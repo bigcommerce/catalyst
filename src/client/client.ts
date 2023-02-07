@@ -3,7 +3,7 @@ import z, { ZodObject, ZodRawShape } from 'zod';
 const clientConfig = z.object({
   storeHash: z.string().min(1),
   accessToken: z.string().min(1),
-  channelId: z.number(),
+  channelId: z.number().optional().default(1),
 });
 
 const storefrontTokenResponse = z.object({
@@ -100,6 +100,6 @@ class ApiClient {
 
 export const http = new ApiClient({
   accessToken: process.env.NEXT_PUBLIC_BIGCOMMERCE_ACCESS_TOKEN,
-  channelId: parseInt(process.env.NEXT_PUBLIC_BIGCOMMERCE_CHANNEL_ID ?? '', 10),
+  channelId: parseInt(process.env.NEXT_PUBLIC_BIGCOMMERCE_CHANNEL_ID ?? '1', 10),
   storeHash: process.env.NEXT_PUBLIC_BIGCOMMERCE_STORE_HASH,
 });
