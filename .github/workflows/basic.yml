@@ -23,7 +23,7 @@ jobs:
           cache: 'npm'
 
       - name: Validate commits
-        run: npx @bigcommerce/validate-commits ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}
+        run: npx @bigcommerce/validate-commits ${GITHUB_BASE_REF}..${GITHUB_SHA}
 
   lint:
 
