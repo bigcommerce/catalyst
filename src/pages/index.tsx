@@ -2,7 +2,6 @@ import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import React, { Fragment } from 'react';
-import { z } from 'zod';
 
 import { Button } from '../../reactant/components/Button';
 import { Link } from '../../reactant/components/Link';
@@ -14,98 +13,80 @@ import { http } from '../client';
 import { FooterMenu } from '../components/FooterMenu';
 import { ProductTiles } from '../components/ProductTiles';
 
-const Category = z.object({
-  name: z.string(),
-  path: z.string(),
-});
+interface CategoryTree {
+  name: string;
+  path: string;
+  children?: CategoryTree[];
+}
 
-type Category = z.infer<typeof Category> & {
-  children?: Category[];
-};
+interface StoreTextLogo {
+  __typename: 'StoreTextLogo';
+  text: string;
+}
 
-const CategoryTree: z.ZodType<Category[]> = z.array(
-  Category.extend({
-    children: z.lazy(() => CategoryTree).optional(),
-  }),
-);
+interface StoreImageLogo {
+  __typename: 'StoreImageLogo';
+  image: {
+    url: string;
+    altText: string;
+  };
+}
 
-const StoreLogo = z.discriminatedUnion('__typename', [
-  z.object({
-    __typename: z.literal('StoreTextLogo'),
-    text: z.string(),
-  }),
-  z.object({
-    __typename: z.literal('StoreImageLogo'),
-    image: z.object({
-      url: z.string(),
-      altText: z.string(),
-    }),
-  }),
-]);
+type StoreLogo = StoreTextLogo | StoreImageLogo;
 
-const ProductConnection = z.object({
-  edges: z.array(
-    z.object({
-      node: z.object({
-        entityId: z.number(),
-        name: z.string(),
-        brand: z
-          .object({
-            name: z.string(),
-          })
-          .nullable(),
-        defaultImage: z.object({
-          url: z.string(),
-          altText: z.string(),
-        }),
-        prices: z.object({
-          price: z
-            .object({
-              formatted: z.string(),
-            })
-            .nullable(),
-        }),
-      }),
-    }),
-  ),
-});
+interface ProductConnection {
+  edges: Array<{
+    node: {
+      entityId: number;
+      name: string;
+      brand: {
+        name: string;
+      } | null;
+      defaultImage: {
+        url: string;
+        altText: string;
+      };
+      prices: {
+        price: {
+          formatted: string;
+        } | null;
+      };
+    };
+  }>;
+}
 
-const HomePageQuery = z.object({
-  data: z.object({
-    site: z.object({
-      featuredProducts: ProductConnection,
-      bestSellingProducts: ProductConnection,
-      categoryTree: CategoryTree,
-      brands: z.object({
-        edges: z.array(
-          z.object({
-            node: z.object({
-              name: z.string(),
-              path: z.string(),
-            }),
-          }),
-        ),
-      }),
-      settings: z.object({
-        storeName: z.string(),
-        logoV2: StoreLogo,
-        contact: z.object({
-          address: z.string(),
-          phone: z.string(),
-        }),
-        socialMediaLinks: z.array(
-          z.object({
-            name: z.string(),
-            url: z.string(),
-          }),
-        ),
-      }),
-    }),
-  }),
-});
+interface HomePageQuery {
+  data: {
+    site: {
+      featuredProducts: ProductConnection;
+      bestSellingProducts: ProductConnection;
+      categoryTree: CategoryTree[];
+      brands: {
+        edges: Array<{
+          node: {
+            name: string;
+            path: string;
+          };
+        }>;
+      };
+      settings: {
+        storeName: string;
+        logoV2: StoreLogo;
+        contact: {
+          address: string;
+          phone: string;
+        };
+        socialMediaLinks: Array<{
+          name: string;
+          url: string;
+        }>;
+      };
+    };
+  };
+}
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const { data } = await http.query(
+  const { data } = await http.query<HomePageQuery>(
     `
     query HomePageQuery($pageSize: Int = 4) {
       site {
@@ -178,7 +159,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
       path
     }
 `,
-    HomePageQuery,
   );
 
   return {
@@ -188,7 +168,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   };
 };
 
-export default function HomePage({ data }: { data: z.infer<typeof HomePageQuery>['data'] }) {
+export default function HomePage({ data }: { data: HomePageQuery['data'] }) {
   return (
     <>
       <Head>

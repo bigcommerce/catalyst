@@ -1,17 +1,11 @@
-import z, { ZodObject, ZodRawShape } from 'zod';
+import { ClientConfig, Config } from './config';
 
-const clientConfig = z.object({
-  storeHash: z.string().min(1),
-  accessToken: z.string().min(1),
-  channelId: z.number(),
-});
-
-const storefrontTokenResponse = z.object({
-  data: z.object({
-    token: z.string(),
-  }),
-  meta: z.unknown(),
-});
+interface StorefrontTokenResponse {
+  data: {
+    token: string;
+  };
+  meta: unknown;
+}
 
 const getExpiresAtUTCTime = (expiresAt: number): number => {
   const today = new Date();
@@ -24,26 +18,15 @@ const getExpiresAtUTCTime = (expiresAt: number): number => {
 
 // TODO: Check if we can use Apollo Client instead of this custom client
 class ApiClient {
-  private readonly config: z.infer<typeof clientConfig>;
+  private readonly config: ClientConfig;
+  private readonly apiUrl: string;
+  private readonly storefrontApiUrl: string;
 
-  constructor(config: Partial<z.infer<typeof clientConfig>>) {
-    this.config = clientConfig.parse(config);
-  }
+  constructor(config: Partial<Config>) {
+    this.config = new ClientConfig(config);
 
-  // eslint-disable-next-line no-restricted-syntax
-  private get storefrontApiUrl() {
-    const channelIdSegment = this.config.channelId !== 1 ? `-${this.config.channelId}` : '';
-    const permanentStoreDomain =
-      process.env.NEXT_PUBLIC_BIGCOMMERCE_PERMANENT_STORE_DOMAIN ?? 'mybigcommerce.com';
-
-    return `https://store-${this.config.storeHash}${channelIdSegment}.${permanentStoreDomain}/graphql`;
-  }
-
-  // eslint-disable-next-line no-restricted-syntax
-  private get apiUrl() {
-    const bcApiUrl = process.env.NEXT_PUBLIC_BIGCOMMERCE_API_URL ?? 'https://api.bigcommerce.com';
-
-    return `${bcApiUrl}/stores/${this.config.storeHash}`;
+    this.apiUrl = this.generateApiUrl();
+    this.storefrontApiUrl = this.generateStorefrontApiUrl();
   }
 
   async fetch(endpoint: string, options?: RequestInit) {
@@ -58,10 +41,7 @@ class ApiClient {
     });
   }
 
-  async query<ResponseType extends ZodObject<ZodRawShape>>(
-    query: string,
-    zodObject: ResponseType,
-  ): Promise<z.infer<ResponseType>> {
+  async query<ResponseType>(query: string): Promise<ResponseType> {
     const {
       data: { token },
     } = await this.generateStorefrontToken();
@@ -76,10 +56,23 @@ class ApiClient {
       body: JSON.stringify({ query }),
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const data = await response.json();
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return (await response.json()) as ResponseType;
+  }
 
-    return zodObject.parse(data);
+  private generateApiUrl() {
+    // TODO: Pass this into the constructor and validate it?
+    const bcApiUrl = process.env.NEXT_PUBLIC_BIGCOMMERCE_API_URL ?? 'https://api.bigcommerce.com';
+
+    return `${bcApiUrl}/stores/${this.config.storeHash}`;
+  }
+
+  private generateStorefrontApiUrl() {
+    const channelIdSegment = this.config.channelId !== 1 ? `-${this.config.channelId}` : '';
+    const canonicalStoreDomain =
+      process.env.NEXT_PUBLIC_BIGCOMMERCE_CANONICAL_STORE_DOMAIN ?? 'mybigcommerce.com';
+
+    return `https://store-${this.config.storeHash}${channelIdSegment}.${canonicalStoreDomain}/graphql`;
   }
 
   private async generateStorefrontToken() {
@@ -94,7 +87,8 @@ class ApiClient {
       }),
     });
 
-    return storefrontTokenResponse.parse(await response.json());
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return (await response.json()) as StorefrontTokenResponse;
   }
 }
 
