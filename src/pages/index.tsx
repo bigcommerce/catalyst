@@ -1,4 +1,5 @@
-/* eslint-disable no-underscore-dangle */
+import { GetServerSideProps } from 'next';
+import Head from 'next/head';
 import Image from 'next/image';
 import React, { Fragment } from 'react';
 import { z } from 'zod';
@@ -97,9 +98,7 @@ const HomePageQuery = z.object({
   }),
 });
 
-export const revalidate = 3600;
-
-export default async function Page() {
+export const getServerSideProps: GetServerSideProps = async () => {
   const { data } = await http.query(
     `
     query HomePageQuery($pageSize: Int = 4) {
@@ -176,8 +175,20 @@ export default async function Page() {
     HomePageQuery,
   );
 
+  return {
+    props: {
+      data,
+    },
+  };
+};
+
+export default function HomePage({ data }: { data: z.infer<typeof HomePageQuery>['data'] }) {
   return (
     <>
+      <Head>
+        <title>BigCommerce Swag Store</title>
+        <meta content="BigCommerce Swag Store" name="description" />
+      </Head>
       <header>
         <div className="my-9 md:my-6 mx-6 sm:mx-10 md:container md:mx-auto">
           {data.site.settings.logoV2.__typename === 'StoreTextLogo' ? (
