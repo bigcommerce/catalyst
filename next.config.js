@@ -4,7 +4,7 @@ const isProduction = process.env.NODE_ENV !== 'development';
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    loaderFile: isProduction ? './src/bigcommerceImageLoader.js' : undefined,
+    loaderFile: isProduction ? './src/bigcommerceImageLoader.ts' : undefined,
     domains: ['cdn11.bigcommerce.com'],
   },
 };
