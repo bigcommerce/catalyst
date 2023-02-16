@@ -1,15 +1,10 @@
-const isDevelopment = process.env.NODE_ENV !== 'development';
+const isProduction = process.env.NODE_ENV !== 'development';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    appDir: true,
-    runtime: isDevelopment ? undefined : 'experimental-edge',
-    fetchCache: true,
-  },
   images: {
-    loaderFile: isDevelopment ? undefined : './src/bigcommerceImageLoader.js',
+    loaderFile: isProduction ? './src/bigcommerceImageLoader.js' : undefined,
     domains: ['cdn11.bigcommerce.com'],
   },
 };
