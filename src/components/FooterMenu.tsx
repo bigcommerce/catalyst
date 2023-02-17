@@ -1,6 +1,7 @@
+import Link from 'next/link';
 import React from 'react';
 
-import { Link } from '../../reactant/components/Link';
+import { Link as ReactantLink } from '../../reactant/components/Link';
 
 interface FooterMenuProps {
   title: string;
@@ -16,7 +17,7 @@ export const FooterMenu = ({ title, items }: FooterMenuProps) => (
     <ul>
       {items.map((item) => (
         <li className="mb-4" key={item.path}>
-          <Link className={Link.text.className} href={item.path}>
+          <Link className={ReactantLink.text.className} href={item.path}>
             {item.name}
           </Link>
         </li>

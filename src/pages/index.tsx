@@ -1,6 +1,5 @@
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
 import React, { Fragment } from 'react';
 
 import { Button } from '../../reactant/components/Button';
@@ -11,6 +10,9 @@ import { PinterestIcon } from '../../reactant/icons/Pinterest';
 import { TwitterIcon } from '../../reactant/icons/Twitter';
 import { http } from '../client';
 import { FooterMenu } from '../components/FooterMenu';
+import { Header } from '../components/Header';
+import type { StoreLogo } from '../components/Header';
+import { BaseStoreLogo } from '../components/Logo';
 import { ProductTiles } from '../components/ProductTiles';
 
 interface CategoryTree {
@@ -19,26 +21,12 @@ interface CategoryTree {
   children?: CategoryTree[];
 }
 
-interface StoreTextLogo {
-  __typename: 'StoreTextLogo';
-  text: string;
-}
-
-interface StoreImageLogo {
-  __typename: 'StoreImageLogo';
-  image: {
-    url: string;
-    altText: string;
-  };
-}
-
-type StoreLogo = StoreTextLogo | StoreImageLogo;
-
 interface ProductConnection {
   edges: Array<{
     node: {
       entityId: number;
       name: string;
+      path: string;
       brand: {
         name: string;
       } | null;
@@ -106,6 +94,12 @@ export const getServerSideProps: GetServerSideProps = async () => {
         }
         categoryTree {
           ...Category
+          children {
+            ...Category
+            children {
+              ...Category
+            }
+          }
         }
         settings {
           storeName
@@ -138,6 +132,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
         node {
           entityId
           name
+          path
           brand {
               name
           }
@@ -175,23 +170,11 @@ export default function HomePage({ data }: { data: HomePageQuery['data'] }) {
         <title>BigCommerce Swag Store</title>
         <meta content="BigCommerce Swag Store" name="description" />
       </Head>
-      <header>
-        <div className="my-9 md:my-6 mx-6 sm:mx-10 md:container md:mx-auto">
-          {data.site.settings.logoV2.__typename === 'StoreTextLogo' ? (
-            <a href="/">{data.site.settings.logoV2.text}</a>
-          ) : (
-            <a href="/">
-              <Image
-                alt={data.site.settings.storeName}
-                height={32}
-                priority
-                src={data.site.settings.logoV2.image.url}
-                width={155}
-              />
-            </a>
-          )}
-        </div>
-      </header>
+      <Header
+        categories={data.site.categoryTree}
+        logo={data.site.settings.logoV2}
+        storeName={data.site.settings.storeName}
+      />
       <main>
         <div className="md:container md:mx-auto">
           <div className="aspect-[9/16] md:aspect-[2/1] bg-slate-100 relative flex flex-col items-start justify-center p-6 sm:p-16 md:p-24">
@@ -200,9 +183,9 @@ export default function HomePage({ data }: { data: HomePageQuery['data'] }) {
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
               incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
             </p>
-            <a className="px-8 py-3 bg-[#053FB0] text-white font-semibold" href="/">
+            <Link className="px-8 py-3 bg-[#053FB0] text-white font-semibold" href="/">
               Shop now
-            </a>
+            </Link>
           </div>
           <ProductTiles priority products={data.site.featuredProducts} title="Featured products" />
           <ProductTiles products={data.site.bestSellingProducts} title="Popular products" />
@@ -227,15 +210,15 @@ export default function HomePage({ data }: { data: HomePageQuery['data'] }) {
             <div>
               <FooterMenu
                 items={data.site.brands.edges.map(({ node }) => ({ ...node }))}
-                title="Categories"
+                title="Brands"
               />
             </div>
             <div>
               <FooterMenu
                 items={[
-                  { name: 'Contact us', path: '/' },
-                  { name: 'About brand', path: '/' },
-                  { name: 'Blog', path: '/' },
+                  { name: 'Contact us', path: '/contact-us' },
+                  { name: 'About brand', path: '/about' },
+                  { name: 'Blog', path: '/blog' },
                 ]}
                 title="About us"
               />
@@ -243,28 +226,21 @@ export default function HomePage({ data }: { data: HomePageQuery['data'] }) {
             <div>
               <FooterMenu
                 items={[
-                  { name: 'Shipping & returns', path: '/' },
-                  { name: 'Privacy policy', path: '/' },
-                  { name: 'Terms & conditions', path: '/' },
-                  { name: 'FAQ', path: '/' },
+                  { name: 'Shipping & returns', path: '/shipping-and-returns' },
+                  { name: 'Privacy policy', path: '/privacy-policy' },
+                  { name: 'Terms & conditions', path: '/terms-and-conditions' },
+                  { name: 'FAQ', path: '/faq' },
                 ]}
                 title="Help"
               />
             </div>
             <div className="sm:col-span-2 md:order-first">
-              {data.site.settings.logoV2.__typename === 'StoreTextLogo' ? (
-                <h4 className="mb-4">{data.site.settings.logoV2.text}</h4>
-              ) : (
-                <h4 className="mb-4">
-                  <Image
-                    alt={data.site.settings.storeName}
-                    height={32}
-                    priority={false}
-                    src={data.site.settings.logoV2.image.url}
-                    width={155}
-                  />
-                </h4>
-              )}
+              <h4 className="mb-4">
+                <BaseStoreLogo
+                  logo={data.site.settings.logoV2}
+                  storeName={data.site.settings.storeName}
+                />
+              </h4>
               <address className="mb-2 not-italic">
                 {data.site.settings.contact.address.split('\n').map((line) => (
                   <Fragment key={line}>
