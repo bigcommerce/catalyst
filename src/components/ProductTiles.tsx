@@ -2,6 +2,8 @@ import Image from 'next/image';
 import React from 'react';
 import { z } from 'zod';
 
+import { Link } from '../../reactant/components/Link';
+
 // TODO: Create a source of truth for this type
 // Alternatively, we could use a generic schema for this component
 const ProductConnection = z.object({
@@ -55,7 +57,9 @@ export const ProductTiles = (props: z.infer<typeof ProductTileProps>) => {
               width={320}
             />
             <p className="text-slate-500">{edge.node.brand?.name}</p>
-            <h3 className="font-bold text-xl mb-3">{edge.node.name}</h3>
+            <h3 className="font-bold text-xl mb-3">
+              <Link className={Link.text.className}>{edge.node.name}</Link>
+            </h3>
             <p className="text-base">{edge.node.prices.price?.formatted}</p>
           </li>
         ))}

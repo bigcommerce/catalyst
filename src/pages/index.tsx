@@ -4,6 +4,12 @@ import Image from 'next/image';
 import React, { Fragment } from 'react';
 import { z } from 'zod';
 
+import { Button } from '../../reactant/components/Button';
+import { Link } from '../../reactant/components/Link';
+import { FacebookIcon } from '../../reactant/icons/Facebook';
+import { HeartIcon } from '../../reactant/icons/Heart';
+import { PinterestIcon } from '../../reactant/icons/Pinterest';
+import { TwitterIcon } from '../../reactant/icons/Twitter';
 import { http } from '../client';
 import { FooterMenu } from '../components/FooterMenu';
 import { ProductTiles } from '../components/ProductTiles';
@@ -221,6 +227,16 @@ export default function HomePage({ data }: { data: z.infer<typeof HomePageQuery>
           <ProductTiles priority products={data.site.featuredProducts} title="Featured products" />
           <ProductTiles products={data.site.bestSellingProducts} title="Popular products" />
         </div>
+        {/* NOTE: temporary for testing purpose */}
+        <div className="flex flex-row flex-wrap justify-start gap-4 m-4">
+          <Button className={Button.primary.className}>Add to cart</Button>
+          <Button className={Button.primary.className}>
+            <HeartIcon className={Button.Icon.className} /> Add to cart
+          </Button>
+          <Button className={`${Button.primary.className} ${Button.iconOnly.className}`}>
+            <HeartIcon />
+          </Button>
+        </div>
       </main>
       <footer>
         <div className="border-t border-b border-slate-100">
@@ -282,7 +298,15 @@ export default function HomePage({ data }: { data: z.infer<typeof HomePageQuery>
                 <ul className="flex flex-wrap gap-4 mt-8">
                   {data.site.settings.socialMediaLinks.map((link) => (
                     <li key={link.name}>
-                      <a href={link.url}>{link.name}</a>
+                      <Link className={Link.iconOnly.className}>
+                        {link.name === 'Facebook' && (
+                          <FacebookIcon className={Link.Icon.className} />
+                        )}
+                        {link.name === 'Twitter' && <TwitterIcon className={Link.Icon.className} />}
+                        {link.name === 'Pinterest' && (
+                          <PinterestIcon className={Link.Icon.className} />
+                        )}
+                      </Link>
                     </li>
                   ))}
                 </ul>
