@@ -41,7 +41,10 @@ class ApiClient {
     });
   }
 
-  async query<ResponseType>(query: string): Promise<ResponseType> {
+  async query<ResponseType>(
+    query: string,
+    variables: Record<string, unknown> = {},
+  ): Promise<ResponseType> {
     const {
       data: { token },
     } = await this.generateStorefrontToken();
@@ -53,7 +56,7 @@ class ApiClient {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query }),
+      body: JSON.stringify({ query, variables }),
     });
 
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
