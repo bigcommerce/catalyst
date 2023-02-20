@@ -1,6 +1,8 @@
 import React from 'react';
 import z from 'zod';
 
+import { Link } from '../../reactant/components/Link';
+
 const FooterMenuProps = z.object({
   title: z.string(),
   items: z.array(
@@ -20,7 +22,9 @@ export const FooterMenu = (props: z.infer<typeof FooterMenuProps>) => {
       <ul>
         {items.map((item) => (
           <li className="mb-4" key={item.path}>
-            <a href={item.path}>{item.name}</a>
+            <Link className={Link.text.className} href={item.path}>
+              {item.name}
+            </Link>
           </li>
         ))}
       </ul>
