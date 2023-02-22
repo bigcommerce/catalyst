@@ -65,6 +65,11 @@ interface HomePageQuery {
       brands: Brands;
       settings: {
         storeName: string;
+        storefront: {
+          catalog: {
+            productComparisonsEnabled: boolean;
+          };
+        };
         logoV2: StoreLogo;
         contact: Contact;
         socialMediaLinks: SocialMediaLink[];
@@ -103,6 +108,11 @@ export const getServerSideProps: GetServerSideProps = async () => {
         }
         settings {
           storeName
+          storefront {
+            catalog {
+              productComparisonsEnabled
+            }
+          }
           logoV2 {
             __typename
             ... on StoreTextLogo{
@@ -130,9 +140,11 @@ export const getServerSideProps: GetServerSideProps = async () => {
     fragment Product on ProductConnection {
       edges {
         node {
+          addToCartUrl
           entityId
           name
           path
+          showCartAction
           brand {
               name
           }
@@ -187,8 +199,21 @@ export default function HomePage({ data }: { data: HomePageQuery['data'] }) {
               Shop now
             </Link>
           </div>
-          <ProductTiles priority products={data.site.featuredProducts} title="Featured products" />
-          <ProductTiles products={data.site.bestSellingProducts} title="Popular products" />
+          <ProductTiles
+            priority
+            productComparisonsEnabled={
+              data.site.settings.storefront.catalog.productComparisonsEnabled
+            }
+            products={data.site.featuredProducts}
+            title="Featured products"
+          />
+          <ProductTiles
+            productComparisonsEnabled={
+              data.site.settings.storefront.catalog.productComparisonsEnabled
+            }
+            products={data.site.bestSellingProducts}
+            title="Popular products"
+          />
         </div>
       </main>
       <Footer
