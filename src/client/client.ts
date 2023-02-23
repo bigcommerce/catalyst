@@ -16,6 +16,14 @@ const getExpiresAtUTCTime = (expiresAt: number): number => {
   return Math.floor(tomorrow.getTime() / 1000);
 };
 
+const platformHeaders = {
+  'X-Client-Type': 'BC-Catalyst-Next.js',
+  'X-Client-Version': 'todo - add next.js version',
+  'X-Plugin-Version': process.env.npm_package_version,
+  'X-Php-Version': process.version, // workaround for existing logging pipeline
+  'X-Language-Version': `Node ${process.version}`, // better more generic version, not yet logged
+};
+
 // TODO: Check if we can use Apollo Client instead of this custom client
 class ApiClient {
   private readonly config: ClientConfig;
@@ -52,6 +60,7 @@ class ApiClient {
         Authorization: `Bearer ${token}`,
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        ...platformHeaders,
       },
       body: JSON.stringify({ query }),
     });
