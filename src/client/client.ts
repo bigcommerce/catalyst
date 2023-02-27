@@ -25,8 +25,8 @@ class ApiClient {
   constructor(config: Partial<Config>) {
     this.config = new ClientConfig(config);
 
-    this.apiUrl = this.generateApiUrl();
-    this.storefrontApiUrl = this.generateStorefrontApiUrl();
+    this.apiUrl = this.getApiUrl();
+    this.storefrontApiUrl = this.getStorefrontApiUrl();
   }
 
   async fetch(endpoint: string, options?: RequestInit) {
@@ -47,7 +47,7 @@ class ApiClient {
   ): Promise<ResponseType> {
     const {
       data: { token },
-    } = await this.generateStorefrontToken();
+    } = await this.fetchStorefrontToken();
 
     const response = await fetch(this.storefrontApiUrl, {
       method: 'POST',
@@ -63,27 +63,19 @@ class ApiClient {
     return (await response.json()) as ResponseType;
   }
 
-  private generateApiUrl() {
-    // TODO: Pass this into the constructor and validate it?
-    const bcApiUrl = process.env.NEXT_PUBLIC_BIGCOMMERCE_API_URL ?? 'https://api.bigcommerce.com';
-
-    return `${bcApiUrl}/stores/${this.config.storeHash}`;
+  private getApiUrl() {
+    return `${this.config.apiUrl}/stores/${this.config.storeHash}`;
   }
 
-  private generateStorefrontApiUrl() {
+  private getStorefrontApiUrl() {
     const channelIdSegment = this.config.channelId !== 1 ? `-${this.config.channelId}` : '';
-    const canonicalStoreDomain =
-      process.env.NEXT_PUBLIC_BIGCOMMERCE_CANONICAL_STORE_DOMAIN ?? 'mybigcommerce.com';
 
-    return `https://store-${this.config.storeHash}${channelIdSegment}.${canonicalStoreDomain}/graphql`;
+    return `https://store-${this.config.storeHash}${channelIdSegment}.${this.config.canonicalDomainName}/graphql`;
   }
 
-  private async generateStorefrontToken() {
+  private async fetchStorefrontToken() {
     const response = await this.fetch(`/v3/storefront/api-token-customer-impersonation`, {
       method: 'POST',
-      headers: {
-        'x-bc-customer-id': '',
-      },
       body: JSON.stringify({
         channel_id: this.config.channelId,
         expires_at: getExpiresAtUTCTime(300),
@@ -99,4 +91,6 @@ export const http = new ApiClient({
   accessToken: process.env.NEXT_PUBLIC_BIGCOMMERCE_ACCESS_TOKEN,
   channelId: parseInt(process.env.NEXT_PUBLIC_BIGCOMMERCE_CHANNEL_ID ?? '', 10),
   storeHash: process.env.NEXT_PUBLIC_BIGCOMMERCE_STORE_HASH,
+  apiUrl: process.env.NEXT_PUBLIC_BIGCOMMERCE_API_URL,
+  canonicalDomainName: process.env.NEXT_PUBLIC_BIGCOMMERCE_CANONICAL_STORE_DOMAIN,
 });
