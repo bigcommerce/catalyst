@@ -1,42 +1,35 @@
 export interface Config {
-  storeHash: string;
   accessToken: string;
+  apiUrl: string;
+  canonicalDomainName: string;
   channelId: number;
+  storeHash: string;
 }
 
 export class ClientConfig {
-  readonly storeHash: string;
   readonly accessToken: string;
+  readonly apiUrl: string;
+  readonly canonicalDomainName: string;
   readonly channelId: number;
+  readonly storeHash: string;
 
   constructor(config: Partial<Config>) {
+    this.apiUrl = config.apiUrl ?? 'https://api.bigcommerce.com';
+    this.canonicalDomainName = config.canonicalDomainName ?? 'mybigcommerce.com';
+
     this.validateConfig(config);
 
-    this.storeHash = config.storeHash;
     this.accessToken = config.accessToken;
     this.channelId = config.channelId;
+    this.storeHash = config.storeHash;
 
     return this;
   }
 
   private validateConfig(config: Partial<Config>): asserts config is Config {
-    [this.validateStoreHash, this.validateAccessToken, this.validateChannelId].forEach(
+    [this.validateAccessToken, this.validateChannelId, this.validateStoreHash].forEach(
       (validator) => validator(config),
     );
-  }
-
-  private validateStoreHash({ storeHash }: Partial<Config>) {
-    if (!storeHash) {
-      throw new Error('storeHash is required');
-    }
-
-    if (typeof storeHash !== 'string') {
-      throw new Error('storeHash must be a string');
-    }
-
-    if (storeHash.length < 1) {
-      throw new Error('storeHash must be at least 1 character');
-    }
   }
 
   private validateAccessToken({ accessToken }: Partial<Config>) {
@@ -64,6 +57,20 @@ export class ClientConfig {
 
     if (channelId < 1) {
       throw new Error('channelId must be at least 1');
+    }
+  }
+
+  private validateStoreHash({ storeHash }: Partial<Config>) {
+    if (!storeHash) {
+      throw new Error('storeHash is required');
+    }
+
+    if (typeof storeHash !== 'string') {
+      throw new Error('storeHash must be a string');
+    }
+
+    if (storeHash.length < 1) {
+      throw new Error('storeHash must be at least 1 character');
     }
   }
 }
