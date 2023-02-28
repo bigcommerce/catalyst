@@ -1,24 +1,39 @@
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { Button } from '../../reactant/components/Button';
 import { Link } from '../../reactant/components/Link';
-import { FacebookIcon } from '../../reactant/icons/Facebook';
 import { HeartIcon } from '../../reactant/icons/Heart';
-import { PinterestIcon } from '../../reactant/icons/Pinterest';
-import { TwitterIcon } from '../../reactant/icons/Twitter';
 import { http } from '../client';
-import { FooterMenu } from '../components/FooterMenu';
+import { Footer } from '../components/Footer';
 import { Header } from '../components/Header';
 import type { StoreLogo } from '../components/Header';
-import { BaseStoreLogo } from '../components/Logo';
 import { ProductTiles } from '../components/ProductTiles';
 
-interface CategoryTree {
+export interface Brands {
+  edges: Array<{
+    node: {
+      name: string;
+      path: string;
+    };
+  }>;
+}
+
+export interface CategoryTree {
   name: string;
   path: string;
   children?: CategoryTree[];
+}
+
+export interface Contact {
+  address: string;
+  phone: string;
+}
+
+export interface SocialMediaLink {
+  name: string;
+  url: string;
 }
 
 interface ProductConnection {
@@ -49,25 +64,12 @@ interface HomePageQuery {
       featuredProducts: ProductConnection;
       bestSellingProducts: ProductConnection;
       categoryTree: CategoryTree[];
-      brands: {
-        edges: Array<{
-          node: {
-            name: string;
-            path: string;
-          };
-        }>;
-      };
+      brands: Brands;
       settings: {
         storeName: string;
         logoV2: StoreLogo;
-        contact: {
-          address: string;
-          phone: string;
-        };
-        socialMediaLinks: Array<{
-          name: string;
-          url: string;
-        }>;
+        contact: Contact;
+        socialMediaLinks: SocialMediaLink[];
       };
     };
   };
@@ -201,84 +203,14 @@ export default function HomePage({ data }: { data: HomePageQuery['data'] }) {
           </Button>
         </div>
       </main>
-      <footer>
-        <div className="border-t border-b border-slate-100">
-          <div className="grid grid-cols-1 sm:grid-cols-4 md:grid-cols-6 gap-8 my-12 mx-6 sm:mx-10 md:container md:mx-auto">
-            <div>
-              <FooterMenu items={data.site.categoryTree} title="Categories" />
-            </div>
-            <div>
-              <FooterMenu
-                items={data.site.brands.edges.map(({ node }) => ({ ...node }))}
-                title="Brands"
-              />
-            </div>
-            <div>
-              <FooterMenu
-                items={[
-                  { name: 'Contact us', path: '/contact-us' },
-                  { name: 'About brand', path: '/about' },
-                  { name: 'Blog', path: '/blog' },
-                ]}
-                title="About us"
-              />
-            </div>
-            <div>
-              <FooterMenu
-                items={[
-                  { name: 'Shipping & returns', path: '/shipping-and-returns' },
-                  { name: 'Privacy policy', path: '/privacy-policy' },
-                  { name: 'Terms & conditions', path: '/terms-and-conditions' },
-                  { name: 'FAQ', path: '/faq' },
-                ]}
-                title="Help"
-              />
-            </div>
-            <div className="sm:col-span-2 md:order-first">
-              <h4 className="mb-4">
-                <BaseStoreLogo
-                  logo={data.site.settings.logoV2}
-                  storeName={data.site.settings.storeName}
-                />
-              </h4>
-              <address className="mb-2 not-italic">
-                {data.site.settings.contact.address.split('\n').map((line) => (
-                  <Fragment key={line}>
-                    {line}
-                    <br />
-                  </Fragment>
-                ))}
-              </address>
-              {data.site.settings.contact.phone ? <p>{data.site.settings.contact.phone}</p> : null}
-              {data.site.settings.socialMediaLinks.length > 0 ? (
-                <ul className="flex flex-wrap gap-4 mt-8">
-                  {data.site.settings.socialMediaLinks.map((link) => (
-                    <li key={link.name}>
-                      <Link className={Link.iconOnly.className}>
-                        {link.name === 'Facebook' && (
-                          <FacebookIcon className={Link.Icon.className} />
-                        )}
-                        {link.name === 'Twitter' && <TwitterIcon className={Link.Icon.className} />}
-                        {link.name === 'Pinterest' && (
-                          <PinterestIcon className={Link.Icon.className} />
-                        )}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-            </div>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 my-8 md:my-6 mx-6 sm:mx-10 md:container md:mx-auto">
-          <div className="md:text-right">Payment methods</div>
-          <div className="md:order-first">
-            <p className="text-sm text-slate-500">
-              © {new Date().getFullYear()} {data.site.settings.storeName} – Powered by BigCommerce
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer
+        brands={data.site.brands}
+        categoryTree={data.site.categoryTree}
+        contact={data.site.settings.contact}
+        logo={data.site.settings.logoV2}
+        socialMediaLinks={data.site.settings.socialMediaLinks}
+        storeName={data.site.settings.storeName}
+      />
     </>
   );
 }
