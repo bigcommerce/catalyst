@@ -75,7 +75,11 @@ export default function HomePage({ data }: { data: HomePageQuery }) {
         <title>BigCommerce Swag Store</title>
         <meta content="BigCommerce Swag Store" name="description" />
       </Head>
-      <Header categoryTree={data.site.categoryTree} settings={data.site.settings} />
+      <Header
+        categoryTree={data.site.categoryTree}
+        content={data.site.content}
+        settings={data.site.settings}
+      />
       <main>
         <div className="md:container md:mx-auto">
           <div className="aspect-[9/16] md:aspect-[2/1] bg-slate-100 relative flex flex-col items-start justify-center p-6 sm:p-16 md:p-24">

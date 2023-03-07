@@ -6,7 +6,7 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     loaderFile: isProduction ? './src/bigcommerceImageLoader.ts' : undefined,
-    domains: ['cdn11.bigcommerce.com'],
+    domains: ['cdn11.bigcommerce.com', 'cdn.store.bcdev'],
   },
   i18n: {
     locales: ['en'],

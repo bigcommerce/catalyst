@@ -5,7 +5,7 @@ import { MergeDeep } from 'type-fest';
 
 import { serverClient } from '../../client/server';
 import { Header, query as HeaderQuery, HeaderSiteQuery } from '../../components/Header';
-import type { StoreLogo } from '../../components/Header';
+import type { Page, StoreLogo } from '../../components/Header';
 import {
   ProductTiles,
   ProductTilesConnection,
@@ -26,7 +26,7 @@ interface Category {
   products: ProductTilesConnection;
 }
 
-interface CategoryTree {
+export interface CategoryTree {
   name: string;
   path: string;
   children?: CategoryTree[];
@@ -51,6 +51,13 @@ interface CategoryQuery {
 interface CategoryPageProps {
   category: Category;
   categories: CategoryTree[];
+  content: {
+    pages: {
+      edges: Array<{
+        node: Page;
+      }>;
+    };
+  };
   storeName: string;
   logo: StoreLogo;
   storefront: {
@@ -122,6 +129,7 @@ export const getServerSideProps: GetServerSideProps<
     props: {
       category: data.site.category,
       categories: data.site.categoryTree,
+      content: data.site.content,
       storeName: data.site.settings.storeName,
       logo: data.site.settings.logoV2,
       storefront: data.site.settings.storefront,
@@ -133,6 +141,7 @@ export const getServerSideProps: GetServerSideProps<
 export default function CategoryPage({
   category,
   categories,
+  content,
   storeName,
   storefront,
   logo,
@@ -142,7 +151,7 @@ export default function CategoryPage({
       <Head>
         <title>{category.name}</title>
       </Head>
-      <Header categoryTree={categories} settings={{ logoV2: logo, storeName }} />
+      <Header categoryTree={categories} content={content} settings={{ logoV2: logo, storeName }} />
       <main>
         <div className="md:container md:mx-auto">
           <h1 className="font-black text-5xl leading-[4rem]">{category.name}</h1>

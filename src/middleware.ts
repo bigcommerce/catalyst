@@ -3,6 +3,7 @@ import { NextResponse, URLPattern } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 import { serverClient } from './client/server';
+import { Page } from './components/Header';
 
 interface RoutesResponse {
   site: {
@@ -11,6 +12,13 @@ interface RoutesResponse {
         __typename: string;
         entityId: string;
       } | null;
+    };
+    content: {
+      pages: {
+        edges: Array<{
+          node: Page;
+        }>;
+      };
     };
   };
 }
@@ -36,11 +44,46 @@ export async function middleware(request: NextRequest) {
               }
             }
           }
+          content {
+            pages {
+              edges {
+                node {
+                  __typename
+                  entityId
+                  name
+                  parentEntityId
+                  ... on NormalPage {
+                    path
+                  }
+                }
+              }
+            }
+          }
         }
       }
     `,
     variables: { path: request.nextUrl.pathname },
   });
+
+  // Temporary workaround until Route endpoint includes Pages
+  const pagesMap: { [path: string]: number } = {};
+
+  data.site.content.pages.edges.forEach(({ node }) => {
+    if (node.__typename === 'NormalPage') {
+      const pathWithoutEndingSlash =
+        node.path[node.path.length - 1] === '/'
+          ? node.path.slice(0, node.path.length - 1)
+          : node.path;
+
+      pagesMap[pathWithoutEndingSlash] = node.entityId;
+    }
+  });
+
+  if (pagesMap[request.nextUrl.pathname]) {
+    return NextResponse.rewrite(
+      new URL(`/page/${pagesMap[request.nextUrl.pathname]}`, request.url),
+    );
+  }
 
   switch (data.site.route.node?.__typename) {
     case 'Product':
@@ -60,9 +103,10 @@ export async function middleware(request: NextRequest) {
     new URLPattern('/product/:pid(\\d+)', request.nextUrl.origin),
     new URLPattern('/category/:cid(\\d+)', request.nextUrl.origin),
     new URLPattern('/brand/:bid(\\d+)', request.nextUrl.origin),
+    new URLPattern('/page/:pageid(\\d+)', request.nextUrl.origin),
   ];
 
-  // Prevent customers from directly navigating to a obfuscated URL.
+  // Prevent customers from directly navigating to an obfuscated URL.
   if (OBFUSCATED_PATTERNS.find((pattern) => pattern.exec(request.url))) {
     return NextResponse.redirect(new URL('/404', request.url));
   }
