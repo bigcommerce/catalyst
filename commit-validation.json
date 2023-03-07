@@ -2,6 +2,7 @@
   "scopes": [
     "ci",
     "deps",
+    "client",
     "catalyst"
   ]
 }
