@@ -1,9 +1,10 @@
+import { gql } from '@apollo/client';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import React from 'react';
 
 import { Link } from '../../reactant/components/Link';
-import { http } from '../client';
+import { serverClient } from '../client/server';
 import { Footer } from '../components/Footer';
 import { Header } from '../components/Header';
 import type { StoreLogo } from '../components/Header';
@@ -57,116 +58,112 @@ interface ProductConnection {
 }
 
 interface HomePageQuery {
-  data: {
-    site: {
-      featuredProducts: ProductConnection;
-      bestSellingProducts: ProductConnection;
-      categoryTree: CategoryTree[];
-      brands: Brands;
-      settings: {
-        storeName: string;
-        storefront: {
-          catalog: {
-            productComparisonsEnabled: boolean;
-          };
+  site: {
+    featuredProducts: ProductConnection;
+    bestSellingProducts: ProductConnection;
+    categoryTree: CategoryTree[];
+    brands: Brands;
+    settings: {
+      storeName: string;
+      storefront: {
+        catalog: {
+          productComparisonsEnabled: boolean;
         };
-        logoV2: StoreLogo;
-        contact: Contact;
-        socialMediaLinks: SocialMediaLink[];
       };
+      logoV2: StoreLogo;
+      contact: Contact;
+      socialMediaLinks: SocialMediaLink[];
     };
   };
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const { data } = await http.query<HomePageQuery>(
-    `
-    query HomePageQuery($pageSize: Int = 4) {
-      site {
-        featuredProducts (first: $pageSize) {
-          ...Product
-        }
-        bestSellingProducts (first: $pageSize) {
-          ...Product
-        }
-        brands {
-          edges {
-            node {
-              name
-              path
-            }
+  const { data } = await serverClient.query<HomePageQuery>({
+    query: gql`
+      query HomePageQuery($pageSize: Int = 4) {
+        site {
+          featuredProducts(first: $pageSize) {
+            ...Product
           }
-        }
-        categoryTree {
-          ...Category
-          children {
-            ...Category
-            children {
-              ...Category
-            }
+          bestSellingProducts(first: $pageSize) {
+            ...Product
           }
-        }
-        settings {
-          storeName
-          storefront {
-            catalog {
-              productComparisonsEnabled
-            }
-          }
-          logoV2 {
-            __typename
-            ... on StoreTextLogo{
-              text
-            }
-            ... on StoreImageLogo{
-              image {
-                url(width: 155)
-                altText
+          brands {
+            edges {
+              node {
+                name
+                path
               }
             }
           }
-          contact {
-            address
-            phone
+          categoryTree {
+            ...Category
+            children {
+              ...Category
+              children {
+                ...Category
+              }
+            }
           }
-          socialMediaLinks{
-            name
-            url
-          }
-        }
-      }
-    }
-
-    fragment Product on ProductConnection {
-      edges {
-        node {
-          addToCartUrl
-          entityId
-          name
-          path
-          showCartAction
-          brand {
+          settings {
+            storeName
+            storefront {
+              catalog {
+                productComparisonsEnabled
+              }
+            }
+            logoV2 {
+              __typename
+              ... on StoreTextLogo {
+                text
+              }
+              ... on StoreImageLogo {
+                image {
+                  url(width: 155)
+                  altText
+                }
+              }
+            }
+            contact {
+              address
+              phone
+            }
+            socialMediaLinks {
               name
-          }
-          defaultImage {
-            url(width: 300, height: 300)
-            altText
-          }
-          prices(currencyCode: USD) {
-            price {
-              formatted
+              url
             }
           }
         }
       }
-    }
-
-    fragment Category on CategoryTreeItem {
-      name
-      path
-    }
-`,
-  );
+      fragment Product on ProductConnection {
+        edges {
+          node {
+            addToCartUrl
+            entityId
+            name
+            path
+            showCartAction
+            brand {
+              name
+            }
+            defaultImage {
+              url(width: 300, height: 300)
+              altText
+            }
+            prices(currencyCode: USD) {
+              price {
+                formatted
+              }
+            }
+          }
+        }
+      }
+      fragment Category on CategoryTreeItem {
+        name
+        path
+      }
+    `,
+  });
 
   return {
     props: {
@@ -175,7 +172,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   };
 };
 
-export default function HomePage({ data }: { data: HomePageQuery['data'] }) {
+export default function HomePage({ data }: { data: HomePageQuery }) {
   return (
     <>
       <Head>
