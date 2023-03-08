@@ -58,28 +58,3 @@ export const createStorefrontClient = (config: Partial<Config>) => {
     },
   };
 };
-
-export const storefrontClient = createStorefrontClient({
-  accessToken: process.env.NEXT_PUBLIC_BIGCOMMERCE_ACCESS_TOKEN,
-  channelId: parseInt(process.env.NEXT_PUBLIC_BIGCOMMERCE_CHANNEL_ID ?? '', 10),
-  storeHash: process.env.NEXT_PUBLIC_BIGCOMMERCE_STORE_HASH,
-  apiUrl: process.env.NEXT_PUBLIC_BIGCOMMERCE_API_URL,
-  canonicalDomainName: process.env.NEXT_PUBLIC_BIGCOMMERCE_CANONICAL_STORE_DOMAIN,
-});
-
-const createQueryClient = () => {
-  return {
-    async query<ResponseType>(query: string, variables: Record<string, unknown> = {}) {
-      const response = await fetch(storefrontClient.getStorefrontApiUrl(), {
-        method: 'POST',
-        headers: await storefrontClient.getStorefrontApiHeaders(),
-        body: JSON.stringify({ query, variables }),
-      });
-
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      return (await response.json()) as ResponseType;
-    },
-  };
-};
-
-export const http = createQueryClient();

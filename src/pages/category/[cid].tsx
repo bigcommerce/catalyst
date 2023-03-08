@@ -1,3 +1,4 @@
+import { gql } from '@apollo/client';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -8,7 +9,7 @@ import { Link as ReactantLink } from '../../../reactant/components/Link';
 import { H3, P, ProductTile } from '../../../reactant/components/ProducTile';
 import { Swatch, SwatchGroup } from '../../../reactant/components/Swatch';
 import { HeartIcon } from '../../../reactant/icons/Heart';
-import { http } from '../../client';
+import { serverClient } from '../../client/server';
 import { Header } from '../../components/Header';
 import type { StoreLogo } from '../../components/Header';
 
@@ -90,17 +91,15 @@ interface CategoryPageProps {
 }
 
 interface CategoryQuery {
-  data: {
-    site: {
-      category: Category | null;
-      categoryTree: CategoryTree[];
-      settings: {
-        storeName: string;
-        logoV2: StoreLogo;
-        storefront: {
-          catalog: {
-            productComparisonsEnabled: boolean;
-          };
+  site: {
+    category: Category | null;
+    categoryTree: CategoryTree[];
+    settings: {
+      storeName: string;
+      logoV2: StoreLogo;
+      storefront: {
+        catalog: {
+          productComparisonsEnabled: boolean;
         };
       };
     };
@@ -124,60 +123,61 @@ export const getServerSideProps: GetServerSideProps<
 
   const categoryId = parseInt(params.cid, 10);
 
-  const { data } = await http.query<CategoryQuery>(
-    `
-    query category($categoryId: Int!, $perPage: Int = 9) {
-      site {
-        category(entityId: $categoryId) {
-          name
-          path
-          breadcrumbs(depth: 1) {
-            edges {
-              node {
-                entityId
-                name
-              }
-            }
-          }
-          products(first: $perPage) {
-            edges {
-              node {
-                id
-                addToCartUrl
-                path
-                name
-                defaultImage {
-                  url: url(width: 300)
-                  altText
-                }
-                showCartAction
-                brand {
+  const { data } = await serverClient.query<CategoryQuery>({
+    query: gql`
+      query category($categoryId: Int!, $perPage: Int = 9) {
+        site {
+          category(entityId: $categoryId) {
+            name
+            path
+            breadcrumbs(depth: 1) {
+              edges {
+                node {
+                  entityId
                   name
                 }
-                prices {
-                  price {
-                    formatted
+              }
+            }
+            products(first: $perPage) {
+              edges {
+                node {
+                  id
+                  addToCartUrl
+                  path
+                  name
+                  defaultImage {
+                    url: url(width: 300)
+                    altText
                   }
-                }
-                productOptions(first: 3) {
-                  edges {
-                    node {
-                      entityId
-                      displayName
-                      isRequired
-                      __typename
-                      ... on MultipleChoiceOption {
-                        displayStyle
-                        values(first: 5) {
-                          edges {
-                            node {
-                              entityId
-                                
-                              isDefault
-                              ... on SwatchOptionValue {
-                                hexColors
-                                imageUrl(width: 200)
-                                isSelected
+                  showCartAction
+                  brand {
+                    name
+                  }
+                  prices {
+                    price {
+                      formatted
+                    }
+                  }
+                  productOptions(first: 3) {
+                    edges {
+                      node {
+                        entityId
+                        displayName
+                        isRequired
+                        __typename
+                        ... on MultipleChoiceOption {
+                          displayStyle
+                          values(first: 5) {
+                            edges {
+                              node {
+                                entityId
+
+                                isDefault
+                                ... on SwatchOptionValue {
+                                  hexColors
+                                  imageUrl(width: 200)
+                                  isSelected
+                                }
                               }
                             }
                           }
@@ -189,46 +189,44 @@ export const getServerSideProps: GetServerSideProps<
               }
             }
           }
-        }
-        categoryTree {
-          ...Category
-          children {
+          categoryTree {
             ...Category
             children {
               ...Category
+              children {
+                ...Category
+              }
             }
           }
-        }
-        settings {
-          storeName
-          storefront {
-            catalog {
-              productComparisonsEnabled
+          settings {
+            storeName
+            storefront {
+              catalog {
+                productComparisonsEnabled
+              }
             }
-          }
-          logoV2 {
-            __typename
-            ... on StoreTextLogo{
-              text
-            }
-            ... on StoreImageLogo{
-              image {
-                url(width: 155)
-                altText
+            logoV2 {
+              __typename
+              ... on StoreTextLogo {
+                text
+              }
+              ... on StoreImageLogo {
+                image {
+                  url(width: 155)
+                  altText
+                }
               }
             }
           }
         }
       }
-    }
-
-    fragment Category on CategoryTreeItem {
-      name
-      path
-    }
-  `,
-    { categoryId },
-  );
+      fragment Category on CategoryTreeItem {
+        name
+        path
+      }
+    `,
+    variables: { categoryId },
+  });
 
   if (data.site.category == null) {
     return { notFound: true };

@@ -1,17 +1,16 @@
+import { gql } from '@apollo/client';
 import { NextResponse, URLPattern } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-import { http } from './client';
+import { serverClient } from './client/server';
 
 interface RoutesResponse {
-  data: {
-    site: {
-      route: {
-        node: {
-          __typename: string;
-          entityId: string;
-        } | null;
-      };
+  site: {
+    route: {
+      node: {
+        __typename: string;
+        entityId: string;
+      } | null;
     };
   };
 }
@@ -19,29 +18,29 @@ interface RoutesResponse {
 // This is a POC middleware intended to redirect all page requests to the right NextJS route.
 // TODO: Internationalization, trailing slash, etc.
 export async function middleware(request: NextRequest) {
-  const { data } = await http.query<RoutesResponse>(
-    `
-    query Routes($path: String!) {
+  const { data } = await serverClient.query<RoutesResponse>({
+    query: gql`
+      query Routes($path: String!) {
         site {
-            route(path: $path) {
-                node {
-                    __typename
-                    ... on Product {
-                      entityId
-                    }
-                    ... on Category {
-                      entityId
-                    }
-                    ... on Brand {
-                      entityId
-                    }
-                }
+          route(path: $path) {
+            node {
+              __typename
+              ... on Product {
+                entityId
+              }
+              ... on Category {
+                entityId
+              }
+              ... on Brand {
+                entityId
+              }
             }
+          }
         }
-    }
-  `,
-    { path: request.nextUrl.pathname },
-  );
+      }
+    `,
+    variables: { path: request.nextUrl.pathname },
+  });
 
   switch (data.site.route.node?.__typename) {
     case 'Product':

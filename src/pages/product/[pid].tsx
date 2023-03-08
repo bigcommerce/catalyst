@@ -1,7 +1,8 @@
+import { gql } from '@apollo/client';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 
-import { http } from '../../client';
+import { serverClient } from '../../client/server';
 
 interface Product {
   name: string;
@@ -9,10 +10,8 @@ interface Product {
 }
 
 interface ProductQuery {
-  data: {
-    site: {
-      product: Product | null;
-    };
+  site: {
+    product: Product | null;
   };
 }
 
@@ -36,19 +35,21 @@ export const getServerSideProps: GetServerSideProps<ProductPageProps, ProductPag
 
   const productId = parseInt(params.pid, 10);
 
-  const { data } = await http.query<ProductQuery>(
-    `
-    query productById($productId: Int!) {
-      site {
-        product(entityId: $productId) {
-          name
-          plainTextDescription
+  const { data } = await serverClient.query<ProductQuery>({
+    query: gql`
+      query productById($productId: Int!) {
+        site {
+          product(entityId: $productId) {
+            name
+            plainTextDescription
+          }
         }
       }
-    }
-  `,
-    { productId },
-  );
+    `,
+    variables: {
+      productId,
+    },
+  });
 
   if (data.site.product == null) {
     return { notFound: true };
