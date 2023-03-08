@@ -8,6 +8,10 @@ const nextConfig = {
     loaderFile: isProduction ? './src/bigcommerceImageLoader.ts' : undefined,
     domains: ['cdn11.bigcommerce.com'],
   },
+  i18n: {
+    locales: ['en'],
+    defaultLocale: 'en',
+  },
   exportPathMap: (defaultPathMap) => {
     if (isDevelopment) {
       return defaultPathMap;
