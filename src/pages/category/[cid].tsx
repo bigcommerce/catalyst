@@ -1,10 +1,21 @@
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
+import Link from 'next/link';
 
+import { Pagination } from '../../../reactant/components/Pagination';
+import { ChevronLeftIcon } from '../../../reactant/icons/ChevronLeft';
+import { ChevronRightIcon } from '../../../reactant/icons/ChevronRight';
 import { http } from '../../client';
 import { Header } from '../../components/Header';
 import type { StoreLogo } from '../../components/Header';
+
+interface PageInfo {
+  endCursor: string;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  startCursor: string;
+}
 
 interface Category {
   name: string;
@@ -18,6 +29,7 @@ interface Category {
     }>;
   };
   products: {
+    pageInfo: PageInfo;
     edges: Array<{
       node: {
         id: string;
@@ -71,10 +83,165 @@ interface CategoryPageParams {
   cid: string;
 }
 
+interface URLSearchParams {
+  before?: string;
+  after?: string;
+}
+
+const nextPageQuery = `
+query category($categoryId: Int!, $perPage: Int = 9, $cursorForward: String) {
+  site {
+    category(entityId: $categoryId) {
+      name
+      path
+      breadcrumbs(depth: 1) {
+        edges {
+          node {
+            entityId
+            name
+          }
+        }
+      }
+      products(first: $perPage, after: $cursorForward) {
+        pageInfo {
+          endCursor
+          hasNextPage
+          hasPreviousPage
+          startCursor
+        }
+        edges {
+          node {
+            id
+            path
+            name
+            defaultImage {
+              url: url(width: 300)
+              altText
+            }
+            brand {
+              name
+            }
+            prices {
+              price {
+                formatted
+              }
+            }
+          }
+        }
+      }
+    }
+    categoryTree {
+      ...Category
+      children {
+        ...Category
+        children {
+          ...Category
+        }
+      }
+    }
+    settings {
+      storeName
+      logoV2 {
+        __typename
+        ... on StoreTextLogo{
+          text
+        }
+        ... on StoreImageLogo{
+          image {
+            url(width: 155)
+            altText
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment Category on CategoryTreeItem {
+  name
+  path
+}
+`;
+const prevPageQuery = `
+query category($categoryId: Int!, $perPage: Int = 9, $cursorBack: String) {
+  site {
+    category(entityId: $categoryId) {
+      name
+      path
+      breadcrumbs(depth: 1) {
+        edges {
+          node {
+            entityId
+            name
+          }
+        }
+      }
+      products(last: $perPage, before: $cursorBack) {
+        pageInfo {
+          endCursor
+          hasNextPage
+          hasPreviousPage
+          startCursor
+        }
+        edges {
+          node {
+            id
+            path
+            name
+            defaultImage {
+              url: url(width: 300)
+              altText
+            }
+            brand {
+              name
+            }
+            prices {
+              price {
+                formatted
+              }
+            }
+          }
+        }
+      }
+    }
+    categoryTree {
+      ...Category
+      children {
+        ...Category
+        children {
+          ...Category
+        }
+      }
+    }
+    settings {
+      storeName
+      logoV2 {
+        __typename
+        ... on StoreTextLogo{
+          text
+        }
+        ... on StoreImageLogo{
+          image {
+            url(width: 155)
+            altText
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment Category on CategoryTreeItem {
+  name
+  path
+}
+`;
+
 export const getServerSideProps: GetServerSideProps<
   CategoryPageProps,
-  CategoryPageParams
-> = async ({ params }) => {
+  CategoryPageParams,
+  URLSearchParams
+> = async ({ params, query }) => {
   if (!params?.cid) {
     return {
       notFound: true,
@@ -82,78 +249,29 @@ export const getServerSideProps: GetServerSideProps<
   }
 
   const categoryId = parseInt(params.cid, 10);
+  const cursorForward = query.after ?? '';
+  const cursorBack = query.before ?? '';
+  let pageQuery;
 
-  const { data } = await http.query<CategoryQuery>(
-    `
-    query category($categoryId: Int!, $perPage: Int = 9) {
-      site {
-        category(entityId: $categoryId) {
-          name
-          path
-          breadcrumbs(depth: 1) {
-            edges {
-              node {
-                entityId
-                name
-              }
-            }
-          }
-          products(first: $perPage) {
-            edges {
-              node {
-                id
-                path
-                name
-                defaultImage {
-                  url: url(width: 300)
-                  altText
-                }
-                brand {
-                  name
-                }
-                prices {
-                  price {
-                    formatted
-                  }
-                }
-              }
-            }
-          }
-        }
-        categoryTree {
-          ...Category
-          children {
-            ...Category
-            children {
-              ...Category
-            }
-          }
-        }
-        settings {
-          storeName
-          logoV2 {
-            __typename
-            ... on StoreTextLogo{
-              text
-            }
-            ... on StoreImageLogo{
-              image {
-                url(width: 155)
-                altText
-              }
-            }
-          }
-        }
-      }
-    }
+  switch (true) {
+    case Boolean(cursorForward):
+      pageQuery = nextPageQuery;
+      break;
 
-    fragment Category on CategoryTreeItem {
-      name
-      path
-    }
-  `,
-    { categoryId },
-  );
+    case Boolean(cursorBack):
+      pageQuery = prevPageQuery;
+      break;
+
+    default:
+      pageQuery = nextPageQuery;
+      break;
+  }
+
+  const { data } = await http.query<CategoryQuery>(pageQuery, {
+    categoryId,
+    cursorForward,
+    cursorBack,
+  });
 
   if (data.site.category == null) {
     return { notFound: true };
@@ -204,6 +322,18 @@ export default function CategoryPage({ category, categories, storeName, logo }: 
                   </li>
                 ))}
               </ul>
+              <Pagination className={Pagination.default.className}>
+                <Link
+                  href={`${category.path}?first=9&before=${category.products.pageInfo.startCursor}`}
+                >
+                  <ChevronLeftIcon className={Pagination.PrevPage?.className} />
+                </Link>
+                <Link
+                  href={`${category.path}?page=9&after=${category.products.pageInfo.endCursor}`}
+                >
+                  <ChevronRightIcon className={Pagination.NextPage?.className} />
+                </Link>
+              </Pagination>
             </div>
           </div>
         </div>
