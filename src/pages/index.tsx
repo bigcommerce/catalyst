@@ -2,9 +2,7 @@ import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import React from 'react';
 
-import { Button } from '../../reactant/components/Button';
 import { Link } from '../../reactant/components/Link';
-import { HeartIcon } from '../../reactant/icons/Heart';
 import { http } from '../client';
 import { Footer } from '../components/Footer';
 import { Header } from '../components/Header';
@@ -191,16 +189,6 @@ export default function HomePage({ data }: { data: HomePageQuery['data'] }) {
           </div>
           <ProductTiles priority products={data.site.featuredProducts} title="Featured products" />
           <ProductTiles products={data.site.bestSellingProducts} title="Popular products" />
-        </div>
-        {/* NOTE: temporary for testing purpose */}
-        <div className="flex flex-row flex-wrap justify-start gap-4 m-4">
-          <Button className={Button.primary.className}>Add to cart</Button>
-          <Button className={Button.primary.className}>
-            <HeartIcon className={Button.Icon.className} /> Add to cart
-          </Button>
-          <Button className={`${Button.primary.className} ${Button.iconOnly.className}`}>
-            <HeartIcon />
-          </Button>
         </div>
       </main>
       <Footer
