@@ -38,9 +38,9 @@ export const Footer = ({
           <div>
             <FooterMenu
               items={[
-                { name: 'Contact us', path: '/' },
-                { name: 'About brand', path: '/' },
-                { name: 'Blog', path: '/' },
+                { name: 'Contact us', path: '/contact-us' },
+                { name: 'About brand', path: '/about' },
+                { name: 'Blog', path: '/blog' },
               ]}
               title="About us"
             />
@@ -48,10 +48,10 @@ export const Footer = ({
           <div>
             <FooterMenu
               items={[
-                { name: 'Shipping & returns', path: '/' },
-                { name: 'Privacy policy', path: '/' },
-                { name: 'Terms & conditions', path: '/' },
-                { name: 'FAQ', path: '/' },
+                { name: 'Shipping & returns', path: '/shipping-and-returns' },
+                { name: 'Privacy policy', path: '/privacy-policy' },
+                { name: 'Terms & conditions', path: '/terms-and-conditions' },
+                { name: 'FAQ', path: '/faq' },
               ]}
               title="Help"
             />
