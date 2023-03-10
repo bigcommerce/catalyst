@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 
+import { Swatch, SwatchGroup } from '../../../reactant/components/Swatch';
 import { http } from '../../client';
 import { Header } from '../../components/Header';
 import type { StoreLogo } from '../../components/Header';
@@ -34,6 +35,29 @@ interface Category {
           price: {
             formatted: string;
           } | null;
+        };
+        productOptions: {
+          edges: Array<{
+            node: {
+              entityId: number;
+              displayName: string;
+              isRequired: boolean;
+              __typename: string;
+              displayStyle: string;
+              values: {
+                edges: Array<{
+                  node: {
+                    entityId: number;
+                    label: string;
+                    isDefault: boolean;
+                    hexColors: string[];
+                    imageUrl: string | null;
+                    isSelected: boolean;
+                  };
+                }>;
+              };
+            };
+          }>;
         };
       };
     }>;
@@ -116,6 +140,33 @@ export const getServerSideProps: GetServerSideProps<
                     formatted
                   }
                 }
+                productOptions(first: 3) {
+                  edges {
+                    node {
+                      entityId
+                      displayName
+                      isRequired
+                      __typename
+                      ... on MultipleChoiceOption {
+                        displayStyle
+                        values(first: 5) {
+                          edges {
+                            node {
+                              entityId
+                                
+                              isDefault
+                              ... on SwatchOptionValue {
+                                hexColors
+                                imageUrl(width: 200)
+                                isSelected
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -195,6 +246,43 @@ export default function CategoryPage({ category, categories, storeName, logo }: 
                           width={292}
                         />
                       ) : null}
+                      {node.productOptions.edges.map(({ node: options }) => {
+                        if (
+                          options.__typename === 'MultipleChoiceOption' &&
+                          options.displayStyle === 'Swatch'
+                        ) {
+                          return (
+                            <SwatchGroup
+                              className={SwatchGroup.default.className}
+                              key={options.entityId}
+                              role="radiogroup"
+                            >
+                              {options.values.edges.map(({ node: variant }) => (
+                                <Swatch className={Swatch.default.className} key={variant.entityId}>
+                                  <Swatch.Label
+                                    className={Swatch.Label.default.className}
+                                    title={variant.label}
+                                  >
+                                    <Swatch.Variant
+                                      className={Swatch.Variant.default.className}
+                                      variantColor={variant.hexColors[0]}
+                                    />
+                                  </Swatch.Label>
+                                  <Swatch.Input
+                                    aria-label={variant.label}
+                                    className={Swatch.Input.default.className}
+                                    name={`${variant.entityId}`}
+                                    type="radio"
+                                    value={variant.entityId}
+                                  />
+                                </Swatch>
+                              ))}
+                            </SwatchGroup>
+                          );
+                        }
+
+                        return false;
+                      })}
                       {node.brand?.name ? (
                         <p className="text-[#546E7A] text-base">{node.brand.name}</p>
                       ) : null}
