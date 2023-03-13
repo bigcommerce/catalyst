@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useRef, useState } from 'react';
 
 import { StoreLogo } from './Logo';
+import { Search } from './Search';
 
 export type { StoreLogo } from './Logo';
 
@@ -129,6 +130,7 @@ export const Header = ({ categoryTree, settings }: HeaderProps) => {
             ))}
           </ul>
         </nav>
+        <Search />
       </div>
     </header>
   );
