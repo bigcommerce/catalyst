@@ -6,25 +6,84 @@ import { PinterestIcon } from '../../reactant/icons/Pinterest';
 import { TwitterIcon } from '../../reactant/icons/Twitter';
 import { FooterMenu } from '../components/FooterMenu';
 import { BaseStoreLogo, StoreLogo } from '../components/Logo';
-import { Brands, CategoryTree, Contact, SocialMediaLink } from '../pages';
 
-interface FooterProps {
-  brands: Brands;
-  categoryTree: CategoryTree[];
-  contact: Contact;
-  logo: StoreLogo;
-  storeName: string;
-  socialMediaLinks: SocialMediaLink[];
+export interface FooterSiteQuery {
+  brands: {
+    edges: Array<{
+      node: {
+        name: string;
+        path: string;
+      };
+    }>;
+  };
+  categoryTree: Array<{
+    name: string;
+    path: string;
+  }>;
+  settings: {
+    storeName: string;
+    logoV2: StoreLogo;
+    contact: {
+      address: string;
+      phone: string;
+    };
+    socialMediaLinks: Array<{
+      name: string;
+      url: string;
+    }>;
+  };
 }
 
-export const Footer = ({
-  brands,
-  categoryTree,
-  contact,
-  logo,
-  storeName,
-  socialMediaLinks,
-}: FooterProps) => {
+export const query = {
+  fragmentName: 'FooterQuery',
+  fragment: /* GraphQL */ `
+    fragment FooterQuery on Site {
+      brands {
+        edges {
+          node {
+            name
+            path
+          }
+        }
+      }
+      categoryTree {
+        ... on CategoryTreeItem {
+          name
+          path
+        }
+      }
+      settings {
+        storeName
+        logoV2 {
+          __typename
+          ... on StoreTextLogo {
+            text
+          }
+          ... on StoreImageLogo {
+            image {
+              url(width: 155)
+              altText
+            }
+          }
+        }
+        contact {
+          address
+          phone
+        }
+        socialMediaLinks {
+          name
+          url
+        }
+      }
+    }
+  `,
+};
+
+type FooterProps = FooterSiteQuery;
+
+export const Footer = ({ brands, categoryTree, settings }: FooterProps) => {
+  const { logoV2, storeName, contact, socialMediaLinks } = settings;
+
   return (
     <footer>
       <div className="border-t border-b border-slate-100">
@@ -58,7 +117,7 @@ export const Footer = ({
           </div>
           <div className="sm:col-span-2 md:order-first">
             <h4 className="mb-4">
-              <BaseStoreLogo logo={logo} storeName={storeName} />
+              <BaseStoreLogo logo={logoV2} storeName={storeName} />
             </h4>
             <address className="mb-2 not-italic">
               {contact.address.split('\n').map((line) => (

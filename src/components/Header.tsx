@@ -12,16 +12,59 @@ interface Category {
   children?: Category[];
 }
 
-interface HeaderProps {
-  logo: StoreLogo;
-  categories: Category[];
-  storeName: string;
+export interface HeaderSiteQuery {
+  categoryTree: Category[];
+  settings: {
+    storeName: string;
+    logoV2: StoreLogo;
+  };
 }
 
-export const Header = ({ logo, categories, storeName }: HeaderProps) => {
+export const query = {
+  fragmentName: 'HeaderQuery',
+  fragment: /* GraphQL */ `
+    fragment HeaderQuery on Site {
+      categoryTree {
+        ...Category
+        children {
+          ...Category
+          children {
+            ...Category
+          }
+        }
+      }
+      settings {
+        storeName
+        logoV2 {
+          __typename
+          ... on StoreTextLogo {
+            text
+          }
+          ... on StoreImageLogo {
+            image {
+              url(width: 155)
+              altText
+            }
+          }
+        }
+      }
+    }
+
+    fragment Category on CategoryTreeItem {
+      name
+      path
+    }
+  `,
+};
+
+type HeaderProps = HeaderSiteQuery;
+
+export const Header = ({ categoryTree, settings }: HeaderProps) => {
   const router = useRouter();
   const [currentCategory, setCurrentCategory] = useState<Category | undefined>(undefined);
   const timer = useRef<ReturnType<typeof setTimeout>>();
+
+  const { storeName, logoV2 } = settings;
 
   const handleMouseOver = (category: Category) => {
     setCurrentCategory(category);
@@ -37,10 +80,10 @@ export const Header = ({ logo, categories, storeName }: HeaderProps) => {
   return (
     <header>
       <div className="my-9 md:my-6 mx-6 sm:mx-10 md:container md:mx-auto flex items-center relative">
-        <StoreLogo isHomePage={router.pathname === '/'} logo={logo} storeName={storeName} />
+        <StoreLogo isHomePage={router.pathname === '/'} logo={logoV2} storeName={storeName} />
         <nav className="flex-auto self-center">
           <ul className="flex flex-row gap-4 items-center justify-center">
-            {categories.map((category) => (
+            {categoryTree.map((category) => (
               // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
               <li
                 key={category.path}
