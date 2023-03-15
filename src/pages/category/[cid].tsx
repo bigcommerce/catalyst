@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
+import { MergeDeep } from 'type-fest';
 
 import { Button } from '../../../reactant/components/Button';
 import { Link as ReactantLink } from '../../../reactant/components/Link';
@@ -10,7 +11,7 @@ import { H3, P, ProductTile } from '../../../reactant/components/ProducTile';
 import { Swatch, SwatchGroup } from '../../../reactant/components/Swatch';
 import { HeartIcon } from '../../../reactant/icons/Heart';
 import { serverClient } from '../../client/server';
-import { Header } from '../../components/Header';
+import { Header, query as HeaderQuery, HeaderSiteQuery } from '../../components/Header';
 import type { StoreLogo } from '../../components/Header';
 
 interface Category {
@@ -78,6 +79,22 @@ interface CategoryTree {
   children?: CategoryTree[];
 }
 
+interface CategoryQuery {
+  site: MergeDeep<
+    HeaderSiteQuery,
+    {
+      category: Category | null;
+      settings: {
+        storefront: {
+          catalog: {
+            productComparisonsEnabled: boolean;
+          };
+        };
+      };
+    }
+  >;
+}
+
 interface CategoryPageProps {
   category: Category;
   categories: CategoryTree[];
@@ -86,22 +103,6 @@ interface CategoryPageProps {
   storefront: {
     catalog: {
       productComparisonsEnabled: boolean;
-    };
-  };
-}
-
-interface CategoryQuery {
-  site: {
-    category: Category | null;
-    categoryTree: CategoryTree[];
-    settings: {
-      storeName: string;
-      logoV2: StoreLogo;
-      storefront: {
-        catalog: {
-          productComparisonsEnabled: boolean;
-        };
-      };
     };
   };
 }
@@ -125,59 +126,58 @@ export const getServerSideProps: GetServerSideProps<
 
   const { data } = await serverClient.query<CategoryQuery>({
     query: gql`
-      query category($categoryId: Int!, $perPage: Int = 9) {
-        site {
-          category(entityId: $categoryId) {
-            name
-            path
-            breadcrumbs(depth: 1) {
-              edges {
-                node {
-                  entityId
-                  name
-                }
+    query category($categoryId: Int!, $perPage: Int = 9) {
+      site {
+        category(entityId: $categoryId) {
+          name
+          path
+          breadcrumbs(depth: 1) {
+            edges {
+              node {
+                entityId
+                name
               }
             }
-            products(first: $perPage) {
-              edges {
-                node {
-                  id
-                  addToCartUrl
-                  path
+          }
+          products(first: $perPage) {
+            edges {
+              node {
+                id
+                addToCartUrl
+                path
+                name
+                defaultImage {
+                  url: url(width: 300)
+                  altText
+                }
+                showCartAction
+                brand {
                   name
-                  defaultImage {
-                    url: url(width: 300)
-                    altText
+                }
+                prices {
+                  price {
+                    formatted
                   }
-                  showCartAction
-                  brand {
-                    name
-                  }
-                  prices {
-                    price {
-                      formatted
-                    }
-                  }
-                  productOptions(first: 3) {
-                    edges {
-                      node {
-                        entityId
-                        displayName
-                        isRequired
-                        __typename
-                        ... on MultipleChoiceOption {
-                          displayStyle
-                          values(first: 5) {
-                            edges {
-                              node {
-                                entityId
-
-                                isDefault
-                                ... on SwatchOptionValue {
-                                  hexColors
-                                  imageUrl(width: 200)
-                                  isSelected
-                                }
+                }
+                productOptions(first: 3) {
+                  edges {
+                    node {
+                      entityId
+                      displayName
+                      isRequired
+                      __typename
+                      ... on MultipleChoiceOption {
+                        displayStyle
+                        values(first: 5) {
+                          edges {
+                            node {
+                              entityId
+                                
+                              isDefault
+                              ... on SwatchOptionValue {
+                                hexColors
+                                imageUrl(width: 200)
+                                isSelected
                               }
                             }
                           }
@@ -189,41 +189,20 @@ export const getServerSideProps: GetServerSideProps<
               }
             }
           }
-          categoryTree {
-            ...Category
-            children {
-              ...Category
-              children {
-                ...Category
-              }
-            }
-          }
-          settings {
-            storeName
-            storefront {
-              catalog {
-                productComparisonsEnabled
-              }
-            }
-            logoV2 {
-              __typename
-              ... on StoreTextLogo {
-                text
-              }
-              ... on StoreImageLogo {
-                image {
-                  url(width: 155)
-                  altText
-                }
-              }
+        }
+        settings {
+          storefront {
+            catalog {
+              productComparisonsEnabled
             }
           }
         }
+
+        ...${HeaderQuery.fragmentName}
       }
-      fragment Category on CategoryTreeItem {
-        name
-        path
-      }
+    }
+
+    ${HeaderQuery.fragment}
     `,
     variables: { categoryId },
   });
@@ -243,6 +222,7 @@ export const getServerSideProps: GetServerSideProps<
   };
 };
 
+// TODO: Re-type with similar method to HomePage
 export default function CategoryPage({
   category,
   categories,
@@ -255,7 +235,7 @@ export default function CategoryPage({
       <Head>
         <title>{category.name}</title>
       </Head>
-      <Header categories={categories} logo={logo} storeName={storeName} />
+      <Header categoryTree={categories} settings={{ logoV2: logo, storeName }} />
       <main>
         <div className="md:container md:mx-auto">
           <h1 className="font-black text-5xl leading-[4rem]">{category.name}</h1>

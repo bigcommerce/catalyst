@@ -2,38 +2,13 @@ import { gql } from '@apollo/client';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import React from 'react';
+import { MergeDeep } from 'type-fest';
 
 import { Link } from '../../reactant/components/Link';
 import { serverClient } from '../client/server';
-import { Footer } from '../components/Footer';
-import { Header } from '../components/Header';
-import type { StoreLogo } from '../components/Header';
+import { Footer, query as FooterQuery, FooterSiteQuery } from '../components/Footer';
+import { Header, query as HeaderQuery, HeaderSiteQuery } from '../components/Header';
 import { ProductTiles } from '../components/ProductTiles';
-
-export interface Brands {
-  edges: Array<{
-    node: {
-      name: string;
-      path: string;
-    };
-  }>;
-}
-
-export interface CategoryTree {
-  name: string;
-  path: string;
-  children?: CategoryTree[];
-}
-
-export interface Contact {
-  address: string;
-  phone: string;
-}
-
-export interface SocialMediaLink {
-  name: string;
-  url: string;
-}
 
 interface ProductConnection {
   edges: Array<{
@@ -58,110 +33,72 @@ interface ProductConnection {
 }
 
 interface HomePageQuery {
-  site: {
-    featuredProducts: ProductConnection;
-    bestSellingProducts: ProductConnection;
-    categoryTree: CategoryTree[];
-    brands: Brands;
-    settings: {
-      storeName: string;
-      storefront: {
-        catalog: {
-          productComparisonsEnabled: boolean;
+  site: MergeDeep<
+    MergeDeep<HeaderSiteQuery, FooterSiteQuery>,
+    {
+      featuredProducts: ProductConnection;
+      bestSellingProducts: ProductConnection;
+      settings: {
+        storefront: {
+          catalog: {
+            productComparisonsEnabled: boolean;
+          };
         };
       };
-      logoV2: StoreLogo;
-      contact: Contact;
-      socialMediaLinks: SocialMediaLink[];
-    };
-  };
+    }
+  >;
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const { data } = await serverClient.query<HomePageQuery>({
     query: gql`
       query HomePageQuery($pageSize: Int = 4) {
-        site {
-          featuredProducts(first: $pageSize) {
-            ...Product
-          }
-          bestSellingProducts(first: $pageSize) {
-            ...Product
-          }
-          brands {
-            edges {
-              node {
-                name
-                path
-              }
-            }
-          }
-          categoryTree {
-            ...Category
-            children {
-              ...Category
-              children {
-                ...Category
-              }
-            }
-          }
-          settings {
-            storeName
-            storefront {
-              catalog {
-                productComparisonsEnabled
-              }
-            }
-            logoV2 {
-              __typename
-              ... on StoreTextLogo {
-                text
-              }
-              ... on StoreImageLogo {
-                image {
-                  url(width: 155)
-                  altText
-                }
-              }
-            }
-            contact {
-              address
-              phone
-            }
-            socialMediaLinks {
-              name
-              url
+      site {
+        featuredProducts (first: $pageSize) {
+          ...Product
+        }
+        bestSellingProducts (first: $pageSize) {
+          ...Product
+        }
+        settings {
+          storefront {
+            catalog {
+              productComparisonsEnabled
             }
           }
         }
+
+        ...${HeaderQuery.fragmentName}
+        ...${FooterQuery.fragmentName}
       }
-      fragment Product on ProductConnection {
-        edges {
-          node {
-            addToCartUrl
-            entityId
+    }
+
+    fragment Product on ProductConnection {
+      edges {
+        node {
+          addToCartUrl
+          entityId
+          name
+          path
+          showCartAction
+          brand {
             name
-            path
-            showCartAction
-            brand {
-              name
-            }
-            defaultImage {
-              url(width: 300, height: 300)
-              altText
-            }
-            prices(currencyCode: USD) {
-              price {
-                formatted
-              }
+          }
+          defaultImage {
+            url(width: 300, height: 300)
+            altText
+          }
+          prices(currencyCode: USD) {
+            price {
+              formatted
             }
           }
         }
       }
-      fragment Category on CategoryTreeItem {
-        name
-        path
-      }
+    }
+
+    ${HeaderQuery.fragment}
+    ${FooterQuery.fragment}
     `,
   });
 
@@ -179,11 +116,7 @@ export default function HomePage({ data }: { data: HomePageQuery }) {
         <title>BigCommerce Swag Store</title>
         <meta content="BigCommerce Swag Store" name="description" />
       </Head>
-      <Header
-        categories={data.site.categoryTree}
-        logo={data.site.settings.logoV2}
-        storeName={data.site.settings.storeName}
-      />
+      <Header categoryTree={data.site.categoryTree} settings={data.site.settings} />
       <main>
         <div className="md:container md:mx-auto">
           <div className="aspect-[9/16] md:aspect-[2/1] bg-slate-100 relative flex flex-col items-start justify-center p-6 sm:p-16 md:p-24">
@@ -216,10 +149,7 @@ export default function HomePage({ data }: { data: HomePageQuery }) {
       <Footer
         brands={data.site.brands}
         categoryTree={data.site.categoryTree}
-        contact={data.site.settings.contact}
-        logo={data.site.settings.logoV2}
-        socialMediaLinks={data.site.settings.socialMediaLinks}
-        storeName={data.site.settings.storeName}
+        settings={data.site.settings}
       />
     </>
   );
