@@ -1,6 +1,8 @@
 {
   "scopes": [
     "ci",
-    "deps"
+    "deps",
+    "client",
+    "catalyst"
   ]
 }

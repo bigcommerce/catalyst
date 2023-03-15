@@ -7,93 +7,79 @@ interface StorefrontTokenResponse {
   meta: unknown;
 }
 
-const getExpiresAtUTCTime = (expiresAt: number): number => {
-  const today = new Date();
-  const tomorrow = new Date(today);
+export const createStorefrontClient = (config: Partial<Config>) => {
+  const clientConfig = new ClientConfig(config);
 
-  tomorrow.setSeconds(today.getSeconds() + expiresAt);
-
-  return Math.floor(tomorrow.getTime() / 1000);
-};
-
-// TODO: Check if we can use Apollo Client instead of this custom client
-class ApiClient {
-  private readonly config: ClientConfig;
-  private readonly apiUrl: string;
-  private readonly storefrontApiUrl: string;
-
-  constructor(config: Partial<Config>) {
-    this.config = new ClientConfig(config);
-
-    this.apiUrl = this.generateApiUrl();
-    this.storefrontApiUrl = this.generateStorefrontApiUrl();
+  // We want to warn the user that this client should not be used in the browser, but only in development.
+  if (process.env.NODE_ENV === 'development' && Boolean(globalThis.document)) {
+    // eslint-disable-next-line no-console
+    console.error(
+      'Using the StorefrontClient in the browser is not recommended as it can expose your secrets in the browser.',
+    );
   }
 
-  async fetch(endpoint: string, options?: RequestInit) {
-    return fetch(`${this.apiUrl}${endpoint}`, {
-      ...options,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-Auth-Token': this.config.accessToken,
-        ...options?.headers,
+  const fetchStorefrontToken = async () => {
+    const response = await fetch(
+      `${clientConfig.apiUrl}/stores/${clientConfig.storeHash}/v3/storefront/api-token-customer-impersonation`,
+      {
+        method: 'POST',
+        headers: {
+          accept: 'application/json',
+          'content-type': 'application/json',
+          'x-auth-token': clientConfig.accessToken,
+        },
+        body: JSON.stringify({
+          channel_id: clientConfig.channelId,
+          expires_at: Math.floor(new Date().getTime() / 1000) + 1 * 24 * 60 * 60, // 1 day
+        }),
       },
-    });
-  }
-
-  async query<ResponseType>(query: string): Promise<ResponseType> {
-    const {
-      data: { token },
-    } = await this.generateStorefrontToken();
-
-    const response = await fetch(this.storefrontApiUrl, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ query }),
-    });
-
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return (await response.json()) as ResponseType;
-  }
-
-  private generateApiUrl() {
-    // TODO: Pass this into the constructor and validate it?
-    const bcApiUrl = process.env.NEXT_PUBLIC_BIGCOMMERCE_API_URL ?? 'https://api.bigcommerce.com';
-
-    return `${bcApiUrl}/stores/${this.config.storeHash}`;
-  }
-
-  private generateStorefrontApiUrl() {
-    const channelIdSegment = this.config.channelId !== 1 ? `-${this.config.channelId}` : '';
-    const canonicalStoreDomain =
-      process.env.NEXT_PUBLIC_BIGCOMMERCE_CANONICAL_STORE_DOMAIN ?? 'mybigcommerce.com';
-
-    return `https://store-${this.config.storeHash}${channelIdSegment}.${canonicalStoreDomain}/graphql`;
-  }
-
-  private async generateStorefrontToken() {
-    const response = await this.fetch(`/v3/storefront/api-token-customer-impersonation`, {
-      method: 'POST',
-      headers: {
-        'x-bc-customer-id': '',
-      },
-      body: JSON.stringify({
-        channel_id: this.config.channelId,
-        expires_at: getExpiresAtUTCTime(300),
-      }),
-    });
+    );
 
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return (await response.json()) as StorefrontTokenResponse;
-  }
-}
+  };
 
-export const http = new ApiClient({
+  return {
+    getStorefrontApiUrl() {
+      const channelIdSegment = clientConfig.channelId !== 1 ? `-${clientConfig.channelId}` : '';
+
+      return `https://store-${clientConfig.storeHash}${channelIdSegment}.${clientConfig.canonicalDomainName}/graphql`;
+    },
+    async getStorefrontApiHeaders() {
+      const {
+        data: { token },
+      } = await fetchStorefrontToken();
+
+      return {
+        accept: 'application/json',
+        authorization: `Bearer ${token}`,
+        'content-type': 'application/json',
+      };
+    },
+  };
+};
+
+export const storefrontClient = createStorefrontClient({
   accessToken: process.env.NEXT_PUBLIC_BIGCOMMERCE_ACCESS_TOKEN,
   channelId: parseInt(process.env.NEXT_PUBLIC_BIGCOMMERCE_CHANNEL_ID ?? '', 10),
   storeHash: process.env.NEXT_PUBLIC_BIGCOMMERCE_STORE_HASH,
+  apiUrl: process.env.NEXT_PUBLIC_BIGCOMMERCE_API_URL,
+  canonicalDomainName: process.env.NEXT_PUBLIC_BIGCOMMERCE_CANONICAL_STORE_DOMAIN,
 });
+
+const createQueryClient = () => {
+  return {
+    async query<ResponseType>(query: string, variables: Record<string, unknown> = {}) {
+      const response = await fetch(storefrontClient.getStorefrontApiUrl(), {
+        method: 'POST',
+        headers: await storefrontClient.getStorefrontApiHeaders(),
+        body: JSON.stringify({ query, variables }),
+      });
+
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      return (await response.json()) as ResponseType;
+    },
+  };
+};
+
+export const http = createQueryClient();
