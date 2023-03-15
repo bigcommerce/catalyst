@@ -1,8 +1,13 @@
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
+import Link from 'next/link';
 
+import { Button } from '../../../reactant/components/Button';
+import { Link as ReactantLink } from '../../../reactant/components/Link';
+import { H3, P, ProductTile } from '../../../reactant/components/ProducTile';
 import { Swatch, SwatchGroup } from '../../../reactant/components/Swatch';
+import { HeartIcon } from '../../../reactant/icons/Heart';
 import { http } from '../../client';
 import { Header } from '../../components/Header';
 import type { StoreLogo } from '../../components/Header';
@@ -22,6 +27,7 @@ interface Category {
     edges: Array<{
       node: {
         id: string;
+        addToCartUrl: string;
         name: string;
         path: string;
         defaultImage: {
@@ -31,6 +37,7 @@ interface Category {
         brand: {
           name: string;
         } | null;
+        showCartAction: boolean;
         prices: {
           price: {
             formatted: string;
@@ -75,6 +82,11 @@ interface CategoryPageProps {
   categories: CategoryTree[];
   storeName: string;
   logo: StoreLogo;
+  storefront: {
+    catalog: {
+      productComparisonsEnabled: boolean;
+    };
+  };
 }
 
 interface CategoryQuery {
@@ -85,6 +97,11 @@ interface CategoryQuery {
       settings: {
         storeName: string;
         logoV2: StoreLogo;
+        storefront: {
+          catalog: {
+            productComparisonsEnabled: boolean;
+          };
+        };
       };
     };
   };
@@ -126,12 +143,14 @@ export const getServerSideProps: GetServerSideProps<
             edges {
               node {
                 id
+                addToCartUrl
                 path
                 name
                 defaultImage {
                   url: url(width: 300)
                   altText
                 }
+                showCartAction
                 brand {
                   name
                 }
@@ -182,6 +201,11 @@ export const getServerSideProps: GetServerSideProps<
         }
         settings {
           storeName
+          storefront {
+            catalog {
+              productComparisonsEnabled
+            }
+          }
           logoV2 {
             __typename
             ... on StoreTextLogo{
@@ -216,11 +240,18 @@ export const getServerSideProps: GetServerSideProps<
       categories: data.site.categoryTree,
       storeName: data.site.settings.storeName,
       logo: data.site.settings.logoV2,
+      storefront: data.site.settings.storefront,
     },
   };
 };
 
-export default function CategoryPage({ category, categories, storeName, logo }: CategoryPageProps) {
+export default function CategoryPage({
+  category,
+  categories,
+  storeName,
+  storefront,
+  logo,
+}: CategoryPageProps) {
   return (
     <>
       <Head>
@@ -236,59 +267,99 @@ export default function CategoryPage({ category, categories, storeName, logo }: 
               <ul className="grid grid-cols-2 md:grid-cols-3 grid-flow-cols gap-8">
                 {category.products.edges.map(({ node }) => (
                   <li className="basis-1/3" key={node.id}>
-                    <a href={node.path}>
-                      {node.defaultImage?.url ? (
-                        <Image
-                          alt={node.defaultImage.altText || node.name}
-                          className="aspect-[7/5] object-cover mb-5"
-                          height={208}
-                          src={node.defaultImage.url}
-                          width={292}
-                        />
-                      ) : null}
-                      {node.productOptions.edges.map(({ node: options }) => {
-                        if (
-                          options.__typename === 'MultipleChoiceOption' &&
-                          options.displayStyle === 'Swatch'
-                        ) {
-                          return (
-                            <SwatchGroup
-                              className={SwatchGroup.default.className}
-                              key={options.entityId}
-                              role="radiogroup"
-                            >
-                              {options.values.edges.map(({ node: variant }) => (
-                                <Swatch className={Swatch.default.className} key={variant.entityId}>
-                                  <Swatch.Label
-                                    className={Swatch.Label.default.className}
-                                    title={variant.label}
-                                  >
-                                    <Swatch.Variant
-                                      className={Swatch.Variant.default.className}
-                                      variantColor={variant.hexColors[0]}
-                                    />
-                                  </Swatch.Label>
-                                  <Swatch.Input
-                                    aria-label={variant.label}
-                                    className={Swatch.Input.default.className}
-                                    name={`${variant.entityId}`}
-                                    type="radio"
-                                    value={variant.entityId}
-                                  />
-                                </Swatch>
-                              ))}
-                            </SwatchGroup>
-                          );
-                        }
+                    <ProductTile className={ProductTile.default.className}>
+                      <ProductTile.Figure className={ProductTile.Figure.default.className}>
+                        <Link className="block relative" href={node.path}>
+                          <Image
+                            alt={node.defaultImage?.altText || 'Product image'}
+                            className="mb-5 aspect-square w-full"
+                            height={320}
+                            priority={false}
+                            src={node.defaultImage?.url || '/'}
+                            width={320}
+                          />
+                        </Link>
+                        <ProductTile.FigCaption
+                          className={ProductTile.FigCaption.default.className}
+                        >
+                          <div>
+                            {storefront.catalog.productComparisonsEnabled && (
+                              <Button className={Button.secondary.className}>
+                                Compare products
+                              </Button>
+                            )}
+                          </div>
+                        </ProductTile.FigCaption>
+                      </ProductTile.Figure>
+                      <ProductTile.Body className={ProductTile.Body.default.className}>
+                        <div className="py-2">
+                          {node.productOptions.edges.map(({ node: options }) => {
+                            if (
+                              options.__typename === 'MultipleChoiceOption' &&
+                              options.displayStyle === 'Swatch'
+                            ) {
+                              return (
+                                <SwatchGroup
+                                  className={SwatchGroup.default.className}
+                                  key={options.entityId}
+                                  role="radiogroup"
+                                >
+                                  {options.values.edges.map(({ node: variant }) => (
+                                    <Swatch
+                                      className={Swatch.default.className}
+                                      key={variant.entityId}
+                                    >
+                                      <Swatch.Label
+                                        className={Swatch.Label.default.className}
+                                        title={variant.label}
+                                      >
+                                        <Swatch.Variant
+                                          className={Swatch.Variant.default.className}
+                                          variantColor={variant.hexColors[0]}
+                                        />
+                                      </Swatch.Label>
+                                      <Swatch.Input
+                                        aria-label={variant.label}
+                                        className={Swatch.Input.default.className}
+                                        name={`${variant.entityId}`}
+                                        type="radio"
+                                        value={variant.entityId}
+                                      />
+                                    </Swatch>
+                                  ))}
+                                </SwatchGroup>
+                              );
+                            }
 
-                        return false;
-                      })}
-                      {node.brand?.name ? (
-                        <p className="text-[#546E7A] text-base">{node.brand.name}</p>
-                      ) : null}
-                      <h4 className="text-xl font-bold mb-3">{node.name}</h4>
-                      <p className="text-base">{node.prices.price?.formatted}</p>
-                    </a>
+                            return false;
+                          })}
+                          <P className={`${P.default.className} text-[#546E7A]`}>
+                            {node.brand?.name}
+                          </P>
+                          <H3 className={`${H3.default.className}  hover:text-[#053FB0]`}>
+                            <Link href={node.path}>{node.name}</Link>
+                          </H3>
+                        </div>
+                        <div className="card-text relative py-1 flex items-center gap-2">
+                          <P className={P.default.className}>{node.prices.price?.formatted}</P>
+                        </div>
+                        <div className="absolute hidden flex-row justify-start pt-4 gap-x-4 group-hover/cardBody:inline-flex">
+                          {node.showCartAction && (
+                            <ReactantLink
+                              className={`${ReactantLink.text.className} ${Button.primary.className} z-10 hover:!text-white hover:!bg-[#3071EF]`}
+                              href={node.addToCartUrl}
+                            >
+                              Add to cart
+                            </ReactantLink>
+                          )}
+                          <Button
+                            className={`${Button.primary.className} ${Button.iconOnly.className} z-10`}
+                          >
+                            <HeartIcon />
+                          </Button>
+                        </div>
+                      </ProductTile.Body>
+                    </ProductTile>
                   </li>
                 ))}
               </ul>
