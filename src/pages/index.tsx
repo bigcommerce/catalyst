@@ -10,26 +10,53 @@ import { Footer, query as FooterQuery, FooterSiteQuery } from '../components/Foo
 import { Header, query as HeaderQuery, HeaderSiteQuery } from '../components/Header';
 import { ProductTiles } from '../components/ProductTiles';
 
-interface ProductConnection {
-  edges: Array<{
-    node: {
-      entityId: number;
+export interface Product {
+  node: {
+    addToCartUrl: string;
+    showCartAction: boolean;
+    entityId: number;
+    name: string;
+    path: string;
+    brand: {
       name: string;
-      path: string;
-      brand: {
-        name: string;
-      } | null;
-      defaultImage: {
-        url: string;
-        altText: string;
-      };
-      prices: {
-        price: {
-          formatted: string;
-        } | null;
-      };
+    } | null;
+    defaultImage?: {
+      url: string;
+      altText: string;
     };
-  }>;
+    prices: {
+      price: {
+        formatted: string;
+      } | null;
+    };
+    productOptions: {
+      edges: Array<{
+        node: {
+          entityId: number;
+          displayName: string;
+          isRequired: boolean;
+          __typename: string;
+          displayStyle: string;
+          values: {
+            edges: Array<{
+              node: {
+                entityId: number;
+                label: string;
+                isDefault: boolean;
+                hexColors: string[];
+                imageUrl: string | null;
+                isSelected: boolean;
+              };
+            }>;
+          };
+        };
+      }>;
+    };
+  };
+}
+
+interface ProductConnection {
+  edges: Product[];
 }
 
 interface HomePageQuery {
@@ -91,6 +118,32 @@ export const getServerSideProps: GetServerSideProps = async () => {
           prices(currencyCode: USD) {
             price {
               formatted
+            }
+          }
+          productOptions(first: 3) {
+            edges {
+              node {
+                entityId
+                displayName
+                isRequired
+                __typename
+                ... on MultipleChoiceOption {
+                  displayStyle
+                  values(first: 5) {
+                    edges {
+                      node {
+                        entityId
+                        isDefault
+                        ... on SwatchOptionValue {
+                          hexColors
+                          imageUrl(width: 200)
+                          isSelected
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }
