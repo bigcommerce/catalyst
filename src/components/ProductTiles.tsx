@@ -8,7 +8,15 @@ import { H3, P, ProductTile } from '../../reactant/components/ProducTile';
 import { Swatch, SwatchGroup } from '../../reactant/components/Swatch';
 import { HeartIcon } from '../../reactant/icons/Heart';
 
+interface PageInfo {
+  endCursor: string;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  startCursor: string;
+}
+
 export interface ProductTilesConnection {
+  pageInfo: PageInfo;
   edges: Array<{
     node: {
       addToCartUrl: string;
@@ -59,6 +67,12 @@ export const query = {
   fragmentName: 'ProductTilesQuery',
   fragment: /* GraphQL */ `
     fragment ProductTilesQuery on ProductConnection {
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
       edges {
         node {
           addToCartUrl
@@ -178,8 +192,10 @@ export const ProductTiles = ({
                                 title={variant.label}
                               >
                                 <Swatch.Variant
-                                  className={Swatch.Variant.default.className}
-                                  variantColor={variant.hexColors[0]}
+                                  className={`${Swatch.Variant.default.className} ${
+                                    variant.imageUrl ? `bg-center bg-no-repeat` : ''
+                                  }`}
+                                  variantColor={variant.hexColors[0] ?? variant.imageUrl}
                                 />
                               </Swatch.Label>
                               <Swatch.Input
