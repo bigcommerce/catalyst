@@ -8,63 +8,18 @@ import { Link } from '../../reactant/components/Link';
 import { serverClient } from '../client/server';
 import { Footer, query as FooterQuery, FooterSiteQuery } from '../components/Footer';
 import { Header, query as HeaderQuery, HeaderSiteQuery } from '../components/Header';
-import { ProductTiles } from '../components/ProductTiles';
-
-export interface Product {
-  node: {
-    addToCartUrl: string;
-    showCartAction: boolean;
-    entityId: number;
-    name: string;
-    path: string;
-    brand: {
-      name: string;
-    } | null;
-    defaultImage?: {
-      url: string;
-      altText: string;
-    };
-    prices: {
-      price: {
-        formatted: string;
-      } | null;
-    };
-    productOptions: {
-      edges: Array<{
-        node: {
-          entityId: number;
-          displayName: string;
-          isRequired: boolean;
-          __typename: string;
-          displayStyle: string;
-          values: {
-            edges: Array<{
-              node: {
-                entityId: number;
-                label: string;
-                isDefault: boolean;
-                hexColors: string[];
-                imageUrl: string | null;
-                isSelected: boolean;
-              };
-            }>;
-          };
-        };
-      }>;
-    };
-  };
-}
-
-interface ProductConnection {
-  edges: Product[];
-}
+import {
+  ProductTiles,
+  ProductTilesConnection,
+  query as ProductTilesQuery,
+} from '../components/ProductTiles';
 
 interface HomePageQuery {
   site: MergeDeep<
     MergeDeep<HeaderSiteQuery, FooterSiteQuery>,
     {
-      featuredProducts: ProductConnection;
-      bestSellingProducts: ProductConnection;
+      featuredProducts: ProductTilesConnection;
+      bestSellingProducts: ProductTilesConnection;
       settings: {
         storefront: {
           catalog: {
@@ -82,10 +37,10 @@ export const getServerSideProps: GetServerSideProps = async () => {
       query HomePageQuery($pageSize: Int = 4) {
       site {
         featuredProducts (first: $pageSize) {
-          ...Product
+          ...${ProductTilesQuery.fragmentName}
         }
         bestSellingProducts (first: $pageSize) {
-          ...Product
+          ...${ProductTilesQuery.fragmentName}
         }
         settings {
           storefront {
@@ -100,58 +55,9 @@ export const getServerSideProps: GetServerSideProps = async () => {
       }
     }
 
-    fragment Product on ProductConnection {
-      edges {
-        node {
-          addToCartUrl
-          entityId
-          name
-          path
-          showCartAction
-          brand {
-            name
-          }
-          defaultImage {
-            url(width: 300, height: 300)
-            altText
-          }
-          prices(currencyCode: USD) {
-            price {
-              formatted
-            }
-          }
-          productOptions(first: 3) {
-            edges {
-              node {
-                entityId
-                displayName
-                isRequired
-                __typename
-                ... on MultipleChoiceOption {
-                  displayStyle
-                  values(first: 5) {
-                    edges {
-                      node {
-                        entityId
-                        isDefault
-                        ... on SwatchOptionValue {
-                          hexColors
-                          imageUrl(width: 200)
-                          isSelected
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
     ${HeaderQuery.fragment}
     ${FooterQuery.fragment}
+    ${ProductTilesQuery.fragment}
     `,
   });
 

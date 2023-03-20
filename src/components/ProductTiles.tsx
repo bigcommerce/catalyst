@@ -7,16 +7,115 @@ import { Link as ReactantLink } from '../../reactant/components/Link';
 import { H3, P, ProductTile } from '../../reactant/components/ProducTile';
 import { Swatch, SwatchGroup } from '../../reactant/components/Swatch';
 import { HeartIcon } from '../../reactant/icons/Heart';
-import { Product } from '../pages';
+
+export interface ProductTilesConnection {
+  edges: Array<{
+    node: {
+      addToCartUrl: string;
+      showCartAction: boolean;
+      entityId: number;
+      name: string;
+      path: string;
+      brand: {
+        name: string;
+      } | null;
+      defaultImage?: {
+        url: string;
+        altText: string;
+      };
+      prices: {
+        price: {
+          formatted: string;
+        } | null;
+      };
+      productOptions: {
+        edges: Array<{
+          node: {
+            entityId: number;
+            displayName: string;
+            isRequired: boolean;
+            __typename: string;
+            displayStyle: string;
+            values: {
+              edges: Array<{
+                node: {
+                  entityId: number;
+                  label: string;
+                  isDefault: boolean;
+                  hexColors: string[];
+                  imageUrl: string | null;
+                  isSelected: boolean;
+                };
+              }>;
+            };
+          };
+        }>;
+      };
+    };
+  }>;
+}
+
+export const query = {
+  fragmentName: 'ProductTilesQuery',
+  fragment: /* GraphQL */ `
+    fragment ProductTilesQuery on ProductConnection {
+      edges {
+        node {
+          addToCartUrl
+          entityId
+          name
+          path
+          showCartAction
+          brand {
+            name
+          }
+          defaultImage {
+            url(width: 300, height: 300)
+            altText
+          }
+          prices(currencyCode: USD) {
+            price {
+              formatted
+            }
+          }
+          productOptions(first: 3) {
+            edges {
+              node {
+                entityId
+                displayName
+                isRequired
+                __typename
+                ... on MultipleChoiceOption {
+                  displayStyle
+                  values(first: 5) {
+                    edges {
+                      node {
+                        entityId
+                        isDefault
+                        ... on SwatchOptionValue {
+                          hexColors
+                          imageUrl(width: 200)
+                          isSelected
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+};
 
 interface ProductTilesProps {
   cols?: keyof typeof COLS;
   title?: string;
   priority?: boolean;
   // TODO: See if we can make this more generic
-  products: {
-    edges: Product[];
-  };
+  products: ProductTilesConnection;
   productComparisonsEnabled: boolean;
 }
 
