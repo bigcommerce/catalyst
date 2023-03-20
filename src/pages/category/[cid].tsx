@@ -3,11 +3,14 @@ import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { MergeDeep } from 'type-fest';
 
-import { Product } from '..';
 import { serverClient } from '../../client/server';
 import { Header, query as HeaderQuery, HeaderSiteQuery } from '../../components/Header';
 import type { StoreLogo } from '../../components/Header';
-import { ProductTiles } from '../../components/ProductTiles';
+import {
+  ProductTiles,
+  ProductTilesConnection,
+  query as ProductTilesQuery,
+} from '../../components/ProductTiles';
 
 interface Category {
   name: string;
@@ -20,9 +23,7 @@ interface Category {
       };
     }>;
   };
-  products: {
-    edges: Product[];
-  };
+  products: ProductTilesConnection;
 }
 
 interface CategoryTree {
@@ -92,54 +93,7 @@ export const getServerSideProps: GetServerSideProps<
             }
           }
           products(first: $perPage) {
-            edges {
-              node {
-                id
-                addToCartUrl
-                path
-                name
-                defaultImage {
-                  url: url(width: 300)
-                  altText
-                }
-                showCartAction
-                brand {
-                  name
-                }
-                prices {
-                  price {
-                    formatted
-                  }
-                }
-                productOptions(first: 3) {
-                  edges {
-                    node {
-                      entityId
-                      displayName
-                      isRequired
-                      __typename
-                      ... on MultipleChoiceOption {
-                        displayStyle
-                        values(first: 5) {
-                          edges {
-                            node {
-                              entityId
-                                
-                              isDefault
-                              ... on SwatchOptionValue {
-                                hexColors
-                                imageUrl(width: 200)
-                                isSelected
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            ...${ProductTilesQuery.fragmentName}
           }
         }
         settings {
@@ -155,6 +109,7 @@ export const getServerSideProps: GetServerSideProps<
     }
 
     ${HeaderQuery.fragment}
+    ${ProductTilesQuery.fragment}
     `,
     variables: { categoryId },
   });
