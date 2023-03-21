@@ -1,8 +1,8 @@
-import { gql } from '@apollo/client';
 import { NextResponse, URLPattern } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-import { serverClient } from './graphql/server';
+import { getServerClient } from './graphql/server';
+import { gql } from './graphql/utils';
 
 interface RoutesResponse {
   site: {
@@ -18,7 +18,9 @@ interface RoutesResponse {
 // This is a POC middleware intended to redirect all page requests to the right NextJS route.
 // TODO: Internationalization, trailing slash, etc.
 export async function middleware(request: NextRequest) {
-  const { data } = await serverClient.query<RoutesResponse>({
+  const client = getServerClient();
+
+  const { data } = await client.query<RoutesResponse>({
     query: gql`
       query Routes($path: String!) {
         site {

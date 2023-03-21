@@ -25,20 +25,18 @@ const httpLink = new HttpLink({
   uri: storefrontClient.getStorefrontApiUrl(),
 });
 
-export const serverClient = new ApolloClient({
-  link: authLink.concat(httpLink),
-  cache: new InMemoryCache({
-    typePolicies: {
-      Site: {
-        // Disables normalization for this type since it has no key fields (id):
-        keyFields: false,
-        // This states that the Site type is a root query:
-        queryType: true,
-      },
-      Settings: {
-        // Disables normalization for this type since it has no key fields (id):
-        keyFields: false,
-      },
-    },
-  }),
-});
+// We want to return a new client for each request server-side. InMemoryCache was designed
+// to be used in a single client instance. If we were to use the same client instance for
+// multiple requests, the cache would be shared between requests and cause caching issues.
+export const getServerClient = () => {
+  if (typeof window !== 'undefined') {
+    throw new Error(
+      'getServerClient is only for use in the browser. Use getBrowserClient for server requests.',
+    );
+  }
+
+  return new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache(),
+  });
+};

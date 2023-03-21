@@ -1,4 +1,3 @@
-import { gql } from '@apollo/client';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { MergeDeep } from 'type-fest';
@@ -10,7 +9,8 @@ import {
   ProductTilesConnection,
   query as ProductTilesQuery,
 } from '../../components/ProductTiles';
-import { serverClient } from '../../graphql/server';
+import { getServerClient } from '../../graphql/server';
+import { gql } from '../../graphql/utils';
 
 interface Category {
   name: string;
@@ -75,9 +75,10 @@ export const getServerSideProps: GetServerSideProps<
     };
   }
 
+  const client = getServerClient();
   const categoryId = parseInt(params.cid, 10);
 
-  const { data } = await serverClient.query<CategoryQuery>({
+  const { data } = await client.query<CategoryQuery>({
     query: gql`
     query category($categoryId: Int!, $perPage: Int = 9) {
       site {
