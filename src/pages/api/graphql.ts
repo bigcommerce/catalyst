@@ -1,7 +1,7 @@
 import { MutationOptions, QueryOptions } from '@apollo/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { serverClient } from '../../client/server';
+import { serverClient } from '../../graphql/server';
 
 const isQueryRequest = (body: unknown): body is QueryOptions => {
   return typeof body === 'object' && body !== null && 'query' in body;

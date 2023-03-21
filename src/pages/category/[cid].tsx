@@ -3,7 +3,6 @@ import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { MergeDeep } from 'type-fest';
 
-import { serverClient } from '../../client/server';
 import { Header, query as HeaderQuery, HeaderSiteQuery } from '../../components/Header';
 import type { StoreLogo } from '../../components/Header';
 import {
@@ -11,6 +10,7 @@ import {
   ProductTilesConnection,
   query as ProductTilesQuery,
 } from '../../components/ProductTiles';
+import { serverClient } from '../../graphql/server';
 
 interface Category {
   name: string;

@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 
-import { serverClient } from '../../client/server';
+import { serverClient } from '../../graphql/server';
 
 interface Product {
   name: string;

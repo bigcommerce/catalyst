@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 import { NextResponse, URLPattern } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-import { serverClient } from './client/server';
+import { serverClient } from './graphql/server';
 
 interface RoutesResponse {
   site: {
