@@ -1,5 +1,5 @@
-import { NextResponse, URLPattern } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { NextResponse, URLPattern } from 'next/server';
 
 import { getServerClient } from './graphql/server';
 import { gql } from './graphql/utils';

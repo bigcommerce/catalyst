@@ -1,15 +1,12 @@
-import type { IronSession, IronSessionOptions } from 'iron-session';
-
-import { getIronSession } from "iron-session/edge";
+import type { IronSessionOptions } from 'iron-session';
+import { getIronSession } from 'iron-session/edge';
 import { NextRequest, NextResponse } from 'next/server';
-import { IncomingMessage, ServerResponse } from 'http';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
 export const sessionOptions: IronSessionOptions = {
-  password: "thisissomekindof32characterlongpassword",
-  cookieName: "session-id",
+  password: 'thisissomekindof32characterlongpassword',
+  cookieName: 'session-id',
   cookieOptions: {
-    secure: false
+    secure: false,
   },
 };
 
@@ -18,13 +15,13 @@ export interface Customer {
 }
 
 // This is where we specify the typings of req.session.*
-declare module "iron-session" {
+declare module 'iron-session' {
   interface IronSessionData {
     customer?: Customer;
-    initTimestamp?: number;
-    initRequestUrl?: string;
     cartId?: string;
-    recentlyViewedProducts?: number[];
+    initTimestamp: number;
+    initRequestUrl: string;
+    recentlyViewedProducts: number[];
   }
 }
 
