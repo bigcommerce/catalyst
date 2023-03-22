@@ -32,6 +32,7 @@ interface HomePageQuery {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
+
   const { data } = await serverClient.query<HomePageQuery>({
     query: gql`
       query HomePageQuery($pageSize: Int = 4) {
