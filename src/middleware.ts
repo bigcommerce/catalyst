@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 
 import { getServerClient } from './graphql/server';
 import { gql } from './graphql/utils';
+import { sessionMiddleware } from './session';
 
 interface RoutesResponse {
   site: {
@@ -15,12 +16,20 @@ interface RoutesResponse {
   };
 }
 
+export async function middleware(request: NextRequest) {
+  return rewriteUrlMiddleware(sessionMiddleware(request));
+}
+
 // This is a POC middleware intended to redirect all page requests to the right NextJS route.
 // TODO: Internationalization, trailing slash, etc.
-export async function middleware(request: NextRequest) {
+export async function rewriteUrlMiddleware(
+  requestResponse: Promise<{ request: NextRequest; response: NextResponse }>,
+) {
   const client = getServerClient();
 
-  const { data } = await client.query<RoutesResponse>({
+  const { request, response } = await requestResponse;
+
+  const { data } =  await client.query<RoutesResponse>({
     query: gql`
       query Routes($path: String!) {
         site {
@@ -48,11 +57,13 @@ export async function middleware(request: NextRequest) {
     case 'Product':
       return NextResponse.rewrite(
         new URL(`/product/${data.site.route.node.entityId}`, request.url),
+        response
       );
 
     case 'Category':
       return NextResponse.rewrite(
         new URL(`/category/${data.site.route.node.entityId}`, request.url),
+        response
       );
   }
 
@@ -69,7 +80,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/404', request.url));
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {

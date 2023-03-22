@@ -37,3 +37,6 @@ next-env.d.ts
 
 # Devpage
 src/pages/_reactant.tsx
+
+# intellij
+.idea/

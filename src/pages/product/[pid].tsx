@@ -25,8 +25,8 @@ interface ProductPageParams {
 }
 
 export const getServerSideProps: GetServerSideProps<ProductPageProps, ProductPageParams> = async ({
-  params,
-}) => {
+                                                                                                    params,
+                                                                                                  }) => {
   if (!params?.pid) {
     return {
       notFound: true,
