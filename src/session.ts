@@ -1,15 +1,14 @@
-import type { IronSession, IronSessionOptions } from 'iron-session';
-
-import { getIronSession } from "iron-session/edge";
-import { NextRequest, NextResponse } from 'next/server';
 import { IncomingMessage, ServerResponse } from 'http';
+import type { IronSession, IronSessionOptions } from 'iron-session';
+import { getIronSession } from 'iron-session/edge';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const sessionOptions: IronSessionOptions = {
-  password: "thisissomekindof32characterlongpassword",
-  cookieName: "session-id",
+  password: 'thisissomekindof32characterlongpassword',
+  cookieName: 'session-id',
   cookieOptions: {
-    secure: false
+    secure: false,
   },
 };
 
@@ -18,70 +17,55 @@ export interface Customer {
 }
 
 // This is where we specify the typings of req.session.*
-declare module "iron-session" {
+declare module 'iron-session' {
   interface IronSessionData {
     customer?: Customer;
-    initTimestamp?: number;
-    initRequestUrl?: string;
     cartId?: string;
-    recentlyViewedProducts?: number[];
+    initTimestamp: number;
+    initRequestUrl: string;
+    recentlyViewedProducts: number[];
   }
 }
 
-export async function save(request: NextRequest, res: NextResponse) {
-  const session: IronSession = await getIronSession(request, res, sessionOptions);
+type PartialIronSessionData = Pick<IronSession, 'save' | 'destroy'> &
+  Partial<Omit<IronSession, 'save' | 'destroy'>>;
 
-  await session.save();
-}
+export async function initializeSession(
+  request: NextRequest,
+  response: NextResponse,
+): Promise<NextResponse> {
+  const session: PartialIronSessionData = await getIronSession(request, response, sessionOptions);
 
-export async function init(request: NextRequest, res: NextResponse): Promise<NextResponse> {
-  const session: IronSession = await getIronSession(request, res, sessionOptions);
+  session.initTimestamp = session.initTimestamp ?? Date.now();
+  session.initRequestUrl = session.initRequestUrl ?? request.nextUrl.pathname;
+  session.recentlyViewedProducts = session.recentlyViewedProducts ?? [];
 
-  if (session.initTimestamp === undefined) {
-    session.initTimestamp = Date.now()
-  }
-
-  if (session.initRequestUrl === undefined) {
-    session.initRequestUrl = request.url
-  }
-
-  if (session.recentlyViewedProducts === undefined) {
-    session.recentlyViewedProducts = [];
-  }
-
-  const { customer, initTimestamp, initRequestUrl, recentlyViewedProducts } = session;
-
-  console.log("Customer: " + JSON.stringify(customer));
-  console.log("initTimestamp: " + initTimestamp);
-  console.log("initRequestUrl: " + initRequestUrl);
-  console.log("products: " + recentlyViewedProducts);
+  console.log(JSON.stringify(session, null, 2));
 
   await session.save();
 
-  return res;
+  return response;
 }
 
-function getPropertyDescriptorForReqSession(
-  session: IronSession,
-): PropertyDescriptor {
+function getPropertyDescriptorForReqSession(session: IronSession): PropertyDescriptor {
   return {
     enumerable: true,
     get() {
       return session;
     },
-    set(value) {
+    set(value: Record<string, unknown>) {
       const keys = Object.keys(value);
       const currentKeys = Object.keys(session);
 
       currentKeys.forEach((key) => {
         if (!keys.includes(key)) {
-          // @ts-ignore See comment in IronSessionData interface
+          // @ts-expect-error See comment in IronSessionData interface
           delete session[key];
         }
       });
 
       keys.forEach((key) => {
-        // @ts-ignore See comment in IronSessionData interface
+        // @ts-expect-error See comment in IronSessionData interface
         session[key] = value[key];
       });
     },
@@ -113,17 +97,10 @@ export function withIronSessionSsr<
       ironSessionOptions = options;
     }
 
-    const session = await getIronSession(
-      context.req,
-      context.res,
-      ironSessionOptions,
-    );
+    const session = await getIronSession(context.req, context.res, ironSessionOptions);
 
-    Object.defineProperty(
-      context.req,
-      "session",
-      getPropertyDescriptorForReqSession(session),
-    );
+    Object.defineProperty(context.req, 'session', getPropertyDescriptorForReqSession(session));
+
     return handler(context);
   };
 }

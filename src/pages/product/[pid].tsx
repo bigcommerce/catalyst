@@ -1,11 +1,11 @@
 import { gql } from '@apollo/client';
+import { getIronSession } from 'iron-session/edge';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
+import { NextResponse } from 'next/server';
 
 import { serverClient } from '../../client/server';
 import { sessionOptions } from '../../session';
-import { withIronSessionSsr } from 'iron-session/next';
-
 
 interface Product {
   name: string;
@@ -27,14 +27,12 @@ interface ProductPageParams {
   pid: string;
 }
 
-export const config = {
-  runtime: 'nodejs',
-  unstable_allowDynamic: [
-    '/node_modules/@peculiar/webcrypto/**',
-  ],
-}
-
-const test: GetServerSideProps<ProductPageProps, ProductPageParams> = async ( { params, req, res } ) => {
+export const getServerSideProps: GetServerSideProps<ProductPageProps, ProductPageParams> = async ({
+  params,
+  req,
+}) => {
+  const res = NextResponse.next();
+  const session = await getIronSession(req, res, sessionOptions);
 
   if (!params?.pid) {
     return {
@@ -44,27 +42,27 @@ const test: GetServerSideProps<ProductPageProps, ProductPageParams> = async ( { 
 
   const productId = parseInt(params.pid, 10);
 
-  req.session.recentlyViewedProducts.push(productId);
+  session.recentlyViewedProducts.push(productId);
 
-  await req.session.save();
+  await session.save();
 
   const { data } = await serverClient.query<ProductQuery>({
     query: gql`
-        query productById($productId: Int!) {
-            site {
-                product(entityId: $productId) {
-                    name
-                    plainTextDescription
-                }
-            }
+      query productById($productId: Int!) {
+        site {
+          product(entityId: $productId) {
+            name
+            plainTextDescription
+          }
         }
+      }
     `,
     variables: {
       productId,
     },
     context: {
       // pass in context here
-    }
+    },
   });
 
   if (data.site.product == null) {
@@ -73,57 +71,10 @@ const test: GetServerSideProps<ProductPageProps, ProductPageParams> = async ( { 
 
   return {
     props: {
-      product: data.site.product
+      product: data.site.product,
     },
   };
 };
-
-export const getServerSideProps = withIronSessionSsr<ProductPageParams>(test, sessionOptions)
-
-// export const getServerSideProps: GetServerSideProps<ProductPageProps, ProductPageParams> = async ({ params, req, res }) => {
-//   const session = await getIronSession(req, res, sessionOptions)
-//
-//   if (!params?.pid) {
-//     return {
-//       notFound: true,
-//     };
-//   }
-//
-//   const productId = parseInt(params.pid, 10);
-//
-//   // session.recentlyViewedProducts.push(productId);
-//
-//   // await session.save();
-//
-//   const { data } = await serverClient.query<ProductQuery>({
-//     query: gql`
-//       query productById($productId: Int!) {
-//         site {
-//           product(entityId: $productId) {
-//             name
-//             plainTextDescription
-//           }
-//         }
-//       }
-//     `,
-//     variables: {
-//       productId,
-//     },
-//     context: {
-//       // pass in context here
-//     }
-//   });
-//
-//   if (data.site.product == null) {
-//     return { notFound: true };
-//   }
-//
-//   return {
-//     props: {
-//       product: data.site.product,
-//     },
-//   };
-// };
 
 export default function ProductPage({ product }: ProductPageProps) {
   return (

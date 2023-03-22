@@ -1,8 +1,9 @@
 import { gql } from '@apollo/client';
 import { NextResponse, URLPattern } from 'next/server';
 import type { NextRequest } from 'next/server';
+
 import { serverClient } from './client/server';
-import { init } from './session'
+import { initializeSession } from './session';
 
 interface RoutesResponse {
   site: {
@@ -18,10 +19,7 @@ interface RoutesResponse {
 // This is a POC middleware intended to redirect all page requests to the right NextJS route.
 // TODO: Internationalization, trailing slash, etc.
 export async function middleware(request: NextRequest) {
-
-  console.log(process.env)
-
-  const res: NextResponse = await init(request, NextResponse.next())
+  const response = await initializeSession(request, NextResponse.next());
 
   const { data } = await serverClient.query<RoutesResponse>({
     query: gql`
@@ -51,13 +49,13 @@ export async function middleware(request: NextRequest) {
     case 'Product':
       return NextResponse.rewrite(
         new URL(`/product/${data.site.route.node.entityId}`, request.url),
-        res
+        response,
       );
 
     case 'Category':
       return NextResponse.rewrite(
         new URL(`/category/${data.site.route.node.entityId}`, request.url),
-        res
+        response,
       );
   }
 
@@ -74,7 +72,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/404', request.url));
   }
 
-  return res;
+  return response;
 }
 
 export const config = {
