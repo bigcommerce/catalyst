@@ -3,10 +3,11 @@ import { getIronSession } from 'iron-session/edge';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const sessionOptions: IronSessionOptions = {
-  password: 'thisissomekindof32characterlongpassword',
-  cookieName: 'session-id',
+  password: process.env.SESSION_PASSWORD ?? '',
+  cookieName: process.env.SESSION_ID ?? '',
+  ttl: parseInt(process.env.SESSION_TTL ?? '0', 10),
   cookieOptions: {
-    secure: false,
+    secure: true, // this will eventually change based off if sitewide https is enabled or not
   },
 };
 
@@ -22,34 +23,34 @@ declare module 'iron-session' {
     initTimestamp: number;
     initRequestUrl: string;
     recentlyViewedProducts: number[];
+    expiry: number;
   }
 }
 
+// TTL for session in milliseconds
+function ttlForSession(now: number): number {
+  return now + parseInt(process.env.SESSION_TTL ?? '0', 10) * 1000;
+}
+
 export async function sessionMiddleware(request: NextRequest) {
+  const now = new Date().getTime();
   const response = NextResponse.next();
   const session = await getIronSession(request, response, sessionOptions);
 
   const sessionCookie = request.cookies.get(process.env.SESSION_ID ?? '');
-
-  // NextRequest RequestCookie doesnt contain expiry so we must get it from the response
-  const sessionExpiry = response.cookies.get(process.env.SESSION_ID ?? '')?.expires;
 
   // initialize new session
   if (sessionCookie === undefined) {
     session.initTimestamp = Date.now();
     session.initRequestUrl = request.nextUrl.pathname;
     session.recentlyViewedProducts = [];
+    session.expiry = ttlForSession(now);
 
     await session.save();
-  } else if (sessionExpiry !== undefined) {
+  } else if (session.expiry - now < 86400000) {
     // if we have a valid session and expiry, and it expires in less than 1 day, update TTL
-    const now = new Date().getTime();
-    const expiry = sessionExpiry.getTime();
-
-    // 1 day in MS
-    if (expiry - now < 86400000) {
-      await session.save();
-    }
+    session.expiry = ttlForSession(now);
+    await session.save();
   }
 
   return {

@@ -26,10 +26,9 @@ export async function rewriteUrlMiddleware(
   requestResponse: Promise<{ request: NextRequest; response: NextResponse }>,
 ) {
   const client = getServerClient();
-
   const { request, response } = await requestResponse;
 
-  const { data } =  await client.query<RoutesResponse>({
+  const { data } = await client.query<RoutesResponse>({
     query: gql`
       query Routes($path: String!) {
         site {
@@ -57,13 +56,13 @@ export async function rewriteUrlMiddleware(
     case 'Product':
       return NextResponse.rewrite(
         new URL(`/product/${data.site.route.node.entityId}`, request.url),
-        response
+        response,
       );
 
     case 'Category':
       return NextResponse.rewrite(
         new URL(`/category/${data.site.route.node.entityId}`, request.url),
-        response
+        response,
       );
   }
 
@@ -93,5 +92,6 @@ export const config = {
      * - favicon.ico (favicon file)
      */
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/',
   ],
 };

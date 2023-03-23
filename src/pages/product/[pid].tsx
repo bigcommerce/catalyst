@@ -25,8 +25,8 @@ interface ProductPageParams {
 }
 
 export const getServerSideProps: GetServerSideProps<ProductPageProps, ProductPageParams> = async ({
-                                                                                                    params,
-                                                                                                  }) => {
+  params,
+}) => {
   if (!params?.pid) {
     return {
       notFound: true,
@@ -38,14 +38,14 @@ export const getServerSideProps: GetServerSideProps<ProductPageProps, ProductPag
 
   const { data } = await client.query<ProductQuery>({
     query: gql`
-        query productById($productId: Int!) {
-            site {
-                product(entityId: $productId) {
-                    name
-                    plainTextDescription
-                }
-            }
+      query productById($productId: Int!) {
+        site {
+          product(entityId: $productId) {
+            name
+            plainTextDescription
+          }
         }
+      }
     `,
     variables: {
       productId,

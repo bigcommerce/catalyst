@@ -22,10 +22,7 @@
       {
         "name": "next"
       }
-    ],
-    "paths": {
-      "crypto": ["node_modules/@peculiar/webcrypto"]
-    }
+    ]
   },
   "include": [
     "next-env.d.ts",
