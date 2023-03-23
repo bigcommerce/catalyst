@@ -1,11 +1,8 @@
 import { gql } from '@apollo/client';
-import { getIronSession } from 'iron-session/edge';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
-import { NextResponse } from 'next/server';
 
 import { serverClient } from '../../client/server';
-import { sessionOptions } from '../../session';
 
 interface Product {
   name: string;
@@ -29,11 +26,7 @@ interface ProductPageParams {
 
 export const getServerSideProps: GetServerSideProps<ProductPageProps, ProductPageParams> = async ({
   params,
-  req,
 }) => {
-  const res = NextResponse.next();
-  const session = await getIronSession(req, res, sessionOptions);
-
   if (!params?.pid) {
     return {
       notFound: true,
@@ -41,10 +34,6 @@ export const getServerSideProps: GetServerSideProps<ProductPageProps, ProductPag
   }
 
   const productId = parseInt(params.pid, 10);
-
-  session.recentlyViewedProducts.push(productId);
-
-  await session.save();
 
   const { data } = await serverClient.query<ProductQuery>({
     query: gql`
@@ -59,9 +48,6 @@ export const getServerSideProps: GetServerSideProps<ProductPageProps, ProductPag
     `,
     variables: {
       productId,
-    },
-    context: {
-      // pass in context here
     },
   });
 

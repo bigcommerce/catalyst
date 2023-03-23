@@ -1,9 +1,10 @@
 import { gql } from '@apollo/client';
+import { getIronSession } from 'iron-session/edge';
 import { NextResponse, URLPattern } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 import { serverClient } from './client/server';
-import { initializeSession } from './session';
+import { handleSession, productViewed, sessionOptions } from './session';
 
 interface RoutesResponse {
   site: {
@@ -19,7 +20,10 @@ interface RoutesResponse {
 // This is a POC middleware intended to redirect all page requests to the right NextJS route.
 // TODO: Internationalization, trailing slash, etc.
 export async function middleware(request: NextRequest) {
-  const response = await initializeSession(request, NextResponse.next());
+  const response = NextResponse.next();
+  const session = await getIronSession(request, response, sessionOptions);
+
+  await handleSession(request, session);
 
   const { data } = await serverClient.query<RoutesResponse>({
     query: gql`
@@ -47,6 +51,8 @@ export async function middleware(request: NextRequest) {
 
   switch (data.site.route.node?.__typename) {
     case 'Product':
+      await productViewed(session, parseInt(data.site.route.node.entityId, 10));
+
       return NextResponse.rewrite(
         new URL(`/product/${data.site.route.node.entityId}`, request.url),
         response,
@@ -85,5 +91,6 @@ export const config = {
      * - favicon.ico (favicon file)
      */
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/',
   ],
 };
