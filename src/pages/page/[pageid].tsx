@@ -1,12 +1,11 @@
 import { gql } from '@apollo/client';
-import { GetServerSideProps } from 'next';
+import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import { MergeDeep } from 'type-fest';
 
 import { serverClient } from '../../client/server';
-import { Header, query as HeaderQuery, HeaderSiteQuery } from '../../components/Header';
-import type { Page, StoreLogo } from '../../components/Header';
-import { CategoryTree } from '../category/[cid]';
+import { query as HeaderQuery, HeaderSiteQuery } from '../../components/Header';
+import type { Page } from '../../components/Header';
 
 interface Region {
   name: string;
@@ -36,9 +35,9 @@ interface PageProps {
     };
   };
   page: Page;
-  categories: CategoryTree[];
-  storeName: string;
-  logo: StoreLogo;
+  // categories: CategoryTree[];
+  // storeName: string;
+  // logo: StoreLogo;
 }
 
 interface PageParams {
@@ -46,7 +45,14 @@ interface PageParams {
   pageid: string;
 }
 
-export const getServerSideProps: GetServerSideProps<PageProps, PageParams> = async ({ params }) => {
+export const getStaticPaths = () => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps<PageProps, PageParams> = async ({ params }) => {
   if (!params?.pageid) {
     return {
       notFound: true,
@@ -80,25 +86,26 @@ export const getServerSideProps: GetServerSideProps<PageProps, PageParams> = asy
     props: {
       content: {
         regions: data.site.content.renderedRegionsByPageTypeAndEntityId.regions.filter(
-          (region) => region.name === 'page_content',
+          (region) => region.name === 'page_builder_content',
         ),
         pages: data.site.content.pages,
       },
       page: data.site.content.pages.edges.filter(({ node }) => node.entityId === pageId)[0].node,
-      categories: data.site.categoryTree,
-      storeName: data.site.settings.storeName,
-      logo: data.site.settings.logoV2,
+      // categories: data.site.categoryTree,
+      // storeName: data.site.settings.storeName,
+      // logo: data.site.settings.logoV2,
     },
+    // revalidate: 120,
   };
 };
 
-export default function Page({ content, page, categories, logo, storeName }: PageProps) {
+export default function Page({ content, page }: PageProps) {
   return (
     <>
       <Head>
         <title>{page.name}</title>
       </Head>
-      <Header categoryTree={categories} content={content} settings={{ logoV2: logo, storeName }} />
+      {/*<Header categoryTree={categories} content={content} settings={{ logoV2: logo, storeName }} />*/}
       <main>
         <div className="md:container md:mx-auto">
           <h1 className="font-black text-5xl leading-[4rem]">{page.name}</h1>
