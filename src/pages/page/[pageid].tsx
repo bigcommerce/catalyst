@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { GetServerSideProps } from 'next';
+import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import { MergeDeep } from 'type-fest';
 
@@ -46,7 +46,14 @@ interface PageParams {
   pageid: string;
 }
 
-export const getServerSideProps: GetServerSideProps<PageProps, PageParams> = async ({ params }) => {
+export const getStaticPaths = () => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps<PageProps, PageParams> = async ({ params }) => {
   if (!params?.pageid) {
     return {
       notFound: true,
@@ -80,7 +87,7 @@ export const getServerSideProps: GetServerSideProps<PageProps, PageParams> = asy
     props: {
       content: {
         regions: data.site.content.renderedRegionsByPageTypeAndEntityId.regions.filter(
-          (region) => region.name === 'page_content',
+          (region) => region.name === 'page_builder_content',
         ),
         pages: data.site.content.pages,
       },
