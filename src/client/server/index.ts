@@ -4,11 +4,11 @@ import { setContext } from '@apollo/client/link/context';
 import { createStorefrontClient } from './storefront/client';
 
 const storefrontClient = createStorefrontClient({
-  accessToken: process.env.NEXT_PUBLIC_BIGCOMMERCE_ACCESS_TOKEN,
-  channelId: parseInt(process.env.NEXT_PUBLIC_BIGCOMMERCE_CHANNEL_ID ?? '', 10),
-  storeHash: process.env.NEXT_PUBLIC_BIGCOMMERCE_STORE_HASH,
-  apiUrl: process.env.NEXT_PUBLIC_BIGCOMMERCE_API_URL,
-  canonicalDomainName: process.env.NEXT_PUBLIC_BIGCOMMERCE_CANONICAL_STORE_DOMAIN,
+  accessToken: process.env.BIGCOMMERCE_ACCESS_TOKEN,
+  channelId: parseInt(process.env.BIGCOMMERCE_CHANNEL_ID ?? '', 10),
+  storeHash: process.env.BIGCOMMERCE_STORE_HASH,
+  apiUrl: process.env.BIGCOMMERCE_API_URL,
+  canonicalDomainName: process.env.BIGCOMMERCE_CANONICAL_STORE_DOMAIN,
 });
 
 const authLink = setContext(async () => {

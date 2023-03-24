@@ -11,7 +11,7 @@ npm install
 ```bash
  mv .env.example .env.local
  ```
-Update `.env.local` with your access-token, and store-hash  
+Update `.env.local` with your access-token, store-hash and channel-id.
 
 3. Run the development server:
 
