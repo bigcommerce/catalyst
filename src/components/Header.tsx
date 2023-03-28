@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useRef, useState } from 'react';
 
+import { Cart } from './cart';
 import { StoreLogo } from './Logo';
 import { Search } from './Search';
 
@@ -131,6 +132,7 @@ export const Header = ({ categoryTree, settings }: HeaderProps) => {
           </ul>
         </nav>
         <Search />
+        <Cart />
       </div>
     </header>
   );
