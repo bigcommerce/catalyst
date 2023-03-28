@@ -11,7 +11,7 @@ export const createStorefrontClient = (config: Partial<Config>) => {
   const clientConfig = new ClientConfig(config);
 
   // We want to warn the user that this client should not be used in the browser, but only in development.
-  if (process.env.NODE_ENV === 'development' && Boolean(globalThis.document)) {
+  if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
     // eslint-disable-next-line no-console
     console.error(
       'Using the StorefrontClient in the browser is not recommended as it can expose your secrets in the browser.',

@@ -1,11 +1,9 @@
-import { gql } from '@apollo/client';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import React from 'react';
 import { MergeDeep } from 'type-fest';
 
 import { Link } from '../../reactant/components/Link';
-import { serverClient } from '../client/server';
 import { Footer, query as FooterQuery, FooterSiteQuery } from '../components/Footer';
 import { Header, query as HeaderQuery, HeaderSiteQuery } from '../components/Header';
 import {
@@ -13,6 +11,8 @@ import {
   ProductTilesConnection,
   query as ProductTilesQuery,
 } from '../components/ProductTiles';
+import { getServerClient } from '../graphql/server';
+import { gql } from '../graphql/utils';
 
 interface HomePageQuery {
   site: MergeDeep<
@@ -32,7 +32,9 @@ interface HomePageQuery {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const { data } = await serverClient.query<HomePageQuery>({
+  const client = getServerClient();
+
+  const { data } = await client.query<HomePageQuery>({
     query: gql`
       query HomePageQuery($pageSize: Int = 4) {
       site {

@@ -1,8 +1,8 @@
-import { gql } from '@apollo/client';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 
-import { serverClient } from '../../client/server';
+import { getServerClient } from '../../graphql/server';
+import { gql } from '../../graphql/utils';
 
 interface Product {
   name: string;
@@ -33,9 +33,10 @@ export const getServerSideProps: GetServerSideProps<ProductPageProps, ProductPag
     };
   }
 
+  const client = getServerClient();
   const productId = parseInt(params.pid, 10);
 
-  const { data } = await serverClient.query<ProductQuery>({
+  const { data } = await client.query<ProductQuery>({
     query: gql`
       query productById($productId: Int!) {
         site {

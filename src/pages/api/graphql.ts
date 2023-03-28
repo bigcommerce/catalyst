@@ -1,7 +1,7 @@
-import { MutationOptions, QueryOptions } from '@apollo/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { serverClient } from '../../client/server';
+import { getServerClient } from '../../graphql/server';
+import { MutationOptions, QueryOptions } from '../../graphql/utils';
 
 const isQueryRequest = (body: unknown): body is QueryOptions => {
   return typeof body === 'object' && body !== null && 'query' in body;
@@ -21,15 +21,16 @@ export default async function graphqlHandler(req: NextApiRequest, res: NextApiRe
   }
 
   const body: unknown = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+  const client = getServerClient();
 
   if (isQueryRequest(body)) {
-    const response = await serverClient.query(body);
+    const response = await client.query(body);
 
     return res.status(200).send(response);
   }
 
   if (isMutationRequest(body)) {
-    const response = await serverClient.mutate(body);
+    const response = await client.mutate(body);
 
     return res.status(200).send(response);
   }
