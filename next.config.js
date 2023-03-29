@@ -4,6 +4,9 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  experimental: {
+    runtime: 'experimental-edge',
+  },
   images: {
     loaderFile: isProduction ? './src/bigcommerceImageLoader.ts' : undefined,
     domains: ['cdn11.bigcommerce.com'],
