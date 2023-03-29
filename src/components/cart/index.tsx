@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { clientClient } from '../../client/client';
+import { getBrowserClient } from '../../graphql/browser';
 
 import { createCartMutation } from './createCartMutation';
 import { getCartQuery, getCartQueryWithId } from './getCartQuery';
@@ -44,7 +44,9 @@ const Cart = () => {
 
   useEffect(() => {
     const getCartWithId = async (entityId: string) => {
-      const res = await clientClient.query({
+      const client = getBrowserClient();
+
+      const res = await client.query({
         query: getCartQueryWithId,
         variables: { entityId },
       });
@@ -57,7 +59,9 @@ const Cart = () => {
     };
 
     const getCart = async () => {
-      const res = await clientClient.query({
+      const client = getBrowserClient();
+
+      const res = await client.query({
         query: getCartQuery,
       });
 
@@ -69,7 +73,9 @@ const Cart = () => {
     };
 
     const createCart = async () => {
-      const res = await clientClient.mutate({
+      const client = getBrowserClient();
+
+      const res = await client.mutate({
         mutation: createCartMutation,
         variables: {
           createCartInput: {
@@ -95,16 +101,16 @@ const Cart = () => {
 
     const cartId = getCookie('cart_id');
 
-    // console.log(cartId, 'cartId');
+    console.log(cartId, 'cartId');
 
     if (cartId) {
       setCart(cart);
     }
   }, []);
 
-//   useEffect(() => {
-//     console.log(cart, 'cart');
-//   }, [cart]);
+  useEffect(() => {
+    console.log(cart, 'cart');
+  }, [cart]);
 
   return <div>Cart</div>;
 };
