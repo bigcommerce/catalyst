@@ -1,6 +1,12 @@
 import { MutationOptions, QueryOptions } from '@apollo/client';
 
 const fetchFn = async (body: QueryOptions | MutationOptions) => {
+  if (typeof window === 'undefined') {
+    throw new Error(
+      'getBrowserClient is only for use in the browser. Use getServerClient for server requests.',
+    );
+  }
+
   const response = await fetch('/api/graphql', {
     method: 'POST',
     headers: {
@@ -16,12 +22,6 @@ const fetchFn = async (body: QueryOptions | MutationOptions) => {
 };
 
 export const getBrowserClient = () => {
-  if (typeof window === 'undefined') {
-    throw new Error(
-      'getBrowserClient is only for use in the browser. Use getServerClient for server requests.',
-    );
-  }
-
   return {
     query: async (options: QueryOptions) => {
       return fetchFn(options);
