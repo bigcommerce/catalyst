@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 
 import { getServerClient } from '../../graphql/server';
 import { MutationOptions, QueryOptions } from '../../graphql/utils';
@@ -11,29 +11,50 @@ const isMutationRequest = (body: unknown): body is MutationOptions => {
   return typeof body === 'object' && body !== null && 'mutation' in body;
 };
 
-export default async function graphqlHandler(req: NextApiRequest, res: NextApiResponse) {
+export default async function graphqlHandler(req: NextRequest) {
   if (typeof req.method !== 'string') {
-    return res.status(405).send(`No request method provided`);
+    return new NextResponse(
+      JSON.stringify({
+        data: {
+          error: `No request method provided`,
+        },
+      }),
+      {
+        status: 405,
+      },
+    );
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).send(`Method ${req.method} not allowed`);
+    return new NextResponse(
+      JSON.stringify({
+        data: {
+          error: `Method ${req.method} not allowed`,
+        },
+      }),
+      {
+        status: 405,
+      },
+    );
   }
 
-  const body: unknown = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+  const body: unknown = await req.json();
   const client = getServerClient();
 
   if (isQueryRequest(body)) {
     const response = await client.query(body);
 
-    return res.status(200).send(response);
+    return new NextResponse(JSON.stringify(response));
   }
 
   if (isMutationRequest(body)) {
     const response = await client.mutate(body);
 
-    return res.status(200).send(response);
+    return new NextResponse(JSON.stringify(response));
   }
 
-  return res.status(400).send(`Request body is invalid ${JSON.stringify(body)}`);
+  return new NextResponse(
+    JSON.stringify({ data: { error: `Request body is invalid ${JSON.stringify(body)}` } }),
+    { status: 400 },
+  );
 }
