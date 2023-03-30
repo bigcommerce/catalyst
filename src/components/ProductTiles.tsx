@@ -150,7 +150,7 @@ export const ProductTiles = ({
 }: ProductTilesProps) => {
   const { addProductToCart, removeProductFromCart, cart } = useContext(CartContext);
 
-  console.log(cart, 'cart');
+//   console.log(cart, 'cart in ProductTiles');
 
   return (
     <div className="my-12 mx-6 sm:mx-10 md:mx-auto">

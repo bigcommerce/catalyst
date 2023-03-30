@@ -1,5 +1,17 @@
 import { gql } from '@apollo/client';
 
+export const getSmallCartQueryWithId = gql`
+  query getCart($entityId: String!) {
+    site {
+      cart(entityId: $entityId) {
+        entityId
+        currencyCode
+        isTaxIncluded
+      }
+    }
+  }
+`;
+
 export const getCartQueryWithId = gql`
   query getCart($entityId: String!) {
     site {
