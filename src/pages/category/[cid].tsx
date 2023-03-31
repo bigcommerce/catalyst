@@ -29,7 +29,7 @@ interface Category {
   products: ProductTilesConnection;
 }
 
-interface CategoryTree {
+export interface CategoryTree {
   name: string;
   path: string;
   children?: CategoryTree[];
