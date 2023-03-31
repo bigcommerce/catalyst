@@ -76,7 +76,12 @@ const SwatchLabel: Swatch['Label'] = ({ children, id, ...props }) => {
   );
 };
 const SwatchVariant: Swatch['Variant'] = ({ children, variantColor, ...props }) => {
-  return <span {...props} style={{ backgroundColor: variantColor }} />;
+  return (
+    <span
+      {...props}
+      style={{ backgroundColor: variantColor, backgroundImage: `url(${variantColor})` }}
+    />
+  );
 };
 
 SwatchInput.default = {

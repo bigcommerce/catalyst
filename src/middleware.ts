@@ -61,7 +61,10 @@ export async function rewriteUrlMiddleware(
 
     case 'Category':
       return NextResponse.rewrite(
-        new URL(`/category/${data.site.route.node.entityId}`, request.url),
+        new URL(
+          `/category/${data.site.route.node.entityId}/${request.nextUrl.search}`,
+          request.url,
+        ),
         response,
       );
   }
