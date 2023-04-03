@@ -148,9 +148,10 @@ export const ProductTiles = ({
   products,
   productComparisonsEnabled,
 }: ProductTilesProps) => {
-  const { addProductToCart, removeProductFromCart, cart } = useContext(CartContext);
+  const { addProductToCart, updateCart, removeProductFromCart, cart } =
+    useContext(CartContext);
 
-//   console.log(cart, 'cart in ProductTiles');
+  //   console.log(cart, 'cart in ProductTiles');
 
   return (
     <div className="my-12 mx-6 sm:mx-10 md:mx-auto">
@@ -236,14 +237,7 @@ export const ProductTiles = ({
                     // </ReactantLink>
                     <Button
                       className={Button.primary.className}
-                      onClick={() =>
-                        addProductToCart({
-                          quantity: 1,
-                          name: edge.node.name,
-                          price: edge.node.prices,
-                          id: edge.node.entityId,
-                        })
-                      }
+                      onClick={() => updateCart(edge.node.entityId)}
                     >
                       Add to cart
                     </Button>

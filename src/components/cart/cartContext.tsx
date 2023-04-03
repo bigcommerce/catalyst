@@ -2,6 +2,7 @@ import { createContext, useEffect, useReducer } from 'react';
 
 import { getBrowserClient } from '../../graphql/browser';
 
+import { addProductToCartMutation } from './addProductToCartMutation';
 import { getCartQuery, getCartQueryWithId, getSmallCartQueryWithId } from './getCartQuery';
 import { ACTIONS, reducer } from './reducer';
 import { getCookie } from './utils';
@@ -30,6 +31,34 @@ const CartContextProvider = ({ children }) => {
 
   const updateCartItems = (items) => {
     dispatch({ type: ACTIONS.UPDATE_CART_ITEMS, payload: items });
+  };
+
+  const updateCart = async (productEntityId) => {
+    const cartEntityId = getCookie('cart_id');
+    const variables = {
+      addCartLineItemsInput: {
+        cartEntityId,
+        data: {
+          lineItem: {
+            quantity: 1,
+            productEntityId,
+          },
+        },
+      },
+    };
+
+    console.log(variables, 'variables in updateCart');
+
+    const client = getBrowserClient();
+
+    const data = await client.mutate({
+      mutation: addProductToCartMutation,
+      variables,
+    });
+
+    console.log(data, 'data in updateCart');
+
+    dispatch({ type: ACTIONS.UPDATE_CART, payload: data });
   };
 
   useEffect(() => {
@@ -72,7 +101,16 @@ const CartContextProvider = ({ children }) => {
   }, [cart]);
 
   return (
-    <CartContext.Provider value={{ addProductToCart, removeProductFromCart, updateTotalQuantity, updateCartItems, cart }}>
+    <CartContext.Provider
+      value={{
+        addProductToCart,
+        removeProductFromCart,
+        updateTotalQuantity,
+        updateCartItems,
+        updateCart,
+        cart,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

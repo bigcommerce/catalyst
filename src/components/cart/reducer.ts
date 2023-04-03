@@ -1,8 +1,8 @@
 export const ACTIONS = {
   ADD_TO_CART: 'ADD_TO_CART',
   REMOVE_FROM_CART: 'REMOVE_FROM_CART',
-  UPDATE_TOTAL_QUANTITY: 'UPDATE_CART',
-  UPDATE_CART_ITEMS: 'UPDATE_CART_ITEMS',
+  UPDATE_TOTAL_QUANTITY: 'UPDATE_TOTAL_QUANTITY',
+  UPDATE_CART: 'UPDATE_CART',
 };
 
 const getTotalQuantity = (items) => {
@@ -54,14 +54,21 @@ const updateCartItems = (items, state) => {
   console.log(items, 'items in updateCartItems');
 
   const cartItems = items.map((item) => {
-
     const { brand, name, imageUrl, entityId, variantEntityId, quantity } = item;
 
     return { brand, name, imageUrl, entityId, variantEntityId, quantity };
   });
-  console.log(cartItems, 'cartItems in updateCartItems');
-  
+
   return { ...state, cartItems };
+};
+
+const updateCart = (cart, state) => {
+  console.log(cart, 'cart in updateCart action');
+
+  return {
+    cartItems: cart.cart.addCartLineItems.cart.lineItems.physicalItems,
+    totalQuantity: cart.cart.addCartLineItems.cart.lineItems.totalQuantity,
+  };
 };
 
 export const reducer = (state, action) => {
@@ -77,6 +84,9 @@ export const reducer = (state, action) => {
 
     case ACTIONS.UPDATE_CART_ITEMS:
       return updateCartItems(action.payload, state);
+
+    case ACTIONS.UPDATE_CART:
+      return updateCart(action.payload, state);
 
     default:
       return state;

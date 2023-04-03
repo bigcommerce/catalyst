@@ -7,6 +7,8 @@ const fetchFn = async (body: QueryOptions | MutationOptions) => {
     );
   }
 
+  console.log(body, 'body in fetchFn');
+
   const response = await fetch('/api/graphql', {
     method: 'POST',
     headers: {
