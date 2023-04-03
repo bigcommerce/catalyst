@@ -148,8 +148,7 @@ export const ProductTiles = ({
   products,
   productComparisonsEnabled,
 }: ProductTilesProps) => {
-  const { addProductToCart, updateCart, removeProductFromCart, cart } =
-    useContext(CartContext);
+  const { updateCart, cart } = useContext(CartContext);
 
   //   console.log(cart, 'cart in ProductTiles');
 
