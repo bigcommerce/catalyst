@@ -27,7 +27,7 @@ interface Product {
         defaultImage: {
           url: string | null;
           altText: string;
-        };
+        } | null;
         prices: {
           price: {
             value: number;
@@ -387,12 +387,7 @@ export const getServerSideProps: GetServerSideProps<ProductPageProps, ProductPag
   };
 };
 
-export default function ProductPage({
-  brands,
-  categoryTree,
-  product,
-  settings,
-}: ProductPageProps) {
+export default function ProductPage({ brands, categoryTree, product, settings }: ProductPageProps) {
   const breadcrumbs = [
     { name: 'Home Page', path: '/' },
     { name: 'Caterory Page', path: '/category' },
@@ -402,35 +397,34 @@ export default function ProductPage({
   const swatchOptions = product.productOptions.edges.filter(
     (option) => option.node.displayStyle === 'Swatch',
   );
-  const defaultSwatchOption = swatchOptions[0].node.values.edges.filter(
-    (value) => value.node.isDefault,
-  );
+  const defaultSwatchOption = swatchOptions.length
+    ? swatchOptions[0].node.values.edges.filter((value) => value.node.isDefault)
+    : [];
   const defaultSwatchId = defaultSwatchOption.length ? defaultSwatchOption[0].node.entityId : null;
   const [optionId, setOptionId] = useState(defaultSwatchId);
 
-  const getVariant = (id: number | null) => {
+  const getVariant = (id: number) => {
     const variant = product.variants.edges.filter(
       (variantItem) => variantItem.node.options.edges[0].node.values.edges[0].node.entityId === id,
     );
 
-    if (!variant.length) {
-      return [];
-    }
-
     return variant;
   };
 
-  const variantAltText = getVariant(optionId).length
-    ? getVariant(optionId)[0].node.defaultImage.altText
-    : null;
-  const variantImage = getVariant(optionId).length
-    ? getVariant(optionId)[0].node.defaultImage.url
-    : null;
-  const variantPrice = getVariant(optionId).length
-    ? getVariant(optionId)[0].node.prices.price.formatted
-    : null;
-  const variantSku = getVariant(optionId).length ? getVariant(optionId)[0].node.sku : null;
-  const variantUpc = getVariant(optionId).length ? getVariant(optionId)[0].node.upc : null;
+  // in terms of POS: for product with swatch option only (check in CP) or without any options
+  let variantAltText;
+  let variantImage;
+  let variantPrice;
+  let variantSku;
+  let variantUpc;
+
+  if (optionId) {
+    variantAltText = getVariant(optionId)[0].node.defaultImage?.altText;
+    variantImage = getVariant(optionId)[0].node.defaultImage?.url;
+    variantPrice = getVariant(optionId)[0].node.prices.price.formatted;
+    variantSku = getVariant(optionId)[0].node.sku;
+    variantUpc = getVariant(optionId)[0].node.upc;
+  }
 
   const onSwatchClick = (id: number) => {
     setOptionId(id);
