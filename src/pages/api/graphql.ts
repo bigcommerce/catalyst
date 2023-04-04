@@ -14,8 +14,6 @@ const isMutationRequest = (body: unknown): body is MutationOptions => {
 };
 
 export default async function graphqlHandler(req: NextRequest) {
-  //   console.log(req, 'req');
-
   if (typeof req.method !== 'string') {
     return new NextResponse(
       JSON.stringify({

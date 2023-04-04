@@ -236,7 +236,11 @@ export const ProductTiles = ({
                     // </ReactantLink>
                     <Button
                       className={Button.primary.className}
-                      onClick={() => updateCart(edge.node.entityId)}
+                      onClick={() => {
+                        console.log(`Add to cart product with entityId - ${edge.node.entityId}`);
+
+                        updateCart(edge.node.entityId);
+                      }}
                     >
                       Add to cart
                     </Button>

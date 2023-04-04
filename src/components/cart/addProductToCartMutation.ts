@@ -1,19 +1,5 @@
 import { gql } from '@apollo/client';
 
-export const addProductToCartMutation2 = gql`
-  mutation createCart($input: CreateCartInput!) {
-    cart {
-      createCart(input: $input) {
-        cart {
-          entityId
-          currencyCode
-          isTaxIncluded
-        }
-      }
-    }
-  }
-`;
-
 export const addProductToCartMutation = gql`
   mutation addCartLineItems($addCartLineItemsInput: AddCartLineItemsInput!) {
     cart {
@@ -26,11 +12,18 @@ export const addProductToCartMutation = gql`
           lineItems {
             totalQuantity
             physicalItems {
+              entityId
+              imageUrl
               name
               quantity
+              extendedListPrice {
+                currencyCode
+                value
+              }
               listPrice {
                 value
               }
+              url
             }
           }
         }

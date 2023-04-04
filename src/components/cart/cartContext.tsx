@@ -3,6 +3,7 @@ import { createContext, useEffect, useReducer } from 'react';
 import { getBrowserClient } from '../../graphql/browser';
 
 import { addProductToCartMutation } from './addProductToCartMutation';
+import { deleteCartLineItemMutation } from './deleteCartLineItemMutation';
 import { getCartQueryWithId } from './getCartQuery';
 import { ACTIONS, reducer } from './reducer';
 import { getCookie } from './utils';
@@ -58,13 +59,36 @@ const CartContextProvider = ({ children }) => {
     dispatch({ type: ACTIONS.UPDATE_CART, payload: data });
   };
 
+  const deleteCartItem = async (lineItemEntityId) => {
+    const cartEntityId = getCookie('cart_id');
+    const variables = {
+      deleteCartLineItemInput: {
+        cartEntityId,
+        lineItemEntityId,
+      },
+    };
+    const client = getBrowserClient();
+
+    const data = await client.mutate({
+      mutation: deleteCartLineItemMutation,
+      variables,
+    });
+
+    dispatch({ type: ACTIONS.DELETE_CART_ITEM, payload: data });
+  };
+
   useEffect(() => {
     void getCart();
   }, []);
 
+  useEffect(() => {
+    console.log(cart, 'cart state');
+  }, [cart]);
+
   return (
     <CartContext.Provider
       value={{
+        deleteCartItem,
         getCart,
         updateCart,
         cart,

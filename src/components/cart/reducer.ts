@@ -1,11 +1,10 @@
 export const ACTIONS = {
   GET_CART: 'GET_CART',
   UPDATE_CART: 'UPDATE_CART',
+  DELETE_CART_ITEM: 'DELETE_CART_ITEM',
 };
 
 const getCart = (cart, state) => {
-  console.log(cart, 'cart in getCart action');
-
   const { physicalItems, totalQuantity } = cart.site.cart.lineItems;
 
   return {
@@ -15,12 +14,28 @@ const getCart = (cart, state) => {
 };
 
 const updateCart = (cart, state) => {
-  console.log(cart, 'cart in updateCart action');
-
   const { physicalItems, totalQuantity } = cart.cart.addCartLineItems.cart.lineItems;
+
+  console.log(physicalItems, 'physicalItems in updateCart action');
 
   return {
     cartItems: physicalItems,
+    totalQuantity,
+  };
+};
+
+const deleteCartItem = (cart, state) => {
+  const { deletedLineItemEntityId } = cart.cart.deleteCartLineItem;
+  const { totalQuantity } = cart.cart.deleteCartLineItem.cart.lineItems;
+
+  const cartItems = state.cartItems.filter((item) => {
+    const res = item.entityId !== deletedLineItemEntityId;
+
+    return res;
+  });
+
+  return {
+    cartItems,
     totalQuantity,
   };
 };
@@ -32,6 +47,9 @@ export const reducer = (state, action) => {
 
     case ACTIONS.UPDATE_CART:
       return updateCart(action.payload, state);
+
+    case ACTIONS.DELETE_CART_ITEM:
+      return deleteCartItem(action.payload, state);
 
     default:
       return state;
