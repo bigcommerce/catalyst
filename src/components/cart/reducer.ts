@@ -16,8 +16,6 @@ const getCart = (cart, state) => {
 const updateCart = (cart, state) => {
   const { physicalItems, totalQuantity } = cart.cart.addCartLineItems.cart.lineItems;
 
-  console.log(physicalItems, 'physicalItems in updateCart action');
-
   return {
     cartItems: physicalItems,
     totalQuantity,

@@ -17,8 +17,6 @@ const Cart = () => {
     deleteCartItem,
   } = useContext(CartContext);
 
-  console.log(cartItems, 'cartItems in Cart Component');
-
   return (
     <div>
       <span className="relative inline-block">
@@ -40,7 +38,6 @@ const Cart = () => {
             {cartItems.map(
               ({ brand, entityId, extendedListPrice, imageUrl, name, quantity, url }) => (
                 <li className="flex justify-between" key={entityId}>
-					{console.log(url, 'url')}
                   <Link className="flex" href={new URL(url).pathname}>
                     <Image alt={name} height={100} src={imageUrl} width={100} />
                     <span className="flex flex-col ml-3">
@@ -53,11 +50,7 @@ const Cart = () => {
                   </Link>
                   <Button
                     className={Button.iconOnly.className}
-                    onClick={() => {
-                      console.log(`Delete entity with id - ${entityId}`);
-
-                      deleteCartItem(entityId);
-                    }}
+                    onClick={() => deleteCartItem(entityId)}
                   >
                     <BinIcon className="fill-[#000] stroke-[#000]" />
                   </Button>

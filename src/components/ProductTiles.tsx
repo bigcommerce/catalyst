@@ -150,8 +150,6 @@ export const ProductTiles = ({
 }: ProductTilesProps) => {
   const { updateCart, cart } = useContext(CartContext);
 
-  //   console.log(cart, 'cart in ProductTiles');
-
   return (
     <div className="my-12 mx-6 sm:mx-10 md:mx-auto">
       {title ? <h2 className="font-black text-4xl mb-10">{title}</h2> : null}
@@ -236,11 +234,7 @@ export const ProductTiles = ({
                     // </ReactantLink>
                     <Button
                       className={Button.primary.className}
-                      onClick={() => {
-                        console.log(`Add to cart product with entityId - ${edge.node.entityId}`);
-
-                        updateCart(edge.node.entityId);
-                      }}
+                      onClick={() => updateCart(edge.node.entityId)}
                     >
                       Add to cart
                     </Button>

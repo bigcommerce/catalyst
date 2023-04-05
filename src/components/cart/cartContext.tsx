@@ -2,9 +2,8 @@ import { createContext, useEffect, useReducer } from 'react';
 
 import { getBrowserClient } from '../../graphql/browser';
 
-import { addProductToCartMutation } from './addProductToCartMutation';
-import { deleteCartLineItemMutation } from './deleteCartLineItemMutation';
-import { getCartQueryWithId } from './getCartQuery';
+import { addProductToCartMutation, deleteCartLineItemMutation } from './mutations';
+import { getCartQuery } from './queries';
 import { ACTIONS, reducer } from './reducer';
 import { getCookie } from './utils';
 
@@ -28,7 +27,7 @@ const CartContextProvider = ({ children }) => {
     const client = getBrowserClient();
 
     const data = await client.query({
-      query: getCartQueryWithId,
+      query: getCartQuery,
       variables: { entityId: cartId },
     });
 
