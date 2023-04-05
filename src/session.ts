@@ -1,4 +1,4 @@
-import type { IronSessionOptions } from 'iron-session';
+import type { IronSession, IronSessionOptions } from 'iron-session';
 import { getIronSession } from 'iron-session/edge';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -32,6 +32,19 @@ function ttlForSession(now: number): number {
   return now + parseInt(process.env.SESSION_TTL ?? '0', 10) * 1000;
 }
 
+async function generateNewSession(
+  session: IronSession,
+  now: number,
+  requestUrl: string,
+): Promise<void> {
+  session.initTimestamp = Date.now();
+  session.initRequestUrl = requestUrl;
+  session.recentlyViewedProducts = [];
+  session.expiry = ttlForSession(now);
+
+  await session.save();
+}
+
 export async function sessionMiddleware(request: NextRequest) {
   const now = new Date().getTime();
   const response = NextResponse.next();
@@ -41,16 +54,16 @@ export async function sessionMiddleware(request: NextRequest) {
 
   // initialize new session
   if (sessionCookie === undefined) {
-    session.initTimestamp = Date.now();
-    session.initRequestUrl = request.nextUrl.pathname;
-    session.recentlyViewedProducts = [];
-    session.expiry = ttlForSession(now);
-
-    await session.save();
-  } else if (session.expiry - now < 86400000) {
+    await generateNewSession(session, now, request.nextUrl.pathname);
+  } else if (session.expiry - now < 86400000 && session.expiry - now > 0) {
     // if we have a valid session and expiry, and it expires in less than 1 day, update TTL
     session.expiry = ttlForSession(now);
     await session.save();
+  } else if (session.expiry - now <= 0){
+    // If we have a valid session cookie, but the internal session ttl has expired, destroy it and generate a new one
+    session.destroy();
+
+    await generateNewSession(session, now, request.nextUrl.pathname);
   }
 
   return {
