@@ -30,6 +30,9 @@ export const createCartMutation = gql`
       createCart(input: $createCartInput) {
         cart {
           entityId
+          amount {
+            value
+          }
           lineItems {
             physicalItems {
               ...${physicalItemsFragment.fragmentName}
@@ -49,6 +52,9 @@ export const deleteCartLineItemMutation = gql`
         deletedLineItemEntityId
         cart {
           entityId
+          amount {
+            value
+          }
           lineItems {
             physicalItems {
               ...${physicalItemsFragment.fragmentName}

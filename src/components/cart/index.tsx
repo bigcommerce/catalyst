@@ -13,7 +13,7 @@ const Cart = () => {
   const [open, setOpen] = useState(false);
 
   const {
-    cart: { totalQuantity, cartItems },
+    cart: { amount, totalQuantity, cartItems },
     deleteCartItem,
   } = useContext(CartContext);
 
@@ -58,6 +58,13 @@ const Cart = () => {
               ),
             )}
           </ul>
+          <div className="p-3 flex justify-between">
+            {' '}
+            <span>Total:</span>{' '}
+            <span>
+              {amount.value} {amount.currencyCode}
+            </span>{' '}
+          </div>
         </div>
       )}
     </div>

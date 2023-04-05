@@ -5,18 +5,26 @@ export const ACTIONS = {
 };
 
 const getCart = (cart, state) => {
-  const { physicalItems, totalQuantity } = cart.site.cart.lineItems;
+  const {
+    amount,
+    lineItems: { physicalItems, totalQuantity },
+  } = cart.site.cart;
 
   return {
+    amount,
     cartItems: physicalItems,
     totalQuantity,
   };
 };
 
 const updateCart = (cart, state) => {
-  const { physicalItems, totalQuantity } = cart.cart.addCartLineItems.cart.lineItems;
+  const {
+    amount: { value },
+    lineItems: { physicalItems, totalQuantity },
+  } = cart.cart.addCartLineItems.cart;
 
   return {
+    amount: { ...state.amount, value },
     cartItems: physicalItems,
     totalQuantity,
   };
@@ -24,7 +32,10 @@ const updateCart = (cart, state) => {
 
 const deleteCartItem = (cart, state) => {
   const { deletedLineItemEntityId } = cart.cart.deleteCartLineItem;
-  const { totalQuantity } = cart.cart.deleteCartLineItem.cart.lineItems;
+  const {
+    amount: { value },
+    lineItems: { totalQuantity },
+  } = cart.cart.deleteCartLineItem.cart;
 
   const cartItems = state.cartItems.filter((item) => {
     const res = item.entityId !== deletedLineItemEntityId;
@@ -33,6 +44,7 @@ const deleteCartItem = (cart, state) => {
   });
 
   return {
+    amount: { ...state.amount, value },
     cartItems,
     totalQuantity,
   };
