@@ -18,6 +18,22 @@ export interface AddProductToCartMutation {
   };
 }
 
+export interface DeleteCartLineItemMutation {
+  cart: {
+    deleteCartLineItem: {
+      deletedLineItemEntityId: string;
+      cart: {
+        entityId: string;
+        amount: {
+          value: number;
+        };
+        lineItems: LineItems;
+      };
+      deletedCartEntityId: string;
+    };
+  };
+}
+
 export const addProductToCartMutation = gql`
   mutation addCartLineItems($addCartLineItemsInput: AddCartLineItemsInput!) {
     cart {

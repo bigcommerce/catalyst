@@ -6,6 +6,7 @@ import {
   addProductToCartMutation,
   AddProductToCartMutation,
   deleteCartLineItemMutation,
+  DeleteCartLineItemMutation,
 } from './mutations';
 import { getCartQuery, GetCartQuery } from './queries';
 import { ACTIONS, reducer } from './reducer';
@@ -62,6 +63,24 @@ const isAddProductToCartMutation = (data: unknown): data is AddProductToCartMuta
   return false;
 };
 
+const isDeleteCartLineItemMutation = (data: unknown): data is AddProductToCartMutation => {
+  if (
+    isObjWithField(data, 'cart') &&
+    isObjWithField(data.cart, 'deleteCartLineItem') &&
+    isObjWithField(data.cart.deleteCartLineItem, 'deletedLineItemEntityId') &&
+    isObjWithField(data.cart.deleteCartLineItem, 'deletedCartEntityId') &&
+    isObjWithField(data.cart.deleteCartLineItem, 'cart') &&
+    isObjWithField(data.cart.deleteCartLineItem.cart, 'amount') &&
+    isObjWithField(data.cart.deleteCartLineItem.cart.amount, 'value') &&
+    isObjWithField(data.cart.deleteCartLineItem.cart, 'lineItems') &&
+    isObjWithField(data.cart.deleteCartLineItem.cart.lineItems, 'physicalItems')
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
 const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [cart, dispatch] = useReducer(reducer, defaultCart);
 
@@ -110,7 +129,7 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
-  const deleteCartItem = async (lineItemEntityId) => {
+  const deleteCartItem = async (lineItemEntityId: string) => {
     const cartEntityId = getCookie('cart_id');
     const variables = {
       deleteCartLineItemInput: {
@@ -125,7 +144,9 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
       variables,
     });
 
-    dispatch({ type: ACTIONS.DELETE_CART_ITEM, payload: data });
+    if (isDeleteCartLineItemMutation(data)) {
+      dispatch({ type: ACTIONS.DELETE_CART_ITEM, payload: data });
+    }
   };
 
   useEffect(() => {

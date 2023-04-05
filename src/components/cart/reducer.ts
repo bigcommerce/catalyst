@@ -1,7 +1,7 @@
 import { LineItems } from '../../pages/fragments';
 
 import { defaultCart } from './cartContext';
-import { AddProductToCartMutation } from './mutations';
+import { AddProductToCartMutation, DeleteCartLineItemMutation } from './mutations';
 import { GetCartQuery } from './queries';
 
 type ActionType = 'GET_CART' | 'UPDATE_CART' | 'DELETE_CART_ITEM';
@@ -51,8 +51,7 @@ const updateCart = (
   };
 };
 
-const deleteCartItem = (cart, state) => {
-  const { deletedLineItemEntityId } = cart.cart.deleteCartLineItem;
+const deleteCartItem = (cart: DeleteCartLineItemMutation, state: CartState): CartState => {
   const {
     amount: { value },
     lineItems: { physicalItems, totalQuantity },
