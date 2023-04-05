@@ -1,20 +1,47 @@
-import { createContext, useEffect, useReducer } from 'react';
+import { createContext, PropsWithChildren, useEffect, useReducer } from 'react';
 
 import { getBrowserClient } from '../../graphql/browser';
 
 import { addProductToCartMutation, deleteCartLineItemMutation } from './mutations';
-import { getCartQuery } from './queries';
+import { getCartQuery, GetCartQuery } from './queries';
 import { ACTIONS, reducer } from './reducer';
 import { getCookie } from './utils';
 
 export const CartContext = createContext(null);
 
-const defaultCart = {
-  cartItems: [],
+export const defaultCart = {
+  amount: {
+    value: 0,
+    currencyCode: '',
+  },
+  cartItems: null,
   totalQuantity: 0,
 };
 
-const CartContextProvider = ({ children }) => {
+const isObjWithField = (obj: unknown, field: string): obj is { [field: string]: unknown } => {
+  if (typeof obj === 'object' && obj !== null && field in obj) {
+    return true;
+  }
+
+  return false;
+};
+const isGetCartQuery = (data: unknown): data is GetCartQuery => {
+  if (
+    isObjWithField(data, 'site') &&
+    isObjWithField(data.site, 'cart') &&
+    isObjWithField(data.site.cart, 'lineItems') &&
+    isObjWithField(data.site.cart.lineItems, 'physicalItems') &&
+    isObjWithField(data.site.cart.lineItems, 'totalQuantity') &&
+    isObjWithField(data.site.cart, 'amount') &&
+    isObjWithField(data.site.cart.amount, 'value')
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
+const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [cart, dispatch] = useReducer(reducer, defaultCart);
 
   const getCart = async () => {
@@ -31,7 +58,9 @@ const CartContextProvider = ({ children }) => {
       variables: { entityId: cartId },
     });
 
-    dispatch({ type: ACTIONS.GET_CART, payload: data });
+    if (isGetCartQuery(data)) {
+      dispatch({ type: 'GET_CART', payload: data });
+    }
   };
 
   const updateCart = async (productEntityId) => {

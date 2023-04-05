@@ -1,6 +1,21 @@
 import { gql } from '@apollo/client';
 
-import { physicalItemsFragment } from '../../pages/fragments';
+import { LineItems, physicalItemsFragment } from '../../pages/fragments';
+
+export interface GetCartQuery {
+  site: {
+    cart: {
+      entityId: string;
+      currencyCode: string;
+      isTaxIncluded: boolean;
+      amount: {
+        currencyCode: string;
+        value: number;
+      };
+      lineItems: LineItems;
+    };
+  };
+}
 
 export const getCartQuery = gql`
   query getCart($entityId: String!) {

@@ -1,5 +1,27 @@
 import { query as ProductTilesQuery } from '../components/ProductTiles';
 
+export interface LineItems {
+  physicalItems: Array<{
+    entityId: string;
+    parentEntityId: number | null;
+    variantEntityId: number | null;
+    productEntityId: number;
+    sku: string;
+    name: string;
+    url: string;
+    imageUrl: string | null;
+    brand: string | null;
+    quantity: number;
+    isTaxable: boolean;
+    extendedListPrice: {
+      currencyCode: string;
+      value: number;
+    };
+    isShippingRequired: boolean;
+  }>;
+  totalQuantity: number;
+}
+
 const CategoryFiltersQuery = {
   fragmentName: 'PageFilters',
   fragment: /* GraphQL */ `
@@ -121,38 +143,7 @@ export const physicalItemsFragment = {
 		  brand
 		  quantity
 		  isTaxable
-		  discounts {
-			entityId
-			discountedAmount {
-			  currencyCode
-			  value
-			}
-		  }
-		  discountedAmount {
-			currencyCode
-			value
-		  }
-		  couponAmount {
-			currencyCode
-			value
-		  }
-		  listPrice {
-			currencyCode
-			value
-		  }
-		  originalPrice {
-			currencyCode
-			value
-		  }
-		  salePrice {
-			currencyCode
-			value
-		  }
 		  extendedListPrice {
-			currencyCode
-			value
-		  }
-		  extendedSalePrice {
 			currencyCode
 			value
 		  }
