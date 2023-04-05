@@ -1,6 +1,7 @@
 import { LineItems } from '../../pages/fragments';
 
 import { defaultCart } from './cartContext';
+import { AddProductToCartMutation } from './mutations';
 import { GetCartQuery } from './queries';
 
 type ActionType = 'GET_CART' | 'UPDATE_CART' | 'DELETE_CART_ITEM';
@@ -12,16 +13,16 @@ export const ACTIONS: ActionsType = {
   DELETE_CART_ITEM: 'DELETE_CART_ITEM',
 };
 
-type CartState = typeof defaultCart;
+type initCartState = typeof defaultCart;
 
-type CartState2 = Omit<CartState, 'cartItems'> & { cartItems: LineItems['physicalItems'] };
+type CartState = Omit<initCartState, 'cartItems'> & { cartItems: LineItems['physicalItems'] };
 
 interface Action {
   type: keyof typeof ACTIONS;
   payload: unknown;
 }
 
-const getCart = (cart: GetCartQuery, state: CartState): CartState2 => {
+const getCart = (cart: GetCartQuery, state: CartState): CartState => {
   const {
     amount,
     lineItems: { physicalItems, totalQuantity },
@@ -34,7 +35,10 @@ const getCart = (cart: GetCartQuery, state: CartState): CartState2 => {
   };
 };
 
-const updateCart = (cart, state) => {
+const updateCart = (
+  cart: AddProductToCartMutation,
+  state: initCartState | CartState,
+): CartState => {
   const {
     amount: { value },
     lineItems: { physicalItems, totalQuantity },

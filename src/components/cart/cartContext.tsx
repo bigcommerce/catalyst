@@ -2,7 +2,11 @@ import { createContext, PropsWithChildren, useEffect, useReducer } from 'react';
 
 import { getBrowserClient } from '../../graphql/browser';
 
-import { addProductToCartMutation, deleteCartLineItemMutation } from './mutations';
+import {
+  addProductToCartMutation,
+  AddProductToCartMutation,
+  deleteCartLineItemMutation,
+} from './mutations';
 import { getCartQuery, GetCartQuery } from './queries';
 import { ACTIONS, reducer } from './reducer';
 import { getCookie } from './utils';
@@ -31,9 +35,26 @@ const isGetCartQuery = (data: unknown): data is GetCartQuery => {
     isObjWithField(data.site, 'cart') &&
     isObjWithField(data.site.cart, 'lineItems') &&
     isObjWithField(data.site.cart.lineItems, 'physicalItems') &&
-    isObjWithField(data.site.cart.lineItems, 'totalQuantity') &&
+    isObjWithField(data.site.cart.lineItems, 'totalQuantity') && // can be 0
     isObjWithField(data.site.cart, 'amount') &&
     isObjWithField(data.site.cart.amount, 'value')
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
+const isAddProductToCartMutation = (data: unknown): data is AddProductToCartMutation => {
+  if (
+    isObjWithField(data, 'cart') &&
+    isObjWithField(data.cart, 'addCartLineItems') &&
+    isObjWithField(data.cart.addCartLineItems, 'cart') &&
+    isObjWithField(data.cart.addCartLineItems.cart, 'lineItems') &&
+    isObjWithField(data.cart.addCartLineItems.cart.lineItems, 'totalQuantity') &&
+    isObjWithField(data.cart.addCartLineItems.cart, 'amount') &&
+    isObjWithField(data.cart.addCartLineItems.cart.amount, 'value') &&
+    isObjWithField(data.cart.addCartLineItems.cart.lineItems, 'physicalItems')
   ) {
     return true;
   }
@@ -63,7 +84,7 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
-  const updateCart = async (productEntityId) => {
+  const updateCart = async (productEntityId: string) => {
     const cartEntityId = getCookie('cart_id');
     const variables = {
       addCartLineItemsInput: {
@@ -84,7 +105,9 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
       variables,
     });
 
-    dispatch({ type: ACTIONS.UPDATE_CART, payload: data });
+    if (isAddProductToCartMutation(data)) {
+      dispatch({ type: ACTIONS.UPDATE_CART, payload: data });
+    }
   };
 
   const deleteCartItem = async (lineItemEntityId) => {

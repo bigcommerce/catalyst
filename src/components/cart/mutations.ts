@@ -1,6 +1,22 @@
 import { gql } from '@apollo/client';
 
-import { physicalItemsFragment } from '../../pages/fragments';
+import { LineItems, physicalItemsFragment } from '../../pages/fragments';
+
+export interface AddProductToCartMutation {
+  cart: {
+    addCartLineItems: {
+      cart: {
+        entityId: string;
+        currencyCode: string;
+        isTaxIncluded: boolean;
+        amount: {
+          value: number;
+        };
+        lineItems: LineItems;
+      };
+    };
+  };
+}
 
 export const addProductToCartMutation = gql`
   mutation addCartLineItems($addCartLineItemsInput: AddCartLineItemsInput!) {
