@@ -1,16 +1,12 @@
-import { PropsWithChildren } from 'react';
+import { ComponentPropsWithoutRef } from 'react';
 
-interface ClassName {
-  className: string;
-}
+import { ComponentClasses } from './types';
 
-interface BadgeProps {
+interface BadgeProps extends ComponentPropsWithoutRef<'div'> {
   label: string;
 }
 
-type ComponentClasses<Props extends string> = Record<Props, ClassName>;
-type ComponentProps = React.HTMLAttributes<HTMLDivElement> & BadgeProps & PropsWithChildren;
-type Badge = React.FC<ComponentProps> & ComponentClasses<'default'>;
+type Badge = React.FC<BadgeProps> & ComponentClasses<'default'>;
 
 export const Badge: Badge = ({ children, label, ...props }) => {
   return (

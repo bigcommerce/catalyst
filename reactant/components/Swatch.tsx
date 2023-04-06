@@ -1,50 +1,48 @@
-import { createContext, PropsWithChildren, useContext, useId } from 'react';
+import { ComponentPropsWithoutRef, createContext, useContext, useId } from 'react';
 
-interface ClassName {
-  className: string;
-}
+import { ComponentClasses } from './types';
 
 const SwatchAccessibilityContext = createContext<{ id: string | undefined }>({ id: undefined });
 
-type ComponentProps<Props, VariantKey extends string> = React.FC<Props> &
-  Record<VariantKey, ClassName>;
-
-type SwatchGroupProps = React.HTMLAttributes<HTMLDivElement> & PropsWithChildren;
-type SwatchGroup = ComponentProps<SwatchGroupProps, 'default'> & {
-  Label: ClassName;
-};
+type SwatchGroupProps = ComponentPropsWithoutRef<'div'>;
+type SwatchGroup = React.FC<SwatchGroupProps> &
+  ComponentClasses<'default'> & {
+    Label: React.FC<SwatchGroupLabelProps> & ComponentClasses<'default'>;
+  };
 
 export const SwatchGroup: SwatchGroup = ({ children, ...props }) => {
-  return <div {...props}>{children}</div>;
+  return (
+    <div role="radiogroup" {...props}>
+      {children}
+    </div>
+  );
 };
 
 SwatchGroup.default = {
   className: 'flex flex-row flex-wrap justify-start items-center gap-3 pt-3 pb-2',
 };
-SwatchGroup.Label = {
+
+type SwatchGroupLabelProps = ComponentPropsWithoutRef<'label'>;
+
+const SwatchGroupLabel: SwatchGroup['Label'] = ({ children, ...props }) => {
+  return <label {...props}>{children}</label>;
+};
+
+SwatchGroupLabel.default = {
   className:
     'basis-full inline-flex flex-row justify-start items-center gap-2 font-semibold h-6 my-1',
 };
 
-type LabelProps = React.HTMLAttributes<HTMLLabelElement> & PropsWithChildren;
-type Label = React.FC<LabelProps> & { className?: string };
+SwatchGroup.Label = SwatchGroupLabel;
 
-export const Label: Label = ({ children, ...props }) => {
-  return <label {...props}>{children}</label>;
-};
+type SwatchProps = ComponentPropsWithoutRef<'div'>;
 
-type SwatchProps = React.HTMLAttributes<HTMLDivElement> & PropsWithChildren;
-type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
-type SwatchLabelProps = React.HTMLAttributes<HTMLLabelElement> & PropsWithChildren;
-type SwatchVariantProps = React.HTMLAttributes<HTMLSpanElement> & {
-  variantColor: string;
-} & PropsWithChildren;
-
-type Swatch = ComponentProps<SwatchProps, 'default'> & {
-  Input: React.FC<InputProps> & Record<'default', ClassName>;
-  Label: React.FC<SwatchLabelProps> & Record<'default', ClassName>;
-  Variant: React.FC<SwatchVariantProps> & Record<'default', ClassName>;
-};
+type Swatch = React.FC<SwatchProps> &
+  ComponentClasses<'default'> & {
+    Input: React.FC<InputProps> & ComponentClasses<'default'>;
+    Label: React.FC<SwatchLabelProps> & ComponentClasses<'default'>;
+    Variant: React.FC<SwatchVariantProps> & ComponentClasses<'default'>;
+  };
 
 export const Swatch: Swatch = ({ children, ...props }) => {
   const id = useId();
@@ -60,11 +58,15 @@ Swatch.default = {
   className: 'relative',
 };
 
+type InputProps = ComponentPropsWithoutRef<'input'>;
+
 const SwatchInput: Swatch['Input'] = ({ id, name, ...props }) => {
   const { id: swatchId } = useContext(SwatchAccessibilityContext);
 
-  return <input id={id ?? swatchId} name={name ?? id} {...props} />;
+  return <input id={id ?? swatchId} name={name ?? id} type="radio" {...props} />;
 };
+
+type SwatchLabelProps = ComponentPropsWithoutRef<'label'>;
 
 const SwatchLabel: Swatch['Label'] = ({ children, id, ...props }) => {
   const { id: swatchId } = useContext(SwatchAccessibilityContext);
@@ -75,6 +77,11 @@ const SwatchLabel: Swatch['Label'] = ({ children, id, ...props }) => {
     </label>
   );
 };
+
+interface SwatchVariantProps extends ComponentPropsWithoutRef<'span'> {
+  variantColor: string;
+}
+
 const SwatchVariant: Swatch['Variant'] = ({ children, variantColor, ...props }) => {
   return (
     <span
@@ -87,6 +94,7 @@ const SwatchVariant: Swatch['Variant'] = ({ children, variantColor, ...props }) 
 SwatchInput.default = {
   className: 'absolute top-0.5 left-0.5 outline-none sr-only peer/input',
 };
+
 SwatchLabel.default = {
   className:
     'border-2 border-solid border-[#CFD8DC] cursor-pointer inline-flex flex-row items-stretch justify-evenly text-[0px] h-6 w-6 p-0.5 hover:border-2 hover:border-solid hover:border-[#053FB0] peer-checked/input:outline-[#053fb033] peer-checked/input:outline peer-checked/input:outline-4 peer-focus/input:outline-[#053fb033] peer-focus/input:outline-3 peer-focus/input:outline peer-disabled/input:border-2 peer-disabled/input:border-solid peer-disabled/input:border-[#F1F3F5] peer-disabled/input:pointer-events-none',

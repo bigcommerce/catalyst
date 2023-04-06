@@ -1,16 +1,14 @@
 import {
+  ComponentPropsWithoutRef,
   createContext,
   Dispatch,
-  PropsWithChildren,
   SetStateAction,
   useContext,
   useId,
   useState,
 } from 'react';
 
-interface ClassName {
-  className: string;
-}
+import { ComponentClasses } from './types';
 
 const AccordionTogglerContext = createContext<{
   accordionId: string | undefined;
@@ -19,25 +17,15 @@ const AccordionTogglerContext = createContext<{
   setToggle: Dispatch<SetStateAction<boolean>> | null;
 }>({ toggle: null, setToggle: null, accordionId: undefined, accordionItemId: undefined });
 
-type ComponentProps<Props, VariantKey extends string> = React.FC<Props> &
-  Record<VariantKey, ClassName>;
+interface AccordionProps extends ComponentPropsWithoutRef<'div'> {
+  isExtended: boolean;
+}
 
-type ContentProps = React.HTMLAttributes<HTMLDivElement> & PropsWithChildren;
-type Content = ComponentProps<ContentProps, 'default'>;
-type ToggleProps = React.HTMLAttributes<HTMLDivElement> &
-  PropsWithChildren & {
-    title: string;
-    icons: React.ReactNode[];
+type Accordion = React.FC<AccordionProps> &
+  ComponentClasses<'default'> & {
+    Toggle: React.FC<ToggleProps> & ComponentClasses<'default'>;
+    Content: React.FC<ContentProps> & ComponentClasses<'default'>;
   };
-type Toggle = ComponentProps<ToggleProps, 'default'>;
-type AccordionProps = React.HTMLAttributes<HTMLDivElement> &
-  PropsWithChildren & {
-    isExtended: boolean;
-  };
-type Accordion = ComponentProps<AccordionProps, 'default'> & {
-  Toggle: Toggle;
-  Content: Content;
-};
 
 export const Accordion: Accordion = ({ children, isExtended, ...props }) => {
   const [toggle, setToggle] = useState(isExtended);
@@ -55,8 +43,13 @@ Accordion.default = {
   className: ' flex flex-col leading-7 gap-y-4',
 };
 
-const Toggle: Toggle = ({ children, icons, title, ...props }) => {
-  const { accordionId, accordionItemId,  toggle, setToggle } = useContext(AccordionTogglerContext);
+interface ToggleProps extends ComponentPropsWithoutRef<'div'> {
+  title: string;
+  icons: React.ReactNode[];
+}
+
+const Toggle: Accordion['Toggle'] = ({ children, icons, title, ...props }) => {
+  const { accordionId, accordionItemId, toggle, setToggle } = useContext(AccordionTogglerContext);
   const [IconA, IconB] = icons;
   const handleToggleAction = () => {
     if (setToggle) {
@@ -85,7 +78,9 @@ Toggle.default = {
   className: 'flex items-center justify-between hover:cursor-pointer',
 };
 
-const Content: Content = ({ children, ...props }) => {
+type ContentProps = ComponentPropsWithoutRef<'div'>;
+
+const Content: Accordion['Content'] = ({ children, ...props }) => {
   const { accordionId, accordionItemId, toggle } = useContext(AccordionTogglerContext);
 
   if (!toggle) {

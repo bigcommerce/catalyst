@@ -1,24 +1,13 @@
-import React, { createContext, PropsWithChildren, useContext, useId } from 'react';
+import React, { ComponentPropsWithoutRef, createContext, useContext, useId } from 'react';
+
+import { ComponentClasses } from './types';
 
 const FormGroupAccessibilityContext = createContext<{ id: string | undefined }>({ id: undefined });
 
-interface ClassName {
-  className: string;
-}
-
-type ComponentClasses<Union extends string> = Record<Union, ClassName>;
-
-type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
+type InputProps = ComponentPropsWithoutRef<'input'>;
 type Input = React.FC<InputProps> &
   ComponentClasses<'default'> & {
-    Icon: {
-      default: {
-        className: string;
-      };
-      position: {
-        className: string;
-      };
-    };
+    Icon: ComponentClasses<'default' | 'position'>;
   };
 
 export const Input: Input = ({ children, id, className, ...props }) => {
@@ -46,7 +35,7 @@ Input.Icon = {
   },
 };
 
-type LabelProps = React.HTMLAttributes<HTMLLabelElement> & PropsWithChildren;
+type LabelProps = ComponentPropsWithoutRef<'label'>;
 type Label = React.FC<LabelProps> & ComponentClasses<'default' | 'left' | 'top'>;
 
 export const Label: Label = ({ children, id, ...props }) => {
@@ -71,7 +60,7 @@ Label.top = {
   className: 'flex mb-2',
 };
 
-type FormGroupProps = React.HTMLAttributes<HTMLDivElement> & PropsWithChildren;
+type FormGroupProps = ComponentPropsWithoutRef<'div'>;
 type FormGroup = React.FC<FormGroupProps>;
 
 export const FormGroup: FormGroup = ({ children, ...props }) => {

@@ -183,7 +183,6 @@ export const ProductTiles = ({
                         <SwatchGroup
                           className={SwatchGroup.default.className}
                           key={options.entityId}
-                          role="radiogroup"
                         >
                           {options.values.edges.map(({ node: variant }) => (
                             <Swatch className={Swatch.default.className} key={variant.entityId}>
