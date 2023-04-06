@@ -59,7 +59,7 @@ export async function sessionMiddleware(request: NextRequest) {
     // if we have a valid session and expiry, and it expires in less than 1 day, update TTL
     session.expiry = ttlForSession(now);
     await session.save();
-  } else if (session.expiry - now <= 0){
+  } else if (session.expiry - now <= 0) {
     // If we have a valid session cookie, but the internal session ttl has expired, destroy it and generate a new one
     session.destroy();
 
