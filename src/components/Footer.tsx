@@ -133,10 +133,14 @@ export const Footer = ({ brands, categoryTree, settings }: FooterProps) => {
                 {socialMediaLinks.map((link) => (
                   <li key={link.name}>
                     <Link className={Link.iconOnly.className}>
-                      {link.name === 'Facebook' && <FacebookIcon className={Link.Icon.className} />}
-                      {link.name === 'Twitter' && <TwitterIcon className={Link.Icon.className} />}
+                      {link.name === 'Facebook' && (
+                        <FacebookIcon className={Link.Icon.default.className} />
+                      )}
+                      {link.name === 'Twitter' && (
+                        <TwitterIcon className={Link.Icon.default.className} />
+                      )}
                       {link.name === 'Pinterest' && (
-                        <PinterestIcon className={Link.Icon.className} />
+                        <PinterestIcon className={Link.Icon.default.className} />
                       )}
                     </Link>
                   </li>

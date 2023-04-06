@@ -313,12 +313,12 @@ export default function CategoryPage({
                   <Link
                     href={`${category.path}?first=9&before=${search.searchProducts.products.pageInfo.startCursor}`}
                   >
-                    <ChevronLeftIcon className={Pagination.PrevPage?.className} />
+                    <ChevronLeftIcon className={Pagination.PrevPage.default.className} />
                   </Link>
                   <Link
                     href={`${category.path}?page=9&after=${search.searchProducts.products.pageInfo.endCursor}`}
                   >
-                    <ChevronRightIcon className={Pagination.NextPage?.className} />
+                    <ChevronRightIcon className={Pagination.NextPage.default.className} />
                   </Link>
                 </Pagination>
               )}

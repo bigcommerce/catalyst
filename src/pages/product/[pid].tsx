@@ -8,7 +8,7 @@ import { Breadcrumbs } from '../../../reactant/components/Breadcrumbs';
 import { Button } from '../../../reactant/components/Button';
 import { Link } from '../../../reactant/components/Link';
 import { Rating } from '../../../reactant/components/Rating';
-import { Label, Swatch, SwatchGroup } from '../../../reactant/components/Swatch';
+import { Swatch, SwatchGroup } from '../../../reactant/components/Swatch';
 import { CartIcon } from '../../../reactant/icons/Cart';
 import { DividerIcon } from '../../../reactant/icons/Divider';
 import { HeartIcon } from '../../../reactant/icons/Heart';
@@ -573,12 +573,11 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
                         <SwatchGroup
                           className={SwatchGroup.default.className}
                           key={swatch.node.entityId}
-                          role="radiogroup"
                         >
                           <>
-                            <Label className={SwatchGroup.Label.className}>
+                            <SwatchGroup.Label className={SwatchGroup.Label.default.className}>
                               <span>{swatch.node.displayName}</span>
-                            </Label>
+                            </SwatchGroup.Label>
                             {swatch.node.values.edges.map((variant) => {
                               return (
                                 <Swatch
@@ -599,7 +598,6 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
                                     className={Swatch.Input.default.className}
                                     name={`${variant.node.entityId}`}
                                     onClick={() => onSwatchClick(variant.node.entityId)}
-                                    type="radio"
                                     value={variant.node.entityId}
                                   />
                                 </Swatch>
@@ -627,12 +625,12 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
                     <button className="w-[44px]">-</button>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-x-4 flex justify-between mb-12">
+                <div className="grid grid-cols-2 gap-x-4 justify-between mb-12">
                   <Button className={`${Button.primary.className} col-span-1`}>
-                    <CartIcon className={Button.Icon.className} /> Add to cart
+                    <CartIcon className={Button.Icon.default.className} /> Add to cart
                   </Button>
                   <Button className={`${Button.secondary.className} col-span-1`}>
-                    <HeartIcon className={Button.Icon.className} /> Save to wishlist
+                    <HeartIcon className={Button.Icon.default.className} /> Save to wishlist
                   </Button>
                 </div>
               </form>
