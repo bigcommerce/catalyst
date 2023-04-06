@@ -4,8 +4,33 @@ import { defaultCart } from './cartContext';
 import { AddProductToCartMutation, DeleteCartLineItemMutation } from './mutations';
 import { GetCartQuery } from './queries';
 
+type ActionMap<M extends { [key in keyof Payload]: Payload[keyof Payload] }> = {
+  [Key in keyof M]: {
+    type: Key;
+    payload: M[Key];
+  };
+};
+
+enum Types {
+  Get = 'GET_CART',
+  Update = 'UPDATE_CART',
+  Delete = 'DELETE_CART_ITEM',
+}
+
+interface Payload {
+  [Types.Get]: GetCartQuery;
+  [Types.Update]: AddProductToCartMutation;
+  [Types.Delete]: DeleteCartLineItemMutation;
+}
+
+type Actions = ActionMap<Payload>[keyof ActionMap<Payload>];
+
 type ActionType = 'GET_CART' | 'UPDATE_CART' | 'DELETE_CART_ITEM';
 type ActionsType = Record<ActionType, ActionType>;
+
+type initCartState = typeof defaultCart;
+
+type CartState = Omit<initCartState, 'cartItems'> & { cartItems: LineItems['physicalItems'] };
 
 export const ACTIONS: ActionsType = {
   GET_CART: 'GET_CART',
@@ -13,16 +38,7 @@ export const ACTIONS: ActionsType = {
   DELETE_CART_ITEM: 'DELETE_CART_ITEM',
 };
 
-type initCartState = typeof defaultCart;
-
-type CartState = Omit<initCartState, 'cartItems'> & { cartItems: LineItems['physicalItems'] };
-
-interface Action {
-  type: keyof typeof ACTIONS;
-  payload: unknown;
-}
-
-const getCart = (cart: GetCartQuery, state: CartState): CartState => {
+const getCart = (cart: GetCartQuery): CartState => {
   const {
     amount,
     lineItems: { physicalItems, totalQuantity },
@@ -64,15 +80,15 @@ const deleteCartItem = (cart: DeleteCartLineItemMutation, state: CartState): Car
   };
 };
 
-export const reducer = (state: CartState, action: Action) => {
+export const reducer = (state: CartState, action: Actions) => {
   switch (action.type) {
-    case ACTIONS.GET_CART:
-      return getCart(action.payload, state);
+    case Types.Get:
+      return getCart(action.payload);
 
-    case ACTIONS.UPDATE_CART:
+    case Types.Update:
       return updateCart(action.payload, state);
 
-    case ACTIONS.DELETE_CART_ITEM:
+    case Types.Delete:
       return deleteCartItem(action.payload, state);
 
     default:
