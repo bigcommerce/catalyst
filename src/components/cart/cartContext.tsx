@@ -9,10 +9,10 @@ import {
   DeleteCartLineItemMutation,
 } from './mutations';
 import { getCartQuery, GetCartQuery } from './queries';
-import { ACTIONS, reducer } from './reducer';
+import { CartState, reducer, Types } from './reducer';
 import { getCookie } from './utils';
 
-export const defaultCart = {
+export const defaultCart: CartState = {
   amount: {
     value: 0,
     currencyCode: '',
@@ -106,7 +106,7 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     });
 
     if (isGetCartQuery(data)) {
-      dispatch({ type: ACTIONS.GET_CART, payload: data });
+      dispatch({ type: Types.Get, payload: data });
     }
   };
 
@@ -132,7 +132,7 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     });
 
     if (isAddProductToCartMutation(data)) {
-      dispatch({ type: ACTIONS.UPDATE_CART, payload: data });
+      dispatch({ type: Types.Update, payload: data });
     }
   };
 
@@ -152,7 +152,7 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     });
 
     if (isDeleteCartLineItemMutation(data)) {
-      dispatch({ type: ACTIONS.DELETE_CART_ITEM, payload: data });
+      dispatch({ type: Types.Delete, payload: data });
     }
   };
 

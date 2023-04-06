@@ -1,6 +1,5 @@
 import { LineItems } from '../../pages/fragments';
 
-import { defaultCart } from './cartContext';
 import { AddProductToCartMutation, DeleteCartLineItemMutation } from './mutations';
 import { GetCartQuery } from './queries';
 
@@ -11,7 +10,7 @@ type ActionMap<M extends { [key in keyof Payload]: Payload[keyof Payload] }> = {
   };
 };
 
-enum Types {
+export enum Types {
   Get = 'GET_CART',
   Update = 'UPDATE_CART',
   Delete = 'DELETE_CART_ITEM',
@@ -25,18 +24,14 @@ interface Payload {
 
 type Actions = ActionMap<Payload>[keyof ActionMap<Payload>];
 
-type ActionType = 'GET_CART' | 'UPDATE_CART' | 'DELETE_CART_ITEM';
-type ActionsType = Record<ActionType, ActionType>;
-
-type initCartState = typeof defaultCart;
-
-type CartState = Omit<initCartState, 'cartItems'> & { cartItems: LineItems['physicalItems'] };
-
-export const ACTIONS: ActionsType = {
-  GET_CART: 'GET_CART',
-  UPDATE_CART: 'UPDATE_CART',
-  DELETE_CART_ITEM: 'DELETE_CART_ITEM',
-};
+export interface CartState {
+  amount: {
+    value: number;
+    currencyCode: string;
+  };
+  cartItems: LineItems['physicalItems'] | null;
+  totalQuantity: number;
+}
 
 const getCart = (cart: GetCartQuery): CartState => {
   const {
@@ -51,10 +46,7 @@ const getCart = (cart: GetCartQuery): CartState => {
   };
 };
 
-const updateCart = (
-  cart: AddProductToCartMutation,
-  state: initCartState | CartState,
-): CartState => {
+const updateCart = (cart: AddProductToCartMutation, state: CartState): CartState => {
   const {
     amount: { value },
     lineItems: { physicalItems, totalQuantity },
