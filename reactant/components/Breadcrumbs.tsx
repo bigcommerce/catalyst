@@ -1,18 +1,14 @@
 import { PropsWithChildren } from 'react';
 
 import { Link } from './Link';
+import { ComponentClasses } from './types';
 
-interface ClassName {
-  className: string;
-}
-
-type BreadcrumbsClasses<Props extends string> = Record<Props, ClassName>;
-type BreadcrumbsProps = React.HTMLAttributes<HTMLUListElement>;
+type BreadcrumbsProps = PropsWithChildren<React.HTMLAttributes<HTMLUListElement>>;
 type Breadcrumbs = React.FC<BreadcrumbsProps> &
-  BreadcrumbsClasses<'default'> & {
-    Item: React.FC<ItemProps> & ItemClasses<'default'>;
-    Path: React.FC<PathProps> & PathClasses<'default'> & PathClasses<'lastItem'>;
-    Divider: React.FC<DividerProps> & DividerClasses<'default'>;
+  ComponentClasses<'default'> & {
+    Item: React.FC<ItemProps> & ComponentClasses<'default'>;
+    Path: React.FC<PathProps> & ComponentClasses<'default' | 'lastItem'>;
+    Divider: React.FC<DividerProps> & ComponentClasses<'default'>;
   };
 
 export const Breadcrumbs: Breadcrumbs = ({ children, ...props }) => {
@@ -27,8 +23,7 @@ Breadcrumbs.default = {
   className: 'flex items-center flex-wrap m-0 p-0 md:container md:mx-auto',
 };
 
-type ItemClasses<Props extends string> = Record<Props, ClassName>;
-type ItemProps = React.HTMLAttributes<HTMLLIElement> & PropsWithChildren;
+type ItemProps = PropsWithChildren<React.HTMLAttributes<HTMLLIElement>>;
 
 const Item: Breadcrumbs['Item'] = ({ children, ...props }) => {
   return <li {...props}>{children}</li>;
@@ -40,12 +35,7 @@ Item.default = {
 
 Breadcrumbs.Item = Item;
 
-interface PathProp {
-  href?: string;
-}
-
-type PathClasses<Props extends string> = Record<Props, ClassName>;
-type PathProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & PathProp & PropsWithChildren;
+type PathProps = PropsWithChildren<React.AnchorHTMLAttributes<HTMLAnchorElement>>;
 
 const Path: Breadcrumbs['Path'] = ({ children, href, ...props }) => {
   return (
@@ -65,8 +55,7 @@ Path.lastItem = {
 
 Breadcrumbs.Path = Path;
 
-type DividerClasses<Props extends string> = Record<Props, ClassName>;
-type DividerProps = React.HTMLAttributes<HTMLSpanElement> & PropsWithChildren;
+type DividerProps = PropsWithChildren<React.HTMLAttributes<HTMLSpanElement>>;
 
 const Divider: Breadcrumbs['Divider'] = ({ children, ...props }) => {
   return <span {...props}>{children}</span>;

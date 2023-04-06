@@ -1,16 +1,12 @@
 import { PropsWithChildren } from 'react';
 
-interface ClassName {
-  className: string;
-}
+import { ComponentClasses } from './types';
 
-type ComponentClasses<Union extends string> = Record<Union, ClassName>;
-
-type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & PropsWithChildren;
+type ButtonProps = PropsWithChildren<React.ButtonHTMLAttributes<HTMLButtonElement>>;
 
 type Button = React.FC<ButtonProps> &
   ComponentClasses<'primary' | 'secondary' | 'subtle' | 'iconOnly'> & {
-    Icon: { className: string };
+    Icon: ComponentClasses<'default'>;
   };
 
 export const Button: Button = ({ children, ...props }) => {
@@ -42,5 +38,7 @@ Button.iconOnly = {
 };
 
 Button.Icon = {
-  className: 'mr-3',
+  default: {
+    className: 'mr-3',
+  },
 };

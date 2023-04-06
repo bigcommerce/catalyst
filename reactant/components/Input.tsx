@@ -1,24 +1,13 @@
 import React, { createContext, PropsWithChildren, useContext, useId } from 'react';
 
+import { ComponentClasses } from './types';
+
 const FormGroupAccessibilityContext = createContext<{ id: string | undefined }>({ id: undefined });
 
-interface ClassName {
-  className: string;
-}
-
-type ComponentClasses<Union extends string> = Record<Union, ClassName>;
-
-type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
+type InputProps = PropsWithChildren<React.InputHTMLAttributes<HTMLInputElement>>;
 type Input = React.FC<InputProps> &
   ComponentClasses<'default'> & {
-    Icon: {
-      default: {
-        className: string;
-      };
-      position: {
-        className: string;
-      };
-    };
+    Icon: ComponentClasses<'default' | 'position'>;
   };
 
 export const Input: Input = ({ children, id, className, ...props }) => {
