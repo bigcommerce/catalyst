@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 
 import { LineItems, physicalItemsFragment } from '../../pages/fragments';
 
-export interface AddProductToCartMutation {
+export interface AddCartLineItemMutation {
   cart: {
     addCartLineItems: {
       cart: {
@@ -34,7 +34,7 @@ export interface DeleteCartLineItemMutation {
   };
 }
 
-export const addProductToCartMutation = gql`
+export const addCartLineItemMutation = gql`
   mutation addCartLineItems($addCartLineItemsInput: AddCartLineItemsInput!) {
     cart {
       addCartLineItems(input: $addCartLineItemsInput) {

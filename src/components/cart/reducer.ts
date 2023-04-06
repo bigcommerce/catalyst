@@ -1,25 +1,25 @@
 import { LineItems } from '../../pages/fragments';
 
-import { AddProductToCartMutation, DeleteCartLineItemMutation } from './mutations';
+import { AddCartLineItemMutation, DeleteCartLineItemMutation } from './mutations';
 import { GetCartQuery } from './queries';
 
-type ActionMap<M extends { [key in keyof Payload]: Payload[keyof Payload] }> = {
-  [Key in keyof M]: {
+type ActionMap<PayloadItem extends { [key in keyof Payload]: Payload[keyof Payload] }> = {
+  [Key in keyof PayloadItem]: {
     type: Key;
-    payload: M[Key];
+    payload: PayloadItem[Key];
   };
 };
 
-export enum Types {
-  Get = 'GET_CART',
-  Update = 'UPDATE_CART',
-  Delete = 'DELETE_CART_ITEM',
+export enum ACTION_TYPES {
+  GET_CART = 'GET_CART',
+  ADD_CART_ITEM = 'UPDATE_CART',
+  DELETE_CART_ITEM = 'DELETE_CART_ITEM',
 }
 
 interface Payload {
-  [Types.Get]: GetCartQuery;
-  [Types.Update]: AddProductToCartMutation;
-  [Types.Delete]: DeleteCartLineItemMutation;
+  [ACTION_TYPES.GET_CART]: GetCartQuery;
+  [ACTION_TYPES.ADD_CART_ITEM]: AddCartLineItemMutation;
+  [ACTION_TYPES.DELETE_CART_ITEM]: DeleteCartLineItemMutation;
 }
 
 type Actions = ActionMap<Payload>[keyof ActionMap<Payload>];
@@ -29,7 +29,7 @@ export interface CartState {
     value: number;
     currencyCode: string;
   };
-  cartItems: LineItems['physicalItems'] | null;
+  cartItems: LineItems['physicalItems'] | [];
   totalQuantity: number;
 }
 
@@ -46,7 +46,7 @@ const getCart = (cart: GetCartQuery): CartState => {
   };
 };
 
-const updateCart = (cart: AddProductToCartMutation, state: CartState): CartState => {
+const updateCart = (cart: AddCartLineItemMutation, state: CartState): CartState => {
   const {
     amount: { value },
     lineItems: { physicalItems, totalQuantity },
@@ -74,13 +74,13 @@ const deleteCartItem = (cart: DeleteCartLineItemMutation, state: CartState): Car
 
 export const reducer = (state: CartState, action: Actions) => {
   switch (action.type) {
-    case Types.Get:
+    case ACTION_TYPES.GET_CART:
       return getCart(action.payload);
 
-    case Types.Update:
+    case ACTION_TYPES.ADD_CART_ITEM:
       return updateCart(action.payload, state);
 
-    case Types.Delete:
+    case ACTION_TYPES.DELETE_CART_ITEM:
       return deleteCartItem(action.payload, state);
 
     default:

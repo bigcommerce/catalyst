@@ -14,7 +14,7 @@ const Cart = () => {
 
   const {
     cart: { amount, totalQuantity, cartItems },
-    deleteCartItem,
+    deleteCartLineItem,
   } = useContext(CartContext);
 
   return (
@@ -50,7 +50,7 @@ const Cart = () => {
                   </Link>
                   <Button
                     className={Button.iconOnly.className}
-                    onClick={() => deleteCartItem(entityId)}
+                    onClick={() => deleteCartLineItem(entityId)}
                   >
                     <BinIcon className="fill-[#000] stroke-[#000]" />
                   </Button>

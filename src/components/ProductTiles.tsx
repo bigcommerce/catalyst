@@ -148,7 +148,7 @@ export const ProductTiles = ({
   products,
   productComparisonsEnabled,
 }: ProductTilesProps) => {
-  const { updateCart, cart } = useContext(CartContext);
+  const { addCartLineItem } = useContext(CartContext);
 
   return (
     <div className="my-12 mx-6 sm:mx-10 md:mx-auto">
@@ -234,7 +234,7 @@ export const ProductTiles = ({
                     // </ReactantLink>
                     <Button
                       className={Button.primary.className}
-                      onClick={() => updateCart(edge.node.entityId)}
+                      onClick={() => addCartLineItem(edge.node.entityId)}
                     >
                       Add to cart
                     </Button>

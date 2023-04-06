@@ -3,13 +3,13 @@ import { createContext, PropsWithChildren, useEffect, useReducer } from 'react';
 import { getBrowserClient } from '../../graphql/browser';
 
 import {
-  addProductToCartMutation,
-  AddProductToCartMutation,
+  addCartLineItemMutation,
+  AddCartLineItemMutation,
   deleteCartLineItemMutation,
   DeleteCartLineItemMutation,
 } from './mutations';
 import { getCartQuery, GetCartQuery } from './queries';
-import { CartState, reducer, Types } from './reducer';
+import { ACTION_TYPES, CartState, reducer } from './reducer';
 import { getCookie } from './utils';
 
 export const defaultCart: CartState = {
@@ -17,18 +17,18 @@ export const defaultCart: CartState = {
     value: 0,
     currencyCode: '',
   },
-  cartItems: null,
+  cartItems: [],
   totalQuantity: 0,
 };
 
 interface CartContext {
   cart: typeof defaultCart;
-  deleteCartItem: (lineItemEntityId: string) => Promise<void>;
+  addCartLineItem: (productEntityId: string) => Promise<void>;
+  deleteCartLineItem: (lineItemEntityId: string) => Promise<void>;
   getCart: () => Promise<void>;
-  updateCart: (productEntityId: string) => Promise<void>;
 }
 
-export const CartContext = createContext<CartContext | null>(null);
+export const CartContext = createContext<CartContext>({});
 
 const isObjWithField = (obj: unknown, field: string): obj is { [field: string]: unknown } => {
   if (typeof obj === 'object' && obj !== null && field in obj) {
@@ -53,7 +53,7 @@ const isGetCartQuery = (data: unknown): data is GetCartQuery => {
   return false;
 };
 
-const isAddProductToCartMutation = (data: unknown): data is AddProductToCartMutation => {
+const isAddCartLineItemMutation = (data: unknown): data is AddCartLineItemMutation => {
   if (
     isObjWithField(data, 'cart') &&
     isObjWithField(data.cart, 'addCartLineItems') &&
@@ -106,11 +106,11 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     });
 
     if (isGetCartQuery(data)) {
-      dispatch({ type: Types.Get, payload: data });
+      dispatch({ type: ACTION_TYPES.GET_CART, payload: data });
     }
   };
 
-  const updateCart = async (productEntityId: string) => {
+  const addCartLineItem = async (productEntityId: string) => {
     const cartEntityId = getCookie('cart_id');
     const variables = {
       addCartLineItemsInput: {
@@ -127,16 +127,16 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const client = getBrowserClient();
 
     const data = await client.mutate({
-      mutation: addProductToCartMutation,
+      mutation: addCartLineItemMutation,
       variables,
     });
 
-    if (isAddProductToCartMutation(data)) {
-      dispatch({ type: Types.Update, payload: data });
+    if (isAddCartLineItemMutation(data)) {
+      dispatch({ type: ACTION_TYPES.ADD_CART_ITEM, payload: data });
     }
   };
 
-  const deleteCartItem = async (lineItemEntityId: string) => {
+  const deleteCartLineItem = async (lineItemEntityId: string) => {
     const cartEntityId = getCookie('cart_id');
     const variables = {
       deleteCartLineItemInput: {
@@ -152,7 +152,7 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     });
 
     if (isDeleteCartLineItemMutation(data)) {
-      dispatch({ type: Types.Delete, payload: data });
+      dispatch({ type: ACTION_TYPES.DELETE_CART_ITEM, payload: data });
     }
   };
 
@@ -167,9 +167,9 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <CartContext.Provider
       value={{
-        deleteCartItem,
+        deleteCartLineItem,
         getCart,
-        updateCart,
+        addCartLineItem,
         cart,
       }}
     >
