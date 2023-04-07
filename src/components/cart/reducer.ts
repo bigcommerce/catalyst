@@ -1,6 +1,10 @@
 import { LineItems } from '../../pages/fragments';
 
-import { AddCartLineItemMutation, DeleteCartLineItemMutation } from './mutations';
+import {
+  AddCartLineItemMutation,
+  CreateCartMutation,
+  DeleteCartLineItemMutation,
+} from './mutations';
 import { GetCartQuery } from './queries';
 
 type ActionMap<PayloadItem extends { [key in keyof Payload]: Payload[keyof Payload] }> = {
@@ -11,15 +15,17 @@ type ActionMap<PayloadItem extends { [key in keyof Payload]: Payload[keyof Paylo
 };
 
 export enum ACTION_TYPES {
-  GET_CART = 'GET_CART',
   ADD_CART_ITEM = 'UPDATE_CART',
+  CREATE_CART = 'CREATE_CART',
   DELETE_CART_ITEM = 'DELETE_CART_ITEM',
+  GET_CART = 'GET_CART',
 }
 
 interface Payload {
-  [ACTION_TYPES.GET_CART]: GetCartQuery;
   [ACTION_TYPES.ADD_CART_ITEM]: AddCartLineItemMutation;
+  [ACTION_TYPES.CREATE_CART]: CreateCartMutation;
   [ACTION_TYPES.DELETE_CART_ITEM]: DeleteCartLineItemMutation;
+  [ACTION_TYPES.GET_CART]: GetCartQuery;
 }
 
 type Actions = ActionMap<Payload>[keyof ActionMap<Payload>];
@@ -46,42 +52,58 @@ const getCart = (cart: GetCartQuery): CartState => {
   };
 };
 
-const updateCart = (cart: AddCartLineItemMutation, state: CartState): CartState => {
+const updateCart = (cart: AddCartLineItemMutation): CartState => {
   const {
-    amount: { value },
+    amount,
     lineItems: { physicalItems, totalQuantity },
   } = cart.cart.addCartLineItems.cart;
 
   return {
-    amount: { ...state.amount, value },
+    amount,
     cartItems: physicalItems,
     totalQuantity,
   };
 };
 
-const deleteCartItem = (cart: DeleteCartLineItemMutation, state: CartState): CartState => {
+const deleteCartItem = (cart: DeleteCartLineItemMutation): CartState => {
   const {
-    amount: { value },
+    amount,
     lineItems: { physicalItems, totalQuantity },
   } = cart.cart.deleteCartLineItem.cart;
 
   return {
-    amount: { ...state.amount, value },
+    amount,
     cartItems: physicalItems,
     totalQuantity,
   };
 };
 
+const createCart = (cart: CreateCartMutation): CartState => {
+  const { amount } = cart.cart.createCart.cart;
+  const { physicalItems, totalQuantity } = cart.cart.createCart.cart.lineItems;
+
+  const newCart = {
+    amount,
+    cartItems: physicalItems,
+    totalQuantity,
+  };
+
+  return newCart;
+};
+
 export const reducer = (state: CartState, action: Actions) => {
   switch (action.type) {
-    case ACTION_TYPES.GET_CART:
-      return getCart(action.payload);
-
     case ACTION_TYPES.ADD_CART_ITEM:
-      return updateCart(action.payload, state);
+      return updateCart(action.payload);
+
+    case ACTION_TYPES.CREATE_CART:
+      return createCart(action.payload);
 
     case ACTION_TYPES.DELETE_CART_ITEM:
-      return deleteCartItem(action.payload, state);
+      return deleteCartItem(action.payload);
+
+    case ACTION_TYPES.GET_CART:
+      return getCart(action.payload);
 
     default:
       return state;

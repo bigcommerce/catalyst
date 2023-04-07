@@ -7,9 +7,25 @@ export interface AddCartLineItemMutation {
     addCartLineItems: {
       cart: {
         entityId: string;
-        currencyCode: string;
         isTaxIncluded: boolean;
         amount: {
+          currencyCode: string;
+
+          value: number;
+        };
+        lineItems: LineItems;
+      };
+    };
+  };
+}
+
+export interface CreateCartMutation {
+  cart: {
+    createCart: {
+      cart: {
+        entityId: string;
+        amount: {
+          currencyCode: string;
           value: number;
         };
         lineItems: LineItems;
@@ -25,6 +41,8 @@ export interface DeleteCartLineItemMutation {
       cart: {
         entityId: string;
         amount: {
+          currencyCode: string;
+
           value: number;
         };
         lineItems: LineItems;
@@ -41,6 +59,7 @@ export const addCartLineItemMutation = gql`
         cart {
           entityId
           amount {
+			currencyCode
             value
           }
           lineItems {
@@ -57,15 +76,17 @@ export const addCartLineItemMutation = gql`
 `;
 
 export const createCartMutation = gql`
-  mutation createCartSimple($createCartInput: CreateCartInput!) {
+  mutation createCart($createCartInput: CreateCartInput!) {
     cart {
       createCart(input: $createCartInput) {
         cart {
           entityId
-          amount {
+		  amount {
+			currencyCode
             value
           }
           lineItems {
+			totalQuantity
             physicalItems {
               ...${physicalItemsFragment.fragmentName}
             }
@@ -85,6 +106,7 @@ export const deleteCartLineItemMutation = gql`
         cart {
           entityId
           amount {
+			currencyCode
             value
           }
           lineItems {

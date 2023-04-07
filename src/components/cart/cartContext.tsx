@@ -5,12 +5,13 @@ import { getBrowserClient } from '../../graphql/browser';
 import {
   addCartLineItemMutation,
   AddCartLineItemMutation,
+  createCartMutation,
   deleteCartLineItemMutation,
   DeleteCartLineItemMutation,
 } from './mutations';
 import { getCartQuery, GetCartQuery } from './queries';
 import { ACTION_TYPES, CartState, reducer } from './reducer';
-import { getCookie } from './utils';
+import { getCookie, setCookie } from './utils';
 
 export const defaultCart: CartState = {
   amount: {
@@ -25,7 +26,7 @@ interface CartContext {
   cart: typeof defaultCart;
   addCartLineItem: (productEntityId: string) => Promise<void>;
   deleteCartLineItem: (lineItemEntityId: string) => Promise<void>;
-  getCart: () => Promise<void>;
+  getCart: (cartId: string) => Promise<void>;
 }
 
 export const CartContext = createContext<CartContext>({});
@@ -91,13 +92,7 @@ const isDeleteCartLineItemMutation = (data: unknown): data is DeleteCartLineItem
 const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [cart, dispatch] = useReducer(reducer, defaultCart);
 
-  const getCart = async () => {
-    const cartId = getCookie('cart_id');
-
-    if (!cartId) {
-      return;
-    }
-
+  const getCart = async (cartId: string) => {
     const client = getBrowserClient();
 
     const data = await client.query({
@@ -111,28 +106,47 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   };
 
   const addCartLineItem = async (productEntityId: string) => {
+    const client = getBrowserClient();
     const cartEntityId = getCookie('cart_id');
-    const variables = {
-      addCartLineItemsInput: {
-        cartEntityId,
-        data: {
-          lineItems: {
-            quantity: 1,
-            productEntityId,
+
+    if (cartEntityId) {
+      const data = await client.mutate({
+        mutation: addCartLineItemMutation,
+        variables: {
+          addCartLineItemsInput: {
+            cartEntityId,
+            data: {
+              lineItems: {
+                quantity: 1,
+                productEntityId,
+              },
+            },
           },
         },
-      },
-    };
+      });
 
-    const client = getBrowserClient();
+      if (isAddCartLineItemMutation(data)) {
+        dispatch({ type: ACTION_TYPES.ADD_CART_ITEM, payload: data });
+      }
+    } else {
+      const variables = {
+        createCartInput: {
+          lineItems: [
+            {
+              quantity: 1,
+              productEntityId,
+            },
+          ],
+        },
+      };
 
-    const data = await client.mutate({
-      mutation: addCartLineItemMutation,
-      variables,
-    });
+      const data = await client.mutate({
+        mutation: createCartMutation,
+        variables,
+      });
 
-    if (isAddCartLineItemMutation(data)) {
-      dispatch({ type: ACTION_TYPES.ADD_CART_ITEM, payload: data });
+      setCookie('cart_id', data.cart.createCart.cart.entityId, 7);
+      dispatch({ type: ACTION_TYPES.CREATE_CART, payload: data });
     }
   };
 
@@ -157,7 +171,11 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   };
 
   useEffect(() => {
-    void getCart();
+    const cartId = getCookie('cart_id');
+
+    if (cartId) {
+      void getCart(cartId);
+    }
   }, []);
 
   useEffect(() => {
@@ -167,9 +185,9 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <CartContext.Provider
       value={{
+        addCartLineItem,
         deleteCartLineItem,
         getCart,
-        addCartLineItem,
         cart,
       }}
     >
