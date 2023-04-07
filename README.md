@@ -1,17 +1,57 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Catalyst
+
+Catalyst is the next generation of storefronts at BigCommerce. It aims to be composable and powerful to meet the needs of our enterprise customers, exceeding performance of Stencil and Blueprint themes. Catalyst is built with [Next.js](https://nextjs.org/) using our React.js storefront component library called Reactant.
 
 ## Getting Started
 
 1. Install project dependencies:
+
 ```bash
-npm install
+npm ci
 ```
+
 2. Setup environment variables:
 
 ```bash
- mv .env.example .env.local
- ```
+ cp .env.example .env.local
+```
+
 Update `.env.local` with your access-token, store-hash and channel-id.
+
+For a list of recommended scopes to use for your access token, please expand the table below.
+
+<details>
+  <summary>Expand</summary>
+
+| Scope                                        | Permission Level |
+| -------------------------------------------- | ---------------- |
+| Content                                      | `read-only`      |
+| Checkout Content                             | `None`           |
+| Customers                                    | `read-only`      |
+| Customers Login                              | `login`          |
+| Information & Settings                       | `read-only`      |
+| Marketing                                    | `read-only`      |
+| Orders                                       | `read-only`      |
+| Order Transactions                           | `read-only`      |
+| Create Payments                              | `None`           |
+| Get Payment Methods                          | `read-only`      |
+| Stored Payment Instruments                   | `read-only`      |
+| Products                                     | `read-only`      |
+| Themes                                       | `read-only`      |
+| Carts                                        | `read-only`      |
+| Checkouts                                    | `read-only`      |
+| Sites & Routes                               | `read-only`      |
+| Channel Settings                             | `None`           |
+| Channel Listings                             | `None`           |
+| Storefront API Tokens                        | `None`           |
+| Storefront API Customer Impersonation Tokens | `manage`         |
+| Store Logs                                   | `None`           |
+| Store Locations                              | `read-only`      |
+| Store Inventory                              | `read-only`      |
+| Fulfillment Methods                          | `None`           |
+| Order Fulfillment                            | `None`           |
+
+</details>
 
 3. Run the development server:
 
@@ -23,7 +63,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/graphql](http://localhost:3000/api/graphql). This endpoint can be edited in `pages/api/graphql.ts`.
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
