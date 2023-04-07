@@ -34,6 +34,14 @@ export interface CreateCartMutation {
   };
 }
 
+export interface DeleteCartMutation {
+  cart: {
+    deleteCart: {
+      deletedCartEntityId: string;
+    };
+  };
+}
+
 export interface DeleteCartLineItemMutation {
   cart: {
     deleteCartLineItem: {
@@ -96,6 +104,16 @@ export const createCartMutation = gql`
     }
   }
   ${physicalItemsFragment.fragment}
+`;
+
+export const deleteCartMutation = gql`
+  mutation deleteCart($deleteCartInput: DeleteCartInput!) {
+    cart {
+      deleteCart(input: $deleteCartInput) {
+        deletedCartEntityId
+      }
+    }
+  }
 `;
 
 export const deleteCartLineItemMutation = gql`

@@ -8,10 +8,11 @@ import {
   createCartMutation,
   deleteCartLineItemMutation,
   DeleteCartLineItemMutation,
+  deleteCartMutation,
 } from './mutations';
 import { getCartQuery, GetCartQuery } from './queries';
 import { ACTION_TYPES, CartState, reducer } from './reducer';
-import { getCookie, setCookie } from './utils';
+import { eraseCookie, getCookie, setCookie } from './utils';
 
 export const defaultCart: CartState = {
   amount: {
@@ -152,21 +153,34 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   const deleteCartLineItem = async (lineItemEntityId: string) => {
     const cartEntityId = getCookie('cart_id');
-    const variables = {
-      deleteCartLineItemInput: {
-        cartEntityId,
-        lineItemEntityId,
-      },
-    };
     const client = getBrowserClient();
 
-    const data = await client.mutate({
-      mutation: deleteCartLineItemMutation,
-      variables,
-    });
+    if (cart.cartItems.length === 1) {
+      const data = await client.mutate({
+        mutation: deleteCartMutation,
+        variables: {
+          deleteCartInput: {
+            cartEntityId,
+          },
+        },
+      });
 
-    if (isDeleteCartLineItemMutation(data)) {
-      dispatch({ type: ACTION_TYPES.DELETE_CART_ITEM, payload: data });
+      dispatch({ type: ACTION_TYPES.DELETE_CART, payload: data });
+      eraseCookie('cart_id');
+    } else {
+      const data = await client.mutate({
+        mutation: deleteCartLineItemMutation,
+        variables: {
+          deleteCartLineItemInput: {
+            cartEntityId,
+            lineItemEntityId,
+          },
+        },
+      });
+
+      if (isDeleteCartLineItemMutation(data)) {
+        dispatch({ type: ACTION_TYPES.DELETE_CART_ITEM, payload: data });
+      }
     }
   };
 
