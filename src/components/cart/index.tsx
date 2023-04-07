@@ -32,21 +32,26 @@ const Cart = () => {
           <CartIcon className="fill-[#000] stroke-[#000]" />
         </Button>
       </span>
-      <div className="absolute right-0 top-100% shadow-lg bg-[#fff] z-10 mt-3 p3">
-        {open && (
+      {open && (
+        <div className="absolute right-0 top-100% shadow-lg bg-[#fff] z-10 mt-6 p-6">
           <div>
             {totalQuantity ? (
               <>
-                <ul className="p-3">
+                <h2 className="font-bold text-3xl mb-6">Your Cart</h2>
+                <ul className="">
                   {cartItems.map(
                     ({ brand, entityId, extendedListPrice, imageUrl, name, quantity, url }) => (
-                      <li className="flex justify-between" key={entityId}>
+                      <li
+                        className="flex justify-between border-t-2 border-[#CFD8DC] p-3"
+                        key={entityId}
+                      >
                         <Link className="flex" href={new URL(url).pathname}>
                           <Image alt={name} height={100} src={imageUrl} width={100} />
                           <span className="flex flex-col ml-3">
-                            <span>{brand}</span>
-                            {name} - {quantity}
-                            <span>
+                            <span className="text-[#546E7A]">{brand}</span>
+                            {name}
+                            <span>Quantity: {quantity}</span>
+                            <span className="font-bold">
                               {extendedListPrice.value} {extendedListPrice.currencyCode}
                             </span>
                           </span>
@@ -61,19 +66,21 @@ const Cart = () => {
                     ),
                   )}
                 </ul>
-                <div className="p-3 flex justify-between">
-                  <span>Total:</span>
+                <div className="p-3 flex justify-between border-t-2 border-[#CFD8DC] uppercase font-bold">
+                  <span>Grand Total:</span>
                   <span>
                     {amount.value} {amount.currencyCode}
                   </span>
                 </div>
               </>
             ) : (
-              !totalQuantity && <p className="p-3">Your cart is empty &#128561;</p>
+              !totalQuantity && (
+                <p className="p-3 font-semibold size-xl">Your cart is empty &#128561;</p>
+              )
             )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
