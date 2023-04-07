@@ -144,11 +144,14 @@ const createPageQuery = (
         ...${SearchForwardQuery.fragmentName}
   
         ...${HeaderQuery.fragmentName}
+
+        ...${FooterQuery.fragmentName}
       }
     }
   
     ${SearchForwardQuery.fragment}
     ${HeaderQuery.fragment}
+    ${FooterQuery.fragment}
     `;
   } else if (urlQuery.before) {
     cursor = urlQuery.before;
@@ -178,11 +181,14 @@ const createPageQuery = (
         ...${SearchBackQuery.fragmentName}
   
         ...${HeaderQuery.fragmentName}
+
+        ...${FooterQuery.fragmentName}
       }
     }
   
     ${SearchBackQuery.fragment}
     ${HeaderQuery.fragment}
+    ${FooterQuery.fragment}
     `;
   } else {
     cursor = '';

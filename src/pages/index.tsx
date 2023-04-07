@@ -22,6 +22,7 @@ interface HomePageQuery {
       featuredProducts: ProductTilesConnection;
       bestSellingProducts: ProductTilesConnection;
       settings: {
+        storeName: string;
         storefront: {
           catalog: {
             productComparisonsEnabled: boolean;
@@ -32,53 +33,91 @@ interface HomePageQuery {
   >;
 }
 
+interface HomePageProps {
+  homePage: {
+    featuredProducts: ProductTilesConnection;
+    bestSellingProducts: ProductTilesConnection;
+    settings: {
+      storeName: string;
+      storefront: {
+        catalog: {
+          productComparisonsEnabled: boolean;
+        };
+      };
+    };
+  };
+  header: HeaderSiteQuery;
+  footer: FooterSiteQuery;
+}
+
 export const getServerSideProps: GetServerSideProps = async () => {
   const client = getServerClient();
 
-  const { data } = await client.query<HomePageQuery>({
-    query: gql`
-      query HomePageQuery($pageSize: Int = 4) {
-      site {
-        featuredProducts (first: $pageSize) {
-          ...${ProductTilesQuery.fragmentName}
-        }
-        bestSellingProducts (first: $pageSize) {
-          ...${ProductTilesQuery.fragmentName}
-        }
-        settings {
-          storefront {
-            catalog {
-              productComparisonsEnabled
+  const [homePage, header, footer] = await Promise.all([
+    client.query<HomePageQuery>({
+      query: gql`
+        query HomePageQuery($pageSize: Int = 4) {
+        site {
+          featuredProducts (first: $pageSize) {
+            ...${ProductTilesQuery.fragmentName}
+          }
+          bestSellingProducts (first: $pageSize) {
+            ...${ProductTilesQuery.fragmentName}
+          }
+          settings {
+            storeName
+            storefront {
+              catalog {
+                productComparisonsEnabled
+              }
             }
           }
         }
-
-        ...${HeaderQuery.fragmentName}
-        ...${FooterQuery.fragmentName}
       }
-    }
 
-    ${HeaderQuery.fragment}
-    ${FooterQuery.fragment}
-    ${ProductTilesQuery.fragment}
-    `,
-  });
+      ${ProductTilesQuery.fragment}
+      `,
+    }),
+    client.query<HomePageQuery>({
+      query: gql`
+        query Header {
+          site {
+            ...${HeaderQuery.fragmentName}   
+          }
+        }
+        ${HeaderQuery.fragment}
+      `,
+    }),
+    client.query<HomePageQuery>({
+      query: gql`
+        query Footer {
+          site {
+            ...${FooterQuery.fragmentName}
+          }
+        }
+        ${FooterQuery.fragment}
+      `,
+    }),
+  ]);
 
   return {
     props: {
-      data,
+      homePage: homePage.data.site,
+      header: header.data.site,
+      footer: footer.data.site,
     },
   };
 };
 
-export default function HomePage({ data }: { data: HomePageQuery }) {
+export default function HomePage({ homePage, header, footer }: HomePageProps) {
   return (
     <>
       <Head>
-        <title>BigCommerce Swag Store</title>
-        <meta content="BigCommerce Swag Store" name="description" />
+        <title>{homePage.settings.storeName}</title>
+        <meta content={homePage.settings.storeName} name="description" />
       </Head>
-      <Header categoryTree={data.site.categoryTree} settings={data.site.settings} />
+      <Header categoryTree={header.categoryTree} settings={header.settings} />
+
       <main>
         <div className="md:container md:mx-auto">
           <div className="aspect-[9/16] md:aspect-[2/1] bg-slate-100 relative flex flex-col items-start justify-center p-6 sm:p-16 md:p-24">
@@ -94,24 +133,25 @@ export default function HomePage({ data }: { data: HomePageQuery }) {
           <ProductTiles
             priority
             productComparisonsEnabled={
-              data.site.settings.storefront.catalog.productComparisonsEnabled
+              homePage.settings.storefront.catalog.productComparisonsEnabled
             }
-            products={data.site.featuredProducts}
+            products={homePage.featuredProducts}
             title="Featured products"
           />
           <ProductTiles
             productComparisonsEnabled={
-              data.site.settings.storefront.catalog.productComparisonsEnabled
+              homePage.settings.storefront.catalog.productComparisonsEnabled
             }
-            products={data.site.bestSellingProducts}
+            products={homePage.bestSellingProducts}
             title="Popular products"
           />
         </div>
       </main>
+
       <Footer
-        brands={data.site.brands}
-        categoryTree={data.site.categoryTree}
-        settings={data.site.settings}
+        brands={footer.brands}
+        categoryTree={footer.categoryTree}
+        settings={footer.settings}
       />
     </>
   );
