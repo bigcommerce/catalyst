@@ -32,41 +32,48 @@ const Cart = () => {
           <CartIcon className="fill-[#000] stroke-[#000]" />
         </Button>
       </span>
-      {open && (
-        <div className="absolute right-0 top-100% shadow-lg bg-[#fff] z-10 mt-3 p3">
-          <ul className="p-3">
-            {cartItems.map(
-              ({ brand, entityId, extendedListPrice, imageUrl, name, quantity, url }) => (
-                <li className="flex justify-between" key={entityId}>
-                  <Link className="flex" href={new URL(url).pathname}>
-                    <Image alt={name} height={100} src={imageUrl} width={100} />
-                    <span className="flex flex-col ml-3">
-                      <span>{brand}</span>
-                      {name} - {quantity}
-                      <span>
-                        {extendedListPrice.value} {extendedListPrice.currencyCode}
-                      </span>
-                    </span>
-                  </Link>
-                  <Button
-                    className={Button.iconOnly.className}
-                    onClick={() => deleteCartLineItem(entityId)}
-                  >
-                    <BinIcon className="fill-[#000] stroke-[#000]" />
-                  </Button>
-                </li>
-              ),
+      <div className="absolute right-0 top-100% shadow-lg bg-[#fff] z-10 mt-3 p3">
+        {open && (
+          <div>
+            {totalQuantity ? (
+              <>
+                <ul className="p-3">
+                  {cartItems.map(
+                    ({ brand, entityId, extendedListPrice, imageUrl, name, quantity, url }) => (
+                      <li className="flex justify-between" key={entityId}>
+                        <Link className="flex" href={new URL(url).pathname}>
+                          <Image alt={name} height={100} src={imageUrl} width={100} />
+                          <span className="flex flex-col ml-3">
+                            <span>{brand}</span>
+                            {name} - {quantity}
+                            <span>
+                              {extendedListPrice.value} {extendedListPrice.currencyCode}
+                            </span>
+                          </span>
+                        </Link>
+                        <Button
+                          className={Button.iconOnly.className}
+                          onClick={() => deleteCartLineItem(entityId)}
+                        >
+                          <BinIcon className="fill-[#000] stroke-[#000]" />
+                        </Button>
+                      </li>
+                    ),
+                  )}
+                </ul>
+                <div className="p-3 flex justify-between">
+                  <span>Total:</span>
+                  <span>
+                    {amount.value} {amount.currencyCode}
+                  </span>
+                </div>
+              </>
+            ) : (
+              !totalQuantity && <p className="p-3">Your cart is empty &#128561;</p>
             )}
-          </ul>
-          <div className="p-3 flex justify-between">
-            {' '}
-            <span>Total:</span>{' '}
-            <span>
-              {amount.value} {amount.currencyCode}
-            </span>{' '}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

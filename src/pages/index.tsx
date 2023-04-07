@@ -4,7 +4,6 @@ import React from 'react';
 import { MergeDeep } from 'type-fest';
 
 import { Link } from '../../reactant/components/Link';
-import { CartContextProvider } from '../components/cart/cartContext';
 import { Footer, query as FooterQuery, FooterSiteQuery } from '../components/Footer';
 import { Header, query as HeaderQuery, HeaderSiteQuery } from '../components/Header';
 import {
@@ -78,43 +77,41 @@ export default function HomePage({ data }: { data: HomePageQuery }) {
         <title>BigCommerce Swag Store</title>
         <meta content="BigCommerce Swag Store" name="description" />
       </Head>
-      <CartContextProvider>
-        <Header categoryTree={data.site.categoryTree} settings={data.site.settings} />
-        <main>
-          <div className="md:container md:mx-auto">
-            <div className="aspect-[9/16] md:aspect-[2/1] bg-slate-100 relative flex flex-col items-start justify-center p-6 sm:p-16 md:p-24">
-              <h1 className="text-4xl font-black mb-4">New collection</h1>
-              <p className="md:max-w-lg mb-10">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
-              </p>
-              <Link className="px-8 py-3 bg-[#053FB0] text-white font-semibold" href="/">
-                Shop now
-              </Link>
-            </div>
-            <ProductTiles
-              priority
-              productComparisonsEnabled={
-                data.site.settings.storefront.catalog.productComparisonsEnabled
-              }
-              products={data.site.featuredProducts}
-              title="Featured products"
-            />
-            <ProductTiles
-              productComparisonsEnabled={
-                data.site.settings.storefront.catalog.productComparisonsEnabled
-              }
-              products={data.site.bestSellingProducts}
-              title="Popular products"
-            />
+      <Header categoryTree={data.site.categoryTree} settings={data.site.settings} />
+      <main>
+        <div className="md:container md:mx-auto">
+          <div className="aspect-[9/16] md:aspect-[2/1] bg-slate-100 relative flex flex-col items-start justify-center p-6 sm:p-16 md:p-24">
+            <h1 className="text-4xl font-black mb-4">New collection</h1>
+            <p className="md:max-w-lg mb-10">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
+            </p>
+            <Link className="px-8 py-3 bg-[#053FB0] text-white font-semibold" href="/">
+              Shop now
+            </Link>
           </div>
-        </main>
-        <Footer
-          brands={data.site.brands}
-          categoryTree={data.site.categoryTree}
-          settings={data.site.settings}
-        />
-      </CartContextProvider>
+          <ProductTiles
+            priority
+            productComparisonsEnabled={
+              data.site.settings.storefront.catalog.productComparisonsEnabled
+            }
+            products={data.site.featuredProducts}
+            title="Featured products"
+          />
+          <ProductTiles
+            productComparisonsEnabled={
+              data.site.settings.storefront.catalog.productComparisonsEnabled
+            }
+            products={data.site.bestSellingProducts}
+            title="Popular products"
+          />
+        </div>
+      </main>
+      <Footer
+        brands={data.site.brands}
+        categoryTree={data.site.categoryTree}
+        settings={data.site.settings}
+      />
     </>
   );
 }

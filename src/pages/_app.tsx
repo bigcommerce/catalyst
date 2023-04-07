@@ -4,6 +4,7 @@ import Head from 'next/head';
 import React from 'react';
 
 import '../../styles/globals.css';
+import { CartContextProvider } from '../components/cart/cartContext';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -23,7 +24,9 @@ function App({ Component, pageProps }: AppProps) {
           }
         `}
       </style>
-      <Component {...pageProps} />
+      <CartContextProvider>
+        <Component {...pageProps} />
+      </CartContextProvider>
     </>
   );
 }

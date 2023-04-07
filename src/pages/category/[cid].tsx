@@ -7,7 +7,6 @@ import { MergeDeep } from 'type-fest';
 import { Pagination } from '../../../reactant/components/Pagination';
 import { ChevronLeftIcon } from '../../../reactant/icons/ChevronLeft';
 import { ChevronRightIcon } from '../../../reactant/icons/ChevronRight';
-import { CartContextProvider } from '../../components/cart/cartContext';
 import { Facets, FacetsState, Filters } from '../../components/Facets';
 import { Footer, query as FooterQuery, FooterSiteQuery } from '../../components/Footer';
 import { Header, query as HeaderQuery, HeaderSiteQuery } from '../../components/Header';
@@ -287,49 +286,47 @@ export default function CategoryPage({
       <Head>
         <title>{category.name}</title>
       </Head>
-      <CartContextProvider>
-        <Header
-          categoryTree={categories}
-          settings={{ logoV2: settings.logoV2, storeName: settings.storeName }}
-        />
-        <main>
-          <div className="md:container md:mx-auto">
-            <h1 className="font-black text-5xl leading-[4rem] mb-8">{category.name}</h1>
-            <div className="grid grid-cols-4">
-              <div className="col-span-1 mr-8">
-                <Facets
-                  filters={search.searchProducts.filters}
-                  pageFacets={pageFacets}
-                  pagePath={category.path}
-                />
-              </div>
-              <div className="col-span-3">
-                <ProductTiles
-                  cols={3}
-                  productComparisonsEnabled={storefront.catalog.productComparisonsEnabled}
-                  products={search.searchProducts.products}
-                />
-                {(search.searchProducts.products.pageInfo.hasNextPage ||
-                  search.searchProducts.products.pageInfo.hasPreviousPage) && (
-                  <Pagination className={Pagination.default.className}>
-                    <Link
-                      href={`${category.path}?first=9&before=${search.searchProducts.products.pageInfo.startCursor}`}
-                    >
-                      <ChevronLeftIcon className={Pagination.PrevPage?.className} />
-                    </Link>
-                    <Link
-                      href={`${category.path}?page=9&after=${search.searchProducts.products.pageInfo.endCursor}`}
-                    >
-                      <ChevronRightIcon className={Pagination.NextPage?.className} />
-                    </Link>
-                  </Pagination>
-                )}
-              </div>
+      <Header
+        categoryTree={categories}
+        settings={{ logoV2: settings.logoV2, storeName: settings.storeName }}
+      />
+      <main>
+        <div className="md:container md:mx-auto">
+          <h1 className="font-black text-5xl leading-[4rem] mb-8">{category.name}</h1>
+          <div className="grid grid-cols-4">
+            <div className="col-span-1 mr-8">
+              <Facets
+                filters={search.searchProducts.filters}
+                pageFacets={pageFacets}
+                pagePath={category.path}
+              />
+            </div>
+            <div className="col-span-3">
+              <ProductTiles
+                cols={3}
+                productComparisonsEnabled={storefront.catalog.productComparisonsEnabled}
+                products={search.searchProducts.products}
+              />
+              {(search.searchProducts.products.pageInfo.hasNextPage ||
+                search.searchProducts.products.pageInfo.hasPreviousPage) && (
+                <Pagination className={Pagination.default.className}>
+                  <Link
+                    href={`${category.path}?first=9&before=${search.searchProducts.products.pageInfo.startCursor}`}
+                  >
+                    <ChevronLeftIcon className={Pagination.PrevPage?.className} />
+                  </Link>
+                  <Link
+                    href={`${category.path}?page=9&after=${search.searchProducts.products.pageInfo.endCursor}`}
+                  >
+                    <ChevronRightIcon className={Pagination.NextPage?.className} />
+                  </Link>
+                </Pagination>
+              )}
             </div>
           </div>
-        </main>
-        <Footer brands={brands} categoryTree={categories} settings={settings} />
-      </CartContextProvider>
+        </div>
+      </main>
+      <Footer brands={brands} categoryTree={categories} settings={settings} />
     </>
   );
 }
