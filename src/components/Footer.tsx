@@ -1,9 +1,10 @@
 import React, { Fragment } from 'react';
 
-import { Link } from '../../reactant/components/Link';
-import { FacebookIcon } from '../../reactant/icons/Facebook';
-import { PinterestIcon } from '../../reactant/icons/Pinterest';
-import { TwitterIcon } from '../../reactant/icons/Twitter';
+import { Link } from '@reactant/components/Link';
+import { FacebookIcon } from '@reactant/icons/Facebook';
+import { PinterestIcon } from '@reactant/icons/Pinterest';
+import { TwitterIcon } from '@reactant/icons/Twitter';
+
 import { FooterMenu } from '../components/FooterMenu';
 import { BaseStoreLogo, StoreLogo } from '../components/Logo';
 

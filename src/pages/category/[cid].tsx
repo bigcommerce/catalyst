@@ -4,15 +4,16 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { MergeDeep } from 'type-fest';
 
-import { Pagination } from '../../../reactant/components/Pagination';
-import { ChevronLeftIcon } from '../../../reactant/icons/ChevronLeft';
-import { ChevronRightIcon } from '../../../reactant/icons/ChevronRight';
+import { getServerClient } from '@client/server';
+import { gql } from '@client/utils';
+import { Pagination } from '@reactant/components/Pagination';
+import { ChevronLeftIcon } from '@reactant/icons/ChevronLeft';
+import { ChevronRightIcon } from '@reactant/icons/ChevronRight';
+
 import { Facets, FacetsState, Filters } from '../../components/Facets';
 import { Footer, query as FooterQuery, FooterSiteQuery } from '../../components/Footer';
 import { Header, query as HeaderQuery, HeaderSiteQuery } from '../../components/Header';
 import { ProductTiles, ProductTilesConnection } from '../../components/ProductTiles';
-import { getServerClient } from '../../graphql/server';
-import { gql } from '../../graphql/utils';
 import { queryBack as SearchBackQuery, queryForward as SearchForwardQuery } from '../fragments';
 
 interface Category {

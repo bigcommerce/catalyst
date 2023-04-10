@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { getServerClient } from '../../graphql/server';
-import { MutationOptions, QueryOptions } from '../../graphql/utils';
+import { getServerClient } from '@client/server';
+import { MutationOptions, QueryOptions } from '@client/utils';
 
 const isQueryRequest = (body: unknown): body is QueryOptions => {
   return typeof body === 'object' && body !== null && 'query' in body;

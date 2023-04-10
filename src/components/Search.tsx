@@ -10,10 +10,10 @@ import React, {
   useState,
 } from 'react';
 
-import { Button as ReactantButton } from '../../reactant/components/Button';
-import { FormGroup, Input } from '../../reactant/components/Input';
-import { SearchIcon } from '../../reactant/icons/Search';
-import { getBrowserClient } from '../graphql/browser';
+import { getBrowserClient } from '@client/browser';
+import { Button as ReactantButton } from '@reactant/components/Button';
+import { FormGroup, Input } from '@reactant/components/Input';
+import { SearchIcon } from '@reactant/icons/Search';
 
 import { ProductTiles, ProductTilesConnection } from './ProductTiles';
 
