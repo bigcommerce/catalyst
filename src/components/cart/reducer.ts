@@ -1,6 +1,6 @@
 import { LineItems } from '../../pages/fragments';
 
-import { defaultCart } from './cartContext';
+import { defaultCartState } from './cartContext';
 import {
   AddCartLineItemMutation,
   CreateCartMutation,
@@ -43,6 +43,51 @@ export interface CartState {
   totalQuantity: number;
 }
 
+const addCartLineItem = (cart: AddCartLineItemMutation): CartState => {
+  const {
+    amount,
+    lineItems: { physicalItems, totalQuantity },
+  } = cart.cart.addCartLineItems.cart;
+
+  return {
+    amount,
+    cartItems: physicalItems,
+    totalQuantity,
+  };
+};
+
+const createCart = (cart: CreateCartMutation): CartState => {
+  const { amount } = cart.cart.createCart.cart;
+  const { physicalItems, totalQuantity } = cart.cart.createCart.cart.lineItems;
+
+  return {
+    amount,
+    cartItems: physicalItems,
+    totalQuantity,
+  };
+};
+
+const deleteCart = (cart: DeleteCartMutation, state: CartState): CartState => {
+  if (cart.cart.deleteCart.deletedCartEntityId) {
+    return defaultCartState;
+  }
+
+  return state;
+};
+
+const deleteCartLineItem = (cart: DeleteCartLineItemMutation): CartState => {
+  const {
+    amount,
+    lineItems: { physicalItems, totalQuantity },
+  } = cart.cart.deleteCartLineItem.cart;
+
+  return {
+    amount,
+    cartItems: physicalItems,
+    totalQuantity,
+  };
+};
+
 const getCart = (cart: GetCartQuery): CartState => {
   const {
     amount,
@@ -56,66 +101,19 @@ const getCart = (cart: GetCartQuery): CartState => {
   };
 };
 
-const updateCart = (cart: AddCartLineItemMutation): CartState => {
-  const {
-    amount,
-    lineItems: { physicalItems, totalQuantity },
-  } = cart.cart.addCartLineItems.cart;
-
-  return {
-    amount,
-    cartItems: physicalItems,
-    totalQuantity,
-  };
-};
-
-const deleteCartItem = (cart: DeleteCartLineItemMutation): CartState => {
-  const {
-    amount,
-    lineItems: { physicalItems, totalQuantity },
-  } = cart.cart.deleteCartLineItem.cart;
-
-  return {
-    amount,
-    cartItems: physicalItems,
-    totalQuantity,
-  };
-};
-
-const deleteCart = (cart: DeleteCartMutation, state: CartState): CartState => {
-  if (cart.cart.deleteCart.deletedCartEntityId) {
-    return { ...defaultCart };
-  }
-
-  return state;
-};
-
-const createCart = (cart: CreateCartMutation): CartState => {
-  const { amount } = cart.cart.createCart.cart;
-  const { physicalItems, totalQuantity } = cart.cart.createCart.cart.lineItems;
-
-  const newCart = {
-    amount,
-    cartItems: physicalItems,
-    totalQuantity,
-  };
-
-  return newCart;
-};
-
 export const reducer = (state: CartState, action: Actions) => {
   switch (action.type) {
     case ACTION_TYPES.ADD_CART_ITEM:
-      return updateCart(action.payload);
+      return addCartLineItem(action.payload);
 
     case ACTION_TYPES.CREATE_CART:
       return createCart(action.payload);
 
-    case ACTION_TYPES.DELETE_CART_ITEM:
-      return deleteCartItem(action.payload);
-
     case ACTION_TYPES.DELETE_CART:
       return deleteCart(action.payload, state);
+
+    case ACTION_TYPES.DELETE_CART_ITEM:
+      return deleteCartLineItem(action.payload);
 
     case ACTION_TYPES.GET_CART:
       return getCart(action.payload);

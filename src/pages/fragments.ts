@@ -2,7 +2,7 @@ import { query as ProductTilesQuery } from '../components/ProductTiles';
 
 export interface LineItems {
   physicalItems: Array<{
-    entityId: string;
+    entityId: number;
     parentEntityId: number | null;
     variantEntityId: number | null;
     productEntityId: number;

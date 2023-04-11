@@ -5,16 +5,18 @@ import { getBrowserClient } from '../../graphql/browser';
 import {
   addCartLineItemMutation,
   AddCartLineItemMutation,
+  CreateCartMutation,
   createCartMutation,
   deleteCartLineItemMutation,
   DeleteCartLineItemMutation,
+  DeleteCartMutation,
   deleteCartMutation,
 } from './mutations';
 import { getCartQuery, GetCartQuery } from './queries';
 import { ACTION_TYPES, CartState, reducer } from './reducer';
 import { eraseCookie, getCookie, setCookie } from './utils';
 
-export const defaultCart: CartState = {
+export const defaultCartState: CartState = {
   amount: {
     value: 0,
     currencyCode: '',
@@ -24,9 +26,9 @@ export const defaultCart: CartState = {
 };
 
 interface CartContext {
-  cart: typeof defaultCart;
-  addCartLineItem: (productEntityId: string) => Promise<void>;
-  deleteCartLineItem: (lineItemEntityId: string) => Promise<void>;
+  cart: typeof defaultCartState;
+  addCartLineItem: (productEntityId: number) => Promise<void>;
+  deleteCartLineItem: (lineItemEntityId: number) => Promise<void>;
   getCart: (cartId: string) => Promise<void>;
 }
 
@@ -34,21 +36,6 @@ export const CartContext = createContext<CartContext>({});
 
 const isObjWithField = (obj: unknown, field: string): obj is { [field: string]: unknown } => {
   if (typeof obj === 'object' && obj !== null && field in obj) {
-    return true;
-  }
-
-  return false;
-};
-const isGetCartQuery = (data: unknown): data is GetCartQuery => {
-  if (
-    isObjWithField(data, 'site') &&
-    isObjWithField(data.site, 'cart') &&
-    isObjWithField(data.site.cart, 'lineItems') &&
-    isObjWithField(data.site.cart.lineItems, 'physicalItems') &&
-    isObjWithField(data.site.cart.lineItems, 'totalQuantity') && // can be 0
-    isObjWithField(data.site.cart, 'amount') &&
-    isObjWithField(data.site.cart.amount, 'value')
-  ) {
     return true;
   }
 
@@ -65,6 +52,22 @@ const isAddCartLineItemMutation = (data: unknown): data is AddCartLineItemMutati
     isObjWithField(data.cart.addCartLineItems.cart, 'amount') &&
     isObjWithField(data.cart.addCartLineItems.cart.amount, 'value') &&
     isObjWithField(data.cart.addCartLineItems.cart.lineItems, 'physicalItems')
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
+const isCreateCreateCartMutation = (data: unknown): data is CreateCartMutation => {
+  if (
+    isObjWithField(data, 'cart') &&
+    isObjWithField(data.cart, 'createCart') &&
+    isObjWithField(data.cart.createCart, 'cart') &&
+    isObjWithField(data.cart.createCart.cart, 'amount') &&
+    isObjWithField(data.cart.createCart.cart, 'lineItems') &&
+    isObjWithField(data.cart.createCart.cart.lineItems, 'physicalItems') &&
+    isObjWithField(data.cart.createCart.cart.amount, 'value')
   ) {
     return true;
   }
@@ -90,23 +93,38 @@ const isDeleteCartLineItemMutation = (data: unknown): data is DeleteCartLineItem
   return false;
 };
 
+const isDeleteCartMutation = (data: unknown): data is DeleteCartMutation => {
+  if (
+    isObjWithField(data, 'cart') &&
+    isObjWithField(data.cart, 'deleteCart') &&
+    isObjWithField(data.cart.deleteCart, 'deletedCartEntityId')
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
+const isGetCartQuery = (data: unknown): data is GetCartQuery => {
+  if (
+    isObjWithField(data, 'site') &&
+    isObjWithField(data.site, 'cart') &&
+    isObjWithField(data.site.cart, 'lineItems') &&
+    isObjWithField(data.site.cart.lineItems, 'physicalItems') &&
+    isObjWithField(data.site.cart.lineItems, 'totalQuantity') && // can be 0
+    isObjWithField(data.site.cart, 'amount') &&
+    isObjWithField(data.site.cart.amount, 'value')
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
 const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [cart, dispatch] = useReducer(reducer, defaultCart);
+  const [cart, dispatch] = useReducer(reducer, defaultCartState);
 
-  const getCart = async (cartId: string) => {
-    const client = getBrowserClient();
-
-    const data = await client.query({
-      query: getCartQuery,
-      variables: { entityId: cartId },
-    });
-
-    if (isGetCartQuery(data)) {
-      dispatch({ type: ACTION_TYPES.GET_CART, payload: data });
-    }
-  };
-
-  const addCartLineItem = async (productEntityId: string) => {
+  const addCartLineItem = async (productEntityId: number, quantity = 1) => {
     const client = getBrowserClient();
     const cartEntityId = getCookie('cart_id');
 
@@ -118,7 +136,7 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
             cartEntityId,
             data: {
               lineItems: {
-                quantity: 1,
+                quantity,
                 productEntityId,
               },
             },
@@ -130,28 +148,28 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
         dispatch({ type: ACTION_TYPES.ADD_CART_ITEM, payload: data });
       }
     } else {
-      const variables = {
-        createCartInput: {
-          lineItems: [
-            {
-              quantity: 1,
-              productEntityId,
-            },
-          ],
-        },
-      };
-
       const data = await client.mutate({
         mutation: createCartMutation,
-        variables,
+        variables: {
+          createCartInput: {
+            lineItems: [
+              {
+                quantity: 1,
+                productEntityId,
+              },
+            ],
+          },
+        },
       });
 
-      setCookie('cart_id', data.cart.createCart.cart.entityId, 7);
-      dispatch({ type: ACTION_TYPES.CREATE_CART, payload: data });
+      if (isCreateCreateCartMutation(data)) {
+        setCookie('cart_id', data.cart.createCart.cart.entityId, 7);
+        dispatch({ type: ACTION_TYPES.CREATE_CART, payload: data });
+      }
     }
   };
 
-  const deleteCartLineItem = async (lineItemEntityId: string) => {
+  const deleteCartLineItem = async (lineItemEntityId: number) => {
     const cartEntityId = getCookie('cart_id');
     const client = getBrowserClient();
 
@@ -165,8 +183,10 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
         },
       });
 
-      dispatch({ type: ACTION_TYPES.DELETE_CART, payload: data });
-      eraseCookie('cart_id');
+      if (isDeleteCartMutation(data)) {
+        dispatch({ type: ACTION_TYPES.DELETE_CART, payload: data });
+        eraseCookie('cart_id');
+      }
     } else {
       const data = await client.mutate({
         mutation: deleteCartLineItemMutation,
@@ -184,6 +204,19 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
+  const getCart = async (cartId: string) => {
+    const client = getBrowserClient();
+
+    const data = await client.query({
+      query: getCartQuery,
+      variables: { entityId: cartId },
+    });
+
+    if (isGetCartQuery(data)) {
+      dispatch({ type: ACTION_TYPES.GET_CART, payload: data });
+    }
+  };
+
   useEffect(() => {
     const cartId = getCookie('cart_id');
 
@@ -191,10 +224,6 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
       void getCart(cartId);
     }
   }, []);
-
-  useEffect(() => {
-    console.log(cart, 'cart state');
-  }, [cart]);
 
   return (
     <CartContext.Provider

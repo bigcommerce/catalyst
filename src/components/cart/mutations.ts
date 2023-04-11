@@ -6,7 +6,7 @@ export interface AddCartLineItemMutation {
   cart: {
     addCartLineItems: {
       cart: {
-        entityId: string;
+        entityId: number;
         isTaxIncluded: boolean;
         amount: {
           currencyCode: string;
@@ -33,21 +33,12 @@ export interface CreateCartMutation {
     };
   };
 }
-
-export interface DeleteCartMutation {
-  cart: {
-    deleteCart: {
-      deletedCartEntityId: string;
-    };
-  };
-}
-
 export interface DeleteCartLineItemMutation {
   cart: {
     deleteCartLineItem: {
       deletedLineItemEntityId: string;
       cart: {
-        entityId: string;
+        entityId: number;
         amount: {
           currencyCode: string;
 
@@ -55,6 +46,14 @@ export interface DeleteCartLineItemMutation {
         };
         lineItems: LineItems;
       };
+      deletedCartEntityId: string;
+    };
+  };
+}
+
+export interface DeleteCartMutation {
+  cart: {
+    deleteCart: {
       deletedCartEntityId: string;
     };
   };
@@ -106,16 +105,6 @@ export const createCartMutation = gql`
   ${physicalItemsFragment.fragment}
 `;
 
-export const deleteCartMutation = gql`
-  mutation deleteCart($deleteCartInput: DeleteCartInput!) {
-    cart {
-      deleteCart(input: $deleteCartInput) {
-        deletedCartEntityId
-      }
-    }
-  }
-`;
-
 export const deleteCartLineItemMutation = gql`
   mutation deleteCartLineItem($deleteCartLineItemInput: DeleteCartLineItemInput!) {
     cart {
@@ -139,4 +128,14 @@ export const deleteCartLineItemMutation = gql`
     }
   }
   ${physicalItemsFragment.fragment}
+`;
+
+export const deleteCartMutation = gql`
+  mutation deleteCart($deleteCartInput: DeleteCartInput!) {
+    cart {
+      deleteCart(input: $deleteCartInput) {
+        deletedCartEntityId
+      }
+    }
+  }
 `;

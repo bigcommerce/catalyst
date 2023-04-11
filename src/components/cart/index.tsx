@@ -13,7 +13,7 @@ const Cart = () => {
   const [open, setOpen] = useState(false);
 
   const {
-    cart: { amount, totalQuantity, cartItems },
+    cart: { amount, cartItems, totalQuantity },
     deleteCartLineItem,
   } = useContext(CartContext);
 
@@ -22,6 +22,7 @@ const Cart = () => {
       <span className="relative inline-block">
         <Badge
           className={`${Badge.default.className} absolute left-3/4 top-0 transform -translate-y-full`}
+          label={`Your cart has ${totalQuantity} items`}
         >
           {totalQuantity}
         </Badge>
@@ -33,12 +34,12 @@ const Cart = () => {
         </Button>
       </span>
       {open && (
-        <div className="absolute right-0 top-100% shadow-lg bg-[#fff] z-10 mt-6 p-6">
+        <div className="absolute right-0 top-100% shadow-lg bg-[#fff] z-10 mt-6 p-6 sm:w-full md:w-9/12 lg:w-1/2 lg:w-[500px]">
           <div>
             {totalQuantity ? (
               <>
                 <h2 className="font-bold text-3xl mb-6">Your Cart</h2>
-                <ul className="">
+                <ul>
                   {cartItems.map(
                     ({ brand, entityId, extendedListPrice, imageUrl, name, quantity, url }) => (
                       <li
@@ -75,7 +76,7 @@ const Cart = () => {
               </>
             ) : (
               !totalQuantity && (
-                <p className="p-3 font-semibold size-xl">Your cart is empty &#128561;</p>
+                <p className="p-3 font-semibold size-xl text-center">Your cart is empty</p>
               )
             )}
           </div>
