@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
 
-import { Link as ReactantLink } from '../../reactant/components/Link';
+import { Link as ReactantLink } from '@reactant/components/Link';
 
 interface FooterMenuProps {
   title: string;

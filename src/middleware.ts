@@ -1,8 +1,9 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse, URLPattern } from 'next/server';
 
-import { getServerClient } from './graphql/server';
-import { gql } from './graphql/utils';
+import { getServerClient } from '@client/server';
+import { gql } from '@client/utils';
+
 import { sessionMiddleware } from './session';
 
 interface RoutesResponse {

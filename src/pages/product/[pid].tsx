@@ -4,18 +4,19 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 import { MergeDeep } from 'type-fest';
 
-import { Breadcrumbs } from '../../../reactant/components/Breadcrumbs';
-import { Button } from '../../../reactant/components/Button';
-import { Link } from '../../../reactant/components/Link';
-import { Rating } from '../../../reactant/components/Rating';
-import { Swatch, SwatchGroup } from '../../../reactant/components/Swatch';
-import { CartIcon } from '../../../reactant/icons/Cart';
-import { DividerIcon } from '../../../reactant/icons/Divider';
-import { HeartIcon } from '../../../reactant/icons/Heart';
+import { getServerClient } from '@client/server';
+import { gql } from '@client/utils';
+import { Breadcrumbs } from '@reactant/components/Breadcrumbs';
+import { Button } from '@reactant/components/Button';
+import { Link } from '@reactant/components/Link';
+import { Rating } from '@reactant/components/Rating';
+import { Swatch, SwatchGroup } from '@reactant/components/Swatch';
+import { CartIcon } from '@reactant/icons/Cart';
+import { DividerIcon } from '@reactant/icons/Divider';
+import { HeartIcon } from '@reactant/icons/Heart';
+
 import { Footer, FooterSiteQuery } from '../../components/Footer';
 import { Header, HeaderSiteQuery } from '../../components/Header';
-import { getServerClient } from '../../graphql/server';
-import { gql } from '../../graphql/utils';
 import { CategoryTree } from '../category/[cid]';
 
 interface Product {

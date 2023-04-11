@@ -1,9 +1,9 @@
 import Link from 'next/link';
 
-import { Accordion } from '../../reactant/components/Accordion';
-import { Check } from '../../reactant/icons/Check';
-import { ChevronDownIcon } from '../../reactant/icons/ChevronDown';
-import { ChevronUpIcon } from '../../reactant/icons/ChevronUp';
+import { Accordion } from '@reactant/components/Accordion';
+import { Check } from '@reactant/icons/Check';
+import { ChevronDownIcon } from '@reactant/icons/ChevronDown';
+import { ChevronUpIcon } from '@reactant/icons/ChevronUp';
 
 export interface Filters {
   edges: Array<{

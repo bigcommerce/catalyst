@@ -22,7 +22,14 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@client/*": ["./lib/client/*"],
+      // TODO: Export via an index file and remove the /*
+      "@reactant/components/*": ["./lib/reactant/components/*"],
+      "@reactant/icons/*": ["./lib/reactant/icons/*"],
+    }
   },
   "include": [
     "next-env.d.ts",

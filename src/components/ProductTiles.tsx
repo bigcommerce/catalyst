@@ -2,11 +2,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
-import { Button } from '../../reactant/components/Button';
-import { Link as ReactantLink } from '../../reactant/components/Link';
-import { H3, P, ProductTile } from '../../reactant/components/ProducTile';
-import { Swatch, SwatchGroup } from '../../reactant/components/Swatch';
-import { HeartIcon } from '../../reactant/icons/Heart';
+import { Button } from '@reactant/components/Button';
+import { Link as ReactantLink } from '@reactant/components/Link';
+import { H3, P, ProductTile } from '@reactant/components/ProducTile';
+import { Swatch, SwatchGroup } from '@reactant/components/Swatch';
+import { HeartIcon } from '@reactant/icons/Heart';
 
 interface PageInfo {
   endCursor: string;
