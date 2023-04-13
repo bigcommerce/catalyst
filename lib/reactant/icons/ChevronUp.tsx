@@ -1,20 +1,14 @@
 import React from 'react';
 
-export const ChevronUpIcon: React.FC<React.SVGAttributes<HTMLOrSVGElement>> = ({ ...props }) => {
-  return (
-    <svg
-      fill="none"
-      height="24"
-      viewBox="0 0 24 24"
-      width="24"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      <path
-        clipRule="evenodd"
-        d="M18.7071 15.7071C18.3166 16.0976 17.6834 16.0976 17.2929 15.7071L12 10.4142L6.70711 15.7071C6.31658 16.0976 5.68342 16.0976 5.29289 15.7071C4.90237 15.3166 4.90237 14.6834 5.29289 14.2929L11.2929 8.29289C11.6834 7.90237 12.3166 7.90237 12.7071 8.29289L18.7071 14.2929C19.0976 14.6834 19.0976 15.3166 18.7071 15.7071Z"
-        fillRule="evenodd"
-      />
-    </svg>
-  );
-};
+export const ChevronUpIcon: React.FC<React.ComponentPropsWithoutRef<'svg'>> = ({ ...props }) => (
+  <svg
+    fill="currentColor"
+    height="24"
+    viewBox="0 0 24 24"
+    width="24"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path d="m18.7071 15.7071c-.3905.3905-1.0237.3905-1.4142 0l-5.2929-5.2929-5.29289 5.2929c-.39053.3905-1.02369.3905-1.41422 0-.39052-.3905-.39052-1.0237 0-1.4142l6.00001-6.00001c.3905-.39052 1.0237-.39052 1.4142 0l6 6.00001c.3905.3905.3905 1.0237 0 1.4142z" />
+  </svg>
+);
