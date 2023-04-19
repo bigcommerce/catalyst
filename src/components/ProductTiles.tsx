@@ -1,14 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useContext } from 'react';
+import React from 'react';
 
 import { Button } from '../../reactant/components/Button';
-// import { Link as ReactantLink } from '../../reactant/components/Link';
+import { Link as ReactantLink } from '../../reactant/components/Link';
 import { H3, P, ProductTile } from '../../reactant/components/ProducTile';
 import { Swatch, SwatchGroup } from '../../reactant/components/Swatch';
 import { HeartIcon } from '../../reactant/icons/Heart';
-
-import { CartContext } from './cart/cartContext';
 
 interface PageInfo {
   endCursor: string;
@@ -148,8 +146,6 @@ export const ProductTiles = ({
   products,
   productComparisonsEnabled,
 }: ProductTilesProps) => {
-  const { addCartLineItem } = useContext(CartContext);
-
   return (
     <div className="my-12 mx-6 sm:mx-10 md:mx-auto">
       {title ? <h2 className="font-black text-4xl mb-10">{title}</h2> : null}
@@ -226,18 +222,12 @@ export const ProductTiles = ({
                 </div>
                 <div className="absolute z-10 hidden flex-row justify-start pt-4 gap-x-4 group-hover/cardBody:inline-flex">
                   {edge.node.showCartAction && (
-                    // <ReactantLink
-                    //   className={`${ReactantLink.text.className} ${Button.primary.className} hover:!text-white hover:!bg-[#3071EF]`}
-                    //   href={edge.node.addToCartUrl}
-                    // >
-                    //   Add to cart
-                    // </ReactantLink>
-                    <Button
-                      className={Button.primary.className}
-                      onClick={() => addCartLineItem(edge.node.entityId)}
+                    <ReactantLink
+                      className={`${ReactantLink.text.className} ${Button.primary.className} hover:!text-white hover:!bg-[#3071EF]`}
+                      href={edge.node.addToCartUrl}
                     >
                       Add to cart
-                    </Button>
+                    </ReactantLink>
                   )}
                   <Button className={`${Button.primary.className} ${Button.iconOnly.className}`}>
                     <HeartIcon />

@@ -41,7 +41,16 @@ const Cart = () => {
                 <h2 className="font-bold text-3xl mb-6">Your Cart</h2>
                 <ul>
                   {cartItems.map(
-                    ({ brand, entityId, extendedListPrice, imageUrl, name, quantity, url }) => (
+                    ({
+                      brand,
+                      entityId,
+                      extendedListPrice,
+                      imageUrl,
+                      name,
+                      quantity,
+                      selectedOptions,
+                      url,
+                    }) => (
                       <li
                         className="flex justify-between border-t-2 border-[#CFD8DC] p-3"
                         key={entityId}
@@ -50,7 +59,16 @@ const Cart = () => {
                           <Image alt={name} height={100} src={imageUrl} width={100} />
                           <span className="flex flex-col ml-3">
                             <span className="text-[#546E7A]">{brand}</span>
-                            {name}
+                            <span className="font-bold">{name}</span>
+                            {selectedOptions.length &&
+                              selectedOptions.map(({ name, value }, i) => {
+                                return (
+                                  <span key={i}>
+                                    {name}: {value}
+                                    {i + 1 < selectedOptions.length && ', '}
+                                  </span>
+                                );
+                              })}
                             <span>Quantity: {quantity}</span>
                             <span className="font-bold">
                               {extendedListPrice.value} {extendedListPrice.currencyCode}

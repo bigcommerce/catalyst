@@ -27,7 +27,7 @@ export const defaultCartState: CartState = {
 
 interface CartContext {
   cart: typeof defaultCartState;
-  addCartLineItem: (productEntityId: number) => Promise<void>;
+  addCartLineItem: (productEntityId: number, variantEntityId: number | null) => Promise<void>;
   deleteCartLineItem: (lineItemEntityId: number) => Promise<void>;
   getCart: (cartId: string) => Promise<void>;
 }
@@ -124,24 +124,32 @@ const isGetCartQuery = (data: unknown): data is GetCartQuery => {
 const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [cart, dispatch] = useReducer(reducer, defaultCartState);
 
-  const addCartLineItem = async (productEntityId: number, quantity = 1) => {
+  const addCartLineItem = async (productEntityId: number, selectedOptions = {}, quantity = 1) => {
     const client = getBrowserClient();
     const cartEntityId = getCookie('cart_id');
 
+    const lineItem = {
+      quantity,
+      productEntityId,
+    };
+
+    if (Object.keys(selectedOptions).length) {
+      lineItem.selectedOptions = selectedOptions;
+    }
+
     if (cartEntityId) {
-      const data = await client.mutate({
-        mutation: addCartLineItemMutation,
-        variables: {
-          addCartLineItemsInput: {
-            cartEntityId,
-            data: {
-              lineItems: {
-                quantity,
-                productEntityId,
-              },
-            },
+      const variables = {
+        addCartLineItemsInput: {
+          cartEntityId,
+          data: {
+            lineItems: [lineItem],
           },
         },
+      };
+
+      const data = await client.mutate({
+        mutation: addCartLineItemMutation,
+        variables,
       });
 
       if (isAddCartLineItemMutation(data)) {
@@ -152,12 +160,7 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
         mutation: createCartMutation,
         variables: {
           createCartInput: {
-            lineItems: [
-              {
-                quantity: 1,
-                productEntityId,
-              },
-            ],
+            lineItems: [lineItem],
           },
         },
       });

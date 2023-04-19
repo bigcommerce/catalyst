@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { MergeDeep } from 'type-fest';
 
 import { Breadcrumbs } from '../../../reactant/components/Breadcrumbs';
@@ -12,6 +12,7 @@ import { Swatch, SwatchGroup } from '../../../reactant/components/Swatch';
 import { CartIcon } from '../../../reactant/icons/Cart';
 import { DividerIcon } from '../../../reactant/icons/Divider';
 import { HeartIcon } from '../../../reactant/icons/Heart';
+import { CartContext } from '../../components/cart/cartContext';
 import { Footer, FooterSiteQuery } from '../../components/Footer';
 import { Header, HeaderSiteQuery } from '../../components/Header';
 import { getServerClient } from '../../graphql/server';
@@ -76,6 +77,7 @@ interface Product {
       };
     }>;
   };
+  entityId: number;
   sku: string;
   warranty: string;
   name: string;
@@ -250,6 +252,7 @@ export const getServerSideProps: GetServerSideProps<ProductPageProps, ProductPag
                 }
               }
             }
+            entityId
             sku
             warranty
             name
@@ -387,12 +390,18 @@ export const getServerSideProps: GetServerSideProps<ProductPageProps, ProductPag
   };
 };
 
+const optionsToCartMap = {
+  MultipleChoiceOption: 'multipleChoices',
+};
+
 export default function ProductPage({ brands, categoryTree, product, settings }: ProductPageProps) {
   const breadcrumbs = [
     { name: 'Home Page', path: '/' },
     { name: 'Caterory Page', path: '/category' },
     { name: 'Product Details Page', path: '/product-details' },
   ];
+
+  //   console.log(product, 'product');
 
   const swatchOptions = product.productOptions.edges.filter(
     (option) => option.node.displayStyle === 'Swatch',
@@ -411,6 +420,8 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
     return variant;
   };
 
+  const [selectedOptions, setSelectedOptions] = useState({});
+
   // in terms of POS: for product with swatch option only (check in CP) or without any options
   let variantAltText;
   let variantImage;
@@ -426,10 +437,43 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
     variantUpc = getVariant(optionId)[0].node.upc;
   }
 
-  const onSwatchClick = (id: number) => {
-    setOptionId(id);
-    getVariant(id);
+  const onSwatchClick = (
+    optionEntityId: number,
+    optionValueEntityId: number,
+    optionType: keyof typeof optionsToCartMap,
+  ) => {
+    setOptionId(optionValueEntityId);
+    getVariant(optionValueEntityId);
+
+    setSelectedOptions((prevSelectedOptions) => {
+      const nextSelectedOptions = { ...prevSelectedOptions };
+      const optionTypeNameInCart = optionsToCartMap[optionType];
+
+      const changedOptionTypeNameArray = nextSelectedOptions[optionTypeNameInCart];
+
+      if (changedOptionTypeNameArray) {
+        const changedOptionIdx = changedOptionTypeNameArray.findIndex(
+          (option) => option.optionEntityId === optionEntityId,
+        );
+
+        if (changedOptionIdx === -1) {
+          changedOptionTypeNameArray.push({ optionEntityId, optionValueEntityId });
+        } else {
+          changedOptionTypeNameArray[changedOptionIdx] = { optionEntityId, optionValueEntityId };
+        }
+      } else {
+        nextSelectedOptions[optionTypeNameInCart] = [{ optionEntityId, optionValueEntityId }];
+      }
+
+      return nextSelectedOptions;
+    });
   };
+
+  useEffect(() => {
+    console.log(selectedOptions, 'selectedOptions');
+  }, [selectedOptions]);
+
+  const { addCartLineItem } = useContext(CartContext);
 
   return (
     <>
@@ -597,7 +641,13 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
                                     aria-label={variant.node.label}
                                     className={Swatch.Input.default.className}
                                     name={`${variant.node.entityId}`}
-                                    onClick={() => onSwatchClick(variant.node.entityId)}
+                                    onClick={() =>
+                                      onSwatchClick(
+                                        swatch.node.entityId,
+                                        variant.node.entityId,
+                                        swatch.node.__typename,
+                                      )
+                                    }
                                     value={variant.node.entityId}
                                   />
                                 </Swatch>
@@ -626,7 +676,12 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-x-4 justify-between mb-12">
-                  <Button className={`${Button.primary.className} col-span-1`}>
+                  <Button
+                    className={`${Button.primary.className} col-span-1`}
+                    onClick={() => {
+                      void addCartLineItem(product.entityId, selectedOptions);
+                    }}
+                  >
                     <CartIcon className={Button.Icon.default.className} /> Add to cart
                   </Button>
                   <Button className={`${Button.secondary.className} col-span-1`}>
