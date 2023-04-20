@@ -69,6 +69,15 @@ const Cart = () => {
                                   </span>
                                 );
                               })}
+                            {selectedOptions.length && (
+                              <span>
+                                {selectedOptions.map(({ name, value }, i) => {
+                                  return `${name}: ${value}${
+                                    i + 1 < selectedOptions.length ? ', ' : ''
+                                  }`;
+                                })}
+                              </span>
+                            )}
                             <span>Quantity: {quantity}</span>
                             <span className="font-bold">
                               {extendedListPrice.value} {extendedListPrice.currencyCode}

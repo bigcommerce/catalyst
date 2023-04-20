@@ -192,7 +192,7 @@ export const getServerSideProps: GetServerSideProps<ProductPageProps, ProductPag
                 }
               }
             }
-            variants(first: 5) {
+            variants(first: 30) {
               edges {
                 node {
                   sku
@@ -394,6 +394,48 @@ const optionsToCartMap = {
   MultipleChoiceOption: 'multipleChoices',
 };
 
+const getVariant = (variants, options, selectedOptions) => {
+  const selectedOptionsQuantity = Object.keys(selectedOptions).reduce((acc, curr) => {
+    return acc + selectedOptions[curr].length;
+  }, 0);
+
+  if (selectedOptionsQuantity < options.edges.length) {
+    return null;
+  }
+
+  const variant = variants.edges.find((variant) => {
+    const { options } = variant.node;
+
+    const variantValues = options.edges
+      .map((option) => {
+        return option.node.values.edges.map((value) => {
+          return value.node.entityId;
+        });
+      })
+      .flat();
+
+    const selectedOptionsValues = Object.keys(selectedOptions)
+      .map((key) => {
+        return selectedOptions[key].map((option) => {
+          return option.optionValueEntityId;
+        });
+      })
+      .flat();
+
+    const selectedOptionsValuesSorted = selectedOptionsValues.sort();
+    const variantValuesSorted = variantValues.sort();
+    const isEqual = selectedOptionsValuesSorted.join(',') === variantValuesSorted.join(',');
+
+    if (isEqual) {
+      return true;
+    }
+
+    return false;
+  });
+
+  return variant;
+};
+
 export default function ProductPage({ brands, categoryTree, product, settings }: ProductPageProps) {
   const breadcrumbs = [
     { name: 'Home Page', path: '/' },
@@ -401,55 +443,53 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
     { name: 'Product Details Page', path: '/product-details' },
   ];
 
-  //   console.log(product, 'product');
-
   const swatchOptions = product.productOptions.edges.filter(
     (option) => option.node.displayStyle === 'Swatch',
   );
-  const defaultSwatchOption = swatchOptions.length
-    ? swatchOptions[0].node.values.edges.filter((value) => value.node.isDefault)
-    : [];
-  const defaultSwatchId = defaultSwatchOption.length ? defaultSwatchOption[0].node.entityId : null;
-  const [optionId, setOptionId] = useState(defaultSwatchId);
 
-  const getVariant = (id: number) => {
-    const variant = product.variants.edges.filter(
-      (variantItem) => variantItem.node.options.edges[0].node.values.edges[0].node.entityId === id,
-    );
+  const defaultSelectedOptions = swatchOptions.reduce((acc, curr) => {
+    const defaultOption = curr.node.values.edges.find((value) => value.node.isDefault);
 
-    return variant;
-  };
+    if (defaultOption) {
+      const optionTypeNameInCart = optionsToCartMap[curr.node.__typename];
+      const optionTypeNameInCartArray = acc[optionTypeNameInCart];
 
-  const [selectedOptions, setSelectedOptions] = useState({});
+      if (optionTypeNameInCartArray) {
+        acc[optionTypeNameInCart].push({
+          optionEntityId: curr.node.entityId,
+          optionValueEntityId: defaultOption.node.entityId,
+        });
+      } else {
+        acc[optionTypeNameInCart] = [
+          { optionEntityId: curr.node.entityId, optionValueEntityId: defaultOption.node.entityId },
+        ];
+      }
+    }
+
+    return acc;
+  }, {});
+
+  const defaultVariant = getVariant(
+    product.variants,
+    product.productOptions,
+    defaultSelectedOptions,
+  );
+
+  const [productState, setProductState] = useState({
+    selectedOptions: defaultSelectedOptions,
+    variant: defaultVariant,
+  });
 
   // in terms of POS: for product with swatch option only (check in CP) or without any options
-  let variantAltText;
-  let variantImage;
-  let variantPrice;
-  let variantSku;
-  let variantUpc;
-
-  if (optionId) {
-    variantAltText = getVariant(optionId)[0].node.defaultImage?.altText;
-    variantImage = getVariant(optionId)[0].node.defaultImage?.url;
-    variantPrice = getVariant(optionId)[0].node.prices.price.formatted;
-    variantSku = getVariant(optionId)[0].node.sku;
-    variantUpc = getVariant(optionId)[0].node.upc;
-  }
-
-  const onSwatchClick = (
+  const onSwatchChange = (
     optionEntityId: number,
     optionValueEntityId: number,
     optionType: keyof typeof optionsToCartMap,
   ) => {
-    setOptionId(optionValueEntityId);
-    getVariant(optionValueEntityId);
-
-    setSelectedOptions((prevSelectedOptions) => {
-      const nextSelectedOptions = { ...prevSelectedOptions };
+    setProductState((prevState) => {
+      const selectedOptions = { ...prevState.selectedOptions };
       const optionTypeNameInCart = optionsToCartMap[optionType];
-
-      const changedOptionTypeNameArray = nextSelectedOptions[optionTypeNameInCart];
+      const changedOptionTypeNameArray = selectedOptions[optionTypeNameInCart];
 
       if (changedOptionTypeNameArray) {
         const changedOptionIdx = changedOptionTypeNameArray.findIndex(
@@ -462,16 +502,21 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
           changedOptionTypeNameArray[changedOptionIdx] = { optionEntityId, optionValueEntityId };
         }
       } else {
-        nextSelectedOptions[optionTypeNameInCart] = [{ optionEntityId, optionValueEntityId }];
+        selectedOptions[optionTypeNameInCart] = [{ optionEntityId, optionValueEntityId }];
       }
 
-      return nextSelectedOptions;
+      const variant = getVariant(product.variants, product.productOptions, selectedOptions);
+
+      return {
+        selectedOptions,
+        variant,
+      };
     });
   };
 
   useEffect(() => {
-    console.log(selectedOptions, 'selectedOptions');
-  }, [selectedOptions]);
+    console.log(productState, 'productState');
+  }, [productState]);
 
   const { addCartLineItem } = useContext(CartContext);
 
@@ -515,10 +560,12 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
             <div className="col-span-1">
               <div className="flex flex-col mb-12">
                 <Image
-                  alt={variantAltText || product.defaultImage.altText}
+                  alt={
+                    productState.variant.node.defaultImage?.altText || product.defaultImage.altText
+                  }
                   height={619}
                   priority
-                  src={variantImage || product.defaultImage.url}
+                  src={productState.variant.node.defaultImage?.url || product.defaultImage.url}
                   width={619}
                 />
 
@@ -603,7 +650,7 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
               </div>
 
               <p className="mb-6 font-bold text-[28px]">
-                {variantPrice ||
+                {productState.variant.node.prices.price.formatted ||
                   `${product.prices.priceRange.min.formatted}-${product.prices.priceRange.max.formatted}` ||
                   product.prices.price.formatted}
               </p>
@@ -620,36 +667,49 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
                         >
                           <>
                             <SwatchGroup.Label className={SwatchGroup.Label.default.className}>
-                              <span>{swatch.node.displayName}</span>
+                              <span>
+                                {swatch.node.displayName} ({swatch.node.entityId})
+                              </span>
                             </SwatchGroup.Label>
-                            {swatch.node.values.edges.map((variant) => {
+                            {swatch.node.values.edges.map((value) => {
+                              const changedOptionTypeNameArray =
+                                productState.selectedOptions[
+                                  optionsToCartMap[swatch.node.__typename]
+                                ];
+
+                              const isChecked = !!changedOptionTypeNameArray.find(
+                                ({ optionValueEntityId }) =>
+                                  optionValueEntityId === value.node.entityId,
+                              );
+
                               return (
                                 <Swatch
                                   className={Swatch.default.className}
-                                  key={variant.node.entityId}
+                                  key={value.node.entityId}
                                 >
-                                  <Swatch.Label
-                                    className={Swatch.Label.default.className}
-                                    title={variant.node.label}
-                                  >
-                                    <Swatch.Variant
-                                      className={Swatch.Variant.default.className}
-                                      variantColor={variant.node.hexColors[0]}
-                                    />
-                                  </Swatch.Label>
                                   <Swatch.Input
-                                    aria-label={variant.node.label}
+                                    aria-label={value.node.label}
+                                    checked={isChecked}
                                     className={Swatch.Input.default.className}
-                                    name={`${variant.node.entityId}`}
-                                    onClick={() =>
-                                      onSwatchClick(
+                                    name={`${value.node.entityId}`}
+                                    onChange={() =>
+                                      onSwatchChange(
                                         swatch.node.entityId,
-                                        variant.node.entityId,
+                                        value.node.entityId,
                                         swatch.node.__typename,
                                       )
                                     }
-                                    value={variant.node.entityId}
+                                    value={value.node.entityId}
                                   />
+                                  <Swatch.Label
+                                    className={Swatch.Label.default.className}
+                                    title={value.node.label}
+                                  >
+                                    <Swatch.Variant
+                                      className={Swatch.Variant.default.className}
+                                      variantColor={value.node.hexColors[0]}
+                                    />
+                                  </Swatch.Label>
                                 </Swatch>
                               );
                             })}
@@ -679,7 +739,7 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
                   <Button
                     className={`${Button.primary.className} col-span-1`}
                     onClick={() => {
-                      void addCartLineItem(product.entityId, selectedOptions);
+                      void addCartLineItem(product.entityId, productState.selectedOptions);
                     }}
                   >
                     <CartIcon className={Button.Icon.default.className} /> Add to cart
@@ -696,11 +756,11 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
                 <ul className="flex flex-wrap">
                   <li className="w-[50%] mb-4 order-1 pr-2">
                     <h3 className="font-semibold text-black">SKU</h3>
-                    <p className="text-black">{variantSku || product.sku}</p>
+                    <p className="text-black">{productState.variant.node.sku || product.sku}</p>
                   </li>
                   <li className="w-[50%] mb-4 order-3 pr-2">
                     <h3 className="font-semibold text-black">UPC</h3>
-                    <p className="text-black">{variantUpc || product.upc}</p>
+                    <p className="text-black">{productState.variant.upc || product.upc}</p>
                   </li>
                   <li className="w-[50%] mb-4 order-5 pr-2">
                     <h3 className="font-semibold text-black">Minimum purchase</h3>
