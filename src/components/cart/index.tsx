@@ -60,24 +60,16 @@ const Cart = () => {
                           <span className="flex flex-col ml-3">
                             <span className="text-[#546E7A]">{brand}</span>
                             <span className="font-bold">{name}</span>
-                            {selectedOptions.length &&
-                              selectedOptions.map(({ name, value }, i) => {
-                                return (
-                                  <span key={i}>
-                                    {name}: {value}
-                                    {i + 1 < selectedOptions.length && ', '}
-                                  </span>
-                                );
-                              })}
-                            {selectedOptions.length && (
-                              <span>
-                                {selectedOptions.map(({ name, value }, i) => {
-                                  return `${name}: ${value}${
-                                    i + 1 < selectedOptions.length ? ', ' : ''
-                                  }`;
-                                })}
-                              </span>
-                            )}
+                            {selectedOptions.length
+                              ? selectedOptions.map(({ name, value }, i) => {
+                                  return (
+                                    <span key={i}>
+                                      {name}: {value}
+                                      {i + 1 < selectedOptions.length && ', '}
+                                    </span>
+                                  );
+                                })
+                              : null}
                             <span>Quantity: {quantity}</span>
                             <span className="font-bold">
                               {extendedListPrice.value} {extendedListPrice.currencyCode}

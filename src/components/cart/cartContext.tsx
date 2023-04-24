@@ -27,7 +27,10 @@ export const defaultCartState: CartState = {
 
 interface CartContext {
   cart: typeof defaultCartState;
-  addCartLineItem: (productEntityId: number, variantEntityId: number | null) => Promise<void>;
+  addCartLineItem: (
+    productEntityId: number,
+    variantEntityId: number | null | undefined,
+  ) => Promise<void>;
   deleteCartLineItem: (lineItemEntityId: number) => Promise<void>;
   getCart: (cartId: string) => Promise<void>;
 }
@@ -124,18 +127,19 @@ const isGetCartQuery = (data: unknown): data is GetCartQuery => {
 const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [cart, dispatch] = useReducer(reducer, defaultCartState);
 
-  const addCartLineItem = async (productEntityId: number, selectedOptions = {}, quantity = 1) => {
+  const addCartLineItem = async (
+    productEntityId: number,
+    variantEntityId: number | null | undefined,
+    quantity = 1,
+  ) => {
     const client = getBrowserClient();
     const cartEntityId = getCookie('cart_id');
 
     const lineItem = {
       quantity,
       productEntityId,
+      variantEntityId,
     };
-
-    if (Object.keys(selectedOptions).length) {
-      lineItem.selectedOptions = selectedOptions;
-    }
 
     if (cartEntityId) {
       const variables = {

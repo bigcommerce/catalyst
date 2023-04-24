@@ -4,9 +4,7 @@ import { getServerClient } from '../../graphql/server';
 import { MutationOptions, QueryOptions } from '../../graphql/utils';
 
 const isQueryRequest = (body: unknown): body is QueryOptions => {
-  const res = typeof body === 'object' && body !== null && 'query' in body;
-
-  return res;
+  return typeof body === 'object' && body !== null && 'query' in body;
 };
 
 const isMutationRequest = (body: unknown): body is MutationOptions => {

@@ -19,64 +19,93 @@ import { getServerClient } from '../../graphql/server';
 import { gql } from '../../graphql/utils';
 import { CategoryTree } from '../category/[cid]';
 
-interface Product {
-  variants: {
-    edges: Array<{
-      node: {
-        sku: string;
-        upc: string | null;
-        defaultImage: {
-          url: string | null;
-          altText: string;
-        } | null;
-        prices: {
-          price: {
-            value: number;
-            currencyCode: string;
-            formatted: string;
+const optionsToCartMap = {
+  MultipleChoiceOption: 'multipleChoices',
+  Checkbox: 'checkboxes',
+} as const;
+
+type OptionTypeName = keyof typeof optionsToCartMap;
+type OptionTypeNameInCart = (typeof optionsToCartMap)[OptionTypeName];
+
+interface MultipleChoices {
+  optionEntityId: number;
+  optionValueEntityId: number;
+}
+
+interface Checkboxes {
+  optionEntityId: number;
+  optionValueEntityId: number;
+}
+
+type Options = MultipleChoices & Checkboxes;
+
+interface ProductOption {
+  node: {
+    entityId: number;
+    displayName: string;
+    isRequired: boolean;
+    __typename: OptionTypeName;
+    displayStyle: string;
+    values: {
+      edges: Array<{
+        node: {
+          entityId: number;
+          label: string;
+          isDefault: boolean;
+          hexColors: string[];
+          imageUrl: string | null;
+          isSelected: boolean;
+        };
+      }>;
+    };
+  };
+}
+
+interface ProductOptions {
+  edges: ProductOption[];
+}
+
+interface Variant {
+  node: {
+    entityId: number;
+    sku: string;
+    upc: string | null;
+    defaultImage: {
+      url: string | null;
+      altText: string;
+    } | null;
+    prices: {
+      price: {
+        value: number;
+        currencyCode: string;
+        formatted: string;
+      };
+    };
+    options: {
+      edges: Array<{
+        node: {
+          displayName: string;
+          values: {
+            edges: Array<{
+              node: {
+                entityId: number;
+                label: string;
+              };
+            }>;
           };
         };
-        options: {
-          edges: Array<{
-            node: {
-              displayName: string;
-              values: {
-                edges: Array<{
-                  node: {
-                    entityId: number;
-                    label: string;
-                  };
-                }>;
-              };
-            };
-          }>;
-        };
-      };
-    }>;
+      }>;
+    };
   };
-  productOptions: {
-    edges: Array<{
-      node: {
-        entityId: number;
-        displayName: string;
-        isRequired: boolean;
-        __typename: string;
-        displayStyle: string;
-        values: {
-          edges: Array<{
-            node: {
-              entityId: number;
-              label: string;
-              isDefault: boolean;
-              hexColors: string[];
-              imageUrl: string | null;
-              isSelected: boolean;
-            };
-          }>;
-        };
-      };
-    }>;
-  };
+}
+
+interface Variants {
+  edges: Variant[];
+}
+
+interface Product {
+  variants: Variants;
+  productOptions: ProductOptions;
   entityId: number;
   sku: string;
   warranty: string;
@@ -162,6 +191,57 @@ interface ProductPageParams {
   pid: string;
 }
 
+type SelectedOptions = { [key in OptionTypeNameInCart]?: Options[] };
+
+interface ProductState {
+  selectedOptions: SelectedOptions;
+  variant: Variant | null;
+}
+
+const getVariant = (
+  variants: Variants,
+  options: ProductOptions,
+  selectedOptions: { [key in OptionTypeNameInCart]?: Options[] },
+) => {
+  const selectedOptionsQuantity = Object.values(selectedOptions).reduce((acc, curr) => {
+    return acc + curr.length;
+  }, 0);
+
+  if (selectedOptionsQuantity < options.edges.length) {
+    return null;
+  }
+
+  const variant = variants.edges.find(({ node: { options: _options } }) => {
+    const variantValues = _options.edges
+      .map((option) => {
+        return option.node.values.edges.map((value) => {
+          return value.node.entityId;
+        });
+      })
+      .flat();
+
+    const selectedOptionsValues = Object.values(selectedOptions)
+      .map((selectedOption) => {
+        return selectedOption.map((option) => {
+          return option.optionValueEntityId;
+        });
+      })
+      .flat();
+
+    const selectedOptionsValuesSorted = selectedOptionsValues.sort();
+    const variantValuesSorted = variantValues.sort();
+    const isEqual = selectedOptionsValuesSorted.join(',') === variantValuesSorted.join(',');
+
+    if (isEqual) {
+      return true;
+    }
+
+    return false;
+  });
+
+  return variant || null;
+};
+
 export const getServerSideProps: GetServerSideProps<ProductPageProps, ProductPageParams> = async ({
   params,
 }) => {
@@ -195,6 +275,7 @@ export const getServerSideProps: GetServerSideProps<ProductPageProps, ProductPag
             variants(first: 30) {
               edges {
                 node {
+                  entityId
                   sku
                   upc
                   defaultImage {
@@ -390,52 +471,6 @@ export const getServerSideProps: GetServerSideProps<ProductPageProps, ProductPag
   };
 };
 
-const optionsToCartMap = {
-  MultipleChoiceOption: 'multipleChoices',
-};
-
-const getVariant = (variants, options, selectedOptions) => {
-  const selectedOptionsQuantity = Object.keys(selectedOptions).reduce((acc, curr) => {
-    return acc + selectedOptions[curr].length;
-  }, 0);
-
-  if (selectedOptionsQuantity < options.edges.length) {
-    return null;
-  }
-
-  const variant = variants.edges.find((variant) => {
-    const { options } = variant.node;
-
-    const variantValues = options.edges
-      .map((option) => {
-        return option.node.values.edges.map((value) => {
-          return value.node.entityId;
-        });
-      })
-      .flat();
-
-    const selectedOptionsValues = Object.keys(selectedOptions)
-      .map((key) => {
-        return selectedOptions[key].map((option) => {
-          return option.optionValueEntityId;
-        });
-      })
-      .flat();
-
-    const selectedOptionsValuesSorted = selectedOptionsValues.sort();
-    const variantValuesSorted = variantValues.sort();
-    const isEqual = selectedOptionsValuesSorted.join(',') === variantValuesSorted.join(',');
-
-    if (isEqual) {
-      return true;
-    }
-
-    return false;
-  });
-
-  return variant;
-};
-
 export default function ProductPage({ brands, categoryTree, product, settings }: ProductPageProps) {
   const breadcrumbs = [
     { name: 'Home Page', path: '/' },
@@ -447,7 +482,7 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
     (option) => option.node.displayStyle === 'Swatch',
   );
 
-  const defaultSelectedOptions = swatchOptions.reduce((acc, curr) => {
+  const defaultSelectedOptions = swatchOptions.reduce<SelectedOptions>((acc, curr) => {
     const defaultOption = curr.node.values.edges.find((value) => value.node.isDefault);
 
     if (defaultOption) {
@@ -455,7 +490,7 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
       const optionTypeNameInCartArray = acc[optionTypeNameInCart];
 
       if (optionTypeNameInCartArray) {
-        acc[optionTypeNameInCart].push({
+        optionTypeNameInCartArray.push({
           optionEntityId: curr.node.entityId,
           optionValueEntityId: defaultOption.node.entityId,
         });
@@ -475,7 +510,7 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
     defaultSelectedOptions,
   );
 
-  const [productState, setProductState] = useState({
+  const [productState, setProductState] = useState<ProductState>({
     selectedOptions: defaultSelectedOptions,
     variant: defaultVariant,
   });
@@ -561,11 +596,11 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
               <div className="flex flex-col mb-12">
                 <Image
                   alt={
-                    productState.variant.node.defaultImage?.altText || product.defaultImage.altText
+                    productState.variant?.node.defaultImage?.altText || product.defaultImage.altText
                   }
                   height={619}
                   priority
-                  src={productState.variant.node.defaultImage?.url || product.defaultImage.url}
+                  src={productState.variant?.node.defaultImage?.url || product.defaultImage.url}
                   width={619}
                 />
 
@@ -650,7 +685,7 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
               </div>
 
               <p className="mb-6 font-bold text-[28px]">
-                {productState.variant.node.prices.price.formatted ||
+                {productState.variant?.node.prices.price.formatted ||
                   `${product.prices.priceRange.min.formatted}-${product.prices.priceRange.max.formatted}` ||
                   product.prices.price.formatted}
               </p>
@@ -667,9 +702,7 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
                         >
                           <>
                             <SwatchGroup.Label className={SwatchGroup.Label.default.className}>
-                              <span>
-                                {swatch.node.displayName} ({swatch.node.entityId})
-                              </span>
+                              <span>{swatch.node.displayName}</span>
                             </SwatchGroup.Label>
                             {swatch.node.values.edges.map((value) => {
                               const changedOptionTypeNameArray =
@@ -677,7 +710,7 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
                                   optionsToCartMap[swatch.node.__typename]
                                 ];
 
-                              const isChecked = !!changedOptionTypeNameArray.find(
+                              const isChecked = !!changedOptionTypeNameArray?.find(
                                 ({ optionValueEntityId }) =>
                                   optionValueEntityId === value.node.entityId,
                               );
@@ -739,7 +772,7 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
                   <Button
                     className={`${Button.primary.className} col-span-1`}
                     onClick={() => {
-                      void addCartLineItem(product.entityId, productState.selectedOptions);
+                      void addCartLineItem(product.entityId, productState.variant?.node.entityId);
                     }}
                   >
                     <CartIcon className={Button.Icon.default.className} /> Add to cart
@@ -756,11 +789,11 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
                 <ul className="flex flex-wrap">
                   <li className="w-[50%] mb-4 order-1 pr-2">
                     <h3 className="font-semibold text-black">SKU</h3>
-                    <p className="text-black">{productState.variant.node.sku || product.sku}</p>
+                    <p className="text-black">{productState.variant?.node.sku || product.sku}</p>
                   </li>
                   <li className="w-[50%] mb-4 order-3 pr-2">
                     <h3 className="font-semibold text-black">UPC</h3>
-                    <p className="text-black">{productState.variant.upc || product.upc}</p>
+                    <p className="text-black">{productState.variant?.node.upc || product.upc}</p>
                   </li>
                   <li className="w-[50%] mb-4 order-5 pr-2">
                     <h3 className="font-semibold text-black">Minimum purchase</h3>
