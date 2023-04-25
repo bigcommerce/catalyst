@@ -3,6 +3,7 @@
     "ci",
     "deps",
     "client",
-    "catalyst"
+    "catalyst",
+    "reactant"
   ]
 }
