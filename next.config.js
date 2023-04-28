@@ -7,7 +7,11 @@ const nextConfig = {
     runtime: 'experimental-edge',
   },
   images: {
-    domains: ['cdn11.bigcommerce.com'],
+    remotePatterns: [
+      {
+        hostname: process.env.BIGCOMMERCE_CDN_HOSTNAME ?? '*.bigcommerce.com',
+      },
+    ],
   },
   i18n: {
     locales: ['en'],
