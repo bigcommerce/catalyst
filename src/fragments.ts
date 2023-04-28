@@ -1,4 +1,4 @@
-import { query as ProductTilesQuery } from '../components/ProductTiles';
+import { query as ProductTilesQuery } from './components/ProductTiles';
 
 const CategoryFiltersQuery = {
   fragmentName: 'PageFilters',

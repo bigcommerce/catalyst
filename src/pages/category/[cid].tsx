@@ -14,7 +14,7 @@ import { Facets, FacetsState, Filters } from '../../components/Facets';
 import { Footer, query as FooterQuery, FooterSiteQuery } from '../../components/Footer';
 import { Header, query as HeaderQuery, HeaderSiteQuery } from '../../components/Header';
 import { ProductTiles, ProductTilesConnection } from '../../components/ProductTiles';
-import { queryBack as SearchBackQuery, queryForward as SearchForwardQuery } from '../fragments';
+import { queryBack as SearchBackQuery, queryForward as SearchForwardQuery } from '../../fragments';
 
 interface Category {
   name: string;
