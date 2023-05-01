@@ -1,4 +1,3 @@
-const isProduction = process.env.NODE_ENV !== 'development';
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 /** @type {import('next').NextConfig} */
@@ -8,8 +7,11 @@ const nextConfig = {
     runtime: 'experimental-edge',
   },
   images: {
-    loaderFile: isProduction ? './src/bigcommerceImageLoader.ts' : undefined,
-    domains: ['cdn11.bigcommerce.com'],
+    remotePatterns: [
+      {
+        hostname: process.env.BIGCOMMERCE_CDN_HOSTNAME ?? '*.bigcommerce.com',
+      },
+    ],
   },
   i18n: {
     locales: ['en'],

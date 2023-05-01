@@ -75,8 +75,8 @@ export default function HomePage({ data }: { data: HomePageQuery }) {
   return (
     <>
       <Head>
-        <title>BigCommerce Swag Store</title>
-        <meta content="BigCommerce Swag Store" name="description" />
+        <title>{data.site.settings.storeName}</title>
+        <meta content={data.site.settings.storeName} name="description" />
       </Head>
       <Header categoryTree={data.site.categoryTree} settings={data.site.settings} />
       <main>
