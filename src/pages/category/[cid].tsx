@@ -7,6 +7,7 @@ import { MergeDeep } from 'type-fest';
 import { getServerClient } from '@client/server';
 import { gql } from '@client/utils';
 import { Pagination } from '@reactant/components/Pagination';
+import { H1 } from '@reactant/components/Typography';
 import { ChevronLeftIcon } from '@reactant/icons/ChevronLeft';
 import { ChevronRightIcon } from '@reactant/icons/ChevronRight';
 
@@ -299,7 +300,7 @@ export default function CategoryPage({
       />
       <main>
         <div className="md:container md:mx-auto">
-          <h1 className="font-black text-5xl leading-[4rem] mb-8">{category.name}</h1>
+          <H1 className={`${H1.default.className} mb-8`}>{category.name}</H1>
           <div className="grid grid-cols-4">
             <div className="col-span-1 mr-8">
               <Facets

@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 
 import { Button } from '@reactant/components/Button';
 import { Link as ReactantLink } from '@reactant/components/Link';
-import { H3, P, ProductTile } from '@reactant/components/ProducTile';
+import { ProductTile } from '@reactant/components/ProducTile';
 import { Swatch, SwatchGroup } from '@reactant/components/Swatch';
+import { H3, H5, Text } from '@reactant/components/Typography';
 import { HeartIcon } from '@reactant/icons/Heart';
 
 import { Variant } from '../pages/product/[pid]';
@@ -124,15 +125,17 @@ export const ProductTileWrapper = ({
 
               return false;
             })}
-            <P className={`${P.default.className} text-[#546E7A]`}>{product.node.brand?.name}</P>
-            <H3 className={`${H3.default.className}  hover:text-[#053FB0]`}>
+            <Text className={`${Text.default.className} text-[#546E7A]`}>
+              {product.node.brand?.name}
+            </Text>
+            <H3 className={`${H5.default.className}  hover:text-[#053FB0]`}>
               <Link href={product.node.path}>{product.node.name}</Link>
             </H3>
           </div>
           <div className="card-text relative py-1 flex items-center gap-2">
-            <P className={P.default.className}>
+            <Text className={Text.default.className}>
               {showPrice(activeSwatchId) || product.node.prices.price?.formatted}
-            </P>
+            </Text>
           </div>
           <div className="absolute z-10 hidden flex-row justify-start pt-4 gap-x-4 group-hover/cardBody:inline-flex">
             {product.node.showCartAction && (

@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 
 import { Link } from '@reactant/components/Link';
+import { H4, Text } from '@reactant/components/Typography';
 import { FacebookIcon } from '@reactant/icons/Facebook';
 import { PinterestIcon } from '@reactant/icons/Pinterest';
 import { TwitterIcon } from '@reactant/icons/Twitter';
@@ -117,9 +118,9 @@ export const Footer = ({ brands, categoryTree, settings }: FooterProps) => {
             />
           </div>
           <div className="sm:col-span-2 md:order-first">
-            <h4 className="mb-4">
+            <H4 className="mb-4">
               <BaseStoreLogo logo={logoV2} storeName={storeName} />
-            </h4>
+            </H4>
             <address className="mb-2 not-italic">
               {contact.address.split('\n').map((line) => (
                 <Fragment key={line}>
@@ -154,9 +155,9 @@ export const Footer = ({ brands, categoryTree, settings }: FooterProps) => {
       <div className="grid grid-cols-1 md:grid-cols-2 my-8 md:my-6 mx-6 sm:mx-10 md:container md:mx-auto">
         <div className="md:text-right">Payment methods</div>
         <div className="md:order-first">
-          <p className="text-sm text-slate-500">
+          <Text className="text-sm text-slate-500">
             © {new Date().getFullYear()} {storeName} – Powered by BigCommerce
-          </p>
+          </Text>
         </div>
       </div>
     </footer>

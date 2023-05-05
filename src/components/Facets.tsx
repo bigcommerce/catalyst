@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { Accordion } from '@reactant/components/Accordion';
+import { H2, H5, Text } from '@reactant/components/Typography';
 import { Check } from '@reactant/icons/Check';
 import { ChevronDownIcon } from '@reactant/icons/ChevronDown';
 import { ChevronUpIcon } from '@reactant/icons/ChevronUp';
@@ -96,7 +97,7 @@ export const Facets = ({ filters, pagePath, pageFacets }: FacetsProps) => {
     <div className="flex flex-col gap-y-6">
       {/* TODO: add facets */}
       <div className="flex items-center justify-between">
-        <p className="text-2xl font-bold">Refined By</p>
+        <H2 className={H5.default.className}>Refined By</H2>
         <Link
           className="text-[#053FB0] hover:cursor-pointer hover:text-[#3071EF]"
           href={`${pagePath}`}
@@ -132,7 +133,7 @@ export const Facets = ({ filters, pagePath, pageFacets }: FacetsProps) => {
                 {/* NOTE: BRANDS FILTER */}
                 {filter.brands?.edges.map(({ node: brand }) => {
                   return (
-                    <p className="inline-flex items-center gap-x-2" key={brand.entityId}>
+                    <Text className="inline-flex items-center gap-x-2" key={brand.entityId}>
                       <Link
                         className="inline-flex items-center gap-x-3"
                         href={getFacetHref(
@@ -148,10 +149,16 @@ export const Facets = ({ filters, pagePath, pageFacets }: FacetsProps) => {
                         ) : (
                           <span className="w-6 h-6 border-2 border-[#CFD8DC] bg-white" />
                         )}
-                        <span className="text-base">{brand.name}</span>
-                        <span className="text-[#546E7A]">{brand.productCount}</span>
+                        <span className={`${Text.default.className} ${Text.regular.className}`}>
+                          {brand.name}
+                        </span>
+                        <span
+                          className={`${Text.default.className} ${Text.regular.className} text-[#546E7A]`}
+                        >
+                          {brand.productCount}
+                        </span>
                       </Link>
-                    </p>
+                    </Text>
                   );
                 })}
               </Accordion.Content>
@@ -184,7 +191,7 @@ export const Facets = ({ filters, pagePath, pageFacets }: FacetsProps) => {
               />
               <Accordion.Content className={Accordion.Content.default.className}>
                 {filter.freeShipping && (
-                  <p className="inline-flex items-center gap-x-2">
+                  <Text className="inline-flex items-center gap-x-2">
                     <Link
                       className="inline-flex items-center gap-x-3"
                       href={getFacetHref(
@@ -200,13 +207,19 @@ export const Facets = ({ filters, pagePath, pageFacets }: FacetsProps) => {
                       ) : (
                         <span className="w-6 h-6 border-2 border-[#CFD8DC] bg-white" />
                       )}
-                      <span className="text-base">Has Free Shipping</span>
-                      <span className="text-[#546E7A]">{filter.freeShipping.productCount}</span>
+                      <span className={`${Text.default.className} ${Text.regular.className}`}>
+                        Has Free Shipping
+                      </span>
+                      <span
+                        className={`${Text.default.className} ${Text.regular.className} text-[#546E7A]`}
+                      >
+                        {filter.freeShipping.productCount}
+                      </span>
                     </Link>
-                  </p>
+                  </Text>
                 )}
                 {filter.isFeatured && (
-                  <p className="inline-flex items-center gap-x-2">
+                  <Text className="inline-flex items-center gap-x-2">
                     <Link
                       className="inline-flex items-center gap-x-3"
                       href={getFacetHref(
@@ -222,13 +235,19 @@ export const Facets = ({ filters, pagePath, pageFacets }: FacetsProps) => {
                       ) : (
                         <span className="w-6 h-6 border-2 border-[#CFD8DC] bg-white" />
                       )}
-                      <span className="text-base">Featured</span>
-                      <span className="text-[#546E7A]">{filter.isFeatured.productCount}</span>
+                      <span className={`${Text.default.className} ${Text.regular.className}`}>
+                        Featured
+                      </span>
+                      <span
+                        className={`${Text.default.className} ${Text.regular.className} text-[#546E7A]`}
+                      >
+                        {filter.isFeatured.productCount}
+                      </span>
                     </Link>
-                  </p>
+                  </Text>
                 )}
                 {filter.isInStock && (
-                  <p className="inline-flex items-center gap-x-2">
+                  <Text className="inline-flex items-center gap-x-2">
                     <Link
                       className="inline-flex items-center gap-x-3"
                       href={getFacetHref(
@@ -244,10 +263,16 @@ export const Facets = ({ filters, pagePath, pageFacets }: FacetsProps) => {
                       ) : (
                         <span className="w-6 h-6 border-2 border-[#CFD8DC] bg-white" />
                       )}
-                      <span className="text-base">In Stock</span>
-                      <span className="text-[#546E7A]">{filter.isInStock.productCount}</span>
+                      <span className={`${Text.default.className} ${Text.regular.className}`}>
+                        In Stock
+                      </span>
+                      <span
+                        className={`${Text.default.className} ${Text.regular.className} text-[#546E7A]`}
+                      >
+                        {filter.isInStock.productCount}
+                      </span>
                     </Link>
-                  </p>
+                  </Text>
                 )}
               </Accordion.Content>
             </Accordion>

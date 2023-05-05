@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { H2, H3 } from '@reactant/components/Typography';
+
 import { Variant } from '../pages/product/[pid]';
 
 import { ProductTileWrapper } from './ProductTileWrapper';
@@ -178,7 +180,7 @@ export const ProductTiles = ({
 }: ProductTilesProps) => {
   return (
     <div className="my-12 mx-6 sm:mx-10 md:mx-auto">
-      {title ? <h2 className="font-black text-4xl mb-10">{title}</h2> : null}
+      {title ? <H2 className={H3.default.className}>{title}</H2> : null}
       <ul className={`grid grid-cols-2 gap-6 ${COLS[cols]} md:gap-8`}>
         {products.edges.map((product: Product) => (
           <ProductTileWrapper

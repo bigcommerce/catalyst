@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { H1 } from '@reactant/components/Typography';
+
 interface StoreTextLogo {
   __typename: 'StoreTextLogo';
   text: string;
@@ -36,9 +38,9 @@ export const BaseStoreLogo: React.FC<Omit<StoreLogoProps, 'isHomePage'>> = ({
 export const StoreLogo = ({ logo, storeName, isHomePage }: StoreLogoProps) => {
   if (isHomePage) {
     return (
-      <h1>
+      <H1>
         <BaseStoreLogo logo={logo} storeName={storeName} />
-      </h1>
+      </H1>
     );
   }
 

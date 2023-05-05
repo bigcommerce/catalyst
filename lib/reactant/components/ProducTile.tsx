@@ -2,28 +2,6 @@ import { ComponentPropsWithoutRef } from 'react';
 
 import { ComponentClasses } from './types';
 
-type PProps = ComponentPropsWithoutRef<'p'>;
-type P = React.FC<PProps> & ComponentClasses<'default'>;
-
-export const P: P = ({ children, ...props }) => {
-  return <p {...props}>{children}</p>;
-};
-
-P.default = {
-  className: 'leading-7 text-base',
-};
-
-type H3Props = ComponentPropsWithoutRef<'h3'>;
-type H3 = React.FC<H3Props> & ComponentClasses<'default'>;
-
-export const H3: H3 = ({ children, ...props }) => {
-  return <h3 {...props}>{children}</h3>;
-};
-
-H3.default = {
-  className: 'font-bold leading-6 text-xl',
-};
-
 type FigureProps = ComponentPropsWithoutRef<'figure'>;
 
 const Figure: ProductTile['Figure'] = ({ children, ...props }) => {

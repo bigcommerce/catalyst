@@ -11,6 +11,7 @@ import { Button } from '@reactant/components/Button';
 import { Link } from '@reactant/components/Link';
 import { Rating } from '@reactant/components/Rating';
 import { Swatch, SwatchGroup } from '@reactant/components/Swatch';
+import { H1, H2, H3, H4, H5, H6, Text } from '@reactant/components/Typography';
 import { CartIcon } from '@reactant/icons/Cart';
 import { DividerIcon } from '@reactant/icons/Divider';
 import { HeartIcon } from '@reactant/icons/Heart';
@@ -500,50 +501,61 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
               </div>
 
               <div className="mb-8">
-                <h2 className="mb-4 text-xl font-bold text-black">Description</h2>
-                <p className="text-base font-normal leading-7 text-black">
+                <H3 className={`${H5.default.className} mb-4`}>Description</H3>
+                <Text className={`${Text.default.className} ${Text.regular.className}`}>
                   {product.plainTextDescription}
-                </p>
+                </Text>
               </div>
 
               <div className="mb-8">
-                <h2 className="mb-4 text-xl font-bold text-black">Warranty</h2>
-                <p className="text-base font-normal leading-7 text-black">{product.warranty}</p>
+                <H3 className={`${H5.default.className} mb-4`}>Warranty</H3>
+                <Text className={`${Text.default.className} ${Text.regular.className}`}>
+                  {product.warranty}
+                </Text>
               </div>
 
-              <div className="reviews">
+              <ul>
                 {product.reviews.edges.map((review, i) => {
                   return (
-                    <React.Fragment key={review.node.entityId}>
-                      <h2 className="mb-[26px] text-xl font-bold text-black">Rewiev {i + 1}</h2>
+                    <li key={review.node.entityId}>
+                      <H3 className={`${H5.default.className} mb-[26px]`}>
+                        Rewiev
+                        <span className="text-[#546E7A] ml-[8px]">{i + 1}</span>
+                      </H3>
                       <div className="mb-3.5">
                         <Rating value={review.node.rating} />
                       </div>
-                      <p className="font-semibold text-base text-black">{review.node.title}</p>
-                      <p className="mb-4 font-normal text-base text-[#546E7A]">
+                      <Text
+                        className={`${Text.default.className} ${Text.regular.className} !font-semibold`}
+                      >
+                        {review.node.title}
+                      </Text>
+                      <Text
+                        className={`${Text.default.className} ${Text.regular.className} text-[#546E7A] mb-4`}
+                      >
                         Posted by{' '}
                         {review.node.author.name !== '' ? review.node.author.name : 'Customer'} on{' '}
                         {review.node.createdAt.utc}
-                      </p>
-                      <p className="text-base font-normal leading-7 text-black mb-6">
+                      </Text>
+                      <Text className={`${Text.default.className} ${Text.regular.className} mb-6`}>
                         {review.node.text}
-                      </p>
-                    </React.Fragment>
+                      </Text>
+                    </li>
                   );
                 })}
                 <Button className={Button.secondary.className}>Write review</Button>
-              </div>
+              </ul>
             </div>
 
             <div className="col-span-1">
               {product.brand ? (
-                <p className="font-semibold text-base text-[#546E7A] uppercase leading-[27px]">
+                <Text
+                  className={`${Text.default.className} ${Text.regular.className} !font-semibold text-[#546E7A] uppercase`}
+                >
                   {product.brand.name}
-                </p>
+                </Text>
               ) : null}
-              <h1 className="text-[50px] font-black leading-[66px] text-black mb-3">
-                {product.name}
-              </h1>
+              <H1 className={`${H2.default.className} mb-3`}>{product.name}</H1>
               <div className="flex items-center mb-6">
                 <span className="mr-3.5">
                   <Rating
@@ -562,11 +574,11 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
                 </Link>
               </div>
 
-              <p className="mb-6 font-bold text-[28px]">
+              <Text className="mb-6 font-bold text-[28px]">
                 {variantPrice ||
                   `${product.prices.priceRange.min.formatted}-${product.prices.priceRange.max.formatted}` ||
                   product.prices.price.formatted}
-              </p>
+              </Text>
 
               <form action="#">
                 <div className="mb-6">
@@ -640,48 +652,64 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
               </form>
 
               <div className="additional-details">
-                <h2 className="text-xl text-black font-bold mb-4">Additional details</h2>
+                <H3 className={`${H5.default.className} mb-4`}>Additional details</H3>
 
                 <ul className="flex flex-wrap">
                   <li className="w-[50%] mb-4 order-1 pr-2">
-                    <h3 className="font-semibold text-black">SKU</h3>
-                    <p className="text-black">{variantSku || product.sku}</p>
+                    <H4 className={`${H6.default.className} !font-semibold !leading-7`}>SKU</H4>
+                    <Text>{variantSku || product.sku}</Text>
                   </li>
                   <li className="w-[50%] mb-4 order-3 pr-2">
-                    <h3 className="font-semibold text-black">UPC</h3>
-                    <p className="text-black">{variantUpc || product.upc}</p>
+                    <H4 className={`${H6.default.className} !font-semibold !leading-7`}>UPC</H4>
+                    <Text>{variantUpc || product.upc}</Text>
                   </li>
                   <li className="w-[50%] mb-4 order-5 pr-2">
-                    <h3 className="font-semibold text-black">Minimum purchase</h3>
-                    <p className="text-black">
+                    <H4 className={`${H6.default.className} !font-semibold !leading-7`}>
+                      Minimum purchase
+                    </H4>
+                    <Text className={`${Text.default.className} ${Text.regular.className}`}>
                       {product.minPurchaseQuantity ? product.minPurchaseQuantity : '1'} unit
-                    </p>
+                    </Text>
                   </li>
                   <li className="w-[50%] mb-4 order-7 pr-2">
-                    <h3 className="font-semibold text-black">Maximum purchase</h3>
-                    <p className="text-black">
+                    <H4 className={`${H6.default.className} !font-semibold !leading-7`}>
+                      Maximum purchase
+                    </H4>
+                    <Text className={`${Text.default.className} ${Text.regular.className}`}>
                       {product.maxPurchaseQuantity ? product.maxPurchaseQuantity : '10'} units
-                    </p>
+                    </Text>
                   </li>
                   <li className="w-[50%] mb-4 order-2 pl-2">
-                    <h3 className="font-semibold text-black">Availability</h3>
-                    <p className="text-black">
+                    <H4 className={`${H6.default.className} !font-semibold !leading-7`}>
+                      Availability
+                    </H4>
+                    <Text className={`${Text.default.className} ${Text.regular.className}`}>
                       {product.availabilityV2.description
                         ? product.availabilityV2.description
                         : '2-3 business days'}
-                    </p>
+                    </Text>
                   </li>
                   <li className="w-[50%] mb-4 order-4 pl-2">
-                    <h3 className="font-semibold text-black">Condition</h3>
-                    <p className="text-black">{product.condition ? product.condition : 'New'}</p>
+                    <H4 className={`${H6.default.className} !font-semibold !leading-7`}>
+                      Condition
+                    </H4>
+                    <Text className={`${Text.default.className} ${Text.regular.className}`}>
+                      {product.condition ? product.condition : 'New'}
+                    </Text>
                   </li>
                   <li className="w-[50%] mb-4 order-6 pl-2">
-                    <h3 className="font-semibold text-black">Material</h3>
-                    <p className="text-black">100% original material</p>
+                    <H4 className={`${H6.default.className} !font-semibold !leading-7`}>
+                      Material
+                    </H4>
+                    <Text className={`${Text.default.className} ${Text.regular.className}`}>
+                      100% original material
+                    </Text>
                   </li>
                   <li className="w-[50%] mb-4 order-8 pl-2">
-                    <h3 className="font-semibold text-black">Fit</h3>
-                    <p className="text-black">Unisex</p>
+                    <H4 className={`${H6.default.className} !font-semibold !leading-7`}>Fit</H4>
+                    <Text className={`${Text.default.className} ${Text.regular.className}`}>
+                      Unisex
+                    </Text>
                   </li>
                 </ul>
               </div>

@@ -6,6 +6,7 @@ import { MergeDeep } from 'type-fest';
 import { getServerClient } from '@client/server';
 import { gql } from '@client/utils';
 import { Link } from '@reactant/components/Link';
+import { H1, H2, Text } from '@reactant/components/Typography';
 
 import { Footer, query as FooterQuery, FooterSiteQuery } from '../components/Footer';
 import { Header, query as HeaderQuery, HeaderSiteQuery } from '../components/Header';
@@ -121,11 +122,13 @@ export default function HomePage({ homePage, header, footer }: HomePageProps) {
       <main>
         <div className="md:container md:mx-auto">
           <div className="aspect-[9/16] md:aspect-[2/1] bg-slate-100 relative flex flex-col items-start justify-center p-6 sm:p-16 md:p-24">
-            <h1 className="text-4xl font-black mb-4">New collection</h1>
-            <p className="md:max-w-lg mb-10">
+            <H2 className={`${H1.default.className} mb-4`}>New collection</H2>
+            <Text
+              className={`${Text.default.className} ${Text.regular.className} md:max-w-lg mb-10`}
+            >
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
               incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
-            </p>
+            </Text>
             <Link className="px-8 py-3 bg-[#053FB0] text-white font-semibold" href="/">
               Shop now
             </Link>

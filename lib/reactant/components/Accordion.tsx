@@ -8,6 +8,8 @@ import {
   useState,
 } from 'react';
 
+import { H4, H6 } from '@reactant/components/Typography';
+
 import { ComponentClasses } from './types';
 
 const AccordionTogglerContext = createContext<{
@@ -68,7 +70,7 @@ const Toggle: Accordion['Toggle'] = ({ children, icons, title, ...props }) => {
       onKeyDown={handleToggleAction}
       tabIndex={0}
     >
-      <p className="font-bold">{title}</p>
+      <H4 className={H6.default.className}>{title}</H4>
       {toggle ? IconA : IconB}
     </div>
   );

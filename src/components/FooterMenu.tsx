@@ -2,6 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 
 import { Link as ReactantLink } from '@reactant/components/Link';
+import { H4, H6 } from '@reactant/components/Typography';
 
 interface FooterMenuProps {
   title: string;
@@ -13,7 +14,7 @@ interface FooterMenuProps {
 
 export const FooterMenu = ({ title, items }: FooterMenuProps) => (
   <>
-    <h4 className="font-bold mb-4">{title}</h4>
+    <H4 className={`${H6.default.className} mb-4`}>{title}</H4>
     <ul>
       {items.map((item) => (
         <li className="mb-4" key={item.path}>
