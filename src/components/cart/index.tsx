@@ -1,3 +1,4 @@
+import { log } from 'console';
 import Image from 'next/image';
 import React, { useContext, useState } from 'react';
 
@@ -16,6 +17,8 @@ const Cart = () => {
     cart: { amount, cartItems, totalQuantity },
     deleteCartLineItem,
   } = useContext(CartContext);
+
+  console.log(cartItems, 'cartItems');
 
   return (
     <div>

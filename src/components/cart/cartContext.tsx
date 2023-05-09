@@ -1,3 +1,4 @@
+import { log } from 'console';
 import { createContext, PropsWithChildren, useEffect, useReducer } from 'react';
 
 import { getBrowserClient } from '../../graphql/browser';
@@ -23,6 +24,14 @@ export const defaultCartState: CartState = {
   },
   cartItems: [],
   totalQuantity: 0,
+};
+
+const API = {
+  addCartLineItemMutation: '/api/cart/addCartLineItemMutation',
+  createCartMutation: '/api/cart/createCartMutation',
+  deleteCartMutation: '/api/cart/deleteCartMutation',
+  deleteCartLineItemMutation: '/api/cart/deleteCartLineItemMutation',
+  getCartQuery: '/api/cart/getCartQuery',
 };
 
 interface CartContext {
@@ -176,6 +185,41 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
+  const addCartLineItem2 = async (
+    productEntityId: number,
+    variantEntityId: number | null | undefined,
+    quantity = 1,
+  ) => {
+    if (cart.cartItems.length) {
+      const res = await fetch(API.addCartLineItemMutation, {
+        method: 'POST',
+        body: JSON.stringify({ productEntityId, variantEntityId, quantity }),
+      });
+      const data: unknown = await res.json();
+
+      if (isAddCartLineItemMutation(data)) {
+        console.log(data, 'data in addCartLineItem2');
+        // dispatch({ type: ACTION_TYPES.ADD_CART_ITEM, payload: data });
+      }
+    } else {
+      const res = await fetch(API.createCartMutation, {
+        method: 'POST',
+        body: JSON.stringify({ productEntityId, variantEntityId, quantity }),
+      });
+
+      const data: unknown = await res.json();
+
+      if (isCreateCreateCartMutation(data)) {
+        console.log(data, 'data in addCartLineItem2');
+        // dispatch({ type: ACTION_TYPES.CREATE_CART, payload: data });
+      }
+    }
+  };
+
+  //   useEffect(() => {
+  //     void addCartLineItem2(86, 1225);
+  //   }, []);
+
   const deleteCartLineItem = async (lineItemEntityId: number) => {
     const cartEntityId = getCookie('cart_id');
     const client = getBrowserClient();
@@ -211,6 +255,38 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
+  const deleteCartLineItem2 = async (lineItemEntityId: string) => {
+    if (cart.cartItems.length === 1) {
+      const res = await fetch(API.deleteCartMutation, {
+        method: 'POST',
+        body: null,
+      });
+
+      const data: unknown = await res.json();
+
+      if (isDeleteCartMutation(data)) {
+        console.log(data, 'data in addCartLineItem2 (delete cart)');
+        // dispatch({ type: ACTION_TYPES.DELETE_CART, payload: data });
+      }
+    } else {
+      const res = await fetch(API.deleteCartLineItemMutation, {
+        method: 'POST',
+        body: JSON.stringify({ lineItemEntityId }),
+      });
+
+      const data: unknown = await res.json();
+
+      if (isDeleteCartLineItemMutation(data)) {
+        console.log(data, 'data in addCartLineItem2');
+        // dispatch({ type: ACTION_TYPES.DELETE_CART_ITEM, payload: data });
+      }
+    }
+  };
+
+  //   useEffect(() => {
+  //     void deleteCartLineItem2('addf3f63-e512-4513-ae7d-96bc7af56f2f');
+  //   }, []);
+
   const getCart = async (cartId: string) => {
     const client = getBrowserClient();
 
@@ -224,11 +300,27 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
+  const getCart2 = async (cartId: string) => {
+    const res = await fetch(API.getCartQuery, {
+      method: 'POST',
+      body: JSON.stringify({ cartId }),
+    });
+    const data: unknown = await res.json();
+
+    if (isGetCartQuery(data)) {
+      console.log(data, 'data in getCart2');
+      // dispatch({ type: ACTION_TYPES.GET_CART, payload: data });
+    }
+  };
+
   useEffect(() => {
     const cartId = getCookie('cart_id');
 
+    console.log(cartId, 'cartId');
+
     if (cartId) {
       void getCart(cartId);
+      void getCart2();
     }
   }, []);
 

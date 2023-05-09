@@ -50,6 +50,8 @@ export async function sessionMiddleware(request: NextRequest) {
   const response = NextResponse.next();
   const session = await getIronSession(request, response, sessionOptions);
 
+//   console.log(session, 'session in sessionMiddleware');
+
   const sessionCookie = request.cookies.get(process.env.SESSION_ID ?? '');
 
   // initialize new session
