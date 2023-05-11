@@ -1,4 +1,5 @@
 import { Inter } from '@next/font/google';
+import { Analytics } from '@vercel/analytics/react';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import React from 'react';
@@ -24,6 +25,7 @@ function App({ Component, pageProps }: AppProps) {
         `}
       </style>
       <Component {...pageProps} />
+      <Analytics />
     </>
   );
 }
