@@ -1,9 +1,0 @@
-{
-  "scopes": [
-    "ci",
-    "deps",
-    "client",
-    "catalyst",
-    "reactant"
-  ]
-}

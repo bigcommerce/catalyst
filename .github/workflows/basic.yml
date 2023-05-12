@@ -7,25 +7,6 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  validate-commits:
-    # Skip if not a Pull Request
-    if: github.base_ref
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@main
-        with:
-          fetch-depth: 0
-
-      - name: Use Node.js
-        uses: actions/setup-node@main
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-
-      - name: Validate commits
-        run: npx @bigcommerce/validate-commits ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}
-
   lint:
 
     runs-on: ubuntu-latest
