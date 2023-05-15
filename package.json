@@ -11,10 +11,9 @@
   },
   "prettier": "@bigcommerce/eslint-config/prettier",
   "dependencies": {
-    "@next/font": "^13.1.6",
     "@vercel/analytics": "^1.0.1",
     "iron-session": "^6.3.1",
-    "next": "^13.1.7-canary.16",
+    "next": "^13.4.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "server-only": "^0.0.1",
@@ -23,8 +22,8 @@
   "devDependencies": {
     "@bigcommerce/eslint-config": "^2.6.2",
     "@types/node": "^18.13.00",
-    "@types/react": "^18.0.27",
-    "@types/react-dom": "^18.0.10",
+    "@types/react": "^18.2.6",
+    "@types/react-dom": "^18.2.4",
     "autoprefixer": "^10.4.13",
     "eslint": "^8.33.0",
     "eslint-config-next": "^13.1.6",
