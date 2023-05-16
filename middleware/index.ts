@@ -1,8 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse, URLPattern } from 'next/server';
 
-import { getServerClient } from '@client/server';
-import { gql } from '@client/utils';
+import { bigcommerceFetch } from '@client';
 
 import { sessionMiddleware } from './session';
 
@@ -26,11 +25,10 @@ export async function middleware(request: NextRequest) {
 export async function rewriteUrlMiddleware(
   requestResponse: Promise<{ request: NextRequest; response: NextResponse }>,
 ) {
-  const client = getServerClient();
   const { request, response } = await requestResponse;
 
-  const { data } = await client.query<RoutesResponse>({
-    query: gql`
+  const { data } = await bigcommerceFetch<RoutesResponse>({
+    query: /* GraphQL */ `
       query Routes($path: String!) {
         site {
           route(path: $path) {
