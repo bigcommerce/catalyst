@@ -2,9 +2,9 @@ import { ComponentPropsWithoutRef } from 'react';
 
 import { ComponentClasses } from './types';
 
-type ButtonProps = ComponentPropsWithoutRef<'button'>;
+export type ButtonProps = ComponentPropsWithoutRef<'button'>;
 
-type Button = React.FC<ButtonProps> &
+export type Button = React.FC<ButtonProps> &
   ComponentClasses<'primary' | 'secondary' | 'subtle' | 'iconOnly'> & {
     Icon: ComponentClasses<'default'>;
   };
@@ -34,7 +34,7 @@ Button.subtle = {
 };
 
 Button.iconOnly = {
-  className: '!px-3',
+  className: 'px-3',
 };
 
 Button.Icon = {
