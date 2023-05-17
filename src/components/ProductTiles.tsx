@@ -35,7 +35,7 @@ export interface ProductTilesConnection {
         price: {
           formatted: string;
         } | null;
-      };
+      } | null;
       productOptions: {
         edges: Array<{
           node: {
@@ -218,7 +218,7 @@ export const ProductTiles = ({
                   </H3>
                 </div>
                 <div className="card-text relative py-1 flex items-center gap-2">
-                  <P className={P.default.className}>{edge.node.prices.price?.formatted}</P>
+                  <P className={P.default.className}>{edge.node.prices?.price?.formatted}</P>
                 </div>
                 <div className="absolute z-10 hidden flex-row justify-start pt-4 gap-x-4 group-hover/cardBody:inline-flex">
                   {edge.node.showCartAction && (
