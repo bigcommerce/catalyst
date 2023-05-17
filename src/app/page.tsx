@@ -1,10 +1,20 @@
 import { Camera } from 'lucide-react';
 import React from 'react';
 
-export default function HomePage() {
+import { getProduct } from '@client';
+
+export default async function HomePage() {
+  const rng = await getProduct(77);
+
   return (
-    <main className="flex items-center gap-2">
-      Catalyst <Camera color="#053FB0" />
+    <main>
+      <div>
+        Catalyst <Camera color="#053FB0" />
+      </div>
+
+      <div>
+        <pre>{JSON.stringify(rng, null, 2)}</pre>
+      </div>
     </main>
   );
 }
