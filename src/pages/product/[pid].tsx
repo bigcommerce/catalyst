@@ -19,40 +19,43 @@ import { Footer, FooterSiteQuery } from '../../components/Footer';
 import { Header, HeaderSiteQuery } from '../../components/Header';
 import { CategoryTree } from '../category/[cid]';
 
-interface Product {
-  variants: {
-    edges: Array<{
-      node: {
-        sku: string;
-        upc: string | null;
-        defaultImage: {
-          url: string | null;
-          altText: string;
-        } | null;
-        prices: {
-          price: {
-            value: number;
-            currencyCode: string;
-            formatted: string;
+export interface Variant {
+  node: {
+    __typename: string;
+    sku: string;
+    upc: string | null;
+    defaultImage: {
+      url: string | null;
+      altText: string;
+    } | null;
+    prices: {
+      price: {
+        value: number;
+        currencyCode: string;
+        formatted: string;
+      };
+    };
+    options: {
+      edges: Array<{
+        node: {
+          displayName: string;
+          values: {
+            edges: Array<{
+              node: {
+                entityId: number;
+                label: string;
+              };
+            }>;
           };
         };
-        options: {
-          edges: Array<{
-            node: {
-              displayName: string;
-              values: {
-                edges: Array<{
-                  node: {
-                    entityId: number;
-                    label: string;
-                  };
-                }>;
-              };
-            };
-          }>;
-        };
-      };
-    }>;
+      }>;
+    };
+  };
+}
+
+export interface Product {
+  variants: {
+    edges: Variant[];
   };
   productOptions: {
     edges: Array<{
@@ -92,7 +95,7 @@ interface Product {
   defaultImage: {
     url: string;
     altText: string;
-  };
+  } | null;
   images: {
     edges: Array<{
       node: {
@@ -472,10 +475,10 @@ export default function ProductPage({ brands, categoryTree, product, settings }:
             <div className="col-span-1">
               <div className="flex flex-col mb-12">
                 <Image
-                  alt={variantAltText || product.defaultImage.altText}
+                  alt={variantAltText || product.defaultImage?.altText || product.name}
                   height={619}
                   priority
-                  src={variantImage || product.defaultImage.url}
+                  src={variantImage || product.defaultImage?.url || '/'}
                   width={619}
                 />
 
