@@ -36,7 +36,7 @@ Input.Icon = {
 };
 
 type LabelProps = ComponentPropsWithoutRef<'label'>;
-type Label = React.FC<LabelProps> & ComponentClasses<'default' | 'left' | 'top'>;
+export type Label = React.FC<LabelProps> & ComponentClasses<'default' | 'left' | 'top'>;
 
 export const Label: Label = ({ children, id, ...props }) => {
   const { id: formGroupId } = useContext(FormGroupAccessibilityContext);

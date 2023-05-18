@@ -13,12 +13,14 @@
   "dependencies": {
     "@apollo/client": "^3.7.10",
     "@next/font": "^13.1.6",
+    "@vercel/analytics": "^1.0.1",
     "graphql": "^16.6.0",
     "iron-session": "^6.3.1",
     "lodash.debounce": "^4.0.8",
     "next": "^13.1.7-canary.16",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "sharp": "^0.32.1"
   },
   "devDependencies": {
     "@bigcommerce/eslint-config": "^2.6.2",
