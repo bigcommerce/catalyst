@@ -1,15 +1,14 @@
 import Link from 'next/link';
 import { ComponentPropsWithoutRef } from 'react';
 
-import { bcFetch } from '../../../lib/fetcher';
-import { FacebookIcon } from '../../icons/Facebook';
-import { InstagramIcon } from '../../icons/Instagram';
-import { LinkedInIcon } from '../../icons/LinkedIn';
-import { PinterestIcon } from '../../icons/Pinterest';
-import { TwitterIcon } from '../../icons/Twitter';
-import { YouTubeIcon } from '../../icons/YouTube';
+import { getStoreSettings } from '@client';
 
-import { getSocialIconsQuery } from './query';
+import { FacebookIcon } from '../SocialIcons/Facebook';
+import { InstagramIcon } from '../SocialIcons/Instagram';
+import { LinkedInIcon } from '../SocialIcons/LinkedIn';
+import { PinterestIcon } from '../SocialIcons/Pinterest';
+import { TwitterIcon } from '../SocialIcons/Twitter';
+import { YouTubeIcon } from '../SocialIcons/YouTube';
 
 const ICON_MAP: Record<string, React.FC<ComponentPropsWithoutRef<'svg'>>> = {
   Facebook: FacebookIcon,
@@ -21,17 +20,15 @@ const ICON_MAP: Record<string, React.FC<ComponentPropsWithoutRef<'svg'>>> = {
 };
 
 export const SocialIcons = async () => {
-  const { data } = await bcFetch({
-    query: getSocialIconsQuery,
-  });
+  const { socialMediaLinks } = await getStoreSettings();
 
-  if (!data.site.settings || data.site.settings.socialMediaLinks.length === 0) {
+  if (socialMediaLinks.length === 0) {
     return null;
   }
 
   return (
-    <ul className="flex flex-wrap gap-4 mt-8">
-      {data.site.settings.socialMediaLinks.map((link) => {
+    <ul className="mt-8 flex flex-wrap gap-4">
+      {socialMediaLinks.map((link) => {
         const Icon = ICON_MAP[link.name];
 
         if (!Icon) {

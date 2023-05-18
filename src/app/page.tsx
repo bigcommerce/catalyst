@@ -1,20 +1,14 @@
 import { Camera } from 'lucide-react';
 import React from 'react';
 
-import { getProduct } from '@client';
-
-export default async function HomePage() {
-  const rng = await getProduct(77);
-
+export default function HomePage() {
   return (
     <main>
       <div>
         Catalyst <Camera color="#053FB0" />
       </div>
 
-      <div>
-        <pre>{JSON.stringify(rng, null, 2)}</pre>
-      </div>
+      <div>A page</div>
     </main>
   );
 }

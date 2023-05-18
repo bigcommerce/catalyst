@@ -1,16 +1,16 @@
 import { ComponentPropsWithoutRef } from 'react';
 
-import { AmazonIcon } from '../../icons/Amazon';
-import { AmericanExpressIcon } from '../../icons/AmericanExpress';
-import { ApplePayIcon } from '../../icons/ApplePay';
-import { MastercardIcon } from '../../icons/Mastercard';
-import { PayPalIcon } from '../../icons/PayPal';
-import { VisaIcon } from '../../icons/Visa';
+import { AmazonIcon } from '../PaymentIcons/Amazon';
+import { AmericanExpressIcon } from '../PaymentIcons/AmericanExpress';
+import { ApplePayIcon } from '../PaymentIcons/ApplePay';
+import { MastercardIcon } from '../PaymentIcons/Mastercard';
+import { PayPalIcon } from '../PaymentIcons/PayPal';
+import { VisaIcon } from '../PaymentIcons/Visa';
 
 export const PaymentMethods: React.FC<ComponentPropsWithoutRef<'div'>> = (props) => {
   return (
     <div {...props}>
-      <div className="flex flex-row gap-6 justify-end">
+      <div className="flex flex-row justify-end gap-6">
         <AmazonIcon />
         <AmericanExpressIcon />
         <ApplePayIcon />

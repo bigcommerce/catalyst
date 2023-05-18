@@ -1,6 +1,6 @@
 import { client } from '../client';
 
-export const getStoreLogo = async () => {
+export const getStoreSettings = async () => {
   const response = await client.query({
     site: {
       settings: {
@@ -20,6 +20,15 @@ export const getStoreLogo = async () => {
               altText: true,
             },
           },
+        },
+        contact: {
+          address: true,
+          email: true,
+          phone: true,
+        },
+        socialMediaLinks: {
+          name: true,
+          url: true,
         },
       },
     },

@@ -18,7 +18,7 @@ export const BaseFooterMenu = ({
 }: Props & ComponentPropsWithoutRef<'div'>) => {
   return (
     <div {...props}>
-      <h3 className="font-bold mb-4">{title}</h3>
+      <h3 className="mb-4 font-bold">{title}</h3>
       <ul>
         {items.map((item) => (
           <li className="mb-4" key={item.path}>

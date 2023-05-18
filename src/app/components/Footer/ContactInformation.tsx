@@ -1,19 +1,9 @@
 import { Fragment } from 'react';
 
-import { bcFetch } from '../../../lib/fetcher';
-
-import { getContactInformationQuery } from './query';
+import { getStoreSettings } from '@client';
 
 export const ContactInformation = async () => {
-  const { data } = await bcFetch({
-    query: getContactInformationQuery,
-  });
-
-  if (!data.site.settings?.contact) {
-    return null;
-  }
-
-  const { contact } = data.site.settings;
+  const { contact } = await getStoreSettings();
 
   return (
     <>

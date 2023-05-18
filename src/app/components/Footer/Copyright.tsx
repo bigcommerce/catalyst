@@ -1,22 +1,14 @@
 import { ComponentPropsWithoutRef } from 'react';
 
-import { bcFetch } from '../../../lib/fetcher';
-
-import { getStoreNameQuery } from './query';
+import { getStoreSettings } from '@client';
 
 export const Copyright = async (props: ComponentPropsWithoutRef<'div'>) => {
-  const { data } = await bcFetch({
-    query: getStoreNameQuery,
-  });
-
-  if (!data.site.settings) {
-    return null;
-  }
+  const { storeName } = await getStoreSettings();
 
   return (
     <div {...props}>
       <p className="text-sm text-slate-500">
-        © {new Date().getFullYear()} {data.site.settings.storeName} – Powered by BigCommerce
+        © {new Date().getFullYear()} {storeName} – Powered by BigCommerce
       </p>
     </div>
   );

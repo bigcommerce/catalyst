@@ -1,16 +1,13 @@
-import { bcFetch } from '../../../../lib/fetcher';
+import { getCategoryTree } from '@client';
 
 import { BaseFooterMenu } from './BaseFooterMenu';
-import { getCategoryMenuQuery } from './query';
 
 export const CategoryFooterMenu = async () => {
-  const { data } = await bcFetch({
-    query: getCategoryMenuQuery,
-  });
+  const categoryTree = await getCategoryTree();
 
-  if (!data.site.categoryTree.length) {
+  if (!categoryTree.length) {
     return null;
   }
 
-  return <BaseFooterMenu items={data.site.categoryTree} title="Categories" />;
+  return <BaseFooterMenu items={categoryTree} title="Categories" />;
 };

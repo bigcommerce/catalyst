@@ -1,16 +1,9 @@
-import { removeEdgesAndNodes } from '@/lib/removeEdgesAndNodes';
-
-import { bcFetch } from '../../../../lib/fetcher';
+import { getBrands } from '@client';
 
 import { BaseFooterMenu } from './BaseFooterMenu';
-import { getBrandMenuQuery } from './query';
 
 export const BrandFooterMenu = async () => {
-  const { data } = await bcFetch({
-    query: getBrandMenuQuery,
-  });
-
-  const brands = removeEdgesAndNodes(data.site.brands);
+  const brands = await getBrands();
 
   if (brands.length === 0) {
     return null;
