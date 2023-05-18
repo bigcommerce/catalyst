@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import type { LinkedField, LinkedType } from './types'
 

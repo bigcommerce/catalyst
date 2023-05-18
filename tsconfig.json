@@ -27,6 +27,8 @@
     "baseUrl": ".",
     "paths": {
       "@client": ["./lib/client"],
+      "@cs": ["./lib/cs"],
+      "@reactant": ["./lib/reactant"],
     }
   },
   "include": [

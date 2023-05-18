@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 export { createClient } from './createClient'
 export type { ClientOptions } from './createClient'

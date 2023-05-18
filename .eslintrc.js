@@ -18,6 +18,10 @@ module.exports = {
             group: ['**/lib/reactant/**/*'],
             message: 'Please use @reactant/* instead.',
           },
+          {
+            group: ['**/lib/cs/**/*'],
+            message: 'Please use @cs/* instead.',
+          },
         ],
       },
     ],

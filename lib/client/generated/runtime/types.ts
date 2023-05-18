@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 
 export interface ExecutionResult<TData = { [key: string]: any }> {

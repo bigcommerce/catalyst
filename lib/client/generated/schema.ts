@@ -1,12 +1,12 @@
-/* eslint-disable */
 // @ts-nocheck
 /* istanbul ignore file */
 /* tslint:disable */
+/* eslint-disable */
 
 export type Scalars = {
-    DateTime: any,
     BigDecimal: any,
     Boolean: boolean,
+    DateTime: any,
     Float: number,
     ID: string,
     Int: number,
@@ -31,169 +31,6 @@ export interface AddWishlistItemsResult {
 }
 
 
-/** Assign cart to the customer result. */
-export interface AssignCartToCustomerResult {
-    /** The Cart that is updated as a result of mutation. */
-    cart: (Cart | null)
-    __typename: 'AssignCartToCustomerResult'
-}
-
-
-/** Cart mutations */
-export interface CartMutations {
-    /** Creates a cart and generates a cart ID. */
-    createCart: (CreateCartResult | null)
-    /** Deletes a Cart. */
-    deleteCart: (DeleteCartResult | null)
-    /** Adds line item(s) to the cart. */
-    addCartLineItems: (AddCartLineItemsResult | null)
-    /** Updates line item in the cart. */
-    updateCartLineItem: (UpdateCartLineItemResult | null)
-    /** Delete line item in the cart. Removing the last line item in the Cart deletes the Cart. */
-    deleteCartLineItem: (DeleteCartLineItemResult | null)
-    /** Update currency of the cart. */
-    updateCartCurrency: (UpdateCartCurrencyResult | null)
-    /** Assign cart to the customer. */
-    assignCartToCustomer: (AssignCartToCustomerResult | null)
-    /** Unassign cart from the customer. */
-    unassignCartFromCustomer: (UnassignCartFromCustomerResult | null)
-    __typename: 'CartMutations'
-}
-
-
-/** Create cart result */
-export interface CreateCartResult {
-    /** The Cart that is created as a result of mutation. */
-    cart: (Cart | null)
-    __typename: 'CreateCartResult'
-}
-
-
-/** Create wishlist */
-export interface CreateWishlistResult {
-    /** The newly created wishlist */
-    result: Wishlist
-    __typename: 'CreateWishlistResult'
-}
-
-
-/** Delete cart lien item result */
-export interface DeleteCartLineItemResult {
-    /** The ID of the line item that is deleted as a result of mutation. */
-    deletedLineItemEntityId: (Scalars['String'] | null)
-    /** The Cart that is updated as a result of mutation. */
-    cart: (Cart | null)
-    /** The ID of the Cart if it is deleted as a result of mutation. */
-    deletedCartEntityId: (Scalars['String'] | null)
-    __typename: 'DeleteCartLineItemResult'
-}
-
-
-/** Delete cart result */
-export interface DeleteCartResult {
-    /** The ID of the Cart that is deleted as a result of mutation. */
-    deletedCartEntityId: (Scalars['String'] | null)
-    __typename: 'DeleteCartResult'
-}
-
-
-/** Delete wishlist items */
-export interface DeleteWishlistItemsResult {
-    /** The wishlist */
-    result: Wishlist
-    __typename: 'DeleteWishlistItemsResult'
-}
-
-
-/** Delete wishlist */
-export interface DeleteWishlistResult {
-    /** The result of the operation */
-    result: Scalars['String']
-    __typename: 'DeleteWishlistResult'
-}
-
-
-/** Login result */
-export interface LoginResult {
-    /**
-     * @deprecated Use customer node instead.
-     * The result of a login
-     */
-    result: Scalars['String']
-    /** The currently logged in customer. */
-    customer: (Customer | null)
-    __typename: 'LoginResult'
-}
-
-
-/** Logout result */
-export interface LogoutResult {
-    /** The result of a logout */
-    result: Scalars['String']
-    __typename: 'LogoutResult'
-}
-
-export interface Mutation {
-    /** Customer login */
-    login: LoginResult
-    /** Customer logout */
-    logout: LogoutResult
-    /** The wishlist mutations. */
-    wishlist: WishlistMutations
-    /** The Cart mutations. */
-    cart: CartMutations
-    __typename: 'Mutation'
-}
-
-
-/** Unassign cart from the customer result. */
-export interface UnassignCartFromCustomerResult {
-    /** The Cart that is updated as a result of mutation. */
-    cart: (Cart | null)
-    __typename: 'UnassignCartFromCustomerResult'
-}
-
-
-/** Update cart currency result */
-export interface UpdateCartCurrencyResult {
-    /** The Cart that is updated as a result of mutation. */
-    cart: (Cart | null)
-    __typename: 'UpdateCartCurrencyResult'
-}
-
-
-/** Update cart line item result */
-export interface UpdateCartLineItemResult {
-    /** The Cart that is updated as a result of mutation. */
-    cart: (Cart | null)
-    __typename: 'UpdateCartLineItemResult'
-}
-
-
-/** Update wishlist */
-export interface UpdateWishlistResult {
-    /** The wishlist */
-    result: Wishlist
-    __typename: 'UpdateWishlistResult'
-}
-
-
-/** The wishlist mutations. */
-export interface WishlistMutations {
-    /** Create wishlist */
-    createWishlist: (CreateWishlistResult | null)
-    /** Add wishlist items */
-    addWishlistItems: (AddWishlistItemsResult | null)
-    /** Delete wishlist items */
-    deleteWishlistItems: (DeleteWishlistItemsResult | null)
-    /** Update wishlist */
-    updateWishlist: (UpdateWishlistResult | null)
-    /** Delete wishlist */
-    deleteWishlists: (DeleteWishlistResult | null)
-    __typename: 'WishlistMutations'
-}
-
-
 /** Aggregated */
 export interface Aggregated {
     /** Number of available products in stock. This can be 'null' if inventory is not set orif the store's Inventory Settings disable displaying stock levels on the storefront. */
@@ -214,6 +51,14 @@ export interface AggregatedInventory {
 }
 
 
+/** Assign cart to the customer result. */
+export interface AssignCartToCustomerResult {
+    /** The Cart that is updated as a result of mutation. */
+    cart: (Cart | null)
+    __typename: 'AssignCartToCustomerResult'
+}
+
+
 /** Author */
 export interface Author {
     /** Author name. */
@@ -222,41 +67,162 @@ export interface Author {
 }
 
 
+/** Banner details. */
+export interface Banner {
+    /** The content of the Banner. */
+    content: Scalars['String']
+    /** The id of the Banner. */
+    entityId: Scalars['Long']
+    /** The id of the object. */
+    id: Scalars['ID']
+    /** The location of the Banner. */
+    location: BannerLocation
+    /** The name of the Banner. */
+    name: Scalars['String']
+    __typename: 'Banner'
+}
+
+
+/** A connection to a list of items. */
+export interface BannerConnection {
+    /** A list of edges. */
+    edges: ((BannerEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
+    __typename: 'BannerConnection'
+}
+
+
+/** An edge in a connection. */
+export interface BannerEdge {
+    /** A cursor for use in pagination. */
+    cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: Banner
+    __typename: 'BannerEdge'
+}
+
+
+/** Banner location */
+export type BannerLocation = 'BOTTOM' | 'TOP'
+
+
+/** Banners details. */
+export interface Banners {
+    /** List of brand page banners. */
+    brandPage: BrandPageBannerConnection
+    /** List of category page banners. */
+    categoryPage: CategoryPageBannerConnection
+    /** List of home page banners. */
+    homePage: BannerConnection
+    /** List of search page banners. */
+    searchPage: BannerConnection
+    __typename: 'Banners'
+}
+
+
+/** Blog details. */
+export interface Blog {
+    /** The description of the Blog. */
+    description: Scalars['String']
+    /** The ID of an object */
+    id: Scalars['ID']
+    /** Whether or not the blog should be visible in the navigation menu. */
+    isVisibleInNavigation: Scalars['Boolean']
+    /** The name of the Blog. */
+    name: Scalars['String']
+    /** The path of the Blog. */
+    path: Scalars['String']
+    /** Blog post details. */
+    post: (BlogPost | null)
+    /** Details of the Blog posts. */
+    posts: BlogPostConnection
+    /** The rendered regions for the blog index. */
+    renderedRegions: RenderedRegionsByPageType
+    __typename: 'Blog'
+}
+
+
 /** A blog index page. */
 export interface BlogIndexPage {
+    /** Unique ID for the web page. */
+    entityId: Scalars['Int']
+    /** Whether or not the page should be visible in the navigation menu. */
+    isVisibleInNavigation: Scalars['Boolean']
+    /** Page name. */
+    name: Scalars['String']
+    /** Unique ID for the parent page. */
+    parentEntityId: (Scalars['Int'] | null)
     /** The URL path of the page. */
     path: Scalars['String']
     /** The rendered regions for the web page. */
     renderedRegions: RenderedRegionsByPageType
-    /** Unique ID for the web page. */
-    entityId: Scalars['Int']
-    /** Unique ID for the parent page. */
-    parentEntityId: (Scalars['Int'] | null)
-    /** Page name. */
-    name: Scalars['String']
-    /** Whether or not the page should be visible in the navigation menu. */
-    isVisibleInNavigation: Scalars['Boolean']
     /** Page SEO details. */
     seo: SeoDetails
     __typename: 'BlogIndexPage'
 }
 
 
-/** Brand */
-export interface Brand {
+/** Blog post details. */
+export interface BlogPost {
+    /** Blog post author. */
+    author: (Scalars['String'] | null)
+    /** Unique ID for the blog post. */
+    entityId: Scalars['Int']
+    /** The body of the Blog post. */
+    htmlBody: Scalars['String']
     /** The ID of an object */
     id: Scalars['ID']
-    /** Id of the brand. */
-    entityId: Scalars['Int']
-    /** Name of the brand. */
+    /** Blog post name. */
     name: Scalars['String']
+    /** Blog post path. */
+    path: Scalars['String']
+    /** The plain text summary of the Blog post. */
+    plainTextSummary: Scalars['String']
+    /** Blog post published date. */
+    publishedDate: DateTimeExtended
+    /** The rendered regions for the blog post. */
+    renderedRegions: RenderedRegionsByPageType
+    /** Blog post SEO details. */
+    seo: SeoDetails
+    /** Blog post tags. */
+    tags: Scalars['String'][]
+    /** Blog post thumbnail image. */
+    thumbnailImage: (Image | null)
+    __typename: 'BlogPost'
+}
+
+
+/** A connection to a list of items. */
+export interface BlogPostConnection {
+    /** Collection info */
+    collectionInfo: (CollectionInfo | null)
+    /** A list of edges. */
+    edges: ((BlogPostEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
+    __typename: 'BlogPostConnection'
+}
+
+
+/** An edge in a connection. */
+export interface BlogPostEdge {
+    /** A cursor for use in pagination. */
+    cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: BlogPost
+    __typename: 'BlogPostEdge'
+}
+
+
+/** Brand */
+export interface Brand {
     /** Default image for brand. */
     defaultImage: (Image | null)
-    /**
-     * @deprecated Use SEO details instead.
-     * Page title for the brand.
-     */
-    pageTitle: Scalars['String']
+    /** Id of the brand. */
+    entityId: Scalars['Int']
+    /** The ID of an object */
+    id: Scalars['ID']
     /**
      * @deprecated Use SEO details instead.
      * Meta description for the brand.
@@ -267,50 +233,77 @@ export interface Brand {
      * Meta keywords for the brand.
      */
     metaKeywords: Scalars['String'][]
-    /** Brand SEO details. */
-    seo: SeoDetails
-    /** Search keywords for the brand. */
-    searchKeywords: Scalars['String'][]
+    /** Metafield data related to a brand. */
+    metafields: MetafieldConnection
+    /** Name of the brand. */
+    name: Scalars['String']
+    /**
+     * @deprecated Use SEO details instead.
+     * Page title for the brand.
+     */
+    pageTitle: Scalars['String']
     /** Path for the brand page. */
     path: Scalars['String']
     /** List of products associated with the brand. */
     products: ProductConnection
-    /** Metafield data related to a brand. */
-    metafields: MetafieldConnection
+    /** Search keywords for the brand. */
+    searchKeywords: Scalars['String'][]
+    /** Brand SEO details. */
+    seo: SeoDetails
     __typename: 'Brand'
 }
 
 
 /** A connection to a list of items. */
 export interface BrandConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((BrandEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'BrandConnection'
 }
 
 
 /** An edge in a connection. */
 export interface BrandEdge {
-    /** The item at the end of the edge. */
-    node: Brand
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: Brand
     __typename: 'BrandEdge'
+}
+
+
+/** A connection to a list of items. */
+export interface BrandPageBannerConnection {
+    /** A list of edges. */
+    edges: ((BrandPageBannerEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
+    __typename: 'BrandPageBannerConnection'
+}
+
+
+/** An edge in a connection. */
+export interface BrandPageBannerEdge {
+    /** A cursor for use in pagination. */
+    cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: Banner
+    __typename: 'BrandPageBannerEdge'
 }
 
 
 /** Brand Filter */
 export interface BrandSearchFilter {
-    /** Indicates whether to display product count next to the filter. */
-    displayProductCount: Scalars['Boolean']
     /** List of available brands. */
     brands: BrandSearchFilterItemConnection
-    /** Display name for the filter. */
-    name: Scalars['String']
+    /** Indicates whether to display product count next to the filter. */
+    displayProductCount: Scalars['Boolean']
     /** Indicates whether filter is collapsed by default. */
     isCollapsedByDefault: Scalars['Boolean']
+    /** Display name for the filter. */
+    name: Scalars['String']
     __typename: 'BrandSearchFilter'
 }
 
@@ -319,10 +312,10 @@ export interface BrandSearchFilter {
 export interface BrandSearchFilterItem {
     /** Brand ID. */
     entityId: Scalars['Int']
-    /** Brand name. */
-    name: Scalars['String']
     /** Indicates whether brand is selected. */
     isSelected: Scalars['Boolean']
+    /** Brand name. */
+    name: Scalars['String']
     /** Indicates how many products available for this filter. */
     productCount: Scalars['Int']
     __typename: 'BrandSearchFilterItem'
@@ -331,20 +324,20 @@ export interface BrandSearchFilterItem {
 
 /** A connection to a list of items. */
 export interface BrandSearchFilterItemConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((BrandSearchFilterItemEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'BrandSearchFilterItemConnection'
 }
 
 
 /** An edge in a connection. */
 export interface BrandSearchFilterItemEdge {
-    /** The item at the end of the edge. */
-    node: BrandSearchFilterItem
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: BrandSearchFilterItem
     __typename: 'BrandSearchFilterItemEdge'
 }
 
@@ -361,56 +354,56 @@ export interface Breadcrumb {
 
 /** A connection to a list of items. */
 export interface BreadcrumbConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((BreadcrumbEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'BreadcrumbConnection'
 }
 
 
 /** An edge in a connection. */
 export interface BreadcrumbEdge {
-    /** The item at the end of the edge. */
-    node: Breadcrumb
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: Breadcrumb
     __typename: 'BreadcrumbEdge'
 }
 
 
 /** Bulk pricing tier that sets a fixed price for the product or variant. */
 export interface BulkPricingFixedPriceDiscount {
-    /** This price will override the current product price. */
-    price: Scalars['BigDecimal']
-    /** Minimum item quantity that applies to this bulk pricing tier. */
-    minimumQuantity: Scalars['Int']
     /** Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound. */
     maximumQuantity: (Scalars['Int'] | null)
+    /** Minimum item quantity that applies to this bulk pricing tier. */
+    minimumQuantity: Scalars['Int']
+    /** This price will override the current product price. */
+    price: Scalars['BigDecimal']
     __typename: 'BulkPricingFixedPriceDiscount'
 }
 
 
 /** Bulk pricing tier that reduces the price of the product or variant by a percentage. */
 export interface BulkPricingPercentageDiscount {
-    /** The percentage that will be removed from the product price. */
-    percentOff: Scalars['BigDecimal']
-    /** Minimum item quantity that applies to this bulk pricing tier. */
-    minimumQuantity: Scalars['Int']
     /** Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound. */
     maximumQuantity: (Scalars['Int'] | null)
+    /** Minimum item quantity that applies to this bulk pricing tier. */
+    minimumQuantity: Scalars['Int']
+    /** The percentage that will be removed from the product price. */
+    percentOff: Scalars['BigDecimal']
     __typename: 'BulkPricingPercentageDiscount'
 }
 
 
 /** Bulk pricing tier that will subtract an amount from the price of the product or variant. */
 export interface BulkPricingRelativePriceDiscount {
-    /** The price of the product/variant will be reduced by this priceAdjustment. */
-    priceAdjustment: Scalars['BigDecimal']
-    /** Minimum item quantity that applies to this bulk pricing tier. */
-    minimumQuantity: Scalars['Int']
     /** Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound. */
     maximumQuantity: (Scalars['Int'] | null)
+    /** Minimum item quantity that applies to this bulk pricing tier. */
+    minimumQuantity: Scalars['Int']
+    /** The price of the product/variant will be reduced by this priceAdjustment. */
+    priceAdjustment: Scalars['BigDecimal']
     __typename: 'BulkPricingRelativePriceDiscount'
 }
 
@@ -421,30 +414,30 @@ export type BulkPricingTier = (BulkPricingFixedPriceDiscount | BulkPricingPercen
 
 /** A cart */
 export interface Cart {
-    /** The ID of an object */
-    id: Scalars['ID']
-    /** Cart ID. */
-    entityId: Scalars['String']
-    /** ISO-4217 currency code. */
-    currencyCode: Scalars['String']
-    /** Whether this item is taxable. */
-    isTaxIncluded: Scalars['Boolean']
-    /** Cost of cart's contents, before applying discounts. */
-    baseAmount: Money
-    /** Discounted amount. */
-    discountedAmount: Money
     /** Sum of line-items amounts, minus cart-level discounts and coupons. This amount includes taxes (where applicable). */
     amount: Money
-    /** List of discounts applied to this cart. */
-    discounts: CartDiscount[]
-    /** List of line items. */
-    lineItems: CartLineItems
+    /** Cost of cart's contents, before applying discounts. */
+    baseAmount: Money
     /** Time when the cart was created. */
     createdAt: DateTimeExtended
-    /** Time when the cart was last updated. */
-    updatedAt: DateTimeExtended
+    /** ISO-4217 currency code. */
+    currencyCode: Scalars['String']
+    /** Discounted amount. */
+    discountedAmount: Money
+    /** List of discounts applied to this cart. */
+    discounts: CartDiscount[]
+    /** Cart ID. */
+    entityId: Scalars['String']
+    /** The ID of an object */
+    id: Scalars['ID']
+    /** Whether this item is taxable. */
+    isTaxIncluded: Scalars['Boolean']
+    /** List of line items. */
+    lineItems: CartLineItems
     /** Locale of the cart. */
     locale: Scalars['String']
+    /** Time when the cart was last updated. */
+    updatedAt: DateTimeExtended
     __typename: 'Cart'
 }
 
@@ -453,114 +446,114 @@ export interface Cart {
 export interface CartCustomItem {
     /** ID of the custom item. */
     entityId: Scalars['String']
-    /** Custom item sku. */
-    sku: (Scalars['String'] | null)
+    /** Item's list price multiplied by the quantity. */
+    extendedListPrice: Money
+    /** Price of the item. With or without tax depending on your stores set up. */
+    listPrice: Money
     /** Custom item name. */
     name: Scalars['String']
     /** Quantity of this item. */
     quantity: Scalars['Int']
-    /** Price of the item. With or without tax depending on your stores set up. */
-    listPrice: Money
-    /** Item's list price multiplied by the quantity. */
-    extendedListPrice: Money
+    /** Custom item sku. */
+    sku: (Scalars['String'] | null)
     __typename: 'CartCustomItem'
 }
 
 
 /** Cart digital item. */
 export interface CartDigitalItem {
-    /** The line-item ID. */
-    entityId: Scalars['String']
-    /** The product is part of a bundle such as a product pick list, then the parentId or the main product id will populate. */
-    parentEntityId: (Scalars['String'] | null)
-    /** ID of the product. */
-    productEntityId: Scalars['Int']
-    /** ID of the variant. */
-    variantEntityId: (Scalars['Int'] | null)
-    /** SKU of the variant. */
-    sku: (Scalars['String'] | null)
-    /** The item's product name. */
-    name: Scalars['String']
-    /** The product URL. */
-    url: Scalars['String']
-    /** URL of an image of this item, accessible on the internet. */
-    imageUrl: (Scalars['String'] | null)
     /** The product brand. */
     brand: (Scalars['String'] | null)
-    /** Quantity of this item. */
-    quantity: Scalars['Int']
-    /** Whether the item is taxable. */
-    isTaxable: Scalars['Boolean']
-    /** List of discounts applied to this item. */
-    discounts: CartDiscount[]
-    /** The total value of all discounts applied to this item (excluding coupon). */
-    discountedAmount: Money
     /** The total value of all coupons applied to this item. */
     couponAmount: Money
-    /** The net item price before discounts and coupons. It is based on the product default price or sale price (if set) configured in BigCommerce Admin. */
-    listPrice: Money
-    /** An item’s original price is the same as the product default price in the admin panel. */
-    originalPrice: Money
-    /** Item's price after all discounts are applied. (The final price before tax calculation). */
-    salePrice: Money
+    /** The total value of all discounts applied to this item (excluding coupon). */
+    discountedAmount: Money
+    /** List of discounts applied to this item. */
+    discounts: CartDiscount[]
+    /** The line-item ID. */
+    entityId: Scalars['String']
     /** Item's list price multiplied by the quantity. */
     extendedListPrice: Money
     /** Item's sale price multiplied by the quantity. */
     extendedSalePrice: Money
+    /** URL of an image of this item, accessible on the internet. */
+    imageUrl: (Scalars['String'] | null)
+    /** Whether the item is taxable. */
+    isTaxable: Scalars['Boolean']
+    /** The net item price before discounts and coupons. It is based on the product default price or sale price (if set) configured in BigCommerce Admin. */
+    listPrice: Money
+    /** The item's product name. */
+    name: Scalars['String']
+    /** An item’s original price is the same as the product default price in the admin panel. */
+    originalPrice: Money
+    /** The product is part of a bundle such as a product pick list, then the parentId or the main product id will populate. */
+    parentEntityId: (Scalars['String'] | null)
+    /** ID of the product. */
+    productEntityId: Scalars['Int']
+    /** Quantity of this item. */
+    quantity: Scalars['Int']
+    /** Item's price after all discounts are applied. (The final price before tax calculation). */
+    salePrice: Money
     /** The list of selected options for this product. */
     selectedOptions: CartSelectedOption[]
+    /** SKU of the variant. */
+    sku: (Scalars['String'] | null)
+    /** The product URL. */
+    url: Scalars['String']
+    /** ID of the variant. */
+    variantEntityId: (Scalars['Int'] | null)
     __typename: 'CartDigitalItem'
 }
 
 
 /** Discount applied to the cart. */
 export interface CartDiscount {
-    /** ID of the applied discount. */
-    entityId: Scalars['String']
     /** The discounted amount applied within a given context. */
     discountedAmount: Money
+    /** ID of the applied discount. */
+    entityId: Scalars['String']
     __typename: 'CartDiscount'
 }
 
 
 /** Cart gift certificate */
 export interface CartGiftCertificate {
-    /** ID of this gift certificate. */
-    entityId: Scalars['String']
-    /** GiftCertificate-provided name that will appear in the control panel. */
-    name: Scalars['String']
-    /** Currently supports Birthday, Boy, Celebration, Christmas, General, and Girl. */
-    theme: CartGiftCertificateTheme
     /** Value must be between 1.00 and 1,000.00 in the store's default currency. */
     amount: Money
+    /** ID of this gift certificate. */
+    entityId: Scalars['String']
     /** Whether or not the gift certificate is taxable. */
     isTaxable: Scalars['Boolean']
-    /** Sender of the gift certificate. */
-    sender: CartGiftCertificateSender
-    /** Recipient of the gift certificate. */
-    recipient: CartGiftCertificateRecipient
     /** Message that will be sent to the gift certificate's recipient. Limited to 200 characters. */
     message: (Scalars['String'] | null)
+    /** GiftCertificate-provided name that will appear in the control panel. */
+    name: Scalars['String']
+    /** Recipient of the gift certificate. */
+    recipient: CartGiftCertificateRecipient
+    /** Sender of the gift certificate. */
+    sender: CartGiftCertificateSender
+    /** Currently supports Birthday, Boy, Celebration, Christmas, General, and Girl. */
+    theme: CartGiftCertificateTheme
     __typename: 'CartGiftCertificate'
 }
 
 
 /** Cart gift certificate recipient */
 export interface CartGiftCertificateRecipient {
-    /** Contact's name. */
-    name: Scalars['String']
     /** Contact's email address. */
     email: Scalars['String']
+    /** Contact's name. */
+    name: Scalars['String']
     __typename: 'CartGiftCertificateRecipient'
 }
 
 
 /** Cart gift certificate sender */
 export interface CartGiftCertificateSender {
-    /** Contact's name. */
-    name: Scalars['String']
     /** Contact's email address. */
     email: Scalars['String']
+    /** Contact's name. */
+    name: Scalars['String']
     __typename: 'CartGiftCertificateSender'
 }
 
@@ -571,78 +564,100 @@ export type CartGiftCertificateTheme = 'BIRTHDAY' | 'BOY' | 'CELEBRATION' | 'CHR
 
 /** Gift wrapping for the item */
 export interface CartGiftWrapping {
-    /** Name of the gift-wrapping option. */
-    name: Scalars['String']
     /** Gift-wrapping price per product. */
     amount: Money
     /** Custom gift message along with items wrapped in this wrapping option. */
     message: (Scalars['String'] | null)
+    /** Name of the gift-wrapping option. */
+    name: Scalars['String']
     __typename: 'CartGiftWrapping'
 }
 
 
 /** Cart line items */
 export interface CartLineItems {
-    /** List of physical items. */
-    physicalItems: CartPhysicalItem[]
+    /** List of custom items. */
+    customItems: CartCustomItem[]
     /** List of digital items. */
     digitalItems: CartDigitalItem[]
     /** List of gift certificates. */
     giftCertificates: CartGiftCertificate[]
-    /** List of custom items. */
-    customItems: CartCustomItem[]
+    /** List of physical items. */
+    physicalItems: CartPhysicalItem[]
     /** Total number of line items. */
     totalQuantity: Scalars['Int']
     __typename: 'CartLineItems'
 }
 
 
+/** Cart mutations */
+export interface CartMutations {
+    /** Adds line item(s) to the cart. */
+    addCartLineItems: (AddCartLineItemsResult | null)
+    /** Assign cart to the customer. */
+    assignCartToCustomer: (AssignCartToCustomerResult | null)
+    /** Creates a cart and generates a cart ID. */
+    createCart: (CreateCartResult | null)
+    /** Deletes a Cart. */
+    deleteCart: (DeleteCartResult | null)
+    /** Delete line item in the cart. Removing the last line item in the Cart deletes the Cart. */
+    deleteCartLineItem: (DeleteCartLineItemResult | null)
+    /** Unassign cart from the customer. */
+    unassignCartFromCustomer: (UnassignCartFromCustomerResult | null)
+    /** Update currency of the cart. */
+    updateCartCurrency: (UpdateCartCurrencyResult | null)
+    /** Updates line item in the cart. */
+    updateCartLineItem: (UpdateCartLineItemResult | null)
+    __typename: 'CartMutations'
+}
+
+
 /** Cart physical item. */
 export interface CartPhysicalItem {
-    /** The line-item ID. */
-    entityId: Scalars['String']
-    /** The product is part of a bundle such as a product pick list, then the parentId or the main product id will populate. */
-    parentEntityId: (Scalars['String'] | null)
-    /** ID of the product. */
-    productEntityId: Scalars['Int']
-    /** ID of the variant. */
-    variantEntityId: (Scalars['Int'] | null)
-    /** SKU of the variant. */
-    sku: (Scalars['String'] | null)
-    /** The item's product name. */
-    name: Scalars['String']
-    /** The product URL. */
-    url: Scalars['String']
-    /** URL of an image of this item, accessible on the internet. */
-    imageUrl: (Scalars['String'] | null)
     /** The product brand. */
     brand: (Scalars['String'] | null)
-    /** Quantity of this item. */
-    quantity: Scalars['Int']
-    /** Whether the item is taxable. */
-    isTaxable: Scalars['Boolean']
-    /** List of discounts applied to this item. */
-    discounts: CartDiscount[]
-    /** The total value of all discounts applied to this item (excluding coupon). */
-    discountedAmount: Money
     /** The total value of all coupons applied to this item. */
     couponAmount: Money
-    /** The net item price before discounts and coupons. It is based on the product default price or sale price (if set) configured in BigCommerce Admin. */
-    listPrice: Money
-    /** An item’s original price is the same as the product default price in the admin panel. */
-    originalPrice: Money
-    /** Item's price after all discounts are applied. (The final price before tax calculation). */
-    salePrice: Money
+    /** The total value of all discounts applied to this item (excluding coupon). */
+    discountedAmount: Money
+    /** List of discounts applied to this item. */
+    discounts: CartDiscount[]
+    /** The line-item ID. */
+    entityId: Scalars['String']
     /** Item's list price multiplied by the quantity. */
     extendedListPrice: Money
     /** Item's sale price multiplied by the quantity. */
     extendedSalePrice: Money
-    /** Whether this item requires shipping to a physical address. */
-    isShippingRequired: Scalars['Boolean']
-    /** The list of selected options for this item. */
-    selectedOptions: CartSelectedOption[]
     /** Gift wrapping for this item. */
     giftWrapping: (CartGiftWrapping | null)
+    /** URL of an image of this item, accessible on the internet. */
+    imageUrl: (Scalars['String'] | null)
+    /** Whether this item requires shipping to a physical address. */
+    isShippingRequired: Scalars['Boolean']
+    /** Whether the item is taxable. */
+    isTaxable: Scalars['Boolean']
+    /** The net item price before discounts and coupons. It is based on the product default price or sale price (if set) configured in BigCommerce Admin. */
+    listPrice: Money
+    /** The item's product name. */
+    name: Scalars['String']
+    /** An item’s original price is the same as the product default price in the admin panel. */
+    originalPrice: Money
+    /** The product is part of a bundle such as a product pick list, then the parentId or the main product id will populate. */
+    parentEntityId: (Scalars['String'] | null)
+    /** ID of the product. */
+    productEntityId: Scalars['Int']
+    /** Quantity of this item. */
+    quantity: Scalars['Int']
+    /** Item's price after all discounts are applied. (The final price before tax calculation). */
+    salePrice: Money
+    /** The list of selected options for this item. */
+    selectedOptions: CartSelectedOption[]
+    /** SKU of the variant. */
+    sku: (Scalars['String'] | null)
+    /** The product URL. */
+    url: Scalars['String']
+    /** ID of the variant. */
+    variantEntityId: (Scalars['Int'] | null)
     __typename: 'CartPhysicalItem'
 }
 
@@ -663,12 +678,12 @@ export interface CartSelectedCheckboxOption {
 
 /** Selected date field option. */
 export interface CartSelectedDateFieldOption {
+    /** Date value. */
+    date: DateTimeExtended
     /** The product option ID. */
     entityId: Scalars['Int']
     /** The product option name. */
     name: Scalars['String']
-    /** Date value. */
-    date: DateTimeExtended
     __typename: 'CartSelectedDateFieldOption'
 }
 
@@ -677,10 +692,10 @@ export interface CartSelectedDateFieldOption {
 export interface CartSelectedFileUploadOption {
     /** The product option ID. */
     entityId: Scalars['Int']
-    /** The product option name. */
-    name: Scalars['String']
     /** Uploaded file name. */
     fileName: Scalars['String']
+    /** The product option name. */
+    name: Scalars['String']
     __typename: 'CartSelectedFileUploadOption'
 }
 
@@ -757,24 +772,26 @@ export type CatalogProductOptionValue = (MultipleChoiceOptionValue | ProductPick
 
 /** Category */
 export interface Category {
-    /** The ID of an object */
-    id: Scalars['ID']
+    /** Category breadcrumbs. */
+    breadcrumbs: BreadcrumbConnection
+    /** Default image for the category. */
+    defaultImage: (Image | null)
+    /** Category default product sort. */
+    defaultProductSort: (CategoryProductSort | null)
+    /** Category description. */
+    description: Scalars['String']
     /** Unique ID for the category. */
     entityId: Scalars['Int']
+    /** The ID of an object */
+    id: Scalars['ID']
+    /** Metafield data related to a category. */
+    metafields: MetafieldConnection
     /** Category name. */
     name: Scalars['String']
     /** Category path. */
     path: Scalars['String']
-    /** Default image for the category. */
-    defaultImage: (Image | null)
-    /** Category description. */
-    description: Scalars['String']
-    /** Category breadcrumbs. */
-    breadcrumbs: BreadcrumbConnection
     /** List of products associated with category */
     products: ProductConnection
-    /** Metafield data related to a category. */
-    metafields: MetafieldConnection
     /** Category SEO details. */
     seo: SeoDetails
     /**
@@ -782,29 +799,47 @@ export interface Category {
      * Category shop by price money ranges.
      */
     shopByPriceRanges: ShopByPriceConnection
-    /** Category default product sort. */
-    defaultProductSort: (CategoryProductSort | null)
     __typename: 'Category'
 }
 
 
 /** A connection to a list of items. */
 export interface CategoryConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((CategoryEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'CategoryConnection'
 }
 
 
 /** An edge in a connection. */
 export interface CategoryEdge {
-    /** The item at the end of the edge. */
-    node: Category
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: Category
     __typename: 'CategoryEdge'
+}
+
+
+/** A connection to a list of items. */
+export interface CategoryPageBannerConnection {
+    /** A list of edges. */
+    edges: ((CategoryPageBannerEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
+    __typename: 'CategoryPageBannerConnection'
+}
+
+
+/** An edge in a connection. */
+export interface CategoryPageBannerEdge {
+    /** A cursor for use in pagination. */
+    cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: Banner
+    __typename: 'CategoryPageBannerEdge'
 }
 
 
@@ -814,14 +849,14 @@ export type CategoryProductSort = 'A_TO_Z' | 'BEST_REVIEWED' | 'BEST_SELLING' | 
 
 /** Category Filter */
 export interface CategorySearchFilter {
-    /** Indicates whether to display product count next to the filter. */
-    displayProductCount: Scalars['Boolean']
     /** List of available categories. */
     categories: CategorySearchFilterItemConnection
-    /** Display name for the filter. */
-    name: Scalars['String']
+    /** Indicates whether to display product count next to the filter. */
+    displayProductCount: Scalars['Boolean']
     /** Indicates whether filter is collapsed by default. */
     isCollapsedByDefault: Scalars['Boolean']
+    /** Display name for the filter. */
+    name: Scalars['String']
     __typename: 'CategorySearchFilter'
 }
 
@@ -830,10 +865,10 @@ export interface CategorySearchFilter {
 export interface CategorySearchFilterItem {
     /** Category ID. */
     entityId: Scalars['Int']
-    /** Category name. */
-    name: Scalars['String']
     /** Indicates whether category is selected. */
     isSelected: Scalars['Boolean']
+    /** Category name. */
+    name: Scalars['String']
     /** Indicates how many products available for this filter. */
     productCount: Scalars['Int']
     /** List of available sub-categories. */
@@ -844,42 +879,42 @@ export interface CategorySearchFilterItem {
 
 /** A connection to a list of items. */
 export interface CategorySearchFilterItemConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((CategorySearchFilterItemEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'CategorySearchFilterItemConnection'
 }
 
 
 /** An edge in a connection. */
 export interface CategorySearchFilterItemEdge {
-    /** The item at the end of the edge. */
-    node: CategorySearchFilterItem
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: CategorySearchFilterItem
     __typename: 'CategorySearchFilterItemEdge'
 }
 
 
 /** An item in a tree of categories. */
 export interface CategoryTreeItem {
+    /** Subcategories of this category */
+    children: CategoryTreeItem[]
+    /** The description of this category. */
+    description: Scalars['String']
     /** The id category. */
     entityId: Scalars['Int']
+    /** If a category has children. */
+    hasChildren: Scalars['Boolean']
+    /** The category image. */
+    image: (Image | null)
     /** The name of category. */
     name: Scalars['String']
     /** Path assigned to this category */
     path: Scalars['String']
-    /** The description of this category. */
-    description: Scalars['String']
     /** The number of products in this category. */
     productCount: Scalars['Int']
-    /** The category image. */
-    image: (Image | null)
-    /** If a category has children. */
-    hasChildren: Scalars['Boolean']
-    /** Subcategories of this category */
-    children: CategoryTreeItem[]
     __typename: 'CategoryTreeItem'
 }
 
@@ -898,16 +933,16 @@ export interface Channel {
 export interface CheckboxOption {
     /** Indicates the default checked status. */
     checkedByDefault: Scalars['Boolean']
-    /** Label of the checkbox option. */
-    label: Scalars['String']
-    /** Unique ID for the option. */
-    entityId: Scalars['Int']
     /** Display name for the option. */
     displayName: Scalars['String']
+    /** Unique ID for the option. */
+    entityId: Scalars['Int']
     /** One of the option values is required to be selected for the checkout. */
     isRequired: Scalars['Boolean']
     /** Indicates whether it is a variant option or modifier. */
     isVariantOption: Scalars['Boolean']
+    /** Label of the checkbox option. */
+    label: Scalars['String']
     __typename: 'CheckboxOption'
 }
 
@@ -932,10 +967,10 @@ export interface CollectionInfo {
 export interface ContactField {
     /** Store address line. */
     address: Scalars['String']
-    /** Store country. */
-    country: Scalars['String']
     /** Store address type. */
     addressType: Scalars['String']
+    /** Store country. */
+    country: Scalars['String']
     /** Store email. */
     email: Scalars['String']
     /** Store phone number. */
@@ -946,26 +981,26 @@ export interface ContactField {
 
 /** A contact page. */
 export interface ContactPage {
-    /** The ID of an object */
-    id: Scalars['ID']
-    /** The URL path of the page. */
-    path: Scalars['String']
-    /** The body of the page. */
-    htmlBody: Scalars['String']
-    /** The plain text summary of the page body. */
-    plainTextSummary: Scalars['String']
     /** The contact fields that should be used on the page. */
     contactFields: Scalars['String'][]
-    /** The rendered regions for the web page. */
-    renderedRegions: RenderedRegionsByPageType
     /** Unique ID for the web page. */
     entityId: Scalars['Int']
-    /** Unique ID for the parent page. */
-    parentEntityId: (Scalars['Int'] | null)
-    /** Page name. */
-    name: Scalars['String']
+    /** The body of the page. */
+    htmlBody: Scalars['String']
+    /** The ID of an object */
+    id: Scalars['ID']
     /** Whether or not the page should be visible in the navigation menu. */
     isVisibleInNavigation: Scalars['Boolean']
+    /** Page name. */
+    name: Scalars['String']
+    /** Unique ID for the parent page. */
+    parentEntityId: (Scalars['Int'] | null)
+    /** The URL path of the page. */
+    path: Scalars['String']
+    /** The plain text summary of the page body. */
+    plainTextSummary: Scalars['String']
+    /** The rendered regions for the web page. */
+    renderedRegions: RenderedRegionsByPageType
     /** Page SEO details. */
     seo: SeoDetails
     __typename: 'ContactPage'
@@ -974,72 +1009,92 @@ export interface ContactPage {
 
 /** The page content. */
 export interface Content {
+    /** Banners details. */
+    banners: (Banners | null)
+    /** Blog details. */
+    blog: (Blog | null)
+    /** Page details. */
+    page: (WebPage | null)
+    /** Details of the pages. */
+    pages: PageConnection
     /** The rendered regions by specific page. */
     renderedRegionsByPageType: RenderedRegionsByPageType
     /** The rendered regions by specific page and id. */
     renderedRegionsByPageTypeAndEntityId: RenderedRegionsByPageType
-    /** Details of the pages. */
-    pages: PageConnection
-    /** Page details. */
-    page: (WebPage | null)
     __typename: 'Content'
+}
+
+
+/** Create cart result */
+export interface CreateCartResult {
+    /** The Cart that is created as a result of mutation. */
+    cart: (Cart | null)
+    __typename: 'CreateCartResult'
+}
+
+
+/** Create wishlist */
+export interface CreateWishlistResult {
+    /** The newly created wishlist */
+    result: Wishlist
+    __typename: 'CreateWishlistResult'
 }
 
 
 /** Currency details. */
 export interface Currency {
-    /** Currency ID. */
-    entityId: Scalars['Int']
     /** Currency code. */
     code: currencyCode
-    /** Currency name. */
-    name: Scalars['String']
+    /** Currency display settings. */
+    display: CurrencyDisplay
+    /** Currency ID. */
+    entityId: Scalars['Int']
+    /** Exchange rate relative to default currency. */
+    exchangeRate: Scalars['Float']
     /** Flag image URL. */
     flagImage: (Scalars['String'] | null)
     /** Indicates whether this currency is active. */
     isActive: Scalars['Boolean']
-    /** Exchange rate relative to default currency. */
-    exchangeRate: Scalars['Float']
     /** Indicates whether this currency is transactional. */
     isTransactional: Scalars['Boolean']
-    /** Currency display settings. */
-    display: CurrencyDisplay
+    /** Currency name. */
+    name: Scalars['String']
     __typename: 'Currency'
 }
 
 
 /** A connection to a list of items. */
 export interface CurrencyConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((CurrencyEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'CurrencyConnection'
 }
 
 
 /** Currency display settings. */
 export interface CurrencyDisplay {
+    /** Currency decimal places. */
+    decimalPlaces: Scalars['Int']
+    /** Currency decimal token. */
+    decimalToken: Scalars['String']
     /** Currency symbol. */
     symbol: Scalars['String']
     /** Currency symbol. */
     symbolPlacement: CurrencySymbolPosition
-    /** Currency decimal token. */
-    decimalToken: Scalars['String']
     /** Currency thousands token. */
     thousandsToken: Scalars['String']
-    /** Currency decimal places. */
-    decimalPlaces: Scalars['Int']
     __typename: 'CurrencyDisplay'
 }
 
 
 /** An edge in a connection. */
 export interface CurrencyEdge {
-    /** The item at the end of the edge. */
-    node: Currency
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: Currency
     __typename: 'CurrencyEdge'
 }
 
@@ -1062,34 +1117,40 @@ export interface CustomField {
 
 /** A connection to a list of items. */
 export interface CustomFieldConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((CustomFieldEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'CustomFieldConnection'
 }
 
 
 /** An edge in a connection. */
 export interface CustomFieldEdge {
-    /** The item at the end of the edge. */
-    node: CustomField
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: CustomField
     __typename: 'CustomFieldEdge'
 }
 
 
 /** A customer that shops on a store */
 export interface Customer {
-    /** The ID of the customer. */
-    entityId: Scalars['Int']
+    /** Customer addresses count. */
+    addressCount: Scalars['Int']
+    /** Customer attributes count. */
+    attributeCount: Scalars['Int']
+    /** Customer attributes. */
+    attributes: CustomerAttributes
     /** The company name of the customer. */
     company: Scalars['String']
     /** The customer group id of the customer. */
     customerGroupId: Scalars['Int']
     /** The email address of the customer. */
     email: Scalars['String']
+    /** The ID of the customer. */
+    entityId: Scalars['Int']
     /** The first name of the customer. */
     firstName: Scalars['String']
     /** The last name of the customer. */
@@ -1098,16 +1159,10 @@ export interface Customer {
     notes: Scalars['String']
     /** The phone number of the customer. */
     phone: Scalars['String']
-    /** The tax exempt category of the customer. */
-    taxExemptCategory: Scalars['String']
-    /** Customer addresses count. */
-    addressCount: Scalars['Int']
-    /** Customer attributes count. */
-    attributeCount: Scalars['Int']
     /** Customer store credit. */
     storeCredit: Money[]
-    /** Customer attributes. */
-    attributes: CustomerAttributes
+    /** The tax exempt category of the customer. */
+    taxExemptCategory: Scalars['String']
     /** Customer wishlists. */
     wishlists: WishlistConnection
     __typename: 'Customer'
@@ -1118,10 +1173,10 @@ export interface Customer {
 export interface CustomerAttribute {
     /** The ID of the custom customer attribute */
     entityId: Scalars['Int']
-    /** The value of the custom customer attribute */
-    value: (Scalars['String'] | null)
     /** The name of the custom customer attribute */
     name: Scalars['String']
+    /** The value of the custom customer attribute */
+    value: (Scalars['String'] | null)
     __typename: 'CustomerAttribute'
 }
 
@@ -1138,20 +1193,20 @@ export interface CustomerAttributes {
 export interface DateFieldOption {
     /** The default timestamp of date option. */
     defaultValue: (Scalars['DateTime'] | null)
-    /** The earliest timestamp of date option. */
-    earliest: (Scalars['DateTime'] | null)
-    /** The latest timestamp of date option. */
-    latest: (Scalars['DateTime'] | null)
-    /** Limit date by */
-    limitDateBy: LimitDateOption
-    /** Unique ID for the option. */
-    entityId: Scalars['Int']
     /** Display name for the option. */
     displayName: Scalars['String']
+    /** The earliest timestamp of date option. */
+    earliest: (Scalars['DateTime'] | null)
+    /** Unique ID for the option. */
+    entityId: Scalars['Int']
     /** One of the option values is required to be selected for the checkout. */
     isRequired: Scalars['Boolean']
     /** Indicates whether it is a variant option or modifier. */
     isVariantOption: Scalars['Boolean']
+    /** The latest timestamp of date option. */
+    latest: (Scalars['DateTime'] | null)
+    /** Limit date by */
+    limitDateBy: LimitDateOption
     __typename: 'DateFieldOption'
 }
 
@@ -1164,22 +1219,58 @@ export interface DateTimeExtended {
 }
 
 
+/** Delete cart lien item result */
+export interface DeleteCartLineItemResult {
+    /** The Cart that is updated as a result of mutation. */
+    cart: (Cart | null)
+    /** The ID of the Cart if it is deleted as a result of mutation. */
+    deletedCartEntityId: (Scalars['String'] | null)
+    /** The ID of the line item that is deleted as a result of mutation. */
+    deletedLineItemEntityId: (Scalars['String'] | null)
+    __typename: 'DeleteCartLineItemResult'
+}
+
+
+/** Delete cart result */
+export interface DeleteCartResult {
+    /** The ID of the Cart that is deleted as a result of mutation. */
+    deletedCartEntityId: (Scalars['String'] | null)
+    __typename: 'DeleteCartResult'
+}
+
+
+/** Delete wishlist items */
+export interface DeleteWishlistItemsResult {
+    /** The wishlist */
+    result: Wishlist
+    __typename: 'DeleteWishlistItemsResult'
+}
+
+
+/** Delete wishlist */
+export interface DeleteWishlistResult {
+    /** The result of the operation */
+    result: Scalars['String']
+    __typename: 'DeleteWishlistResult'
+}
+
+
 /** Display field */
 export interface DisplayField {
-    /** Short date format. */
-    shortDateFormat: Scalars['String']
     /** Extended date format. */
     extendedDateFormat: Scalars['String']
+    /** Short date format. */
+    shortDateFormat: Scalars['String']
     __typename: 'DisplayField'
 }
 
 
 /** Distance */
 export interface Distance {
-    /** Distance in specified length unit */
-    value: Scalars['Float']
     /** Length unit */
     lengthUnit: LengthUnit
+    /** Distance in specified length unit */
+    value: Scalars['Float']
     __typename: 'Distance'
 }
 
@@ -1190,16 +1281,16 @@ export type EntityPageType = 'BLOG_POST' | 'BRAND' | 'CATEGORY' | 'CONTACT_US' |
 
 /** An external link page. */
 export interface ExternalLinkPage {
-    /** The URL that the page links to. */
-    link: Scalars['String']
     /** Unique ID for the web page. */
     entityId: Scalars['Int']
-    /** Unique ID for the parent page. */
-    parentEntityId: (Scalars['Int'] | null)
-    /** Page name. */
-    name: Scalars['String']
     /** Whether or not the page should be visible in the navigation menu. */
     isVisibleInNavigation: Scalars['Boolean']
+    /** The URL that the page links to. */
+    link: Scalars['String']
+    /** Page name. */
+    name: Scalars['String']
+    /** Unique ID for the parent page. */
+    parentEntityId: (Scalars['Int'] | null)
     /** Page SEO details. */
     seo: SeoDetails
     __typename: 'ExternalLinkPage'
@@ -1208,30 +1299,30 @@ export interface ExternalLinkPage {
 
 /** A form allowing selection and uploading of a file from the user's local computer. */
 export interface FileUploadFieldOption {
-    /** The maximum size of the file in kilobytes */
-    maxFileSize: Scalars['Int']
-    /** All possible file extensions. Empty means that all files allowed. */
-    fileTypes: Scalars['String'][]
-    /** Unique ID for the option. */
-    entityId: Scalars['Int']
     /** Display name for the option. */
     displayName: Scalars['String']
+    /** Unique ID for the option. */
+    entityId: Scalars['Int']
+    /** All possible file extensions. Empty means that all files allowed. */
+    fileTypes: Scalars['String'][]
     /** One of the option values is required to be selected for the checkout. */
     isRequired: Scalars['Boolean']
     /** Indicates whether it is a variant option or modifier. */
     isVariantOption: Scalars['Boolean']
+    /** The maximum size of the file in kilobytes */
+    maxFileSize: Scalars['Int']
     __typename: 'FileUploadFieldOption'
 }
 
 
 /** Gift wrapping for product */
 export interface GiftWrapping {
+    /** Indicates whether commenting is allowed for the gift wrapping. */
+    allowComments: Scalars['Boolean']
     /** Gift wrapping id. */
     entityId: Scalars['Int']
     /** Gift wrapping name. */
     name: Scalars['String']
-    /** Indicates whether commenting is allowed for the gift wrapping. */
-    allowComments: Scalars['Boolean']
     /** Gift wrapping preview image url. */
     previewImageUrl: (Scalars['String'] | null)
     __typename: 'GiftWrapping'
@@ -1240,54 +1331,54 @@ export interface GiftWrapping {
 
 /** A connection to a list of items. */
 export interface GiftWrappingConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((GiftWrappingEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'GiftWrappingConnection'
 }
 
 
 /** An edge in a connection. */
 export interface GiftWrappingEdge {
-    /** The item at the end of the edge. */
-    node: GiftWrapping
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: GiftWrapping
     __typename: 'GiftWrappingEdge'
 }
 
 
 /** Image */
 export interface Image {
-    /** Absolute path to image using store CDN. */
-    url: Scalars['String']
-    /** Absolute path to original image using store CDN. */
-    urlOriginal: Scalars['String']
     /** Text description of an image that can be used for SEO and/or accessibility purposes. */
     altText: Scalars['String']
     /** Indicates whether this is the primary image. */
     isDefault: Scalars['Boolean']
+    /** Absolute path to image using store CDN. */
+    url: Scalars['String']
+    /** Absolute path to original image using store CDN. */
+    urlOriginal: Scalars['String']
     __typename: 'Image'
 }
 
 
 /** A connection to a list of items. */
 export interface ImageConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((ImageEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'ImageConnection'
 }
 
 
 /** An edge in a connection. */
 export interface ImageEdge {
-    /** The item at the end of the edge. */
-    node: Image
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: Image
     __typename: 'ImageEdge'
 }
 
@@ -1302,137 +1393,137 @@ export interface Inventory {
 
 /** Address */
 export interface InventoryAddress {
-    /** Address id. */
-    entityId: Scalars['Int']
-    /** Address code. */
-    code: Scalars['String']
-    /** Address label. */
-    label: Scalars['String']
-    /** Address description. */
-    description: (Scalars['String'] | null)
     /** Address line1. */
     address1: Scalars['String']
     /** Address line2. */
     address2: Scalars['String']
     /** Address city. */
     city: Scalars['String']
-    /** Address state. */
-    stateOrProvince: Scalars['String']
+    /** Address code. */
+    code: Scalars['String']
     /** Country code. */
     countryCode: Scalars['String']
-    /** Address zip. */
-    postalCode: Scalars['String']
-    /** Address phone. */
-    phone: Scalars['String']
+    /** Address description. */
+    description: (Scalars['String'] | null)
     /** Address email. */
     email: Scalars['String']
+    /** Address id. */
+    entityId: Scalars['Int']
+    /** Address label. */
+    label: Scalars['String']
     /** Address latitude. */
     latitude: (Scalars['Float'] | null)
     /** Address longitude. */
     longitude: (Scalars['Float'] | null)
+    /** Address phone. */
+    phone: Scalars['String']
+    /** Address zip. */
+    postalCode: Scalars['String']
+    /** Address state. */
+    stateOrProvince: Scalars['String']
     __typename: 'InventoryAddress'
 }
 
 
 /** Inventory By Locations */
 export interface InventoryByLocations {
-    /** Location id. */
-    locationEntityId: Scalars['Long']
     /** Number of available products in stock. */
     availableToSell: Scalars['Long']
-    /** Indicates a threshold low-stock level. */
-    warningLevel: Scalars['Int']
     /** Indicates whether this product is in stock. */
     isInStock: Scalars['Boolean']
     /** Distance between location and specified longitude and latitude */
     locationDistance: (Distance | null)
-    /** Location type id. */
-    locationEntityTypeId: (Scalars['String'] | null)
+    /** Location code. */
+    locationEntityCode: Scalars['String']
+    /** Location id. */
+    locationEntityId: Scalars['Long']
     /**
      * @deprecated Deprecated. Will be substituted with pickup methods.
      * Location service type ids.
      */
     locationEntityServiceTypeIds: Scalars['String'][]
-    /** Location code. */
-    locationEntityCode: Scalars['String']
+    /** Location type id. */
+    locationEntityTypeId: (Scalars['String'] | null)
+    /** Indicates a threshold low-stock level. */
+    warningLevel: Scalars['Int']
     __typename: 'InventoryByLocations'
 }
 
 
 /** Location */
 export interface InventoryLocation {
-    /** Location id. */
-    entityId: Scalars['Int']
-    /** Location code. */
-    code: Scalars['String']
-    /** Location label. */
-    label: Scalars['String']
-    /** Location description. */
-    description: (Scalars['String'] | null)
-    /** Location type id. */
-    typeId: (Scalars['String'] | null)
-    /**
-     * @deprecated Deprecated. Will be substituted with pickup methods.
-     * Location service type ids.
-     */
-    serviceTypeIds: Scalars['String'][]
     /** Location address */
     address: (InventoryAddress | null)
-    /** Location OperatingHours */
-    operatingHours: (OperatingHours | null)
-    /** Distance between location and specified longitude and latitude */
-    distance: (Distance | null)
     /**
      * @deprecated Deprecated. Use specialHours instead
      * Upcoming events
      */
     blackoutHours: SpecialHour[]
+    /** Location code. */
+    code: Scalars['String']
+    /** Location description. */
+    description: (Scalars['String'] | null)
+    /** Distance between location and specified longitude and latitude */
+    distance: (Distance | null)
+    /** Location id. */
+    entityId: Scalars['Int']
+    /** Location label. */
+    label: Scalars['String']
+    /** Metafield data related to a location. */
+    metafields: MetafieldConnection
+    /** Location OperatingHours */
+    operatingHours: (OperatingHours | null)
+    /**
+     * @deprecated Deprecated. Will be substituted with pickup methods.
+     * Location service type ids.
+     */
+    serviceTypeIds: Scalars['String'][]
     /** Upcoming events */
     specialHours: SpecialHour[]
     /** Time zone of location */
     timeZone: (Scalars['String'] | null)
-    /** Metafield data related to a location. */
-    metafields: MetafieldConnection
+    /** Location type id. */
+    typeId: (Scalars['String'] | null)
     __typename: 'InventoryLocation'
 }
 
 
 /** A connection to a list of items. */
 export interface InventoryLocationConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((InventoryLocationEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'InventoryLocationConnection'
 }
 
 
 /** An edge in a connection. */
 export interface InventoryLocationEdge {
-    /** The item at the end of the edge. */
-    node: InventoryLocation
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: InventoryLocation
     __typename: 'InventoryLocationEdge'
 }
 
 
 /** Inventory settings from control panel. */
 export interface InventorySettings {
-    /** The product out of stock behavior. */
-    productOutOfStockBehavior: (ProductOutOfStockBehavior | null)
-    /** The option out of stock behavior. */
-    optionOutOfStockBehavior: (OptionOutOfStockBehavior | null)
-    /** Hide or show inventory node for product */
-    stockLevelDisplay: (StockLevelDisplay | null)
     /** Out of stock message. */
     defaultOutOfStockMessage: Scalars['String']
     /** Flag to show or not on product filtering when option is out of stock */
     hideInProductFiltering: Scalars['Boolean']
-    /** Show pre-order inventory */
-    showPreOrderStockLevels: Scalars['Boolean']
+    /** The option out of stock behavior. */
+    optionOutOfStockBehavior: (OptionOutOfStockBehavior | null)
+    /** The product out of stock behavior. */
+    productOutOfStockBehavior: (ProductOutOfStockBehavior | null)
     /** Show out of stock message on product listing pages */
     showOutOfStockMessage: Scalars['Boolean']
+    /** Show pre-order inventory */
+    showPreOrderStockLevels: Scalars['Boolean']
+    /** Hide or show inventory node for product */
+    stockLevelDisplay: (StockLevelDisplay | null)
     __typename: 'InventorySettings'
 }
 
@@ -1451,70 +1542,91 @@ export type LimitInputBy = 'HIGHEST_VALUE' | 'LOWEST_VALUE' | 'NO_LIMIT' | 'RANG
 
 /** A connection to a list of items. */
 export interface LocationConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((LocationEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'LocationConnection'
 }
 
 
 /** An edge in a connection. */
 export interface LocationEdge {
-    /** The item at the end of the edge. */
-    node: InventoryByLocations
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: InventoryByLocations
     __typename: 'LocationEdge'
+}
+
+
+/** Login result */
+export interface LoginResult {
+    /** The currently logged in customer. */
+    customer: (Customer | null)
+    /**
+     * @deprecated Use customer node instead.
+     * The result of a login
+     */
+    result: Scalars['String']
+    __typename: 'LoginResult'
 }
 
 
 /** Logo field */
 export interface LogoField {
-    /** Logo title. */
-    title: Scalars['String']
     /** Store logo image. */
     image: Image
+    /** Logo title. */
+    title: Scalars['String']
     __typename: 'LogoField'
+}
+
+
+/** Logout result */
+export interface LogoutResult {
+    /** The result of a logout */
+    result: Scalars['String']
+    __typename: 'LogoutResult'
 }
 
 
 /** Measurement */
 export interface Measurement {
-    /** Unformatted weight measurement value. */
-    value: Scalars['Float']
     /** Unit of measurement. */
     unit: Scalars['String']
+    /** Unformatted weight measurement value. */
+    value: Scalars['Float']
     __typename: 'Measurement'
 }
 
 
 /** A connection to a list of items. */
 export interface MetafieldConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((MetafieldEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'MetafieldConnection'
 }
 
 
 /** An edge in a connection. */
 export interface MetafieldEdge {
-    /** The item at the end of the edge. */
-    node: Metafields
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: Metafields
     __typename: 'MetafieldEdge'
 }
 
 
 /** Key/Value pairs of data attached tied to a resource entity (product, brand, category, etc.) */
 export interface Metafields {
-    /** The ID of an object */
-    id: Scalars['ID']
     /** The ID of the metafield when referencing via our backend API. */
     entityId: Scalars['Int']
+    /** The ID of an object */
+    id: Scalars['ID']
     /** A label for identifying a metafield data value. */
     key: Scalars['String']
     /** A metafield value. */
@@ -1527,23 +1639,23 @@ export interface Metafields {
 export interface Money {
     /** Currency code of the current money. */
     currencyCode: Scalars['String']
-    /** The amount of money. */
-    value: Scalars['BigDecimal']
     /**
      * @deprecated Deprecated. Don't use - it will be removed soon.
      * The formatted currency string for the current money.
      */
     formatted: (Scalars['String'] | null)
+    /** The amount of money. */
+    value: Scalars['BigDecimal']
     __typename: 'Money'
 }
 
 
 /** A min and max pair of money objects */
 export interface MoneyRange {
-    /** Minimum money object. */
-    min: Money
     /** Maximum money object. */
     max: Money
+    /** Minimum money object. */
+    min: Money
     __typename: 'MoneyRange'
 }
 
@@ -1552,38 +1664,38 @@ export interface MoneyRange {
 export interface MultiLineTextFieldOption {
     /** Default value of the multiline text field option. */
     defaultValue: (Scalars['String'] | null)
-    /** The minimum number of characters. */
-    minLength: (Scalars['Int'] | null)
-    /** The maximum number of characters. */
-    maxLength: (Scalars['Int'] | null)
-    /** The maximum number of lines. */
-    maxLines: (Scalars['Int'] | null)
-    /** Unique ID for the option. */
-    entityId: Scalars['Int']
     /** Display name for the option. */
     displayName: Scalars['String']
+    /** Unique ID for the option. */
+    entityId: Scalars['Int']
     /** One of the option values is required to be selected for the checkout. */
     isRequired: Scalars['Boolean']
     /** Indicates whether it is a variant option or modifier. */
     isVariantOption: Scalars['Boolean']
+    /** The maximum number of characters. */
+    maxLength: (Scalars['Int'] | null)
+    /** The maximum number of lines. */
+    maxLines: (Scalars['Int'] | null)
+    /** The minimum number of characters. */
+    minLength: (Scalars['Int'] | null)
     __typename: 'MultiLineTextFieldOption'
 }
 
 
 /** An option type that has a fixed list of values. */
 export interface MultipleChoiceOption {
-    /** The chosen display style for this multiple choice option. */
-    displayStyle: Scalars['String']
-    /** List of option values. */
-    values: ProductOptionValueConnection
-    /** Unique ID for the option. */
-    entityId: Scalars['Int']
     /** Display name for the option. */
     displayName: Scalars['String']
+    /** The chosen display style for this multiple choice option. */
+    displayStyle: Scalars['String']
+    /** Unique ID for the option. */
+    entityId: Scalars['Int']
     /** One of the option values is required to be selected for the checkout. */
     isRequired: Scalars['Boolean']
     /** Indicates whether it is a variant option or modifier. */
     isVariantOption: Scalars['Boolean']
+    /** List of option values. */
+    values: ProductOptionValueConnection
     __typename: 'MultipleChoiceOption'
 }
 
@@ -1592,40 +1704,52 @@ export interface MultipleChoiceOption {
 export interface MultipleChoiceOptionValue {
     /** Unique ID for the option value. */
     entityId: Scalars['Int']
-    /** Label for the option value. */
-    label: Scalars['String']
     /** Indicates whether this value is the chosen default selected value. */
     isDefault: Scalars['Boolean']
     /** Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level. */
     isSelected: (Scalars['Boolean'] | null)
+    /** Label for the option value. */
+    label: Scalars['String']
     __typename: 'MultipleChoiceOptionValue'
+}
+
+export interface Mutation {
+    /** The Cart mutations. */
+    cart: CartMutations
+    /** Customer login */
+    login: LoginResult
+    /** Customer logout */
+    logout: LogoutResult
+    /** The wishlist mutations. */
+    wishlist: WishlistMutations
+    __typename: 'Mutation'
 }
 
 
 /** An object with an ID */
-export type Node = (Brand | Cart | Category | ContactPage | NormalPage | Product | RawHtmlPage | Variant) & { __isUnion?: true }
+export type Node = (Banner | Blog | BlogPost | Brand | Cart | Category | ContactPage | NormalPage | Product | RawHtmlPage | Variant) & { __isUnion?: true }
 
 
 /** A normal page. */
 export interface NormalPage {
-    /** The ID of an object */
-    id: Scalars['ID']
-    /** The URL path of the page. */
-    path: Scalars['String']
+    /** Unique ID for the web page. */
+    entityId: Scalars['Int']
     /** The body of the page. */
     htmlBody: Scalars['String']
+    /** The ID of an object */
+    id: Scalars['ID']
+    /** Whether or not the page should be visible in the navigation menu. */
+    isVisibleInNavigation: Scalars['Boolean']
+    /** Page name. */
+    name: Scalars['String']
+    /** Unique ID for the parent page. */
+    parentEntityId: (Scalars['Int'] | null)
+    /** The URL path of the page. */
+    path: Scalars['String']
     /** The plain text summary of the page body. */
     plainTextSummary: Scalars['String']
     /** The rendered regions for the web page. */
     renderedRegions: RenderedRegionsByPageType
-    /** Unique ID for the web page. */
-    entityId: Scalars['Int']
-    /** Unique ID for the parent page. */
-    parentEntityId: (Scalars['Int'] | null)
-    /** Page name. */
-    name: Scalars['String']
-    /** Whether or not the page should be visible in the navigation menu. */
-    isVisibleInNavigation: Scalars['Boolean']
     /** Page SEO details. */
     seo: SeoDetails
     __typename: 'NormalPage'
@@ -1636,74 +1760,74 @@ export interface NormalPage {
 export interface NumberFieldOption {
     /** Default value of the text field option. */
     defaultValue: (Scalars['Float'] | null)
-    /** The bottom limit of possible numbers. */
-    lowest: (Scalars['Float'] | null)
+    /** Display name for the option. */
+    displayName: Scalars['String']
+    /** Unique ID for the option. */
+    entityId: Scalars['Int']
     /** The top limit of possible numbers. */
     highest: (Scalars['Float'] | null)
     /** Allow whole numbers only. */
     isIntegerOnly: Scalars['Boolean']
-    /** Limit numbers by several options. */
-    limitNumberBy: LimitInputBy
-    /** Unique ID for the option. */
-    entityId: Scalars['Int']
-    /** Display name for the option. */
-    displayName: Scalars['String']
     /** One of the option values is required to be selected for the checkout. */
     isRequired: Scalars['Boolean']
     /** Indicates whether it is a variant option or modifier. */
     isVariantOption: Scalars['Boolean']
+    /** Limit numbers by several options. */
+    limitNumberBy: LimitInputBy
+    /** The bottom limit of possible numbers. */
+    lowest: (Scalars['Float'] | null)
     __typename: 'NumberFieldOption'
 }
 
 
 /** Operating day */
 export interface OperatingDay {
+    /** Closing. */
+    closing: Scalars['String']
     /** Open. */
     open: Scalars['Boolean']
     /** Opening. */
     opening: Scalars['String']
-    /** Closing. */
-    closing: Scalars['String']
     __typename: 'OperatingDay'
 }
 
 
 /** Operating hours */
 export interface OperatingHours {
-    /** Sunday. */
-    sunday: (OperatingDay | null)
+    /** Friday. */
+    friday: (OperatingDay | null)
     /** Monday. */
     monday: (OperatingDay | null)
+    /** Saturday. */
+    saturday: (OperatingDay | null)
+    /** Sunday. */
+    sunday: (OperatingDay | null)
+    /** Thursday. */
+    thursday: (OperatingDay | null)
     /** Tuesday. */
     tuesday: (OperatingDay | null)
     /** Wednesday. */
     wednesday: (OperatingDay | null)
-    /** Thursday. */
-    thursday: (OperatingDay | null)
-    /** Friday. */
-    friday: (OperatingDay | null)
-    /** Saturday. */
-    saturday: (OperatingDay | null)
     __typename: 'OperatingHours'
 }
 
 
 /** A connection to a list of items. */
 export interface OptionConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((OptionEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'OptionConnection'
 }
 
 
 /** An edge in a connection. */
 export interface OptionEdge {
-    /** The item at the end of the edge. */
-    node: ProductOption
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: ProductOption
     __typename: 'OptionEdge'
 }
 
@@ -1714,20 +1838,20 @@ export type OptionOutOfStockBehavior = 'DO_NOTHING' | 'HIDE_OPTION' | 'LABEL_OPT
 
 /** A connection to a list of items. */
 export interface OptionValueConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((OptionValueEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'OptionValueConnection'
 }
 
 
 /** An edge in a connection. */
 export interface OptionValueEdge {
-    /** The item at the end of the edge. */
-    node: ProductOptionValue
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: ProductOptionValue
     __typename: 'OptionValueEdge'
 }
 
@@ -1738,14 +1862,14 @@ export interface OtherSearchFilter {
     displayProductCount: Scalars['Boolean']
     /** Free shipping filter. */
     freeShipping: (OtherSearchFilterItem | null)
+    /** Indicates whether filter is collapsed by default. */
+    isCollapsedByDefault: Scalars['Boolean']
     /** Is Featured filter. */
     isFeatured: (OtherSearchFilterItem | null)
     /** Is In Stock filter. */
     isInStock: (OtherSearchFilterItem | null)
     /** Display name for the filter. */
     name: Scalars['String']
-    /** Indicates whether filter is collapsed by default. */
-    isCollapsedByDefault: Scalars['Boolean']
     __typename: 'OtherSearchFilter'
 }
 
@@ -1762,34 +1886,34 @@ export interface OtherSearchFilterItem {
 
 /** A connection to a list of items. */
 export interface PageConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((PageEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'PageConnection'
 }
 
 
 /** An edge in a connection. */
 export interface PageEdge {
-    /** The item at the end of the edge. */
-    node: WebPage
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: WebPage
     __typename: 'PageEdge'
 }
 
 
 /** Information about pagination in a connection. */
 export interface PageInfo {
+    /** When paginating forwards, the cursor to continue. */
+    endCursor: (Scalars['String'] | null)
     /** When paginating forwards, are there more items? */
     hasNextPage: Scalars['Boolean']
     /** When paginating backwards, are there more items? */
     hasPreviousPage: Scalars['Boolean']
     /** When paginating backwards, the cursor to continue. */
     startCursor: (Scalars['String'] | null)
-    /** When paginating forwards, the cursor to continue. */
-    endCursor: (Scalars['String'] | null)
     __typename: 'PageInfo'
 }
 
@@ -1800,30 +1924,30 @@ export type PageType = 'ACCOUNT_ADDRESS' | 'ACCOUNT_ADD_ADDRESS' | 'ACCOUNT_ADD_
 
 /** A connection to a list of items. */
 export interface PopularBrandConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((PopularBrandEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'PopularBrandConnection'
 }
 
 
 /** An edge in a connection. */
 export interface PopularBrandEdge {
-    /** The item at the end of the edge. */
-    node: PopularBrandType
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: PopularBrandType
     __typename: 'PopularBrandEdge'
 }
 
 
 /** PopularBrandType */
 export interface PopularBrandType {
-    /** Brand id */
-    entityId: Scalars['Int']
     /** Brand count */
     count: Scalars['Int']
+    /** Brand id */
+    entityId: Scalars['Int']
     /** Brand name */
     name: Scalars['String']
     /** Brand URL as a relative path */
@@ -1844,72 +1968,52 @@ export interface PriceRanges {
 
 /** Price Filter */
 export interface PriceSearchFilter {
-    /** Selected price filters. */
-    selected: (PriceSearchFilterItem | null)
-    /** Display name for the filter. */
-    name: Scalars['String']
     /** Indicates whether filter is collapsed by default. */
     isCollapsedByDefault: Scalars['Boolean']
+    /** Display name for the filter. */
+    name: Scalars['String']
+    /** Selected price filters. */
+    selected: (PriceSearchFilterItem | null)
     __typename: 'PriceSearchFilter'
 }
 
 
 /** Price filter range */
 export interface PriceSearchFilterItem {
-    /** Minimum price of the product. */
-    minPrice: (Scalars['Float'] | null)
     /** Maximum price of the product. */
     maxPrice: (Scalars['Float'] | null)
+    /** Minimum price of the product. */
+    minPrice: (Scalars['Float'] | null)
     __typename: 'PriceSearchFilterItem'
 }
 
 
 /** The various prices that can be set on a product. */
 export interface Prices {
-    /** Calculated price of the product.  Calculated price takes into account basePrice, salePrice, rules (modifier, option, option set) that apply to the product configuration, and customer group discounts.  It represents the in-cart price for a product configuration without bulk pricing rules. */
-    price: Money
-    /** Sale price of the product. */
-    salePrice: (Money | null)
     /** Original price of the product. */
     basePrice: (Money | null)
-    /** Retail price of the product. */
-    retailPrice: (Money | null)
-    /** Minimum advertised price of the product. */
-    mapPrice: (Money | null)
-    /** Product price min/max range. */
-    priceRange: MoneyRange
-    /** Product retail price min/max range. */
-    retailPriceRange: (MoneyRange | null)
-    /** The difference between the retail price (MSRP) and the current price, which can be presented to the shopper as their savings. */
-    saved: (Money | null)
     /** List of bulk pricing tiers applicable to a product or variant. */
     bulkPricing: BulkPricingTier[]
+    /** Minimum advertised price of the product. */
+    mapPrice: (Money | null)
+    /** Calculated price of the product.  Calculated price takes into account basePrice, salePrice, rules (modifier, option, option set) that apply to the product configuration, and customer group discounts.  It represents the in-cart price for a product configuration without bulk pricing rules. */
+    price: Money
+    /** Product price min/max range. */
+    priceRange: MoneyRange
+    /** Retail price of the product. */
+    retailPrice: (Money | null)
+    /** Product retail price min/max range. */
+    retailPriceRange: (MoneyRange | null)
+    /** Sale price of the product. */
+    salePrice: (Money | null)
+    /** The difference between the retail price (MSRP) and the current price, which can be presented to the shopper as their savings. */
+    saved: (Money | null)
     __typename: 'Prices'
 }
 
 
 /** Product */
 export interface Product {
-    /** The ID of an object */
-    id: Scalars['ID']
-    /** Id of the product. */
-    entityId: Scalars['Int']
-    /** Default product variant when no options are selected. */
-    sku: Scalars['String']
-    /** Relative URL path to product page. */
-    path: Scalars['String']
-    /** Name of the product. */
-    name: Scalars['String']
-    /** Description of the product. */
-    description: Scalars['String']
-    /** Description of the product in plain text. */
-    plainTextDescription: Scalars['String']
-    /** Warranty information of the product. */
-    warranty: Scalars['String']
-    /** Minimum purchasable quantity for this product in a single order. */
-    minPurchaseQuantity: (Scalars['Int'] | null)
-    /** Maximum purchasable quantity for this product in a single order. */
-    maxPurchaseQuantity: (Scalars['Int'] | null)
     /** Absolute URL path for adding a product to cart. */
     addToCartUrl: Scalars['String']
     /**
@@ -1917,32 +2021,6 @@ export interface Product {
      * Absolute URL path for adding a product to customer's wishlist.
      */
     addToWishlistUrl: Scalars['String']
-    /** Prices object determined by supplied product ID, variant ID, and selected option IDs. */
-    prices: (Prices | null)
-    /**
-     * @deprecated Use priceRanges inside prices node instead.
-     * The minimum and maximum price of this product based on variant pricing and/or modifier price rules.
-     */
-    priceRanges: (PriceRanges | null)
-    /** Weight of the product. */
-    weight: (Measurement | null)
-    /** Height of the product. */
-    height: (Measurement | null)
-    /** Width of the product. */
-    width: (Measurement | null)
-    /** Depth of the product. */
-    depth: (Measurement | null)
-    /**
-     * @deprecated Use productOptions instead.
-     * Product options.
-     */
-    options: OptionConnection
-    /** Product options. */
-    productOptions: ProductOptionConnection
-    /** Summary of the product reviews, includes the total number of reviews submitted and summation of the ratings on the reviews (ratings range from 0-5 per review). */
-    reviewSummary: Reviews
-    /** Type of product, ex: physical, digital */
-    type: Scalars['String']
     /**
      * @deprecated Use status inside availabilityV2 instead.
      * The availability state of the product.
@@ -1955,91 +2033,137 @@ export interface Product {
     availabilityDescription: Scalars['String']
     /** The availability state of the product. */
     availabilityV2: ProductAvailability
-    /** List of categories associated with the product. */
-    categories: CategoryConnection
     /** Brand associated with the product. */
     brand: (Brand | null)
-    /** Variants associated with the product. */
-    variants: VariantConnection
-    /** Custom fields of the product. */
-    customFields: CustomFieldConnection
-    /** A list of the images for a product. */
-    images: ImageConnection
-    /** Default image for a product. */
-    defaultImage: (Image | null)
-    /** Related products for this product. */
-    relatedProducts: RelatedProductsConnection
-    /** Inventory information of the product. */
-    inventory: ProductInventory
-    /** Metafield data related to a product. */
-    metafields: MetafieldConnection
-    /** Universal product code. */
-    upc: (Scalars['String'] | null)
-    /** Manufacturer part number. */
-    mpn: (Scalars['String'] | null)
-    /** Global trade item number. */
-    gtin: (Scalars['String'] | null)
+    /** List of categories associated with the product. */
+    categories: CategoryConnection
+    /** Product condition */
+    condition: (ProductConditionType | null)
     /**
      * @deprecated Alpha version. Do not use in production.
      * Product creation date
      */
     createdAt: DateTimeExtended
+    /** Custom fields of the product. */
+    customFields: CustomFieldConnection
+    /** Default image for a product. */
+    defaultImage: (Image | null)
+    /** Depth of the product. */
+    depth: (Measurement | null)
+    /** Description of the product. */
+    description: Scalars['String']
+    /** Id of the product. */
+    entityId: Scalars['Int']
+    /** Gift wrapping options available for the product. */
+    giftWrappingOptions: GiftWrappingConnection
+    /** Global trade item number. */
+    gtin: (Scalars['String'] | null)
+    /** Height of the product. */
+    height: (Measurement | null)
+    /** The ID of an object */
+    id: Scalars['ID']
+    /** A list of the images for a product. */
+    images: ImageConnection
+    /** Inventory information of the product. */
+    inventory: ProductInventory
+    /** Maximum purchasable quantity for this product in a single order. */
+    maxPurchaseQuantity: (Scalars['Int'] | null)
+    /** Metafield data related to a product. */
+    metafields: MetafieldConnection
+    /** Minimum purchasable quantity for this product in a single order. */
+    minPurchaseQuantity: (Scalars['Int'] | null)
+    /** Manufacturer part number. */
+    mpn: (Scalars['String'] | null)
+    /** Name of the product. */
+    name: Scalars['String']
+    /**
+     * @deprecated Use productOptions instead.
+     * Product options.
+     */
+    options: OptionConnection
+    /** Relative URL path to product page. */
+    path: Scalars['String']
+    /** Description of the product in plain text. */
+    plainTextDescription: Scalars['String']
+    /**
+     * @deprecated Use priceRanges inside prices node instead.
+     * The minimum and maximum price of this product based on variant pricing and/or modifier price rules.
+     */
+    priceRanges: (PriceRanges | null)
+    /** Prices object determined by supplied product ID, variant ID, and selected option IDs. */
+    prices: (Prices | null)
+    /** Product options. */
+    productOptions: ProductOptionConnection
+    /** Related products for this product. */
+    relatedProducts: RelatedProductsConnection
+    /** Summary of the product reviews, includes the total number of reviews submitted and summation of the ratings on the reviews (ratings range from 0-5 per review). */
+    reviewSummary: Reviews
     /** Reviews associated with the product. */
     reviews: ReviewConnection
     /** Product SEO details. */
     seo: SeoDetails
-    /** Gift wrapping options available for the product. */
-    giftWrappingOptions: GiftWrappingConnection
-    /** Product condition */
-    condition: (ProductConditionType | null)
     /** Whether or not the cart call to action should be visible for this product. */
     showCartAction: Scalars['Boolean']
+    /** Default product variant when no options are selected. */
+    sku: Scalars['String']
+    /** Type of product, ex: physical, digital */
+    type: Scalars['String']
+    /** Universal product code. */
+    upc: (Scalars['String'] | null)
+    /** Variants associated with the product. */
+    variants: VariantConnection
+    /** Warranty information of the product. */
+    warranty: Scalars['String']
+    /** Weight of the product. */
+    weight: (Measurement | null)
+    /** Width of the product. */
+    width: (Measurement | null)
     __typename: 'Product'
 }
 
 
 /** Product Attribute Filter */
 export interface ProductAttributeSearchFilter {
-    /** Indicates whether to display product count next to the filter. */
-    displayProductCount: Scalars['Boolean']
     /** List of available product attributes. */
     attributes: ProductAttributeSearchFilterItemConnection
-    /** Display name for the filter. */
-    name: Scalars['String']
+    /** Indicates whether to display product count next to the filter. */
+    displayProductCount: Scalars['Boolean']
     /** Indicates whether filter is collapsed by default. */
     isCollapsedByDefault: Scalars['Boolean']
+    /** Display name for the filter. */
+    name: Scalars['String']
     __typename: 'ProductAttributeSearchFilter'
 }
 
 
 /** Specific product attribute filter item */
 export interface ProductAttributeSearchFilterItem {
-    /** Product attribute value. */
-    value: Scalars['String']
     /** Indicates whether product attribute is selected. */
     isSelected: Scalars['Boolean']
     /** Indicates how many products available for this filter. */
     productCount: Scalars['Int']
+    /** Product attribute value. */
+    value: Scalars['String']
     __typename: 'ProductAttributeSearchFilterItem'
 }
 
 
 /** A connection to a list of items. */
 export interface ProductAttributeSearchFilterItemConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((ProductAttributeSearchFilterItemEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'ProductAttributeSearchFilterItemConnection'
 }
 
 
 /** An edge in a connection. */
 export interface ProductAttributeSearchFilterItemEdge {
-    /** The item at the end of the edge. */
-    node: ProductAttributeSearchFilterItem
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: ProductAttributeSearchFilterItem
     __typename: 'ProductAttributeSearchFilterItemEdge'
 }
 
@@ -2054,10 +2178,10 @@ export type ProductAvailabilityStatus = 'Available' | 'Preorder' | 'Unavailable'
 
 /** Available Product */
 export interface ProductAvailable {
-    /** The availability state of the product. */
-    status: ProductAvailabilityStatus
     /** A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'. */
     description: Scalars['String']
+    /** The availability state of the product. */
+    status: ProductAvailabilityStatus
     __typename: 'ProductAvailable'
 }
 
@@ -2068,44 +2192,44 @@ export type ProductConditionType = 'NEW' | 'REFURBISHED' | 'USED'
 
 /** A connection to a list of items. */
 export interface ProductConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
-    /** A list of edges. */
-    edges: ((ProductEdge | null)[] | null)
     /** Collection info */
     collectionInfo: (CollectionInfo | null)
+    /** A list of edges. */
+    edges: ((ProductEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'ProductConnection'
 }
 
 
 /** An edge in a connection. */
 export interface ProductEdge {
-    /** The item at the end of the edge. */
-    node: Product
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: Product
     __typename: 'ProductEdge'
 }
 
 
 /** Product Inventory Information */
 export interface ProductInventory {
-    /** Indicates whether this product is in stock. */
-    isInStock: Scalars['Boolean']
-    /** Indicates whether this product's inventory is being tracked on variant level. If true, you may wish to check the variants node to understand the true inventory of each individual variant, rather than relying on this product-level aggregate to understand how many items may be added to cart. */
-    hasVariantInventory: Scalars['Boolean']
     /** Aggregated product inventory information. This data may not be available if not set or if the store's Inventory Settings have disabled displaying stock levels on the storefront. */
     aggregated: (AggregatedInventory | null)
+    /** Indicates whether this product's inventory is being tracked on variant level. If true, you may wish to check the variants node to understand the true inventory of each individual variant, rather than relying on this product-level aggregate to understand how many items may be added to cart. */
+    hasVariantInventory: Scalars['Boolean']
+    /** Indicates whether this product is in stock. */
+    isInStock: Scalars['Boolean']
     __typename: 'ProductInventory'
 }
 
 
 /** Product Option */
 export interface ProductOption {
-    /** Unique ID for the option. */
-    entityId: Scalars['Int']
     /** Display name for the option. */
     displayName: Scalars['String']
+    /** Unique ID for the option. */
+    entityId: Scalars['Int']
     /** One of the option values is required to be selected for the checkout. */
     isRequired: Scalars['Boolean']
     /** Option values. */
@@ -2116,20 +2240,20 @@ export interface ProductOption {
 
 /** A connection to a list of items. */
 export interface ProductOptionConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((ProductOptionEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'ProductOptionConnection'
 }
 
 
 /** An edge in a connection. */
 export interface ProductOptionEdge {
-    /** The item at the end of the edge. */
-    node: CatalogProductOption
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: CatalogProductOption
     __typename: 'ProductOptionEdge'
 }
 
@@ -2146,20 +2270,20 @@ export interface ProductOptionValue {
 
 /** A connection to a list of items. */
 export interface ProductOptionValueConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((ProductOptionValueEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'ProductOptionValueConnection'
 }
 
 
 /** An edge in a connection. */
 export interface ProductOptionValueEdge {
-    /** The item at the end of the edge. */
-    node: CatalogProductOptionValue
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: CatalogProductOptionValue
     __typename: 'ProductOptionValueEdge'
 }
 
@@ -2170,32 +2294,32 @@ export type ProductOutOfStockBehavior = 'DO_NOTHING' | 'HIDE_PRODUCT' | 'HIDE_PR
 
 /** A Product PickList Value - a product to be mapped to the base product if selected. */
 export interface ProductPickListOptionValue {
-    /** The ID of the product associated with this option value. */
-    productId: Scalars['Int']
     /** Default image for a pick list product. */
     defaultImage: (Image | null)
     /** Unique ID for the option value. */
     entityId: Scalars['Int']
-    /** Label for the option value. */
-    label: Scalars['String']
     /** Indicates whether this value is the chosen default selected value. */
     isDefault: Scalars['Boolean']
     /** Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level. */
     isSelected: (Scalars['Boolean'] | null)
+    /** Label for the option value. */
+    label: Scalars['String']
+    /** The ID of the product associated with this option value. */
+    productId: Scalars['Int']
     __typename: 'ProductPickListOptionValue'
 }
 
 
 /** PreOrder Product */
 export interface ProductPreOrder {
-    /** The message to be shown in the store when a product is put into the pre-order availability state, e.g. "Expected release date is %%DATE%%" */
-    message: (Scalars['String'] | null)
-    /** Product release date */
-    willBeReleasedAt: (DateTimeExtended | null)
-    /** The availability state of the product. */
-    status: ProductAvailabilityStatus
     /** A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'. */
     description: Scalars['String']
+    /** The message to be shown in the store when a product is put into the pre-order availability state, e.g. "Expected release date is %%DATE%%" */
+    message: (Scalars['String'] | null)
+    /** The availability state of the product. */
+    status: ProductAvailabilityStatus
+    /** Product release date */
+    willBeReleasedAt: (DateTimeExtended | null)
     __typename: 'ProductPreOrder'
 }
 
@@ -2206,12 +2330,12 @@ export type ProductReviewsSortInput = 'HIGHEST_RATING' | 'LOWEST_RATING' | 'NEWE
 
 /** Unavailable Product */
 export interface ProductUnavailable {
+    /** A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'. */
+    description: Scalars['String']
     /** The message to be shown in the store when "Call for pricing" is enabled for this product, e.g. "Contact us at 555-5555" */
     message: (Scalars['String'] | null)
     /** The availability state of the product. */
     status: ProductAvailabilityStatus
-    /** A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'. */
-    description: Scalars['String']
     __typename: 'ProductUnavailable'
 }
 
@@ -2220,92 +2344,92 @@ export interface ProductUnavailable {
 export interface PublicWishlist {
     /** The wishlist id. */
     entityId: Scalars['Int']
+    /** A list of the wishlist items */
+    items: WishlistItemConnection
     /** The wishlist name. */
     name: Scalars['String']
     /** The wishlist token. */
     token: Scalars['String']
-    /** A list of the wishlist items */
-    items: WishlistItemConnection
     __typename: 'PublicWishlist'
 }
 
 export interface Query {
-    /** A site */
-    site: Site
     /** The current channel. */
     channel: Channel
     /** The currently logged in customer. */
     customer: (Customer | null)
-    /** Fetches an object given its ID */
-    node: (Node | null)
     /** An inventory */
     inventory: Inventory
+    /** Fetches an object given its ID */
+    node: (Node | null)
+    /** A site */
+    site: Site
     __typename: 'Query'
 }
 
 
 /** Rating Filter */
 export interface RatingSearchFilter {
-    /** List of available ratings. */
-    ratings: RatingSearchFilterItemConnection
-    /** Display name for the filter. */
-    name: Scalars['String']
     /** Indicates whether filter is collapsed by default. */
     isCollapsedByDefault: Scalars['Boolean']
+    /** Display name for the filter. */
+    name: Scalars['String']
+    /** List of available ratings. */
+    ratings: RatingSearchFilterItemConnection
     __typename: 'RatingSearchFilter'
 }
 
 
 /** Specific rating filter item */
 export interface RatingSearchFilterItem {
-    /** Rating value. */
-    value: Scalars['String']
     /** Indicates whether rating is selected. */
     isSelected: Scalars['Boolean']
     /** Indicates how many products available for this filter. */
     productCount: Scalars['Int']
+    /** Rating value. */
+    value: Scalars['String']
     __typename: 'RatingSearchFilterItem'
 }
 
 
 /** A connection to a list of items. */
 export interface RatingSearchFilterItemConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((RatingSearchFilterItemEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'RatingSearchFilterItemConnection'
 }
 
 
 /** An edge in a connection. */
 export interface RatingSearchFilterItemEdge {
-    /** The item at the end of the edge. */
-    node: RatingSearchFilterItem
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: RatingSearchFilterItem
     __typename: 'RatingSearchFilterItemEdge'
 }
 
 
 /** A raw HTML page. */
 export interface RawHtmlPage {
-    /** The ID of an object */
-    id: Scalars['ID']
-    /** The URL path of the page. */
-    path: Scalars['String']
-    /** The body of the page. */
-    htmlBody: Scalars['String']
-    /** The plain text summary of the page body. */
-    plainTextSummary: Scalars['String']
     /** Unique ID for the web page. */
     entityId: Scalars['Int']
-    /** Unique ID for the parent page. */
-    parentEntityId: (Scalars['Int'] | null)
-    /** Page name. */
-    name: Scalars['String']
+    /** The body of the page. */
+    htmlBody: Scalars['String']
+    /** The ID of an object */
+    id: Scalars['ID']
     /** Whether or not the page should be visible in the navigation menu. */
     isVisibleInNavigation: Scalars['Boolean']
+    /** Page name. */
+    name: Scalars['String']
+    /** Unique ID for the parent page. */
+    parentEntityId: (Scalars['Int'] | null)
+    /** The URL path of the page. */
+    path: Scalars['String']
+    /** The plain text summary of the page body. */
+    plainTextSummary: Scalars['String']
     /** Page SEO details. */
     seo: SeoDetails
     __typename: 'RawHtmlPage'
@@ -2322,30 +2446,30 @@ export interface ReCaptchaSettings {
 
 /** The region object */
 export interface Region {
-    /** The name of a region. */
-    name: Scalars['String']
     /** The rendered HTML content targeted at the region. */
     html: Scalars['String']
+    /** The name of a region. */
+    name: Scalars['String']
     __typename: 'Region'
 }
 
 
 /** A connection to a list of items. */
 export interface RelatedProductsConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((RelatedProductsEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'RelatedProductsConnection'
 }
 
 
 /** An edge in a connection. */
 export interface RelatedProductsEdge {
-    /** The item at the end of the edge. */
-    node: Product
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: Product
     __typename: 'RelatedProductsEdge'
 }
 
@@ -2360,38 +2484,38 @@ export interface RenderedRegionsByPageType {
 
 /** Review */
 export interface Review {
-    /** Unique ID for the product review. */
-    entityId: Scalars['Long']
     /** Product review author. */
     author: Author
-    /** Product review title. */
-    title: Scalars['String']
-    /** Product review text. */
-    text: Scalars['String']
-    /** Product review rating. */
-    rating: Scalars['Int']
     /** Product review creation date. */
     createdAt: DateTimeExtended
+    /** Unique ID for the product review. */
+    entityId: Scalars['Long']
+    /** Product review rating. */
+    rating: Scalars['Int']
+    /** Product review text. */
+    text: Scalars['String']
+    /** Product review title. */
+    title: Scalars['String']
     __typename: 'Review'
 }
 
 
 /** A connection to a list of items. */
 export interface ReviewConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((ReviewEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'ReviewConnection'
 }
 
 
 /** An edge in a connection. */
 export interface ReviewEdge {
-    /** The item at the end of the edge. */
-    node: Review
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: Review
     __typename: 'ReviewEdge'
 }
 
@@ -2433,30 +2557,30 @@ export type SearchProductFilter = (BrandSearchFilter | CategorySearchFilter | Ot
 
 /** A connection to a list of items. */
 export interface SearchProductFilterConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((SearchProductFilterEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'SearchProductFilterConnection'
 }
 
 
 /** An edge in a connection. */
 export interface SearchProductFilterEdge {
-    /** The item at the end of the edge. */
-    node: SearchProductFilter
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: SearchProductFilter
     __typename: 'SearchProductFilterEdge'
 }
 
 
 /** Container for catalog search results, which may contain both products as well as a list of search filters for further refinement. */
 export interface SearchProducts {
-    /** Details of the products. */
-    products: ProductConnection
     /** Available product filters. */
     filters: SearchProductFilterConnection
+    /** Details of the products. */
+    products: ProductConnection
     __typename: 'SearchProducts'
 }
 
@@ -2475,24 +2599,28 @@ export interface SearchQueries {
 
 /** Seo Details */
 export interface SeoDetails {
-    /** Page title. */
-    pageTitle: Scalars['String']
     /** Meta description. */
     metaDescription: Scalars['String']
     /** Meta keywords. */
     metaKeywords: Scalars['String']
+    /** Page title. */
+    pageTitle: Scalars['String']
     __typename: 'SeoDetails'
 }
 
 
 /** Store settings information from the control panel. */
 export interface Settings {
-    /** The name of the store. */
-    storeName: Scalars['String']
-    /** The hash of the store. */
-    storeHash: Scalars['String']
-    /** The current store status. */
-    status: StorefrontStatusType
+    /** Channel ID. */
+    channelId: Scalars['Long']
+    /** Checkout settings. */
+    checkout: (CheckoutSettings | null)
+    /** Contact information for the store. */
+    contact: (ContactField | null)
+    /** Store display format information. */
+    display: DisplayField
+    /** Inventory settings. */
+    inventory: (InventorySettings | null)
     /**
      * @deprecated Use `logoV2` instead.
      * Logo information for the store.
@@ -2500,48 +2628,44 @@ export interface Settings {
     logo: LogoField
     /** Logo information for the store. */
     logoV2: StoreLogo
-    /** Contact information for the store. */
-    contact: (ContactField | null)
-    /** Store urls. */
-    url: UrlField
-    /** Store display format information. */
-    display: DisplayField
-    /** Channel ID. */
-    channelId: Scalars['Long']
-    /** The tax display settings object */
-    tax: (TaxDisplaySettings | null)
-    /** Store search settings. */
-    search: Search
-    /** Storefront settings. */
-    storefront: Storefront
-    /** Inventory settings. */
-    inventory: (InventorySettings | null)
     /** ReCaptcha settings. */
     reCaptcha: ReCaptchaSettings
+    /** Store search settings. */
+    search: Search
     /** The social media links of connected platforms to the storefront. */
     socialMediaLinks: SocialMediaLink[]
-    /** Checkout settings. */
-    checkout: (CheckoutSettings | null)
+    /** The current store status. */
+    status: StorefrontStatusType
+    /** The hash of the store. */
+    storeHash: Scalars['String']
+    /** The name of the store. */
+    storeName: Scalars['String']
+    /** Storefront settings. */
+    storefront: Storefront
+    /** The tax display settings object */
+    tax: (TaxDisplaySettings | null)
+    /** Store urls. */
+    url: UrlField
     __typename: 'Settings'
 }
 
 
 /** A connection to a list of items. */
 export interface ShopByPriceConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((ShopByPriceEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'ShopByPriceConnection'
 }
 
 
 /** An edge in a connection. */
 export interface ShopByPriceEdge {
-    /** The item at the end of the edge. */
-    node: ShopByPriceRange
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: ShopByPriceRange
     __typename: 'ShopByPriceEdge'
 }
 
@@ -2556,40 +2680,40 @@ export interface ShopByPriceRange {
 
 /** A site */
 export interface Site {
-    /** The Search queries. */
-    search: SearchQueries
-    /** A tree of categories. */
-    categoryTree: CategoryTreeItem[]
-    /** Retrieve a category object by the id. */
-    category: (Category | null)
-    /** Details of the brand. */
-    brands: BrandConnection
-    /** Details of the products. */
-    products: ProductConnection
-    /** Details of the newest products. */
-    newestProducts: ProductConnection
     /** Details of the best selling products. */
     bestSellingProducts: ProductConnection
-    /** Details of the featured products. */
-    featuredProducts: ProductConnection
-    /** A single product object with variant pricing overlay capabilities. */
-    product: (Product | null)
-    /** Route for a node */
-    route: Route
-    /** Store settings. */
-    settings: (Settings | null)
-    /** The page content. */
-    content: Content
-    /** Currency details. */
-    currency: (Currency | null)
-    /** Store Currencies. */
-    currencies: CurrencyConnection
-    /** Public Wishlist */
-    publicWishlist: (PublicWishlist | null)
-    /** List of brands sorted by product count. */
-    popularBrands: PopularBrandConnection
+    /** Details of the brand. */
+    brands: BrandConnection
     /** The Cart of the current customer. */
     cart: (Cart | null)
+    /** Retrieve a category object by the id. */
+    category: (Category | null)
+    /** A tree of categories. */
+    categoryTree: CategoryTreeItem[]
+    /** The page content. */
+    content: Content
+    /** Store Currencies. */
+    currencies: CurrencyConnection
+    /** Currency details. */
+    currency: (Currency | null)
+    /** Details of the featured products. */
+    featuredProducts: ProductConnection
+    /** Details of the newest products. */
+    newestProducts: ProductConnection
+    /** List of brands sorted by product count. */
+    popularBrands: PopularBrandConnection
+    /** A single product object with variant pricing overlay capabilities. */
+    product: (Product | null)
+    /** Details of the products. */
+    products: ProductConnection
+    /** Public Wishlist */
+    publicWishlist: (PublicWishlist | null)
+    /** Route for a node */
+    route: Route
+    /** The Search queries. */
+    search: SearchQueries
+    /** Store settings. */
+    settings: (Settings | null)
     __typename: 'Site'
 }
 
@@ -2606,14 +2730,14 @@ export interface SocialMediaLink {
 
 /** Special hour */
 export interface SpecialHour {
+    /** Closing time */
+    closing: (Scalars['DateTime'] | null)
     /** Upcoming event name */
     label: Scalars['String']
     /** Is open */
     open: Scalars['Boolean']
     /** Opening time */
     opening: (Scalars['DateTime'] | null)
-    /** Closing time */
-    closing: (Scalars['DateTime'] | null)
     __typename: 'SpecialHour'
 }
 
@@ -2631,7 +2755,7 @@ export interface StoreImageLogo {
 
 
 /** Store logo. */
-export type StoreLogo = (StoreTextLogo | StoreImageLogo) & { __isUnion?: true }
+export type StoreLogo = (StoreImageLogo | StoreTextLogo) & { __isUnion?: true }
 
 
 /** Store logo as text. */
@@ -2658,10 +2782,10 @@ export type StorefrontStatusType = 'HIBERNATION' | 'LAUNCHED' | 'MAINTENANCE' | 
 export interface SubCategorySearchFilterItem {
     /** Category ID. */
     entityId: Scalars['Int']
-    /** Category name. */
-    name: Scalars['String']
     /** Indicates whether category is selected. */
     isSelected: Scalars['Boolean']
+    /** Category name. */
+    name: Scalars['String']
     /** Indicates how many products available for this filter. */
     productCount: Scalars['Int']
     /** List of available sub-categories. */
@@ -2672,38 +2796,38 @@ export interface SubCategorySearchFilterItem {
 
 /** A connection to a list of items. */
 export interface SubCategorySearchFilterItemConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((SubCategorySearchFilterItemEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'SubCategorySearchFilterItemConnection'
 }
 
 
 /** An edge in a connection. */
 export interface SubCategorySearchFilterItemEdge {
-    /** The item at the end of the edge. */
-    node: SubCategorySearchFilterItem
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: SubCategorySearchFilterItem
     __typename: 'SubCategorySearchFilterItemEdge'
 }
 
 
 /** A swatch option value - swatch values can be associated with a list of hexidecimal colors or an image. */
 export interface SwatchOptionValue {
+    /** Unique ID for the option value. */
+    entityId: Scalars['Int']
     /** List of up to 3 hex encoded colors to associate with a swatch value. */
     hexColors: Scalars['String'][]
     /** Absolute path of a swatch texture image. */
     imageUrl: (Scalars['String'] | null)
-    /** Unique ID for the option value. */
-    entityId: Scalars['Int']
-    /** Label for the option value. */
-    label: Scalars['String']
     /** Indicates whether this value is the chosen default selected value. */
     isDefault: Scalars['Boolean']
     /** Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level. */
     isSelected: (Scalars['Boolean'] | null)
+    /** Label for the option value. */
+    label: Scalars['String']
     __typename: 'SwatchOptionValue'
 }
 
@@ -2726,90 +2850,122 @@ export type TaxPriceDisplay = 'BOTH' | 'EX' | 'INC'
 export interface TextFieldOption {
     /** Default value of the text field option. */
     defaultValue: (Scalars['String'] | null)
-    /** The minimum number of characters. */
-    minLength: (Scalars['Int'] | null)
-    /** The maximum number of characters. */
-    maxLength: (Scalars['Int'] | null)
-    /** Unique ID for the option. */
-    entityId: Scalars['Int']
     /** Display name for the option. */
     displayName: Scalars['String']
+    /** Unique ID for the option. */
+    entityId: Scalars['Int']
     /** One of the option values is required to be selected for the checkout. */
     isRequired: Scalars['Boolean']
     /** Indicates whether it is a variant option or modifier. */
     isVariantOption: Scalars['Boolean']
+    /** The maximum number of characters. */
+    maxLength: (Scalars['Int'] | null)
+    /** The minimum number of characters. */
+    minLength: (Scalars['Int'] | null)
     __typename: 'TextFieldOption'
+}
+
+
+/** Unassign cart from the customer result. */
+export interface UnassignCartFromCustomerResult {
+    /** The Cart that is updated as a result of mutation. */
+    cart: (Cart | null)
+    __typename: 'UnassignCartFromCustomerResult'
+}
+
+
+/** Update cart currency result */
+export interface UpdateCartCurrencyResult {
+    /** The Cart that is updated as a result of mutation. */
+    cart: (Cart | null)
+    __typename: 'UpdateCartCurrencyResult'
+}
+
+
+/** Update cart line item result */
+export interface UpdateCartLineItemResult {
+    /** The Cart that is updated as a result of mutation. */
+    cart: (Cart | null)
+    __typename: 'UpdateCartLineItemResult'
+}
+
+
+/** Update wishlist */
+export interface UpdateWishlistResult {
+    /** The wishlist */
+    result: Wishlist
+    __typename: 'UpdateWishlistResult'
 }
 
 
 /** Url field */
 export interface UrlField {
-    /** Store url. */
-    vanityUrl: Scalars['String']
     /** CDN url to fetch assets. */
     cdnUrl: Scalars['String']
     /** Checkout url. */
     checkoutUrl: (Scalars['String'] | null)
+    /** Store url. */
+    vanityUrl: Scalars['String']
     __typename: 'UrlField'
 }
 
 
 /** Variant */
 export interface Variant {
-    /** The ID of an object */
-    id: Scalars['ID']
-    /** Id of the variant. */
-    entityId: Scalars['Int']
-    /** Sku of the variant. */
-    sku: Scalars['String']
-    /** The variant's weight. If a weight was not explicitly specified on the variant, this will be the product's weight. */
-    weight: (Measurement | null)
-    /** The variant's height. If a height was not explicitly specified on the variant, this will be the product's height. */
-    height: (Measurement | null)
-    /** The variant's width. If a width was not explicitly specified on the variant, this will be the product's width. */
-    width: (Measurement | null)
-    /** The variant's depth. If a depth was not explicitly specified on the variant, this will be the product's depth. */
-    depth: (Measurement | null)
-    /** The options which define a variant. */
-    options: OptionConnection
-    /** Product options that compose this variant. */
-    productOptions: ProductOptionConnection
     /** Default image for a variant. */
     defaultImage: (Image | null)
-    /** Variant prices */
-    prices: (Prices | null)
-    /** Variant inventory */
-    inventory: (VariantInventory | null)
-    /** Metafield data related to a variant. */
-    metafields: MetafieldConnection
-    /** Universal product code. */
-    upc: (Scalars['String'] | null)
-    /** Manufacturer part number. */
-    mpn: (Scalars['String'] | null)
+    /** The variant's depth. If a depth was not explicitly specified on the variant, this will be the product's depth. */
+    depth: (Measurement | null)
+    /** Id of the variant. */
+    entityId: Scalars['Int']
     /** Global trade item number. */
     gtin: (Scalars['String'] | null)
+    /** The variant's height. If a height was not explicitly specified on the variant, this will be the product's height. */
+    height: (Measurement | null)
+    /** The ID of an object */
+    id: Scalars['ID']
+    /** Variant inventory */
+    inventory: (VariantInventory | null)
     /** Whether the product can be purchased */
     isPurchasable: Scalars['Boolean']
+    /** Metafield data related to a variant. */
+    metafields: MetafieldConnection
+    /** Manufacturer part number. */
+    mpn: (Scalars['String'] | null)
+    /** The options which define a variant. */
+    options: OptionConnection
+    /** Variant prices */
+    prices: (Prices | null)
+    /** Product options that compose this variant. */
+    productOptions: ProductOptionConnection
+    /** Sku of the variant. */
+    sku: Scalars['String']
+    /** Universal product code. */
+    upc: (Scalars['String'] | null)
+    /** The variant's weight. If a weight was not explicitly specified on the variant, this will be the product's weight. */
+    weight: (Measurement | null)
+    /** The variant's width. If a width was not explicitly specified on the variant, this will be the product's width. */
+    width: (Measurement | null)
     __typename: 'Variant'
 }
 
 
 /** A connection to a list of items. */
 export interface VariantConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((VariantEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'VariantConnection'
 }
 
 
 /** An edge in a connection. */
 export interface VariantEdge {
-    /** The item at the end of the edge. */
-    node: Variant
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: Variant
     __typename: 'VariantEdge'
 }
 
@@ -2818,10 +2974,10 @@ export interface VariantEdge {
 export interface VariantInventory {
     /** Aggregated product variant inventory information. This data may not be available if not set or if the store's Inventory Settings have disabled displaying stock levels on the storefront. */
     aggregated: (Aggregated | null)
-    /** Indicates whether this product is in stock. */
-    isInStock: Scalars['Boolean']
     /** Inventory by locations. */
     byLocation: (LocationConnection | null)
+    /** Indicates whether this product is in stock. */
+    isInStock: Scalars['Boolean']
     __typename: 'VariantInventory'
 }
 
@@ -2838,34 +2994,34 @@ export type WebPageType = 'BLOG' | 'CONTACT' | 'LINK' | 'NORMAL' | 'RAW'
 export interface Wishlist {
     /** The wishlist id. */
     entityId: Scalars['Int']
-    /** The wishlist name. */
-    name: Scalars['String']
     /** Is the wishlist public? */
     isPublic: Scalars['Boolean']
-    /** The wishlist token. */
-    token: Scalars['String']
     /** A list of the wishlist items */
     items: WishlistItemConnection
+    /** The wishlist name. */
+    name: Scalars['String']
+    /** The wishlist token. */
+    token: Scalars['String']
     __typename: 'Wishlist'
 }
 
 
 /** A connection to a list of items. */
 export interface WishlistConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((WishlistEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'WishlistConnection'
 }
 
 
 /** An edge in a connection. */
 export interface WishlistEdge {
-    /** The item at the end of the edge. */
-    node: Wishlist
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: Wishlist
     __typename: 'WishlistEdge'
 }
 
@@ -2886,21 +3042,37 @@ export interface WishlistItem {
 
 /** A connection to a list of items. */
 export interface WishlistItemConnection {
-    /** Information to aid in pagination. */
-    pageInfo: PageInfo
     /** A list of edges. */
     edges: ((WishlistItemEdge | null)[] | null)
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo
     __typename: 'WishlistItemConnection'
 }
 
 
 /** An edge in a connection. */
 export interface WishlistItemEdge {
-    /** The item at the end of the edge. */
-    node: WishlistItem
     /** A cursor for use in pagination. */
     cursor: Scalars['String']
+    /** The item at the end of the edge. */
+    node: WishlistItem
     __typename: 'WishlistItemEdge'
+}
+
+
+/** The wishlist mutations. */
+export interface WishlistMutations {
+    /** Add wishlist items */
+    addWishlistItems: (AddWishlistItemsResult | null)
+    /** Create wishlist */
+    createWishlist: (CreateWishlistResult | null)
+    /** Delete wishlist items */
+    deleteWishlistItems: (DeleteWishlistItemsResult | null)
+    /** Delete wishlist */
+    deleteWishlists: (DeleteWishlistResult | null)
+    /** Update wishlist */
+    updateWishlist: (UpdateWishlistResult | null)
+    __typename: 'WishlistMutations'
 }
 
 
@@ -2912,12 +3084,16 @@ export type countryCode = 'AD' | 'AE' | 'AF' | 'AG' | 'AI' | 'AL' | 'AM' | 'AO' 
 export type currencyCode = 'ADP' | 'AED' | 'AFA' | 'AFN' | 'ALK' | 'ALL' | 'AMD' | 'ANG' | 'AOA' | 'AOK' | 'AON' | 'AOR' | 'ARA' | 'ARL' | 'ARM' | 'ARP' | 'ARS' | 'ATS' | 'AUD' | 'AWG' | 'AZM' | 'AZN' | 'BAD' | 'BAM' | 'BAN' | 'BBD' | 'BDT' | 'BEC' | 'BEF' | 'BEL' | 'BGL' | 'BGM' | 'BGN' | 'BGO' | 'BHD' | 'BIF' | 'BMD' | 'BND' | 'BOB' | 'BOL' | 'BOP' | 'BOV' | 'BRB' | 'BRC' | 'BRE' | 'BRL' | 'BRN' | 'BRR' | 'BRZ' | 'BSD' | 'BTN' | 'BUK' | 'BWP' | 'BYB' | 'BYN' | 'BYR' | 'BZD' | 'CAD' | 'CDF' | 'CHE' | 'CHF' | 'CHW' | 'CLE' | 'CLF' | 'CLP' | 'CNX' | 'CNY' | 'COP' | 'COU' | 'CRC' | 'CSD' | 'CSK' | 'CUC' | 'CUP' | 'CVE' | 'CYP' | 'CZK' | 'DDM' | 'DEM' | 'DJF' | 'DKK' | 'DOP' | 'DZD' | 'ECS' | 'ECV' | 'EEK' | 'EGP' | 'ERN' | 'ESA' | 'ESB' | 'ESP' | 'ETB' | 'EUR' | 'FIM' | 'FJD' | 'FKP' | 'FRF' | 'GBP' | 'GEK' | 'GEL' | 'GHC' | 'GHS' | 'GIP' | 'GMD' | 'GNF' | 'GNS' | 'GQE' | 'GRD' | 'GTQ' | 'GWE' | 'GWP' | 'GYD' | 'HKD' | 'HNL' | 'HRD' | 'HRK' | 'HTG' | 'HUF' | 'IDR' | 'IEP' | 'ILP' | 'ILR' | 'ILS' | 'INR' | 'IQD' | 'IRR' | 'ISJ' | 'ISK' | 'ITL' | 'JMD' | 'JOD' | 'JPY' | 'KES' | 'KGS' | 'KHR' | 'KMF' | 'KPW' | 'KRH' | 'KRO' | 'KRW' | 'KWD' | 'KYD' | 'KZT' | 'LAK' | 'LBP' | 'LKR' | 'LRD' | 'LSL' | 'LTL' | 'LTT' | 'LUC' | 'LUF' | 'LUL' | 'LVL' | 'LVR' | 'LYD' | 'MAD' | 'MAF' | 'MCF' | 'MDC' | 'MDL' | 'MGA' | 'MGF' | 'MKD' | 'MKN' | 'MLF' | 'MMK' | 'MNT' | 'MOP' | 'MRO' | 'MTL' | 'MTP' | 'MUR' | 'MVP' | 'MVR' | 'MWK' | 'MXN' | 'MXP' | 'MXV' | 'MYR' | 'MZE' | 'MZM' | 'MZN' | 'NAD' | 'NGN' | 'NIC' | 'NIO' | 'NLG' | 'NOK' | 'NPR' | 'NZD' | 'OMR' | 'PAB' | 'PEI' | 'PEN' | 'PES' | 'PGK' | 'PHP' | 'PKR' | 'PLN' | 'PLZ' | 'PTE' | 'PYG' | 'QAR' | 'RHD' | 'ROL' | 'RON' | 'RSD' | 'RUB' | 'RUR' | 'RWF' | 'SAR' | 'SBD' | 'SCR' | 'SDD' | 'SDG' | 'SDP' | 'SEK' | 'SGD' | 'SHP' | 'SIT' | 'SKK' | 'SLL' | 'SOS' | 'SRD' | 'SRG' | 'SSP' | 'STD' | 'SUR' | 'SVC' | 'SYP' | 'SZL' | 'THB' | 'TJR' | 'TJS' | 'TMM' | 'TMT' | 'TND' | 'TOP' | 'TPE' | 'TRL' | 'TRY' | 'TTD' | 'TWD' | 'TZS' | 'UAH' | 'UAK' | 'UGS' | 'UGX' | 'USD' | 'USN' | 'USS' | 'UYI' | 'UYP' | 'UYU' | 'UZS' | 'VEB' | 'VEF' | 'VND' | 'VNN' | 'VUV' | 'WST' | 'XAF' | 'XCD' | 'XEU' | 'XFO' | 'XFU' | 'XOF' | 'XPF' | 'XRE' | 'YDD' | 'YER' | 'YUD' | 'YUM' | 'YUN' | 'YUR' | 'ZAL' | 'ZAR' | 'ZMK' | 'ZMW' | 'ZRN' | 'ZRZ' | 'ZWD' | 'ZWL' | 'ZWR'
 
 
+/** Blog post sort */
+export type sortBy = 'NEWEST' | 'OLDEST'
+
+
 /** Add cart line items data object */
 export interface AddCartLineItemsDataInput {
-/** List of cart line items */
-lineItems?: (CartLineItemInput[] | null),
 /** List of gift certificates */
-giftCertificates?: (CartGiftCertificateInput[] | null)}
+giftCertificates?: (CartGiftCertificateInput[] | null),
+/** List of cart line items */
+lineItems?: (CartLineItemInput[] | null)}
 
 
 /** Add cart line items input object */
@@ -2954,6 +3130,28 @@ export interface AddWishlistItemsResultGenqlSelection{
 }
 
 
+/** Aggregated */
+export interface AggregatedGenqlSelection{
+    /** Number of available products in stock. This can be 'null' if inventory is not set orif the store's Inventory Settings disable displaying stock levels on the storefront. */
+    availableToSell?: boolean | number
+    /** Indicates a threshold low-stock level.  This can be 'null' if the inventory warning level is not set or if the store's Inventory Settings disable displaying stock levels on the storefront. */
+    warningLevel?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Aggregated Product Inventory */
+export interface AggregatedInventoryGenqlSelection{
+    /** Number of available products in stock. This can be 'null' if inventory is not set orif the store's Inventory Settings disable displaying stock levels on the storefront. */
+    availableToSell?: boolean | number
+    /** Indicates a threshold low-stock level. This can be 'null' if the inventory warning level is not set or if the store's Inventory Settings disable displaying stock levels on the storefront. */
+    warningLevel?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
 /** Assign cart to the customer input object. */
 export interface AssignCartToCustomerInput {
 /** The cart id. */
@@ -2969,54 +3167,655 @@ export interface AssignCartToCustomerResultGenqlSelection{
 }
 
 
+/** Author */
+export interface AuthorGenqlSelection{
+    /** Author name. */
+    name?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Banner details. */
+export interface BannerGenqlSelection{
+    /** The content of the Banner. */
+    content?: boolean | number
+    /** The id of the Banner. */
+    entityId?: boolean | number
+    /** The id of the object. */
+    id?: boolean | number
+    /** The location of the Banner. */
+    location?: boolean | number
+    /** The name of the Banner. */
+    name?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface BannerConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: BannerEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface BannerEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: BannerGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Banners details. */
+export interface BannersGenqlSelection{
+    /** List of brand page banners. */
+    brandPage?: (BrandPageBannerConnectionGenqlSelection & { __args: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), 
+    /** The id of the brand to request banners for. */
+    brandEntityId: Scalars['Int'], first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** List of category page banners. */
+    categoryPage?: (CategoryPageBannerConnectionGenqlSelection & { __args: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), 
+    /** The id of the category to request banners for. */
+    categoryEntityId: Scalars['Int'], first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** List of home page banners. */
+    homePage?: (BannerConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** List of search page banners. */
+    searchPage?: (BannerConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Blog details. */
+export interface BlogGenqlSelection{
+    /** The description of the Blog. */
+    description?: boolean | number
+    /** The ID of an object */
+    id?: boolean | number
+    /** Whether or not the blog should be visible in the navigation menu. */
+    isVisibleInNavigation?: boolean | number
+    /** The name of the Blog. */
+    name?: boolean | number
+    /** The path of the Blog. */
+    path?: boolean | number
+    /** Blog post details. */
+    post?: (BlogPostGenqlSelection & { __args: {
+    /** Id of the blog post to fetch. */
+    entityId: Scalars['Int']} })
+    /** Details of the Blog posts. */
+    posts?: (BlogPostConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), 
+    /** Filters for querying blog posts */
+    filters?: (BlogPostsFiltersInput | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null), 
+    /** Order to sort the blog posts. */
+    sort?: (sortBy | null)} })
+    /** The rendered regions for the blog index. */
+    renderedRegions?: RenderedRegionsByPageTypeGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A blog index page. */
+export interface BlogIndexPageGenqlSelection{
+    /** Unique ID for the web page. */
+    entityId?: boolean | number
+    /** Whether or not the page should be visible in the navigation menu. */
+    isVisibleInNavigation?: boolean | number
+    /** Page name. */
+    name?: boolean | number
+    /** Unique ID for the parent page. */
+    parentEntityId?: boolean | number
+    /** The URL path of the page. */
+    path?: boolean | number
+    /** The rendered regions for the web page. */
+    renderedRegions?: RenderedRegionsByPageTypeGenqlSelection
+    /** Page SEO details. */
+    seo?: SeoDetailsGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Blog post details. */
+export interface BlogPostGenqlSelection{
+    /** Blog post author. */
+    author?: boolean | number
+    /** Unique ID for the blog post. */
+    entityId?: boolean | number
+    /** The body of the Blog post. */
+    htmlBody?: boolean | number
+    /** The ID of an object */
+    id?: boolean | number
+    /** Blog post name. */
+    name?: boolean | number
+    /** Blog post path. */
+    path?: boolean | number
+    /** The plain text summary of the Blog post. */
+    plainTextSummary?: { __args: {
+    /** The max number of characters for the plain text summary. */
+    characterLimit?: (Scalars['Int'] | null)} } | boolean | number
+    /** Blog post published date. */
+    publishedDate?: DateTimeExtendedGenqlSelection
+    /** The rendered regions for the blog post. */
+    renderedRegions?: RenderedRegionsByPageTypeGenqlSelection
+    /** Blog post SEO details. */
+    seo?: SeoDetailsGenqlSelection
+    /** Blog post tags. */
+    tags?: boolean | number
+    /** Blog post thumbnail image. */
+    thumbnailImage?: ImageGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface BlogPostConnectionGenqlSelection{
+    /** Collection info */
+    collectionInfo?: CollectionInfoGenqlSelection
+    /** A list of edges. */
+    edges?: BlogPostEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface BlogPostEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: BlogPostGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Object containing the filters for querying blog posts */
+export interface BlogPostsFiltersInput {
+/** Ids of the expected blog posts. */
+entityIds?: (Scalars['Int'][] | null),
+/** Tags of the expected blog posts. */
+tags?: (Scalars['String'][] | null)}
+
+
+/** Brand */
+export interface BrandGenqlSelection{
+    /** Default image for brand. */
+    defaultImage?: ImageGenqlSelection
+    /** Id of the brand. */
+    entityId?: boolean | number
+    /** The ID of an object */
+    id?: boolean | number
+    /**
+     * @deprecated Use SEO details instead.
+     * Meta description for the brand.
+     */
+    metaDesc?: boolean | number
+    /**
+     * @deprecated Use SEO details instead.
+     * Meta keywords for the brand.
+     */
+    metaKeywords?: boolean | number
+    /** Metafield data related to a brand. */
+    metafields?: (MetafieldConnectionGenqlSelection & { __args: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), 
+    /** Labels for identifying metafield data values. */
+    keys?: (Scalars['String'][] | null), last?: (Scalars['Int'] | null), 
+    /** Metafield namespace filter */
+    namespace: Scalars['String']} })
+    /** Name of the brand. */
+    name?: boolean | number
+    /**
+     * @deprecated Use SEO details instead.
+     * Page title for the brand.
+     */
+    pageTitle?: boolean | number
+    /** Path for the brand page. */
+    path?: boolean | number
+    /** List of products associated with the brand. */
+    products?: (ProductConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), 
+    /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
+    hideOutOfStock?: (Scalars['Boolean'] | null), last?: (Scalars['Int'] | null)} })
+    /** Search keywords for the brand. */
+    searchKeywords?: boolean | number
+    /** Brand SEO details. */
+    seo?: SeoDetailsGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface BrandConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: BrandEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface BrandEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: BrandGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface BrandPageBannerConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: BrandPageBannerEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface BrandPageBannerEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: BannerGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Brand Filter */
+export interface BrandSearchFilterGenqlSelection{
+    /** List of available brands. */
+    brands?: (BrandSearchFilterItemConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** Indicates whether to display product count next to the filter. */
+    displayProductCount?: boolean | number
+    /** Indicates whether filter is collapsed by default. */
+    isCollapsedByDefault?: boolean | number
+    /** Display name for the filter. */
+    name?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Specific brand filter item */
+export interface BrandSearchFilterItemGenqlSelection{
+    /** Brand ID. */
+    entityId?: boolean | number
+    /** Indicates whether brand is selected. */
+    isSelected?: boolean | number
+    /** Brand name. */
+    name?: boolean | number
+    /** Indicates how many products available for this filter. */
+    productCount?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface BrandSearchFilterItemConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: BrandSearchFilterItemEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface BrandSearchFilterItemEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: BrandSearchFilterItemGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Breadcrumb */
+export interface BreadcrumbGenqlSelection{
+    /** Category id. */
+    entityId?: boolean | number
+    /** Name of the category. */
+    name?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface BreadcrumbConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: BreadcrumbEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface BreadcrumbEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: BreadcrumbGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Bulk pricing tier that sets a fixed price for the product or variant. */
+export interface BulkPricingFixedPriceDiscountGenqlSelection{
+    /** Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound. */
+    maximumQuantity?: boolean | number
+    /** Minimum item quantity that applies to this bulk pricing tier. */
+    minimumQuantity?: boolean | number
+    /** This price will override the current product price. */
+    price?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Bulk pricing tier that reduces the price of the product or variant by a percentage. */
+export interface BulkPricingPercentageDiscountGenqlSelection{
+    /** Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound. */
+    maximumQuantity?: boolean | number
+    /** Minimum item quantity that applies to this bulk pricing tier. */
+    minimumQuantity?: boolean | number
+    /** The percentage that will be removed from the product price. */
+    percentOff?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Bulk pricing tier that will subtract an amount from the price of the product or variant. */
+export interface BulkPricingRelativePriceDiscountGenqlSelection{
+    /** Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound. */
+    maximumQuantity?: boolean | number
+    /** Minimum item quantity that applies to this bulk pricing tier. */
+    minimumQuantity?: boolean | number
+    /** The price of the product/variant will be reduced by this priceAdjustment. */
+    priceAdjustment?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A set of bulk pricing tiers that define price discounts which apply when purchasing specified quantities of a product or variant. */
+export interface BulkPricingTierGenqlSelection{
+    /** Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound. */
+    maximumQuantity?: boolean | number
+    /** Minimum item quantity that applies to this bulk pricing tier. */
+    minimumQuantity?: boolean | number
+    on_BulkPricingFixedPriceDiscount?: BulkPricingFixedPriceDiscountGenqlSelection
+    on_BulkPricingPercentageDiscount?: BulkPricingPercentageDiscountGenqlSelection
+    on_BulkPricingRelativePriceDiscount?: BulkPricingRelativePriceDiscountGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A cart */
+export interface CartGenqlSelection{
+    /** Sum of line-items amounts, minus cart-level discounts and coupons. This amount includes taxes (where applicable). */
+    amount?: MoneyGenqlSelection
+    /** Cost of cart's contents, before applying discounts. */
+    baseAmount?: MoneyGenqlSelection
+    /** Time when the cart was created. */
+    createdAt?: DateTimeExtendedGenqlSelection
+    /** ISO-4217 currency code. */
+    currencyCode?: boolean | number
+    /** Discounted amount. */
+    discountedAmount?: MoneyGenqlSelection
+    /** List of discounts applied to this cart. */
+    discounts?: CartDiscountGenqlSelection
+    /** Cart ID. */
+    entityId?: boolean | number
+    /** The ID of an object */
+    id?: boolean | number
+    /** Whether this item is taxable. */
+    isTaxIncluded?: boolean | number
+    /** List of line items. */
+    lineItems?: CartLineItemsGenqlSelection
+    /** Locale of the cart. */
+    locale?: boolean | number
+    /** Time when the cart was last updated. */
+    updatedAt?: DateTimeExtendedGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Cart custom item. */
+export interface CartCustomItemGenqlSelection{
+    /** ID of the custom item. */
+    entityId?: boolean | number
+    /** Item's list price multiplied by the quantity. */
+    extendedListPrice?: MoneyGenqlSelection
+    /** Price of the item. With or without tax depending on your stores set up. */
+    listPrice?: MoneyGenqlSelection
+    /** Custom item name. */
+    name?: boolean | number
+    /** Quantity of this item. */
+    quantity?: boolean | number
+    /** Custom item sku. */
+    sku?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Cart digital item. */
+export interface CartDigitalItemGenqlSelection{
+    /** The product brand. */
+    brand?: boolean | number
+    /** The total value of all coupons applied to this item. */
+    couponAmount?: MoneyGenqlSelection
+    /** The total value of all discounts applied to this item (excluding coupon). */
+    discountedAmount?: MoneyGenqlSelection
+    /** List of discounts applied to this item. */
+    discounts?: CartDiscountGenqlSelection
+    /** The line-item ID. */
+    entityId?: boolean | number
+    /** Item's list price multiplied by the quantity. */
+    extendedListPrice?: MoneyGenqlSelection
+    /** Item's sale price multiplied by the quantity. */
+    extendedSalePrice?: MoneyGenqlSelection
+    /** URL of an image of this item, accessible on the internet. */
+    imageUrl?: boolean | number
+    /** Whether the item is taxable. */
+    isTaxable?: boolean | number
+    /** The net item price before discounts and coupons. It is based on the product default price or sale price (if set) configured in BigCommerce Admin. */
+    listPrice?: MoneyGenqlSelection
+    /** The item's product name. */
+    name?: boolean | number
+    /** An item’s original price is the same as the product default price in the admin panel. */
+    originalPrice?: MoneyGenqlSelection
+    /** The product is part of a bundle such as a product pick list, then the parentId or the main product id will populate. */
+    parentEntityId?: boolean | number
+    /** ID of the product. */
+    productEntityId?: boolean | number
+    /** Quantity of this item. */
+    quantity?: boolean | number
+    /** Item's price after all discounts are applied. (The final price before tax calculation). */
+    salePrice?: MoneyGenqlSelection
+    /** The list of selected options for this product. */
+    selectedOptions?: CartSelectedOptionGenqlSelection
+    /** SKU of the variant. */
+    sku?: boolean | number
+    /** The product URL. */
+    url?: boolean | number
+    /** ID of the variant. */
+    variantEntityId?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Discount applied to the cart. */
+export interface CartDiscountGenqlSelection{
+    /** The discounted amount applied within a given context. */
+    discountedAmount?: MoneyGenqlSelection
+    /** ID of the applied discount. */
+    entityId?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Cart gift certificate */
+export interface CartGiftCertificateGenqlSelection{
+    /** Value must be between 1.00 and 1,000.00 in the store's default currency. */
+    amount?: MoneyGenqlSelection
+    /** ID of this gift certificate. */
+    entityId?: boolean | number
+    /** Whether or not the gift certificate is taxable. */
+    isTaxable?: boolean | number
+    /** Message that will be sent to the gift certificate's recipient. Limited to 200 characters. */
+    message?: boolean | number
+    /** GiftCertificate-provided name that will appear in the control panel. */
+    name?: boolean | number
+    /** Recipient of the gift certificate. */
+    recipient?: CartGiftCertificateRecipientGenqlSelection
+    /** Sender of the gift certificate. */
+    sender?: CartGiftCertificateSenderGenqlSelection
+    /** Currently supports Birthday, Boy, Celebration, Christmas, General, and Girl. */
+    theme?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
 /** Cart gift certificate input object */
 export interface CartGiftCertificateInput {
-/** GiftCertificate-provided name that will appear in the control panel. */
-name?: Scalars['String'],
-/** Currently supports Birthday, Boy, Celebration, Christmas, General, and Girl. */
-theme?: CartGiftCertificateTheme,
 /** Value must be between 1.00 and 1,000.00 in the store's default currency. */
 amount?: Scalars['BigDecimal'],
+/** Message that will be sent to the gift certificate's recipient. Limited to 200 characters. */
+message?: (Scalars['String'] | null),
+/** GiftCertificate-provided name that will appear in the control panel. */
+name?: Scalars['String'],
 /** The total number of certificates */
 quantity?: Scalars['Int'],
-/** Sender of the gift certificate. */
-sender?: CartGiftCertificateSenderInput,
 /** Recipient of the gift certificate. */
 recipient?: CartGiftCertificateRecipientInput,
-/** Message that will be sent to the gift certificate's recipient. Limited to 200 characters. */
-message?: (Scalars['String'] | null)}
+/** Sender of the gift certificate. */
+sender?: CartGiftCertificateSenderInput,
+/** Currently supports Birthday, Boy, Celebration, Christmas, General, and Girl. */
+theme?: CartGiftCertificateTheme}
+
+
+/** Cart gift certificate recipient */
+export interface CartGiftCertificateRecipientGenqlSelection{
+    /** Contact's email address. */
+    email?: boolean | number
+    /** Contact's name. */
+    name?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
 
 
 /** Cart gift certificate recipient input object */
 export interface CartGiftCertificateRecipientInput {
-/** Contact's name. */
-name?: Scalars['String'],
 /** Contact's email address. */
-email?: Scalars['String']}
+email?: Scalars['String'],
+/** Contact's name. */
+name?: Scalars['String']}
+
+
+/** Cart gift certificate sender */
+export interface CartGiftCertificateSenderGenqlSelection{
+    /** Contact's email address. */
+    email?: boolean | number
+    /** Contact's name. */
+    name?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
 
 
 /** Cart gift certificate sender input object */
 export interface CartGiftCertificateSenderInput {
-/** Contact's name. */
-name?: Scalars['String'],
 /** Contact's email address. */
-email?: Scalars['String']}
+email?: Scalars['String'],
+/** Contact's name. */
+name?: Scalars['String']}
+
+
+/** Gift wrapping for the item */
+export interface CartGiftWrappingGenqlSelection{
+    /** Gift-wrapping price per product. */
+    amount?: MoneyGenqlSelection
+    /** Custom gift message along with items wrapped in this wrapping option. */
+    message?: boolean | number
+    /** Name of the gift-wrapping option. */
+    name?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
 
 
 /** Cart line item input object */
 export interface CartLineItemInput {
-/** Total number of line items. */
-quantity?: Scalars['Int'],
 /** The product id */
 productEntityId?: Scalars['Int'],
-/** The variant id */
-variantEntityId?: (Scalars['Int'] | null),
+/** Total number of line items. */
+quantity?: Scalars['Int'],
 /** The list of selected options for this item. */
-selectedOptions?: (CartSelectedOptionsInput | null)}
+selectedOptions?: (CartSelectedOptionsInput | null),
+/** The variant id */
+variantEntityId?: (Scalars['Int'] | null)}
+
+
+/** Cart line items */
+export interface CartLineItemsGenqlSelection{
+    /** List of custom items. */
+    customItems?: CartCustomItemGenqlSelection
+    /** List of digital items. */
+    digitalItems?: CartDigitalItemGenqlSelection
+    /** List of gift certificates. */
+    giftCertificates?: CartGiftCertificateGenqlSelection
+    /** List of physical items. */
+    physicalItems?: CartPhysicalItemGenqlSelection
+    /** Total number of line items. */
+    totalQuantity?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
 
 
 /** Cart mutations */
 export interface CartMutationsGenqlSelection{
+    /** Adds line item(s) to the cart. */
+    addCartLineItems?: (AddCartLineItemsResultGenqlSelection & { __args: {
+    /** Add cart line items input object */
+    input: AddCartLineItemsInput} })
+    /** Assign cart to the customer. */
+    assignCartToCustomer?: (AssignCartToCustomerResultGenqlSelection & { __args: {
+    /** Assign cart to the customer input object. */
+    input: AssignCartToCustomerInput} })
     /** Creates a cart and generates a cart ID. */
     createCart?: (CreateCartResultGenqlSelection & { __args: {
     /** Create cart input object */
@@ -3025,30 +3824,88 @@ export interface CartMutationsGenqlSelection{
     deleteCart?: (DeleteCartResultGenqlSelection & { __args: {
     /** Delete cart input object */
     input: DeleteCartInput} })
-    /** Adds line item(s) to the cart. */
-    addCartLineItems?: (AddCartLineItemsResultGenqlSelection & { __args: {
-    /** Add cart line items input object */
-    input: AddCartLineItemsInput} })
-    /** Updates line item in the cart. */
-    updateCartLineItem?: (UpdateCartLineItemResultGenqlSelection & { __args: {
-    /** Update cart line item input object */
-    input: UpdateCartLineItemInput} })
     /** Delete line item in the cart. Removing the last line item in the Cart deletes the Cart. */
     deleteCartLineItem?: (DeleteCartLineItemResultGenqlSelection & { __args: {
     /** Delete cart line item input object */
     input: DeleteCartLineItemInput} })
-    /** Update currency of the cart. */
-    updateCartCurrency?: (UpdateCartCurrencyResultGenqlSelection & { __args: {
-    /** Update cart currency input object */
-    input: UpdateCartCurrencyInput} })
-    /** Assign cart to the customer. */
-    assignCartToCustomer?: (AssignCartToCustomerResultGenqlSelection & { __args: {
-    /** Assign cart to the customer input object. */
-    input: AssignCartToCustomerInput} })
     /** Unassign cart from the customer. */
     unassignCartFromCustomer?: (UnassignCartFromCustomerResultGenqlSelection & { __args: {
     /** Unassign cart from the customer input object. */
     input: UnassignCartFromCustomerInput} })
+    /** Update currency of the cart. */
+    updateCartCurrency?: (UpdateCartCurrencyResultGenqlSelection & { __args: {
+    /** Update cart currency input object */
+    input: UpdateCartCurrencyInput} })
+    /** Updates line item in the cart. */
+    updateCartLineItem?: (UpdateCartLineItemResultGenqlSelection & { __args: {
+    /** Update cart line item input object */
+    input: UpdateCartLineItemInput} })
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Cart physical item. */
+export interface CartPhysicalItemGenqlSelection{
+    /** The product brand. */
+    brand?: boolean | number
+    /** The total value of all coupons applied to this item. */
+    couponAmount?: MoneyGenqlSelection
+    /** The total value of all discounts applied to this item (excluding coupon). */
+    discountedAmount?: MoneyGenqlSelection
+    /** List of discounts applied to this item. */
+    discounts?: CartDiscountGenqlSelection
+    /** The line-item ID. */
+    entityId?: boolean | number
+    /** Item's list price multiplied by the quantity. */
+    extendedListPrice?: MoneyGenqlSelection
+    /** Item's sale price multiplied by the quantity. */
+    extendedSalePrice?: MoneyGenqlSelection
+    /** Gift wrapping for this item. */
+    giftWrapping?: CartGiftWrappingGenqlSelection
+    /** URL of an image of this item, accessible on the internet. */
+    imageUrl?: boolean | number
+    /** Whether this item requires shipping to a physical address. */
+    isShippingRequired?: boolean | number
+    /** Whether the item is taxable. */
+    isTaxable?: boolean | number
+    /** The net item price before discounts and coupons. It is based on the product default price or sale price (if set) configured in BigCommerce Admin. */
+    listPrice?: MoneyGenqlSelection
+    /** The item's product name. */
+    name?: boolean | number
+    /** An item’s original price is the same as the product default price in the admin panel. */
+    originalPrice?: MoneyGenqlSelection
+    /** The product is part of a bundle such as a product pick list, then the parentId or the main product id will populate. */
+    parentEntityId?: boolean | number
+    /** ID of the product. */
+    productEntityId?: boolean | number
+    /** Quantity of this item. */
+    quantity?: boolean | number
+    /** Item's price after all discounts are applied. (The final price before tax calculation). */
+    salePrice?: MoneyGenqlSelection
+    /** The list of selected options for this item. */
+    selectedOptions?: CartSelectedOptionGenqlSelection
+    /** SKU of the variant. */
+    sku?: boolean | number
+    /** The product URL. */
+    url?: boolean | number
+    /** ID of the variant. */
+    variantEntityId?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Selected checkbox option. */
+export interface CartSelectedCheckboxOptionGenqlSelection{
+    /** The product option ID. */
+    entityId?: boolean | number
+    /** The product option name. */
+    name?: boolean | number
+    /** The product option value. */
+    value?: boolean | number
+    /** The product option value ID. */
+    valueEntityId?: boolean | number
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -3062,12 +3919,51 @@ optionEntityId?: Scalars['Int'],
 optionValueEntityId?: Scalars['Int']}
 
 
+/** Selected date field option. */
+export interface CartSelectedDateFieldOptionGenqlSelection{
+    /** Date value. */
+    date?: DateTimeExtendedGenqlSelection
+    /** The product option ID. */
+    entityId?: boolean | number
+    /** The product option name. */
+    name?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
 /** Cart selected date field option input object */
 export interface CartSelectedDateFieldOptionInput {
-/** The product option ID. */
-optionEntityId?: Scalars['Int'],
 /** Date value. */
-date?: Scalars['DateTime']}
+date?: Scalars['DateTime'],
+/** The product option ID. */
+optionEntityId?: Scalars['Int']}
+
+
+/** Selected file upload option. */
+export interface CartSelectedFileUploadOptionGenqlSelection{
+    /** The product option ID. */
+    entityId?: boolean | number
+    /** Uploaded file name. */
+    fileName?: boolean | number
+    /** The product option name. */
+    name?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Selected multi-line text field option. */
+export interface CartSelectedMultiLineTextFieldOptionGenqlSelection{
+    /** The product option ID. */
+    entityId?: boolean | number
+    /** The product option name. */
+    name?: boolean | number
+    /** Text value. */
+    text?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
 
 
 /** Cart selected multiple line text field option input object */
@@ -3078,6 +3974,21 @@ optionEntityId?: Scalars['Int'],
 text?: Scalars['String']}
 
 
+/** Selected multiple choice option. */
+export interface CartSelectedMultipleChoiceOptionGenqlSelection{
+    /** The product option ID. */
+    entityId?: boolean | number
+    /** The product option name. */
+    name?: boolean | number
+    /** The product option value. */
+    value?: boolean | number
+    /** The product option value ID. */
+    valueEntityId?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
 /** Cart selected multiple choice option input object */
 export interface CartSelectedMultipleChoiceOptionInput {
 /** The product option ID. */
@@ -3086,12 +3997,43 @@ optionEntityId?: Scalars['Int'],
 optionValueEntityId?: Scalars['Int']}
 
 
+/** Selected number field option. */
+export interface CartSelectedNumberFieldOptionGenqlSelection{
+    /** The product option ID. */
+    entityId?: boolean | number
+    /** The product option name. */
+    name?: boolean | number
+    /** Number value. */
+    number?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
 /** Cart selected number field option input object */
 export interface CartSelectedNumberFieldOptionInput {
-/** The product option ID. */
-optionEntityId?: Scalars['Int'],
 /** Number value. */
-number?: Scalars['Float']}
+number?: Scalars['Float'],
+/** The product option ID. */
+optionEntityId?: Scalars['Int']}
+
+
+/** Selected option for the item. */
+export interface CartSelectedOptionGenqlSelection{
+    /** The product option ID. */
+    entityId?: boolean | number
+    /** The product option name. */
+    name?: boolean | number
+    on_CartSelectedCheckboxOption?: CartSelectedCheckboxOptionGenqlSelection
+    on_CartSelectedDateFieldOption?: CartSelectedDateFieldOptionGenqlSelection
+    on_CartSelectedFileUploadOption?: CartSelectedFileUploadOptionGenqlSelection
+    on_CartSelectedMultiLineTextFieldOption?: CartSelectedMultiLineTextFieldOptionGenqlSelection
+    on_CartSelectedMultipleChoiceOption?: CartSelectedMultipleChoiceOptionGenqlSelection
+    on_CartSelectedNumberFieldOption?: CartSelectedNumberFieldOptionGenqlSelection
+    on_CartSelectedTextFieldOption?: CartSelectedTextFieldOptionGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
 
 
 /** Selected product options. */
@@ -3110,6 +4052,19 @@ numberFields?: (CartSelectedNumberFieldOptionInput[] | null),
 textFields?: (CartSelectedTextFieldOptionInput[] | null)}
 
 
+/** Selected text field option. */
+export interface CartSelectedTextFieldOptionGenqlSelection{
+    /** The product option ID. */
+    entityId?: boolean | number
+    /** The product option name. */
+    name?: boolean | number
+    /** Text value. */
+    text?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
 /** Cart selected multiple line text field option input object */
 export interface CartSelectedTextFieldOptionInput {
 /** The product option ID. */
@@ -3118,14 +4073,361 @@ optionEntityId?: Scalars['Int'],
 text?: Scalars['String']}
 
 
+/** Storefront catalog settings. */
+export interface CatalogGenqlSelection{
+    /** Product comparisons enabled. */
+    productComparisonsEnabled?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Product Option */
+export interface CatalogProductOptionGenqlSelection{
+    /** Display name for the option. */
+    displayName?: boolean | number
+    /** Unique ID for the option. */
+    entityId?: boolean | number
+    /** One of the option values is required to be selected for the checkout. */
+    isRequired?: boolean | number
+    /** Indicates whether it is a variant option or modifier. */
+    isVariantOption?: boolean | number
+    on_CheckboxOption?: CheckboxOptionGenqlSelection
+    on_DateFieldOption?: DateFieldOptionGenqlSelection
+    on_FileUploadFieldOption?: FileUploadFieldOptionGenqlSelection
+    on_MultiLineTextFieldOption?: MultiLineTextFieldOptionGenqlSelection
+    on_MultipleChoiceOption?: MultipleChoiceOptionGenqlSelection
+    on_NumberFieldOption?: NumberFieldOptionGenqlSelection
+    on_TextFieldOption?: TextFieldOptionGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Product Option Value */
+export interface CatalogProductOptionValueGenqlSelection{
+    /** Unique ID for the option value. */
+    entityId?: boolean | number
+    /** Indicates whether this value is the chosen default selected value. */
+    isDefault?: boolean | number
+    /** Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level. */
+    isSelected?: boolean | number
+    /** Label for the option value. */
+    label?: boolean | number
+    on_MultipleChoiceOptionValue?: MultipleChoiceOptionValueGenqlSelection
+    on_ProductPickListOptionValue?: ProductPickListOptionValueGenqlSelection
+    on_SwatchOptionValue?: SwatchOptionValueGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Category */
+export interface CategoryGenqlSelection{
+    /** Category breadcrumbs. */
+    breadcrumbs?: (BreadcrumbConnectionGenqlSelection & { __args: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), 
+    /** The depth of the breadcrumbs. */
+    depth: Scalars['Int'], first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** Default image for the category. */
+    defaultImage?: ImageGenqlSelection
+    /** Category default product sort. */
+    defaultProductSort?: boolean | number
+    /** Category description. */
+    description?: boolean | number
+    /** Unique ID for the category. */
+    entityId?: boolean | number
+    /** The ID of an object */
+    id?: boolean | number
+    /** Metafield data related to a category. */
+    metafields?: (MetafieldConnectionGenqlSelection & { __args: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), 
+    /** Labels for identifying metafield data values. */
+    keys?: (Scalars['String'][] | null), last?: (Scalars['Int'] | null), 
+    /** Metafield namespace filter */
+    namespace: Scalars['String']} })
+    /** Category name. */
+    name?: boolean | number
+    /** Category path. */
+    path?: boolean | number
+    /** List of products associated with category */
+    products?: (ProductConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), 
+    /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
+    hideOutOfStock?: (Scalars['Boolean'] | null), last?: (Scalars['Int'] | null), 
+    /** Product sorting by categories. */
+    sortBy?: (CategoryProductSort | null)} })
+    /** Category SEO details. */
+    seo?: SeoDetailsGenqlSelection
+    /**
+     * @deprecated Alpha version. Do not use in production.
+     * Category shop by price money ranges.
+     */
+    shopByPriceRanges?: (ShopByPriceConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), 
+    /** Please select a currency */
+    currencyCode?: (currencyCode | null), first?: (Scalars['Int'] | null), 
+    /** Tax will be included if enabled */
+    includeTax?: (Scalars['Boolean'] | null), last?: (Scalars['Int'] | null)} })
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface CategoryConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: CategoryEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface CategoryEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: CategoryGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface CategoryPageBannerConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: CategoryPageBannerEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface CategoryPageBannerEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: BannerGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Category Filter */
+export interface CategorySearchFilterGenqlSelection{
+    /** List of available categories. */
+    categories?: (CategorySearchFilterItemConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** Indicates whether to display product count next to the filter. */
+    displayProductCount?: boolean | number
+    /** Indicates whether filter is collapsed by default. */
+    isCollapsedByDefault?: boolean | number
+    /** Display name for the filter. */
+    name?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Specific category filter item */
+export interface CategorySearchFilterItemGenqlSelection{
+    /** Category ID. */
+    entityId?: boolean | number
+    /** Indicates whether category is selected. */
+    isSelected?: boolean | number
+    /** Category name. */
+    name?: boolean | number
+    /** Indicates how many products available for this filter. */
+    productCount?: boolean | number
+    /** List of available sub-categories. */
+    subCategories?: (SubCategorySearchFilterItemConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface CategorySearchFilterItemConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: CategorySearchFilterItemEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface CategorySearchFilterItemEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: CategorySearchFilterItemGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An item in a tree of categories. */
+export interface CategoryTreeItemGenqlSelection{
+    /** Subcategories of this category */
+    children?: CategoryTreeItemGenqlSelection
+    /** The description of this category. */
+    description?: boolean | number
+    /** The id category. */
+    entityId?: boolean | number
+    /** If a category has children. */
+    hasChildren?: boolean | number
+    /** The category image. */
+    image?: ImageGenqlSelection
+    /** The name of category. */
+    name?: boolean | number
+    /** Path assigned to this category */
+    path?: boolean | number
+    /** The number of products in this category. */
+    productCount?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** The Channel */
+export interface ChannelGenqlSelection{
+    /** The ID of the channel. */
+    entityId?: boolean | number
+    /** Metafield data related to a channel. */
+    metafields?: (MetafieldConnectionGenqlSelection & { __args: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), 
+    /** Labels for identifying metafield data values. */
+    keys?: (Scalars['String'][] | null), last?: (Scalars['Int'] | null), 
+    /** Metafield namespace filter */
+    namespace: Scalars['String']} })
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A simple yes/no question represented by a checkbox. */
+export interface CheckboxOptionGenqlSelection{
+    /** Indicates the default checked status. */
+    checkedByDefault?: boolean | number
+    /** Display name for the option. */
+    displayName?: boolean | number
+    /** Unique ID for the option. */
+    entityId?: boolean | number
+    /** One of the option values is required to be selected for the checkout. */
+    isRequired?: boolean | number
+    /** Indicates whether it is a variant option or modifier. */
+    isVariantOption?: boolean | number
+    /** Label of the checkbox option. */
+    label?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Checkout settings. */
+export interface CheckoutSettingsGenqlSelection{
+    /** Indicates whether ReCaptcha is enabled on checkout. */
+    reCaptchaEnabled?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Additional information about the collection. */
+export interface CollectionInfoGenqlSelection{
+    /** Total items in the collection despite pagination. */
+    totalItems?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Contact field */
+export interface ContactFieldGenqlSelection{
+    /** Store address line. */
+    address?: boolean | number
+    /** Store address type. */
+    addressType?: boolean | number
+    /** Store country. */
+    country?: boolean | number
+    /** Store email. */
+    email?: boolean | number
+    /** Store phone number. */
+    phone?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A contact page. */
+export interface ContactPageGenqlSelection{
+    /** The contact fields that should be used on the page. */
+    contactFields?: boolean | number
+    /** Unique ID for the web page. */
+    entityId?: boolean | number
+    /** The body of the page. */
+    htmlBody?: boolean | number
+    /** The ID of an object */
+    id?: boolean | number
+    /** Whether or not the page should be visible in the navigation menu. */
+    isVisibleInNavigation?: boolean | number
+    /** Page name. */
+    name?: boolean | number
+    /** Unique ID for the parent page. */
+    parentEntityId?: boolean | number
+    /** The URL path of the page. */
+    path?: boolean | number
+    /** The plain text summary of the page body. */
+    plainTextSummary?: { __args: {
+    /** The max number of characters for the plain text summary. */
+    characterLimit?: (Scalars['Int'] | null)} } | boolean | number
+    /** The rendered regions for the web page. */
+    renderedRegions?: RenderedRegionsByPageTypeGenqlSelection
+    /** Page SEO details. */
+    seo?: SeoDetailsGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** The page content. */
+export interface ContentGenqlSelection{
+    /** Banners details. */
+    banners?: BannersGenqlSelection
+    /** Blog details. */
+    blog?: BlogGenqlSelection
+    /** Page details. */
+    page?: (WebPageGenqlSelection & { __args: {
+    /** Id of the page to fetch. */
+    entityId: Scalars['Int']} })
+    /** Details of the pages. */
+    pages?: (PageConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), 
+    /** Filters for querying web pages */
+    filters?: (WebPagesFiltersInput | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** The rendered regions by specific page. */
+    renderedRegionsByPageType?: (RenderedRegionsByPageTypeGenqlSelection & { __args: {
+    /** Rendered regions filter by page type. */
+    pageType: PageType} })
+    /** The rendered regions by specific page and id. */
+    renderedRegionsByPageTypeAndEntityId?: (RenderedRegionsByPageTypeGenqlSelection & { __args: {
+    /** Rendered regions filter by id. */
+    entityId: Scalars['Long'], 
+    /** Rendered regions filter by page type and id. */
+    entityPageType: EntityPageType} })
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
 /** Create cart input object */
 export interface CreateCartInput {
-/** List of cart line items */
-lineItems?: (CartLineItemInput[] | null),
-/** List of gift certificates */
-giftCertificates?: (CartGiftCertificateInput[] | null),
 /** ISO-4217 currency code */
 currencyCode?: (Scalars['String'] | null),
+/** List of gift certificates */
+giftCertificates?: (CartGiftCertificateInput[] | null),
+/** List of cart line items */
+lineItems?: (CartLineItemInput[] | null),
 /** Locale of the cart */
 locale?: (Scalars['String'] | null)}
 
@@ -3141,18 +4443,208 @@ export interface CreateCartResultGenqlSelection{
 
 /** Create wishlist input object */
 export interface CreateWishlistInput {
-/** A wishlist name */
-name?: Scalars['String'],
 /** A wishlist visibility mode */
 isPublic?: Scalars['Boolean'],
 /** A wishlist items */
-items?: (WishlistItemInput[] | null)}
+items?: (WishlistItemInput[] | null),
+/** A wishlist name */
+name?: Scalars['String']}
 
 
 /** Create wishlist */
 export interface CreateWishlistResultGenqlSelection{
     /** The newly created wishlist */
     result?: WishlistGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Currency details. */
+export interface CurrencyGenqlSelection{
+    /** Currency code. */
+    code?: boolean | number
+    /** Currency display settings. */
+    display?: CurrencyDisplayGenqlSelection
+    /** Currency ID. */
+    entityId?: boolean | number
+    /** Exchange rate relative to default currency. */
+    exchangeRate?: boolean | number
+    /** Flag image URL. */
+    flagImage?: boolean | number
+    /** Indicates whether this currency is active. */
+    isActive?: boolean | number
+    /** Indicates whether this currency is transactional. */
+    isTransactional?: boolean | number
+    /** Currency name. */
+    name?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface CurrencyConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: CurrencyEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Currency display settings. */
+export interface CurrencyDisplayGenqlSelection{
+    /** Currency decimal places. */
+    decimalPlaces?: boolean | number
+    /** Currency decimal token. */
+    decimalToken?: boolean | number
+    /** Currency symbol. */
+    symbol?: boolean | number
+    /** Currency symbol. */
+    symbolPlacement?: boolean | number
+    /** Currency thousands token. */
+    thousandsToken?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface CurrencyEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: CurrencyGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Custom field */
+export interface CustomFieldGenqlSelection{
+    /** Custom field id. */
+    entityId?: boolean | number
+    /** Name of the custom field. */
+    name?: boolean | number
+    /** Value of the custom field. */
+    value?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface CustomFieldConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: CustomFieldEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface CustomFieldEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: CustomFieldGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A customer that shops on a store */
+export interface CustomerGenqlSelection{
+    /** Customer addresses count. */
+    addressCount?: boolean | number
+    /** Customer attributes count. */
+    attributeCount?: boolean | number
+    /** Customer attributes. */
+    attributes?: CustomerAttributesGenqlSelection
+    /** The company name of the customer. */
+    company?: boolean | number
+    /** The customer group id of the customer. */
+    customerGroupId?: boolean | number
+    /** The email address of the customer. */
+    email?: boolean | number
+    /** The ID of the customer. */
+    entityId?: boolean | number
+    /** The first name of the customer. */
+    firstName?: boolean | number
+    /** The last name of the customer. */
+    lastName?: boolean | number
+    /** The notes of the customer. */
+    notes?: boolean | number
+    /** The phone number of the customer. */
+    phone?: boolean | number
+    /** Customer store credit. */
+    storeCredit?: MoneyGenqlSelection
+    /** The tax exempt category of the customer. */
+    taxExemptCategory?: boolean | number
+    /** Customer wishlists. */
+    wishlists?: (WishlistConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), 
+    /** Wishlist filters input */
+    filters?: (WishlistFiltersInput | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A custom, store-specific attribute for a customer */
+export interface CustomerAttributeGenqlSelection{
+    /** The ID of the custom customer attribute */
+    entityId?: boolean | number
+    /** The name of the custom customer attribute */
+    name?: boolean | number
+    /** The value of the custom customer attribute */
+    value?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Custom, store-specific customer attributes */
+export interface CustomerAttributesGenqlSelection{
+    /** A custom, store-specific attribute for a customer */
+    attribute?: (CustomerAttributeGenqlSelection & { __args: {
+    /** The ID of the customer attribute */
+    entityId: Scalars['Int']} })
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A calendar for allowing selection of a date. */
+export interface DateFieldOptionGenqlSelection{
+    /** The default timestamp of date option. */
+    defaultValue?: boolean | number
+    /** Display name for the option. */
+    displayName?: boolean | number
+    /** The earliest timestamp of date option. */
+    earliest?: boolean | number
+    /** Unique ID for the option. */
+    entityId?: boolean | number
+    /** One of the option values is required to be selected for the checkout. */
+    isRequired?: boolean | number
+    /** Indicates whether it is a variant option or modifier. */
+    isVariantOption?: boolean | number
+    /** The latest timestamp of date option. */
+    latest?: boolean | number
+    /** Limit date by */
+    limitDateBy?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Date Time Extended */
+export interface DateTimeExtendedGenqlSelection{
+    /** ISO-8601 formatted date in UTC */
+    utc?: boolean | number
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -3174,12 +4666,12 @@ lineItemEntityId?: Scalars['String']}
 
 /** Delete cart lien item result */
 export interface DeleteCartLineItemResultGenqlSelection{
-    /** The ID of the line item that is deleted as a result of mutation. */
-    deletedLineItemEntityId?: boolean | number
     /** The Cart that is updated as a result of mutation. */
     cart?: CartGenqlSelection
     /** The ID of the Cart if it is deleted as a result of mutation. */
     deletedCartEntityId?: boolean | number
+    /** The ID of the line item that is deleted as a result of mutation. */
+    deletedLineItemEntityId?: boolean | number
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -3226,15 +4718,370 @@ export interface DeleteWishlistsInput {
 entityIds?: Scalars['Int'][]}
 
 
+/** Display field */
+export interface DisplayFieldGenqlSelection{
+    /** Extended date format. */
+    extendedDateFormat?: boolean | number
+    /** Short date format. */
+    shortDateFormat?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Distance */
+export interface DistanceGenqlSelection{
+    /** Length unit */
+    lengthUnit?: boolean | number
+    /** Distance in specified length unit */
+    value?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Filter locations by the distance */
+export interface DistanceFilter {
+/** Signed decimal degrees without compass direction */
+latitude?: Scalars['Float'],
+/** Length unit */
+lengthUnit?: LengthUnit,
+/** Signed decimal degrees without compass direction */
+longitude?: Scalars['Float'],
+/** Radius of search in length units specified in lengthUnit argument */
+radius?: Scalars['Float']}
+
+
+/** An external link page. */
+export interface ExternalLinkPageGenqlSelection{
+    /** Unique ID for the web page. */
+    entityId?: boolean | number
+    /** Whether or not the page should be visible in the navigation menu. */
+    isVisibleInNavigation?: boolean | number
+    /** The URL that the page links to. */
+    link?: boolean | number
+    /** Page name. */
+    name?: boolean | number
+    /** Unique ID for the parent page. */
+    parentEntityId?: boolean | number
+    /** Page SEO details. */
+    seo?: SeoDetailsGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A form allowing selection and uploading of a file from the user's local computer. */
+export interface FileUploadFieldOptionGenqlSelection{
+    /** Display name for the option. */
+    displayName?: boolean | number
+    /** Unique ID for the option. */
+    entityId?: boolean | number
+    /** All possible file extensions. Empty means that all files allowed. */
+    fileTypes?: boolean | number
+    /** One of the option values is required to be selected for the checkout. */
+    isRequired?: boolean | number
+    /** Indicates whether it is a variant option or modifier. */
+    isVariantOption?: boolean | number
+    /** The maximum size of the file in kilobytes */
+    maxFileSize?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Gift wrapping for product */
+export interface GiftWrappingGenqlSelection{
+    /** Indicates whether commenting is allowed for the gift wrapping. */
+    allowComments?: boolean | number
+    /** Gift wrapping id. */
+    entityId?: boolean | number
+    /** Gift wrapping name. */
+    name?: boolean | number
+    /** Gift wrapping preview image url. */
+    previewImageUrl?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface GiftWrappingConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: GiftWrappingEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface GiftWrappingEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: GiftWrappingGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Image */
+export interface ImageGenqlSelection{
+    /** Text description of an image that can be used for SEO and/or accessibility purposes. */
+    altText?: boolean | number
+    /** Indicates whether this is the primary image. */
+    isDefault?: boolean | number
+    /** Absolute path to image using store CDN. */
+    url?: { __args: {
+    /** Desired height of the image. */
+    height?: (Scalars['Int'] | null), 
+    /** Desired width of the image. */
+    width: Scalars['Int']} }
+    /** Absolute path to original image using store CDN. */
+    urlOriginal?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface ImageConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: ImageEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface ImageEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: ImageGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An inventory */
+export interface InventoryGenqlSelection{
+    /** Locations */
+    locations?: (InventoryLocationConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), 
+    /** Location cities filter */
+    cities?: (Scalars['String'][] | null), 
+    /** Location codes filter */
+    codes?: (Scalars['String'][] | null), 
+    /** Location country codes filter */
+    countryCodes?: (countryCode[] | null), 
+    /** Filter locations by the distance */
+    distanceFilter?: (DistanceFilter | null), 
+    /** Location ids filter */
+    entityIds?: (Scalars['Int'][] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null), 
+    /** Location service type ids filter */
+    serviceTypeIds?: (Scalars['String'][] | null), 
+    /** Location states filter */
+    states?: (Scalars['String'][] | null), 
+    /** Location type ids filter */
+    typeIds?: (Scalars['String'][] | null)} })
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Address */
+export interface InventoryAddressGenqlSelection{
+    /** Address line1. */
+    address1?: boolean | number
+    /** Address line2. */
+    address2?: boolean | number
+    /** Address city. */
+    city?: boolean | number
+    /** Address code. */
+    code?: boolean | number
+    /** Country code. */
+    countryCode?: boolean | number
+    /** Address description. */
+    description?: boolean | number
+    /** Address email. */
+    email?: boolean | number
+    /** Address id. */
+    entityId?: boolean | number
+    /** Address label. */
+    label?: boolean | number
+    /** Address latitude. */
+    latitude?: boolean | number
+    /** Address longitude. */
+    longitude?: boolean | number
+    /** Address phone. */
+    phone?: boolean | number
+    /** Address zip. */
+    postalCode?: boolean | number
+    /** Address state. */
+    stateOrProvince?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Inventory By Locations */
+export interface InventoryByLocationsGenqlSelection{
+    /** Number of available products in stock. */
+    availableToSell?: boolean | number
+    /** Indicates whether this product is in stock. */
+    isInStock?: boolean | number
+    /** Distance between location and specified longitude and latitude */
+    locationDistance?: DistanceGenqlSelection
+    /** Location code. */
+    locationEntityCode?: boolean | number
+    /** Location id. */
+    locationEntityId?: boolean | number
+    /**
+     * @deprecated Deprecated. Will be substituted with pickup methods.
+     * Location service type ids.
+     */
+    locationEntityServiceTypeIds?: boolean | number
+    /** Location type id. */
+    locationEntityTypeId?: boolean | number
+    /** Indicates a threshold low-stock level. */
+    warningLevel?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Location */
+export interface InventoryLocationGenqlSelection{
+    /** Location address */
+    address?: InventoryAddressGenqlSelection
+    /**
+     * @deprecated Deprecated. Use specialHours instead
+     * Upcoming events
+     */
+    blackoutHours?: SpecialHourGenqlSelection
+    /** Location code. */
+    code?: boolean | number
+    /** Location description. */
+    description?: boolean | number
+    /** Distance between location and specified longitude and latitude */
+    distance?: DistanceGenqlSelection
+    /** Location id. */
+    entityId?: boolean | number
+    /** Location label. */
+    label?: boolean | number
+    /** Metafield data related to a location. */
+    metafields?: (MetafieldConnectionGenqlSelection & { __args: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), 
+    /** Labels for identifying metafield data values. */
+    keys?: (Scalars['String'][] | null), last?: (Scalars['Int'] | null), 
+    /** Metafield namespace filter */
+    namespace: Scalars['String']} })
+    /** Location OperatingHours */
+    operatingHours?: OperatingHoursGenqlSelection
+    /**
+     * @deprecated Deprecated. Will be substituted with pickup methods.
+     * Location service type ids.
+     */
+    serviceTypeIds?: boolean | number
+    /** Upcoming events */
+    specialHours?: SpecialHourGenqlSelection
+    /** Time zone of location */
+    timeZone?: boolean | number
+    /** Location type id. */
+    typeId?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface InventoryLocationConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: InventoryLocationEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface InventoryLocationEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: InventoryLocationGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Inventory settings from control panel. */
+export interface InventorySettingsGenqlSelection{
+    /** Out of stock message. */
+    defaultOutOfStockMessage?: boolean | number
+    /** Flag to show or not on product filtering when option is out of stock */
+    hideInProductFiltering?: boolean | number
+    /** The option out of stock behavior. */
+    optionOutOfStockBehavior?: boolean | number
+    /** The product out of stock behavior. */
+    productOutOfStockBehavior?: boolean | number
+    /** Show out of stock message on product listing pages */
+    showOutOfStockMessage?: boolean | number
+    /** Show pre-order inventory */
+    showPreOrderStockLevels?: boolean | number
+    /** Hide or show inventory node for product */
+    stockLevelDisplay?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface LocationConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: LocationEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface LocationEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: InventoryByLocationsGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
 /** Login result */
 export interface LoginResultGenqlSelection{
+    /** The currently logged in customer. */
+    customer?: CustomerGenqlSelection
     /**
      * @deprecated Use customer node instead.
      * The result of a login
      */
     result?: boolean | number
-    /** The currently logged in customer. */
-    customer?: CustomerGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Logo field */
+export interface LogoFieldGenqlSelection{
+    /** Store logo image. */
+    image?: ImageGenqlSelection
+    /** Logo title. */
+    title?: boolean | number
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -3248,7 +5095,141 @@ export interface LogoutResultGenqlSelection{
     __scalar?: boolean | number
 }
 
+
+/** Measurement */
+export interface MeasurementGenqlSelection{
+    /** Unit of measurement. */
+    unit?: boolean | number
+    /** Unformatted weight measurement value. */
+    value?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface MetafieldConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: MetafieldEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface MetafieldEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: MetafieldsGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Key/Value pairs of data attached tied to a resource entity (product, brand, category, etc.) */
+export interface MetafieldsGenqlSelection{
+    /** The ID of the metafield when referencing via our backend API. */
+    entityId?: boolean | number
+    /** The ID of an object */
+    id?: boolean | number
+    /** A label for identifying a metafield data value. */
+    key?: boolean | number
+    /** A metafield value. */
+    value?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A money object - includes currency code and a money amount */
+export interface MoneyGenqlSelection{
+    /** Currency code of the current money. */
+    currencyCode?: boolean | number
+    /**
+     * @deprecated Deprecated. Don't use - it will be removed soon.
+     * The formatted currency string for the current money.
+     */
+    formatted?: boolean | number
+    /** The amount of money. */
+    value?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A min and max pair of money objects */
+export interface MoneyRangeGenqlSelection{
+    /** Maximum money object. */
+    max?: MoneyGenqlSelection
+    /** Minimum money object. */
+    min?: MoneyGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A multi-line text input field, aka a text box. */
+export interface MultiLineTextFieldOptionGenqlSelection{
+    /** Default value of the multiline text field option. */
+    defaultValue?: boolean | number
+    /** Display name for the option. */
+    displayName?: boolean | number
+    /** Unique ID for the option. */
+    entityId?: boolean | number
+    /** One of the option values is required to be selected for the checkout. */
+    isRequired?: boolean | number
+    /** Indicates whether it is a variant option or modifier. */
+    isVariantOption?: boolean | number
+    /** The maximum number of characters. */
+    maxLength?: boolean | number
+    /** The maximum number of lines. */
+    maxLines?: boolean | number
+    /** The minimum number of characters. */
+    minLength?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An option type that has a fixed list of values. */
+export interface MultipleChoiceOptionGenqlSelection{
+    /** Display name for the option. */
+    displayName?: boolean | number
+    /** The chosen display style for this multiple choice option. */
+    displayStyle?: boolean | number
+    /** Unique ID for the option. */
+    entityId?: boolean | number
+    /** One of the option values is required to be selected for the checkout. */
+    isRequired?: boolean | number
+    /** Indicates whether it is a variant option or modifier. */
+    isVariantOption?: boolean | number
+    /** List of option values. */
+    values?: (ProductOptionValueConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A simple multiple choice value comprised of an id and a label. */
+export interface MultipleChoiceOptionValueGenqlSelection{
+    /** Unique ID for the option value. */
+    entityId?: boolean | number
+    /** Indicates whether this value is the chosen default selected value. */
+    isDefault?: boolean | number
+    /** Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level. */
+    isSelected?: boolean | number
+    /** Label for the option value. */
+    label?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
 export interface MutationGenqlSelection{
+    /** The Cart mutations. */
+    cart?: CartMutationsGenqlSelection
     /** Customer login */
     login?: (LoginResultGenqlSelection & { __args: {
     /** An email of the customer. */
@@ -3259,8 +5240,1380 @@ export interface MutationGenqlSelection{
     logout?: LogoutResultGenqlSelection
     /** The wishlist mutations. */
     wishlist?: WishlistMutationsGenqlSelection
-    /** The Cart mutations. */
-    cart?: CartMutationsGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An object with an ID */
+export interface NodeGenqlSelection{
+    /** The id of the object. */
+    id?: boolean | number
+    on_Banner?: BannerGenqlSelection
+    on_Blog?: BlogGenqlSelection
+    on_BlogPost?: BlogPostGenqlSelection
+    on_Brand?: BrandGenqlSelection
+    on_Cart?: CartGenqlSelection
+    on_Category?: CategoryGenqlSelection
+    on_ContactPage?: ContactPageGenqlSelection
+    on_NormalPage?: NormalPageGenqlSelection
+    on_Product?: ProductGenqlSelection
+    on_RawHtmlPage?: RawHtmlPageGenqlSelection
+    on_Variant?: VariantGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A normal page. */
+export interface NormalPageGenqlSelection{
+    /** Unique ID for the web page. */
+    entityId?: boolean | number
+    /** The body of the page. */
+    htmlBody?: boolean | number
+    /** The ID of an object */
+    id?: boolean | number
+    /** Whether or not the page should be visible in the navigation menu. */
+    isVisibleInNavigation?: boolean | number
+    /** Page name. */
+    name?: boolean | number
+    /** Unique ID for the parent page. */
+    parentEntityId?: boolean | number
+    /** The URL path of the page. */
+    path?: boolean | number
+    /** The plain text summary of the page body. */
+    plainTextSummary?: { __args: {
+    /** The max number of characters for the plain text summary. */
+    characterLimit?: (Scalars['Int'] | null)} } | boolean | number
+    /** The rendered regions for the web page. */
+    renderedRegions?: RenderedRegionsByPageTypeGenqlSelection
+    /** Page SEO details. */
+    seo?: SeoDetailsGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A single line text input field that only accepts numbers. */
+export interface NumberFieldOptionGenqlSelection{
+    /** Default value of the text field option. */
+    defaultValue?: boolean | number
+    /** Display name for the option. */
+    displayName?: boolean | number
+    /** Unique ID for the option. */
+    entityId?: boolean | number
+    /** The top limit of possible numbers. */
+    highest?: boolean | number
+    /** Allow whole numbers only. */
+    isIntegerOnly?: boolean | number
+    /** One of the option values is required to be selected for the checkout. */
+    isRequired?: boolean | number
+    /** Indicates whether it is a variant option or modifier. */
+    isVariantOption?: boolean | number
+    /** Limit numbers by several options. */
+    limitNumberBy?: boolean | number
+    /** The bottom limit of possible numbers. */
+    lowest?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Operating day */
+export interface OperatingDayGenqlSelection{
+    /** Closing. */
+    closing?: boolean | number
+    /** Open. */
+    open?: boolean | number
+    /** Opening. */
+    opening?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Operating hours */
+export interface OperatingHoursGenqlSelection{
+    /** Friday. */
+    friday?: OperatingDayGenqlSelection
+    /** Monday. */
+    monday?: OperatingDayGenqlSelection
+    /** Saturday. */
+    saturday?: OperatingDayGenqlSelection
+    /** Sunday. */
+    sunday?: OperatingDayGenqlSelection
+    /** Thursday. */
+    thursday?: OperatingDayGenqlSelection
+    /** Tuesday. */
+    tuesday?: OperatingDayGenqlSelection
+    /** Wednesday. */
+    wednesday?: OperatingDayGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface OptionConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: OptionEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface OptionEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: ProductOptionGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface OptionValueConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: OptionValueEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface OptionValueEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: ProductOptionValueGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A variant option value id input object */
+export interface OptionValueId {
+/** A variant option id filter */
+optionEntityId?: Scalars['Int'],
+/** A variant value id filter. */
+valueEntityId?: Scalars['Int']}
+
+
+/** Other Filter */
+export interface OtherSearchFilterGenqlSelection{
+    /** Indicates whether to display product count next to the filter. */
+    displayProductCount?: boolean | number
+    /** Free shipping filter. */
+    freeShipping?: OtherSearchFilterItemGenqlSelection
+    /** Indicates whether filter is collapsed by default. */
+    isCollapsedByDefault?: boolean | number
+    /** Is Featured filter. */
+    isFeatured?: OtherSearchFilterItemGenqlSelection
+    /** Is In Stock filter. */
+    isInStock?: OtherSearchFilterItemGenqlSelection
+    /** Display name for the filter. */
+    name?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Other Filter Item */
+export interface OtherSearchFilterItemGenqlSelection{
+    /** Indicates whether this filter is selected. */
+    isSelected?: boolean | number
+    /** Indicates how many products available for this filter. */
+    productCount?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface PageConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: PageEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface PageEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: WebPageGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Information about pagination in a connection. */
+export interface PageInfoGenqlSelection{
+    /** When paginating forwards, the cursor to continue. */
+    endCursor?: boolean | number
+    /** When paginating forwards, are there more items? */
+    hasNextPage?: boolean | number
+    /** When paginating backwards, are there more items? */
+    hasPreviousPage?: boolean | number
+    /** When paginating backwards, the cursor to continue. */
+    startCursor?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface PopularBrandConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: PopularBrandEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface PopularBrandEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: PopularBrandTypeGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** PopularBrandType */
+export interface PopularBrandTypeGenqlSelection{
+    /** Brand count */
+    count?: boolean | number
+    /** Brand id */
+    entityId?: boolean | number
+    /** Brand name */
+    name?: boolean | number
+    /** Brand URL as a relative path */
+    path?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** The min and max range of prices that apply to this product. */
+export interface PriceRangesGenqlSelection{
+    /** Product price min/max range. */
+    priceRange?: MoneyRangeGenqlSelection
+    /** Product retail price min/max range. */
+    retailPriceRange?: MoneyRangeGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Price Filter */
+export interface PriceSearchFilterGenqlSelection{
+    /** Indicates whether filter is collapsed by default. */
+    isCollapsedByDefault?: boolean | number
+    /** Display name for the filter. */
+    name?: boolean | number
+    /** Selected price filters. */
+    selected?: PriceSearchFilterItemGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Search by price range. At least a minPrice or maxPrice must be supplied. */
+export interface PriceSearchFilterInput {
+/** Maximum price of the product. */
+maxPrice?: (Scalars['Float'] | null),
+/** Minimum price of the product. */
+minPrice?: (Scalars['Float'] | null)}
+
+
+/** Price filter range */
+export interface PriceSearchFilterItemGenqlSelection{
+    /** Maximum price of the product. */
+    maxPrice?: boolean | number
+    /** Minimum price of the product. */
+    minPrice?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** The various prices that can be set on a product. */
+export interface PricesGenqlSelection{
+    /** Original price of the product. */
+    basePrice?: MoneyGenqlSelection
+    /** List of bulk pricing tiers applicable to a product or variant. */
+    bulkPricing?: BulkPricingTierGenqlSelection
+    /** Minimum advertised price of the product. */
+    mapPrice?: MoneyGenqlSelection
+    /** Calculated price of the product.  Calculated price takes into account basePrice, salePrice, rules (modifier, option, option set) that apply to the product configuration, and customer group discounts.  It represents the in-cart price for a product configuration without bulk pricing rules. */
+    price?: MoneyGenqlSelection
+    /** Product price min/max range. */
+    priceRange?: MoneyRangeGenqlSelection
+    /** Retail price of the product. */
+    retailPrice?: MoneyGenqlSelection
+    /** Product retail price min/max range. */
+    retailPriceRange?: MoneyRangeGenqlSelection
+    /** Sale price of the product. */
+    salePrice?: MoneyGenqlSelection
+    /** The difference between the retail price (MSRP) and the current price, which can be presented to the shopper as their savings. */
+    saved?: MoneyGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Product */
+export interface ProductGenqlSelection{
+    /** Absolute URL path for adding a product to cart. */
+    addToCartUrl?: boolean | number
+    /**
+     * @deprecated Deprecated.
+     * Absolute URL path for adding a product to customer's wishlist.
+     */
+    addToWishlistUrl?: boolean | number
+    /**
+     * @deprecated Use status inside availabilityV2 instead.
+     * The availability state of the product.
+     */
+    availability?: boolean | number
+    /**
+     * @deprecated Use description inside availabilityV2 instead.
+     * A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'.
+     */
+    availabilityDescription?: boolean | number
+    /** The availability state of the product. */
+    availabilityV2?: ProductAvailabilityGenqlSelection
+    /** Brand associated with the product. */
+    brand?: BrandGenqlSelection
+    /** List of categories associated with the product. */
+    categories?: (CategoryConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** Product condition */
+    condition?: boolean | number
+    /**
+     * @deprecated Alpha version. Do not use in production.
+     * Product creation date
+     */
+    createdAt?: DateTimeExtendedGenqlSelection
+    /** Custom fields of the product. */
+    customFields?: (CustomFieldConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null), 
+    /** Product custom fields filter by names. */
+    names?: (Scalars['String'][] | null)} })
+    /** Default image for a product. */
+    defaultImage?: ImageGenqlSelection
+    /** Depth of the product. */
+    depth?: MeasurementGenqlSelection
+    /** Description of the product. */
+    description?: boolean | number
+    /** Id of the product. */
+    entityId?: boolean | number
+    /** Gift wrapping options available for the product. */
+    giftWrappingOptions?: (GiftWrappingConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** Global trade item number. */
+    gtin?: boolean | number
+    /** Height of the product. */
+    height?: MeasurementGenqlSelection
+    /** The ID of an object */
+    id?: boolean | number
+    /** A list of the images for a product. */
+    images?: (ImageConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** Inventory information of the product. */
+    inventory?: ProductInventoryGenqlSelection
+    /** Maximum purchasable quantity for this product in a single order. */
+    maxPurchaseQuantity?: boolean | number
+    /** Metafield data related to a product. */
+    metafields?: (MetafieldConnectionGenqlSelection & { __args: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), 
+    /** Labels for identifying metafield data values. */
+    keys?: (Scalars['String'][] | null), last?: (Scalars['Int'] | null), 
+    /** Metafield namespace filter */
+    namespace: Scalars['String']} })
+    /** Minimum purchasable quantity for this product in a single order. */
+    minPurchaseQuantity?: boolean | number
+    /** Manufacturer part number. */
+    mpn?: boolean | number
+    /** Name of the product. */
+    name?: boolean | number
+    /**
+     * @deprecated Use productOptions instead.
+     * Product options.
+     */
+    options?: (OptionConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** Relative URL path to product page. */
+    path?: boolean | number
+    /** Description of the product in plain text. */
+    plainTextDescription?: { __args: {
+    /** The max number of characters for the description. */
+    characterLimit?: (Scalars['Int'] | null)} } | boolean | number
+    /**
+     * @deprecated Use priceRanges inside prices node instead.
+     * The minimum and maximum price of this product based on variant pricing and/or modifier price rules.
+     */
+    priceRanges?: (PriceRangesGenqlSelection & { __args?: {
+    /** Tax will be included if enabled */
+    includeTax?: (Scalars['Boolean'] | null)} })
+    /** Prices object determined by supplied product ID, variant ID, and selected option IDs. */
+    prices?: (PricesGenqlSelection & { __args?: {
+    /** Please select a currency */
+    currencyCode?: (currencyCode | null), 
+    /** Tax will be included if enabled */
+    includeTax?: (Scalars['Boolean'] | null)} })
+    /** Product options. */
+    productOptions?: (ProductOptionConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** Related products for this product. */
+    relatedProducts?: (RelatedProductsConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), 
+    /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
+    hideOutOfStock?: (Scalars['Boolean'] | null), last?: (Scalars['Int'] | null)} })
+    /** Summary of the product reviews, includes the total number of reviews submitted and summation of the ratings on the reviews (ratings range from 0-5 per review). */
+    reviewSummary?: ReviewsGenqlSelection
+    /** Reviews associated with the product. */
+    reviews?: (ReviewConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), 
+    /** Product reviews filters. */
+    filters?: (ProductReviewsFiltersInput | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null), 
+    /** Product reviews sorting. */
+    sort?: (ProductReviewsSortInput | null)} })
+    /** Product SEO details. */
+    seo?: SeoDetailsGenqlSelection
+    /** Whether or not the cart call to action should be visible for this product. */
+    showCartAction?: boolean | number
+    /** Default product variant when no options are selected. */
+    sku?: boolean | number
+    /** Type of product, ex: physical, digital */
+    type?: boolean | number
+    /** Universal product code. */
+    upc?: boolean | number
+    /** Variants associated with the product. */
+    variants?: (VariantConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), 
+    /** Ids of expected variants. */
+    entityIds?: (Scalars['Int'][] | null), first?: (Scalars['Int'] | null), 
+    /** Whether the product can be purchased */
+    isPurchasable?: (Scalars['Boolean'] | null), last?: (Scalars['Int'] | null), 
+    /** A variant option value ids filter. */
+    optionValueIds?: (OptionValueId[] | null)} })
+    /** Warranty information of the product. */
+    warranty?: boolean | number
+    /** Weight of the product. */
+    weight?: MeasurementGenqlSelection
+    /** Width of the product. */
+    width?: MeasurementGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Product Attribute Filter */
+export interface ProductAttributeSearchFilterGenqlSelection{
+    /** List of available product attributes. */
+    attributes?: (ProductAttributeSearchFilterItemConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** Indicates whether to display product count next to the filter. */
+    displayProductCount?: boolean | number
+    /** Indicates whether filter is collapsed by default. */
+    isCollapsedByDefault?: boolean | number
+    /** Display name for the filter. */
+    name?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Filter by the attributes of products such as Product Options and Product Custom Fields. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
+export interface ProductAttributeSearchFilterInput {
+/** Product attributes */
+attribute?: Scalars['String'],
+/** Product attribute values */
+values?: Scalars['String'][]}
+
+
+/** Specific product attribute filter item */
+export interface ProductAttributeSearchFilterItemGenqlSelection{
+    /** Indicates whether product attribute is selected. */
+    isSelected?: boolean | number
+    /** Indicates how many products available for this filter. */
+    productCount?: boolean | number
+    /** Product attribute value. */
+    value?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface ProductAttributeSearchFilterItemConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: ProductAttributeSearchFilterItemEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface ProductAttributeSearchFilterItemEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: ProductAttributeSearchFilterItemGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Product availability */
+export interface ProductAvailabilityGenqlSelection{
+    /** A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'. */
+    description?: boolean | number
+    /** The availability state of the product. */
+    status?: boolean | number
+    on_ProductAvailable?: ProductAvailableGenqlSelection
+    on_ProductPreOrder?: ProductPreOrderGenqlSelection
+    on_ProductUnavailable?: ProductUnavailableGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Available Product */
+export interface ProductAvailableGenqlSelection{
+    /** A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'. */
+    description?: boolean | number
+    /** The availability state of the product. */
+    status?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface ProductConnectionGenqlSelection{
+    /** Collection info */
+    collectionInfo?: CollectionInfoGenqlSelection
+    /** A list of edges. */
+    edges?: ProductEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface ProductEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: ProductGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Product Inventory Information */
+export interface ProductInventoryGenqlSelection{
+    /** Aggregated product inventory information. This data may not be available if not set or if the store's Inventory Settings have disabled displaying stock levels on the storefront. */
+    aggregated?: AggregatedInventoryGenqlSelection
+    /** Indicates whether this product's inventory is being tracked on variant level. If true, you may wish to check the variants node to understand the true inventory of each individual variant, rather than relying on this product-level aggregate to understand how many items may be added to cart. */
+    hasVariantInventory?: boolean | number
+    /** Indicates whether this product is in stock. */
+    isInStock?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Product Option */
+export interface ProductOptionGenqlSelection{
+    /** Display name for the option. */
+    displayName?: boolean | number
+    /** Unique ID for the option. */
+    entityId?: boolean | number
+    /** One of the option values is required to be selected for the checkout. */
+    isRequired?: boolean | number
+    /** Option values. */
+    values?: (OptionValueConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface ProductOptionConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: ProductOptionEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface ProductOptionEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: CatalogProductOptionGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Product Option Value */
+export interface ProductOptionValueGenqlSelection{
+    /** Unique ID for the option value. */
+    entityId?: boolean | number
+    /** Label for the option value. */
+    label?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface ProductOptionValueConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: ProductOptionValueEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface ProductOptionValueEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: CatalogProductOptionValueGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A Product PickList Value - a product to be mapped to the base product if selected. */
+export interface ProductPickListOptionValueGenqlSelection{
+    /** Default image for a pick list product. */
+    defaultImage?: ImageGenqlSelection
+    /** Unique ID for the option value. */
+    entityId?: boolean | number
+    /** Indicates whether this value is the chosen default selected value. */
+    isDefault?: boolean | number
+    /** Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level. */
+    isSelected?: boolean | number
+    /** Label for the option value. */
+    label?: boolean | number
+    /** The ID of the product associated with this option value. */
+    productId?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** PreOrder Product */
+export interface ProductPreOrderGenqlSelection{
+    /** A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'. */
+    description?: boolean | number
+    /** The message to be shown in the store when a product is put into the pre-order availability state, e.g. "Expected release date is %%DATE%%" */
+    message?: boolean | number
+    /** The availability state of the product. */
+    status?: boolean | number
+    /** Product release date */
+    willBeReleasedAt?: DateTimeExtendedGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Product reviews filters. */
+export interface ProductReviewsFiltersInput {
+/** Product reviews filter by rating. */
+rating?: (ProductReviewsRatingFilterInput | null)}
+
+
+/** Product reviews filter by rating. */
+export interface ProductReviewsRatingFilterInput {
+/** Maximum rating of the product. */
+maxRating?: (Scalars['Int'] | null),
+/** Minimum rating of the product. */
+minRating?: (Scalars['Int'] | null)}
+
+
+/** Unavailable Product */
+export interface ProductUnavailableGenqlSelection{
+    /** A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'. */
+    description?: boolean | number
+    /** The message to be shown in the store when "Call for pricing" is enabled for this product, e.g. "Contact us at 555-5555" */
+    message?: boolean | number
+    /** The availability state of the product. */
+    status?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Public Wishlist */
+export interface PublicWishlistGenqlSelection{
+    /** The wishlist id. */
+    entityId?: boolean | number
+    /** A list of the wishlist items */
+    items?: (WishlistItemConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), 
+    /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
+    hideOutOfStock?: (Scalars['Boolean'] | null), last?: (Scalars['Int'] | null)} })
+    /** The wishlist name. */
+    name?: boolean | number
+    /** The wishlist token. */
+    token?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+export interface QueryGenqlSelection{
+    /** The current channel. */
+    channel?: ChannelGenqlSelection
+    /** The currently logged in customer. */
+    customer?: CustomerGenqlSelection
+    /** An inventory */
+    inventory?: InventoryGenqlSelection
+    /** Fetches an object given its ID */
+    node?: (NodeGenqlSelection & { __args: {
+    /** The ID of an object */
+    id: Scalars['ID']} })
+    /** A site */
+    site?: SiteGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Rating Filter */
+export interface RatingSearchFilterGenqlSelection{
+    /** Indicates whether filter is collapsed by default. */
+    isCollapsedByDefault?: boolean | number
+    /** Display name for the filter. */
+    name?: boolean | number
+    /** List of available ratings. */
+    ratings?: (RatingSearchFilterItemConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Filter by rating. At least a minRating or maxRating must be supplied. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
+export interface RatingSearchFilterInput {
+/** Maximum rating of the product. */
+maxRating?: (Scalars['Float'] | null),
+/** Minimum rating of the product. */
+minRating?: (Scalars['Float'] | null)}
+
+
+/** Specific rating filter item */
+export interface RatingSearchFilterItemGenqlSelection{
+    /** Indicates whether rating is selected. */
+    isSelected?: boolean | number
+    /** Indicates how many products available for this filter. */
+    productCount?: boolean | number
+    /** Rating value. */
+    value?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface RatingSearchFilterItemConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: RatingSearchFilterItemEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface RatingSearchFilterItemEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: RatingSearchFilterItemGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A raw HTML page. */
+export interface RawHtmlPageGenqlSelection{
+    /** Unique ID for the web page. */
+    entityId?: boolean | number
+    /** The body of the page. */
+    htmlBody?: boolean | number
+    /** The ID of an object */
+    id?: boolean | number
+    /** Whether or not the page should be visible in the navigation menu. */
+    isVisibleInNavigation?: boolean | number
+    /** Page name. */
+    name?: boolean | number
+    /** Unique ID for the parent page. */
+    parentEntityId?: boolean | number
+    /** The URL path of the page. */
+    path?: boolean | number
+    /** The plain text summary of the page body. */
+    plainTextSummary?: { __args: {
+    /** The max number of characters for the plain text summary. */
+    characterLimit?: (Scalars['Int'] | null)} } | boolean | number
+    /** Page SEO details. */
+    seo?: SeoDetailsGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** ReCaptcha settings. */
+export interface ReCaptchaSettingsGenqlSelection{
+    /** ReCaptcha site key. */
+    siteKey?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** The region object */
+export interface RegionGenqlSelection{
+    /** The rendered HTML content targeted at the region. */
+    html?: boolean | number
+    /** The name of a region. */
+    name?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface RelatedProductsConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: RelatedProductsEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface RelatedProductsEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: ProductGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** The rendered regions by specific page. */
+export interface RenderedRegionsByPageTypeGenqlSelection{
+    /** List of regions */
+    regions?: RegionGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Review */
+export interface ReviewGenqlSelection{
+    /** Product review author. */
+    author?: AuthorGenqlSelection
+    /** Product review creation date. */
+    createdAt?: DateTimeExtendedGenqlSelection
+    /** Unique ID for the product review. */
+    entityId?: boolean | number
+    /** Product review rating. */
+    rating?: boolean | number
+    /** Product review text. */
+    text?: boolean | number
+    /** Product review title. */
+    title?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface ReviewConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: ReviewEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface ReviewEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: ReviewGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Review Rating Summary */
+export interface ReviewsGenqlSelection{
+    /**
+     * @deprecated Alpha version. Do not use in production.
+     * Average rating of the product.
+     */
+    averageRating?: boolean | number
+    /** Total number of reviews on product. */
+    numberOfReviews?: boolean | number
+    /** Summation of rating scores from each review. */
+    summationOfRatings?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** route */
+export interface RouteGenqlSelection{
+    /** Node */
+    node?: NodeGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Store search settings. */
+export interface SearchGenqlSelection{
+    /** Product filtering enabled. */
+    productFilteringEnabled?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Search Product Filter */
+export interface SearchProductFilterGenqlSelection{
+    /** Indicates whether filter is collapsed by default. */
+    isCollapsedByDefault?: boolean | number
+    /** Display name for the filter. */
+    name?: boolean | number
+    on_BrandSearchFilter?: BrandSearchFilterGenqlSelection
+    on_CategorySearchFilter?: CategorySearchFilterGenqlSelection
+    on_OtherSearchFilter?: OtherSearchFilterGenqlSelection
+    on_PriceSearchFilter?: PriceSearchFilterGenqlSelection
+    on_ProductAttributeSearchFilter?: ProductAttributeSearchFilterGenqlSelection
+    on_RatingSearchFilter?: RatingSearchFilterGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface SearchProductFilterConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: SearchProductFilterEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface SearchProductFilterEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: SearchProductFilterGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Container for catalog search results, which may contain both products as well as a list of search filters for further refinement. */
+export interface SearchProductsGenqlSelection{
+    /** Available product filters. */
+    filters?: (SearchProductFilterConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** Details of the products. */
+    products?: (ProductConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null)} })
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Object containing available search filters for use when querying Products. */
+export interface SearchProductsFiltersInput {
+/** Filter by products belonging to any of the specified Brands. */
+brandEntityIds?: (Scalars['Int'][] | null),
+/** Filter by products belonging to a single Category. This is intended for use when presenting a Category page in a PLP experience. This argument must be used in order for custom product sorts and custom product filtering settings targeted at a particular category to take effect. */
+categoryEntityId?: (Scalars['Int'] | null),
+/** Filter by products belonging to any of the specified Categories. Intended for Advanced Search and Faceted Search/Product Filtering use cases, not for a page for a specific Category. */
+categoryEntityIds?: (Scalars['Int'][] | null),
+/** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
+hideOutOfStock?: (Scalars['Boolean'] | null),
+/** Filters by Products which have explicitly been marked as Featured within the catalog. If not supplied, the Featured status of products will not be considered when returning the list of products. */
+isFeatured?: (Scalars['Boolean'] | null),
+/** Filters by Products which have explicit Free Shipping configured within the catalog. If not supplied, the Free Shipping status of products will not be considered when returning the list of products. */
+isFreeShipping?: (Scalars['Boolean'] | null),
+/** Search by price range. At least a minPrice or maxPrice must be supplied. */
+price?: (PriceSearchFilterInput | null),
+/** Filter by the attributes of products such as Product Options and Product Custom Fields. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
+productAttributes?: (ProductAttributeSearchFilterInput[] | null),
+/** Filter by rating. At least a minRating or maxRating must be supplied. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
+rating?: (RatingSearchFilterInput | null),
+/** Boolean argument to determine whether products within sub-Categories will be returned when filtering products by Category. Defaults to False if not supplied. */
+searchSubCategories?: (Scalars['Boolean'] | null),
+/** Textual search term. Used to search for products based on text entered by a shopper, typically in a search box. Searches against several fields on the product including Name, SKU, and Description. */
+searchTerm?: (Scalars['String'] | null)}
+
+
+/** The Search queries. */
+export interface SearchQueriesGenqlSelection{
+    /** Details of the products and facets matching given search criteria. */
+    searchProducts?: (SearchProductsGenqlSelection & { __args: {
+    /** Available search filters for use when querying products */
+    filters: SearchProductsFiltersInput, 
+    /** The results are sorted by relevance if the sort argument is not provided. */
+    sort?: (SearchProductsSortInput | null)} })
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Seo Details */
+export interface SeoDetailsGenqlSelection{
+    /** Meta description. */
+    metaDescription?: boolean | number
+    /** Meta keywords. */
+    metaKeywords?: boolean | number
+    /** Page title. */
+    pageTitle?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Store settings information from the control panel. */
+export interface SettingsGenqlSelection{
+    /** Channel ID. */
+    channelId?: boolean | number
+    /** Checkout settings. */
+    checkout?: CheckoutSettingsGenqlSelection
+    /** Contact information for the store. */
+    contact?: ContactFieldGenqlSelection
+    /** Store display format information. */
+    display?: DisplayFieldGenqlSelection
+    /** Inventory settings. */
+    inventory?: InventorySettingsGenqlSelection
+    /**
+     * @deprecated Use `logoV2` instead.
+     * Logo information for the store.
+     */
+    logo?: LogoFieldGenqlSelection
+    /** Logo information for the store. */
+    logoV2?: StoreLogoGenqlSelection
+    /** ReCaptcha settings. */
+    reCaptcha?: ReCaptchaSettingsGenqlSelection
+    /** Store search settings. */
+    search?: SearchGenqlSelection
+    /** The social media links of connected platforms to the storefront. */
+    socialMediaLinks?: SocialMediaLinkGenqlSelection
+    /** The current store status. */
+    status?: boolean | number
+    /** The hash of the store. */
+    storeHash?: boolean | number
+    /** The name of the store. */
+    storeName?: boolean | number
+    /** Storefront settings. */
+    storefront?: StorefrontGenqlSelection
+    /** The tax display settings object */
+    tax?: TaxDisplaySettingsGenqlSelection
+    /** Store urls. */
+    url?: UrlFieldGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface ShopByPriceConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: ShopByPriceEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface ShopByPriceEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: ShopByPriceRangeGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Category shop by price money ranges */
+export interface ShopByPriceRangeGenqlSelection{
+    /** Category shop by price range. */
+    ranges?: MoneyRangeGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A site */
+export interface SiteGenqlSelection{
+    /** Details of the best selling products. */
+    bestSellingProducts?: (ProductConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), 
+    /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
+    hideOutOfStock?: (Scalars['Boolean'] | null), last?: (Scalars['Int'] | null)} })
+    /** Details of the brand. */
+    brands?: (BrandConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), 
+    /** Filter by brand ids. */
+    entityIds?: (Scalars['Int'][] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null), 
+    /** Filter by brands belonging to any of the specified Products. */
+    productEntityIds?: (Scalars['Int'][] | null)} })
+    /** The Cart of the current customer. */
+    cart?: (CartGenqlSelection & { __args?: {
+    /** Cart ID. */
+    entityId?: (Scalars['String'] | null)} })
+    /** Retrieve a category object by the id. */
+    category?: (CategoryGenqlSelection & { __args: {
+    /** The category id */
+    entityId: Scalars['Int']} })
+    /** A tree of categories. */
+    categoryTree?: (CategoryTreeItemGenqlSelection & { __args?: {
+    /** A root category ID to be used to load the tree starting from a particular branch. If not supplied, starts at the top of the tree. */
+    rootEntityId?: (Scalars['Int'] | null)} })
+    /** The page content. */
+    content?: ContentGenqlSelection
+    /** Store Currencies. */
+    currencies?: (CurrencyConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** Currency details. */
+    currency?: (CurrencyGenqlSelection & { __args: {
+    /** Currency Code */
+    currencyCode: currencyCode} })
+    /** Details of the featured products. */
+    featuredProducts?: (ProductConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), 
+    /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
+    hideOutOfStock?: (Scalars['Boolean'] | null), last?: (Scalars['Int'] | null)} })
+    /** Details of the newest products. */
+    newestProducts?: (ProductConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), 
+    /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
+    hideOutOfStock?: (Scalars['Boolean'] | null), last?: (Scalars['Int'] | null)} })
+    /** List of brands sorted by product count. */
+    popularBrands?: (PopularBrandConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** A single product object with variant pricing overlay capabilities. */
+    product?: (ProductGenqlSelection & { __args?: {
+    /** Product id filter. */
+    entityId?: (Scalars['Int'] | null), 
+    /** Product global id filter. */
+    id?: (Scalars['ID'] | null), 
+    /** A variant option value ids filter. */
+    optionValueIds?: (OptionValueId[] | null), 
+    /** Product filter by sku. */
+    sku?: (Scalars['String'] | null), 
+    /** When set to True, returns products with default option selection overlay if one exists. Otherwise returns a base product. Defaults to False */
+    useDefaultOptionSelections?: (Scalars['Boolean'] | null), 
+    /** Product filter by variant id. */
+    variantEntityId?: (Scalars['Int'] | null)} })
+    /** Details of the products. */
+    products?: (ProductConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), 
+    /** Ids of expected products. */
+    entityIds?: (Scalars['Int'][] | null), first?: (Scalars['Int'] | null), 
+    /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
+    hideOutOfStock?: (Scalars['Boolean'] | null), 
+    /** Global ids of expected products. */
+    ids?: (Scalars['ID'][] | null), last?: (Scalars['Int'] | null)} })
+    /** Public Wishlist */
+    publicWishlist?: (PublicWishlistGenqlSelection & { __args: {
+    /** A wishlist token filter */
+    token: Scalars['String']} })
+    /** Route for a node */
+    route?: (RouteGenqlSelection & { __args: {
+    /** An url path to an expected entity. */
+    path: Scalars['String']} })
+    /** The Search queries. */
+    search?: SearchQueriesGenqlSelection
+    /** Store settings. */
+    settings?: SettingsGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** The social media link. */
+export interface SocialMediaLinkGenqlSelection{
+    /** The name of the social media link. */
+    name?: boolean | number
+    /** The url of the social media link. */
+    url?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Special hour */
+export interface SpecialHourGenqlSelection{
+    /** Closing time */
+    closing?: boolean | number
+    /** Upcoming event name */
+    label?: boolean | number
+    /** Is open */
+    open?: boolean | number
+    /** Opening time */
+    opening?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Store logo as image. */
+export interface StoreImageLogoGenqlSelection{
+    /** Logo image. */
+    image?: ImageGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Store logo. */
+export interface StoreLogoGenqlSelection{
+    on_StoreImageLogo?:StoreImageLogoGenqlSelection,
+    on_StoreTextLogo?:StoreTextLogoGenqlSelection,
+    __typename?: boolean | number
+}
+
+
+/** Store logo as text. */
+export interface StoreTextLogoGenqlSelection{
+    /** Logo text. */
+    text?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Storefront settings. */
+export interface StorefrontGenqlSelection{
+    /** Storefront catalog settings. */
+    catalog?: CatalogGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Specific sub-category filter item */
+export interface SubCategorySearchFilterItemGenqlSelection{
+    /** Category ID. */
+    entityId?: boolean | number
+    /** Indicates whether category is selected. */
+    isSelected?: boolean | number
+    /** Category name. */
+    name?: boolean | number
+    /** Indicates how many products available for this filter. */
+    productCount?: boolean | number
+    /** List of available sub-categories. */
+    subCategories?: (SubCategorySearchFilterItemConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A connection to a list of items. */
+export interface SubCategorySearchFilterItemConnectionGenqlSelection{
+    /** A list of edges. */
+    edges?: SubCategorySearchFilterItemEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** An edge in a connection. */
+export interface SubCategorySearchFilterItemEdgeGenqlSelection{
+    /** A cursor for use in pagination. */
+    cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: SubCategorySearchFilterItemGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A swatch option value - swatch values can be associated with a list of hexidecimal colors or an image. */
+export interface SwatchOptionValueGenqlSelection{
+    /** Unique ID for the option value. */
+    entityId?: boolean | number
+    /** List of up to 3 hex encoded colors to associate with a swatch value. */
+    hexColors?: boolean | number
+    /** Absolute path of a swatch texture image. */
+    imageUrl?: { __args: {
+    /** Desired height of the image. */
+    height?: (Scalars['Int'] | null), 
+    /** Desired width of the image. */
+    width: Scalars['Int']} }
+    /** Indicates whether this value is the chosen default selected value. */
+    isDefault?: boolean | number
+    /** Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level. */
+    isSelected?: boolean | number
+    /** Label for the option value. */
+    label?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** The tax display settings object */
+export interface TaxDisplaySettingsGenqlSelection{
+    /** Tax display setting for Product Details Page. */
+    pdp?: boolean | number
+    /** Tax display setting for Product List Page. */
+    plp?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A single line text input field. */
+export interface TextFieldOptionGenqlSelection{
+    /** Default value of the text field option. */
+    defaultValue?: boolean | number
+    /** Display name for the option. */
+    displayName?: boolean | number
+    /** Unique ID for the option. */
+    entityId?: boolean | number
+    /** One of the option values is required to be selected for the checkout. */
+    isRequired?: boolean | number
+    /** Indicates whether it is a variant option or modifier. */
+    isVariantOption?: boolean | number
+    /** The maximum number of characters. */
+    maxLength?: boolean | number
+    /** The minimum number of characters. */
+    minLength?: boolean | number
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -3306,20 +6659,20 @@ export interface UpdateCartCurrencyResultGenqlSelection{
 
 /** Update cart line item data object */
 export interface UpdateCartLineItemDataInput {
-/** The cart line item */
-lineItem?: (CartLineItemInput | null),
 /** The gift certificate */
-giftCertificate?: (CartGiftCertificateInput | null)}
+giftCertificate?: (CartGiftCertificateInput | null),
+/** The cart line item */
+lineItem?: (CartLineItemInput | null)}
 
 
 /** Update cart line item input object */
 export interface UpdateCartLineItemInput {
 /** The cart id */
 cartEntityId?: Scalars['String'],
-/** The line item id */
-lineItemEntityId?: Scalars['String'],
 /** Update cart line item data object */
-data?: UpdateCartLineItemDataInput}
+data?: UpdateCartLineItemDataInput,
+/** The line item id */
+lineItemEntityId?: Scalars['String']}
 
 
 /** Update cart line item result */
@@ -3333,10 +6686,10 @@ export interface UpdateCartLineItemResultGenqlSelection{
 
 /** Update wishlist input object */
 export interface UpdateWishlistInput {
-/** The wishlist id */
-entityId?: Scalars['Int'],
 /** Wishlist data to update */
-data?: WishlistUpdateDataInput}
+data?: WishlistUpdateDataInput,
+/** The wishlist id */
+entityId?: Scalars['Int']}
 
 
 /** Update wishlist */
@@ -3348,3031 +6701,14 @@ export interface UpdateWishlistResultGenqlSelection{
 }
 
 
-/** Wishlist item input object */
-export interface WishlistItemInput {
-/** An id of the product from the wishlist. */
-productEntityId?: Scalars['Int'],
-/** An id of the specific product variant from the wishlist. */
-variantEntityId?: (Scalars['Int'] | null)}
-
-
-/** The wishlist mutations. */
-export interface WishlistMutationsGenqlSelection{
-    /** Create wishlist */
-    createWishlist?: (CreateWishlistResultGenqlSelection & { __args: {
-    /** Create wishlists input */
-    input: CreateWishlistInput} })
-    /** Add wishlist items */
-    addWishlistItems?: (AddWishlistItemsResultGenqlSelection & { __args: {
-    /** Add wishlist items input */
-    input: AddWishlistItemsInput} })
-    /** Delete wishlist items */
-    deleteWishlistItems?: (DeleteWishlistItemsResultGenqlSelection & { __args: {
-    /** Delete wishlist items input */
-    input: DeleteWishlistItemsInput} })
-    /** Update wishlist */
-    updateWishlist?: (UpdateWishlistResultGenqlSelection & { __args: {
-    /** Update wishlist items input */
-    input: UpdateWishlistInput} })
-    /** Delete wishlist */
-    deleteWishlists?: (DeleteWishlistResultGenqlSelection & { __args: {
-    /** Delete wishlists input */
-    input: DeleteWishlistsInput} })
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Wishlist data to update */
-export interface WishlistUpdateDataInput {
-/** A new wishlist name */
-name?: (Scalars['String'] | null),
-/** A new wishlist visibility mode */
-isPublic?: (Scalars['Boolean'] | null)}
-
-
-/** Aggregated */
-export interface AggregatedGenqlSelection{
-    /** Number of available products in stock. This can be 'null' if inventory is not set orif the store's Inventory Settings disable displaying stock levels on the storefront. */
-    availableToSell?: boolean | number
-    /** Indicates a threshold low-stock level.  This can be 'null' if the inventory warning level is not set or if the store's Inventory Settings disable displaying stock levels on the storefront. */
-    warningLevel?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Aggregated Product Inventory */
-export interface AggregatedInventoryGenqlSelection{
-    /** Number of available products in stock. This can be 'null' if inventory is not set orif the store's Inventory Settings disable displaying stock levels on the storefront. */
-    availableToSell?: boolean | number
-    /** Indicates a threshold low-stock level. This can be 'null' if the inventory warning level is not set or if the store's Inventory Settings disable displaying stock levels on the storefront. */
-    warningLevel?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Author */
-export interface AuthorGenqlSelection{
-    /** Author name. */
-    name?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A blog index page. */
-export interface BlogIndexPageGenqlSelection{
-    /** The URL path of the page. */
-    path?: boolean | number
-    /** The rendered regions for the web page. */
-    renderedRegions?: RenderedRegionsByPageTypeGenqlSelection
-    /** Unique ID for the web page. */
-    entityId?: boolean | number
-    /** Unique ID for the parent page. */
-    parentEntityId?: boolean | number
-    /** Page name. */
-    name?: boolean | number
-    /** Whether or not the page should be visible in the navigation menu. */
-    isVisibleInNavigation?: boolean | number
-    /** Page SEO details. */
-    seo?: SeoDetailsGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Brand */
-export interface BrandGenqlSelection{
-    /** The ID of an object */
-    id?: boolean | number
-    /** Id of the brand. */
-    entityId?: boolean | number
-    /** Name of the brand. */
-    name?: boolean | number
-    /** Default image for brand. */
-    defaultImage?: ImageGenqlSelection
-    /**
-     * @deprecated Use SEO details instead.
-     * Page title for the brand.
-     */
-    pageTitle?: boolean | number
-    /**
-     * @deprecated Use SEO details instead.
-     * Meta description for the brand.
-     */
-    metaDesc?: boolean | number
-    /**
-     * @deprecated Use SEO details instead.
-     * Meta keywords for the brand.
-     */
-    metaKeywords?: boolean | number
-    /** Brand SEO details. */
-    seo?: SeoDetailsGenqlSelection
-    /** Search keywords for the brand. */
-    searchKeywords?: boolean | number
-    /** Path for the brand page. */
-    path?: boolean | number
-    /** List of products associated with the brand. */
-    products?: (ProductConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null), 
-    /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
-    hideOutOfStock?: (Scalars['Boolean'] | null)} })
-    /** Metafield data related to a brand. */
-    metafields?: (MetafieldConnectionGenqlSelection & { __args: {
-    /** Metafield namespace filter */
-    namespace: Scalars['String'], 
-    /** Labels for identifying metafield data values. */
-    keys?: (Scalars['String'][] | null), before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface BrandConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: BrandEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface BrandEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: BrandGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Brand Filter */
-export interface BrandSearchFilterGenqlSelection{
-    /** Indicates whether to display product count next to the filter. */
-    displayProductCount?: boolean | number
-    /** List of available brands. */
-    brands?: (BrandSearchFilterItemConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** Display name for the filter. */
-    name?: boolean | number
-    /** Indicates whether filter is collapsed by default. */
-    isCollapsedByDefault?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Specific brand filter item */
-export interface BrandSearchFilterItemGenqlSelection{
-    /** Brand ID. */
-    entityId?: boolean | number
-    /** Brand name. */
-    name?: boolean | number
-    /** Indicates whether brand is selected. */
-    isSelected?: boolean | number
-    /** Indicates how many products available for this filter. */
-    productCount?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface BrandSearchFilterItemConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: BrandSearchFilterItemEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface BrandSearchFilterItemEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: BrandSearchFilterItemGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Breadcrumb */
-export interface BreadcrumbGenqlSelection{
-    /** Category id. */
-    entityId?: boolean | number
-    /** Name of the category. */
-    name?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface BreadcrumbConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: BreadcrumbEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface BreadcrumbEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: BreadcrumbGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Bulk pricing tier that sets a fixed price for the product or variant. */
-export interface BulkPricingFixedPriceDiscountGenqlSelection{
-    /** This price will override the current product price. */
-    price?: boolean | number
-    /** Minimum item quantity that applies to this bulk pricing tier. */
-    minimumQuantity?: boolean | number
-    /** Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound. */
-    maximumQuantity?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Bulk pricing tier that reduces the price of the product or variant by a percentage. */
-export interface BulkPricingPercentageDiscountGenqlSelection{
-    /** The percentage that will be removed from the product price. */
-    percentOff?: boolean | number
-    /** Minimum item quantity that applies to this bulk pricing tier. */
-    minimumQuantity?: boolean | number
-    /** Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound. */
-    maximumQuantity?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Bulk pricing tier that will subtract an amount from the price of the product or variant. */
-export interface BulkPricingRelativePriceDiscountGenqlSelection{
-    /** The price of the product/variant will be reduced by this priceAdjustment. */
-    priceAdjustment?: boolean | number
-    /** Minimum item quantity that applies to this bulk pricing tier. */
-    minimumQuantity?: boolean | number
-    /** Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound. */
-    maximumQuantity?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A set of bulk pricing tiers that define price discounts which apply when purchasing specified quantities of a product or variant. */
-export interface BulkPricingTierGenqlSelection{
-    /** Minimum item quantity that applies to this bulk pricing tier. */
-    minimumQuantity?: boolean | number
-    /** Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound. */
-    maximumQuantity?: boolean | number
-    on_BulkPricingFixedPriceDiscount?: BulkPricingFixedPriceDiscountGenqlSelection
-    on_BulkPricingPercentageDiscount?: BulkPricingPercentageDiscountGenqlSelection
-    on_BulkPricingRelativePriceDiscount?: BulkPricingRelativePriceDiscountGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A cart */
-export interface CartGenqlSelection{
-    /** The ID of an object */
-    id?: boolean | number
-    /** Cart ID. */
-    entityId?: boolean | number
-    /** ISO-4217 currency code. */
-    currencyCode?: boolean | number
-    /** Whether this item is taxable. */
-    isTaxIncluded?: boolean | number
-    /** Cost of cart's contents, before applying discounts. */
-    baseAmount?: MoneyGenqlSelection
-    /** Discounted amount. */
-    discountedAmount?: MoneyGenqlSelection
-    /** Sum of line-items amounts, minus cart-level discounts and coupons. This amount includes taxes (where applicable). */
-    amount?: MoneyGenqlSelection
-    /** List of discounts applied to this cart. */
-    discounts?: CartDiscountGenqlSelection
-    /** List of line items. */
-    lineItems?: CartLineItemsGenqlSelection
-    /** Time when the cart was created. */
-    createdAt?: DateTimeExtendedGenqlSelection
-    /** Time when the cart was last updated. */
-    updatedAt?: DateTimeExtendedGenqlSelection
-    /** Locale of the cart. */
-    locale?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Cart custom item. */
-export interface CartCustomItemGenqlSelection{
-    /** ID of the custom item. */
-    entityId?: boolean | number
-    /** Custom item sku. */
-    sku?: boolean | number
-    /** Custom item name. */
-    name?: boolean | number
-    /** Quantity of this item. */
-    quantity?: boolean | number
-    /** Price of the item. With or without tax depending on your stores set up. */
-    listPrice?: MoneyGenqlSelection
-    /** Item's list price multiplied by the quantity. */
-    extendedListPrice?: MoneyGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Cart digital item. */
-export interface CartDigitalItemGenqlSelection{
-    /** The line-item ID. */
-    entityId?: boolean | number
-    /** The product is part of a bundle such as a product pick list, then the parentId or the main product id will populate. */
-    parentEntityId?: boolean | number
-    /** ID of the product. */
-    productEntityId?: boolean | number
-    /** ID of the variant. */
-    variantEntityId?: boolean | number
-    /** SKU of the variant. */
-    sku?: boolean | number
-    /** The item's product name. */
-    name?: boolean | number
-    /** The product URL. */
-    url?: boolean | number
-    /** URL of an image of this item, accessible on the internet. */
-    imageUrl?: boolean | number
-    /** The product brand. */
-    brand?: boolean | number
-    /** Quantity of this item. */
-    quantity?: boolean | number
-    /** Whether the item is taxable. */
-    isTaxable?: boolean | number
-    /** List of discounts applied to this item. */
-    discounts?: CartDiscountGenqlSelection
-    /** The total value of all discounts applied to this item (excluding coupon). */
-    discountedAmount?: MoneyGenqlSelection
-    /** The total value of all coupons applied to this item. */
-    couponAmount?: MoneyGenqlSelection
-    /** The net item price before discounts and coupons. It is based on the product default price or sale price (if set) configured in BigCommerce Admin. */
-    listPrice?: MoneyGenqlSelection
-    /** An item’s original price is the same as the product default price in the admin panel. */
-    originalPrice?: MoneyGenqlSelection
-    /** Item's price after all discounts are applied. (The final price before tax calculation). */
-    salePrice?: MoneyGenqlSelection
-    /** Item's list price multiplied by the quantity. */
-    extendedListPrice?: MoneyGenqlSelection
-    /** Item's sale price multiplied by the quantity. */
-    extendedSalePrice?: MoneyGenqlSelection
-    /** The list of selected options for this product. */
-    selectedOptions?: CartSelectedOptionGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Discount applied to the cart. */
-export interface CartDiscountGenqlSelection{
-    /** ID of the applied discount. */
-    entityId?: boolean | number
-    /** The discounted amount applied within a given context. */
-    discountedAmount?: MoneyGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Cart gift certificate */
-export interface CartGiftCertificateGenqlSelection{
-    /** ID of this gift certificate. */
-    entityId?: boolean | number
-    /** GiftCertificate-provided name that will appear in the control panel. */
-    name?: boolean | number
-    /** Currently supports Birthday, Boy, Celebration, Christmas, General, and Girl. */
-    theme?: boolean | number
-    /** Value must be between 1.00 and 1,000.00 in the store's default currency. */
-    amount?: MoneyGenqlSelection
-    /** Whether or not the gift certificate is taxable. */
-    isTaxable?: boolean | number
-    /** Sender of the gift certificate. */
-    sender?: CartGiftCertificateSenderGenqlSelection
-    /** Recipient of the gift certificate. */
-    recipient?: CartGiftCertificateRecipientGenqlSelection
-    /** Message that will be sent to the gift certificate's recipient. Limited to 200 characters. */
-    message?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Cart gift certificate recipient */
-export interface CartGiftCertificateRecipientGenqlSelection{
-    /** Contact's name. */
-    name?: boolean | number
-    /** Contact's email address. */
-    email?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Cart gift certificate sender */
-export interface CartGiftCertificateSenderGenqlSelection{
-    /** Contact's name. */
-    name?: boolean | number
-    /** Contact's email address. */
-    email?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Gift wrapping for the item */
-export interface CartGiftWrappingGenqlSelection{
-    /** Name of the gift-wrapping option. */
-    name?: boolean | number
-    /** Gift-wrapping price per product. */
-    amount?: MoneyGenqlSelection
-    /** Custom gift message along with items wrapped in this wrapping option. */
-    message?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Cart line items */
-export interface CartLineItemsGenqlSelection{
-    /** List of physical items. */
-    physicalItems?: CartPhysicalItemGenqlSelection
-    /** List of digital items. */
-    digitalItems?: CartDigitalItemGenqlSelection
-    /** List of gift certificates. */
-    giftCertificates?: CartGiftCertificateGenqlSelection
-    /** List of custom items. */
-    customItems?: CartCustomItemGenqlSelection
-    /** Total number of line items. */
-    totalQuantity?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Cart physical item. */
-export interface CartPhysicalItemGenqlSelection{
-    /** The line-item ID. */
-    entityId?: boolean | number
-    /** The product is part of a bundle such as a product pick list, then the parentId or the main product id will populate. */
-    parentEntityId?: boolean | number
-    /** ID of the product. */
-    productEntityId?: boolean | number
-    /** ID of the variant. */
-    variantEntityId?: boolean | number
-    /** SKU of the variant. */
-    sku?: boolean | number
-    /** The item's product name. */
-    name?: boolean | number
-    /** The product URL. */
-    url?: boolean | number
-    /** URL of an image of this item, accessible on the internet. */
-    imageUrl?: boolean | number
-    /** The product brand. */
-    brand?: boolean | number
-    /** Quantity of this item. */
-    quantity?: boolean | number
-    /** Whether the item is taxable. */
-    isTaxable?: boolean | number
-    /** List of discounts applied to this item. */
-    discounts?: CartDiscountGenqlSelection
-    /** The total value of all discounts applied to this item (excluding coupon). */
-    discountedAmount?: MoneyGenqlSelection
-    /** The total value of all coupons applied to this item. */
-    couponAmount?: MoneyGenqlSelection
-    /** The net item price before discounts and coupons. It is based on the product default price or sale price (if set) configured in BigCommerce Admin. */
-    listPrice?: MoneyGenqlSelection
-    /** An item’s original price is the same as the product default price in the admin panel. */
-    originalPrice?: MoneyGenqlSelection
-    /** Item's price after all discounts are applied. (The final price before tax calculation). */
-    salePrice?: MoneyGenqlSelection
-    /** Item's list price multiplied by the quantity. */
-    extendedListPrice?: MoneyGenqlSelection
-    /** Item's sale price multiplied by the quantity. */
-    extendedSalePrice?: MoneyGenqlSelection
-    /** Whether this item requires shipping to a physical address. */
-    isShippingRequired?: boolean | number
-    /** The list of selected options for this item. */
-    selectedOptions?: CartSelectedOptionGenqlSelection
-    /** Gift wrapping for this item. */
-    giftWrapping?: CartGiftWrappingGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Selected checkbox option. */
-export interface CartSelectedCheckboxOptionGenqlSelection{
-    /** The product option ID. */
-    entityId?: boolean | number
-    /** The product option name. */
-    name?: boolean | number
-    /** The product option value. */
-    value?: boolean | number
-    /** The product option value ID. */
-    valueEntityId?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Selected date field option. */
-export interface CartSelectedDateFieldOptionGenqlSelection{
-    /** The product option ID. */
-    entityId?: boolean | number
-    /** The product option name. */
-    name?: boolean | number
-    /** Date value. */
-    date?: DateTimeExtendedGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Selected file upload option. */
-export interface CartSelectedFileUploadOptionGenqlSelection{
-    /** The product option ID. */
-    entityId?: boolean | number
-    /** The product option name. */
-    name?: boolean | number
-    /** Uploaded file name. */
-    fileName?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Selected multi-line text field option. */
-export interface CartSelectedMultiLineTextFieldOptionGenqlSelection{
-    /** The product option ID. */
-    entityId?: boolean | number
-    /** The product option name. */
-    name?: boolean | number
-    /** Text value. */
-    text?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Selected multiple choice option. */
-export interface CartSelectedMultipleChoiceOptionGenqlSelection{
-    /** The product option ID. */
-    entityId?: boolean | number
-    /** The product option name. */
-    name?: boolean | number
-    /** The product option value. */
-    value?: boolean | number
-    /** The product option value ID. */
-    valueEntityId?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Selected number field option. */
-export interface CartSelectedNumberFieldOptionGenqlSelection{
-    /** The product option ID. */
-    entityId?: boolean | number
-    /** The product option name. */
-    name?: boolean | number
-    /** Number value. */
-    number?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Selected option for the item. */
-export interface CartSelectedOptionGenqlSelection{
-    /** The product option ID. */
-    entityId?: boolean | number
-    /** The product option name. */
-    name?: boolean | number
-    on_CartSelectedCheckboxOption?: CartSelectedCheckboxOptionGenqlSelection
-    on_CartSelectedDateFieldOption?: CartSelectedDateFieldOptionGenqlSelection
-    on_CartSelectedFileUploadOption?: CartSelectedFileUploadOptionGenqlSelection
-    on_CartSelectedMultiLineTextFieldOption?: CartSelectedMultiLineTextFieldOptionGenqlSelection
-    on_CartSelectedMultipleChoiceOption?: CartSelectedMultipleChoiceOptionGenqlSelection
-    on_CartSelectedNumberFieldOption?: CartSelectedNumberFieldOptionGenqlSelection
-    on_CartSelectedTextFieldOption?: CartSelectedTextFieldOptionGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Selected text field option. */
-export interface CartSelectedTextFieldOptionGenqlSelection{
-    /** The product option ID. */
-    entityId?: boolean | number
-    /** The product option name. */
-    name?: boolean | number
-    /** Text value. */
-    text?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Storefront catalog settings. */
-export interface CatalogGenqlSelection{
-    /** Product comparisons enabled. */
-    productComparisonsEnabled?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Product Option */
-export interface CatalogProductOptionGenqlSelection{
-    /** Unique ID for the option. */
-    entityId?: boolean | number
-    /** Display name for the option. */
-    displayName?: boolean | number
-    /** One of the option values is required to be selected for the checkout. */
-    isRequired?: boolean | number
-    /** Indicates whether it is a variant option or modifier. */
-    isVariantOption?: boolean | number
-    on_CheckboxOption?: CheckboxOptionGenqlSelection
-    on_DateFieldOption?: DateFieldOptionGenqlSelection
-    on_FileUploadFieldOption?: FileUploadFieldOptionGenqlSelection
-    on_MultiLineTextFieldOption?: MultiLineTextFieldOptionGenqlSelection
-    on_MultipleChoiceOption?: MultipleChoiceOptionGenqlSelection
-    on_NumberFieldOption?: NumberFieldOptionGenqlSelection
-    on_TextFieldOption?: TextFieldOptionGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Product Option Value */
-export interface CatalogProductOptionValueGenqlSelection{
-    /** Unique ID for the option value. */
-    entityId?: boolean | number
-    /** Label for the option value. */
-    label?: boolean | number
-    /** Indicates whether this value is the chosen default selected value. */
-    isDefault?: boolean | number
-    /** Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level. */
-    isSelected?: boolean | number
-    on_MultipleChoiceOptionValue?: MultipleChoiceOptionValueGenqlSelection
-    on_ProductPickListOptionValue?: ProductPickListOptionValueGenqlSelection
-    on_SwatchOptionValue?: SwatchOptionValueGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Category */
-export interface CategoryGenqlSelection{
-    /** The ID of an object */
-    id?: boolean | number
-    /** Unique ID for the category. */
-    entityId?: boolean | number
-    /** Category name. */
-    name?: boolean | number
-    /** Category path. */
-    path?: boolean | number
-    /** Default image for the category. */
-    defaultImage?: ImageGenqlSelection
-    /** Category description. */
-    description?: boolean | number
-    /** Category breadcrumbs. */
-    breadcrumbs?: (BreadcrumbConnectionGenqlSelection & { __args: {
-    /** The depth of the breadcrumbs. */
-    depth: Scalars['Int'], before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** List of products associated with category */
-    products?: (ProductConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null), 
-    /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
-    hideOutOfStock?: (Scalars['Boolean'] | null), 
-    /** Product sorting by categories. */
-    sortBy?: (CategoryProductSort | null)} })
-    /** Metafield data related to a category. */
-    metafields?: (MetafieldConnectionGenqlSelection & { __args: {
-    /** Metafield namespace filter */
-    namespace: Scalars['String'], 
-    /** Labels for identifying metafield data values. */
-    keys?: (Scalars['String'][] | null), before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** Category SEO details. */
-    seo?: SeoDetailsGenqlSelection
-    /**
-     * @deprecated Alpha version. Do not use in production.
-     * Category shop by price money ranges.
-     */
-    shopByPriceRanges?: (ShopByPriceConnectionGenqlSelection & { __args?: {
-    /** Please select a currency */
-    currencyCode?: (currencyCode | null), 
-    /** Tax will be included if enabled */
-    includeTax?: (Scalars['Boolean'] | null), before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** Category default product sort. */
-    defaultProductSort?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface CategoryConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: CategoryEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface CategoryEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: CategoryGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Category Filter */
-export interface CategorySearchFilterGenqlSelection{
-    /** Indicates whether to display product count next to the filter. */
-    displayProductCount?: boolean | number
-    /** List of available categories. */
-    categories?: (CategorySearchFilterItemConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** Display name for the filter. */
-    name?: boolean | number
-    /** Indicates whether filter is collapsed by default. */
-    isCollapsedByDefault?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Specific category filter item */
-export interface CategorySearchFilterItemGenqlSelection{
-    /** Category ID. */
-    entityId?: boolean | number
-    /** Category name. */
-    name?: boolean | number
-    /** Indicates whether category is selected. */
-    isSelected?: boolean | number
-    /** Indicates how many products available for this filter. */
-    productCount?: boolean | number
-    /** List of available sub-categories. */
-    subCategories?: (SubCategorySearchFilterItemConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface CategorySearchFilterItemConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: CategorySearchFilterItemEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface CategorySearchFilterItemEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: CategorySearchFilterItemGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An item in a tree of categories. */
-export interface CategoryTreeItemGenqlSelection{
-    /** The id category. */
-    entityId?: boolean | number
-    /** The name of category. */
-    name?: boolean | number
-    /** Path assigned to this category */
-    path?: boolean | number
-    /** The description of this category. */
-    description?: boolean | number
-    /** The number of products in this category. */
-    productCount?: boolean | number
-    /** The category image. */
-    image?: ImageGenqlSelection
-    /** If a category has children. */
-    hasChildren?: boolean | number
-    /** Subcategories of this category */
-    children?: CategoryTreeItemGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** The Channel */
-export interface ChannelGenqlSelection{
-    /** The ID of the channel. */
-    entityId?: boolean | number
-    /** Metafield data related to a channel. */
-    metafields?: (MetafieldConnectionGenqlSelection & { __args: {
-    /** Metafield namespace filter */
-    namespace: Scalars['String'], 
-    /** Labels for identifying metafield data values. */
-    keys?: (Scalars['String'][] | null), before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A simple yes/no question represented by a checkbox. */
-export interface CheckboxOptionGenqlSelection{
-    /** Indicates the default checked status. */
-    checkedByDefault?: boolean | number
-    /** Label of the checkbox option. */
-    label?: boolean | number
-    /** Unique ID for the option. */
-    entityId?: boolean | number
-    /** Display name for the option. */
-    displayName?: boolean | number
-    /** One of the option values is required to be selected for the checkout. */
-    isRequired?: boolean | number
-    /** Indicates whether it is a variant option or modifier. */
-    isVariantOption?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Checkout settings. */
-export interface CheckoutSettingsGenqlSelection{
-    /** Indicates whether ReCaptcha is enabled on checkout. */
-    reCaptchaEnabled?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Additional information about the collection. */
-export interface CollectionInfoGenqlSelection{
-    /** Total items in the collection despite pagination. */
-    totalItems?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Contact field */
-export interface ContactFieldGenqlSelection{
-    /** Store address line. */
-    address?: boolean | number
-    /** Store country. */
-    country?: boolean | number
-    /** Store address type. */
-    addressType?: boolean | number
-    /** Store email. */
-    email?: boolean | number
-    /** Store phone number. */
-    phone?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A contact page. */
-export interface ContactPageGenqlSelection{
-    /** The ID of an object */
-    id?: boolean | number
-    /** The URL path of the page. */
-    path?: boolean | number
-    /** The body of the page. */
-    htmlBody?: boolean | number
-    /** The plain text summary of the page body. */
-    plainTextSummary?: { __args: {
-    /** The max number of characters for the plain text summary. */
-    characterLimit?: (Scalars['Int'] | null)} } | boolean | number
-    /** The contact fields that should be used on the page. */
-    contactFields?: boolean | number
-    /** The rendered regions for the web page. */
-    renderedRegions?: RenderedRegionsByPageTypeGenqlSelection
-    /** Unique ID for the web page. */
-    entityId?: boolean | number
-    /** Unique ID for the parent page. */
-    parentEntityId?: boolean | number
-    /** Page name. */
-    name?: boolean | number
-    /** Whether or not the page should be visible in the navigation menu. */
-    isVisibleInNavigation?: boolean | number
-    /** Page SEO details. */
-    seo?: SeoDetailsGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** The page content. */
-export interface ContentGenqlSelection{
-    /** The rendered regions by specific page. */
-    renderedRegionsByPageType?: (RenderedRegionsByPageTypeGenqlSelection & { __args: {
-    /** Rendered regions filter by page type. */
-    pageType: PageType} })
-    /** The rendered regions by specific page and id. */
-    renderedRegionsByPageTypeAndEntityId?: (RenderedRegionsByPageTypeGenqlSelection & { __args: {
-    /** Rendered regions filter by id. */
-    entityId: Scalars['Long'], 
-    /** Rendered regions filter by page type and id. */
-    entityPageType: EntityPageType} })
-    /** Details of the pages. */
-    pages?: (PageConnectionGenqlSelection & { __args?: {
-    /** Filters for querying web pages */
-    filters?: (WebPagesFiltersInput | null), before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** Page details. */
-    page?: (WebPageGenqlSelection & { __args: {
-    /** Id of the page to fetch. */
-    entityId: Scalars['Int']} })
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Currency details. */
-export interface CurrencyGenqlSelection{
-    /** Currency ID. */
-    entityId?: boolean | number
-    /** Currency code. */
-    code?: boolean | number
-    /** Currency name. */
-    name?: boolean | number
-    /** Flag image URL. */
-    flagImage?: boolean | number
-    /** Indicates whether this currency is active. */
-    isActive?: boolean | number
-    /** Exchange rate relative to default currency. */
-    exchangeRate?: boolean | number
-    /** Indicates whether this currency is transactional. */
-    isTransactional?: boolean | number
-    /** Currency display settings. */
-    display?: CurrencyDisplayGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface CurrencyConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: CurrencyEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Currency display settings. */
-export interface CurrencyDisplayGenqlSelection{
-    /** Currency symbol. */
-    symbol?: boolean | number
-    /** Currency symbol. */
-    symbolPlacement?: boolean | number
-    /** Currency decimal token. */
-    decimalToken?: boolean | number
-    /** Currency thousands token. */
-    thousandsToken?: boolean | number
-    /** Currency decimal places. */
-    decimalPlaces?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface CurrencyEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: CurrencyGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Custom field */
-export interface CustomFieldGenqlSelection{
-    /** Custom field id. */
-    entityId?: boolean | number
-    /** Name of the custom field. */
-    name?: boolean | number
-    /** Value of the custom field. */
-    value?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface CustomFieldConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: CustomFieldEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface CustomFieldEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: CustomFieldGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A customer that shops on a store */
-export interface CustomerGenqlSelection{
-    /** The ID of the customer. */
-    entityId?: boolean | number
-    /** The company name of the customer. */
-    company?: boolean | number
-    /** The customer group id of the customer. */
-    customerGroupId?: boolean | number
-    /** The email address of the customer. */
-    email?: boolean | number
-    /** The first name of the customer. */
-    firstName?: boolean | number
-    /** The last name of the customer. */
-    lastName?: boolean | number
-    /** The notes of the customer. */
-    notes?: boolean | number
-    /** The phone number of the customer. */
-    phone?: boolean | number
-    /** The tax exempt category of the customer. */
-    taxExemptCategory?: boolean | number
-    /** Customer addresses count. */
-    addressCount?: boolean | number
-    /** Customer attributes count. */
-    attributeCount?: boolean | number
-    /** Customer store credit. */
-    storeCredit?: MoneyGenqlSelection
-    /** Customer attributes. */
-    attributes?: CustomerAttributesGenqlSelection
-    /** Customer wishlists. */
-    wishlists?: (WishlistConnectionGenqlSelection & { __args?: {
-    /** Wishlist filters input */
-    filters?: (WishlistFiltersInput | null), before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A custom, store-specific attribute for a customer */
-export interface CustomerAttributeGenqlSelection{
-    /** The ID of the custom customer attribute */
-    entityId?: boolean | number
-    /** The value of the custom customer attribute */
-    value?: boolean | number
-    /** The name of the custom customer attribute */
-    name?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Custom, store-specific customer attributes */
-export interface CustomerAttributesGenqlSelection{
-    /** A custom, store-specific attribute for a customer */
-    attribute?: (CustomerAttributeGenqlSelection & { __args: {
-    /** The ID of the customer attribute */
-    entityId: Scalars['Int']} })
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A calendar for allowing selection of a date. */
-export interface DateFieldOptionGenqlSelection{
-    /** The default timestamp of date option. */
-    defaultValue?: boolean | number
-    /** The earliest timestamp of date option. */
-    earliest?: boolean | number
-    /** The latest timestamp of date option. */
-    latest?: boolean | number
-    /** Limit date by */
-    limitDateBy?: boolean | number
-    /** Unique ID for the option. */
-    entityId?: boolean | number
-    /** Display name for the option. */
-    displayName?: boolean | number
-    /** One of the option values is required to be selected for the checkout. */
-    isRequired?: boolean | number
-    /** Indicates whether it is a variant option or modifier. */
-    isVariantOption?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Date Time Extended */
-export interface DateTimeExtendedGenqlSelection{
-    /** ISO-8601 formatted date in UTC */
-    utc?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Display field */
-export interface DisplayFieldGenqlSelection{
-    /** Short date format. */
-    shortDateFormat?: boolean | number
-    /** Extended date format. */
-    extendedDateFormat?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Distance */
-export interface DistanceGenqlSelection{
-    /** Distance in specified length unit */
-    value?: boolean | number
-    /** Length unit */
-    lengthUnit?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Filter locations by the distance */
-export interface DistanceFilter {
-/** Radius of search in length units specified in lengthUnit argument */
-radius?: Scalars['Float'],
-/** Signed decimal degrees without compass direction */
-longitude?: Scalars['Float'],
-/** Signed decimal degrees without compass direction */
-latitude?: Scalars['Float'],
-/** Length unit */
-lengthUnit?: LengthUnit}
-
-
-/** An external link page. */
-export interface ExternalLinkPageGenqlSelection{
-    /** The URL that the page links to. */
-    link?: boolean | number
-    /** Unique ID for the web page. */
-    entityId?: boolean | number
-    /** Unique ID for the parent page. */
-    parentEntityId?: boolean | number
-    /** Page name. */
-    name?: boolean | number
-    /** Whether or not the page should be visible in the navigation menu. */
-    isVisibleInNavigation?: boolean | number
-    /** Page SEO details. */
-    seo?: SeoDetailsGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A form allowing selection and uploading of a file from the user's local computer. */
-export interface FileUploadFieldOptionGenqlSelection{
-    /** The maximum size of the file in kilobytes */
-    maxFileSize?: boolean | number
-    /** All possible file extensions. Empty means that all files allowed. */
-    fileTypes?: boolean | number
-    /** Unique ID for the option. */
-    entityId?: boolean | number
-    /** Display name for the option. */
-    displayName?: boolean | number
-    /** One of the option values is required to be selected for the checkout. */
-    isRequired?: boolean | number
-    /** Indicates whether it is a variant option or modifier. */
-    isVariantOption?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Gift wrapping for product */
-export interface GiftWrappingGenqlSelection{
-    /** Gift wrapping id. */
-    entityId?: boolean | number
-    /** Gift wrapping name. */
-    name?: boolean | number
-    /** Indicates whether commenting is allowed for the gift wrapping. */
-    allowComments?: boolean | number
-    /** Gift wrapping preview image url. */
-    previewImageUrl?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface GiftWrappingConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: GiftWrappingEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface GiftWrappingEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: GiftWrappingGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Image */
-export interface ImageGenqlSelection{
-    /** Absolute path to image using store CDN. */
-    url?: { __args: {
-    /** Desired width of the image. */
-    width: Scalars['Int'], 
-    /** Desired height of the image. */
-    height?: (Scalars['Int'] | null)} }
-    /** Absolute path to original image using store CDN. */
-    urlOriginal?: boolean | number
-    /** Text description of an image that can be used for SEO and/or accessibility purposes. */
-    altText?: boolean | number
-    /** Indicates whether this is the primary image. */
-    isDefault?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface ImageConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: ImageEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface ImageEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: ImageGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An inventory */
-export interface InventoryGenqlSelection{
-    /** Locations */
-    locations?: (InventoryLocationConnectionGenqlSelection & { __args?: {
-    /** Location ids filter */
-    entityIds?: (Scalars['Int'][] | null), 
-    /** Location codes filter */
-    codes?: (Scalars['String'][] | null), 
-    /** Location type ids filter */
-    typeIds?: (Scalars['String'][] | null), 
-    /** Location service type ids filter */
-    serviceTypeIds?: (Scalars['String'][] | null), 
-    /** Filter locations by the distance */
-    distanceFilter?: (DistanceFilter | null), 
-    /** Location country codes filter */
-    countryCodes?: (countryCode[] | null), 
-    /** Location states filter */
-    states?: (Scalars['String'][] | null), 
-    /** Location cities filter */
-    cities?: (Scalars['String'][] | null), before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Address */
-export interface InventoryAddressGenqlSelection{
-    /** Address id. */
-    entityId?: boolean | number
-    /** Address code. */
-    code?: boolean | number
-    /** Address label. */
-    label?: boolean | number
-    /** Address description. */
-    description?: boolean | number
-    /** Address line1. */
-    address1?: boolean | number
-    /** Address line2. */
-    address2?: boolean | number
-    /** Address city. */
-    city?: boolean | number
-    /** Address state. */
-    stateOrProvince?: boolean | number
-    /** Country code. */
-    countryCode?: boolean | number
-    /** Address zip. */
-    postalCode?: boolean | number
-    /** Address phone. */
-    phone?: boolean | number
-    /** Address email. */
-    email?: boolean | number
-    /** Address latitude. */
-    latitude?: boolean | number
-    /** Address longitude. */
-    longitude?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Inventory By Locations */
-export interface InventoryByLocationsGenqlSelection{
-    /** Location id. */
-    locationEntityId?: boolean | number
-    /** Number of available products in stock. */
-    availableToSell?: boolean | number
-    /** Indicates a threshold low-stock level. */
-    warningLevel?: boolean | number
-    /** Indicates whether this product is in stock. */
-    isInStock?: boolean | number
-    /** Distance between location and specified longitude and latitude */
-    locationDistance?: DistanceGenqlSelection
-    /** Location type id. */
-    locationEntityTypeId?: boolean | number
-    /**
-     * @deprecated Deprecated. Will be substituted with pickup methods.
-     * Location service type ids.
-     */
-    locationEntityServiceTypeIds?: boolean | number
-    /** Location code. */
-    locationEntityCode?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Location */
-export interface InventoryLocationGenqlSelection{
-    /** Location id. */
-    entityId?: boolean | number
-    /** Location code. */
-    code?: boolean | number
-    /** Location label. */
-    label?: boolean | number
-    /** Location description. */
-    description?: boolean | number
-    /** Location type id. */
-    typeId?: boolean | number
-    /**
-     * @deprecated Deprecated. Will be substituted with pickup methods.
-     * Location service type ids.
-     */
-    serviceTypeIds?: boolean | number
-    /** Location address */
-    address?: InventoryAddressGenqlSelection
-    /** Location OperatingHours */
-    operatingHours?: OperatingHoursGenqlSelection
-    /** Distance between location and specified longitude and latitude */
-    distance?: DistanceGenqlSelection
-    /**
-     * @deprecated Deprecated. Use specialHours instead
-     * Upcoming events
-     */
-    blackoutHours?: SpecialHourGenqlSelection
-    /** Upcoming events */
-    specialHours?: SpecialHourGenqlSelection
-    /** Time zone of location */
-    timeZone?: boolean | number
-    /** Metafield data related to a location. */
-    metafields?: (MetafieldConnectionGenqlSelection & { __args: {
-    /** Metafield namespace filter */
-    namespace: Scalars['String'], 
-    /** Labels for identifying metafield data values. */
-    keys?: (Scalars['String'][] | null), before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface InventoryLocationConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: InventoryLocationEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface InventoryLocationEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: InventoryLocationGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Inventory settings from control panel. */
-export interface InventorySettingsGenqlSelection{
-    /** The product out of stock behavior. */
-    productOutOfStockBehavior?: boolean | number
-    /** The option out of stock behavior. */
-    optionOutOfStockBehavior?: boolean | number
-    /** Hide or show inventory node for product */
-    stockLevelDisplay?: boolean | number
-    /** Out of stock message. */
-    defaultOutOfStockMessage?: boolean | number
-    /** Flag to show or not on product filtering when option is out of stock */
-    hideInProductFiltering?: boolean | number
-    /** Show pre-order inventory */
-    showPreOrderStockLevels?: boolean | number
-    /** Show out of stock message on product listing pages */
-    showOutOfStockMessage?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface LocationConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: LocationEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface LocationEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: InventoryByLocationsGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Logo field */
-export interface LogoFieldGenqlSelection{
-    /** Logo title. */
-    title?: boolean | number
-    /** Store logo image. */
-    image?: ImageGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Measurement */
-export interface MeasurementGenqlSelection{
-    /** Unformatted weight measurement value. */
-    value?: boolean | number
-    /** Unit of measurement. */
-    unit?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface MetafieldConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: MetafieldEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface MetafieldEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: MetafieldsGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Key/Value pairs of data attached tied to a resource entity (product, brand, category, etc.) */
-export interface MetafieldsGenqlSelection{
-    /** The ID of an object */
-    id?: boolean | number
-    /** The ID of the metafield when referencing via our backend API. */
-    entityId?: boolean | number
-    /** A label for identifying a metafield data value. */
-    key?: boolean | number
-    /** A metafield value. */
-    value?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A money object - includes currency code and a money amount */
-export interface MoneyGenqlSelection{
-    /** Currency code of the current money. */
-    currencyCode?: boolean | number
-    /** The amount of money. */
-    value?: boolean | number
-    /**
-     * @deprecated Deprecated. Don't use - it will be removed soon.
-     * The formatted currency string for the current money.
-     */
-    formatted?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A min and max pair of money objects */
-export interface MoneyRangeGenqlSelection{
-    /** Minimum money object. */
-    min?: MoneyGenqlSelection
-    /** Maximum money object. */
-    max?: MoneyGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A multi-line text input field, aka a text box. */
-export interface MultiLineTextFieldOptionGenqlSelection{
-    /** Default value of the multiline text field option. */
-    defaultValue?: boolean | number
-    /** The minimum number of characters. */
-    minLength?: boolean | number
-    /** The maximum number of characters. */
-    maxLength?: boolean | number
-    /** The maximum number of lines. */
-    maxLines?: boolean | number
-    /** Unique ID for the option. */
-    entityId?: boolean | number
-    /** Display name for the option. */
-    displayName?: boolean | number
-    /** One of the option values is required to be selected for the checkout. */
-    isRequired?: boolean | number
-    /** Indicates whether it is a variant option or modifier. */
-    isVariantOption?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An option type that has a fixed list of values. */
-export interface MultipleChoiceOptionGenqlSelection{
-    /** The chosen display style for this multiple choice option. */
-    displayStyle?: boolean | number
-    /** List of option values. */
-    values?: (ProductOptionValueConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** Unique ID for the option. */
-    entityId?: boolean | number
-    /** Display name for the option. */
-    displayName?: boolean | number
-    /** One of the option values is required to be selected for the checkout. */
-    isRequired?: boolean | number
-    /** Indicates whether it is a variant option or modifier. */
-    isVariantOption?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A simple multiple choice value comprised of an id and a label. */
-export interface MultipleChoiceOptionValueGenqlSelection{
-    /** Unique ID for the option value. */
-    entityId?: boolean | number
-    /** Label for the option value. */
-    label?: boolean | number
-    /** Indicates whether this value is the chosen default selected value. */
-    isDefault?: boolean | number
-    /** Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level. */
-    isSelected?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An object with an ID */
-export interface NodeGenqlSelection{
-    /** The id of the object. */
-    id?: boolean | number
-    on_Brand?: BrandGenqlSelection
-    on_Cart?: CartGenqlSelection
-    on_Category?: CategoryGenqlSelection
-    on_ContactPage?: ContactPageGenqlSelection
-    on_NormalPage?: NormalPageGenqlSelection
-    on_Product?: ProductGenqlSelection
-    on_RawHtmlPage?: RawHtmlPageGenqlSelection
-    on_Variant?: VariantGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A normal page. */
-export interface NormalPageGenqlSelection{
-    /** The ID of an object */
-    id?: boolean | number
-    /** The URL path of the page. */
-    path?: boolean | number
-    /** The body of the page. */
-    htmlBody?: boolean | number
-    /** The plain text summary of the page body. */
-    plainTextSummary?: { __args: {
-    /** The max number of characters for the plain text summary. */
-    characterLimit?: (Scalars['Int'] | null)} } | boolean | number
-    /** The rendered regions for the web page. */
-    renderedRegions?: RenderedRegionsByPageTypeGenqlSelection
-    /** Unique ID for the web page. */
-    entityId?: boolean | number
-    /** Unique ID for the parent page. */
-    parentEntityId?: boolean | number
-    /** Page name. */
-    name?: boolean | number
-    /** Whether or not the page should be visible in the navigation menu. */
-    isVisibleInNavigation?: boolean | number
-    /** Page SEO details. */
-    seo?: SeoDetailsGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A single line text input field that only accepts numbers. */
-export interface NumberFieldOptionGenqlSelection{
-    /** Default value of the text field option. */
-    defaultValue?: boolean | number
-    /** The bottom limit of possible numbers. */
-    lowest?: boolean | number
-    /** The top limit of possible numbers. */
-    highest?: boolean | number
-    /** Allow whole numbers only. */
-    isIntegerOnly?: boolean | number
-    /** Limit numbers by several options. */
-    limitNumberBy?: boolean | number
-    /** Unique ID for the option. */
-    entityId?: boolean | number
-    /** Display name for the option. */
-    displayName?: boolean | number
-    /** One of the option values is required to be selected for the checkout. */
-    isRequired?: boolean | number
-    /** Indicates whether it is a variant option or modifier. */
-    isVariantOption?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Operating day */
-export interface OperatingDayGenqlSelection{
-    /** Open. */
-    open?: boolean | number
-    /** Opening. */
-    opening?: boolean | number
-    /** Closing. */
-    closing?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Operating hours */
-export interface OperatingHoursGenqlSelection{
-    /** Sunday. */
-    sunday?: OperatingDayGenqlSelection
-    /** Monday. */
-    monday?: OperatingDayGenqlSelection
-    /** Tuesday. */
-    tuesday?: OperatingDayGenqlSelection
-    /** Wednesday. */
-    wednesday?: OperatingDayGenqlSelection
-    /** Thursday. */
-    thursday?: OperatingDayGenqlSelection
-    /** Friday. */
-    friday?: OperatingDayGenqlSelection
-    /** Saturday. */
-    saturday?: OperatingDayGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface OptionConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: OptionEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface OptionEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: ProductOptionGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface OptionValueConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: OptionValueEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface OptionValueEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: ProductOptionValueGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A variant option value id input object */
-export interface OptionValueId {
-/** A variant option id filter */
-optionEntityId?: Scalars['Int'],
-/** A variant value id filter. */
-valueEntityId?: Scalars['Int']}
-
-
-/** Other Filter */
-export interface OtherSearchFilterGenqlSelection{
-    /** Indicates whether to display product count next to the filter. */
-    displayProductCount?: boolean | number
-    /** Free shipping filter. */
-    freeShipping?: OtherSearchFilterItemGenqlSelection
-    /** Is Featured filter. */
-    isFeatured?: OtherSearchFilterItemGenqlSelection
-    /** Is In Stock filter. */
-    isInStock?: OtherSearchFilterItemGenqlSelection
-    /** Display name for the filter. */
-    name?: boolean | number
-    /** Indicates whether filter is collapsed by default. */
-    isCollapsedByDefault?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Other Filter Item */
-export interface OtherSearchFilterItemGenqlSelection{
-    /** Indicates whether this filter is selected. */
-    isSelected?: boolean | number
-    /** Indicates how many products available for this filter. */
-    productCount?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface PageConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: PageEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface PageEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: WebPageGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Information about pagination in a connection. */
-export interface PageInfoGenqlSelection{
-    /** When paginating forwards, are there more items? */
-    hasNextPage?: boolean | number
-    /** When paginating backwards, are there more items? */
-    hasPreviousPage?: boolean | number
-    /** When paginating backwards, the cursor to continue. */
-    startCursor?: boolean | number
-    /** When paginating forwards, the cursor to continue. */
-    endCursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface PopularBrandConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: PopularBrandEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface PopularBrandEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: PopularBrandTypeGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** PopularBrandType */
-export interface PopularBrandTypeGenqlSelection{
-    /** Brand id */
-    entityId?: boolean | number
-    /** Brand count */
-    count?: boolean | number
-    /** Brand name */
-    name?: boolean | number
-    /** Brand URL as a relative path */
-    path?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** The min and max range of prices that apply to this product. */
-export interface PriceRangesGenqlSelection{
-    /** Product price min/max range. */
-    priceRange?: MoneyRangeGenqlSelection
-    /** Product retail price min/max range. */
-    retailPriceRange?: MoneyRangeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Price Filter */
-export interface PriceSearchFilterGenqlSelection{
-    /** Selected price filters. */
-    selected?: PriceSearchFilterItemGenqlSelection
-    /** Display name for the filter. */
-    name?: boolean | number
-    /** Indicates whether filter is collapsed by default. */
-    isCollapsedByDefault?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Search by price range. At least a minPrice or maxPrice must be supplied. */
-export interface PriceSearchFilterInput {
-/** Minimum price of the product. */
-minPrice?: (Scalars['Float'] | null),
-/** Maximum price of the product. */
-maxPrice?: (Scalars['Float'] | null)}
-
-
-/** Price filter range */
-export interface PriceSearchFilterItemGenqlSelection{
-    /** Minimum price of the product. */
-    minPrice?: boolean | number
-    /** Maximum price of the product. */
-    maxPrice?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** The various prices that can be set on a product. */
-export interface PricesGenqlSelection{
-    /** Calculated price of the product.  Calculated price takes into account basePrice, salePrice, rules (modifier, option, option set) that apply to the product configuration, and customer group discounts.  It represents the in-cart price for a product configuration without bulk pricing rules. */
-    price?: MoneyGenqlSelection
-    /** Sale price of the product. */
-    salePrice?: MoneyGenqlSelection
-    /** Original price of the product. */
-    basePrice?: MoneyGenqlSelection
-    /** Retail price of the product. */
-    retailPrice?: MoneyGenqlSelection
-    /** Minimum advertised price of the product. */
-    mapPrice?: MoneyGenqlSelection
-    /** Product price min/max range. */
-    priceRange?: MoneyRangeGenqlSelection
-    /** Product retail price min/max range. */
-    retailPriceRange?: MoneyRangeGenqlSelection
-    /** The difference between the retail price (MSRP) and the current price, which can be presented to the shopper as their savings. */
-    saved?: MoneyGenqlSelection
-    /** List of bulk pricing tiers applicable to a product or variant. */
-    bulkPricing?: BulkPricingTierGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Product */
-export interface ProductGenqlSelection{
-    /** The ID of an object */
-    id?: boolean | number
-    /** Id of the product. */
-    entityId?: boolean | number
-    /** Default product variant when no options are selected. */
-    sku?: boolean | number
-    /** Relative URL path to product page. */
-    path?: boolean | number
-    /** Name of the product. */
-    name?: boolean | number
-    /** Description of the product. */
-    description?: boolean | number
-    /** Description of the product in plain text. */
-    plainTextDescription?: { __args: {
-    /** The max number of characters for the description. */
-    characterLimit?: (Scalars['Int'] | null)} } | boolean | number
-    /** Warranty information of the product. */
-    warranty?: boolean | number
-    /** Minimum purchasable quantity for this product in a single order. */
-    minPurchaseQuantity?: boolean | number
-    /** Maximum purchasable quantity for this product in a single order. */
-    maxPurchaseQuantity?: boolean | number
-    /** Absolute URL path for adding a product to cart. */
-    addToCartUrl?: boolean | number
-    /**
-     * @deprecated Deprecated.
-     * Absolute URL path for adding a product to customer's wishlist.
-     */
-    addToWishlistUrl?: boolean | number
-    /** Prices object determined by supplied product ID, variant ID, and selected option IDs. */
-    prices?: (PricesGenqlSelection & { __args?: {
-    /** Tax will be included if enabled */
-    includeTax?: (Scalars['Boolean'] | null), 
-    /** Please select a currency */
-    currencyCode?: (currencyCode | null)} })
-    /**
-     * @deprecated Use priceRanges inside prices node instead.
-     * The minimum and maximum price of this product based on variant pricing and/or modifier price rules.
-     */
-    priceRanges?: (PriceRangesGenqlSelection & { __args?: {
-    /** Tax will be included if enabled */
-    includeTax?: (Scalars['Boolean'] | null)} })
-    /** Weight of the product. */
-    weight?: MeasurementGenqlSelection
-    /** Height of the product. */
-    height?: MeasurementGenqlSelection
-    /** Width of the product. */
-    width?: MeasurementGenqlSelection
-    /** Depth of the product. */
-    depth?: MeasurementGenqlSelection
-    /**
-     * @deprecated Use productOptions instead.
-     * Product options.
-     */
-    options?: (OptionConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** Product options. */
-    productOptions?: (ProductOptionConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** Summary of the product reviews, includes the total number of reviews submitted and summation of the ratings on the reviews (ratings range from 0-5 per review). */
-    reviewSummary?: ReviewsGenqlSelection
-    /** Type of product, ex: physical, digital */
-    type?: boolean | number
-    /**
-     * @deprecated Use status inside availabilityV2 instead.
-     * The availability state of the product.
-     */
-    availability?: boolean | number
-    /**
-     * @deprecated Use description inside availabilityV2 instead.
-     * A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'.
-     */
-    availabilityDescription?: boolean | number
-    /** The availability state of the product. */
-    availabilityV2?: ProductAvailabilityGenqlSelection
-    /** List of categories associated with the product. */
-    categories?: (CategoryConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** Brand associated with the product. */
-    brand?: BrandGenqlSelection
-    /** Variants associated with the product. */
-    variants?: (VariantConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null), 
-    /** Whether the product can be purchased */
-    isPurchasable?: (Scalars['Boolean'] | null), 
-    /** Ids of expected variants. */
-    entityIds?: (Scalars['Int'][] | null), 
-    /** A variant option value ids filter. */
-    optionValueIds?: (OptionValueId[] | null)} })
-    /** Custom fields of the product. */
-    customFields?: (CustomFieldConnectionGenqlSelection & { __args?: {
-    /** Product custom fields filter by names. */
-    names?: (Scalars['String'][] | null), before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** A list of the images for a product. */
-    images?: (ImageConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** Default image for a product. */
-    defaultImage?: ImageGenqlSelection
-    /** Related products for this product. */
-    relatedProducts?: (RelatedProductsConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null), 
-    /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
-    hideOutOfStock?: (Scalars['Boolean'] | null)} })
-    /** Inventory information of the product. */
-    inventory?: ProductInventoryGenqlSelection
-    /** Metafield data related to a product. */
-    metafields?: (MetafieldConnectionGenqlSelection & { __args: {
-    /** Metafield namespace filter */
-    namespace: Scalars['String'], 
-    /** Labels for identifying metafield data values. */
-    keys?: (Scalars['String'][] | null), before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** Universal product code. */
-    upc?: boolean | number
-    /** Manufacturer part number. */
-    mpn?: boolean | number
-    /** Global trade item number. */
-    gtin?: boolean | number
-    /**
-     * @deprecated Alpha version. Do not use in production.
-     * Product creation date
-     */
-    createdAt?: DateTimeExtendedGenqlSelection
-    /** Reviews associated with the product. */
-    reviews?: (ReviewConnectionGenqlSelection & { __args?: {
-    /** Product reviews sorting. */
-    sort?: (ProductReviewsSortInput | null), 
-    /** Product reviews filters. */
-    filters?: (ProductReviewsFiltersInput | null), before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** Product SEO details. */
-    seo?: SeoDetailsGenqlSelection
-    /** Gift wrapping options available for the product. */
-    giftWrappingOptions?: (GiftWrappingConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** Product condition */
-    condition?: boolean | number
-    /** Whether or not the cart call to action should be visible for this product. */
-    showCartAction?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Product Attribute Filter */
-export interface ProductAttributeSearchFilterGenqlSelection{
-    /** Indicates whether to display product count next to the filter. */
-    displayProductCount?: boolean | number
-    /** List of available product attributes. */
-    attributes?: (ProductAttributeSearchFilterItemConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** Display name for the filter. */
-    name?: boolean | number
-    /** Indicates whether filter is collapsed by default. */
-    isCollapsedByDefault?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Filter by the attributes of products such as Product Options and Product Custom Fields. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
-export interface ProductAttributeSearchFilterInput {
-/** Product attributes */
-attribute?: Scalars['String'],
-/** Product attribute values */
-values?: Scalars['String'][]}
-
-
-/** Specific product attribute filter item */
-export interface ProductAttributeSearchFilterItemGenqlSelection{
-    /** Product attribute value. */
-    value?: boolean | number
-    /** Indicates whether product attribute is selected. */
-    isSelected?: boolean | number
-    /** Indicates how many products available for this filter. */
-    productCount?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface ProductAttributeSearchFilterItemConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: ProductAttributeSearchFilterItemEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface ProductAttributeSearchFilterItemEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: ProductAttributeSearchFilterItemGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Product availability */
-export interface ProductAvailabilityGenqlSelection{
-    /** The availability state of the product. */
-    status?: boolean | number
-    /** A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'. */
-    description?: boolean | number
-    on_ProductAvailable?: ProductAvailableGenqlSelection
-    on_ProductPreOrder?: ProductPreOrderGenqlSelection
-    on_ProductUnavailable?: ProductUnavailableGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Available Product */
-export interface ProductAvailableGenqlSelection{
-    /** The availability state of the product. */
-    status?: boolean | number
-    /** A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'. */
-    description?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface ProductConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: ProductEdgeGenqlSelection
-    /** Collection info */
-    collectionInfo?: CollectionInfoGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface ProductEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: ProductGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Product Inventory Information */
-export interface ProductInventoryGenqlSelection{
-    /** Indicates whether this product is in stock. */
-    isInStock?: boolean | number
-    /** Indicates whether this product's inventory is being tracked on variant level. If true, you may wish to check the variants node to understand the true inventory of each individual variant, rather than relying on this product-level aggregate to understand how many items may be added to cart. */
-    hasVariantInventory?: boolean | number
-    /** Aggregated product inventory information. This data may not be available if not set or if the store's Inventory Settings have disabled displaying stock levels on the storefront. */
-    aggregated?: AggregatedInventoryGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Product Option */
-export interface ProductOptionGenqlSelection{
-    /** Unique ID for the option. */
-    entityId?: boolean | number
-    /** Display name for the option. */
-    displayName?: boolean | number
-    /** One of the option values is required to be selected for the checkout. */
-    isRequired?: boolean | number
-    /** Option values. */
-    values?: (OptionValueConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface ProductOptionConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: ProductOptionEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface ProductOptionEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: CatalogProductOptionGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Product Option Value */
-export interface ProductOptionValueGenqlSelection{
-    /** Unique ID for the option value. */
-    entityId?: boolean | number
-    /** Label for the option value. */
-    label?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface ProductOptionValueConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: ProductOptionValueEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface ProductOptionValueEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: CatalogProductOptionValueGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A Product PickList Value - a product to be mapped to the base product if selected. */
-export interface ProductPickListOptionValueGenqlSelection{
-    /** The ID of the product associated with this option value. */
-    productId?: boolean | number
-    /** Default image for a pick list product. */
-    defaultImage?: ImageGenqlSelection
-    /** Unique ID for the option value. */
-    entityId?: boolean | number
-    /** Label for the option value. */
-    label?: boolean | number
-    /** Indicates whether this value is the chosen default selected value. */
-    isDefault?: boolean | number
-    /** Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level. */
-    isSelected?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** PreOrder Product */
-export interface ProductPreOrderGenqlSelection{
-    /** The message to be shown in the store when a product is put into the pre-order availability state, e.g. "Expected release date is %%DATE%%" */
-    message?: boolean | number
-    /** Product release date */
-    willBeReleasedAt?: DateTimeExtendedGenqlSelection
-    /** The availability state of the product. */
-    status?: boolean | number
-    /** A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'. */
-    description?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Product reviews filters. */
-export interface ProductReviewsFiltersInput {
-/** Product reviews filter by rating. */
-rating?: (ProductReviewsRatingFilterInput | null)}
-
-
-/** Product reviews filter by rating. */
-export interface ProductReviewsRatingFilterInput {
-/** Minimum rating of the product. */
-minRating?: (Scalars['Int'] | null),
-/** Maximum rating of the product. */
-maxRating?: (Scalars['Int'] | null)}
-
-
-/** Unavailable Product */
-export interface ProductUnavailableGenqlSelection{
-    /** The message to be shown in the store when "Call for pricing" is enabled for this product, e.g. "Contact us at 555-5555" */
-    message?: boolean | number
-    /** The availability state of the product. */
-    status?: boolean | number
-    /** A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'. */
-    description?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Public Wishlist */
-export interface PublicWishlistGenqlSelection{
-    /** The wishlist id. */
-    entityId?: boolean | number
-    /** The wishlist name. */
-    name?: boolean | number
-    /** The wishlist token. */
-    token?: boolean | number
-    /** A list of the wishlist items */
-    items?: (WishlistItemConnectionGenqlSelection & { __args?: {
-    /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
-    hideOutOfStock?: (Scalars['Boolean'] | null), before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-export interface QueryGenqlSelection{
-    /** A site */
-    site?: SiteGenqlSelection
-    /** The current channel. */
-    channel?: ChannelGenqlSelection
-    /** The currently logged in customer. */
-    customer?: CustomerGenqlSelection
-    /** Fetches an object given its ID */
-    node?: (NodeGenqlSelection & { __args: {
-    /** The ID of an object */
-    id: Scalars['ID']} })
-    /** An inventory */
-    inventory?: InventoryGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Rating Filter */
-export interface RatingSearchFilterGenqlSelection{
-    /** List of available ratings. */
-    ratings?: (RatingSearchFilterItemConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** Display name for the filter. */
-    name?: boolean | number
-    /** Indicates whether filter is collapsed by default. */
-    isCollapsedByDefault?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Filter by rating. At least a minRating or maxRating must be supplied. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
-export interface RatingSearchFilterInput {
-/** Minimum rating of the product. */
-minRating?: (Scalars['Float'] | null),
-/** Maximum rating of the product. */
-maxRating?: (Scalars['Float'] | null)}
-
-
-/** Specific rating filter item */
-export interface RatingSearchFilterItemGenqlSelection{
-    /** Rating value. */
-    value?: boolean | number
-    /** Indicates whether rating is selected. */
-    isSelected?: boolean | number
-    /** Indicates how many products available for this filter. */
-    productCount?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface RatingSearchFilterItemConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: RatingSearchFilterItemEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface RatingSearchFilterItemEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: RatingSearchFilterItemGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A raw HTML page. */
-export interface RawHtmlPageGenqlSelection{
-    /** The ID of an object */
-    id?: boolean | number
-    /** The URL path of the page. */
-    path?: boolean | number
-    /** The body of the page. */
-    htmlBody?: boolean | number
-    /** The plain text summary of the page body. */
-    plainTextSummary?: { __args: {
-    /** The max number of characters for the plain text summary. */
-    characterLimit?: (Scalars['Int'] | null)} } | boolean | number
-    /** Unique ID for the web page. */
-    entityId?: boolean | number
-    /** Unique ID for the parent page. */
-    parentEntityId?: boolean | number
-    /** Page name. */
-    name?: boolean | number
-    /** Whether or not the page should be visible in the navigation menu. */
-    isVisibleInNavigation?: boolean | number
-    /** Page SEO details. */
-    seo?: SeoDetailsGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** ReCaptcha settings. */
-export interface ReCaptchaSettingsGenqlSelection{
-    /** ReCaptcha site key. */
-    siteKey?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** The region object */
-export interface RegionGenqlSelection{
-    /** The name of a region. */
-    name?: boolean | number
-    /** The rendered HTML content targeted at the region. */
-    html?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface RelatedProductsConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: RelatedProductsEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface RelatedProductsEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: ProductGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** The rendered regions by specific page. */
-export interface RenderedRegionsByPageTypeGenqlSelection{
-    /** List of regions */
-    regions?: RegionGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Review */
-export interface ReviewGenqlSelection{
-    /** Unique ID for the product review. */
-    entityId?: boolean | number
-    /** Product review author. */
-    author?: AuthorGenqlSelection
-    /** Product review title. */
-    title?: boolean | number
-    /** Product review text. */
-    text?: boolean | number
-    /** Product review rating. */
-    rating?: boolean | number
-    /** Product review creation date. */
-    createdAt?: DateTimeExtendedGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface ReviewConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: ReviewEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface ReviewEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: ReviewGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Review Rating Summary */
-export interface ReviewsGenqlSelection{
-    /**
-     * @deprecated Alpha version. Do not use in production.
-     * Average rating of the product.
-     */
-    averageRating?: boolean | number
-    /** Total number of reviews on product. */
-    numberOfReviews?: boolean | number
-    /** Summation of rating scores from each review. */
-    summationOfRatings?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** route */
-export interface RouteGenqlSelection{
-    /** Node */
-    node?: NodeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Store search settings. */
-export interface SearchGenqlSelection{
-    /** Product filtering enabled. */
-    productFilteringEnabled?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Search Product Filter */
-export interface SearchProductFilterGenqlSelection{
-    /** Display name for the filter. */
-    name?: boolean | number
-    /** Indicates whether filter is collapsed by default. */
-    isCollapsedByDefault?: boolean | number
-    on_BrandSearchFilter?: BrandSearchFilterGenqlSelection
-    on_CategorySearchFilter?: CategorySearchFilterGenqlSelection
-    on_OtherSearchFilter?: OtherSearchFilterGenqlSelection
-    on_PriceSearchFilter?: PriceSearchFilterGenqlSelection
-    on_ProductAttributeSearchFilter?: ProductAttributeSearchFilterGenqlSelection
-    on_RatingSearchFilter?: RatingSearchFilterGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface SearchProductFilterConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: SearchProductFilterEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface SearchProductFilterEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: SearchProductFilterGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Container for catalog search results, which may contain both products as well as a list of search filters for further refinement. */
-export interface SearchProductsGenqlSelection{
-    /** Details of the products. */
-    products?: (ProductConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null)} })
-    /** Available product filters. */
-    filters?: (SearchProductFilterConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Object containing available search filters for use when querying Products. */
-export interface SearchProductsFiltersInput {
-/** Textual search term. Used to search for products based on text entered by a shopper, typically in a search box. Searches against several fields on the product including Name, SKU, and Description. */
-searchTerm?: (Scalars['String'] | null),
-/** Search by price range. At least a minPrice or maxPrice must be supplied. */
-price?: (PriceSearchFilterInput | null),
-/** Filter by rating. At least a minRating or maxRating must be supplied. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
-rating?: (RatingSearchFilterInput | null),
-/** Filter by products belonging to a single Category. This is intended for use when presenting a Category page in a PLP experience. This argument must be used in order for custom product sorts and custom product filtering settings targeted at a particular category to take effect. */
-categoryEntityId?: (Scalars['Int'] | null),
-/** Filter by products belonging to any of the specified Categories. Intended for Advanced Search and Faceted Search/Product Filtering use cases, not for a page for a specific Category. */
-categoryEntityIds?: (Scalars['Int'][] | null),
-/** Boolean argument to determine whether products within sub-Categories will be returned when filtering products by Category. Defaults to False if not supplied. */
-searchSubCategories?: (Scalars['Boolean'] | null),
-/** Filter by products belonging to any of the specified Brands. */
-brandEntityIds?: (Scalars['Int'][] | null),
-/** Filter by the attributes of products such as Product Options and Product Custom Fields. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
-productAttributes?: (ProductAttributeSearchFilterInput[] | null),
-/** Filters by Products which have explicit Free Shipping configured within the catalog. If not supplied, the Free Shipping status of products will not be considered when returning the list of products. */
-isFreeShipping?: (Scalars['Boolean'] | null),
-/** Filters by Products which have explicitly been marked as Featured within the catalog. If not supplied, the Featured status of products will not be considered when returning the list of products. */
-isFeatured?: (Scalars['Boolean'] | null),
-/** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
-hideOutOfStock?: (Scalars['Boolean'] | null)}
-
-
-/** The Search queries. */
-export interface SearchQueriesGenqlSelection{
-    /** Details of the products and facets matching given search criteria. */
-    searchProducts?: (SearchProductsGenqlSelection & { __args: {
-    /** Available search filters for use when querying products */
-    filters: SearchProductsFiltersInput, 
-    /** The results are sorted by relevance if the sort argument is not provided. */
-    sort?: (SearchProductsSortInput | null)} })
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Seo Details */
-export interface SeoDetailsGenqlSelection{
-    /** Page title. */
-    pageTitle?: boolean | number
-    /** Meta description. */
-    metaDescription?: boolean | number
-    /** Meta keywords. */
-    metaKeywords?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Store settings information from the control panel. */
-export interface SettingsGenqlSelection{
-    /** The name of the store. */
-    storeName?: boolean | number
-    /** The hash of the store. */
-    storeHash?: boolean | number
-    /** The current store status. */
-    status?: boolean | number
-    /**
-     * @deprecated Use `logoV2` instead.
-     * Logo information for the store.
-     */
-    logo?: LogoFieldGenqlSelection
-    /** Logo information for the store. */
-    logoV2?: StoreLogoGenqlSelection
-    /** Contact information for the store. */
-    contact?: ContactFieldGenqlSelection
-    /** Store urls. */
-    url?: UrlFieldGenqlSelection
-    /** Store display format information. */
-    display?: DisplayFieldGenqlSelection
-    /** Channel ID. */
-    channelId?: boolean | number
-    /** The tax display settings object */
-    tax?: TaxDisplaySettingsGenqlSelection
-    /** Store search settings. */
-    search?: SearchGenqlSelection
-    /** Storefront settings. */
-    storefront?: StorefrontGenqlSelection
-    /** Inventory settings. */
-    inventory?: InventorySettingsGenqlSelection
-    /** ReCaptcha settings. */
-    reCaptcha?: ReCaptchaSettingsGenqlSelection
-    /** The social media links of connected platforms to the storefront. */
-    socialMediaLinks?: SocialMediaLinkGenqlSelection
-    /** Checkout settings. */
-    checkout?: CheckoutSettingsGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface ShopByPriceConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: ShopByPriceEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface ShopByPriceEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: ShopByPriceRangeGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Category shop by price money ranges */
-export interface ShopByPriceRangeGenqlSelection{
-    /** Category shop by price range. */
-    ranges?: MoneyRangeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A site */
-export interface SiteGenqlSelection{
-    /** The Search queries. */
-    search?: SearchQueriesGenqlSelection
-    /** A tree of categories. */
-    categoryTree?: (CategoryTreeItemGenqlSelection & { __args?: {
-    /** A root category ID to be used to load the tree starting from a particular branch. If not supplied, starts at the top of the tree. */
-    rootEntityId?: (Scalars['Int'] | null)} })
-    /** Retrieve a category object by the id. */
-    category?: (CategoryGenqlSelection & { __args: {
-    /** The category id */
-    entityId: Scalars['Int']} })
-    /** Details of the brand. */
-    brands?: (BrandConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null), 
-    /** Filter by brands belonging to any of the specified Products. */
-    productEntityIds?: (Scalars['Int'][] | null), 
-    /** Filter by brand ids. */
-    entityIds?: (Scalars['Int'][] | null)} })
-    /** Details of the products. */
-    products?: (ProductConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null), 
-    /** Global ids of expected products. */
-    ids?: (Scalars['ID'][] | null), 
-    /** Ids of expected products. */
-    entityIds?: (Scalars['Int'][] | null), 
-    /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
-    hideOutOfStock?: (Scalars['Boolean'] | null)} })
-    /** Details of the newest products. */
-    newestProducts?: (ProductConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null), 
-    /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
-    hideOutOfStock?: (Scalars['Boolean'] | null)} })
-    /** Details of the best selling products. */
-    bestSellingProducts?: (ProductConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null), 
-    /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
-    hideOutOfStock?: (Scalars['Boolean'] | null)} })
-    /** Details of the featured products. */
-    featuredProducts?: (ProductConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null), 
-    /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
-    hideOutOfStock?: (Scalars['Boolean'] | null)} })
-    /** A single product object with variant pricing overlay capabilities. */
-    product?: (ProductGenqlSelection & { __args?: {
-    /** Product global id filter. */
-    id?: (Scalars['ID'] | null), 
-    /** Product id filter. */
-    entityId?: (Scalars['Int'] | null), 
-    /** Product filter by variant id. */
-    variantEntityId?: (Scalars['Int'] | null), 
-    /** A variant option value ids filter. */
-    optionValueIds?: (OptionValueId[] | null), 
-    /** Product filter by sku. */
-    sku?: (Scalars['String'] | null), 
-    /** When set to True, returns products with default option selection overlay if one exists. Otherwise returns a base product. Defaults to False */
-    useDefaultOptionSelections?: (Scalars['Boolean'] | null)} })
-    /** Route for a node */
-    route?: (RouteGenqlSelection & { __args: {
-    /** An url path to an expected entity. */
-    path: Scalars['String']} })
-    /** Store settings. */
-    settings?: SettingsGenqlSelection
-    /** The page content. */
-    content?: ContentGenqlSelection
-    /** Currency details. */
-    currency?: (CurrencyGenqlSelection & { __args: {
-    /** Currency Code */
-    currencyCode: currencyCode} })
-    /** Store Currencies. */
-    currencies?: (CurrencyConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** Public Wishlist */
-    publicWishlist?: (PublicWishlistGenqlSelection & { __args: {
-    /** A wishlist token filter */
-    token: Scalars['String']} })
-    /** List of brands sorted by product count. */
-    popularBrands?: (PopularBrandConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** The Cart of the current customer. */
-    cart?: (CartGenqlSelection & { __args?: {
-    /** Cart ID. */
-    entityId?: (Scalars['String'] | null)} })
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** The social media link. */
-export interface SocialMediaLinkGenqlSelection{
-    /** The name of the social media link. */
-    name?: boolean | number
-    /** The url of the social media link. */
-    url?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Special hour */
-export interface SpecialHourGenqlSelection{
-    /** Upcoming event name */
-    label?: boolean | number
-    /** Is open */
-    open?: boolean | number
-    /** Opening time */
-    opening?: boolean | number
-    /** Closing time */
-    closing?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Store logo as image. */
-export interface StoreImageLogoGenqlSelection{
-    /** Logo image. */
-    image?: ImageGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Store logo. */
-export interface StoreLogoGenqlSelection{
-    on_StoreTextLogo?:StoreTextLogoGenqlSelection,
-    on_StoreImageLogo?:StoreImageLogoGenqlSelection,
-    __typename?: boolean | number
-}
-
-
-/** Store logo as text. */
-export interface StoreTextLogoGenqlSelection{
-    /** Logo text. */
-    text?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Storefront settings. */
-export interface StorefrontGenqlSelection{
-    /** Storefront catalog settings. */
-    catalog?: CatalogGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** Specific sub-category filter item */
-export interface SubCategorySearchFilterItemGenqlSelection{
-    /** Category ID. */
-    entityId?: boolean | number
-    /** Category name. */
-    name?: boolean | number
-    /** Indicates whether category is selected. */
-    isSelected?: boolean | number
-    /** Indicates how many products available for this filter. */
-    productCount?: boolean | number
-    /** List of available sub-categories. */
-    subCategories?: (SubCategorySearchFilterItemConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A connection to a list of items. */
-export interface SubCategorySearchFilterItemConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
-    /** A list of edges. */
-    edges?: SubCategorySearchFilterItemEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** An edge in a connection. */
-export interface SubCategorySearchFilterItemEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: SubCategorySearchFilterItemGenqlSelection
-    /** A cursor for use in pagination. */
-    cursor?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A swatch option value - swatch values can be associated with a list of hexidecimal colors or an image. */
-export interface SwatchOptionValueGenqlSelection{
-    /** List of up to 3 hex encoded colors to associate with a swatch value. */
-    hexColors?: boolean | number
-    /** Absolute path of a swatch texture image. */
-    imageUrl?: { __args: {
-    /** Desired width of the image. */
-    width: Scalars['Int'], 
-    /** Desired height of the image. */
-    height?: (Scalars['Int'] | null)} }
-    /** Unique ID for the option value. */
-    entityId?: boolean | number
-    /** Label for the option value. */
-    label?: boolean | number
-    /** Indicates whether this value is the chosen default selected value. */
-    isDefault?: boolean | number
-    /** Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level. */
-    isSelected?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** The tax display settings object */
-export interface TaxDisplaySettingsGenqlSelection{
-    /** Tax display setting for Product Details Page. */
-    pdp?: boolean | number
-    /** Tax display setting for Product List Page. */
-    plp?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
-/** A single line text input field. */
-export interface TextFieldOptionGenqlSelection{
-    /** Default value of the text field option. */
-    defaultValue?: boolean | number
-    /** The minimum number of characters. */
-    minLength?: boolean | number
-    /** The maximum number of characters. */
-    maxLength?: boolean | number
-    /** Unique ID for the option. */
-    entityId?: boolean | number
-    /** Display name for the option. */
-    displayName?: boolean | number
-    /** One of the option values is required to be selected for the checkout. */
-    isRequired?: boolean | number
-    /** Indicates whether it is a variant option or modifier. */
-    isVariantOption?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-
 /** Url field */
 export interface UrlFieldGenqlSelection{
-    /** Store url. */
-    vanityUrl?: boolean | number
     /** CDN url to fetch assets. */
     cdnUrl?: boolean | number
     /** Checkout url. */
     checkoutUrl?: boolean | number
+    /** Store url. */
+    vanityUrl?: boolean | number
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -6380,48 +6716,48 @@ export interface UrlFieldGenqlSelection{
 
 /** Variant */
 export interface VariantGenqlSelection{
-    /** The ID of an object */
-    id?: boolean | number
-    /** Id of the variant. */
-    entityId?: boolean | number
-    /** Sku of the variant. */
-    sku?: boolean | number
-    /** The variant's weight. If a weight was not explicitly specified on the variant, this will be the product's weight. */
-    weight?: MeasurementGenqlSelection
-    /** The variant's height. If a height was not explicitly specified on the variant, this will be the product's height. */
-    height?: MeasurementGenqlSelection
-    /** The variant's width. If a width was not explicitly specified on the variant, this will be the product's width. */
-    width?: MeasurementGenqlSelection
-    /** The variant's depth. If a depth was not explicitly specified on the variant, this will be the product's depth. */
-    depth?: MeasurementGenqlSelection
-    /** The options which define a variant. */
-    options?: (OptionConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** Product options that compose this variant. */
-    productOptions?: (ProductOptionConnectionGenqlSelection & { __args?: {before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
     /** Default image for a variant. */
     defaultImage?: ImageGenqlSelection
-    /** Variant prices */
-    prices?: (PricesGenqlSelection & { __args?: {
-    /** Tax will be included if enabled */
-    includeTax?: (Scalars['Boolean'] | null), 
-    /** Please select a currency */
-    currencyCode?: (currencyCode | null)} })
-    /** Variant inventory */
-    inventory?: VariantInventoryGenqlSelection
-    /** Metafield data related to a variant. */
-    metafields?: (MetafieldConnectionGenqlSelection & { __args: {
-    /** Metafield namespace filter */
-    namespace: Scalars['String'], 
-    /** Labels for identifying metafield data values. */
-    keys?: (Scalars['String'][] | null), before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
-    /** Universal product code. */
-    upc?: boolean | number
-    /** Manufacturer part number. */
-    mpn?: boolean | number
+    /** The variant's depth. If a depth was not explicitly specified on the variant, this will be the product's depth. */
+    depth?: MeasurementGenqlSelection
+    /** Id of the variant. */
+    entityId?: boolean | number
     /** Global trade item number. */
     gtin?: boolean | number
+    /** The variant's height. If a height was not explicitly specified on the variant, this will be the product's height. */
+    height?: MeasurementGenqlSelection
+    /** The ID of an object */
+    id?: boolean | number
+    /** Variant inventory */
+    inventory?: VariantInventoryGenqlSelection
     /** Whether the product can be purchased */
     isPurchasable?: boolean | number
+    /** Metafield data related to a variant. */
+    metafields?: (MetafieldConnectionGenqlSelection & { __args: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), 
+    /** Labels for identifying metafield data values. */
+    keys?: (Scalars['String'][] | null), last?: (Scalars['Int'] | null), 
+    /** Metafield namespace filter */
+    namespace: Scalars['String']} })
+    /** Manufacturer part number. */
+    mpn?: boolean | number
+    /** The options which define a variant. */
+    options?: (OptionConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** Variant prices */
+    prices?: (PricesGenqlSelection & { __args?: {
+    /** Please select a currency */
+    currencyCode?: (currencyCode | null), 
+    /** Tax will be included if enabled */
+    includeTax?: (Scalars['Boolean'] | null)} })
+    /** Product options that compose this variant. */
+    productOptions?: (ProductOptionConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** Sku of the variant. */
+    sku?: boolean | number
+    /** Universal product code. */
+    upc?: boolean | number
+    /** The variant's weight. If a weight was not explicitly specified on the variant, this will be the product's weight. */
+    weight?: MeasurementGenqlSelection
+    /** The variant's width. If a width was not explicitly specified on the variant, this will be the product's width. */
+    width?: MeasurementGenqlSelection
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -6429,10 +6765,10 @@ export interface VariantGenqlSelection{
 
 /** A connection to a list of items. */
 export interface VariantConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
     /** A list of edges. */
     edges?: VariantEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -6440,10 +6776,10 @@ export interface VariantConnectionGenqlSelection{
 
 /** An edge in a connection. */
 export interface VariantEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: VariantGenqlSelection
     /** A cursor for use in pagination. */
     cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: VariantGenqlSelection
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -6453,20 +6789,20 @@ export interface VariantEdgeGenqlSelection{
 export interface VariantInventoryGenqlSelection{
     /** Aggregated product variant inventory information. This data may not be available if not set or if the store's Inventory Settings have disabled displaying stock levels on the storefront. */
     aggregated?: AggregatedGenqlSelection
-    /** Indicates whether this product is in stock. */
-    isInStock?: boolean | number
     /** Inventory by locations. */
-    byLocation?: (LocationConnectionGenqlSelection & { __args?: {
-    /** Location ids filter. */
-    locationEntityIds?: (Scalars['Int'][] | null), 
+    byLocation?: (LocationConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), 
+    /** Filter locations by the distance */
+    distanceFilter?: (DistanceFilter | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null), 
     /** Location entity codes filter. */
     locationEntityCodes?: (Scalars['String'][] | null), 
-    /** Location entity type ids filter. */
-    locationEntityTypeIds?: (Scalars['String'][] | null), 
+    /** Location ids filter. */
+    locationEntityIds?: (Scalars['Int'][] | null), 
     /** Location entity type ids filter. */
     locationEntityServiceTypeIds?: (Scalars['String'][] | null), 
-    /** Filter locations by the distance */
-    distanceFilter?: (DistanceFilter | null), before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
+    /** Location entity type ids filter. */
+    locationEntityTypeIds?: (Scalars['String'][] | null)} })
+    /** Indicates whether this product is in stock. */
+    isInStock?: boolean | number
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -6476,12 +6812,12 @@ export interface VariantInventoryGenqlSelection{
 export interface WebPageGenqlSelection{
     /** Unique ID for the web page. */
     entityId?: boolean | number
-    /** Unique ID for the parent page. */
-    parentEntityId?: boolean | number
-    /** Page name. */
-    name?: boolean | number
     /** Whether or not the page should be visible in the navigation menu. */
     isVisibleInNavigation?: boolean | number
+    /** Page name. */
+    name?: boolean | number
+    /** Unique ID for the parent page. */
+    parentEntityId?: boolean | number
     /** Page SEO details. */
     seo?: SeoDetailsGenqlSelection
     on_BlogIndexPage?: BlogIndexPageGenqlSelection
@@ -6498,26 +6834,26 @@ export interface WebPageGenqlSelection{
 export interface WebPagesFiltersInput {
 /** Ids of the expected pages. */
 entityIds?: (Scalars['Int'][] | null),
-/** Type of the expected pages. */
-pageType?: (WebPageType | null),
 /** Whether the expected pages are visible in the navigation bar. */
-isVisibleInNavigation?: (Scalars['Boolean'] | null)}
+isVisibleInNavigation?: (Scalars['Boolean'] | null),
+/** Type of the expected pages. */
+pageType?: (WebPageType | null)}
 
 
 /** A wishlist */
 export interface WishlistGenqlSelection{
     /** The wishlist id. */
     entityId?: boolean | number
-    /** The wishlist name. */
-    name?: boolean | number
     /** Is the wishlist public? */
     isPublic?: boolean | number
+    /** A list of the wishlist items */
+    items?: (WishlistItemConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), 
+    /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
+    hideOutOfStock?: (Scalars['Boolean'] | null), last?: (Scalars['Int'] | null)} })
+    /** The wishlist name. */
+    name?: boolean | number
     /** The wishlist token. */
     token?: boolean | number
-    /** A list of the wishlist items */
-    items?: (WishlistItemConnectionGenqlSelection & { __args?: {
-    /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
-    hideOutOfStock?: (Scalars['Boolean'] | null), before?: (Scalars['String'] | null), after?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -6525,10 +6861,10 @@ export interface WishlistGenqlSelection{
 
 /** A connection to a list of items. */
 export interface WishlistConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
     /** A list of edges. */
     edges?: WishlistEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -6536,10 +6872,10 @@ export interface WishlistConnectionGenqlSelection{
 
 /** An edge in a connection. */
 export interface WishlistEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: WishlistGenqlSelection
     /** A cursor for use in pagination. */
     cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: WishlistGenqlSelection
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -6568,10 +6904,10 @@ export interface WishlistItemGenqlSelection{
 
 /** A connection to a list of items. */
 export interface WishlistItemConnectionGenqlSelection{
-    /** Information to aid in pagination. */
-    pageInfo?: PageInfoGenqlSelection
     /** A list of edges. */
     edges?: WishlistItemEdgeGenqlSelection
+    /** Information to aid in pagination. */
+    pageInfo?: PageInfoGenqlSelection
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -6579,13 +6915,56 @@ export interface WishlistItemConnectionGenqlSelection{
 
 /** An edge in a connection. */
 export interface WishlistItemEdgeGenqlSelection{
-    /** The item at the end of the edge. */
-    node?: WishlistItemGenqlSelection
     /** A cursor for use in pagination. */
     cursor?: boolean | number
+    /** The item at the end of the edge. */
+    node?: WishlistItemGenqlSelection
     __typename?: boolean | number
     __scalar?: boolean | number
 }
+
+
+/** Wishlist item input object */
+export interface WishlistItemInput {
+/** An id of the product from the wishlist. */
+productEntityId?: Scalars['Int'],
+/** An id of the specific product variant from the wishlist. */
+variantEntityId?: (Scalars['Int'] | null)}
+
+
+/** The wishlist mutations. */
+export interface WishlistMutationsGenqlSelection{
+    /** Add wishlist items */
+    addWishlistItems?: (AddWishlistItemsResultGenqlSelection & { __args: {
+    /** Add wishlist items input */
+    input: AddWishlistItemsInput} })
+    /** Create wishlist */
+    createWishlist?: (CreateWishlistResultGenqlSelection & { __args: {
+    /** Create wishlists input */
+    input: CreateWishlistInput} })
+    /** Delete wishlist items */
+    deleteWishlistItems?: (DeleteWishlistItemsResultGenqlSelection & { __args: {
+    /** Delete wishlist items input */
+    input: DeleteWishlistItemsInput} })
+    /** Delete wishlist */
+    deleteWishlists?: (DeleteWishlistResultGenqlSelection & { __args: {
+    /** Delete wishlists input */
+    input: DeleteWishlistsInput} })
+    /** Update wishlist */
+    updateWishlist?: (UpdateWishlistResultGenqlSelection & { __args: {
+    /** Update wishlist items input */
+    input: UpdateWishlistInput} })
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Wishlist data to update */
+export interface WishlistUpdateDataInput {
+/** A new wishlist visibility mode */
+isPublic?: (Scalars['Boolean'] | null),
+/** A new wishlist name */
+name?: (Scalars['String'] | null)}
 
 
     const AddCartLineItemsResult_possibleTypes: string[] = ['AddCartLineItemsResult']
@@ -6600,134 +6979,6 @@ export interface WishlistItemEdgeGenqlSelection{
     export const isAddWishlistItemsResult = (obj?: { __typename?: any } | null): obj is AddWishlistItemsResult => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isAddWishlistItemsResult"')
       return AddWishlistItemsResult_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const AssignCartToCustomerResult_possibleTypes: string[] = ['AssignCartToCustomerResult']
-    export const isAssignCartToCustomerResult = (obj?: { __typename?: any } | null): obj is AssignCartToCustomerResult => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isAssignCartToCustomerResult"')
-      return AssignCartToCustomerResult_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const CartMutations_possibleTypes: string[] = ['CartMutations']
-    export const isCartMutations = (obj?: { __typename?: any } | null): obj is CartMutations => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isCartMutations"')
-      return CartMutations_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const CreateCartResult_possibleTypes: string[] = ['CreateCartResult']
-    export const isCreateCartResult = (obj?: { __typename?: any } | null): obj is CreateCartResult => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isCreateCartResult"')
-      return CreateCartResult_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const CreateWishlistResult_possibleTypes: string[] = ['CreateWishlistResult']
-    export const isCreateWishlistResult = (obj?: { __typename?: any } | null): obj is CreateWishlistResult => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isCreateWishlistResult"')
-      return CreateWishlistResult_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const DeleteCartLineItemResult_possibleTypes: string[] = ['DeleteCartLineItemResult']
-    export const isDeleteCartLineItemResult = (obj?: { __typename?: any } | null): obj is DeleteCartLineItemResult => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isDeleteCartLineItemResult"')
-      return DeleteCartLineItemResult_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const DeleteCartResult_possibleTypes: string[] = ['DeleteCartResult']
-    export const isDeleteCartResult = (obj?: { __typename?: any } | null): obj is DeleteCartResult => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isDeleteCartResult"')
-      return DeleteCartResult_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const DeleteWishlistItemsResult_possibleTypes: string[] = ['DeleteWishlistItemsResult']
-    export const isDeleteWishlistItemsResult = (obj?: { __typename?: any } | null): obj is DeleteWishlistItemsResult => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isDeleteWishlistItemsResult"')
-      return DeleteWishlistItemsResult_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const DeleteWishlistResult_possibleTypes: string[] = ['DeleteWishlistResult']
-    export const isDeleteWishlistResult = (obj?: { __typename?: any } | null): obj is DeleteWishlistResult => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isDeleteWishlistResult"')
-      return DeleteWishlistResult_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const LoginResult_possibleTypes: string[] = ['LoginResult']
-    export const isLoginResult = (obj?: { __typename?: any } | null): obj is LoginResult => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isLoginResult"')
-      return LoginResult_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const LogoutResult_possibleTypes: string[] = ['LogoutResult']
-    export const isLogoutResult = (obj?: { __typename?: any } | null): obj is LogoutResult => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isLogoutResult"')
-      return LogoutResult_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const Mutation_possibleTypes: string[] = ['Mutation']
-    export const isMutation = (obj?: { __typename?: any } | null): obj is Mutation => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isMutation"')
-      return Mutation_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const UnassignCartFromCustomerResult_possibleTypes: string[] = ['UnassignCartFromCustomerResult']
-    export const isUnassignCartFromCustomerResult = (obj?: { __typename?: any } | null): obj is UnassignCartFromCustomerResult => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isUnassignCartFromCustomerResult"')
-      return UnassignCartFromCustomerResult_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const UpdateCartCurrencyResult_possibleTypes: string[] = ['UpdateCartCurrencyResult']
-    export const isUpdateCartCurrencyResult = (obj?: { __typename?: any } | null): obj is UpdateCartCurrencyResult => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isUpdateCartCurrencyResult"')
-      return UpdateCartCurrencyResult_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const UpdateCartLineItemResult_possibleTypes: string[] = ['UpdateCartLineItemResult']
-    export const isUpdateCartLineItemResult = (obj?: { __typename?: any } | null): obj is UpdateCartLineItemResult => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isUpdateCartLineItemResult"')
-      return UpdateCartLineItemResult_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const UpdateWishlistResult_possibleTypes: string[] = ['UpdateWishlistResult']
-    export const isUpdateWishlistResult = (obj?: { __typename?: any } | null): obj is UpdateWishlistResult => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isUpdateWishlistResult"')
-      return UpdateWishlistResult_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const WishlistMutations_possibleTypes: string[] = ['WishlistMutations']
-    export const isWishlistMutations = (obj?: { __typename?: any } | null): obj is WishlistMutations => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isWishlistMutations"')
-      return WishlistMutations_possibleTypes.includes(obj.__typename)
     }
     
 
@@ -6748,6 +6999,14 @@ export interface WishlistItemEdgeGenqlSelection{
     
 
 
+    const AssignCartToCustomerResult_possibleTypes: string[] = ['AssignCartToCustomerResult']
+    export const isAssignCartToCustomerResult = (obj?: { __typename?: any } | null): obj is AssignCartToCustomerResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isAssignCartToCustomerResult"')
+      return AssignCartToCustomerResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
     const Author_possibleTypes: string[] = ['Author']
     export const isAuthor = (obj?: { __typename?: any } | null): obj is Author => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isAuthor"')
@@ -6756,10 +7015,74 @@ export interface WishlistItemEdgeGenqlSelection{
     
 
 
+    const Banner_possibleTypes: string[] = ['Banner']
+    export const isBanner = (obj?: { __typename?: any } | null): obj is Banner => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isBanner"')
+      return Banner_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const BannerConnection_possibleTypes: string[] = ['BannerConnection']
+    export const isBannerConnection = (obj?: { __typename?: any } | null): obj is BannerConnection => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isBannerConnection"')
+      return BannerConnection_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const BannerEdge_possibleTypes: string[] = ['BannerEdge']
+    export const isBannerEdge = (obj?: { __typename?: any } | null): obj is BannerEdge => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isBannerEdge"')
+      return BannerEdge_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const Banners_possibleTypes: string[] = ['Banners']
+    export const isBanners = (obj?: { __typename?: any } | null): obj is Banners => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isBanners"')
+      return Banners_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const Blog_possibleTypes: string[] = ['Blog']
+    export const isBlog = (obj?: { __typename?: any } | null): obj is Blog => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isBlog"')
+      return Blog_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
     const BlogIndexPage_possibleTypes: string[] = ['BlogIndexPage']
     export const isBlogIndexPage = (obj?: { __typename?: any } | null): obj is BlogIndexPage => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isBlogIndexPage"')
       return BlogIndexPage_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const BlogPost_possibleTypes: string[] = ['BlogPost']
+    export const isBlogPost = (obj?: { __typename?: any } | null): obj is BlogPost => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isBlogPost"')
+      return BlogPost_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const BlogPostConnection_possibleTypes: string[] = ['BlogPostConnection']
+    export const isBlogPostConnection = (obj?: { __typename?: any } | null): obj is BlogPostConnection => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isBlogPostConnection"')
+      return BlogPostConnection_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const BlogPostEdge_possibleTypes: string[] = ['BlogPostEdge']
+    export const isBlogPostEdge = (obj?: { __typename?: any } | null): obj is BlogPostEdge => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isBlogPostEdge"')
+      return BlogPostEdge_possibleTypes.includes(obj.__typename)
     }
     
 
@@ -6784,6 +7107,22 @@ export interface WishlistItemEdgeGenqlSelection{
     export const isBrandEdge = (obj?: { __typename?: any } | null): obj is BrandEdge => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isBrandEdge"')
       return BrandEdge_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const BrandPageBannerConnection_possibleTypes: string[] = ['BrandPageBannerConnection']
+    export const isBrandPageBannerConnection = (obj?: { __typename?: any } | null): obj is BrandPageBannerConnection => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isBrandPageBannerConnection"')
+      return BrandPageBannerConnection_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const BrandPageBannerEdge_possibleTypes: string[] = ['BrandPageBannerEdge']
+    export const isBrandPageBannerEdge = (obj?: { __typename?: any } | null): obj is BrandPageBannerEdge => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isBrandPageBannerEdge"')
+      return BrandPageBannerEdge_possibleTypes.includes(obj.__typename)
     }
     
 
@@ -6948,6 +7287,14 @@ export interface WishlistItemEdgeGenqlSelection{
     
 
 
+    const CartMutations_possibleTypes: string[] = ['CartMutations']
+    export const isCartMutations = (obj?: { __typename?: any } | null): obj is CartMutations => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCartMutations"')
+      return CartMutations_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
     const CartPhysicalItem_possibleTypes: string[] = ['CartPhysicalItem']
     export const isCartPhysicalItem = (obj?: { __typename?: any } | null): obj is CartPhysicalItem => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isCartPhysicalItem"')
@@ -7068,6 +7415,22 @@ export interface WishlistItemEdgeGenqlSelection{
     
 
 
+    const CategoryPageBannerConnection_possibleTypes: string[] = ['CategoryPageBannerConnection']
+    export const isCategoryPageBannerConnection = (obj?: { __typename?: any } | null): obj is CategoryPageBannerConnection => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCategoryPageBannerConnection"')
+      return CategoryPageBannerConnection_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CategoryPageBannerEdge_possibleTypes: string[] = ['CategoryPageBannerEdge']
+    export const isCategoryPageBannerEdge = (obj?: { __typename?: any } | null): obj is CategoryPageBannerEdge => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCategoryPageBannerEdge"')
+      return CategoryPageBannerEdge_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
     const CategorySearchFilter_possibleTypes: string[] = ['CategorySearchFilter']
     export const isCategorySearchFilter = (obj?: { __typename?: any } | null): obj is CategorySearchFilter => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isCategorySearchFilter"')
@@ -7164,6 +7527,22 @@ export interface WishlistItemEdgeGenqlSelection{
     
 
 
+    const CreateCartResult_possibleTypes: string[] = ['CreateCartResult']
+    export const isCreateCartResult = (obj?: { __typename?: any } | null): obj is CreateCartResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCreateCartResult"')
+      return CreateCartResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CreateWishlistResult_possibleTypes: string[] = ['CreateWishlistResult']
+    export const isCreateWishlistResult = (obj?: { __typename?: any } | null): obj is CreateWishlistResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCreateWishlistResult"')
+      return CreateWishlistResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
     const Currency_possibleTypes: string[] = ['Currency']
     export const isCurrency = (obj?: { __typename?: any } | null): obj is Currency => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isCurrency"')
@@ -7256,6 +7635,38 @@ export interface WishlistItemEdgeGenqlSelection{
     export const isDateTimeExtended = (obj?: { __typename?: any } | null): obj is DateTimeExtended => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isDateTimeExtended"')
       return DateTimeExtended_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const DeleteCartLineItemResult_possibleTypes: string[] = ['DeleteCartLineItemResult']
+    export const isDeleteCartLineItemResult = (obj?: { __typename?: any } | null): obj is DeleteCartLineItemResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isDeleteCartLineItemResult"')
+      return DeleteCartLineItemResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const DeleteCartResult_possibleTypes: string[] = ['DeleteCartResult']
+    export const isDeleteCartResult = (obj?: { __typename?: any } | null): obj is DeleteCartResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isDeleteCartResult"')
+      return DeleteCartResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const DeleteWishlistItemsResult_possibleTypes: string[] = ['DeleteWishlistItemsResult']
+    export const isDeleteWishlistItemsResult = (obj?: { __typename?: any } | null): obj is DeleteWishlistItemsResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isDeleteWishlistItemsResult"')
+      return DeleteWishlistItemsResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const DeleteWishlistResult_possibleTypes: string[] = ['DeleteWishlistResult']
+    export const isDeleteWishlistResult = (obj?: { __typename?: any } | null): obj is DeleteWishlistResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isDeleteWishlistResult"')
+      return DeleteWishlistResult_possibleTypes.includes(obj.__typename)
     }
     
 
@@ -7412,10 +7823,26 @@ export interface WishlistItemEdgeGenqlSelection{
     
 
 
+    const LoginResult_possibleTypes: string[] = ['LoginResult']
+    export const isLoginResult = (obj?: { __typename?: any } | null): obj is LoginResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isLoginResult"')
+      return LoginResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
     const LogoField_possibleTypes: string[] = ['LogoField']
     export const isLogoField = (obj?: { __typename?: any } | null): obj is LogoField => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isLogoField"')
       return LogoField_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const LogoutResult_possibleTypes: string[] = ['LogoutResult']
+    export const isLogoutResult = (obj?: { __typename?: any } | null): obj is LogoutResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isLogoutResult"')
+      return LogoutResult_possibleTypes.includes(obj.__typename)
     }
     
 
@@ -7492,7 +7919,15 @@ export interface WishlistItemEdgeGenqlSelection{
     
 
 
-    const Node_possibleTypes: string[] = ['Brand','Cart','Category','ContactPage','NormalPage','Product','RawHtmlPage','Variant']
+    const Mutation_possibleTypes: string[] = ['Mutation']
+    export const isMutation = (obj?: { __typename?: any } | null): obj is Mutation => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isMutation"')
+      return Mutation_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const Node_possibleTypes: string[] = ['Banner','Blog','BlogPost','Brand','Cart','Category','ContactPage','NormalPage','Product','RawHtmlPage','Variant']
     export const isNode = (obj?: { __typename?: any } | null): obj is Node => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isNode"')
       return Node_possibleTypes.includes(obj.__typename)
@@ -8068,7 +8503,7 @@ export interface WishlistItemEdgeGenqlSelection{
     
 
 
-    const StoreLogo_possibleTypes: string[] = ['StoreTextLogo','StoreImageLogo']
+    const StoreLogo_possibleTypes: string[] = ['StoreImageLogo','StoreTextLogo']
     export const isStoreLogo = (obj?: { __typename?: any } | null): obj is StoreLogo => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isStoreLogo"')
       return StoreLogo_possibleTypes.includes(obj.__typename)
@@ -8136,6 +8571,38 @@ export interface WishlistItemEdgeGenqlSelection{
     export const isTextFieldOption = (obj?: { __typename?: any } | null): obj is TextFieldOption => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isTextFieldOption"')
       return TextFieldOption_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const UnassignCartFromCustomerResult_possibleTypes: string[] = ['UnassignCartFromCustomerResult']
+    export const isUnassignCartFromCustomerResult = (obj?: { __typename?: any } | null): obj is UnassignCartFromCustomerResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isUnassignCartFromCustomerResult"')
+      return UnassignCartFromCustomerResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const UpdateCartCurrencyResult_possibleTypes: string[] = ['UpdateCartCurrencyResult']
+    export const isUpdateCartCurrencyResult = (obj?: { __typename?: any } | null): obj is UpdateCartCurrencyResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isUpdateCartCurrencyResult"')
+      return UpdateCartCurrencyResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const UpdateCartLineItemResult_possibleTypes: string[] = ['UpdateCartLineItemResult']
+    export const isUpdateCartLineItemResult = (obj?: { __typename?: any } | null): obj is UpdateCartLineItemResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isUpdateCartLineItemResult"')
+      return UpdateCartLineItemResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const UpdateWishlistResult_possibleTypes: string[] = ['UpdateWishlistResult']
+    export const isUpdateWishlistResult = (obj?: { __typename?: any } | null): obj is UpdateWishlistResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isUpdateWishlistResult"')
+      return UpdateWishlistResult_possibleTypes.includes(obj.__typename)
     }
     
 
@@ -8234,6 +8701,19 @@ export interface WishlistItemEdgeGenqlSelection{
       return WishlistItemEdge_possibleTypes.includes(obj.__typename)
     }
     
+
+
+    const WishlistMutations_possibleTypes: string[] = ['WishlistMutations']
+    export const isWishlistMutations = (obj?: { __typename?: any } | null): obj is WishlistMutations => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isWishlistMutations"')
+      return WishlistMutations_possibleTypes.includes(obj.__typename)
+    }
+    
+
+export const enumBannerLocation = {
+   BOTTOM: 'BOTTOM' as const,
+   TOP: 'TOP' as const
+}
 
 export const enumCartGiftCertificateTheme = {
    BIRTHDAY: 'BIRTHDAY' as const,
@@ -8935,4 +9415,9 @@ export const enumCurrencyCode = {
    ZWD: 'ZWD' as const,
    ZWL: 'ZWL' as const,
    ZWR: 'ZWR' as const
+}
+
+export const enumSortBy = {
+   NEWEST: 'NEWEST' as const,
+   OLDEST: 'OLDEST' as const
 }

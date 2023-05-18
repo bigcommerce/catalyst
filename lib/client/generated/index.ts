@@ -1,4 +1,3 @@
-/* eslint-disable */
 // @ts-nocheck
 import type {
   QueryGenqlSelection,
@@ -34,7 +33,6 @@ export interface Client {
 
 export const createClient = function (options?: ClientOptions): Client {
   return createClientOriginal({
-    // TODO: BC - Remove this, make url required?
     url: 'https://store-vcxk3p73en.mybigcommerce.com/graphql',
 
     ...options,

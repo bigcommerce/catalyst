@@ -1,10 +1,10 @@
 """Add cart line items data object"""
 input AddCartLineItemsDataInput {
-  """List of cart line items"""
-  lineItems: [CartLineItemInput!]
-
   """List of gift certificates"""
   giftCertificates: [CartGiftCertificateInput!]
+
+  """List of cart line items"""
+  lineItems: [CartLineItemInput!]
 }
 
 """Add cart line items input object"""
@@ -37,6 +37,32 @@ type AddWishlistItemsResult {
   result: Wishlist!
 }
 
+"""Aggregated"""
+type Aggregated {
+  """
+  Number of available products in stock. This can be 'null' if inventory is not set orif the store's Inventory Settings disable displaying stock levels on the storefront.
+  """
+  availableToSell: Long!
+
+  """
+  Indicates a threshold low-stock level.  This can be 'null' if the inventory warning level is not set or if the store's Inventory Settings disable displaying stock levels on the storefront.
+  """
+  warningLevel: Int!
+}
+
+"""Aggregated Product Inventory"""
+type AggregatedInventory {
+  """
+  Number of available products in stock. This can be 'null' if inventory is not set orif the store's Inventory Settings disable displaying stock levels on the storefront.
+  """
+  availableToSell: Int!
+
+  """
+  Indicates a threshold low-stock level. This can be 'null' if the inventory warning level is not set or if the store's Inventory Settings disable displaying stock levels on the storefront.
+  """
+  warningLevel: Int!
+}
+
 """Assign cart to the customer input object."""
 input AssignCartToCustomerInput {
   """The cart id."""
@@ -49,71 +75,773 @@ type AssignCartToCustomerResult {
   cart: Cart
 }
 
-"""Cart gift certificate input object"""
-input CartGiftCertificateInput {
-  """GiftCertificate-provided name that will appear in the control panel."""
+"""Author"""
+type Author {
+  """Author name."""
+  name: String!
+}
+
+"""Banner details."""
+type Banner implements Node {
+  """The content of the Banner."""
+  content: String!
+
+  """The id of the Banner."""
+  entityId: Long!
+
+  """The id of the object."""
+  id: ID!
+
+  """The location of the Banner."""
+  location: BannerLocation!
+
+  """The name of the Banner."""
+  name: String!
+}
+
+"""A connection to a list of items."""
+type BannerConnection {
+  """A list of edges."""
+  edges: [BannerEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+}
+
+"""An edge in a connection."""
+type BannerEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: Banner!
+}
+
+"""Banner location"""
+enum BannerLocation {
+  BOTTOM
+  TOP
+}
+
+"""Banners details."""
+type Banners {
+  """List of brand page banners."""
+  brandPage(
+    after: String
+    before: String
+
+    """The id of the brand to request banners for."""
+    brandEntityId: Int!
+    first: Int
+    last: Int
+  ): BrandPageBannerConnection!
+
+  """List of category page banners."""
+  categoryPage(
+    after: String
+    before: String
+
+    """The id of the category to request banners for."""
+    categoryEntityId: Int!
+    first: Int
+    last: Int
+  ): CategoryPageBannerConnection!
+
+  """List of home page banners."""
+  homePage(after: String, before: String, first: Int, last: Int): BannerConnection!
+
+  """List of search page banners."""
+  searchPage(after: String, before: String, first: Int, last: Int): BannerConnection!
+}
+
+"""
+The `BigDecimal` scalar type represents signed fractional values with arbitrary precision.
+"""
+scalar BigDecimal
+
+"""Blog details."""
+type Blog implements Node {
+  """The description of the Blog."""
+  description: String!
+
+  """The ID of an object"""
+  id: ID!
+
+  """Whether or not the blog should be visible in the navigation menu."""
+  isVisibleInNavigation: Boolean!
+
+  """The name of the Blog."""
+  name: String!
+
+  """The path of the Blog."""
+  path: String!
+
+  """Blog post details."""
+  post(
+    """Id of the blog post to fetch."""
+    entityId: Int!
+  ): BlogPost
+
+  """Details of the Blog posts."""
+  posts(
+    after: String
+    before: String
+
+    """Filters for querying blog posts"""
+    filters: BlogPostsFiltersInput
+    first: Int
+    last: Int
+
+    """Order to sort the blog posts."""
+    sort: sortBy = NEWEST
+  ): BlogPostConnection!
+
+  """The rendered regions for the blog index."""
+  renderedRegions: RenderedRegionsByPageType!
+}
+
+"""A blog index page."""
+type BlogIndexPage implements WebPage {
+  """Unique ID for the web page."""
+  entityId: Int!
+
+  """Whether or not the page should be visible in the navigation menu."""
+  isVisibleInNavigation: Boolean!
+
+  """Page name."""
+  name: String!
+
+  """Unique ID for the parent page."""
+  parentEntityId: Int
+
+  """The URL path of the page."""
+  path: String!
+
+  """The rendered regions for the web page."""
+  renderedRegions: RenderedRegionsByPageType!
+
+  """Page SEO details."""
+  seo: SeoDetails!
+}
+
+"""Blog post details."""
+type BlogPost implements Node {
+  """Blog post author."""
+  author: String
+
+  """Unique ID for the blog post."""
+  entityId: Int!
+
+  """The body of the Blog post."""
+  htmlBody: String!
+
+  """The ID of an object"""
+  id: ID!
+
+  """Blog post name."""
+  name: String!
+
+  """Blog post path."""
+  path: String!
+
+  """The plain text summary of the Blog post."""
+  plainTextSummary(
+    """The max number of characters for the plain text summary."""
+    characterLimit: Int = 120
+  ): String!
+
+  """Blog post published date."""
+  publishedDate: DateTimeExtended!
+
+  """The rendered regions for the blog post."""
+  renderedRegions: RenderedRegionsByPageType!
+
+  """Blog post SEO details."""
+  seo: SeoDetails!
+
+  """Blog post tags."""
+  tags: [String!]!
+
+  """Blog post thumbnail image."""
+  thumbnailImage: Image
+}
+
+"""A connection to a list of items."""
+type BlogPostConnection {
+  """Collection info"""
+  collectionInfo: CollectionInfo
+
+  """A list of edges."""
+  edges: [BlogPostEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+}
+
+"""An edge in a connection."""
+type BlogPostEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: BlogPost!
+}
+
+"""Object containing the filters for querying blog posts"""
+input BlogPostsFiltersInput {
+  """Ids of the expected blog posts."""
+  entityIds: [Int!]
+
+  """Tags of the expected blog posts."""
+  tags: [String!]
+}
+
+"""Brand"""
+type Brand implements Node {
+  """Default image for brand."""
+  defaultImage: Image
+
+  """Id of the brand."""
+  entityId: Int!
+
+  """The ID of an object"""
+  id: ID!
+
+  """Meta description for the brand."""
+  metaDesc: String! @deprecated(reason: "Use SEO details instead.")
+
+  """Meta keywords for the brand."""
+  metaKeywords: [String!]! @deprecated(reason: "Use SEO details instead.")
+
+  """Metafield data related to a brand."""
+  metafields(
+    after: String
+    before: String
+    first: Int
+
+    """Labels for identifying metafield data values."""
+    keys: [String!] = []
+    last: Int
+
+    """Metafield namespace filter"""
+    namespace: String!
+  ): MetafieldConnection!
+
+  """Name of the brand."""
+  name: String!
+
+  """Page title for the brand."""
+  pageTitle: String! @deprecated(reason: "Use SEO details instead.")
+
+  """Path for the brand page."""
+  path: String!
+
+  """List of products associated with the brand."""
+  products(
+    after: String
+    before: String
+    first: Int
+
+    """
+    When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
+    """
+    hideOutOfStock: Boolean
+    last: Int
+  ): ProductConnection!
+
+  """Search keywords for the brand."""
+  searchKeywords: [String!]!
+
+  """Brand SEO details."""
+  seo: SeoDetails!
+}
+
+"""A connection to a list of items."""
+type BrandConnection {
+  """A list of edges."""
+  edges: [BrandEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+}
+
+"""An edge in a connection."""
+type BrandEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: Brand!
+}
+
+"""A connection to a list of items."""
+type BrandPageBannerConnection {
+  """A list of edges."""
+  edges: [BrandPageBannerEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+}
+
+"""An edge in a connection."""
+type BrandPageBannerEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: Banner!
+}
+
+"""Brand Filter"""
+type BrandSearchFilter implements SearchProductFilter {
+  """List of available brands."""
+  brands(after: String, before: String, first: Int, last: Int): BrandSearchFilterItemConnection!
+
+  """Indicates whether to display product count next to the filter."""
+  displayProductCount: Boolean!
+
+  """Indicates whether filter is collapsed by default."""
+  isCollapsedByDefault: Boolean!
+
+  """Display name for the filter."""
+  name: String!
+}
+
+"""Specific brand filter item"""
+type BrandSearchFilterItem {
+  """Brand ID."""
+  entityId: Int!
+
+  """Indicates whether brand is selected."""
+  isSelected: Boolean!
+
+  """Brand name."""
+  name: String!
+
+  """Indicates how many products available for this filter."""
+  productCount: Int!
+}
+
+"""A connection to a list of items."""
+type BrandSearchFilterItemConnection {
+  """A list of edges."""
+  edges: [BrandSearchFilterItemEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+}
+
+"""An edge in a connection."""
+type BrandSearchFilterItemEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: BrandSearchFilterItem!
+}
+
+"""Breadcrumb"""
+type Breadcrumb {
+  """Category id."""
+  entityId: Int!
+
+  """Name of the category."""
+  name: String!
+}
+
+"""A connection to a list of items."""
+type BreadcrumbConnection {
+  """A list of edges."""
+  edges: [BreadcrumbEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+}
+
+"""An edge in a connection."""
+type BreadcrumbEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: Breadcrumb!
+}
+
+"""Bulk pricing tier that sets a fixed price for the product or variant."""
+type BulkPricingFixedPriceDiscount implements BulkPricingTier {
+  """
+  Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound.
+  """
+  maximumQuantity: Int
+
+  """Minimum item quantity that applies to this bulk pricing tier."""
+  minimumQuantity: Int!
+
+  """This price will override the current product price."""
+  price: BigDecimal!
+}
+
+"""
+Bulk pricing tier that reduces the price of the product or variant by a percentage.
+"""
+type BulkPricingPercentageDiscount implements BulkPricingTier {
+  """
+  Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound.
+  """
+  maximumQuantity: Int
+
+  """Minimum item quantity that applies to this bulk pricing tier."""
+  minimumQuantity: Int!
+
+  """The percentage that will be removed from the product price."""
+  percentOff: BigDecimal!
+}
+
+"""
+Bulk pricing tier that will subtract an amount from the price of the product or variant.
+"""
+type BulkPricingRelativePriceDiscount implements BulkPricingTier {
+  """
+  Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound.
+  """
+  maximumQuantity: Int
+
+  """Minimum item quantity that applies to this bulk pricing tier."""
+  minimumQuantity: Int!
+
+  """
+  The price of the product/variant will be reduced by this priceAdjustment.
+  """
+  priceAdjustment: BigDecimal!
+}
+
+"""
+A set of bulk pricing tiers that define price discounts which apply when purchasing specified quantities of a product or variant.
+"""
+interface BulkPricingTier {
+  """
+  Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound.
+  """
+  maximumQuantity: Int
+
+  """Minimum item quantity that applies to this bulk pricing tier."""
+  minimumQuantity: Int!
+}
+
+"""A cart"""
+type Cart implements Node {
+  """
+  Sum of line-items amounts, minus cart-level discounts and coupons. This amount includes taxes (where applicable).
+  """
+  amount: Money!
+
+  """Cost of cart's contents, before applying discounts."""
+  baseAmount: Money!
+
+  """Time when the cart was created."""
+  createdAt: DateTimeExtended!
+
+  """ISO-4217 currency code."""
+  currencyCode: String!
+
+  """Discounted amount."""
+  discountedAmount: Money!
+
+  """List of discounts applied to this cart."""
+  discounts: [CartDiscount!]!
+
+  """Cart ID."""
+  entityId: String!
+
+  """The ID of an object"""
+  id: ID!
+
+  """Whether this item is taxable."""
+  isTaxIncluded: Boolean!
+
+  """List of line items."""
+  lineItems: CartLineItems!
+
+  """Locale of the cart."""
+  locale: String!
+
+  """Time when the cart was last updated."""
+  updatedAt: DateTimeExtended!
+}
+
+"""Cart custom item."""
+type CartCustomItem {
+  """ID of the custom item."""
+  entityId: String!
+
+  """Item's list price multiplied by the quantity."""
+  extendedListPrice: Money!
+
+  """
+  Price of the item. With or without tax depending on your stores set up.
+  """
+  listPrice: Money!
+
+  """Custom item name."""
+  name: String!
+
+  """Quantity of this item."""
+  quantity: Int!
+
+  """Custom item sku."""
+  sku: String
+}
+
+"""Cart digital item."""
+type CartDigitalItem {
+  """The product brand."""
+  brand: String
+
+  """The total value of all coupons applied to this item."""
+  couponAmount: Money!
+
+  """
+  The total value of all discounts applied to this item (excluding coupon).
+  """
+  discountedAmount: Money!
+
+  """List of discounts applied to this item."""
+  discounts: [CartDiscount!]!
+
+  """The line-item ID."""
+  entityId: String!
+
+  """Item's list price multiplied by the quantity."""
+  extendedListPrice: Money!
+
+  """Item's sale price multiplied by the quantity."""
+  extendedSalePrice: Money!
+
+  """URL of an image of this item, accessible on the internet."""
+  imageUrl: String
+
+  """Whether the item is taxable."""
+  isTaxable: Boolean!
+
+  """
+  The net item price before discounts and coupons. It is based on the product default price or sale price (if set) configured in BigCommerce Admin.
+  """
+  listPrice: Money!
+
+  """The item's product name."""
   name: String!
 
   """
-  Currently supports Birthday, Boy, Celebration, Christmas, General, and Girl.
+  An item’s original price is the same as the product default price in the admin panel.
   """
-  theme: CartGiftCertificateTheme!
+  originalPrice: Money!
 
+  """
+  The product is part of a bundle such as a product pick list, then the parentId or the main product id will populate.
+  """
+  parentEntityId: String
+
+  """ID of the product."""
+  productEntityId: Int!
+
+  """Quantity of this item."""
+  quantity: Int!
+
+  """
+  Item's price after all discounts are applied. (The final price before tax calculation).
+  """
+  salePrice: Money!
+
+  """The list of selected options for this product."""
+  selectedOptions: [CartSelectedOption!]!
+
+  """SKU of the variant."""
+  sku: String
+
+  """The product URL."""
+  url: String!
+
+  """ID of the variant."""
+  variantEntityId: Int
+}
+
+"""Discount applied to the cart."""
+type CartDiscount {
+  """The discounted amount applied within a given context."""
+  discountedAmount: Money!
+
+  """ID of the applied discount."""
+  entityId: String!
+}
+
+"""Cart gift certificate"""
+type CartGiftCertificate {
   """
   Value must be between 1.00 and 1,000.00 in the store's default currency.
   """
-  amount: BigDecimal!
+  amount: Money!
 
-  """The total number of certificates"""
-  quantity: Int!
+  """ID of this gift certificate."""
+  entityId: String!
 
-  """Sender of the gift certificate."""
-  sender: CartGiftCertificateSenderInput!
-
-  """Recipient of the gift certificate."""
-  recipient: CartGiftCertificateRecipientInput!
+  """Whether or not the gift certificate is taxable."""
+  isTaxable: Boolean!
 
   """
   Message that will be sent to the gift certificate's recipient. Limited to 200 characters.
   """
   message: String
+
+  """GiftCertificate-provided name that will appear in the control panel."""
+  name: String!
+
+  """Recipient of the gift certificate."""
+  recipient: CartGiftCertificateRecipient!
+
+  """Sender of the gift certificate."""
+  sender: CartGiftCertificateSender!
+
+  """
+  Currently supports Birthday, Boy, Celebration, Christmas, General, and Girl.
+  """
+  theme: CartGiftCertificateTheme!
+}
+
+"""Cart gift certificate input object"""
+input CartGiftCertificateInput {
+  """
+  Value must be between 1.00 and 1,000.00 in the store's default currency.
+  """
+  amount: BigDecimal!
+
+  """
+  Message that will be sent to the gift certificate's recipient. Limited to 200 characters.
+  """
+  message: String
+
+  """GiftCertificate-provided name that will appear in the control panel."""
+  name: String!
+
+  """The total number of certificates"""
+  quantity: Int!
+
+  """Recipient of the gift certificate."""
+  recipient: CartGiftCertificateRecipientInput!
+
+  """Sender of the gift certificate."""
+  sender: CartGiftCertificateSenderInput!
+
+  """
+  Currently supports Birthday, Boy, Celebration, Christmas, General, and Girl.
+  """
+  theme: CartGiftCertificateTheme!
+}
+
+"""Cart gift certificate recipient"""
+type CartGiftCertificateRecipient {
+  """Contact's email address."""
+  email: String!
+
+  """Contact's name."""
+  name: String!
 }
 
 """Cart gift certificate recipient input object"""
 input CartGiftCertificateRecipientInput {
-  """Contact's name."""
-  name: String!
-
   """Contact's email address."""
   email: String!
+
+  """Contact's name."""
+  name: String!
+}
+
+"""Cart gift certificate sender"""
+type CartGiftCertificateSender {
+  """Contact's email address."""
+  email: String!
+
+  """Contact's name."""
+  name: String!
 }
 
 """Cart gift certificate sender input object"""
 input CartGiftCertificateSenderInput {
-  """Contact's name."""
-  name: String!
-
   """Contact's email address."""
   email: String!
+
+  """Contact's name."""
+  name: String!
+}
+
+"""Cart gift certificate theme"""
+enum CartGiftCertificateTheme {
+  BIRTHDAY
+  BOY
+  CELEBRATION
+  CHRISTMAS
+  GENERAL
+  GIRL
+}
+
+"""Gift wrapping for the item"""
+type CartGiftWrapping {
+  """Gift-wrapping price per product."""
+  amount: Money!
+
+  """Custom gift message along with items wrapped in this wrapping option."""
+  message: String
+
+  """Name of the gift-wrapping option."""
+  name: String!
 }
 
 """Cart line item input object"""
 input CartLineItemInput {
-  """Total number of line items."""
-  quantity: Int!
-
   """The product id"""
   productEntityId: Int!
 
-  """The variant id"""
-  variantEntityId: Int
+  """Total number of line items."""
+  quantity: Int!
 
   """The list of selected options for this item."""
   selectedOptions: CartSelectedOptionsInput
+
+  """The variant id"""
+  variantEntityId: Int
+}
+
+"""Cart line items"""
+type CartLineItems {
+  """List of custom items."""
+  customItems: [CartCustomItem!]!
+
+  """List of digital items."""
+  digitalItems: [CartDigitalItem!]!
+
+  """List of gift certificates."""
+  giftCertificates: [CartGiftCertificate!]!
+
+  """List of physical items."""
+  physicalItems: [CartPhysicalItem!]!
+
+  """Total number of line items."""
+  totalQuantity: Int!
 }
 
 """Cart mutations"""
 type CartMutations {
+  """Adds line item(s) to the cart."""
+  addCartLineItems(
+    """Add cart line items input object"""
+    input: AddCartLineItemsInput!
+  ): AddCartLineItemsResult
+
+  """Assign cart to the customer."""
+  assignCartToCustomer(
+    """Assign cart to the customer input object."""
+    input: AssignCartToCustomerInput!
+  ): AssignCartToCustomerResult
+
   """Creates a cart and generates a cart ID."""
   createCart(
     """Create cart input object"""
@@ -126,18 +854,6 @@ type CartMutations {
     input: DeleteCartInput!
   ): DeleteCartResult
 
-  """Adds line item(s) to the cart."""
-  addCartLineItems(
-    """Add cart line items input object"""
-    input: AddCartLineItemsInput!
-  ): AddCartLineItemsResult
-
-  """Updates line item in the cart."""
-  updateCartLineItem(
-    """Update cart line item input object"""
-    input: UpdateCartLineItemInput!
-  ): UpdateCartLineItemResult
-
   """
   Delete line item in the cart. Removing the last line item in the Cart deletes the Cart.
   """
@@ -146,23 +862,117 @@ type CartMutations {
     input: DeleteCartLineItemInput!
   ): DeleteCartLineItemResult
 
+  """Unassign cart from the customer."""
+  unassignCartFromCustomer(
+    """Unassign cart from the customer input object."""
+    input: UnassignCartFromCustomerInput!
+  ): UnassignCartFromCustomerResult
+
   """Update currency of the cart."""
   updateCartCurrency(
     """Update cart currency input object"""
     input: UpdateCartCurrencyInput!
   ): UpdateCartCurrencyResult
 
-  """Assign cart to the customer."""
-  assignCartToCustomer(
-    """Assign cart to the customer input object."""
-    input: AssignCartToCustomerInput!
-  ): AssignCartToCustomerResult
+  """Updates line item in the cart."""
+  updateCartLineItem(
+    """Update cart line item input object"""
+    input: UpdateCartLineItemInput!
+  ): UpdateCartLineItemResult
+}
 
-  """Unassign cart from the customer."""
-  unassignCartFromCustomer(
-    """Unassign cart from the customer input object."""
-    input: UnassignCartFromCustomerInput!
-  ): UnassignCartFromCustomerResult
+"""Cart physical item."""
+type CartPhysicalItem {
+  """The product brand."""
+  brand: String
+
+  """The total value of all coupons applied to this item."""
+  couponAmount: Money!
+
+  """
+  The total value of all discounts applied to this item (excluding coupon).
+  """
+  discountedAmount: Money!
+
+  """List of discounts applied to this item."""
+  discounts: [CartDiscount!]!
+
+  """The line-item ID."""
+  entityId: String!
+
+  """Item's list price multiplied by the quantity."""
+  extendedListPrice: Money!
+
+  """Item's sale price multiplied by the quantity."""
+  extendedSalePrice: Money!
+
+  """Gift wrapping for this item."""
+  giftWrapping: CartGiftWrapping
+
+  """URL of an image of this item, accessible on the internet."""
+  imageUrl: String
+
+  """Whether this item requires shipping to a physical address."""
+  isShippingRequired: Boolean!
+
+  """Whether the item is taxable."""
+  isTaxable: Boolean!
+
+  """
+  The net item price before discounts and coupons. It is based on the product default price or sale price (if set) configured in BigCommerce Admin.
+  """
+  listPrice: Money!
+
+  """The item's product name."""
+  name: String!
+
+  """
+  An item’s original price is the same as the product default price in the admin panel.
+  """
+  originalPrice: Money!
+
+  """
+  The product is part of a bundle such as a product pick list, then the parentId or the main product id will populate.
+  """
+  parentEntityId: String
+
+  """ID of the product."""
+  productEntityId: Int!
+
+  """Quantity of this item."""
+  quantity: Int!
+
+  """
+  Item's price after all discounts are applied. (The final price before tax calculation).
+  """
+  salePrice: Money!
+
+  """The list of selected options for this item."""
+  selectedOptions: [CartSelectedOption!]!
+
+  """SKU of the variant."""
+  sku: String
+
+  """The product URL."""
+  url: String!
+
+  """ID of the variant."""
+  variantEntityId: Int
+}
+
+"""Selected checkbox option."""
+type CartSelectedCheckboxOption implements CartSelectedOption {
+  """The product option ID."""
+  entityId: Int!
+
+  """The product option name."""
+  name: String!
+
+  """The product option value."""
+  value: String!
+
+  """The product option value ID."""
+  valueEntityId: Int!
 }
 
 """Cart selected checkbox option input object"""
@@ -174,13 +984,49 @@ input CartSelectedCheckboxOptionInput {
   optionValueEntityId: Int!
 }
 
+"""Selected date field option."""
+type CartSelectedDateFieldOption implements CartSelectedOption {
+  """Date value."""
+  date: DateTimeExtended!
+
+  """The product option ID."""
+  entityId: Int!
+
+  """The product option name."""
+  name: String!
+}
+
 """Cart selected date field option input object"""
 input CartSelectedDateFieldOptionInput {
-  """The product option ID."""
-  optionEntityId: Int!
-
   """Date value."""
   date: DateTime!
+
+  """The product option ID."""
+  optionEntityId: Int!
+}
+
+"""Selected file upload option."""
+type CartSelectedFileUploadOption implements CartSelectedOption {
+  """The product option ID."""
+  entityId: Int!
+
+  """Uploaded file name."""
+  fileName: String!
+
+  """The product option name."""
+  name: String!
+}
+
+"""Selected multi-line text field option."""
+type CartSelectedMultiLineTextFieldOption implements CartSelectedOption {
+  """The product option ID."""
+  entityId: Int!
+
+  """The product option name."""
+  name: String!
+
+  """Text value."""
+  text: String!
 }
 
 """Cart selected multiple line text field option input object"""
@@ -192,6 +1038,21 @@ input CartSelectedMultiLineTextFieldOptionInput {
   text: String!
 }
 
+"""Selected multiple choice option."""
+type CartSelectedMultipleChoiceOption implements CartSelectedOption {
+  """The product option ID."""
+  entityId: Int!
+
+  """The product option name."""
+  name: String!
+
+  """The product option value."""
+  value: String!
+
+  """The product option value ID."""
+  valueEntityId: Int!
+}
+
 """Cart selected multiple choice option input object"""
 input CartSelectedMultipleChoiceOptionInput {
   """The product option ID."""
@@ -201,13 +1062,34 @@ input CartSelectedMultipleChoiceOptionInput {
   optionValueEntityId: Int!
 }
 
-"""Cart selected number field option input object"""
-input CartSelectedNumberFieldOptionInput {
+"""Selected number field option."""
+type CartSelectedNumberFieldOption implements CartSelectedOption {
   """The product option ID."""
-  optionEntityId: Int!
+  entityId: Int!
+
+  """The product option name."""
+  name: String!
 
   """Number value."""
   number: Float!
+}
+
+"""Cart selected number field option input object"""
+input CartSelectedNumberFieldOptionInput {
+  """Number value."""
+  number: Float!
+
+  """The product option ID."""
+  optionEntityId: Int!
+}
+
+"""Selected option for the item."""
+interface CartSelectedOption {
+  """The product option ID."""
+  entityId: Int!
+
+  """The product option name."""
+  name: String!
 }
 
 """Selected product options."""
@@ -231,6 +1113,18 @@ input CartSelectedOptionsInput {
   textFields: [CartSelectedTextFieldOptionInput!]
 }
 
+"""Selected text field option."""
+type CartSelectedTextFieldOption implements CartSelectedOption {
+  """The product option ID."""
+  entityId: Int!
+
+  """The product option name."""
+  name: String!
+
+  """Text value."""
+  text: String!
+}
+
 """Cart selected multiple line text field option input object"""
 input CartSelectedTextFieldOptionInput {
   """The product option ID."""
@@ -240,16 +1134,414 @@ input CartSelectedTextFieldOptionInput {
   text: String!
 }
 
+"""Storefront catalog settings."""
+type Catalog {
+  """Product comparisons enabled."""
+  productComparisonsEnabled: Boolean
+}
+
+"""Product Option"""
+interface CatalogProductOption {
+  """Display name for the option."""
+  displayName: String!
+
+  """Unique ID for the option."""
+  entityId: Int!
+
+  """One of the option values is required to be selected for the checkout."""
+  isRequired: Boolean!
+
+  """Indicates whether it is a variant option or modifier."""
+  isVariantOption: Boolean!
+}
+
+"""Product Option Value"""
+interface CatalogProductOptionValue {
+  """Unique ID for the option value."""
+  entityId: Int!
+
+  """Indicates whether this value is the chosen default selected value."""
+  isDefault: Boolean!
+
+  """
+  Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level.
+  """
+  isSelected: Boolean
+
+  """Label for the option value."""
+  label: String!
+}
+
+"""Category"""
+type Category implements Node {
+  """Category breadcrumbs."""
+  breadcrumbs(
+    after: String
+    before: String
+
+    """The depth of the breadcrumbs."""
+    depth: Int!
+    first: Int
+    last: Int
+  ): BreadcrumbConnection!
+
+  """Default image for the category."""
+  defaultImage: Image
+
+  """Category default product sort."""
+  defaultProductSort: CategoryProductSort
+
+  """Category description."""
+  description: String!
+
+  """Unique ID for the category."""
+  entityId: Int!
+
+  """The ID of an object"""
+  id: ID!
+
+  """Metafield data related to a category."""
+  metafields(
+    after: String
+    before: String
+    first: Int
+
+    """Labels for identifying metafield data values."""
+    keys: [String!] = []
+    last: Int
+
+    """Metafield namespace filter"""
+    namespace: String!
+  ): MetafieldConnection!
+
+  """Category name."""
+  name: String!
+
+  """Category path."""
+  path: String!
+
+  """List of products associated with category"""
+  products(
+    after: String
+    before: String
+    first: Int
+
+    """
+    When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
+    """
+    hideOutOfStock: Boolean
+    last: Int
+
+    """Product sorting by categories."""
+    sortBy: CategoryProductSort
+  ): ProductConnection!
+
+  """Category SEO details."""
+  seo: SeoDetails!
+
+  """Category shop by price money ranges."""
+  shopByPriceRanges(
+    after: String
+    before: String
+
+    """Please select a currency"""
+    currencyCode: currencyCode
+    first: Int
+
+    """Tax will be included if enabled"""
+    includeTax: Boolean = false
+    last: Int
+  ): ShopByPriceConnection! @deprecated(reason: "Alpha version. Do not use in production.")
+}
+
+"""A connection to a list of items."""
+type CategoryConnection {
+  """A list of edges."""
+  edges: [CategoryEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+}
+
+"""An edge in a connection."""
+type CategoryEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: Category!
+}
+
+"""A connection to a list of items."""
+type CategoryPageBannerConnection {
+  """A list of edges."""
+  edges: [CategoryPageBannerEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+}
+
+"""An edge in a connection."""
+type CategoryPageBannerEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: Banner!
+}
+
+"""Product sorting by categories."""
+enum CategoryProductSort {
+  A_TO_Z
+  BEST_REVIEWED
+  BEST_SELLING
+  DEFAULT
+  FEATURED
+  HIGHEST_PRICE
+  LOWEST_PRICE
+  NEWEST
+  Z_TO_A
+}
+
+"""Category Filter"""
+type CategorySearchFilter implements SearchProductFilter {
+  """List of available categories."""
+  categories(after: String, before: String, first: Int, last: Int): CategorySearchFilterItemConnection!
+
+  """Indicates whether to display product count next to the filter."""
+  displayProductCount: Boolean!
+
+  """Indicates whether filter is collapsed by default."""
+  isCollapsedByDefault: Boolean!
+
+  """Display name for the filter."""
+  name: String!
+}
+
+"""Specific category filter item"""
+type CategorySearchFilterItem {
+  """Category ID."""
+  entityId: Int!
+
+  """Indicates whether category is selected."""
+  isSelected: Boolean!
+
+  """Category name."""
+  name: String!
+
+  """Indicates how many products available for this filter."""
+  productCount: Int!
+
+  """List of available sub-categories."""
+  subCategories(after: String, before: String, first: Int, last: Int): SubCategorySearchFilterItemConnection!
+}
+
+"""A connection to a list of items."""
+type CategorySearchFilterItemConnection {
+  """A list of edges."""
+  edges: [CategorySearchFilterItemEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+}
+
+"""An edge in a connection."""
+type CategorySearchFilterItemEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: CategorySearchFilterItem!
+}
+
+"""An item in a tree of categories."""
+type CategoryTreeItem {
+  """Subcategories of this category"""
+  children: [CategoryTreeItem!]!
+
+  """The description of this category."""
+  description: String!
+
+  """The id category."""
+  entityId: Int!
+
+  """If a category has children."""
+  hasChildren: Boolean!
+
+  """The category image."""
+  image: Image
+
+  """The name of category."""
+  name: String!
+
+  """Path assigned to this category"""
+  path: String!
+
+  """The number of products in this category."""
+  productCount: Int!
+}
+
+"""The Channel"""
+type Channel {
+  """The ID of the channel."""
+  entityId: Long!
+
+  """Metafield data related to a channel."""
+  metafields(
+    after: String
+    before: String
+    first: Int
+
+    """Labels for identifying metafield data values."""
+    keys: [String!] = []
+    last: Int
+
+    """Metafield namespace filter"""
+    namespace: String!
+  ): MetafieldConnection!
+}
+
+"""A simple yes/no question represented by a checkbox."""
+type CheckboxOption implements CatalogProductOption {
+  """Indicates the default checked status."""
+  checkedByDefault: Boolean!
+
+  """Display name for the option."""
+  displayName: String!
+
+  """Unique ID for the option."""
+  entityId: Int!
+
+  """One of the option values is required to be selected for the checkout."""
+  isRequired: Boolean!
+
+  """Indicates whether it is a variant option or modifier."""
+  isVariantOption: Boolean!
+
+  """Label of the checkbox option."""
+  label: String!
+}
+
+"""Checkout settings."""
+type CheckoutSettings {
+  """Indicates whether ReCaptcha is enabled on checkout."""
+  reCaptchaEnabled: Boolean!
+}
+
+"""Additional information about the collection."""
+type CollectionInfo {
+  """Total items in the collection despite pagination."""
+  totalItems: Long
+}
+
+"""Contact field"""
+type ContactField {
+  """Store address line."""
+  address: String!
+
+  """Store address type."""
+  addressType: String!
+
+  """Store country."""
+  country: String!
+
+  """Store email."""
+  email: String!
+
+  """Store phone number."""
+  phone: String!
+}
+
+"""A contact page."""
+type ContactPage implements Node & WebPage {
+  """The contact fields that should be used on the page."""
+  contactFields: [String!]!
+
+  """Unique ID for the web page."""
+  entityId: Int!
+
+  """The body of the page."""
+  htmlBody: String!
+
+  """The ID of an object"""
+  id: ID!
+
+  """Whether or not the page should be visible in the navigation menu."""
+  isVisibleInNavigation: Boolean!
+
+  """Page name."""
+  name: String!
+
+  """Unique ID for the parent page."""
+  parentEntityId: Int
+
+  """The URL path of the page."""
+  path: String!
+
+  """The plain text summary of the page body."""
+  plainTextSummary(
+    """The max number of characters for the plain text summary."""
+    characterLimit: Int = 120
+  ): String!
+
+  """The rendered regions for the web page."""
+  renderedRegions: RenderedRegionsByPageType!
+
+  """Page SEO details."""
+  seo: SeoDetails!
+}
+
+"""The page content."""
+type Content {
+  """Banners details."""
+  banners: Banners
+
+  """Blog details."""
+  blog: Blog
+
+  """Page details."""
+  page(
+    """Id of the page to fetch."""
+    entityId: Int!
+  ): WebPage
+
+  """Details of the pages."""
+  pages(
+    after: String
+    before: String
+
+    """Filters for querying web pages"""
+    filters: WebPagesFiltersInput
+    first: Int
+    last: Int
+  ): PageConnection!
+
+  """The rendered regions by specific page."""
+  renderedRegionsByPageType(
+    """Rendered regions filter by page type."""
+    pageType: PageType!
+  ): RenderedRegionsByPageType!
+
+  """The rendered regions by specific page and id."""
+  renderedRegionsByPageTypeAndEntityId(
+    """Rendered regions filter by id."""
+    entityId: Long!
+
+    """Rendered regions filter by page type and id."""
+    entityPageType: EntityPageType!
+  ): RenderedRegionsByPageType!
+}
+
 """Create cart input object"""
 input CreateCartInput {
-  """List of cart line items"""
-  lineItems: [CartLineItemInput!]
+  """ISO-4217 currency code"""
+  currencyCode: String
 
   """List of gift certificates"""
   giftCertificates: [CartGiftCertificateInput!]
 
-  """ISO-4217 currency code"""
-  currencyCode: String
+  """List of cart line items"""
+  lineItems: [CartLineItemInput!]
 
   """Locale of the cart"""
   locale: String
@@ -263,20 +1555,229 @@ type CreateCartResult {
 
 """Create wishlist input object"""
 input CreateWishlistInput {
-  """A wishlist name"""
-  name: String!
-
   """A wishlist visibility mode"""
   isPublic: Boolean!
 
   """A wishlist items"""
   items: [WishlistItemInput!]
+
+  """A wishlist name"""
+  name: String!
 }
 
 """Create wishlist"""
 type CreateWishlistResult {
   """The newly created wishlist"""
   result: Wishlist!
+}
+
+"""Currency details."""
+type Currency {
+  """Currency code."""
+  code: currencyCode!
+
+  """Currency display settings."""
+  display: CurrencyDisplay!
+
+  """Currency ID."""
+  entityId: Int!
+
+  """Exchange rate relative to default currency."""
+  exchangeRate: Float!
+
+  """Flag image URL."""
+  flagImage: String
+
+  """Indicates whether this currency is active."""
+  isActive: Boolean!
+
+  """Indicates whether this currency is transactional."""
+  isTransactional: Boolean!
+
+  """Currency name."""
+  name: String!
+}
+
+"""A connection to a list of items."""
+type CurrencyConnection {
+  """A list of edges."""
+  edges: [CurrencyEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+}
+
+"""Currency display settings."""
+type CurrencyDisplay {
+  """Currency decimal places."""
+  decimalPlaces: Int!
+
+  """Currency decimal token."""
+  decimalToken: String!
+
+  """Currency symbol."""
+  symbol: String!
+
+  """Currency symbol."""
+  symbolPlacement: CurrencySymbolPosition!
+
+  """Currency thousands token."""
+  thousandsToken: String!
+}
+
+"""An edge in a connection."""
+type CurrencyEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: Currency!
+}
+
+"""Currency symbol position"""
+enum CurrencySymbolPosition {
+  LEFT
+  RIGHT
+}
+
+"""Custom field"""
+type CustomField {
+  """Custom field id."""
+  entityId: Int!
+
+  """Name of the custom field."""
+  name: String!
+
+  """Value of the custom field."""
+  value: String!
+}
+
+"""A connection to a list of items."""
+type CustomFieldConnection {
+  """A list of edges."""
+  edges: [CustomFieldEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+}
+
+"""An edge in a connection."""
+type CustomFieldEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: CustomField!
+}
+
+"""A customer that shops on a store"""
+type Customer {
+  """Customer addresses count."""
+  addressCount: Int!
+
+  """Customer attributes count."""
+  attributeCount: Int!
+
+  """Customer attributes."""
+  attributes: CustomerAttributes!
+
+  """The company name of the customer."""
+  company: String!
+
+  """The customer group id of the customer."""
+  customerGroupId: Int!
+
+  """The email address of the customer."""
+  email: String!
+
+  """The ID of the customer."""
+  entityId: Int!
+
+  """The first name of the customer."""
+  firstName: String!
+
+  """The last name of the customer."""
+  lastName: String!
+
+  """The notes of the customer."""
+  notes: String!
+
+  """The phone number of the customer."""
+  phone: String!
+
+  """Customer store credit."""
+  storeCredit: [Money!]!
+
+  """The tax exempt category of the customer."""
+  taxExemptCategory: String!
+
+  """Customer wishlists."""
+  wishlists(
+    after: String
+    before: String
+
+    """Wishlist filters input"""
+    filters: WishlistFiltersInput
+    first: Int
+    last: Int
+  ): WishlistConnection!
+}
+
+"""A custom, store-specific attribute for a customer"""
+type CustomerAttribute {
+  """The ID of the custom customer attribute"""
+  entityId: Int!
+
+  """The name of the custom customer attribute"""
+  name: String!
+
+  """The value of the custom customer attribute"""
+  value: String
+}
+
+"""Custom, store-specific customer attributes"""
+type CustomerAttributes {
+  """A custom, store-specific attribute for a customer"""
+  attribute(
+    """The ID of the customer attribute"""
+    entityId: Int!
+  ): CustomerAttribute!
+}
+
+"""A calendar for allowing selection of a date."""
+type DateFieldOption implements CatalogProductOption {
+  """The default timestamp of date option."""
+  defaultValue: DateTime
+
+  """Display name for the option."""
+  displayName: String!
+
+  """The earliest timestamp of date option."""
+  earliest: DateTime
+
+  """Unique ID for the option."""
+  entityId: Int!
+
+  """One of the option values is required to be selected for the checkout."""
+  isRequired: Boolean!
+
+  """Indicates whether it is a variant option or modifier."""
+  isVariantOption: Boolean!
+
+  """The latest timestamp of date option."""
+  latest: DateTime
+
+  """Limit date by"""
+  limitDateBy: LimitDateOption!
+}
+
+"""ISO-8601 formatted date in UTC"""
+scalar DateTime
+
+"""Date Time Extended"""
+type DateTimeExtended {
+  """ISO-8601 formatted date in UTC"""
+  utc: DateTime!
 }
 
 """Delete cart input object"""
@@ -296,14 +1797,14 @@ input DeleteCartLineItemInput {
 
 """Delete cart lien item result"""
 type DeleteCartLineItemResult {
-  """The ID of the line item that is deleted as a result of mutation."""
-  deletedLineItemEntityId: String
-
   """The Cart that is updated as a result of mutation."""
   cart: Cart
 
   """The ID of the Cart if it is deleted as a result of mutation."""
   deletedCartEntityId: String
+
+  """The ID of the line item that is deleted as a result of mutation."""
+  deletedLineItemEntityId: String
 }
 
 """Delete cart result"""
@@ -339,1459 +1840,37 @@ input DeleteWishlistsInput {
   entityIds: [Int!]!
 }
 
-"""Login result"""
-type LoginResult {
-  """The result of a login"""
-  result: String! @deprecated(reason: "Use customer node instead.")
-
-  """The currently logged in customer."""
-  customer: Customer
-}
-
-"""Logout result"""
-type LogoutResult {
-  """The result of a logout"""
-  result: String!
-}
-
-type Mutation {
-  """Customer login"""
-  login(
-    """An email of the customer."""
-    email: String!
-
-    """A password of the customer."""
-    password: String!
-  ): LoginResult!
-
-  """Customer logout"""
-  logout: LogoutResult!
-
-  """The wishlist mutations."""
-  wishlist: WishlistMutations!
-
-  """The Cart mutations."""
-  cart: CartMutations!
-}
-
-"""Unassign cart from the customer input object."""
-input UnassignCartFromCustomerInput {
-  """The cart id."""
-  cartEntityId: String!
-}
-
-"""Unassign cart from the customer result."""
-type UnassignCartFromCustomerResult {
-  """The Cart that is updated as a result of mutation."""
-  cart: Cart
-}
-
-"""Update cart currency data object"""
-input UpdateCartCurrencyDataInput {
-  """ISO-4217 currency code"""
-  currencyCode: String!
-}
-
-"""Update cart currency input object"""
-input UpdateCartCurrencyInput {
-  """The cart id"""
-  cartEntityId: String!
-
-  """Update cart currency data object"""
-  data: UpdateCartCurrencyDataInput!
-}
-
-"""Update cart currency result"""
-type UpdateCartCurrencyResult {
-  """The Cart that is updated as a result of mutation."""
-  cart: Cart
-}
-
-"""Update cart line item data object"""
-input UpdateCartLineItemDataInput {
-  """The cart line item"""
-  lineItem: CartLineItemInput
-
-  """The gift certificate"""
-  giftCertificate: CartGiftCertificateInput
-}
-
-"""Update cart line item input object"""
-input UpdateCartLineItemInput {
-  """The cart id"""
-  cartEntityId: String!
-
-  """The line item id"""
-  lineItemEntityId: String!
-
-  """Update cart line item data object"""
-  data: UpdateCartLineItemDataInput!
-}
-
-"""Update cart line item result"""
-type UpdateCartLineItemResult {
-  """The Cart that is updated as a result of mutation."""
-  cart: Cart
-}
-
-"""Update wishlist input object"""
-input UpdateWishlistInput {
-  """The wishlist id"""
-  entityId: Int!
-
-  """Wishlist data to update"""
-  data: WishlistUpdateDataInput!
-}
-
-"""Update wishlist"""
-type UpdateWishlistResult {
-  """The wishlist"""
-  result: Wishlist!
-}
-
-"""Wishlist item input object"""
-input WishlistItemInput {
-  """An id of the product from the wishlist."""
-  productEntityId: Int!
-
-  """An id of the specific product variant from the wishlist."""
-  variantEntityId: Int
-}
-
-"""The wishlist mutations."""
-type WishlistMutations {
-  """Create wishlist"""
-  createWishlist(
-    """Create wishlists input"""
-    input: CreateWishlistInput!
-  ): CreateWishlistResult
-
-  """Add wishlist items"""
-  addWishlistItems(
-    """Add wishlist items input"""
-    input: AddWishlistItemsInput!
-  ): AddWishlistItemsResult
-
-  """Delete wishlist items"""
-  deleteWishlistItems(
-    """Delete wishlist items input"""
-    input: DeleteWishlistItemsInput!
-  ): DeleteWishlistItemsResult
-
-  """Update wishlist"""
-  updateWishlist(
-    """Update wishlist items input"""
-    input: UpdateWishlistInput!
-  ): UpdateWishlistResult
-
-  """Delete wishlist"""
-  deleteWishlists(
-    """Delete wishlists input"""
-    input: DeleteWishlistsInput!
-  ): DeleteWishlistResult
-}
-
-"""Wishlist data to update"""
-input WishlistUpdateDataInput {
-  """A new wishlist name"""
-  name: String
-
-  """A new wishlist visibility mode"""
-  isPublic: Boolean
-}
-
-"""Aggregated"""
-type Aggregated {
-  """
-  Number of available products in stock. This can be 'null' if inventory is not set orif the store's Inventory Settings disable displaying stock levels on the storefront.
-  """
-  availableToSell: Long!
-
-  """
-  Indicates a threshold low-stock level.  This can be 'null' if the inventory warning level is not set or if the store's Inventory Settings disable displaying stock levels on the storefront.
-  """
-  warningLevel: Int!
-}
-
-"""Aggregated Product Inventory"""
-type AggregatedInventory {
-  """
-  Number of available products in stock. This can be 'null' if inventory is not set orif the store's Inventory Settings disable displaying stock levels on the storefront.
-  """
-  availableToSell: Int!
-
-  """
-  Indicates a threshold low-stock level. This can be 'null' if the inventory warning level is not set or if the store's Inventory Settings disable displaying stock levels on the storefront.
-  """
-  warningLevel: Int!
-}
-
-"""Author"""
-type Author {
-  """Author name."""
-  name: String!
-}
-
-"""A blog index page."""
-type BlogIndexPage implements WebPage {
-  """The URL path of the page."""
-  path: String!
-
-  """The rendered regions for the web page."""
-  renderedRegions: RenderedRegionsByPageType!
-
-  """Unique ID for the web page."""
-  entityId: Int!
-
-  """Unique ID for the parent page."""
-  parentEntityId: Int
-
-  """Page name."""
-  name: String!
-
-  """Whether or not the page should be visible in the navigation menu."""
-  isVisibleInNavigation: Boolean!
-
-  """Page SEO details."""
-  seo: SeoDetails!
-}
-
-"""Brand"""
-type Brand implements Node {
-  """The ID of an object"""
-  id: ID!
-
-  """Id of the brand."""
-  entityId: Int!
-
-  """Name of the brand."""
-  name: String!
-
-  """Default image for brand."""
-  defaultImage: Image
-
-  """Page title for the brand."""
-  pageTitle: String! @deprecated(reason: "Use SEO details instead.")
-
-  """Meta description for the brand."""
-  metaDesc: String! @deprecated(reason: "Use SEO details instead.")
-
-  """Meta keywords for the brand."""
-  metaKeywords: [String!]! @deprecated(reason: "Use SEO details instead.")
-
-  """Brand SEO details."""
-  seo: SeoDetails!
-
-  """Search keywords for the brand."""
-  searchKeywords: [String!]!
-
-  """Path for the brand page."""
-  path: String!
-
-  """List of products associated with the brand."""
-  products(
-    before: String
-    after: String
-    first: Int
-    last: Int
-
-    """
-    When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
-    """
-    hideOutOfStock: Boolean
-  ): ProductConnection!
-
-  """Metafield data related to a brand."""
-  metafields(
-    """Metafield namespace filter"""
-    namespace: String!
-
-    """Labels for identifying metafield data values."""
-    keys: [String!] = []
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): MetafieldConnection!
-}
-
-"""A connection to a list of items."""
-type BrandConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [BrandEdge]
-}
-
-"""An edge in a connection."""
-type BrandEdge {
-  """The item at the end of the edge."""
-  node: Brand!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-"""Brand Filter"""
-type BrandSearchFilter implements SearchProductFilter {
-  """Indicates whether to display product count next to the filter."""
-  displayProductCount: Boolean!
-
-  """List of available brands."""
-  brands(before: String, after: String, first: Int, last: Int): BrandSearchFilterItemConnection!
-
-  """Display name for the filter."""
-  name: String!
-
-  """Indicates whether filter is collapsed by default."""
-  isCollapsedByDefault: Boolean!
-}
-
-"""Specific brand filter item"""
-type BrandSearchFilterItem {
-  """Brand ID."""
-  entityId: Int!
-
-  """Brand name."""
-  name: String!
-
-  """Indicates whether brand is selected."""
-  isSelected: Boolean!
-
-  """Indicates how many products available for this filter."""
-  productCount: Int!
-}
-
-"""A connection to a list of items."""
-type BrandSearchFilterItemConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [BrandSearchFilterItemEdge]
-}
-
-"""An edge in a connection."""
-type BrandSearchFilterItemEdge {
-  """The item at the end of the edge."""
-  node: BrandSearchFilterItem!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-"""Breadcrumb"""
-type Breadcrumb {
-  """Category id."""
-  entityId: Int!
-
-  """Name of the category."""
-  name: String!
-}
-
-"""A connection to a list of items."""
-type BreadcrumbConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [BreadcrumbEdge]
-}
-
-"""An edge in a connection."""
-type BreadcrumbEdge {
-  """The item at the end of the edge."""
-  node: Breadcrumb!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-"""Bulk pricing tier that sets a fixed price for the product or variant."""
-type BulkPricingFixedPriceDiscount implements BulkPricingTier {
-  """This price will override the current product price."""
-  price: BigDecimal!
-
-  """Minimum item quantity that applies to this bulk pricing tier."""
-  minimumQuantity: Int!
-
-  """
-  Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound.
-  """
-  maximumQuantity: Int
-}
-
-"""
-Bulk pricing tier that reduces the price of the product or variant by a percentage.
-"""
-type BulkPricingPercentageDiscount implements BulkPricingTier {
-  """The percentage that will be removed from the product price."""
-  percentOff: BigDecimal!
-
-  """Minimum item quantity that applies to this bulk pricing tier."""
-  minimumQuantity: Int!
-
-  """
-  Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound.
-  """
-  maximumQuantity: Int
-}
-
-"""
-Bulk pricing tier that will subtract an amount from the price of the product or variant.
-"""
-type BulkPricingRelativePriceDiscount implements BulkPricingTier {
-  """
-  The price of the product/variant will be reduced by this priceAdjustment.
-  """
-  priceAdjustment: BigDecimal!
-
-  """Minimum item quantity that applies to this bulk pricing tier."""
-  minimumQuantity: Int!
-
-  """
-  Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound.
-  """
-  maximumQuantity: Int
-}
-
-"""
-A set of bulk pricing tiers that define price discounts which apply when purchasing specified quantities of a product or variant.
-"""
-interface BulkPricingTier {
-  """Minimum item quantity that applies to this bulk pricing tier."""
-  minimumQuantity: Int!
-
-  """
-  Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound.
-  """
-  maximumQuantity: Int
-}
-
-"""A cart"""
-type Cart implements Node {
-  """The ID of an object"""
-  id: ID!
-
-  """Cart ID."""
-  entityId: String!
-
-  """ISO-4217 currency code."""
-  currencyCode: String!
-
-  """Whether this item is taxable."""
-  isTaxIncluded: Boolean!
-
-  """Cost of cart's contents, before applying discounts."""
-  baseAmount: Money!
-
-  """Discounted amount."""
-  discountedAmount: Money!
-
-  """
-  Sum of line-items amounts, minus cart-level discounts and coupons. This amount includes taxes (where applicable).
-  """
-  amount: Money!
-
-  """List of discounts applied to this cart."""
-  discounts: [CartDiscount!]!
-
-  """List of line items."""
-  lineItems: CartLineItems!
-
-  """Time when the cart was created."""
-  createdAt: DateTimeExtended!
-
-  """Time when the cart was last updated."""
-  updatedAt: DateTimeExtended!
-
-  """Locale of the cart."""
-  locale: String!
-}
-
-"""Cart custom item."""
-type CartCustomItem {
-  """ID of the custom item."""
-  entityId: String!
-
-  """Custom item sku."""
-  sku: String
-
-  """Custom item name."""
-  name: String!
-
-  """Quantity of this item."""
-  quantity: Int!
-
-  """
-  Price of the item. With or without tax depending on your stores set up.
-  """
-  listPrice: Money!
-
-  """Item's list price multiplied by the quantity."""
-  extendedListPrice: Money!
-}
-
-"""Cart digital item."""
-type CartDigitalItem {
-  """The line-item ID."""
-  entityId: String!
-
-  """
-  The product is part of a bundle such as a product pick list, then the parentId or the main product id will populate.
-  """
-  parentEntityId: String
-
-  """ID of the product."""
-  productEntityId: Int!
-
-  """ID of the variant."""
-  variantEntityId: Int
-
-  """SKU of the variant."""
-  sku: String
-
-  """The item's product name."""
-  name: String!
-
-  """The product URL."""
-  url: String!
-
-  """URL of an image of this item, accessible on the internet."""
-  imageUrl: String
-
-  """The product brand."""
-  brand: String
-
-  """Quantity of this item."""
-  quantity: Int!
-
-  """Whether the item is taxable."""
-  isTaxable: Boolean!
-
-  """List of discounts applied to this item."""
-  discounts: [CartDiscount!]!
-
-  """
-  The total value of all discounts applied to this item (excluding coupon).
-  """
-  discountedAmount: Money!
-
-  """The total value of all coupons applied to this item."""
-  couponAmount: Money!
-
-  """
-  The net item price before discounts and coupons. It is based on the product default price or sale price (if set) configured in BigCommerce Admin.
-  """
-  listPrice: Money!
-
-  """
-  An item’s original price is the same as the product default price in the admin panel.
-  """
-  originalPrice: Money!
-
-  """
-  Item's price after all discounts are applied. (The final price before tax calculation).
-  """
-  salePrice: Money!
-
-  """Item's list price multiplied by the quantity."""
-  extendedListPrice: Money!
-
-  """Item's sale price multiplied by the quantity."""
-  extendedSalePrice: Money!
-
-  """The list of selected options for this product."""
-  selectedOptions: [CartSelectedOption!]!
-}
-
-"""Discount applied to the cart."""
-type CartDiscount {
-  """ID of the applied discount."""
-  entityId: String!
-
-  """The discounted amount applied within a given context."""
-  discountedAmount: Money!
-}
-
-"""Cart gift certificate"""
-type CartGiftCertificate {
-  """ID of this gift certificate."""
-  entityId: String!
-
-  """GiftCertificate-provided name that will appear in the control panel."""
-  name: String!
-
-  """
-  Currently supports Birthday, Boy, Celebration, Christmas, General, and Girl.
-  """
-  theme: CartGiftCertificateTheme!
-
-  """
-  Value must be between 1.00 and 1,000.00 in the store's default currency.
-  """
-  amount: Money!
-
-  """Whether or not the gift certificate is taxable."""
-  isTaxable: Boolean!
-
-  """Sender of the gift certificate."""
-  sender: CartGiftCertificateSender!
-
-  """Recipient of the gift certificate."""
-  recipient: CartGiftCertificateRecipient!
-
-  """
-  Message that will be sent to the gift certificate's recipient. Limited to 200 characters.
-  """
-  message: String
-}
-
-"""Cart gift certificate recipient"""
-type CartGiftCertificateRecipient {
-  """Contact's name."""
-  name: String!
-
-  """Contact's email address."""
-  email: String!
-}
-
-"""Cart gift certificate sender"""
-type CartGiftCertificateSender {
-  """Contact's name."""
-  name: String!
-
-  """Contact's email address."""
-  email: String!
-}
-
-"""Cart gift certificate theme"""
-enum CartGiftCertificateTheme {
-  BIRTHDAY
-  BOY
-  CELEBRATION
-  CHRISTMAS
-  GENERAL
-  GIRL
-}
-
-"""Gift wrapping for the item"""
-type CartGiftWrapping {
-  """Name of the gift-wrapping option."""
-  name: String!
-
-  """Gift-wrapping price per product."""
-  amount: Money!
-
-  """Custom gift message along with items wrapped in this wrapping option."""
-  message: String
-}
-
-"""Cart line items"""
-type CartLineItems {
-  """List of physical items."""
-  physicalItems: [CartPhysicalItem!]!
-
-  """List of digital items."""
-  digitalItems: [CartDigitalItem!]!
-
-  """List of gift certificates."""
-  giftCertificates: [CartGiftCertificate!]!
-
-  """List of custom items."""
-  customItems: [CartCustomItem!]!
-
-  """Total number of line items."""
-  totalQuantity: Int!
-}
-
-"""Cart physical item."""
-type CartPhysicalItem {
-  """The line-item ID."""
-  entityId: String!
-
-  """
-  The product is part of a bundle such as a product pick list, then the parentId or the main product id will populate.
-  """
-  parentEntityId: String
-
-  """ID of the product."""
-  productEntityId: Int!
-
-  """ID of the variant."""
-  variantEntityId: Int
-
-  """SKU of the variant."""
-  sku: String
-
-  """The item's product name."""
-  name: String!
-
-  """The product URL."""
-  url: String!
-
-  """URL of an image of this item, accessible on the internet."""
-  imageUrl: String
-
-  """The product brand."""
-  brand: String
-
-  """Quantity of this item."""
-  quantity: Int!
-
-  """Whether the item is taxable."""
-  isTaxable: Boolean!
-
-  """List of discounts applied to this item."""
-  discounts: [CartDiscount!]!
-
-  """
-  The total value of all discounts applied to this item (excluding coupon).
-  """
-  discountedAmount: Money!
-
-  """The total value of all coupons applied to this item."""
-  couponAmount: Money!
-
-  """
-  The net item price before discounts and coupons. It is based on the product default price or sale price (if set) configured in BigCommerce Admin.
-  """
-  listPrice: Money!
-
-  """
-  An item’s original price is the same as the product default price in the admin panel.
-  """
-  originalPrice: Money!
-
-  """
-  Item's price after all discounts are applied. (The final price before tax calculation).
-  """
-  salePrice: Money!
-
-  """Item's list price multiplied by the quantity."""
-  extendedListPrice: Money!
-
-  """Item's sale price multiplied by the quantity."""
-  extendedSalePrice: Money!
-
-  """Whether this item requires shipping to a physical address."""
-  isShippingRequired: Boolean!
-
-  """The list of selected options for this item."""
-  selectedOptions: [CartSelectedOption!]!
-
-  """Gift wrapping for this item."""
-  giftWrapping: CartGiftWrapping
-}
-
-"""Selected checkbox option."""
-type CartSelectedCheckboxOption implements CartSelectedOption {
-  """The product option ID."""
-  entityId: Int!
-
-  """The product option name."""
-  name: String!
-
-  """The product option value."""
-  value: String!
-
-  """The product option value ID."""
-  valueEntityId: Int!
-}
-
-"""Selected date field option."""
-type CartSelectedDateFieldOption implements CartSelectedOption {
-  """The product option ID."""
-  entityId: Int!
-
-  """The product option name."""
-  name: String!
-
-  """Date value."""
-  date: DateTimeExtended!
-}
-
-"""Selected file upload option."""
-type CartSelectedFileUploadOption implements CartSelectedOption {
-  """The product option ID."""
-  entityId: Int!
-
-  """The product option name."""
-  name: String!
-
-  """Uploaded file name."""
-  fileName: String!
-}
-
-"""Selected multi-line text field option."""
-type CartSelectedMultiLineTextFieldOption implements CartSelectedOption {
-  """The product option ID."""
-  entityId: Int!
-
-  """The product option name."""
-  name: String!
-
-  """Text value."""
-  text: String!
-}
-
-"""Selected multiple choice option."""
-type CartSelectedMultipleChoiceOption implements CartSelectedOption {
-  """The product option ID."""
-  entityId: Int!
-
-  """The product option name."""
-  name: String!
-
-  """The product option value."""
-  value: String!
-
-  """The product option value ID."""
-  valueEntityId: Int!
-}
-
-"""Selected number field option."""
-type CartSelectedNumberFieldOption implements CartSelectedOption {
-  """The product option ID."""
-  entityId: Int!
-
-  """The product option name."""
-  name: String!
-
-  """Number value."""
-  number: Float!
-}
-
-"""Selected option for the item."""
-interface CartSelectedOption {
-  """The product option ID."""
-  entityId: Int!
-
-  """The product option name."""
-  name: String!
-}
-
-"""Selected text field option."""
-type CartSelectedTextFieldOption implements CartSelectedOption {
-  """The product option ID."""
-  entityId: Int!
-
-  """The product option name."""
-  name: String!
-
-  """Text value."""
-  text: String!
-}
-
-"""Storefront catalog settings."""
-type Catalog {
-  """Product comparisons enabled."""
-  productComparisonsEnabled: Boolean
-}
-
-"""Product Option"""
-interface CatalogProductOption {
-  """Unique ID for the option."""
-  entityId: Int!
-
-  """Display name for the option."""
-  displayName: String!
-
-  """One of the option values is required to be selected for the checkout."""
-  isRequired: Boolean!
-
-  """Indicates whether it is a variant option or modifier."""
-  isVariantOption: Boolean!
-}
-
-"""Product Option Value"""
-interface CatalogProductOptionValue {
-  """Unique ID for the option value."""
-  entityId: Int!
-
-  """Label for the option value."""
-  label: String!
-
-  """Indicates whether this value is the chosen default selected value."""
-  isDefault: Boolean!
-
-  """
-  Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level.
-  """
-  isSelected: Boolean
-}
-
-"""Category"""
-type Category implements Node {
-  """The ID of an object"""
-  id: ID!
-
-  """Unique ID for the category."""
-  entityId: Int!
-
-  """Category name."""
-  name: String!
-
-  """Category path."""
-  path: String!
-
-  """Default image for the category."""
-  defaultImage: Image
-
-  """Category description."""
-  description: String!
-
-  """Category breadcrumbs."""
-  breadcrumbs(
-    """The depth of the breadcrumbs."""
-    depth: Int!
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): BreadcrumbConnection!
-
-  """List of products associated with category"""
-  products(
-    before: String
-    after: String
-    first: Int
-    last: Int
-
-    """
-    When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
-    """
-    hideOutOfStock: Boolean
-
-    """Product sorting by categories."""
-    sortBy: CategoryProductSort
-  ): ProductConnection!
-
-  """Metafield data related to a category."""
-  metafields(
-    """Metafield namespace filter"""
-    namespace: String!
-
-    """Labels for identifying metafield data values."""
-    keys: [String!] = []
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): MetafieldConnection!
-
-  """Category SEO details."""
-  seo: SeoDetails!
-
-  """Category shop by price money ranges."""
-  shopByPriceRanges(
-    """Please select a currency"""
-    currencyCode: currencyCode
-
-    """Tax will be included if enabled"""
-    includeTax: Boolean = false
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): ShopByPriceConnection! @deprecated(reason: "Alpha version. Do not use in production.")
-
-  """Category default product sort."""
-  defaultProductSort: CategoryProductSort
-}
-
-"""A connection to a list of items."""
-type CategoryConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [CategoryEdge]
-}
-
-"""An edge in a connection."""
-type CategoryEdge {
-  """The item at the end of the edge."""
-  node: Category!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-"""Product sorting by categories."""
-enum CategoryProductSort {
-  A_TO_Z
-  BEST_REVIEWED
-  BEST_SELLING
-  DEFAULT
-  FEATURED
-  HIGHEST_PRICE
-  LOWEST_PRICE
-  NEWEST
-  Z_TO_A
-}
-
-"""Category Filter"""
-type CategorySearchFilter implements SearchProductFilter {
-  """Indicates whether to display product count next to the filter."""
-  displayProductCount: Boolean!
-
-  """List of available categories."""
-  categories(before: String, after: String, first: Int, last: Int): CategorySearchFilterItemConnection!
-
-  """Display name for the filter."""
-  name: String!
-
-  """Indicates whether filter is collapsed by default."""
-  isCollapsedByDefault: Boolean!
-}
-
-"""Specific category filter item"""
-type CategorySearchFilterItem {
-  """Category ID."""
-  entityId: Int!
-
-  """Category name."""
-  name: String!
-
-  """Indicates whether category is selected."""
-  isSelected: Boolean!
-
-  """Indicates how many products available for this filter."""
-  productCount: Int!
-
-  """List of available sub-categories."""
-  subCategories(before: String, after: String, first: Int, last: Int): SubCategorySearchFilterItemConnection!
-}
-
-"""A connection to a list of items."""
-type CategorySearchFilterItemConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [CategorySearchFilterItemEdge]
-}
-
-"""An edge in a connection."""
-type CategorySearchFilterItemEdge {
-  """The item at the end of the edge."""
-  node: CategorySearchFilterItem!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-"""An item in a tree of categories."""
-type CategoryTreeItem {
-  """The id category."""
-  entityId: Int!
-
-  """The name of category."""
-  name: String!
-
-  """Path assigned to this category"""
-  path: String!
-
-  """The description of this category."""
-  description: String!
-
-  """The number of products in this category."""
-  productCount: Int!
-
-  """The category image."""
-  image: Image
-
-  """If a category has children."""
-  hasChildren: Boolean!
-
-  """Subcategories of this category"""
-  children: [CategoryTreeItem!]!
-}
-
-"""The Channel"""
-type Channel {
-  """The ID of the channel."""
-  entityId: Long!
-
-  """Metafield data related to a channel."""
-  metafields(
-    """Metafield namespace filter"""
-    namespace: String!
-
-    """Labels for identifying metafield data values."""
-    keys: [String!] = []
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): MetafieldConnection!
-}
-
-"""A simple yes/no question represented by a checkbox."""
-type CheckboxOption implements CatalogProductOption {
-  """Indicates the default checked status."""
-  checkedByDefault: Boolean!
-
-  """Label of the checkbox option."""
-  label: String!
-
-  """Unique ID for the option."""
-  entityId: Int!
-
-  """Display name for the option."""
-  displayName: String!
-
-  """One of the option values is required to be selected for the checkout."""
-  isRequired: Boolean!
-
-  """Indicates whether it is a variant option or modifier."""
-  isVariantOption: Boolean!
-}
-
-"""Checkout settings."""
-type CheckoutSettings {
-  """Indicates whether ReCaptcha is enabled on checkout."""
-  reCaptchaEnabled: Boolean!
-}
-
-"""Additional information about the collection."""
-type CollectionInfo {
-  """Total items in the collection despite pagination."""
-  totalItems: Long
-}
-
-"""Contact field"""
-type ContactField {
-  """Store address line."""
-  address: String!
-
-  """Store country."""
-  country: String!
-
-  """Store address type."""
-  addressType: String!
-
-  """Store email."""
-  email: String!
-
-  """Store phone number."""
-  phone: String!
-}
-
-"""A contact page."""
-type ContactPage implements WebPage & Node {
-  """The ID of an object"""
-  id: ID!
-
-  """The URL path of the page."""
-  path: String!
-
-  """The body of the page."""
-  htmlBody: String!
-
-  """The plain text summary of the page body."""
-  plainTextSummary(
-    """The max number of characters for the plain text summary."""
-    characterLimit: Int = 120
-  ): String!
-
-  """The contact fields that should be used on the page."""
-  contactFields: [String!]!
-
-  """The rendered regions for the web page."""
-  renderedRegions: RenderedRegionsByPageType!
-
-  """Unique ID for the web page."""
-  entityId: Int!
-
-  """Unique ID for the parent page."""
-  parentEntityId: Int
-
-  """Page name."""
-  name: String!
-
-  """Whether or not the page should be visible in the navigation menu."""
-  isVisibleInNavigation: Boolean!
-
-  """Page SEO details."""
-  seo: SeoDetails!
-}
-
-"""The page content."""
-type Content {
-  """The rendered regions by specific page."""
-  renderedRegionsByPageType(
-    """Rendered regions filter by page type."""
-    pageType: PageType!
-  ): RenderedRegionsByPageType!
-
-  """The rendered regions by specific page and id."""
-  renderedRegionsByPageTypeAndEntityId(
-    """Rendered regions filter by id."""
-    entityId: Long!
-
-    """Rendered regions filter by page type and id."""
-    entityPageType: EntityPageType!
-  ): RenderedRegionsByPageType!
-
-  """Details of the pages."""
-  pages(
-    """Filters for querying web pages"""
-    filters: WebPagesFiltersInput
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): PageConnection!
-
-  """Page details."""
-  page(
-    """Id of the page to fetch."""
-    entityId: Int!
-  ): WebPage
-}
-
-"""Currency details."""
-type Currency {
-  """Currency ID."""
-  entityId: Int!
-
-  """Currency code."""
-  code: currencyCode!
-
-  """Currency name."""
-  name: String!
-
-  """Flag image URL."""
-  flagImage: String
-
-  """Indicates whether this currency is active."""
-  isActive: Boolean!
-
-  """Exchange rate relative to default currency."""
-  exchangeRate: Float!
-
-  """Indicates whether this currency is transactional."""
-  isTransactional: Boolean!
-
-  """Currency display settings."""
-  display: CurrencyDisplay!
-}
-
-"""A connection to a list of items."""
-type CurrencyConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [CurrencyEdge]
-}
-
-"""Currency display settings."""
-type CurrencyDisplay {
-  """Currency symbol."""
-  symbol: String!
-
-  """Currency symbol."""
-  symbolPlacement: CurrencySymbolPosition!
-
-  """Currency decimal token."""
-  decimalToken: String!
-
-  """Currency thousands token."""
-  thousandsToken: String!
-
-  """Currency decimal places."""
-  decimalPlaces: Int!
-}
-
-"""An edge in a connection."""
-type CurrencyEdge {
-  """The item at the end of the edge."""
-  node: Currency!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-"""Currency symbol position"""
-enum CurrencySymbolPosition {
-  LEFT
-  RIGHT
-}
-
-"""Custom field"""
-type CustomField {
-  """Custom field id."""
-  entityId: Int!
-
-  """Name of the custom field."""
-  name: String!
-
-  """Value of the custom field."""
-  value: String!
-}
-
-"""A connection to a list of items."""
-type CustomFieldConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [CustomFieldEdge]
-}
-
-"""An edge in a connection."""
-type CustomFieldEdge {
-  """The item at the end of the edge."""
-  node: CustomField!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-"""A customer that shops on a store"""
-type Customer {
-  """The ID of the customer."""
-  entityId: Int!
-
-  """The company name of the customer."""
-  company: String!
-
-  """The customer group id of the customer."""
-  customerGroupId: Int!
-
-  """The email address of the customer."""
-  email: String!
-
-  """The first name of the customer."""
-  firstName: String!
-
-  """The last name of the customer."""
-  lastName: String!
-
-  """The notes of the customer."""
-  notes: String!
-
-  """The phone number of the customer."""
-  phone: String!
-
-  """The tax exempt category of the customer."""
-  taxExemptCategory: String!
-
-  """Customer addresses count."""
-  addressCount: Int!
-
-  """Customer attributes count."""
-  attributeCount: Int!
-
-  """Customer store credit."""
-  storeCredit: [Money!]!
-
-  """Customer attributes."""
-  attributes: CustomerAttributes!
-
-  """Customer wishlists."""
-  wishlists(
-    """Wishlist filters input"""
-    filters: WishlistFiltersInput
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): WishlistConnection!
-}
-
-"""A custom, store-specific attribute for a customer"""
-type CustomerAttribute {
-  """The ID of the custom customer attribute"""
-  entityId: Int!
-
-  """The value of the custom customer attribute"""
-  value: String
-
-  """The name of the custom customer attribute"""
-  name: String!
-}
-
-"""Custom, store-specific customer attributes"""
-type CustomerAttributes {
-  """A custom, store-specific attribute for a customer"""
-  attribute(
-    """The ID of the customer attribute"""
-    entityId: Int!
-  ): CustomerAttribute!
-}
-
-"""A calendar for allowing selection of a date."""
-type DateFieldOption implements CatalogProductOption {
-  """The default timestamp of date option."""
-  defaultValue: DateTime
-
-  """The earliest timestamp of date option."""
-  earliest: DateTime
-
-  """The latest timestamp of date option."""
-  latest: DateTime
-
-  """Limit date by"""
-  limitDateBy: LimitDateOption!
-
-  """Unique ID for the option."""
-  entityId: Int!
-
-  """Display name for the option."""
-  displayName: String!
-
-  """One of the option values is required to be selected for the checkout."""
-  isRequired: Boolean!
-
-  """Indicates whether it is a variant option or modifier."""
-  isVariantOption: Boolean!
-}
-
-"""ISO-8601 formatted date in UTC"""
-scalar DateTime
-
-"""Date Time Extended"""
-type DateTimeExtended {
-  """ISO-8601 formatted date in UTC"""
-  utc: DateTime!
-}
-
 """Display field"""
 type DisplayField {
-  """Short date format."""
-  shortDateFormat: String!
-
   """Extended date format."""
   extendedDateFormat: String!
+
+  """Short date format."""
+  shortDateFormat: String!
 }
 
 """Distance"""
 type Distance {
-  """Distance in specified length unit"""
-  value: Float!
-
   """Length unit"""
   lengthUnit: LengthUnit!
+
+  """Distance in specified length unit"""
+  value: Float!
 }
 
 """Filter locations by the distance"""
 input DistanceFilter {
-  """Radius of search in length units specified in lengthUnit argument"""
-  radius: Float!
-
-  """Signed decimal degrees without compass direction"""
-  longitude: Float!
-
   """Signed decimal degrees without compass direction"""
   latitude: Float!
 
   """Length unit"""
   lengthUnit: LengthUnit!
+
+  """Signed decimal degrees without compass direction"""
+  longitude: Float!
+
+  """Radius of search in length units specified in lengthUnit argument"""
+  radius: Float!
 }
 
 """Entity page type"""
@@ -1806,20 +1885,20 @@ enum EntityPageType {
 
 """An external link page."""
 type ExternalLinkPage implements WebPage {
-  """The URL that the page links to."""
-  link: String!
-
   """Unique ID for the web page."""
   entityId: Int!
 
-  """Unique ID for the parent page."""
-  parentEntityId: Int
+  """Whether or not the page should be visible in the navigation menu."""
+  isVisibleInNavigation: Boolean!
+
+  """The URL that the page links to."""
+  link: String!
 
   """Page name."""
   name: String!
 
-  """Whether or not the page should be visible in the navigation menu."""
-  isVisibleInNavigation: Boolean!
+  """Unique ID for the parent page."""
+  parentEntityId: Int
 
   """Page SEO details."""
   seo: SeoDetails!
@@ -1829,35 +1908,35 @@ type ExternalLinkPage implements WebPage {
 A form allowing selection and uploading of a file from the user's local computer.
 """
 type FileUploadFieldOption implements CatalogProductOption {
-  """The maximum size of the file in kilobytes"""
-  maxFileSize: Int!
-
-  """All possible file extensions. Empty means that all files allowed."""
-  fileTypes: [String!]!
+  """Display name for the option."""
+  displayName: String!
 
   """Unique ID for the option."""
   entityId: Int!
 
-  """Display name for the option."""
-  displayName: String!
+  """All possible file extensions. Empty means that all files allowed."""
+  fileTypes: [String!]!
 
   """One of the option values is required to be selected for the checkout."""
   isRequired: Boolean!
 
   """Indicates whether it is a variant option or modifier."""
   isVariantOption: Boolean!
+
+  """The maximum size of the file in kilobytes"""
+  maxFileSize: Int!
 }
 
 """Gift wrapping for product"""
 type GiftWrapping {
+  """Indicates whether commenting is allowed for the gift wrapping."""
+  allowComments: Boolean!
+
   """Gift wrapping id."""
   entityId: Int!
 
   """Gift wrapping name."""
   name: String!
-
-  """Indicates whether commenting is allowed for the gift wrapping."""
-  allowComments: Boolean!
 
   """Gift wrapping preview image url."""
   previewImageUrl: String
@@ -1865,36 +1944,24 @@ type GiftWrapping {
 
 """A connection to a list of items."""
 type GiftWrappingConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [GiftWrappingEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type GiftWrappingEdge {
-  """The item at the end of the edge."""
-  node: GiftWrapping!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: GiftWrapping!
 }
 
 """Image"""
 type Image {
-  """Absolute path to image using store CDN."""
-  url(
-    """Desired width of the image."""
-    width: Int!
-
-    """Desired height of the image."""
-    height: Int
-  ): String!
-
-  """Absolute path to original image using store CDN."""
-  urlOriginal: String!
-
   """
   Text description of an image that can be used for SEO and/or accessibility purposes.
   """
@@ -1902,74 +1969,75 @@ type Image {
 
   """Indicates whether this is the primary image."""
   isDefault: Boolean!
+
+  """Absolute path to image using store CDN."""
+  url(
+    """Desired height of the image."""
+    height: Int
+
+    """Desired width of the image."""
+    width: Int!
+  ): String!
+
+  """Absolute path to original image using store CDN."""
+  urlOriginal: String!
 }
 
 """A connection to a list of items."""
 type ImageConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [ImageEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type ImageEdge {
-  """The item at the end of the edge."""
-  node: Image!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: Image!
 }
 
 """An inventory"""
 type Inventory {
   """Locations"""
   locations(
-    """Location ids filter"""
-    entityIds: [Int!] = []
+    after: String
+    before: String
+
+    """Location cities filter"""
+    cities: [String!] = []
 
     """Location codes filter"""
     codes: [String!] = []
 
-    """Location type ids filter"""
-    typeIds: [String!] = []
-
-    """Location service type ids filter"""
-    serviceTypeIds: [String!] = []
+    """Location country codes filter"""
+    countryCodes: [countryCode!] = []
 
     """Filter locations by the distance"""
     distanceFilter: DistanceFilter
 
-    """Location country codes filter"""
-    countryCodes: [countryCode!] = []
+    """Location ids filter"""
+    entityIds: [Int!] = []
+    first: Int
+    last: Int
+
+    """Location service type ids filter"""
+    serviceTypeIds: [String!] = []
 
     """Location states filter"""
     states: [String!] = []
 
-    """Location cities filter"""
-    cities: [String!] = []
-    before: String
-    after: String
-    first: Int
-    last: Int
+    """Location type ids filter"""
+    typeIds: [String!] = []
   ): InventoryLocationConnection!
 }
 
 """Address"""
 type InventoryAddress {
-  """Address id."""
-  entityId: Int!
-
-  """Address code."""
-  code: String!
-
-  """Address label."""
-  label: String!
-
-  """Address description."""
-  description: String
-
   """Address line1."""
   address1: String!
 
@@ -1979,38 +2047,44 @@ type InventoryAddress {
   """Address city."""
   city: String!
 
-  """Address state."""
-  stateOrProvince: String!
+  """Address code."""
+  code: String!
 
   """Country code."""
   countryCode: String!
 
-  """Address zip."""
-  postalCode: String!
-
-  """Address phone."""
-  phone: String!
+  """Address description."""
+  description: String
 
   """Address email."""
   email: String!
+
+  """Address id."""
+  entityId: Int!
+
+  """Address label."""
+  label: String!
 
   """Address latitude."""
   latitude: Float
 
   """Address longitude."""
   longitude: Float
+
+  """Address phone."""
+  phone: String!
+
+  """Address zip."""
+  postalCode: String!
+
+  """Address state."""
+  stateOrProvince: String!
 }
 
 """Inventory By Locations"""
 type InventoryByLocations {
-  """Location id."""
-  locationEntityId: Long!
-
   """Number of available products in stock."""
   availableToSell: Long!
-
-  """Indicates a threshold low-stock level."""
-  warningLevel: Int!
 
   """Indicates whether this product is in stock."""
   isInStock: Boolean!
@@ -2018,47 +2092,64 @@ type InventoryByLocations {
   """Distance between location and specified longitude and latitude"""
   locationDistance: Distance
 
-  """Location type id."""
-  locationEntityTypeId: String
+  """Location code."""
+  locationEntityCode: String!
+
+  """Location id."""
+  locationEntityId: Long!
 
   """Location service type ids."""
   locationEntityServiceTypeIds: [String!]! @deprecated(reason: "Deprecated. Will be substituted with pickup methods.")
 
-  """Location code."""
-  locationEntityCode: String!
+  """Location type id."""
+  locationEntityTypeId: String
+
+  """Indicates a threshold low-stock level."""
+  warningLevel: Int!
 }
 
 """Location"""
 type InventoryLocation {
-  """Location id."""
-  entityId: Int!
+  """Location address"""
+  address: InventoryAddress
+
+  """Upcoming events"""
+  blackoutHours: [SpecialHour!]! @deprecated(reason: "Deprecated. Use specialHours instead")
 
   """Location code."""
   code: String!
 
-  """Location label."""
-  label: String!
-
   """Location description."""
   description: String
-
-  """Location type id."""
-  typeId: String
-
-  """Location service type ids."""
-  serviceTypeIds: [String!]! @deprecated(reason: "Deprecated. Will be substituted with pickup methods.")
-
-  """Location address"""
-  address: InventoryAddress
-
-  """Location OperatingHours"""
-  operatingHours: OperatingHours
 
   """Distance between location and specified longitude and latitude"""
   distance: Distance
 
-  """Upcoming events"""
-  blackoutHours: [SpecialHour!]! @deprecated(reason: "Deprecated. Use specialHours instead")
+  """Location id."""
+  entityId: Int!
+
+  """Location label."""
+  label: String!
+
+  """Metafield data related to a location."""
+  metafields(
+    after: String
+    before: String
+    first: Int
+
+    """Labels for identifying metafield data values."""
+    keys: [String!] = []
+    last: Int
+
+    """Metafield namespace filter"""
+    namespace: String!
+  ): MetafieldConnection!
+
+  """Location OperatingHours"""
+  operatingHours: OperatingHours
+
+  """Location service type ids."""
+  serviceTypeIds: [String!]! @deprecated(reason: "Deprecated. Will be substituted with pickup methods.")
 
   """Upcoming events"""
   specialHours: [SpecialHour!]!
@@ -2066,60 +2157,50 @@ type InventoryLocation {
   """Time zone of location"""
   timeZone: String
 
-  """Metafield data related to a location."""
-  metafields(
-    """Metafield namespace filter"""
-    namespace: String!
-
-    """Labels for identifying metafield data values."""
-    keys: [String!] = []
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): MetafieldConnection!
+  """Location type id."""
+  typeId: String
 }
 
 """A connection to a list of items."""
 type InventoryLocationConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [InventoryLocationEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type InventoryLocationEdge {
-  """The item at the end of the edge."""
-  node: InventoryLocation!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: InventoryLocation!
 }
 
 """Inventory settings from control panel."""
 type InventorySettings {
-  """The product out of stock behavior."""
-  productOutOfStockBehavior: ProductOutOfStockBehavior
-
-  """The option out of stock behavior."""
-  optionOutOfStockBehavior: OptionOutOfStockBehavior
-
-  """Hide or show inventory node for product"""
-  stockLevelDisplay: StockLevelDisplay
-
   """Out of stock message."""
   defaultOutOfStockMessage: String!
 
   """Flag to show or not on product filtering when option is out of stock"""
   hideInProductFiltering: Boolean!
 
-  """Show pre-order inventory"""
-  showPreOrderStockLevels: Boolean!
+  """The option out of stock behavior."""
+  optionOutOfStockBehavior: OptionOutOfStockBehavior
+
+  """The product out of stock behavior."""
+  productOutOfStockBehavior: ProductOutOfStockBehavior
 
   """Show out of stock message on product listing pages"""
   showOutOfStockMessage: Boolean!
+
+  """Show pre-order inventory"""
+  showPreOrderStockLevels: Boolean!
+
+  """Hide or show inventory node for product"""
+  stockLevelDisplay: StockLevelDisplay
 }
 
 """length unit"""
@@ -2146,67 +2227,87 @@ enum LimitInputBy {
 
 """A connection to a list of items."""
 type LocationConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [LocationEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type LocationEdge {
-  """The item at the end of the edge."""
-  node: InventoryByLocations!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: InventoryByLocations!
+}
+
+"""Login result"""
+type LoginResult {
+  """The currently logged in customer."""
+  customer: Customer
+
+  """The result of a login"""
+  result: String! @deprecated(reason: "Use customer node instead.")
 }
 
 """Logo field"""
 type LogoField {
-  """Logo title."""
-  title: String!
-
   """Store logo image."""
   image: Image!
+
+  """Logo title."""
+  title: String!
 }
+
+"""Logout result"""
+type LogoutResult {
+  """The result of a logout"""
+  result: String!
+}
+
+"""
+The `Long` scalar type represents non-fractional signed whole numeric values. Long can represent values between -(2^63) and 2^63 - 1.
+"""
+scalar Long
 
 """Measurement"""
 type Measurement {
-  """Unformatted weight measurement value."""
-  value: Float!
-
   """Unit of measurement."""
   unit: String!
+
+  """Unformatted weight measurement value."""
+  value: Float!
 }
 
 """A connection to a list of items."""
 type MetafieldConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [MetafieldEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type MetafieldEdge {
-  """The item at the end of the edge."""
-  node: Metafields!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: Metafields!
 }
 
 """
 Key/Value pairs of data attached tied to a resource entity (product, brand, category, etc.)
 """
 type Metafields {
-  """The ID of an object"""
-  id: ID!
-
   """The ID of the metafield when referencing via our backend API."""
   entityId: Int!
+
+  """The ID of an object"""
+  id: ID!
 
   """A label for identifying a metafield data value."""
   key: String!
@@ -2220,20 +2321,20 @@ type Money {
   """Currency code of the current money."""
   currencyCode: String!
 
-  """The amount of money."""
-  value: BigDecimal!
-
   """The formatted currency string for the current money."""
   formatted: String @deprecated(reason: "Deprecated. Don't use - it will be removed soon.")
+
+  """The amount of money."""
+  value: BigDecimal!
 }
 
 """A min and max pair of money objects"""
 type MoneyRange {
-  """Minimum money object."""
-  min: Money!
-
   """Maximum money object."""
   max: Money!
+
+  """Minimum money object."""
+  min: Money!
 }
 
 """A multi-line text input field, aka a text box."""
@@ -2241,8 +2342,17 @@ type MultiLineTextFieldOption implements CatalogProductOption {
   """Default value of the multiline text field option."""
   defaultValue: String
 
-  """The minimum number of characters."""
-  minLength: Int
+  """Display name for the option."""
+  displayName: String!
+
+  """Unique ID for the option."""
+  entityId: Int!
+
+  """One of the option values is required to be selected for the checkout."""
+  isRequired: Boolean!
+
+  """Indicates whether it is a variant option or modifier."""
+  isVariantOption: Boolean!
 
   """The maximum number of characters."""
   maxLength: Int
@@ -2250,47 +2360,35 @@ type MultiLineTextFieldOption implements CatalogProductOption {
   """The maximum number of lines."""
   maxLines: Int
 
-  """Unique ID for the option."""
-  entityId: Int!
-
-  """Display name for the option."""
-  displayName: String!
-
-  """One of the option values is required to be selected for the checkout."""
-  isRequired: Boolean!
-
-  """Indicates whether it is a variant option or modifier."""
-  isVariantOption: Boolean!
+  """The minimum number of characters."""
+  minLength: Int
 }
 
 """An option type that has a fixed list of values."""
 type MultipleChoiceOption implements CatalogProductOption {
+  """Display name for the option."""
+  displayName: String!
+
   """The chosen display style for this multiple choice option."""
   displayStyle: String!
 
-  """List of option values."""
-  values(before: String, after: String, first: Int, last: Int): ProductOptionValueConnection!
-
   """Unique ID for the option."""
   entityId: Int!
-
-  """Display name for the option."""
-  displayName: String!
 
   """One of the option values is required to be selected for the checkout."""
   isRequired: Boolean!
 
   """Indicates whether it is a variant option or modifier."""
   isVariantOption: Boolean!
+
+  """List of option values."""
+  values(after: String, before: String, first: Int, last: Int): ProductOptionValueConnection!
 }
 
 """A simple multiple choice value comprised of an id and a label."""
 type MultipleChoiceOptionValue implements CatalogProductOptionValue {
   """Unique ID for the option value."""
   entityId: Int!
-
-  """Label for the option value."""
-  label: String!
 
   """Indicates whether this value is the chosen default selected value."""
   isDefault: Boolean!
@@ -2299,6 +2397,29 @@ type MultipleChoiceOptionValue implements CatalogProductOptionValue {
   Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level.
   """
   isSelected: Boolean
+
+  """Label for the option value."""
+  label: String!
+}
+
+type Mutation {
+  """The Cart mutations."""
+  cart: CartMutations!
+
+  """Customer login"""
+  login(
+    """An email of the customer."""
+    email: String!
+
+    """A password of the customer."""
+    password: String!
+  ): LoginResult!
+
+  """Customer logout"""
+  logout: LogoutResult!
+
+  """The wishlist mutations."""
+  wishlist: WishlistMutations!
 }
 
 """An object with an ID"""
@@ -2308,15 +2429,27 @@ interface Node {
 }
 
 """A normal page."""
-type NormalPage implements WebPage & Node {
-  """The ID of an object"""
-  id: ID!
-
-  """The URL path of the page."""
-  path: String!
+type NormalPage implements Node & WebPage {
+  """Unique ID for the web page."""
+  entityId: Int!
 
   """The body of the page."""
   htmlBody: String!
+
+  """The ID of an object"""
+  id: ID!
+
+  """Whether or not the page should be visible in the navigation menu."""
+  isVisibleInNavigation: Boolean!
+
+  """Page name."""
+  name: String!
+
+  """Unique ID for the parent page."""
+  parentEntityId: Int
+
+  """The URL path of the page."""
+  path: String!
 
   """The plain text summary of the page body."""
   plainTextSummary(
@@ -2327,18 +2460,6 @@ type NormalPage implements WebPage & Node {
   """The rendered regions for the web page."""
   renderedRegions: RenderedRegionsByPageType!
 
-  """Unique ID for the web page."""
-  entityId: Int!
-
-  """Unique ID for the parent page."""
-  parentEntityId: Int
-
-  """Page name."""
-  name: String!
-
-  """Whether or not the page should be visible in the navigation menu."""
-  isVisibleInNavigation: Boolean!
-
   """Page SEO details."""
   seo: SeoDetails!
 }
@@ -2348,8 +2469,11 @@ type NumberFieldOption implements CatalogProductOption {
   """Default value of the text field option."""
   defaultValue: Float
 
-  """The bottom limit of possible numbers."""
-  lowest: Float
+  """Display name for the option."""
+  displayName: String!
+
+  """Unique ID for the option."""
+  entityId: Int!
 
   """The top limit of possible numbers."""
   highest: Float
@@ -2357,74 +2481,71 @@ type NumberFieldOption implements CatalogProductOption {
   """Allow whole numbers only."""
   isIntegerOnly: Boolean!
 
-  """Limit numbers by several options."""
-  limitNumberBy: LimitInputBy!
-
-  """Unique ID for the option."""
-  entityId: Int!
-
-  """Display name for the option."""
-  displayName: String!
-
   """One of the option values is required to be selected for the checkout."""
   isRequired: Boolean!
 
   """Indicates whether it is a variant option or modifier."""
   isVariantOption: Boolean!
+
+  """Limit numbers by several options."""
+  limitNumberBy: LimitInputBy!
+
+  """The bottom limit of possible numbers."""
+  lowest: Float
 }
 
 """Operating day"""
 type OperatingDay {
+  """Closing."""
+  closing: String!
+
   """Open."""
   open: Boolean!
 
   """Opening."""
   opening: String!
-
-  """Closing."""
-  closing: String!
 }
 
 """Operating hours"""
 type OperatingHours {
-  """Sunday."""
-  sunday: OperatingDay
+  """Friday."""
+  friday: OperatingDay
 
   """Monday."""
   monday: OperatingDay
+
+  """Saturday."""
+  saturday: OperatingDay
+
+  """Sunday."""
+  sunday: OperatingDay
+
+  """Thursday."""
+  thursday: OperatingDay
 
   """Tuesday."""
   tuesday: OperatingDay
 
   """Wednesday."""
   wednesday: OperatingDay
-
-  """Thursday."""
-  thursday: OperatingDay
-
-  """Friday."""
-  friday: OperatingDay
-
-  """Saturday."""
-  saturday: OperatingDay
 }
 
 """A connection to a list of items."""
 type OptionConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [OptionEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type OptionEdge {
-  """The item at the end of the edge."""
-  node: ProductOption!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: ProductOption!
 }
 
 """Behavior of the variant when stock is equal to 0"""
@@ -2436,20 +2557,20 @@ enum OptionOutOfStockBehavior {
 
 """A connection to a list of items."""
 type OptionValueConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [OptionValueEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type OptionValueEdge {
-  """The item at the end of the edge."""
-  node: ProductOptionValue!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: ProductOptionValue!
 }
 
 """A variant option value id input object"""
@@ -2469,6 +2590,9 @@ type OtherSearchFilter implements SearchProductFilter {
   """Free shipping filter."""
   freeShipping: OtherSearchFilterItem
 
+  """Indicates whether filter is collapsed by default."""
+  isCollapsedByDefault: Boolean!
+
   """Is Featured filter."""
   isFeatured: OtherSearchFilterItem
 
@@ -2477,9 +2601,6 @@ type OtherSearchFilter implements SearchProductFilter {
 
   """Display name for the filter."""
   name: String!
-
-  """Indicates whether filter is collapsed by default."""
-  isCollapsedByDefault: Boolean!
 }
 
 """Other Filter Item"""
@@ -2493,24 +2614,27 @@ type OtherSearchFilterItem {
 
 """A connection to a list of items."""
 type PageConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [PageEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type PageEdge {
-  """The item at the end of the edge."""
-  node: WebPage!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: WebPage!
 }
 
 """Information about pagination in a connection."""
 type PageInfo {
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+
   """When paginating forwards, are there more items?"""
   hasNextPage: Boolean!
 
@@ -2519,9 +2643,6 @@ type PageInfo {
 
   """When paginating backwards, the cursor to continue."""
   startCursor: String
-
-  """When paginating forwards, the cursor to continue."""
-  endCursor: String
 }
 
 """Page type"""
@@ -2564,29 +2685,29 @@ enum PageType {
 
 """A connection to a list of items."""
 type PopularBrandConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [PopularBrandEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type PopularBrandEdge {
-  """The item at the end of the edge."""
-  node: PopularBrandType!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: PopularBrandType!
 }
 
 """PopularBrandType"""
 type PopularBrandType {
-  """Brand id"""
-  entityId: Int!
-
   """Brand count"""
   count: Int!
+
+  """Brand id"""
+  entityId: Int!
 
   """Brand name"""
   name: String!
@@ -2606,155 +2727,77 @@ type PriceRanges {
 
 """Price Filter"""
 type PriceSearchFilter implements SearchProductFilter {
-  """Selected price filters."""
-  selected: PriceSearchFilterItem
+  """Indicates whether filter is collapsed by default."""
+  isCollapsedByDefault: Boolean!
 
   """Display name for the filter."""
   name: String!
 
-  """Indicates whether filter is collapsed by default."""
-  isCollapsedByDefault: Boolean!
+  """Selected price filters."""
+  selected: PriceSearchFilterItem
 }
 
 """
 Search by price range. At least a minPrice or maxPrice must be supplied.
 """
 input PriceSearchFilterInput {
-  """Minimum price of the product."""
-  minPrice: Float
-
   """Maximum price of the product."""
   maxPrice: Float
+
+  """Minimum price of the product."""
+  minPrice: Float
 }
 
 """Price filter range"""
 type PriceSearchFilterItem {
-  """Minimum price of the product."""
-  minPrice: Float
-
   """Maximum price of the product."""
   maxPrice: Float
+
+  """Minimum price of the product."""
+  minPrice: Float
 }
 
 """The various prices that can be set on a product."""
 type Prices {
+  """Original price of the product."""
+  basePrice: Money
+
+  """List of bulk pricing tiers applicable to a product or variant."""
+  bulkPricing: [BulkPricingTier!]!
+
+  """Minimum advertised price of the product."""
+  mapPrice: Money
+
   """
   Calculated price of the product.  Calculated price takes into account basePrice, salePrice, rules (modifier, option, option set) that apply to the product configuration, and customer group discounts.  It represents the in-cart price for a product configuration without bulk pricing rules.
   """
   price: Money!
 
-  """Sale price of the product."""
-  salePrice: Money
-
-  """Original price of the product."""
-  basePrice: Money
+  """Product price min/max range."""
+  priceRange: MoneyRange!
 
   """Retail price of the product."""
   retailPrice: Money
 
-  """Minimum advertised price of the product."""
-  mapPrice: Money
-
-  """Product price min/max range."""
-  priceRange: MoneyRange!
-
   """Product retail price min/max range."""
   retailPriceRange: MoneyRange
+
+  """Sale price of the product."""
+  salePrice: Money
 
   """
   The difference between the retail price (MSRP) and the current price, which can be presented to the shopper as their savings.
   """
   saved: Money
-
-  """List of bulk pricing tiers applicable to a product or variant."""
-  bulkPricing: [BulkPricingTier!]!
 }
 
 """Product"""
 type Product implements Node {
-  """The ID of an object"""
-  id: ID!
-
-  """Id of the product."""
-  entityId: Int!
-
-  """Default product variant when no options are selected."""
-  sku: String!
-
-  """Relative URL path to product page."""
-  path: String!
-
-  """Name of the product."""
-  name: String!
-
-  """Description of the product."""
-  description: String!
-
-  """Description of the product in plain text."""
-  plainTextDescription(
-    """The max number of characters for the description."""
-    characterLimit: Int = 120
-  ): String!
-
-  """Warranty information of the product."""
-  warranty: String!
-
-  """Minimum purchasable quantity for this product in a single order."""
-  minPurchaseQuantity: Int
-
-  """Maximum purchasable quantity for this product in a single order."""
-  maxPurchaseQuantity: Int
-
   """Absolute URL path for adding a product to cart."""
   addToCartUrl: String!
 
   """Absolute URL path for adding a product to customer's wishlist."""
   addToWishlistUrl: String! @deprecated(reason: "Deprecated.")
-
-  """
-  Prices object determined by supplied product ID, variant ID, and selected option IDs.
-  """
-  prices(
-    """Tax will be included if enabled"""
-    includeTax: Boolean = false
-
-    """Please select a currency"""
-    currencyCode: currencyCode
-  ): Prices
-
-  """
-  The minimum and maximum price of this product based on variant pricing and/or modifier price rules.
-  """
-  priceRanges(
-    """Tax will be included if enabled"""
-    includeTax: Boolean = false
-  ): PriceRanges @deprecated(reason: "Use priceRanges inside prices node instead.")
-
-  """Weight of the product."""
-  weight: Measurement
-
-  """Height of the product."""
-  height: Measurement
-
-  """Width of the product."""
-  width: Measurement
-
-  """Depth of the product."""
-  depth: Measurement
-
-  """Product options."""
-  options(before: String, after: String, first: Int, last: Int): OptionConnection! @deprecated(reason: "Use productOptions instead.")
-
-  """Product options."""
-  productOptions(before: String, after: String, first: Int, last: Int): ProductOptionConnection!
-
-  """
-  Summary of the product reviews, includes the total number of reviews submitted and summation of the ratings on the reviews (ratings range from 0-5 per review).
-  """
-  reviewSummary: Reviews!
-
-  """Type of product, ex: physical, digital"""
-  type: String!
 
   """The availability state of the product."""
   availability: String! @deprecated(reason: "Use status inside availabilityV2 instead.")
@@ -2767,127 +2810,208 @@ type Product implements Node {
   """The availability state of the product."""
   availabilityV2: ProductAvailability!
 
-  """List of categories associated with the product."""
-  categories(before: String, after: String, first: Int, last: Int): CategoryConnection!
-
   """Brand associated with the product."""
   brand: Brand
 
-  """Variants associated with the product."""
-  variants(
-    before: String
-    after: String
-    first: Int
-    last: Int
+  """List of categories associated with the product."""
+  categories(after: String, before: String, first: Int, last: Int): CategoryConnection!
 
-    """Whether the product can be purchased"""
-    isPurchasable: Boolean
+  """Product condition"""
+  condition: ProductConditionType
 
-    """Ids of expected variants."""
-    entityIds: [Int!] = []
-
-    """A variant option value ids filter."""
-    optionValueIds: [OptionValueId!] = []
-  ): VariantConnection!
+  """Product creation date"""
+  createdAt: DateTimeExtended! @deprecated(reason: "Alpha version. Do not use in production.")
 
   """Custom fields of the product."""
   customFields(
-    """Product custom fields filter by names."""
-    names: [String!] = []
-    before: String
     after: String
+    before: String
     first: Int
     last: Int
-  ): CustomFieldConnection!
 
-  """A list of the images for a product."""
-  images(before: String, after: String, first: Int, last: Int): ImageConnection!
+    """Product custom fields filter by names."""
+    names: [String!] = []
+  ): CustomFieldConnection!
 
   """Default image for a product."""
   defaultImage: Image
 
+  """Depth of the product."""
+  depth: Measurement
+
+  """Description of the product."""
+  description: String!
+
+  """Id of the product."""
+  entityId: Int!
+
+  """Gift wrapping options available for the product."""
+  giftWrappingOptions(after: String, before: String, first: Int, last: Int): GiftWrappingConnection!
+
+  """Global trade item number."""
+  gtin: String
+
+  """Height of the product."""
+  height: Measurement
+
+  """The ID of an object"""
+  id: ID!
+
+  """A list of the images for a product."""
+  images(after: String, before: String, first: Int, last: Int): ImageConnection!
+
+  """Inventory information of the product."""
+  inventory: ProductInventory!
+
+  """Maximum purchasable quantity for this product in a single order."""
+  maxPurchaseQuantity: Int
+
+  """Metafield data related to a product."""
+  metafields(
+    after: String
+    before: String
+    first: Int
+
+    """Labels for identifying metafield data values."""
+    keys: [String!] = []
+    last: Int
+
+    """Metafield namespace filter"""
+    namespace: String!
+  ): MetafieldConnection!
+
+  """Minimum purchasable quantity for this product in a single order."""
+  minPurchaseQuantity: Int
+
+  """Manufacturer part number."""
+  mpn: String
+
+  """Name of the product."""
+  name: String!
+
+  """Product options."""
+  options(after: String, before: String, first: Int, last: Int): OptionConnection! @deprecated(reason: "Use productOptions instead.")
+
+  """Relative URL path to product page."""
+  path: String!
+
+  """Description of the product in plain text."""
+  plainTextDescription(
+    """The max number of characters for the description."""
+    characterLimit: Int = 120
+  ): String!
+
+  """
+  The minimum and maximum price of this product based on variant pricing and/or modifier price rules.
+  """
+  priceRanges(
+    """Tax will be included if enabled"""
+    includeTax: Boolean = false
+  ): PriceRanges @deprecated(reason: "Use priceRanges inside prices node instead.")
+
+  """
+  Prices object determined by supplied product ID, variant ID, and selected option IDs.
+  """
+  prices(
+    """Please select a currency"""
+    currencyCode: currencyCode
+
+    """Tax will be included if enabled"""
+    includeTax: Boolean = false
+  ): Prices
+
+  """Product options."""
+  productOptions(after: String, before: String, first: Int, last: Int): ProductOptionConnection!
+
   """Related products for this product."""
   relatedProducts(
-    before: String
     after: String
+    before: String
     first: Int
-    last: Int
 
     """
     When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
     """
     hideOutOfStock: Boolean
+    last: Int
   ): RelatedProductsConnection!
 
-  """Inventory information of the product."""
-  inventory: ProductInventory!
-
-  """Metafield data related to a product."""
-  metafields(
-    """Metafield namespace filter"""
-    namespace: String!
-
-    """Labels for identifying metafield data values."""
-    keys: [String!] = []
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): MetafieldConnection!
-
-  """Universal product code."""
-  upc: String
-
-  """Manufacturer part number."""
-  mpn: String
-
-  """Global trade item number."""
-  gtin: String
-
-  """Product creation date"""
-  createdAt: DateTimeExtended! @deprecated(reason: "Alpha version. Do not use in production.")
+  """
+  Summary of the product reviews, includes the total number of reviews submitted and summation of the ratings on the reviews (ratings range from 0-5 per review).
+  """
+  reviewSummary: Reviews!
 
   """Reviews associated with the product."""
   reviews(
-    """Product reviews sorting."""
-    sort: ProductReviewsSortInput
+    after: String
+    before: String
 
     """Product reviews filters."""
     filters: ProductReviewsFiltersInput
-    before: String
-    after: String
     first: Int
     last: Int
+
+    """Product reviews sorting."""
+    sort: ProductReviewsSortInput
   ): ReviewConnection!
 
   """Product SEO details."""
   seo: SeoDetails!
 
-  """Gift wrapping options available for the product."""
-  giftWrappingOptions(before: String, after: String, first: Int, last: Int): GiftWrappingConnection!
-
-  """Product condition"""
-  condition: ProductConditionType
-
   """
   Whether or not the cart call to action should be visible for this product.
   """
   showCartAction: Boolean!
+
+  """Default product variant when no options are selected."""
+  sku: String!
+
+  """Type of product, ex: physical, digital"""
+  type: String!
+
+  """Universal product code."""
+  upc: String
+
+  """Variants associated with the product."""
+  variants(
+    after: String
+    before: String
+
+    """Ids of expected variants."""
+    entityIds: [Int!] = []
+    first: Int
+
+    """Whether the product can be purchased"""
+    isPurchasable: Boolean
+    last: Int
+
+    """A variant option value ids filter."""
+    optionValueIds: [OptionValueId!] = []
+  ): VariantConnection!
+
+  """Warranty information of the product."""
+  warranty: String!
+
+  """Weight of the product."""
+  weight: Measurement
+
+  """Width of the product."""
+  width: Measurement
 }
 
 """Product Attribute Filter"""
 type ProductAttributeSearchFilter implements SearchProductFilter {
+  """List of available product attributes."""
+  attributes(after: String, before: String, first: Int, last: Int): ProductAttributeSearchFilterItemConnection!
+
   """Indicates whether to display product count next to the filter."""
   displayProductCount: Boolean!
 
-  """List of available product attributes."""
-  attributes(before: String, after: String, first: Int, last: Int): ProductAttributeSearchFilterItemConnection!
+  """Indicates whether filter is collapsed by default."""
+  isCollapsedByDefault: Boolean!
 
   """Display name for the filter."""
   name: String!
-
-  """Indicates whether filter is collapsed by default."""
-  isCollapsedByDefault: Boolean!
 }
 
 """
@@ -2903,43 +3027,43 @@ input ProductAttributeSearchFilterInput {
 
 """Specific product attribute filter item"""
 type ProductAttributeSearchFilterItem {
-  """Product attribute value."""
-  value: String!
-
   """Indicates whether product attribute is selected."""
   isSelected: Boolean!
 
   """Indicates how many products available for this filter."""
   productCount: Int!
+
+  """Product attribute value."""
+  value: String!
 }
 
 """A connection to a list of items."""
 type ProductAttributeSearchFilterItemConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [ProductAttributeSearchFilterItemEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type ProductAttributeSearchFilterItemEdge {
-  """The item at the end of the edge."""
-  node: ProductAttributeSearchFilterItem!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: ProductAttributeSearchFilterItem!
 }
 
 """Product availability"""
 interface ProductAvailability {
-  """The availability state of the product."""
-  status: ProductAvailabilityStatus!
-
   """
   A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'.
   """
   description: String!
+
+  """The availability state of the product."""
+  status: ProductAvailabilityStatus!
 }
 
 """Product availability status"""
@@ -2951,13 +3075,13 @@ enum ProductAvailabilityStatus {
 
 """Available Product"""
 type ProductAvailable implements ProductAvailability {
-  """The availability state of the product."""
-  status: ProductAvailabilityStatus!
-
   """
   A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'.
   """
   description: String!
+
+  """The availability state of the product."""
+  status: ProductAvailabilityStatus!
 }
 
 """Product condition"""
@@ -2969,72 +3093,72 @@ enum ProductConditionType {
 
 """A connection to a list of items."""
 type ProductConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
+  """Collection info"""
+  collectionInfo: CollectionInfo
 
   """A list of edges."""
   edges: [ProductEdge]
 
-  """Collection info"""
-  collectionInfo: CollectionInfo
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type ProductEdge {
-  """The item at the end of the edge."""
-  node: Product!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: Product!
 }
 
 """Product Inventory Information"""
 type ProductInventory {
-  """Indicates whether this product is in stock."""
-  isInStock: Boolean!
+  """
+  Aggregated product inventory information. This data may not be available if not set or if the store's Inventory Settings have disabled displaying stock levels on the storefront.
+  """
+  aggregated: AggregatedInventory
 
   """
   Indicates whether this product's inventory is being tracked on variant level. If true, you may wish to check the variants node to understand the true inventory of each individual variant, rather than relying on this product-level aggregate to understand how many items may be added to cart.
   """
   hasVariantInventory: Boolean!
 
-  """
-  Aggregated product inventory information. This data may not be available if not set or if the store's Inventory Settings have disabled displaying stock levels on the storefront.
-  """
-  aggregated: AggregatedInventory
+  """Indicates whether this product is in stock."""
+  isInStock: Boolean!
 }
 
 """Product Option"""
 type ProductOption {
-  """Unique ID for the option."""
-  entityId: Int!
-
   """Display name for the option."""
   displayName: String!
+
+  """Unique ID for the option."""
+  entityId: Int!
 
   """One of the option values is required to be selected for the checkout."""
   isRequired: Boolean!
 
   """Option values."""
-  values(before: String, after: String, first: Int, last: Int): OptionValueConnection!
+  values(after: String, before: String, first: Int, last: Int): OptionValueConnection!
 }
 
 """A connection to a list of items."""
 type ProductOptionConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [ProductOptionEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type ProductOptionEdge {
-  """The item at the end of the edge."""
-  node: CatalogProductOption!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: CatalogProductOption!
 }
 
 """Product Option Value"""
@@ -3048,20 +3172,20 @@ type ProductOptionValue {
 
 """A connection to a list of items."""
 type ProductOptionValueConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [ProductOptionValueEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type ProductOptionValueEdge {
-  """The item at the end of the edge."""
-  node: CatalogProductOptionValue!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: CatalogProductOptionValue!
 }
 
 """Behavior of the product when stock is equal to 0"""
@@ -3076,17 +3200,11 @@ enum ProductOutOfStockBehavior {
 A Product PickList Value - a product to be mapped to the base product if selected.
 """
 type ProductPickListOptionValue implements CatalogProductOptionValue {
-  """The ID of the product associated with this option value."""
-  productId: Int!
-
   """Default image for a pick list product."""
   defaultImage: Image
 
   """Unique ID for the option value."""
   entityId: Int!
-
-  """Label for the option value."""
-  label: String!
 
   """Indicates whether this value is the chosen default selected value."""
   isDefault: Boolean!
@@ -3095,25 +3213,31 @@ type ProductPickListOptionValue implements CatalogProductOptionValue {
   Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level.
   """
   isSelected: Boolean
+
+  """Label for the option value."""
+  label: String!
+
+  """The ID of the product associated with this option value."""
+  productId: Int!
 }
 
 """PreOrder Product"""
 type ProductPreOrder implements ProductAvailability {
   """
+  A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'.
+  """
+  description: String!
+
+  """
   The message to be shown in the store when a product is put into the pre-order availability state, e.g. "Expected release date is %%DATE%%"
   """
   message: String
 
-  """Product release date"""
-  willBeReleasedAt: DateTimeExtended
-
   """The availability state of the product."""
   status: ProductAvailabilityStatus!
 
-  """
-  A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'.
-  """
-  description: String!
+  """Product release date"""
+  willBeReleasedAt: DateTimeExtended
 }
 
 """Product reviews filters."""
@@ -3124,11 +3248,11 @@ input ProductReviewsFiltersInput {
 
 """Product reviews filter by rating."""
 input ProductReviewsRatingFilterInput {
-  """Minimum rating of the product."""
-  minRating: Int
-
   """Maximum rating of the product."""
   maxRating: Int
+
+  """Minimum rating of the product."""
+  minRating: Int
 }
 
 """Product reviews sorting."""
@@ -3142,17 +3266,17 @@ enum ProductReviewsSortInput {
 """Unavailable Product"""
 type ProductUnavailable implements ProductAvailability {
   """
+  A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'.
+  """
+  description: String!
+
+  """
   The message to be shown in the store when "Call for pricing" is enabled for this product, e.g. "Contact us at 555-5555"
   """
   message: String
 
   """The availability state of the product."""
   status: ProductAvailabilityStatus!
-
-  """
-  A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'.
-  """
-  description: String!
 }
 
 """Public Wishlist"""
@@ -3160,34 +3284,35 @@ type PublicWishlist {
   """The wishlist id."""
   entityId: Int!
 
+  """A list of the wishlist items"""
+  items(
+    after: String
+    before: String
+    first: Int
+
+    """
+    When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
+    """
+    hideOutOfStock: Boolean
+    last: Int
+  ): WishlistItemConnection!
+
   """The wishlist name."""
   name: String!
 
   """The wishlist token."""
   token: String!
-
-  """A list of the wishlist items"""
-  items(
-    """
-    When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
-    """
-    hideOutOfStock: Boolean
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): WishlistItemConnection!
 }
 
 type Query {
-  """A site"""
-  site: Site!
-
   """The current channel."""
   channel: Channel!
 
   """The currently logged in customer."""
   customer: Customer
+
+  """An inventory"""
+  inventory: Inventory!
 
   """Fetches an object given its ID"""
   node(
@@ -3195,91 +3320,91 @@ type Query {
     id: ID!
   ): Node
 
-  """An inventory"""
-  inventory: Inventory!
+  """A site"""
+  site: Site!
 }
 
 """Rating Filter"""
 type RatingSearchFilter implements SearchProductFilter {
-  """List of available ratings."""
-  ratings(before: String, after: String, first: Int, last: Int): RatingSearchFilterItemConnection!
+  """Indicates whether filter is collapsed by default."""
+  isCollapsedByDefault: Boolean!
 
   """Display name for the filter."""
   name: String!
 
-  """Indicates whether filter is collapsed by default."""
-  isCollapsedByDefault: Boolean!
+  """List of available ratings."""
+  ratings(after: String, before: String, first: Int, last: Int): RatingSearchFilterItemConnection!
 }
 
 """
 Filter by rating. At least a minRating or maxRating must be supplied. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
 """
 input RatingSearchFilterInput {
-  """Minimum rating of the product."""
-  minRating: Float
-
   """Maximum rating of the product."""
   maxRating: Float
+
+  """Minimum rating of the product."""
+  minRating: Float
 }
 
 """Specific rating filter item"""
 type RatingSearchFilterItem {
-  """Rating value."""
-  value: String!
-
   """Indicates whether rating is selected."""
   isSelected: Boolean!
 
   """Indicates how many products available for this filter."""
   productCount: Int!
+
+  """Rating value."""
+  value: String!
 }
 
 """A connection to a list of items."""
 type RatingSearchFilterItemConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [RatingSearchFilterItemEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type RatingSearchFilterItemEdge {
-  """The item at the end of the edge."""
-  node: RatingSearchFilterItem!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: RatingSearchFilterItem!
 }
 
 """A raw HTML page."""
-type RawHtmlPage implements WebPage & Node {
-  """The ID of an object"""
-  id: ID!
-
-  """The URL path of the page."""
-  path: String!
+type RawHtmlPage implements Node & WebPage {
+  """Unique ID for the web page."""
+  entityId: Int!
 
   """The body of the page."""
   htmlBody: String!
+
+  """The ID of an object"""
+  id: ID!
+
+  """Whether or not the page should be visible in the navigation menu."""
+  isVisibleInNavigation: Boolean!
+
+  """Page name."""
+  name: String!
+
+  """Unique ID for the parent page."""
+  parentEntityId: Int
+
+  """The URL path of the page."""
+  path: String!
 
   """The plain text summary of the page body."""
   plainTextSummary(
     """The max number of characters for the plain text summary."""
     characterLimit: Int = 120
   ): String!
-
-  """Unique ID for the web page."""
-  entityId: Int!
-
-  """Unique ID for the parent page."""
-  parentEntityId: Int
-
-  """Page name."""
-  name: String!
-
-  """Whether or not the page should be visible in the navigation menu."""
-  isVisibleInNavigation: Boolean!
 
   """Page SEO details."""
   seo: SeoDetails!
@@ -3293,29 +3418,29 @@ type ReCaptchaSettings {
 
 """The region object"""
 type Region {
-  """The name of a region."""
-  name: String!
-
   """The rendered HTML content targeted at the region."""
   html: String!
+
+  """The name of a region."""
+  name: String!
 }
 
 """A connection to a list of items."""
 type RelatedProductsConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [RelatedProductsEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type RelatedProductsEdge {
-  """The item at the end of the edge."""
-  node: Product!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: Product!
 }
 
 """The rendered regions by specific page."""
@@ -3326,41 +3451,41 @@ type RenderedRegionsByPageType {
 
 """Review"""
 type Review {
-  """Unique ID for the product review."""
-  entityId: Long!
-
   """Product review author."""
   author: Author!
 
-  """Product review title."""
-  title: String!
+  """Product review creation date."""
+  createdAt: DateTimeExtended!
 
-  """Product review text."""
-  text: String!
+  """Unique ID for the product review."""
+  entityId: Long!
 
   """Product review rating."""
   rating: Int!
 
-  """Product review creation date."""
-  createdAt: DateTimeExtended!
+  """Product review text."""
+  text: String!
+
+  """Product review title."""
+  title: String!
 }
 
 """A connection to a list of items."""
 type ReviewConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [ReviewEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type ReviewEdge {
-  """The item at the end of the edge."""
-  node: Review!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: Review!
 }
 
 """Review Rating Summary"""
@@ -3389,60 +3514,48 @@ type Search {
 
 """Search Product Filter"""
 interface SearchProductFilter {
-  """Display name for the filter."""
-  name: String!
-
   """Indicates whether filter is collapsed by default."""
   isCollapsedByDefault: Boolean!
+
+  """Display name for the filter."""
+  name: String!
 }
 
 """A connection to a list of items."""
 type SearchProductFilterConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [SearchProductFilterEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type SearchProductFilterEdge {
-  """The item at the end of the edge."""
-  node: SearchProductFilter!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: SearchProductFilter!
 }
 
 """
 Container for catalog search results, which may contain both products as well as a list of search filters for further refinement.
 """
 type SearchProducts {
+  """Available product filters."""
+  filters(after: String, before: String, first: Int, last: Int): SearchProductFilterConnection!
+
   """Details of the products."""
   products(after: String, first: Int): ProductConnection!
-
-  """Available product filters."""
-  filters(before: String, after: String, first: Int, last: Int): SearchProductFilterConnection!
 }
 
 """
 Object containing available search filters for use when querying Products.
 """
 input SearchProductsFiltersInput {
-  """
-  Textual search term. Used to search for products based on text entered by a shopper, typically in a search box. Searches against several fields on the product including Name, SKU, and Description.
-  """
-  searchTerm: String
-
-  """
-  Search by price range. At least a minPrice or maxPrice must be supplied.
-  """
-  price: PriceSearchFilterInput
-
-  """
-  Filter by rating. At least a minRating or maxRating must be supplied. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
-  """
-  rating: RatingSearchFilterInput
+  """Filter by products belonging to any of the specified Brands."""
+  brandEntityIds: [Int!]
 
   """
   Filter by products belonging to a single Category. This is intended for use when presenting a Category page in a PLP experience. This argument must be used in order for custom product sorts and custom product filtering settings targeted at a particular category to take effect.
@@ -3455,22 +3568,9 @@ input SearchProductsFiltersInput {
   categoryEntityIds: [Int!]
 
   """
-  Boolean argument to determine whether products within sub-Categories will be returned when filtering products by Category. Defaults to False if not supplied.
+  When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
   """
-  searchSubCategories: Boolean
-
-  """Filter by products belonging to any of the specified Brands."""
-  brandEntityIds: [Int!]
-
-  """
-  Filter by the attributes of products such as Product Options and Product Custom Fields. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
-  """
-  productAttributes: [ProductAttributeSearchFilterInput!]
-
-  """
-  Filters by Products which have explicit Free Shipping configured within the catalog. If not supplied, the Free Shipping status of products will not be considered when returning the list of products.
-  """
-  isFreeShipping: Boolean
+  hideOutOfStock: Boolean
 
   """
   Filters by Products which have explicitly been marked as Featured within the catalog. If not supplied, the Featured status of products will not be considered when returning the list of products.
@@ -3478,9 +3578,34 @@ input SearchProductsFiltersInput {
   isFeatured: Boolean
 
   """
-  When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
+  Filters by Products which have explicit Free Shipping configured within the catalog. If not supplied, the Free Shipping status of products will not be considered when returning the list of products.
   """
-  hideOutOfStock: Boolean
+  isFreeShipping: Boolean
+
+  """
+  Search by price range. At least a minPrice or maxPrice must be supplied.
+  """
+  price: PriceSearchFilterInput
+
+  """
+  Filter by the attributes of products such as Product Options and Product Custom Fields. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
+  """
+  productAttributes: [ProductAttributeSearchFilterInput!]
+
+  """
+  Filter by rating. At least a minRating or maxRating must be supplied. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
+  """
+  rating: RatingSearchFilterInput
+
+  """
+  Boolean argument to determine whether products within sub-Categories will be returned when filtering products by Category. Defaults to False if not supplied.
+  """
+  searchSubCategories: Boolean
+
+  """
+  Textual search term. Used to search for products based on text entered by a shopper, typically in a search box. Searches against several fields on the product including Name, SKU, and Description.
+  """
+  searchTerm: String
 }
 
 """
@@ -3514,26 +3639,32 @@ type SearchQueries {
 
 """Seo Details"""
 type SeoDetails {
-  """Page title."""
-  pageTitle: String!
-
   """Meta description."""
   metaDescription: String!
 
   """Meta keywords."""
   metaKeywords: String!
+
+  """Page title."""
+  pageTitle: String!
 }
 
 """Store settings information from the control panel."""
 type Settings {
-  """The name of the store."""
-  storeName: String!
+  """Channel ID."""
+  channelId: Long!
 
-  """The hash of the store."""
-  storeHash: String!
+  """Checkout settings."""
+  checkout: CheckoutSettings
 
-  """The current store status."""
-  status: StorefrontStatusType!
+  """Contact information for the store."""
+  contact: ContactField
+
+  """Store display format information."""
+  display: DisplayField!
+
+  """Inventory settings."""
+  inventory: InventorySettings
 
   """Logo information for the store."""
   logo: LogoField! @deprecated(reason: "Use `logoV2` instead.")
@@ -3541,56 +3672,50 @@ type Settings {
   """Logo information for the store."""
   logoV2: StoreLogo!
 
-  """Contact information for the store."""
-  contact: ContactField
-
-  """Store urls."""
-  url: UrlField!
-
-  """Store display format information."""
-  display: DisplayField!
-
-  """Channel ID."""
-  channelId: Long!
-
-  """The tax display settings object"""
-  tax: TaxDisplaySettings
+  """ReCaptcha settings."""
+  reCaptcha: ReCaptchaSettings!
 
   """Store search settings."""
   search: Search!
 
-  """Storefront settings."""
-  storefront: Storefront!
-
-  """Inventory settings."""
-  inventory: InventorySettings
-
-  """ReCaptcha settings."""
-  reCaptcha: ReCaptchaSettings!
-
   """The social media links of connected platforms to the storefront."""
   socialMediaLinks: [SocialMediaLink!]!
 
-  """Checkout settings."""
-  checkout: CheckoutSettings
+  """The current store status."""
+  status: StorefrontStatusType!
+
+  """The hash of the store."""
+  storeHash: String!
+
+  """The name of the store."""
+  storeName: String!
+
+  """Storefront settings."""
+  storefront: Storefront!
+
+  """The tax display settings object"""
+  tax: TaxDisplaySettings
+
+  """Store urls."""
+  url: UrlField!
 }
 
 """A connection to a list of items."""
 type ShopByPriceConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [ShopByPriceEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type ShopByPriceEdge {
-  """The item at the end of the edge."""
-  node: ShopByPriceRange!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: ShopByPriceRange!
 }
 
 """Category shop by price money ranges"""
@@ -3601,8 +3726,44 @@ type ShopByPriceRange {
 
 """A site"""
 type Site {
-  """The Search queries."""
-  search: SearchQueries!
+  """Details of the best selling products."""
+  bestSellingProducts(
+    after: String
+    before: String
+    first: Int
+
+    """
+    When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
+    """
+    hideOutOfStock: Boolean
+    last: Int
+  ): ProductConnection!
+
+  """Details of the brand."""
+  brands(
+    after: String
+    before: String
+
+    """Filter by brand ids."""
+    entityIds: [Int!] = []
+    first: Int
+    last: Int
+
+    """Filter by brands belonging to any of the specified Products."""
+    productEntityIds: [Int!] = []
+  ): BrandConnection!
+
+  """The Cart of the current customer."""
+  cart(
+    """Cart ID."""
+    entityId: String
+  ): Cart
+
+  """Retrieve a category object by the id."""
+  category(
+    """The category id"""
+    entityId: Int!
+  ): Category
 
   """A tree of categories."""
   categoryTree(
@@ -3612,94 +3773,54 @@ type Site {
     rootEntityId: Int
   ): [CategoryTreeItem!]!
 
-  """Retrieve a category object by the id."""
-  category(
-    """The category id"""
-    entityId: Int!
-  ): Category
+  """The page content."""
+  content: Content!
 
-  """Details of the brand."""
-  brands(
-    before: String
+  """Store Currencies."""
+  currencies(after: String, before: String, first: Int, last: Int): CurrencyConnection!
+
+  """Currency details."""
+  currency(
+    """Currency Code"""
+    currencyCode: currencyCode!
+  ): Currency
+
+  """Details of the featured products."""
+  featuredProducts(
     after: String
-    first: Int
-    last: Int
-
-    """Filter by brands belonging to any of the specified Products."""
-    productEntityIds: [Int!] = []
-
-    """Filter by brand ids."""
-    entityIds: [Int!] = []
-  ): BrandConnection!
-
-  """Details of the products."""
-  products(
     before: String
-    after: String
     first: Int
-    last: Int
-
-    """Global ids of expected products."""
-    ids: [ID!] = []
-
-    """Ids of expected products."""
-    entityIds: [Int!] = []
 
     """
     When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
     """
     hideOutOfStock: Boolean
+    last: Int
   ): ProductConnection!
 
   """Details of the newest products."""
   newestProducts(
-    before: String
     after: String
+    before: String
     first: Int
-    last: Int
 
     """
     When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
     """
     hideOutOfStock: Boolean
-  ): ProductConnection!
-
-  """Details of the best selling products."""
-  bestSellingProducts(
-    before: String
-    after: String
-    first: Int
     last: Int
-
-    """
-    When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
-    """
-    hideOutOfStock: Boolean
   ): ProductConnection!
 
-  """Details of the featured products."""
-  featuredProducts(
-    before: String
-    after: String
-    first: Int
-    last: Int
-
-    """
-    When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
-    """
-    hideOutOfStock: Boolean
-  ): ProductConnection!
+  """List of brands sorted by product count."""
+  popularBrands(after: String, before: String, first: Int, last: Int): PopularBrandConnection!
 
   """A single product object with variant pricing overlay capabilities."""
   product(
-    """Product global id filter."""
-    id: ID
-
     """Product id filter."""
     entityId: Int
 
-    """Product filter by variant id."""
-    variantEntityId: Int
+    """Product global id filter."""
+    id: ID
 
     """A variant option value ids filter."""
     optionValueIds: [OptionValueId!] = []
@@ -3711,28 +3832,29 @@ type Site {
     When set to True, returns products with default option selection overlay if one exists. Otherwise returns a base product. Defaults to False
     """
     useDefaultOptionSelections: Boolean
+
+    """Product filter by variant id."""
+    variantEntityId: Int
   ): Product
 
-  """Route for a node"""
-  route(
-    """An url path to an expected entity."""
-    path: String!
-  ): Route!
+  """Details of the products."""
+  products(
+    after: String
+    before: String
 
-  """Store settings."""
-  settings: Settings
+    """Ids of expected products."""
+    entityIds: [Int!] = []
+    first: Int
 
-  """The page content."""
-  content: Content!
+    """
+    When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
+    """
+    hideOutOfStock: Boolean
 
-  """Currency details."""
-  currency(
-    """Currency Code"""
-    currencyCode: currencyCode!
-  ): Currency
-
-  """Store Currencies."""
-  currencies(before: String, after: String, first: Int, last: Int): CurrencyConnection!
+    """Global ids of expected products."""
+    ids: [ID!] = []
+    last: Int
+  ): ProductConnection!
 
   """Public Wishlist"""
   publicWishlist(
@@ -3740,14 +3862,17 @@ type Site {
     token: String!
   ): PublicWishlist
 
-  """List of brands sorted by product count."""
-  popularBrands(before: String, after: String, first: Int, last: Int): PopularBrandConnection!
+  """Route for a node"""
+  route(
+    """An url path to an expected entity."""
+    path: String!
+  ): Route!
 
-  """The Cart of the current customer."""
-  cart(
-    """Cart ID."""
-    entityId: String
-  ): Cart
+  """The Search queries."""
+  search: SearchQueries!
+
+  """Store settings."""
+  settings: Settings
 }
 
 """The social media link."""
@@ -3761,6 +3886,9 @@ type SocialMediaLink {
 
 """Special hour"""
 type SpecialHour {
+  """Closing time"""
+  closing: DateTime
+
   """Upcoming event name"""
   label: String!
 
@@ -3769,9 +3897,6 @@ type SpecialHour {
 
   """Opening time"""
   opening: DateTime
-
-  """Closing time"""
-  closing: DateTime
 }
 
 """Stock level display setting"""
@@ -3788,7 +3913,7 @@ type StoreImageLogo {
 }
 
 """Store logo."""
-union StoreLogo = StoreTextLogo | StoreImageLogo
+union StoreLogo = StoreImageLogo | StoreTextLogo
 
 """Store logo as text."""
 type StoreTextLogo {
@@ -3815,58 +3940,55 @@ type SubCategorySearchFilterItem {
   """Category ID."""
   entityId: Int!
 
-  """Category name."""
-  name: String!
-
   """Indicates whether category is selected."""
   isSelected: Boolean!
+
+  """Category name."""
+  name: String!
 
   """Indicates how many products available for this filter."""
   productCount: Int!
 
   """List of available sub-categories."""
-  subCategories(before: String, after: String, first: Int, last: Int): SubCategorySearchFilterItemConnection!
+  subCategories(after: String, before: String, first: Int, last: Int): SubCategorySearchFilterItemConnection!
 }
 
 """A connection to a list of items."""
 type SubCategorySearchFilterItemConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [SubCategorySearchFilterItemEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type SubCategorySearchFilterItemEdge {
-  """The item at the end of the edge."""
-  node: SubCategorySearchFilterItem!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: SubCategorySearchFilterItem!
 }
 
 """
 A swatch option value - swatch values can be associated with a list of hexidecimal colors or an image.
 """
 type SwatchOptionValue implements CatalogProductOptionValue {
+  """Unique ID for the option value."""
+  entityId: Int!
+
   """List of up to 3 hex encoded colors to associate with a swatch value."""
   hexColors: [String!]!
 
   """Absolute path of a swatch texture image."""
   imageUrl(
-    """Desired width of the image."""
-    width: Int!
-
     """Desired height of the image."""
     height: Int
+
+    """Desired width of the image."""
+    width: Int!
   ): String
-
-  """Unique ID for the option value."""
-  entityId: Int!
-
-  """Label for the option value."""
-  label: String!
 
   """Indicates whether this value is the chosen default selected value."""
   isDefault: Boolean!
@@ -3875,6 +3997,9 @@ type SwatchOptionValue implements CatalogProductOptionValue {
   Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level.
   """
   isSelected: Boolean
+
+  """Label for the option value."""
+  label: String!
 }
 
 """The tax display settings object"""
@@ -3900,47 +4025,179 @@ type TextFieldOption implements CatalogProductOption {
   """Default value of the text field option."""
   defaultValue: String
 
-  """The minimum number of characters."""
-  minLength: Int
-
-  """The maximum number of characters."""
-  maxLength: Int
+  """Display name for the option."""
+  displayName: String!
 
   """Unique ID for the option."""
   entityId: Int!
-
-  """Display name for the option."""
-  displayName: String!
 
   """One of the option values is required to be selected for the checkout."""
   isRequired: Boolean!
 
   """Indicates whether it is a variant option or modifier."""
   isVariantOption: Boolean!
+
+  """The maximum number of characters."""
+  maxLength: Int
+
+  """The minimum number of characters."""
+  minLength: Int
+}
+
+"""Unassign cart from the customer input object."""
+input UnassignCartFromCustomerInput {
+  """The cart id."""
+  cartEntityId: String!
+}
+
+"""Unassign cart from the customer result."""
+type UnassignCartFromCustomerResult {
+  """The Cart that is updated as a result of mutation."""
+  cart: Cart
+}
+
+"""Update cart currency data object"""
+input UpdateCartCurrencyDataInput {
+  """ISO-4217 currency code"""
+  currencyCode: String!
+}
+
+"""Update cart currency input object"""
+input UpdateCartCurrencyInput {
+  """The cart id"""
+  cartEntityId: String!
+
+  """Update cart currency data object"""
+  data: UpdateCartCurrencyDataInput!
+}
+
+"""Update cart currency result"""
+type UpdateCartCurrencyResult {
+  """The Cart that is updated as a result of mutation."""
+  cart: Cart
+}
+
+"""Update cart line item data object"""
+input UpdateCartLineItemDataInput {
+  """The gift certificate"""
+  giftCertificate: CartGiftCertificateInput
+
+  """The cart line item"""
+  lineItem: CartLineItemInput
+}
+
+"""Update cart line item input object"""
+input UpdateCartLineItemInput {
+  """The cart id"""
+  cartEntityId: String!
+
+  """Update cart line item data object"""
+  data: UpdateCartLineItemDataInput!
+
+  """The line item id"""
+  lineItemEntityId: String!
+}
+
+"""Update cart line item result"""
+type UpdateCartLineItemResult {
+  """The Cart that is updated as a result of mutation."""
+  cart: Cart
+}
+
+"""Update wishlist input object"""
+input UpdateWishlistInput {
+  """Wishlist data to update"""
+  data: WishlistUpdateDataInput!
+
+  """The wishlist id"""
+  entityId: Int!
+}
+
+"""Update wishlist"""
+type UpdateWishlistResult {
+  """The wishlist"""
+  result: Wishlist!
 }
 
 """Url field"""
 type UrlField {
-  """Store url."""
-  vanityUrl: String!
-
   """CDN url to fetch assets."""
   cdnUrl: String!
 
   """Checkout url."""
   checkoutUrl: String
+
+  """Store url."""
+  vanityUrl: String!
 }
 
 """Variant"""
 type Variant implements Node {
-  """The ID of an object"""
-  id: ID!
+  """Default image for a variant."""
+  defaultImage: Image
+
+  """
+  The variant's depth. If a depth was not explicitly specified on the variant, this will be the product's depth.
+  """
+  depth: Measurement
 
   """Id of the variant."""
   entityId: Int!
 
+  """Global trade item number."""
+  gtin: String
+
+  """
+  The variant's height. If a height was not explicitly specified on the variant, this will be the product's height.
+  """
+  height: Measurement
+
+  """The ID of an object"""
+  id: ID!
+
+  """Variant inventory"""
+  inventory: VariantInventory
+
+  """Whether the product can be purchased"""
+  isPurchasable: Boolean!
+
+  """Metafield data related to a variant."""
+  metafields(
+    after: String
+    before: String
+    first: Int
+
+    """Labels for identifying metafield data values."""
+    keys: [String!] = []
+    last: Int
+
+    """Metafield namespace filter"""
+    namespace: String!
+  ): MetafieldConnection!
+
+  """Manufacturer part number."""
+  mpn: String
+
+  """The options which define a variant."""
+  options(after: String, before: String, first: Int, last: Int): OptionConnection!
+
+  """Variant prices"""
+  prices(
+    """Please select a currency"""
+    currencyCode: currencyCode
+
+    """Tax will be included if enabled"""
+    includeTax: Boolean = false
+  ): Prices
+
+  """Product options that compose this variant."""
+  productOptions(after: String, before: String, first: Int, last: Int): ProductOptionConnection!
+
   """Sku of the variant."""
   sku: String!
+
+  """Universal product code."""
+  upc: String
 
   """
   The variant's weight. If a weight was not explicitly specified on the variant, this will be the product's weight.
@@ -3948,83 +4205,27 @@ type Variant implements Node {
   weight: Measurement
 
   """
-  The variant's height. If a height was not explicitly specified on the variant, this will be the product's height.
-  """
-  height: Measurement
-
-  """
   The variant's width. If a width was not explicitly specified on the variant, this will be the product's width.
   """
   width: Measurement
-
-  """
-  The variant's depth. If a depth was not explicitly specified on the variant, this will be the product's depth.
-  """
-  depth: Measurement
-
-  """The options which define a variant."""
-  options(before: String, after: String, first: Int, last: Int): OptionConnection!
-
-  """Product options that compose this variant."""
-  productOptions(before: String, after: String, first: Int, last: Int): ProductOptionConnection!
-
-  """Default image for a variant."""
-  defaultImage: Image
-
-  """Variant prices"""
-  prices(
-    """Tax will be included if enabled"""
-    includeTax: Boolean = false
-
-    """Please select a currency"""
-    currencyCode: currencyCode
-  ): Prices
-
-  """Variant inventory"""
-  inventory: VariantInventory
-
-  """Metafield data related to a variant."""
-  metafields(
-    """Metafield namespace filter"""
-    namespace: String!
-
-    """Labels for identifying metafield data values."""
-    keys: [String!] = []
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): MetafieldConnection!
-
-  """Universal product code."""
-  upc: String
-
-  """Manufacturer part number."""
-  mpn: String
-
-  """Global trade item number."""
-  gtin: String
-
-  """Whether the product can be purchased"""
-  isPurchasable: Boolean!
 }
 
 """A connection to a list of items."""
 type VariantConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [VariantEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type VariantEdge {
-  """The item at the end of the edge."""
-  node: Variant!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: Variant!
 }
 
 """Variant Inventory"""
@@ -4034,30 +4235,31 @@ type VariantInventory {
   """
   aggregated: Aggregated
 
-  """Indicates whether this product is in stock."""
-  isInStock: Boolean!
-
   """Inventory by locations."""
   byLocation(
-    """Location ids filter."""
-    locationEntityIds: [Int!] = []
+    after: String
+    before: String
+
+    """Filter locations by the distance"""
+    distanceFilter: DistanceFilter
+    first: Int
+    last: Int
 
     """Location entity codes filter."""
     locationEntityCodes: [String!] = []
 
-    """Location entity type ids filter."""
-    locationEntityTypeIds: [String!] = []
+    """Location ids filter."""
+    locationEntityIds: [Int!] = []
 
     """Location entity type ids filter."""
     locationEntityServiceTypeIds: [String!] = []
 
-    """Filter locations by the distance"""
-    distanceFilter: DistanceFilter
-    before: String
-    after: String
-    first: Int
-    last: Int
+    """Location entity type ids filter."""
+    locationEntityTypeIds: [String!] = []
   ): LocationConnection
+
+  """Indicates whether this product is in stock."""
+  isInStock: Boolean!
 }
 
 """WebPage details."""
@@ -4065,14 +4267,14 @@ interface WebPage {
   """Unique ID for the web page."""
   entityId: Int!
 
-  """Unique ID for the parent page."""
-  parentEntityId: Int
+  """Whether or not the page should be visible in the navigation menu."""
+  isVisibleInNavigation: Boolean!
 
   """Page name."""
   name: String!
 
-  """Whether or not the page should be visible in the navigation menu."""
-  isVisibleInNavigation: Boolean!
+  """Unique ID for the parent page."""
+  parentEntityId: Int
 
   """Page SEO details."""
   seo: SeoDetails!
@@ -4092,11 +4294,11 @@ input WebPagesFiltersInput {
   """Ids of the expected pages."""
   entityIds: [Int!]
 
-  """Type of the expected pages."""
-  pageType: WebPageType
-
   """Whether the expected pages are visible in the navigation bar."""
   isVisibleInNavigation: Boolean
+
+  """Type of the expected pages."""
+  pageType: WebPageType
 }
 
 """A wishlist"""
@@ -4104,44 +4306,45 @@ type Wishlist {
   """The wishlist id."""
   entityId: Int!
 
-  """The wishlist name."""
-  name: String!
-
   """Is the wishlist public?"""
   isPublic: Boolean!
 
-  """The wishlist token."""
-  token: String!
-
   """A list of the wishlist items"""
   items(
+    after: String
+    before: String
+    first: Int
+
     """
     When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored.
     """
     hideOutOfStock: Boolean
-    before: String
-    after: String
-    first: Int
     last: Int
   ): WishlistItemConnection!
+
+  """The wishlist name."""
+  name: String!
+
+  """The wishlist token."""
+  token: String!
 }
 
 """A connection to a list of items."""
 type WishlistConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [WishlistEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type WishlistEdge {
-  """The item at the end of the edge."""
-  node: Wishlist!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: Wishlist!
 }
 
 """Wishlist filters input object"""
@@ -4167,20 +4370,71 @@ type WishlistItem {
 
 """A connection to a list of items."""
 type WishlistItemConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
   """A list of edges."""
   edges: [WishlistItemEdge]
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
 }
 
 """An edge in a connection."""
 type WishlistItemEdge {
-  """The item at the end of the edge."""
-  node: WishlistItem!
-
   """A cursor for use in pagination."""
   cursor: String!
+
+  """The item at the end of the edge."""
+  node: WishlistItem!
+}
+
+"""Wishlist item input object"""
+input WishlistItemInput {
+  """An id of the product from the wishlist."""
+  productEntityId: Int!
+
+  """An id of the specific product variant from the wishlist."""
+  variantEntityId: Int
+}
+
+"""The wishlist mutations."""
+type WishlistMutations {
+  """Add wishlist items"""
+  addWishlistItems(
+    """Add wishlist items input"""
+    input: AddWishlistItemsInput!
+  ): AddWishlistItemsResult
+
+  """Create wishlist"""
+  createWishlist(
+    """Create wishlists input"""
+    input: CreateWishlistInput!
+  ): CreateWishlistResult
+
+  """Delete wishlist items"""
+  deleteWishlistItems(
+    """Delete wishlist items input"""
+    input: DeleteWishlistItemsInput!
+  ): DeleteWishlistItemsResult
+
+  """Delete wishlist"""
+  deleteWishlists(
+    """Delete wishlists input"""
+    input: DeleteWishlistsInput!
+  ): DeleteWishlistResult
+
+  """Update wishlist"""
+  updateWishlist(
+    """Update wishlist items input"""
+    input: UpdateWishlistInput!
+  ): UpdateWishlistResult
+}
+
+"""Wishlist data to update"""
+input WishlistUpdateDataInput {
+  """A new wishlist visibility mode"""
+  isPublic: Boolean
+
+  """A new wishlist name"""
+  name: String
 }
 
 """Country Code"""
@@ -4725,12 +4979,8 @@ enum currencyCode {
   ZWR
 }
 
-"""
-The `BigDecimal` scalar type represents signed fractional values with arbitrary precision.
-"""
-scalar BigDecimal
-
-"""
-The `Long` scalar type represents non-fractional signed whole numeric values. Long can represent values between -(2^63) and 2^63 - 1.
-"""
-scalar Long
+"""Blog post sort"""
+enum sortBy {
+  NEWEST
+  OLDEST
+}

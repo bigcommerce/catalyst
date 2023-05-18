@@ -57,6 +57,7 @@ async function internalGetProduct(productId: number) {
           __args: { first: 1 },
           edges: {
             node: {
+              name: true,
               breadcrumbs: {
                 __args: { depth: 5 },
                 edges: {
