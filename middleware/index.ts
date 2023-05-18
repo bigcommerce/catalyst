@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse, URLPattern } from 'next/server';
 
-import { bigcommerceFetch } from '@client';
+import { bigcommerceFetch } from '@client/fetcher';
 
 import { sessionMiddleware } from './session';
 

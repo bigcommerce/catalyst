@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
+// import { Suspense } from 'react';
 
 import { getProduct } from '@client';
 
@@ -14,7 +14,7 @@ export default async function Product({ params }: { params: { slug: string } }) 
   const product = await getProduct(productId);
 
   // We can use useId in async server components so manually creating the id.
-  const reviewSectionId = 'write-a-review';
+  // const reviewSectionId = 'write-a-review';
 
   if (!product) {
     return notFound();
