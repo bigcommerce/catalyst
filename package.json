@@ -11,6 +11,7 @@
   },
   "prettier": "@bigcommerce/eslint-config/prettier",
   "dependencies": {
+    "@makeswift/runtime": "^0.8.11",
     "@vercel/analytics": "^1.0.1",
     "clsx": "^1.2.1",
     "deepmerge": "^4.3.1",
