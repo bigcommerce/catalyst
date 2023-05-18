@@ -5,10 +5,8 @@ export default function HomePage() {
   return (
     <main>
       <div>
-        Catalyst <Camera color="#053FB0" />
+        Catalyst Homepage <Camera className="inline-block" color="#053FB0" />
       </div>
-
-      <div>A page</div>
     </main>
   );
 }

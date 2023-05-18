@@ -19,7 +19,7 @@ export const metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html className={inter.variable} lang="en">
-      <body>
+      <body className="md:container md:mx-auto">
         <Header />
 
         {children}

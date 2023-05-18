@@ -1,3 +1,4 @@
+import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 
 import { getCategoryTree } from '@client';
@@ -26,16 +27,16 @@ const HeaderNav = async () => {
 
 export const Header = () => {
   return (
-    <header>
-      <div className="relative mx-6 my-9 flex items-center md:container sm:mx-10 md:mx-auto md:my-6">
-        <Link href="/">
-          {/* @ts-expect-error Server Component */}
-          <StoreLogo />
-        </Link>
-
+    <header className="my-6 flex items-center">
+      <Link href="/">
         {/* @ts-expect-error Server Component */}
-        <HeaderNav />
-      </div>
+        <StoreLogo />
+      </Link>
+
+      {/* @ts-expect-error Server Component */}
+      <HeaderNav />
+
+      <ShoppingCart />
     </header>
   );
 };
