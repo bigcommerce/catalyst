@@ -26,4 +26,5 @@ module.exports = {
       },
     ],
   },
+  ignorePatterns: ['lib/client/generated/**/*.ts'],
 };
