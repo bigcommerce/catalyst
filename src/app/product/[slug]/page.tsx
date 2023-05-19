@@ -24,8 +24,8 @@ export default async function Product({ params }: { params: { slug: string } }) 
       {/* @ts-expect-error Server Component */}
       <BreadCrumbs productId={productId} />
 
-      <div className="my-6 grid grid-cols-2 gap-4">
-        <div className="order-2">
+      <div className="my-6 grid-cols-2 gap-4 md:grid">
+        <div className="md:order-2">
           {product.brand && (
             <p className="text-md font-semibold uppercase text-slate-500">{product.brand.name}</p>
           )}
@@ -38,7 +38,7 @@ export default async function Product({ params }: { params: { slug: string } }) 
           {/* <Variants productId={productId} /> */}
         </div>
 
-        <div className="order-1">
+        <div className="md:order-1">
           {/* @ts-expect-error Server Component */}
           <Gallery productId={productId} />
 
