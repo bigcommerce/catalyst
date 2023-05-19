@@ -1,7 +1,7 @@
 import { client } from '../client';
 import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
-type Product = Awaited<ReturnType<typeof internalGetProduct>>;
+type Product = NonNullable<Awaited<ReturnType<typeof internalGetProduct>>>;
 
 const reshapeProductCategories = (categoryConnection: Product['categories']) => {
   const categories = removeEdgesAndNodes(categoryConnection);
@@ -145,8 +145,6 @@ async function internalGetProduct(productId: number) {
 export const getProduct = async (productId: number) => {
   const product = await internalGetProduct(productId);
 
-  // TODO: Genql types are wrong here? Figure this out
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!product) {
     return null;
   }

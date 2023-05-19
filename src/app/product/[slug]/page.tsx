@@ -5,7 +5,7 @@ import { getProduct } from '@client';
 
 import { BreadCrumbs } from './Breadcrumbs';
 import { Gallery } from './Gallery';
-// import { Reviews } from './Reviews';
+import { Reviews } from './Reviews';
 import { ReviewSummary } from './ReviewSummary';
 // import { Variants } from './Variants';
 
@@ -13,8 +13,7 @@ export default async function Product({ params }: { params: { slug: string } }) 
   const productId = Number(params.slug);
   const product = await getProduct(productId);
 
-  // We can use useId in async server components so manually creating the id.
-  // const reviewSectionId = 'write-a-review';
+  const reviewSectionId = 'write-a-review';
 
   if (!product) {
     return notFound();
@@ -27,14 +26,15 @@ export default async function Product({ params }: { params: { slug: string } }) 
 
       <div className="my-6 grid grid-cols-2 gap-4">
         <div className="order-2">
-          <p className="text-md font-semibold uppercase text-slate-500">{product.brand.name}</p>
+          {product.brand && (
+            <p className="text-md font-semibold uppercase text-slate-500">{product.brand.name}</p>
+          )}
           <h1 className="mb-3 text-[50px] font-black leading-[66px] text-black">{product.name}</h1>
           <Suspense fallback="Loading...">
             {/* @ts-expect-error Server Component */}
-            <ReviewSummary productId={productId} reviewSectionId="asdlajsdi" />
+            <ReviewSummary productId={productId} reviewSectionId={reviewSectionId} />
           </Suspense>
 
-          {/* @ts-expect-error Server Component */}
           {/* <Variants productId={productId} /> */}
         </div>
 
@@ -56,10 +56,10 @@ export default async function Product({ params }: { params: { slug: string } }) 
             </>
           )}
 
-          {/* <Suspense fallback="Loading..."> */}
-          {/* @ts-expect-error Server Component */}
-          {/* <Reviews productId={productId} reviewSectionId={reviewSectionId} /> */}
-          {/* </Suspense> */}
+          <Suspense fallback="Loading...">
+            {/* @ts-expect-error Server Component */}
+            <Reviews productId={productId} reviewSectionId={reviewSectionId} />
+          </Suspense>
         </div>
       </div>
     </>

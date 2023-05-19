@@ -48,7 +48,7 @@ export const getBestSellingProducts = async ({
 
     return {
       ...rest,
-      price: prices.price,
+      price: prices?.price,
     };
   });
 };

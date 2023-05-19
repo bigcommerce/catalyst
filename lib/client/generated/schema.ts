@@ -6,11 +6,11 @@
 export type Scalars = {
     BigDecimal: any,
     Boolean: boolean,
-    DateTime: any,
+    DateTime: string,
     Float: number,
     ID: string,
     Int: number,
-    Long: any,
+    Long: number,
     String: string,
 }
 
@@ -18,7 +18,7 @@ export type Scalars = {
 /** Add cart line items result */
 export interface AddCartLineItemsResult {
     /** The Cart that is updated as a result of mutation. */
-    cart: (Cart | null)
+    cart?: (Cart | null)
     __typename: 'AddCartLineItemsResult'
 }
 
@@ -54,7 +54,7 @@ export interface AggregatedInventory {
 /** Assign cart to the customer result. */
 export interface AssignCartToCustomerResult {
     /** The Cart that is updated as a result of mutation. */
-    cart: (Cart | null)
+    cart?: (Cart | null)
     __typename: 'AssignCartToCustomerResult'
 }
 
@@ -86,7 +86,7 @@ export interface Banner {
 /** A connection to a list of items. */
 export interface BannerConnection {
     /** A list of edges. */
-    edges: ((BannerEdge | null)[] | null)
+    edges?: ((BannerEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'BannerConnection'
@@ -134,7 +134,7 @@ export interface Blog {
     /** The path of the Blog. */
     path: Scalars['String']
     /** Blog post details. */
-    post: (BlogPost | null)
+    post?: (BlogPost | null)
     /** Details of the Blog posts. */
     posts: BlogPostConnection
     /** The rendered regions for the blog index. */
@@ -152,7 +152,7 @@ export interface BlogIndexPage {
     /** Page name. */
     name: Scalars['String']
     /** Unique ID for the parent page. */
-    parentEntityId: (Scalars['Int'] | null)
+    parentEntityId?: (Scalars['Int'] | null)
     /** The URL path of the page. */
     path: Scalars['String']
     /** The rendered regions for the web page. */
@@ -166,7 +166,7 @@ export interface BlogIndexPage {
 /** Blog post details. */
 export interface BlogPost {
     /** Blog post author. */
-    author: (Scalars['String'] | null)
+    author?: (Scalars['String'] | null)
     /** Unique ID for the blog post. */
     entityId: Scalars['Int']
     /** The body of the Blog post. */
@@ -188,7 +188,7 @@ export interface BlogPost {
     /** Blog post tags. */
     tags: Scalars['String'][]
     /** Blog post thumbnail image. */
-    thumbnailImage: (Image | null)
+    thumbnailImage?: (Image | null)
     __typename: 'BlogPost'
 }
 
@@ -196,9 +196,9 @@ export interface BlogPost {
 /** A connection to a list of items. */
 export interface BlogPostConnection {
     /** Collection info */
-    collectionInfo: (CollectionInfo | null)
+    collectionInfo?: (CollectionInfo | null)
     /** A list of edges. */
-    edges: ((BlogPostEdge | null)[] | null)
+    edges?: ((BlogPostEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'BlogPostConnection'
@@ -218,7 +218,7 @@ export interface BlogPostEdge {
 /** Brand */
 export interface Brand {
     /** Default image for brand. */
-    defaultImage: (Image | null)
+    defaultImage?: (Image | null)
     /** Id of the brand. */
     entityId: Scalars['Int']
     /** The ID of an object */
@@ -257,7 +257,7 @@ export interface Brand {
 /** A connection to a list of items. */
 export interface BrandConnection {
     /** A list of edges. */
-    edges: ((BrandEdge | null)[] | null)
+    edges?: ((BrandEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'BrandConnection'
@@ -277,7 +277,7 @@ export interface BrandEdge {
 /** A connection to a list of items. */
 export interface BrandPageBannerConnection {
     /** A list of edges. */
-    edges: ((BrandPageBannerEdge | null)[] | null)
+    edges?: ((BrandPageBannerEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'BrandPageBannerConnection'
@@ -325,7 +325,7 @@ export interface BrandSearchFilterItem {
 /** A connection to a list of items. */
 export interface BrandSearchFilterItemConnection {
     /** A list of edges. */
-    edges: ((BrandSearchFilterItemEdge | null)[] | null)
+    edges?: ((BrandSearchFilterItemEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'BrandSearchFilterItemConnection'
@@ -355,7 +355,7 @@ export interface Breadcrumb {
 /** A connection to a list of items. */
 export interface BreadcrumbConnection {
     /** A list of edges. */
-    edges: ((BreadcrumbEdge | null)[] | null)
+    edges?: ((BreadcrumbEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'BreadcrumbConnection'
@@ -375,7 +375,7 @@ export interface BreadcrumbEdge {
 /** Bulk pricing tier that sets a fixed price for the product or variant. */
 export interface BulkPricingFixedPriceDiscount {
     /** Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound. */
-    maximumQuantity: (Scalars['Int'] | null)
+    maximumQuantity?: (Scalars['Int'] | null)
     /** Minimum item quantity that applies to this bulk pricing tier. */
     minimumQuantity: Scalars['Int']
     /** This price will override the current product price. */
@@ -387,7 +387,7 @@ export interface BulkPricingFixedPriceDiscount {
 /** Bulk pricing tier that reduces the price of the product or variant by a percentage. */
 export interface BulkPricingPercentageDiscount {
     /** Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound. */
-    maximumQuantity: (Scalars['Int'] | null)
+    maximumQuantity?: (Scalars['Int'] | null)
     /** Minimum item quantity that applies to this bulk pricing tier. */
     minimumQuantity: Scalars['Int']
     /** The percentage that will be removed from the product price. */
@@ -399,7 +399,7 @@ export interface BulkPricingPercentageDiscount {
 /** Bulk pricing tier that will subtract an amount from the price of the product or variant. */
 export interface BulkPricingRelativePriceDiscount {
     /** Maximum item quantity that applies to this bulk pricing tier - if not defined then the tier does not have an upper bound. */
-    maximumQuantity: (Scalars['Int'] | null)
+    maximumQuantity?: (Scalars['Int'] | null)
     /** Minimum item quantity that applies to this bulk pricing tier. */
     minimumQuantity: Scalars['Int']
     /** The price of the product/variant will be reduced by this priceAdjustment. */
@@ -455,7 +455,7 @@ export interface CartCustomItem {
     /** Quantity of this item. */
     quantity: Scalars['Int']
     /** Custom item sku. */
-    sku: (Scalars['String'] | null)
+    sku?: (Scalars['String'] | null)
     __typename: 'CartCustomItem'
 }
 
@@ -463,7 +463,7 @@ export interface CartCustomItem {
 /** Cart digital item. */
 export interface CartDigitalItem {
     /** The product brand. */
-    brand: (Scalars['String'] | null)
+    brand?: (Scalars['String'] | null)
     /** The total value of all coupons applied to this item. */
     couponAmount: Money
     /** The total value of all discounts applied to this item (excluding coupon). */
@@ -477,7 +477,7 @@ export interface CartDigitalItem {
     /** Item's sale price multiplied by the quantity. */
     extendedSalePrice: Money
     /** URL of an image of this item, accessible on the internet. */
-    imageUrl: (Scalars['String'] | null)
+    imageUrl?: (Scalars['String'] | null)
     /** Whether the item is taxable. */
     isTaxable: Scalars['Boolean']
     /** The net item price before discounts and coupons. It is based on the product default price or sale price (if set) configured in BigCommerce Admin. */
@@ -487,7 +487,7 @@ export interface CartDigitalItem {
     /** An item’s original price is the same as the product default price in the admin panel. */
     originalPrice: Money
     /** The product is part of a bundle such as a product pick list, then the parentId or the main product id will populate. */
-    parentEntityId: (Scalars['String'] | null)
+    parentEntityId?: (Scalars['String'] | null)
     /** ID of the product. */
     productEntityId: Scalars['Int']
     /** Quantity of this item. */
@@ -497,11 +497,11 @@ export interface CartDigitalItem {
     /** The list of selected options for this product. */
     selectedOptions: CartSelectedOption[]
     /** SKU of the variant. */
-    sku: (Scalars['String'] | null)
+    sku?: (Scalars['String'] | null)
     /** The product URL. */
     url: Scalars['String']
     /** ID of the variant. */
-    variantEntityId: (Scalars['Int'] | null)
+    variantEntityId?: (Scalars['Int'] | null)
     __typename: 'CartDigitalItem'
 }
 
@@ -525,7 +525,7 @@ export interface CartGiftCertificate {
     /** Whether or not the gift certificate is taxable. */
     isTaxable: Scalars['Boolean']
     /** Message that will be sent to the gift certificate's recipient. Limited to 200 characters. */
-    message: (Scalars['String'] | null)
+    message?: (Scalars['String'] | null)
     /** GiftCertificate-provided name that will appear in the control panel. */
     name: Scalars['String']
     /** Recipient of the gift certificate. */
@@ -567,7 +567,7 @@ export interface CartGiftWrapping {
     /** Gift-wrapping price per product. */
     amount: Money
     /** Custom gift message along with items wrapped in this wrapping option. */
-    message: (Scalars['String'] | null)
+    message?: (Scalars['String'] | null)
     /** Name of the gift-wrapping option. */
     name: Scalars['String']
     __typename: 'CartGiftWrapping'
@@ -593,21 +593,21 @@ export interface CartLineItems {
 /** Cart mutations */
 export interface CartMutations {
     /** Adds line item(s) to the cart. */
-    addCartLineItems: (AddCartLineItemsResult | null)
+    addCartLineItems?: (AddCartLineItemsResult | null)
     /** Assign cart to the customer. */
-    assignCartToCustomer: (AssignCartToCustomerResult | null)
+    assignCartToCustomer?: (AssignCartToCustomerResult | null)
     /** Creates a cart and generates a cart ID. */
-    createCart: (CreateCartResult | null)
+    createCart?: (CreateCartResult | null)
     /** Deletes a Cart. */
-    deleteCart: (DeleteCartResult | null)
+    deleteCart?: (DeleteCartResult | null)
     /** Delete line item in the cart. Removing the last line item in the Cart deletes the Cart. */
-    deleteCartLineItem: (DeleteCartLineItemResult | null)
+    deleteCartLineItem?: (DeleteCartLineItemResult | null)
     /** Unassign cart from the customer. */
-    unassignCartFromCustomer: (UnassignCartFromCustomerResult | null)
+    unassignCartFromCustomer?: (UnassignCartFromCustomerResult | null)
     /** Update currency of the cart. */
-    updateCartCurrency: (UpdateCartCurrencyResult | null)
+    updateCartCurrency?: (UpdateCartCurrencyResult | null)
     /** Updates line item in the cart. */
-    updateCartLineItem: (UpdateCartLineItemResult | null)
+    updateCartLineItem?: (UpdateCartLineItemResult | null)
     __typename: 'CartMutations'
 }
 
@@ -615,7 +615,7 @@ export interface CartMutations {
 /** Cart physical item. */
 export interface CartPhysicalItem {
     /** The product brand. */
-    brand: (Scalars['String'] | null)
+    brand?: (Scalars['String'] | null)
     /** The total value of all coupons applied to this item. */
     couponAmount: Money
     /** The total value of all discounts applied to this item (excluding coupon). */
@@ -629,9 +629,9 @@ export interface CartPhysicalItem {
     /** Item's sale price multiplied by the quantity. */
     extendedSalePrice: Money
     /** Gift wrapping for this item. */
-    giftWrapping: (CartGiftWrapping | null)
+    giftWrapping?: (CartGiftWrapping | null)
     /** URL of an image of this item, accessible on the internet. */
-    imageUrl: (Scalars['String'] | null)
+    imageUrl?: (Scalars['String'] | null)
     /** Whether this item requires shipping to a physical address. */
     isShippingRequired: Scalars['Boolean']
     /** Whether the item is taxable. */
@@ -643,7 +643,7 @@ export interface CartPhysicalItem {
     /** An item’s original price is the same as the product default price in the admin panel. */
     originalPrice: Money
     /** The product is part of a bundle such as a product pick list, then the parentId or the main product id will populate. */
-    parentEntityId: (Scalars['String'] | null)
+    parentEntityId?: (Scalars['String'] | null)
     /** ID of the product. */
     productEntityId: Scalars['Int']
     /** Quantity of this item. */
@@ -653,11 +653,11 @@ export interface CartPhysicalItem {
     /** The list of selected options for this item. */
     selectedOptions: CartSelectedOption[]
     /** SKU of the variant. */
-    sku: (Scalars['String'] | null)
+    sku?: (Scalars['String'] | null)
     /** The product URL. */
     url: Scalars['String']
     /** ID of the variant. */
-    variantEntityId: (Scalars['Int'] | null)
+    variantEntityId?: (Scalars['Int'] | null)
     __typename: 'CartPhysicalItem'
 }
 
@@ -757,7 +757,7 @@ export interface CartSelectedTextFieldOption {
 /** Storefront catalog settings. */
 export interface Catalog {
     /** Product comparisons enabled. */
-    productComparisonsEnabled: (Scalars['Boolean'] | null)
+    productComparisonsEnabled?: (Scalars['Boolean'] | null)
     __typename: 'Catalog'
 }
 
@@ -775,9 +775,9 @@ export interface Category {
     /** Category breadcrumbs. */
     breadcrumbs: BreadcrumbConnection
     /** Default image for the category. */
-    defaultImage: (Image | null)
+    defaultImage?: (Image | null)
     /** Category default product sort. */
-    defaultProductSort: (CategoryProductSort | null)
+    defaultProductSort?: (CategoryProductSort | null)
     /** Category description. */
     description: Scalars['String']
     /** Unique ID for the category. */
@@ -806,7 +806,7 @@ export interface Category {
 /** A connection to a list of items. */
 export interface CategoryConnection {
     /** A list of edges. */
-    edges: ((CategoryEdge | null)[] | null)
+    edges?: ((CategoryEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'CategoryConnection'
@@ -826,7 +826,7 @@ export interface CategoryEdge {
 /** A connection to a list of items. */
 export interface CategoryPageBannerConnection {
     /** A list of edges. */
-    edges: ((CategoryPageBannerEdge | null)[] | null)
+    edges?: ((CategoryPageBannerEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'CategoryPageBannerConnection'
@@ -880,7 +880,7 @@ export interface CategorySearchFilterItem {
 /** A connection to a list of items. */
 export interface CategorySearchFilterItemConnection {
     /** A list of edges. */
-    edges: ((CategorySearchFilterItemEdge | null)[] | null)
+    edges?: ((CategorySearchFilterItemEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'CategorySearchFilterItemConnection'
@@ -908,7 +908,7 @@ export interface CategoryTreeItem {
     /** If a category has children. */
     hasChildren: Scalars['Boolean']
     /** The category image. */
-    image: (Image | null)
+    image?: (Image | null)
     /** The name of category. */
     name: Scalars['String']
     /** Path assigned to this category */
@@ -958,7 +958,7 @@ export interface CheckoutSettings {
 /** Additional information about the collection. */
 export interface CollectionInfo {
     /** Total items in the collection despite pagination. */
-    totalItems: (Scalars['Long'] | null)
+    totalItems?: (Scalars['Long'] | null)
     __typename: 'CollectionInfo'
 }
 
@@ -994,7 +994,7 @@ export interface ContactPage {
     /** Page name. */
     name: Scalars['String']
     /** Unique ID for the parent page. */
-    parentEntityId: (Scalars['Int'] | null)
+    parentEntityId?: (Scalars['Int'] | null)
     /** The URL path of the page. */
     path: Scalars['String']
     /** The plain text summary of the page body. */
@@ -1010,11 +1010,11 @@ export interface ContactPage {
 /** The page content. */
 export interface Content {
     /** Banners details. */
-    banners: (Banners | null)
+    banners?: (Banners | null)
     /** Blog details. */
-    blog: (Blog | null)
+    blog?: (Blog | null)
     /** Page details. */
-    page: (WebPage | null)
+    page?: (WebPage | null)
     /** Details of the pages. */
     pages: PageConnection
     /** The rendered regions by specific page. */
@@ -1028,7 +1028,7 @@ export interface Content {
 /** Create cart result */
 export interface CreateCartResult {
     /** The Cart that is created as a result of mutation. */
-    cart: (Cart | null)
+    cart?: (Cart | null)
     __typename: 'CreateCartResult'
 }
 
@@ -1052,7 +1052,7 @@ export interface Currency {
     /** Exchange rate relative to default currency. */
     exchangeRate: Scalars['Float']
     /** Flag image URL. */
-    flagImage: (Scalars['String'] | null)
+    flagImage?: (Scalars['String'] | null)
     /** Indicates whether this currency is active. */
     isActive: Scalars['Boolean']
     /** Indicates whether this currency is transactional. */
@@ -1066,7 +1066,7 @@ export interface Currency {
 /** A connection to a list of items. */
 export interface CurrencyConnection {
     /** A list of edges. */
-    edges: ((CurrencyEdge | null)[] | null)
+    edges?: ((CurrencyEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'CurrencyConnection'
@@ -1118,7 +1118,7 @@ export interface CustomField {
 /** A connection to a list of items. */
 export interface CustomFieldConnection {
     /** A list of edges. */
-    edges: ((CustomFieldEdge | null)[] | null)
+    edges?: ((CustomFieldEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'CustomFieldConnection'
@@ -1176,7 +1176,7 @@ export interface CustomerAttribute {
     /** The name of the custom customer attribute */
     name: Scalars['String']
     /** The value of the custom customer attribute */
-    value: (Scalars['String'] | null)
+    value?: (Scalars['String'] | null)
     __typename: 'CustomerAttribute'
 }
 
@@ -1192,11 +1192,11 @@ export interface CustomerAttributes {
 /** A calendar for allowing selection of a date. */
 export interface DateFieldOption {
     /** The default timestamp of date option. */
-    defaultValue: (Scalars['DateTime'] | null)
+    defaultValue?: (Scalars['DateTime'] | null)
     /** Display name for the option. */
     displayName: Scalars['String']
     /** The earliest timestamp of date option. */
-    earliest: (Scalars['DateTime'] | null)
+    earliest?: (Scalars['DateTime'] | null)
     /** Unique ID for the option. */
     entityId: Scalars['Int']
     /** One of the option values is required to be selected for the checkout. */
@@ -1204,7 +1204,7 @@ export interface DateFieldOption {
     /** Indicates whether it is a variant option or modifier. */
     isVariantOption: Scalars['Boolean']
     /** The latest timestamp of date option. */
-    latest: (Scalars['DateTime'] | null)
+    latest?: (Scalars['DateTime'] | null)
     /** Limit date by */
     limitDateBy: LimitDateOption
     __typename: 'DateFieldOption'
@@ -1222,11 +1222,11 @@ export interface DateTimeExtended {
 /** Delete cart lien item result */
 export interface DeleteCartLineItemResult {
     /** The Cart that is updated as a result of mutation. */
-    cart: (Cart | null)
+    cart?: (Cart | null)
     /** The ID of the Cart if it is deleted as a result of mutation. */
-    deletedCartEntityId: (Scalars['String'] | null)
+    deletedCartEntityId?: (Scalars['String'] | null)
     /** The ID of the line item that is deleted as a result of mutation. */
-    deletedLineItemEntityId: (Scalars['String'] | null)
+    deletedLineItemEntityId?: (Scalars['String'] | null)
     __typename: 'DeleteCartLineItemResult'
 }
 
@@ -1234,7 +1234,7 @@ export interface DeleteCartLineItemResult {
 /** Delete cart result */
 export interface DeleteCartResult {
     /** The ID of the Cart that is deleted as a result of mutation. */
-    deletedCartEntityId: (Scalars['String'] | null)
+    deletedCartEntityId?: (Scalars['String'] | null)
     __typename: 'DeleteCartResult'
 }
 
@@ -1290,7 +1290,7 @@ export interface ExternalLinkPage {
     /** Page name. */
     name: Scalars['String']
     /** Unique ID for the parent page. */
-    parentEntityId: (Scalars['Int'] | null)
+    parentEntityId?: (Scalars['Int'] | null)
     /** Page SEO details. */
     seo: SeoDetails
     __typename: 'ExternalLinkPage'
@@ -1324,7 +1324,7 @@ export interface GiftWrapping {
     /** Gift wrapping name. */
     name: Scalars['String']
     /** Gift wrapping preview image url. */
-    previewImageUrl: (Scalars['String'] | null)
+    previewImageUrl?: (Scalars['String'] | null)
     __typename: 'GiftWrapping'
 }
 
@@ -1332,7 +1332,7 @@ export interface GiftWrapping {
 /** A connection to a list of items. */
 export interface GiftWrappingConnection {
     /** A list of edges. */
-    edges: ((GiftWrappingEdge | null)[] | null)
+    edges?: ((GiftWrappingEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'GiftWrappingConnection'
@@ -1366,7 +1366,7 @@ export interface Image {
 /** A connection to a list of items. */
 export interface ImageConnection {
     /** A list of edges. */
-    edges: ((ImageEdge | null)[] | null)
+    edges?: ((ImageEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'ImageConnection'
@@ -1404,7 +1404,7 @@ export interface InventoryAddress {
     /** Country code. */
     countryCode: Scalars['String']
     /** Address description. */
-    description: (Scalars['String'] | null)
+    description?: (Scalars['String'] | null)
     /** Address email. */
     email: Scalars['String']
     /** Address id. */
@@ -1412,9 +1412,9 @@ export interface InventoryAddress {
     /** Address label. */
     label: Scalars['String']
     /** Address latitude. */
-    latitude: (Scalars['Float'] | null)
+    latitude?: (Scalars['Float'] | null)
     /** Address longitude. */
-    longitude: (Scalars['Float'] | null)
+    longitude?: (Scalars['Float'] | null)
     /** Address phone. */
     phone: Scalars['String']
     /** Address zip. */
@@ -1432,7 +1432,7 @@ export interface InventoryByLocations {
     /** Indicates whether this product is in stock. */
     isInStock: Scalars['Boolean']
     /** Distance between location and specified longitude and latitude */
-    locationDistance: (Distance | null)
+    locationDistance?: (Distance | null)
     /** Location code. */
     locationEntityCode: Scalars['String']
     /** Location id. */
@@ -1443,7 +1443,7 @@ export interface InventoryByLocations {
      */
     locationEntityServiceTypeIds: Scalars['String'][]
     /** Location type id. */
-    locationEntityTypeId: (Scalars['String'] | null)
+    locationEntityTypeId?: (Scalars['String'] | null)
     /** Indicates a threshold low-stock level. */
     warningLevel: Scalars['Int']
     __typename: 'InventoryByLocations'
@@ -1453,7 +1453,7 @@ export interface InventoryByLocations {
 /** Location */
 export interface InventoryLocation {
     /** Location address */
-    address: (InventoryAddress | null)
+    address?: (InventoryAddress | null)
     /**
      * @deprecated Deprecated. Use specialHours instead
      * Upcoming events
@@ -1462,9 +1462,9 @@ export interface InventoryLocation {
     /** Location code. */
     code: Scalars['String']
     /** Location description. */
-    description: (Scalars['String'] | null)
+    description?: (Scalars['String'] | null)
     /** Distance between location and specified longitude and latitude */
-    distance: (Distance | null)
+    distance?: (Distance | null)
     /** Location id. */
     entityId: Scalars['Int']
     /** Location label. */
@@ -1472,7 +1472,7 @@ export interface InventoryLocation {
     /** Metafield data related to a location. */
     metafields: MetafieldConnection
     /** Location OperatingHours */
-    operatingHours: (OperatingHours | null)
+    operatingHours?: (OperatingHours | null)
     /**
      * @deprecated Deprecated. Will be substituted with pickup methods.
      * Location service type ids.
@@ -1481,9 +1481,9 @@ export interface InventoryLocation {
     /** Upcoming events */
     specialHours: SpecialHour[]
     /** Time zone of location */
-    timeZone: (Scalars['String'] | null)
+    timeZone?: (Scalars['String'] | null)
     /** Location type id. */
-    typeId: (Scalars['String'] | null)
+    typeId?: (Scalars['String'] | null)
     __typename: 'InventoryLocation'
 }
 
@@ -1491,7 +1491,7 @@ export interface InventoryLocation {
 /** A connection to a list of items. */
 export interface InventoryLocationConnection {
     /** A list of edges. */
-    edges: ((InventoryLocationEdge | null)[] | null)
+    edges?: ((InventoryLocationEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'InventoryLocationConnection'
@@ -1515,15 +1515,15 @@ export interface InventorySettings {
     /** Flag to show or not on product filtering when option is out of stock */
     hideInProductFiltering: Scalars['Boolean']
     /** The option out of stock behavior. */
-    optionOutOfStockBehavior: (OptionOutOfStockBehavior | null)
+    optionOutOfStockBehavior?: (OptionOutOfStockBehavior | null)
     /** The product out of stock behavior. */
-    productOutOfStockBehavior: (ProductOutOfStockBehavior | null)
+    productOutOfStockBehavior?: (ProductOutOfStockBehavior | null)
     /** Show out of stock message on product listing pages */
     showOutOfStockMessage: Scalars['Boolean']
     /** Show pre-order inventory */
     showPreOrderStockLevels: Scalars['Boolean']
     /** Hide or show inventory node for product */
-    stockLevelDisplay: (StockLevelDisplay | null)
+    stockLevelDisplay?: (StockLevelDisplay | null)
     __typename: 'InventorySettings'
 }
 
@@ -1543,7 +1543,7 @@ export type LimitInputBy = 'HIGHEST_VALUE' | 'LOWEST_VALUE' | 'NO_LIMIT' | 'RANG
 /** A connection to a list of items. */
 export interface LocationConnection {
     /** A list of edges. */
-    edges: ((LocationEdge | null)[] | null)
+    edges?: ((LocationEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'LocationConnection'
@@ -1563,7 +1563,7 @@ export interface LocationEdge {
 /** Login result */
 export interface LoginResult {
     /** The currently logged in customer. */
-    customer: (Customer | null)
+    customer?: (Customer | null)
     /**
      * @deprecated Use customer node instead.
      * The result of a login
@@ -1604,7 +1604,7 @@ export interface Measurement {
 /** A connection to a list of items. */
 export interface MetafieldConnection {
     /** A list of edges. */
-    edges: ((MetafieldEdge | null)[] | null)
+    edges?: ((MetafieldEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'MetafieldConnection'
@@ -1643,7 +1643,7 @@ export interface Money {
      * @deprecated Deprecated. Don't use - it will be removed soon.
      * The formatted currency string for the current money.
      */
-    formatted: (Scalars['String'] | null)
+    formatted?: (Scalars['String'] | null)
     /** The amount of money. */
     value: Scalars['BigDecimal']
     __typename: 'Money'
@@ -1663,7 +1663,7 @@ export interface MoneyRange {
 /** A multi-line text input field, aka a text box. */
 export interface MultiLineTextFieldOption {
     /** Default value of the multiline text field option. */
-    defaultValue: (Scalars['String'] | null)
+    defaultValue?: (Scalars['String'] | null)
     /** Display name for the option. */
     displayName: Scalars['String']
     /** Unique ID for the option. */
@@ -1673,11 +1673,11 @@ export interface MultiLineTextFieldOption {
     /** Indicates whether it is a variant option or modifier. */
     isVariantOption: Scalars['Boolean']
     /** The maximum number of characters. */
-    maxLength: (Scalars['Int'] | null)
+    maxLength?: (Scalars['Int'] | null)
     /** The maximum number of lines. */
-    maxLines: (Scalars['Int'] | null)
+    maxLines?: (Scalars['Int'] | null)
     /** The minimum number of characters. */
-    minLength: (Scalars['Int'] | null)
+    minLength?: (Scalars['Int'] | null)
     __typename: 'MultiLineTextFieldOption'
 }
 
@@ -1707,7 +1707,7 @@ export interface MultipleChoiceOptionValue {
     /** Indicates whether this value is the chosen default selected value. */
     isDefault: Scalars['Boolean']
     /** Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level. */
-    isSelected: (Scalars['Boolean'] | null)
+    isSelected?: (Scalars['Boolean'] | null)
     /** Label for the option value. */
     label: Scalars['String']
     __typename: 'MultipleChoiceOptionValue'
@@ -1743,7 +1743,7 @@ export interface NormalPage {
     /** Page name. */
     name: Scalars['String']
     /** Unique ID for the parent page. */
-    parentEntityId: (Scalars['Int'] | null)
+    parentEntityId?: (Scalars['Int'] | null)
     /** The URL path of the page. */
     path: Scalars['String']
     /** The plain text summary of the page body. */
@@ -1759,13 +1759,13 @@ export interface NormalPage {
 /** A single line text input field that only accepts numbers. */
 export interface NumberFieldOption {
     /** Default value of the text field option. */
-    defaultValue: (Scalars['Float'] | null)
+    defaultValue?: (Scalars['Float'] | null)
     /** Display name for the option. */
     displayName: Scalars['String']
     /** Unique ID for the option. */
     entityId: Scalars['Int']
     /** The top limit of possible numbers. */
-    highest: (Scalars['Float'] | null)
+    highest?: (Scalars['Float'] | null)
     /** Allow whole numbers only. */
     isIntegerOnly: Scalars['Boolean']
     /** One of the option values is required to be selected for the checkout. */
@@ -1775,7 +1775,7 @@ export interface NumberFieldOption {
     /** Limit numbers by several options. */
     limitNumberBy: LimitInputBy
     /** The bottom limit of possible numbers. */
-    lowest: (Scalars['Float'] | null)
+    lowest?: (Scalars['Float'] | null)
     __typename: 'NumberFieldOption'
 }
 
@@ -1795,19 +1795,19 @@ export interface OperatingDay {
 /** Operating hours */
 export interface OperatingHours {
     /** Friday. */
-    friday: (OperatingDay | null)
+    friday?: (OperatingDay | null)
     /** Monday. */
-    monday: (OperatingDay | null)
+    monday?: (OperatingDay | null)
     /** Saturday. */
-    saturday: (OperatingDay | null)
+    saturday?: (OperatingDay | null)
     /** Sunday. */
-    sunday: (OperatingDay | null)
+    sunday?: (OperatingDay | null)
     /** Thursday. */
-    thursday: (OperatingDay | null)
+    thursday?: (OperatingDay | null)
     /** Tuesday. */
-    tuesday: (OperatingDay | null)
+    tuesday?: (OperatingDay | null)
     /** Wednesday. */
-    wednesday: (OperatingDay | null)
+    wednesday?: (OperatingDay | null)
     __typename: 'OperatingHours'
 }
 
@@ -1815,7 +1815,7 @@ export interface OperatingHours {
 /** A connection to a list of items. */
 export interface OptionConnection {
     /** A list of edges. */
-    edges: ((OptionEdge | null)[] | null)
+    edges?: ((OptionEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'OptionConnection'
@@ -1839,7 +1839,7 @@ export type OptionOutOfStockBehavior = 'DO_NOTHING' | 'HIDE_OPTION' | 'LABEL_OPT
 /** A connection to a list of items. */
 export interface OptionValueConnection {
     /** A list of edges. */
-    edges: ((OptionValueEdge | null)[] | null)
+    edges?: ((OptionValueEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'OptionValueConnection'
@@ -1861,13 +1861,13 @@ export interface OtherSearchFilter {
     /** Indicates whether to display product count next to the filter. */
     displayProductCount: Scalars['Boolean']
     /** Free shipping filter. */
-    freeShipping: (OtherSearchFilterItem | null)
+    freeShipping?: (OtherSearchFilterItem | null)
     /** Indicates whether filter is collapsed by default. */
     isCollapsedByDefault: Scalars['Boolean']
     /** Is Featured filter. */
-    isFeatured: (OtherSearchFilterItem | null)
+    isFeatured?: (OtherSearchFilterItem | null)
     /** Is In Stock filter. */
-    isInStock: (OtherSearchFilterItem | null)
+    isInStock?: (OtherSearchFilterItem | null)
     /** Display name for the filter. */
     name: Scalars['String']
     __typename: 'OtherSearchFilter'
@@ -1887,7 +1887,7 @@ export interface OtherSearchFilterItem {
 /** A connection to a list of items. */
 export interface PageConnection {
     /** A list of edges. */
-    edges: ((PageEdge | null)[] | null)
+    edges?: ((PageEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'PageConnection'
@@ -1907,13 +1907,13 @@ export interface PageEdge {
 /** Information about pagination in a connection. */
 export interface PageInfo {
     /** When paginating forwards, the cursor to continue. */
-    endCursor: (Scalars['String'] | null)
+    endCursor?: (Scalars['String'] | null)
     /** When paginating forwards, are there more items? */
     hasNextPage: Scalars['Boolean']
     /** When paginating backwards, are there more items? */
     hasPreviousPage: Scalars['Boolean']
     /** When paginating backwards, the cursor to continue. */
-    startCursor: (Scalars['String'] | null)
+    startCursor?: (Scalars['String'] | null)
     __typename: 'PageInfo'
 }
 
@@ -1925,7 +1925,7 @@ export type PageType = 'ACCOUNT_ADDRESS' | 'ACCOUNT_ADD_ADDRESS' | 'ACCOUNT_ADD_
 /** A connection to a list of items. */
 export interface PopularBrandConnection {
     /** A list of edges. */
-    edges: ((PopularBrandEdge | null)[] | null)
+    edges?: ((PopularBrandEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'PopularBrandConnection'
@@ -1951,7 +1951,7 @@ export interface PopularBrandType {
     /** Brand name */
     name: Scalars['String']
     /** Brand URL as a relative path */
-    path: (Scalars['String'] | null)
+    path?: (Scalars['String'] | null)
     __typename: 'PopularBrandType'
 }
 
@@ -1961,7 +1961,7 @@ export interface PriceRanges {
     /** Product price min/max range. */
     priceRange: MoneyRange
     /** Product retail price min/max range. */
-    retailPriceRange: (MoneyRange | null)
+    retailPriceRange?: (MoneyRange | null)
     __typename: 'PriceRanges'
 }
 
@@ -1973,7 +1973,7 @@ export interface PriceSearchFilter {
     /** Display name for the filter. */
     name: Scalars['String']
     /** Selected price filters. */
-    selected: (PriceSearchFilterItem | null)
+    selected?: (PriceSearchFilterItem | null)
     __typename: 'PriceSearchFilter'
 }
 
@@ -1981,9 +1981,9 @@ export interface PriceSearchFilter {
 /** Price filter range */
 export interface PriceSearchFilterItem {
     /** Maximum price of the product. */
-    maxPrice: (Scalars['Float'] | null)
+    maxPrice?: (Scalars['Float'] | null)
     /** Minimum price of the product. */
-    minPrice: (Scalars['Float'] | null)
+    minPrice?: (Scalars['Float'] | null)
     __typename: 'PriceSearchFilterItem'
 }
 
@@ -1991,23 +1991,23 @@ export interface PriceSearchFilterItem {
 /** The various prices that can be set on a product. */
 export interface Prices {
     /** Original price of the product. */
-    basePrice: (Money | null)
+    basePrice?: (Money | null)
     /** List of bulk pricing tiers applicable to a product or variant. */
     bulkPricing: BulkPricingTier[]
     /** Minimum advertised price of the product. */
-    mapPrice: (Money | null)
+    mapPrice?: (Money | null)
     /** Calculated price of the product.  Calculated price takes into account basePrice, salePrice, rules (modifier, option, option set) that apply to the product configuration, and customer group discounts.  It represents the in-cart price for a product configuration without bulk pricing rules. */
     price: Money
     /** Product price min/max range. */
     priceRange: MoneyRange
     /** Retail price of the product. */
-    retailPrice: (Money | null)
+    retailPrice?: (Money | null)
     /** Product retail price min/max range. */
-    retailPriceRange: (MoneyRange | null)
+    retailPriceRange?: (MoneyRange | null)
     /** Sale price of the product. */
-    salePrice: (Money | null)
+    salePrice?: (Money | null)
     /** The difference between the retail price (MSRP) and the current price, which can be presented to the shopper as their savings. */
-    saved: (Money | null)
+    saved?: (Money | null)
     __typename: 'Prices'
 }
 
@@ -2034,11 +2034,11 @@ export interface Product {
     /** The availability state of the product. */
     availabilityV2: ProductAvailability
     /** Brand associated with the product. */
-    brand: (Brand | null)
+    brand?: (Brand | null)
     /** List of categories associated with the product. */
     categories: CategoryConnection
     /** Product condition */
-    condition: (ProductConditionType | null)
+    condition?: (ProductConditionType | null)
     /**
      * @deprecated Alpha version. Do not use in production.
      * Product creation date
@@ -2047,9 +2047,9 @@ export interface Product {
     /** Custom fields of the product. */
     customFields: CustomFieldConnection
     /** Default image for a product. */
-    defaultImage: (Image | null)
+    defaultImage?: (Image | null)
     /** Depth of the product. */
-    depth: (Measurement | null)
+    depth?: (Measurement | null)
     /** Description of the product. */
     description: Scalars['String']
     /** Id of the product. */
@@ -2057,9 +2057,9 @@ export interface Product {
     /** Gift wrapping options available for the product. */
     giftWrappingOptions: GiftWrappingConnection
     /** Global trade item number. */
-    gtin: (Scalars['String'] | null)
+    gtin?: (Scalars['String'] | null)
     /** Height of the product. */
-    height: (Measurement | null)
+    height?: (Measurement | null)
     /** The ID of an object */
     id: Scalars['ID']
     /** A list of the images for a product. */
@@ -2067,13 +2067,13 @@ export interface Product {
     /** Inventory information of the product. */
     inventory: ProductInventory
     /** Maximum purchasable quantity for this product in a single order. */
-    maxPurchaseQuantity: (Scalars['Int'] | null)
+    maxPurchaseQuantity?: (Scalars['Int'] | null)
     /** Metafield data related to a product. */
     metafields: MetafieldConnection
     /** Minimum purchasable quantity for this product in a single order. */
-    minPurchaseQuantity: (Scalars['Int'] | null)
+    minPurchaseQuantity?: (Scalars['Int'] | null)
     /** Manufacturer part number. */
-    mpn: (Scalars['String'] | null)
+    mpn?: (Scalars['String'] | null)
     /** Name of the product. */
     name: Scalars['String']
     /**
@@ -2089,9 +2089,9 @@ export interface Product {
      * @deprecated Use priceRanges inside prices node instead.
      * The minimum and maximum price of this product based on variant pricing and/or modifier price rules.
      */
-    priceRanges: (PriceRanges | null)
+    priceRanges?: (PriceRanges | null)
     /** Prices object determined by supplied product ID, variant ID, and selected option IDs. */
-    prices: (Prices | null)
+    prices?: (Prices | null)
     /** Product options. */
     productOptions: ProductOptionConnection
     /** Related products for this product. */
@@ -2109,15 +2109,15 @@ export interface Product {
     /** Type of product, ex: physical, digital */
     type: Scalars['String']
     /** Universal product code. */
-    upc: (Scalars['String'] | null)
+    upc?: (Scalars['String'] | null)
     /** Variants associated with the product. */
     variants: VariantConnection
     /** Warranty information of the product. */
     warranty: Scalars['String']
     /** Weight of the product. */
-    weight: (Measurement | null)
+    weight?: (Measurement | null)
     /** Width of the product. */
-    width: (Measurement | null)
+    width?: (Measurement | null)
     __typename: 'Product'
 }
 
@@ -2151,7 +2151,7 @@ export interface ProductAttributeSearchFilterItem {
 /** A connection to a list of items. */
 export interface ProductAttributeSearchFilterItemConnection {
     /** A list of edges. */
-    edges: ((ProductAttributeSearchFilterItemEdge | null)[] | null)
+    edges?: ((ProductAttributeSearchFilterItemEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'ProductAttributeSearchFilterItemConnection'
@@ -2193,9 +2193,9 @@ export type ProductConditionType = 'NEW' | 'REFURBISHED' | 'USED'
 /** A connection to a list of items. */
 export interface ProductConnection {
     /** Collection info */
-    collectionInfo: (CollectionInfo | null)
+    collectionInfo?: (CollectionInfo | null)
     /** A list of edges. */
-    edges: ((ProductEdge | null)[] | null)
+    edges?: ((ProductEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'ProductConnection'
@@ -2215,7 +2215,7 @@ export interface ProductEdge {
 /** Product Inventory Information */
 export interface ProductInventory {
     /** Aggregated product inventory information. This data may not be available if not set or if the store's Inventory Settings have disabled displaying stock levels on the storefront. */
-    aggregated: (AggregatedInventory | null)
+    aggregated?: (AggregatedInventory | null)
     /** Indicates whether this product's inventory is being tracked on variant level. If true, you may wish to check the variants node to understand the true inventory of each individual variant, rather than relying on this product-level aggregate to understand how many items may be added to cart. */
     hasVariantInventory: Scalars['Boolean']
     /** Indicates whether this product is in stock. */
@@ -2241,7 +2241,7 @@ export interface ProductOption {
 /** A connection to a list of items. */
 export interface ProductOptionConnection {
     /** A list of edges. */
-    edges: ((ProductOptionEdge | null)[] | null)
+    edges?: ((ProductOptionEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'ProductOptionConnection'
@@ -2271,7 +2271,7 @@ export interface ProductOptionValue {
 /** A connection to a list of items. */
 export interface ProductOptionValueConnection {
     /** A list of edges. */
-    edges: ((ProductOptionValueEdge | null)[] | null)
+    edges?: ((ProductOptionValueEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'ProductOptionValueConnection'
@@ -2295,13 +2295,13 @@ export type ProductOutOfStockBehavior = 'DO_NOTHING' | 'HIDE_PRODUCT' | 'HIDE_PR
 /** A Product PickList Value - a product to be mapped to the base product if selected. */
 export interface ProductPickListOptionValue {
     /** Default image for a pick list product. */
-    defaultImage: (Image | null)
+    defaultImage?: (Image | null)
     /** Unique ID for the option value. */
     entityId: Scalars['Int']
     /** Indicates whether this value is the chosen default selected value. */
     isDefault: Scalars['Boolean']
     /** Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level. */
-    isSelected: (Scalars['Boolean'] | null)
+    isSelected?: (Scalars['Boolean'] | null)
     /** Label for the option value. */
     label: Scalars['String']
     /** The ID of the product associated with this option value. */
@@ -2315,11 +2315,11 @@ export interface ProductPreOrder {
     /** A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'. */
     description: Scalars['String']
     /** The message to be shown in the store when a product is put into the pre-order availability state, e.g. "Expected release date is %%DATE%%" */
-    message: (Scalars['String'] | null)
+    message?: (Scalars['String'] | null)
     /** The availability state of the product. */
     status: ProductAvailabilityStatus
     /** Product release date */
-    willBeReleasedAt: (DateTimeExtended | null)
+    willBeReleasedAt?: (DateTimeExtended | null)
     __typename: 'ProductPreOrder'
 }
 
@@ -2333,7 +2333,7 @@ export interface ProductUnavailable {
     /** A few words telling the customer how long it will normally take to ship this product, such as 'Usually ships in 24 hours'. */
     description: Scalars['String']
     /** The message to be shown in the store when "Call for pricing" is enabled for this product, e.g. "Contact us at 555-5555" */
-    message: (Scalars['String'] | null)
+    message?: (Scalars['String'] | null)
     /** The availability state of the product. */
     status: ProductAvailabilityStatus
     __typename: 'ProductUnavailable'
@@ -2357,11 +2357,11 @@ export interface Query {
     /** The current channel. */
     channel: Channel
     /** The currently logged in customer. */
-    customer: (Customer | null)
+    customer?: (Customer | null)
     /** An inventory */
     inventory: Inventory
     /** Fetches an object given its ID */
-    node: (Node | null)
+    node?: (Node | null)
     /** A site */
     site: Site
     __typename: 'Query'
@@ -2395,7 +2395,7 @@ export interface RatingSearchFilterItem {
 /** A connection to a list of items. */
 export interface RatingSearchFilterItemConnection {
     /** A list of edges. */
-    edges: ((RatingSearchFilterItemEdge | null)[] | null)
+    edges?: ((RatingSearchFilterItemEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'RatingSearchFilterItemConnection'
@@ -2425,7 +2425,7 @@ export interface RawHtmlPage {
     /** Page name. */
     name: Scalars['String']
     /** Unique ID for the parent page. */
-    parentEntityId: (Scalars['Int'] | null)
+    parentEntityId?: (Scalars['Int'] | null)
     /** The URL path of the page. */
     path: Scalars['String']
     /** The plain text summary of the page body. */
@@ -2457,7 +2457,7 @@ export interface Region {
 /** A connection to a list of items. */
 export interface RelatedProductsConnection {
     /** A list of edges. */
-    edges: ((RelatedProductsEdge | null)[] | null)
+    edges?: ((RelatedProductsEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'RelatedProductsConnection'
@@ -2503,7 +2503,7 @@ export interface Review {
 /** A connection to a list of items. */
 export interface ReviewConnection {
     /** A list of edges. */
-    edges: ((ReviewEdge | null)[] | null)
+    edges?: ((ReviewEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'ReviewConnection'
@@ -2538,7 +2538,7 @@ export interface Reviews {
 /** route */
 export interface Route {
     /** Node */
-    node: (Node | null)
+    node?: (Node | null)
     __typename: 'Route'
 }
 
@@ -2558,7 +2558,7 @@ export type SearchProductFilter = (BrandSearchFilter | CategorySearchFilter | Ot
 /** A connection to a list of items. */
 export interface SearchProductFilterConnection {
     /** A list of edges. */
-    edges: ((SearchProductFilterEdge | null)[] | null)
+    edges?: ((SearchProductFilterEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'SearchProductFilterConnection'
@@ -2614,13 +2614,13 @@ export interface Settings {
     /** Channel ID. */
     channelId: Scalars['Long']
     /** Checkout settings. */
-    checkout: (CheckoutSettings | null)
+    checkout?: (CheckoutSettings | null)
     /** Contact information for the store. */
-    contact: (ContactField | null)
+    contact?: (ContactField | null)
     /** Store display format information. */
     display: DisplayField
     /** Inventory settings. */
-    inventory: (InventorySettings | null)
+    inventory?: (InventorySettings | null)
     /**
      * @deprecated Use `logoV2` instead.
      * Logo information for the store.
@@ -2643,7 +2643,7 @@ export interface Settings {
     /** Storefront settings. */
     storefront: Storefront
     /** The tax display settings object */
-    tax: (TaxDisplaySettings | null)
+    tax?: (TaxDisplaySettings | null)
     /** Store urls. */
     url: UrlField
     __typename: 'Settings'
@@ -2653,7 +2653,7 @@ export interface Settings {
 /** A connection to a list of items. */
 export interface ShopByPriceConnection {
     /** A list of edges. */
-    edges: ((ShopByPriceEdge | null)[] | null)
+    edges?: ((ShopByPriceEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'ShopByPriceConnection'
@@ -2685,9 +2685,9 @@ export interface Site {
     /** Details of the brand. */
     brands: BrandConnection
     /** The Cart of the current customer. */
-    cart: (Cart | null)
+    cart?: (Cart | null)
     /** Retrieve a category object by the id. */
-    category: (Category | null)
+    category?: (Category | null)
     /** A tree of categories. */
     categoryTree: CategoryTreeItem[]
     /** The page content. */
@@ -2695,7 +2695,7 @@ export interface Site {
     /** Store Currencies. */
     currencies: CurrencyConnection
     /** Currency details. */
-    currency: (Currency | null)
+    currency?: (Currency | null)
     /** Details of the featured products. */
     featuredProducts: ProductConnection
     /** Details of the newest products. */
@@ -2703,17 +2703,17 @@ export interface Site {
     /** List of brands sorted by product count. */
     popularBrands: PopularBrandConnection
     /** A single product object with variant pricing overlay capabilities. */
-    product: (Product | null)
+    product?: (Product | null)
     /** Details of the products. */
     products: ProductConnection
     /** Public Wishlist */
-    publicWishlist: (PublicWishlist | null)
+    publicWishlist?: (PublicWishlist | null)
     /** Route for a node */
     route: Route
     /** The Search queries. */
     search: SearchQueries
     /** Store settings. */
-    settings: (Settings | null)
+    settings?: (Settings | null)
     __typename: 'Site'
 }
 
@@ -2731,13 +2731,13 @@ export interface SocialMediaLink {
 /** Special hour */
 export interface SpecialHour {
     /** Closing time */
-    closing: (Scalars['DateTime'] | null)
+    closing?: (Scalars['DateTime'] | null)
     /** Upcoming event name */
     label: Scalars['String']
     /** Is open */
     open: Scalars['Boolean']
     /** Opening time */
-    opening: (Scalars['DateTime'] | null)
+    opening?: (Scalars['DateTime'] | null)
     __typename: 'SpecialHour'
 }
 
@@ -2769,7 +2769,7 @@ export interface StoreTextLogo {
 /** Storefront settings. */
 export interface Storefront {
     /** Storefront catalog settings. */
-    catalog: (Catalog | null)
+    catalog?: (Catalog | null)
     __typename: 'Storefront'
 }
 
@@ -2797,7 +2797,7 @@ export interface SubCategorySearchFilterItem {
 /** A connection to a list of items. */
 export interface SubCategorySearchFilterItemConnection {
     /** A list of edges. */
-    edges: ((SubCategorySearchFilterItemEdge | null)[] | null)
+    edges?: ((SubCategorySearchFilterItemEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'SubCategorySearchFilterItemConnection'
@@ -2821,11 +2821,11 @@ export interface SwatchOptionValue {
     /** List of up to 3 hex encoded colors to associate with a swatch value. */
     hexColors: Scalars['String'][]
     /** Absolute path of a swatch texture image. */
-    imageUrl: (Scalars['String'] | null)
+    imageUrl?: (Scalars['String'] | null)
     /** Indicates whether this value is the chosen default selected value. */
     isDefault: Scalars['Boolean']
     /** Indicates whether this value is selected based on sku/variantEntityId/optionValueIds overlay requested on the product node level. */
-    isSelected: (Scalars['Boolean'] | null)
+    isSelected?: (Scalars['Boolean'] | null)
     /** Label for the option value. */
     label: Scalars['String']
     __typename: 'SwatchOptionValue'
@@ -2849,7 +2849,7 @@ export type TaxPriceDisplay = 'BOTH' | 'EX' | 'INC'
 /** A single line text input field. */
 export interface TextFieldOption {
     /** Default value of the text field option. */
-    defaultValue: (Scalars['String'] | null)
+    defaultValue?: (Scalars['String'] | null)
     /** Display name for the option. */
     displayName: Scalars['String']
     /** Unique ID for the option. */
@@ -2859,9 +2859,9 @@ export interface TextFieldOption {
     /** Indicates whether it is a variant option or modifier. */
     isVariantOption: Scalars['Boolean']
     /** The maximum number of characters. */
-    maxLength: (Scalars['Int'] | null)
+    maxLength?: (Scalars['Int'] | null)
     /** The minimum number of characters. */
-    minLength: (Scalars['Int'] | null)
+    minLength?: (Scalars['Int'] | null)
     __typename: 'TextFieldOption'
 }
 
@@ -2869,7 +2869,7 @@ export interface TextFieldOption {
 /** Unassign cart from the customer result. */
 export interface UnassignCartFromCustomerResult {
     /** The Cart that is updated as a result of mutation. */
-    cart: (Cart | null)
+    cart?: (Cart | null)
     __typename: 'UnassignCartFromCustomerResult'
 }
 
@@ -2877,7 +2877,7 @@ export interface UnassignCartFromCustomerResult {
 /** Update cart currency result */
 export interface UpdateCartCurrencyResult {
     /** The Cart that is updated as a result of mutation. */
-    cart: (Cart | null)
+    cart?: (Cart | null)
     __typename: 'UpdateCartCurrencyResult'
 }
 
@@ -2885,7 +2885,7 @@ export interface UpdateCartCurrencyResult {
 /** Update cart line item result */
 export interface UpdateCartLineItemResult {
     /** The Cart that is updated as a result of mutation. */
-    cart: (Cart | null)
+    cart?: (Cart | null)
     __typename: 'UpdateCartLineItemResult'
 }
 
@@ -2903,7 +2903,7 @@ export interface UrlField {
     /** CDN url to fetch assets. */
     cdnUrl: Scalars['String']
     /** Checkout url. */
-    checkoutUrl: (Scalars['String'] | null)
+    checkoutUrl?: (Scalars['String'] | null)
     /** Store url. */
     vanityUrl: Scalars['String']
     __typename: 'UrlField'
@@ -2913,39 +2913,39 @@ export interface UrlField {
 /** Variant */
 export interface Variant {
     /** Default image for a variant. */
-    defaultImage: (Image | null)
+    defaultImage?: (Image | null)
     /** The variant's depth. If a depth was not explicitly specified on the variant, this will be the product's depth. */
-    depth: (Measurement | null)
+    depth?: (Measurement | null)
     /** Id of the variant. */
     entityId: Scalars['Int']
     /** Global trade item number. */
-    gtin: (Scalars['String'] | null)
+    gtin?: (Scalars['String'] | null)
     /** The variant's height. If a height was not explicitly specified on the variant, this will be the product's height. */
-    height: (Measurement | null)
+    height?: (Measurement | null)
     /** The ID of an object */
     id: Scalars['ID']
     /** Variant inventory */
-    inventory: (VariantInventory | null)
+    inventory?: (VariantInventory | null)
     /** Whether the product can be purchased */
     isPurchasable: Scalars['Boolean']
     /** Metafield data related to a variant. */
     metafields: MetafieldConnection
     /** Manufacturer part number. */
-    mpn: (Scalars['String'] | null)
+    mpn?: (Scalars['String'] | null)
     /** The options which define a variant. */
     options: OptionConnection
     /** Variant prices */
-    prices: (Prices | null)
+    prices?: (Prices | null)
     /** Product options that compose this variant. */
     productOptions: ProductOptionConnection
     /** Sku of the variant. */
     sku: Scalars['String']
     /** Universal product code. */
-    upc: (Scalars['String'] | null)
+    upc?: (Scalars['String'] | null)
     /** The variant's weight. If a weight was not explicitly specified on the variant, this will be the product's weight. */
-    weight: (Measurement | null)
+    weight?: (Measurement | null)
     /** The variant's width. If a width was not explicitly specified on the variant, this will be the product's width. */
-    width: (Measurement | null)
+    width?: (Measurement | null)
     __typename: 'Variant'
 }
 
@@ -2953,7 +2953,7 @@ export interface Variant {
 /** A connection to a list of items. */
 export interface VariantConnection {
     /** A list of edges. */
-    edges: ((VariantEdge | null)[] | null)
+    edges?: ((VariantEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'VariantConnection'
@@ -2973,9 +2973,9 @@ export interface VariantEdge {
 /** Variant Inventory */
 export interface VariantInventory {
     /** Aggregated product variant inventory information. This data may not be available if not set or if the store's Inventory Settings have disabled displaying stock levels on the storefront. */
-    aggregated: (Aggregated | null)
+    aggregated?: (Aggregated | null)
     /** Inventory by locations. */
-    byLocation: (LocationConnection | null)
+    byLocation?: (LocationConnection | null)
     /** Indicates whether this product is in stock. */
     isInStock: Scalars['Boolean']
     __typename: 'VariantInventory'
@@ -3009,7 +3009,7 @@ export interface Wishlist {
 /** A connection to a list of items. */
 export interface WishlistConnection {
     /** A list of edges. */
-    edges: ((WishlistEdge | null)[] | null)
+    edges?: ((WishlistEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'WishlistConnection'
@@ -3035,7 +3035,7 @@ export interface WishlistItem {
     /** An id of the product from the wishlist. */
     productEntityId: Scalars['Int']
     /** An id of the specific product variant from the wishlist. */
-    variantEntityId: (Scalars['Int'] | null)
+    variantEntityId?: (Scalars['Int'] | null)
     __typename: 'WishlistItem'
 }
 
@@ -3043,7 +3043,7 @@ export interface WishlistItem {
 /** A connection to a list of items. */
 export interface WishlistItemConnection {
     /** A list of edges. */
-    edges: ((WishlistItemEdge | null)[] | null)
+    edges?: ((WishlistItemEdge | null)[] | null)
     /** Information to aid in pagination. */
     pageInfo: PageInfo
     __typename: 'WishlistItemConnection'
@@ -3063,15 +3063,15 @@ export interface WishlistItemEdge {
 /** The wishlist mutations. */
 export interface WishlistMutations {
     /** Add wishlist items */
-    addWishlistItems: (AddWishlistItemsResult | null)
+    addWishlistItems?: (AddWishlistItemsResult | null)
     /** Create wishlist */
-    createWishlist: (CreateWishlistResult | null)
+    createWishlist?: (CreateWishlistResult | null)
     /** Delete wishlist items */
-    deleteWishlistItems: (DeleteWishlistItemsResult | null)
+    deleteWishlistItems?: (DeleteWishlistItemsResult | null)
     /** Delete wishlist */
-    deleteWishlists: (DeleteWishlistResult | null)
+    deleteWishlists?: (DeleteWishlistResult | null)
     /** Update wishlist */
-    updateWishlist: (UpdateWishlistResult | null)
+    updateWishlist?: (UpdateWishlistResult | null)
     __typename: 'WishlistMutations'
 }
 
@@ -3099,9 +3099,9 @@ lineItems?: (CartLineItemInput[] | null)}
 /** Add cart line items input object */
 export interface AddCartLineItemsInput {
 /** The cart id */
-cartEntityId?: Scalars['String'],
+cartEntityId: Scalars['String'],
 /** Add cart line items data object */
-data?: AddCartLineItemsDataInput}
+data: AddCartLineItemsDataInput}
 
 
 /** Add cart line items result */
@@ -3116,9 +3116,9 @@ export interface AddCartLineItemsResultGenqlSelection{
 /** Add wishlist items input object */
 export interface AddWishlistItemsInput {
 /** The wishlist id */
-entityId?: Scalars['Int'],
+entityId: Scalars['Int'],
 /** The new wishlist items */
-items?: WishlistItemInput[]}
+items: WishlistItemInput[]}
 
 
 /** Add wishlist items */
@@ -3155,7 +3155,7 @@ export interface AggregatedInventoryGenqlSelection{
 /** Assign cart to the customer input object. */
 export interface AssignCartToCustomerInput {
 /** The cart id. */
-cartEntityId?: Scalars['String']}
+cartEntityId: Scalars['String']}
 
 
 /** Assign cart to the customer result. */
@@ -3711,19 +3711,19 @@ export interface CartGiftCertificateGenqlSelection{
 /** Cart gift certificate input object */
 export interface CartGiftCertificateInput {
 /** Value must be between 1.00 and 1,000.00 in the store's default currency. */
-amount?: Scalars['BigDecimal'],
+amount: Scalars['BigDecimal'],
 /** Message that will be sent to the gift certificate's recipient. Limited to 200 characters. */
 message?: (Scalars['String'] | null),
 /** GiftCertificate-provided name that will appear in the control panel. */
-name?: Scalars['String'],
+name: Scalars['String'],
 /** The total number of certificates */
-quantity?: Scalars['Int'],
+quantity: Scalars['Int'],
 /** Recipient of the gift certificate. */
-recipient?: CartGiftCertificateRecipientInput,
+recipient: CartGiftCertificateRecipientInput,
 /** Sender of the gift certificate. */
-sender?: CartGiftCertificateSenderInput,
+sender: CartGiftCertificateSenderInput,
 /** Currently supports Birthday, Boy, Celebration, Christmas, General, and Girl. */
-theme?: CartGiftCertificateTheme}
+theme: CartGiftCertificateTheme}
 
 
 /** Cart gift certificate recipient */
@@ -3740,9 +3740,9 @@ export interface CartGiftCertificateRecipientGenqlSelection{
 /** Cart gift certificate recipient input object */
 export interface CartGiftCertificateRecipientInput {
 /** Contact's email address. */
-email?: Scalars['String'],
+email: Scalars['String'],
 /** Contact's name. */
-name?: Scalars['String']}
+name: Scalars['String']}
 
 
 /** Cart gift certificate sender */
@@ -3759,9 +3759,9 @@ export interface CartGiftCertificateSenderGenqlSelection{
 /** Cart gift certificate sender input object */
 export interface CartGiftCertificateSenderInput {
 /** Contact's email address. */
-email?: Scalars['String'],
+email: Scalars['String'],
 /** Contact's name. */
-name?: Scalars['String']}
+name: Scalars['String']}
 
 
 /** Gift wrapping for the item */
@@ -3780,9 +3780,9 @@ export interface CartGiftWrappingGenqlSelection{
 /** Cart line item input object */
 export interface CartLineItemInput {
 /** The product id */
-productEntityId?: Scalars['Int'],
+productEntityId: Scalars['Int'],
 /** Total number of line items. */
-quantity?: Scalars['Int'],
+quantity: Scalars['Int'],
 /** The list of selected options for this item. */
 selectedOptions?: (CartSelectedOptionsInput | null),
 /** The variant id */
@@ -3914,9 +3914,9 @@ export interface CartSelectedCheckboxOptionGenqlSelection{
 /** Cart selected checkbox option input object */
 export interface CartSelectedCheckboxOptionInput {
 /** The product option ID. */
-optionEntityId?: Scalars['Int'],
+optionEntityId: Scalars['Int'],
 /** The product option value ID. */
-optionValueEntityId?: Scalars['Int']}
+optionValueEntityId: Scalars['Int']}
 
 
 /** Selected date field option. */
@@ -3935,9 +3935,9 @@ export interface CartSelectedDateFieldOptionGenqlSelection{
 /** Cart selected date field option input object */
 export interface CartSelectedDateFieldOptionInput {
 /** Date value. */
-date?: Scalars['DateTime'],
+date: Scalars['DateTime'],
 /** The product option ID. */
-optionEntityId?: Scalars['Int']}
+optionEntityId: Scalars['Int']}
 
 
 /** Selected file upload option. */
@@ -3969,9 +3969,9 @@ export interface CartSelectedMultiLineTextFieldOptionGenqlSelection{
 /** Cart selected multiple line text field option input object */
 export interface CartSelectedMultiLineTextFieldOptionInput {
 /** The product option ID. */
-optionEntityId?: Scalars['Int'],
+optionEntityId: Scalars['Int'],
 /** Text value. */
-text?: Scalars['String']}
+text: Scalars['String']}
 
 
 /** Selected multiple choice option. */
@@ -3992,9 +3992,9 @@ export interface CartSelectedMultipleChoiceOptionGenqlSelection{
 /** Cart selected multiple choice option input object */
 export interface CartSelectedMultipleChoiceOptionInput {
 /** The product option ID. */
-optionEntityId?: Scalars['Int'],
+optionEntityId: Scalars['Int'],
 /** The product option value ID. */
-optionValueEntityId?: Scalars['Int']}
+optionValueEntityId: Scalars['Int']}
 
 
 /** Selected number field option. */
@@ -4013,9 +4013,9 @@ export interface CartSelectedNumberFieldOptionGenqlSelection{
 /** Cart selected number field option input object */
 export interface CartSelectedNumberFieldOptionInput {
 /** Number value. */
-number?: Scalars['Float'],
+number: Scalars['Float'],
 /** The product option ID. */
-optionEntityId?: Scalars['Int']}
+optionEntityId: Scalars['Int']}
 
 
 /** Selected option for the item. */
@@ -4068,9 +4068,9 @@ export interface CartSelectedTextFieldOptionGenqlSelection{
 /** Cart selected multiple line text field option input object */
 export interface CartSelectedTextFieldOptionInput {
 /** The product option ID. */
-optionEntityId?: Scalars['Int'],
+optionEntityId: Scalars['Int'],
 /** TODO */
-text?: Scalars['String']}
+text: Scalars['String']}
 
 
 /** Storefront catalog settings. */
@@ -4444,11 +4444,11 @@ export interface CreateCartResultGenqlSelection{
 /** Create wishlist input object */
 export interface CreateWishlistInput {
 /** A wishlist visibility mode */
-isPublic?: Scalars['Boolean'],
+isPublic: Scalars['Boolean'],
 /** A wishlist items */
 items?: (WishlistItemInput[] | null),
 /** A wishlist name */
-name?: Scalars['String']}
+name: Scalars['String']}
 
 
 /** Create wishlist */
@@ -4653,15 +4653,15 @@ export interface DateTimeExtendedGenqlSelection{
 /** Delete cart input object */
 export interface DeleteCartInput {
 /** The cart id */
-cartEntityId?: Scalars['String']}
+cartEntityId: Scalars['String']}
 
 
 /** Delete cart line item input object */
 export interface DeleteCartLineItemInput {
 /** The cart id */
-cartEntityId?: Scalars['String'],
+cartEntityId: Scalars['String'],
 /** The line item id */
-lineItemEntityId?: Scalars['String']}
+lineItemEntityId: Scalars['String']}
 
 
 /** Delete cart lien item result */
@@ -4689,9 +4689,9 @@ export interface DeleteCartResultGenqlSelection{
 /** Delete wishlist items input object */
 export interface DeleteWishlistItemsInput {
 /** The wishlist id */
-entityId?: Scalars['Int'],
+entityId: Scalars['Int'],
 /** The wishlist item ids */
-itemEntityIds?: Scalars['Int'][]}
+itemEntityIds: Scalars['Int'][]}
 
 
 /** Delete wishlist items */
@@ -4715,7 +4715,7 @@ export interface DeleteWishlistResultGenqlSelection{
 /** Delete wishlists input object */
 export interface DeleteWishlistsInput {
 /** The wishlist ids */
-entityIds?: Scalars['Int'][]}
+entityIds: Scalars['Int'][]}
 
 
 /** Display field */
@@ -4743,13 +4743,13 @@ export interface DistanceGenqlSelection{
 /** Filter locations by the distance */
 export interface DistanceFilter {
 /** Signed decimal degrees without compass direction */
-latitude?: Scalars['Float'],
+latitude: Scalars['Float'],
 /** Length unit */
-lengthUnit?: LengthUnit,
+lengthUnit: LengthUnit,
 /** Signed decimal degrees without compass direction */
-longitude?: Scalars['Float'],
+longitude: Scalars['Float'],
 /** Radius of search in length units specified in lengthUnit argument */
-radius?: Scalars['Float']}
+radius: Scalars['Float']}
 
 
 /** An external link page. */
@@ -5400,9 +5400,9 @@ export interface OptionValueEdgeGenqlSelection{
 /** A variant option value id input object */
 export interface OptionValueId {
 /** A variant option id filter */
-optionEntityId?: Scalars['Int'],
+optionEntityId: Scalars['Int'],
 /** A variant value id filter. */
-valueEntityId?: Scalars['Int']}
+valueEntityId: Scalars['Int']}
 
 
 /** Other Filter */
@@ -5732,9 +5732,9 @@ export interface ProductAttributeSearchFilterGenqlSelection{
 /** Filter by the attributes of products such as Product Options and Product Custom Fields. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
 export interface ProductAttributeSearchFilterInput {
 /** Product attributes */
-attribute?: Scalars['String'],
+attribute: Scalars['String'],
 /** Product attribute values */
-values?: Scalars['String'][]}
+values: Scalars['String'][]}
 
 
 /** Specific product attribute filter item */
@@ -6622,7 +6622,7 @@ export interface TextFieldOptionGenqlSelection{
 /** Unassign cart from the customer input object. */
 export interface UnassignCartFromCustomerInput {
 /** The cart id. */
-cartEntityId?: Scalars['String']}
+cartEntityId: Scalars['String']}
 
 
 /** Unassign cart from the customer result. */
@@ -6637,15 +6637,15 @@ export interface UnassignCartFromCustomerResultGenqlSelection{
 /** Update cart currency data object */
 export interface UpdateCartCurrencyDataInput {
 /** ISO-4217 currency code */
-currencyCode?: Scalars['String']}
+currencyCode: Scalars['String']}
 
 
 /** Update cart currency input object */
 export interface UpdateCartCurrencyInput {
 /** The cart id */
-cartEntityId?: Scalars['String'],
+cartEntityId: Scalars['String'],
 /** Update cart currency data object */
-data?: UpdateCartCurrencyDataInput}
+data: UpdateCartCurrencyDataInput}
 
 
 /** Update cart currency result */
@@ -6668,11 +6668,11 @@ lineItem?: (CartLineItemInput | null)}
 /** Update cart line item input object */
 export interface UpdateCartLineItemInput {
 /** The cart id */
-cartEntityId?: Scalars['String'],
+cartEntityId: Scalars['String'],
 /** Update cart line item data object */
-data?: UpdateCartLineItemDataInput,
+data: UpdateCartLineItemDataInput,
 /** The line item id */
-lineItemEntityId?: Scalars['String']}
+lineItemEntityId: Scalars['String']}
 
 
 /** Update cart line item result */
@@ -6687,9 +6687,9 @@ export interface UpdateCartLineItemResultGenqlSelection{
 /** Update wishlist input object */
 export interface UpdateWishlistInput {
 /** Wishlist data to update */
-data?: WishlistUpdateDataInput,
+data: WishlistUpdateDataInput,
 /** The wishlist id */
-entityId?: Scalars['Int']}
+entityId: Scalars['Int']}
 
 
 /** Update wishlist */
@@ -6927,7 +6927,7 @@ export interface WishlistItemEdgeGenqlSelection{
 /** Wishlist item input object */
 export interface WishlistItemInput {
 /** An id of the product from the wishlist. */
-productEntityId?: Scalars['Int'],
+productEntityId: Scalars['Int'],
 /** An id of the specific product variant from the wishlist. */
 variantEntityId?: (Scalars['Int'] | null)}
 
@@ -8877,7 +8877,7 @@ export const enumWebPageType = {
    RAW: 'RAW' as const
 }
 
-export const enumCountryCode = {
+export const enumcountryCode = {
    AD: 'AD' as const,
    AE: 'AE' as const,
    AF: 'AF' as const,
@@ -9129,7 +9129,7 @@ export const enumCountryCode = {
    ZW: 'ZW' as const
 }
 
-export const enumCurrencyCode = {
+export const enumcurrencyCode = {
    ADP: 'ADP' as const,
    AED: 'AED' as const,
    AFA: 'AFA' as const,
@@ -9417,7 +9417,7 @@ export const enumCurrencyCode = {
    ZWR: 'ZWR' as const
 }
 
-export const enumSortBy = {
+export const enumsortBy = {
    NEWEST: 'NEWEST' as const,
    OLDEST: 'OLDEST' as const
 }

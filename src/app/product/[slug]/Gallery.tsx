@@ -18,11 +18,11 @@ export const Gallery = async ({ productId }: Props) => {
     <div className="mb-12 flex flex-col">
       <Image
         // alt={variantAltText || product.defaultImage.altText}
-        alt={product.defaultImage.altText}
+        alt={product.defaultImage?.altText ?? ''}
         height={619}
         priority
         // src={variantImage || product.defaultImage.url}
-        src={product.defaultImage.url}
+        src={product.defaultImage?.url ?? ''}
         width={619}
       />
 

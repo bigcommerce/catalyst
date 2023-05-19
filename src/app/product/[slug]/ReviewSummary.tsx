@@ -1,7 +1,7 @@
-import { Star, StarHalf, StarHalfIcon } from 'lucide-react';
+import { Star, StarHalf } from 'lucide-react';
 import { useId } from 'react';
 
-import { getProductReviewSummary } from '@client';
+import { getProductReviews } from '@client';
 
 interface Props {
   productId: number;
@@ -9,35 +9,46 @@ interface Props {
 }
 
 export const ReviewSummary = async ({ productId, reviewSectionId }: Props) => {
-  const reviewId = useId();
-  const { numberOfReviews, averageRating } = await getProductReviewSummary(productId);
+  const summaryId = useId();
+
+  const reviews = await getProductReviews(productId);
+
+  if (!reviews) {
+    return null;
+  }
+
+  const { numberOfReviews, averageRating } = reviews.reviewSummary;
 
   return (
     <div className="flex items-center gap-3">
-      <Star fill="currentColor" />
-      <StarHalf />
-      <StarHalfIcon />
-      <p aria-describedby={reviewId} className="flex flex-nowrap text-[#053FB0]">
+      <p aria-describedby={summaryId} className="flex flex-nowrap text-[#053FB0]">
         {new Array(5).fill(undefined).map((_, i) => {
           const index = i + 1;
 
           if (averageRating >= index) {
-            return <Star key={i} role="presentation" />;
+            return <Star fill="currentColor" key={i} role="presentation" />;
           }
 
           if (averageRating < index && averageRating - index > -1) {
-            return <StarHalf key={i} role="presentation" />;
+            return (
+              <span className="relative" key={i}>
+                <StarHalf fill="currentColor" role="presentation" />
+                <Star className="absolute left-0 top-0" key={i} role="presentation" />
+              </span>
+            );
           }
 
           return <Star key={i} role="presentation" />;
         })}
       </p>
-      <div className="font-semibold" id={reviewId}>
+
+      <div className="font-semibold" id={summaryId}>
         <span className="sr-only">Rating:</span>
         {averageRating} <span className="sr-only">out of 5 stars.</span> (
         <span className="sr-only">Number of reviews:</span>
         {numberOfReviews})
       </div>
+
       <a className="font-semibold text-[#053FB0]" href={`#${reviewSectionId}`}>
         Write review
       </a>

@@ -57,7 +57,7 @@ export const getFeaturedProducts = async <R extends QueryGenqlSelection>(
 
     return {
       ...rest,
-      price: prices.price,
+      price: prices?.price,
     };
   });
 };
