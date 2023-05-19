@@ -1,8 +1,8 @@
 // We should change this file, barrel files are not great.
-export { getFeaturedProducts } from './methods/getFeaturedProducts';
-export { getBestSellingProducts } from './methods/getBestSellingProducts';
-export { getProduct } from './methods/getProduct';
-export { getStoreSettings } from './methods/getStoreSettings';
-export { getCategoryTree } from './methods/getCategoryTree';
-export { getBrands } from './methods/getBrands';
-export { getProductReviews } from './methods/getProductReviews';
+export { getFeaturedProducts } from './queries/getFeaturedProducts';
+export { getBestSellingProducts } from './queries/getBestSellingProducts';
+export { getProduct } from './queries/getProduct';
+export { getStoreSettings } from './queries/getStoreSettings';
+export { getCategoryTree } from './queries/getCategoryTree';
+export { getBrands } from './queries/getBrands';
+export { getProductReviews } from './queries/getProductReviews';
