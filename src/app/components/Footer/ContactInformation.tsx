@@ -3,7 +3,12 @@ import { Fragment } from 'react';
 import { getStoreSettings } from '@client';
 
 export const ContactInformation = async () => {
-  const { contact } = await getStoreSettings();
+  const settings = await getStoreSettings();
+  const contact = settings?.contact;
+
+  if (!contact) {
+    return null;
+  }
 
   return (
     <>

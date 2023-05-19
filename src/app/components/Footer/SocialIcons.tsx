@@ -20,9 +20,11 @@ const ICON_MAP: Record<string, React.FC<ComponentPropsWithoutRef<'svg'>>> = {
 };
 
 export const SocialIcons = async () => {
-  const { socialMediaLinks } = await getStoreSettings();
+  const settings = await getStoreSettings();
 
-  if (socialMediaLinks.length === 0) {
+  const socialMediaLinks = settings?.socialMediaLinks;
+
+  if (!socialMediaLinks || socialMediaLinks.length === 0) {
     return null;
   }
 

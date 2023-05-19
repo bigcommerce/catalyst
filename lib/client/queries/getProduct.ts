@@ -104,7 +104,7 @@ async function internalGetProduct(productId: number) {
         warranty: true,
         name: true,
         plainTextDescription: {
-          __args: { characterLimit: 500 },
+          __args: { characterLimit: 2_000 },
         },
         availabilityV2: {
           status: true,
