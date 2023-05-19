@@ -3,7 +3,7 @@ import { NextResponse, URLPattern } from 'next/server';
 
 import { bigcommerceFetch } from '@client/fetcher';
 
-import { sessionMiddleware } from './session';
+// import { sessionMiddleware } from './session';
 
 interface RoutesResponse {
   site: {
@@ -17,12 +17,13 @@ interface RoutesResponse {
 }
 
 export async function middleware(request: NextRequest) {
-  return rewriteUrlMiddleware(sessionMiddleware(request));
+  // TODO: Bypassing middleware for now
+  // return rewriteUrlMiddleware(sessionMiddleware(request));
 }
 
 // This is a POC middleware intended to redirect all page requests to the right NextJS route.
 // TODO: Internationalization, trailing slash, etc.
-export async function rewriteUrlMiddleware(
+async function rewriteUrlMiddleware(
   requestResponse: Promise<{ request: NextRequest; response: NextResponse }>,
 ) {
   const { request, response } = await requestResponse;
