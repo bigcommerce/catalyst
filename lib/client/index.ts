@@ -6,3 +6,4 @@ export { getStoreSettings } from './queries/getStoreSettings';
 export { getCategoryTree } from './queries/getCategoryTree';
 export { getBrands } from './queries/getBrands';
 export { getProductReviews } from './queries/getProductReviews';
+export { getCategory } from './queries/getCategory';
