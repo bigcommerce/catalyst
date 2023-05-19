@@ -1,16 +1,34 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { getCategory } from '@client';
 
-export default async function Category({ params }: { params: { slug: string } }) {
+interface Props {
+  params: {
+    slug: string;
+  };
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export default async function Category({ params, searchParams }: Props) {
+  const before = typeof searchParams.before === 'string' ? searchParams.before : undefined;
+  const after = typeof searchParams.after === 'string' ? searchParams.after : undefined;
+
   const categoryId = Number(params.slug);
-  const category = await getCategory({ categoryId });
+  const category = await getCategory({
+    categoryId,
+    limit: 2,
+    after,
+    before,
+  });
 
   if (!category) {
     return notFound();
   }
 
-  const products = category.products.items;
+  const productsCollection = category.products;
+  const products = productsCollection.items;
+  const { hasNextPage, hasPreviousPage, endCursor, startCursor } = productsCollection.pageInfo;
 
   return (
     <div>
@@ -19,10 +37,19 @@ export default async function Category({ params }: { params: { slug: string } })
       <ul>
         {products.map((product) => (
           <li key={product.entityId}>
-            <a href={`/product/${product.entityId}`}>{product.name}</a>
+            <Link href={`/product/${product.entityId}`}>{product.name}</Link>
           </li>
         ))}
       </ul>
+
+      <div>
+        {hasPreviousPage && (
+          <Link href={`/category/${categoryId}?before=${String(startCursor)}`}>Previous</Link>
+        )}
+        {hasNextPage && (
+          <Link href={`/category/${categoryId}?after=${String(endCursor)}`}>Next</Link>
+        )}
+      </div>
     </div>
   );
 }

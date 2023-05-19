@@ -4,10 +4,14 @@ import { client } from '../client';
 
 interface GetCategoryOptions {
   categoryId: number;
-  first?: number;
+  limit?: number;
+  before?: string;
+  after?: string;
 }
 
-export const getCategory = async ({ categoryId, first = 9 }: GetCategoryOptions) => {
+export const getCategory = async ({ categoryId, limit = 9, before, after }: GetCategoryOptions) => {
+  const paginationArgs = before ? { last: limit, before } : { first: limit, after };
+
   const { site } = await client.query({
     site: {
       category: {
@@ -16,7 +20,9 @@ export const getCategory = async ({ categoryId, first = 9 }: GetCategoryOptions)
         description: true,
         path: true,
         products: {
-          __args: { first },
+          __args: {
+            ...paginationArgs,
+          },
           pageInfo: {
             startCursor: true,
             endCursor: true,
