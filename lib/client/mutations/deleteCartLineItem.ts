@@ -1,7 +1,8 @@
-import { client } from '../client';
+import { bigcommerceFetch } from '@client/fetcher';
+import { generateMutationOp, MutationGenqlSelection, MutationResult } from '@client/generated';
 
 export const deleteCartLineItem = async (cartEntityId: string, lineItemEntityId: string) => {
-  const response = await client.mutation({
+  const mutation = {
     cart: {
       deleteCartLineItem: {
         __args: {
@@ -15,7 +16,14 @@ export const deleteCartLineItem = async (cartEntityId: string, lineItemEntityId:
         },
       },
     },
+  } satisfies MutationGenqlSelection;
+
+  const mutationOp = generateMutationOp(mutation);
+
+  const { data } = await bigcommerceFetch<MutationResult<typeof mutation>>({
+    ...mutationOp,
+    cache: 'no-store',
   });
 
-  return response.cart.deleteCartLineItem?.cart;
+  return data.cart.deleteCartLineItem?.cart;
 };

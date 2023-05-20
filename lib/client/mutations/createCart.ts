@@ -25,10 +25,10 @@ export const createCart = async (lineItems: CartLineItemInput[]) => {
 
   const mutationOp = generateMutationOp(mutation);
 
-  const response = await bigcommerceFetch<MutationResult<typeof mutation>>({
+  const { data } = await bigcommerceFetch<MutationResult<typeof mutation>>({
     ...mutationOp,
     cache: 'no-store',
   });
 
-  return response.data.cart.createCart?.cart;
+  return data.cart.createCart?.cart;
 };

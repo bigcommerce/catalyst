@@ -30,7 +30,6 @@ export const getCart = async (entityId: string) => {
   const response = await bigcommerceFetch<QueryResult<typeof query>>({
     ...queryOp,
     // TODO: This is next-specific, move it somewhere else.
-    cache: 'no-store',
     next: {
       tags: ['cart'],
     },
