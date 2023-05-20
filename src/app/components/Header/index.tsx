@@ -1,9 +1,32 @@
 import { ShoppingCart } from 'lucide-react';
+import { cookies } from 'next/headers';
 import Link from 'next/link';
+import { Suspense } from 'react';
 
-import { getCategoryTree } from '@client';
+import { getCart, getCategoryTree } from '@client';
 
 import { StoreLogo } from '../StoreLogo';
+
+const Cart = async () => {
+  const cartId = cookies().get('cartId')?.value;
+
+  if (!cartId) {
+    return <ShoppingCart />;
+  }
+
+  const cart = await getCart(cartId);
+
+  if (!cart) {
+    return <ShoppingCart />;
+  }
+
+  return (
+    <div>
+      <ShoppingCart />
+      <p>{cart.lineItems.totalQuantity}</p>
+    </div>
+  );
+};
 
 const HeaderNav = async () => {
   const categoryTree = await getCategoryTree();
@@ -36,7 +59,10 @@ export const Header = () => {
       {/* @ts-expect-error Server Component */}
       <HeaderNav />
 
-      <ShoppingCart />
+      <Suspense>
+        {/* @ts-expect-error Server Component */}
+        <Cart />
+      </Suspense>
     </header>
   );
 };

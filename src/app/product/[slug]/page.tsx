@@ -1,7 +1,9 @@
+import { revalidateTag } from 'next/cache';
+import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
-import { getProduct } from '@client';
+import { addCartLineItem, createCart, getProduct } from '@client';
 
 import { BreadCrumbs } from './Breadcrumbs';
 import { Gallery } from './Gallery';
@@ -19,6 +21,48 @@ export default async function Product({ params }: { params: { slug: string } }) 
     return notFound();
   }
 
+  const handleAddToCart = async () => {
+    'use server';
+
+    const cartId = cookies().get('cartId')?.value;
+
+    if (cartId) {
+      await addCartLineItem(cartId, {
+        lineItems: [
+          {
+            productEntityId: productId,
+            quantity: 1,
+          },
+        ],
+      });
+
+      revalidateTag('cart');
+
+      return;
+    }
+
+    // Create cart
+    const cart = await createCart([
+      {
+        productEntityId: productId,
+        quantity: 1,
+      },
+    ]);
+
+    if (cart) {
+      cookies().set({
+        name: 'cartId',
+        value: cart.entityId,
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: true,
+        path: '/',
+      });
+    }
+
+    revalidateTag('cart');
+  };
+
   return (
     <>
       {/* @ts-expect-error Server Component */}
@@ -34,6 +78,12 @@ export default async function Product({ params }: { params: { slug: string } }) 
             {/* @ts-expect-error Server Component */}
             <ReviewSummary productId={productId} reviewSectionId={reviewSectionId} />
           </Suspense>
+
+          <form action={handleAddToCart} className="my-6">
+            <button className="bg-blue-800 text-white" type="submit">
+              Add to Cart
+            </button>
+          </form>
 
           {/* <Variants productId={productId} /> */}
         </div>

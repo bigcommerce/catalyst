@@ -1,8 +1,14 @@
-import { client } from '../client';
-import { AddCartLineItemsDataInput } from '../generated';
+import { bigcommerceFetch } from '@client/fetcher';
+
+import {
+  AddCartLineItemsDataInput,
+  generateMutationOp,
+  MutationGenqlSelection,
+  MutationResult,
+} from '../generated';
 
 export const addCartLineItem = async (cartEntityId: string, data: AddCartLineItemsDataInput) => {
-  const response = await client.mutation({
+  const mutation = {
     cart: {
       addCartLineItems: {
         __args: {
@@ -16,7 +22,14 @@ export const addCartLineItem = async (cartEntityId: string, data: AddCartLineIte
         },
       },
     },
+  } satisfies MutationGenqlSelection;
+
+  const mutationOp = generateMutationOp(mutation);
+
+  const response = await bigcommerceFetch<MutationResult<typeof mutation>>({
+    ...mutationOp,
+    cache: 'no-store',
   });
 
-  return response.cart.addCartLineItems?.cart;
+  return response.data.cart.addCartLineItems?.cart;
 };
