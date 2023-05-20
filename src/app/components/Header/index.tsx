@@ -14,7 +14,7 @@ const HeaderNav = async () => {
         {categoryTree.map((category) => (
           <Link
             className="flex flex-row items-center p-3 font-semibold"
-            href={category.path}
+            href={`/category/${category.entityId}`}
             key={category.path}
           >
             {category.name}
