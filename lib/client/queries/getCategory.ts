@@ -37,6 +37,11 @@ export const getCategory = async ({ categoryId, limit = 9, before, after }: GetC
               brand: {
                 name: true,
               },
+              prices: {
+                price: {
+                  value: true,
+                },
+              },
               defaultImage: {
                 url: {
                   __args: { width: 300 },
