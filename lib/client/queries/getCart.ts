@@ -9,14 +9,26 @@ export const getCart = async (entityId: string) => {
         __args: {
           entityId,
         },
+        entityId: true,
+        isTaxIncluded: true,
+        currencyCode: true,
         lineItems: {
           totalQuantity: true,
           physicalItems: {
             name: true,
+            brand: true,
             imageUrl: true,
             entityId: true,
             quantity: true,
-            listPrice: {
+            extendedListPrice: {
+              currencyCode: true,
+              value: true,
+            },
+            extendedSalePrice: {
+              currencyCode: true,
+              value: true,
+            },
+            discountedAmount: {
               currencyCode: true,
               value: true,
             },
@@ -36,5 +48,37 @@ export const getCart = async (entityId: string) => {
     },
   });
 
-  return response.data.site.cart;
+  const cart = response.data.site.cart;
+
+  if (!cart) {
+    return;
+  }
+
+  const totalExtendedListPrice = cart.lineItems.physicalItems.reduce((acc, item) => {
+    return acc + item.extendedListPrice.value;
+  }, 0);
+
+  const totalDiscountedAmount = cart.lineItems.physicalItems.reduce((acc, item) => {
+    return acc + item.discountedAmount.value;
+  }, 0);
+
+  const totalExtendedSalePrice = cart.lineItems.physicalItems.reduce((acc, item) => {
+    return acc + item.extendedSalePrice.value;
+  }, 0);
+
+  return {
+    ...cart,
+    totalExtendedListPrice: {
+      currencyCode: cart.currencyCode,
+      value: totalExtendedListPrice,
+    },
+    totalDiscountedAmount: {
+      currencyCode: cart.currencyCode,
+      value: totalDiscountedAmount,
+    },
+    totalExtendedSalePrice: {
+      currencyCode: cart.currencyCode,
+      value: totalExtendedSalePrice,
+    },
+  };
 };

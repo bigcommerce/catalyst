@@ -16,3 +16,6 @@ export { createCart } from './mutations/createCart';
 export { addCartLineItem } from './mutations/addCartLineItem';
 export { deleteCartLineItem } from './mutations/deleteCartLineItem';
 export { updateCartLineItem } from './mutations/updateCartLineItem';
+
+// Management API (no graphql)
+export { getCheckoutUrl } from './management/getCheckoutUrl';

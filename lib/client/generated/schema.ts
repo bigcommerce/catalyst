@@ -4,7 +4,7 @@
 /* eslint-disable */
 
 export type Scalars = {
-    BigDecimal: any,
+    BigDecimal: number,
     Boolean: boolean,
     DateTime: string,
     Float: number,
