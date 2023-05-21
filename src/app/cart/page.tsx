@@ -12,7 +12,7 @@ const CheckoutButton = async ({ cartId }: { cartId: string }) => {
 
   return (
     <a
-      className="inline-block w-full bg-[#053FB0] py-2 text-center text-base font-semibold text-white hover:opacity-95"
+      className="inline-block w-full bg-[#053FB0] py-3 text-center text-base font-semibold text-white hover:opacity-95"
       href={checkoutUrl}
     >
       Proceed to checkout
@@ -52,7 +52,7 @@ export default async function CartPage() {
                 </div>
 
                 <div className="flex-1">
-                  <p className="text-base text-[#546E7A]">{product.brand} A BRAND, TODO: REMOVe </p>
+                  <p className="text-base text-[#546E7A]">{product.brand}</p>
                   <p className="text-xl font-bold">{product.name}</p>
                 </div>
 

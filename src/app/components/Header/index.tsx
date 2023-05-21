@@ -11,20 +11,27 @@ const Cart = async () => {
   const cartId = cookies().get('cartId')?.value;
 
   if (!cartId) {
-    return <ShoppingCart />;
+    return <ShoppingCart aria-hidden="true" />;
   }
 
   const cart = await getCart(cartId);
 
   if (!cart) {
-    return <ShoppingCart />;
+    return <ShoppingCart aria-hidden="true" />;
   }
 
-  // TODO: Make this accessible
+  const count = cart.lineItems.totalQuantity;
+
   return (
     <Link href="/cart">
-      <ShoppingCart />
-      <p>{cart.lineItems.totalQuantity}</p>
+      <span className="sr-only">Cart Items</span>
+
+      <div className="relative">
+        <ShoppingCart aria-hidden="true" />
+        <div className="absolute -right-4 -top-4 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-[#053FB0] text-xs font-bold text-white dark:border-gray-900">
+          {count}
+        </div>
+      </div>
     </Link>
   );
 };

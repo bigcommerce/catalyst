@@ -1,3 +1,4 @@
+import { Heart, ShoppingCart } from 'lucide-react';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
@@ -80,11 +81,28 @@ export default async function Product({ params }: { params: { slug: string } }) 
             <ReviewSummary productId={productId} reviewSectionId={reviewSectionId} />
           </Suspense>
 
-          <form action={handleAddToCart} className="my-6">
-            <button className="bg-blue-800 text-white" type="submit">
-              Add to Cart
-            </button>
-          </form>
+          <div className="flex gap-4">
+            <form action={handleAddToCart} className="my-6 w-full">
+              <button
+                className="inline-flex w-full justify-center border-2 border-[#053FB0] bg-[#053FB0] py-3 text-base font-semibold text-white hover:opacity-95"
+                type="submit"
+              >
+                <ShoppingCart aria-hidden="true" className="mx-2" />
+                Add to Cart
+              </button>
+            </form>
+
+            {/* NOT IMPLEMENTED YET */}
+            <div className="my-6 w-full">
+              <button
+                className="inline-flex w-full justify-center border-2 border-[#053FB0] py-3 text-base font-semibold text-[#053FB0] hover:bg-gray-50"
+                type="submit"
+              >
+                <Heart aria-hidden="true" className="mx-2" />
+                <span>Save to wishlist</span>
+              </button>
+            </div>
+          </div>
 
           {/* <Variants productId={productId} /> */}
         </div>

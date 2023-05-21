@@ -1,5 +1,5 @@
 const storeHash = process.env.BIGCOMMERCE_STORE_HASH ?? '';
-const xAuthToken = process.env.BIGCOMMERCE_X_AUTH_TOKEN ?? '';
+const xAuthToken = process.env.BIGCOMMERCE_ACCESS_TOKEN ?? '';
 
 interface RedirectUrlsResponse {
   data: {
