@@ -15,6 +15,7 @@ export const getCart = async (entityId: string) => {
             name: true,
             imageUrl: true,
             entityId: true,
+            quantity: true,
             listPrice: {
               currencyCode: true,
               value: true,

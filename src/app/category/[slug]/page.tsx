@@ -103,4 +103,4 @@ export default async function Category({ params, searchParams }: Props) {
   );
 }
 
-export const runtime = 'experimental-edge';
+export const runtime = 'edge';

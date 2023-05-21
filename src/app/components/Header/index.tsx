@@ -20,11 +20,12 @@ const Cart = async () => {
     return <ShoppingCart />;
   }
 
+  // TODO: Make this accessible
   return (
-    <div>
+    <Link href="/cart">
       <ShoppingCart />
       <p>{cart.lineItems.totalQuantity}</p>
-    </div>
+    </Link>
   );
 };
 

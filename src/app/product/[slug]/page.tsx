@@ -1,4 +1,4 @@
-import { revalidateTag } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -37,6 +37,7 @@ export default async function Product({ params }: { params: { slug: string } }) 
       });
 
       revalidateTag('cart');
+      // revalidatePath('/cart');
 
       return;
     }
@@ -116,4 +117,4 @@ export default async function Product({ params }: { params: { slug: string } }) 
   );
 }
 
-export const runtime = 'experimental-edge';
+export const runtime = 'edge';
