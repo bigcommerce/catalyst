@@ -10,7 +10,13 @@ import { BreadCrumbs } from './Breadcrumbs';
 import { Gallery } from './Gallery';
 import { Reviews } from './Reviews';
 import { ReviewSummary } from './ReviewSummary';
+
 // import { Variants } from './Variants';
+//
+const currencyFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});
 
 export default async function Product({ params }: { params: { slug: string } }) {
   const productId = Number(params.slug);
@@ -81,8 +87,16 @@ export default async function Product({ params }: { params: { slug: string } }) 
             <ReviewSummary productId={productId} reviewSectionId={reviewSectionId} />
           </Suspense>
 
-          <div className="flex gap-4">
-            <form action={handleAddToCart} className="my-6 w-full">
+          {product.prices && (
+            <div className="my-7">
+              <p className="text-3xl font-bold">
+                {currencyFormatter.format(product.prices.price.value)}
+              </p>
+            </div>
+          )}
+
+          <div className="my-7 flex gap-4">
+            <form action={handleAddToCart} className="w-full">
               <button
                 className="inline-flex w-full justify-center border-2 border-[#053FB0] bg-[#053FB0] py-3 text-base font-semibold text-white hover:opacity-95"
                 type="submit"
@@ -93,7 +107,7 @@ export default async function Product({ params }: { params: { slug: string } }) 
             </form>
 
             {/* NOT IMPLEMENTED YET */}
-            <div className="my-6 w-full">
+            <div className="w-full">
               <button
                 className="inline-flex w-full justify-center border-2 border-[#053FB0] py-3 text-base font-semibold text-[#053FB0] hover:bg-gray-50"
                 type="submit"
