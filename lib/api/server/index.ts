@@ -3,13 +3,7 @@ import { setContext } from '@apollo/client/link/context';
 
 import { createStorefrontClient } from './storefront/client';
 
-const storefrontClient = createStorefrontClient({
-  accessToken: process.env.BIGCOMMERCE_ACCESS_TOKEN,
-  channelId: parseInt(process.env.BIGCOMMERCE_CHANNEL_ID ?? '', 10),
-  storeHash: process.env.BIGCOMMERCE_STORE_HASH,
-  apiUrl: process.env.BIGCOMMERCE_API_URL,
-  canonicalDomainName: process.env.BIGCOMMERCE_CANONICAL_STORE_DOMAIN,
-});
+const storefrontClient = createStorefrontClient();
 
 const authLink = setContext(async () => {
   const storefrontClientHeaders = await storefrontClient.getStorefrontApiHeaders();
@@ -31,7 +25,7 @@ const httpLink = new HttpLink({
 export const getServerClient = () => {
   if (typeof window !== 'undefined') {
     throw new Error(
-      'getServerClient is only for use in the browser. Use getBrowserClient for server requests.',
+      'getServerClient is only for use in the server. Use getBrowserClient for browser requests.',
     );
   }
 

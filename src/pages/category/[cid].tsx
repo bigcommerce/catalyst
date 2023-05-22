@@ -4,11 +4,12 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { MergeDeep } from 'type-fest';
 
-import { getServerClient } from '@client/server';
-import { gql } from '@client/utils';
+import { getServerClient } from '@api/server';
+import { gql } from '@api/utils';
 import { Pagination } from '@reactant/components/Pagination';
 import { ChevronLeftIcon } from '@reactant/icons/ChevronLeft';
 import { ChevronRightIcon } from '@reactant/icons/ChevronRight';
+import { CheckoutButton } from 'src/components/CheckoutButton';
 
 import { Facets, FacetsState, Filters } from '../../components/Facets';
 import { Footer, query as FooterQuery, FooterSiteQuery } from '../../components/Footer';
@@ -297,6 +298,7 @@ export default function CategoryPage({
         categoryTree={categories}
         settings={{ logoV2: settings.logoV2, storeName: settings.storeName }}
       />
+      <CheckoutButton />
       <main>
         <div className="md:container md:mx-auto">
           <h1 className="font-black text-5xl leading-[4rem] mb-8">{category.name}</h1>

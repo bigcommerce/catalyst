@@ -1,8 +1,8 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse, URLPattern } from 'next/server';
 
-import { getServerClient } from '@client/server';
-import { gql } from '@client/utils';
+import { getServerClient } from '@api/server';
+import { gql } from '@api/utils';
 
 import { sessionMiddleware } from './session';
 

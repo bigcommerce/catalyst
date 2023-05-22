@@ -4,8 +4,8 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 import { MergeDeep } from 'type-fest';
 
-import { getServerClient } from '@client/server';
-import { gql } from '@client/utils';
+import { getServerClient } from '@api/server';
+import { gql } from '@api/utils';
 import { Breadcrumbs } from '@reactant/components/Breadcrumbs';
 import { Button } from '@reactant/components/Button';
 import { Link } from '@reactant/components/Link';
