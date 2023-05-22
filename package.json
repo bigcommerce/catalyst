@@ -20,7 +20,6 @@
     "deepmerge": "^4.3.1",
     "iron-session": "^6.3.1",
     "keen-slider": "^6.8.5",
-    "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.216.0",
     "next": "^13.4.4-canary.0",
@@ -32,6 +31,7 @@
   },
   "devDependencies": {
     "@bigcommerce/eslint-config": "^2.6.2",
+    "@types/lodash.debounce": "^4.0.7",
     "@types/node": "^18.13.00",
     "@types/react": "^18.2.6",
     "@types/react-dom": "^18.2.4",

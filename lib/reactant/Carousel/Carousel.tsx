@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useKeenSlider } from 'keen-slider/react';
-import debounce from 'lodash/debounce';
+import debounce from 'lodash.debounce';
 import Image from 'next/image';
 import React, { MouseEvent, useCallback, useEffect, useState } from 'react';
 
