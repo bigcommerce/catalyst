@@ -184,7 +184,7 @@ export function Navigation({
               </NavigationMenu.List>
 
               <div className="absolute inset-x-0 top-full w-full">
-                <NavigationMenu.Viewport className="h-[var(--radix-navigation-menu-viewport-height)] w-full origin-top overflow-hidden bg-white shadow-[0px_12px_20px_rgba(20,28,31,0.12)] transition-[width,_height] duration-200 sm:w-[var(--radix-navigation-menu-viewport-width)]" />
+                <NavigationMenu.Viewport className="h-[var(--radix-navigation-menu-viewport-height)] w-full origin-top overflow-hidden bg-white shadow-[0px_20px_20px_rgba(20,28,31,0.12)] transition-[width,_height] duration-200 sm:w-[var(--radix-navigation-menu-viewport-width)]" />
               </div>
             </NavigationMenu.Root>
 

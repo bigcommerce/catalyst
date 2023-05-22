@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { useKeenSlider } from 'keen-slider/react';
 import debounce from 'lodash/debounce';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import React, { MouseEvent, useCallback, useEffect, useState } from 'react';
 
 import { ArrowLeft, ArrowRight, Pause } from '../../icons';
 import { Warning } from '../Warning';
@@ -66,7 +66,7 @@ export function Carousel({ className, slides, loop = true, autoplay = 0 }: Props
     }
   }, [instanceRef, autoplay]);
 
-  function prevSlide() {
+  const prevSlide = useCallback(() => {
     const slider = instanceRef.current;
 
     if (!slider) {
@@ -74,9 +74,9 @@ export function Carousel({ className, slides, loop = true, autoplay = 0 }: Props
     }
 
     slider.moveToIdx(slider.track.details.rel - 1);
-  }
+  }, [instanceRef]);
 
-  function nextSlide() {
+  const nextSlide = useCallback(() => {
     const slider = instanceRef.current;
 
     if (!slider) {
@@ -84,7 +84,7 @@ export function Carousel({ className, slides, loop = true, autoplay = 0 }: Props
     }
 
     slider.moveToIdx(slider.track.details.rel + 1);
-  }
+  }, [instanceRef]);
 
   return (
     <div className={clsx(className, 'text-white')}>
