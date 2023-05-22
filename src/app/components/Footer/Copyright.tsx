@@ -11,7 +11,7 @@ export const Copyright = async (props: ComponentPropsWithoutRef<'div'>) => {
 
   return (
     <div {...props}>
-      <p className="text-sm text-slate-500">
+      <p className="text-sm text-gray-500">
         © {new Date().getFullYear()} {settings.storeName} – Powered by BigCommerce
       </p>
     </div>

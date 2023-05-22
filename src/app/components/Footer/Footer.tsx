@@ -11,7 +11,7 @@ import { SocialIcons } from './SocialIcons';
 export const Footer = () => {
   return (
     <footer>
-      <div className="border-b border-t border-slate-100">
+      <div className="border-b border-t border-gray-200">
         <div className="mx-6 my-12 grid grid-cols-1 gap-8 md:container sm:mx-10 sm:grid-cols-4 md:mx-auto md:grid-cols-6">
           {/* @ts-expect-error Server Component */}
           <CategoryFooterMenu />

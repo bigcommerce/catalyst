@@ -12,7 +12,7 @@ export const StoreLogo = async () => {
   const { logoV2: logo, storeName } = settings;
 
   if (logo.__typename === 'StoreTextLogo') {
-    return <span className="text-2xl font-black">{logo.text}</span>;
+    return <span className="text-h4 font-black">{logo.text}</span>;
   }
 
   return (

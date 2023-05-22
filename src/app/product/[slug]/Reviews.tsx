@@ -17,9 +17,9 @@ export const Reviews = async ({ productId, reviewSectionId }: Props) => {
 
   return (
     <>
-      <h3 className="mb-4 mt-8 text-xl font-bold">
+      <h3 className="mb-4 mt-8 text-h5">
         Reviews
-        <span className="ms-2 text-[#546E7A]">
+        <span className="ms-2 text-gray-500">
           <span className="sr-only">Count:</span>
           {reviews.length}
         </span>
@@ -29,7 +29,7 @@ export const Reviews = async ({ productId, reviewSectionId }: Props) => {
         {reviews.map((review) => {
           return (
             <li key={review.entityId}>
-              <p className="mb-3 flex flex-nowrap text-[#053FB0]">
+              <p className="mb-3 flex flex-nowrap text-blue-primary">
                 {new Array(5).fill(undefined).map((_, i) => {
                   const index = i + 1;
 
@@ -51,7 +51,7 @@ export const Reviews = async ({ productId, reviewSectionId }: Props) => {
                 <span className="sr-only">Rating: ${review.rating} out of 5 stars</span>
               </p>
               <h4 className="text-base font-semibold">{review.title}</h4>
-              <p className="mb-2 text-[#546E7A]">
+              <p className="mb-2 text-gray-500">
                 Posted by {review.author.name} on{' '}
                 {new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(
                   new Date(review.createdAt.utc),
@@ -64,7 +64,7 @@ export const Reviews = async ({ productId, reviewSectionId }: Props) => {
       </ul>
 
       <button
-        className="border-2 border-[#053FB0] px-8 py-3 font-semibold text-[#053FB0]"
+        className="border-2 border-blue-primary px-8 py-3 font-semibold text-blue-primary"
         id={reviewSectionId}
       >
         Write a review

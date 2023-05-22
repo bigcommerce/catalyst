@@ -34,7 +34,7 @@ export default async function Category({ params, searchParams }: Props) {
 
   return (
     <div>
-      <h1 className="mb-3 text-[50px] font-black leading-[66px] text-black">{category.name}</h1>
+      <h1 className="mb-3 text-h2">{category.name}</h1>
 
       <div className="pt-6 lg:grid lg:grid-cols-3 lg:gap-x-8 xl:grid-cols-4">
         <section aria-labelledby="filters-heading" className="flex flex-col gap-6">
@@ -43,7 +43,7 @@ export default async function Category({ params, searchParams }: Props) {
           </h2>
 
           <div>
-            <h3 className="mb-3 text-xl font-bold">Categories</h3>
+            <h3 className="mb-3 text-h5">Categories</h3>
 
             <ul className="flex flex-col gap-4 text-base">
               <li>Category 1</li>
@@ -53,7 +53,7 @@ export default async function Category({ params, searchParams }: Props) {
           </div>
 
           <div>
-            <h3 className="mb-3 text-xl font-bold">Brand</h3>
+            <h3 className="mb-3 text-h5">Brand</h3>
 
             <ul className="flex flex-col gap-4 text-base">
               <li>Brand 1</li>
@@ -87,7 +87,7 @@ export default async function Category({ params, searchParams }: Props) {
                 <div className="flex flex-1 flex-col space-y-2 p-4">
                   {product.brand && <p className="text-base text-gray-500">{product.brand.name}</p>}
 
-                  <h3 className="text-xl font-medium text-gray-900">
+                  <h3 className="text-h5">
                     <Link href={`/product/${product.entityId}`}>
                       <span aria-hidden="true" className="absolute inset-0" />
                       {product.name}
@@ -95,14 +95,14 @@ export default async function Category({ params, searchParams }: Props) {
                   </h3>
 
                   <div className="flex flex-1 flex-col justify-end">
-                    <p className="text-base text-gray-900">${product.prices?.price.value}</p>
+                    <p className="text-base">${product.prices?.price.value}</p>
                   </div>
                 </div>
               </div>
             ))}
           </div>
 
-          <nav aria-label="Pagination" className="my-6 text-center text-[#053FB0]">
+          <nav aria-label="Pagination" className="my-6 text-center text-blue-primary">
             {hasPreviousPage ? (
               <Link href={`/category/${categoryId}?before=${String(startCursor)}`}>
                 <span className="sr-only">Previous</span>

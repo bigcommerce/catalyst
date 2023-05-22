@@ -79,9 +79,11 @@ export default async function Product({ params }: { params: { slug: string } }) 
       <div className="my-6 grid-cols-2 gap-4 md:grid">
         <div className="md:order-2">
           {product.brand && (
-            <p className="text-md font-semibold uppercase text-slate-500">{product.brand.name}</p>
+            <p className="font-semibold uppercase text-gray-500">{product.brand.name}</p>
           )}
-          <h1 className="mb-3 text-[50px] font-black leading-[66px] text-black">{product.name}</h1>
+
+          <h1 className="mb-3 text-h2">{product.name}</h1>
+
           <Suspense fallback="Loading...">
             {/* @ts-expect-error Server Component */}
             <ReviewSummary productId={productId} reviewSectionId={reviewSectionId} />
@@ -89,16 +91,14 @@ export default async function Product({ params }: { params: { slug: string } }) 
 
           {product.prices && (
             <div className="my-7">
-              <p className="text-3xl font-bold">
-                {currencyFormatter.format(product.prices.price.value)}
-              </p>
+              <p className="text-h4">{currencyFormatter.format(product.prices.price.value)}</p>
             </div>
           )}
 
           <div className="my-7 flex gap-4">
             <form action={handleAddToCart} className="w-full">
               <button
-                className="inline-flex w-full justify-center border-2 border-[#053FB0] bg-[#053FB0] py-3 text-base font-semibold text-white hover:opacity-95"
+                className="inline-flex w-full justify-center border-2 border-blue-primary bg-blue-primary py-3 text-base font-semibold text-white hover:opacity-95"
                 type="submit"
               >
                 <ShoppingCart aria-hidden="true" className="mx-2" />
@@ -109,7 +109,7 @@ export default async function Product({ params }: { params: { slug: string } }) 
             {/* NOT IMPLEMENTED YET */}
             <div className="w-full">
               <button
-                className="inline-flex w-full justify-center border-2 border-[#053FB0] py-3 text-base font-semibold text-[#053FB0] hover:bg-gray-50"
+                className="hover:bg-gray-50 inline-flex w-full justify-center border-2 border-blue-primary py-3 text-base font-semibold text-blue-primary"
                 type="submit"
               >
                 <Heart aria-hidden="true" className="mx-2" />
@@ -127,14 +127,14 @@ export default async function Product({ params }: { params: { slug: string } }) 
 
           {Boolean(product.plainTextDescription) && (
             <>
-              <h2 className="mb-4 text-xl font-bold">Description</h2>
+              <h3 className="mb-4 text-h5">Description</h3>
               <p>{product.plainTextDescription}</p>
             </>
           )}
 
           {Boolean(product.warranty) && (
             <>
-              <h2 className="mb-4 mt-8 text-xl font-bold">Warranty</h2>
+              <h3 className="mb-4 mt-8 text-h5">Warranty</h3>
               <p>{product.warranty}</p>
             </>
           )}

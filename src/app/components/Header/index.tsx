@@ -28,7 +28,7 @@ const Cart = async () => {
 
       <div className="relative">
         <ShoppingCart aria-hidden="true" />
-        <div className="absolute -right-4 -top-4 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-[#053FB0] text-xs font-bold text-white dark:border-gray-900">
+        <div className="dark:border-gray-900 absolute -right-4 -top-4 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-blue-primary text-sm font-bold text-white">
           {count}
         </div>
       </div>

@@ -21,7 +21,7 @@ export const ReviewSummary = async ({ productId, reviewSectionId }: Props) => {
 
   return (
     <div className="flex items-center gap-3">
-      <p aria-describedby={summaryId} className="flex flex-nowrap text-[#053FB0]">
+      <p aria-describedby={summaryId} className="flex flex-nowrap text-blue-primary">
         {new Array(5).fill(undefined).map((_, i) => {
           const index = i + 1;
 
@@ -49,7 +49,7 @@ export const ReviewSummary = async ({ productId, reviewSectionId }: Props) => {
         {numberOfReviews})
       </div>
 
-      <a className="font-semibold text-[#053FB0]" href={`#${reviewSectionId}`}>
+      <a className="font-semibold text-blue-primary" href={`#${reviewSectionId}`}>
         Write review
       </a>
     </div>
