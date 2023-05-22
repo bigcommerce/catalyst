@@ -89,7 +89,7 @@ export const query = {
             url(width: 300, height: 300)
             altText
           }
-          prices(currencyCode: USD) {
+          prices(currencyCode: UAH) {
             price {
               formatted
             }

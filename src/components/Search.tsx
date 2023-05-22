@@ -10,7 +10,7 @@ import React, {
   useState,
 } from 'react';
 
-import { getBrowserClient } from '@client/browser';
+import { getBrowserClient } from '@api/browser/graphql';
 import { Button as ReactantButton } from '@reactant/components/Button';
 import { FormGroup, Input } from '@reactant/components/Input';
 import { SearchIcon } from '@reactant/icons/Search';

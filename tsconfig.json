@@ -25,7 +25,7 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@client/*": ["./lib/client/*"],
+      "@api/*": ["./lib/api/*"],
       // TODO: Export via an index file and remove the /*
       "@reactant/components/*": ["./lib/reactant/components/*"],
       "@reactant/icons/*": ["./lib/reactant/icons/*"],

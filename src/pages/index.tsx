@@ -3,8 +3,8 @@ import Head from 'next/head';
 import React from 'react';
 import { MergeDeep } from 'type-fest';
 
-import { getServerClient } from '@client/server';
-import { gql } from '@client/utils';
+import { getServerClient } from '@api/server';
+import { gql } from '@api/utils';
 import { Link } from '@reactant/components/Link';
 
 import { Footer, query as FooterQuery, FooterSiteQuery } from '../components/Footer';
@@ -117,7 +117,6 @@ export default function HomePage({ homePage, header, footer }: HomePageProps) {
         <meta content={homePage.settings.storeName} name="description" />
       </Head>
       <Header categoryTree={header.categoryTree} settings={header.settings} />
-
       <main>
         <div className="md:container md:mx-auto">
           <div className="aspect-[9/16] md:aspect-[2/1] bg-slate-100 relative flex flex-col items-start justify-center p-6 sm:p-16 md:p-24">

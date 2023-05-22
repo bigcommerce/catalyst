@@ -38,7 +38,7 @@ For a list of recommended scopes to use for your access token, please expand the
 | Stored Payment Instruments                   | `read-only`      |
 | Products                                     | `read-only`      |
 | Themes                                       | `read-only`      |
-| Carts                                        | `read-only`      |
+| Carts                                        | `modify`         |
 | Checkouts                                    | `read-only`      |
 | Sites & Routes                               | `read-only`      |
 | Channel Settings                             | `None`           |
