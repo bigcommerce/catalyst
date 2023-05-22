@@ -67,7 +67,7 @@ export const Header = () => {
       {/* @ts-expect-error Server Component */}
       <HeaderNav />
 
-      <Suspense>
+      <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
         {/* @ts-expect-error Server Component */}
         <Cart />
       </Suspense>
