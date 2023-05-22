@@ -28,7 +28,7 @@ ReactRuntime.registerComponent(ProductCards, {
             defaultValue: 'Image',
             selectAll: true,
           }),
-          hasBadge: Checkbox({ label: 'Show badge' }),
+          hasBadge: Checkbox({ label: 'Show badge', defaultValue: false }),
           badgeText: TextInput({
             label: 'Badge text',
             defaultValue: 'New',

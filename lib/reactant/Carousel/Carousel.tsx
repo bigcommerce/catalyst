@@ -13,7 +13,7 @@ interface Slide {
   image?: { url: string; dimensions: { width: number; height: number } };
   imageAlt: string;
   buttonText: string;
-  link: {
+  link?: {
     target?: '_self' | '_blank';
     href: string;
     onClick(event: MouseEvent): void;

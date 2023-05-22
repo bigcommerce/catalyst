@@ -47,15 +47,17 @@ export function Footer({
       }}
     >
       <div
-        className="mx-auto flex flex-col gap-x-6 md:flex-row md:gap-x-8"
+        className="mx-auto flex flex-col gap-x-6 gap-y-8 md:flex-row md:gap-x-8"
         style={{
           maxWidth: `${contentWidth}px`,
         }}
       >
-        <div className="xs:order-3 order-1 min-w-[384px] max-w-sm">{footerSlot}</div>
+        <div className="relative order-first min-w-0 max-w-sm sm:order-3 sm:min-w-[384px]">
+          {footerSlot}
+        </div>
 
         {footerGroups.length > 0 && (
-          <div className="order-2 flex flex-1 flex-col gap-x-6 sm:flex-row md:gap-x-8">
+          <div className="order-1 flex flex-1 flex-col gap-x-6 gap-y-8 sm:order-last sm:flex-row md:gap-x-8">
             {footerGroups.map((group, groupIndex) => {
               if (footerGroups.length === 0) {
                 return null;

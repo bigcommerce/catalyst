@@ -4,7 +4,14 @@ import * as Portal from '@radix-ui/react-portal';
 import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { MouseEvent, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, {
+  CSSProperties,
+  MouseEvent,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { BurgerMenu, Cart, ChevronDown, Compare, Gift, Heart, Profile, Search } from '../../icons';
 
@@ -226,10 +233,13 @@ export function Navigation({
               'animate-revealVertical fixed inset-x-0 bottom-0 top-[var(--top)] z-[100] flex flex-1 -translate-y-full flex-col overflow-auto md:px-8 lg:px-10',
               linkTextStyle,
             )}
-            style={{
-              backgroundColor: navBackground,
-              '--top': `${height}px`,
-            }}
+            style={
+              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+              {
+                backgroundColor: navBackground,
+                '--top': `${height}px`,
+              } as CSSProperties
+            }
           >
             <Accordion.Root className="flex-1" type="multiple">
               {mainNavLinks?.map((mainNavLink, footerMainNavLinkIndex) => (

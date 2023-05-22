@@ -15,8 +15,8 @@ interface Props {
   };
   heading?: string;
   name?: string;
-  price?: string;
-  originalPrice?: string;
+  price?: number;
+  originalPrice?: number;
 }
 
 export function ProductCard({

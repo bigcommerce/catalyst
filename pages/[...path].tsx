@@ -1,4 +1,4 @@
-import '../lib/reactant/makeswift';
+import '@reactant/makeswift';
 
 import {
   Makeswift,
