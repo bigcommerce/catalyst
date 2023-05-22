@@ -14,11 +14,15 @@ if (!process.env.BIGCOMMERCE_ACCESS_TOKEN) {
   throw new Error('The environment variable BIGCOMMERCE_ACCESS_TOKEN is missing');
 }
 
+if (!process.env.MAKESWIFT_SITE_API_KEY) {
+  throw new Error('The environment variable MAKESWIFT_SITE_API_KEY is missing');
+}
+
 /** @type {import('next').NextConfig} */
 const withMakeswift = require('@makeswift/runtime/next/plugin')();
+
 const nextConfig = {
   reactStrictMode: true,
-  experimental: { appDir: true },
   images: {
     remotePatterns: [
       {

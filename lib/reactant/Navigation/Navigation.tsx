@@ -92,7 +92,9 @@ export function Navigation({
 
     setHeight(navElement.current.clientHeight);
 
-    const observer = new ResizeObserver(([element]) => setHeight(element.target.clientHeight));
+    const observer = new ResizeObserver(([element]) =>
+      setHeight(element?.target.clientHeight ?? 0),
+    );
 
     observer.observe(navElement.current);
 
