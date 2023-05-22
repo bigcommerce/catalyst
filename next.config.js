@@ -15,8 +15,10 @@ if (!process.env.BIGCOMMERCE_ACCESS_TOKEN) {
 }
 
 /** @type {import('next').NextConfig} */
+const withMakeswift = require('@makeswift/runtime/next/plugin')();
 const nextConfig = {
   reactStrictMode: true,
+  experimental: { appDir: true },
   images: {
     remotePatterns: [
       {
@@ -29,4 +31,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withMakeswift(nextConfig);

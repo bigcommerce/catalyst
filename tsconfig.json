@@ -29,7 +29,7 @@
       "@client": ["./lib/client"],
       "@client/*": ["./lib/client/*"],
       "@cs": ["./lib/cs"],
-      "@reactant": ["./lib/reactant"],
+      "@reactant/*": ["./lib/reactant/*"]
     }
   },
   "include": [
