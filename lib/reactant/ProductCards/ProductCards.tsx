@@ -6,12 +6,12 @@ import { Warning } from '../Warning';
 
 type CardProps = ComponentPropsWithoutRef<typeof ProductCard>;
 
-interface Props {
+export interface ProductCardsProps {
   cards: Array<Omit<CardProps, 'className'>>;
   className?: string;
 }
 
-export function ProductCards({ cards, className }: Props) {
+export function ProductCards({ cards, className }: ProductCardsProps) {
   if (cards.length === 0) {
     return <Warning className={className}>There are no product cards</Warning>;
   }

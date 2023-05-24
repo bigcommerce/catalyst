@@ -21,6 +21,7 @@ export const getBestSellingProducts = async ({
         edges: {
           node: {
             name: true,
+            entityId: true,
             prices: {
               price: {
                 __scalar: true,

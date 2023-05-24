@@ -11,7 +11,7 @@ interface Props {
   link?: {
     target?: '_self' | '_blank';
     href: string;
-    onClick(event: MouseEvent): void;
+    onClick?(event: MouseEvent): void;
   };
   heading?: string;
   name?: string;

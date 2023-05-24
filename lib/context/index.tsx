@@ -5,28 +5,27 @@ import { getBestSellingProducts, getCategoryTree, getFeaturedProducts } from '@c
 export type BcContext = Awaited<ReturnType<typeof getContextData>>;
 
 export const getContextData = async () => {
-  const [featuredProducts, popularProducts, categoryTree] = await Promise.all([
+  const [featuredProducts, bestSellingProducts, categoryTree] = await Promise.all([
     getFeaturedProducts(),
     getBestSellingProducts(),
     getCategoryTree(),
   ]);
 
   return {
+    bestSellingProducts,
     featuredProducts,
-    popularProducts,
     categoryTree,
   };
 };
 
 const BcContext = createContext<BcContext | undefined>(undefined);
 
-export const BcContextProvider = ({
-  children,
-  value,
-}: {
+interface BcContextProviderProps {
   children: ReactNode;
   value: BcContext;
-}) => {
+}
+
+export const BcContextProvider = ({ children, value }: BcContextProviderProps) => {
   return <BcContext.Provider value={value}>{children}</BcContext.Provider>;
 };
 
