@@ -2,6 +2,7 @@ import * as Accordion from '@radix-ui/react-accordion';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Portal from '@radix-ui/react-portal';
 import clsx from 'clsx';
+import { ChevronDown, Gift, Heart, Menu, Scale, Search, ShoppingCart, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, {
@@ -12,8 +13,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-
-import { BurgerMenu, Cart, ChevronDown, Compare, Gift, Heart, Profile, Search } from '../../icons';
 
 interface SubnavLink {
   linkText?: string;
@@ -118,6 +117,7 @@ export function Navigation({
         ref={navElement}
         style={{
           backgroundColor: navBackground,
+          color: linkColor,
         }}
       >
         <div className="relative z-10 w-full px-6 py-4 md:px-8 lg:justify-end lg:px-12">
@@ -142,16 +142,17 @@ export function Navigation({
             <NavigationMenu.Root className="hidden flex-1 justify-center lg:flex" delayDuration={0}>
               <NavigationMenu.List className="flex items-center gap-x-0 md:gap-x-4">
                 {mainNavLinks?.map((mainNavLink, mainNavLinkIndex) => (
-                  <NavigationMenu.Item
-                    className="relative"
-                    key={mainNavLinkIndex}
-                    style={{ color: linkColor }}
-                  >
+                  <NavigationMenu.Item className="relative" key={mainNavLinkIndex}>
                     {mainNavLink.subnavGroups.length > 0 ? (
                       <NavigationMenu.Trigger asChild>
                         <span className="group flex cursor-pointer select-none items-center px-3 py-2.5 outline-none [text-transform:inherit]">
                           {mainNavLink.text}
-                          <ChevronDown className="linear ml-1 fill-current transition-transform duration-300 group-data-[state=open]:-rotate-180" />
+                          <ChevronDown
+                            absoluteStrokeWidth={true}
+                            className="linear ml-1 transition-transform duration-300 group-data-[state=open]:-rotate-180"
+                            size={16}
+                            strokeWidth={2}
+                          />
                         </span>
                       </NavigationMenu.Trigger>
                     ) : (
@@ -197,12 +198,12 @@ export function Navigation({
               </div>
             </NavigationMenu.Root>
 
-            <div className="flex gap-2 [&>a:hover]:opacity-50 [&>a]:p-3 [&>a]:transition-opacity [&_svg]:fill-current">
+            <div className="flex gap-2 [&>a:hover]:opacity-50 [&>a]:p-3 [&>a]:transition-opacity">
               <Link className="hidden sm:block" href="#">
                 <Search />
               </Link>
               <Link className="hidden md:block" href="#">
-                <Compare />
+                <Scale />
               </Link>
               <Link className="hidden md:block" href="#">
                 <Gift />
@@ -211,17 +212,17 @@ export function Navigation({
                 <Heart />
               </Link>
               <Link className="hidden md:block" href="#">
-                <Profile />
+                <User />
               </Link>
               <Link href="#">
-                <Cart />
+                <ShoppingCart />
               </Link>
 
               <button
                 className="block p-3 md:hidden"
                 onClick={() => setMobileNavOpen(!mobileNavOpen)}
               >
-                <BurgerMenu className="fill-current" />
+                <Menu />
               </button>
             </div>
           </div>
