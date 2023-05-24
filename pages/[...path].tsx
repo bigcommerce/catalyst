@@ -7,6 +7,8 @@ import {
 } from '@makeswift/runtime/next';
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next';
 
+import { BcContext, BcContextProvider, getContextData } from 'lib/context';
+
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 type ParsedUrlQuery = { path?: string[] };
 
@@ -24,7 +26,9 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult<ParsedUrlQu
   };
 }
 
-type Props = MakeswiftPageProps;
+type Props = MakeswiftPageProps & {
+  contextData: BcContext;
+};
 
 export async function getStaticProps(
   ctx: GetStaticPropsContext<ParsedUrlQuery>,
@@ -39,9 +43,20 @@ export async function getStaticProps(
     return { notFound: true };
   }
 
-  return { props: { snapshot } };
+  const contextData = await getContextData();
+
+  return {
+    props: {
+      contextData,
+      snapshot,
+    },
+  };
 }
 
-export default function Page({ snapshot }: Props) {
-  return <MakeswiftPage snapshot={snapshot} />;
+export default function Page({ snapshot, contextData }: Props) {
+  return (
+    <BcContextProvider value={contextData}>
+      <MakeswiftPage snapshot={snapshot} />
+    </BcContextProvider>
+  );
 }
