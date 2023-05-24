@@ -6,8 +6,9 @@ import {
   PageProps as MakeswiftPageProps,
 } from '@makeswift/runtime/next';
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next';
+import React from 'react';
 
-import { BcContext, BcContextProvider, getContextData } from 'lib/context';
+import { BcContext, BcContextProvider, getContextData } from '../lib/context';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 type ParsedUrlQuery = { path?: string[] };
