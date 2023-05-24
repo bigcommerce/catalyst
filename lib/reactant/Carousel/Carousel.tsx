@@ -1,10 +1,10 @@
 import clsx from 'clsx';
 import { useKeenSlider } from 'keen-slider/react';
 import debounce from 'lodash.debounce';
+import { ArrowLeft, ArrowRight, Pause } from 'lucide-react';
 import Image from 'next/image';
 import React, { MouseEvent, useCallback, useEffect, useState } from 'react';
 
-import { ArrowLeft, ArrowRight, Pause } from '../../icons';
 import { Warning } from '../Warning';
 
 interface Slide {
@@ -144,7 +144,7 @@ export function Carousel({ className, slides, loop = true, autoplay = 0 }: Props
             ))}
           </div>
 
-          <div className="absolute bottom-6 left-6 z-10 flex items-center md:bottom-12 md:left-20 lg:bottom-16 lg:left-24 [&>button]:p-4 [&>button]:outline-none [&_svg]:fill-current [&_svg]:drop-shadow-md">
+          <div className="absolute bottom-6 left-6 z-10 flex items-center md:bottom-12 md:left-20 lg:bottom-16 lg:left-24 [&>button]:p-4 [&>button]:outline-none [&_svg]:drop-shadow-md">
             <button className="mr-4">
               <Pause />
             </button>

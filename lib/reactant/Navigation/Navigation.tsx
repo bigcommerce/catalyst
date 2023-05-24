@@ -2,6 +2,7 @@ import * as Accordion from '@radix-ui/react-accordion';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Portal from '@radix-ui/react-portal';
 import clsx from 'clsx';
+import { ChevronDown, Gift, Heart, Menu, Scale, Search, ShoppingCart, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, {
@@ -12,8 +13,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-
-import { BurgerMenu, Cart, ChevronDown, Compare, Gift, Heart, Profile, Search } from '../../icons';
 
 interface SubnavLink {
   linkText?: string;
@@ -151,7 +150,12 @@ export function Navigation({
                       <NavigationMenu.Trigger asChild>
                         <span className="group flex cursor-pointer select-none items-center px-3 py-2.5 outline-none [text-transform:inherit]">
                           {mainNavLink.text}
-                          <ChevronDown className="linear ml-1 fill-current transition-transform duration-300 group-data-[state=open]:-rotate-180" />
+                          <ChevronDown
+                            absoluteStrokeWidth={true}
+                            className="linear ml-1 transition-transform duration-300 group-data-[state=open]:-rotate-180"
+                            size={16}
+                            strokeWidth={2}
+                          />
                         </span>
                       </NavigationMenu.Trigger>
                     ) : (
@@ -197,12 +201,12 @@ export function Navigation({
               </div>
             </NavigationMenu.Root>
 
-            <div className="flex gap-2 [&>a:hover]:opacity-50 [&>a]:p-3 [&>a]:transition-opacity [&_svg]:fill-current">
+            <div className="flex gap-2 [&>a:hover]:opacity-50 [&>a]:p-3 [&>a]:transition-opacity">
               <Link className="hidden sm:block" href="#">
                 <Search />
               </Link>
               <Link className="hidden md:block" href="#">
-                <Compare />
+                <Scale />
               </Link>
               <Link className="hidden md:block" href="#">
                 <Gift />
@@ -211,17 +215,17 @@ export function Navigation({
                 <Heart />
               </Link>
               <Link className="hidden md:block" href="#">
-                <Profile />
+                <User />
               </Link>
               <Link href="#">
-                <Cart />
+                <ShoppingCart />
               </Link>
 
               <button
                 className="block p-3 md:hidden"
                 onClick={() => setMobileNavOpen(!mobileNavOpen)}
               >
-                <BurgerMenu className="fill-current" />
+                <Menu className="fill-current" />
               </button>
             </div>
           </div>
