@@ -117,6 +117,7 @@ export function Navigation({
         ref={navElement}
         style={{
           backgroundColor: navBackground,
+          color: linkColor,
         }}
       >
         <div className="relative z-10 w-full px-6 py-4 md:px-8 lg:justify-end lg:px-12">
@@ -141,11 +142,7 @@ export function Navigation({
             <NavigationMenu.Root className="hidden flex-1 justify-center lg:flex" delayDuration={0}>
               <NavigationMenu.List className="flex items-center gap-x-0 md:gap-x-4">
                 {mainNavLinks?.map((mainNavLink, mainNavLinkIndex) => (
-                  <NavigationMenu.Item
-                    className="relative"
-                    key={mainNavLinkIndex}
-                    style={{ color: linkColor }}
-                  >
+                  <NavigationMenu.Item className="relative" key={mainNavLinkIndex}>
                     {mainNavLink.subnavGroups.length > 0 ? (
                       <NavigationMenu.Trigger asChild>
                         <span className="group flex cursor-pointer select-none items-center px-3 py-2.5 outline-none [text-transform:inherit]">
@@ -225,7 +222,7 @@ export function Navigation({
                 className="block p-3 md:hidden"
                 onClick={() => setMobileNavOpen(!mobileNavOpen)}
               >
-                <Menu className="fill-current" />
+                <Menu />
               </button>
             </div>
           </div>
