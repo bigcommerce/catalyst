@@ -14,6 +14,7 @@ import { BcContext, BcContextProvider, getContextData } from '../lib/context';
 type ParsedUrlQuery = { path?: string[] };
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult<ParsedUrlQuery>> {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const makeswift = new Makeswift(process.env.MAKESWIFT_SITE_API_KEY!);
   const pages = await makeswift.getPages();
 
@@ -34,6 +35,7 @@ type Props = MakeswiftPageProps & {
 export async function getStaticProps(
   ctx: GetStaticPropsContext<ParsedUrlQuery>,
 ): Promise<GetStaticPropsResult<Props>> {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const makeswift = new Makeswift(process.env.MAKESWIFT_SITE_API_KEY!);
   const path = `/${(ctx.params?.path ?? []).join('/')}`;
   const snapshot = await makeswift.getPageSnapshot(path, {
