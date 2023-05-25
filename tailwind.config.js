@@ -26,6 +26,15 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-inter)'],
       },
+      keyframes: {
+        revealVertical: {
+          '0%': { transform: 'translateY(-100%)' },
+          '100%': { transform: 'translateY(0%)' },
+        },
+      },
+      animation: {
+        revealVertical: 'revealVertical 400ms forwards cubic-bezier(0, 1, 0.25, 1)',
+      },
     },
     fontSize: {
       h1: ['4rem', { lineHeight: '1.3', fontWeight: '900' }],
