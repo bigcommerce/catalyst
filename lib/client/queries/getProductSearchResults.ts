@@ -9,7 +9,12 @@ interface ProductSearch {
   after?: string;
 }
 
-export const getProductSearchResults = async ({ searchTerm, limit = 9, before, after }: ProductSearch) => {
+export const getProductSearchResults = async ({
+  searchTerm,
+  limit = 9,
+  before,
+  after,
+}: ProductSearch) => {
   const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
   const { site } = await client.query({
@@ -18,8 +23,8 @@ export const getProductSearchResults = async ({ searchTerm, limit = 9, before, a
         searchProducts: {
           __args: {
             filters: {
-              searchTerm: searchTerm,
-            }
+              searchTerm,
+            },
           },
           products: {
             __args: {
@@ -90,22 +95,18 @@ export const getProductSearchResults = async ({ searchTerm, limit = 9, before, a
                 brand: {
                   name: true,
                 },
-              }
-            }
-          }
-        }
-      }
+              },
+            },
+          },
+        },
+      },
     },
   });
 
   const searchResults = site.search.searchProducts;
 
-  if (!searchResults) {
-    return undefined;
-  }
-
   return {
-    filters:{
+    filters: {
       searchTerm,
       ...paginationArgs,
     },

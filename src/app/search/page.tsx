@@ -8,14 +8,14 @@ interface Props {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-const SearchBlock = function({ term }: { term?: string }) {
+const SearchBlock = ({ term }: { term?: string }) => {
   return (
     <div className="py-10">
-      <form method="get" action="/search">
+      <form action="/search" method="get">
         <input
-          className="border-2 border-grey-200 px-8 py-3 mr-4 font-semibold"
-          name="term"
+          className="grey-200 mr-4 border-2 px-8 py-3 font-semibold"
           defaultValue={term}
+          name="term"
         />
         <button
           className="border-2 border-blue-primary px-8 py-3 font-semibold text-blue-primary"
@@ -25,42 +25,42 @@ const SearchBlock = function({ term }: { term?: string }) {
         </button>
       </form>
     </div>
-  )
-}
+  );
+};
 
 export default async function Search({ searchParams }: Props) {
   const before = typeof searchParams.before === 'string' ? searchParams.before : undefined;
   const after = typeof searchParams.after === 'string' ? searchParams.after : undefined;
   const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : undefined;
-  
+
   if (!searchTerm) {
     return (
       <>
         <h1 className="mb-3 text-h2">Search</h1>
         <SearchBlock />
       </>
-    )
+    );
   }
 
   const productSearchResults = await getProductSearchResults({
     searchTerm,
-    limit: 2,
+    limit: 4,
     after,
     before,
   });
 
-  if (!productSearchResults || productSearchResults?.products?.items?.length === 0) {
+  if (productSearchResults.products.items.length === 0) {
     return (
       <div>
         <h1 className="mb-3 text-h2">Search</h1>
-        
+
         <SearchBlock term={searchTerm} />
 
         <p className="pv-6">
           <em>No Results</em>
         </p>
       </div>
-    )
+    );
   }
 
   const productsCollection = productSearchResults.products;
@@ -74,7 +74,6 @@ export default async function Search({ searchParams }: Props) {
       <SearchBlock term={searchTerm} />
 
       <div className="pt-6 lg:grid lg:grid-cols-4 lg:gap-x-8">
-
         <section
           aria-labelledby="product-heading"
           className="mt-6 lg:col-span-2 lg:mt-0 xl:col-span-4"
