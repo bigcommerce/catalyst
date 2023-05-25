@@ -7,6 +7,8 @@ import { getCart, getCategoryTree } from '@client';
 
 import { StoreLogo } from '../StoreLogo';
 
+import { LinkNoCache } from './LinkNoCache';
+
 const Cart = async () => {
   const cartId = cookies().get('cartId')?.value;
 
@@ -23,7 +25,7 @@ const Cart = async () => {
   const count = cart.lineItems.totalQuantity;
 
   return (
-    <Link href="/cart">
+    <LinkNoCache href="/cart">
       <span className="sr-only">Cart Items</span>
 
       <div className="relative">
@@ -32,7 +34,7 @@ const Cart = async () => {
           {count}
         </div>
       </div>
-    </Link>
+    </LinkNoCache>
   );
 };
 
