@@ -233,7 +233,7 @@ export function Navigation({
         <Portal.Root asChild>
           <nav
             className={clsx(
-              'animate-revealVertical fixed inset-x-0 bottom-0 top-[var(--top)] z-[100] flex flex-1 -translate-y-full flex-col overflow-auto md:px-8 lg:px-10',
+              'fixed inset-x-0 bottom-0 top-[var(--top)] z-[100] flex flex-1 -translate-y-full animate-revealVertical flex-col gap-y-4 divide-y divide-gray-200 overflow-auto px-6 pb-6 pt-2',
               linkTextStyle,
             )}
             style={
@@ -244,18 +244,16 @@ export function Navigation({
               } as CSSProperties
             }
           >
-            <Accordion.Root className="flex-1" type="multiple">
+            <Accordion.Root type="multiple">
               {mainNavLinks?.map((mainNavLink, footerMainNavLinkIndex) => (
                 <Accordion.Item
-                  className="border-black/15 border-b px-4 py-4"
                   key={footerMainNavLinkIndex}
-                  style={{ color: linkColor }}
                   value={`item${footerMainNavLinkIndex}`}
                 >
                   {mainNavLink.subnavGroups.length > 0 ? (
                     <>
                       <Accordion.Trigger asChild>
-                        <span className="group flex w-full items-center justify-between text-[1rem] outline-none">
+                        <span className="group flex w-full items-center justify-between py-3 pr-4 leading-normal outline-none">
                           {mainNavLink.text}
                           <svg
                             className="linear duration-250 ml-2 h-2 w-3 stroke-current transition-transform group-data-[state=open]:-rotate-180"
@@ -272,30 +270,32 @@ export function Navigation({
                         </span>
                       </Accordion.Trigger>
                       <Accordion.AccordionContent asChild>
-                        {mainNavLink.subnavGroups.map((subnavGroup, i) => (
-                          <ul className="space-y-3" key={i}>
-                            {subnavGroup.heading.length > 0 ? (
-                              <li className="text-gray-600">{subnavGroup.heading}</li>
-                            ) : null}
+                        <>
+                          {mainNavLink.subnavGroups.map((subnavGroup, i) => (
+                            <ul className="space-y-3 pb-4 pl-6 pt-2" key={i}>
+                              {subnavGroup.heading.length > 0 ? (
+                                <li className="pt-2">{subnavGroup.heading}</li>
+                              ) : null}
 
-                            {subnavGroup.subnavLinks.map((subnavLink, footerSubnavLinkIndex) => (
-                              <li key={footerSubnavLinkIndex}>
-                                <a
-                                  {...subnavLink.link}
-                                  className="text leading-[27px] text-gray-600"
-                                >
-                                  {subnavLink.linkText}
-                                </a>
-                              </li>
-                            ))}
-                          </ul>
-                        ))}
+                              {subnavGroup.subnavLinks.map((subnavLink, footerSubnavLinkIndex) => (
+                                <li key={footerSubnavLinkIndex}>
+                                  <a
+                                    {...subnavLink.link}
+                                    className="block font-normal leading-normal"
+                                  >
+                                    {subnavLink.linkText}
+                                  </a>
+                                </li>
+                              ))}
+                            </ul>
+                          ))}
+                        </>
                       </Accordion.AccordionContent>
                     </>
                   ) : (
                     <a
                       {...mainNavLink.link}
-                      className="block text-[1rem] outline-none"
+                      className="block py-3 leading-normal outline-none"
                       style={{ color: linkColor }}
                     >
                       {mainNavLink.text}
@@ -304,6 +304,33 @@ export function Navigation({
                 </Accordion.Item>
               ))}
             </Accordion.Root>
+
+            <ul className="pt-4 leading-normal [&_a]:flex [&_a]:items-center [&_a]:py-3 [&_a]:pr-3 [&_span]:flex-1">
+              <li>
+                <Link href="#">
+                  <span>Compare</span>
+                  <Scale />
+                </Link>
+              </li>
+              <li>
+                <Link href="#">
+                  <span>Wishlist</span>
+                  <Heart />
+                </Link>
+              </li>
+              <li>
+                <Link href="#">
+                  <span>Gift certificates</span>
+                  <Gift />
+                </Link>
+              </li>
+              <li>
+                <Link href="#">
+                  <span>Your account</span>
+                  <User />
+                </Link>
+              </li>
+            </ul>
           </nav>
         </Portal.Root>
       )}
