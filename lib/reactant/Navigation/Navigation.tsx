@@ -199,7 +199,7 @@ export function Navigation({
             </NavigationMenu.Root>
 
             <div className="flex gap-2 [&>a:hover]:opacity-50 [&>a]:p-3 [&>a]:transition-opacity">
-              <Link aria-label="Search" className="hidden sm:block" href="#">
+              <Link aria-label="Search" className="hidden sm:block" href="/search">
                 <Search />
               </Link>
               <Link aria-label="Compare items" className="hidden md:block" href="#">
