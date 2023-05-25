@@ -48,6 +48,7 @@ ReactRuntime.registerComponent(Navigation, {
       defaultValue: 'Logo',
       selectAll: true,
     }),
+    logoLink: Link({ label: 'Logo on click' }),
     mainNavLinks: List({
       label: 'Main links',
       type: Shape({
