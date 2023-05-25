@@ -8,6 +8,7 @@ export { getCategoryTree } from './queries/getCategoryTree';
 export { getFeaturedProducts } from './queries/getFeaturedProducts';
 export { getProduct } from './queries/getProduct';
 export { getProductReviews } from './queries/getProductReviews';
+export { getProductSearchResults } from './queries/getProductSearchResults';
 export { getStoreSettings } from './queries/getStoreSettings';
 export { getCart } from './queries/getCart';
 
