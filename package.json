@@ -22,7 +22,7 @@
     "keen-slider": "^6.8.5",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.216.0",
-    "next": "^13.4.4-canary.0",
+    "next": "^13.4.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "server-only": "^0.0.1",
