@@ -39,61 +39,21 @@ export const getProductSearchResults = async ({
             edges: {
               node: {
                 entityId: true,
-                id: true,
-                sku: true,
-                warranty: true,
                 name: true,
-                plainTextDescription: {
-                  __args: { characterLimit: 2_000 },
-                },
-                availabilityV2: {
-                  status: true,
-                  description: true,
-                },
-                defaultImage: {
-                  altText: true,
-                  url: {
-                    __args: { width: 320 },
-                  },
-                },
-                productOptions: {
-                  __args: { first: 3 },
-                  edges: {
-                    node: {
-                      entityId: true,
-                      displayName: true,
-                      isRequired: true,
-                      __typename: true,
-                      on_MultipleChoiceOption: {
-                        displayStyle: true,
-                        values: {
-                          __args: { first: 5 },
-                          edges: {
-                            node: {
-                              entityId: true,
-                              label: true,
-                              isDefault: true,
-                              on_SwatchOptionValue: {
-                                hexColors: true,
-                                imageUrl: {
-                                  __args: { width: 200 },
-                                },
-                              },
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
+                path: true,
+                brand: {
+                  name: true,
                 },
                 prices: {
                   price: {
                     value: true,
-                    currencyCode: true,
                   },
                 },
-                brand: {
-                  name: true,
+                defaultImage: {
+                  url: {
+                    __args: { width: 300 },
+                  },
+                  altText: true,
                 },
               },
             },
