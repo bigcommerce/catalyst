@@ -37,7 +37,7 @@ const reshapeProductOptions = (productOptionConnection: Product['productOptions'
   });
 };
 
-export const reshapeProduct = (product: Product) => {
+const reshapeProduct = (product: Product) => {
   return {
     ...product,
     categories: reshapeProductCategories(product.categories),
