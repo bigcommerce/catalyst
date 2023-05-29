@@ -4,29 +4,11 @@ import Link from 'next/link';
 
 import { getProductSearchResults } from '@client';
 
+import { SearchForm } from './SearchForm';
+
 interface Props {
   searchParams: { [key: string]: string | string[] | undefined };
 }
-
-const SearchBlock = ({ term }: { term?: string }) => {
-  return (
-    <div className="py-10">
-      <form action="/search" method="get">
-        <input
-          className="grey-200 mr-4 border-2 px-8 py-3 font-semibold"
-          defaultValue={term}
-          name="term"
-        />
-        <button
-          className="border-2 border-blue-primary px-8 py-3 font-semibold text-blue-primary"
-          type="submit"
-        >
-          Search
-        </button>
-      </form>
-    </div>
-  );
-};
 
 export default async function Search({ searchParams }: Props) {
   const before = typeof searchParams.before === 'string' ? searchParams.before : undefined;
@@ -37,7 +19,7 @@ export default async function Search({ searchParams }: Props) {
     return (
       <>
         <h1 className="mb-3 text-h2">Search</h1>
-        <SearchBlock />
+        <SearchForm />
       </>
     );
   }
@@ -54,7 +36,7 @@ export default async function Search({ searchParams }: Props) {
       <div>
         <h1 className="mb-3 text-h2">Search</h1>
 
-        <SearchBlock term={searchTerm} />
+        <SearchForm initialTerm={searchTerm} />
 
         <p className="pv-6">
           <em>No Results</em>
@@ -71,7 +53,7 @@ export default async function Search({ searchParams }: Props) {
     <div>
       <h1 className="mb-3 text-h2">Search</h1>
 
-      <SearchBlock term={searchTerm} />
+      <SearchForm initialTerm={searchTerm} />
 
       <div className="pt-6 lg:grid lg:grid-cols-4 lg:gap-x-8">
         <section
