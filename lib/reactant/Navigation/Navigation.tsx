@@ -199,26 +199,27 @@ export function Navigation({
             </NavigationMenu.Root>
 
             <div className="flex gap-2 [&>a:hover]:opacity-50 [&>a]:p-3 [&>a]:transition-opacity">
-              <Link className="hidden sm:block" href="#">
+              <Link aria-label="Search" className="hidden sm:block" href="#">
                 <Search />
               </Link>
-              <Link className="hidden md:block" href="#">
+              <Link aria-label="Compare items" className="hidden md:block" href="#">
                 <Scale />
               </Link>
-              <Link className="hidden md:block" href="#">
+              <Link aria-label="Wishlist" className="hidden md:block" href="#">
                 <Gift />
               </Link>
-              <Link className="hidden md:block" href="#">
+              <Link aria-label="Favorites" className="hidden md:block" href="#">
                 <Heart />
               </Link>
-              <Link className="hidden md:block" href="#">
+              <Link aria-label="Profile" className="hidden md:block" href="#">
                 <User />
               </Link>
-              <Link href="#">
+              <Link aria-label="Shopping cart" href="#">
                 <ShoppingCart />
               </Link>
 
               <button
+                aria-label="View mobile menu"
                 className="block p-3 md:hidden"
                 onClick={() => setMobileNavOpen(!mobileNavOpen)}
               >
