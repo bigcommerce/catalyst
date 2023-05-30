@@ -137,6 +137,7 @@ export function Carousel({ className, slides, loop = true, autoplay = 0 }: Props
                     alt={slide.imageAlt}
                     className="absolute inset-0 -z-10 object-cover"
                     fill
+                    priority
                     src={slide.image.url}
                   />
                 )}
@@ -145,11 +146,11 @@ export function Carousel({ className, slides, loop = true, autoplay = 0 }: Props
           </div>
 
           <div className="absolute bottom-6 left-6 z-10 flex items-center md:bottom-12 md:left-20 lg:bottom-16 lg:left-24 [&>button]:p-4 [&>button]:outline-none [&_svg]:drop-shadow-md">
-            <button className="mr-4">
+            <button aria-label="Pause carousel" className="mr-4">
               <Pause />
             </button>
 
-            <button onClick={prevSlide}>
+            <button aria-label="Previous slide" onClick={prevSlide}>
               <ArrowLeft />
             </button>
 
@@ -159,7 +160,7 @@ export function Carousel({ className, slides, loop = true, autoplay = 0 }: Props
               </p>
             )}
 
-            <button onClick={nextSlide}>
+            <button aria-label="Next slide" onClick={nextSlide}>
               <ArrowRight />
             </button>
           </div>
