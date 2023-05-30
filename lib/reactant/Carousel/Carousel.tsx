@@ -111,12 +111,12 @@ export function Carousel({ className, slides, loop = true, autoplay = 0 }: Props
           tabIndex={-1}
         >
           <div
-            className="relative z-10 flex w-full touch-pan-y select-none items-center overflow-hidden focus:outline-0"
+            className="relative z-10 flex w-full touch-pan-y select-none items-stretch overflow-hidden focus:outline-0"
             ref={sliderRef}
           >
             {slides.map((slide, index) => (
               <div
-                className="relative bg-gray-500 px-6 pb-32 pt-44 md:px-20 md:pb-44 md:pt-28 lg:px-24 lg:pb-48 lg:pt-36"
+                className="relative min-w-full bg-gray-500 px-6 pb-32 pt-44 md:px-20 md:pb-44 md:pt-28 lg:px-24 lg:pb-48 lg:pt-36"
                 key={index}
               >
                 <div className="max-w-xl">
