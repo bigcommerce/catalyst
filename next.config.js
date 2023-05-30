@@ -2,10 +2,6 @@
 const withMakeswift = require('@makeswift/runtime/next/plugin')();
 
 const nextConfig = {
-  i18n: {
-    locales: ['en'],
-    defaultLocale: 'en',
-  },
   reactStrictMode: true,
   images: {
     remotePatterns: [
@@ -16,6 +12,10 @@ const nextConfig = {
   },
   experimental: {
     serverActions: true,
+  },
+  i18n: {
+    locales: ['en'],
+    defaultLocale: 'en',
   },
 };
 

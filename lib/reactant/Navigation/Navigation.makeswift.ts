@@ -21,7 +21,7 @@ ReactRuntime.registerComponent(Navigation, {
     className: Style(),
     stickyNav: Checkbox({
       label: 'Sticky navigation',
-      defaultValue: true,
+      defaultValue: false,
     }),
     navBackground: Color({
       label: 'Background color',

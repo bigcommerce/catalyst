@@ -69,7 +69,7 @@ interface Props {
 
 export function Navigation({
   className,
-  stickyNav,
+  stickyNav = false,
   linkTextStyle,
   navWidth,
   navBackground,
@@ -110,7 +110,7 @@ export function Navigation({
         className={clsx(
           className,
           linkTextStyle,
-          'z-[110]',
+          'z-[999]',
           stickyNav && 'fixed inset-x-0 top-0',
           mobileNavOpen && 'min-h-0',
         )}
@@ -140,12 +140,12 @@ export function Navigation({
             )}
 
             <NavigationMenu.Root className="hidden flex-1 justify-center lg:flex" delayDuration={0}>
-              <NavigationMenu.List className="flex items-center gap-x-0 md:gap-x-4">
+              <NavigationMenu.List className="flex items-center gap-x-0 md:gap-x-3">
                 {mainNavLinks?.map((mainNavLink, mainNavLinkIndex) => (
                   <NavigationMenu.Item className="relative" key={mainNavLinkIndex}>
                     {mainNavLink.subnavGroups.length > 0 ? (
                       <NavigationMenu.Trigger asChild>
-                        <span className="group flex cursor-pointer select-none items-center px-3 py-2.5 outline-none [text-transform:inherit]">
+                        <button className="group flex cursor-pointer select-none items-center px-3 py-2.5 outline-none [text-transform:inherit]">
                           {mainNavLink.text}
                           <ChevronDown
                             absoluteStrokeWidth={true}
@@ -153,7 +153,7 @@ export function Navigation({
                             size={16}
                             strokeWidth={2}
                           />
-                        </span>
+                        </button>
                       </NavigationMenu.Trigger>
                     ) : (
                       <NavigationMenu.Link asChild>
@@ -220,7 +220,7 @@ export function Navigation({
 
               <button
                 aria-label="View mobile menu"
-                className="block p-3 md:hidden"
+                className="block p-3 lg:hidden"
                 onClick={() => setMobileNavOpen(!mobileNavOpen)}
               >
                 {mobileNavOpen ? <X /> : <Menu />}
