@@ -48,3 +48,15 @@ jobs:
       - name: Typecheck
         run: tsc --noEmit
 
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Audit URLs using Lighthouse
+      uses: treosh/lighthouse-ci-action@v10
+      with:
+        urls: 'https://catalyst-demo.site'
+        configPath: './lighthouserc.json'
+        # budgetPath: ./budget.json # test performance budgets
+        uploadArtifacts: true # save results as an action artifacts
+        temporaryPublicStorage: true 

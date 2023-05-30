@@ -1,0 +1,9 @@
+{
+    "ci": {
+      "assert": {
+        "assertions": {
+          "first-contentful-paint": ["error", { "maxScore": 0.6 }]
+        }
+      }
+    }
+  }
