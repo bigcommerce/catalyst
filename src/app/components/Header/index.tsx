@@ -1,4 +1,4 @@
-import { ShoppingCart } from 'lucide-react';
+import { Search, ShoppingCart } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { Suspense } from 'react';
@@ -68,6 +68,10 @@ export const Header = () => {
 
       {/* @ts-expect-error Server Component */}
       <HeaderNav />
+
+      <Link aria-label="Search" className="hidden sm:mx-4 sm:block" href="/search">
+        <Search />
+      </Link>
 
       <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
         {/* @ts-expect-error Server Component */}
