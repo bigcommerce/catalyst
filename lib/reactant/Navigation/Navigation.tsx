@@ -219,7 +219,7 @@ export function Navigation({
               </Link>
 
               <button
-                aria-label="View mobile menu"
+                aria-label={mobileNavOpen ? 'Close mobile menu' : 'View mobile menu'}
                 className="block p-3 lg:hidden"
                 onClick={() => setMobileNavOpen(!mobileNavOpen)}
               >
