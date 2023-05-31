@@ -19,8 +19,8 @@ export const Footer = () => {
           <BrandFooterMenu />
           <BaseFooterMenu
             items={[
+              { name: 'About us', path: '/about-us' },
               { name: 'Contact us', path: '/contact-us' },
-              { name: 'About brand', path: '/about' },
               { name: 'Blog', path: '/blog' },
             ]}
             title="About us"
