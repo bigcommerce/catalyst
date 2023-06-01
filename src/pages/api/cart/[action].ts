@@ -7,27 +7,35 @@ import {
   deleteCartLineItemMutation,
   deleteCartMutation,
 } from '../../../components/cart/mutations';
-import { getCartQuery } from '../../../components/cart/queries';
+import { getCartIdQuery, getCartQuery } from '../../../components/cart/queries';
 import { getServerClient } from '../../../graphql/server';
 import { sessionOptions } from '../../../session';
 
-const getCartId = () => '80ad4662-f569-4c83-bca2-cea6702ad9e4';
-const getCartId2 = async (req, res) => {
-  const session = await getIronSession(req, res, sessionOptions);
+interface ActionObj {
+  gql: object;
+  getVariables: (arg: unknown) => object;
+  onComplete?: (arg: unknown) => void;
+}
 
-  return session.cartId;
-};
+const getCartId = () => 'be7efbcf-599b-401c-a6f7-cda696908f0a';
 
-const QUERIES = {
+const QUERIES: {
+  [key: string]: ActionObj;
+} = {
   getCartQuery: {
     gql: getCartQuery,
     getVariables: () => ({
       entityId: getCartId(),
     }),
+    onComplete: () => {
+      // delete cartId from route
+    },
   },
 };
 
-const MUTATIONS = {
+const MUTATIONS: {
+  [key: string]: ActionObj;
+} = {
   addCartLineItemMutation: {
     gql: addCartLineItemMutation,
     getVariables: (body) => ({
@@ -54,6 +62,9 @@ const MUTATIONS = {
         cartEntityId: getCartId(),
       },
     }),
+    onComplete: () => {
+      // delete cartId from route
+    },
   },
   deleteCartLineItemMutation: {
     gql: deleteCartLineItemMutation,
@@ -83,35 +94,38 @@ export default async function cart(req: NextRequest) {
     );
   }
 
-  const { gql, getVariables } = actionObj;
-
+  const { gql, getVariables, onComplete } = actionObj;
   const actionType = gql.definitions.find((def) => !!def.operation)?.operation;
 
   const body: unknown = await req.json();
   const client = getServerClient();
 
-  const res = NextResponse.next();
+  const res = NextResponse.redirect(new URL('/', req.url), 302);
   const session = await getIronSession(req, res, sessionOptions);
 
-  console.log(session, 'session in route 1');
-
   if (!session.cartId) {
-    session.cartId = '9ca6a993-6f59-4be6-a9ec-5cbb5a845167';
-    await session.save();
+    const cartId = await client.query({ query: getCartIdQuery });
+    // save cartId in session
   }
-
-  console.log(session, 'session in route 2');
 
   if (actionType === 'mutation') {
     const variables = getVariables(body);
     const response = await client.mutate({ mutation: gql, variables });
 
-    return new NextResponse(JSON.stringify(response));
+    if (onComplete) {
+      onComplete();
+    }
+
+    return res;
   } else if (actionType === 'query') {
     const variables = getVariables();
     const response = await client.query({ query: gql, variables });
 
-    return new NextResponse(JSON.stringify(response));
+    if (onComplete) {
+      onComplete();
+    }
+
+    return res;
   }
 
   return new NextResponse(

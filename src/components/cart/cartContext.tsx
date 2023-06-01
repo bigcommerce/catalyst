@@ -1,4 +1,3 @@
-import { log } from 'console';
 import { createContext, PropsWithChildren, useEffect, useReducer } from 'react';
 
 import { getBrowserClient } from '../../graphql/browser';
@@ -190,7 +189,7 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     variantEntityId: number | null | undefined,
     quantity = 1,
   ) => {
-    if (cart.cartItems.length) {
+    if (!cart.cartItems.length) {
       const res = await fetch(API.addCartLineItemMutation, {
         method: 'POST',
         body: JSON.stringify({ productEntityId, variantEntityId, quantity }),
@@ -198,7 +197,6 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
       const data: unknown = await res.json();
 
       if (isAddCartLineItemMutation(data)) {
-        console.log(data, 'data in addCartLineItem2');
         // dispatch({ type: ACTION_TYPES.ADD_CART_ITEM, payload: data });
       }
     } else {
@@ -210,7 +208,6 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
       const data: unknown = await res.json();
 
       if (isCreateCreateCartMutation(data)) {
-        console.log(data, 'data in addCartLineItem2');
         // dispatch({ type: ACTION_TYPES.CREATE_CART, payload: data });
       }
     }
@@ -265,7 +262,6 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
       const data: unknown = await res.json();
 
       if (isDeleteCartMutation(data)) {
-        console.log(data, 'data in addCartLineItem2 (delete cart)');
         // dispatch({ type: ACTION_TYPES.DELETE_CART, payload: data });
       }
     } else {
@@ -277,7 +273,6 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
       const data: unknown = await res.json();
 
       if (isDeleteCartLineItemMutation(data)) {
-        console.log(data, 'data in addCartLineItem2');
         // dispatch({ type: ACTION_TYPES.DELETE_CART_ITEM, payload: data });
       }
     }
@@ -316,11 +311,8 @@ const CartContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   useEffect(() => {
     const cartId = getCookie('cart_id');
 
-    console.log(cartId, 'cartId');
-
     if (cartId) {
       void getCart(cartId);
-      void getCart2();
     }
   }, []);
 

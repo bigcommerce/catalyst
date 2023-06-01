@@ -17,6 +17,24 @@ export interface GetCartQuery {
   };
 }
 
+export interface getCartIdQuery {
+  site: {
+    cart: {
+      entityId: string;
+    };
+  };
+}
+
+export const getCartIdQuery = gql`
+  query getCartId {
+    site {
+      cart {
+        entityId
+      }
+    }
+  }
+`;
+
 export const getCartQuery = gql`
   query getCart($entityId: String!) {
     site {
