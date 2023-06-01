@@ -5,45 +5,6 @@
   "private": true,
   "packageManager": "pnpm@8.6.0",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "prettier": "@bigcommerce/eslint-config/prettier",
-  "dependencies": {
-    "@makeswift/runtime": "^0.8.11",
-    "@radix-ui/react-accordion": "^1.1.1",
-    "@radix-ui/react-navigation-menu": "^1.1.2",
-    "@radix-ui/react-portal": "^1.0.2",
-    "@vercel/analytics": "^1.0.1",
-    "clsx": "^1.2.1",
-    "deepmerge": "^4.3.1",
-    "iron-session": "^6.3.1",
-    "keen-slider": "^6.8.5",
-    "lodash.debounce": "^4.0.8",
-    "lucide-react": "^0.216.0",
-    "next": "^13.4.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "server-only": "^0.0.1",
-    "sharp": "^0.32.1",
-    "tailwind-merge": "^1.12.0"
-  },
-  "devDependencies": {
-    "@bigcommerce/eslint-config": "^2.6.2",
-    "@types/lodash.debounce": "^4.0.7",
-    "@types/node": "^18.13.00",
-    "@types/react": "^18.2.6",
-    "@types/react-dom": "^18.2.4",
-    "autoprefixer": "^10.4.13",
-    "eslint": "^8.33.0",
-    "eslint-config-next": "^13.1.6",
-    "postcss": "^8.4.21",
-    "prettier": "^2.8.8",
-    "prettier-plugin-tailwindcss": "^0.3.0",
-    "tailwindcss": "^3.2.4",
-    "type-fest": "^3.6.1",
-    "typescript": "^4.9.4"
+    "makeswift": "pnpm --filter @bigcommerce/catalyst-with-makeswift dev"
   }
 }
