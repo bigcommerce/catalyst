@@ -73,7 +73,6 @@ export default async function Product({ params }: { params: { slug: string } }) 
 
   return (
     <>
-      {/* @ts-expect-error Server Component */}
       <BreadCrumbs productId={productId} />
 
       <div className="my-6 grid-cols-2 gap-4 md:grid">
@@ -85,7 +84,6 @@ export default async function Product({ params }: { params: { slug: string } }) 
           <h1 className="mb-3 text-h2">{product.name}</h1>
 
           <Suspense fallback="Loading...">
-            {/* @ts-expect-error Server Component */}
             <ReviewSummary productId={productId} reviewSectionId={reviewSectionId} />
           </Suspense>
 
@@ -122,7 +120,6 @@ export default async function Product({ params }: { params: { slug: string } }) 
         </div>
 
         <div className="md:order-1">
-          {/* @ts-expect-error Server Component */}
           <Gallery productId={productId} />
 
           {Boolean(product.plainTextDescription) && (
@@ -140,7 +137,6 @@ export default async function Product({ params }: { params: { slug: string } }) 
           )}
 
           <Suspense fallback="Loading...">
-            {/* @ts-expect-error Server Component */}
             <Reviews productId={productId} reviewSectionId={reviewSectionId} />
           </Suspense>
         </div>

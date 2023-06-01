@@ -98,7 +98,6 @@ export default async function CartPage() {
           </div>
 
           <Suspense fallback="Loading...">
-            {/* @ts-expect-error Server Component */}
             <CheckoutButton cartId={cartId} />
           </Suspense>
         </div>

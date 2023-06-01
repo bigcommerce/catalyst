@@ -62,11 +62,9 @@ export const Header = () => {
   return (
     <header className="my-6 flex items-center">
       <Link href="/">
-        {/* @ts-expect-error Server Component */}
         <StoreLogo />
       </Link>
 
-      {/* @ts-expect-error Server Component */}
       <HeaderNav />
 
       <Link aria-label="Search" className="hidden sm:mx-4 sm:block" href="/search">
@@ -74,7 +72,6 @@ export const Header = () => {
       </Link>
 
       <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
-        {/* @ts-expect-error Server Component */}
         <Cart />
       </Suspense>
     </header>
