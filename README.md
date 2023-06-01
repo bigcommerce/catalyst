@@ -7,7 +7,8 @@ Catalyst is the next generation of storefronts at BigCommerce. It aims to be com
 1. Install project dependencies:
 
 ```bash
-npm ci
+corepack enable pnpm
+pnpm install
 ```
 
 2. Setup environment variables:
@@ -56,7 +57,7 @@ For a list of recommended scopes to use for your access token, please expand the
 3. Run the development server:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
