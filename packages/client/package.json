@@ -1,0 +1,16 @@
+{
+  "name": "@bigcommerce/catalyst-client",
+  "description": "BigCommerce API client for Catalyst.",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@genql/cli": "^6.0.0",
+    "tsup": "^6.7.0",
+    "typescript": "^5.1.3"
+  }
+}
