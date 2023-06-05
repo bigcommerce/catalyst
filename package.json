@@ -6,7 +6,9 @@
   "packageManager": "pnpm@8.6.0",
   "scripts": {
     "makeswift": "pnpm --filter @bigcommerce/catalyst-with-makeswift dev",
-    "client": "pnpm --filter @bigcommerce/catalyst-client dev"
+    "client": "pnpm --filter @bigcommerce/catalyst-client dev",
+    "core": "pnpm --filter @bigcommerce/catalyst-core dev",
+    "reactant": "pnpm --filter @bigcommerce/reactant dev"
   },
   "dependencies": {
     "typescript": "^5.1.3"

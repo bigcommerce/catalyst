@@ -1,0 +1,39 @@
+{
+  "name": "@bigcommerce/catalyst-core",
+  "description": "BigCommerce Catalyst is a Next.js starter kit for building headless BigCommerce storefronts.",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "prettier": "@bigcommerce/eslint-config/prettier",
+  "dependencies": {
+    "@bigcommerce/catalyst-client": "workspace:^",
+    "@bigcommerce/reactant": "workspace:^",
+    "@vercel/analytics": "^1.0.1",
+    "lucide-react": "^0.216.0",
+    "next": "^13.4.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "server-only": "^0.0.1",
+    "sharp": "^0.32.1",
+    "tailwind-merge": "^1.12.0"
+  },
+  "devDependencies": {
+    "@bigcommerce/eslint-config": "^2.7.0",
+    "@types/node": "^18.13.00",
+    "@types/react": "^18.2.8",
+    "@types/react-dom": "^18.2.4",
+    "autoprefixer": "^10.4.13",
+    "eslint": "^8.33.0",
+    "eslint-config-next": "^13.1.6",
+    "postcss": "^8.4.21",
+    "prettier": "^2.8.8",
+    "prettier-plugin-tailwindcss": "^0.3.0",
+    "tailwindcss": "^3.2.4",
+    "typescript": "^5.1.3"
+  }
+}
