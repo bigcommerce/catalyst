@@ -114,6 +114,9 @@ importers:
       '@genql/cli':
         specifier: ^6.0.0
         version: 6.0.0
+      '@types/node':
+        specifier: ^18.13.00
+        version: 18.13.0
       tsup:
         specifier: ^6.7.0
         version: 6.7.0(typescript@5.1.3)
