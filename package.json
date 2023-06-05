@@ -8,9 +8,13 @@
     "makeswift": "pnpm --filter @bigcommerce/catalyst-with-makeswift dev",
     "client": "pnpm --filter @bigcommerce/catalyst-client dev",
     "core": "pnpm --filter @bigcommerce/catalyst-core dev",
-    "reactant": "pnpm --filter @bigcommerce/reactant dev"
+    "reactant": "pnpm --filter @bigcommerce/reactant dev",
+    "dev": "turbo dev"
   },
   "dependencies": {
     "typescript": "^5.1.3"
+  },
+  "devDependencies": {
+    "turbo": "^1.10.1"
   }
 }

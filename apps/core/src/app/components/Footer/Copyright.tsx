@@ -1,6 +1,5 @@
-import { ComponentPropsWithoutRef } from 'react';
-
 import { getStoreSettings } from '@bigcommerce/catalyst-client';
+import { ComponentPropsWithoutRef } from 'react';
 
 export const Copyright = async (props: ComponentPropsWithoutRef<'div'>) => {
   const settings = await getStoreSettings();

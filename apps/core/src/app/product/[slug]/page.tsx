@@ -1,10 +1,9 @@
+import { addCartLineItem, createCart, getProduct } from '@bigcommerce/catalyst-client';
 import { Heart, ShoppingCart } from 'lucide-react';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-
-import { addCartLineItem, createCart, getProduct } from '@bigcommerce/catalyst-client';
 
 import { BreadCrumbs } from './Breadcrumbs';
 import { Gallery } from './Gallery';

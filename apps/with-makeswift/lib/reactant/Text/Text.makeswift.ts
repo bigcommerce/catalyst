@@ -5,6 +5,9 @@ import { ReactRuntime } from '@makeswift/runtime/react';
 
 import { Text } from './Text';
 
+// TODO: Fix type error
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 ReactRuntime.registerComponent(Text, {
   type: MakeswiftComponentType.Text,
   label: 'Text',

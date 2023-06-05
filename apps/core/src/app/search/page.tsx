@@ -1,8 +1,7 @@
+import { getProductSearchResults } from '@bigcommerce/catalyst-client';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-
-import { getProductSearchResults } from '@bigcommerce/catalyst-client';
 
 import { SearchForm } from './SearchForm';
 

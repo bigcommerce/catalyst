@@ -1,8 +1,7 @@
+import { deleteCartLineItem } from '@bigcommerce/catalyst-client';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-
-import { deleteCartLineItem } from '@bigcommerce/catalyst-client';
 
 export async function removeProduct(formData: FormData) {
   'use server';

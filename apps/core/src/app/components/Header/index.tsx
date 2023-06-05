@@ -1,9 +1,8 @@
+import { getCart, getCategoryTree } from '@bigcommerce/catalyst-client';
 import { Search, ShoppingCart } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { Suspense } from 'react';
-
-import { getCart, getCategoryTree } from '@bigcommerce/catalyst-client';
 
 import { StoreLogo } from '../StoreLogo';
 

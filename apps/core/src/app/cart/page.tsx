@@ -1,9 +1,8 @@
+import { getCart, getCheckoutUrl } from '@bigcommerce/catalyst-client';
 import { Trash2 as Trash } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
 import { Suspense } from 'react';
-
-import { getCart, getCheckoutUrl } from '@bigcommerce/catalyst-client';
 
 import { removeProduct } from './_actions/removeProduct';
 

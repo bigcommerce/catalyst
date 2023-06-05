@@ -1,9 +1,8 @@
+import { getCategory } from '@bigcommerce/catalyst-client';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-
-import { getCategory } from '@bigcommerce/catalyst-client';
 
 interface Props {
   params: {

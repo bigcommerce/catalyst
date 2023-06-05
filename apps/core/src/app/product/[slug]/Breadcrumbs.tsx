@@ -1,7 +1,6 @@
-import Link from 'next/link';
-
 import { getProduct } from '@bigcommerce/catalyst-client';
 import { cs } from '@bigcommerce/reactant';
+import Link from 'next/link';
 
 interface Props {
   productId: number;
