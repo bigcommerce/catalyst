@@ -1,4 +1,4 @@
-import { getCategoryTree } from '@client';
+import { getCategoryTree } from '@bigcommerce/catalyst-client';
 
 import { BaseFooterMenu } from './BaseFooterMenu';
 

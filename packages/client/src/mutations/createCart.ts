@@ -1,4 +1,4 @@
-import { bigcommerceFetch } from '@client/fetcher';
+import { bigcommerceFetch } from '../fetcher';
 
 import {
   CartLineItemInput,

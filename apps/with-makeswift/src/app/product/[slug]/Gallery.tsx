@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import { getProduct } from '@client';
+import { getProduct } from '@bigcommerce/catalyst-client';
 
 interface Props {
   productId: number;

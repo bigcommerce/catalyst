@@ -11,10 +11,6 @@ module.exports = {
       {
         patterns: [
           {
-            group: ['**/lib/client/**/*'],
-            message: 'Please use @client/* instead.',
-          },
-          {
             group: ['**/lib/reactant/**/*'],
             message: 'Please use @reactant/* instead.',
           },

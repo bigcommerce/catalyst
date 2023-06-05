@@ -3,11 +3,16 @@
   "description": "BigCommerce API client for Catalyst.",
   "version": "0.1.0",
   "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "check-types": "tsc --noEmit"
   },
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "@genql/cli": "^6.0.0",
     "@types/node": "^18.13.00",

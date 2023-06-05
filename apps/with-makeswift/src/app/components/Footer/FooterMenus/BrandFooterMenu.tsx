@@ -1,4 +1,4 @@
-import { getBrands } from '@client';
+import { getBrands } from '@bigcommerce/catalyst-client';
 
 import { BaseFooterMenu } from './BaseFooterMenu';
 

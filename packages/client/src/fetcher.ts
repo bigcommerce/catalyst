@@ -17,7 +17,8 @@ export async function bigcommerceFetch<T>({
   variables?: Record<string | symbol, unknown>;
   headers?: HeadersInit;
   cache?: RequestCache;
-  next?: NextFetchRequestConfig;
+  next?: any;
+  // next?: NextFetchRequestConfig;
 }): Promise<BigCommerceResponse<T> | never> {
   const response = await fetch(endpoint, {
     method: 'POST',
@@ -31,6 +32,8 @@ export async function bigcommerceFetch<T>({
       ...(variables && { variables }),
     }),
     cache,
+    // TODO: Make this not next-specific
+    // @ts-expect-error
     next,
   });
 

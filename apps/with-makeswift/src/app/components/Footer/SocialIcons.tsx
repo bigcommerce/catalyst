@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ComponentPropsWithoutRef } from 'react';
 
-import { getStoreSettings } from '@client';
+import { getStoreSettings } from '@bigcommerce/catalyst-client';
 
 import { FacebookIcon } from '../SocialIcons/Facebook';
 import { InstagramIcon } from '../SocialIcons/Instagram';

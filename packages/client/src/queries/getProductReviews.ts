@@ -1,4 +1,4 @@
-import { removeEdgesAndNodes } from '@client/utils/removeEdgesAndNodes';
+import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
 import { client } from '../client';
 

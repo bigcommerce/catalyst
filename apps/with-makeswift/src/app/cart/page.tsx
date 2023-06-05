@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import Image from 'next/image';
 import { Suspense } from 'react';
 
-import { getCart, getCheckoutUrl } from '@client';
+import { getCart, getCheckoutUrl } from '@bigcommerce/catalyst-client';
 
 import { removeProduct } from './_actions/removeProduct';
 

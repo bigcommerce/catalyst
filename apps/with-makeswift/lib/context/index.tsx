@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext } from 'react';
 
-import { getBestSellingProducts, getCategoryTree, getFeaturedProducts } from '@client';
+import { getBestSellingProducts, getCategoryTree, getFeaturedProducts } from '@bigcommerce/catalyst-client';
 
 export type BcContext = Awaited<ReturnType<typeof getContextData>>;
 

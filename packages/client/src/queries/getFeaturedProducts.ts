@@ -1,5 +1,3 @@
-import merge from 'deepmerge';
-
 import { client } from '../client';
 import { QueryGenqlSelection } from '../generated';
 import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
@@ -10,11 +8,12 @@ interface GetFeaturedProductsOptions {
   imageHeight: number;
 }
 
-export const getFeaturedProducts = async <R extends QueryGenqlSelection>(
-  { first = 10, imageHeight = 300, imageWidth = 300 }: Partial<GetFeaturedProductsOptions> = {},
-  customQuery?: R,
-) => {
-  const defaultQuery = {
+export const getFeaturedProducts = async ({
+  first = 10,
+  imageHeight = 300,
+  imageWidth = 300,
+}: Partial<GetFeaturedProductsOptions> = {}) => {
+  const query = {
     site: {
       featuredProducts: {
         __args: {
@@ -45,11 +44,6 @@ export const getFeaturedProducts = async <R extends QueryGenqlSelection>(
       },
     },
   } satisfies QueryGenqlSelection;
-
-  // Not sure if we want this yet, but this supports passing a custom query
-  // which gets merged with the default query, so you can add additional fields.
-  // Concerns: We would expose the genql implementation details to the consumer
-  const query = customQuery ? merge(defaultQuery, customQuery) : defaultQuery;
 
   const { site } = await client.query(query);
 

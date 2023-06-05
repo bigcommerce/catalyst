@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { getProduct } from '@client';
+import { getProduct } from '@bigcommerce/catalyst-client';
 import { cs } from '@cs';
 
 interface Props {

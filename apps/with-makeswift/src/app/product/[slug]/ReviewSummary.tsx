@@ -1,7 +1,7 @@
 import { Star, StarHalf } from 'lucide-react';
 import { useId } from 'react';
 
-import { getProductReviews } from '@client';
+import { getProductReviews } from '@bigcommerce/catalyst-client';
 
 interface Props {
   productId: number;

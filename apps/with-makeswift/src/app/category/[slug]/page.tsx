@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { getCategory } from '@client';
+import { getCategory } from '@bigcommerce/catalyst-client';
 
 interface Props {
   params: {

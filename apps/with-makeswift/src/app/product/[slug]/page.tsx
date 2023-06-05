@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
-import { addCartLineItem, createCart, getProduct } from '@client';
+import { addCartLineItem, createCart, getProduct } from '@bigcommerce/catalyst-client';
 
 import { BreadCrumbs } from './Breadcrumbs';
 import { Gallery } from './Gallery';

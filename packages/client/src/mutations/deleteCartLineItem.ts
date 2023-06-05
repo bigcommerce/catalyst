@@ -1,5 +1,5 @@
-import { bigcommerceFetch } from '@client/fetcher';
-import { generateMutationOp, MutationGenqlSelection, MutationResult } from '@client/generated';
+import { bigcommerceFetch } from '../fetcher';
+import { generateMutationOp, MutationGenqlSelection, MutationResult } from '../generated';
 
 export const deleteCartLineItem = async (cartEntityId: string, lineItemEntityId: string) => {
   const mutation = {
