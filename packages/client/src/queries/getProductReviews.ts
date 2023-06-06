@@ -1,6 +1,5 @@
-import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
-
 import { client } from '../client';
+import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
 export const getProductReviews = async (productId: number) => {
   const { site } = await client.query({

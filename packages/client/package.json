@@ -5,17 +5,22 @@
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "prettier": "@bigcommerce/eslint-config/prettier",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.js,.cjs --max-warnings 0"
   },
   "files": [
     "dist"
   ],
   "devDependencies": {
+    "@bigcommerce/eslint-config": "^2.7.0",
     "@genql/cli": "^6.0.0",
     "@types/node": "^18.13.00",
+    "eslint": "^8.33.0",
+    "prettier": "^2.8.8",
     "tsup": "^6.7.0",
     "typescript": "^5.1.3"
   }

@@ -1,5 +1,4 @@
 import { bigcommerceFetch } from '../fetcher';
-
 import {
   CartLineItemInput,
   generateMutationOp,

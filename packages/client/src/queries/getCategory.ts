@@ -1,6 +1,5 @@
-import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
-
 import { client } from '../client';
+import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
 interface GetCategoryOptions {
   categoryId: number;

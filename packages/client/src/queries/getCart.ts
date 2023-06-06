@@ -1,5 +1,4 @@
 import { bigcommerceFetch } from '../fetcher';
-
 import { generateQueryOp, QueryGenqlSelection, QueryResult } from '../generated';
 
 export const getCart = async (entityId: string) => {

@@ -7,23 +7,13 @@ settings:
 importers:
 
   .:
-    dependencies:
-      typescript:
-        specifier: ^5.1.3
-        version: 5.1.3
     devDependencies:
-      '@bigcommerce/eslint-config':
-        specifier: ^2.7.0
-        version: 2.7.0(eslint@8.33.0)(typescript@5.1.3)
-      eslint:
-        specifier: ^8.33.0
-        version: 8.33.0
-      prettier:
-        specifier: ^2.8.8
-        version: 2.8.8
       turbo:
         specifier: ^1.10.1
         version: 1.10.1
+      typescript:
+        specifier: ^5.1.3
+        version: 5.1.3
 
   apps/core:
     dependencies:
@@ -197,12 +187,21 @@ importers:
 
   packages/client:
     devDependencies:
+      '@bigcommerce/eslint-config':
+        specifier: ^2.7.0
+        version: 2.7.0(eslint@8.33.0)(typescript@5.1.3)
       '@genql/cli':
         specifier: ^6.0.0
         version: 6.0.0
       '@types/node':
         specifier: ^18.13.00
         version: 18.13.0
+      eslint:
+        specifier: ^8.33.0
+        version: 8.33.0
+      prettier:
+        specifier: ^2.8.8
+        version: 2.8.8
       tsup:
         specifier: ^6.7.0
         version: 6.7.0(typescript@5.1.3)
@@ -219,6 +218,15 @@ importers:
         specifier: ^1.12.0
         version: 1.12.0
     devDependencies:
+      '@bigcommerce/eslint-config':
+        specifier: ^2.7.0
+        version: 2.7.0(eslint@8.33.0)(typescript@5.1.3)
+      eslint:
+        specifier: ^8.33.0
+        version: 8.33.0
+      prettier:
+        specifier: ^2.8.8
+        version: 2.8.8
       tsup:
         specifier: ^6.7.0
         version: 6.7.0(typescript@5.1.3)
@@ -5578,6 +5586,7 @@ packages:
     resolution: {integrity: sha512-XH627E9vkeqhlZFQuL+UsyAXEnibT0kWR2FWONlr4sTjvxyJYnyefgrkyECLzM5NenmKzRAy2rR/OlYLA1HkZw==}
     engines: {node: '>=14.17'}
     hasBin: true
+    dev: true
 
   /unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
