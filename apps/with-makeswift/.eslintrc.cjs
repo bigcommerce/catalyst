@@ -1,6 +1,5 @@
-require('@bigcommerce/eslint-config/patch');
-
-module.exports = {
+/** @type {import('eslint').Linter.Config} */
+const config = {
   extends: ['@bigcommerce/eslint-config', 'next/core-web-vitals'],
   rules: {
     '@typescript-eslint/naming-convention': 'off',
@@ -18,5 +17,6 @@ module.exports = {
       },
     ],
   },
-  ignorePatterns: ['lib/client/generated/**/*.ts'],
 };
+
+module.exports = config;
