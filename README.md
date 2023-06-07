@@ -24,3 +24,8 @@ Update `.env` with your values
 ```bash
 pnpm run dev
 ```
+
+4. (Optional) Vscode setup
+```bash
+ cp .vscode/settings.example.json .vscode/settings.json
+```
