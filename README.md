@@ -19,13 +19,17 @@ pnpm install
 
 Update `.env` with your values
 
-3. Run the development server:
+3. (Optional) Vscode setup
+```bash
+ cp .vscode/settings.example.json .vscode/settings.json
+```
+
+4. Run dev environment
 
 ```bash
 pnpm run dev
 ```
 
-4. (Optional) Vscode setup
-```bash
- cp .vscode/settings.example.json .vscode/settings.json
-```
+This will run all packages / apps in watch mode
+Core: http://localhost:3000
+Makeswift: http://localhost:3001

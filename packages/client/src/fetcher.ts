@@ -1,6 +1,6 @@
 const domain = process.env.BIGCOMMERCE_STOREFRONT_DOMAIN ?? '';
 const endpoint = `${domain}/graphql`;
-const key = process.env.BIGCOMMERCE_STOREFRONT_TOKEN ?? '';
+const key = process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '';
 
 interface BigCommerceResponse<T> {
   data: T;

@@ -7,7 +7,7 @@ export const client = createClient({
   url,
   headers: {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${process.env.BIGCOMMERCE_STOREFRONT_TOKEN ?? ''}`,
+    Authorization: `Bearer ${process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? ''}`,
   },
   cache: 'force-cache',
 });
