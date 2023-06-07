@@ -1,6 +1,6 @@
-/** @type {import('next').NextConfig} */
-const withMakeswift = require('@makeswift/runtime/next/plugin')();
+// @ts-check
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   images: {
@@ -15,4 +15,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withMakeswift(nextConfig);
+module.exports = nextConfig;

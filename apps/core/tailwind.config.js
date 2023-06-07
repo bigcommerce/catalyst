@@ -1,5 +1,7 @@
+// @ts-check
+
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const config = {
   content: ['./src/**/*.{ts,tsx}', './lib/**/*.{ts,tsx}'],
   theme: {
     colors: {
@@ -51,3 +53,5 @@ module.exports = {
   },
   plugins: [],
 };
+
+module.exports = config;
