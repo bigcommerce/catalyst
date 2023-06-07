@@ -12,7 +12,7 @@ export const Footer = () => {
   return (
     <footer>
       <div className="border-b border-t border-gray-200">
-        <div className="mx-6 my-12 grid grid-cols-1 gap-8 md:container sm:mx-10 sm:grid-cols-4 md:mx-auto md:grid-cols-6">
+        <div className="mx-6 my-12 grid grid-cols-1 gap-8 sm:mx-10 sm:grid-cols-4 md:container md:mx-auto md:grid-cols-6">
           <CategoryFooterMenu />
           <BrandFooterMenu />
           <BaseFooterMenu
@@ -41,7 +41,7 @@ export const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="mx-6 my-8 grid grid-cols-1 md:container sm:mx-10 md:mx-auto md:my-6 md:grid-cols-2">
+      <div className="mx-6 my-8 grid grid-cols-1 sm:mx-10 md:container md:mx-auto md:my-6 md:grid-cols-2">
         <PaymentMethods className="md:text-right" />
         <Copyright className="md:order-first" />
       </div>

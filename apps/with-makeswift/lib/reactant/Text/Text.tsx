@@ -1,5 +1,5 @@
 import { Text as MakeswiftText } from '@makeswift/runtime/components';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import React, { ComponentPropsWithoutRef, ComponentRef, CSSProperties, forwardRef } from 'react';
 
 type MakeswiftTextProps = ComponentPropsWithoutRef<typeof MakeswiftText>;

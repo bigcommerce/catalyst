@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import { ReactNode } from 'react';
 
 export function Warning({ className, children }: { className?: string; children?: ReactNode }) {

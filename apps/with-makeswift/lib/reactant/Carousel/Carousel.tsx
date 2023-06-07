@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import { useKeenSlider } from 'keen-slider/react';
 import debounce from 'lodash.debounce';
 import { ArrowLeft, ArrowRight, Pause } from 'lucide-react';
@@ -31,7 +31,7 @@ interface Props {
 
 export function Carousel({ className, slides, loop = true, autoplay = 0 }: Props) {
   const SLIDER_COUNT = slides.length;
-  const [, setCurrentSlide] = React.useState(0);
+  const [, setCurrentSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
     {

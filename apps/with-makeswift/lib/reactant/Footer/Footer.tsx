@@ -1,5 +1,5 @@
-import clsx from 'clsx';
-import React, { MouseEvent, ReactNode } from 'react';
+import { clsx } from 'clsx';
+import { MouseEvent, ReactNode } from 'react';
 
 interface FooterLink {
   text?: string;

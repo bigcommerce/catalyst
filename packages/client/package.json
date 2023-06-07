@@ -5,7 +5,6 @@
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "prettier": "@bigcommerce/eslint-config/prettier",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -16,6 +15,8 @@
     "dist"
   ],
   "devDependencies": {
+    "@bigcommerce/eslint-config-catalyst": "workspace:^",
+    "@bigcommerce/catalyst-configs": "workspace:^",
     "@bigcommerce/eslint-config": "^2.7.0",
     "@genql/cli": "^6.0.0",
     "@types/node": "^18.13.00",

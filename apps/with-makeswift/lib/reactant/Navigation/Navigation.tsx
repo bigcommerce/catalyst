@@ -1,7 +1,7 @@
 import * as Accordion from '@radix-ui/react-accordion';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Portal from '@radix-ui/react-portal';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import { ChevronDown, Gift, Heart, Menu, Scale, Search, ShoppingCart, User, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';

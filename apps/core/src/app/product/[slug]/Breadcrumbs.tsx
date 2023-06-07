@@ -16,7 +16,7 @@ export const BreadCrumbs = async ({ productId }: Props) => {
 
   return (
     <nav>
-      <ul className="m-0 flex flex-wrap items-center p-0 md:container md:mx-auto">
+      <ul className="m-0 flex flex-wrap items-center p-0 md:container md:mx-auto ">
         {category.breadcrumbs.map((breadcrumb, i, arr) => {
           const isLast = arr.length - 1 === i;
 
