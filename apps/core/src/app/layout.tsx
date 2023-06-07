@@ -8,6 +8,7 @@ import './globals.css';
 
 const inter = Inter({
   subsets: ['latin'],
+  display: 'swap',
   variable: '--font-inter',
 });
 
@@ -18,7 +19,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
-    <html className={inter.variable} lang="en">
+    <html className={`${inter.variable} font-sans`} lang="en">
       <body className="md:container md:mx-auto">
         <Header />
 

@@ -3,3 +3,4 @@ dist
 .turbo
 .vscode/**/*
 !.vscode/settings.example.json
+.env
