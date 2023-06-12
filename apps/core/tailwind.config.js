@@ -1,7 +1,3 @@
-// @ts-check
-
-// TODO: Fix this
-// @ts-ignore
 const reactantPreset = require('@bigcommerce/reactant/tailwind-config');
 
 /** @type {import('tailwindcss').Config} */
