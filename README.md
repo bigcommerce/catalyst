@@ -33,3 +33,5 @@ pnpm run dev
 This will run all packages / apps in watch mode
 Core: http://localhost:3000
 Makeswift: http://localhost:3001
+
+Testing Vercel
