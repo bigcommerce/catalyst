@@ -5,8 +5,8 @@
   "private": true,
   "exports": {
     ".": "./dist",
-    "./postcss.config.js": "./postcss.config.js",
-    "./tailwind.config.js": "./tailwind.config.js"
+    "./postcss-config": "./postcss.config.js",
+    "./tailwind-config": "./tailwind.config.js"
   },
   "types": "dist/index.d.ts",
   "scripts": {

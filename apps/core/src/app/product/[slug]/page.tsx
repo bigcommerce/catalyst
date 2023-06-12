@@ -1,4 +1,5 @@
 import { addCartLineItem, createCart, getProduct } from '@bigcommerce/catalyst-client';
+import { Button } from '@bigcommerce/reactant';
 import { Heart, ShoppingCart } from 'lucide-react';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
@@ -72,6 +73,7 @@ export default async function Product({ params }: { params: { slug: string } }) 
 
   return (
     <>
+      <Button />
       <BreadCrumbs productId={productId} />
 
       <div className="my-6 grid-cols-2 gap-4 md:grid">

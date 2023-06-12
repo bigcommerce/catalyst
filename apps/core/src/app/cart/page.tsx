@@ -1,5 +1,4 @@
 import { getCart, getCheckoutUrl } from '@bigcommerce/catalyst-client';
-import { Button } from '@bigcommerce/reactant';
 import { Trash2 as Trash } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
@@ -40,10 +39,6 @@ export default async function CartPage() {
 
   return (
     <div>
-      <Button />
-
-      <h1 className="mb-3 text-h2">Your cart</h1>
-
       <div className="md:grid md:grid-cols-3 md:gap-8">
         <ul className="col-span-2">
           {cart.lineItems.physicalItems.map((product) => (
