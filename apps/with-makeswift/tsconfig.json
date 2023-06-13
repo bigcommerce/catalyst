@@ -26,7 +26,7 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@reactant/*": ["./lib/reactant/*"]
+      "@reactant/*": ["lib/components/*"]
     }
   },
   "include": [

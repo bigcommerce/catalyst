@@ -1,4 +1,4 @@
-import '@reactant/makeswift';
+import 'lib/components/makeswift';
 
 import {
   Makeswift,
