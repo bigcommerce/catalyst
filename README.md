@@ -14,7 +14,7 @@ pnpm install
 2. Setup environment variables:
 
 ```bash
- cp .env.example .env
+ cp .env.example .env.local
 ```
 
 Update `.env` with your values

@@ -5,7 +5,7 @@
   "private": true,
   "packageManager": "pnpm@8.6.0",
   "scripts": {
-    "dev": "dotenv -- turbo run dev",
+    "dev": "dotenv -e .env.local -- turbo run dev",
     "lint": "turbo lint"
   },
   "devDependencies": {
