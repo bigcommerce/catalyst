@@ -266,9 +266,6 @@ importers:
       clsx:
         specifier: ^1.2.1
         version: 1.2.1
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
       tailwind-merge:
         specifier: ^1.12.0
         version: 1.12.0
@@ -300,6 +297,9 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: ^0.3.0
         version: 0.3.0(prettier@2.8.8)
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
