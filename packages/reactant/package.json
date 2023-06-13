@@ -21,6 +21,8 @@
     "tailwind.config.js"
   ],
   "dependencies": {
+    "@radix-ui/react-slot": "^1.0.2",
+    "class-variance-authority": "^0.6.0",
     "clsx": "^1.2.1",
     "tailwind-merge": "^1.12.0"
   },
