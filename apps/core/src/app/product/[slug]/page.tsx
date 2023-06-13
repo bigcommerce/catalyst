@@ -103,7 +103,7 @@ export default async function Product({ params }: { params: { slug: string } }) 
 
             {/* NOT IMPLEMENTED YET */}
             <div className="w-full">
-              <Button type="submit" variant="outline">
+              <Button type="submit" variant="secondary">
                 <Heart aria-hidden="true" className="mx-2" />
                 <span>Save to wishlist</span>
               </Button>
