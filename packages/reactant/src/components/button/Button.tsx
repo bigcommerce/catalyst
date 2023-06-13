@@ -5,22 +5,16 @@ import React, { ButtonHTMLAttributes, forwardRef, PropsWithChildren } from 'reac
 import { cs } from '../../utils';
 
 const buttonVariants = cva(
-  'inline-flex w-full justify-center border-2 py-3 text-base font-semibold border-blue-primary',
+  'inline-flex w-full justify-center border-2 py-3 text-base font-semibold border-blue-primary disabled:border-gray-300',
   {
     variants: {
       variant: {
-        primary: 'bg-blue-primary text-white hover:opacity-95',
-        outline: 'bg-white text-blue-primary hover:opacity-95', // TODO: fix hover
-      },
-      isDisabled: {
-        // TODO: fix isDisabled showing up
-        true: 'border-gray-300 hover:none', // TODO: check for correct gray color
+        primary:
+          'bg-blue-primary text-white hover:opacity-95 disabled:bg-gray-300 disabled:hover:opacity-100',
+        outline:
+          'bg-white text-blue-primary hover:bg-opacity-10 hover:bg-blue-primary disabled:text-gray-300 disabled:hover:bg-opacity-100 disabled:hover:bg-white',
       },
     },
-    compoundVariants: [
-      { variant: 'primary', isDisabled: true, className: 'bd-gray-300' },
-      { variant: 'outline', isDisabled: true, className: 'text-gray-300' },
-    ],
     defaultVariants: {
       variant: 'primary',
     },
@@ -34,20 +28,13 @@ interface ButtonProps
 }
 
 export const Button = forwardRef<HTMLButtonElement, PropsWithChildren<ButtonProps>>(
-  ({ asChild = false, children, className, disabled, variant, ...props }, ref) => {
-    const Comp = asChild ? Slot : 'button'; // TODO: test asChild link to check styles
+  ({ asChild = false, children, className, variant, ...props }, ref) => {
+    const Comp = asChild ? Slot : 'button';
 
     return (
-      <Comp
-        className={cs(buttonVariants({ variant, isDisabled: disabled, className }))}
-        disabled
-        ref={ref}
-        {...props}
-      >
+      <Comp className={cs(buttonVariants({ variant, className }))} ref={ref} {...props}>
         {children}
       </Comp>
     );
   },
 );
-// TODO: do we need this?
-Button.displayName = 'Button';
