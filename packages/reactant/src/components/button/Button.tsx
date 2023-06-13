@@ -12,7 +12,7 @@ const buttonVariants = cva(
         primary:
           'bg-blue-primary text-white hover:bg-blue-secondary hover:border-blue-secondary disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:hover:border-gray-400',
         secondary:
-          'bg-white text-blue-primary hover:bg-opacity-10 hover:bg-blue-secondary hover:border-blue-secondary hover:text-blue-secondary disabled:text-gray-400 disabled:hover:bg-opacity-100 disabled:hover:bg-white disabled:hover:border-gray-400 disabled:hover:text-gray-400',
+          'bg-transparent text-blue-primary hover:bg-blue-secondary hover:bg-opacity-10 hover:border-blue-secondary hover:text-blue-secondary disabled:text-gray-400 disabled:hover:bg-transparent disabled:hover:border-gray-400 disabled:hover:text-gray-400',
       },
     },
     defaultVariants: {
