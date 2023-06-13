@@ -19,7 +19,6 @@
     "preserveWatchOutput": true,
     "skipLibCheck": true,
     "strict": true,
-    "jsx": "preserve"
   },
   "include": ["."],
   "exclude": ["node_modules", "dist"]
