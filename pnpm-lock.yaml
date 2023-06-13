@@ -96,6 +96,9 @@ importers:
       '@bigcommerce/catalyst-client':
         specifier: workspace:^
         version: link:../../packages/client
+      '@bigcommerce/reactant':
+        specifier: workspace:^
+        version: link:../../packages/reactant
       '@makeswift/runtime':
         specifier: ^0.8.11
         version: 0.8.11(next@13.4.4)(react-dom@18.2.0)(react@18.2.0)
