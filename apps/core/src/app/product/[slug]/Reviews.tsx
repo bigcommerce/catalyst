@@ -63,7 +63,7 @@ export const Reviews = async ({ productId, reviewSectionId }: Props) => {
         })}
       </ul>
 
-      <Button className="w-auto px-8" id={reviewSectionId} variant="outline">
+      <Button className="w-auto" id={reviewSectionId} variant="outline">
         Write a review
       </Button>
     </>

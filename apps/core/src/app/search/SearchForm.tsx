@@ -34,7 +34,7 @@ export const SearchForm = ({ initialTerm = '' }: Props) => {
           value={term}
         />
 
-        <Button className="w-auto px-8" disabled={status === 'pending'} type="submit">
+        <Button className="w-auto" disabled={status === 'pending'} type="submit">
           {status === 'idle' && <span>Search</span>}
 
           {status === 'pending' && (

@@ -5,7 +5,7 @@ import { ButtonHTMLAttributes, forwardRef, PropsWithChildren } from 'react';
 import { cs } from '../../utils';
 
 const buttonVariants = cva(
-  'inline-flex w-full justify-center border-2 py-3 text-base font-semibold border-blue-primary disabled:border-gray-50',
+  'inline-flex w-full justify-center border-2 py-3 px-8 text-base font-semibold border-blue-primary disabled:border-gray-50',
   {
     variants: {
       variant: {
