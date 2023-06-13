@@ -1,4 +1,5 @@
 import { getCart, getCheckoutUrl } from '@bigcommerce/catalyst-client';
+import { Button } from '@bigcommerce/reactant';
 import { Trash2 as Trash } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
@@ -10,12 +11,9 @@ const CheckoutButton = async ({ cartId }: { cartId: string }) => {
   const checkoutUrl = await getCheckoutUrl(cartId);
 
   return (
-    <a
-      className="inline-block w-full bg-blue-primary py-3 text-center text-base font-semibold text-white hover:opacity-95"
-      href={checkoutUrl}
-    >
-      Proceed to checkout
-    </a>
+    <Button asChild>
+      <a href={checkoutUrl}>Proceed to checkout</a>
+    </Button>
   );
 };
 
