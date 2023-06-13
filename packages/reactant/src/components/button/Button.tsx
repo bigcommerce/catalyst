@@ -1,18 +1,18 @@
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
-import React, { ButtonHTMLAttributes, forwardRef, PropsWithChildren } from 'react';
+import { ButtonHTMLAttributes, forwardRef, PropsWithChildren } from 'react';
 
 import { cs } from '../../utils';
 
 const buttonVariants = cva(
-  'inline-flex w-full justify-center border-2 py-3 text-base font-semibold border-blue-primary disabled:border-gray-300',
+  'inline-flex w-full justify-center border-2 py-3 text-base font-semibold border-blue-primary disabled:border-gray-50',
   {
     variants: {
       variant: {
         primary:
-          'bg-blue-primary text-white hover:opacity-95 disabled:bg-gray-300 disabled:hover:opacity-100',
+          'bg-blue-primary text-white hover:opacity-95 disabled:bg-gray-50 disabled:hover:opacity-100',
         outline:
-          'bg-white text-blue-primary hover:bg-opacity-10 hover:bg-blue-primary disabled:text-gray-300 disabled:hover:bg-opacity-100 disabled:hover:bg-white',
+          'bg-white text-blue-primary hover:bg-opacity-10 hover:bg-blue-primary disabled:text-gray-50 disabled:hover:bg-opacity-100 disabled:hover:bg-white',
       },
     },
     defaultVariants: {
