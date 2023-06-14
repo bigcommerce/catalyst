@@ -1,4 +1,5 @@
 import { getProductReviews } from '@bigcommerce/catalyst-client';
+import { Button } from '@bigcommerce/reactant';
 import { Star, StarHalf } from 'lucide-react';
 
 interface Props {
@@ -62,12 +63,9 @@ export const Reviews = async ({ productId, reviewSectionId }: Props) => {
         })}
       </ul>
 
-      <button
-        className="border-2 border-blue-primary px-8 py-3 font-semibold text-blue-primary"
-        id={reviewSectionId}
-      >
+      <Button className="w-auto" id={reviewSectionId} variant="secondary">
         Write a review
-      </button>
+      </Button>
     </>
   );
 };

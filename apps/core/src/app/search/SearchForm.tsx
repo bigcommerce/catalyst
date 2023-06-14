@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@bigcommerce/reactant';
 import { Loader2 as Spinner } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
@@ -33,11 +34,7 @@ export const SearchForm = ({ initialTerm = '' }: Props) => {
           value={term}
         />
 
-        <button
-          className="border-2 border-blue-primary px-8 py-3 font-semibold text-blue-primary"
-          disabled={status === 'pending'}
-          type="submit"
-        >
+        <Button className="w-auto" disabled={status === 'pending'} type="submit">
           {status === 'idle' && <span>Search</span>}
 
           {status === 'pending' && (
@@ -46,7 +43,7 @@ export const SearchForm = ({ initialTerm = '' }: Props) => {
               <span className="sr-only">Searching...</span>
             </>
           )}
-        </button>
+        </Button>
       </form>
     </div>
   );

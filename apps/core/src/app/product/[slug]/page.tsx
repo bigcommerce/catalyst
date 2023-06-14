@@ -1,4 +1,5 @@
 import { addCartLineItem, createCart, getProduct } from '@bigcommerce/catalyst-client';
+import { Button } from '@bigcommerce/reactant';
 import { Heart, ShoppingCart } from 'lucide-react';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
@@ -94,24 +95,18 @@ export default async function Product({ params }: { params: { slug: string } }) 
 
           <div className="my-7 flex gap-4">
             <form action={handleAddToCart} className="w-full">
-              <button
-                className="inline-flex w-full justify-center border-2 border-blue-primary bg-blue-primary py-3 text-base font-semibold text-white hover:opacity-95"
-                type="submit"
-              >
+              <Button type="submit">
                 <ShoppingCart aria-hidden="true" className="mx-2" />
                 Add to Cart
-              </button>
+              </Button>
             </form>
 
             {/* NOT IMPLEMENTED YET */}
             <div className="w-full">
-              <button
-                className="hover:bg-gray-50 inline-flex w-full justify-center border-2 border-blue-primary py-3 text-base font-semibold text-blue-primary"
-                type="submit"
-              >
+              <Button type="submit" variant="secondary">
                 <Heart aria-hidden="true" className="mx-2" />
                 <span>Save to wishlist</span>
-              </button>
+              </Button>
             </div>
           </div>
 

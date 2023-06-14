@@ -5,14 +5,14 @@ import { ButtonHTMLAttributes, forwardRef, PropsWithChildren } from 'react';
 import { cs } from '../../utils';
 
 const buttonVariants = cva(
-  'inline-flex w-full justify-center border-2 py-3 text-base font-semibold border-blue-primary disabled:border-gray-50',
+  'inline-flex w-full justify-center border-2 py-2.5 px-[30px] text-base leading-6 font-semibold border-blue-primary disabled:border-gray-400 focus:outline-none focus:ring-4 focus:ring-primary-blue/20',
   {
     variants: {
       variant: {
         primary:
-          'bg-blue-primary text-white hover:opacity-95 disabled:bg-gray-50 disabled:hover:opacity-100',
-        outline:
-          'bg-white text-blue-primary hover:bg-opacity-10 hover:bg-blue-primary disabled:text-gray-50 disabled:hover:bg-opacity-100 disabled:hover:bg-white',
+          'bg-blue-primary text-white hover:bg-blue-secondary hover:border-blue-secondary disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:hover:border-gray-400',
+        secondary:
+          'bg-transparent text-blue-primary hover:bg-blue-secondary hover:bg-opacity-10 hover:border-blue-secondary hover:text-blue-secondary disabled:text-gray-400 disabled:hover:bg-transparent disabled:hover:border-gray-400 disabled:hover:text-gray-400',
       },
     },
     defaultVariants: {
