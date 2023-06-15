@@ -13,6 +13,11 @@ const nextConfig = {
   experimental: {
     serverActions: true,
   },
+  modularizeImports: {
+    'lucide-react': {
+      transform: 'lucide-react/dist/esm/icons/{{ kebabCase member }}',
+    },
+  },
 };
 
 module.exports = nextConfig;
