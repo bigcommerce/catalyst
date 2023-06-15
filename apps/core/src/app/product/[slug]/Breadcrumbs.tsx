@@ -1,5 +1,5 @@
 import { getProduct } from '@bigcommerce/catalyst-client';
-import { cs } from '@bigcommerce/reactant';
+import { cs } from '@bigcommerce/reactant/cs';
 import Link from 'next/link';
 
 interface Props {

@@ -1,5 +1,5 @@
 import { getProductReviews } from '@bigcommerce/catalyst-client';
-import { Button } from '@bigcommerce/reactant';
+import { Button } from '@bigcommerce/reactant/Button';
 import { Star, StarHalf } from 'lucide-react';
 
 interface Props {

@@ -1,5 +1,5 @@
 import { addCartLineItem, createCart, getProduct } from '@bigcommerce/catalyst-client';
-import { Button } from '@bigcommerce/reactant';
+import { Button } from '@bigcommerce/reactant/Button';
 import { Heart, ShoppingCart } from 'lucide-react';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';

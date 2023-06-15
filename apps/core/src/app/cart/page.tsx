@@ -1,5 +1,5 @@
 import { getCart, getCheckoutUrl } from '@bigcommerce/catalyst-client';
-import { Button } from '@bigcommerce/reactant';
+import { Button } from '@bigcommerce/reactant/Button';
 import { Trash2 as Trash } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Image from 'next/image';

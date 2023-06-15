@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@bigcommerce/reactant';
+import { Button } from '@bigcommerce/reactant/Button';
 import { Loader2 as Spinner } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';

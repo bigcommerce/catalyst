@@ -3,12 +3,22 @@
   "description": "BigCommerce components for Catalyst.",
   "version": "0.1.0",
   "private": true,
+  "sideEffects": false,
   "exports": {
-    ".": "./dist",
+    "./package.json": "./package.json",
     "./postcss-config": "./postcss.config.js",
-    "./tailwind-config": "./tailwind.config.js"
+    "./tailwind-config": "./tailwind.config.js",
+    "./cs": {
+      "import": "./dist/utils/cs.mjs",
+      "require": "./dist/utils/cs.js",
+      "types": "./dist/utils/cs.d.ts"
+    },
+    "./*": {
+      "import": "./dist/components/*/index.mjs",
+      "require": "./dist/components/*/index.js",
+      "types": "./dist/components/*/index.d.ts"
+    }
   },
-  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
