@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@bigcommerce/reactant": "workspace:^",
+    "lucide-react": "^0.216.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "storybook": "^7.0.22"
