@@ -6,7 +6,7 @@ import { cs } from '../../utils/cs';
 export const Header = forwardRef<HTMLDivElement, ComponentPropsWithRef<'header'>>(
   ({ className, children, ...props }, ref) => (
     <header
-      className={cs('flex items-center justify-between gap-8 bg-white py-9', className)}
+      className={cs('flex items-center justify-between gap-12 bg-white py-9', className)}
       ref={ref}
       {...props}
     >
@@ -15,13 +15,9 @@ export const Header = forwardRef<HTMLDivElement, ComponentPropsWithRef<'header'>
   ),
 );
 
-export const HeaderLogo = forwardRef<HTMLDivElement, ComponentPropsWithRef<'div'>>(
+export const HeaderSection = forwardRef<HTMLDivElement, ComponentPropsWithRef<'div'>>(
   ({ className, children, ...props }, ref) => (
-    <div
-      className={cs('flex-none items-center text-h4 font-black', className)}
-      ref={ref}
-      {...props}
-    >
+    <div className={cs('flex items-center gap-8', className)} ref={ref} {...props}>
       {children}
     </div>
   ),

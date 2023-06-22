@@ -1,9 +1,9 @@
 import {
   Header,
-  HeaderLogo,
   HeaderNav,
   HeaderNavLink,
   HeaderNavList,
+  HeaderSection,
 } from '@bigcommerce/reactant/Header';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Search, ShoppingCart, User } from 'lucide-react';
@@ -28,9 +28,11 @@ type Story = StoryObj<typeof Header>;
 export const BasicExample: Story = {
   render: () => (
     <Header>
-      <HeaderLogo>
-        <a href="/home">Catalyst Store</a>
-      </HeaderLogo>
+      <HeaderSection>
+        <a className="text-h4 font-black" href="/home">
+          Catalyst Store
+        </a>
+      </HeaderSection>
       <HeaderNav>
         <HeaderNavList>
           <HeaderNavLink href="#">Men</HeaderNavLink>
@@ -38,7 +40,7 @@ export const BasicExample: Story = {
           <HeaderNavLink href="#">Accessories</HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
-      <div className="flex items-center gap-4">
+      <HeaderSection>
         <a aria-label="Search" href="/search">
           <Search aria-hidden="true" />
         </a>
@@ -48,7 +50,7 @@ export const BasicExample: Story = {
         <a aria-label="Cart" href="/cart">
           <ShoppingCart aria-hidden="true" />
         </a>
-      </div>
+      </HeaderSection>
     </Header>
   ),
 };
@@ -56,9 +58,11 @@ export const BasicExample: Story = {
 export const NavigationAlignmentLeft: Story = {
   render: () => (
     <Header>
-      <HeaderLogo className="text-h4">
-        <a href="/home">Catalyst Store</a>
-      </HeaderLogo>
+      <HeaderSection>
+        <a className="text-h4 font-black" href="/home">
+          Catalyst Store
+        </a>
+      </HeaderSection>
       <HeaderNav className="flex-auto justify-start">
         <HeaderNavList>
           <HeaderNavLink href="#">Men</HeaderNavLink>
@@ -66,7 +70,7 @@ export const NavigationAlignmentLeft: Story = {
           <HeaderNavLink href="#">Accessories</HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
-      <div className="flex items-center gap-4">
+      <HeaderSection>
         <a aria-label="Search" href="/search">
           <Search aria-hidden="true" />
         </a>
@@ -76,7 +80,7 @@ export const NavigationAlignmentLeft: Story = {
         <a aria-label="Cart" href="/cart">
           <ShoppingCart aria-hidden="true" />
         </a>
-      </div>
+      </HeaderSection>
     </Header>
   ),
 };
@@ -84,9 +88,11 @@ export const NavigationAlignmentLeft: Story = {
 export const NavigationAlignmentRight: Story = {
   render: () => (
     <Header>
-      <HeaderLogo>
-        <a href="/home">Catalyst Store</a>
-      </HeaderLogo>
+      <HeaderSection>
+        <a className="text-h4 font-black" href="/home">
+          Catalyst Store
+        </a>
+      </HeaderSection>
       <HeaderNav className="flex-auto justify-end">
         <HeaderNavList className="justify">
           <HeaderNavLink href="#">Men</HeaderNavLink>
@@ -94,7 +100,7 @@ export const NavigationAlignmentRight: Story = {
           <HeaderNavLink href="#">Accessories</HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
-      <div className="flex items-center gap-4">
+      <HeaderSection>
         <a aria-label="Search" href="/search">
           <Search aria-hidden="true" />
         </a>
@@ -104,7 +110,7 @@ export const NavigationAlignmentRight: Story = {
         <a aria-label="Cart" href="/cart">
           <ShoppingCart aria-hidden="true" />
         </a>
-      </div>
+      </HeaderSection>
     </Header>
   ),
 };
@@ -119,10 +125,12 @@ export const LogoCentered: Story = {
           <HeaderNavLink href="#">Accessories</HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
-      <HeaderLogo>
-        <a href="/home">Catalyst Store</a>
-      </HeaderLogo>
-      <div className="flex flex-1 items-center justify-end gap-4">
+      <HeaderSection>
+        <a className="text-h4 font-black" href="/home">
+          Catalyst Store
+        </a>
+      </HeaderSection>
+      <HeaderSection className="flex-1 justify-end">
         <a aria-label="Search" href="/search">
           <Search aria-hidden="true" />
         </a>
@@ -132,7 +140,7 @@ export const LogoCentered: Story = {
         <a aria-label="Cart" href="/cart">
           <ShoppingCart aria-hidden="true" />
         </a>
-      </div>
+      </HeaderSection>
     </Header>
   ),
 };
@@ -141,10 +149,12 @@ export const BottomNavigationLeft: Story = {
   render: () => (
     <Header className="flex-col">
       <div className="flex w-full flex-row justify-between">
-        <HeaderLogo>
-          <a href="/home">Catalyst Store</a>
-        </HeaderLogo>
-        <div className="flex items-center gap-4">
+        <HeaderSection>
+          <a className="text-h4 font-black" href="/home">
+            Catalyst Store
+          </a>
+        </HeaderSection>
+        <HeaderSection>
           <a aria-label="Search" href="/search">
             <Search aria-hidden="true" />
           </a>
@@ -154,7 +164,7 @@ export const BottomNavigationLeft: Story = {
           <a aria-label="Cart" href="/cart">
             <ShoppingCart aria-hidden="true" />
           </a>
-        </div>
+        </HeaderSection>
       </div>
       <HeaderNav className="w-full border-t border-gray-200 pt-2">
         <HeaderNavList>
@@ -171,10 +181,12 @@ export const BottomNavigationCenter: Story = {
   render: () => (
     <Header className="flex-col">
       <div className="flex w-full flex-row justify-between">
-        <HeaderLogo>
-          <a href="/home">Catalyst Store</a>
-        </HeaderLogo>
-        <div className="flex items-center gap-4">
+        <HeaderSection>
+          <a className="text-h4 font-black" href="/home">
+            Catalyst Store
+          </a>
+        </HeaderSection>
+        <HeaderSection>
           <a aria-label="Search" href="/search">
             <Search aria-hidden="true" />
           </a>
@@ -184,7 +196,7 @@ export const BottomNavigationCenter: Story = {
           <a aria-label="Cart" href="/cart">
             <ShoppingCart aria-hidden="true" />
           </a>
-        </div>
+        </HeaderSection>
       </div>
       <HeaderNav className="flex w-full justify-center border-t border-gray-200 pt-2">
         <HeaderNavList>
@@ -201,10 +213,10 @@ export const BottomNavigationRight: Story = {
   render: () => (
     <Header className="flex-col">
       <div className="flex w-full flex-row justify-between">
-        <HeaderLogo>
+        <HeaderSection className="text-h4 font-black">
           <a href="/home">Catalyst Store</a>
-        </HeaderLogo>
-        <div className="flex items-center gap-4">
+        </HeaderSection>
+        <HeaderSection className="flex items-center gap-4">
           <a aria-label="Search" href="/search">
             <Search aria-hidden="true" />
           </a>
@@ -214,7 +226,7 @@ export const BottomNavigationRight: Story = {
           <a aria-label="Cart" href="/cart">
             <ShoppingCart aria-hidden="true" />
           </a>
-        </div>
+        </HeaderSection>
       </div>
       <HeaderNav className="flex w-full justify-end border-t border-gray-200 pt-2">
         <HeaderNavList>
@@ -234,9 +246,9 @@ const CustomLink = ({ children, ...props }: ComponentPropsWithoutRef<'a'>) => {
 export const AsChild: Story = {
   render: () => (
     <Header>
-      <HeaderLogo>
+      <HeaderSection className="text-h4 font-black">
         <a href="/home">Catalyst Store</a>
-      </HeaderLogo>
+      </HeaderSection>
       <HeaderNav>
         <HeaderNavList>
           <HeaderNavLink asChild>
@@ -250,7 +262,7 @@ export const AsChild: Story = {
           </HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
-      <div className="flex items-center  gap-4">
+      <HeaderSection className="flex items-center  gap-4">
         <a aria-label="Search" href="/search">
           <Search aria-hidden="true" />
         </a>
@@ -260,7 +272,7 @@ export const AsChild: Story = {
         <a aria-label="Cart" href="/cart">
           <ShoppingCart aria-hidden="true" />
         </a>
-      </div>
+      </HeaderSection>
     </Header>
   ),
 };

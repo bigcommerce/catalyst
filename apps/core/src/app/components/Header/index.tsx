@@ -1,8 +1,8 @@
 import { getCart, getCategoryTree } from '@bigcommerce/catalyst-client';
 import {
-  HeaderLogo,
   HeaderNavLink,
   HeaderNavList,
+  HeaderSection,
   Header as ReactantHeader,
   HeaderNav as ReactantHeaderNav,
 } from '@bigcommerce/reactant/Header';
@@ -63,23 +63,23 @@ const HeaderNav = async () => {
 export const Header = () => {
   return (
     <ReactantHeader>
-      <HeaderLogo>
+      <HeaderSection>
         <Link href="/">
           <StoreLogo />
         </Link>
-      </HeaderLogo>
+      </HeaderSection>
 
       <HeaderNav />
 
-      <div className="flex items-center">
-        <Link aria-label="Search" className="hidden sm:mx-4 sm:block" href="/search">
+      <HeaderSection>
+        <Link aria-label="Search" className="hidden sm:block" href="/search">
           <Search />
         </Link>
 
         <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
           <Cart />
         </Suspense>
-      </div>
+      </HeaderSection>
     </ReactantHeader>
   );
 };
