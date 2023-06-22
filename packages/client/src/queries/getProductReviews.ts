@@ -1,8 +1,13 @@
-import { client } from '../client';
+import { BigCommerceResponse, FetcherInput } from '../fetcher';
+import { generateQueryOp, QueryResult } from '../generated';
 import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
-export const getProductReviews = async (productId: number) => {
-  const { site } = await client.query({
+export const getProductReviews = async <T>(
+  customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
+  productId: number,
+  config: T = {} as T,
+) => {
+  const query = {
     site: {
       product: {
         __args: {
@@ -34,9 +39,14 @@ export const getProductReviews = async (productId: number) => {
         },
       },
     },
-  });
+  };
 
-  const product = site.product;
+  const queryOp = generateQueryOp(query);
+  const response = await customFetch<QueryResult<typeof query>>({
+    ...queryOp,
+    ...config,
+  });
+  const { product } = response.data.site;
 
   if (!product) {
     return undefined;

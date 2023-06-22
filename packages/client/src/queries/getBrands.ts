@@ -1,12 +1,17 @@
-import { client } from '../client';
+import { BigCommerceResponse, FetcherInput } from '../fetcher';
+import { generateQueryOp, QueryResult } from '../generated';
 import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
-interface GetBrandsOptions {
+export interface GetBrandsOptions {
   first?: number;
 }
 
-export const getBrands = async ({ first = 5 }: GetBrandsOptions = {}) => {
-  const { site } = await client.query({
+export const getBrands = async <T>(
+  customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
+  { first = 5 }: GetBrandsOptions = {},
+  config: T = {} as T,
+) => {
+  const query = {
     site: {
       brands: {
         __args: {
@@ -20,7 +25,16 @@ export const getBrands = async ({ first = 5 }: GetBrandsOptions = {}) => {
         },
       },
     },
+  };
+
+  const queryOp = generateQueryOp(query);
+
+  const response = await customFetch<QueryResult<typeof query>>({
+    ...queryOp,
+    ...config,
   });
+
+  const { site } = response.data;
 
   return removeEdgesAndNodes(site.brands);
 };

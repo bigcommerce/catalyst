@@ -1,9 +1,10 @@
-import { getStoreSettings } from '@bigcommerce/catalyst-client';
 import { FooterSection } from '@bigcommerce/reactant/Footer';
 import { ComponentPropsWithoutRef } from 'react';
 
+import client from '~/client';
+
 export const Copyright = async (props: ComponentPropsWithoutRef<'div'>) => {
-  const settings = await getStoreSettings();
+  const settings = await client.getStoreSettings();
 
   if (!settings) {
     return null;

@@ -1,7 +1,11 @@
-import { client } from '../client';
+import { BigCommerceResponse, FetcherInput } from '../fetcher';
+import { generateQueryOp, QueryResult } from '../generated';
 
-export const getStoreSettings = async () => {
-  const response = await client.query({
+export const getStoreSettings = async <T>(
+  customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
+  config: T = {} as T,
+) => {
+  const query = {
     site: {
       settings: {
         storeName: true,
@@ -32,7 +36,13 @@ export const getStoreSettings = async () => {
         },
       },
     },
+  };
+
+  const queryOp = generateQueryOp(query);
+  const response = await customFetch<QueryResult<typeof query>>({
+    ...queryOp,
+    ...config,
   });
 
-  return response.site.settings;
+  return response.data.site.settings;
 };

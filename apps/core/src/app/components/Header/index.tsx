@@ -1,4 +1,3 @@
-import { getCart, getCategoryTree } from '@bigcommerce/catalyst-client';
 import { cs } from '@bigcommerce/reactant/cs';
 import {
   NavigationMenu,
@@ -13,6 +12,8 @@ import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { Suspense } from 'react';
 
+import client from '~/client';
+
 import { StoreLogo } from '../StoreLogo';
 
 import { LinkNoCache } from './LinkNoCache';
@@ -24,7 +25,7 @@ const Cart = async () => {
     return <ShoppingCart aria-hidden="true" />;
   }
 
-  const cart = await getCart(cartId);
+  const cart = await client.getCart(cartId);
 
   if (!cart) {
     return <ShoppingCart aria-hidden="true" />;
@@ -53,7 +54,7 @@ const HeaderNav = async ({
   className?: string;
   isMenuMobile?: boolean;
 }) => {
-  const categoryTree = await getCategoryTree();
+  const categoryTree = await client.getCategoryTree();
 
   return (
     <NavigationMenuList className={className}>

@@ -1,8 +1,9 @@
-import { getProduct } from '@bigcommerce/catalyst-client';
 import { Button } from '@bigcommerce/reactant/Button';
 import { Heart } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+
+import client from '~/client';
 
 import { AddToCart } from './AddToCart';
 import { BreadCrumbs } from './Breadcrumbs';
@@ -17,7 +18,7 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
 
 export default async function Product({ params }: { params: { slug: string } }) {
   const productId = Number(params.slug);
-  const product = await getProduct(productId);
+  const product = await client.getProduct(productId);
 
   const reviewSectionId = 'write-a-review';
 

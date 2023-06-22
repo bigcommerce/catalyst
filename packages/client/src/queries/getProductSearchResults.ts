@@ -1,22 +1,22 @@
-import { client } from '../client';
+import { BigCommerceResponse, FetcherInput } from '../fetcher';
+import { generateQueryOp, QueryResult } from '../generated';
 import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
-interface ProductSearch {
+export interface ProductSearch {
   searchTerm: string;
   limit?: number;
   before?: string;
   after?: string;
 }
 
-export const getProductSearchResults = async ({
-  searchTerm,
-  limit = 9,
-  before,
-  after,
-}: ProductSearch) => {
+export const getProductSearchResults = async <T>(
+  customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
+  { searchTerm, limit = 9, before, after }: ProductSearch,
+  config: T = {} as T,
+) => {
   const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
-  const { site } = await client.query({
+  const query = {
     site: {
       search: {
         searchProducts: {
@@ -60,7 +60,14 @@ export const getProductSearchResults = async ({
         },
       },
     },
+  };
+
+  const queryOp = generateQueryOp(query);
+  const response = await customFetch<QueryResult<typeof query>>({
+    ...queryOp,
+    ...config,
   });
+  const { site } = response.data;
 
   const searchResults = site.search.searchProducts;
 

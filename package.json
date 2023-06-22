@@ -6,6 +6,7 @@
   "packageManager": "pnpm@8.6.0",
   "scripts": {
     "dev": "dotenv -e .env.local -- turbo run dev",
+    "build": "dotenv -e .env.local -- turbo run build",
     "lint": "turbo lint"
   },
   "devDependencies": {

@@ -7,11 +7,9 @@ import type {
 } from './schema'
 import {
   linkTypeMap,
-  createClient as createClientOriginal,
   generateGraphqlOperation,
   type FieldsSelection,
   type GraphqlOperation,
-  type ClientOptions,
   GenqlError,
 } from './runtime'
 export type { FieldsSelection } from './runtime'
@@ -29,17 +27,6 @@ export interface Client {
   mutation<R extends MutationGenqlSelection>(
     request: R & { __name?: string },
   ): Promise<FieldsSelection<Mutation, R>>
-}
-
-export const createClient = function (options?: ClientOptions): Client {
-  return createClientOriginal({
-    url: 'https://store-vcxk3p73en.mybigcommerce.com/graphql',
-
-    ...options,
-    queryRoot: typeMap.Query!,
-    mutationRoot: typeMap.Mutation!,
-    subscriptionRoot: typeMap.Subscription!,
-  }) as any
 }
 
 export const everything = {

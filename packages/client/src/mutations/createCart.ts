@@ -1,4 +1,4 @@
-import { bigcommerceFetch } from '../fetcher';
+import { BigCommerceResponse, FetcherInput } from '../fetcher';
 import {
   CartLineItemInput,
   generateMutationOp,
@@ -6,7 +6,11 @@ import {
   MutationResult,
 } from '../generated';
 
-export const createCart = async (lineItems: CartLineItemInput[]) => {
+export const createCart = async <T>(
+  customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
+  lineItems: CartLineItemInput[],
+  config: T = { cache: 'no-store' } as T,
+) => {
   const mutation = {
     cart: {
       createCart: {
@@ -24,9 +28,9 @@ export const createCart = async (lineItems: CartLineItemInput[]) => {
 
   const mutationOp = generateMutationOp(mutation);
 
-  const { data } = await bigcommerceFetch<MutationResult<typeof mutation>>({
+  const { data } = await customFetch<MutationResult<typeof mutation>>({
     ...mutationOp,
-    cache: 'no-store',
+    ...config,
   });
 
   return data.cart.createCart?.cart;

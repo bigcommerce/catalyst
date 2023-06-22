@@ -1,8 +1,9 @@
-import { getStoreSettings } from '@bigcommerce/catalyst-client';
 import Image from 'next/image';
 
+import client from '~/client';
+
 export const StoreLogo = async () => {
-  const settings = await getStoreSettings();
+  const settings = await client.getStoreSettings();
 
   if (!settings) {
     return null;

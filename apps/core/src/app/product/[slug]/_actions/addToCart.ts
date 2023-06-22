@@ -1,14 +1,15 @@
 'use server';
 
-import { addCartLineItem, createCart } from '@bigcommerce/catalyst-client';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
+
+import client from '~/client';
 
 export async function handleAddToCart(productEntityId: number) {
   const cartId = cookies().get('cartId')?.value;
 
   if (cartId) {
-    await addCartLineItem(cartId, {
+    await client.addCartLineItem(cartId, {
       lineItems: [
         {
           productEntityId,
@@ -23,7 +24,7 @@ export async function handleAddToCart(productEntityId: number) {
   }
 
   // Create cart
-  const cart = await createCart([
+  const cart = await client.createCart([
     {
       productEntityId,
       quantity: 1,

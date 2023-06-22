@@ -1,6 +1,7 @@
-import { getProductReviews } from '@bigcommerce/catalyst-client';
 import { Button } from '@bigcommerce/reactant/Button';
 import { Star, StarHalf } from 'lucide-react';
+
+import client from '~/client';
 
 interface Props {
   productId: number;
@@ -8,7 +9,7 @@ interface Props {
 }
 
 export const Reviews = async ({ productId, reviewSectionId }: Props) => {
-  const product = await getProductReviews(productId);
+  const product = await client.getProductReviews(productId);
   const reviews = product?.reviews;
 
   if (!reviews) {

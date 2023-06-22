@@ -1,18 +1,19 @@
-import { client } from '../client';
+import { BigCommerceResponse, FetcherInput } from '../fetcher';
+import { generateQueryOp, QueryResult } from '../generated';
 import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
-interface GetBestSellingProductsOptions {
+export interface GetBestSellingProductsOptions {
   first: number;
   imageWidth: number;
   imageHeight: number;
 }
 
-export const getBestSellingProducts = async ({
-  first = 10,
-  imageHeight = 300,
-  imageWidth = 300,
-}: Partial<GetBestSellingProductsOptions> = {}) => {
-  const { site } = await client.query({
+export const getBestSellingProducts = async <T>(
+  customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
+  { first = 10, imageHeight = 300, imageWidth = 300 }: Partial<GetBestSellingProductsOptions> = {},
+  config: T = {} as T,
+) => {
+  const query = {
     site: {
       bestSellingProducts: {
         __args: {
@@ -43,7 +44,16 @@ export const getBestSellingProducts = async ({
         },
       },
     },
+  };
+
+  const queryOp = generateQueryOp(query);
+
+  const response = await customFetch<QueryResult<typeof query>>({
+    ...queryOp,
+    ...config,
   });
+
+  const { site } = response.data;
 
   return removeEdgesAndNodes(site.bestSellingProducts);
 };

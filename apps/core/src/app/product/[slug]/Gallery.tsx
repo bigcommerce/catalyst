@@ -1,12 +1,13 @@
-import { getProduct } from '@bigcommerce/catalyst-client';
 import Image from 'next/image';
+
+import client from '~/client';
 
 interface Props {
   productId: number;
 }
 
 export const Gallery = async ({ productId }: Props) => {
-  const product = await getProduct(productId);
+  const product = await client.getProduct(productId);
 
   if (!product) {
     return null;

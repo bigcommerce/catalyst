@@ -1,9 +1,9 @@
-import { getBrands } from '@bigcommerce/catalyst-client';
+import client from '~/client';
 
 import { BaseFooterMenu } from './BaseFooterMenu';
 
 export const BrandFooterMenu = async () => {
-  const brands = await getBrands();
+  const brands = await client.getBrands();
 
   if (brands.length === 0) {
     return null;

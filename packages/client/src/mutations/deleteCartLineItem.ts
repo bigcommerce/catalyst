@@ -1,7 +1,12 @@
-import { bigcommerceFetch } from '../fetcher';
+import { BigCommerceResponse, FetcherInput } from '../fetcher';
 import { generateMutationOp, MutationGenqlSelection, MutationResult } from '../generated';
 
-export const deleteCartLineItem = async (cartEntityId: string, lineItemEntityId: string) => {
+export const deleteCartLineItem = async <T>(
+  customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
+  cartEntityId: string,
+  lineItemEntityId: string,
+  config: T = { cache: 'no-store' } as T,
+) => {
   const mutation = {
     cart: {
       deleteCartLineItem: {
@@ -20,9 +25,9 @@ export const deleteCartLineItem = async (cartEntityId: string, lineItemEntityId:
 
   const mutationOp = generateMutationOp(mutation);
 
-  const { data } = await bigcommerceFetch<MutationResult<typeof mutation>>({
+  const { data } = await customFetch<MutationResult<typeof mutation>>({
     ...mutationOp,
-    cache: 'no-store',
+    ...config,
   });
 
   return data.cart.deleteCartLineItem?.cart;

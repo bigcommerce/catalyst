@@ -1,18 +1,18 @@
-import { client } from '../client';
-import { QueryGenqlSelection } from '../generated';
+import { BigCommerceResponse, FetcherInput } from '../fetcher';
+import { generateQueryOp, QueryGenqlSelection, QueryResult } from '../generated';
 import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
-interface GetFeaturedProductsOptions {
+export interface GetFeaturedProductsOptions {
   first: number;
   imageWidth: number;
   imageHeight: number;
 }
 
-export const getFeaturedProducts = async ({
-  first = 10,
-  imageHeight = 300,
-  imageWidth = 300,
-}: Partial<GetFeaturedProductsOptions> = {}) => {
+export const getFeaturedProducts = async <T>(
+  customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
+  { first = 10, imageHeight = 300, imageWidth = 300 }: Partial<GetFeaturedProductsOptions> = {},
+  config: T = {} as T,
+) => {
   const query = {
     site: {
       featuredProducts: {
@@ -46,7 +46,12 @@ export const getFeaturedProducts = async ({
     },
   } satisfies QueryGenqlSelection;
 
-  const { site } = await client.query(query);
+  const queryOp = generateQueryOp(query);
+  const response = await customFetch<QueryResult<typeof query>>({
+    ...queryOp,
+    ...config,
+  });
+  const { site } = response.data;
 
   return removeEdgesAndNodes(site.featuredProducts);
 };
