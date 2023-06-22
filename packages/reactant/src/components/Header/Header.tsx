@@ -4,51 +4,43 @@ import { ComponentPropsWithRef, forwardRef } from 'react';
 import { cs } from '../../utils/cs';
 
 export const Header = forwardRef<HTMLDivElement, ComponentPropsWithRef<'header'>>(
-  ({ className, children, ...props }, ref) => {
-    return (
-      <header
-        className={cs('flex items-center justify-between gap-8 bg-white py-9', className)}
-        ref={ref}
-        {...props}
-      >
-        {children}
-      </header>
-    );
-  },
+  ({ className, children, ...props }, ref) => (
+    <header
+      className={cs('flex items-center justify-between gap-8 bg-white py-9', className)}
+      ref={ref}
+      {...props}
+    >
+      {children}
+    </header>
+  ),
 );
 
 export const HeaderLogo = forwardRef<HTMLDivElement, ComponentPropsWithRef<'div'>>(
-  ({ className, children, ...props }, ref) => {
-    return (
-      <div
-        className={cs('flex-none items-center text-h4 font-black', className)}
-        ref={ref}
-        {...props}
-      >
-        {children}
-      </div>
-    );
-  },
+  ({ className, children, ...props }, ref) => (
+    <div
+      className={cs('flex-none items-center text-h4 font-black', className)}
+      ref={ref}
+      {...props}
+    >
+      {children}
+    </div>
+  ),
 );
 
 export const HeaderNav = forwardRef<HTMLDivElement, ComponentPropsWithRef<'nav'>>(
-  ({ children, className, ...props }, ref) => {
-    return (
-      <nav aria-label="Main menu" className={cs('flex', className)} ref={ref} {...props}>
-        {children}
-      </nav>
-    );
-  },
+  ({ children, className, ...props }, ref) => (
+    <nav aria-label="Main menu" className={cs('flex', className)} ref={ref} {...props}>
+      {children}
+    </nav>
+  ),
 );
 
 export const HeaderNavList = forwardRef<HTMLUListElement, ComponentPropsWithRef<'ul'>>(
-  ({ children, className, ...props }, ref) => {
-    return (
-      <ul className={cs('flex flex-row items-center gap-5', className)} ref={ref} {...props}>
-        {children}
-      </ul>
-    );
-  },
+  ({ children, className, ...props }, ref) => (
+    <ul className={cs('flex flex-row items-center gap-5', className)} ref={ref} {...props}>
+      {children}
+    </ul>
+  ),
 );
 
 interface HeaderNavLinkProps extends ComponentPropsWithRef<'a'> {
