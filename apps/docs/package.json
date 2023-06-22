@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "storybook dev -p 6006",
-    "build": "storybook build --docs"
+    "build": "storybook build"
   },
   "dependencies": {
     "@bigcommerce/reactant": "workspace:^",
