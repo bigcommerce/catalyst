@@ -61,7 +61,7 @@ export const NavigationAlignmentLeft: Story = {
         <HeaderLogo className="text-h4">
           <a href="/home">Catalyst Store</a>
         </HeaderLogo>
-        <HeaderNav className="flex-auto justify-start px-6">
+        <HeaderNav className="flex-auto justify-start">
           <HeaderNavList>
             <HeaderNavLink href="#">Men</HeaderNavLink>
             <HeaderNavLink href="#">Woman</HeaderNavLink>
@@ -91,7 +91,7 @@ export const NavigationAlignmentRight: Story = {
         <HeaderLogo>
           <a href="/home">Catalyst Store</a>
         </HeaderLogo>
-        <HeaderNav className="flex-auto justify-end px-6">
+        <HeaderNav className="flex-auto justify-end">
           <HeaderNavList className="justify">
             <HeaderNavLink href="#">Men</HeaderNavLink>
             <HeaderNavLink href="#">Woman</HeaderNavLink>

@@ -6,7 +6,7 @@ export const Header = forwardRef<HTMLDivElement, ComponentPropsWithRef<'header'>
   ({ className, children, ...props }, ref) => {
     return (
       <header
-        className={cs('flex items-center justify-between bg-white py-9', className)}
+        className={cs('flex items-center justify-between gap-8 bg-white py-9', className)}
         ref={ref}
         {...props}
       >
