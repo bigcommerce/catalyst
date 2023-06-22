@@ -35,9 +35,9 @@ export const BasicExample: Story = {
       </HeaderSection>
       <HeaderNav>
         <HeaderNavList>
-          <HeaderNavLink href="#">Men</HeaderNavLink>
-          <HeaderNavLink href="#">Woman</HeaderNavLink>
-          <HeaderNavLink href="#">Accessories</HeaderNavLink>
+          <HeaderNavLink href="/men">Men</HeaderNavLink>
+          <HeaderNavLink href="/woman">Woman</HeaderNavLink>
+          <HeaderNavLink href="/accessories">Accessories</HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
       <HeaderSection>
@@ -65,9 +65,9 @@ export const NavigationAlignmentLeft: Story = {
       </HeaderSection>
       <HeaderNav className="flex-auto justify-start">
         <HeaderNavList>
-          <HeaderNavLink href="#">Men</HeaderNavLink>
-          <HeaderNavLink href="#">Woman</HeaderNavLink>
-          <HeaderNavLink href="#">Accessories</HeaderNavLink>
+          <HeaderNavLink href="/men">Men</HeaderNavLink>
+          <HeaderNavLink href="/woman">Woman</HeaderNavLink>
+          <HeaderNavLink href="/accessories">Accessories</HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
       <HeaderSection>
@@ -95,9 +95,9 @@ export const NavigationAlignmentRight: Story = {
       </HeaderSection>
       <HeaderNav className="flex-auto justify-end">
         <HeaderNavList className="justify">
-          <HeaderNavLink href="#">Men</HeaderNavLink>
-          <HeaderNavLink href="#">Woman</HeaderNavLink>
-          <HeaderNavLink href="#">Accessories</HeaderNavLink>
+          <HeaderNavLink href="/men">Men</HeaderNavLink>
+          <HeaderNavLink href="/woman">Woman</HeaderNavLink>
+          <HeaderNavLink href="/accessories">Accessories</HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
       <HeaderSection>
@@ -120,9 +120,9 @@ export const LogoCentered: Story = {
     <Header>
       <HeaderNav className="flex-1">
         <HeaderNavList>
-          <HeaderNavLink href="#">Men</HeaderNavLink>
-          <HeaderNavLink href="#">Woman</HeaderNavLink>
-          <HeaderNavLink href="#">Accessories</HeaderNavLink>
+          <HeaderNavLink href="/men">Men</HeaderNavLink>
+          <HeaderNavLink href="/woman">Woman</HeaderNavLink>
+          <HeaderNavLink href="/accessories">Accessories</HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
       <HeaderSection>
@@ -168,9 +168,9 @@ export const BottomNavigationLeft: Story = {
       </div>
       <HeaderNav className="w-full border-t border-gray-200 pt-2">
         <HeaderNavList>
-          <HeaderNavLink href="#">Men</HeaderNavLink>
-          <HeaderNavLink href="#">Woman</HeaderNavLink>
-          <HeaderNavLink href="#">Accessories</HeaderNavLink>
+          <HeaderNavLink href="/men">Men</HeaderNavLink>
+          <HeaderNavLink href="/woman">Woman</HeaderNavLink>
+          <HeaderNavLink href="/accessories">Accessories</HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
     </Header>
@@ -200,9 +200,9 @@ export const BottomNavigationCenter: Story = {
       </div>
       <HeaderNav className="flex w-full justify-center border-t border-gray-200 pt-2">
         <HeaderNavList>
-          <HeaderNavLink href="#">Men</HeaderNavLink>
-          <HeaderNavLink href="#">Woman</HeaderNavLink>
-          <HeaderNavLink href="#">Accessories</HeaderNavLink>
+          <HeaderNavLink href="/men">Men</HeaderNavLink>
+          <HeaderNavLink href="/woman">Woman</HeaderNavLink>
+          <HeaderNavLink href="/accessories">Accessories</HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
     </Header>
@@ -216,7 +216,7 @@ export const BottomNavigationRight: Story = {
         <HeaderSection className="text-h4 font-black">
           <a href="/home">Catalyst Store</a>
         </HeaderSection>
-        <HeaderSection className="flex items-center gap-4">
+        <HeaderSection>
           <a aria-label="Search" href="/search">
             <Search aria-hidden="true" />
           </a>
@@ -230,9 +230,9 @@ export const BottomNavigationRight: Story = {
       </div>
       <HeaderNav className="flex w-full justify-end border-t border-gray-200 pt-2">
         <HeaderNavList>
-          <HeaderNavLink href="#">Men</HeaderNavLink>
-          <HeaderNavLink href="#">Woman</HeaderNavLink>
-          <HeaderNavLink href="#">Accessories</HeaderNavLink>
+          <HeaderNavLink href="/men">Men</HeaderNavLink>
+          <HeaderNavLink href="/woman">Woman</HeaderNavLink>
+          <HeaderNavLink href="/accessories">Accessories</HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
     </Header>
@@ -252,17 +252,17 @@ export const AsChild: Story = {
       <HeaderNav>
         <HeaderNavList>
           <HeaderNavLink asChild>
-            <CustomLink href="#">Men</CustomLink>
+            <CustomLink href="/men">Men</CustomLink>
           </HeaderNavLink>
           <HeaderNavLink asChild>
-            <CustomLink href="#">Woman</CustomLink>
+            <CustomLink href="/woman">Woman</CustomLink>
           </HeaderNavLink>
           <HeaderNavLink asChild>
-            <CustomLink href="#">Accessories</CustomLink>
+            <CustomLink href="/accessories">Accessories</CustomLink>
           </HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
-      <HeaderSection className="flex items-center  gap-4">
+      <HeaderSection>
         <a aria-label="Search" href="/search">
           <Search aria-hidden="true" />
         </a>
