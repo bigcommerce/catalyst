@@ -145,6 +145,105 @@ export const LogoCentered: Story = {
   },
 };
 
+export const BottomNavigationLeft: Story = {
+  args: {
+    className: 'flex-col',
+    children: (
+      <>
+        <div className="flex w-full flex-row justify-between">
+          <HeaderLogo>
+            <a href="/home">Catalyst Store</a>
+          </HeaderLogo>
+          <div className="flex items-center gap-4">
+            <a aria-label="Search" href="/search">
+              <Search aria-hidden="true" />
+            </a>
+            <a aria-label="Profile" href="/profile">
+              <User aria-hidden="true" />
+            </a>
+            <a aria-label="Cart" href="/cart">
+              <ShoppingCart aria-hidden="true" />
+            </a>
+          </div>
+        </div>
+        <HeaderNav className="w-full border-t border-gray-200">
+          <HeaderNavList>
+            <HeaderNavLink href="#">Men</HeaderNavLink>
+            <HeaderNavLink href="#">Woman</HeaderNavLink>
+            <HeaderNavLink href="#">Accesories</HeaderNavLink>
+          </HeaderNavList>
+        </HeaderNav>
+      </>
+    ),
+  },
+};
+
+export const BottomNavigationCenter: Story = {
+  args: {
+    className: 'flex-col',
+    children: (
+      <>
+        <div className="flex w-full flex-row justify-between">
+          <HeaderLogo>
+            <a href="/home">Catalyst Store</a>
+          </HeaderLogo>
+          <div className="flex items-center gap-4">
+            <a aria-label="Search" href="/search">
+              <Search aria-hidden="true" />
+            </a>
+            <a aria-label="Profile" href="/profile">
+              <User aria-hidden="true" />
+            </a>
+            <a aria-label="Cart" href="/cart">
+              <ShoppingCart aria-hidden="true" />
+            </a>
+          </div>
+        </div>
+        <HeaderNav className="flex w-full justify-center border-t border-gray-200">
+          <HeaderNavList>
+            <HeaderNavLink href="#">Men</HeaderNavLink>
+            <HeaderNavLink href="#">Woman</HeaderNavLink>
+            <HeaderNavLink href="#">Accesories</HeaderNavLink>
+          </HeaderNavList>
+        </HeaderNav>
+      </>
+    ),
+  },
+};
+
+export const BottomNavigationRight: Story = {
+  args: {
+    className: 'flex-col',
+    children: (
+      <>
+        <div className="flex w-full flex-row justify-between">
+          <HeaderLogo>
+            <a href="/home">Catalyst Store</a>
+          </HeaderLogo>
+          <div className="flex items-center gap-4">
+            <a aria-label="Search" href="/search">
+              <Search aria-hidden="true" />
+            </a>
+            <a aria-label="Profile" href="/profile">
+              <User aria-hidden="true" />
+            </a>
+            <a aria-label="Cart" href="/cart">
+              <ShoppingCart aria-hidden="true" />
+            </a>
+          </div>
+        </div>
+        <HeaderNav className="flex w-full justify-end border-t border-gray-200">
+          <HeaderNavList>
+            <HeaderNavLink href="#">Men</HeaderNavLink>
+            <HeaderNavLink href="#">Woman</HeaderNavLink>
+            <HeaderNavLink href="#">Accesories</HeaderNavLink>
+          </HeaderNavList>
+        </HeaderNav>
+      </>
+    ),
+  },
+};
+
 const CustomLink = ({ children, ...props }: ComponentPropsWithoutRef<'a'>) => {
   return <a {...props}>{children}</a>;
 };
