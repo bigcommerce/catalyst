@@ -82,7 +82,7 @@ export const NavigationAlignmentLeft: Story = {
 };
 
 export const NavigationAlignmentRight: Story = {
-  render: () => {
+  render: () => (
     <Header>
       <HeaderLogo>
         <a href="/home">Catalyst Store</a>
@@ -105,8 +105,8 @@ export const NavigationAlignmentRight: Story = {
           <ShoppingCart aria-hidden="true" />
         </a>
       </div>
-    </Header>;
-  },
+    </Header>
+  ),
 };
 
 export const LogoCentered: Story = {
