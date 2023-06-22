@@ -213,8 +213,10 @@ export const BottomNavigationRight: Story = {
   render: () => (
     <Header className="flex-col">
       <div className="flex w-full flex-row justify-between">
-        <HeaderSection className="text-h4 font-black">
-          <a href="/home">Catalyst Store</a>
+        <HeaderSection>
+          <a className="text-h4 font-black" href="/home">
+            Catalyst Store
+          </a>
         </HeaderSection>
         <HeaderSection>
           <a aria-label="Search" href="/search">
@@ -246,8 +248,10 @@ const CustomLink = ({ children, ...props }: ComponentPropsWithoutRef<'a'>) => {
 export const AsChild: Story = {
   render: () => (
     <Header>
-      <HeaderSection className="text-h4 font-black">
-        <a href="/home">Catalyst Store</a>
+      <HeaderSection>
+        <a className="text-h4 font-black" href="/home">
+          Catalyst Store
+        </a>
       </HeaderSection>
       <HeaderNav>
         <HeaderNavList>
