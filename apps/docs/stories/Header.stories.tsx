@@ -7,6 +7,7 @@ import {
 } from '@bigcommerce/reactant/Header';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Search, ShoppingCart, User } from 'lucide-react';
+import { ComponentPropsWithoutRef } from 'react';
 
 const meta: Meta<typeof Header> = {
   component: Header,
@@ -129,6 +130,46 @@ export const LogoCentered: Story = {
           <a href="/home">Catalyst Store</a>
         </HeaderLogo>
         <div className="flex flex-1 items-center justify-end gap-4">
+          <a aria-label="Search" href="/search">
+            <Search aria-hidden="true" />
+          </a>
+          <a aria-label="Profile" href="/profile">
+            <User aria-hidden="true" />
+          </a>
+          <a aria-label="Cart" href="/cart">
+            <ShoppingCart aria-hidden="true" />
+          </a>
+        </div>
+      </>
+    ),
+  },
+};
+
+const CustomLink = ({ children, ...props }: ComponentPropsWithoutRef<'a'>) => {
+  return <a {...props}>{children}</a>;
+};
+
+export const AsChild: Story = {
+  args: {
+    children: (
+      <>
+        <HeaderLogo>
+          <a href="/home">Catalyst Store</a>
+        </HeaderLogo>
+        <HeaderNav>
+          <HeaderNavList>
+            <HeaderNavLink asChild>
+              <CustomLink href="#">Men</CustomLink>
+            </HeaderNavLink>
+            <HeaderNavLink asChild>
+              <CustomLink href="#">Woman</CustomLink>
+            </HeaderNavLink>
+            <HeaderNavLink asChild>
+              <CustomLink href="#">Accesories</CustomLink>
+            </HeaderNavLink>
+          </HeaderNavList>
+        </HeaderNav>
+        <div className="flex items-center  gap-4">
           <a aria-label="Search" href="/search">
             <Search aria-hidden="true" />
           </a>
