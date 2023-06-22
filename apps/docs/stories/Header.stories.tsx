@@ -35,7 +35,7 @@ export const BasicExample: Story = {
         <HeaderNavList>
           <HeaderNavLink href="#">Men</HeaderNavLink>
           <HeaderNavLink href="#">Woman</HeaderNavLink>
-          <HeaderNavLink href="#">Accesories</HeaderNavLink>
+          <HeaderNavLink href="#">Accessories</HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
       <div className="flex items-center gap-4">
@@ -63,7 +63,7 @@ export const NavigationAlignmentLeft: Story = {
         <HeaderNavList>
           <HeaderNavLink href="#">Men</HeaderNavLink>
           <HeaderNavLink href="#">Woman</HeaderNavLink>
-          <HeaderNavLink href="#">Accesories</HeaderNavLink>
+          <HeaderNavLink href="#">Accessories</HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
       <div className="flex items-center gap-4">
@@ -91,7 +91,7 @@ export const NavigationAlignmentRight: Story = {
         <HeaderNavList className="justify">
           <HeaderNavLink href="#">Men</HeaderNavLink>
           <HeaderNavLink href="#">Woman</HeaderNavLink>
-          <HeaderNavLink href="#">Accesories</HeaderNavLink>
+          <HeaderNavLink href="#">Accessories</HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
       <div className="flex items-center gap-4">
@@ -116,7 +116,7 @@ export const LogoCentered: Story = {
         <HeaderNavList>
           <HeaderNavLink href="#">Men</HeaderNavLink>
           <HeaderNavLink href="#">Woman</HeaderNavLink>
-          <HeaderNavLink href="#">Accesories</HeaderNavLink>
+          <HeaderNavLink href="#">Accessories</HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
       <HeaderLogo>
@@ -160,7 +160,7 @@ export const BottomNavigationLeft: Story = {
         <HeaderNavList>
           <HeaderNavLink href="#">Men</HeaderNavLink>
           <HeaderNavLink href="#">Woman</HeaderNavLink>
-          <HeaderNavLink href="#">Accesories</HeaderNavLink>
+          <HeaderNavLink href="#">Accessories</HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
     </Header>
@@ -190,7 +190,7 @@ export const BottomNavigationCenter: Story = {
         <HeaderNavList>
           <HeaderNavLink href="#">Men</HeaderNavLink>
           <HeaderNavLink href="#">Woman</HeaderNavLink>
-          <HeaderNavLink href="#">Accesories</HeaderNavLink>
+          <HeaderNavLink href="#">Accessories</HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
     </Header>
@@ -220,7 +220,7 @@ export const BottomNavigationRight: Story = {
         <HeaderNavList>
           <HeaderNavLink href="#">Men</HeaderNavLink>
           <HeaderNavLink href="#">Woman</HeaderNavLink>
-          <HeaderNavLink href="#">Accesories</HeaderNavLink>
+          <HeaderNavLink href="#">Accessories</HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
     </Header>
@@ -246,7 +246,7 @@ export const AsChild: Story = {
             <CustomLink href="#">Woman</CustomLink>
           </HeaderNavLink>
           <HeaderNavLink asChild>
-            <CustomLink href="#">Accesories</CustomLink>
+            <CustomLink href="#">Accessories</CustomLink>
           </HeaderNavLink>
         </HeaderNavList>
       </HeaderNav>
