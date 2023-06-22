@@ -26,3 +26,11 @@ export const Secondary: Story = {
     variant: 'secondary',
   },
 };
+
+export const AsChild: Story = {
+  args: {
+    asChild: true,
+    // eslint-disable-next-line jsx-a11y/anchor-is-valid
+    children: <a href="#">This is a link!</a>,
+  },
+};
