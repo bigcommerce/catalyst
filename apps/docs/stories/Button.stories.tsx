@@ -26,3 +26,10 @@ export const Secondary: Story = {
     variant: 'secondary',
   },
 };
+
+export const AsChild: Story = {
+  args: {
+    asChild: true,
+    children: <a href="/link">This is a link!</a>,
+  },
+};

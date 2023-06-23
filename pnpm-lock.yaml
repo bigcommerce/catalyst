@@ -96,6 +96,9 @@ importers:
       '@bigcommerce/reactant':
         specifier: workspace:^
         version: link:../../packages/reactant
+      lucide-react:
+        specifier: ^0.216.0
+        version: 0.216.0(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0

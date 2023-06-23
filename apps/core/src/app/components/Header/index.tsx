@@ -1,4 +1,11 @@
 import { getCart, getCategoryTree } from '@bigcommerce/catalyst-client';
+import {
+  HeaderNavLink,
+  HeaderNavList,
+  HeaderSection,
+  Header as ReactantHeader,
+  HeaderNav as ReactantHeaderNav,
+} from '@bigcommerce/reactant/Header';
 import { Search, ShoppingCart } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
@@ -41,38 +48,38 @@ const HeaderNav = async () => {
   const categoryTree = await getCategoryTree();
 
   return (
-    <nav className="flex-auto self-center">
-      <ul className="flex flex-row items-center justify-center gap-4">
+    <ReactantHeaderNav>
+      <HeaderNavList className="justify-center">
         {categoryTree.map((category) => (
-          <Link
-            className="flex flex-row items-center p-3 font-semibold"
-            href={`/category/${category.entityId}`}
-            key={category.path}
-          >
-            {category.name}
-          </Link>
+          <HeaderNavLink asChild key={category.path}>
+            <Link href={`/category/${category.entityId}`}>{category.name}</Link>
+          </HeaderNavLink>
         ))}
-      </ul>
-    </nav>
+      </HeaderNavList>
+    </ReactantHeaderNav>
   );
 };
 
 export const Header = () => {
   return (
-    <header className="my-6 flex items-center">
-      <Link href="/">
-        <StoreLogo />
-      </Link>
+    <ReactantHeader>
+      <HeaderSection>
+        <Link href="/">
+          <StoreLogo />
+        </Link>
+      </HeaderSection>
 
       <HeaderNav />
 
-      <Link aria-label="Search" className="hidden sm:mx-4 sm:block" href="/search">
-        <Search />
-      </Link>
+      <HeaderSection>
+        <Link aria-label="Search" className="hidden sm:block" href="/search">
+          <Search />
+        </Link>
 
-      <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
-        <Cart />
-      </Suspense>
-    </header>
+        <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
+          <Cart />
+        </Suspense>
+      </HeaderSection>
+    </ReactantHeader>
   );
 };
