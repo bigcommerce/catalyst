@@ -1,9 +1,9 @@
 import { Slot } from '@radix-ui/react-slot';
-import { ComponentPropsWithRef, forwardRef } from 'react';
+import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
 import { cs } from '../../utils/cs';
 
-export const Header = forwardRef<HTMLDivElement, ComponentPropsWithRef<'header'>>(
+export const Header = forwardRef<ElementRef<'header'>, ComponentPropsWithRef<'header'>>(
   ({ className, children, ...props }, ref) => (
     <header
       className={cs('flex items-center justify-between gap-12 bg-white py-9', className)}
@@ -15,7 +15,7 @@ export const Header = forwardRef<HTMLDivElement, ComponentPropsWithRef<'header'>
   ),
 );
 
-export const HeaderSection = forwardRef<HTMLDivElement, ComponentPropsWithRef<'div'>>(
+export const HeaderSection = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ className, children, ...props }, ref) => (
     <div className={cs('flex items-center gap-8', className)} ref={ref} {...props}>
       {children}
@@ -23,7 +23,7 @@ export const HeaderSection = forwardRef<HTMLDivElement, ComponentPropsWithRef<'d
   ),
 );
 
-export const HeaderNav = forwardRef<HTMLDivElement, ComponentPropsWithRef<'nav'>>(
+export const HeaderNav = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'nav'>>(
   ({ children, className, ...props }, ref) => (
     <nav aria-label="Main menu" className={cs('flex', className)} ref={ref} {...props}>
       {children}
@@ -31,7 +31,7 @@ export const HeaderNav = forwardRef<HTMLDivElement, ComponentPropsWithRef<'nav'>
   ),
 );
 
-export const HeaderNavList = forwardRef<HTMLUListElement, ComponentPropsWithRef<'ul'>>(
+export const HeaderNavList = forwardRef<ElementRef<'ul'>, ComponentPropsWithRef<'ul'>>(
   ({ children, className, ...props }, ref) => (
     <ul className={cs('flex flex-row items-center gap-5', className)} ref={ref} {...props}>
       {children}
@@ -43,7 +43,7 @@ interface HeaderNavLinkProps extends ComponentPropsWithRef<'a'> {
   asChild?: boolean;
 }
 
-export const HeaderNavLink = forwardRef<HTMLAnchorElement, HeaderNavLinkProps>(
+export const HeaderNavLink = forwardRef<ElementRef<'a'>, HeaderNavLinkProps>(
   ({ asChild = false, children, className, ...props }, ref) => {
     const Comp = asChild ? Slot : 'a';
 
