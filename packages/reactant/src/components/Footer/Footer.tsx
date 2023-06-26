@@ -2,7 +2,7 @@ import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
 import { cs } from '../../utils/cs';
 
-export const Footer = forwardRef<HTMLDivElement, ComponentPropsWithRef<'footer'>>(
+export const Footer = forwardRef<ElementRef<'footer'>, ComponentPropsWithRef<'footer'>>(
   ({ children, className, ...props }, ref) => (
     <footer className={cs(className)} ref={ref} {...props}>
       {children}
@@ -10,7 +10,7 @@ export const Footer = forwardRef<HTMLDivElement, ComponentPropsWithRef<'footer'>
   ),
 );
 
-export const FooterContent = forwardRef<HTMLDivElement, ComponentPropsWithRef<'div'>>(
+export const FooterContent = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => (
     <div
       className={cs(
@@ -25,7 +25,7 @@ export const FooterContent = forwardRef<HTMLDivElement, ComponentPropsWithRef<'d
   ),
 );
 
-export const FooterSiteMap = forwardRef<HTMLDivElement, ComponentPropsWithRef<'div'>>(
+export const FooterSiteMap = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => (
     <div
       className={cs('grid grid-cols-1 gap-8 sm:col-span-2 sm:grid-cols-4', className)}
@@ -37,7 +37,7 @@ export const FooterSiteMap = forwardRef<HTMLDivElement, ComponentPropsWithRef<'d
   ),
 );
 
-export const FooterSiteMapCategory = forwardRef<HTMLDivElement, ComponentPropsWithRef<'div'>>(
+export const FooterSiteMapCategory = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => (
     <div className={cs(className)} ref={ref} {...props}>
       {children}
@@ -54,7 +54,7 @@ export const FooterSiteMapCategoryTitle = forwardRef<
   </h3>
 ));
 
-export const FooterSiteMapCategoryList = forwardRef<HTMLUListElement, ComponentPropsWithRef<'ul'>>(
+export const FooterSiteMapCategoryList = forwardRef<ElementRef<'ul'>, ComponentPropsWithRef<'ul'>>(
   ({ children, className, ...props }, ref) => (
     <ul className={cs('space-y-4', className)} ref={ref} {...props}>
       {children}
@@ -62,7 +62,7 @@ export const FooterSiteMapCategoryList = forwardRef<HTMLUListElement, ComponentP
   ),
 );
 
-export const FooterSiteMapCategoryItem = forwardRef<HTMLLIElement, ComponentPropsWithRef<'li'>>(
+export const FooterSiteMapCategoryItem = forwardRef<ElementRef<'li'>, ComponentPropsWithRef<'li'>>(
   ({ children, className, ...props }, ref) => (
     <li className={cs(className)} ref={ref} {...props}>
       {children}
@@ -70,7 +70,7 @@ export const FooterSiteMapCategoryItem = forwardRef<HTMLLIElement, ComponentProp
   ),
 );
 
-export const FooterContactInformation = forwardRef<HTMLDivElement, ComponentPropsWithRef<'div'>>(
+export const FooterContactInformation = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => (
     <div
       className={cs('flex flex-col gap-4 sm:col-span-1 md:order-first', className)}
@@ -100,7 +100,7 @@ export const FooterContactInformationSocials = forwardRef<
   </div>
 ));
 
-export const FooterAddendum = forwardRef<HTMLDivElement, ComponentPropsWithRef<'div'>>(
+export const FooterAddendum = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => (
     <div
       className={cs(
