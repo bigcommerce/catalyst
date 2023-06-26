@@ -1,4 +1,5 @@
 import { getStoreSettings } from '@bigcommerce/catalyst-client';
+import { FooterContactInformationSocials } from '@bigcommerce/reactant/Footer';
 import Link from 'next/link';
 import { ComponentPropsWithoutRef } from 'react';
 
@@ -28,7 +29,7 @@ export const SocialIcons = async () => {
   }
 
   return (
-    <ul className="mt-8 flex flex-wrap gap-4">
+    <FooterContactInformationSocials>
       {socialMediaLinks.map((link) => {
         const Icon = ICON_MAP[link.name];
 
@@ -37,13 +38,11 @@ export const SocialIcons = async () => {
         }
 
         return (
-          <li key={link.name}>
-            <Link href={link.url}>
-              <Icon />
-            </Link>
-          </li>
+          <Link href={link.url} key={link.name}>
+            <Icon />
+          </Link>
         );
       })}
-    </ul>
+    </FooterContactInformationSocials>
   );
 };
