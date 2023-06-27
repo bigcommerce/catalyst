@@ -1,8 +1,4 @@
 import { getStoreSettings } from '@bigcommerce/catalyst-client';
-import {
-  FooterContactInformationAddress,
-  FooterContactInformationPhoneNumber,
-} from '@bigcommerce/reactant/Footer';
 import { Fragment } from 'react';
 
 export const ContactInformation = async () => {
@@ -15,18 +11,18 @@ export const ContactInformation = async () => {
 
   return (
     <>
-      <FooterContactInformationAddress>
+      <address className="not-italic">
         {contact.address.split('\n').map((line) => (
           <Fragment key={line}>
             {line}
             <br />
           </Fragment>
         ))}
-      </FooterContactInformationAddress>
+      </address>
       {contact.phone ? (
-        <FooterContactInformationPhoneNumber>
+        <a href={`tel:${contact.phone}`}>
           <p>{contact.phone}</p>
-        </FooterContactInformationPhoneNumber>
+        </a>
       ) : null}
     </>
   );

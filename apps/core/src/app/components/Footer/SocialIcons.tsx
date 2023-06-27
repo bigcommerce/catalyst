@@ -1,5 +1,5 @@
 import { getStoreSettings } from '@bigcommerce/catalyst-client';
-import { FooterContactInformationSocials } from '@bigcommerce/reactant/Footer';
+import { FooterNav, FooterNavGroupList, FooterNavLink } from '@bigcommerce/reactant/Footer';
 import Link from 'next/link';
 import { ComponentPropsWithoutRef } from 'react';
 
@@ -29,20 +29,24 @@ export const SocialIcons = async () => {
   }
 
   return (
-    <FooterContactInformationSocials>
-      {socialMediaLinks.map((link) => {
-        const Icon = ICON_MAP[link.name];
+    <FooterNav aria-label="Social media links" className="block">
+      <FooterNavGroupList>
+        {socialMediaLinks.map((link) => {
+          const Icon = ICON_MAP[link.name];
 
-        if (!Icon) {
-          return null;
-        }
+          if (!Icon) {
+            return null;
+          }
 
-        return (
-          <Link href={link.url} key={link.name}>
-            <Icon />
-          </Link>
-        );
-      })}
-    </FooterContactInformationSocials>
+          return (
+            <FooterNavLink asChild key={link.name}>
+              <Link href={link.url}>
+                <Icon />
+              </Link>
+            </FooterNavLink>
+          );
+        })}
+      </FooterNavGroupList>
+    </FooterNav>
   );
 };

@@ -1,17 +1,12 @@
 import {
   Footer,
   FooterAddendum,
-  FooterAddendumCopyright,
-  FooterAddendumPaymentOptions,
-  FooterContactInformation,
-  FooterContactInformationAddress,
-  FooterContactInformationPhoneNumber,
-  FooterContactInformationSocials,
-  FooterSiteMap,
-  FooterSiteMapCategory,
-  FooterSiteMapCategoryItem,
-  FooterSiteMapCategoryList,
-  FooterSiteMapCategoryTitle,
+  FooterNav,
+  FooterNavGroup,
+  FooterNavGroupList,
+  FooterNavGroupTitle,
+  FooterNavLink,
+  FooterSection,
 } from '@bigcommerce/reactant/Footer';
 import { Meta, StoryObj } from '@storybook/react';
 import { FacebookIcon, InstagramIcon, TwitterIcon } from 'lucide-react';
@@ -37,293 +32,276 @@ type Story = StoryObj<typeof Footer>;
 export const BasicExample: Story = {
   render: () => (
     <Footer>
-      <FooterSiteMap>
-        <FooterSiteMapCategory>
-          <FooterSiteMapCategoryTitle>Categories</FooterSiteMapCategoryTitle>
-          <FooterSiteMapCategoryList>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/on-sale">On Sale</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/new-arrivals">New arrivals</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/men">Men</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/woman">Women</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/accessories">Accessories</a>
-            </FooterSiteMapCategoryItem>
-          </FooterSiteMapCategoryList>
-        </FooterSiteMapCategory>
-        <FooterSiteMapCategory>
-          <FooterSiteMapCategoryTitle>Top Brands</FooterSiteMapCategoryTitle>
-          <FooterSiteMapCategoryList>
-            <FooterSiteMapCategoryItem>
-              <a href="/brands/arcminute">Arcminute</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/brands/base-london">Base London</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/brands/birkenstock">Birkenstock</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="brands/good-for-nothing">Good for Nothing</a>
-            </FooterSiteMapCategoryItem>
-          </FooterSiteMapCategoryList>
-        </FooterSiteMapCategory>
-        <FooterSiteMapCategory>
-          <FooterSiteMapCategoryTitle>About Us</FooterSiteMapCategoryTitle>
-          <FooterSiteMapCategoryList>
-            <FooterSiteMapCategoryItem>
-              <a href="/contact-us">Contact Us</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/about">About brand</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/blog">Blog</a>
-            </FooterSiteMapCategoryItem>
-          </FooterSiteMapCategoryList>
-        </FooterSiteMapCategory>
-        <FooterSiteMapCategory>
-          <FooterSiteMapCategoryTitle>Help</FooterSiteMapCategoryTitle>
-          <FooterSiteMapCategoryList>
-            <FooterSiteMapCategoryItem>
-              <a href="/shipping-and-returns">Shipping & returns</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/privacy-policy">Privacy policy</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/terms-and-conditions">Terms & conditions</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/faq">FAQ</a>
-            </FooterSiteMapCategoryItem>
-          </FooterSiteMapCategoryList>
-        </FooterSiteMapCategory>
-      </FooterSiteMap>
-      <FooterContactInformation>
-        <span className="text-h4 font-black">Catalyst Store</span>
-        <FooterContactInformationAddress>
-          24 Wisteria Lane, Fairview, Eagle <br />
-          01234 United States
-        </FooterContactInformationAddress>
-        <FooterContactInformationPhoneNumber>
+      <FooterSection className="md:flex-row">
+        <FooterNav>
+          <FooterNavGroup>
+            <FooterNavGroupTitle>Categories</FooterNavGroupTitle>
+            <FooterNavGroupList>
+              <FooterNavLink href="/categories/on-sale">On Sale</FooterNavLink>
+              <FooterNavLink href="/categories/new-arrivals">New arrivals</FooterNavLink>
+              <FooterNavLink href="/categories/men">Men</FooterNavLink>
+              <FooterNavLink href="/categories/woman">Women</FooterNavLink>
+              <FooterNavLink href="/categories/accessories">Accessories</FooterNavLink>
+            </FooterNavGroupList>
+          </FooterNavGroup>
+          <FooterNavGroup>
+            <FooterNavGroupTitle>Top Brands</FooterNavGroupTitle>
+            <FooterNavGroupList>
+              <FooterNavLink href="/brands/arcminute">Arcminute</FooterNavLink>
+              <FooterNavLink href="/brands/base-london">Base London</FooterNavLink>
+              <FooterNavLink href="/brands/birkenstock">Birkenstock</FooterNavLink>
+              <FooterNavLink href="brands/good-for-nothing">Good for Nothing</FooterNavLink>
+            </FooterNavGroupList>
+          </FooterNavGroup>
+          <FooterNavGroup>
+            <FooterNavGroupTitle>About Us</FooterNavGroupTitle>
+            <FooterNavGroupList>
+              <FooterNavLink href="/contact-us">Contact Us</FooterNavLink>
+              <FooterNavLink href="/about">About brand</FooterNavLink>
+              <FooterNavLink href="/blog">Blog</FooterNavLink>
+            </FooterNavGroupList>
+          </FooterNavGroup>
+          <FooterNavGroup>
+            <FooterNavGroupTitle>Help</FooterNavGroupTitle>
+            <FooterNavGroupList>
+              <FooterNavLink href="/shipping-and-returns">Shipping & returns</FooterNavLink>
+              <FooterNavLink href="/privacy-policy">Privacy policy</FooterNavLink>
+              <FooterNavLink href="/terms-and-conditions">Terms & conditions</FooterNavLink>
+              <FooterNavLink href="/faq">FAQ</FooterNavLink>
+            </FooterNavGroupList>
+          </FooterNavGroup>
+        </FooterNav>
+        <FooterSection className="shrink-0 grow gap-4 md:order-first">
+          <span className="text-h4 font-black">Catalyst Store</span>
+          <address className="not-italic">
+            24 Wisteria Lane, Fairview, Eagle <br />
+            01234 United States
+          </address>
           <a href="tel:5555551234">(555) 555-1234</a>
-        </FooterContactInformationPhoneNumber>
-        <FooterContactInformationSocials>
-          <a href="facebook.com/catalyst-store">
-            <FacebookIcon />
-          </a>
-          <a href="instagram.com/catalyst-store">
-            <InstagramIcon />
-          </a>
-          <a href="twitter.com/catalyst-store">
-            <TwitterIcon />
-          </a>
-        </FooterContactInformationSocials>
-      </FooterContactInformation>
+          <FooterNav aria-label="Social media links" className="block">
+            <FooterNavGroupList className="flex items-center space-x-4 space-y-0">
+              <FooterNavLink aria-label="Facebook" href="facebook.com/catalyst-store">
+                <FacebookIcon />
+              </FooterNavLink>
+              <FooterNavLink aria-label="Instagram" href="instagram.com/catalyst-store">
+                <InstagramIcon />
+              </FooterNavLink>
+              <FooterNavLink aria-label="Twitter" href="twitter.com/catalyst-store">
+                <TwitterIcon />
+              </FooterNavLink>
+            </FooterNavGroupList>
+          </FooterNav>
+        </FooterSection>
+      </FooterSection>
       <FooterAddendum>
-        <FooterAddendumPaymentOptions>
+        <FooterSection className="grow flex-row gap-6 sm:justify-end">
           <AmazonIcon />
           <AmericanExpressIcon />
           <ApplePayIcon />
           <MastercardIcon />
           <PayPalIcon />
           <VisaIcon />
-        </FooterAddendumPaymentOptions>
-        <FooterAddendumCopyright>
-          © {new Date().getFullYear()} Catalyst Store – Powered by BigCommerce
-        </FooterAddendumCopyright>
+        </FooterSection>
+        <FooterSection className="grow sm:order-first">
+          <p className="text-gray-500">
+            © {new Date().getFullYear()} Catalyst Store – Powered by BigCommerce
+          </p>
+        </FooterSection>
       </FooterAddendum>
     </Footer>
   ),
 };
 
-export const CustomColumns: Story = {
+export const MultiRowFooterNav: Story = {
   render: () => (
     <Footer>
-      <FooterSiteMap className="sm:grid-cols-3 md:col-span-4">
-        <FooterSiteMapCategory>
-          <FooterSiteMapCategoryTitle>Categories</FooterSiteMapCategoryTitle>
-          <FooterSiteMapCategoryList>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/on-sale">On Sale</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/new-arrivals">New arrivals</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/men">Men</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/woman">Women</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/accessories">Accessories</a>
-            </FooterSiteMapCategoryItem>
-          </FooterSiteMapCategoryList>
-        </FooterSiteMapCategory>
-        <FooterSiteMapCategory>
-          <FooterSiteMapCategoryTitle>Top Brands</FooterSiteMapCategoryTitle>
-          <FooterSiteMapCategoryList>
-            <FooterSiteMapCategoryItem>
-              <a href="/brands/arcminute">Arcminute</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/brands/base-london">Base London</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/brands/birkenstock">Birkenstock</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="brands/good-for-nothing">Good for Nothing</a>
-            </FooterSiteMapCategoryItem>
-          </FooterSiteMapCategoryList>
-        </FooterSiteMapCategory>
-        <FooterSiteMapCategory>
-          <FooterSiteMapCategoryTitle>About Us</FooterSiteMapCategoryTitle>
-          <FooterSiteMapCategoryList>
-            <FooterSiteMapCategoryItem>
-              <a href="/contact-us">Contact Us</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/about">About brand</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/blog">Blog</a>
-            </FooterSiteMapCategoryItem>
-          </FooterSiteMapCategoryList>
-        </FooterSiteMapCategory>
-      </FooterSiteMap>
-      <FooterContactInformation className="md:col-span-4">
-        <span className="text-h4 font-black">Catalyst Store</span>
-        <FooterContactInformationAddress>
-          24 Wisteria Lane, Fairview, Eagle <br />
-          01234 United States
-        </FooterContactInformationAddress>
-        <FooterContactInformationPhoneNumber>
+      <FooterSection className="md:flex-row">
+        <FooterNav className="sm:grid-flow-row sm:grid-cols-4">
+          <FooterNavGroup>
+            <FooterNavGroupTitle>Categories</FooterNavGroupTitle>
+            <FooterNavGroupList>
+              <FooterNavLink href="/categories/on-sale">On Sale</FooterNavLink>
+              <FooterNavLink href="/categories/new-arrivals">New arrivals</FooterNavLink>
+              <FooterNavLink href="/categories/men">Men</FooterNavLink>
+              <FooterNavLink href="/categories/woman">Women</FooterNavLink>
+              <FooterNavLink href="/categories/accessories">Accessories</FooterNavLink>
+            </FooterNavGroupList>
+          </FooterNavGroup>
+          <FooterNavGroup>
+            <FooterNavGroupTitle>Top Brands</FooterNavGroupTitle>
+            <FooterNavGroupList>
+              <FooterNavLink href="/brands/arcminute">Arcminute</FooterNavLink>
+              <FooterNavLink href="/brands/base-london">Base London</FooterNavLink>
+              <FooterNavLink href="/brands/birkenstock">Birkenstock</FooterNavLink>
+              <FooterNavLink href="brands/good-for-nothing">Good for Nothing</FooterNavLink>
+            </FooterNavGroupList>
+          </FooterNavGroup>
+          <FooterNavGroup>
+            <FooterNavGroupTitle>Men</FooterNavGroupTitle>
+            <FooterNavGroupList>
+              <FooterNavLink href="/men/shirts">Shirts</FooterNavLink>
+              <FooterNavLink href="/men/pants">Pants</FooterNavLink>
+              <FooterNavLink href="/men/sweaters">Sweaters</FooterNavLink>
+              <FooterNavLink href="/men/underwear">Underwear</FooterNavLink>
+            </FooterNavGroupList>
+          </FooterNavGroup>
+          <FooterNavGroup>
+            <FooterNavGroupTitle>Women</FooterNavGroupTitle>
+            <FooterNavGroupList>
+              <FooterNavLink href="/women/shirts">Shirts</FooterNavLink>
+              <FooterNavLink href="/women/pants">Pants</FooterNavLink>
+              <FooterNavLink href="/women/sweaters">Sweaters</FooterNavLink>
+              <FooterNavLink href="/women/underwear">Underwear</FooterNavLink>
+            </FooterNavGroupList>
+          </FooterNavGroup>
+          <FooterNavGroup>
+            <FooterNavGroupTitle>Accessories</FooterNavGroupTitle>
+            <FooterNavGroupList>
+              <FooterNavLink href="/jewelry">Jewelry</FooterNavLink>
+              <FooterNavLink href="/hats">Hats</FooterNavLink>
+              <FooterNavLink href="/shoes">Shoes</FooterNavLink>
+            </FooterNavGroupList>
+          </FooterNavGroup>
+          <FooterNavGroup>
+            <FooterNavGroupTitle>About Us</FooterNavGroupTitle>
+            <FooterNavGroupList>
+              <FooterNavLink href="/contact-us">Contact Us</FooterNavLink>
+              <FooterNavLink href="/about">About brand</FooterNavLink>
+              <FooterNavLink href="/blog">Blog</FooterNavLink>
+            </FooterNavGroupList>
+          </FooterNavGroup>
+          <FooterNavGroup>
+            <FooterNavGroupTitle>Help</FooterNavGroupTitle>
+            <FooterNavGroupList>
+              <FooterNavLink href="/shipping-and-returns">Shipping & returns</FooterNavLink>
+              <FooterNavLink href="/privacy-policy">Privacy policy</FooterNavLink>
+              <FooterNavLink href="/terms-and-conditions">Terms & conditions</FooterNavLink>
+              <FooterNavLink href="/faq">FAQ</FooterNavLink>
+            </FooterNavGroupList>
+          </FooterNavGroup>
+        </FooterNav>
+        <FooterSection className="shrink-0 grow gap-4 md:order-first">
+          <span className="text-h4 font-black">Catalyst Store</span>
+          <address className="not-italic">
+            24 Wisteria Lane, Fairview, Eagle <br />
+            01234 United States
+          </address>
           <a href="tel:5555551234">(555) 555-1234</a>
-        </FooterContactInformationPhoneNumber>
-        <FooterContactInformationSocials>
-          <a href="facebook.com/catalyst-store">
-            <FacebookIcon />
-          </a>
-          <a href="instagram.com/catalyst-store">
-            <InstagramIcon />
-          </a>
-          <a href="twitter.com/catalyst-store">
-            <TwitterIcon />
-          </a>
-        </FooterContactInformationSocials>
-      </FooterContactInformation>
+          <FooterNav aria-label="Social media links" className="block">
+            <FooterNavGroupList className="flex items-center space-x-4 space-y-0">
+              <FooterNavLink aria-label="Facebook" href="facebook.com/catalyst-store">
+                <FacebookIcon />
+              </FooterNavLink>
+              <FooterNavLink aria-label="Instagram" href="instagram.com/catalyst-store">
+                <InstagramIcon />
+              </FooterNavLink>
+              <FooterNavLink aria-label="Twitter" href="twitter.com/catalyst-store">
+                <TwitterIcon />
+              </FooterNavLink>
+            </FooterNavGroupList>
+          </FooterNav>
+        </FooterSection>
+      </FooterSection>
       <FooterAddendum>
-        <FooterAddendumPaymentOptions>
+        <FooterSection className="grow flex-row gap-6 sm:justify-end">
           <AmazonIcon />
           <AmericanExpressIcon />
           <ApplePayIcon />
           <MastercardIcon />
           <PayPalIcon />
           <VisaIcon />
-        </FooterAddendumPaymentOptions>
-        <FooterAddendumCopyright>
-          © {new Date().getFullYear()} Catalyst Store – Powered by BigCommerce
-        </FooterAddendumCopyright>
+        </FooterSection>
+        <FooterSection className="grow sm:order-first">
+          <p className="text-gray-500">
+            © {new Date().getFullYear()} Catalyst Store – Powered by BigCommerce
+          </p>
+        </FooterSection>
       </FooterAddendum>
     </Footer>
   ),
 };
 
-export const SitemapOnly: Story = {
+export const FooterNavOnly: Story = {
   render: () => (
     <Footer>
-      <FooterSiteMap className="md:col-span-full">
-        <FooterSiteMapCategory>
-          <FooterSiteMapCategoryTitle>Categories</FooterSiteMapCategoryTitle>
-          <FooterSiteMapCategoryList>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/on-sale">On Sale</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/new-arrivals">New arrivals</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/men">Men</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/woman">Women</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/accessories">Accessories</a>
-            </FooterSiteMapCategoryItem>
-          </FooterSiteMapCategoryList>
-        </FooterSiteMapCategory>
-        <FooterSiteMapCategory>
-          <FooterSiteMapCategoryTitle>Top Brands</FooterSiteMapCategoryTitle>
-          <FooterSiteMapCategoryList>
-            <FooterSiteMapCategoryItem>
-              <a href="/brands/arcminute">Arcminute</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/brands/base-london">Base London</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/brands/birkenstock">Birkenstock</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="brands/good-for-nothing">Good for Nothing</a>
-            </FooterSiteMapCategoryItem>
-          </FooterSiteMapCategoryList>
-        </FooterSiteMapCategory>
-        <FooterSiteMapCategory>
-          <FooterSiteMapCategoryTitle>About Us</FooterSiteMapCategoryTitle>
-          <FooterSiteMapCategoryList>
-            <FooterSiteMapCategoryItem>
-              <a href="/contact-us">Contact Us</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/about">About brand</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/blog">Blog</a>
-            </FooterSiteMapCategoryItem>
-          </FooterSiteMapCategoryList>
-        </FooterSiteMapCategory>
-        <FooterSiteMapCategory>
-          <FooterSiteMapCategoryTitle>Help</FooterSiteMapCategoryTitle>
-          <FooterSiteMapCategoryList>
-            <FooterSiteMapCategoryItem>
-              <a href="/shipping-and-returns">Shipping & returns</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/privacy-policy">Privacy policy</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/terms-and-conditions">Terms & conditions</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/faq">FAQ</a>
-            </FooterSiteMapCategoryItem>
-          </FooterSiteMapCategoryList>
-        </FooterSiteMapCategory>
-      </FooterSiteMap>
+      <FooterNav className="sm:grid-flow-row sm:grid-cols-4">
+        <FooterNavGroup>
+          <FooterNavGroupTitle>Categories</FooterNavGroupTitle>
+          <FooterNavGroupList>
+            <FooterNavLink href="/categories/on-sale">On Sale</FooterNavLink>
+            <FooterNavLink href="/categories/new-arrivals">New arrivals</FooterNavLink>
+            <FooterNavLink href="/categories/men">Men</FooterNavLink>
+            <FooterNavLink href="/categories/woman">Women</FooterNavLink>
+            <FooterNavLink href="/categories/accessories">Accessories</FooterNavLink>
+          </FooterNavGroupList>
+        </FooterNavGroup>
+        <FooterNavGroup>
+          <FooterNavGroupTitle>Top Brands</FooterNavGroupTitle>
+          <FooterNavGroupList>
+            <FooterNavLink href="/brands/arcminute">Arcminute</FooterNavLink>
+            <FooterNavLink href="/brands/base-london">Base London</FooterNavLink>
+            <FooterNavLink href="/brands/birkenstock">Birkenstock</FooterNavLink>
+            <FooterNavLink href="brands/good-for-nothing">Good for Nothing</FooterNavLink>
+          </FooterNavGroupList>
+        </FooterNavGroup>
+        <FooterNavGroup>
+          <FooterNavGroupTitle>Men</FooterNavGroupTitle>
+          <FooterNavGroupList>
+            <FooterNavLink href="/men/shirts">Shirts</FooterNavLink>
+            <FooterNavLink href="/men/pants">Pants</FooterNavLink>
+            <FooterNavLink href="/men/sweaters">Sweaters</FooterNavLink>
+            <FooterNavLink href="/men/underwear">Underwear</FooterNavLink>
+          </FooterNavGroupList>
+        </FooterNavGroup>
+        <FooterNavGroup>
+          <FooterNavGroupTitle>Women</FooterNavGroupTitle>
+          <FooterNavGroupList>
+            <FooterNavLink href="/women/shirts">Shirts</FooterNavLink>
+            <FooterNavLink href="/women/pants">Pants</FooterNavLink>
+            <FooterNavLink href="/women/sweaters">Sweaters</FooterNavLink>
+            <FooterNavLink href="/women/underwear">Underwear</FooterNavLink>
+          </FooterNavGroupList>
+        </FooterNavGroup>
+        <FooterNavGroup>
+          <FooterNavGroupTitle>Accessories</FooterNavGroupTitle>
+          <FooterNavGroupList>
+            <FooterNavLink href="/jewelry">Jewelry</FooterNavLink>
+            <FooterNavLink href="/hats">Hats</FooterNavLink>
+            <FooterNavLink href="/shoes">Shoes</FooterNavLink>
+          </FooterNavGroupList>
+        </FooterNavGroup>
+        <FooterNavGroup>
+          <FooterNavGroupTitle>About Us</FooterNavGroupTitle>
+          <FooterNavGroupList>
+            <FooterNavLink href="/contact-us">Contact Us</FooterNavLink>
+            <FooterNavLink href="/about">About brand</FooterNavLink>
+            <FooterNavLink href="/blog">Blog</FooterNavLink>
+          </FooterNavGroupList>
+        </FooterNavGroup>
+        <FooterNavGroup>
+          <FooterNavGroupTitle>Help</FooterNavGroupTitle>
+          <FooterNavGroupList>
+            <FooterNavLink href="/shipping-and-returns">Shipping & returns</FooterNavLink>
+            <FooterNavLink href="/privacy-policy">Privacy policy</FooterNavLink>
+            <FooterNavLink href="/terms-and-conditions">Terms & conditions</FooterNavLink>
+            <FooterNavLink href="/faq">FAQ</FooterNavLink>
+          </FooterNavGroupList>
+        </FooterNavGroup>
+      </FooterNav>
       <FooterAddendum>
-        <FooterAddendumPaymentOptions>
+        <FooterSection className="grow flex-row gap-6 sm:justify-end">
           <AmazonIcon />
           <AmericanExpressIcon />
           <ApplePayIcon />
           <MastercardIcon />
           <PayPalIcon />
           <VisaIcon />
-        </FooterAddendumPaymentOptions>
-        <FooterAddendumCopyright>
-          © {new Date().getFullYear()} Catalyst Store – Powered by BigCommerce
-        </FooterAddendumCopyright>
+        </FooterSection>
+        <FooterSection className="grow sm:order-first">
+          <p className="text-gray-500">
+            © {new Date().getFullYear()} Catalyst Store – Powered by BigCommerce
+          </p>
+        </FooterSection>
       </FooterAddendum>
     </Footer>
   ),
@@ -332,97 +310,67 @@ export const SitemapOnly: Story = {
 export const NoAddendum: Story = {
   render: () => (
     <Footer>
-      <FooterSiteMap>
-        <FooterSiteMapCategory>
-          <FooterSiteMapCategoryTitle>Categories</FooterSiteMapCategoryTitle>
-          <FooterSiteMapCategoryList>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/on-sale">On Sale</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/new-arrivals">New arrivals</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/men">Men</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/woman">Women</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/categories/accessories">Accessories</a>
-            </FooterSiteMapCategoryItem>
-          </FooterSiteMapCategoryList>
-        </FooterSiteMapCategory>
-        <FooterSiteMapCategory>
-          <FooterSiteMapCategoryTitle>Top Brands</FooterSiteMapCategoryTitle>
-          <FooterSiteMapCategoryList>
-            <FooterSiteMapCategoryItem>
-              <a href="/brands/arcminute">Arcminute</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/brands/base-london">Base London</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/brands/birkenstock">Birkenstock</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="brands/good-for-nothing">Good for Nothing</a>
-            </FooterSiteMapCategoryItem>
-          </FooterSiteMapCategoryList>
-        </FooterSiteMapCategory>
-        <FooterSiteMapCategory>
-          <FooterSiteMapCategoryTitle>About Us</FooterSiteMapCategoryTitle>
-          <FooterSiteMapCategoryList>
-            <FooterSiteMapCategoryItem>
-              <a href="/contact-us">Contact Us</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/about">About brand</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/blog">Blog</a>
-            </FooterSiteMapCategoryItem>
-          </FooterSiteMapCategoryList>
-        </FooterSiteMapCategory>
-        <FooterSiteMapCategory>
-          <FooterSiteMapCategoryTitle>Help</FooterSiteMapCategoryTitle>
-          <FooterSiteMapCategoryList>
-            <FooterSiteMapCategoryItem>
-              <a href="/shipping-and-returns">Shipping & returns</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/privacy-policy">Privacy policy</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/terms-and-conditions">Terms & conditions</a>
-            </FooterSiteMapCategoryItem>
-            <FooterSiteMapCategoryItem>
-              <a href="/faq">FAQ</a>
-            </FooterSiteMapCategoryItem>
-          </FooterSiteMapCategoryList>
-        </FooterSiteMapCategory>
-      </FooterSiteMap>
-      <FooterContactInformation>
-        <span className="text-h4 font-black">Catalyst Store</span>
-        <FooterContactInformationAddress>
-          24 Wisteria Lane, Fairview, Eagle <br />
-          01234 United States
-        </FooterContactInformationAddress>
-        <FooterContactInformationPhoneNumber>
+      <FooterSection className="md:flex-row">
+        <FooterNav>
+          <FooterNavGroup>
+            <FooterNavGroupTitle>Categories</FooterNavGroupTitle>
+            <FooterNavGroupList>
+              <FooterNavLink href="/categories/on-sale">On Sale</FooterNavLink>
+              <FooterNavLink href="/categories/new-arrivals">New arrivals</FooterNavLink>
+              <FooterNavLink href="/categories/men">Men</FooterNavLink>
+              <FooterNavLink href="/categories/woman">Women</FooterNavLink>
+              <FooterNavLink href="/categories/accessories">Accessories</FooterNavLink>
+            </FooterNavGroupList>
+          </FooterNavGroup>
+          <FooterNavGroup>
+            <FooterNavGroupTitle>Top Brands</FooterNavGroupTitle>
+            <FooterNavGroupList>
+              <FooterNavLink href="/brands/arcminute">Arcminute</FooterNavLink>
+              <FooterNavLink href="/brands/base-london">Base London</FooterNavLink>
+              <FooterNavLink href="/brands/birkenstock">Birkenstock</FooterNavLink>
+              <FooterNavLink href="brands/good-for-nothing">Good for Nothing</FooterNavLink>
+            </FooterNavGroupList>
+          </FooterNavGroup>
+          <FooterNavGroup>
+            <FooterNavGroupTitle>About Us</FooterNavGroupTitle>
+            <FooterNavGroupList>
+              <FooterNavLink href="/contact-us">Contact Us</FooterNavLink>
+              <FooterNavLink href="/about">About brand</FooterNavLink>
+              <FooterNavLink href="/blog">Blog</FooterNavLink>
+            </FooterNavGroupList>
+          </FooterNavGroup>
+          <FooterNavGroup>
+            <FooterNavGroupTitle>Help</FooterNavGroupTitle>
+            <FooterNavGroupList>
+              <FooterNavLink href="/shipping-and-returns">Shipping & returns</FooterNavLink>
+              <FooterNavLink href="/privacy-policy">Privacy policy</FooterNavLink>
+              <FooterNavLink href="/terms-and-conditions">Terms & conditions</FooterNavLink>
+              <FooterNavLink href="/faq">FAQ</FooterNavLink>
+            </FooterNavGroupList>
+          </FooterNavGroup>
+        </FooterNav>
+        <FooterSection className="shrink-0 grow gap-4 md:order-first">
+          <span className="text-h4 font-black">Catalyst Store</span>
+          <address className="not-italic">
+            24 Wisteria Lane, Fairview, Eagle <br />
+            01234 United States
+          </address>
           <a href="tel:5555551234">(555) 555-1234</a>
-        </FooterContactInformationPhoneNumber>
-        <FooterContactInformationSocials>
-          <a href="facebook.com/catalyst-store">
-            <FacebookIcon />
-          </a>
-          <a href="instagram.com/catalyst-store">
-            <InstagramIcon />
-          </a>
-          <a href="twitter.com/catalyst-store">
-            <TwitterIcon />
-          </a>
-        </FooterContactInformationSocials>
-      </FooterContactInformation>
+          <FooterNav aria-label="Social media links" className="block">
+            <FooterNavGroupList className="flex items-center space-x-4 space-y-0">
+              <FooterNavLink aria-label="Facebook" href="facebook.com/catalyst-store">
+                <FacebookIcon />
+              </FooterNavLink>
+              <FooterNavLink aria-label="Instagram" href="instagram.com/catalyst-store">
+                <InstagramIcon />
+              </FooterNavLink>
+              <FooterNavLink aria-label="Twitter" href="twitter.com/catalyst-store">
+                <TwitterIcon />
+              </FooterNavLink>
+            </FooterNavGroupList>
+          </FooterNav>
+        </FooterSection>
+      </FooterSection>
     </Footer>
   ),
 };

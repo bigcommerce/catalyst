@@ -1,8 +1,8 @@
 import {
-  FooterSiteMapCategory,
-  FooterSiteMapCategoryItem,
-  FooterSiteMapCategoryList,
-  FooterSiteMapCategoryTitle,
+  FooterNavGroup,
+  FooterNavGroupList,
+  FooterNavGroupTitle,
+  FooterNavLink,
 } from '@bigcommerce/reactant/Footer';
 import Link from 'next/link';
 import React, { ComponentPropsWithoutRef } from 'react';
@@ -23,15 +23,15 @@ export const BaseFooterMenu = ({
   ...props
 }: Props & ComponentPropsWithoutRef<'div'>) => {
   return (
-    <FooterSiteMapCategory {...props}>
-      <FooterSiteMapCategoryTitle>{title}</FooterSiteMapCategoryTitle>
-      <FooterSiteMapCategoryList>
+    <FooterNavGroup {...props}>
+      <FooterNavGroupTitle>{title}</FooterNavGroupTitle>
+      <FooterNavGroupList>
         {items.map((item) => (
-          <FooterSiteMapCategoryItem key={item.path}>
+          <FooterNavLink asChild key={item.path}>
             <Link href={item.path}>{item.name}</Link>
-          </FooterSiteMapCategoryItem>
+          </FooterNavLink>
         ))}
-      </FooterSiteMapCategoryList>
-    </FooterSiteMapCategory>
+      </FooterNavGroupList>
+    </FooterNavGroup>
   );
 };

@@ -1,3 +1,4 @@
+import { FooterSection } from '@bigcommerce/reactant/Footer';
 import { ComponentPropsWithoutRef } from 'react';
 
 import { AmazonIcon } from '../PaymentIcons/Amazon';
@@ -9,15 +10,13 @@ import { VisaIcon } from '../PaymentIcons/Visa';
 
 export const PaymentMethods: React.FC<ComponentPropsWithoutRef<'div'>> = (props) => {
   return (
-    <div {...props}>
-      <div className="flex flex-row justify-end gap-6">
-        <AmazonIcon />
-        <AmericanExpressIcon />
-        <ApplePayIcon />
-        <MastercardIcon />
-        <PayPalIcon />
-        <VisaIcon />
-      </div>
-    </div>
+    <FooterSection className="grow flex-row gap-6 sm:justify-end" {...props}>
+      <AmazonIcon />
+      <AmericanExpressIcon />
+      <ApplePayIcon />
+      <MastercardIcon />
+      <PayPalIcon />
+      <VisaIcon />
+    </FooterSection>
   );
 };
