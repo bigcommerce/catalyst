@@ -93,8 +93,8 @@ export const BasicExample: Story = {
           </FooterNav>
         </FooterSection>
       </FooterSection>
-      <FooterAddendum>
-        <FooterSection className="grow flex-row gap-6 sm:justify-end">
+      <FooterAddendum className="justify-between">
+        <FooterSection className="flex-row gap-6 sm:justify-end">
           <AmazonIcon />
           <AmericanExpressIcon />
           <ApplePayIcon />
@@ -102,7 +102,7 @@ export const BasicExample: Story = {
           <PayPalIcon />
           <VisaIcon />
         </FooterSection>
-        <FooterSection className="grow sm:order-first">
+        <FooterSection className="sm:order-first">
           <p className="text-gray-500">
             © {new Date().getFullYear()} Catalyst Store – Powered by BigCommerce
           </p>
@@ -202,8 +202,8 @@ export const MultiRowFooterNav: Story = {
           </FooterNav>
         </FooterSection>
       </FooterSection>
-      <FooterAddendum>
-        <FooterSection className="grow flex-row gap-6 sm:justify-end">
+      <FooterAddendum className="justify-between">
+        <FooterSection className="flex-row gap-6 sm:justify-end">
           <AmazonIcon />
           <AmericanExpressIcon />
           <ApplePayIcon />
@@ -211,7 +211,7 @@ export const MultiRowFooterNav: Story = {
           <PayPalIcon />
           <VisaIcon />
         </FooterSection>
-        <FooterSection className="grow sm:order-first">
+        <FooterSection className="sm:order-first">
           <p className="text-gray-500">
             © {new Date().getFullYear()} Catalyst Store – Powered by BigCommerce
           </p>
@@ -288,8 +288,8 @@ export const FooterNavOnly: Story = {
           </FooterNavGroupList>
         </FooterNavGroup>
       </FooterNav>
-      <FooterAddendum>
-        <FooterSection className="grow flex-row gap-6 sm:justify-end">
+      <FooterAddendum className="justify-between">
+        <FooterSection className="flex-row gap-6 sm:justify-end">
           <AmazonIcon />
           <AmericanExpressIcon />
           <ApplePayIcon />
@@ -297,7 +297,7 @@ export const FooterNavOnly: Story = {
           <PayPalIcon />
           <VisaIcon />
         </FooterSection>
-        <FooterSection className="grow sm:order-first">
+        <FooterSection className="sm:order-first">
           <p className="text-gray-500">
             © {new Date().getFullYear()} Catalyst Store – Powered by BigCommerce
           </p>

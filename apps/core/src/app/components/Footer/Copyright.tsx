@@ -10,7 +10,7 @@ export const Copyright = async (props: ComponentPropsWithoutRef<'div'>) => {
   }
 
   return (
-    <FooterSection className="grow sm:order-first" {...props}>
+    <FooterSection className="sm:order-first" {...props}>
       <p className="text-gray-500">
         © {new Date().getFullYear()} {settings.storeName} – Powered by BigCommerce
       </p>

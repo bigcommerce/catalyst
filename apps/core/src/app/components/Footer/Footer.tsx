@@ -47,7 +47,7 @@ export const Footer = () => {
           <SocialIcons />
         </FooterSection>
       </FooterSection>
-      <FooterAddendum>
+      <FooterAddendum className="justify-between">
         <PaymentMethods />
         <Copyright />
       </FooterAddendum>
