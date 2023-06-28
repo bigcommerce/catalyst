@@ -5,6 +5,7 @@ import { ChevronRight } from 'lucide-react';
 
 import clsx from 'clsx';
 
+import { SelectMenu } from '../SelectMenu';
 import { Warning } from '../Warning';
 
 interface Breadcrumb {
@@ -13,7 +14,6 @@ interface Breadcrumb {
     href: string;
     target?: '_self' | '_blank';
   };
-  schemaUrl?: string;
 }
 
 interface Props {
@@ -27,35 +27,48 @@ export function Breadcrumbs({ className, breadcrumbs, currentPage }: Props) {
     return <Warning className={className}>There are no breadcrumbs</Warning>;
 
   return (
-    <nav aria-label="Breadcrumb" className={className}>
-      <ul className={clsx('flex w-full text-sm')}>
-        {breadcrumbs?.map((breadcrumb, i) => {
-          return (
-            <li
-              key={i}
-              className={clsx(
-                'shrink-auto flex min-w-0 items-center font-semibold [&:first-child>svg]:hidden',
-              )}
-            >
-              <ChevronRight size={16} className="mx-1 stroke-current" />
-
-              <span className="flex-1 truncate">
-                {breadcrumb.link ? (
-                  <Link href={breadcrumb.link?.href ?? '#'} target={breadcrumb.link?.target}>
-                    {breadcrumb.text}
-                  </Link>
-                ) : (
-                  breadcrumb.text
+    <>
+      <nav aria-label="Breadcrumb" className={className}>
+        <ul className={clsx('flex w-full text-sm')}>
+          {breadcrumbs?.map((breadcrumb, i) => {
+            return (
+              <li
+                key={i}
+                className={clsx(
+                  'shrink-auto flex min-w-0 items-center font-semibold [&:first-child>svg]:hidden',
                 )}
-              </span>
-            </li>
-          );
-        })}
-        <li className="flex min-w-0 shrink items-center font-extrabold">
-          <ChevronRight size={16} className="mx-1 stroke-current" />
-          <span className="truncate">{currentPage}</span>
-        </li>
-      </ul>
-    </nav>
+              >
+                <ChevronRight size={16} className="mx-1 stroke-current" />
+
+                <span className="flex-1 truncate">
+                  {breadcrumb.link ? (
+                    <Link href={breadcrumb.link?.href ?? '#'} target={breadcrumb.link?.target}>
+                      {breadcrumb.text}
+                    </Link>
+                  ) : (
+                    breadcrumb.text
+                  )}
+                </span>
+              </li>
+            );
+          })}
+          <li className="flex min-w-0 shrink items-center font-extrabold">
+            <ChevronRight size={16} className="mx-1 stroke-current" />
+            <span className="truncate">{currentPage}</span>
+          </li>
+        </ul>
+      </nav>
+
+      <SelectMenu
+        placeholder="Testing"
+        options={[
+          { value: 'blues', label: 'Blues' },
+          { value: 'rock', label: 'Rock' },
+          { value: 'jazz', label: 'Jazz' },
+          { value: 'orchestra', label: 'Orchestra' },
+        ]}
+        className="w-80"
+      />
+    </>
   );
 }
