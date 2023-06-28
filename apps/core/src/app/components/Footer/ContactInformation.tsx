@@ -11,7 +11,7 @@ export const ContactInformation = async () => {
 
   return (
     <>
-      <address className="mb-2 not-italic">
+      <address className="not-italic">
         {contact.address.split('\n').map((line) => (
           <Fragment key={line}>
             {line}
@@ -19,7 +19,11 @@ export const ContactInformation = async () => {
           </Fragment>
         ))}
       </address>
-      {contact.phone ? <p>{contact.phone}</p> : null}
+      {contact.phone ? (
+        <a href={`tel:${contact.phone}`}>
+          <p>{contact.phone}</p>
+        </a>
+      ) : null}
     </>
   );
 };
