@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 
 import * as Select from '@radix-ui/react-select';
 import { Warning } from '../Warning';
@@ -14,21 +14,21 @@ interface Option {
 interface Props {
   className?: string;
   value?: string;
-  placeholder?: string;
   options: Option[];
 }
 
-export function SelectMenu({ className, value, placeholder, options }: Props) {
+export function SelectMenu({ className, value, options }: Props) {
+  const [selectedOption, setSelectedOption] = useState(value);
   if (options.length === 0) return <Warning className={className}>There are no options</Warning>;
 
   return (
     <div className={clsx(className, 'relative')}>
-      <Select.Root>
+      <Select.Root value={selectedOption} onValueChange={setSelectedOption}>
         <Select.Trigger
           className="group inline-flex h-12 w-full items-center gap-2 truncate border-2 border-gray-200 bg-white px-4 text-left leading-none text-black outline-none ring-4 ring-transparent hover:border-blue-primary focus:border-blue-primary focus:ring-blue-primary/20 data-[placeholder]:text-black"
           aria-label="Food"
         >
-          <Select.Value placeholder={placeholder} />
+          <Select.Value />
           <Select.Icon className="absolute right-4">
             <ChevronDown className="group-hover:stroke-blue-primary" />
           </Select.Icon>

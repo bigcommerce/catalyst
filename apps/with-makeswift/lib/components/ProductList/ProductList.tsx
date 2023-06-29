@@ -10,6 +10,7 @@ import * as Accordion from '@radix-ui/react-accordion';
 import { SelectMenu } from '../SelectMenu';
 import { Warning } from '../Warning';
 import { ProductCard } from '../ProductCard';
+import { CheckboxFilter } from '../CheckboxFilter';
 
 type CardProps = ComponentPropsWithoutRef<typeof ProductCard>;
 
@@ -36,15 +37,15 @@ function AccordionItem({ value, children }: { value: string; children: ReactNode
 
 function AccordionTrigger({ children }: { children: ReactNode }) {
   return (
-    <Accordion.Trigger className="">
-      {children}
-      <ChevronDown className="" />
+    <Accordion.Trigger className="group flex w-full py-2 text-left text-base font-bold leading-snug">
+      <span className="block flex-1">{children}</span>
+      <ChevronDown className="group-data-[state=open]:rotate-180" />
     </Accordion.Trigger>
   );
 }
 
 function AccordionContent({ children }: { children: ReactNode }) {
-  return <Accordion.Content className="">{children}</Accordion.Content>;
+  return <Accordion.Content className="max-h-[280px] overflow-auto">{children}</Accordion.Content>;
 }
 
 export function ProductList({ className, title = 'Accessories', cards }: Props) {
@@ -56,7 +57,7 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
         <p className="font-bold">1-9 of 235 items</p>
 
         <SelectMenu
-          placeholder="Select one"
+          value="featured"
           options={[
             { value: 'featured', label: 'Featured' },
             { value: 'price-descending', label: 'Price (high to low)' },
@@ -69,7 +70,7 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
 
       <div className="flex gap-8">
         <div className="w-72">
-          <h2 className="mb-2 text-h5 font-bold leading-normal">Categories</h2>
+          <div className="mb-2 text-h5 font-bold leading-normal">Categories</div>
           <ul className="mb-8">
             <li className="py-2">
               <Link href="" className="block text-base">
@@ -105,10 +106,41 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
             <Tag>200mm</Tag>
           </div>
 
-          <Accordion.Root type="multiple" className="space-y-4">
+          <Accordion.Root type="multiple" className="w-full space-y-4">
             <AccordionItem value="brand">
               <AccordionTrigger>Brand</AccordionTrigger>
-              <AccordionContent>More things</AccordionContent>
+              <AccordionContent>
+                <CheckboxFilter count={1} id="1">
+                  Adidas
+                </CheckboxFilter>
+                <CheckboxFilter count={11} id="2">
+                  Bonobos
+                </CheckboxFilter>
+                <CheckboxFilter count={3} id="3">
+                  This is an example with a really long name
+                </CheckboxFilter>
+                <CheckboxFilter count={3} id="4">
+                  Nike
+                </CheckboxFilter>
+                <CheckboxFilter count={5} id="5">
+                  Puma
+                </CheckboxFilter>
+                <CheckboxFilter count={3} id="6">
+                  Reebok
+                </CheckboxFilter>
+                <CheckboxFilter count={3} id="7">
+                  Polo
+                </CheckboxFilter>
+                <CheckboxFilter count={3} id="8">
+                  Ralph Lauren
+                </CheckboxFilter>
+                <CheckboxFilter count={3} id="9">
+                  Polo
+                </CheckboxFilter>
+                <CheckboxFilter count={3} id="10">
+                  Polo
+                </CheckboxFilter>
+              </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="size">

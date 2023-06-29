@@ -1,5 +1,6 @@
 export * from './Breadcrumbs';
 export * from './Carousel';
+export * from './CheckboxFilter';
 export * from './Footer';
 export * from './Navigation';
 export * from './ProductCard';
