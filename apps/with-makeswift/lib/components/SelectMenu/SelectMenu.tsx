@@ -13,11 +13,12 @@ interface Option {
 
 interface Props {
   className?: string;
+  value?: string;
   placeholder?: string;
   options: Option[];
 }
 
-export function SelectMenu({ className, placeholder, options }: Props) {
+export function SelectMenu({ className, value, placeholder, options }: Props) {
   if (options.length === 0) return <Warning className={className}>There are no options</Warning>;
 
   return (
