@@ -6,4 +6,5 @@ export * from './Navigation';
 export * from './ProductCard';
 export * from './ProductCards';
 export * from './ProductList';
+export * from './ReviewRating';
 export * from './SelectMenu';

@@ -22,7 +22,10 @@ export function CheckboxFilter({ id, children, count }: Props) {
           <Check absoluteStrokeWidth className="stroke-white" size={16} />
         </Checkbox.Indicator>
       </Checkbox.Root>
-      <label className="flex-1 cursor-pointer text-base leading-normal" htmlFor={id}>
+      <label
+        className="flex flex-1 cursor-pointer items-center text-base leading-normal"
+        htmlFor={id}
+      >
         {children}
         <span className="ml-3 text-gray-500">{count}</span>
       </label>

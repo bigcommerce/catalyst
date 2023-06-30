@@ -1,4 +1,4 @@
-import React, { ComponentPropsWithoutRef, ReactNode } from 'react';
+import React, { ComponentPropsWithoutRef, ReactNode, useState } from 'react';
 
 import Link from 'next/link';
 import { ChevronDown, ChevronLeft, ChevronRight, X } from 'lucide-react';
@@ -11,6 +11,7 @@ import { SelectMenu } from '../SelectMenu';
 import { Warning } from '../Warning';
 import { ProductCard } from '../ProductCard';
 import { CheckboxFilter } from '../CheckboxFilter';
+import { ReviewRating } from '../ReviewRating';
 
 type CardProps = ComponentPropsWithoutRef<typeof ProductCard>;
 
@@ -49,6 +50,7 @@ function AccordionContent({ children }: { children: ReactNode }) {
 }
 
 export function ProductList({ className, title = 'Accessories', cards }: Props) {
+  const [open, setOpen] = useState(['brand', 'size']);
   return (
     <div className={className}>
       <div className="mb-8 flex items-center space-x-8">
@@ -73,22 +75,22 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
           <div className="mb-2 text-h5 font-bold leading-normal">Categories</div>
           <ul className="mb-8">
             <li className="py-2">
-              <Link href="" className="block text-base">
+              <Link href="" className="block text-base hover:text-blue-primary">
                 Bags
               </Link>
             </li>
             <li className="py-2">
-              <Link href="" className="block text-base">
+              <Link href="" className="block text-base hover:text-blue-primary">
                 Hats
               </Link>
             </li>
             <li className="py-2">
-              <Link href="" className="block text-base">
+              <Link href="" className="block text-base hover:text-blue-primary">
                 Sunglasses
               </Link>
             </li>
             <li className="py-2">
-              <Link href="" className="block text-base">
+              <Link href="" className="block text-base hover:text-blue-primary">
                 Watches
               </Link>
             </li>
@@ -106,7 +108,12 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
             <Tag>200mm</Tag>
           </div>
 
-          <Accordion.Root type="multiple" className="w-full space-y-4">
+          <Accordion.Root
+            type="multiple"
+            value={open}
+            onValueChange={setOpen}
+            className="w-full space-y-4"
+          >
             <AccordionItem value="brand">
               <AccordionTrigger>Brand</AccordionTrigger>
               <AccordionContent>
@@ -145,13 +152,51 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
 
             <AccordionItem value="size">
               <AccordionTrigger>Size</AccordionTrigger>
-              <AccordionContent>More things</AccordionContent>
+              <AccordionContent>
+                <CheckboxFilter count={1} id="s">
+                  S
+                </CheckboxFilter>
+                <CheckboxFilter count={1} id="m">
+                  M
+                </CheckboxFilter>
+                <CheckboxFilter count={1} id="l">
+                  L
+                </CheckboxFilter>
+                <CheckboxFilter count={1} id="xl">
+                  XL
+                </CheckboxFilter>
+                <CheckboxFilter count={1} id="xxl">
+                  XXL
+                </CheckboxFilter>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="rating">
+              <AccordionTrigger>Rating</AccordionTrigger>
+              <AccordionContent>
+                <CheckboxFilter count={1} id="4stars">
+                  <ReviewRating stars={4} />
+                  <span className="ml-2">& up</span>
+                </CheckboxFilter>
+                <CheckboxFilter count={1} id="4stars">
+                  <ReviewRating stars={3} />
+                  <span className="ml-2">& up</span>
+                </CheckboxFilter>
+                <CheckboxFilter count={1} id="4stars">
+                  <ReviewRating stars={2} />
+                  <span className="ml-2">& up</span>
+                </CheckboxFilter>
+                <CheckboxFilter count={1} id="4stars">
+                  <ReviewRating stars={1} />
+                  <span className="ml-2">& up</span>
+                </CheckboxFilter>
+              </AccordionContent>
             </AccordionItem>
           </Accordion.Root>
         </div>
 
         <div className="flex-1">
-          <div className="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-6 lg:grid-cols-3">
             {cards.map((card, index) => (
               <ProductCard {...card} key={index} />
             ))}
