@@ -2,6 +2,7 @@ import { Link, List, Shape, Style, TextInput } from '@makeswift/runtime/controls
 import { ReactRuntime } from '@makeswift/runtime/react';
 
 import { Breadcrumbs } from './Breadcrumbs';
+import { runtime } from 'lib/runtime';
 
 export const props = {
   className: Style(),
@@ -24,7 +25,7 @@ export const props = {
   }),
 };
 
-ReactRuntime.registerComponent(Breadcrumbs, {
+runtime.registerComponent(Breadcrumbs, {
   type: 'breadcrumbs',
   label: 'Breadcrumbs',
   props,

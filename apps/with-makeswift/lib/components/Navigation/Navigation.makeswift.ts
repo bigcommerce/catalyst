@@ -13,8 +13,9 @@ import {
 import { ReactRuntime } from '@makeswift/runtime/react';
 
 import { Navigation } from './Navigation';
+import { runtime } from 'lib/runtime';
 
-ReactRuntime.registerComponent(Navigation, {
+runtime.registerComponent(Navigation, {
   type: 'navigation',
   label: 'Navigation',
   props: {

@@ -4,6 +4,7 @@ import { ReactRuntime } from '@makeswift/runtime/react';
 import { useBcContext } from 'lib/context';
 
 import { ProductCards, ProductCardsProps } from './ProductCards';
+import { runtime } from 'lib/runtime';
 
 interface WrapperProps {
   className?: string;
@@ -41,7 +42,7 @@ const ProductCardsWrapper = ({ className, type, count }: WrapperProps) => {
   return <ProductCards cards={cards} className={className} />;
 };
 
-ReactRuntime.registerComponent(ProductCardsWrapper, {
+runtime.registerComponent(ProductCardsWrapper, {
   type: 'product-cards',
   label: 'Product Cards',
   props: {

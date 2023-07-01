@@ -11,8 +11,9 @@ import {
 import { ReactRuntime } from '@makeswift/runtime/react';
 
 import { Footer } from './Footer';
+import { runtime } from 'lib/runtime';
 
-ReactRuntime.registerComponent(Footer, {
+runtime.registerComponent(Footer, {
   type: 'footer',
   label: 'Footer',
   props: {

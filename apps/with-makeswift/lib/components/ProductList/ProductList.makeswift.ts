@@ -11,8 +11,9 @@ import {
 import { ReactRuntime } from '@makeswift/runtime/react';
 
 import { ProductList } from './ProductList';
+import { runtime } from 'lib/runtime';
 
-ReactRuntime.registerComponent(ProductList, {
+runtime.registerComponent(ProductList, {
   type: 'ProductList',
   label: 'Product List',
   props: {
