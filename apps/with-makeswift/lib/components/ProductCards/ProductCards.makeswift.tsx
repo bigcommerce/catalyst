@@ -1,5 +1,4 @@
 import { Number, Select, Style } from '@makeswift/runtime/controls';
-import { ReactRuntime } from '@makeswift/runtime/react';
 
 import { useBcContext } from 'lib/context';
 

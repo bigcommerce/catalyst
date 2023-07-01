@@ -10,7 +10,6 @@ import {
   Style,
   TextInput,
 } from '@makeswift/runtime/controls';
-import { ReactRuntime } from '@makeswift/runtime/react';
 
 import { Navigation } from './Navigation';
 import { runtime } from 'lib/runtime';

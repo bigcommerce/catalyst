@@ -8,7 +8,6 @@ import {
   Style,
   TextInput,
 } from '@makeswift/runtime/controls';
-import { ReactRuntime } from '@makeswift/runtime/react';
 
 import { ProductList } from './ProductList';
 import { runtime } from 'lib/runtime';
