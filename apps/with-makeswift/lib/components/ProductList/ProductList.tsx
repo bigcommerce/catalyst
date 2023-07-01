@@ -14,6 +14,7 @@ import { ProductCard } from '../ProductCard';
 import { CheckboxFilter } from '../CheckboxFilter';
 import { ReviewRating } from '../ReviewRating';
 import { Button } from '../Button';
+import { ColorSwatch } from '@components/ColorSwatch';
 
 type CardProps = ComponentPropsWithoutRef<typeof ProductCard>;
 
@@ -50,6 +51,40 @@ function AccordionTrigger({ children }: { children: ReactNode }) {
 function AccordionContent({ className, children }: { className?: string; children: ReactNode }) {
   return <Accordion.Content className={clsx(className)}>{children}</Accordion.Content>;
 }
+
+const brands = [
+  { label: 'Nike', id: 'nike', count: 3 },
+  { label: 'Adidas', id: 'adidas', count: 13 },
+  { label: 'Bonobos', id: 'bonobos', count: 1 },
+  { label: 'Chanel', id: 'chanel', count: 8 },
+  { label: 'Puma', id: 'puma', count: 0 },
+  { label: 'Reebok', id: 'reebok', count: 0 },
+  { label: 'Ralph Lauren', id: 'ralph-lauren', count: 0 },
+  { label: 'Reef', id: 'reef', count: 0 },
+  { label: 'Gucci', id: 'gucci', count: 0 },
+  { label: 'Puma', id: 'puma', count: 0 },
+  { label: 'Puma', id: 'puma', count: 0 },
+  { label: 'Puma', id: 'puma', count: 0 },
+];
+
+const sizes = [
+  { label: 'S', id: 'small', count: 3 },
+  { label: 'M', id: 'medium', count: 13 },
+  { label: 'L', id: 'large', count: 1 },
+  { label: 'XL', id: 'xlarge', count: 8 },
+  { label: 'XXL', id: 'xxlarge', count: 0 },
+];
+
+const colors = [
+  { colorValue: '#ff0000' },
+  { colorValue: 'yellow' },
+  { colorValue: 'black' },
+  { colorValue: 'gray' },
+  { colorValue: 'purple' },
+  { colorValue: 'orange' },
+  { colorValue: 'cyan' },
+  { colorValue: 'pink' },
+];
 
 export function ProductList({ className, title = 'Accessories', cards }: Props) {
   const [filterCategoryOpen, setFilterCategoryOpen] = useState(['brand', 'size']);
@@ -145,58 +180,23 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
           >
             <AccordionItem value="brand">
               <AccordionTrigger>Brand</AccordionTrigger>
-              <AccordionContent className="max-h-auto overflow-auto pr-6 lg:max-h-[280px]">
-                <CheckboxFilter count={1} id="1">
-                  Adidas
-                </CheckboxFilter>
-                <CheckboxFilter count={11} id="2">
-                  Bonobos
-                </CheckboxFilter>
-                <CheckboxFilter count={3} id="3">
-                  This is an example with a really long name
-                </CheckboxFilter>
-                <CheckboxFilter count={3} id="4">
-                  Nike
-                </CheckboxFilter>
-                <CheckboxFilter count={5} id="5">
-                  Puma
-                </CheckboxFilter>
-                <CheckboxFilter count={3} id="6">
-                  Reebok
-                </CheckboxFilter>
-                <CheckboxFilter count={3} id="7">
-                  Polo
-                </CheckboxFilter>
-                <CheckboxFilter count={3} id="8">
-                  Ralph Lauren
-                </CheckboxFilter>
-                <CheckboxFilter count={3} id="9">
-                  Polo
-                </CheckboxFilter>
-                <CheckboxFilter count={3} id="10">
-                  Polo
-                </CheckboxFilter>
+              <AccordionContent className="max-h-auto overflow-auto pr-6 lg:max-h-[300px]">
+                {brands.map((brand) => (
+                  <CheckboxFilter count={brand.count} id={brand.id}>
+                    {brand.label}
+                  </CheckboxFilter>
+                ))}
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="size">
               <AccordionTrigger>Size</AccordionTrigger>
               <AccordionContent>
-                <CheckboxFilter count={1} id="s">
-                  S
-                </CheckboxFilter>
-                <CheckboxFilter count={1} id="m">
-                  M
-                </CheckboxFilter>
-                <CheckboxFilter count={1} id="l">
-                  L
-                </CheckboxFilter>
-                <CheckboxFilter count={1} id="xl">
-                  XL
-                </CheckboxFilter>
-                <CheckboxFilter count={1} id="xxl">
-                  XXL
-                </CheckboxFilter>
+                {sizes.map((size) => (
+                  <CheckboxFilter count={size.count} id={size.id}>
+                    {size.label}
+                  </CheckboxFilter>
+                ))}
               </AccordionContent>
             </AccordionItem>
 
@@ -263,7 +263,13 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
 
             <AccordionItem value="color">
               <AccordionTrigger>Color</AccordionTrigger>
-              <AccordionContent></AccordionContent>
+              <AccordionContent className="px-1 py-2">
+                <div className="grid grid-cols-5 gap-3">
+                  {colors.map((color) => (
+                    <ColorSwatch colorValue={color.colorValue} />
+                  ))}
+                </div>
+              </AccordionContent>
             </AccordionItem>
           </Accordion.Root>
         </div>
