@@ -26,7 +26,7 @@ export function SelectMenu({ className, value, options }: Props) {
       <Select.Root value={selectedOption} onValueChange={setSelectedOption}>
         <Select.Trigger
           className="group inline-flex h-12 w-full items-center gap-2 truncate border-2 border-gray-200 bg-white px-4 text-left leading-none text-black outline-none ring-4 ring-transparent hover:border-blue-primary focus:border-blue-primary focus:ring-blue-primary/20 data-[placeholder]:text-black"
-          aria-label="Food"
+          aria-label="Sort by"
         >
           <Select.Value />
           <Select.Icon className="absolute right-4">

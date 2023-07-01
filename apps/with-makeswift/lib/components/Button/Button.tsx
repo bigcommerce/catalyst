@@ -18,11 +18,11 @@ const SELECTED_ICON = {
 
 const VARIANT_STYLES = {
   primary:
-    'bg-blue-primary hover:bg-blue-secondary text-white disabled:bg-gray-400 px-6 py-2 border-2 border-blue-primary hover:border-blue-secondary focus:border-blue-primary',
+    'bg-blue-primary hover:bg-blue-secondary text-white disabled:bg-gray-400 px-6 py-2.5 border-2 border-blue-primary hover:border-blue-secondary focus:border-blue-primary',
   secondary:
-    'text-blue-primary hover:text-blue-secondary focus:text-blue-primary hover:bg-blue-primary/10 px-6 py-2 border-2 border-blue-primary hover:border-blue-secondary focus:border-blue-primary',
+    'text-blue-primary hover:text-blue-secondary focus:text-blue-primary hover:bg-blue-primary/10 px-6 py-2.5 border-2 border-blue-primary hover:border-blue-secondary focus:border-blue-primary disabled:border-gray-400 disabled:text-gray-400',
   subtle:
-    'border-transparent hover:bg-blue-primary/10 p-3 text-blue-primary hover:text-blue-secondary focus:text-blue-primary',
+    'border-transparent hover:bg-blue-primary/10 p-3 text-blue-primary hover:text-blue-secondary focus:text-blue-primary disabled:text-gray-400',
 } as const;
 
 type BaseButtonProps = {
@@ -45,12 +45,12 @@ export const Button = forwardRef(function Button(
       className={clsx(
         className,
         VARIANT_STYLES[variant],
-        'group inline-flex items-center gap-3 text-center text-base font-semibold ring-4 ring-transparent transition-colors duration-150 focus:ring-blue-primary/20 disabled:border-gray-400',
+        'group inline-flex items-center justify-center gap-3 text-center text-base font-semibold ring-4 ring-transparent transition-colors duration-150 focus:ring-blue-primary/20 disabled:border-gray-400',
       )}
     >
       {SELECTED_ICON[icon]}
 
-      {children}
+      <span className="leading-normal">{children}</span>
     </button>
   );
 });

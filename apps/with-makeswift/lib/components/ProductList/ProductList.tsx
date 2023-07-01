@@ -6,12 +6,14 @@ import { ChevronDown, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import clsx from 'clsx';
 
 import * as Accordion from '@radix-ui/react-accordion';
+import * as Form from '@radix-ui/react-form';
 
 import { SelectMenu } from '../SelectMenu';
 import { Warning } from '../Warning';
 import { ProductCard } from '../ProductCard';
 import { CheckboxFilter } from '../CheckboxFilter';
 import { ReviewRating } from '../ReviewRating';
+import { Button } from '../Button';
 
 type CardProps = ComponentPropsWithoutRef<typeof ProductCard>;
 
@@ -45,22 +47,30 @@ function AccordionTrigger({ children }: { children: ReactNode }) {
   );
 }
 
-function AccordionContent({ children }: { children: ReactNode }) {
-  return <Accordion.Content className="max-h-[280px] overflow-auto">{children}</Accordion.Content>;
+function AccordionContent({ className, children }: { className?: string; children: ReactNode }) {
+  return <Accordion.Content className={clsx(className)}>{children}</Accordion.Content>;
 }
 
 export function ProductList({ className, title = 'Accessories', cards }: Props) {
-  const [filterOpen, setFilterOpen] = useState(['brand', 'size']);
-  const [filterListOpen, setFilterListOpen] = useState(true);
+  const [filterCategoryOpen, setFilterCategoryOpen] = useState(['brand', 'size']);
+  const [filterListOpen, setFilterListOpen] = useState(false);
   return (
     <div className={className}>
       <div className="mb-8 flex flex-col items-center justify-start gap-x-8 gap-y-6 lg:flex-row">
         <h1 className="m-0 w-full flex-1 text-h2 font-black leading-snug">{title}</h1>
 
-        <div className="flex w-full items-center justify-between gap-x-8">
-          Filters
-          <div className="flex items-center gap-x-8">
-            <p className="font-bold">1-9 of 235 items</p>
+        <div className="flex w-full flex-col items-center justify-between gap-x-8 gap-y-3 sm:flex-row lg:justify-end">
+          <Button
+            icon="filter"
+            variant="secondary"
+            onClick={() => setFilterListOpen(true)}
+            className="w-full sm:w-auto lg:hidden"
+          >
+            Show filters
+          </Button>
+
+          <div className="flex w-full flex-col items-center gap-x-8 gap-y-8 sm:w-auto sm:flex-row">
+            <p className="order-last w-full font-bold sm:order-first sm:w-auto">1-9 of 235 items</p>
 
             <SelectMenu
               value="featured"
@@ -70,7 +80,7 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
                 { value: 'price-ascending', label: 'Price (low to high' },
                 { value: 'newest', label: 'Newest' },
               ]}
-              className="w-56"
+              className="w-full sm:w-56"
             />
           </div>
         </div>
@@ -129,13 +139,13 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
 
           <Accordion.Root
             type="multiple"
-            value={filterOpen}
-            onValueChange={setFilterOpen}
+            value={filterCategoryOpen}
+            onValueChange={setFilterCategoryOpen}
             className="w-full space-y-4"
           >
             <AccordionItem value="brand">
               <AccordionTrigger>Brand</AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="max-h-auto overflow-auto pr-6 lg:max-h-[280px]">
                 <CheckboxFilter count={1} id="1">
                   Adidas
                 </CheckboxFilter>
@@ -215,37 +225,83 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
                 </button>
               </AccordionContent>
             </AccordionItem>
+
+            <AccordionItem value="price">
+              <AccordionTrigger>Price</AccordionTrigger>
+              <AccordionContent>
+                <Form.Root className="box-border w-full px-1 py-2">
+                  <div className="mb-4 flex w-full gap-x-4">
+                    <Form.Field className="" name="price-min">
+                      <Form.Control asChild>
+                        <input
+                          className="h-12 w-full truncate border-2 border-gray-200 bg-white px-4 text-left leading-none text-black outline-none ring-4 ring-transparent hover:border-blue-primary focus:border-blue-primary focus:ring-blue-primary/20 data-[placeholder]:text-black"
+                          type="number"
+                          placeholder="$ min"
+                        />
+                      </Form.Control>
+                    </Form.Field>
+
+                    <Form.Field className="" name="price-min">
+                      <Form.Control asChild>
+                        <input
+                          className="h-12 w-full truncate border-2 border-gray-200 bg-white px-4 text-left leading-none text-black outline-none ring-4 ring-transparent hover:border-blue-primary focus:border-blue-primary focus:ring-blue-primary/20 data-[placeholder]:text-black"
+                          type="number"
+                          placeholder="$ max"
+                        />
+                      </Form.Control>
+                    </Form.Field>
+                  </div>
+
+                  <Form.Submit asChild>
+                    <Button variant="secondary" className="w-full">
+                      Update price
+                    </Button>
+                  </Form.Submit>
+                </Form.Root>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="color">
+              <AccordionTrigger>Color</AccordionTrigger>
+              <AccordionContent></AccordionContent>
+            </AccordionItem>
           </Accordion.Root>
         </div>
 
         <div className="flex-1">
-          <div className="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3">
-            {cards.map((card, index) => (
-              <ProductCard {...card} key={index} />
-            ))}
-          </div>
+          {!cards.length ? (
+            <Warning>No products were found</Warning>
+          ) : (
+            <div className="grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-3 md:gap-x-8">
+              {cards.map((card, index) => (
+                <ProductCard {...card} key={index} />
+              ))}
+            </div>
+          )}
 
-          <div className="mt-10 flex w-full items-center justify-center gap-x-10">
-            <button className="p-3">
-              <ChevronLeft className="stroke-gray-400" />
-            </button>
+          {!!cards.length && (
+            <div className="mt-10 flex w-full items-center justify-center gap-x-10">
+              <button className="p-3">
+                <ChevronLeft className="stroke-gray-400" />
+              </button>
 
-            <div className="flex gap-x-2">
-              <button className="inline-block h-12 w-12 self-center justify-self-center border-2 border-blue-primary text-center text-base font-semibold text-blue-primary">
-                1
-              </button>
-              <button className="inline-block h-12 w-12 self-center justify-self-center border-2 border-transparent text-center text-base font-semibold text-blue-primary">
-                2
-              </button>
-              <button className="inline-block h-12 w-12 self-center justify-self-center border-2 border-transparent text-center text-base font-semibold text-blue-primary">
-                3
+              <div className="flex gap-x-2">
+                <button className="inline-block h-12 w-12 self-center justify-self-center border-2 border-blue-primary text-center text-base font-semibold text-blue-primary">
+                  1
+                </button>
+                <button className="inline-block h-12 w-12 self-center justify-self-center border-2 border-transparent text-center text-base font-semibold text-blue-primary">
+                  2
+                </button>
+                <button className="inline-block h-12 w-12 self-center justify-self-center border-2 border-transparent text-center text-base font-semibold text-blue-primary">
+                  3
+                </button>
+              </div>
+
+              <button className="p-3">
+                <ChevronRight className="stroke-blue-primary" />
               </button>
             </div>
-
-            <button className="p-3">
-              <ChevronRight className="stroke-blue-primary" />
-            </button>
-          </div>
+          )}
         </div>
       </div>
     </div>

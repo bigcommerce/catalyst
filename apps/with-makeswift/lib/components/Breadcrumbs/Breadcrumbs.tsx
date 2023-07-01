@@ -39,7 +39,7 @@ export function Breadcrumbs({ className, breadcrumbs, currentPage }: Props) {
             >
               <ChevronRight size={16} className="mx-1 stroke-current" />
 
-              <span className="flex-1 truncate">
+              <span className="flex-1 truncate hover:text-blue-primary">
                 {breadcrumb.link ? (
                   <Link href={breadcrumb.link?.href ?? '#'} target={breadcrumb.link?.target}>
                     {breadcrumb.text}
