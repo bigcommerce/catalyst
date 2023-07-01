@@ -50,28 +50,47 @@ function AccordionContent({ children }: { children: ReactNode }) {
 }
 
 export function ProductList({ className, title = 'Accessories', cards }: Props) {
-  const [open, setOpen] = useState(['brand', 'size']);
+  const [filterOpen, setFilterOpen] = useState(['brand', 'size']);
+  const [filterListOpen, setFilterListOpen] = useState(true);
   return (
     <div className={className}>
-      <div className="mb-8 flex items-center space-x-8">
-        <h1 className="m-0 flex-1 text-h2 font-black leading-snug">{title}</h1>
+      <div className="mb-8 flex flex-col items-center justify-start gap-x-8 gap-y-6 lg:flex-row">
+        <h1 className="m-0 w-full flex-1 text-h2 font-black leading-snug">{title}</h1>
 
-        <p className="font-bold">1-9 of 235 items</p>
+        <div className="flex w-full items-center justify-between gap-x-8">
+          Filters
+          <div className="flex items-center gap-x-8">
+            <p className="font-bold">1-9 of 235 items</p>
 
-        <SelectMenu
-          value="featured"
-          options={[
-            { value: 'featured', label: 'Featured' },
-            { value: 'price-descending', label: 'Price (high to low)' },
-            { value: 'price-ascending', label: 'Price (low to high' },
-            { value: 'newest', label: 'Newest' },
-          ]}
-          className="w-56"
-        />
+            <SelectMenu
+              value="featured"
+              options={[
+                { value: 'featured', label: 'Featured' },
+                { value: 'price-descending', label: 'Price (high to low)' },
+                { value: 'price-ascending', label: 'Price (low to high' },
+                { value: 'newest', label: 'Newest' },
+              ]}
+              className="w-56"
+            />
+          </div>
+        </div>
       </div>
 
       <div className="flex gap-8">
-        <div className="w-72">
+        <div
+          className={clsx(
+            'm:h-auto fixed inset-y-0 left-0 z-20 box-border w-full overflow-auto bg-white p-10 transition-transform sm:box-content sm:w-72 lg:static lg:p-0',
+            filterListOpen
+              ? 'translate-x-0 shadow-xl lg:shadow-none'
+              : '-translate-x-full shadow-none lg:translate-x-0',
+          )}
+        >
+          <div className="mb-6 flex items-center justify-between lg:hidden">
+            <div className="text-h4">Filters</div>
+            <button aria-label="Close filters" onClick={() => setFilterListOpen(false)}>
+              <X />
+            </button>
+          </div>
           <div className="mb-2 text-h5 font-bold leading-normal">Categories</div>
           <ul className="mb-8">
             <li className="py-2">
@@ -110,8 +129,8 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
 
           <Accordion.Root
             type="multiple"
-            value={open}
-            onValueChange={setOpen}
+            value={filterOpen}
+            onValueChange={setFilterOpen}
             className="w-full space-y-4"
           >
             <AccordionItem value="brand">
@@ -174,29 +193,33 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
             <AccordionItem value="rating">
               <AccordionTrigger>Rating</AccordionTrigger>
               <AccordionContent>
-                <CheckboxFilter count={1} id="4stars">
+                <button className="flex items-center py-2 [&_.rr--on>svg]:hover:fill-blue-primary [&_.rr--on>svg]:hover:stroke-blue-primary [&_.rr--off>svg]:hover:stroke-blue-primary">
                   <ReviewRating stars={4} />
                   <span className="ml-2">& up</span>
-                </CheckboxFilter>
-                <CheckboxFilter count={1} id="4stars">
+                  <span className="ml-3 text-gray-500">2</span>
+                </button>
+                <button className="flex items-center py-2 [&_.rr--on>svg]:hover:fill-blue-primary [&_.rr--on>svg]:hover:stroke-blue-primary [&_.rr--off>svg]:hover:stroke-blue-primary">
                   <ReviewRating stars={3} />
                   <span className="ml-2">& up</span>
-                </CheckboxFilter>
-                <CheckboxFilter count={1} id="4stars">
+                  <span className="ml-3 text-gray-500">5</span>
+                </button>
+                <button className="flex items-center py-2 [&_.rr--on>svg]:hover:fill-blue-primary [&_.rr--on>svg]:hover:stroke-blue-primary [&_.rr--off>svg]:hover:stroke-blue-primary">
                   <ReviewRating stars={2} />
                   <span className="ml-2">& up</span>
-                </CheckboxFilter>
-                <CheckboxFilter count={1} id="4stars">
+                  <span className="ml-3 text-gray-500">15</span>
+                </button>
+                <button className="flex items-center py-2 [&_.rr--on>svg]:hover:fill-blue-primary [&_.rr--on>svg]:hover:stroke-blue-primary [&_.rr--off>svg]:hover:stroke-blue-primary">
                   <ReviewRating stars={1} />
                   <span className="ml-2">& up</span>
-                </CheckboxFilter>
+                  <span className="ml-3 text-gray-500">8</span>
+                </button>
               </AccordionContent>
             </AccordionItem>
           </Accordion.Root>
         </div>
 
         <div className="flex-1">
-          <div className="grid grid-cols-2 gap-x-8 gap-y-6 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3">
             {cards.map((card, index) => (
               <ProductCard {...card} key={index} />
             ))}

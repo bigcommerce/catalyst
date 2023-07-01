@@ -18,7 +18,7 @@ export function CheckboxFilter({ id, children, count }: Props) {
         defaultChecked
         id={id}
       >
-        <Checkbox.Indicator className="">
+        <Checkbox.Indicator>
           <Check absoluteStrokeWidth className="stroke-white" size={16} />
         </Checkbox.Indicator>
       </Checkbox.Root>

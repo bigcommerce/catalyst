@@ -110,7 +110,7 @@ export function Navigation({
         className={clsx(
           className,
           linkTextStyle,
-          'z-[999]',
+          'z-[10]',
           stickyNav && 'fixed inset-x-0 top-0',
           mobileNavOpen && 'min-h-0',
         )}
