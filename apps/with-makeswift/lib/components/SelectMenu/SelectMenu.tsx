@@ -19,7 +19,6 @@ interface Props {
 
 export function SelectMenu({ className, value, options }: Props) {
   const [selectedOption, setSelectedOption] = useState(value);
-  if (options.length === 0) return <Warning className={className}>There are no options</Warning>;
 
   return (
     <div className={clsx(className, 'relative')}>
@@ -33,8 +32,8 @@ export function SelectMenu({ className, value, options }: Props) {
             <ChevronDown className="group-hover:stroke-blue-primary" />
           </Select.Icon>
         </Select.Trigger>
-        <Select.Content position="popper" asChild>
-          <div className="absolute top-full z-10 bg-white py-2 shadow-lg shadow-gray-600/20">
+        <Select.Content position="popper" className="w-[var(--radix-select-trigger-width)]" asChild>
+          <div className="absolute top-full z-10 bg-white py-2 shadow-lg shadow-gray-600/10">
             {options?.map((option, i) => (
               <Select.Item
                 key={i}

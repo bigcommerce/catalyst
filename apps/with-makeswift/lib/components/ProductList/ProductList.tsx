@@ -92,9 +92,9 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
   return (
     <div className={className}>
       <div className="mb-8 flex flex-col items-center justify-start gap-x-8 gap-y-6 lg:flex-row">
-        <h1 className="m-0 w-full flex-1 text-h2 font-black leading-snug">{title}</h1>
+        <h1 className="m-0 w-full flex-1 text-h3 font-black leading-snug lg:text-h2">{title}</h1>
 
-        <div className="flex w-full flex-col items-center justify-between gap-x-8 gap-y-3 sm:flex-row lg:justify-end">
+        <div className="flex w-full flex-col items-center justify-between gap-x-5 gap-y-3 sm:flex-row lg:justify-end">
           <Button
             icon="filter"
             variant="secondary"
@@ -104,7 +104,7 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
             Show filters
           </Button>
 
-          <div className="flex w-full flex-col items-center gap-x-8 gap-y-8 sm:w-auto sm:flex-row">
+          <div className="flex w-full flex-col items-center gap-x-6 gap-y-8 sm:w-auto sm:flex-row">
             <p className="order-last w-full font-bold sm:order-first sm:w-auto">1-9 of 235 items</p>
 
             <SelectMenu
@@ -124,7 +124,7 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
       <div className="flex gap-8">
         <div
           className={clsx(
-            'm:h-auto fixed inset-y-0 left-0 z-20 box-border w-full overflow-auto bg-white p-10 transition-transform sm:box-content sm:w-72 lg:static lg:p-0',
+            'm:h-auto fixed inset-y-0 left-0 z-40 box-border w-full overflow-auto bg-white p-10 transition-transform sm:box-content sm:w-72 lg:static lg:p-0',
             filterListOpen
               ? 'translate-x-0 shadow-xl lg:shadow-none'
               : '-translate-x-full shadow-none lg:translate-x-0',
