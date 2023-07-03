@@ -43,6 +43,8 @@ export function ProductDetail({
   name = 'Accessories',
   price = '25.50',
 }: Props) {
+  const [selectedColor, setSelectedColor] = useState(colors[0]);
+
   const [quantity, setQuantity] = useState(1);
   const increaseCount = () => {
     setQuantity(quantity + 1);
@@ -70,7 +72,7 @@ export function ProductDetail({
 
         <div className="mb-2 mt-6 text-base font-semibold">Sizes</div>
         <ToggleGroup.Root
-          className="flex items-center gap-x-4"
+          className="flex flex-wrap items-center gap-4"
           type="single"
           defaultValue="small"
           aria-label="Sizes"
@@ -84,16 +86,21 @@ export function ProductDetail({
           ))}
         </ToggleGroup.Root>
 
-        <div className="mb-2 mt-6 text-base font-semibold">Color</div>
+        <div className="mb-2 mt-6 text-base font-semibold">
+          Color: <span>{selectedColor?.value}</span>
+        </div>
         <ToggleGroup.Root
-          className="flex items-center gap-x-4"
+          className="flex flex-wrap items-center gap-4"
           type="single"
           defaultValue="red"
           aria-label="Color"
         >
           {colors.map((color) => (
             <ToggleGroup.Item value={color.value} asChild>
-              <button className="w-12 border-2 border-gray-200 p-1 data-[state=on]:border-blue-primary">
+              <button
+                className="w-12 border-2 border-gray-200 p-1 data-[state=on]:border-blue-primary"
+                onClick={() => setSelectedColor(color)}
+              >
                 <ColorSwatch colorValue={color.colorValue} />
               </button>
             </ToggleGroup.Item>
