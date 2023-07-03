@@ -8,18 +8,8 @@ import React, { MouseEvent, useCallback, useEffect, useState } from 'react';
 import { Warning } from '../Warning';
 
 interface Slide {
-  title?: string;
-  text?: string;
   image?: { url: string; dimensions: { width: number; height: number } };
   imageAlt: string;
-  buttonText: string;
-  link?: {
-    target?: '_self' | '_blank';
-    href: string;
-    onClick(event: MouseEvent): void;
-  };
-  buttonColor?: string;
-  buttonTextColor?: string;
 }
 
 interface Props {
@@ -30,7 +20,6 @@ interface Props {
 }
 
 export function ProductCarousel({ className, slides, loop = true, autoplay = 0 }: Props) {
-  const SLIDER_COUNT = slides.length;
   const [, setCurrentSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
@@ -87,7 +76,7 @@ export function ProductCarousel({ className, slides, loop = true, autoplay = 0 }
   }, [instanceRef]);
 
   return (
-    <div className={clsx(className, 'text-white')}>
+    <div className={className}>
       {slides.length > 0 ? (
         <div
           className="relative focus:outline-0"
@@ -115,27 +104,11 @@ export function ProductCarousel({ className, slides, loop = true, autoplay = 0 }
             ref={sliderRef}
           >
             {slides.map((slide, index) => (
-              <div
-                className="relative min-w-full bg-gray-500 px-6 pb-32 pt-44 md:px-20 md:pb-44 md:pt-28 lg:px-24 lg:pb-48 lg:pt-36"
-                key={index}
-              >
-                <div className="max-w-xl">
-                  <h1 className="leading-0 m-0 text-h2 font-black text-current drop-shadow-md md:text-h1">
-                    {slide.title}
-                  </h1>
-                  <p className="mt-4 text-base text-current drop-shadow-md">{slide.text}</p>
-                  <a
-                    {...slide.link}
-                    className="mt-10 block px-8 py-3 text-center text-base font-semibold outline-none sm:inline-block"
-                    style={{ backgroundColor: slide.buttonColor, color: slide.buttonTextColor }}
-                  >
-                    {slide.buttonText}
-                  </a>
-                </div>
+              <div className="min-w-full bg-gray-500" key={index}>
                 {slide.image && (
                   <Image
                     alt={slide.imageAlt}
-                    className="absolute inset-0 -z-10 object-cover"
+                    className="aspect-square object-cover"
                     fill
                     priority
                     src={slide.image.url}
@@ -144,29 +117,9 @@ export function ProductCarousel({ className, slides, loop = true, autoplay = 0 }
               </div>
             ))}
           </div>
-
-          <div className="absolute bottom-6 left-6 z-10 flex items-center md:bottom-12 md:left-20 lg:bottom-16 lg:left-24 [&>button]:p-4 [&>button]:outline-none [&_svg]:drop-shadow-md">
-            <button aria-label="Pause carousel" className="mr-4">
-              <Pause />
-            </button>
-
-            <button aria-label="Previous slide" onClick={prevSlide}>
-              <ArrowLeft />
-            </button>
-
-            {loaded && instanceRef.current && (
-              <p className="w-16 text-center text-base font-semibold">
-                {instanceRef.current.track.details.rel + 1} / {SLIDER_COUNT}
-              </p>
-            )}
-
-            <button aria-label="Next slide" onClick={nextSlide}>
-              <ArrowRight />
-            </button>
-          </div>
         </div>
       ) : (
-        <Warning className={className}>There are no slides</Warning>
+        <Warning className={className}>There are no product images</Warning>
       )}
     </div>
   );

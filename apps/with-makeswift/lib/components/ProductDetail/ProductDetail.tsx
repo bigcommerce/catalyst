@@ -16,6 +16,7 @@ interface Props {
   brand?: string;
   name?: string;
   price?: string;
+  averageRating?: number;
 }
 
 const sizes = [
@@ -42,6 +43,7 @@ export function ProductDetail({
   brand = 'Base London',
   name = 'Accessories',
   price = '25.50',
+  averageRating = 3.56,
 }: Props) {
   const [selectedColor, setSelectedColor] = useState(colors[0]);
 
@@ -61,9 +63,9 @@ export function ProductDetail({
         <div className="text-base font-semibold uppercase text-gray-500">{brand}</div>
         <h1 className="m-0 w-full flex-1 text-h3 font-black leading-snug lg:text-h2">{name}</h1>
         <div className="mt-3 flex items-center gap-x-3">
-          <ReviewRating stars={3.5} color="var(--blue-primary)" />
-          <span className="text-base">3.56 (1)</span>
-          <button className="font-semibold text-blue-primary hover:text-black">
+          <ReviewRating stars={averageRating} color="var(--blue-primary)" />
+          <span className="text-base leading-normal">{averageRating} (1)</span>
+          <button className="text-base font-semibold leading-normal text-blue-primary hover:text-black">
             Write a review
           </button>
         </div>
