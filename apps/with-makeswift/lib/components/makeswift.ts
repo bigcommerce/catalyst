@@ -5,5 +5,6 @@ import './Footer/Footer.makeswift';
 import './Navigation/Navigation.makeswift';
 import './ProductCard/ProductCard.makeswift';
 import './ProductCards/ProductCards.makeswift';
+import './ProductDetail/ProductDetail.makeswift';
 import './ProductList/ProductList.makeswift';
 import './Text/Text.makeswift';

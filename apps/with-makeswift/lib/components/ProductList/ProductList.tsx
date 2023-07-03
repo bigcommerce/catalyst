@@ -7,6 +7,7 @@ import clsx from 'clsx';
 
 import * as Accordion from '@radix-ui/react-accordion';
 import * as Form from '@radix-ui/react-form';
+import * as ToggleGroup from '@radix-ui/react-toggle-group';
 
 import { SelectMenu } from '../SelectMenu';
 import { Warning } from '../Warning';
@@ -76,14 +77,14 @@ const sizes = [
 ];
 
 const colors = [
-  { colorValue: '#ff0000' },
-  { colorValue: 'yellow' },
-  { colorValue: 'black' },
-  { colorValue: 'gray' },
-  { colorValue: 'purple' },
-  { colorValue: 'orange' },
-  { colorValue: 'cyan' },
-  { colorValue: 'pink' },
+  { colorValue: '#ff0000', value: 'red' },
+  { colorValue: 'yellow', value: 'yellow' },
+  { colorValue: 'black', value: 'black' },
+  { colorValue: 'gray', value: 'gray' },
+  { colorValue: 'purple', value: 'purple' },
+  { colorValue: 'orange', value: 'orange' },
+  { colorValue: 'cyan', value: 'cyan' },
+  { colorValue: 'pink', value: 'pink' },
 ];
 
 export function ProductList({ className, title = 'Accessories', cards }: Props) {
@@ -203,22 +204,22 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
             <AccordionItem value="rating">
               <AccordionTrigger>Rating</AccordionTrigger>
               <AccordionContent>
-                <button className="flex items-center py-2 [&_.rr--on>svg]:hover:fill-blue-primary [&_.rr--on>svg]:hover:stroke-blue-primary [&_.rr--off>svg]:hover:stroke-blue-primary">
+                <button className="flex items-center py-2">
                   <ReviewRating stars={4} />
                   <span className="ml-2">& up</span>
                   <span className="ml-3 text-gray-500">2</span>
                 </button>
-                <button className="flex items-center py-2 [&_.rr--on>svg]:hover:fill-blue-primary [&_.rr--on>svg]:hover:stroke-blue-primary [&_.rr--off>svg]:hover:stroke-blue-primary">
+                <button className="flex items-center py-2">
                   <ReviewRating stars={3} />
                   <span className="ml-2">& up</span>
                   <span className="ml-3 text-gray-500">5</span>
                 </button>
-                <button className="flex items-center py-2 [&_.rr--on>svg]:hover:fill-blue-primary [&_.rr--on>svg]:hover:stroke-blue-primary [&_.rr--off>svg]:hover:stroke-blue-primary">
+                <button className="flex items-center py-2">
                   <ReviewRating stars={2} />
                   <span className="ml-2">& up</span>
                   <span className="ml-3 text-gray-500">15</span>
                 </button>
-                <button className="flex items-center py-2 [&_.rr--on>svg]:hover:fill-blue-primary [&_.rr--on>svg]:hover:stroke-blue-primary [&_.rr--off>svg]:hover:stroke-blue-primary">
+                <button className="flex items-center py-2">
                   <ReviewRating stars={1} />
                   <span className="ml-2">& up</span>
                   <span className="ml-3 text-gray-500">8</span>
@@ -264,11 +265,19 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
             <AccordionItem value="color">
               <AccordionTrigger>Color</AccordionTrigger>
               <AccordionContent className="px-1 py-2">
-                <div className="grid grid-cols-5 gap-3">
+                <ToggleGroup.Root
+                  className="grid grid-cols-5 gap-3"
+                  type="multiple"
+                  aria-label="Color"
+                >
                   {colors.map((color) => (
-                    <ColorSwatch colorValue={color.colorValue} />
+                    <ToggleGroup.Item value={color.value} asChild>
+                      <button className="border-2 border-gray-200 p-1 data-[state=on]:border-blue-primary">
+                        <ColorSwatch colorValue={color.colorValue} />
+                      </button>
+                    </ToggleGroup.Item>
                   ))}
-                </div>
+                </ToggleGroup.Root>
               </AccordionContent>
             </AccordionItem>
           </Accordion.Root>

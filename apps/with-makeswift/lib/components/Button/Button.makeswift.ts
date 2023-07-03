@@ -5,7 +5,6 @@ import { Link, Select, Style, TextInput } from '@makeswift/runtime/controls';
 import { forwardNextDynamicRef } from '@makeswift/runtime/next';
 
 import { LinkButton } from '../Button';
-import { ReactRuntime } from '@makeswift/runtime/react';
 import { runtime } from 'lib/runtime';
 
 runtime.registerComponent(LinkButton, {
