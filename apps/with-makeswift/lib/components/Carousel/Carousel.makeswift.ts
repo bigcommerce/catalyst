@@ -9,11 +9,11 @@ import {
   TextArea,
   TextInput,
 } from '@makeswift/runtime/controls';
-import { ReactRuntime } from '@makeswift/runtime/react';
 
 import { Carousel } from './Carousel';
+import { runtime } from 'lib/runtime';
 
-ReactRuntime.registerComponent(Carousel, {
+runtime.registerComponent(Carousel, {
   type: 'carousel',
   label: 'Carousel',
   props: {

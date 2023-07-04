@@ -1,14 +1,14 @@
 import { MakeswiftComponentType } from '@makeswift/runtime/components';
 import { Color } from '@makeswift/runtime/controls';
 import { Props } from '@makeswift/runtime/prop-controllers';
-import { ReactRuntime } from '@makeswift/runtime/react';
 
 import { Text } from './Text';
+import { runtime } from 'lib/runtime';
 
 // TODO: Fix type error
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
-ReactRuntime.registerComponent(Text, {
+runtime.registerComponent(Text, {
   type: MakeswiftComponentType.Text,
   label: 'Text',
   props: {

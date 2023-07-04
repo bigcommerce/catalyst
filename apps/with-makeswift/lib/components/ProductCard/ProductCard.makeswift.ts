@@ -1,9 +1,9 @@
 import { Checkbox, Image, Link, Number, Style, TextInput } from '@makeswift/runtime/controls';
-import { ReactRuntime } from '@makeswift/runtime/react';
 
 import { ProductCard } from './ProductCard';
+import { runtime } from 'lib/runtime';
 
-ReactRuntime.registerComponent(ProductCard, {
+runtime.registerComponent(ProductCard, {
   type: 'product-card',
   label: 'Product Card',
   props: {

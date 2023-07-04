@@ -110,7 +110,7 @@ export function Navigation({
         className={clsx(
           className,
           linkTextStyle,
-          'z-[999]',
+          'z-30 lg:z-50',
           stickyNav && 'fixed inset-x-0 top-0',
           mobileNavOpen && 'min-h-0',
         )}
@@ -120,7 +120,7 @@ export function Navigation({
           color: linkColor,
         }}
       >
-        <div className="relative z-10 w-full px-6 py-4 md:px-8 lg:justify-end lg:px-12">
+        <div className="relative w-full px-6 py-4 md:px-8 lg:justify-end lg:px-12">
           <div
             className="mx-auto flex w-full items-center justify-between gap-x-8"
             style={{
@@ -234,7 +234,7 @@ export function Navigation({
         <Portal.Root asChild>
           <nav
             className={clsx(
-              'fixed inset-x-0 bottom-0 top-[var(--top)] z-[100] flex flex-1 -translate-y-full animate-revealVertical flex-col gap-y-4 divide-y divide-gray-200 overflow-auto px-6 pb-6 pt-2',
+              'fixed inset-x-0 bottom-0 top-[var(--top)] z-30 flex flex-1 -translate-y-full animate-revealVertical flex-col gap-y-4 divide-y divide-gray-200 overflow-auto px-6 pb-6 pt-2',
               linkTextStyle,
             )}
             style={

@@ -8,6 +8,8 @@ import {
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import React from 'react';
 
+import { runtime } from '../lib/runtime';
+
 import { BcContext, BcContextProvider, getContextData } from '../lib/context';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -59,7 +61,7 @@ export async function getStaticProps(
 export default function Page({ snapshot, contextData }: Props) {
   return (
     <BcContextProvider value={contextData}>
-      <MakeswiftPage snapshot={snapshot} />
+      <MakeswiftPage snapshot={snapshot} runtime={runtime} />
     </BcContextProvider>
   );
 }
