@@ -19,49 +19,22 @@ runtime.registerComponent(ProductCarousel, {
   props: {
     className: Style(),
     slides: List({
-      label: 'Slides',
+      label: 'Images',
       type: Shape({
         type: {
-          title: TextInput({
-            label: 'Title',
-            defaultValue: 'Slide title',
-            selectAll: true,
-          }),
-          text: TextArea({
-            label: 'Text',
-            defaultValue:
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.',
-            selectAll: true,
-          }),
           image: Image({
             label: 'Background image',
             format: Image.Format.WithDimensions,
           }),
           imageAlt: TextInput({
             label: 'Alt text',
-            defaultValue: 'Logo',
+            defaultValue: 'Product image',
             selectAll: true,
-          }),
-          buttonText: TextInput({
-            label: 'Button text',
-            defaultValue: 'Shop now',
-            selectAll: true,
-          }),
-          link: Link({
-            label: 'Button link',
-          }),
-          buttonColor: Color({
-            label: 'Button color',
-            defaultValue: '#053FB0',
-          }),
-          buttonTextColor: Color({
-            label: 'Button text color',
-            defaultValue: '#ffffff',
           }),
         },
       }),
       getItemLabel(slide) {
-        return slide?.title || 'Slide title';
+        return slide?.imageAlt || 'Product image';
       },
     }),
     autoplay: Number({

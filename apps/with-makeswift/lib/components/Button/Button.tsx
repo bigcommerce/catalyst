@@ -23,11 +23,11 @@ const VARIANT_STYLES = {
     'text-blue-primary hover:text-blue-secondary focus:text-blue-primary hover:bg-blue-primary/10 px-6 py-2.5 border-2 border-blue-primary hover:border-blue-secondary focus:border-blue-primary disabled:border-gray-400 disabled:text-gray-400',
   subtle:
     'border-transparent hover:bg-blue-primary/10 p-3 text-blue-primary hover:text-blue-secondary focus:text-blue-primary disabled:text-gray-400',
-} as const;
+};
 
 type BaseButtonProps = {
   children?: ReactNode;
-  variant?: 'primary' | 'secondary' | 'subtle';
+  variant: 'primary' | 'secondary' | 'subtle';
   icon?: 'filter' | 'gift' | 'heart' | 'none' | 'scale' | 'search' | 'shopping-cart' | 'user';
   className?: string;
 };
@@ -56,7 +56,7 @@ export const Button = forwardRef(function Button(
 });
 
 type BaseLinkButtonProps = {
-  link?: { href: string; target?: '_self' | '_blank' };
+  link: { href: string; target?: '_self' | '_blank' };
 } & Props;
 
 export const LinkButton = forwardRef(function LinkButton(

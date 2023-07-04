@@ -1,9 +1,8 @@
 import { clsx } from 'clsx';
-import { useKeenSlider } from 'keen-slider/react';
+import { KeenSliderInstance, KeenSliderPlugin, useKeenSlider } from 'keen-slider/react';
 import debounce from 'lodash.debounce';
-import { ArrowLeft, ArrowRight, Pause } from 'lucide-react';
 import Image from 'next/image';
-import React, { MouseEvent, useCallback, useEffect, useState } from 'react';
+import React, { MutableRefObject, useCallback, useEffect, useState } from 'react';
 
 import { Warning } from '../Warning';
 
@@ -17,6 +16,39 @@ interface Props {
   loop?: boolean;
   autoplay?: number;
   slides: Slide[];
+}
+
+function ThumbnailPlugin(mainRef: MutableRefObject<KeenSliderInstance | null>): KeenSliderPlugin {
+  return (slider) => {
+    function removeActive() {
+      slider.slides.forEach((slide) => {
+        slide.classList.remove('active');
+      });
+    }
+    function addActive(idx: number) {
+      slider.slides[idx].classList.add('active');
+    }
+
+    function addClickEvents() {
+      slider.slides.forEach((slide, idx) => {
+        slide.addEventListener('click', () => {
+          if (mainRef.current) mainRef.current.moveToIdx(idx);
+        });
+      });
+    }
+
+    slider.on('created', () => {
+      if (!mainRef.current) return;
+      addActive(slider.track.details.rel);
+      addClickEvents();
+      mainRef.current.on('animationStarted', (main) => {
+        removeActive();
+        const next = main.animator.targetIdx || 0;
+        addActive(main.track.absToRel(next));
+        slider.moveToIdx(Math.min(slider.track.details.maxIdx, next));
+      });
+    });
+  };
 }
 
 export function ProductCarousel({ className, slides, loop = true, autoplay = 0 }: Props) {
@@ -45,6 +77,17 @@ export function ProductCarousel({ className, slides, loop = true, autoplay = 0 }
         slider.on('destroyed', () => observer.unobserve(slider.container));
       },
     ],
+  );
+
+  const [thumbnailRef] = useKeenSlider<HTMLDivElement>(
+    {
+      initial: 0,
+      slides: {
+        perView: 4,
+        spacing: 8,
+      },
+    },
+    [ThumbnailPlugin(instanceRef)],
   );
 
   useEffect(() => {
@@ -76,10 +119,10 @@ export function ProductCarousel({ className, slides, loop = true, autoplay = 0 }
   }, [instanceRef]);
 
   return (
-    <div className={className}>
+    <div className={clsx(className, 'min-h-[40px] w-full')}>
       {slides.length > 0 ? (
         <div
-          className="relative focus:outline-0"
+          className="focus:outline-0"
           onKeyDown={(e) => {
             switch (e.key) {
               default:
@@ -100,20 +143,34 @@ export function ProductCarousel({ className, slides, loop = true, autoplay = 0 }
           tabIndex={-1}
         >
           <div
-            className="relative z-10 flex w-full touch-pan-y select-none items-stretch overflow-hidden focus:outline-0"
+            className="relative z-10 flex aspect-square w-full touch-pan-y select-none items-stretch overflow-hidden focus:outline-0"
             ref={sliderRef}
           >
             {slides.map((slide, index) => (
-              <div className="min-w-full bg-gray-500" key={index}>
+              <div className="aspect-square h-full min-w-full" key={index}>
                 {slide.image && (
                   <Image
                     alt={slide.imageAlt}
-                    className="aspect-square object-cover"
+                    className="w-full object-cover"
                     fill
                     priority
                     src={slide.image.url}
                   />
                 )}
+              </div>
+            ))}
+          </div>
+
+          <div
+            className="flex w-full touch-pan-y select-none items-stretch overflow-hidden focus:outline-0"
+            ref={thumbnailRef}
+          >
+            {slides.map((slide, index) => (
+              <div
+                className="thumbnail relative aspect-square w-1/5 min-w-[20%] bg-gray-100"
+                key={index}
+              >
+                {slide.image && <Image alt={slide.imageAlt} fill src={slide.image.url} />}
               </div>
             ))}
           </div>

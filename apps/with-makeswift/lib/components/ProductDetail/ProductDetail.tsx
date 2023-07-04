@@ -9,7 +9,8 @@ import * as ToggleGroup from '@radix-ui/react-toggle-group';
 
 import { ReviewRating } from '../ReviewRating';
 import { Button } from '../Button';
-import { ColorSwatch } from '@components/ColorSwatch';
+import { ColorSwatch } from '../ColorSwatch';
+import { ProductCarousel } from '../ProductCarousel';
 
 interface Props {
   className?: string;
@@ -57,7 +58,9 @@ export function ProductDetail({
 
   return (
     <div className={clsx(className, 'flex flex-col gap-8 lg:flex-row')}>
-      <div className="flex-1"></div>
+      <div className="flex-1">
+        <ProductCarousel slides={[]} />
+      </div>
 
       <div className="flex-1">
         <div className="text-base font-semibold uppercase text-gray-500">{brand}</div>

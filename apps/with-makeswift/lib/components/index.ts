@@ -6,6 +6,7 @@ export * from './Footer';
 export * from './Navigation';
 export * from './ProductCard';
 export * from './ProductCards';
+export * from './ProductCarousel';
 export * from './ProductDetail';
 export * from './ProductList';
 export * from './ReviewRating';
