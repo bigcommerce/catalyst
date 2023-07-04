@@ -27,7 +27,7 @@ const VARIANT_STYLES = {
 
 type BaseButtonProps = {
   children?: ReactNode;
-  variant: 'primary' | 'secondary' | 'subtle';
+  variant?: 'primary' | 'secondary' | 'subtle';
   icon?: 'filter' | 'gift' | 'heart' | 'none' | 'scale' | 'search' | 'shopping-cart' | 'user';
   className?: string;
 };

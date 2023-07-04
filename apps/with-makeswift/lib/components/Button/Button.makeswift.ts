@@ -2,7 +2,6 @@ import dynamic from 'next/dynamic';
 
 import { MakeswiftComponentType } from '@makeswift/runtime/components';
 import { Link, Select, Style, TextInput } from '@makeswift/runtime/controls';
-import { forwardNextDynamicRef } from '@makeswift/runtime/next';
 
 import { LinkButton } from '../Button';
 import { runtime } from 'lib/runtime';
