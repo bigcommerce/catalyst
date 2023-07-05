@@ -1,12 +1,13 @@
 import { getCart, getCategoryTree } from '@bigcommerce/catalyst-client';
 import {
-  HeaderNavLink,
-  HeaderNavList,
-  HeaderSection,
-  Header as ReactantHeader,
-  HeaderNav as ReactantHeaderNav,
-} from '@bigcommerce/reactant/Header';
-import { Search, ShoppingCart } from 'lucide-react';
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuMobile,
+  NavigationMenuMobileTrigger,
+} from '@bigcommerce/reactant/NavigationMenu';
+import { Menu, Search, ShoppingCart } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { Suspense } from 'react';
@@ -44,42 +45,56 @@ const Cart = async () => {
   );
 };
 
-const HeaderNav = async () => {
+const HeaderNav = async ({ className }: { className?: string }) => {
   const categoryTree = await getCategoryTree();
 
   return (
-    <ReactantHeaderNav>
-      <HeaderNavList className="justify-center">
-        {categoryTree.map((category) => (
-          <HeaderNavLink asChild key={category.path}>
+    <NavigationMenuList className={className}>
+      {categoryTree.map((category) => (
+        <NavigationMenuItem key={category.path}>
+          <NavigationMenuLink asChild>
             <Link href={`/category/${category.entityId}`}>{category.name}</Link>
-          </HeaderNavLink>
-        ))}
-      </HeaderNavList>
-    </ReactantHeaderNav>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+      ))}
+    </NavigationMenuList>
   );
 };
 
 export const Header = () => {
   return (
-    <ReactantHeader>
-      <HeaderSection>
-        <Link href="/">
-          <StoreLogo />
-        </Link>
-      </HeaderSection>
-
-      <HeaderNav />
-
-      <HeaderSection>
-        <Link aria-label="Search" className="hidden sm:block" href="/search">
-          <Search />
-        </Link>
-
-        <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
-          <Cart />
-        </Suspense>
-      </HeaderSection>
-    </ReactantHeader>
+    <header>
+      <NavigationMenu>
+        <div className="flex min-h-[92px] w-full items-center justify-between gap-5">
+          <Link href="/">
+            <StoreLogo />
+          </Link>
+          <HeaderNav className="hidden sm:flex" />
+          <NavigationMenuList className="hidden sm:flex">
+            <NavigationMenuItem>
+              <Link aria-label="Search" className="hidden sm:block" href="/search">
+                <Search />
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
+                <Cart />
+              </Suspense>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+          <div className="flex items-center gap-5 sm:hidden">
+            <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
+              <Cart />
+            </Suspense>
+            <NavigationMenuMobileTrigger>
+              <Menu />
+            </NavigationMenuMobileTrigger>
+          </div>
+        </div>
+        <NavigationMenuMobile>
+          <HeaderNav className="block" />
+        </NavigationMenuMobile>
+      </NavigationMenu>
+    </header>
   );
 };
