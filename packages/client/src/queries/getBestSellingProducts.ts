@@ -31,6 +31,7 @@ export const getBestSellingProducts = async ({
               name: true,
             },
             defaultImage: {
+              altText: true,
               url: {
                 __args: {
                   width: imageWidth,
