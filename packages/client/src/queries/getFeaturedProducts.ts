@@ -32,6 +32,7 @@ export const getFeaturedProducts = async ({
               name: true,
             },
             defaultImage: {
+              altText: true,
               url: {
                 __args: {
                   width: imageWidth,
