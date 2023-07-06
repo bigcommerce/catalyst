@@ -6,6 +6,7 @@ const meta: Meta<typeof Button> = {
   tags: ['autodocs'],
   argTypes: {
     variant: { control: 'select', options: ['primary', 'secondary'] },
+    disabled: { control: 'boolean' },
   },
 };
 
@@ -17,6 +18,7 @@ export const Primary: Story = {
   args: {
     variant: 'primary',
     children: 'Button',
+    disabled: false,
   },
 };
 
