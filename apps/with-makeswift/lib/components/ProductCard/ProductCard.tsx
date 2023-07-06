@@ -32,7 +32,7 @@ export function ProductCard({
   originalPrice,
 }: Props) {
   return (
-    <a {...link} className={clsx(className, 'group w-full')}>
+    <a {...link} className={clsx(className, 'group w-full bg-white p-8')}>
       <div className="relative mb-4 aspect-[4/5] overflow-hidden">
         {imageSrc ? (
           <Image
