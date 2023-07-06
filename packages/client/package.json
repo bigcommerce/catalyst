@@ -15,9 +15,9 @@
     "dist"
   ],
   "devDependencies": {
-    "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@bigcommerce/catalyst-configs": "workspace:^",
     "@bigcommerce/eslint-config": "^2.7.0",
+    "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@genql/cli": "^6.0.0",
     "@types/node": "^18.13.00",
     "eslint": "^8.33.0",
