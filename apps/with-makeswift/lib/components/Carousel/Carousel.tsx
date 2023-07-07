@@ -23,9 +23,10 @@ interface Props {
 }
 
 export function Carousel({ className, slides, loop = true, autoplay = 0 }: Props) {
+  const SLIDER_COUNT = slides.length;
   const [isAutoplaying, setIsAutplaying] = useState(true);
   const [, setCurrentSlide] = useState(0);
-  const [, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
     {
       loop,
@@ -142,6 +143,12 @@ export function Carousel({ className, slides, loop = true, autoplay = 0 }: Props
             >
               {isAutoplaying ? <Pause strokeWidth={1.5} /> : <Play strokeWidth={1.5} />}
             </Button>
+
+            {/* {loaded && instanceRef.current && (
+              <p className="w-16 text-center text-base font-semibold">
+                {instanceRef.current.track.details.rel + 1} / {SLIDER_COUNT}
+              </p>
+            )} */}
           </div>
         </div>
       ) : (
