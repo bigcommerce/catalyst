@@ -24,7 +24,7 @@ export const NavigationMenu = forwardRef<ElementRef<'nav'>, ComponentPropsWithRe
 
     return (
       <ExpandedContext.Provider value={{ isExpanded, setIsExpanded }}>
-        <nav aria-label="Main" className={cs('pb-6', className)} ref={ref} {...props}>
+        <nav aria-label="Main" className={cs(className)} ref={ref} {...props}>
           {children}
         </nav>
       </ExpandedContext.Provider>
@@ -102,7 +102,11 @@ export const NavigationMenuMobile = forwardRef<ElementRef<'div'>, ComponentProps
 
     return (
       <div
-        className={cs('sm:hidden', !isExpanded && 'hidden', className)}
+        className={cs(
+          'sm:hidden',
+          className,
+          !isExpanded && 'hidden sm:hidden md:hidden lg:hidden',
+        )}
         id="nav-menu"
         ref={ref}
         {...props}
