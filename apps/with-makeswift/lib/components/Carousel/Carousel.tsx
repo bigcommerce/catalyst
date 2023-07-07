@@ -1,25 +1,18 @@
 import { clsx } from 'clsx';
 import { useKeenSlider } from 'keen-slider/react';
 import debounce from 'lodash.debounce';
-import { ArrowLeft, ArrowRight, Pause } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Pause, Play } from 'lucide-react';
 import Image from 'next/image';
-import React, { MouseEvent, useCallback, useEffect, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+
+import { Button } from '@components/Button';
 
 import { Warning } from '../Warning';
 
 interface Slide {
-  title?: string;
-  text?: string;
   image?: { url: string; dimensions: { width: number; height: number } };
   imageAlt: string;
-  buttonText: string;
-  link?: {
-    target?: '_self' | '_blank';
-    href: string;
-    onClick(event: MouseEvent): void;
-  };
-  buttonColor?: string;
-  buttonTextColor?: string;
+  children?: ReactNode;
 }
 
 interface Props {
@@ -30,9 +23,9 @@ interface Props {
 }
 
 export function Carousel({ className, slides, loop = true, autoplay = 0 }: Props) {
-  const SLIDER_COUNT = slides.length;
+  const [isAutoplaying, setIsAutplaying] = useState(true);
   const [, setCurrentSlide] = useState(0);
-  const [loaded, setLoaded] = useState(false);
+  const [, setLoaded] = useState(false);
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
     {
       loop,
@@ -59,12 +52,12 @@ export function Carousel({ className, slides, loop = true, autoplay = 0 }: Props
   );
 
   useEffect(() => {
-    if (autoplay > 0) {
+    if (isAutoplaying && autoplay > 0) {
       const intervalId = setInterval(() => instanceRef.current?.next(), autoplay * 1000);
 
       return () => clearInterval(intervalId);
     }
-  }, [instanceRef, autoplay]);
+  }, [instanceRef, autoplay, isAutoplaying]);
 
   const prevSlide = useCallback(() => {
     const slider = instanceRef.current;
@@ -87,7 +80,7 @@ export function Carousel({ className, slides, loop = true, autoplay = 0 }: Props
   }, [instanceRef]);
 
   return (
-    <div className={clsx(className, 'text-white')}>
+    <div className={clsx(className)}>
       {slides.length > 0 ? (
         <div
           className="relative focus:outline-0"
@@ -116,22 +109,10 @@ export function Carousel({ className, slides, loop = true, autoplay = 0 }: Props
           >
             {slides.map((slide, index) => (
               <div
-                className="min-w-full bg-gray-500 px-6 pb-32 pt-44 md:px-20 md:pb-44 md:pt-28 lg:px-24 lg:pb-48 lg:pt-36"
+                className="relative min-w-full bg-gray-100 px-6 pt-8 pb-40 md:min-h-[640px] md:px-8 md:pt-12 md:pb-44 lg:px-16 lg:pt-16 lg:pb-64"
                 key={index}
               >
-                <div className="max-w-xl">
-                  <h1 className="leading-0 m-0 text-h2 font-black text-current drop-shadow-md md:text-h1">
-                    {slide.title}
-                  </h1>
-                  <p className="mt-4 text-base text-current drop-shadow-md">{slide.text}</p>
-                  <a
-                    {...slide.link}
-                    className="mt-10 block px-8 py-3 text-center text-base font-semibold outline-none sm:inline-block"
-                    style={{ backgroundColor: slide.buttonColor, color: slide.buttonTextColor }}
-                  >
-                    {slide.buttonText}
-                  </a>
-                </div>
+                {slide.children}
                 {slide.image && (
                   <Image
                     alt={slide.imageAlt}
@@ -145,24 +126,22 @@ export function Carousel({ className, slides, loop = true, autoplay = 0 }: Props
             ))}
           </div>
 
-          <div className="absolute bottom-6 left-6 flex items-center md:bottom-12 md:left-20 lg:bottom-16 lg:left-24 [&>button]:p-4 [&>button]:outline-none [&_svg]:drop-shadow-md">
-            <button aria-label="Pause carousel" className="mr-4">
-              <Pause />
-            </button>
+          <div className="absolute bottom-6 left-6 flex items-center gap-x-1 md:bottom-12 md:left-12 lg:bottom-16 lg:left-16">
+            <Button aria-label="Previous slide" onClick={prevSlide} variant="subtle">
+              <ArrowLeft strokeWidth={1.5} />
+            </Button>
 
-            <button aria-label="Previous slide" onClick={prevSlide}>
-              <ArrowLeft />
-            </button>
+            <Button aria-label="Next slide" onClick={nextSlide} variant="subtle">
+              <ArrowRight strokeWidth={1.5} />
+            </Button>
 
-            {loaded && instanceRef.current && (
-              <p className="w-16 text-center text-base font-semibold">
-                {instanceRef.current.track.details.rel + 1} / {SLIDER_COUNT}
-              </p>
-            )}
-
-            <button aria-label="Next slide" onClick={nextSlide}>
-              <ArrowRight />
-            </button>
+            <Button
+              aria-label="Toggle carousel autoplay"
+              onClick={() => setIsAutplaying(!isAutoplaying)}
+              variant="subtle"
+            >
+              {isAutoplaying ? <Pause strokeWidth={1.5} /> : <Play strokeWidth={1.5} />}
+            </Button>
           </div>
         </div>
       ) : (

@@ -11,8 +11,9 @@ import {
   TextInput,
 } from '@makeswift/runtime/controls';
 
-import { Navigation } from './Navigation';
 import { runtime } from 'lib/runtime';
+
+import { Navigation } from './Navigation';
 
 runtime.registerComponent(Navigation, {
   type: 'navigation',
@@ -27,10 +28,9 @@ runtime.registerComponent(Navigation, {
       label: 'Background color',
       defaultValue: '#ffffff',
     }),
-    navWidth: Number({
+    navWidth: TextInput({
       label: 'Max content width',
-      defaultValue: 1280,
-      suffix: 'px',
+      defaultValue: '1280px',
       selectAll: true,
     }),
     logoImage: Image({
@@ -39,7 +39,7 @@ runtime.registerComponent(Navigation, {
     }),
     logoWidth: Number({
       label: 'Logo width',
-      defaultValue: 100,
+      defaultValue: 180,
       suffix: 'px',
       selectAll: true,
     }),

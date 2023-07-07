@@ -38,7 +38,7 @@ export async function getStaticProps(
   ctx: GetStaticPropsContext<ParsedUrlQuery>,
 ): Promise<GetStaticPropsResult<Props>> {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const makeswift = new Makeswift(process.env.MAKESWIFT_SITE_API_KEY!);
+  const makeswift = new Makeswift(process.env.MAKESWIFT_SITE_API_KEY!, { runtime });
   const path = `/${(ctx.params?.path ?? []).join('/')}`;
   const snapshot = await makeswift.getPageSnapshot(path, {
     preview: ctx.preview,

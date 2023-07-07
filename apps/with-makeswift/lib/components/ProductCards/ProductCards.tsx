@@ -17,7 +17,7 @@ export function ProductCards({ cards, className }: ProductCardsProps) {
   }
 
   return (
-    <div className={clsx(className, 'grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-4 md:gap-x-8')}>
+    <div className={clsx(className, 'grid grid-cols-2 gap-0.5 sm:grid-cols-4')}>
       {cards.map((card, index) => (
         <ProductCard {...card} key={index} />
       ))}

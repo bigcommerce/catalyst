@@ -1,9 +1,7 @@
-import Link from 'next/link';
-import { ComponentPropsWithoutRef, ReactNode, Ref, forwardRef } from 'react';
-
 import clsx from 'clsx';
-
 import { Filter, Gift, Heart, Scale, Search, ShoppingCart, User } from 'lucide-react';
+import Link from 'next/link';
+import { ComponentPropsWithoutRef, forwardRef, ReactNode, Ref } from 'react';
 
 const SELECTED_ICON = {
   filter: <Filter />,
@@ -25,12 +23,12 @@ const VARIANT_STYLES = {
     'border-transparent hover:bg-blue-primary/10 p-3 text-blue-primary hover:text-blue-secondary focus:text-blue-primary disabled:text-gray-400',
 };
 
-type BaseButtonProps = {
+interface BaseButtonProps {
   children?: ReactNode;
   variant?: 'primary' | 'secondary' | 'subtle';
   icon?: 'filter' | 'gift' | 'heart' | 'none' | 'scale' | 'search' | 'shopping-cart' | 'user';
   className?: string;
-};
+}
 
 type Props = BaseButtonProps & Omit<ComponentPropsWithoutRef<'button'>, keyof BaseButtonProps>;
 
@@ -41,12 +39,12 @@ export const Button = forwardRef(function Button(
   return (
     <button
       {...rest}
-      ref={ref}
       className={clsx(
         className,
         VARIANT_STYLES[variant],
         'group inline-flex items-center justify-center gap-3 text-center text-base font-semibold ring-4 ring-transparent transition-colors duration-150 focus:ring-blue-primary/20 disabled:border-gray-400',
       )}
+      ref={ref}
     >
       {SELECTED_ICON[icon]}
 
@@ -64,7 +62,7 @@ export const LinkButton = forwardRef(function LinkButton(
   ref: Ref<HTMLAnchorElement>,
 ) {
   return (
-    <Link ref={ref} className={className} href={link?.href ?? '#'} target={link?.target}>
+    <Link className={className} href={link.href ? link.href : '#'} ref={ref} target={link.target}>
       <Button {...rest} />
     </Link>
   );

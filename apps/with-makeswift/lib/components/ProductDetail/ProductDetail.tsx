@@ -1,16 +1,12 @@
-import React, { ComponentPropsWithoutRef, ReactNode, useState } from 'react';
-
-import Link from 'next/link';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-
-import clsx from 'clsx';
-
 import * as ToggleGroup from '@radix-ui/react-toggle-group';
+import clsx from 'clsx';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import React, { useState } from 'react';
 
-import { ReviewRating } from '../ReviewRating';
 import { Button } from '../Button';
 import { ColorSwatch } from '../ColorSwatch';
 import { ProductCarousel } from '../ProductCarousel';
+import { ReviewRating } from '../ReviewRating';
 
 interface Props {
   className?: string;
@@ -66,7 +62,7 @@ export function ProductDetail({
         <div className="text-base font-semibold uppercase text-gray-500">{brand}</div>
         <h1 className="m-0 w-full flex-1 text-h3 font-black leading-snug lg:text-h2">{name}</h1>
         <div className="mt-3 flex items-center gap-x-3">
-          <ReviewRating stars={averageRating} color="var(--blue-primary)" />
+          <ReviewRating color="var(--blue-primary)" stars={averageRating} />
           <span className="text-base leading-normal">{averageRating} (1)</span>
           <button className="text-base font-semibold leading-normal text-blue-primary hover:text-black">
             Write a review
@@ -77,13 +73,13 @@ export function ProductDetail({
 
         <div className="mb-2 mt-6 text-base font-semibold">Sizes</div>
         <ToggleGroup.Root
-          className="flex flex-wrap items-center gap-4"
-          type="single"
-          defaultValue="small"
           aria-label="Sizes"
+          className="flex flex-wrap items-center gap-4"
+          defaultValue="small"
+          type="single"
         >
-          {sizes.map((size) => (
-            <ToggleGroup.Item value={size.value} asChild>
+          {sizes.map((size, index) => (
+            <ToggleGroup.Item asChild key={index} value={size.value}>
               <button className="border-2 border-gray-200 px-6 py-2.5 data-[state=on]:border-blue-primary">
                 {size.label}
               </button>
@@ -95,13 +91,13 @@ export function ProductDetail({
           Color: <span>{selectedColor?.value}</span>
         </div>
         <ToggleGroup.Root
-          className="flex flex-wrap items-center gap-4"
-          type="single"
-          defaultValue="red"
           aria-label="Color"
+          className="flex flex-wrap items-center gap-4"
+          defaultValue="red"
+          type="single"
         >
-          {colors.map((color) => (
-            <ToggleGroup.Item value={color.value} asChild>
+          {colors.map((color, index) => (
+            <ToggleGroup.Item asChild key={index} value={color.value}>
               <button
                 className="w-12 border-2 border-gray-200 p-1 data-[state=on]:border-blue-primary"
                 onClick={() => setSelectedColor(color)}
@@ -125,10 +121,10 @@ export function ProductDetail({
         </div>
 
         <div className="mt-10 flex flex-col items-center gap-4 md:flex-row">
-          <Button icon="shopping-cart" className="w-full">
+          <Button className="w-full" icon="shopping-cart">
             Add to cart
           </Button>
-          <Button variant="secondary" icon="heart" className="w-full">
+          <Button className="w-full" icon="heart" variant="secondary">
             Save to wishlist
           </Button>
         </div>

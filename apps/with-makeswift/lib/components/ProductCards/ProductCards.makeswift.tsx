@@ -1,9 +1,9 @@
 import { Number, Select, Style } from '@makeswift/runtime/controls';
 
 import { useBcContext } from 'lib/context';
+import { runtime } from 'lib/runtime';
 
 import { ProductCards, ProductCardsProps } from './ProductCards';
-import { runtime } from 'lib/runtime';
 
 interface WrapperProps {
   className?: string;

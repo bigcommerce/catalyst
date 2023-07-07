@@ -1,11 +1,14 @@
 import { clsx } from 'clsx';
 import { useKeenSlider } from 'keen-slider/react';
 import debounce from 'lodash.debounce';
-import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Pause, Play } from 'lucide-react';
 import Image from 'next/image';
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 
+import { Button } from '@components/Button';
+
 import { Warning } from '../Warning';
+import { SCButton } from '@components/SCButton';
 
 interface Slide {
   image?: { url: string; dimensions: { width: number; height: number } };
@@ -21,10 +24,9 @@ interface Props {
 }
 
 export function SCCarousel({ className, slides, loop = true, autoplay = 0 }: Props) {
-  const SLIDER_COUNT = slides.length;
   const [isAutoplaying, setIsAutplaying] = useState(true);
   const [, setCurrentSlide] = useState(0);
-  const [loaded, setLoaded] = useState(false);
+  const [, setLoaded] = useState(false);
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
     {
       loop,
@@ -56,7 +58,7 @@ export function SCCarousel({ className, slides, loop = true, autoplay = 0 }: Pro
 
       return () => clearInterval(intervalId);
     }
-  }, [instanceRef, autoplay]);
+  }, [instanceRef, autoplay, isAutoplaying]);
 
   const prevSlide = useCallback(() => {
     const slider = instanceRef.current;
@@ -125,21 +127,22 @@ export function SCCarousel({ className, slides, loop = true, autoplay = 0 }: Pro
             ))}
           </div>
 
-          <div className="absolute bottom-6 left-6 flex items-center gap-x-1 md:bottom-12 md:left-12 lg:bottom-16 lg:left-16 [&>button]:cursor-pointer [&>button]:bg-white [&>button]:p-3 [&>button]:text-black">
-            <button aria-label="Previous slide" onClick={prevSlide}>
-              <ChevronLeft strokeWidth={1.5} />
-            </button>
+          <div className="absolute bottom-6 left-6 flex items-center gap-x-1 md:bottom-12 md:left-12 lg:bottom-16 lg:left-16">
+            <SCButton aria-label="Previous slide" onClick={prevSlide} variant="subtle">
+              <ArrowLeft strokeWidth={1.5} />
+            </SCButton>
 
-            <button aria-label="Next slide" onClick={nextSlide}>
-              <ChevronRight strokeWidth={1.5} />
-            </button>
+            <SCButton aria-label="Next slide" onClick={nextSlide} variant="subtle">
+              <ArrowRight strokeWidth={1.5} />
+            </SCButton>
 
-            <button
+            <SCButton
               aria-label="Toggle carousel autoplay"
               onClick={() => setIsAutplaying(!isAutoplaying)}
+              variant="subtle"
             >
               {isAutoplaying ? <Pause strokeWidth={1.5} /> : <Play strokeWidth={1.5} />}
-            </button>
+            </SCButton>
           </div>
         </div>
       ) : (

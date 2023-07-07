@@ -2,7 +2,7 @@ import * as Accordion from '@radix-ui/react-accordion';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Portal from '@radix-ui/react-portal';
 import { clsx } from 'clsx';
-import { ChevronDown, Gift, Heart, Menu, Scale, Search, ShoppingCart, User, X } from 'lucide-react';
+import { ChevronDown, Gift, Heart, Menu, Scale, Search, ShoppingBag, User, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, {
@@ -42,7 +42,7 @@ interface Props {
   className?: string;
   stickyNav?: boolean;
   linkTextStyle?: string;
-  navWidth: number;
+  navWidth: string;
   navBackground?: string;
   logoImage?: { url: string; dimensions: { width: number; height: number } };
   logoWidth: number;
@@ -109,7 +109,6 @@ export function Navigation({
       <header
         className={clsx(
           className,
-          linkTextStyle,
           'z-30 lg:z-50',
           stickyNav && 'fixed inset-x-0 top-0',
           mobileNavOpen && 'min-h-0',
@@ -120,11 +119,11 @@ export function Navigation({
           color: linkColor,
         }}
       >
-        <div className="relative w-full px-6 py-4 md:px-8 lg:justify-end lg:px-12">
+        <div className="relative w-full px-6 py-3 md:px-8 lg:justify-end">
           <div
             className="mx-auto flex w-full items-center justify-between gap-x-8"
             style={{
-              maxWidth: `${navWidth}px`,
+              maxWidth: navWidth,
             }}
           >
             {logoImage && (
@@ -139,10 +138,13 @@ export function Navigation({
               </a>
             )}
 
-            <NavigationMenu.Root className="hidden flex-1 justify-center lg:flex" delayDuration={0}>
-              <NavigationMenu.List className="flex items-center gap-x-0 md:gap-x-3">
+            <NavigationMenu.Root className="hidden flex-1 justify-start lg:flex" delayDuration={0}>
+              <NavigationMenu.List className="flex items-center gap-x-0 md:gap-x-2">
                 {mainNavLinks?.map((mainNavLink, mainNavLinkIndex) => (
-                  <NavigationMenu.Item className="relative" key={mainNavLinkIndex}>
+                  <NavigationMenu.Item
+                    className={clsx('relative', linkTextStyle)}
+                    key={mainNavLinkIndex}
+                  >
                     {mainNavLink.subnavGroups.length > 0 ? (
                       <NavigationMenu.Trigger asChild>
                         <button className="group flex cursor-pointer select-none items-center px-3 py-2.5 outline-none [text-transform:inherit]">
@@ -168,7 +170,7 @@ export function Navigation({
 
                     {mainNavLink.subnavGroups.length > 0 && (
                       <NavigationMenu.Content asChild>
-                        <div className="flex items-start justify-center gap-x-8 px-8 pb-12 pt-6 lg:px-12">
+                        <div className="flex items-start justify-center gap-x-8 px-8 pb-8 pt-6 text-black lg:px-12">
                           {mainNavLink.subnavGroups.map((subnavGroup, subnavGroupIndex) => (
                             <ul className="w-44 space-y-2 leading-8" key={subnavGroupIndex}>
                               <li className="font-semibold">{subnavGroup.heading}</li>
@@ -202,7 +204,7 @@ export function Navigation({
               <Link aria-label="Search" className="hidden sm:block" href="/search">
                 <Search />
               </Link>
-              <Link aria-label="Compare items" className="hidden md:block" href="#">
+              {/* <Link aria-label="Compare items" className="hidden md:block" href="#">
                 <Scale />
               </Link>
               <Link aria-label="Wishlist" className="hidden md:block" href="#">
@@ -210,12 +212,12 @@ export function Navigation({
               </Link>
               <Link aria-label="Favorites" className="hidden md:block" href="#">
                 <Heart />
-              </Link>
+              </Link> */}
               <Link aria-label="Profile" className="hidden md:block" href="#">
                 <User />
               </Link>
-              <Link aria-label="Shopping cart" href="#">
-                <ShoppingCart />
+              <Link aria-label="Shopping bag" href="#">
+                <ShoppingBag />
               </Link>
 
               <button
@@ -235,7 +237,6 @@ export function Navigation({
           <nav
             className={clsx(
               'fixed inset-x-0 bottom-0 top-[var(--top)] z-30 flex flex-1 -translate-y-full animate-revealVertical flex-col gap-y-4 divide-y divide-gray-200 overflow-auto px-6 pb-6 pt-2',
-              linkTextStyle,
             )}
             style={
               // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

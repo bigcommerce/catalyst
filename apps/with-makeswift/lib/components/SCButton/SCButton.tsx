@@ -1,9 +1,7 @@
-import Link from 'next/link';
-import { ComponentPropsWithoutRef, ReactNode, Ref, forwardRef } from 'react';
-
 import clsx from 'clsx';
-
 import { Filter, Gift, Heart, Scale, Search, ShoppingCart, User } from 'lucide-react';
+import Link from 'next/link';
+import { ComponentPropsWithoutRef, forwardRef, ReactNode, Ref } from 'react';
 
 const SELECTED_ICON = {
   filter: <Filter />,
@@ -19,15 +17,15 @@ const SELECTED_ICON = {
 const VARIANT_STYLES = {
   primary: 'text-white bg-black after:bg-white after:opacity-[15%]',
   secondary: 'text-black bg-gray-100 after:bg-black/5',
-  subtle: '',
+  subtle: 'text-black bg-gray-100 after:bg-black/5 !p-3',
 };
 
-type BaseButtonProps = {
+interface BaseButtonProps {
   children?: ReactNode;
   variant?: 'primary' | 'secondary' | 'subtle';
   icon?: 'filter' | 'gift' | 'heart' | 'none' | 'scale' | 'search' | 'shopping-cart' | 'user';
   className?: string;
-};
+}
 
 type Props = BaseButtonProps & Omit<ComponentPropsWithoutRef<'button'>, keyof BaseButtonProps>;
 
@@ -38,12 +36,12 @@ export const SCButton = forwardRef(function SCButton(
   return (
     <button
       {...rest}
-      ref={ref}
       className={clsx(
         className,
         VARIANT_STYLES[variant],
-        "after:-z-1 group relative z-0 inline-flex items-center justify-center gap-3 overflow-hidden px-12 py-4 text-center text-base font-semibold uppercase after:absolute after:inset-y-0 after:left-1/2 after:w-5 after:-translate-x-1/2 after:skew-x-[20deg] after:transition-all after:content-[''] hover:after:w-[120%]",
+        "after:-z-1 group relative z-0 inline-flex items-center justify-center gap-3 overflow-hidden px-12 py-4 text-center text-sm font-semibold uppercase after:absolute after:inset-y-0 after:left-1/2 after:w-5 after:-translate-x-1/2 after:skew-x-[20deg] after:transition-all after:content-[''] hover:after:w-[140%]",
       )}
+      ref={ref}
     >
       {SELECTED_ICON[icon]}
 
@@ -61,7 +59,7 @@ export const SCLinkButton = forwardRef(function SCLinkButton(
   ref: Ref<HTMLAnchorElement>,
 ) {
   return (
-    <Link ref={ref} className={className} href={link?.href ?? '#'} target={link?.target}>
+    <Link className={className} href={link.href ? link.href : '#'} ref={ref} target={link.target}>
       <SCButton {...rest} />
     </Link>
   );

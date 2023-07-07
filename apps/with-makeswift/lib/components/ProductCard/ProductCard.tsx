@@ -32,12 +32,12 @@ export function ProductCard({
   originalPrice,
 }: Props) {
   return (
-    <a {...link} className={clsx(className, 'group w-full bg-white p-8')}>
-      <div className="relative mb-4 aspect-[4/5] overflow-hidden">
+    <a {...link} className={clsx(className, 'group w-full bg-white p-5 md:p-6 lg:p-8')}>
+      <div className="relative mb-4 aspect-square">
         {imageSrc ? (
           <Image
             alt={imageAlt}
-            className="object-cover transition-transform duration-300 group-hover:scale-110"
+            className="object-cover transition-transform duration-200 group-hover:scale-110"
             fill
             src={imageSrc.url}
           />
@@ -51,7 +51,7 @@ export function ProductCard({
         )}
       </div>
       {Boolean(heading) && <div className="leading-7 opacity-50">{heading}</div>}
-      <h3 className="mb-2 text-h5 font-bold">{name}</h3>
+      <h3 className="mb-2 text-h6 font-bold md:text-h5">{name}</h3>
       <p className="text-base">
         ${price}
         {Boolean(originalPrice) && (

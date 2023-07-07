@@ -1,17 +1,8 @@
-import {
-  Color,
-  Image,
-  Link,
-  List,
-  Number,
-  Shape,
-  Style,
-  TextArea,
-  TextInput,
-} from '@makeswift/runtime/controls';
+import { Image, List, Number, Shape, Slot, Style, TextInput } from '@makeswift/runtime/controls';
+
+import { runtime } from 'lib/runtime';
 
 import { Carousel } from './Carousel';
-import { runtime } from 'lib/runtime';
 
 runtime.registerComponent(Carousel, {
   type: 'carousel',
@@ -22,46 +13,20 @@ runtime.registerComponent(Carousel, {
       label: 'Slides',
       type: Shape({
         type: {
-          title: TextInput({
-            label: 'Title',
-            defaultValue: 'Slide title',
-            selectAll: true,
-          }),
-          text: TextArea({
-            label: 'Text',
-            defaultValue:
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.',
-            selectAll: true,
-          }),
           image: Image({
             label: 'Background image',
             format: Image.Format.WithDimensions,
           }),
           imageAlt: TextInput({
             label: 'Alt text',
-            defaultValue: 'Logo',
+            defaultValue: 'Slide image',
             selectAll: true,
           }),
-          buttonText: TextInput({
-            label: 'Button text',
-            defaultValue: 'Shop now',
-            selectAll: true,
-          }),
-          link: Link({
-            label: 'Button link',
-          }),
-          buttonColor: Color({
-            label: 'Button color',
-            defaultValue: '#053FB0',
-          }),
-          buttonTextColor: Color({
-            label: 'Button text color',
-            defaultValue: '#ffffff',
-          }),
+          children: Slot(),
         },
       }),
       getItemLabel(slide) {
-        return slide?.title || 'Slide title';
+        return slide?.imageAlt || 'Slide image';
       },
     }),
     autoplay: Number({
