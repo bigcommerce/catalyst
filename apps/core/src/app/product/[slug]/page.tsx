@@ -1,18 +1,15 @@
-import { addCartLineItem, createCart, getProduct } from '@bigcommerce/catalyst-client';
+import { getProduct } from '@bigcommerce/catalyst-client';
 import { Button } from '@bigcommerce/reactant/Button';
-import { Heart, ShoppingCart } from 'lucide-react';
-import { revalidateTag } from 'next/cache';
-import { cookies } from 'next/headers';
+import { Heart } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
+import { AddToCart } from './AddToCart';
 import { BreadCrumbs } from './Breadcrumbs';
 import { Gallery } from './Gallery';
 import { Reviews } from './Reviews';
 import { ReviewSummary } from './ReviewSummary';
 
-// import { Variants } from './Variants';
-//
 const currencyFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
@@ -27,49 +24,6 @@ export default async function Product({ params }: { params: { slug: string } }) 
   if (!product) {
     return notFound();
   }
-
-  const handleAddToCart = async () => {
-    'use server';
-
-    const cartId = cookies().get('cartId')?.value;
-
-    if (cartId) {
-      await addCartLineItem(cartId, {
-        lineItems: [
-          {
-            productEntityId: productId,
-            quantity: 1,
-          },
-        ],
-      });
-
-      revalidateTag('cart');
-      // revalidatePath('/cart');
-
-      return;
-    }
-
-    // Create cart
-    const cart = await createCart([
-      {
-        productEntityId: productId,
-        quantity: 1,
-      },
-    ]);
-
-    if (cart) {
-      cookies().set({
-        name: 'cartId',
-        value: cart.entityId,
-        httpOnly: true,
-        sameSite: 'lax',
-        secure: true,
-        path: '/',
-      });
-    }
-
-    revalidateTag('cart');
-  };
 
   return (
     <>
@@ -94,12 +48,7 @@ export default async function Product({ params }: { params: { slug: string } }) 
           )}
 
           <div className="my-7 flex gap-4">
-            <form action={handleAddToCart} className="w-full">
-              <Button type="submit">
-                <ShoppingCart aria-hidden="true" className="mx-2" />
-                Add to Cart
-              </Button>
-            </form>
+            <AddToCart productId={productId} />
 
             {/* NOT IMPLEMENTED YET */}
             <div className="w-full">
