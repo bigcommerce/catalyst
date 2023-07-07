@@ -48,12 +48,5 @@ export const getFeaturedProducts = async ({
 
   const { site } = await client.query(query);
 
-  return removeEdgesAndNodes(site.featuredProducts).map((product) => {
-    const { prices, ...rest } = product;
-
-    return {
-      ...rest,
-      price: prices?.price,
-    };
-  });
+  return removeEdgesAndNodes(site.featuredProducts);
 };
