@@ -53,11 +53,7 @@ const ProductListName = ({ children }: { children: ReactNode }) => (
 );
 
 const ProductListGrid = ({ children }: { children: ReactNode }) => (
-  <div
-    className={cs('grid grid-cols-2 gap-y-8 gap-x-6 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4')}
-  >
-    {children}
-  </div>
+  <div className={cs('grid grid-cols-2 gap-y-8 gap-x-6 md:grid-cols-4')}>{children}</div>
 );
 
 export default async function Home() {
