@@ -2,7 +2,7 @@ import './Breadcrumbs/Breadcrumbs.makeswift';
 import './Button/Button.makeswift';
 import './Carousel/Carousel.makeswift';
 import './Footer/Footer.makeswift';
-// import './HeadphoneConfigurator/HeadphoneConfigurator.makeswift';
+import './HeadphoneConfigurator/HeadphoneConfigurator.makeswift';
 import './Headroom/Headroom.makeswift';
 import './Navigation/Navigation.makeswift';
 import './ProductCard/ProductCard.makeswift';

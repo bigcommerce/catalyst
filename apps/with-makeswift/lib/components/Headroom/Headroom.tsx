@@ -14,6 +14,7 @@ export const Headroom = forwardRef(function Headroom(
 ) {
   return (
     <div ref={ref} className="w-full">
+      {/* @ts-ignore */}
       <ReactHeadroom {...rest}>{children}</ReactHeadroom>
     </div>
   );

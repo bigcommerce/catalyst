@@ -183,7 +183,7 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
               <AccordionTrigger>Brand</AccordionTrigger>
               <AccordionContent className="max-h-auto overflow-auto pr-6 lg:max-h-[300px]">
                 {brands.map((brand) => (
-                  <CheckboxFilter count={brand.count} id={brand.id}>
+                  <CheckboxFilter count={brand.count} key={brand.id} id={brand.id}>
                     {brand.label}
                   </CheckboxFilter>
                 ))}
@@ -194,7 +194,7 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
               <AccordionTrigger>Size</AccordionTrigger>
               <AccordionContent>
                 {sizes.map((size) => (
-                  <CheckboxFilter count={size.count} id={size.id}>
+                  <CheckboxFilter count={size.count} key={size.id} id={size.id}>
                     {size.label}
                   </CheckboxFilter>
                 ))}
@@ -270,8 +270,8 @@ export function ProductList({ className, title = 'Accessories', cards }: Props) 
                   type="multiple"
                   aria-label="Color"
                 >
-                  {colors.map((color) => (
-                    <ToggleGroup.Item value={color.value} asChild>
+                  {colors.map((color, index) => (
+                    <ToggleGroup.Item value={color.value} key={index} asChild>
                       <button className="border-2 border-gray-200 p-1 data-[state=on]:border-blue-primary">
                         <ColorSwatch colorValue={color.colorValue} />
                       </button>

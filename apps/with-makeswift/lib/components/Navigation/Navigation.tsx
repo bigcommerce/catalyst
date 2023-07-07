@@ -239,7 +239,6 @@ export function Navigation({
               'fixed inset-x-0 bottom-0 top-[var(--top)] z-30 flex flex-1 -translate-y-full animate-revealVertical flex-col gap-y-4 divide-y divide-gray-200 overflow-auto px-6 pb-6 pt-2',
             )}
             style={
-              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
               {
                 backgroundColor: navBackground,
                 '--top': `${height}px`,

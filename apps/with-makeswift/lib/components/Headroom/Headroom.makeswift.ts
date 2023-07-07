@@ -6,6 +6,7 @@ import { forwardNextDynamicRef } from '@makeswift/runtime/next';
 import { runtime } from 'lib/runtime';
 import { Headroom } from './Headroom';
 
+// @ts-ignore
 runtime.registerComponent(Headroom, {
   type: 'Headroom',
   label: 'Headroom',

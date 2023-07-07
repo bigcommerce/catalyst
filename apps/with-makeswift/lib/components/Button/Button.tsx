@@ -15,12 +15,9 @@ const SELECTED_ICON = {
 };
 
 const VARIANT_STYLES = {
-  primary:
-    'bg-blue-primary hover:bg-blue-secondary text-white disabled:bg-gray-400 px-6 py-2.5 border-2 border-blue-primary hover:border-blue-secondary focus:border-blue-primary',
-  secondary:
-    'text-blue-primary hover:text-blue-secondary focus:text-blue-primary hover:bg-blue-primary/10 px-6 py-2.5 border-2 border-blue-primary hover:border-blue-secondary focus:border-blue-primary disabled:border-gray-400 disabled:text-gray-400',
-  subtle:
-    'border-transparent hover:bg-blue-primary/10 p-3 text-blue-primary hover:text-blue-secondary focus:text-blue-primary disabled:text-gray-400',
+  primary: 'text-white bg-black after:bg-white after:opacity-[25%]',
+  secondary: 'text-black bg-white after:bg-black/10',
+  subtle: 'text-black bg-white after:bg-black/5 !p-3',
 };
 
 interface BaseButtonProps {
@@ -42,7 +39,7 @@ export const Button = forwardRef(function Button(
       className={clsx(
         className,
         VARIANT_STYLES[variant],
-        'group inline-flex items-center justify-center gap-3 text-center text-base font-semibold ring-4 ring-transparent transition-colors duration-150 focus:ring-blue-primary/20 disabled:border-gray-400',
+        "after:-z-1 group relative z-0 inline-flex items-center justify-center gap-3 overflow-hidden px-12 py-4 text-center text-sm font-semibold uppercase after:absolute after:inset-y-0 after:left-1/2 after:w-5 after:-translate-x-1/2 after:skew-x-[20deg] after:transition-all after:content-[''] hover:after:w-[140%]",
       )}
       ref={ref}
     >
@@ -54,7 +51,7 @@ export const Button = forwardRef(function Button(
 });
 
 type BaseLinkButtonProps = {
-  link: { href: string; target?: '_self' | '_blank' };
+  link?: { href: string; target?: '_self' | '_blank' };
 } & Props;
 
 export const LinkButton = forwardRef(function LinkButton(
@@ -62,7 +59,7 @@ export const LinkButton = forwardRef(function LinkButton(
   ref: Ref<HTMLAnchorElement>,
 ) {
   return (
-    <Link className={className} href={link.href ? link.href : '#'} ref={ref} target={link.target}>
+    <Link className={className} href={link?.href ?? '#'} ref={ref} target={link?.target}>
       <Button {...rest} />
     </Link>
   );
