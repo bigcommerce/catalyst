@@ -45,12 +45,5 @@ export const getBestSellingProducts = async ({
     },
   });
 
-  return removeEdgesAndNodes(site.bestSellingProducts).map((product) => {
-    const { prices, ...rest } = product;
-
-    return {
-      ...rest,
-      price: prices?.price,
-    };
-  });
+  return removeEdgesAndNodes(site.bestSellingProducts);
 };

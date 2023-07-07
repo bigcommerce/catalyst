@@ -1,8 +1,9 @@
 import { getCategory } from '@bigcommerce/catalyst-client';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+
+import { ProductCard } from 'src/app/components/ProductCard';
 
 interface Props {
   params: {
@@ -72,32 +73,7 @@ export default async function Category({ params, searchParams }: Props) {
 
           <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:gap-x-8 xl:grid-cols-3">
             {products.map((product) => (
-              <div className="group relative flex flex-col overflow-hidden" key={product.entityId}>
-                <div className="group-hover:opacity-75">
-                  <Image
-                    alt={product.defaultImage?.altText ?? product.name}
-                    className="h-full w-full object-cover object-center sm:h-full sm:w-full"
-                    height={300}
-                    src={product.defaultImage?.url ?? ''}
-                    width={300}
-                  />
-                </div>
-
-                <div className="flex flex-1 flex-col space-y-2 p-4">
-                  {product.brand && <p className="text-base text-gray-500">{product.brand.name}</p>}
-
-                  <h3 className="text-h5">
-                    <Link href={`/product/${product.entityId}`}>
-                      <span aria-hidden="true" className="absolute inset-0" />
-                      {product.name}
-                    </Link>
-                  </h3>
-
-                  <div className="flex flex-1 flex-col justify-end">
-                    <p className="text-base">${product.prices?.price.value}</p>
-                  </div>
-                </div>
-              </div>
+              <ProductCard key={product.entityId} product={product} />
             ))}
           </div>
 

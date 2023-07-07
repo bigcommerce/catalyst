@@ -1,48 +1,8 @@
 import { getBestSellingProducts, getFeaturedProducts } from '@bigcommerce/catalyst-client';
 import { cs } from '@bigcommerce/reactant/cs';
-import {
-  ProductCardBadge,
-  ProductCardImage,
-  ProductCardInfo,
-  ProductCardInfoBrandName,
-  ProductCardInfoPrice,
-  ProductCardInfoProductName,
-  ProductCard as ReactantProductCard,
-} from '@bigcommerce/reactant/ProductCard';
-import Image from 'next/image';
-import Link from 'next/link';
 import { ReactNode } from 'react';
 
-type FeaturedProduct = Awaited<ReturnType<typeof getFeaturedProducts>>[number];
-type BestSellingProduct = Awaited<ReturnType<typeof getBestSellingProducts>>[number];
-
-interface ProductCardProps {
-  product: FeaturedProduct | BestSellingProduct;
-}
-
-const ProductCard = ({ product }: ProductCardProps) => (
-  <ReactantProductCard key={product.entityId}>
-    <ProductCardImage>
-      <Image
-        alt={product.defaultImage?.altText ?? product.name}
-        className="h-full w-full object-contain object-center sm:h-full sm:w-full"
-        height={300}
-        src={product.defaultImage?.url ?? ''}
-        width={300}
-      />
-    </ProductCardImage>
-    <ProductCardInfo>
-      {product.brand && <ProductCardInfoBrandName>{product.brand.name}</ProductCardInfoBrandName>}
-      <ProductCardInfoProductName>
-        <Link href={`/product/${product.entityId}`}>
-          <span aria-hidden="true" className="absolute inset-0" />
-          {product.name}
-        </Link>
-      </ProductCardInfoProductName>
-      <ProductCardInfoPrice>${product.price?.value}</ProductCardInfoPrice>
-    </ProductCardInfo>
-  </ReactantProductCard>
-);
+import { ProductCard } from './components/ProductCard';
 
 const ProductList = ({ children }: { children: ReactNode }) => (
   <section className={cs('mb-10')}>{children}</section>
