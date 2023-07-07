@@ -36,7 +36,7 @@ const ProductCard = ({ product }: ProductCardProps) => (
       {product.brand && <ProductCardInfoBrandName>{product.brand.name}</ProductCardInfoBrandName>}
       <ProductCardInfoProductName>
         <Link href={`/product/${product.entityId}`}>
-          <span aria-hidden="true" />
+          <span aria-hidden="true" className="absolute inset-0" />
           {product.name}
         </Link>
       </ProductCardInfoProductName>
