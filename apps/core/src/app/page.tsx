@@ -31,7 +31,6 @@ const ProductCard = ({ product }: ProductCardProps) => (
         width={300}
       />
     </ProductCardImage>
-    <ProductCardBadge>On sale</ProductCardBadge>
     <ProductCardInfo>
       {product.brand && <ProductCardInfoBrandName>{product.brand.name}</ProductCardInfoBrandName>}
       <ProductCardInfoProductName>
