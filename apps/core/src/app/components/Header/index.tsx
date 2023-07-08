@@ -48,17 +48,17 @@ const Cart = async () => {
 
 const HeaderNav = async ({
   className,
-  isMobileNav = false,
+  isMenuMobile = false,
 }: {
   className?: string;
-  isMobileNav?: boolean;
+  isMenuMobile?: boolean;
 }) => {
   const categoryTree = await getCategoryTree();
 
   return (
     <NavigationMenuList className={className}>
-      {isMobileNav && (
-        <NavigationMenuItem className="sm:py-3 md:hidden">
+      {isMenuMobile && (
+        <NavigationMenuItem>
           <NavigationMenuLink asChild>
             <Link aria-label="Search" href="/search">
               Search <Search aria-hidden="true" className="sm:hidden" />
@@ -69,12 +69,12 @@ const HeaderNav = async ({
       {categoryTree.map((category, index) => (
         <NavigationMenuItem
           className={cs(
-            !isMobileNav && index > 2 && 'sm:hidden lg:flex',
-            isMobileNav && index < 3 && 'sm:hidden',
+            !isMenuMobile && index > 2 && 'sm:hidden lg:block',
+            isMenuMobile && index < 3 && 'sm:hidden',
           )}
           key={category.path}
         >
-          <NavigationMenuLink asChild className={cs(isMobileNav && 'sm:py-3')}>
+          <NavigationMenuLink asChild>
             <Link href={`/category/${category.entityId}`}>{category.name}</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
@@ -87,31 +87,29 @@ export const Header = () => {
   return (
     <header>
       <NavigationMenu>
-        <div className="flex min-h-[92px] w-full items-center justify-between gap-5">
-          <Link href="/">
-            <StoreLogo />
-          </Link>
-          <HeaderNav className="hidden sm:flex" />
-          <div className="flex gap-5">
-            <NavigationMenuList className="flex">
-              <NavigationMenuItem className="hidden md:block">
-                <Link aria-label="Search" href="/search">
-                  <Search />
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
-                  <Cart />
-                </Suspense>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-            <NavigationMenuMobileTrigger className="sm:block lg:hidden">
-              <Menu />
-            </NavigationMenuMobileTrigger>
-          </div>
+        <Link href="/">
+          <StoreLogo />
+        </Link>
+        <HeaderNav className="hidden sm:flex" />
+        <div className="flex gap-5">
+          <NavigationMenuList className="flex">
+            <NavigationMenuItem className="hidden md:block">
+              <Link aria-label="Search" href="/search">
+                <Search />
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
+                <Cart />
+              </Suspense>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+          <NavigationMenuMobileTrigger className="sm:block lg:hidden">
+            <Menu />
+          </NavigationMenuMobileTrigger>
         </div>
-        <NavigationMenuMobile className="sm:block lg:hidden">
-          <HeaderNav className="block" isMobileNav={true} />
+        <NavigationMenuMobile className="sm:block md:block">
+          <HeaderNav isMenuMobile={true} />
         </NavigationMenuMobile>
       </NavigationMenu>
     </header>

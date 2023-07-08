@@ -28,64 +28,62 @@ type Story = StoryObj<typeof NavigationMenu>;
 export const BasicExample: Story = {
   render: () => (
     <NavigationMenu>
-      <div className="flex min-h-[92px] w-full items-center justify-between gap-5">
-        <a className="text-h4 font-black" href="/home">
-          Catalyst Store
-        </a>
-        <NavigationMenuList className="hidden sm:flex">
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/men">Men</NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/woman">Woman</NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/accessories">Accessories</NavigationMenuLink>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-        <NavigationMenuList className="hidden sm:flex">
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/search">
-              <Search aria-label="Search" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/compare">
-              <Scale aria-label="Compare" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/wish-list">
-              <Heart aria-label="Wish list" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/gift-certificates">
-              <Gift aria-label="Gift certificates" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/profile">
-              <User aria-label="Profile" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/cart">
-              <ShoppingCart aria-label="Shopping cart" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-        <div className="flex items-center gap-5 sm:hidden">
+      <a className="text-h4 font-black" href="/home">
+        Catalyst Store
+      </a>
+      <NavigationMenuList>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/men">Men</NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/woman">Woman</NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/accessories">Accessories</NavigationMenuLink>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+      <NavigationMenuList>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/search">
+            <Search aria-label="Search" />
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/compare">
+            <Scale aria-label="Compare" />
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/wish-list">
+            <Heart aria-label="Wish list" />
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/gift-certificates">
+            <Gift aria-label="Gift certificates" />
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/profile">
+            <User aria-label="Profile" />
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
           <NavigationMenuLink href="/cart">
             <ShoppingCart aria-label="Shopping cart" />
           </NavigationMenuLink>
-          <NavigationMenuMobileTrigger>
-            <Menu />
-          </NavigationMenuMobileTrigger>
-        </div>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+      <div className="flex items-center gap-5 sm:hidden">
+        <NavigationMenuLink href="/cart">
+          <ShoppingCart aria-label="Shopping cart" />
+        </NavigationMenuLink>
+        <NavigationMenuMobileTrigger>
+          <Menu />
+        </NavigationMenuMobileTrigger>
       </div>
       <NavigationMenuMobile>
-        <NavigationMenuList className="block pb-6">
+        <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/men">Men</NavigationMenuLink>
           </NavigationMenuItem>
@@ -96,7 +94,7 @@ export const BasicExample: Story = {
             <NavigationMenuLink href="/accessories">Accessories</NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
-        <NavigationMenuList className="block border-t border-gray-200 py-6">
+        <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/search">
               Search <Search aria-hidden="true" />
@@ -123,7 +121,7 @@ export const BasicExample: Story = {
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
-        <NavigationMenuList className="block border-t border-gray-200 py-6">
+        <NavigationMenuList>
           <NavigationMenuLink href="/shipping-and-returns">Shipping & returns</NavigationMenuLink>
           <NavigationMenuLink href="/warranty">Warranty</NavigationMenuLink>
           <NavigationMenuLink href="/location">Downtown store</NavigationMenuLink>
@@ -139,49 +137,47 @@ export const BasicExample: Story = {
 export const NavigationAlignmentLeft: Story = {
   render: () => (
     <NavigationMenu>
-      <div className="flex min-h-[92px] w-full items-center justify-between gap-5">
-        <a className="text-h4 font-black" href="/home">
-          Catalyst Store
-        </a>
-        <NavigationMenuList className="hidden flex-auto justify-start sm:flex">
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/men">Men</NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/woman">Woman</NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/accessories">Accessories</NavigationMenuLink>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-        <NavigationMenuList className="hidden sm:flex">
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/search">
-              <Search aria-label="Search" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/profile">
-              <User aria-label="Profile" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/cart">
-              <ShoppingCart aria-label="Shopping cart" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-        <div className="flex items-center gap-5 sm:hidden">
+      <a className="text-h4 font-black" href="/home">
+        Catalyst Store
+      </a>
+      <NavigationMenuList className="flex-auto justify-start">
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/men">Men</NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/woman">Woman</NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/accessories">Accessories</NavigationMenuLink>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+      <NavigationMenuList className="hidden sm:flex">
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/search">
+            <Search aria-label="Search" />
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/profile">
+            <User aria-label="Profile" />
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
           <NavigationMenuLink href="/cart">
             <ShoppingCart aria-label="Shopping cart" />
           </NavigationMenuLink>
-          <NavigationMenuMobileTrigger>
-            <Menu />
-          </NavigationMenuMobileTrigger>
-        </div>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+      <div className="flex items-center gap-5 sm:hidden">
+        <NavigationMenuLink href="/cart">
+          <ShoppingCart aria-label="Shopping cart" />
+        </NavigationMenuLink>
+        <NavigationMenuMobileTrigger>
+          <Menu />
+        </NavigationMenuMobileTrigger>
       </div>
       <NavigationMenuMobile>
-        <NavigationMenuList className="block pb-6">
+        <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/men">Men</NavigationMenuLink>
           </NavigationMenuItem>
@@ -192,7 +188,7 @@ export const NavigationAlignmentLeft: Story = {
             <NavigationMenuLink href="/accessories">Accessories</NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
-        <NavigationMenuList className="block border-t border-gray-200 py-6">
+        <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/search">
               Search <Search aria-hidden="true" />
@@ -212,49 +208,47 @@ export const NavigationAlignmentLeft: Story = {
 export const NavigationAlignmentRight: Story = {
   render: () => (
     <NavigationMenu>
-      <div className="flex min-h-[92px] w-full items-center justify-between gap-5">
-        <a className="text-h4 font-black" href="/home">
-          Catalyst Store
-        </a>
-        <NavigationMenuList className="hidden flex-auto justify-end sm:flex">
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/men">Men</NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/woman">Woman</NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/accessories">Accessories</NavigationMenuLink>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-        <NavigationMenuList className="hidden sm:flex">
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/search">
-              <Search aria-label="Search" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/profile">
-              <User aria-label="Profile" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/cart">
-              <ShoppingCart aria-label="Shopping cart" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-        <div className="flex items-center gap-5 sm:hidden">
+      <a className="text-h4 font-black" href="/home">
+        Catalyst Store
+      </a>
+      <NavigationMenuList className="flex-auto justify-end">
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/men">Men</NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/woman">Woman</NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/accessories">Accessories</NavigationMenuLink>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+      <NavigationMenuList>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/search">
+            <Search aria-label="Search" />
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/profile">
+            <User aria-label="Profile" />
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
           <NavigationMenuLink href="/cart">
             <ShoppingCart aria-label="Shopping cart" />
           </NavigationMenuLink>
-          <NavigationMenuMobileTrigger>
-            <Menu />
-          </NavigationMenuMobileTrigger>
-        </div>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+      <div className="flex items-center gap-5 sm:hidden">
+        <NavigationMenuLink href="/cart">
+          <ShoppingCart aria-label="Shopping cart" />
+        </NavigationMenuLink>
+        <NavigationMenuMobileTrigger>
+          <Menu />
+        </NavigationMenuMobileTrigger>
       </div>
       <NavigationMenuMobile>
-        <NavigationMenuList className="block pb-6">
+        <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/men">Men</NavigationMenuLink>
           </NavigationMenuItem>
@@ -265,7 +259,7 @@ export const NavigationAlignmentRight: Story = {
             <NavigationMenuLink href="/accessories">Accessories</NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
-        <NavigationMenuList className="block border-t border-gray-200 py-6">
+        <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/search">
               Search <Search aria-hidden="true" />
@@ -285,49 +279,47 @@ export const NavigationAlignmentRight: Story = {
 export const LogoCentered: Story = {
   render: () => (
     <NavigationMenu>
-      <div className="flex min-h-[92px] w-full items-center justify-between gap-5">
-        <NavigationMenuList className="hidden flex-1 sm:flex">
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/men">Men</NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/woman">Woman</NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/accessories">Accessories</NavigationMenuLink>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-        <a className="text-h4 font-black" href="/home">
-          Catalyst Store
-        </a>
-        <NavigationMenuList className="hidden flex-1 justify-end sm:flex">
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/search">
-              <Search aria-label="Search" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/profile">
-              <User aria-label="Profile" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/cart">
-              <ShoppingCart aria-label="Shopping cart" />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-        <div className="flex items-center gap-5 sm:hidden">
+      <NavigationMenuList className="flex-1">
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/men">Men</NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/woman">Woman</NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/accessories">Accessories</NavigationMenuLink>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+      <a className="text-h4 font-black" href="/home">
+        Catalyst Store
+      </a>
+      <NavigationMenuList className="flex-1 justify-end">
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/search">
+            <Search aria-label="Search" />
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/profile">
+            <User aria-label="Profile" />
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
           <NavigationMenuLink href="/cart">
             <ShoppingCart aria-label="Shopping cart" />
           </NavigationMenuLink>
-          <NavigationMenuMobileTrigger>
-            <Menu />
-          </NavigationMenuMobileTrigger>
-        </div>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+      <div className="flex items-center gap-5 sm:hidden">
+        <NavigationMenuLink href="/cart">
+          <ShoppingCart aria-label="Shopping cart" />
+        </NavigationMenuLink>
+        <NavigationMenuMobileTrigger>
+          <Menu />
+        </NavigationMenuMobileTrigger>
       </div>
       <NavigationMenuMobile>
-        <NavigationMenuList className="block pb-6">
+        <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/men">Men</NavigationMenuLink>
           </NavigationMenuItem>
@@ -338,7 +330,7 @@ export const LogoCentered: Story = {
             <NavigationMenuLink href="/accessories">Accessories</NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
-        <NavigationMenuList className="block border-t border-gray-200 py-6">
+        <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/search">
               Search <Search aria-hidden="true" />
@@ -358,12 +350,12 @@ export const LogoCentered: Story = {
 export const BottomNavigationLeft: Story = {
   render: () => {
     return (
-      <NavigationMenu>
-        <div className="flex min-h-[92px] w-full items-center justify-between gap-5">
+      <NavigationMenu className="!flex-col justify-center">
+        <div className="flex w-full flex-row items-center justify-between">
           <a className="text-h4 font-black" href="/home">
             Catalyst Store
           </a>
-          <NavigationMenuList className="hidden sm:flex">
+          <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuLink href="/search">
                 <Search aria-label="Search" />
@@ -389,8 +381,8 @@ export const BottomNavigationLeft: Story = {
             </NavigationMenuMobileTrigger>
           </div>
         </div>
-        <div className="flex w-full items-center justify-between gap-5 border-t border-gray-200 py-6">
-          <NavigationMenuList className="hidden sm:flex">
+        <div className="hidden w-full items-center justify-between gap-5 border-t border-gray-200 pt-5 sm:flex">
+          <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuLink href="/men">Men</NavigationMenuLink>
             </NavigationMenuItem>
@@ -403,7 +395,7 @@ export const BottomNavigationLeft: Story = {
           </NavigationMenuList>
         </div>
         <NavigationMenuMobile>
-          <NavigationMenuList className="block pb-6">
+          <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuLink href="/men">Men</NavigationMenuLink>
             </NavigationMenuItem>
@@ -414,7 +406,7 @@ export const BottomNavigationLeft: Story = {
               <NavigationMenuLink href="/accessories">Accessories</NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
-          <NavigationMenuList className="block border-t border-gray-200 py-6">
+          <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuLink href="/search">
                 Search <Search aria-hidden="true" />
@@ -434,12 +426,12 @@ export const BottomNavigationLeft: Story = {
 
 export const BottomNavigationCenter: Story = {
   render: () => (
-    <NavigationMenu>
-      <div className="flex min-h-[92px] w-full items-center justify-between gap-5">
+    <NavigationMenu className="!flex-col justify-center">
+      <div className="flex w-full flex-row justify-between">
         <a className="text-h4 font-black" href="/home">
           Catalyst Store
         </a>
-        <NavigationMenuList className="hidden sm:flex">
+        <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/search">
               <Search aria-label="Search" />
@@ -465,7 +457,7 @@ export const BottomNavigationCenter: Story = {
           </NavigationMenuMobileTrigger>
         </div>
       </div>
-      <div className="hidden w-full items-center justify-center gap-5 border-t border-gray-200 py-6 sm:flex">
+      <div className="hidden w-full items-center justify-center gap-5 border-t border-gray-200 pt-5 sm:flex">
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/men">Men</NavigationMenuLink>
@@ -479,7 +471,7 @@ export const BottomNavigationCenter: Story = {
         </NavigationMenuList>
       </div>
       <NavigationMenuMobile>
-        <NavigationMenuList className="block pb-6">
+        <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/men">Men</NavigationMenuLink>
           </NavigationMenuItem>
@@ -490,7 +482,7 @@ export const BottomNavigationCenter: Story = {
             <NavigationMenuLink href="/accessories">Accessories</NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
-        <NavigationMenuList className="block border-t border-gray-200 py-6">
+        <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/search">
               Search <Search aria-hidden="true" />
@@ -509,12 +501,12 @@ export const BottomNavigationCenter: Story = {
 
 export const BottomNavigationRight: Story = {
   render: () => (
-    <NavigationMenu>
-      <div className="flex min-h-[92px] w-full items-center justify-between gap-5 sm:flex">
+    <NavigationMenu className="!flex-col justify-center">
+      <div className="flex w-full flex-row justify-between">
         <a className="text-h4 font-black" href="/home">
           Catalyst Store
         </a>
-        <NavigationMenuList className="hidden sm:flex">
+        <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/search">
               <Search aria-label="Search" />
@@ -540,7 +532,7 @@ export const BottomNavigationRight: Story = {
           </NavigationMenuMobileTrigger>
         </div>
       </div>
-      <div className="hidden w-full items-center justify-end gap-5 border-t border-gray-200 py-6 sm:flex">
+      <div className="hidden w-full items-center justify-end gap-5 border-t border-gray-200 pt-6 sm:flex">
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/men">Men</NavigationMenuLink>
@@ -554,7 +546,7 @@ export const BottomNavigationRight: Story = {
         </NavigationMenuList>
       </div>
       <NavigationMenuMobile>
-        <NavigationMenuList className="block pb-6">
+        <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/men">Men</NavigationMenuLink>
           </NavigationMenuItem>
@@ -565,7 +557,7 @@ export const BottomNavigationRight: Story = {
             <NavigationMenuLink href="/accessories">Accessories</NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
-        <NavigationMenuList className="block border-t border-gray-200 py-6">
+        <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/search">
               Search <Search aria-hidden="true" />
