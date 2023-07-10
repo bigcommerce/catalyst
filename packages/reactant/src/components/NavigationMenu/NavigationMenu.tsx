@@ -28,7 +28,7 @@ export const NavigationMenu = forwardRef<ElementRef<'nav'>, ComponentPropsWithRe
         <nav
           aria-label="Main"
           className={cs(
-            'relative flex min-h-[92px] items-center justify-between gap-5 sm:flex-row',
+            'relative flex min-h-[92px] items-center justify-between gap-6 sm:flex-row lg:gap-8',
             className,
           )}
           ref={ref}
@@ -45,9 +45,9 @@ export const NavigationMenuList = forwardRef<ElementRef<'ul'>, ComponentPropsWit
   ({ children, className, ...props }, ref) => (
     <ul
       className={cs(
-        'hidden items-center gap-5 sm:flex',
+        'hidden items-center gap-6 sm:flex lg:gap-8',
         'group-[.is-expanded]:block group-[.is-expanded]:border-t group-[.is-expanded]:border-gray-200 group-[.is-expanded]:py-6',
-        'group-[.is-expanded]:first-of-type:border-t-0 group-[.is-expanded]:first-of-type:pt-0',
+        'group-[.is-expanded]:first-of-type:border-t-0 group-[.is-expanded]:first-of-type:pt-0 group-[.is-expanded]:last-of-type:pb-0',
         className,
       )}
       ref={ref}
@@ -92,7 +92,7 @@ export const NavigationMenuLink = forwardRef<ElementRef<'a'>, NavigationMenuLink
   },
 );
 
-export const NavigationMenuMobileTrigger = forwardRef<
+export const NavigationMenuToggle = forwardRef<
   ElementRef<'button'>,
   ComponentPropsWithRef<'button'>
 >(({ children, className, onClick, ...props }, ref) => {
@@ -115,7 +115,7 @@ export const NavigationMenuMobileTrigger = forwardRef<
   );
 });
 
-export const NavigationMenuMobile = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
+export const NavigationMenuCollapsed = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     const { isExpanded, setIsExpanded } = useContext(ExpandedContext);
 
@@ -134,7 +134,7 @@ export const NavigationMenuMobile = forwardRef<ElementRef<'div'>, ComponentProps
     return (
       <div
         className={cs(
-          'group absolute top-full left-0 z-50 w-full bg-white sm:hidden',
+          'group absolute top-full left-0 z-50 w-full bg-white pb-6',
           isExpanded && 'is-expanded',
           className,
           !isExpanded && '!hidden',

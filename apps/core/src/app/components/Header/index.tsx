@@ -2,11 +2,11 @@ import { getCart, getCategoryTree } from '@bigcommerce/catalyst-client';
 import { cs } from '@bigcommerce/reactant/cs';
 import {
   NavigationMenu,
+  NavigationMenuCollapsed,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuMobile,
-  NavigationMenuMobileTrigger,
+  NavigationMenuToggle,
 } from '@bigcommerce/reactant/NavigationMenu';
 import { Menu, Search, ShoppingCart } from 'lucide-react';
 import { cookies } from 'next/headers';
@@ -58,7 +58,7 @@ const HeaderNav = async ({
   return (
     <NavigationMenuList className={className}>
       {isMenuMobile && (
-        <NavigationMenuItem>
+        <NavigationMenuItem className="md:hidden">
           <NavigationMenuLink asChild>
             <Link aria-label="Search" href="/search">
               Search <Search aria-hidden="true" className="sm:hidden" />
@@ -90,7 +90,7 @@ export const Header = () => {
         <Link href="/">
           <StoreLogo />
         </Link>
-        <HeaderNav className="hidden sm:flex" />
+        <HeaderNav />
         <div className="flex gap-5">
           <NavigationMenuList className="flex">
             <NavigationMenuItem className="hidden md:block">
@@ -104,13 +104,13 @@ export const Header = () => {
               </Suspense>
             </NavigationMenuItem>
           </NavigationMenuList>
-          <NavigationMenuMobileTrigger className="sm:block lg:hidden">
+          <NavigationMenuToggle className="sm:block lg:hidden">
             <Menu />
-          </NavigationMenuMobileTrigger>
+          </NavigationMenuToggle>
         </div>
-        <NavigationMenuMobile className="sm:block md:block">
+        <NavigationMenuCollapsed>
           <HeaderNav isMenuMobile={true} />
-        </NavigationMenuMobile>
+        </NavigationMenuCollapsed>
       </NavigationMenu>
     </header>
   );

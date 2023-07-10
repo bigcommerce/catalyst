@@ -1,13 +1,14 @@
 import {
   NavigationMenu,
+  NavigationMenuCollapsed,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuMobile,
-  NavigationMenuMobileTrigger,
+  NavigationMenuToggle,
 } from '@bigcommerce/reactant/NavigationMenu';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Gift, Heart, Menu, Scale, Search, ShoppingCart, User } from 'lucide-react';
+import { ComponentPropsWithoutRef } from 'react';
 
 const meta: Meta<typeof NavigationMenu> = {
   component: NavigationMenu,
@@ -74,15 +75,15 @@ export const BasicExample: Story = {
           </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
-      <div className="flex items-center gap-5 sm:hidden">
+      <div className="flex items-center gap-6 sm:hidden">
         <NavigationMenuLink href="/cart">
           <ShoppingCart aria-label="Shopping cart" />
         </NavigationMenuLink>
-        <NavigationMenuMobileTrigger>
+        <NavigationMenuToggle>
           <Menu />
-        </NavigationMenuMobileTrigger>
+        </NavigationMenuToggle>
       </div>
-      <NavigationMenuMobile>
+      <NavigationMenuCollapsed>
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/men">Men</NavigationMenuLink>
@@ -128,8 +129,8 @@ export const BasicExample: Story = {
           <NavigationMenuLink href="/currency">USD</NavigationMenuLink>
           <NavigationMenuLink href="/language">ENG</NavigationMenuLink>
         </NavigationMenuList>
-        <p>(555) 555-1234</p>
-      </NavigationMenuMobile>
+        <p className="pt-3">(555) 555-1234</p>
+      </NavigationMenuCollapsed>
     </NavigationMenu>
   ),
 };
@@ -168,15 +169,15 @@ export const NavigationAlignmentLeft: Story = {
           </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
-      <div className="flex items-center gap-5 sm:hidden">
+      <div className="flex items-center gap-6 sm:hidden">
         <NavigationMenuLink href="/cart">
           <ShoppingCart aria-label="Shopping cart" />
         </NavigationMenuLink>
-        <NavigationMenuMobileTrigger>
+        <NavigationMenuToggle>
           <Menu />
-        </NavigationMenuMobileTrigger>
+        </NavigationMenuToggle>
       </div>
-      <NavigationMenuMobile>
+      <NavigationMenuCollapsed>
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/men">Men</NavigationMenuLink>
@@ -200,7 +201,7 @@ export const NavigationAlignmentLeft: Story = {
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
-      </NavigationMenuMobile>
+      </NavigationMenuCollapsed>
     </NavigationMenu>
   ),
 };
@@ -239,15 +240,15 @@ export const NavigationAlignmentRight: Story = {
           </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
-      <div className="flex items-center gap-5 sm:hidden">
+      <div className="flex items-center gap-6 sm:hidden">
         <NavigationMenuLink href="/cart">
           <ShoppingCart aria-label="Shopping cart" />
         </NavigationMenuLink>
-        <NavigationMenuMobileTrigger>
+        <NavigationMenuToggle>
           <Menu />
-        </NavigationMenuMobileTrigger>
+        </NavigationMenuToggle>
       </div>
-      <NavigationMenuMobile>
+      <NavigationMenuCollapsed>
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/men">Men</NavigationMenuLink>
@@ -271,7 +272,7 @@ export const NavigationAlignmentRight: Story = {
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
-      </NavigationMenuMobile>
+      </NavigationMenuCollapsed>
     </NavigationMenu>
   ),
 };
@@ -310,15 +311,15 @@ export const LogoCentered: Story = {
           </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
-      <div className="flex items-center gap-5 sm:hidden">
+      <div className="flex items-center gap-6 sm:hidden">
         <NavigationMenuLink href="/cart">
           <ShoppingCart aria-label="Shopping cart" />
         </NavigationMenuLink>
-        <NavigationMenuMobileTrigger>
+        <NavigationMenuToggle>
           <Menu />
-        </NavigationMenuMobileTrigger>
+        </NavigationMenuToggle>
       </div>
-      <NavigationMenuMobile>
+      <NavigationMenuCollapsed>
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/men">Men</NavigationMenuLink>
@@ -342,7 +343,7 @@ export const LogoCentered: Story = {
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
-      </NavigationMenuMobile>
+      </NavigationMenuCollapsed>
     </NavigationMenu>
   ),
 };
@@ -372,13 +373,13 @@ export const BottomNavigationLeft: Story = {
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
-          <div className="flex items-center gap-5 sm:hidden">
+          <div className="flex items-center gap-6 sm:hidden">
             <NavigationMenuLink href="/cart">
               <ShoppingCart aria-label="Shopping cart" />
             </NavigationMenuLink>
-            <NavigationMenuMobileTrigger>
+            <NavigationMenuToggle>
               <Menu />
-            </NavigationMenuMobileTrigger>
+            </NavigationMenuToggle>
           </div>
         </div>
         <div className="hidden w-full items-center justify-between gap-5 border-t border-gray-200 pt-5 sm:flex">
@@ -394,7 +395,7 @@ export const BottomNavigationLeft: Story = {
             </NavigationMenuItem>
           </NavigationMenuList>
         </div>
-        <NavigationMenuMobile>
+        <NavigationMenuCollapsed>
           <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuLink href="/men">Men</NavigationMenuLink>
@@ -418,7 +419,7 @@ export const BottomNavigationLeft: Story = {
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
-        </NavigationMenuMobile>
+        </NavigationMenuCollapsed>
       </NavigationMenu>
     );
   },
@@ -448,13 +449,13 @@ export const BottomNavigationCenter: Story = {
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
-        <div className="flex items-center gap-5 sm:hidden">
+        <div className="flex items-center gap-6 sm:hidden">
           <NavigationMenuLink href="/cart">
             <ShoppingCart aria-label="Shopping cart" />
           </NavigationMenuLink>
-          <NavigationMenuMobileTrigger>
+          <NavigationMenuToggle>
             <Menu />
-          </NavigationMenuMobileTrigger>
+          </NavigationMenuToggle>
         </div>
       </div>
       <div className="hidden w-full items-center justify-center gap-5 border-t border-gray-200 pt-5 sm:flex">
@@ -470,7 +471,7 @@ export const BottomNavigationCenter: Story = {
           </NavigationMenuItem>
         </NavigationMenuList>
       </div>
-      <NavigationMenuMobile>
+      <NavigationMenuCollapsed>
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/men">Men</NavigationMenuLink>
@@ -494,7 +495,7 @@ export const BottomNavigationCenter: Story = {
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
-      </NavigationMenuMobile>
+      </NavigationMenuCollapsed>
     </NavigationMenu>
   ),
 };
@@ -523,13 +524,13 @@ export const BottomNavigationRight: Story = {
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
-        <div className="flex items-center gap-5 sm:hidden">
+        <div className="flex items-center gap-6 sm:hidden">
           <NavigationMenuLink href="/cart">
             <ShoppingCart aria-label="Shopping cart" />
           </NavigationMenuLink>
-          <NavigationMenuMobileTrigger>
+          <NavigationMenuToggle>
             <Menu />
-          </NavigationMenuMobileTrigger>
+          </NavigationMenuToggle>
         </div>
       </div>
       <div className="hidden w-full items-center justify-end gap-5 border-t border-gray-200 pt-6 sm:flex">
@@ -545,7 +546,7 @@ export const BottomNavigationRight: Story = {
           </NavigationMenuItem>
         </NavigationMenuList>
       </div>
-      <NavigationMenuMobile>
+      <NavigationMenuCollapsed>
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/men">Men</NavigationMenuLink>
@@ -569,47 +570,41 @@ export const BottomNavigationRight: Story = {
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
-      </NavigationMenuMobile>
+      </NavigationMenuCollapsed>
     </NavigationMenu>
   ),
 };
 
-// const CustomLink = ({ children, ...props }: ComponentPropsWithoutRef<'a'>) => {
-//   return <a {...props}>{children}</a>;
-// };
+const CustomLink = ({ children, ...props }: ComponentPropsWithoutRef<'a'>) => {
+  return <a {...props}>{children}</a>;
+};
 
-// export const AsChild: Story = {
-//   render: () => (
-//     <Header>
-//       <HeaderSection>
-//         <a className="text-h4 font-black" href="/home">
-//           Catalyst Store
-//         </a>
-//       </HeaderSection>
-//       <NavigationMenu>
-//         <NavigationMenuList>
-//           <NavigationMenuLink asChild>
-//             <CustomLink href="/men">Men</CustomLink>
-//           </NavigationMenuLink>
-//           <NavigationMenuLink asChild>
-//             <CustomLink href="/woman">Woman</CustomLink>
-//           </NavigationMenuLink>
-//           <NavigationMenuLink asChild>
-//             <CustomLink href="/accessories">Accessories</CustomLink>
-//           </NavigationMenuLink>
-//         </NavigationMenuList>
-//       </NavigationMenu>
-//       <HeaderSection>
-//         <a aria-label="Search" href="/search">
-//           <Search aria-hidden="true" />
-//         </a>
-//         <a aria-label="Profile" href="/profile">
-//           <User aria-hidden="true" />
-//         </a>
-//         <a aria-label="Cart" href="/cart">
-//           <ShoppingCart aria-hidden="true" />
-//         </a>
-//       </HeaderSection>
-//     </Header>
-//   ),
-// };
+export const AsChild: Story = {
+  render: () => (
+    <NavigationMenu>
+      <a className="text-h4 font-black" href="/home">
+        Catalyst Store
+      </a>
+      <NavigationMenuList>
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild>
+            <CustomLink href="/men">Men</CustomLink>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild>
+            <CustomLink href="/woman">Woman</CustomLink>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild>
+            <CustomLink href="/accessories">Accessories</CustomLink>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+      <NavigationMenuToggle>
+        <Menu />
+      </NavigationMenuToggle>
+    </NavigationMenu>
+  ),
+};
