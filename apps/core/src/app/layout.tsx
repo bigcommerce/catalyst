@@ -20,11 +20,9 @@ export const metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html className={`${inter.variable} font-sans`} lang="en">
-      <body className="px-4 md:container md:mx-auto">
+      <body className="mx-auto flex h-screen flex-col px-4 md:container">
         <Header />
-
-        {children}
-
+        <div className="flex-1">{children}</div>
         <Footer />
       </body>
     </html>

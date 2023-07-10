@@ -37,7 +37,8 @@ export default async function CartPage() {
 
   return (
     <div>
-      <div className="md:grid md:grid-cols-3 md:gap-8">
+      <h2 className="pb-6 text-h2 lg:pb-10">Your cart</h2>
+      <div className="pb-12 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-3">
         <ul className="col-span-2">
           {cart.lineItems.physicalItems.map((product) => (
             <li key={product.entityId}>
@@ -70,7 +71,7 @@ export default async function CartPage() {
           ))}
         </ul>
 
-        <div className="col-span-1">
+        <div className="col-span-1 col-start-2 lg:col-start-3">
           <div className="flex justify-between border-t border-t-gray-200 py-4">
             <span className="text-base font-semibold">Subtotal</span>
             <span className="text-base">
