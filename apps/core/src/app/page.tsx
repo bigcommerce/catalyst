@@ -2,6 +2,7 @@ import { getBestSellingProducts, getFeaturedProducts } from '@bigcommerce/cataly
 import { cs } from '@bigcommerce/reactant/cs';
 import { ReactNode } from 'react';
 
+import { Hero } from './components/Hero';
 import { ProductCard } from './components/ProductCard';
 
 const ProductList = ({ children }: { children: ReactNode }) => (
@@ -23,25 +24,28 @@ export default async function Home() {
   ]);
 
   return (
-    <div className="my-10">
-      <ProductList>
-        <ProductListName>Best Selling Products</ProductListName>
-        <ProductListGrid>
-          {bestSellingProducts.map((product) => (
-            <ProductCard key={product.entityId} product={product} />
-          ))}
-        </ProductListGrid>
-      </ProductList>
+    <>
+      <Hero />
+      <div className="my-10">
+        <ProductList>
+          <ProductListName>Best Selling Products</ProductListName>
+          <ProductListGrid>
+            {bestSellingProducts.map((product) => (
+              <ProductCard key={product.entityId} product={product} />
+            ))}
+          </ProductListGrid>
+        </ProductList>
 
-      <ProductList>
-        <ProductListName>Featured Products</ProductListName>
-        <ProductListGrid>
-          {featuredProducts.map((product) => (
-            <ProductCard key={product.entityId} product={product} />
-          ))}
-        </ProductListGrid>
-      </ProductList>
-    </div>
+        <ProductList>
+          <ProductListName>Featured Products</ProductListName>
+          <ProductListGrid>
+            {featuredProducts.map((product) => (
+              <ProductCard key={product.entityId} product={product} />
+            ))}
+          </ProductListGrid>
+        </ProductList>
+      </div>
+    </>
   );
 }
 
