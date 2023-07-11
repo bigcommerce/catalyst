@@ -7,7 +7,7 @@ export const Footer = forwardRef<ElementRef<'footer'>, ComponentPropsWithRef<'fo
   ({ children, className, ...props }, ref) => (
     <footer
       className={cs(
-        'flex flex-col gap-10 border-t border-gray-200 py-10 sm:gap-8 sm:py-12',
+        'flex flex-col gap-10 border-t border-gray-200 pt-10 sm:gap-8 sm:pt-12',
         className,
       )}
       ref={ref}
