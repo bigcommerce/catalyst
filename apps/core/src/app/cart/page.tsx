@@ -11,7 +11,7 @@ const CheckoutButton = async ({ cartId }: { cartId: string }) => {
   const checkoutUrl = await getCheckoutUrl(cartId);
 
   return (
-    <Button asChild>
+    <Button asChild className="mt-6">
       <a href={checkoutUrl}>Proceed to checkout</a>
     </Button>
   );
