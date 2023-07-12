@@ -10,8 +10,9 @@ const inputVariants = cva(
     variants: {
       state: {
         success:
-          'pr-12 border-green focus:border-green focus:ring-green/20 disabled:border-gray-200',
-        error: 'pr-12 border-red focus:border-red focus:ring-red/20 disabled:border-gray-200',
+          'pr-12 border-green-100 focus:border-green-100 focus:ring-green-100/20 disabled:border-gray-200 hover:border-green-200',
+        error:
+          'pr-12 border-red-100 focus:border-red-100 focus:ring-red-100/20 disabled:border-gray-200 hover:border-red-200',
       },
     },
   },
@@ -29,8 +30,8 @@ export const Input = forwardRef<ElementRef<'div'>, InputProps>(
         aria-hidden="true"
         className={cs(
           'pointer-events-none absolute top-0 right-4 flex h-full items-center peer-disabled:text-gray-200',
-          state === 'success' && 'text-green',
-          state === 'error' && 'text-red',
+          state === 'success' && 'text-green-100',
+          state === 'error' && 'text-red-100',
         )}
       >
         {state === 'success' && <Check />}
