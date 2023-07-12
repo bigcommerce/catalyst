@@ -1,6 +1,3 @@
-const storeHash = process.env.BIGCOMMERCE_STORE_HASH ?? '';
-const xAuthToken = process.env.BIGCOMMERCE_ACCESS_TOKEN ?? '';
-
 interface RedirectUrlsResponse {
   data: {
     checkout_url: string;
@@ -28,7 +25,7 @@ const isRedirectUrlsResponse = (resp: unknown): resp is RedirectUrlsResponse => 
 };
 
 // Url used to redirect the user to the checkout page
-export const getCheckoutUrl = async (cartId: string) => {
+export const getCheckoutUrl = async (cartId: string, storeHash: string, xAuthToken: string) => {
   const response = await fetch(
     `https://api.bigcommerce.com/stores/${storeHash}/v3/carts/${cartId}/redirect_urls`,
     {

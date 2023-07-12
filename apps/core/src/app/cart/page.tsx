@@ -1,14 +1,15 @@
-import { getCart, getCheckoutUrl } from '@bigcommerce/catalyst-client';
 import { Button } from '@bigcommerce/reactant/Button';
 import { Trash2 as Trash } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
 import { Suspense } from 'react';
 
+import client from '~/client';
+
 import { removeProduct } from './_actions/removeProduct';
 
 const CheckoutButton = async ({ cartId }: { cartId: string }) => {
-  const checkoutUrl = await getCheckoutUrl(cartId);
+  const checkoutUrl = await client.getCheckoutUrl(cartId);
 
   return (
     <Button asChild className="mt-6">
@@ -24,7 +25,7 @@ export default async function CartPage() {
     return <div>Your cart is empty</div>;
   }
 
-  const cart = await getCart(cartId);
+  const cart = await client.getCart(cartId);
 
   if (!cart) {
     return <div>Your cart is empty</div>;

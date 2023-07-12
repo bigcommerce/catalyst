@@ -1,13 +1,14 @@
-import { getProduct } from '@bigcommerce/catalyst-client';
 import { cs } from '@bigcommerce/reactant/cs';
 import Link from 'next/link';
+
+import client from '~/client';
 
 interface Props {
   productId: number;
 }
 
 export const BreadCrumbs = async ({ productId }: Props) => {
-  const product = await getProduct(productId);
+  const product = await client.getProduct(productId);
   const category = product?.categories?.[0];
 
   if (!category) {

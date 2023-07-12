@@ -1,25 +1,37 @@
-const domain = process.env.BIGCOMMERCE_STOREFRONT_DOMAIN ?? '';
-const endpoint = `${domain}/graphql`;
-const key = process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '';
-
-interface BigCommerceResponse<T> {
+export interface BigCommerceResponse<T> {
   data: T;
 }
 
+export interface FetcherConfig {
+  storeHash: string;
+  key: string;
+  xAuthToken: string;
+}
+
+export interface FetcherInput {
+  query: string;
+  variables?: Record<string | symbol, unknown>;
+}
+
+export function customWrappedFetch<U>(config: FetcherConfig) {
+  return (data: FetcherInput) => {
+    return bigcommerceFetch<U>({
+      ...data,
+      ...config,
+    });
+  };
+}
+
 export async function bigcommerceFetch<T>({
+  storeHash,
+  key,
   query,
   variables,
   headers,
   cache = 'force-cache',
-  next,
-}: {
-  query: string;
-  variables?: Record<string | symbol, unknown>;
-  headers?: HeadersInit;
-  cache?: RequestCache;
-  next?: any;
-  // next?: NextFetchRequestConfig;
-}): Promise<BigCommerceResponse<T> | never> {
+  ...rest
+}: FetcherInput & FetcherConfig & RequestInit): Promise<BigCommerceResponse<T> | never> {
+  const endpoint = `https://store-${storeHash}.mybigcommerce.com/graphql`;
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
@@ -32,15 +44,12 @@ export async function bigcommerceFetch<T>({
       ...(variables && { variables }),
     }),
     cache,
-    // TODO: Make this not next-specific
-    // @ts-expect-error
-    next,
+    ...rest,
   });
 
   if (!response.ok) {
     throw new Error(`BigCommerce API returned ${response.status}`);
   }
 
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   return response.json() as Promise<BigCommerceResponse<T> | never>;
 }

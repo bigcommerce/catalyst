@@ -1,8 +1,9 @@
-import { getStoreSettings } from '@bigcommerce/catalyst-client';
 import { Fragment } from 'react';
 
+import client from '~/client';
+
 export const ContactInformation = async () => {
-  const settings = await getStoreSettings();
+  const settings = await client.getStoreSettings();
   const contact = settings?.contact;
 
   if (!contact) {

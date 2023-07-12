@@ -1,17 +1,22 @@
-import { client } from '../client';
+import { BigCommerceResponse, FetcherInput } from '../fetcher';
+import { generateQueryOp, QueryResult } from '../generated';
 import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
-interface GetCategoryOptions {
+export interface GetCategoryOptions {
   categoryId: number;
   limit?: number;
   before?: string;
   after?: string;
 }
 
-export const getCategory = async ({ categoryId, limit = 9, before, after }: GetCategoryOptions) => {
+export const getCategory = async <T>(
+  customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
+  { categoryId, limit = 9, before, after }: GetCategoryOptions,
+  config: T = {} as T,
+) => {
   const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
-  const { site } = await client.query({
+  const query = {
     site: {
       category: {
         __args: { entityId: categoryId },
@@ -52,9 +57,16 @@ export const getCategory = async ({ categoryId, limit = 9, before, after }: GetC
         },
       },
     },
+  };
+
+  const queryOp = generateQueryOp(query);
+
+  const response = await customFetch<QueryResult<typeof query>>({
+    ...queryOp,
+    ...config,
   });
 
-  const category = site.category;
+  const category = response.data.site.category;
 
   if (!category) {
     return undefined;

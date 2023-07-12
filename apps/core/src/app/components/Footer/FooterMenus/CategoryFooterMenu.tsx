@@ -1,9 +1,9 @@
-import { getCategoryTree } from '@bigcommerce/catalyst-client';
+import client from '~/client';
 
 import { BaseFooterMenu } from './BaseFooterMenu';
 
 export const CategoryFooterMenu = async () => {
-  const categoryTree = await getCategoryTree();
+  const categoryTree = await client.getCategoryTree();
 
   // Temp workaround until we have the middleware that converts paths to real urls
   const items = categoryTree.map((item) => ({

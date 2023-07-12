@@ -1,6 +1,7 @@
-import { getProductSearchResults } from '@bigcommerce/catalyst-client';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+
+import client from '~/client';
 
 import { ProductCard } from '../components/ProductCard';
 
@@ -24,7 +25,7 @@ export default async function Search({ searchParams }: Props) {
     );
   }
 
-  const productSearchResults = await getProductSearchResults({
+  const productSearchResults = await client.getProductSearchResults({
     searchTerm,
     limit: 4,
     after,

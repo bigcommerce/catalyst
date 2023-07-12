@@ -1,6 +1,6 @@
-import { getBestSellingProducts, getFeaturedProducts } from '@bigcommerce/catalyst-client';
 import { cs } from '@bigcommerce/reactant/cs';
 import { ReactNode } from 'react';
+import client from '~/client';
 
 import { Hero } from './components/Hero';
 import { ProductCard } from './components/ProductCard';
@@ -19,8 +19,8 @@ const ProductListGrid = ({ children }: { children: ReactNode }) => (
 
 export default async function Home() {
   const [bestSellingProducts, featuredProducts] = await Promise.all([
-    getBestSellingProducts(),
-    getFeaturedProducts(),
+    client.getBestSellingProducts(),
+    client.getFeaturedProducts(),
   ]);
 
   return (

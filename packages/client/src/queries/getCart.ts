@@ -1,7 +1,11 @@
-import { bigcommerceFetch } from '../fetcher';
+import { BigCommerceResponse, FetcherInput } from '../fetcher';
 import { generateQueryOp, QueryGenqlSelection, QueryResult } from '../generated';
 
-export const getCart = async (entityId: string) => {
+export async function getCart<T>(
+  customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
+  entityId: string,
+  config: T = {} as T,
+) {
   const query = {
     site: {
       cart: {
@@ -39,13 +43,9 @@ export const getCart = async (entityId: string) => {
 
   const queryOp = generateQueryOp(query);
 
-  const response = await bigcommerceFetch<QueryResult<typeof query>>({
+  const response = await customFetch<QueryResult<typeof query>>({
     ...queryOp,
-    // TODO: This is next-specific, move it somewhere else.
-    cache: 'no-store',
-    next: {
-      tags: ['cart'],
-    },
+    ...config,
   });
 
   const cart = response.data.site.cart;
@@ -81,4 +81,4 @@ export const getCart = async (entityId: string) => {
       value: totalExtendedSalePrice,
     },
   };
-};
+}

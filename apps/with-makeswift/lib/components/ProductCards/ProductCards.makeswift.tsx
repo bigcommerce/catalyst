@@ -33,7 +33,7 @@ const ProductCardsWrapper = ({ className, type, count }: WrapperProps) => {
       link: {
         href: `/product/${product.entityId}`,
       },
-      price: product.price?.value,
+      price: product.prices?.price.value,
       hasBadge: false,
     };
   });

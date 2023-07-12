@@ -1,6 +1,7 @@
-import { getProductReviews } from '@bigcommerce/catalyst-client';
 import { Star, StarHalf } from 'lucide-react';
 import { useId } from 'react';
+
+import client from '~/client';
 
 interface Props {
   productId: number;
@@ -10,7 +11,7 @@ interface Props {
 export const ReviewSummary = async ({ productId, reviewSectionId }: Props) => {
   const summaryId = useId();
 
-  const reviews = await getProductReviews(productId);
+  const reviews = await client.getProductReviews(productId);
 
   if (!reviews) {
     return null;

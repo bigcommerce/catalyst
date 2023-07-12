@@ -1,9 +1,9 @@
-import { getCategory } from '@bigcommerce/catalyst-client';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { ProductCard } from 'src/app/components/ProductCard';
+import client from '~/client';
 
 interface Props {
   params: {
@@ -17,7 +17,7 @@ export default async function Category({ params, searchParams }: Props) {
   const after = typeof searchParams.after === 'string' ? searchParams.after : undefined;
 
   const categoryId = Number(params.slug);
-  const category = await getCategory({
+  const category = await client.getCategory({
     categoryId,
     limit: 4,
     after,

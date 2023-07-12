@@ -1,7 +1,8 @@
-import { getStoreSettings } from '@bigcommerce/catalyst-client';
 import { FooterNav, FooterNavGroupList, FooterNavLink } from '@bigcommerce/reactant/Footer';
 import Link from 'next/link';
 import { ComponentPropsWithoutRef } from 'react';
+
+import client from '~/client';
 
 import { FacebookIcon } from '../SocialIcons/Facebook';
 import { InstagramIcon } from '../SocialIcons/Instagram';
@@ -20,7 +21,7 @@ const ICON_MAP: Record<string, React.FC<ComponentPropsWithoutRef<'svg'>>> = {
 };
 
 export const SocialIcons = async () => {
-  const settings = await getStoreSettings();
+  const settings = await client.getStoreSettings();
 
   const socialMediaLinks = settings?.socialMediaLinks;
 

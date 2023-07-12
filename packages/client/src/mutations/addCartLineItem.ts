@@ -1,4 +1,4 @@
-import { bigcommerceFetch } from '../fetcher';
+import { BigCommerceResponse, FetcherInput } from '../fetcher';
 import {
   AddCartLineItemsDataInput,
   generateMutationOp,
@@ -6,7 +6,12 @@ import {
   MutationResult,
 } from '../generated';
 
-export const addCartLineItem = async (cartEntityId: string, data: AddCartLineItemsDataInput) => {
+export const addCartLineItem = async <T>(
+  customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
+  cartEntityId: string,
+  data: AddCartLineItemsDataInput,
+  config: T = { cache: 'no-store' } as T,
+) => {
   const mutation = {
     cart: {
       addCartLineItems: {
@@ -25,9 +30,9 @@ export const addCartLineItem = async (cartEntityId: string, data: AddCartLineIte
 
   const mutationOp = generateMutationOp(mutation);
 
-  const response = await bigcommerceFetch<MutationResult<typeof mutation>>({
+  const response = await customFetch<MutationResult<typeof mutation>>({
     ...mutationOp,
-    cache: 'no-store',
+    ...config,
   });
 
   return response.data.cart.addCartLineItems?.cart;

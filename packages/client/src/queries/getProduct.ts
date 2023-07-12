@@ -1,4 +1,5 @@
-import { client } from '../client';
+import { BigCommerceResponse, FetcherInput } from '../fetcher';
+import { generateQueryOp, QueryResult } from '../generated';
 import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
 type Product = NonNullable<Awaited<ReturnType<typeof internalGetProduct>>>;
@@ -46,8 +47,12 @@ const reshapeProduct = (product: Product) => {
   };
 };
 
-async function internalGetProduct(productId: number) {
-  const response = await client.query({
+async function internalGetProduct<T>(
+  productId: number,
+  customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
+  config: T = {} as T,
+) {
+  const query = {
     site: {
       product: {
         __args: {
@@ -137,13 +142,24 @@ async function internalGetProduct(productId: number) {
         },
       },
     },
+  };
+
+  const queryOp = generateQueryOp(query);
+
+  const response = await customFetch<QueryResult<typeof query>>({
+    ...queryOp,
+    ...config,
   });
 
-  return response.site.product;
+  return response.data.site.product;
 }
 
-export const getProduct = async (productId: number) => {
-  const product = await internalGetProduct(productId);
+export const getProduct = async <T>(
+  customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
+  productId: number,
+  config: T = {} as T,
+) => {
+  const product = await internalGetProduct(productId, customFetch, config);
 
   if (!product) {
     return null;

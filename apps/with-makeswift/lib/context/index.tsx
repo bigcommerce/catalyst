@@ -1,17 +1,14 @@
-import {
-  getBestSellingProducts,
-  getCategoryTree,
-  getFeaturedProducts,
-} from '@bigcommerce/catalyst-client';
 import { createContext, ReactNode, useContext } from 'react';
+
+import client from '~/client';
 
 export type BcContext = Awaited<ReturnType<typeof getContextData>>;
 
 export const getContextData = async () => {
   const [featuredProducts, bestSellingProducts, categoryTree] = await Promise.all([
-    getFeaturedProducts(),
-    getBestSellingProducts(),
-    getCategoryTree(),
+    client.getFeaturedProducts(),
+    client.getBestSellingProducts(),
+    client.getCategoryTree(),
   ]);
 
   return {
