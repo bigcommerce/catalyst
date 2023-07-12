@@ -15,9 +15,30 @@ export default meta;
 
 type Story = StoryObj<typeof Input>;
 
-export const Example: Story = {
+export const Default: Story = {
   args: {
     disabled: false,
     placeholder: 'Placeholder...',
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    ...Default.args,
+    disabled: true,
+  },
+};
+
+export const Success: Story = {
+  args: {
+    ...Default.args,
+    state: 'success',
+  },
+};
+
+export const Error: Story = {
+  args: {
+    ...Default.args,
+    state: 'error',
   },
 };
