@@ -1,11 +1,12 @@
 import { getCart, getCategoryTree } from '@bigcommerce/catalyst-client';
+import { cs } from '@bigcommerce/reactant/cs';
 import {
   NavigationMenu,
+  NavigationMenuCollapsed,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuMobile,
-  NavigationMenuMobileTrigger,
+  NavigationMenuToggle,
 } from '@bigcommerce/reactant/NavigationMenu';
 import { Menu, Search, ShoppingCart } from 'lucide-react';
 import { cookies } from 'next/headers';
@@ -45,13 +46,34 @@ const Cart = async () => {
   );
 };
 
-const HeaderNav = async ({ className }: { className?: string }) => {
+const HeaderNav = async ({
+  className,
+  isMenuMobile = false,
+}: {
+  className?: string;
+  isMenuMobile?: boolean;
+}) => {
   const categoryTree = await getCategoryTree();
 
   return (
     <NavigationMenuList className={className}>
-      {categoryTree.map((category) => (
-        <NavigationMenuItem key={category.path}>
+      {isMenuMobile && (
+        <NavigationMenuItem className="md:hidden">
+          <NavigationMenuLink asChild>
+            <Link aria-label="Search" href="/search">
+              Search <Search aria-hidden="true" className="sm:hidden" />
+            </Link>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+      )}
+      {categoryTree.map((category, index) => (
+        <NavigationMenuItem
+          className={cs(
+            !isMenuMobile && index > 2 && 'sm:hidden lg:block',
+            isMenuMobile && index < 3 && 'sm:hidden',
+          )}
+          key={category.path}
+        >
           <NavigationMenuLink asChild>
             <Link href={`/category/${category.entityId}`}>{category.name}</Link>
           </NavigationMenuLink>
@@ -65,14 +87,14 @@ export const Header = () => {
   return (
     <header>
       <NavigationMenu>
-        <div className="flex min-h-[92px] w-full items-center justify-between gap-5">
-          <Link href="/">
-            <StoreLogo />
-          </Link>
-          <HeaderNav className="hidden sm:flex" />
-          <NavigationMenuList className="hidden sm:flex">
-            <NavigationMenuItem>
-              <Link aria-label="Search" className="hidden sm:block" href="/search">
+        <Link href="/">
+          <StoreLogo />
+        </Link>
+        <HeaderNav />
+        <div className="flex gap-5">
+          <NavigationMenuList className="flex">
+            <NavigationMenuItem className="hidden md:block">
+              <Link aria-label="Search" href="/search">
                 <Search />
               </Link>
             </NavigationMenuItem>
@@ -82,18 +104,13 @@ export const Header = () => {
               </Suspense>
             </NavigationMenuItem>
           </NavigationMenuList>
-          <div className="flex items-center gap-5 sm:hidden">
-            <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
-              <Cart />
-            </Suspense>
-            <NavigationMenuMobileTrigger>
-              <Menu />
-            </NavigationMenuMobileTrigger>
-          </div>
+          <NavigationMenuToggle className="sm:block lg:hidden">
+            <Menu />
+          </NavigationMenuToggle>
         </div>
-        <NavigationMenuMobile>
-          <HeaderNav className="block" />
-        </NavigationMenuMobile>
+        <NavigationMenuCollapsed>
+          <HeaderNav isMenuMobile={true} />
+        </NavigationMenuCollapsed>
       </NavigationMenu>
     </header>
   );
