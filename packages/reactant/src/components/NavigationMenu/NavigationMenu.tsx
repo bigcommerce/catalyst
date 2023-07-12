@@ -137,7 +137,7 @@ export const NavigationMenuCollapsed = forwardRef<ElementRef<'div'>, ComponentPr
           'group absolute top-full left-0 z-50 w-full bg-white pb-6',
           isExpanded && 'is-expanded',
           className,
-          !isExpanded && '!hidden',
+          !isExpanded && 'hidden',
         )}
         id="nav-menu"
         ref={ref}
