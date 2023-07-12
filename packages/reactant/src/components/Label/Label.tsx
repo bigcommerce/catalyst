@@ -7,9 +7,5 @@ export const Label = forwardRef<
   ElementRef<typeof LabelPrimitive.Root>,
   ComponentPropsWithRef<typeof LabelPrimitive.Root>
 >(({ className, ...props }, ref) => (
-  <LabelPrimitive.Root
-    className={cs('text-base peer-disabled:cursor-not-allowed peer-disabled:opacity-70', className)}
-    ref={ref}
-    {...props}
-  />
+  <LabelPrimitive.Root className={cs('text-base', className)} ref={ref} {...props} />
 ));
