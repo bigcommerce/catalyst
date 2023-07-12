@@ -23,6 +23,22 @@ export interface AddCartLineItemsResult {
 }
 
 
+/** Add checkout billing address result */
+export interface AddCheckoutBillingAddressResult {
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: (Checkout | null)
+    __typename: 'AddCheckoutBillingAddressResult'
+}
+
+
+/** Apply checkout shipping consignments result */
+export interface AddCheckoutShippingConsignmentsResult {
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: (Checkout | null)
+    __typename: 'AddCheckoutShippingConsignmentsResult'
+}
+
+
 /** Add wishlist items */
 export interface AddWishlistItemsResult {
     /** The wishlist */
@@ -48,6 +64,22 @@ export interface AggregatedInventory {
     /** Indicates a threshold low-stock level. This can be 'null' if the inventory warning level is not set or if the store's Inventory Settings disable displaying stock levels on the storefront. */
     warningLevel: Scalars['Int']
     __typename: 'AggregatedInventory'
+}
+
+
+/** Apply checkout coupon result */
+export interface ApplyCheckoutCouponResult {
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: (Checkout | null)
+    __typename: 'ApplyCheckoutCouponResult'
+}
+
+
+/** Apply checkout spam protection result */
+export interface ApplyCheckoutSpamProtectionResult {
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: (Checkout | null)
+    __typename: 'ApplyCheckoutSpamProtectionResult'
 }
 
 
@@ -348,6 +380,8 @@ export interface Breadcrumb {
     entityId: Scalars['Int']
     /** Name of the category. */
     name: Scalars['String']
+    /** Path to the category. */
+    path: Scalars['String']
     __typename: 'Breadcrumb'
 }
 
@@ -947,6 +981,294 @@ export interface CheckboxOption {
 }
 
 
+/** The checkout. */
+export interface Checkout {
+    /** Billing address information. */
+    billingAddress?: (CheckoutBillingAddress | null)
+    /** Cart associated with the checkout. */
+    cart?: (Cart | null)
+    /** Coupons applied at checkout level. */
+    coupons: CheckoutCoupon[]
+    /** Time when the checkout was created. */
+    createdAt: DateTimeExtended
+    /** Shopper's message provided as details for the order to be created from the checkout. */
+    customerMessage?: (Scalars['String'] | null)
+    /** Checkout ID. */
+    entityId: Scalars['String']
+    /** Gift wrapping cost for all items, including or excluding tax. */
+    giftWrappingCostTotal?: (Money | null)
+    /** The total payable amount, before applying any store credit or gift certificate. */
+    grandTotal?: (Money | null)
+    /** Handling cost for all consignments including or excluding tax. */
+    handlingCostTotal?: (Money | null)
+    /** The ID of an object */
+    id: Scalars['ID']
+    /** Order associated with the checkout. */
+    order?: (Order | null)
+    /** GrandTotal subtract the store-credit amount. */
+    outstandingBalance?: (Money | null)
+    /** List of promotions */
+    promotions: CheckoutPromotion[]
+    /** List of shipping consignments. */
+    shippingConsignments?: (CheckoutShippingConsignment[] | null)
+    /** Total shipping cost before any discounts are applied. */
+    shippingCostTotal?: (Money | null)
+    /** Subtotal of the checkout before applying item-level discounts. Tax inclusive based on the store settings. */
+    subtotal?: (Money | null)
+    /** Total amount of taxes applied. */
+    taxTotal?: (Money | null)
+    /** List of taxes applied. */
+    taxes?: (CheckoutTax[] | null)
+    /** Time when the checkout was last updated. */
+    updatedAt: DateTimeExtended
+    __typename: 'Checkout'
+}
+
+
+/** Checkout address. */
+export type CheckoutAddress = (CheckoutBillingAddress | CheckoutConsignmentAddress) & { __isUnion?: true }
+
+
+/** Checkboxes custom field. */
+export interface CheckoutAddressCheckboxesCustomField {
+    /** Custom field ID. */
+    entityId: Scalars['Int']
+    /** List of custom field value IDs. */
+    valueEntityIds: Scalars['Int'][]
+    __typename: 'CheckoutAddressCheckboxesCustomField'
+}
+
+
+/** Custom field of the checkout address. */
+export type CheckoutAddressCustomField = (CheckoutAddressCheckboxesCustomField | CheckoutAddressDateCustomField | CheckoutAddressMultipleChoiceCustomField | CheckoutAddressNumberCustomField | CheckoutAddressPasswordCustomField | CheckoutAddressTextFieldCustomField) & { __isUnion?: true }
+
+
+/** Date custom field. */
+export interface CheckoutAddressDateCustomField {
+    /** Date value. */
+    date: DateTimeExtended
+    /** Custom field ID. */
+    entityId: Scalars['Int']
+    __typename: 'CheckoutAddressDateCustomField'
+}
+
+
+/** Multiple choice custom field. */
+export interface CheckoutAddressMultipleChoiceCustomField {
+    /** Custom field ID. */
+    entityId: Scalars['Int']
+    /** Custom field value ID. */
+    valueEntityId: Scalars['Int']
+    __typename: 'CheckoutAddressMultipleChoiceCustomField'
+}
+
+
+/** Number custom field. */
+export interface CheckoutAddressNumberCustomField {
+    /** Custom field ID. */
+    entityId: Scalars['Int']
+    /** Number value. */
+    number: Scalars['Float']
+    __typename: 'CheckoutAddressNumberCustomField'
+}
+
+
+/** Password custom field. */
+export interface CheckoutAddressPasswordCustomField {
+    /** Custom field ID. */
+    entityId: Scalars['Int']
+    /** Password value. */
+    password: Scalars['String']
+    __typename: 'CheckoutAddressPasswordCustomField'
+}
+
+
+/** Text custom field. */
+export interface CheckoutAddressTextFieldCustomField {
+    /** Custom field ID. */
+    entityId: Scalars['Int']
+    /** Text value. */
+    text: Scalars['String']
+    __typename: 'CheckoutAddressTextFieldCustomField'
+}
+
+
+/** Available shipping option. */
+export interface CheckoutAvailableShippingOption {
+    /** Shipping option cost. */
+    cost: Money
+    /** Shipping option description. */
+    description: Scalars['String']
+    /** Shipping option ID. */
+    entityId: Scalars['String']
+    /** Shipping option image URL. */
+    imageUrl?: (Scalars['String'] | null)
+    /** Is this shipping method the recommended shipping option or not. */
+    isRecommended: Scalars['Boolean']
+    /** An estimate of the arrival time. */
+    transitTime?: (Scalars['String'] | null)
+    /** Shipping option type. Flat rate, UPS, etc. */
+    type: Scalars['String']
+    __typename: 'CheckoutAvailableShippingOption'
+}
+
+
+/** Checkboxes billing address. */
+export interface CheckoutBillingAddress {
+    /** Address line 1. */
+    address1?: (Scalars['String'] | null)
+    /** Address line 2. */
+    address2?: (Scalars['String'] | null)
+    /** Name of the city. */
+    city?: (Scalars['String'] | null)
+    /** Company name. */
+    company?: (Scalars['String'] | null)
+    /** Country code. */
+    countryCode: Scalars['String']
+    /** List of custom fields. */
+    customFields: CheckoutAddressCustomField[]
+    /** Email address. */
+    email?: (Scalars['String'] | null)
+    /** Billing address ID. */
+    entityId: Scalars['String']
+    /** The first name. */
+    firstName?: (Scalars['String'] | null)
+    /** The last name. */
+    lastName?: (Scalars['String'] | null)
+    /** Phone number. */
+    phone?: (Scalars['String'] | null)
+    /** Postal code. */
+    postalCode?: (Scalars['String'] | null)
+    /** State or province. */
+    stateOrProvince?: (Scalars['String'] | null)
+    /** Code of the state or province. */
+    stateOrProvinceCode?: (Scalars['String'] | null)
+    __typename: 'CheckoutBillingAddress'
+}
+
+
+/** Checkboxes consignment address. */
+export interface CheckoutConsignmentAddress {
+    /** Address line 1. */
+    address1?: (Scalars['String'] | null)
+    /** Address line 2. */
+    address2?: (Scalars['String'] | null)
+    /** Name of the city. */
+    city?: (Scalars['String'] | null)
+    /** Company name. */
+    company?: (Scalars['String'] | null)
+    /** Country code. */
+    countryCode: Scalars['String']
+    /** List of custom fields. */
+    customFields: CheckoutAddressCustomField[]
+    /** Email address. */
+    email?: (Scalars['String'] | null)
+    /** The first name. */
+    firstName?: (Scalars['String'] | null)
+    /** The last name. */
+    lastName?: (Scalars['String'] | null)
+    /** Phone number. */
+    phone?: (Scalars['String'] | null)
+    /** Postal code. */
+    postalCode?: (Scalars['String'] | null)
+    /** State or province. */
+    stateOrProvince?: (Scalars['String'] | null)
+    /** Code of the state or province. */
+    stateOrProvinceCode?: (Scalars['String'] | null)
+    __typename: 'CheckoutConsignmentAddress'
+}
+
+
+/** The checkout coupon. */
+export interface CheckoutCoupon {
+    /** The coupon code. */
+    code: Scalars['String']
+    /** The coupon type. */
+    couponType?: (CouponType | null)
+    /** The discounted amount applied within a given context. */
+    discountedAmount: Money
+    /** The coupon ID. */
+    entityId: Scalars['Int']
+    __typename: 'CheckoutCoupon'
+}
+
+
+/** Checkout mutations */
+export interface CheckoutMutations {
+    /** Creates a checkout billing address. */
+    addCheckoutBillingAddress?: (AddCheckoutBillingAddressResult | null)
+    /** Creates a checkout shipping consignments. */
+    addCheckoutShippingConsignments?: (AddCheckoutShippingConsignmentsResult | null)
+    /** Applies a checkout coupon. */
+    applyCheckoutCoupon?: (ApplyCheckoutCouponResult | null)
+    /** Applies a checkout spam protection. */
+    applyCheckoutSpamProtection?: (ApplyCheckoutSpamProtectionResult | null)
+    /** Completes the checkout. */
+    completeCheckout?: (CompleteCheckoutResult | null)
+    /** Deletes a checkout consignment. */
+    deleteCheckoutConsignment?: (DeleteCheckoutConsignmentResult | null)
+    /** Selects a checkout shipping option. */
+    selectCheckoutShippingOption?: (SelectCheckoutShippingOptionResult | null)
+    /** Unapply a checkout coupon. */
+    unapplyCheckoutCoupon?: (UnapplyCheckoutCouponResult | null)
+    /** Update a checkout billing address. */
+    updateCheckoutBillingAddress?: (UpdateCheckoutBillingAddressResult | null)
+    /** Updates a checkout customer message. */
+    updateCheckoutCustomerMessage?: (UpdateCheckoutCustomerMessageResult | null)
+    /** Updates a checkout shipping consignments. */
+    updateCheckoutShippingConsignment?: (UpdateCheckoutShippingConsignmentResult | null)
+    __typename: 'CheckoutMutations'
+}
+
+
+/** The checkout promotion */
+export interface CheckoutPromotion {
+    /** The checkout promotion banners. */
+    banners: CheckoutPromotionBanner[]
+    __typename: 'CheckoutPromotion'
+}
+
+
+/** The checkout promotion banner */
+export interface CheckoutPromotionBanner {
+    /** The checkout promotion banner ID. */
+    entityId: Scalars['Int']
+    /** The list of the locations where the banner will display. */
+    locations: CheckoutPromotionBannerLocation[]
+    /** Text of the banner. */
+    text: Scalars['String']
+    /** Type of the banner. */
+    type: CheckoutPromotionBannerType
+    __typename: 'CheckoutPromotionBanner'
+}
+
+
+/** Checkout promotion banner location. */
+export type CheckoutPromotionBannerLocation = 'CART_PAGE' | 'CHECKOUT_PAGE' | 'HOME_PAGE' | 'PRODUCT_PAGE'
+
+
+/** Checkout promotion banner type. */
+export type CheckoutPromotionBannerType = 'APPLIED' | 'ELIGIBLE' | 'PROMOTION' | 'UPSELL'
+
+
+/** Selected shipping option. */
+export interface CheckoutSelectedShippingOption {
+    /** Shipping option cost. */
+    cost: Money
+    /** Shipping option description. */
+    description: Scalars['String']
+    /** Shipping option ID. */
+    entityId: Scalars['String']
+    /** Shipping option image URL. */
+    imageUrl?: (Scalars['String'] | null)
+    /** An estimate of the arrival time. */
+    transitTime?: (Scalars['String'] | null)
+    /** Shipping option type. Flat rate, UPS, etc. */
+    type: Scalars['String']
+    __typename: 'CheckoutSelectedShippingOption'
+}
+
+
 /** Checkout settings. */
 export interface CheckoutSettings {
     /** Indicates whether ReCaptcha is enabled on checkout. */
@@ -955,11 +1277,53 @@ export interface CheckoutSettings {
 }
 
 
+/** Checkout shipping consignment. */
+export interface CheckoutShippingConsignment {
+    /** Shipping consignment address. */
+    address: CheckoutConsignmentAddress
+    /** List of available shipping options. */
+    availableShippingOptions?: (CheckoutAvailableShippingOption[] | null)
+    /** List of coupons applied to this shipping consignment. */
+    coupons?: (CheckoutCoupon[] | null)
+    /** Shipping consignment ID. */
+    entityId: Scalars['String']
+    /** The handling cost of shipping for the consignment. */
+    handlingCost?: (Money | null)
+    /** List of line item IDs for the consignment. */
+    lineItemIds: Scalars['String'][]
+    /** Selected shipping option. */
+    selectedShippingOption?: (CheckoutSelectedShippingOption | null)
+    /** The shipping cost for the consignment. */
+    shippingCost?: (Money | null)
+    __typename: 'CheckoutShippingConsignment'
+}
+
+
+/** The checkout. */
+export interface CheckoutTax {
+    /** Tax amount. */
+    amount: Money
+    /** Name of the tax. */
+    name: Scalars['String']
+    __typename: 'CheckoutTax'
+}
+
+
 /** Additional information about the collection. */
 export interface CollectionInfo {
     /** Total items in the collection despite pagination. */
     totalItems?: (Scalars['Long'] | null)
     __typename: 'CollectionInfo'
+}
+
+
+/** Complete checkout result */
+export interface CompleteCheckoutResult {
+    /** The Order ID created as a result of the checkout. */
+    orderEntityId?: (Scalars['Int'] | null)
+    /** The access token to be used to complete a payment. */
+    paymentAccessToken?: (Scalars['String'] | null)
+    __typename: 'CompleteCheckoutResult'
 }
 
 
@@ -1023,6 +1387,10 @@ export interface Content {
     renderedRegionsByPageTypeAndEntityId: RenderedRegionsByPageType
     __typename: 'Content'
 }
+
+
+/** The coupon type. */
+export type CouponType = 'FREE_SHIPPING' | 'PERCENTAGE_DISCOUNT' | 'PER_ITEM_DISCOUNT' | 'PER_TOTAL_DISCOUNT' | 'PROMOTION' | 'SHIPPING_DISCOUNT'
 
 
 /** Create cart result */
@@ -1236,6 +1604,14 @@ export interface DeleteCartResult {
     /** The ID of the Cart that is deleted as a result of mutation. */
     deletedCartEntityId?: (Scalars['String'] | null)
     __typename: 'DeleteCartResult'
+}
+
+
+/** Delete checkout consignment result */
+export interface DeleteCheckoutConsignmentResult {
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: (Checkout | null)
+    __typename: 'DeleteCheckoutConsignmentResult'
 }
 
 
@@ -1716,6 +2092,8 @@ export interface MultipleChoiceOptionValue {
 export interface Mutation {
     /** The Cart mutations. */
     cart: CartMutations
+    /** The Checkout mutations. */
+    checkout: CheckoutMutations
     /** Customer login */
     login: LoginResult
     /** Customer logout */
@@ -1727,7 +2105,7 @@ export interface Mutation {
 
 
 /** An object with an ID */
-export type Node = (Banner | Blog | BlogPost | Brand | Cart | Category | ContactPage | NormalPage | Product | RawHtmlPage | Variant) & { __isUnion?: true }
+export type Node = (Banner | Blog | BlogPost | Brand | Cart | Category | Checkout | ContactPage | NormalPage | Product | RawHtmlPage | Variant) & { __isUnion?: true }
 
 
 /** A normal page. */
@@ -1853,6 +2231,14 @@ export interface OptionValueEdge {
     /** The item at the end of the edge. */
     node: ProductOptionValue
     __typename: 'OptionValueEdge'
+}
+
+
+/** The order. */
+export interface Order {
+    /** Order ID. */
+    entityId: Scalars['Int']
+    __typename: 'Order'
 }
 
 
@@ -2128,6 +2514,8 @@ export interface ProductAttributeSearchFilter {
     attributes: ProductAttributeSearchFilterItemConnection
     /** Indicates whether to display product count next to the filter. */
     displayProductCount: Scalars['Boolean']
+    /** Filter name for building filter URLs */
+    filterName: Scalars['String']
     /** Indicates whether filter is collapsed by default. */
     isCollapsedByDefault: Scalars['Boolean']
     /** Display name for the filter. */
@@ -2597,6 +2985,14 @@ export interface SearchQueries {
 }
 
 
+/** Select checkout shipping option result */
+export interface SelectCheckoutShippingOptionResult {
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: (Checkout | null)
+    __typename: 'SelectCheckoutShippingOptionResult'
+}
+
+
 /** Seo Details */
 export interface SeoDetails {
     /** Meta description. */
@@ -2690,6 +3086,8 @@ export interface Site {
     category?: (Category | null)
     /** A tree of categories. */
     categoryTree: CategoryTreeItem[]
+    /** The checkout of the current customer. */
+    checkout?: (Checkout | null)
     /** The page content. */
     content: Content
     /** Store Currencies. */
@@ -2866,6 +3264,14 @@ export interface TextFieldOption {
 }
 
 
+/** Unapply checkout coupon result */
+export interface UnapplyCheckoutCouponResult {
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: (Checkout | null)
+    __typename: 'UnapplyCheckoutCouponResult'
+}
+
+
 /** Unassign cart from the customer result. */
 export interface UnassignCartFromCustomerResult {
     /** The Cart that is updated as a result of mutation. */
@@ -2887,6 +3293,30 @@ export interface UpdateCartLineItemResult {
     /** The Cart that is updated as a result of mutation. */
     cart?: (Cart | null)
     __typename: 'UpdateCartLineItemResult'
+}
+
+
+/** Update checkout billing address result */
+export interface UpdateCheckoutBillingAddressResult {
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: (Checkout | null)
+    __typename: 'UpdateCheckoutBillingAddressResult'
+}
+
+
+/** Update checkout customer message result */
+export interface UpdateCheckoutCustomerMessageResult {
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: (Checkout | null)
+    __typename: 'UpdateCheckoutCustomerMessageResult'
+}
+
+
+/** Update checkout shipping consignment result */
+export interface UpdateCheckoutShippingConsignmentResult {
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: (Checkout | null)
+    __typename: 'UpdateCheckoutShippingConsignmentResult'
 }
 
 
@@ -3113,6 +3543,52 @@ export interface AddCartLineItemsResultGenqlSelection{
 }
 
 
+/** Add checkout billing address data object */
+export interface AddCheckoutBillingAddressDataInput {
+/** The checkout billing address */
+address: CheckoutAddressInput}
+
+
+/** Add checkout billing address input object */
+export interface AddCheckoutBillingAddressInput {
+/** The checkout id */
+checkoutEntityId: Scalars['String'],
+/** Add checkout billing address data object */
+data: AddCheckoutBillingAddressDataInput}
+
+
+/** Add checkout billing address result */
+export interface AddCheckoutBillingAddressResultGenqlSelection{
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: CheckoutGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Add checkout shipping consignments data object */
+export interface AddCheckoutShippingConsignmentsDataInput {
+/** The list of shipping consignments */
+consignments: CheckoutShippingConsignmentInput[]}
+
+
+/** Add checkout shipping consignments input object */
+export interface AddCheckoutShippingConsignmentsInput {
+/** The checkout id */
+checkoutEntityId: Scalars['String'],
+/** Add checkout shipping consignments data object */
+data: AddCheckoutShippingConsignmentsDataInput}
+
+
+/** Apply checkout shipping consignments result */
+export interface AddCheckoutShippingConsignmentsResultGenqlSelection{
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: CheckoutGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
 /** Add wishlist items input object */
 export interface AddWishlistItemsInput {
 /** The wishlist id */
@@ -3147,6 +3623,52 @@ export interface AggregatedInventoryGenqlSelection{
     availableToSell?: boolean | number
     /** Indicates a threshold low-stock level. This can be 'null' if the inventory warning level is not set or if the store's Inventory Settings disable displaying stock levels on the storefront. */
     warningLevel?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Apply checkout coupon data object */
+export interface ApplyCheckoutCouponDataInput {
+/** The checkout coupon code */
+couponCode: Scalars['String']}
+
+
+/** Apply checkout coupon input object */
+export interface ApplyCheckoutCouponInput {
+/** The checkout id */
+checkoutEntityId: Scalars['String'],
+/** Apply checkout coupon data object */
+data: ApplyCheckoutCouponDataInput}
+
+
+/** Apply checkout coupon result */
+export interface ApplyCheckoutCouponResultGenqlSelection{
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: CheckoutGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Apply checkout spam protection data object */
+export interface ApplyCheckoutSpamProtectionDataInput {
+/** The checkout spam protection token */
+token: Scalars['String']}
+
+
+/** Apply checkout spam protection input object */
+export interface ApplyCheckoutSpamProtectionInput {
+/** The checkout id */
+checkoutEntityId: Scalars['String'],
+/** Apply checkout spam protection data object */
+data: ApplyCheckoutSpamProtectionDataInput}
+
+
+/** Apply checkout spam protection result */
+export interface ApplyCheckoutSpamProtectionResultGenqlSelection{
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: CheckoutGenqlSelection
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -3497,6 +4019,8 @@ export interface BreadcrumbGenqlSelection{
     entityId?: boolean | number
     /** Name of the category. */
     name?: boolean | number
+    /** Path to the category. */
+    path?: boolean | number
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -4325,6 +4849,469 @@ export interface CheckboxOptionGenqlSelection{
 }
 
 
+/** The checkout. */
+export interface CheckoutGenqlSelection{
+    /** Billing address information. */
+    billingAddress?: CheckoutBillingAddressGenqlSelection
+    /** Cart associated with the checkout. */
+    cart?: CartGenqlSelection
+    /** Coupons applied at checkout level. */
+    coupons?: CheckoutCouponGenqlSelection
+    /** Time when the checkout was created. */
+    createdAt?: DateTimeExtendedGenqlSelection
+    /** Shopper's message provided as details for the order to be created from the checkout. */
+    customerMessage?: boolean | number
+    /** Checkout ID. */
+    entityId?: boolean | number
+    /** Gift wrapping cost for all items, including or excluding tax. */
+    giftWrappingCostTotal?: MoneyGenqlSelection
+    /** The total payable amount, before applying any store credit or gift certificate. */
+    grandTotal?: MoneyGenqlSelection
+    /** Handling cost for all consignments including or excluding tax. */
+    handlingCostTotal?: MoneyGenqlSelection
+    /** The ID of an object */
+    id?: boolean | number
+    /** Order associated with the checkout. */
+    order?: OrderGenqlSelection
+    /** GrandTotal subtract the store-credit amount. */
+    outstandingBalance?: MoneyGenqlSelection
+    /** List of promotions */
+    promotions?: CheckoutPromotionGenqlSelection
+    /** List of shipping consignments. */
+    shippingConsignments?: CheckoutShippingConsignmentGenqlSelection
+    /** Total shipping cost before any discounts are applied. */
+    shippingCostTotal?: MoneyGenqlSelection
+    /** Subtotal of the checkout before applying item-level discounts. Tax inclusive based on the store settings. */
+    subtotal?: MoneyGenqlSelection
+    /** Total amount of taxes applied. */
+    taxTotal?: MoneyGenqlSelection
+    /** List of taxes applied. */
+    taxes?: CheckoutTaxGenqlSelection
+    /** Time when the checkout was last updated. */
+    updatedAt?: DateTimeExtendedGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Checkout address. */
+export interface CheckoutAddressGenqlSelection{
+    /** Address line 1. */
+    address1?: boolean | number
+    /** Address line 2. */
+    address2?: boolean | number
+    /** Name of the city. */
+    city?: boolean | number
+    /** Company name. */
+    company?: boolean | number
+    /** Country code. */
+    countryCode?: boolean | number
+    /** List of custom fields. */
+    customFields?: CheckoutAddressCustomFieldGenqlSelection
+    /** Email address. */
+    email?: boolean | number
+    /** The first name. */
+    firstName?: boolean | number
+    /** The last name. */
+    lastName?: boolean | number
+    /** Phone number. */
+    phone?: boolean | number
+    /** Postal code. */
+    postalCode?: boolean | number
+    /** State or province. */
+    stateOrProvince?: boolean | number
+    /** Code of the state or province. */
+    stateOrProvinceCode?: boolean | number
+    on_CheckoutBillingAddress?: CheckoutBillingAddressGenqlSelection
+    on_CheckoutConsignmentAddress?: CheckoutConsignmentAddressGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Checkboxes custom field. */
+export interface CheckoutAddressCheckboxesCustomFieldGenqlSelection{
+    /** Custom field ID. */
+    entityId?: boolean | number
+    /** List of custom field value IDs. */
+    valueEntityIds?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Checkout address checkboxes custom field input object */
+export interface CheckoutAddressCheckboxesCustomFieldInput {
+/** The custom field ID. */
+fieldEntityId: Scalars['Int'],
+/** List of custom field value IDs. */
+fieldValueEntityIds: Scalars['Int'][]}
+
+
+/** Custom field of the checkout address. */
+export interface CheckoutAddressCustomFieldGenqlSelection{
+    /** Custom field ID. */
+    entityId?: boolean | number
+    on_CheckoutAddressCheckboxesCustomField?: CheckoutAddressCheckboxesCustomFieldGenqlSelection
+    on_CheckoutAddressDateCustomField?: CheckoutAddressDateCustomFieldGenqlSelection
+    on_CheckoutAddressMultipleChoiceCustomField?: CheckoutAddressMultipleChoiceCustomFieldGenqlSelection
+    on_CheckoutAddressNumberCustomField?: CheckoutAddressNumberCustomFieldGenqlSelection
+    on_CheckoutAddressPasswordCustomField?: CheckoutAddressPasswordCustomFieldGenqlSelection
+    on_CheckoutAddressTextFieldCustomField?: CheckoutAddressTextFieldCustomFieldGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Checkout address custom field input object */
+export interface CheckoutAddressCustomFieldInput {
+/** List of checkboxes custom fields. */
+checkboxes?: (CheckoutAddressCheckboxesCustomFieldInput[] | null),
+/** List of date custom fields. */
+dates?: (CheckoutAddressDateCustomFieldInput[] | null),
+/** List of multiple choice custom fields. */
+multipleChoices?: (CheckoutAddressMultipleChoiceCustomFieldInput[] | null),
+/** List of number custom fields. */
+numbers?: (CheckoutAddressNumberCustomFieldInput[] | null),
+/** List of password custom fields. */
+passwords?: (CheckoutAddressPasswordCustomFieldInput[] | null),
+/** List of text custom fields. */
+texts?: (CheckoutAddressTextCustomFieldInput[] | null)}
+
+
+/** Date custom field. */
+export interface CheckoutAddressDateCustomFieldGenqlSelection{
+    /** Date value. */
+    date?: DateTimeExtendedGenqlSelection
+    /** Custom field ID. */
+    entityId?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Checkout address date custom field input object */
+export interface CheckoutAddressDateCustomFieldInput {
+/** Date value. */
+date: Scalars['DateTime'],
+/** The custom field ID. */
+fieldEntityId: Scalars['Int']}
+
+
+/** Checkout address input object */
+export interface CheckoutAddressInput {
+/** Address line 1 */
+address1?: (Scalars['String'] | null),
+/** Address line 2 */
+address2?: (Scalars['String'] | null),
+/** Name of the city */
+city?: (Scalars['String'] | null),
+/** Company name */
+company?: (Scalars['String'] | null),
+/** Country code */
+countryCode: Scalars['String'],
+/** List of custom fields */
+customFields?: (CheckoutAddressCustomFieldInput | null),
+/** Email address */
+email?: (Scalars['String'] | null),
+/** The first name */
+firstName?: (Scalars['String'] | null),
+/** The last name */
+lastName?: (Scalars['String'] | null),
+/** Phone number */
+phone?: (Scalars['String'] | null),
+/** Postal code */
+postalCode?: (Scalars['String'] | null),
+/** Should we save this address? */
+shouldSaveAddress: Scalars['Boolean'],
+/** State or province */
+stateOrProvince?: (Scalars['String'] | null),
+/** Code of the state or province */
+stateOrProvinceCode?: (Scalars['String'] | null)}
+
+
+/** Multiple choice custom field. */
+export interface CheckoutAddressMultipleChoiceCustomFieldGenqlSelection{
+    /** Custom field ID. */
+    entityId?: boolean | number
+    /** Custom field value ID. */
+    valueEntityId?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Checkout address multiple choice custom field input object */
+export interface CheckoutAddressMultipleChoiceCustomFieldInput {
+/** The custom field ID. */
+fieldEntityId: Scalars['Int'],
+/** The custom field value ID. */
+fieldValueEntityId: Scalars['Int']}
+
+
+/** Number custom field. */
+export interface CheckoutAddressNumberCustomFieldGenqlSelection{
+    /** Custom field ID. */
+    entityId?: boolean | number
+    /** Number value. */
+    number?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Checkout address number custom field input object */
+export interface CheckoutAddressNumberCustomFieldInput {
+/** The custom field ID. */
+fieldEntityId: Scalars['Int'],
+/** Number value. */
+number: Scalars['Float']}
+
+
+/** Password custom field. */
+export interface CheckoutAddressPasswordCustomFieldGenqlSelection{
+    /** Custom field ID. */
+    entityId?: boolean | number
+    /** Password value. */
+    password?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Checkout address password custom field input object */
+export interface CheckoutAddressPasswordCustomFieldInput {
+/** The custom field ID. */
+fieldEntityId: Scalars['Int'],
+/** Password value. */
+password: Scalars['String']}
+
+
+/** Checkout address text custom field input object */
+export interface CheckoutAddressTextCustomFieldInput {
+/** The custom field ID. */
+fieldEntityId: Scalars['Int'],
+/** Text value. */
+text: Scalars['String']}
+
+
+/** Text custom field. */
+export interface CheckoutAddressTextFieldCustomFieldGenqlSelection{
+    /** Custom field ID. */
+    entityId?: boolean | number
+    /** Text value. */
+    text?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Available shipping option. */
+export interface CheckoutAvailableShippingOptionGenqlSelection{
+    /** Shipping option cost. */
+    cost?: MoneyGenqlSelection
+    /** Shipping option description. */
+    description?: boolean | number
+    /** Shipping option ID. */
+    entityId?: boolean | number
+    /** Shipping option image URL. */
+    imageUrl?: boolean | number
+    /** Is this shipping method the recommended shipping option or not. */
+    isRecommended?: boolean | number
+    /** An estimate of the arrival time. */
+    transitTime?: boolean | number
+    /** Shipping option type. Flat rate, UPS, etc. */
+    type?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Checkboxes billing address. */
+export interface CheckoutBillingAddressGenqlSelection{
+    /** Address line 1. */
+    address1?: boolean | number
+    /** Address line 2. */
+    address2?: boolean | number
+    /** Name of the city. */
+    city?: boolean | number
+    /** Company name. */
+    company?: boolean | number
+    /** Country code. */
+    countryCode?: boolean | number
+    /** List of custom fields. */
+    customFields?: CheckoutAddressCustomFieldGenqlSelection
+    /** Email address. */
+    email?: boolean | number
+    /** Billing address ID. */
+    entityId?: boolean | number
+    /** The first name. */
+    firstName?: boolean | number
+    /** The last name. */
+    lastName?: boolean | number
+    /** Phone number. */
+    phone?: boolean | number
+    /** Postal code. */
+    postalCode?: boolean | number
+    /** State or province. */
+    stateOrProvince?: boolean | number
+    /** Code of the state or province. */
+    stateOrProvinceCode?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Checkboxes consignment address. */
+export interface CheckoutConsignmentAddressGenqlSelection{
+    /** Address line 1. */
+    address1?: boolean | number
+    /** Address line 2. */
+    address2?: boolean | number
+    /** Name of the city. */
+    city?: boolean | number
+    /** Company name. */
+    company?: boolean | number
+    /** Country code. */
+    countryCode?: boolean | number
+    /** List of custom fields. */
+    customFields?: CheckoutAddressCustomFieldGenqlSelection
+    /** Email address. */
+    email?: boolean | number
+    /** The first name. */
+    firstName?: boolean | number
+    /** The last name. */
+    lastName?: boolean | number
+    /** Phone number. */
+    phone?: boolean | number
+    /** Postal code. */
+    postalCode?: boolean | number
+    /** State or province. */
+    stateOrProvince?: boolean | number
+    /** Code of the state or province. */
+    stateOrProvinceCode?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Checkout consignment line item input object */
+export interface CheckoutConsignmentLineItemInput {
+/** The line item id */
+lineItemEntityId: Scalars['String'],
+/** The total number of consignment line items */
+quantity: Scalars['Int']}
+
+
+/** The checkout coupon. */
+export interface CheckoutCouponGenqlSelection{
+    /** The coupon code. */
+    code?: boolean | number
+    /** The coupon type. */
+    couponType?: boolean | number
+    /** The discounted amount applied within a given context. */
+    discountedAmount?: MoneyGenqlSelection
+    /** The coupon ID. */
+    entityId?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Checkout mutations */
+export interface CheckoutMutationsGenqlSelection{
+    /** Creates a checkout billing address. */
+    addCheckoutBillingAddress?: (AddCheckoutBillingAddressResultGenqlSelection & { __args: {
+    /** Add checkout billing address input object */
+    input: AddCheckoutBillingAddressInput} })
+    /** Creates a checkout shipping consignments. */
+    addCheckoutShippingConsignments?: (AddCheckoutShippingConsignmentsResultGenqlSelection & { __args: {
+    /** Apply checkout shipping consignments input object */
+    input: AddCheckoutShippingConsignmentsInput} })
+    /** Applies a checkout coupon. */
+    applyCheckoutCoupon?: (ApplyCheckoutCouponResultGenqlSelection & { __args: {
+    /** Apply checkout coupon input object */
+    input: ApplyCheckoutCouponInput} })
+    /** Applies a checkout spam protection. */
+    applyCheckoutSpamProtection?: (ApplyCheckoutSpamProtectionResultGenqlSelection & { __args: {
+    /** Apply checkout spam protection input object */
+    input: ApplyCheckoutSpamProtectionInput} })
+    /** Completes the checkout. */
+    completeCheckout?: (CompleteCheckoutResultGenqlSelection & { __args: {
+    /** Complete checkout input object */
+    input: CompleteCheckoutInput} })
+    /** Deletes a checkout consignment. */
+    deleteCheckoutConsignment?: (DeleteCheckoutConsignmentResultGenqlSelection & { __args: {
+    /** Delete checkout consignment input object */
+    input: DeleteCheckoutConsignmentInput} })
+    /** Selects a checkout shipping option. */
+    selectCheckoutShippingOption?: (SelectCheckoutShippingOptionResultGenqlSelection & { __args: {
+    /** Select checkout shipping option input object */
+    input: SelectCheckoutShippingOptionInput} })
+    /** Unapply a checkout coupon. */
+    unapplyCheckoutCoupon?: (UnapplyCheckoutCouponResultGenqlSelection & { __args: {
+    /** Unapply checkout coupon input object */
+    input: UnapplyCheckoutCouponInput} })
+    /** Update a checkout billing address. */
+    updateCheckoutBillingAddress?: (UpdateCheckoutBillingAddressResultGenqlSelection & { __args: {
+    /** Update checkout billing address input object */
+    input: UpdateCheckoutBillingAddressInput} })
+    /** Updates a checkout customer message. */
+    updateCheckoutCustomerMessage?: (UpdateCheckoutCustomerMessageResultGenqlSelection & { __args: {
+    /** Update checkout customer message input object */
+    input: UpdateCheckoutCustomerMessageInput} })
+    /** Updates a checkout shipping consignments. */
+    updateCheckoutShippingConsignment?: (UpdateCheckoutShippingConsignmentResultGenqlSelection & { __args: {
+    /** Update checkout shipping consignment input object */
+    input: UpdateCheckoutShippingConsignmentInput} })
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** The checkout promotion */
+export interface CheckoutPromotionGenqlSelection{
+    /** The checkout promotion banners. */
+    banners?: CheckoutPromotionBannerGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** The checkout promotion banner */
+export interface CheckoutPromotionBannerGenqlSelection{
+    /** The checkout promotion banner ID. */
+    entityId?: boolean | number
+    /** The list of the locations where the banner will display. */
+    locations?: boolean | number
+    /** Text of the banner. */
+    text?: boolean | number
+    /** Type of the banner. */
+    type?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Selected shipping option. */
+export interface CheckoutSelectedShippingOptionGenqlSelection{
+    /** Shipping option cost. */
+    cost?: MoneyGenqlSelection
+    /** Shipping option description. */
+    description?: boolean | number
+    /** Shipping option ID. */
+    entityId?: boolean | number
+    /** Shipping option image URL. */
+    imageUrl?: boolean | number
+    /** An estimate of the arrival time. */
+    transitTime?: boolean | number
+    /** Shipping option type. Flat rate, UPS, etc. */
+    type?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
 /** Checkout settings. */
 export interface CheckoutSettingsGenqlSelection{
     /** Indicates whether ReCaptcha is enabled on checkout. */
@@ -4334,10 +5321,69 @@ export interface CheckoutSettingsGenqlSelection{
 }
 
 
+/** Checkout shipping consignment. */
+export interface CheckoutShippingConsignmentGenqlSelection{
+    /** Shipping consignment address. */
+    address?: CheckoutConsignmentAddressGenqlSelection
+    /** List of available shipping options. */
+    availableShippingOptions?: CheckoutAvailableShippingOptionGenqlSelection
+    /** List of coupons applied to this shipping consignment. */
+    coupons?: CheckoutCouponGenqlSelection
+    /** Shipping consignment ID. */
+    entityId?: boolean | number
+    /** The handling cost of shipping for the consignment. */
+    handlingCost?: MoneyGenqlSelection
+    /** List of line item IDs for the consignment. */
+    lineItemIds?: boolean | number
+    /** Selected shipping option. */
+    selectedShippingOption?: CheckoutSelectedShippingOptionGenqlSelection
+    /** The shipping cost for the consignment. */
+    shippingCost?: MoneyGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Checkout shipping consignments input object */
+export interface CheckoutShippingConsignmentInput {
+/** Shipping consignment address. */
+address: CheckoutAddressInput,
+/** List of line items for the consignment. */
+lineItems: CheckoutConsignmentLineItemInput[]}
+
+
+/** The checkout. */
+export interface CheckoutTaxGenqlSelection{
+    /** Tax amount. */
+    amount?: MoneyGenqlSelection
+    /** Name of the tax. */
+    name?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
 /** Additional information about the collection. */
 export interface CollectionInfoGenqlSelection{
     /** Total items in the collection despite pagination. */
     totalItems?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Complete checkout input object */
+export interface CompleteCheckoutInput {
+/** The checkout id */
+checkoutEntityId: Scalars['String']}
+
+
+/** Complete checkout result */
+export interface CompleteCheckoutResultGenqlSelection{
+    /** The Order ID created as a result of the checkout. */
+    orderEntityId?: boolean | number
+    /** The access token to be used to complete a payment. */
+    paymentAccessToken?: boolean | number
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -4681,6 +5727,23 @@ export interface DeleteCartLineItemResultGenqlSelection{
 export interface DeleteCartResultGenqlSelection{
     /** The ID of the Cart that is deleted as a result of mutation. */
     deletedCartEntityId?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Delete checkout consignment input object */
+export interface DeleteCheckoutConsignmentInput {
+/** The checkout id */
+checkoutEntityId: Scalars['String'],
+/** The consignment id */
+consignmentEntityId: Scalars['String']}
+
+
+/** Delete checkout consignment result */
+export interface DeleteCheckoutConsignmentResultGenqlSelection{
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: CheckoutGenqlSelection
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -5230,6 +6293,8 @@ export interface MultipleChoiceOptionValueGenqlSelection{
 export interface MutationGenqlSelection{
     /** The Cart mutations. */
     cart?: CartMutationsGenqlSelection
+    /** The Checkout mutations. */
+    checkout?: CheckoutMutationsGenqlSelection
     /** Customer login */
     login?: (LoginResultGenqlSelection & { __args: {
     /** An email of the customer. */
@@ -5255,6 +6320,7 @@ export interface NodeGenqlSelection{
     on_Brand?: BrandGenqlSelection
     on_Cart?: CartGenqlSelection
     on_Category?: CategoryGenqlSelection
+    on_Checkout?: CheckoutGenqlSelection
     on_ContactPage?: ContactPageGenqlSelection
     on_NormalPage?: NormalPageGenqlSelection
     on_Product?: ProductGenqlSelection
@@ -5403,6 +6469,15 @@ export interface OptionValueId {
 optionEntityId: Scalars['Int'],
 /** A variant value id filter. */
 valueEntityId: Scalars['Int']}
+
+
+/** The order. */
+export interface OrderGenqlSelection{
+    /** Order ID. */
+    entityId?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
 
 
 /** Other Filter */
@@ -5720,6 +6795,8 @@ export interface ProductAttributeSearchFilterGenqlSelection{
     attributes?: (ProductAttributeSearchFilterItemConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), last?: (Scalars['Int'] | null)} })
     /** Indicates whether to display product count next to the filter. */
     displayProductCount?: boolean | number
+    /** Filter name for building filter URLs */
+    filterName?: boolean | number
     /** Indicates whether filter is collapsed by default. */
     isCollapsedByDefault?: boolean | number
     /** Display name for the filter. */
@@ -6297,6 +7374,31 @@ export interface SearchQueriesGenqlSelection{
 }
 
 
+/** Select checkout shipping option input data object */
+export interface SelectCheckoutShippingOptionDataInput {
+/** The shipping option id */
+shippingOptionEntityId: Scalars['String']}
+
+
+/** Select checkout shipping option input object */
+export interface SelectCheckoutShippingOptionInput {
+/** The checkout id */
+checkoutEntityId: Scalars['String'],
+/** The consignment id */
+consignmentEntityId: Scalars['String'],
+/** Select checkout shipping option data object */
+data: SelectCheckoutShippingOptionDataInput}
+
+
+/** Select checkout shipping option result */
+export interface SelectCheckoutShippingOptionResultGenqlSelection{
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: CheckoutGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
 /** Seo Details */
 export interface SeoDetailsGenqlSelection{
     /** Meta description. */
@@ -6407,6 +7509,10 @@ export interface SiteGenqlSelection{
     categoryTree?: (CategoryTreeItemGenqlSelection & { __args?: {
     /** A root category ID to be used to load the tree starting from a particular branch. If not supplied, starts at the top of the tree. */
     rootEntityId?: (Scalars['Int'] | null)} })
+    /** The checkout of the current customer. */
+    checkout?: (CheckoutGenqlSelection & { __args?: {
+    /** Checkout ID. */
+    entityId?: (Scalars['String'] | null)} })
     /** The page content. */
     content?: ContentGenqlSelection
     /** Store Currencies. */
@@ -6619,6 +7725,29 @@ export interface TextFieldOptionGenqlSelection{
 }
 
 
+/** Unapply checkout coupon data object */
+export interface UnapplyCheckoutCouponDataInput {
+/** The checkout coupon code */
+couponCode: Scalars['String']}
+
+
+/** Unapply checkout coupon input object */
+export interface UnapplyCheckoutCouponInput {
+/** The checkout id */
+checkoutEntityId: Scalars['String'],
+/** Unapply checkout coupon data object */
+data: UnapplyCheckoutCouponDataInput}
+
+
+/** Unapply checkout coupon result */
+export interface UnapplyCheckoutCouponResultGenqlSelection{
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: CheckoutGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
 /** Unassign cart from the customer input object. */
 export interface UnassignCartFromCustomerInput {
 /** The cart id. */
@@ -6679,6 +7808,79 @@ lineItemEntityId: Scalars['String']}
 export interface UpdateCartLineItemResultGenqlSelection{
     /** The Cart that is updated as a result of mutation. */
     cart?: CartGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Update checkout billing address data object */
+export interface UpdateCheckoutBillingAddressDataInput {
+/** The checkout billing address */
+address: CheckoutAddressInput}
+
+
+/** Update checkout billing address input object */
+export interface UpdateCheckoutBillingAddressInput {
+/** The address id */
+addressEntityId: Scalars['String'],
+/** The checkout id */
+checkoutEntityId: Scalars['String'],
+/** Update checkout billing address data object */
+data: UpdateCheckoutBillingAddressDataInput}
+
+
+/** Update checkout billing address result */
+export interface UpdateCheckoutBillingAddressResultGenqlSelection{
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: CheckoutGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Update checkout customer message data object */
+export interface UpdateCheckoutCustomerMessageDataInput {
+/** The checkout customer message */
+message: Scalars['String']}
+
+
+/** Update checkout customer message input object */
+export interface UpdateCheckoutCustomerMessageInput {
+/** The checkout id */
+checkoutEntityId: Scalars['String'],
+/** Update checkout customer message data object */
+data: UpdateCheckoutCustomerMessageDataInput}
+
+
+/** Update checkout customer message result */
+export interface UpdateCheckoutCustomerMessageResultGenqlSelection{
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: CheckoutGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** Update checkout shipping consignment data object */
+export interface UpdateCheckoutShippingConsignmentDataInput {
+/** Checkout shipping consignment input object */
+consignment: CheckoutShippingConsignmentInput}
+
+
+/** Update checkout shipping consignment input object */
+export interface UpdateCheckoutShippingConsignmentInput {
+/** The checkout id */
+checkoutEntityId: Scalars['String'],
+/** The consignment id */
+consignmentEntityId: Scalars['String'],
+/** Update checkout shipping consignment data object */
+data: UpdateCheckoutShippingConsignmentDataInput}
+
+
+/** Update checkout shipping consignment result */
+export interface UpdateCheckoutShippingConsignmentResultGenqlSelection{
+    /** The Checkout that is updated as a result of mutation. */
+    checkout?: CheckoutGenqlSelection
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -6975,6 +8177,22 @@ name?: (Scalars['String'] | null)}
     
 
 
+    const AddCheckoutBillingAddressResult_possibleTypes: string[] = ['AddCheckoutBillingAddressResult']
+    export const isAddCheckoutBillingAddressResult = (obj?: { __typename?: any } | null): obj is AddCheckoutBillingAddressResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isAddCheckoutBillingAddressResult"')
+      return AddCheckoutBillingAddressResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const AddCheckoutShippingConsignmentsResult_possibleTypes: string[] = ['AddCheckoutShippingConsignmentsResult']
+    export const isAddCheckoutShippingConsignmentsResult = (obj?: { __typename?: any } | null): obj is AddCheckoutShippingConsignmentsResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isAddCheckoutShippingConsignmentsResult"')
+      return AddCheckoutShippingConsignmentsResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
     const AddWishlistItemsResult_possibleTypes: string[] = ['AddWishlistItemsResult']
     export const isAddWishlistItemsResult = (obj?: { __typename?: any } | null): obj is AddWishlistItemsResult => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isAddWishlistItemsResult"')
@@ -6995,6 +8213,22 @@ name?: (Scalars['String'] | null)}
     export const isAggregatedInventory = (obj?: { __typename?: any } | null): obj is AggregatedInventory => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isAggregatedInventory"')
       return AggregatedInventory_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const ApplyCheckoutCouponResult_possibleTypes: string[] = ['ApplyCheckoutCouponResult']
+    export const isApplyCheckoutCouponResult = (obj?: { __typename?: any } | null): obj is ApplyCheckoutCouponResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isApplyCheckoutCouponResult"')
+      return ApplyCheckoutCouponResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const ApplyCheckoutSpamProtectionResult_possibleTypes: string[] = ['ApplyCheckoutSpamProtectionResult']
+    export const isApplyCheckoutSpamProtectionResult = (obj?: { __typename?: any } | null): obj is ApplyCheckoutSpamProtectionResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isApplyCheckoutSpamProtectionResult"')
+      return ApplyCheckoutSpamProtectionResult_possibleTypes.includes(obj.__typename)
     }
     
 
@@ -7487,6 +8721,142 @@ name?: (Scalars['String'] | null)}
     
 
 
+    const Checkout_possibleTypes: string[] = ['Checkout']
+    export const isCheckout = (obj?: { __typename?: any } | null): obj is Checkout => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckout"')
+      return Checkout_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CheckoutAddress_possibleTypes: string[] = ['CheckoutBillingAddress','CheckoutConsignmentAddress']
+    export const isCheckoutAddress = (obj?: { __typename?: any } | null): obj is CheckoutAddress => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutAddress"')
+      return CheckoutAddress_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CheckoutAddressCheckboxesCustomField_possibleTypes: string[] = ['CheckoutAddressCheckboxesCustomField']
+    export const isCheckoutAddressCheckboxesCustomField = (obj?: { __typename?: any } | null): obj is CheckoutAddressCheckboxesCustomField => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutAddressCheckboxesCustomField"')
+      return CheckoutAddressCheckboxesCustomField_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CheckoutAddressCustomField_possibleTypes: string[] = ['CheckoutAddressCheckboxesCustomField','CheckoutAddressDateCustomField','CheckoutAddressMultipleChoiceCustomField','CheckoutAddressNumberCustomField','CheckoutAddressPasswordCustomField','CheckoutAddressTextFieldCustomField']
+    export const isCheckoutAddressCustomField = (obj?: { __typename?: any } | null): obj is CheckoutAddressCustomField => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutAddressCustomField"')
+      return CheckoutAddressCustomField_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CheckoutAddressDateCustomField_possibleTypes: string[] = ['CheckoutAddressDateCustomField']
+    export const isCheckoutAddressDateCustomField = (obj?: { __typename?: any } | null): obj is CheckoutAddressDateCustomField => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutAddressDateCustomField"')
+      return CheckoutAddressDateCustomField_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CheckoutAddressMultipleChoiceCustomField_possibleTypes: string[] = ['CheckoutAddressMultipleChoiceCustomField']
+    export const isCheckoutAddressMultipleChoiceCustomField = (obj?: { __typename?: any } | null): obj is CheckoutAddressMultipleChoiceCustomField => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutAddressMultipleChoiceCustomField"')
+      return CheckoutAddressMultipleChoiceCustomField_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CheckoutAddressNumberCustomField_possibleTypes: string[] = ['CheckoutAddressNumberCustomField']
+    export const isCheckoutAddressNumberCustomField = (obj?: { __typename?: any } | null): obj is CheckoutAddressNumberCustomField => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutAddressNumberCustomField"')
+      return CheckoutAddressNumberCustomField_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CheckoutAddressPasswordCustomField_possibleTypes: string[] = ['CheckoutAddressPasswordCustomField']
+    export const isCheckoutAddressPasswordCustomField = (obj?: { __typename?: any } | null): obj is CheckoutAddressPasswordCustomField => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutAddressPasswordCustomField"')
+      return CheckoutAddressPasswordCustomField_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CheckoutAddressTextFieldCustomField_possibleTypes: string[] = ['CheckoutAddressTextFieldCustomField']
+    export const isCheckoutAddressTextFieldCustomField = (obj?: { __typename?: any } | null): obj is CheckoutAddressTextFieldCustomField => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutAddressTextFieldCustomField"')
+      return CheckoutAddressTextFieldCustomField_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CheckoutAvailableShippingOption_possibleTypes: string[] = ['CheckoutAvailableShippingOption']
+    export const isCheckoutAvailableShippingOption = (obj?: { __typename?: any } | null): obj is CheckoutAvailableShippingOption => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutAvailableShippingOption"')
+      return CheckoutAvailableShippingOption_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CheckoutBillingAddress_possibleTypes: string[] = ['CheckoutBillingAddress']
+    export const isCheckoutBillingAddress = (obj?: { __typename?: any } | null): obj is CheckoutBillingAddress => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutBillingAddress"')
+      return CheckoutBillingAddress_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CheckoutConsignmentAddress_possibleTypes: string[] = ['CheckoutConsignmentAddress']
+    export const isCheckoutConsignmentAddress = (obj?: { __typename?: any } | null): obj is CheckoutConsignmentAddress => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutConsignmentAddress"')
+      return CheckoutConsignmentAddress_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CheckoutCoupon_possibleTypes: string[] = ['CheckoutCoupon']
+    export const isCheckoutCoupon = (obj?: { __typename?: any } | null): obj is CheckoutCoupon => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutCoupon"')
+      return CheckoutCoupon_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CheckoutMutations_possibleTypes: string[] = ['CheckoutMutations']
+    export const isCheckoutMutations = (obj?: { __typename?: any } | null): obj is CheckoutMutations => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutMutations"')
+      return CheckoutMutations_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CheckoutPromotion_possibleTypes: string[] = ['CheckoutPromotion']
+    export const isCheckoutPromotion = (obj?: { __typename?: any } | null): obj is CheckoutPromotion => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutPromotion"')
+      return CheckoutPromotion_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CheckoutPromotionBanner_possibleTypes: string[] = ['CheckoutPromotionBanner']
+    export const isCheckoutPromotionBanner = (obj?: { __typename?: any } | null): obj is CheckoutPromotionBanner => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutPromotionBanner"')
+      return CheckoutPromotionBanner_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CheckoutSelectedShippingOption_possibleTypes: string[] = ['CheckoutSelectedShippingOption']
+    export const isCheckoutSelectedShippingOption = (obj?: { __typename?: any } | null): obj is CheckoutSelectedShippingOption => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutSelectedShippingOption"')
+      return CheckoutSelectedShippingOption_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
     const CheckoutSettings_possibleTypes: string[] = ['CheckoutSettings']
     export const isCheckoutSettings = (obj?: { __typename?: any } | null): obj is CheckoutSettings => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutSettings"')
@@ -7495,10 +8865,34 @@ name?: (Scalars['String'] | null)}
     
 
 
+    const CheckoutShippingConsignment_possibleTypes: string[] = ['CheckoutShippingConsignment']
+    export const isCheckoutShippingConsignment = (obj?: { __typename?: any } | null): obj is CheckoutShippingConsignment => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutShippingConsignment"')
+      return CheckoutShippingConsignment_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CheckoutTax_possibleTypes: string[] = ['CheckoutTax']
+    export const isCheckoutTax = (obj?: { __typename?: any } | null): obj is CheckoutTax => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCheckoutTax"')
+      return CheckoutTax_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
     const CollectionInfo_possibleTypes: string[] = ['CollectionInfo']
     export const isCollectionInfo = (obj?: { __typename?: any } | null): obj is CollectionInfo => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isCollectionInfo"')
       return CollectionInfo_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CompleteCheckoutResult_possibleTypes: string[] = ['CompleteCheckoutResult']
+    export const isCompleteCheckoutResult = (obj?: { __typename?: any } | null): obj is CompleteCheckoutResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCompleteCheckoutResult"')
+      return CompleteCheckoutResult_possibleTypes.includes(obj.__typename)
     }
     
 
@@ -7651,6 +9045,14 @@ name?: (Scalars['String'] | null)}
     export const isDeleteCartResult = (obj?: { __typename?: any } | null): obj is DeleteCartResult => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isDeleteCartResult"')
       return DeleteCartResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const DeleteCheckoutConsignmentResult_possibleTypes: string[] = ['DeleteCheckoutConsignmentResult']
+    export const isDeleteCheckoutConsignmentResult = (obj?: { __typename?: any } | null): obj is DeleteCheckoutConsignmentResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isDeleteCheckoutConsignmentResult"')
+      return DeleteCheckoutConsignmentResult_possibleTypes.includes(obj.__typename)
     }
     
 
@@ -7927,7 +9329,7 @@ name?: (Scalars['String'] | null)}
     
 
 
-    const Node_possibleTypes: string[] = ['Banner','Blog','BlogPost','Brand','Cart','Category','ContactPage','NormalPage','Product','RawHtmlPage','Variant']
+    const Node_possibleTypes: string[] = ['Banner','Blog','BlogPost','Brand','Cart','Category','Checkout','ContactPage','NormalPage','Product','RawHtmlPage','Variant']
     export const isNode = (obj?: { __typename?: any } | null): obj is Node => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isNode"')
       return Node_possibleTypes.includes(obj.__typename)
@@ -7995,6 +9397,14 @@ name?: (Scalars['String'] | null)}
     export const isOptionValueEdge = (obj?: { __typename?: any } | null): obj is OptionValueEdge => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isOptionValueEdge"')
       return OptionValueEdge_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const Order_possibleTypes: string[] = ['Order']
+    export const isOrder = (obj?: { __typename?: any } | null): obj is Order => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isOrder"')
+      return Order_possibleTypes.includes(obj.__typename)
     }
     
 
@@ -8431,6 +9841,14 @@ name?: (Scalars['String'] | null)}
     
 
 
+    const SelectCheckoutShippingOptionResult_possibleTypes: string[] = ['SelectCheckoutShippingOptionResult']
+    export const isSelectCheckoutShippingOptionResult = (obj?: { __typename?: any } | null): obj is SelectCheckoutShippingOptionResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isSelectCheckoutShippingOptionResult"')
+      return SelectCheckoutShippingOptionResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
     const SeoDetails_possibleTypes: string[] = ['SeoDetails']
     export const isSeoDetails = (obj?: { __typename?: any } | null): obj is SeoDetails => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isSeoDetails"')
@@ -8575,6 +9993,14 @@ name?: (Scalars['String'] | null)}
     
 
 
+    const UnapplyCheckoutCouponResult_possibleTypes: string[] = ['UnapplyCheckoutCouponResult']
+    export const isUnapplyCheckoutCouponResult = (obj?: { __typename?: any } | null): obj is UnapplyCheckoutCouponResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isUnapplyCheckoutCouponResult"')
+      return UnapplyCheckoutCouponResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
     const UnassignCartFromCustomerResult_possibleTypes: string[] = ['UnassignCartFromCustomerResult']
     export const isUnassignCartFromCustomerResult = (obj?: { __typename?: any } | null): obj is UnassignCartFromCustomerResult => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isUnassignCartFromCustomerResult"')
@@ -8595,6 +10021,30 @@ name?: (Scalars['String'] | null)}
     export const isUpdateCartLineItemResult = (obj?: { __typename?: any } | null): obj is UpdateCartLineItemResult => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isUpdateCartLineItemResult"')
       return UpdateCartLineItemResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const UpdateCheckoutBillingAddressResult_possibleTypes: string[] = ['UpdateCheckoutBillingAddressResult']
+    export const isUpdateCheckoutBillingAddressResult = (obj?: { __typename?: any } | null): obj is UpdateCheckoutBillingAddressResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isUpdateCheckoutBillingAddressResult"')
+      return UpdateCheckoutBillingAddressResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const UpdateCheckoutCustomerMessageResult_possibleTypes: string[] = ['UpdateCheckoutCustomerMessageResult']
+    export const isUpdateCheckoutCustomerMessageResult = (obj?: { __typename?: any } | null): obj is UpdateCheckoutCustomerMessageResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isUpdateCheckoutCustomerMessageResult"')
+      return UpdateCheckoutCustomerMessageResult_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const UpdateCheckoutShippingConsignmentResult_possibleTypes: string[] = ['UpdateCheckoutShippingConsignmentResult']
+    export const isUpdateCheckoutShippingConsignmentResult = (obj?: { __typename?: any } | null): obj is UpdateCheckoutShippingConsignmentResult => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isUpdateCheckoutShippingConsignmentResult"')
+      return UpdateCheckoutShippingConsignmentResult_possibleTypes.includes(obj.__typename)
     }
     
 
@@ -8734,6 +10184,29 @@ export const enumCategoryProductSort = {
    LOWEST_PRICE: 'LOWEST_PRICE' as const,
    NEWEST: 'NEWEST' as const,
    Z_TO_A: 'Z_TO_A' as const
+}
+
+export const enumCheckoutPromotionBannerLocation = {
+   CART_PAGE: 'CART_PAGE' as const,
+   CHECKOUT_PAGE: 'CHECKOUT_PAGE' as const,
+   HOME_PAGE: 'HOME_PAGE' as const,
+   PRODUCT_PAGE: 'PRODUCT_PAGE' as const
+}
+
+export const enumCheckoutPromotionBannerType = {
+   APPLIED: 'APPLIED' as const,
+   ELIGIBLE: 'ELIGIBLE' as const,
+   PROMOTION: 'PROMOTION' as const,
+   UPSELL: 'UPSELL' as const
+}
+
+export const enumCouponType = {
+   FREE_SHIPPING: 'FREE_SHIPPING' as const,
+   PERCENTAGE_DISCOUNT: 'PERCENTAGE_DISCOUNT' as const,
+   PER_ITEM_DISCOUNT: 'PER_ITEM_DISCOUNT' as const,
+   PER_TOTAL_DISCOUNT: 'PER_TOTAL_DISCOUNT' as const,
+   PROMOTION: 'PROMOTION' as const,
+   SHIPPING_DISCOUNT: 'SHIPPING_DISCOUNT' as const
 }
 
 export const enumCurrencySymbolPosition = {
