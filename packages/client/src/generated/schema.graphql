@@ -22,6 +22,48 @@ type AddCartLineItemsResult {
   cart: Cart
 }
 
+"""Add checkout billing address data object"""
+input AddCheckoutBillingAddressDataInput {
+  """The checkout billing address"""
+  address: CheckoutAddressInput!
+}
+
+"""Add checkout billing address input object"""
+input AddCheckoutBillingAddressInput {
+  """The checkout id"""
+  checkoutEntityId: String!
+
+  """Add checkout billing address data object"""
+  data: AddCheckoutBillingAddressDataInput!
+}
+
+"""Add checkout billing address result"""
+type AddCheckoutBillingAddressResult {
+  """The Checkout that is updated as a result of mutation."""
+  checkout: Checkout
+}
+
+"""Add checkout shipping consignments data object"""
+input AddCheckoutShippingConsignmentsDataInput {
+  """The list of shipping consignments"""
+  consignments: [CheckoutShippingConsignmentInput!]!
+}
+
+"""Add checkout shipping consignments input object"""
+input AddCheckoutShippingConsignmentsInput {
+  """The checkout id"""
+  checkoutEntityId: String!
+
+  """Add checkout shipping consignments data object"""
+  data: AddCheckoutShippingConsignmentsDataInput!
+}
+
+"""Apply checkout shipping consignments result"""
+type AddCheckoutShippingConsignmentsResult {
+  """The Checkout that is updated as a result of mutation."""
+  checkout: Checkout
+}
+
 """Add wishlist items input object"""
 input AddWishlistItemsInput {
   """The wishlist id"""
@@ -61,6 +103,48 @@ type AggregatedInventory {
   Indicates a threshold low-stock level. This can be 'null' if the inventory warning level is not set or if the store's Inventory Settings disable displaying stock levels on the storefront.
   """
   warningLevel: Int!
+}
+
+"""Apply checkout coupon data object"""
+input ApplyCheckoutCouponDataInput {
+  """The checkout coupon code"""
+  couponCode: String!
+}
+
+"""Apply checkout coupon input object"""
+input ApplyCheckoutCouponInput {
+  """The checkout id"""
+  checkoutEntityId: String!
+
+  """Apply checkout coupon data object"""
+  data: ApplyCheckoutCouponDataInput!
+}
+
+"""Apply checkout coupon result"""
+type ApplyCheckoutCouponResult {
+  """The Checkout that is updated as a result of mutation."""
+  checkout: Checkout
+}
+
+"""Apply checkout spam protection data object"""
+input ApplyCheckoutSpamProtectionDataInput {
+  """The checkout spam protection token"""
+  token: String!
+}
+
+"""Apply checkout spam protection input object"""
+input ApplyCheckoutSpamProtectionInput {
+  """The checkout id"""
+  checkoutEntityId: String!
+
+  """Apply checkout spam protection data object"""
+  data: ApplyCheckoutSpamProtectionDataInput!
+}
+
+"""Apply checkout spam protection result"""
+type ApplyCheckoutSpamProtectionResult {
+  """The Checkout that is updated as a result of mutation."""
+  checkout: Checkout
 }
 
 """Assign cart to the customer input object."""
@@ -447,6 +531,9 @@ type Breadcrumb {
 
   """Name of the category."""
   name: String!
+
+  """Path to the category."""
+  path: String!
 }
 
 """A connection to a list of items."""
@@ -1422,16 +1509,626 @@ type CheckboxOption implements CatalogProductOption {
   label: String!
 }
 
+"""The checkout."""
+type Checkout implements Node {
+  """Billing address information."""
+  billingAddress: CheckoutBillingAddress
+
+  """Cart associated with the checkout."""
+  cart: Cart
+
+  """Coupons applied at checkout level."""
+  coupons: [CheckoutCoupon!]!
+
+  """Time when the checkout was created."""
+  createdAt: DateTimeExtended!
+
+  """
+  Shopper's message provided as details for the order to be created from the checkout.
+  """
+  customerMessage: String
+
+  """Checkout ID."""
+  entityId: String!
+
+  """Gift wrapping cost for all items, including or excluding tax."""
+  giftWrappingCostTotal: Money
+
+  """
+  The total payable amount, before applying any store credit or gift certificate.
+  """
+  grandTotal: Money
+
+  """Handling cost for all consignments including or excluding tax."""
+  handlingCostTotal: Money
+
+  """The ID of an object"""
+  id: ID!
+
+  """Order associated with the checkout."""
+  order: Order
+
+  """GrandTotal subtract the store-credit amount."""
+  outstandingBalance: Money
+
+  """List of promotions"""
+  promotions: [CheckoutPromotion!]!
+
+  """List of shipping consignments."""
+  shippingConsignments: [CheckoutShippingConsignment!]
+
+  """Total shipping cost before any discounts are applied."""
+  shippingCostTotal: Money
+
+  """
+  Subtotal of the checkout before applying item-level discounts. Tax inclusive based on the store settings.
+  """
+  subtotal: Money
+
+  """Total amount of taxes applied."""
+  taxTotal: Money
+
+  """List of taxes applied."""
+  taxes: [CheckoutTax!]
+
+  """Time when the checkout was last updated."""
+  updatedAt: DateTimeExtended!
+}
+
+"""Checkout address."""
+interface CheckoutAddress {
+  """Address line 1."""
+  address1: String
+
+  """Address line 2."""
+  address2: String
+
+  """Name of the city."""
+  city: String
+
+  """Company name."""
+  company: String
+
+  """Country code."""
+  countryCode: String!
+
+  """List of custom fields."""
+  customFields: [CheckoutAddressCustomField!]!
+
+  """Email address."""
+  email: String
+
+  """The first name."""
+  firstName: String
+
+  """The last name."""
+  lastName: String
+
+  """Phone number."""
+  phone: String
+
+  """Postal code."""
+  postalCode: String
+
+  """State or province."""
+  stateOrProvince: String
+
+  """Code of the state or province."""
+  stateOrProvinceCode: String
+}
+
+"""Checkboxes custom field."""
+type CheckoutAddressCheckboxesCustomField implements CheckoutAddressCustomField {
+  """Custom field ID."""
+  entityId: Int!
+
+  """List of custom field value IDs."""
+  valueEntityIds: [Int!]!
+}
+
+"""Checkout address checkboxes custom field input object"""
+input CheckoutAddressCheckboxesCustomFieldInput {
+  """The custom field ID."""
+  fieldEntityId: Int!
+
+  """List of custom field value IDs."""
+  fieldValueEntityIds: [Int!]!
+}
+
+"""Custom field of the checkout address."""
+interface CheckoutAddressCustomField {
+  """Custom field ID."""
+  entityId: Int!
+}
+
+"""Checkout address custom field input object"""
+input CheckoutAddressCustomFieldInput {
+  """List of checkboxes custom fields."""
+  checkboxes: [CheckoutAddressCheckboxesCustomFieldInput!]
+
+  """List of date custom fields."""
+  dates: [CheckoutAddressDateCustomFieldInput!]
+
+  """List of multiple choice custom fields."""
+  multipleChoices: [CheckoutAddressMultipleChoiceCustomFieldInput!]
+
+  """List of number custom fields."""
+  numbers: [CheckoutAddressNumberCustomFieldInput!]
+
+  """List of password custom fields."""
+  passwords: [CheckoutAddressPasswordCustomFieldInput!]
+
+  """List of text custom fields."""
+  texts: [CheckoutAddressTextCustomFieldInput!]
+}
+
+"""Date custom field."""
+type CheckoutAddressDateCustomField implements CheckoutAddressCustomField {
+  """Date value."""
+  date: DateTimeExtended!
+
+  """Custom field ID."""
+  entityId: Int!
+}
+
+"""Checkout address date custom field input object"""
+input CheckoutAddressDateCustomFieldInput {
+  """Date value."""
+  date: DateTime!
+
+  """The custom field ID."""
+  fieldEntityId: Int!
+}
+
+"""Checkout address input object"""
+input CheckoutAddressInput {
+  """Address line 1"""
+  address1: String
+
+  """Address line 2"""
+  address2: String
+
+  """Name of the city"""
+  city: String
+
+  """Company name"""
+  company: String
+
+  """Country code"""
+  countryCode: String!
+
+  """List of custom fields"""
+  customFields: CheckoutAddressCustomFieldInput
+
+  """Email address"""
+  email: String
+
+  """The first name"""
+  firstName: String
+
+  """The last name"""
+  lastName: String
+
+  """Phone number"""
+  phone: String
+
+  """Postal code"""
+  postalCode: String
+
+  """Should we save this address?"""
+  shouldSaveAddress: Boolean!
+
+  """State or province"""
+  stateOrProvince: String
+
+  """Code of the state or province"""
+  stateOrProvinceCode: String
+}
+
+"""Multiple choice custom field."""
+type CheckoutAddressMultipleChoiceCustomField implements CheckoutAddressCustomField {
+  """Custom field ID."""
+  entityId: Int!
+
+  """Custom field value ID."""
+  valueEntityId: Int!
+}
+
+"""Checkout address multiple choice custom field input object"""
+input CheckoutAddressMultipleChoiceCustomFieldInput {
+  """The custom field ID."""
+  fieldEntityId: Int!
+
+  """The custom field value ID."""
+  fieldValueEntityId: Int!
+}
+
+"""Number custom field."""
+type CheckoutAddressNumberCustomField implements CheckoutAddressCustomField {
+  """Custom field ID."""
+  entityId: Int!
+
+  """Number value."""
+  number: Float!
+}
+
+"""Checkout address number custom field input object"""
+input CheckoutAddressNumberCustomFieldInput {
+  """The custom field ID."""
+  fieldEntityId: Int!
+
+  """Number value."""
+  number: Float!
+}
+
+"""Password custom field."""
+type CheckoutAddressPasswordCustomField implements CheckoutAddressCustomField {
+  """Custom field ID."""
+  entityId: Int!
+
+  """Password value."""
+  password: String!
+}
+
+"""Checkout address password custom field input object"""
+input CheckoutAddressPasswordCustomFieldInput {
+  """The custom field ID."""
+  fieldEntityId: Int!
+
+  """Password value."""
+  password: String!
+}
+
+"""Checkout address text custom field input object"""
+input CheckoutAddressTextCustomFieldInput {
+  """The custom field ID."""
+  fieldEntityId: Int!
+
+  """Text value."""
+  text: String!
+}
+
+"""Text custom field."""
+type CheckoutAddressTextFieldCustomField implements CheckoutAddressCustomField {
+  """Custom field ID."""
+  entityId: Int!
+
+  """Text value."""
+  text: String!
+}
+
+"""Available shipping option."""
+type CheckoutAvailableShippingOption {
+  """Shipping option cost."""
+  cost: Money!
+
+  """Shipping option description."""
+  description: String!
+
+  """Shipping option ID."""
+  entityId: String!
+
+  """Shipping option image URL."""
+  imageUrl: String
+
+  """Is this shipping method the recommended shipping option or not."""
+  isRecommended: Boolean!
+
+  """An estimate of the arrival time."""
+  transitTime: String
+
+  """Shipping option type. Flat rate, UPS, etc."""
+  type: String!
+}
+
+"""Checkboxes billing address."""
+type CheckoutBillingAddress implements CheckoutAddress {
+  """Address line 1."""
+  address1: String
+
+  """Address line 2."""
+  address2: String
+
+  """Name of the city."""
+  city: String
+
+  """Company name."""
+  company: String
+
+  """Country code."""
+  countryCode: String!
+
+  """List of custom fields."""
+  customFields: [CheckoutAddressCustomField!]!
+
+  """Email address."""
+  email: String
+
+  """Billing address ID."""
+  entityId: String!
+
+  """The first name."""
+  firstName: String
+
+  """The last name."""
+  lastName: String
+
+  """Phone number."""
+  phone: String
+
+  """Postal code."""
+  postalCode: String
+
+  """State or province."""
+  stateOrProvince: String
+
+  """Code of the state or province."""
+  stateOrProvinceCode: String
+}
+
+"""Checkboxes consignment address."""
+type CheckoutConsignmentAddress implements CheckoutAddress {
+  """Address line 1."""
+  address1: String
+
+  """Address line 2."""
+  address2: String
+
+  """Name of the city."""
+  city: String
+
+  """Company name."""
+  company: String
+
+  """Country code."""
+  countryCode: String!
+
+  """List of custom fields."""
+  customFields: [CheckoutAddressCustomField!]!
+
+  """Email address."""
+  email: String
+
+  """The first name."""
+  firstName: String
+
+  """The last name."""
+  lastName: String
+
+  """Phone number."""
+  phone: String
+
+  """Postal code."""
+  postalCode: String
+
+  """State or province."""
+  stateOrProvince: String
+
+  """Code of the state or province."""
+  stateOrProvinceCode: String
+}
+
+"""Checkout consignment line item input object"""
+input CheckoutConsignmentLineItemInput {
+  """The line item id"""
+  lineItemEntityId: String!
+
+  """The total number of consignment line items"""
+  quantity: Int!
+}
+
+"""The checkout coupon."""
+type CheckoutCoupon {
+  """The coupon code."""
+  code: String!
+
+  """The coupon type."""
+  couponType: CouponType
+
+  """The discounted amount applied within a given context."""
+  discountedAmount: Money!
+
+  """The coupon ID."""
+  entityId: Int!
+}
+
+"""Checkout mutations"""
+type CheckoutMutations {
+  """Creates a checkout billing address."""
+  addCheckoutBillingAddress(
+    """Add checkout billing address input object"""
+    input: AddCheckoutBillingAddressInput!
+  ): AddCheckoutBillingAddressResult
+
+  """Creates a checkout shipping consignments."""
+  addCheckoutShippingConsignments(
+    """Apply checkout shipping consignments input object"""
+    input: AddCheckoutShippingConsignmentsInput!
+  ): AddCheckoutShippingConsignmentsResult
+
+  """Applies a checkout coupon."""
+  applyCheckoutCoupon(
+    """Apply checkout coupon input object"""
+    input: ApplyCheckoutCouponInput!
+  ): ApplyCheckoutCouponResult
+
+  """Applies a checkout spam protection."""
+  applyCheckoutSpamProtection(
+    """Apply checkout spam protection input object"""
+    input: ApplyCheckoutSpamProtectionInput!
+  ): ApplyCheckoutSpamProtectionResult
+
+  """Completes the checkout."""
+  completeCheckout(
+    """Complete checkout input object"""
+    input: CompleteCheckoutInput!
+  ): CompleteCheckoutResult
+
+  """Deletes a checkout consignment."""
+  deleteCheckoutConsignment(
+    """Delete checkout consignment input object"""
+    input: DeleteCheckoutConsignmentInput!
+  ): DeleteCheckoutConsignmentResult
+
+  """Selects a checkout shipping option."""
+  selectCheckoutShippingOption(
+    """Select checkout shipping option input object"""
+    input: SelectCheckoutShippingOptionInput!
+  ): SelectCheckoutShippingOptionResult
+
+  """Unapply a checkout coupon."""
+  unapplyCheckoutCoupon(
+    """Unapply checkout coupon input object"""
+    input: UnapplyCheckoutCouponInput!
+  ): UnapplyCheckoutCouponResult
+
+  """Update a checkout billing address."""
+  updateCheckoutBillingAddress(
+    """Update checkout billing address input object"""
+    input: UpdateCheckoutBillingAddressInput!
+  ): UpdateCheckoutBillingAddressResult
+
+  """Updates a checkout customer message."""
+  updateCheckoutCustomerMessage(
+    """Update checkout customer message input object"""
+    input: UpdateCheckoutCustomerMessageInput!
+  ): UpdateCheckoutCustomerMessageResult
+
+  """Updates a checkout shipping consignments."""
+  updateCheckoutShippingConsignment(
+    """Update checkout shipping consignment input object"""
+    input: UpdateCheckoutShippingConsignmentInput!
+  ): UpdateCheckoutShippingConsignmentResult
+}
+
+"""The checkout promotion"""
+type CheckoutPromotion {
+  """The checkout promotion banners."""
+  banners: [CheckoutPromotionBanner!]!
+}
+
+"""The checkout promotion banner"""
+type CheckoutPromotionBanner {
+  """The checkout promotion banner ID."""
+  entityId: Int!
+
+  """The list of the locations where the banner will display."""
+  locations: [CheckoutPromotionBannerLocation!]!
+
+  """Text of the banner."""
+  text: String!
+
+  """Type of the banner."""
+  type: CheckoutPromotionBannerType!
+}
+
+"""Checkout promotion banner location."""
+enum CheckoutPromotionBannerLocation {
+  CART_PAGE
+  CHECKOUT_PAGE
+  HOME_PAGE
+  PRODUCT_PAGE
+}
+
+"""Checkout promotion banner type."""
+enum CheckoutPromotionBannerType {
+  APPLIED
+  ELIGIBLE
+  PROMOTION
+  UPSELL
+}
+
+"""Selected shipping option."""
+type CheckoutSelectedShippingOption {
+  """Shipping option cost."""
+  cost: Money!
+
+  """Shipping option description."""
+  description: String!
+
+  """Shipping option ID."""
+  entityId: String!
+
+  """Shipping option image URL."""
+  imageUrl: String
+
+  """An estimate of the arrival time."""
+  transitTime: String
+
+  """Shipping option type. Flat rate, UPS, etc."""
+  type: String!
+}
+
 """Checkout settings."""
 type CheckoutSettings {
   """Indicates whether ReCaptcha is enabled on checkout."""
   reCaptchaEnabled: Boolean!
 }
 
+"""Checkout shipping consignment."""
+type CheckoutShippingConsignment {
+  """Shipping consignment address."""
+  address: CheckoutConsignmentAddress!
+
+  """List of available shipping options."""
+  availableShippingOptions: [CheckoutAvailableShippingOption!]
+
+  """List of coupons applied to this shipping consignment."""
+  coupons: [CheckoutCoupon!]
+
+  """Shipping consignment ID."""
+  entityId: String!
+
+  """The handling cost of shipping for the consignment."""
+  handlingCost: Money
+
+  """List of line item IDs for the consignment."""
+  lineItemIds: [String!]!
+
+  """Selected shipping option."""
+  selectedShippingOption: CheckoutSelectedShippingOption
+
+  """The shipping cost for the consignment."""
+  shippingCost: Money
+}
+
+"""Checkout shipping consignments input object"""
+input CheckoutShippingConsignmentInput {
+  """Shipping consignment address."""
+  address: CheckoutAddressInput!
+
+  """List of line items for the consignment."""
+  lineItems: [CheckoutConsignmentLineItemInput!]!
+}
+
+"""The checkout."""
+type CheckoutTax {
+  """Tax amount."""
+  amount: Money!
+
+  """Name of the tax."""
+  name: String!
+}
+
 """Additional information about the collection."""
 type CollectionInfo {
   """Total items in the collection despite pagination."""
   totalItems: Long
+}
+
+"""Complete checkout input object"""
+input CompleteCheckoutInput {
+  """The checkout id"""
+  checkoutEntityId: String!
+}
+
+"""Complete checkout result"""
+type CompleteCheckoutResult {
+  """The Order ID created as a result of the checkout."""
+  orderEntityId: Int
+
+  """The access token to be used to complete a payment."""
+  paymentAccessToken: String
 }
 
 """Contact field"""
@@ -1530,6 +2227,16 @@ type Content {
     """Rendered regions filter by page type and id."""
     entityPageType: EntityPageType!
   ): RenderedRegionsByPageType!
+}
+
+"""The coupon type."""
+enum CouponType {
+  FREE_SHIPPING
+  PERCENTAGE_DISCOUNT
+  PER_ITEM_DISCOUNT
+  PER_TOTAL_DISCOUNT
+  PROMOTION
+  SHIPPING_DISCOUNT
 }
 
 """Create cart input object"""
@@ -1811,6 +2518,21 @@ type DeleteCartLineItemResult {
 type DeleteCartResult {
   """The ID of the Cart that is deleted as a result of mutation."""
   deletedCartEntityId: String
+}
+
+"""Delete checkout consignment input object"""
+input DeleteCheckoutConsignmentInput {
+  """The checkout id"""
+  checkoutEntityId: String!
+
+  """The consignment id"""
+  consignmentEntityId: String!
+}
+
+"""Delete checkout consignment result"""
+type DeleteCheckoutConsignmentResult {
+  """The Checkout that is updated as a result of mutation."""
+  checkout: Checkout
 }
 
 """Delete wishlist items input object"""
@@ -2406,6 +3128,9 @@ type Mutation {
   """The Cart mutations."""
   cart: CartMutations!
 
+  """The Checkout mutations."""
+  checkout: CheckoutMutations!
+
   """Customer login"""
   login(
     """An email of the customer."""
@@ -2580,6 +3305,12 @@ input OptionValueId {
 
   """A variant value id filter."""
   valueEntityId: Int!
+}
+
+"""The order."""
+type Order {
+  """Order ID."""
+  entityId: Int!
 }
 
 """Other Filter"""
@@ -3006,6 +3737,9 @@ type ProductAttributeSearchFilter implements SearchProductFilter {
 
   """Indicates whether to display product count next to the filter."""
   displayProductCount: Boolean!
+
+  """Filter name for building filter URLs"""
+  filterName: String!
 
   """Indicates whether filter is collapsed by default."""
   isCollapsedByDefault: Boolean!
@@ -3637,6 +4371,30 @@ type SearchQueries {
   ): SearchProducts!
 }
 
+"""Select checkout shipping option input data object"""
+input SelectCheckoutShippingOptionDataInput {
+  """The shipping option id"""
+  shippingOptionEntityId: String!
+}
+
+"""Select checkout shipping option input object"""
+input SelectCheckoutShippingOptionInput {
+  """The checkout id"""
+  checkoutEntityId: String!
+
+  """The consignment id"""
+  consignmentEntityId: String!
+
+  """Select checkout shipping option data object"""
+  data: SelectCheckoutShippingOptionDataInput!
+}
+
+"""Select checkout shipping option result"""
+type SelectCheckoutShippingOptionResult {
+  """The Checkout that is updated as a result of mutation."""
+  checkout: Checkout
+}
+
 """Seo Details"""
 type SeoDetails {
   """Meta description."""
@@ -3772,6 +4530,12 @@ type Site {
     """
     rootEntityId: Int
   ): [CategoryTreeItem!]!
+
+  """The checkout of the current customer."""
+  checkout(
+    """Checkout ID."""
+    entityId: String
+  ): Checkout
 
   """The page content."""
   content: Content!
@@ -4044,6 +4808,27 @@ type TextFieldOption implements CatalogProductOption {
   minLength: Int
 }
 
+"""Unapply checkout coupon data object"""
+input UnapplyCheckoutCouponDataInput {
+  """The checkout coupon code"""
+  couponCode: String!
+}
+
+"""Unapply checkout coupon input object"""
+input UnapplyCheckoutCouponInput {
+  """The checkout id"""
+  checkoutEntityId: String!
+
+  """Unapply checkout coupon data object"""
+  data: UnapplyCheckoutCouponDataInput!
+}
+
+"""Unapply checkout coupon result"""
+type UnapplyCheckoutCouponResult {
+  """The Checkout that is updated as a result of mutation."""
+  checkout: Checkout
+}
+
 """Unassign cart from the customer input object."""
 input UnassignCartFromCustomerInput {
   """The cart id."""
@@ -4102,6 +4887,75 @@ input UpdateCartLineItemInput {
 type UpdateCartLineItemResult {
   """The Cart that is updated as a result of mutation."""
   cart: Cart
+}
+
+"""Update checkout billing address data object"""
+input UpdateCheckoutBillingAddressDataInput {
+  """The checkout billing address"""
+  address: CheckoutAddressInput!
+}
+
+"""Update checkout billing address input object"""
+input UpdateCheckoutBillingAddressInput {
+  """The address id"""
+  addressEntityId: String!
+
+  """The checkout id"""
+  checkoutEntityId: String!
+
+  """Update checkout billing address data object"""
+  data: UpdateCheckoutBillingAddressDataInput!
+}
+
+"""Update checkout billing address result"""
+type UpdateCheckoutBillingAddressResult {
+  """The Checkout that is updated as a result of mutation."""
+  checkout: Checkout
+}
+
+"""Update checkout customer message data object"""
+input UpdateCheckoutCustomerMessageDataInput {
+  """The checkout customer message"""
+  message: String!
+}
+
+"""Update checkout customer message input object"""
+input UpdateCheckoutCustomerMessageInput {
+  """The checkout id"""
+  checkoutEntityId: String!
+
+  """Update checkout customer message data object"""
+  data: UpdateCheckoutCustomerMessageDataInput!
+}
+
+"""Update checkout customer message result"""
+type UpdateCheckoutCustomerMessageResult {
+  """The Checkout that is updated as a result of mutation."""
+  checkout: Checkout
+}
+
+"""Update checkout shipping consignment data object"""
+input UpdateCheckoutShippingConsignmentDataInput {
+  """Checkout shipping consignment input object"""
+  consignment: CheckoutShippingConsignmentInput!
+}
+
+"""Update checkout shipping consignment input object"""
+input UpdateCheckoutShippingConsignmentInput {
+  """The checkout id"""
+  checkoutEntityId: String!
+
+  """The consignment id"""
+  consignmentEntityId: String!
+
+  """Update checkout shipping consignment data object"""
+  data: UpdateCheckoutShippingConsignmentDataInput!
+}
+
+"""Update checkout shipping consignment result"""
+type UpdateCheckoutShippingConsignmentResult {
+  """The Checkout that is updated as a result of mutation."""
+  checkout: Checkout
 }
 
 """Update wishlist input object"""

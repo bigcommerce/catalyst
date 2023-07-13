@@ -294,11 +294,14 @@ importers:
         specifier: workspace:^
         version: link:../eslint-config-catalyst
       '@genql/cli':
-        specifier: ^6.0.0
-        version: 6.0.0
+        specifier: ^4.0.4
+        version: 4.0.4
       '@types/node':
         specifier: ^18.13.00
         version: 18.13.0
+      dotenv-cli:
+        specifier: ^7.2.1
+        version: 7.2.1
       eslint:
         specifier: ^8.33.0
         version: 8.33.0
@@ -2959,8 +2962,8 @@ packages:
   /@fal-works/esbuild-plugin-global-externals@2.1.2:
     resolution: {integrity: sha512-cEee/Z+I12mZcFJshKcCqC8tuX5hG3s+d+9nZ3LabqKF1vKdF41B92pJVCBggjAGORAeOzyyDDKrZwIkLffeOQ==}
 
-  /@genql/cli@6.0.0:
-    resolution: {integrity: sha512-CL7udS5eIZjL6YabT3RU3Vhus2Dtb0qtU95hyaBadrO7aj+TZQqmeABOVOzBWcWDErZOGHVNd8JqgQ1Ww4pUCw==}
+  /@genql/cli@4.0.4:
+    resolution: {integrity: sha512-I8ZcHVWQaMHJhHrE9CGU2H162zM9y6zhxIZV8bgMZZq1B0jpMV1OoD+G6rVJM2yx3QyLBqPZMA7YlHryVk72Ew==}
     hasBin: true
     dependencies:
       '@graphql-tools/graphql-file-loader': 7.5.17(graphql@16.6.0)

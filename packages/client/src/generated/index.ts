@@ -7,9 +7,11 @@ import type {
 } from './schema'
 import {
   linkTypeMap,
+  createClient as createClientOriginal,
   generateGraphqlOperation,
   type FieldsSelection,
   type GraphqlOperation,
+  type ClientOptions,
   GenqlError,
 } from './runtime'
 export type { FieldsSelection } from './runtime'
