@@ -49,7 +49,7 @@ const mockedCategories = {
   },
 };
 
-export const BasicExample: Story = {
+export const Example: Story = {
   render: () => (
     <Breadcrumbs>
       {mockedCategories.data.site.category.breadcrumbs.edges
