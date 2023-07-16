@@ -29,7 +29,7 @@ export const BreadcrumbItem = forwardRef<ElementRef<'li'>, BreadcrumbItemProps>(
         <Comp
           aria-current={isActive ? `page` : undefined}
           className={cs(
-            'focus:ring-primary-blue/20 p-1 font-semibold font-semibold hover:text-blue-primary focus:outline-none focus:ring-4',
+            'focus:ring-primary-blue/20 p-1 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4',
             isActive && 'cursor-default font-extrabold hover:text-black',
             className,
           )}
