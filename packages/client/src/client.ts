@@ -1,4 +1,6 @@
 import { BigCommerceResponse, customWrappedFetch, FetcherConfig, FetcherInput } from './fetcher';
+import { generateQueryOp, QueryResult } from './generated';
+import { QueryGenqlSelection } from './generated/schema';
 // Management API (no graphql)
 import { getCheckoutUrl } from './management/getCheckoutUrl';
 // Mutations
@@ -29,6 +31,25 @@ class Client<CustomRequestInit extends RequestInit = RequestInit> {
   constructor(config: FetcherConfig) {
     this.config = config;
     this.fetch = customWrappedFetch(config);
+  }
+
+  async merge(queries: QueryGenqlSelection[]) {
+    const query = queries.reduce((acc, curr) => {
+      if (!acc) return curr;
+      return {
+        ...acc,
+        ...curr,
+      };
+    }, {} as QueryGenqlSelection);
+
+    const queryOp = generateQueryOp(query);
+
+    const response = await this.fetch<QueryResult<typeof query>>({
+      ...queryOp,
+      ...this.config,
+    });
+
+    return response.data;
   }
 
   getBestSellingProducts(...args: PublicParams<typeof getBestSellingProducts<CustomRequestInit>>) {

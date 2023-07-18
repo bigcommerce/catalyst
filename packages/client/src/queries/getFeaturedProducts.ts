@@ -8,11 +8,9 @@ export interface GetFeaturedProductsOptions {
   imageHeight: number;
 }
 
-export const getFeaturedProducts = async <T>(
-  customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
+export const getFeaturedProductsQuery = (
   { first = 10, imageHeight = 300, imageWidth = 300 }: Partial<GetFeaturedProductsOptions> = {},
-  config: T = {} as T,
-) => {
+): QueryGenqlSelection => {
   const query = {
     site: {
       featuredProducts: {
@@ -44,7 +42,16 @@ export const getFeaturedProducts = async <T>(
         },
       },
     },
-  } satisfies QueryGenqlSelection;
+  };
+  return query;
+}
+
+export const getFeaturedProducts = async <T>(
+  customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
+  options: Partial<GetFeaturedProductsOptions> = {},
+  config: T = {} as T,
+) => {
+  const query = getFeaturedProductsQuery(options);
 
   const queryOp = generateQueryOp(query);
   const response = await customFetch<QueryResult<typeof query>>({
@@ -52,6 +59,7 @@ export const getFeaturedProducts = async <T>(
     ...config,
   });
   const { site } = response.data;
+  response.data.site
 
   return removeEdgesAndNodes(site.featuredProducts);
 };
