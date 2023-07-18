@@ -1,4 +1,4 @@
-import { Slot } from '@radix-ui/react-slot';
+import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu';
 import {
   ComponentPropsWithRef,
   createContext,
@@ -19,78 +19,85 @@ const ExpandedContext = createContext<{
   setIsExpanded: () => undefined,
 });
 
-export const NavigationMenu = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef<'nav'>>(
-  ({ children, className, ...props }, ref) => {
-    const [isExpanded, setIsExpanded] = useState(false);
+const expandedMenuStyles = cs('is-expanded group absolute top-full left-0 z-50 w-full bg-white');
 
-    return (
-      <ExpandedContext.Provider value={{ isExpanded, setIsExpanded }}>
-        <nav
-          aria-label="Main"
-          className={cs(
-            'relative flex min-h-[92px] items-center justify-between gap-6 sm:flex-row lg:gap-8',
-            className,
-          )}
-          ref={ref}
-          {...props}
-        >
-          {children}
-        </nav>
-      </ExpandedContext.Provider>
-    );
-  },
-);
+export const NavigationMenu = forwardRef<
+  ElementRef<typeof NavigationMenuPrimitive.Root>,
+  ComponentPropsWithRef<typeof NavigationMenuPrimitive.Root>
+>(({ children, className, ...props }, ref) => {
+  const [isExpanded, setIsExpanded] = useState(false);
 
-export const NavigationMenuList = forwardRef<ElementRef<'ul'>, ComponentPropsWithRef<'ul'>>(
-  ({ children, className, ...props }, ref) => (
-    <ul
-      className={cs(
-        'hidden items-center gap-6 sm:flex lg:gap-8',
-        'group-[.is-expanded]:block group-[.is-expanded]:border-t group-[.is-expanded]:border-gray-200 group-[.is-expanded]:py-6',
-        'group-[.is-expanded]:first-of-type:border-t-0 group-[.is-expanded]:first-of-type:pt-0 group-[.is-expanded]:last-of-type:pb-0',
-        className,
-      )}
-      ref={ref}
-      {...props}
-    >
-      {children}
-    </ul>
-  ),
-);
-
-export const NavigationMenuItem = forwardRef<ElementRef<'li'>, ComponentPropsWithRef<'li'>>(
-  ({ children, className, ...props }, ref) => {
-    return (
-      <li className={className} ref={ref} {...props}>
-        {children}
-      </li>
-    );
-  },
-);
-
-interface NavigationMenuLinkProps extends ComponentPropsWithRef<'a'> {
-  asChild?: boolean;
-}
-
-export const NavigationMenuLink = forwardRef<ElementRef<'a'>, NavigationMenuLinkProps>(
-  ({ asChild = false, children, className, ...props }, ref) => {
-    const Comp = asChild ? Slot : 'a';
-
-    return (
-      <Comp
+  return (
+    <ExpandedContext.Provider value={{ isExpanded, setIsExpanded }}>
+      <NavigationMenuPrimitive.Root
         className={cs(
-          'focus:ring-primary-blue/20 flex justify-between py-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4 sm:py-0',
-          'group-[.is-expanded]:py-3',
+          'group relative flex min-h-[92px] items-center justify-between gap-6 bg-white lg:gap-8',
           className,
         )}
         ref={ref}
         {...props}
       >
         {children}
-      </Comp>
-    );
-  },
+        {!isExpanded && (
+          <NavigationMenuPrimitive.Viewport className={cs(expandedMenuStyles, 'pt-3')} />
+        )}
+      </NavigationMenuPrimitive.Root>
+    </ExpandedContext.Provider>
+  );
+});
+
+export const NavigationMenuList = forwardRef<
+  ElementRef<typeof NavigationMenuPrimitive.List>,
+  ComponentPropsWithRef<typeof NavigationMenuPrimitive.List>
+>(({ children, className, ...props }, ref) => (
+  <NavigationMenuPrimitive.List
+    className={cs('flex items-center gap-4 lg:gap-8', className)}
+    ref={ref}
+    {...props}
+  >
+    {children}
+  </NavigationMenuPrimitive.List>
+));
+
+export const NavigationMenuItem = NavigationMenuPrimitive.Item;
+
+const navigationMenuLinkStyles = cs(
+  'focus:ring-primary-blue/20 flex justify-between font-semibold hover:text-blue-primary focus:outline-none focus:ring-4 group-[.is-expanded]:py-3',
 );
+
+export const NavigationMenuTrigger = forwardRef<
+  React.ElementRef<typeof NavigationMenuPrimitive.Trigger>,
+  React.ComponentPropsWithRef<typeof NavigationMenuPrimitive.Trigger>
+>(({ className, children, ...props }, ref) => (
+  <NavigationMenuPrimitive.Trigger
+    className={cs(
+      navigationMenuLinkStyles,
+      'group/button flex w-full items-center justify-between',
+      className,
+    )}
+    ref={ref}
+    {...props}
+  >
+    {children}
+  </NavigationMenuPrimitive.Trigger>
+));
+
+export const NavigationMenuContent = NavigationMenuPrimitive.Content;
+
+export const NavigationMenuLink = forwardRef<
+  ElementRef<typeof NavigationMenuPrimitive.Link>,
+  ComponentPropsWithRef<typeof NavigationMenuPrimitive.Link>
+>(({ children, className, ...props }, ref) => {
+  return (
+    <NavigationMenuPrimitive.Link
+      className={cs(navigationMenuLinkStyles, className)}
+      ref={ref}
+      {...props}
+    >
+      {children}
+    </NavigationMenuPrimitive.Link>
+  );
+});
 
 export const NavigationMenuToggle = forwardRef<
   ElementRef<'button'>,
@@ -102,7 +109,7 @@ export const NavigationMenuToggle = forwardRef<
     <button
       aria-controls="nav-menu"
       aria-expanded={isExpanded}
-      className={cs('hover:text-blue-primary sm:hidden', className)}
+      className={cs('hover:text-blue-primary', className)}
       onClick={(e) => {
         onClick?.(e);
         setIsExpanded(!isExpanded);
@@ -133,12 +140,7 @@ export const NavigationMenuCollapsed = forwardRef<ElementRef<'div'>, ComponentPr
 
     return (
       <div
-        className={cs(
-          'group absolute top-full left-0 z-50 w-full bg-white pb-6',
-          isExpanded && 'is-expanded',
-          className,
-          !isExpanded && 'hidden',
-        )}
+        className={cs(expandedMenuStyles, className, !isExpanded && 'hidden')}
         id="nav-menu"
         ref={ref}
         {...props}

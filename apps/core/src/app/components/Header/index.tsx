@@ -2,12 +2,14 @@ import { cs } from '@bigcommerce/reactant/cs';
 import {
   NavigationMenu,
   NavigationMenuCollapsed,
+  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuToggle,
+  NavigationMenuTrigger,
 } from '@bigcommerce/reactant/NavigationMenu';
-import { Menu, Search, ShoppingCart } from 'lucide-react';
+import { ChevronDown, Menu, Search, ShoppingCart } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { Suspense } from 'react';
@@ -49,35 +51,56 @@ const Cart = async () => {
 
 const HeaderNav = async ({
   className,
-  isMenuMobile = false,
+  inCollapsedNav = false,
 }: {
   className?: string;
-  isMenuMobile?: boolean;
+  inCollapsedNav?: boolean;
 }) => {
   const categoryTree = await client.getCategoryTree();
 
   return (
     <NavigationMenuList className={className}>
-      {isMenuMobile && (
-        <NavigationMenuItem className="md:hidden">
-          <NavigationMenuLink asChild>
-            <Link aria-label="Search" href="/search">
-              Search <Search aria-hidden="true" className="sm:hidden" />
-            </Link>
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-      )}
-      {categoryTree.map((category, index) => (
-        <NavigationMenuItem
-          className={cs(
-            !isMenuMobile && index > 2 && 'sm:hidden lg:block',
-            isMenuMobile && index < 3 && 'sm:hidden',
+      {categoryTree.map((category) => (
+        <NavigationMenuItem key={category.path}>
+          {category.children.length > 0 ? (
+            <>
+              <NavigationMenuTrigger asChild>
+                <NavigationMenuLink asChild>
+                  <Link href={`/category/${category.entityId}`}>
+                    {category.name}{' '}
+                    <ChevronDown
+                      aria-hidden="true"
+                      className={cs(
+                        'transition duration-200 group-data-[state=open]/button:-rotate-180',
+                      )}
+                    />
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuTrigger>
+              <NavigationMenuContent
+                className={cs(!inCollapsedNav && 'flex flex-row gap-20', inCollapsedNav && 'pl-6')}
+              >
+                {category.children.map((childCategory1) => (
+                  <ul key={childCategory1.entityId}>
+                    <NavigationMenuItem>
+                      <NavigationMenuLink href="#">{childCategory1.name}</NavigationMenuLink>
+                    </NavigationMenuItem>
+                    {childCategory1.children.map((childCategory2) => (
+                      <NavigationMenuItem key={childCategory2.entityId}>
+                        <NavigationMenuLink className="font-normal" href="#">
+                          {childCategory2.name}
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                    ))}
+                  </ul>
+                ))}
+              </NavigationMenuContent>
+            </>
+          ) : (
+            <NavigationMenuLink asChild>
+              <Link href={`/category/${category.entityId}`}>{category.name}</Link>
+            </NavigationMenuLink>
           )}
-          key={category.path}
-        >
-          <NavigationMenuLink asChild>
-            <Link href={`/category/${category.entityId}`}>{category.name}</Link>
-          </NavigationMenuLink>
         </NavigationMenuItem>
       ))}
     </NavigationMenuList>
@@ -91,10 +114,10 @@ export const Header = () => {
         <Link href="/">
           <StoreLogo />
         </Link>
-        <HeaderNav />
+        <HeaderNav className="hidden lg:flex" />
         <div className="flex gap-5">
-          <NavigationMenuList className="flex">
-            <NavigationMenuItem className="hidden md:block">
+          <NavigationMenuList>
+            <NavigationMenuItem>
               <Link aria-label="Search" href="/search">
                 <Search />
               </Link>
@@ -105,12 +128,12 @@ export const Header = () => {
               </Suspense>
             </NavigationMenuItem>
           </NavigationMenuList>
-          <NavigationMenuToggle className="sm:block lg:hidden">
+          <NavigationMenuToggle className="lg:hidden">
             <Menu />
           </NavigationMenuToggle>
         </div>
         <NavigationMenuCollapsed>
-          <HeaderNav isMenuMobile={true} />
+          <HeaderNav className="block" inCollapsedNav />
         </NavigationMenuCollapsed>
       </NavigationMenu>
     </header>
