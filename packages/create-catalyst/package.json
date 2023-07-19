@@ -1,0 +1,28 @@
+{
+  "name": "@bigcommerce/create-catalyst",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0"
+  },
+  "engines": {
+    "node": ">=18.16"
+  },
+  "devDependencies": {
+    "@bigcommerce/catalyst-configs": "workspace:^",
+    "@bigcommerce/eslint-config": "^2.7.0",
+    "@bigcommerce/eslint-config-catalyst": "workspace:^",
+    "@types/node": "^18.16.20",
+    "eslint": "^8.33.0",
+    "prettier": "^2.8.8",
+    "tsup": "^6.7.0",
+    "typescript": "^5.1.3"
+  }
+}
