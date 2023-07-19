@@ -19,7 +19,9 @@ const ExpandedContext = createContext<{
   setIsExpanded: () => undefined,
 });
 
-const expandedMenuStyles = cs('is-expanded group absolute top-full left-0 z-50 w-full bg-white');
+const expandedMenuStyles = cs(
+  'is-expanded group absolute top-full left-0 z-50 w-full bg-white pb-6',
+);
 
 export const NavigationMenu = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.Root>,
@@ -39,7 +41,7 @@ export const NavigationMenu = forwardRef<
       >
         {children}
         {!isExpanded && (
-          <NavigationMenuPrimitive.Viewport className={cs(expandedMenuStyles, 'pt-3')} />
+          <NavigationMenuPrimitive.Viewport className={cs(expandedMenuStyles, 'pt-6 pb-12')} />
         )}
       </NavigationMenuPrimitive.Root>
     </ExpandedContext.Provider>

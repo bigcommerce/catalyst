@@ -78,10 +78,13 @@ const HeaderNav = async ({
                 </NavigationMenuLink>
               </NavigationMenuTrigger>
               <NavigationMenuContent
-                className={cs(!inCollapsedNav && 'flex flex-row gap-20', inCollapsedNav && 'pl-6')}
+                className={cs(
+                  !inCollapsedNav && 'mx-auto flex w-[700px] flex-row gap-20',
+                  inCollapsedNav && 'pl-6',
+                )}
               >
                 {category.children.map((childCategory1) => (
-                  <ul key={childCategory1.entityId}>
+                  <ul className={cs(inCollapsedNav && 'pb-4')} key={childCategory1.entityId}>
                     <NavigationMenuItem>
                       <NavigationMenuLink href="#">{childCategory1.name}</NavigationMenuLink>
                     </NavigationMenuItem>

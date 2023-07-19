@@ -274,7 +274,7 @@ export const BasicExample: Story = {
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="pl-6">
                     {category.children.map((childCategory, index) => (
-                      <ul key={index}>
+                      <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
                           <NavigationMenuLink className="py-3" href="#">
                             {childCategory.name}
@@ -394,7 +394,7 @@ export const NavigationAlignmentLeft: Story = {
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="pl-6">
                     {category.children.map((childCategory, index) => (
-                      <ul key={index}>
+                      <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
                           <NavigationMenuLink className="py-3" href="#">
                             {childCategory.name}
@@ -514,7 +514,7 @@ export const NavigationAlignmentRight: Story = {
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="pl-6">
                     {category.children.map((childCategory, index) => (
-                      <ul key={index}>
+                      <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
                           <NavigationMenuLink className="py-3" href="#">
                             {childCategory.name}
@@ -637,7 +637,7 @@ export const LogoCentered: Story = {
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="pl-6">
                     {category.children.map((childCategory, index) => (
-                      <ul key={index}>
+                      <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
                           <NavigationMenuLink className="py-3" href="#">
                             {childCategory.name}
@@ -760,7 +760,7 @@ export const BottomNavigationLeft: Story = {
                     </NavigationMenuTrigger>
                     <NavigationMenuContent className="pl-6">
                       {category.children.map((childCategory, index) => (
-                        <ul key={index}>
+                        <ul className="pb-6" key={index}>
                           <NavigationMenuItem>
                             <NavigationMenuLink className="py-3" href="#">
                               {childCategory.name}
@@ -883,7 +883,7 @@ export const BottomNavigationCenter: Story = {
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="pl-6">
                     {category.children.map((childCategory, index) => (
-                      <ul key={index}>
+                      <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
                           <NavigationMenuLink className="py-3" href="#">
                             {childCategory.name}
@@ -1005,7 +1005,7 @@ export const BottomNavigationRight: Story = {
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="pl-6">
                     {category.children.map((childCategory, index) => (
-                      <ul key={index}>
+                      <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
                           <NavigationMenuLink className="py-3" href="#">
                             {childCategory.name}
