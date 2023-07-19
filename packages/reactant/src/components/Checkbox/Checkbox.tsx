@@ -1,43 +1,33 @@
+import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { Check } from 'lucide-react';
 import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
 import { cs } from '../../utils/cs';
 
-// interface LabelProps extends ComponentPropsWithRef<'label'>
+type CheckboxType = typeof CheckboxPrimitive.Root;
 
-// export const Label = forwardRef<ElementRef<'label'>, LabelProps>();
-
-interface CheckboxProps extends ComponentPropsWithRef<'input'> {
-  isChecked?: boolean;
-  isDisabled?: boolean;
-}
-
-export const Checkbox = forwardRef<ElementRef<'input'>, CheckboxProps>(
-  ({ children, className, isChecked, isDisabled = false, ...props }, ref) => {
+export const Checkbox = forwardRef<ElementRef<CheckboxType>, ComponentPropsWithRef<CheckboxType>>(
+  ({ children, className, ...props }, ref) => {
     return (
-      <div className="inline-flex items-center">
-        <input
-          checked={isChecked}
-          className="peer/checkbox-1 absolute h-6 w-6 opacity-0 hover:cursor-pointer disabled:pointer-events-none"
-          disabled={isDisabled}
-          id="default-checkbox"
-          ref={ref}
-          type="checkbox"
-          {...props}
-        />
-        <div
-          className="peer-focus/checkbox-1:ring-primary-blue/20', { flex h-6 w-6 flex-shrink-0 items-center justify-center border-2 border-gray-200 peer-checked/checkbox-1:border-blue-primary peer-checked/checkbox-1:bg-blue-primary peer-hover/checkbox-1:border-blue-primary peer-focus/checkbox-1:outline-none peer-focus/checkbox-1:ring-4 peer-disabled/checkbox-1:bg-gray-100
-  peer-checked/checkbox-1:[&>svg]:block"
-        >
-          <Check absoluteStrokeWidth className="hidden stroke-white" size={13} />
-        </div>
-        {/* <label
-          className="pl-3 text-base font-normal text-black hover:cursor-pointer"
-          htmlFor="default-checkbox"
-        >
-          Default checkbox
-        </label> */}
-      </div>
+      <CheckboxPrimitive.Root
+        className={cs(
+          'block h-6 w-6 border-2 border-gray-200',
+          'hover:border-blue-secondary',
+          'focus:ring-primary-blue/20 focus:border-blue-primary focus:outline-none focus:ring-4',
+          'focus:hover:border-blue-secondary',
+          'radix-state-checked:border-blue-primary radix-state-checked:bg-blue-primary',
+          'radix-state-checked:hover:border-blue-secondary radix-state-checked:hover:bg-blue-secondary',
+          'disabled:pointer-events-none disabled:bg-gray-100',
+          'radix-state-checked:disabled:border-gray-400 radix-state-checked:disabled:bg-gray-400',
+          className,
+        )}
+        ref={ref}
+        {...props}
+      >
+        <CheckboxPrimitive.Indicator className="flex flex-shrink-0 items-center justify-center">
+          {children || <Check absoluteStrokeWidth className="stroke-white" size={13} />}
+        </CheckboxPrimitive.Indicator>
+      </CheckboxPrimitive.Root>
     );
   },
 );

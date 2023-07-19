@@ -1,6 +1,7 @@
 import { Checkbox } from '@bigcommerce/reactant/Checkbox';
 import { Label } from '@bigcommerce/reactant/Label';
 import type { Meta, StoryObj } from '@storybook/react';
+import { X } from 'lucide-react';
 
 const meta: Meta<typeof Checkbox> = {
   component: Checkbox,
@@ -11,11 +12,30 @@ export default meta;
 
 type Story = StoryObj<typeof Checkbox>;
 
-const mockedOnClick = () => {};
+export const BaseCheckbox: Story = {};
 
-export const BaseCheckbox: Story = {
+export const FocusedCheckbox: Story = {
   args: {
-    onClick: mockedOnClick,
+    autoFocus: true,
+  },
+};
+
+export const CheckedCheckbox: Story = {
+  args: {
+    checked: true,
+  },
+};
+
+export const DisabledCheckbox: Story = {
+  args: {
+    disabled: true,
+  },
+};
+
+export const DisabledCheckedCheckbox: Story = {
+  args: {
+    checked: true,
+    disabled: true,
   },
 };
 
@@ -24,9 +44,19 @@ export const CheckboxWithLabel: Story = {
     children: 'Label',
   },
   render: ({ children }) => (
-    <div className="max-w-sm space-y-1">
-      <Checkbox id="checkboxId" />
-      <Label className="cursor-pointer pl-4" htmlFor="checkboxId">{children}</Label>
+    <div className="flex max-w-sm items-center">
+      <Checkbox id="CheckboxWithLabel" />
+      <Label className="cursor-pointer pl-4" htmlFor="CheckboxWithLabel">
+        {children}
+      </Label>
     </div>
+  ),
+};
+
+export const CheckboxWithCustomIcon: Story = {
+  render: () => (
+    <Checkbox id="CheckboxWithCustomIcon">
+      <X absoluteStrokeWidth className="stroke-white" size={13} />
+    </Checkbox>
   ),
 };
