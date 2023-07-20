@@ -10,7 +10,7 @@ import {
   NavigationMenuTrigger,
 } from '@bigcommerce/reactant/NavigationMenu';
 import type { Meta, StoryObj } from '@storybook/react';
-import { ChevronDown, Gift, Heart, Menu, Scale, Search, ShoppingCart, User } from 'lucide-react';
+import { ChevronDown, Menu, Search, ShoppingCart, User } from 'lucide-react';
 
 const meta: Meta<typeof NavigationMenu> = {
   component: NavigationMenu,
@@ -188,34 +188,29 @@ const mockedData = [
 
 const mockLinks = [
   { href: '#', label: 'Search', icon: <Search aria-label="Search" /> },
-  { href: '#', label: 'Compare', icon: <Scale aria-label="Compare" /> },
-  { href: '#', label: 'Wish list', icon: <Heart aria-label="Wish list" /> },
-  { href: '#', label: 'Gift certificates', icon: <Gift aria-label="Gift certificates" /> },
   { href: '#', label: 'Profile', icon: <User aria-label="Profile" /> },
   { href: '#', label: 'Shopping cart', icon: <ShoppingCart aria-label="Shopping cart" /> },
 ];
 
 export const BasicExample: Story = {
   render: () => (
-    <NavigationMenu>
-      <a className="text-h4 font-black" href="/home">
+    <NavigationMenu className="gap-6 lg:gap-8">
+      <NavigationMenuLink className="px-0 text-h4 font-black" href="/home">
         Catalyst Store
-      </a>
-      <NavigationMenuList className="hidden md:flex">
+      </NavigationMenuLink>
+      <NavigationMenuList className="hidden md:flex lg:gap-4">
         {mockedData.map((rootCategory) => (
           <NavigationMenuItem key={rootCategory.entityId}>
             {rootCategory.children.length > 0 ? (
               <>
-                <NavigationMenuTrigger asChild>
-                  <NavigationMenuLink href="#">
-                    {rootCategory.name}{' '}
-                    <ChevronDown
-                      aria-hidden="true"
-                      className={cs(
-                        'transition duration-200 group-data-[state=open]/button:-rotate-180',
-                      )}
-                    />
-                  </NavigationMenuLink>
+                <NavigationMenuTrigger>
+                  {rootCategory.name}{' '}
+                  <ChevronDown
+                    aria-hidden="true"
+                    className={cs(
+                      'transition duration-200 group-data-[state=open]/button:-rotate-180',
+                    )}
+                  />
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="grid auto-cols-auto grid-flow-col">
                   {rootCategory.children.map((childCategory1) => (
@@ -225,7 +220,7 @@ export const BasicExample: Story = {
                       </NavigationMenuItem>
                       {childCategory1.children.map((childCategory2) => (
                         <NavigationMenuItem key={childCategory2.entityId}>
-                          <NavigationMenuLink className="py-3 font-normal" href="#">
+                          <NavigationMenuLink className="font-normal" href="#">
                             {childCategory2.name}
                           </NavigationMenuLink>
                         </NavigationMenuItem>
@@ -240,14 +235,14 @@ export const BasicExample: Story = {
           </NavigationMenuItem>
         ))}
       </NavigationMenuList>
-      <NavigationMenuList className="hidden md:flex">
+      <NavigationMenuList className="hidden gap-2 md:flex">
         {mockLinks.map((link, index) => (
           <NavigationMenuItem key={index}>
             <NavigationMenuLink href={link.href}>{link.icon}</NavigationMenuLink>
           </NavigationMenuItem>
         ))}
       </NavigationMenuList>
-      <div className="flex items-center gap-6 md:hidden">
+      <div className="flex items-center md:hidden">
         <NavigationMenuLink href="/cart">
           <ShoppingCart aria-label="Shopping cart" />
         </NavigationMenuLink>
@@ -262,7 +257,7 @@ export const BasicExample: Story = {
               {category.children.length > 0 ? (
                 <>
                   <NavigationMenuTrigger asChild>
-                    <NavigationMenuLink className="py-3" href="#">
+                    <NavigationMenuLink href="#">
                       {category.name}{' '}
                       <ChevronDown
                         aria-hidden="true"
@@ -276,13 +271,11 @@ export const BasicExample: Story = {
                     {category.children.map((childCategory, index) => (
                       <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
-                          <NavigationMenuLink className="py-3" href="#">
-                            {childCategory.name}
-                          </NavigationMenuLink>
+                          <NavigationMenuLink href="#">{childCategory.name}</NavigationMenuLink>
                         </NavigationMenuItem>
                         {childCategory.children.map((grandchildCategory, childIndex) => (
                           <NavigationMenuItem key={childIndex}>
-                            <NavigationMenuLink className="py-3 font-normal" href="#">
+                            <NavigationMenuLink className="font-normal" href="#">
                               {grandchildCategory.name}
                             </NavigationMenuLink>
                           </NavigationMenuItem>
@@ -292,9 +285,7 @@ export const BasicExample: Story = {
                   </NavigationMenuContent>
                 </>
               ) : (
-                <NavigationMenuLink className="py-3" href="#">
-                  {category.name}
-                </NavigationMenuLink>
+                <NavigationMenuLink href="#">{category.name}</NavigationMenuLink>
               )}
             </NavigationMenuItem>
           ))}
@@ -302,7 +293,7 @@ export const BasicExample: Story = {
         <ul className="border-t border-gray-200 pt-6">
           {mockLinks.map((link, index) => (
             <NavigationMenuItem key={index}>
-              <NavigationMenuLink className="py-3" href={link.href}>
+              <NavigationMenuLink href={link.href}>
                 {link.label} {link.icon}
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -315,26 +306,24 @@ export const BasicExample: Story = {
 
 export const NavigationAlignmentLeft: Story = {
   render: () => (
-    <NavigationMenu>
-      <a className="text-h4 font-black" href="/home">
+    <NavigationMenu className="gap-6 lg:gap-8">
+      <NavigationMenuLink className="px-0 text-h4 font-black" href="/home">
         Catalyst Store
-      </a>
+      </NavigationMenuLink>
       <div className="flex flex-auto">
-        <NavigationMenuList className="hidden md:flex">
+        <NavigationMenuList className="hidden md:flex lg:gap-4">
           {mockedData.map((rootCategory) => (
             <NavigationMenuItem key={rootCategory.entityId}>
               {rootCategory.children.length > 0 ? (
                 <>
-                  <NavigationMenuTrigger asChild>
-                    <NavigationMenuLink href="#">
-                      {rootCategory.name}{' '}
-                      <ChevronDown
-                        aria-hidden="true"
-                        className={cs(
-                          'transition duration-200 group-data-[state=open]/button:-rotate-180',
-                        )}
-                      />
-                    </NavigationMenuLink>
+                  <NavigationMenuTrigger>
+                    {rootCategory.name}{' '}
+                    <ChevronDown
+                      aria-hidden="true"
+                      className={cs(
+                        'transition duration-200 group-data-[state=open]/button:-rotate-180',
+                      )}
+                    />
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="grid auto-cols-auto grid-flow-col">
                     {rootCategory.children.map((childCategory1) => (
@@ -344,7 +333,7 @@ export const NavigationAlignmentLeft: Story = {
                         </NavigationMenuItem>
                         {childCategory1.children.map((childCategory2) => (
                           <NavigationMenuItem key={childCategory2.entityId}>
-                            <NavigationMenuLink className="py-3 font-normal" href="#">
+                            <NavigationMenuLink className="font-normal" href="#">
                               {childCategory2.name}
                             </NavigationMenuLink>
                           </NavigationMenuItem>
@@ -360,14 +349,14 @@ export const NavigationAlignmentLeft: Story = {
           ))}
         </NavigationMenuList>
       </div>
-      <NavigationMenuList className="hidden md:flex">
+      <NavigationMenuList className="hidden gap-2 md:flex">
         {mockLinks.map((link, index) => (
           <NavigationMenuItem key={index}>
             <NavigationMenuLink href={link.href}>{link.icon}</NavigationMenuLink>
           </NavigationMenuItem>
         ))}
       </NavigationMenuList>
-      <div className="flex items-center gap-6 md:hidden">
+      <div className="flex items-center md:hidden">
         <NavigationMenuLink href="/cart">
           <ShoppingCart aria-label="Shopping cart" />
         </NavigationMenuLink>
@@ -382,7 +371,7 @@ export const NavigationAlignmentLeft: Story = {
               {category.children.length > 0 ? (
                 <>
                   <NavigationMenuTrigger asChild>
-                    <NavigationMenuLink className="py-3" href="#">
+                    <NavigationMenuLink href="#">
                       {category.name}{' '}
                       <ChevronDown
                         aria-hidden="true"
@@ -396,13 +385,11 @@ export const NavigationAlignmentLeft: Story = {
                     {category.children.map((childCategory, index) => (
                       <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
-                          <NavigationMenuLink className="py-3" href="#">
-                            {childCategory.name}
-                          </NavigationMenuLink>
+                          <NavigationMenuLink href="#">{childCategory.name}</NavigationMenuLink>
                         </NavigationMenuItem>
                         {childCategory.children.map((grandchildCategory, childIndex) => (
                           <NavigationMenuItem key={childIndex}>
-                            <NavigationMenuLink className="py-3 font-normal" href="#">
+                            <NavigationMenuLink className="font-normal" href="#">
                               {grandchildCategory.name}
                             </NavigationMenuLink>
                           </NavigationMenuItem>
@@ -412,9 +399,7 @@ export const NavigationAlignmentLeft: Story = {
                   </NavigationMenuContent>
                 </>
               ) : (
-                <NavigationMenuLink className="py-3" href="#">
-                  {category.name}
-                </NavigationMenuLink>
+                <NavigationMenuLink href="#">{category.name}</NavigationMenuLink>
               )}
             </NavigationMenuItem>
           ))}
@@ -422,7 +407,7 @@ export const NavigationAlignmentLeft: Story = {
         <ul className="border-t border-gray-200 pt-6">
           {mockLinks.map((link, index) => (
             <NavigationMenuItem key={index}>
-              <NavigationMenuLink className="py-3" href={link.href}>
+              <NavigationMenuLink href={link.href}>
                 {link.label} {link.icon}
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -435,26 +420,24 @@ export const NavigationAlignmentLeft: Story = {
 
 export const NavigationAlignmentRight: Story = {
   render: () => (
-    <NavigationMenu>
-      <a className="text-h4 font-black" href="/home">
+    <NavigationMenu className="gap-6 lg:gap-8">
+      <NavigationMenuLink className="px-0 text-h4 font-black" href="/home">
         Catalyst Store
-      </a>
+      </NavigationMenuLink>
       <div className="flex flex-auto justify-end">
-        <NavigationMenuList className="hidden md:flex">
+        <NavigationMenuList className="hidden md:flex lg:gap-4">
           {mockedData.map((rootCategory) => (
             <NavigationMenuItem key={rootCategory.entityId}>
               {rootCategory.children.length > 0 ? (
                 <>
-                  <NavigationMenuTrigger asChild>
-                    <NavigationMenuLink href="#">
-                      {rootCategory.name}{' '}
-                      <ChevronDown
-                        aria-hidden="true"
-                        className={cs(
-                          'transition duration-200 group-data-[state=open]/button:-rotate-180',
-                        )}
-                      />
-                    </NavigationMenuLink>
+                  <NavigationMenuTrigger>
+                    {rootCategory.name}{' '}
+                    <ChevronDown
+                      aria-hidden="true"
+                      className={cs(
+                        'transition duration-200 group-data-[state=open]/button:-rotate-180',
+                      )}
+                    />
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="grid auto-cols-auto grid-flow-col">
                     {rootCategory.children.map((childCategory1) => (
@@ -464,7 +447,7 @@ export const NavigationAlignmentRight: Story = {
                         </NavigationMenuItem>
                         {childCategory1.children.map((childCategory2) => (
                           <NavigationMenuItem key={childCategory2.entityId}>
-                            <NavigationMenuLink className="py-3 font-normal" href="#">
+                            <NavigationMenuLink className="font-normal" href="#">
                               {childCategory2.name}
                             </NavigationMenuLink>
                           </NavigationMenuItem>
@@ -480,14 +463,14 @@ export const NavigationAlignmentRight: Story = {
           ))}
         </NavigationMenuList>
       </div>
-      <NavigationMenuList className="hidden md:flex">
+      <NavigationMenuList className="hidden gap-2 md:flex">
         {mockLinks.map((link, index) => (
           <NavigationMenuItem key={index}>
             <NavigationMenuLink href={link.href}>{link.icon}</NavigationMenuLink>
           </NavigationMenuItem>
         ))}
       </NavigationMenuList>
-      <div className="flex items-center gap-6 md:hidden">
+      <div className="flex items-center md:hidden">
         <NavigationMenuLink href="/cart">
           <ShoppingCart aria-label="Shopping cart" />
         </NavigationMenuLink>
@@ -502,7 +485,7 @@ export const NavigationAlignmentRight: Story = {
               {category.children.length > 0 ? (
                 <>
                   <NavigationMenuTrigger asChild>
-                    <NavigationMenuLink className="py-3" href="#">
+                    <NavigationMenuLink href="#">
                       {category.name}{' '}
                       <ChevronDown
                         aria-hidden="true"
@@ -516,13 +499,11 @@ export const NavigationAlignmentRight: Story = {
                     {category.children.map((childCategory, index) => (
                       <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
-                          <NavigationMenuLink className="py-3" href="#">
-                            {childCategory.name}
-                          </NavigationMenuLink>
+                          <NavigationMenuLink href="#">{childCategory.name}</NavigationMenuLink>
                         </NavigationMenuItem>
                         {childCategory.children.map((grandchildCategory, childIndex) => (
                           <NavigationMenuItem key={childIndex}>
-                            <NavigationMenuLink className="py-3 font-normal" href="#">
+                            <NavigationMenuLink className="font-normal" href="#">
                               {grandchildCategory.name}
                             </NavigationMenuLink>
                           </NavigationMenuItem>
@@ -532,9 +513,7 @@ export const NavigationAlignmentRight: Story = {
                   </NavigationMenuContent>
                 </>
               ) : (
-                <NavigationMenuLink className="py-3" href="#">
-                  {category.name}
-                </NavigationMenuLink>
+                <NavigationMenuLink href="#">{category.name}</NavigationMenuLink>
               )}
             </NavigationMenuItem>
           ))}
@@ -542,7 +521,7 @@ export const NavigationAlignmentRight: Story = {
         <ul className="border-t border-gray-200 pt-6">
           {mockLinks.map((link, index) => (
             <NavigationMenuItem key={index}>
-              <NavigationMenuLink className="py-3" href={link.href}>
+              <NavigationMenuLink href={link.href}>
                 {link.label} {link.icon}
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -555,23 +534,21 @@ export const NavigationAlignmentRight: Story = {
 
 export const LogoCentered: Story = {
   render: () => (
-    <NavigationMenu className="justify-start">
+    <NavigationMenu className="justify-start gap-6 lg:gap-8">
       <div className="flex-1">
-        <NavigationMenuList className="hidden flex-1 md:flex">
+        <NavigationMenuList className="hidden flex-1 md:flex lg:gap-4">
           {mockedData.map((rootCategory) => (
             <NavigationMenuItem key={rootCategory.entityId}>
               {rootCategory.children.length > 0 ? (
                 <>
-                  <NavigationMenuTrigger asChild>
-                    <NavigationMenuLink href="#">
-                      {rootCategory.name}{' '}
-                      <ChevronDown
-                        aria-hidden="true"
-                        className={cs(
-                          'transition duration-200 group-data-[state=open]/button:-rotate-180',
-                        )}
-                      />
-                    </NavigationMenuLink>
+                  <NavigationMenuTrigger>
+                    {rootCategory.name}{' '}
+                    <ChevronDown
+                      aria-hidden="true"
+                      className={cs(
+                        'transition duration-200 group-data-[state=open]/button:-rotate-180',
+                      )}
+                    />
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="grid auto-cols-auto grid-flow-col">
                     {rootCategory.children.map((childCategory1) => (
@@ -581,7 +558,7 @@ export const LogoCentered: Story = {
                         </NavigationMenuItem>
                         {childCategory1.children.map((childCategory2) => (
                           <NavigationMenuItem key={childCategory2.entityId}>
-                            <NavigationMenuLink className="py-3 font-normal" href="#">
+                            <NavigationMenuLink className="font-normal" href="#">
                               {childCategory2.name}
                             </NavigationMenuLink>
                           </NavigationMenuItem>
@@ -597,18 +574,18 @@ export const LogoCentered: Story = {
           ))}
         </NavigationMenuList>
       </div>
-      <a className="flex flex-auto justify-center text-h4 font-black" href="/home">
+      <a className="flex flex-auto justify-center px-0 text-h4 font-black" href="/home">
         Catalyst Store
       </a>
-      <div className="flex-1 justify-end">
-        <NavigationMenuList className="hidden md:flex">
+      <div className="flex-1">
+        <NavigationMenuList className="hidden justify-end gap-2 md:flex">
           {mockLinks.map((link, index) => (
             <NavigationMenuItem key={index}>
               <NavigationMenuLink href={link.href}>{link.icon}</NavigationMenuLink>
             </NavigationMenuItem>
           ))}
         </NavigationMenuList>
-        <div className="flex items-center gap-6 md:hidden">
+        <div className="flex items-center justify-end md:hidden">
           <NavigationMenuLink href="/cart">
             <ShoppingCart aria-label="Shopping cart" />
           </NavigationMenuLink>
@@ -617,7 +594,6 @@ export const LogoCentered: Story = {
           </NavigationMenuToggle>
         </div>
       </div>
-
       <NavigationMenuCollapsed>
         <ul className="pb-6">
           {mockedData.map((category, key) => (
@@ -625,7 +601,7 @@ export const LogoCentered: Story = {
               {category.children.length > 0 ? (
                 <>
                   <NavigationMenuTrigger asChild>
-                    <NavigationMenuLink className="py-3" href="#">
+                    <NavigationMenuLink href="#">
                       {category.name}{' '}
                       <ChevronDown
                         aria-hidden="true"
@@ -639,13 +615,11 @@ export const LogoCentered: Story = {
                     {category.children.map((childCategory, index) => (
                       <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
-                          <NavigationMenuLink className="py-3" href="#">
-                            {childCategory.name}
-                          </NavigationMenuLink>
+                          <NavigationMenuLink href="#">{childCategory.name}</NavigationMenuLink>
                         </NavigationMenuItem>
                         {childCategory.children.map((grandchildCategory, childIndex) => (
                           <NavigationMenuItem key={childIndex}>
-                            <NavigationMenuLink className="py-3 font-normal" href="#">
+                            <NavigationMenuLink className="font-normal" href="#">
                               {grandchildCategory.name}
                             </NavigationMenuLink>
                           </NavigationMenuItem>
@@ -655,9 +629,7 @@ export const LogoCentered: Story = {
                   </NavigationMenuContent>
                 </>
               ) : (
-                <NavigationMenuLink className="py-3" href="#">
-                  {category.name}
-                </NavigationMenuLink>
+                <NavigationMenuLink href="#">{category.name}</NavigationMenuLink>
               )}
             </NavigationMenuItem>
           ))}
@@ -665,7 +637,7 @@ export const LogoCentered: Story = {
         <ul className="border-t border-gray-200 pt-6">
           {mockLinks.map((link, index) => (
             <NavigationMenuItem key={index}>
-              <NavigationMenuLink className="py-3" href={link.href}>
+              <NavigationMenuLink href={link.href}>
                 {link.label} {link.icon}
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -681,17 +653,17 @@ export const BottomNavigationLeft: Story = {
     return (
       <NavigationMenu className="flex-col">
         <div className="flex min-h-[92px] w-full items-center justify-between">
-          <a className="text-h4 font-black" href="/home">
+          <a className="px-0 text-h4 font-black" href="/home">
             Catalyst Store
           </a>
-          <NavigationMenuList className="hidden md:flex">
+          <NavigationMenuList className="hidden gap-2 md:flex">
             {mockLinks.map((link, index) => (
               <NavigationMenuItem key={index}>
                 <NavigationMenuLink href={link.href}>{link.icon}</NavigationMenuLink>
               </NavigationMenuItem>
             ))}
           </NavigationMenuList>
-          <div className="flex items-center gap-6 md:hidden">
+          <div className="flex items-center md:hidden">
             <NavigationMenuLink href="/cart">
               <ShoppingCart aria-label="Shopping cart" />
             </NavigationMenuLink>
@@ -701,21 +673,19 @@ export const BottomNavigationLeft: Story = {
           </div>
         </div>
         <div className="hidden w-full border-t border-gray-200 pt-6 md:flex">
-          <NavigationMenuList className="hidden md:flex">
+          <NavigationMenuList className="hidden md:flex lg:gap-4">
             {mockedData.map((rootCategory) => (
               <NavigationMenuItem key={rootCategory.entityId}>
                 {rootCategory.children.length > 0 ? (
                   <>
-                    <NavigationMenuTrigger asChild>
-                      <NavigationMenuLink href="#">
-                        {rootCategory.name}{' '}
-                        <ChevronDown
-                          aria-hidden="true"
-                          className={cs(
-                            'transition duration-200 group-data-[state=open]/button:-rotate-180',
-                          )}
-                        />
-                      </NavigationMenuLink>
+                    <NavigationMenuTrigger>
+                      {rootCategory.name}{' '}
+                      <ChevronDown
+                        aria-hidden="true"
+                        className={cs(
+                          'transition duration-200 group-data-[state=open]/button:-rotate-180',
+                        )}
+                      />
                     </NavigationMenuTrigger>
                     <NavigationMenuContent className="grid auto-cols-auto grid-flow-col">
                       {rootCategory.children.map((childCategory1) => (
@@ -725,7 +695,7 @@ export const BottomNavigationLeft: Story = {
                           </NavigationMenuItem>
                           {childCategory1.children.map((childCategory2) => (
                             <NavigationMenuItem key={childCategory2.entityId}>
-                              <NavigationMenuLink className="py-3 font-normal" href="#">
+                              <NavigationMenuLink className="font-normal" href="#">
                                 {childCategory2.name}
                               </NavigationMenuLink>
                             </NavigationMenuItem>
@@ -748,7 +718,7 @@ export const BottomNavigationLeft: Story = {
                 {category.children.length > 0 ? (
                   <>
                     <NavigationMenuTrigger asChild>
-                      <NavigationMenuLink className="py-3" href="#">
+                      <NavigationMenuLink href="#">
                         {category.name}{' '}
                         <ChevronDown
                           aria-hidden="true"
@@ -762,13 +732,11 @@ export const BottomNavigationLeft: Story = {
                       {category.children.map((childCategory, index) => (
                         <ul className="pb-6" key={index}>
                           <NavigationMenuItem>
-                            <NavigationMenuLink className="py-3" href="#">
-                              {childCategory.name}
-                            </NavigationMenuLink>
+                            <NavigationMenuLink href="#">{childCategory.name}</NavigationMenuLink>
                           </NavigationMenuItem>
                           {childCategory.children.map((grandchildCategory, childIndex) => (
                             <NavigationMenuItem key={childIndex}>
-                              <NavigationMenuLink className="py-3 font-normal" href="#">
+                              <NavigationMenuLink className="font-normal" href="#">
                                 {grandchildCategory.name}
                               </NavigationMenuLink>
                             </NavigationMenuItem>
@@ -778,9 +746,7 @@ export const BottomNavigationLeft: Story = {
                     </NavigationMenuContent>
                   </>
                 ) : (
-                  <NavigationMenuLink className="py-3" href="#">
-                    {category.name}
-                  </NavigationMenuLink>
+                  <NavigationMenuLink href="#">{category.name}</NavigationMenuLink>
                 )}
               </NavigationMenuItem>
             ))}
@@ -788,7 +754,7 @@ export const BottomNavigationLeft: Story = {
           <ul className="border-t border-gray-200 pt-6">
             {mockLinks.map((link, index) => (
               <NavigationMenuItem key={index}>
-                <NavigationMenuLink className="py-3" href={link.href}>
+                <NavigationMenuLink href={link.href}>
                   {link.label} {link.icon}
                 </NavigationMenuLink>
               </NavigationMenuItem>
@@ -804,17 +770,17 @@ export const BottomNavigationCenter: Story = {
   render: () => (
     <NavigationMenu className="flex-col">
       <div className="flex min-h-[92px] w-full items-center justify-between">
-        <a className="text-h4 font-black" href="/home">
+        <a className="px-0 text-h4 font-black" href="/home">
           Catalyst Store
         </a>
-        <NavigationMenuList className="hidden md:flex">
+        <NavigationMenuList className="hidden gap-2 md:flex">
           {mockLinks.map((link, index) => (
             <NavigationMenuItem key={index}>
               <NavigationMenuLink href={link.href}>{link.icon}</NavigationMenuLink>
             </NavigationMenuItem>
           ))}
         </NavigationMenuList>
-        <div className="flex items-center gap-6 md:hidden">
+        <div className="flex items-center md:hidden">
           <NavigationMenuLink href="/cart">
             <ShoppingCart aria-label="Shopping cart" />
           </NavigationMenuLink>
@@ -824,21 +790,19 @@ export const BottomNavigationCenter: Story = {
         </div>
       </div>
       <div className="hidden w-full justify-center border-t border-gray-200 pt-6 md:flex">
-        <NavigationMenuList className="hidden md:flex">
+        <NavigationMenuList className="hidden md:flex lg:gap-4">
           {mockedData.map((rootCategory) => (
             <NavigationMenuItem key={rootCategory.entityId}>
               {rootCategory.children.length > 0 ? (
                 <>
-                  <NavigationMenuTrigger asChild>
-                    <NavigationMenuLink href="#">
-                      {rootCategory.name}{' '}
-                      <ChevronDown
-                        aria-hidden="true"
-                        className={cs(
-                          'transition duration-200 group-data-[state=open]/button:-rotate-180',
-                        )}
-                      />
-                    </NavigationMenuLink>
+                  <NavigationMenuTrigger>
+                    {rootCategory.name}{' '}
+                    <ChevronDown
+                      aria-hidden="true"
+                      className={cs(
+                        'transition duration-200 group-data-[state=open]/button:-rotate-180',
+                      )}
+                    />
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="grid auto-cols-auto grid-flow-col">
                     {rootCategory.children.map((childCategory1) => (
@@ -848,7 +812,7 @@ export const BottomNavigationCenter: Story = {
                         </NavigationMenuItem>
                         {childCategory1.children.map((childCategory2) => (
                           <NavigationMenuItem key={childCategory2.entityId}>
-                            <NavigationMenuLink className="py-3 font-normal" href="#">
+                            <NavigationMenuLink className="font-normal" href="#">
                               {childCategory2.name}
                             </NavigationMenuLink>
                           </NavigationMenuItem>
@@ -871,7 +835,7 @@ export const BottomNavigationCenter: Story = {
               {category.children.length > 0 ? (
                 <>
                   <NavigationMenuTrigger asChild>
-                    <NavigationMenuLink className="py-3" href="#">
+                    <NavigationMenuLink href="#">
                       {category.name}{' '}
                       <ChevronDown
                         aria-hidden="true"
@@ -885,13 +849,11 @@ export const BottomNavigationCenter: Story = {
                     {category.children.map((childCategory, index) => (
                       <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
-                          <NavigationMenuLink className="py-3" href="#">
-                            {childCategory.name}
-                          </NavigationMenuLink>
+                          <NavigationMenuLink href="#">{childCategory.name}</NavigationMenuLink>
                         </NavigationMenuItem>
                         {childCategory.children.map((grandchildCategory, childIndex) => (
                           <NavigationMenuItem key={childIndex}>
-                            <NavigationMenuLink className="py-3 font-normal" href="#">
+                            <NavigationMenuLink className="font-normal" href="#">
                               {grandchildCategory.name}
                             </NavigationMenuLink>
                           </NavigationMenuItem>
@@ -901,9 +863,7 @@ export const BottomNavigationCenter: Story = {
                   </NavigationMenuContent>
                 </>
               ) : (
-                <NavigationMenuLink className="py-3" href="#">
-                  {category.name}
-                </NavigationMenuLink>
+                <NavigationMenuLink href="#">{category.name}</NavigationMenuLink>
               )}
             </NavigationMenuItem>
           ))}
@@ -911,7 +871,7 @@ export const BottomNavigationCenter: Story = {
         <ul className="border-t border-gray-200 pt-6">
           {mockLinks.map((link, index) => (
             <NavigationMenuItem key={index}>
-              <NavigationMenuLink className="py-3" href={link.href}>
+              <NavigationMenuLink href={link.href}>
                 {link.label} {link.icon}
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -926,17 +886,17 @@ export const BottomNavigationRight: Story = {
   render: () => (
     <NavigationMenu className="flex-col">
       <div className="flex min-h-[92px] w-full items-center justify-between">
-        <a className="text-h4 font-black" href="/home">
+        <a className="px-0 text-h4 font-black" href="/home">
           Catalyst Store
         </a>
-        <NavigationMenuList className="hidden md:flex">
+        <NavigationMenuList className="hidden gap-2 md:flex">
           {mockLinks.map((link, index) => (
             <NavigationMenuItem key={index}>
               <NavigationMenuLink href={link.href}>{link.icon}</NavigationMenuLink>
             </NavigationMenuItem>
           ))}
         </NavigationMenuList>
-        <div className="flex items-center gap-6 md:hidden">
+        <div className="flex items-center md:hidden">
           <NavigationMenuLink href="/cart">
             <ShoppingCart aria-label="Shopping cart" />
           </NavigationMenuLink>
@@ -946,21 +906,19 @@ export const BottomNavigationRight: Story = {
         </div>
       </div>
       <div className="hidden w-full justify-end border-t border-gray-200 pt-6 md:flex">
-        <NavigationMenuList className="hidden md:flex">
+        <NavigationMenuList className="hidden md:flex lg:gap-4">
           {mockedData.map((rootCategory) => (
             <NavigationMenuItem key={rootCategory.entityId}>
               {rootCategory.children.length > 0 ? (
                 <>
-                  <NavigationMenuTrigger asChild>
-                    <NavigationMenuLink href="#">
-                      {rootCategory.name}{' '}
-                      <ChevronDown
-                        aria-hidden="true"
-                        className={cs(
-                          'transition duration-200 group-data-[state=open]/button:-rotate-180',
-                        )}
-                      />
-                    </NavigationMenuLink>
+                  <NavigationMenuTrigger>
+                    {rootCategory.name}{' '}
+                    <ChevronDown
+                      aria-hidden="true"
+                      className={cs(
+                        'transition duration-200 group-data-[state=open]/button:-rotate-180',
+                      )}
+                    />
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="grid auto-cols-auto grid-flow-col">
                     {rootCategory.children.map((childCategory1) => (
@@ -970,7 +928,7 @@ export const BottomNavigationRight: Story = {
                         </NavigationMenuItem>
                         {childCategory1.children.map((childCategory2) => (
                           <NavigationMenuItem key={childCategory2.entityId}>
-                            <NavigationMenuLink className="py-3 font-normal" href="#">
+                            <NavigationMenuLink className="font-normal" href="#">
                               {childCategory2.name}
                             </NavigationMenuLink>
                           </NavigationMenuItem>
@@ -993,7 +951,7 @@ export const BottomNavigationRight: Story = {
               {category.children.length > 0 ? (
                 <>
                   <NavigationMenuTrigger asChild>
-                    <NavigationMenuLink className="py-3" href="#">
+                    <NavigationMenuLink href="#">
                       {category.name}{' '}
                       <ChevronDown
                         aria-hidden="true"
@@ -1007,13 +965,11 @@ export const BottomNavigationRight: Story = {
                     {category.children.map((childCategory, index) => (
                       <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
-                          <NavigationMenuLink className="py-3" href="#">
-                            {childCategory.name}
-                          </NavigationMenuLink>
+                          <NavigationMenuLink href="#">{childCategory.name}</NavigationMenuLink>
                         </NavigationMenuItem>
                         {childCategory.children.map((grandchildCategory, childIndex) => (
                           <NavigationMenuItem key={childIndex}>
-                            <NavigationMenuLink className="py-3 font-normal" href="#">
+                            <NavigationMenuLink className="font-normal" href="#">
                               {grandchildCategory.name}
                             </NavigationMenuLink>
                           </NavigationMenuItem>
@@ -1023,9 +979,7 @@ export const BottomNavigationRight: Story = {
                   </NavigationMenuContent>
                 </>
               ) : (
-                <NavigationMenuLink className="py-3" href="#">
-                  {category.name}
-                </NavigationMenuLink>
+                <NavigationMenuLink href="#">{category.name}</NavigationMenuLink>
               )}
             </NavigationMenuItem>
           ))}
@@ -1033,7 +987,7 @@ export const BottomNavigationRight: Story = {
         <ul className="border-t border-gray-200 pt-6">
           {mockLinks.map((link, index) => (
             <NavigationMenuItem key={index}>
-              <NavigationMenuLink className="py-3" href={link.href}>
+              <NavigationMenuLink href={link.href}>
                 {link.label} {link.icon}
               </NavigationMenuLink>
             </NavigationMenuItem>

@@ -36,12 +36,15 @@ const Cart = async () => {
   const count = cart.lineItems.totalQuantity;
 
   return (
-    <LinkNoCache href="/cart">
+    <LinkNoCache
+      className="focus:ring-primary-blue/20 flex justify-between p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4"
+      href="/cart"
+    >
       <span className="sr-only">Cart Items</span>
 
       <div className="relative">
         <ShoppingCart aria-hidden="true" />
-        <div className="dark:border-gray-900 absolute -right-4 -top-4 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-blue-primary text-sm font-bold text-white">
+        <div className="dark:border-gray-900 absolute -right-4 -top-3 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-blue-primary text-sm font-bold text-white">
           {count}
         </div>
       </div>
@@ -59,7 +62,7 @@ const HeaderNav = async ({
   const categoryTree = await client.getCategoryTree();
 
   return (
-    <NavigationMenuList className={className}>
+    <NavigationMenuList className={cs(!inCollapsedNav && 'lg:gap-4', className)}>
       {categoryTree.map((category) => (
         <NavigationMenuItem key={category.path}>
           {category.children.length > 0 ? (
@@ -113,22 +116,28 @@ const HeaderNav = async ({
 export const Header = () => {
   return (
     <header>
-      <NavigationMenu>
-        <Link href="/">
-          <StoreLogo />
-        </Link>
+      <NavigationMenu className="gap-6 lg:gap-8">
+        <NavigationMenuLink asChild className="px-0">
+          <Link href="/">
+            <StoreLogo />
+          </Link>
+        </NavigationMenuLink>
         <HeaderNav className="hidden lg:flex" />
-        <div className="flex gap-5">
-          <NavigationMenuList>
+        <div className="flex">
+          <NavigationMenuList className="lg:gap-2">
             <NavigationMenuItem>
-              <Link aria-label="Search" href="/search">
-                <Search />
-              </Link>
+              <NavigationMenuLink asChild>
+                <Link aria-label="Search" href="/search">
+                  <Search />
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
-                <Cart />
-              </Suspense>
+              <NavigationMenuLink asChild>
+                <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
+                  <Cart />
+                </Suspense>
+              </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
           <NavigationMenuToggle className="lg:hidden">

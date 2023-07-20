@@ -19,10 +19,6 @@ const ExpandedContext = createContext<{
   setIsExpanded: () => undefined,
 });
 
-const expandedMenuStyles = cs(
-  'is-expanded group absolute top-full left-0 z-50 w-full bg-white pb-6',
-);
-
 export const NavigationMenu = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.Root>,
   ComponentPropsWithRef<typeof NavigationMenuPrimitive.Root>
@@ -33,7 +29,7 @@ export const NavigationMenu = forwardRef<
     <ExpandedContext.Provider value={{ isExpanded, setIsExpanded }}>
       <NavigationMenuPrimitive.Root
         className={cs(
-          'group relative flex min-h-[92px] items-center justify-between gap-6 bg-white lg:gap-8',
+          'group relative flex min-h-[92px] items-center justify-between bg-white',
           className,
         )}
         ref={ref}
@@ -41,7 +37,9 @@ export const NavigationMenu = forwardRef<
       >
         {children}
         {!isExpanded && (
-          <NavigationMenuPrimitive.Viewport className={cs(expandedMenuStyles, 'pt-6 pb-12')} />
+          <NavigationMenuPrimitive.Viewport
+            className={cs('absolute top-full left-0 z-50 w-full bg-white pt-6 pb-12')}
+          />
         )}
       </NavigationMenuPrimitive.Root>
     </ExpandedContext.Provider>
@@ -52,11 +50,7 @@ export const NavigationMenuList = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.List>,
   ComponentPropsWithRef<typeof NavigationMenuPrimitive.List>
 >(({ children, className, ...props }, ref) => (
-  <NavigationMenuPrimitive.List
-    className={cs('flex items-center gap-4 lg:gap-8', className)}
-    ref={ref}
-    {...props}
-  >
+  <NavigationMenuPrimitive.List className={cs('flex items-center', className)} ref={ref} {...props}>
     {children}
   </NavigationMenuPrimitive.List>
 ));
@@ -64,7 +58,7 @@ export const NavigationMenuList = forwardRef<
 export const NavigationMenuItem = NavigationMenuPrimitive.Item;
 
 const navigationMenuLinkStyles = cs(
-  'focus:ring-primary-blue/20 flex justify-between font-semibold hover:text-blue-primary focus:outline-none focus:ring-4 group-[.is-expanded]:py-3',
+  'focus:ring-primary-blue/20 flex justify-between p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4 group-[.in-collapsed-nav]:px-0',
 );
 
 export const NavigationMenuTrigger = forwardRef<
@@ -111,7 +105,10 @@ export const NavigationMenuToggle = forwardRef<
     <button
       aria-controls="nav-menu"
       aria-expanded={isExpanded}
-      className={cs('hover:text-blue-primary', className)}
+      className={cs(
+        'focus:ring-primary-blue/20 p-3 hover:text-blue-primary focus:outline-none focus:ring-4',
+        className,
+      )}
       onClick={(e) => {
         onClick?.(e);
         setIsExpanded(!isExpanded);
@@ -142,7 +139,11 @@ export const NavigationMenuCollapsed = forwardRef<ElementRef<'div'>, ComponentPr
 
     return (
       <div
-        className={cs(expandedMenuStyles, className, !isExpanded && 'hidden')}
+        className={cs(
+          'in-collapsed-nav group absolute top-full left-0 z-50 w-full bg-white pb-6',
+          className,
+          !isExpanded && 'hidden',
+        )}
         id="nav-menu"
         ref={ref}
         {...props}
