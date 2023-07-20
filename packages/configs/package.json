@@ -2,11 +2,13 @@
   "name": "@bigcommerce/catalyst-configs",
   "description": "Config files for catalyst",
   "version": "0.1.0",
-  "private": true,
   "files": [
     "prettier.config.js"
   ],
   "devDependencies": {
     "prettier": "^2.8.8"
+  },
+  "publishConfig": {
+    "registry": "http://localhost:4873"
   }
 }
