@@ -145,7 +145,7 @@ export const Header = () => {
           </NavigationMenuToggle>
         </div>
         <NavigationMenuCollapsed>
-          <HeaderNav className="block" inCollapsedNav />
+          <HeaderNav inCollapsedNav />
         </NavigationMenuCollapsed>
       </NavigationMenu>
     </header>
