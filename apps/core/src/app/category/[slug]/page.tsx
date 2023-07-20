@@ -36,7 +36,7 @@ export default async function Category({ params, searchParams }: Props) {
     <div>
       <h1 className="mb-3 text-h2">{category.name}</h1>
 
-      <div className="pt-6 lg:grid lg:grid-cols-3 lg:gap-x-8 xl:grid-cols-4">
+      <div className="pt-6 sm:grid sm:grid-cols-3 lg:gap-x-8 xl:grid-cols-4">
         <section aria-labelledby="filters-heading" className="flex flex-col gap-6">
           <h2 className="sr-only" id="filters-heading">
             Filters
@@ -65,7 +65,7 @@ export default async function Category({ params, searchParams }: Props) {
 
         <section
           aria-labelledby="product-heading"
-          className="mt-6 lg:col-span-2 lg:mt-0 xl:col-span-3"
+          className="mt-6 sm:col-span-2 lg:mt-0 xl:col-span-3"
         >
           <h2 className="sr-only" id="product-heading">
             Products
