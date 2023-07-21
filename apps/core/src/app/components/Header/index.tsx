@@ -62,9 +62,15 @@ const HeaderNav = async ({
   const categoryTree = await client.getCategoryTree();
 
   return (
-    <NavigationMenuList className={cs(!inCollapsedNav && 'lg:gap-4', className)}>
+    <NavigationMenuList
+      className={cs(
+        !inCollapsedNav && 'lg:gap-4',
+        inCollapsedNav && 'flex-col items-start',
+        className,
+      )}
+    >
       {categoryTree.map((category) => (
-        <NavigationMenuItem key={category.path}>
+        <NavigationMenuItem className={cs(inCollapsedNav && 'w-full')} key={category.path}>
           {category.children.length > 0 ? (
             <>
               <NavigationMenuTrigger asChild>
@@ -89,11 +95,16 @@ const HeaderNav = async ({
                 {category.children.map((childCategory1) => (
                   <ul className={cs(inCollapsedNav && 'pb-4')} key={childCategory1.entityId}>
                     <NavigationMenuItem>
-                      <NavigationMenuLink href="#">{childCategory1.name}</NavigationMenuLink>
+                      <NavigationMenuLink href={`/category/${childCategory1.entityId}`}>
+                        {childCategory1.name}
+                      </NavigationMenuLink>
                     </NavigationMenuItem>
                     {childCategory1.children.map((childCategory2) => (
                       <NavigationMenuItem key={childCategory2.entityId}>
-                        <NavigationMenuLink className="font-normal" href="#">
+                        <NavigationMenuLink
+                          className="font-normal"
+                          href={`/category/${childCategory2.entityId}`}
+                        >
                           {childCategory2.name}
                         </NavigationMenuLink>
                       </NavigationMenuItem>
