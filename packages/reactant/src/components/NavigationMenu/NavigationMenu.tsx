@@ -105,6 +105,7 @@ export const NavigationMenuToggle = forwardRef<
     <button
       aria-controls="nav-menu"
       aria-expanded={isExpanded}
+      aria-label="Toggle navigation"
       className={cs(
         'focus:ring-primary-blue/20 p-3 hover:text-blue-primary focus:outline-none focus:ring-4',
         className,
