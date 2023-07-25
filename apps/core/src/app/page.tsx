@@ -1,5 +1,6 @@
 import { cs } from '@bigcommerce/reactant/cs';
 import { ReactNode } from 'react';
+
 import client from '~/client';
 
 import { Hero } from './components/Hero';
@@ -10,7 +11,7 @@ const ProductList = ({ children }: { children: ReactNode }) => (
 );
 
 const ProductListName = ({ children }: { children: ReactNode }) => (
-  <h3 className={cs('mb-10 text-center text-h3 sm:text-left')}>{children}</h3>
+  <h2 className={cs('mb-10 text-center text-h3 sm:text-left')}>{children}</h2>
 );
 
 const ProductListGrid = ({ children }: { children: ReactNode }) => (
