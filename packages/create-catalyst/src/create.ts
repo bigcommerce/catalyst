@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default-member */
 import { execSync } from 'child_process';
 import { writeFileSync } from 'fs';
 import fsExtra from 'fs-extra';
@@ -12,10 +13,9 @@ export const create = async (name: string) => {
 
   const pkgMgr = getPackageManager();
 
-  console.log();
-  console.log(`Creating Catalyst Storefront: ${name} with ${pkgMgr}`);
-  console.log();
+  console.log(`\nCreating Catalyst Storefront: ${name}\n`);
 
+  // TODO: with makeswift
   const { dir } = await downloadTemplate('github:bigcommerce/catalyst/apps/core', {
     dir: `./${name}`,
   });
@@ -30,6 +30,7 @@ export const create = async (name: string) => {
 
   pkgJson.name = name;
 
+  // #region remove in prod
   const reversionedDependencies: { [key: string]: string } = {};
 
   // eslint-disable-next-line no-restricted-syntax
@@ -56,30 +57,53 @@ export const create = async (name: string) => {
 
       reversionedDevDependencies[pkg] = newVersion;
     }
+
+    // TODO: yarn can't handle double zeroes? e.g., ^18.13.00
+    if (pkg.includes('@types/node')) {
+      reversionedDevDependencies[pkg] = '^18.13.0';
+    }
   }
 
   pkgJson.devDependencies = reversionedDevDependencies;
+  // #endregion remove in prod
 
   fsExtra.writeJsonSync(pkgJsonFilePath, pkgJson, {
     spaces: 2,
   });
 
-  writeFileSync(path.join(dir, '.npmrc'), '@bigcommerce:registry=http://localhost:4873/\n');
+  // #region remove in prod
+  if (pkgMgr === 'yarn') {
+    writeFileSync(
+      path.join(dir, '.yarnrc.yml'),
+      [`npmScopes:`, `  bigcommerce:`, `    npmRegistryServer: "http://localhost:4873"`].join('\n'),
+    );
+  }
+
+  if (pkgMgr === 'npm' || pkgMgr === 'pnpm') {
+    writeFileSync(path.join(dir, '.npmrc'), '@bigcommerce:registry=http://localhost:4873/\n');
+  }
+  // #endregion remove in prod
 
   execSync('cp .env.example .env.local', { cwd: dir, stdio: 'inherit' });
 
-  console.log('Installing dependencies:');
-  console.log();
+  console.log(`Installing dependencies with ${pkgMgr}:\n`);
 
-  execSync('npm install --legacy-peer-deps', { cwd: dir, stdio: 'inherit' });
+  if (pkgMgr === 'npm') {
+    execSync('npm install --legacy-peer-deps', { cwd: dir, stdio: 'inherit' });
+  }
 
-  console.log();
-  console.log(`Success! Created ${name} and installed dependencies.`);
-  console.log();
-  console.log('Next steps:');
-  console.log();
-  console.log(`cd ./${name}`);
+  if (pkgMgr === 'pnpm') {
+    execSync('pnpm install', { cwd: dir, stdio: 'inherit' });
+  }
+
+  if (pkgMgr === 'yarn') {
+    // TODO: this hangs after console.log below, unsure why
+    execSync('yarn install', { cwd: dir, stdio: 'inherit' });
+  }
+
+  console.log(`\nSuccess! Created ${name} and installed dependencies.`);
+  console.log('\nNext steps:');
+  console.log(`\ncd ./${name}`);
   console.log('Modify .env.local');
-  console.log(`${pkgMgr} run dev`);
-  console.log();
+  console.log(`${pkgMgr} run dev\n`);
 };
