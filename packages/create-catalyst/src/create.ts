@@ -1,4 +1,7 @@
+// TODO: fix eslint errors
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
 /* eslint-disable import/no-named-as-default-member */
+
 import { execSync } from 'child_process';
 import { writeFileSync } from 'fs';
 import fsExtra from 'fs-extra';
@@ -8,7 +11,7 @@ import path from 'path';
 import { checkNodeVersion } from './utils/checkNodeVersion';
 import { getPackageManager } from './utils/getPackageManager';
 
-export const create = async (name: string) => {
+export const create = async (name: string, { example }: { example: string }) => {
   checkNodeVersion();
 
   const pkgMgr = getPackageManager();
@@ -16,9 +19,32 @@ export const create = async (name: string) => {
   console.log(`\nCreating Catalyst Storefront: ${name}\n`);
 
   // TODO: with makeswift
-  const { dir } = await downloadTemplate('github:bigcommerce/catalyst/apps/core', {
-    dir: `./${name}`,
-  });
+
+  let dir = '';
+
+  switch (example) {
+    case undefined: {
+      const result = await downloadTemplate('github:bigcommerce/catalyst/apps/core', {
+        dir: `./${name}`,
+      });
+
+      dir = result.dir;
+      break;
+    }
+
+    case 'makeswift': {
+      const result = await downloadTemplate('github:bigcommerce/catalyst/apps/with-makeswift', {
+        dir: `./${name}`,
+      });
+
+      dir = result.dir;
+      break;
+    }
+
+    default: {
+      throw new Error('invalid option passed to --example');
+    }
+  }
 
   const pkgJsonFilePath = path.join(dir, 'package.json');
   const pkgJson = fsExtra.readJsonSync(pkgJsonFilePath) as {

@@ -13,6 +13,7 @@ program
   .description('The official command-line tool to create a new Catalyst storefront.')
   .version(pkg.version)
   .argument('<name>', '(required) name of the folder in which to create your Catalyst project')
+  .option('--example [template]', 'an example with which to bootstrap your store')
   .action(create);
 
 program.parse();
