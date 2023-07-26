@@ -11,7 +11,7 @@ import {
   NavigationMenuTrigger,
 } from '@bigcommerce/reactant/NavigationMenu';
 import type { Meta, StoryObj } from '@storybook/react';
-import { ChevronDown, Menu, Search, ShoppingCart, User } from 'lucide-react';
+import { ChevronDown, MenuSquare, Search, ShoppingCart, User, XSquare } from 'lucide-react';
 
 const meta: Meta<typeof NavigationMenu> = {
   component: NavigationMenu,
@@ -247,9 +247,7 @@ export const BasicExample: Story = {
         <NavigationMenuLink href="/cart">
           <ShoppingCart aria-label="Shopping cart" />
         </NavigationMenuLink>
-        <NavigationMenuToggle>
-          <Menu />
-        </NavigationMenuToggle>
+        <NavigationMenuToggle />
       </div>
       <NavigationMenuCollapsed>
         <ul className="pb-6">
@@ -361,9 +359,7 @@ export const NavigationAlignmentLeft: Story = {
         <NavigationMenuLink href="/cart">
           <ShoppingCart aria-label="Shopping cart" />
         </NavigationMenuLink>
-        <NavigationMenuToggle>
-          <Menu />
-        </NavigationMenuToggle>
+        <NavigationMenuToggle />
       </div>
       <NavigationMenuCollapsed>
         <ul className="pb-6">
@@ -475,9 +471,7 @@ export const NavigationAlignmentRight: Story = {
         <NavigationMenuLink href="/cart">
           <ShoppingCart aria-label="Shopping cart" />
         </NavigationMenuLink>
-        <NavigationMenuToggle>
-          <Menu />
-        </NavigationMenuToggle>
+        <NavigationMenuToggle />
       </div>
       <NavigationMenuCollapsed>
         <ul className="pb-6">
@@ -590,9 +584,7 @@ export const LogoCentered: Story = {
           <NavigationMenuLink href="/cart">
             <ShoppingCart aria-label="Shopping cart" />
           </NavigationMenuLink>
-          <NavigationMenuToggle>
-            <Menu />
-          </NavigationMenuToggle>
+          <NavigationMenuToggle />
         </div>
       </div>
       <NavigationMenuCollapsed>
@@ -668,9 +660,7 @@ export const BottomNavigationLeft: Story = {
             <NavigationMenuLink href="/cart">
               <ShoppingCart aria-label="Shopping cart" />
             </NavigationMenuLink>
-            <NavigationMenuToggle>
-              <Menu />
-            </NavigationMenuToggle>
+            <NavigationMenuToggle />
           </div>
         </div>
         <div className="hidden w-full border-t border-gray-200 pt-6 md:flex">
@@ -785,9 +775,7 @@ export const BottomNavigationCenter: Story = {
           <NavigationMenuLink href="/cart">
             <ShoppingCart aria-label="Shopping cart" />
           </NavigationMenuLink>
-          <NavigationMenuToggle>
-            <Menu />
-          </NavigationMenuToggle>
+          <NavigationMenuToggle />
         </div>
       </div>
       <div className="hidden w-full justify-center border-t border-gray-200 pt-6 md:flex">
@@ -901,9 +889,7 @@ export const BottomNavigationRight: Story = {
           <NavigationMenuLink href="/cart">
             <ShoppingCart aria-label="Shopping cart" />
           </NavigationMenuLink>
-          <NavigationMenuToggle>
-            <Menu />
-          </NavigationMenuToggle>
+          <NavigationMenuToggle />
         </div>
       </div>
       <div className="hidden w-full justify-end border-t border-gray-200 pt-6 md:flex">
@@ -1064,8 +1050,119 @@ export const NavigationWithBadge: Story = {
           <Badge>{children}</Badge>
           <ShoppingCart aria-label="Shopping cart" />
         </NavigationMenuLink>
+        <NavigationMenuToggle />
+      </div>
+      <NavigationMenuCollapsed>
+        <ul className="pb-6">
+          {mockedData.map((category, key) => (
+            <NavigationMenuItem key={key}>
+              {category.children.length > 0 ? (
+                <>
+                  <NavigationMenuTrigger asChild>
+                    <NavigationMenuLink href="#">
+                      {category.name}{' '}
+                      <ChevronDown
+                        aria-hidden="true"
+                        className={cs(
+                          'transition duration-200 group-data-[state=open]/button:-rotate-180',
+                        )}
+                      />
+                    </NavigationMenuLink>
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent className="pl-6">
+                    {category.children.map((childCategory, index) => (
+                      <ul className="pb-6" key={index}>
+                        <NavigationMenuItem>
+                          <NavigationMenuLink href="#">{childCategory.name}</NavigationMenuLink>
+                        </NavigationMenuItem>
+                        {childCategory.children.map((grandchildCategory, childIndex) => (
+                          <NavigationMenuItem key={childIndex}>
+                            <NavigationMenuLink className="font-normal" href="#">
+                              {grandchildCategory.name}
+                            </NavigationMenuLink>
+                          </NavigationMenuItem>
+                        ))}
+                      </ul>
+                    ))}
+                  </NavigationMenuContent>
+                </>
+              ) : (
+                <NavigationMenuLink href="#">{category.name}</NavigationMenuLink>
+              )}
+            </NavigationMenuItem>
+          ))}
+        </ul>
+        <ul className="border-t border-gray-200 pt-6">
+          {mockLinks.map((link, index) => (
+            <NavigationMenuItem key={index}>
+              <NavigationMenuLink href={link.href}>
+                {link.label} {link.icon}
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          ))}
+        </ul>
+      </NavigationMenuCollapsed>
+    </NavigationMenu>
+  ),
+};
+
+export const CustomNavigationMenuToggle: Story = {
+  render: () => (
+    <NavigationMenu className="gap-6 lg:gap-8">
+      <NavigationMenuLink className="px-0 text-h4 font-black" href="/home">
+        Catalyst Store
+      </NavigationMenuLink>
+      <NavigationMenuList className="hidden md:flex lg:gap-4">
+        {mockedData.map((rootCategory) => (
+          <NavigationMenuItem key={rootCategory.entityId}>
+            {rootCategory.children.length > 0 ? (
+              <>
+                <NavigationMenuTrigger>
+                  {rootCategory.name}{' '}
+                  <ChevronDown
+                    aria-hidden="true"
+                    className={cs(
+                      'transition duration-200 group-data-[state=open]/button:-rotate-180',
+                    )}
+                  />
+                </NavigationMenuTrigger>
+                <NavigationMenuContent className="grid auto-cols-auto grid-flow-col">
+                  {rootCategory.children.map((childCategory1) => (
+                    <ul key={childCategory1.entityId}>
+                      <NavigationMenuItem>
+                        <NavigationMenuLink href="#">{childCategory1.name}</NavigationMenuLink>
+                      </NavigationMenuItem>
+                      {childCategory1.children.map((childCategory2) => (
+                        <NavigationMenuItem key={childCategory2.entityId}>
+                          <NavigationMenuLink className="font-normal" href="#">
+                            {childCategory2.name}
+                          </NavigationMenuLink>
+                        </NavigationMenuItem>
+                      ))}
+                    </ul>
+                  ))}
+                </NavigationMenuContent>
+              </>
+            ) : (
+              <NavigationMenuLink href="#">{rootCategory.name}</NavigationMenuLink>
+            )}
+          </NavigationMenuItem>
+        ))}
+      </NavigationMenuList>
+      <NavigationMenuList className="hidden gap-2 md:flex">
+        {mockLinks.map((link, index) => (
+          <NavigationMenuItem key={index}>
+            <NavigationMenuLink href={link.href}>{link.icon}</NavigationMenuLink>
+          </NavigationMenuItem>
+        ))}
+      </NavigationMenuList>
+      <div className="flex items-center md:hidden">
+        <NavigationMenuLink href="/cart">
+          <ShoppingCart aria-label="Shopping cart" />
+        </NavigationMenuLink>
         <NavigationMenuToggle>
-          <Menu />
+          <XSquare className="hidden group-aria-[expanded='true']:block" />
+          <MenuSquare className="hidden group-aria-[expanded='false']:block" />
         </NavigationMenuToggle>
       </div>
       <NavigationMenuCollapsed>
