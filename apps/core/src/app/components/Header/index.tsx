@@ -1,3 +1,4 @@
+import { Badge } from '@bigcommerce/reactant/Badge';
 import { cs } from '@bigcommerce/reactant/cs';
 import {
   NavigationMenu,
@@ -37,17 +38,14 @@ const Cart = async () => {
 
   return (
     <LinkNoCache
-      className="focus:ring-primary-blue/20 flex justify-between p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4"
+      className="focus:ring-primary-blue/20 flex justify-between font-semibold hover:text-blue-primary focus:outline-none focus:ring-4"
       href="/cart"
     >
-      <span className="sr-only">Cart Items</span>
-
-      <div className="relative">
+      <p className="relative p-3" role="status">
+        <span className="sr-only">Cart Items</span>
         <ShoppingCart aria-hidden="true" />
-        <div className="dark:border-gray-900 absolute -right-4 -top-3 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-blue-primary text-sm font-bold text-white">
-          {count}
-        </div>
-      </div>
+        <Badge>{count}</Badge>
+      </p>
     </LinkNoCache>
   );
 };

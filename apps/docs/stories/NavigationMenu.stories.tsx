@@ -1,3 +1,4 @@
+import { Badge } from '@bigcommerce/reactant/Badge';
 import { cs } from '@bigcommerce/reactant/cs';
 import {
   NavigationMenu,
@@ -943,6 +944,129 @@ export const BottomNavigationRight: Story = {
             </NavigationMenuItem>
           ))}
         </NavigationMenuList>
+      </div>
+      <NavigationMenuCollapsed>
+        <ul className="pb-6">
+          {mockedData.map((category, key) => (
+            <NavigationMenuItem key={key}>
+              {category.children.length > 0 ? (
+                <>
+                  <NavigationMenuTrigger asChild>
+                    <NavigationMenuLink href="#">
+                      {category.name}{' '}
+                      <ChevronDown
+                        aria-hidden="true"
+                        className={cs(
+                          'transition duration-200 group-data-[state=open]/button:-rotate-180',
+                        )}
+                      />
+                    </NavigationMenuLink>
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent className="pl-6">
+                    {category.children.map((childCategory, index) => (
+                      <ul className="pb-6" key={index}>
+                        <NavigationMenuItem>
+                          <NavigationMenuLink href="#">{childCategory.name}</NavigationMenuLink>
+                        </NavigationMenuItem>
+                        {childCategory.children.map((grandchildCategory, childIndex) => (
+                          <NavigationMenuItem key={childIndex}>
+                            <NavigationMenuLink className="font-normal" href="#">
+                              {grandchildCategory.name}
+                            </NavigationMenuLink>
+                          </NavigationMenuItem>
+                        ))}
+                      </ul>
+                    ))}
+                  </NavigationMenuContent>
+                </>
+              ) : (
+                <NavigationMenuLink href="#">{category.name}</NavigationMenuLink>
+              )}
+            </NavigationMenuItem>
+          ))}
+        </ul>
+        <ul className="border-t border-gray-200 pt-6">
+          {mockLinks.map((link, index) => (
+            <NavigationMenuItem key={index}>
+              <NavigationMenuLink href={link.href}>
+                {link.label} {link.icon}
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          ))}
+        </ul>
+      </NavigationMenuCollapsed>
+    </NavigationMenu>
+  ),
+};
+
+export const NavigationWithBadge: Story = {
+  args: {
+    children: 3,
+  },
+  render: ({ children }: { children: number }) => (
+    <NavigationMenu className="mx-5 gap-6 lg:gap-8">
+      <NavigationMenuLink className="px-0 text-h4 font-black" href="/home">
+        Catalyst Store
+      </NavigationMenuLink>
+      <NavigationMenuList className="hidden md:flex lg:gap-4">
+        {mockedData.map((rootCategory) => (
+          <NavigationMenuItem key={rootCategory.entityId}>
+            {rootCategory.children.length > 0 ? (
+              <>
+                <NavigationMenuTrigger>
+                  {rootCategory.name}{' '}
+                  <ChevronDown
+                    aria-hidden="true"
+                    className={cs(
+                      'transition duration-200 group-data-[state=open]/button:-rotate-180',
+                    )}
+                  />
+                </NavigationMenuTrigger>
+                <NavigationMenuContent className="grid auto-cols-auto grid-flow-col">
+                  {rootCategory.children.map((childCategory1) => (
+                    <ul key={childCategory1.entityId}>
+                      <NavigationMenuItem>
+                        <NavigationMenuLink href="#">{childCategory1.name}</NavigationMenuLink>
+                      </NavigationMenuItem>
+                      {childCategory1.children.map((childCategory2) => (
+                        <NavigationMenuItem key={childCategory2.entityId}>
+                          <NavigationMenuLink className="font-normal" href="#">
+                            {childCategory2.name}
+                          </NavigationMenuLink>
+                        </NavigationMenuItem>
+                      ))}
+                    </ul>
+                  ))}
+                </NavigationMenuContent>
+              </>
+            ) : (
+              <NavigationMenuLink href="#">{rootCategory.name}</NavigationMenuLink>
+            )}
+          </NavigationMenuItem>
+        ))}
+      </NavigationMenuList>
+      <NavigationMenuList className="hidden gap-2 md:flex">
+        {mockLinks.map((link, index) => (
+          <NavigationMenuItem key={index}>
+            {link.label === 'Shopping cart' ? (
+              <NavigationMenuLink className="relative" href="/cart" role="status">
+                <Badge>{children}</Badge>
+                <ShoppingCart aria-label="Shopping cart" />
+              </NavigationMenuLink>
+            ) : (
+              <NavigationMenuLink href={link.href}>{link.icon}</NavigationMenuLink>
+            )}
+          </NavigationMenuItem>
+        ))}
+      </NavigationMenuList>
+      <div className="flex items-center md:hidden">
+        <NavigationMenuLink className="relative" href="/cart" role="status">
+          <Badge>{children}</Badge>
+          <ShoppingCart aria-label="Shopping cart" />
+        </NavigationMenuLink>
+        <NavigationMenuToggle>
+          <Menu />
+        </NavigationMenuToggle>
       </div>
       <NavigationMenuCollapsed>
         <ul className="pb-6">
