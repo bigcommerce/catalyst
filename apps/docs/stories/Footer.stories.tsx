@@ -1,10 +1,7 @@
 import {
   Footer,
-  FooterAddendum,
   FooterNav,
-  FooterNavGroup,
   FooterNavGroupList,
-  FooterNavGroupTitle,
   FooterNavLink,
   FooterSection,
 } from '@bigcommerce/reactant/Footer';
@@ -34,8 +31,8 @@ export const BasicExample: Story = {
     <Footer>
       <FooterSection className="md:flex-row">
         <FooterNav>
-          <FooterNavGroup>
-            <FooterNavGroupTitle>Categories</FooterNavGroupTitle>
+          <div>
+            <h3 className="mb-4 font-bold">Categories</h3>
             <FooterNavGroupList>
               <FooterNavLink href="/categories/on-sale">On Sale</FooterNavLink>
               <FooterNavLink href="/categories/new-arrivals">New arrivals</FooterNavLink>
@@ -43,35 +40,35 @@ export const BasicExample: Story = {
               <FooterNavLink href="/categories/woman">Women</FooterNavLink>
               <FooterNavLink href="/categories/accessories">Accessories</FooterNavLink>
             </FooterNavGroupList>
-          </FooterNavGroup>
-          <FooterNavGroup>
-            <FooterNavGroupTitle>Top Brands</FooterNavGroupTitle>
+          </div>
+          <div>
+            <h3 className="mb-4 font-bold">Top Brands</h3>
             <FooterNavGroupList>
               <FooterNavLink href="/brands/arcminute">Arcminute</FooterNavLink>
               <FooterNavLink href="/brands/base-london">Base London</FooterNavLink>
               <FooterNavLink href="/brands/birkenstock">Birkenstock</FooterNavLink>
               <FooterNavLink href="brands/good-for-nothing">Good for Nothing</FooterNavLink>
             </FooterNavGroupList>
-          </FooterNavGroup>
-          <FooterNavGroup>
-            <FooterNavGroupTitle>About Us</FooterNavGroupTitle>
+          </div>
+          <div>
+            <h3 className="mb-4 font-bold">About Us</h3>
             <FooterNavGroupList>
               <FooterNavLink href="/contact-us">Contact Us</FooterNavLink>
               <FooterNavLink href="/about">About brand</FooterNavLink>
               <FooterNavLink href="/blog">Blog</FooterNavLink>
             </FooterNavGroupList>
-          </FooterNavGroup>
-          <FooterNavGroup>
-            <FooterNavGroupTitle>Help</FooterNavGroupTitle>
+          </div>
+          <div>
+            <h3 className="mb-4 font-bold">Help</h3>
             <FooterNavGroupList>
               <FooterNavLink href="/shipping-and-returns">Shipping & returns</FooterNavLink>
               <FooterNavLink href="/privacy-policy">Privacy policy</FooterNavLink>
               <FooterNavLink href="/terms-and-conditions">Terms & conditions</FooterNavLink>
               <FooterNavLink href="/faq">FAQ</FooterNavLink>
             </FooterNavGroupList>
-          </FooterNavGroup>
+          </div>
         </FooterNav>
-        <FooterSection className="shrink-0 grow gap-4 md:order-first">
+        <div className="flex shrink-0 grow flex-col gap-4 md:order-first">
           <span className="text-h4 font-black">Catalyst Store</span>
           <address className="not-italic">
             24 Wisteria Lane, Fairview, Eagle <br />
@@ -91,23 +88,21 @@ export const BasicExample: Story = {
               </FooterNavLink>
             </FooterNavGroupList>
           </FooterNav>
-        </FooterSection>
+        </div>
       </FooterSection>
-      <FooterAddendum className="justify-between">
-        <FooterSection className="flex-row gap-6 sm:justify-end">
+      <FooterSection className="flex flex-col justify-between gap-10 border-t border-gray-200 py-8 sm:flex-row sm:gap-8 sm:py-6">
+        <div className="flex gap-6">
           <AmazonIcon />
           <AmericanExpressIcon />
           <ApplePayIcon />
           <MastercardIcon />
           <PayPalIcon />
           <VisaIcon />
-        </FooterSection>
-        <FooterSection className="sm:order-first">
-          <p className="text-gray-500">
-            © {new Date().getFullYear()} Catalyst Store – Powered by BigCommerce
-          </p>
-        </FooterSection>
-      </FooterAddendum>
+        </div>
+        <p className="text-gray-500 sm:order-first">
+          © {new Date().getFullYear()} Catalyst Store – Powered by BigCommerce
+        </p>
+      </FooterSection>
     </Footer>
   ),
 };
@@ -117,8 +112,8 @@ export const MultiRowFooterNav: Story = {
     <Footer>
       <FooterSection className="md:flex-row">
         <FooterNav className="sm:grid-flow-row sm:grid-cols-4">
-          <FooterNavGroup>
-            <FooterNavGroupTitle>Categories</FooterNavGroupTitle>
+          <div>
+            <h3 className="mb-4 font-bold">Categories</h3>
             <FooterNavGroupList>
               <FooterNavLink href="/categories/on-sale">On Sale</FooterNavLink>
               <FooterNavLink href="/categories/new-arrivals">New arrivals</FooterNavLink>
@@ -126,61 +121,61 @@ export const MultiRowFooterNav: Story = {
               <FooterNavLink href="/categories/woman">Women</FooterNavLink>
               <FooterNavLink href="/categories/accessories">Accessories</FooterNavLink>
             </FooterNavGroupList>
-          </FooterNavGroup>
-          <FooterNavGroup>
-            <FooterNavGroupTitle>Top Brands</FooterNavGroupTitle>
+          </div>
+          <div>
+            <h3 className="mb-4 font-bold">Top Brands</h3>
             <FooterNavGroupList>
               <FooterNavLink href="/brands/arcminute">Arcminute</FooterNavLink>
               <FooterNavLink href="/brands/base-london">Base London</FooterNavLink>
               <FooterNavLink href="/brands/birkenstock">Birkenstock</FooterNavLink>
               <FooterNavLink href="brands/good-for-nothing">Good for Nothing</FooterNavLink>
             </FooterNavGroupList>
-          </FooterNavGroup>
-          <FooterNavGroup>
-            <FooterNavGroupTitle>Men</FooterNavGroupTitle>
+          </div>
+          <div>
+            <h3 className="mb-4 font-bold">Men</h3>
             <FooterNavGroupList>
               <FooterNavLink href="/men/shirts">Shirts</FooterNavLink>
               <FooterNavLink href="/men/pants">Pants</FooterNavLink>
               <FooterNavLink href="/men/sweaters">Sweaters</FooterNavLink>
               <FooterNavLink href="/men/underwear">Underwear</FooterNavLink>
             </FooterNavGroupList>
-          </FooterNavGroup>
-          <FooterNavGroup>
-            <FooterNavGroupTitle>Women</FooterNavGroupTitle>
+          </div>
+          <div>
+            <h3 className="mb-4 font-bold">Women</h3>
             <FooterNavGroupList>
               <FooterNavLink href="/women/shirts">Shirts</FooterNavLink>
               <FooterNavLink href="/women/pants">Pants</FooterNavLink>
               <FooterNavLink href="/women/sweaters">Sweaters</FooterNavLink>
               <FooterNavLink href="/women/underwear">Underwear</FooterNavLink>
             </FooterNavGroupList>
-          </FooterNavGroup>
-          <FooterNavGroup>
-            <FooterNavGroupTitle>Accessories</FooterNavGroupTitle>
+          </div>
+          <div>
+            <h3 className="mb-4 font-bold">Accessories</h3>
             <FooterNavGroupList>
               <FooterNavLink href="/jewelry">Jewelry</FooterNavLink>
               <FooterNavLink href="/hats">Hats</FooterNavLink>
               <FooterNavLink href="/shoes">Shoes</FooterNavLink>
             </FooterNavGroupList>
-          </FooterNavGroup>
-          <FooterNavGroup>
-            <FooterNavGroupTitle>About Us</FooterNavGroupTitle>
+          </div>
+          <div>
+            <h3 className="mb-4 font-bold">About Us</h3>
             <FooterNavGroupList>
               <FooterNavLink href="/contact-us">Contact Us</FooterNavLink>
               <FooterNavLink href="/about">About brand</FooterNavLink>
               <FooterNavLink href="/blog">Blog</FooterNavLink>
             </FooterNavGroupList>
-          </FooterNavGroup>
-          <FooterNavGroup>
-            <FooterNavGroupTitle>Help</FooterNavGroupTitle>
+          </div>
+          <div>
+            <h3 className="mb-4 font-bold">Help</h3>
             <FooterNavGroupList>
               <FooterNavLink href="/shipping-and-returns">Shipping & returns</FooterNavLink>
               <FooterNavLink href="/privacy-policy">Privacy policy</FooterNavLink>
               <FooterNavLink href="/terms-and-conditions">Terms & conditions</FooterNavLink>
               <FooterNavLink href="/faq">FAQ</FooterNavLink>
             </FooterNavGroupList>
-          </FooterNavGroup>
+          </div>
         </FooterNav>
-        <FooterSection className="shrink-0 grow gap-4 md:order-first">
+        <div className="flex shrink-0 grow flex-col gap-4 md:order-first">
           <span className="text-h4 font-black">Catalyst Store</span>
           <address className="not-italic">
             24 Wisteria Lane, Fairview, Eagle <br />
@@ -200,23 +195,21 @@ export const MultiRowFooterNav: Story = {
               </FooterNavLink>
             </FooterNavGroupList>
           </FooterNav>
-        </FooterSection>
+        </div>
       </FooterSection>
-      <FooterAddendum className="justify-between">
-        <FooterSection className="flex-row gap-6 sm:justify-end">
+      <FooterSection className="flex flex-col justify-between gap-10 border-t border-gray-200 py-8 sm:flex-row sm:gap-8 sm:py-6">
+        <div className="flex gap-6">
           <AmazonIcon />
           <AmericanExpressIcon />
           <ApplePayIcon />
           <MastercardIcon />
           <PayPalIcon />
           <VisaIcon />
-        </FooterSection>
-        <FooterSection className="sm:order-first">
-          <p className="text-gray-500">
-            © {new Date().getFullYear()} Catalyst Store – Powered by BigCommerce
-          </p>
-        </FooterSection>
-      </FooterAddendum>
+        </div>
+        <p className="text-gray-500 sm:order-first">
+          © {new Date().getFullYear()} Catalyst Store – Powered by BigCommerce
+        </p>
+      </FooterSection>
     </Footer>
   ),
 };
@@ -224,85 +217,85 @@ export const MultiRowFooterNav: Story = {
 export const FooterNavOnly: Story = {
   render: () => (
     <Footer>
-      <FooterNav className="sm:grid-flow-row sm:grid-cols-4">
-        <FooterNavGroup>
-          <FooterNavGroupTitle>Categories</FooterNavGroupTitle>
-          <FooterNavGroupList>
-            <FooterNavLink href="/categories/on-sale">On Sale</FooterNavLink>
-            <FooterNavLink href="/categories/new-arrivals">New arrivals</FooterNavLink>
-            <FooterNavLink href="/categories/men">Men</FooterNavLink>
-            <FooterNavLink href="/categories/woman">Women</FooterNavLink>
-            <FooterNavLink href="/categories/accessories">Accessories</FooterNavLink>
-          </FooterNavGroupList>
-        </FooterNavGroup>
-        <FooterNavGroup>
-          <FooterNavGroupTitle>Top Brands</FooterNavGroupTitle>
-          <FooterNavGroupList>
-            <FooterNavLink href="/brands/arcminute">Arcminute</FooterNavLink>
-            <FooterNavLink href="/brands/base-london">Base London</FooterNavLink>
-            <FooterNavLink href="/brands/birkenstock">Birkenstock</FooterNavLink>
-            <FooterNavLink href="brands/good-for-nothing">Good for Nothing</FooterNavLink>
-          </FooterNavGroupList>
-        </FooterNavGroup>
-        <FooterNavGroup>
-          <FooterNavGroupTitle>Men</FooterNavGroupTitle>
-          <FooterNavGroupList>
-            <FooterNavLink href="/men/shirts">Shirts</FooterNavLink>
-            <FooterNavLink href="/men/pants">Pants</FooterNavLink>
-            <FooterNavLink href="/men/sweaters">Sweaters</FooterNavLink>
-            <FooterNavLink href="/men/underwear">Underwear</FooterNavLink>
-          </FooterNavGroupList>
-        </FooterNavGroup>
-        <FooterNavGroup>
-          <FooterNavGroupTitle>Women</FooterNavGroupTitle>
-          <FooterNavGroupList>
-            <FooterNavLink href="/women/shirts">Shirts</FooterNavLink>
-            <FooterNavLink href="/women/pants">Pants</FooterNavLink>
-            <FooterNavLink href="/women/sweaters">Sweaters</FooterNavLink>
-            <FooterNavLink href="/women/underwear">Underwear</FooterNavLink>
-          </FooterNavGroupList>
-        </FooterNavGroup>
-        <FooterNavGroup>
-          <FooterNavGroupTitle>Accessories</FooterNavGroupTitle>
-          <FooterNavGroupList>
-            <FooterNavLink href="/jewelry">Jewelry</FooterNavLink>
-            <FooterNavLink href="/hats">Hats</FooterNavLink>
-            <FooterNavLink href="/shoes">Shoes</FooterNavLink>
-          </FooterNavGroupList>
-        </FooterNavGroup>
-        <FooterNavGroup>
-          <FooterNavGroupTitle>About Us</FooterNavGroupTitle>
-          <FooterNavGroupList>
-            <FooterNavLink href="/contact-us">Contact Us</FooterNavLink>
-            <FooterNavLink href="/about">About brand</FooterNavLink>
-            <FooterNavLink href="/blog">Blog</FooterNavLink>
-          </FooterNavGroupList>
-        </FooterNavGroup>
-        <FooterNavGroup>
-          <FooterNavGroupTitle>Help</FooterNavGroupTitle>
-          <FooterNavGroupList>
-            <FooterNavLink href="/shipping-and-returns">Shipping & returns</FooterNavLink>
-            <FooterNavLink href="/privacy-policy">Privacy policy</FooterNavLink>
-            <FooterNavLink href="/terms-and-conditions">Terms & conditions</FooterNavLink>
-            <FooterNavLink href="/faq">FAQ</FooterNavLink>
-          </FooterNavGroupList>
-        </FooterNavGroup>
-      </FooterNav>
-      <FooterAddendum className="justify-between">
-        <FooterSection className="flex-row gap-6 sm:justify-end">
+      <FooterSection className="md:flex-row">
+        <FooterNav className="sm:grid-flow-row sm:grid-cols-4">
+          <div>
+            <h3 className="mb-4 font-bold">Categories</h3>
+            <FooterNavGroupList>
+              <FooterNavLink href="/categories/on-sale">On Sale</FooterNavLink>
+              <FooterNavLink href="/categories/new-arrivals">New arrivals</FooterNavLink>
+              <FooterNavLink href="/categories/men">Men</FooterNavLink>
+              <FooterNavLink href="/categories/woman">Women</FooterNavLink>
+              <FooterNavLink href="/categories/accessories">Accessories</FooterNavLink>
+            </FooterNavGroupList>
+          </div>
+          <div>
+            <h3 className="mb-4 font-bold">Top Brands</h3>
+            <FooterNavGroupList>
+              <FooterNavLink href="/brands/arcminute">Arcminute</FooterNavLink>
+              <FooterNavLink href="/brands/base-london">Base London</FooterNavLink>
+              <FooterNavLink href="/brands/birkenstock">Birkenstock</FooterNavLink>
+              <FooterNavLink href="brands/good-for-nothing">Good for Nothing</FooterNavLink>
+            </FooterNavGroupList>
+          </div>
+          <div>
+            <h3 className="mb-4 font-bold">Men</h3>
+            <FooterNavGroupList>
+              <FooterNavLink href="/men/shirts">Shirts</FooterNavLink>
+              <FooterNavLink href="/men/pants">Pants</FooterNavLink>
+              <FooterNavLink href="/men/sweaters">Sweaters</FooterNavLink>
+              <FooterNavLink href="/men/underwear">Underwear</FooterNavLink>
+            </FooterNavGroupList>
+          </div>
+          <div>
+            <h3 className="mb-4 font-bold">Women</h3>
+            <FooterNavGroupList>
+              <FooterNavLink href="/women/shirts">Shirts</FooterNavLink>
+              <FooterNavLink href="/women/pants">Pants</FooterNavLink>
+              <FooterNavLink href="/women/sweaters">Sweaters</FooterNavLink>
+              <FooterNavLink href="/women/underwear">Underwear</FooterNavLink>
+            </FooterNavGroupList>
+          </div>
+          <div>
+            <h3 className="mb-4 font-bold">Accessories</h3>
+            <FooterNavGroupList>
+              <FooterNavLink href="/jewelry">Jewelry</FooterNavLink>
+              <FooterNavLink href="/hats">Hats</FooterNavLink>
+              <FooterNavLink href="/shoes">Shoes</FooterNavLink>
+            </FooterNavGroupList>
+          </div>
+          <div>
+            <h3 className="mb-4 font-bold">About Us</h3>
+            <FooterNavGroupList>
+              <FooterNavLink href="/contact-us">Contact Us</FooterNavLink>
+              <FooterNavLink href="/about">About brand</FooterNavLink>
+              <FooterNavLink href="/blog">Blog</FooterNavLink>
+            </FooterNavGroupList>
+          </div>
+          <div>
+            <h3 className="mb-4 font-bold">Help</h3>
+            <FooterNavGroupList>
+              <FooterNavLink href="/shipping-and-returns">Shipping & returns</FooterNavLink>
+              <FooterNavLink href="/privacy-policy">Privacy policy</FooterNavLink>
+              <FooterNavLink href="/terms-and-conditions">Terms & conditions</FooterNavLink>
+              <FooterNavLink href="/faq">FAQ</FooterNavLink>
+            </FooterNavGroupList>
+          </div>
+        </FooterNav>
+      </FooterSection>
+      <FooterSection className="flex flex-col justify-between gap-10 border-t border-gray-200 py-8 sm:flex-row sm:gap-8 sm:py-6">
+        <div className="flex gap-6">
           <AmazonIcon />
           <AmericanExpressIcon />
           <ApplePayIcon />
           <MastercardIcon />
           <PayPalIcon />
           <VisaIcon />
-        </FooterSection>
-        <FooterSection className="sm:order-first">
-          <p className="text-gray-500">
-            © {new Date().getFullYear()} Catalyst Store – Powered by BigCommerce
-          </p>
-        </FooterSection>
-      </FooterAddendum>
+        </div>
+        <p className="text-gray-500 sm:order-first">
+          © {new Date().getFullYear()} Catalyst Store – Powered by BigCommerce
+        </p>
+      </FooterSection>
     </Footer>
   ),
 };
@@ -312,8 +305,8 @@ export const NoAddendum: Story = {
     <Footer>
       <FooterSection className="md:flex-row">
         <FooterNav>
-          <FooterNavGroup>
-            <FooterNavGroupTitle>Categories</FooterNavGroupTitle>
+          <div>
+            <h3 className="mb-4 font-bold">Categories</h3>
             <FooterNavGroupList>
               <FooterNavLink href="/categories/on-sale">On Sale</FooterNavLink>
               <FooterNavLink href="/categories/new-arrivals">New arrivals</FooterNavLink>
@@ -321,35 +314,35 @@ export const NoAddendum: Story = {
               <FooterNavLink href="/categories/woman">Women</FooterNavLink>
               <FooterNavLink href="/categories/accessories">Accessories</FooterNavLink>
             </FooterNavGroupList>
-          </FooterNavGroup>
-          <FooterNavGroup>
-            <FooterNavGroupTitle>Top Brands</FooterNavGroupTitle>
+          </div>
+          <div>
+            <h3 className="mb-4 font-bold">Top Brands</h3>
             <FooterNavGroupList>
               <FooterNavLink href="/brands/arcminute">Arcminute</FooterNavLink>
               <FooterNavLink href="/brands/base-london">Base London</FooterNavLink>
               <FooterNavLink href="/brands/birkenstock">Birkenstock</FooterNavLink>
               <FooterNavLink href="brands/good-for-nothing">Good for Nothing</FooterNavLink>
             </FooterNavGroupList>
-          </FooterNavGroup>
-          <FooterNavGroup>
-            <FooterNavGroupTitle>About Us</FooterNavGroupTitle>
+          </div>
+          <div>
+            <h3 className="mb-4 font-bold">About Us</h3>
             <FooterNavGroupList>
               <FooterNavLink href="/contact-us">Contact Us</FooterNavLink>
               <FooterNavLink href="/about">About brand</FooterNavLink>
               <FooterNavLink href="/blog">Blog</FooterNavLink>
             </FooterNavGroupList>
-          </FooterNavGroup>
-          <FooterNavGroup>
-            <FooterNavGroupTitle>Help</FooterNavGroupTitle>
+          </div>
+          <div>
+            <h3 className="mb-4 font-bold">Help</h3>
             <FooterNavGroupList>
               <FooterNavLink href="/shipping-and-returns">Shipping & returns</FooterNavLink>
               <FooterNavLink href="/privacy-policy">Privacy policy</FooterNavLink>
               <FooterNavLink href="/terms-and-conditions">Terms & conditions</FooterNavLink>
               <FooterNavLink href="/faq">FAQ</FooterNavLink>
             </FooterNavGroupList>
-          </FooterNavGroup>
+          </div>
         </FooterNav>
-        <FooterSection className="shrink-0 grow gap-4 md:order-first">
+        <div className="flex shrink-0 grow flex-col gap-4 md:order-first">
           <span className="text-h4 font-black">Catalyst Store</span>
           <address className="not-italic">
             24 Wisteria Lane, Fairview, Eagle <br />
@@ -369,7 +362,7 @@ export const NoAddendum: Story = {
               </FooterNavLink>
             </FooterNavGroupList>
           </FooterNav>
-        </FooterSection>
+        </div>
       </FooterSection>
     </Footer>
   ),

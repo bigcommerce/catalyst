@@ -22,31 +22,36 @@ const ExpandedContext = createContext<{
 });
 
 export const NavigationMenu = forwardRef<
-  ElementRef<'div'>,
-  ComponentPropsWithRef<typeof NavigationMenuPrimitive.Root>
+  ElementRef<typeof NavigationMenuPrimitive.Root>,
+  ComponentPropsWithRef<'div'>
 >(({ children, className, ...props }, ref) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <ExpandedContext.Provider value={{ isExpanded, setIsExpanded }}>
-      <FocusTrap active={isExpanded}>
-        <div className={cs(isExpanded && 'h-screen overflow-y-scroll')} ref={ref}>
-          <NavigationMenuPrimitive.Root
-            className={cs(
-              'group relative flex min-h-[92px] items-center justify-between bg-white px-6 sm:px-10 lg:px-12',
-              className,
-            )}
-            {...props}
-          >
-            {children}
+      <NavigationMenuPrimitive.Root
+        className={cs(isExpanded && 'h-screen overflow-y-auto')}
+        ref={ref}
+      >
+        <FocusTrap active={isExpanded}>
+          <div className="relative">
+            <div
+              className={cs(
+                'group flex min-h-[92px] items-center justify-between bg-white px-6 sm:px-10 lg:px-12 2xl:container 2xl:mx-auto 2xl:px-0',
+                className,
+              )}
+              {...props}
+            >
+              {children}
+            </div>
             {!isExpanded && (
               <NavigationMenuPrimitive.Viewport
                 className={cs('absolute top-full left-0 z-50 w-full bg-white pt-6 pb-12 shadow-xl')}
               />
             )}
-          </NavigationMenuPrimitive.Root>
-        </div>
-      </FocusTrap>
+          </div>
+        </FocusTrap>
+      </NavigationMenuPrimitive.Root>
     </ExpandedContext.Provider>
   );
 });
@@ -83,7 +88,18 @@ export const NavigationMenuTrigger = forwardRef<
   </NavigationMenuPrimitive.Trigger>
 ));
 
-export const NavigationMenuContent = NavigationMenuPrimitive.Content;
+export const NavigationMenuContent = forwardRef<
+  React.ElementRef<typeof NavigationMenuPrimitive.Content>,
+  React.ComponentPropsWithRef<typeof NavigationMenuPrimitive.Content>
+>(({ className, children, ...props }, ref) => (
+  <NavigationMenuPrimitive.Content
+    className={cs('2xl:container 2xl:mx-auto', className)}
+    ref={ref}
+    {...props}
+  >
+    {children}
+  </NavigationMenuPrimitive.Content>
+));
 
 export const NavigationMenuLink = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.Link>,
@@ -159,7 +175,7 @@ export const NavigationMenuCollapsed = forwardRef<ElementRef<'div'>, ComponentPr
     return (
       <div
         className={cs(
-          'in-collapsed-nav group absolute top-full left-0 z-50 w-full bg-white px-3 pb-6 sm:px-7 lg:px-9',
+          'in-collapsed-nav group absolute top-full left-0 z-50 w-full bg-white px-3 pb-6 sm:px-7 lg:px-9 2xl:container 2xl:mx-auto 2xl:px-0',
           className,
           !isExpanded && 'hidden',
         )}

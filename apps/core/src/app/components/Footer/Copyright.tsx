@@ -1,9 +1,8 @@
-import { FooterSection } from '@bigcommerce/reactant/Footer';
 import { ComponentPropsWithoutRef } from 'react';
 
 import client from '~/client';
 
-export const Copyright = async (props: ComponentPropsWithoutRef<'div'>) => {
+export const Copyright = async (props: ComponentPropsWithoutRef<'p'>) => {
   const settings = await client.getStoreSettings();
 
   if (!settings) {
@@ -11,10 +10,8 @@ export const Copyright = async (props: ComponentPropsWithoutRef<'div'>) => {
   }
 
   return (
-    <FooterSection className="sm:order-first" {...props}>
-      <p className="text-gray-500">
-        © {new Date().getFullYear()} {settings.storeName} – Powered by BigCommerce
-      </p>
-    </FooterSection>
+    <p className="text-gray-500 sm:order-first" {...props}>
+      © {new Date().getFullYear()} {settings.storeName} – Powered by BigCommerce
+    </p>
   );
 };
