@@ -1,5 +1,6 @@
 import { cs } from '@bigcommerce/reactant/cs';
 import { ReactNode } from 'react';
+
 import client from '~/client';
 
 import { Hero } from './components/Hero';
