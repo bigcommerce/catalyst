@@ -5,22 +5,22 @@ import { cs } from '../../utils/cs';
 
 export const Footer = forwardRef<ElementRef<'footer'>, ComponentPropsWithRef<'footer'>>(
   ({ children, className, ...props }, ref) => (
-    <footer
-      className={cs(
-        'flex flex-col gap-10 border-t border-gray-200 pt-10 sm:gap-8 sm:pt-12',
-        className,
-      )}
-      ref={ref}
-      {...props}
-    >
+    <footer className={cs('2xl:container 2xl:mx-auto', className)} ref={ref} {...props}>
       {children}
     </footer>
   ),
 );
 
-export const FooterSection = forwardRef<ElementRef<'section'>, ComponentPropsWithRef<'section'>>(
+export const FooterSection = forwardRef<ElementRef<'section'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => (
-    <section className={cs('flex flex-col gap-8', className)} ref={ref} {...props}>
+    <section
+      className={cs(
+        'flex flex-col gap-4 border-t border-gray-200 py-8 px-6 sm:flex-row sm:px-10 lg:px-12 2xl:container 2xl:mx-auto 2xl:px-0',
+        className,
+      )}
+      {...props}
+      ref={ref}
+    >
       {children}
     </section>
   ),
@@ -36,22 +36,6 @@ export const FooterNav = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef<'na
     >
       {children}
     </nav>
-  ),
-);
-
-export const FooterNavGroup = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
-  ({ children, className, ...props }, ref) => (
-    <div className={cs(className)} ref={ref} {...props}>
-      {children}
-    </div>
-  ),
-);
-
-export const FooterNavGroupTitle = forwardRef<HTMLHeadingElement, ComponentPropsWithRef<'h3'>>(
-  ({ children, className, ...props }, ref) => (
-    <h3 className={cs('mb-4 font-bold', className)} ref={ref} {...props}>
-      {children}
-    </h3>
   ),
 );
 
@@ -79,19 +63,4 @@ export const FooterNavLink = forwardRef<ElementRef<'li'>, FooterNavLinkProps>(
       </li>
     );
   },
-);
-
-export const FooterAddendum = forwardRef<ElementRef<'section'>, ComponentPropsWithRef<'section'>>(
-  ({ children, className, ...props }, ref) => (
-    <section
-      className={cs(
-        'order-last flex flex-col gap-10 border-t border-gray-200 py-8 sm:flex-row sm:gap-8 sm:py-6',
-        className,
-      )}
-      ref={ref}
-      {...props}
-    >
-      {children}
-    </section>
-  ),
 );

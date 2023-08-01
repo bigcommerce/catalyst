@@ -1,4 +1,5 @@
 import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu';
+import FocusTrap from 'focus-trap-react';
 import {
   ComponentPropsWithRef,
   createContext,
@@ -6,6 +7,7 @@ import {
   forwardRef,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 
@@ -21,26 +23,34 @@ const ExpandedContext = createContext<{
 
 export const NavigationMenu = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.Root>,
-  ComponentPropsWithRef<typeof NavigationMenuPrimitive.Root>
+  ComponentPropsWithRef<'div'>
 >(({ children, className, ...props }, ref) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <ExpandedContext.Provider value={{ isExpanded, setIsExpanded }}>
       <NavigationMenuPrimitive.Root
-        className={cs(
-          'group relative flex min-h-[92px] items-center justify-between bg-white',
-          className,
-        )}
+        className={cs(isExpanded && 'h-screen overflow-y-auto')}
         ref={ref}
-        {...props}
       >
-        {children}
-        {!isExpanded && (
-          <NavigationMenuPrimitive.Viewport
-            className={cs('absolute top-full left-0 z-50 w-full bg-white pt-6 pb-12')}
-          />
-        )}
+        <FocusTrap active={isExpanded}>
+          <div className="relative">
+            <div
+              className={cs(
+                'group flex min-h-[92px] items-center justify-between bg-white px-6 sm:px-10 lg:px-12 2xl:container 2xl:mx-auto 2xl:px-0',
+                className,
+              )}
+              {...props}
+            >
+              {children}
+            </div>
+            {!isExpanded && (
+              <NavigationMenuPrimitive.Viewport
+                className={cs('absolute top-full left-0 z-50 w-full bg-white pt-6 pb-12 shadow-xl')}
+              />
+            )}
+          </div>
+        </FocusTrap>
       </NavigationMenuPrimitive.Root>
     </ExpandedContext.Provider>
   );
@@ -58,7 +68,7 @@ export const NavigationMenuList = forwardRef<
 export const NavigationMenuItem = NavigationMenuPrimitive.Item;
 
 const navigationMenuLinkStyles = cs(
-  'focus:ring-primary-blue/20 flex justify-between p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4 group-[.in-collapsed-nav]:px-0',
+  'focus:ring-primary-blue/20 flex justify-between p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4',
 );
 
 export const NavigationMenuTrigger = forwardRef<
@@ -78,7 +88,18 @@ export const NavigationMenuTrigger = forwardRef<
   </NavigationMenuPrimitive.Trigger>
 ));
 
-export const NavigationMenuContent = NavigationMenuPrimitive.Content;
+export const NavigationMenuContent = forwardRef<
+  React.ElementRef<typeof NavigationMenuPrimitive.Content>,
+  React.ComponentPropsWithRef<typeof NavigationMenuPrimitive.Content>
+>(({ className, children, ...props }, ref) => (
+  <NavigationMenuPrimitive.Content
+    className={cs('2xl:container 2xl:mx-auto', className)}
+    ref={ref}
+    {...props}
+  >
+    {children}
+  </NavigationMenuPrimitive.Content>
+));
 
 export const NavigationMenuLink = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.Link>,
@@ -125,6 +146,19 @@ export const NavigationMenuToggle = forwardRef<
 export const NavigationMenuCollapsed = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     const { isExpanded, setIsExpanded } = useContext(ExpandedContext);
+    const initialBodyOverflowYRef = useRef('');
+
+    // Disable scroll on body when nav is open
+    useEffect(() => {
+      if (isExpanded) {
+        initialBodyOverflowYRef.current = document.body.style.overflowY || '';
+        document.body.style.overflowY = 'hidden';
+
+        return () => {
+          document.body.style.overflowY = initialBodyOverflowYRef.current;
+        };
+      }
+    }, [isExpanded]);
 
     useEffect(() => {
       const handleResize = () => {
@@ -141,7 +175,7 @@ export const NavigationMenuCollapsed = forwardRef<ElementRef<'div'>, ComponentPr
     return (
       <div
         className={cs(
-          'in-collapsed-nav group absolute top-full left-0 z-50 w-full bg-white pb-6',
+          'in-collapsed-nav group absolute top-full left-0 z-50 w-full bg-white px-3 pb-6 sm:px-7 lg:px-9 2xl:container 2xl:mx-auto 2xl:px-0',
           className,
           !isExpanded && 'hidden',
         )}

@@ -36,6 +36,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "class-variance-authority": "^0.6.0",
     "clsx": "^1.2.1",
+    "focus-trap-react": "^10.2.1",
     "lucide-react": "^0.216.0",
     "tailwind-merge": "^1.12.0"
   },

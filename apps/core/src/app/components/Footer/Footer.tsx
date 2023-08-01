@@ -1,9 +1,4 @@
-import {
-  FooterAddendum,
-  FooterNav,
-  FooterSection,
-  Footer as ReactantFooter,
-} from '@bigcommerce/reactant/Footer';
+import { FooterNav, FooterSection, Footer as ReactantFooter } from '@bigcommerce/reactant/Footer';
 import React from 'react';
 
 import { StoreLogo } from '../StoreLogo';
@@ -17,7 +12,7 @@ import { SocialIcons } from './SocialIcons';
 export const Footer = () => {
   return (
     <ReactantFooter>
-      <FooterSection className="md:flex-row">
+      <FooterSection>
         <FooterNav>
           <CategoryFooterMenu />
           <BrandFooterMenu />
@@ -39,18 +34,18 @@ export const Footer = () => {
             title="Help"
           />
         </FooterNav>
-        <FooterSection className="shrink-0 grow gap-4 md:order-first">
+        <div className="flex shrink-0 grow flex-col gap-4 md:order-first">
           <h3 className="mb-4">
             <StoreLogo />
           </h3>
           <ContactInformation />
           <SocialIcons />
-        </FooterSection>
+        </div>
       </FooterSection>
-      <FooterAddendum className="justify-between">
+      <FooterSection className="justify-between gap-10 sm:flex-row sm:gap-8 sm:py-6">
         <PaymentMethods />
         <Copyright />
-      </FooterAddendum>
+      </FooterSection>
     </ReactantFooter>
   );
 };
