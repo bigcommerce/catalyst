@@ -1,5 +1,6 @@
 import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu';
 import FocusTrap from 'focus-trap-react';
+import { Menu, X } from 'lucide-react';
 import {
   ComponentPropsWithRef,
   createContext,
@@ -128,7 +129,7 @@ export const NavigationMenuToggle = forwardRef<
       aria-expanded={isExpanded}
       aria-label="Toggle navigation"
       className={cs(
-        'focus:ring-primary-blue/20 p-3 hover:text-blue-primary focus:outline-none focus:ring-4',
+        'focus:ring-primary-blue/20 group p-3 hover:text-blue-primary focus:outline-none focus:ring-4',
         className,
       )}
       onClick={(e) => {
@@ -138,7 +139,7 @@ export const NavigationMenuToggle = forwardRef<
       ref={ref}
       {...props}
     >
-      {children}
+      {children ?? (isExpanded ? <X /> : <Menu />)}
     </button>
   );
 });

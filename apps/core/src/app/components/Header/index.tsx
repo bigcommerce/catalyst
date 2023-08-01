@@ -149,9 +149,7 @@ export const Header = () => {
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
-          <NavigationMenuToggle className="lg:hidden">
-            <Menu />
-          </NavigationMenuToggle>
+          <NavigationMenuToggle className="lg:hidden" />
         </div>
         <NavigationMenuCollapsed>
           <HeaderNav inCollapsedNav />
