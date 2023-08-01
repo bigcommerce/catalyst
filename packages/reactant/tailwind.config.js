@@ -75,7 +75,7 @@ const config = {
       li: ['1rem', { lineHeight: '1.7' }],
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-radix")()],
 };
 
 module.exports = config;
