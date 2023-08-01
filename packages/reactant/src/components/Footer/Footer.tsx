@@ -15,7 +15,7 @@ export const FooterSection = forwardRef<ElementRef<'section'>, ComponentPropsWit
   ({ children, className, ...props }, ref) => (
     <section
       className={cs(
-        'flex flex-col border-t border-gray-200 py-8 px-6 sm:px-10 lg:px-12 2xl:container 2xl:mx-auto 2xl:px-0',
+        'flex flex-col gap-4 border-t border-gray-200 py-8 px-6 sm:flex-row sm:px-10 lg:px-12 2xl:container 2xl:mx-auto 2xl:px-0',
         className,
       )}
       {...props}

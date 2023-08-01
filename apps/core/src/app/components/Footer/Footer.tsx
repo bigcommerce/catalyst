@@ -12,7 +12,7 @@ import { SocialIcons } from './SocialIcons';
 export const Footer = () => {
   return (
     <ReactantFooter>
-      <FooterSection className="md:flex-row">
+      <FooterSection>
         <FooterNav>
           <CategoryFooterMenu />
           <BrandFooterMenu />

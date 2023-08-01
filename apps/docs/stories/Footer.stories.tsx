@@ -29,7 +29,7 @@ type Story = StoryObj<typeof Footer>;
 export const BasicExample: Story = {
   render: () => (
     <Footer>
-      <FooterSection className="md:flex-row">
+      <FooterSection>
         <FooterNav>
           <div>
             <h3 className="mb-4 font-bold">Categories</h3>
@@ -90,7 +90,7 @@ export const BasicExample: Story = {
           </FooterNav>
         </div>
       </FooterSection>
-      <FooterSection className="flex flex-col justify-between gap-10 border-t border-gray-200 py-8 sm:flex-row sm:gap-8 sm:py-6">
+      <FooterSection className="justify-between gap-10 border-t border-gray-200 sm:gap-8 sm:py-6">
         <div className="flex gap-6">
           <AmazonIcon />
           <AmericanExpressIcon />
@@ -110,7 +110,7 @@ export const BasicExample: Story = {
 export const MultiRowFooterNav: Story = {
   render: () => (
     <Footer>
-      <FooterSection className="md:flex-row">
+      <FooterSection>
         <FooterNav className="sm:grid-flow-row sm:grid-cols-4">
           <div>
             <h3 className="mb-4 font-bold">Categories</h3>
@@ -197,7 +197,7 @@ export const MultiRowFooterNav: Story = {
           </FooterNav>
         </div>
       </FooterSection>
-      <FooterSection className="flex flex-col justify-between gap-10 border-t border-gray-200 py-8 sm:flex-row sm:gap-8 sm:py-6">
+      <FooterSection className="justify-between gap-10 border-t border-gray-200 sm:gap-8 sm:py-6">
         <div className="flex gap-6">
           <AmazonIcon />
           <AmericanExpressIcon />
@@ -217,7 +217,7 @@ export const MultiRowFooterNav: Story = {
 export const FooterNavOnly: Story = {
   render: () => (
     <Footer>
-      <FooterSection className="md:flex-row">
+      <FooterSection>
         <FooterNav className="sm:grid-flow-row sm:grid-cols-4">
           <div>
             <h3 className="mb-4 font-bold">Categories</h3>
@@ -283,7 +283,7 @@ export const FooterNavOnly: Story = {
           </div>
         </FooterNav>
       </FooterSection>
-      <FooterSection className="flex flex-col justify-between gap-10 border-t border-gray-200 py-8 sm:flex-row sm:gap-8 sm:py-6">
+      <FooterSection className="justify-between gap-10 border-t border-gray-200 py-8 sm:gap-8 sm:py-6">
         <div className="flex gap-6">
           <AmazonIcon />
           <AmericanExpressIcon />
@@ -303,7 +303,7 @@ export const FooterNavOnly: Story = {
 export const NoAddendum: Story = {
   render: () => (
     <Footer>
-      <FooterSection className="md:flex-row">
+      <FooterSection>
         <FooterNav>
           <div>
             <h3 className="mb-4 font-bold">Categories</h3>
