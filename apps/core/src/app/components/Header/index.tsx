@@ -10,7 +10,7 @@ import {
   NavigationMenuToggle,
   NavigationMenuTrigger,
 } from '@bigcommerce/reactant/NavigationMenu';
-import { ChevronDown, Menu, Search, ShoppingCart } from 'lucide-react';
+import { ChevronDown, Search, ShoppingCart } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { Suspense } from 'react';
