@@ -75,7 +75,9 @@ const config = {
       li: ['1rem', { lineHeight: '1.7' }],
     },
   },
-  plugins: [require("tailwindcss-radix")()],
+  // @ts-ignore
+  // eslint-disable-next-line global-require
+  plugins: [require('tailwindcss-radix')()],
 };
 
 module.exports = config;
