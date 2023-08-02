@@ -140,6 +140,10 @@ async function internalGetProduct<T>(
         brand: {
           name: true,
         },
+        upc: true,
+        minPurchaseQuantity: true,
+        maxPurchaseQuantity: true,
+        condition: true,
       },
     },
   } satisfies QueryGenqlSelection;
