@@ -1,5 +1,5 @@
 import { BigCommerceResponse, FetcherInput } from '../fetcher';
-import { generateQueryOp, QueryResult } from '../generated';
+import { generateQueryOp, QueryGenqlSelection, QueryResult } from '../generated';
 
 export const getCategoryTree = async <T>(
   customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
@@ -23,7 +23,7 @@ export const getCategoryTree = async <T>(
         },
       },
     },
-  };
+  } satisfies QueryGenqlSelection;
 
   const queryOp = generateQueryOp(query);
 
