@@ -1,5 +1,5 @@
 import { BigCommerceResponse, FetcherInput } from '../fetcher';
-import { generateQueryOp, QueryResult } from '../generated';
+import { generateQueryOp, QueryGenqlSelection, QueryResult } from '../generated';
 import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
 export interface GetBestSellingProductsOptions {
@@ -44,7 +44,7 @@ export const getBestSellingProducts = async <T>(
         },
       },
     },
-  };
+  } satisfies QueryGenqlSelection;
 
   const queryOp = generateQueryOp(query);
 

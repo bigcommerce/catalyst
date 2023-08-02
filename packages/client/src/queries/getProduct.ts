@@ -1,5 +1,5 @@
 import { BigCommerceResponse, FetcherInput } from '../fetcher';
-import { generateQueryOp, QueryResult } from '../generated';
+import { generateQueryOp, QueryGenqlSelection, QueryResult } from '../generated';
 import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
 type Product = NonNullable<Awaited<ReturnType<typeof internalGetProduct>>>;
@@ -142,7 +142,7 @@ async function internalGetProduct<T>(
         },
       },
     },
-  };
+  } satisfies QueryGenqlSelection;
 
   const queryOp = generateQueryOp(query);
 

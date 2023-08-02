@@ -1,5 +1,5 @@
 import { BigCommerceResponse, FetcherInput } from '../fetcher';
-import { generateQueryOp, QueryResult } from '../generated';
+import { generateQueryOp, QueryGenqlSelection, QueryResult } from '../generated';
 import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
 export const getProductReviews = async <T>(
@@ -39,7 +39,7 @@ export const getProductReviews = async <T>(
         },
       },
     },
-  };
+  } satisfies QueryGenqlSelection;
 
   const queryOp = generateQueryOp(query);
   const response = await customFetch<QueryResult<typeof query>>({
