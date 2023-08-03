@@ -8,7 +8,6 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
     "check-types": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0"
   },
