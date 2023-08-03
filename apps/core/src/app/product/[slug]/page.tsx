@@ -5,8 +5,8 @@ import { Heart } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
-import { assertNonNullable } from '~/app/_utils';
 import client from '~/client';
+import { assertNonNullable } from '~/utils';
 
 import { AddToCart } from './AddToCart';
 import { BreadCrumbs } from './Breadcrumbs';
