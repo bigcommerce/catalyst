@@ -6,7 +6,6 @@ import { Label } from '../Label';
 
 export type ValidationPattern =
   | 'badInput'
-  | 'customError'
   | 'patternMismatch'
   | 'rangeOverflow'
   | 'rangeUnderflow'
@@ -41,14 +40,18 @@ export const Field = forwardRef<
   </FormPrimitive.Field>
 ));
 
-export const FieldMessage = forwardRef<
-  ElementRef<typeof FormPrimitive.Message>,
-  ComponentPropsWithRef<typeof FormPrimitive.Message>
->(({ className, children, ...props }, ref) => (
-  <FormPrimitive.Message className={cs(className)} ref={ref} {...props}>
-    {children}
-  </FormPrimitive.Message>
-));
+interface FieldMessageProps
+  extends Omit<ComponentPropsWithRef<typeof FormPrimitive.Message>, 'match'> {
+  match?: ValidationPattern;
+}
+
+export const FieldMessage = forwardRef<ElementRef<typeof FormPrimitive.Message>, FieldMessageProps>(
+  ({ className, children, ...props }, ref) => (
+    <FormPrimitive.Message className={cs(className)} ref={ref} {...props}>
+      {children}
+    </FormPrimitive.Message>
+  ),
+);
 
 interface FieldLabelProps extends ComponentPropsWithRef<typeof Label> {
   isRequired?: boolean;
