@@ -102,20 +102,14 @@ const ProductDetails = async ({ productId }: { productId: number }) => {
   );
 };
 
-const ProductDescriptionAndReviews = async ({
-  className,
-  productId,
-}: {
-  className?: string;
-  productId: number;
-}) => {
+const ProductDescriptionAndReviews = async ({ productId }: { productId: number }) => {
   const product = await client.getProduct(productId);
   const reviewSectionId = 'write-a-review';
 
   assertNonNullable(product);
 
   return (
-    <div className={cs(className)}>
+    <div>
       {Boolean(product.plainTextDescription) && (
         <>
           <h2 className="mb-4 text-h5">Description</h2>
@@ -149,12 +143,9 @@ export default async function Product({ params }: { params: { slug: string } }) 
     <>
       <BreadCrumbs productId={productId} />
       <div className="mt-4 mb-12 lg:grid lg:grid-cols-2 lg:gap-8">
-        <div>
-          <Gallery productId={productId} />
-          <ProductDescriptionAndReviews className="hidden lg:block" productId={productId} />
-        </div>
+        <Gallery productId={productId} />
         <ProductDetails productId={productId} />
-        <ProductDescriptionAndReviews className="lg:hidden" productId={productId} />
+        <ProductDescriptionAndReviews productId={productId} />
       </div>
     </>
   );
