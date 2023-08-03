@@ -29,7 +29,7 @@ const fieldNameMapping = {
 
 type Field = keyof typeof fieldNameMapping;
 
-export const ContactUs = ({ fields }: { fields: Field[] }) => {
+export const ContactUs = ({ fields }: { fields: string[] }) => {
   const { pending } = useFormStatus();
   const [isMessageVisible, showMessage] = useState(false);
   const [isTextFieldValid, setTextFieldValidation] = useState(true);
@@ -62,21 +62,23 @@ export const ContactUs = ({ fields }: { fields: Field[] }) => {
       )}
       <Form
         action={onSubmit}
-        className="mx-auto mb-[42px] mt-8 grid grid-cols-1 gap-y-6 lg:w-[830px] lg:grid-cols-2 lg:gap-x-6 lg:gap-y-2"
+        className="mx-auto mb-10 mt-8 grid grid-cols-1 gap-y-6 lg:w-2/3 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-2"
       >
         <>
-          {fields.map((field) => {
-            const label = fieldNameMapping[field];
+          {fields
+            .filter((field): field is Field => Object.hasOwn(fieldNameMapping, field))
+            .map((field) => {
+              const label = fieldNameMapping[field];
 
-            return (
-              <Field className={cs('relative space-y-2 pb-7')} key={label} name={label}>
-                <FieldLabel>{label}</FieldLabel>
-                <FieldControl asChild>
-                  <Input />
-                </FieldControl>
-              </Field>
-            );
-          })}
+              return (
+                <Field className={cs('relative space-y-2 pb-7')} key={label} name={label}>
+                  <FieldLabel>{label}</FieldLabel>
+                  <FieldControl asChild>
+                    <Input />
+                  </FieldControl>
+                </Field>
+              );
+            })}
           <Field className={cs('relative space-y-2 pb-7')} key="email" name="email">
             <FieldLabel isRequired>Email</FieldLabel>
             <FieldControl asChild>
