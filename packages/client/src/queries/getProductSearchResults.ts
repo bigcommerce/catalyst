@@ -3,7 +3,9 @@ import { generateQueryOp, QueryGenqlSelection, QueryResult } from '../generated'
 import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
 export interface ProductSearch {
-  searchTerm: string;
+  searchTerm?: string;
+  categoryEntityId?: number;
+  categoryEntityIds?: number[];
   limit?: number;
   before?: string;
   after?: string;
@@ -11,7 +13,7 @@ export interface ProductSearch {
 
 export const getProductSearchResults = async <T>(
   customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
-  { searchTerm, limit = 9, before, after }: ProductSearch,
+  { searchTerm, categoryEntityId, categoryEntityIds, limit = 9, before, after }: ProductSearch,
   config: T = {} as T,
 ) => {
   const paginationArgs = before ? { last: limit, before } : { first: limit, after };
@@ -23,6 +25,8 @@ export const getProductSearchResults = async <T>(
           __args: {
             filters: {
               searchTerm,
+              categoryEntityId,
+              categoryEntityIds,
             },
           },
           products: {
@@ -57,6 +61,69 @@ export const getProductSearchResults = async <T>(
               },
             },
           },
+          filters: {
+            edges: {
+              node: {
+                __scalar: true,
+                on_BrandSearchFilter: {
+                  __scalar: true,
+                  brands: {
+                    edges: {
+                      node: {
+                        __scalar: true,
+                      },
+                    },
+                  },
+                },
+                on_CategorySearchFilter: {
+                  __scalar: true,
+                  categories: {
+                    edges: {
+                      node: {
+                        __scalar: true,
+                      },
+                    },
+                  },
+                },
+                on_ProductAttributeSearchFilter: {
+                  __scalar: true,
+                  attributes: {
+                    edges: {
+                      node: {
+                        __scalar: true,
+                      },
+                    },
+                  },
+                },
+                on_RatingSearchFilter: {
+                  __scalar: true,
+                  ratings: {
+                    edges: {
+                      node: {
+                        __scalar: true,
+                      },
+                    },
+                  },
+                },
+                on_PriceSearchFilter: {
+                  selected: {
+                    __scalar: true,
+                  },
+                },
+                on_OtherSearchFilter: {
+                  freeShipping: {
+                    __scalar: true,
+                  },
+                  isFeatured: {
+                    __scalar: true,
+                  },
+                  isInStock: {
+                    __scalar: true,
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },
@@ -76,6 +143,36 @@ export const getProductSearchResults = async <T>(
       searchTerm,
       ...paginationArgs,
     },
+    facets: removeEdgesAndNodes(searchResults.filters).map((node) => {
+      switch (node.__typename) {
+        case 'BrandSearchFilter':
+          return {
+            ...node,
+            brands: removeEdgesAndNodes(node.brands),
+          };
+
+        case 'CategorySearchFilter':
+          return {
+            ...node,
+            categories: removeEdgesAndNodes(node.categories),
+          };
+
+        case 'ProductAttributeSearchFilter':
+          return {
+            ...node,
+            attributes: removeEdgesAndNodes(node.attributes),
+          };
+
+        case 'RatingSearchFilter':
+          return {
+            ...node,
+            ratings: removeEdgesAndNodes(node.ratings),
+          };
+
+        default:
+          return node;
+      }
+    }),
     products: {
       pageInfo: searchResults.products.pageInfo,
       items: removeEdgesAndNodes(searchResults.products),
