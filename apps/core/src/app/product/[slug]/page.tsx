@@ -1,6 +1,5 @@
 import { Product } from '@bigcommerce/catalyst-client';
 import { Button } from '@bigcommerce/reactant/Button';
-import { cs } from '@bigcommerce/reactant/cs';
 import { Heart } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
