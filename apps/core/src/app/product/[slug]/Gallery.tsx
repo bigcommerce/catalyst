@@ -15,10 +15,11 @@ export const Gallery = async ({ productId }: Props) => {
 
   // TODO: make this change based on variant
   return (
-    <div className="mb-12 flex flex-col">
+    <div className="-mx-6 mb-12 flex flex-col sm:-mx-0">
       <Image
         // alt={variantAltText || product.defaultImage.altText}
         alt={product.defaultImage?.altText ?? ''}
+        className="self-center"
         height={619}
         priority
         // src={variantImage || product.defaultImage.url}
