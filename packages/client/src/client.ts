@@ -26,6 +26,7 @@ import { getProductSearchResults } from './queries/getProductSearchResults';
 import { getRelatedProducts } from './queries/getRelatedProducts';
 import { getRoute } from './queries/getRoute';
 import { getStoreSettings } from './queries/getStoreSettings';
+import { getWebPage } from './queries/getWebPage';
 
 type OmitFirstInTuple<T extends unknown[]> = T extends [unknown, ...infer U] ? U : [];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -84,6 +85,10 @@ class Client<CustomRequestInit extends FetcherRequestInit = FetcherRequestInit> 
 
   getStoreSettings(...args: PublicParams<typeof getStoreSettings<CustomRequestInit>>) {
     return getStoreSettings(this.fetch, ...args);
+  }
+
+  getWebPage(...args: PublicParams<typeof getWebPage<CustomRequestInit>>) {
+    return getWebPage(this.fetch, ...args);
   }
 
   getCart(...args: PublicParams<typeof getCart<CustomRequestInit>>) {
