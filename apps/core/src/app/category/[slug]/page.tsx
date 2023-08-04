@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { ProductCard } from 'src/app/components/ProductCard';
 import client from '~/client';
 
+import { Breadcrumbs } from './Breadcrumbs';
 import { fetchCategory } from './fetchCategory';
 
 interface Props {
@@ -42,10 +43,12 @@ export default async function Category({ params, searchParams }: Props) {
 
   return (
     <div>
+      <Breadcrumbs breadcrumbs={category.breadcrumbs.items} category={category.name} />
+
       <h1 className="mb-3 text-h2">{category.name}</h1>
 
       <div className="pt-6 sm:grid sm:grid-cols-3 lg:gap-x-8 xl:grid-cols-4">
-        <section aria-labelledby="filters-heading" className="flex flex-col gap-6">
+        <aside aria-labelledby="filters-heading" className="flex flex-col gap-6">
           <h2 className="sr-only" id="filters-heading">
             Filters
           </h2>
@@ -69,7 +72,7 @@ export default async function Category({ params, searchParams }: Props) {
               <li>Brand 3</li>
             </ul>
           </div>
-        </section>
+        </aside>
 
         <section
           aria-labelledby="product-heading"
