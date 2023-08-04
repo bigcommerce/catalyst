@@ -144,36 +144,38 @@ export const getProductSearchResults = async <T>(
       searchTerm,
       ...paginationArgs,
     },
-    facets: removeEdgesAndNodes(searchResults.filters).map((node) => {
-      switch (node.__typename) {
-        case 'BrandSearchFilter':
-          return {
-            ...node,
-            brands: removeEdgesAndNodes(node.brands),
-          };
+    facets: {
+      items: removeEdgesAndNodes(searchResults.filters).map((node) => {
+        switch (node.__typename) {
+          case 'BrandSearchFilter':
+            return {
+              ...node,
+              brands: removeEdgesAndNodes(node.brands),
+            };
 
-        case 'CategorySearchFilter':
-          return {
-            ...node,
-            categories: removeEdgesAndNodes(node.categories),
-          };
+          case 'CategorySearchFilter':
+            return {
+              ...node,
+              categories: removeEdgesAndNodes(node.categories),
+            };
 
-        case 'ProductAttributeSearchFilter':
-          return {
-            ...node,
-            attributes: removeEdgesAndNodes(node.attributes),
-          };
+          case 'ProductAttributeSearchFilter':
+            return {
+              ...node,
+              attributes: removeEdgesAndNodes(node.attributes),
+            };
 
-        case 'RatingSearchFilter':
-          return {
-            ...node,
-            ratings: removeEdgesAndNodes(node.ratings),
-          };
+          case 'RatingSearchFilter':
+            return {
+              ...node,
+              ratings: removeEdgesAndNodes(node.ratings),
+            };
 
-        default:
-          return node;
-      }
-    }),
+          default:
+            return node;
+        }
+      }),
+    },
     products: {
       pageInfo: searchResults.products.pageInfo,
       items: removeEdgesAndNodes(searchResults.products),
