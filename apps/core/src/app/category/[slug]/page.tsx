@@ -5,6 +5,8 @@ import { notFound } from 'next/navigation';
 import { ProductCard } from 'src/app/components/ProductCard';
 import client from '~/client';
 
+import { fetchCategory } from './fetchCategory';
+
 interface Props {
   params: {
     slug: string;
@@ -13,22 +15,28 @@ interface Props {
 }
 
 export default async function Category({ params, searchParams }: Props) {
-  const before = typeof searchParams.before === 'string' ? searchParams.before : undefined;
-  const after = typeof searchParams.after === 'string' ? searchParams.after : undefined;
-
   const categoryId = Number(params.slug);
+
+  // Eventually we'll want to have a utility parse the query params for the page and map them to the appropriate graphql filters.
+  const after = typeof searchParams.after === 'string' ? searchParams.after : undefined;
+  const before = typeof searchParams.before === 'string' ? searchParams.before : undefined;
+  const limit = typeof searchParams.limit === 'string' ? Number(searchParams.limit) : undefined;
+
+  const fetchCategoryParams = { categoryId, limit, after, before };
+
+  const search = await fetchCategory(fetchCategoryParams);
+
+  // We will only need a partial of this query to fetch the category name and breadcrumbs.
+  // The rest of the arguments are useless at this point.
   const category = await client.getCategory({
     categoryId,
-    limit: 4,
-    after,
-    before,
   });
 
   if (!category) {
     return notFound();
   }
 
-  const productsCollection = category.products;
+  const productsCollection = search.products;
   const products = productsCollection.items;
   const { hasNextPage, hasPreviousPage, endCursor, startCursor } = productsCollection.pageInfo;
 
