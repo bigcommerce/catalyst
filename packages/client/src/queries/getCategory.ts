@@ -7,11 +7,12 @@ export interface GetCategoryOptions {
   limit?: number;
   before?: string;
   after?: string;
+  breadcrumbDepth?: number;
 }
 
 export const getCategory = async <T>(
   customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
-  { categoryId, limit = 9, before, after }: GetCategoryOptions,
+  { categoryId, limit = 9, before, after, breadcrumbDepth = 10 }: GetCategoryOptions,
   config: T = {} as T,
 ) => {
   const paginationArgs = before ? { last: limit, before } : { first: limit, after };
@@ -55,6 +56,15 @@ export const getCategory = async <T>(
             },
           },
         },
+        breadcrumbs: {
+          __args: { depth: breadcrumbDepth },
+          edges: {
+            node: {
+              entityId: true,
+              name: true,
+            },
+          },
+        },
       },
     },
   } satisfies QueryGenqlSelection;
@@ -77,6 +87,9 @@ export const getCategory = async <T>(
     products: {
       pageInfo: category.products.pageInfo,
       items: removeEdgesAndNodes(category.products),
+    },
+    breadcrumbs: {
+      items: removeEdgesAndNodes(category.breadcrumbs),
     },
   };
 };
