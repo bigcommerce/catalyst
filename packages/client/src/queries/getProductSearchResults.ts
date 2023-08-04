@@ -111,6 +111,7 @@ export const getProductSearchResults = async <T>(
                   },
                 },
                 on_OtherSearchFilter: {
+                  __scalar: true,
                   freeShipping: {
                     __scalar: true,
                   },
