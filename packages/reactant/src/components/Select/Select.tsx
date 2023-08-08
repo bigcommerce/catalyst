@@ -57,7 +57,6 @@ export const SelectContent = forwardRef<
         <SelectPrimitive.Viewport className="w-full min-w-[var(--radix-select-trigger-width)] h-radix-select-content-available-height">
           {children}
         </SelectPrimitive.Viewport>
-        <SelectPrimitive.Arrow />
       </SelectPrimitive.Content>
     </SelectPrimitive.Portal>
   );
