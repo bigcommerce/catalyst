@@ -1,4 +1,6 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from '@bigcommerce/reactant/Button';
+import { Select, SelectContent, SelectItem } from '@bigcommerce/reactant/Select';
+import { ChevronLeft, ChevronRight, Filter } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -45,7 +47,34 @@ export default async function Category({ params, searchParams }: Props) {
     <div>
       <Breadcrumbs breadcrumbs={category.breadcrumbs.items} category={category.name} />
 
-      <h1 className="mb-3 text-h2">{category.name}</h1>
+      <div className="lg:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
+        <h1 className="mb-4 text-h2 lg:mb-0">{category.name}</h1>
+
+        <div className="flex flex-col items-center gap-3 whitespace-nowrap md:flex-row">
+          <Button className="items-center md:w-auto lg:hidden" variant="secondary">
+            <Filter className="mr-3" /> <span>Show Filters</span>
+          </Button>
+          <div className="flex w-full flex-col items-start gap-4 md:flex-row md:items-center md:justify-end md:gap-6">
+            <Select className="order-2 min-w-[224px] md:order-3 md:w-auto" defaultValue="featured">
+              <SelectContent>
+                <SelectItem value="featured">Featured items</SelectItem>
+                <SelectItem value="newest">Newest items</SelectItem>
+                <SelectItem value="best_selling">Best selling</SelectItem>
+                <SelectItem value="a_to_z">A to Z</SelectItem>
+                <SelectItem value="z_to_a">Z to A</SelectItem>
+                <SelectItem value="best_reviewed">By review</SelectItem>
+                <SelectItem value="lowest_price">Price: ascending</SelectItem>
+                <SelectItem value="highest_price">Price: descending</SelectItem>
+                <SelectItem value="relevance">Relevance</SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="order-3 py-4 text-base font-semibold md:order-2 md:py-0">
+              {/* TODO: Plural vs. singular items */}
+              {search.products.collectionInfo?.totalItems} items
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="pt-6 sm:grid sm:grid-cols-3 lg:gap-x-8 xl:grid-cols-4">
         <aside aria-labelledby="filters-heading" className="flex flex-col gap-6">

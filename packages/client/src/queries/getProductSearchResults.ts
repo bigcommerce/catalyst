@@ -39,6 +39,9 @@ export const getProductSearchResults = async <T>(
               hasNextPage: true,
               hasPreviousPage: true,
             },
+            collectionInfo: {
+              totalItems: true,
+            },
             edges: {
               node: {
                 entityId: true,
@@ -177,6 +180,7 @@ export const getProductSearchResults = async <T>(
       }),
     },
     products: {
+      collectionInfo: searchResults.products.collectionInfo,
       pageInfo: searchResults.products.pageInfo,
       items: removeEdgesAndNodes(searchResults.products),
     },
