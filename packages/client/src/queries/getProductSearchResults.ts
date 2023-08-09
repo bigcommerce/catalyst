@@ -1,5 +1,10 @@
 import { BigCommerceResponse, FetcherInput } from '../fetcher';
-import { generateQueryOp, QueryGenqlSelection, QueryResult } from '../generated';
+import {
+  generateQueryOp,
+  QueryGenqlSelection,
+  QueryResult,
+  SearchProductsSortInput,
+} from '../generated';
 import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
 export interface ProductSearch {
@@ -9,11 +14,20 @@ export interface ProductSearch {
   limit?: number;
   before?: string;
   after?: string;
+  sort?: SearchProductsSortInput;
 }
 
 export const getProductSearchResults = async <T>(
   customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
-  { searchTerm, categoryEntityId, categoryEntityIds, limit = 9, before, after }: ProductSearch,
+  {
+    searchTerm,
+    categoryEntityId,
+    categoryEntityIds,
+    limit = 9,
+    before,
+    after,
+    sort,
+  }: ProductSearch,
   config: T = {} as T,
 ) => {
   const paginationArgs = before ? { last: limit, before } : { first: limit, after };
@@ -28,6 +42,7 @@ export const getProductSearchResults = async <T>(
               categoryEntityId,
               categoryEntityIds,
             },
+            sort,
           },
           products: {
             __args: {
