@@ -3,6 +3,7 @@ import { generateQueryOp, QueryGenqlSelection, QueryResult } from '../generated'
 
 export const getCategoryTree = async <T>(
   customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
+  rootEntityId?: number,
   config: T = {} as T,
 ) => {
   const Category = {
@@ -14,6 +15,9 @@ export const getCategoryTree = async <T>(
   const query = {
     site: {
       categoryTree: {
+        __args: {
+          rootEntityId,
+        },
         ...Category,
         children: {
           ...Category,

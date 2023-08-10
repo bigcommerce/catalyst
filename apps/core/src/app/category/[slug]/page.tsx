@@ -10,6 +10,7 @@ import client from '~/client';
 import { Breadcrumbs } from './Breadcrumbs';
 import { fetchCategory, PublicSearchParamsSchema } from './fetchCategory';
 import { SortBy } from './SortBy';
+import { SubCategories } from './SubCategories';
 
 interface Props {
   params: {
@@ -63,21 +64,13 @@ export default async function Category({ params, searchParams }: Props) {
         </div>
       </div>
 
-      <div className="pt-6 sm:grid sm:grid-cols-3 lg:gap-x-8 xl:grid-cols-4">
+      <div className="sm:grid sm:grid-cols-3 lg:gap-x-8 xl:grid-cols-4">
         <aside aria-labelledby="filters-heading" className="flex flex-col gap-6">
           <h2 className="sr-only" id="filters-heading">
             Filters
           </h2>
 
-          <div>
-            <h3 className="mb-3 text-h5">Categories</h3>
-
-            <ul className="flex flex-col gap-4 text-base">
-              <li>Category 1</li>
-              <li>Category 2</li>
-              <li>Category 3</li>
-            </ul>
-          </div>
+          <SubCategories categoryId={categoryId} />
 
           <div>
             <h3 className="mb-3 text-h5">Brand</h3>
