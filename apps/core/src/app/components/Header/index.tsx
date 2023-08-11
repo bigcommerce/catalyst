@@ -28,7 +28,12 @@ const Cart = async () => {
     return <ShoppingCart aria-hidden="true" />;
   }
 
-  const cart = await client.getCart(cartId);
+  const cart = await client.getCart(cartId, {
+    cache: 'no-store',
+    next: {
+      tags: ['cart'],
+    },
+  });
 
   if (!cart) {
     return <ShoppingCart aria-hidden="true" />;
