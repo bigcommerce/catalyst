@@ -4,7 +4,7 @@ import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 import { cs } from '../../utils/cs';
 
 export const Breadcrumbs = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef<'ul'>>(
-  ({ children, className, ref, ...props }) => {
+  ({ children, className, ...props }, ref) => {
     return (
       <nav aria-label="Breadcrumb" ref={ref}>
         <ul className={cs('flex flex-wrap items-center', className)} {...props}>
@@ -43,7 +43,7 @@ export const BreadcrumbItem = forwardRef<ElementRef<'li'>, BreadcrumbItemProps>(
 );
 
 export const BreadcrumbDivider = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'span'>>(
-  ({ children, className, ref, ...props }) => {
+  ({ children, className, ...props }, ref) => {
     return (
       <span className={cs('mx-1', className)} ref={ref} {...props}>
         {children}
