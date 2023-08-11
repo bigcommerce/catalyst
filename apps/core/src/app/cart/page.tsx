@@ -25,7 +25,12 @@ export default async function CartPage() {
     return <div>Your cart is empty</div>;
   }
 
-  const cart = await client.getCart(cartId);
+  const cart = await client.getCart(cartId, {
+    cache: 'no-store',
+    next: {
+      tags: ['cart'],
+    },
+  });
 
   if (!cart) {
     return <div>Your cart is empty</div>;
