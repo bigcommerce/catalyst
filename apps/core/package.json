@@ -14,7 +14,7 @@
     "@bigcommerce/reactant": "workspace:^",
     "@vercel/analytics": "^1.0.1",
     "lucide-react": "^0.216.0",
-    "next": "^13.4.14-canary.2",
+    "next": "^13.4.15",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "server-only": "^0.0.1",
