@@ -77,7 +77,7 @@ const config = {
   },
   // @ts-ignore
   // eslint-disable-next-line global-require
-  plugins: [require('tailwindcss-radix')()],
+  plugins: [require('tailwindcss-radix')(), require('tailwindcss-animate')],
 };
 
 module.exports = config;
