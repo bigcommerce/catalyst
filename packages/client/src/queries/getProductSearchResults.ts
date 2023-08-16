@@ -3,31 +3,22 @@ import {
   generateQueryOp,
   QueryGenqlSelection,
   QueryResult,
+  SearchProductsFiltersInput,
   SearchProductsSortInput,
 } from '../generated';
 import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
 export interface ProductSearch {
-  searchTerm?: string;
-  categoryEntityId?: number;
-  categoryEntityIds?: number[];
   limit?: number;
   before?: string;
   after?: string;
   sort?: SearchProductsSortInput;
+  filters?: SearchProductsFiltersInput;
 }
 
 export const getProductSearchResults = async <T>(
   customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
-  {
-    searchTerm,
-    categoryEntityId,
-    categoryEntityIds,
-    limit = 9,
-    before,
-    after,
-    sort,
-  }: ProductSearch,
+  { limit = 9, before, after, sort, filters = {} }: ProductSearch,
   config: T = {} as T,
 ) => {
   const paginationArgs = before ? { last: limit, before } : { first: limit, after };
@@ -37,11 +28,7 @@ export const getProductSearchResults = async <T>(
       search: {
         searchProducts: {
           __args: {
-            filters: {
-              searchTerm,
-              categoryEntityId,
-              categoryEntityIds,
-            },
+            filters,
             sort,
           },
           products: {
@@ -158,10 +145,6 @@ export const getProductSearchResults = async <T>(
   const searchResults = site.search.searchProducts;
 
   return {
-    filters: {
-      searchTerm,
-      ...paginationArgs,
-    },
     facets: {
       items: removeEdgesAndNodes(searchResults.filters).map((node) => {
         switch (node.__typename) {
