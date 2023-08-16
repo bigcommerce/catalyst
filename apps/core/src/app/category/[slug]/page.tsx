@@ -8,7 +8,7 @@ import { ProductCard } from 'src/app/components/ProductCard';
 import client from '~/client';
 
 import { Breadcrumbs } from './Breadcrumbs';
-import { fetchCategory, PublicSearchParamsSchema } from './fetchCategory';
+import { fetchCategory, PublicToPrivateParams } from './fetchCategory';
 import { SortBy } from './SortBy';
 import { SubCategories } from './SubCategories';
 
@@ -22,9 +22,9 @@ interface Props {
 export default async function Category({ params, searchParams }: Props) {
   const categoryId = Number(params.slug);
 
-  const parsedParams = PublicSearchParamsSchema.parse({ categoryId, ...searchParams });
+  const privateParams = PublicToPrivateParams.parse({ categoryId, ...searchParams });
 
-  const search = await fetchCategory(parsedParams);
+  const search = await fetchCategory(privateParams);
 
   // We will only need a partial of this query to fetch the category name and breadcrumbs.
   // The rest of the arguments are useless at this point.

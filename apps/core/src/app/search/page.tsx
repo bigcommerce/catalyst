@@ -26,7 +26,9 @@ export default async function Search({ searchParams }: Props) {
   }
 
   const productSearchResults = await client.getProductSearchResults({
-    searchTerm,
+    filters: {
+      searchTerm,
+    },
     limit: 4,
     after,
     before,
