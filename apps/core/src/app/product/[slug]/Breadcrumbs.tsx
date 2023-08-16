@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const BreadCrumbs = async ({ productId }: Props) => {
-  const product = await client.getProduct(productId);
+  const product = await client.getProduct({ productId });
   const category = product?.categories?.[0];
 
   if (!category) {

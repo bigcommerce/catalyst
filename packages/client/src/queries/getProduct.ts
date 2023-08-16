@@ -4,6 +4,16 @@ import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
 type Product = NonNullable<Awaited<ReturnType<typeof internalGetProduct>>>;
 
+export interface OptionValueId {
+  optionEntityId: number;
+  valueEntityId: number;
+}
+
+export interface GetProductOptions {
+  productId: number;
+  optionValueIds?: OptionValueId[];
+}
+
 const reshapeProductCategories = (categoryConnection: Product['categories']) => {
   const categories = removeEdgesAndNodes(categoryConnection);
 
@@ -48,15 +58,18 @@ const reshapeProduct = (product: Product) => {
 };
 
 async function internalGetProduct<T>(
-  productId: number,
+  options: GetProductOptions,
   customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
   config: T = {} as T,
 ) {
+  const { productId, optionValueIds } = options;
+
   const query = {
     site: {
       product: {
         __args: {
           entityId: productId,
+          optionValueIds,
         },
         categories: {
           __args: { first: 1 },
@@ -85,12 +98,13 @@ async function internalGetProduct<T>(
               on_MultipleChoiceOption: {
                 displayStyle: true,
                 values: {
-                  __args: { first: 5 },
+                  __args: { first: 10 },
                   edges: {
                     node: {
                       entityId: true,
                       label: true,
                       isDefault: true,
+                      __typename: true,
                       on_SwatchOptionValue: {
                         hexColors: true,
                         imageUrl: {
@@ -105,6 +119,7 @@ async function internalGetProduct<T>(
           },
         },
         id: true,
+        entityId: true,
         sku: true,
         warranty: true,
         name: true,
@@ -160,10 +175,10 @@ async function internalGetProduct<T>(
 
 export const getProduct = async <T>(
   customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
-  productId: number,
+  options: GetProductOptions,
   config: T = {} as T,
 ) => {
-  const product = await internalGetProduct(productId, customFetch, config);
+  const product = await internalGetProduct(options, customFetch, config);
 
   if (!product) {
     return null;

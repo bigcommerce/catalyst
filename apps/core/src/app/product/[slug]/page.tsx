@@ -1,5 +1,6 @@
-import { Product } from '@bigcommerce/catalyst-client';
 import { Button } from '@bigcommerce/reactant/Button';
+import { Counter } from '@bigcommerce/reactant/Counter';
+import { Label } from '@bigcommerce/reactant/Label';
 import { Heart } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -10,16 +11,21 @@ import { assertNonNullable } from '~/utils';
 import { AddToCart } from './AddToCart';
 import { BreadCrumbs } from './Breadcrumbs';
 import { Gallery } from './Gallery';
+import { ProductForm } from './ProductForm';
 import { Reviews } from './Reviews';
 import { ReviewSummary } from './ReviewSummary';
+import { VariantSelector } from './VariantSelector';
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
 });
 
-const ProductDetails = async ({ productId }: { productId: number }) => {
-  const product = await client.getProduct(productId);
+const ProductDetails = ({
+  product,
+}: {
+  product: Awaited<ReturnType<typeof client.getProduct>>;
+}) => {
   const reviewSectionId = 'write-a-review';
 
   assertNonNullable(product);
@@ -33,7 +39,7 @@ const ProductDetails = async ({ productId }: { productId: number }) => {
       <h1 className="mb-4 text-h2">{product.name}</h1>
 
       <Suspense fallback="Loading...">
-        <ReviewSummary productId={productId} reviewSectionId={reviewSectionId} />
+        <ReviewSummary productId={product.entityId} reviewSectionId={reviewSectionId} />
       </Suspense>
 
       {product.prices && (
@@ -42,17 +48,30 @@ const ProductDetails = async ({ productId }: { productId: number }) => {
         </div>
       )}
 
-      <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-        <AddToCart productId={productId} />
+      <ProductForm>
+        <input name="product_id" type="hidden" value={product.entityId} />
 
-        {/* NOT IMPLEMENTED YET */}
-        <div className="w-full">
-          <Button disabled type="submit" variant="secondary">
-            <Heart aria-hidden="true" className="mx-2" />
-            <span>Save to wishlist</span>
-          </Button>
+        <VariantSelector product={product} />
+
+        <div className="sm:w-[120px]">
+          <Label className="my-2 inline-block font-semibold" htmlFor="quantity">
+            Quantity
+          </Label>
+          <Counter id="quantity" name="quantity" />
         </div>
-      </div>
+
+        <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+          <AddToCart disabled={product.availabilityV2.status === 'Unavailable'} />
+
+          {/* NOT IMPLEMENTED YET */}
+          <div className="w-full">
+            <Button disabled type="submit" variant="secondary">
+              <Heart aria-hidden="true" className="mx-2" />
+              <span>Save to wishlist</span>
+            </Button>
+          </div>
+        </div>
+      </ProductForm>
 
       <div className="my-12">
         <h2 className="mb-4 text-h5">Additional details</h2>
@@ -81,10 +100,10 @@ const ProductDetails = async ({ productId }: { productId: number }) => {
               <p>{product.maxPurchaseQuantity}</p>
             </div>
           )}
-          {Boolean(product.availabilityV2) && (
+          {Boolean(product.availabilityV2.description) && (
             <div>
               <h3 className="text-base font-bold">Availability</h3>
-              <p>{product.availabilityV2.status}</p>
+              <p>{product.availabilityV2.description}</p>
             </div>
           )}
           {Boolean(product.condition) && (
@@ -95,20 +114,21 @@ const ProductDetails = async ({ productId }: { productId: number }) => {
           )}
         </div>
       </div>
-
-      {/* <Variants productId={productId} /> */}
     </div>
   );
 };
 
-const ProductDescriptionAndReviews = async ({ productId }: { productId: number }) => {
-  const product = await client.getProduct(productId);
-  const reviewSectionId = 'write-a-review';
-
+const ProductDescriptionAndReviews = ({
+  product,
+}: {
+  product: Awaited<ReturnType<typeof client.getProduct>>;
+}) => {
   assertNonNullable(product);
 
+  const reviewSectionId = 'write-a-review';
+
   return (
-    <div>
+    <div className="lg:col-span-2">
       {Boolean(product.plainTextDescription) && (
         <>
           <h2 className="mb-4 text-h5">Description</h2>
@@ -124,27 +144,61 @@ const ProductDescriptionAndReviews = async ({ productId }: { productId: number }
       )}
 
       <Suspense fallback="Loading...">
-        <Reviews productId={productId} reviewSectionId={reviewSectionId} />
+        <Reviews productId={product.entityId} reviewSectionId={reviewSectionId} />
       </Suspense>
     </div>
   );
 };
 
-export default async function Product({ params }: { params: { slug: string } }) {
+export default async function Product({
+  params,
+  searchParams,
+}: {
+  params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   const productId = Number(params.slug);
-  const product = await client.getProduct(productId);
+
+  let product = await client.getProduct({ productId });
 
   if (!product) {
     return notFound();
   }
 
+  const productOptionsEntityIds =
+    product.productOptions?.map((productOption) => productOption.entityId) || [];
+
+  // If product options are present, find if any options have been preselected via search params
+  const optionValueIds = productOptionsEntityIds.reduce<
+    Array<{ optionEntityId: number; valueEntityId: number }>
+  >(
+    (accum, productOptionId) =>
+      searchParams[productOptionId]
+        ? [
+            ...accum,
+            {
+              optionEntityId: productOptionId,
+              valueEntityId: Number(searchParams[productOptionId]),
+            },
+          ]
+        : accum,
+    [],
+  );
+
+  // Need to refetch product with `optionValueIds` if any, to get product overlay
+  if (optionValueIds.length) {
+    product = await client.getProduct({ productId, optionValueIds });
+  }
+
+  assertNonNullable(product);
+
   return (
     <>
       <BreadCrumbs productId={productId} />
       <div className="mt-4 mb-12 lg:grid lg:grid-cols-2 lg:gap-8">
-        <Gallery productId={productId} />
-        <ProductDetails productId={productId} />
-        <ProductDescriptionAndReviews productId={productId} />
+        <Gallery product={product} />
+        <ProductDetails product={product} />
+        <ProductDescriptionAndReviews product={product} />
       </div>
     </>
   );
