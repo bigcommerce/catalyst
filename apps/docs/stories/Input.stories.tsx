@@ -5,9 +5,9 @@ const meta: Meta<typeof Input> = {
   component: Input,
   tags: ['autodocs'],
   argTypes: {
-    state: { control: 'select', options: ['success', 'error'] },
     disabled: { control: 'boolean' },
     placeholder: { control: 'text' },
+    variant: { control: 'select', options: ['success', 'error'] },
   },
 };
 
@@ -32,13 +32,13 @@ export const Disabled: Story = {
 export const Success: Story = {
   args: {
     ...Default.args,
-    state: 'success',
+    variant: 'success',
   },
 };
 
 export const Error: Story = {
   args: {
     ...Default.args,
-    state: 'error',
+    variant: 'error',
   },
 };
