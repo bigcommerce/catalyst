@@ -28,7 +28,7 @@ export const Reviews = async ({ productId, reviewSectionId }: Props) => {
         )}
       </h3>
 
-      <ul>
+      <ul className="lg:grid lg:grid-cols-2 lg:gap-8">
         {reviews.length === 0 ? (
           <p className="pb-6 pt-1">This product hasn't been reviewed yet.</p>
         ) : (
