@@ -54,7 +54,6 @@ const reshapeProduct = (product: Product) => {
     categories: reshapeProductCategories(product.categories),
     images: removeEdgesAndNodes(product.images),
     productOptions: reshapeProductOptions(product.productOptions),
-    relatedProducts: removeEdgesAndNodes(product.relatedProducts),
   };
 };
 
@@ -160,27 +159,6 @@ async function internalGetProduct<T>(
         minPurchaseQuantity: true,
         maxPurchaseQuantity: true,
         condition: true,
-        relatedProducts: {
-          __args: { first: 4 },
-          edges: {
-            node: {
-              entityId: true,
-              name: true,
-              defaultImage: {
-                altText: true,
-                url: {
-                  __args: { width: 320 },
-                },
-              },
-              prices: {
-                price: {
-                  value: true,
-                  currencyCode: true,
-                },
-              },
-            },
-          },
-        },
       },
     },
   } satisfies QueryGenqlSelection;

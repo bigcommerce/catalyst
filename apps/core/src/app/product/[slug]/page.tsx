@@ -1,3 +1,4 @@
+import { OptionValueId } from '@bigcommerce/catalyst-client';
 import { Button } from '@bigcommerce/reactant/Button';
 import { Counter } from '@bigcommerce/reactant/Counter';
 import { Label } from '@bigcommerce/reactant/Label';
@@ -151,14 +152,16 @@ const ProductDescriptionAndReviews = ({
   );
 };
 
-const RelatedProducts = ({
-  product,
+const RelatedProducts = async ({
+  productId,
+  optionValueIds,
 }: {
-  product: Awaited<ReturnType<typeof client.getProduct>>;
+  productId: number;
+  optionValueIds: OptionValueId[];
 }) => {
-  assertNonNullable(product);
+  const relatedProducts = await client.getRelatedProducts({ productId, optionValueIds });
 
-  if (!product.relatedProducts.length) {
+  if (!relatedProducts || !relatedProducts.length) {
     return null;
   }
 
@@ -166,7 +169,7 @@ const RelatedProducts = ({
     <>
       <h2 className="text-h3">Related Products</h2>
       <div className="mb-14 mt-9 grid grid-cols-2 gap-6 md:grid-cols-4 lg:mt-10 lg:gap-8">
-        {product.relatedProducts.map((relatedProduct) => (
+        {relatedProducts.map((relatedProduct) => (
           <ProductCard key={relatedProduct.entityId} product={relatedProduct} />
         ))}
       </div>
@@ -203,7 +206,10 @@ export default async function Product({
         <ProductDetails product={product} />
         <ProductDescriptionAndReviews product={product} />
       </div>
-      <RelatedProducts product={product} />
+
+      <Suspense fallback="Loading...">
+        <RelatedProducts optionValueIds={optionValueIds} productId={productId} />
+      </Suspense>
     </>
   );
 }

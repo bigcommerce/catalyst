@@ -16,6 +16,7 @@ import { getFeaturedProducts } from './queries/getFeaturedProducts';
 import { getProduct } from './queries/getProduct';
 import { getProductReviews } from './queries/getProductReviews';
 import { getProductSearchResults } from './queries/getProductSearchResults';
+import { getRelatedProducts } from './queries/getRelatedProducts';
 import { getStoreSettings } from './queries/getStoreSettings';
 
 type OmitFirstInTuple<T extends unknown[]> = T extends [unknown, ...infer U] ? U : [];
@@ -63,6 +64,10 @@ class Client<CustomRequestInit extends RequestInit = RequestInit> {
     ...args: PublicParams<typeof getProductSearchResults<CustomRequestInit>>
   ) {
     return getProductSearchResults(this.fetch, ...args);
+  }
+
+  getRelatedProducts(...args: PublicParams<typeof getRelatedProducts<CustomRequestInit>>) {
+    return getRelatedProducts(this.fetch, ...args);
   }
 
   getStoreSettings(...args: PublicParams<typeof getStoreSettings<CustomRequestInit>>) {
