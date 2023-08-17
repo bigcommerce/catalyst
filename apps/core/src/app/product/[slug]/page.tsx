@@ -169,21 +169,12 @@ export default async function Product({
     product.productOptions?.map((productOption) => productOption.entityId) || [];
 
   // If product options are present, find if any options have been preselected via search params
-  const optionValueIds = productOptionsEntityIds.reduce<
-    Array<{ optionEntityId: number; valueEntityId: number }>
-  >(
-    (accum, productOptionId) =>
-      searchParams[productOptionId]
-        ? [
-            ...accum,
-            {
-              optionEntityId: productOptionId,
-              valueEntityId: Number(searchParams[productOptionId]),
-            },
-          ]
-        : accum,
-    [],
-  );
+  const optionValueIds = productOptionsEntityIds
+    .filter((productOptionEntityId) => Number(searchParams[productOptionEntityId]))
+    .map((productOptionEntityId) => ({
+      optionEntityId: productOptionEntityId,
+      valueEntityId: Number(searchParams[productOptionEntityId]),
+    }));
 
   // Need to refetch product with `optionValueIds` if any, to get product overlay
   if (optionValueIds.length) {
