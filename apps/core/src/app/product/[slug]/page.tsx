@@ -158,30 +158,18 @@ export default async function Product({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const productId = Number(params.slug);
+  const { slug, ...options } = searchParams;
 
-  let product = await client.getProduct({ productId });
+  const optionValueIds = Object.keys(options).map((option) => ({
+    optionEntityId: Number(option),
+    valueEntityId: Number(searchParams[option]),
+  }));
+
+  const product = await client.getProduct({ productId, optionValueIds });
 
   if (!product) {
     return notFound();
   }
-
-  const productOptionsEntityIds =
-    product.productOptions?.map((productOption) => productOption.entityId) || [];
-
-  // If product options are present, find if any options have been preselected via search params
-  const optionValueIds = productOptionsEntityIds
-    .filter((productOptionEntityId) => Number(searchParams[productOptionEntityId]))
-    .map((productOptionEntityId) => ({
-      optionEntityId: productOptionEntityId,
-      valueEntityId: Number(searchParams[productOptionEntityId]),
-    }));
-
-  // Need to refetch product with `optionValueIds` if any, to get product overlay
-  if (optionValueIds.length) {
-    product = await client.getProduct({ productId, optionValueIds });
-  }
-
-  assertNonNullable(product);
 
   return (
     <>
