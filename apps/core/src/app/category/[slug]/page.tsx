@@ -2,13 +2,13 @@ import { Button } from '@bigcommerce/reactant/Button';
 import { ChevronLeft, ChevronRight, Filter } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
 
 import { ProductCard } from 'src/app/components/ProductCard';
 import client from '~/client';
 
 import { Breadcrumbs } from './Breadcrumbs';
 import { fetchCategory, PublicToPrivateParams } from './fetchCategory';
+import { RefineBy } from './RefineBy';
 import { SortBy } from './SortBy';
 import { SubCategories } from './SubCategories';
 
@@ -52,10 +52,7 @@ export default async function Category({ params, searchParams }: Props) {
             <Filter className="mr-3" /> <span>Show Filters</span>
           </Button>
           <div className="flex w-full flex-col items-start gap-4 md:flex-row md:items-center md:justify-end md:gap-6">
-            {/* This suspense boundary allows everything above it to be statically rendered */}
-            <Suspense>
-              <SortBy />
-            </Suspense>
+            <SortBy />
             <div className="order-3 py-4 text-base font-semibold md:order-2 md:py-0">
               {/* TODO: Plural vs. singular items */}
               {search.products.collectionInfo?.totalItems} items
@@ -71,6 +68,8 @@ export default async function Category({ params, searchParams }: Props) {
           </h2>
 
           <SubCategories categoryId={categoryId} />
+
+          <RefineBy facets={search.facets} />
 
           <div>
             <h3 className="mb-3 text-h5">Brand</h3>

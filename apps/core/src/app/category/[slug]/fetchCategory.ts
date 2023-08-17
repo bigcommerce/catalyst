@@ -71,7 +71,7 @@ const PrivateSearchParamsSchema = z.object({
   filters: SearchProductsFiltersInputSchema.optional(),
 });
 
-const PublicSearchParamsSchema = z
+export const PublicSearchParamsSchema = z
   .object({
     after: z.string().optional(),
     before: z.string().optional(),
