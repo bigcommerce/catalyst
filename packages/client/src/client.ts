@@ -15,6 +15,7 @@ import { getCategoryTree } from './queries/getCategoryTree';
 import { getFeaturedProducts } from './queries/getFeaturedProducts';
 import { getProduct } from './queries/getProduct';
 import { getProductReviews } from './queries/getProductReviews';
+import { getProducts } from './queries/getProducts';
 import { getProductSearchResults } from './queries/getProductSearchResults';
 import { getStoreSettings } from './queries/getStoreSettings';
 
@@ -53,6 +54,10 @@ class Client<CustomRequestInit extends RequestInit = RequestInit> {
 
   getProduct(...args: PublicParams<typeof getProduct<CustomRequestInit>>) {
     return getProduct(this.fetch, ...args);
+  }
+
+  getProducts(...args: PublicParams<typeof getProducts<CustomRequestInit>>) {
+    return getProducts(this.fetch, ...args);
   }
 
   getProductReviews(...args: PublicParams<typeof getProductReviews<CustomRequestInit>>) {
