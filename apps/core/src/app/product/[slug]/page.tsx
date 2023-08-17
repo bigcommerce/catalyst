@@ -5,6 +5,7 @@ import { Heart } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
+import { ProductCard } from '~/app/components/ProductCard';
 import client from '~/client';
 import { assertNonNullable } from '~/utils';
 
@@ -150,6 +151,29 @@ const ProductDescriptionAndReviews = ({
   );
 };
 
+const RelatedProducts = ({
+  product,
+}: {
+  product: Awaited<ReturnType<typeof client.getProduct>>;
+}) => {
+  assertNonNullable(product);
+
+  if (!product.relatedProducts.length) {
+    return null;
+  }
+
+  return (
+    <>
+      <h2 className="text-h3">Related Products</h2>
+      <div className="mb-14 mt-9 grid grid-cols-2 gap-6 md:grid-cols-4 lg:mt-10 lg:gap-8">
+        {product.relatedProducts.map((relatedProduct) => (
+          <ProductCard key={relatedProduct.entityId} product={relatedProduct} />
+        ))}
+      </div>
+    </>
+  );
+};
+
 export default async function Product({
   params,
   searchParams,
@@ -179,6 +203,7 @@ export default async function Product({
         <ProductDetails product={product} />
         <ProductDescriptionAndReviews product={product} />
       </div>
+      <RelatedProducts product={product} />
     </>
   );
 }
