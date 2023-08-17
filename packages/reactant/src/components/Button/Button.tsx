@@ -5,7 +5,7 @@ import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 import { cs } from '../../utils/cs';
 
 const buttonVariants = cva(
-  'inline-flex w-full justify-center border-2 py-2.5 px-[30px] text-base leading-6 font-semibold border-blue-primary disabled:border-gray-400 focus:outline-none focus:ring-4 focus:ring-primary-blue/20',
+  'inline-flex w-full justify-center items-center border-2 py-2.5 px-[30px] text-base leading-6 font-semibold border-blue-primary disabled:border-gray-400 focus:outline-none focus:ring-4 focus:ring-primary-blue/20',
   {
     variants: {
       variant: {
