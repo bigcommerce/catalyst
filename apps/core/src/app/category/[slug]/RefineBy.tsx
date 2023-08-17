@@ -1,4 +1,7 @@
+'use client';
+
 import { Tag, TagAction, TagContent } from '@bigcommerce/reactant/Tag';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import z from 'zod';
 
 import { fetchCategory, PublicSearchParamsSchema } from './fetchCategory';
@@ -89,7 +92,20 @@ const mapFacetsToRefinements = (facets: Props['facets']) =>
     .flat();
 
 export const RefineBy = ({ facets }: Props) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const refinements = mapFacetsToRefinements(facets);
+
+  const removeRefinement = (refinement: FacetProps<string>) => {
+    const filteredParams = Array.from(searchParams.entries()).filter(
+      ([key, value]) => refinement.key !== key || refinement.value !== value,
+    );
+
+    const params = new URLSearchParams(Object.fromEntries(filteredParams));
+
+    return router.push(`${pathname}?${params.toString()}`);
+  };
 
   if (!refinements.length) {
     return null;
@@ -103,11 +119,11 @@ export const RefineBy = ({ facets }: Props) => {
         <button className="font-semibold text-blue-primary">Clear all</button>
       </div>
       <ul className="mb-4 flex flex-row flex-wrap gap-2 py-2">
-        {refinements.map((param) => (
-          <li key={`${param.key}-${param.value}`}>
+        {refinements.map((refinement) => (
+          <li key={`${refinement.key}-${refinement.value}`}>
             <Tag>
-              <TagContent>{param.display_name}</TagContent>
-              <TagAction />
+              <TagContent>{refinement.display_name}</TagContent>
+              <TagAction onClick={() => removeRefinement(refinement)} />
             </Tag>
           </li>
         ))}
