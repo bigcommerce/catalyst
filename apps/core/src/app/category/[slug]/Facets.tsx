@@ -70,6 +70,38 @@ export const Facets = ({ facets }: Props) => {
           );
         }
 
+        if (facet.__typename === 'ProductAttributeSearchFilter') {
+          return (
+            <AccordionItem key={facet.__typename} value={facet.name}>
+              <AccordionTrigger>
+                <h3>{facet.name}</h3>
+              </AccordionTrigger>
+              <AccordionContent>
+                {facet.attributes.map((attribute) => (
+                  <div className="flex max-w-sm items-center py-2 pl-1" key={attribute.value}>
+                    <Checkbox
+                      defaultChecked={attribute.isSelected}
+                      id={`${facet.filterName}-${attribute.value}`}
+                      name={facet.filterName}
+                      value={attribute.value}
+                    />
+                    <Label
+                      className="cursor-pointer pl-3"
+                      htmlFor={`${facet.filterName}-${attribute.value}`}
+                    >
+                      {attribute.value}
+                      <ProductCount
+                        count={attribute.productCount}
+                        shouldDisplay={facet.displayProductCount}
+                      />
+                    </Label>
+                  </div>
+                ))}
+              </AccordionContent>
+            </AccordionItem>
+          );
+        }
+
         return null;
       })}
     </Accordion>
