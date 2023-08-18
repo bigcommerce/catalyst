@@ -22,21 +22,37 @@ export interface InputProps extends ComponentPropsWithRef<'input'> {
   variant?: 'success' | 'error';
 }
 
+export interface InputIconProps extends ComponentPropsWithRef<'span'> {
+  variant?: 'success' | 'error';
+}
+
+export const InputIcon = forwardRef<ElementRef<'span'>, InputIconProps>(
+  ({ className, children, variant, ...props }) => (
+    <span
+      aria-hidden="true"
+      className={cs(
+        'pointer-events-none absolute top-0 right-4 flex h-full items-center peer-disabled:text-gray-200',
+        variant === 'success' && 'text-green-100',
+        variant === 'error' && 'text-red-100',
+        className,
+      )}
+      {...props}
+    >
+      {children ?? (
+        <>
+          {variant === 'success' && <Check />}
+          {variant === 'error' && <AlertCircle />}
+        </>
+      )}
+    </span>
+  ),
+);
+
 export const Input = forwardRef<ElementRef<'div'>, InputProps>(
   ({ className, variant, children, type = 'text', ...props }, ref) => (
     <div className={cs('relative')} ref={ref}>
       <input className={cs(inputVariants({ variant, className }))} type={type} {...props} />
-      <span
-        aria-hidden="true"
-        className={cs(
-          'pointer-events-none absolute top-0 right-4 flex h-full items-center peer-disabled:text-gray-200',
-          variant === 'success' && 'text-green-100',
-          variant === 'error' && 'text-red-100',
-        )}
-      >
-        {variant === 'success' && <Check />}
-        {variant === 'error' && <AlertCircle />}
-      </span>
+      {children ?? <InputIcon variant={variant} />}
     </div>
   ),
 );
