@@ -7,6 +7,7 @@ import { ProductCard } from 'src/app/components/ProductCard';
 import client from '~/client';
 
 import { Breadcrumbs } from './Breadcrumbs';
+import { Facets } from './Facets';
 import { fetchCategory, PublicToPrivateParams } from './fetchCategory';
 import { RefineBy } from './RefineBy';
 import { SortBy } from './SortBy';
@@ -71,15 +72,7 @@ export default async function Category({ params, searchParams }: Props) {
 
           <RefineBy facets={search.facets} />
 
-          <div>
-            <h3 className="mb-3 text-h5">Brand</h3>
-
-            <ul className="flex flex-col gap-4 text-base">
-              <li>Brand 1</li>
-              <li>Brand 2</li>
-              <li>Brand 3</li>
-            </ul>
-          </div>
+          <Facets facets={search.facets} />
         </aside>
 
         <section
