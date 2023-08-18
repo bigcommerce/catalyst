@@ -51,7 +51,7 @@ export const CustomIcon: Story = {
   },
   render: ({ variant, ...props }) => (
     <Input variant={variant} {...props}>
-      <InputIcon variant={variant}>
+      <InputIcon>
         <CheckCircle />
       </InputIcon>
     </Input>
