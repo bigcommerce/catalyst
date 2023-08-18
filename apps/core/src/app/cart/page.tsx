@@ -56,6 +56,24 @@ export default async function CartPage() {
                 <div className="flex-1">
                   <p className="text-base text-gray-500">{product.brand}</p>
                   <p className="text-h5">{product.name}</p>
+
+                  {product.selectedOptions.length ? (
+                    <div className="mt-2">
+                      {product.selectedOptions.map((selectedOption) => {
+                        switch (selectedOption.__typename) {
+                          case 'CartSelectedMultipleChoiceOption':
+                            return (
+                              <div key={selectedOption.entityId}>
+                                <span>{selectedOption.name}:</span>{' '}
+                                <span className="font-semibold">{selectedOption.value}</span>
+                              </div>
+                            );
+                        }
+
+                        return null;
+                      })}
+                    </div>
+                  ) : null}
                 </div>
 
                 <div>

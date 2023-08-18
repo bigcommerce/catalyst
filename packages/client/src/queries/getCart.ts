@@ -35,6 +35,14 @@ export async function getCart<T>(
               currencyCode: true,
               value: true,
             },
+            selectedOptions: {
+              __typename: true,
+              entityId: true,
+              name: true,
+              on_CartSelectedMultipleChoiceOption: {
+                value: true,
+              },
+            },
           },
         },
       },
