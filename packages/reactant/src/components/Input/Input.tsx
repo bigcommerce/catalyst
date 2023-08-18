@@ -1,6 +1,6 @@
 import { cva } from 'class-variance-authority';
 import { AlertCircle, Check } from 'lucide-react';
-import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
+import { ComponentPropsWithRef, createContext, ElementRef, forwardRef, useContext } from 'react';
 
 import { cs } from '../../utils/cs';
 
@@ -18,25 +18,47 @@ const inputVariants = cva(
   },
 );
 
+type VariantTypes = 'success' | 'error';
+
 export interface InputProps extends ComponentPropsWithRef<'input'> {
-  variant?: 'success' | 'error';
+  variant?: VariantTypes;
 }
 
-export const Input = forwardRef<ElementRef<'div'>, InputProps>(
-  ({ className, variant, children, type = 'text', ...props }, ref) => (
-    <div className={cs('relative')} ref={ref}>
-      <input className={cs(inputVariants({ variant, className }))} type={type} {...props} />
+const InputContext = createContext<{ variant?: VariantTypes }>({ variant: undefined });
+
+export const InputIcon = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'span'>>(
+  ({ className, children, ...props }) => {
+    const { variant } = useContext(InputContext);
+
+    return (
       <span
         aria-hidden="true"
         className={cs(
           'pointer-events-none absolute top-0 right-4 flex h-full items-center peer-disabled:text-gray-200',
           variant === 'success' && 'text-green-100',
           variant === 'error' && 'text-red-100',
+          className,
         )}
+        {...props}
       >
-        {variant === 'success' && <Check />}
-        {variant === 'error' && <AlertCircle />}
+        {children ?? (
+          <>
+            {variant === 'success' && <Check />}
+            {variant === 'error' && <AlertCircle />}
+          </>
+        )}
       </span>
-    </div>
+    );
+  },
+);
+
+export const Input = forwardRef<ElementRef<'div'>, InputProps>(
+  ({ className, variant, children, type = 'text', ...props }, ref) => (
+    <InputContext.Provider value={{ variant }}>
+      <div className={cs('relative')} ref={ref}>
+        <input className={cs(inputVariants({ variant, className }))} type={type} {...props} />
+        {children ?? <InputIcon />}
+      </div>
+    </InputContext.Provider>
   ),
 );

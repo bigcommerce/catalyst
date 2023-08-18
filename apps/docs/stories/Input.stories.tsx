@@ -1,5 +1,6 @@
-import { Input } from '@bigcommerce/reactant/Input';
+import { Input, InputIcon } from '@bigcommerce/reactant/Input';
 import type { Meta, StoryObj } from '@storybook/react';
+import { CheckCircle } from 'lucide-react';
 
 const meta: Meta<typeof Input> = {
   component: Input,
@@ -41,4 +42,18 @@ export const Error: Story = {
     ...Default.args,
     variant: 'error',
   },
+};
+
+export const CustomIcon: Story = {
+  args: {
+    ...Default.args,
+    variant: 'success',
+  },
+  render: ({ variant, ...props }) => (
+    <Input variant={variant} {...props}>
+      <InputIcon>
+        <CheckCircle />
+      </InputIcon>
+    </Input>
+  ),
 };
