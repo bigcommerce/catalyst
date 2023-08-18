@@ -57,7 +57,7 @@ export default async function CartPage() {
                   <p className="text-base text-gray-500">{product.brand}</p>
                   <p className="text-h5">{product.name}</p>
 
-                  {product.selectedOptions.length ? (
+                  {Boolean(product.selectedOptions.length) && (
                     <div className="mt-2">
                       {product.selectedOptions.map((selectedOption) => {
                         switch (selectedOption.__typename) {
@@ -73,7 +73,7 @@ export default async function CartPage() {
                         return null;
                       })}
                     </div>
-                  ) : null}
+                  )}
                 </div>
 
                 <div>
