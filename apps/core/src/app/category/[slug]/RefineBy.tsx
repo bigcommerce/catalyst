@@ -2,7 +2,7 @@
 
 import { Tag, TagAction, TagContent } from '@bigcommerce/reactant/Tag';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import z from 'zod';
+import { z } from 'zod';
 
 import { fetchCategory, PublicSearchParamsSchema } from './fetchCategory';
 
