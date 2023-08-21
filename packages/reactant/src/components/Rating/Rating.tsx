@@ -22,7 +22,6 @@ const roundHalf = (num: number) => {
 type StarIconType = FC<ComponentPropsWithoutRef<'svg'>> | LucideIcon;
 
 interface RatingProps extends ComponentPropsWithRef<'span'> {
-  color?: string;
   starEmptyIcon?: StarIconType;
   starFilledIcon?: StarIconType;
   starHalfIcon?: StarIconType;
@@ -32,19 +31,7 @@ interface RatingProps extends ComponentPropsWithRef<'span'> {
 }
 
 export const Rating = forwardRef<ElementRef<'span'>, RatingProps>(
-  (
-    {
-      className,
-      color = 'fill-blue-primary',
-      starFilledIcon,
-      starHalfIcon,
-      starEmptyIcon,
-      size = 24,
-      value,
-      ...props
-    },
-    ref,
-  ) => {
+  ({ className, starFilledIcon, starHalfIcon, starEmptyIcon, size = 24, value, ...props }, ref) => {
     const stars: ReactElement[] = [];
     const rating = roundHalf(value);
 
@@ -54,21 +41,16 @@ export const Rating = forwardRef<ElementRef<'span'>, RatingProps>(
 
     for (let i = 1; i <= MAX_RATING; i += 1) {
       if (rating - i >= 0) {
-        stars.push(<StarFilled className={cs(`${color}`)} height={size} key={i} width={size} />);
+        stars.push(<StarFilled height={size} key={i} width={size} />);
       } else if (rating - i > -1) {
-        stars.push(<StarHalf className={cs(`${color}`)} height={size} key={i} width={size} />);
+        stars.push(<StarHalf height={size} key={i} width={size} />);
       } else {
-        stars.push(<StarEmpty className={cs(`${color}`)} height={size} key={i} width={size} />);
+        stars.push(<StarEmpty height={size} key={i} width={size} />);
       }
     }
 
     return (
-      <span
-        className={cs('inline-flex fill-blue-primary', className)}
-        ref={ref}
-        role="img"
-        {...props}
-      >
+      <span className={cs('inline-flex fill-current', className)} ref={ref} role="img" {...props}>
         {stars}
       </span>
     );

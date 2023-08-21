@@ -1,3 +1,4 @@
+import { cs } from '@bigcommerce/reactant/cs';
 import { Rating } from '@bigcommerce/reactant/Rating';
 import { useId } from 'react';
 
@@ -21,8 +22,14 @@ export const ReviewSummary = async ({ productId, reviewSectionId }: Props) => {
 
   return (
     <div className="flex items-center gap-3">
-      <p aria-describedby={summaryId} className="flex flex-nowrap text-blue-primary">
-        <Rating color={numberOfReviews === 0 && 'fill-gray-400'} value={averageRating} />
+      <p
+        aria-describedby={summaryId}
+        className={cs(
+          'flex flex-nowrap text-blue-primary',
+          numberOfReviews === 0 && 'text-gray-400',
+        )}
+      >
+        <Rating value={averageRating} />
       </p>
 
       <div className="font-semibold" id={summaryId}>
