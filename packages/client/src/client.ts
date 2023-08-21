@@ -1,4 +1,10 @@
-import { BigCommerceResponse, customWrappedFetch, FetcherConfig, FetcherInput } from './fetcher';
+import {
+  BigCommerceResponse,
+  customWrappedFetch,
+  FetcherConfig,
+  FetcherInput,
+  FetcherRequestInit,
+} from './fetcher';
 // Management API (no graphql)
 import { getCheckoutUrl } from './management/getCheckoutUrl';
 // Mutations
@@ -24,7 +30,7 @@ type OmitFirstInTuple<T extends unknown[]> = T extends [unknown, ...infer U] ? U
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type PublicParams<T extends (...args: any[]) => any> = OmitFirstInTuple<Parameters<T>>;
 
-class Client<CustomRequestInit extends RequestInit = RequestInit> {
+class Client<CustomRequestInit extends FetcherRequestInit = FetcherRequestInit> {
   private config: FetcherConfig;
   private fetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>;
 
@@ -104,7 +110,7 @@ class Client<CustomRequestInit extends RequestInit = RequestInit> {
   }
 }
 
-export function createClient<CustomRequestInit extends RequestInit = RequestInit>(
+export function createClient<CustomRequestInit extends FetcherRequestInit = FetcherRequestInit>(
   config: FetcherConfig,
 ): Client<CustomRequestInit> {
   const client = new Client<CustomRequestInit>(config);

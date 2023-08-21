@@ -13,6 +13,10 @@ export interface FetcherInput {
   variables?: Record<string | symbol, unknown>;
 }
 
+export interface FetcherRequestInit extends Omit<RequestInit, 'cache'> {
+  cache?: RequestCache | null;
+}
+
 export function customWrappedFetch<U>(config: FetcherConfig) {
   return (data: FetcherInput) => {
     return bigcommerceFetch<U>({
@@ -30,7 +34,7 @@ export async function bigcommerceFetch<T>({
   headers,
   cache = 'force-cache',
   ...rest
-}: FetcherInput & FetcherConfig & RequestInit): Promise<BigCommerceResponse<T> | never> {
+}: FetcherInput & FetcherConfig & FetcherRequestInit): Promise<BigCommerceResponse<T> | never> {
   const endpoint = `https://store-${storeHash}.mybigcommerce.com/graphql`;
   const response = await fetch(endpoint, {
     method: 'POST',
@@ -43,7 +47,7 @@ export async function bigcommerceFetch<T>({
       query,
       ...(variables && { variables }),
     }),
-    cache,
+    ...(cache && { cache }),
     ...rest,
   });
 
