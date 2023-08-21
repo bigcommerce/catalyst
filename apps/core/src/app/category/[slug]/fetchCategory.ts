@@ -159,12 +159,15 @@ export const fetchCategory = cache(
     sort,
     filters,
   }: z.infer<typeof PrivateSearchParamsSchema>) => {
-    return client.getProductSearchResults({
-      after,
-      before,
-      limit,
-      sort,
-      filters,
-    });
+    return client.getProductSearchResults(
+      {
+        after,
+        before,
+        limit,
+        sort,
+        filters,
+      },
+      { next: { revalidate: 300 }, cache: null },
+    );
   },
 );
