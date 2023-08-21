@@ -82,7 +82,10 @@ export const Facets = ({ facets }: Props) => {
               </AccordionTrigger>
               <AccordionContent>
                 {facet.attributes.map((attribute) => (
-                  <div className="flex max-w-sm items-center py-2 pl-1" key={attribute.value}>
+                  <div
+                    className="flex max-w-sm items-center py-2 pl-1"
+                    key={`${facet.filterName}-${attribute.value}`}
+                  >
                     <Checkbox
                       defaultChecked={attribute.isSelected}
                       id={`${facet.filterName}-${attribute.value}`}
@@ -156,6 +159,33 @@ export const Facets = ({ facets }: Props) => {
                     placeholder="$ max"
                   />
                   <Button className="col-span-2">Update price</Button>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          );
+        }
+
+        if (facet.__typename === 'OtherSearchFilter') {
+          return (
+            <AccordionItem key={facet.__typename} value={facet.name}>
+              <AccordionTrigger>
+                <h3>{facet.name}</h3>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="flex max-w-sm items-center py-2 pl-1">
+                  <Checkbox
+                    defaultChecked={facet.freeShipping?.isSelected}
+                    id="shipping-free_shipping"
+                    name="shipping"
+                    value="free_shipping"
+                  />
+                  <Label className="cursor-pointer pl-3" htmlFor="shipping-free_shipping">
+                    Free shipping
+                    <ProductCount
+                      count={facet.freeShipping?.productCount ?? 0}
+                      shouldDisplay={facet.displayProductCount}
+                    />
+                  </Label>
                 </div>
               </AccordionContent>
             </AccordionItem>
