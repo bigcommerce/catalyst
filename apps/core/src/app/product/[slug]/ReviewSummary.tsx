@@ -20,20 +20,19 @@ export const ReviewSummary = async ({ productId, reviewSectionId }: Props) => {
 
   const { numberOfReviews, averageRating } = reviews.reviewSummary;
 
+  const hasNoReviews = numberOfReviews === 0;
+
   return (
     <div className="flex items-center gap-3">
       <p
         aria-describedby={summaryId}
-        className={cs(
-          'flex flex-nowrap text-blue-primary',
-          numberOfReviews === 0 && 'text-gray-400',
-        )}
+        className={cs('flex flex-nowrap text-blue-primary', hasNoReviews && 'text-gray-400')}
       >
         <Rating value={averageRating} />
       </p>
 
       <div className="font-semibold" id={summaryId}>
-        {numberOfReviews > 0 && (
+        {!hasNoReviews && (
           <>
             <span className="sr-only">Rating:</span>
             {averageRating}
