@@ -2,9 +2,8 @@ import { cs } from '@bigcommerce/reactant/cs';
 import { ReactNode } from 'react';
 
 import client from '~/client';
-
-import { Hero } from './components/Hero';
-import { ProductCard } from './components/ProductCard';
+import { Hero } from '~/components/Hero';
+import { ProductCard } from '~/components/ProductCard';
 
 const ProductList = ({ children }: { children: ReactNode }) => (
   <section className={cs('mb-10')}>{children}</section>

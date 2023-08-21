@@ -6,8 +6,8 @@ import { Heart } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
-import { ProductCard } from '~/app/components/ProductCard';
 import client from '~/client';
+import { ProductCard } from '~/components/ProductCard';
 import { assertNonNullable } from '~/utils';
 
 import { AddToCart } from './AddToCart';

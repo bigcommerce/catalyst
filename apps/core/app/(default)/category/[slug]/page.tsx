@@ -3,8 +3,8 @@ import { ChevronLeft, ChevronRight, Filter } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { ProductCard } from 'src/app/components/ProductCard';
 import client from '~/client';
+import { ProductCard } from '~/components/ProductCard';
 
 import { Breadcrumbs } from './Breadcrumbs';
 import { Facets } from './Facets';
