@@ -27,18 +27,19 @@ export interface InputProps extends ComponentPropsWithRef<'input'> {
 const InputContext = createContext<{ variant?: VariantTypes }>({ variant: undefined });
 
 export const InputIcon = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'span'>>(
-  ({ className, children, ...props }) => {
+  ({ className, children, ...props }, ref) => {
     const { variant } = useContext(InputContext);
 
     return (
       <span
         aria-hidden="true"
         className={cs(
-          'pointer-events-none absolute top-0 right-4 flex h-full items-center peer-disabled:text-gray-200',
+          'pointer-events-none absolute right-4 top-0 flex h-full items-center peer-disabled:text-gray-200',
           variant === 'success' && 'text-green-100',
           variant === 'error' && 'text-red-100',
           className,
         )}
+        ref={ref}
         {...props}
       >
         {children ?? (
