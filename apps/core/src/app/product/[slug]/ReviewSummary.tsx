@@ -1,4 +1,5 @@
-import { Star, StarHalf } from 'lucide-react';
+import { cs } from '@bigcommerce/reactant/cs';
+import { Rating } from '@bigcommerce/reactant/Rating';
 import { useId } from 'react';
 
 import client from '~/client';
@@ -19,41 +20,27 @@ export const ReviewSummary = async ({ productId, reviewSectionId }: Props) => {
 
   const { numberOfReviews, averageRating } = reviews.reviewSummary;
 
+  const hasNoReviews = numberOfReviews === 0;
+
   return (
     <div className="flex items-center gap-3">
-      {numberOfReviews === 0 ? (
-        <p>This product has no reviews</p>
-      ) : (
-        <>
-          <p aria-describedby={summaryId} className="flex flex-nowrap text-blue-primary">
-            {new Array(5).fill(undefined).map((_, i) => {
-              const index = i + 1;
+      <p
+        aria-describedby={summaryId}
+        className={cs('flex flex-nowrap text-blue-primary', hasNoReviews && 'text-gray-400')}
+      >
+        <Rating value={averageRating} />
+      </p>
 
-              if (averageRating >= index) {
-                return <Star fill="currentColor" key={i} role="presentation" />;
-              }
-
-              if (averageRating < index && averageRating - index > -1) {
-                return (
-                  <span className="relative" key={i}>
-                    <StarHalf fill="currentColor" role="presentation" />
-                    <Star className="absolute left-0 top-0" key={i} role="presentation" />
-                  </span>
-                );
-              }
-
-              return <Star key={i} role="presentation" />;
-            })}
-          </p>
-
-          <div className="font-semibold" id={summaryId}>
+      <div className="font-semibold" id={summaryId}>
+        {!hasNoReviews && (
+          <>
             <span className="sr-only">Rating:</span>
-            {averageRating} <span className="sr-only">out of 5 stars.</span> (
-            <span className="sr-only">Number of reviews:</span>
-            {numberOfReviews})
-          </div>
-        </>
-      )}
+            {averageRating}
+            <span className="sr-only">out of 5 stars.</span>{' '}
+          </>
+        )}
+        <span className="sr-only">Number of reviews:</span>({numberOfReviews})
+      </div>
 
       <a className="font-semibold text-blue-primary" href={`#${reviewSectionId}`}>
         Write review
