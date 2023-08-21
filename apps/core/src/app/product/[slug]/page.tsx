@@ -201,7 +201,7 @@ export default async function Product({
   return (
     <>
       <BreadCrumbs productId={productId} />
-      <div className="mt-4 mb-12 lg:grid lg:grid-cols-2 lg:gap-8">
+      <div className="mb-12 mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
         <Gallery product={product} />
         <ProductDetails product={product} />
         <ProductDescriptionAndReviews product={product} />

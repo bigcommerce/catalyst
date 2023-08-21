@@ -22,7 +22,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
     <html className={`${inter.variable} font-sans`} lang="en">
       <body className="flex h-screen flex-col">
         <Header />
-        <main className="flex-1 px-6 sm:px-10 lg:px-12 2xl:container 2xl:mx-auto 2xl:px-0">
+        <main className="flex-1 px-6 2xl:container sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0">
           {children}
         </main>
         <Footer />

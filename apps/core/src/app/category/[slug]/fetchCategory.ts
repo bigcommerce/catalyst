@@ -1,6 +1,6 @@
 import { SearchProductsFiltersInput, SearchProductsSortInput } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
-import z from 'zod';
+import { z } from 'zod';
 
 import client from '~/client';
 
