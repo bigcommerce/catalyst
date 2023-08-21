@@ -63,7 +63,12 @@ export const Rating = forwardRef<ElementRef<'span'>, RatingProps>(
     }
 
     return (
-      <span className={cs('inline-flex', className)} ref={ref} role="img" {...props}>
+      <span
+        className={cs('inline-flex fill-blue-primary', className)}
+        ref={ref}
+        role="img"
+        {...props}
+      >
         {stars}
       </span>
     );

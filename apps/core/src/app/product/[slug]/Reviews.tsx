@@ -1,5 +1,5 @@
 import { Button } from '@bigcommerce/reactant/Button';
-import { Star, StarHalf } from 'lucide-react';
+import { Rating } from '@bigcommerce/reactant/Rating';
 
 import client from '~/client';
 
@@ -21,7 +21,7 @@ export const Reviews = async ({ productId, reviewSectionId }: Props) => {
       <h3 className="mb-4 mt-8 text-h5">
         Reviews
         {reviews.length > 0 && (
-          <span className="ms-2 pl-2 text-gray-500">
+          <span className="ms-2 pl-1 text-gray-500">
             <span className="sr-only">Count:</span>
             {reviews.length}
           </span>
@@ -36,24 +36,7 @@ export const Reviews = async ({ productId, reviewSectionId }: Props) => {
             return (
               <li key={review.entityId}>
                 <p className="mb-3 flex flex-nowrap text-blue-primary">
-                  {new Array(5).fill(undefined).map((_, i) => {
-                    const index = i + 1;
-
-                    if (review.rating >= index) {
-                      return <Star fill="currentColor" key={i} role="presentation" />;
-                    }
-
-                    if (review.rating < index && review.rating - index > -1) {
-                      return (
-                        <span className="relative" key={i}>
-                          <StarHalf fill="currentColor" role="presentation" />
-                          <Star className="absolute left-0 top-0" key={i} role="presentation" />
-                        </span>
-                      );
-                    }
-
-                    return <Star key={i} role="presentation" />;
-                  })}
+                  <Rating value={review.rating} />
                   <span className="sr-only">Rating: ${review.rating} out of 5 stars</span>
                 </p>
                 <h4 className="text-base font-semibold">{review.title}</h4>
