@@ -5,7 +5,9 @@ import {
   AccordionTrigger,
 } from '@bigcommerce/reactant/Accordion';
 import { Checkbox } from '@bigcommerce/reactant/Checkbox';
+import { cs } from '@bigcommerce/reactant/cs';
 import { Label } from '@bigcommerce/reactant/Label';
+import { Star, StarHalf } from 'lucide-react';
 
 import { fetchCategory } from './fetchCategory';
 
@@ -97,6 +99,59 @@ export const Facets = ({ facets }: Props) => {
                     </Label>
                   </div>
                 ))}
+              </AccordionContent>
+            </AccordionItem>
+          );
+        }
+
+        if (facet.__typename === 'RatingSearchFilter') {
+          return (
+            <AccordionItem key={facet.__typename} value={facet.name}>
+              <AccordionTrigger>
+                <h3>{facet.name}</h3>
+              </AccordionTrigger>
+              <AccordionContent>
+                {facet.ratings
+                  .reverse()
+                  .filter((rating) => rating.value !== '5')
+                  .map((rating) => (
+                    <div className="flex flex-row flex-nowrap py-2" key={rating.value}>
+                      <div
+                        className={cs('flex flex-row flex-nowrap', {
+                          'text-blue-primary': rating.isSelected,
+                        })}
+                      >
+                        {new Array(5).fill(undefined).map((_, i) => {
+                          const index = i + 1;
+                          const value = parseInt(rating.value, 10);
+
+                          if (value >= index) {
+                            return <Star fill="currentColor" key={i} role="presentation" />;
+                          }
+
+                          if (value < index && value - index > -1) {
+                            return (
+                              <span className="relative" key={i}>
+                                <StarHalf fill="currentColor" role="presentation" />
+                                <Star
+                                  className="absolute left-0 top-0"
+                                  key={i}
+                                  role="presentation"
+                                />
+                              </span>
+                            );
+                          }
+
+                          return <Star key={i} role="presentation" />;
+                        })}
+                      </div>
+                      <span className="pl-2">
+                        {/* TODO: singular vs. plural */}
+                        <span className="sr-only">{rating.value} stars</span> & up
+                      </span>
+                      <ProductCount count={rating.productCount} shouldDisplay={true} />
+                    </div>
+                  ))}
               </AccordionContent>
             </AccordionItem>
           );
