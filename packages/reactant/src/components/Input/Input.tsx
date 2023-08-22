@@ -53,11 +53,16 @@ export const InputIcon = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'s
   },
 );
 
-export const Input = forwardRef<ElementRef<'div'>, InputProps>(
+export const Input = forwardRef<ElementRef<'input'>, InputProps>(
   ({ className, variant, children, type = 'text', ...props }, ref) => (
     <InputContext.Provider value={{ variant }}>
-      <div className={cs('relative')} ref={ref}>
-        <input className={cs(inputVariants({ variant, className }))} type={type} {...props} />
+      <div className={cs('relative')}>
+        <input
+          className={cs(inputVariants({ variant, className }))}
+          ref={ref}
+          type={type}
+          {...props}
+        />
         {children ?? <InputIcon />}
       </div>
     </InputContext.Provider>
