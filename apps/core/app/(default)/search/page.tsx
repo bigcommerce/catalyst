@@ -2,8 +2,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
 import client from '~/client';
-
-import { ProductCard } from '../components/ProductCard';
+import { ProductCard } from '~/components/ProductCard';
 
 import { SearchForm } from './SearchForm';
 
