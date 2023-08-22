@@ -12,6 +12,9 @@ const inter = Inter({
 export const metadata = {
   title: 'Catalyst Store',
   description: 'Example store built with Catalyst',
+  other: {
+    platform: 'bigcommerce.catalyst',
+  },
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {
