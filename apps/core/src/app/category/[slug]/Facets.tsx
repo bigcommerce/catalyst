@@ -82,7 +82,10 @@ export const Facets = ({ facets }: Props) => {
               </AccordionTrigger>
               <AccordionContent>
                 {facet.attributes.map((attribute) => (
-                  <div className="flex max-w-sm items-center py-2 pl-1" key={attribute.value}>
+                  <div
+                    className="flex max-w-sm items-center py-2 pl-1"
+                    key={`${facet.filterName}-${attribute.value}`}
+                  >
                     <Checkbox
                       defaultChecked={attribute.isSelected}
                       id={`${facet.filterName}-${attribute.value}`}
@@ -157,6 +160,69 @@ export const Facets = ({ facets }: Props) => {
                   />
                   <Button className="col-span-2">Update price</Button>
                 </div>
+              </AccordionContent>
+            </AccordionItem>
+          );
+        }
+
+        if (facet.__typename === 'OtherSearchFilter') {
+          return (
+            <AccordionItem key={facet.__typename} value={facet.name}>
+              <AccordionTrigger>
+                <h3>{facet.name}</h3>
+              </AccordionTrigger>
+              <AccordionContent>
+                {facet.freeShipping && (
+                  <div className="flex max-w-sm items-center py-2 pl-1">
+                    <Checkbox
+                      defaultChecked={facet.freeShipping.isSelected}
+                      id="shipping-free_shipping"
+                      name="shipping"
+                      value="free_shipping"
+                    />
+                    <Label className="cursor-pointer pl-3" htmlFor="shipping-free_shipping">
+                      Free shipping
+                      <ProductCount
+                        count={facet.freeShipping.productCount}
+                        shouldDisplay={facet.displayProductCount}
+                      />
+                    </Label>
+                  </div>
+                )}
+                {facet.isFeatured && (
+                  <div className="flex max-w-sm items-center py-2 pl-1">
+                    <Checkbox
+                      defaultChecked={facet.isFeatured.isSelected}
+                      id="isFeatured"
+                      name="isFeatured"
+                      value="1"
+                    />
+                    <Label className="cursor-pointer pl-3" htmlFor="isFeatured">
+                      Is featured
+                      <ProductCount
+                        count={facet.isFeatured.productCount}
+                        shouldDisplay={facet.displayProductCount}
+                      />
+                    </Label>
+                  </div>
+                )}
+                {facet.isInStock && (
+                  <div className="flex max-w-sm items-center py-2 pl-1">
+                    <Checkbox
+                      defaultChecked={facet.isInStock.isSelected}
+                      id="stock-in_stock"
+                      name="stock"
+                      value="in_stock"
+                    />
+                    <Label className="cursor-pointer pl-3" htmlFor="stock-in_stock">
+                      In stock
+                      <ProductCount
+                        count={facet.isInStock.productCount}
+                        shouldDisplay={facet.displayProductCount}
+                      />
+                    </Label>
+                  </div>
+                )}
               </AccordionContent>
             </AccordionItem>
           );
