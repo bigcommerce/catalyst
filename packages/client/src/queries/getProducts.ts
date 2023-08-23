@@ -1,5 +1,6 @@
 import { BigCommerceResponse, FetcherInput } from '../fetcher';
 import { generateQueryOp, QueryGenqlSelection, QueryResult } from '../generated';
+import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
 export interface GetProductsArguments {
   productIds: number[];
@@ -77,8 +78,15 @@ export const getProducts = async <T>(
 
   const queryOp = generateQueryOp(query);
 
-  return customFetch<QueryResult<typeof query>>({
+  const response = await customFetch<QueryResult<typeof query>>({
     ...queryOp,
     ...config,
   });
+
+  const products = removeEdgesAndNodes(response.data.site.products);
+
+  return products.map((product) => ({
+    ...product,
+    images: removeEdgesAndNodes(product.images),
+  }));
 };
