@@ -3,6 +3,7 @@ import { generateQueryOp, QueryGenqlSelection, QueryResult } from '../generated'
 
 export interface GetProductsArguments {
   productIds: number[];
+  first: number;
   images: { width: number; height?: number };
 }
 
@@ -11,13 +12,14 @@ export const getProducts = async <T>(
   args: GetProductsArguments,
   config: T = {} as T,
 ) => {
-  const { productIds, images } = args;
+  const { productIds, images, first } = args;
 
   const query = {
     site: {
       products: {
         __args: {
           entityIds: productIds,
+          first,
         },
         edges: {
           node: {
