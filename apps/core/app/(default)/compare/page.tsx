@@ -29,15 +29,13 @@ export default async function Compare({
   const parsed = CompareParamsSchema.parse(searchParams);
   const productIds = parsed.ids?.filter((id) => !Number.isNaN(id));
 
-  const response = await client.getProducts({
+  const products = await client.getProducts({
     productIds: productIds ?? [],
     first: productIds?.length ? MAX_COMPARE_LIMIT : 0,
     images: { width: 300 },
   });
 
-  const products = response.data.site.products.edges;
-
-  if (!products || !products.length) {
+  if (!products.length) {
     return <h1 className="text-h2">Well, there's nothing to compare!</h1>;
   }
 
