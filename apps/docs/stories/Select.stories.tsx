@@ -6,6 +6,7 @@ const meta: Meta<typeof Select> = {
   tags: ['autodocs'],
   argTypes: {
     disabled: { control: 'boolean' },
+    variant: { control: 'select', options: ['success', 'error'] },
     placeholder: { control: 'text' },
   },
 };

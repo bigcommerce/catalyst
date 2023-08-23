@@ -1,29 +1,39 @@
 import * as SelectPrimitive from '@radix-ui/react-select';
+import { cva } from 'class-variance-authority';
 import { Check, ChevronDown } from 'lucide-react';
 import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
 import { cs } from '../../utils/cs';
 
+const selectVariants = cva(
+  'focus:ring-primary-blue/20 group flex h-12 w-full items-center justify-between border-2 border-gray-200 px-4 py-3 text-base text-black hover:border-blue-primary focus:border-blue-primary focus:outline-none focus:ring-4 disabled:bg-gray-100 disabled:hover:border-gray-200 data-[placeholder]:text-gray-500',
+  {
+    variants: {
+      variant: {
+        success:
+          'border-green-100 focus:border-green-100 focus:ring-green-100/20 disabled:border-gray-200 hover:border-green-200',
+        error:
+          'border-red-100 focus:border-red-100 focus:ring-red-100/20 disabled:border-gray-200 hover:border-red-200',
+      },
+    },
+  },
+);
+
 type SelectType = typeof SelectPrimitive.Root;
 type SelectTriggerType = typeof SelectPrimitive.Trigger;
 
 interface SelectProps extends ComponentPropsWithRef<SelectType> {
+  variant?: 'success' | 'error';
   placeholder?: string;
   className?: string;
 }
 
 // We need to pass the ref to the Trigger component so we need to type it as such.
 export const Select = forwardRef<ElementRef<SelectTriggerType>, SelectProps>(
-  ({ children, placeholder, className, ...props }, ref) => {
+  ({ children, placeholder, className, variant, ...props }, ref) => {
     return (
       <SelectPrimitive.Root {...props}>
-        <SelectPrimitive.Trigger
-          className={cs(
-            'focus:ring-primary-blue/20 group flex h-12 w-full items-center justify-between border-2 border-gray-200 px-4 py-3 text-base text-black hover:border-blue-primary focus:border-blue-primary focus:outline-none focus:ring-4 disabled:bg-gray-100 disabled:hover:border-gray-200 data-[placeholder]:text-gray-500',
-            className,
-          )}
-          ref={ref}
-        >
+        <SelectPrimitive.Trigger className={cs(selectVariants({ variant, className }))} ref={ref}>
           <SelectPrimitive.Value placeholder={placeholder} />
           {/* TODO: For the sake of moving fast we are leaving this in, but in the future we need to figure out how enable custom icons */}
           <SelectPrimitive.Icon>
