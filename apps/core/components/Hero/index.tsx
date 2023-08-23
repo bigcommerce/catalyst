@@ -8,8 +8,8 @@ export const Hero = () => (
       <div className="absolute -z-10 h-full w-full">
         <Image
           alt="an assortment of brandless products against a blank background"
-          layout="fill"
-          objectFit="cover"
+          className="object-cover"
+          fill
           src="/carousel-bg-01.jpg"
         />
       </div>
