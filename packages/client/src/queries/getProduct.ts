@@ -108,7 +108,7 @@ async function internalGetProduct<T>(
                       on_SwatchOptionValue: {
                         hexColors: true,
                         imageUrl: {
-                          __args: { width: 200 },
+                          __args: { width: 36 },
                         },
                       },
                     },
@@ -133,7 +133,7 @@ async function internalGetProduct<T>(
         defaultImage: {
           altText: true,
           url: {
-            __args: { width: 320 },
+            __args: { width: 600 },
           },
         },
         images: {
@@ -141,8 +141,9 @@ async function internalGetProduct<T>(
             node: {
               altText: true,
               url: {
-                __args: { width: 320 },
+                __args: { width: 600 },
               },
+              isDefault: true,
             },
           },
         },
