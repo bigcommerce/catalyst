@@ -24,6 +24,7 @@ import { getProductReviews } from './queries/getProductReviews';
 import { getProducts } from './queries/getProducts';
 import { getProductSearchResults } from './queries/getProductSearchResults';
 import { getRelatedProducts } from './queries/getRelatedProducts';
+import { getRoute } from './queries/getRoute';
 import { getStoreSettings } from './queries/getStoreSettings';
 
 type OmitFirstInTuple<T extends unknown[]> = T extends [unknown, ...infer U] ? U : [];
@@ -87,6 +88,10 @@ class Client<CustomRequestInit extends FetcherRequestInit = FetcherRequestInit> 
 
   getCart(...args: PublicParams<typeof getCart<CustomRequestInit>>) {
     return getCart(this.fetch, ...args);
+  }
+
+  getRoute(...args: PublicParams<typeof getRoute<CustomRequestInit>>) {
+    return getRoute(this.fetch, ...args);
   }
 
   createCart(...args: PublicParams<typeof createCart<CustomRequestInit>>) {
