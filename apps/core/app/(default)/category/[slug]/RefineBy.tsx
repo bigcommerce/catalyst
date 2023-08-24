@@ -76,7 +76,7 @@ const mapFacetsToRefinements = (facets: Props['facets']) =>
             ? {
                 key: 'isFeatured',
                 display_name: 'Is Featured',
-                value: '1',
+                value: 'on',
               }
             : undefined;
 
@@ -102,7 +102,7 @@ export const RefineBy = ({ facets }: Props) => {
       ([key, value]) => refinement.key !== key || refinement.value !== value,
     );
 
-    const params = new URLSearchParams(Object.fromEntries(filteredParams));
+    const params = new URLSearchParams(filteredParams);
 
     return router.push(`${pathname}?${params.toString()}`);
   };
