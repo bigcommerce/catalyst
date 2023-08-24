@@ -31,7 +31,7 @@ export default async function Home() {
           <ProductListName>Best Selling Products</ProductListName>
           <ProductListGrid>
             {bestSellingProducts.map((product) => (
-              <ProductCard key={product.entityId} product={product} />
+              <ProductCard imageSize="tall" key={product.entityId} product={product} />
             ))}
           </ProductListGrid>
         </ProductList>

@@ -55,6 +55,7 @@ export const getProductSearchResults = async <T>(
                 prices: {
                   price: {
                     value: true,
+                    currencyCode: true,
                   },
                 },
                 defaultImage: {
