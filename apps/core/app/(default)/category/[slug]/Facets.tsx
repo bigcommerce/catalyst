@@ -37,18 +37,7 @@ const ProductCount = ({ shouldDisplay, count }: ProductCountProps) => {
 };
 
 const sortRatingsDescending = (a: RatingSearchFilterItem, b: RatingSearchFilterItem) => {
-  const valueA = parseInt(a.value, 10);
-  const valueB = parseInt(b.value, 10);
-
-  if (valueA > valueB) {
-    return -1;
-  }
-
-  if (valueA < valueB) {
-    return 1;
-  }
-
-  return 0;
+  return parseInt(b.value, 10) - parseInt(a.value, 10);
 };
 
 interface Props {
