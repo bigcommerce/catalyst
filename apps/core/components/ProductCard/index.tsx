@@ -1,3 +1,4 @@
+import { cs } from '@bigcommerce/reactant/cs';
 import {
   ProductCardImage,
   ProductCardInfo,
@@ -22,34 +23,51 @@ interface Product {
   prices?: {
     price?: {
       value?: number;
+      currencyCode?: string;
     };
   };
 }
 
 interface ProductCardProps {
   product: Product;
+  imageSize?: 'tall' | 'wide' | 'square';
 }
 
-export const ProductCard = ({ product }: ProductCardProps) => (
-  <ReactantProductCard key={product.entityId}>
-    <ProductCardImage>
-      <Image
-        alt={product.defaultImage?.altText ?? product.name}
-        className="h-full w-full object-contain object-center sm:h-full sm:w-full"
-        height={300}
-        src={product.defaultImage?.url ?? ''}
-        width={300}
-      />
-    </ProductCardImage>
-    <ProductCardInfo>
-      {product.brand && <ProductCardInfoBrandName>{product.brand.name}</ProductCardInfoBrandName>}
-      <ProductCardInfoProductName>
-        <Link href={`/product/${product.entityId}`}>
-          <span aria-hidden="true" className="absolute inset-0" />
-          {product.name}
-        </Link>
-      </ProductCardInfoProductName>
-      <ProductCardInfoPrice>${product.prices?.price?.value}</ProductCardInfoPrice>
-    </ProductCardInfo>
-  </ReactantProductCard>
-);
+export const ProductCard = ({ product, imageSize }: ProductCardProps) => {
+  const currencyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: product.prices?.price?.currencyCode,
+  });
+
+  return (
+    <ReactantProductCard key={product.entityId}>
+      <ProductCardImage>
+        <Image
+          alt={product.defaultImage?.altText ?? product.name}
+          className={cs('object-contain object-center', {
+            'aspect-square': imageSize === 'square',
+            'aspect-[4/5]': imageSize === 'tall',
+            'aspect-[7/5]': imageSize === 'wide',
+          })}
+          height={300}
+          src={product.defaultImage?.url ?? ''}
+          width={300}
+        />
+      </ProductCardImage>
+      <ProductCardInfo>
+        {product.brand && <ProductCardInfoBrandName>{product.brand.name}</ProductCardInfoBrandName>}
+        <ProductCardInfoProductName>
+          <Link href={`/product/${product.entityId}`}>
+            <span aria-hidden="true" className="absolute inset-0" />
+            {product.name}
+          </Link>
+        </ProductCardInfoProductName>
+        {product.prices?.price?.value !== undefined && (
+          <ProductCardInfoPrice>
+            {currencyFormatter.format(product.prices.price.value)}
+          </ProductCardInfoPrice>
+        )}
+      </ProductCardInfo>
+    </ReactantProductCard>
+  );
+};

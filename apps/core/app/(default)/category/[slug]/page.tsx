@@ -45,7 +45,7 @@ export default async function Category({ params, searchParams }: Props) {
     <div>
       <Breadcrumbs breadcrumbs={category.breadcrumbs.items} category={category.name} />
 
-      <div className="lg:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
+      <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
         <h1 className="mb-4 text-h2 lg:mb-0">{category.name}</h1>
 
         <div className="flex flex-col items-center gap-3 whitespace-nowrap md:flex-row">
@@ -62,8 +62,8 @@ export default async function Category({ params, searchParams }: Props) {
         </div>
       </div>
 
-      <div className="sm:grid sm:grid-cols-3 lg:gap-x-8 xl:grid-cols-4">
-        <aside aria-labelledby="filters-heading" className="flex flex-col gap-6">
+      <div className="grid grid-cols-4 gap-8">
+        <aside aria-labelledby="filters-heading" className="hidden lg:block">
           <h2 className="sr-only" id="filters-heading">
             Filters
           </h2>
@@ -75,17 +75,14 @@ export default async function Category({ params, searchParams }: Props) {
           <Facets facets={search.facets} />
         </aside>
 
-        <section
-          aria-labelledby="product-heading"
-          className="mt-6 sm:col-span-2 lg:mt-0 xl:col-span-3"
-        >
+        <section aria-labelledby="product-heading" className="col-span-4 lg:col-span-3">
           <h2 className="sr-only" id="product-heading">
             Products
           </h2>
 
-          <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:gap-x-8 xl:grid-cols-3">
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 sm:gap-8">
             {products.map((product) => (
-              <ProductCard key={product.entityId} product={product} />
+              <ProductCard imageSize="wide" key={product.entityId} product={product} />
             ))}
           </div>
 
