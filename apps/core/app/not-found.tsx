@@ -7,7 +7,7 @@ import { Footer } from '~/components/Footer/Footer';
 import { Header } from '~/components/Header';
 import { ProductCard } from '~/components/ProductCard';
 
-const NotFound = async () => {
+export default async function NotFound() {
   const featuredProducts = await client.getFeaturedProducts();
 
   return (
@@ -33,6 +33,4 @@ const NotFound = async () => {
       <Footer />
     </>
   );
-};
-
-export default NotFound;
+}
