@@ -1,10 +1,9 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
+import { ProductCard } from 'components/ProductCard';
+import { SearchForm } from 'components/SearchForm';
 import client from '~/client';
-import { ProductCard } from '~/components/ProductCard';
-
-import { SearchForm } from './SearchForm';
 
 interface Props {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -53,10 +52,7 @@ export default async function Search({ searchParams }: Props) {
 
   return (
     <div>
-      <h1 className="mb-3 text-h2">Search</h1>
-
-      <SearchForm initialTerm={searchTerm} />
-
+      <h1 className="mb-3 text-h2">Search results for "{searchTerm}"</h1>
       <div className="pt-6 lg:grid lg:grid-cols-4 lg:gap-x-8">
         <section
           aria-labelledby="product-heading"
