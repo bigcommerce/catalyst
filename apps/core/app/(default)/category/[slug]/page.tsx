@@ -8,7 +8,7 @@ import { ProductCard } from '~/components/ProductCard';
 
 import { Breadcrumbs } from './Breadcrumbs';
 import { Facets } from './Facets';
-import { fetchCategory, PublicToPrivateParams } from './fetchCategory';
+import { fetchCategory } from './fetchCategory';
 import { RefineBy } from './RefineBy';
 import { SortBy } from './SortBy';
 import { SubCategories } from './SubCategories';
@@ -23,9 +23,7 @@ interface Props {
 export default async function Category({ params, searchParams }: Props) {
   const categoryId = Number(params.slug);
 
-  const privateParams = PublicToPrivateParams.parse({ categoryId, ...searchParams });
-
-  const search = await fetchCategory(privateParams);
+  const search = await fetchCategory({ categoryId, ...searchParams });
 
   // We will only need a partial of this query to fetch the category name and breadcrumbs.
   // The rest of the arguments are useless at this point.
@@ -56,7 +54,7 @@ export default async function Category({ params, searchParams }: Props) {
             <SortBy />
             <div className="order-3 py-4 text-base font-semibold md:order-2 md:py-0">
               {/* TODO: Plural vs. singular items */}
-              {search.products.collectionInfo?.totalItems} items
+              {productsCollection.collectionInfo?.totalItems} items
             </div>
           </div>
         </div>
