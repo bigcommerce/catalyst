@@ -1,6 +1,4 @@
-'use client';
-
-import { useId } from 'react';
+import { ComponentPropsWithoutRef } from 'react';
 
 import type { Facet } from '../types';
 
@@ -8,17 +6,16 @@ import { Facets } from './facets';
 import { RefineBy } from './refine-by';
 import { SubCategories } from './sub-categories';
 
-interface Props {
+interface Props extends ComponentPropsWithoutRef<'aside'> {
   categoryId: number;
   facets: Facet[];
+  headingId: string;
 }
 
-export const FacetedSearch = ({ categoryId, facets }: Props) => {
-  const id = useId();
-
+export const FacetedSearch = ({ categoryId, facets, headingId, ...props }: Props) => {
   return (
-    <aside aria-labelledby={id} className="hidden lg:block">
-      <h2 className="sr-only" id={id}>
+    <aside aria-labelledby={headingId} {...props}>
+      <h2 className="sr-only" id={headingId}>
         Filters
       </h2>
 
