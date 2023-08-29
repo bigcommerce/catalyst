@@ -17,7 +17,7 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useRef } from 'react';
 
-import { fetchCategory } from '../fetchCategory';
+import type { Facet } from '../types';
 
 interface ProductCountProps {
   shouldDisplay: boolean;
@@ -41,7 +41,7 @@ const sortRatingsDescending = (a: RatingSearchFilterItem, b: RatingSearchFilterI
 };
 
 interface Props {
-  facets: Awaited<ReturnType<typeof fetchCategory>>['facets'];
+  facets: Facet[];
 }
 
 export const Facets = ({ facets }: Props) => {
@@ -50,7 +50,7 @@ export const Facets = ({ facets }: Props) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const defaultOpenFacets = facets.items
+  const defaultOpenFacets = facets
     .filter((facet) => !facet.isCollapsedByDefault)
     .map((facet) => facet.name);
 
@@ -82,7 +82,7 @@ export const Facets = ({ facets }: Props) => {
   return (
     <Accordion defaultValue={defaultOpenFacets} type="multiple">
       <form onSubmit={handleSubmit} ref={ref}>
-        {facets.items.map((facet) => {
+        {facets.map((facet) => {
           if (facet.__typename === 'BrandSearchFilter') {
             return (
               <AccordionItem key={facet.__typename} value={facet.name}>

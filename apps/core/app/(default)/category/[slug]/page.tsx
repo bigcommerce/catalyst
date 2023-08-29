@@ -59,7 +59,7 @@ export default async function Category({ params, searchParams }: Props) {
       </div>
 
       <div className="grid grid-cols-4 gap-8">
-        <FacetedSearch categoryId={categoryId} facets={search.facets} />
+        <FacetedSearch categoryId={categoryId} facets={search.facets.items} />
 
         <section aria-labelledby="product-heading" className="col-span-4 lg:col-span-3">
           <h2 className="sr-only" id="product-heading">
