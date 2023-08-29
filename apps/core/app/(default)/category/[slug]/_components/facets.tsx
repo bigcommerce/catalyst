@@ -17,7 +17,7 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useRef } from 'react';
 
-import { fetchCategory } from './fetchCategory';
+import { fetchCategory } from '../fetchCategory';
 
 interface ProductCountProps {
   shouldDisplay: boolean;

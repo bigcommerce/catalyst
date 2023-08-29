@@ -4,7 +4,7 @@ import { Tag, TagAction, TagContent } from '@bigcommerce/reactant/Tag';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { z } from 'zod';
 
-import { fetchCategory, PublicSearchParamsSchema } from './fetchCategory';
+import { fetchCategory, PublicSearchParamsSchema } from '../fetchCategory';
 
 interface Props {
   facets: Awaited<ReturnType<typeof fetchCategory>>['facets'];

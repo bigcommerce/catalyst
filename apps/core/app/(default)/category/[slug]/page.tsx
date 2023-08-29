@@ -6,12 +6,10 @@ import { notFound } from 'next/navigation';
 import client from '~/client';
 import { ProductCard } from '~/components/ProductCard';
 
-import { Breadcrumbs } from './Breadcrumbs';
-import { Facets } from './Facets';
+import { Breadcrumbs } from './_components/breadcrumbs';
+import { FacetedSearch } from './_components/faceted-search';
+import { SortBy } from './_components/sort-by';
 import { fetchCategory } from './fetchCategory';
-import { RefineBy } from './RefineBy';
-import { SortBy } from './SortBy';
-import { SubCategories } from './SubCategories';
 
 interface Props {
   params: {
@@ -61,17 +59,7 @@ export default async function Category({ params, searchParams }: Props) {
       </div>
 
       <div className="grid grid-cols-4 gap-8">
-        <aside aria-labelledby="filters-heading" className="hidden lg:block">
-          <h2 className="sr-only" id="filters-heading">
-            Filters
-          </h2>
-
-          <SubCategories categoryId={categoryId} />
-
-          <RefineBy facets={search.facets} />
-
-          <Facets facets={search.facets} />
-        </aside>
+        <FacetedSearch categoryId={categoryId} facets={search.facets} />
 
         <section aria-labelledby="product-heading" className="col-span-4 lg:col-span-3">
           <h2 className="sr-only" id="product-heading">
