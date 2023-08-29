@@ -1,5 +1,4 @@
-import { Button } from '@bigcommerce/reactant/Button';
-import { ChevronLeft, ChevronRight, Filter } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -8,6 +7,7 @@ import { ProductCard } from '~/components/ProductCard';
 
 import { Breadcrumbs } from './_components/breadcrumbs';
 import { FacetedSearch } from './_components/faceted-search';
+import { MobileSideNav } from './_components/mobile-side-nav';
 import { SortBy } from './_components/sort-by';
 import { fetchCategory } from './fetchCategory';
 
@@ -45,9 +45,13 @@ export default async function Category({ params, searchParams }: Props) {
         <h1 className="mb-4 text-h2 lg:mb-0">{category.name}</h1>
 
         <div className="flex flex-col items-center gap-3 whitespace-nowrap md:flex-row">
-          <Button className="items-center md:w-auto lg:hidden" variant="secondary">
-            <Filter className="mr-3" /> <span>Show Filters</span>
-          </Button>
+          <MobileSideNav>
+            <FacetedSearch
+              categoryId={categoryId}
+              facets={search.facets.items}
+              headingId="mobile-filter-heading"
+            />
+          </MobileSideNav>
           <div className="flex w-full flex-col items-start gap-4 md:flex-row md:items-center md:justify-end md:gap-6">
             <SortBy />
             <div className="order-3 py-4 text-base font-semibold md:order-2 md:py-0">
@@ -61,7 +65,7 @@ export default async function Category({ params, searchParams }: Props) {
       <div className="grid grid-cols-4 gap-8">
         <FacetedSearch
           categoryId={categoryId}
-          className="hidden lg:block"
+          className="mb-8 hidden lg:block"
           facets={search.facets.items}
           headingId="desktop-filter-heading"
         />
