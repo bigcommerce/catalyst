@@ -2,12 +2,11 @@
 
 import { Tag, TagAction, TagContent } from '@bigcommerce/reactant/Tag';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { z } from 'zod';
 
-import { fetchCategory, PublicSearchParamsSchema } from '../fetchCategory';
+import type { Facet, PublicParamKeys } from '../types';
 
 interface Props {
-  facets: Awaited<ReturnType<typeof fetchCategory>>['facets'];
+  facets: Facet[];
 }
 
 interface FacetProps<Key extends string> {
@@ -16,12 +15,8 @@ interface FacetProps<Key extends string> {
   value: string;
 }
 
-const publicParamKeys = PublicSearchParamsSchema.keyof();
-
-type PublicParamKeys = z.infer<typeof publicParamKeys>;
-
 const mapFacetsToRefinements = (facets: Props['facets']) =>
-  facets.items
+  facets
     .map<Array<FacetProps<PublicParamKeys | string>>>((facet) => {
       switch (facet.__typename) {
         case 'BrandSearchFilter':

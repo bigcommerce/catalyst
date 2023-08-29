@@ -2,7 +2,7 @@
 
 import { useId } from 'react';
 
-import { fetchCategory } from '../fetchCategory';
+import type { Facet } from '../types';
 
 import { Facets } from './facets';
 import { RefineBy } from './refine-by';
@@ -10,7 +10,7 @@ import { SubCategories } from './sub-categories';
 
 interface Props {
   categoryId: number;
-  facets: Awaited<ReturnType<typeof fetchCategory>>['facets'];
+  facets: Facet[];
 }
 
 export const FacetedSearch = ({ categoryId, facets }: Props) => {
