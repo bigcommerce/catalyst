@@ -60,7 +60,7 @@ export const WithComponentExample: Story = {
         <AccordionTrigger>
           <div className="flex flex-row items-center gap-2">
             <Info />
-            <span className="ml-2">Information</span>
+            <span className="ms-2">Information</span>
           </div>
         </AccordionTrigger>
         <AccordionContent className="p-4">

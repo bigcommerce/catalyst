@@ -30,7 +30,7 @@ const ProductCount = ({ shouldDisplay, count }: ProductCountProps) => {
   }
 
   return (
-    <span className="pl-3 text-gray-500">
+    <span className="ps-3 text-gray-500">
       {count} <span className="sr-only">products</span>
     </span>
   );
@@ -93,7 +93,7 @@ export const Facets = ({ facets }: Props) => {
                   {facet.brands.map((brand) => {
                     return (
                       <div
-                        className="flex max-w-sm items-center py-2 pl-1"
+                        className="flex max-w-sm items-center py-2 ps-1"
                         key={`${brand.entityId}-${brand.isSelected.toString()}`}
                       >
                         <Checkbox
@@ -104,7 +104,7 @@ export const Facets = ({ facets }: Props) => {
                           value={brand.entityId}
                         />
                         <Label
-                          className="cursor-pointer pl-3"
+                          className="cursor-pointer ps-3"
                           htmlFor={`${brand.name}-${brand.entityId}`}
                         >
                           {brand.name}
@@ -130,7 +130,7 @@ export const Facets = ({ facets }: Props) => {
                 <AccordionContent>
                   {facet.attributes.map((attribute) => (
                     <div
-                      className="flex max-w-sm items-center py-2 pl-1"
+                      className="flex max-w-sm items-center py-2 ps-1"
                       key={`${facet.filterName}-${
                         attribute.value
                       }-${attribute.isSelected.toString()}`}
@@ -143,7 +143,7 @@ export const Facets = ({ facets }: Props) => {
                         value={attribute.value}
                       />
                       <Label
-                        className="cursor-pointer pl-3"
+                        className="cursor-pointer ps-3"
                         htmlFor={`${facet.filterName}-${attribute.value}`}
                       >
                         {attribute.value}
@@ -187,7 +187,7 @@ export const Facets = ({ facets }: Props) => {
                           >
                             <Rating value={parseInt(rating.value, 10)} />
                           </div>
-                          <span className="pl-2">
+                          <span className="ps-2">
                             {/* TODO: singular vs. plural */}
                             <span className="sr-only">{rating.value} stars</span> & up
                           </span>
@@ -237,7 +237,7 @@ export const Facets = ({ facets }: Props) => {
                 </AccordionTrigger>
                 <AccordionContent>
                   {facet.freeShipping && (
-                    <div className="flex max-w-sm items-center py-2 pl-1">
+                    <div className="flex max-w-sm items-center py-2 ps-1">
                       <Checkbox
                         defaultChecked={facet.freeShipping.isSelected}
                         id="shipping-free_shipping"
@@ -245,7 +245,7 @@ export const Facets = ({ facets }: Props) => {
                         onCheckedChange={submitForm}
                         value="free_shipping"
                       />
-                      <Label className="cursor-pointer pl-3" htmlFor="shipping-free_shipping">
+                      <Label className="cursor-pointer ps-3" htmlFor="shipping-free_shipping">
                         Free shipping
                         <ProductCount
                           count={facet.freeShipping.productCount}
@@ -255,14 +255,14 @@ export const Facets = ({ facets }: Props) => {
                     </div>
                   )}
                   {facet.isFeatured && (
-                    <div className="flex max-w-sm items-center py-2 pl-1">
+                    <div className="flex max-w-sm items-center py-2 ps-1">
                       <Checkbox
                         defaultChecked={facet.isFeatured.isSelected}
                         id="isFeatured"
                         name="isFeatured"
                         onCheckedChange={submitForm}
                       />
-                      <Label className="cursor-pointer pl-3" htmlFor="isFeatured">
+                      <Label className="cursor-pointer ps-3" htmlFor="isFeatured">
                         Is featured
                         <ProductCount
                           count={facet.isFeatured.productCount}
@@ -272,7 +272,7 @@ export const Facets = ({ facets }: Props) => {
                     </div>
                   )}
                   {facet.isInStock && (
-                    <div className="flex max-w-sm items-center py-2 pl-1">
+                    <div className="flex max-w-sm items-center py-2 ps-1">
                       <Checkbox
                         defaultChecked={facet.isInStock.isSelected}
                         id="stock-in_stock"
@@ -280,7 +280,7 @@ export const Facets = ({ facets }: Props) => {
                         onCheckedChange={submitForm}
                         value="in_stock"
                       />
-                      <Label className="cursor-pointer pl-3" htmlFor="stock-in_stock">
+                      <Label className="cursor-pointer ps-3" htmlFor="stock-in_stock">
                         In stock
                         <ProductCount
                           count={facet.isInStock.productCount}

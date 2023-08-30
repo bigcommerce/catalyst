@@ -21,7 +21,7 @@ export const Reviews = async ({ productId, reviewSectionId }: Props) => {
       <h3 className="mb-4 mt-8 text-h5">
         Reviews
         {reviews.length > 0 && (
-          <span className="ms-2 pl-1 text-gray-500">
+          <span className="ms-2 ps-1 text-gray-500">
             <span className="sr-only">Count:</span>
             {reviews.length}
           </span>

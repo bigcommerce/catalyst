@@ -24,7 +24,7 @@ export const MobileSideNav = ({ children }: PropsWithChildren) => {
     <Sheet onOpenChange={setOpen} open={open}>
       <SheetTrigger asChild>
         <Button className="items-center md:w-auto lg:hidden" variant="secondary">
-          <Filter className="mr-3" /> <span>Show Filters</span>
+          <Filter className="me-3" /> <span>Show Filters</span>
         </Button>
       </SheetTrigger>
       <SheetOverlay className="bg-transparent, backdrop-blur-none lg:hidden">

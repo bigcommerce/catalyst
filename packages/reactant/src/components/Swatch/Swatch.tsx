@@ -53,7 +53,7 @@ export const SwatchItem = forwardRef<
       >
         <span
           className={cs(
-            'absolute -left-px -top-[2px] w-[51px] origin-top-left rotate-45 border-t-2 border-red-100 group-disabled:opacity-30',
+            'absolute -start-px -top-[2px] w-[51px] origin-top-left rotate-45 border-t-2 border-red-100 group-disabled:opacity-30',
           )}
         />
       </span>

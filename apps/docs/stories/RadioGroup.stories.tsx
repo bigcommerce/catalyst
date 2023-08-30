@@ -59,7 +59,7 @@ export const BaseRadioGroup: Story = {
         {MOCKED_SIZE_OPTIONS.map((option) => (
           <div className="mb-2 flex" key={option.id}>
             <RadioItem {...option} />
-            <Label className="cursor-pointer pl-4" htmlFor={option.id}>
+            <Label className="cursor-pointer ps-4" htmlFor={option.id}>
               {option.value}
             </Label>
           </div>
@@ -83,7 +83,7 @@ export const RadioGroupWithIcon: Story = {
                 />
               </RadioIndicator>
             </RadioItem>
-            <Label className="cursor-pointer pl-4" htmlFor={option.id}>
+            <Label className="cursor-pointer ps-4" htmlFor={option.id}>
               {option.value}
             </Label>
           </div>

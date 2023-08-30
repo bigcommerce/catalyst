@@ -145,8 +145,8 @@ export function Carousel({ className, slides, loop = true, autoplay = 0 }: Props
             ))}
           </div>
 
-          <div className="absolute bottom-6 left-6 z-10 flex items-center md:bottom-12 md:left-20 lg:bottom-16 lg:left-24 [&>button]:p-4 [&>button]:outline-none [&_svg]:drop-shadow-md">
-            <button aria-label="Pause carousel" className="mr-4">
+          <div className="absolute bottom-6 start-6 z-10 flex items-center md:bottom-12 md:start-20 lg:bottom-16 lg:start-24 [&>button]:p-4 [&>button]:outline-none [&_svg]:drop-shadow-md">
+            <button aria-label="Pause carousel" className="me-4">
               <Pause />
             </button>
 

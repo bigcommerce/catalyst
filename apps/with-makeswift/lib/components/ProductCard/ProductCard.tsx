@@ -45,7 +45,7 @@ export function ProductCard({
           <div className="h-full w-full bg-gray-100" />
         )}
         {hasBadge && (
-          <div className="absolute left-0 top-4 bg-black px-4 py-1 text-base font-semibold text-white">
+          <div className="absolute start-0 top-4 bg-black px-4 py-1 text-base font-semibold text-white">
             {badgeText}
           </div>
         )}
@@ -55,7 +55,7 @@ export function ProductCard({
       <p className="text-base">
         ${price}
         {Boolean(originalPrice) && (
-          <span className="ml-3 line-through opacity-50">${originalPrice}</span>
+          <span className="ms-3 line-through opacity-50">${originalPrice}</span>
         )}
       </p>
     </a>
