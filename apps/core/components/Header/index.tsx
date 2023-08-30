@@ -92,7 +92,7 @@ const HeaderNav = async ({
               <NavigationMenuContent
                 className={cs(
                   !inCollapsedNav && 'mx-auto flex w-[700px] flex-row gap-20',
-                  inCollapsedNav && 'pl-6',
+                  inCollapsedNav && 'ps-6',
                 )}
               >
                 {category.children.map((childCategory1) => (

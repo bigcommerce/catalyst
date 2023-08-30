@@ -4,7 +4,7 @@ import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
 import { cs } from '../../utils/cs';
 
-const messageVariants = cva('flex w-full justify-start gap-x-2.5 py-3 pl-3 text-base', {
+const messageVariants = cva('flex w-full justify-start gap-x-2.5 py-3 ps-3 text-base', {
   variants: {
     variant: {
       success: 'bg-green-300/20 [&>svg]:text-green-300',

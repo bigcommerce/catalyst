@@ -38,7 +38,7 @@ export const NavigationMenu = forwardRef<
           <div className="relative">
             <div
               className={cs(
-                'group flex min-h-[92px] items-center justify-between bg-white px-6 sm:px-10 lg:px-12 2xl:container 2xl:mx-auto 2xl:px-0',
+                'group flex min-h-[92px] items-center justify-between bg-white px-6 2xl:container sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0',
                 className,
               )}
               {...props}
@@ -47,7 +47,9 @@ export const NavigationMenu = forwardRef<
             </div>
             {!isExpanded && (
               <NavigationMenuPrimitive.Viewport
-                className={cs('absolute top-full left-0 z-50 w-full bg-white pt-6 pb-12 shadow-xl')}
+                className={cs(
+                  'absolute start-0 top-full z-50 w-full bg-white pb-12 pt-6 shadow-xl',
+                )}
               />
             )}
           </div>
@@ -176,7 +178,7 @@ export const NavigationMenuCollapsed = forwardRef<ElementRef<'div'>, ComponentPr
     return (
       <div
         className={cs(
-          'in-collapsed-nav group absolute top-full left-0 z-50 w-full bg-white px-3 pb-6 sm:px-7 lg:px-9 2xl:container 2xl:mx-auto 2xl:px-0',
+          'in-collapsed-nav group absolute start-0 top-full z-50 w-full bg-white px-3 pb-6 2xl:container sm:px-7 lg:px-9 2xl:mx-auto 2xl:px-0',
           className,
           !isExpanded && 'hidden',
         )}

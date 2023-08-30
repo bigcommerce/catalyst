@@ -149,7 +149,7 @@ export function Navigation({
                           {mainNavLink.text}
                           <ChevronDown
                             absoluteStrokeWidth={true}
-                            className="linear ml-1 transition-transform duration-300 group-data-[state=open]:-rotate-180"
+                            className="linear ms-1 transition-transform duration-300 group-data-[state=open]:-rotate-180"
                             size={16}
                             strokeWidth={2}
                           />
@@ -254,10 +254,10 @@ export function Navigation({
                   {mainNavLink.subnavGroups.length > 0 ? (
                     <>
                       <Accordion.Trigger asChild>
-                        <span className="group flex w-full items-center justify-between py-3 pr-4 leading-normal outline-none">
+                        <span className="group flex w-full items-center justify-between py-3 pe-4 leading-normal outline-none">
                           {mainNavLink.text}
                           <svg
-                            className="linear duration-250 ml-2 h-2 w-3 stroke-current transition-transform group-data-[state=open]:-rotate-180"
+                            className="linear duration-250 ms-2 h-2 w-3 stroke-current transition-transform group-data-[state=open]:-rotate-180"
                             fill="none"
                             viewBox="0 0 12 8"
                           >
@@ -273,7 +273,7 @@ export function Navigation({
                       <Accordion.AccordionContent asChild>
                         <>
                           {mainNavLink.subnavGroups.map((subnavGroup, i) => (
-                            <ul className="space-y-3 pb-4 pl-6 pt-2" key={i}>
+                            <ul className="space-y-3 pb-4 ps-6 pt-2" key={i}>
                               {subnavGroup.heading.length > 0 ? (
                                 <li className="pt-2">{subnavGroup.heading}</li>
                               ) : null}
@@ -306,7 +306,7 @@ export function Navigation({
               ))}
             </Accordion.Root>
 
-            <ul className="pt-4 leading-normal [&_a]:flex [&_a]:items-center [&_a]:py-3 [&_a]:pr-3 [&_span]:flex-1">
+            <ul className="pt-4 leading-normal [&_a]:flex [&_a]:items-center [&_a]:py-3 [&_a]:pe-3 [&_span]:flex-1">
               <li>
                 <Link href="#">
                   <span>Compare</span>

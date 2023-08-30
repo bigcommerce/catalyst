@@ -25,7 +25,7 @@ export type TagContentProps = ComponentPropsWithRef<'span'>;
 const TagContent = forwardRef<ElementRef<'span'>, TagContentProps>(
   ({ className, ...props }, ref) => {
     return (
-      <span className={cs('pl-4 pr-2 font-semibold only:px-4', className)} ref={ref} {...props} />
+      <span className={cs('pe-2 ps-4 font-semibold only:px-4', className)} ref={ref} {...props} />
     );
   },
 );

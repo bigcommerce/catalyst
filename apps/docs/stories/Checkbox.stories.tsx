@@ -46,7 +46,7 @@ export const CheckboxWithLabel: Story = {
   render: ({ children }) => (
     <div className="flex max-w-sm items-center">
       <Checkbox id="CheckboxWithLabel" />
-      <Label className="cursor-pointer pl-4" htmlFor="CheckboxWithLabel">
+      <Label className="cursor-pointer ps-4" htmlFor="CheckboxWithLabel">
         {children}
       </Label>
     </div>

@@ -27,7 +27,7 @@ export const ProductCardBadge = forwardRef<ElementRef<'span'>, ComponentPropsWit
     return (
       <span
         className={cs(
-          'absolute left-0 top-4 bg-black px-4 py-1 text-white group-hover:opacity-75',
+          'absolute start-0 top-4 bg-black px-4 py-1 text-white group-hover:opacity-75',
           className,
         )}
         ref={ref}

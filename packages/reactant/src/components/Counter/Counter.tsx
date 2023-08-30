@@ -15,7 +15,7 @@ export const Counter = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'inpu
           aria-hidden="true"
           aria-label="Decrease count"
           className={cs(
-            'peer/down absolute top-0 left-0 flex h-full w-12 items-center justify-center focus:outline-none disabled:text-gray-200',
+            'peer/down absolute start-0 top-0 flex h-full w-12 items-center justify-center focus:outline-none disabled:text-gray-200',
           )}
           disabled={value <= 1 || disabled}
           onClick={() => {
@@ -31,7 +31,7 @@ export const Counter = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'inpu
           aria-hidden="true"
           aria-label="Increase count"
           className={cs(
-            'peer/up absolute top-0 right-0 flex h-full w-12 items-center justify-center focus:outline-none disabled:text-gray-200',
+            'peer/up absolute end-0 top-0 flex h-full w-12 items-center justify-center focus:outline-none disabled:text-gray-200',
           )}
           disabled={disabled}
           onClick={() => {
@@ -45,7 +45,7 @@ export const Counter = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'inpu
         </button>
         <input
           className={cs(
-            'focus:ring-primary-blue/20 peer/input w-full border-2 border-gray-200 py-2.5 px-12 text-center text-base placeholder:text-gray-500 hover:border-blue-primary focus:border-blue-primary focus:outline-none focus:ring-4 disabled:bg-gray-100 disabled:hover:border-gray-200 peer-hover/up:border-blue-primary peer-hover/down:border-blue-primary peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200 [&::-webkit-inner-spin-button]:appearance-none',
+            'focus:ring-primary-blue/20 peer/input w-full border-2 border-gray-200 px-12 py-2.5 text-center text-base placeholder:text-gray-500 hover:border-blue-primary focus:border-blue-primary focus:outline-none focus:ring-4 disabled:bg-gray-100 disabled:hover:border-gray-200 peer-hover/down:border-blue-primary peer-hover/up:border-blue-primary peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200 [&::-webkit-inner-spin-button]:appearance-none',
             className,
           )}
           disabled={disabled}

@@ -9,9 +9,9 @@ const textAreaVariants = cva(
     variants: {
       variant: {
         success:
-          'pr-12 border-green-100 focus:border-green-100 focus:ring-green-100/20 disabled:border-gray-200 hover:border-green-200',
+          'pe-12 border-green-100 focus:border-green-100 focus:ring-green-100/20 disabled:border-gray-200 hover:border-green-200',
         error:
-          'ring-red-100/20 focus:ring-red-100/20 !border-red-100 pr-12 hover:border-red-100 focus:border-red-100  disabled:border-gray-200',
+          'ring-red-100/20 focus:ring-red-100/20 !border-red-100 pe-12 hover:border-red-100 focus:border-red-100  disabled:border-gray-200',
       },
     },
   },

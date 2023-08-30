@@ -173,7 +173,7 @@ export const Carousel = forwardRef<ElementRef<'ul'>, CarouselProps>(
           ))}
 
           {state.items.length > 1 && (
-            <ul className="absolute bottom-12 left-12 z-30 flex gap-8">
+            <ul className="absolute bottom-12 start-12 z-30 flex gap-8">
               <li>
                 <Button
                   className="border-0 p-1 text-black hover:bg-transparent hover:text-black"

@@ -10,9 +10,9 @@ const inputVariants = cva(
     variants: {
       variant: {
         success:
-          'pr-12 border-green-100 focus:border-green-100 focus:ring-green-100/20 disabled:border-gray-200 hover:border-green-200',
+          'pe-12 border-green-100 focus:border-green-100 focus:ring-green-100/20 disabled:border-gray-200 hover:border-green-200',
         error:
-          'pr-12 border-red-100 focus:border-red-100 focus:ring-red-100/20 disabled:border-gray-200 hover:border-red-200',
+          'pe-12 border-red-100 focus:border-red-100 focus:ring-red-100/20 disabled:border-gray-200 hover:border-red-200',
       },
     },
   },
@@ -34,7 +34,7 @@ export const InputIcon = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'s
       <span
         aria-hidden="true"
         className={cs(
-          'pointer-events-none absolute right-4 top-0 flex h-full items-center peer-disabled:text-gray-200',
+          'pointer-events-none absolute end-4 top-0 flex h-full items-center peer-disabled:text-gray-200',
           variant === 'success' && 'text-green-100',
           variant === 'error' && 'text-red-100',
           className,

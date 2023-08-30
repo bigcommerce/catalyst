@@ -266,7 +266,7 @@ export const BasicExample: Story = {
                       />
                     </NavigationMenuLink>
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="pl-6">
+                  <NavigationMenuContent className="ps-6">
                     {category.children.map((childCategory, index) => (
                       <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
@@ -378,7 +378,7 @@ export const NavigationAlignmentLeft: Story = {
                       />
                     </NavigationMenuLink>
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="pl-6">
+                  <NavigationMenuContent className="ps-6">
                     {category.children.map((childCategory, index) => (
                       <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
@@ -490,7 +490,7 @@ export const NavigationAlignmentRight: Story = {
                       />
                     </NavigationMenuLink>
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="pl-6">
+                  <NavigationMenuContent className="ps-6">
                     {category.children.map((childCategory, index) => (
                       <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
@@ -604,7 +604,7 @@ export const LogoCentered: Story = {
                       />
                     </NavigationMenuLink>
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="pl-6">
+                  <NavigationMenuContent className="ps-6">
                     {category.children.map((childCategory, index) => (
                       <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
@@ -719,7 +719,7 @@ export const BottomNavigationLeft: Story = {
                         />
                       </NavigationMenuLink>
                     </NavigationMenuTrigger>
-                    <NavigationMenuContent className="pl-6">
+                    <NavigationMenuContent className="ps-6">
                       {category.children.map((childCategory, index) => (
                         <ul className="pb-6" key={index}>
                           <NavigationMenuItem>
@@ -834,7 +834,7 @@ export const BottomNavigationCenter: Story = {
                       />
                     </NavigationMenuLink>
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="pl-6">
+                  <NavigationMenuContent className="ps-6">
                     {category.children.map((childCategory, index) => (
                       <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
@@ -948,7 +948,7 @@ export const BottomNavigationRight: Story = {
                       />
                     </NavigationMenuLink>
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="pl-6">
+                  <NavigationMenuContent className="ps-6">
                     {category.children.map((childCategory, index) => (
                       <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
@@ -1069,7 +1069,7 @@ export const NavigationWithBadge: Story = {
                       />
                     </NavigationMenuLink>
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="pl-6">
+                  <NavigationMenuContent className="ps-6">
                     {category.children.map((childCategory, index) => (
                       <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
@@ -1182,7 +1182,7 @@ export const CustomNavigationMenuToggle: Story = {
                       />
                     </NavigationMenuLink>
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="pl-6">
+                  <NavigationMenuContent className="ps-6">
                     {category.children.map((childCategory, index) => (
                       <ul className="pb-6" key={index}>
                         <NavigationMenuItem>
