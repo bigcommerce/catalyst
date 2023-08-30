@@ -102,6 +102,10 @@ export const RefineBy = ({ facets }: Props) => {
     return router.push(`${pathname}?${params.toString()}`);
   };
 
+  const clearAllRefinements = () => {
+    return router.push(pathname);
+  };
+
   if (!refinements.length) {
     return null;
   }
@@ -111,7 +115,9 @@ export const RefineBy = ({ facets }: Props) => {
       <div className="flex flex-row items-center justify-between pb-2">
         <h3 className="text-h5">Refine by</h3>
         {/* TODO: Make subtle variant */}
-        <button className="font-semibold text-blue-primary">Clear all</button>
+        <button className="font-semibold text-blue-primary" onClick={clearAllRefinements}>
+          Clear all
+        </button>
       </div>
       <ul className="mb-4 flex flex-row flex-wrap gap-2 py-2">
         {refinements.map((refinement) => (
