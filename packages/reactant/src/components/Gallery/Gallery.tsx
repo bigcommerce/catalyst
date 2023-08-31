@@ -153,7 +153,7 @@ export const GalleryContent = forwardRef<ElementRef<'figure'>, ComponentPropsWit
   },
 );
 
-export const GalleryThumbnailList = forwardRef<ElementRef<'ul'>, ComponentPropsWithRef<'ul'>>(
+export const GalleryThumbnailList = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef<'nav'>>(
   ({ children, className, ...props }, ref) => {
     return (
       <nav
