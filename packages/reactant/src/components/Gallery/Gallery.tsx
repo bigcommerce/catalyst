@@ -131,7 +131,7 @@ export const GalleryImage = forwardRef<ElementRef<'img'>, GalleryImageProps>(
         alt={images[selectedImageIndex].altText}
         className={cs('h-full w-full object-contain', className)}
         ref={ref}
-        sizes="(min-width: 1024px) 50vw, 100vw"
+        sizes="100vw"
         src={images[selectedImageIndex].url}
         {...props}
       />

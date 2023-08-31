@@ -27,7 +27,13 @@ export const Gallery = ({ images }: Props) => {
           <GalleryContent>
             <GalleryImage>
               {({ selectedImage }) => (
-                <Image alt={selectedImage.altText} fill priority={true} src={selectedImage.url} />
+                <Image
+                  alt={selectedImage.altText}
+                  fill
+                  priority={true}
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  src={selectedImage.url}
+                />
               )}
             </GalleryImage>
             <GalleryControls />
