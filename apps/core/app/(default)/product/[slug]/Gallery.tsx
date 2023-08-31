@@ -1,42 +1,55 @@
+'use client';
+
+import {
+  GalleryContent,
+  GalleryControls,
+  GalleryImage,
+  GalleryThumbnail,
+  GalleryThumbnailItem,
+  GalleryThumbnailList,
+  Gallery as ReactantGallery,
+} from '@bigcommerce/reactant/Gallery';
 import Image from 'next/image';
 
 import client from '~/client';
-import { assertNonNullable } from '~/utils';
 
-export const Gallery = ({
-  product,
-}: {
-  product: Awaited<ReturnType<typeof client.getProduct>>;
-}) => {
-  assertNonNullable(product);
+interface Props {
+  images: NonNullable<Awaited<ReturnType<typeof client.getProduct>>>['images'];
+}
+
+export const Gallery = ({ images }: Props) => {
+  const defaultImageIndex = images.findIndex((image) => image.isDefault);
 
   return (
-    <div className="-mx-6 mb-12 flex flex-col sm:-mx-0 ">
+    <div className="-mx-6 mb-10 sm:-mx-0 md:mb-12">
       <div className="lg:sticky lg:top-0">
-        <Image
-          alt={product.defaultImage?.altText ?? ''}
-          className="self-center"
-          height={619}
-          priority
-          src={product.defaultImage?.url ?? ''}
-          width={619}
-        />
-
-        <ul className="mt-6 grid grid-cols-5">
-          {product.images.map((image, index) => {
-            return (
-              <li className="col-span-1 flex justify-center" key={index}>
+        <ReactantGallery defaultImageIndex={defaultImageIndex} images={images}>
+          <GalleryContent>
+            <GalleryImage>
+              {({ selectedImage }) => (
                 <Image
-                  alt={image.altText || ''}
-                  height={104}
-                  priority
-                  src={image.url || ''}
-                  width={104}
+                  alt={selectedImage.altText}
+                  fill
+                  priority={true}
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  src={selectedImage.url}
                 />
-              </li>
-            );
-          })}
-        </ul>
+              )}
+            </GalleryImage>
+            <GalleryControls />
+          </GalleryContent>
+          <GalleryThumbnailList className="px-6 sm:-mx-1 sm:px-1">
+            {images.map((image, index) => {
+              return (
+                <GalleryThumbnailItem imageIndex={index} key={image.url}>
+                  <GalleryThumbnail asChild>
+                    <Image alt={`Enlarge ${image.altText}`} priority={true} src={image.url} />
+                  </GalleryThumbnail>
+                </GalleryThumbnailItem>
+              );
+            })}
+          </GalleryThumbnailList>
+        </ReactantGallery>
       </div>
     </div>
   );

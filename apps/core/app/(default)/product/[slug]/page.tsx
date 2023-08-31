@@ -187,10 +187,14 @@ export default async function Product({
   const productId = Number(params.slug);
   const { slug, ...options } = searchParams;
 
-  const optionValueIds = Object.keys(options).map((option) => ({
-    optionEntityId: Number(option),
-    valueEntityId: Number(searchParams[option]),
-  }));
+  const optionValueIds = Object.keys(options)
+    .map((option) => ({
+      optionEntityId: Number(option),
+      valueEntityId: Number(searchParams[option]),
+    }))
+    .filter(
+      (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
+    );
 
   const product = await client.getProduct({ productId, optionValueIds });
 
@@ -202,7 +206,7 @@ export default async function Product({
     <>
       <BreadCrumbs productId={productId} />
       <div className="mb-12 mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
-        <Gallery product={product} />
+        <Gallery images={product.images} />
         <ProductDetails product={product} />
         <ProductDescriptionAndReviews product={product} />
       </div>
