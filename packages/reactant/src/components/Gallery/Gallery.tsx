@@ -176,8 +176,8 @@ interface GalleryThumbnailItemProps extends ComponentPropsWithRef<'button'> {
 }
 
 export const GalleryThumbnailItem = forwardRef<ElementRef<'button'>, GalleryThumbnailItemProps>(
-  ({ className, children, imageIndex, ...props }, ref) => {
-    const { selectedImageIndex } = useContext(GalleryContext);
+  ({ className, children, imageIndex, onClick, ...props }, ref) => {
+    const { selectedImageIndex, setSelectedImageIndex } = useContext(GalleryContext);
     const isActive = selectedImageIndex === imageIndex;
 
     return (
@@ -188,6 +188,13 @@ export const GalleryThumbnailItem = forwardRef<ElementRef<'button'>, GalleryThum
           'focus:ring-primary-blue/20 inline-block h-24 w-24 flex-shrink-0 flex-grow-0 focus:outline-none focus:ring-4',
           className,
         )}
+        onClick={(e) => {
+          setSelectedImageIndex(imageIndex);
+
+          if (onClick) {
+            onClick(e);
+          }
+        }}
         ref={ref}
         type="button"
         {...props}
@@ -206,7 +213,7 @@ interface GalleryThumbnailProps extends ComponentPropsWithRef<'img'> {
 
 export const GalleryThumbnail = forwardRef<ElementRef<'img'>, GalleryThumbnailProps>(
   ({ asChild, className, ...props }, forwardedRef) => {
-    const { selectedImageIndex, setSelectedImageIndex } = useContext(GalleryContext);
+    const { selectedImageIndex } = useContext(GalleryContext);
     const { index } = useContext(ThumbnailContext);
 
     const fallbackRef = useRef<HTMLImageElement | null>(null);
@@ -233,7 +240,6 @@ export const GalleryThumbnail = forwardRef<ElementRef<'img'>, GalleryThumbnailPr
           className,
         )}
         height={94}
-        onClick={() => setSelectedImageIndex(index)}
         ref={ref}
         width={94}
         {...props}
