@@ -91,22 +91,23 @@ export const Facets = ({ facets }: Props) => {
                 </AccordionTrigger>
                 <AccordionContent>
                   {facet.brands.map((brand) => {
+                    const normalizedBrandName = brand.name.replace(/\s/g, '-').toLowerCase();
+                    const id = `${normalizedBrandName}-${brand.entityId}`;
+                    const labelId = `${normalizedBrandName}-${brand.entityId}-label`;
+
+                    const key = `${brand.entityId}-${brand.isSelected.toString()}`;
+
                     return (
-                      <div
-                        className="flex max-w-sm items-center py-2 ps-1"
-                        key={`${brand.entityId}-${brand.isSelected.toString()}`}
-                      >
+                      <div className="flex max-w-sm items-center py-2 ps-1" key={key}>
                         <Checkbox
+                          aria-labelledby={labelId}
                           defaultChecked={brand.isSelected}
-                          id={`${brand.name}-${brand.entityId}`}
+                          id={id}
                           name="brand"
                           onCheckedChange={submitForm}
                           value={brand.entityId}
                         />
-                        <Label
-                          className="cursor-pointer ps-3"
-                          htmlFor={`${brand.name}-${brand.entityId}`}
-                        >
+                        <Label className="cursor-pointer ps-3" htmlFor={id} id={labelId}>
                           {brand.name}
                           <ProductCount
                             count={brand.productCount}
@@ -128,32 +129,38 @@ export const Facets = ({ facets }: Props) => {
                   <h3>{facet.name}</h3>
                 </AccordionTrigger>
                 <AccordionContent>
-                  {facet.attributes.map((attribute) => (
-                    <div
-                      className="flex max-w-sm items-center py-2 ps-1"
-                      key={`${facet.filterName}-${
-                        attribute.value
-                      }-${attribute.isSelected.toString()}`}
-                    >
-                      <Checkbox
-                        defaultChecked={attribute.isSelected}
-                        id={`${facet.filterName}-${attribute.value}`}
-                        name={facet.filterName}
-                        onCheckedChange={submitForm}
-                        value={attribute.value}
-                      />
-                      <Label
-                        className="cursor-pointer ps-3"
-                        htmlFor={`${facet.filterName}-${attribute.value}`}
-                      >
-                        {attribute.value}
-                        <ProductCount
-                          count={attribute.productCount}
-                          shouldDisplay={facet.displayProductCount}
+                  {facet.attributes.map((attribute) => {
+                    const normalizedFilterName = facet.filterName.replace(/\s/g, '-').toLowerCase();
+                    const normalizedAttributeValue = attribute.value
+                      .replace(/\s/g, '-')
+                      .toLowerCase();
+                    const id = `${normalizedFilterName}-${attribute.value}`;
+                    const labelId = `${normalizedFilterName}-${normalizedAttributeValue}-label`;
+
+                    const key = `${attribute.value}-${
+                      attribute.value
+                    }-${attribute.isSelected.toString()}`;
+
+                    return (
+                      <div className="flex max-w-sm items-center py-2 ps-1" key={key}>
+                        <Checkbox
+                          aria-labelledby={labelId}
+                          defaultChecked={attribute.isSelected}
+                          id={id}
+                          name={facet.filterName}
+                          onCheckedChange={submitForm}
+                          value={attribute.value}
                         />
-                      </Label>
-                    </div>
-                  ))}
+                        <Label className="cursor-pointer ps-3" htmlFor={id} id={labelId}>
+                          {attribute.value}
+                          <ProductCount
+                            count={attribute.productCount}
+                            shouldDisplay={facet.displayProductCount}
+                          />
+                        </Label>
+                      </div>
+                    );
+                  })}
                 </AccordionContent>
               </AccordionItem>
             );
@@ -170,6 +177,8 @@ export const Facets = ({ facets }: Props) => {
                     .filter((rating) => rating.value !== '5')
                     .sort(sortRatingsDescending)
                     .map((rating) => {
+                      const key = `${facet.name}-${rating.value}-${rating.isSelected.toString()}`;
+
                       const search = new URLSearchParams(searchParams);
 
                       search.set('minRating', rating.value);
@@ -178,7 +187,7 @@ export const Facets = ({ facets }: Props) => {
                         <Link
                           className="flex flex-row flex-nowrap py-2"
                           href={{ search: `?${search.toString()}` }}
-                          key={`${facet.name}-${rating.value}-${rating.isSelected.toString()}`}
+                          key={key}
                         >
                           <div
                             className={cs('flex flex-row flex-nowrap', {
@@ -239,13 +248,18 @@ export const Facets = ({ facets }: Props) => {
                   {facet.freeShipping && (
                     <div className="flex max-w-sm items-center py-2 ps-1">
                       <Checkbox
+                        aria-labelledby="shipping-free_shipping-label"
                         defaultChecked={facet.freeShipping.isSelected}
                         id="shipping-free_shipping"
                         name="shipping"
                         onCheckedChange={submitForm}
                         value="free_shipping"
                       />
-                      <Label className="cursor-pointer ps-3" htmlFor="shipping-free_shipping">
+                      <Label
+                        className="cursor-pointer ps-3"
+                        htmlFor="shipping-free_shipping"
+                        id="shipping-free_shipping-label"
+                      >
                         Free shipping
                         <ProductCount
                           count={facet.freeShipping.productCount}
@@ -257,12 +271,17 @@ export const Facets = ({ facets }: Props) => {
                   {facet.isFeatured && (
                     <div className="flex max-w-sm items-center py-2 ps-1">
                       <Checkbox
+                        aria-labelledby="isFeatured-label"
                         defaultChecked={facet.isFeatured.isSelected}
                         id="isFeatured"
                         name="isFeatured"
                         onCheckedChange={submitForm}
                       />
-                      <Label className="cursor-pointer ps-3" htmlFor="isFeatured">
+                      <Label
+                        className="cursor-pointer ps-3"
+                        htmlFor="isFeatured"
+                        id="isFeatured-label"
+                      >
                         Is featured
                         <ProductCount
                           count={facet.isFeatured.productCount}
@@ -274,13 +293,18 @@ export const Facets = ({ facets }: Props) => {
                   {facet.isInStock && (
                     <div className="flex max-w-sm items-center py-2 ps-1">
                       <Checkbox
+                        aria-labelledby="stock-in_stock-label"
                         defaultChecked={facet.isInStock.isSelected}
                         id="stock-in_stock"
                         name="stock"
                         onCheckedChange={submitForm}
                         value="in_stock"
                       />
-                      <Label className="cursor-pointer ps-3" htmlFor="stock-in_stock">
+                      <Label
+                        className="cursor-pointer ps-3"
+                        htmlFor="stock-in_stock"
+                        id="stock-in_stock-label"
+                      >
                         In stock
                         <ProductCount
                           count={facet.isInStock.productCount}

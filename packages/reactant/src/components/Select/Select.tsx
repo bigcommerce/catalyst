@@ -26,14 +26,19 @@ interface SelectProps extends ComponentPropsWithRef<SelectType> {
   variant?: 'success' | 'error';
   placeholder?: string;
   className?: string;
+  'aria-label'?: string;
 }
 
 // We need to pass the ref to the Trigger component so we need to type it as such.
 export const Select = forwardRef<ElementRef<SelectTriggerType>, SelectProps>(
-  ({ children, placeholder, className, variant, ...props }, ref) => {
+  ({ children, placeholder, className, variant, 'aria-label': ariaLabel, ...props }, ref) => {
     return (
       <SelectPrimitive.Root {...props}>
-        <SelectPrimitive.Trigger className={cs(selectVariants({ variant, className }))} ref={ref}>
+        <SelectPrimitive.Trigger
+          aria-label={ariaLabel}
+          className={cs(selectVariants({ variant, className }))}
+          ref={ref}
+        >
           <SelectPrimitive.Value placeholder={placeholder} />
           {/* TODO: For the sake of moving fast we are leaving this in, but in the future we need to figure out how enable custom icons */}
           <SelectPrimitive.Icon>
@@ -82,7 +87,7 @@ export const SelectItem = forwardRef<
     <SelectPrimitive.Item
       {...props}
       className={cs(
-        'relative z-10 flex w-full cursor-pointer select-none items-center justify-between overflow-visible py-2 px-4 outline-none hover:bg-blue-secondary/10 hover:text-blue-primary focus:bg-blue-secondary/10 data-[disabled]:pointer-events-none data-[state="checked"]:bg-blue-secondary/10 data-[state="checked"]:text-blue-primary data-[disabled]:opacity-50',
+        'relative z-10 flex w-full cursor-pointer select-none items-center justify-between overflow-visible px-4 py-2 outline-none hover:bg-blue-secondary/10 hover:text-blue-primary focus:bg-blue-secondary/10 data-[disabled]:pointer-events-none data-[state="checked"]:bg-blue-secondary/10 data-[state="checked"]:text-blue-primary data-[disabled]:opacity-50',
         className,
       )}
       ref={ref}

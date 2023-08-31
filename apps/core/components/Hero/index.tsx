@@ -10,6 +10,7 @@ export const Hero = () => (
           alt="an assortment of brandless products against a blank background"
           className="object-cover"
           fill
+          priority
           src="/carousel-bg-01.jpg"
         />
       </div>

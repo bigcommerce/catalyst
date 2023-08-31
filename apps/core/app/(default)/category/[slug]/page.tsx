@@ -76,8 +76,13 @@ export default async function Category({ params, searchParams }: Props) {
           </h2>
 
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 sm:gap-8">
-            {products.map((product) => (
-              <ProductCard imageSize="wide" key={product.entityId} product={product} />
+            {products.map((product, index) => (
+              <ProductCard
+                imagePriotity={index <= 3}
+                imageSize="wide"
+                key={product.entityId}
+                product={product}
+              />
             ))}
           </div>
 

@@ -173,41 +173,55 @@ export const Carousel = forwardRef<ElementRef<'ul'>, CarouselProps>(
           ))}
 
           {state.items.length > 1 && (
-            <ul className="absolute bottom-12 start-12 z-30 flex gap-8">
-              <li>
-                <Button
-                  className="border-0 p-1 text-black hover:bg-transparent hover:text-black"
-                  onClick={() => togglePause()}
-                  variant="secondary"
-                >
-                  {paused ? <Play /> : <Pause />}
-                </Button>
-              </li>
+            <li>
+              <ul className="absolute bottom-12 start-12 z-30 flex gap-8">
+                <li>
+                  <Button
+                    className="border-0 p-1 text-black hover:bg-transparent hover:text-black"
+                    onClick={() => togglePause()}
+                    variant="secondary"
+                  >
+                    {paused ? (
+                      <Play>
+                        <title>Play</title>
+                      </Play>
+                    ) : (
+                      <Pause>
+                        <title>Pause</title>
+                      </Pause>
+                    )}
+                  </Button>
+                </li>
 
-              <li>
-                <Button
-                  className="border-0 p-1 text-black hover:bg-transparent hover:text-black"
-                  onClick={() => navigate({ type: 'prev' })}
-                  variant="secondary"
-                >
-                  <ArrowLeft />
-                </Button>
-              </li>
+                <li>
+                  <Button
+                    className="border-0 p-1 text-black hover:bg-transparent hover:text-black"
+                    onClick={() => navigate({ type: 'prev' })}
+                    variant="secondary"
+                  >
+                    <ArrowLeft>
+                      <title>Previous slide</title>
+                    </ArrowLeft>
+                  </Button>
+                </li>
 
-              <li aria-atomic="true" aria-live="polite" className="p-1 font-semibold">
-                {indicatorTop} of {indicatorBottom}
-              </li>
+                <li aria-atomic="true" aria-live="polite" className="p-1 font-semibold">
+                  {indicatorTop} of {indicatorBottom}
+                </li>
 
-              <li>
-                <Button
-                  className="border-0 p-1 text-black hover:bg-transparent hover:text-black"
-                  onClick={() => navigate({ type: 'next' })}
-                  variant="secondary"
-                >
-                  <ArrowRight />
-                </Button>
-              </li>
-            </ul>
+                <li>
+                  <Button
+                    className="border-0 p-1 text-black hover:bg-transparent hover:text-black"
+                    onClick={() => navigate({ type: 'next' })}
+                    variant="secondary"
+                  >
+                    <ArrowRight>
+                      <title>Next slide</title>
+                    </ArrowRight>
+                  </Button>
+                </li>
+              </ul>
+            </li>
           )}
         </ul>
       </CarouselContext.Provider>

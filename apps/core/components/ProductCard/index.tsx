@@ -31,9 +31,10 @@ interface Product {
 interface ProductCardProps {
   product: Product;
   imageSize?: 'tall' | 'wide' | 'square';
+  imagePriotity?: boolean;
 }
 
-export const ProductCard = ({ product, imageSize }: ProductCardProps) => {
+export const ProductCard = ({ product, imageSize, imagePriotity = false }: ProductCardProps) => {
   const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: product.prices?.price?.currencyCode,
@@ -50,6 +51,7 @@ export const ProductCard = ({ product, imageSize }: ProductCardProps) => {
             'aspect-[7/5]': imageSize === 'wide',
           })}
           height={300}
+          priority={imagePriotity}
           src={product.defaultImage?.url ?? ''}
           width={300}
         />
