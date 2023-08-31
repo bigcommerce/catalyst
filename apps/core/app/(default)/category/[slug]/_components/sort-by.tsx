@@ -19,6 +19,7 @@ export function SortBy() {
 
   return (
     <Select
+      aria-label="Sort by:"
       className="order-2 min-w-[224px] md:order-3 md:w-auto"
       onValueChange={onSort}
       value={value}
