@@ -17,7 +17,7 @@
     "@radix-ui/react-navigation-menu": "^1.1.3",
     "@radix-ui/react-portal": "^1.0.3",
     "@vercel/analytics": "^1.0.2",
-    "clsx": "^1.2.1",
+    "clsx": "^2.0.0",
     "deepmerge": "^4.3.1",
     "iron-session": "^6.3.1",
     "keen-slider": "^6.8.6",
@@ -44,7 +44,7 @@
     "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.4",
     "tailwindcss": "^3.3.3",
-    "type-fest": "^3.13.1",
+    "type-fest": "^4.3.1",
     "typescript": "^5.2.2"
   }
 }
