@@ -29,6 +29,7 @@ export const Gallery = ({ images }: Props) => {
               {({ selectedImage }) => (
                 <Image
                   alt={selectedImage.altText}
+                  className="h-full w-full object-contain"
                   fill
                   priority={true}
                   sizes="(min-width: 1024px) 50vw, 100vw"
@@ -43,7 +44,7 @@ export const Gallery = ({ images }: Props) => {
               return (
                 <GalleryThumbnailItem imageIndex={index} key={image.url}>
                   <GalleryThumbnail asChild>
-                    <Image alt={`Enlarge ${image.altText}`} priority={true} src={image.url} />
+                    <Image alt={image.altText} priority={true} src={image.url} />
                   </GalleryThumbnail>
                 </GalleryThumbnailItem>
               );
