@@ -2,260 +2,261 @@ export default {
     "scalars": [
         25,
         27,
-        34,
-        61,
-        90,
-        123,
-        124,
-        136,
-        145,
-        153,
-        168,
+        35,
+        63,
+        92,
+        126,
+        127,
+        139,
+        148,
+        156,
         171,
-        175,
-        179,
-        187,
-        188,
-        189,
-        195,
-        213,
-        223,
-        239,
-        241,
-        251,
+        174,
+        178,
+        182,
+        190,
+        191,
+        192,
+        198,
+        217,
+        228,
+        244,
+        246,
         256,
-        282,
-        295,
-        300,
-        301,
-        307,
+        262,
+        290,
+        303,
+        308,
+        309,
+        315,
         337,
-        349,
-        350,
-        351
+        346,
+        358,
+        359,
+        360
     ],
     "types": {
         "AddCartLineItemsDataInput": {
             "giftCertificates": [
-                56
+                58
             ],
             "lineItems": [
-                63
+                65
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "AddCartLineItemsInput": {
             "cartEntityId": [
-                301
+                309
             ],
             "data": [
                 0
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "AddCartLineItemsResult": {
             "cart": [
-                51
+                53
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "AddCheckoutBillingAddressDataInput": {
             "address": [
-                106
+                109
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "AddCheckoutBillingAddressInput": {
             "checkoutEntityId": [
-                301
+                309
             ],
             "data": [
                 3
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "AddCheckoutBillingAddressResult": {
             "checkout": [
-                98
+                101
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "AddCheckoutShippingConsignmentsDataInput": {
             "consignments": [
-                128
+                131
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "AddCheckoutShippingConsignmentsInput": {
             "checkoutEntityId": [
-                301
+                309
             ],
             "data": [
                 6
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "AddCheckoutShippingConsignmentsResult": {
             "checkout": [
-                98
+                101
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "AddWishlistItemsInput": {
             "entityId": [
-                179
+                182
             ],
             "items": [
-                346
+                355
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "AddWishlistItemsResult": {
             "result": [
-                339
+                348
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Aggregated": {
             "availableToSell": [
-                195
+                198
             ],
             "warningLevel": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "AggregatedInventory": {
             "availableToSell": [
-                179
+                182
             ],
             "warningLevel": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ApplyCheckoutCouponDataInput": {
             "couponCode": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ApplyCheckoutCouponInput": {
             "checkoutEntityId": [
-                301
+                309
             ],
             "data": [
                 13
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ApplyCheckoutCouponResult": {
             "checkout": [
-                98
+                101
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ApplyCheckoutSpamProtectionDataInput": {
             "token": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ApplyCheckoutSpamProtectionInput": {
             "checkoutEntityId": [
-                301
+                309
             ],
             "data": [
                 16
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ApplyCheckoutSpamProtectionResult": {
             "checkout": [
-                98
+                101
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "AssignCartToCustomerInput": {
             "cartEntityId": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "AssignCartToCustomerResult": {
             "cart": [
-                51
+                53
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Author": {
             "name": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Banner": {
             "content": [
-                301
+                309
             ],
             "entityId": [
-                195
+                198
             ],
             "id": [
-                175
+                178
             ],
             "location": [
                 25
             ],
             "name": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BannerConnection": {
@@ -263,64 +264,64 @@ export default {
                 24
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BannerEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
                 22
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BannerLocation": {},
         "Banners": {
             "brandPage": [
-                38,
+                39,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "brandEntityId": [
-                        179,
+                        182,
                         "Int!"
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "categoryPage": [
-                88,
+                90,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "categoryEntityId": [
-                        179,
+                        182,
                         "Int!"
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
@@ -328,16 +329,16 @@ export default {
                 23,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
@@ -345,45 +346,45 @@ export default {
                 23,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BigDecimal": {},
         "Blog": {
             "description": [
-                301
+                309
             ],
             "id": [
-                175
+                178
             ],
             "isVisibleInNavigation": [
-                34
+                35
             ],
             "name": [
-                301
+                309
             ],
             "path": [
-                301
+                309
             ],
             "post": [
                 30,
                 {
                     "entityId": [
-                        179,
+                        182,
                         "Int!"
                     ]
                 }
@@ -392,600 +393,628 @@ export default {
                 31,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "filters": [
-                        33
+                        34
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ],
                     "sort": [
-                        351
+                        360
                     ]
                 }
             ],
             "renderedRegions": [
-                270
+                278
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BlogIndexPage": {
             "entityId": [
-                179
+                182
             ],
             "isVisibleInNavigation": [
-                34
+                35
             ],
             "name": [
-                301
+                309
             ],
             "parentEntityId": [
-                179
+                182
             ],
             "path": [
-                301
+                309
             ],
             "renderedRegions": [
-                270
+                278
             ],
             "seo": [
-                287
+                295
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BlogPost": {
             "author": [
-                301
+                309
             ],
             "entityId": [
-                179
+                182
             ],
             "htmlBody": [
-                301
+                309
             ],
             "id": [
-                175
+                178
             ],
             "name": [
-                301
+                309
             ],
             "path": [
-                301
+                309
             ],
             "plainTextSummary": [
-                301,
+                309,
                 {
                     "characterLimit": [
-                        179
+                        182
                     ]
                 }
             ],
             "publishedDate": [
-                154
+                157
             ],
             "renderedRegions": [
-                270
+                278
             ],
             "seo": [
-                287
+                295
             ],
             "tags": [
-                301
+                309
             ],
             "thumbnailImage": [
-                176
+                179
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BlogPostConnection": {
             "collectionInfo": [
-                130
+                133
             ],
             "edges": [
                 32
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BlogPostEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
                 30
             ],
             "__typename": [
-                301
+                309
+            ]
+        },
+        "BlogPostRedirect": {
+            "entityId": [
+                182
+            ],
+            "id": [
+                178
+            ],
+            "path": [
+                309
+            ],
+            "__typename": [
+                309
             ]
         },
         "BlogPostsFiltersInput": {
             "entityIds": [
-                179
+                182
             ],
             "tags": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Boolean": {},
         "Brand": {
             "defaultImage": [
-                176
-            ],
-            "entityId": [
                 179
             ],
+            "entityId": [
+                182
+            ],
             "id": [
-                175
+                178
             ],
             "metaDesc": [
-                301
+                309
             ],
             "metaKeywords": [
-                301
+                309
             ],
             "metafields": [
-                197,
+                201,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "keys": [
-                        301,
+                        309,
                         "[String!]"
                     ],
                     "last": [
-                        179
+                        182
                     ],
                     "namespace": [
-                        301,
+                        309,
                         "String!"
                     ]
                 }
             ],
             "name": [
-                301
+                309
             ],
             "pageTitle": [
-                301
+                309
             ],
             "path": [
-                301
+                309
             ],
             "products": [
-                242,
+                247,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "hideOutOfStock": [
-                        34
+                        35
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "searchKeywords": [
-                301
+                309
             ],
             "seo": [
-                287
+                295
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BrandConnection": {
             "edges": [
-                37
+                38
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BrandEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                35
+                36
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BrandPageBannerConnection": {
             "edges": [
-                39
+                40
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BrandPageBannerEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
                 22
             ],
             "__typename": [
-                301
+                309
+            ]
+        },
+        "BrandRedirect": {
+            "entityId": [
+                182
+            ],
+            "id": [
+                178
+            ],
+            "path": [
+                309
+            ],
+            "__typename": [
+                309
             ]
         },
         "BrandSearchFilter": {
             "brands": [
-                42,
+                44,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "displayProductCount": [
-                34
+                35
             ],
             "isCollapsedByDefault": [
-                34
+                35
             ],
             "name": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BrandSearchFilterItem": {
             "entityId": [
-                179
+                182
             ],
             "isSelected": [
-                34
+                35
             ],
             "name": [
-                301
+                309
             ],
             "productCount": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BrandSearchFilterItemConnection": {
             "edges": [
-                43
+                45
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BrandSearchFilterItemEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                41
+                43
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Breadcrumb": {
             "entityId": [
-                179
+                182
             ],
             "name": [
-                301
+                309
             ],
             "path": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BreadcrumbConnection": {
             "edges": [
-                46
+                48
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BreadcrumbEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                44
+                46
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BulkPricingFixedPriceDiscount": {
             "maximumQuantity": [
-                179
+                182
             ],
             "minimumQuantity": [
-                179
+                182
             ],
             "price": [
                 27
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BulkPricingPercentageDiscount": {
             "maximumQuantity": [
-                179
+                182
             ],
             "minimumQuantity": [
-                179
+                182
             ],
             "percentOff": [
                 27
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BulkPricingRelativePriceDiscount": {
             "maximumQuantity": [
-                179
+                182
             ],
             "minimumQuantity": [
-                179
+                182
             ],
             "priceAdjustment": [
                 27
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "BulkPricingTier": {
             "maximumQuantity": [
-                179
+                182
             ],
             "minimumQuantity": [
-                179
+                182
             ],
             "on_BulkPricingFixedPriceDiscount": [
-                47
-            ],
-            "on_BulkPricingPercentageDiscount": [
-                48
-            ],
-            "on_BulkPricingRelativePriceDiscount": [
                 49
             ],
+            "on_BulkPricingPercentageDiscount": [
+                50
+            ],
+            "on_BulkPricingRelativePriceDiscount": [
+                51
+            ],
             "__typename": [
-                301
+                309
             ]
         },
         "Cart": {
             "amount": [
-                200
+                204
             ],
             "baseAmount": [
-                200
+                204
             ],
             "createdAt": [
-                154
+                157
             ],
             "currencyCode": [
-                301
+                309
             ],
             "discountedAmount": [
-                200
+                204
             ],
             "discounts": [
-                54
+                56
             ],
             "entityId": [
-                301
+                309
             ],
             "id": [
-                175
+                178
             ],
             "isTaxIncluded": [
-                34
+                35
             ],
             "lineItems": [
-                64
+                66
             ],
             "locale": [
-                301
+                309
             ],
             "updatedAt": [
-                154
+                157
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartCustomItem": {
             "entityId": [
-                301
+                309
             ],
             "extendedListPrice": [
-                200
+                204
             ],
             "listPrice": [
-                200
+                204
             ],
             "name": [
-                301
+                309
             ],
             "quantity": [
-                179
+                182
             ],
             "sku": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartDigitalItem": {
             "brand": [
-                301
+                309
             ],
             "couponAmount": [
-                200
+                204
             ],
             "discountedAmount": [
-                200
+                204
             ],
             "discounts": [
-                54
+                56
             ],
             "entityId": [
-                301
+                309
             ],
             "extendedListPrice": [
-                200
+                204
             ],
             "extendedSalePrice": [
-                200
+                204
             ],
             "imageUrl": [
-                301
+                309
             ],
             "isTaxable": [
-                34
+                35
             ],
             "listPrice": [
-                200
+                204
             ],
             "name": [
-                301
+                309
             ],
             "originalPrice": [
-                200
+                204
             ],
             "parentEntityId": [
-                301
+                309
             ],
             "productEntityId": [
-                179
+                182
             ],
             "quantity": [
-                179
+                182
             ],
             "salePrice": [
-                200
+                204
             ],
             "selectedOptions": [
-                78
+                80
             ],
             "sku": [
-                301
+                309
             ],
             "url": [
-                301
+                309
             ],
             "variantEntityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartDiscount": {
             "discountedAmount": [
-                200
+                204
             ],
             "entityId": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartGiftCertificate": {
             "amount": [
-                200
+                204
             ],
             "entityId": [
-                301
+                309
             ],
             "isTaxable": [
-                34
+                35
             ],
             "message": [
-                301
+                309
             ],
             "name": [
-                301
+                309
             ],
             "recipient": [
-                57
-            ],
-            "sender": [
                 59
             ],
-            "theme": [
+            "sender": [
                 61
             ],
+            "theme": [
+                63
+            ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartGiftCertificateInput": {
@@ -993,121 +1022,121 @@ export default {
                 27
             ],
             "message": [
-                301
+                309
             ],
             "name": [
-                301
+                309
             ],
             "quantity": [
-                179
+                182
             ],
             "recipient": [
-                58
-            ],
-            "sender": [
                 60
             ],
+            "sender": [
+                62
+            ],
             "theme": [
-                61
+                63
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartGiftCertificateRecipient": {
             "email": [
-                301
+                309
             ],
             "name": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartGiftCertificateRecipientInput": {
             "email": [
-                301
+                309
             ],
             "name": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartGiftCertificateSender": {
             "email": [
-                301
+                309
             ],
             "name": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartGiftCertificateSenderInput": {
             "email": [
-                301
+                309
             ],
             "name": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartGiftCertificateTheme": {},
         "CartGiftWrapping": {
             "amount": [
-                200
+                204
             ],
             "message": [
-                301
+                309
             ],
             "name": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartLineItemInput": {
             "productEntityId": [
-                179
+                182
             ],
             "quantity": [
-                179
+                182
             ],
             "selectedOptions": [
-                79
+                81
             ],
             "variantEntityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartLineItems": {
             "customItems": [
-                52
+                54
             ],
             "digitalItems": [
-                53
-            ],
-            "giftCertificates": [
                 55
             ],
+            "giftCertificates": [
+                57
+            ],
             "physicalItems": [
-                66
+                68
             ],
             "totalQuantity": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartMutations": {
@@ -1130,1252 +1159,1266 @@ export default {
                 }
             ],
             "createCart": [
-                138,
+                141,
                 {
                     "input": [
-                        137,
+                        140,
                         "CreateCartInput!"
                     ]
                 }
             ],
             "deleteCart": [
-                158,
+                161,
                 {
                     "input": [
-                        155,
+                        158,
                         "DeleteCartInput!"
                     ]
                 }
             ],
             "deleteCartLineItem": [
-                157,
+                160,
                 {
                     "input": [
-                        156,
+                        159,
                         "DeleteCartLineItemInput!"
                     ]
                 }
             ],
             "unassignCartFromCustomer": [
-                313,
+                321,
                 {
                     "input": [
-                        312,
+                        320,
                         "UnassignCartFromCustomerInput!"
                     ]
                 }
             ],
             "updateCartCurrency": [
-                316,
+                324,
                 {
                     "input": [
-                        315,
+                        323,
                         "UpdateCartCurrencyInput!"
                     ]
                 }
             ],
             "updateCartLineItem": [
-                319,
+                327,
                 {
                     "input": [
-                        318,
+                        326,
                         "UpdateCartLineItemInput!"
                     ]
                 }
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartPhysicalItem": {
             "brand": [
-                301
+                309
             ],
             "couponAmount": [
-                200
+                204
             ],
             "discountedAmount": [
-                200
+                204
             ],
             "discounts": [
-                54
+                56
             ],
             "entityId": [
-                301
+                309
             ],
             "extendedListPrice": [
-                200
+                204
             ],
             "extendedSalePrice": [
-                200
+                204
             ],
             "giftWrapping": [
-                62
+                64
             ],
             "imageUrl": [
-                301
+                309
             ],
             "isShippingRequired": [
-                34
+                35
             ],
             "isTaxable": [
-                34
+                35
             ],
             "listPrice": [
-                200
+                204
             ],
             "name": [
-                301
+                309
             ],
             "originalPrice": [
-                200
+                204
             ],
             "parentEntityId": [
-                301
+                309
             ],
             "productEntityId": [
-                179
+                182
             ],
             "quantity": [
-                179
+                182
             ],
             "salePrice": [
-                200
+                204
             ],
             "selectedOptions": [
-                78
+                80
             ],
             "sku": [
-                301
+                309
             ],
             "url": [
-                301
+                309
             ],
             "variantEntityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartSelectedCheckboxOption": {
             "entityId": [
-                179
+                182
             ],
             "name": [
-                301
+                309
             ],
             "value": [
-                301
+                309
             ],
             "valueEntityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartSelectedCheckboxOptionInput": {
             "optionEntityId": [
-                179
+                182
             ],
             "optionValueEntityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartSelectedDateFieldOption": {
             "date": [
-                154
+                157
             ],
             "entityId": [
-                179
+                182
             ],
             "name": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartSelectedDateFieldOptionInput": {
             "date": [
-                153
+                156
             ],
             "optionEntityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartSelectedFileUploadOption": {
             "entityId": [
-                179
+                182
             ],
             "fileName": [
-                301
+                309
             ],
             "name": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartSelectedMultiLineTextFieldOption": {
             "entityId": [
-                179
+                182
             ],
             "name": [
-                301
+                309
             ],
             "text": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartSelectedMultiLineTextFieldOptionInput": {
             "optionEntityId": [
-                179
+                182
             ],
             "text": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartSelectedMultipleChoiceOption": {
             "entityId": [
-                179
+                182
             ],
             "name": [
-                301
+                309
             ],
             "value": [
-                301
+                309
             ],
             "valueEntityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartSelectedMultipleChoiceOptionInput": {
             "optionEntityId": [
-                179
+                182
             ],
             "optionValueEntityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartSelectedNumberFieldOption": {
             "entityId": [
-                179
+                182
             ],
             "name": [
-                301
+                309
             ],
             "number": [
-                171
+                174
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartSelectedNumberFieldOptionInput": {
             "number": [
-                171
+                174
             ],
             "optionEntityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartSelectedOption": {
             "entityId": [
-                179
+                182
             ],
             "name": [
-                301
+                309
             ],
             "on_CartSelectedCheckboxOption": [
-                67
-            ],
-            "on_CartSelectedDateFieldOption": [
                 69
             ],
-            "on_CartSelectedFileUploadOption": [
+            "on_CartSelectedDateFieldOption": [
                 71
             ],
-            "on_CartSelectedMultiLineTextFieldOption": [
-                72
+            "on_CartSelectedFileUploadOption": [
+                73
             ],
-            "on_CartSelectedMultipleChoiceOption": [
+            "on_CartSelectedMultiLineTextFieldOption": [
                 74
             ],
-            "on_CartSelectedNumberFieldOption": [
+            "on_CartSelectedMultipleChoiceOption": [
                 76
             ],
+            "on_CartSelectedNumberFieldOption": [
+                78
+            ],
             "on_CartSelectedTextFieldOption": [
-                80
+                82
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartSelectedOptionsInput": {
             "checkboxes": [
-                68
-            ],
-            "dateFields": [
                 70
             ],
-            "multiLineTextFields": [
-                73
+            "dateFields": [
+                72
             ],
-            "multipleChoices": [
+            "multiLineTextFields": [
                 75
             ],
-            "numberFields": [
+            "multipleChoices": [
                 77
             ],
+            "numberFields": [
+                79
+            ],
             "textFields": [
-                81
+                83
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartSelectedTextFieldOption": {
             "entityId": [
-                179
+                182
             ],
             "name": [
-                301
+                309
             ],
             "text": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CartSelectedTextFieldOptionInput": {
             "optionEntityId": [
-                179
+                182
             ],
             "text": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Catalog": {
             "productComparisonsEnabled": [
-                34
+                35
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CatalogProductOption": {
             "displayName": [
-                301
+                309
             ],
             "entityId": [
-                179
+                182
             ],
             "isRequired": [
-                34
+                35
             ],
             "isVariantOption": [
-                34
+                35
             ],
             "on_CheckboxOption": [
-                97
+                100
             ],
             "on_DateFieldOption": [
-                152
+                155
             ],
             "on_FileUploadFieldOption": [
-                170
+                173
             ],
             "on_MultiLineTextFieldOption": [
-                202
+                206
             ],
             "on_MultipleChoiceOption": [
-                203
+                207
             ],
             "on_NumberFieldOption": [
-                208
+                212
             ],
             "on_TextFieldOption": [
-                308
+                316
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CatalogProductOptionValue": {
             "entityId": [
-                179
+                182
             ],
             "isDefault": [
-                34
+                35
             ],
             "isSelected": [
-                34
+                35
             ],
             "label": [
-                301
+                309
             ],
             "on_MultipleChoiceOptionValue": [
-                204
+                208
             ],
             "on_ProductPickListOptionValue": [
-                252
+                257
             ],
             "on_SwatchOptionValue": [
-                305
+                313
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Category": {
             "breadcrumbs": [
-                45,
+                47,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "depth": [
-                        179,
+                        182,
                         "Int!"
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "defaultImage": [
-                176
-            ],
-            "defaultProductSort": [
-                90
-            ],
-            "description": [
-                301
-            ],
-            "entityId": [
                 179
             ],
+            "defaultProductSort": [
+                92
+            ],
+            "description": [
+                309
+            ],
+            "entityId": [
+                182
+            ],
             "id": [
-                175
+                178
             ],
             "metafields": [
-                197,
+                201,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "keys": [
-                        301,
+                        309,
                         "[String!]"
                     ],
                     "last": [
-                        179
+                        182
                     ],
                     "namespace": [
-                        301,
+                        309,
                         "String!"
                     ]
                 }
             ],
             "name": [
-                301
+                309
             ],
             "path": [
-                301
+                309
             ],
             "products": [
-                242,
+                247,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "hideOutOfStock": [
-                        34
+                        35
                     ],
                     "last": [
-                        179
+                        182
                     ],
                     "sortBy": [
-                        90
+                        92
                     ]
                 }
             ],
             "seo": [
-                287
+                295
             ],
             "shopByPriceRanges": [
-                289,
+                297,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "currencyCode": [
-                        350
+                        359
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "includeTax": [
-                        34
+                        35
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CategoryConnection": {
             "edges": [
-                87
+                89
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CategoryEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                85
+                87
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CategoryPageBannerConnection": {
             "edges": [
-                89
+                91
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CategoryPageBannerEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
                 22
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CategoryProductSort": {},
+        "CategoryRedirect": {
+            "entityId": [
+                182
+            ],
+            "id": [
+                178
+            ],
+            "path": [
+                309
+            ],
+            "__typename": [
+                309
+            ]
+        },
         "CategorySearchFilter": {
             "categories": [
-                93,
+                96,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "displayProductCount": [
-                34
+                35
             ],
             "isCollapsedByDefault": [
-                34
+                35
             ],
             "name": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CategorySearchFilterItem": {
             "entityId": [
-                179
+                182
             ],
             "isSelected": [
-                34
+                35
             ],
             "name": [
-                301
+                309
             ],
             "productCount": [
-                179
+                182
             ],
             "subCategories": [
-                303,
+                311,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CategorySearchFilterItemConnection": {
             "edges": [
-                94
+                97
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CategorySearchFilterItemEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                92
+                95
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CategoryTreeItem": {
             "children": [
-                95
+                98
             ],
             "description": [
-                301
+                309
             ],
             "entityId": [
-                179
+                182
             ],
             "hasChildren": [
-                34
+                35
             ],
             "image": [
-                176
-            ],
-            "name": [
-                301
-            ],
-            "path": [
-                301
-            ],
-            "productCount": [
                 179
             ],
+            "name": [
+                309
+            ],
+            "path": [
+                309
+            ],
+            "productCount": [
+                182
+            ],
             "__typename": [
-                301
+                309
             ]
         },
         "Channel": {
             "entityId": [
-                195
+                198
             ],
             "metafields": [
-                197,
+                201,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "keys": [
-                        301,
+                        309,
                         "[String!]"
                     ],
                     "last": [
-                        179
+                        182
                     ],
                     "namespace": [
-                        301,
+                        309,
                         "String!"
                     ]
                 }
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckboxOption": {
             "checkedByDefault": [
-                34
+                35
             ],
             "displayName": [
-                301
+                309
             ],
             "entityId": [
-                179
+                182
             ],
             "isRequired": [
-                34
+                35
             ],
             "isVariantOption": [
-                34
+                35
             ],
             "label": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Checkout": {
             "billingAddress": [
-                116
-            ],
-            "cart": [
-                51
-            ],
-            "coupons": [
                 119
             ],
+            "cart": [
+                53
+            ],
+            "coupons": [
+                122
+            ],
             "createdAt": [
-                154
+                157
             ],
             "customerMessage": [
-                301
+                309
             ],
             "entityId": [
-                301
+                309
             ],
             "giftWrappingCostTotal": [
-                200
+                204
             ],
             "grandTotal": [
-                200
+                204
             ],
             "handlingCostTotal": [
-                200
+                204
             ],
             "id": [
-                175
+                178
             ],
             "order": [
-                217
+                221
             ],
             "outstandingBalance": [
-                200
+                204
             ],
             "promotions": [
-                121
+                124
             ],
             "shippingConsignments": [
-                127
+                130
             ],
             "shippingCostTotal": [
-                200
+                204
             ],
             "subtotal": [
-                200
+                204
             ],
             "taxTotal": [
-                200
+                204
             ],
             "taxes": [
-                129
+                132
             ],
             "updatedAt": [
-                154
+                157
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutAddress": {
             "address1": [
-                301
+                309
             ],
             "address2": [
-                301
+                309
             ],
             "city": [
-                301
+                309
             ],
             "company": [
-                301
+                309
             ],
             "countryCode": [
-                301
+                309
             ],
             "customFields": [
-                102
+                105
             ],
             "email": [
-                301
+                309
             ],
             "firstName": [
-                301
+                309
             ],
             "lastName": [
-                301
+                309
             ],
             "phone": [
-                301
+                309
             ],
             "postalCode": [
-                301
+                309
             ],
             "stateOrProvince": [
-                301
+                309
             ],
             "stateOrProvinceCode": [
-                301
+                309
             ],
             "on_CheckoutBillingAddress": [
-                116
+                119
             ],
             "on_CheckoutConsignmentAddress": [
-                117
+                120
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutAddressCheckboxesCustomField": {
             "entityId": [
-                179
+                182
             ],
             "valueEntityIds": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutAddressCheckboxesCustomFieldInput": {
             "fieldEntityId": [
-                179
+                182
             ],
             "fieldValueEntityIds": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutAddressCustomField": {
             "entityId": [
-                179
+                182
             ],
             "on_CheckoutAddressCheckboxesCustomField": [
-                100
+                103
             ],
             "on_CheckoutAddressDateCustomField": [
-                104
-            ],
-            "on_CheckoutAddressMultipleChoiceCustomField": [
                 107
             ],
+            "on_CheckoutAddressMultipleChoiceCustomField": [
+                110
+            ],
             "on_CheckoutAddressNumberCustomField": [
-                109
+                112
             ],
             "on_CheckoutAddressPasswordCustomField": [
-                111
-            ],
-            "on_CheckoutAddressTextFieldCustomField": [
                 114
             ],
+            "on_CheckoutAddressTextFieldCustomField": [
+                117
+            ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutAddressCustomFieldInput": {
             "checkboxes": [
-                101
+                104
             ],
             "dates": [
-                105
-            ],
-            "multipleChoices": [
                 108
             ],
+            "multipleChoices": [
+                111
+            ],
             "numbers": [
-                110
-            ],
-            "passwords": [
-                112
-            ],
-            "texts": [
                 113
             ],
+            "passwords": [
+                115
+            ],
+            "texts": [
+                116
+            ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutAddressDateCustomField": {
             "date": [
-                154
+                157
             ],
             "entityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutAddressDateCustomFieldInput": {
             "date": [
-                153
+                156
             ],
             "fieldEntityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutAddressInput": {
             "address1": [
-                301
+                309
             ],
             "address2": [
-                301
+                309
             ],
             "city": [
-                301
+                309
             ],
             "company": [
-                301
+                309
             ],
             "countryCode": [
-                301
+                309
             ],
             "customFields": [
-                103
+                106
             ],
             "email": [
-                301
+                309
             ],
             "firstName": [
-                301
+                309
             ],
             "lastName": [
-                301
+                309
             ],
             "phone": [
-                301
+                309
             ],
             "postalCode": [
-                301
+                309
             ],
             "shouldSaveAddress": [
-                34
+                35
             ],
             "stateOrProvince": [
-                301
+                309
             ],
             "stateOrProvinceCode": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutAddressMultipleChoiceCustomField": {
             "entityId": [
-                179
+                182
             ],
             "valueEntityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutAddressMultipleChoiceCustomFieldInput": {
             "fieldEntityId": [
-                179
+                182
             ],
             "fieldValueEntityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutAddressNumberCustomField": {
             "entityId": [
-                179
+                182
             ],
             "number": [
-                171
+                174
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutAddressNumberCustomFieldInput": {
             "fieldEntityId": [
-                179
+                182
             ],
             "number": [
-                171
+                174
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutAddressPasswordCustomField": {
             "entityId": [
-                179
+                182
             ],
             "password": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutAddressPasswordCustomFieldInput": {
             "fieldEntityId": [
-                179
+                182
             ],
             "password": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutAddressTextCustomFieldInput": {
             "fieldEntityId": [
-                179
+                182
             ],
             "text": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutAddressTextFieldCustomField": {
             "entityId": [
-                179
+                182
             ],
             "text": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutAvailableShippingOption": {
             "cost": [
-                200
+                204
             ],
             "description": [
-                301
+                309
             ],
             "entityId": [
-                301
+                309
             ],
             "imageUrl": [
-                301
+                309
             ],
             "isRecommended": [
-                34
+                35
             ],
             "transitTime": [
-                301
+                309
             ],
             "type": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutBillingAddress": {
             "address1": [
-                301
+                309
             ],
             "address2": [
-                301
+                309
             ],
             "city": [
-                301
+                309
             ],
             "company": [
-                301
+                309
             ],
             "countryCode": [
-                301
+                309
             ],
             "customFields": [
-                102
+                105
             ],
             "email": [
-                301
+                309
             ],
             "entityId": [
-                301
+                309
             ],
             "firstName": [
-                301
+                309
             ],
             "lastName": [
-                301
+                309
             ],
             "phone": [
-                301
+                309
             ],
             "postalCode": [
-                301
+                309
             ],
             "stateOrProvince": [
-                301
+                309
             ],
             "stateOrProvinceCode": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutConsignmentAddress": {
             "address1": [
-                301
+                309
             ],
             "address2": [
-                301
+                309
             ],
             "city": [
-                301
+                309
             ],
             "company": [
-                301
+                309
             ],
             "countryCode": [
-                301
+                309
             ],
             "customFields": [
-                102
+                105
             ],
             "email": [
-                301
+                309
             ],
             "firstName": [
-                301
+                309
             ],
             "lastName": [
-                301
+                309
             ],
             "phone": [
-                301
+                309
             ],
             "postalCode": [
-                301
+                309
             ],
             "stateOrProvince": [
-                301
+                309
             ],
             "stateOrProvinceCode": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutConsignmentLineItemInput": {
             "lineItemEntityId": [
-                301
+                309
             ],
             "quantity": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutCoupon": {
             "code": [
-                301
+                309
             ],
             "couponType": [
-                136
+                139
             ],
             "discountedAmount": [
-                200
+                204
             ],
             "entityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutMutations": {
@@ -2416,269 +2459,269 @@ export default {
                 }
             ],
             "completeCheckout": [
-                132,
+                135,
                 {
                     "input": [
-                        131,
+                        134,
                         "CompleteCheckoutInput!"
                     ]
                 }
             ],
             "deleteCheckoutConsignment": [
-                160,
+                163,
                 {
                     "input": [
-                        159,
+                        162,
                         "DeleteCheckoutConsignmentInput!"
                     ]
                 }
             ],
             "selectCheckoutShippingOption": [
-                286,
+                294,
                 {
                     "input": [
-                        285,
+                        293,
                         "SelectCheckoutShippingOptionInput!"
                     ]
                 }
             ],
             "unapplyCheckoutCoupon": [
-                311,
+                319,
                 {
                     "input": [
-                        310,
+                        318,
                         "UnapplyCheckoutCouponInput!"
                     ]
                 }
             ],
             "updateCheckoutBillingAddress": [
-                322,
+                330,
                 {
                     "input": [
-                        321,
+                        329,
                         "UpdateCheckoutBillingAddressInput!"
                     ]
                 }
             ],
             "updateCheckoutCustomerMessage": [
-                325,
+                333,
                 {
                     "input": [
-                        324,
+                        332,
                         "UpdateCheckoutCustomerMessageInput!"
                     ]
                 }
             ],
             "updateCheckoutShippingConsignment": [
-                328,
+                336,
                 {
                     "input": [
-                        327,
+                        335,
                         "UpdateCheckoutShippingConsignmentInput!"
                     ]
                 }
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutPromotion": {
             "banners": [
-                122
+                125
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutPromotionBanner": {
             "entityId": [
-                179
+                182
             ],
             "locations": [
-                123
+                126
             ],
             "text": [
-                301
+                309
             ],
             "type": [
-                124
+                127
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutPromotionBannerLocation": {},
         "CheckoutPromotionBannerType": {},
         "CheckoutSelectedShippingOption": {
             "cost": [
-                200
+                204
             ],
             "description": [
-                301
+                309
             ],
             "entityId": [
-                301
+                309
             ],
             "imageUrl": [
-                301
+                309
             ],
             "transitTime": [
-                301
+                309
             ],
             "type": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutSettings": {
             "reCaptchaEnabled": [
-                34
+                35
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutShippingConsignment": {
             "address": [
-                117
+                120
             ],
             "availableShippingOptions": [
-                115
+                118
             ],
             "coupons": [
-                119
+                122
             ],
             "entityId": [
-                301
+                309
             ],
             "handlingCost": [
-                200
+                204
             ],
             "lineItemIds": [
-                301
+                309
             ],
             "selectedShippingOption": [
-                125
+                128
             ],
             "shippingCost": [
-                200
+                204
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutShippingConsignmentInput": {
             "address": [
-                106
+                109
             ],
             "lineItems": [
-                118
+                121
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CheckoutTax": {
             "amount": [
-                200
+                204
             ],
             "name": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CollectionInfo": {
             "totalItems": [
-                195
+                198
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CompleteCheckoutInput": {
             "checkoutEntityId": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CompleteCheckoutResult": {
             "orderEntityId": [
-                179
+                182
             ],
             "paymentAccessToken": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ContactField": {
             "address": [
-                301
+                309
             ],
             "addressType": [
-                301
+                309
             ],
             "country": [
-                301
+                309
             ],
             "email": [
-                301
+                309
             ],
             "phone": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ContactPage": {
             "contactFields": [
-                301
+                309
             ],
             "entityId": [
-                179
+                182
             ],
             "htmlBody": [
-                301
+                309
             ],
             "id": [
-                175
+                178
             ],
             "isVisibleInNavigation": [
-                34
+                35
             ],
             "name": [
-                301
+                309
             ],
             "parentEntityId": [
-                179
+                182
             ],
             "path": [
-                301
+                309
             ],
             "plainTextSummary": [
-                301,
+                309,
                 {
                     "characterLimit": [
-                        179
+                        182
                     ]
                 }
             ],
             "renderedRegions": [
-                270
+                278
             ],
             "seo": [
-                287
+                295
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Content": {
@@ -2689,858 +2732,861 @@ export default {
                 28
             ],
             "page": [
-                336,
+                345,
                 {
                     "entityId": [
-                        179,
+                        182,
                         "Int!"
                     ]
                 }
             ],
             "pages": [
-                220,
+                224,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "filters": [
-                        338
+                        347
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "renderedRegionsByPageType": [
-                270,
+                278,
                 {
                     "pageType": [
-                        223,
+                        228,
                         "PageType!"
                     ]
                 }
             ],
             "renderedRegionsByPageTypeAndEntityId": [
-                270,
+                278,
                 {
                     "entityId": [
-                        195,
+                        198,
                         "Long!"
                     ],
                     "entityPageType": [
-                        168,
+                        171,
                         "EntityPageType!"
                     ]
                 }
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CouponType": {},
         "CreateCartInput": {
             "currencyCode": [
-                301
+                309
             ],
             "giftCertificates": [
-                56
+                58
             ],
             "lineItems": [
-                63
+                65
             ],
             "locale": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CreateCartResult": {
             "cart": [
-                51
+                53
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CreateWishlistInput": {
             "isPublic": [
-                34
+                35
             ],
             "items": [
-                346
+                355
             ],
             "name": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CreateWishlistResult": {
             "result": [
-                339
+                348
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Currency": {
             "code": [
-                350
+                359
             ],
             "display": [
-                143
+                146
             ],
             "entityId": [
-                179
+                182
             ],
             "exchangeRate": [
-                171
+                174
             ],
             "flagImage": [
-                301
+                309
             ],
             "isActive": [
-                34
+                35
             ],
             "isTransactional": [
-                34
+                35
             ],
             "name": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CurrencyConnection": {
             "edges": [
-                144
+                147
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CurrencyDisplay": {
             "decimalPlaces": [
-                179
+                182
             ],
             "decimalToken": [
-                301
+                309
             ],
             "symbol": [
-                301
+                309
             ],
             "symbolPlacement": [
-                145
+                148
             ],
             "thousandsToken": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CurrencyEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                141
+                144
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CurrencySymbolPosition": {},
         "CustomField": {
             "entityId": [
-                179
+                182
             ],
             "name": [
-                301
+                309
             ],
             "value": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CustomFieldConnection": {
             "edges": [
-                148
+                151
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CustomFieldEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                146
+                149
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Customer": {
             "addressCount": [
-                179
+                182
             ],
             "attributeCount": [
-                179
+                182
             ],
             "attributes": [
-                151
+                154
             ],
             "company": [
-                301
+                309
             ],
             "customerGroupId": [
-                179
+                182
             ],
             "email": [
-                301
+                309
             ],
             "entityId": [
-                179
+                182
             ],
             "firstName": [
-                301
+                309
             ],
             "lastName": [
-                301
+                309
             ],
             "notes": [
-                301
+                309
             ],
             "phone": [
-                301
+                309
             ],
             "storeCredit": [
-                200
+                204
             ],
             "taxExemptCategory": [
-                301
+                309
             ],
             "wishlists": [
-                340,
+                349,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "filters": [
-                        342
+                        351
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CustomerAttribute": {
             "entityId": [
-                179
+                182
             ],
             "name": [
-                301
+                309
             ],
             "value": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "CustomerAttributes": {
             "attribute": [
-                150,
+                153,
                 {
                     "entityId": [
-                        179,
+                        182,
                         "Int!"
                     ]
                 }
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "DateFieldOption": {
             "defaultValue": [
-                153
+                156
             ],
             "displayName": [
-                301
+                309
             ],
             "earliest": [
-                153
+                156
             ],
             "entityId": [
-                179
+                182
             ],
             "isRequired": [
-                34
+                35
             ],
             "isVariantOption": [
-                34
+                35
             ],
             "latest": [
-                153
+                156
             ],
             "limitDateBy": [
-                188
+                191
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "DateTime": {},
         "DateTimeExtended": {
             "utc": [
-                153
+                156
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "DeleteCartInput": {
             "cartEntityId": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "DeleteCartLineItemInput": {
             "cartEntityId": [
-                301
+                309
             ],
             "lineItemEntityId": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "DeleteCartLineItemResult": {
             "cart": [
-                51
+                53
             ],
             "deletedCartEntityId": [
-                301
+                309
             ],
             "deletedLineItemEntityId": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "DeleteCartResult": {
             "deletedCartEntityId": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "DeleteCheckoutConsignmentInput": {
             "checkoutEntityId": [
-                301
+                309
             ],
             "consignmentEntityId": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "DeleteCheckoutConsignmentResult": {
             "checkout": [
-                98
+                101
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "DeleteWishlistItemsInput": {
             "entityId": [
-                179
+                182
             ],
             "itemEntityIds": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "DeleteWishlistItemsResult": {
             "result": [
-                339
+                348
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "DeleteWishlistResult": {
             "result": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "DeleteWishlistsInput": {
             "entityIds": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "DisplayField": {
             "extendedDateFormat": [
-                301
+                309
             ],
             "shortDateFormat": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Distance": {
             "lengthUnit": [
-                187
+                190
             ],
             "value": [
-                171
+                174
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "DistanceFilter": {
             "latitude": [
-                171
+                174
             ],
             "lengthUnit": [
-                187
+                190
             ],
             "longitude": [
-                171
+                174
             ],
             "radius": [
-                171
+                174
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "EntityPageType": {},
         "ExternalLinkPage": {
             "entityId": [
-                179
+                182
             ],
             "isVisibleInNavigation": [
-                34
+                35
             ],
             "link": [
-                301
+                309
             ],
             "name": [
-                301
+                309
             ],
             "parentEntityId": [
-                179
+                182
             ],
             "seo": [
-                287
+                295
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "FileUploadFieldOption": {
             "displayName": [
-                301
+                309
             ],
             "entityId": [
-                179
+                182
             ],
             "fileTypes": [
-                301
+                309
             ],
             "isRequired": [
-                34
+                35
             ],
             "isVariantOption": [
-                34
+                35
             ],
             "maxFileSize": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Float": {},
         "GiftWrapping": {
             "allowComments": [
-                34
+                35
             ],
             "entityId": [
-                179
+                182
             ],
             "name": [
-                301
+                309
             ],
             "previewImageUrl": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "GiftWrappingConnection": {
             "edges": [
-                174
+                177
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "GiftWrappingEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                172
+                175
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ID": {},
         "Image": {
             "altText": [
-                301
+                309
             ],
             "isDefault": [
-                34
+                35
             ],
             "url": [
-                301,
+                309,
                 {
                     "height": [
-                        179
+                        182
                     ],
                     "width": [
-                        179,
+                        182,
                         "Int!"
                     ]
                 }
             ],
             "urlOriginal": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ImageConnection": {
             "edges": [
-                178
+                181
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ImageEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                176
+                179
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Int": {},
         "Inventory": {
             "locations": [
-                184,
+                187,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "cities": [
-                        301,
+                        309,
                         "[String!]"
                     ],
                     "codes": [
-                        301,
+                        309,
                         "[String!]"
                     ],
                     "countryCodes": [
-                        349,
+                        358,
                         "[countryCode!]"
                     ],
                     "distanceFilter": [
-                        167
+                        170
                     ],
                     "entityIds": [
-                        179,
+                        182,
                         "[Int!]"
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ],
                     "serviceTypeIds": [
-                        301,
+                        309,
                         "[String!]"
                     ],
                     "states": [
-                        301,
+                        309,
                         "[String!]"
                     ],
                     "typeIds": [
-                        301,
+                        309,
                         "[String!]"
                     ]
                 }
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "InventoryAddress": {
             "address1": [
-                301
+                309
             ],
             "address2": [
-                301
+                309
             ],
             "city": [
-                301
+                309
             ],
             "code": [
-                301
+                309
             ],
             "countryCode": [
-                301
+                309
             ],
             "description": [
-                301
+                309
             ],
             "email": [
-                301
+                309
             ],
             "entityId": [
-                179
+                182
             ],
             "label": [
-                301
+                309
             ],
             "latitude": [
-                171
+                174
             ],
             "longitude": [
-                171
+                174
             ],
             "phone": [
-                301
+                309
             ],
             "postalCode": [
-                301
+                309
             ],
             "stateOrProvince": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "InventoryByLocations": {
             "availableToSell": [
-                195
+                198
             ],
             "isInStock": [
-                34
+                35
             ],
             "locationDistance": [
-                166
+                169
             ],
             "locationEntityCode": [
-                301
+                309
             ],
             "locationEntityId": [
-                195
+                198
             ],
             "locationEntityServiceTypeIds": [
-                301
+                309
             ],
             "locationEntityTypeId": [
-                301
+                309
             ],
             "warningLevel": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "InventoryLocation": {
             "address": [
-                181
+                184
             ],
             "blackoutHours": [
-                294
+                302
             ],
             "code": [
-                301
+                309
             ],
             "description": [
-                301
+                309
             ],
             "distance": [
-                166
+                169
             ],
             "entityId": [
-                179
+                182
             ],
             "label": [
-                301
+                309
             ],
             "metafields": [
-                197,
+                201,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "keys": [
-                        301,
+                        309,
                         "[String!]"
                     ],
                     "last": [
-                        179
+                        182
                     ],
                     "namespace": [
-                        301,
+                        309,
                         "String!"
                     ]
                 }
             ],
             "operatingHours": [
-                210
+                214
             ],
             "serviceTypeIds": [
-                301
+                309
             ],
             "specialHours": [
-                294
+                302
             ],
             "timeZone": [
-                301
+                309
             ],
             "typeId": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "InventoryLocationConnection": {
             "edges": [
-                185
+                188
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "InventoryLocationEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                183
+                186
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "InventorySettings": {
             "defaultOutOfStockMessage": [
-                301
+                309
             ],
             "hideInProductFiltering": [
-                34
+                35
             ],
             "optionOutOfStockBehavior": [
-                213
+                217
             ],
             "productOutOfStockBehavior": [
-                251
+                256
             ],
             "showOutOfStockMessage": [
-                34
+                35
             ],
             "showPreOrderStockLevels": [
-                34
+                35
             ],
             "stockLevelDisplay": [
-                295
+                303
+            ],
+            "updateStockBehavior": [
+                337
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "LengthUnit": {},
@@ -3548,248 +3594,256 @@ export default {
         "LimitInputBy": {},
         "LocationConnection": {
             "edges": [
-                191
+                194
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "LocationEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                182
+                185
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "LoginResult": {
             "customer": [
-                149
+                152
             ],
             "result": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "LogoField": {
             "image": [
-                176
+                179
             ],
             "title": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "LogoutResult": {
             "result": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Long": {},
-        "Measurement": {
-            "unit": [
-                301
-            ],
-            "value": [
-                171
+        "ManualRedirect": {
+            "url": [
+                309
             ],
             "__typename": [
-                301
+                309
+            ]
+        },
+        "Measurement": {
+            "unit": [
+                309
+            ],
+            "value": [
+                174
+            ],
+            "__typename": [
+                309
             ]
         },
         "MetafieldConnection": {
             "edges": [
-                198
+                202
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "MetafieldEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                199
+                203
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Metafields": {
             "entityId": [
-                179
+                182
             ],
             "id": [
-                175
+                178
             ],
             "key": [
-                301
+                309
             ],
             "value": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Money": {
             "currencyCode": [
-                301
+                309
             ],
             "formatted": [
-                301
+                309
             ],
             "value": [
                 27
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "MoneyRange": {
             "max": [
-                200
+                204
             ],
             "min": [
-                200
+                204
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "MultiLineTextFieldOption": {
             "defaultValue": [
-                301
+                309
             ],
             "displayName": [
-                301
+                309
             ],
             "entityId": [
-                179
+                182
             ],
             "isRequired": [
-                34
+                35
             ],
             "isVariantOption": [
-                34
+                35
             ],
             "maxLength": [
-                179
+                182
             ],
             "maxLines": [
-                179
+                182
             ],
             "minLength": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "MultipleChoiceOption": {
             "displayName": [
-                301
+                309
             ],
             "displayStyle": [
-                301
+                309
             ],
             "entityId": [
-                179
+                182
             ],
             "isRequired": [
-                34
+                35
             ],
             "isVariantOption": [
-                34
+                35
             ],
             "values": [
-                249,
+                254,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "MultipleChoiceOptionValue": {
             "entityId": [
-                179
+                182
             ],
             "isDefault": [
-                34
+                35
             ],
             "isSelected": [
-                34
+                35
             ],
             "label": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Mutation": {
             "cart": [
-                65
+                67
             ],
             "checkout": [
-                120
+                123
             ],
             "login": [
-                192,
+                195,
                 {
                     "email": [
-                        301,
+                        309,
                         "String!"
                     ],
                     "password": [
-                        301,
+                        309,
                         "String!"
                     ]
                 }
             ],
             "logout": [
-                194
+                197
             ],
             "wishlist": [
-                347
+                356
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Node": {
             "id": [
-                175
+                178
             ],
             "on_Banner": [
                 22
@@ -3801,865 +3855,882 @@ export default {
                 30
             ],
             "on_Brand": [
-                35
+                36
             ],
             "on_Cart": [
-                51
+                53
             ],
             "on_Category": [
-                85
+                87
             ],
             "on_Checkout": [
-                98
+                101
             ],
             "on_ContactPage": [
-                134
+                137
             ],
             "on_NormalPage": [
-                207
+                211
             ],
             "on_Product": [
-                232
+                237
             ],
             "on_RawHtmlPage": [
-                265
+                271
+            ],
+            "on_Redirect": [
+                273
             ],
             "on_Variant": [
-                332
+                341
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "NormalPage": {
             "entityId": [
-                179
+                182
             ],
             "htmlBody": [
-                301
+                309
             ],
             "id": [
-                175
+                178
             ],
             "isVisibleInNavigation": [
-                34
+                35
             ],
             "name": [
-                301
+                309
             ],
             "parentEntityId": [
-                179
+                182
             ],
             "path": [
-                301
+                309
             ],
             "plainTextSummary": [
-                301,
+                309,
                 {
                     "characterLimit": [
-                        179
+                        182
                     ]
                 }
             ],
             "renderedRegions": [
-                270
+                278
             ],
             "seo": [
-                287
+                295
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "NumberFieldOption": {
             "defaultValue": [
-                171
+                174
             ],
             "displayName": [
-                301
+                309
             ],
             "entityId": [
-                179
+                182
             ],
             "highest": [
-                171
+                174
             ],
             "isIntegerOnly": [
-                34
+                35
             ],
             "isRequired": [
-                34
+                35
             ],
             "isVariantOption": [
-                34
+                35
             ],
             "limitNumberBy": [
-                189
+                192
             ],
             "lowest": [
-                171
+                174
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "OperatingDay": {
             "closing": [
-                301
+                309
             ],
             "open": [
-                34
+                35
             ],
             "opening": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "OperatingHours": {
             "friday": [
-                209
+                213
             ],
             "monday": [
-                209
+                213
             ],
             "saturday": [
-                209
+                213
             ],
             "sunday": [
-                209
+                213
             ],
             "thursday": [
-                209
+                213
             ],
             "tuesday": [
-                209
+                213
             ],
             "wednesday": [
-                209
+                213
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "OptionConnection": {
             "edges": [
-                212
+                216
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "OptionEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                245
+                250
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "OptionOutOfStockBehavior": {},
         "OptionValueConnection": {
             "edges": [
-                215
+                219
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "OptionValueEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                248
+                253
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "OptionValueId": {
             "optionEntityId": [
-                179
+                182
             ],
             "valueEntityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Order": {
             "entityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "OtherSearchFilter": {
             "displayProductCount": [
-                34
+                35
             ],
             "freeShipping": [
-                219
+                223
             ],
             "isCollapsedByDefault": [
-                34
+                35
             ],
             "isFeatured": [
-                219
+                223
             ],
             "isInStock": [
-                219
+                223
             ],
             "name": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "OtherSearchFilterItem": {
             "isSelected": [
-                34
+                35
             ],
             "productCount": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "PageConnection": {
             "edges": [
-                221
+                225
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "PageEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                336
+                345
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "PageInfo": {
             "endCursor": [
-                301
+                309
             ],
             "hasNextPage": [
-                34
+                35
             ],
             "hasPreviousPage": [
-                34
+                35
             ],
             "startCursor": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
+            ]
+        },
+        "PageRedirect": {
+            "entityId": [
+                182
+            ],
+            "id": [
+                178
+            ],
+            "path": [
+                309
+            ],
+            "__typename": [
+                309
             ]
         },
         "PageType": {},
         "PopularBrandConnection": {
             "edges": [
-                225
+                230
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "PopularBrandEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                226
+                231
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "PopularBrandType": {
             "count": [
-                179
+                182
             ],
             "entityId": [
-                179
+                182
             ],
             "name": [
-                301
+                309
             ],
             "path": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "PriceRanges": {
             "priceRange": [
-                201
+                205
             ],
             "retailPriceRange": [
-                201
+                205
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "PriceSearchFilter": {
             "isCollapsedByDefault": [
-                34
+                35
             ],
             "name": [
-                301
+                309
             ],
             "selected": [
-                230
+                235
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "PriceSearchFilterInput": {
             "maxPrice": [
-                171
+                174
             ],
             "minPrice": [
-                171
+                174
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "PriceSearchFilterItem": {
             "maxPrice": [
-                171
+                174
             ],
             "minPrice": [
-                171
+                174
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Prices": {
             "basePrice": [
-                200
+                204
             ],
             "bulkPricing": [
-                50
+                52
             ],
             "mapPrice": [
-                200
+                204
             ],
             "price": [
-                200
+                204
             ],
             "priceRange": [
-                201
+                205
             ],
             "retailPrice": [
-                200
+                204
             ],
             "retailPriceRange": [
-                201
+                205
             ],
             "salePrice": [
-                200
+                204
             ],
             "saved": [
-                200
+                204
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Product": {
             "addToCartUrl": [
-                301
+                309
             ],
             "addToWishlistUrl": [
-                301
+                309
             ],
             "availability": [
-                301
+                309
             ],
             "availabilityDescription": [
-                301
+                309
             ],
             "availabilityV2": [
-                238
+                243
             ],
             "brand": [
-                35
+                36
             ],
             "categories": [
-                86,
+                88,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "condition": [
-                241
+                246
             ],
             "createdAt": [
-                154
+                157
             ],
             "customFields": [
-                147,
+                150,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ],
                     "names": [
-                        301,
+                        309,
                         "[String!]"
                     ]
                 }
             ],
             "defaultImage": [
-                176
-            ],
-            "depth": [
-                196
-            ],
-            "description": [
-                301
-            ],
-            "entityId": [
                 179
             ],
+            "depth": [
+                200
+            ],
+            "description": [
+                309
+            ],
+            "entityId": [
+                182
+            ],
             "giftWrappingOptions": [
-                173,
+                176,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "gtin": [
-                301
+                309
             ],
             "height": [
-                196
+                200
             ],
             "id": [
-                175
+                178
             ],
             "images": [
-                177,
+                180,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "inventory": [
-                244
+                249
             ],
             "maxPurchaseQuantity": [
-                179
+                182
             ],
             "metafields": [
-                197,
+                201,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "keys": [
-                        301,
+                        309,
                         "[String!]"
                     ],
                     "last": [
-                        179
+                        182
                     ],
                     "namespace": [
-                        301,
+                        309,
                         "String!"
                     ]
                 }
             ],
             "minPurchaseQuantity": [
-                179
+                182
             ],
             "mpn": [
-                301
+                309
             ],
             "name": [
-                301
+                309
             ],
             "options": [
-                211,
+                215,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "path": [
-                301
+                309
             ],
             "plainTextDescription": [
-                301,
+                309,
                 {
                     "characterLimit": [
-                        179
+                        182
                     ]
                 }
             ],
             "priceRanges": [
-                227,
+                232,
                 {
                     "includeTax": [
-                        34
+                        35
                     ]
                 }
             ],
             "prices": [
-                231,
+                236,
                 {
                     "currencyCode": [
-                        350
+                        359
                     ],
                     "includeTax": [
-                        34
+                        35
                     ]
                 }
             ],
             "productOptions": [
-                246,
+                251,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "relatedProducts": [
-                268,
+                276,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "hideOutOfStock": [
-                        34
+                        35
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "reviewSummary": [
-                274
+                282
             ],
             "reviews": [
-                272,
+                280,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "filters": [
-                        254
+                        260
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ],
                     "sort": [
-                        256
+                        262
                     ]
                 }
             ],
             "seo": [
-                287
+                295
             ],
             "showCartAction": [
-                34
+                35
             ],
             "sku": [
-                301
+                309
             ],
             "type": [
-                301
+                309
             ],
             "upc": [
-                301
+                309
             ],
             "variants": [
-                333,
+                342,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "entityIds": [
-                        179,
+                        182,
                         "[Int!]"
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "isPurchasable": [
-                        34
+                        35
                     ],
                     "last": [
-                        179
+                        182
                     ],
                     "optionValueIds": [
-                        216,
+                        220,
                         "[OptionValueId!]"
                     ]
                 }
             ],
             "warranty": [
-                301
+                309
             ],
             "weight": [
-                196
+                200
             ],
             "width": [
-                196
+                200
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductAttributeSearchFilter": {
             "attributes": [
-                236,
+                241,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "displayProductCount": [
-                34
+                35
             ],
             "filterName": [
-                301
+                309
             ],
             "isCollapsedByDefault": [
-                34
+                35
             ],
             "name": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductAttributeSearchFilterInput": {
             "attribute": [
-                301
+                309
             ],
             "values": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductAttributeSearchFilterItem": {
             "isSelected": [
-                34
+                35
             ],
             "productCount": [
-                179
+                182
             ],
             "value": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductAttributeSearchFilterItemConnection": {
             "edges": [
-                237
+                242
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductAttributeSearchFilterItemEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                235
+                240
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductAvailability": {
             "description": [
-                301
+                309
             ],
             "status": [
-                239
+                244
             ],
             "on_ProductAvailable": [
-                240
+                245
             ],
             "on_ProductPreOrder": [
-                253
+                258
             ],
             "on_ProductUnavailable": [
-                257
+                263
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductAvailabilityStatus": {},
         "ProductAvailable": {
             "description": [
-                301
+                309
             ],
             "status": [
-                239
+                244
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductConditionType": {},
         "ProductConnection": {
             "collectionInfo": [
-                130
+                133
             ],
             "edges": [
-                243
+                248
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                232
+                237
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductInventory": {
@@ -4667,395 +4738,449 @@ export default {
                 12
             ],
             "hasVariantInventory": [
-                34
+                35
             ],
             "isInStock": [
-                34
+                35
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductOption": {
             "displayName": [
-                301
+                309
             ],
             "entityId": [
-                179
+                182
             ],
             "isRequired": [
-                34
+                35
             ],
             "values": [
-                214,
+                218,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductOptionConnection": {
             "edges": [
-                247
+                252
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductOptionEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                83
+                85
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductOptionValue": {
             "entityId": [
-                179
+                182
             ],
             "label": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductOptionValueConnection": {
             "edges": [
-                250
+                255
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductOptionValueEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                84
+                86
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductOutOfStockBehavior": {},
         "ProductPickListOptionValue": {
             "defaultImage": [
-                176
+                179
             ],
             "entityId": [
-                179
+                182
             ],
             "isDefault": [
-                34
+                35
             ],
             "isSelected": [
-                34
+                35
             ],
             "label": [
-                301
+                309
             ],
             "productId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductPreOrder": {
             "description": [
-                301
+                309
             ],
             "message": [
-                301
+                309
             ],
             "status": [
-                239
+                244
             ],
             "willBeReleasedAt": [
-                154
+                157
             ],
             "__typename": [
-                301
+                309
+            ]
+        },
+        "ProductRedirect": {
+            "entityId": [
+                182
+            ],
+            "id": [
+                178
+            ],
+            "path": [
+                309
+            ],
+            "__typename": [
+                309
             ]
         },
         "ProductReviewsFiltersInput": {
             "rating": [
-                255
+                261
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductReviewsRatingFilterInput": {
             "maxRating": [
-                179
+                182
             ],
             "minRating": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ProductReviewsSortInput": {},
         "ProductUnavailable": {
             "description": [
-                301
+                309
             ],
             "message": [
-                301
+                309
             ],
             "status": [
-                239
+                244
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "PublicWishlist": {
             "entityId": [
-                179
+                182
             ],
             "items": [
-                344,
+                353,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "hideOutOfStock": [
-                        34
+                        35
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "name": [
-                301
+                309
             ],
             "token": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Query": {
             "channel": [
-                96
+                99
             ],
             "customer": [
-                149
+                152
             ],
             "inventory": [
-                180
+                183
             ],
             "node": [
-                206,
+                210,
                 {
                     "id": [
-                        175,
+                        178,
                         "ID!"
                     ]
                 }
             ],
             "site": [
-                292
+                300
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "RatingSearchFilter": {
             "isCollapsedByDefault": [
-                34
+                35
             ],
             "name": [
-                301
+                309
             ],
             "ratings": [
-                263,
+                269,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "RatingSearchFilterInput": {
             "maxRating": [
-                171
+                174
             ],
             "minRating": [
-                171
+                174
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "RatingSearchFilterItem": {
             "isSelected": [
-                34
+                35
             ],
             "productCount": [
-                179
+                182
             ],
             "value": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "RatingSearchFilterItemConnection": {
             "edges": [
-                264
+                270
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "RatingSearchFilterItemEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                262
+                268
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "RawHtmlPage": {
             "entityId": [
-                179
+                182
             ],
             "htmlBody": [
-                301
+                309
             ],
             "id": [
-                175
+                178
             ],
             "isVisibleInNavigation": [
-                34
+                35
             ],
             "name": [
-                301
+                309
             ],
             "parentEntityId": [
-                179
+                182
             ],
             "path": [
-                301
+                309
             ],
             "plainTextSummary": [
-                301,
+                309,
                 {
                     "characterLimit": [
-                        179
+                        182
                     ]
                 }
             ],
             "seo": [
-                287
+                295
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ReCaptchaSettings": {
             "siteKey": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
+            ]
+        },
+        "Redirect": {
+            "fromPath": [
+                309
+            ],
+            "id": [
+                178
+            ],
+            "to": [
+                274
+            ],
+            "toUrl": [
+                309
+            ],
+            "__typename": [
+                309
+            ]
+        },
+        "RedirectTo": {
+            "on_BlogPostRedirect": [
+                33
+            ],
+            "on_BrandRedirect": [
+                41
+            ],
+            "on_CategoryRedirect": [
+                93
+            ],
+            "on_ManualRedirect": [
+                199
+            ],
+            "on_PageRedirect": [
+                227
+            ],
+            "on_ProductRedirect": [
+                259
+            ],
+            "__typename": [
+                309
             ]
         },
         "Region": {
             "html": [
-                301
+                309
             ],
             "name": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "RelatedProductsConnection": {
             "edges": [
-                269
+                277
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "RelatedProductsEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                232
+                237
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "RenderedRegionsByPageType": {
             "regions": [
-                267
+                275
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Review": {
@@ -5063,1137 +5188,1138 @@ export default {
                 21
             ],
             "createdAt": [
-                154
+                157
             ],
             "entityId": [
-                195
+                198
             ],
             "rating": [
-                179
+                182
             ],
             "text": [
-                301
+                309
             ],
             "title": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ReviewConnection": {
             "edges": [
-                273
+                281
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ReviewEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                271
+                279
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Reviews": {
             "averageRating": [
-                171
+                174
             ],
             "numberOfReviews": [
-                179
+                182
             ],
             "summationOfRatings": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Route": {
             "node": [
-                206
+                210
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Search": {
             "productFilteringEnabled": [
-                34
+                35
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "SearchProductFilter": {
             "isCollapsedByDefault": [
-                34
+                35
             ],
             "name": [
-                301
+                309
             ],
             "on_BrandSearchFilter": [
-                40
+                42
             ],
             "on_CategorySearchFilter": [
-                91
+                94
             ],
             "on_OtherSearchFilter": [
-                218
+                222
             ],
             "on_PriceSearchFilter": [
-                228
-            ],
-            "on_ProductAttributeSearchFilter": [
                 233
             ],
+            "on_ProductAttributeSearchFilter": [
+                238
+            ],
             "on_RatingSearchFilter": [
-                260
+                266
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "SearchProductFilterConnection": {
             "edges": [
-                279
+                287
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "SearchProductFilterEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                277
+                285
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "SearchProducts": {
             "filters": [
-                278,
+                286,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "products": [
-                242,
+                247,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ]
                 }
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "SearchProductsFiltersInput": {
             "brandEntityIds": [
-                179
+                182
             ],
             "categoryEntityId": [
-                179
+                182
             ],
             "categoryEntityIds": [
-                179
+                182
             ],
             "hideOutOfStock": [
-                34
+                35
             ],
             "isFeatured": [
-                34
+                35
             ],
             "isFreeShipping": [
-                34
+                35
             ],
             "price": [
-                229
-            ],
-            "productAttributes": [
                 234
             ],
+            "productAttributes": [
+                239
+            ],
             "rating": [
-                261
+                267
             ],
             "searchSubCategories": [
-                34
+                35
             ],
             "searchTerm": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "SearchProductsSortInput": {},
         "SearchQueries": {
             "searchProducts": [
-                280,
+                288,
                 {
                     "filters": [
-                        281,
+                        289,
                         "SearchProductsFiltersInput!"
                     ],
                     "sort": [
-                        282
+                        290
                     ]
                 }
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "SelectCheckoutShippingOptionDataInput": {
             "shippingOptionEntityId": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "SelectCheckoutShippingOptionInput": {
             "checkoutEntityId": [
-                301
+                309
             ],
             "consignmentEntityId": [
-                301
+                309
             ],
             "data": [
-                284
+                292
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "SelectCheckoutShippingOptionResult": {
             "checkout": [
-                98
+                101
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "SeoDetails": {
             "metaDescription": [
-                301
+                309
             ],
             "metaKeywords": [
-                301
+                309
             ],
             "pageTitle": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Settings": {
             "channelId": [
-                195
+                198
             ],
             "checkout": [
-                126
+                129
             ],
             "contact": [
-                133
+                136
             ],
             "display": [
-                165
+                168
             ],
             "inventory": [
-                186
+                189
             ],
             "logo": [
-                193
+                196
             ],
             "logoV2": [
-                297
+                305
             ],
             "reCaptcha": [
-                266
+                272
             ],
             "search": [
-                276
+                284
             ],
             "socialMediaLinks": [
-                293
+                301
             ],
             "status": [
-                300
+                308
             ],
             "storeHash": [
-                301
+                309
             ],
             "storeName": [
-                301
+                309
             ],
             "storefront": [
-                299
+                307
             ],
             "tax": [
-                306
+                314
             ],
             "url": [
-                331
+                340
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ShopByPriceConnection": {
             "edges": [
-                290
+                298
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ShopByPriceEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                291
+                299
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "ShopByPriceRange": {
             "ranges": [
-                201
+                205
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Site": {
             "bestSellingProducts": [
-                242,
+                247,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "hideOutOfStock": [
-                        34
+                        35
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "brands": [
-                36,
+                37,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "entityIds": [
-                        179,
+                        182,
                         "[Int!]"
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ],
                     "productEntityIds": [
-                        179,
+                        182,
                         "[Int!]"
                     ]
                 }
             ],
             "cart": [
-                51,
+                53,
                 {
                     "entityId": [
-                        301
+                        309
                     ]
                 }
             ],
             "category": [
-                85,
+                87,
                 {
                     "entityId": [
-                        179,
+                        182,
                         "Int!"
                     ]
                 }
             ],
             "categoryTree": [
-                95,
+                98,
                 {
                     "rootEntityId": [
-                        179
+                        182
                     ]
                 }
             ],
             "checkout": [
-                98,
+                101,
                 {
                     "entityId": [
-                        301
+                        309
                     ]
                 }
             ],
             "content": [
-                135
+                138
             ],
             "currencies": [
-                142,
+                145,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "currency": [
-                141,
+                144,
                 {
                     "currencyCode": [
-                        350,
+                        359,
                         "currencyCode!"
                     ]
                 }
             ],
             "featuredProducts": [
-                242,
+                247,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "hideOutOfStock": [
-                        34
+                        35
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "newestProducts": [
-                242,
+                247,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "hideOutOfStock": [
-                        34
+                        35
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "popularBrands": [
-                224,
+                229,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "product": [
-                232,
+                237,
                 {
                     "entityId": [
-                        179
+                        182
                     ],
                     "id": [
-                        175
+                        178
                     ],
                     "optionValueIds": [
-                        216,
+                        220,
                         "[OptionValueId!]"
                     ],
                     "sku": [
-                        301
+                        309
                     ],
                     "useDefaultOptionSelections": [
-                        34
+                        35
                     ],
                     "variantEntityId": [
-                        179
+                        182
                     ]
                 }
             ],
             "products": [
-                242,
+                247,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "entityIds": [
-                        179,
+                        182,
                         "[Int!]"
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "hideOutOfStock": [
-                        34
+                        35
                     ],
                     "ids": [
-                        175,
+                        178,
                         "[ID!]"
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "publicWishlist": [
-                258,
+                264,
                 {
                     "token": [
-                        301,
+                        309,
                         "String!"
                     ]
                 }
             ],
             "route": [
-                275,
+                283,
                 {
                     "path": [
-                        301,
+                        309,
                         "String!"
                     ]
                 }
             ],
             "search": [
-                283
+                291
             ],
             "settings": [
-                288
+                296
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "SocialMediaLink": {
             "name": [
-                301
+                309
             ],
             "url": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "SpecialHour": {
             "closing": [
-                153
+                156
             ],
             "label": [
-                301
+                309
             ],
             "open": [
-                34
+                35
             ],
             "opening": [
-                153
+                156
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "StockLevelDisplay": {},
         "StoreImageLogo": {
             "image": [
-                176
+                179
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "StoreLogo": {
             "on_StoreImageLogo": [
-                296
+                304
             ],
             "on_StoreTextLogo": [
-                298
+                306
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "StoreTextLogo": {
             "text": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Storefront": {
             "catalog": [
-                82
+                84
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "StorefrontStatusType": {},
         "String": {},
         "SubCategorySearchFilterItem": {
             "entityId": [
-                179
+                182
             ],
             "isSelected": [
-                34
+                35
             ],
             "name": [
-                301
+                309
             ],
             "productCount": [
-                179
+                182
             ],
             "subCategories": [
-                303,
+                311,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "SubCategorySearchFilterItemConnection": {
             "edges": [
-                304
+                312
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "SubCategorySearchFilterItemEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                302
+                310
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "SwatchOptionValue": {
             "entityId": [
-                179
+                182
             ],
             "hexColors": [
-                301
+                309
             ],
             "imageUrl": [
-                301,
+                309,
                 {
                     "height": [
-                        179
+                        182
                     ],
                     "width": [
-                        179,
+                        182,
                         "Int!"
                     ]
                 }
             ],
             "isDefault": [
-                34
+                35
             ],
             "isSelected": [
-                34
+                35
             ],
             "label": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "TaxDisplaySettings": {
             "pdp": [
-                307
+                315
             ],
             "plp": [
-                307
+                315
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "TaxPriceDisplay": {},
         "TextFieldOption": {
             "defaultValue": [
-                301
+                309
             ],
             "displayName": [
-                301
+                309
             ],
             "entityId": [
-                179
+                182
             ],
             "isRequired": [
-                34
+                35
             ],
             "isVariantOption": [
-                34
+                35
             ],
             "maxLength": [
-                179
+                182
             ],
             "minLength": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "UnapplyCheckoutCouponDataInput": {
             "couponCode": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "UnapplyCheckoutCouponInput": {
             "checkoutEntityId": [
-                301
-            ],
-            "data": [
                 309
-            ],
-            "__typename": [
-                301
-            ]
-        },
-        "UnapplyCheckoutCouponResult": {
-            "checkout": [
-                98
-            ],
-            "__typename": [
-                301
-            ]
-        },
-        "UnassignCartFromCustomerInput": {
-            "cartEntityId": [
-                301
-            ],
-            "__typename": [
-                301
-            ]
-        },
-        "UnassignCartFromCustomerResult": {
-            "cart": [
-                51
-            ],
-            "__typename": [
-                301
-            ]
-        },
-        "UpdateCartCurrencyDataInput": {
-            "currencyCode": [
-                301
-            ],
-            "__typename": [
-                301
-            ]
-        },
-        "UpdateCartCurrencyInput": {
-            "cartEntityId": [
-                301
-            ],
-            "data": [
-                314
-            ],
-            "__typename": [
-                301
-            ]
-        },
-        "UpdateCartCurrencyResult": {
-            "cart": [
-                51
-            ],
-            "__typename": [
-                301
-            ]
-        },
-        "UpdateCartLineItemDataInput": {
-            "giftCertificate": [
-                56
-            ],
-            "lineItem": [
-                63
-            ],
-            "__typename": [
-                301
-            ]
-        },
-        "UpdateCartLineItemInput": {
-            "cartEntityId": [
-                301
             ],
             "data": [
                 317
             ],
-            "lineItemEntityId": [
-                301
+            "__typename": [
+                309
+            ]
+        },
+        "UnapplyCheckoutCouponResult": {
+            "checkout": [
+                101
             ],
             "__typename": [
-                301
+                309
+            ]
+        },
+        "UnassignCartFromCustomerInput": {
+            "cartEntityId": [
+                309
+            ],
+            "__typename": [
+                309
+            ]
+        },
+        "UnassignCartFromCustomerResult": {
+            "cart": [
+                53
+            ],
+            "__typename": [
+                309
+            ]
+        },
+        "UpdateCartCurrencyDataInput": {
+            "currencyCode": [
+                309
+            ],
+            "__typename": [
+                309
+            ]
+        },
+        "UpdateCartCurrencyInput": {
+            "cartEntityId": [
+                309
+            ],
+            "data": [
+                322
+            ],
+            "__typename": [
+                309
+            ]
+        },
+        "UpdateCartCurrencyResult": {
+            "cart": [
+                53
+            ],
+            "__typename": [
+                309
+            ]
+        },
+        "UpdateCartLineItemDataInput": {
+            "giftCertificate": [
+                58
+            ],
+            "lineItem": [
+                65
+            ],
+            "__typename": [
+                309
+            ]
+        },
+        "UpdateCartLineItemInput": {
+            "cartEntityId": [
+                309
+            ],
+            "data": [
+                325
+            ],
+            "lineItemEntityId": [
+                309
+            ],
+            "__typename": [
+                309
             ]
         },
         "UpdateCartLineItemResult": {
             "cart": [
-                51
+                53
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "UpdateCheckoutBillingAddressDataInput": {
             "address": [
-                106
+                109
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "UpdateCheckoutBillingAddressInput": {
             "addressEntityId": [
-                301
+                309
             ],
             "checkoutEntityId": [
-                301
+                309
             ],
             "data": [
-                320
+                328
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "UpdateCheckoutBillingAddressResult": {
             "checkout": [
-                98
+                101
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "UpdateCheckoutCustomerMessageDataInput": {
             "message": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "UpdateCheckoutCustomerMessageInput": {
             "checkoutEntityId": [
-                301
+                309
             ],
             "data": [
-                323
+                331
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "UpdateCheckoutCustomerMessageResult": {
             "checkout": [
-                98
+                101
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "UpdateCheckoutShippingConsignmentDataInput": {
             "consignment": [
-                128
+                131
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "UpdateCheckoutShippingConsignmentInput": {
             "checkoutEntityId": [
-                301
+                309
             ],
             "consignmentEntityId": [
-                301
+                309
             ],
             "data": [
-                326
+                334
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "UpdateCheckoutShippingConsignmentResult": {
             "checkout": [
-                98
+                101
             ],
             "__typename": [
-                301
+                309
             ]
         },
+        "UpdateStockBehavior": {},
         "UpdateWishlistInput": {
             "data": [
-                348
+                357
             ],
             "entityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "UpdateWishlistResult": {
             "result": [
-                339
+                348
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "UrlField": {
             "cdnUrl": [
-                301
+                309
             ],
             "checkoutUrl": [
-                301
+                309
             ],
             "vanityUrl": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Variant": {
             "defaultImage": [
-                176
-            ],
-            "depth": [
-                196
-            ],
-            "entityId": [
                 179
             ],
+            "depth": [
+                200
+            ],
+            "entityId": [
+                182
+            ],
             "gtin": [
-                301
+                309
             ],
             "height": [
-                196
+                200
             ],
             "id": [
-                175
+                178
             ],
             "inventory": [
-                335
+                344
             ],
             "isPurchasable": [
-                34
+                35
             ],
             "metafields": [
-                197,
+                201,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "keys": [
-                        301,
+                        309,
                         "[String!]"
                     ],
                     "last": [
-                        179
+                        182
                     ],
                     "namespace": [
-                        301,
+                        309,
                         "String!"
                     ]
                 }
             ],
             "mpn": [
-                301
+                309
             ],
             "options": [
-                211,
+                215,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "prices": [
-                231,
+                236,
                 {
                     "currencyCode": [
-                        350
+                        359
                     ],
                     "includeTax": [
-                        34
+                        35
                     ]
                 }
             ],
             "productOptions": [
-                246,
+                251,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "sku": [
-                301
+                309
             ],
             "upc": [
-                301
+                309
             ],
             "weight": [
-                196
+                200
             ],
             "width": [
-                196
+                200
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "VariantConnection": {
             "edges": [
-                334
+                343
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "VariantEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                332
+                341
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "VariantInventory": {
@@ -6201,213 +6327,213 @@ export default {
                 11
             ],
             "byLocation": [
-                190,
+                193,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "distanceFilter": [
-                        167
+                        170
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "last": [
-                        179
+                        182
                     ],
                     "locationEntityCodes": [
-                        301,
+                        309,
                         "[String!]"
                     ],
                     "locationEntityIds": [
-                        179,
+                        182,
                         "[Int!]"
                     ],
                     "locationEntityServiceTypeIds": [
-                        301,
+                        309,
                         "[String!]"
                     ],
                     "locationEntityTypeIds": [
-                        301,
+                        309,
                         "[String!]"
                     ]
                 }
             ],
             "isInStock": [
-                34
+                35
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "WebPage": {
             "entityId": [
-                179
+                182
             ],
             "isVisibleInNavigation": [
-                34
+                35
             ],
             "name": [
-                301
+                309
             ],
             "parentEntityId": [
-                179
+                182
             ],
             "seo": [
-                287
+                295
             ],
             "on_BlogIndexPage": [
                 29
             ],
             "on_ContactPage": [
-                134
+                137
             ],
             "on_ExternalLinkPage": [
-                169
+                172
             ],
             "on_NormalPage": [
-                207
+                211
             ],
             "on_RawHtmlPage": [
-                265
+                271
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "WebPageType": {},
         "WebPagesFiltersInput": {
             "entityIds": [
-                179
+                182
             ],
             "isVisibleInNavigation": [
-                34
+                35
             ],
             "pageType": [
-                337
+                346
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "Wishlist": {
             "entityId": [
-                179
+                182
             ],
             "isPublic": [
-                34
+                35
             ],
             "items": [
-                344,
+                353,
                 {
                     "after": [
-                        301
+                        309
                     ],
                     "before": [
-                        301
+                        309
                     ],
                     "first": [
-                        179
+                        182
                     ],
                     "hideOutOfStock": [
-                        34
+                        35
                     ],
                     "last": [
-                        179
+                        182
                     ]
                 }
             ],
             "name": [
-                301
+                309
             ],
             "token": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "WishlistConnection": {
             "edges": [
-                341
+                350
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "WishlistEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                339
+                348
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "WishlistFiltersInput": {
             "entityIds": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "WishlistItem": {
             "entityId": [
-                179
+                182
             ],
             "product": [
-                232
+                237
             ],
             "productEntityId": [
-                179
+                182
             ],
             "variantEntityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "WishlistItemConnection": {
             "edges": [
-                345
+                354
             ],
             "pageInfo": [
-                222
+                226
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "WishlistItemEdge": {
             "cursor": [
-                301
+                309
             ],
             "node": [
-                343
+                352
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "WishlistItemInput": {
             "productEntityId": [
-                179
+                182
             ],
             "variantEntityId": [
-                179
+                182
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "WishlistMutations": {
@@ -6421,54 +6547,54 @@ export default {
                 }
             ],
             "createWishlist": [
-                140,
+                143,
                 {
                     "input": [
-                        139,
+                        142,
                         "CreateWishlistInput!"
                     ]
                 }
             ],
             "deleteWishlistItems": [
-                162,
+                165,
                 {
                     "input": [
-                        161,
+                        164,
                         "DeleteWishlistItemsInput!"
                     ]
                 }
             ],
             "deleteWishlists": [
-                163,
+                166,
                 {
                     "input": [
-                        164,
+                        167,
                         "DeleteWishlistsInput!"
                     ]
                 }
             ],
             "updateWishlist": [
-                330,
+                339,
                 {
                     "input": [
-                        329,
+                        338,
                         "UpdateWishlistInput!"
                     ]
                 }
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "WishlistUpdateDataInput": {
             "isPublic": [
-                34
+                35
             ],
             "name": [
-                301
+                309
             ],
             "__typename": [
-                301
+                309
             ]
         },
         "countryCode": {},
