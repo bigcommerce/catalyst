@@ -1,6 +1,6 @@
 import { Text as MakeswiftText } from '@makeswift/runtime/components';
 import { clsx } from 'clsx';
-import React, { ComponentPropsWithoutRef, ComponentRef, CSSProperties, forwardRef } from 'react';
+import React, { ComponentPropsWithoutRef, CSSProperties } from 'react';
 
 type MakeswiftTextProps = ComponentPropsWithoutRef<typeof MakeswiftText>;
 
@@ -9,10 +9,7 @@ type Props = MakeswiftTextProps & {
   listMarkerColor?: string;
 };
 
-export const Text = forwardRef<ComponentRef<typeof MakeswiftText>, Props>(function Text(
-  { linkColor, listMarkerColor, ...restOfProps },
-  ref,
-) {
+export const Text = ({ linkColor, listMarkerColor, ...restOfProps }: Props) => {
   return (
     <div
       className={clsx(
@@ -26,7 +23,7 @@ export const Text = forwardRef<ComponentRef<typeof MakeswiftText>, Props>(functi
         } as CSSProperties
       }
     >
-      <MakeswiftText {...restOfProps} ref={ref} />
+      <MakeswiftText {...restOfProps} />
     </div>
   );
-});
+};

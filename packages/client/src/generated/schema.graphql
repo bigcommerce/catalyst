@@ -173,7 +173,7 @@ type Banner implements Node {
   """The id of the Banner."""
   entityId: Long!
 
-  """The id of the object."""
+  """The ID of an object"""
   id: ID!
 
   """The location of the Banner."""
@@ -371,6 +371,18 @@ type BlogPostEdge {
   node: BlogPost!
 }
 
+"""Redirect to a blog post."""
+type BlogPostRedirect {
+  """Entity id."""
+  entityId: Int!
+
+  """The ID of an object."""
+  id: ID!
+
+  """Relative destination url."""
+  path: String!
+}
+
 """Object containing the filters for querying blog posts"""
 input BlogPostsFiltersInput {
   """Ids of the expected blog posts."""
@@ -476,6 +488,18 @@ type BrandPageBannerEdge {
   node: Banner!
 }
 
+"""Redirect to a brand."""
+type BrandRedirect {
+  """Entity id."""
+  entityId: Int!
+
+  """The ID of an object."""
+  id: ID!
+
+  """Relative destination url."""
+  path: String!
+}
+
 """Brand Filter"""
 type BrandSearchFilter implements SearchProductFilter {
   """List of available brands."""
@@ -533,7 +557,7 @@ type Breadcrumb {
   name: String!
 
   """Path to the category."""
-  path: String!
+  path: String
 }
 
 """A connection to a list of items."""
@@ -1388,6 +1412,18 @@ enum CategoryProductSort {
   LOWEST_PRICE
   NEWEST
   Z_TO_A
+}
+
+"""Redirect to a category."""
+type CategoryRedirect {
+  """Entity id."""
+  entityId: Int!
+
+  """The ID of an object."""
+  id: ID!
+
+  """Relative destination url."""
+  path: String!
 }
 
 """Category Filter"""
@@ -2923,6 +2959,9 @@ type InventorySettings {
 
   """Hide or show inventory node for product"""
   stockLevelDisplay: StockLevelDisplay
+
+  """The behavior to use to update stock levels."""
+  updateStockBehavior: UpdateStockBehavior
 }
 
 """length unit"""
@@ -2993,6 +3032,12 @@ type LogoutResult {
 The `Long` scalar type represents non-fractional signed whole numeric values. Long can represent values between -(2^63) and 2^63 - 1.
 """
 scalar Long
+
+"""Redirect to manually input url."""
+type ManualRedirect {
+  """Url."""
+  url: String!
+}
 
 """Measurement"""
 type Measurement {
@@ -3374,6 +3419,18 @@ type PageInfo {
 
   """When paginating backwards, the cursor to continue."""
   startCursor: String
+}
+
+"""Redirect to a page."""
+type PageRedirect {
+  """Entity id."""
+  entityId: Int!
+
+  """The ID of an object."""
+  id: ID!
+
+  """Relative destination url."""
+  path: String!
 }
 
 """Page type"""
@@ -3974,6 +4031,18 @@ type ProductPreOrder implements ProductAvailability {
   willBeReleasedAt: DateTimeExtended
 }
 
+"""Redirect to a product."""
+type ProductRedirect {
+  """Entity id."""
+  entityId: Int!
+
+  """The ID of an object."""
+  id: ID!
+
+  """Relative destination url."""
+  path: String!
+}
+
 """Product reviews filters."""
 input ProductReviewsFiltersInput {
   """Product reviews filter by rating."""
@@ -4149,6 +4218,24 @@ type ReCaptchaSettings {
   """ReCaptcha site key."""
   siteKey: String!
 }
+
+"""Redirect."""
+type Redirect implements Node {
+  """Redirected url."""
+  fromPath: String!
+
+  """The ID of an object."""
+  id: ID!
+
+  """Additional information about redirect."""
+  to: RedirectTo!
+
+  """Full destination url."""
+  toUrl: String!
+}
+
+"""Type of the redirect."""
+union RedirectTo = BlogPostRedirect | BrandRedirect | CategoryRedirect | ManualRedirect | PageRedirect | ProductRedirect
 
 """The region object"""
 type Region {
@@ -4956,6 +5043,12 @@ input UpdateCheckoutShippingConsignmentInput {
 type UpdateCheckoutShippingConsignmentResult {
   """The Checkout that is updated as a result of mutation."""
   checkout: Checkout
+}
+
+"""The behavior type for updating stock levels."""
+enum UpdateStockBehavior {
+  ORDER_COMPLETED_OR_SHIPPED
+  ORDER_PLACED
 }
 
 """Update wishlist input object"""

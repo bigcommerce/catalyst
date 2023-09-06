@@ -84,12 +84,12 @@ export const PublicSearchParamsSchema = z.object({
   maxRating: z.coerce.number().optional(),
   sort: PublicSortParam.optional(),
   // In the future we should support more stock filters, e.g. out of stock, low stock, etc.
-  stock: SearchParamToArray.transform((value) =>
-    value?.filter((stock) => z.enum(['in_stock']).safeParse(stock).success),
+  stock: SearchParamToArray.transform(
+    (value) => value?.filter((stock) => z.enum(['in_stock']).safeParse(stock).success),
   ),
   // In the future we should support more shipping filters, e.g. 2 day shipping, same day, etc.
-  shipping: SearchParamToArray.transform((value) =>
-    value?.filter((stock) => z.enum(['free_shipping']).safeParse(stock).success),
+  shipping: SearchParamToArray.transform(
+    (value) => value?.filter((stock) => z.enum(['free_shipping']).safeParse(stock).success),
   ),
 });
 

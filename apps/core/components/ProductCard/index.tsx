@@ -16,16 +16,16 @@ interface Product {
   defaultImage?: {
     altText?: string;
     url: string;
-  };
+  } | null;
   brand?: {
     name: string;
-  };
+  } | null;
   prices?: {
     price?: {
       value?: number;
       currencyCode?: string;
     };
-  };
+  } | null;
 }
 
 interface ProductCardProps {
