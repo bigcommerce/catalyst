@@ -137,7 +137,7 @@ export const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchPar
                 minPrice,
               }
             : undefined,
-        productAttributes: productAttributes.length ? productAttributes : undefined,
+        productAttributes,
         rating:
           minRating || maxRating
             ? {
