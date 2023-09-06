@@ -82,7 +82,5 @@ export const getBlogPosts = async <T>(
     return undefined;
   }
 
-  return {
-    ...blog,
-  };
+  return blog;
 };
