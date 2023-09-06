@@ -1,5 +1,13 @@
 # packages/create-catalyst
 
+---
+
+:warning: Notice
+
+The create-catalyst package is in development and not published to the NPM registry
+
+---
+
 Scaffolding for Catalyst storefront projects.
 
 ## Usage

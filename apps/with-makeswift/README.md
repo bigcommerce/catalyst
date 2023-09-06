@@ -1,6 +1,14 @@
 # Catalyst
 
-Catalyst is the next generation of storefronts at BigCommerce. It aims to be composable and powerful to meet the needs of our enterprise customers, exceeding performance of Stencil and Blueprint themes. Catalyst is built with [Next.js](https://nextjs.org/) using our React.js storefront component library called Reactant.
+---
+
+:warning: Notice
+
+The experimental `with-makeswift` version of Catalyst is not quite ready for feedback. During Catalyst’s developer preview you should be focused on the core Catalyst storefront.
+
+---
+
+A fully customizable headless storefront, Catalyst offers a set of opinionated defaults, while being composable to fit the needs of the developer, merchant, and shopper. Catalyst is built with [Next.js](https://nextjs.org/) and [Makeswift](https://www.makeswift.com/) using our React.js storefront component library called Reactant.
 
 ## Getting Started
 
@@ -17,42 +25,24 @@ pnpm install
  cp .env.example .env.local
 ```
 
-Update `.env.local` with your access-token, store-hash and channel-id.
+Update `.env.local` with the appropriate values:
+* `BIGCOMMERCE_STORE_HASH` should be the hash visible in your store's url when logged in to the control panel. The url will be of the form `https://store-{hash}.mybigcommerce.com`. Set this environment variable to the value of `{hash}` for your store.
+* `BIGCOMMERCE_ACCESS_TOKEN` can be created in your store's control panel, in the `Settings->Store-level API accounts` section. This token should have `read-only` access for the `Carts` scope, and `manage` access for `Storefront API customer impersonation tokens`.
+* `BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN` can be created via the [BigCommerce API](https://developer.bigcommerce.com/docs/storefront-auth/tokens/customer-impersonation-token#create-a-token) using the token created above. You can also get a working token by accessing `Settings->Storefront API Playground` in the control panel, clicking `HTTP HEADERS` at the bottom of the screen, and copying the value of the `Authorization` header (excluding the `Bearer ` prefix).
+* `BIGCOMMERCE_CDN_HOSTNAME` can remain unchanged from its default value.
+* `MAKESWIFT_API_KEY` is only used by the experimental `with-makeswift` version of Catalyst, and can be left blank when working with the core product.
 
-For a list of recommended scopes to use for your access token, please expand the table below.
+---
 
-<details>
-  <summary>Expand</summary>
+:warning: Notice
 
-| Scope                                        | Permission Level |
-| -------------------------------------------- | ---------------- |
-| Content                                      | `read-only`      |
-| Checkout Content                             | `None`           |
-| Customers                                    | `read-only`      |
-| Customers Login                              | `login`          |
-| Information & Settings                       | `read-only`      |
-| Marketing                                    | `read-only`      |
-| Orders                                       | `read-only`      |
-| Order Transactions                           | `read-only`      |
-| Create Payments                              | `None`           |
-| Get Payment Methods                          | `read-only`      |
-| Stored Payment Instruments                   | `read-only`      |
-| Products                                     | `read-only`      |
-| Themes                                       | `read-only`      |
-| Carts                                        | `read-only`      |
-| Checkouts                                    | `read-only`      |
-| Sites & Routes                               | `read-only`      |
-| Channel Settings                             | `None`           |
-| Channel Listings                             | `None`           |
-| Storefront API Tokens                        | `None`           |
-| Storefront API Customer Impersonation Tokens | `manage`         |
-| Store Logs                                   | `None`           |
-| Store Locations                              | `read-only`      |
-| Store Inventory                              | `read-only`      |
-| Fulfillment Methods                          | `None`           |
-| Order Fulfillment                            | `None`           |
+The experimental `with-makeswift` version of Catalyst is not ready and users should focus on the core product only. While we are not looking for feedback yet with the experimental `with-makeswift` version of Catalyst, the following onboarding instructions are if users want to experiment with the current state of the experimental `with-makeswift` version of Catalyst. During Developer Preview you should be looking at Core.
 
-</details>
+---
+
+Follow the instructions at https://github.com/makeswift/makeswift/tree/main/examples/bigcommerce#visually-build-with-bigcommerce-components to build and deploy a MakeSwift integration with your BigCommerce Storefront. (Or follow along with the video at https://www.makeswift.com/components/nextjs/bigcommerce)
+
+Once done in your https://app.makeswift.com/ go to Settings > Host > Site SPI Key under Host URL to fill in MAKESWIFT_SITE_API_KEY= in your .env.local file.
 
 3. Run the development server:
 
