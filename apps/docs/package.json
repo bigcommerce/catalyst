@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "storybook dev -p 6006 --no-open",
-    "build": "storybook build"
+    "build": "storybook build",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@bigcommerce/reactant": "workspace:^",

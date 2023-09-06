@@ -8,7 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "check-types": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0"
   },
   "engines": {
