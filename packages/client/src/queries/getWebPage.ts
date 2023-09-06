@@ -61,7 +61,7 @@ export const getWebPage = async <T>(
         },
       },
     },
-  };
+  } satisfies QueryGenqlSelection;
 
   const queryOp = generateQueryOp(query);
 
