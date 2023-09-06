@@ -1,5 +1,5 @@
 import { BigCommerceResponse, FetcherInput } from '../fetcher';
-import { generateQueryOp, QueryResult } from '../generated';
+import { generateQueryOp, QueryGenqlSelection, QueryResult } from '../generated';
 
 export interface GetWebPageOptions {
   path: string;
