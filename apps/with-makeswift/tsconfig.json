@@ -28,7 +28,8 @@
     "paths": {
       "@components/*": ["lib/components/*"],
       "~/*": ["./lib/*"]
-    }
+    },
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
   },
   "include": [
     "next-env.d.ts",

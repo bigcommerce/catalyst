@@ -10,8 +10,13 @@ import {
 } from '@bigcommerce/reactant/Sheet';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof Sheet> = {
-  component: Sheet,
+// We need to remove these once we get variant types working with cva
+interface StoryProps {
+  side: 'top' | 'right' | 'bottom' | 'left';
+}
+
+const meta: Meta<StoryProps> = {
+  title: 'Sheet',
   tags: ['autodocs'],
   argTypes: {
     side: { control: 'select', options: ['top', 'right', 'bottom', 'left'] },
@@ -20,7 +25,7 @@ const meta: Meta<typeof Sheet> = {
 
 export default meta;
 
-type Story = StoryObj<typeof Sheet>;
+type Story = StoryObj<typeof meta>;
 
 const Content = () => (
   <>

@@ -13,7 +13,7 @@ import {
 import type { Meta, StoryObj } from '@storybook/react';
 import { ChevronDown, MenuSquare, Search, ShoppingCart, User, XSquare } from 'lucide-react';
 
-const meta: Meta<typeof NavigationMenu> = {
+const meta = {
   component: NavigationMenu,
   tags: ['autodocs'],
   argTypes: {
@@ -23,11 +23,11 @@ const meta: Meta<typeof NavigationMenu> = {
       },
     },
   },
-};
+} satisfies Meta<typeof NavigationMenu>;
 
 export default meta;
 
-type Story = StoryObj<typeof NavigationMenu>;
+type Story = StoryObj<typeof meta>;
 
 const mockedData = [
   {
@@ -989,7 +989,7 @@ export const NavigationWithBadge: Story = {
   args: {
     children: 3,
   },
-  render: ({ children }: { children: number }) => (
+  render: ({ children }) => (
     <NavigationMenu className="mx-5 gap-6 lg:gap-8">
       <NavigationMenuLink className="px-0 text-h4 font-black" href="/home">
         Catalyst Store

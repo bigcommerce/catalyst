@@ -2,14 +2,25 @@
   "$schema": "https://turbo.build/schema.json",
   "globalDotEnv": [".env.local"],
   "pipeline": {
+    "topo": {
+      "dependsOn": ["^topo"]
+    },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**", "storybook-static/**"]
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**",
+        "storybook-static/**"
+      ]
     },
     "lint": {
       "dependsOn": ["^build"]
     },
-    "check-types": {},
+    "typecheck": {
+      "dependsOn": ["topo"],
+      "outputs": ["node_modules/.cache/tsbuildinfo.json"]
+    },
     "dev": {
       "cache": false,
       "persistent": true
