@@ -1,13 +1,8 @@
 # Catalyst
 
----
-
-:warning: Notice
-
-- Catalyst is in development and should not be used in production environments
-- The experimental `with-makeswift` version of Catalyst is not quite ready for feedback. During Catalyst’s developer preview you should be focused on the core Catalyst storefront
-
----
+> [!WARNING]
+> - Catalyst is in development and should not be used in production environments
+> - The experimental `with-makeswift` version of Catalyst is not quite ready for feedback. During Catalyst’s developer preview you should be focused on the core Catalyst storefront
 
 A fully customizable headless storefront, Catalyst offers a set of opinionated defaults, while being composable to fit the needs of the developer, merchant, and shopper.
 
@@ -43,11 +38,8 @@ Update `.env.local` with the appropriate values:
 * `BIGCOMMERCE_CDN_HOSTNAME` can remain unchanged from its default value.
 * `MAKESWIFT_API_KEY` is only used by the experimental `with-makeswift` version of Catalyst, and can be left blank when working with the core product.
 
----
-
-:warning: Notice
-
-The experimental `with-makeswift` version of Catalyst is not ready and users should focus on the core product only. While we are not looking for feedback yet with the experimental `with-makeswift` version of Catalyst, the following onboarding instructions are if users want to experiment with the current state of the experimental `with-makeswift` version of Catalyst. During Developer Preview you should be looking at Core.
+> [!WARNING]
+> The experimental `with-makeswift` version of Catalyst is not ready and users should focus on the core product only. While we are not looking for feedback yet with the experimental `with-makeswift` version of Catalyst, the following onboarding instructions are if users want to experiment with the current state of the experimental `with-makeswift` version of Catalyst. During Developer Preview you should be looking at Core.
 
 ---
 
