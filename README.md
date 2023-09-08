@@ -4,7 +4,7 @@
 > - Catalyst is in development and should not be used in production environments.
 > - The experimental `with-makeswift` version of Catalyst is a work in progress and not ready for feedback. During Catalyst’s Developer Preview, focus on the core Catalyst storefront features.
 
-**Catalyst** is a composable, fully customizable headless storefront that offers a set of opinionated defaults. It is intended to fit the needs of modern developers, merchants, and shoppers. Catalyst is built with [Next.js (nextjs.org)](https://nextjs.org/) and uses our [React.js-based (react.dev)](https://react.dev/)**Reactant** storefront components.
+**Catalyst** is a composable, fully customizable headless storefront that offers a set of opinionated defaults. It is intended to fit the needs of modern developers, merchants, and shoppers. Catalyst is built with [Next.js (nextjs.org)](https://nextjs.org/) and uses our [React.js-based (react.dev)](https://react.dev/) **Reactant** storefront components.
 
 The Catalyst monorepo contains the following:
 
@@ -62,7 +62,7 @@ The `dev` script runs all packages and apps in watch mode. The following table l
 |:--------|:--------------|
 | Core Catalyst storefront | http://localhost:3000 |
 | Experimental Makeswift-enabled storefront | http://localhost:3001 |
-| Reactant Storybook | http://localhost:6006/ |
+| Reactant Storybook | http://localhost:6006 |
 
 Happy developing! Let us know how things are going in the dedicated Slack channel.
 
