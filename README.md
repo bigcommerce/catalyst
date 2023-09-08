@@ -68,3 +68,25 @@ The `dev` script runs all packages and apps in watch mode. The following table l
 | Reactant Storybook | http://localhost:6006/ |
 
 Happy developing! Let us know how things are going in the dedicated Slack channel.
+
+## Development notes
+
+Start editing the page by modifying `pages/index.tsx`. The server auto-reloads the browser page as you edit the file.
+
+You can work with the BigCommerce GraphQL Storefront API at [http://localhost:3000/api/graphql](http://localhost:3000/api/graphql), or edit this endpoint in `pages/api/graphql.ts`.
+
+The `pages/api` directory maps to `/api/*`. Files in this directory are [Next.js API routes (nextjs.org)](https://nextjs.org/docs/api-routes/introduction), not React pages.
+
+This project uses [next/font (nextjs.org)](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+
+## Deploy using Vercel
+
+One common way to deploy a Next.js app for development is to use the [Vercel Platform (vercel.com)](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme). Consult the [Next.js deployment documentation (next.js)](https://nextjs.org/docs/deployment) for more details.
+
+## Resources
+
+### Next.js
+
+- [Next.js documentation (nextjs.org)](https://nextjs.org/docs)
+- [Interactive Next.js tutorial (nextjs.org)](https://nextjs.org/learn)
+- [Next.js repository (GitHub)](https://github.com/vercel/next.js/)
