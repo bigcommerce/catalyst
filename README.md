@@ -1,65 +1,69 @@
 # Catalyst
 
 > [!WARNING]
-> - Catalyst is in development and should not be used in production environments
-> - The experimental `with-makeswift` version of Catalyst is not quite ready for feedback. During Catalyst’s developer preview you should be focused on the core Catalyst storefront
+> - Catalyst is in development and should not be used in production environments.
+> - The experimental `with-makeswift` version of Catalyst is a work in progress and not ready for feedback. During Catalyst’s Developer Preview, focus on the core Catalyst storefront features.
 
-A fully customizable headless storefront, Catalyst offers a set of opinionated defaults, while being composable to fit the needs of the developer, merchant, and shopper.
+Catalyst is a composable, fully customizable headless storefront that offers a set of opinionated defaults. It is intended to fit the needs of modern developers, merchants, and shoppers.
 
-The Catalyst monorepo contains:
-* The core Catalyst Next.js storefront, in [apps/core](apps/core).
-* An experimental version of the Catalyst storefront for use with [Makeswift](https://www.makeswift.com/), in [apps/with-makeswift](apps/with-makeswift).
-* The Reactant storefront component library, in [packages/reactant](packages/reactant).
-* Our [BigCommerce Storefront API](https://developer.bigcommerce.com/docs/graphql-storefront) client, in [packages/client](packages/client).
+The Catalyst monorepo contains the following:
+
+* The core **Catalyst** Next.js storefront, in [apps/core](apps/core).
+* An experimental version of Catalyst that uses the [Makeswift (makeswift.com)](https://www.makeswift.com/) low-code page builder, in [apps/with-makeswift](apps/with-makeswift).
+* The **Reactant** storefront component library, in [packages/reactant](packages/reactant).
+* The BigCommerce [GraphQL Storefront API (BigCommerce Dev Center)](https://developer.bigcommerce.com/docs/graphql-storefront) client, in [packages/client](packages/client).
 
 ## Requirements
 
-Catalyst requires Node.js version 18 or greater, and uses [corepack](https://nodejs.org/api/corepack.html) and [pnpm](https://pnpm.io/).
+* Node.js 18+
+* [Corepack (nodejs.org)](https://nodejs.org/api/corepack.html)
+* The [pnpm (pnpm.io)](https://pnpm.io/) package manager
 
 ## Getting Started
 
 1. Install project dependencies:
 
-```bash
-corepack enable pnpm
-pnpm install
+```shell
+  corepack enable pnpm
+  pnpm install
 ```
 
-2. Setup environment variables:
+2. **Set up environment variables.**
 
-```bash
- cp .env.example .env.local
+```shell
+  cp .env.example .env.local
 ```
 
-Update `.env.local` with the appropriate values:
-* `BIGCOMMERCE_STORE_HASH` should be the hash visible in your store's url when logged in to the control panel. The url will be of the form `https://store-{hash}.mybigcommerce.com`. Set this environment variable to the value of `{hash}` for your store.
-* `BIGCOMMERCE_ACCESS_TOKEN` can be created in your store's control panel, in the `Settings->Store-level API accounts` section. This token should have `read-only` access for the `Carts` scope, and `manage` access for `Storefront API customer impersonation tokens`.
-* `BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN` can be created via the [BigCommerce API](https://developer.bigcommerce.com/docs/storefront-auth/tokens/customer-impersonation-token#create-a-token) using the token created above. You can also get a working token by accessing `Settings->Storefront API Playground` in the control panel, clicking `HTTP HEADERS` at the bottom of the screen, and copying the value of the `Authorization` header (excluding the `Bearer ` prefix).
-* `BIGCOMMERCE_CDN_HOSTNAME` can remain unchanged from its default value.
-* `MAKESWIFT_API_KEY` is only used by the experimental `with-makeswift` version of Catalyst, and can be left blank when working with the core product.
+Update `.env.local` with the following values:
 
-> [!WARNING]
-> The experimental `with-makeswift` version of Catalyst is not ready and users should focus on the core product only. While we are not looking for feedback yet with the experimental `with-makeswift` version of Catalyst, the following onboarding instructions are if users want to experiment with the current state of the experimental `with-makeswift` version of Catalyst. During Developer Preview you should be looking at Core.
+| Variable | Description |
+|:---------|:------------|
+| `BIGCOMMERCE_STORE_HASH` | The hash visible in the subject store's URL when signed in to the store control panel. The control panel URL is of the form `https://store-{hash}.mybigcommerce.com`. Set this environment variable to the value of `{hash}` for the subject store. |
+| `BIGCOMMERCE_ACCESS_TOKEN` | [Create a store-level API account (BigCommerce Dev Center)](https://developer.bigcommerce.com/api-docs/getting-started/api-accounts#creating-store-level-api-credentials) with the following [OAuth scopes (BigCommerce Dev Center)](https://developer.bigcommerce.com/api-docs/getting-started/api-accounts#oauth-scopes): Carts `read-only` and Storefront API Customer Impersonation Tokens `manage`. |
+| `BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN` | Use the store-level API account access token you created to make a call to the BigCommerce REST [Create a customer impersonation token (BigCommerce Dev Center)](https://developer.bigcommerce.com/docs/storefront-auth/tokens/customer-impersonation-token#create-a-token) endpoint. You can also get a customer impersonation token by accessing `Settings->Storefront API Playground` in the control panel, clicking `HTTP HEADERS` at the bottom of the screen, and copying the value of the `Authorization` header. Make sure to remove the `Bearer ` prefix from the copied header value. |
+| `BIGCOMMERCE_CDN_HOSTNAME` | Can remain unchanged from its default value. |
+| `MAKESWIFT_API_KEY` | Only required for the experimental `with-makeswift` version of Catalyst. When working with the core product, set this variable to an empty string . |
 
----
+> For those who are experimenting with Makeswift, follow [Makeswift's text instructions (GitHub)](https://github.com/makeswift/makeswift/tree/main/examples/bigcommerce#visually-build-with-bigcommerce-components) or [video instructions (makeswift.com)](https://www.makeswift.com/components/nextjs/bigcommerce) to build and deploy a Makeswift integration with your Catalyst storefront. Next, locate the Makeswift API key in the [Makeswift app dashboard (makeswift.com)](https://app.makeswift.com/) by going to **Settings > Host > Site API Key**. Add the value to the `MAKESWIFT_SITE_API_KEY` variable in your `.env.local` file.
 
-Follow the instructions at https://github.com/makeswift/makeswift/tree/main/examples/bigcommerce#visually-build-with-bigcommerce-components to build and deploy a MakeSwift integration with your BigCommerce Storefront. (Or follow along with the video at https://www.makeswift.com/components/nextjs/bigcommerce)
+3. To optimize your workflow, use the following command to configure VSCode with the project-specific settings the Catalyst team has created:
 
-Once done in your https://app.makeswift.com/ go to Settings > Host > Site SPI Key under Host URL to fill in MAKESWIFT_SITE_API_KEY= in your .env.local file.
-
-
-3. (Optional) Vscode setup
-```bash
+```shell
  cp .vscode/settings.example.json .vscode/settings.json
 ```
 
-4. Run Catalyst!
+4. Start the Catalyst development server!
 
-```bash
+```shell
 pnpm run dev
 ```
 
-This will run all packages and apps in watch mode. Default ports are listed below. If a port is unavailable, the next available port will be used. (For example, if `3000` is in use, `core` and `with-makeswift` will run on `3001` and `3002`, respectively) 
-* Core Catalyst storefront: http://localhost:3000
-* Experimental Makeswift-enabled storefront: http://localhost:3001
-* Reactant Storybook: http://localhost:6006/
+The `dev` script runs all packages and apps in watch mode. The following table lists localhost URLs with the default ports. When a port is unavailable, Catalyst uses the next available port. For example, if `3000` is in use, `core` and `with-makeswift` will run on `3001` and `3002`, respectively.
+
+| Process | URL with port |
+|:--------|:--------------|
+| Core Catalyst storefront | http://localhost:3000 |
+| Experimental Makeswift-enabled storefront | http://localhost:3001 |
+| Reactant Storybook | http://localhost:6006/ |
+
+Happy developing! Let us know how things are going in the dedicated Slack channel.
