@@ -1,66 +1,27 @@
-# Catalyst
+# Catalyst with Makeswift
 
 > [!WARNING]
-> The experimental `with-makeswift` version of Catalyst is not quite ready for feedback. During Catalyst’s developer preview you should be focused on the core Catalyst storefront.
+> - Catalyst is in development and should not be used in production environments.
+> - The experimental `with-makeswift` version of Catalyst is a work in progress and not ready for feedback. During Catalyst’s Developer Preview, focus on the core Catalyst storefront features.
 
-A fully customizable headless storefront, Catalyst offers a set of opinionated defaults, while being composable to fit the needs of the developer, merchant, and shopper. Catalyst is built with [Next.js](https://nextjs.org/) and [Makeswift](https://www.makeswift.com/) using our React.js storefront component library called Reactant.
+**Catalyst** is a composable, fully customizable headless storefront that offers a set of opinionated defaults. It is intended to fit the needs of modern developers, merchants, and shoppers. Catalyst is built with [Next.js (nextjs.org)](https://nextjs.org/) and uses our [React.js-based (react.dev)](https://react.dev/) **Reactant** storefront components.
 
-## Getting Started
+This version of Catalyst uses [Makeswift](https://www.makeswift.com/) as an experimental low-code page builder.
 
-1. Install project dependencies:
+To install Catalyst packages, configure environment variables, start the development server, and more, consult the [primary Catalyst README](https://github.com/bigcommerce/catalyst/blob/main/README.md).
 
-```bash
-corepack enable pnpm
-pnpm install
-```
+## Create a Makeswift API key
 
-2. Setup environment variables:
+Follow [Makeswift's text instructions (GitHub)](https://github.com/makeswift/makeswift/tree/main/examples/bigcommerce#visually-build-with-bigcommerce-components) or [video instructions (makeswift.com)](https://www.makeswift.com/components/nextjs/bigcommerce) to build and deploy a Makeswift integration with your Catalyst storefront. 
 
-```bash
- cp .env.example .env.local
-```
+Next, locate the Makeswift API key in the [Makeswift app dashboard (makeswift.com)](https://app.makeswift.com/) by going to **Settings > Host > Site API Key**. Add the value to the `MAKESWIFT_SITE_API_KEY` variable in your `.env.local` file.
 
-Update `.env.local` with the appropriate values:
-* `BIGCOMMERCE_STORE_HASH` should be the hash visible in your store's url when logged in to the control panel. The url will be of the form `https://store-{hash}.mybigcommerce.com`. Set this environment variable to the value of `{hash}` for your store.
-* `BIGCOMMERCE_ACCESS_TOKEN` can be created in your store's control panel, in the `Settings->Store-level API accounts` section. This token should have `read-only` access for the `Carts` scope, and `manage` access for `Storefront API customer impersonation tokens`.
-* `BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN` can be created via the [BigCommerce API](https://developer.bigcommerce.com/docs/storefront-auth/tokens/customer-impersonation-token#create-a-token) using the token created above. You can also get a working token by accessing `Settings->Storefront API Playground` in the control panel, clicking `HTTP HEADERS` at the bottom of the screen, and copying the value of the `Authorization` header (excluding the `Bearer ` prefix).
-* `BIGCOMMERCE_CDN_HOSTNAME` can remain unchanged from its default value.
-* `MAKESWIFT_API_KEY` is only used by the experimental `with-makeswift` version of Catalyst, and can be left blank when working with the core product.
+## Development notes
 
-> [!WARNING]
-> The experimental `with-makeswift` version of Catalyst is not ready and users should focus on the core product only. While we are not looking for feedback yet with the experimental `with-makeswift` version of Catalyst, the following onboarding instructions are if users want to experiment with the current state of the experimental `with-makeswift` version of Catalyst. During Developer Preview you should be looking at Core.
+After you get the development server started, edit the rendered page by modifying `pages/index.tsx`. The server auto-reloads the browser page as you edit the file.
 
-Follow the instructions at https://github.com/makeswift/makeswift/tree/main/examples/bigcommerce#visually-build-with-bigcommerce-components to build and deploy a MakeSwift integration with your BigCommerce Storefront. (Or follow along with the video at https://www.makeswift.com/components/nextjs/bigcommerce)
+You can work with the BigCommerce GraphQL Storefront API at [http://localhost:3000/api/graphql](http://localhost:3000/api/graphql), or edit this endpoint in `pages/api/graphql.ts`.
 
-Once done in your https://app.makeswift.com/ go to Settings > Host > Site SPI Key under Host URL to fill in MAKESWIFT_SITE_API_KEY= in your .env.local file.
+The `pages/api` directory maps to `/api/*`. Files in this directory are [Next.js API routes (nextjs.org)](https://nextjs.org/docs/api-routes/introduction), not React pages.
 
-3. Run the development server:
-
-```bash
-pnpm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/graphql](http://localhost:3000/api/graphql). This endpoint can be edited in `pages/api/graphql.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+This project uses [next/font (nextjs.org)](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
