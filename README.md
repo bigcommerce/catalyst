@@ -42,10 +42,7 @@ Update `.env.local` with the following values:
 | `BIGCOMMERCE_ACCESS_TOKEN` | [Create a store-level API account (BigCommerce Dev Center)](https://developer.bigcommerce.com/api-docs/getting-started/api-accounts#creating-store-level-api-credentials) with the following [OAuth scopes (BigCommerce Dev Center)](https://developer.bigcommerce.com/api-docs/getting-started/api-accounts#oauth-scopes): Carts `read-only` and Storefront API Customer Impersonation Tokens `manage`. |
 | `BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN` | Use the store-level API account access token you created to make a call to the BigCommerce REST [Create a customer impersonation token (BigCommerce Dev Center)](https://developer.bigcommerce.com/docs/storefront-auth/tokens/customer-impersonation-token#create-a-token) endpoint. You can also get a customer impersonation token by accessing **Settings > Storefront API Playground** in the control panel, clicking `HTTP HEADERS` at the bottom of the screen, and copying the value of the `Authorization` header. Make sure to remove the `Bearer ` prefix from the copied header value. |
 | `BIGCOMMERCE_CDN_HOSTNAME` | Can remain unchanged from its default value. |
-| `MAKESWIFT_SITE_API_KEY` | Only required for the experimental `with-makeswift` version of Catalyst. When working with the core product, comment out this variable. |
-
-> [!INFO]
-> For those who are experimenting with Makeswift, follow [Makeswift's text instructions (GitHub)](https://github.com/makeswift/makeswift/tree/main/examples/bigcommerce#visually-build-with-bigcommerce-components) or [video instructions (makeswift.com)](https://www.makeswift.com/components/nextjs/bigcommerce) to build and deploy a Makeswift integration with your Catalyst storefront. Next, locate the Makeswift API key in the [Makeswift app dashboard (makeswift.com)](https://app.makeswift.com/) by going to **Settings > Host > Site API Key**. Add the value to the `MAKESWIFT_SITE_API_KEY` variable in your `.env.local` file.
+| `MAKESWIFT_SITE_API_KEY` | Only required for the experimental `with-makeswift` version of Catalyst. When working with the core product, comment out this variable. For more about setting this variable, consult the [with-makeswift README](https://github.com/bigcommerce/catalyst/blob/main/apps/with-makeswift/README.md#create-a-makeswift-api-key). |
 
 3. Optionally, to optimize your workflow, use the following command to configure VSCode with the project-specific settings the Catalyst team has created:
 
@@ -68,16 +65,6 @@ The `dev` script runs all packages and apps in watch mode. The following table l
 | Reactant Storybook | http://localhost:6006/ |
 
 Happy developing! Let us know how things are going in the dedicated Slack channel.
-
-## Development notes
-
-Start editing the page by modifying `pages/index.tsx`. The server auto-reloads the browser page as you edit the file.
-
-You can work with the BigCommerce GraphQL Storefront API at [http://localhost:3000/api/graphql](http://localhost:3000/api/graphql), or edit this endpoint in `pages/api/graphql.ts`.
-
-The `pages/api` directory maps to `/api/*`. Files in this directory are [Next.js API routes (nextjs.org)](https://nextjs.org/docs/api-routes/introduction), not React pages.
-
-This project uses [next/font (nextjs.org)](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
 ## Deploy using Vercel
 
