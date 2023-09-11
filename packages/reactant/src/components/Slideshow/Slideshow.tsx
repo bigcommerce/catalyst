@@ -83,7 +83,7 @@ interface PrevAction {
 
 type SlideshowNavAction = NextAction | PrevAction;
 
-const carouselReducer = (state: SlideshowState, action: SlideshowNavAction) => {
+const slideshowReducer = (state: SlideshowState, action: SlideshowNavAction) => {
   switch (action.type) {
     case 'next':
       return {
@@ -119,13 +119,13 @@ export const Slideshow = forwardRef<ElementRef<'ul'>, SlideshowProps>(
     );
 
     /**
-     * We must pad two-slide carousels with two extra slides
+     * We must pad two-slide slideshow with two extra slides
      * so that we can navigate backwards if currentIndex is 0
      */
     const normalizedItems =
       Children.count(children) === 2 ? [...validChildren, ...validChildren] : validChildren;
 
-    const [state, navigate] = useReducer(carouselReducer, {
+    const [state, navigate] = useReducer(slideshowReducer, {
       currentIndex: 0,
       items: normalizedItems,
     });

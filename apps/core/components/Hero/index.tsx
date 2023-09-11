@@ -11,7 +11,7 @@ export const Hero = () => (
           className="object-cover"
           fill
           priority
-          src="/carousel-bg-01.jpg"
+          src="/slideshow-bg-01.jpg"
         />
       </div>
       <div className="flex h-full flex-col justify-center p-12">

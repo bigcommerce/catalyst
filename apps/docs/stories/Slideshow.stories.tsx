@@ -19,7 +19,7 @@ export const OneSlide: Story = {
           <img
             alt="A plant in a glass vase against a blank background."
             className="absolute -z-10"
-            src="/carousel-bg-01.jpg"
+            src="/slideshow-bg-01.jpg"
           />
           <div className="flex h-full flex-col justify-center p-12">
             <h1 className="text-h1">25% Off Sale</h1>
@@ -45,7 +45,7 @@ export const TwoSlides: Story = {
           <img
             alt="A plant in a glass vase against a blank background."
             className="absolute -z-10"
-            src="/carousel-bg-01.jpg"
+            src="/slideshow-bg-01.jpg"
           />
           <div className="flex h-full flex-col justify-center p-12">
             <h1 className="text-h1">25% Off Sale</h1>
@@ -81,7 +81,7 @@ export const ThreeSlides: Story = {
           <img
             alt="A plant in a glass vase against a blank background."
             className="absolute -z-10"
-            src="/carousel-bg-01.jpg"
+            src="/slideshow-bg-01.jpg"
           />
           <div className="flex h-full flex-col justify-center p-12">
             <h1 className="text-h1">25% Off Sale</h1>
@@ -130,7 +130,7 @@ export const OneHundredSlides: Story = {
             <img
               alt="A plant in a glass vase against a blank background."
               className="absolute -z-10"
-              src="/carousel-bg-01.jpg"
+              src="/slideshow-bg-01.jpg"
             />
             <div className="flex h-full flex-col justify-center p-12">
               <h1 className="text-h1">{i + 1}% Off Sale</h1>
