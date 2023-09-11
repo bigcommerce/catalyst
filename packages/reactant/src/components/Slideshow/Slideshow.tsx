@@ -17,18 +17,18 @@ import {
 import { cs } from '../../utils/cs';
 import { Button } from '../Button';
 
-interface CarouselItemPositionState {
+interface SlideshowItemPositionState {
   itemPosition: number;
 }
 
-const CarouselItemContext = createContext<CarouselItemPositionState>({ itemPosition: 0 });
+const SlideshowItemContext = createContext<SlideshowItemPositionState>({ itemPosition: 0 });
 
-interface CarouselState {
+interface SlideshowState {
   currentIndex: number;
   items: ReactElement[];
 }
 
-const CarouselContext = createContext<CarouselState>({
+const SlideshowContext = createContext<SlideshowState>({
   currentIndex: 0,
   items: [],
 });
@@ -39,12 +39,12 @@ const decrement = (index: number, items: ReactElement[]) =>
 const increment = (index: number, items: ReactElement[]) =>
   index + 1 > items.length - 1 ? 0 : index + 1;
 
-type CarouselItemProps = ComponentPropsWithRef<'li'>;
+type SlideshowItemProps = ComponentPropsWithRef<'li'>;
 
-export const CarouselItem = forwardRef<ElementRef<'li'>, CarouselItemProps>(
+export const SlideshowItem = forwardRef<ElementRef<'li'>, SlideshowItemProps>(
   ({ className, children, ...props }, ref) => {
-    const { currentIndex, items } = useContext(CarouselContext);
-    const { itemPosition } = useContext(CarouselItemContext);
+    const { currentIndex, items } = useContext(SlideshowContext);
+    const { itemPosition } = useContext(SlideshowItemContext);
 
     const leftIndex = decrement(currentIndex, items);
     const rightIndex = increment(currentIndex, items);
@@ -81,9 +81,9 @@ interface PrevAction {
   type: 'prev';
 }
 
-type CarouselNavAction = NextAction | PrevAction;
+type SlideshowNavAction = NextAction | PrevAction;
 
-const carouselReducer = (state: CarouselState, action: CarouselNavAction) => {
+const slideshowReducer = (state: SlideshowState, action: SlideshowNavAction) => {
   switch (action.type) {
     case 'next':
       return {
@@ -102,30 +102,30 @@ const carouselReducer = (state: CarouselState, action: CarouselNavAction) => {
   }
 };
 
-interface CarouselProps extends ComponentPropsWithRef<'ul'> {
+interface SlideshowProps extends ComponentPropsWithRef<'ul'> {
   interval?: number;
 }
 
-export const Carousel = forwardRef<ElementRef<'ul'>, CarouselProps>(
+export const Slideshow = forwardRef<ElementRef<'ul'>, SlideshowProps>(
   ({ children, className, interval = 10_000, ...props }, ref) => {
     const [paused, togglePause] = useReducer((isPaused: boolean) => !isPaused, false);
     const [hoverPaused, setHoverPaused] = useState(false);
 
     const validChildren = Children.toArray(children).filter(
-      (child): child is ReactElement<CarouselItemProps> =>
-        isValidElement<CarouselItemProps>(child) &&
+      (child): child is ReactElement<SlideshowItemProps> =>
+        isValidElement<SlideshowItemProps>(child) &&
         typeof child !== 'string' &&
         typeof child !== 'number',
     );
 
     /**
-     * We must pad two-slide carousels with two extra slides
+     * We must pad two-slide slideshow with two extra slides
      * so that we can navigate backwards if currentIndex is 0
      */
     const normalizedItems =
       Children.count(children) === 2 ? [...validChildren, ...validChildren] : validChildren;
 
-    const [state, navigate] = useReducer(carouselReducer, {
+    const [state, navigate] = useReducer(slideshowReducer, {
       currentIndex: 0,
       items: normalizedItems,
     });
@@ -153,7 +153,7 @@ export const Carousel = forwardRef<ElementRef<'ul'>, CarouselProps>(
     );
 
     return (
-      <CarouselContext.Provider value={state}>
+      <SlideshowContext.Provider value={state}>
         <ul
           className={cs(
             'relative inset-0 -mx-6 h-[640px] overflow-hidden sm:-mx-10 md:h-[508px] lg:mx-0 lg:h-[600px]',
@@ -167,9 +167,9 @@ export const Carousel = forwardRef<ElementRef<'ul'>, CarouselProps>(
           {...props}
         >
           {state.items.map((item, index) => (
-            <CarouselItemContext.Provider key={index} value={{ itemPosition: index }}>
+            <SlideshowItemContext.Provider key={index} value={{ itemPosition: index }}>
               {item}
-            </CarouselItemContext.Provider>
+            </SlideshowItemContext.Provider>
           ))}
 
           {state.items.length > 1 && (
@@ -224,7 +224,7 @@ export const Carousel = forwardRef<ElementRef<'ul'>, CarouselProps>(
             </li>
           )}
         </ul>
-      </CarouselContext.Provider>
+      </SlideshowContext.Provider>
     );
   },
 );
