@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "storybook dev -p 6006 --no-open",
     "build": "storybook build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "jest"
   },
   "dependencies": {
     "@bigcommerce/reactant": "workspace:^",
@@ -24,6 +25,7 @@
     "@storybook/cli": "^7.4.0",
     "@storybook/react": "^7.4.0",
     "@storybook/react-vite": "^7.4.0",
+    "@testing-library/react": "^14.0.0",
     "@types/node": "^18.17.12",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
@@ -32,6 +34,7 @@
     "eslint": "^8.48.0",
     "eslint-config-next": "^13.4.19",
     "eslint-plugin-storybook": "^0.6.13",
+    "jest": "^29.6.4",
     "postcss": "^8.4.29",
     "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.4",
