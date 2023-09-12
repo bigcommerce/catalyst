@@ -22,7 +22,7 @@ export const BasicExample: Story = {
   render: () => (
     <ProductCard>
       <ProductCardImage>
-        <div className="h-full w-full bg-gray-200" />
+        <div className="h-[180px] w-full bg-gray-200" />
       </ProductCardImage>
       <ProductCardBadge>On sale</ProductCardBadge>
       <ProductCardInfo>
