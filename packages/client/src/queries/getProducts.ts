@@ -24,6 +24,9 @@ export const getProducts = async <T>(
         },
         edges: {
           node: {
+            availabilityV2: {
+              status: true,
+            },
             brand: {
               name: true,
             },
@@ -68,6 +71,13 @@ export const getProducts = async <T>(
               salePrice: {
                 currencyCode: true,
                 value: true,
+              },
+            },
+            productOptions: {
+              edges: {
+                node: {
+                  entityId: true,
+                },
               },
             },
           },
