@@ -1,5 +1,6 @@
 import { BigCommerceResponse, FetcherInput } from '../fetcher';
 import { generateQueryOp, QueryGenqlSelection, QueryResult } from '../generated';
+import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
 interface BlogPostsFiltersInput {
   tagId?: string;
@@ -82,5 +83,11 @@ export const getBlogPosts = async <T>(
     return undefined;
   }
 
-  return blog;
+  return {
+    ...blog,
+    posts: {
+      pageInfo: blog.posts.pageInfo,
+      items: removeEdgesAndNodes(blog.posts),
+    },
+  };
 };
