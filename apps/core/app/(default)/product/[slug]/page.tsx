@@ -1,4 +1,3 @@
-import { OptionValueId } from '@bigcommerce/catalyst-client';
 import { Button } from '@bigcommerce/reactant/Button';
 import { Counter } from '@bigcommerce/reactant/Counter';
 import { Label } from '@bigcommerce/reactant/Label';
@@ -7,13 +6,13 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
 import client from '~/client';
-import { ProductCard } from '~/components/ProductCard';
 import { assertNonNullable } from '~/utils';
 
 import { AddToCart } from './AddToCart';
 import { BreadCrumbs } from './Breadcrumbs';
 import { Gallery } from './Gallery';
 import { ProductForm } from './ProductForm';
+import { RelatedProducts } from './RelatedProducts';
 import { Reviews } from './Reviews';
 import { ReviewSummary } from './ReviewSummary';
 import { VariantSelector } from './VariantSelector';
@@ -149,31 +148,6 @@ const ProductDescriptionAndReviews = ({
         <Reviews productId={product.entityId} reviewSectionId={reviewSectionId} />
       </Suspense>
     </div>
-  );
-};
-
-const RelatedProducts = async ({
-  productId,
-  optionValueIds,
-}: {
-  productId: number;
-  optionValueIds: OptionValueId[];
-}) => {
-  const relatedProducts = await client.getRelatedProducts({ productId, optionValueIds });
-
-  if (!relatedProducts || !relatedProducts.length) {
-    return null;
-  }
-
-  return (
-    <>
-      <h2 className="text-h3">Related Products</h2>
-      <div className="mb-14 mt-9 grid grid-cols-2 gap-6 md:grid-cols-4 lg:mt-10 lg:gap-8">
-        {relatedProducts.map((relatedProduct) => (
-          <ProductCard key={relatedProduct.entityId} product={relatedProduct} />
-        ))}
-      </div>
-    </>
   );
 };
 

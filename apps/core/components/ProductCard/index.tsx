@@ -9,6 +9,7 @@ import {
 } from '@bigcommerce/reactant/ProductCard';
 import Image from 'next/image';
 import Link from 'next/link';
+import { PartialDeep } from 'type-fest';
 
 interface Product {
   entityId: number;
@@ -29,7 +30,7 @@ interface Product {
 }
 
 interface ProductCardProps {
-  product: Product;
+  product: PartialDeep<Product>;
   imageSize?: 'tall' | 'wide' | 'square';
   imagePriotity?: boolean;
 }
@@ -44,7 +45,7 @@ export const ProductCard = ({ product, imageSize, imagePriotity = false }: Produ
     <ReactantProductCard key={product.entityId}>
       <ProductCardImage>
         <Image
-          alt={product.defaultImage?.altText ?? product.name}
+          alt={product.defaultImage?.altText ?? product.name ?? ''}
           className={cs('object-contain object-center', {
             'aspect-square': imageSize === 'square',
             'aspect-[4/5]': imageSize === 'tall',
@@ -59,7 +60,7 @@ export const ProductCard = ({ product, imageSize, imagePriotity = false }: Produ
       <ProductCardInfo>
         {product.brand && <ProductCardInfoBrandName>{product.brand.name}</ProductCardInfoBrandName>}
         <ProductCardInfoProductName>
-          <Link href={`/product/${product.entityId}`}>
+          <Link href={`/product/${product.entityId ?? ''}`}>
             <span aria-hidden="true" className="absolute inset-0" />
             {product.name}
           </Link>
