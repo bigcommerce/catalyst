@@ -478,6 +478,9 @@ importers:
       eslint:
         specifier: ^8.48.0
         version: 8.48.0
+      jest:
+        specifier: ^29.6.4
+        version: 29.6.4(@types/node@18.17.12)
       postcss:
         specifier: ^8.4.29
         version: 8.4.29
