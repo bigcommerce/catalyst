@@ -17,16 +17,33 @@ import { ProductCard } from '../ProductCard';
 
 export const ProductCardCarousel = ({
   title,
-  groupedProducts,
+  products,
 }: {
   title: string;
-  groupedProducts: Array<Array<PartialDeep<Product>>>;
+  products: Array<PartialDeep<Product>>;
 }) => {
   const id = useId();
 
-  if (groupedProducts.length === 0) {
+  if (products.length === 0) {
     return null;
   }
+
+  const groupedProducts = products.reduce<Array<Array<PartialDeep<Product>>>>(
+    (batches, _, index) => {
+      if (index % 4 === 0) {
+        batches.push([]);
+      }
+
+      const product = products[index];
+
+      if (batches[batches.length - 1] && product) {
+        batches[batches.length - 1]?.push(product);
+      }
+
+      return batches;
+    },
+    [],
+  );
 
   return (
     <Carousel aria-labelledby="title" className="mb-14">

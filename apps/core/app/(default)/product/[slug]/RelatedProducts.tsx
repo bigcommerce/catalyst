@@ -1,5 +1,4 @@
-import { OptionValueId, Product } from '@bigcommerce/catalyst-client';
-import { PartialDeep } from 'type-fest';
+import { OptionValueId } from '@bigcommerce/catalyst-client';
 
 import client from '~/client';
 import { ProductCardCarousel } from '~/components/ProductCardCarousel';
@@ -13,26 +12,9 @@ export const RelatedProducts = async ({
 }) => {
   const relatedProducts = await client.getRelatedProducts({ productId, optionValueIds });
 
-  if (!relatedProducts || !relatedProducts.length) {
+  if (!relatedProducts) {
     return null;
   }
 
-  const groupedRelatedProducts = relatedProducts.reduce<Array<Array<PartialDeep<Product>>>>(
-    (batches, _, index) => {
-      if (index % 4 === 0) {
-        batches.push([]);
-      }
-
-      const product = relatedProducts[index];
-
-      if (batches[batches.length - 1] && product) {
-        batches[batches.length - 1]?.push(product);
-      }
-
-      return batches;
-    },
-    [],
-  );
-
-  return <ProductCardCarousel groupedProducts={groupedRelatedProducts} title="Related Products" />;
+  return <ProductCardCarousel products={relatedProducts} title="Related Products" />;
 };
