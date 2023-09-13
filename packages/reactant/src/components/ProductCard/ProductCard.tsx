@@ -15,7 +15,11 @@ export const ProductCard = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'
 export const ProductCardImage = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     return (
-      <div className={cs('mx-auto pb-3 group-hover:opacity-75', className)} ref={ref} {...props}>
+      <div
+        className={cs('flex justify-center pb-3 group-hover:opacity-75', className)}
+        ref={ref}
+        {...props}
+      >
         {children}
       </div>
     );
