@@ -4,6 +4,7 @@ import Link from 'next/link';
 import * as z from 'zod';
 
 import client from '~/client';
+import { SearchForm } from '~/components/SearchForm';
 
 import { AddToCartForm } from './AddToCartForm';
 
@@ -77,7 +78,17 @@ export default async function Compare({
   });
 
   if (!products.length) {
-    return <h1 className="text-h2">Well, there's nothing to compare!</h1>;
+    return (
+      <div className="flex w-full justify-center py-16 align-middle">
+        <div className="flex max-w-2xl flex-col gap-8 pb-8">
+          <h1 className="text-h2">Well, there's nothing to compare!</h1>
+          <p className="text-lg">
+            You somehow managed to land here, but you need to select a few products first.
+          </p>
+          <SearchForm />
+        </div>
+      </div>
+    );
   }
 
   return (
