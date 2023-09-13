@@ -4,11 +4,12 @@ import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
 export interface GetBrandsOptions {
   first?: number;
+  brandIds?: number[];
 }
 
 export const getBrands = async <T>(
   customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
-  { first = 5 }: GetBrandsOptions = {},
+  { first = 5, brandIds }: GetBrandsOptions = {},
   config: T = {} as T,
 ) => {
   const query = {
@@ -16,6 +17,7 @@ export const getBrands = async <T>(
       brands: {
         __args: {
           first,
+          entityIds: brandIds,
         },
         edges: {
           node: {
