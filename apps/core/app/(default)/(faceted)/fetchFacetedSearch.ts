@@ -150,7 +150,7 @@ export const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchPar
   })
   .pipe(PrivateSearchParamsSchema);
 
-export const fetchCategory = cache(
+export const fetchFacetedSearch = cache(
   // We need to make sure the reference passed into this function is the same if we want it to be memoized.
   async (params: z.infer<typeof PublicSearchParamsSchema>) => {
     const { after, before, limit = 9, sort, filters } = PublicToPrivateParams.parse(params);
