@@ -5,11 +5,11 @@ import { notFound } from 'next/navigation';
 import client from '~/client';
 import { ProductCard } from '~/components/ProductCard';
 
-import { Breadcrumbs } from './_components/breadcrumbs';
-import { FacetedSearch } from './_components/faceted-search';
-import { MobileSideNav } from './_components/mobile-side-nav';
-import { SortBy } from './_components/sort-by';
-import { fetchCategory } from './fetchCategory';
+import { Breadcrumbs } from '../../_components/breadcrumbs';
+import { FacetedSearch } from '../../_components/faceted-search';
+import { MobileSideNav } from '../../_components/mobile-side-nav';
+import { SortBy } from '../../_components/sort-by';
+import { fetchFacetedSearch } from '../../fetchFacetedSearch';
 
 interface Props {
   params: {
@@ -21,7 +21,7 @@ interface Props {
 export default async function Category({ params, searchParams }: Props) {
   const categoryId = Number(params.slug);
 
-  const search = await fetchCategory({ categoryId, ...searchParams });
+  const search = await fetchFacetedSearch({ categoryId, ...searchParams });
 
   // We will only need a partial of this query to fetch the category name and breadcrumbs.
   // The rest of the arguments are useless at this point.
