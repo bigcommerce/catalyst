@@ -22,7 +22,6 @@
     "@bigcommerce/eslint-config": "^2.7.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@genql/cli": "^6.2.1",
-    "@testing-library/react": "^14.0.0",
     "@types/node": "^18.17.12",
     "dotenv-cli": "^7.3.0",
     "eslint": "^8.48.0",

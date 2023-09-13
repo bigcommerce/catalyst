@@ -2,17 +2,16 @@ import type { Config } from 'jest';
 
 const config: Config = {
   testEnvironment: 'jsdom',
-  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
-  collectCoverageFrom: ['**/*.{ts,tsx}', '!**/node_modules/**', '!**/vendor/**'],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/.next/'],
+  collectCoverageFrom: ['**/*.{ts,tsx}', '!src/**/*.d.ts'],
   coverageThreshold: {
     global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80,
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
     },
-  },
-  verbose: true,
+  }
 };
 
 export default config;
