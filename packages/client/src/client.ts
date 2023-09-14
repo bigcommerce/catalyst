@@ -16,6 +16,7 @@ import { updateCartLineItem } from './mutations/updateCartLineItem';
 import { getBestSellingProducts } from './queries/getBestSellingProducts';
 import { getBlogPost } from './queries/getBlogPost';
 import { getBlogPosts } from './queries/getBlogPosts';
+import { getBrand } from './queries/getBrand';
 import { getBrands } from './queries/getBrands';
 import { getCart } from './queries/getCart';
 import { getCategory } from './queries/getCategory';
@@ -53,6 +54,10 @@ class Client<CustomRequestInit extends FetcherRequestInit = FetcherRequestInit> 
 
   getBlogPosts(...args: PublicParams<typeof getBlogPosts<CustomRequestInit>>) {
     return getBlogPosts(this.fetch, ...args);
+  }
+
+  getBrand(...args: PublicParams<typeof getBrand<CustomRequestInit>>) {
+    return getBrand(this.fetch, ...args);
   }
 
   getBrands(...args: PublicParams<typeof getBrands<CustomRequestInit>>) {
