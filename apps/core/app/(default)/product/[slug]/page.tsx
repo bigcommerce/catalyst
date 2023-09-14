@@ -27,8 +27,6 @@ const ProductDetails = ({
 }: {
   product: Awaited<ReturnType<typeof client.getProduct>>;
 }) => {
-  const reviewSectionId = 'write-a-review';
-
   assertNonNullable(product);
 
   return (
@@ -40,7 +38,7 @@ const ProductDetails = ({
       <h1 className="mb-4 text-h2">{product.name}</h1>
 
       <Suspense fallback="Loading...">
-        <ReviewSummary productId={product.entityId} reviewSectionId={reviewSectionId} />
+        <ReviewSummary productId={product.entityId} />
       </Suspense>
 
       {product.prices && (
@@ -126,8 +124,6 @@ const ProductDescriptionAndReviews = ({
 }) => {
   assertNonNullable(product);
 
-  const reviewSectionId = 'write-a-review';
-
   return (
     <div className="lg:col-span-2">
       {Boolean(product.plainTextDescription) && (
@@ -145,7 +141,7 @@ const ProductDescriptionAndReviews = ({
       )}
 
       <Suspense fallback="Loading...">
-        <Reviews productId={product.entityId} reviewSectionId={reviewSectionId} />
+        <Reviews productId={product.entityId} />
       </Suspense>
     </div>
   );

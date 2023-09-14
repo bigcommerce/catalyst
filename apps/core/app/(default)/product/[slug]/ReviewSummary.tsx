@@ -6,10 +6,9 @@ import client from '~/client';
 
 interface Props {
   productId: number;
-  reviewSectionId: string;
 }
 
-export const ReviewSummary = async ({ productId, reviewSectionId }: Props) => {
+export const ReviewSummary = async ({ productId }: Props) => {
   const summaryId = useId();
 
   const reviews = await client.getProductReviews(productId);
@@ -41,10 +40,6 @@ export const ReviewSummary = async ({ productId, reviewSectionId }: Props) => {
         )}
         <span className="sr-only">Number of reviews:</span>({numberOfReviews})
       </div>
-
-      <a className="font-semibold text-blue-primary" href={`#${reviewSectionId}`}>
-        Write review
-      </a>
     </div>
   );
 };
