@@ -14,7 +14,7 @@ export async function SubCategories({ categoryId }: Props) {
   }
 
   return (
-    <div>
+    <div className="mb-8">
       <h3 className="mb-3 text-h5">Categories</h3>
 
       <ul className="flex flex-col gap-4 text-base">

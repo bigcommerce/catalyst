@@ -9,6 +9,7 @@ import { Breadcrumbs } from '../../_components/breadcrumbs';
 import { FacetedSearch } from '../../_components/faceted-search';
 import { MobileSideNav } from '../../_components/mobile-side-nav';
 import { SortBy } from '../../_components/sort-by';
+import { SubCategories } from '../../_components/sub-categories';
 import { fetchFacetedSearch } from '../../fetchFacetedSearch';
 
 interface Props {
@@ -46,11 +47,9 @@ export default async function Category({ params, searchParams }: Props) {
 
         <div className="flex flex-col items-center gap-3 whitespace-nowrap md:flex-row">
           <MobileSideNav>
-            <FacetedSearch
-              categoryId={categoryId}
-              facets={search.facets.items}
-              headingId="mobile-filter-heading"
-            />
+            <FacetedSearch facets={search.facets.items} headingId="mobile-filter-heading">
+              <SubCategories categoryId={categoryId} />
+            </FacetedSearch>
           </MobileSideNav>
           <div className="flex w-full flex-col items-start gap-4 md:flex-row md:items-center md:justify-end md:gap-6">
             <SortBy />
@@ -64,11 +63,12 @@ export default async function Category({ params, searchParams }: Props) {
 
       <div className="grid grid-cols-4 gap-8">
         <FacetedSearch
-          categoryId={categoryId}
           className="mb-8 hidden lg:block"
           facets={search.facets.items}
           headingId="desktop-filter-heading"
-        />
+        >
+          <SubCategories categoryId={categoryId} />
+        </FacetedSearch>
 
         <section aria-labelledby="product-heading" className="col-span-4 lg:col-span-3">
           <h2 className="sr-only" id="product-heading">
