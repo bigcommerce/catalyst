@@ -1,14 +1,12 @@
-import { Button } from '@bigcommerce/reactant/Button';
 import { Rating } from '@bigcommerce/reactant/Rating';
 
 import client from '~/client';
 
 interface Props {
   productId: number;
-  reviewSectionId: string;
 }
 
-export const Reviews = async ({ productId, reviewSectionId }: Props) => {
+export const Reviews = async ({ productId }: Props) => {
   const product = await client.getProductReviews(productId);
   const reviews = product?.reviews;
 
@@ -52,10 +50,6 @@ export const Reviews = async ({ productId, reviewSectionId }: Props) => {
           })
         )}
       </ul>
-
-      <Button className="w-auto" disabled id={reviewSectionId} variant="secondary">
-        Write a review
-      </Button>
     </>
   );
 };
