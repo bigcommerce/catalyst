@@ -21,6 +21,7 @@ export const getBrands = async <T>(
         },
         edges: {
           node: {
+            entityId: true,
             name: true,
             path: true,
           },
