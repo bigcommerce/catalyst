@@ -40,11 +40,12 @@ const sortRatingsDescending = (a: RatingSearchFilterItem, b: RatingSearchFilterI
   return parseInt(b.value, 10) - parseInt(a.value, 10);
 };
 
-interface Props {
+export interface Props {
   facets: Facet[];
+  pageType: 'category' | 'brand' | 'search';
 }
 
-export const Facets = ({ facets }: Props) => {
+export const Facets = ({ facets, pageType }: Props) => {
   const ref = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -83,7 +84,7 @@ export const Facets = ({ facets }: Props) => {
     <Accordion defaultValue={defaultOpenFacets} type="multiple">
       <form onSubmit={handleSubmit} ref={ref}>
         {facets.map((facet) => {
-          if (facet.__typename === 'BrandSearchFilter') {
+          if (facet.__typename === 'BrandSearchFilter' && pageType !== 'brand') {
             return (
               <AccordionItem key={facet.__typename} value={facet.name}>
                 <AccordionTrigger>

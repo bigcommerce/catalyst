@@ -47,7 +47,11 @@ export default async function Category({ params, searchParams }: Props) {
 
         <div className="flex flex-col items-center gap-3 whitespace-nowrap md:flex-row">
           <MobileSideNav>
-            <FacetedSearch facets={search.facets.items} headingId="mobile-filter-heading">
+            <FacetedSearch
+              facets={search.facets.items}
+              headingId="mobile-filter-heading"
+              pageType="category"
+            >
               <SubCategories categoryId={categoryId} />
             </FacetedSearch>
           </MobileSideNav>
@@ -66,6 +70,7 @@ export default async function Category({ params, searchParams }: Props) {
           className="mb-8 hidden lg:block"
           facets={search.facets.items}
           headingId="desktop-filter-heading"
+          pageType="category"
         >
           <SubCategories categoryId={categoryId} />
         </FacetedSearch>
