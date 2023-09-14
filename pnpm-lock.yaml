@@ -53,6 +53,9 @@ importers:
       tailwind-merge:
         specifier: ^1.14.0
         version: 1.14.0
+      type-fest:
+        specifier: ^4.3.1
+        version: 4.3.1
       zod:
         specifier: ^3.22.2
         version: 3.22.2
@@ -12141,7 +12144,6 @@ packages:
   /type-fest@4.3.1:
     resolution: {integrity: sha512-pphNW/msgOUSkJbH58x8sqpq8uQj6b0ZKGxEsLKMUnGorRcDjrUaLS+39+/ub41JNTwrrMyJcUB8+YZs3mbwqw==}
     engines: {node: '>=16'}
-    dev: true
 
   /type-is@1.6.18:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}

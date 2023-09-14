@@ -19,7 +19,7 @@ async function internalGetProduct<T>(
           optionValueIds,
         },
         relatedProducts: {
-          __args: { first: 4 },
+          __args: { first: 12 },
           edges: {
             node: {
               entityId: true,
@@ -29,6 +29,9 @@ async function internalGetProduct<T>(
                 url: {
                   __args: { width: 320 },
                 },
+              },
+              brand: {
+                name: true,
               },
               prices: {
                 price: {
