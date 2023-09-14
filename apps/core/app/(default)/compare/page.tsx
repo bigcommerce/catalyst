@@ -5,6 +5,8 @@ import * as z from 'zod';
 
 import client from '~/client';
 
+import { AddToCartForm } from './AddToCartForm';
+
 const MAX_COMPARE_LIMIT = 10;
 
 const CompareParamsSchema = z.object({
@@ -148,11 +150,27 @@ export default async function Compare({
               ))}
             </tr>
             <tr>
-              {products.map((product) => (
-                <td className="border-b px-4 pb-12" key={product.entityId}>
-                  <Button aria-label={product.name}>Add to Cart</Button>
-                </td>
-              ))}
+              {products.map((product) => {
+                if (product.productOptions.edges?.length) {
+                  return (
+                    <td className="border-b px-4 pb-12" key={product.entityId}>
+                      <Button aria-label={product.name} asChild>
+                        <Link href={`/product/${product.entityId}`}>Choose Options</Link>
+                      </Button>
+                    </td>
+                  );
+                }
+
+                return (
+                  <td className="border-b px-4 pb-12" key={product.entityId}>
+                    <AddToCartForm
+                      availability={product.availabilityV2.status}
+                      entityId={product.entityId}
+                      productName={product.name}
+                    />
+                  </td>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
@@ -205,11 +223,27 @@ export default async function Compare({
               ))}
             </tr>
             <tr>
-              {products.map((product) => (
-                <td className="px-4 pb-24 pt-12" key={product.entityId}>
-                  <Button aria-label={product.name}>Add to Cart</Button>
-                </td>
-              ))}
+              {products.map((product) => {
+                if (product.productOptions.edges?.length) {
+                  return (
+                    <td className="border-b px-4 pb-24 pt-12" key={product.entityId}>
+                      <Button aria-label={product.name} asChild>
+                        <Link href={`/product/${product.entityId}`}>Choose Options</Link>
+                      </Button>
+                    </td>
+                  );
+                }
+
+                return (
+                  <td className="border-b px-4 pb-24 pt-12" key={product.entityId}>
+                    <AddToCartForm
+                      availability={product.availabilityV2.status}
+                      entityId={product.entityId}
+                      productName={product.name}
+                    />
+                  </td>
+                );
+              })}
             </tr>
           </tbody>
         </table>
