@@ -54,7 +54,7 @@ export const getBlogPost = async <T>(
 
   const { blog } = response.data.site.content;
 
-  if (!blog) {
+  if (!blog?.post) {
     return undefined;
   }
 
