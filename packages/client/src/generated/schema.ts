@@ -2047,11 +2047,11 @@ export interface MetafieldEdge {
 export interface Metafields {
     /** The ID of the metafield when referencing via our backend API. */
     entityId: Scalars['Int']
-    /** The ID of an object */
+    /** The ID of metafield. */
     id: Scalars['ID']
-    /** A label for identifying a metafield data value. */
+    /** A label for identifying metafield's data value. */
     key: Scalars['String']
-    /** A metafield value. */
+    /** A metafield's value. */
     value: Scalars['String']
     __typename: 'Metafields'
 }
@@ -3120,6 +3120,8 @@ export interface Settings {
     socialMediaLinks: SocialMediaLink[]
     /** The current store status. */
     status: StorefrontStatusType
+    /** The customer-facing message associated with the current store status. */
+    statusMessage: (Scalars['String'] | null)
     /** The hash of the store. */
     storeHash: Scalars['String']
     /** The name of the store. */
@@ -3166,6 +3168,8 @@ export interface ShopByPriceRange {
 export interface Site {
     /** Details of the best selling products. */
     bestSellingProducts: ProductConnection
+    /** Details of a brand. */
+    brand: (Brand | null)
     /** Details of the brand. */
     brands: BrandConnection
     /** The Cart of the current customer. */
@@ -6338,11 +6342,11 @@ export interface MetafieldEdgeGenqlSelection{
 export interface MetafieldsGenqlSelection{
     /** The ID of the metafield when referencing via our backend API. */
     entityId?: boolean | number
-    /** The ID of an object */
+    /** The ID of metafield. */
     id?: boolean | number
-    /** A label for identifying a metafield data value. */
+    /** A label for identifying metafield's data value. */
     key?: boolean | number
-    /** A metafield value. */
+    /** A metafield's value. */
     value?: boolean | number
     __typename?: boolean | number
     __scalar?: boolean | number
@@ -7635,6 +7639,8 @@ export interface SettingsGenqlSelection{
     socialMediaLinks?: SocialMediaLinkGenqlSelection
     /** The current store status. */
     status?: boolean | number
+    /** The customer-facing message associated with the current store status. */
+    statusMessage?: boolean | number
     /** The hash of the store. */
     storeHash?: boolean | number
     /** The name of the store. */
@@ -7687,6 +7693,10 @@ export interface SiteGenqlSelection{
     bestSellingProducts?: (ProductConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), 
     /** When set to True, hides products which are out of stock. Defaults to False. This filter will do nothing unless your store has the Product Filtering feature available on your plan and enabled. If it is supplied when your store does not have the feature enabled, it will be silently ignored. */
     hideOutOfStock?: (Scalars['Boolean'] | null), last?: (Scalars['Int'] | null)} })
+    /** Details of a brand. */
+    brand?: (BrandGenqlSelection & { __args: {
+    /** Brand ID. */
+    entityId: Scalars['Int']} })
     /** Details of the brand. */
     brands?: (BrandConnectionGenqlSelection & { __args?: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), 
     /** Filter by brand ids. */
