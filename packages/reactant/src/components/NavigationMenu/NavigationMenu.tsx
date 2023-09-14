@@ -6,8 +6,10 @@ import {
   createContext,
   ElementRef,
   forwardRef,
+  useCallback,
   useContext,
   useEffect,
+  useId,
   useRef,
   useState,
 } from 'react';
@@ -16,7 +18,7 @@ import { cs } from '../../utils/cs';
 
 const ExpandedContext = createContext<{
   isExpanded: boolean;
-  setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsExpanded: (newIsExpanded: boolean) => void;
 }>({
   isExpanded: false,
   setIsExpanded: () => undefined,
@@ -27,12 +29,23 @@ export const NavigationMenu = forwardRef<
   ComponentPropsWithRef<'div'>
 >(({ children, className, ...props }, ref) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [value, setValue] = useState('');
+
+  const toggleExpanded = useCallback((newIsExpanded: boolean) => {
+    // Reset the state of menu items
+    // Prevents the navigation items from remaining open in viewport when closing collapsed menu
+    setValue('');
+
+    setIsExpanded(newIsExpanded);
+  }, []);
 
   return (
-    <ExpandedContext.Provider value={{ isExpanded, setIsExpanded }}>
+    <ExpandedContext.Provider value={{ isExpanded, setIsExpanded: toggleExpanded }}>
       <NavigationMenuPrimitive.Root
         className={cs(isExpanded && 'h-screen overflow-y-auto')}
+        onValueChange={(newValue) => setValue(newValue)}
         ref={ref}
+        value={value}
       >
         <FocusTrap active={isExpanded}>
           <div className="relative">
@@ -68,7 +81,18 @@ export const NavigationMenuList = forwardRef<
   </NavigationMenuPrimitive.List>
 ));
 
-export const NavigationMenuItem = NavigationMenuPrimitive.Item;
+export const NavigationMenuItem = forwardRef<
+  ElementRef<typeof NavigationMenuPrimitive.Item>,
+  ComponentPropsWithRef<typeof NavigationMenuPrimitive.Item>
+>(({ children, className, ...props }, ref) => {
+  const id = useId();
+
+  return (
+    <NavigationMenuPrimitive.Item className={cs(className)} ref={ref} value={id} {...props}>
+      {children}
+    </NavigationMenuPrimitive.Item>
+  );
+});
 
 const navigationMenuLinkStyles = cs(
   'focus:ring-primary-blue/20 flex justify-between p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4',
