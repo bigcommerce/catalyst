@@ -75,7 +75,7 @@ export const PublicSearchParamsSchema = z.object({
   after: z.string().optional(),
   before: z.string().optional(),
   brand: SearchParamToArray.transform((value) => value?.map(Number)),
-  categoryId: z.number(),
+  category: SearchParamToArray.transform((value) => value?.map(Number)),
   isFeatured: z.coerce.boolean().optional(),
   limit: z.coerce.number().optional(),
   minPrice: z.coerce.number().optional(),
@@ -99,7 +99,7 @@ export const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchPar
 
     const {
       brand,
-      categoryId,
+      category,
       isFeatured,
       minPrice,
       maxPrice,
@@ -126,7 +126,7 @@ export const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchPar
       sort,
       filters: {
         brandEntityIds: brand,
-        categoryEntityId: categoryId,
+        categoryEntityIds: category,
         hideOutOfStock: stock?.includes('in_stock'),
         isFreeShipping: shipping?.includes('free_shipping'),
         isFeatured,
@@ -152,7 +152,7 @@ export const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchPar
 
 export const fetchFacetedSearch = cache(
   // We need to make sure the reference passed into this function is the same if we want it to be memoized.
-  async (params: z.infer<typeof PublicSearchParamsSchema>) => {
+  async (params: z.input<typeof PublicSearchParamsSchema>) => {
     const { after, before, limit = 9, sort, filters } = PublicToPrivateParams.parse(params);
 
     return client.getProductSearchResults(
