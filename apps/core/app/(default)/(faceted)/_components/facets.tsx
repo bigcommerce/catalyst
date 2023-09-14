@@ -123,6 +123,45 @@ export const Facets = ({ facets, pageType }: Props) => {
             );
           }
 
+          if (facet.__typename === 'CategorySearchFilter' && pageType !== 'category') {
+            return (
+              <AccordionItem key={facet.__typename} value={facet.name}>
+                <AccordionTrigger>
+                  <h3>{facet.name}</h3>
+                </AccordionTrigger>
+                <AccordionContent>
+                  {facet.categories.map((category) => {
+                    const normalizedCategoryName = category.name.replace(/\s/g, '-').toLowerCase();
+                    const id = `${normalizedCategoryName}-${category.entityId}`;
+                    const labelId = `${normalizedCategoryName}-${category.entityId}-label`;
+
+                    const key = `${category.entityId}-${category.isSelected.toString()}`;
+
+                    return (
+                      <div className="flex max-w-sm items-center py-2 ps-1" key={key}>
+                        <Checkbox
+                          aria-labelledby={labelId}
+                          defaultChecked={category.isSelected}
+                          id={id}
+                          name="category"
+                          onCheckedChange={submitForm}
+                          value={category.entityId}
+                        />
+                        <Label className="cursor-pointer ps-3" htmlFor={id} id={labelId}>
+                          {category.name}
+                          <ProductCount
+                            count={category.productCount}
+                            shouldDisplay={facet.displayProductCount}
+                          />
+                        </Label>
+                      </div>
+                    );
+                  })}
+                </AccordionContent>
+              </AccordionItem>
+            );
+          }
+
           if (facet.__typename === 'ProductAttributeSearchFilter') {
             return (
               <AccordionItem key={`${facet.__typename}-${facet.filterName}`} value={facet.name}>
