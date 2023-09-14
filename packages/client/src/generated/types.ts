@@ -5476,6 +5476,9 @@ export default {
             "status": [
                 308
             ],
+            "statusMessage": [
+                309
+            ],
             "storeHash": [
                 309
             ],
@@ -5543,6 +5546,15 @@ export default {
                     ],
                     "last": [
                         182
+                    ]
+                }
+            ],
+            "brand": [
+                36,
+                {
+                    "entityId": [
+                        182,
+                        "Int!"
                     ]
                 }
             ],

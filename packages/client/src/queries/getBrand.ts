@@ -1,30 +1,27 @@
 import { BigCommerceResponse, FetcherInput } from '../fetcher';
 import { generateQueryOp, QueryGenqlSelection, QueryResult } from '../generated';
-import { removeEdgesAndNodes } from '../utils/removeEdgesAndNodes';
 
-export interface GetBrandsOptions {
-  first?: number;
-  brandIds?: number[];
+export interface GetBrandOptions {
+  brandId: number;
 }
 
-export const getBrands = async <T>(
+export const getBrand = async <T>(
   customFetch: <U>(data: FetcherInput) => Promise<BigCommerceResponse<U>>,
-  { first = 5, brandIds }: GetBrandsOptions = {},
+  { brandId }: GetBrandOptions,
   config: T = {} as T,
 ) => {
   const query = {
     site: {
-      brands: {
+      brand: {
         __args: {
-          first,
-          entityIds: brandIds,
+          entityId: brandId,
         },
-        edges: {
-          node: {
-            entityId: true,
-            name: true,
-            path: true,
-          },
+        entityId: true,
+        name: true,
+        path: true,
+        searchKeywords: true,
+        seo: {
+          __scalar: true,
         },
       },
     },
@@ -37,7 +34,11 @@ export const getBrands = async <T>(
     ...config,
   });
 
-  const { site } = response.data;
+  const brand = response.data.site.brand;
 
-  return removeEdgesAndNodes(site.brands);
+  if (!brand) {
+    return undefined;
+  }
+
+  return brand;
 };

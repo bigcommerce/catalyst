@@ -3073,13 +3073,13 @@ type Metafields {
   """The ID of the metafield when referencing via our backend API."""
   entityId: Int!
 
-  """The ID of an object"""
+  """The ID of metafield."""
   id: ID!
 
-  """A label for identifying a metafield data value."""
+  """A label for identifying metafield's data value."""
   key: String!
 
-  """A metafield value."""
+  """A metafield's value."""
   value: String!
 }
 
@@ -4529,6 +4529,9 @@ type Settings {
   """The current store status."""
   status: StorefrontStatusType!
 
+  """The customer-facing message associated with the current store status."""
+  statusMessage: String
+
   """The hash of the store."""
   storeHash: String!
 
@@ -4583,6 +4586,12 @@ type Site {
     hideOutOfStock: Boolean
     last: Int
   ): ProductConnection!
+
+  """Details of a brand."""
+  brand(
+    """Brand ID."""
+    entityId: Int!
+  ): Brand
 
   """Details of the brand."""
   brands(
