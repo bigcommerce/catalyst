@@ -3,10 +3,11 @@
 import { Tag, TagAction, TagContent } from '@bigcommerce/reactant/Tag';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import type { Facet, PublicParamKeys } from '../types';
+import type { Facet, PageType, PublicParamKeys } from '../types';
 
-interface Props {
+export interface Props {
   facets: Facet[];
+  pageType: PageType;
 }
 
 interface FacetProps<Key extends string> {
@@ -15,15 +16,32 @@ interface FacetProps<Key extends string> {
   value: string;
 }
 
-const mapFacetsToRefinements = (facets: Props['facets']) =>
+const mapFacetsToRefinements = ({ facets, pageType }: Props) =>
   facets
     .map<Array<FacetProps<PublicParamKeys | string>>>((facet) => {
       switch (facet.__typename) {
         case 'BrandSearchFilter':
+          if (pageType === 'brand') {
+            return [];
+          }
+
           return facet.brands
             .filter((brand) => brand.isSelected)
             .map<FacetProps<PublicParamKeys>>(({ name, entityId }) => ({
               key: 'brand',
+              display_name: name,
+              value: String(entityId),
+            }));
+
+        case 'CategorySearchFilter':
+          if (pageType === 'category') {
+            return [];
+          }
+
+          return facet.categories
+            .filter((category) => category.isSelected)
+            .map<FacetProps<PublicParamKeys>>(({ name, entityId }) => ({
+              key: 'category',
               display_name: name,
               value: String(entityId),
             }));
@@ -86,11 +104,11 @@ const mapFacetsToRefinements = (facets: Props['facets']) =>
     })
     .flat();
 
-export const RefineBy = ({ facets }: Props) => {
+export const RefineBy = (props: Props) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const refinements = mapFacetsToRefinements(facets);
+  const refinements = mapFacetsToRefinements(props);
 
   const removeRefinement = (refinement: FacetProps<string>) => {
     const filteredParams = Array.from(searchParams.entries()).filter(
