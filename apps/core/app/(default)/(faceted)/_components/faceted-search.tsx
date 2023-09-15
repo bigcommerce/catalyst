@@ -1,9 +1,9 @@
 import { ComponentPropsWithoutRef, PropsWithChildren } from 'react';
 
 import { Props as FacetProps, Facets } from './facets';
-import { RefineBy } from './refine-by';
+import { RefineBy, Props as RefineByProps } from './refine-by';
 
-interface Props extends FacetProps, ComponentPropsWithoutRef<'aside'> {
+interface Props extends FacetProps, RefineByProps, ComponentPropsWithoutRef<'aside'> {
   headingId: string;
 }
 
@@ -22,7 +22,7 @@ export const FacetedSearch = ({
 
       {children}
 
-      <RefineBy facets={facets} />
+      <RefineBy facets={facets} pageType={pageType} />
 
       <Facets facets={facets} pageType={pageType} />
     </aside>

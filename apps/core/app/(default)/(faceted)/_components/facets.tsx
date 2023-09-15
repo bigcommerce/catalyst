@@ -17,7 +17,7 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useRef } from 'react';
 
-import type { Facet } from '../types';
+import type { Facet, PageType } from '../types';
 
 interface ProductCountProps {
   shouldDisplay: boolean;
@@ -42,7 +42,7 @@ const sortRatingsDescending = (a: RatingSearchFilterItem, b: RatingSearchFilterI
 
 export interface Props {
   facets: Facet[];
-  pageType: 'category' | 'brand' | 'search';
+  pageType: PageType;
 }
 
 export const Facets = ({ facets, pageType }: Props) => {
