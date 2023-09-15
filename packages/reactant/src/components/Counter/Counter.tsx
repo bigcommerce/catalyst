@@ -3,10 +3,14 @@ import { ComponentPropsWithRef, ElementRef, forwardRef, useRef, useState } from 
 
 import { cs } from '../../utils/cs';
 
-export const Counter = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'input'>>(
+interface CounterProps extends Omit<ComponentPropsWithRef<'input'>, 'onChange'> {
+  onChange?: (value: number) => void | Promise<void>;
+}
+
+export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
   ({ className, children, type, value: valueProp = 1, onChange, disabled, ...props }, ref) => {
     const [value, setValue] = useState(Number(valueProp));
-
+    const currValue = onChange ? Number(valueProp) : value;
     const inputRef = useRef<ElementRef<'input'>>(null);
 
     return (
@@ -17,9 +21,14 @@ export const Counter = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'inpu
           className={cs(
             'peer/down absolute start-0 top-0 flex h-full w-12 items-center justify-center focus:outline-none disabled:text-gray-200',
           )}
-          disabled={value <= 1 || disabled}
-          onClick={() => {
-            setValue(value - 1);
+          disabled={currValue <= 1 || disabled}
+          onClick={async () => {
+            if (onChange) {
+              await onChange(currValue - 1);
+            } else {
+              setValue(currValue - 1);
+            }
+
             inputRef.current?.focus();
           }}
           tabIndex={-1}
@@ -34,8 +43,13 @@ export const Counter = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'inpu
             'peer/up absolute end-0 top-0 flex h-full w-12 items-center justify-center focus:outline-none disabled:text-gray-200',
           )}
           disabled={disabled}
-          onClick={() => {
-            setValue(value + 1);
+          onClick={async () => {
+            if (onChange) {
+              await onChange(currValue + 1);
+            } else {
+              setValue(currValue + 1);
+            }
+
             inputRef.current?.focus();
           }}
           tabIndex={-1}
@@ -49,13 +63,15 @@ export const Counter = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'inpu
             className,
           )}
           disabled={disabled}
-          onChange={(e) => {
-            setValue(e.target.valueAsNumber);
-
-            onChange?.(e);
+          onChange={async (e) => {
+            if (onChange) {
+              await onChange(e.target.valueAsNumber);
+            } else {
+              setValue(e.target.valueAsNumber);
+            }
           }}
           type="number"
-          value={value}
+          value={currValue}
           {...props}
           ref={inputRef}
         />

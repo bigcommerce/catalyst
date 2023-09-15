@@ -7,6 +7,7 @@ import { Suspense } from 'react';
 import client from '~/client';
 
 import { removeProduct } from './_actions/removeProduct';
+import { CartItemCounter } from './CartItemCounter';
 
 const EmptyCart = () => (
   <div className="flex h-full flex-col">
@@ -52,6 +53,17 @@ export default async function CartPage() {
     style: 'currency',
     currency: cart.currencyCode,
   });
+  const extractCartlineItemsData = ({
+    entityId,
+    productEntityId,
+    quantity,
+    variantEntityId,
+  }: (typeof cart.lineItems.physicalItems)[number]) => ({
+    lineItemEntityId: entityId,
+    productEntityId,
+    quantity,
+    variantEntityId,
+  });
 
   return (
     <div>
@@ -69,7 +81,7 @@ export default async function CartPage() {
                   <p className="text-base text-gray-500">{product.brand}</p>
                   <p className="text-h5">{product.name}</p>
 
-                  {Boolean(product.selectedOptions.length) && (
+                  {product.selectedOptions.length > 0 && (
                     <div className="mt-2">
                       {product.selectedOptions.map((selectedOption) => {
                         switch (selectedOption.__typename) {
@@ -88,12 +100,12 @@ export default async function CartPage() {
                   )}
                 </div>
 
-                <div>
-                  <p className="text-base font-bold">x{product.quantity}</p>
-                </div>
+                <CartItemCounter itemData={extractCartlineItemsData(product)} />
 
                 <div>
-                  <p className="text-base font-bold">${product.extendedSalePrice.value}</p>
+                  <p className="inline-flex w-24 justify-center text-base font-bold">
+                    ${product.extendedSalePrice.value}
+                  </p>
                 </div>
 
                 <form action={removeProduct}>
