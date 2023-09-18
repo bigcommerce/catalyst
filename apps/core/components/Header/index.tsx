@@ -17,6 +17,7 @@ import { PropsWithChildren, Suspense } from 'react';
 
 import client from '~/client';
 
+import { QuickSearch } from '../QuickSearch';
 import { StoreLogo } from '../StoreLogo';
 
 import { LinkNoCache } from './LinkNoCache';
@@ -166,6 +167,7 @@ export const Header = () => {
           <NavigationMenuToggle className="ms-2 lg:hidden" />
         </div>
         <NavigationMenuCollapsed>
+          <QuickSearch className="px-3" />
           <HeaderNav inCollapsedNav />
         </NavigationMenuCollapsed>
       </NavigationMenu>
