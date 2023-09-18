@@ -32,10 +32,10 @@ interface Product {
 interface ProductCardProps {
   product: PartialDeep<Product>;
   imageSize?: 'tall' | 'wide' | 'square';
-  imagePriotity?: boolean;
+  imagePriority?: boolean;
 }
 
-export const ProductCard = ({ product, imageSize, imagePriotity = false }: ProductCardProps) => {
+export const ProductCard = ({ product, imageSize, imagePriority = false }: ProductCardProps) => {
   const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: product.prices?.price?.currencyCode,
@@ -52,7 +52,7 @@ export const ProductCard = ({ product, imageSize, imagePriotity = false }: Produ
             'aspect-[7/5]': imageSize === 'wide',
           })}
           height={300}
-          priority={imagePriotity}
+          priority={imagePriority}
           src={product.defaultImage?.url ?? ''}
           width={300}
         />
