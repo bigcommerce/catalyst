@@ -83,7 +83,7 @@ export default async function Category({ params, searchParams }: Props) {
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 sm:gap-8">
             {products.map((product, index) => (
               <ProductCard
-                imagePriotity={index <= 3}
+                imagePriority={index <= 3}
                 imageSize="wide"
                 key={product.entityId}
                 product={product}
