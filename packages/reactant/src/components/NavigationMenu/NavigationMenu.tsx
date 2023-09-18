@@ -51,7 +51,7 @@ export const NavigationMenu = forwardRef<
           <div className="relative">
             <div
               className={cs(
-                'group flex min-h-[92px] items-center justify-between bg-white px-6 2xl:container sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0',
+                'group flex min-h-[92px] items-center justify-between gap-6 bg-white px-6 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0',
                 className,
               )}
               {...props}
@@ -76,7 +76,11 @@ export const NavigationMenuList = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.List>,
   ComponentPropsWithRef<typeof NavigationMenuPrimitive.List>
 >(({ children, className, ...props }, ref) => (
-  <NavigationMenuPrimitive.List className={cs('flex items-center', className)} ref={ref} {...props}>
+  <NavigationMenuPrimitive.List
+    className={cs('flex items-center lg:gap-4', className)}
+    ref={ref}
+    {...props}
+  >
     {children}
   </NavigationMenuPrimitive.List>
 ));
@@ -94,18 +98,13 @@ export const NavigationMenuItem = forwardRef<
   );
 });
 
-const navigationMenuLinkStyles = cs(
-  'focus:ring-primary-blue/20 flex justify-between p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4',
-);
-
 export const NavigationMenuTrigger = forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Trigger>,
   React.ComponentPropsWithRef<typeof NavigationMenuPrimitive.Trigger>
 >(({ className, children, ...props }, ref) => (
   <NavigationMenuPrimitive.Trigger
     className={cs(
-      navigationMenuLinkStyles,
-      'group/button flex w-full items-center justify-between',
+      'group/button focus:ring-primary-blue/20 flex w-full items-center justify-between gap-1 p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4',
       className,
     )}
     ref={ref}
@@ -132,9 +131,15 @@ export const NavigationMenuLink = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.Link>,
   ComponentPropsWithRef<typeof NavigationMenuPrimitive.Link>
 >(({ children, className, ...props }, ref) => {
+  const { setIsExpanded } = useContext(ExpandedContext);
+
   return (
     <NavigationMenuPrimitive.Link
-      className={cs(navigationMenuLinkStyles, className)}
+      className={cs(
+        'focus:ring-primary-blue/20 flex justify-between p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4',
+        className,
+      )}
+      onClick={() => setIsExpanded(false)}
       ref={ref}
       {...props}
     >
@@ -202,7 +207,7 @@ export const NavigationMenuCollapsed = forwardRef<ElementRef<'div'>, ComponentPr
     return (
       <div
         className={cs(
-          'in-collapsed-nav group absolute start-0 top-full z-50 w-full bg-white px-3 pb-6 2xl:container sm:px-7 lg:px-9 2xl:mx-auto 2xl:px-0',
+          'in-collapsed-nav group absolute start-0 top-full z-50 w-full bg-white px-6 pb-6 2xl:container sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0',
           className,
           !isExpanded && 'hidden',
         )}
