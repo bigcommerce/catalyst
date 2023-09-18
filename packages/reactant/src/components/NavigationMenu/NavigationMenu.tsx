@@ -77,7 +77,7 @@ export const NavigationMenuList = forwardRef<
   ComponentPropsWithRef<typeof NavigationMenuPrimitive.List>
 >(({ children, className, ...props }, ref) => (
   <NavigationMenuPrimitive.List
-    className={cs('flex items-center lg:gap-4', className)}
+    className={cs('flex items-center gap-2 lg:gap-4', className)}
     ref={ref}
     {...props}
   >

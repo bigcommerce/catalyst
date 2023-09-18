@@ -25,7 +25,11 @@ const Cart = async () => {
   const cartId = cookies().get('cartId')?.value;
 
   if (!cartId) {
-    return <ShoppingCart aria-hidden="true" />;
+    return (
+      <span className="p-3">
+        <ShoppingCart aria-hidden="true" />
+      </span>
+    );
   }
 
   const cart = await client.getCart(cartId, {
@@ -36,7 +40,11 @@ const Cart = async () => {
   });
 
   if (!cart) {
-    return <ShoppingCart aria-hidden="true" />;
+    return (
+      <span className="p-3">
+        <ShoppingCart aria-hidden="true" />
+      </span>
+    );
   }
 
   const count = cart.lineItems.totalQuantity;
@@ -158,7 +166,7 @@ export const Header = () => {
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
-          <NavigationMenuToggle className="lg:hidden" />
+          <NavigationMenuToggle className="ml-2 lg:hidden" />
         </div>
         <NavigationMenuCollapsed>
           <HeaderNav inCollapsedNav />
