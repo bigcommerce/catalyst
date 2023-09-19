@@ -19,19 +19,17 @@ import { experimental_useFormStatus as useFormStatus } from 'react-dom';
 
 import { submitContactForm } from './_actions/submitContactForm';
 
-interface FieldMapping {
-  [key: string]: string;
-}
-
-const fieldNameMapping: FieldMapping = {
+const fieldNameMapping = {
   fullname: 'Full name',
   companyname: 'Company name',
   phone: 'Phone',
   orderno: 'Order number',
   rma: 'RMA number',
-};
+} as const;
 
-export const ContactUs = ({ fields }: { fields: string[] }) => {
+type Field = keyof typeof fieldNameMapping;
+
+export const ContactUs = ({ fields }: { fields: Field[] }) => {
   const { pending } = useFormStatus();
   const [isMessageVisible, showMessage] = useState(false);
   const [isTextFieldValid, setTextFieldValidation] = useState(true);
@@ -68,13 +66,11 @@ export const ContactUs = ({ fields }: { fields: string[] }) => {
       >
         <>
           {fields.map((field) => {
+            const label = fieldNameMapping[field];
+
             return (
-              <Field
-                className={cs('relative space-y-2 pb-7')}
-                key={fieldNameMapping[field]}
-                name={fieldNameMapping[field]!}
-              >
-                <FieldLabel>{fieldNameMapping[field]}</FieldLabel>
+              <Field className={cs('relative space-y-2 pb-7')} key={label} name={label}>
+                <FieldLabel>{label}</FieldLabel>
                 <FieldControl asChild>
                   <Input />
                 </FieldControl>

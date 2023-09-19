@@ -14,9 +14,7 @@ const ContactUsSchema = z.object({
   comments: z.string().trim().nonempty(),
 });
 
-export const submitContactForm = async (
-  formData: FormData,
-): Promise<{ status: 'success' | 'failed' }> => {
+export const submitContactForm = async (formData: FormData) => {
   try {
     const parsedData = ContactUsSchema.parse({
       email: formData.get('email'),
@@ -28,11 +26,14 @@ export const submitContactForm = async (
       rmaNumber: formData.get('RMA number'),
     });
 
-    console.log('contact us data', parsedData);
-    // TODO: add graphql mutation on submit;
+    // TODO: Add graphql mutation on submit
 
-    return { status: 'success' };
-  } catch (e) {
+    return { status: 'success', data: parsedData };
+  } catch (e: unknown) {
+    if (e instanceof Error || e instanceof z.ZodError) {
+      return { status: 'failed', error: e.message };
+    }
+
     return { status: 'failed' };
   }
 };
