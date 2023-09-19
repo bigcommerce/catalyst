@@ -1,7 +1,6 @@
 'use client';
 
-import { SiFacebook, SiLinkedin, SiPinterest, SiX } from '@icons-pack/react-simple-icons'; 
-
+import { SiFacebook, SiLinkedin, SiPinterest, SiX } from '@icons-pack/react-simple-icons';
 import { Mail, Printer } from 'lucide-react';
 
 interface SharingLinksProps {
