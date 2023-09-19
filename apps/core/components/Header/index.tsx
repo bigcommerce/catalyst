@@ -25,7 +25,7 @@ const Cart = async () => {
   const cartId = cookies().get('cartId')?.value;
 
   if (!cartId) {
-    return <ShoppingCart aria-hidden="true" />;
+    return <ShoppingCart aria-hidden="true" className="box-content p-3" />;
   }
 
   const cart = await client.getCart(cartId, {
@@ -36,7 +36,7 @@ const Cart = async () => {
   });
 
   if (!cart) {
-    return <ShoppingCart aria-hidden="true" />;
+    return <ShoppingCart aria-hidden="true" className="box-content p-3" />;
   }
 
   const count = cart.lineItems.totalQuantity;
@@ -76,23 +76,27 @@ const HeaderNav = async ({
         <NavigationMenuItem className={cs(inCollapsedNav && 'w-full')} key={category.path}>
           {category.children.length > 0 ? (
             <>
-              <NavigationMenuTrigger asChild>
-                <NavigationMenuLink asChild>
-                  <Link href={`/category/${category.entityId}`}>
-                    {category.name}{' '}
+              <NavigationMenuTrigger className="gap-0 p-0">
+                <>
+                  <NavigationMenuLink asChild>
+                    <Link className="grow" href={`/category/${category.entityId}`}>
+                      {category.name}
+                    </Link>
+                  </NavigationMenuLink>
+                  <span className={cs(inCollapsedNav && 'p-3')}>
                     <ChevronDown
                       aria-hidden="true"
                       className={cs(
-                        'transition duration-200 group-data-[state=open]/button:-rotate-180',
+                        'cursor-pointer transition duration-200 group-data-[state=open]/button:-rotate-180',
                       )}
                     />
-                  </Link>
-                </NavigationMenuLink>
+                  </span>
+                </>
               </NavigationMenuTrigger>
               <NavigationMenuContent
                 className={cs(
                   !inCollapsedNav && 'mx-auto flex w-[700px] flex-row gap-20',
-                  inCollapsedNav && 'ps-6',
+                  inCollapsedNav && 'ps-3',
                 )}
               >
                 {category.children.map((childCategory1) => (
@@ -130,7 +134,7 @@ const HeaderNav = async ({
 export const Header = () => {
   return (
     <header>
-      <NavigationMenu className="gap-6 lg:gap-8">
+      <NavigationMenu>
         <NavigationMenuLink asChild className="px-0">
           <Link href="/">
             <StoreLogo />
@@ -138,7 +142,7 @@ export const Header = () => {
         </NavigationMenuLink>
         <HeaderNav className="hidden lg:flex" />
         <div className="flex">
-          <NavigationMenuList className="lg:gap-2">
+          <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 <Link aria-label="Search" href="/search">
@@ -154,7 +158,7 @@ export const Header = () => {
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
-          <NavigationMenuToggle className="lg:hidden" />
+          <NavigationMenuToggle className="ms-2 lg:hidden" />
         </div>
         <NavigationMenuCollapsed>
           <HeaderNav inCollapsedNav />
