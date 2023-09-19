@@ -35,6 +35,7 @@ export const getStoreSettings = async <T>(
           url: true,
         },
         status: true,
+        statusMessage: true,
       },
     },
   } satisfies QueryGenqlSelection;
