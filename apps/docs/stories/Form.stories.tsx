@@ -119,7 +119,7 @@ export const ValidityStateWrapper: Story = {
       <Field className="relative space-y-2 pb-6" name="email">
         <FieldLabel isRequired>Email Mismatch</FieldLabel>
         <FieldValidation>
-          {(validity: BuiltInValidityState) => {
+          {(validity: BuiltInValidityState | undefined): JSX.Element => {
             const handleControlValidation = () => {
               let validationState: boolean;
 
