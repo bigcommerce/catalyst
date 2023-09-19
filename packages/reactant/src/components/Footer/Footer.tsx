@@ -15,7 +15,7 @@ export const FooterSection = forwardRef<ElementRef<'section'>, ComponentPropsWit
   ({ children, className, ...props }, ref) => (
     <section
       className={cs(
-        'flex flex-col gap-4 border-t border-gray-200 py-8 px-6 sm:flex-row sm:px-10 lg:px-12 2xl:container 2xl:mx-auto 2xl:px-0',
+        'flex flex-col gap-4 border-t border-gray-200 px-6 py-8 2xl:container sm:flex-row sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0',
         className,
       )}
       {...props}
@@ -41,7 +41,7 @@ export const FooterNav = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef<'na
 
 export const FooterNavGroupList = forwardRef<ElementRef<'ul'>, ComponentPropsWithRef<'ul'>>(
   ({ children, className, ...props }, ref) => (
-    <ul className={cs('space-y-4', className)} ref={ref} {...props}>
+    <ul className={cs('flex flex-col gap-4', className)} ref={ref} {...props}>
       {children}
     </ul>
   ),

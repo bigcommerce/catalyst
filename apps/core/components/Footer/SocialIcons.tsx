@@ -31,7 +31,7 @@ export const SocialIcons = async () => {
 
   return (
     <FooterNav aria-label="Social media links" className="block">
-      <FooterNavGroupList>
+      <FooterNavGroupList className="flex-row gap-6">
         {socialMediaLinks.map((link) => {
           const Icon = ICON_MAP[link.name];
 
