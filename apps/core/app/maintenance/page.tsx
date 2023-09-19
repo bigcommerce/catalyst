@@ -27,7 +27,7 @@ export default async function MaintenancePage() {
 
       <h1 className="my-8 text-h2">We are down for maintenance</h1>
 
-      {statusMessage && <p className="mb-4">{statusMessage}</p>}
+      {Boolean(statusMessage) && <p className="mb-4">{statusMessage}</p>}
 
       {contact && (
         <address className="flex flex-col gap-2 not-italic">
