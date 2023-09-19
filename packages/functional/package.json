@@ -1,7 +1,8 @@
 {
-  "name": "specs",
+  "name": "functional",
   "version": "1.0.0",
   "description": "",
+  "private": true,
   "main": "index.js",
   "scripts": {},
   "keywords": [],

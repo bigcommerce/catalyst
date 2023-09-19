@@ -5,4 +5,7 @@ dist
 !.vscode/settings.example.json
 .env
 .env*.local
+/test-results/
+/playwright-report/
+/playwright/.cache/
 
