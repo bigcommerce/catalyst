@@ -17,41 +17,39 @@ import {
 import { cs } from '../../utils/cs';
 import { Button } from '../Button';
 
-interface SlideshowItemPositionState {
-  itemPosition: number;
-}
-
-const SlideshowItemContext = createContext<SlideshowItemPositionState>({ itemPosition: 0 });
-
-interface SlideshowState {
-  currentIndex: number;
-  items: ReactElement[];
-}
-
-const SlideshowContext = createContext<SlideshowState>({
-  currentIndex: 0,
-  items: [],
-});
-
 const decrement = (index: number, items: ReactElement[]) =>
   index - 1 < 0 ? items.length - 1 : index - 1;
 
 const increment = (index: number, items: ReactElement[]) =>
   index + 1 > items.length - 1 ? 0 : index + 1;
 
-type SlideshowItemProps = ComponentPropsWithRef<'li'>;
+interface SlideshowSlidePositionState {
+  slidePosition: number;
+}
 
-export const SlideshowItem = forwardRef<ElementRef<'li'>, SlideshowItemProps>(
+interface SlideshowState {
+  currentIndex: number;
+  items: ReactElement[];
+}
+
+const SlideshowContentContext = createContext<SlideshowState>({
+  currentIndex: 0,
+  items: [],
+});
+
+const SlideshowSlideContext = createContext<SlideshowSlidePositionState>({ slidePosition: 0 });
+
+export const SlideshowSlide = forwardRef<ElementRef<'li'>, ComponentPropsWithRef<'li'>>(
   ({ className, children, ...props }, ref) => {
-    const { currentIndex, items } = useContext(SlideshowContext);
-    const { itemPosition } = useContext(SlideshowItemContext);
+    const { currentIndex, items } = useContext(SlideshowContentContext);
+    const { slidePosition } = useContext(SlideshowSlideContext);
 
     const leftIndex = decrement(currentIndex, items);
     const rightIndex = increment(currentIndex, items);
 
-    const left = itemPosition === leftIndex;
-    const right = itemPosition === rightIndex;
-    const middle = itemPosition === currentIndex;
+    const left = slidePosition === leftIndex;
+    const right = slidePosition === rightIndex;
+    const middle = slidePosition === currentIndex;
 
     return (
       <li
@@ -102,18 +100,18 @@ const slideshowReducer = (state: SlideshowState, action: SlideshowNavAction) => 
   }
 };
 
-interface SlideshowProps extends ComponentPropsWithRef<'ul'> {
+interface SlideshowContentProps extends ComponentPropsWithRef<'ul'> {
   interval?: number;
 }
 
-export const Slideshow = forwardRef<ElementRef<'ul'>, SlideshowProps>(
+export const SlideshowContent = forwardRef<ElementRef<'ul'>, SlideshowContentProps>(
   ({ children, className, interval = 10_000, ...props }, ref) => {
     const [paused, togglePause] = useReducer((isPaused: boolean) => !isPaused, false);
     const [hoverPaused, setHoverPaused] = useState(false);
 
     const validChildren = Children.toArray(children).filter(
-      (child): child is ReactElement<SlideshowItemProps> =>
-        isValidElement<SlideshowItemProps>(child) &&
+      (child): child is ReactElement<ComponentPropsWithRef<'li'>> =>
+        isValidElement<ComponentPropsWithRef<'li'>>(child) &&
         typeof child !== 'string' &&
         typeof child !== 'number',
     );
@@ -153,10 +151,10 @@ export const Slideshow = forwardRef<ElementRef<'ul'>, SlideshowProps>(
     );
 
     return (
-      <SlideshowContext.Provider value={state}>
+      <SlideshowContentContext.Provider value={state}>
         <ul
           className={cs(
-            'relative inset-0 -mx-6 h-[640px] overflow-hidden sm:-mx-10 md:h-[508px] lg:mx-0 lg:h-[600px]',
+            'relative inset-0 h-[640px] overflow-hidden md:h-[508px] lg:h-[600px]',
             className,
           )}
           onBlur={() => setHoverPaused(false)}
@@ -167,9 +165,9 @@ export const Slideshow = forwardRef<ElementRef<'ul'>, SlideshowProps>(
           {...props}
         >
           {state.items.map((item, index) => (
-            <SlideshowItemContext.Provider key={index} value={{ itemPosition: index }}>
+            <SlideshowSlideContext.Provider key={index} value={{ slidePosition: index }}>
               {item}
-            </SlideshowItemContext.Provider>
+            </SlideshowSlideContext.Provider>
           ))}
 
           {state.items.length > 1 && (
@@ -224,7 +222,24 @@ export const Slideshow = forwardRef<ElementRef<'ul'>, SlideshowProps>(
             </li>
           )}
         </ul>
-      </SlideshowContext.Provider>
+      </SlideshowContentContext.Provider>
+    );
+  },
+);
+
+export const Slideshow = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
+  ({ children, className, ...props }, ref) => {
+    return (
+      <div
+        className={cs(
+          'relative inset-0 -mx-6 h-[640px] overflow-hidden sm:-mx-10 md:h-[508px] lg:mx-0 lg:h-[600px]',
+          className,
+        )}
+        ref={ref}
+        {...props}
+      >
+        {children}
+      </div>
     );
   },
 );
