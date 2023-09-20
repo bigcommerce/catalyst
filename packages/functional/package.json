@@ -1,13 +1,8 @@
 {
   "name": "functional",
+  "description": "UI testing for catalyst",
   "version": "1.0.0",
-  "description": "",
   "private": true,
-  "main": "index.js",
-  "scripts": {},
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.38.0",
     "@types/node": "^18.17.12"
