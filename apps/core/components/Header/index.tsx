@@ -13,7 +13,7 @@ import {
 import { ChevronDown, Search, ShoppingCart } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
-import { Suspense } from 'react';
+import { PropsWithChildren, Suspense } from 'react';
 
 import client from '~/client';
 
@@ -21,17 +21,23 @@ import { StoreLogo } from '../StoreLogo';
 
 import { LinkNoCache } from './LinkNoCache';
 
+const CartLink = ({ children }: PropsWithChildren) => (
+  <LinkNoCache
+    className="focus:ring-primary-blue/20 relative flex justify-between p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4"
+    href="/cart"
+  >
+    {children}
+  </LinkNoCache>
+);
+
 const Cart = async () => {
   const cartId = cookies().get('cartId')?.value;
 
   if (!cartId) {
     return (
-      <LinkNoCache
-        className="focus:ring-primary-blue/20 flex justify-between p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4"
-        href="/cart"
-      >
+      <CartLink>
         <ShoppingCart aria-label="cart" />
-      </LinkNoCache>
+      </CartLink>
     );
   }
 
@@ -45,16 +51,13 @@ const Cart = async () => {
   const count = cart?.lineItems.totalQuantity;
 
   return (
-    <LinkNoCache
-      className="focus:ring-primary-blue/20 flex justify-between font-semibold hover:text-blue-primary focus:outline-none focus:ring-4"
-      href="/cart"
-    >
-      <p className="relative p-3" role="status">
+    <CartLink>
+      <p role="status">
         <span className="sr-only">Cart Items</span>
         <ShoppingCart aria-hidden="true" />
         {Boolean(count) && <Badge>{count}</Badge>}
       </p>
-    </LinkNoCache>
+    </CartLink>
   );
 };
 
