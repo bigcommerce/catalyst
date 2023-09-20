@@ -13,7 +13,7 @@ import {
 import { ChevronDown, Search, ShoppingCart } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
-import { Suspense } from 'react';
+import { PropsWithChildren, Suspense } from 'react';
 
 import client from '~/client';
 
@@ -21,11 +21,23 @@ import { StoreLogo } from '../StoreLogo';
 
 import { LinkNoCache } from './LinkNoCache';
 
+const CartLink = ({ children }: PropsWithChildren) => (
+  <NavigationMenuLink asChild>
+    <LinkNoCache className="relative" href="/cart">
+      {children}
+    </LinkNoCache>
+  </NavigationMenuLink>
+);
+
 const Cart = async () => {
   const cartId = cookies().get('cartId')?.value;
 
   if (!cartId) {
-    return <ShoppingCart aria-hidden="true" className="box-content p-3" />;
+    return (
+      <CartLink>
+        <ShoppingCart aria-label="cart" />
+      </CartLink>
+    );
   }
 
   const cart = await client.getCart(cartId, {
@@ -35,23 +47,16 @@ const Cart = async () => {
     },
   });
 
-  if (!cart) {
-    return <ShoppingCart aria-hidden="true" className="box-content p-3" />;
-  }
-
-  const count = cart.lineItems.totalQuantity;
+  const count = cart?.lineItems.totalQuantity;
 
   return (
-    <LinkNoCache
-      className="focus:ring-primary-blue/20 flex justify-between font-semibold hover:text-blue-primary focus:outline-none focus:ring-4"
-      href="/cart"
-    >
-      <p className="relative p-3" role="status">
+    <CartLink>
+      <p role="status">
         <span className="sr-only">Cart Items</span>
         <ShoppingCart aria-hidden="true" />
-        <Badge>{count}</Badge>
+        {Boolean(count) && <Badge>{count}</Badge>}
       </p>
-    </LinkNoCache>
+    </CartLink>
   );
 };
 

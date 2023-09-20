@@ -1,6 +1,5 @@
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 
 import client from '~/client';
 
@@ -26,8 +25,6 @@ export async function removeProduct(formData: FormData) {
   if (!updatedCart) {
     cookies().delete('cartId');
     revalidateTag('cart');
-
-    return redirect('/');
   }
 
   revalidateTag('cart');
