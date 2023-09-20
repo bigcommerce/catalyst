@@ -1,6 +1,15 @@
 import { Button } from '@bigcommerce/reactant/Button';
-import { Slideshow, SlideshowContent, SlideshowSlide } from '@bigcommerce/reactant/Slideshow';
+import {
+  Slideshow,
+  SlideshowContent,
+  SlideshowControls,
+  SlideshowNextIndicator,
+  SlideshowPagination,
+  SlideshowPreviousIndicator,
+  SlideshowSlide,
+} from '@bigcommerce/reactant/Slideshow';
 import type { Meta, StoryObj } from '@storybook/react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const meta: Meta<typeof Slideshow> = {
   component: Slideshow,
@@ -22,7 +31,7 @@ export const OneSlide: Story = {
               className="absolute -z-10"
               src="/slideshow-bg-01.jpg"
             />
-            <div className="flex flex-col gap-4 px-12 py-24">
+            <div className="flex flex-col gap-4 px-12 pb-48 pt-36">
               <h2 className="text-h1">25% Off Sale</h2>
               <p className="max-w-xl">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
@@ -50,7 +59,7 @@ export const TwoSlides: Story = {
               className="absolute -z-10"
               src="/slideshow-bg-01.jpg"
             />
-            <div className="flex flex-col gap-4 px-12 py-24">
+            <div className="flex flex-col gap-4 px-12 pb-48 pt-36">
               <h2 className="text-h1">25% Off Sale</h2>
               <p className="max-w-xl">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
@@ -63,7 +72,7 @@ export const TwoSlides: Story = {
           </div>
         </SlideshowSlide>
         <SlideshowSlide>
-          <div className="flex flex-col gap-4 bg-gray-100 px-12 py-24">
+          <div className="flex flex-col gap-4 bg-gray-100 px-12 pb-48 pt-36">
             <h2 className="text-h1">Great Deals</h2>
             <p className="max-w-xl">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
@@ -75,6 +84,11 @@ export const TwoSlides: Story = {
           </div>
         </SlideshowSlide>
       </SlideshowContent>
+      <SlideshowControls>
+        <SlideshowPreviousIndicator />
+        <SlideshowPagination />
+        <SlideshowNextIndicator />
+      </SlideshowControls>
     </Slideshow>
   ),
 };
@@ -90,7 +104,7 @@ export const ThreeSlides: Story = {
               className="absolute -z-10"
               src="/slideshow-bg-01.jpg"
             />
-            <div className="flex flex-col gap-4 px-12 py-24">
+            <div className="flex flex-col gap-4 px-12 pb-48 pt-36">
               <h2 className="text-h1">25% Off Sale</h2>
               <p className="max-w-xl">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
@@ -103,7 +117,7 @@ export const ThreeSlides: Story = {
           </div>
         </SlideshowSlide>
         <SlideshowSlide>
-          <div className="flex flex-col gap-4 bg-gray-100 px-12 py-24">
+          <div className="flex flex-col gap-4 bg-gray-100 px-12 pb-48 pt-36">
             <h2 className="text-h1">Great Deals</h2>
             <p className="max-w-xl">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
@@ -115,7 +129,7 @@ export const ThreeSlides: Story = {
           </div>
         </SlideshowSlide>
         <SlideshowSlide>
-          <div className="flex flex-col gap-4 bg-gray-100 px-12 py-24">
+          <div className="flex flex-col gap-4 bg-gray-100 px-12 pb-48 pt-36">
             <h2 className="text-h1">Low Prices</h2>
             <p className="max-w-xl">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
@@ -127,6 +141,11 @@ export const ThreeSlides: Story = {
           </div>
         </SlideshowSlide>
       </SlideshowContent>
+      <SlideshowControls>
+        <SlideshowPreviousIndicator />
+        <SlideshowPagination />
+        <SlideshowNextIndicator />
+      </SlideshowControls>
     </Slideshow>
   ),
 };
@@ -145,7 +164,7 @@ export const OneHundredSlides: Story = {
                 className="absolute -z-10"
                 src="/slideshow-bg-01.jpg"
               />
-              <div className="flex flex-col gap-4 px-12 py-24">
+              <div className="flex flex-col gap-4 px-12 pb-48 pt-36">
                 <h2 className="text-h1">{i + 1}% Off Sale</h2>
                 <p className="max-w-xl">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
@@ -159,6 +178,66 @@ export const OneHundredSlides: Story = {
           </SlideshowSlide>
         ))}
       </SlideshowContent>
+      <SlideshowControls>
+        <SlideshowPreviousIndicator />
+        <SlideshowPagination />
+        <SlideshowNextIndicator />
+      </SlideshowControls>
+    </Slideshow>
+  ),
+};
+
+export const CustomControls: Story = {
+  render: () => (
+    <Slideshow>
+      <SlideshowContent>
+        <SlideshowSlide>
+          <div className="relative">
+            <img
+              alt="A plant in a glass vase against a blank background."
+              className="absolute -z-10"
+              src="/slideshow-bg-01.jpg"
+            />
+            <div className="flex flex-col gap-4 px-12 pb-48 pt-36">
+              <h2 className="text-h1">25% Off Sale</h2>
+              <p className="max-w-xl">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
+              </p>
+              <Button asChild className="w-fit">
+                <a href="/#">Shop now</a>
+              </Button>
+            </div>
+          </div>
+        </SlideshowSlide>
+        <SlideshowSlide>
+          <div className="flex flex-col gap-4 bg-gray-100 px-12 pb-48 pt-36">
+            <h2 className="text-h1">Great Deals</h2>
+            <p className="max-w-xl">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
+            </p>
+            <Button asChild className="w-fit">
+              <a href="/#">Shop now</a>
+            </Button>
+          </div>
+        </SlideshowSlide>
+      </SlideshowContent>
+      <SlideshowControls>
+        <SlideshowPreviousIndicator>
+          <ChevronLeft />
+        </SlideshowPreviousIndicator>
+        <SlideshowPagination>
+          {({ activeIndex, totalSlides }) => (
+            <>
+              {activeIndex}/{totalSlides}
+            </>
+          )}
+        </SlideshowPagination>
+        <SlideshowNextIndicator>
+          <ChevronRight />
+        </SlideshowNextIndicator>
+      </SlideshowControls>
     </Slideshow>
   ),
 };
