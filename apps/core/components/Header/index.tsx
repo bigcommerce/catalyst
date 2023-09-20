@@ -22,12 +22,11 @@ import { StoreLogo } from '../StoreLogo';
 import { LinkNoCache } from './LinkNoCache';
 
 const CartLink = ({ children }: PropsWithChildren) => (
-  <LinkNoCache
-    className="focus:ring-primary-blue/20 relative flex justify-between p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4"
-    href="/cart"
-  >
-    {children}
-  </LinkNoCache>
+  <NavigationMenuLink asChild>
+    <LinkNoCache className="relative" href="/cart">
+      {children}
+    </LinkNoCache>
+  </NavigationMenuLink>
 );
 
 const Cart = async () => {
