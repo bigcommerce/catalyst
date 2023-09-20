@@ -11,6 +11,7 @@ import { getCheckoutUrl } from './management/getCheckoutUrl';
 import { addCartLineItem } from './mutations/addCartLineItem';
 import { createCart } from './mutations/createCart';
 import { deleteCartLineItem } from './mutations/deleteCartLineItem';
+import { login } from './mutations/login';
 import { updateCartLineItem } from './mutations/updateCartLineItem';
 // Queries
 import { getBestSellingProducts } from './queries/getBestSellingProducts';
@@ -124,6 +125,10 @@ class Client<CustomRequestInit extends FetcherRequestInit = FetcherRequestInit> 
 
   deleteCartLineItem(...args: PublicParams<typeof deleteCartLineItem<CustomRequestInit>>) {
     return deleteCartLineItem(this.fetch, ...args);
+  }
+
+  login(...args: PublicParams<typeof login<CustomRequestInit>>) {
+    return login(this.fetch, ...args);
   }
 
   updateCartLineItem(...args: PublicParams<typeof updateCartLineItem<CustomRequestInit>>) {
