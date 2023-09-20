@@ -25,7 +25,14 @@ const Cart = async () => {
   const cartId = cookies().get('cartId')?.value;
 
   if (!cartId) {
-    return <ShoppingCart aria-hidden="true" className="box-content p-3" />;
+    return (
+      <LinkNoCache
+        className="focus:ring-primary-blue/20 flex justify-between p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4"
+        href="/cart"
+      >
+        <ShoppingCart aria-label="cart" />
+      </LinkNoCache>
+    );
   }
 
   const cart = await client.getCart(cartId, {
@@ -35,11 +42,7 @@ const Cart = async () => {
     },
   });
 
-  if (!cart) {
-    return <ShoppingCart aria-hidden="true" className="box-content p-3" />;
-  }
-
-  const count = cart.lineItems.totalQuantity;
+  const count = cart?.lineItems.totalQuantity;
 
   return (
     <LinkNoCache
@@ -49,7 +52,7 @@ const Cart = async () => {
       <p className="relative p-3" role="status">
         <span className="sr-only">Cart Items</span>
         <ShoppingCart aria-hidden="true" />
-        <Badge>{count}</Badge>
+        {Boolean(count) && <Badge>{count}</Badge>}
       </p>
     </LinkNoCache>
   );

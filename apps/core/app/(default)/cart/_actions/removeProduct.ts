@@ -26,8 +26,6 @@ export async function removeProduct(formData: FormData) {
   if (!updatedCart) {
     cookies().delete('cartId');
     revalidateTag('cart');
-
-    return redirect('/');
   }
 
   revalidateTag('cart');

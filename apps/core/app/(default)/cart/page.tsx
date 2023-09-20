@@ -8,6 +8,18 @@ import client from '~/client';
 
 import { removeProduct } from './_actions/removeProduct';
 
+const EmptyCart = () => (
+  <div className="flex h-full flex-col">
+    <h2 className="pb-6 text-h2 lg:pb-10">Your cart</h2>
+    <div className="flex grow flex-col items-center justify-center gap-6 border-t border-t-gray-200 py-20">
+      <h5 className="text-h5">Your cart is empty</h5>
+      <p className="text-center">
+        Looks like you have not addded anything to your cart. Go ahead & explore top categories.
+      </p>
+    </div>
+  </div>
+);
+
 const CheckoutButton = async ({ cartId }: { cartId: string }) => {
   const checkoutUrl = await client.getCheckoutUrl(cartId);
 
@@ -22,7 +34,7 @@ export default async function CartPage() {
   const cartId = cookies().get('cartId')?.value;
 
   if (!cartId) {
-    return <div>Your cart is empty</div>;
+    return <EmptyCart />;
   }
 
   const cart = await client.getCart(cartId, {
@@ -33,7 +45,7 @@ export default async function CartPage() {
   });
 
   if (!cart) {
-    return <div>Your cart is empty</div>;
+    return <EmptyCart />;
   }
 
   const currencyFormatter = new Intl.NumberFormat('en-US', {
