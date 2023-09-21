@@ -30,7 +30,7 @@ nvm list
 ```
 
 ```shell
-nvm use 18
+nvm install 18 && nvm use 18
 ```
 
 ```shell
