@@ -19,6 +19,28 @@ The Catalyst monorepo contains the following:
 * [Corepack (nodejs.org)](https://nodejs.org/api/corepack.html)
 * The [pnpm (pnpm.io)](https://pnpm.io/) package manager
 
+You may wish to use Node Version Manager, or [nvm (GitHub)](https://github.com/nvm-sh/nvm#installing-and-updating), to facilitate moving back and forth between different versions of node. You can install nvm using either the instructions at the preceding link or your package manager of choice.
+
+Ensure that corepack and pnpm are installed for the version of node/npm you intend to use.
+
+The following commands may not all be applicable to your configuration, but they may be useful and are listed for your convenience. To copy a command to your clipboard, hover over the command to see the **copy** icon in the upper right of the code block.
+
+```shell
+nvm list
+```
+
+```shell
+nvm use 18
+```
+
+```shell
+node -v && npm list -g --depth=0
+```
+
+```shell
+npm install -g pnpm && npm install -g corepack
+```
+
 ## Getting Started
 
 1. Install project dependencies:
