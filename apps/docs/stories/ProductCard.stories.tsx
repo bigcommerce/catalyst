@@ -27,11 +27,15 @@ export const BasicExample: Story = {
       <ProductCardImage>
         <div className="h-[180px] w-full bg-gray-200" />
         <ProductCardActions>
-          <ProductCardActionButton aria-label="Add to Cart">
-            <ShoppingCart aria-hidden="true" />
+          <ProductCardActionButton>
+            <ShoppingCart>
+              <title>Add to Cart</title>
+            </ShoppingCart>
           </ProductCardActionButton>
-          <ProductCardActionButton aria-label="Add to Compare">
-            <Scale aria-hidden="true" />
+          <ProductCardActionButton>
+            <Scale>
+              <title>Add to Compare</title>
+            </Scale>
           </ProductCardActionButton>
         </ProductCardActions>
       </ProductCardImage>
