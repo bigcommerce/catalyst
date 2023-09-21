@@ -23,7 +23,7 @@ You may wish to use Node Version Manager, or [nvm (GitHub)](https://github.com/n
 
 Ensure that corepack and pnpm are installed for the version of node/npm you intend to use.
 
-The following commands may not all be applicable to your configuration, but they may be useful and are listed for your convenience. To copy a command to your clipboard, hover over the command to see the **copy** icon in the upper right of the code block.
+The following commands may not all be applicable to your configuration, but they may be useful and are listed for your convenience. To copy a command to your clipboard, hover over the command's code block to see the **copy** icon in the upper right corner.
 
 ```shell
 nvm list
