@@ -12,11 +12,13 @@ export const ProductCard = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'
   },
 );
 
+ProductCard.displayName = 'ProductCard';
+
 export const ProductCardImage = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     return (
       <div
-        className={cs('flex justify-center pb-3 group-hover:opacity-75', className)}
+        className={cs('relative flex justify-center pb-3 group-hover:opacity-75', className)}
         ref={ref}
         {...props}
       >
@@ -25,6 +27,8 @@ export const ProductCardImage = forwardRef<ElementRef<'div'>, ComponentPropsWith
     );
   },
 );
+
+ProductCardImage.displayName = 'ProductCardImage';
 
 export const ProductCardBadge = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'span'>>(
   ({ children, className, ...props }, ref) => {
@@ -43,6 +47,8 @@ export const ProductCardBadge = forwardRef<ElementRef<'span'>, ComponentPropsWit
   },
 );
 
+ProductCardBadge.displayName = 'ProductCardBadge';
+
 export const ProductCardInfo = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     return (
@@ -52,6 +58,8 @@ export const ProductCardInfo = forwardRef<ElementRef<'div'>, ComponentPropsWithR
     );
   },
 );
+
+ProductCardInfo.displayName = 'ProductCardInfo';
 
 export const ProductCardInfoBrandName = forwardRef<ElementRef<'p'>, ComponentPropsWithRef<'p'>>(
   ({ children, className, ...props }, ref) => {
@@ -63,6 +71,8 @@ export const ProductCardInfoBrandName = forwardRef<ElementRef<'p'>, ComponentPro
   },
 );
 
+ProductCardInfoBrandName.displayName = 'ProductCardInfoBrandName';
+
 export const ProductCardInfoProductName = forwardRef<ElementRef<'h3'>, ComponentPropsWithRef<'h3'>>(
   ({ children, className, ...props }, ref) => {
     return (
@@ -72,6 +82,7 @@ export const ProductCardInfoProductName = forwardRef<ElementRef<'h3'>, Component
     );
   },
 );
+ProductCardInfoProductName.displayName = 'ProductCardInfoProductName';
 
 export const ProductCardInfoPrice = forwardRef<ElementRef<'h3'>, ComponentPropsWithRef<'h3'>>(
   ({ children, className, ...props }, ref) => {
@@ -82,3 +93,38 @@ export const ProductCardInfoPrice = forwardRef<ElementRef<'h3'>, ComponentPropsW
     );
   },
 );
+
+ProductCardInfoPrice.displayName = 'ProductCardInfoPrice';
+
+export const ProductCardActions = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
+  ({ children, className, ...props }, ref) => (
+    <div
+      className={cs('absolute bottom-8 hidden gap-6 group-hover:flex', className)}
+      ref={ref}
+      {...props}
+    >
+      {children}
+    </div>
+  ),
+);
+
+ProductCardActions.displayName = 'ProductCardActions';
+
+export const ProductCardActionButton = forwardRef<
+  ElementRef<'button'>,
+  ComponentPropsWithRef<'button'>
+>(({ children, className, ...props }, ref) => (
+  <button
+    className={cs(
+      'focus:ring-primary-blue/20 rounded-full bg-white p-3 text-blue-primary focus:outline-none focus:ring-4',
+      className,
+    )}
+    ref={ref}
+    type="button"
+    {...props}
+  >
+    {children}
+  </button>
+));
+
+ProductCardActionButton.displayName = 'ProductCardActionButton';
