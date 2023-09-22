@@ -44,7 +44,7 @@ npm install -g pnpm && npm install -g corepack
 
 ## Getting Started
 
-1. Fork the project repository, then clone the project to your local environment:
+1. [Fork the project repository (GitHub)](https://github.com/bigcommerce/catalyst), then clone the project to your local environment:
 
 ```shell
 git clone git@github.com:{yourGitHubUsername}/catalyst.git && cd catalyst
