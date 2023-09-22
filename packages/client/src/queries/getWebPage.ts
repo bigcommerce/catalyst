@@ -76,7 +76,13 @@ export const getWebPage = async <T>(
     return undefined;
   }
 
-  return {
-    ...webpage,
-  };
+  switch (webpage.__typename) {
+    case 'ContactPage':
+    case 'NormalPage':
+    case 'RawHtmlPage':
+      return webpage;
+
+    default:
+      return undefined;
+  }
 };
