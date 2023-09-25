@@ -29,10 +29,10 @@ This project uses [corepack (nodejs.org)](https://nodejs.org/api/corepack.html) 
 git clone git@github.com:{yourGitHubUsername}/catalyst.git && cd catalyst
 ```
 
-2. To help stay up to date with the latest changes, add the BigCommerce repo to your project as an additional remote repository:
+2. To help stay up to date with the latest changes, add the BigCommerce repo to your project as the upstream repository:
 
 ```shell
-git remote add bigcommerce git@github.com:bigcommerce/catalyst.git
+git remote add upstream git@github.com:bigcommerce/catalyst.git
 ```
 
 3. Use corepack to enable pnpm, then use pnpm to install project dependencies:
