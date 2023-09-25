@@ -16,7 +16,11 @@ import { experimental_useFormStatus as useFormStatus } from 'react-dom';
 
 import { submitLoginForm } from './_actions/submitLoginForm';
 
-export const Login = ({ onFormSubmit }: { onFormSubmit: Dispatch<SetStateAction<boolean>> }) => {
+export const Login = ({
+  onFormValidate,
+}: {
+  onFormValidate: Dispatch<SetStateAction<boolean>>;
+}) => {
   const { pending } = useFormStatus();
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
@@ -24,7 +28,7 @@ export const Login = ({ onFormSubmit }: { onFormSubmit: Dispatch<SetStateAction<
     const { status } = await submitLoginForm(formData);
 
     if (status === 'failed') {
-      onFormSubmit(true);
+      onFormValidate(true);
     }
   };
 
@@ -44,10 +48,11 @@ export const Login = ({ onFormSubmit }: { onFormSubmit: Dispatch<SetStateAction<
       className=" mb-14 inline-flex w-full flex-col md:gap-y-3 md:p-8 lg:mb-0 lg:me-8 lg:w-max lg:px-0"
     >
       <Field className={cs('relative space-y-2 pb-7')} name="email">
-        <FieldLabel>Email</FieldLabel>
+        <FieldLabel htmlFor="email">Email</FieldLabel>
         <FieldControl asChild>
           <Input
             autoComplete="email"
+            id="email"
             onChange={handleInputValidation}
             onInvalid={handleInputValidation}
             required
@@ -63,9 +68,10 @@ export const Login = ({ onFormSubmit }: { onFormSubmit: Dispatch<SetStateAction<
         </FieldMessage>
       </Field>
       <Field className={cs('relative space-y-2 pb-7')} name="password">
-        <FieldLabel>Password</FieldLabel>
+        <FieldLabel htmlFor="password">Password</FieldLabel>
         <FieldControl asChild>
           <Input
+            id="password"
             onChange={handleInputValidation}
             onInvalid={handleInputValidation}
             required
