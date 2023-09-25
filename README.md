@@ -16,31 +16,10 @@ The Catalyst monorepo contains the following:
 ## Requirements
 
 * Node.js 18+
-* [Corepack (nodejs.org)](https://nodejs.org/api/corepack.html)
-* The [pnpm (pnpm.io)](https://pnpm.io/) package manager
-* Read access to this repository
 
 You may wish to use Node Version Manager, or [nvm (GitHub)](https://github.com/nvm-sh/nvm#installing-and-updating), to facilitate moving back and forth between different versions of node. You can install nvm using either the instructions at the preceding link or your package manager of choice.
 
-Ensure that corepack and pnpm are installed for the version of node/npm you intend to use.
-
-The following commands may not all be applicable to your configuration, but they may be useful and are listed for your convenience. To copy a command to your clipboard, hover over the command's code block to see the **copy** icon in the upper right corner.
-
-```shell
-nvm list
-```
-
-```shell
-nvm install 18 && nvm use 18
-```
-
-```shell
-node -v && npm list -g --depth=0
-```
-
-```shell
-npm install -g pnpm && npm install -g corepack
-```
+This project uses [corepack (nodejs.org)](https://nodejs.org/api/corepack.html) to install and enable the [pnpm (pnpm.io)](https://pnpm.io/) package manager. Corepack comes bundled with Node 18, so you do not need to install either of these packages on their own.
 
 ## Getting Started
 
@@ -56,10 +35,13 @@ git clone git@github.com:{yourGitHubUsername}/catalyst.git && cd catalyst
 git remote add bigcommerce git@github.com:bigcommerce/catalyst.git
 ```
 
-3. Install project dependencies:
+3. Use corepack to enable pnpm, then use pnpm to install project dependencies:
 
 ```shell
 corepack enable pnpm
+```
+
+```shell
 pnpm install
 ```
 
