@@ -17,13 +17,13 @@ The Catalyst monorepo contains the following:
 
 * Node.js 18+
 
-You may wish to use Node Version Manager, or [nvm (GitHub)](https://github.com/nvm-sh/nvm#installing-and-updating), to facilitate moving back and forth between different versions of node. You can install nvm using either the instructions at the preceding link or your package manager of choice.
+You may wish to use Node Version Manager, or [nvm (GitHub)](https://github.com/nvm-sh/nvm#installing-and-updating), to facilitate moving back and forth between different versions of node. You can install nvm using either the instructions at the preceding link or your operating system package manager of choice.
 
 This project uses [corepack (nodejs.org)](https://nodejs.org/api/corepack.html) to install and enable the [pnpm (pnpm.io)](https://pnpm.io/) package manager. Corepack comes bundled with Node 18, so you do not need to install either of these packages on their own.
 
 ## Getting Started
 
-1. [Fork the project repository (GitHub)](https://github.com/bigcommerce/catalyst), then clone the project to your local environment:
+1. [Fork the project repository (GitHub)](https://docs.github.com/en/get-started/quickstart/fork-a-repo), then clone the project to your local environment:
 
 ```shell
 git clone git@github.com:{yourGitHubUsername}/catalyst.git && cd catalyst
