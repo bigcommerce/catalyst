@@ -15,20 +15,46 @@ The Catalyst monorepo contains the following:
 
 ## Requirements
 
-* Node.js 18+
-* [Corepack (nodejs.org)](https://nodejs.org/api/corepack.html)
-* The [pnpm (pnpm.io)](https://pnpm.io/) package manager
+* [Node.js 18+](#node.js)
+* [Corepack-managed pnpm](#corepack-and-pnpm)
+
+### Node.js
+
+Use Node.js 18+.
+
+You may wish to use Node Version Manager, or [nvm (GitHub)](https://github.com/nvm-sh/nvm#installing-and-updating), to facilitate moving back and forth between different versions of node. You can install nvm using either the instructions at the preceding link or your operating system package manager of choice.
+
+### Corepack and pnpm
+
+This project uses [corepack (nodejs.org)](https://nodejs.org/api/corepack.html) to install and enable the [pnpm (pnpm.io)](https://pnpm.io/) package manager. Corepack comes bundled with Node 18, so you do not need to install either of these packages on their own.
+
+Catalyst is configured such that pnpm replaces npm. When you enhance your project with additional packages or scripts, be sure to use the `pnpm` command. For more information, see the [pnpm documentation](https://pnpm.io/cli/add).
 
 ## Getting Started
 
-1. Install project dependencies:
+1. [Fork the project repository (GitHub)](https://docs.github.com/en/get-started/quickstart/fork-a-repo), then clone the project to your local environment:
+
+```shell
+git clone git@github.com:{yourGitHubUsername}/catalyst.git && cd catalyst
+```
+
+2. To help stay up to date with the latest changes, add the BigCommerce repo to your project as the upstream repository:
+
+```shell
+git remote add upstream git@github.com:bigcommerce/catalyst.git
+```
+
+3. Use corepack to enable pnpm, then use pnpm to install project dependencies:
 
 ```shell
 corepack enable pnpm
+```
+
+```shell
 pnpm install
 ```
 
-2. **Set up environment variables.**
+4. **Set up environment variables.**
 
 ```shell
 cp .env.example .env.local
@@ -44,13 +70,13 @@ Update `.env.local` with the following values:
 | `BIGCOMMERCE_CDN_HOSTNAME` | Can remain unchanged from its default value. |
 | `MAKESWIFT_SITE_API_KEY` | Only required for the experimental `with-makeswift` version of Catalyst. When working with the core product, comment out this variable. For more about setting this variable, consult the [with-makeswift README](https://github.com/bigcommerce/catalyst/blob/main/apps/with-makeswift/README.md#create-a-makeswift-api-key). |
 
-3. Optionally, to optimize your workflow, use the following command to configure VSCode with the project-specific settings the Catalyst team has created:
+5. Optionally, to optimize your workflow, use the following command to configure VSCode with the project-specific settings the Catalyst team has created:
 
 ```shell
 cp .vscode/settings.example.json .vscode/settings.json
 ```
 
-4. Start the Catalyst development server!
+6. Start the Catalyst development server!
 
 ```shell
 pnpm run dev
