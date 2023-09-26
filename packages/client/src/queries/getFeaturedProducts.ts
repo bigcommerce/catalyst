@@ -40,6 +40,11 @@ export const getFeaturedProducts = async <T>(
                 },
               },
             },
+            reviewSummary: {
+              summationOfRatings: true,
+              numberOfReviews: true,
+              averageRating: true,
+            },
           },
         },
       },

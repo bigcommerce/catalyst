@@ -52,7 +52,7 @@ ProductCardBadge.displayName = 'ProductCardBadge';
 export const ProductCardInfo = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     return (
-      <div className={cs('flex flex-1 flex-col gap-1 lg:gap-2', className)} ref={ref} {...props}>
+      <div className={cs('flex flex-1 flex-col gap-1', className)} ref={ref} {...props}>
         {children}
       </div>
     );
@@ -87,7 +87,7 @@ ProductCardInfoProductName.displayName = 'ProductCardInfoProductName';
 export const ProductCardInfoPrice = forwardRef<ElementRef<'h3'>, ComponentPropsWithRef<'h3'>>(
   ({ children, className, ...props }, ref) => {
     return (
-      <p className={cs('text-base', className)} ref={ref} {...props}>
+      <p className={cs('pt-2 text-base', className)} ref={ref} {...props}>
         {children}
       </p>
     );

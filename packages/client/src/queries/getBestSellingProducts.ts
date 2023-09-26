@@ -40,6 +40,11 @@ export const getBestSellingProducts = async <T>(
                 },
               },
             },
+            reviewSummary: {
+              summationOfRatings: true,
+              numberOfReviews: true,
+              averageRating: true,
+            },
           },
         },
       },
