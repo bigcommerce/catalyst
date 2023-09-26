@@ -15,11 +15,20 @@ The Catalyst monorepo contains the following:
 
 ## Requirements
 
-* Node.js 18+
+* [Node.js 18+](#node.js)
+* [Corepack-managed pnpm](#corepack-and-pnpm)
+
+### Node.js
+
+Use Node.js 18+.
 
 You may wish to use Node Version Manager, or [nvm (GitHub)](https://github.com/nvm-sh/nvm#installing-and-updating), to facilitate moving back and forth between different versions of node. You can install nvm using either the instructions at the preceding link or your operating system package manager of choice.
 
+### Corepack and pnpm
+
 This project uses [corepack (nodejs.org)](https://nodejs.org/api/corepack.html) to install and enable the [pnpm (pnpm.io)](https://pnpm.io/) package manager. Corepack comes bundled with Node 18, so you do not need to install either of these packages on their own.
+
+Catalyst is configured such that pnpm replaces npm. When you enhance your project with additional packages or scripts, be sure to use the `pnpm` command. For more information, see the [pnpm documentation](https://pnpm.io/cli/add).
 
 ## Getting Started
 
