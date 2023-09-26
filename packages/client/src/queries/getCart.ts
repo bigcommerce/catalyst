@@ -23,6 +23,8 @@ export async function getCart<T>(
             imageUrl: true,
             entityId: true,
             quantity: true,
+            productEntityId: true,
+            variantEntityId: true,
             extendedListPrice: {
               currencyCode: true,
               value: true,
