@@ -8,6 +8,8 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useImperativeHandle,
+  useRef,
   useState,
 } from 'react';
 
@@ -36,17 +38,28 @@ export const Carousel = forwardRef<ElementRef<'section'>, ComponentPropsWithRef<
 
 Carousel.displayName = 'Carousel';
 
-export const CarouselContent = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'ul'>>(
+type ForwardedRef = ElementRef<'div'> | null;
+
+export const CarouselContent = forwardRef<ForwardedRef, ComponentPropsWithRef<'ul'>>(
   ({ children, className, ...props }, ref) => {
+    const mutableRef = useRef<ForwardedRef>(null);
     const [emblaRef] = useContext(CarouselContext);
 
+    useImperativeHandle<ForwardedRef, ForwardedRef>(ref, () => mutableRef.current, []);
+
+    const refCallback = useCallback(
+      (current: ForwardedRef) => {
+        emblaRef(current);
+        mutableRef.current = current;
+      },
+      [emblaRef],
+    );
+
     return (
-      <div ref={ref}>
-        <div ref={emblaRef}>
-          <ul aria-live="polite" className={cs('mb-16 mt-8 flex lg:mt-10', className)} {...props}>
-            {children}
-          </ul>
-        </div>
+      <div ref={refCallback}>
+        <ul aria-live="polite" className={cs('mb-16 mt-8 flex lg:mt-10', className)} {...props}>
+          {children}
+        </ul>
       </div>
     );
   },

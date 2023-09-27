@@ -48,6 +48,7 @@ export const SlideshowContent = forwardRef<ForwardedRef, ComponentPropsWithRef<'
     const refCallback = useCallback(
       (current: HTMLDivElement) => {
         emblaRef(current);
+        mutableRef.current = current;
       },
       [emblaRef],
     );
