@@ -35,7 +35,11 @@ interface ProductCardProps {
   imagePriority?: boolean;
 }
 
-export const ProductCard = ({ product, imageSize, imagePriority = false }: ProductCardProps) => {
+export const ProductCard = ({
+  product,
+  imageSize = 'square',
+  imagePriority = false,
+}: ProductCardProps) => {
   const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: product.prices?.price?.currencyCode,
@@ -44,18 +48,25 @@ export const ProductCard = ({ product, imageSize, imagePriority = false }: Produ
   return (
     <ReactantProductCard key={product.entityId}>
       <ProductCardImage>
-        <Image
-          alt={product.defaultImage?.altText ?? product.name ?? ''}
-          className={cs('object-contain object-center', {
+        <div
+          className={cs('relative flex-auto', {
             'aspect-square': imageSize === 'square',
             'aspect-[4/5]': imageSize === 'tall',
             'aspect-[7/5]': imageSize === 'wide',
           })}
-          height={300}
-          priority={imagePriority}
-          src={product.defaultImage?.url ?? ''}
-          width={300}
-        />
+        >
+          {product.defaultImage ? (
+            <Image
+              alt={product.defaultImage.altText ?? product.name ?? ''}
+              className="object-contain"
+              fill
+              priority={imagePriority}
+              src={product.defaultImage.url ?? ''}
+            />
+          ) : (
+            <div className="h-full w-full bg-gray-200" />
+          )}
+        </div>
       </ProductCardImage>
       <ProductCardInfo>
         {product.brand && <ProductCardInfoBrandName>{product.brand.name}</ProductCardInfoBrandName>}

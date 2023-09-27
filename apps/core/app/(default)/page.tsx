@@ -19,8 +19,8 @@ const ProductListGrid = ({ children }: { children: ReactNode }) => (
 
 export default async function Home() {
   const [bestSellingProducts, featuredProducts] = await Promise.all([
-    client.getBestSellingProducts(),
-    client.getFeaturedProducts(),
+    client.getBestSellingProducts({ imageWidth: 500, imageHeight: 500 }),
+    client.getFeaturedProducts({ imageWidth: 500, imageHeight: 500 }),
   ]);
 
   return (
@@ -40,7 +40,7 @@ export default async function Home() {
           <ProductListName>Featured Products</ProductListName>
           <ProductListGrid>
             {featuredProducts.map((product) => (
-              <ProductCard key={product.entityId} product={product} />
+              <ProductCard imageSize="tall" key={product.entityId} product={product} />
             ))}
           </ProductListGrid>
         </ProductList>
