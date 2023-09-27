@@ -1,8 +1,9 @@
 import useEmblaCarousel, { UseEmblaCarouselType } from 'embla-carousel-react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Pause, Play } from 'lucide-react';
 import {
   ComponentPropsWithRef,
   createContext,
+  DispatchWithoutAction,
   ElementRef,
   forwardRef,
   MouseEvent,
@@ -10,6 +11,7 @@ import {
   useContext,
   useEffect,
   useImperativeHandle,
+  useReducer,
   useRef,
   useState,
 } from 'react';
@@ -17,22 +19,48 @@ import {
 import { cs } from '../../utils/cs';
 
 const SlideshowContext = createContext<UseEmblaCarouselType>([() => null, undefined]);
+const AutoplayContext = createContext<[boolean, DispatchWithoutAction]>([false, () => null]);
 
-export const Slideshow = forwardRef<ElementRef<'section'>, ComponentPropsWithRef<'section'>>(
-  ({ children, className, ...props }, ref) => {
+interface SlideshowProps extends ComponentPropsWithRef<'section'> {
+  interval?: number;
+}
+
+export const Slideshow = forwardRef<ElementRef<'section'>, SlideshowProps>(
+  ({ children, className, interval = 15_000, ...props }, ref) => {
     const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+
+    const [isHoverPaused, setIsHoverPaused] = useState(false);
+    const [isPaused, togglePaused] = useReducer((val: boolean) => !val, false);
+
+    useEffect(() => {
+      const autoplay = setInterval(() => {
+        if (isPaused) return;
+        if (isHoverPaused) return;
+        if (!emblaApi) return;
+
+        emblaApi.scrollNext();
+      }, interval);
+
+      return () => clearInterval(autoplay);
+    }, [emblaApi, isHoverPaused, interval, isPaused]);
 
     return (
       <SlideshowContext.Provider value={[emblaRef, emblaApi]}>
-        <section
-          aria-label="Interactive slide show"
-          aria-roledescription="carousel"
-          className={cs('relative overflow-hidden', className)}
-          ref={ref}
-          {...props}
-        >
-          {children}
-        </section>
+        <AutoplayContext.Provider value={[isPaused, togglePaused]}>
+          <section
+            aria-label="Interactive slide show"
+            aria-roledescription="carousel"
+            className={cs('relative overflow-hidden', className)}
+            onBlur={() => setIsHoverPaused(false)}
+            onFocus={() => setIsHoverPaused(true)}
+            onMouseEnter={() => setIsHoverPaused(true)}
+            onMouseLeave={() => setIsHoverPaused(false)}
+            ref={ref}
+            {...props}
+          >
+            {children}
+          </section>
+        </AutoplayContext.Provider>
       </SlideshowContext.Provider>
     );
   },
@@ -47,6 +75,8 @@ export const SlideshowContent = forwardRef<ForwardedRef, ComponentPropsWithRef<'
     const mutableRef = useRef<ForwardedRef>(null);
     const [emblaRef] = useContext(SlideshowContext);
 
+    const [isPaused] = useContext(AutoplayContext);
+
     useImperativeHandle<ForwardedRef, ForwardedRef>(ref, () => mutableRef.current, []);
 
     const refCallback = useCallback(
@@ -59,7 +89,7 @@ export const SlideshowContent = forwardRef<ForwardedRef, ComponentPropsWithRef<'
 
     return (
       <div ref={refCallback}>
-        <ul aria-live="off" className={cs('flex', className)} {...props}>
+        <ul aria-live={isPaused ? 'polite' : 'off'} className={cs('flex', className)} {...props}>
           {children}
         </ul>
       </div>
@@ -106,6 +136,48 @@ export const SlideshowControls = forwardRef<ElementRef<'div'>, ComponentPropsWit
 );
 
 SlideshowControls.displayName = 'SlideshowControls';
+
+interface SlideshowAutoplayControlProps extends Omit<ComponentPropsWithRef<'button'>, 'children'> {
+  children?: (({ isPaused }: { isPaused: boolean }) => React.ReactNode) | React.ReactNode;
+}
+
+export const SlideshowAutoplayControl = forwardRef<
+  ElementRef<'button'>,
+  SlideshowAutoplayControlProps
+>(({ children, className, onClick, ...props }, ref) => {
+  const [isPaused, togglePaused] = useContext(AutoplayContext);
+
+  const renderChildrenWithFallback = () => {
+    if (typeof children === 'function') {
+      return children({ isPaused });
+    }
+
+    return isPaused ? <Play /> : <Pause />;
+  };
+
+  return (
+    <button
+      aria-label={isPaused ? 'Play slideshow' : 'Pause slideshow'}
+      className={cs(
+        'focus:ring-primary-blue/20 inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4',
+        className,
+      )}
+      onClick={(e) => {
+        togglePaused();
+
+        if (onClick) {
+          onClick(e);
+        }
+      }}
+      ref={ref}
+      {...props}
+    >
+      {renderChildrenWithFallback()}
+    </button>
+  );
+});
+
+SlideshowAutoplayControl.displayName = 'SlideshowAutoplayControl';
 
 export const SlideshowNextIndicator = forwardRef<
   ElementRef<'button'>,
@@ -184,6 +256,18 @@ export const SlideshowPagination = forwardRef<ElementRef<'span'>, SlideshowPagin
     const [activeIndex, setActiveIndex] = useState(0);
     const [totalSlides, setTotalSlides] = useState(0);
 
+    const renderChildrenWithFallback = () => {
+      if (typeof children === 'function') {
+        return children({ activeIndex, totalSlides });
+      }
+
+      return (
+        <>
+          {activeIndex} of {totalSlides}
+        </>
+      );
+    };
+
     useEffect(() => {
       if (!emblaApi) return;
 
@@ -205,17 +289,9 @@ export const SlideshowPagination = forwardRef<ElementRef<'span'>, SlideshowPagin
       emblaApi.on('select', onSelect);
     }, [emblaApi]);
 
-    if (typeof children === 'function') {
-      return (
-        <span className={cs('font-semibold', className)} ref={ref} {...props}>
-          {children({ activeIndex, totalSlides })}
-        </span>
-      );
-    }
-
     return (
       <span className={cs('font-semibold', className)} ref={ref} {...props}>
-        {activeIndex} of {totalSlides}
+        {renderChildrenWithFallback()}
       </span>
     );
   },

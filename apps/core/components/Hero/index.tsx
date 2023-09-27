@@ -1,6 +1,7 @@
 import { Button } from '@bigcommerce/reactant/Button';
 import {
   Slideshow,
+  SlideshowAutoplayControl,
   SlideshowContent,
   SlideshowControls,
   SlideshowNextIndicator,
@@ -60,6 +61,7 @@ export const Hero = () => (
       </SlideshowSlide>
     </SlideshowContent>
     <SlideshowControls>
+      <SlideshowAutoplayControl />
       <SlideshowPreviousIndicator />
       <SlideshowPagination />
       <SlideshowNextIndicator />
