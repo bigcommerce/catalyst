@@ -160,6 +160,11 @@ async function internalGetProduct<T>(
         minPurchaseQuantity: true,
         maxPurchaseQuantity: true,
         condition: true,
+        reviewSummary: {
+          summationOfRatings: true,
+          numberOfReviews: true,
+          averageRating: true,
+        },
       },
     },
   } satisfies QueryGenqlSelection;

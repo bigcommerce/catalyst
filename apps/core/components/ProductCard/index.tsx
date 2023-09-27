@@ -1,3 +1,4 @@
+import { Product } from '@bigcommerce/catalyst-client';
 import { cs } from '@bigcommerce/reactant/cs';
 import {
   ProductCardImage,
@@ -7,27 +8,11 @@ import {
   ProductCardInfoProductName,
   ProductCard as ReactantProductCard,
 } from '@bigcommerce/reactant/ProductCard';
+import { Rating } from '@bigcommerce/reactant/Rating';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useId } from 'react';
 import { PartialDeep } from 'type-fest';
-
-interface Product {
-  entityId: number;
-  name: string;
-  defaultImage?: {
-    altText?: string;
-    url: string;
-  } | null;
-  brand?: {
-    name: string;
-  } | null;
-  prices?: {
-    price?: {
-      value?: number;
-      currencyCode?: string;
-    };
-  } | null;
-}
 
 interface ProductCardProps {
   product: PartialDeep<Product>;
@@ -44,6 +29,12 @@ export const ProductCard = ({
     style: 'currency',
     currency: product.prices?.price?.currencyCode,
   });
+
+  const summaryId = useId();
+
+  if (!product.entityId) {
+    return null;
+  }
 
   return (
     <ReactantProductCard key={product.entityId}>
@@ -71,11 +62,36 @@ export const ProductCard = ({
       <ProductCardInfo>
         {product.brand && <ProductCardInfoBrandName>{product.brand.name}</ProductCardInfoBrandName>}
         <ProductCardInfoProductName>
-          <Link href={`/product/${product.entityId ?? ''}`}>
+          <Link href={`/product/${product.entityId}`}>
             <span aria-hidden="true" className="absolute inset-0" />
             {product.name}
           </Link>
         </ProductCardInfoProductName>
+        {product.reviewSummary && (
+          <div className="flex items-center gap-3">
+            <p
+              aria-describedby={summaryId}
+              className={cs(
+                'flex flex-nowrap text-blue-primary',
+                product.reviewSummary.numberOfReviews === 0 && 'text-gray-400',
+              )}
+            >
+              <Rating size={13} value={product.reviewSummary.averageRating || 0} />
+            </p>
+
+            <div className="text-sm text-gray-500" id={summaryId}>
+              {product.reviewSummary.averageRating !== 0 && (
+                <>
+                  <span className="sr-only">Rating:</span>
+                  {product.reviewSummary.averageRating}
+                  <span className="sr-only">out of 5 stars.</span>{' '}
+                </>
+              )}
+              <span className="sr-only">Number of reviews:</span>(
+              {product.reviewSummary.numberOfReviews})
+            </div>
+          </div>
+        )}
         {product.prices?.price?.value !== undefined && (
           <ProductCardInfoPrice>
             {currencyFormatter.format(product.prices.price.value)}

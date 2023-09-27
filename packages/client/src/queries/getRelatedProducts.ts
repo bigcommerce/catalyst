@@ -39,6 +39,11 @@ async function internalGetProduct<T>(
                   currencyCode: true,
                 },
               },
+              reviewSummary: {
+                summationOfRatings: true,
+                numberOfReviews: true,
+                averageRating: true,
+              },
             },
           },
         },
