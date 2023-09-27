@@ -14,6 +14,8 @@ import Link from 'next/link';
 import { useId } from 'react';
 import { PartialDeep } from 'type-fest';
 
+import { Action } from './Action';
+
 interface ProductCardProps {
   product: PartialDeep<Product>;
   imageSize?: 'tall' | 'wide' | 'square';
@@ -62,8 +64,11 @@ export const ProductCard = ({
       <ProductCardInfo>
         {product.brand && <ProductCardInfoBrandName>{product.brand.name}</ProductCardInfoBrandName>}
         <ProductCardInfoProductName>
-          <Link href={`/product/${product.entityId}`}>
-            <span aria-hidden="true" className="absolute inset-0" />
+          <Link
+            className="focus:ring-primary-blue/20 focus:outline-none focus:ring-4"
+            href={`/product/${product.entityId}`}
+          >
+            <span aria-hidden="true" className="absolute inset-0 bottom-12" />
             {product.name}
           </Link>
         </ProductCardInfoProductName>
@@ -98,6 +103,7 @@ export const ProductCard = ({
           </ProductCardInfoPrice>
         )}
       </ProductCardInfo>
+      <Action product={product} />
     </ReactantProductCard>
   );
 };

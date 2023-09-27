@@ -44,6 +44,16 @@ async function internalGetProduct<T>(
                 numberOfReviews: true,
                 averageRating: true,
               },
+              productOptions: {
+                __args: { first: 3 },
+                edges: {
+                  node: {
+                    entityId: true,
+                    displayName: true,
+                    isRequired: true,
+                  },
+                },
+              },
             },
           },
         },
@@ -72,5 +82,8 @@ export const getRelatedProducts = async <T>(
     return null;
   }
 
-  return removeEdgesAndNodes(product.relatedProducts);
+  return removeEdgesAndNodes(product.relatedProducts).map((relatedProduct) => ({
+    ...relatedProduct,
+    productOptions: removeEdgesAndNodes(relatedProduct.productOptions),
+  }));
 };

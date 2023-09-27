@@ -5,7 +5,11 @@ import { cs } from '../../utils/cs';
 export const ProductCard = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     return (
-      <div className={cs('group relative flex flex-col', className)} ref={ref} {...props}>
+      <div
+        className={cs('group relative flex flex-col overflow-visible', className)}
+        ref={ref}
+        {...props}
+      >
         {children}
       </div>
     );
@@ -17,11 +21,7 @@ ProductCard.displayName = 'ProductCard';
 export const ProductCardImage = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     return (
-      <div
-        className={cs('relative flex justify-center pb-3 group-hover:opacity-75', className)}
-        ref={ref}
-        {...props}
-      >
+      <div className={cs('relative flex justify-center pb-3', className)} ref={ref} {...props}>
         {children}
       </div>
     );
@@ -34,10 +34,7 @@ export const ProductCardBadge = forwardRef<ElementRef<'span'>, ComponentPropsWit
   ({ children, className, ...props }, ref) => {
     return (
       <span
-        className={cs(
-          'absolute start-0 top-4 bg-black px-4 py-1 text-white group-hover:opacity-75',
-          className,
-        )}
+        className={cs('absolute start-0 top-4 bg-black px-4 py-1 text-white', className)}
         ref={ref}
         {...props}
       >
