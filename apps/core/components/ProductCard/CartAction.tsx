@@ -11,29 +11,28 @@ import { handleAddToCart } from './_actions/addToCart';
 const AddToCart = () => {
   const { pending } = useFormStatus();
 
-  const status = pending ? 'pending' : 'idle';
-
   return (
     <Button className="mt-2" disabled={pending} type="submit">
-      {status === 'idle' && <span>Add to cart</span>}
-
-      {status === 'pending' && (
+      {pending ? (
         <>
           <Spinner aria-hidden="true" className="animate-spin" />
           <span className="sr-only">Processing...</span>
         </>
+      ) : (
+        <span>Add to cart</span>
       )}
     </Button>
   );
 };
 
-export const Action = ({ product }: { product: PartialDeep<Product> }) => {
+export const CartAction = ({ product }: { product: PartialDeep<Product> }) => {
   const { entityId, productOptions } = product;
 
   if (!entityId) {
     return null;
   }
 
+  // TODO: Render Quick Add button
   return Array.isArray(productOptions) && productOptions.length > 0 ? null : (
     <form action={handleAddToCart}>
       <input name="product_id" type="hidden" value={entityId} />

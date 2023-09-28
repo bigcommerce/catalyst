@@ -14,7 +14,7 @@ import Link from 'next/link';
 import { useId } from 'react';
 import { PartialDeep } from 'type-fest';
 
-import { Action } from './Action';
+import { CartAction } from './CartAction';
 
 interface ProductCardProps {
   product: PartialDeep<Product>;
@@ -103,7 +103,7 @@ export const ProductCard = ({
           </ProductCardInfoPrice>
         )}
       </ProductCardInfo>
-      <Action product={product} />
+      <CartAction product={product} />
     </ReactantProductCard>
   );
 };
