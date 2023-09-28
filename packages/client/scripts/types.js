@@ -20,12 +20,34 @@ const getSecrets = () => {
   };
 };
 
+const getChannel = () => {
+  const channelId = process.env.BIGCOMMERCE_CHANNEL_ID;
+
+  return {
+    channelId,
+  };
+};
+
+const getEndpoint = () => {
+  const { storeHash } = getSecrets();
+  const { channelId } = getChannel();
+
+  // Not all sites have the channel-specific canonical URL backfilled.
+  // Wait till MSF-2643 is resolved before removing and simplifying the endpoint logic.
+  if (!channelId || channelId === '1') {
+    return `https://store-${storeHash}.mybigcommerce.com/graphql`;
+  }
+
+  return `https://store-${storeHash}-${channelId}.mybigcommerce.com/graphql`;
+};
+
 const run = async () => {
   try {
-    const { storeHash, token } = getSecrets();
+    const endpoint = getEndpoint();
+    const { token } = getSecrets();
 
     await generate({
-      endpoint: `https://store-${storeHash}.mybigcommerce.com/graphql`,
+      endpoint,
       headers: {
         Authorization: `Bearer ${token}`,
       },

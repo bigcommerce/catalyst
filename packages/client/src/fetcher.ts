@@ -6,6 +6,7 @@ export interface FetcherConfig {
   storeHash: string;
   key: string;
   xAuthToken: string;
+  channelId?: string;
 }
 
 export interface FetcherInput {
@@ -26,16 +27,28 @@ export function customWrappedFetch<U>(config: FetcherConfig) {
   };
 }
 
+// Not all sites have the channel-specific canonical URL backfilled.
+// Wait till MSF-2643 is resolved before removing and simplifying the endpoint logic.
+const getEndpoint = ({ channelId, storeHash }: Pick<FetcherConfig, 'channelId' | 'storeHash'>) => {
+  if (!channelId || channelId === '1') {
+    return `https://store-${storeHash}.mybigcommerce.com/graphql`;
+  }
+
+  return `https://store-${storeHash}-${channelId}.mybigcommerce.com/graphql`;
+};
+
 export async function bigcommerceFetch<T>({
   storeHash,
   key,
+  channelId,
   query,
   variables,
   headers,
   cache = 'force-cache',
   ...rest
 }: FetcherInput & FetcherConfig & FetcherRequestInit): Promise<BigCommerceResponse<T> | never> {
-  const endpoint = `https://store-${storeHash}.mybigcommerce.com/graphql`;
+  const endpoint = getEndpoint({ channelId, storeHash });
+
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
