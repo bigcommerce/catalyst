@@ -1,5 +1,13 @@
 import { Button } from '@bigcommerce/reactant/Button';
-import { Slideshow, SlideshowContent, SlideshowSlide } from '@bigcommerce/reactant/Slideshow';
+import {
+  Slideshow,
+  SlideshowContent,
+  SlideshowControls,
+  SlideshowNextIndicator,
+  SlideshowPagination,
+  SlideshowPreviousIndicator,
+  SlideshowSlide,
+} from '@bigcommerce/reactant/Slideshow';
 import Image from 'next/image';
 
 export const Hero = () => (
@@ -14,7 +22,7 @@ export const Hero = () => (
             priority
             src="/slideshow-bg-01.jpg"
           />
-          <div className="flex flex-col gap-4 px-12 py-36">
+          <div className="flex flex-col gap-4 px-12 pb-48 pt-36">
             <h2 className="text-h1">25% Off Sale</h2>
             <p className="max-w-xl">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
@@ -27,7 +35,7 @@ export const Hero = () => (
         </div>
       </SlideshowSlide>
       <SlideshowSlide>
-        <div className="flex flex-col gap-4 bg-gray-100 px-12 py-36">
+        <div className="flex flex-col gap-4 bg-gray-100 px-12 pb-48 pt-36">
           <h2 className="text-h1">Great Deals</h2>
           <p className="max-w-xl">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
@@ -39,7 +47,7 @@ export const Hero = () => (
         </div>
       </SlideshowSlide>
       <SlideshowSlide>
-        <div className="flex flex-col gap-4 bg-gray-100 px-12 py-36">
+        <div className="flex flex-col gap-4 bg-gray-100 px-12 pb-48 pt-36">
           <h2 className="text-h1">Low Prices</h2>
           <p className="max-w-xl">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
@@ -51,5 +59,10 @@ export const Hero = () => (
         </div>
       </SlideshowSlide>
     </SlideshowContent>
+    <SlideshowControls>
+      <SlideshowPreviousIndicator />
+      <SlideshowPagination />
+      <SlideshowNextIndicator />
+    </SlideshowControls>
   </Slideshow>
 );
