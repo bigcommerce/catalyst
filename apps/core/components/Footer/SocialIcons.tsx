@@ -1,23 +1,50 @@
 import { FooterNav, FooterNavGroupList, FooterNavLink } from '@bigcommerce/reactant/Footer';
+import {
+  SiFacebook,
+  SiInstagram,
+  SiLinkedin,
+  SiPinterest,
+  SiX,
+  SiYoutube,
+} from '@icons-pack/react-simple-icons';
 import Link from 'next/link';
-import { ComponentPropsWithoutRef } from 'react';
 
 import client from '~/client';
 
-import { FacebookIcon } from '../SocialIcons/Facebook';
-import { InstagramIcon } from '../SocialIcons/Instagram';
-import { LinkedInIcon } from '../SocialIcons/LinkedIn';
-import { PinterestIcon } from '../SocialIcons/Pinterest';
-import { TwitterIcon } from '../SocialIcons/Twitter';
-import { YouTubeIcon } from '../SocialIcons/YouTube';
+const socialIconNames = [
+  'Facebook',
+  'Twitter',
+  'X',
+  'Pinterest',
+  'Instagram',
+  'LinkedIn',
+  'YouTube',
+];
 
-const ICON_MAP: Record<string, React.FC<ComponentPropsWithoutRef<'svg'>>> = {
-  Facebook: FacebookIcon,
-  Twitter: TwitterIcon,
-  Pinterest: PinterestIcon,
-  Instagram: InstagramIcon,
-  LinkedIn: LinkedInIcon,
-  YouTube: YouTubeIcon,
+const SocialIcon = ({ name }: { name: string }) => {
+  switch (name) {
+    case 'Facebook':
+      return <SiFacebook title="Facebook" />;
+
+    case 'Twitter':
+    case 'X':
+      return <SiX title="X" />;
+
+    case 'Pinterest':
+      return <SiPinterest title="Pinterest" />;
+
+    case 'Instagram':
+      return <SiInstagram title="Instagram" />;
+
+    case 'LinkedIn':
+      return <SiLinkedin title="LinkedIn" />;
+
+    case 'YouTube':
+      return <SiYoutube title="YouTube" />;
+
+    default:
+      return null;
+  }
 };
 
 export const SocialIcons = async () => {
@@ -33,16 +60,14 @@ export const SocialIcons = async () => {
     <FooterNav aria-label="Social media links" className="block">
       <FooterNavGroupList className="flex-row gap-6">
         {socialMediaLinks.map((link) => {
-          const Icon = ICON_MAP[link.name];
-
-          if (!Icon) {
+          if (!socialIconNames.includes(link.name)) {
             return null;
           }
 
           return (
             <FooterNavLink asChild key={link.name}>
               <Link href={link.url}>
-                <Icon />
+                <SocialIcon name={link.name} />
               </Link>
             </FooterNavLink>
           );

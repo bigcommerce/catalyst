@@ -27,17 +27,17 @@ export const SharingLinks = ({
         href={`https://facebook.com/sharer/sharer.php?u=${encodedUrl}`}
         rel="noopener noreferrer"
         target="_blank"
-        title="Facebook"
       >
-        <SiFacebook size={24} />
+        <SiFacebook size={24} title="Facebook" />
       </a>
       <a
         href={`mailto:?subject=${encodedTitle}&body=${encodedUrl}`}
         rel="noopener noreferrer"
         target="_self"
-        title="Email"
       >
-        <Mail size={24} />
+        <Mail size={24}>
+          <title>Email</title>
+        </Mail>
       </a>
       <button
         onClick={() => {
@@ -45,34 +45,32 @@ export const SharingLinks = ({
 
           return false;
         }}
-        title="Print"
         type="button"
       >
-        <Printer size={24} />
+        <Printer size={24}>
+          <title>Print</title>
+        </Printer>
       </button>
       <a
         href={`https://twitter.com/intent/tweet/?text=${encodedTitle}&url=${encodedUrl}`}
         rel="noopener noreferrer"
         target="_blank"
-        title="X"
       >
-        <SiX size={24} />
+        <SiX size={24} title="X" />
       </a>
       <a
         href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodedUrl}&title=${encodedTitle}&summary=${encodedTitle}&source=${encodedUrl}`}
         rel="noopener noreferrer"
         target="_blank"
-        title="LinkedIn"
       >
-        <SiLinkedin size={24} />
+        <SiLinkedin size={24} title="LinkedIn" />
       </a>
       <a
         href={`https://pinterest.com/pin/create/button/?url=${encodedUrl}&media=${blogPostImageUrl}&description=${encodedTitle}`}
         rel="noopener noreferrer"
         target="_blank"
-        title="Pinterest"
       >
-        <SiPinterest height={24} width={24} />
+        <SiPinterest height={24} title="Pinterest" width={24} />
       </a>
     </div>
   );
