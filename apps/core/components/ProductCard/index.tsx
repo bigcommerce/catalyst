@@ -1,4 +1,3 @@
-import { Product } from '@bigcommerce/catalyst-client';
 import { cs } from '@bigcommerce/reactant/cs';
 import {
   ProductCardImage,
@@ -14,7 +13,15 @@ import Link from 'next/link';
 import { useId } from 'react';
 import { PartialDeep } from 'type-fest';
 
+import client from '~/client';
+
 import { CartAction } from './CartAction';
+
+type Product =
+  | NonNullable<Awaited<ReturnType<typeof client.getProduct>>>
+  | NonNullable<Awaited<ReturnType<typeof client.getBestSellingProducts>>[number]>
+  | NonNullable<Awaited<ReturnType<typeof client.getFeaturedProducts>>[number]>
+  | NonNullable<Awaited<ReturnType<typeof client.getRelatedProducts>>[number]>;
 
 interface ProductCardProps {
   product: PartialDeep<Product>;

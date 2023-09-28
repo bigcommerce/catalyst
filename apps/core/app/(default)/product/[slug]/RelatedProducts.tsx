@@ -12,9 +12,5 @@ export const RelatedProducts = async ({
 }) => {
   const relatedProducts = await client.getRelatedProducts({ productId, optionValueIds });
 
-  if (!relatedProducts) {
-    return null;
-  }
-
   return <ProductCardCarousel products={relatedProducts} title="Related Products" />;
 };

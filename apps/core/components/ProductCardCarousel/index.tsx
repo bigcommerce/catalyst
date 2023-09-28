@@ -1,6 +1,5 @@
 'use client';
 
-import { Product } from '@bigcommerce/catalyst-client';
 import {
   Carousel,
   CarouselContent,
@@ -13,7 +12,15 @@ import {
 import { useId } from 'react';
 import { PartialDeep } from 'type-fest';
 
+import client from '~/client';
+
 import { ProductCard } from '../ProductCard';
+
+type Product =
+  | NonNullable<Awaited<ReturnType<typeof client.getProduct>>>
+  | NonNullable<Awaited<ReturnType<typeof client.getBestSellingProducts>>[number]>
+  | NonNullable<Awaited<ReturnType<typeof client.getFeaturedProducts>>[number]>
+  | NonNullable<Awaited<ReturnType<typeof client.getRelatedProducts>>[number]>;
 
 export const ProductCardCarousel = ({
   title,

@@ -79,7 +79,7 @@ export const getRelatedProducts = async <T>(
   const product = await internalGetProduct(options, customFetch, config);
 
   if (!product) {
-    return null;
+    return [];
   }
 
   return removeEdgesAndNodes(product.relatedProducts).map((relatedProduct) => ({
