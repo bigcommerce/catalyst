@@ -49,8 +49,6 @@ async function internalGetProduct<T>(
                 edges: {
                   node: {
                     entityId: true,
-                    displayName: true,
-                    isRequired: true,
                   },
                 },
               },

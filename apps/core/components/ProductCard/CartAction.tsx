@@ -5,15 +5,9 @@ import { Loader2 as Spinner } from 'lucide-react';
 import { experimental_useFormStatus as useFormStatus } from 'react-dom';
 import { PartialDeep } from 'type-fest';
 
-import client from '~/client';
-
 import { handleAddToCart } from './_actions/addToCart';
 
-type Product =
-  | NonNullable<Awaited<ReturnType<typeof client.getProduct>>>
-  | NonNullable<Awaited<ReturnType<typeof client.getBestSellingProducts>>[number]>
-  | NonNullable<Awaited<ReturnType<typeof client.getFeaturedProducts>>[number]>
-  | NonNullable<Awaited<ReturnType<typeof client.getRelatedProducts>>[number]>;
+import { Product } from '.';
 
 const AddToCart = () => {
   const { pending } = useFormStatus();

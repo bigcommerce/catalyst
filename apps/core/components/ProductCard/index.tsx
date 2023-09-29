@@ -13,15 +13,32 @@ import Link from 'next/link';
 import { useId } from 'react';
 import { PartialDeep } from 'type-fest';
 
-import client from '~/client';
-
 import { CartAction } from './CartAction';
 
-type Product =
-  | NonNullable<Awaited<ReturnType<typeof client.getProduct>>>
-  | NonNullable<Awaited<ReturnType<typeof client.getBestSellingProducts>>[number]>
-  | NonNullable<Awaited<ReturnType<typeof client.getFeaturedProducts>>[number]>
-  | NonNullable<Awaited<ReturnType<typeof client.getRelatedProducts>>[number]>;
+export interface Product {
+  entityId: number;
+  name: string;
+  defaultImage?: {
+    altText?: string;
+    url: string;
+  } | null;
+  brand?: {
+    name: string;
+  } | null;
+  prices?: {
+    price?: {
+      value?: number;
+      currencyCode?: string;
+    };
+  } | null;
+  reviewSummary?: {
+    numberOfReviews: number;
+    averageRating: number;
+  } | null;
+  productOptions?: Array<{
+    entityId: number;
+  }>;
+}
 
 interface ProductCardProps {
   product: PartialDeep<Product>;

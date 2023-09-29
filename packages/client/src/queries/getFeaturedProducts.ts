@@ -50,8 +50,6 @@ export const getFeaturedProducts = async <T>(
               edges: {
                 node: {
                   entityId: true,
-                  displayName: true,
-                  isRequired: true,
                 },
               },
             },
