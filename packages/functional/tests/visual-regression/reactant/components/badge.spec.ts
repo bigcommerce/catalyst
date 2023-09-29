@@ -2,7 +2,6 @@ import { test, expect } from '@playwright/test';
 
 const badgeUrl = 'https://catalyst-storybook.vercel.app/?path=/docs/badge--docs';
 const storyBookFrame = 'iframe[title="storybook-preview-iframe"]';
-const collapseBtn = '#story--accordion--basic-example--primary-inner';
 
 test('badge', async ({ page }) => {
     await page.goto(badgeUrl);
