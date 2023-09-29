@@ -45,6 +45,14 @@ export const getFeaturedProducts = async <T>(
               numberOfReviews: true,
               averageRating: true,
             },
+            productOptions: {
+              __args: { first: 3 },
+              edges: {
+                node: {
+                  entityId: true,
+                },
+              },
+            },
           },
         },
       },
@@ -58,5 +66,8 @@ export const getFeaturedProducts = async <T>(
   });
   const { site } = response.data;
 
-  return removeEdgesAndNodes(site.featuredProducts);
+  return removeEdgesAndNodes(site.featuredProducts).map((featuredProduct) => ({
+    ...featuredProduct,
+    productOptions: removeEdgesAndNodes(featuredProduct.productOptions),
+  }));
 };

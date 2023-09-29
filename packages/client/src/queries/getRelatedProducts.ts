@@ -44,6 +44,14 @@ async function internalGetProduct<T>(
                 numberOfReviews: true,
                 averageRating: true,
               },
+              productOptions: {
+                __args: { first: 3 },
+                edges: {
+                  node: {
+                    entityId: true,
+                  },
+                },
+              },
             },
           },
         },
@@ -69,8 +77,11 @@ export const getRelatedProducts = async <T>(
   const product = await internalGetProduct(options, customFetch, config);
 
   if (!product) {
-    return null;
+    return [];
   }
 
-  return removeEdgesAndNodes(product.relatedProducts);
+  return removeEdgesAndNodes(product.relatedProducts).map((relatedProduct) => ({
+    ...relatedProduct,
+    productOptions: removeEdgesAndNodes(relatedProduct.productOptions),
+  }));
 };

@@ -1,6 +1,5 @@
 'use client';
 
-import { Product } from '@bigcommerce/catalyst-client';
 import {
   Carousel,
   CarouselContent,
@@ -11,16 +10,15 @@ import {
   CarouselSlide,
 } from '@bigcommerce/reactant/Carousel';
 import { useId } from 'react';
-import { PartialDeep } from 'type-fest';
 
-import { ProductCard } from '../ProductCard';
+import { Product, ProductCard } from '../ProductCard';
 
 export const ProductCardCarousel = ({
   title,
   products,
 }: {
   title: string;
-  products: Array<PartialDeep<Product>>;
+  products: Array<Partial<Product>>;
 }) => {
   const id = useId();
 
@@ -28,22 +26,19 @@ export const ProductCardCarousel = ({
     return null;
   }
 
-  const groupedProducts = products.reduce<Array<Array<PartialDeep<Product>>>>(
-    (batches, _, index) => {
-      if (index % 4 === 0) {
-        batches.push([]);
-      }
+  const groupedProducts = products.reduce<Array<Array<Partial<Product>>>>((batches, _, index) => {
+    if (index % 4 === 0) {
+      batches.push([]);
+    }
 
-      const product = products[index];
+    const product = products[index];
 
-      if (batches[batches.length - 1] && product) {
-        batches[batches.length - 1]?.push(product);
-      }
+    if (batches[batches.length - 1] && product) {
+      batches[batches.length - 1]?.push(product);
+    }
 
-      return batches;
-    },
-    [],
-  );
+    return batches;
+  }, []);
 
   return (
     <Carousel aria-labelledby="title" className="mb-14">

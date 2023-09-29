@@ -1,4 +1,3 @@
-import { Product } from '@bigcommerce/catalyst-client';
 import { cs } from '@bigcommerce/reactant/cs';
 import {
   ProductCardImage,
@@ -12,10 +11,36 @@ import { Rating } from '@bigcommerce/reactant/Rating';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useId } from 'react';
-import { PartialDeep } from 'type-fest';
+
+import { CartAction } from './CartAction';
+
+export interface Product {
+  entityId: number;
+  name: string;
+  defaultImage?: {
+    altText?: string;
+    url?: string;
+  } | null;
+  brand?: {
+    name: string;
+  } | null;
+  prices?: {
+    price?: {
+      value?: number;
+      currencyCode?: string;
+    };
+  } | null;
+  reviewSummary?: {
+    numberOfReviews: number;
+    averageRating: number;
+  } | null;
+  productOptions?: Array<{
+    entityId: number;
+  }>;
+}
 
 interface ProductCardProps {
-  product: PartialDeep<Product>;
+  product: Partial<Product>;
   imageSize?: 'tall' | 'wide' | 'square';
   imagePriority?: boolean;
 }
@@ -62,8 +87,11 @@ export const ProductCard = ({
       <ProductCardInfo>
         {product.brand && <ProductCardInfoBrandName>{product.brand.name}</ProductCardInfoBrandName>}
         <ProductCardInfoProductName>
-          <Link href={`/product/${product.entityId}`}>
-            <span aria-hidden="true" className="absolute inset-0" />
+          <Link
+            className="focus:ring-primary-blue/20 focus:outline-none focus:ring-4"
+            href={`/product/${product.entityId}`}
+          >
+            <span aria-hidden="true" className="absolute inset-0 bottom-12" />
             {product.name}
           </Link>
         </ProductCardInfoProductName>
@@ -98,6 +126,7 @@ export const ProductCard = ({
           </ProductCardInfoPrice>
         )}
       </ProductCardInfo>
+      <CartAction product={product} />
     </ReactantProductCard>
   );
 };
