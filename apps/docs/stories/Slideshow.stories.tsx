@@ -1,6 +1,7 @@
 import { Button } from '@bigcommerce/reactant/Button';
 import {
   Slideshow,
+  SlideshowAutoplayControl,
   SlideshowContent,
   SlideshowControls,
   SlideshowNextIndicator,
@@ -85,6 +86,7 @@ export const TwoSlides: Story = {
         </SlideshowSlide>
       </SlideshowContent>
       <SlideshowControls>
+        <SlideshowAutoplayControl />
         <SlideshowPreviousIndicator />
         <SlideshowPagination />
         <SlideshowNextIndicator />
@@ -142,6 +144,7 @@ export const ThreeSlides: Story = {
         </SlideshowSlide>
       </SlideshowContent>
       <SlideshowControls>
+        <SlideshowAutoplayControl />
         <SlideshowPreviousIndicator />
         <SlideshowPagination />
         <SlideshowNextIndicator />
@@ -179,6 +182,7 @@ export const OneHundredSlides: Story = {
         ))}
       </SlideshowContent>
       <SlideshowControls>
+        <SlideshowAutoplayControl />
         <SlideshowPreviousIndicator />
         <SlideshowPagination />
         <SlideshowNextIndicator />
@@ -187,9 +191,9 @@ export const OneHundredSlides: Story = {
   ),
 };
 
-export const CustomControls: Story = {
+export const CustomControlsAndInterval: Story = {
   render: () => (
-    <Slideshow>
+    <Slideshow interval={5_000}>
       <SlideshowContent>
         <SlideshowSlide>
           <div className="relative">
@@ -224,6 +228,9 @@ export const CustomControls: Story = {
         </SlideshowSlide>
       </SlideshowContent>
       <SlideshowControls>
+        <SlideshowAutoplayControl className="font-semibold">
+          {({ isPaused }) => (isPaused ? 'Play' : 'Pause')}
+        </SlideshowAutoplayControl>
         <SlideshowPreviousIndicator>
           <ChevronLeft />
         </SlideshowPreviousIndicator>
