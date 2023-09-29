@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const accordionUrl = 'http://localhost:6006/?path=/docs/accordion--docs';
+const accordionUrl = 'https://catalyst-storybook.vercel.app/?path=/docs/accordion--docs';
 const storyBookFrame = 'iframe[title="storybook-preview-iframe"]';
 const collapseBtn = '#story--accordion--basic-example--primary-inner';
 

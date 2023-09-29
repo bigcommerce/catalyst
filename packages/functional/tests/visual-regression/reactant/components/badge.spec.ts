@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const badgeUrl = 'http://localhost:6006/?path=/docs/badge--docs';
+const badgeUrl = 'https://catalyst-storybook.vercel.app/?path=/docs/badge--docs';
 const storyBookFrame = 'iframe[title="storybook-preview-iframe"]';
 const collapseBtn = '#story--accordion--basic-example--primary-inner';
 
