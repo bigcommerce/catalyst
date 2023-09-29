@@ -160,9 +160,9 @@ export const CustomControlsAndInterval: Story = {
           <ChevronLeft />
         </SlideshowPreviousIndicator>
         <SlideshowPagination>
-          {({ activeIndex, totalSlides }) => (
+          {({ activeSlide, totalSlides }) => (
             <>
-              {activeIndex}/{totalSlides}
+              {activeSlide}/{totalSlides}
             </>
           )}
         </SlideshowPagination>
