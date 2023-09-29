@@ -3,7 +3,6 @@
 import { Button } from '@bigcommerce/reactant/Button';
 import { Loader2 as Spinner } from 'lucide-react';
 import { experimental_useFormStatus as useFormStatus } from 'react-dom';
-import { PartialDeep } from 'type-fest';
 
 import { handleAddToCart } from './_actions/addToCart';
 
@@ -26,7 +25,7 @@ const AddToCart = () => {
   );
 };
 
-export const CartAction = ({ product }: { product: PartialDeep<Product> }) => {
+export const CartAction = ({ product }: { product: Partial<Product> }) => {
   const { entityId, productOptions } = product;
 
   if (!entityId) {

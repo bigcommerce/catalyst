@@ -11,7 +11,6 @@ import { Rating } from '@bigcommerce/reactant/Rating';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useId } from 'react';
-import { PartialDeep } from 'type-fest';
 
 import { CartAction } from './CartAction';
 
@@ -20,7 +19,7 @@ export interface Product {
   name: string;
   defaultImage?: {
     altText?: string;
-    url: string;
+    url?: string;
   } | null;
   brand?: {
     name: string;
@@ -41,7 +40,7 @@ export interface Product {
 }
 
 interface ProductCardProps {
-  product: PartialDeep<Product>;
+  product: Partial<Product>;
   imageSize?: 'tall' | 'wide' | 'square';
   imagePriority?: boolean;
 }
