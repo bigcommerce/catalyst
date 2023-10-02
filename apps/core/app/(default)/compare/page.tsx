@@ -162,7 +162,7 @@ export default async function Compare({
             </tr>
             <tr>
               {products.map((product) => {
-                if (product.productOptions.edges?.length) {
+                if (product.productOptions.length) {
                   return (
                     <td className="border-b px-4 pb-12" key={product.entityId}>
                       <Button aria-label={product.name} asChild>
@@ -235,7 +235,7 @@ export default async function Compare({
             </tr>
             <tr>
               {products.map((product) => {
-                if (product.productOptions.edges?.length) {
+                if (product.productOptions.length) {
                   return (
                     <td className="border-b px-4 pb-24 pt-12" key={product.entityId}>
                       <Button aria-label={product.name} asChild>

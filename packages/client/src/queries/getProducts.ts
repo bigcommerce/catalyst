@@ -99,5 +99,6 @@ export const getProducts = async <T>(
   return products.map((product) => ({
     ...product,
     images: removeEdgesAndNodes(product.images),
+    productOptions: removeEdgesAndNodes(product.productOptions),
   }));
 };

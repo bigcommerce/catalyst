@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
 import client from '~/client';
+import { VariantSelector } from '~/components/VariantSelector';
 
 import { AddToCart } from './AddToCart';
 import { BreadCrumbs } from './Breadcrumbs';
@@ -15,7 +16,6 @@ import { ProductSchema } from './ProductSchema';
 import { RelatedProducts } from './RelatedProducts';
 import { Reviews } from './Reviews';
 import { ReviewSummary } from './ReviewSummary';
-import { VariantSelector } from './VariantSelector';
 
 type Product = Awaited<ReturnType<typeof client.getProduct>>;
 
