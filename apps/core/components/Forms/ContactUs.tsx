@@ -1,5 +1,3 @@
-'use client';
-
 import { Button } from '@bigcommerce/reactant/Button';
 import { cs } from '@bigcommerce/reactant/cs';
 import {
