@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
 import client from '~/client';
+import { VariantSelector } from '~/components/VariantSelector';
 import { assertNonNullable } from '~/utils';
 
 import { AddToCart } from './AddToCart';
@@ -15,7 +16,6 @@ import { ProductForm } from './ProductForm';
 import { RelatedProducts } from './RelatedProducts';
 import { Reviews } from './Reviews';
 import { ReviewSummary } from './ReviewSummary';
-import { VariantSelector } from './VariantSelector';
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
