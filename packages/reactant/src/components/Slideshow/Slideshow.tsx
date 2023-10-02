@@ -50,7 +50,7 @@ export const Slideshow = forwardRef<ElementRef<'section'>, SlideshowProps>(
           <section
             aria-label="Interactive slide show"
             aria-roledescription="carousel"
-            className={cs('relative overflow-hidden', className)}
+            className={cs('relative -mx-6 overflow-hidden sm:-mx-10 md:-mx-12 lg:mx-0', className)}
             onBlur={() => setIsHoverPaused(false)}
             onFocus={() => setIsHoverPaused(true)}
             onMouseEnter={() => setIsHoverPaused(true)}
