@@ -1,12 +1,15 @@
 import useEmblaCarousel, { UseEmblaCarouselType } from 'embla-carousel-react';
 import { ArrowLeft, ArrowRight, Pause, Play } from 'lucide-react';
 import {
+  Children,
   ComponentPropsWithRef,
   createContext,
+  Dispatch,
   DispatchWithoutAction,
   ElementRef,
   forwardRef,
   MouseEvent,
+  SetStateAction,
   useCallback,
   useContext,
   useEffect,
@@ -18,8 +21,12 @@ import {
 
 import { cs } from '../../utils/cs';
 
+type SetState<T> = Dispatch<SetStateAction<T>>;
+
 const SlideshowContext = createContext<UseEmblaCarouselType>([() => null, undefined]);
+const SlideIndexContext = createContext<[number, number]>([0, 0]);
 const AutoplayContext = createContext<[boolean, DispatchWithoutAction]>([false, () => null]);
+const ActiveSlideContext = createContext<[number, SetState<number>]>([0, () => null]);
 
 interface SlideshowProps extends ComponentPropsWithRef<'section'> {
   interval?: number;
@@ -31,6 +38,8 @@ export const Slideshow = forwardRef<ElementRef<'section'>, SlideshowProps>(
 
     const [isHoverPaused, setIsHoverPaused] = useState(false);
     const [isPaused, togglePaused] = useReducer((val: boolean) => !val, false);
+
+    const [activeSlide, setActiveSlide] = useState(0);
 
     useEffect(() => {
       const autoplay = setInterval(() => {
@@ -47,19 +56,24 @@ export const Slideshow = forwardRef<ElementRef<'section'>, SlideshowProps>(
     return (
       <SlideshowContext.Provider value={[emblaRef, emblaApi]}>
         <AutoplayContext.Provider value={[isPaused, togglePaused]}>
-          <section
-            aria-label="Interactive slide show"
-            aria-roledescription="carousel"
-            className={cs('relative -mx-6 overflow-hidden sm:-mx-10 md:-mx-12 lg:mx-0', className)}
-            onBlur={() => setIsHoverPaused(false)}
-            onFocus={() => setIsHoverPaused(true)}
-            onMouseEnter={() => setIsHoverPaused(true)}
-            onMouseLeave={() => setIsHoverPaused(false)}
-            ref={ref}
-            {...props}
-          >
-            {children}
-          </section>
+          <ActiveSlideContext.Provider value={[activeSlide, setActiveSlide]}>
+            <section
+              aria-label="Interactive slide show"
+              aria-roledescription="carousel"
+              className={cs(
+                'relative -mx-6 overflow-hidden sm:-mx-10 md:-mx-12 lg:mx-0',
+                className,
+              )}
+              onBlur={() => setIsHoverPaused(false)}
+              onFocus={() => setIsHoverPaused(true)}
+              onMouseEnter={() => setIsHoverPaused(true)}
+              onMouseLeave={() => setIsHoverPaused(false)}
+              ref={ref}
+              {...props}
+            >
+              {children}
+            </section>
+          </ActiveSlideContext.Provider>
         </AutoplayContext.Provider>
       </SlideshowContext.Provider>
     );
@@ -75,8 +89,6 @@ export const SlideshowContent = forwardRef<ForwardedRef, ComponentPropsWithRef<'
     const mutableRef = useRef<ForwardedRef>(null);
     const [emblaRef] = useContext(SlideshowContext);
 
-    const [isPaused] = useContext(AutoplayContext);
-
     useImperativeHandle<ForwardedRef, ForwardedRef>(ref, () => mutableRef.current, []);
 
     const refCallback = useCallback(
@@ -87,10 +99,16 @@ export const SlideshowContent = forwardRef<ForwardedRef, ComponentPropsWithRef<'
       [emblaRef],
     );
 
+    const unindexedSlides = Children.toArray(children);
+
     return (
       <div ref={refCallback}>
-        <ul aria-live={isPaused ? 'polite' : 'off'} className={cs('flex', className)} {...props}>
-          {children}
+        <ul className={cs('flex', className)} id="slideshow-slides" {...props}>
+          {unindexedSlides.map((indexedSlide, index) => (
+            <SlideIndexContext.Provider key={index} value={[index, unindexedSlides.length]}>
+              {indexedSlide}
+            </SlideIndexContext.Provider>
+          ))}
         </ul>
       </div>
     );
@@ -100,17 +118,26 @@ export const SlideshowContent = forwardRef<ForwardedRef, ComponentPropsWithRef<'
 SlideshowContent.displayName = 'SlideshowContent';
 
 export const SlideshowSlide = forwardRef<ElementRef<'li'>, ComponentPropsWithRef<'li'>>(
-  ({ children, className, ...props }, ref) => (
-    <li
-      aria-roledescription="slide"
-      className={cs('min-w-0 shrink-0 grow-0 basis-full', className)}
-      ref={ref}
-      role="group"
-      {...props}
-    >
-      {children}
-    </li>
-  ),
+  ({ children, className, ...props }, ref) => {
+    const [activeSlide] = useContext(ActiveSlideContext);
+    const [thisSlideIndex, totalSlides] = useContext(SlideIndexContext);
+
+    const activeSlideIndex = activeSlide - 1;
+
+    return (
+      <li
+        aria-label={`${thisSlideIndex + 1} of ${totalSlides}`}
+        aria-roledescription="slide"
+        className={cs('min-w-0 shrink-0 grow-0 basis-full', className)}
+        // @ts-expect-error https://github.com/DefinitelyTyped/DefinitelyTyped/pull/60822
+        inert={thisSlideIndex === activeSlideIndex ? null : 'true'}
+        ref={ref}
+        {...props}
+      >
+        {children}
+      </li>
+    );
+  },
 );
 
 SlideshowSlide.displayName = 'SlideshowSlide';
@@ -192,6 +219,7 @@ export const SlideshowNextIndicator = forwardRef<
 
   return (
     <button
+      aria-controls="slideshow-slides"
       aria-label="Next slide"
       className={cs(
         'focus:ring-primary-blue/20 inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4',
@@ -221,6 +249,7 @@ export const SlideshowPreviousIndicator = forwardRef<
 
   return (
     <button
+      aria-controls="slideshow-slides"
       aria-label="Previous slide"
       className={cs(
         'focus:ring-primary-blue/20 inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4',
@@ -240,10 +269,10 @@ SlideshowPreviousIndicator.displayName = 'SlideshowPreviousIndicator';
 interface SlideshowPaginationProps extends Omit<ComponentPropsWithRef<'div'>, 'children'> {
   children?:
     | (({
-        activeIndex,
+        activeSlide,
         totalSlides,
       }: {
-        activeIndex: number;
+        activeSlide: number;
         totalSlides: number;
       }) => React.ReactNode)
     | React.ReactNode;
@@ -252,18 +281,19 @@ interface SlideshowPaginationProps extends Omit<ComponentPropsWithRef<'div'>, 'c
 export const SlideshowPagination = forwardRef<ElementRef<'span'>, SlideshowPaginationProps>(
   ({ children, className, ...props }, ref) => {
     const [, emblaApi] = useContext(SlideshowContext);
+    const [activeSlide, setActiveSlide] = useContext(ActiveSlideContext);
+    const [isPaused] = useContext(AutoplayContext);
 
-    const [activeIndex, setActiveIndex] = useState(0);
     const [totalSlides, setTotalSlides] = useState(0);
 
     const renderChildrenWithFallback = () => {
       if (typeof children === 'function') {
-        return children({ activeIndex, totalSlides });
+        return children({ activeSlide, totalSlides });
       }
 
       return (
         <>
-          {activeIndex} of {totalSlides}
+          {activeSlide} of {totalSlides}
         </>
       );
     };
@@ -277,20 +307,26 @@ export const SlideshowPagination = forwardRef<ElementRef<'span'>, SlideshowPagin
 
       const initialize = () => {
         setTotalSlides(emblaApi.scrollSnapList().length);
-        setActiveIndex(emblaApi.selectedScrollSnap() + 1);
+        setActiveSlide(emblaApi.selectedScrollSnap() + 1);
       };
 
       const onSelect = () => {
-        setActiveIndex(emblaApi.selectedScrollSnap() + 1);
+        setActiveSlide(emblaApi.selectedScrollSnap() + 1);
       };
 
       emblaApi.on('slidesInView', initialize);
       emblaApi.on('reInit', initialize);
       emblaApi.on('select', onSelect);
-    }, [emblaApi]);
+    }, [emblaApi, setActiveSlide]);
 
     return (
-      <span className={cs('font-semibold', className)} ref={ref} {...props}>
+      <span
+        aria-atomic="false"
+        aria-live={isPaused ? 'polite' : 'off'}
+        className={cs('font-semibold', className)}
+        ref={ref}
+        {...props}
+      >
         {renderChildrenWithFallback()}
       </span>
     );
