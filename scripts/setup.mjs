@@ -1,12 +1,18 @@
 import { input } from "@inquirer/prompts";
 
 /** @returns {Promise<string>} */
-const promptName = async () => input({ message: "What is your name?" });
+const promptStoreHash = async () =>
+  input({ message: "Please enter your store hash" });
 
-const connect = async () => {
-  const name = await promptName();
-
-  console.log(`Hello, ${name}!`);
+/** @param {{ storeHash: string }} config */
+const logEnv = ({ storeHash }) => {
+  console.log(`\nBIGCOMMERCE_STORE_HASH=${storeHash}`);
 };
 
-connect();
+const setup = async () => {
+  const storeHash = await promptStoreHash();
+
+  logEnv({ storeHash });
+};
+
+setup();
