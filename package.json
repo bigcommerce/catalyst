@@ -11,6 +11,7 @@
     "typecheck": "turbo typecheck"
   },
   "devDependencies": {
+    "@inquirer/prompts": "^3.2.0",
     "dotenv-cli": "^7.3.0",
     "turbo": "^1.10.14",
     "typescript": "^5.2.2"
