@@ -104,7 +104,7 @@ export const ProductCard = ({
                 product.reviewSummary.numberOfReviews === 0 && 'text-gray-400',
               )}
             >
-              <Rating size={13} value={product.reviewSummary.averageRating || 0} />
+              <Rating size={16} value={product.reviewSummary.averageRating || 0} />
             </p>
 
             <div className="text-sm text-gray-500" id={summaryId}>
