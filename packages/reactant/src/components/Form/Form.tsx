@@ -59,9 +59,13 @@ interface FieldLabelProps extends ComponentPropsWithRef<typeof Label> {
 
 export const FieldLabel = forwardRef<ElementRef<typeof Label>, FieldLabelProps>(
   ({ className, children, isRequired, ...props }, ref) => (
-    <Label className={cs('inline-flex w-full justify-between', className)} ref={ref} {...props}>
+    <Label
+      className={cs('inline-flex w-full items-center justify-between', className)}
+      ref={ref}
+      {...props}
+    >
       <span>{children}</span>
-      {isRequired && <span className="text-sm font-normal text-gray-200">Required</span>}
+      {isRequired && <span className="text-sm font-normal text-gray-500">Required</span>}
     </Label>
   ),
 );
