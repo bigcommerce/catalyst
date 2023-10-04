@@ -1,22 +1,8 @@
-import { NextResponse } from 'next/server';
+import { withCustomUrls } from './middlewares/with-custom-urls';
+import { withMaintenanceMode } from './middlewares/with-maitenance-mode';
+import { composeMiddlewares } from './utils/composeMiddlewares';
 
-import client from './client';
-import { composeMiddlewares, type MiddlewareFactory } from './utils/composeMiddlewares';
-
-const withMaintenanceMode: MiddlewareFactory = (next) => {
-  return async (request, event) => {
-    const settings = await client.getStoreSettings();
-
-    if (settings?.status === 'MAINTENANCE') {
-      // 503 status code not working - https://github.com/vercel/next.js/issues/50155
-      return NextResponse.rewrite(new URL(`/maintenance`, request.url), { status: 503 });
-    }
-
-    return next(request, event);
-  };
-};
-
-export const middleware = composeMiddlewares(withMaintenanceMode);
+export const middleware = composeMiddlewares(withMaintenanceMode, withCustomUrls);
 
 export const config = {
   matcher: [
