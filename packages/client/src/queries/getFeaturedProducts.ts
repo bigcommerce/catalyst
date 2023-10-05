@@ -23,6 +23,7 @@ export const getFeaturedProducts = async <T>(
           node: {
             name: true,
             entityId: true,
+            path: true,
             prices: {
               price: {
                 __scalar: true,
