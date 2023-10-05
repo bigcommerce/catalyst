@@ -70,17 +70,20 @@ export const ContactUs = ({ fields }: { fields: string[] }) => {
 
               return (
                 <Field className={cs('relative space-y-2 pb-7')} key={label} name={label}>
-                  <FieldLabel>{label}</FieldLabel>
+                  <FieldLabel htmlFor={label}>{label}</FieldLabel>
                   <FieldControl asChild>
-                    <Input />
+                    <Input id={label} />
                   </FieldControl>
                 </Field>
               );
             })}
           <Field className={cs('relative space-y-2 pb-7')} key="email" name="email">
-            <FieldLabel isRequired>Email</FieldLabel>
+            <FieldLabel htmlFor="email" isRequired>
+              Email
+            </FieldLabel>
             <FieldControl asChild>
               <Input
+                id="email"
                 onChange={handleInputValidation}
                 onInvalid={handleInputValidation}
                 required
@@ -106,9 +109,12 @@ export const ContactUs = ({ fields }: { fields: string[] }) => {
             key="comments"
             name="comments"
           >
-            <FieldLabel isRequired>Comments/questions</FieldLabel>
+            <FieldLabel htmlFor="comments" isRequired>
+              Comments/questions
+            </FieldLabel>
             <FieldControl asChild>
               <TextArea
+                id="comments"
                 onChange={handleTextFieldValidation}
                 onInvalid={handleTextFieldValidation}
                 required
