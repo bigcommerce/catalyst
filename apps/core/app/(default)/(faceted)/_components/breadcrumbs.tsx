@@ -11,17 +11,18 @@ interface Props {
   breadcrumbs: Array<{
     name: string;
     entityId: number;
+    path: string | null;
   }>;
   category: string;
 }
 
 export const Breadcrumbs = ({ breadcrumbs, category }: Props) => (
   <ReactantBreadcrumbs className="py-4">
-    {breadcrumbs.map(({ name, entityId }, index, arr) => {
-      if (arr.length - 1 === index) {
+    {breadcrumbs.map(({ name, entityId, path }, index) => {
+      if (!path || breadcrumbs.length - 1 === index) {
         return (
-          <BreadcrumbItem asChild isActive={category === name} key={entityId}>
-            <Link href={`/category/${entityId}`}>{name}</Link>
+          <BreadcrumbItem isActive={category === name} key={entityId}>
+            {name}
           </BreadcrumbItem>
         );
       }
@@ -29,7 +30,7 @@ export const Breadcrumbs = ({ breadcrumbs, category }: Props) => (
       return (
         <Fragment key={entityId}>
           <BreadcrumbItem asChild isActive={category === name}>
-            <Link href={`/category/${entityId}`}>{name}</Link>
+            <Link href={path}>{name}</Link>
           </BreadcrumbItem>
           <BreadcrumbDivider>
             <ChevronRight aria-hidden="true" size={16} />

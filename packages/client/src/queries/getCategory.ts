@@ -61,6 +61,7 @@ export const getCategory = async <T>(
           edges: {
             node: {
               entityId: true,
+              path: true,
               name: true,
             },
           },
