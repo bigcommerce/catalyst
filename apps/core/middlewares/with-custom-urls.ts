@@ -1,7 +1,15 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 import client from '../client';
 import { type MiddlewareFactory } from '../utils/composeMiddlewares';
+
+const createRewriteUrl = (path: string, request: NextRequest) => {
+  const url = new URL(path, request.url);
+
+  url.search = request.nextUrl.search;
+
+  return url;
+};
 
 export const withCustomUrls: MiddlewareFactory = (next) => {
   return async (request, event) => {
@@ -21,9 +29,13 @@ export const withCustomUrls: MiddlewareFactory = (next) => {
 
     switch (node?.__typename) {
       case 'Brand': {
-        const url = new URL(`/brand/${node.entityId}`, request.url);
+        const url = createRewriteUrl(`/brand/${node.entityId}`, request);
 
-        url.search = request.nextUrl.search;
+        return NextResponse.rewrite(url);
+      }
+
+      case 'Category': {
+        const url = createRewriteUrl(`/category/${node.entityId}`, request);
 
         return NextResponse.rewrite(url);
       }

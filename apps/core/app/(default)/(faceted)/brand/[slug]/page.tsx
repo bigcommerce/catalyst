@@ -83,7 +83,7 @@ export default async function Brand({ params, searchParams }: Props) {
 
           <nav aria-label="Pagination" className="my-6 text-center text-blue-primary">
             {hasPreviousPage ? (
-              <Link href={`/brand/${brandId}?before=${String(startCursor)}`}>
+              <Link href={`${brand.path}?before=${String(startCursor)}`}>
                 <span className="sr-only">Previous</span>
                 <ChevronLeft aria-hidden="true" className="inline-block h-8 w-8" />
               </Link>
@@ -92,7 +92,7 @@ export default async function Brand({ params, searchParams }: Props) {
             )}
 
             {hasNextPage ? (
-              <Link href={`/brand/${brandId}?after=${String(endCursor)}`}>
+              <Link href={`${brand.path}?after=${String(endCursor)}`}>
                 <span className="sr-only">Next</span>
                 <ChevronRight aria-hidden="true" className="inline-block h-8 w-8" />
               </Link>

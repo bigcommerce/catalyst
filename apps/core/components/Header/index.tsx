@@ -85,7 +85,7 @@ const HeaderNav = async ({
               <NavigationMenuTrigger className="gap-0 p-0">
                 <>
                   <NavigationMenuLink asChild>
-                    <Link className="grow" href={`/category/${category.entityId}`}>
+                    <Link className="grow" href={category.path}>
                       {category.name}
                     </Link>
                   </NavigationMenuLink>
@@ -108,16 +108,13 @@ const HeaderNav = async ({
                 {category.children.map((childCategory1) => (
                   <ul className={cs(inCollapsedNav && 'pb-4')} key={childCategory1.entityId}>
                     <NavigationMenuItem>
-                      <NavigationMenuLink href={`/category/${childCategory1.entityId}`}>
+                      <NavigationMenuLink href={childCategory1.path}>
                         {childCategory1.name}
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                     {childCategory1.children.map((childCategory2) => (
                       <NavigationMenuItem key={childCategory2.entityId}>
-                        <NavigationMenuLink
-                          className="font-normal"
-                          href={`/category/${childCategory2.entityId}`}
-                        >
+                        <NavigationMenuLink className="font-normal" href={childCategory2.path}>
                           {childCategory2.name}
                         </NavigationMenuLink>
                       </NavigationMenuItem>
@@ -128,7 +125,7 @@ const HeaderNav = async ({
             </>
           ) : (
             <NavigationMenuLink asChild>
-              <Link href={`/category/${category.entityId}`}>{category.name}</Link>
+              <Link href={category.path}>{category.name}</Link>
             </NavigationMenuLink>
           )}
         </NavigationMenuItem>
