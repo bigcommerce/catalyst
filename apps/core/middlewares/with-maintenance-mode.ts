@@ -5,7 +5,14 @@ import { type MiddlewareFactory } from '../utils/composeMiddlewares';
 
 export const withMaintenanceMode: MiddlewareFactory = (next) => {
   return async (request, event) => {
-    const settings = await client.getStoreSettings();
+    const response = await fetch(new URL(`/api/store-settings`, request.url));
+
+    if (!response.ok) {
+      throw new Error(`BigCommerce API returned ${response.status}`);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    const settings = (await response.json()) as Awaited<ReturnType<typeof client.getStoreSettings>>;
 
     if (settings?.status === 'MAINTENANCE') {
       // 503 status code not working - https://github.com/vercel/next.js/issues/50155
