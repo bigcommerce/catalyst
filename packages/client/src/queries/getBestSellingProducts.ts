@@ -31,6 +31,7 @@ export const getBestSellingProducts = async <T>(
             brand: {
               name: true,
             },
+            path: true,
             defaultImage: {
               altText: true,
               url: {

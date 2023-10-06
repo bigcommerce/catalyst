@@ -33,6 +33,7 @@ async function internalGetProduct<T>(
               brand: {
                 name: true,
               },
+              path: true,
               prices: {
                 price: {
                   value: true,

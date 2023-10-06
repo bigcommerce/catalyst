@@ -21,6 +21,7 @@ export interface Product {
     altText?: string;
     url?: string;
   } | null;
+  path: string;
   brand?: {
     name: string;
   } | null;
@@ -87,13 +88,17 @@ export const ProductCard = ({
       <ProductCardInfo>
         {product.brand && <ProductCardInfoBrandName>{product.brand.name}</ProductCardInfoBrandName>}
         <ProductCardInfoProductName>
-          <Link
-            className="focus:ring-primary-blue/20 focus:outline-none focus:ring-4"
-            href={`/product/${product.entityId}`}
-          >
-            <span aria-hidden="true" className="absolute inset-0 bottom-12" />
-            {product.name}
-          </Link>
+          {product.path ? (
+            <Link
+              className="focus:ring-primary-blue/20 focus:outline-none focus:ring-4"
+              href={product.path}
+            >
+              <span aria-hidden="true" className="absolute inset-0 bottom-12" />
+              {product.name}
+            </Link>
+          ) : (
+            product.name
+          )}
         </ProductCardInfoProductName>
         {product.reviewSummary && (
           <div className="flex items-center gap-3">

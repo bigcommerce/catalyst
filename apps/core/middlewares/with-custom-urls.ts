@@ -40,6 +40,12 @@ export const withCustomUrls: MiddlewareFactory = (next) => {
         return NextResponse.rewrite(url);
       }
 
+      case 'Product': {
+        const url = createRewriteUrl(`/product/${node.entityId}`, request);
+
+        return NextResponse.rewrite(url);
+      }
+
       default:
         return next(request, event);
     }
