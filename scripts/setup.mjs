@@ -1,4 +1,4 @@
-import { input, password } from "@inquirer/prompts";
+import { confirm, input, password } from "@inquirer/prompts";
 
 /** @returns {Promise<string>} */
 const promptStoreHash = async () =>
@@ -20,6 +20,13 @@ const promptAccessToken = async () => {
   });
 };
 
+/** @returns {Promise<boolean>} */
+const promptUseExistingChannel = async () =>
+  confirm({
+    message: "Would you like to connect to an existing channel?",
+    default: false,
+  });
+
 /** @param {{ storeHash: string, accessToken: string }} config */
 const logEnv = ({ storeHash, accessToken }) => {
   console.log(`\nBIGCOMMERCE_STORE_HASH=${storeHash}`);
@@ -29,6 +36,8 @@ const logEnv = ({ storeHash, accessToken }) => {
 const setup = async () => {
   const storeHash = await promptStoreHash();
   const accessToken = await promptAccessToken();
+
+  const shouldUseExistingChannel = await promptUseExistingChannel();
 
   logEnv({ storeHash, accessToken });
 };
