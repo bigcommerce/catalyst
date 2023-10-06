@@ -29,6 +29,9 @@ export const getWebPages = async <T>(
               on_BlogIndexPage: {
                 path: true,
               },
+              on_ExternalLinkPage: {
+                link: true,
+              },
             },
           },
         },
