@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import client from '~/client';
 import { ContactUs } from '~/components/Forms';
 
-import { PageContent } from './PageContent';
+import { PageContent } from '../_components/PageContent';
 
 interface Props {
   params: { page: string };
