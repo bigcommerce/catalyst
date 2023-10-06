@@ -1,5 +1,5 @@
 import { withCustomUrls } from './middlewares/with-custom-urls';
-import { withMaintenanceMode } from './middlewares/with-maitenance-mode';
+import { withMaintenanceMode } from './middlewares/with-maintenance-mode';
 import { composeMiddlewares } from './utils/composeMiddlewares';
 
 export const middleware = composeMiddlewares(withMaintenanceMode, withCustomUrls);
