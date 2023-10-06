@@ -53,6 +53,62 @@ const createChannel = async ({ storeHash, accessToken, channelName }) =>
     }),
   });
 
+/**
+ * @param {{ storeHash: string, accessToken: string, channelId: number }} config
+ * @returns {Promise<Response>}
+ */
+const fetchChannelSite = async ({ storeHash, accessToken, channelId }) =>
+  fetch(
+    `https://api.bigcommerce.com/stores/${storeHash}/v3/channels/${channelId}/site`,
+    {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        "x-auth-token": accessToken,
+      },
+    }
+  );
+
+/**
+ * @param {{ storeHash: string, accessToken: string, channelId: number, channelUrl: string }} config
+ * @returns {Promise<Response>}
+ */
+const createChannelSite = ({ storeHash, accessToken, channelId, channelUrl }) =>
+  fetch(
+    `https://api.bigcommerce.com/stores/${storeHash}/v3/channels/${channelId}/site`,
+    {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        "x-auth-token": accessToken,
+      },
+      body: JSON.stringify({
+        url: channelUrl,
+        channel_id: channelId,
+      }),
+    }
+  );
+
+/**
+ * @param {{ storeHash: string, accessToken: string, channelId: number, newUrl: string }} config
+ * @returns {Promise<Response>}
+ */
+const updateChannelSite = ({ storeHash, accessToken, channelId, newUrl }) =>
+  fetch(
+    `https://api.bigcommerce.com/stores/${storeHash}/v3/channels/${channelId}/site`,
+    {
+      method: "PUT",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        "x-auth-token": accessToken,
+      },
+      body: JSON.stringify({ url: newUrl }),
+    }
+  );
+
 /** @returns {Promise<string>} */
 const promptStoreHash = async () =>
   input({ message: "Please enter your store hash" });
@@ -197,6 +253,101 @@ const promptCustomChannelId = async ({ storeHash, accessToken }) => {
 };
 
 /**
+ * @param {{ storeHash: string, accessToken: string, channelId: number }} config
+ * @returns {Promise<string>}
+ */
+const promptNewChannelSite = async ({ storeHash, accessToken, channelId }) => {
+  const channelUrl = await input({
+    message:
+      "Please enter a unique URL for your new channel (this can be changed later)",
+  });
+
+  const res = await createChannelSite({
+    storeHash,
+    accessToken,
+    channelId,
+    channelUrl,
+  });
+
+  if (!res.ok) {
+    switch (res.status) {
+      // 401 might already be accounted for in channel name prompts
+      case 401:
+        throw new Error(
+          `${res.status} ${res.statusText}: Ensure your access token was entered correctly.`
+        );
+      case 403:
+        throw new Error(
+          `${res.status} ${res.statusText}: Ensure your access token was created with the correct scopes.`
+        );
+      case 422:
+        console.log("Channel Site URL already exists");
+        return promptNewChannelSite({ storeHash, accessToken, channelId });
+      default:
+        throw new Error(`${res.status} ${res.statusText}`);
+    }
+  }
+
+  const { data } = await res.json();
+
+  return data.url;
+};
+
+/**
+ * @param {{ storeHash: string, accessToken: string, channelId: number, existingUrl: string }} config
+ * @returns {Promise<string>}
+ */
+const promptUpdateChannelSite = async ({
+  storeHash,
+  accessToken,
+  channelId,
+  existingUrl,
+}) => {
+  const newUrl = await input({
+    message: `Channel ${channelId} has existing site: ${existingUrl} — Press enter to keep, otherwise enter a new URL to replace it`,
+  });
+
+  if (!newUrl) {
+    return existingUrl;
+  }
+
+  const res = await updateChannelSite({
+    storeHash,
+    accessToken,
+    channelId,
+    newUrl,
+  });
+
+  if (!res.ok) {
+    switch (res.status) {
+      // 401 might already be accounted for in channel name prompts
+      case 401:
+        throw new Error(
+          `${res.status} ${res.statusText}: Ensure your access token was entered correctly.`
+        );
+      case 403:
+        throw new Error(
+          `${res.status} ${res.statusText}: Ensure your access token was created with the correct scopes.`
+        );
+      case 422:
+        console.log("Channel Site URL already exists");
+        return promptUpdateChannelSite({
+          storeHash,
+          accessToken,
+          channelId,
+          existingUrl,
+        });
+      default:
+        throw new Error(`${res.status} ${res.statusText}`);
+    }
+  }
+
+  const { data } = await res.json();
+
+  return data.url;
+};
+
+/**
  * @param {{ storeHash: string, accessToken: string }} config
  * @returns {Promise<number>}
  */
@@ -219,6 +370,40 @@ const getChannelId = async ({ storeHash, accessToken }) => {
   return promptNewChannelId({ storeHash, accessToken });
 };
 
+/**
+ * @param {{ storeHash: string, accessToken: string, channelId: number }} config
+ * @returns {Promise<string>}
+ */
+const assignChannelSite = async ({ storeHash, accessToken, channelId }) => {
+  const res = await fetchChannelSite({ storeHash, accessToken, channelId });
+
+  if (!res.ok) {
+    switch (res.status) {
+      case 401:
+        throw new Error(
+          `${res.status} ${res.statusText}: Ensure your access token was entered correctly.`
+        );
+      case 403:
+        throw new Error(
+          `${res.status} ${res.statusText}: Ensure your access token was created with the correct scopes.`
+        );
+      case 404:
+        return promptNewChannelSite({ storeHash, accessToken, channelId });
+      default:
+        throw new Error(`${res.status} ${res.statusText}`);
+    }
+  }
+
+  const { data } = await res.json();
+
+  return promptUpdateChannelSite({
+    storeHash,
+    accessToken,
+    channelId,
+    existingUrl: data.url,
+  });
+};
+
 /** @param {{ storeHash: string, accessToken: string, channelId: number }} env */
 const logEnv = ({ storeHash, accessToken, channelId }) => {
   console.log(`\nBIGCOMMERCE_STORE_HASH=${storeHash}`);
@@ -231,6 +416,8 @@ const setup = async () => {
   const accessToken = await promptAccessToken();
 
   const channelId = await getChannelId({ storeHash, accessToken });
+
+  await assignChannelSite({ storeHash, accessToken, channelId });
 
   logEnv({ storeHash, accessToken, channelId });
 };
