@@ -157,6 +157,7 @@ async function internalGetProduct<T>(
           name: true,
         },
         upc: true,
+        path: true,
         minPurchaseQuantity: true,
         maxPurchaseQuantity: true,
         condition: true,

@@ -51,6 +51,7 @@ export const getProducts = async <T>(
               },
             },
             name: true,
+            path: true,
             plainTextDescription: true,
             reviewSummary: {
               summationOfRatings: true,

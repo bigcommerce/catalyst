@@ -14,10 +14,7 @@ const createRewriteUrl = (path: string, request: NextRequest) => {
 export const withCustomUrls: MiddlewareFactory = (next) => {
   return async (request, event) => {
     const response = await fetch(
-      new URL(
-        `/api/route?path=${request.nextUrl.pathname}`,
-        process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : request.url,
-      ),
+      new URL(`/api/route?path=${request.nextUrl.pathname}`, request.url),
     );
 
     if (!response.ok) {
@@ -36,6 +33,12 @@ export const withCustomUrls: MiddlewareFactory = (next) => {
 
       case 'Category': {
         const url = createRewriteUrl(`/category/${node.entityId}`, request);
+
+        return NextResponse.rewrite(url);
+      }
+
+      case 'Product': {
+        const url = createRewriteUrl(`/product/${node.entityId}`, request);
 
         return NextResponse.rewrite(url);
       }
