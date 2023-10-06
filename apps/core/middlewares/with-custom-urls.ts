@@ -15,6 +15,11 @@ export const withCustomUrls: MiddlewareFactory = (next) => {
   return async (request, event) => {
     const response = await fetch(
       new URL(`/api/route?path=${request.nextUrl.pathname}`, request.url),
+      {
+        headers: {
+          'x-internal-token': process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '',
+        },
+      },
     );
 
     if (!response.ok) {

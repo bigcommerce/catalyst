@@ -5,7 +5,11 @@ import { type MiddlewareFactory } from '../utils/composeMiddlewares';
 
 export const withMaintenanceMode: MiddlewareFactory = (next) => {
   return async (request, event) => {
-    const response = await fetch(new URL(`/api/store-settings`, request.url));
+    const response = await fetch(new URL(`/api/store-settings`, request.url), {
+      headers: {
+        'x-internal-token': process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '',
+      },
+    });
 
     if (!response.ok) {
       throw new Error(`BigCommerce API returned ${response.status}`);

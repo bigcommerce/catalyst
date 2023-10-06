@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import client from '~/client';
 
-export const GET = async (request: NextRequest) => {
+import { withInternalAuth } from '../_internal-auth';
+
+const handler = async (request: NextRequest) => {
   const { searchParams } = request.nextUrl;
 
   const path = searchParams.get('path');
@@ -16,5 +18,7 @@ export const GET = async (request: NextRequest) => {
 
   return new NextResponse('Missing path', { status: 400 });
 };
+
+export const GET = withInternalAuth(handler);
 
 export const runtime = 'edge';
