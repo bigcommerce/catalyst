@@ -5,12 +5,12 @@ export default defineConfig({
   timeout: 120 * 1000,
   expect: {
     timeout: 20000,
-    toHaveScreenshot: { maxDiffPixels: 100 }
+    toHaveScreenshot: { maxDiffPixels: 100 },
   },
   fullyParallel: true,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:3000'
+    baseURL: 'http://localhost:3000',
   },
 
   projects: [
