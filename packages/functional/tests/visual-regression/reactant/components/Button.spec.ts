@@ -1,20 +1,27 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
+
 import * as storyBookElements from '../StoryBookElements';
 
 test('Primary button', async ({ page }) => {
-    await page.goto(storyBookElements.storyUrl + '/button--primary');
-    await expect(page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook)).toBeVisible();
-    await expect(page).toHaveScreenshot();
+  await page.goto(`${storyBookElements.storyUrl}/button--primary`);
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toBeVisible();
+  await expect(page).toHaveScreenshot();
 });
 
 test('Secondary button', async ({ page }) => {
-    await page.goto(storyBookElements.storyUrl + '/button--secondary');
-    await expect(page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook)).toBeVisible();
-    await expect(page).toHaveScreenshot();
+  await page.goto(`${storyBookElements.storyUrl}/button--secondary`);
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toBeVisible();
+  await expect(page).toHaveScreenshot();
 });
 
 test('As a child', async ({ page }) => {
-    await page.goto(storyBookElements.storyUrl + '/button--as-child');
-    await expect(page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook)).toBeVisible();
-    await expect(page).toHaveScreenshot();
+  await page.goto(`${storyBookElements.storyUrl}/button--as-child`);
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toBeVisible();
+  await expect(page).toHaveScreenshot();
 });

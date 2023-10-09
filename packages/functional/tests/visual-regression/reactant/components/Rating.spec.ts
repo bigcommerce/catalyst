@@ -1,20 +1,27 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
+
 import * as storyBookElements from '../StoryBookElements';
 
 test('Five star rating', async ({ page }) => {
-    await page.goto(storyBookElements.storyUrl + '/rating--five-star-rating');
-    await expect(page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook)).toBeVisible();
-    await expect(page).toHaveScreenshot();
+  await page.goto(`${storyBookElements.storyUrl}/rating--five-star-rating`);
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toBeVisible();
+  await expect(page).toHaveScreenshot();
 });
 
 test('Zero rating', async ({ page }) => {
-    await page.goto(storyBookElements.storyUrl + '/rating--zero-rating');
-    await expect(page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook)).toBeVisible();
-    await expect(page).toHaveScreenshot();
+  await page.goto(`${storyBookElements.storyUrl}/rating--zero-rating`);
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toBeVisible();
+  await expect(page).toHaveScreenshot();
 });
 
 test('Float rating', async ({ page }) => {
-    await page.goto(storyBookElements.storyUrl + '/rating--float-rating');
-    await expect(page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook)).toBeVisible();
-    await expect(page).toHaveScreenshot();
+  await page.goto(`${storyBookElements.storyUrl}/rating--float-rating`);
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toBeVisible();
+  await expect(page).toHaveScreenshot();
 });
