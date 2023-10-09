@@ -32,10 +32,10 @@ Catalyst is configured such that pnpm replaces npm. When you enhance your projec
 
 ## Getting Started
 
-1. [Fork the project repository (GitHub)](https://docs.github.com/en/get-started/quickstart/fork-a-repo), then clone the project to your local environment:
+1. Clone the project to your local environment:
 
 ```shell
-git clone git@github.com:{yourGitHubUsername}/catalyst.git && cd catalyst
+git clone git@github.com:bigcommerce/catalyst.git && cd catalyst
 ```
 
 2. To help stay up to date with the latest changes, add the BigCommerce repo to your project as the upstream repository:
