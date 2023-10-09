@@ -60,7 +60,7 @@ const mapFacetsToRefinements = ({ facets, pageType }: Props) =>
             .filter(({ isSelected }) => isSelected)
             .map<FacetProps<string>>(({ value }) => {
               return {
-                key: facet.filterName,
+                key: `attr_${facet.filterName}`,
                 display_name: value,
                 value,
               };
