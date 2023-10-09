@@ -3,8 +3,18 @@
   "description": "UI testing for catalyst",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.js,.cjs --max-warnings 0"
+  },
   "devDependencies": {
+    "@bigcommerce/catalyst-configs": "workspace:^",
+    "@bigcommerce/eslint-config": "^2.7.0",
+    "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@playwright/test": "^1.38.0",
-    "@types/node": "^18.17.12"
+    "@types/node": "^18.17.12",
+    "eslint": "^8.48.0",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2"
   }
 }

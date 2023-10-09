@@ -24,6 +24,6 @@ export default defineConfig({
     {
       name: 'tests-webkit',
       use: { ...devices['Desktop Safari'] },
-    }
+    },
   ],
 });
