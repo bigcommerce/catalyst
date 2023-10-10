@@ -7,7 +7,6 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Fragment } from 'react';
 
 import client from '~/client';
-import { createUrl } from '~/utils';
 
 type Product = NonNullable<Awaited<ReturnType<typeof client.getProduct>>>;
 
@@ -27,9 +26,7 @@ export const VariantSelector = ({ product }: { product: Product }) => {
 
     optionSearchParams.set(String(optionId), String(valueId));
 
-    const optionUrl = createUrl(pathname, optionSearchParams);
-
-    void router.push(optionUrl, { scroll: false });
+    router.push(`${pathname}?${optionSearchParams.toString()}`, { scroll: false });
   };
 
   return product.productOptions?.map((option) => {
