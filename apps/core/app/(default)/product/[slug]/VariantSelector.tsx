@@ -7,18 +7,14 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Fragment } from 'react';
 
 import client from '~/client';
-import { assertNonNullable, createUrl } from '~/utils';
+import { createUrl } from '~/utils';
 
-export const VariantSelector = ({
-  product,
-}: {
-  product: Awaited<ReturnType<typeof client.getProduct>>;
-}) => {
+type Product = NonNullable<Awaited<ReturnType<typeof client.getProduct>>>;
+
+export const VariantSelector = ({ product }: { product: Product }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
-  assertNonNullable(product);
 
   const hasNoOptions = !product.productOptions || !product.productOptions.length;
 
