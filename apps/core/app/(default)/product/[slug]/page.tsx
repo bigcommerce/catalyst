@@ -12,6 +12,7 @@ import { AddToCart } from './AddToCart';
 import { BreadCrumbs } from './Breadcrumbs';
 import { Gallery } from './Gallery';
 import { ProductForm } from './ProductForm';
+import { ProductSchema } from './ProductSchema';
 import { RelatedProducts } from './RelatedProducts';
 import { Reviews } from './Reviews';
 import { ReviewSummary } from './ReviewSummary';
@@ -113,6 +114,7 @@ const ProductDetails = ({
           )}
         </div>
       </div>
+      <ProductSchema product={product} />
     </div>
   );
 };

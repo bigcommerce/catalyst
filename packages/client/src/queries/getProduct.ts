@@ -152,12 +152,25 @@ async function internalGetProduct<T>(
             value: true,
             currencyCode: true,
           },
+          priceRange: {
+            min: {
+              value: true,
+              currencyCode: true,
+            },
+            max: {
+              value: true,
+              currencyCode: true,
+            },
+          },
         },
         brand: {
           name: true,
+          path: true,
         },
         upc: true,
         path: true,
+        mpn: true,
+        gtin: true,
         minPurchaseQuantity: true,
         maxPurchaseQuantity: true,
         condition: true,
