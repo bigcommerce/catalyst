@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 import * as storyBookElements from '../StoryBookElements';
 
 test('Label example', async ({ page }) => {
-  await page.goto(`${storyBookElements.docsUrl}/label--example`);
+  await page.goto(`${storyBookElements.storyUrl}/label--example`);
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByText('Label'),
   ).toBeVisible();
@@ -11,7 +11,7 @@ test('Label example', async ({ page }) => {
 });
 
 test('Label with input', async ({ page }) => {
-  await page.goto(`${storyBookElements.docsUrl}/label--with-input`);
+  await page.goto(`${storyBookElements.storyUrl}/label--with-input`);
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByLabel('Label'),
   ).toBeVisible();

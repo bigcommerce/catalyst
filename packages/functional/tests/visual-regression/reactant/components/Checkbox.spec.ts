@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 import * as storyBookElements from '../StoryBookElements';
 
 test('Base checkbox', async ({ page }) => {
-  await page.goto(`${storyBookElements.docsUrl}/checkbox--base-checkbox`);
+  await page.goto(`${storyBookElements.storyUrl}/checkbox--base-checkbox`);
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
@@ -11,7 +11,7 @@ test('Base checkbox', async ({ page }) => {
 });
 
 test('Focused checkbox', async ({ page }) => {
-  await page.goto(`${storyBookElements.docsUrl}/checkbox--focused-checkbox`);
+  await page.goto(`${storyBookElements.storyUrl}/checkbox--focused-checkbox`);
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
@@ -19,7 +19,7 @@ test('Focused checkbox', async ({ page }) => {
 });
 
 test('Checked checkbox', async ({ page }) => {
-  await page.goto(`${storyBookElements.docsUrl}/checkbox--checked-checkbox`);
+  await page.goto(`${storyBookElements.storyUrl}/checkbox--checked-checkbox`);
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
@@ -27,7 +27,7 @@ test('Checked checkbox', async ({ page }) => {
 });
 
 test('Disabled checkbox', async ({ page }) => {
-  await page.goto(`${storyBookElements.docsUrl}/checkbox--disabled-checkbox`);
+  await page.goto(`${storyBookElements.storyUrl}/checkbox--disabled-checkbox`);
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
@@ -35,7 +35,7 @@ test('Disabled checkbox', async ({ page }) => {
 });
 
 test('Disabled checked checkbox', async ({ page }) => {
-  await page.goto(`${storyBookElements.docsUrl}/checkbox--disabled-checked-checkbox`);
+  await page.goto(`${storyBookElements.storyUrl}/checkbox--disabled-checked-checkbox`);
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
@@ -43,7 +43,7 @@ test('Disabled checked checkbox', async ({ page }) => {
 });
 
 test('Checkbox with label', async ({ page }) => {
-  await page.goto(`${storyBookElements.docsUrl}/checkbox--checkbox-with-label`);
+  await page.goto(`${storyBookElements.storyUrl}/checkbox--checkbox-with-label`);
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
@@ -51,7 +51,7 @@ test('Checkbox with label', async ({ page }) => {
 });
 
 test('Checkbox with custom icon', async ({ page }) => {
-  await page.goto(`${storyBookElements.docsUrl}/checkbox--checkbox-with-custom-icon`);
+  await page.goto(`${storyBookElements.storyUrl}/checkbox--checkbox-with-custom-icon`);
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();

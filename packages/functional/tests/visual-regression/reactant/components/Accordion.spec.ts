@@ -2,24 +2,21 @@ import { expect, test } from '@playwright/test';
 
 import * as storyBookElements from '../StoryBookElements';
 
-const collapseBtn = '#story--accordion--basic-example--primary-inner';
-
 test('accordion', async ({ page }) => {
-  await page.goto(`${storyBookElements.docsUrl}/accordion--docs`);
+  await page.goto(`${storyBookElements.storyUrl}/accordion--basic-example`);
   await expect(
-    page.frameLocator(storyBookElements.storyBookFrame).getByRole('heading', { name: 'Accordion' }),
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
   await expect(page).toHaveScreenshot();
 });
 
 test('accordion collapsed', async ({ page }) => {
-  await page.goto(`${storyBookElements.docsUrl}/accordion--docs`);
+  await page.goto(`${storyBookElements.storyUrl}/accordion--basic-example`);
   await expect(
-    page.frameLocator(storyBookElements.storyBookFrame).getByRole('heading', { name: 'Accordion' }),
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
   await page
     .frameLocator(storyBookElements.storyBookFrame)
-    .locator(collapseBtn)
     .getByRole('button', { name: 'Brand' })
     .click();
   await expect(page).toHaveScreenshot();
