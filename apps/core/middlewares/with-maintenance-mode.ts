@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 
 import client from '../client';
-import { type MiddlewareFactory } from '../utils/composeMiddlewares';
+
+import { type MiddlewareFactory } from './compose-middlewares';
 
 export const withMaintenanceMode: MiddlewareFactory = (next) => {
   return async (request, event) => {

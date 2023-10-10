@@ -8,9 +8,9 @@ import { Fragment } from 'react';
 
 import client from '~/client';
 
-type Product = NonNullable<Awaited<ReturnType<typeof client.getProduct>>>;
+type Product = Awaited<ReturnType<typeof client.getProduct>>;
 
-export const VariantSelector = ({ product }: { product: Product }) => {
+export const VariantSelector = ({ product }: { product: NonNullable<Product> }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
