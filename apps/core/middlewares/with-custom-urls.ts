@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import client from '../client';
-import { type MiddlewareFactory } from '../utils/composeMiddlewares';
+
+import { type MiddlewareFactory } from './compose-middlewares';
 
 const createRewriteUrl = (path: string, request: NextRequest) => {
   const url = new URL(path, request.url);

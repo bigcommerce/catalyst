@@ -6,7 +6,6 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
 import client from '~/client';
-import { assertNonNullable } from '~/utils';
 
 import { AddToCart } from './AddToCart';
 import { BreadCrumbs } from './Breadcrumbs';
@@ -18,18 +17,14 @@ import { Reviews } from './Reviews';
 import { ReviewSummary } from './ReviewSummary';
 import { VariantSelector } from './VariantSelector';
 
+type Product = Awaited<ReturnType<typeof client.getProduct>>;
+
 const currencyFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
 });
 
-const ProductDetails = ({
-  product,
-}: {
-  product: Awaited<ReturnType<typeof client.getProduct>>;
-}) => {
-  assertNonNullable(product);
-
+const ProductDetails = ({ product }: { product: NonNullable<Product> }) => {
   return (
     <div>
       {product.brand && (
@@ -119,13 +114,7 @@ const ProductDetails = ({
   );
 };
 
-const ProductDescriptionAndReviews = ({
-  product,
-}: {
-  product: Awaited<ReturnType<typeof client.getProduct>>;
-}) => {
-  assertNonNullable(product);
-
+const ProductDescriptionAndReviews = ({ product }: { product: NonNullable<Product> }) => {
   return (
     <div className="lg:col-span-2">
       {Boolean(product.plainTextDescription) && (
@@ -149,13 +138,12 @@ const ProductDescriptionAndReviews = ({
   );
 };
 
-export default async function Product({
-  params,
-  searchParams,
-}: {
+interface ProductPageProps {
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
-}) {
+}
+
+export default async function Product({ params, searchParams }: ProductPageProps) {
   const productId = Number(params.slug);
   const { slug, ...options } = searchParams;
 
