@@ -30,7 +30,6 @@ import { experimental_useFormStatus as useFormStatus } from 'react-dom';
 
 import client from '~/client';
 import { VariantSelector } from '~/components/VariantSelector';
-import { createUrl } from '~/utils';
 
 const ProductContext = createContext<{ product: Awaited<ReturnType<typeof client.getProduct>> }>({
   product: null,
@@ -73,7 +72,10 @@ export const ProductSheetContent = ({
       setError(false);
 
       try {
-        const url = createUrl(`/api/product/${productId}`, searchParams);
+        const paramsString = searchParams.toString();
+        const queryString = `${paramsString.length ? '?' : ''}${paramsString}`;
+
+        const url = `/api/product/${productId}${queryString}`;
 
         const response = await fetch(url);
 
