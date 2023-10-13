@@ -10,7 +10,7 @@ import {
   NavigationMenuToggle,
   NavigationMenuTrigger,
 } from '@bigcommerce/reactant/NavigationMenu';
-import { ChevronDown, Search, ShoppingCart, User } from 'lucide-react';
+import { ChevronDown, Scale, Search, ShoppingCart, User } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { PropsWithChildren, Suspense } from 'react';
@@ -58,6 +58,33 @@ const Cart = async () => {
         {Boolean(count) && <Badge>{count}</Badge>}
       </p>
     </CartLink>
+  );
+};
+
+const CompareLink = ({ children }: PropsWithChildren) => {
+  const productIds = cookies().get('compareProductsIds')?.value || '';
+
+  return (
+    <NavigationMenuLink asChild>
+      <LinkNoCache className="relative" href={`/compare?ids=${productIds}`}>
+        {children}
+      </LinkNoCache>
+    </NavigationMenuLink>
+  );
+};
+
+const Compare = () => {
+  const value = cookies().get('compareProductsIds')?.value;
+  const count = value ? value.split(',').length : 0;
+
+  return (
+    <CompareLink>
+      <p role="status">
+        <span className="sr-only">Compare Items</span>
+        <Scale aria-hidden="true" />
+        {Boolean(count) && <Badge>{count}</Badge>}
+      </p>
+    </CompareLink>
   );
 };
 
@@ -173,6 +200,11 @@ export const Header = () => {
                 <Link aria-label="Login" href="/login">
                   <User />
                 </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Compare />
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
