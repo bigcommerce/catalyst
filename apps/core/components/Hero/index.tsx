@@ -11,6 +11,8 @@ import {
 } from '@bigcommerce/reactant/Slideshow';
 import Image from 'next/image';
 
+import SlideshowBG from './slideshow-bg-01.jpg';
+
 export const Hero = () => (
   <Slideshow>
     <SlideshowContent>
@@ -21,7 +23,7 @@ export const Hero = () => (
             className="absolute -z-10 object-cover"
             fill
             priority
-            src="/slideshow-bg-01.jpg"
+            src={SlideshowBG}
           />
           <div className="flex flex-col gap-4 px-12 pb-48 pt-36">
             <h2 className="text-h1">25% Off Sale</h2>
