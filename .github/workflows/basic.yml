@@ -6,14 +6,14 @@ on:
   pull_request:
     types: [opened, synchronize]
   merge_group:
-    types: [checks_requested]  
+    types: [checks_requested]
 
 jobs:
   lint-typecheck:
     name: Lint and Typecheck
 
     runs-on: ubuntu-latest
-      
+
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
