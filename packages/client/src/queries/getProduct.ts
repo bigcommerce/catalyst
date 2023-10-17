@@ -123,6 +123,7 @@ async function internalGetProduct<T>(
         sku: true,
         warranty: true,
         name: true,
+        description: true,
         plainTextDescription: {
           __args: { characterLimit: 2_000 },
         },

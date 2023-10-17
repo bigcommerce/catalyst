@@ -194,11 +194,10 @@ export default async function Compare({
               {products.map((product) => (
                 <td
                   className="border-b px-4 pb-12 pt-20"
+                  dangerouslySetInnerHTML={{ __html: product.description }}
                   headers="product-description"
                   key={product.entityId}
-                >
-                  {product.plainTextDescription}
-                </td>
+                />
               ))}
             </tr>
             <tr className="absolute mt-8">
