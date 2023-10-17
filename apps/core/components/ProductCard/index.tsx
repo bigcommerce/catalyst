@@ -8,12 +8,11 @@ import {
   ProductCard as ReactantProductCard,
 } from '@bigcommerce/reactant/ProductCard';
 import { Rating } from '@bigcommerce/reactant/Rating';
-import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useId } from 'react';
 
-import { CartAction } from './CartAction';
+import { Cart } from './Cart';
 import { Compare } from './Compare';
 
 export interface Product {
@@ -63,10 +62,6 @@ export const ProductCard = ({
   if (!product.entityId) {
     return null;
   }
-
-  const compareChecked =
-    cookies().get('compareProductsIds')?.value.split(',').includes(String(product.entityId)) ||
-    false;
 
   return (
     <ReactantProductCard key={product.entityId}>
@@ -137,10 +132,10 @@ export const ProductCard = ({
               {currencyFormatter.format(product.prices.price.value)}
             </ProductCardInfoPrice>
           )}
-          <Compare checked={compareChecked} productId={product.entityId} />
+          <Compare productId={product.entityId} />
         </div>
       </ProductCardInfo>
-      <CartAction product={product} />
+      <Cart product={product} />
     </ReactantProductCard>
   );
 };

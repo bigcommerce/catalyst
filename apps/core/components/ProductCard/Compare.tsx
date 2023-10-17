@@ -2,17 +2,20 @@
 
 import { Checkbox } from '@bigcommerce/reactant/Checkbox';
 import { Label } from '@bigcommerce/reactant/Label';
-import { startTransition, useEffect, useId, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 
-import { handleUpdateCompare } from './_actions/updateCompare';
+import { useCompareProductsContext } from '../CompareProductsContext';
 
-export const Compare = ({ checked, productId }: { checked: boolean; productId: number }) => {
+export const Compare = ({ productId }: { productId: number }) => {
   const checkboxId = useId();
-  const [checkedState, setCheckedState] = useState(checked);
+  const [checkedState, setCheckedState] = useState(false);
+  const { productIds, setProductIds } = useCompareProductsContext();
 
   useEffect(() => {
+    const checked = productIds.includes(String(productId));
+
     setCheckedState(checked);
-  }, [checked]);
+  }, [productIds, productId]);
 
   return (
     <div className="flex items-center gap-3">
@@ -22,9 +25,12 @@ export const Compare = ({ checked, productId }: { checked: boolean; productId: n
         id={checkboxId}
         onCheckedChange={(isChecked) => {
           setCheckedState(Boolean(isChecked));
-          startTransition(() => {
-            handleUpdateCompare(productId, Boolean(isChecked));
-          });
+
+          if (isChecked) {
+            setProductIds([...productIds, String(productId)]);
+          } else {
+            setProductIds(productIds.filter((id) => id !== String(productId)));
+          }
         }}
       />
       <Label htmlFor={checkboxId}>Compare</Label>
