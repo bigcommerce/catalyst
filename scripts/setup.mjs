@@ -1,4 +1,5 @@
 import { confirm, input, password, select } from "@inquirer/prompts";
+import { readFile, writeFile } from 'fs/promises';
 
 /**
  * @param {{ storeHash: string, accessToken: string }} config
@@ -526,19 +527,113 @@ const promptCustomerImpersonationToken = async ({
   return data.token;
 };
 
+// Sourced and modified from the Vercel CLI: https://github.com/vercel/vercel/blob/da300030c999b3555c608a321c9d0a4d36923a5a/packages/cli/src/util/parse-env.ts
+// https://github.com/vercel/vercel/blob/da300030c999b3555c608a321c9d0a4d36923a5a/LICENSE
+/**
+ * @param { string | string[] | Record<string, string> } env
+ * @returns { Record<string, string> }
+ */
+export const parseEnv = (env) => {
+  if (!env) {
+    return {};
+  }
+
+  if (typeof env === 'string') {
+    env = [env];
+  }
+
+  if (Array.isArray(env)) {
+    return env.reduce((o, e) => {
+      let key;
+      let value;
+      const equalsSign = e.indexOf('=');
+
+      if (equalsSign === -1) {
+        key = e;
+      } else {
+        key = e.slice(0, equalsSign);
+        value = e.slice(equalsSign + 1);
+      }
+
+      if (typeof value !== 'undefined') {
+        o[key] = value;
+      }
+
+      return o;
+    }, {});
+  }
+
+  return env;
+};
+
+// Sourced and modified from the Vercel CLI: https://github.com/vercel/vercel/blob/da300030c999b3555c608a321c9d0a4d36923a5a/packages/cli/src/util/env/diff-env-files.ts#L7-L29
+// https://github.com/vercel/vercel/blob/da300030c999b3555c608a321c9d0a4d36923a5a/LICENSE
+/**
+ * @param { string } envPath
+ * @returns { Promise<Record<string, string | undefined> | undefined> }
+ */
+export async function createEnvObject(envPath) {
+  const envArr = (await readFile(envPath, 'utf-8'))
+    // remove double quotes
+    .replace(/"/g, '')
+    // split on new line
+    .split(/\r?\n|\r/)
+    // filter comments
+    .filter(line => /^[^#]/.test(line))
+    // needs equal sign
+    .filter(line => /=/i.test(line));
+
+  const parsedEnv = parseEnv(envArr);
+
+  if (Object.keys(parsedEnv).length === 0) {
+    return;
+  }
+
+  return parsedEnv;
+}
+
+// Sourced from the Vercel CLI: https://github.com/vercel/vercel/blob/da300030c999b3555c608a321c9d0a4d36923a5a/packages/cli/src/commands/env/pull.ts#L176-L182
+// https://github.com/vercel/vercel/blob/da300030c999b3555c608a321c9d0a4d36923a5a/LICENSE
+/**
+ * @param { string | undefined } value
+ * @returns { string }
+ */
+function escapeValue(value) {
+  return value
+    ? value
+        .replace(new RegExp('\n', 'g'), '\\n') // combine newlines (unix) into one line
+        .replace(new RegExp('\r', 'g'), '\\r') // combine newlines (windows) into one line
+    : '';
+}
+
 /** @param {{ storeHash: string, accessToken: string, channelId: number, customerImpersonationToken: string }} env */
-const logEnv = ({
+const writeEnv = async ({
   storeHash,
   accessToken,
   channelId,
   customerImpersonationToken,
 }) => {
-  console.log(`\nBIGCOMMERCE_STORE_HASH=${storeHash}`);
-  console.log(`BIGCOMMERCE_ACCESS_TOKEN=${accessToken}`);
-  console.log(`BIGCOMMERCE_CHANNEL_ID=${channelId}`);
-  console.log(
-    `BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN=${customerImpersonationToken}`
-  );
+  const records = await createEnvObject('.env.example');
+
+  if (!records) {
+    throw new Error('Could not read .env.example');
+  }
+
+  // Add new or overwrite existing values
+  records['BIGCOMMERCE_STORE_HASH'] = storeHash;
+  records['BIGCOMMERCE_ACCESS_TOKEN'] = accessToken;
+  records['BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN'] = customerImpersonationToken;
+  records['BIGCOMMERCE_CHANNEL_ID'] = `${channelId}`;
+
+  const contents =
+    Object.keys(records)
+      .map(key => `${key}="${escapeValue(records[key])}"`)
+      .join('\n') +
+    '\n';
+
+  await writeFile(`.env.local`, contents, { encoding: 'utf-8' });
+  
+  console.log('✅ Successfully created and populated your .env.local');
 };
 
 const setup = async () => {
@@ -555,7 +650,7 @@ const setup = async () => {
     channelId,
   });
 
-  logEnv({ storeHash, accessToken, channelId, customerImpersonationToken });
+  await writeEnv({ storeHash, accessToken, channelId, customerImpersonationToken });
 };
 
 setup();
