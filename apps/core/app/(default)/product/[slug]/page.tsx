@@ -3,6 +3,7 @@ import { Counter } from '@bigcommerce/reactant/Counter';
 import { Label } from '@bigcommerce/reactant/Label';
 import { Heart } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
 import { Suspense } from 'react';
 
 import client from '~/client';
@@ -141,6 +142,30 @@ const ProductDescriptionAndReviews = ({ product }: { product: NonNullable<Produc
 interface ProductPageProps {
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export async function generateMetadata({ params, searchParams }: ProductPageProps): Promise<Metadata> {
+  const productId = Number(params.slug);
+  const { slug, ...options } = searchParams;
+
+  const optionValueIds = Object.keys(options)
+    .map((option) => ({
+      optionEntityId: Number(option),
+      valueEntityId: Number(searchParams[option]),
+    }))
+    .filter(
+      (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
+    );
+
+  const product = await client.getProduct({ productId, optionValueIds });
+
+  if (!product) {
+    return {};
+  }
+
+  return {
+    title: product.name, // TODO: combine with store name from settings over here
+  }
 }
 
 export default async function Product({ params, searchParams }: ProductPageProps) {
