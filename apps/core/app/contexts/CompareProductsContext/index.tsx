@@ -2,24 +2,27 @@
 
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 
+type CheckedProductIds = Record<string, boolean>;
+
 const CompareProductsContext = createContext<{
-  productIds: string[];
-  setProductIds: (productIds: string[]) => void;
+  productIds: CheckedProductIds;
+  setProductIds: (productIds: CheckedProductIds) => void;
 } | null>(null);
 
 export const CompareProductsProvider = ({ children }: PropsWithChildren) => {
-  const [productIds, setProductIds] = useState<string[]>([]);
+  const [productIds, setProductIds] = useState<CheckedProductIds>({});
 
   useEffect(() => {
     const ids = sessionStorage.getItem('compareProductIds');
 
-    if (ids) {
-      setProductIds(ids.split(','));
+    if (ids && ids !== '{}') {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      setProductIds(JSON.parse(ids));
     }
   }, []);
 
   useEffect(() => {
-    sessionStorage.setItem('compareProductIds', productIds.join(','));
+    sessionStorage.setItem('compareProductIds', JSON.stringify(productIds));
   }, [productIds]);
 
   return (

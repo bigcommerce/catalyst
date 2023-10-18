@@ -12,9 +12,13 @@ import { LinkNoCache } from './LinkNoCache';
 const CompareLink = forwardRef<ElementRef<'a'>, ComponentPropsWithRef<'a'>>(({ children }, ref) => {
   const { productIds } = useCompareProductsContext();
 
+  const ids = Object.keys(productIds)
+    .filter((id) => productIds[id])
+    .join(',');
+
   return (
     <NavigationMenuLink asChild ref={ref}>
-      <LinkNoCache className="relative" href={`/compare?ids=${productIds.join(',')}`}>
+      <LinkNoCache className="relative" href={`/compare?ids=${ids}`}>
         {children}
       </LinkNoCache>
     </NavigationMenuLink>
@@ -23,7 +27,7 @@ const CompareLink = forwardRef<ElementRef<'a'>, ComponentPropsWithRef<'a'>>(({ c
 
 export const Compare = forwardRef<ElementRef<'a'>, ComponentPropsWithRef<'a'>>((_, ref) => {
   const { productIds } = useCompareProductsContext();
-  const count = productIds.length;
+  const count = Object.keys(productIds).filter((id) => productIds[id]).length;
 
   return (
     <CompareLink ref={ref}>

@@ -12,19 +12,14 @@ export const Compare = ({ productId }: { productId: number }) => {
   const { productIds, setProductIds } = useCompareProductsContext();
 
   useEffect(() => {
-    const checked = productIds.includes(String(productId));
+    const checked = productIds[productId];
 
-    setCheckedState(checked);
+    setCheckedState(checked ?? false);
   }, [productIds, productId]);
 
   const handleOnCheckedChange = (isChecked: boolean) => {
     setCheckedState(isChecked);
-
-    if (isChecked) {
-      setProductIds([...productIds, String(productId)]);
-    } else {
-      setProductIds(productIds.filter((id) => id !== String(productId)));
-    }
+    setProductIds({ ...productIds, [productId]: isChecked });
   };
 
   return (
