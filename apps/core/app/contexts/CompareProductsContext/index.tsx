@@ -1,18 +1,10 @@
 'use client';
 
-import {
-  createContext,
-  Dispatch,
-  PropsWithChildren,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 
 const CompareProductsContext = createContext<{
   productIds: string[];
-  setProductIds: Dispatch<SetStateAction<string[]>>;
+  setProductIds: (productIds: string[]) => void;
 } | null>(null);
 
 export const CompareProductsProvider = ({ children }: PropsWithChildren) => {

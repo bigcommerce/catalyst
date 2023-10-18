@@ -5,7 +5,7 @@ import { NavigationMenuLink } from '@bigcommerce/reactant/NavigationMenu';
 import { Scale } from 'lucide-react';
 import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
-import { useCompareProductsContext } from '../CompareProductsContext';
+import { useCompareProductsContext } from '../../app/contexts/CompareProductsContext';
 
 import { LinkNoCache } from './LinkNoCache';
 
