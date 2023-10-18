@@ -52,9 +52,9 @@ export async function handleAddToCart(data: FormData) {
   // Create cart
   const cart = await client.createCart([
     {
-      productEntityId: Number(data.get('product_id')),
+      productEntityId,
       selectedOptions,
-      quantity: Number(data.get('quantity')),
+      quantity,
     },
   ]);
 

@@ -1,21 +1,45 @@
 'use server';
 
+import { CartSelectedOptionsInput } from '@bigcommerce/catalyst-client';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
 import client from '~/client';
 
-export const handleAddToCart = async (data: FormData) => {
+export async function handleAddToCart(data: FormData) {
   const productEntityId = Number(data.get('product_id'));
+  const quantity = Number(data.get('quantity'));
+
+  const product = await client.getProduct({ productId: productEntityId });
 
   const cartId = cookies().get('cartId')?.value;
+
+  const selectedOptions =
+    product?.productOptions?.reduce<CartSelectedOptionsInput>((accum, option) => {
+      const optionInput = {
+        optionEntityId: option.entityId,
+        optionValueEntityId: Number(data.get(`attribute[${option.entityId}]`)),
+      };
+
+      switch (option.__typename) {
+        case 'MultipleChoiceOption':
+          if (accum.multipleChoices) {
+            return { ...accum, multipleChoices: [...accum.multipleChoices, optionInput] };
+          }
+
+          return { ...accum, multipleChoices: [optionInput] };
+      }
+
+      return accum;
+    }, {}) ?? {};
 
   if (cartId) {
     await client.addCartLineItem(cartId, {
       lineItems: [
         {
           productEntityId,
-          quantity: 1,
+          selectedOptions,
+          quantity,
         },
       ],
     });
@@ -25,7 +49,14 @@ export const handleAddToCart = async (data: FormData) => {
     return;
   }
 
-  const cart = await client.createCart([{ productEntityId, quantity: 1 }]);
+  // Create cart
+  const cart = await client.createCart([
+    {
+      productEntityId,
+      selectedOptions,
+      quantity,
+    },
+  ]);
 
   if (cart) {
     cookies().set({
@@ -39,4 +70,4 @@ export const handleAddToCart = async (data: FormData) => {
   }
 
   revalidateTag('cart');
-};
+}
