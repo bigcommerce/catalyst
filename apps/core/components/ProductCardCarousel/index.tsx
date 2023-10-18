@@ -1,17 +1,15 @@
-'use client';
-
 import {
   Carousel,
   CarouselContent,
   CarouselNextIndicator,
-  CarouselPagination,
-  CarouselPaginationTab,
   CarouselPreviousIndicator,
   CarouselSlide,
 } from '@bigcommerce/reactant/Carousel';
 import { useId } from 'react';
 
 import { Product, ProductCard } from '../ProductCard';
+
+import { Pagination } from './Pagination';
 
 export const ProductCardCarousel = ({
   title,
@@ -65,19 +63,7 @@ export const ProductCardCarousel = ({
           </CarouselSlide>
         ))}
       </CarouselContent>
-      <CarouselPagination>
-        {({ selectedIndex, scrollTo }) =>
-          groupedProducts.map((_, index) => (
-            <CarouselPaginationTab
-              aria-controls={`${id}-slide-${index + 1}`}
-              aria-label={`Slide ${index + 1}`}
-              isSelected={selectedIndex === index}
-              key={index}
-              onClick={() => scrollTo(index)}
-            />
-          ))
-        }
-      </CarouselPagination>
+      <Pagination groupedProducts={groupedProducts} id={id} />
     </Carousel>
   );
 };

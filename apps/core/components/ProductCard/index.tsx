@@ -12,7 +12,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useId } from 'react';
 
-import { CartAction } from './CartAction';
+import { Cart } from './Cart';
+import { Compare } from './Compare';
 
 export interface Product {
   entityId: number;
@@ -85,7 +86,7 @@ export const ProductCard = ({
           )}
         </div>
       </ProductCardImage>
-      <ProductCardInfo>
+      <ProductCardInfo className="justify-end">
         {product.brand && <ProductCardInfoBrandName>{product.brand.name}</ProductCardInfoBrandName>}
         <ProductCardInfoProductName>
           {product.path ? (
@@ -93,7 +94,7 @@ export const ProductCard = ({
               className="focus:ring-primary-blue/20 focus:outline-none focus:ring-4"
               href={product.path}
             >
-              <span aria-hidden="true" className="absolute inset-0 bottom-12" />
+              <span aria-hidden="true" className="absolute inset-0 bottom-20" />
               {product.name}
             </Link>
           ) : (
@@ -125,13 +126,16 @@ export const ProductCard = ({
             </div>
           </div>
         )}
-        {product.prices?.price?.value !== undefined && (
-          <ProductCardInfoPrice>
-            {currencyFormatter.format(product.prices.price.value)}
-          </ProductCardInfoPrice>
-        )}
+        <div className="flex flex-wrap items-center justify-between pt-2">
+          {product.prices?.price?.value !== undefined && (
+            <ProductCardInfoPrice className="w-[144px] shrink-0 pt-0">
+              {currencyFormatter.format(product.prices.price.value)}
+            </ProductCardInfoPrice>
+          )}
+          <Compare productId={product.entityId} />
+        </div>
       </ProductCardInfo>
-      <CartAction product={product} />
+      <Cart product={product} />
     </ReactantProductCard>
   );
 };

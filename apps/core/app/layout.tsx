@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google';
 import { PropsWithChildren } from 'react';
 
 import './globals.css';
+import { Providers } from './providers';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -20,7 +21,9 @@ export const metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html className={`${inter.variable} font-sans`} lang="en">
-      <body className="flex h-screen flex-col">{children}</body>
+      <body className="flex h-screen flex-col">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

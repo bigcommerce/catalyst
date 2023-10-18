@@ -5,7 +5,7 @@ import { AddToCart } from './AddToCart';
 
 import { Product } from '.';
 
-export const CartAction = ({ product }: { product: Partial<Product> }) => {
+export const Cart = ({ product }: { product: Partial<Product> }) => {
   if (!product.entityId) {
     return null;
   }
