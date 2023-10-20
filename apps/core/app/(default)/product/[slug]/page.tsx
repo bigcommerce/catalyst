@@ -144,28 +144,30 @@ interface ProductPageProps {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export async function generateMetadata({ params, searchParams }: ProductPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const productId = Number(params.slug);
-  const { slug, ...options } = searchParams;
-
-  const optionValueIds = Object.keys(options)
-    .map((option) => ({
-      optionEntityId: Number(option),
-      valueEntityId: Number(searchParams[option]),
-    }))
-    .filter(
-      (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
-    );
-
-  const product = await client.getProduct({ productId, optionValueIds });
+  const product: Product = await client.getProduct({ productId });
 
   if (!product) {
     return {};
   }
 
+  const {pageTitle, metaDescription, metaKeywords} = product.seo;
+  const { url, altText: alt } = product.defaultImage || {};
+
   return {
-    title: product.name, // TODO: combine with store name from settings over here
-  }
+    title: pageTitle || product.name,
+    description: metaDescription || product.plainTextDescription,
+    keywords: metaKeywords ? metaKeywords.split(',') : null,
+    openGraph: url ? {
+      images: [
+        {
+          url,
+          alt,
+        },
+      ],
+    } : null,
+  };
 }
 
 export default async function Product({ params, searchParams }: ProductPageProps) {
