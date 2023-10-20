@@ -2,8 +2,8 @@ import { Button } from '@bigcommerce/reactant/Button';
 import { Counter } from '@bigcommerce/reactant/Counter';
 import { Label } from '@bigcommerce/reactant/Label';
 import { Heart } from 'lucide-react';
-import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
 import { Suspense } from 'react';
 
 import client from '~/client';
@@ -198,23 +198,21 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     return {};
   }
 
-  const { pageTitle, metaDescription, metaKeywords } = product.seo;
+  const {pageTitle, metaDescription, metaKeywords} = product.seo;
   const { url, altText: alt } = product.defaultImage || {};
 
   return {
     title: pageTitle || product.name,
-    description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
+    description: metaDescription || product.plainTextDescription,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
-    openGraph: url
-      ? {
-          images: [
-            {
-              url,
-              alt,
-            },
-          ],
-        }
-      : null,
+    openGraph: url ? {
+      images: [
+        {
+          url,
+          alt,
+        },
+      ],
+    } : null,
   };
 }
 
