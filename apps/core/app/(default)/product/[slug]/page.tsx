@@ -118,10 +118,10 @@ const ProductDetails = ({ product }: { product: NonNullable<Product> }) => {
 const ProductDescriptionAndReviews = ({ product }: { product: NonNullable<Product> }) => {
   return (
     <div className="lg:col-span-2">
-      {Boolean(product.plainTextDescription) && (
+      {Boolean(product.description) && (
         <>
           <h2 className="mb-4 text-h5">Description</h2>
-          <p>{product.plainTextDescription}</p>
+          <div dangerouslySetInnerHTML={{ __html: product.description }} />
         </>
       )}
 
