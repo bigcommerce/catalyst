@@ -52,7 +52,7 @@ export const getProducts = async <T>(
             },
             name: true,
             path: true,
-            plainTextDescription: true,
+            description: true,
             reviewSummary: {
               summationOfRatings: true,
             },
