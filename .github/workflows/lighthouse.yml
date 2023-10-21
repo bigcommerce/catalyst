@@ -11,15 +11,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@main
 
-      - name: Add comment to PR
-        id: loading_comment_to_pr
-        uses: marocchino/sticky-pull-request-comment@v2.0.0
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          number: ${{ github.event.issue.number }}
-          header: lighthouse
-          message: |
-            Running Lighthouse audit...
+      - uses: pnpm/action-setup@v2
 
       - name: Capture Vercel preview URL
         id: vercel_preview_url
@@ -61,5 +53,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           number: ${{ github.event.pull_request.number }}
           header: lighthouse
-          message: |
-            ${{ steps.format_lighthouse_score.outputs.comment }}
+          message: ${{ steps.format_lighthouse_score.outputs.comment }}
