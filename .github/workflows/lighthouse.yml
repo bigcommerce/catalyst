@@ -1,10 +1,11 @@
-name: Lighthouse Audit on Vercel Preview URL
+name: Lighthouse Report
 
 on:
   deployment_status
 
 jobs:
   generate_lighthouse_audit:
+    name: Deployment Audit
     timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
@@ -48,7 +49,7 @@ jobs:
 
       - name: Add comment to PR
         id: comment_to_pr
-        uses: marocchino/sticky-pull-request-comment@v1
+        uses: marocchino/sticky-pull-request-comment@v2.0.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           number: ${{ github.event.pull_request.number }}
