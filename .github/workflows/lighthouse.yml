@@ -11,10 +11,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@main
@@ -54,14 +50,17 @@ jobs:
             const comment = lighthouseCommentMaker({ lighthouseOutputs });
             core.setOutput("comment", comment);
 
-      - name: Add Lighthouse stats as comment
+      - name: Find pull request
+        uses: jwalton/gh-find-current-pr@v1
+        id: finder
+
+      - name: Add comment to PR
         id: comment_to_pr
-        uses: actions/github-script@v5
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
-          script: |
-            github.rest.issues.createComment({
-              number: ${{ github.event.pull_request.number }}
-              header: lighthouse
-              repo: context.repo.repo,
-              body: ${{ steps.format_lighthouse_score.outputs.comment }}
-            })
+          append: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ steps.finder.outputs.pr }}
+          header: lighthouse
+          message: ${{ steps.format_lighthouse_score.outputs.comment }}
+
