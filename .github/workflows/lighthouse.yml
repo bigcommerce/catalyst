@@ -50,7 +50,7 @@ jobs:
         id: comment_to_pr
         uses: marocchino/sticky-pull-request-comment@v2
         with:
-          append: true
+          recreate: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           number: ${{ steps.finder.outputs.pr }}
           header: lighthouse
