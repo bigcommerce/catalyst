@@ -9,7 +9,7 @@ jobs:
 
     timeout-minutes: 30
 
-    if: !contains(fromJson(['makeswift', 'storybook']), github.event.deployment_status.target_url)
+    if: ${{ contains('makeswift storybook', github.event.deployment_status.target_url) }}
     runs-on: ubuntu-latest
 
     steps:
