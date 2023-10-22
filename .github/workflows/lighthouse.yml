@@ -3,14 +3,18 @@ name: Lighthouse Report
 on:
   deployment_status
 
-permissions:
-  pull-requests: write
-
 jobs:
   generate_lighthouse_audit:
     name: Deployment Audit
+
     timeout-minutes: 30
+
     runs-on: ubuntu-latest
+
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@main
