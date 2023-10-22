@@ -58,7 +58,6 @@ jobs:
         id: comment_to_pr
         uses: actions/github-script@v5
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.rest.issues.createComment({
               number: ${{ github.event.pull_request.number }}
