@@ -23,7 +23,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           max_timeout: 60
-      - run: echo ${{steps.vercel_preview_url.outputs.url}}
+      - run: echo ${{ steps.vercel_preview_url.outputs.url }}
+      - run: echo ${{ github.event.deployment_status.target_url }}
 
       - name: Audit preview URL with Lighthouse
         id: lighthouse_audit
