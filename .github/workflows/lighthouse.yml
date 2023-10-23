@@ -21,19 +21,18 @@ jobs:
         id: requires_audit
         uses: actions/github-script@v6
         with:
+          result-encoding: string
           script: |
             const DEPLOY_URL = ${{ github.event.deployment_status.target_url }};
             
             if (DEPLOY_URL.contains("storybook") || DEPLOY_URL.contains("makeswift")) {
-              const requires_audit = false;
+              return false;
             } else {
-              const requires_audit = true;
+              return true;
             }
-            
-            core.setOutput("requires_audit", requires_audit);
 
       - name: Audit preview URL with Lighthouse
-        if: steps.requires_audit.outputs.requires_audit
+        if: ${{ steps.requires_audit.outputs.result == 'true' }}
         id: lighthouse_audit
         uses: treosh/lighthouse-ci-action@v10
         with:
@@ -44,7 +43,7 @@ jobs:
           runs: 3
 
       - name: Format lighthouse score
-        if: steps.requires_audit.outputs.requires_audit
+        if: ${{ steps.requires_audit.outputs.result == 'true' }}
         id: format_lighthouse_score
         uses: actions/github-script@v6
         with:
@@ -60,12 +59,12 @@ jobs:
             core.setOutput("comment", comment);
 
       - name: Find pull request
-        if: steps.requires_audit.outputs.requires_audit
+        if: ${{ steps.requires_audit.outputs.result == 'true' }}
         uses: jwalton/gh-find-current-pr@v1
         id: finder
 
       - name: Add comment to PR
-        if: steps.requires_audit.outputs.requires_audit
+        if: ${{ steps.requires_audit.outputs.result == 'true' }}
         id: comment_to_pr
         uses: marocchino/sticky-pull-request-comment@v2
         with:
