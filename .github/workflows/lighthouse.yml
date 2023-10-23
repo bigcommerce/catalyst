@@ -9,7 +9,7 @@ jobs:
 
     timeout-minutes: 30
 
-    if: ${{ contains(github.event.deployment_status.target_url, '[makeswift]') == 'false' }}
+    if: !contains(github.event.deployment_status.target_url, 'makeswift')
     runs-on: ubuntu-latest
 
     steps:
@@ -17,6 +17,9 @@ jobs:
         uses: actions/checkout@main
 
       - uses: pnpm/action-setup@v2
+
+      - name: Needs audit
+        run: echo ${{ github.event.deployment_status.target_url }}
 
       - name: Audit preview URL with Lighthouse
         id: lighthouse_audit
