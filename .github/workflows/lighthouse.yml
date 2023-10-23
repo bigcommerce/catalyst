@@ -38,7 +38,6 @@ jobs:
         if: ${{ env.AUDIT == 'true' }}
         id: lighthouse_audit
         uses: treosh/lighthouse-ci-action@v10
-        run: echo ${{ env.AUDIT }}
         with:
           urls: |
             ${{ github.event.deployment_status.target_url }}
