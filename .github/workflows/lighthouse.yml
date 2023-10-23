@@ -9,7 +9,6 @@ jobs:
 
     timeout-minutes: 30
 
-    if: !contains(github.event.deployment_status.target_url, 'makeswift')
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +18,17 @@ jobs:
       - uses: pnpm/action-setup@v2
 
       - name: Needs audit
-        run: echo ${{ github.event.deployment_status.target_url }}
+        env:
+          DEPLOY_URL: ${{ github.event.deployment_status.target_url }}
+        run: |
+          echo ${{ github.event.deployment_status.target_url }}
+          if [[ $DEPLOY_URL =~ "makeswift" ]]; then
+            echo "No audit required."
+          elif [[ $DEPLOY_URL =~ "storybook" ]]; then
+            echo "No audit required."
+          else
+            echo "Audit required."
+          fi
 
       - name: Audit preview URL with Lighthouse
         id: lighthouse_audit
