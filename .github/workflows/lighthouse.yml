@@ -19,15 +19,17 @@ jobs:
 
       - name: Requires audit
         id: requires_audit
+        uses: actions/github-script@v5
         env:
           DEPLOY_URL: ${{ github.event.deployment_status.target_url }}
-        run: |
-          if (DEPLOY_URL.contains('storybook') || DEPLOY_URL.contains('makeswift')) {
-            const requires_audit = false;
-          } else {
-            const requires_audit = true;
-          }
-          core.setOutput("requires_audit", requires_audit);
+        with:
+          script: |
+            if (DEPLOY_URL.contains("storybook") || DEPLOY_URL.contains("makeswift")) {
+              const requires_audit = false;
+            } else {
+              const requires_audit = true;
+            }
+            core.setOutput("requires_audit", requires_audit);
 
       - name: Audit preview URL with Lighthouse
         if: steps.requires_audit.outputs.requires_audit
