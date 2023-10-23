@@ -157,7 +157,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
   return {
     title: pageTitle || product.name,
-    description: metaDescription || '',
+    description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
     openGraph: url
       ? {
