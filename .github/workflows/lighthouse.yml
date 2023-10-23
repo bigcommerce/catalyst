@@ -18,24 +18,24 @@ jobs:
       - uses: pnpm/action-setup@v2
 
       - name: Requires audit
+        id: requires_audit
         env:
           DEPLOY_URL: ${{ github.event.deployment_status.target_url }}
         run: |
           echo ${{ github.event.deployment_status.target_url }}
           if [[ $DEPLOY_URL =~ "makeswift" ]]; then
             echo "No audit required."
-            export "audit_required='false'" >> $GITHUB_ENV
+            export "AUDIT='false'" >> $GITHUB_ENV
           elif [[ $DEPLOY_URL =~ "storybook" ]]; then
             echo "No audit required."
-            export "audit_required='false'" >> $GITHUB_ENV
+            export "AUDIT='false'" >> $GITHUB_ENV
           else
             echo "Audit required."
-            export "audit_required='true'" >> $GITHUB_ENV
+            export "AUDIT='true'" >> $GITHUB_ENV
           fi
-          echo "Is Audit required - $audit_required - env.audit_required - ${{ env.audit_required }}"
 
       - name: Audit preview URL with Lighthouse
-        if: ${{ env.audit_required == 'true' }}
+        if: ${{ steps.requires_audit.outputs.AUDIT }} == 'true'
         id: lighthouse_audit
         uses: treosh/lighthouse-ci-action@v10
         with:
@@ -46,7 +46,7 @@ jobs:
           runs: 3
 
       - name: Format lighthouse score
-        if: ${{ env.audit_required == 'true' }}
+        if: ${{ steps.requires_audit.outputs.AUDIT }} == 'true'
         id: format_lighthouse_score
         uses: actions/github-script@v5
         with:
@@ -62,12 +62,12 @@ jobs:
             core.setOutput("comment", comment);
 
       - name: Find pull request
-        if: ${{ env.audit_required == 'true' }}
+        if: ${{ steps.requires_audit.outputs.AUDIT }} == 'true'
         uses: jwalton/gh-find-current-pr@v1
         id: finder
 
       - name: Add comment to PR
-        if: ${{ env.audit_required == 'true' }}
+        if: ${{ steps.requires_audit.outputs.AUDIT }} == 'true'
         id: comment_to_pr
         uses: marocchino/sticky-pull-request-comment@v2
         with:
