@@ -17,20 +17,24 @@ jobs:
 
       - uses: pnpm/action-setup@v2
 
-      - name: Needs audit
+      - name: Requires audit
         env:
           DEPLOY_URL: ${{ github.event.deployment_status.target_url }}
         run: |
           echo ${{ github.event.deployment_status.target_url }}
           if [[ $DEPLOY_URL =~ "makeswift" ]]; then
             echo "No audit required."
+            echo "audit_required=false" >> $GITHUB_ENV
           elif [[ $DEPLOY_URL =~ "storybook" ]]; then
             echo "No audit required."
+            echo "audit_required=false" >> $GITHUB_ENV
           else
             echo "Audit required."
+            echo "audit_required=true" >> $GITHUB_ENV
           fi
 
       - name: Audit preview URL with Lighthouse
+        if: env.audit_required
         id: lighthouse_audit
         uses: treosh/lighthouse-ci-action@v10
         with:
@@ -41,6 +45,7 @@ jobs:
           runs: 3
 
       - name: Format lighthouse score
+        if: env.audit_required
         id: format_lighthouse_score
         uses: actions/github-script@v5
         with:
@@ -60,6 +65,7 @@ jobs:
         id: finder
 
       - name: Add comment to PR
+        if: env.audit_required
         id: comment_to_pr
         uses: marocchino/sticky-pull-request-comment@v2
         with:
