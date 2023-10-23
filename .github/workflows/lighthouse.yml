@@ -19,16 +19,17 @@ jobs:
 
       - name: Requires audit
         id: requires_audit
-        uses: actions/github-script@v5
-        env:
-          DEPLOY_URL: ${{ github.event.deployment_status.target_url }}
+        uses: actions/github-script@v6
         with:
           script: |
+            const DEPLOY_URL = ${{ github.event.deployment_status.target_url }};
+            
             if (DEPLOY_URL.contains("storybook") || DEPLOY_URL.contains("makeswift")) {
               const requires_audit = false;
             } else {
               const requires_audit = true;
             }
+            
             core.setOutput("requires_audit", requires_audit);
 
       - name: Audit preview URL with Lighthouse
@@ -45,7 +46,7 @@ jobs:
       - name: Format lighthouse score
         if: steps.requires_audit.outputs.requires_audit
         id: format_lighthouse_score
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           script: |
             const lighthouseCommentMaker = require('./.github/workflows/lighthouseCommentMaker.js');
