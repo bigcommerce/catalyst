@@ -19,22 +19,26 @@ jobs:
 
       - name: Requires audit
         id: requires_audit
-        uses: actions/github-script@v6
-        with:
-          result-encoding: string
-          script: |
-            const DEPLOY_URL = "${{ github.event.deployment_status.target_url }}";
-            
-            if (DEPLOY_URL.contains("storybook") || DEPLOY_URL.contains("makeswift")) {
-              return "false";
-            } else {
-              return "true";
-            }
+        env:
+          DEPLOY_URL: ${{ github.event.deployment_status.target_url }}
+        run: |
+          echo ${{ github.event.deployment_status.target_url }}
+          if [[ $DEPLOY_URL =~ "makeswift" ]]; then
+            echo "No audit required."
+            export "AUDIT='false'" >> $GITHUB_ENV
+          elif [[ $DEPLOY_URL =~ "storybook" ]]; then
+            echo "No audit required."
+            export "AUDIT='false'" >> $GITHUB_ENV
+          else
+            echo "Audit required."
+            export "AUDIT='true'" >> $GITHUB_ENV
+          fi
 
       - name: Audit preview URL with Lighthouse
-        if: ${{ steps.requires_audit.outputs.result == 'true' }}
+        if: ${{ env.AUDIT == 'true' }}
         id: lighthouse_audit
         uses: treosh/lighthouse-ci-action@v10
+        run: echo ${{ env.AUDIT }}
         with:
           urls: |
             ${{ github.event.deployment_status.target_url }}
@@ -43,7 +47,7 @@ jobs:
           runs: 3
 
       - name: Format lighthouse score
-        if: ${{ steps.requires_audit.outputs.result == 'true' }}
+        if: ${{ env.AUDIT == 'true' }}
         id: format_lighthouse_score
         uses: actions/github-script@v6
         with:
@@ -59,12 +63,12 @@ jobs:
             core.setOutput("comment", comment);
 
       - name: Find pull request
-        if: ${{ steps.requires_audit.outputs.result == 'true' }}
+        if: ${{ env.AUDIT == 'true' }}
         uses: jwalton/gh-find-current-pr@v1
         id: finder
 
       - name: Add comment to PR
-        if: ${{ steps.requires_audit.outputs.result == 'true' }}
+        if: ${{ env.AUDIT == 'true' }}
         id: comment_to_pr
         uses: marocchino/sticky-pull-request-comment@v2
         with:
