@@ -25,13 +25,13 @@ jobs:
           echo ${{ github.event.deployment_status.target_url }}
           if [[ $DEPLOY_URL =~ "makeswift" ]]; then
             echo "No audit required."
-            export "AUDIT=false" >> $GITHUB_ENV
+            export "AUDIT=false" >> "$GITHUB_ENV"
           elif [[ $DEPLOY_URL =~ "storybook" ]]; then
             echo "No audit required."
-            export "AUDIT=false" >> $GITHUB_ENV
+            export "AUDIT=false" >> "$GITHUB_ENV"
           else
             echo "Audit required."
-            export "AUDIT=true" >> $GITHUB_ENV
+            export "AUDIT=true" >> "$GITHUB_ENV"
           fi
 
       - name: Audit preview URL with Lighthouse
