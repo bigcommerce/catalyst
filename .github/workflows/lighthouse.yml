@@ -22,20 +22,15 @@ jobs:
         env:
           DEPLOY_URL: ${{ github.event.deployment_status.target_url }}
         run: |
-          echo ${{ github.event.deployment_status.target_url }}
-          if [[ $DEPLOY_URL =~ "makeswift" ]]; then
-            echo "No audit required."
-            export "AUDIT='false'" >> $GITHUB_ENV
-          elif [[ $DEPLOY_URL =~ "storybook" ]]; then
-            echo "No audit required."
-            export "AUDIT='false'" >> $GITHUB_ENV
-          else
-            echo "Audit required."
-            export "AUDIT='true'" >> $GITHUB_ENV
-          fi
+          if (DEPLOY_URL.contains('storybook') || DEPLOY_URL.contains('makeswift')) {
+            const requires_audit = false;
+          } else {
+            const requires_audit = true;
+          }
+          core.setOutput("requires_audit", requires_audit);
 
       - name: Audit preview URL with Lighthouse
-        if: steps.requires_audit.outputs.AUDIT == 'true'
+        if: steps.requires_audit.outputs.requires_audit
         id: lighthouse_audit
         uses: treosh/lighthouse-ci-action@v10
         with:
@@ -46,7 +41,7 @@ jobs:
           runs: 3
 
       - name: Format lighthouse score
-        if: steps.requires_audit.outputs.AUDIT == 'true'
+        if: steps.requires_audit.outputs.requires_audit
         id: format_lighthouse_score
         uses: actions/github-script@v5
         with:
@@ -62,12 +57,12 @@ jobs:
             core.setOutput("comment", comment);
 
       - name: Find pull request
-        if: steps.requires_audit.outputs.AUDIT == 'true'
+        if: steps.requires_audit.outputs.requires_audit
         uses: jwalton/gh-find-current-pr@v1
         id: finder
 
       - name: Add comment to PR
-        if: steps.requires_audit.outputs.AUDIT == 'true'
+        if: steps.requires_audit.outputs.requires_audit
         id: comment_to_pr
         uses: marocchino/sticky-pull-request-comment@v2
         with:
