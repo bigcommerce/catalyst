@@ -23,12 +23,12 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const DEPLOY_URL = ${{ github.event.deployment_status.target_url }};
+            const DEPLOY_URL = "${{ github.event.deployment_status.target_url }}";
             
             if (DEPLOY_URL.contains("storybook") || DEPLOY_URL.contains("makeswift")) {
-              return false;
+              return "false";
             } else {
-              return true;
+              return "true";
             }
 
       - name: Audit preview URL with Lighthouse
