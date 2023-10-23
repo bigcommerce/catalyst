@@ -34,7 +34,7 @@ jobs:
           fi
 
       - name: Audit preview URL with Lighthouse
-        if: ${{ env.audit_required == true }}
+        if: fromJSON(env.audit_required)
         id: lighthouse_audit
         uses: treosh/lighthouse-ci-action@v10
         with:
@@ -45,7 +45,7 @@ jobs:
           runs: 3
 
       - name: Format lighthouse score
-        if: ${{ env.audit_required == true }}
+        if: fromJSON(env.audit_required)
         id: format_lighthouse_score
         uses: actions/github-script@v5
         with:
@@ -61,12 +61,12 @@ jobs:
             core.setOutput("comment", comment);
 
       - name: Find pull request
-        if: ${{ env.audit_required == true }}
+        if: fromJSON(env.audit_required)
         uses: jwalton/gh-find-current-pr@v1
         id: finder
 
       - name: Add comment to PR
-        if: ${{ env.audit_required == true }}
+        if: fromJSON(env.audit_required)
         id: comment_to_pr
         uses: marocchino/sticky-pull-request-comment@v2
         with:
