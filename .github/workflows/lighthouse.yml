@@ -32,9 +32,9 @@ jobs:
             echo "Audit required."
             export "audit_required='true'" >> $GITHUB_ENV
           fi
+          echo "Is Audit required - $audit_required - env.audit_required - ${{ env.audit_required }}"
 
       - name: Audit preview URL with Lighthouse
-        run: echo "Is Audit required - $audit_required - env.audit_required - ${{ env.audit_required }}"
         if: ${{ env.audit_required == 'true' }}
         id: lighthouse_audit
         uses: treosh/lighthouse-ci-action@v10
