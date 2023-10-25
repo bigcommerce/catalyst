@@ -9,6 +9,10 @@ const CompareProductsContext = createContext<{
   setProductIds: (productIds: CheckedProductIds) => void;
 } | null>(null);
 
+const isCheckeredProductIds = (ids: object): ids is CheckedProductIds => {
+  return Object.values(ids).every((value) => typeof value === 'boolean');
+};
+
 export const CompareProductsProvider = ({ children }: PropsWithChildren) => {
   const [productIds, setProductIds] = useState<CheckedProductIds>({});
 
@@ -16,8 +20,11 @@ export const CompareProductsProvider = ({ children }: PropsWithChildren) => {
     const ids = sessionStorage.getItem('compareProductIds');
 
     if (ids && ids !== '{}') {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      setProductIds(JSON.parse(ids));
+      const parsedIds: unknown = JSON.parse(ids);
+
+      if (parsedIds !== null && typeof parsedIds === 'object' && isCheckeredProductIds(parsedIds)) {
+        setProductIds(parsedIds);
+      }
     }
   }, []);
 
