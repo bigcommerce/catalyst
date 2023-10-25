@@ -25,8 +25,21 @@ export const getFeaturedProducts = async <T>(
             entityId: true,
             path: true,
             prices: {
+              basePrice: {
+                currencyCode: true,
+                value: true,
+              },
               price: {
-                __scalar: true,
+                currencyCode: true,
+                value: true,
+              },
+              retailPrice: {
+                currencyCode: true,
+                value: true,
+              },
+              salePrice: {
+                currencyCode: true,
+                value: true,
               },
             },
             brand: {
