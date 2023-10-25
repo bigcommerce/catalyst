@@ -20,10 +20,18 @@ export const CompareProductsProvider = ({ children }: PropsWithChildren) => {
     const ids = sessionStorage.getItem('compareProductIds');
 
     if (ids && ids !== '{}') {
-      const parsedIds: unknown = JSON.parse(ids);
+      try {
+        const parsedIds: unknown = JSON.parse(ids);
 
-      if (parsedIds !== null && typeof parsedIds === 'object' && isCheckeredProductIds(parsedIds)) {
-        setProductIds(parsedIds);
+        if (
+          parsedIds !== null &&
+          typeof parsedIds === 'object' &&
+          isCheckeredProductIds(parsedIds)
+        ) {
+          setProductIds(parsedIds);
+        }
+      } catch (e) {
+        throw new Error('Error parsing compareProductIds from sessionStorage');
       }
     }
   }, []);
