@@ -26,7 +26,7 @@ export const VariantSelector = ({ product }: { product: NonNullable<Product> }) 
 
     optionSearchParams.set(String(optionId), String(valueId));
 
-    router.push(`${pathname}?${optionSearchParams.toString()}`, { scroll: false });
+    router.replace(`${pathname}?${optionSearchParams.toString()}`, { scroll: false });
   };
 
   return product.productOptions?.map((option) => {
