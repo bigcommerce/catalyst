@@ -10,7 +10,7 @@ import {
   NavigationMenuToggle,
   NavigationMenuTrigger,
 } from '@bigcommerce/reactant/NavigationMenu';
-import { ChevronDown, Search, ShoppingCart, User } from 'lucide-react';
+import { ChevronDown, ShoppingCart, User } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { PropsWithChildren, Suspense } from 'react';
@@ -163,11 +163,14 @@ export const Header = () => {
         <div className="flex">
           <NavigationMenuList>
             <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link aria-label="Search" href="/search">
-                  <Search />
+              <QuickSearch>
+                <Link
+                  className="focus:ring-primary-blue/20 flex focus:outline-none focus:ring-4"
+                  href="/"
+                >
+                  <StoreLogo />
                 </Link>
-              </NavigationMenuLink>
+              </QuickSearch>
             </NavigationMenuItem>
             <NavigationMenuItem className="hidden lg:flex">
               <NavigationMenuLink asChild>
@@ -192,7 +195,6 @@ export const Header = () => {
           <NavigationMenuToggle className="ms-2 lg:hidden" />
         </div>
         <NavigationMenuCollapsed>
-          <QuickSearch className="px-3" />
           <HeaderNav inCollapsedNav />
         </NavigationMenuCollapsed>
       </NavigationMenu>
