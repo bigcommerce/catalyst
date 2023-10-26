@@ -41,6 +41,16 @@ export const getFeaturedProducts = async <T>(
                 currencyCode: true,
                 value: true,
               },
+              priceRange: {
+                min: {
+                  value: true,
+                  currencyCode: true,
+                },
+                max: {
+                  value: true,
+                  currencyCode: true,
+                },
+              },
             },
             brand: {
               name: true,

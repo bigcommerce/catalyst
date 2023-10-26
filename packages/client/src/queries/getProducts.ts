@@ -73,6 +73,16 @@ export const getProducts = async <T>(
                 currencyCode: true,
                 value: true,
               },
+              priceRange: {
+                min: {
+                  value: true,
+                  currencyCode: true,
+                },
+                max: {
+                  value: true,
+                  currencyCode: true,
+                },
+              },
             },
             productOptions: {
               edges: {
