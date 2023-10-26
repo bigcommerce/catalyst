@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@bigcommerce/reactant/Button';
-import { experimental_useFormStatus as useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 
 export const AddToCart = ({
   disabled = false,

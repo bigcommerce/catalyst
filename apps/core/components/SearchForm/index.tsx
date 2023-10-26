@@ -4,7 +4,7 @@ import { Button } from '@bigcommerce/reactant/Button';
 import { Field, FieldControl, Form, FormSubmit } from '@bigcommerce/reactant/Form';
 import { Input } from '@bigcommerce/reactant/Input';
 import { Loader2 as Spinner } from 'lucide-react';
-import { experimental_useFormStatus as useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 
 interface Props {
   initialTerm?: string;

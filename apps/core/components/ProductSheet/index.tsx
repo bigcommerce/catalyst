@@ -26,7 +26,7 @@ import {
   useId,
   useState,
 } from 'react';
-import { experimental_useFormStatus as useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 
 import client from '~/client';
 import { VariantSelector } from '~/components/VariantSelector';
