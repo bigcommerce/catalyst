@@ -12,7 +12,7 @@ import { Input } from '@bigcommerce/reactant/Input';
 import { Loader2 as Spinner } from 'lucide-react';
 import Link from 'next/link';
 import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
-import { experimental_useFormStatus as useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 
 import { submitLoginForm } from './_actions/submitLoginForm';
 

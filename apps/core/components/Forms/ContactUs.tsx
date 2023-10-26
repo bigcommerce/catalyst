@@ -13,7 +13,7 @@ import { Message } from '@bigcommerce/reactant/Message';
 import { TextArea } from '@bigcommerce/reactant/TextArea';
 import { Loader2 as Spinner } from 'lucide-react';
 import { ChangeEvent, useState } from 'react';
-import { experimental_useFormStatus as useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 
 import { submitContactForm } from './_actions/submitContactForm';
 
