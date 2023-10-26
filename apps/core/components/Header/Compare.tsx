@@ -9,33 +9,20 @@ import { useCompareProductsContext } from '../../app/contexts/CompareProductsCon
 
 import { LinkNoCache } from './LinkNoCache';
 
-const CompareLink = forwardRef<ElementRef<'a'>, ComponentPropsWithRef<'a'>>(({ children }, ref) => {
+export const Compare = forwardRef<ElementRef<'a'>, ComponentPropsWithRef<'a'>>((_, ref) => {
   const { productIds } = useCompareProductsContext();
-
-  const ids = Object.keys(productIds)
-    .filter((id) => productIds[id])
-    .join(',');
+  const selectedIds = Object.keys(productIds).filter((id) => productIds[id]);
+  const count = selectedIds.length;
 
   return (
     <NavigationMenuLink asChild ref={ref}>
-      <LinkNoCache className="relative" href={`/compare?ids=${ids}`}>
-        {children}
+      <LinkNoCache className="relative" href={`/compare?ids=${selectedIds.join(',')}`}>
+        <p role="status">
+          <span className="sr-only">Compare Items</span>
+          <Scale aria-hidden="true" />
+          {Boolean(count) && <Badge>{count}</Badge>}
+        </p>
       </LinkNoCache>
     </NavigationMenuLink>
-  );
-});
-
-export const Compare = forwardRef<ElementRef<'a'>, ComponentPropsWithRef<'a'>>((_, ref) => {
-  const { productIds } = useCompareProductsContext();
-  const count = Object.keys(productIds).filter((id) => productIds[id]).length;
-
-  return (
-    <CompareLink ref={ref}>
-      <p role="status">
-        <span className="sr-only">Compare Items</span>
-        <Scale aria-hidden="true" />
-        {Boolean(count) && <Badge>{count}</Badge>}
-      </p>
-    </CompareLink>
   );
 });
