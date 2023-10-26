@@ -9,7 +9,7 @@ const CompareProductsContext = createContext<{
   setProductIds: (productIds: CheckedProductIds) => void;
 } | null>(null);
 
-const isCheckeredProductIds = (ids: object): ids is CheckedProductIds => {
+const isCheckedProductIds = (ids: object): ids is CheckedProductIds => {
   return Object.values(ids).every((value) => typeof value === 'boolean');
 };
 
@@ -23,11 +23,7 @@ export const CompareProductsProvider = ({ children }: PropsWithChildren) => {
       try {
         const parsedIds: unknown = JSON.parse(ids);
 
-        if (
-          parsedIds !== null &&
-          typeof parsedIds === 'object' &&
-          isCheckeredProductIds(parsedIds)
-        ) {
+        if (parsedIds !== null && typeof parsedIds === 'object' && isCheckedProductIds(parsedIds)) {
           setProductIds(parsedIds);
         }
       } catch (e) {
