@@ -40,7 +40,33 @@ const ProductDetails = ({ product }: { product: NonNullable<Product> }) => {
 
       {product.prices && (
         <div className="my-6">
-          <p className="text-h4">{currencyFormatter.format(product.prices.price.value)}</p>
+          {product.prices.retailPrice?.value !== undefined && (
+            <p className="text-h4">
+              MSRP:{' '}
+              <span className="line-through">
+                {currencyFormatter.format(product.prices.retailPrice.value)}
+              </span>
+            </p>
+          )}
+          {product.prices.basePrice?.value !== undefined && (
+            <p className="text-h4">
+              {product.prices.salePrice?.value ? (
+                <>
+                  Was:{' '}
+                  <span className="line-through">
+                    {currencyFormatter.format(product.prices.basePrice.value)}
+                  </span>
+                </>
+              ) : (
+                currencyFormatter.format(product.prices.basePrice.value)
+              )}
+            </p>
+          )}
+          {product.prices.salePrice?.value !== undefined && (
+            <p className="text-h4">
+              Now: {currencyFormatter.format(product.prices.salePrice.value)}
+            </p>
+          )}
         </div>
       )}
 
