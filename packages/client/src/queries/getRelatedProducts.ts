@@ -35,9 +35,31 @@ async function internalGetProduct<T>(
               },
               path: true,
               prices: {
-                price: {
-                  value: true,
+                basePrice: {
                   currencyCode: true,
+                  value: true,
+                },
+                price: {
+                  currencyCode: true,
+                  value: true,
+                },
+                retailPrice: {
+                  currencyCode: true,
+                  value: true,
+                },
+                salePrice: {
+                  currencyCode: true,
+                  value: true,
+                },
+                priceRange: {
+                  min: {
+                    value: true,
+                    currencyCode: true,
+                  },
+                  max: {
+                    value: true,
+                    currencyCode: true,
+                  },
                 },
               },
               reviewSummary: {

@@ -43,6 +43,16 @@ export interface Product {
       value?: number;
       currencyCode?: string;
     } | null;
+    priceRange?: {
+      min?: {
+        value?: number;
+        currencyCode?: string;
+      } | null;
+      max?: {
+        value?: number;
+        currencyCode?: string;
+      } | null;
+    } | null;
   } | null;
   reviewSummary?: {
     numberOfReviews: number;
@@ -74,6 +84,9 @@ export const ProductCard = ({
   if (!product.entityId) {
     return null;
   }
+
+  const showPriceRange =
+    product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
 
   return (
     <ReactantProductCard key={product.entityId}>
@@ -139,35 +152,46 @@ export const ProductCard = ({
           </div>
         )}
         <div className="flex flex-wrap items-end justify-between pt-2">
-          <div>
-            {product.prices?.retailPrice?.value !== undefined && (
+          {showPriceRange &&
+          product.prices?.priceRange?.min?.value !== undefined &&
+          product.prices.priceRange.max?.value !== undefined ? (
+            <div>
               <ProductCardInfoPrice className="w-[144px] shrink-0 pt-0">
-                MSRP:{' '}
-                <span className="line-through">
-                  {currencyFormatter.format(product.prices.retailPrice.value)}
-                </span>
+                {currencyFormatter.format(product.prices.priceRange.min.value)} -{' '}
+                {currencyFormatter.format(product.prices.priceRange.max.value)}
               </ProductCardInfoPrice>
-            )}
-            {product.prices?.basePrice?.value !== undefined && (
-              <ProductCardInfoPrice className="w-[144px] shrink-0 pt-0">
-                {product.prices.salePrice?.value ? (
-                  <>
-                    Was:{' '}
-                    <span className="line-through">
-                      {currencyFormatter.format(product.prices.basePrice.value)}
-                    </span>
-                  </>
-                ) : (
-                  currencyFormatter.format(product.prices.basePrice.value)
-                )}
-              </ProductCardInfoPrice>
-            )}
-            {product.prices?.salePrice?.value !== undefined && (
-              <ProductCardInfoPrice className="w-[144px] shrink-0 pt-0">
-                Now: {currencyFormatter.format(product.prices.salePrice.value)}
-              </ProductCardInfoPrice>
-            )}
-          </div>
+            </div>
+          ) : (
+            <div>
+              {product.prices?.retailPrice?.value !== undefined && (
+                <ProductCardInfoPrice className="w-[144px] shrink-0 pt-0">
+                  MSRP:{' '}
+                  <span className="line-through">
+                    {currencyFormatter.format(product.prices.retailPrice.value)}
+                  </span>
+                </ProductCardInfoPrice>
+              )}
+              {product.prices?.basePrice?.value !== undefined && (
+                <ProductCardInfoPrice className="w-[144px] shrink-0 pt-0">
+                  {product.prices.salePrice?.value ? (
+                    <>
+                      Was:{' '}
+                      <span className="line-through">
+                        {currencyFormatter.format(product.prices.basePrice.value)}
+                      </span>
+                    </>
+                  ) : (
+                    currencyFormatter.format(product.prices.basePrice.value)
+                  )}
+                </ProductCardInfoPrice>
+              )}
+              {product.prices?.salePrice?.value !== undefined && (
+                <ProductCardInfoPrice className="w-[144px] shrink-0 pt-0">
+                  Now: {currencyFormatter.format(product.prices.salePrice.value)}
+                </ProductCardInfoPrice>
+              )}
+            </div>
+          )}
           <Compare productId={product.entityId} />
         </div>
       </ProductCardInfo>
