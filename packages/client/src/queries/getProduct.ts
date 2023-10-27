@@ -192,6 +192,10 @@ async function internalGetProduct<T>(
           numberOfReviews: true,
           averageRating: true,
         },
+        weight: {
+          unit: true,
+          value: true,
+        },
         seo: {
           pageTitle: true,
           metaKeywords: true,

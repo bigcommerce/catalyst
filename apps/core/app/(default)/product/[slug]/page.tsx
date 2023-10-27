@@ -146,6 +146,14 @@ const ProductDetails = ({ product }: { product: NonNullable<Product> }) => {
               <p>{product.condition}</p>
             </div>
           )}
+          {Boolean(product.weight) && (
+            <div>
+              <h3 className="text-base font-bold">Weight</h3>
+              <p>
+                {product.weight?.value} {product.weight?.unit}
+              </p>
+            </div>
+          )}
         </div>
       </div>
       <ProductSchema product={product} />
