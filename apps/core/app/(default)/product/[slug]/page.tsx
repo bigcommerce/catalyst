@@ -26,6 +26,9 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
 });
 
 const ProductDetails = ({ product }: { product: NonNullable<Product> }) => {
+  const showPriceRange =
+    product.prices?.priceRange.min.value !== product.prices?.priceRange.max.value;
+
   return (
     <div>
       {product.brand && (
@@ -40,32 +43,41 @@ const ProductDetails = ({ product }: { product: NonNullable<Product> }) => {
 
       {product.prices && (
         <div className="my-6">
-          {product.prices.retailPrice?.value !== undefined && (
+          {showPriceRange ? (
             <p className="text-h4">
-              MSRP:{' '}
-              <span className="line-through">
-                {currencyFormatter.format(product.prices.retailPrice.value)}
-              </span>
+              {currencyFormatter.format(product.prices.priceRange.min.value)} -{' '}
+              {currencyFormatter.format(product.prices.priceRange.max.value)}
             </p>
-          )}
-          {product.prices.basePrice?.value !== undefined && (
-            <p className="text-h4">
-              {product.prices.salePrice?.value ? (
-                <>
-                  Was:{' '}
+          ) : (
+            <>
+              {product.prices.retailPrice?.value !== undefined && (
+                <p className="text-h4">
+                  MSRP:{' '}
                   <span className="line-through">
-                    {currencyFormatter.format(product.prices.basePrice.value)}
+                    {currencyFormatter.format(product.prices.retailPrice.value)}
                   </span>
-                </>
-              ) : (
-                currencyFormatter.format(product.prices.basePrice.value)
+                </p>
               )}
-            </p>
-          )}
-          {product.prices.salePrice?.value !== undefined && (
-            <p className="text-h4">
-              Now: {currencyFormatter.format(product.prices.salePrice.value)}
-            </p>
+              {product.prices.basePrice?.value !== undefined && (
+                <p className="text-h4">
+                  {product.prices.salePrice?.value ? (
+                    <>
+                      Was:{' '}
+                      <span className="line-through">
+                        {currencyFormatter.format(product.prices.basePrice.value)}
+                      </span>
+                    </>
+                  ) : (
+                    currencyFormatter.format(product.prices.basePrice.value)
+                  )}
+                </p>
+              )}
+              {product.prices.salePrice?.value !== undefined && (
+                <p className="text-h4">
+                  Now: {currencyFormatter.format(product.prices.salePrice.value)}
+                </p>
+              )}
+            </>
           )}
         </div>
       )}
