@@ -50,7 +50,6 @@ ${scoreRow('Performance', summary.performance)}
 ${scoreRow('Accessibility', summary.accessibility)}
 ${scoreRow('Best practices', summary['best-practices'])}
 ${scoreRow('SEO', summary.seo)}
-${scoreRow('PWA', summary.pwa)}
 
 *Lighthouse ran against [${testedUrl}](${testedUrl})*
 `;
