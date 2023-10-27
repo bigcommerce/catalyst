@@ -2,6 +2,8 @@ import { Rating } from '@bigcommerce/reactant/Rating';
 
 import client from '~/client';
 
+import { ProductReviewSchema } from './ProductReviewSchema';
+
 interface Props {
   productId: number;
 }
@@ -50,6 +52,7 @@ export const Reviews = async ({ productId }: Props) => {
           })
         )}
       </ul>
+      {reviews.length > 0 && <ProductReviewSchema productId={productId} reviews={reviews} />}
     </>
   );
 };
