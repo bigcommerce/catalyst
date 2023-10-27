@@ -1,0 +1,74 @@
+name: Lighthouse Report
+
+on:
+  deployment_status
+
+jobs:
+  generate_lighthouse_audit:
+    name: Deployment Audit
+
+    timeout-minutes: 30
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@main
+
+      - uses: pnpm/action-setup@v2
+
+      - name: Requires audit
+        id: requires_audit
+        env:
+          DEPLOY_URL: ${{ github.event.deployment_status.target_url }}
+        run: |
+          if [[ $DEPLOY_URL =~ "makeswift" ]]; then
+            echo "AUDIT=false" >> "$GITHUB_ENV"
+          elif [[ $DEPLOY_URL =~ "storybook" ]]; then
+            echo "AUDIT=false" >> "$GITHUB_ENV"
+          else
+            echo "AUDIT=true" >> "$GITHUB_ENV"
+          fi
+
+      - name: Audit preview URL with Lighthouse
+        if: env.AUDIT == 'true'
+        id: lighthouse_audit
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: |
+            ${{ github.event.deployment_status.target_url }}
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+          runs: 3
+
+      - name: Format lighthouse score
+        if: env.AUDIT == 'true'
+        id: format_lighthouse_score
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const lighthouseCommentMaker = require('./.github/workflows/lighthouseCommentMaker.js');
+
+            const lighthouseOutputs = {
+              manifest: ${{ steps.lighthouse_audit.outputs.manifest }},
+              links: ${{ steps.lighthouse_audit.outputs.links }}
+            };
+
+            const comment = lighthouseCommentMaker({ lighthouseOutputs });
+            core.setOutput("comment", comment);
+
+      - name: Find pull request
+        if: env.AUDIT == 'true'
+        uses: jwalton/gh-find-current-pr@v1
+        id: finder
+
+      - name: Add comment to PR
+        if: env.AUDIT == 'true'
+        id: comment_to_pr
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ steps.finder.outputs.pr }}
+          header: lighthouse
+          message: ${{ steps.format_lighthouse_score.outputs.comment }}
