@@ -26,16 +26,22 @@ export const Gallery = ({ images }: Props) => {
         <ReactantGallery defaultImageIndex={defaultImageIndex} images={images}>
           <GalleryContent>
             <GalleryImage>
-              {({ selectedImage }) => (
-                <Image
-                  alt={selectedImage.altText}
-                  className="h-full w-full object-contain"
-                  fill
-                  priority={true}
-                  sizes="(min-width: 1024px) 50vw, 100vw"
-                  src={selectedImage.url}
-                />
-              )}
+              {({ selectedImage }) =>
+                selectedImage ? (
+                  <Image
+                    alt={selectedImage.altText}
+                    className="h-full w-full object-contain"
+                    fill
+                    priority={true}
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    src={selectedImage.url}
+                  />
+                ) : (
+                  <div className="flex aspect-square items-center justify-center bg-gray-200">
+                    <div className="text-base font-semibold text-gray-500">Coming soon</div>
+                  </div>
+                )
+              }
             </GalleryImage>
             <GalleryControls />
           </GalleryContent>
