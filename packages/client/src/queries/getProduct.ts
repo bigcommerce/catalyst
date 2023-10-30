@@ -29,7 +29,7 @@ const reshapeProductCategories = (categoryConnection: Product['categories']) => 
   });
 };
 
-const reshapeProductOptions = (productOptionConnection: Product['productOptions']) => {
+export const reshapeProductOptions = (productOptionConnection: Product['productOptions']) => {
   const productOptions = removeEdgesAndNodes(productOptionConnection);
 
   if (!productOptions.length) {

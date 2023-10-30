@@ -21,16 +21,20 @@ export const VariantSelector = ({ product }: { product: NonNullable<Product> }) 
     return null;
   }
 
-  const handleOnValueChange = ({ optionId, valueId }: { optionId: number; valueId: number }) => {
+  const handleOnValueChange = ({ optionName, value }: { optionName: string; value: string }) => {
     const optionSearchParams = new URLSearchParams(searchParams.toString());
 
-    optionSearchParams.set(String(optionId), String(valueId));
+    optionSearchParams.set(optionName, value);
 
     router.replace(`${pathname}?${optionSearchParams.toString()}`, { scroll: false });
   };
 
   return product.productOptions?.map((option) => {
     if (option.__typename === 'MultipleChoiceOption') {
+      const getOptionLabel = (id: string) => {
+        return option.values.find(({ entityId }) => entityId.toString() === id)?.label ?? '';
+      };
+
       switch (option.displayStyle) {
         case 'Swatch':
           return (
@@ -42,10 +46,10 @@ export const VariantSelector = ({ product }: { product: NonNullable<Product> }) 
                 aria-labelledby={`label-${option.entityId}`}
                 defaultValue={searchParams.get(String(option.entityId)) ?? undefined}
                 name={`attribute[${option.entityId}]`}
-                onValueChange={(value) =>
+                onValueChange={(value: string) =>
                   handleOnValueChange({
-                    optionId: option.entityId,
-                    valueId: Number(value),
+                    optionName: option.displayName,
+                    value: getOptionLabel(value),
                   })
                 }
                 required={option.isRequired}
@@ -78,10 +82,10 @@ export const VariantSelector = ({ product }: { product: NonNullable<Product> }) 
                 aria-labelledby={`label-${option.entityId}`}
                 defaultValue={searchParams.get(String(option.entityId)) ?? undefined}
                 name={`attribute[${option.entityId}]`}
-                onValueChange={(value) =>
+                onValueChange={(value: string) =>
                   handleOnValueChange({
-                    optionId: option.entityId,
-                    valueId: Number(value),
+                    optionName: option.displayName,
+                    value: getOptionLabel(value),
                   })
                 }
                 required={option.isRequired}
