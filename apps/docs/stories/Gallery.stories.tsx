@@ -57,7 +57,9 @@ export const CustomImageElement: Story = {
     <Gallery defaultImageIndex={0} images={images}>
       <GalleryContent>
         <GalleryImage>
-          {({ selectedImage }) => <img alt={selectedImage.altText} src={selectedImage.url} />}
+          {({ selectedImage }) =>
+            selectedImage && <img alt={selectedImage.altText} src={selectedImage.url} />
+          }
         </GalleryImage>
         <GalleryControls />
       </GalleryContent>

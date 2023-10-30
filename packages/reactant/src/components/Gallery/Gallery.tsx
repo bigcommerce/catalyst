@@ -19,7 +19,7 @@ interface Image {
 }
 
 const GalleryContext = createContext<{
-  images: Image[];
+  images: Image[] | [];
   selectedImageIndex: number;
   setSelectedImageIndex: React.Dispatch<React.SetStateAction<number>>;
 }>({
@@ -115,27 +115,30 @@ export const GalleryControls = forwardRef<ElementRef<'div'>, ComponentPropsWithR
 );
 
 interface GalleryImageProps extends Omit<ComponentPropsWithRef<'img'>, 'children'> {
-  children?: (({ selectedImage }: { selectedImage: Image }) => React.ReactNode) | React.ReactNode;
+  children?: (({ selectedImage }: { selectedImage?: Image }) => React.ReactNode) | React.ReactNode;
 }
 
 export const GalleryImage = forwardRef<ElementRef<'img'>, GalleryImageProps>(
   ({ className, children, ...props }, ref) => {
     const { images, selectedImageIndex } = useContext(GalleryContext);
+    const selectedImage = images.length > 0 ? images[selectedImageIndex] : undefined;
 
     if (typeof children === 'function') {
-      return children({ selectedImage: images[selectedImageIndex] });
+      return children({ selectedImage });
     }
 
-    return (
-      <img
-        alt={images[selectedImageIndex].altText}
-        className={cs('h-full w-full object-contain', className)}
-        ref={ref}
-        sizes="100vw"
-        src={images[selectedImageIndex].url}
-        {...props}
-      />
-    );
+    if (selectedImage) {
+      return (
+        <img
+          alt={selectedImage.altText}
+          className={cs('h-full w-full object-contain', className)}
+          ref={ref}
+          sizes="100vw"
+          src={images[selectedImageIndex].url}
+          {...props}
+        />
+      );
+    }
   },
 );
 
@@ -249,7 +252,7 @@ export const GalleryThumbnail = forwardRef<ElementRef<'img'>, GalleryThumbnailPr
 );
 
 interface GalleryProps extends ComponentPropsWithRef<'div'> {
-  images: Image[];
+  images: Image[] | [];
   defaultImageIndex?: number;
 }
 
