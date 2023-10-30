@@ -192,7 +192,7 @@ interface ProductPageProps {
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const productId = Number(params.slug);
-  const product: Product = await client.getProduct({ productId });
+  const product = await client.getProduct({ productId });
 
   if (!product) {
     return {};
