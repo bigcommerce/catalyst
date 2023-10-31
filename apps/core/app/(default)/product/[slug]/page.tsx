@@ -154,6 +154,13 @@ const ProductDetails = ({ product }: { product: NonNullable<Product> }) => {
               </p>
             </div>
           )}
+          {Boolean(product.customFields) &&
+            product.customFields.map((customField, index) => (
+              <div key={`custom-field-${index}`}>
+                <h3 className="text-base font-bold">{customField.name}</h3>
+                <p>{customField.value}</p>
+              </div>
+            ))}
         </div>
       </div>
       <ProductSchema product={product} />

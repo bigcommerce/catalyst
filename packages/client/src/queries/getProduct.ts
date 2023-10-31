@@ -52,6 +52,7 @@ const reshapeProduct = (product: Product) => {
   return {
     ...product,
     categories: reshapeProductCategories(product.categories),
+    customFields: removeEdgesAndNodes(product.customFields),
     images: removeEdgesAndNodes(product.images),
     productOptions: reshapeProductOptions(product.productOptions),
   };
@@ -200,6 +201,15 @@ async function internalGetProduct<T>(
           pageTitle: true,
           metaKeywords: true,
           metaDescription: true,
+        },
+        customFields: {
+          edges: {
+            node: {
+              name: true,
+              entityId: true,
+              value: true,
+            },
+          },
         },
       },
     },
