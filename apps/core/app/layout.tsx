@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react';
 import { Inter } from 'next/font/google';
 import { PropsWithChildren } from 'react';
 
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
     <html className={`${inter.variable} font-sans`} lang="en">
       <body className="flex h-screen flex-col">
         <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );
