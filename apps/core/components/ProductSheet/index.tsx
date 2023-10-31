@@ -106,6 +106,9 @@ export const ProductSheetContent = ({
       currency: product.prices?.price.currencyCode,
     });
 
+    const showPriceRange =
+      product.prices?.priceRange.min.value !== product.prices?.priceRange.max.value;
+
     return (
       <>
         <div className="flex">
@@ -153,8 +156,46 @@ export const ProductSheetContent = ({
               </div>
             </div>
 
-            {product.prices?.price.value !== undefined &&
-              currencyFormatter.format(product.prices.price.value)}
+            {product.prices && (
+              <div>
+                {showPriceRange ? (
+                  <p className="text-h4">
+                    {currencyFormatter.format(product.prices.priceRange.min.value)} -{' '}
+                    {currencyFormatter.format(product.prices.priceRange.max.value)}
+                  </p>
+                ) : (
+                  <>
+                    {product.prices.retailPrice?.value !== undefined && (
+                      <p className="text-h4">
+                        MSRP:{' '}
+                        <span className="line-through">
+                          {currencyFormatter.format(product.prices.retailPrice.value)}
+                        </span>
+                      </p>
+                    )}
+                    {product.prices.basePrice?.value !== undefined && (
+                      <p className="text-h4">
+                        {product.prices.salePrice?.value ? (
+                          <>
+                            Was:{' '}
+                            <span className="line-through">
+                              {currencyFormatter.format(product.prices.basePrice.value)}
+                            </span>
+                          </>
+                        ) : (
+                          currencyFormatter.format(product.prices.basePrice.value)
+                        )}
+                      </p>
+                    )}
+                    {product.prices.salePrice?.value !== undefined && (
+                      <p className="text-h4">
+                        Now: {currencyFormatter.format(product.prices.salePrice.value)}
+                      </p>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </div>
         <ProductContext.Provider value={{ product }}>{children}</ProductContext.Provider>
