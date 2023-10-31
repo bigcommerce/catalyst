@@ -7,7 +7,7 @@ import { readFile, writeFile } from 'fs/promises';
  */
 const fetchChannels = async ({ storeHash, accessToken }) =>
   fetch(
-    `https://api.bigcommerce.com/stores/${storeHash}/v3/channels?type:in=storefront&platform:in=bigcommerce,next&available=true`,
+    `https://api.bigcommerce.com/stores/${storeHash}/v3/channels?type:in=storefront&platform:in=bigcommerce,next,catalyst&available=true`,
     {
       method: "GET",
       headers: {
@@ -48,7 +48,7 @@ const createChannel = async ({ storeHash, accessToken, channelName }) =>
     body: JSON.stringify({
       name: channelName,
       type: "storefront",
-      platform: "next",
+      platform: "catalyst",
       status: "prelaunch",
       is_listable_from_ui: true,
     }),
