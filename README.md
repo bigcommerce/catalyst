@@ -56,19 +56,23 @@ pnpm install
 
 4. **Set up environment variables.**
 
+This repository contains a setup script that generates a local development environment file, `.env.local`. The environment file contains the authentication credentials and other variables required to connect Catalyst to an existing BigCommerce store. Run the script from the root directory of this repository and follow the prompts:
+
 ```shell
-cp .env.example .env.local
+node scripts/setup.mjs
 ```
 
-Update `.env.local` with the following values:
+*If you prefer to manually enter your own environment variables, you can run `cp .env.example .env.local` to get started.*
+
+The following table contains a description of each variable in the `.env.local` file:
 
 | Variable | Description |
 |:---------|:------------|
-| `BIGCOMMERCE_STORE_HASH` | The hash visible in the subject store's URL when signed in to the store control panel. The control panel URL is of the form `https://store-{hash}.mybigcommerce.com`. Set this environment variable to the value of `{hash}` for the subject store. |
-| `BIGCOMMERCE_ACCESS_TOKEN` | [Create a store-level API account (BigCommerce Dev Center)](https://developer.bigcommerce.com/api-docs/getting-started/api-accounts#creating-store-level-api-credentials) with the following [OAuth scopes (BigCommerce Dev Center)](https://developer.bigcommerce.com/api-docs/getting-started/api-accounts#oauth-scopes): Carts `read-only` and Storefront API Customer Impersonation Tokens `manage`. |
-| `BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN` | Use the store-level API account access token you created to make a call to the BigCommerce REST [Create a customer impersonation token (BigCommerce Dev Center)](https://developer.bigcommerce.com/docs/storefront-auth/tokens/customer-impersonation-token#create-a-token) endpoint. You can also get a customer impersonation token by accessing **Settings > Storefront API Playground** in the control panel, clicking `HTTP HEADERS` at the bottom of the screen, and copying the value of the `Authorization` header. Make sure to remove the `Bearer ` prefix from the copied header value. |
-| `BIGCOMMERCE_CDN_HOSTNAME` | Can remain unchanged from its default value. |
-| `BIGCOMMERCE_CHANNEL_ID` | Set the storefront channel id. Defaults to 1, the default storefront channel. Note: Will need to create a site for the channel before you can hit the GraphQL endpoint. |
+| `BIGCOMMERCE_STORE_HASH` | The hash visible in the subject store's URL when signed in to the store control panel. The control panel URL is of the form `https://store-{hash}.mybigcommerce.com`. |
+| `BIGCOMMERCE_ACCESS_TOKEN` | The access token from a [store-level API account (BigCommerce Dev Center)](https://developer.bigcommerce.com/api-docs/getting-started/api-accounts#store-level-api-accounts). The only [OAuth scope (BigCommerce Dev Center)](https://developer.bigcommerce.com/api-docs/getting-started/api-accounts#oauth-scopes) required to run Catalyst is Carts `read-only`. |
+| `BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN` | A bearer token that authorizes server-to-server requests to the [GraphQL Storefront API (BigCommerce Dev Center)](https://developer.bigcommerce.com/docs/storefront/graphql). |
+| `BIGCOMMERCE_CDN_HOSTNAME` | Ensures that the Next.js Image Optimization API is configured to serve external images from BigCommerce. Used in the Next.js Configuration file. For more information, see the [Next.js Image Component API Reference (next.js)](https://nextjs.org/docs/app/api-reference/components/image#remotepatterns). |
+| `BIGCOMMERCE_CHANNEL_ID` | The channel ID for the Catalyst storefront's dedicated channel. |
 | `MAKESWIFT_SITE_API_KEY` | Only required for the experimental `with-makeswift` version of Catalyst. When working with the core product, comment out this variable. For more about setting this variable, consult the [with-makeswift README](https://github.com/bigcommerce/catalyst/blob/main/apps/with-makeswift/README.md#create-a-makeswift-api-key). |
 
 5. Optionally, to optimize your workflow, use the following command to configure VSCode with the project-specific settings the Catalyst team has created:
