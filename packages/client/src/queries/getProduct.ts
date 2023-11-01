@@ -196,6 +196,11 @@ async function internalGetProduct<T>(
           unit: true,
           value: true,
         },
+        seo: {
+          pageTitle: true,
+          metaKeywords: true,
+          metaDescription: true,
+        },
       },
     },
   } satisfies QueryGenqlSelection;

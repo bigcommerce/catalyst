@@ -2,6 +2,7 @@ import { Button } from '@bigcommerce/reactant/Button';
 import { Counter } from '@bigcommerce/reactant/Counter';
 import { Label } from '@bigcommerce/reactant/Label';
 import { Heart } from 'lucide-react';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -187,6 +188,34 @@ const ProductDescriptionAndReviews = ({ product }: { product: NonNullable<Produc
 interface ProductPageProps {
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const productId = Number(params.slug);
+  const product = await client.getProduct({ productId });
+
+  if (!product) {
+    return {};
+  }
+
+  const { pageTitle, metaDescription, metaKeywords } = product.seo;
+  const { url, altText: alt } = product.defaultImage || {};
+
+  return {
+    title: pageTitle || product.name,
+    description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
+    keywords: metaKeywords ? metaKeywords.split(',') : null,
+    openGraph: url
+      ? {
+          images: [
+            {
+              url,
+              alt,
+            },
+          ],
+        }
+      : null,
+  };
 }
 
 export default async function Product({ params, searchParams }: ProductPageProps) {
