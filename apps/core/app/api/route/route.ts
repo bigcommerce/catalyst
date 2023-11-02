@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import client from '~/client';
+import { getRoute } from '~/client/queries/getRoute';
 
 import { withInternalAuth } from '../_internal-auth';
 
@@ -10,7 +10,7 @@ const handler = async (request: NextRequest) => {
   const path = searchParams.get('path');
 
   if (path) {
-    const node = await client.getRoute({ path }, { cache: null, next: { revalidate: 60 * 30 } });
+    const node = await getRoute(path);
 
     // Middleware is the current consumer of this endpoint. If you need to modify this, ensure middleware is updated.
     return NextResponse.json(node);
@@ -22,3 +22,4 @@ const handler = async (request: NextRequest) => {
 export const GET = withInternalAuth(handler);
 
 export const runtime = 'edge';
+export const revalidate = 1030; // 30 min

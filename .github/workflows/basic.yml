@@ -17,6 +17,8 @@ jobs:
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      BIGCOMMERCE_STORE_HASH: ${{ secrets.BIGCOMMERCE_STORE_HASH }}
+      BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN: ${{ secrets.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN }}
 
     steps:
       - name: Checkout code
@@ -34,6 +36,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Graphql Codegen
+        run: pnpm run -r codegen
 
       - name: Lint
         run: pnpm run lint -- --max-warnings=0
