@@ -61,7 +61,7 @@ export const NavigationMenu = forwardRef<
             {!isExpanded && (
               <NavigationMenuPrimitive.Viewport
                 className={cs(
-                  'absolute start-0 top-full z-50 w-full bg-white pb-12 pt-6 shadow-xl',
+                  'absolute start-0 top-full z-50 w-full bg-white pb-12 pt-6 shadow-xl duration-200 animate-in slide-in-from-top-5',
                 )}
               />
             )}
@@ -117,15 +117,25 @@ export const NavigationMenuTrigger = forwardRef<
 export const NavigationMenuContent = forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Content>,
   React.ComponentPropsWithRef<typeof NavigationMenuPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-  <NavigationMenuPrimitive.Content
-    className={cs('2xl:container 2xl:mx-auto', className)}
-    ref={ref}
-    {...props}
-  >
-    {children}
-  </NavigationMenuPrimitive.Content>
-));
+>(({ className, children, ...props }, ref) => {
+  const { isExpanded } = useContext(ExpandedContext);
+
+  return (
+    <NavigationMenuPrimitive.Content
+      className={cs(
+        '2xl:container  2xl:mx-auto',
+        !isExpanded &&
+          'data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52',
+        isExpanded && 'duration-200 animate-in slide-in-from-top-2',
+        className,
+      )}
+      ref={ref}
+      {...props}
+    >
+      {children}
+    </NavigationMenuPrimitive.Content>
+  );
+});
 
 export const NavigationMenuLink = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.Link>,
@@ -207,7 +217,7 @@ export const NavigationMenuCollapsed = forwardRef<ElementRef<'div'>, ComponentPr
     return (
       <div
         className={cs(
-          'in-collapsed-nav group absolute start-0 top-full z-50 w-full bg-white px-6 pb-6 2xl:container sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0',
+          'in-collapsed-nav group absolute start-0 top-full z-50 w-full bg-white px-6 pb-6 duration-200 animate-in slide-in-from-top-5 2xl:container sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0',
           className,
           !isExpanded && 'hidden',
         )}
