@@ -7,7 +7,9 @@ test('accordion', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('accordion collapsed', async ({ page }) => {
@@ -19,5 +21,7 @@ test('accordion collapsed', async ({ page }) => {
     .frameLocator(storyBookElements.storyBookFrame)
     .getByRole('button', { name: 'Brand' })
     .click();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
