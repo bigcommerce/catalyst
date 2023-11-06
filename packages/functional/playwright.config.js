@@ -1,4 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { config } from 'dotenv';
+
+config();
 
 export default defineConfig({
   testDir: './tests',
@@ -10,7 +14,7 @@ export default defineConfig({
   fullyParallel: true,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL,
   },
 
   projects: [
