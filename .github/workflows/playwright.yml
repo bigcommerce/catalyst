@@ -37,7 +37,9 @@ jobs:
 
       - name: Run Playwright tests
         if: env.IS_STORYBOOK == 'true'
-        run: npx playwright test /packages/functional/tests/visual-regression/components/Accordion.spec.ts
+        run: |
+          cd packages/functional
+          npx playwright test /tests/visual-regression/components/Accordion.spec.ts
 
       - uses: actions/upload-artifact@v3
         if: always()
