@@ -1,5 +1,4 @@
 import { defineConfig, devices } from '@playwright/test';
-// eslint-disable-next-line
 import { config } from 'dotenv';
 
 config();
