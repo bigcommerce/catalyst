@@ -26,7 +26,7 @@ jobs:
       - name: Install Playwright Browsers
         run: |
           cd packages/functional
-          pnpm playwright install-deps chromium
+          npx playwright install chromium
 
       - name: Set base url
         env:
@@ -41,7 +41,7 @@ jobs:
         if: env.IS_STORYBOOK == 'true'
         run: |
           cd packages/functional
-          npx playwright test tests/visual-regression/reactant/components/Accordion.spec.ts
+          npx playwright test tests/visual-regression/reactant/components/Accordion.spec.ts --project=tests-chromium 
 
       - uses: actions/upload-artifact@v3
         if: always()
