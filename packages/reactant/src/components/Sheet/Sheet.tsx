@@ -25,8 +25,8 @@ const SheetClose = forwardRef<ElementRef<typeof SheetPrimitive.Close>, SheetClos
 
 SheetClose.displayName = SheetPrimitive.Close.displayName;
 
-const SheetPortal = ({ className, ...props }: SheetPrimitive.DialogPortalProps) => (
-  <SheetPrimitive.Portal className={cs(className)} {...props} />
+const SheetPortal = (props: SheetPrimitive.DialogPortalProps) => (
+  <SheetPrimitive.Portal {...props} />
 );
 
 SheetPortal.displayName = SheetPrimitive.Portal.displayName;
