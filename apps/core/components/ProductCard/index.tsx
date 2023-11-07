@@ -67,12 +67,17 @@ interface ProductCardProps {
   product: Partial<Product>;
   imageSize?: 'tall' | 'wide' | 'square';
   imagePriority?: boolean;
+  showCart?: boolean;
+  showCompare?: boolean;
 }
 
+// eslint-disable-next-line complexity
 export const ProductCard = ({
   product,
   imageSize = 'square',
   imagePriority = false,
+  showCart = true,
+  showCompare = true,
 }: ProductCardProps) => {
   const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -111,7 +116,7 @@ export const ProductCard = ({
           )}
         </div>
       </ProductCardImage>
-      <ProductCardInfo className="justify-end">
+      <ProductCardInfo className={cs(showCart && 'justify-end')}>
         {product.brand && <ProductCardInfoBrandName>{product.brand.name}</ProductCardInfoBrandName>}
         <ProductCardInfoProductName>
           {product.path ? (
@@ -192,10 +197,10 @@ export const ProductCard = ({
               )}
             </div>
           )}
-          <Compare productId={product.entityId} />
+          {showCompare && <Compare productId={product.entityId} />}
         </div>
       </ProductCardInfo>
-      <Cart product={product} />
+      {showCart && <Cart product={product} />}
     </ReactantProductCard>
   );
 };
