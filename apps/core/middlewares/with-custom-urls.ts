@@ -19,7 +19,7 @@ const getProductOptionIdsByLabel = (
   return (productOptions ?? []).flatMap((option) => {
     const matchedIds = [];
 
-    if (optionName === option.displayName) {
+    if (optionName.split('attr_')[1] === option.displayName) {
       matchedIds.push(option.entityId);
 
       if (option.__typename === 'MultipleChoiceOption') {

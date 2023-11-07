@@ -24,7 +24,7 @@ export const VariantSelector = ({ product }: { product: NonNullable<Product> }) 
   const handleOnValueChange = ({ optionName, value }: { optionName: string; value: string }) => {
     const optionSearchParams = new URLSearchParams(searchParams.toString());
 
-    optionSearchParams.set(optionName, value);
+    optionSearchParams.set(`attr_${optionName}`, value);
 
     router.replace(`${pathname}?${optionSearchParams.toString()}`, { scroll: false });
   };
