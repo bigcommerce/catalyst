@@ -279,8 +279,12 @@ export const Facets = ({ facets, pageType }: Props) => {
           }
 
           if (facet.__typename === 'OtherSearchFilter') {
+            const key = `${facet.__typename}-${String(facet.isInStock?.isSelected)}-${String(
+              facet.isFeatured?.isSelected,
+            )}-${String(facet.freeShipping?.isSelected)}`;
+
             return (
-              <AccordionItem key={facet.__typename} value={facet.name}>
+              <AccordionItem key={key} value={facet.name}>
                 <AccordionTrigger>
                   <h3>{facet.name}</h3>
                 </AccordionTrigger>
