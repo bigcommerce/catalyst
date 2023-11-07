@@ -64,11 +64,6 @@ export const getBestSellingProducts = async <T>(
                 },
               },
             },
-            reviewSummary: {
-              summationOfRatings: true,
-              numberOfReviews: true,
-              averageRating: true,
-            },
             productOptions: {
               __args: { first: 3 },
               edges: {

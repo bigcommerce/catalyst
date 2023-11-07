@@ -14,9 +14,13 @@ import { Pagination } from './Pagination';
 export const ProductCardCarousel = ({
   title,
   products,
+  showCart = true,
+  showCompare = true,
 }: {
   title: string;
   products: Array<Partial<Product>>;
+  showCart?: boolean;
+  showCompare?: boolean;
 }) => {
   const id = useId();
 
@@ -58,7 +62,13 @@ export const ProductCardCarousel = ({
             key={index}
           >
             {group.map((product) => (
-              <ProductCard imageSize="tall" key={product.entityId} product={product} />
+              <ProductCard
+                imageSize="tall"
+                key={product.entityId}
+                product={product}
+                showCart={showCart}
+                showCompare={showCompare}
+              />
             ))}
           </CarouselSlide>
         ))}
