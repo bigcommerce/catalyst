@@ -3,7 +3,6 @@ import {
   ProductCardImage,
   ProductCardInfo,
   ProductCardInfoBrandName,
-  ProductCardInfoPrice,
   ProductCardInfoProductName,
   ProductCard as ReactantProductCard,
 } from '@bigcommerce/reactant/ProductCard';
@@ -14,6 +13,7 @@ import { useId } from 'react';
 
 import { Cart } from './Cart';
 import { Compare } from './Compare';
+import { Pricing } from './Pricing';
 
 export interface Product {
   entityId: number;
@@ -71,7 +71,6 @@ interface ProductCardProps {
   showCompare?: boolean;
 }
 
-// eslint-disable-next-line complexity
 export const ProductCard = ({
   product,
   imageSize = 'square',
@@ -79,19 +78,11 @@ export const ProductCard = ({
   showCart = true,
   showCompare = true,
 }: ProductCardProps) => {
-  const currencyFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: product.prices?.price?.currencyCode,
-  });
-
   const summaryId = useId();
 
   if (!product.entityId) {
     return null;
   }
-
-  const showPriceRange =
-    product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
 
   return (
     <ReactantProductCard key={product.entityId}>
@@ -157,46 +148,7 @@ export const ProductCard = ({
           </div>
         )}
         <div className="flex flex-wrap items-end justify-between pt-2">
-          {showPriceRange &&
-          product.prices?.priceRange?.min?.value !== undefined &&
-          product.prices.priceRange.max?.value !== undefined ? (
-            <div>
-              <ProductCardInfoPrice className="w-[144px] shrink-0 pt-0">
-                {currencyFormatter.format(product.prices.priceRange.min.value)} -{' '}
-                {currencyFormatter.format(product.prices.priceRange.max.value)}
-              </ProductCardInfoPrice>
-            </div>
-          ) : (
-            <div>
-              {product.prices?.retailPrice?.value !== undefined && (
-                <ProductCardInfoPrice className="w-[144px] shrink-0 pt-0">
-                  MSRP:{' '}
-                  <span className="line-through">
-                    {currencyFormatter.format(product.prices.retailPrice.value)}
-                  </span>
-                </ProductCardInfoPrice>
-              )}
-              {product.prices?.basePrice?.value !== undefined && (
-                <ProductCardInfoPrice className="w-[144px] shrink-0 pt-0">
-                  {product.prices.salePrice?.value ? (
-                    <>
-                      Was:{' '}
-                      <span className="line-through">
-                        {currencyFormatter.format(product.prices.basePrice.value)}
-                      </span>
-                    </>
-                  ) : (
-                    currencyFormatter.format(product.prices.basePrice.value)
-                  )}
-                </ProductCardInfoPrice>
-              )}
-              {product.prices?.salePrice?.value !== undefined && (
-                <ProductCardInfoPrice className="w-[144px] shrink-0 pt-0">
-                  Now: {currencyFormatter.format(product.prices.salePrice.value)}
-                </ProductCardInfoPrice>
-              )}
-            </div>
-          )}
+          <Pricing prices={product.prices}/>
           {showCompare && <Compare productId={product.entityId} />}
         </div>
       </ProductCardInfo>
