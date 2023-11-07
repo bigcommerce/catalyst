@@ -93,6 +93,10 @@ export const PublicSearchParamsSchema = z.object({
   ),
 });
 
+const AttributeKey = z.custom<`attr_${string}`>((val) => {
+  return typeof val === 'string' ? /^attr_\w+$/.test(val) : false;
+});
+
 export const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchParamToArray)
   .transform((publicParams) => {
     const { after, before, limit, sort, ...filters } = publicParams;
@@ -114,10 +118,12 @@ export const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchPar
     } = filters;
 
     // Assuming the rest of the params are product attributes for now. We need to see if we can get the GQL endpoint to ingore unknown params.
-    const productAttributes = Object.entries(additionalParams).map(([attribute, values]) => ({
-      attribute,
-      values,
-    }));
+    const productAttributes = Object.entries(additionalParams)
+      .filter(([attribute]) => AttributeKey.safeParse(attribute).success)
+      .map(([attribute, values]) => ({
+        attribute: attribute.replace('attr_', ''),
+        values,
+      }));
 
     return {
       after,
