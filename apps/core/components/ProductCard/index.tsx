@@ -148,7 +148,7 @@ export const ProductCard = ({
           </div>
         )}
         <div className="flex flex-wrap items-end justify-between pt-2">
-          <Pricing prices={product.prices}/>
+          <Pricing prices={product.prices} />
           {showCompare && <Compare productId={product.entityId} />}
         </div>
       </ProductCardInfo>

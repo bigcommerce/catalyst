@@ -12,12 +12,11 @@ export const Pricing = ({ prices }: { prices: Product['prices'] }) => {
     currency: prices.price?.currencyCode,
   });
 
-  const showPriceRange =
-    prices.priceRange?.min?.value !== prices?.priceRange?.max?.value;
+  const showPriceRange = prices.priceRange?.min?.value !== prices.priceRange?.max?.value;
 
   return showPriceRange &&
     prices.priceRange?.min?.value !== undefined &&
-    prices.priceRange?.max?.value !== undefined ? (
+    prices.priceRange.max?.value !== undefined ? (
     <div>
       <ProductCardInfoPrice className="w-[144px] shrink-0 pt-0">
         {currencyFormatter.format(prices.priceRange.min.value)} -{' '}
@@ -29,9 +28,7 @@ export const Pricing = ({ prices }: { prices: Product['prices'] }) => {
       {prices.retailPrice?.value !== undefined && (
         <ProductCardInfoPrice className="w-[144px] shrink-0 pt-0">
           MSRP:{' '}
-          <span className="line-through">
-            {currencyFormatter.format(prices.retailPrice.value)}
-          </span>
+          <span className="line-through">{currencyFormatter.format(prices.retailPrice.value)}</span>
         </ProductCardInfoPrice>
       )}
       {prices.basePrice?.value !== undefined && (

@@ -64,14 +64,6 @@ export const getBestSellingProducts = async <T>(
                 },
               },
             },
-            productOptions: {
-              __args: { first: 3 },
-              edges: {
-                node: {
-                  entityId: true,
-                },
-              },
-            },
           },
         },
       },
@@ -87,8 +79,5 @@ export const getBestSellingProducts = async <T>(
 
   const { site } = response.data;
 
-  return removeEdgesAndNodes(site.bestSellingProducts).map((bestSellingProduct) => ({
-    ...bestSellingProduct,
-    productOptions: removeEdgesAndNodes(bestSellingProduct.productOptions),
-  }));
+  return removeEdgesAndNodes(site.bestSellingProducts);
 };
