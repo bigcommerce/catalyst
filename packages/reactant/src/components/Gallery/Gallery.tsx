@@ -274,6 +274,10 @@ const Gallery = forwardRef<ElementRef<'div'>, GalleryProps>(
   ({ className, children, images, defaultImageIndex = 0, ...props }, ref) => {
     const [selectedImageIndex, setSelectedImageIndex] = useState(defaultImageIndex);
 
+    useEffect(() => {
+      setSelectedImageIndex(defaultImageIndex);
+    }, [defaultImageIndex]);
+
     return (
       <GalleryContext.Provider value={{ images, selectedImageIndex, setSelectedImageIndex }}>
         <div aria-live="polite" className={cs(className)} ref={ref} {...props}>

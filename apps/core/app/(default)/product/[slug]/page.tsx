@@ -244,11 +244,30 @@ export default async function Product({ params, searchParams }: ProductPageProps
     return notFound();
   }
 
+  // make a copy of product.images
+  const images = product.images;
+
+  // pick the top-level default image out of the `Image` response
+  const topLevelDefaultImg = product.images.find((image) => image.isDefault);
+
+  // if product.defaultImage exists, and product.defaultImage.url is not equal to the url of the isDefault image in the Image response, mark the existing isDefault image to "isDefault = false" and append the correct default image to images
+  if (product.defaultImage && topLevelDefaultImg?.url !== product.defaultImage.url) {
+    images.forEach((image) => {
+      image.isDefault = false;
+    });
+
+    images.push({
+      url: product.defaultImage.url,
+      altText: product.defaultImage.altText,
+      isDefault: true,
+    });
+  }
+
   return (
     <>
       <BreadCrumbs productId={productId} />
       <div className="mb-12 mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
-        <Gallery images={product.images} />
+        <Gallery images={images} />
         <ProductDetails product={product} />
         <ProductDescriptionAndReviews product={product} />
       </div>
