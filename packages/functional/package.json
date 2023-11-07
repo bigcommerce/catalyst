@@ -11,9 +11,9 @@
     "@bigcommerce/catalyst-configs": "workspace:^",
     "@bigcommerce/eslint-config": "^2.7.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
-    "@playwright/test": "^1.38.0",
+    "@playwright/test": "^1.39.0",
     "@types/node": "^18.17.12",
-    "eslint": "^8.48.0",
+    "eslint": "^8.53.0",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"
   }
