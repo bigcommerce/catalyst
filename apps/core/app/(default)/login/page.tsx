@@ -1,7 +1,7 @@
 import { Button } from '@bigcommerce/reactant/Button';
 import Link from 'next/link';
 
-import { Login as LoginForm } from 'components/Forms';
+import { LoginForm } from './LoginForm';
 
 export default function Login() {
   return (
