@@ -8,7 +8,9 @@ test('Gallery example', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByLabel('Thumbnail navigation'),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Custom image gallery', async ({ page }) => {
@@ -17,5 +19,7 @@ test('Custom image gallery', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByLabel('Thumbnail navigation'),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });

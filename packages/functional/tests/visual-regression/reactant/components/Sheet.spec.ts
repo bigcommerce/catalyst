@@ -17,7 +17,9 @@ test('Basic sheet', async ({ page }) => {
       .frameLocator(storyBookElements.storyBookFrame)
       .getByRole('heading', { name: 'Categories' }),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Sheet with overlay', async ({ page }) => {
@@ -35,7 +37,9 @@ test('Sheet with overlay', async ({ page }) => {
       .frameLocator(storyBookElements.storyBookFrame)
       .getByRole('heading', { name: 'Sheet w/ Overlay' }),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Sheet with footer', async ({ page }) => {
@@ -53,5 +57,7 @@ test('Sheet with footer', async ({ page }) => {
       .frameLocator(storyBookElements.storyBookFrame)
       .getByRole('heading', { name: 'Sheet w/ Footer' }),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });

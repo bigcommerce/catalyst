@@ -10,7 +10,9 @@ test('Basic footer', async ({ page }) => {
       .locator(storyBookElements.storyBook)
       .getByLabel('Footer navigation'),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Multi low footer', async ({ page }) => {
@@ -21,5 +23,7 @@ test('Multi low footer', async ({ page }) => {
       .locator(storyBookElements.storyBook)
       .getByLabel('Footer navigation'),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });

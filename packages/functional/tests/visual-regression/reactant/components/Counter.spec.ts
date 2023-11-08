@@ -12,7 +12,9 @@ test('Counter default', async ({ page }) => {
     .locator(storyBookElements.storyBook)
     .getByLabel('Increase count')
     .click();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Counter disabled', async ({ page }) => {
@@ -20,5 +22,7 @@ test('Counter disabled', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });

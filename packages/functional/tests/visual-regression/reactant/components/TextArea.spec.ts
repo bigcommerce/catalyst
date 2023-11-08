@@ -8,7 +8,9 @@ test('Text area default', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByPlaceholder('Placeholder...'),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Text area success', async ({ page }) => {
@@ -17,7 +19,9 @@ test('Text area success', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByPlaceholder('Placeholder...'),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Text area error', async ({ page }) => {
@@ -26,5 +30,7 @@ test('Text area error', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByPlaceholder('Placeholder...'),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });

@@ -9,5 +9,7 @@ test('blog post card', async ({ page }) => {
       .frameLocator(storyBookElements.storyBookFrame)
       .getByRole('link', { name: 'Blog Post Title' }),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });

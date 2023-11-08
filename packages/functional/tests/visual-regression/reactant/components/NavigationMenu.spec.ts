@@ -8,7 +8,9 @@ test('Basic navigation', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Accessories' }),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Navigation alignment left', async ({ page }) => {
@@ -17,7 +19,9 @@ test('Navigation alignment left', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Accessories' }),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Navigation alignment right', async ({ page }) => {
@@ -26,7 +30,9 @@ test('Navigation alignment right', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Accessories' }),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Logo centered', async ({ page }) => {
@@ -35,7 +41,9 @@ test('Logo centered', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Accessories' }),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Bottom navigation left', async ({ page }) => {
@@ -44,7 +52,9 @@ test('Bottom navigation left', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Accessories' }),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Bottom navigation center', async ({ page }) => {
@@ -53,7 +63,9 @@ test('Bottom navigation center', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Accessories' }),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Bottom navigation right', async ({ page }) => {
@@ -62,7 +74,9 @@ test('Bottom navigation right', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Accessories' }),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Navigation with badge', async ({ page }) => {
@@ -71,7 +85,9 @@ test('Navigation with badge', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Accessories' }),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Custom navigation menu toggle', async ({ page }) => {
@@ -80,5 +96,7 @@ test('Custom navigation menu toggle', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Accessories' }),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
