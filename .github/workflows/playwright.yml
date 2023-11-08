@@ -7,7 +7,7 @@ jobs:
   visual-regression-tests:
     timeout-minutes: 30
     runs-on: ubuntu-latest
-    if: github.event.deployment_status.state == 'success'
+    if:  ${{ github.event.deployment_status.state == 'success' && contains(github.event.deployment_status.target_url, 'storybook') }}
     steps:
       - name: Checkout code
         uses: actions/checkout@main
