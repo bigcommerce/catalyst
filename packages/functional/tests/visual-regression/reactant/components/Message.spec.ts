@@ -9,7 +9,9 @@ test('Default message', async ({ page }) => {
       .frameLocator(storyBookElements.storyBookFrame)
       .getByText('Here is your message for Users on Successful Action'),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Error message', async ({ page }) => {
@@ -19,5 +21,7 @@ test('Error message', async ({ page }) => {
       .frameLocator(storyBookElements.storyBookFrame)
       .getByText('Here is your message for Users on Failed Action'),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });

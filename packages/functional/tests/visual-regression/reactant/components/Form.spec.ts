@@ -10,7 +10,9 @@ test('Default form', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(inputField),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Form with validation', async ({ page }) => {
@@ -20,6 +22,7 @@ test('Form with validation', async ({ page }) => {
     .frameLocator(storyBookElements.storyBookFrame)
     .getByRole('button', { name: 'Submit Form' })
     .click();
-
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
