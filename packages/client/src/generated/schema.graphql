@@ -173,7 +173,7 @@ type Banner implements Node {
   """The id of the Banner."""
   entityId: Long!
 
-  """The ID of an object"""
+  """The ID of the banner."""
   id: ID!
 
   """The location of the Banner."""
@@ -285,9 +285,12 @@ type Blog implements Node {
 }
 
 """A blog index page."""
-type BlogIndexPage implements WebPage {
+type BlogIndexPage implements Node & WebPage {
   """Unique ID for the web page."""
   entityId: Int!
+
+  """The ID of an object"""
+  id: ID!
 
   """Whether or not the page should be visible in the navigation menu."""
   isVisibleInNavigation: Boolean!
@@ -675,6 +678,20 @@ type Cart implements Node {
 
   """Locale of the cart."""
   locale: String!
+
+  """Metafield data related to a cart."""
+  metafields(
+    after: String
+    before: String
+    first: Int
+
+    """Labels for identifying metafield data values."""
+    keys: [String!] = []
+    last: Int
+
+    """Metafield namespace filter"""
+    namespace: String!
+  ): MetafieldConnection!
 
   """Time when the cart was last updated."""
   updatedAt: DateTimeExtended!
@@ -1529,6 +1546,9 @@ type CheckboxOption implements CatalogProductOption {
   """Indicates the default checked status."""
   checkedByDefault: Boolean!
 
+  """Option value entity ID used for specifying the checkbox is checked."""
+  checkedOptionValueEntityId: Int!
+
   """Display name for the option."""
   displayName: String!
 
@@ -1543,6 +1563,11 @@ type CheckboxOption implements CatalogProductOption {
 
   """Label of the checkbox option."""
   label: String!
+
+  """
+  Option value entity ID used for specifying the checkbox is not checked.
+  """
+  uncheckedOptionValueEntityId: Int!
 }
 
 """The checkout."""
@@ -4325,6 +4350,24 @@ type Reviews {
 type Route {
   """Node"""
   node: Node
+
+  """Redirect details for a given path (if exists)."""
+  redirect: Redirect
+}
+
+"""
+Enum value to specify the desired behavior when encountering a redirect for the requested route.
+"""
+enum RouteRedirectBehavior {
+  """
+  If there is a dynamic/association redirect configured, the `node` node will return a resulting entity (category, product, etc.) that a redirect points to. If there is a static/manual redirect configured, the `node` node will return null, as there is no entity associated with it, the `redirect node` however will return the redirect details.
+  """
+  FOLLOW
+
+  """
+  No redirects are taken into account, relying on custom URLs only. If there is the same path for both redirect and entity URL configured, both `redirect` node and `node` node return respective non-null values.
+  """
+  IGNORE
 }
 
 """Store search settings."""
@@ -4726,6 +4769,11 @@ type Site {
   route(
     """An url path to an expected entity."""
     path: String!
+
+    """
+    The flag that allows you to specify the desired behavior when encountering a redirect for the requested route.
+    """
+    redirectBehavior: RouteRedirectBehavior! = IGNORE
   ): Route!
 
   """The Search queries."""

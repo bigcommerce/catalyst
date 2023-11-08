@@ -105,7 +105,7 @@ export interface Banner {
     content: Scalars['String']
     /** The id of the Banner. */
     entityId: Scalars['Long']
-    /** The ID of an object */
+    /** The ID of the banner. */
     id: Scalars['ID']
     /** The location of the Banner. */
     location: BannerLocation
@@ -179,6 +179,8 @@ export interface Blog {
 export interface BlogIndexPage {
     /** Unique ID for the web page. */
     entityId: Scalars['Int']
+    /** The ID of an object */
+    id: Scalars['ID']
     /** Whether or not the page should be visible in the navigation menu. */
     isVisibleInNavigation: Scalars['Boolean']
     /** Page name. */
@@ -494,6 +496,8 @@ export interface Cart {
     lineItems: CartLineItems
     /** Locale of the cart. */
     locale: Scalars['String']
+    /** Metafield data related to a cart. */
+    metafields: MetafieldConnection
     /** Time when the cart was last updated. */
     updatedAt: DateTimeExtended
     __typename: 'Cart'
@@ -1003,6 +1007,8 @@ export interface Channel {
 export interface CheckboxOption {
     /** Indicates the default checked status. */
     checkedByDefault: Scalars['Boolean']
+    /** Option value entity ID used for specifying the checkbox is checked. */
+    checkedOptionValueEntityId: Scalars['Int']
     /** Display name for the option. */
     displayName: Scalars['String']
     /** Unique ID for the option. */
@@ -1013,6 +1019,8 @@ export interface CheckboxOption {
     isVariantOption: Scalars['Boolean']
     /** Label of the checkbox option. */
     label: Scalars['String']
+    /** Option value entity ID used for specifying the checkbox is not checked. */
+    uncheckedOptionValueEntityId: Scalars['Int']
     __typename: 'CheckboxOption'
 }
 
@@ -2151,7 +2159,7 @@ export interface Mutation {
 
 
 /** An object with an ID */
-export type Node = (Banner | Blog | BlogPost | Brand | Cart | Category | Checkout | ContactPage | NormalPage | Product | RawHtmlPage | Redirect | Variant) & { __isUnion?: true }
+export type Node = (Banner | Blog | BlogIndexPage | BlogPost | Brand | Cart | Category | Checkout | ContactPage | NormalPage | Product | RawHtmlPage | Redirect | Variant) & { __isUnion?: true }
 
 
 /** A normal page. */
@@ -3015,8 +3023,14 @@ export interface Reviews {
 export interface Route {
     /** Node */
     node: (Node | null)
+    /** Redirect details for a given path (if exists). */
+    redirect: (Redirect | null)
     __typename: 'Route'
 }
+
+
+/** Enum value to specify the desired behavior when encountering a redirect for the requested route. */
+export type RouteRedirectBehavior = 'FOLLOW' | 'IGNORE'
 
 
 /** Store search settings. */
@@ -3800,7 +3814,7 @@ export interface BannerGenqlSelection{
     content?: boolean | number
     /** The id of the Banner. */
     entityId?: boolean | number
-    /** The ID of an object */
+    /** The ID of the banner. */
     id?: boolean | number
     /** The location of the Banner. */
     location?: boolean | number
@@ -3885,6 +3899,8 @@ export interface BlogGenqlSelection{
 export interface BlogIndexPageGenqlSelection{
     /** Unique ID for the web page. */
     entityId?: boolean | number
+    /** The ID of an object */
+    id?: boolean | number
     /** Whether or not the page should be visible in the navigation menu. */
     isVisibleInNavigation?: boolean | number
     /** Page name. */
@@ -4247,6 +4263,12 @@ export interface CartGenqlSelection{
     lineItems?: CartLineItemsGenqlSelection
     /** Locale of the cart. */
     locale?: boolean | number
+    /** Metafield data related to a cart. */
+    metafields?: (MetafieldConnectionGenqlSelection & { __args: {after?: (Scalars['String'] | null), before?: (Scalars['String'] | null), first?: (Scalars['Int'] | null), 
+    /** Labels for identifying metafield data values. */
+    keys?: (Scalars['String'][] | null), last?: (Scalars['Int'] | null), 
+    /** Metafield namespace filter */
+    namespace: Scalars['String']} })
     /** Time when the cart was last updated. */
     updatedAt?: DateTimeExtendedGenqlSelection
     __typename?: boolean | number
@@ -4969,6 +4991,8 @@ export interface ChannelGenqlSelection{
 export interface CheckboxOptionGenqlSelection{
     /** Indicates the default checked status. */
     checkedByDefault?: boolean | number
+    /** Option value entity ID used for specifying the checkbox is checked. */
+    checkedOptionValueEntityId?: boolean | number
     /** Display name for the option. */
     displayName?: boolean | number
     /** Unique ID for the option. */
@@ -4979,6 +5003,8 @@ export interface CheckboxOptionGenqlSelection{
     isVariantOption?: boolean | number
     /** Label of the checkbox option. */
     label?: boolean | number
+    /** Option value entity ID used for specifying the checkbox is not checked. */
+    uncheckedOptionValueEntityId?: boolean | number
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -6462,6 +6488,7 @@ export interface NodeGenqlSelection{
     id?: boolean | number
     on_Banner?: BannerGenqlSelection
     on_Blog?: BlogGenqlSelection
+    on_BlogIndexPage?: BlogIndexPageGenqlSelection
     on_BlogPost?: BlogPostGenqlSelection
     on_Brand?: BrandGenqlSelection
     on_Cart?: CartGenqlSelection
@@ -7471,6 +7498,8 @@ export interface ReviewsGenqlSelection{
 export interface RouteGenqlSelection{
     /** Node */
     node?: NodeGenqlSelection
+    /** Redirect details for a given path (if exists). */
+    redirect?: RedirectGenqlSelection
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -7766,7 +7795,9 @@ export interface SiteGenqlSelection{
     /** Route for a node */
     route?: (RouteGenqlSelection & { __args: {
     /** An url path to an expected entity. */
-    path: Scalars['String']} })
+    path: Scalars['String'], 
+    /** The flag that allows you to specify the desired behavior when encountering a redirect for the requested route. */
+    redirectBehavior: RouteRedirectBehavior} })
     /** The Search queries. */
     search?: SearchQueriesGenqlSelection
     /** Store settings. */
@@ -9567,7 +9598,7 @@ name?: (Scalars['String'] | null)}
     
 
 
-    const Node_possibleTypes: string[] = ['Banner','Blog','BlogPost','Brand','Cart','Category','Checkout','ContactPage','NormalPage','Product','RawHtmlPage','Redirect','Variant']
+    const Node_possibleTypes: string[] = ['Banner','Blog','BlogIndexPage','BlogPost','Brand','Cart','Category','Checkout','ContactPage','NormalPage','Product','RawHtmlPage','Redirect','Variant']
     export const isNode = (obj?: { __typename?: any } | null): obj is Node => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isNode"')
       return Node_possibleTypes.includes(obj.__typename)
@@ -10579,6 +10610,11 @@ export const enumProductReviewsSortInput = {
    LOWEST_RATING: 'LOWEST_RATING' as const,
    NEWEST: 'NEWEST' as const,
    OLDEST: 'OLDEST' as const
+}
+
+export const enumRouteRedirectBehavior = {
+   FOLLOW: 'FOLLOW' as const,
+   IGNORE: 'IGNORE' as const
 }
 
 export const enumSearchProductsSortInput = {
