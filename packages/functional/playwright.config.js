@@ -30,7 +30,7 @@ export default defineConfig({
             '--disable-lcd-text',
             '--disable-remote-fonts',
           ],
-        }
+        },
       },
     },
 
