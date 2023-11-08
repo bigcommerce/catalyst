@@ -1,5 +1,6 @@
 'use client';
 
+import { Checkbox } from '@bigcommerce/reactant/Checkbox';
 import { Label } from '@bigcommerce/reactant/Label';
 import { RectangleList, RectangleListItem } from '@bigcommerce/reactant/RectangleList';
 import { Swatch, SwatchItem } from '@bigcommerce/reactant/Swatch';
@@ -104,6 +105,34 @@ export const VariantSelector = ({ product }: { product: NonNullable<Product> }) 
         default:
           return null;
       }
+    }
+
+    if (option.__typename === 'CheckboxOption') {
+      return (
+        <fieldset key={option.entityId}>
+          <legend className="inline-block py-2 font-semibold">
+            {option.isRequired ? (
+              <>
+                {option.displayName} <span className="font-normal text-gray-500">(required)</span>
+              </>
+            ) : (
+              option.displayName
+            )}
+          </legend>
+          <div className="flex flex-row items-center" key={option.entityId}>
+            <Checkbox
+              defaultChecked={option.checkedByDefault}
+              id={`${option.entityId}`}
+              name={`attribute[${option.entityId}]`}
+              required={option.isRequired}
+              value={option.checkedOptionValueEntityId}
+            />
+            <Label className="mx-3" htmlFor={`${option.entityId}`}>
+              {option.label}
+            </Label>
+          </div>
+        </fieldset>
+      );
     }
 
     return null;

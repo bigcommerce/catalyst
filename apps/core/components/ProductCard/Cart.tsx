@@ -1,6 +1,7 @@
+import { handleAddToCart } from '~/app/(default)/product/[slug]/_actions/addToCart';
+
 import { ProductSheet, ProductSheetContent, ProductSheetForm } from '../ProductSheet';
 
-import { handleAddToCart } from './_actions/addToCart';
 import { AddToCart } from './AddToCart';
 
 import { Product } from '.';

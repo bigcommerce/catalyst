@@ -16,9 +16,10 @@ export async function handleAddToCart(data: FormData) {
 
   const selectedOptions =
     product?.productOptions?.reduce<CartSelectedOptionsInput>((accum, option) => {
-      const optionInput = {
+      const optionValueEntityId = Number(data.get(`attribute[${option.entityId}]`));
+      let optionInput = {
         optionEntityId: option.entityId,
-        optionValueEntityId: Number(data.get(`attribute[${option.entityId}]`)),
+        optionValueEntityId,
       };
 
       switch (option.__typename) {
@@ -28,6 +29,21 @@ export async function handleAddToCart(data: FormData) {
           }
 
           return { ...accum, multipleChoices: [optionInput] };
+
+        case 'CheckboxOption':
+          optionInput = {
+            optionEntityId: option.entityId,
+            optionValueEntityId:
+              optionValueEntityId !== 0
+                ? option.checkedOptionValueEntityId
+                : option.uncheckedOptionValueEntityId,
+          };
+
+          if (accum.checkboxes) {
+            return { ...accum, checkboxes: [...accum.checkboxes, optionInput] };
+          }
+
+          return { ...accum, checkboxes: [optionInput] };
       }
 
       return accum;
