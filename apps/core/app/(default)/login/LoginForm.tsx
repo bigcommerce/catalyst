@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@bigcommerce/reactant/Button';
 import { cs } from '@bigcommerce/reactant/cs';
 import {
@@ -17,7 +19,7 @@ import { useFormStatus } from 'react-dom';
 
 import { submitLoginForm } from './_actions/submitLoginForm';
 
-export const Login = () => {
+export const LoginForm = () => {
   const { pending } = useFormStatus();
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
