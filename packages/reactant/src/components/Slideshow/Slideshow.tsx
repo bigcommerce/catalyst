@@ -32,7 +32,7 @@ interface SlideshowProps extends ComponentPropsWithRef<'section'> {
   interval?: number;
 }
 
-export const Slideshow = forwardRef<ElementRef<'section'>, SlideshowProps>(
+const Slideshow = forwardRef<ElementRef<'section'>, SlideshowProps>(
   ({ children, className, interval = 15_000, ...props }, ref) => {
     const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
 
@@ -84,7 +84,7 @@ Slideshow.displayName = 'Slideshow';
 
 type ForwardedRef = ElementRef<'div'> | null;
 
-export const SlideshowContent = forwardRef<ForwardedRef, ComponentPropsWithRef<'ul'>>(
+const SlideshowContent = forwardRef<ForwardedRef, ComponentPropsWithRef<'ul'>>(
   ({ children, className, ...props }, ref) => {
     const mutableRef = useRef<ForwardedRef>(null);
     const [emblaRef] = useContext(SlideshowContext);
@@ -117,7 +117,7 @@ export const SlideshowContent = forwardRef<ForwardedRef, ComponentPropsWithRef<'
 
 SlideshowContent.displayName = 'SlideshowContent';
 
-export const SlideshowSlide = forwardRef<ElementRef<'li'>, ComponentPropsWithRef<'li'>>(
+const SlideshowSlide = forwardRef<ElementRef<'li'>, ComponentPropsWithRef<'li'>>(
   ({ children, className, ...props }, ref) => {
     const [activeSlide] = useContext(ActiveSlideContext);
     const [thisSlideIndex, totalSlides] = useContext(SlideIndexContext);
@@ -142,7 +142,7 @@ export const SlideshowSlide = forwardRef<ElementRef<'li'>, ComponentPropsWithRef
 
 SlideshowSlide.displayName = 'SlideshowSlide';
 
-export const SlideshowControls = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
+const SlideshowControls = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     const [, emblaApi] = useContext(SlideshowContext);
 
@@ -168,75 +168,73 @@ interface SlideshowAutoplayControlProps extends Omit<ComponentPropsWithRef<'butt
   children?: (({ isPaused }: { isPaused: boolean }) => React.ReactNode) | React.ReactNode;
 }
 
-export const SlideshowAutoplayControl = forwardRef<
-  ElementRef<'button'>,
-  SlideshowAutoplayControlProps
->(({ children, className, onClick, ...props }, ref) => {
-  const [isPaused, togglePaused] = useContext(AutoplayContext);
+const SlideshowAutoplayControl = forwardRef<ElementRef<'button'>, SlideshowAutoplayControlProps>(
+  ({ children, className, onClick, ...props }, ref) => {
+    const [isPaused, togglePaused] = useContext(AutoplayContext);
 
-  const renderChildrenWithFallback = () => {
-    if (typeof children === 'function') {
-      return children({ isPaused });
-    }
+    const renderChildrenWithFallback = () => {
+      if (typeof children === 'function') {
+        return children({ isPaused });
+      }
 
-    return isPaused ? <Play /> : <Pause />;
-  };
+      return isPaused ? <Play /> : <Pause />;
+    };
 
-  return (
-    <button
-      aria-label={isPaused ? 'Play slideshow' : 'Pause slideshow'}
-      className={cs(
-        'focus:ring-primary-blue/20 inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4',
-        className,
-      )}
-      onClick={(e) => {
-        togglePaused();
+    return (
+      <button
+        aria-label={isPaused ? 'Play slideshow' : 'Pause slideshow'}
+        className={cs(
+          'focus:ring-primary-blue/20 inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4',
+          className,
+        )}
+        onClick={(e) => {
+          togglePaused();
 
-        if (onClick) {
-          onClick(e);
-        }
-      }}
-      ref={ref}
-      {...props}
-    >
-      {renderChildrenWithFallback()}
-    </button>
-  );
-});
+          if (onClick) {
+            onClick(e);
+          }
+        }}
+        ref={ref}
+        {...props}
+      >
+        {renderChildrenWithFallback()}
+      </button>
+    );
+  },
+);
 
 SlideshowAutoplayControl.displayName = 'SlideshowAutoplayControl';
 
-export const SlideshowNextIndicator = forwardRef<
-  ElementRef<'button'>,
-  ComponentPropsWithRef<'button'>
->(({ children, className, onClick, ...props }, ref) => {
-  const [, emblaApi] = useContext(SlideshowContext);
+const SlideshowNextIndicator = forwardRef<ElementRef<'button'>, ComponentPropsWithRef<'button'>>(
+  ({ children, className, onClick, ...props }, ref) => {
+    const [, emblaApi] = useContext(SlideshowContext);
 
-  const scrollNext = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
-    if (emblaApi) emblaApi.scrollNext();
-    if (onClick) onClick(e);
-  };
+    const scrollNext = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
+      if (emblaApi) emblaApi.scrollNext();
+      if (onClick) onClick(e);
+    };
 
-  return (
-    <button
-      aria-controls="slideshow-slides"
-      aria-label="Next slide"
-      className={cs(
-        'focus:ring-primary-blue/20 inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4',
-        className,
-      )}
-      onClick={scrollNext}
-      ref={ref}
-      {...props}
-    >
-      {children || <ArrowRight />}
-    </button>
-  );
-});
+    return (
+      <button
+        aria-controls="slideshow-slides"
+        aria-label="Next slide"
+        className={cs(
+          'focus:ring-primary-blue/20 inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4',
+          className,
+        )}
+        onClick={scrollNext}
+        ref={ref}
+        {...props}
+      >
+        {children || <ArrowRight />}
+      </button>
+    );
+  },
+);
 
 SlideshowNextIndicator.displayName = 'SlideshowNextIndicator';
 
-export const SlideshowPreviousIndicator = forwardRef<
+const SlideshowPreviousIndicator = forwardRef<
   ElementRef<'button'>,
   ComponentPropsWithRef<'button'>
 >(({ children, className, onClick, ...props }, ref) => {
@@ -278,7 +276,7 @@ interface SlideshowPaginationProps extends Omit<ComponentPropsWithRef<'div'>, 'c
     | React.ReactNode;
 }
 
-export const SlideshowPagination = forwardRef<ElementRef<'span'>, SlideshowPaginationProps>(
+const SlideshowPagination = forwardRef<ElementRef<'span'>, SlideshowPaginationProps>(
   ({ children, className, ...props }, ref) => {
     const [, emblaApi] = useContext(SlideshowContext);
     const [activeSlide, setActiveSlide] = useContext(ActiveSlideContext);
@@ -334,3 +332,14 @@ export const SlideshowPagination = forwardRef<ElementRef<'span'>, SlideshowPagin
 );
 
 SlideshowPagination.displayName = 'SlideshowPagination';
+
+export {
+  Slideshow,
+  SlideshowContent,
+  SlideshowSlide,
+  SlideshowControls,
+  SlideshowAutoplayControl,
+  SlideshowNextIndicator,
+  SlideshowPreviousIndicator,
+  SlideshowPagination,
+};

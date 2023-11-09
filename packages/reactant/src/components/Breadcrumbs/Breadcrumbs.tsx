@@ -3,7 +3,7 @@ import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
 import { cs } from '../../utils/cs';
 
-export const Breadcrumbs = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef<'ul'>>(
+const Breadcrumbs = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef<'ul'>>(
   ({ children, className, ...props }, ref) => {
     return (
       <nav aria-label="Breadcrumb" ref={ref}>
@@ -22,7 +22,7 @@ interface BreadcrumbItemProps extends ComponentPropsWithRef<'a'> {
   isActive?: boolean;
 }
 
-export const BreadcrumbItem = forwardRef<ElementRef<'li'>, BreadcrumbItemProps>(
+const BreadcrumbItem = forwardRef<ElementRef<'li'>, BreadcrumbItemProps>(
   ({ asChild, children, className, isActive, ...props }, ref) => {
     const Comp = asChild ? Slot : 'a';
 
@@ -46,7 +46,7 @@ export const BreadcrumbItem = forwardRef<ElementRef<'li'>, BreadcrumbItemProps>(
 
 BreadcrumbItem.displayName = 'BreadcrumbItem';
 
-export const BreadcrumbDivider = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'span'>>(
+const BreadcrumbDivider = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'span'>>(
   ({ children, className, ...props }, ref) => {
     return (
       <span className={cs('mx-1', className)} ref={ref} {...props}>
@@ -57,3 +57,5 @@ export const BreadcrumbDivider = forwardRef<ElementRef<'span'>, ComponentPropsWi
 );
 
 BreadcrumbDivider.displayName = 'BreadcrumbDivider';
+
+export { Breadcrumbs, BreadcrumbItem, BreadcrumbDivider };

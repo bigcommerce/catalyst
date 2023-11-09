@@ -3,7 +3,7 @@ import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
 import { cs } from '../../utils/cs';
 
-export type TagProps = ComponentPropsWithRef<'div'>;
+type TagProps = ComponentPropsWithRef<'div'>;
 
 const Tag = forwardRef<ElementRef<'div'>, TagProps>(({ className, ...props }, ref) => {
   return (
@@ -20,7 +20,7 @@ const Tag = forwardRef<ElementRef<'div'>, TagProps>(({ className, ...props }, re
 
 Tag.displayName = 'Tag';
 
-export type TagContentProps = ComponentPropsWithRef<'span'>;
+type TagContentProps = ComponentPropsWithRef<'span'>;
 
 const TagContent = forwardRef<ElementRef<'span'>, TagContentProps>(
   ({ className, ...props }, ref) => {
@@ -32,7 +32,7 @@ const TagContent = forwardRef<ElementRef<'span'>, TagContentProps>(
 
 TagContent.displayName = 'TagContent';
 
-export type TagActionProps = ComponentPropsWithRef<'button'>;
+type TagActionProps = ComponentPropsWithRef<'button'>;
 
 const TagAction = forwardRef<ElementRef<'button'>, TagActionProps>(
   ({ className, children, ...props }, ref) => {
@@ -54,3 +54,4 @@ const TagAction = forwardRef<ElementRef<'button'>, TagActionProps>(
 TagAction.displayName = 'TagAction';
 
 export { Tag, TagContent, TagAction };
+export type { TagProps, TagContentProps, TagActionProps };

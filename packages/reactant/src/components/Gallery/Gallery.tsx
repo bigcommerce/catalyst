@@ -34,63 +34,61 @@ const ThumbnailContext = createContext<{
   index: 0,
 });
 
-export const GalleryPreviousIndicator = forwardRef<
-  ElementRef<'button'>,
-  ComponentPropsWithRef<'button'>
->(({ children, className, onClick, ...props }, ref) => {
-  const { images, selectedImageIndex, setSelectedImageIndex } = useContext(GalleryContext);
-  const previousIndex = selectedImageIndex === 0 ? images.length - 1 : selectedImageIndex - 1;
+const GalleryPreviousIndicator = forwardRef<ElementRef<'button'>, ComponentPropsWithRef<'button'>>(
+  ({ children, className, onClick, ...props }, ref) => {
+    const { images, selectedImageIndex, setSelectedImageIndex } = useContext(GalleryContext);
+    const previousIndex = selectedImageIndex === 0 ? images.length - 1 : selectedImageIndex - 1;
 
-  return (
-    <button
-      aria-label="Previous product image"
-      className={cs('focus:ring-primary-blue/20 focus:outline-none focus:ring-4', className)}
-      onClick={(e) => {
-        setSelectedImageIndex(previousIndex);
+    return (
+      <button
+        aria-label="Previous product image"
+        className={cs('focus:ring-primary-blue/20 focus:outline-none focus:ring-4', className)}
+        onClick={(e) => {
+          setSelectedImageIndex(previousIndex);
 
-        if (onClick) {
-          onClick(e);
-        }
-      }}
-      ref={ref}
-      {...props}
-    >
-      {children || <ChevronLeft />}
-    </button>
-  );
-});
+          if (onClick) {
+            onClick(e);
+          }
+        }}
+        ref={ref}
+        {...props}
+      >
+        {children || <ChevronLeft />}
+      </button>
+    );
+  },
+);
 
 GalleryPreviousIndicator.displayName = 'GalleryPreviousIndicator';
 
-export const GalleryNextIndicator = forwardRef<
-  ElementRef<'button'>,
-  ComponentPropsWithRef<'button'>
->(({ children, className, onClick, ...props }, ref) => {
-  const { images, selectedImageIndex, setSelectedImageIndex } = useContext(GalleryContext);
-  const nextIndex = selectedImageIndex + 1 < images.length ? selectedImageIndex + 1 : 0;
+const GalleryNextIndicator = forwardRef<ElementRef<'button'>, ComponentPropsWithRef<'button'>>(
+  ({ children, className, onClick, ...props }, ref) => {
+    const { images, selectedImageIndex, setSelectedImageIndex } = useContext(GalleryContext);
+    const nextIndex = selectedImageIndex + 1 < images.length ? selectedImageIndex + 1 : 0;
 
-  return (
-    <button
-      aria-label="Next product image"
-      className={cs('focus:ring-primary-blue/20 focus:outline-none focus:ring-4', className)}
-      onClick={(e) => {
-        setSelectedImageIndex(nextIndex);
+    return (
+      <button
+        aria-label="Next product image"
+        className={cs('focus:ring-primary-blue/20 focus:outline-none focus:ring-4', className)}
+        onClick={(e) => {
+          setSelectedImageIndex(nextIndex);
 
-        if (onClick) {
-          onClick(e);
-        }
-      }}
-      ref={ref}
-      {...props}
-    >
-      {children || <ChevronRight />}
-    </button>
-  );
-});
+          if (onClick) {
+            onClick(e);
+          }
+        }}
+        ref={ref}
+        {...props}
+      >
+        {children || <ChevronRight />}
+      </button>
+    );
+  },
+);
 
 GalleryNextIndicator.displayName = 'GalleryNextIndicator';
 
-export const GalleryControls = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
+const GalleryControls = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     const { images } = useContext(GalleryContext);
 
@@ -124,7 +122,7 @@ interface GalleryImageProps extends Omit<ComponentPropsWithRef<'img'>, 'children
   children?: (({ selectedImage }: { selectedImage?: Image }) => React.ReactNode) | React.ReactNode;
 }
 
-export const GalleryImage = forwardRef<ElementRef<'img'>, GalleryImageProps>(
+const GalleryImage = forwardRef<ElementRef<'img'>, GalleryImageProps>(
   ({ className, children, ...props }, ref) => {
     const { images, selectedImageIndex } = useContext(GalleryContext);
     const selectedImage = images.length > 0 ? images[selectedImageIndex] : undefined;
@@ -150,7 +148,7 @@ export const GalleryImage = forwardRef<ElementRef<'img'>, GalleryImageProps>(
 
 GalleryImage.displayName = 'GalleryImage';
 
-export const GalleryContent = forwardRef<ElementRef<'figure'>, ComponentPropsWithRef<'figure'>>(
+const GalleryContent = forwardRef<ElementRef<'figure'>, ComponentPropsWithRef<'figure'>>(
   ({ className, children, ...props }, ref) => {
     return (
       <figure
@@ -166,7 +164,7 @@ export const GalleryContent = forwardRef<ElementRef<'figure'>, ComponentPropsWit
 
 GalleryContent.displayName = 'GalleryContent';
 
-export const GalleryThumbnailList = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef<'nav'>>(
+const GalleryThumbnailList = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef<'nav'>>(
   ({ children, className, ...props }, ref) => {
     return (
       <nav
@@ -190,7 +188,7 @@ interface GalleryThumbnailItemProps extends ComponentPropsWithRef<'button'> {
   imageIndex: number;
 }
 
-export const GalleryThumbnailItem = forwardRef<ElementRef<'button'>, GalleryThumbnailItemProps>(
+const GalleryThumbnailItem = forwardRef<ElementRef<'button'>, GalleryThumbnailItemProps>(
   ({ className, children, imageIndex, onClick, ...props }, ref) => {
     const { selectedImageIndex, setSelectedImageIndex } = useContext(GalleryContext);
     const isActive = selectedImageIndex === imageIndex;
@@ -228,7 +226,7 @@ interface GalleryThumbnailProps extends ComponentPropsWithRef<'img'> {
   asChild?: boolean;
 }
 
-export const GalleryThumbnail = forwardRef<ElementRef<'img'>, GalleryThumbnailProps>(
+const GalleryThumbnail = forwardRef<ElementRef<'img'>, GalleryThumbnailProps>(
   ({ asChild, className, ...props }, forwardedRef) => {
     const { selectedImageIndex } = useContext(GalleryContext);
     const { index } = useContext(ThumbnailContext);
@@ -272,7 +270,7 @@ interface GalleryProps extends ComponentPropsWithRef<'div'> {
   defaultImageIndex?: number;
 }
 
-export const Gallery = forwardRef<ElementRef<'div'>, GalleryProps>(
+const Gallery = forwardRef<ElementRef<'div'>, GalleryProps>(
   ({ className, children, images, defaultImageIndex = 0, ...props }, ref) => {
     const [selectedImageIndex, setSelectedImageIndex] = useState(defaultImageIndex);
 
@@ -287,3 +285,15 @@ export const Gallery = forwardRef<ElementRef<'div'>, GalleryProps>(
 );
 
 Gallery.displayName = 'Gallery';
+
+export {
+  Gallery,
+  GalleryThumbnail,
+  GalleryThumbnailItem,
+  GalleryThumbnailList,
+  GalleryContent,
+  GalleryImage,
+  GalleryControls,
+  GalleryNextIndicator,
+  GalleryPreviousIndicator,
+};

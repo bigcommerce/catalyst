@@ -8,7 +8,7 @@ interface BlogPostCardProps extends ComponentPropsWithRef<'li'> {
   asChild?: boolean;
 }
 
-export const BlogPostCard = forwardRef<ElementRef<'li'>, BlogPostCardProps>(
+const BlogPostCard = forwardRef<ElementRef<'li'>, BlogPostCardProps>(
   ({ asChild = false, children, className, ...props }, ref) => {
     const Comp = asChild ? Slot : 'li';
 
@@ -22,7 +22,7 @@ export const BlogPostCard = forwardRef<ElementRef<'li'>, BlogPostCardProps>(
 
 BlogPostCard.displayName = 'BlogPostCard';
 
-export const BlogPostBanner = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
+const BlogPostBanner = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     return (
       <div
@@ -38,7 +38,7 @@ export const BlogPostBanner = forwardRef<ElementRef<'div'>, ComponentPropsWithRe
 
 BlogPostBanner.displayName = 'BlogPostBanner';
 
-export const BlogPostImage = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
+const BlogPostImage = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     return (
       <div className={cs('mb-2 flex h-44 lg:h-56', className)} ref={ref} {...props}>
@@ -63,7 +63,7 @@ const titleVariants = cva('mb-2 text-h5', {
   },
 });
 
-export const BlogPostTitle = forwardRef<ElementRef<'h3'>, TitleProps>(
+const BlogPostTitle = forwardRef<ElementRef<'h3'>, TitleProps>(
   ({ asChild = false, children, className, variant, ...props }, ref) => {
     const Comp = asChild ? Slot : 'h3';
 
@@ -77,7 +77,7 @@ export const BlogPostTitle = forwardRef<ElementRef<'h3'>, TitleProps>(
 
 BlogPostTitle.displayName = 'BlogPostTitle';
 
-export const BlogPostContent = forwardRef<ElementRef<'p'>, ComponentPropsWithRef<'p'>>(
+const BlogPostContent = forwardRef<ElementRef<'p'>, ComponentPropsWithRef<'p'>>(
   ({ children, className, ...props }, ref) => {
     return (
       <p className={cs('mb-2 text-base', className)} {...props} ref={ref}>
@@ -101,7 +101,7 @@ const dateVariants = cva('mb-2 text-base text-gray-500', {
   },
 });
 
-export const BlogPostDate = forwardRef<ElementRef<'small'>, DateProps>(
+const BlogPostDate = forwardRef<ElementRef<'small'>, DateProps>(
   ({ children, className, variant, ...props }, ref) => {
     return (
       <small className={cs(dateVariants({ variant, className }))} {...props} ref={ref}>
@@ -113,7 +113,7 @@ export const BlogPostDate = forwardRef<ElementRef<'small'>, DateProps>(
 
 BlogPostDate.displayName = 'BlogPostDate';
 
-export const BlogPostAuthor = forwardRef<ElementRef<'small'>, ComponentPropsWithRef<'small'>>(
+const BlogPostAuthor = forwardRef<ElementRef<'small'>, ComponentPropsWithRef<'small'>>(
   ({ children, className, ...props }, ref) => {
     return (
       <small className={cs('text-base text-gray-500', className)} {...props} ref={ref}>
@@ -124,3 +124,13 @@ export const BlogPostAuthor = forwardRef<ElementRef<'small'>, ComponentPropsWith
 );
 
 BlogPostAuthor.displayName = 'BlogPostAuthor';
+
+export {
+  BlogPostCard,
+  BlogPostBanner,
+  BlogPostImage,
+  BlogPostTitle,
+  BlogPostContent,
+  BlogPostDate,
+  BlogPostAuthor,
+};

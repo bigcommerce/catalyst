@@ -24,7 +24,7 @@ const ExpandedContext = createContext<{
   setIsExpanded: () => undefined,
 });
 
-export const NavigationMenu = forwardRef<
+const NavigationMenu = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.Root>,
   ComponentPropsWithRef<'div'>
 >(({ children, className, ...props }, ref) => {
@@ -74,7 +74,7 @@ export const NavigationMenu = forwardRef<
 
 NavigationMenu.displayName = NavigationMenuPrimitive.NavigationMenu.displayName;
 
-export const NavigationMenuList = forwardRef<
+const NavigationMenuList = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.List>,
   ComponentPropsWithRef<typeof NavigationMenuPrimitive.List>
 >(({ children, className, ...props }, ref) => (
@@ -89,7 +89,7 @@ export const NavigationMenuList = forwardRef<
 
 NavigationMenuList.displayName = NavigationMenuPrimitive.NavigationMenuList.displayName;
 
-export const NavigationMenuItem = forwardRef<
+const NavigationMenuItem = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.Item>,
   ComponentPropsWithRef<typeof NavigationMenuPrimitive.Item>
 >(({ children, className, ...props }, ref) => {
@@ -104,7 +104,7 @@ export const NavigationMenuItem = forwardRef<
 
 NavigationMenuItem.displayName = NavigationMenuPrimitive.NavigationMenuItem.displayName;
 
-export const NavigationMenuTrigger = forwardRef<
+const NavigationMenuTrigger = forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Trigger>,
   React.ComponentPropsWithRef<typeof NavigationMenuPrimitive.Trigger>
 >(({ className, children, ...props }, ref) => (
@@ -122,7 +122,7 @@ export const NavigationMenuTrigger = forwardRef<
 
 NavigationMenuTrigger.displayName = NavigationMenuPrimitive.Trigger.displayName;
 
-export const NavigationMenuContent = forwardRef<
+const NavigationMenuContent = forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Content>,
   React.ComponentPropsWithRef<typeof NavigationMenuPrimitive.Content>
 >(({ className, children, ...props }, ref) => {
@@ -147,7 +147,7 @@ export const NavigationMenuContent = forwardRef<
 
 NavigationMenuContent.displayName = NavigationMenuPrimitive.NavigationMenuContent.displayName;
 
-export const NavigationMenuLink = forwardRef<
+const NavigationMenuLink = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.Link>,
   ComponentPropsWithRef<typeof NavigationMenuPrimitive.Link>
 >(({ children, className, ...props }, ref) => {
@@ -170,36 +170,35 @@ export const NavigationMenuLink = forwardRef<
 
 NavigationMenuLink.displayName = NavigationMenuPrimitive.NavigationMenuLink.displayName;
 
-export const NavigationMenuToggle = forwardRef<
-  ElementRef<'button'>,
-  ComponentPropsWithRef<'button'>
->(({ children, className, onClick, ...props }, ref) => {
-  const { isExpanded, setIsExpanded } = useContext(ExpandedContext);
+const NavigationMenuToggle = forwardRef<ElementRef<'button'>, ComponentPropsWithRef<'button'>>(
+  ({ children, className, onClick, ...props }, ref) => {
+    const { isExpanded, setIsExpanded } = useContext(ExpandedContext);
 
-  return (
-    <button
-      aria-controls="nav-menu"
-      aria-expanded={isExpanded}
-      aria-label="Toggle navigation"
-      className={cs(
-        'focus:ring-primary-blue/20 group p-3 hover:text-blue-primary focus:outline-none focus:ring-4',
-        className,
-      )}
-      onClick={(e) => {
-        onClick?.(e);
-        setIsExpanded(!isExpanded);
-      }}
-      ref={ref}
-      {...props}
-    >
-      {children ?? (isExpanded ? <X /> : <Menu />)}
-    </button>
-  );
-});
+    return (
+      <button
+        aria-controls="nav-menu"
+        aria-expanded={isExpanded}
+        aria-label="Toggle navigation"
+        className={cs(
+          'focus:ring-primary-blue/20 group p-3 hover:text-blue-primary focus:outline-none focus:ring-4',
+          className,
+        )}
+        onClick={(e) => {
+          onClick?.(e);
+          setIsExpanded(!isExpanded);
+        }}
+        ref={ref}
+        {...props}
+      >
+        {children ?? (isExpanded ? <X /> : <Menu />)}
+      </button>
+    );
+  },
+);
 
 NavigationMenuToggle.displayName = 'NavigationMenuToggle';
 
-export const NavigationMenuCollapsed = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
+const NavigationMenuCollapsed = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     const { isExpanded, setIsExpanded } = useContext(ExpandedContext);
     const initialBodyOverflowYRef = useRef('');
@@ -246,3 +245,14 @@ export const NavigationMenuCollapsed = forwardRef<ElementRef<'div'>, ComponentPr
 );
 
 NavigationMenuCollapsed.displayName = 'NavigationMenuCollapsed';
+
+export {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
+  NavigationMenuLink,
+  NavigationMenuToggle,
+  NavigationMenuCollapsed,
+};

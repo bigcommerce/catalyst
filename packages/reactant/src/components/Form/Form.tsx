@@ -4,7 +4,7 @@ import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 import { cs } from '../../utils/cs';
 import { Label } from '../Label';
 
-export type ValidationPattern =
+type ValidationPattern =
   | 'badInput'
   | 'patternMismatch'
   | 'rangeOverflow'
@@ -16,15 +16,15 @@ export type ValidationPattern =
   | 'valid'
   | 'valueMissing';
 
-export type ValidationFunction =
+type ValidationFunction =
   | ((value: string, formData: FormData) => boolean)
   | ((value: string, formData: FormData) => Promise<boolean>);
-export type ControlValidationPatterns = ValidationPattern & ValidationFunction;
-export type BuiltInValidityState = {
+type ControlValidationPatterns = ValidationPattern & ValidationFunction;
+type BuiltInValidityState = {
   [pattern in ValidationPattern]: boolean;
 };
 
-export const Form = forwardRef<
+const Form = forwardRef<
   ElementRef<typeof FormPrimitive.Root>,
   ComponentPropsWithRef<typeof FormPrimitive.Root>
 >(({ className, ...props }, ref) => (
@@ -33,7 +33,7 @@ export const Form = forwardRef<
 
 Form.displayName = FormPrimitive.Form.displayName;
 
-export const Field = forwardRef<
+const Field = forwardRef<
   ElementRef<typeof FormPrimitive.Field>,
   ComponentPropsWithRef<typeof FormPrimitive.Field>
 >(({ className, children, ...props }, ref) => (
@@ -49,7 +49,7 @@ interface FieldMessageProps
   match?: ValidationPattern;
 }
 
-export const FieldMessage = forwardRef<ElementRef<typeof FormPrimitive.Message>, FieldMessageProps>(
+const FieldMessage = forwardRef<ElementRef<typeof FormPrimitive.Message>, FieldMessageProps>(
   ({ className, children, ...props }, ref) => (
     <FormPrimitive.Message className={cs(className)} ref={ref} {...props}>
       {children}
@@ -63,7 +63,7 @@ interface FieldLabelProps extends ComponentPropsWithRef<typeof Label> {
   isRequired?: boolean;
 }
 
-export const FieldLabel = forwardRef<ElementRef<typeof Label>, FieldLabelProps>(
+const FieldLabel = forwardRef<ElementRef<typeof Label>, FieldLabelProps>(
   ({ className, children, isRequired, ...props }, ref) => (
     <Label
       className={cs('inline-flex w-full items-center justify-between', className)}
@@ -78,7 +78,7 @@ export const FieldLabel = forwardRef<ElementRef<typeof Label>, FieldLabelProps>(
 
 FieldLabel.displayName = 'FieldLabel';
 
-export const FieldControl = forwardRef<
+const FieldControl = forwardRef<
   ElementRef<typeof FormPrimitive.Control>,
   ComponentPropsWithRef<typeof FormPrimitive.Control>
 >(({ className, children, ...props }, ref) => (
@@ -89,7 +89,7 @@ export const FieldControl = forwardRef<
 
 FieldControl.displayName = 'FieldControl';
 
-export const FormSubmit = forwardRef<
+const FormSubmit = forwardRef<
   ElementRef<typeof FormPrimitive.Submit>,
   ComponentPropsWithRef<typeof FormPrimitive.Submit>
 >(({ className, children, ...props }, ref) => (
@@ -100,6 +100,14 @@ export const FormSubmit = forwardRef<
 
 FormSubmit.displayName = 'FormSubmit';
 
-export const FieldValidation = FormPrimitive.ValidityState;
+const FieldValidation = FormPrimitive.ValidityState;
 
 FieldValidation.displayName = 'FieldValidation';
+
+export { Form, Field, FieldMessage, FieldLabel, FieldControl, FormSubmit, FieldValidation };
+export type {
+  ValidationPattern,
+  ValidationFunction,
+  ControlValidationPatterns,
+  BuiltInValidityState,
+};

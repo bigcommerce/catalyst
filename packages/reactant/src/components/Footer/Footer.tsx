@@ -3,7 +3,7 @@ import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
 import { cs } from '../../utils/cs';
 
-export const Footer = forwardRef<ElementRef<'footer'>, ComponentPropsWithRef<'footer'>>(
+const Footer = forwardRef<ElementRef<'footer'>, ComponentPropsWithRef<'footer'>>(
   ({ children, className, ...props }, ref) => (
     <footer className={cs('2xl:container 2xl:mx-auto', className)} ref={ref} {...props}>
       {children}
@@ -13,7 +13,7 @@ export const Footer = forwardRef<ElementRef<'footer'>, ComponentPropsWithRef<'fo
 
 Footer.displayName = 'Footer';
 
-export const FooterSection = forwardRef<ElementRef<'section'>, ComponentPropsWithRef<'div'>>(
+const FooterSection = forwardRef<ElementRef<'section'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => (
     <section
       className={cs(
@@ -30,7 +30,7 @@ export const FooterSection = forwardRef<ElementRef<'section'>, ComponentPropsWit
 
 FooterSection.displayName = 'FooterSection';
 
-export const FooterNav = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef<'nav'>>(
+const FooterNav = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef<'nav'>>(
   ({ children, className, ...props }, ref) => (
     <nav
       aria-label="Footer navigation"
@@ -45,7 +45,7 @@ export const FooterNav = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef<'na
 
 FooterNav.displayName = 'FooterNav';
 
-export const FooterNavGroupList = forwardRef<ElementRef<'ul'>, ComponentPropsWithRef<'ul'>>(
+const FooterNavGroupList = forwardRef<ElementRef<'ul'>, ComponentPropsWithRef<'ul'>>(
   ({ children, className, ...props }, ref) => (
     <ul className={cs('flex flex-col gap-4', className)} ref={ref} {...props}>
       {children}
@@ -59,7 +59,7 @@ interface FooterNavLinkProps extends ComponentPropsWithRef<'a'> {
   asChild?: boolean;
 }
 
-export const FooterNavLink = forwardRef<ElementRef<'li'>, FooterNavLinkProps>(
+const FooterNavLink = forwardRef<ElementRef<'li'>, FooterNavLinkProps>(
   ({ asChild, children, className, ...props }, ref) => {
     const Comp = asChild ? Slot : 'a';
 
@@ -74,3 +74,5 @@ export const FooterNavLink = forwardRef<ElementRef<'li'>, FooterNavLinkProps>(
 );
 
 FooterNavLink.displayName = 'FooterNavLink';
+
+export { Footer, FooterSection, FooterNav, FooterNavGroupList, FooterNavLink };

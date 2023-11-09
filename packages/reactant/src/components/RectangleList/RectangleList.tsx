@@ -3,7 +3,7 @@ import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
 import { cs } from '../../utils/cs';
 
-export const RectangleList = forwardRef<
+const RectangleList = forwardRef<
   ElementRef<typeof RadioGroupPrimitive.Root>,
   ComponentPropsWithRef<typeof RadioGroupPrimitive.Root>
 >(({ children, className, ...props }, ref) => (
@@ -19,7 +19,7 @@ export const RectangleList = forwardRef<
 
 RectangleList.displayName = 'RectangleList';
 
-export const RectangleListItem = forwardRef<
+const RectangleListItem = forwardRef<
   ElementRef<typeof RadioGroupPrimitive.Item>,
   ComponentPropsWithRef<typeof RadioGroupPrimitive.Item>
 >(({ className, children, ...props }, ref) => (
@@ -37,3 +37,5 @@ export const RectangleListItem = forwardRef<
 ));
 
 RectangleListItem.displayName = 'RectangleListItem';
+
+export { RectangleList, RectangleListItem };
