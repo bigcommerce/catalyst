@@ -116,6 +116,12 @@ async function internalGetProduct<T>(
                   },
                 },
               },
+              on_CheckboxOption: {
+                checkedByDefault: true,
+                label: true,
+                checkedOptionValueEntityId: true,
+                uncheckedOptionValueEntityId: true,
+              },
             },
           },
         },
