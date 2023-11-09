@@ -1,68 +1,40 @@
-import * as z from 'zod';
+import { Button } from '@bigcommerce/reactant/Button';
+import Link from 'next/link';
 
-import { PageContent } from './PageContent';
+import { LoginForm } from './LoginForm';
 
-const SearchParamSchema = z.union([z.string(), z.array(z.string()), z.undefined()]);
-
-const SearchParamToArray = SearchParamSchema.transform((value) => {
-  if (Array.isArray(value)) {
-    return value;
-  }
-
-  if (typeof value === 'string') {
-    return [value];
-  }
-
-  return undefined;
-});
-
-const LoginParamsSchema = z.object({
-  action: SearchParamToArray.transform((param) => {
-    if (param) {
-      const parsed = z
-        .union([z.literal('reset_password'), z.literal('create_account'), z.undefined()])
-        .safeParse(param[param.length - 1]);
-
-      if (parsed.success) {
-        return parsed.data;
-      }
-    }
-  }),
-});
-
-interface Props {
-  searchParams: { [key: string]: z.infer<typeof SearchParamToArray> };
-}
-
-export default function Login({ searchParams }: Props) {
-  const { action } = LoginParamsSchema.parse(searchParams);
-
-  switch (action) {
-    case 'reset_password': {
-      return (
-        <>
-          <h2 className="mb-3 text-h2">Reset Password</h2>
-          {/* TODO: implement reset form */}
-        </>
-      );
-    }
-
-    case 'create_account': {
-      return (
-        <>
-          <h2 className="mb-3 text-h2">New Account</h2>
-          {/* TODO: implement  createAccount form */}
-        </>
-      );
-    }
-
-    default:
-      return (
-        <div className="mx-auto mb-12 flex lg:mb-14">
-          <PageContent />
+export default function Login() {
+  return (
+    <div className="mx-auto my-6 max-w-4xl">
+      <h2 className="mb-8 text-h2">Log In</h2>
+      <div className="mb-12 grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8">
+        <LoginForm />
+        <div className="flex flex-col gap-4 bg-gray-100 p-8">
+          <h3 className="mb-3 text-h5">New customer?</h3>
+          <p className="text-base font-semibold">
+            Create an account with us and you'll be able to:
+          </p>
+          <ul className="list-disc ps-4">
+            <li>Check out faster</li>
+            <li>Save multiple shipping addresses</li>
+            <li>Access your order history</li>
+            <li>Track new orders</li>
+            <li>Save items to your Wish List</li>
+          </ul>
+          <Button asChild className="w-fit items-center px-8 py-2">
+            <Link
+              href={{
+                pathname: '/login',
+                query: { action: 'create_account' },
+              }}
+            >
+              Create Account
+            </Link>
+          </Button>
         </div>
-      );
-  }
+      </div>
+    </div>
+  );
 }
 
 export const runtime = 'edge';
