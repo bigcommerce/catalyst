@@ -44,6 +44,7 @@ export const getWebPage = async <T>(
       route: {
         __args: {
           path,
+          redirectBehavior: 'IGNORE',
         },
         node: {
           on_RawHtmlPage: {

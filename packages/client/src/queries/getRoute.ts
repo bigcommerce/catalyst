@@ -15,6 +15,7 @@ export const getRoute = async <T>(
       route: {
         __args: {
           path,
+          redirectBehavior: 'IGNORE',
         },
         node: {
           __typename: true,
