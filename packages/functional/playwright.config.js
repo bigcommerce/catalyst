@@ -19,7 +19,8 @@ export default defineConfig({
   projects: [
     {
       name: 'tests-chromium',
-      use: { ...devices['Desktop Chrome'],
+      use: {
+        ...devices['Desktop Chrome'],
         launchOptions: {
           args: [
             '--font-render-hinting=none',
