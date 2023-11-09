@@ -86,6 +86,14 @@ export const getProductSearchResults = async <T>(
                   },
                   altText: true,
                 },
+                productOptions: {
+                  __args: { first: 3 },
+                  edges: {
+                    node: {
+                      entityId: true,
+                    },
+                  },
+                },
               },
             },
           },
@@ -167,6 +175,11 @@ export const getProductSearchResults = async <T>(
 
   const searchResults = site.search.searchProducts;
 
+  const items = removeEdgesAndNodes(searchResults.products).map((product) => ({
+    ...product,
+    productOptions: removeEdgesAndNodes(product.productOptions),
+  }));
+
   return {
     facets: {
       items: removeEdgesAndNodes(searchResults.filters).map((node) => {
@@ -203,7 +216,7 @@ export const getProductSearchResults = async <T>(
     products: {
       collectionInfo: searchResults.products.collectionInfo,
       pageInfo: searchResults.products.pageInfo,
-      items: removeEdgesAndNodes(searchResults.products),
+      items,
     },
   };
 };
