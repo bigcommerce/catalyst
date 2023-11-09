@@ -28,17 +28,9 @@ jobs:
           cd packages/functional
           npx playwright install chromium
 
-      - name: Set base url
-        env:
-          DEPLOY_URL: ${{ github.event.deployment_status.target_url }}
-        run: |
-          if [[ $DEPLOY_URL =~ "storybook" ]]; then
-            echo "PLAYWRIGHT_TEST_BASE_URL=$DEPLOY_URL" >> "$GITHUB_ENV"
-            echo "IS_STORYBOOK=true" >> "$GITHUB_ENV"
-          fi
-
       - name: Run Playwright tests
-        if: env.IS_STORYBOOK == 'true'
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
         run: |
           cd packages/functional
           npx playwright test tests/visual-regression/reactant/components/ --project=tests-chromium 
