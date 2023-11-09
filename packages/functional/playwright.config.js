@@ -14,19 +14,19 @@ export default defineConfig({
   reporter: 'html',
   use: {
     baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL,
+    extraHTTPHeaders: {
+      'x-vercel-skip-toolbar': '1',
+    },
   },
-
   projects: [
     {
       name: 'tests-chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-
     {
       name: 'tests-firefox',
       use: { ...devices['Desktop Firefox'] },
     },
-
     {
       name: 'tests-webkit',
       use: { ...devices['Desktop Safari'] },
