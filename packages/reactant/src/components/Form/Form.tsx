@@ -31,6 +31,8 @@ export const Form = forwardRef<
   <FormPrimitive.Root className={cs('text-base', className)} ref={ref} {...props} />
 ));
 
+Form.displayName = FormPrimitive.Form.displayName;
+
 export const Field = forwardRef<
   ElementRef<typeof FormPrimitive.Field>,
   ComponentPropsWithRef<typeof FormPrimitive.Field>
@@ -39,6 +41,8 @@ export const Field = forwardRef<
     {children}
   </FormPrimitive.Field>
 ));
+
+Field.displayName = 'Field';
 
 interface FieldMessageProps
   extends Omit<ComponentPropsWithRef<typeof FormPrimitive.Message>, 'match'> {
@@ -52,6 +56,8 @@ export const FieldMessage = forwardRef<ElementRef<typeof FormPrimitive.Message>,
     </FormPrimitive.Message>
   ),
 );
+
+FieldMessage.displayName = 'FieldMessage';
 
 interface FieldLabelProps extends ComponentPropsWithRef<typeof Label> {
   isRequired?: boolean;
@@ -70,6 +76,8 @@ export const FieldLabel = forwardRef<ElementRef<typeof Label>, FieldLabelProps>(
   ),
 );
 
+FieldLabel.displayName = 'FieldLabel';
+
 export const FieldControl = forwardRef<
   ElementRef<typeof FormPrimitive.Control>,
   ComponentPropsWithRef<typeof FormPrimitive.Control>
@@ -78,6 +86,8 @@ export const FieldControl = forwardRef<
     {children}
   </FormPrimitive.Control>
 ));
+
+FieldControl.displayName = 'FieldControl';
 
 export const FormSubmit = forwardRef<
   ElementRef<typeof FormPrimitive.Submit>,
@@ -88,4 +98,8 @@ export const FormSubmit = forwardRef<
   </FormPrimitive.Submit>
 ));
 
+FormSubmit.displayName = 'FormSubmit';
+
 export const FieldValidation = FormPrimitive.ValidityState;
+
+FieldValidation.displayName = 'FieldValidation';

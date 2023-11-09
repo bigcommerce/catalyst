@@ -53,6 +53,8 @@ export const InputIcon = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'s
   },
 );
 
+InputIcon.displayName = 'InputIcon';
+
 export const Input = forwardRef<ElementRef<'input'>, InputProps>(
   ({ className, variant, children, type = 'text', ...props }, ref) => (
     <InputContext.Provider value={{ variant }}>
@@ -68,3 +70,5 @@ export const Input = forwardRef<ElementRef<'input'>, InputProps>(
     </InputContext.Provider>
   ),
 );
+
+Input.displayName = 'Input';

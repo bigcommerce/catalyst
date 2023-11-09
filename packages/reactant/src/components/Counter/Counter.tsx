@@ -79,3 +79,5 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
     );
   },
 );
+
+Counter.displayName = 'Counter';

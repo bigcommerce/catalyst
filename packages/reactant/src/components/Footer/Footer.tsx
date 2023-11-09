@@ -11,6 +11,8 @@ export const Footer = forwardRef<ElementRef<'footer'>, ComponentPropsWithRef<'fo
   ),
 );
 
+Footer.displayName = 'Footer';
+
 export const FooterSection = forwardRef<ElementRef<'section'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => (
     <section
@@ -26,6 +28,8 @@ export const FooterSection = forwardRef<ElementRef<'section'>, ComponentPropsWit
   ),
 );
 
+FooterSection.displayName = 'FooterSection';
+
 export const FooterNav = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef<'nav'>>(
   ({ children, className, ...props }, ref) => (
     <nav
@@ -39,6 +43,8 @@ export const FooterNav = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef<'na
   ),
 );
 
+FooterNav.displayName = 'FooterNav';
+
 export const FooterNavGroupList = forwardRef<ElementRef<'ul'>, ComponentPropsWithRef<'ul'>>(
   ({ children, className, ...props }, ref) => (
     <ul className={cs('flex flex-col gap-4', className)} ref={ref} {...props}>
@@ -46,6 +52,8 @@ export const FooterNavGroupList = forwardRef<ElementRef<'ul'>, ComponentPropsWit
     </ul>
   ),
 );
+
+FooterNavGroupList.displayName = 'FooterNavGroupList';
 
 interface FooterNavLinkProps extends ComponentPropsWithRef<'a'> {
   asChild?: boolean;
@@ -64,3 +72,5 @@ export const FooterNavLink = forwardRef<ElementRef<'li'>, FooterNavLinkProps>(
     );
   },
 );
+
+FooterNavLink.displayName = 'FooterNavLink';

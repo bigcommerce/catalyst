@@ -20,6 +20,8 @@ export const RadioIndicator = forwardRef<
   );
 });
 
+RadioIndicator.displayName = 'RadioIndicator';
+
 type RadioItemType = typeof RadioGroupPrimitive.Item;
 
 export const RadioItem = forwardRef<
@@ -47,6 +49,8 @@ export const RadioItem = forwardRef<
   );
 });
 
+RadioItem.displayName = 'RadioItem';
+
 type RadioGroupType = typeof RadioGroupPrimitive.Root;
 
 export const RadioGroup = forwardRef<
@@ -59,3 +63,5 @@ export const RadioGroup = forwardRef<
     </RadioGroupPrimitive.Root>
   );
 });
+
+RadioGroup.displayName = 'RadioGroup';

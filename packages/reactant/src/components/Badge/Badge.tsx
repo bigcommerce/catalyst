@@ -18,3 +18,5 @@ export const Badge = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'span'
     );
   },
 );
+
+Badge.displayName = 'Badge';

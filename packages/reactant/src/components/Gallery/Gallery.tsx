@@ -60,6 +60,8 @@ export const GalleryPreviousIndicator = forwardRef<
   );
 });
 
+GalleryPreviousIndicator.displayName = 'GalleryPreviousIndicator';
+
 export const GalleryNextIndicator = forwardRef<
   ElementRef<'button'>,
   ComponentPropsWithRef<'button'>
@@ -85,6 +87,8 @@ export const GalleryNextIndicator = forwardRef<
     </button>
   );
 });
+
+GalleryNextIndicator.displayName = 'GalleryNextIndicator';
 
 export const GalleryControls = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
@@ -114,6 +118,8 @@ export const GalleryControls = forwardRef<ElementRef<'div'>, ComponentPropsWithR
   },
 );
 
+GalleryControls.displayName = 'GalleryControls';
+
 interface GalleryImageProps extends Omit<ComponentPropsWithRef<'img'>, 'children'> {
   children?: (({ selectedImage }: { selectedImage?: Image }) => React.ReactNode) | React.ReactNode;
 }
@@ -142,6 +148,8 @@ export const GalleryImage = forwardRef<ElementRef<'img'>, GalleryImageProps>(
   },
 );
 
+GalleryImage.displayName = 'GalleryImage';
+
 export const GalleryContent = forwardRef<ElementRef<'figure'>, ComponentPropsWithRef<'figure'>>(
   ({ className, children, ...props }, ref) => {
     return (
@@ -155,6 +163,8 @@ export const GalleryContent = forwardRef<ElementRef<'figure'>, ComponentPropsWit
     );
   },
 );
+
+GalleryContent.displayName = 'GalleryContent';
 
 export const GalleryThumbnailList = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef<'nav'>>(
   ({ children, className, ...props }, ref) => {
@@ -173,6 +183,8 @@ export const GalleryThumbnailList = forwardRef<ElementRef<'nav'>, ComponentProps
     );
   },
 );
+
+GalleryThumbnailList.displayName = 'GalleryThumbnailList';
 
 interface GalleryThumbnailItemProps extends ComponentPropsWithRef<'button'> {
   imageIndex: number;
@@ -209,6 +221,8 @@ export const GalleryThumbnailItem = forwardRef<ElementRef<'button'>, GalleryThum
     );
   },
 );
+
+GalleryThumbnailItem.displayName = 'GalleryThumbnailItem';
 
 interface GalleryThumbnailProps extends ComponentPropsWithRef<'img'> {
   asChild?: boolean;
@@ -251,6 +265,8 @@ export const GalleryThumbnail = forwardRef<ElementRef<'img'>, GalleryThumbnailPr
   },
 );
 
+GalleryThumbnail.displayName = 'GalleryThumbnail';
+
 interface GalleryProps extends ComponentPropsWithRef<'div'> {
   images: Image[] | [];
   defaultImageIndex?: number;
@@ -269,3 +285,5 @@ export const Gallery = forwardRef<ElementRef<'div'>, GalleryProps>(
     );
   },
 );
+
+Gallery.displayName = 'Gallery';

@@ -56,3 +56,5 @@ export const Rating = forwardRef<ElementRef<'span'>, RatingProps>(
     );
   },
 );
+
+Rating.displayName = 'Rating';

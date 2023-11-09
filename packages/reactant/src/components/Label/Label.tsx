@@ -9,3 +9,5 @@ export const Label = forwardRef<
 >(({ className, ...props }, ref) => (
   <LabelPrimitive.Root className={cs('text-base font-semibold', className)} ref={ref} {...props} />
 ));
+
+Label.displayName = LabelPrimitive.Label.displayName;

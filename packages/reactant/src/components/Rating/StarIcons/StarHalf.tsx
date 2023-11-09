@@ -7,3 +7,5 @@ export const StarHalfIcon: React.FC<React.ComponentPropsWithoutRef<'svg'>> = ({ 
     </svg>
   );
 };
+
+StarHalfIcon.displayName = 'StarHalfIcon';

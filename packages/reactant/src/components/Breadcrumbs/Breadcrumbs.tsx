@@ -15,6 +15,8 @@ export const Breadcrumbs = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef<'
   },
 );
 
+Breadcrumbs.displayName = 'Breadcrumbs';
+
 interface BreadcrumbItemProps extends ComponentPropsWithRef<'a'> {
   asChild?: boolean;
   isActive?: boolean;
@@ -42,6 +44,8 @@ export const BreadcrumbItem = forwardRef<ElementRef<'li'>, BreadcrumbItemProps>(
   },
 );
 
+BreadcrumbItem.displayName = 'BreadcrumbItem';
+
 export const BreadcrumbDivider = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'span'>>(
   ({ children, className, ...props }, ref) => {
     return (
@@ -51,3 +55,5 @@ export const BreadcrumbDivider = forwardRef<ElementRef<'span'>, ComponentPropsWi
     );
   },
 );
+
+BreadcrumbDivider.displayName = 'BreadcrumbDivider';

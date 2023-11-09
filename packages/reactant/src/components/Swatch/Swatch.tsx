@@ -19,6 +19,8 @@ export const Swatch = forwardRef<
   );
 });
 
+Swatch.displayName = 'Swatch';
+
 interface SwatchVariantProps extends ComponentPropsWithRef<typeof RadioGroupPrimitive.Item> {
   variantColor?: string;
 }
@@ -60,3 +62,5 @@ export const SwatchItem = forwardRef<
     )}
   </RadioGroupPrimitive.Item>
 ));
+
+SwatchItem.displayName = 'SwatchItem';

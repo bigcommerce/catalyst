@@ -52,6 +52,8 @@ export const Select = forwardRef<ElementRef<SelectTriggerType>, SelectProps>(
   },
 );
 
+Select.displayName = SelectPrimitive.Root.displayName;
+
 type SelectContentType = typeof SelectPrimitive.Content;
 
 export const SelectContent = forwardRef<
@@ -77,6 +79,8 @@ export const SelectContent = forwardRef<
   );
 });
 
+SelectContent.displayName = SelectPrimitive.Content.displayName;
+
 type SelectItemType = typeof SelectPrimitive.Item;
 
 export const SelectItem = forwardRef<
@@ -100,3 +104,5 @@ export const SelectItem = forwardRef<
     </SelectPrimitive.Item>
   );
 });
+
+SelectItem.displayName = SelectPrimitive.Item.displayName;

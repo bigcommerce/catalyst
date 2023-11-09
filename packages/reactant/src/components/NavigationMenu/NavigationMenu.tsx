@@ -72,6 +72,8 @@ export const NavigationMenu = forwardRef<
   );
 });
 
+NavigationMenu.displayName = NavigationMenuPrimitive.NavigationMenu.displayName;
+
 export const NavigationMenuList = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.List>,
   ComponentPropsWithRef<typeof NavigationMenuPrimitive.List>
@@ -85,6 +87,8 @@ export const NavigationMenuList = forwardRef<
   </NavigationMenuPrimitive.List>
 ));
 
+NavigationMenuList.displayName = NavigationMenuPrimitive.NavigationMenuList.displayName;
+
 export const NavigationMenuItem = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.Item>,
   ComponentPropsWithRef<typeof NavigationMenuPrimitive.Item>
@@ -97,6 +101,8 @@ export const NavigationMenuItem = forwardRef<
     </NavigationMenuPrimitive.Item>
   );
 });
+
+NavigationMenuItem.displayName = NavigationMenuPrimitive.NavigationMenuItem.displayName;
 
 export const NavigationMenuTrigger = forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Trigger>,
@@ -113,6 +119,8 @@ export const NavigationMenuTrigger = forwardRef<
     {children}
   </NavigationMenuPrimitive.Trigger>
 ));
+
+NavigationMenuTrigger.displayName = NavigationMenuPrimitive.Trigger.displayName;
 
 export const NavigationMenuContent = forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Content>,
@@ -137,6 +145,8 @@ export const NavigationMenuContent = forwardRef<
   );
 });
 
+NavigationMenuContent.displayName = NavigationMenuPrimitive.NavigationMenuContent.displayName;
+
 export const NavigationMenuLink = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.Link>,
   ComponentPropsWithRef<typeof NavigationMenuPrimitive.Link>
@@ -157,6 +167,8 @@ export const NavigationMenuLink = forwardRef<
     </NavigationMenuPrimitive.Link>
   );
 });
+
+NavigationMenuLink.displayName = NavigationMenuPrimitive.NavigationMenuLink.displayName;
 
 export const NavigationMenuToggle = forwardRef<
   ElementRef<'button'>,
@@ -184,6 +196,8 @@ export const NavigationMenuToggle = forwardRef<
     </button>
   );
 });
+
+NavigationMenuToggle.displayName = 'NavigationMenuToggle';
 
 export const NavigationMenuCollapsed = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
@@ -230,3 +244,5 @@ export const NavigationMenuCollapsed = forwardRef<ElementRef<'div'>, ComponentPr
     );
   },
 );
+
+NavigationMenuCollapsed.displayName = 'NavigationMenuCollapsed';

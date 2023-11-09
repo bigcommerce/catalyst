@@ -79,6 +79,7 @@ export const ProductCardInfoProductName = forwardRef<ElementRef<'h3'>, Component
     );
   },
 );
+
 ProductCardInfoProductName.displayName = 'ProductCardInfoProductName';
 
 export const ProductCardInfoPrice = forwardRef<ElementRef<'h3'>, ComponentPropsWithRef<'h3'>>(

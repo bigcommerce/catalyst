@@ -31,3 +31,5 @@ export const Checkbox = forwardRef<ElementRef<CheckboxType>, ComponentPropsWithR
     );
   },
 );
+
+Checkbox.displayName = CheckboxPrimitive.Root.displayName;

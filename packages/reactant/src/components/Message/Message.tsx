@@ -26,3 +26,5 @@ export const Message = forwardRef<ElementRef<'div'>, MessageProps>(
     </div>
   ),
 );
+
+Message.displayName = 'Message';

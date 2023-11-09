@@ -33,3 +33,5 @@ export const TextArea = forwardRef<ElementRef<'textarea'>, TextAreaProps>(
     );
   },
 );
+
+TextArea.displayName = 'TextArea';

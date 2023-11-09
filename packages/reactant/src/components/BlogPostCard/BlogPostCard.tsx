@@ -20,6 +20,8 @@ export const BlogPostCard = forwardRef<ElementRef<'li'>, BlogPostCardProps>(
   },
 );
 
+BlogPostCard.displayName = 'BlogPostCard';
+
 export const BlogPostBanner = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     return (
@@ -34,6 +36,8 @@ export const BlogPostBanner = forwardRef<ElementRef<'div'>, ComponentPropsWithRe
   },
 );
 
+BlogPostBanner.displayName = 'BlogPostBanner';
+
 export const BlogPostImage = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     return (
@@ -43,6 +47,8 @@ export const BlogPostImage = forwardRef<ElementRef<'div'>, ComponentPropsWithRef
     );
   },
 );
+
+BlogPostImage.displayName = 'BlogPostImage';
 
 interface TitleProps extends ComponentPropsWithRef<'h3'> {
   asChild?: boolean;
@@ -69,6 +75,8 @@ export const BlogPostTitle = forwardRef<ElementRef<'h3'>, TitleProps>(
   },
 );
 
+BlogPostTitle.displayName = 'BlogPostTitle';
+
 export const BlogPostContent = forwardRef<ElementRef<'p'>, ComponentPropsWithRef<'p'>>(
   ({ children, className, ...props }, ref) => {
     return (
@@ -78,6 +86,8 @@ export const BlogPostContent = forwardRef<ElementRef<'p'>, ComponentPropsWithRef
     );
   },
 );
+
+BlogPostContent.displayName = 'BlogPostContent';
 
 interface DateProps extends ComponentPropsWithRef<'small'> {
   variant?: 'inBanner';
@@ -101,6 +111,8 @@ export const BlogPostDate = forwardRef<ElementRef<'small'>, DateProps>(
   },
 );
 
+BlogPostDate.displayName = 'BlogPostDate';
+
 export const BlogPostAuthor = forwardRef<ElementRef<'small'>, ComponentPropsWithRef<'small'>>(
   ({ children, className, ...props }, ref) => {
     return (
@@ -110,3 +122,5 @@ export const BlogPostAuthor = forwardRef<ElementRef<'small'>, ComponentPropsWith
     );
   },
 );
+
+BlogPostAuthor.displayName = 'BlogPostAuthor';
