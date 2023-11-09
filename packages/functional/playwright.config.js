@@ -19,7 +19,18 @@ export default defineConfig({
   projects: [
     {
       name: 'tests-chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'],
+        launchOptions: {
+          args: [
+            '--font-render-hinting=none',
+            '--disable-skia-runtime-opts',
+            '--disable-system-font-check',
+            '--disable-font-subpixel-positioning',
+            '--disable-lcd-text',
+            '--disable-remote-fonts',
+          ],
+        },
+      },
     },
 
     {
