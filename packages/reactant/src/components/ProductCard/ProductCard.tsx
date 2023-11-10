@@ -2,7 +2,7 @@ import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
 import { cs } from '../../utils/cs';
 
-export const ProductCard = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
+const ProductCard = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     return (
       <div
@@ -18,7 +18,7 @@ export const ProductCard = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'
 
 ProductCard.displayName = 'ProductCard';
 
-export const ProductCardImage = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
+const ProductCardImage = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     return (
       <div className={cs('relative flex justify-center pb-3', className)} ref={ref} {...props}>
@@ -30,7 +30,7 @@ export const ProductCardImage = forwardRef<ElementRef<'div'>, ComponentPropsWith
 
 ProductCardImage.displayName = 'ProductCardImage';
 
-export const ProductCardBadge = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'span'>>(
+const ProductCardBadge = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'span'>>(
   ({ children, className, ...props }, ref) => {
     return (
       <span
@@ -46,7 +46,7 @@ export const ProductCardBadge = forwardRef<ElementRef<'span'>, ComponentPropsWit
 
 ProductCardBadge.displayName = 'ProductCardBadge';
 
-export const ProductCardInfo = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
+const ProductCardInfo = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     return (
       <div className={cs('flex flex-1 flex-col gap-1', className)} ref={ref} {...props}>
@@ -58,7 +58,7 @@ export const ProductCardInfo = forwardRef<ElementRef<'div'>, ComponentPropsWithR
 
 ProductCardInfo.displayName = 'ProductCardInfo';
 
-export const ProductCardInfoBrandName = forwardRef<ElementRef<'p'>, ComponentPropsWithRef<'p'>>(
+const ProductCardInfoBrandName = forwardRef<ElementRef<'p'>, ComponentPropsWithRef<'p'>>(
   ({ children, className, ...props }, ref) => {
     return (
       <p className={cs('text-base text-gray-500', className)} {...props} ref={ref}>
@@ -70,7 +70,7 @@ export const ProductCardInfoBrandName = forwardRef<ElementRef<'p'>, ComponentPro
 
 ProductCardInfoBrandName.displayName = 'ProductCardInfoBrandName';
 
-export const ProductCardInfoProductName = forwardRef<ElementRef<'h3'>, ComponentPropsWithRef<'h3'>>(
+const ProductCardInfoProductName = forwardRef<ElementRef<'h3'>, ComponentPropsWithRef<'h3'>>(
   ({ children, className, ...props }, ref) => {
     return (
       <h3 className={cs('text-h5', className)} ref={ref} {...props}>
@@ -79,9 +79,10 @@ export const ProductCardInfoProductName = forwardRef<ElementRef<'h3'>, Component
     );
   },
 );
+
 ProductCardInfoProductName.displayName = 'ProductCardInfoProductName';
 
-export const ProductCardInfoPrice = forwardRef<ElementRef<'h3'>, ComponentPropsWithRef<'h3'>>(
+const ProductCardInfoPrice = forwardRef<ElementRef<'h3'>, ComponentPropsWithRef<'h3'>>(
   ({ children, className, ...props }, ref) => {
     return (
       <p className={cs('pt-2 text-base', className)} ref={ref} {...props}>
@@ -92,3 +93,13 @@ export const ProductCardInfoPrice = forwardRef<ElementRef<'h3'>, ComponentPropsW
 );
 
 ProductCardInfoPrice.displayName = 'ProductCardInfoPrice';
+
+export {
+  ProductCard,
+  ProductCardImage,
+  ProductCardBadge,
+  ProductCardInfo,
+  ProductCardInfoBrandName,
+  ProductCardInfoProductName,
+  ProductCardInfoPrice,
+};

@@ -30,7 +30,7 @@ interface SelectProps extends ComponentPropsWithRef<SelectType> {
 }
 
 // We need to pass the ref to the Trigger component so we need to type it as such.
-export const Select = forwardRef<ElementRef<SelectTriggerType>, SelectProps>(
+const Select = forwardRef<ElementRef<SelectTriggerType>, SelectProps>(
   ({ children, placeholder, className, variant, 'aria-label': ariaLabel, ...props }, ref) => {
     return (
       <SelectPrimitive.Root {...props}>
@@ -52,9 +52,11 @@ export const Select = forwardRef<ElementRef<SelectTriggerType>, SelectProps>(
   },
 );
 
+Select.displayName = SelectPrimitive.Root.displayName;
+
 type SelectContentType = typeof SelectPrimitive.Content;
 
-export const SelectContent = forwardRef<
+const SelectContent = forwardRef<
   ElementRef<SelectContentType>,
   ComponentPropsWithRef<SelectContentType>
 >(({ children, className, ...props }, ref) => {
@@ -77,26 +79,31 @@ export const SelectContent = forwardRef<
   );
 });
 
+SelectContent.displayName = SelectPrimitive.Content.displayName;
+
 type SelectItemType = typeof SelectPrimitive.Item;
 
-export const SelectItem = forwardRef<
-  ElementRef<SelectItemType>,
-  ComponentPropsWithRef<SelectItemType>
->(({ children, className, ...props }, ref) => {
-  return (
-    <SelectPrimitive.Item
-      {...props}
-      className={cs(
-        'relative z-10 flex w-full cursor-pointer select-none items-center justify-between overflow-visible px-4 py-2 outline-none hover:bg-blue-secondary/10 hover:text-blue-primary focus:bg-blue-secondary/10 data-[disabled]:pointer-events-none data-[state="checked"]:bg-blue-secondary/10 data-[state="checked"]:text-blue-primary data-[disabled]:opacity-50',
-        className,
-      )}
-      ref={ref}
-    >
-      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-      {/* TODO: For the sake of moving fast we are leaving this in, but in the future we need to figure out how enable custom indicators */}
-      <SelectPrimitive.ItemIndicator>
-        <Check />
-      </SelectPrimitive.ItemIndicator>
-    </SelectPrimitive.Item>
-  );
-});
+const SelectItem = forwardRef<ElementRef<SelectItemType>, ComponentPropsWithRef<SelectItemType>>(
+  ({ children, className, ...props }, ref) => {
+    return (
+      <SelectPrimitive.Item
+        {...props}
+        className={cs(
+          'relative z-10 flex w-full cursor-pointer select-none items-center justify-between overflow-visible px-4 py-2 outline-none hover:bg-blue-secondary/10 hover:text-blue-primary focus:bg-blue-secondary/10 data-[disabled]:pointer-events-none data-[state="checked"]:bg-blue-secondary/10 data-[state="checked"]:text-blue-primary data-[disabled]:opacity-50',
+          className,
+        )}
+        ref={ref}
+      >
+        <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+        {/* TODO: For the sake of moving fast we are leaving this in, but in the future we need to figure out how enable custom indicators */}
+        <SelectPrimitive.ItemIndicator>
+          <Check />
+        </SelectPrimitive.ItemIndicator>
+      </SelectPrimitive.Item>
+    );
+  },
+);
+
+SelectItem.displayName = SelectPrimitive.Item.displayName;
+
+export { Select, SelectContent, SelectItem };

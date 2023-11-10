@@ -3,7 +3,7 @@ import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
 import { cs } from '../../utils/cs';
 
-export const RectangleList = forwardRef<
+const RectangleList = forwardRef<
   ElementRef<typeof RadioGroupPrimitive.Root>,
   ComponentPropsWithRef<typeof RadioGroupPrimitive.Root>
 >(({ children, className, ...props }, ref) => (
@@ -17,13 +17,15 @@ export const RectangleList = forwardRef<
   </RadioGroupPrimitive.Root>
 ));
 
-export const RectangleListItem = forwardRef<
+RectangleList.displayName = 'RectangleList';
+
+const RectangleListItem = forwardRef<
   ElementRef<typeof RadioGroupPrimitive.Item>,
   ComponentPropsWithRef<typeof RadioGroupPrimitive.Item>
 >(({ className, children, ...props }, ref) => (
   <RadioGroupPrimitive.Item
     className={cs(
-      'focus:ring-primary-blue/20 border-2 py-2.5 px-6 font-semibold text-black hover:border-blue-primary focus:outline-none focus:ring-4 disabled:border-gray-100 disabled:text-gray-400 disabled:hover:border-gray-100',
+      'focus:ring-primary-blue/20 border-2 px-6 py-2.5 font-semibold text-black hover:border-blue-primary focus:outline-none focus:ring-4 disabled:border-gray-100 disabled:text-gray-400 disabled:hover:border-gray-100',
       'data-[state=checked]:border-blue-primary',
       className,
     )}
@@ -33,3 +35,7 @@ export const RectangleListItem = forwardRef<
     {children}
   </RadioGroupPrimitive.Item>
 ));
+
+RectangleListItem.displayName = 'RectangleListItem';
+
+export { RectangleList, RectangleListItem };

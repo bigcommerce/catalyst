@@ -26,7 +26,7 @@ export interface InputProps extends ComponentPropsWithRef<'input'> {
 
 const InputContext = createContext<{ variant?: VariantTypes }>({ variant: undefined });
 
-export const InputIcon = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'span'>>(
+const InputIcon = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'span'>>(
   ({ className, children, ...props }, ref) => {
     const { variant } = useContext(InputContext);
 
@@ -53,7 +53,9 @@ export const InputIcon = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'s
   },
 );
 
-export const Input = forwardRef<ElementRef<'input'>, InputProps>(
+InputIcon.displayName = 'InputIcon';
+
+const Input = forwardRef<ElementRef<'input'>, InputProps>(
   ({ className, variant, children, type = 'text', ...props }, ref) => (
     <InputContext.Provider value={{ variant }}>
       <div className={cs('relative')}>
@@ -68,3 +70,7 @@ export const Input = forwardRef<ElementRef<'input'>, InputProps>(
     </InputContext.Provider>
   ),
 );
+
+Input.displayName = 'Input';
+
+export { Input, InputIcon };

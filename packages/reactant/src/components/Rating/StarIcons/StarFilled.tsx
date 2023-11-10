@@ -7,3 +7,5 @@ export const StarFilledIcon: React.FC<React.ComponentPropsWithoutRef<'svg'>> = (
     </svg>
   );
 };
+
+StarFilledIcon.displayName = 'StarFilledIcon';
