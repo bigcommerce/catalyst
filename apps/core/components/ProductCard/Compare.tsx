@@ -30,7 +30,9 @@ export const Compare = ({ productId }: { productId: number }) => {
         id={checkboxId}
         onCheckedChange={handleOnCheckedChange}
       />
-      <Label htmlFor={checkboxId}>Compare</Label>
+      <Label className="font-normal" htmlFor={checkboxId}>
+        Compare
+      </Label>
     </div>
   );
 };
