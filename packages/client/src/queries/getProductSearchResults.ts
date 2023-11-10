@@ -94,6 +94,11 @@ export const getProductSearchResults = async <T>(
                     },
                   },
                 },
+                reviewSummary: {
+                  summationOfRatings: true,
+                  numberOfReviews: true,
+                  averageRating: true,
+                },
               },
             },
           },
