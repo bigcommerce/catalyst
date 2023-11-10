@@ -36,7 +36,7 @@ export const VariantSelector = ({ product }: { product: NonNullable<Product> }) 
         case 'Swatch':
           return (
             <Fragment key={option.entityId}>
-              <Label className="my-2 inline-block font-semibold" id={`label-${option.entityId}`}>
+              <Label className="my-2 inline-block" id={`label-${option.entityId}`}>
                 {option.displayName}
               </Label>
               <Swatch
@@ -72,7 +72,7 @@ export const VariantSelector = ({ product }: { product: NonNullable<Product> }) 
         case 'RectangleBoxes':
           return (
             <Fragment key={option.entityId}>
-              <Label className="my-2 inline-block font-semibold" id={`label-${option.entityId}`}>
+              <Label className="my-2 inline-block" id={`label-${option.entityId}`}>
                 {option.displayName}
               </Label>
               <RectangleList
@@ -127,7 +127,7 @@ export const VariantSelector = ({ product }: { product: NonNullable<Product> }) 
               required={option.isRequired}
               value={option.checkedOptionValueEntityId}
             />
-            <Label className="mx-3" htmlFor={`${option.entityId}`}>
+            <Label className="mx-3 font-normal" htmlFor={`${option.entityId}`}>
               {option.label}
             </Label>
           </div>
