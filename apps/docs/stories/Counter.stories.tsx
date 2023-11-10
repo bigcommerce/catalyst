@@ -25,3 +25,35 @@ export const Disabled: Story = {
     disabled: true,
   },
 };
+
+export const DefaultValue: Story = {
+  args: {
+    ...Default.args,
+    value: 5,
+  },
+};
+
+export const MinValue: Story = {
+  args: {
+    ...Default.args,
+    value: 5,
+    min: 3,
+  },
+};
+
+export const MaxValue: Story = {
+  args: {
+    ...Default.args,
+    value: 5,
+    max: 8,
+  },
+};
+
+export const AllowDecimals: Story = {
+  args: {
+    ...Default.args,
+    value: 5,
+    isIntegerOnly: false,
+    step: 0.5,
+  },
+};

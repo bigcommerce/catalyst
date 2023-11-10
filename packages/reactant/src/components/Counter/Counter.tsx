@@ -4,14 +4,34 @@ import { ComponentPropsWithRef, ElementRef, forwardRef, useRef, useState } from 
 import { cs } from '../../utils/cs';
 
 interface CounterProps extends Omit<ComponentPropsWithRef<'input'>, 'onChange'> {
-  onChange?: (value: number) => void | Promise<void>;
+  isIntegerOnly?: boolean;
+  onChange?: (value: number | string) => void | Promise<void>;
 }
 
 export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
-  ({ className, children, type, value: valueProp = 1, onChange, disabled, ...props }, ref) => {
-    const [value, setValue] = useState(Number(valueProp));
+  (
+    {
+      children,
+      className,
+      disabled,
+      isIntegerOnly = true,
+      max: maxProp,
+      min: minProp = 0,
+      onChange,
+      step: stepProp = 1,
+      type,
+      value: valueProp = 1,
+      ...props
+    },
+    ref,
+  ) => {
+    const [value, setValue] = useState<number | string>(Number(valueProp));
     const currValue = onChange ? Number(valueProp) : value;
     const inputRef = useRef<ElementRef<'input'>>(null);
+
+    const min = Number(minProp);
+    const max = Number(maxProp);
+    const step = Number(stepProp);
 
     return (
       <div className={cs('relative')} ref={ref}>
@@ -21,12 +41,12 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
           className={cs(
             'peer/down absolute start-0 top-0 flex h-full w-12 items-center justify-center focus:outline-none disabled:text-gray-200',
           )}
-          disabled={currValue <= 1 || disabled}
+          disabled={Number(currValue) <= min || disabled}
           onClick={async () => {
             if (onChange) {
-              await onChange(currValue - 1);
+              await onChange(Number(currValue) - step);
             } else {
-              setValue(currValue - 1);
+              setValue(Number(currValue) - step);
             }
 
             inputRef.current?.focus();
@@ -42,12 +62,12 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
           className={cs(
             'peer/up absolute end-0 top-0 flex h-full w-12 items-center justify-center focus:outline-none disabled:text-gray-200',
           )}
-          disabled={disabled}
+          disabled={(max && Number(currValue) === max) || disabled}
           onClick={async () => {
             if (onChange) {
-              await onChange(currValue + 1);
+              await onChange(Number(currValue) + step);
             } else {
-              setValue(currValue + 1);
+              setValue(Number(currValue) + step);
             }
 
             inputRef.current?.focus();
@@ -63,13 +83,52 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
             className,
           )}
           disabled={disabled}
-          onChange={async (e) => {
-            if (onChange) {
-              await onChange(e.target.valueAsNumber);
-            } else {
-              setValue(e.target.valueAsNumber);
+          max={max || undefined}
+          min={min || undefined}
+          onBlur={async (e) => {
+            const valueAsNumber = e.target.valueAsNumber;
+
+            if (Number.isNaN(valueAsNumber)) {
+              return;
+            }
+
+            if (valueAsNumber < min) {
+              if (onChange) {
+                await onChange(min);
+              } else {
+                setValue(min);
+              }
+            } else if (valueAsNumber > max) {
+              if (onChange) {
+                await onChange(max);
+              } else {
+                setValue(max);
+              }
             }
           }}
+          onChange={async (e) => {
+            const valueAsNumber =
+              isIntegerOnly && !Number.isNaN(e.target.valueAsNumber)
+                ? Math.round(e.target.valueAsNumber)
+                : e.target.valueAsNumber;
+
+            if (Number.isNaN(valueAsNumber)) {
+              if (onChange) {
+                await onChange('');
+              } else {
+                setValue('');
+              }
+
+              return;
+            }
+
+            if (onChange) {
+              await onChange(valueAsNumber);
+            } else {
+              setValue(valueAsNumber);
+            }
+          }}
+          step={step}
           type="number"
           value={currValue}
           {...props}
