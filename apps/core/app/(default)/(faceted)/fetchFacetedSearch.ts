@@ -4,6 +4,8 @@ import { z } from 'zod';
 
 import client from '~/client';
 
+import { getSessionFetchConfig } from '../../../lib/session';
+
 const SearchParamSchema = z.union([z.string(), z.array(z.string()), z.undefined()]);
 
 const SearchParamToArray = SearchParamSchema.transform((value) => {
@@ -154,6 +156,7 @@ export const fetchFacetedSearch = cache(
   // We need to make sure the reference passed into this function is the same if we want it to be memoized.
   async (params: z.input<typeof PublicSearchParamsSchema>) => {
     const { after, before, limit = 9, sort, filters } = PublicToPrivateParams.parse(params);
+    const config = await getSessionFetchConfig();
 
     return client.getProductSearchResults(
       {
@@ -163,7 +166,7 @@ export const fetchFacetedSearch = cache(
         sort,
         filters,
       },
-      { next: { revalidate: 300 }, cache: null },
+      config || { next: { revalidate: 300 }, cache: null },
     );
   },
 );

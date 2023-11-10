@@ -1,12 +1,21 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 import client from '../client';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
+const getRequestUrl = (request: NextRequest) => {
+  const forwardedHost = request.headers.get('x-forwarded-host');
+  const forwardedProto = request.headers.get('x-forwarded-proto');
+
+  return forwardedHost && forwardedProto ? `${forwardedProto}://${forwardedHost}` : request.url;
+};
+
 export const withMaintenanceMode: MiddlewareFactory = (next) => {
   return async (request, event) => {
-    const response = await fetch(new URL(`/api/store-settings`, request.url), {
+    const url = getRequestUrl(request);
+
+    const response = await fetch(new URL(`/api/store-settings`, url), {
       headers: {
         'x-internal-token': process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '',
       },

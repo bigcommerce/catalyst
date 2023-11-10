@@ -35,6 +35,9 @@ importers:
       '@vercel/analytics':
         specifier: ^1.1.1
         version: 1.1.1
+      iron-session:
+        specifier: ^6.3.1
+        version: 6.3.1(next@14.0.1)
       lucide-react:
         specifier: ^0.292.0
         version: 0.292.0(react@18.2.0)
@@ -47,9 +50,6 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
-      schema-dts:
-        specifier: ^1.1.2
-        version: 1.1.2(typescript@5.2.2)
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
@@ -102,6 +102,9 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: ^0.5.6
         version: 0.5.6(prettier@3.0.3)
+      schema-dts:
+        specifier: ^1.1.2
+        version: 1.1.2(typescript@5.2.2)
       tailwindcss:
         specifier: ^3.3.5
         version: 3.3.5
@@ -11747,7 +11750,7 @@ packages:
       typescript: '>=4.1.0'
     dependencies:
       typescript: 5.2.2
-    dev: false
+    dev: true
 
   /schema-utils@3.3.0:
     resolution: {integrity: sha512-pN/yOAvcC+5rQ5nERGuwrjLlYvLTbCibnZ1I7B1LaiAz9BRBlE9GMgE/eqV30P7aJQUf7Ddimy/RsbYO/GrVGg==}

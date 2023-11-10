@@ -5,23 +5,30 @@ import client from '../client';
 import { type MiddlewareFactory } from './compose-middlewares';
 
 const createRewriteUrl = (path: string, request: NextRequest) => {
-  const url = new URL(path, request.url);
+  const forwardedHost = request.headers.get('x-forwarded-host');
+  const url = new URL(path, forwardedHost ?? request.url);
 
   url.search = request.nextUrl.search;
 
   return url;
 };
 
+const getRequestUrl = (request: NextRequest) => {
+  const forwardedHost = request.headers.get('x-forwarded-host');
+  const forwardedProto = request.headers.get('x-forwarded-proto');
+
+  return forwardedHost && forwardedProto ? `${forwardedProto}://${forwardedHost}` : request.url;
+};
+
 export const withCustomUrls: MiddlewareFactory = (next) => {
   return async (request, event) => {
-    const response = await fetch(
-      new URL(`/api/route?path=${request.nextUrl.pathname}`, request.url),
-      {
-        headers: {
-          'x-internal-token': process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '',
-        },
+    const url = getRequestUrl(request);
+
+    const response = await fetch(new URL(`/api/route?path=${request.nextUrl.pathname}`, url), {
+      headers: {
+        'x-internal-token': process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(`BigCommerce API returned ${response.status}`);

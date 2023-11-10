@@ -1,8 +1,12 @@
 'use server';
 
+import { sealData } from 'iron-session/edge';
+import { revalidatePath } from 'next/cache';
+import { cookies } from 'next/headers';
 import { z } from 'zod';
 
 import client from '~/client';
+import { sessionOptions } from '~/lib/session';
 
 const LoginSchema = z.object({
   email: z.string().email(),
@@ -18,7 +22,23 @@ export const submitLoginForm = async (formData: FormData) => {
 
     const customer = await client.login(email, password);
 
-    return { status: 'success', data: customer };
+    const encryptedSession = await sealData(
+      { customer: { id: customer?.entityId } },
+      {
+        password: sessionOptions.password,
+        ttl: sessionOptions.ttl,
+      },
+    );
+
+    cookies().set(sessionOptions.cookieName, encryptedSession, {
+      maxAge: sessionOptions.ttl,
+      httpOnly: true,
+      sameSite: 'strict',
+    });
+
+    revalidatePath('/');
+
+    return { status: 'success' };
   } catch (e: unknown) {
     if (e instanceof Error || e instanceof z.ZodError) {
       return { status: 'failed', error: e.message };

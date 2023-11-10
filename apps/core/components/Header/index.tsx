@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { PropsWithChildren, Suspense } from 'react';
 
 import client from '~/client';
+import { getSessionFetchConfig } from '~/lib/session';
 
 import { QuickSearch } from '../QuickSearch';
 import { StoreLogo } from '../StoreLogo';
@@ -69,7 +70,8 @@ const HeaderNav = async ({
   className?: string;
   inCollapsedNav?: boolean;
 }) => {
-  const categoryTree = await client.getCategoryTree();
+  const config = await getSessionFetchConfig();
+  const categoryTree = await client.getCategoryTree(undefined, config);
 
   return (
     <>
