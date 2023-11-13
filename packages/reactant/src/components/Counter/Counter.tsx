@@ -128,7 +128,7 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
           }}
           step={step}
           type="number"
-          value={valueProp || value}
+          value={currValue}
           {...props}
           ref={inputRef}
         />
