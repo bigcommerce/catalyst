@@ -90,11 +90,7 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
           onBlur={async (e) => {
             const valueAsNumber = e.target.valueAsNumber;
 
-            if (Number.isNaN(valueAsNumber)) {
-              return;
-            }
-
-            if (valueAsNumber < min) {
+            if (Number.isNaN(valueAsNumber) || valueAsNumber < min) {
               if (onChange) {
                 await onChange(min);
               } else {
