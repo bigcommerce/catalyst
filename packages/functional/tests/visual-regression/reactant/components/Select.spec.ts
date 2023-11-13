@@ -7,7 +7,9 @@ test('Default select', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Select with disabled items', async ({ page }) => {
@@ -20,5 +22,7 @@ test('Select with disabled items', async ({ page }) => {
     .locator(storyBookElements.storyBook)
     .getByRole('combobox')
     .click();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });

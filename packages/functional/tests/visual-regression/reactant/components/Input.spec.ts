@@ -7,7 +7,9 @@ test('Default input', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByPlaceholder('Placeholder...'),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Disabled input', async ({ page }) => {
@@ -15,7 +17,9 @@ test('Disabled input', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByPlaceholder('Placeholder...'),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Success input', async ({ page }) => {
@@ -23,7 +27,9 @@ test('Success input', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByPlaceholder('Placeholder...'),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Error input', async ({ page }) => {
@@ -31,7 +37,9 @@ test('Error input', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByPlaceholder('Placeholder...'),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Custom icon input', async ({ page }) => {
@@ -39,5 +47,7 @@ test('Custom icon input', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByPlaceholder('Placeholder...'),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });

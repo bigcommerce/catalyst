@@ -7,5 +7,7 @@ test('Basic rectangle list', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });

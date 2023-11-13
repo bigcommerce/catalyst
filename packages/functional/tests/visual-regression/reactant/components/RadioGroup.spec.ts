@@ -7,7 +7,9 @@ test('Base radio group', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Radio group with icon', async ({ page }) => {
@@ -15,5 +17,7 @@ test('Radio group with icon', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });

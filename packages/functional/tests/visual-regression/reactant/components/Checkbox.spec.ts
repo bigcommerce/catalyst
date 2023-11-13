@@ -7,7 +7,9 @@ test('Base checkbox', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Focused checkbox', async ({ page }) => {
@@ -15,7 +17,9 @@ test('Focused checkbox', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Checked checkbox', async ({ page }) => {
@@ -23,7 +27,9 @@ test('Checked checkbox', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Disabled checkbox', async ({ page }) => {
@@ -31,7 +37,9 @@ test('Disabled checkbox', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Disabled checked checkbox', async ({ page }) => {
@@ -39,7 +47,9 @@ test('Disabled checked checkbox', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Checkbox with label', async ({ page }) => {
@@ -47,7 +57,9 @@ test('Checkbox with label', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Checkbox with custom icon', async ({ page }) => {
@@ -59,5 +71,7 @@ test('Checkbox with custom icon', async ({ page }) => {
     .frameLocator(storyBookElements.storyBookFrame)
     .locator('#CheckboxWithCustomIcon')
     .click();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });

@@ -7,7 +7,9 @@ test('Multiple slides', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByLabel('Related Products'),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
 
 test('Single slide', async ({ page }) => {
@@ -15,5 +17,7 @@ test('Single slide', async ({ page }) => {
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByLabel('Related Products'),
   ).toBeVisible();
-  await expect(page).toHaveScreenshot();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
 });
