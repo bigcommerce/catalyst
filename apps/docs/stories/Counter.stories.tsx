@@ -16,6 +16,9 @@ type Story = StoryObj<typeof Counter>;
 export const Default: Story = {
   args: {
     disabled: false,
+    max: Infinity,
+    min: 0,
+    step: 1,
   },
 };
 
@@ -29,14 +32,14 @@ export const Disabled: Story = {
 export const DefaultValue: Story = {
   args: {
     ...Default.args,
-    value: 5,
+    defaultValue: 5,
   },
 };
 
 export const MinValue: Story = {
   args: {
     ...Default.args,
-    value: 5,
+    defaultValue: 5,
     min: 3,
   },
 };
@@ -44,7 +47,7 @@ export const MinValue: Story = {
 export const MaxValue: Story = {
   args: {
     ...Default.args,
-    value: 5,
+    defaultValue: 5,
     max: 8,
   },
 };
@@ -52,8 +55,7 @@ export const MaxValue: Story = {
 export const AllowDecimals: Story = {
   args: {
     ...Default.args,
-    value: 5,
-    isIntegerOnly: false,
+    defaultValue: 5,
     step: 0.5,
   },
 };

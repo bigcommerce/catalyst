@@ -4,7 +4,7 @@ import { ComponentPropsWithRef, ElementRef, forwardRef, useRef, useState } from 
 import { cs } from '../../utils/cs';
 
 interface CounterProps extends Omit<ComponentPropsWithRef<'input'>, 'onChange'> {
-  isIntegerOnly?: boolean;
+  defaultValue?: number;
   onChange?: (value: number | string) => void | Promise<void>;
 }
 
@@ -13,25 +13,27 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
     {
       children,
       className,
-      disabled,
-      isIntegerOnly = true,
-      max: maxProp,
+      defaultValue = 0,
+      disabled = false,
+      max: maxProp = Infinity,
       min: minProp = 0,
       onChange,
       step: stepProp = 1,
       type,
-      value: valueProp = 1,
+      value: valueProp,
       ...props
     },
     ref,
   ) => {
-    const [value, setValue] = useState<number | string>(Number(valueProp));
-    const currValue = onChange ? Number(valueProp) : value;
+    const [value, setValue] = useState<number | string>(defaultValue);
     const inputRef = useRef<ElementRef<'input'>>(null);
 
+    const currValue = Number(valueProp) || Number(value);
     const min = Number(minProp);
     const max = Number(maxProp);
     const step = Number(stepProp);
+
+    const isInteger = Number(stepProp) % 1 === 0;
 
     return (
       <div className={cs('relative')} ref={ref}>
@@ -41,12 +43,12 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
           className={cs(
             'peer/down absolute start-0 top-0 flex h-full w-12 items-center justify-center focus:outline-none disabled:text-gray-200',
           )}
-          disabled={Number(currValue) <= min || disabled}
+          disabled={currValue <= min || disabled}
           onClick={async () => {
             if (onChange) {
-              await onChange(Number(currValue) - step);
+              await onChange(currValue - step);
             } else {
-              setValue(Number(currValue) - step);
+              setValue(currValue - step);
             }
 
             inputRef.current?.focus();
@@ -62,12 +64,12 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
           className={cs(
             'peer/up absolute end-0 top-0 flex h-full w-12 items-center justify-center focus:outline-none disabled:text-gray-200',
           )}
-          disabled={(max && Number(currValue) === max) || disabled}
+          disabled={value === max || disabled}
           onClick={async () => {
             if (onChange) {
-              await onChange(Number(currValue) + step);
+              await onChange(currValue + step);
             } else {
-              setValue(Number(currValue) + step);
+              setValue(currValue + step);
             }
 
             inputRef.current?.focus();
@@ -83,8 +85,8 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
             className,
           )}
           disabled={disabled}
-          max={max || undefined}
-          min={min || undefined}
+          max={max}
+          min={min}
           onBlur={async (e) => {
             const valueAsNumber = e.target.valueAsNumber;
 
@@ -108,8 +110,8 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
           }}
           onChange={async (e) => {
             const valueAsNumber =
-              isIntegerOnly && !Number.isNaN(e.target.valueAsNumber)
-                ? Math.round(e.target.valueAsNumber)
+              isInteger && !Number.isNaN(e.target.valueAsNumber)
+                ? Math.trunc(e.target.valueAsNumber)
                 : e.target.valueAsNumber;
 
             if (Number.isNaN(valueAsNumber)) {
@@ -130,7 +132,7 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
           }}
           step={step}
           type="number"
-          value={currValue}
+          value={valueProp || value}
           {...props}
           ref={inputRef}
         />
