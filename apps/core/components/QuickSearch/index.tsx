@@ -48,7 +48,7 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
               method="get"
               role="search"
             >
-              <Field className="w-full" name="search">
+              <Field className="w-full" name="term">
                 <FieldControl asChild>
                   <Input
                     className="peer appearance-none border-2 px-12 py-3"

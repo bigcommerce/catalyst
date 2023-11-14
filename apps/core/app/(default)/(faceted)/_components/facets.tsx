@@ -65,6 +65,7 @@ export const Facets = ({ facets, pageType }: Props) => {
 
     const formData = new FormData(e.currentTarget);
     const sortParam = searchParams.get('sort');
+    const searchParam = searchParams.get('term');
     const filteredSearchParams = Array.from(formData.entries())
       .filter((entry): entry is [string, string] => {
         return entry instanceof File === false;
@@ -76,6 +77,11 @@ export const Facets = ({ facets, pageType }: Props) => {
     // We want to keep the sort param if it exists
     if (sortParam) {
       newSearchParams.append('sort', sortParam);
+    }
+
+    // We want to keep the search param if it exists
+    if (searchParam) {
+      newSearchParams.append('term', searchParam);
     }
 
     router.push(`${pathname}?${newSearchParams.toString()}`);

@@ -3,15 +3,17 @@ import Link from 'next/link';
 
 import { ProductCard } from 'components/ProductCard';
 import { SearchForm } from 'components/SearchForm';
-import client from '~/client';
+
+import { FacetedSearch } from '../_components/faceted-search';
+import { MobileSideNav } from '../_components/mobile-side-nav';
+import { SortBy } from '../_components/sort-by';
+import { fetchFacetedSearch } from '../fetchFacetedSearch';
 
 interface Props {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export default async function Search({ searchParams }: Props) {
-  const before = typeof searchParams.before === 'string' ? searchParams.before : undefined;
-  const after = typeof searchParams.after === 'string' ? searchParams.after : undefined;
   const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : undefined;
 
   if (!searchTerm) {
@@ -23,16 +25,12 @@ export default async function Search({ searchParams }: Props) {
     );
   }
 
-  const productSearchResults = await client.getProductSearchResults({
-    filters: {
-      searchTerm,
-    },
-    limit: 4,
-    after,
-    before,
-  });
+  const search = await fetchFacetedSearch({ ...searchParams });
 
-  if (productSearchResults.products.items.length === 0) {
+  const productsCollection = search.products;
+  const products = productsCollection.items;
+
+  if (products.length === 0) {
     return (
       <div>
         <h1 className="mb-3 text-h2">Search</h1>
@@ -46,25 +44,55 @@ export default async function Search({ searchParams }: Props) {
     );
   }
 
-  const productsCollection = productSearchResults.products;
-  const products = productsCollection.items;
   const { hasNextPage, hasPreviousPage, endCursor, startCursor } = productsCollection.pageInfo;
 
   return (
     <div>
-      <h1 className="mb-3 text-h2">Search results for "{searchTerm}"</h1>
-      <div className="pt-6 lg:grid lg:grid-cols-4 lg:gap-x-8">
-        <section
-          aria-labelledby="product-heading"
-          className="mt-6 lg:col-span-2 lg:mt-0 xl:col-span-4"
-        >
+      <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
+        <h1 className="mb-3 text-base">
+          Search results for <br />
+          <b className="text-h4">"{searchTerm}"</b>
+        </h1>
+
+        <div className="flex flex-col items-center gap-3 whitespace-nowrap md:flex-row">
+          <MobileSideNav>
+            <FacetedSearch
+              facets={search.facets.items}
+              headingId="mobile-filter-heading"
+              pageType="search"
+            />
+          </MobileSideNav>
+          <div className="flex w-full flex-col items-start gap-4 md:flex-row md:items-center md:justify-end md:gap-6">
+            <SortBy />
+            <div className="order-3 py-4 text-base font-semibold md:order-2 md:py-0">
+              {/* TODO: Plural vs. singular items */}
+              {productsCollection.collectionInfo?.totalItems} items
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-4 gap-8">
+        <FacetedSearch
+          className="mb-8 hidden lg:block"
+          facets={search.facets.items}
+          headingId="desktop-filter-heading"
+          pageType="search"
+        />
+
+        <section aria-labelledby="product-heading" className="col-span-4 lg:col-span-3">
           <h2 className="sr-only" id="product-heading">
             Products
           </h2>
 
-          <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:gap-x-8 xl:grid-cols-4">
-            {products.map((product) => (
-              <ProductCard key={product.entityId} product={product} />
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 sm:gap-8">
+            {products.map((product, index) => (
+              <ProductCard
+                imagePriority={index <= 3}
+                imageSize="wide"
+                key={product.entityId}
+                product={product}
+              />
             ))}
           </div>
 

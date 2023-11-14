@@ -91,6 +91,7 @@ export const PublicSearchParamsSchema = z.object({
   shipping: SearchParamToArray.transform(
     (value) => value?.filter((stock) => z.enum(['free_shipping']).safeParse(stock).success),
   ),
+  term: z.string().optional(),
 });
 
 const AttributeKey = z.custom<`attr_${string}`>((val) => {
@@ -109,6 +110,7 @@ export const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchPar
       maxPrice,
       minRating,
       maxRating,
+      term,
       shipping,
       stock,
       // There is a bug in Next.js that is adding the path params to the searchParams. We need to filter out the slug params for now.
@@ -151,6 +153,7 @@ export const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchPar
                 minRating,
               }
             : undefined,
+        searchTerm: term,
       },
     };
   })
