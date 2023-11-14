@@ -9,13 +9,14 @@ import {
 } from '@bigcommerce/reactant/Accordion';
 import { Button } from '@bigcommerce/reactant/Button';
 import { Checkbox } from '@bigcommerce/reactant/Checkbox';
-import { cs } from '@bigcommerce/reactant/cs';
 import { Input } from '@bigcommerce/reactant/Input';
 import { Label } from '@bigcommerce/reactant/Label';
 import { Rating } from '@bigcommerce/reactant/Rating';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useRef } from 'react';
+
+import { cn } from '~/lib/utils';
 
 import type { Facet, PageType } from '../types';
 
@@ -230,7 +231,7 @@ export const Facets = ({ facets, pageType }: Props) => {
                           key={key}
                         >
                           <div
-                            className={cs('flex flex-row flex-nowrap', {
+                            className={cn('flex flex-row flex-nowrap', {
                               'text-blue-primary': rating.isSelected,
                             })}
                           >

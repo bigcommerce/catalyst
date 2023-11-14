@@ -1,4 +1,3 @@
-import { cs } from '@bigcommerce/reactant/cs';
 import {
   ProductCardImage,
   ProductCardInfo,
@@ -10,6 +9,8 @@ import { Rating } from '@bigcommerce/reactant/Rating';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useId } from 'react';
+
+import { cn } from '~/lib/utils';
 
 import { Cart } from './Cart';
 import { Compare } from './Compare';
@@ -88,7 +89,7 @@ export const ProductCard = ({
     <ReactantProductCard key={product.entityId}>
       <ProductCardImage>
         <div
-          className={cs('relative flex-auto', {
+          className={cn('relative flex-auto', {
             'aspect-square': imageSize === 'square',
             'aspect-[4/5]': imageSize === 'tall',
             'aspect-[7/5]': imageSize === 'wide',
@@ -107,7 +108,7 @@ export const ProductCard = ({
           )}
         </div>
       </ProductCardImage>
-      <ProductCardInfo className={cs(showCart && 'justify-end')}>
+      <ProductCardInfo className={cn(showCart && 'justify-end')}>
         {product.brand && <ProductCardInfoBrandName>{product.brand.name}</ProductCardInfoBrandName>}
         <ProductCardInfoProductName>
           {product.path ? (
@@ -126,7 +127,7 @@ export const ProductCard = ({
           <div className="flex items-center gap-3">
             <p
               aria-describedby={summaryId}
-              className={cs(
+              className={cn(
                 'flex flex-nowrap text-blue-primary',
                 product.reviewSummary.numberOfReviews === 0 && 'text-gray-400',
               )}

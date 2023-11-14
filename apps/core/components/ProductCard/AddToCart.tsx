@@ -1,15 +1,16 @@
 'use client';
 
 import { Button } from '@bigcommerce/reactant/Button';
-import { cs } from '@bigcommerce/reactant/cs';
 import { Loader2 as Spinner } from 'lucide-react';
 import { useFormStatus } from 'react-dom';
+
+import { cn } from '~/lib/utils';
 
 export const AddToCart = () => {
   const { pending } = useFormStatus();
 
   return (
-    <Button className={cs('mt-2')} disabled={pending} type="submit">
+    <Button className={cn('mt-2')} disabled={pending} type="submit">
       {pending ? (
         <>
           <Spinner aria-hidden="true" className="animate-spin" />

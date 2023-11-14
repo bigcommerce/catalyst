@@ -1,7 +1,7 @@
-import { cs } from '@bigcommerce/reactant/cs';
 import Link from 'next/link';
 
 import client from '~/client';
+import { cn } from '~/lib/utils';
 
 interface Props {
   productId: number;
@@ -23,7 +23,7 @@ export const BreadCrumbs = async ({ productId }: Props) => {
 
           return (
             <li
-              className={cs('p-1 ps-0 hover:text-blue-primary', {
+              className={cn('p-1 ps-0 hover:text-blue-primary', {
                 'font-semibold': !isLast,
                 'font-extrabold': isLast,
               })}
