@@ -6,9 +6,7 @@ on:
 jobs:
   generate_lighthouse_audit:
     name: Deployment Audit
-
     timeout-minutes: 30
-
     runs-on: ubuntu-latest
 
     steps:
@@ -39,7 +37,7 @@ jobs:
             ${{ github.event.deployment_status.target_url }}
           uploadArtifacts: true
           temporaryPublicStorage: true
-          runs: 3
+          runs: 1
 
       - name: Format lighthouse score
         if: env.AUDIT == 'true'
@@ -65,7 +63,7 @@ jobs:
       - name: Add comment to PR
         if: env.AUDIT == 'true'
         id: comment_to_pr
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v2.8.0
         with:
           recreate: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
