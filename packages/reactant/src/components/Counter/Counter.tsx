@@ -5,10 +5,11 @@ import { cs } from '../../utils/cs';
 
 interface CounterProps extends Omit<ComponentPropsWithRef<'input'>, 'onChange'> {
   defaultValue?: number | '';
-  value?: number | '';
-  min?: number;
+  isInteger?: boolean;
   max?: number;
+  min?: number;
   step?: number;
+  value?: number | '';
   onChange?: (value: number | '') => void;
 }
 
@@ -19,6 +20,7 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
       className,
       defaultValue = 0,
       disabled = false,
+      isInteger = true,
       max = Infinity,
       min = 0,
       step = 1,
@@ -32,7 +34,6 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
     const [value, setValue] = useState<number | ''>(defaultValue);
     const inputRef = useRef<ElementRef<'input'>>(null);
     const currValue = valueProp ?? value;
-    const isInteger = step % 1 === 0;
 
     const updateValue = (newValue: number | '') => {
       if (onChange) {

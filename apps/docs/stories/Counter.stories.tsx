@@ -56,6 +56,7 @@ export const AllowDecimals: Story = {
   args: {
     ...Default.args,
     defaultValue: 5,
+    isInteger: false,
     step: 0.5,
   },
 };
