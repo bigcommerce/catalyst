@@ -4,8 +4,12 @@ import { ComponentPropsWithRef, ElementRef, forwardRef, useRef, useState } from 
 import { cs } from '../../utils/cs';
 
 interface CounterProps extends Omit<ComponentPropsWithRef<'input'>, 'onChange'> {
-  defaultValue?: number;
-  onChange?: (value: number | string) => void | Promise<void>;
+  defaultValue?: number | '';
+  value?: number | '';
+  min?: number;
+  max?: number;
+  step?: number;
+  onChange?: (value: number | '') => void;
 }
 
 export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
@@ -15,25 +19,56 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
       className,
       defaultValue = 0,
       disabled = false,
-      max: maxProp = Infinity,
-      min: minProp = 0,
+      max = Infinity,
+      min = 0,
+      step = 1,
       onChange,
-      step: stepProp = 1,
       type,
       value: valueProp,
       ...props
     },
     ref,
   ) => {
-    const [value, setValue] = useState<number | string>(defaultValue);
+    const [value, setValue] = useState<number | ''>(defaultValue);
     const inputRef = useRef<ElementRef<'input'>>(null);
+    const currValue = valueProp ?? value;
+    const isInteger = step % 1 === 0;
 
-    const currValue = Number(valueProp) || Number(value);
-    const min = Number(minProp);
-    const max = Number(maxProp);
-    const step = Number(stepProp);
+    const updateValue = (newValue: number | '') => {
+      if (onChange) {
+        onChange(newValue);
+      } else {
+        setValue(newValue);
+      }
+    };
 
-    const isInteger = Number(stepProp) % 1 === 0;
+    const increment = () => {
+      updateValue(currValue === '' ? step : currValue + step);
+    };
+
+    const decrement = () => {
+      updateValue(currValue === '' ? -step : currValue - step);
+    };
+
+    const canIncrement = () => {
+      if (disabled) {
+        return false;
+      }
+
+      const tmpValue = currValue === '' ? 0 : currValue;
+
+      return tmpValue < max;
+    };
+
+    const canDecrement = () => {
+      if (disabled) {
+        return false;
+      }
+
+      const tmpValue = currValue === '' ? 0 : currValue;
+
+      return tmpValue > min;
+    };
 
     return (
       <div className={cs('relative')} ref={ref}>
@@ -43,13 +78,9 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
           className={cs(
             'peer/down absolute start-0 top-0 flex h-full w-12 items-center justify-center focus:outline-none disabled:text-gray-200',
           )}
-          disabled={currValue <= min || disabled}
-          onClick={async () => {
-            if (onChange) {
-              await onChange(currValue - step);
-            } else {
-              setValue(currValue - step);
-            }
+          disabled={!canDecrement()}
+          onClick={() => {
+            decrement();
 
             inputRef.current?.focus();
           }}
@@ -58,19 +89,16 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
         >
           <ChevronDown />
         </button>
+
         <button
           aria-hidden="true"
           aria-label="Increase count"
           className={cs(
             'peer/up absolute end-0 top-0 flex h-full w-12 items-center justify-center focus:outline-none disabled:text-gray-200',
           )}
-          disabled={value === max || disabled}
-          onClick={async () => {
-            if (onChange) {
-              await onChange(currValue + step);
-            } else {
-              setValue(currValue + step);
-            }
+          disabled={!canIncrement()}
+          onClick={() => {
+            increment();
 
             inputRef.current?.focus();
           }}
@@ -79,6 +107,7 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
         >
           <ChevronUp />
         </button>
+
         <input
           className={cs(
             'focus:ring-primary-blue/20 peer/input w-full border-2 border-gray-200 px-12 py-2.5 text-center text-base placeholder:text-gray-500 hover:border-blue-primary focus:border-blue-primary focus:outline-none focus:ring-4 disabled:bg-gray-100 disabled:hover:border-gray-200 peer-hover/down:border-blue-primary peer-hover/up:border-blue-primary peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200 [&::-webkit-inner-spin-button]:appearance-none',
@@ -87,48 +116,26 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
           disabled={disabled}
           max={max}
           min={min}
-          onBlur={async (e) => {
+          onBlur={(e) => {
             const valueAsNumber = e.target.valueAsNumber;
 
-            if (Number.isNaN(valueAsNumber) || valueAsNumber < min) {
-              if (onChange) {
-                await onChange(min);
-              } else {
-                setValue(min);
-              }
+            if (valueAsNumber < min) {
+              updateValue(min);
             } else if (valueAsNumber > max) {
-              if (onChange) {
-                await onChange(max);
-              } else {
-                setValue(max);
-              }
+              updateValue(max);
             }
           }}
-          onChange={async (e) => {
+          onChange={(e) => {
             const valueAsNumber =
               isInteger && !Number.isNaN(e.target.valueAsNumber)
                 ? Math.trunc(e.target.valueAsNumber)
                 : e.target.valueAsNumber;
 
-            if (Number.isNaN(valueAsNumber)) {
-              if (onChange) {
-                await onChange('');
-              } else {
-                setValue('');
-              }
-
-              return;
-            }
-
-            if (onChange) {
-              await onChange(valueAsNumber);
-            } else {
-              setValue(valueAsNumber);
-            }
+            updateValue(Number.isNaN(valueAsNumber) ? '' : valueAsNumber);
           }}
           step={step}
           type="number"
-          value={valueProp || value}
+          value={currValue}
           {...props}
           ref={inputRef}
         />
