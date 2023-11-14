@@ -1,17 +1,17 @@
-import { cs } from '@bigcommerce/reactant/cs';
 import { Message } from '@bigcommerce/reactant/Message';
 
 import { SearchForm } from 'components/SearchForm';
 import client from '~/client';
 import { ProductCard } from '~/components/ProductCard';
+import { cn } from '~/lib/utils';
 
 const FeaturedProducts = async () => {
   const featuredProducts = await client.getFeaturedProducts();
 
   return (
-    <section className={cs('w-full')}>
-      <h3 className={cs('mb-10 text-center text-h3 sm:text-left')}>Featured Products</h3>
-      <div className={cs('grid grid-cols-2 gap-x-8 gap-y-8 md:grid-cols-4')}>
+    <section className={cn('w-full')}>
+      <h3 className={cn('mb-10 text-center text-h3 sm:text-left')}>Featured Products</h3>
+      <div className={cn('grid grid-cols-2 gap-x-8 gap-y-8 md:grid-cols-4')}>
         {featuredProducts.map((product) => (
           <ProductCard key={product.entityId} product={product} />
         ))}

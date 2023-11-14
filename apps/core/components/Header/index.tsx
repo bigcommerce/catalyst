@@ -1,5 +1,4 @@
 import { Badge } from '@bigcommerce/reactant/Badge';
-import { cs } from '@bigcommerce/reactant/cs';
 import {
   NavigationMenu,
   NavigationMenuCollapsed,
@@ -16,6 +15,7 @@ import Link from 'next/link';
 import { PropsWithChildren, Suspense } from 'react';
 
 import client from '~/client';
+import { cn } from '~/lib/utils';
 
 import { QuickSearch } from '../QuickSearch';
 import { StoreLogo } from '../StoreLogo';
@@ -74,14 +74,14 @@ const HeaderNav = async ({
   return (
     <>
       <NavigationMenuList
-        className={cs(
+        className={cn(
           !inCollapsedNav && 'lg:gap-4',
           inCollapsedNav && 'flex-col items-start pb-6',
           className,
         )}
       >
         {categoryTree.map((category) => (
-          <NavigationMenuItem className={cs(inCollapsedNav && 'w-full')} key={category.path}>
+          <NavigationMenuItem className={cn(inCollapsedNav && 'w-full')} key={category.path}>
             {category.children.length > 0 ? (
               <>
                 <NavigationMenuTrigger className="gap-0 p-0">
@@ -91,10 +91,10 @@ const HeaderNav = async ({
                         {category.name}
                       </Link>
                     </NavigationMenuLink>
-                    <span className={cs(inCollapsedNav && 'p-3')}>
+                    <span className={cn(inCollapsedNav && 'p-3')}>
                       <ChevronDown
                         aria-hidden="true"
-                        className={cs(
+                        className={cn(
                           'cursor-pointer transition duration-200 group-data-[state=open]/button:-rotate-180',
                         )}
                       />
@@ -102,13 +102,13 @@ const HeaderNav = async ({
                   </>
                 </NavigationMenuTrigger>
                 <NavigationMenuContent
-                  className={cs(
+                  className={cn(
                     !inCollapsedNav && 'mx-auto flex w-[700px] flex-row gap-20',
                     inCollapsedNav && 'ps-3',
                   )}
                 >
                   {category.children.map((childCategory1) => (
-                    <ul className={cs(inCollapsedNav && 'pb-4')} key={childCategory1.entityId}>
+                    <ul className={cn(inCollapsedNav && 'pb-4')} key={childCategory1.entityId}>
                       <NavigationMenuItem>
                         <NavigationMenuLink href={childCategory1.path}>
                           {childCategory1.name}
@@ -134,13 +134,13 @@ const HeaderNav = async ({
         ))}
       </NavigationMenuList>
       <NavigationMenuList
-        className={cs(
+        className={cn(
           'border-t border-gray-200 pt-6 lg:hidden',
           !inCollapsedNav && 'hidden',
           inCollapsedNav && 'flex-col items-start',
         )}
       >
-        <NavigationMenuItem className={cs(inCollapsedNav && 'w-full')}>
+        <NavigationMenuItem className={cn(inCollapsedNav && 'w-full')}>
           <NavigationMenuLink href="/login">
             Your Account <User />
           </NavigationMenuLink>

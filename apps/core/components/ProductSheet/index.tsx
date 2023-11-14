@@ -2,7 +2,6 @@
 
 import { Button } from '@bigcommerce/reactant/Button';
 import { Counter } from '@bigcommerce/reactant/Counter';
-import { cs } from '@bigcommerce/reactant/cs';
 import { Label } from '@bigcommerce/reactant/Label';
 import { Rating } from '@bigcommerce/reactant/Rating';
 import {
@@ -30,6 +29,7 @@ import { useFormStatus } from 'react-dom';
 
 import client from '~/client';
 import { VariantSelector } from '~/components/VariantSelector';
+import { cn } from '~/lib/utils';
 
 const ProductContext = createContext<{ product: Awaited<ReturnType<typeof client.getProduct>> }>({
   product: null,
@@ -112,7 +112,7 @@ export const ProductSheetContent = ({
     return (
       <>
         <div className="flex">
-          <div className={cs('square relative h-[144px] w-[144px] shrink-0 grow-0')}>
+          <div className={cn('square relative h-[144px] w-[144px] shrink-0 grow-0')}>
             {product.defaultImage ? (
               <Image
                 alt={product.defaultImage.altText}
@@ -135,7 +135,7 @@ export const ProductSheetContent = ({
             <div className="mb-2 flex items-center gap-3">
               <p
                 aria-describedby={summaryId}
-                className={cs(
+                className={cn(
                   'flex flex-nowrap text-blue-primary',
                   product.reviewSummary.numberOfReviews === 0 && 'text-gray-400',
                 )}
@@ -215,7 +215,7 @@ const SubmitButton = ({ children }: PropsWithChildren) => {
   const { pending } = useFormStatus();
 
   return (
-    <Button className={cs('mt-6')} disabled={pending} type="submit">
+    <Button className={cn('mt-6')} disabled={pending} type="submit">
       {pending ? (
         <>
           <Spinner aria-hidden="true" className="animate-spin" />

@@ -1,4 +1,3 @@
-import { cs } from '@bigcommerce/reactant/cs';
 import { Message } from '@bigcommerce/reactant/Message';
 
 import { SearchForm } from 'components/SearchForm';
@@ -6,6 +5,7 @@ import client from '~/client';
 import { Footer } from '~/components/Footer/Footer';
 import { Header } from '~/components/Header';
 import { ProductCard } from '~/components/ProductCard';
+import { cn } from '~/lib/utils';
 
 export default async function NotFound() {
   const featuredProducts = await client.getFeaturedProducts();
@@ -21,9 +21,9 @@ export default async function NotFound() {
           </p>
         </Message>
         <SearchForm />
-        <section className={cs('w-full')}>
-          <h3 className={cs('mb-10 text-center text-h3 sm:text-left')}>Featured Products</h3>
-          <div className={cs('grid grid-cols-2 gap-x-8 gap-y-8 md:grid-cols-4')}>
+        <section className={cn('w-full')}>
+          <h3 className={cn('mb-10 text-center text-h3 sm:text-left')}>Featured Products</h3>
+          <div className={cn('grid grid-cols-2 gap-x-8 gap-y-8 md:grid-cols-4')}>
             {featuredProducts.map((product) => (
               <ProductCard key={product.entityId} product={product} />
             ))}
