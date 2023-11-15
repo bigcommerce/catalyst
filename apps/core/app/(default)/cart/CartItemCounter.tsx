@@ -21,15 +21,15 @@ interface UpdateProductQuantityData extends CartLineItemInput {
 export const CartItemCounter = ({ itemData }: { itemData: CartItemData }) => {
   const { quantity, lineItemEntityId, productEntityId, variantEntityId } = itemData;
   const [counterValue, setCounterValue] = useState(quantity);
-  const handleCountUpdate = async (value: number) => {
+  const handleCountUpdate = async (value: string | number) => {
     if (Number.isNaN(value)) {
-      return;
+      setCounterValue(0);
     }
 
-    setCounterValue(value);
+    setCounterValue(Number(value));
 
     const productData: UpdateProductQuantityData = Object.assign(
-      { lineItemEntityId, productEntityId, quantity: value },
+      { lineItemEntityId, productEntityId, quantity: Number(value) },
       variantEntityId && { variantEntityId },
     );
 
