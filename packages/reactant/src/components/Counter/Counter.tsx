@@ -13,6 +13,18 @@ interface CounterProps extends Omit<ComponentPropsWithRef<'input'>, 'onChange'> 
   onChange?: (value: number | '') => void;
 }
 
+const getDefaultValue = (defaultValue: number | '', min: number, max: number) => {
+  if (typeof defaultValue === 'number') {
+    if (defaultValue < min) {
+      return min;
+    } else if (defaultValue > max) {
+      return max;
+    }
+  }
+
+  return defaultValue;
+};
+
 export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
   (
     {
@@ -31,7 +43,7 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
     },
     ref,
   ) => {
-    const [value, setValue] = useState<number | ''>(defaultValue);
+    const [value, setValue] = useState<number | ''>(getDefaultValue(defaultValue, min, max));
     const inputRef = useRef<ElementRef<'input'>>(null);
     const currValue = valueProp ?? value;
 
