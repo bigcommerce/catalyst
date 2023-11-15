@@ -24,7 +24,11 @@
     "preserveWatchOutput": true,
     "skipLibCheck": true,
     "strict": true,
-    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "include": ["."],
   "exclude": ["node_modules", "dist"]

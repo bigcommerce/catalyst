@@ -8,10 +8,10 @@
     "./package.json": "./package.json",
     "./postcss-config": "./postcss.config.js",
     "./tailwind-config": "./tailwind.config.js",
-    "./cs": {
-      "import": "./dist/utils/cs.mjs",
-      "require": "./dist/utils/cs.js",
-      "types": "./dist/utils/cs.d.ts"
+    "./cn": {
+      "import": "./dist/lib/utils.mjs",
+      "require": "./dist/lib/utils.js",
+      "types": "./dist/lib/utils.d.ts"
     },
     "./*": {
       "import": "./dist/components/*/index.mjs",

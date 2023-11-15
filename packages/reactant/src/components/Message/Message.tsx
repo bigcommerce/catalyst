@@ -2,7 +2,7 @@ import { cva } from 'class-variance-authority';
 import { AlertCircle, Check } from 'lucide-react';
 import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
-import { cs } from '../../utils/cs';
+import { cn } from '@/lib/utils';
 
 const messageVariants = cva('flex w-full gap-x-2.5 justify-start p-3 text-base', {
   variants: {
@@ -19,7 +19,7 @@ interface MessageProps extends ComponentPropsWithRef<'div'> {
 
 export const Message = forwardRef<ElementRef<'div'>, MessageProps>(
   ({ className, children, variant, ...props }, ref) => (
-    <div className={cs(messageVariants({ variant, className }))} ref={ref} {...props}>
+    <div className={cn(messageVariants({ variant, className }))} ref={ref} {...props}>
       {variant === 'error' && <AlertCircle className="flex-none" />}
       {variant === 'success' && <Check className="flex-none" />}
       {children}

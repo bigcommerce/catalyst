@@ -14,7 +14,7 @@ import {
   useState,
 } from 'react';
 
-import { cs } from '../../utils/cs';
+import { cn } from '@/lib/utils';
 
 const ExpandedContext = createContext<{
   isExpanded: boolean;
@@ -42,7 +42,7 @@ const NavigationMenu = forwardRef<
   return (
     <ExpandedContext.Provider value={{ isExpanded, setIsExpanded: toggleExpanded }}>
       <NavigationMenuPrimitive.Root
-        className={cs(isExpanded && 'h-screen overflow-y-auto')}
+        className={cn(isExpanded && 'h-screen overflow-y-auto')}
         onValueChange={(newValue) => setValue(newValue)}
         ref={ref}
         value={value}
@@ -50,7 +50,7 @@ const NavigationMenu = forwardRef<
         <FocusTrap active={isExpanded}>
           <div className="relative">
             <div
-              className={cs(
+              className={cn(
                 'group flex min-h-[92px] items-center justify-between gap-6 bg-white px-6 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0',
                 className,
               )}
@@ -60,7 +60,7 @@ const NavigationMenu = forwardRef<
             </div>
             {!isExpanded && (
               <NavigationMenuPrimitive.Viewport
-                className={cs(
+                className={cn(
                   'absolute start-0 top-full z-50 w-full bg-white pb-12 pt-6 shadow-xl duration-200 animate-in slide-in-from-top-5',
                 )}
               />
@@ -79,7 +79,7 @@ const NavigationMenuList = forwardRef<
   ComponentPropsWithRef<typeof NavigationMenuPrimitive.List>
 >(({ children, className, ...props }, ref) => (
   <NavigationMenuPrimitive.List
-    className={cs('flex items-center gap-2 lg:gap-4', className)}
+    className={cn('flex items-center gap-2 lg:gap-4', className)}
     ref={ref}
     {...props}
   >
@@ -96,7 +96,7 @@ const NavigationMenuItem = forwardRef<
   const id = useId();
 
   return (
-    <NavigationMenuPrimitive.Item className={cs(className)} ref={ref} value={id} {...props}>
+    <NavigationMenuPrimitive.Item className={cn(className)} ref={ref} value={id} {...props}>
       {children}
     </NavigationMenuPrimitive.Item>
   );
@@ -109,7 +109,7 @@ const NavigationMenuTrigger = forwardRef<
   React.ComponentPropsWithRef<typeof NavigationMenuPrimitive.Trigger>
 >(({ className, children, ...props }, ref) => (
   <NavigationMenuPrimitive.Trigger
-    className={cs(
+    className={cn(
       'group/button focus:ring-primary-blue/20 flex w-full items-center justify-between gap-1 p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4',
       className,
     )}
@@ -130,7 +130,7 @@ const NavigationMenuContent = forwardRef<
 
   return (
     <NavigationMenuPrimitive.Content
-      className={cs(
+      className={cn(
         '2xl:container  2xl:mx-auto',
         !isExpanded &&
           'data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52',
@@ -155,7 +155,7 @@ const NavigationMenuLink = forwardRef<
 
   return (
     <NavigationMenuPrimitive.Link
-      className={cs(
+      className={cn(
         'focus:ring-primary-blue/20 flex justify-between p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4',
         className,
       )}
@@ -179,7 +179,7 @@ const NavigationMenuToggle = forwardRef<ElementRef<'button'>, ComponentPropsWith
         aria-controls="nav-menu"
         aria-expanded={isExpanded}
         aria-label="Toggle navigation"
-        className={cs(
+        className={cn(
           'focus:ring-primary-blue/20 group p-3 hover:text-blue-primary focus:outline-none focus:ring-4',
           className,
         )}
@@ -229,7 +229,7 @@ const NavigationMenuCollapsed = forwardRef<ElementRef<'div'>, ComponentPropsWith
 
     return (
       <div
-        className={cs(
+        className={cn(
           'in-collapsed-nav group absolute start-0 top-full z-50 w-full bg-white px-6 pb-6 duration-200 animate-in slide-in-from-top-5 2xl:container sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0',
           className,
           !isExpanded && 'hidden',

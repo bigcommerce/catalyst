@@ -8,7 +8,7 @@ import {
   ReactElement,
 } from 'react';
 
-import { cs } from '../../utils/cs';
+import { cn } from '@/lib/utils';
 
 import { StarEmptyIcon } from './StarIcons/StarEmpty';
 import { StarFilledIcon } from './StarIcons/StarFilled';
@@ -50,7 +50,7 @@ export const Rating = forwardRef<ElementRef<'span'>, RatingProps>(
     }
 
     return (
-      <span className={cs('inline-flex fill-current', className)} ref={ref} role="img" {...props}>
+      <span className={cn('inline-flex fill-current', className)} ref={ref} role="img" {...props}>
         {stars}
       </span>
     );

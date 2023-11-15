@@ -1,7 +1,7 @@
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
-import { cs } from '../../utils/cs';
+import { cn } from '@/lib/utils';
 
 type RadioIndicatorType = typeof RadioGroupPrimitive.Indicator;
 
@@ -11,7 +11,7 @@ const RadioIndicator = forwardRef<
 >(({ children, className, ...props }, ref) => {
   return (
     <RadioGroupPrimitive.Indicator
-      className={cs('bg-plue-primary h-2 w-2 rounded-full bg-white', className)}
+      className={cn('bg-plue-primary h-2 w-2 rounded-full bg-white', className)}
       {...props}
       ref={ref}
     >
@@ -28,7 +28,7 @@ const RadioItem = forwardRef<ElementRef<RadioItemType>, ComponentPropsWithRef<Ra
   ({ children, className, ...props }, ref) => {
     return (
       <RadioGroupPrimitive.Item
-        className={cs(
+        className={cn(
           'flex h-6 w-6 items-center justify-center rounded-full border-2 border-gray-200',
           'hover:border-blue-secondary',
           'focus:ring-primary-blue/20 focus:border-blue-primary focus:outline-none focus:ring-4',
@@ -55,7 +55,7 @@ type RadioGroupType = typeof RadioGroupPrimitive.Root;
 const RadioGroup = forwardRef<ElementRef<RadioGroupType>, ComponentPropsWithRef<RadioGroupType>>(
   ({ children, className, ...props }, ref) => {
     return (
-      <RadioGroupPrimitive.Root className={cs(className)} ref={ref} {...props}>
+      <RadioGroupPrimitive.Root className={cn(className)} ref={ref} {...props}>
         {children}
       </RadioGroupPrimitive.Root>
     );

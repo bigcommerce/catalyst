@@ -1,13 +1,13 @@
 import { Slot } from '@radix-ui/react-slot';
 import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
-import { cs } from '../../utils/cs';
+import { cn } from '@/lib/utils';
 
 const Breadcrumbs = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef<'ul'>>(
   ({ children, className, ...props }, ref) => {
     return (
       <nav aria-label="Breadcrumb" ref={ref}>
-        <ul className={cs('flex flex-wrap items-center', className)} {...props}>
+        <ul className={cn('flex flex-wrap items-center', className)} {...props}>
           {children}
         </ul>
       </nav>
@@ -27,10 +27,10 @@ const BreadcrumbItem = forwardRef<ElementRef<'li'>, BreadcrumbItemProps>(
     const Comp = asChild ? Slot : 'a';
 
     return (
-      <li className={cs('flex items-center text-sm text-black')} ref={ref}>
+      <li className={cn('flex items-center text-sm text-black')} ref={ref}>
         <Comp
           aria-current={isActive ? `page` : undefined}
-          className={cs(
+          className={cn(
             'focus:ring-primary-blue/20 p-1 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4',
             isActive && 'cursor-default font-extrabold hover:text-black',
             className,
@@ -49,7 +49,7 @@ BreadcrumbItem.displayName = 'BreadcrumbItem';
 const BreadcrumbDivider = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'span'>>(
   ({ children, className, ...props }, ref) => {
     return (
-      <span className={cs('mx-1', className)} ref={ref} {...props}>
+      <span className={cn('mx-1', className)} ref={ref} {...props}>
         {children}
       </span>
     );

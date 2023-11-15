@@ -2,7 +2,7 @@ import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { Check } from 'lucide-react';
 import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
-import { cs } from '../../utils/cs';
+import { cn } from '@/lib/utils';
 
 type CheckboxType = typeof CheckboxPrimitive.Root;
 
@@ -10,7 +10,7 @@ export const Checkbox = forwardRef<ElementRef<CheckboxType>, ComponentPropsWithR
   ({ children, className, ...props }, ref) => {
     return (
       <CheckboxPrimitive.Root
-        className={cs(
+        className={cn(
           'block h-6 w-6 border-2 border-gray-200',
           'hover:border-blue-secondary',
           'focus:ring-primary-blue/20 focus:border-blue-primary focus:outline-none focus:ring-4',

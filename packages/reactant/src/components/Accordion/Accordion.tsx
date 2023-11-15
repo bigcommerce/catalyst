@@ -2,7 +2,7 @@ import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDown } from 'lucide-react';
 import * as React from 'react';
 
-import { cs } from '../../utils/cs';
+import { cn } from '@/lib/utils';
 
 const Accordion = AccordionPrimitive.Root;
 
@@ -10,7 +10,7 @@ const AccordionItem = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item>
 >(({ className, ...props }, ref) => (
-  <AccordionPrimitive.Item className={cs('', className)} ref={ref} {...props} />
+  <AccordionPrimitive.Item className={cn('', className)} ref={ref} {...props} />
 ));
 
 AccordionItem.displayName = 'AccordionItem';
@@ -21,7 +21,7 @@ const AccordionTrigger = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Header className="flex">
     <AccordionPrimitive.Trigger
-      className={cs(
+      className={cn(
         'flex flex-1 items-center justify-between py-[9.5px] text-h6 outline-none transition-all hover:text-blue-secondary focus:text-blue-secondary [&[data-state=open]>svg]:rotate-180',
         className,
       )}
@@ -42,7 +42,7 @@ const AccordionContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Content>
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Content
-    className={cs(
+    className={cn(
       'data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down mb-4 overflow-hidden transition-all',
       className,
     )}
