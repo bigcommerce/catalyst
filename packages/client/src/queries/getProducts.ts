@@ -54,7 +54,8 @@ export const getProducts = async <T>(
             path: true,
             description: true,
             reviewSummary: {
-              summationOfRatings: true,
+              averageRating: true,
+              numberOfReviews: true,
             },
             prices: {
               basePrice: {

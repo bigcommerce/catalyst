@@ -21,7 +21,7 @@ const roundHalf = (num: number) => {
 
 type StarIconType = FC<ComponentPropsWithoutRef<'svg'>> | LucideIcon;
 
-interface RatingProps extends ComponentPropsWithRef<'span'> {
+interface RatingProps extends ComponentPropsWithRef<'img'> {
   starEmptyIcon?: StarIconType;
   starFilledIcon?: StarIconType;
   starHalfIcon?: StarIconType;
@@ -30,7 +30,7 @@ interface RatingProps extends ComponentPropsWithRef<'span'> {
   value: number;
 }
 
-export const Rating = forwardRef<ElementRef<'span'>, RatingProps>(
+export const Rating = forwardRef<ElementRef<'img'>, RatingProps>(
   ({ className, starFilledIcon, starHalfIcon, starEmptyIcon, size = 24, value, ...props }, ref) => {
     const stars: ReactElement[] = [];
     const rating = roundHalf(value);

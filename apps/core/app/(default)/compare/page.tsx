@@ -1,10 +1,12 @@
 import { Button } from '@bigcommerce/reactant/Button';
+import { Rating } from '@bigcommerce/reactant/Rating';
 import Image from 'next/image';
 import Link from 'next/link';
 import * as z from 'zod';
 
 import client from '~/client';
 import { SearchForm } from '~/components/SearchForm';
+import { cn } from '~/lib/utils';
 
 import { AddToCartForm } from './AddToCartForm';
 
@@ -193,14 +195,14 @@ export default async function Compare({
             <tr>
               {products.map((product) => (
                 <td
-                  className="border-b px-4 pb-12 pt-20"
+                  className="border-b px-4 pb-8 pt-20"
                   dangerouslySetInnerHTML={{ __html: product.description }}
                   headers="product-description"
                   key={product.entityId}
                 />
               ))}
             </tr>
-            <tr className="absolute mt-8">
+            <tr className="absolute mt-6">
               <th className="sticky left-0 top-0 m-0 pl-4 text-left" id="product-rating">
                 Rating
               </th>
@@ -208,15 +210,29 @@ export default async function Compare({
             <tr>
               {products.map((product) => (
                 <td
-                  className="border-b px-4 pb-12 pt-24"
+                  className="border-b px-4 pb-8 pt-20"
                   headers="product-rating"
                   key={product.entityId}
                 >
-                  {product.reviewSummary.summationOfRatings}
+                  <p
+                    className={cn(
+                      'flex flex-nowrap text-blue-primary',
+                      product.reviewSummary.numberOfReviews === 0 && 'text-gray-400',
+                    )}
+                  >
+                    <Rating
+                      alt={
+                        product.reviewSummary.numberOfReviews === 0
+                          ? `${product.name} has no rating specified`
+                          : `${product.name} rating is ${product.reviewSummary.averageRating} out of 5 stars`
+                      }
+                      value={product.reviewSummary.averageRating}
+                    />
+                  </p>
                 </td>
               ))}
             </tr>
-            <tr className="absolute mt-8">
+            <tr className="absolute mt-6">
               <th className="sticky left-0 top-0 m-0 pl-4 text-left" id="product-availability">
                 Availability
               </th>
@@ -224,7 +240,7 @@ export default async function Compare({
             <tr>
               {products.map((product) => (
                 <td
-                  className="border-b px-4 pb-12 pt-24"
+                  className="border-b px-4 pb-8 pt-20"
                   headers="product-availability"
                   key={product.entityId}
                 >
