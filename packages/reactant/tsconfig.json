@@ -27,7 +27,8 @@
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@/registry/*": ["./components/*"]
     }
   },
   "include": ["."],
