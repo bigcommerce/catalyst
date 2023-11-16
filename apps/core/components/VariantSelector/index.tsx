@@ -5,6 +5,7 @@ import { Counter } from '@bigcommerce/reactant/Counter';
 import { Label } from '@bigcommerce/reactant/Label';
 import { RadioGroup, RadioItem } from '@bigcommerce/reactant/RadioGroup';
 import { RectangleList, RectangleListItem } from '@bigcommerce/reactant/RectangleList';
+import { Select, SelectContent, SelectItem } from '@bigcommerce/reactant/Select';
 import { Swatch, SwatchItem } from '@bigcommerce/reactant/Swatch';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Fragment } from 'react';
@@ -139,6 +140,35 @@ export const VariantSelector = ({ product }: { product: NonNullable<Product> }) 
                   </div>
                 ))}
               </RadioGroup>
+            </Fragment>
+          );
+
+        case 'DropdownList':
+          return (
+            <Fragment key={option.entityId}>
+              <Label className="my-2 inline-block font-semibold" id={`label-${option.entityId}`}>
+                {option.displayName}
+              </Label>
+              <Select
+                aria-labelledby={`label-${option.entityId}`}
+                defaultValue={previouslySelected || selectedValue || defaultValue}
+                name={`attribute[${option.entityId}]`}
+                onValueChange={(value) =>
+                  handleOnValueChange({
+                    optionId: option.entityId,
+                    valueId: Number(value),
+                  })
+                }
+                required={option.isRequired}
+              >
+                <SelectContent>
+                  {option.values.map((value) => (
+                    <SelectItem key={value.entityId} value={`${value.entityId}`}>
+                      {value.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </Fragment>
           );
 
