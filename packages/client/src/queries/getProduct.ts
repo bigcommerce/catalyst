@@ -89,7 +89,7 @@ async function internalGetProduct<T>(
           },
         },
         productOptions: {
-          __args: { first: 3 },
+          __args: { first: 10 },
           edges: {
             node: {
               entityId: true,
@@ -121,6 +121,13 @@ async function internalGetProduct<T>(
                 label: true,
                 checkedOptionValueEntityId: true,
                 uncheckedOptionValueEntityId: true,
+              },
+              on_NumberFieldOption: {
+                defaultValue: true,
+                highest: true,
+                isIntegerOnly: true,
+                limitNumberBy: true,
+                lowest: true,
               },
             },
           },

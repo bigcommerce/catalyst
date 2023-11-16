@@ -17,21 +17,28 @@ export async function handleAddToCart(data: FormData) {
   const selectedOptions =
     product?.productOptions?.reduce<CartSelectedOptionsInput>((accum, option) => {
       const optionValueEntityId = Number(data.get(`attribute[${option.entityId}]`));
-      let optionInput = {
-        optionEntityId: option.entityId,
-        optionValueEntityId,
-      };
+      let multipleChoicesOptionInput;
+      let checkboxOptionInput;
+      let numberFieldOptionInput;
 
       switch (option.__typename) {
         case 'MultipleChoiceOption':
+          multipleChoicesOptionInput = {
+            optionEntityId: option.entityId,
+            optionValueEntityId,
+          };
+
           if (accum.multipleChoices) {
-            return { ...accum, multipleChoices: [...accum.multipleChoices, optionInput] };
+            return {
+              ...accum,
+              multipleChoices: [...accum.multipleChoices, multipleChoicesOptionInput],
+            };
           }
 
-          return { ...accum, multipleChoices: [optionInput] };
+          return { ...accum, multipleChoices: [multipleChoicesOptionInput] };
 
         case 'CheckboxOption':
-          optionInput = {
+          checkboxOptionInput = {
             optionEntityId: option.entityId,
             optionValueEntityId:
               optionValueEntityId !== 0
@@ -40,10 +47,22 @@ export async function handleAddToCart(data: FormData) {
           };
 
           if (accum.checkboxes) {
-            return { ...accum, checkboxes: [...accum.checkboxes, optionInput] };
+            return { ...accum, checkboxes: [...accum.checkboxes, checkboxOptionInput] };
           }
 
-          return { ...accum, checkboxes: [optionInput] };
+          return { ...accum, checkboxes: [checkboxOptionInput] };
+
+        case 'NumberFieldOption':
+          numberFieldOptionInput = {
+            optionEntityId: option.entityId,
+            number: optionValueEntityId,
+          };
+
+          if (accum.numberFields) {
+            return { ...accum, numberFields: [...accum.numberFields, numberFieldOptionInput] };
+          }
+
+          return { ...accum, numberFields: [numberFieldOptionInput] };
       }
 
       return accum;

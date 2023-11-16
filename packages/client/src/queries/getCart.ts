@@ -47,6 +47,9 @@ export async function getCart<T>(
               on_CartSelectedCheckboxOption: {
                 value: true,
               },
+              on_CartSelectedNumberFieldOption: {
+                number: true,
+              },
             },
           },
         },
