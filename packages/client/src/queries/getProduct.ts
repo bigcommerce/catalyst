@@ -129,6 +129,12 @@ async function internalGetProduct<T>(
                 limitNumberBy: true,
                 lowest: true,
               },
+              on_MultiLineTextFieldOption: {
+                // defaultValue: true, TODO: need aliases to make this work
+                maxLength: true,
+                minLength: true,
+                // maxLines: true, TODO: use when we add custom validation
+              },
             },
           },
         },

@@ -16,16 +16,18 @@ export async function handleAddToCart(data: FormData) {
 
   const selectedOptions =
     product?.productOptions?.reduce<CartSelectedOptionsInput>((accum, option) => {
-      const optionValueEntityId = Number(data.get(`attribute[${option.entityId}]`));
+      const optionValueEntityId = data.get(`attribute[${option.entityId}]`);
+
       let multipleChoicesOptionInput;
       let checkboxOptionInput;
       let numberFieldOptionInput;
+      let multiLineTextFieldOptionInput;
 
       switch (option.__typename) {
         case 'MultipleChoiceOption':
           multipleChoicesOptionInput = {
             optionEntityId: option.entityId,
-            optionValueEntityId,
+            optionValueEntityId: Number(optionValueEntityId),
           };
 
           if (accum.multipleChoices) {
@@ -41,7 +43,7 @@ export async function handleAddToCart(data: FormData) {
           checkboxOptionInput = {
             optionEntityId: option.entityId,
             optionValueEntityId:
-              optionValueEntityId !== 0
+              Number(optionValueEntityId) !== 0
                 ? option.checkedOptionValueEntityId
                 : option.uncheckedOptionValueEntityId,
           };
@@ -55,7 +57,7 @@ export async function handleAddToCart(data: FormData) {
         case 'NumberFieldOption':
           numberFieldOptionInput = {
             optionEntityId: option.entityId,
-            number: optionValueEntityId,
+            number: Number(optionValueEntityId),
           };
 
           if (accum.numberFields) {
@@ -63,6 +65,21 @@ export async function handleAddToCart(data: FormData) {
           }
 
           return { ...accum, numberFields: [numberFieldOptionInput] };
+
+        case 'MultiLineTextFieldOption':
+          multiLineTextFieldOptionInput = {
+            optionEntityId: option.entityId,
+            text: String(optionValueEntityId),
+          };
+
+          if (accum.multiLineTextFields) {
+            return {
+              ...accum,
+              multiLineTextFields: [...accum.multiLineTextFields, multiLineTextFieldOptionInput],
+            };
+          }
+
+          return { ...accum, multiLineTextFields: [multiLineTextFieldOptionInput] };
       }
 
       return accum;
