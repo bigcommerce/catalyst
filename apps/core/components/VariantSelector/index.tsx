@@ -3,6 +3,7 @@
 import { Checkbox } from '@bigcommerce/reactant/Checkbox';
 import { Counter } from '@bigcommerce/reactant/Counter';
 import { Label } from '@bigcommerce/reactant/Label';
+import { RadioGroup, RadioItem } from '@bigcommerce/reactant/RadioGroup';
 import { RectangleList, RectangleListItem } from '@bigcommerce/reactant/RectangleList';
 import { Swatch, SwatchItem } from '@bigcommerce/reactant/Swatch';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -32,7 +33,12 @@ export const VariantSelector = ({ product }: { product: NonNullable<Product> }) 
   };
 
   return product.productOptions?.map((option) => {
+    const previouslySelected = searchParams.get(String(option.entityId)) ?? undefined;
+
     if (option.__typename === 'MultipleChoiceOption') {
+      const selectedValue = option.values.find((value) => value.isSelected)?.entityId.toString();
+      const defaultValue = option.values.find((value) => value.isDefault)?.entityId.toString();
+
       switch (option.displayStyle) {
         case 'Swatch':
           return (
@@ -42,7 +48,7 @@ export const VariantSelector = ({ product }: { product: NonNullable<Product> }) 
               </Label>
               <Swatch
                 aria-labelledby={`label-${option.entityId}`}
-                defaultValue={searchParams.get(String(option.entityId)) ?? undefined}
+                defaultValue={previouslySelected || selectedValue || defaultValue}
                 name={`attribute[${option.entityId}]`}
                 onValueChange={(value) =>
                   handleOnValueChange({
@@ -78,7 +84,7 @@ export const VariantSelector = ({ product }: { product: NonNullable<Product> }) 
               </Label>
               <RectangleList
                 aria-labelledby={`label-${option.entityId}`}
-                defaultValue={searchParams.get(String(option.entityId)) ?? undefined}
+                defaultValue={previouslySelected || selectedValue || defaultValue}
                 name={`attribute[${option.entityId}]`}
                 onValueChange={(value) =>
                   handleOnValueChange({
@@ -100,6 +106,39 @@ export const VariantSelector = ({ product }: { product: NonNullable<Product> }) 
                   );
                 })}
               </RectangleList>
+            </Fragment>
+          );
+
+        case 'RadioButtons':
+          return (
+            <Fragment key={option.entityId}>
+              <Label className="my-2 inline-block font-semibold" id={`label-${option.entityId}`}>
+                {option.displayName}
+              </Label>
+              <RadioGroup
+                aria-labelledby={`label-${option.entityId}`}
+                defaultValue={previouslySelected || selectedValue || defaultValue}
+                name={`attribute[${option.entityId}]`}
+                onValueChange={(value) =>
+                  handleOnValueChange({
+                    optionId: option.entityId,
+                    valueId: Number(value),
+                  })
+                }
+                required={option.isRequired}
+              >
+                {option.values.map((value) => (
+                  <div className="mb-2 flex" key={value.entityId}>
+                    <RadioItem id={`${value.entityId}`} value={`${value.entityId}`} />
+                    <Label
+                      className="cursor-pointer ps-4 font-normal"
+                      htmlFor={`${value.entityId}`}
+                    >
+                      {value.label}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
             </Fragment>
           );
 
