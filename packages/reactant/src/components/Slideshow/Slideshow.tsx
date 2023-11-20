@@ -41,17 +41,30 @@ const Slideshow = forwardRef<ElementRef<'section'>, SlideshowProps>(
 
     const [activeSlide, setActiveSlide] = useState(0);
 
+    const [visibilityState, setVisibilityState] = useState<
+      DocumentVisibilityState | Omit<string, 'hidden' | 'visible'>
+    >('');
+
     useEffect(() => {
       const autoplay = setInterval(() => {
         if (isPaused) return;
         if (isHoverPaused) return;
         if (!emblaApi) return;
+        if (visibilityState === 'hidden') return;
 
         emblaApi.scrollNext();
       }, interval);
 
       return () => clearInterval(autoplay);
-    }, [emblaApi, isHoverPaused, interval, isPaused]);
+    }, [emblaApi, isHoverPaused, interval, isPaused, visibilityState]);
+
+    useEffect(() => {
+      window.addEventListener('visibilitychange', () => {
+        setVisibilityState(document.visibilityState);
+      });
+
+      return () => window.removeEventListener('visibilitychange', () => null);
+    }, [visibilityState]);
 
     return (
       <SlideshowContext.Provider value={[emblaRef, emblaApi]}>
