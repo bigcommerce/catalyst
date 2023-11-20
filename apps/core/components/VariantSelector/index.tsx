@@ -1,6 +1,7 @@
 'use client';
 
 import { Checkbox } from '@bigcommerce/reactant/Checkbox';
+import { Counter } from '@bigcommerce/reactant/Counter';
 import { Label } from '@bigcommerce/reactant/Label';
 import { RectangleList, RectangleListItem } from '@bigcommerce/reactant/RectangleList';
 import { Swatch, SwatchItem } from '@bigcommerce/reactant/Swatch';
@@ -132,6 +133,27 @@ export const VariantSelector = ({ product }: { product: NonNullable<Product> }) 
             </Label>
           </div>
         </fieldset>
+      );
+    }
+
+    if (option.__typename === 'NumberFieldOption') {
+      return (
+        <Fragment key={option.entityId}>
+          <Label className="my-2 inline-block" htmlFor={`${option.entityId}`}>
+            {option.displayName}
+          </Label>
+          <div className="sm:w-[120px]">
+            <Counter
+              defaultValue={Number(option.defaultValue) || 0}
+              id={`${option.entityId}`}
+              isInteger={option.isIntegerOnly}
+              max={Number(option.highest)}
+              min={Number(option.lowest)}
+              name={`attribute[${option.entityId}]`}
+              required={option.isRequired}
+            />
+          </div>
+        </Fragment>
       );
     }
 

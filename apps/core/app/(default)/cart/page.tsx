@@ -100,6 +100,14 @@ export default async function CartPage() {
                                 <span className="font-semibold">{selectedOption.value}</span>
                               </div>
                             );
+
+                          case 'CartSelectedNumberFieldOption':
+                            return (
+                              <div key={selectedOption.entityId}>
+                                <span>{selectedOption.name}:</span>{' '}
+                                <span className="font-semibold">{selectedOption.number}</span>
+                              </div>
+                            );
                         }
 
                         return null;
