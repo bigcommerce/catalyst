@@ -108,6 +108,14 @@ export default async function CartPage() {
                                 <span className="font-semibold">{selectedOption.number}</span>
                               </div>
                             );
+
+                          case 'CartSelectedMultiLineTextFieldOption':
+                            return (
+                              <div key={selectedOption.entityId}>
+                                <span>{selectedOption.name}:</span>{' '}
+                                <span className="font-semibold">{selectedOption.text}</span>
+                              </div>
+                            );
                         }
 
                         return null;

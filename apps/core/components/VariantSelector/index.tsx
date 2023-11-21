@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import client from '~/client';
 
 import { CheckboxField } from './CheckboxField';
+import { MultiLineTextField } from './MultiLineTextField';
 import { MultipleChoiceField } from './MultipleChoiceField';
 import { NumberField } from './NumberField';
 
@@ -47,6 +48,10 @@ export const VariantSelector = ({ product }: { product: NonNullable<Product> }) 
 
     if (option.__typename === 'NumberFieldOption') {
       return <NumberField key={option.entityId} option={option} />;
+    }
+
+    if (option.__typename === 'MultiLineTextFieldOption') {
+      return <MultiLineTextField key={option.entityId} option={option} />;
     }
 
     return null;
