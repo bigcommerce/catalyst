@@ -87,7 +87,7 @@ const ProductDetails = ({ product }: { product: NonNullable<Product> }) => {
 
         <VariantSelector product={product} />
 
-        <div className="sm:w-[120px]">
+        <div className="sm:w-32">
           <Label className="my-2 inline-block font-semibold" htmlFor="quantity">
             Quantity
           </Label>
