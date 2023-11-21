@@ -83,8 +83,9 @@ export function Navigation({
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const navElement = useRef<HTMLDivElement | null>(null);
   const [height, setHeight] = useState(0);
+  const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!navElement.current) {
       return;
     }

@@ -18,17 +18,13 @@
     "@radix-ui/react-navigation-menu": "^1.1.4",
     "@radix-ui/react-portal": "^1.0.4",
     "clsx": "^2.0.0",
-    "deepmerge": "^4.3.1",
-    "iron-session": "^6.3.1",
     "keen-slider": "^6.8.6",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.292.0",
     "next": "^14.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "server-only": "^0.0.1",
-    "sharp": "^0.32.6",
-    "tailwind-merge": "^2.0.0"
+    "sharp": "^0.32.6"
   },
   "devDependencies": {
     "@bigcommerce/catalyst-configs": "workspace:^",
@@ -44,7 +40,6 @@
     "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.6",
     "tailwindcss": "^3.3.5",
-    "type-fest": "^4.6.0",
     "typescript": "^5.2.2"
   }
 }
