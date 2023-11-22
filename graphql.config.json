@@ -1,3 +1,6 @@
 {
-  "schema": "apps/core/schema.graphql"
+  "schema": "apps/core/schema.graphql",
+  "documents": [
+    "apps/core/client/queries/**/*.ts"   
+  ]
 }

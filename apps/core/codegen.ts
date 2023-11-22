@@ -53,6 +53,9 @@ const config: CodegenConfig = {
   generates: {
     './client/generated/': {
       preset: 'client',
+      presetConfig: {
+        fragmentMasking: false,
+      },
       config: {
         documentMode: 'string',
         scalars: {
