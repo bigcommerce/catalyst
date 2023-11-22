@@ -1,6 +1,13 @@
-import { CheckboxOption } from '@bigcommerce/catalyst-client';
 import { Checkbox } from '@bigcommerce/reactant/Checkbox';
 import { Label } from '@bigcommerce/reactant/Label';
+
+import { getProduct } from '~/client/queries/getProduct';
+import { ExistingResultType, Unpacked } from '~/client/util';
+
+type CheckboxOption = Extract<
+  Unpacked<ExistingResultType<typeof getProduct>['productOptions']>,
+  { __typename: 'CheckboxOption' }
+>;
 
 export const CheckboxField = ({ option }: { option: CheckboxOption }) => (
   <fieldset>

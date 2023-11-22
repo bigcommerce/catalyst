@@ -2,8 +2,9 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client-new';
 
 import { newClient } from '..';
 import { graphql } from '../generated';
+import { ExistingResultType } from '../util';
 
-type Product = NonNullable<Awaited<ReturnType<typeof getInternalProduct>>>;
+type Product = ExistingResultType<typeof getInternalProduct>;
 
 export interface OptionValueId {
   optionEntityId: number;
@@ -15,21 +16,118 @@ export interface GetProductOptions {
   optionValueIds?: OptionValueId[];
 }
 
+export const PRICES_FRAGMENT = /* GraphQL */ `
+  fragment Prices on Product {
+    prices {
+      basePrice {
+        currencyCode
+        value
+      }
+      price {
+        currencyCode
+        value
+      }
+      retailPrice {
+        currencyCode
+        value
+      }
+      salePrice {
+        currencyCode
+        value
+      }
+      priceRange {
+        min {
+          value
+          currencyCode
+        }
+        max {
+          value
+          currencyCode
+        }
+      }
+    }
+  }
+`;
+
+export const BASIC_PRODUCT_FRAGMENT = /* GraphQL */ `
+  fragment BasicProduct on Product {
+    id
+    entityId
+    name
+    path
+    brand {
+      name
+      path
+    }
+    ...Prices
+  }
+`;
+
+export const PRODUCT_OPTIONS_FRAGMENT = /* GraphQL */ `
+  fragment ProductOptions on Product {
+    productOptions(first: 10) {
+      edges {
+        node {
+          entityId
+          displayName
+          isRequired
+          isVariantOption
+          ... on MultipleChoiceOption {
+            __typename
+            displayStyle
+            values(first: 10) {
+              edges {
+                node {
+                  entityId
+                  label
+                  isDefault
+                  isSelected
+                  ... on SwatchOptionValue {
+                    __typename
+                    hexColors
+                    imageUrl(width: 36)
+                  }
+                }
+              }
+            }
+          }
+          ... on CheckboxOption {
+            __typename
+            checkedByDefault
+            label
+            checkedOptionValueEntityId
+            uncheckedOptionValueEntityId
+          }
+          ... on NumberFieldOption {
+            __typename
+            defaultNumber: defaultValue
+            highest
+            isIntegerOnly
+            limitNumberBy
+            lowest
+          }
+          ... on MultiLineTextFieldOption {
+            __typename
+            defaultText: defaultValue
+            maxLength
+            minLength
+            maxLines
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const GET_PRODUCT_QUERY = /* GraphQL */ `
   query getProduct($productId: Int!, $optionValueIds: [OptionValueId!]) {
     site {
       product(entityId: $productId, optionValueIds: $optionValueIds) {
-        id
-        entityId
+        ...BasicProduct
         sku
         warranty
-        name
         description
         plainTextDescription(characterLimit: 2000)
-        availabilityV2 {
-          status
-          description
-        }
         defaultImage {
           altText
           url(width: 600)
@@ -43,44 +141,14 @@ export const GET_PRODUCT_QUERY = /* GraphQL */ `
             }
           }
         }
-        prices {
-          basePrice {
-            currencyCode
-            value
-          }
-          price {
-            currencyCode
-            value
-          }
-          retailPrice {
-            currencyCode
-            value
-          }
-          salePrice {
-            currencyCode
-            value
-          }
-          priceRange {
-            min {
-              value
-              currencyCode
-            }
-            max {
-              value
-              currencyCode
-            }
-          }
-        }
-        brand {
-          name
-          path
+        availabilityV2 {
+          status
+          description
         }
         upc
         path
         mpn
         gtin
-        minPurchaseQuantity
-        maxPurchaseQuantity
         condition
         reviewSummary {
           summationOfRatings
@@ -119,55 +187,9 @@ export const GET_PRODUCT_QUERY = /* GraphQL */ `
             }
           }
         }
-        productOptions(first: 10) {
-          edges {
-            node {
-              entityId
-              displayName
-              isRequired
-              ... on MultipleChoiceOption {
-                __typename
-                displayStyle
-                values(first: 10) {
-                  edges {
-                    node {
-                      entityId
-                      label
-                      isDefault
-                      __typename
-                      ... on SwatchOptionValue {
-                        hexColors
-                        imageUrl(width: 36)
-                      }
-                    }
-                  }
-                }
-              }
-              ... on CheckboxOption {
-                __typename
-                checkedByDefault
-                label
-                checkedOptionValueEntityId
-                uncheckedOptionValueEntityId
-              }
-              ... on NumberFieldOption {
-                __typename
-                defaultNumber: defaultValue
-                highest
-                isIntegerOnly
-                limitNumberBy
-                lowest
-              }
-              ... on MultiLineTextFieldOption {
-                __typename
-                defaultText: defaultValue
-                maxLength
-                minLength
-                maxLines
-              }
-            }
-          }
-        }
+        minPurchaseQuantity
+        maxPurchaseQuantity
+        ...ProductOptions
       }
     }
   }

@@ -12,9 +12,10 @@ import {
 import Image from 'next/image';
 
 import { getProduct } from '~/client/queries/getProduct';
+import { ExistingResultType } from '~/client/util';
 
 interface Props {
-  images: NonNullable<Awaited<ReturnType<typeof getProduct>>>['images'];
+  images: ExistingResultType<typeof getProduct>['images'];
 }
 
 export const Gallery = ({ images }: Props) => {
