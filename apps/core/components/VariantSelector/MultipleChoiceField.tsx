@@ -1,4 +1,3 @@
-import { CatalogProductOptionValue, MultipleChoiceOption } from '@bigcommerce/catalyst-client';
 import { Label } from '@bigcommerce/reactant/Label';
 import { RadioGroup, RadioItem } from '@bigcommerce/reactant/RadioGroup';
 import { RectangleList, RectangleListItem } from '@bigcommerce/reactant/RectangleList';
@@ -6,8 +5,14 @@ import { Select, SelectContent, SelectItem } from '@bigcommerce/reactant/Select'
 import { Swatch, SwatchItem } from '@bigcommerce/reactant/Swatch';
 import { Fragment } from 'react';
 
+import {
+  CatalogProductOptionValue,
+  MultipleChoiceOption,
+  SwatchOptionValue,
+} from '~/client/generated/graphql';
+
 interface MultipleChoice extends Omit<MultipleChoiceOption, 'values'> {
-  values: CatalogProductOptionValue[];
+  values: CatalogProductOptionValue[] | SwatchOptionValue[];
 }
 
 export const MultipleChoiceField = ({
@@ -42,7 +47,7 @@ export const MultipleChoiceField = ({
             required={option.isRequired}
           >
             {option.values.map((value) => {
-              if (value.__typename === 'SwatchOptionValue') {
+              if ('__typename' in value && value.__typename === 'SwatchOptionValue') {
                 return (
                   <SwatchItem
                     key={value.entityId}
