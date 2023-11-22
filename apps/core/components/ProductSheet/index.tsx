@@ -27,11 +27,11 @@ import {
 } from 'react';
 import { useFormStatus } from 'react-dom';
 
-import client from '~/client';
+import { getProduct } from '~/client/queries/getProduct';
 import { VariantSelector } from '~/components/VariantSelector';
 import { cn } from '~/lib/utils';
 
-const ProductContext = createContext<{ product: Awaited<ReturnType<typeof client.getProduct>> }>({
+const ProductContext = createContext<{ product: Awaited<ReturnType<typeof getProduct>> }>({
   product: null,
 });
 
@@ -65,7 +65,7 @@ export const ProductSheetContent = ({
   const summaryId = useId();
   const searchParams = useSearchParams();
   const [isError, setError] = useState(false);
-  const [product, setProduct] = useState<Awaited<ReturnType<typeof client.getProduct>>>(null);
+  const [product, setProduct] = useState<Awaited<ReturnType<typeof getProduct>>>(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -80,8 +80,7 @@ export const ProductSheetContent = ({
         const response = await fetch(url);
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const productResponse: Awaited<ReturnType<typeof client.getProduct>> =
-          await response.json();
+        const productResponse: Awaited<ReturnType<typeof getProduct>> = await response.json();
 
         setProduct(productResponse);
       } catch (error) {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import client from '~/client';
+import { getProduct } from '~/client/queries/getProduct';
 
 export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
   const { id } = params;
@@ -14,7 +14,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
   );
 
   if (id) {
-    const product = await client.getProduct({ productId: Number(id), optionValueIds });
+    const product = await getProduct(Number(id), optionValueIds);
 
     return NextResponse.json(product);
   }

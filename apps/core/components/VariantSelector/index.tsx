@@ -2,14 +2,14 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import client from '~/client';
+import { getProduct } from '~/client/queries/getProduct';
 
 import { CheckboxField } from './CheckboxField';
 import { MultiLineTextField } from './MultiLineTextField';
 import { MultipleChoiceField } from './MultipleChoiceField';
 import { NumberField } from './NumberField';
 
-type Product = Awaited<ReturnType<typeof client.getProduct>>;
+type Product = Awaited<ReturnType<typeof getProduct>>;
 
 export const VariantSelector = ({ product }: { product: NonNullable<Product> }) => {
   const router = useRouter();

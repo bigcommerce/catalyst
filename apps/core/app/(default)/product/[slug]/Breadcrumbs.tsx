@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import client from '~/client';
+import { getProduct } from '~/client/queries/getProduct';
 import { cn } from '~/lib/utils';
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const BreadCrumbs = async ({ productId }: Props) => {
-  const product = await client.getProduct({ productId });
+  const product = await getProduct(productId);
   const category = product?.categories?.[0];
 
   if (!category) {

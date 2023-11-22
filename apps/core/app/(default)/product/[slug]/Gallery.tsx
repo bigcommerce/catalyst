@@ -11,10 +11,10 @@ import {
 } from '@bigcommerce/reactant/Gallery';
 import Image from 'next/image';
 
-import client from '~/client';
+import { getProduct } from '~/client/queries/getProduct';
 
 interface Props {
-  images: NonNullable<Awaited<ReturnType<typeof client.getProduct>>>['images'];
+  images: NonNullable<Awaited<ReturnType<typeof getProduct>>>['images'];
 }
 
 export const Gallery = ({ images }: Props) => {

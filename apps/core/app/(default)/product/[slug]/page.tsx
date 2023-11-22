@@ -6,7 +6,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
-import client from '~/client';
+import { getProduct } from '~/client/queries/getProduct';
 import { VariantSelector } from '~/components/VariantSelector';
 
 import { AddToCart } from './AddToCart';
@@ -18,7 +18,7 @@ import { RelatedProducts } from './RelatedProducts';
 import { Reviews } from './Reviews';
 import { ReviewSummary } from './ReviewSummary';
 
-type Product = Awaited<ReturnType<typeof client.getProduct>>;
+type Product = Awaited<ReturnType<typeof getProduct>>;
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -199,7 +199,7 @@ interface ProductPageProps {
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const productId = Number(params.slug);
-  const product = await client.getProduct({ productId });
+  const product = await getProduct(productId);
 
   if (!product) {
     return {};
@@ -238,7 +238,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
       (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
     );
 
-  const product = await client.getProduct({ productId, optionValueIds });
+  const product = await getProduct(productId, optionValueIds);
 
   if (!product) {
     return notFound();
