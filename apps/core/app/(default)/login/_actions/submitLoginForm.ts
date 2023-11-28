@@ -1,29 +1,31 @@
 'use server';
 
-import { z } from 'zod';
+import { isRedirectError } from 'next/dist/client/components/redirect';
 
-import { login } from '~/client/mutations/login';
+import { Credentials, signIn } from 'auth';
 
-const LoginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
-});
+export type State = { status: 'idle' } | { status: 'failed' };
 
-export const submitLoginForm = async (formData: FormData) => {
+export const submitLoginForm = async (_previousState: unknown, formData: FormData) => {
   try {
-    const { email, password } = LoginSchema.parse({
+    const credentials = Credentials.parse({
       email: formData.get('email'),
       password: formData.get('password'),
     });
 
-    const customer = await login(email, password);
-
-    return { status: 'success', data: customer };
-  } catch (e: unknown) {
-    if (e instanceof Error || e instanceof z.ZodError) {
-      return { status: 'failed', error: e.message };
+    await signIn('credentials', {
+      ...credentials,
+      // TODO: Redirect to previous page
+      redirectTo: '/',
+    });
+  } catch (error: unknown) {
+    // We need to throw this error to trigger the redirect as Next.js uses error boundaries to redirect.
+    if (isRedirectError(error)) {
+      throw error;
     }
 
-    return { status: 'failed' };
+    return {
+      status: 'failed',
+    };
   }
 };
