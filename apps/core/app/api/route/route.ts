@@ -22,4 +22,4 @@ const handler = async (request: NextRequest) => {
 export const GET = withInternalAuth(handler);
 
 export const runtime = 'edge';
-export const revalidate = 1030; // 30 min
+export const revalidate = 1800; // 30 min
