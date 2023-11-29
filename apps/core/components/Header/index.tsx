@@ -20,7 +20,6 @@ import { cn } from '~/lib/utils';
 import { QuickSearch } from '../QuickSearch';
 import { StoreLogo } from '../StoreLogo';
 
-import { Compare } from './Compare';
 import { LinkNoCache } from './LinkNoCache';
 
 const CartLink = ({ children }: PropsWithChildren) => (
@@ -177,11 +176,6 @@ export const Header = () => {
                 <Link aria-label="Login" href="/login">
                   <User />
                 </Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Compare />
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>

@@ -6,20 +6,38 @@ import { useEffect, useId, useState } from 'react';
 
 import { useCompareProductsContext } from '../../app/contexts/CompareProductsContext';
 
-export const Compare = ({ productId }: { productId: number }) => {
+export const Compare = ({
+  productId,
+  productImage,
+  productName,
+}: {
+  productId: number;
+  productImage?: {
+    altText?: string;
+    url?: string;
+  } | null;
+  productName: string;
+}) => {
   const checkboxId = useId();
   const [checkedState, setCheckedState] = useState(false);
-  const { productIds, setProductIds } = useCompareProductsContext();
+  const { products, setProducts } = useCompareProductsContext();
 
   useEffect(() => {
-    const checked = productIds[productId];
-
-    setCheckedState(checked ?? false);
-  }, [productIds, productId]);
+    setCheckedState(products.some(({ id }) => id === productId));
+  }, [products, productId]);
 
   const handleOnCheckedChange = (isChecked: boolean) => {
     setCheckedState(isChecked);
-    setProductIds({ ...productIds, [productId]: isChecked });
+
+    if (isChecked) {
+      setProducts([...products, { id: productId, image: productImage, name: productName }]);
+    } else {
+      setProducts(
+        products.filter(({ id }) => {
+          return id !== productId;
+        }),
+      );
+    }
   };
 
   return (

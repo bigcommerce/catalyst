@@ -154,7 +154,13 @@ export const ProductCard = ({
           <ProductCardInfoPrice>
             <Pricing prices={product.prices} />
           </ProductCardInfoPrice>
-          {showCompare && <Compare productId={product.entityId} />}
+          {showCompare && (
+            <Compare
+              productId={product.entityId}
+              productImage={product.defaultImage}
+              productName={product.name ?? ''}
+            />
+          )}
         </div>
       </ProductCardInfo>
       {showCart && <Cart product={product} />}
