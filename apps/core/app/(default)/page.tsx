@@ -1,16 +1,18 @@
-import client from '~/client';
+import { getBestSellingProducts } from '~/client/queries/getBestSellingProducts';
+import { getFeaturedProducts } from '~/client/queries/getFeaturedProducts';
 import { Hero } from '~/components/Hero';
 import { ProductCardCarousel } from '~/components/ProductCardCarousel';
 
 export default async function Home() {
   const [bestSellingProducts, featuredProducts] = await Promise.all([
-    client.getBestSellingProducts({ imageWidth: 500, imageHeight: 500 }),
-    client.getFeaturedProducts({ imageWidth: 500, imageHeight: 500 }),
+    getBestSellingProducts({ imageWidth: 500, imageHeight: 500 }),
+    getFeaturedProducts({ imageWidth: 500, imageHeight: 500 }),
   ]);
 
   return (
     <>
       <Hero />
+
       <div className="my-10">
         <ProductCardCarousel
           products={bestSellingProducts}
@@ -18,6 +20,7 @@ export default async function Home() {
           showCompare={false}
           title="Best Selling Products"
         />
+
         <ProductCardCarousel
           products={featuredProducts}
           showCart={false}
@@ -30,3 +33,4 @@ export default async function Home() {
 }
 
 export const runtime = 'edge';
+export const fetchCache = 'force-cache';
