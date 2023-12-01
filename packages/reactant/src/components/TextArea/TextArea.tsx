@@ -4,7 +4,7 @@ import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 import { cs } from '../../utils/cs';
 
 const textAreaVariants = cva(
-  'focus:ring-primary-blue/20 h-[64px] w-full border-2 border-gray-200 py-2.5 px-4 hover:border-blue-primary focus:border-blue-primary focus:outline-none focus:ring-4',
+  'focus:ring-blue-primary/20 h-[64px] w-full border-2 border-gray-200 py-2.5 px-4 hover:border-blue-primary focus:border-blue-primary focus:outline-none focus:ring-4',
   {
     variants: {
       variant: {

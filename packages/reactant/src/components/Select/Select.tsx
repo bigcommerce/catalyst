@@ -6,7 +6,7 @@ import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 import { cs } from '../../utils/cs';
 
 const selectVariants = cva(
-  'focus:ring-primary-blue/20 group flex h-12 w-full items-center justify-between border-2 border-gray-200 px-4 py-3 text-base text-black hover:border-blue-primary focus:border-blue-primary focus:outline-none focus:ring-4 disabled:bg-gray-100 disabled:hover:border-gray-200 data-[placeholder]:text-gray-500',
+  'focus:ring-blue-primary/20 group flex h-12 w-full items-center justify-between border-2 border-gray-200 px-4 py-3 text-base text-black hover:border-blue-primary focus:border-blue-primary focus:outline-none focus:ring-4 disabled:bg-gray-100 disabled:hover:border-gray-200 data-[placeholder]:text-gray-500',
   {
     variants: {
       variant: {
