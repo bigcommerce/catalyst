@@ -5,7 +5,7 @@ const meta: Meta<typeof Button> = {
   component: Button,
   tags: ['autodocs'],
   argTypes: {
-    variant: { control: 'select', options: ['primary', 'secondary'] },
+    variant: { control: 'select', options: ['primary', 'secondary', 'subtle'] },
     disabled: { control: 'boolean' },
   },
 };
@@ -26,6 +26,13 @@ export const Secondary: Story = {
   args: {
     ...Primary.args,
     variant: 'secondary',
+  },
+};
+
+export const Subtle: Story = {
+  args: {
+    ...Primary.args,
+    variant: 'subtle',
   },
 };
 
