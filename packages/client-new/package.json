@@ -18,7 +18,8 @@
     "dist"
   ],
   "dependencies": {
-    "@graphql-typed-document-node/core": "^3.2.0"
+    "@graphql-typed-document-node/core": "^3.2.0",
+    "graphql": "^16.8.1"
   },
   "devDependencies": {
     "@bigcommerce/catalyst-configs": "workspace:^",
