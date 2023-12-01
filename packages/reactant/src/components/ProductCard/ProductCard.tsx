@@ -82,12 +82,12 @@ const ProductCardInfoProductName = forwardRef<ElementRef<'h3'>, ComponentPropsWi
 
 ProductCardInfoProductName.displayName = 'ProductCardInfoProductName';
 
-const ProductCardInfoPrice = forwardRef<ElementRef<'h3'>, ComponentPropsWithRef<'h3'>>(
+const ProductCardInfoPrice = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     return (
-      <p className={cs('pt-2 text-base', className)} ref={ref} {...props}>
+      <div className={cs('pt-2 text-base', className)} ref={ref} {...props}>
         {children}
-      </p>
+      </div>
     );
   },
 );

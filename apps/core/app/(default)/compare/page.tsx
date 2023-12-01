@@ -5,6 +5,7 @@ import Link from 'next/link';
 import * as z from 'zod';
 
 import client from '~/client';
+import { Pricing } from '~/components/Pricing';
 import { SearchForm } from '~/components/SearchForm';
 import { cn } from '~/lib/utils';
 
@@ -28,42 +29,6 @@ const CompareParamsSchema = z.object({
     })
     .transform((value) => value?.map((id) => parseInt(id, 10))),
 });
-
-type Prices = Awaited<ReturnType<typeof client.getProducts>>[number]['prices'];
-
-const Prices = ({ prices }: { prices: Prices }) => {
-  if (!prices) {
-    return <p>N/A</p>;
-  }
-
-  const { format } = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: prices.price.currencyCode,
-  });
-
-  const { retailPrice, price, basePrice } = prices;
-
-  if (retailPrice) {
-    if (basePrice && basePrice.value !== price.value) {
-      return (
-        <>
-          <p className="text-gray-500 line-through">{format(Number(retailPrice.value))}</p>
-          <p className="text-gray-500 line-through">{format(Number(basePrice.value))}</p>
-          <p>{format(Number(price.value))}</p>
-        </>
-      );
-    }
-
-    return (
-      <>
-        <p className="text-gray-500 line-through">{format(Number(retailPrice.value))}</p>
-        <p>{format(Number(price.value))}</p>
-      </>
-    );
-  }
-
-  return <p>{format(Number(price.value))}</p>;
-};
 
 export default async function Compare({
   searchParams,
@@ -157,8 +122,8 @@ export default async function Compare({
             </tr>
             <tr>
               {products.map((product) => (
-                <td className="px-4 py-4 align-bottom" key={product.entityId}>
-                  <Prices prices={product.prices} />
+                <td className="px-4 py-4 align-bottom text-base" key={product.entityId}>
+                  <Pricing prices={product.prices} />
                 </td>
               ))}
             </tr>
