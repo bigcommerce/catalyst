@@ -64,7 +64,7 @@ export default async function BlogPostPage({ params: { blogId } }: Props) {
       <div className="mb-10 flex">
         {blogPost.tags.map((tag) => (
           <Link
-            className="focus:ring-primary-blue/20 mr-3 block cursor-pointer focus:outline-none focus:ring-4"
+            className="mr-3 block cursor-pointer focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
             href={`/blog/tag/${tag}`}
             key={tag}
           >

@@ -42,7 +42,7 @@ const GalleryPreviousIndicator = forwardRef<ElementRef<'button'>, ComponentProps
     return (
       <button
         aria-label="Previous product image"
-        className={cs('focus:ring-primary-blue/20 focus:outline-none focus:ring-4', className)}
+        className={cs('focus:ring-blue-primary/20 focus:outline-none focus:ring-4', className)}
         onClick={(e) => {
           setSelectedImageIndex(previousIndex);
 
@@ -69,7 +69,7 @@ const GalleryNextIndicator = forwardRef<ElementRef<'button'>, ComponentPropsWith
     return (
       <button
         aria-label="Next product image"
-        className={cs('focus:ring-primary-blue/20 focus:outline-none focus:ring-4', className)}
+        className={cs('focus:ring-blue-primary/20 focus:outline-none focus:ring-4', className)}
         onClick={(e) => {
           setSelectedImageIndex(nextIndex);
 
@@ -198,7 +198,7 @@ const GalleryThumbnailItem = forwardRef<ElementRef<'button'>, GalleryThumbnailIt
         aria-label="Enlarge product image"
         aria-pressed={isActive}
         className={cs(
-          'focus:ring-primary-blue/20 inline-block h-24 w-24 flex-shrink-0 flex-grow-0 focus:outline-none focus:ring-4',
+          'focus:ring-blue-primary/20 inline-block h-24 w-24 flex-shrink-0 flex-grow-0 focus:outline-none focus:ring-4',
           className,
         )}
         onClick={(e) => {

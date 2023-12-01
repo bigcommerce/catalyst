@@ -21,7 +21,7 @@ export const BlogPostCard = ({ blogPost }: BlogPostCardProps) => (
     {blogPost.thumbnailImage ? (
       <BlogPostImage>
         <Link
-          className="focus:ring-primary-blue/20 block w-full focus:outline-none focus:ring-4"
+          className="block w-full focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
           href={`/blog/${blogPost.entityId}`}
         >
           <Image
@@ -48,7 +48,7 @@ export const BlogPostCard = ({ blogPost }: BlogPostCardProps) => (
 
     <BlogPostTitle>
       <Link
-        className="focus:ring-primary-blue/20 focus:outline-none focus:ring-4"
+        className="focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
         href={`/blog/${blogPost.entityId}`}
       >
         {blogPost.name}

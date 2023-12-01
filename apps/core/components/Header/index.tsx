@@ -165,7 +165,7 @@ export const Header = () => {
             <NavigationMenuItem>
               <QuickSearch>
                 <Link
-                  className="focus:ring-primary-blue/20 flex focus:outline-none focus:ring-4"
+                  className="flex focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
                   href="/"
                 >
                   <StoreLogo />

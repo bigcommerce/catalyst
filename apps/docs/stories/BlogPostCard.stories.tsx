@@ -25,7 +25,7 @@ export const BlogPostCardWithImage: Story = {
         <div>
           <BlogPostImage>
             <a
-              className="focus:ring-primary-blue/20 block w-full focus:outline-none focus:ring-4"
+              className="focus:ring-blue-primary/20 block w-full focus:outline-none focus:ring-4"
               href="/"
             >
               <div className="flex h-full w-full items-center justify-center bg-gray-200 text-h4">
@@ -34,7 +34,7 @@ export const BlogPostCardWithImage: Story = {
             </a>
           </BlogPostImage>
           <BlogPostTitle>
-            <a className="focus:ring-primary-blue/20 focus:outline-none focus:ring-4" href="/">
+            <a className="focus:ring-blue-primary/20 focus:outline-none focus:ring-4" href="/">
               Blog Post Title
             </a>
           </BlogPostTitle>
@@ -63,7 +63,7 @@ export const BlogPostCardWithoutImage: Story = {
             </BlogPostDate>
           </BlogPostBanner>
           <BlogPostTitle>
-            <a className="focus:ring-primary-blue/20 focus:outline-none focus:ring-4" href="/">
+            <a className="focus:ring-blue-primary/20 focus:outline-none focus:ring-4" href="/">
               Blog Post Title
             </a>
           </BlogPostTitle>

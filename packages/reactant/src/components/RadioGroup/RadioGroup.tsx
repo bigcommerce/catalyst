@@ -31,7 +31,7 @@ const RadioItem = forwardRef<ElementRef<RadioItemType>, ComponentPropsWithRef<Ra
         className={cs(
           'flex h-6 w-6 items-center justify-center rounded-full border-2 border-gray-200',
           'hover:border-blue-secondary',
-          'focus:ring-primary-blue/20 focus:border-blue-primary focus:outline-none focus:ring-4',
+          'focus:ring-blue-primary/20 focus:border-blue-primary focus:outline-none focus:ring-4',
           'focus:hover:border-blue-secondary',
           'radix-state-checked:border-blue-primary radix-state-checked:bg-blue-primary',
           'radix-state-checked:hover:border-blue-secondary radix-state-checked:hover:bg-blue-secondary',
