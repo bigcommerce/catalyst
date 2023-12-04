@@ -5,6 +5,7 @@ import * as React from 'react';
 import { DayPicker } from 'react-day-picker';
 
 import { cs } from '../../utils/cs';
+import { buttonVariants } from '../Button';
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -22,9 +23,7 @@ export const Calendar = ({
         caption: 'flex justify-center pt-1 relative items-center',
         caption_label: 'text-base',
         nav: 'space-x-1 flex items-center',
-        nav_button: cs(
-          'h-6 w-6 bg-transparent p-0 text-blue-primary hover:text-blue-secondary focus:text-blue-secondary focus:outline-none focus:ring-4 focus:ring-blue-primary/20',
-        ),
+        nav_button: cs(buttonVariants({ variant: 'subtle' }), 'h-8 w-8 p-0'),
         nav_button_previous: 'absolute start-1',
         nav_button_next: 'absolute end-1',
         head_row: 'flex',
