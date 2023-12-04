@@ -1,12 +1,8 @@
 import { Product as ProductSchemaType, WithContext } from 'schema-dts';
 
-import client from '~/client';
+import { getProduct } from '~/client/queries/getProduct';
 
-export const ProductSchema = ({
-  product,
-}: {
-  product: Awaited<ReturnType<typeof client.getProduct>>;
-}) => {
+export const ProductSchema = ({ product }: { product: Awaited<ReturnType<typeof getProduct>> }) => {
   if (product === null) return null;
 
   /* TODO: use common default image when product has no images */

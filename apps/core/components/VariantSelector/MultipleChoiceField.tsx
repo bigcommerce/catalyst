@@ -1,4 +1,3 @@
-import { CatalogProductOptionValue, MultipleChoiceOption } from '@bigcommerce/catalyst-client';
 import { Label } from '@bigcommerce/reactant/Label';
 import { RadioGroup, RadioItem } from '@bigcommerce/reactant/RadioGroup';
 import { RectangleList, RectangleListItem } from '@bigcommerce/reactant/RectangleList';
@@ -6,16 +5,20 @@ import { Select, SelectContent, SelectItem } from '@bigcommerce/reactant/Select'
 import { Swatch, SwatchItem } from '@bigcommerce/reactant/Swatch';
 import { Fragment } from 'react';
 
-interface MultipleChoice extends Omit<MultipleChoiceOption, 'values'> {
-  values: CatalogProductOptionValue[];
-}
+import { getProduct } from '~/client/queries/getProduct';
+import { ExistingResultType, Unpacked } from '~/client/util';
+
+type MultipleChoiceOption = Extract<
+  Unpacked<ExistingResultType<typeof getProduct>['productOptions']>,
+  { __typename: 'MultipleChoiceOption' }
+>;
 
 export const MultipleChoiceField = ({
   option,
   searchParamSelected,
   handleOnValueChange,
 }: {
-  option: MultipleChoice;
+  option: MultipleChoiceOption;
   searchParamSelected?: string;
   handleOnValueChange: ({ optionId, valueId }: { optionId: number; valueId: number }) => void;
 }) => {
@@ -42,7 +45,7 @@ export const MultipleChoiceField = ({
             required={option.isRequired}
           >
             {option.values.map((value) => {
-              if (value.__typename === 'SwatchOptionValue') {
+              if ('__typename' in value && value.__typename === 'SwatchOptionValue') {
                 return (
                   <SwatchItem
                     key={value.entityId}

@@ -1,6 +1,13 @@
-import { NumberFieldOption } from '@bigcommerce/catalyst-client';
 import { Counter } from '@bigcommerce/reactant/Counter';
 import { Label } from '@bigcommerce/reactant/Label';
+
+import { getProduct } from '~/client/queries/getProduct';
+import { ExistingResultType, Unpacked } from '~/client/util';
+
+type NumberFieldOption = Extract<
+  Unpacked<ExistingResultType<typeof getProduct>['productOptions']>,
+  { __typename: 'NumberFieldOption' }
+>;
 
 export const NumberField = ({ option }: { option: NumberFieldOption }) => (
   <>
@@ -15,7 +22,7 @@ export const NumberField = ({ option }: { option: NumberFieldOption }) => (
     </Label>
     <div className="sm:w-32">
       <Counter
-        defaultValue={Number(option.defaultValue) || 0}
+        defaultValue={Number(option.defaultNumber) || 0}
         id={`${option.entityId}`}
         isInteger={option.isIntegerOnly}
         max={Number(option.highest)}

@@ -1,6 +1,13 @@
-import { MultiLineTextFieldOption } from '@bigcommerce/catalyst-client';
 import { Label } from '@bigcommerce/reactant/Label';
 import { TextArea } from '@bigcommerce/reactant/TextArea';
+
+import { getProduct } from '~/client/queries/getProduct';
+import { ExistingResultType, Unpacked } from '~/client/util';
+
+type MultiLineTextFieldOption = Extract<
+  Unpacked<ExistingResultType<typeof getProduct>['productOptions']>,
+  { __typename: 'MultiLineTextFieldOption' }
+>;
 
 export const MultiLineTextField = ({ option }: { option: MultiLineTextFieldOption }) => (
   <>
@@ -14,7 +21,7 @@ export const MultiLineTextField = ({ option }: { option: MultiLineTextFieldOptio
       )}
     </Label>
     <TextArea
-      defaultValue={option.defaultValue ?? undefined}
+      defaultValue={option.defaultText ?? undefined}
       maxLength={option.maxLength ?? undefined}
       minLength={option.minLength ?? undefined}
       name={`attribute[${option.entityId}]`}

@@ -5,12 +5,13 @@ import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
 import client from '~/client';
+import { getProduct } from '~/client/queries/getProduct';
 
 export async function handleAddToCart(data: FormData) {
   const productEntityId = Number(data.get('product_id'));
   const quantity = Number(data.get('quantity'));
 
-  const product = await client.getProduct({ productId: productEntityId });
+  const product = await getProduct(productEntityId);
 
   const cartId = cookies().get('cartId')?.value;
 
