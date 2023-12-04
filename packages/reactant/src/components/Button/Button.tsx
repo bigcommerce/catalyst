@@ -4,7 +4,7 @@ import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
 import { cs } from '../../utils/cs';
 
-const buttonVariants = cva(
+export const buttonVariants = cva(
   'inline-flex w-full justify-center items-center border-2 py-2.5 px-[30px] text-base leading-6 font-semibold border-blue-primary disabled:border-gray-400 focus:outline-none focus:ring-4 focus:ring-blue-primary/20',
   {
     variants: {
@@ -13,6 +13,8 @@ const buttonVariants = cva(
           'bg-blue-primary text-white hover:bg-blue-secondary hover:border-blue-secondary disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:hover:border-gray-400',
         secondary:
           'bg-transparent text-blue-primary hover:bg-blue-secondary hover:bg-opacity-10 hover:border-blue-secondary hover:text-blue-secondary disabled:text-gray-400 disabled:hover:bg-transparent disabled:hover:border-gray-400 disabled:hover:text-gray-400',
+        subtle:
+          'border-none bg-transparent text-blue-primary hover:bg-blue-secondary hover:bg-opacity-10 hover:text-blue-secondary disabled:text-gray-400 disabled:hover:bg-transparent disabled:hover:text-gray-400',
       },
     },
     defaultVariants: {
@@ -22,7 +24,7 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps extends ComponentPropsWithRef<'button'> {
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'subtle';
   asChild?: boolean;
 }
 
