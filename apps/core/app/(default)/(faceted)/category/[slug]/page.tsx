@@ -21,7 +21,6 @@ interface Props {
 
 export default async function Category({ params, searchParams }: Props) {
   const categoryId = Number(params.slug);
-
   const search = await fetchFacetedSearch({ ...searchParams, category: [params.slug] });
 
   // We will only need a partial of this query to fetch the category name and breadcrumbs.
