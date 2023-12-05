@@ -29,6 +29,7 @@ export const Pricing = ({ prices }: { prices: Product['prices'] }) => {
               <span className="line-through">
                 {currencyFormatter.format(prices.retailPrice.value)}
               </span>
+              <br />
             </>
           )}
           {prices.basePrice?.value !== undefined &&
@@ -38,6 +39,7 @@ export const Pricing = ({ prices }: { prices: Product['prices'] }) => {
                 <span className="line-through">
                   {currencyFormatter.format(prices.basePrice.value)}
                 </span>
+                <br />
               </>
             ) : (
               currencyFormatter.format(prices.basePrice.value)

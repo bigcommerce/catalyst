@@ -2,43 +2,56 @@
 
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 
-type CheckedProductIds = Record<string, boolean>;
+export interface CheckedProduct {
+  id: number;
+  name: string;
+  image?: {
+    altText?: string;
+    url?: string;
+  } | null;
+}
+
+import { CompareDrawer } from '~/components/CompareDrawer';
 
 const CompareProductsContext = createContext<{
-  productIds: CheckedProductIds;
-  setProductIds: (productIds: CheckedProductIds) => void;
+  products: CheckedProduct[];
+  setProducts: (products: CheckedProduct[]) => void;
 } | null>(null);
 
-const isCheckedProductIds = (ids: object): ids is CheckedProductIds => {
-  return Object.values(ids).every((value) => typeof value === 'boolean');
+const isCheckedProducts = (products: unknown): products is CheckedProduct[] => {
+  return (
+    Array.isArray(products) &&
+    products.every((product) => product !== null && typeof product === 'object' && 'id' in product)
+  );
 };
 
 export const CompareProductsProvider = ({ children }: PropsWithChildren) => {
-  const [productIds, setProductIds] = useState<CheckedProductIds>({});
+  const [products, setProducts] = useState<CheckedProduct[]>([]);
 
   useEffect(() => {
-    const ids = sessionStorage.getItem('compareProductIds');
+    const stringProducts = sessionStorage.getItem('compareProducts');
 
-    if (ids && ids !== '{}') {
+    if (stringProducts && stringProducts !== '[]') {
       try {
-        const parsedIds: unknown = JSON.parse(ids);
+        const parsedProducts: unknown = JSON.parse(stringProducts);
 
-        if (parsedIds !== null && typeof parsedIds === 'object' && isCheckedProductIds(parsedIds)) {
-          setProductIds(parsedIds);
+        if (isCheckedProducts(parsedProducts)) {
+          setProducts(parsedProducts);
         }
       } catch (e) {
-        throw new Error('Error parsing compareProductIds from sessionStorage');
+        throw new Error('Error parsing compareProducts from sessionStorage');
       }
     }
   }, []);
 
   useEffect(() => {
-    sessionStorage.setItem('compareProductIds', JSON.stringify(productIds));
-  }, [productIds]);
+    sessionStorage.setItem('compareProducts', JSON.stringify(products));
+  }, [products]);
 
   return (
-    <CompareProductsContext.Provider value={{ productIds, setProductIds }}>
+    <CompareProductsContext.Provider value={{ products, setProducts }}>
       {children}
+      <CompareDrawer />
     </CompareProductsContext.Provider>
   );
 };
