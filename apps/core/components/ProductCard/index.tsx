@@ -2,6 +2,7 @@ import {
   ProductCardImage,
   ProductCardInfo,
   ProductCardInfoBrandName,
+  ProductCardInfoPrice,
   ProductCardInfoProductName,
   ProductCard as ReactantProductCard,
 } from '@bigcommerce/reactant/ProductCard';
@@ -12,9 +13,10 @@ import { useId } from 'react';
 
 import { cn } from '~/lib/utils';
 
+import { Pricing } from '../Pricing';
+
 import { Cart } from './Cart';
 import { Compare } from './Compare';
-import { Pricing } from './Pricing';
 
 export interface Product {
   entityId: number;
@@ -149,7 +151,9 @@ export const ProductCard = ({
           </div>
         )}
         <div className="flex flex-wrap items-end justify-between pt-2">
-          <Pricing prices={product.prices} />
+          <ProductCardInfoPrice>
+            <Pricing prices={product.prices} />
+          </ProductCardInfoPrice>
           {showCompare && <Compare productId={product.entityId} />}
         </div>
       </ProductCardInfo>
