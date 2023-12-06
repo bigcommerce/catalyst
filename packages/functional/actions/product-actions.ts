@@ -14,6 +14,11 @@ export async function addProductsToCompare(page: Page, names: string[]) {
   for (const name of names) await selectProductForComparison(page, name);
 }
 
+export async function removeProductsInCompare(page: Page, name: string) {
+  await expect(page.getByRole('button', { name })).toBeVisible();
+  await page.getByRole('button', { name }).click();
+}
+
 async function selectProductForComparison(page: Page, name: string) {
   await expect(
     page.locator('a').filter({ hasText: name }).locator('../..').locator('button'),

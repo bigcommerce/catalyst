@@ -17,9 +17,33 @@ test('Compare products', async ({ page }) => {
   await ProductActions.addProductsToCompare(page, [
     'Orbit Terrarium - Large',
     'Orbit Terrarium - Small',
+    'Able Brewing System',
   ]);
-  await expect(page.locator('a').filter({ hasText: 'Compare Items2' })).toBeVisible();
 
-  await page.locator('a').filter({ hasText: 'Compare Items2' }).click();
-  await expect(page.getByRole('heading', { name: 'Comparing 2 products' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Compare (3)' })).toBeVisible();
+  expect(ProductPage.isProductInCompare(page, 'Orbit Terrarium - Large')).toBeTruthy();
+  expect(ProductPage.isProductInCompare(page, 'Orbit Terrarium - Small')).toBeTruthy();
+  expect(ProductPage.isProductInCompare(page, 'Able Brewing System')).toBeTruthy();
+
+  await page.getByRole('link', { name: 'Compare (3)' }).click();
+  await expect(page.getByRole('heading', { name: 'Comparing 3 products' })).toBeVisible();
+});
+
+test('Add and remove products to compare', async ({ page }) => {
+  await ProductActions.addProductsToCompare(page, [
+    'Orbit Terrarium - Large',
+    'Orbit Terrarium - Small',
+    'Able Brewing System',
+    'Fog Linen Chambray Towel',
+  ]);
+
+  await expect(page.getByRole('link', { name: 'Compare (4)' })).toBeVisible();
+  expect(ProductPage.isProductInCompare(page, 'Orbit Terrarium - Large')).toBeTruthy();
+  expect(ProductPage.isProductInCompare(page, 'Orbit Terrarium - Small')).toBeTruthy();
+  expect(ProductPage.isProductInCompare(page, 'Able Brewing System')).toBeTruthy();
+  expect(ProductPage.isProductInCompare(page, 'Fog Linen Chambray Towel')).toBeTruthy();
+
+  await ProductActions.removeProductsInCompare(page, 'Orbit Terrarium - Large');
+  await ProductActions.removeProductsInCompare(page, 'Orbit Terrarium - Small');
+  await expect(page.getByRole('link', { name: 'Compare (2)' })).toBeVisible();
 });

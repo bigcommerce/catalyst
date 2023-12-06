@@ -13,4 +13,8 @@ export async function validateShopAllPage(page: Page) {
   await expect(page.getByLabel('Sort by:')).toBeVisible();
 }
 
+export async function isProductInCompare(page: Page, name: string) {
+  return page.getByRole('button', { name }).isVisible();
+}
+
 export * as ProductPage from './product-page';
