@@ -6,6 +6,7 @@ import { getProduct } from '~/client/queries/getProduct';
 import { ExistingResultType } from '~/client/util';
 
 import { CheckboxField } from './CheckboxField';
+import { DateField } from './DateField';
 import { MultiLineTextField } from './MultiLineTextField';
 import { MultipleChoiceField } from './MultipleChoiceField';
 import { NumberField } from './NumberField';
@@ -53,6 +54,10 @@ export const VariantSelector = ({ product }: { product: Product }) => {
 
     if (option.__typename === 'MultiLineTextFieldOption') {
       return <MultiLineTextField key={option.entityId} option={option} />;
+    }
+
+    if (option.__typename === 'DateFieldOption') {
+      return <DateField key={option.entityId} option={option} />;
     }
 
     return null;

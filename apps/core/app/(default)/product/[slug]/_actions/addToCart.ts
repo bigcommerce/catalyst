@@ -23,6 +23,7 @@ export async function handleAddToCart(data: FormData) {
       let checkboxOptionInput;
       let numberFieldOptionInput;
       let multiLineTextFieldOptionInput;
+      let dateFieldOptionInput;
 
       switch (option.__typename) {
         case 'MultipleChoiceOption':
@@ -81,6 +82,21 @@ export async function handleAddToCart(data: FormData) {
           }
 
           return { ...accum, multiLineTextFields: [multiLineTextFieldOptionInput] };
+
+        case 'DateFieldOption':
+          dateFieldOptionInput = {
+            optionEntityId: option.entityId,
+            date: new Date(String(optionValueEntityId)).toISOString(),
+          };
+
+          if (accum.dateFields) {
+            return {
+              ...accum,
+              dateFields: [...accum.dateFields, dateFieldOptionInput],
+            };
+          }
+
+          return { ...accum, dateFields: [dateFieldOptionInput] };
       }
 
       return accum;

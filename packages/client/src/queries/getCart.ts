@@ -53,6 +53,11 @@ export async function getCart<T>(
               on_CartSelectedMultiLineTextFieldOption: {
                 text: true,
               },
+              on_CartSelectedDateFieldOption: {
+                date: {
+                  utc: true,
+                },
+              },
             },
           },
         },
