@@ -49,10 +49,6 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.deployment_status.state == 'success' && ! contains(github.event.deployment_status.target_url, 'storybook') && ! contains(github.event.deployment_status.target_url, 'makeswift') }}
     steps:
-      - name: Sleep for 90 seconds
-        run: sleep 90s
-        shell: bash
-
       - name: Checkout code
         uses: actions/checkout@main
 
