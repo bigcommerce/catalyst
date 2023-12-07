@@ -14,6 +14,7 @@ export default defineConfig({
   reporter: 'html',
   use: {
     baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL,
+    screenshot: 'only-on-failure',
   },
 
   projects: [
