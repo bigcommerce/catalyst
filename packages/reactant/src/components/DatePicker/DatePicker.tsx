@@ -9,14 +9,29 @@ import { Calendar } from '../Calendar';
 import { Input, InputIcon, InputProps } from '../Input';
 import { Popover, PopoverContent, PopoverTrigger } from '../Popover';
 
-type DatePickerProps = InputProps & {
+type DatePickerProps = Omit<InputProps, 'defaultValue'> & {
+  defaultValue?: string | Date;
   selected?: DayPickerSingleProps['selected'];
   onSelect?: DayPickerSingleProps['onSelect'];
+  disabledDays?: DayPickerSingleProps['disabled'];
 };
 
 export const DatePicker = React.forwardRef<React.ElementRef<'div'>, DatePickerProps>(
-  ({ selected, onSelect, placeholder = 'MM/DD/YYYY', ...props }, ref) => {
-    const [date, setDate] = React.useState<Date>();
+  (
+    {
+      defaultValue,
+      disabledDays,
+      selected,
+      onSelect,
+      placeholder = 'MM/DD/YYYY',
+      required,
+      ...props
+    },
+    ref,
+  ) => {
+    const [date, setDate] = React.useState<Date | undefined>(
+      defaultValue ? new Date(defaultValue) : undefined,
+    );
 
     const formattedSelected = selected ? format(selected, 'MM/dd/yyyy') : undefined;
     const formattedDate = date ? format(date, 'MM/dd/yyyy') : undefined;
@@ -27,8 +42,10 @@ export const DatePicker = React.forwardRef<React.ElementRef<'div'>, DatePickerPr
           <PopoverTrigger asChild>
             <Input
               placeholder={placeholder}
+              readOnly={true}
+              required={required}
               type="text"
-              value={formattedSelected ?? formattedDate}
+              value={formattedSelected ?? formattedDate ?? ''}
               {...props}
             >
               <InputIcon>
@@ -38,9 +55,11 @@ export const DatePicker = React.forwardRef<React.ElementRef<'div'>, DatePickerPr
           </PopoverTrigger>
           <PopoverContent align="start" className="w-auto p-0">
             <Calendar
+              disabled={disabledDays}
               initialFocus
               mode="single"
               onSelect={onSelect || setDate}
+              required={required}
               selected={selected ?? date}
             />
           </PopoverContent>

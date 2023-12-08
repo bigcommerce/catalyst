@@ -113,6 +113,13 @@ export const PRODUCT_OPTIONS_FRAGMENT = /* GraphQL */ `
             minLength
             maxLines
           }
+          ... on DateFieldOption {
+            __typename
+            defaultDate: defaultValue
+            earliest
+            latest
+            limitDateBy
+          }
         }
       }
     }

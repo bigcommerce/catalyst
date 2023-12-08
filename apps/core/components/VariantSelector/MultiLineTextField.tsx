@@ -22,6 +22,7 @@ export const MultiLineTextField = ({ option }: { option: MultiLineTextFieldOptio
     </Label>
     <TextArea
       defaultValue={option.defaultText ?? undefined}
+      id={`${option.entityId}`}
       maxLength={option.maxLength ?? undefined}
       minLength={option.minLength ?? undefined}
       name={`attribute[${option.entityId}]`}
