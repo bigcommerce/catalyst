@@ -44,7 +44,6 @@
     "@radix-ui/react-slot": "^1.0.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
-    "date-fns": "^2.30.0",
     "embla-carousel-react": "8.0.0-rc14",
     "focus-trap-react": "^10.2.3",
     "lucide-react": "^0.292.0",
