@@ -1,12 +1,14 @@
 import { DocumentTypeDecoration } from '@graphql-typed-document-node/core';
 
 import { BigCommerceAPIError } from './error';
+import { getOperationInfo } from './utils/getOperationName';
 
 interface Config {
   storeHash: string;
   customerImpersonationToken: string;
   xAuthToken: string;
   channelId?: string;
+  logger?: boolean;
 }
 
 interface BigCommerceResponse<T> {
@@ -14,11 +16,9 @@ interface BigCommerceResponse<T> {
 }
 
 class Client<FetcherRequestInit extends RequestInit = RequestInit> {
-  private config: Config;
   private graphqlUrl: string;
 
-  constructor(config: Config) {
-    this.config = config;
+  constructor(private config: Config) {
     this.graphqlUrl = this.getEndpoint();
   }
 
@@ -50,6 +50,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     fetchOptions?: FetcherRequestInit;
   }): Promise<BigCommerceResponse<TResult>> {
     const { cache, headers = {}, ...rest } = fetchOptions;
+    const log = this.requestLogger(document);
 
     const response = await fetch(this.graphqlUrl, {
       method: 'POST',
@@ -71,6 +72,8 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       throw await BigCommerceAPIError.createFromResponse(response);
     }
 
+    log();
+
     return response.json() as Promise<BigCommerceResponse<TResult>>;
   }
 
@@ -80,6 +83,28 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     }
 
     return `https://store-${this.config.storeHash}-${this.config.channelId}.mybigcommerce.com/graphql`;
+  }
+
+  private requestLogger<TResult, TVariables>(
+    document: DocumentTypeDecoration<TResult, TVariables>,
+  ) {
+    if (!this.config.logger) {
+      return () => {
+        // noop
+      };
+    }
+
+    const { name, type } = getOperationInfo(document);
+
+    const timeStart = Date.now();
+
+    return () => {
+      const timeEnd = Date.now();
+      const duration = timeEnd - timeStart;
+
+      // eslint-disable-next-line no-console
+      console.log(`[BigCommerce] ${type} ${name ?? 'anonymous'} - ${duration}ms`);
+    };
   }
 }
 
