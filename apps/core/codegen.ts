@@ -49,7 +49,7 @@ const config: CodegenConfig = {
       },
     },
   ],
-  documents: ['client/queries/**/*.ts'],
+  documents: ['client/queries/**/*.ts', 'client/fragments/**/*.ts'],
   generates: {
     './client/generated/': {
       preset: 'client',
