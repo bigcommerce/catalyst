@@ -8,29 +8,14 @@
     "./package.json": "./package.json",
     "./postcss-config": "./postcss.config.js",
     "./tailwind-config": "./tailwind.config.js",
-    "./cs": {
-      "import": "./dist/utils/cs.mjs",
-      "require": "./dist/utils/cs.js",
-      "types": "./dist/utils/cs.d.ts"
-    },
-    "./*": {
-      "import": "./dist/components/*/index.mjs",
-      "require": "./dist/components/*/index.js",
-      "types": "./dist/components/*/index.d.ts"
-    }
+    "./cs": "./src/utils/cs.ts",
+    "./*": "./src/components/*/index.ts"
   },
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts,.js,.cjs --max-warnings 0",
     "test": "jest"
   },
-  "files": [
-    "dist",
-    "postcss.config.js",
-    "tailwind.config.js"
-  ],
   "dependencies": {
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-checkbox": "^1.0.4",
@@ -72,7 +57,6 @@
     "react-dom": "^18.2.0",
     "tailwindcss": "^3.3.5",
     "tailwindcss-animate": "^1.0.7",
-    "tsup": "^6.7.0",
     "typescript": "^5.2.2"
   }
 }

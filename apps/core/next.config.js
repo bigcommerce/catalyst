@@ -10,6 +10,7 @@ const nextConfig = {
       },
     ],
   },
+  transpilePackages: ['@bigcommerce/reactant'],
   typescript: {
     ignoreBuildErrors: !!process.env.CI,
   },

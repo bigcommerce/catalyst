@@ -138,7 +138,7 @@ const GalleryImage = forwardRef<ElementRef<'img'>, GalleryImageProps>(
           className={cs('h-full w-full object-contain', className)}
           ref={ref}
           sizes="100vw"
-          src={images[selectedImageIndex].url}
+          src={selectedImage.url}
           {...props}
         />
       );
