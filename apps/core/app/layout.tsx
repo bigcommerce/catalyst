@@ -1,4 +1,5 @@
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Inter } from 'next/font/google';
 import { PropsWithChildren } from 'react';
 
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
       <body className="flex h-screen flex-col">
         <Providers>{children}</Providers>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
