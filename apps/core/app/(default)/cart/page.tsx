@@ -1,5 +1,4 @@
 import { Button } from '@bigcommerce/reactant/Button';
-import { format } from 'date-fns';
 import { Trash2 as Trash } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
@@ -123,7 +122,7 @@ export default async function CartPage() {
                               <div key={selectedOption.entityId}>
                                 <span>{selectedOption.name}:</span>{' '}
                                 <span className="font-semibold">
-                                  {format(new Date(selectedOption.date.utc), 'MM/dd/yyyy')}
+                                  {Intl.DateTimeFormat().format(new Date(selectedOption.date.utc))}
                                 </span>
                               </div>
                             );

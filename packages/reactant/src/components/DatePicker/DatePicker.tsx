@@ -1,6 +1,5 @@
 'use client';
 
-import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import * as React from 'react';
 import { DayPickerSingleProps } from 'react-day-picker';
@@ -33,8 +32,8 @@ export const DatePicker = React.forwardRef<React.ElementRef<'div'>, DatePickerPr
       defaultValue ? new Date(defaultValue) : undefined,
     );
 
-    const formattedSelected = selected ? format(selected, 'MM/dd/yyyy') : undefined;
-    const formattedDate = date ? format(date, 'MM/dd/yyyy') : undefined;
+    const formattedSelected = selected ? Intl.DateTimeFormat().format(selected) : undefined;
+    const formattedDate = date ? Intl.DateTimeFormat().format(date) : undefined;
 
     return (
       <div ref={ref}>
