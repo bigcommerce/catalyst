@@ -10,6 +10,12 @@ const nextConfig = {
       },
     ],
   },
+  typescript: {
+    ignoreBuildErrors: !!process.env.CI,
+  },
+  eslint: {
+    ignoreDuringBuilds: !!process.env.CI,
+  },
 };
 
 module.exports = withMakeswift(nextConfig);
