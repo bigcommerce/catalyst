@@ -6,7 +6,7 @@ const config = {
   content: [
     './app/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
-    './node_modules/@bigcommerce/reactant/dist/**/*.{js,mjs}',
+    './node_modules/@bigcommerce/reactant/src/**/*.{ts,tsx}',
   ],
   plugins: [],
 };
