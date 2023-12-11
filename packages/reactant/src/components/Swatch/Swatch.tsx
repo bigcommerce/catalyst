@@ -29,7 +29,7 @@ const SwatchItem = forwardRef<ElementRef<typeof RadioGroupPrimitive.Item>, Swatc
   ({ children, className, disabled, variantColor, ...props }, ref) => (
     <RadioGroupPrimitive.Item
       className={cs(
-        'focus:ring-blue-primary/20 group h-12 w-12 border-2 bg-white p-1 hover:border-blue-primary focus:outline-none focus:ring-4 disabled:border-gray-100 disabled:hover:border-gray-100',
+        'group h-12 w-12 border-2 bg-white p-1 hover:border-blue-primary focus:outline-none focus:ring-4 focus:ring-blue-primary/20 disabled:border-gray-100 disabled:hover:border-gray-100',
         'data-[state=checked]:border-blue-primary',
         className,
       )}

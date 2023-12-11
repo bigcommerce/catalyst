@@ -121,7 +121,7 @@ const CarouselPreviousIndicator = forwardRef<ElementRef<'button'>, ComponentProp
       <button
         aria-label="Previous products"
         className={cs(
-          'focus:ring-blue-primary/20 inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4',
+          'inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4 focus:ring-blue-primary/20',
           isHidden && 'hidden',
           className,
         )}
@@ -160,7 +160,7 @@ const CarouselNextIndicator = forwardRef<ElementRef<'button'>, ComponentPropsWit
       <button
         aria-label="Next products"
         className={cs(
-          'focus:ring-blue-primary/20 inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4',
+          'inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4 focus:ring-blue-primary/20',
           isHidden && 'hidden',
           className,
         )}
@@ -256,7 +256,7 @@ const CarouselPaginationTab = forwardRef<ElementRef<'button'>, CarouselPaginatio
       <button
         aria-selected={isSelected}
         className={cs(
-          "focus:ring-blue-primary/20 h-7 w-7 p-0.5 after:block after:h-0.5 after:w-full after:bg-gray-400 after:content-[''] focus:outline-none focus:ring-4",
+          "h-7 w-7 p-0.5 after:block after:h-0.5 after:w-full after:bg-gray-400 after:content-[''] focus:outline-none focus:ring-4 focus:ring-blue-primary/20",
           isSelected && 'after:bg-black',
           className,
         )}

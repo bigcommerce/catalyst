@@ -110,7 +110,7 @@ const NavigationMenuTrigger = forwardRef<
 >(({ className, children, ...props }, ref) => (
   <NavigationMenuPrimitive.Trigger
     className={cs(
-      'group/button focus:ring-blue-primary/20 flex w-full items-center justify-between gap-1 p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4',
+      'group/button flex w-full items-center justify-between gap-1 p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4 focus:ring-blue-primary/20',
       className,
     )}
     ref={ref}
@@ -156,7 +156,7 @@ const NavigationMenuLink = forwardRef<
   return (
     <NavigationMenuPrimitive.Link
       className={cs(
-        'focus:ring-blue-primary/20 flex justify-between p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4',
+        'flex justify-between p-3 font-semibold hover:text-blue-primary focus:outline-none focus:ring-4 focus:ring-blue-primary/20',
         className,
       )}
       onClick={() => setIsExpanded(false)}
@@ -180,7 +180,7 @@ const NavigationMenuToggle = forwardRef<ElementRef<'button'>, ComponentPropsWith
         aria-expanded={isExpanded}
         aria-label="Toggle navigation"
         className={cs(
-          'focus:ring-blue-primary/20 group p-3 hover:text-blue-primary focus:outline-none focus:ring-4',
+          'group p-3 hover:text-blue-primary focus:outline-none focus:ring-4 focus:ring-blue-primary/20',
           className,
         )}
         onClick={(e) => {

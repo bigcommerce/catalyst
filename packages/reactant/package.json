@@ -13,7 +13,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .ts,.js,.cjs --max-warnings 0",
+    "lint": "eslint . --ext .ts,.tsx,.js,.cjs --max-warnings 0",
     "test": "jest"
   },
   "dependencies": {
