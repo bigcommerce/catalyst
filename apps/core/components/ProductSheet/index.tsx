@@ -242,7 +242,7 @@ export const ProductSheetForm = ({ children, ...props }: ComponentPropsWithoutRe
         <Label className="my-2 inline-block font-semibold" htmlFor="quantity">
           Quantity
         </Label>
-        <Counter id="quantity" name="quantity" />
+        <Counter id="quantity" min={1} name="quantity" />
       </div>
       {children || <SubmitButton>Add to cart</SubmitButton>}
     </form>
