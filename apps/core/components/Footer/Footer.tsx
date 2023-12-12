@@ -1,7 +1,7 @@
 import { FooterNav, FooterSection, Footer as ReactantFooter } from '@bigcommerce/reactant/Footer';
 import React from 'react';
 
-import client from '~/client';
+import { AvailableWebPages, getWebPages } from '~/client/queries/getWebPages';
 
 import { StoreLogo } from '../StoreLogo';
 
@@ -11,9 +11,7 @@ import { BaseFooterMenu, BrandFooterMenu, CategoryFooterMenu } from './FooterMen
 import { PaymentMethods } from './PaymentMethods';
 import { SocialIcons } from './SocialIcons';
 
-const filterActivePages = (
-  availableStorePages: Array<NonNullable<Awaited<ReturnType<typeof client.getWebPages>>>[number]>,
-) =>
+const filterActivePages = (availableStorePages: AvailableWebPages) =>
   availableStorePages.reduce<Array<{ name: string; path: string }>>((visiblePages, currentPage) => {
     if (currentPage.isVisibleInNavigation) {
       const { name, __typename } = currentPage;
@@ -29,7 +27,7 @@ const filterActivePages = (
     return visiblePages;
   }, []);
 const activeFooterWebPages = await (async (columnName: string) => {
-  const storeWebPages = await client.getWebPages();
+  const storeWebPages = await getWebPages();
 
   return {
     title: columnName,
