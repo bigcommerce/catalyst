@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import client from '~/client';
+import { getWebPage } from '~/client/queries/getWebPage';
 import { ContactUs } from '~/components/Forms';
 
 import { PageContent } from '../_components/PageContent';
@@ -12,7 +12,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const path = `/${params.page}`;
-  const webpage = await client.getWebPage({ path });
+  const webpage = await getWebPage({ path });
 
   if (!webpage) {
     notFound();
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function WebPage({ params }: Props) {
   const path = `/${params.page}`;
-  const webpage = await client.getWebPage({ path });
+  const webpage = await getWebPage({ path });
 
   if (!webpage) {
     notFound();
