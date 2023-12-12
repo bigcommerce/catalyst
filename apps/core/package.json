@@ -22,6 +22,7 @@
     "@icons-pack/react-simple-icons": "^9.1.0",
     "@vercel/analytics": "^1.1.1",
     "@vercel/speed-insights": "^1.0.1",
+    "@vercel/kv": "^1.0.0",
     "clsx": "^2.0.0",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.292.0",

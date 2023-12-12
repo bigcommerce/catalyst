@@ -97,6 +97,32 @@ The `dev` script runs all packages and apps in watch mode. The following table l
 
 Happy developing! Let us know how things are going in the dedicated Slack channel.
 
+### Using the `vercel` CLI
+
+If you are able to install and use the [Vercel CLI (vercel.com)](https://vercel.com/cli) on your local machine, you can use it to pull the environment variables from Vercel. The `vercel` CLI is not required to run Catalyst locally.
+
+1. Link the app to your Vercel project
+
+This command will take you through the process of linking the app to your Vercel project.
+
+```shell
+vercel link
+```
+
+2. Pull the environment variables from Vercel
+
+This will pull the `development` environment variables from Vercel and write them to `.env.local`.
+
+```shell
+vercel env pull .env.local
+```
+
+If you need to pull the production environment variables for debugging, use the `--prod` flag.
+
+```shell
+vercel env pull .env.production --prod
+```
+
 ## Deploy using Vercel
 
 One common way to deploy a Next.js app for development is to use the [Vercel Platform (vercel.com)](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme). Consult the [Next.js deployment documentation (next.js)](https://nextjs.org/docs/deployment) for more details.
