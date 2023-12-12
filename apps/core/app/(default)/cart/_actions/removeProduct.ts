@@ -1,11 +1,11 @@
+'use server';
+
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
 import client from '~/client';
 
 export async function removeProduct(formData: FormData) {
-  'use server';
-
   const cartId = cookies().get('cartId')?.value;
 
   if (!cartId) {
