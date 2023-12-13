@@ -102,41 +102,45 @@ export async function handleAddToCart(data: FormData) {
       return accum;
     }, {}) ?? {};
 
-  if (cartId) {
-    await client.addCartLineItem(cartId, {
-      lineItems: [
-        {
-          productEntityId,
-          selectedOptions,
-          quantity,
-        },
-      ],
-    });
+  try {
+    if (cartId) {
+      await client.addCartLineItem(cartId, {
+        lineItems: [
+          {
+            productEntityId,
+            selectedOptions,
+            quantity,
+          },
+        ],
+      });
+
+      revalidateTag('cart');
+
+      return;
+    }
+
+    // Create cart
+    const cart = await client.createCart([
+      {
+        productEntityId,
+        selectedOptions,
+        quantity,
+      },
+    ]);
+
+    if (cart) {
+      cookies().set({
+        name: 'cartId',
+        value: cart.entityId,
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: true,
+        path: '/',
+      });
+    }
 
     revalidateTag('cart');
-
-    return;
+  } catch (e) {
+    return { error: 'Something went wrong. Please try again.' };
   }
-
-  // Create cart
-  const cart = await client.createCart([
-    {
-      productEntityId,
-      selectedOptions,
-      quantity,
-    },
-  ]);
-
-  if (cart) {
-    cookies().set({
-      name: 'cartId',
-      value: cart.entityId,
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: true,
-      path: '/',
-    });
-  }
-
-  revalidateTag('cart');
 }
