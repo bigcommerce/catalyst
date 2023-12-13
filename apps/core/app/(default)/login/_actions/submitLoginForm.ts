@@ -2,11 +2,11 @@
 
 import { z } from 'zod';
 
-import client from '~/client';
+import { login } from '~/client/mutations/login';
 
 const LoginSchema = z.object({
   email: z.string().email(),
-  password: z.string().nonempty(),
+  password: z.string().min(1),
 });
 
 export const submitLoginForm = async (formData: FormData) => {
@@ -16,7 +16,7 @@ export const submitLoginForm = async (formData: FormData) => {
       password: formData.get('password'),
     });
 
-    const customer = await client.login(email, password);
+    const customer = await login(email, password);
 
     return { status: 'success', data: customer };
   } catch (e: unknown) {
