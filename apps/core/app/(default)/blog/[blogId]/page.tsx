@@ -10,7 +10,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import client from '~/client';
+import { getBlogPost } from '~/client/queries/getBlogPost';
 import { SharingLinks } from '~/components/SharingLinks';
 
 interface Props {
@@ -20,7 +20,7 @@ interface Props {
 }
 
 export default async function BlogPostPage({ params: { blogId } }: Props) {
-  const blogPost = await client.getBlogPost(+blogId);
+  const blogPost = await getBlogPost(+blogId);
 
   if (!blogPost || !blogPost.isVisibleInNavigation) {
     return notFound();
