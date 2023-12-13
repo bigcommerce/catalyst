@@ -10,10 +10,11 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 
-import client from '~/client';
+import { getBlogPosts } from '~/client/queries/getBlogPosts';
+import { ExistingResultType } from '~/client/util';
 
 interface BlogPostCardProps {
-  blogPost: NonNullable<Awaited<ReturnType<typeof client.getBlogPosts>>>['posts']['items'][number];
+  blogPost: ExistingResultType<typeof getBlogPosts>['posts']['items'][number];
 }
 
 export const BlogPostCard = ({ blogPost }: BlogPostCardProps) => (
