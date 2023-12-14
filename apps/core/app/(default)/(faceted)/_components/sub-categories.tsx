@@ -1,13 +1,13 @@
 import Link from 'next/link';
 
-import client from '~/client';
+import { getCategoryTree } from '~/client/queries/getCategoryTree';
 
 interface Props {
   categoryId: number;
 }
 
 export async function SubCategories({ categoryId }: Props) {
-  const [categoryTree] = await client.getCategoryTree(categoryId);
+  const [categoryTree] = await getCategoryTree(categoryId);
 
   if (!categoryTree?.children.length) {
     return null;
