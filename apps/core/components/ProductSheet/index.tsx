@@ -27,7 +27,7 @@ import {
 } from 'react';
 import { useFormStatus } from 'react-dom';
 
-import { ProductForm } from '~/app/(default)/product/[slug]/ProductForm';
+import { ProductForm } from '~/app/(default)/product/[slug]/_components/ProductForm';
 import { getProduct } from '~/client/queries/getProduct';
 import { VariantSelector } from '~/components/VariantSelector';
 import { cn } from '~/lib/utils';

@@ -1,4 +1,4 @@
-import { ProductForm } from '~/app/(default)/product/[slug]/ProductForm';
+import { ProductForm } from '~/app/(default)/product/[slug]/_components/ProductForm';
 
 import { ProductSheet, ProductSheetContent, ProductSheetForm } from '../ProductSheet';
 

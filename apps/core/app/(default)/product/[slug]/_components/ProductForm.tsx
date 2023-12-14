@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { ComponentPropsWithoutRef } from 'react';
 import { toast } from 'react-hot-toast';
 
-import { handleAddToCart } from './_actions/addToCart';
+import { handleAddToCart } from '../_actions/addToCart';
 
 export const ProductForm = ({ children }: ComponentPropsWithoutRef<'form'>) => (
   <form
