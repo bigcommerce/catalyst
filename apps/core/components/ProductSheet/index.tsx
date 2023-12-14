@@ -27,6 +27,7 @@ import {
 } from 'react';
 import { useFormStatus } from 'react-dom';
 
+import { ProductForm } from '~/app/(default)/product/[slug]/ProductForm';
 import { getProduct } from '~/client/queries/getProduct';
 import { VariantSelector } from '~/components/VariantSelector';
 import { cn } from '~/lib/utils';
@@ -227,7 +228,7 @@ const SubmitButton = ({ children }: PropsWithChildren) => {
   );
 };
 
-export const ProductSheetForm = ({ children, ...props }: ComponentPropsWithoutRef<'form'>) => {
+export const ProductSheetForm = ({ children }: ComponentPropsWithoutRef<'form'>) => {
   const { product } = useContext(ProductContext);
 
   if (!product) {
@@ -235,7 +236,7 @@ export const ProductSheetForm = ({ children, ...props }: ComponentPropsWithoutRe
   }
 
   return (
-    <form {...props}>
+    <ProductForm>
       <input name="product_id" type="hidden" value={product.entityId} />
       <VariantSelector product={product} />
       <div>
@@ -245,6 +246,6 @@ export const ProductSheetForm = ({ children, ...props }: ComponentPropsWithoutRe
         <Counter id="quantity" min={1} name="quantity" />
       </div>
       {children || <SubmitButton>Add to cart</SubmitButton>}
-    </form>
+    </ProductForm>
   );
 };
