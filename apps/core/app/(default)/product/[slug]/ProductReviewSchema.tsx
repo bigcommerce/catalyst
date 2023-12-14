@@ -1,12 +1,13 @@
 import { Product as ProductSchemaType, WithContext } from 'schema-dts';
 
-import client from '~/client';
+import { getProductReviews } from '~/client/queries/getProductReviews';
+import { ExistingResultType } from '~/client/util';
 
 export const ProductReviewSchema = ({
   reviews,
   productId,
 }: {
-  reviews: NonNullable<Awaited<ReturnType<typeof client.getProductReviews>>>['reviews'];
+  reviews: ExistingResultType<typeof getProductReviews>['reviews'];
   productId: number;
 }) => {
   const productReviewSchema: WithContext<ProductSchemaType> = {

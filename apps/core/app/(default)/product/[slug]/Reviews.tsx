@@ -1,6 +1,6 @@
 import { Rating } from '@bigcommerce/reactant/Rating';
 
-import client from '~/client';
+import { getProductReviews } from '~/client/queries/getProductReviews';
 
 import { ProductReviewSchema } from './ProductReviewSchema';
 
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const Reviews = async ({ productId }: Props) => {
-  const product = await client.getProductReviews(productId);
+  const product = await getProductReviews(productId);
   const reviews = product?.reviews;
 
   if (!reviews) {
