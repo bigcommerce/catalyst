@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import client from '~/client';
+import { getCategory } from '~/client/queries/getCategory';
 import { ProductCard } from '~/components/ProductCard';
 
 import { Breadcrumbs } from '../../_components/breadcrumbs';
@@ -25,7 +25,7 @@ export default async function Category({ params, searchParams }: Props) {
 
   // We will only need a partial of this query to fetch the category name and breadcrumbs.
   // The rest of the arguments are useless at this point.
-  const category = await client.getCategory({
+  const category = await getCategory({
     categoryId,
   });
 

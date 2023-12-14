@@ -11,7 +11,7 @@ interface Props {
   breadcrumbs: Array<{
     name: string;
     entityId: number;
-    path: string | null;
+    path?: string | null;
   }>;
   category: string;
 }
