@@ -22,7 +22,6 @@ import { getCategory } from './queries/getCategory';
 import { getCategoryTree } from './queries/getCategoryTree';
 import { getFeaturedProducts } from './queries/getFeaturedProducts';
 import { getProduct } from './queries/getProduct';
-import { getProductReviews } from './queries/getProductReviews';
 import { getProducts } from './queries/getProducts';
 import { getProductSearchResults } from './queries/getProductSearchResults';
 import { getQuickSearchResults } from './queries/getQuickSearchResults';
@@ -75,10 +74,6 @@ class Client<CustomRequestInit extends FetcherRequestInit = FetcherRequestInit> 
 
   getProducts(...args: PublicParams<typeof getProducts<CustomRequestInit>>) {
     return getProducts(this.fetch, ...args);
-  }
-
-  getProductReviews(...args: PublicParams<typeof getProductReviews<CustomRequestInit>>) {
-    return getProductReviews(this.fetch, ...args);
   }
 
   getProductSearchResults(

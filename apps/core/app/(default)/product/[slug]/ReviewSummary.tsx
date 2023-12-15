@@ -2,7 +2,7 @@ import { cs } from '@bigcommerce/reactant/cs';
 import { Rating } from '@bigcommerce/reactant/Rating';
 import { useId } from 'react';
 
-import client from '~/client';
+import { getProductReviews } from '~/client/queries/getProductReviews';
 
 interface Props {
   productId: number;
@@ -11,7 +11,7 @@ interface Props {
 export const ReviewSummary = async ({ productId }: Props) => {
   const summaryId = useId();
 
-  const reviews = await client.getProductReviews(productId);
+  const reviews = await getProductReviews(productId);
 
   if (!reviews) {
     return null;
