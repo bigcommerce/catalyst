@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import client from '~/client';
+import { getBrand } from '~/client/queries/getBrand';
 import { ProductCard } from '~/components/ProductCard';
 
 import { FacetedSearch } from '../../_components/faceted-search';
@@ -22,7 +22,7 @@ export default async function Brand({ params, searchParams }: Props) {
 
   const search = await fetchFacetedSearch({ ...searchParams, brand: [params.slug] });
 
-  const brand = await client.getBrand({
+  const brand = await getBrand({
     brandId,
   });
 

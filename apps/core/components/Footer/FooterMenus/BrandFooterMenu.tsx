@@ -1,9 +1,9 @@
-import client from '~/client';
+import { getBrands } from '~/client/queries/getBrands';
 
 import { BaseFooterMenu } from './BaseFooterMenu';
 
 export const BrandFooterMenu = async () => {
-  const brands = await client.getBrands();
+  const brands = await getBrands();
 
   if (!brands.length) {
     return null;
