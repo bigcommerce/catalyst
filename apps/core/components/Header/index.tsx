@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { PropsWithChildren, Suspense } from 'react';
 
 import client from '~/client';
+import { getCart } from '~/client/queries/getCart';
 import { cn } from '~/lib/utils';
 
 import { QuickSearch } from '../QuickSearch';
@@ -41,12 +42,7 @@ const Cart = async () => {
     );
   }
 
-  const cart = await client.getCart(cartId, {
-    cache: 'no-store',
-    next: {
-      tags: ['cart'],
-    },
-  });
+  const cart = await getCart(cartId);
 
   const count = cart?.lineItems.totalQuantity;
 

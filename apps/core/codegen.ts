@@ -58,6 +58,9 @@ const config: CodegenConfig = {
       },
       config: {
         documentMode: 'string',
+        avoidOptionals: {
+          field: true,
+        },
         scalars: {
           DateTime: 'string',
           Long: 'number',
