@@ -9,14 +9,14 @@ import { Suspense } from 'react';
 import { getProduct } from '~/client/queries/getProduct';
 import { VariantSelector } from '~/components/VariantSelector';
 
-import { AddToCart } from './AddToCart';
-import { BreadCrumbs } from './Breadcrumbs';
-import { Gallery } from './Gallery';
-import { ProductForm } from './ProductForm';
-import { ProductSchema } from './ProductSchema';
-import { RelatedProducts } from './RelatedProducts';
-import { Reviews } from './Reviews';
-import { ReviewSummary } from './ReviewSummary';
+import { AddToCart } from './_components/AddToCart';
+import { BreadCrumbs } from './_components/Breadcrumbs';
+import { Gallery } from './_components/Gallery';
+import { ProductForm } from './_components/ProductForm';
+import { ProductSchema } from './_components/ProductSchema';
+import { RelatedProducts } from './_components/RelatedProducts';
+import { Reviews } from './_components/Reviews';
+import { ReviewSummary } from './_components/ReviewSummary';
 
 type Product = Awaited<ReturnType<typeof getProduct>>;
 
