@@ -87,6 +87,14 @@ export const PRODUCT_OPTIONS_FRAGMENT = /* GraphQL */ `
                     hexColors
                     imageUrl(width: 36)
                   }
+                  ... on ProductPickListOptionValue {
+                    __typename
+                    defaultImage {
+                      altText
+                      url(width: 48)
+                    }
+                    productId
+                  }
                 }
               }
             }

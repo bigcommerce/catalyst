@@ -1,8 +1,10 @@
 import { Label } from '@bigcommerce/reactant/Label';
+import { PickList, PickListItem } from '@bigcommerce/reactant/PickList';
 import { RadioGroup, RadioItem } from '@bigcommerce/reactant/RadioGroup';
 import { RectangleList, RectangleListItem } from '@bigcommerce/reactant/RectangleList';
 import { Select, SelectContent, SelectItem } from '@bigcommerce/reactant/Select';
 import { Swatch, SwatchItem } from '@bigcommerce/reactant/Swatch';
+import Image from 'next/image';
 import { Fragment } from 'react';
 
 import { getProduct } from '~/client/queries/getProduct';
@@ -151,6 +153,55 @@ export const MultipleChoiceField = ({
               ))}
             </SelectContent>
           </Select>
+        </Fragment>
+      );
+
+    case 'ProductPickList':
+    case 'ProductPickListWithImages':
+      return (
+        <Fragment key={option.entityId}>
+          <Label className="my-2 inline-block font-semibold" id={`label-${option.entityId}`}>
+            {option.displayName}
+          </Label>
+          <PickList
+            aria-labelledby={`label-${option.entityId}`}
+            defaultValue={searchParamSelected || selectedValue || defaultValue}
+            name={`attribute[${option.entityId}]`}
+            onValueChange={(value) =>
+              handleOnValueChange({
+                optionId: option.entityId,
+                valueId: Number(value),
+              })
+            }
+            required={option.isRequired}
+          >
+            {option.values.map((value) => {
+              if ('__typename' in value && value.__typename === 'ProductPickListOptionValue') {
+                return (
+                  <div className="flex flex-row items-center p-4" key={value.entityId}>
+                    {Boolean(value.defaultImage) && (
+                      <Image
+                        alt={value.defaultImage?.altText || ''}
+                        className="mr-6"
+                        height={48}
+                        src={value.defaultImage?.url || ''}
+                        width={48}
+                      />
+                    )}
+                    <PickListItem id={`${value.entityId}`} value={`${value.entityId}`} />
+                    <Label
+                      className="cursor-pointer ps-4 font-normal"
+                      htmlFor={`${value.entityId}`}
+                    >
+                      {value.label}
+                    </Label>
+                  </div>
+                );
+              }
+
+              return null;
+            })}
+          </PickList>
         </Fragment>
       );
 
