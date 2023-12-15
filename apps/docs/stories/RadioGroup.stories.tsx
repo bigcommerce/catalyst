@@ -55,7 +55,7 @@ const MOCKED_COLOR_OPTIONS = [
 export const BaseRadioGroup: Story = {
   render: () => (
     <form>
-      <RadioGroup defaultValue="XL">
+      <RadioGroup defaultValue="M">
         {MOCKED_SIZE_OPTIONS.map((option) => (
           <div className="mb-2 flex" key={option.id}>
             <RadioItem {...option} />
@@ -72,7 +72,7 @@ export const BaseRadioGroup: Story = {
 export const RadioGroupWithIcon: Story = {
   render: () => (
     <form>
-      <RadioGroup defaultValue="Pink">
+      <RadioGroup defaultValue="Green">
         {MOCKED_COLOR_OPTIONS.map((option) => (
           <div className="mb-2 flex" key={option.id}>
             <RadioItem {...option} className="group">
