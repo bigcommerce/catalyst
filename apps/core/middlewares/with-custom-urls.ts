@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import client from '../client';
+import { getRoute } from '~/client/queries/getRoute';
+
+import { kv } from '../lib/kv';
 
 import { type MiddlewareFactory } from './compose-middlewares';
+
+type Node = Awaited<ReturnType<typeof getRoute>>;
 
 const createRewriteUrl = (path: string, request: NextRequest) => {
   const url = new URL(path, request.url);
@@ -12,23 +16,56 @@ const createRewriteUrl = (path: string, request: NextRequest) => {
   return url;
 };
 
-export const withCustomUrls: MiddlewareFactory = (next) => {
-  return async (request, event) => {
-    const response = await fetch(
-      new URL(`/api/route?path=${request.nextUrl.pathname}`, request.url),
+const getExistingRoute = async (request: NextRequest) => {
+  try {
+    const route = await kv.get<{ node: Node }>(request.nextUrl.pathname);
+
+    return route?.node;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+  }
+};
+
+const setKvRoute = async (request: NextRequest, node: Node) => {
+  try {
+    await kv.set(
+      request.nextUrl.pathname,
+      { node },
       {
-        headers: {
-          'x-internal-token': process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '',
-        },
+        ex: 60 * 30, // 30 minutes
       },
     );
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+  }
+};
 
-    if (!response.ok) {
-      throw new Error(`BigCommerce API returned ${response.status}`);
+const getCustomUrlNode = async (request: NextRequest) => {
+  try {
+    const route = await getExistingRoute(request);
+
+    if (route) {
+      return route;
     }
 
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    const node = (await response.json()) as Awaited<ReturnType<typeof client.getRoute>>;
+    const node = await getRoute(request.nextUrl.pathname);
+
+    if (node !== undefined) {
+      await setKvRoute(request, node);
+    }
+
+    return node;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+  }
+};
+
+export const withCustomUrls: MiddlewareFactory = (next) => {
+  return async (request, event) => {
+    const node = await getCustomUrlNode(request);
 
     switch (node?.__typename) {
       case 'Brand': {

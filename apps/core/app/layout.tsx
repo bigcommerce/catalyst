@@ -4,6 +4,8 @@ import { Inter } from 'next/font/google';
 import { PropsWithChildren } from 'react';
 
 import './globals.css';
+
+import { Notifications } from './notifications';
 import { Providers } from './providers';
 
 const inter = Inter({
@@ -24,6 +26,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html className={`${inter.variable} font-sans`} lang="en">
       <body className="flex h-screen flex-col">
+        <Notifications />
         <Providers>{children}</Providers>
         <Analytics />
         <SpeedInsights />

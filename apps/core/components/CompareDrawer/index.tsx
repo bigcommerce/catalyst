@@ -92,7 +92,7 @@ export const CompareDrawer = () => {
         <AccordionItem className="flex flex-col" value="compare">
           <div className="flex">
             <CompareLink products={products} />
-            <AccordionTrigger className="align-center flex aspect-square h-12 grow-0 justify-center border border-blue-primary text-blue-primary md:hidden" />
+            <AccordionTrigger className="align-center flex aspect-square h-12 grow-0 justify-center border border-blue-primary text-blue-primary md:hidden [&[data-state=closed]>svg]:rotate-180 [&[data-state=open]>svg]:rotate-0" />
           </div>
           <AccordionContent className="mt-4">
             <ul className="flex max-h-44 flex-col overflow-auto">
