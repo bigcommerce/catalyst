@@ -4,6 +4,7 @@ import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
 import client from '~/client';
+import { addCartLineItem } from '~/client/mutations/addCartLineItem';
 
 export const addToCart = async (data: FormData) => {
   const productEntityId = Number(data.get('product_id'));
@@ -11,7 +12,7 @@ export const addToCart = async (data: FormData) => {
   const cartId = cookies().get('cartId')?.value;
 
   if (cartId) {
-    await client.addCartLineItem(cartId, {
+    await addCartLineItem(cartId, {
       lineItems: [
         {
           productEntityId,
