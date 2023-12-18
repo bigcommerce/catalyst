@@ -178,7 +178,7 @@ export const MultipleChoiceField = ({
             {option.values.map((value) => {
               if ('__typename' in value && value.__typename === 'ProductPickListOptionValue') {
                 return (
-                  <div className="flex flex-row items-center p-4" key={value.entityId}>
+                  <div className="flex items-center p-4" key={value.entityId}>
                     {Boolean(value.defaultImage) && (
                       <Image
                         alt={value.defaultImage?.altText || ''}
