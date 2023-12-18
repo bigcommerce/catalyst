@@ -2,7 +2,7 @@ import { kv } from '@vercel/kv';
 
 import { KvAdapter, SetCommandOptions } from '../types';
 
-class VercelKvAdapter implements KvAdapter {
+export class VercelKvAdapter implements KvAdapter {
   constructor(private adapter = kv) {}
 
   async get<Data>(key: string) {
@@ -23,5 +23,3 @@ class VercelKvAdapter implements KvAdapter {
     return response;
   }
 }
-
-export const vercelKvAdapter = new VercelKvAdapter();

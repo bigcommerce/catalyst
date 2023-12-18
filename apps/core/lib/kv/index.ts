@@ -1,12 +1,17 @@
-import { vercelKvAdapter } from './adapters/vercel';
 import { KvAdapter, SetCommandOptions } from './types';
 
+interface Config {
+  logger?: boolean;
+}
+
 class KV<Adapter extends KvAdapter> implements KvAdapter {
-  private kv: Adapter;
+  private kv?: Adapter;
   private namespace: string;
 
-  constructor(adapter: Adapter) {
-    this.kv = adapter;
+  constructor(
+    private createAdapter: () => Promise<Adapter>,
+    private config: Config = {},
+  ) {
     this.namespace =
       process.env.KV_NAMESPACE ??
       `${process.env.BIGCOMMERCE_STORE_HASH ?? 'store'}_${
@@ -15,7 +20,14 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
   }
 
   async get<Data>(key: string) {
-    return this.kv.get<Data>(`${this.namespace}_${key}`);
+    const kv = await this.getKv();
+    const fullKey = `${this.namespace}_${key}`;
+
+    const value = await kv.get<Data>(fullKey);
+
+    this.logger(`GET - Key: ${fullKey} - Value: ${JSON.stringify(value, null, 2)}`);
+
+    return value;
   }
 
   async set<Data, Options extends SetCommandOptions = SetCommandOptions>(
@@ -23,8 +35,44 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
     value: Data,
     opts?: Options,
   ) {
-    return this.kv.set(`${this.namespace}_${key}`, value, opts);
+    const kv = await this.getKv();
+    const fullKey = `${this.namespace}_${key}`;
+
+    this.logger(`SET - Key: ${fullKey} - Value: ${JSON.stringify(value, null, 2)}`);
+
+    return kv.set(`${fullKey}`, value, opts);
+  }
+
+  private async getKv() {
+    if (!this.kv) {
+      this.kv = await this.createAdapter();
+    }
+
+    return this.kv;
+  }
+
+  private logger(message: string) {
+    if (this.config.logger) {
+      // eslint-disable-next-line no-console
+      console.log(`[BigCommerce] KV ${message}`);
+    }
   }
 }
 
-export const kv = new KV(vercelKvAdapter);
+async function createKVAdapter() {
+  if (process.env.NODE_ENV === 'development' && !process.env.KV_REST_API_URL) {
+    const { DevKvAdapter } = await import('./adapters/dev');
+
+    return new DevKvAdapter();
+  }
+
+  const { VercelKvAdapter } = await import('./adapters/vercel');
+
+  return new VercelKvAdapter();
+}
+
+const adapterInstance = new KV(createKVAdapter, {
+  logger: process.env.NODE_ENV !== 'production' || process.env.KV_LOGGER === 'true',
+});
+
+export { adapterInstance as kv };
