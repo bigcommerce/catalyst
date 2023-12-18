@@ -14,7 +14,7 @@ import { Message } from '@bigcommerce/reactant/Message';
 import { Loader2 as Spinner } from 'lucide-react';
 import Link from 'next/link';
 import { ChangeEvent, useState } from 'react';
-import { useFormStatus } from 'react-dom';
+import { useFormState, useFormStatus } from 'react-dom';
 
 import { cn } from '~/lib/utils';
 
@@ -24,14 +24,9 @@ export const LoginForm = () => {
   const { pending } = useFormStatus();
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
-  const [isFormInvalid, showIsFormInvalid] = useState(false);
-  const onSubmit = async (formData: FormData) => {
-    const { status } = await submitLoginForm(formData);
+  const [state, formAction] = useFormState(submitLoginForm, { status: 'idle' });
 
-    if (status === 'failed') {
-      showIsFormInvalid(true);
-    }
-  };
+  const isFormInvalid = state?.status === 'failed';
 
   const handleInputValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const validationStatus = e.target.validity.valueMissing;
@@ -63,7 +58,7 @@ export const LoginForm = () => {
           </p>
         </Message>
       )}
-      <Form action={onSubmit} className="mb-14 flex flex-col gap-3 md:p-8 lg:p-0">
+      <Form action={formAction} className="mb-14 flex flex-col gap-3 md:p-8 lg:p-0">
         <Field className={cn('relative space-y-2 pb-7')} name="email">
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <FieldControl asChild>

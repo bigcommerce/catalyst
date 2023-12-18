@@ -26,6 +26,7 @@ const filterActivePages = (availableStorePages: AvailableWebPages) =>
 
     return visiblePages;
   }, []);
+
 const activeFooterWebPages = await (async (columnName: string) => {
   const storeWebPages = await getWebPages();
 
@@ -34,6 +35,7 @@ const activeFooterWebPages = await (async (columnName: string) => {
     items: filterActivePages(storeWebPages),
   };
 })('About us');
+
 const WebPageFooterMenu = () => {
   const { title, items } = activeFooterWebPages;
 
