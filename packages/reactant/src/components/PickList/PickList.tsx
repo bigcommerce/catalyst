@@ -5,7 +5,7 @@ import { cs } from '../../utils/cs';
 
 type RadioIndicatorType = typeof RadioGroupPrimitive.Indicator;
 
-const RadioIndicator = forwardRef<
+const PickListIndicator = forwardRef<
   ElementRef<RadioIndicatorType>,
   ComponentPropsWithRef<RadioIndicatorType>
 >(({ children, className, ...props }, ref) => {
@@ -20,11 +20,11 @@ const RadioIndicator = forwardRef<
   );
 });
 
-RadioIndicator.displayName = 'RadioIndicator';
+PickListIndicator.displayName = 'PickListIndicator';
 
 type RadioItemType = typeof RadioGroupPrimitive.Item;
 
-const RadioItem = forwardRef<ElementRef<RadioItemType>, ComponentPropsWithRef<RadioItemType>>(
+const PickListItem = forwardRef<ElementRef<RadioItemType>, ComponentPropsWithRef<RadioItemType>>(
   ({ children, className, ...props }, ref) => {
     return (
       <RadioGroupPrimitive.Item
@@ -42,26 +42,30 @@ const RadioItem = forwardRef<ElementRef<RadioItemType>, ComponentPropsWithRef<Ra
         ref={ref}
         {...props}
       >
-        {children || <RadioIndicator />}
+        {children || <PickListIndicator />}
       </RadioGroupPrimitive.Item>
     );
   },
 );
 
-RadioItem.displayName = 'RadioItem';
+PickListItem.displayName = 'PickListItem';
 
 type RadioGroupType = typeof RadioGroupPrimitive.Root;
 
-const RadioGroup = forwardRef<ElementRef<RadioGroupType>, ComponentPropsWithRef<RadioGroupType>>(
+const PickList = forwardRef<ElementRef<RadioGroupType>, ComponentPropsWithRef<RadioGroupType>>(
   ({ children, className, ...props }, ref) => {
     return (
-      <RadioGroupPrimitive.Root className={cs(className)} ref={ref} {...props}>
+      <RadioGroupPrimitive.Root
+        className={cs('grid auto-rows-fr divide-y divide-solid divide-gray-200 border', className)}
+        ref={ref}
+        {...props}
+      >
         {children}
       </RadioGroupPrimitive.Root>
     );
   },
 );
 
-RadioGroup.displayName = 'RadioGroup';
+PickList.displayName = 'PickList';
 
-export { RadioGroup, RadioItem, RadioIndicator };
+export { PickList, PickListItem, PickListIndicator };
