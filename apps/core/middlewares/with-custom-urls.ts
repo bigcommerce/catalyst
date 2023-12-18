@@ -46,7 +46,7 @@ const getCustomUrlNode = async (request: NextRequest) => {
   try {
     const route = await getExistingRoute(request);
 
-    if (route) {
+    if (route !== undefined) {
       return route;
     }
 
