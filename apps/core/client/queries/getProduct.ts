@@ -114,6 +114,12 @@ export const PRODUCT_OPTIONS_FRAGMENT = /* GraphQL */ `
             limitNumberBy
             lowest
           }
+          ... on TextFieldOption {
+            __typename
+            defaultText: defaultValue
+            maxLength
+            minLength
+          }
           ... on MultiLineTextFieldOption {
             __typename
             defaultText: defaultValue

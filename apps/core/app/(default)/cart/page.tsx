@@ -113,6 +113,14 @@ export default async function CartPage() {
                               </div>
                             );
 
+                          case 'CartSelectedTextFieldOption':
+                            return (
+                              <div key={selectedOption.entityId}>
+                                <span>{selectedOption.name}:</span>{' '}
+                                <span className="font-semibold">{selectedOption.text}</span>
+                              </div>
+                            );
+
                           case 'CartSelectedDateFieldOption':
                             return (
                               <div key={selectedOption.entityId}>

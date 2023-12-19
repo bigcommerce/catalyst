@@ -43,6 +43,9 @@ export const GET_CART_QUERY = /* GraphQL */ `
               ... on CartSelectedMultiLineTextFieldOption {
                 text
               }
+              ... on CartSelectedTextFieldOption {
+                text
+              }
               ... on CartSelectedDateFieldOption {
                 date {
                   utc
