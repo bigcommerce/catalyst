@@ -14,8 +14,8 @@ import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { PropsWithChildren, Suspense } from 'react';
 
-import client from '~/client';
 import { getCart } from '~/client/queries/getCart';
+import { getCategoryTree } from '~/client/queries/getCategoryTree';
 import { cn } from '~/lib/utils';
 
 import { QuickSearch } from '../QuickSearch';
@@ -64,7 +64,7 @@ const HeaderNav = async ({
   className?: string;
   inCollapsedNav?: boolean;
 }) => {
-  const categoryTree = await client.getCategoryTree();
+  const categoryTree = await getCategoryTree();
 
   return (
     <>

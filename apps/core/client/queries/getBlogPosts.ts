@@ -29,10 +29,7 @@ const GET_BLOG_POSTS_QUERY = /* GraphQL */ `
           name
           posts(first: $first, after: $after, last: $last, before: $before, filters: $filters) {
             pageInfo {
-              startCursor
-              endCursor
-              hasNextPage
-              hasPreviousPage
+              ...PageDetails
             }
             edges {
               node {

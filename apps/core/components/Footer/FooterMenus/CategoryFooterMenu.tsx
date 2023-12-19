@@ -1,9 +1,9 @@
-import client from '~/client';
+import { getCategoryTree } from '~/client/queries/getCategoryTree';
 
 import { BaseFooterMenu } from './BaseFooterMenu';
 
 export const CategoryFooterMenu = async () => {
-  const categoryTree = await client.getCategoryTree();
+  const categoryTree = await getCategoryTree();
 
   if (!categoryTree.length) {
     return null;
