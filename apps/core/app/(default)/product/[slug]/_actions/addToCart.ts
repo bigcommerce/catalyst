@@ -5,6 +5,7 @@ import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
 import client from '~/client';
+import { addCartLineItem } from '~/client/mutations/addCartLineItem';
 import { getProduct } from '~/client/queries/getProduct';
 
 export async function handleAddToCart(data: FormData) {
@@ -104,7 +105,7 @@ export async function handleAddToCart(data: FormData) {
 
   try {
     if (cartId) {
-      await client.addCartLineItem(cartId, {
+      await addCartLineItem(cartId, {
         lineItems: [
           {
             productEntityId,
