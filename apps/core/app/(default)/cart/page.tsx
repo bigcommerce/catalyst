@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Suspense } from 'react';
 
 import client from '~/client';
+import { getCart } from '~/client/queries/getCart';
 
 import { removeProduct } from './_actions/removeProduct';
 import { CartItemCounter } from './CartItemCounter';
@@ -38,12 +39,7 @@ export default async function CartPage() {
     return <EmptyCart />;
   }
 
-  const cart = await client.getCart(cartId, {
-    cache: 'no-store',
-    next: {
-      tags: ['cart'],
-    },
-  });
+  const cart = await getCart(cartId);
 
   if (!cart) {
     return <EmptyCart />;
