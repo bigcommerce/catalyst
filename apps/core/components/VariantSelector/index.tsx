@@ -10,6 +10,7 @@ import { DateField } from './DateField';
 import { MultiLineTextField } from './MultiLineTextField';
 import { MultipleChoiceField } from './MultipleChoiceField';
 import { NumberField } from './NumberField';
+import { TextField } from './TextField';
 
 type Product = ExistingResultType<typeof getProduct>;
 
@@ -54,6 +55,10 @@ export const VariantSelector = ({ product }: { product: Product }) => {
 
     if (option.__typename === 'MultiLineTextFieldOption') {
       return <MultiLineTextField key={option.entityId} option={option} />;
+    }
+
+    if (option.__typename === 'TextFieldOption') {
+      return <TextField key={option.entityId} option={option} />;
     }
 
     if (option.__typename === 'DateFieldOption') {
