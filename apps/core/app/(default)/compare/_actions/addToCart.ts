@@ -3,8 +3,8 @@
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
-import client from '~/client';
 import { addCartLineItem } from '~/client/mutations/addCartLineItem';
+import { createCart } from '~/client/mutations/createCart';
 
 export const addToCart = async (data: FormData) => {
   const productEntityId = Number(data.get('product_id'));
@@ -26,7 +26,7 @@ export const addToCart = async (data: FormData) => {
     return;
   }
 
-  const cart = await client.createCart([{ productEntityId, quantity: 1 }]);
+  const cart = await createCart([{ productEntityId, quantity: 1 }]);
 
   if (cart) {
     cookies().set({

@@ -4,8 +4,8 @@ import { CartSelectedOptionsInput } from '@bigcommerce/catalyst-client';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
-import client from '~/client';
 import { addCartLineItem } from '~/client/mutations/addCartLineItem';
+import { createCart } from '~/client/mutations/createCart';
 import { getProduct } from '~/client/queries/getProduct';
 
 export async function handleAddToCart(data: FormData) {
@@ -137,7 +137,7 @@ export async function handleAddToCart(data: FormData) {
     }
 
     // Create cart
-    const cart = await client.createCart([
+    const cart = await createCart([
       {
         productEntityId,
         selectedOptions,
