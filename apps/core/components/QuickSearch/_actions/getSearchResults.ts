@@ -1,9 +1,9 @@
 'use server';
 
-import client from '~/client';
+import { getQuickSearchResults } from '~/client/queries/getQuickSearchResults';
 
 export async function getSearchResults(searchTerm: string) {
-  const searchResults = await client.getQuickSearchResults(searchTerm);
+  const searchResults = await getQuickSearchResults(searchTerm);
 
   return searchResults;
 }

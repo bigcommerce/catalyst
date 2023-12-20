@@ -16,7 +16,8 @@ import { Search, Loader2 as Spinner, X } from 'lucide-react';
 import Image from 'next/image';
 import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 
-import client from '~/client';
+import { getQuickSearchResults } from '~/client/queries/getQuickSearchResults';
+import { ExistingResultType } from '~/client/util';
 
 import { Pricing } from '../Pricing';
 
@@ -26,7 +27,7 @@ interface SearchProps extends PropsWithChildren {
   initialTerm?: string;
 }
 
-type SearchResults = NonNullable<Awaited<ReturnType<typeof client.getQuickSearchResults>>>;
+type SearchResults = ExistingResultType<typeof getQuickSearchResults>;
 
 const isSearchQuery = (data: unknown): data is SearchResults => {
   if (typeof data === 'object' && data !== null && 'products' in data) {
