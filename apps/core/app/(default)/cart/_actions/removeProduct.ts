@@ -3,7 +3,7 @@
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
-import client from '~/client';
+import { deleteCartLineItem } from '~/client/mutations/deleteCartLineItem';
 
 export async function removeProduct(formData: FormData) {
   const cartId = cookies().get('cartId')?.value;
@@ -18,7 +18,7 @@ export async function removeProduct(formData: FormData) {
     throw new Error('No lineItemEntityId found');
   }
 
-  const updatedCart = await client.deleteCartLineItem(cartId, lineItemEntityId.toString());
+  const updatedCart = await deleteCartLineItem(cartId, lineItemEntityId.toString());
 
   // If we remove the last item in a cart the cart is deleted
   // so we need to remove the cartId cookie
