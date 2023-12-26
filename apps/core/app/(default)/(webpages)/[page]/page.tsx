@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { getReCaptchaSettings } from '~/client/queries/getReCaptchaSettings';
 import { getWebPage } from '~/client/queries/getWebPage';
 import { ContactUs } from '~/components/Forms';
 
@@ -35,16 +36,23 @@ export default async function WebPage({ params }: Props) {
     notFound();
   }
 
-  const { name, htmlBody, __typename: pageType } = webpage;
+  const { name, htmlBody, __typename: pageType, entityId } = webpage;
 
   switch (pageType) {
-    case 'ContactPage':
+    case 'ContactPage': {
+      const reCaptchaSettings = await getReCaptchaSettings();
+
       return (
         <>
           <PageContent content={htmlBody} title={name} />
-          <ContactUs fields={webpage.contactFields} />
+          <ContactUs
+            fields={webpage.contactFields}
+            pageEntityId={entityId}
+            reCaptchaSettings={reCaptchaSettings}
+          />
         </>
       );
+    }
 
     case 'NormalPage':
     default:
