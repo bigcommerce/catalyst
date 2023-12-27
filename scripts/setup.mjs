@@ -1,5 +1,6 @@
 import { confirm, input, password, select } from "@inquirer/prompts";
 import { readFile, writeFile } from 'fs/promises';
+import crypto from 'crypto'
 
 /**
  * @param {{ storeHash: string, accessToken: string }} config
@@ -527,6 +528,13 @@ const promptCustomerImpersonationToken = async ({
   return data.token;
 };
 
+/**
+* @returns {string}
+*/
+const generateAuthSecret = () => {
+  return crypto.randomBytes(32).toString('hex');
+};
+
 // Sourced and modified from the Vercel CLI: https://github.com/vercel/vercel/blob/da300030c999b3555c608a321c9d0a4d36923a5a/packages/cli/src/util/parse-env.ts
 // https://github.com/vercel/vercel/blob/da300030c999b3555c608a321c9d0a4d36923a5a/LICENSE
 /**
@@ -606,12 +614,13 @@ function escapeValue(value) {
     : '';
 }
 
-/** @param {{ storeHash: string, accessToken: string, channelId: number, customerImpersonationToken: string }} env */
+/** @param {{ storeHash: string, accessToken: string, channelId: number, customerImpersonationToken: string, authSecret: string }} env */
 const writeEnv = async ({
   storeHash,
   accessToken,
   channelId,
   customerImpersonationToken,
+  authSecret,
 }) => {
   const records = await createEnvObject('.env.example');
 
@@ -624,6 +633,7 @@ const writeEnv = async ({
   records['BIGCOMMERCE_ACCESS_TOKEN'] = accessToken;
   records['BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN'] = customerImpersonationToken;
   records['BIGCOMMERCE_CHANNEL_ID'] = `${channelId}`;
+  records['AUTH_SECRET'] = authSecret;
 
   const contents =
     Object.keys(records)
@@ -650,7 +660,9 @@ const setup = async () => {
     channelId,
   });
 
-  await writeEnv({ storeHash, accessToken, channelId, customerImpersonationToken });
+  const authSecret = generateAuthSecret();
+
+  await writeEnv({ storeHash, accessToken, channelId, customerImpersonationToken, authSecret });
 };
 
 setup();
