@@ -25,7 +25,7 @@ test('Edit product quantity in cart', async ({ page }) => {
   await ProductActions.addProductToCart(page, sampleProduct);
 
   await page.locator('a').filter({ hasText: 'Cart Items1' }).click();
-  await page.getByRole('link', { name: 'Proceed to checkout' }).waitFor({ state: 'visible' });
+  await expect(page.getByRole('link', { name: 'Proceed to checkout' })).toBeVisible();
 
   await page.getByLabel('Increase count').click();
   await expect(page.locator('a').filter({ hasText: 'Cart Items2' })).toBeVisible();
@@ -39,7 +39,13 @@ test('Proceed to checkout', async ({ page }) => {
 
   await page.locator('a').filter({ hasText: 'Cart Items1' }).click();
   await page.getByRole('link', { name: 'Proceed to checkout' }).click();
+  await expect(page.getByRole('heading', { name: 'Order Summary' })).toBeVisible();
 
-  await expect(page.getByRole('link', { name: sampleProduct })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Check out' })).toBeVisible();
+  await expect(
+    page.locator(CartPage.CART_ITEM_DIV).filter({ hasText: `1 x ${sampleProduct}` }),
+  ).toBeVisible();
+
+  await expect(page.getByRole('heading', { name: 'Shipping' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Billing' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Payment' })).toBeVisible();
 });
