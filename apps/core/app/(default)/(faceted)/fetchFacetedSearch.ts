@@ -1,8 +1,8 @@
-import { SearchProductsFiltersInput, SearchProductsSortInput } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 import { z } from 'zod';
 
-import client from '~/client';
+import { SearchProductsFiltersInput, SearchProductsSortInput } from '~/client/generated/graphql';
+import { getProductSearchResults } from '~/client/queries/getProductSearchResults';
 
 const SearchParamSchema = z.union([z.string(), z.array(z.string()), z.undefined()]);
 
@@ -18,17 +18,7 @@ const SearchParamToArray = SearchParamSchema.transform((value) => {
   return undefined;
 });
 
-const PrivateSortParam = z.enum([
-  'A_TO_Z',
-  'BEST_REVIEWED',
-  'BEST_SELLING',
-  'FEATURED',
-  'HIGHEST_PRICE',
-  'LOWEST_PRICE',
-  'NEWEST',
-  'RELEVANCE',
-  'Z_TO_A',
-]) satisfies z.ZodType<SearchProductsSortInput>;
+const PrivateSortParam = z.nativeEnum(SearchProductsSortInput);
 
 const PublicSortParam = z.string().toUpperCase().pipe(PrivateSortParam);
 
@@ -68,7 +58,7 @@ const PrivateSearchParamsSchema = z.object({
   before: z.string().optional(),
   limit: z.number().optional(),
   sort: PrivateSortParam.optional(),
-  filters: SearchProductsFiltersInputSchema.optional(),
+  filters: SearchProductsFiltersInputSchema,
 });
 
 export const PublicSearchParamsSchema = z.object({
@@ -162,17 +152,13 @@ export const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchPar
 export const fetchFacetedSearch = cache(
   // We need to make sure the reference passed into this function is the same if we want it to be memoized.
   async (params: z.input<typeof PublicSearchParamsSchema>) => {
-    const { after, before, limit = 9, sort, filters } = PublicToPrivateParams.parse(params);
+    const { after, limit = 9, sort, filters } = PublicToPrivateParams.parse(params);
 
-    return client.getProductSearchResults(
-      {
-        after,
-        before,
-        limit,
-        sort,
-        filters,
-      },
-      { next: { revalidate: 300 }, cache: null },
-    );
+    return getProductSearchResults({
+      after,
+      limit,
+      sort,
+      filters,
+    });
   },
 );
