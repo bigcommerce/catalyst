@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import * as z from 'zod';
 
-import client from '~/client';
+import { getProducts } from '~/client/queries/getProducts';
 import { Pricing } from '~/components/Pricing';
 import { SearchForm } from '~/components/SearchForm';
 import { cn } from '~/lib/utils';
@@ -38,10 +38,9 @@ export default async function Compare({
   const parsed = CompareParamsSchema.parse(searchParams);
   const productIds = parsed.ids?.filter((id) => !Number.isNaN(id));
 
-  const products = await client.getProducts({
+  const products = await getProducts({
     productIds: productIds ?? [],
     first: productIds?.length ? MAX_COMPARE_LIMIT : 0,
-    images: { width: 300 },
   });
 
   if (!products.length) {
@@ -80,16 +79,16 @@ export default async function Compare({
             </tr>
             <tr>
               {products.map((product) => {
-                const defaultImg = product.images.find((image) => image.isDefault);
-
-                if (defaultImg) {
-                  const defaultImgUrl = defaultImg.url;
-                  const defaultImgAlt = defaultImg.altText;
-
+                if (product.defaultImage) {
                   return (
                     <td className="px-4" key={product.entityId}>
                       <Link aria-label={product.name} href={product.path}>
-                        <Image alt={defaultImgAlt} height={300} src={defaultImgUrl} width={300} />
+                        <Image
+                          alt={product.defaultImage.altText}
+                          height={300}
+                          src={product.defaultImage.url}
+                          width={300}
+                        />
                       </Link>
                     </td>
                   );
