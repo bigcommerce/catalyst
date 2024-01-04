@@ -3,7 +3,7 @@ import { graphql } from '../generated';
 import { CreateCartInput } from '../generated/graphql';
 
 export const CREATE_CART_MUTATION = /* GraphQL */ `
-  mutation createCartSimple($createCartInput: CreateCartInput!) {
+  mutation CreateCart($createCartInput: CreateCartInput!) {
     cart {
       createCart(input: $createCartInput) {
         cart {

@@ -4,7 +4,7 @@ import { CartLineItemInput, UpdateCartLineItemInput } from '@bigcommerce/catalys
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
-import client from '~/client';
+import { updateCartLineItem } from '~/client/mutations/updateCartLineItem';
 
 interface UpdateProductQuantityParams extends CartLineItemInput {
   lineItemEntityId: UpdateCartLineItemInput['lineItemEntityId'];
@@ -31,7 +31,7 @@ export async function updateProductQuantity({
     variantEntityId && { variantEntityId },
   );
 
-  const updatedCart = await client.updateCartLineItem(cartId, lineItemEntityId, {
+  const updatedCart = await updateCartLineItem(cartId, lineItemEntityId, {
     lineItem: cartLineItemData,
   });
 
