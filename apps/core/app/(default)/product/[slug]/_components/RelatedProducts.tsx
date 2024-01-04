@@ -1,6 +1,6 @@
 import { OptionValueId } from '@bigcommerce/catalyst-client';
 
-import client from '~/client';
+import { getRelatedProducts } from '~/client/queries/getRelatedProducts';
 import { ProductCardCarousel } from '~/components/ProductCardCarousel';
 
 export const RelatedProducts = async ({
@@ -10,7 +10,12 @@ export const RelatedProducts = async ({
   productId: number;
   optionValueIds: OptionValueId[];
 }) => {
-  const relatedProducts = await client.getRelatedProducts({ productId, optionValueIds });
+  const relatedProducts = await getRelatedProducts({
+    productId,
+    optionValueIds,
+    imageWidth: 500,
+    imageHeight: 500,
+  });
 
   return <ProductCardCarousel products={relatedProducts} title="Related Products" />;
 };
