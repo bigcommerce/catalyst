@@ -24,7 +24,7 @@ interface Options {
 }
 
 export const getBestSellingProducts = async ({
-  first = 10,
+  first = 12,
   imageHeight = 300,
   imageWidth = 300,
 }: Options = {}) => {
