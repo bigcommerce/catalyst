@@ -13,8 +13,8 @@ export const addToCart = async (data: FormData) => {
   const cartId = cookies().get('cartId')?.value;
   const cart = await getCart(cartId);
 
-  if (cartId && cart) {
-    await addCartLineItem(cartId, {
+  if (cart) {
+    await addCartLineItem(cart.entityId, {
       lineItems: [
         {
           productEntityId,

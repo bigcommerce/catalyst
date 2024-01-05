@@ -122,8 +122,8 @@ export async function handleAddToCart(data: FormData) {
     }, {}) ?? {};
 
   try {
-    if (cartId && cart) {
-      await addCartLineItem(cartId, {
+    if (cart) {
+      await addCartLineItem(cart.entityId, {
         lineItems: [
           {
             productEntityId,
