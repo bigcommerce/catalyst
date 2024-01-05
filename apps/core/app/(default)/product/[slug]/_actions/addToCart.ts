@@ -6,6 +6,7 @@ import { cookies } from 'next/headers';
 
 import { addCartLineItem } from '~/client/mutations/addCartLineItem';
 import { createCart } from '~/client/mutations/createCart';
+import { getCart } from '~/client/queries/getCart';
 import { getProduct } from '~/client/queries/getProduct';
 
 export async function handleAddToCart(data: FormData) {
@@ -15,6 +16,7 @@ export async function handleAddToCart(data: FormData) {
   const product = await getProduct(productEntityId);
 
   const cartId = cookies().get('cartId')?.value;
+  const cart = await getCart(cartId);
 
   const selectedOptions =
     product?.productOptions?.reduce<CartSelectedOptionsInput>((accum, option) => {
@@ -120,7 +122,7 @@ export async function handleAddToCart(data: FormData) {
     }, {}) ?? {};
 
   try {
-    if (cartId) {
+    if (cartId && cart) {
       await addCartLineItem(cartId, {
         lineItems: [
           {
@@ -137,7 +139,7 @@ export async function handleAddToCart(data: FormData) {
     }
 
     // Create cart
-    const cart = await createCart([
+    const newCart = await createCart([
       {
         productEntityId,
         selectedOptions,
@@ -145,10 +147,10 @@ export async function handleAddToCart(data: FormData) {
       },
     ]);
 
-    if (cart) {
+    if (newCart) {
       cookies().set({
         name: 'cartId',
-        value: cart.entityId,
+        value: newCart.entityId,
         httpOnly: true,
         sameSite: 'lax',
         secure: true,

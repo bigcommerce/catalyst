@@ -1,4 +1,5 @@
 import { Badge } from '@bigcommerce/reactant/Badge';
+import { Button } from '@bigcommerce/reactant/Button';
 import {
   NavigationMenu,
   NavigationMenuCollapsed,
@@ -9,11 +10,12 @@ import {
   NavigationMenuToggle,
   NavigationMenuTrigger,
 } from '@bigcommerce/reactant/NavigationMenu';
-import { ChevronDown, ShoppingCart, User } from 'lucide-react';
+import { ChevronDown, LogOut, ShoppingCart, User } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { PropsWithChildren, Suspense } from 'react';
 
+import { getSessionCustomerId } from '~/auth';
 import { getCart } from '~/client/queries/getCart';
 import { getCategoryTree } from '~/client/queries/getCategoryTree';
 import { cn } from '~/lib/utils';
@@ -21,6 +23,7 @@ import { cn } from '~/lib/utils';
 import { QuickSearch } from '../QuickSearch';
 import { StoreLogo } from '../StoreLogo';
 
+import { logout } from './_actions/logout';
 import { LinkNoCache } from './LinkNoCache';
 
 const CartLink = ({ children }: PropsWithChildren) => (
@@ -145,7 +148,9 @@ const HeaderNav = async ({
   );
 };
 
-export const Header = () => {
+export const Header = async () => {
+  const customerId = await getSessionCustomerId();
+
   return (
     <header>
       <NavigationMenu>
@@ -168,11 +173,23 @@ export const Header = () => {
               </QuickSearch>
             </NavigationMenuItem>
             <NavigationMenuItem className="hidden lg:flex">
-              <NavigationMenuLink asChild>
-                <Link aria-label="Login" href="/login">
-                  <User />
-                </Link>
-              </NavigationMenuLink>
+              {customerId ? (
+                <form action={logout}>
+                  <Button
+                    className="p-3 text-black hover:bg-transparent"
+                    type="submit"
+                    variant="subtle"
+                  >
+                    <LogOut />
+                  </Button>
+                </form>
+              ) : (
+                <NavigationMenuLink asChild>
+                  <Link aria-label="Login" href="/login">
+                    <User />
+                  </Link>
+                </NavigationMenuLink>
+              )}
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
