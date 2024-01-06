@@ -1,14 +1,14 @@
 import { Message } from '@bigcommerce/reactant/Message';
 
 import { SearchForm } from 'components/SearchForm';
-import client from '~/client';
+import { getFeaturedProducts } from '~/client/queries/getFeaturedProducts';
 import { Footer } from '~/components/Footer/Footer';
 import { Header } from '~/components/Header';
 import { ProductCard } from '~/components/ProductCard';
 import { cn } from '~/lib/utils';
 
 export default async function NotFound() {
-  const featuredProducts = await client.getFeaturedProducts();
+  const featuredProducts = await getFeaturedProducts({ imageHeight: 500, imageWidth: 500 });
 
   return (
     <>
