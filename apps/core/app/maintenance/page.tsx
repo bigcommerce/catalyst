@@ -1,7 +1,7 @@
 import { Phone } from 'lucide-react';
 import { ReactNode } from 'react';
 
-import client from '~/client';
+import { getStoreSettings } from '~/client/queries/getStoreSettings';
 import { StoreLogo } from '~/components/StoreLogo';
 
 const Container = ({ children }: { children: ReactNode }) => (
@@ -9,7 +9,7 @@ const Container = ({ children }: { children: ReactNode }) => (
 );
 
 export default async function MaintenancePage() {
-  const storeSettings = await client.getStoreSettings();
+  const storeSettings = await getStoreSettings();
 
   if (!storeSettings) {
     return (
