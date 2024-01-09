@@ -1,3 +1,5 @@
+import { getSessionCustomerId } from '~/auth';
+
 import { newClient } from '..';
 import { graphql } from '../generated';
 import { UpdateCartLineItemDataInput } from '../generated/graphql';
@@ -20,6 +22,7 @@ export const updateCartLineItem = async (
   data: UpdateCartLineItemDataInput,
 ) => {
   const mutation = graphql(UPDATE_CART_LINE_ITEM_MUTATION);
+  const customerId = await getSessionCustomerId();
 
   const response = await newClient.fetch({
     document: mutation,
@@ -30,6 +33,7 @@ export const updateCartLineItem = async (
         data,
       },
     },
+    customerId,
     fetchOptions: { cache: 'no-store' },
   });
 

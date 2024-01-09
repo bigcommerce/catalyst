@@ -5,14 +5,16 @@ import { cookies } from 'next/headers';
 
 import { addCartLineItem } from '~/client/mutations/addCartLineItem';
 import { createCart } from '~/client/mutations/createCart';
+import { getCart } from '~/client/queries/getCart';
 
 export const addToCart = async (data: FormData) => {
   const productEntityId = Number(data.get('product_id'));
 
   const cartId = cookies().get('cartId')?.value;
+  const cart = await getCart(cartId);
 
-  if (cartId) {
-    await addCartLineItem(cartId, {
+  if (cart) {
+    await addCartLineItem(cart.entityId, {
       lineItems: [
         {
           productEntityId,
@@ -26,12 +28,12 @@ export const addToCart = async (data: FormData) => {
     return;
   }
 
-  const cart = await createCart([{ productEntityId, quantity: 1 }]);
+  const newCart = await createCart([{ productEntityId, quantity: 1 }]);
 
-  if (cart) {
+  if (newCart) {
     cookies().set({
       name: 'cartId',
-      value: cart.entityId,
+      value: newCart.entityId,
       httpOnly: true,
       sameSite: 'lax',
       secure: true,

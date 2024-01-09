@@ -1,8 +1,11 @@
+import { cookies } from 'next/headers';
 import NextAuth, { type NextAuthConfig } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { z } from 'zod';
 
+import { assignCartToCustomer } from './client/mutations/assignCartToCustomer';
 import { login } from './client/mutations/login';
+import { unassignCartFromCustomer } from './client/mutations/unassignCartFromCustomer';
 
 export const Credentials = z.object({
   email: z.string().email(),
@@ -31,6 +34,32 @@ const config = {
       session.user.id = token.sub ? parseInt(token.sub, 10) : undefined;
 
       return session;
+    },
+  },
+  events: {
+    async signIn({ user }) {
+      const cookieCartId = cookies().get('cartId')?.value;
+
+      if (cookieCartId) {
+        try {
+          await assignCartToCustomer(user.id, cookieCartId);
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        }
+      }
+    },
+    async signOut() {
+      const cookieCartId = cookies().get('cartId')?.value;
+
+      if (cookieCartId) {
+        try {
+          await unassignCartFromCustomer(cookieCartId);
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        }
+      }
     },
   },
   providers: [

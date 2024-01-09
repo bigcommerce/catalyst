@@ -1,3 +1,5 @@
+import { getSessionCustomerId } from '~/auth';
+
 import { newClient } from '..';
 import { graphql } from '../generated';
 
@@ -61,10 +63,12 @@ export const GET_CART_QUERY = /* GraphQL */ `
 
 export const getCart = async (cartId?: string) => {
   const query = graphql(GET_CART_QUERY);
+  const customerId = await getSessionCustomerId();
 
   const response = await newClient.fetch({
     document: query,
     variables: { cartId },
+    customerId,
     fetchOptions: {
       cache: 'no-store',
       next: {
