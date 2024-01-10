@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import Image from 'next/image';
 import { Suspense } from 'react';
 
-import client from '~/client';
+import { getCheckoutUrl } from '~/client/management/getCheckoutUrl';
 import { getCart } from '~/client/queries/getCart';
 
 import { removeProduct } from './_actions/removeProduct';
@@ -23,7 +23,7 @@ const EmptyCart = () => (
 );
 
 const CheckoutButton = async ({ cartId }: { cartId: string }) => {
-  const checkoutUrl = await client.getCheckoutUrl(cartId);
+  const checkoutUrl = await getCheckoutUrl(cartId);
 
   return (
     <Button asChild className="mt-6">
