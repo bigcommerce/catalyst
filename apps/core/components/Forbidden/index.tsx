@@ -1,12 +1,12 @@
 import { Message } from '@bigcommerce/reactant/Message';
 
 import { SearchForm } from 'components/SearchForm';
-import client from '~/client';
+import { getFeaturedProducts } from '~/client/queries/getFeaturedProducts';
 import { ProductCard } from '~/components/ProductCard';
 import { cn } from '~/lib/utils';
 
 const FeaturedProducts = async () => {
-  const featuredProducts = await client.getFeaturedProducts();
+  const featuredProducts = await getFeaturedProducts({ imageHeight: 500, imageWidth: 500 });
 
   return (
     <section className={cn('w-full')}>

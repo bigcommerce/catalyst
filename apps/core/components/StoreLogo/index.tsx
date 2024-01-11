@@ -1,9 +1,9 @@
 import Image from 'next/image';
 
-import client from '~/client';
+import { getStoreSettings } from '~/client/queries/getStoreSettings';
 
 export const StoreLogo = async () => {
-  const settings = await client.getStoreSettings();
+  const settings = await getStoreSettings();
 
   if (!settings) {
     return null;

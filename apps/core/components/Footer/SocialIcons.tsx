@@ -9,7 +9,7 @@ import {
 } from '@icons-pack/react-simple-icons';
 import Link from 'next/link';
 
-import client from '~/client';
+import { getStoreSettings } from '~/client/queries/getStoreSettings';
 
 const socialIconNames = [
   'Facebook',
@@ -48,7 +48,7 @@ const SocialIcon = ({ name }: { name: string }) => {
 };
 
 export const SocialIcons = async () => {
-  const settings = await client.getStoreSettings();
+  const settings = await getStoreSettings();
 
   const socialMediaLinks = settings?.socialMediaLinks;
 
