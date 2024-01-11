@@ -1,0 +1,33 @@
+import { randomBytes } from 'crypto';
+import { outputFileSync } from 'fs-extra/esm';
+import { join } from 'path';
+
+export const writeEnv = (
+  projectDir: string,
+  {
+    channelId,
+    storeHash,
+    accessToken,
+    customerImpersonationToken,
+  }: {
+    channelId: string;
+    storeHash: string;
+    accessToken: string;
+    customerImpersonationToken: string;
+  },
+) => {
+  /**
+   * @todo silence request logs by default
+   */
+  outputFileSync(
+    join(projectDir, '.env.local'),
+    [
+      `AUTH_SECRET=${randomBytes(32).toString('hex')}`,
+      `ENABLE_ADMIN_ROUTE=true`,
+      `BIGCOMMERCE_STORE_HASH=${storeHash}`,
+      `BIGCOMMERCE_CHANNEL_ID=${channelId}`,
+      `BIGCOMMERCE_ACCESS_TOKEN=${accessToken}`,
+      `BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN=${customerImpersonationToken}`,
+    ].join('\n'),
+  );
+};

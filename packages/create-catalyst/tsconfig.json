@@ -1,23 +1,15 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Default",
+  "display": "Node 18",
   "compilerOptions": {
-    "module": "NodeNext",
-    "composite": false,
-    "declaration": true,
-    "declarationMap": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "inlineSources": false,
-    "incremental": true,
-    "isolatedModules": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "preserveWatchOutput": true,
-    "skipLibCheck": true,
+    "lib": ["es2023"],
+    "module": "node16",
+    "target": "es2022",
     "strict": true,
+    "esModuleInterop": true,
     "resolveJsonModule": true,
-    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
-  },
-  "exclude": ["node_modules"]
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node16"
+  }
 }
