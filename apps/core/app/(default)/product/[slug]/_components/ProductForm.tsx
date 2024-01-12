@@ -24,7 +24,7 @@ export const ProductForm = ({ children }: ComponentPropsWithoutRef<'form'>) => (
           <div className="flex items-center gap-3">
             <span>
               {quantity} {quantity === 1 ? 'Item' : 'Items'} added to{' '}
-              <Link className="font-semibold text-blue-primary" href="/cart">
+              <Link className="font-semibold text-blue-primary" href="/cart" prefetch={false}>
                 your cart
               </Link>
             </span>

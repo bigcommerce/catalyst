@@ -22,6 +22,8 @@ export const metadata = {
   },
 };
 
+export const fetchCache = 'default-cache';
+
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html className={`${inter.variable} font-sans`} lang="en">

@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client-new';
+import { cache } from 'react';
 
 import { newClient } from '..';
 import { graphql } from '../generated';
@@ -60,33 +61,30 @@ const GET_BLOG_POSTS_QUERY = /* GraphQL */ `
   }
 `;
 
-export const getBlogPosts = async ({
-  tagId,
-  limit = 9,
-  before,
-  after,
-}: BlogPostsFiltersInput & Pagination) => {
-  const filterArgs = tagId ? { filters: { tags: [tagId] } } : {};
-  const paginationArgs = before ? { last: limit, before } : { first: limit, after };
+export const getBlogPosts = cache(
+  async ({ tagId, limit = 9, before, after }: BlogPostsFiltersInput & Pagination) => {
+    const filterArgs = tagId ? { filters: { tags: [tagId] } } : {};
+    const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
-  const query = graphql(GET_BLOG_POSTS_QUERY);
+    const query = graphql(GET_BLOG_POSTS_QUERY);
 
-  const response = await newClient.fetch({
-    document: query,
-    variables: { ...filterArgs, ...paginationArgs },
-  });
+    const response = await newClient.fetch({
+      document: query,
+      variables: { ...filterArgs, ...paginationArgs },
+    });
 
-  const { blog } = response.data.site.content;
+    const { blog } = response.data.site.content;
 
-  if (!blog) {
-    return null;
-  }
+    if (!blog) {
+      return null;
+    }
 
-  return {
-    ...blog,
-    posts: {
-      pageInfo: blog.posts.pageInfo,
-      items: removeEdgesAndNodes(blog.posts),
-    },
-  };
-};
+    return {
+      ...blog,
+      posts: {
+        pageInfo: blog.posts.pageInfo,
+        items: removeEdgesAndNodes(blog.posts),
+      },
+    };
+  },
+);

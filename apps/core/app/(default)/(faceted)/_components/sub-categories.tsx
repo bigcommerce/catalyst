@@ -20,7 +20,9 @@ export async function SubCategories({ categoryId }: Props) {
       <ul className="flex flex-col gap-4 text-base">
         {categoryTree.children.map((category) => (
           <li key={category.entityId}>
-            <Link href={category.path}>{category.name}</Link>
+            <Link href={category.path} prefetch={false}>
+              {category.name}
+            </Link>
           </li>
         ))}
       </ul>

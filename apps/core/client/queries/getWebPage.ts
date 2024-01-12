@@ -1,3 +1,5 @@
+import { cache } from 'react';
+
 import { newClient } from '..';
 import { graphql } from '../generated';
 
@@ -62,7 +64,7 @@ export interface Options {
   characterLimit?: number;
 }
 
-export const getWebPage = async ({ path, characterLimit = 120 }: Options) => {
+export const getWebPage = cache(async ({ path, characterLimit = 120 }: Options) => {
   const query = graphql(GET_WEB_PAGE_QUERY);
 
   const response = await newClient.fetch({
@@ -85,4 +87,4 @@ export const getWebPage = async ({ path, characterLimit = 120 }: Options) => {
     default:
       return undefined;
   }
-};
+});

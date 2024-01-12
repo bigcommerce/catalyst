@@ -30,7 +30,9 @@ export const Breadcrumbs = ({ breadcrumbs, category }: Props) => (
       return (
         <Fragment key={entityId}>
           <BreadcrumbItem asChild isActive={category === name}>
-            <Link href={path}>{name}</Link>
+            <Link href={path} prefetch={false}>
+              {name}
+            </Link>
           </BreadcrumbItem>
           <BreadcrumbDivider>
             <ChevronRight aria-hidden="true" size={16} />

@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client-new';
+import { cache } from 'react';
 
 import { newClient } from '..';
 import { graphql } from '../generated';
@@ -155,68 +156,70 @@ const GET_PRODUCT_SEARCH_RESULTS_QUERY = /* GraphQL */ `
   }
 `;
 
-export const getProductSearchResults = async ({
-  limit = 9,
-  after,
-  sort,
-  filters,
-  imageHeight = 300,
-  imageWidth = 300,
-}: ProductSearch) => {
-  const query = graphql(GET_PRODUCT_SEARCH_RESULTS_QUERY);
+export const getProductSearchResults = cache(
+  async ({
+    limit = 9,
+    after,
+    sort,
+    filters,
+    imageHeight = 300,
+    imageWidth = 300,
+  }: ProductSearch) => {
+    const query = graphql(GET_PRODUCT_SEARCH_RESULTS_QUERY);
 
-  const response = await newClient.fetch({
-    document: query,
-    variables: { first: limit, after, filters, sort, imageHeight, imageWidth },
-    fetchOptions: { next: { revalidate: 300 } },
-  });
+    const response = await newClient.fetch({
+      document: query,
+      variables: { first: limit, after, filters, sort, imageHeight, imageWidth },
+      fetchOptions: { next: { revalidate: 300 } },
+    });
 
-  const { site } = response.data;
+    const { site } = response.data;
 
-  const searchResults = site.search.searchProducts;
+    const searchResults = site.search.searchProducts;
 
-  const items = removeEdgesAndNodes(searchResults.products).map((product) => ({
-    ...product,
-    productOptions: removeEdgesAndNodes(product.productOptions),
-  }));
+    const items = removeEdgesAndNodes(searchResults.products).map((product) => ({
+      ...product,
+      productOptions: removeEdgesAndNodes(product.productOptions),
+    }));
 
-  return {
-    facets: {
-      items: removeEdgesAndNodes(searchResults.filters).map((node) => {
-        switch (node.__typename) {
-          case 'BrandSearchFilter':
-            return {
-              ...node,
-              brands: removeEdgesAndNodes(node.brands),
-            };
+    return {
+      facets: {
+        items: removeEdgesAndNodes(searchResults.filters).map((node) => {
+          switch (node.__typename) {
+            case 'BrandSearchFilter':
+              return {
+                ...node,
+                brands: removeEdgesAndNodes(node.brands),
+              };
 
-          case 'CategorySearchFilter':
-            return {
-              ...node,
-              categories: removeEdgesAndNodes(node.categories),
-            };
+            case 'CategorySearchFilter':
+              return {
+                ...node,
+                categories: removeEdgesAndNodes(node.categories),
+              };
 
-          case 'ProductAttributeSearchFilter':
-            return {
-              ...node,
-              attributes: removeEdgesAndNodes(node.attributes),
-            };
+            case 'ProductAttributeSearchFilter':
+              return {
+                ...node,
+                attributes: removeEdgesAndNodes(node.attributes),
+              };
 
-          case 'RatingSearchFilter':
-            return {
-              ...node,
-              ratings: removeEdgesAndNodes(node.ratings),
-            };
+            case 'RatingSearchFilter':
+              return {
+                ...node,
+                ratings: removeEdgesAndNodes(node.ratings),
+              };
 
-          default:
-            return node;
-        }
-      }),
-    },
-    products: {
-      collectionInfo: searchResults.products.collectionInfo,
-      pageInfo: searchResults.products.pageInfo,
-      items,
-    },
-  };
-};
+            default:
+              return node;
+          }
+        }),
+      },
+      products: {
+        collectionInfo: searchResults.products.collectionInfo,
+        pageInfo: searchResults.products.pageInfo,
+        items,
+      },
+    };
+  },
+);

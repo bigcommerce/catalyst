@@ -98,7 +98,10 @@ export default async function Search({ searchParams }: Props) {
 
           <nav aria-label="Pagination" className="my-6 text-center text-blue-primary">
             {hasPreviousPage ? (
-              <Link href={`/search?term=${searchTerm}&before=${String(startCursor)}`}>
+              <Link
+                href={`/search?term=${searchTerm}&before=${String(startCursor)}`}
+                prefetch={false}
+              >
                 <span className="sr-only">Previous</span>
                 <ChevronLeft aria-hidden="true" className="inline-block h-8 w-8" />
               </Link>
@@ -107,7 +110,7 @@ export default async function Search({ searchParams }: Props) {
             )}
 
             {hasNextPage ? (
-              <Link href={`/search?term=${searchTerm}&after=${String(endCursor)}`}>
+              <Link href={`/search?term=${searchTerm}&after=${String(endCursor)}`} prefetch={false}>
                 <span className="sr-only">Next</span>
                 <ChevronRight aria-hidden="true" className="inline-block h-8 w-8" />
               </Link>

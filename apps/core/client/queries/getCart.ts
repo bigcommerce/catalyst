@@ -1,3 +1,5 @@
+import { cache } from 'react';
+
 import { getSessionCustomerId } from '~/auth';
 
 import { newClient } from '..';
@@ -61,7 +63,7 @@ export const GET_CART_QUERY = /* GraphQL */ `
   }
 `;
 
-export const getCart = async (cartId?: string) => {
+export const getCart = cache(async (cartId?: string) => {
   const query = graphql(GET_CART_QUERY);
   const customerId = await getSessionCustomerId();
 
@@ -110,4 +112,4 @@ export const getCart = async (cartId?: string) => {
       value: totalExtendedSalePrice,
     },
   };
-};
+});

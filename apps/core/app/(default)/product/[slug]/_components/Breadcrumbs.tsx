@@ -29,7 +29,9 @@ export const BreadCrumbs = async ({ productId }: Props) => {
               })}
               key={breadcrumb.name}
             >
-              <Link href="#">{breadcrumb.name}</Link>
+              <Link href="#" prefetch={false}>
+                {breadcrumb.name}
+              </Link>
               {!isLast && <span className="mx-2">/</span>}
             </li>
           );

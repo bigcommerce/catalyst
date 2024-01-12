@@ -17,7 +17,7 @@ import { CheckedProduct, useCompareProductsContext } from '~/app/contexts/Compar
 const CompareLink = ({ products }: { products: CheckedProduct[] }) => {
   return (
     <Button asChild className="me-4 h-12 w-auto grow whitespace-nowrap px-8 md:grow-0">
-      <Link href={`/compare?ids=${products.map(({ id }) => id).join(',')}`}>
+      <Link href={`/compare?ids=${products.map(({ id }) => id).join(',')}`} prefetch={false}>
         Compare ({products.length})
       </Link>
     </Button>
