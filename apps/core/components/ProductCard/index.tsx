@@ -28,6 +28,7 @@ export interface Product {
   path: string;
   brand?: {
     name: string;
+    path: string;
   } | null;
   prices?: {
     price?: {

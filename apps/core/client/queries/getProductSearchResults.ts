@@ -10,6 +10,8 @@ interface ProductSearch {
   after?: string;
   sort?: SearchProductsSortInput;
   filters: SearchProductsFiltersInput;
+  imageWidth?: number;
+  imageHeight?: number;
 }
 
 const GET_PRODUCT_SEARCH_RESULTS_QUERY = /* GraphQL */ `
@@ -18,6 +20,8 @@ const GET_PRODUCT_SEARCH_RESULTS_QUERY = /* GraphQL */ `
     $after: String
     $filters: SearchProductsFiltersInput!
     $sort: SearchProductsSortInput
+    $imageHeight: Int!
+    $imageWidth: Int!
   ) {
     site {
       search {
@@ -31,29 +35,7 @@ const GET_PRODUCT_SEARCH_RESULTS_QUERY = /* GraphQL */ `
             }
             edges {
               node {
-                entityId
-                name
-                path
-                brand {
-                  name
-                }
-                ...Prices
-                defaultImage {
-                  url(width: 300)
-                  altText
-                }
-                productOptions(first: 3) {
-                  edges {
-                    node {
-                      entityId
-                    }
-                  }
-                }
-                reviewSummary {
-                  summationOfRatings
-                  numberOfReviews
-                  averageRating
-                }
+                ...ProductDetails
               }
             }
           }
@@ -178,12 +160,14 @@ export const getProductSearchResults = async ({
   after,
   sort,
   filters,
+  imageHeight = 300,
+  imageWidth = 300,
 }: ProductSearch) => {
   const query = graphql(GET_PRODUCT_SEARCH_RESULTS_QUERY);
 
   const response = await newClient.fetch({
     document: query,
-    variables: { first: limit, after, filters, sort },
+    variables: { first: limit, after, filters, sort, imageHeight, imageWidth },
     fetchOptions: { next: { revalidate: 300 } },
   });
 
