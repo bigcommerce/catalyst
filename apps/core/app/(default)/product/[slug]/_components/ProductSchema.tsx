@@ -1,6 +1,6 @@
 import { Product as ProductSchemaType, WithContext } from 'schema-dts';
 
-import { getProduct } from '~/client/queries/getProduct';
+import { getProduct } from '~/clients/new/queries/getProduct';
 
 export const ProductSchema = ({ product }: { product: Awaited<ReturnType<typeof getProduct>> }) => {
   if (product === null) return null;

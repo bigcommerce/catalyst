@@ -1,7 +1,7 @@
 import { FooterNav, FooterSection, Footer as ReactantFooter } from '@bigcommerce/reactant/Footer';
 import React from 'react';
 
-import { AvailableWebPages, getWebPages } from '~/client/queries/getWebPages';
+import { AvailableWebPages, getWebPages } from '~/clients/new/queries/getWebPages';
 
 import { StoreLogo } from '../StoreLogo';
 

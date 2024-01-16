@@ -1,7 +1,7 @@
 import { Product as ProductSchemaType, WithContext } from 'schema-dts';
 
-import { getProductReviews } from '~/client/queries/getProductReviews';
-import { ExistingResultType } from '~/client/util';
+import { getProductReviews } from '~/clients/new/queries/getProductReviews';
+import { ExistingResultType } from '~/clients/new/util';
 
 export const ProductReviewSchema = ({
   reviews,

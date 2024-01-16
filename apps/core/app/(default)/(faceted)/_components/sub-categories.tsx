@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { getCategoryTree } from '~/client/queries/getCategoryTree';
+import { getCategoryTree } from '~/clients/new/queries/getCategoryTree';
 
 interface Props {
   categoryId: number;

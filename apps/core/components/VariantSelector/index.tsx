@@ -2,8 +2,8 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import { getProduct } from '~/client/queries/getProduct';
-import { ExistingResultType } from '~/client/util';
+import { getProduct } from '~/clients/new/queries/getProduct';
+import { ExistingResultType } from '~/clients/new/util';
 
 import { CheckboxField } from './CheckboxField';
 import { DateField } from './DateField';

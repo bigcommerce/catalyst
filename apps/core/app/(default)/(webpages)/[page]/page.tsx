@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { getWebPage } from '~/client/queries/getWebPage';
+import { getWebPage } from '~/clients/new/queries/getWebPage';
 import { ContactUs } from '~/components/Forms';
 
 import { PageContent } from '../_components/PageContent';

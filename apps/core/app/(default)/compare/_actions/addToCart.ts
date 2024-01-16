@@ -3,9 +3,9 @@
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
-import { addCartLineItem } from '~/client/mutations/addCartLineItem';
-import { createCart } from '~/client/mutations/createCart';
-import { getCart } from '~/client/queries/getCart';
+import { addCartLineItem } from '~/clients/new/mutations/addCartLineItem';
+import { createCart } from '~/clients/new/mutations/createCart';
+import { getCart } from '~/clients/new/queries/getCart';
 
 export const addToCart = async (data: FormData) => {
   const productEntityId = Number(data.get('product_id'));

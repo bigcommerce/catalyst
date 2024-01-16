@@ -9,7 +9,7 @@ import {
 } from '@icons-pack/react-simple-icons';
 import Link from 'next/link';
 
-import { getStoreSettings } from '~/client/queries/getStoreSettings';
+import { getStoreSettings } from '~/clients/new/queries/getStoreSettings';
 
 const socialIconNames = [
   'Facebook',

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { getRoute } from '~/client/queries/getRoute';
+import { getRoute } from '~/clients/new/queries/getRoute';
 
 import { kv } from '../lib/kv';
 

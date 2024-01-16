@@ -1,4 +1,4 @@
-import { getBrands } from '~/client/queries/getBrands';
+import { getBrands } from '~/clients/new/queries/getBrands';
 
 import { BaseFooterMenu } from './BaseFooterMenu';
 

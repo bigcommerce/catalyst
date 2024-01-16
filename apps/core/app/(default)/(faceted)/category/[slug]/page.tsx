@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { getCategory } from '~/client/queries/getCategory';
+import { getCategory } from '~/clients/new/queries/getCategory';
 import { ProductCard } from '~/components/ProductCard';
 
 import { Breadcrumbs } from '../../_components/breadcrumbs';

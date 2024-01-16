@@ -1,8 +1,8 @@
 import { Label } from '@bigcommerce/reactant/Label';
 import { TextArea } from '@bigcommerce/reactant/TextArea';
 
-import { getProduct } from '~/client/queries/getProduct';
-import { ExistingResultType, Unpacked } from '~/client/util';
+import { getProduct } from '~/clients/new/queries/getProduct';
+import { ExistingResultType, Unpacked } from '~/clients/new/util';
 
 type MultiLineTextFieldOption = Extract<
   Unpacked<ExistingResultType<typeof getProduct>['productOptions']>,

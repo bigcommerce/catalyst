@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { getProduct } from '~/client/queries/getProduct';
+import { getProduct } from '~/clients/new/queries/getProduct';
 import { cn } from '~/lib/utils';
 
 interface Props {

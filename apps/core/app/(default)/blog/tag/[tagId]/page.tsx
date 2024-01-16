@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { getBlogPosts } from '~/client/queries/getBlogPosts';
+import { getBlogPosts } from '~/clients/new/queries/getBlogPosts';
 import { BlogPostCard } from '~/components/BlogPostCard';
 
 interface Props {

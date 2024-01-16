@@ -3,7 +3,7 @@
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
-import { deleteCartLineItem } from '~/client/mutations/deleteCartLineItem';
+import { deleteCartLineItem } from '~/clients/new/mutations/deleteCartLineItem';
 
 export async function removeProduct(formData: FormData) {
   const cartId = cookies().get('cartId')?.value;

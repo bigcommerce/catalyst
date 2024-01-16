@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { getBrand } from '~/client/queries/getBrand';
+import { getBrand } from '~/clients/new/queries/getBrand';
 import { ProductCard } from '~/components/ProductCard';
 
 import { FacetedSearch } from '../../_components/faceted-search';

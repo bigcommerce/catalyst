@@ -16,8 +16,8 @@ import Link from 'next/link';
 import { PropsWithChildren, Suspense } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
-import { getCart } from '~/client/queries/getCart';
-import { getCategoryTree } from '~/client/queries/getCategoryTree';
+import { getCart } from '~/clients/new/queries/getCart';
+import { getCategoryTree } from '~/clients/new/queries/getCategoryTree';
 import { cn } from '~/lib/utils';
 
 import { QuickSearch } from '../QuickSearch';

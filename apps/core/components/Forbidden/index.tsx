@@ -1,7 +1,7 @@
 import { Message } from '@bigcommerce/reactant/Message';
 
 import { SearchForm } from 'components/SearchForm';
-import { getFeaturedProducts } from '~/client/queries/getFeaturedProducts';
+import { getFeaturedProducts } from '~/clients/new/queries/getFeaturedProducts';
 import { ProductCard } from '~/components/ProductCard';
 import { cn } from '~/lib/utils';
 

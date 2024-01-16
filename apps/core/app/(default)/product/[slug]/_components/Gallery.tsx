@@ -11,8 +11,8 @@ import {
 } from '@bigcommerce/reactant/Gallery';
 import Image from 'next/image';
 
-import { getProduct } from '~/client/queries/getProduct';
-import { ExistingResultType } from '~/client/util';
+import { getProduct } from '~/clients/new/queries/getProduct';
+import { ExistingResultType } from '~/clients/new/util';
 
 interface Props {
   images: ExistingResultType<typeof getProduct>['images'];

@@ -7,8 +7,8 @@ import { Swatch, SwatchItem } from '@bigcommerce/reactant/Swatch';
 import Image from 'next/image';
 import { Fragment } from 'react';
 
-import { getProduct } from '~/client/queries/getProduct';
-import { ExistingResultType, Unpacked } from '~/client/util';
+import { getProduct } from '~/clients/new/queries/getProduct';
+import { ExistingResultType, Unpacked } from '~/clients/new/util';
 
 type MultipleChoiceOption = Extract<
   Unpacked<ExistingResultType<typeof getProduct>['productOptions']>,

@@ -26,9 +26,6 @@ importers:
       '@bigcommerce/catalyst-client':
         specifier: workspace:^
         version: link:../../packages/client
-      '@bigcommerce/catalyst-client-new':
-        specifier: workspace:^
-        version: link:../../packages/client-new
       '@bigcommerce/reactant':
         specifier: workspace:^
         version: link:../../packages/reactant
@@ -50,6 +47,9 @@ importers:
       clsx:
         specifier: ^2.0.0
         version: 2.0.0
+      graphql:
+        specifier: ^16.8.1
+        version: 16.8.1
       lodash.debounce:
         specifier: ^4.0.8
         version: 4.0.8

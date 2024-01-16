@@ -1,8 +1,11 @@
 import { cache } from 'react';
 import { z } from 'zod';
 
-import { SearchProductsFiltersInput, SearchProductsSortInput } from '~/client/generated/graphql';
-import { getProductSearchResults } from '~/client/queries/getProductSearchResults';
+import {
+  SearchProductsFiltersInput,
+  SearchProductsSortInput,
+} from '~/clients/new/generated/graphql';
+import { getProductSearchResults } from '~/clients/new/queries/getProductSearchResults';
 
 const SearchParamSchema = z.union([z.string(), z.array(z.string()), z.undefined()]);
 

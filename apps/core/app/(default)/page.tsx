@@ -1,5 +1,5 @@
-import { getBestSellingProducts } from '~/client/queries/getBestSellingProducts';
-import { getFeaturedProducts } from '~/client/queries/getFeaturedProducts';
+import { getBestSellingProducts } from '~/clients/new/queries/getBestSellingProducts';
+import { getFeaturedProducts } from '~/clients/new/queries/getFeaturedProducts';
 import { Hero } from '~/components/Hero';
 import { ProductCardCarousel } from '~/components/ProductCardCarousel';
 

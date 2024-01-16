@@ -2,7 +2,7 @@ import { cs } from '@bigcommerce/reactant/cs';
 import { Rating } from '@bigcommerce/reactant/Rating';
 import { useId } from 'react';
 
-import { getProductReviews } from '~/client/queries/getProductReviews';
+import { getProductReviews } from '~/clients/new/queries/getProductReviews';
 
 interface Props {
   productId: number;

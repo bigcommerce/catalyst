@@ -6,7 +6,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
-import { getProduct } from '~/client/queries/getProduct';
+import { getProduct } from '~/clients/new/queries/getProduct';
 import { VariantSelector } from '~/components/VariantSelector';
 
 import { AddToCart } from './_components/AddToCart';

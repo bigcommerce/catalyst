@@ -1,8 +1,8 @@
 import { Counter } from '@bigcommerce/reactant/Counter';
 import { Label } from '@bigcommerce/reactant/Label';
 
-import { getProduct } from '~/client/queries/getProduct';
-import { ExistingResultType, Unpacked } from '~/client/util';
+import { getProduct } from '~/clients/new/queries/getProduct';
+import { ExistingResultType, Unpacked } from '~/clients/new/util';
 
 type NumberFieldOption = Extract<
   Unpacked<ExistingResultType<typeof getProduct>['productOptions']>,

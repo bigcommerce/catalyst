@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 
-import { getStoreSettings } from '~/client/queries/getStoreSettings';
+import { getStoreSettings } from '~/clients/new/queries/getStoreSettings';
 
 export const ContactInformation = async () => {
   const settings = await getStoreSettings();

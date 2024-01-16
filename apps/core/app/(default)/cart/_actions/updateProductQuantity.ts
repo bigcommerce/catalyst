@@ -4,7 +4,7 @@ import { CartLineItemInput, UpdateCartLineItemInput } from '@bigcommerce/catalys
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
-import { updateCartLineItem } from '~/client/mutations/updateCartLineItem';
+import { updateCartLineItem } from '~/clients/new/mutations/updateCartLineItem';
 
 interface UpdateProductQuantityParams extends CartLineItemInput {
   lineItemEntityId: UpdateCartLineItemInput['lineItemEntityId'];

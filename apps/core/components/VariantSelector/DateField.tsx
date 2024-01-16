@@ -1,8 +1,8 @@
 import { DatePicker } from '@bigcommerce/reactant/DatePicker';
 import { Label } from '@bigcommerce/reactant/Label';
 
-import { getProduct } from '~/client/queries/getProduct';
-import { ExistingResultType, Unpacked } from '~/client/util';
+import { getProduct } from '~/clients/new/queries/getProduct';
+import { ExistingResultType, Unpacked } from '~/clients/new/util';
 
 type DateFieldOption = Extract<
   Unpacked<ExistingResultType<typeof getProduct>['productOptions']>,

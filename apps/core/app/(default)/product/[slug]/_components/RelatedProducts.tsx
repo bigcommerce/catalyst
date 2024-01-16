@@ -1,6 +1,6 @@
 import { OptionValueId } from '@bigcommerce/catalyst-client';
 
-import { getRelatedProducts } from '~/client/queries/getRelatedProducts';
+import { getRelatedProducts } from '~/clients/new/queries/getRelatedProducts';
 import { ProductCardCarousel } from '~/components/ProductCardCarousel';
 
 export const RelatedProducts = async ({

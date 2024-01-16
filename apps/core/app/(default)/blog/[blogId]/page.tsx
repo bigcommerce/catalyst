@@ -10,7 +10,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { getBlogPost } from '~/client/queries/getBlogPost';
+import { getBlogPost } from '~/clients/new/queries/getBlogPost';
 import { SharingLinks } from '~/components/SharingLinks';
 
 interface Props {

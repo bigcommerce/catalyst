@@ -4,8 +4,8 @@ import { cookies } from 'next/headers';
 import Image from 'next/image';
 import { Suspense } from 'react';
 
-import { getCheckoutUrl } from '~/client/management/getCheckoutUrl';
-import { getCart } from '~/client/queries/getCart';
+import { getCheckoutUrl } from '~/clients/new/management/getCheckoutUrl';
+import { getCart } from '~/clients/new/queries/getCart';
 
 import { removeProduct } from './_actions/removeProduct';
 import { CartItemCounter } from './CartItemCounter';

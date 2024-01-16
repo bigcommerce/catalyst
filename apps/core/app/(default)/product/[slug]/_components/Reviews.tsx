@@ -1,6 +1,6 @@
 import { Rating } from '@bigcommerce/reactant/Rating';
 
-import { getProductReviews } from '~/client/queries/getProductReviews';
+import { getProductReviews } from '~/clients/new/queries/getProductReviews';
 
 import { ProductReviewSchema } from './ProductReviewSchema';
 

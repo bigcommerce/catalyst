@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
-import { StorefrontStatusType } from '~/client/generated/graphql';
-import { getStoreSettings } from '~/client/queries/getStoreSettings';
+import { StorefrontStatusType } from '~/clients/new/generated/graphql';
+import { getStoreSettings } from '~/clients/new/queries/getStoreSettings';
 
 import { kv } from '../lib/kv';
 

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import * as z from 'zod';
 
-import { getProducts } from '~/client/queries/getProducts';
+import { getProducts } from '~/clients/new/queries/getProducts';
 import { Pricing } from '~/components/Pricing';
 import { SearchForm } from '~/components/SearchForm';
 import { cn } from '~/lib/utils';

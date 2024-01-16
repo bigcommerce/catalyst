@@ -15,7 +15,7 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useRef } from 'react';
 
-import { RatingSearchFilterItem } from '~/client/generated/graphql';
+import { RatingSearchFilterItem } from '~/clients/new/generated/graphql';
 import { cn } from '~/lib/utils';
 
 import type { Facet, PageType } from '../types';

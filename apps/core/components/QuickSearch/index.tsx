@@ -16,8 +16,8 @@ import { Search, Loader2 as Spinner, X } from 'lucide-react';
 import Image from 'next/image';
 import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 
-import { getQuickSearchResults } from '~/client/queries/getQuickSearchResults';
-import { ExistingResultType } from '~/client/util';
+import { getQuickSearchResults } from '~/clients/new/queries/getQuickSearchResults';
+import { ExistingResultType } from '~/clients/new/util';
 
 import { Pricing } from '../Pricing';
 

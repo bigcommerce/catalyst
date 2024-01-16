@@ -1,6 +1,6 @@
 import { ComponentPropsWithoutRef } from 'react';
 
-import { getStoreSettings } from '~/client/queries/getStoreSettings';
+import { getStoreSettings } from '~/clients/new/queries/getStoreSettings';
 
 export const Copyright = async (props: ComponentPropsWithoutRef<'p'>) => {
   const settings = await getStoreSettings();

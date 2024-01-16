@@ -49,9 +49,13 @@ const config: CodegenConfig = {
       },
     },
   ],
-  documents: ['client/queries/**/*.ts', 'client/mutations/**/*.ts', 'client/fragments/**/*.ts'],
+  documents: [
+    'clients/new/queries/**/*.ts',
+    'clients/new/mutations/**/*.ts',
+    'clients/new/fragments/**/*.ts',
+  ],
   generates: {
-    './client/generated/': {
+    './clients/new/generated/': {
       preset: 'client',
       presetConfig: {
         fragmentMasking: false,

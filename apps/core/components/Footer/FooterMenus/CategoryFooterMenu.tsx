@@ -1,4 +1,4 @@
-import { getCategoryTree } from '~/client/queries/getCategoryTree';
+import { getCategoryTree } from '~/clients/new/queries/getCategoryTree';
 
 import { BaseFooterMenu } from './BaseFooterMenu';
 

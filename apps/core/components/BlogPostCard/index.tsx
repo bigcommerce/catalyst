@@ -10,8 +10,8 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { getBlogPosts } from '~/client/queries/getBlogPosts';
-import { ExistingResultType } from '~/client/util';
+import { getBlogPosts } from '~/clients/new/queries/getBlogPosts';
+import { ExistingResultType } from '~/clients/new/util';
 
 interface BlogPostCardProps {
   blogPost: ExistingResultType<typeof getBlogPosts>['posts']['items'][number];
