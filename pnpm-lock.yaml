@@ -23,9 +23,6 @@ importers:
 
   apps/core:
     dependencies:
-      '@bigcommerce/catalyst-client':
-        specifier: workspace:^
-        version: link:../../packages/client
       '@bigcommerce/reactant':
         specifier: workspace:^
         version: link:../../packages/reactant
@@ -93,6 +90,9 @@ importers:
       '@bigcommerce/eslint-config-catalyst':
         specifier: workspace:^
         version: link:../../packages/eslint-config-catalyst
+      '@genql/cli':
+        specifier: ^6.2.1
+        version: 6.2.1
       '@graphql-codegen/cli':
         specifier: ^5.0.0
         version: 5.0.0(@parcel/watcher@2.3.0)(@types/node@18.19.3)(graphql@16.8.1)

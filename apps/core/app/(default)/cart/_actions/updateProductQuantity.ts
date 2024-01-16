@@ -1,6 +1,6 @@
 'use server';
 
-import { CartLineItemInput, UpdateCartLineItemInput } from '@bigcommerce/catalyst-client';
+import { CartLineItemInput, UpdateCartLineItemInput } from '../../../../clients/old';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 

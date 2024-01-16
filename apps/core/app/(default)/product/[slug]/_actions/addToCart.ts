@@ -1,6 +1,6 @@
 'use server';
 
-import { CartSelectedOptionsInput } from '@bigcommerce/catalyst-client';
+import { CartSelectedOptionsInput } from '../../../../../clients/old';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 

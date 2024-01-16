@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  CartLineItemInput,
-  CartPhysicalItem,
-  UpdateCartLineItemInput,
-} from '@bigcommerce/catalyst-client';
+import { CartLineItemInput, CartPhysicalItem, UpdateCartLineItemInput } from '../../../clients/old';
 import { Counter } from '@bigcommerce/reactant/Counter';
 import { useState } from 'react';
 

@@ -8,6 +8,7 @@
     "dev-next": "next dev",
     "dev-codegen": "pnpm codegen -w",
     "codegen": "dotenv -e .env.local -- gql-gen --errors-only --config codegen.ts",
+    "gen-types-client-old": "dotenv -e .env.local -- node clients/old/scripts/types.js",
     "build": "pnpm run codegen && next build",
     "start": "next start",
     "lint": "next lint",
@@ -15,7 +16,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@bigcommerce/catalyst-client": "workspace:^",
     "@bigcommerce/reactant": "workspace:^",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@icons-pack/react-simple-icons": "^9.2.0",
@@ -40,6 +40,7 @@
   "devDependencies": {
     "@bigcommerce/catalyst-configs": "workspace:^",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
+    "@genql/cli": "^6.2.1",
     "@graphql-codegen/cli": "^5.0.0",
     "@graphql-codegen/client-preset": "^4.1.0",
     "@graphql-codegen/schema-ast": "^4.0.0",

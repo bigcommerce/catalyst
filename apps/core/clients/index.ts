@@ -1,4 +1,4 @@
-import { createClient } from '@bigcommerce/catalyst-client';
+import { createClient } from './old/index';
 import { createClient as createNewClient } from './new/index';
 
 const client = createClient({
