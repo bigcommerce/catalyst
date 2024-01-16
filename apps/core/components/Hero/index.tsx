@@ -1,4 +1,4 @@
-import { Button } from '@bigcommerce/reactant/Button';
+import { Button } from 'components/_reactant/components/Button';
 import {
   Slideshow,
   SlideshowAutoplayControl,
@@ -8,7 +8,7 @@ import {
   SlideshowPagination,
   SlideshowPreviousIndicator,
   SlideshowSlide,
-} from '@bigcommerce/reactant/Slideshow';
+} from 'components/_reactant/components/Slideshow';
 import Image from 'next/image';
 
 import SlideshowBG from './slideshow-bg-01.jpg';

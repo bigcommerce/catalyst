@@ -5,8 +5,8 @@ import {
   ProductCardInfoPrice,
   ProductCardInfoProductName,
   ProductCard as ReactantProductCard,
-} from '@bigcommerce/reactant/ProductCard';
-import { Rating } from '@bigcommerce/reactant/Rating';
+} from 'components/_reactant/components/ProductCard';
+import { Rating } from 'components/_reactant/components/Rating';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useId } from 'react';

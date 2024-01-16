@@ -1,5 +1,5 @@
-import { Label } from '@bigcommerce/reactant/Label';
-import { TextArea } from '@bigcommerce/reactant/TextArea';
+import { Label } from 'components/_reactant/components/Label';
+import { TextArea } from 'components/_reactant/components/TextArea';
 
 import { getProduct } from '~/clients/new/queries/getProduct';
 import { ExistingResultType, Unpacked } from '~/clients/new/util';

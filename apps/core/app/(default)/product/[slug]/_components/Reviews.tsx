@@ -1,4 +1,4 @@
-import { Rating } from '@bigcommerce/reactant/Rating';
+import { Rating } from 'components/_reactant/components/Rating';
 
 import { getProductReviews } from '~/clients/new/queries/getProductReviews';
 

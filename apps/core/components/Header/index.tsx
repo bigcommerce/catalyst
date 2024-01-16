@@ -1,5 +1,5 @@
-import { Badge } from '@bigcommerce/reactant/Badge';
-import { Button } from '@bigcommerce/reactant/Button';
+import { Badge } from 'components/_reactant/components/Badge';
+import { Button } from 'components/_reactant/components/Button';
 import {
   NavigationMenu,
   NavigationMenuCollapsed,
@@ -9,7 +9,7 @@ import {
   NavigationMenuList,
   NavigationMenuToggle,
   NavigationMenuTrigger,
-} from '@bigcommerce/reactant/NavigationMenu';
+} from 'components/_reactant/components/NavigationMenu';
 import { ChevronDown, LogOut, ShoppingCart, User } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Link from 'next/link';

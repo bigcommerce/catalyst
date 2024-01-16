@@ -1,4 +1,4 @@
-import { FooterNavGroupList, FooterNavLink } from '@bigcommerce/reactant/Footer';
+import { FooterNavGroupList, FooterNavLink } from 'components/_reactant/components/Footer';
 import Link from 'next/link';
 import React, { ComponentPropsWithoutRef } from 'react';
 

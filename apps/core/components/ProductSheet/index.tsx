@@ -1,9 +1,9 @@
 'use client';
 
-import { Button } from '@bigcommerce/reactant/Button';
-import { Counter } from '@bigcommerce/reactant/Counter';
-import { Label } from '@bigcommerce/reactant/Label';
-import { Rating } from '@bigcommerce/reactant/Rating';
+import { Button } from 'components/_reactant/components/Button';
+import { Counter } from 'components/_reactant/components/Counter';
+import { Label } from 'components/_reactant/components/Label';
+import { Rating } from 'components/_reactant/components/Rating';
 import {
   Sheet,
   SheetClose,
@@ -12,7 +12,7 @@ import {
   SheetOverlay,
   SheetTitle,
   SheetTrigger,
-} from '@bigcommerce/reactant/Sheet';
+} from 'components/_reactant/components/Sheet';
 import { Loader2 as Spinner } from 'lucide-react';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';

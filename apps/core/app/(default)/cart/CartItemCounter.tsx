@@ -1,7 +1,7 @@
 'use client';
 
 import { CartLineItemInput, CartPhysicalItem, UpdateCartLineItemInput } from '../../../clients/old';
-import { Counter } from '@bigcommerce/reactant/Counter';
+import { Counter } from 'components/_reactant/components/Counter';
 import { useState } from 'react';
 
 import { updateProductQuantity } from './_actions/updateProductQuantity';

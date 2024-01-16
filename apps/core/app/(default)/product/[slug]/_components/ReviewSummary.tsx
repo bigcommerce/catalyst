@@ -1,5 +1,5 @@
-import { cs } from '@bigcommerce/reactant/cs';
-import { Rating } from '@bigcommerce/reactant/Rating';
+import { cs } from 'components/_reactant/utils/cs';
+import { Rating } from 'components/_reactant/components/Rating';
 import { useId } from 'react';
 
 import { getProductReviews } from '~/clients/new/queries/getProductReviews';

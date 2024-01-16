@@ -1,4 +1,4 @@
-import { Button } from '@bigcommerce/reactant/Button';
+import { Button } from 'components/_reactant/components/Button';
 import {
   Field,
   FieldControl,
@@ -6,10 +6,10 @@ import {
   FieldMessage,
   Form,
   FormSubmit,
-} from '@bigcommerce/reactant/Form';
-import { Input } from '@bigcommerce/reactant/Input';
-import { Message } from '@bigcommerce/reactant/Message';
-import { TextArea } from '@bigcommerce/reactant/TextArea';
+} from 'components/_reactant/components/Form';
+import { Input } from 'components/_reactant/components/Input';
+import { Message } from 'components/_reactant/components/Message';
+import { TextArea } from 'components/_reactant/components/TextArea';
 import { Loader2 as Spinner } from 'lucide-react';
 import { ChangeEvent, useState } from 'react';
 import { useFormStatus } from 'react-dom';

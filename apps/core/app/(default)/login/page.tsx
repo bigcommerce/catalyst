@@ -1,4 +1,4 @@
-import { Button } from '@bigcommerce/reactant/Button';
+import { Button } from 'components/_reactant/components/Button';
 import Link from 'next/link';
 
 import { LoginForm } from './LoginForm';

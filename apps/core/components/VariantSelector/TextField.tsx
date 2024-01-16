@@ -1,5 +1,5 @@
-import { Input } from '@bigcommerce/reactant/Input';
-import { Label } from '@bigcommerce/reactant/Label';
+import { Input } from 'components/_reactant/components/Input';
+import { Label } from 'components/_reactant/components/Label';
 
 import { getProduct } from '~/clients/new/queries/getProduct';
 import { ExistingResultType, Unpacked } from '~/clients/new/util';

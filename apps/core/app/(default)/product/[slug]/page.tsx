@@ -1,6 +1,6 @@
-import { Button } from '@bigcommerce/reactant/Button';
-import { Counter } from '@bigcommerce/reactant/Counter';
-import { Label } from '@bigcommerce/reactant/Label';
+import { Button } from 'components/_reactant/components/Button';
+import { Counter } from 'components/_reactant/components/Counter';
+import { Label } from 'components/_reactant/components/Label';
 import { Heart } from 'lucide-react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';

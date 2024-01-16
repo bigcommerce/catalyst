@@ -4,8 +4,8 @@ import {
   BlogPostDate,
   BlogPostImage,
   BlogPostTitle,
-} from '@bigcommerce/reactant/BlogPostCard';
-import { Tag, TagContent } from '@bigcommerce/reactant/Tag';
+} from 'components/_reactant/components/BlogPostCard';
+import { Tag, TagContent } from 'components/_reactant/components/Tag';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
