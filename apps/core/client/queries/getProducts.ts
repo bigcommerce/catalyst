@@ -17,26 +17,6 @@ const GET_PRODUCTS_QUERY = /* GraphQL */ `
         edges {
           node {
             ...ProductDetails
-            description
-            availabilityV2 {
-              status
-            }
-            inventory {
-              aggregated {
-                availableToSell
-              }
-            }
-            reviewSummary {
-              averageRating
-              numberOfReviews
-            }
-            productOptions {
-              edges {
-                node {
-                  entityId
-                }
-              }
-            }
           }
         }
       }

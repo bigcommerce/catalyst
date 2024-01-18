@@ -37,5 +37,8 @@ export const getFeaturedProducts = async ({
 
   const { site } = response.data;
 
-  return removeEdgesAndNodes(site.featuredProducts);
+  return removeEdgesAndNodes(site.featuredProducts).map((featuredProduct) => ({
+    ...featuredProduct,
+    productOptions: removeEdgesAndNodes(featuredProduct.productOptions),
+  }));
 };

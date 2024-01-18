@@ -159,6 +159,8 @@ export const fetchFacetedSearch = cache(
       limit,
       sort,
       filters,
+      imageHeight: 500,
+      imageWidth: 500,
     });
   },
 );

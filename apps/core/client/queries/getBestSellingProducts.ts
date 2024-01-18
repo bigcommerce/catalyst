@@ -37,5 +37,8 @@ export const getBestSellingProducts = async ({
 
   const { site } = response.data;
 
-  return removeEdgesAndNodes(site.bestSellingProducts);
+  return removeEdgesAndNodes(site.bestSellingProducts).map((bestSellingProduct) => ({
+    ...bestSellingProduct,
+    productOptions: removeEdgesAndNodes(bestSellingProduct.productOptions),
+  }));
 };

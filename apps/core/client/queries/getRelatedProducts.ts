@@ -19,18 +19,6 @@ export const GET_RELATED_PRODUCTS = /* GraphQL */ `
           edges {
             node {
               ...ProductDetails
-              reviewSummary {
-                summationOfRatings
-                numberOfReviews
-                averageRating
-              }
-              productOptions(first: 3) {
-                edges {
-                  node {
-                    entityId
-                  }
-                }
-              }
             }
           }
         }
