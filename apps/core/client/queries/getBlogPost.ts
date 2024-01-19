@@ -1,3 +1,5 @@
+import { cache } from 'react';
+
 import { newClient } from '..';
 import { graphql } from '../generated';
 
@@ -37,7 +39,7 @@ const GET_BLOG_POST_QUERY = /* GraphQL */ `
   }
 `;
 
-export const getBlogPost = async (entityId: number) => {
+export const getBlogPost = cache(async (entityId: number) => {
   const query = graphql(GET_BLOG_POST_QUERY);
 
   const response = await newClient.fetch({
@@ -58,4 +60,4 @@ export const getBlogPost = async (entityId: number) => {
     isVisibleInNavigation,
     vanityUrl: response.data.site.settings?.url.vanityUrl,
   };
-};
+});

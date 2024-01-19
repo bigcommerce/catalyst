@@ -24,13 +24,12 @@ import { QuickSearch } from '../QuickSearch';
 import { StoreLogo } from '../StoreLogo';
 
 import { logout } from './_actions/logout';
-import { LinkNoCache } from './LinkNoCache';
 
 const CartLink = ({ children }: PropsWithChildren) => (
   <NavigationMenuLink asChild>
-    <LinkNoCache className="relative" href="/cart">
+    <Link className="relative" href="/cart" prefetch={false}>
       {children}
-    </LinkNoCache>
+    </Link>
   </NavigationMenuLink>
 );
 
@@ -85,7 +84,7 @@ const HeaderNav = async ({
                 <NavigationMenuTrigger className="gap-0 p-0">
                   <>
                     <NavigationMenuLink asChild>
-                      <Link className="grow" href={category.path}>
+                      <Link className="grow" href={category.path} prefetch={false}>
                         {category.name}
                       </Link>
                     </NavigationMenuLink>
@@ -125,7 +124,9 @@ const HeaderNav = async ({
               </>
             ) : (
               <NavigationMenuLink asChild>
-                <Link href={category.path}>{category.name}</Link>
+                <Link href={category.path} prefetch={false}>
+                  {category.name}
+                </Link>
               </NavigationMenuLink>
             )}
           </NavigationMenuItem>
@@ -155,7 +156,7 @@ export const Header = async () => {
     <header>
       <NavigationMenu>
         <NavigationMenuLink asChild className="px-0">
-          <Link href="/">
+          <Link href="/" prefetch={false}>
             <StoreLogo />
           </Link>
         </NavigationMenuLink>
@@ -185,7 +186,7 @@ export const Header = async () => {
                 </form>
               ) : (
                 <NavigationMenuLink asChild>
-                  <Link aria-label="Login" href="/login">
+                  <Link aria-label="Login" href="/login" prefetch={false}>
                     <User />
                   </Link>
                 </NavigationMenuLink>

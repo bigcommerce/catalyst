@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { StorefrontStatusType } from '~/client/generated/graphql';
-import { getStoreSettings } from '~/client/queries/getStoreSettings';
+import { getStoreStatus } from '~/client/queries/getStoreStatus';
 
 import { kv } from '../lib/kv';
 
@@ -34,10 +34,10 @@ const getMaintenanceStatus = async () => {
     let status = await getExistingStatus();
 
     if (!status) {
-      const settings = await getStoreSettings();
+      const newStatus = await getStoreStatus();
 
-      if (settings) {
-        status = settings.status;
+      if (newStatus) {
+        status = newStatus;
       }
 
       await setKvStatus(status);

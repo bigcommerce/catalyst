@@ -1,3 +1,5 @@
+import { cache } from 'react';
+
 import { newClient } from '..';
 import { graphql } from '../generated';
 
@@ -23,7 +25,7 @@ export const GET_CATEGORY_TREE_QUERY = /* GraphQL */ `
   }
 `;
 
-export const getCategoryTree = async (categoryId?: number) => {
+export const getCategoryTree = cache(async (categoryId?: number) => {
   const query = graphql(GET_CATEGORY_TREE_QUERY);
 
   const response = await newClient.fetch({
@@ -32,4 +34,4 @@ export const getCategoryTree = async (categoryId?: number) => {
   });
 
   return response.data.site.categoryTree;
-};
+});

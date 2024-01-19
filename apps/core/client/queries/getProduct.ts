@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client-new';
+import { cache } from 'react';
 
 import { newClient } from '..';
 import { graphql } from '../generated';
@@ -277,7 +278,7 @@ const reshapeProduct = (product: Product) => {
   };
 };
 
-export const getProduct = async (productId: number, optionValueIds?: OptionValueId[]) => {
+export const getProduct = cache(async (productId: number, optionValueIds?: OptionValueId[]) => {
   const product = await getInternalProduct(productId, optionValueIds);
 
   if (!product) {
@@ -285,4 +286,4 @@ export const getProduct = async (productId: number, optionValueIds?: OptionValue
   }
 
   return reshapeProduct(product);
-};
+});

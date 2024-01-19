@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client-new';
+import { cache } from 'react';
 
 import { newClient } from '..';
 import { graphql } from '../generated';
@@ -31,21 +32,19 @@ const GET_QUICK_SEARCH_RESULTS_QUERY = /* GraphQL */ `
   }
 `;
 
-export const getQuickSearchResults = async ({
-  searchTerm,
-  imageHeight = 300,
-  imageWidth = 300,
-}: QuickSearch) => {
-  const query = graphql(GET_QUICK_SEARCH_RESULTS_QUERY);
+export const getQuickSearchResults = cache(
+  async ({ searchTerm, imageHeight = 300, imageWidth = 300 }: QuickSearch) => {
+    const query = graphql(GET_QUICK_SEARCH_RESULTS_QUERY);
 
-  const response = await newClient.fetch({
-    document: query,
-    variables: { filters: { searchTerm }, imageHeight, imageWidth },
-  });
+    const response = await newClient.fetch({
+      document: query,
+      variables: { filters: { searchTerm }, imageHeight, imageWidth },
+    });
 
-  const { products } = response.data.site.search.searchProducts;
+    const { products } = response.data.site.search.searchProducts;
 
-  return {
-    products: removeEdgesAndNodes(products),
-  };
-};
+    return {
+      products: removeEdgesAndNodes(products),
+    };
+  },
+);

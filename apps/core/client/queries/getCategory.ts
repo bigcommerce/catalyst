@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client-new';
+import { cache } from 'react';
 
 import { newClient } from '..';
 import { graphql } from '../generated';
@@ -63,36 +64,32 @@ export interface CategoryOptions {
   limit?: number;
 }
 
-export const getCategory = async ({
-  categoryId,
-  limit = 9,
-  before,
-  after,
-  breadcrumbDepth = 10,
-}: CategoryOptions) => {
-  const query = graphql(GET_CATEGORY_QUERY);
+export const getCategory = cache(
+  async ({ categoryId, limit = 9, before, after, breadcrumbDepth = 10 }: CategoryOptions) => {
+    const query = graphql(GET_CATEGORY_QUERY);
 
-  const paginationArgs = before ? { last: limit, before } : { first: limit, after };
+    const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
-  const response = await newClient.fetch({
-    document: query,
-    variables: { categoryId, breadcrumbDepth, ...paginationArgs },
-  });
+    const response = await newClient.fetch({
+      document: query,
+      variables: { categoryId, breadcrumbDepth, ...paginationArgs },
+    });
 
-  const category = response.data.site.category;
+    const category = response.data.site.category;
 
-  if (!category) {
-    return undefined;
-  }
+    if (!category) {
+      return undefined;
+    }
 
-  return {
-    ...category,
-    products: {
-      pageInfo: category.products.pageInfo,
-      items: removeEdgesAndNodes(category.products),
-    },
-    breadcrumbs: {
-      items: removeEdgesAndNodes(category.breadcrumbs),
-    },
-  };
-};
+    return {
+      ...category,
+      products: {
+        pageInfo: category.products.pageInfo,
+        items: removeEdgesAndNodes(category.products),
+      },
+      breadcrumbs: {
+        items: removeEdgesAndNodes(category.breadcrumbs),
+      },
+    };
+  },
+);
