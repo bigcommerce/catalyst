@@ -20,9 +20,7 @@ jobs:
         env:
           DEPLOY_URL: ${{ github.event.deployment_status.target_url }}
         run: |
-          if [[ $DEPLOY_URL =~ "makeswift" ]]; then
-            echo "AUDIT=false" >> "$GITHUB_ENV"
-          elif [[ $DEPLOY_URL =~ "storybook" ]]; then
+          if [[ $DEPLOY_URL =~ "storybook" ]]; then
             echo "AUDIT=false" >> "$GITHUB_ENV"
           else
             echo "AUDIT=true" >> "$GITHUB_ENV"
