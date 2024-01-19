@@ -1,6 +1,8 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client-new';
 import { cache } from 'react';
 
+import { getSessionCustomerId } from '~/auth';
+
 import { newClient } from '..';
 import { graphql } from '../generated';
 
@@ -39,10 +41,14 @@ export const getRelatedProducts = cache(
     const { productId, optionValueIds, first = 12, imageWidth = 300, imageHeight = 300 } = options;
 
     const query = graphql(GET_RELATED_PRODUCTS);
+    const customerId = await getSessionCustomerId();
 
     const response = await newClient.fetch({
       document: query,
       variables: { entityId: productId, optionValueIds, first, imageWidth, imageHeight },
+      fetchOptions: {
+        cache: customerId ? 'no-store' : 'force-cache',
+      },
     });
 
     const { product } = response.data.site;
