@@ -15,7 +15,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@bigcommerce/catalyst-client": "workspace:^",
     "@bigcommerce/catalyst-client-new": "workspace:^",
     "@bigcommerce/reactant": "workspace:^",
     "@graphql-typed-document-node/core": "^3.2.0",

@@ -1,12 +1,13 @@
 'use client';
 
+import { Counter } from '@bigcommerce/reactant/Counter';
+import { useState } from 'react';
+
 import {
   CartLineItemInput,
   CartPhysicalItem,
   UpdateCartLineItemInput,
-} from '@bigcommerce/catalyst-client';
-import { Counter } from '@bigcommerce/reactant/Counter';
-import { useState } from 'react';
+} from '~/client/generated/graphql';
 
 import { updateProductQuantity } from './_actions/updateProductQuantity';
 

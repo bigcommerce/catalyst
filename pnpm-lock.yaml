@@ -23,9 +23,6 @@ importers:
 
   apps/core:
     dependencies:
-      '@bigcommerce/catalyst-client':
-        specifier: workspace:^
-        version: link:../../packages/client
       '@bigcommerce/catalyst-client-new':
         specifier: workspace:^
         version: link:../../packages/client-new

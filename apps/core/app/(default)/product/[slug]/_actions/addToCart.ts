@@ -1,9 +1,9 @@
 'use server';
 
-import { CartSelectedOptionsInput } from '@bigcommerce/catalyst-client';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
+import { CartSelectedOptionsInput } from '~/client/generated/graphql';
 import { addCartLineItem } from '~/client/mutations/addCartLineItem';
 import { createCart } from '~/client/mutations/createCart';
 import { getCart } from '~/client/queries/getCart';
