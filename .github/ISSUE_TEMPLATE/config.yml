@@ -7,7 +7,7 @@ contact_links:
     url: https://github.com/bigcommerce/catalyst/discussions/new?category=q-a
     about: If you can't get something to work the way you expect, join us in Discussions to browse existing topics or to share a new post.
   - name: Feature Request
-    url: https://github.com/bigcommerce/catalyst/discussions/new?category=ideas
+    url: https://github.com/bigcommerce/catalyst/discussions/categories/feature-requests
     about: Join us in Discussions to share your idea on improving Catalyst. Thanks for your contribution!
   - name: Official BigCommerce Support
     url: https://support.bigcommerce.com/contact
