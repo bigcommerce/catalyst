@@ -9,7 +9,7 @@ import {
   NavigationMenuToggle,
   NavigationMenuTrigger,
 } from '@bigcommerce/components/navigation-menu';
-import { ChevronDown, LogOut, ShoppingCart, User } from 'lucide-react';
+import { ChevronDown, ShoppingCart, User } from 'lucide-react';
 import { ReactNode, Suspense } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
@@ -34,6 +34,7 @@ const HeaderNav = async ({
   // To show a full list of categories, modify the `slice` method to remove the limit.
   // Will require modification of navigation menu styles to accommodate the additional categories.
   const categoryTree = (await getCategoryTree()).slice(0, 6);
+  const customerId = await getSessionCustomerId();
 
   return (
     <>
@@ -95,15 +96,26 @@ const HeaderNav = async ({
           </NavigationMenuItem>
         ))}
       </NavigationMenuList>
-      {inCollapsedNav && (
-        <NavigationMenuList className="flex-col items-start border-t border-gray-200 pt-6 lg:hidden">
-          <NavigationMenuItem className="w-full">
-            <NavigationMenuLink href="/login">
+      <NavigationMenuList
+        className={cn(
+          'border-t border-gray-200 pt-6 lg:hidden',
+          !inCollapsedNav && 'hidden',
+          inCollapsedNav && 'flex-col items-start',
+        )}
+      >
+        <NavigationMenuItem className={cn(inCollapsedNav && 'w-full')}>
+          {customerId ? (
+            <NavigationMenuLink href="/account">
               Your Account <User />
             </NavigationMenuLink>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      )}
+          ) : (
+            <NavigationMenuLink href="/login">
+              {/* TODO: add Log out for mobile */}
+              Log in <User />
+            </NavigationMenuLink>
+          )}
+        </NavigationMenuItem>
+      </NavigationMenuList>
     </>
   );
 };
@@ -120,8 +132,8 @@ export const Header = async ({ cart }: { cart: ReactNode }) => {
           </Link>
         </NavigationMenuLink>
         <HeaderNav className="hidden lg:flex" />
-        <div className="flex">
-          <NavigationMenuList>
+        <div className="flex lg:self-stretch">
+          <NavigationMenuList className="h-full">
             <NavigationMenuItem>
               <QuickSearch>
                 <Link className="flex" href="/">
@@ -129,17 +141,87 @@ export const Header = async ({ cart }: { cart: ReactNode }) => {
                 </Link>
               </QuickSearch>
             </NavigationMenuItem>
-            <NavigationMenuItem className="hidden lg:flex">
+            <NavigationMenuItem className={`hidden lg:flex ${customerId ? 'self-stretch' : ''}`}>
               {customerId ? (
-                <form action={logout}>
-                  <Button
-                    className="p-3 text-black hover:bg-transparent"
-                    type="submit"
-                    variant="subtle"
+                <div className="group/account flex cursor-pointer items-center">
+                  <Link
+                    aria-label="Account"
+                    className="p-3 focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
+                    href="/account"
                   >
-                    <LogOut />
-                  </Button>
-                </form>
+                    <User aria-hidden="true" />
+                  </Link>
+
+                  <ul className="absolute -right-12 top-full z-10 hidden cursor-default bg-white p-6 pb-8 shadow-md group-hover/account:block [&>li]:mb-2">
+                    <li>
+                      <Link
+                        className="whitespace-nowrap font-semibold focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
+                        href="/account"
+                      >
+                        My account
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        className="whitespace-nowrap focus:outline-none focus:ring-4"
+                        href="/account/orders"
+                      >
+                        Orders
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        className="whitespace-nowrap focus:outline-none focus:ring-4"
+                        href="/account/messages"
+                      >
+                        Messages
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        className="whitespace-nowrap focus:outline-none focus:ring-4"
+                        href="/account/addresses"
+                      >
+                        Addresses
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        className="whitespace-nowrap focus:outline-none focus:ring-4"
+                        href="/account/wishlists"
+                      >
+                        Wish lists
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        className="whitespace-nowrap focus:outline-none focus:ring-4"
+                        href="/account/recently-viewed"
+                      >
+                        Recently viewed
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        className="whitespace-nowrap focus:outline-none focus:ring-4"
+                        href="/account/settings"
+                      >
+                        Account Settings
+                      </Link>
+                    </li>
+                    <li>
+                      <form action={logout}>
+                        <Button
+                          className="justify-start p-0 font-normal text-black hover:bg-transparent hover:text-black"
+                          type="submit"
+                          variant="subtle"
+                        >
+                          Log out
+                        </Button>
+                      </form>
+                    </li>
+                  </ul>
+                </div>
               ) : (
                 <NavigationMenuLink asChild>
                   <Link aria-label="Login" href="/login">
