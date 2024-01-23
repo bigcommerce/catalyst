@@ -7,8 +7,10 @@ import { Suspense } from 'react';
 import { getCheckoutUrl } from '~/client/management/get-checkout-url';
 import { getCart } from '~/client/queries/get-cart';
 
+import { getShippingCountries } from './_actions/get-shipping-countries';
 import { removeProduct } from './_actions/remove-products';
 import { CartItemCounter } from './_components/cart-item-counter';
+import { CheckoutSummary, ShippingCosts } from './_components/checkout-summary';
 
 export const metadata = {
   title: 'Cart',
@@ -38,21 +40,23 @@ const CheckoutButton = async ({ cartId }: { cartId: string }) => {
 
 export default async function CartPage() {
   const cartId = cookies().get('cartId')?.value;
+  const shippingCostData = cookies().get('shippingCosts')?.value;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const shippingCosts: ShippingCosts | null = shippingCostData
+    ? JSON.parse(shippingCostData)
+    : null;
 
   if (!cartId) {
     return <EmptyCart />;
   }
 
   const cart = await getCart(cartId);
+  const shippingCountries = await getShippingCountries();
 
   if (!cart) {
     return <EmptyCart />;
   }
 
-  const currencyFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: cart.currencyCode,
-  });
   const extractCartlineItemsData = ({
     entityId,
     productEntityId,
@@ -162,26 +166,11 @@ export default async function CartPage() {
         </ul>
 
         <div className="col-span-1 col-start-2 lg:col-start-3">
-          <div className="flex justify-between border-t border-t-gray-200 py-4">
-            <span className="text-base font-semibold">Subtotal</span>
-            <span className="text-base">
-              {currencyFormatter.format(cart.totalExtendedListPrice.value)}
-            </span>
-          </div>
-
-          <div className="flex justify-between border-t border-t-gray-200 py-4">
-            <span className="text-base font-semibold">Discounts</span>
-            <span className="text-base">
-              {currencyFormatter.format(cart.totalDiscountedAmount.value)}
-            </span>
-          </div>
-
-          <div className="flex justify-between border-t border-t-gray-200 py-4">
-            <span className="text-xl font-bold lg:text-2xl">Grand total</span>
-            <span className="text-xl font-bold lg:text-2xl">
-              {currencyFormatter.format(cart.totalExtendedSalePrice.value)}
-            </span>
-          </div>
+          <CheckoutSummary
+            cart={cart}
+            shippingCosts={shippingCosts}
+            shippingCountries={shippingCountries}
+          />
 
           <Suspense fallback="Loading...">
             <CheckoutButton cartId={cartId} />
