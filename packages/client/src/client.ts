@@ -114,6 +114,66 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     return response.json() as Promise<BigCommerceResponse<TResult>>;
   }
 
+  async fetchAvailableCountries() {
+    const response = await fetch(
+      `https://api.bigcommerce.com/stores/${this.config.storeHash}/v2/countries?limit=250`,
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Auth-Token': this.config.xAuthToken,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(`Unable to get available Countries List: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+  async fetchCountryStates(id: number) {
+    const response = await fetch(
+      `https://api.bigcommerce.com/stores/${this.config.storeHash}/v2/countries/${id}/states?limit=60`,
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Auth-Token': this.config.xAuthToken,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(`Unable to get available States or Provinces: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+  async fetchShippingZones() {
+    const response = await fetch(
+      `https://api.bigcommerce.com/stores/${this.config.storeHash}/v2/shipping/zones`,
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Auth-Token': this.config.xAuthToken,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(`Unable to get Shipping Zones: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
   private getEndpoint() {
     if (!this.config.channelId || this.config.channelId === '1') {
       return `https://store-${this.config.storeHash}.${graphqlApiDomain}/graphql`;
