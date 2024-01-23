@@ -1,6 +1,6 @@
 import { cache } from 'react';
 
-import { newClient } from '..';
+import { client } from '..';
 import { graphql } from '../generated';
 
 export interface GetBrandOptions {
@@ -22,7 +22,7 @@ const GET_BRAND_QUERY = /* GraphQL */ `
 export const getBrand = cache(async ({ brandId }: GetBrandOptions) => {
   const query = graphql(GET_BRAND_QUERY);
 
-  const response = await newClient.fetch({
+  const response = await client.fetch({
     document: query,
     variables: { entityId: brandId },
   });

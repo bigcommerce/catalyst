@@ -1,6 +1,6 @@
 import { cache } from 'react';
 
-import { newClient } from '..';
+import { client } from '..';
 import { graphql } from '../generated';
 
 const GET_BLOG_POST_QUERY = /* GraphQL */ `
@@ -42,7 +42,7 @@ const GET_BLOG_POST_QUERY = /* GraphQL */ `
 export const getBlogPost = cache(async (entityId: number) => {
   const query = graphql(GET_BLOG_POST_QUERY);
 
-  const response = await newClient.fetch({
+  const response = await client.fetch({
     document: query,
     variables: { entityId },
   });

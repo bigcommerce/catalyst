@@ -1,5 +1,5 @@
 {
-  "name": "@bigcommerce/catalyst-client-new",
+  "name": "@bigcommerce/catalyst-client",
   "description": "BigCommerce API client for Catalyst.",
   "version": "0.1.0",
   "private": true,

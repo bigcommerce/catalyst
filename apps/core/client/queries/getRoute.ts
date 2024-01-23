@@ -1,4 +1,4 @@
-import { newClient } from '..';
+import { client } from '..';
 import { graphql } from '../generated';
 
 export const GET_ROUTE_QUERY = /* GraphQL */ `
@@ -25,7 +25,7 @@ export const GET_ROUTE_QUERY = /* GraphQL */ `
 export const getRoute = async (path: string) => {
   const query = graphql(GET_ROUTE_QUERY);
 
-  const response = await newClient.fetch({
+  const response = await client.fetch({
     document: query,
     variables: { path },
   });

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { newClient } from '..';
+import { client } from '..';
 
 const RedirectUrlsSchema = z.object({
   data: z.object({
@@ -12,7 +12,7 @@ const RedirectUrlsSchema = z.object({
 
 // Url used to redirect the user to the checkout page
 export const getCheckoutUrl = async (cartId: string) => {
-  const response = await newClient.fetchCartRedirectUrls(cartId);
+  const response = await client.fetchCartRedirectUrls(cartId);
   const parsedResponse = RedirectUrlsSchema.safeParse(response);
 
   if (parsedResponse.success) {

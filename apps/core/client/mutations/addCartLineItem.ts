@@ -1,6 +1,6 @@
 import { getSessionCustomerId } from '~/auth';
 
-import { newClient } from '..';
+import { client } from '..';
 import { graphql } from '../generated';
 import { AddCartLineItemsDataInput } from '../generated/graphql';
 
@@ -20,7 +20,7 @@ export const addCartLineItem = async (cartEntityId: string, data: AddCartLineIte
   const mutation = graphql(ADD_TO_CART_LINE_ITEM_MUTATION);
   const customerId = await getSessionCustomerId();
 
-  const response = await newClient.fetch({
+  const response = await client.fetch({
     document: mutation,
     variables: { input: { cartEntityId, data } },
     customerId,

@@ -1,4 +1,4 @@
-import { newClient } from '..';
+import { client } from '..';
 import { graphql } from '../generated';
 import { AssignCartToCustomerInput } from '../generated/graphql';
 
@@ -20,7 +20,7 @@ export const assignCartToCustomer = async (
 ) => {
   const mutation = graphql(ASSIGN_CART_TO_CUSTOMER_MUTATION);
 
-  const response = await newClient.fetch({
+  const response = await client.fetch({
     document: mutation,
     variables: {
       assignCartToCustomerInput: {
