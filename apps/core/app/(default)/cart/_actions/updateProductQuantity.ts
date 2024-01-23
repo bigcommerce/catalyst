@@ -1,9 +1,9 @@
 'use server';
 
-import { CartLineItemInput, UpdateCartLineItemInput } from '@bigcommerce/catalyst-client';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
+import { CartLineItemInput, UpdateCartLineItemInput } from '~/client/generated/graphql';
 import { updateCartLineItem } from '~/client/mutations/updateCartLineItem';
 
 interface UpdateProductQuantityParams extends CartLineItemInput {

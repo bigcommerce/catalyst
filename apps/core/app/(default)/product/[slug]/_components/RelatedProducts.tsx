@@ -1,5 +1,4 @@
-import { OptionValueId } from '@bigcommerce/catalyst-client';
-
+import { OptionValueId } from '~/client/generated/graphql';
 import { getRelatedProducts } from '~/client/queries/getRelatedProducts';
 import { ProductCardCarousel } from '~/components/ProductCardCarousel';
 
