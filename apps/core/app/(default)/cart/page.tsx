@@ -170,6 +170,7 @@ export default async function CartPage() {
         <div className="col-span-1 col-start-2 lg:col-start-3">
           <CheckoutSummary
             cart={cart}
+            key={cart.totalExtendedListPrice.value}
             shippingCosts={shippingCosts}
             shippingCountries={shippingCountries}
           />

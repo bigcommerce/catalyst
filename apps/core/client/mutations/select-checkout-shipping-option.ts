@@ -16,6 +16,7 @@ export const SELECT_CHECKOUT_SHIPPING_OPTION_MUTATION = /* GraphQL */ `
             currencyCode
           }
           shippingConsignments {
+            entityId
             selectedShippingOption {
               entityId
               description

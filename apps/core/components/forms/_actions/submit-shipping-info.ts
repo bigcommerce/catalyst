@@ -3,6 +3,7 @@
 import { z } from 'zod';
 
 import { addCheckoutShippingInfo } from '~/client/mutations/add-checkout-shipping-info';
+import { updateCheckoutShippingInfo } from '~/client/mutations/update-checkout-shipping-info';
 
 const ShippingInfoSchema = z.object({
   country: z.string(),
@@ -15,6 +16,7 @@ export const submitShippingInfo = async (
   formData: FormData,
   cartData: {
     cartId: string;
+    shippingId: string | null;
     cartItems: Array<{ quantity: number; lineItemEntityId: string }>;
   },
 ) => {
@@ -25,18 +27,32 @@ export const submitShippingInfo = async (
       city: formData.get('city'),
       zipcode: formData.get('zip'),
     });
-    const { cartId, cartItems } = cartData;
+    const { cartId, cartItems, shippingId } = cartData;
 
-    const res = await addCheckoutShippingInfo({
-      cartId,
-      cartItems,
-      countryCode: parsedData.country.split('-')[0] ?? '',
-      stateOrProvince: parsedData.state,
-      city: parsedData.city,
-      postalCode: parsedData.zipcode,
-    });
+    let result;
 
-    return { status: 'success', data: res };
+    if (shippingId) {
+      result = await updateCheckoutShippingInfo({
+        cartId,
+        shippingId,
+        cartItems,
+        countryCode: parsedData.country.split('-')[0] ?? '',
+        stateOrProvince: parsedData.state,
+        city: parsedData.city,
+        postalCode: parsedData.zipcode,
+      });
+    } else {
+      result = await addCheckoutShippingInfo({
+        cartId,
+        cartItems,
+        countryCode: parsedData.country.split('-')[0] ?? '',
+        stateOrProvince: parsedData.state,
+        city: parsedData.city,
+        postalCode: parsedData.zipcode,
+      });
+    }
+
+    return { status: 'success', data: result };
   } catch (e: unknown) {
     if (e instanceof Error || e instanceof z.ZodError) {
       return { status: 'failed', error: e.message };
