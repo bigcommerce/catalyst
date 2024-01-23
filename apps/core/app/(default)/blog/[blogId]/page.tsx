@@ -7,10 +7,10 @@ import {
 } from '@bigcommerce/reactant/BlogPostCard';
 import { Tag, TagContent } from '@bigcommerce/reactant/Tag';
 import Image from 'next/image';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { getBlogPost } from '~/client/queries/getBlogPost';
+import { Link } from '~/components/Link';
 import { SharingLinks } from '~/components/SharingLinks';
 
 interface Props {

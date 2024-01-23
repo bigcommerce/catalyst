@@ -1,9 +1,9 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { getBlogPosts } from '~/client/queries/getBlogPosts';
 import { BlogPostCard } from '~/components/BlogPostCard';
+import { Link } from '~/components/Link';
 
 interface Props {
   searchParams: { [key: string]: string | string[] | undefined };

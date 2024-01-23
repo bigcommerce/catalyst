@@ -1,6 +1,7 @@
 import { FooterNavGroupList, FooterNavLink } from '@bigcommerce/reactant/Footer';
-import Link from 'next/link';
 import React, { ComponentPropsWithoutRef } from 'react';
+
+import { Link } from '~/components/Link';
 
 interface Item {
   name: string;
@@ -23,9 +24,7 @@ export const BaseFooterMenu = ({
       <FooterNavGroupList>
         {items.map((item) => (
           <FooterNavLink asChild key={item.path}>
-            <Link href={item.path} prefetch={false}>
-              {item.name}
-            </Link>
+            <Link href={item.path}>{item.name}</Link>
           </FooterNavLink>
         ))}
       </FooterNavGroupList>

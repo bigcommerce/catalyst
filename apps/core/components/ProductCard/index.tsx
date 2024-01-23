@@ -8,9 +8,9 @@ import {
 } from '@bigcommerce/reactant/ProductCard';
 import { Rating } from '@bigcommerce/reactant/Rating';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useId } from 'react';
 
+import { Link } from '~/components/Link';
 import { cn } from '~/lib/utils';
 
 import { Pricing } from '../Pricing';

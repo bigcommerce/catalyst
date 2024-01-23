@@ -4,8 +4,9 @@ import {
   Breadcrumbs as ReactantBreadcrumbs,
 } from '@bigcommerce/reactant/Breadcrumbs';
 import { ChevronRight } from 'lucide-react';
-import Link from 'next/link';
 import { Fragment } from 'react';
+
+import { Link } from '~/components/Link';
 
 interface Props {
   breadcrumbs: Array<{
@@ -30,9 +31,7 @@ export const Breadcrumbs = ({ breadcrumbs, category }: Props) => (
       return (
         <Fragment key={entityId}>
           <BreadcrumbItem asChild isActive={category === name}>
-            <Link href={path} prefetch={false}>
-              {name}
-            </Link>
+            <Link href={path}>{name}</Link>
           </BreadcrumbItem>
           <BreadcrumbDivider>
             <ChevronRight aria-hidden="true" size={16} />
