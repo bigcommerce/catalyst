@@ -1,7 +1,7 @@
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client-new';
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { newClient } from '..';
+import { client } from '..';
 import { graphql } from '../generated';
 
 interface BlogPostsFiltersInput {
@@ -68,7 +68,7 @@ export const getBlogPosts = cache(
 
     const query = graphql(GET_BLOG_POSTS_QUERY);
 
-    const response = await newClient.fetch({
+    const response = await client.fetch({
       document: query,
       variables: { ...filterArgs, ...paginationArgs },
     });

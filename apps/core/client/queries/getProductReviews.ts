@@ -1,7 +1,7 @@
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client-new';
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { newClient } from '..';
+import { client } from '..';
 import { graphql } from '../generated';
 
 const GET_PRODUCT_REVIEWS_QUERY = /* GraphQL */ `
@@ -37,7 +37,7 @@ const GET_PRODUCT_REVIEWS_QUERY = /* GraphQL */ `
 export const getProductReviews = cache(async (entityId: number) => {
   const query = graphql(GET_PRODUCT_REVIEWS_QUERY);
 
-  const response = await newClient.fetch({
+  const response = await client.fetch({
     document: query,
     variables: { entityId },
   });

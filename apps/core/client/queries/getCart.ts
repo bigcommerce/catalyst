@@ -2,7 +2,7 @@ import { cache } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
 
-import { newClient } from '..';
+import { client } from '..';
 import { graphql } from '../generated';
 
 export const GET_CART_QUERY = /* GraphQL */ `
@@ -67,7 +67,7 @@ export const getCart = cache(async (cartId?: string) => {
   const query = graphql(GET_CART_QUERY);
   const customerId = await getSessionCustomerId();
 
-  const response = await newClient.fetch({
+  const response = await client.fetch({
     document: query,
     variables: { cartId },
     customerId,

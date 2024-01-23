@@ -1,6 +1,6 @@
 import { cache } from 'react';
 
-import { newClient } from '..';
+import { client } from '..';
 import { graphql } from '../generated';
 
 export const GET_WEB_PAGE_QUERY = /* GraphQL */ `
@@ -67,7 +67,7 @@ export interface Options {
 export const getWebPage = cache(async ({ path, characterLimit = 120 }: Options) => {
   const query = graphql(GET_WEB_PAGE_QUERY);
 
-  const response = await newClient.fetch({
+  const response = await client.fetch({
     document: query,
     variables: { path, characterLimit },
   });

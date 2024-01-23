@@ -1,7 +1,7 @@
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client-new';
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { newClient } from '..';
+import { client } from '..';
 import { graphql } from '../generated';
 
 export const GET_CATEGORY_QUERY = /* GraphQL */ `
@@ -70,7 +70,7 @@ export const getCategory = cache(
 
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
-    const response = await newClient.fetch({
+    const response = await client.fetch({
       document: query,
       variables: { categoryId, breadcrumbDepth, ...paginationArgs },
     });

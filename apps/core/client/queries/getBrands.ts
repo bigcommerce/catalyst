@@ -1,7 +1,7 @@
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client-new';
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { newClient } from '..';
+import { client } from '..';
 import { graphql } from '../generated';
 
 interface GetBrandsOptions {
@@ -28,7 +28,7 @@ const GET_BRANDS_QUERY = /* GraphQL */ `
 export const getBrands = cache(async ({ first = 5, brandIds }: GetBrandsOptions = {}) => {
   const query = graphql(GET_BRANDS_QUERY);
 
-  const response = await newClient.fetch({
+  const response = await client.fetch({
     document: query,
     variables: { first, entityIds: brandIds },
   });

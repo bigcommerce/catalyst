@@ -1,6 +1,6 @@
 import { cache } from 'react';
 
-import { newClient } from '..';
+import { client } from '..';
 import { graphql } from '../generated';
 
 export const GET_STORE_SETTINGS_QUERY = /* GraphQL */ `
@@ -38,7 +38,7 @@ export const GET_STORE_SETTINGS_QUERY = /* GraphQL */ `
 
 export const getStoreSettings = cache(async () => {
   const query = graphql(GET_STORE_SETTINGS_QUERY);
-  const response = await newClient.fetch({ document: query });
+  const response = await client.fetch({ document: query });
 
   return response.data.site.settings;
 });
