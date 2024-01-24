@@ -4,6 +4,12 @@ import { BigCommerceAPIError } from './error';
 import { getOperationInfo } from './utils/getOperationName';
 import { getBackendUserAgent } from './utils/userAgent';
 
+export const graphqlApiDomain: string =
+  process.env.BIGCOMMERCE_GRAPHQL_API_DOMAIN ?? 'mybigcommerce.com';
+
+export const adminApiHostname: string =
+  process.env.BIGCOMMERCE_ADMIN_API_HOST ?? 'api.bigcommerce.com';
+
 interface Config {
   storeHash: string;
   customerImpersonationToken: string;
@@ -85,7 +91,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
   async fetchCartRedirectUrls<TResult>(cartId: string) {
     const response = await fetch(
-      `https://api.bigcommerce.com/stores/${this.config.storeHash}/v3/carts/${cartId}/redirect_urls`,
+      `https://${adminApiHostname}/stores/${this.config.storeHash}/v3/carts/${cartId}/redirect_urls`,
       {
         method: 'POST',
         headers: {
@@ -110,10 +116,10 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
   private getEndpoint() {
     if (!this.config.channelId || this.config.channelId === '1') {
-      return `https://store-${this.config.storeHash}.mybigcommerce.com/graphql`;
+      return `https://store-${this.config.storeHash}.${graphqlApiDomain}/graphql`;
     }
 
-    return `https://store-${this.config.storeHash}-${this.config.channelId}.mybigcommerce.com/graphql`;
+    return `https://store-${this.config.storeHash}-${this.config.channelId}.${graphqlApiDomain}/graphql`;
   }
 
   private requestLogger<TResult, TVariables>(

@@ -1,5 +1,8 @@
 import { CodegenConfig } from '@graphql-codegen/cli';
 
+export const graphqlApiDomain: string =
+  process.env.BIGCOMMERCE_GRAPHQL_API_DOMAIN ?? 'mybigcommerce.com';
+
 const getToken = () => {
   const token = process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN;
 
@@ -33,10 +36,10 @@ const getEndpoint = () => {
   // Not all sites have the channel-specific canonical URL backfilled.
   // Wait till MSF-2643 is resolved before removing and simplifying the endpoint logic.
   if (!channelId || channelId === '1') {
-    return `https://store-${storeHash}.mybigcommerce.com/graphql`;
+    return `https://store-${storeHash}.${graphqlApiDomain}/graphql`;
   }
 
-  return `https://store-${storeHash}-${channelId}.mybigcommerce.com/graphql`;
+  return `https://store-${storeHash}-${channelId}.${graphqlApiDomain}/graphql`;
 };
 
 const config: CodegenConfig = {

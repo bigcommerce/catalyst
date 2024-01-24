@@ -242,7 +242,7 @@ importers:
         specifier: ^16.8.1
         version: 16.8.1
       std-env:
-        specifier: 3.7.0
+        specifier: ^3.7.0
         version: 3.7.0
     devDependencies:
       '@bigcommerce/catalyst-configs':

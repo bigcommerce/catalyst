@@ -2,14 +2,41 @@ import { confirm, input, password, select } from "@inquirer/prompts";
 import { readFile, writeFile } from 'fs/promises';
 import crypto from 'crypto'
 
+const apiHostname = process.env.BIGCOMMERCE_ADMIN_API_HOST ?? 'api.bigcommerce.com';
+const authHostname = process.env.BIGCOMMERCE_AUTH_HOST ?? 'login.bigcommerce.com';
+
+
+/**
+ * @param {string} storeHash
+ * @param {string} path
+ * @param {Object} [params]
+ * @returns {string}
+ */
+const apiRoute = (storeHash, path, params) => {
+  const route = new URL(`https://${apiHostname}/stores/${storeHash}${path}`);
+  if (params) {
+    Object.keys(params).forEach((key) => {
+      route.searchParams.append(key, params[key]);
+    });
+  }
+  return route.toString();
+};
+
 /**
  * @param {{ storeHash: string, accessToken: string }} config
  * @returns {Promise<Response>}
  */
 const fetchChannels = async ({ storeHash, accessToken }) =>
   fetch(
-    `https://api.bigcommerce.com/stores/${storeHash}/v3/channels?type:in=storefront&platform:in=bigcommerce,next,catalyst&available=true`,
-    {
+    apiRoute(
+      storeHash, 
+      '/v3/channels',
+      {
+        'type:in': 'storefront', 
+        'platform:in': 'bigcommerce,next,catalyst', 
+        available: true
+      }
+    ),{
       method: "GET",
       headers: {
         accept: "application/json",
@@ -24,7 +51,10 @@ const fetchChannels = async ({ storeHash, accessToken }) =>
  */
 const fetchChannel = async ({ storeHash, accessToken, channelId }) =>
   fetch(
-    `https://api.bigcommerce.com/stores/${storeHash}/v3/channels/${channelId}`,
+    apiRoute(
+      storeHash,
+      `/v3/channels/${channelId}`
+    ),
     {
       method: "GET",
       headers: {
@@ -39,7 +69,11 @@ const fetchChannel = async ({ storeHash, accessToken, channelId }) =>
  * @returns {Promise<Response>}
  */
 const createChannel = async ({ storeHash, accessToken, channelName }) =>
-  fetch(`https://api.bigcommerce.com/stores/${storeHash}/v3/channels`, {
+  fetch(
+    apiRoute(
+      storeHash,
+      '/v3/channels'
+    ), {
     method: "POST",
     headers: {
       accept: "application/json",
@@ -61,7 +95,10 @@ const createChannel = async ({ storeHash, accessToken, channelName }) =>
  */
 const fetchChannelSite = async ({ storeHash, accessToken, channelId }) =>
   fetch(
-    `https://api.bigcommerce.com/stores/${storeHash}/v3/channels/${channelId}/site`,
+    apiRoute(
+      storeHash,
+      `/v3/channels/${channelId}/site`
+    ),
     {
       method: "GET",
       headers: {
@@ -78,7 +115,10 @@ const fetchChannelSite = async ({ storeHash, accessToken, channelId }) =>
  */
 const createChannelSite = ({ storeHash, accessToken, channelId, channelUrl }) =>
   fetch(
-    `https://api.bigcommerce.com/stores/${storeHash}/v3/channels/${channelId}/site`,
+    apiRoute(
+      storeHash,
+      `/v3/channels/${channelId}/site`
+    ),
     {
       method: "POST",
       headers: {
@@ -99,7 +139,10 @@ const createChannelSite = ({ storeHash, accessToken, channelId, channelUrl }) =>
  */
 const updateChannelSite = ({ storeHash, accessToken, channelId, newUrl }) =>
   fetch(
-    `https://api.bigcommerce.com/stores/${storeHash}/v3/channels/${channelId}/site`,
+    apiRoute(
+      storeHash,
+      `/v3/channels/${channelId}/site`
+    ),
     {
       method: "PUT",
       headers: {
@@ -122,7 +165,10 @@ const createCustomerImpersonationToken = ({
   expirySeconds,
 }) =>
   fetch(
-    `https://api.bigcommerce.com/stores/${storeHash}/v3/storefront/api-token-customer-impersonation`,
+    apiRoute(
+      storeHash,
+      `/v3/storefront/api-token-customer-impersonation`
+    ),
     {
       method: "POST",
       headers: {
@@ -149,7 +195,7 @@ const promptAccessToken = async () => {
   console.log("- Channel settings: modify");
   console.log("- Storefront API customer impersonation tokens: manage");
   console.log(
-    "http://login.bigcommerce.com/deep-links/settings/api-accounts/create"
+    `http://${authHostname}/deep-links/settings/api-accounts/create`
   );
 
   return password({
