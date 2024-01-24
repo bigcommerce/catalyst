@@ -133,6 +133,7 @@ const GalleryImage = forwardRef<ElementRef<'img'>, GalleryImageProps>(
 
     if (selectedImage) {
       return (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           alt={selectedImage.altText}
           className={cs('h-full w-full object-contain', className)}
