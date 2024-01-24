@@ -2,12 +2,15 @@ import { DocumentTypeDecoration } from '@graphql-typed-document-node/core';
 
 import { BigCommerceAPIError } from './error';
 import { getOperationInfo } from './utils/getOperationName';
+import { getBackendUserAgent } from './utils/userAgent';
 
 interface Config {
   storeHash: string;
   customerImpersonationToken: string;
   xAuthToken: string;
   channelId?: string;
+  platform?: string;
+  backendUserAgentExtensions?: string;
   logger?: boolean;
 }
 
@@ -17,9 +20,11 @@ interface BigCommerceResponse<T> {
 
 class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   private graphqlUrl: string;
+  private backendUserAgent: string;
 
   constructor(private config: Config) {
     this.graphqlUrl = this.getEndpoint();
+    this.backendUserAgent = getBackendUserAgent(config.platform, config.backendUserAgentExtensions);
   }
 
   // Overload for documents that require variables
@@ -57,6 +62,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${this.config.customerImpersonationToken}`,
+        'User-Agent': this.backendUserAgent,
         ...(customerId && { 'X-Bc-Customer-Id': String(customerId) }),
         ...headers,
       },
@@ -86,6 +92,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
           Accept: 'application/json',
           'Content-Type': 'application/json',
           'X-Auth-Token': this.config.xAuthToken,
+          'User-Agent': this.backendUserAgent,
         },
         cache: 'no-store',
         body: JSON.stringify({
