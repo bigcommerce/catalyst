@@ -2,7 +2,7 @@
 
 /** @type {import('tailwindcss').Config} */
 const config = {
-  content: ['./src/**/*.{ts,tsx}'],
+  content: ['./src/**/*.{ts,tsx}', './app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}'],
   theme: {
     colors: {
       transparent: 'transparent',
