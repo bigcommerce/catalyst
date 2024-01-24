@@ -2,7 +2,7 @@ import { cva } from 'class-variance-authority';
 import { AlertCircle, Check } from 'lucide-react';
 import { ComponentPropsWithRef, createContext, ElementRef, forwardRef, useContext } from 'react';
 
-import { cs } from '../../utils/cs';
+import { cn } from '~/lib/utils';
 
 const inputVariants = cva(
   'peer focus:ring-blue-primary/20 w-full border-2 border-gray-200 py-2.5 px-4 text-base placeholder:text-gray-500 focus:border-blue-primary focus:outline-none focus:ring-4 hover:border-blue-primary disabled:bg-gray-100 disabled:hover:border-gray-200',
@@ -33,7 +33,7 @@ const InputIcon = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'span'>>(
     return (
       <span
         aria-hidden="true"
-        className={cs(
+        className={cn(
           'pointer-events-none absolute end-4 top-0 flex h-full items-center peer-disabled:text-gray-200',
           variant === 'success' && 'text-green-100',
           variant === 'error' && 'text-red-100',
@@ -58,9 +58,9 @@ InputIcon.displayName = 'InputIcon';
 const Input = forwardRef<ElementRef<'input'>, InputProps>(
   ({ className, variant, children, type = 'text', ...props }, ref) => (
     <InputContext.Provider value={{ variant }}>
-      <div className={cs('relative')}>
+      <div className={cn('relative')}>
         <input
-          className={cs(inputVariants({ variant, className }))}
+          className={cn(inputVariants({ variant, className }))}
           ref={ref}
           type={type}
           {...props}

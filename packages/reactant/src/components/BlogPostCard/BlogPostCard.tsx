@@ -2,7 +2,7 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva } from 'class-variance-authority';
 import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
-import { cs } from '../../utils/cs';
+import { cn } from '~/lib/utils';
 
 interface BlogPostCardProps extends ComponentPropsWithRef<'li'> {
   asChild?: boolean;
@@ -13,7 +13,7 @@ const BlogPostCard = forwardRef<ElementRef<'li'>, BlogPostCardProps>(
     const Comp = asChild ? Slot : 'li';
 
     return (
-      <Comp className={cs('group relative list-none flex-col', className)} ref={ref} {...props}>
+      <Comp className={cn('group relative list-none flex-col', className)} ref={ref} {...props}>
         {children}
       </Comp>
     );
@@ -26,7 +26,7 @@ const BlogPostBanner = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'
   ({ children, className, ...props }, ref) => {
     return (
       <div
-        className={cs('mb-3 flex h-44 justify-between bg-blue-primary/10 p-4 lg:h-56', className)}
+        className={cn('mb-3 flex h-44 justify-between bg-blue-primary/10 p-4 lg:h-56', className)}
         ref={ref}
         {...props}
       >
@@ -41,7 +41,7 @@ BlogPostBanner.displayName = 'BlogPostBanner';
 const BlogPostImage = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     return (
-      <div className={cs('mb-2 flex h-44 lg:h-56', className)} ref={ref} {...props}>
+      <div className={cn('mb-2 flex h-44 lg:h-56', className)} ref={ref} {...props}>
         {children}
       </div>
     );
@@ -68,7 +68,7 @@ const BlogPostTitle = forwardRef<ElementRef<'h3'>, TitleProps>(
     const Comp = asChild ? Slot : 'h3';
 
     return (
-      <Comp className={cs(titleVariants({ variant, className }))} ref={ref} {...props}>
+      <Comp className={cn(titleVariants({ variant, className }))} ref={ref} {...props}>
         {children}
       </Comp>
     );
@@ -80,7 +80,7 @@ BlogPostTitle.displayName = 'BlogPostTitle';
 const BlogPostContent = forwardRef<ElementRef<'p'>, ComponentPropsWithRef<'p'>>(
   ({ children, className, ...props }, ref) => {
     return (
-      <p className={cs('mb-2 text-base', className)} {...props} ref={ref}>
+      <p className={cn('mb-2 text-base', className)} {...props} ref={ref}>
         {children}
       </p>
     );
@@ -104,7 +104,7 @@ const dateVariants = cva('mb-2 text-base text-gray-500', {
 const BlogPostDate = forwardRef<ElementRef<'small'>, DateProps>(
   ({ children, className, variant, ...props }, ref) => {
     return (
-      <small className={cs(dateVariants({ variant, className }))} {...props} ref={ref}>
+      <small className={cn(dateVariants({ variant, className }))} {...props} ref={ref}>
         {children}
       </small>
     );
@@ -116,7 +116,7 @@ BlogPostDate.displayName = 'BlogPostDate';
 const BlogPostAuthor = forwardRef<ElementRef<'small'>, ComponentPropsWithRef<'small'>>(
   ({ children, className, ...props }, ref) => {
     return (
-      <small className={cs('text-base text-gray-500', className)} {...props} ref={ref}>
+      <small className={cn('text-base text-gray-500', className)} {...props} ref={ref}>
         {children}
       </small>
     );

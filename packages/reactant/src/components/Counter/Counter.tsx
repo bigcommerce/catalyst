@@ -2,7 +2,7 @@ import { cva } from 'class-variance-authority';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { ComponentPropsWithRef, ElementRef, forwardRef, useRef, useState } from 'react';
 
-import { cs } from '../../utils/cs';
+import { cn } from '~/lib/utils';
 
 const inputVariants = cva(
   'peer/input w-full border-2 border-gray-200 px-12 py-2.5 text-center text-base placeholder:text-gray-500 hover:border-blue-primary focus:border-blue-primary focus:outline-none focus:ring-4 focus:ring-blue-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200 peer-hover/down:border-blue-primary peer-hover/up:border-blue-primary peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200 [&::-webkit-inner-spin-button]:appearance-none',
@@ -103,11 +103,11 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
     };
 
     return (
-      <div className={cs('relative')} ref={ref}>
+      <div className={cn('relative')} ref={ref}>
         <button
           aria-hidden="true"
           aria-label="Decrease count"
-          className={cs(
+          className={cn(
             'peer/down absolute start-0 top-0 flex h-full w-12 items-center justify-center focus:outline-none disabled:text-gray-200',
           )}
           disabled={!canDecrement()}
@@ -125,7 +125,7 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
         <button
           aria-hidden="true"
           aria-label="Increase count"
-          className={cs(
+          className={cn(
             'peer/up absolute end-0 top-0 flex h-full w-12 items-center justify-center focus:outline-none disabled:text-gray-200',
           )}
           disabled={!canIncrement()}
@@ -141,7 +141,7 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
         </button>
 
         <input
-          className={cs(inputVariants({ variant, className }))}
+          className={cn(inputVariants({ variant, className }))}
           disabled={disabled}
           max={max}
           min={min}

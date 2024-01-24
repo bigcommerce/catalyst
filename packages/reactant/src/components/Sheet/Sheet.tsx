@@ -3,7 +3,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { X } from 'lucide-react';
 import { ComponentPropsWithoutRef, ElementRef, forwardRef, HTMLAttributes } from 'react';
 
-import { cs } from '../../utils/cs';
+import { cn } from '~/lib/utils';
 
 const Sheet = SheetPrimitive.Root;
 
@@ -36,7 +36,7 @@ const SheetOverlay = forwardRef<
   ComponentPropsWithoutRef<typeof SheetPrimitive.Overlay>
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Overlay
-    className={cs(
+    className={cn(
       'fixed inset-0 z-50 bg-white/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
       className,
     )}
@@ -74,7 +74,7 @@ const SheetContent = forwardRef<ElementRef<typeof SheetPrimitive.Content>, Sheet
   ({ side = 'left', className, children, ...props }, ref) => (
     <SheetPortal>
       <SheetPrimitive.Content
-        className={cs(sheetVariants({ side }), className)}
+        className={cn(sheetVariants({ side }), className)}
         ref={ref}
         {...props}
       >
@@ -87,14 +87,14 @@ const SheetContent = forwardRef<ElementRef<typeof SheetPrimitive.Content>, Sheet
 SheetContent.displayName = SheetPrimitive.Content.displayName;
 
 const SheetHeader = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
-  <div className={cs('mb-6 flex flex-row items-center justify-between', className)} {...props} />
+  <div className={cn('mb-6 flex flex-row items-center justify-between', className)} {...props} />
 );
 
 SheetHeader.displayName = 'SheetHeader';
 
 const SheetFooter = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cs('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)}
+    className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)}
     {...props}
   />
 );
@@ -105,7 +105,7 @@ const SheetTitle = forwardRef<
   ElementRef<typeof SheetPrimitive.Title>,
   ComponentPropsWithoutRef<typeof SheetPrimitive.Title>
 >(({ className, ...props }, ref) => (
-  <SheetPrimitive.Title className={cs('text-h4', className)} ref={ref} {...props} />
+  <SheetPrimitive.Title className={cn('text-h4', className)} ref={ref} {...props} />
 ));
 
 SheetTitle.displayName = SheetPrimitive.Title.displayName;

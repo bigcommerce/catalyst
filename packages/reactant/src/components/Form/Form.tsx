@@ -1,7 +1,7 @@
 import * as FormPrimitive from '@radix-ui/react-form';
 import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
-import { cs } from '../../utils/cs';
+import { cn } from '~/lib/utils';
 import { Label } from '../Label';
 
 type ValidationPattern =
@@ -28,7 +28,7 @@ const Form = forwardRef<
   ElementRef<typeof FormPrimitive.Root>,
   ComponentPropsWithRef<typeof FormPrimitive.Root>
 >(({ className, ...props }, ref) => (
-  <FormPrimitive.Root className={cs('text-base', className)} ref={ref} {...props} />
+  <FormPrimitive.Root className={cn('text-base', className)} ref={ref} {...props} />
 ));
 
 Form.displayName = FormPrimitive.Form.displayName;
@@ -37,7 +37,7 @@ const Field = forwardRef<
   ElementRef<typeof FormPrimitive.Field>,
   ComponentPropsWithRef<typeof FormPrimitive.Field>
 >(({ className, children, ...props }, ref) => (
-  <FormPrimitive.Field className={cs(className)} ref={ref} {...props}>
+  <FormPrimitive.Field className={cn(className)} ref={ref} {...props}>
     {children}
   </FormPrimitive.Field>
 ));
@@ -51,7 +51,7 @@ interface FieldMessageProps
 
 const FieldMessage = forwardRef<ElementRef<typeof FormPrimitive.Message>, FieldMessageProps>(
   ({ className, children, ...props }, ref) => (
-    <FormPrimitive.Message className={cs(className)} ref={ref} {...props}>
+    <FormPrimitive.Message className={cn(className)} ref={ref} {...props}>
       {children}
     </FormPrimitive.Message>
   ),
@@ -66,7 +66,7 @@ interface FieldLabelProps extends ComponentPropsWithRef<typeof Label> {
 const FieldLabel = forwardRef<ElementRef<typeof Label>, FieldLabelProps>(
   ({ className, children, isRequired, ...props }, ref) => (
     <Label
-      className={cs('inline-flex w-full items-center justify-between', className)}
+      className={cn('inline-flex w-full items-center justify-between', className)}
       ref={ref}
       {...props}
     >
@@ -82,7 +82,7 @@ const FieldControl = forwardRef<
   ElementRef<typeof FormPrimitive.Control>,
   ComponentPropsWithRef<typeof FormPrimitive.Control>
 >(({ className, children, ...props }, ref) => (
-  <FormPrimitive.Control className={cs(className)} ref={ref} {...props}>
+  <FormPrimitive.Control className={cn(className)} ref={ref} {...props}>
     {children}
   </FormPrimitive.Control>
 ));
@@ -93,7 +93,7 @@ const FormSubmit = forwardRef<
   ElementRef<typeof FormPrimitive.Submit>,
   ComponentPropsWithRef<typeof FormPrimitive.Submit>
 >(({ className, children, ...props }, ref) => (
-  <FormPrimitive.Submit className={cs(className)} ref={ref} {...props}>
+  <FormPrimitive.Submit className={cn(className)} ref={ref} {...props}>
     {children}
   </FormPrimitive.Submit>
 ));

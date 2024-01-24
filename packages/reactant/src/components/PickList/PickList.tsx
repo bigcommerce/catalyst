@@ -1,7 +1,7 @@
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
-import { cs } from '../../utils/cs';
+import { cn } from '~/lib/utils';
 
 type RadioIndicatorType = typeof RadioGroupPrimitive.Indicator;
 
@@ -11,7 +11,7 @@ const PickListIndicator = forwardRef<
 >(({ children, className, ...props }, ref) => {
   return (
     <RadioGroupPrimitive.Indicator
-      className={cs('h-2 w-2 rounded-full bg-white', className)}
+      className={cn('h-2 w-2 rounded-full bg-white', className)}
       {...props}
       ref={ref}
     >
@@ -28,7 +28,7 @@ const PickListItem = forwardRef<ElementRef<RadioItemType>, ComponentPropsWithRef
   ({ children, className, ...props }, ref) => {
     return (
       <RadioGroupPrimitive.Item
-        className={cs(
+        className={cn(
           'flex h-6 w-6 items-center justify-center rounded-full border-2 border-gray-200',
           'hover:border-blue-secondary',
           'focus:border-blue-primary focus:outline-none focus:ring-4 focus:ring-blue-primary/20',
@@ -56,7 +56,7 @@ const PickList = forwardRef<ElementRef<RadioGroupType>, ComponentPropsWithRef<Ra
   ({ children, className, ...props }, ref) => {
     return (
       <RadioGroupPrimitive.Root
-        className={cs('grid auto-rows-fr divide-y divide-solid divide-gray-200 border', className)}
+        className={cn('grid auto-rows-fr divide-y divide-solid divide-gray-200 border', className)}
         ref={ref}
         {...props}
       >

@@ -19,7 +19,7 @@ import {
   useState,
 } from 'react';
 
-import { cs } from '../../utils/cs';
+import { cn } from '~/lib/utils';
 
 type SetState<T> = Dispatch<SetStateAction<T>>;
 
@@ -73,7 +73,7 @@ const Slideshow = forwardRef<ElementRef<'section'>, SlideshowProps>(
             <section
               aria-label="Interactive slide show"
               aria-roledescription="carousel"
-              className={cs(
+              className={cn(
                 'relative -mx-6 overflow-hidden sm:-mx-10 md:-mx-12 lg:mx-0',
                 className,
               )}
@@ -116,7 +116,7 @@ const SlideshowContent = forwardRef<ForwardedRef, ComponentPropsWithRef<'ul'>>(
 
     return (
       <div ref={refCallback}>
-        <ul className={cs('flex', className)} id="slideshow-slides" {...props}>
+        <ul className={cn('flex', className)} id="slideshow-slides" {...props}>
           {unindexedSlides.map((indexedSlide, index) => (
             <SlideIndexContext.Provider key={index} value={[index, unindexedSlides.length]}>
               {indexedSlide}
@@ -141,7 +141,7 @@ const SlideshowSlide = forwardRef<ElementRef<'li'>, ComponentPropsWithRef<'li'>>
       <li
         aria-label={`${thisSlideIndex + 1} of ${totalSlides}`}
         aria-roledescription="slide"
-        className={cs('min-w-0 shrink-0 grow-0 basis-full', className)}
+        className={cn('min-w-0 shrink-0 grow-0 basis-full', className)}
         // @ts-expect-error https://github.com/DefinitelyTyped/DefinitelyTyped/pull/60822
         inert={thisSlideIndex === activeSlideIndex ? null : 'true'}
         ref={ref}
@@ -165,7 +165,7 @@ const SlideshowControls = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'d
 
     return (
       <div
-        className={cs('absolute bottom-12 start-12 flex items-center gap-4', className)}
+        className={cn('absolute bottom-12 start-12 flex items-center gap-4', className)}
         ref={ref}
         {...props}
       >
@@ -196,7 +196,7 @@ const SlideshowAutoplayControl = forwardRef<ElementRef<'button'>, SlideshowAutop
     return (
       <button
         aria-label={isPaused ? 'Play slideshow' : 'Pause slideshow'}
-        className={cs(
+        className={cn(
           'inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4 focus:ring-blue-primary/20',
           className,
         )}
@@ -231,7 +231,7 @@ const SlideshowNextIndicator = forwardRef<ElementRef<'button'>, ComponentPropsWi
       <button
         aria-controls="slideshow-slides"
         aria-label="Next slide"
-        className={cs(
+        className={cn(
           'inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4 focus:ring-blue-primary/20',
           className,
         )}
@@ -262,7 +262,7 @@ const SlideshowPreviousIndicator = forwardRef<
     <button
       aria-controls="slideshow-slides"
       aria-label="Previous slide"
-      className={cs(
+      className={cn(
         'inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4 focus:ring-blue-primary/20',
         className,
       )}
@@ -334,7 +334,7 @@ const SlideshowPagination = forwardRef<ElementRef<'span'>, SlideshowPaginationPr
       <span
         aria-atomic="false"
         aria-live={isPaused ? 'polite' : 'off'}
-        className={cs('font-semibold', className)}
+        className={cn('font-semibold', className)}
         ref={ref}
         {...props}
       >
