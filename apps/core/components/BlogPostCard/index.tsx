@@ -8,10 +8,10 @@ import {
   BlogPostCard as ReactantBlogPostCard,
 } from '@bigcommerce/reactant/BlogPostCard';
 import Image from 'next/image';
-import Link from 'next/link';
 
 import { getBlogPosts } from '~/client/queries/getBlogPosts';
 import { ExistingResultType } from '~/client/util';
+import { Link } from '~/components/Link';
 
 interface BlogPostCardProps {
   blogPost: ExistingResultType<typeof getBlogPosts>['posts']['items'][number];

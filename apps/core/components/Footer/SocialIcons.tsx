@@ -7,9 +7,9 @@ import {
   SiX,
   SiYoutube,
 } from '@icons-pack/react-simple-icons';
-import Link from 'next/link';
 
 import { getStoreSettings } from '~/client/queries/getStoreSettings';
+import { Link } from '~/components/Link';
 
 const socialIconNames = [
   'Facebook',
@@ -66,7 +66,7 @@ export const SocialIcons = async () => {
 
           return (
             <FooterNavLink asChild key={link.name}>
-              <Link href={link.url} prefetch={false}>
+              <Link href={link.url}>
                 <SocialIcon name={link.name} />
               </Link>
             </FooterNavLink>

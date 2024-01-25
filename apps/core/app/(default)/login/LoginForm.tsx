@@ -12,10 +12,10 @@ import {
 import { Input } from '@bigcommerce/reactant/Input';
 import { Message } from '@bigcommerce/reactant/Message';
 import { Loader2 as Spinner } from 'lucide-react';
-import Link from 'next/link';
 import { ChangeEvent, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 
+import { Link } from '~/components/Link';
 import { cn } from '~/lib/utils';
 
 import { submitLoginForm } from './_actions/submitLoginForm';

@@ -12,12 +12,12 @@ import {
 } from '@bigcommerce/reactant/NavigationMenu';
 import { ChevronDown, LogOut, ShoppingCart, User } from 'lucide-react';
 import { cookies } from 'next/headers';
-import Link from 'next/link';
 import { PropsWithChildren, Suspense } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
 import { getCart } from '~/client/queries/getCart';
 import { getCategoryTree } from '~/client/queries/getCategoryTree';
+import { Link } from '~/components/Link';
 import { cn } from '~/lib/utils';
 
 import { QuickSearch } from '../QuickSearch';
@@ -27,7 +27,7 @@ import { logout } from './_actions/logout';
 
 const CartLink = ({ children }: PropsWithChildren) => (
   <NavigationMenuLink asChild>
-    <Link className="relative" href="/cart" prefetch={false}>
+    <Link className="relative" href="/cart">
       {children}
     </Link>
   </NavigationMenuLink>
@@ -84,7 +84,7 @@ const HeaderNav = async ({
                 <NavigationMenuTrigger className="gap-0 p-0">
                   <>
                     <NavigationMenuLink asChild>
-                      <Link className="grow" href={category.path} prefetch={false}>
+                      <Link className="grow" href={category.path}>
                         {category.name}
                       </Link>
                     </NavigationMenuLink>
@@ -124,9 +124,7 @@ const HeaderNav = async ({
               </>
             ) : (
               <NavigationMenuLink asChild>
-                <Link href={category.path} prefetch={false}>
-                  {category.name}
-                </Link>
+                <Link href={category.path}>{category.name}</Link>
               </NavigationMenuLink>
             )}
           </NavigationMenuItem>
@@ -156,7 +154,7 @@ export const Header = async () => {
     <header>
       <NavigationMenu>
         <NavigationMenuLink asChild className="px-0">
-          <Link href="/" prefetch={false}>
+          <Link href="/">
             <StoreLogo />
           </Link>
         </NavigationMenuLink>
@@ -186,7 +184,7 @@ export const Header = async () => {
                 </form>
               ) : (
                 <NavigationMenuLink asChild>
-                  <Link aria-label="Login" href="/login" prefetch={false}>
+                  <Link aria-label="Login" href="/login">
                     <User />
                   </Link>
                 </NavigationMenuLink>

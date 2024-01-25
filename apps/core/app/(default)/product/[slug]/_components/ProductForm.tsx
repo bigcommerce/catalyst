@@ -1,9 +1,10 @@
 'use client';
 
 import { AlertCircle, Check } from 'lucide-react';
-import Link from 'next/link';
 import { ComponentPropsWithoutRef } from 'react';
 import { toast } from 'react-hot-toast';
+
+import { Link } from '~/components/Link';
 
 import { handleAddToCart } from '../_actions/addToCart';
 
@@ -24,7 +25,7 @@ export const ProductForm = ({ children }: ComponentPropsWithoutRef<'form'>) => (
           <div className="flex items-center gap-3">
             <span>
               {quantity} {quantity === 1 ? 'Item' : 'Items'} added to{' '}
-              <Link className="font-semibold text-blue-primary" href="/cart" prefetch={false}>
+              <Link className="font-semibold text-blue-primary" href="/cart">
                 your cart
               </Link>
             </span>

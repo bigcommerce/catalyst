@@ -9,15 +9,15 @@ import {
 import { Button } from '@bigcommerce/reactant/Button';
 import { X } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { CheckedProduct, useCompareProductsContext } from '~/app/contexts/CompareProductsContext';
+import { Link } from '~/components/Link';
 
 const CompareLink = ({ products }: { products: CheckedProduct[] }) => {
   return (
     <Button asChild className="me-4 h-12 w-auto grow whitespace-nowrap px-8 md:grow-0">
-      <Link href={`/compare?ids=${products.map(({ id }) => id).join(',')}`} prefetch={false}>
+      <Link href={`/compare?ids=${products.map(({ id }) => id).join(',')}`}>
         Compare ({products.length})
       </Link>
     </Button>

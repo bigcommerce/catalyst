@@ -1,8 +1,8 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { getBrand } from '~/client/queries/getBrand';
+import { Link } from '~/components/Link';
 import { ProductCard } from '~/components/ProductCard';
 
 import { FacetedSearch } from '../../_components/faceted-search';
@@ -83,7 +83,7 @@ export default async function Brand({ params, searchParams }: Props) {
 
           <nav aria-label="Pagination" className="my-6 text-center text-blue-primary">
             {hasPreviousPage ? (
-              <Link href={`${brand.path}?before=${String(startCursor)}`} prefetch={false}>
+              <Link href={`${brand.path}?before=${String(startCursor)}`}>
                 <span className="sr-only">Previous</span>
                 <ChevronLeft aria-hidden="true" className="inline-block h-8 w-8" />
               </Link>
@@ -92,7 +92,7 @@ export default async function Brand({ params, searchParams }: Props) {
             )}
 
             {hasNextPage ? (
-              <Link href={`${brand.path}?after=${String(endCursor)}`} prefetch={false}>
+              <Link href={`${brand.path}?after=${String(endCursor)}`}>
                 <span className="sr-only">Next</span>
                 <ChevronRight aria-hidden="true" className="inline-block h-8 w-8" />
               </Link>

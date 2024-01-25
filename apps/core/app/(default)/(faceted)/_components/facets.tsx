@@ -11,11 +11,11 @@ import { Checkbox } from '@bigcommerce/reactant/Checkbox';
 import { Input } from '@bigcommerce/reactant/Input';
 import { Label } from '@bigcommerce/reactant/Label';
 import { Rating } from '@bigcommerce/reactant/Rating';
-import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useRef } from 'react';
 
 import { RatingSearchFilterItem } from '~/client/generated/graphql';
+import { Link } from '~/components/Link';
 import { cn } from '~/lib/utils';
 
 import type { Facet, PageType } from '../types';

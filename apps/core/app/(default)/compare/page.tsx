@@ -1,10 +1,10 @@
 import { Button } from '@bigcommerce/reactant/Button';
 import { Rating } from '@bigcommerce/reactant/Rating';
 import Image from 'next/image';
-import Link from 'next/link';
 import * as z from 'zod';
 
 import { getProducts } from '~/client/queries/getProducts';
+import { Link } from '~/components/Link';
 import { Pricing } from '~/components/Pricing';
 import { SearchForm } from '~/components/SearchForm';
 import { cn } from '~/lib/utils';
@@ -82,7 +82,7 @@ export default async function Compare({
                 if (product.defaultImage) {
                   return (
                     <td className="px-4" key={product.entityId}>
-                      <Link aria-label={product.name} href={product.path} prefetch={false}>
+                      <Link aria-label={product.name} href={product.path}>
                         <Image
                           alt={product.defaultImage.altText}
                           height={300}
@@ -96,7 +96,7 @@ export default async function Compare({
 
                 return (
                   <td className="px-4" key={product.entityId}>
-                    <Link aria-label={product.name} href={product.path} prefetch={false}>
+                    <Link aria-label={product.name} href={product.path}>
                       <div className="flex aspect-square items-center justify-center bg-gray-200 text-gray-500">
                         <p className="text-lg">No Image</p>
                       </div>
@@ -115,9 +115,7 @@ export default async function Compare({
             <tr>
               {products.map((product) => (
                 <td className="px-4 align-top text-h5" key={product.entityId}>
-                  <Link href={product.path} prefetch={false}>
-                    {product.name}
-                  </Link>
+                  <Link href={product.path}>{product.name}</Link>
                 </td>
               ))}
             </tr>
@@ -134,9 +132,7 @@ export default async function Compare({
                   return (
                     <td className="border-b px-4 pb-12" key={product.entityId}>
                       <Button aria-label={product.name} asChild>
-                        <Link href={product.path} prefetch={false}>
-                          Choose Options
-                        </Link>
+                        <Link href={product.path}>Choose Options</Link>
                       </Button>
                     </td>
                   );

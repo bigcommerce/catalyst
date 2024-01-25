@@ -1,6 +1,5 @@
-import Link from 'next/link';
-
 import { getProduct } from '~/client/queries/getProduct';
+import { Link } from '~/components/Link';
 import { cn } from '~/lib/utils';
 
 interface Props {
@@ -29,9 +28,7 @@ export const BreadCrumbs = async ({ productId }: Props) => {
               })}
               key={breadcrumb.name}
             >
-              <Link href="#" prefetch={false}>
-                {breadcrumb.name}
-              </Link>
+              <Link href="#">{breadcrumb.name}</Link>
               {!isLast && <span className="mx-2">/</span>}
             </li>
           );
