@@ -154,35 +154,6 @@ const updateChannelSite = ({ storeHash, accessToken, channelId, newUrl }) =>
     }
   );
 
-/**
- * @param {{ storeHash: string, accessToken: string, channelId: number, expirySeconds: number }} config
- * @returns {Promise<Response>}
- */
-const createCustomerImpersonationToken = ({
-  storeHash,
-  accessToken,
-  channelId,
-  expirySeconds,
-}) =>
-  fetch(
-    apiRoute(
-      storeHash,
-      `/v3/storefront/api-token-customer-impersonation`
-    ),
-    {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "content-type": "application/json",
-        "x-auth-token": accessToken,
-      },
-      body: JSON.stringify({
-        channel_id: channelId,
-        expires_at: expirySeconds,
-      }),
-    }
-  );
-
 /** @returns {Promise<string>} */
 const promptStoreHash = async () =>
   input({ message: "Please enter your store hash" });
@@ -478,81 +449,35 @@ const assignChannelSite = async ({ storeHash, accessToken, channelId }) => {
   });
 };
 
-const EXPIRY_OPTS = {
-  /** @type {"DAY"} */
-  DAY: "DAY",
-  /** @type {"WEEK"} */
-  WEEK: "WEEK",
-  /** @type {"MONTH"} */
-  MONTH: "MONTH",
-  /** @type {"YEAR"} */
-  YEAR: "YEAR",
-};
-
-/**
- * @param {keyof typeof EXPIRY_OPTS} expirySelection
- * @returns {number}
- */
-const getTokenExpiry = (expirySelection) => {
-  const expiry = new Date();
-
-  switch (expirySelection) {
-    case EXPIRY_OPTS.DAY:
-      expiry.setDate(expiry.getDate() + 1);
-      break;
-    case EXPIRY_OPTS.WEEK:
-      expiry.setDate(expiry.getDate() + 7);
-      break;
-    case EXPIRY_OPTS.MONTH:
-      expiry.setMonth(expiry.getMonth() + 1);
-      break;
-    case EXPIRY_OPTS.YEAR:
-      expiry.setFullYear(expiry.getFullYear() + 1);
-      break;
-    default:
-      throw new Error("Invalid token expiry value");
-  }
-
-  return parseInt((expiry.getTime() / 1000).toFixed(0));
-};
-
 /**
  * @param {{ storeHash: string, accessToken: string, channelId: number }} config
  * @returns {Promise<string>}
  */
-const promptCustomerImpersonationToken = async ({
+const createCustomerImpersonationToken = async ({
   storeHash,
   accessToken,
   channelId,
 }) => {
-  const expirySeconds = await select({
-    message: "When would you like your customer impersonation token to expire?",
-    choices: [
-      {
-        name: "1 day",
-        value: getTokenExpiry(EXPIRY_OPTS.DAY),
-      },
-      {
-        name: "1 week",
-        value: getTokenExpiry(EXPIRY_OPTS.WEEK),
-      },
-      {
-        name: "1 month",
-        value: getTokenExpiry(EXPIRY_OPTS.MONTH),
-      },
-      {
-        name: "1 year",
-        value: getTokenExpiry(EXPIRY_OPTS.YEAR),
-      },
-    ],
-  });
+  const maxUnixTime = 2147483647;
 
-  const res = await createCustomerImpersonationToken({
-    storeHash,
-    accessToken,
-    channelId,
-    expirySeconds,
-  });
+  const res = await fetch(
+    apiRoute(
+      storeHash,
+      `/v3/storefront/api-token-customer-impersonation`
+    ),
+    {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        "x-auth-token": accessToken,
+      },
+      body: JSON.stringify({
+        channel_id: channelId,
+        expires_at: maxUnixTime,
+      }),
+    }
+  );
 
   if (!res.ok) {
     switch (res.status) {
@@ -700,7 +625,7 @@ const setup = async () => {
 
   await assignChannelSite({ storeHash, accessToken, channelId });
 
-  const customerImpersonationToken = await promptCustomerImpersonationToken({
+  const customerImpersonationToken = await createCustomerImpersonationToken({
     storeHash,
     accessToken,
     channelId,
