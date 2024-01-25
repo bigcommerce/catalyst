@@ -6,6 +6,7 @@ const meta: Meta<typeof Counter> = {
   tags: ['autodocs'],
   argTypes: {
     disabled: { control: 'boolean' },
+    variant: { control: 'select', options: ['success', 'error'] },
   },
 };
 
@@ -58,5 +59,19 @@ export const AllowDecimals: Story = {
     defaultValue: 5,
     isInteger: false,
     step: 0.5,
+  },
+};
+
+export const Success: Story = {
+  args: {
+    ...Default.args,
+    variant: 'success',
+  },
+};
+
+export const Error: Story = {
+  args: {
+    ...Default.args,
+    variant: 'error',
   },
 };
