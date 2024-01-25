@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import NextLink, { type LinkProps } from 'next/link';
 import { ElementRef, forwardRef } from 'react';
 
