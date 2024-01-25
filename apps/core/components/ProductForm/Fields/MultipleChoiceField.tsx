@@ -5,46 +5,66 @@ import { RectangleList, RectangleListItem } from '@bigcommerce/reactant/Rectangl
 import { Select, SelectContent, SelectItem } from '@bigcommerce/reactant/Select';
 import { Swatch, SwatchItem } from '@bigcommerce/reactant/Swatch';
 import Image from 'next/image';
-import { Fragment } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { getProduct } from '~/client/queries/getProduct';
 import { ExistingResultType, Unpacked } from '~/client/util';
+
+import { useProductFieldController } from '../useProductForm';
+
+import { ErrorMessage } from './shared/ErrorMessage';
 
 type MultipleChoiceOption = Extract<
   Unpacked<ExistingResultType<typeof getProduct>['productOptions']>,
   { __typename: 'MultipleChoiceOption' }
 >;
 
-export const MultipleChoiceField = ({
-  option,
-  searchParamSelected,
-  handleOnValueChange,
-}: {
-  option: MultipleChoiceOption;
-  searchParamSelected?: string;
-  handleOnValueChange: ({ optionId, valueId }: { optionId: number; valueId: number }) => void;
-}) => {
+export const MultipleChoiceField = ({ option }: { option: MultipleChoiceOption }) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const searchParamSelected = searchParams.get(String(option.entityId));
+
+  const handleOnValueChange = ({ optionId, valueId }: { optionId: number; valueId: number }) => {
+    const optionSearchParams = new URLSearchParams(searchParams.toString());
+
+    optionSearchParams.set(String(optionId), String(valueId));
+
+    router.replace(`${pathname}?${optionSearchParams.toString()}`, { scroll: false });
+  };
+
   const selectedValue = option.values.find((value) => value.isSelected)?.entityId.toString();
   const defaultValue = option.values.find((value) => value.isDefault)?.entityId.toString();
+
+  const { field, fieldState } = useProductFieldController({
+    name: `attribute_${option.entityId}`,
+    rules: {
+      required: option.isRequired ? 'Please select an option.' : false,
+    },
+    defaultValue: searchParamSelected || selectedValue || defaultValue || '',
+  });
+  const { error } = fieldState;
 
   switch (option.displayStyle) {
     case 'Swatch':
       return (
-        <Fragment key={option.entityId}>
-          <Label className="my-2 inline-block" id={`label-${option.entityId}`}>
+        <div key={option.entityId}>
+          <Label className="mb-2 inline-block" id={`label-${option.entityId}`}>
             {option.displayName}
           </Label>
           <Swatch
             aria-labelledby={`label-${option.entityId}`}
-            defaultValue={searchParamSelected || selectedValue || defaultValue}
-            name={`attribute[${option.entityId}]`}
-            onValueChange={(value) =>
+            name={field.name}
+            onValueChange={(value) => {
+              field.onChange(value);
+
               handleOnValueChange({
                 optionId: option.entityId,
                 valueId: Number(value),
-              })
-            }
-            required={option.isRequired}
+              });
+            }}
+            value={field.value?.toString()}
           >
             {option.values.map((value) => {
               if ('__typename' in value && value.__typename === 'SwatchOptionValue') {
@@ -61,26 +81,28 @@ export const MultipleChoiceField = ({
               return null;
             })}
           </Swatch>
-        </Fragment>
+          {error && <ErrorMessage>{error.message}</ErrorMessage>}
+        </div>
       );
 
     case 'RectangleBoxes':
       return (
-        <Fragment key={option.entityId}>
-          <Label className="my-2 inline-block" id={`label-${option.entityId}`}>
+        <div key={option.entityId}>
+          <Label className="mb-2 inline-block" id={`label-${option.entityId}`}>
             {option.displayName}
           </Label>
           <RectangleList
             aria-labelledby={`label-${option.entityId}`}
-            defaultValue={searchParamSelected || selectedValue || defaultValue}
-            name={`attribute[${option.entityId}]`}
-            onValueChange={(value) =>
+            name={field.name}
+            onValueChange={(value) => {
+              field.onChange(value);
+
               handleOnValueChange({
                 optionId: option.entityId,
                 valueId: Number(value),
-              })
-            }
-            required={option.isRequired}
+              });
+            }}
+            value={field.value?.toString()}
           >
             {option.values.map((value) => {
               return (
@@ -94,26 +116,28 @@ export const MultipleChoiceField = ({
               );
             })}
           </RectangleList>
-        </Fragment>
+          {error && <ErrorMessage>{error.message}</ErrorMessage>}
+        </div>
       );
 
     case 'RadioButtons':
       return (
-        <Fragment key={option.entityId}>
-          <Label className="my-2 inline-block font-semibold" id={`label-${option.entityId}`}>
+        <div key={option.entityId}>
+          <Label className="mb-2 inline-block font-semibold" id={`label-${option.entityId}`}>
             {option.displayName}
           </Label>
           <RadioGroup
             aria-labelledby={`label-${option.entityId}`}
-            defaultValue={searchParamSelected || selectedValue || defaultValue}
-            name={`attribute[${option.entityId}]`}
-            onValueChange={(value) =>
+            name={field.name}
+            onValueChange={(value) => {
+              field.onChange(value);
+
               handleOnValueChange({
                 optionId: option.entityId,
                 valueId: Number(value),
-              })
-            }
-            required={option.isRequired}
+              });
+            }}
+            value={field.value?.toString()}
           >
             {option.values.map((value) => (
               <div className="mb-2 flex" key={value.entityId}>
@@ -124,26 +148,29 @@ export const MultipleChoiceField = ({
               </div>
             ))}
           </RadioGroup>
-        </Fragment>
+          {error && <ErrorMessage>{error.message}</ErrorMessage>}
+        </div>
       );
 
     case 'DropdownList':
       return (
-        <Fragment key={option.entityId}>
-          <Label className="my-2 inline-block font-semibold" id={`label-${option.entityId}`}>
+        <div key={option.entityId}>
+          <Label className="mb-2 inline-block font-semibold" id={`label-${option.entityId}`}>
             {option.displayName}
           </Label>
           <Select
             aria-labelledby={`label-${option.entityId}`}
-            defaultValue={searchParamSelected || selectedValue || defaultValue}
-            name={`attribute[${option.entityId}]`}
-            onValueChange={(value) =>
+            name={field.name}
+            onValueChange={(value) => {
+              field.onChange(value);
+
               handleOnValueChange({
                 optionId: option.entityId,
                 valueId: Number(value),
-              })
-            }
-            required={option.isRequired}
+              });
+            }}
+            value={field.value?.toString()}
+            variant={error && 'error'}
           >
             <SelectContent>
               {option.values.map((value) => (
@@ -153,27 +180,29 @@ export const MultipleChoiceField = ({
               ))}
             </SelectContent>
           </Select>
-        </Fragment>
+          {error && <ErrorMessage>{error.message}</ErrorMessage>}
+        </div>
       );
 
     case 'ProductPickList':
     case 'ProductPickListWithImages':
       return (
-        <Fragment key={option.entityId}>
-          <Label className="my-2 inline-block font-semibold" id={`label-${option.entityId}`}>
+        <div key={option.entityId}>
+          <Label className="mb-2 inline-block font-semibold" id={`label-${option.entityId}`}>
             {option.displayName}
           </Label>
           <PickList
             aria-labelledby={`label-${option.entityId}`}
-            defaultValue={searchParamSelected || selectedValue || defaultValue}
-            name={`attribute[${option.entityId}]`}
-            onValueChange={(value) =>
+            name={field.name}
+            onValueChange={(value) => {
+              field.onChange(value);
+
               handleOnValueChange({
                 optionId: option.entityId,
                 valueId: Number(value),
-              })
-            }
-            required={option.isRequired}
+              });
+            }}
+            value={field.value?.toString()}
           >
             {option.values.map((value) => {
               if ('__typename' in value && value.__typename === 'ProductPickListOptionValue') {
@@ -202,7 +231,8 @@ export const MultipleChoiceField = ({
               return null;
             })}
           </PickList>
-        </Fragment>
+          {error && <ErrorMessage>{error.message}</ErrorMessage>}
+        </div>
       );
 
     default:
