@@ -36,13 +36,7 @@ Catalyst is configured such that pnpm replaces npm. When you enhance your projec
 git clone git@github.com:bigcommerce/catalyst.git && cd catalyst
 ```
 
-2. To help stay up to date with the latest changes, add the BigCommerce repo to your project as the upstream repository:
-
-```shell
-git remote add upstream git@github.com:bigcommerce/catalyst.git
-```
-
-3. Use corepack to enable pnpm, then use pnpm to install project dependencies:
+2. Use corepack to enable pnpm, then use pnpm to install project dependencies:
 
 ```shell
 corepack enable pnpm
@@ -52,7 +46,7 @@ corepack enable pnpm
 pnpm install
 ```
 
-4. **Set up environment variables.**
+3. **Set up environment variables.**
 
 This repository contains a setup script that generates a local development environment file, `.env.local`. The environment file contains the authentication credentials and other variables required to connect Catalyst to an existing BigCommerce store. Run the script from the root directory of this repository and follow the prompts:
 
@@ -93,35 +87,9 @@ The `dev` script runs all packages and apps in watch mode. The following table l
 
 Happy developing! Let us know how things are going in the dedicated Slack channel.
 
-### Using the `vercel` CLI
-
-If you are able to install and use the [Vercel CLI (vercel.com)](https://vercel.com/cli) on your local machine, you can use it to pull the environment variables from Vercel. The `vercel` CLI is not required to run Catalyst locally.
-
-1. Link the app to your Vercel project
-
-This command will take you through the process of linking the app to your Vercel project.
-
-```shell
-vercel link
-```
-
-2. Pull the environment variables from Vercel
-
-This will pull the `development` environment variables from Vercel and write them to `.env.local`.
-
-```shell
-vercel env pull .env.local
-```
-
-If you need to pull the production environment variables for debugging, use the `--prod` flag.
-
-```shell
-vercel env pull .env.production --prod
-```
-
 ## Deploy using Vercel
 
-One common way to deploy a Next.js app for development is to use the [Vercel Platform (vercel.com)](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme). Consult the [Next.js deployment documentation (next.js)](https://nextjs.org/docs/deployment) for more details.
+One common way to deploy a Next.js app is to use the [Vercel Platform (vercel.com)](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme). Consult the [Next.js deployment documentation (next.js)](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 ## Resources
 
