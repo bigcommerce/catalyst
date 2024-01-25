@@ -4,17 +4,14 @@ import { AlertCircle, Check } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 
-import { getProduct } from '~/client/queries/getProduct';
-import { ExistingResultType } from '~/client/util';
-
 import { ProductSheet, ProductSheetContent } from '../ProductSheet';
 
 import { addToCart } from './_actions/addToCart';
 import { AddToCart } from './AddToCart';
 
-type Product = ExistingResultType<typeof getProduct>;
+import { Product } from '.';
 
-export const Cart = ({ product }: { product: Product }) => {
+export const Cart = ({ product }: { product: Partial<Product> }) => {
   if (!product.entityId) {
     return null;
   }
