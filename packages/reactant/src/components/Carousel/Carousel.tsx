@@ -57,7 +57,7 @@ const CarouselContent = forwardRef<ForwardedRef, ComponentPropsWithRef<'ul'>>(
 
     return (
       <div ref={refCallback}>
-        <ul aria-live="polite" className={cs('mb-16 mt-8 flex lg:mt-10', className)} {...props}>
+        <ul aria-live="polite" className={cs('mb-16 mt-4 flex lg:mt-10', className)} {...props}>
           {children}
         </ul>
       </div>
