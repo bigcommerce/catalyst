@@ -44,8 +44,33 @@ const fieldNameMapping = {
 
 type Field = keyof typeof fieldNameMapping;
 
-export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUsProps) => {
+const Submit = () => {
   const { pending } = useFormStatus();
+
+  return (
+    <FormSubmit asChild>
+      <Button
+        className="relative mt-8 w-fit items-center px-8 py-2"
+        disabled={pending}
+        variant="primary"
+      >
+        <>
+          {pending && (
+            <>
+              <span className="absolute z-10 flex h-full w-full items-center justify-center bg-gray-400">
+                <Spinner aria-hidden="true" className="animate-spin" />
+              </span>
+              <span className="sr-only">Submitting...</span>
+            </>
+          )}
+          <span aria-hidden={pending}>Submit form</span>
+        </>
+      </Button>
+    </FormSubmit>
+  );
+};
+
+export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUsProps) => {
   const form = useRef<HTMLFormElement>(null);
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
   const [isTextFieldValid, setTextFieldValidation] = useState(true);
@@ -77,7 +102,7 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
       form.current?.reset();
       setFormStatus({
         status: 'success',
-        message: `Thanks for reaching out. We'll get back to you soon. Keep shopping`,
+        message: "Thanks for reaching out. We'll get back to you soon.",
       });
     }
 
@@ -180,36 +205,21 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
         {
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           IS_RECAPTCHA_ENABLED && (
-            <Field className="relative col-span-full max-w-full space-y-2 pb-5" name="ReCAPTCHA">
+            <Field className="relative col-span-full max-w-full space-y-2 pb-7" name="ReCAPTCHA">
               <ReCAPTCHA
                 onChange={onReCatpchaChange}
                 ref={reCaptchaRef}
                 sitekey={reCaptchaSettings?.siteKey ?? ''}
               />
               {!isReCaptchaValid && (
-                <span className="inset-x-0 bottom-0 inline-flex w-full text-sm text-red-200">
+                <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-red-200">
                   Pass ReCAPTCHA check
                 </span>
               )}
             </Field>
           )
         }
-        <FormSubmit asChild>
-          <Button
-            className="mt-8 w-fit items-center px-8 py-2"
-            disabled={pending}
-            variant="primary"
-          >
-            {pending ? (
-              <>
-                <Spinner aria-hidden="true" className="animate-spin" />
-                <span className="sr-only">Submitting...</span>
-              </>
-            ) : (
-              <span>Submit form</span>
-            )}
-          </Button>
-        </FormSubmit>
+        <Submit />
       </Form>
     </>
   );
