@@ -1,7 +1,24 @@
+import { cva } from 'class-variance-authority';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { ComponentPropsWithRef, ElementRef, forwardRef, useRef, useState } from 'react';
 
 import { cs } from '../../utils/cs';
+
+const inputVariants = cva(
+  'peer/input w-full border-2 border-gray-200 px-12 py-2.5 text-center text-base placeholder:text-gray-500 hover:border-blue-primary focus:border-blue-primary focus:outline-none focus:ring-4 focus:ring-blue-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200 peer-hover/down:border-blue-primary peer-hover/up:border-blue-primary peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200 [&::-webkit-inner-spin-button]:appearance-none',
+  {
+    variants: {
+      variant: {
+        success:
+          'border-green-100 focus:border-green-100 focus:ring-green-100/20 disabled:border-gray-200 hover:border-green-200 peer-hover/down:border-green-200 peer-hover/up:border-green-200 peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
+        error:
+          'border-red-100 focus:border-red-100 focus:ring-red-100/20 disabled:border-gray-200 hover:border-red-200 peer-hover/down:border-red-200 peer-hover/up:border-red-200 peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
+      },
+    },
+  },
+);
+
+type VariantTypes = 'success' | 'error';
 
 interface CounterProps extends Omit<ComponentPropsWithRef<'input'>, 'onChange'> {
   defaultValue?: number | '';
@@ -10,6 +27,7 @@ interface CounterProps extends Omit<ComponentPropsWithRef<'input'>, 'onChange'> 
   min?: number;
   step?: number;
   value?: number | '';
+  variant?: VariantTypes;
   onChange?: (value: number | '') => void;
 }
 
@@ -39,6 +57,7 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
       onChange,
       type,
       value: valueProp,
+      variant,
       ...props
     },
     ref,
@@ -122,10 +141,7 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
         </button>
 
         <input
-          className={cs(
-            'peer/input w-full border-2 border-gray-200 px-12 py-2.5 text-center text-base placeholder:text-gray-500 hover:border-blue-primary focus:border-blue-primary focus:outline-none focus:ring-4 focus:ring-blue-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200 peer-hover/down:border-blue-primary peer-hover/up:border-blue-primary peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200 [&::-webkit-inner-spin-button]:appearance-none',
-            className,
-          )}
+          className={cs(inputVariants({ variant, className }))}
           disabled={disabled}
           max={max}
           min={min}
