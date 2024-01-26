@@ -1,9 +1,9 @@
 'use client';
 
 import { AlertCircle, Check } from 'lucide-react';
-import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 
+import { Link } from '../Link';
 import { ProductSheet, ProductSheetContent } from '../ProductSheet';
 
 import { addToCart } from './_actions/addToCart';

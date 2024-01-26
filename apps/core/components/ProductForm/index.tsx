@@ -2,12 +2,13 @@
 
 import { Button } from '@bigcommerce/reactant/Button';
 import { AlertCircle, Check, Heart } from 'lucide-react';
-import Link from 'next/link';
 import { FormProvider } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
 import { getProduct } from '~/client/queries/getProduct';
 import { ExistingResultType } from '~/client/util';
+
+import { Link } from '../Link';
 
 import { handleAddToCart } from './_actions/addToCart';
 import { AddToCart } from './AddToCart';
