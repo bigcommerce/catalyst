@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 
-import { CartActions } from '../../actions/cart-actions';
-import { ProductActions } from '../../actions/product-actions';
-import { CartPage } from '../../pages/cart-page';
+import { CartActions } from '../../../actions/cart-actions';
+import { ProductActions } from '../../../actions/product-actions';
+import { CartPage } from '../../../pages/cart-page';
 
 const sampleProduct = '[Sample] Able Brewing System';
 
