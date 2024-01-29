@@ -73,7 +73,7 @@ export const CompareDrawer = () => {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 w-full border-t border-gray-200 bg-white p-6 md:pe-0">
+    <div className="fixed bottom-0 start-0 w-full border-t border-gray-200 bg-white p-6 md:pe-0">
       <div className="hidden md:flex">
         <CompareLink products={products} />
         <ul className="flex overflow-auto">

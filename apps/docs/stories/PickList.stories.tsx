@@ -46,7 +46,7 @@ export const BasicExample: Story = {
               <img
                 alt={option.value}
                 aria-hidden="true"
-                className="mr-6 h-12 w-12"
+                className="me-6 h-12 w-12"
                 src={option.imgSrc}
               />
             )}

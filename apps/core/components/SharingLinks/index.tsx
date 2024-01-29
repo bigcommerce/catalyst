@@ -21,7 +21,7 @@ export const SharingLinks = ({
   const encodedUrl = encodeURIComponent(`${vanityUrl}/blog/${blogPostId}/`);
 
   return (
-    <div className="mb-10 flex items-center [&>*:not(:last-child)]:mr-2.5">
+    <div className="mb-10 flex items-center [&>*:not(:last-child)]:me-2.5">
       <h3 className="text-h5">Share</h3>
       <a
         href={`https://facebook.com/sharer/sharer.php?u=${encodedUrl}`}
