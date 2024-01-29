@@ -152,7 +152,7 @@ export default async function Compare({
           </thead>
           <tbody>
             <tr className="absolute mt-6">
-              <th className="sticky left-0 top-0 m-0 pl-4 text-left" id="product-description">
+              <th className="sticky start-0 top-0 m-0 ps-4 text-start" id="product-description">
                 Description
               </th>
             </tr>
@@ -167,7 +167,7 @@ export default async function Compare({
               ))}
             </tr>
             <tr className="absolute mt-6">
-              <th className="sticky left-0 top-0 m-0 pl-4 text-left" id="product-rating">
+              <th className="sticky start-0 top-0 m-0 ps-4 text-start" id="product-rating">
                 Rating
               </th>
             </tr>
@@ -197,7 +197,7 @@ export default async function Compare({
               ))}
             </tr>
             <tr className="absolute mt-6">
-              <th className="sticky left-0 top-0 m-0 pl-4 text-left" id="product-availability">
+              <th className="sticky start-0 top-0 m-0 ps-4 text-start" id="product-availability">
                 Availability
               </th>
             </tr>

@@ -22,7 +22,7 @@ export default async function NotFound() {
         </Message>
         <SearchForm />
         <section className={cn('w-full')}>
-          <h3 className={cn('mb-10 text-center text-h3 sm:text-left')}>Featured Products</h3>
+          <h3 className={cn('mb-10 text-center text-h3 sm:text-start')}>Featured Products</h3>
           <div className={cn('grid grid-cols-2 gap-x-8 gap-y-8 md:grid-cols-4')}>
             {featuredProducts.map((product) => (
               <ProductCard key={product.entityId} product={product} />

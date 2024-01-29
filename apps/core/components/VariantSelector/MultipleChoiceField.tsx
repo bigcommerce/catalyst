@@ -182,7 +182,7 @@ export const MultipleChoiceField = ({
                     {Boolean(value.defaultImage) && (
                       <Image
                         alt={value.defaultImage?.altText || ''}
-                        className="mr-6"
+                        className="me-6"
                         height={48}
                         src={value.defaultImage?.url || ''}
                         width={48}

@@ -165,7 +165,7 @@ const SlideshowControls = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'d
 
     return (
       <div
-        className={cs('absolute bottom-12 left-12 flex items-center gap-4', className)}
+        className={cs('absolute bottom-12 start-12 flex items-center gap-4', className)}
         ref={ref}
         {...props}
       >
