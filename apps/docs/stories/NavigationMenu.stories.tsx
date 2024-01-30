@@ -1,5 +1,4 @@
 import { Badge } from '@bigcommerce/reactant/Badge';
-import { cs } from '@bigcommerce/reactant/cs';
 import {
   NavigationMenu,
   NavigationMenuCollapsed,
@@ -12,6 +11,8 @@ import {
 } from '@bigcommerce/reactant/NavigationMenu';
 import type { Meta, StoryObj } from '@storybook/react';
 import { ChevronDown, MenuSquare, Search, ShoppingCart, User, XSquare } from 'lucide-react';
+
+import { cn } from '~/lib/utils';
 
 const meta = {
   component: NavigationMenu,
@@ -208,7 +209,7 @@ export const BasicExample: Story = {
                   {rootCategory.name}{' '}
                   <ChevronDown
                     aria-hidden="true"
-                    className={cs(
+                    className={cn(
                       'transition duration-200 group-data-[state=open]/button:-rotate-180',
                     )}
                   />
@@ -260,7 +261,7 @@ export const BasicExample: Story = {
                       {category.name}{' '}
                       <ChevronDown
                         aria-hidden="true"
-                        className={cs(
+                        className={cn(
                           'transition duration-200 group-data-[state=open]/button:-rotate-180',
                         )}
                       />
@@ -319,7 +320,7 @@ export const NavigationAlignmentLeft: Story = {
                     {rootCategory.name}{' '}
                     <ChevronDown
                       aria-hidden="true"
-                      className={cs(
+                      className={cn(
                         'transition duration-200 group-data-[state=open]/button:-rotate-180',
                       )}
                     />
@@ -372,7 +373,7 @@ export const NavigationAlignmentLeft: Story = {
                       {category.name}{' '}
                       <ChevronDown
                         aria-hidden="true"
-                        className={cs(
+                        className={cn(
                           'transition duration-200 group-data-[state=open]/button:-rotate-180',
                         )}
                       />
@@ -431,7 +432,7 @@ export const NavigationAlignmentRight: Story = {
                     {rootCategory.name}{' '}
                     <ChevronDown
                       aria-hidden="true"
-                      className={cs(
+                      className={cn(
                         'transition duration-200 group-data-[state=open]/button:-rotate-180',
                       )}
                     />
@@ -484,7 +485,7 @@ export const NavigationAlignmentRight: Story = {
                       {category.name}{' '}
                       <ChevronDown
                         aria-hidden="true"
-                        className={cs(
+                        className={cn(
                           'transition duration-200 group-data-[state=open]/button:-rotate-180',
                         )}
                       />
@@ -540,7 +541,7 @@ export const LogoCentered: Story = {
                     {rootCategory.name}{' '}
                     <ChevronDown
                       aria-hidden="true"
-                      className={cs(
+                      className={cn(
                         'transition duration-200 group-data-[state=open]/button:-rotate-180',
                       )}
                     />
@@ -598,7 +599,7 @@ export const LogoCentered: Story = {
                       {category.name}{' '}
                       <ChevronDown
                         aria-hidden="true"
-                        className={cs(
+                        className={cn(
                           'transition duration-200 group-data-[state=open]/button:-rotate-180',
                         )}
                       />
@@ -673,7 +674,7 @@ export const BottomNavigationLeft: Story = {
                       {rootCategory.name}{' '}
                       <ChevronDown
                         aria-hidden="true"
-                        className={cs(
+                        className={cn(
                           'transition duration-200 group-data-[state=open]/button:-rotate-180',
                         )}
                       />
@@ -713,7 +714,7 @@ export const BottomNavigationLeft: Story = {
                         {category.name}{' '}
                         <ChevronDown
                           aria-hidden="true"
-                          className={cs(
+                          className={cn(
                             'transition duration-200 group-data-[state=open]/button:-rotate-180',
                           )}
                         />
@@ -788,7 +789,7 @@ export const BottomNavigationCenter: Story = {
                     {rootCategory.name}{' '}
                     <ChevronDown
                       aria-hidden="true"
-                      className={cs(
+                      className={cn(
                         'transition duration-200 group-data-[state=open]/button:-rotate-180',
                       )}
                     />
@@ -828,7 +829,7 @@ export const BottomNavigationCenter: Story = {
                       {category.name}{' '}
                       <ChevronDown
                         aria-hidden="true"
-                        className={cs(
+                        className={cn(
                           'transition duration-200 group-data-[state=open]/button:-rotate-180',
                         )}
                       />
@@ -902,7 +903,7 @@ export const BottomNavigationRight: Story = {
                     {rootCategory.name}{' '}
                     <ChevronDown
                       aria-hidden="true"
-                      className={cs(
+                      className={cn(
                         'transition duration-200 group-data-[state=open]/button:-rotate-180',
                       )}
                     />
@@ -942,7 +943,7 @@ export const BottomNavigationRight: Story = {
                       {category.name}{' '}
                       <ChevronDown
                         aria-hidden="true"
-                        className={cs(
+                        className={cn(
                           'transition duration-200 group-data-[state=open]/button:-rotate-180',
                         )}
                       />
@@ -1003,7 +1004,7 @@ export const NavigationWithBadge: Story = {
                   {rootCategory.name}{' '}
                   <ChevronDown
                     aria-hidden="true"
-                    className={cs(
+                    className={cn(
                       'transition duration-200 group-data-[state=open]/button:-rotate-180',
                     )}
                   />
@@ -1063,7 +1064,7 @@ export const NavigationWithBadge: Story = {
                       {category.name}{' '}
                       <ChevronDown
                         aria-hidden="true"
-                        className={cs(
+                        className={cn(
                           'transition duration-200 group-data-[state=open]/button:-rotate-180',
                         )}
                       />
@@ -1121,7 +1122,7 @@ export const CustomNavigationMenuToggle: Story = {
                   {rootCategory.name}{' '}
                   <ChevronDown
                     aria-hidden="true"
-                    className={cs(
+                    className={cn(
                       'transition duration-200 group-data-[state=open]/button:-rotate-180',
                     )}
                   />
@@ -1176,7 +1177,7 @@ export const CustomNavigationMenuToggle: Story = {
                       {category.name}{' '}
                       <ChevronDown
                         aria-hidden="true"
-                        className={cs(
+                        className={cn(
                           'transition duration-200 group-data-[state=open]/button:-rotate-180',
                         )}
                       />

@@ -156,6 +156,9 @@ importers:
       '@bigcommerce/reactant':
         specifier: workspace:^
         version: link:../../packages/reactant
+      clsx:
+        specifier: ^2.0.0
+        version: 2.0.0
       lucide-react:
         specifier: ^0.294.0
         version: 0.294.0(react@18.2.0)
@@ -168,6 +171,9 @@ importers:
       storybook:
         specifier: ^7.6.4
         version: 7.6.4
+      tailwind-merge:
+        specifier: ^2.1.0
+        version: 2.1.0
     devDependencies:
       '@bigcommerce/catalyst-configs':
         specifier: workspace:^
