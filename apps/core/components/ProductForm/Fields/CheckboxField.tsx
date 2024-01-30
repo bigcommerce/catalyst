@@ -34,7 +34,7 @@ export const CheckboxField = ({ option }: { option: CheckboxOption }) => {
           option.displayName
         )}
       </legend>
-      <div className="flex flex-row items-center" key={option.entityId}>
+      <div className="flex items-center" key={option.entityId}>
         <Checkbox
           id={`${option.entityId}`}
           name={field.name}
