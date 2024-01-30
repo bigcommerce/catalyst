@@ -1,4 +1,3 @@
-import { Badge } from '@bigcommerce/reactant/Badge';
 import { Button } from '@bigcommerce/reactant/Button';
 import {
   NavigationMenu,
@@ -11,11 +10,9 @@ import {
   NavigationMenuTrigger,
 } from '@bigcommerce/reactant/NavigationMenu';
 import { ChevronDown, LogOut, ShoppingCart, User } from 'lucide-react';
-import { cookies } from 'next/headers';
-import { PropsWithChildren, Suspense } from 'react';
+import { ReactNode, Suspense } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
-import { getCart } from '~/client/queries/getCart';
 import { getCategoryTree } from '~/client/queries/getCategoryTree';
 import { Link } from '~/components/Link';
 import { cn } from '~/lib/utils';
@@ -24,40 +21,7 @@ import { QuickSearch } from '../QuickSearch';
 import { StoreLogo } from '../StoreLogo';
 
 import { logout } from './_actions/logout';
-
-const CartLink = ({ children }: PropsWithChildren) => (
-  <NavigationMenuLink asChild>
-    <Link className="relative" href="/cart">
-      {children}
-    </Link>
-  </NavigationMenuLink>
-);
-
-const Cart = async () => {
-  const cartId = cookies().get('cartId')?.value;
-
-  if (!cartId) {
-    return (
-      <CartLink>
-        <ShoppingCart aria-label="cart" />
-      </CartLink>
-    );
-  }
-
-  const cart = await getCart(cartId);
-
-  const count = cart?.lineItems.totalQuantity;
-
-  return (
-    <CartLink>
-      <p role="status">
-        <span className="sr-only">Cart Items</span>
-        <ShoppingCart aria-hidden="true" />
-        {Boolean(count) && <Badge>{count}</Badge>}
-      </p>
-    </CartLink>
-  );
-};
+import { Cart } from './cart';
 
 const HeaderNav = async ({
   className,
@@ -145,7 +109,7 @@ const HeaderNav = async ({
   );
 };
 
-export const Header = async ({ hideCartBadge = false }: { hideCartBadge?: boolean }) => {
+export const Header = async ({ cart }: { cart?: ReactNode }) => {
   const customerId = await getSessionCustomerId();
 
   return (
@@ -189,17 +153,11 @@ export const Header = async ({ hideCartBadge = false }: { hideCartBadge?: boolea
               )}
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                {hideCartBadge ? (
-                  <CartLink>
-                    <ShoppingCart aria-label="cart" />
-                  </CartLink>
-                ) : (
-                  <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
-                    <Cart />
-                  </Suspense>
-                )}
-              </NavigationMenuLink>
+              {cart || (
+                <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
+                  <Cart />
+                </Suspense>
+              )}
             </NavigationMenuItem>
           </NavigationMenuList>
           <NavigationMenuToggle className="ms-2 lg:hidden" />

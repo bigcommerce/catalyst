@@ -1,9 +1,11 @@
 import { Message } from '@bigcommerce/reactant/Message';
+import { ShoppingCart } from 'lucide-react';
 
 import { SearchForm } from 'components/SearchForm';
 import { getFeaturedProducts } from '~/client/queries/getFeaturedProducts';
 import { Footer } from '~/components/Footer/Footer';
 import { Header } from '~/components/Header';
+import { CartLink } from '~/components/Header/cart';
 import { ProductCard } from '~/components/ProductCard';
 
 export default async function NotFound() {
@@ -11,7 +13,13 @@ export default async function NotFound() {
 
   return (
     <>
-      <Header hideCartBadge={true} />
+      <Header
+        cart={
+          <CartLink>
+            <ShoppingCart aria-label="cart" />
+          </CartLink>
+        }
+      />
       <main className="mx-auto mb-10 max-w-[835px] space-y-8 px-6 sm:px-10 lg:px-0">
         <Message className="flex-col gap-8 px-0 py-16">
           <h2 className="text-h2">We couldn't find that page!</h2>
