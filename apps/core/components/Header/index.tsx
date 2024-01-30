@@ -1,4 +1,3 @@
-import { Badge } from '@bigcommerce/reactant/Badge';
 import { Button } from '@bigcommerce/reactant/Button';
 import {
   NavigationMenu,
@@ -10,12 +9,10 @@ import {
   NavigationMenuToggle,
   NavigationMenuTrigger,
 } from '@bigcommerce/reactant/NavigationMenu';
-import { ChevronDown, LogOut, ShoppingCart, User } from 'lucide-react';
-import { cookies } from 'next/headers';
-import { PropsWithChildren, Suspense } from 'react';
+import { ChevronDown, LogOut, User } from 'lucide-react';
+import { ReactNode } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
-import { getCart } from '~/client/queries/getCart';
 import { getCategoryTree } from '~/client/queries/getCategoryTree';
 import { Link } from '~/components/Link';
 import { cn } from '~/lib/utils';
@@ -24,40 +21,6 @@ import { QuickSearch } from '../QuickSearch';
 import { StoreLogo } from '../StoreLogo';
 
 import { logout } from './_actions/logout';
-
-const CartLink = ({ children }: PropsWithChildren) => (
-  <NavigationMenuLink asChild>
-    <Link className="relative" href="/cart">
-      {children}
-    </Link>
-  </NavigationMenuLink>
-);
-
-const Cart = async () => {
-  const cartId = cookies().get('cartId')?.value;
-
-  if (!cartId) {
-    return (
-      <CartLink>
-        <ShoppingCart aria-label="cart" />
-      </CartLink>
-    );
-  }
-
-  const cart = await getCart(cartId);
-
-  const count = cart?.lineItems.totalQuantity;
-
-  return (
-    <CartLink>
-      <p role="status">
-        <span className="sr-only">Cart Items</span>
-        <ShoppingCart aria-hidden="true" />
-        {Boolean(count) && <Badge>{count}</Badge>}
-      </p>
-    </CartLink>
-  );
-};
 
 const HeaderNav = async ({
   className,
@@ -145,7 +108,7 @@ const HeaderNav = async ({
   );
 };
 
-export const Header = async () => {
+export const Header = async ({ cart }: { cart: ReactNode }) => {
   const customerId = await getSessionCustomerId();
 
   return (
@@ -190,9 +153,9 @@ export const Header = async () => {
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
-                  <Cart />
-                </Suspense>
+                <Link className="relative" href="/cart">
+                  {cart}
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
