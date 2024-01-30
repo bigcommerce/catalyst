@@ -2,11 +2,15 @@ import { expect, Page } from '@playwright/test';
 
 export async function addProductToCart(page: Page, productName: string): Promise<void> {
   await page.getByRole('link', { name: productName }).click();
-  await page.getByRole('button', { name: 'Add to Cart', exact: true }).click();
-}
 
-export async function isProductVisible(page: Page, productName: string): Promise<boolean> {
-  return page.getByText(productName).isVisible();
+  await expect(
+    page.getByRole('heading', {
+      level: 1,
+      name: productName,
+    }),
+  ).toBeVisible();
+
+  await page.getByRole('button', { name: 'Add to Cart', exact: true }).click();
 }
 
 export async function addProductsToCompare(page: Page, names: string[]) {

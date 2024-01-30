@@ -6,11 +6,19 @@ import { ProductPage } from '../../../pages/product-page';
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
   await page.getByLabel('Main').getByRole('link', { name: 'Shop All' }).click();
-  await page.waitForSelector(ProductPage.PRODUCT_HEADING, { state: 'visible' });
+
+  await expect(page.getByRole('heading', { level: 1, name: 'Shop all' })).toBeVisible();
 });
 
 test('Validate product page', async ({ page }) => {
-  await ProductPage.validateShopAllPage(page);
+  await expect(page.getByRole('button', { name: 'Brand' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Brand' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Color' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Size' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Price', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Rating' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Other' })).toBeVisible();
+  await expect(page.getByLabel('Sort by:')).toBeVisible();
 });
 
 test('Compare products', async ({ page }) => {
