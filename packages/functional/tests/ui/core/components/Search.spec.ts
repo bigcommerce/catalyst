@@ -1,6 +1,6 @@
 import { test } from '@playwright/test';
 
-test('test', async ({ page }) => {
+test('Search for specific product and verify results', async ({ page }) => {
   await page.goto('/');
   await page.getByLabel('Open search popup').click();
   await page.getByPlaceholder('Search...').click();

@@ -1,6 +1,6 @@
 import { test } from '@playwright/test';
 
-test('Add a single product to cart', async ({ page }) => {
+test('Navigate through slideshow on homepage and verify slide content', async ({ page }) => {
   await page.goto('/');
   await page.getByLabel('Next slide').isVisible();
   await page.getByLabel('Next slide').click();
