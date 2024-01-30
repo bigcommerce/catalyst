@@ -14,8 +14,6 @@ import { Loader2 as Spinner } from 'lucide-react';
 import { ChangeEvent, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 
-import { cn } from '~/lib/utils';
-
 import { submitContactForm } from './_actions/submitContactForm';
 
 const fieldNameMapping = {
@@ -70,7 +68,7 @@ export const ContactUs = ({ fields }: { fields: string[] }) => {
               const label = fieldNameMapping[field];
 
               return (
-                <Field className={cn('relative space-y-2 pb-7')} key={label} name={label}>
+                <Field className="relative space-y-2 pb-7" key={label} name={label}>
                   <FieldLabel htmlFor={label}>{label}</FieldLabel>
                   <FieldControl asChild>
                     <Input id={label} />
@@ -78,7 +76,7 @@ export const ContactUs = ({ fields }: { fields: string[] }) => {
                 </Field>
               );
             })}
-          <Field className={cn('relative space-y-2 pb-7')} key="email" name="email">
+          <Field className="relative space-y-2 pb-7" key="email" name="email">
             <FieldLabel htmlFor="email" isRequired>
               Email
             </FieldLabel>
@@ -106,7 +104,7 @@ export const ContactUs = ({ fields }: { fields: string[] }) => {
             </FieldMessage>
           </Field>
           <Field
-            className={cn('relative col-span-full max-w-full space-y-2 pb-5')}
+            className="relative col-span-full max-w-full space-y-2 pb-5"
             key="comments"
             name="comments"
           >

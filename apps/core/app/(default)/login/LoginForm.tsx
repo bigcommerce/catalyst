@@ -16,7 +16,6 @@ import { ChangeEvent, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 
 import { Link } from '~/components/Link';
-import { cn } from '~/lib/utils';
 
 import { submitLoginForm } from './_actions/submitLoginForm';
 
@@ -59,7 +58,7 @@ export const LoginForm = () => {
         </Message>
       )}
       <Form action={formAction} className="mb-14 flex flex-col gap-3 md:p-8 lg:p-0">
-        <Field className={cn('relative space-y-2 pb-7')} name="email">
+        <Field className="relative space-y-2 pb-7" name="email">
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <FieldControl asChild>
             <Input
@@ -79,7 +78,7 @@ export const LoginForm = () => {
             Enter your email.
           </FieldMessage>
         </Field>
-        <Field className={cn('relative space-y-2 pb-7')} name="password">
+        <Field className="relative space-y-2 pb-7" name="password">
           <FieldLabel htmlFor="password">Password</FieldLabel>
           <FieldControl asChild>
             <Input

@@ -112,7 +112,7 @@ export const ProductSheetContent = ({
     return (
       <>
         <div className="flex">
-          <div className={cn('square relative h-[144px] w-[144px] shrink-0 grow-0')}>
+          <div className="square relative h-[144px] w-[144px] shrink-0 grow-0">
             {product.defaultImage ? (
               <Image
                 alt={product.defaultImage.altText}
@@ -215,7 +215,7 @@ const SubmitButton = ({ children }: PropsWithChildren) => {
   const { pending } = useFormStatus();
 
   return (
-    <Button className={cn('mt-6')} disabled={pending} type="submit">
+    <Button className="mt-6" disabled={pending} type="submit">
       {pending ? (
         <>
           <Spinner aria-hidden="true" className="animate-spin" />

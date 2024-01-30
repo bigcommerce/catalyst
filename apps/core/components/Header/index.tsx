@@ -91,9 +91,7 @@ const HeaderNav = async ({
                     <span className={cn(inCollapsedNav && 'p-3')}>
                       <ChevronDown
                         aria-hidden="true"
-                        className={cn(
-                          'cursor-pointer transition duration-200 group-data-[state=open]/button:-rotate-180',
-                        )}
+                        className="cursor-pointer transition duration-200 group-data-[state=open]/button:-rotate-180"
                       />
                     </span>
                   </>
