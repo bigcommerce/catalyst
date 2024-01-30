@@ -1,4 +1,5 @@
 import { Badge } from '@bigcommerce/reactant/Badge';
+import { cn } from '@bigcommerce/reactant/cn';
 import {
   NavigationMenu,
   NavigationMenuCollapsed,
@@ -11,8 +12,6 @@ import {
 } from '@bigcommerce/reactant/NavigationMenu';
 import type { Meta, StoryObj } from '@storybook/react';
 import { ChevronDown, MenuSquare, Search, ShoppingCart, User, XSquare } from 'lucide-react';
-
-import { cn } from '~/lib/utils';
 
 const meta = {
   component: NavigationMenu,
