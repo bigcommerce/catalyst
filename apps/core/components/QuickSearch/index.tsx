@@ -9,6 +9,7 @@ import {
   SheetClose,
   SheetContent,
   SheetOverlay,
+  SheetTitle,
   SheetTrigger,
 } from '@bigcommerce/reactant/Sheet';
 import debounce from 'lodash.debounce';
@@ -97,6 +98,7 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
           )}
           side="top"
         >
+          <SheetTitle className="sr-only">Search bar</SheetTitle>
           <div className="grid grid-cols-5 items-center">
             <div className="me-2 hidden lg:block lg:justify-self-start">{children}</div>
             <Form
