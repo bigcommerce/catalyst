@@ -174,7 +174,7 @@ export const getProductSearchResults = cache(
       document: query,
       variables: { first: limit, after, filters, sort, imageHeight, imageWidth },
       customerId,
-      fetchOptions: { cache: customerId ? 'no-store' : undefined, next: { revalidate: 300 } },
+      fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate: 300 } },
     });
 
     const { site } = response.data;
