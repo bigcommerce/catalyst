@@ -9,8 +9,8 @@ import {
   NavigationMenuToggle,
   NavigationMenuTrigger,
 } from '@bigcommerce/reactant/NavigationMenu';
-import { ChevronDown, LogOut, ShoppingCart, User } from 'lucide-react';
-import { ReactNode, Suspense } from 'react';
+import { ChevronDown, LogOut, User } from 'lucide-react';
+import { ReactNode } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
 import { getCategoryTree } from '~/client/queries/getCategoryTree';
@@ -21,7 +21,6 @@ import { QuickSearch } from '../QuickSearch';
 import { StoreLogo } from '../StoreLogo';
 
 import { logout } from './_actions/logout';
-import { Cart } from './cart';
 
 const HeaderNav = async ({
   className,
@@ -109,7 +108,7 @@ const HeaderNav = async ({
   );
 };
 
-export const Header = async ({ cart }: { cart?: ReactNode }) => {
+export const Header = async ({ cart }: { cart: ReactNode }) => {
   const customerId = await getSessionCustomerId();
 
   return (
@@ -153,11 +152,11 @@ export const Header = async ({ cart }: { cart?: ReactNode }) => {
               )}
             </NavigationMenuItem>
             <NavigationMenuItem>
-              {cart || (
-                <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
-                  <Cart />
-                </Suspense>
-              )}
+              <NavigationMenuLink asChild>
+                <Link className="relative" href="/cart">
+                  {cart}
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
           <NavigationMenuToggle className="ms-2 lg:hidden" />
