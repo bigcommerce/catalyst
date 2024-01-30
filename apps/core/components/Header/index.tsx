@@ -145,7 +145,7 @@ const HeaderNav = async ({
   );
 };
 
-export const Header = async () => {
+export const Header = async ({ hideCartBadge = false }: { hideCartBadge?: boolean }) => {
   const customerId = await getSessionCustomerId();
 
   return (
@@ -190,9 +190,15 @@ export const Header = async () => {
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
-                  <Cart />
-                </Suspense>
+                {hideCartBadge ? (
+                  <CartLink>
+                    <ShoppingCart aria-label="cart" />
+                  </CartLink>
+                ) : (
+                  <Suspense fallback={<ShoppingCart aria-hidden="true" />}>
+                    <Cart />
+                  </Suspense>
+                )}
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
