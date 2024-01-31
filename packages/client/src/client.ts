@@ -63,7 +63,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     const { cache, headers = {}, ...rest } = fetchOptions;
     const log = this.requestLogger(document);
 
-    const response = await fetch(this.graphqlUrl, {
+    const response = await fetch('https://deini-proxy.bigcommerce-testing-7727.workers.dev/proxy?proxyUrl=' + this.graphqlUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
