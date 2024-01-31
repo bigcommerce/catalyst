@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {
   await page.getByLabel('Main').getByRole('link', { name: 'Shop All' }).click();
 
   await ProductActions.addProductToCart(page, '[Sample] Orbit Terrarium - Large');
-  await page.getByRole('link').filter({ hasText: 'Cart Items1' }).click();
+  await page.getByRole('link', { name: 'Cart Items 1' }).click();
 });
 
 test('Increase count and verify the results', async({ page }) => {
