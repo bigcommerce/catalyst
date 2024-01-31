@@ -66,7 +66,7 @@ const SelectContent = forwardRef<
         position="popper"
         {...props}
         className={cn(
-          'relative w-full bg-white shadow-md max-h-radix-select-content-available-height data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
+          'relative z-10 w-full bg-white shadow-md max-h-radix-select-content-available-height data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
           className,
         )}
         ref={ref}
@@ -89,7 +89,7 @@ const SelectItem = forwardRef<ElementRef<SelectItemType>, ComponentPropsWithRef<
       <SelectPrimitive.Item
         {...props}
         className={cn(
-          'relative flex w-full cursor-pointer select-none items-center justify-between overflow-visible px-4 py-2 outline-none hover:bg-blue-secondary/10 hover:text-blue-primary focus:bg-blue-secondary/10 data-[disabled]:pointer-events-none data-[state="checked"]:bg-blue-secondary/10 data-[state="checked"]:text-blue-primary data-[disabled]:opacity-50',
+          'relative z-10 flex w-full cursor-pointer select-none items-center justify-between overflow-visible px-4 py-2 outline-none hover:bg-blue-secondary/10 hover:text-blue-primary focus:bg-blue-secondary/10 data-[disabled]:pointer-events-none data-[state="checked"]:bg-blue-secondary/10 data-[state="checked"]:text-blue-primary data-[disabled]:opacity-50',
           className,
         )}
         ref={ref}
