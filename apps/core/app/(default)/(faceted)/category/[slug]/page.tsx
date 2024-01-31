@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { getCategory } from '~/client/queries/getCategory';
@@ -17,6 +18,20 @@ interface Props {
     slug: string;
   };
   searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const categoryId = Number(params.slug);
+
+  const category = await getCategory({
+    categoryId,
+  });
+
+  const title = category?.name;
+
+  return {
+    title,
+  };
 }
 
 export default async function Category({ params, searchParams }: Props) {

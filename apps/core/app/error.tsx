@@ -1,5 +1,9 @@
 'use client';
 
+export const metadata = {
+  title: 'Error',
+};
+
 export default function Error() {
   return (
     <div className="h-full px-10 py-12 lg:py-24">

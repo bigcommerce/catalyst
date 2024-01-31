@@ -4,6 +4,10 @@ import { Link } from '~/components/Link';
 
 import { LoginForm } from './LoginForm';
 
+export const metadata = {
+  title: 'Login',
+};
+
 export default function Login() {
   return (
     <div className="mx-auto my-6 max-w-4xl">

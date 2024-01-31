@@ -10,6 +10,10 @@ import { getCart } from '~/client/queries/getCart';
 import { removeProduct } from './_actions/removeProduct';
 import { CartItemCounter } from './CartItemCounter';
 
+export const metadata = {
+  title: 'Cart',
+};
+
 const EmptyCart = () => (
   <div className="flex h-full flex-col">
     <h1 className="pb-6 text-h2 lg:pb-10">Your cart</h1>

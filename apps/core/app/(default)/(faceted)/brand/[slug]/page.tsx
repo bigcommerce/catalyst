@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { getBrand } from '~/client/queries/getBrand';
@@ -15,6 +16,20 @@ interface Props {
     slug: string;
   };
   searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const brandId = Number(params.slug);
+
+  const brand = await getBrand({
+    brandId,
+  });
+
+  const title = brand?.name;
+
+  return {
+    title,
+  };
 }
 
 export default async function Brand({ params, searchParams }: Props) {

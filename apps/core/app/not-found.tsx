@@ -8,6 +8,10 @@ import { Header } from '~/components/Header';
 import { CartLink } from '~/components/Header/cart';
 import { ProductCard } from '~/components/ProductCard';
 
+export const metadata = {
+  title: 'Not Found',
+};
+
 export default async function NotFound() {
   const featuredProducts = await getFeaturedProducts({ imageHeight: 500, imageWidth: 500 });
 
