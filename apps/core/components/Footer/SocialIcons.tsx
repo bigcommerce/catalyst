@@ -66,7 +66,7 @@ export const SocialIcons = async () => {
 
           return (
             <FooterNavLink asChild key={link.name}>
-              <Link href={link.url}>
+              <Link className="inline-block" href={link.url}>
                 <SocialIcon name={link.name} />
               </Link>
             </FooterNavLink>
