@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+
 import { ProductActions } from '../../../../actions/product-actions';
 
 test('Modify product quantity in cart and verify the results', async ({ page }) => {
