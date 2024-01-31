@@ -124,10 +124,7 @@ export const Header = async ({ cart }: { cart: ReactNode }) => {
           <NavigationMenuList>
             <NavigationMenuItem>
               <QuickSearch>
-                <Link
-                  className="flex focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
-                  href="/"
-                >
+                <Link className="flex" href="/">
                   <StoreLogo />
                 </Link>
               </QuickSearch>

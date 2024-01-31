@@ -21,10 +21,7 @@ export const BlogPostCard = ({ blogPost }: BlogPostCardProps) => (
   <ReactantBlogPostCard>
     {blogPost.thumbnailImage ? (
       <BlogPostImage>
-        <Link
-          className="block w-full focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
-          href={`/blog/${blogPost.entityId}`}
-        >
+        <Link className="block w-full" href={`/blog/${blogPost.entityId}`}>
           <Image
             alt={blogPost.thumbnailImage.altText}
             className="h-full w-full object-cover object-center"
@@ -48,12 +45,7 @@ export const BlogPostCard = ({ blogPost }: BlogPostCardProps) => (
     )}
 
     <BlogPostTitle>
-      <Link
-        className="focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
-        href={`/blog/${blogPost.entityId}`}
-      >
-        {blogPost.name}
-      </Link>
+      <Link href={`/blog/${blogPost.entityId}`}>{blogPost.name}</Link>
     </BlogPostTitle>
     <BlogPostContent>{blogPost.plainTextSummary}</BlogPostContent>
     <BlogPostDate>

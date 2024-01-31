@@ -40,7 +40,7 @@ export const productFormSubmit = async (data: ProductFormData) => {
       <div className="flex items-center gap-3">
         <span>
           {quantity} {quantity === 1 ? 'Item' : 'Items'} added to{' '}
-          <Link className="font-semibold text-blue-primary" href="/cart">
+          <Link className="font-semibold text-blue-primary hover:text-blue-secondary" href="/cart">
             your cart
           </Link>
         </span>
