@@ -17,22 +17,21 @@ const MOCKED_SIZE_OPTIONS = [
   {
     id: 's1',
     value: 'Pick list item 1',
-    imgSrc: '/gallery-img-01.jpg',
+    imgsrc: '/gallery-img-01.jpg',
   },
   {
     id: 's2',
     value: 'Pick list item 2',
-    imgSrc: '/gallery-img-02.jpg',
+    imgsrc: '/gallery-img-02.jpg',
   },
   {
     id: 's3',
     value: 'Pick list item 3',
-    imgSrc: 'gallery-img-03.jpg',
+    imgsrc: 'gallery-img-03.jpg',
   },
   {
     id: 's4',
     value: 'Pick list item 4',
-    disabled: true,
   },
 ];
 
@@ -42,12 +41,12 @@ export const BasicExample: Story = {
       <PickList defaultValue="Pick list item 2">
         {MOCKED_SIZE_OPTIONS.map((option) => (
           <div className="flex flex-row items-center p-4" key={option.id}>
-            {Boolean(option.imgSrc) && (
+            {Boolean(option.imgsrc) && (
               <img
                 alt={option.value}
                 aria-hidden="true"
                 className="me-6 h-12 w-12"
-                src={option.imgSrc}
+                src={option.imgsrc}
               />
             )}
             <PickListItem {...option} key={option.id} />
