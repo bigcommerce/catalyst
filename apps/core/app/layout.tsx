@@ -19,6 +19,7 @@ export const metadata = {
   description: 'Example store built with Catalyst',
   other: {
     platform: 'bigcommerce.catalyst',
+    build_sha: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA,
   },
 };
 
