@@ -34,7 +34,7 @@ const activeFooterWebPages = await (async (columnName: string) => {
     title: columnName,
     items: filterActivePages(storeWebPages),
   };
-})('About us');
+})('Navigate');
 
 const WebPageFooterMenu = () => {
   const { title, items } = activeFooterWebPages;
@@ -54,13 +54,6 @@ export const Footer = () => {
           <CategoryFooterMenu />
           <BrandFooterMenu />
           <WebPageFooterMenu />
-          <BaseFooterMenu
-            items={[
-              { name: 'About Us', path: '/about-us' },
-              { name: 'FAQ', path: '/faq' },
-            ]}
-            title="Help"
-          />
         </FooterNav>
         <div className="flex shrink-0 grow flex-col gap-4 md:order-first">
           <h3 className="mb-4">
