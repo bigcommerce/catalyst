@@ -9,9 +9,11 @@ import { createCart } from '~/client/mutations/createCart';
 import { getCart } from '~/client/queries/getCart';
 import { getProduct } from '~/client/queries/getProduct';
 
-export async function handleAddToCart(data: FormData) {
-  const productEntityId = Number(data.get('product_id'));
-  const quantity = Number(data.get('quantity'));
+import { ProductFormData } from '../useProductForm';
+
+export async function handleAddToCart(data: ProductFormData) {
+  const productEntityId = Number(data.product_id);
+  const quantity = Number(data.quantity);
 
   const product = await getProduct(productEntityId);
 
@@ -20,7 +22,7 @@ export async function handleAddToCart(data: FormData) {
 
   const selectedOptions =
     product?.productOptions?.reduce<CartSelectedOptionsInput>((accum, option) => {
-      const optionValueEntityId = data.get(`attribute[${option.entityId}]`);
+      const optionValueEntityId = data[`attribute_${option.entityId}`];
 
       let multipleChoicesOptionInput;
       let checkboxOptionInput;
@@ -103,6 +105,8 @@ export async function handleAddToCart(data: FormData) {
           return { ...accum, multiLineTextFields: [multiLineTextFieldOptionInput] };
 
         case 'DateFieldOption':
+          if (!optionValueEntityId) return accum;
+
           dateFieldOptionInput = {
             optionEntityId: option.entityId,
             date: new Date(String(optionValueEntityId)).toISOString(),

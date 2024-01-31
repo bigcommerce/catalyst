@@ -1,18 +1,12 @@
-import { Button } from '@bigcommerce/reactant/Button';
-import { Counter } from '@bigcommerce/reactant/Counter';
-import { Label } from '@bigcommerce/reactant/Label';
-import { Heart } from 'lucide-react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
 import { getProduct } from '~/client/queries/getProduct';
-import { VariantSelector } from '~/components/VariantSelector';
+import { ProductForm } from '~/components/ProductForm';
 
-import { AddToCart } from './_components/AddToCart';
 import { BreadCrumbs } from './_components/Breadcrumbs';
 import { Gallery } from './_components/Gallery';
-import { ProductForm } from './_components/ProductForm';
 import { ProductSchema } from './_components/ProductSchema';
 import { RelatedProducts } from './_components/RelatedProducts';
 import { Reviews } from './_components/Reviews';
@@ -82,30 +76,7 @@ const ProductDetails = ({ product }: { product: NonNullable<Product> }) => {
         </div>
       )}
 
-      <ProductForm>
-        <input name="product_id" type="hidden" value={product.entityId} />
-
-        <VariantSelector product={product} />
-
-        <div className="sm:w-32">
-          <Label className="my-2 inline-block font-semibold" htmlFor="quantity">
-            Quantity
-          </Label>
-          <Counter id="quantity" min={1} name="quantity" required />
-        </div>
-
-        <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-          <AddToCart disabled={product.availabilityV2.status === 'Unavailable'} />
-
-          {/* NOT IMPLEMENTED YET */}
-          <div className="w-full">
-            <Button disabled type="submit" variant="secondary">
-              <Heart aria-hidden="true" className="mx-2" />
-              <span>Save to wishlist</span>
-            </Button>
-          </div>
-        </div>
-      </ProductForm>
+      <ProductForm product={product} />
 
       <div className="my-12">
         <h2 className="mb-4 text-h5">Additional details</h2>
