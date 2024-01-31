@@ -29,7 +29,7 @@ const PickListItem = forwardRef<ElementRef<RadioItemType>, ComponentPropsWithRef
     return (
       <RadioGroupPrimitive.Item
         className={cn(
-          'flex h-6 w-6 items-center justify-center rounded-full border-2 border-gray-200',
+          'flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-gray-200',
           'hover:border-blue-secondary',
           'focus:border-blue-primary focus:outline-none focus:ring-4 focus:ring-blue-primary/20',
           'focus:hover:border-blue-secondary',
