@@ -24,6 +24,9 @@
     "preserveWatchOutput": true,
     "skipLibCheck": true,
     "strict": true,
+    "paths": {
+      "~/*": ["./src/*"]
+    },
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
   },
   "include": ["."],

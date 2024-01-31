@@ -1,7 +1,6 @@
 'use client';
 
 import { Button } from '@bigcommerce/reactant/Button';
-import { cs } from '@bigcommerce/reactant/cs';
 import { Field, FieldControl, Form } from '@bigcommerce/reactant/Form';
 import { Input, InputIcon } from '@bigcommerce/reactant/Input';
 import {
@@ -19,6 +18,7 @@ import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 
 import { getQuickSearchResults } from '~/client/queries/getQuickSearchResults';
 import { ExistingResultType } from '~/client/util';
+import { cn } from '~/lib/utils';
 
 import { Pricing } from '../Pricing';
 
@@ -92,7 +92,7 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
       </SheetTrigger>
       <SheetOverlay className="bg-transparent backdrop-blur-none">
         <SheetContent
-          className={cs(
+          className={cn(
             'flex min-h-[92px] flex-col px-6 py-4 data-[state=closed]:duration-0 data-[state=open]:duration-0 md:px-10 md:py-4 lg:px-12',
             searchResults && searchResults.products.length > 0 && 'h-full lg:h-3/4',
           )}

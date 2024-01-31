@@ -6,9 +6,15 @@ const config = {
   extends: [
     '@bigcommerce/catalyst/base',
     '@bigcommerce/catalyst/react',
+    '@bigcommerce/catalyst/next',
     '@bigcommerce/catalyst/prettier',
   ],
-  ignorePatterns: ['/dist/**'],
+  rules: {
+    '@typescript-eslint/naming-convention': 'off',
+    '@next/next/no-html-link-for-pages': 'off',
+    'import/dynamic-import-chunkname': 'off',
+    'no-underscore-dangle': ['error', { allow: ['__typename'] }],
+  },
 };
 
 module.exports = config;

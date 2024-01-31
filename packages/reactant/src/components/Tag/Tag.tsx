@@ -1,14 +1,14 @@
 import { X } from 'lucide-react';
 import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
-import { cs } from '../../utils/cs';
+import { cn } from '~/lib/utils';
 
 type TagProps = ComponentPropsWithRef<'div'>;
 
 const Tag = forwardRef<ElementRef<'div'>, TagProps>(({ className, ...props }, ref) => {
   return (
     <div
-      className={cs(
+      className={cn(
         'inline-flex h-[40px] flex-row items-center whitespace-nowrap bg-gray-100',
         className,
       )}
@@ -25,7 +25,7 @@ type TagContentProps = ComponentPropsWithRef<'span'>;
 const TagContent = forwardRef<ElementRef<'span'>, TagContentProps>(
   ({ className, ...props }, ref) => {
     return (
-      <span className={cs('pe-2 ps-4 font-semibold only:px-4', className)} ref={ref} {...props} />
+      <span className={cn('pe-2 ps-4 font-semibold only:px-4', className)} ref={ref} {...props} />
     );
   },
 );
@@ -38,7 +38,7 @@ const TagAction = forwardRef<ElementRef<'button'>, TagActionProps>(
   ({ className, children, ...props }, ref) => {
     return (
       <button
-        className={cs(
+        className={cn(
           'box-content inline-flex h-8 w-8 items-center justify-center p-1 hover:bg-blue-primary/10 focus:outline-none focus:ring-4 focus:ring-inset focus:ring-blue-primary/20',
         )}
         ref={ref}

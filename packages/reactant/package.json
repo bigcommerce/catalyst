@@ -8,7 +8,7 @@
     "./package.json": "./package.json",
     "./postcss-config": "./postcss.config.js",
     "./tailwind-config": "./tailwind.config.js",
-    "./cs": "./src/utils/cs.ts",
+    "./cn": "./src/lib/utils.ts",
     "./*": "./src/components/*/index.ts"
   },
   "scripts": {

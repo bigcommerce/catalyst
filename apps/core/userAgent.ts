@@ -1,4 +1,4 @@
-import packageInfo from '../../package.json';
+import packageInfo from './package.json';
 
 const { name, version } = packageInfo;
 

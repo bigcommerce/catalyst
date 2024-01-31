@@ -11,7 +11,7 @@ import {
   useState,
 } from 'react';
 
-import { cs } from '../../utils/cs';
+import { cn } from '~/lib/utils';
 
 interface Image {
   url: string;
@@ -42,7 +42,7 @@ const GalleryPreviousIndicator = forwardRef<ElementRef<'button'>, ComponentProps
     return (
       <button
         aria-label="Previous product image"
-        className={cs('focus:outline-none focus:ring-4 focus:ring-blue-primary/20', className)}
+        className={cn('focus:outline-none focus:ring-4 focus:ring-blue-primary/20', className)}
         onClick={(e) => {
           setSelectedImageIndex(previousIndex);
 
@@ -69,7 +69,7 @@ const GalleryNextIndicator = forwardRef<ElementRef<'button'>, ComponentPropsWith
     return (
       <button
         aria-label="Next product image"
-        className={cs('focus:outline-none focus:ring-4 focus:ring-blue-primary/20', className)}
+        className={cn('focus:outline-none focus:ring-4 focus:ring-blue-primary/20', className)}
         onClick={(e) => {
           setSelectedImageIndex(nextIndex);
 
@@ -98,7 +98,7 @@ const GalleryControls = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div
 
     return (
       <div
-        className={cs(
+        className={cn(
           'absolute top-1/2 flex w-full -translate-y-1/2 justify-between px-5 sm:px-0',
           className,
         )}
@@ -133,9 +133,10 @@ const GalleryImage = forwardRef<ElementRef<'img'>, GalleryImageProps>(
 
     if (selectedImage) {
       return (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           alt={selectedImage.altText}
-          className={cs('h-full w-full object-contain', className)}
+          className={cn('h-full w-full object-contain', className)}
           ref={ref}
           sizes="100vw"
           src={selectedImage.url}
@@ -152,7 +153,7 @@ const GalleryContent = forwardRef<ElementRef<'figure'>, ComponentPropsWithRef<'f
   ({ className, children, ...props }, ref) => {
     return (
       <figure
-        className={cs('relative aspect-square h-full max-h-[548px] w-full', className)}
+        className={cn('relative aspect-square h-full max-h-[548px] w-full', className)}
         ref={ref}
         {...props}
       >
@@ -169,7 +170,7 @@ const GalleryThumbnailList = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef
     return (
       <nav
         aria-label="Thumbnail navigation"
-        className={cs(
+        className={cn(
           '-mx-1 mt-3 flex w-full flex-nowrap items-center gap-4 overflow-x-auto px-1 py-1 md:mt-5 md:gap-6',
           className,
         )}
@@ -197,7 +198,7 @@ const GalleryThumbnailItem = forwardRef<ElementRef<'button'>, GalleryThumbnailIt
       <button
         aria-label="Enlarge product image"
         aria-pressed={isActive}
-        className={cs(
+        className={cn(
           'inline-block h-24 w-24 flex-shrink-0 flex-grow-0 focus:outline-none focus:ring-4 focus:ring-blue-primary/20',
           className,
         )}
@@ -248,7 +249,7 @@ const GalleryThumbnail = forwardRef<ElementRef<'img'>, GalleryThumbnailProps>(
 
     return (
       <Comp
-        className={cs(
+        className={cn(
           'flex cursor-pointer items-center justify-center border-2 hover:border-blue-primary',
           isActive && 'border-blue-primary',
           'h-full w-full object-contain',
@@ -280,7 +281,7 @@ const Gallery = forwardRef<ElementRef<'div'>, GalleryProps>(
 
     return (
       <GalleryContext.Provider value={{ images, selectedImageIndex, setSelectedImageIndex }}>
-        <div aria-live="polite" className={cs(className)} ref={ref} {...props}>
+        <div aria-live="polite" className={cn(className)} ref={ref} {...props}>
           {children}
         </div>
       </GalleryContext.Provider>

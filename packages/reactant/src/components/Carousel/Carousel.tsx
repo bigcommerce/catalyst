@@ -13,7 +13,7 @@ import {
   useState,
 } from 'react';
 
-import { cs } from '../../utils/cs';
+import { cn } from '~/lib/utils';
 
 const CarouselContext = createContext<UseEmblaCarouselType>([() => null, undefined]);
 
@@ -25,7 +25,7 @@ const Carousel = forwardRef<ElementRef<'section'>, ComponentPropsWithRef<'sectio
       <CarouselContext.Provider value={[emblaRef, emblaApi]}>
         <section
           aria-roledescription="carousel"
-          className={cs('relative -m-2 overflow-hidden p-2', className)}
+          className={cn('relative -m-2 overflow-hidden p-2', className)}
           ref={ref}
           {...props}
         >
@@ -57,7 +57,7 @@ const CarouselContent = forwardRef<ForwardedRef, ComponentPropsWithRef<'ul'>>(
 
     return (
       <div ref={refCallback}>
-        <ul aria-live="polite" className={cs('mb-16 mt-8 flex lg:mt-10', className)} {...props}>
+        <ul aria-live="polite" className={cn('mb-16 mt-8 flex lg:mt-10', className)} {...props}>
           {children}
         </ul>
       </div>
@@ -87,7 +87,7 @@ const CarouselSlide = forwardRef<ElementRef<'li'>, CarouselSlideProps>(
     return (
       <li
         aria-roledescription="slide"
-        className={cs(
+        className={cn(
           'mx-6 grid min-w-0 flex-shrink-0 flex-grow-0 basis-full grid-cols-2 gap-6 md:grid-cols-4 lg:gap-8',
           !slidesInView.includes(index) && 'invisible',
           className,
@@ -120,7 +120,7 @@ const CarouselPreviousIndicator = forwardRef<ElementRef<'button'>, ComponentProp
     return (
       <button
         aria-label="Previous products"
-        className={cs(
+        className={cn(
           'inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4 focus:ring-blue-primary/20',
           isHidden && 'hidden',
           className,
@@ -159,7 +159,7 @@ const CarouselNextIndicator = forwardRef<ElementRef<'button'>, ComponentPropsWit
     return (
       <button
         aria-label="Next products"
-        className={cs(
+        className={cn(
           'inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4 focus:ring-blue-primary/20',
           isHidden && 'hidden',
           className,
@@ -230,7 +230,7 @@ const CarouselPagination = forwardRef<ElementRef<'div'>, CarouselPaginationProps
       return (
         <div
           aria-label="Slides"
-          className={cs('no-wrap absolute bottom-1 flex w-full items-center justify-center gap-2')}
+          className={cn('no-wrap absolute bottom-1 flex w-full items-center justify-center gap-2')}
           ref={ref}
           role="tablist"
           {...props}
@@ -255,7 +255,7 @@ const CarouselPaginationTab = forwardRef<ElementRef<'button'>, CarouselPaginatio
     return (
       <button
         aria-selected={isSelected}
-        className={cs(
+        className={cn(
           "h-7 w-7 p-0.5 after:block after:h-0.5 after:w-full after:bg-gray-400 after:content-[''] focus:outline-none focus:ring-4 focus:ring-blue-primary/20",
           isSelected && 'after:bg-black',
           className,
