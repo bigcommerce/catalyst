@@ -8,6 +8,7 @@ import {
 } from '@bigcommerce/components/product-card';
 import { Rating } from '@bigcommerce/components/rating';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { useId } from 'react';
 
 import { Link } from '~/components/link';
@@ -85,6 +86,7 @@ export const ProductCard = ({
   showReviews = true,
 }: ProductCardProps) => {
   const summaryId = useId();
+  const t = useTranslations('Product.ProductSheet');
 
   if (!product.entityId) {
     return null;
@@ -144,12 +146,14 @@ export const ProductCard = ({
             <div className="text-xs font-normal text-gray-500" id={summaryId}>
               {product.reviewSummary.averageRating !== 0 && (
                 <>
-                  <span className="sr-only">Rating:</span>
-                  {product.reviewSummary.averageRating}
-                  <span className="sr-only">out of 5 stars.</span>{' '}
+                  {t.rich('productRating', {
+                    currentRating: product.reviewSummary.averageRating,
+                    rating: (chunks) => <span className="sr-only">{chunks}</span>,
+                    stars: (chunks) => <span className="sr-only">{chunks}</span>,
+                  })}
                 </>
               )}
-              <span className="sr-only">Number of reviews:</span>(
+              <span className="sr-only">{t('numberReviews')}</span>(
               {product.reviewSummary.numberOfReviews})
             </div>
           </div>

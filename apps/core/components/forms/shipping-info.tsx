@@ -6,7 +6,7 @@ import { Loader2 as Spinner } from 'lucide-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 
-import { CheckoutContext } from '~/app/(default)/cart/_components/checkout-summary';
+import { CheckoutContext } from '~/app/[locale]/(default)/cart/_components/checkout-summary';
 import { ExistingResultType } from '~/client/util';
 import { cn } from '~/lib/utils';
 

@@ -10,18 +10,21 @@ import { Button } from '@bigcommerce/components/button';
 import { X } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 import { CheckedProduct, useCompareProductsContext } from '~/app/contexts/compare-products-context';
 import { Link } from '~/components/link';
 
 const CompareLink = ({ products }: { products: CheckedProduct[] }) => {
+  const t = useTranslations('Providers.Compare');
+
   return (
     <Button
       asChild
       className="me-4 h-12 w-auto grow whitespace-nowrap px-8 hover:text-white md:grow-0"
     >
       <Link href={`/compare?ids=${products.map(({ id }) => id).join(',')}`}>
-        Compare ({products.length})
+        {t('compareButton', { products: products.length })}
       </Link>
     </Button>
   );
@@ -34,6 +37,8 @@ const CompareItem = ({
   product: CheckedProduct;
   removeItem: () => void;
 }) => {
+  const t = useTranslations('Providers.Compare');
+
   return (
     <li
       className="mb-4 flex h-12 flex-shrink-0 items-center overflow-hidden border border-gray-200 pe-3 last:mb-0 md:mb-0 md:me-4"
@@ -49,14 +54,14 @@ const CompareItem = ({
         />
       ) : (
         <span className="flex h-12 w-12 items-center justify-center bg-gray-200 text-[8px] text-gray-500">
-          Photo
+          {t('productPhoto')}
         </span>
       )}
       <small className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap px-4 text-base font-semibold">
         {product.name}
       </small>
       <Button
-        aria-label={`Remove ${product.name} from compare list`}
+        aria-label={t('removeProductAriaLabel', { product: product.name })}
         className="grow-1 ms-auto w-auto border-0 bg-transparent p-0 text-black hover:bg-transparent hover:text-blue-primary focus:text-blue-primary"
         onClick={removeItem}
         type="button"
@@ -78,7 +83,7 @@ export const CompareDrawer = () => {
   return (
     <div className="fixed bottom-0 start-0 w-full border-t border-gray-200 bg-white p-6 md:pe-0">
       <div className="hidden md:flex">
-        <CompareLink products={products} />
+        <CompareLink key={products.toString()} products={products} />
         <ul className="flex overflow-auto">
           {products.map((product) => {
             return (

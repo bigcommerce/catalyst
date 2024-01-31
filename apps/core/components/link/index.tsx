@@ -1,13 +1,12 @@
 'use client';
 
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import NextLink from 'next/link';
-import { useRouter } from 'next/navigation';
 import { ComponentPropsWithRef, ElementRef, forwardRef, useReducer } from 'react';
 
 import { cn } from '~/lib/utils';
 
-type NextLinkProps = Omit<ComponentPropsWithRef<typeof NextLink>, 'prefetch'>;
+import { Link as NavLink, useRouter } from '../../navigation';
+
+type NextLinkProps = Omit<ComponentPropsWithRef<typeof NavLink>, 'prefetch'>;
 
 interface PrefetchOptions {
   prefetch?: 'hover' | 'viewport' | 'none';
@@ -17,8 +16,11 @@ interface PrefetchOptions {
 type Props = NextLinkProps & PrefetchOptions;
 
 /**
- * This custom `Link` component extends Next.js's `Link` with additional prefetching controls, making
- * navigation prefetching more adaptable to different use cases. By offering `prefetch` and `prefetchKind`
+ * This custom `Link` is based on  Next-Intl's `Link` component
+ * https://next-intl-docs.vercel.app/docs/routing/navigation#link
+ * which adds automatically prefixes for the href with the current locale as necessary
+ * and etends with additional prefetching controls, making navigation
+ * prefetching more adaptable to different use cases. By offering `prefetch` and `prefetchKind`
  * props, it grants explicit management over when and how prefetching occurs, defaulting to 'hover' for
  * prefetch behavior and 'auto' for prefetch kind. This approach provides a balance between optimizing
  * page load performance and resource usage. https://nextjs.org/docs/app/api-reference/components/link#prefetch
@@ -42,7 +44,7 @@ export const Link = forwardRef<ElementRef<'a'>, Props>(
     };
 
     return (
-      <NextLink
+      <NavLink
         className={cn(
           ' hover:text-blue-primary focus:outline-none focus:ring-4 focus:ring-blue-primary/20',
           className,
@@ -55,7 +57,7 @@ export const Link = forwardRef<ElementRef<'a'>, Props>(
         {...rest}
       >
         {children}
-      </NextLink>
+      </NavLink>
     );
   },
 );

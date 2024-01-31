@@ -4,6 +4,7 @@ import { Rating } from '@bigcommerce/components/rating';
 import { Loader2 as Spinner } from 'lucide-react';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useEffect, useId, useState } from 'react';
 
 import { getProduct } from '~/client/queries/get-product';
@@ -12,6 +13,7 @@ import { cn } from '~/lib/utils';
 
 export const ProductSheetContent = () => {
   const summaryId = useId();
+  const t = useTranslations('Product.ProductSheet');
 
   const searchParams = useSearchParams();
   const productId = searchParams.get('showQuickAdd');
@@ -52,7 +54,7 @@ export const ProductSheetContent = () => {
   if (isError) {
     return (
       <div className="flex h-full w-full">
-        <span>An error has ocurred.</span>
+        <span>{t('errorMessage')}</span>
       </div>
     );
   }
@@ -103,12 +105,14 @@ export const ProductSheetContent = () => {
               <div className="text-xs font-normal text-gray-500" id={summaryId}>
                 {product.reviewSummary.averageRating !== 0 && (
                   <>
-                    <span className="sr-only">Rating:</span>
-                    {product.reviewSummary.averageRating}
-                    <span className="sr-only">out of 5 stars.</span>{' '}
+                    {t.rich('productRating', {
+                      currentRating: product.reviewSummary.averageRating,
+                      rating: (chunks) => <span className="sr-only">{chunks}</span>,
+                      stars: (chunks) => <span className="sr-only">{chunks}</span>,
+                    })}
                   </>
                 )}
-                <span className="sr-only">Number of reviews:</span>(
+                <span className="sr-only">{t('numberReviews')}</span>(
                 {product.reviewSummary.numberOfReviews})
               </div>
             </div>
@@ -124,7 +128,7 @@ export const ProductSheetContent = () => {
                   <>
                     {product.prices.retailPrice?.value !== undefined && (
                       <span>
-                        MSRP:{' '}
+                        {t('msrp')}{' '}
                         <span className="line-through">
                           {currencyFormatter.format(product.prices.retailPrice.value)}
                         </span>
@@ -135,13 +139,15 @@ export const ProductSheetContent = () => {
                     product.prices.basePrice?.value !== undefined ? (
                       <>
                         <span>
-                          Was:{' '}
+                          {t('was')}{' '}
                           <span className="line-through">
                             {currencyFormatter.format(product.prices.basePrice.value)}
                           </span>
                         </span>
                         <br />
-                        <span>Now: {currencyFormatter.format(product.prices.salePrice.value)}</span>
+                        <span>
+                          {t('now')} {currencyFormatter.format(product.prices.salePrice.value)}
+                        </span>
                       </>
                     ) : (
                       product.prices.price.value && (
@@ -162,7 +168,7 @@ export const ProductSheetContent = () => {
   return (
     <div className="flex h-full w-full items-center justify-center text-blue-primary">
       <Spinner aria-hidden="true" className="animate-spin" />
-      <span className="sr-only">Loading...</span>
+      <span className="sr-only">{t('loading')}</span>
     </div>
   );
 };

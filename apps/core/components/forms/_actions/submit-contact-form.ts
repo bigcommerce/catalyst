@@ -22,11 +22,11 @@ export const submitContactForm = async ({
     const parsedData = ContactUsSchema.parse({
       email: formData.get('email'),
       comments: formData.get('comments'),
-      companyName: formData.get('Company name'),
-      fullName: formData.get('Full name'),
-      phoneNumber: formData.get('Phone'),
-      orderNumber: formData.get('Order number'),
-      rmaNumber: formData.get('RMA number'),
+      companyName: formData.get('companyname'),
+      fullName: formData.get('fullname'),
+      phoneNumber: formData.get('phone'),
+      orderNumber: formData.get('orderno'),
+      rmaNumber: formData.get('rma'),
     });
 
     const response = await submitContactFormClient({

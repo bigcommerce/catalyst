@@ -1,4 +1,7 @@
 // @ts-check
+const createNextIntlPlugin = require('next-intl/plugin');
+
+const withNextIntl = createNextIntlPlugin();
 
 const cspHeader = `
   base-uri 'self';
@@ -44,4 +47,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withNextIntl(nextConfig);

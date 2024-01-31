@@ -2,6 +2,7 @@
 
 import { Checkbox } from '@bigcommerce/components/checkbox';
 import { Label } from '@bigcommerce/components/label';
+import { useTranslations } from 'next-intl';
 import { useEffect, useId, useState } from 'react';
 
 import { useCompareProductsContext } from '../../app/contexts/compare-products-context';
@@ -19,6 +20,7 @@ export const Compare = ({
   productName: string;
 }) => {
   const checkboxId = useId();
+  const t = useTranslations('Product.ProductSheet');
   const [checkedState, setCheckedState] = useState(false);
   const { products, setProducts } = useCompareProductsContext();
 
@@ -49,7 +51,7 @@ export const Compare = ({
         onCheckedChange={handleOnCheckedChange}
       />
       <Label className="font-normal" htmlFor={checkboxId}>
-        Compare
+        {t('compare')}
       </Label>
     </div>
   );

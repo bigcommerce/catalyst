@@ -10,7 +10,7 @@ import { useFormStatus } from 'react-dom';
 import {
   CheckoutContext,
   createCurrencyFormatter,
-} from '~/app/(default)/cart/_components/checkout-summary';
+} from '~/app/[locale]/(default)/cart/_components/checkout-summary';
 import { addCheckoutShippingInfo } from '~/client/mutations/add-checkout-shipping-info';
 import { ExistingResultType } from '~/client/util';
 import { cn } from '~/lib/utils';

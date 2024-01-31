@@ -15,7 +15,7 @@ test('Filter products by selecting checkbox', async ({ page }) => {
   await expect(page.getByText('13 items')).toBeVisible();
 
   await page.getByLabel('Common Good1 products').click();
-  await expect(page.getByText('1 items')).toBeVisible();
+  await expect(page.getByText('1 item')).toBeVisible();
   await expect(page.getByRole('link', { name: '[Sample] Laundry Detergent' })).toBeVisible();
 
   await page.getByRole('button', { name: 'Clear all' }).click();

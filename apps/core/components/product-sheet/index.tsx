@@ -9,11 +9,13 @@ import {
   SheetTitle,
 } from '@bigcommerce/components/sheet';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
 import { ProductSheetContent } from './product-sheet-content';
 
 export const ProductSheet = () => {
+  const t = useTranslations('Product.ProductSheet');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -51,7 +53,7 @@ export const ProductSheet = () => {
         <SheetContent side="right">
           <SheetHeader>
             <SheetTitle asChild>
-              <h2>Choose options</h2>
+              <h2>{t('title')}</h2>
             </SheetTitle>
             <SheetClose />
           </SheetHeader>
