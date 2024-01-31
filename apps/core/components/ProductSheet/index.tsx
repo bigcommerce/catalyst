@@ -1,8 +1,6 @@
 'use client';
 
 import { Button } from '@bigcommerce/reactant/Button';
-import { Counter } from '@bigcommerce/reactant/Counter';
-import { Label } from '@bigcommerce/reactant/Label';
 import { Rating } from '@bigcommerce/reactant/Rating';
 import {
   Sheet,
@@ -16,25 +14,11 @@ import {
 import { Loader2 as Spinner } from 'lucide-react';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import {
-  ComponentPropsWithoutRef,
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useId,
-  useState,
-} from 'react';
-import { useFormStatus } from 'react-dom';
+import { PropsWithChildren, useEffect, useId, useState } from 'react';
 
-import { ProductForm } from '~/app/(default)/product/[slug]/_components/ProductForm';
 import { getProduct } from '~/client/queries/getProduct';
-import { VariantSelector } from '~/components/VariantSelector';
+import { ProductForm } from '~/components/ProductForm';
 import { cn } from '~/lib/utils';
-
-const ProductContext = createContext<{ product: Awaited<ReturnType<typeof getProduct>> }>({
-  product: null,
-});
 
 export const ProductSheet = ({ children, title }: PropsWithChildren<{ title: string }>) => {
   const [open, setOpen] = useState(false);
@@ -59,10 +43,7 @@ export const ProductSheet = ({ children, title }: PropsWithChildren<{ title: str
   );
 };
 
-export const ProductSheetContent = ({
-  productId,
-  children,
-}: PropsWithChildren<{ productId: number }>) => {
+export const ProductSheetContent = ({ productId }: { productId: number }) => {
   const summaryId = useId();
   const searchParams = useSearchParams();
   const [isError, setError] = useState(false);
@@ -198,7 +179,7 @@ export const ProductSheetContent = ({
             )}
           </div>
         </div>
-        <ProductContext.Provider value={{ product }}>{children}</ProductContext.Provider>
+        <ProductForm product={product} />
       </>
     );
   }
@@ -208,44 +189,5 @@ export const ProductSheetContent = ({
       <Spinner aria-hidden="true" className="animate-spin" />
       <span className="sr-only">Loading...</span>
     </div>
-  );
-};
-
-const SubmitButton = ({ children }: PropsWithChildren) => {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button className="mt-6" disabled={pending} type="submit">
-      {pending ? (
-        <>
-          <Spinner aria-hidden="true" className="animate-spin" />
-          <span className="sr-only">Processing...</span>
-        </>
-      ) : (
-        <span>{children}</span>
-      )}
-    </Button>
-  );
-};
-
-export const ProductSheetForm = ({ children }: ComponentPropsWithoutRef<'form'>) => {
-  const { product } = useContext(ProductContext);
-
-  if (!product) {
-    return null;
-  }
-
-  return (
-    <ProductForm>
-      <input name="product_id" type="hidden" value={product.entityId} />
-      <VariantSelector product={product} />
-      <div>
-        <Label className="my-2 inline-block font-semibold" htmlFor="quantity">
-          Quantity
-        </Label>
-        <Counter id="quantity" min={1} name="quantity" />
-      </div>
-      {children || <SubmitButton>Add to cart</SubmitButton>}
-    </ProductForm>
   );
 };

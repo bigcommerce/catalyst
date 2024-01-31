@@ -2,14 +2,15 @@
 
 import { Button } from '@bigcommerce/reactant/Button';
 import { ShoppingCart, Loader2 as Spinner } from 'lucide-react';
-import { useFormStatus } from 'react-dom';
+import { useFormContext } from 'react-hook-form';
 
 export const AddToCart = ({ disabled = false }: { disabled?: boolean }) => {
-  const { pending } = useFormStatus();
+  const { formState } = useFormContext();
+  const { isSubmitting } = formState;
 
   return (
-    <Button className="mt-2" disabled={disabled || pending} type="submit">
-      {pending ? (
+    <Button disabled={disabled || isSubmitting} type="submit">
+      {isSubmitting ? (
         <>
           <Spinner aria-hidden="true" className="animate-spin" />
           <span className="sr-only">Processing...</span>

@@ -8,7 +8,7 @@ const config = {
     './components/**/*.{ts,tsx}',
     './node_modules/@bigcommerce/reactant/src/**/*.{ts,tsx}',
   ],
-  plugins: [],
+  plugins: [require('@tailwindcss/container-queries')],
 };
 
 module.exports = config;

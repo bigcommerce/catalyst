@@ -4,6 +4,10 @@ import { Label } from '@bigcommerce/reactant/Label';
 import { getProduct } from '~/client/queries/getProduct';
 import { ExistingResultType, Unpacked } from '~/client/util';
 
+import { useProductFieldController } from '../useProductForm';
+
+import { ErrorMessage } from './shared/ErrorMessage';
+
 type DateFieldOption = Extract<
   Unpacked<ExistingResultType<typeof getProduct>['productOptions']>,
   { __typename: 'DateFieldOption' }
@@ -30,10 +34,20 @@ const getDisabledDays = (option: DateFieldOption) => {
 
 export const DateField = ({ option }: { option: DateFieldOption }) => {
   const disabledDays = getDisabledDays(option);
+  const { field, fieldState } = useProductFieldController({
+    name: `attribute_${option.entityId}`,
+    rules: {
+      required: option.isRequired ? 'Please select a date.' : false,
+    },
+    defaultValue: option.defaultDate
+      ? Intl.DateTimeFormat().format(new Date(option.defaultDate))
+      : '',
+  });
+  const { error } = fieldState;
 
   return (
-    <>
-      <Label className="my-2 inline-block" htmlFor={`${option.entityId}`}>
+    <div>
+      <Label className="mb-2 inline-block" htmlFor={`${option.entityId}`}>
         {option.isRequired ? (
           <>
             {option.displayName} <span className="font-normal text-gray-500">(required)</span>
@@ -43,12 +57,13 @@ export const DateField = ({ option }: { option: DateFieldOption }) => {
         )}
       </Label>
       <DatePicker
-        defaultValue={option.defaultDate ?? undefined}
         disabledDays={disabledDays}
         id={`${option.entityId}`}
-        name={`attribute[${option.entityId}]`}
-        required={option.isRequired}
+        onSelect={field.onChange}
+        selected={field.value ? new Date(field.value) : undefined}
+        variant={error && 'error'}
       />
-    </>
+      {error && <ErrorMessage>{error.message}</ErrorMessage>}
+    </div>
   );
 };
