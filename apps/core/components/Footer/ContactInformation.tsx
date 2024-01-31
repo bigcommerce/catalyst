@@ -21,7 +21,10 @@ export const ContactInformation = async () => {
         ))}
       </address>
       {contact.phone ? (
-        <a href={`tel:${contact.phone}`}>
+        <a
+          className="hover:text-blue-primary focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
+          href={`tel:${contact.phone}`}
+        >
           <p>{contact.phone}</p>
         </a>
       ) : null}
