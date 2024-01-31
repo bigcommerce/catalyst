@@ -152,10 +152,8 @@ export const Header = async ({ cart }: { cart: ReactNode }) => {
               )}
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link className="relative" href="/cart">
-                  {cart}
-                </Link>
+              <NavigationMenuLink asChild className="relative">
+                <p role="status">{cart}</p>
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>

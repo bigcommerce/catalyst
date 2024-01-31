@@ -5,6 +5,7 @@ import { SearchForm } from 'components/SearchForm';
 import { getFeaturedProducts } from '~/client/queries/getFeaturedProducts';
 import { Footer } from '~/components/Footer/Footer';
 import { Header } from '~/components/Header';
+import { Link } from '~/components/Link';
 import { ProductCard } from '~/components/ProductCard';
 
 export default async function NotFound() {
@@ -12,7 +13,13 @@ export default async function NotFound() {
 
   return (
     <>
-      <Header cart={<ShoppingCart aria-label="cart" />} />
+      <Header
+        cart={
+          <Link href="/cart">
+            <ShoppingCart aria-label="cart" />
+          </Link>
+        }
+      />
       <main className="mx-auto mb-10 max-w-[835px] space-y-8 px-6 sm:px-10 lg:px-0">
         <Message className="flex-col gap-8 px-0 py-16">
           <h2 className="text-h2">We couldn't find that page!</h2>

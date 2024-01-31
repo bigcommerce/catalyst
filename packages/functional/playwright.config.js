@@ -5,9 +5,7 @@ config();
 
 export default defineConfig({
   testDir: './tests',
-  timeout: 120 * 1000,
   expect: {
-    timeout: 20000,
     toHaveScreenshot: { maxDiffPixels: 100 },
   },
   fullyParallel: true,
@@ -15,8 +13,9 @@ export default defineConfig({
   use: {
     baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL,
     screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+    trace: 'retain-on-failure',
   },
-
   projects: [
     {
       name: 'tests-chromium',
