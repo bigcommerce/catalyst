@@ -152,9 +152,7 @@ export const Header = async ({ cart }: { cart: ReactNode }) => {
               )}
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuLink asChild className="relative">
-                <p role="status">{cart}</p>
-              </NavigationMenuLink>
+              <p role="status">{cart}</p>
             </NavigationMenuItem>
           </NavigationMenuList>
           <NavigationMenuToggle className="ms-2 lg:hidden" />
