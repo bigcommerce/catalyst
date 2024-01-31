@@ -30,4 +30,3 @@ test.skip('Pause slideshow', async ({ page }) => {
 
   await expect(page.getByRole('heading', { name: 'Great Deals' })).toBeVisible();
 });
-

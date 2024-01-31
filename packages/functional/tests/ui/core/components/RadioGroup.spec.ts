@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test';
 
-test('Changing selection on radio button options should update query parameters', async ({ page }) => {
+test('Changing selection on radio button options should update query parameters', async ({
+  page,
+}) => {
   await page.goto('/');
 
   await page.getByLabel('Main').getByRole('link', { name: 'Shop All' }).click();

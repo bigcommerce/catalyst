@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test';
 
-test('Selecting various options on color panel should update query parameters', async ({ page }) => {
+test('Selecting various options on color panel should update query parameters', async ({
+  page,
+}) => {
   await page.goto('/');
 
   await page.getByLabel('Main').getByRole('link', { name: 'Shop All' }).click();
