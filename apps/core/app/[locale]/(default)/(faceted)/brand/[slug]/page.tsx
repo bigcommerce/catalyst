@@ -1,72 +1,62 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 
-import { ProductCard } from 'components/ProductCard';
-import { SearchForm } from 'components/SearchForm';
+import { getBrand } from '~/client/queries/getBrand';
 import { Link } from '~/components/Link';
+import { ProductCard } from '~/components/ProductCard';
+import { LocaleType } from '~/i18n';
 
-import { FacetedSearch } from '../_components/faceted-search';
-import { MobileSideNav } from '../_components/mobile-side-nav';
-import { SortBy } from '../_components/sort-by';
-import { fetchFacetedSearch } from '../fetchFacetedSearch';
+import { FacetedSearch } from '../../_components/faceted-search';
+import { MobileSideNav } from '../../_components/mobile-side-nav';
+import { SortBy } from '../../_components/sort-by';
+import { fetchFacetedSearch } from '../../fetchFacetedSearch';
 
 interface Props {
+  params: {
+    slug: string;
+    locale: LocaleType;
+  };
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default async function Search({ searchParams }: Props) {
-  const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : undefined;
+export default async function Brand({ params: { slug, locale }, searchParams }: Props) {
+  const t = await getTranslations({ locale, namespace: 'Brand' });
 
-  if (!searchTerm) {
-    return (
-      <>
-        <h1 className="mb-3 text-h2">Search</h1>
-        <SearchForm />
-      </>
-    );
+  const brandId = Number(slug);
+
+  const search = await fetchFacetedSearch({ ...searchParams, brand: [slug] });
+
+  const brand = await getBrand({
+    brandId,
+  });
+
+  if (!brand) {
+    notFound();
   }
-
-  const search = await fetchFacetedSearch({ ...searchParams });
 
   const productsCollection = search.products;
   const products = productsCollection.items;
-
-  if (products.length === 0) {
-    return (
-      <div>
-        <h1 className="mb-3 text-h2">Search</h1>
-
-        <SearchForm initialTerm={searchTerm} />
-
-        <p className="pv-6">
-          <em>No Results</em>
-        </p>
-      </div>
-    );
-  }
-
   const { hasNextPage, hasPreviousPage, endCursor, startCursor } = productsCollection.pageInfo;
 
   return (
     <div>
       <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
-        <h1 className="mb-3 text-base">
-          Search results for <br />
-          <b className="text-h4">"{searchTerm}"</b>
-        </h1>
+        <h1 className="mb-4 text-h2 lg:mb-0">{brand.name}</h1>
 
         <div className="flex flex-col items-center gap-3 whitespace-nowrap md:flex-row">
           <MobileSideNav>
             <FacetedSearch
               facets={search.facets.items}
               headingId="mobile-filter-heading"
-              pageType="search"
+              pageType="brand"
             />
           </MobileSideNav>
           <div className="flex w-full flex-col items-start gap-4 md:flex-row md:items-center md:justify-end md:gap-6">
             <SortBy />
             <div className="order-3 py-4 text-base font-semibold md:order-2 md:py-0">
               {/* TODO: Plural vs. singular items */}
-              {productsCollection.collectionInfo?.totalItems} items
+              {t('sortBy', { items: productsCollection.collectionInfo?.totalItems ?? 0 })}
             </div>
           </div>
         </div>
@@ -77,12 +67,12 @@ export default async function Search({ searchParams }: Props) {
           className="mb-8 hidden lg:block"
           facets={search.facets.items}
           headingId="desktop-filter-heading"
-          pageType="search"
+          pageType="brand"
         />
 
         <section aria-labelledby="product-heading" className="col-span-4 lg:col-span-3">
           <h2 className="sr-only" id="product-heading">
-            Products
+            {t('products')}
           </h2>
 
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 sm:gap-8">
@@ -98,7 +88,7 @@ export default async function Search({ searchParams }: Props) {
 
           <nav aria-label="Pagination" className="my-6 text-center text-blue-primary">
             {hasPreviousPage ? (
-              <Link href={`/search?term=${searchTerm}&before=${String(startCursor)}`}>
+              <Link href={`${brand.path}?before=${String(startCursor)}`}>
                 <span className="sr-only">Previous</span>
                 <ChevronLeft aria-hidden="true" className="inline-block h-8 w-8" />
               </Link>
@@ -107,7 +97,7 @@ export default async function Search({ searchParams }: Props) {
             )}
 
             {hasNextPage ? (
-              <Link href={`/search?term=${searchTerm}&after=${String(endCursor)}`}>
+              <Link href={`${brand.path}?after=${String(endCursor)}`}>
                 <span className="sr-only">Next</span>
                 <ChevronRight aria-hidden="true" className="inline-block h-8 w-8" />
               </Link>

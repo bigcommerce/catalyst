@@ -1,50 +1,67 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 
-import { getBrand } from '~/client/queries/getBrand';
+import { ProductCard } from 'components/ProductCard';
+import { SearchForm } from 'components/SearchForm';
 import { Link } from '~/components/Link';
-import { ProductCard } from '~/components/ProductCard';
 
-import { FacetedSearch } from '../../_components/faceted-search';
-import { MobileSideNav } from '../../_components/mobile-side-nav';
-import { SortBy } from '../../_components/sort-by';
-import { fetchFacetedSearch } from '../../fetchFacetedSearch';
+import { FacetedSearch } from '../_components/faceted-search';
+import { MobileSideNav } from '../_components/mobile-side-nav';
+import { SortBy } from '../_components/sort-by';
+import { fetchFacetedSearch } from '../fetchFacetedSearch';
 
 interface Props {
-  params: {
-    slug: string;
-  };
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default async function Brand({ params, searchParams }: Props) {
-  const brandId = Number(params.slug);
+export default async function Search({ searchParams }: Props) {
+  const t = await getTranslations('Search');
+  const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : undefined;
 
-  const search = await fetchFacetedSearch({ ...searchParams, brand: [params.slug] });
-
-  const brand = await getBrand({
-    brandId,
-  });
-
-  if (!brand) {
-    notFound();
+  if (!searchTerm) {
+    return (
+      <>
+        <h1 className="mb-3 text-h2">{t('heading')}</h1>
+        <SearchForm />
+      </>
+    );
   }
+
+  const search = await fetchFacetedSearch({ ...searchParams });
 
   const productsCollection = search.products;
   const products = productsCollection.items;
+
+  if (products.length === 0) {
+    return (
+      <div>
+        <h1 className="mb-3 text-h2">{t('heading')}</h1>
+
+        <SearchForm initialTerm={searchTerm} />
+
+        <p className="pv-6">
+          <em>{t('noResults')}</em>
+        </p>
+      </div>
+    );
+  }
+
   const { hasNextPage, hasPreviousPage, endCursor, startCursor } = productsCollection.pageInfo;
 
   return (
     <div>
       <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
-        <h1 className="mb-4 text-h2 lg:mb-0">{brand.name}</h1>
+        <h1 className="mb-3 text-base">
+          {t('searchResults')} <br />
+          <b className="text-h4">"{searchTerm}"</b>
+        </h1>
 
         <div className="flex flex-col items-center gap-3 whitespace-nowrap md:flex-row">
           <MobileSideNav>
             <FacetedSearch
               facets={search.facets.items}
               headingId="mobile-filter-heading"
-              pageType="brand"
+              pageType="search"
             />
           </MobileSideNav>
           <div className="flex w-full flex-col items-start gap-4 md:flex-row md:items-center md:justify-end md:gap-6">
@@ -62,7 +79,7 @@ export default async function Brand({ params, searchParams }: Props) {
           className="mb-8 hidden lg:block"
           facets={search.facets.items}
           headingId="desktop-filter-heading"
-          pageType="brand"
+          pageType="search"
         />
 
         <section aria-labelledby="product-heading" className="col-span-4 lg:col-span-3">
@@ -83,7 +100,7 @@ export default async function Brand({ params, searchParams }: Props) {
 
           <nav aria-label="Pagination" className="my-6 text-center text-blue-primary">
             {hasPreviousPage ? (
-              <Link href={`${brand.path}?before=${String(startCursor)}`}>
+              <Link href={`/search?term=${searchTerm}&before=${String(startCursor)}`}>
                 <span className="sr-only">Previous</span>
                 <ChevronLeft aria-hidden="true" className="inline-block h-8 w-8" />
               </Link>
@@ -92,7 +109,7 @@ export default async function Brand({ params, searchParams }: Props) {
             )}
 
             {hasNextPage ? (
-              <Link href={`${brand.path}?after=${String(endCursor)}`}>
+              <Link href={`/search?term=${searchTerm}&after=${String(endCursor)}`}>
                 <span className="sr-only">Next</span>
                 <ChevronRight aria-hidden="true" className="inline-block h-8 w-8" />
               </Link>

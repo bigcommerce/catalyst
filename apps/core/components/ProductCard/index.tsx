@@ -10,7 +10,8 @@ import { Rating } from '@bigcommerce/reactant/Rating';
 import Image from 'next/image';
 import { useId } from 'react';
 
-import { Link } from '~/components/Link';
+import { NavLink } from '~/components/NavLink';
+// import { Link } from '~/components/OldLink';
 import { cn } from '~/lib/utils';
 
 import { Pricing } from '../Pricing';
@@ -115,13 +116,13 @@ export const ProductCard = ({
         {product.brand && <ProductCardInfoBrandName>{product.brand.name}</ProductCardInfoBrandName>}
         <ProductCardInfoProductName>
           {product.path ? (
-            <Link
+            <NavLink
               className="focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
               href={product.path}
             >
               <span aria-hidden="true" className="absolute inset-0 bottom-20" />
               {product.name}
-            </Link>
+            </NavLink>
           ) : (
             product.name
           )}

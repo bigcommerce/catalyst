@@ -6,6 +6,7 @@ import { cn } from '~/lib/utils';
 
 type LinkType = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps> &
   LinkProps & {
+    // locale?: Locale;
     children?: React.ReactNode;
   } & React.RefAttributes<HTMLAnchorElement>;
 

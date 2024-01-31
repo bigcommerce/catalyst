@@ -1,9 +1,11 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 
 import { getCategory } from '~/client/queries/getCategory';
 import { Link } from '~/components/Link';
 import { ProductCard } from '~/components/ProductCard';
+import { LocaleType } from '~/i18n';
 
 import { Breadcrumbs } from '../../_components/breadcrumbs';
 import { FacetedSearch } from '../../_components/faceted-search';
@@ -15,14 +17,15 @@ import { fetchFacetedSearch } from '../../fetchFacetedSearch';
 interface Props {
   params: {
     slug: string;
+    locale: LocaleType;
   };
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default async function Category({ params, searchParams }: Props) {
-  const categoryId = Number(params.slug);
-  const search = await fetchFacetedSearch({ ...searchParams, category: [params.slug] });
-
+export default async function Category({ params: { locale, slug }, searchParams }: Props) {
+  const t = await getTranslations({ locale, namespace: 'Category' });
+  const categoryId = Number(slug);
+  const search = await fetchFacetedSearch({ ...searchParams, category: [slug] });
   // We will only need a partial of this query to fetch the category name and breadcrumbs.
   // The rest of the arguments are useless at this point.
   const category = await getCategory({
@@ -58,7 +61,8 @@ export default async function Category({ params, searchParams }: Props) {
             <SortBy />
             <div className="order-3 py-4 text-base font-semibold md:order-2 md:py-0">
               {/* TODO: Plural vs. singular items */}
-              {productsCollection.collectionInfo?.totalItems} items
+              {t('sortBy', { items: productsCollection.collectionInfo?.totalItems ?? 0 })}
+              {/* {productsCollection.collectionInfo?.totalItems} items */}
             </div>
           </div>
         </div>
@@ -76,7 +80,7 @@ export default async function Category({ params, searchParams }: Props) {
 
         <section aria-labelledby="product-heading" className="col-span-4 lg:col-span-3">
           <h2 className="sr-only" id="product-heading">
-            Products
+            {t('products')}
           </h2>
 
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 sm:gap-8">

@@ -2,6 +2,7 @@ import { Button } from '@bigcommerce/reactant/Button';
 import { Trash2 as Trash } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
+import { getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 
 import { getCheckoutUrl } from '~/client/management/getCheckoutUrl';
@@ -33,6 +34,7 @@ const CheckoutButton = async ({ cartId }: { cartId: string }) => {
 };
 
 export default async function CartPage() {
+  const t = await getTranslations('Cart');
   const cartId = cookies().get('cartId')?.value;
 
   if (!cartId) {
@@ -159,21 +161,21 @@ export default async function CartPage() {
 
         <div className="col-span-1 col-start-2 lg:col-start-3">
           <div className="flex justify-between border-t border-t-gray-200 py-4">
-            <span className="text-base font-semibold">Subtotal</span>
+            <span className="text-base font-semibold">{t('subtotal')}</span>
             <span className="text-base">
               {currencyFormatter.format(cart.totalExtendedListPrice.value)}
             </span>
           </div>
 
           <div className="flex justify-between border-t border-t-gray-200 py-4">
-            <span className="text-base font-semibold">Discounts</span>
+            <span className="text-base font-semibold">{t('discounts')}</span>
             <span className="text-base">
               {currencyFormatter.format(cart.totalDiscountedAmount.value)}
             </span>
           </div>
 
           <div className="flex justify-between border-t border-t-gray-200 py-4">
-            <span className="text-h5">Grand total</span>
+            <span className="text-h5">{t('grandTotal')}</span>
             <span className="text-h5">
               {currencyFormatter.format(cart.totalExtendedSalePrice.value)}
             </span>

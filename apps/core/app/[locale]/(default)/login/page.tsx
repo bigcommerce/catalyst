@@ -1,13 +1,16 @@
 import { Button } from '@bigcommerce/reactant/Button';
+import { useTranslations } from 'next-intl';
 
 import { Link } from '~/components/Link';
 
 import { LoginForm } from './LoginForm';
 
 export default function Login() {
+  const t = useTranslations('Account.Login');
+
   return (
     <div className="mx-auto my-6 max-w-4xl">
-      <h2 className="mb-8 text-h2">Log In</h2>
+      <h2 className="mb-8 text-h2">{t('heading')}</h2>
       <div className="mb-12 grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8">
         <LoginForm />
         <div className="flex flex-col gap-4 bg-gray-100 p-8">

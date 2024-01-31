@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 
 import { getProduct } from '~/client/queries/getProduct';
@@ -164,11 +165,12 @@ const ProductDescriptionAndReviews = ({ product }: { product: NonNullable<Produc
 };
 
 interface ProductPageProps {
-  params: { slug: string };
+  params: { slug: string; locale: LocaleType };
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const t = await getTranslations({ locale: params.locale, namespace: 'RootLayout.Metadata' });
   const productId = Number(params.slug);
   const product = await getProduct(productId);
 
@@ -180,7 +182,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   const { url, altText: alt } = product.defaultImage || {};
 
   return {
-    title: pageTitle || product.name,
+    title: pageTitle || product.name || t('title'),
     description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
     openGraph: url
@@ -197,6 +199,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 }
 
 export default async function Product({ params, searchParams }: ProductPageProps) {
+  const t = await getTranslations({ locale: params.locale, namespace: 'Product' });
   const productId = Number(params.slug);
   const { slug, ...options } = searchParams;
 
@@ -236,6 +239,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
 
   return (
     <>
+      <p>{t('test')}</p>
       <BreadCrumbs productId={productId} />
       <div className="mb-12 mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
         <Gallery images={images} />

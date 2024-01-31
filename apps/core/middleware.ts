@@ -1,9 +1,15 @@
 import { composeMiddlewares } from './middlewares/compose-middlewares';
 import { withAuth } from './middlewares/with-auth';
 import { withCustomUrls } from './middlewares/with-custom-urls';
+import { withI18n } from './middlewares/with-i18n';
 import { withMaintenanceMode } from './middlewares/with-maintenance-mode';
 
-export const middleware = composeMiddlewares(withMaintenanceMode, withAuth, withCustomUrls);
+export const middleware = composeMiddlewares(
+  withMaintenanceMode,
+  withAuth,
+  withCustomUrls,
+  withI18n,
+);
 
 export const config = {
   matcher: [
@@ -17,5 +23,6 @@ export const config = {
      */
     '/((?!api|_next/static|_next/image|_vercel|favicon.ico).*)',
     '/',
+    '/(de|en)/(.*)',
   ],
 };

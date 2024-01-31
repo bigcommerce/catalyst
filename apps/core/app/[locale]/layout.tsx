@@ -3,10 +3,10 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Inter } from 'next/font/google';
 import { PropsWithChildren } from 'react';
 
-import './globals.css';
+import '../globals.css';
 
-import { Notifications } from './notifications';
-import { Providers } from './providers';
+import { Notifications } from '../notifications';
+import { Providers } from '../providers';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -25,9 +25,13 @@ export const metadata = {
 
 export const fetchCache = 'default-cache';
 
-export default function RootLayout({ children }: PropsWithChildren) {
+interface RootLayoutProps extends PropsWithChildren {
+  params: { locale: string };
+}
+
+export default function RootLayout({ children, params: { locale } }: RootLayoutProps) {
   return (
-    <html className={`${inter.variable} font-sans`} lang="en">
+    <html className={`${inter.variable} font-sans`} lang={locale}>
       <body className="flex h-screen flex-col">
         <Notifications />
         <Providers>{children}</Providers>

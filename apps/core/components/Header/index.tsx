@@ -14,7 +14,7 @@ import { ReactNode } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
 import { getCategoryTree } from '~/client/queries/getCategoryTree';
-import { Link } from '~/components/Link';
+import { NavLink } from '~/components/NavLink';
 import { cn } from '~/lib/utils';
 
 import { QuickSearch } from '../QuickSearch';
@@ -47,9 +47,9 @@ const HeaderNav = async ({
                 <NavigationMenuTrigger className="gap-0 p-0">
                   <>
                     <NavigationMenuLink asChild>
-                      <Link className="grow" href={category.path}>
+                      <NavLink className="grow" href={category.path}>
                         {category.name}
-                      </Link>
+                      </NavLink>
                     </NavigationMenuLink>
                     <span className={cn(inCollapsedNav && 'p-3')}>
                       <ChevronDown
@@ -85,7 +85,7 @@ const HeaderNav = async ({
               </>
             ) : (
               <NavigationMenuLink asChild>
-                <Link href={category.path}>{category.name}</Link>
+                <NavLink href={category.path}>{category.name}</NavLink>
               </NavigationMenuLink>
             )}
           </NavigationMenuItem>
@@ -115,21 +115,21 @@ export const Header = async ({ cart }: { cart: ReactNode }) => {
     <header>
       <NavigationMenu>
         <NavigationMenuLink asChild className="px-0">
-          <Link href="/">
+          <NavLink href="/">
             <StoreLogo />
-          </Link>
+          </NavLink>
         </NavigationMenuLink>
         <HeaderNav className="hidden lg:flex" />
         <div className="flex">
           <NavigationMenuList>
             <NavigationMenuItem>
               <QuickSearch>
-                <Link
+                <NavLink
                   className="flex focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
                   href="/"
                 >
                   <StoreLogo />
-                </Link>
+                </NavLink>
               </QuickSearch>
             </NavigationMenuItem>
             <NavigationMenuItem className="hidden lg:flex">
@@ -145,9 +145,9 @@ export const Header = async ({ cart }: { cart: ReactNode }) => {
                 </form>
               ) : (
                 <NavigationMenuLink asChild>
-                  <Link aria-label="Login" href="/login">
+                  <NavLink aria-label="Login" href="/login">
                     <User />
-                  </Link>
+                  </NavLink>
                 </NavigationMenuLink>
               )}
             </NavigationMenuItem>

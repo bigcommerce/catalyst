@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 
 import { getBlogPosts } from '~/client/queries/getBlogPosts';
 import { BlogPostCard } from '~/components/BlogPostCard';
@@ -11,6 +12,7 @@ interface Props {
 
 export default async function BlogPostPage({ searchParams }: Props) {
   const blogPosts = await getBlogPosts(searchParams);
+  const t = await getTranslations('Header');
 
   if (!blogPosts || !blogPosts.isVisibleInNavigation) {
     return notFound();
@@ -18,6 +20,7 @@ export default async function BlogPostPage({ searchParams }: Props) {
 
   return (
     <div className="mx-auto max-w-screen-xl">
+      <p>{t('account')}</p>
       <h1 className="mb-8 text-h3 lg:text-h2">{blogPosts.name}</h1>
 
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">

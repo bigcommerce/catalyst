@@ -1,0 +1,59 @@
+{
+  "RootLayout": {
+    "Metadata": {
+      "title": "(DE) Catalyst Store",
+      "description": "(DE) Example store built with Catalyst",
+      "other": {
+        "platform": "(DE) bigcommerce.catalyst"
+      }
+    }
+  },
+  "Header": {
+    "account": "(DE) Your Account"
+  },
+  "Pagination": {
+    "next": "(DE) Next",
+    "prev": "(DE) Previous"
+  },
+  "Home": {
+    "Carousel": {
+      "bestSellingProducts": "(DE) Best Selling Products",
+      "featuredProducts": "(DE) Featured Products"
+    }
+  },
+  "Category": {
+    "sortBy": "{items, plural, =0 {(DE) no items} =1 {(DE) one item} other {# items (DE)}}",
+    "products": "(DE) Products",
+    "items": "(DE) items"
+  },
+  "Brand": {
+    "sortBy": "{items, plural, =0 {(DE) no items} =1 {(DE) one item} other {# items (DE)}}",
+    "products": "(DE) Products"
+  },
+  "Product": {
+    "test": "(DE) test"
+  },
+  "Cart": {
+    "subtotal": "(DE) Subtotal",
+    "discounts": "(DE) Discounts",
+    "grandTotal": "(DE) Grand total"
+  },
+  "Search": {
+    "heading": "(DE) Search",
+    "noResults": "(DE) No Results",
+    "searchResults": "(DE) Search results for"
+  },
+  "Account": {
+    "Login": {
+      "heading": "(DE) Log In"
+    }
+  },
+  "PageNotFound": {
+    "heading": "(DE) We couldn't find that page!",
+    "message": "(DE) It looks like the page you requested has moved or no longer exists."
+  },
+  "ServerError": {
+    "heading": "(DE) There was a server error!",
+    "message": "(DE) Please try again later."
+  }
+}
