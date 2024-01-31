@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
   await page.getByRole('link', { name: 'your cart' }).click();
 });
 
-test('Increase count and verify the results.', async({ page }) => {
+test('Increase count and verify the results', async ({ page }) => {
   await expect(page.getByRole('spinbutton')).toHaveValue('1');
 
   await page.getByLabel('Increase count').click();
@@ -19,7 +19,7 @@ test('Increase count and verify the results.', async({ page }) => {
   await expect(page.getByRole('spinbutton')).toHaveValue('3');
 });
 
-test('Decrease count and verify the results.', async({ page }) => {
+test('Decrease count and verify the results', async ({ page }) => {
   await expect(page.getByRole('spinbutton')).toHaveValue('1');
 
   await page.getByLabel('Decrease count').click();
