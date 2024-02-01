@@ -31,12 +31,16 @@
     "products": "(DE) Products"
   },
   "Product": {
-    "test": "(DE) test"
+    "test": "(DE) i18n"
   },
   "Cart": {
     "subtotal": "(DE) Subtotal",
     "discounts": "(DE) Discounts",
     "grandTotal": "(DE) Grand total"
+  },
+  "Blog": {
+    "heading": "(DE) i18n",
+    "post": "(DE) i18n"
   },
   "Search": {
     "heading": "(DE) Search",

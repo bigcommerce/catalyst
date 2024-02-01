@@ -29,6 +29,9 @@ importers:
       '@bigcommerce/reactant':
         specifier: workspace:^
         version: link:../../packages/reactant
+      '@formatjs/intl-localematcher':
+        specifier: ^0.5.4
+        version: 0.5.4
       '@graphql-typed-document-node/core':
         specifier: ^3.2.0
         version: 3.2.0(graphql@16.8.1)
@@ -53,6 +56,9 @@ importers:
       lucide-react:
         specifier: ^0.294.0
         version: 0.294.0(react@18.2.0)
+      negotiator:
+        specifier: ^0.6.3
+        version: 0.6.3
       next:
         specifier: ^14.1.0
         version: 14.1.0(@babel/core@7.23.6)(react-dom@18.2.0)(react@18.2.0)
@@ -117,6 +123,9 @@ importers:
       '@types/lodash.debounce':
         specifier: ^4.0.7
         version: 4.0.9
+      '@types/negotiator':
+        specifier: ^0.6.3
+        version: 0.6.3
       '@types/node':
         specifier: ^18.17.12
         version: 18.19.3
@@ -5955,6 +5964,10 @@ packages:
     resolution: {integrity: sha512-CPM9nzrCPPJHQNA9keH9CVkVI+WR5kMa+7XEs5jcGQ0VoAGnLv242w8lIVgwAEfmE4oufJRaTc9PNLQl0ioAow==}
     dependencies:
       '@types/node': 18.19.8
+    dev: true
+
+  /@types/negotiator@0.6.3:
+    resolution: {integrity: sha512-JkXTOdKs5MF086b/pt8C3+yVp3iDUwG635L7oCH6HvJvvr6lSUU5oe/gLXnPEfYRROHjJIPgCV6cuAg8gGkntQ==}
     dev: true
 
   /@types/node-fetch@2.6.9:

@@ -8,18 +8,22 @@ import {
 import { Tag, TagContent } from '@bigcommerce/reactant/Tag';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 
 import { getBlogPost } from '~/client/queries/getBlogPost';
 import { Link } from '~/components/Link';
 import { SharingLinks } from '~/components/SharingLinks';
+import { LocaleType } from '~/i18n';
 
 interface Props {
   params: {
     blogId: string;
+    locale?: LocaleType;
   };
 }
 
-export default async function BlogPostPage({ params: { blogId } }: Props) {
+export default async function BlogPostPage({ params: { blogId, locale } }: Props) {
+  const t = await getTranslations({ locale, namespace: 'Blog' });
   const blogPost = await getBlogPost(+blogId);
 
   if (!blogPost || !blogPost.isVisibleInNavigation) {
@@ -28,7 +32,9 @@ export default async function BlogPostPage({ params: { blogId } }: Props) {
 
   return (
     <div className="mx-auto max-w-4xl">
-      <h1 className="mb-2 text-h3 lg:text-h2">{blogPost.name}</h1>
+      <h1 className="mb-2 text-h3 lg:text-h2">
+        {blogPost.name} {t('post')}
+      </h1>
 
       <div className="mb-8 flex">
         <BlogPostDate className="mb-0">

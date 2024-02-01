@@ -11,7 +11,9 @@ const locales = ['en', 'de'] as const;
 
 type LocalePrefixesType = `${LocalePrefixes}`;
 
-const localePrefix: LocalePrefixesType = LocalePrefixes.ASNEEDED;
+// turn off prefix since we temporary give priority to accept-language header
+// due to multi-language in Catalyst is in progress
+const localePrefix: LocalePrefixesType = LocalePrefixes.NEVER;
 const defaultLocale = 'en';
 
 type LocaleType = (typeof locales)[number];
@@ -27,7 +29,7 @@ export default getRequestConfig(async (params) => {
 
   return {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    messages: (await import(`../core/dictionaries/${isLocaleFound ? locale : 'en'}.json`)).default, // TODO: fix types later
+    messages: (await import(`../core/dictionaries/${isLocaleFound ? locale : 'en'}.json`)).default,
   };
 });
 

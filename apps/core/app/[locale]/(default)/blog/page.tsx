@@ -12,7 +12,7 @@ interface Props {
 
 export default async function BlogPostPage({ searchParams }: Props) {
   const blogPosts = await getBlogPosts(searchParams);
-  const t = await getTranslations('Header');
+  const t = await getTranslations('Blog');
 
   if (!blogPosts || !blogPosts.isVisibleInNavigation) {
     return notFound();
@@ -20,8 +20,9 @@ export default async function BlogPostPage({ searchParams }: Props) {
 
   return (
     <div className="mx-auto max-w-screen-xl">
-      <p>{t('account')}</p>
-      <h1 className="mb-8 text-h3 lg:text-h2">{blogPosts.name}</h1>
+      <h1 className="mb-8 text-h3 lg:text-h2">
+        {blogPosts.name} {t('heading')}
+      </h1>
 
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
         {blogPosts.posts.items.map((post) => {

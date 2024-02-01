@@ -31,12 +31,16 @@
     "products": "(EN) Products"
   },
   "Product": {
-    "test": "(EN) Product Test"
+    "test": "(EN) i18n"
   },
   "Cart": {
     "subtotal": "(EN) Subtotal",
     "discounts": "(EN) Discounts",
     "grandTotal": "(EN) Grand total"
+  },
+  "Blog": {
+    "heading": "(EN) i18n",
+    "post": "(EN) i18n"
   },
   "Search": {
     "heading": "(EN) Search",
