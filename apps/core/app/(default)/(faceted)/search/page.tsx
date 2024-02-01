@@ -13,6 +13,10 @@ interface Props {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
+export const metadata = {
+  title: 'Search Results',
+};
+
 export default async function Search({ searchParams }: Props) {
   const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : undefined;
 

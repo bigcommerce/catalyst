@@ -13,6 +13,10 @@ import { AddToCartForm } from './AddToCartForm';
 
 const MAX_COMPARE_LIMIT = 10;
 
+export const metadata = {
+  title: 'Compare',
+};
+
 const CompareParamsSchema = z.object({
   ids: z
     .union([z.string(), z.array(z.string()), z.undefined()])

@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { getBlogPosts } from '~/client/queries/getBlogPosts';
@@ -7,6 +8,16 @@ import { Link } from '~/components/Link';
 
 interface Props {
   searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const blogPosts = await getBlogPosts(searchParams);
+
+  const title = blogPosts?.name ?? 'Blog';
+
+  return {
+    title,
+  };
 }
 
 export default async function BlogPostPage({ searchParams }: Props) {

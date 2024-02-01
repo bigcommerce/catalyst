@@ -1,9 +1,12 @@
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { PropsWithChildren } from 'react';
 
 import './globals.css';
+
+import { getStoreSettings } from '~/client/queries/getStoreSettings';
 
 import { Notifications } from './notifications';
 import { Providers } from './providers';
@@ -14,14 +17,22 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
-export const metadata = {
-  title: 'Catalyst Store',
-  description: 'Example store built with Catalyst',
-  other: {
-    platform: 'bigcommerce.catalyst',
-    build_sha: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA,
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const storeSettings = await getStoreSettings();
+  const title = storeSettings?.storeName ?? 'Catalyst Store';
+
+  return {
+    title: {
+      template: `${title} - %s`,
+      default: `${title}`,
+    },
+    description: 'Example store built with Catalyst',
+    other: {
+      platform: 'bigcommerce.catalyst',
+      build_sha: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA ?? '',
+    },
+  };
+}
 
 export const fetchCache = 'default-cache';
 

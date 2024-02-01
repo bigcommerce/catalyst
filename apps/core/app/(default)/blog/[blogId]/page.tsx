@@ -6,6 +6,7 @@ import {
   BlogPostTitle,
 } from '@bigcommerce/reactant/BlogPostCard';
 import { Tag, TagContent } from '@bigcommerce/reactant/Tag';
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
@@ -16,6 +17,16 @@ import { SharingLinks } from '~/components/SharingLinks';
 interface Props {
   params: {
     blogId: string;
+  };
+}
+
+export async function generateMetadata({ params: { blogId } }: Props): Promise<Metadata> {
+  const blogPost = await getBlogPost(+blogId);
+
+  const title = blogPost?.seo.pageTitle ?? 'Blog';
+
+  return {
+    title,
   };
 }
 

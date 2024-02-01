@@ -8,6 +8,10 @@ const Container = ({ children }: { children: ReactNode }) => (
   <main className="mx-auto mt-[64px] px-6 md:px-10 lg:mt-[128px]">{children}</main>
 );
 
+export const metadata = {
+  title: 'Maintenance',
+};
+
 export default async function MaintenancePage() {
   const storeSettings = await getStoreSettings();
 
