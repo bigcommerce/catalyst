@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 
 import { getProduct } from '~/client/queries/getProduct';
 import { ProductForm } from '~/components/ProductForm';
+import { LocaleType } from '~/i18n';
 
 import { BreadCrumbs } from './_components/Breadcrumbs';
 import { Gallery } from './_components/Gallery';
