@@ -14,6 +14,8 @@ const config = {
     '@next/next/no-html-link-for-pages': 'off',
     'import/dynamic-import-chunkname': 'off',
     'no-underscore-dangle': ['error', { allow: ['__typename'] }],
+    'check-file/filename-naming-convention': 'off',
+    'check-file/folder-naming-convention': 'off',
   },
 };
 

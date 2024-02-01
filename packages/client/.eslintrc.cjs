@@ -8,6 +8,7 @@ const config = {
     '@typescript-eslint/consistent-type-assertions': 'off',
     '@typescript-eslint/naming-convention': 'off',
     'no-underscore-dangle': ['error', { allow: ['__typename'] }],
+    'check-file/filename-naming-convention': 'off',
   },
   ignorePatterns: ['/src/generated/**', '/dist/**'],
 };
