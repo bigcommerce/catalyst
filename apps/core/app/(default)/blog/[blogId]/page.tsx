@@ -63,11 +63,7 @@ export default async function BlogPostPage({ params: { blogId } }: Props) {
       <div className="mb-10 text-base" dangerouslySetInnerHTML={{ __html: blogPost.htmlBody }} />
       <div className="mb-10 flex">
         {blogPost.tags.map((tag) => (
-          <Link
-            className="me-3 block cursor-pointer focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
-            href={`/blog/tag/${tag}`}
-            key={tag}
-          >
+          <Link className="me-3 block cursor-pointer" href={`/blog/tag/${tag}`} key={tag}>
             <Tag>
               <TagContent>{tag}</TagContent>
             </Tag>

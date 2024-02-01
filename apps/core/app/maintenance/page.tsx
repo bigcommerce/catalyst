@@ -35,7 +35,10 @@ export default async function MaintenancePage() {
 
           <p className="flex items-center gap-2">
             <Phone aria-hidden="true" />
-            <a className="text-blue-primary" href={`tel:${contact.phone}`}>
+            <a
+              className="text-blue-primary hover:text-blue-secondary focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
+              href={`tel:${contact.phone}`}
+            >
               {contact.phone}
             </a>
           </p>
