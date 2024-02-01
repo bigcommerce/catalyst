@@ -11,10 +11,28 @@ import { Input } from '@bigcommerce/reactant/Input';
 import { Message } from '@bigcommerce/reactant/Message';
 import { TextArea } from '@bigcommerce/reactant/TextArea';
 import { Loader2 as Spinner } from 'lucide-react';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
+// eslint-disable-next-line import/no-named-as-default
+import ReCAPTCHA from 'react-google-recaptcha';
 
 import { submitContactForm } from './_actions/submitContactForm';
+
+interface FormStatus {
+  status: 'success' | 'error';
+  message: string;
+}
+
+interface ContactUsProps {
+  fields: string[];
+  pageEntityId: number;
+  reCaptchaSettings?: {
+    siteKey: string;
+  };
+}
+
+// TODO: replace mocked var when enabled field will be added to GraphQL api
+const IS_RECAPTCHA_ENABLED = true;
 
 const fieldNameMapping = {
   fullname: 'Full name',
@@ -26,18 +44,75 @@ const fieldNameMapping = {
 
 type Field = keyof typeof fieldNameMapping;
 
-export const ContactUs = ({ fields }: { fields: string[] }) => {
+const Submit = () => {
   const { pending } = useFormStatus();
-  const [isMessageVisible, showMessage] = useState(false);
+
+  return (
+    <FormSubmit asChild>
+      <Button
+        className="relative mt-8 w-fit items-center px-8 py-2"
+        disabled={pending}
+        variant="primary"
+      >
+        <>
+          {pending && (
+            <>
+              <span className="absolute z-10 flex h-full w-full items-center justify-center bg-gray-400">
+                <Spinner aria-hidden="true" className="animate-spin" />
+              </span>
+              <span className="sr-only">Submitting...</span>
+            </>
+          )}
+          <span aria-hidden={pending}>Submit form</span>
+        </>
+      </Button>
+    </FormSubmit>
+  );
+};
+
+export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUsProps) => {
+  const form = useRef<HTMLFormElement>(null);
+  const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
   const [isTextFieldValid, setTextFieldValidation] = useState(true);
   const [isInputValid, setInputValidation] = useState(true);
-  const onSubmit = async (formData: FormData) => {
-    const { status } = await submitContactForm(formData);
+  const reCaptchaRef = useRef<ReCAPTCHA>(null);
+  const [reCaptchaToken, setReCaptchaToken] = useState('');
+  const [isReCaptchaValid, setReCaptchaValid] = useState(true);
 
-    if (status === 'success') {
-      showMessage(true);
+  const onReCatpchaChange = (token: string | null) => {
+    if (!token) {
+      return setReCaptchaValid(false);
     }
+
+    setReCaptchaToken(token);
+    setReCaptchaValid(true);
   };
+
+  const onSubmit = async (formData: FormData) => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (IS_RECAPTCHA_ENABLED && !reCaptchaToken) {
+      return setReCaptchaValid(false);
+    }
+
+    setReCaptchaValid(true);
+
+    const submit = await submitContactForm({ formData, pageEntityId, reCaptchaToken });
+
+    if (submit.status === 'success') {
+      form.current?.reset();
+      setFormStatus({
+        status: 'success',
+        message: "Thanks for reaching out. We'll get back to you soon.",
+      });
+    }
+
+    if (submit.status === 'failed') {
+      setFormStatus({ status: 'error', message: submit.error ?? '' });
+    }
+
+    reCaptchaRef.current?.reset();
+  };
+
   const handleTextFieldValidation = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setTextFieldValidation(!e.target.validity.valueMissing);
   };
@@ -50,16 +125,15 @@ export const ContactUs = ({ fields }: { fields: string[] }) => {
 
   return (
     <>
-      {isMessageVisible && (
-        <Message className="mx-auto lg:w-[830px]" variant="success">
-          <p>
-            Thanks for reaching out. We'll get back to you soon. <strong>Keep shopping</strong>
-          </p>
+      {formStatus && (
+        <Message className="mx-auto lg:w-[830px]" variant={formStatus.status}>
+          <p>{formStatus.message}</p>
         </Message>
       )}
       <Form
         action={onSubmit}
         className="mx-auto mb-10 mt-8 grid grid-cols-1 gap-y-6 lg:w-2/3 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-2"
+        ref={form}
       >
         <>
           {fields
@@ -128,22 +202,24 @@ export const ContactUs = ({ fields }: { fields: string[] }) => {
             </FieldMessage>
           </Field>
         </>
-        <FormSubmit asChild>
-          <Button
-            className="mt-8 w-fit items-center px-8 py-2"
-            disabled={pending}
-            variant="primary"
-          >
-            {pending ? (
-              <>
-                <Spinner aria-hidden="true" className="animate-spin" />
-                <span className="sr-only">Submitting...</span>
-              </>
-            ) : (
-              <span>Submit form</span>
-            )}
-          </Button>
-        </FormSubmit>
+        {
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          IS_RECAPTCHA_ENABLED && (
+            <Field className="relative col-span-full max-w-full space-y-2 pb-7" name="ReCAPTCHA">
+              <ReCAPTCHA
+                onChange={onReCatpchaChange}
+                ref={reCaptchaRef}
+                sitekey={reCaptchaSettings?.siteKey ?? ''}
+              />
+              {!isReCaptchaValid && (
+                <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-red-200">
+                  Pass ReCAPTCHA check
+                </span>
+              )}
+            </Field>
+          )
+        }
+        <Submit />
       </Form>
     </>
   );
