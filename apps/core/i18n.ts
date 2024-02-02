@@ -4,15 +4,15 @@ import { getRequestConfig } from 'next-intl/server';
 enum LocalePrefixes {
   ALWAYS = 'always',
   NEVER = 'never',
-  ASNEEDED = 'as-needed', // for removing prefix on default locale
+  ASNEEDED = 'as-needed', // remove prefix on default locale
 }
 
 const locales = ['en', 'de'] as const;
 
 type LocalePrefixesType = `${LocalePrefixes}`;
 
-// turn off prefix since we temporary give priority to accept-language header
-// due to multi-language in Catalyst is in progress
+// Temporary we use NEVER prefix to give priority to accept-language header
+// & disable internationalized routes due to multi-language in Catalyst is in progress
 const localePrefix: LocalePrefixesType = LocalePrefixes.NEVER;
 const defaultLocale = 'en';
 

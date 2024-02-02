@@ -8,8 +8,10 @@ import { defaultLocale, localePrefix, LocalePrefixes, locales, LocaleType } from
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
+const isPriorityToAcceptLanguageHeaderEnabled = localePrefix === LocalePrefixes.NEVER;
+
 // we use negotiator and intl-localematcher to get best locale
-const getLocale = (request: NextRequest): LocaleType | undefined => {
+const getLocale = (request: NextRequest): LocaleType => {
   const negotiatorHeaders: Record<string, string> = {};
 
   request.headers.forEach((value, key) => (negotiatorHeaders[key] = value));
@@ -26,14 +28,14 @@ const getLocale = (request: NextRequest): LocaleType | undefined => {
 const updateLocaleCookie = (currentLocale: string, request: NextRequest) => {
   const nextLocale = cookies().get('NEXT_LOCALE')?.value;
 
-  if (localePrefix === LocalePrefixes.NEVER && nextLocale !== currentLocale) {
+  if (isPriorityToAcceptLanguageHeaderEnabled && nextLocale !== currentLocale) {
     request.cookies.set('NEXT_LOCALE', currentLocale);
   }
 };
 
 export const withI18n: MiddlewareFactory = () => {
   return (request: NextRequest) => {
-    const locale = getLocale(request) ?? defaultLocale;
+    const locale = isPriorityToAcceptLanguageHeaderEnabled ? getLocale(request) : defaultLocale;
 
     updateLocaleCookie(locale, request);
 
@@ -44,7 +46,9 @@ export const withI18n: MiddlewareFactory = () => {
     });
     const response = intlMiddleware(request);
 
-    response.cookies.set('NEXT_LOCALE', locale);
+    if (isPriorityToAcceptLanguageHeaderEnabled) {
+      response.cookies.set('NEXT_LOCALE', locale);
+    }
 
     return response;
   };

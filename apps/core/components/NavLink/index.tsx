@@ -2,7 +2,7 @@
 
 import { ComponentProps, ElementRef, forwardRef } from 'react';
 
-import { Link } from '../../navigation';
+import { Link } from '~/navigation';
 
 type NavLinkProp = ComponentProps<typeof Link>;
 type NavLinkType = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof NavLinkProp> &
