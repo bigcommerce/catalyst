@@ -4,7 +4,10 @@ import { ProductActions } from '../../../../actions/product-actions';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Shop All' }).click();
+  await page
+    .getByRole('navigation', { name: 'Main' })
+    .getByRole('link', { name: 'Shop All' })
+    .click();
 });
 
 test('Increase count and verify the results', async ({ page }) => {

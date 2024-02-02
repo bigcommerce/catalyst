@@ -5,7 +5,10 @@ test('Selecting various options on color panel should update query parameters', 
 }) => {
   await page.goto('/');
 
-  await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Shop All' }).click();
+  await page
+    .getByRole('navigation', { name: 'Main' })
+    .getByRole('link', { name: 'Shop All' })
+    .click();
   await page.getByRole('button', { name: 'Quick add' }).first().click();
   await page.getByRole('radio', { name: 'Color Silver' }).click();
 
