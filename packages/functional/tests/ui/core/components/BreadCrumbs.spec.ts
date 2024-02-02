@@ -5,6 +5,7 @@ test('Verify breadcrumbs on product selection', async ({ page }) => {
   await page.getByLabel('Main').getByRole('link', { name: 'Kitchen' }).hover();
 
   await expect(page.getByRole('link', { name: 'Knives' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Most popular' })).toBeVisible();
 
   await page.getByRole('link', { name: 'Most popular' }).click();
 

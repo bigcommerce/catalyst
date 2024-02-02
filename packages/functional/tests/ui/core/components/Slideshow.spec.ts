@@ -16,17 +16,3 @@ test('Navigate to previous slide', async ({ page }) => {
 
   await expect(page.getByRole('heading', { name: 'Low Prices' })).toBeVisible();
 });
-
-test.skip('Pause slideshow', async ({ page }) => {
-  await expect(page.getByRole('heading', { name: '25% Off Sale' })).toBeVisible();
-
-  await page.waitForTimeout(12);
-
-  await expect(page.getByRole('heading', { name: 'Great Deals' })).toBeVisible();
-
-  await page.getByLabel('Pause slideshow').click();
-
-  await page.waitForTimeout(12);
-
-  await expect(page.getByRole('heading', { name: 'Great Deals' })).toBeVisible();
-});

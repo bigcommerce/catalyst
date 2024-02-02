@@ -10,7 +10,7 @@ export async function addProductToCart(page: Page, productName: string): Promise
     }),
   ).toBeVisible();
 
-  await page.getByRole('button', { name: 'Add to Cart', exact: true }).click();
+  await page.getByRole('button', { name: 'Add to Cart' }).first().click();
 }
 
 export async function addProductsToCompare(page: Page, names: string[]) {

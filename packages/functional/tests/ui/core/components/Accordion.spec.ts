@@ -2,7 +2,9 @@ import { expect, test } from '@playwright/test';
 
 test('Verify accordion behavior on header', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByLabel('Main').getByRole('link', { name: 'Kitchen' })).toBeVisible();
+  await expect(
+    page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Kitchen' }),
+  ).toBeVisible();
 
   await page.getByLabel('Main').getByRole('link', { name: 'Kitchen' }).hover();
   await expect(page.getByRole('link', { name: 'Knives' })).toBeVisible();
@@ -16,7 +18,9 @@ test('Verify accordion behavior on header', async ({ page }) => {
 
 test('Verify accordion behavior on desktop filter', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByLabel('Main').getByRole('link', { name: 'Kitchen' })).toBeVisible();
+  await expect(
+    page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Kitchen' }),
+  ).toBeVisible();
 
   await page.getByLabel('Main').getByRole('link', { name: 'Kitchen' }).click();
 
