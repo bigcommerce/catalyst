@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
-  await page.getByLabel('Main').getByRole('link', { name: 'Shop All' }).click();
+  await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Shop All' }).click();
 });
 
 test('Sort products on display by review', async ({ page }) => {

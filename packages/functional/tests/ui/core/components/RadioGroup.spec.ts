@@ -5,7 +5,7 @@ test('Changing selection on radio button options should update query parameters'
 }) => {
   await page.goto('/');
 
-  await page.getByLabel('Main').getByRole('link', { name: 'Shop All' }).click();
+  await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Shop All' }).click();
   await page.getByRole('button', { name: 'Quick add' }).first().click();
 
   await page.getByLabel('Radio').getByText('1').click();

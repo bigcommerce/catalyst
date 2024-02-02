@@ -4,12 +4,13 @@ import { ProductActions } from '../../../../actions/product-actions';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
-  await page.getByLabel('Main').getByRole('link', { name: 'Shop All' }).click();
+  await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Shop All' }).click();
 });
 
 test('Increase count and verify the results', async ({ page }) => {
   await ProductActions.addProductToCart(page, '[Sample] Orbit Terrarium - Large');
   await page.getByRole('link', { name: 'your cart' }).click();
+
   await expect(page.getByRole('spinbutton')).toHaveValue('1');
 
   await page.getByLabel('Increase count').click();
@@ -21,6 +22,7 @@ test('Increase count and verify the results', async ({ page }) => {
 test('Decrease count and verify the results', async ({ page }) => {
   await ProductActions.addProductToCart(page, '[Sample] Orbit Terrarium - Large');
   await page.getByRole('link', { name: 'your cart' }).click();
+
   await expect(page.getByRole('spinbutton')).toHaveValue('1');
 
   await page.getByLabel('Increase count').click();
@@ -29,4 +31,18 @@ test('Decrease count and verify the results', async ({ page }) => {
   await page.getByLabel('Decrease count').click();
 
   await expect(page.getByRole('spinbutton')).toHaveValue('1');
+});
+
+test('Decreasing the count to 0 should remove the product from cart', async ({ page }) => {
+  await ProductActions.addProductToCart(page, '[Sample] Orbit Terrarium - Large');
+  await page.getByRole('link', { name: 'your cart' }).click();
+
+  await expect(page.getByRole('spinbutton')).toHaveValue('1');
+
+  await page.getByLabel('Decrease count').click();
+
+  await expect(page.getByRole('spinbutton')).toHaveValue('0');
+  await expect(page.getByText('[Sample] Orbit Terrarium -')).toBeHidden({
+    timeout: 10000,
+  });
 });
