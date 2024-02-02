@@ -9,8 +9,8 @@ import {
   NavigationMenuToggle,
   NavigationMenuTrigger,
 } from '@bigcommerce/reactant/NavigationMenu';
-import { ChevronDown, LogOut, User } from 'lucide-react';
-import { ReactNode } from 'react';
+import { ChevronDown, LogOut, ShoppingCart, User } from 'lucide-react';
+import { ReactNode, Suspense } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
 import { getCategoryTree } from '~/client/queries/getCategoryTree';
@@ -21,6 +21,7 @@ import { QuickSearch } from '../QuickSearch';
 import { StoreLogo } from '../StoreLogo';
 
 import { logout } from './_actions/logout';
+import { CartLink } from './cart';
 
 const HeaderNav = async ({
   className,
@@ -149,7 +150,17 @@ export const Header = async ({ cart }: { cart: ReactNode }) => {
               )}
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <p role="status">{cart}</p>
+              <p role="status">
+                <Suspense
+                  fallback={
+                    <CartLink>
+                      <ShoppingCart aria-label="cart" />
+                    </CartLink>
+                  }
+                >
+                  {cart}
+                </Suspense>
+              </p>
             </NavigationMenuItem>
           </NavigationMenuList>
           <NavigationMenuToggle className="ms-2 lg:hidden" />
