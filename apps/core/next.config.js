@@ -17,6 +17,9 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: !!process.env.CI,
   },
+  experimental: {
+    instrumentationHook: true,
+  },
 };
 
 module.exports = nextConfig;
