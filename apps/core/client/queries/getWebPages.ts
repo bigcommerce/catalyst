@@ -43,6 +43,9 @@ export const getWebPages = cache(async () => {
 
   const response = await client.fetch({
     document: query,
+    fetchOptions: {
+      cache: 'force-cache'
+    },
   });
 
   const { pages } = response.data.site.content;

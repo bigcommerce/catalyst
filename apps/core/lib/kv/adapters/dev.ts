@@ -3,7 +3,6 @@ import { KvAdapter } from '../types';
 
 interface CacheEntry {
   value: unknown;
-  expiresAt: number;
 }
 
 export class DevKvAdapter implements KvAdapter {
@@ -26,19 +25,19 @@ export class DevKvAdapter implements KvAdapter {
       return null;
     }
 
-    if (entry.expiresAt < Date.now()) {
-      return null;
-    }
-
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return entry.value as Data;
   }
 
-  async set<Data>(key: string, value: Data, options: { ex?: number } = {}) {
-    this.kv.set(key, {
-      value,
-      expiresAt: options.ex ? Date.now() + options.ex * 1_000 : Number.MAX_SAFE_INTEGER,
-    });
+  async mget<Data>(...keys: string[]) {
+    const entries = keys.map((key) => this.kv.get(key)?.value);
+
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return entries as Data[];
+  }
+
+  async set<Data>(key: string, value: Data) {
+    this.kv.set(key, { value });
 
     return value;
   }

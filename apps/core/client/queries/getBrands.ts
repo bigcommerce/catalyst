@@ -31,6 +31,9 @@ export const getBrands = cache(async ({ first = 5, brandIds }: GetBrandsOptions 
   const response = await client.fetch({
     document: query,
     variables: { first, entityIds: brandIds },
+    fetchOptions: {
+      cache: 'force-cache',
+    },
   });
 
   const { brands } = response.data.site;

@@ -42,6 +42,10 @@ export class VercelEdgeConfigAdapter implements KvAdapter {
     );
   }
 
+  async mget<Data>(...keys: string[]) {
+    return Promise.all(keys.map((keyHash) => this.get<Data>(keyHash)));
+  }
+
   async set<Data>(key: string, value: Data) {
     const keyHash = await this.hashString(key);
 

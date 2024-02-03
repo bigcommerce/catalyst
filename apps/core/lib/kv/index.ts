@@ -1,4 +1,4 @@
-import { KvAdapter, SetCommandOptions } from './types';
+import { KvAdapter } from './types';
 
 interface Config {
   logger?: boolean;
@@ -30,17 +30,24 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
     return value;
   }
 
-  async set<Data, Options extends SetCommandOptions = SetCommandOptions>(
-    key: string,
-    value: Data,
-    opts?: Options,
-  ) {
+  async mget<Data>(...keys: string[]) {
+    const kv = await this.getKv();
+    const fullKeys = keys.map((key) => `${this.namespace}_${key}`);
+
+    const values = await kv.mget<Data>(...fullKeys);
+
+    this.logger(`MGET - Keys: ${fullKeys.toString()} - Value: ${JSON.stringify(values, null, 2)}`);
+
+    return values;
+  }
+
+  async set<Data>(key: string, value: Data) {
     const kv = await this.getKv();
     const fullKey = `${this.namespace}_${key}`;
 
     this.logger(`SET - Key: ${fullKey} - Value: ${JSON.stringify(value, null, 2)}`);
 
-    return kv.set(`${fullKey}`, value, opts);
+    return kv.set(`${fullKey}`, value);
   }
 
   private async getKv() {

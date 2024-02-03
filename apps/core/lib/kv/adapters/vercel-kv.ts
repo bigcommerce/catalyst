@@ -1,6 +1,6 @@
 import { kv } from '@vercel/kv';
 
-import { KvAdapter, SetCommandOptions } from '../types';
+import { KvAdapter } from '../types';
 
 export class VercelKvAdapter implements KvAdapter {
   constructor(private adapter = kv) {}
@@ -9,12 +9,12 @@ export class VercelKvAdapter implements KvAdapter {
     return this.adapter.get<Data>(key);
   }
 
-  async set<Data, Options extends SetCommandOptions = SetCommandOptions>(
-    key: string,
-    value: Data,
-    opts?: Options,
-  ) {
-    const response = await this.adapter.set(key, value, opts);
+  async mget<Data>(...keys: string[]) {
+    return this.adapter.mget<Data[]>(keys);
+  }
+
+  async set<Data>(key: string, value: Data) {
+    const response = await this.adapter.set(key, value);
 
     if (response === 'OK') {
       return null;
