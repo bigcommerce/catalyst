@@ -1,7 +1,7 @@
 import { FooterNav, FooterSection, Footer as ReactantFooter } from '@bigcommerce/reactant/Footer';
 import React from 'react';
 
-import { AvailableWebPages, getWebPages } from '~/client/queries/getWebPages';
+import { getWebPages } from '~/client/queries/getWebPages';
 
 import { StoreLogo } from '../StoreLogo';
 
@@ -11,33 +11,27 @@ import { BaseFooterMenu, BrandFooterMenu, CategoryFooterMenu } from './FooterMen
 import { PaymentMethods } from './PaymentMethods';
 import { SocialIcons } from './SocialIcons';
 
-const filterActivePages = (availableStorePages: AvailableWebPages) =>
-  availableStorePages.reduce<Array<{ name: string; path: string }>>((visiblePages, currentPage) => {
-    if (currentPage.isVisibleInNavigation) {
-      const { name, __typename } = currentPage;
-
-      visiblePages.push({
-        name,
-        path: __typename === 'ExternalLinkPage' ? currentPage.link : currentPage.path,
-      });
-
-      return visiblePages;
-    }
-
-    return visiblePages;
-  }, []);
-
-const activeFooterWebPages = await (async (columnName: string) => {
-  const storeWebPages = await getWebPages();
+const footerWebPages = await (async (columnName: string) => {
+  const footerPages = await getWebPages({
+    navigationOnly: true,
+    first: 5,
+  });
 
   return {
     title: columnName,
-    items: filterActivePages(storeWebPages),
+    items: footerPages.map((page: { link?: any; path?: any; name?: any; __typename?: any; }) => {
+      const { name, __typename } = page;
+
+      return {
+        name,
+        path: __typename === 'ExternalLinkPage' ? page.link : page.path,
+      };
+    }),
   };
 })('Navigate');
 
 const WebPageFooterMenu = () => {
-  const { title, items } = activeFooterWebPages;
+  const { title, items } = footerWebPages;
 
   if (items.length > 0) {
     return <BaseFooterMenu items={items} title={title} />;
