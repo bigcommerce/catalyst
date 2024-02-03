@@ -111,6 +111,13 @@ export const withRoutes: MiddlewareFactory = (next) => {
         return NextResponse.rewrite(url);
       }
 
+      case ('RawHtmlPage'): {
+        // fast path for raw html pages
+        const url = createRewriteUrl(`/api/raw-page/${node.id}`, request);
+
+        return NextResponse.rewrite(url);
+      }
+
       default:
         return next(request, event);
     }

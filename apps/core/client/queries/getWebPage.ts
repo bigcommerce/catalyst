@@ -8,17 +8,6 @@ export const GET_WEB_PAGE_QUERY = /* GraphQL */ `
     site {
       route(path: $path) {
         node {
-          ... on RawHtmlPage {
-            path
-            htmlBody
-            plainTextSummary(characterLimit: $characterLimit)
-            seo {
-              pageTitle
-              metaKeywords
-              metaDescription
-            }
-            ...WebPage
-          }
           ... on ContactPage {
             contactFields
             path
@@ -35,7 +24,6 @@ export const GET_WEB_PAGE_QUERY = /* GraphQL */ `
               metaKeywords
               metaDescription
             }
-            ...WebPage
           }
           ... on NormalPage {
             htmlBody
@@ -51,7 +39,6 @@ export const GET_WEB_PAGE_QUERY = /* GraphQL */ `
               metaKeywords
               metaDescription
             }
-            ...WebPage
           }
         }
       }
@@ -81,7 +68,6 @@ export const getWebPage = cache(async ({ path, characterLimit = 120 }: Options) 
   switch (webpage.__typename) {
     case 'ContactPage':
     case 'NormalPage':
-    case 'RawHtmlPage':
       return webpage;
 
     default:
