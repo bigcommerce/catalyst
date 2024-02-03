@@ -17,6 +17,8 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: !!process.env.CI,
   },
+  // default URL generation in BigCommerce uses trailing slash
+  trailingSlash: process.env.TRAILING_SLASH !== 'false',
 };
 
 module.exports = nextConfig;
