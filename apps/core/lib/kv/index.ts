@@ -60,15 +60,19 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
 }
 
 async function createKVAdapter() {
-  if (process.env.NODE_ENV === 'development' && !process.env.KV_REST_API_URL) {
-    const { DevKvAdapter } = await import('./adapters/dev');
+  if (process.env.ENABLE_EDGE_CONFIG === 'true') {
+    const { VercelEdgeConfigAdapter } = await import('./adapters/vercel-edge-config');
 
-    return new DevKvAdapter();
+    return new VercelEdgeConfigAdapter();
+  } else if (process.env.KV_REST_API_URL) {
+    const { VercelKvAdapter } = await import('./adapters/vercel-kv');
+
+    return new VercelKvAdapter();
   }
 
-  const { VercelKvAdapter } = await import('./adapters/vercel');
+  const { DevKvAdapter } = await import('./adapters/dev');
 
-  return new VercelKvAdapter();
+  return new DevKvAdapter();
 }
 
 const adapterInstance = new KV(createKVAdapter, {
