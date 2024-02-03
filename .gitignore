@@ -3,6 +3,7 @@ dist
 .turbo
 .vscode/**/*
 !.vscode/settings.example.json
+.idea
 .env
 .env*.local
 test-results/
