@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 
 import { getCheckoutUrl } from '~/client/management/get-checkout-url';
 import { getCart } from '~/client/queries/get-cart';
+import { envRuntime } from '~/runtime';
 
 import { removeProduct } from './_actions/remove-products';
 import { CartItemCounter } from './_components/cart-item-counter';
@@ -192,4 +193,4 @@ export default async function CartPage() {
   );
 }
 
-export const runtime = 'edge';
+export const runtime = `${envRuntime}`;

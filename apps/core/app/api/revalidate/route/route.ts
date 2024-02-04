@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 import { getRoute } from '~/client/queries/get-route';
 import { kv } from '~/lib/kv';
+import { envRuntime } from '~/runtime';
 
 import { withInternalAuth } from '../../internal-auth';
 
@@ -29,5 +30,4 @@ const handler = async (request: NextRequest) => {
 };
 
 export const POST = withInternalAuth(handler);
-
-export const runtime = 'edge';
+export const runtime = `${envRuntime}`;

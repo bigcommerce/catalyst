@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { getCategory } from '~/client/queries/get-category';
 import { Link } from '~/components/link';
 import { ProductCard } from '~/components/product-card';
+import { envRuntime } from '~/runtime';
 
 import { Breadcrumbs } from '../../_components/breadcrumbs';
 import { FacetedSearch } from '../../_components/faceted-search';
@@ -130,4 +131,4 @@ export default async function Category({ params, searchParams }: Props) {
   );
 }
 
-export const runtime = 'edge';
+export const runtime = `${envRuntime}`;

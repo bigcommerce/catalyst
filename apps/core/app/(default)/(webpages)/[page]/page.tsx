@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { getReCaptchaSettings } from '~/client/queries/get-recaptcha-settings';
 import { getWebPage } from '~/client/queries/get-web-page';
 import { ContactUs } from '~/components/forms';
+import { envRuntime } from '~/runtime';
 
 import { PageContent } from '../_components/page-content';
 
@@ -60,4 +61,4 @@ export default async function WebPage({ params }: Props) {
   }
 }
 
-export const runtime = 'edge';
+export const runtime = `${envRuntime}`;

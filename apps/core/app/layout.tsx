@@ -7,6 +7,7 @@ import { PropsWithChildren } from 'react';
 import './globals.css';
 
 import { getStoreSettings } from '~/client/queries/get-store-settings';
+import { envRuntime } from '~/runtime';
 
 import { Notifications } from './notifications';
 import { Providers } from './providers';
@@ -48,3 +49,5 @@ export default function RootLayout({ children }: PropsWithChildren) {
     </html>
   );
 }
+
+export const runtime = `${envRuntime}`;

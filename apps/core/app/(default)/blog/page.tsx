@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { getBlogPosts } from '~/client/queries/get-blog-posts';
 import { BlogPostCard } from '~/components/blog-post-card';
 import { Link } from '~/components/link';
+import { envRuntime } from '~/runtime';
 
 interface Props {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -67,4 +68,4 @@ export default async function BlogPostPage({ searchParams }: Props) {
   );
 }
 
-export const runtime = 'edge';
+export const runtime = `${envRuntime}`;

@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from '~/components/link';
 import { ProductCard } from '~/components/product-card';
 import { SearchForm } from '~/components/search-form';
+import { envRuntime } from '~/runtime';
 
 import { FacetedSearch } from '../_components/faceted-search';
 import { MobileSideNav } from '../_components/mobile-side-nav';
@@ -125,4 +126,4 @@ export default async function Search({ searchParams }: Props) {
   );
 }
 
-export const runtime = 'edge';
+export const runtime = `${envRuntime}`;

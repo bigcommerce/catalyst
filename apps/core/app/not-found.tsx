@@ -7,6 +7,7 @@ import { Header } from '~/components/header';
 import { CartLink } from '~/components/header/cart';
 import { ProductCard } from '~/components/product-card';
 import { SearchForm } from '~/components/search-form';
+import { envRuntime } from '~/runtime';
 
 export const metadata = {
   title: 'Not Found',
@@ -56,4 +57,4 @@ export default async function NotFound() {
   );
 }
 
-export const runtime = 'edge';
+export const runtime = `${envRuntime}`;

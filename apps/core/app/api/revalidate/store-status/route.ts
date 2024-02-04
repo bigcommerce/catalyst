@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { getStoreStatus } from '~/client/queries/get-store-status';
 import { kv } from '~/lib/kv';
+import { envRuntime } from '~/runtime';
 
 import { withInternalAuth } from '../../internal-auth';
 
@@ -27,5 +28,4 @@ const handler = async () => {
 };
 
 export const POST = withInternalAuth(handler);
-
-export const runtime = 'edge';
+export const runtime = `${envRuntime}`;

@@ -1,5 +1,6 @@
 import { getCategoryTree } from '~/client/queries/get-category-tree';
 import { ExistingResultType } from '~/client/util';
+import { envStaticRuntime } from '~/runtime';
 
 import CategoryPage from '../page';
 
@@ -26,3 +27,4 @@ export async function generateStaticParams() {
 
 export const dynamic = 'force-static';
 export const revalidate = 600;
+export const runtime = `${envStaticRuntime}`;

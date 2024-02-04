@@ -1,6 +1,7 @@
 import { Button } from '@bigcommerce/components/button';
 
 import { Link } from '~/components/link';
+import { envRuntime } from '~/runtime';
 
 import { LoginForm } from './_components/login-form';
 
@@ -42,4 +43,4 @@ export default function Login() {
   );
 }
 
-export const runtime = 'edge';
+export const runtime = `${envRuntime}`;

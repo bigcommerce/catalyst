@@ -4,6 +4,7 @@ import { Footer } from '~/components/footer/footer';
 import { Header } from '~/components/header';
 import { Cart } from '~/components/header/cart';
 import { ProductSheet } from '~/components/product-sheet';
+import { envRuntime } from '~/runtime';
 
 export default function DefaultLayout({ children }: PropsWithChildren) {
   return (
@@ -19,3 +20,5 @@ export default function DefaultLayout({ children }: PropsWithChildren) {
     </>
   );
 }
+
+export const runtime = `${envRuntime}`;

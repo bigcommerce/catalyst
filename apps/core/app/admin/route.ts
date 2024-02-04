@@ -1,5 +1,7 @@
 import { redirect } from 'next/navigation';
 
+import { envRuntime } from '~/runtime';
+
 const canonicalDomain: string = process.env.BIGCOMMERCE_GRAPHQL_API_DOMAIN ?? 'mybigcommerce.com';
 const BIGCOMMERCE_STORE_HASH = process.env.BIGCOMMERCE_STORE_HASH;
 const ENABLE_ADMIN_ROUTE = process.env.ENABLE_ADMIN_ROUTE;
@@ -17,4 +19,4 @@ export const GET = () => {
   );
 };
 
-export const runtime = 'edge';
+export const runtime = `${envRuntime}`;

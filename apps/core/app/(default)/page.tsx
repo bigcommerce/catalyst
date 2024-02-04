@@ -2,6 +2,7 @@ import { getBestSellingProducts } from '~/client/queries/get-best-selling-produc
 import { getFeaturedProducts } from '~/client/queries/get-featured-products';
 import { Hero } from '~/components/hero';
 import { ProductCardCarousel } from '~/components/product-card-carousel';
+import { envRuntime } from '~/runtime';
 
 export default async function Home() {
   const [bestSellingProducts, featuredProducts] = await Promise.all([
@@ -33,4 +34,4 @@ export default async function Home() {
   );
 }
 
-export const runtime = 'edge';
+export const runtime = `${envRuntime}`;
