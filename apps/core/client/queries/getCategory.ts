@@ -1,10 +1,9 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
-
 import { client } from '..';
 import { graphql } from '../generated';
+import { useCustomerProvider } from '~/app/contexts/CustomerContext';
 
 export const GET_CATEGORY_QUERY = /* GraphQL */ `
   query getCategory(
@@ -69,7 +68,7 @@ export interface CategoryOptions {
 export const getCategory = cache(
   async ({ categoryId, limit = 9, before, after, breadcrumbDepth = 10 }: CategoryOptions) => {
     const query = graphql(GET_CATEGORY_QUERY);
-    const customerId = await getSessionCustomerId();
+    const customerId = useCustomerProvider();
 
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 

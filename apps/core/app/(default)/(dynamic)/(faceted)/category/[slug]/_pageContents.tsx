@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { useSearchParamsProvider } from '~/app/contexts/SearchParamsContext';
 import { getCategory } from '~/client/queries/getCategory';
 import { Link } from '~/components/Link';
 import { ProductCard } from '~/components/ProductCard';
@@ -12,12 +13,12 @@ import { MobileSideNav } from '../../_components/mobile-side-nav';
 import { SortBy } from '../../_components/sort-by';
 import { SubCategories } from '../../_components/sub-categories';
 import { fetchFacetedSearch } from '../../fetchFacetedSearch';
+import { Suspense } from 'react';
 
 interface Props {
   params: {
     slug: string;
   };
-  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -34,8 +35,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function Category({ params, searchParams }: Props) {
+export default async function CategoryPageContents({ params }: Props) {
   const categoryId = Number(params.slug);
+  const searchParams = useSearchParamsProvider();
   const search = await fetchFacetedSearch({ ...searchParams, category: [params.slug] });
 
   // We will only need a partial of this query to fetch the category name and breadcrumbs.
@@ -70,7 +72,9 @@ export default async function Category({ params, searchParams }: Props) {
             </FacetedSearch>
           </MobileSideNav>
           <div className="flex w-full flex-col items-start gap-4 md:flex-row md:items-center md:justify-end md:gap-6">
-            <SortBy />
+            <Suspense fallback="Loading...">
+              <SortBy />
+            </Suspense>
             <div className="order-3 py-4 text-base font-semibold md:order-2 md:py-0">
               {/* TODO: Plural vs. singular items */}
               {productsCollection.collectionInfo?.totalItems} items
@@ -129,5 +133,3 @@ export default async function Category({ params, searchParams }: Props) {
     </div>
   );
 }
-
-export const runtime = 'edge';

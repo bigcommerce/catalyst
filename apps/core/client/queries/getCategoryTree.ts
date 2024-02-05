@@ -1,9 +1,8 @@
 import { cache } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
-
 import { client } from '..';
 import { graphql } from '../generated';
+import { useCustomerProvider } from '~/app/contexts/CustomerContext';
 
 export const GET_CATEGORY_TREE_QUERY = /* GraphQL */ `
   query getCategoryTree($categoryId: Int) {
@@ -29,7 +28,7 @@ export const GET_CATEGORY_TREE_QUERY = /* GraphQL */ `
 
 export const getCategoryTree = cache(async (categoryId?: number) => {
   const query = graphql(GET_CATEGORY_TREE_QUERY);
-  const customerId = await getSessionCustomerId();
+  const customerId = useCustomerProvider();
 
   const response = await client.fetch({
     document: query,

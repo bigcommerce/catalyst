@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { useSearchParamsProvider } from '~/app/contexts/SearchParamsContext';
 import { getBrand } from '~/client/queries/getBrand';
 import { Link } from '~/components/Link';
 import { ProductCard } from '~/components/ProductCard';
@@ -10,12 +11,12 @@ import { FacetedSearch } from '../../_components/faceted-search';
 import { MobileSideNav } from '../../_components/mobile-side-nav';
 import { SortBy } from '../../_components/sort-by';
 import { fetchFacetedSearch } from '../../fetchFacetedSearch';
+import { Suspense } from 'react';
 
 interface Props {
   params: {
     slug: string;
   };
-  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -32,9 +33,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function Brand({ params, searchParams }: Props) {
+export default async function BrandPageContents({ params }: Props) {
   const brandId = Number(params.slug);
-
+  const searchParams = useSearchParamsProvider();
   const search = await fetchFacetedSearch({ ...searchParams, brand: [params.slug] });
 
   const brand = await getBrand({
@@ -63,7 +64,9 @@ export default async function Brand({ params, searchParams }: Props) {
             />
           </MobileSideNav>
           <div className="flex w-full flex-col items-start gap-4 md:flex-row md:items-center md:justify-end md:gap-6">
-            <SortBy />
+            <Suspense fallback="Loading...">
+                <SortBy />
+            </Suspense>
             <div className="order-3 py-4 text-base font-semibold md:order-2 md:py-0">
               {/* TODO: Plural vs. singular items */}
               {productsCollection.collectionInfo?.totalItems} items

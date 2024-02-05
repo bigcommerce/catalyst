@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
+import { useSearchParamsProvider } from '~/app/contexts/SearchParamsContext';
 import { getProduct } from '~/client/queries/getProduct';
 import { ProductForm } from '~/components/ProductForm';
 
@@ -165,7 +166,6 @@ const ProductDescriptionAndReviews = ({ product }: { product: NonNullable<Produc
 
 interface ProductPageProps {
   params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
@@ -196,8 +196,9 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   };
 }
 
-export default async function Product({ params, searchParams }: ProductPageProps) {
+export default async function ProductPageContents({ params }: ProductPageProps) {
   const productId = Number(params.slug);
+  const searchParams = useSearchParamsProvider();
   const { slug, ...options } = searchParams;
 
   const optionValueIds = Object.keys(options)
@@ -249,5 +250,3 @@ export default async function Product({ params, searchParams }: ProductPageProps
     </>
   );
 }
-
-export const runtime = 'edge';

@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, PropsWithChildren } from 'react';
+import { ComponentPropsWithoutRef, PropsWithChildren, Suspense } from 'react';
 
 import { Props as FacetProps, Facets } from './facets';
 import { RefineBy, Props as RefineByProps } from './refine-by';
@@ -22,9 +22,11 @@ export const FacetedSearch = ({
 
       {children}
 
-      <RefineBy facets={facets} pageType={pageType} />
+      <Suspense fallback="Loading...">
+        <RefineBy facets={facets} pageType={pageType} />
 
-      <Facets facets={facets} pageType={pageType} />
+        <Facets facets={facets} pageType={pageType} />
+      </Suspense>
     </aside>
   );
 };

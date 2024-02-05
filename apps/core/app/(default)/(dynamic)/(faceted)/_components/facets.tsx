@@ -84,7 +84,7 @@ export const Facets = ({ facets, pageType }: Props) => {
       newSearchParams.append('term', searchParam);
     }
 
-    router.push(`${pathname}?${newSearchParams.toString()}`);
+    router.push(`${pathname ?? ''}?${newSearchParams.toString()}`);
   };
 
   return (

@@ -7,6 +7,8 @@ import { kv } from '../lib/kv';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 import { StorefrontStatusType } from '~/client/generated/graphql';
+import { getSessionCustomerId } from '~/auth';
+import { cookies } from 'next/headers';
 
 type Node = Awaited<ReturnType<typeof getRoute>>;
 
@@ -77,7 +79,7 @@ const getExistingRouteInfo = async (request: NextRequest) => {
 
 const setKvStatus = async (status?: StorefrontStatusType | null) => {
   try {
-    const expiryTime = Date.now() + 1000 * 60 * 5 // 5 minutes;
+    const expiryTime = Date.now() + 1000 * 60 * 60 * 6 // 12 hours;
     await kv.set(STORE_STATUS_KEY, { status, expiryTime });
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -87,7 +89,7 @@ const setKvStatus = async (status?: StorefrontStatusType | null) => {
 
 const setKvRoute = async (request: NextRequest, node: Node) => {
   try {
-    const expiryTime = Date.now() + 1000 * 30 * 5 // 30 minutes;
+    const expiryTime = Date.now() + 1000 * 60 * 60 * 6 // 12 hours;
     await kv.set('v2_' + request.nextUrl.pathname, { node, expiryTime });
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -136,22 +138,34 @@ export const withCustomUrls: MiddlewareFactory = (next) => {
       // 503 status code not working - https://github.com/vercel/next.js/issues/50155
       return NextResponse.rewrite(new URL(`/maintenance`, request.url), { status: 503 });
     }
+    
+    const customerId = await getSessionCustomerId();
+    const cartId = cookies().get('cartId');
+    let staticPrefix = '';
+    if (request.nextUrl.search === '' && customerId === undefined && cartId === undefined && request.method === 'GET') {
+      staticPrefix = '/static';
+    }
+
+    if (request.nextUrl.pathname == '/') {
+      const url = createRewriteUrl(`${staticPrefix}`, request);
+      return NextResponse.rewrite(url);
+    }
 
     switch (node?.__typename) {
       case 'Brand': {
-        const url = createRewriteUrl(`/brand/${node.entityId}`, request);
+        const url = createRewriteUrl(`${staticPrefix}/brand/${node.entityId}`, request);
 
         return NextResponse.rewrite(url);
       }
 
       case 'Category': {
-        const url = createRewriteUrl(`/category/${node.entityId}`, request);
+        const url = createRewriteUrl(`${staticPrefix}/category/${node.entityId}`, request);
 
         return NextResponse.rewrite(url);
       }
 
       case 'Product': {
-        const url = createRewriteUrl(`/product/${node.entityId}`, request);
+        const url = createRewriteUrl(`${staticPrefix}/product/${node.entityId}`, request);
 
         return NextResponse.rewrite(url);
       }

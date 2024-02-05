@@ -31,7 +31,7 @@ const handler = async (request: NextRequest) => {
 
   const node = await getRoute(pathname);
 
-  const expiryTime = Date.now() + 1000 * 60 * 30; // 30 minutes;
+  const expiryTime = Date.now() + 1000 * 60 * 60 * 6 // 12 hours;
 
   try {
     await kv.set(`v2_${pathname}`, { node, expiryTime });

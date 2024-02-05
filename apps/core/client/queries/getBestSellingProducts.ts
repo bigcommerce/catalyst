@@ -1,10 +1,9 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
-
 import { client } from '..';
 import { graphql } from '../generated';
+import { useCustomerProvider } from '~/app/contexts/CustomerContext';
 
 export const GET_BEST_SELLING_PRODUCTS_QUERY = /* GraphQL */ `
   query getBestSellingProducts($first: Int, $imageHeight: Int!, $imageWidth: Int!) {
@@ -29,7 +28,7 @@ interface Options {
 export const getBestSellingProducts = cache(
   async ({ first = 12, imageHeight = 300, imageWidth = 300 }: Options = {}) => {
     const query = graphql(GET_BEST_SELLING_PRODUCTS_QUERY);
-    const customerId = await getSessionCustomerId();
+    const customerId = useCustomerProvider();
 
     const response = await client.fetch({
       document: query,

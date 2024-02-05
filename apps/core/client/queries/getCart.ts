@@ -1,9 +1,8 @@
 import { cache } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
-
 import { client } from '..';
 import { graphql } from '../generated';
+import { useCustomerProvider } from '~/app/contexts/CustomerContext';
 
 export const GET_CART_QUERY = /* GraphQL */ `
   query getCart($cartId: String) {
@@ -65,14 +64,14 @@ export const GET_CART_QUERY = /* GraphQL */ `
 
 export const getCart = cache(async (cartId?: string) => {
   const query = graphql(GET_CART_QUERY);
-  const customerId = await getSessionCustomerId();
+  const customerId = useCustomerProvider();
 
   const response = await client.fetch({
     document: query,
     variables: { cartId },
     customerId,
     fetchOptions: {
-      cache: 'no-store',
+      cache: cartId ? 'no-store' : 'force-cache',
       next: {
         tags: ['cart'],
       },

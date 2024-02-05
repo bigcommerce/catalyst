@@ -1,9 +1,9 @@
 import { Badge } from '@bigcommerce/reactant/Badge';
 import { NavigationMenuLink } from '@bigcommerce/reactant/NavigationMenu';
 import { ShoppingCart } from 'lucide-react';
-import { cookies } from 'next/headers';
 import { ReactNode } from 'react';
 
+import { useCartProvider } from '~/app/contexts/CartContext';
 import { getCart } from '~/client/queries/getCart';
 import { Link } from '~/components/Link';
 
@@ -16,7 +16,9 @@ export const CartLink = ({ children }: { children: ReactNode }) => (
 );
 
 export const Cart = async () => {
-  const cartId = cookies().get('cartId')?.value;
+  const cartId = useCartProvider();
+
+  const cart = await getCart(cartId);
 
   if (!cartId) {
     return (
@@ -25,8 +27,6 @@ export const Cart = async () => {
       </CartLink>
     );
   }
-
-  const cart = await getCart(cartId);
 
   const count = cart?.lineItems.totalQuantity;
 

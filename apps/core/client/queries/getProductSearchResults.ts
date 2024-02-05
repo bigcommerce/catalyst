@@ -1,11 +1,10 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
-
 import { client } from '..';
 import { graphql } from '../generated';
 import { SearchProductsFiltersInput, SearchProductsSortInput } from '../generated/graphql';
+import { useCustomerProvider } from '~/app/contexts/CustomerContext';
 
 interface ProductSearch {
   limit?: number;
@@ -168,8 +167,8 @@ export const getProductSearchResults = cache(
     imageWidth = 300,
   }: ProductSearch) => {
     const query = graphql(GET_PRODUCT_SEARCH_RESULTS_QUERY);
-    const customerId = await getSessionCustomerId();
-
+    const customerId = useCustomerProvider();
+    
     const response = await client.fetch({
       document: query,
       variables: { first: limit, after, filters, sort, imageHeight, imageWidth },

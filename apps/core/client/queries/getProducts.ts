@@ -1,10 +1,9 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
-
 import { client } from '..';
 import { graphql } from '../generated';
+import { useCustomerProvider } from '~/app/contexts/CustomerContext';
 
 export interface GetProductsArguments {
   productIds: number[];
@@ -30,8 +29,7 @@ const GET_PRODUCTS_QUERY = /* GraphQL */ `
 export const getProducts = cache(
   async ({ productIds, first, imageWidth = 300, imageHeight = 300 }: GetProductsArguments) => {
     const query = graphql(GET_PRODUCTS_QUERY);
-    const customerId = await getSessionCustomerId();
-
+    const customerId = useCustomerProvider();
     const response = await client.fetch({
       document: query,
       variables: { entityIds: productIds, first, imageWidth, imageHeight },

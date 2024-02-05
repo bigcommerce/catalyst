@@ -1,11 +1,10 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
-
 import { client } from '..';
 import { graphql } from '../generated';
 import { ExistingResultType } from '../util';
+import { useCustomerProvider } from '~/app/contexts/CustomerContext';
 
 type Product = ExistingResultType<typeof getInternalProduct>;
 
@@ -221,8 +220,7 @@ export const GET_PRODUCT_QUERY = /* GraphQL */ `
 
 const getInternalProduct = async (productId: number, optionValueIds?: OptionValueId[]) => {
   const query = graphql(GET_PRODUCT_QUERY);
-  const customerId = await getSessionCustomerId();
-
+  const customerId = useCustomerProvider();
   const response = await client.fetch({
     document: query,
     variables: { productId, optionValueIds },

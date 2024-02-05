@@ -20,6 +20,7 @@ import { NumberField } from './Fields/NumberField';
 import { QuantityField } from './Fields/QuantityField';
 import { TextField } from './Fields/TextField';
 import { ProductFormData, useProductForm } from './useProductForm';
+import { Suspense } from 'react';
 
 type Product = ExistingResultType<typeof getProduct>;
 
@@ -60,7 +61,9 @@ export const ProductForm = ({ product }: { product: Product }) => {
 
         {product.productOptions?.map((option) => {
           if (option.__typename === 'MultipleChoiceOption') {
-            return <MultipleChoiceField key={option.entityId} option={option} />;
+            return <Suspense fallback="Loading...">
+              <MultipleChoiceField key={option.entityId} option={option} />
+            </Suspense>;
           }
 
           if (option.__typename === 'CheckboxOption') {

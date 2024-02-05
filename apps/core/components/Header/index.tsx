@@ -12,7 +12,7 @@ import {
 import { ChevronDown, LogOut, ShoppingCart, User } from 'lucide-react';
 import { ReactNode, Suspense } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
+import { useCustomerProvider } from '~/app/contexts/CustomerContext';
 import { getCategoryTree } from '~/client/queries/getCategoryTree';
 import { Link } from '~/components/Link';
 import { cn } from '~/lib/utils';
@@ -109,8 +109,8 @@ const HeaderNav = async ({
   );
 };
 
-export const Header = async ({ cart }: { cart: ReactNode }) => {
-  const customerId = await getSessionCustomerId();
+export const Header = ({ cart }: { cart: ReactNode }) => {
+  const customerId = useCustomerProvider();
 
   return (
     <header>
