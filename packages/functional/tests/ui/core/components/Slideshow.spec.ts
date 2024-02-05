@@ -1,17 +1,18 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-test('Navigate through slideshow on homepage and verify slide content', async ({ page }) => {
+test.beforeEach(async ({ page }) => {
   await page.goto('/');
-  await page.getByLabel('Next slide').isVisible();
+  await expect(page.getByLabel('Next slide')).toBeVisible();
+});
+
+test('Navigate to next slide', async ({ page }) => {
   await page.getByLabel('Next slide').click();
-  await page.getByRole('heading', { name: 'Great Deals' }).isVisible();
 
-  await page.getByLabel('Pause slideshow').click();
-  await page.getByLabel('Play slideshow').click();
+  await expect(page.getByRole('heading', { name: 'Great Deals' })).toBeVisible();
+});
 
-  await page.getByLabel('Next slide').click();
-  await page.getByRole('heading', { name: 'Low Prices' }).isVisible();
-
+test('Navigate to previous slide', async ({ page }) => {
   await page.getByLabel('Previous slide').click();
-  await page.getByRole('heading', { name: 'Great Deals' }).isVisible();
+
+  await expect(page.getByRole('heading', { name: 'Low Prices' })).toBeVisible();
 });
