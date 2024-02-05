@@ -34,6 +34,7 @@ export const getCategoryTree = cache(async (categoryId?: number) => {
   const response = await client.fetch({
     document: query,
     variables: { categoryId },
+    customerId,
     fetchOptions: {
       cache: customerId ? 'no-store' : 'force-cache',
     },
