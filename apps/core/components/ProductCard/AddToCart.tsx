@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@bigcommerce/reactant/Button';
-import { ShoppingCart, Loader2 as Spinner } from 'lucide-react';
+import { Loader2 as Spinner } from 'lucide-react';
 import { useFormStatus } from 'react-dom';
 
 export const AddToCart = ({ disabled = false }: { disabled?: boolean }) => {
@@ -15,10 +15,7 @@ export const AddToCart = ({ disabled = false }: { disabled?: boolean }) => {
           <span className="sr-only">Processing...</span>
         </>
       ) : (
-        <>
-          <ShoppingCart aria-hidden="true" className="mx-2" />
-          <span>Add to Cart</span>
-        </>
+        'Add to cart'
       )}
     </Button>
   );
