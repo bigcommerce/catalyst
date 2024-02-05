@@ -76,6 +76,7 @@ export const getCategory = cache(
     const response = await client.fetch({
       document: query,
       variables: { categoryId, breadcrumbDepth, ...paginationArgs },
+      customerId,
       fetchOptions: {
         cache: customerId ? 'no-store' : 'force-cache',
       },
