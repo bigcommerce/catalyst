@@ -32,20 +32,17 @@ export const Pricing = ({ prices }: { prices: Product['prices'] }) => {
               <br />
             </>
           )}
-          {prices.basePrice?.value !== undefined &&
-            (prices.salePrice?.value ? (
-              <>
-                Was:{' '}
-                <span className="line-through">
-                  {currencyFormatter.format(prices.basePrice.value)}
-                </span>
-                <br />
-              </>
-            ) : (
-              currencyFormatter.format(prices.basePrice.value)
-            ))}
-          {prices.salePrice?.value !== undefined && (
-            <>Now: {currencyFormatter.format(prices.salePrice.value)}</>
+          {prices.salePrice?.value !== undefined && prices.basePrice?.value !== undefined ? (
+            <>
+              Was:{' '}
+              <span className="line-through">
+                {currencyFormatter.format(prices.basePrice.value)}
+              </span>
+              <br />
+              <>Now: {currencyFormatter.format(prices.salePrice.value)}</>
+            </>
+          ) : (
+            prices.price?.value && <>{currencyFormatter.format(prices.price.value)}</>
           )}
         </>
       )}
