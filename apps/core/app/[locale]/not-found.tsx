@@ -1,5 +1,6 @@
 import { Message } from '@bigcommerce/reactant/Message';
 import { ShoppingCart } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
 
 import { SearchForm } from 'components/SearchForm';
 import { getFeaturedProducts } from '~/client/queries/getFeaturedProducts';
@@ -10,6 +11,7 @@ import { ProductCard } from '~/components/ProductCard';
 
 export default async function NotFound() {
   const featuredProducts = await getFeaturedProducts({ imageHeight: 500, imageWidth: 500 });
+  const t = await getTranslations('PageNotFound');
 
   return (
     <>
@@ -22,10 +24,8 @@ export default async function NotFound() {
       />
       <main className="mx-auto mb-10 max-w-[835px] space-y-8 px-6 sm:px-10 lg:px-0">
         <Message className="flex-col gap-8 px-0 py-16">
-          <h2 className="text-h2">We couldn't find that page!</h2>
-          <p className="text-lg">
-            It looks like the page you requested has moved or no longer exists.
-          </p>
+          <h2 className="text-h2">{t('heading')}</h2>
+          <p className="text-lg">{t('message')}</p>
         </Message>
         <SearchForm />
         <section>
