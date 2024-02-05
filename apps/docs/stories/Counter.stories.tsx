@@ -20,6 +20,7 @@ export const Default: Story = {
     max: Infinity,
     min: 0,
     step: 1,
+    onChange: undefined,
   },
 };
 

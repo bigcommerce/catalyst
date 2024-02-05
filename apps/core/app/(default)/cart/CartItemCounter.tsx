@@ -8,7 +8,6 @@ import {
   CartPhysicalItem,
   UpdateCartLineItemInput,
 } from '~/client/generated/graphql';
-import { deleteCartLineItem } from '~/client/mutations/deleteCartLineItem';
 
 import { updateProductQuantity } from './_actions/updateProductQuantity';
 
@@ -26,19 +25,7 @@ export const CartItemCounter = ({ itemData }: { itemData: CartItemData }) => {
   const [counterValue, setCounterValue] = useState<'' | number>(quantity);
   const handleCountUpdate = async (value: string | number) => {
     if (value === '') {
-      setCounterValue('');
-
-      return;
-    }
-
-    if (Number(value) === 0) {
-      setCounterValue(0);
-
-      return;
-    }
-
-    if (Number.isNaN(value)) {
-      setCounterValue(1);
+      setCounterValue(value);
 
       return;
     }
