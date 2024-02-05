@@ -115,7 +115,7 @@ export const Header = async ({ cart }: { cart: ReactNode }) => {
   return (
     <header>
       <NavigationMenu>
-        <NavigationMenuLink asChild className="px-0">
+        <NavigationMenuLink asChild className="shrink-0 px-0">
           <Link href="/">
             <StoreLogo />
           </Link>
