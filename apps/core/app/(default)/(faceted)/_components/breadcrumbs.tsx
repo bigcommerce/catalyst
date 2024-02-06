@@ -1,8 +1,8 @@
 import {
   BreadcrumbDivider,
   BreadcrumbItem,
-  Breadcrumbs as ReactantBreadcrumbs,
-} from '@bigcommerce/reactant/Breadcrumbs';
+  Breadcrumbs as ComponentsBreadcrumbs,
+} from '@bigcommerce/components/Breadcrumbs';
 import { ChevronRight } from 'lucide-react';
 import { Fragment } from 'react';
 
@@ -18,7 +18,7 @@ interface Props {
 }
 
 export const Breadcrumbs = ({ breadcrumbs, category }: Props) => (
-  <ReactantBreadcrumbs className="py-4">
+  <ComponentsBreadcrumbs className="py-4">
     {breadcrumbs.map(({ name, entityId, path }, index) => {
       if (!path || breadcrumbs.length - 1 === index) {
         return (
@@ -39,5 +39,5 @@ export const Breadcrumbs = ({ breadcrumbs, category }: Props) => (
         </Fragment>
       );
     })}
-  </ReactantBreadcrumbs>
+  </ComponentsBreadcrumbs>
 );

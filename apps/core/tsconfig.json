@@ -27,7 +27,7 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./*"],
-      "@bigcommerce/reactant/*": ["./node_modules/@bigcommerce/reactant/*"]
+      "@bigcommerce/components/*": ["./node_modules/@bigcommerce/components/*"]
     },
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
   },

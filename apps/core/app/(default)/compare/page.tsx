@@ -1,5 +1,5 @@
-import { Button } from '@bigcommerce/reactant/Button';
-import { Rating } from '@bigcommerce/reactant/Rating';
+import { Button } from '@bigcommerce/components/Button';
+import { Rating } from '@bigcommerce/components/Rating';
 import Image from 'next/image';
 import * as z from 'zod';
 

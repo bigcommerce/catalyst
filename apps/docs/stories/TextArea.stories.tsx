@@ -1,4 +1,4 @@
-import { TextArea } from '@bigcommerce/reactant/TextArea';
+import { TextArea } from '@bigcommerce/components/TextArea';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof TextArea> = {

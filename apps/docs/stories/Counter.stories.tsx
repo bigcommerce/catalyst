@@ -1,4 +1,4 @@
-import { Counter } from '@bigcommerce/reactant/Counter';
+import { Counter } from '@bigcommerce/components/Counter';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Counter> = {

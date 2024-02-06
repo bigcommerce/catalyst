@@ -1,6 +1,6 @@
 'use client';
 
-import { Counter } from '@bigcommerce/reactant/Counter';
+import { Counter } from '@bigcommerce/components/Counter';
 import { useState } from 'react';
 
 import {

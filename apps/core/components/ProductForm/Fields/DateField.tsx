@@ -1,5 +1,5 @@
-import { DatePicker } from '@bigcommerce/reactant/DatePicker';
-import { Label } from '@bigcommerce/reactant/Label';
+import { DatePicker } from '@bigcommerce/components/DatePicker';
+import { Label } from '@bigcommerce/components/Label';
 
 import { getProduct } from '~/client/queries/getProduct';
 import { ExistingResultType, Unpacked } from '~/client/util';

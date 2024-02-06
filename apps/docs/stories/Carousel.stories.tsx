@@ -6,7 +6,7 @@ import {
   CarouselPaginationTab,
   CarouselPreviousIndicator,
   CarouselSlide,
-} from '@bigcommerce/reactant/Carousel';
+} from '@bigcommerce/components/Carousel';
 import {
   ProductCard,
   ProductCardBadge,
@@ -15,7 +15,7 @@ import {
   ProductCardInfoBrandName,
   ProductCardInfoPrice,
   ProductCardInfoProductName,
-} from '@bigcommerce/reactant/ProductCard';
+} from '@bigcommerce/components/ProductCard';
 import { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Carousel> = {

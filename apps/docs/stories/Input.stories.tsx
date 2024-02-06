@@ -1,4 +1,4 @@
-import { Input, InputIcon } from '@bigcommerce/reactant/Input';
+import { Input, InputIcon } from '@bigcommerce/components/Input';
 import type { Meta, StoryObj } from '@storybook/react';
 import { CheckCircle } from 'lucide-react';
 

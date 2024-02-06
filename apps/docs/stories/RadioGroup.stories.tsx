@@ -1,5 +1,5 @@
-import { Label } from '@bigcommerce/reactant/Label';
-import { RadioGroup, RadioIndicator, RadioItem } from '@bigcommerce/reactant/RadioGroup';
+import { Label } from '@bigcommerce/components/Label';
+import { RadioGroup, RadioIndicator, RadioItem } from '@bigcommerce/components/RadioGroup';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Paintbrush } from 'lucide-react';
 

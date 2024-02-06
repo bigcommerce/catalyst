@@ -1,12 +1,12 @@
 import {
+  ProductCard as ComponentsProductCard,
   ProductCardImage,
   ProductCardInfo,
   ProductCardInfoBrandName,
   ProductCardInfoPrice,
   ProductCardInfoProductName,
-  ProductCard as ReactantProductCard,
-} from '@bigcommerce/reactant/ProductCard';
-import { Rating } from '@bigcommerce/reactant/Rating';
+} from '@bigcommerce/components/ProductCard';
+import { Rating } from '@bigcommerce/components/Rating';
 import Image from 'next/image';
 import { useId } from 'react';
 
@@ -89,7 +89,7 @@ export const ProductCard = ({
   }
 
   return (
-    <ReactantProductCard key={product.entityId}>
+    <ComponentsProductCard key={product.entityId}>
       <ProductCardImage>
         <div
           className={cn('relative flex-auto', {
@@ -165,6 +165,6 @@ export const ProductCard = ({
         </div>
       </ProductCardInfo>
       {showCart && <Cart product={product} />}
-    </ReactantProductCard>
+    </ComponentsProductCard>
   );
 };

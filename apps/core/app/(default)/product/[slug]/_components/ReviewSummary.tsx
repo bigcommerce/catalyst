@@ -1,4 +1,4 @@
-import { Rating } from '@bigcommerce/reactant/Rating';
+import { Rating } from '@bigcommerce/components/Rating';
 import { useId } from 'react';
 
 import { getProductReviews } from '~/client/queries/getProductReviews';

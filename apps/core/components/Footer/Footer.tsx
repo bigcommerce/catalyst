@@ -1,4 +1,8 @@
-import { FooterNav, FooterSection, Footer as ReactantFooter } from '@bigcommerce/reactant/Footer';
+import {
+  Footer as ComponentsFooter,
+  FooterNav,
+  FooterSection,
+} from '@bigcommerce/components/Footer';
 import React from 'react';
 
 import { AvailableWebPages, getWebPages } from '~/client/queries/getWebPages';
@@ -48,7 +52,7 @@ const WebPageFooterMenu = () => {
 
 export const Footer = () => {
   return (
-    <ReactantFooter>
+    <ComponentsFooter>
       <FooterSection>
         <FooterNav>
           <CategoryFooterMenu />
@@ -67,6 +71,6 @@ export const Footer = () => {
         <PaymentMethods />
         <Copyright />
       </FooterSection>
-    </ReactantFooter>
+    </ComponentsFooter>
   );
 };

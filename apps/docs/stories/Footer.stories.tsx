@@ -4,7 +4,7 @@ import {
   FooterNavGroupList,
   FooterNavLink,
   FooterSection,
-} from '@bigcommerce/reactant/Footer';
+} from '@bigcommerce/components/Footer';
 import { Meta, StoryObj } from '@storybook/react';
 import { FacebookIcon, InstagramIcon, TwitterIcon } from 'lucide-react';
 

@@ -3,7 +3,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@bigcommerce/reactant/Accordion';
+} from '@bigcommerce/components/Accordion';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Info } from 'lucide-react';
 

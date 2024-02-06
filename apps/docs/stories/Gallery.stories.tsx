@@ -8,7 +8,7 @@ import {
   GalleryThumbnail,
   GalleryThumbnailItem,
   GalleryThumbnailList,
-} from '@bigcommerce/reactant/Gallery';
+} from '@bigcommerce/components/Gallery';
 import type { Meta, StoryObj } from '@storybook/react';
 import { ArrowLeftCircle, ArrowRightCircle } from 'lucide-react';
 

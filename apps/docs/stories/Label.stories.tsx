@@ -1,5 +1,5 @@
-import { Input } from '@bigcommerce/reactant/Input';
-import { Label } from '@bigcommerce/reactant/Label';
+import { Input } from '@bigcommerce/components/Input';
+import { Label } from '@bigcommerce/components/Label';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Label> = {

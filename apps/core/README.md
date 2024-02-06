@@ -1,6 +1,6 @@
 # Catalyst
 
-Catalyst is the next generation of storefronts at BigCommerce. It aims to be composable and powerful to meet the needs of our enterprise customers, exceeding performance of Stencil and Blueprint themes. Catalyst is built with [Next.js](https://nextjs.org/) using our React.js storefront component library called Reactant.
+Catalyst is the next generation of storefronts at BigCommerce. It aims to be composable and powerful to meet the needs of our enterprise customers, exceeding performance of Stencil and Blueprint themes. Catalyst is built with [Next.js](https://nextjs.org/) using our React.js storefront component library.
 
 ## Getting Started
 

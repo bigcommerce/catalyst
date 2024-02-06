@@ -1,5 +1,5 @@
-import { Label } from '@bigcommerce/reactant/Label';
-import { Swatch, SwatchItem } from '@bigcommerce/reactant/Swatch';
+import { Label } from '@bigcommerce/components/Label';
+import { Swatch, SwatchItem } from '@bigcommerce/components/Swatch';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Swatch> = {

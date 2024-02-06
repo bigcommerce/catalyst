@@ -1,5 +1,5 @@
-import { Label } from '@bigcommerce/reactant/Label';
-import { RectangleList, RectangleListItem } from '@bigcommerce/reactant/RectangleList';
+import { Label } from '@bigcommerce/components/Label';
+import { RectangleList, RectangleListItem } from '@bigcommerce/components/RectangleList';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof RectangleList> = {

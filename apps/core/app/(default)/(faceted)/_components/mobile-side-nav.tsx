@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@bigcommerce/reactant/Button';
+import { Button } from '@bigcommerce/components/Button';
 import {
   Sheet,
   SheetClose,
@@ -9,7 +9,7 @@ import {
   SheetOverlay,
   SheetTitle,
   SheetTrigger,
-} from '@bigcommerce/reactant/Sheet';
+} from '@bigcommerce/components/Sheet';
 import { Filter } from 'lucide-react';
 import { PropsWithChildren, useEffect, useState } from 'react';
 

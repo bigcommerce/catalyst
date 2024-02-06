@@ -1,5 +1,5 @@
-import { FileChooser } from '@bigcommerce/reactant/FileChooser';
-import { Label } from '@bigcommerce/reactant/Label';
+import { FileChooser } from '@bigcommerce/components/FileChooser';
+import { Label } from '@bigcommerce/components/Label';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof FileChooser> = {

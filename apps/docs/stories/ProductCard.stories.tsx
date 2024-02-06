@@ -6,7 +6,7 @@ import {
   ProductCardInfoBrandName,
   ProductCardInfoPrice,
   ProductCardInfoProductName,
-} from '@bigcommerce/reactant/ProductCard';
+} from '@bigcommerce/components/ProductCard';
 import { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof ProductCard> = {

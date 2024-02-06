@@ -1,4 +1,4 @@
-import { Select, SelectContent, SelectItem } from '@bigcommerce/reactant/Select';
+import { Select, SelectContent, SelectItem } from '@bigcommerce/components/Select';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Select> = {

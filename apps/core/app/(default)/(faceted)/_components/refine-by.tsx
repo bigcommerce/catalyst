@@ -1,6 +1,6 @@
 'use client';
 
-import { Tag, TagAction, TagContent } from '@bigcommerce/reactant/Tag';
+import { Tag, TagAction, TagContent } from '@bigcommerce/components/Tag';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import type { Facet, PageType, PublicParamKeys } from '../types';
