@@ -52,24 +52,20 @@ const ProductDetails = ({ product }: { product: NonNullable<Product> }) => {
                   </span>
                 </p>
               )}
-              {product.prices.basePrice?.value !== undefined && (
-                <p className="text-h4">
-                  {product.prices.salePrice?.value ? (
-                    <>
-                      Was:{' '}
-                      <span className="line-through">
-                        {currencyFormatter.format(product.prices.basePrice.value)}
-                      </span>
-                    </>
-                  ) : (
-                    currencyFormatter.format(product.prices.basePrice.value)
-                  )}
-                </p>
-              )}
-              {product.prices.salePrice?.value !== undefined && (
-                <p className="text-h4">
-                  Now: {currencyFormatter.format(product.prices.salePrice.value)}
-                </p>
+              {product.prices.salePrice?.value !== undefined &&
+              product.prices.basePrice?.value !== undefined ? (
+                <>
+                  Was:{' '}
+                  <span className="line-through">
+                    {currencyFormatter.format(product.prices.basePrice.value)}
+                  </span>
+                  <br />
+                  <>Now: {currencyFormatter.format(product.prices.salePrice.value)}</>
+                </>
+              ) : (
+                product.prices.price.value && (
+                  <>{currencyFormatter.format(product.prices.price.value)}</>
+                )
               )}
             </>
           )}
