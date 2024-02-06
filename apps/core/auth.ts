@@ -88,13 +88,17 @@ const config = {
 const { handlers, auth, signIn, signOut, update } = NextAuth(config);
 
 const getSessionCustomerId = async () => {
-  const session = await auth();
+  try {
+    const session = await auth();
 
-  if (!session?.user?.id) {
-    return;
+    if (!session?.user?.id) {
+      return;
+    }
+
+    return session.user.id;
+  } catch {
+    // No empty
   }
-
-  return session.user.id;
 };
 
 export { handlers, auth, signIn, signOut, update, getSessionCustomerId };
