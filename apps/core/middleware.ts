@@ -1,9 +1,8 @@
 import { composeMiddlewares } from './middlewares/compose-middlewares';
 import { withAuth } from './middlewares/with-auth';
 import { withCustomUrls } from './middlewares/with-custom-urls';
-import { withMaintenanceMode } from './middlewares/with-maintenance-mode';
 
-export const middleware = composeMiddlewares(withMaintenanceMode, withAuth, withCustomUrls);
+export const middleware = composeMiddlewares(withAuth, withCustomUrls);
 
 export const config = {
   matcher: [

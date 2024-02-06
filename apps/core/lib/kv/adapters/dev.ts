@@ -34,6 +34,13 @@ export class DevKvAdapter implements KvAdapter {
     return entry.value as Data;
   }
 
+  async mget<Data>(...keys: string[]) {
+    const entries = keys.map((key) => this.kv.get(key)?.value);
+
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return entries as Data[];
+  }
+
   async set<Data>(key: string, value: Data, options: { ex?: number } = {}) {
     this.kv.set(key, {
       value,

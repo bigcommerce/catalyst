@@ -30,6 +30,17 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
     return value;
   }
 
+  async mget<Data>(...keys: string[]) {
+    const kv = await this.getKv();
+    const fullKeys = keys.map((key) => `${this.namespace}_${key}`);
+
+    const values = await kv.mget<Data>(...fullKeys);
+
+    this.logger(`MGET - Keys: ${fullKeys.toString()} - Value: ${JSON.stringify(values, null, 2)}`);
+
+    return values;
+  }
+
   async set<Data, Options extends SetCommandOptions = SetCommandOptions>(
     key: string,
     value: Data,
