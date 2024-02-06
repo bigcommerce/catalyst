@@ -13,6 +13,7 @@
     "@bigcommerce/eslint-config": "^2.7.0",
     "@next/eslint-plugin-next": "^14.0.4",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-check-file": "^2.6.2",
     "eslint-plugin-prettier": "^5.0.1"
   },
   "peerDependencies": {

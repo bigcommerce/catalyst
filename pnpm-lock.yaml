@@ -344,6 +344,9 @@ importers:
       eslint-config-prettier:
         specifier: ^9.1.0
         version: 9.1.0(eslint@8.55.0)
+      eslint-plugin-check-file:
+        specifier: ^2.6.2
+        version: 2.6.2(eslint@8.55.0)
       eslint-plugin-prettier:
         specifier: ^5.0.1
         version: 5.0.1(eslint-config-prettier@9.1.0)(eslint@8.55.0)(prettier@3.2.4)
@@ -8319,6 +8322,17 @@ packages:
       - supports-color
     dev: true
 
+  /eslint-plugin-check-file@2.6.2(eslint@8.55.0):
+    resolution: {integrity: sha512-z3Rur4JjOdNH0fia1IH7JQseo9NLuFVtw9j8P6z2c5XmXWemH7/qGpmMB8XbOt9bJBNpmPlNAGJty9b3EervPw==}
+    engines: {node: 14.x || >= 16}
+    peerDependencies:
+      eslint: '>=7.28.0'
+    dependencies:
+      eslint: 8.55.0
+      is-glob: 4.0.3
+      micromatch: 4.0.5
+    dev: false
+
   /eslint-plugin-gettext@1.2.0:
     resolution: {integrity: sha512-k7jSJD1nETfGYk94VS7AxHXPe7AZN7LvTfhBEnpyUx6DR98/5Bffovuw5vGk4axFBgKqzzfIV7ASTz/lnVd2qQ==}
     engines: {node: '>=6.0.0'}
@@ -8378,7 +8392,7 @@ packages:
       doctrine: 2.1.0
       eslint: 8.55.0
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.59.8)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.55.0)
+      eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.14.0)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.55.0)
       hasown: 2.0.0
       is-core-module: 2.13.1
       is-glob: 4.0.3

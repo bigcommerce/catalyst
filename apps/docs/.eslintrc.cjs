@@ -17,6 +17,7 @@ const config = {
         allow: ['__typename'],
       },
     ],
+    'check-file/filename-naming-convention': 'off',
   },
 };
 
