@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { getBlogPosts } from '~/client/queries/getBlogPosts';
+import { getBlogPosts } from '~/client/queries/get-blog-posts';
 import { BlogPostCard } from '~/components/BlogPostCard';
 import { Link } from '~/components/Link';
 

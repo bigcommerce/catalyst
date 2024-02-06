@@ -2,15 +2,15 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
-import { getProduct } from '~/client/queries/getProduct';
+import { getProduct } from '~/client/queries/get-product';
 import { ProductForm } from '~/components/ProductForm';
 
-import { BreadCrumbs } from './_components/Breadcrumbs';
-import { Gallery } from './_components/Gallery';
-import { ProductSchema } from './_components/ProductSchema';
-import { RelatedProducts } from './_components/RelatedProducts';
-import { Reviews } from './_components/Reviews';
-import { ReviewSummary } from './_components/ReviewSummary';
+import { BreadCrumbs } from './_components/breadcrumbs';
+import { Gallery } from './_components/gallery';
+import { ProductSchema } from './_components/product-schema';
+import { RelatedProducts } from './_components/related-products';
+import { ReviewSummary } from './_components/review-summary';
+import { Reviews } from './_components/reviews';
 
 type Product = Awaited<ReturnType<typeof getProduct>>;
 

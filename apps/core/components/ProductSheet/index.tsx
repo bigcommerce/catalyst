@@ -16,7 +16,7 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { PropsWithChildren, useEffect, useId, useState } from 'react';
 
-import { getProduct } from '~/client/queries/getProduct';
+import { getProduct } from '~/client/queries/get-product';
 import { ProductForm } from '~/components/ProductForm';
 import { cn } from '~/lib/utils';
 

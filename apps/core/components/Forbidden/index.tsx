@@ -1,7 +1,7 @@
 import { Message } from '@bigcommerce/components/Message';
 
 import { SearchForm } from 'components/SearchForm';
-import { getFeaturedProducts } from '~/client/queries/getFeaturedProducts';
+import { getFeaturedProducts } from '~/client/queries/get-featured-products';
 import { ProductCard } from '~/components/ProductCard';
 
 const FeaturedProducts = async () => {

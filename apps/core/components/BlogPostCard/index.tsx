@@ -9,7 +9,7 @@ import {
 } from '@bigcommerce/components/BlogPostCard';
 import Image from 'next/image';
 
-import { getBlogPosts } from '~/client/queries/getBlogPosts';
+import { getBlogPosts } from '~/client/queries/get-blog-posts';
 import { ExistingResultType } from '~/client/util';
 import { Link } from '~/components/Link';
 

@@ -1,4 +1,4 @@
-import { getCategoryTree } from '~/client/queries/getCategoryTree';
+import { getCategoryTree } from '~/client/queries/get-category-tree';
 import { Link } from '~/components/Link';
 
 interface Props {

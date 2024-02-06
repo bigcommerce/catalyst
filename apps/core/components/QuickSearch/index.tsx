@@ -16,13 +16,13 @@ import { Search, Loader2 as Spinner, X } from 'lucide-react';
 import Image from 'next/image';
 import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 
-import { getQuickSearchResults } from '~/client/queries/getQuickSearchResults';
+import { getQuickSearchResults } from '~/client/queries/get-quick-search-results';
 import { ExistingResultType } from '~/client/util';
 import { cn } from '~/lib/utils';
 
 import { Pricing } from '../Pricing';
 
-import { getSearchResults } from './_actions/getSearchResults';
+import { getSearchResults } from './_actions/get-search-results';
 
 interface SearchProps extends PropsWithChildren {
   initialTerm?: string;

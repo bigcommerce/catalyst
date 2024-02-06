@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { getProduct } from '~/client/queries/getProduct';
+import { getProduct } from '~/client/queries/get-product';
 
 export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
   const { id } = params;

@@ -7,7 +7,7 @@ import { Link } from '~/components/Link';
 import { FacetedSearch } from '../_components/faceted-search';
 import { MobileSideNav } from '../_components/mobile-side-nav';
 import { SortBy } from '../_components/sort-by';
-import { fetchFacetedSearch } from '../fetchFacetedSearch';
+import { fetchFacetedSearch } from '../fetch-faceted-search';
 
 interface Props {
   searchParams: { [key: string]: string | string[] | undefined };

@@ -15,8 +15,8 @@ import { cn } from '~/lib/utils';
 
 import { Pricing } from '../Pricing';
 
-import { Cart } from './Cart';
-import { Compare } from './Compare';
+import { Cart } from './cart';
+import { Compare } from './compare';
 
 export interface Product {
   entityId: number;

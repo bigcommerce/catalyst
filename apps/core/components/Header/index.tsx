@@ -13,7 +13,7 @@ import { ChevronDown, LogOut, ShoppingCart, User } from 'lucide-react';
 import { ReactNode, Suspense } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
-import { getCategoryTree } from '~/client/queries/getCategoryTree';
+import { getCategoryTree } from '~/client/queries/get-category-tree';
 import { Link } from '~/components/Link';
 import { cn } from '~/lib/utils';
 

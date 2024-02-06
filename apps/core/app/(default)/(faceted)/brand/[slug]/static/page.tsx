@@ -1,4 +1,4 @@
-import { getBrands } from '~/client/queries/getBrands';
+import { getBrands } from '~/client/queries/get-brands';
 
 import BrandPage from '../page';
 

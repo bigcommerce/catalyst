@@ -1,4 +1,4 @@
-import { getFeaturedProducts } from '~/client/queries/getFeaturedProducts';
+import { getFeaturedProducts } from '~/client/queries/get-featured-products';
 
 import ProductPage from '../page';
 

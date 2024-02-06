@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 
-import { getStoreStatus } from '~/client/queries/getStoreStatus';
+import { getStoreStatus } from '~/client/queries/get-store-status';
 import { kv } from '~/lib/kv';
 
-import { withInternalAuth } from '../../_internal-auth';
+import { withInternalAuth } from '../../internal-auth';
 
 const STORE_STATUS_KEY = 'v2_storeStatus';
 
