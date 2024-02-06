@@ -1,5 +1,7 @@
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
+import { getSessionCustomerId } from '~/auth';
 import { getRoute } from '~/client/queries/getRoute';
 
 import { kv } from '../lib/kv';
@@ -66,22 +68,29 @@ const getCustomUrlNode = async (request: NextRequest) => {
 export const withCustomUrls: MiddlewareFactory = (next) => {
   return async (request, event) => {
     const node = await getCustomUrlNode(request);
+    const customerId = await getSessionCustomerId();
+    const cartId = cookies().get('cartId');
+    let postfix = '';
+
+    if (!request.nextUrl.search && !customerId && !cartId && request.method === 'GET') {
+      postfix = '/static';
+    }
 
     switch (node?.__typename) {
       case 'Brand': {
-        const url = createRewriteUrl(`/brand/${node.entityId}`, request);
+        const url = createRewriteUrl(`/brand/${node.entityId}${postfix}`, request);
 
         return NextResponse.rewrite(url);
       }
 
       case 'Category': {
-        const url = createRewriteUrl(`/category/${node.entityId}`, request);
+        const url = createRewriteUrl(`/category/${node.entityId}${postfix}`, request);
 
         return NextResponse.rewrite(url);
       }
 
       case 'Product': {
-        const url = createRewriteUrl(`/product/${node.entityId}`, request);
+        const url = createRewriteUrl(`/product/${node.entityId}${postfix}`, request);
 
         return NextResponse.rewrite(url);
       }
