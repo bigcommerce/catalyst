@@ -1,4 +1,4 @@
-import { Button } from '@bigcommerce/reactant/Button';
+import { Button } from '@bigcommerce/components/Button';
 import {
   Slideshow,
   SlideshowAutoplayControl,
@@ -8,7 +8,7 @@ import {
   SlideshowPagination,
   SlideshowPreviousIndicator,
   SlideshowSlide,
-} from '@bigcommerce/reactant/Slideshow';
+} from '@bigcommerce/components/Slideshow';
 import type { Meta, StoryObj } from '@storybook/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 

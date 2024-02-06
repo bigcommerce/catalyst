@@ -1,8 +1,8 @@
 'use client';
 
-import { Button } from '@bigcommerce/reactant/Button';
-import { Field, FieldControl, Form } from '@bigcommerce/reactant/Form';
-import { Input, InputIcon } from '@bigcommerce/reactant/Input';
+import { Button } from '@bigcommerce/components/Button';
+import { Field, FieldControl, Form } from '@bigcommerce/components/Form';
+import { Input, InputIcon } from '@bigcommerce/components/Input';
 import {
   Sheet,
   SheetClose,
@@ -10,7 +10,7 @@ import {
   SheetOverlay,
   SheetTitle,
   SheetTrigger,
-} from '@bigcommerce/reactant/Sheet';
+} from '@bigcommerce/components/Sheet';
 import debounce from 'lodash.debounce';
 import { Search, Loader2 as Spinner, X } from 'lucide-react';
 import Image from 'next/image';

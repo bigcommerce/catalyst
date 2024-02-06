@@ -1,4 +1,4 @@
-import { Button } from '@bigcommerce/reactant/Button';
+import { Button } from '@bigcommerce/components/Button';
 import { Trash2 as Trash } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Image from 'next/image';

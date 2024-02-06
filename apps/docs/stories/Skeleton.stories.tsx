@@ -1,4 +1,4 @@
-import { Skeleton } from '@bigcommerce/reactant/Skeleton';
+import { Skeleton } from '@bigcommerce/components/Skeleton';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Skeleton> = {

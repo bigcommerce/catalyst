@@ -1,4 +1,4 @@
-import { Calendar } from '@bigcommerce/reactant/Calendar';
+import { Calendar } from '@bigcommerce/components/Calendar';
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 

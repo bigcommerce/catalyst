@@ -5,8 +5,8 @@ import {
   BlogPostDate,
   BlogPostImage,
   BlogPostTitle,
-  BlogPostCard as ReactantBlogPostCard,
-} from '@bigcommerce/reactant/BlogPostCard';
+  BlogPostCard as ComponentsBlogPostCard,
+} from '@bigcommerce/components/BlogPostCard';
 import Image from 'next/image';
 
 import { getBlogPosts } from '~/client/queries/getBlogPosts';
@@ -18,7 +18,7 @@ interface BlogPostCardProps {
 }
 
 export const BlogPostCard = ({ blogPost }: BlogPostCardProps) => (
-  <ReactantBlogPostCard>
+  <ComponentsBlogPostCard>
     {blogPost.thumbnailImage ? (
       <BlogPostImage>
         <Link className="block w-full" href={`/blog/${blogPost.entityId}`}>
@@ -52,5 +52,5 @@ export const BlogPostCard = ({ blogPost }: BlogPostCardProps) => (
       {new Intl.DateTimeFormat('en-US').format(new Date(blogPost.publishedDate.utc))}
     </BlogPostDate>
     {blogPost.author ? <BlogPostAuthor>, by {blogPost.author}</BlogPostAuthor> : null}
-  </ReactantBlogPostCard>
+  </ComponentsBlogPostCard>
 );

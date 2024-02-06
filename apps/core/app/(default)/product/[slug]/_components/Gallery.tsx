@@ -1,14 +1,14 @@
 'use client';
 
 import {
+  Gallery as ComponentsGallery,
   GalleryContent,
   GalleryControls,
   GalleryImage,
   GalleryThumbnail,
   GalleryThumbnailItem,
   GalleryThumbnailList,
-  Gallery as ReactantGallery,
-} from '@bigcommerce/reactant/Gallery';
+} from '@bigcommerce/components/Gallery';
 import Image from 'next/image';
 
 import { getProduct } from '~/client/queries/getProduct';
@@ -24,7 +24,7 @@ export const Gallery = ({ images }: Props) => {
   return (
     <div className="-mx-6 mb-10 sm:-mx-0 md:mb-12">
       <div className="lg:sticky lg:top-0">
-        <ReactantGallery defaultImageIndex={defaultImageIndex} images={images}>
+        <ComponentsGallery defaultImageIndex={defaultImageIndex} images={images}>
           <GalleryContent>
             <GalleryImage>
               {({ selectedImage }) =>
@@ -57,7 +57,7 @@ export const Gallery = ({ images }: Props) => {
               );
             })}
           </GalleryThumbnailList>
-        </ReactantGallery>
+        </ComponentsGallery>
       </div>
     </div>
   );

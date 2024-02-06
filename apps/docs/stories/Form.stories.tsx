@@ -1,4 +1,4 @@
-import { Button } from '@bigcommerce/reactant/Button';
+import { Button } from '@bigcommerce/components/Button';
 import {
   BuiltInValidityState,
   Field,
@@ -8,10 +8,10 @@ import {
   FieldValidation,
   Form,
   FormSubmit,
-} from '@bigcommerce/reactant/Form';
-import { Input } from '@bigcommerce/reactant/Input';
-import { Select, SelectContent, SelectItem } from '@bigcommerce/reactant/Select';
-import { TextArea } from '@bigcommerce/reactant/TextArea';
+} from '@bigcommerce/components/Form';
+import { Input } from '@bigcommerce/components/Input';
+import { Select, SelectContent, SelectItem } from '@bigcommerce/components/Select';
+import { TextArea } from '@bigcommerce/components/TextArea';
 import type { Meta, StoryObj } from '@storybook/react';
 import { FormEvent } from 'react';
 

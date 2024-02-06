@@ -7,7 +7,7 @@ import {
   SheetOverlay,
   SheetTitle,
   SheetTrigger,
-} from '@bigcommerce/reactant/Sheet';
+} from '@bigcommerce/components/Sheet';
 import type { Meta, StoryObj } from '@storybook/react';
 
 // We need to remove these once we get variant types working with cva

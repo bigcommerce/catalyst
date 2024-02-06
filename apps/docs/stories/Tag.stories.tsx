@@ -1,4 +1,4 @@
-import { Tag, TagAction, TagContent, TagProps } from '@bigcommerce/reactant/Tag';
+import { Tag, TagAction, TagContent, TagProps } from '@bigcommerce/components/Tag';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Tag> = {

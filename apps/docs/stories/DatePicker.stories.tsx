@@ -1,4 +1,4 @@
-import { DatePicker } from '@bigcommerce/reactant/DatePicker';
+import { DatePicker } from '@bigcommerce/components/DatePicker';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof DatePicker> = {

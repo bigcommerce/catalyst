@@ -1,5 +1,5 @@
-import { Badge } from '@bigcommerce/reactant/Badge';
-import { cn } from '@bigcommerce/reactant/cn';
+import { Badge } from '@bigcommerce/components/Badge';
+import { cn } from '@bigcommerce/components/cn';
 import {
   NavigationMenu,
   NavigationMenuCollapsed,
@@ -9,7 +9,7 @@ import {
   NavigationMenuList,
   NavigationMenuToggle,
   NavigationMenuTrigger,
-} from '@bigcommerce/reactant/NavigationMenu';
+} from '@bigcommerce/components/NavigationMenu';
 import type { Meta, StoryObj } from '@storybook/react';
 import { ChevronDown, MenuSquare, Search, ShoppingCart, User, XSquare } from 'lucide-react';
 

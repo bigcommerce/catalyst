@@ -42,7 +42,7 @@ While developing `create-catalyst` locally, it's essential to test your changes 
 
 > ⚠️ **IMPORTANT:** NPM registry data is immutable, meaning once published, a package cannot change. Be careful to ensure that you do not run commands such as `publish` against the default NPM registry if your work is not ready to be published. Always explicitly pass `--registry=http://localhost:<VERDACCIO_PORT>` with commands that modify the registry (such as `publish`) to ensure you only publish to Verdaccio when working locally.
 
-4. If necessary, run `pnpm build` and `pnpm publish --registry=http://localhost:4873` in each Catalyst-scoped package required by relevant examples listed in `apps/` (e.g., Catalyst `core` examples require `@bigcommerce/reactant`, `@bigcommerce/eslint-config-catalyst`, `@bigcommerce/catalyst-configs`, `@bigcommerce/catalyst-client`)
+4. If necessary, run `pnpm build` and `pnpm publish --registry=http://localhost:4873` in each Catalyst-scoped package required by relevant examples listed in `apps/` (e.g., Catalyst `core` examples require `@bigcommerce/components`, `@bigcommerce/eslint-config-catalyst`, `@bigcommerce/catalyst-configs`, `@bigcommerce/catalyst-client`)
 5. Run `pnpm build` and `pnpm publish --registry=http://localhost:4873` in the `@bigcommerce/create-catalyst` package
 6. Confirm published packages are listed in Verdaccio: http://localhost:4873
 

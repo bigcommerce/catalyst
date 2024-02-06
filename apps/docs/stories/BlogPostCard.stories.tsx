@@ -6,7 +6,7 @@ import {
   BlogPostDate,
   BlogPostImage,
   BlogPostTitle,
-} from '@bigcommerce/reactant/BlogPostCard';
+} from '@bigcommerce/components/BlogPostCard';
 import { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof BlogPostCard> = {

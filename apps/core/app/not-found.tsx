@@ -1,4 +1,4 @@
-import { Message } from '@bigcommerce/reactant/Message';
+import { Message } from '@bigcommerce/components/Message';
 import { ShoppingCart } from 'lucide-react';
 
 import { SearchForm } from 'components/SearchForm';
