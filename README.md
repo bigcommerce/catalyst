@@ -20,8 +20,11 @@ By choosing Catalyst, you'll have a fully-functional storefront within a few sec
 up APIs or building SEO, Accessibility, and Performance-optimized ecommerce components you've probably written many
 times before. You can instead go straight to work building your brand and making this your own.
 
+<div align="center">
+
 ![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/separator.png)
 
+</div>
 
 <p align="center">
  <a href="https://www.catalyst.dev">🚀 catalyst.dev</a> •
@@ -29,7 +32,11 @@ times before. You can instead go straight to work building your brand and making
  <a href="https://github.com/bigcommerce/catalyst/discussions">💬 GitHub Discussions</a>
 </p>
 
+<div align="center">
+
 ![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/separator.png)
+
+</div>
 
 ## Quickstart
 
@@ -72,7 +79,11 @@ Learn more about Catalyst at [catalyst.dev](https://catalyst.dev).
 > The rest of this README is related to development on top of this monorepo.
 > If you just want to build a storefront, start with the [CLI](#quickstart).
 
+<div align="center">
+
 ![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/separator.png)
+
+</div>
 
 ## Overview
 
@@ -82,14 +93,22 @@ This Catalyst monorepo contains the following:
 * The storefront component library, in [packages/components](packages/components), and a [Storybook](https://storybook.js.org/) instance to view the collection.
 * The BigCommerce [GraphQL Storefront API](https://developer.bigcommerce.com/docs/graphql-storefront) client, in [packages/client](packages/client).
 
+<div align="center">
+
 ![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/separator.png)
+
+</div>
 
 ### Requirements to use the monorepo
 
 * Node.js 18+
 * Corepack-managed `pnpm`
 
+<div align="center">
+
 ![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/separator.png)
+
+</div>
 
 ### Getting started
 
@@ -135,5 +154,8 @@ For example, if `3000` is in use, `core` will run on `3001`.
 | Catalyst storefront   | http://localhost:3000 |
 | Components Storybook  | http://localhost:6006 |
 
+<div align="center">
+
 ![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/separator.png)
 
+</div>

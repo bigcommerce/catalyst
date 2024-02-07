@@ -16,8 +16,11 @@ By choosing Catalyst, you'll have a fully-functional storefront within a few sec
 up APIs or building SEO, Accessibility, and Performance-optimized ecommerce components you've probably written many
 times before. You can instead go straight to work building your brand and making this your own.
 
+<div align="center">
+
 ![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/separator.png)
 
+</div>
 
 <p align="center">
  <a href="https://www.catalyst.dev">🚀 catalyst.dev</a> •
@@ -25,7 +28,11 @@ times before. You can instead go straight to work building your brand and making
  <a href="https://github.com/bigcommerce/catalyst/discussions">💬 GitHub Discussions</a>
 </p>
 
+<div align="center">
+
 ![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/separator.png)
+
+</div>
 
 ## Requirements 
 * Node.js 18+
