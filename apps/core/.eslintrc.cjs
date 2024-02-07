@@ -26,6 +26,7 @@ const config = {
       },
     ],
   },
+  ignorePatterns: ['client/generated/**/*.ts'],
 };
 
 module.exports = config;
