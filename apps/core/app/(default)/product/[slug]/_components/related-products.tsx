@@ -1,6 +1,6 @@
 import { OptionValueId } from '~/client/generated/graphql';
 import { getRelatedProducts } from '~/client/queries/get-related-products';
-import { ProductCardCarousel } from '~/components/ProductCardCarousel';
+import { ProductCardCarousel } from '~/components/product-card-carousel';
 
 export const RelatedProducts = async ({
   productId,

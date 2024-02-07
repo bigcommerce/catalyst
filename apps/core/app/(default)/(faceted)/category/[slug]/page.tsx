@@ -3,8 +3,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { getCategory } from '~/client/queries/get-category';
-import { Link } from '~/components/Link';
-import { ProductCard } from '~/components/ProductCard';
+import { Link } from '~/components/link';
+import { ProductCard } from '~/components/product-card';
 
 import { Breadcrumbs } from '../../_components/breadcrumbs';
 import { FacetedSearch } from '../../_components/faceted-search';

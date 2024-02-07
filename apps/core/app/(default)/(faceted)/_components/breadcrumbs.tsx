@@ -6,7 +6,7 @@ import {
 import { ChevronRight } from 'lucide-react';
 import { Fragment } from 'react';
 
-import { Link } from '~/components/Link';
+import { Link } from '~/components/link';
 
 interface Props {
   breadcrumbs: Array<{

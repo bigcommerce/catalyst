@@ -1,12 +1,12 @@
 import { Message } from '@bigcommerce/components/Message';
 import { ShoppingCart } from 'lucide-react';
 
-import { SearchForm } from 'components/SearchForm';
 import { getFeaturedProducts } from '~/client/queries/get-featured-products';
-import { Footer } from '~/components/Footer/footer';
-import { Header } from '~/components/Header';
-import { CartLink } from '~/components/Header/cart';
-import { ProductCard } from '~/components/ProductCard';
+import { Footer } from '~/components/footer/footer';
+import { Header } from '~/components/header';
+import { CartLink } from '~/components/header/cart';
+import { ProductCard } from '~/components/product-card';
+import { SearchForm } from '~/components/search-form';
 
 export const metadata = {
   title: 'Not Found',

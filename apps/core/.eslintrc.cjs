@@ -25,7 +25,12 @@ const config = {
         ],
       },
     ],
-    'check-file/folder-naming-convention': 'off',
+    'check-file/folder-naming-convention': [
+      'error',
+      {
+        '**': 'NEXT_JS_APP_ROUTER_CASE',
+      },
+    ],
   },
   ignorePatterns: ['client/generated/**/*.ts'],
 };

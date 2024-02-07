@@ -1,8 +1,8 @@
 import { PropsWithChildren } from 'react';
 
-import { Footer } from '~/components/Footer/footer';
-import { Header } from '~/components/Header';
-import { Cart } from '~/components/Header/cart';
+import { Footer } from '~/components/footer/footer';
+import { Header } from '~/components/header';
+import { Cart } from '~/components/header/cart';
 
 export default function DefaultLayout({ children }: PropsWithChildren) {
   return (

@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
 import { getProduct } from '~/client/queries/get-product';
-import { ProductForm } from '~/components/ProductForm';
+import { ProductForm } from '~/components/product-form';
 
 import { BreadCrumbs } from './_components/breadcrumbs';
 import { Gallery } from './_components/gallery';

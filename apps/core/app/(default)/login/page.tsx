@@ -1,6 +1,6 @@
 import { Button } from '@bigcommerce/components/Button';
 
-import { Link } from '~/components/Link';
+import { Link } from '~/components/link';
 
 import { LoginForm } from './login-form';
 
