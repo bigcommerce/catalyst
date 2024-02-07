@@ -92,7 +92,7 @@ const getExistingRouteInfo = async (request: NextRequest) => {
 
 const setKvStatus = async (status?: StorefrontStatusType | null) => {
   try {
-    const expiryTime = Date.now() + 1000 * 60 * 5; // 5 minutes;
+    const expiryTime = Date.now() + 1000 * 60 * 60 * 6; // 6 hours;
 
     await kv.set(STORE_STATUS_KEY, { status, expiryTime });
   } catch (error) {
@@ -103,7 +103,7 @@ const setKvStatus = async (status?: StorefrontStatusType | null) => {
 
 const setKvRoute = async (request: NextRequest, node: Node) => {
   try {
-    const expiryTime = Date.now() + 1000 * 60 * 30; // 30 minutes;
+    const expiryTime = Date.now() + 1000 * 60 * 60 * 6; // 6 hours;
 
     await kv.set(request.nextUrl.pathname, { node, expiryTime });
   } catch (error) {

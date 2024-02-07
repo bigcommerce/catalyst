@@ -14,7 +14,7 @@ const handler = async () => {
     return new NextResponse('Unable to revalidate store status', { status: 500 });
   }
 
-  const expiryTime = Date.now() + 1000 * 60 * 5; // 5 minutes;
+  const expiryTime = Date.now() + 1000 * 60 * 60 * 6; // 6 hours;
 
   try {
     await kv.set(STORE_STATUS_KEY, { status, expiryTime });

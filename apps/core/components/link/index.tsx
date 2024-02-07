@@ -7,7 +7,7 @@ import { cn } from '~/lib/utils';
 type Props = ComponentPropsWithRef<typeof NextLink>;
 
 export const Link = forwardRef<ElementRef<'a'>, Props>(
-  ({ href, prefetch = false, children, className, ...rest }, ref) => {
+  ({ href, prefetch = true, children, className, ...rest }, ref) => {
     return (
       <NextLink
         className={cn(
