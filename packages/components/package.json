@@ -42,7 +42,6 @@
     "tailwindcss": "^3.3.4"
   },
   "devDependencies": {
-    "@bigcommerce/catalyst-configs": "workspace:^",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@testing-library/react": "^14.1.2",
     "@types/react": "^18.2.43",

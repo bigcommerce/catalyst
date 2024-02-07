@@ -22,7 +22,6 @@
     "std-env": "^3.7.0"
   },
   "devDependencies": {
-    "@bigcommerce/catalyst-configs": "workspace:^",
     "@bigcommerce/eslint-config": "^2.7.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@types/node": "^18.17.12",

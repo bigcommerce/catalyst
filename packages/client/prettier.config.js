@@ -1,1 +1,10 @@
-module.exports = require('@bigcommerce/catalyst-configs/prettier.config');
+// @ts-check
+
+/** @type {import("prettier").Config} */
+const config = {
+  printWidth: 100,
+  singleQuote: true,
+  trailingComma: 'all',
+};
+
+module.exports = config;

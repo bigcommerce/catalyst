@@ -18,7 +18,6 @@
     "tailwind-merge": "^2.1.0"
   },
   "devDependencies": {
-    "@bigcommerce/catalyst-configs": "workspace:^",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@storybook/addon-essentials": "^7.6.4",
     "@storybook/addon-links": "^7.6.4",
