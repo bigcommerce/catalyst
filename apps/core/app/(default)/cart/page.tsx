@@ -4,11 +4,11 @@ import { cookies } from 'next/headers';
 import Image from 'next/image';
 import { Suspense } from 'react';
 
-import { getCheckoutUrl } from '~/client/management/getCheckoutUrl';
-import { getCart } from '~/client/queries/getCart';
+import { getCheckoutUrl } from '~/client/management/get-checkout-url';
+import { getCart } from '~/client/queries/get-cart';
 
-import { removeProduct } from './_actions/removeProduct';
-import { CartItemCounter } from './CartItemCounter';
+import { removeProduct } from './_actions/remove-products';
+import { CartItemCounter } from './cart-item-counter';
 
 export const metadata = {
   title: 'Cart',

@@ -3,13 +3,13 @@ import { Rating } from '@bigcommerce/components/Rating';
 import Image from 'next/image';
 import * as z from 'zod';
 
-import { getProducts } from '~/client/queries/getProducts';
+import { getProducts } from '~/client/queries/get-products';
 import { Link } from '~/components/Link';
 import { Pricing } from '~/components/Pricing';
 import { SearchForm } from '~/components/SearchForm';
 import { cn } from '~/lib/utils';
 
-import { AddToCartForm } from './AddToCartForm';
+import { AddToCartForm } from './add-to-cart-form';
 
 const MAX_COMPARE_LIMIT = 10;
 

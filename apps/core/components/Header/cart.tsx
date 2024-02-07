@@ -4,7 +4,7 @@ import { ShoppingCart } from 'lucide-react';
 import { cookies } from 'next/headers';
 import { ReactNode } from 'react';
 
-import { getCart } from '~/client/queries/getCart';
+import { getCart } from '~/client/queries/get-cart';
 import { Link } from '~/components/Link';
 
 export const CartLink = ({ children }: { children: ReactNode }) => (

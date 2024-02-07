@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { fetchFacetedSearch, PublicSearchParamsSchema } from './fetchFacetedSearch';
+import { fetchFacetedSearch, PublicSearchParamsSchema } from './fetch-faceted-search';
 
 const publicParamKeys = PublicSearchParamsSchema.keyof();
 

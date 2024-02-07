@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react';
 
-import { Footer } from '~/components/Footer/Footer';
+import { Footer } from '~/components/Footer/footer';
 import { Header } from '~/components/Header';
 import { Cart } from '~/components/Header/cart';
 

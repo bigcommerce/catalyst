@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { getCategory } from '~/client/queries/getCategory';
+import { getCategory } from '~/client/queries/get-category';
 import { Link } from '~/components/Link';
 import { ProductCard } from '~/components/ProductCard';
 
@@ -11,7 +11,7 @@ import { FacetedSearch } from '../../_components/faceted-search';
 import { MobileSideNav } from '../../_components/mobile-side-nav';
 import { SortBy } from '../../_components/sort-by';
 import { SubCategories } from '../../_components/sub-categories';
-import { fetchFacetedSearch } from '../../fetchFacetedSearch';
+import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 interface Props {
   params: {

@@ -5,21 +5,21 @@ import { AlertCircle, Check, Heart } from 'lucide-react';
 import { FormProvider } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
-import { getProduct } from '~/client/queries/getProduct';
+import { getProduct } from '~/client/queries/get-product';
 import { ExistingResultType } from '~/client/util';
 
 import { Link } from '../Link';
 
-import { handleAddToCart } from './_actions/addToCart';
-import { AddToCart } from './AddToCart';
-import { CheckboxField } from './Fields/CheckboxField';
-import { DateField } from './Fields/DateField';
-import { MultiLineTextField } from './Fields/MultiLineTextField';
-import { MultipleChoiceField } from './Fields/MultipleChoiceField';
-import { NumberField } from './Fields/NumberField';
-import { QuantityField } from './Fields/QuantityField';
-import { TextField } from './Fields/TextField';
-import { ProductFormData, useProductForm } from './useProductForm';
+import { handleAddToCart } from './_actions/add-to-cart';
+import { AddToCart } from './add-to-cart';
+import { CheckboxField } from './Fields/checkbox-field';
+import { DateField } from './Fields/date-field';
+import { MultiLineTextField } from './Fields/multi-line-text-field';
+import { MultipleChoiceField } from './Fields/multiple-choice-field';
+import { NumberField } from './Fields/number-field';
+import { QuantityField } from './Fields/quantity-field';
+import { TextField } from './Fields/text-field';
+import { ProductFormData, useProductForm } from './use-product-form';
 
 type Product = ExistingResultType<typeof getProduct>;
 

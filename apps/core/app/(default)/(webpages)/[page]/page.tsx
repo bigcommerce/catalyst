@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { getReCaptchaSettings } from '~/client/queries/getReCaptchaSettings';
-import { getWebPage } from '~/client/queries/getWebPage';
+import { getReCaptchaSettings } from '~/client/queries/get-recaptcha-settings';
+import { getWebPage } from '~/client/queries/get-web-page';
 import { ContactUs } from '~/components/Forms';
 
-import { PageContent } from '../_components/PageContent';
+import { PageContent } from '../_components/page-content';
 
 interface Props {
   params: { page: string };

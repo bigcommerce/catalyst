@@ -2,8 +2,8 @@ import { Message } from '@bigcommerce/components/Message';
 import { ShoppingCart } from 'lucide-react';
 
 import { SearchForm } from 'components/SearchForm';
-import { getFeaturedProducts } from '~/client/queries/getFeaturedProducts';
-import { Footer } from '~/components/Footer/Footer';
+import { getFeaturedProducts } from '~/client/queries/get-featured-products';
+import { Footer } from '~/components/Footer/footer';
 import { Header } from '~/components/Header';
 import { CartLink } from '~/components/Header/cart';
 import { ProductCard } from '~/components/ProductCard';

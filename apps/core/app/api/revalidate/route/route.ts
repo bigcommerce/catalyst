@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { getRoute } from '~/client/queries/getRoute';
+import { getRoute } from '~/client/queries/get-route';
 import { kv } from '~/lib/kv';
 
-import { withInternalAuth } from '../../_internal-auth';
+import { withInternalAuth } from '../../internal-auth';
 
 const BodySchema = z.object({
   pathname: z.string(),

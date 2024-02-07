@@ -2,14 +2,14 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { getBrand } from '~/client/queries/getBrand';
+import { getBrand } from '~/client/queries/get-brand';
 import { Link } from '~/components/Link';
 import { ProductCard } from '~/components/ProductCard';
 
 import { FacetedSearch } from '../../_components/faceted-search';
 import { MobileSideNav } from '../../_components/mobile-side-nav';
 import { SortBy } from '../../_components/sort-by';
-import { fetchFacetedSearch } from '../../fetchFacetedSearch';
+import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 interface Props {
   params: {

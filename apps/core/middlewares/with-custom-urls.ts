@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { getSessionCustomerId } from '~/auth';
 import { StorefrontStatusType } from '~/client/generated/graphql';
-import { getRoute } from '~/client/queries/getRoute';
-import { getStoreStatus } from '~/client/queries/getStoreStatus';
+import { getRoute } from '~/client/queries/get-route';
+import { getStoreStatus } from '~/client/queries/get-store-status';
 
 import { kv } from '../lib/kv';
 

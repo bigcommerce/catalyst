@@ -9,7 +9,7 @@ import { useId } from 'react';
 
 import { Product, ProductCard } from '../ProductCard';
 
-import { Pagination } from './Pagination';
+import { Pagination } from './pagination';
 
 export const ProductCardCarousel = ({
   title,

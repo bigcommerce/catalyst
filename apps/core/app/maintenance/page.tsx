@@ -1,7 +1,7 @@
 import { Phone } from 'lucide-react';
 import { ReactNode } from 'react';
 
-import { getStoreSettings } from '~/client/queries/getStoreSettings';
+import { getStoreSettings } from '~/client/queries/get-store-settings';
 import { StoreLogo } from '~/components/StoreLogo';
 
 const Container = ({ children }: { children: ReactNode }) => (

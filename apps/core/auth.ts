@@ -3,9 +3,9 @@ import NextAuth, { type NextAuthConfig } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { z } from 'zod';
 
-import { assignCartToCustomer } from './client/mutations/assignCartToCustomer';
+import { assignCartToCustomer } from './client/mutations/assign-cart-to-customer';
 import { login } from './client/mutations/login';
-import { unassignCartFromCustomer } from './client/mutations/unassignCartFromCustomer';
+import { unassignCartFromCustomer } from './client/mutations/unassign-cart-from-customer';
 
 export const Credentials = z.object({
   email: z.string().email(),

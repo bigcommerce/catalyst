@@ -6,7 +6,7 @@ import { PropsWithChildren } from 'react';
 
 import './globals.css';
 
-import { getStoreSettings } from '~/client/queries/getStoreSettings';
+import { getStoreSettings } from '~/client/queries/get-store-settings';
 
 import { Notifications } from './notifications';
 import { Providers } from './providers';
