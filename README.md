@@ -1,100 +1,137 @@
-# Catalyst
+<a href="https://bigcommerce.com">
+   <img src="https://storage.googleapis.com/bigcommerce-developers/images/bigc-rounded-icon.png" alt="BigCommerce icon" title="BigCommerce" align="right" height="60" />
+</a>
 
-> [!WARNING]
-> - Catalyst is in development and should not be used in production environments.
 
-**Catalyst** is a composable, fully customizable headless storefront that offers a set of opinionated defaults. It is intended to fit the needs of modern developers, merchants, and shoppers. Catalyst is built with [Next.js (nextjs.org)](https://nextjs.org/) and uses our [React.js-based (react.dev)](https://react.dev/) storefront components.
+# **Catalyst** <br><sup>_for Composable Commerce_</sup>
 
-The Catalyst monorepo contains the following:
 
-* The core **Catalyst** Next.js storefront, in [apps/core](apps/core).
-* The storefront component library, in [packages/components](packages/components).
+[![MIT License](https://img.shields.io/github/license/bigcommerce/catalyst)](LICENSE.md) 
+[![Lighthouse Report](https://github.com/bigcommerce/catalyst/actions/workflows/lighthouse.yml/badge.svg)](https://github.com/bigcommerce/catalyst/actions/workflows/lighthouse.yml) [![Lint, Typecheck, GraphQL Codegen](https://github.com/bigcommerce/catalyst/actions/workflows/basic.yml/badge.svg)](https://github.com/bigcommerce/catalyst/actions/workflows/basic.yml)
+
+
+**Catalyst** is the composable, fully customizable headless ecommerce storefront framework for 
+[BigCommerce](https://www.bigcommerce.com/). Catalyst is built with [Next.js](https://nextjs.org/), uses 
+our [React](https://react.dev/) storefront components, and is backed by the
+[Storefront GraphQL API](https://developer.bigcommerce.com/docs/storefront/graphql).
+
+
+By choosing Catalyst, you will have a fully-functional storefront within a few seconds, and spend zero time on wiring
+up APIs or building SEO, Accessibility, and Performance-optimized ecommerce components you've probably written many 
+times before. You can instead go straight to work turning this into your brand and making it your own.
+
+![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/separator.png)
+
+
+<p align="center">
+ <a href="https://www.catalyst.dev">🚀 catalyst.dev</a> •
+ <a href="https://developer.bigcommerce.com/community">🤗 BigCommerce Developer Community</a> •
+ <a href="https://github.com/bigcommerce/catalyst/discussions">💬 GitHub Discussions</a>
+</p>
+
+![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/separator.png)
+
+## Quickstart
+
+Create a new project interactively by running:
+
+```bash
+npm create catalyst-storefront@latest
+```
+
+You will then be asked the following prompts:
+```console
+? What would you like to call your project?  my-faster-storefront
+? Which would you like?
+❯ Link Catalyst to a BigCommerce Store
+  Use sample data
+
+? Would you like to create a new channel? y
+
+? What would you like to name the new channel? My Faster Storefront
+
+Success! Created 'my-faster-storefront' at '/Users/first.last/Documents/GitHub/my-faster-storefront'
+
+Next steps:
+cd my-faster-storefront && npm run dev
+```
+
+Further documentation for the CLI and Catalyst framework can be found at [catalyst.dev](https://catalyst.dev)
+
+## Resources
+
+* [Catalyst Documentation](https://catalyst.dev/docs)
+* [GraphQL Storefront API Playground](https://developer.bigcommerce.com/graphql-storefront/playground)
+* [GraphQL Storefront API Explorer](https://developer.bigcommerce.com/graphql-storefront/explorer)
+* [BigCommerce Developer Documentation](https://developer.bigcommerce.com/docs/build)
+
+> [!IMPORTANT]
+> The rest of this readme is related to development on top of the Catalyst monorepo. 
+> If you just want to build a storefront, you should start with the [CLI.](#quickstart)
+
+![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/separator.png)
+
+## Overview
+
+This Catalyst monorepo contains the following:
+
+* The core **Catalyst** Next.js storefront, in [apps/core](apps/core). This is what is installed when you run the quickstart command above.
+* The storefront component library, in [packages/components](packages/components), and a [Storybook](https://storybook.js.org/) instance to view them in a collection.
 * The BigCommerce [GraphQL Storefront API (BigCommerce Dev Center)](https://developer.bigcommerce.com/docs/graphql-storefront) client, in [packages/client](packages/client).
 
-## Requirements
+![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/separator.png)
 
-* [Node.js 18+](#node.js)
-* [Corepack-managed pnpm](#corepack-and-pnpm)
+## Requirements to use the monorepo
 
-### Node.js
+* Node.js 18+
+* Corepack-managed `pnpm`
 
-Use Node.js 18+.
-
-You may wish to use Node Version Manager, or [nvm (GitHub)](https://github.com/nvm-sh/nvm#installing-and-updating), to facilitate moving back and forth between different versions of node. You can install nvm using either the instructions at the preceding link or your operating system package manager of choice.
-
-### Corepack and pnpm
-
-This project uses [corepack (nodejs.org)](https://nodejs.org/api/corepack.html) to install and enable the [pnpm (pnpm.io)](https://pnpm.io/) package manager. Corepack comes bundled with Node 18, so you do not need to install either of these packages on their own.
-
-Catalyst is configured such that pnpm replaces npm. When you enhance your project with additional packages or scripts, be sure to use the `pnpm` command. For more information, see the [pnpm documentation](https://pnpm.io/cli/add).
+![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/separator.png)
 
 ## Getting Started
 
 1. Clone the project to your local environment:
 
-```shell
+```bash
 git clone git@github.com:bigcommerce/catalyst.git && cd catalyst
 ```
 
 2. Use corepack to enable pnpm, then use pnpm to install project dependencies:
 
-```shell
-corepack enable pnpm
-```
-
-```shell
-pnpm install
+```bash
+corepack enable pnpm && pnpm install
 ```
 
 3. **Set up environment variables.**
 
-This repository contains a setup script that generates a local development environment file, `.env.local`. The environment file contains the authentication credentials and other variables required to connect Catalyst to an existing BigCommerce store. Run the script from the root directory of this repository and follow the prompts:
-
-```shell
-node scripts/setup.mjs
+In your terminal, run
+```bash
+cp .env.example .env.local
 ```
 
-*If you prefer to manually enter your own environment variables, you can run `cp .env.example .env.local` to get started.*
+Documentation for each field in the `.env.local` file can be found in the [.env.example](.env.example).
 
-The following table contains a description of each variable in the `.env.local` file:
+5. If you use VS Code, use the following command to configure VSCode with the project-specific settings the Catalyst team has created:
 
-| Variable | Description |
-|:---------|:------------|
-| `BIGCOMMERCE_STORE_HASH` | The hash visible in the subject store's URL when signed in to the store control panel. The control panel URL is of the form `https://store-{hash}.mybigcommerce.com`. |
-| `BIGCOMMERCE_ACCESS_TOKEN` | The access token from a [store-level API account (BigCommerce Dev Center)](https://developer.bigcommerce.com/api-docs/getting-started/api-accounts#store-level-api-accounts). The only [OAuth scope (BigCommerce Dev Center)](https://developer.bigcommerce.com/api-docs/getting-started/api-accounts#oauth-scopes) required to run Catalyst is Carts `read-only`. |
-| `BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN` | A bearer token that authorizes server-to-server requests to the [GraphQL Storefront API (BigCommerce Dev Center)](https://developer.bigcommerce.com/docs/storefront/graphql). |
-| `BIGCOMMERCE_CHANNEL_ID` | The channel ID for the Catalyst storefront's dedicated channel. |
-| `AUTH_SECRET` | Used by NextAuth, can be generated by running `openssl rand -hex 32` in your terminal.  |
-
-5. Optionally, to optimize your workflow, use the following command to configure VSCode with the project-specific settings the Catalyst team has created:
-
-```shell
+```bash
 cp .vscode/settings.example.json .vscode/settings.json
 ```
 
 6. Start the Catalyst development server!
 
-```shell
+```bash
 pnpm run dev
 ```
 
-The `dev` script runs all packages and apps in watch mode. The following table lists localhost URLs with the default ports. When a port is unavailable, Catalyst uses the next available port. For example, if `3000` is in use, `core` will run on `3001`.
+The `dev` script runs all packages and apps in watch mode. 
+The following table lists localhost URLs with the default ports. 
+When a port is unavailable, Catalyst uses the next available port. 
+For example, if `3000` is in use, `core` will run on `3001`.
 
-| Process | URL with port |
-|:--------|:--------------|
-| Core Catalyst storefront | http://localhost:3000 |
-| Components Storybook | http://localhost:6006 |
+| Process               | URL with port |
+|:----------------------|:--------------|
+| Catalyst storefront   | http://localhost:3000 |
+| Components Storybook  | http://localhost:6006 |
 
-Happy developing! Let us know how things are going in the dedicated Slack channel.
+![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/separator.png)
 
-## Deploy using Vercel
-
-One common way to deploy a Next.js app is to use the [Vercel Platform (vercel.com)](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme). Consult the [Next.js deployment documentation (next.js)](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## Resources
-
-### Next.js
-
-- [Next.js documentation (nextjs.org)](https://nextjs.org/docs)
-- [Interactive Next.js tutorial (nextjs.org)](https://nextjs.org/learn)
-- [Next.js repository (GitHub)](https://github.com/vercel/next.js/)
