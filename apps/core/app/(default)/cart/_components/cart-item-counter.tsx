@@ -9,7 +9,7 @@ import {
   UpdateCartLineItemInput,
 } from '~/client/generated/graphql';
 
-import { updateProductQuantity } from './_actions/update-product-quantity';
+import { updateProductQuantity } from '../_actions/update-product-quantity';
 
 type CartItemData = Pick<CartPhysicalItem, 'quantity' | 'productEntityId' | 'variantEntityId'> & {
   lineItemEntityId: CartPhysicalItem['entityId'];

@@ -2,7 +2,7 @@ import { Button } from '@bigcommerce/components/Button';
 
 import { Link } from '~/components/link';
 
-import { LoginForm } from './login-form';
+import { LoginForm } from './_components/login-form';
 
 export const metadata = {
   title: 'Login',

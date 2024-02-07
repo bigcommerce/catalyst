@@ -8,7 +8,7 @@ import { getCheckoutUrl } from '~/client/management/get-checkout-url';
 import { getCart } from '~/client/queries/get-cart';
 
 import { removeProduct } from './_actions/remove-products';
-import { CartItemCounter } from './cart-item-counter';
+import { CartItemCounter } from './_components/cart-item-counter';
 
 export const metadata = {
   title: 'Cart',
