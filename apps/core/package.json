@@ -39,7 +39,6 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@bigcommerce/catalyst-configs": "workspace:^",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@graphql-codegen/cli": "^5.0.0",
     "@graphql-codegen/client-preset": "^4.1.0",

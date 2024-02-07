@@ -8,7 +8,6 @@
     "lint": "eslint . --ext .ts,.js,.cjs --max-warnings 0"
   },
   "devDependencies": {
-    "@bigcommerce/catalyst-configs": "workspace:^",
     "@bigcommerce/eslint-config": "^2.7.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@playwright/test": "^1.40.1",

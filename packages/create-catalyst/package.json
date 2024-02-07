@@ -15,7 +15,6 @@
     "node": ">=18.16"
   },
   "devDependencies": {
-    "@bigcommerce/catalyst-configs": "workspace:^",
     "@bigcommerce/eslint-config": "^2.7.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@types/node": "^18.17.12",

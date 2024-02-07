@@ -1,10 +1,10 @@
 // @ts-check
 
-const baseConfig = require('@bigcommerce/catalyst-configs/prettier.config');
-
 /** @type {import("prettier").Config} */
 const config = {
-  ...baseConfig,
+  printWidth: 100,
+  singleQuote: true,
+  trailingComma: 'all',
   plugins: ['prettier-plugin-tailwindcss'],
   tailwindFunctions: ['cs'],
 };
