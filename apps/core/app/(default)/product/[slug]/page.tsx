@@ -36,35 +36,38 @@ const ProductDetails = ({ product }: { product: NonNullable<Product> }) => {
       </Suspense>
 
       {product.prices && (
-        <div className="my-6">
+        <div className="my-6 text-h4">
           {showPriceRange ? (
-            <p className="text-h4">
+            <span>
               {currencyFormatter.format(product.prices.priceRange.min.value)} -{' '}
               {currencyFormatter.format(product.prices.priceRange.max.value)}
-            </p>
+            </span>
           ) : (
             <>
               {product.prices.retailPrice?.value !== undefined && (
-                <p className="text-h4">
+                <span>
                   MSRP:{' '}
                   <span className="line-through">
                     {currencyFormatter.format(product.prices.retailPrice.value)}
                   </span>
-                </p>
+                  <br />
+                </span>
               )}
               {product.prices.salePrice?.value !== undefined &&
               product.prices.basePrice?.value !== undefined ? (
                 <>
-                  Was:{' '}
-                  <span className="line-through">
-                    {currencyFormatter.format(product.prices.basePrice.value)}
+                  <span>
+                    Was:{' '}
+                    <span className="line-through">
+                      {currencyFormatter.format(product.prices.basePrice.value)}
+                    </span>
                   </span>
                   <br />
-                  <>Now: {currencyFormatter.format(product.prices.salePrice.value)}</>
+                  <span>Now: {currencyFormatter.format(product.prices.salePrice.value)}</span>
                 </>
               ) : (
                 product.prices.price.value && (
-                  <>{currencyFormatter.format(product.prices.price.value)}</>
+                  <span>{currencyFormatter.format(product.prices.price.value)}</span>
                 )
               )}
             </>
