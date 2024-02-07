@@ -2,7 +2,6 @@
   "name": "@bigcommerce/components",
   "description": "BigCommerce components for Catalyst.",
   "version": "0.1.0",
-  "private": true,
   "sideEffects": false,
   "exports": {
     "./package.json": "./package.json",
