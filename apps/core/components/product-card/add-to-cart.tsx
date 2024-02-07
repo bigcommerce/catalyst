@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@bigcommerce/components/Button';
+import { Button } from '@bigcommerce/components/button';
 import { Loader2 as Spinner } from 'lucide-react';
 import { useFormStatus } from 'react-dom';
 

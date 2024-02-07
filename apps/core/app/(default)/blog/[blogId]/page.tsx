@@ -4,8 +4,8 @@ import {
   BlogPostDate,
   BlogPostImage,
   BlogPostTitle,
-} from '@bigcommerce/components/BlogPostCard';
-import { Tag, TagContent } from '@bigcommerce/components/Tag';
+} from '@bigcommerce/components/blog-post-card';
+import { Tag, TagContent } from '@bigcommerce/components/tag';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';

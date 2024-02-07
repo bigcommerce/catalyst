@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@bigcommerce/components/Button';
-import { Rating } from '@bigcommerce/components/Rating';
+import { Button } from '@bigcommerce/components/button';
+import { Rating } from '@bigcommerce/components/rating';
 import {
   Sheet,
   SheetClose,
@@ -10,7 +10,7 @@ import {
   SheetOverlay,
   SheetTitle,
   SheetTrigger,
-} from '@bigcommerce/components/Sheet';
+} from '@bigcommerce/components/sheet';
 import { Loader2 as Spinner } from 'lucide-react';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';

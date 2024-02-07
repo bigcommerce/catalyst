@@ -5,8 +5,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@bigcommerce/components/Accordion';
-import { Button } from '@bigcommerce/components/Button';
+} from '@bigcommerce/components/accordion';
+import { Button } from '@bigcommerce/components/button';
 import { X } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';

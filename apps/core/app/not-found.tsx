@@ -1,4 +1,4 @@
-import { Message } from '@bigcommerce/components/Message';
+import { Message } from '@bigcommerce/components/message';
 import { ShoppingCart } from 'lucide-react';
 
 import { getFeaturedProducts } from '~/client/queries/get-featured-products';

@@ -1,6 +1,6 @@
 'use client';
 
-import { Select, SelectContent, SelectItem } from '@bigcommerce/components/Select';
+import { Select, SelectContent, SelectItem } from '@bigcommerce/components/select';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export function SortBy() {

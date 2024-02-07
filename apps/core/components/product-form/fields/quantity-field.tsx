@@ -1,5 +1,5 @@
-import { Counter } from '@bigcommerce/components/Counter';
-import { Label } from '@bigcommerce/components/Label';
+import { Counter } from '@bigcommerce/components/counter';
+import { Label } from '@bigcommerce/components/label';
 
 import { useProductFieldController } from '../use-product-form';
 

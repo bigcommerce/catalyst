@@ -1,5 +1,5 @@
-import { Checkbox } from '@bigcommerce/components/Checkbox';
-import { Label } from '@bigcommerce/components/Label';
+import { Checkbox } from '@bigcommerce/components/checkbox';
+import { Label } from '@bigcommerce/components/label';
 
 import { getProduct } from '~/client/queries/get-product';
 import { ExistingResultType, Unpacked } from '~/client/util';

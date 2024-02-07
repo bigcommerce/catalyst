@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@bigcommerce/components/Button';
+import { Button } from '@bigcommerce/components/button';
 import { AlertCircle, Check, Heart } from 'lucide-react';
 import { FormProvider } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
