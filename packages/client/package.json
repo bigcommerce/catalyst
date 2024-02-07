@@ -2,7 +2,6 @@
   "name": "@bigcommerce/catalyst-client",
   "description": "BigCommerce API client for Catalyst.",
   "version": "0.1.0",
-  "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
