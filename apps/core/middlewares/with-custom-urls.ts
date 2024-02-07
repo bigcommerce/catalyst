@@ -7,6 +7,7 @@ import { getRoute } from '~/client/queries/getRoute';
 import { kv } from '../lib/kv';
 
 import { type MiddlewareFactory } from './compose-middlewares';
+import path from 'path';
 
 type Node = Awaited<ReturnType<typeof getRoute>>;
 
@@ -18,9 +19,9 @@ const createRewriteUrl = (path: string, request: NextRequest) => {
   return url;
 };
 
-const getExistingRoute = async (request: NextRequest) => {
+const getExistingRoute = async (pathname: string) => {
   try {
-    const route = await kv.get<{ node: Node }>(request.nextUrl.pathname);
+    const route = await kv.get<{ node: Node }>(pathname);
 
     return route?.node;
   } catch (error) {
@@ -29,10 +30,10 @@ const getExistingRoute = async (request: NextRequest) => {
   }
 };
 
-const setKvRoute = async (request: NextRequest, node: Node) => {
+const setKvRoute = async (pathname: string, node: Node) => {
   try {
     await kv.set(
-      request.nextUrl.pathname,
+      pathname,
       { node },
       {
         ex: 60 * 30, // 30 minutes
@@ -44,18 +45,18 @@ const setKvRoute = async (request: NextRequest, node: Node) => {
   }
 };
 
-const getCustomUrlNode = async (request: NextRequest) => {
+const getCustomUrlNode = async (pathname: string) => {
   try {
-    const route = await getExistingRoute(request);
+    const route = await getExistingRoute(pathname);
 
     if (route !== undefined) {
       return route;
     }
 
-    const node = await getRoute(request.nextUrl.pathname);
+    const node = await getRoute(pathname);
 
     if (node !== undefined) {
-      await setKvRoute(request, node);
+      await setKvRoute(pathname, node);
     }
 
     return node;
@@ -71,7 +72,7 @@ export const withCustomUrls: MiddlewareFactory = (next) => {
     const cartId = cookies().get('cartId');
     let postfix = '';
 
-    // If the request is not dynamic, we can serve the static version
+    // If the request is not dynamic, serve the static version
     if (
       !request.nextUrl.search && 
       !customerId && 
@@ -81,10 +82,10 @@ export const withCustomUrls: MiddlewareFactory = (next) => {
       postfix = '/static';
     }
 
-    const { pathname } = new URL(request.url);
+    const { pathname, basePath } = request.nextUrl;
 
     // If the request is for the home page, skip this middleware
-    if (pathname === '/') {
+    if (pathname === '/' || pathname === basePath) {
       if(postfix) {
         return NextResponse.rewrite(createRewriteUrl(postfix, request));
       } else {
@@ -94,7 +95,7 @@ export const withCustomUrls: MiddlewareFactory = (next) => {
 
     // Ask the GraphQL API for the node that matches the current URL
     // If KV is configured this should come from cache
-    const node = await getCustomUrlNode(request);
+    const node = await getCustomUrlNode(pathname);
 
     switch (node?.__typename) {
       case 'Brand': {
