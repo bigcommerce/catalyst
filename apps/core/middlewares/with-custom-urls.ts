@@ -67,14 +67,24 @@ const getCustomUrlNode = async (request: NextRequest) => {
 
 export const withCustomUrls: MiddlewareFactory = (next) => {
   return async (request, event) => {
-    const node = await getCustomUrlNode(request);
     const customerId = await getSessionCustomerId();
     const cartId = cookies().get('cartId');
     let postfix = '';
 
     if (!request.nextUrl.search && !customerId && !cartId && request.method === 'GET') {
       postfix = '/static';
+
+      const { pathname } = new URL(request.url);
+      if (pathname === '/' && postfix) {
+        const url = createRewriteUrl(postfix, request);
+
+        return NextResponse.rewrite(url);
+      }
     }
+
+    // Ask the GraphQL API for the node that matches the current URL
+    // If KV is configured this should come from cache
+    const node = await getCustomUrlNode(request);
 
     switch (node?.__typename) {
       case 'Brand': {
@@ -96,14 +106,6 @@ export const withCustomUrls: MiddlewareFactory = (next) => {
       }
 
       default: {
-        const { pathname } = new URL(request.url);
-
-        if (pathname === '/' && postfix) {
-          const url = createRewriteUrl(postfix, request);
-
-          return NextResponse.rewrite(url);
-        }
-
         return next(request, event);
       }
     }
