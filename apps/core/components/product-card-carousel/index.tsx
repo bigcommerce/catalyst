@@ -4,7 +4,7 @@ import {
   CarouselNextIndicator,
   CarouselPreviousIndicator,
   CarouselSlide,
-} from '@bigcommerce/components/Carousel';
+} from '@bigcommerce/components/carousel';
 import { useId } from 'react';
 
 import { Product, ProductCard } from '../product-card';

@@ -2,7 +2,7 @@ import {
   Footer as ComponentsFooter,
   FooterNav,
   FooterSection,
-} from '@bigcommerce/components/Footer';
+} from '@bigcommerce/components/footer';
 import React from 'react';
 
 import { AvailableWebPages, getWebPages } from '~/client/queries/get-web-pages';

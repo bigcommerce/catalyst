@@ -1,4 +1,4 @@
-import { Button } from '@bigcommerce/components/Button';
+import { Button } from '@bigcommerce/components/button';
 import {
   NavigationMenu,
   NavigationMenuCollapsed,
@@ -8,7 +8,7 @@ import {
   NavigationMenuList,
   NavigationMenuToggle,
   NavigationMenuTrigger,
-} from '@bigcommerce/components/NavigationMenu';
+} from '@bigcommerce/components/navigation-menu';
 import { ChevronDown, LogOut, ShoppingCart, User } from 'lucide-react';
 import { ReactNode, Suspense } from 'react';
 

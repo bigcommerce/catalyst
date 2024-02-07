@@ -6,7 +6,7 @@ import {
   BlogPostImage,
   BlogPostTitle,
   BlogPostCard as ComponentsBlogPostCard,
-} from '@bigcommerce/components/BlogPostCard';
+} from '@bigcommerce/components/blog-post-card';
 import Image from 'next/image';
 
 import { getBlogPosts } from '~/client/queries/get-blog-posts';

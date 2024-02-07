@@ -1,4 +1,4 @@
-import { Button } from '@bigcommerce/components/Button';
+import { Button } from '@bigcommerce/components/button';
 
 import { Link } from '~/components/link';
 

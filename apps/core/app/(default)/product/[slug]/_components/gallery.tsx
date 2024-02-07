@@ -8,7 +8,7 @@ import {
   GalleryThumbnail,
   GalleryThumbnailItem,
   GalleryThumbnailList,
-} from '@bigcommerce/components/Gallery';
+} from '@bigcommerce/components/gallery';
 import Image from 'next/image';
 
 import { getProduct } from '~/client/queries/get-product';

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@bigcommerce/components/Button';
+import { Button } from '@bigcommerce/components/button';
 import {
   Field,
   FieldControl,
@@ -8,9 +8,9 @@ import {
   FieldMessage,
   Form,
   FormSubmit,
-} from '@bigcommerce/components/Form';
-import { Input } from '@bigcommerce/components/Input';
-import { Message } from '@bigcommerce/components/Message';
+} from '@bigcommerce/components/form';
+import { Input } from '@bigcommerce/components/input';
+import { Message } from '@bigcommerce/components/message';
 import { Loader2 as Spinner } from 'lucide-react';
 import { ChangeEvent, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';

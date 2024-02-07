@@ -2,7 +2,7 @@ import {
   BreadcrumbDivider,
   BreadcrumbItem,
   Breadcrumbs as ComponentsBreadcrumbs,
-} from '@bigcommerce/components/Breadcrumbs';
+} from '@bigcommerce/components/breadcrumbs';
 import { ChevronRight } from 'lucide-react';
 import { Fragment } from 'react';
 

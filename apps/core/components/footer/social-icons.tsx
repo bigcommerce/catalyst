@@ -1,4 +1,4 @@
-import { FooterNav, FooterNavGroupList, FooterNavLink } from '@bigcommerce/components/Footer';
+import { FooterNav, FooterNavGroupList, FooterNavLink } from '@bigcommerce/components/footer';
 import {
   SiFacebook,
   SiInstagram,

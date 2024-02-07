@@ -1,9 +1,9 @@
-import { Label } from '@bigcommerce/components/Label';
-import { PickList, PickListItem } from '@bigcommerce/components/PickList';
-import { RadioGroup, RadioItem } from '@bigcommerce/components/RadioGroup';
-import { RectangleList, RectangleListItem } from '@bigcommerce/components/RectangleList';
-import { Select, SelectContent, SelectItem } from '@bigcommerce/components/Select';
-import { Swatch, SwatchItem } from '@bigcommerce/components/Swatch';
+import { Label } from '@bigcommerce/components/label';
+import { PickList, PickListItem } from '@bigcommerce/components/pick-list';
+import { RadioGroup, RadioItem } from '@bigcommerce/components/radio-group';
+import { RectangleList, RectangleListItem } from '@bigcommerce/components/rectangle-list';
+import { Select, SelectContent, SelectItem } from '@bigcommerce/components/select';
+import { Swatch, SwatchItem } from '@bigcommerce/components/swatch';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 

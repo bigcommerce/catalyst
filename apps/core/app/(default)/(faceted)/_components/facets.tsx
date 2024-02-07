@@ -5,12 +5,12 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@bigcommerce/components/Accordion';
-import { Button } from '@bigcommerce/components/Button';
-import { Checkbox } from '@bigcommerce/components/Checkbox';
-import { Input } from '@bigcommerce/components/Input';
-import { Label } from '@bigcommerce/components/Label';
-import { Rating } from '@bigcommerce/components/Rating';
+} from '@bigcommerce/components/accordion';
+import { Button } from '@bigcommerce/components/button';
+import { Checkbox } from '@bigcommerce/components/checkbox';
+import { Input } from '@bigcommerce/components/input';
+import { Label } from '@bigcommerce/components/label';
+import { Rating } from '@bigcommerce/components/rating';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useRef } from 'react';
 

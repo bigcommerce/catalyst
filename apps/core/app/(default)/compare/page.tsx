@@ -1,5 +1,5 @@
-import { Button } from '@bigcommerce/components/Button';
-import { Rating } from '@bigcommerce/components/Rating';
+import { Button } from '@bigcommerce/components/button';
+import { Rating } from '@bigcommerce/components/rating';
 import Image from 'next/image';
 import * as z from 'zod';
 

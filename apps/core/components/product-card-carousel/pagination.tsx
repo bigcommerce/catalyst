@@ -1,6 +1,6 @@
 'use client';
 
-import { CarouselPagination, CarouselPaginationTab } from '@bigcommerce/components/Carousel';
+import { CarouselPagination, CarouselPaginationTab } from '@bigcommerce/components/carousel';
 
 import { Product } from '../product-card';
 
