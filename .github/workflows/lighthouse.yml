@@ -32,7 +32,7 @@ jobs:
         uses: treosh/lighthouse-ci-action@v10
         with:
           urls: |
-            ${{ github.event.deployment_status.target_url }}
+            ${{ github.event.deployment_status.target_url }}?x-vercel-protection-bypass=${{ secrets.VERCEL_PROTECTION_BYPASS }}&x-vercel-set-bypass-cookie=true
           uploadArtifacts: true
           temporaryPublicStorage: true
           runs: 1
