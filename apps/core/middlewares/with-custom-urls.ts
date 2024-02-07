@@ -71,14 +71,24 @@ export const withCustomUrls: MiddlewareFactory = (next) => {
     const cartId = cookies().get('cartId');
     let postfix = '';
 
-    if (!request.nextUrl.search && !customerId && !cartId && request.method === 'GET') {
+    // If the request is not dynamic, we can serve the static version
+    if (
+      !request.nextUrl.search && 
+      !customerId && 
+      !cartId && 
+      request.method === 'GET'
+      ) {
       postfix = '/static';
+    }
 
-      const { pathname } = new URL(request.url);
-      if (pathname === '/' && postfix) {
-        const url = createRewriteUrl(postfix, request);
+    const { pathname } = new URL(request.url);
 
-        return NextResponse.rewrite(url);
+    // If the request is for the home page, skip this middleware
+    if (pathname === '/') {
+      if(postfix) {
+        return NextResponse.rewrite(createRewriteUrl(postfix, request));
+      } else {
+        return next(request, event);
       }
     }
 
