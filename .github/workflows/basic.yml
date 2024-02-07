@@ -1,4 +1,4 @@
-name: Basic workflow
+name: Lint, Typecheck, GraphQL Codegen
 
 on:
   push:
