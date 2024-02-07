@@ -129,8 +129,6 @@ export const ValidityStateWrapper: Story = {
                 validationState = false;
               }
 
-              console.log('%c validityStateState', 'color: #aaf615', validity);
-
               return validationState;
             };
 

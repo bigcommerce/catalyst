@@ -1,4 +1,8 @@
-import { BreadcrumbDivider, BreadcrumbItem, Breadcrumbs } from '@bigcommerce/components/Breadcrumbs';
+import {
+  BreadcrumbDivider,
+  BreadcrumbItem,
+  Breadcrumbs,
+} from '@bigcommerce/components/Breadcrumbs';
 import type { Meta, StoryObj } from '@storybook/react';
 import { ChevronRight } from 'lucide-react';
 

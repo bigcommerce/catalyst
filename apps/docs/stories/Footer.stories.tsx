@@ -15,7 +15,7 @@ import {
   MastercardIcon,
   PayPalIcon,
   VisaIcon,
-} from '../components/PaymentIcons';
+} from '../components/payment-icons';
 
 const meta: Meta<typeof Footer> = {
   component: Footer,
