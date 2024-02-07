@@ -2,13 +2,27 @@ import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { getSessionCustomerId } from '~/auth';
+import { StorefrontStatusType } from '~/client/generated/graphql';
 import { getRoute } from '~/client/queries/getRoute';
+import { getStoreStatus } from '~/client/queries/getStoreStatus';
 
 import { kv } from '../lib/kv';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
 type Node = Awaited<ReturnType<typeof getRoute>>;
+
+interface RouteCache {
+  node: Node;
+  expiryTime: number;
+}
+
+const STORE_STATUS_KEY = 'v2_storeStatus';
+
+interface StorefrontStatusCache {
+  status: StorefrontStatusType;
+  expiryTime: number;
+}
 
 const createRewriteUrl = (path: string, request: NextRequest) => {
   const url = new URL(path, request.url);
@@ -18,11 +32,56 @@ const createRewriteUrl = (path: string, request: NextRequest) => {
   return url;
 };
 
-const getExistingRoute = async (request: NextRequest) => {
+const getExistingRouteInfo = async (request: NextRequest) => {
   try {
-    const route = await kv.get<{ node: Node }>(request.nextUrl.pathname);
+    const pathname = request.nextUrl.pathname;
 
-    return route?.node;
+    const [route, status] = await kv.mget<RouteCache | StorefrontStatusCache>(
+      `v2_${pathname}`,
+      STORE_STATUS_KEY,
+    );
+
+    if (status && status.expiryTime < Date.now()) {
+      void fetch(new URL(`/api/revalidate/store-status`, request.url), {
+        method: 'POST',
+        headers: {
+          'x-internal-token': process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '',
+        },
+      });
+    }
+
+    if (route && route.expiryTime < Date.now()) {
+      void fetch(new URL(`/api/revalidate/route`, request.url), {
+        method: 'POST',
+        body: JSON.stringify({ pathname }),
+        headers: {
+          'x-internal-token': process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '',
+        },
+      });
+    }
+
+    return {
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      node: (route as RouteCache).node,
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      status: (status as StorefrontStatusCache).status,
+    };
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+
+    return {
+      node: undefined,
+      status: undefined,
+    };
+  }
+};
+
+const setKvStatus = async (status?: StorefrontStatusType | null) => {
+  try {
+    const expiryTime = Date.now() + 1000 * 60 * 5; // 5 minutes;
+
+    await kv.set(STORE_STATUS_KEY, { status, expiryTime });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
@@ -31,43 +90,56 @@ const getExistingRoute = async (request: NextRequest) => {
 
 const setKvRoute = async (request: NextRequest, node: Node) => {
   try {
-    await kv.set(
-      request.nextUrl.pathname,
-      { node },
-      {
-        ex: 60 * 30, // 30 minutes
-      },
-    );
+    const expiryTime = Date.now() + 1000 * 60 * 30; // 30 minutes;
+
+    await kv.set(`v2_${request.nextUrl.pathname}`, { node, expiryTime });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
   }
 };
 
-const getCustomUrlNode = async (request: NextRequest) => {
+const getRouteInfo = async (request: NextRequest) => {
   try {
-    const route = await getExistingRoute(request);
+    let { node, status } = await getExistingRouteInfo(request);
 
-    if (route !== undefined) {
-      return route;
+    if (status === undefined) {
+      const newStatus = await getStoreStatus();
+
+      if (newStatus) {
+        status = newStatus;
+        await setKvStatus(status);
+      }
     }
 
-    const node = await getRoute(request.nextUrl.pathname);
+    if (node === undefined) {
+      const newNode = await getRoute(request.nextUrl.pathname);
 
-    if (node !== undefined) {
+      node = newNode;
       await setKvRoute(request, node);
     }
 
-    return node;
+    return { node, status };
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
+
+    return {
+      node: undefined,
+      status: undefined,
+    };
   }
 };
 
 export const withCustomUrls: MiddlewareFactory = (next) => {
   return async (request, event) => {
-    const node = await getCustomUrlNode(request);
+    const { node, status } = await getRouteInfo(request);
+
+    if (status === 'MAINTENANCE') {
+      // 503 status code not working - https://github.com/vercel/next.js/issues/50155
+      return NextResponse.rewrite(new URL(`/maintenance`, request.url), { status: 503 });
+    }
+
     const customerId = await getSessionCustomerId();
     const cartId = cookies().get('cartId');
     let postfix = '';
