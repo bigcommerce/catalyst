@@ -1,8 +1,6 @@
 import { Label } from '@bigcommerce/components/Label';
-import { PickList, PickListIndicator, PickListItem } from '@bigcommerce/components/PickList';
+import { PickList, PickListItem } from '@bigcommerce/components/PickList';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Paintbrush } from 'lucide-react';
-import { Fragment } from 'react';
 
 const meta: Meta<typeof PickList> = {
   component: PickList,
