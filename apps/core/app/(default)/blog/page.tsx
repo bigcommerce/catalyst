@@ -3,8 +3,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { getBlogPosts } from '~/client/queries/get-blog-posts';
-import { BlogPostCard } from '~/components/BlogPostCard';
-import { Link } from '~/components/Link';
+import { BlogPostCard } from '~/components/blog-post-card';
+import { Link } from '~/components/link';
 
 interface Props {
   searchParams: { [key: string]: string | string[] | undefined };

@@ -2,8 +2,8 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
 import { getBlogPosts } from '~/client/queries/get-blog-posts';
-import { BlogPostCard } from '~/components/BlogPostCard';
-import { Link } from '~/components/Link';
+import { BlogPostCard } from '~/components/blog-post-card';
+import { Link } from '~/components/link';
 
 interface Props {
   params: {

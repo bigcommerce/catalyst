@@ -4,9 +4,9 @@ import Image from 'next/image';
 import * as z from 'zod';
 
 import { getProducts } from '~/client/queries/get-products';
-import { Link } from '~/components/Link';
-import { Pricing } from '~/components/Pricing';
-import { SearchForm } from '~/components/SearchForm';
+import { Link } from '~/components/link';
+import { Pricing } from '~/components/pricing';
+import { SearchForm } from '~/components/search-form';
 import { cn } from '~/lib/utils';
 
 import { AddToCartForm } from './add-to-cart-form';

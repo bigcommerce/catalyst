@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 
 import { getReCaptchaSettings } from '~/client/queries/get-recaptcha-settings';
 import { getWebPage } from '~/client/queries/get-web-page';
-import { ContactUs } from '~/components/Forms';
+import { ContactUs } from '~/components/forms';
 
 import { PageContent } from '../_components/page-content';
 

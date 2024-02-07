@@ -3,7 +3,7 @@
 import { AlertCircle, Check } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
-import { Link } from '~/components/Link';
+import { Link } from '~/components/link';
 
 import { addToCart } from './_actions/add-to-cart';
 import { AddToCart } from './add-to-cart';

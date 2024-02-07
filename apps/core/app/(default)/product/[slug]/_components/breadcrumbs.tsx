@@ -1,5 +1,5 @@
 import { getProduct } from '~/client/queries/get-product';
-import { Link } from '~/components/Link';
+import { Link } from '~/components/link';
 import { cn } from '~/lib/utils';
 
 interface Props {

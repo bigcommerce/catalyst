@@ -1,8 +1,8 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-import { ProductCard } from 'components/ProductCard';
-import { SearchForm } from 'components/SearchForm';
-import { Link } from '~/components/Link';
+import { Link } from '~/components/link';
+import { ProductCard } from '~/components/product-card';
+import { SearchForm } from '~/components/search-form';
 
 import { FacetedSearch } from '../_components/faceted-search';
 import { MobileSideNav } from '../_components/mobile-side-nav';

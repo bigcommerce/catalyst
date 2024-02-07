@@ -1,5 +1,5 @@
 import { getCategoryTree } from '~/client/queries/get-category-tree';
-import { Link } from '~/components/Link';
+import { Link } from '~/components/link';
 
 interface Props {
   categoryId: number;

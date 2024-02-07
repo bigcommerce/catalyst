@@ -11,8 +11,8 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
 import { getBlogPost } from '~/client/queries/get-blost-post';
-import { Link } from '~/components/Link';
-import { SharingLinks } from '~/components/SharingLinks';
+import { Link } from '~/components/link';
+import { SharingLinks } from '~/components/sharing-links';
 
 interface Props {
   params: {

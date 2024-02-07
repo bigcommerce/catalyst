@@ -15,7 +15,7 @@ import { Loader2 as Spinner } from 'lucide-react';
 import { ChangeEvent, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 
-import { Link } from '~/components/Link';
+import { Link } from '~/components/link';
 
 import { submitLoginForm } from './_actions/submit-login-form';
 
