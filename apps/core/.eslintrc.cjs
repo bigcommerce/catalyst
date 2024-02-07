@@ -28,6 +28,7 @@ const config = {
     'check-file/filename-naming-convention': 'off',
     'check-file/folder-naming-convention': 'off',
   },
+  ignorePatterns: ['client/generated/**/*.ts'],
 };
 
 module.exports = config;
