@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 
 import { getSessionCustomerId } from '~/auth';
 import { StorefrontStatusType } from '~/client/generated/graphql';
@@ -32,16 +33,26 @@ const createRewriteUrl = (path: string, request: NextRequest) => {
   return url;
 };
 
+const StorefrontStatusCacheSchema = z.object({
+  status: z.nativeEnum(StorefrontStatusType),
+  expiryTime: z.number(),
+});
+
+const RouteCacheSchema = z.object({
+  node: z.nullable(z.object({ __typename: z.string(), entityId: z.optional(z.number()) })),
+  expiryTime: z.number(),
+});
+
 const getExistingRouteInfo = async (request: NextRequest) => {
   try {
     const pathname = request.nextUrl.pathname;
 
-    const [route, status] = await kv.mget<RouteCache | StorefrontStatusCache>(
+    const [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
       `v2_${pathname}`,
       STORE_STATUS_KEY,
     );
 
-    if (status && status.expiryTime < Date.now()) {
+    if (statusCache && statusCache.expiryTime < Date.now()) {
       void fetch(new URL(`/api/revalidate/store-status`, request.url), {
         method: 'POST',
         headers: {
@@ -50,7 +61,7 @@ const getExistingRouteInfo = async (request: NextRequest) => {
       });
     }
 
-    if (route && route.expiryTime < Date.now()) {
+    if (routeCache && routeCache.expiryTime < Date.now()) {
       void fetch(new URL(`/api/revalidate/route`, request.url), {
         method: 'POST',
         body: JSON.stringify({ pathname }),
@@ -60,11 +71,13 @@ const getExistingRouteInfo = async (request: NextRequest) => {
       });
     }
 
+    const parsedRoute = RouteCacheSchema.safeParse(routeCache);
+    const parsedStatus = StorefrontStatusCacheSchema.safeParse(statusCache);
+
     return {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      node: (route as RouteCache).node,
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      status: (status as StorefrontStatusCache).status,
+      node: parsedRoute.success ? (parsedRoute.data.node as Node) : undefined,
+      status: parsedStatus.success ? parsedStatus.data.status : undefined,
     };
   } catch (error) {
     // eslint-disable-next-line no-console
