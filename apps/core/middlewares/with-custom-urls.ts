@@ -95,8 +95,17 @@ export const withCustomUrls: MiddlewareFactory = (next) => {
         return NextResponse.rewrite(url);
       }
 
-      default:
+      default: {
+        const { pathname } = new URL(request.url);
+
+        if (pathname === '/' && postfix) {
+          const url = createRewriteUrl(postfix, request);
+
+          return NextResponse.rewrite(url);
+        }
+
         return next(request, event);
+      }
     }
   };
 };

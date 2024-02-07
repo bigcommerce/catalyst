@@ -25,3 +25,4 @@ export async function generateStaticParams() {
 }
 
 export const dynamic = 'force-static';
+export const revalidate = 600;
