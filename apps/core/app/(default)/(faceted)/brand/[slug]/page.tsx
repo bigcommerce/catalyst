@@ -52,7 +52,7 @@ export default async function Brand({ params, searchParams }: Props) {
   return (
     <div>
       <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
-        <h1 className="mb-4 text-h2 lg:mb-0">{brand.name}</h1>
+        <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{brand.name}</h1>
 
         <div className="flex flex-col items-center gap-3 whitespace-nowrap md:flex-row">
           <MobileSideNav>

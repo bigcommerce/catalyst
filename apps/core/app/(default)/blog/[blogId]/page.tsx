@@ -39,7 +39,7 @@ export default async function BlogPostPage({ params: { blogId } }: Props) {
 
   return (
     <div className="mx-auto max-w-4xl">
-      <h1 className="mb-2 text-h3 lg:text-h2">{blogPost.name}</h1>
+      <h1 className="mb-2 text-3xl font-black lg:text-5xl">{blogPost.name}</h1>
 
       <div className="mb-8 flex">
         <BlogPostDate className="mb-0">
@@ -60,10 +60,10 @@ export default async function BlogPostPage({ params: { blogId } }: Props) {
         </BlogPostImage>
       ) : (
         <BlogPostBanner className="mb-6 h-40 sm:h-80 lg:h-96">
-          <BlogPostTitle className="text-h4" variant="inBanner">
+          <BlogPostTitle variant="inBanner">
             <span className="text-blue-primary">{blogPost.name}</span>
           </BlogPostTitle>
-          <BlogPostDate className="text-h5" variant="inBanner">
+          <BlogPostDate variant="inBanner">
             <span className="text-blue-primary">
               {new Intl.DateTimeFormat('en-US').format(new Date(blogPost.publishedDate.utc))}
             </span>

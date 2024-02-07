@@ -165,13 +165,13 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
               />
             </FieldControl>
             <FieldMessage
-              className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-red-200"
+              className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200"
               match="valueMissing"
             >
               Enter a valid email such as name@domain.com
             </FieldMessage>
             <FieldMessage
-              className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-red-200"
+              className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200"
               match="typeMismatch"
             >
               Enter a valid email such as name@domain.com
@@ -195,7 +195,7 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
               />
             </FieldControl>
             <FieldMessage
-              className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-red-200"
+              className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200"
               match="valueMissing"
             >
               Please provide a valid Comments
@@ -212,7 +212,7 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
                 sitekey={reCaptchaSettings?.siteKey ?? ''}
               />
               {!isReCaptchaValid && (
-                <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-red-200">
+                <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200">
                   Pass ReCAPTCHA check
                 </span>
               )}

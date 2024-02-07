@@ -14,7 +14,7 @@ export const AddToCart = ({
   const { pending } = useFormStatus();
 
   return (
-    <Button aria-label={productName} className="mt-2" disabled={disabled || pending} type="submit">
+    <Button aria-label={productName} disabled={disabled || pending} type="submit">
       {pending ? (
         <>
           <Spinner aria-hidden="true" className="animate-spin" />

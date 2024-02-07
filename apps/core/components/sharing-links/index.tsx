@@ -22,7 +22,7 @@ export const SharingLinks = ({
 
   return (
     <div className="mb-10 flex items-center [&>*:not(:last-child)]:me-2.5">
-      <h3 className="text-h5">Share</h3>
+      <h3 className="text-xl font-bold lg:text-2xl">Share</h3>
       <a
         className="hover:text-blue-primary focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
         href={`https://facebook.com/sharer/sharer.php?u=${encodedUrl}`}

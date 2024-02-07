@@ -111,7 +111,7 @@ export const ProductSheetContent = ({ productId }: { productId: number }) => {
               <p className="mb-2 font-semibold uppercase text-gray-500">{product.brand.name}</p>
             )}
 
-            <h5 className="mb-2 text-h5">{product.name}</h5>
+            <h5 className="mb-2 text-xl font-bold lg:text-2xl">{product.name}</h5>
 
             <div className="mb-2 flex items-center gap-3">
               <p
@@ -124,7 +124,7 @@ export const ProductSheetContent = ({ productId }: { productId: number }) => {
                 <Rating size={16} value={product.reviewSummary.averageRating || 0} />
               </p>
 
-              <div className="text-sm text-gray-500" id={summaryId}>
+              <div className="text-xs font-normal text-gray-500" id={summaryId}>
                 {product.reviewSummary.averageRating !== 0 && (
                   <>
                     <span className="sr-only">Rating:</span>
@@ -140,14 +140,14 @@ export const ProductSheetContent = ({ productId }: { productId: number }) => {
             {product.prices && (
               <div>
                 {showPriceRange ? (
-                  <p className="text-h4">
+                  <p className="text-2xl font-bold lg:text-3xl">
                     {currencyFormatter.format(product.prices.priceRange.min.value)} -{' '}
                     {currencyFormatter.format(product.prices.priceRange.max.value)}
                   </p>
                 ) : (
                   <>
                     {product.prices.retailPrice?.value !== undefined && (
-                      <p className="text-h4">
+                      <p className="text-2xl font-bold lg:text-3xl">
                         MSRP:{' '}
                         <span className="line-through">
                           {currencyFormatter.format(product.prices.retailPrice.value)}

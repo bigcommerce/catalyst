@@ -155,7 +155,9 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
           {searchResults && searchResults.products.length > 0 && (
             <div className="mt-8 grid overflow-auto px-1 lg:grid-cols-3 lg:gap-6">
               <section>
-                <h3 className="mb-6 border-b border-gray-200 pb-3 text-h5">Categories</h3>
+                <h3 className="mb-6 border-b border-gray-200 pb-3 text-xl font-bold lg:text-2xl">
+                  Categories
+                </h3>
                 <ul id="categories" role="listbox">
                   {Object.entries(
                     searchResults.products.reduce<Record<string, string>>((categories, product) => {
@@ -182,7 +184,9 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
                 </ul>
               </section>
               <section>
-                <h3 className="mb-6 border-b border-gray-200 pb-3 text-h5">Products</h3>
+                <h3 className="mb-6 border-b border-gray-200 pb-3 text-xl font-bold lg:text-2xl">
+                  Products
+                </h3>
                 <ul id="products" role="listbox">
                   {searchResults.products.map((product) => {
                     return (
@@ -200,13 +204,13 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
                               width={80}
                             />
                           ) : (
-                            <span className="flex h-20 w-20 flex-shrink-0 items-center justify-center bg-gray-200 text-h6 text-gray-500">
+                            <span className="flex h-20 w-20 flex-shrink-0 items-center justify-center bg-gray-200 text-lg font-bold text-gray-500">
                               Photo
                             </span>
                           )}
 
                           <span className="flex flex-col">
-                            <p className="text-h5">{product.name}</p>
+                            <p className="text-lg font-bold lg:text-2xl">{product.name}</p>
                             <Pricing prices={product.prices} />
                           </span>
                         </a>
@@ -216,7 +220,9 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
                 </ul>
               </section>
               <section>
-                <h3 className="mb-6 border-b border-gray-200 pb-3 text-h5">Brands</h3>
+                <h3 className="mb-6 border-b border-gray-200 pb-3 text-xl font-bold lg:text-2xl">
+                  Brands
+                </h3>
                 <ul id="brands" role="listbox">
                   {Object.entries(
                     searchResults.products.reduce<Record<string, string>>((brands, product) => {
