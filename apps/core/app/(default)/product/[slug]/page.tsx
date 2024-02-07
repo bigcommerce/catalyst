@@ -64,7 +64,7 @@ const ProductDetails = ({ product }: { product: NonNullable<Product> }) => {
                 </>
               ) : (
                 product.prices.price.value && (
-                  <>{currencyFormatter.format(product.prices.price.value)}</>
+                  <p className="text-h4">{currencyFormatter.format(product.prices.price.value)}</p>
                 )
               )}
             </>
