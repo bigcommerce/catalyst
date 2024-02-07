@@ -68,7 +68,7 @@ const RouteCacheSchema = z.object({
 const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promise<RouteCache> => {
   const routeCache: RouteCache = {
     route: await getRoute(pathname),
-    expiryTime: Date.now() + 1000 * 60 * 30, // 30 minutes
+    expiryTime: Date.now() + 1000 * 60 * 60 * 24, // 24 hours
   };
 
   event.waitUntil(kv.set(routeCacheKvKey(pathname), routeCache));
@@ -85,7 +85,7 @@ const updateStatusCache = async (event: NextFetchEvent): Promise<StorefrontStatu
 
   const statusCache: StorefrontStatusCache = {
     status,
-    expiryTime: Date.now() + 1000 * 60 * 5, // 5 minutes
+    expiryTime: Date.now() + 1000 * 60 * 60 * 24, // 24 hours
   };
 
   event.waitUntil(kv.set(STORE_STATUS_KEY, statusCache));

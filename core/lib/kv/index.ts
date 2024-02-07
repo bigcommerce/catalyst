@@ -101,6 +101,12 @@ async function createKVAdapter() {
     return new BcKvAdapter();
   }
 
+  if (process.env.ENABLE_EDGE_CONFIG === 'true') {
+    const { VercelEdgeConfigAdapter } = await import('./adapters/vercel-edge-config');
+
+    return new VercelEdgeConfigAdapter();
+  }
+
   if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
     const { VercelKvAdapter } = await import('./adapters/vercel');
 
