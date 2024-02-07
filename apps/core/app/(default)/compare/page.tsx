@@ -9,7 +9,7 @@ import { Pricing } from '~/components/pricing';
 import { SearchForm } from '~/components/search-form';
 import { cn } from '~/lib/utils';
 
-import { AddToCartForm } from './add-to-cart-form';
+import { AddToCartForm } from './_components/add-to-cart-form';
 
 const MAX_COMPARE_LIMIT = 10;
 

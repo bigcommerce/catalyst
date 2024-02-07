@@ -17,7 +17,7 @@ import { useFormState, useFormStatus } from 'react-dom';
 
 import { Link } from '~/components/link';
 
-import { submitLoginForm } from './_actions/submit-login-form';
+import { submitLoginForm } from '../_actions/submit-login-form';
 
 export const LoginForm = () => {
   const { pending } = useFormStatus();
