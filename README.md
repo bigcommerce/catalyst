@@ -12,7 +12,7 @@
 
 </div>
 
-**Catalyst** is the composable, fully customizable headless ecommerce storefront framework for
+**Catalyst** is the composable, fully customizable headless commerce framework for
 [BigCommerce](https://www.bigcommerce.com/). Catalyst is built with [Next.js](https://nextjs.org/), uses
 our [React](https://react.dev/) storefront components, and is backed by the
 [GraphQL Storefront API](https://developer.bigcommerce.com/docs/storefront/graphql).
@@ -79,6 +79,19 @@ Learn more about Catalyst at [catalyst.dev](https://catalyst.dev).
 This Catalyst monorepo contains the following:
 
 - The core **Catalyst** Next.js storefront, in [apps/core](apps/core). This is what is installed when you run the command above in [Quickstart](#quickstart).
+  - By default the storefront supports an end-to-end B2C focused shopper journey, inclusive of:
+    - Global Header & Footers
+    - Home Page
+    - Product Listing Pages (Category, Brand, Search/Faceted search, Comparison page)
+    - Product Detail Pages
+    - Cart
+    - Headless Redirected Checkout
+  - This includes end-to-end support for most features connected to Customer accounts, like:
+    - Price Lists
+    - Customer-specific pricing
+    - Customer-specific category visibility
+    - Customer-specific product visibility
+  - To extend into more complex B2C and B2B scenarios, you'll want to utilize more of our [GraphQL Storefront API](https://developer.bigcommerce.com/docs/storefront/graphql).
 - The storefront component library, in [packages/components](packages/components), and a [Storybook](https://storybook.js.org/) instance to view the collection.
 - The BigCommerce [GraphQL Storefront API](https://developer.bigcommerce.com/docs/graphql-storefront) client, in [packages/client](packages/client).
 
