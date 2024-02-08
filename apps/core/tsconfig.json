@@ -26,8 +26,7 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./*"],
-      "@bigcommerce/components/*": ["./node_modules/@bigcommerce/components/*"]
+      "~/*": ["./*"]
     },
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
   },
