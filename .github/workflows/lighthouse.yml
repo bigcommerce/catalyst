@@ -34,7 +34,7 @@ jobs:
             const lighthouseCommentMaker = require('./.github/workflows/lighthouseCommentMaker.js');
 
             const lighthouseOutputs = {
-              manifest: ${{ steps.lighthouse_audit.outputs.manifest[2] }},
+              manifest: ${{ steps.lighthouse_audit.outputs.manifest }},
               links: ${{ steps.lighthouse_audit.outputs.links }}
             };
 

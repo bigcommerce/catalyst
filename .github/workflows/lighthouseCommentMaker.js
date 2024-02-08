@@ -37,7 +37,7 @@ const scoreRow = (
  * @param {LighthouseOutputs} lighthouseOutputs
  */
 function makeComment(lighthouseOutputs) {
-    const { summary } = lighthouseOutputs.manifest[0];
+    const { summary } = lighthouseOutputs.manifest[2];
     const [[testedUrl, reportUrl]] = Object.entries(lighthouseOutputs.links);
 
     const comment = `## ⚡️🏠 Lighthouse report
