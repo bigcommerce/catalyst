@@ -8,6 +8,7 @@ jobs:
     name: Deployment Audit
     timeout-minutes: 30
     runs-on: ubuntu-latest
+    if:  ${{ github.event.deployment_status.state == 'success' && contains(github.event.deployment_status.target_url, 'catalyst-latest') }}
 
     steps:
       - name: Checkout code
@@ -15,30 +16,17 @@ jobs:
 
       - uses: pnpm/action-setup@v2
 
-      - name: Requires audit
-        id: requires_audit
-        env:
-          DEPLOY_URL: ${{ github.event.deployment_status.target_url }}
-        run: |
-          if [[ $DEPLOY_URL =~ "storybook" ]]; then
-            echo "AUDIT=false" >> "$GITHUB_ENV"
-          else
-            echo "AUDIT=true" >> "$GITHUB_ENV"
-          fi
-
       - name: Audit preview URL with Lighthouse
-        if: env.AUDIT == 'true'
         id: lighthouse_audit
-        uses: treosh/lighthouse-ci-action@v10
+        uses: treosh/lighthouse-ci-action@v11
         with:
           urls: |
             ${{ github.event.deployment_status.target_url }}
           uploadArtifacts: true
           temporaryPublicStorage: true
-          runs: 1
+          runs: 3
 
       - name: Format lighthouse score
-        if: env.AUDIT == 'true'
         id: format_lighthouse_score
         uses: actions/github-script@v6
         with:
@@ -54,12 +42,10 @@ jobs:
             core.setOutput("comment", comment);
 
       - name: Find pull request
-        if: env.AUDIT == 'true'
         uses: jwalton/gh-find-current-pr@v1
         id: finder
 
       - name: Add comment to PR
-        if: env.AUDIT == 'true'
         id: comment_to_pr
         uses: marocchino/sticky-pull-request-comment@v2.8.0
         with:
