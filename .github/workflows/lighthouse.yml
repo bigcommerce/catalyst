@@ -1,14 +1,15 @@
 name: Lighthouse Report
 
 on:
-  deployment_status
+  deployment_status:
+    states: ['success']
 
 jobs:
   generate_lighthouse_audit:
     name: Deployment Audit
     timeout-minutes: 30
     runs-on: ubuntu-latest
-    if:  ${{ github.event.deployment_status.state == 'success' && contains(github.event.deployment_status.target_url, 'catalyst-latest') }}
+    if: ${{ contains(fromJson('["Production – catalyst-latest", "Preview – catalyst-latest"]'), github.event.deployment_status.environment) }}
 
     steps:
       - name: Checkout code
