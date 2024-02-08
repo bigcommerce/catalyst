@@ -19,7 +19,7 @@ const handler = async (request: NextRequest) => {
   const expiryTime = Date.now() + 1000 * 60 * 30; // 30 minutes;
 
   try {
-    await kv.set(`v2_${pathname}`, { node, expiryTime });
+    await kv.set(pathname, { node, expiryTime });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);

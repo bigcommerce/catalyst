@@ -18,7 +18,7 @@ interface RouteCache {
   expiryTime: number;
 }
 
-const STORE_STATUS_KEY = 'v2_storeStatus';
+const STORE_STATUS_KEY = 'storeStatus';
 
 interface StorefrontStatusCache {
   status: StorefrontStatusType;
@@ -48,7 +48,7 @@ const getExistingRouteInfo = async (request: NextRequest) => {
     const pathname = request.nextUrl.pathname;
 
     const [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
-      `v2_${pathname}`,
+      pathname,
       STORE_STATUS_KEY,
     );
 
@@ -105,7 +105,7 @@ const setKvRoute = async (request: NextRequest, node: Node) => {
   try {
     const expiryTime = Date.now() + 1000 * 60 * 30; // 30 minutes;
 
-    await kv.set(`v2_${request.nextUrl.pathname}`, { node, expiryTime });
+    await kv.set(request.nextUrl.pathname, { node, expiryTime });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);

@@ -5,7 +5,7 @@ import { kv } from '~/lib/kv';
 
 import { withInternalAuth } from '../../internal-auth';
 
-const STORE_STATUS_KEY = 'v2_storeStatus';
+const STORE_STATUS_KEY = 'storeStatus';
 
 const handler = async () => {
   const status = await getStoreStatus();
