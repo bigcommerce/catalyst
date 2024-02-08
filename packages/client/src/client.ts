@@ -84,7 +84,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       throw await BigCommerceAPIError.createFromResponse(response);
     }
 
-    log();
+    log(response);
 
     return response.json() as Promise<BigCommerceResponse<TResult>>;
   }
@@ -135,12 +135,16 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
     const timeStart = Date.now();
 
-    return () => {
+    return (response: Response) => {
       const timeEnd = Date.now();
       const duration = timeEnd - timeStart;
 
+      const complexity = response.headers.get('x-bc-graphql-complexity');
+
       // eslint-disable-next-line no-console
-      console.log(`[BigCommerce] ${type} ${name ?? 'anonymous'} - ${duration}ms`);
+      console.log(
+        `[BigCommerce] ${type} ${name ?? 'anonymous'} - ${duration}ms - complexity ${complexity ?? 'unknown'}`,
+      );
     };
   }
 }
