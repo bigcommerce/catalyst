@@ -11,11 +11,11 @@ export const metadata = {
 export default function Login() {
   return (
     <div className="mx-auto my-6 max-w-4xl">
-      <h2 className="mb-8 text-h2">Log In</h2>
+      <h2 className="mb-8 text-4xl font-black lg:text-5xl">Log In</h2>
       <div className="mb-12 grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8">
         <LoginForm />
         <div className="flex flex-col gap-4 bg-gray-100 p-8">
-          <h3 className="mb-3 text-h5">New customer?</h3>
+          <h3 className="mb-3 text-xl font-bold lg:text-2xl">New customer?</h3>
           <p className="text-base font-semibold">
             Create an account with us and you'll be able to:
           </p>

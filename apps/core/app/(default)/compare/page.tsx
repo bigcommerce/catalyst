@@ -51,7 +51,7 @@ export default async function Compare({
     return (
       <div className="flex w-full justify-center py-16 align-middle">
         <div className="flex max-w-2xl flex-col gap-8 pb-8">
-          <h1 className="text-h2">Well, there's nothing to compare!</h1>
+          <h1 className="text-4xl font-black lg:text-5xl">Well, there's nothing to compare!</h1>
           <p className="text-lg">
             You somehow managed to land here, but you need to select a few products first.
           </p>
@@ -63,7 +63,7 @@ export default async function Compare({
 
   return (
     <>
-      <h1 className="pb-8 text-h2">Comparing {products.length} products</h1>
+      <h1 className="pb-8 text-4xl font-black lg:text-5xl">Comparing {products.length} products</h1>
 
       <div className="-mx-6 overflow-auto overscroll-x-contain px-6 sm:-mx-10 sm:px-10 lg:-mx-12 lg:px-12">
         <table className="mx-auto w-full max-w-full table-fixed text-base md:w-fit">
@@ -118,7 +118,7 @@ export default async function Compare({
             </tr>
             <tr>
               {products.map((product) => (
-                <td className="px-4 align-top text-h5" key={product.entityId}>
+                <td className="px-4 align-top text-xl font-bold lg:text-2xl" key={product.entityId}>
                   <Link href={product.path}>{product.name}</Link>
                 </td>
               ))}
@@ -135,8 +135,8 @@ export default async function Compare({
                 if (product.productOptions.length) {
                   return (
                     <td className="border-b px-4 pb-12" key={product.entityId}>
-                      <Button aria-label={product.name} asChild>
-                        <Link href={product.path}>Choose Options</Link>
+                      <Button aria-label={product.name} asChild className="hover:text-white">
+                        <Link href={product.path}>Choose options</Link>
                       </Button>
                     </td>
                   );
@@ -221,9 +221,9 @@ export default async function Compare({
                 if (product.productOptions.length) {
                   return (
                     <td className="border-b px-4 pb-24 pt-12" key={product.entityId}>
-                      <Button aria-label={product.name} asChild>
+                      <Button aria-label={product.name} asChild className="hover:text-white">
                         <Link href={product.path} prefetch={false}>
-                          Choose Options
+                          Choose options
                         </Link>
                       </Button>
                     </td>

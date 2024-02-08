@@ -72,7 +72,7 @@ export const LoginForm = () => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-red-200"
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200"
             match="valueMissing"
           >
             Enter your email.
@@ -91,7 +91,7 @@ export const LoginForm = () => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-red-200"
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200"
             match="valueMissing"
           >
             Enter your password.

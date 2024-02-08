@@ -14,9 +14,9 @@ export async function SubCategories({ categoryId }: Props) {
 
   return (
     <div className="mb-8">
-      <h3 className="mb-3 text-h5">Categories</h3>
+      <h3 className="mb-3 text-2xl font-bold">Categories</h3>
 
-      <ul className="flex flex-col gap-4 text-base">
+      <ul className="flex flex-col gap-4">
         {categoryTree.children.map((category) => (
           <li key={category.entityId}>
             <Link href={category.path}>{category.name}</Link>

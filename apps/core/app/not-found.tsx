@@ -26,14 +26,14 @@ export default async function NotFound() {
       />
       <main className="mx-auto mb-10 max-w-[835px] space-y-8 px-6 sm:px-10 lg:px-0">
         <Message className="flex-col gap-8 px-0 py-16">
-          <h2 className="text-h2">We couldn't find that page!</h2>
+          <h2 className="text-4xl font-black lg:text-5xl">We couldn't find that page!</h2>
           <p className="text-lg">
             It looks like the page you requested has moved or no longer exists.
           </p>
         </Message>
         <SearchForm />
         <section>
-          <h3 className="mb-8 text-h3">Featured Products</h3>
+          <h3 className="mb-8 text-3xl font-black lg:text-4xl">Featured products</h3>
           <div className="grid grid-cols-2 gap-x-8 gap-y-8 md:grid-cols-4">
             {featuredProducts.map((product) => (
               <ProductCard key={product.entityId} product={product} />

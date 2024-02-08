@@ -15,7 +15,7 @@ export const SearchForm = ({ initialTerm = '' }: Props) => {
 
   return (
     <div className="flex flex-col gap-8">
-      <h3 className="text-h3">Search our store</h3>
+      <h3 className="text-3xl font-black lg:text-4xl">Search for products</h3>
       <Form action="/search" className="flex" method="get">
         <Field className="me-4 w-full" name="search">
           <FieldControl asChild>

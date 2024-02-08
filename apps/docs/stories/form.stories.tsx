@@ -52,7 +52,7 @@ export const Default: Story = {
           </Select>
         </FieldControl>
         <FieldMessage
-          className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-red-200"
+          className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200"
           match="typeMismatch"
         >
           Show explonation on failed validation
@@ -64,7 +64,7 @@ export const Default: Story = {
           <TextArea />
         </FieldControl>
         <FieldMessage
-          className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-red-200"
+          className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200"
           match="typeMismatch"
         >
           Show explonation on failed validation
@@ -91,13 +91,13 @@ export const WithValidation: Story = {
           <Input required type="email" />
         </FieldControl>
         <FieldMessage
-          className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-red-200"
+          className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200"
           match="valueMissing"
         >
           Enter your email as a name@domain.com
         </FieldMessage>
         <FieldMessage
-          className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-red-200"
+          className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200"
           match="typeMismatch"
         >
           Enter your email as a name@domain.com
@@ -138,13 +138,13 @@ export const ValidityStateWrapper: Story = {
                   <Input onChange={handleControlValidation} required type="email" />
                 </FieldControl>
                 <FieldMessage
-                  className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-red-200"
+                  className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200"
                   match="valueMissing"
                 >
                   Enter your email as a name@domain.com
                 </FieldMessage>
                 <FieldMessage
-                  className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-red-200"
+                  className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200"
                   match="typeMismatch"
                 >
                   Enter your email as a name@domain.com

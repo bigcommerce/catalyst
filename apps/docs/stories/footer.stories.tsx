@@ -69,7 +69,7 @@ export const BasicExample: Story = {
           </div>
         </FooterNav>
         <div className="flex shrink-0 grow flex-col gap-4 md:order-first">
-          <span className="text-h4 font-black">Catalyst Store</span>
+          <span className="text-2xl font-black font-bold lg:text-3xl">Catalyst Store</span>
           <address className="not-italic">
             24 Wisteria Lane, Fairview, Eagle <br />
             01234 United States
@@ -176,7 +176,7 @@ export const MultiRowFooterNav: Story = {
           </div>
         </FooterNav>
         <div className="flex shrink-0 grow flex-col gap-4 md:order-first">
-          <span className="text-h4 font-black">Catalyst Store</span>
+          <span className="text-2xl font-black font-bold lg:text-3xl">Catalyst Store</span>
           <address className="not-italic">
             24 Wisteria Lane, Fairview, Eagle <br />
             01234 United States
@@ -343,7 +343,7 @@ export const NoAddendum: Story = {
           </div>
         </FooterNav>
         <div className="flex shrink-0 grow flex-col gap-4 md:order-first">
-          <span className="text-h4 font-black">Catalyst Store</span>
+          <span className="text-2xl font-black font-bold lg:text-3xl">Catalyst Store</span>
           <address className="not-italic">
             24 Wisteria Lane, Fairview, Eagle <br />
             01234 United States

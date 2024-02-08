@@ -31,7 +31,7 @@ export const MultipleSlides: Story = {
   render: () => (
     <Carousel aria-labelledby="title">
       <div className="flex items-center justify-between">
-        <h2 className="text-h3" id="title">
+        <h2 className="text-3xl font-black lg:text-4xl" id="title">
           Related Products
         </h2>
         <span className="no-wrap flex">
@@ -163,7 +163,7 @@ export const SingleSlide: Story = {
   render: () => (
     <Carousel aria-labelledby="title">
       <div className="flex items-center justify-between">
-        <h2 className="text-h3" id="title">
+        <h2 className="text-3xl font-black lg:text-4xl" id="title">
           Related Products
         </h2>
         <span className="no-wrap flex">

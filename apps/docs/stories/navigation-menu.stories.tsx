@@ -196,7 +196,7 @@ const mockLinks = [
 export const BasicExample: Story = {
   render: () => (
     <NavigationMenu className="gap-6 lg:gap-8">
-      <NavigationMenuLink className="px-0 text-h4 font-black" href="/home">
+      <NavigationMenuLink className="px-0 text-2xl font-black font-bold lg:text-3xl" href="/home">
         Catalyst Store
       </NavigationMenuLink>
       <NavigationMenuList className="hidden md:flex lg:gap-4">
@@ -306,7 +306,7 @@ export const BasicExample: Story = {
 export const NavigationAlignmentLeft: Story = {
   render: () => (
     <NavigationMenu className="gap-6 lg:gap-8">
-      <NavigationMenuLink className="px-0 text-h4 font-black" href="/home">
+      <NavigationMenuLink className="px-0 text-2xl font-black font-bold lg:text-3xl" href="/home">
         Catalyst Store
       </NavigationMenuLink>
       <div className="flex flex-auto">
@@ -418,7 +418,7 @@ export const NavigationAlignmentLeft: Story = {
 export const NavigationAlignmentRight: Story = {
   render: () => (
     <NavigationMenu className="gap-6 lg:gap-8">
-      <NavigationMenuLink className="px-0 text-h4 font-black" href="/home">
+      <NavigationMenuLink className="px-0 text-2xl font-black font-bold lg:text-3xl" href="/home">
         Catalyst Store
       </NavigationMenuLink>
       <div className="flex flex-auto justify-end">
@@ -569,7 +569,10 @@ export const LogoCentered: Story = {
           ))}
         </NavigationMenuList>
       </div>
-      <a className="flex flex-auto justify-center px-0 text-h4 font-black" href="/home">
+      <a
+        className="flex flex-auto justify-center px-0 text-2xl font-black font-bold lg:text-3xl"
+        href="/home"
+      >
         Catalyst Store
       </a>
       <div className="flex-1">
@@ -646,7 +649,7 @@ export const BottomNavigationLeft: Story = {
     return (
       <NavigationMenu className="flex-col">
         <div className="flex min-h-[92px] w-full items-center justify-between">
-          <a className="px-0 text-h4 font-black" href="/home">
+          <a className="px-0 text-2xl font-black font-bold lg:text-3xl" href="/home">
             Catalyst Store
           </a>
           <NavigationMenuList className="hidden gap-2 md:flex">
@@ -761,7 +764,7 @@ export const BottomNavigationCenter: Story = {
   render: () => (
     <NavigationMenu className="flex-col">
       <div className="flex min-h-[92px] w-full items-center justify-between">
-        <a className="px-0 text-h4 font-black" href="/home">
+        <a className="px-0 text-2xl font-black font-bold lg:text-3xl" href="/home">
           Catalyst Store
         </a>
         <NavigationMenuList className="hidden gap-2 md:flex">
@@ -875,7 +878,7 @@ export const BottomNavigationRight: Story = {
   render: () => (
     <NavigationMenu className="flex-col">
       <div className="flex min-h-[92px] w-full items-center justify-between">
-        <a className="px-0 text-h4 font-black" href="/home">
+        <a className="px-0 text-2xl font-black font-bold lg:text-3xl" href="/home">
           Catalyst Store
         </a>
         <NavigationMenuList className="hidden gap-2 md:flex">
@@ -991,7 +994,7 @@ export const NavigationWithBadge: Story = {
   },
   render: ({ children }) => (
     <NavigationMenu className="mx-5 gap-6 lg:gap-8">
-      <NavigationMenuLink className="px-0 text-h4 font-black" href="/home">
+      <NavigationMenuLink className="px-0 text-2xl font-black font-bold lg:text-3xl" href="/home">
         Catalyst Store
       </NavigationMenuLink>
       <NavigationMenuList className="hidden md:flex lg:gap-4">
@@ -1109,7 +1112,7 @@ export const NavigationWithBadge: Story = {
 export const CustomNavigationMenuToggle: Story = {
   render: () => (
     <NavigationMenu className="gap-6 lg:gap-8">
-      <NavigationMenuLink className="px-0 text-h4 font-black" href="/home">
+      <NavigationMenuLink className="px-0 text-2xl font-black font-bold lg:text-3xl" href="/home">
         Catalyst Store
       </NavigationMenuLink>
       <NavigationMenuList className="hidden md:flex lg:gap-4">

@@ -26,10 +26,10 @@ export const Calendar = ({
         nav_button_previous: 'absolute start-1',
         nav_button_next: 'absolute end-1',
         head_row: 'flex',
-        head_cell: 'text-gray-400 w-10 text-sm font-normal',
+        head_cell: 'text-gray-400 w-10 text-xs font-normal font-normal',
         row: 'flex w-full',
         cell: cn(
-          'relative flex h-10 w-10 items-center justify-center p-0 text-center text-sm focus-within:relative focus-within:z-20 focus-within:rounded focus-within:border focus-within:border-blue-primary/20',
+          'relative flex h-10 w-10 items-center justify-center p-0 text-center text-xs font-normal focus-within:relative focus-within:z-20 focus-within:rounded focus-within:border focus-within:border-blue-primary/20',
         ),
         day: cn(
           'h-8 w-8 p-0 text-base hover:bg-blue-secondary/10 focus:outline-none aria-selected:bg-blue-primary aria-selected:text-white aria-selected:hover:bg-blue-primary aria-selected:hover:text-white',

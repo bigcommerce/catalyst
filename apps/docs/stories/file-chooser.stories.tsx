@@ -26,7 +26,7 @@ export const Default: Story = {
       <Label className="my-2 inline-block" htmlFor="file-chooser">
         File Upload
       </Label>
-      <p className="pb-2 text-sm text-gray-500" id="file-chooser-description">
+      <p className="pb-2 text-xs font-normal text-gray-500" id="file-chooser-description">
         Upload a file no larger than 500MB in PNG/JPEG format.
       </p>
       <FileChooser aria-describedby="file-chooser-description" id="file-chooser" {...args} />

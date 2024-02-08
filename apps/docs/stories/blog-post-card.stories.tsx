@@ -28,7 +28,7 @@ export const BlogPostCardWithImage: Story = {
               className="block w-full focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
               href="/"
             >
-              <div className="flex h-full w-full items-center justify-center bg-gray-200 text-h4">
+              <div className="flex h-full w-full items-center justify-center bg-gray-200 text-2xl font-bold lg:text-3xl">
                 Image
               </div>
             </a>

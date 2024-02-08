@@ -29,7 +29,7 @@ type Story = StoryObj<typeof meta>;
 
 const Content = () => (
   <>
-    <h3 className="mb-2 text-h5">Categories</h3>
+    <h3 className="mb-2 text-xl font-bold lg:text-2xl">Categories</h3>
 
     <ul className="flex flex-col">
       <li>

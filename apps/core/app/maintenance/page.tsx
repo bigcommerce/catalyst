@@ -18,7 +18,7 @@ export default async function MaintenancePage() {
   if (!storeSettings) {
     return (
       <Container>
-        <h1 className="my-4 text-h2">We are down for maintenance</h1>
+        <h1 className="my-4 text-4xl font-black lg:text-5xl">We are down for maintenance</h1>
       </Container>
     );
   }
@@ -29,7 +29,7 @@ export default async function MaintenancePage() {
     <Container>
       <StoreLogo />
 
-      <h1 className="my-8 text-h2">We are down for maintenance</h1>
+      <h1 className="my-8 text-4xl font-black lg:text-5xl">We are down for maintenance</h1>
 
       {Boolean(statusMessage) && <p className="mb-4">{statusMessage}</p>}
 

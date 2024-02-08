@@ -23,7 +23,7 @@ export default async function Search({ searchParams }: Props) {
   if (!searchTerm) {
     return (
       <>
-        <h1 className="mb-3 text-h2">Search</h1>
+        <h1 className="mb-3 text-4xl font-black lg:text-5xl">Search</h1>
         <SearchForm />
       </>
     );
@@ -37,7 +37,7 @@ export default async function Search({ searchParams }: Props) {
   if (products.length === 0) {
     return (
       <div>
-        <h1 className="mb-3 text-h2">Search</h1>
+        <h1 className="mb-3 text-4xl font-black lg:text-5xl">Search</h1>
 
         <SearchForm initialTerm={searchTerm} />
 
@@ -55,7 +55,7 @@ export default async function Search({ searchParams }: Props) {
       <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
         <h1 className="mb-3 text-base">
           Search results for <br />
-          <b className="text-h4">"{searchTerm}"</b>
+          <b className="text-2xl font-bold lg:text-3xl">"{searchTerm}"</b>
         </h1>
 
         <div className="flex flex-col items-center gap-3 whitespace-nowrap md:flex-row">

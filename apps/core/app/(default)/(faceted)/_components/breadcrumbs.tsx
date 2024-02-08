@@ -22,7 +22,7 @@ export const Breadcrumbs = ({ breadcrumbs, category }: Props) => (
     {breadcrumbs.map(({ name, entityId, path }, index) => {
       if (!path || breadcrumbs.length - 1 === index) {
         return (
-          <BreadcrumbItem isActive={category === name} key={entityId}>
+          <BreadcrumbItem className="font-extrabold" isActive={category === name} key={entityId}>
             {name}
           </BreadcrumbItem>
         );

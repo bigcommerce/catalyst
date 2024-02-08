@@ -55,10 +55,10 @@ interface TitleProps extends ComponentPropsWithRef<'h3'> {
   variant?: 'inBanner';
 }
 
-const titleVariants = cva('mb-2 text-h5', {
+const titleVariants = cva('mb-2 text-2xl font-bold', {
   variants: {
     variant: {
-      inBanner: 'mb-0 flex-none basis-1/2 self-start text-h4',
+      inBanner: 'mb-0 flex-none basis-1/2 self-start text-3xl font-bold',
     },
   },
 });
@@ -96,7 +96,7 @@ interface DateProps extends ComponentPropsWithRef<'small'> {
 const dateVariants = cva('mb-2 text-base text-gray-500', {
   variants: {
     variant: {
-      inBanner: 'mb-0 flex-none self-end text-h5',
+      inBanner: 'mb-0 flex-none self-end text-xl font-bold',
     },
   },
 });

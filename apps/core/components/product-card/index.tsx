@@ -138,7 +138,7 @@ export const ProductCard = ({
               <Rating size={16} value={product.reviewSummary.averageRating || 0} />
             </p>
 
-            <div className="text-sm text-gray-500" id={summaryId}>
+            <div className="text-xs font-normal text-gray-500" id={summaryId}>
               {product.reviewSummary.averageRating !== 0 && (
                 <>
                   <span className="sr-only">Rating:</span>

@@ -21,7 +21,7 @@ export default async function BlogPostPage({ params: { tagId }, searchParams }: 
 
   return (
     <div className="mx-auto max-w-screen-xl">
-      <h1 className="mb-8 text-h3 lg:text-h2">{blogPosts.name}</h1>
+      <h1 className="mb-8 text-3xl font-black lg:text-5xl">{blogPosts.name}</h1>
 
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
         {blogPosts.posts.items.map((post) => {
