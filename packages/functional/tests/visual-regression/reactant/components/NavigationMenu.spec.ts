@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 import * as storyBookElements from '../StoryBookElements';
 
 test('Basic navigation', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/navigationmenu--basic-example`);
+  await page.goto(`${storyBookElements.storyUrl}/navigation-menu--basic-example`);
   await page.getByRole('button', { name: 'Go full screen [F]' }).click();
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Accessories' }),
@@ -14,7 +14,7 @@ test('Basic navigation', async ({ page }) => {
 });
 
 test('Navigation alignment left', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/navigationmenu--navigation-alignment-left`);
+  await page.goto(`${storyBookElements.storyUrl}/navigation-menu--navigation-alignment-left`);
   await page.getByRole('button', { name: 'Go full screen [F]' }).click();
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Accessories' }),
@@ -25,7 +25,7 @@ test('Navigation alignment left', async ({ page }) => {
 });
 
 test('Navigation alignment right', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/navigationmenu--navigation-alignment-right`);
+  await page.goto(`${storyBookElements.storyUrl}/navigation-menu--navigation-alignment-right`);
   await page.getByRole('button', { name: 'Go full screen [F]' }).click();
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Accessories' }),
@@ -36,7 +36,7 @@ test('Navigation alignment right', async ({ page }) => {
 });
 
 test('Logo centered', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/navigationmenu--logo-centered`);
+  await page.goto(`${storyBookElements.storyUrl}/navigation-menu--logo-centered`);
   await page.getByRole('button', { name: 'Go full screen [F]' }).click();
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Accessories' }),
@@ -47,7 +47,7 @@ test('Logo centered', async ({ page }) => {
 });
 
 test('Bottom navigation left', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/navigationmenu--bottom-navigation-left`);
+  await page.goto(`${storyBookElements.storyUrl}/navigation-menu--bottom-navigation-left`);
   await page.getByRole('button', { name: 'Go full screen [F]' }).click();
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Accessories' }),
@@ -58,7 +58,7 @@ test('Bottom navigation left', async ({ page }) => {
 });
 
 test('Bottom navigation center', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/navigationmenu--bottom-navigation-center`);
+  await page.goto(`${storyBookElements.storyUrl}/navigation-menu--bottom-navigation-center`);
   await page.getByRole('button', { name: 'Go full screen [F]' }).click();
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Accessories' }),
@@ -69,7 +69,7 @@ test('Bottom navigation center', async ({ page }) => {
 });
 
 test('Bottom navigation right', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/navigationmenu--bottom-navigation-right`);
+  await page.goto(`${storyBookElements.storyUrl}/navigation-menu--bottom-navigation-right`);
   await page.getByRole('button', { name: 'Go full screen [F]' }).click();
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Accessories' }),
@@ -80,7 +80,7 @@ test('Bottom navigation right', async ({ page }) => {
 });
 
 test('Navigation with badge', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/navigationmenu--navigation-with-badge`);
+  await page.goto(`${storyBookElements.storyUrl}/navigation-menu--navigation-with-badge`);
   await page.getByRole('button', { name: 'Go full screen [F]' }).click();
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Accessories' }),
@@ -91,7 +91,7 @@ test('Navigation with badge', async ({ page }) => {
 });
 
 test('Custom navigation menu toggle', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/navigationmenu--custom-navigation-menu-toggle`);
+  await page.goto(`${storyBookElements.storyUrl}/navigation-menu--custom-navigation-menu-toggle`);
   await page.getByRole('button', { name: 'Go full screen [F]' }).click();
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Accessories' }),
