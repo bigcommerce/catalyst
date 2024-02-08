@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@main
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
 
       - name: Audit preview URL with Lighthouse
         id: lighthouse_audit
@@ -24,17 +24,17 @@ jobs:
             ${{ github.event.deployment_status.target_url }}
           uploadArtifacts: true
           temporaryPublicStorage: true
-          runs: 1
+          runs: 3
 
       - name: Format lighthouse score
         id: format_lighthouse_score
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const lighthouseCommentMaker = require('./.github/workflows/lighthouseCommentMaker.js');
 
             const lighthouseOutputs = {
-              manifest: ${{ steps.lighthouse_audit.outputs.manifest }},
+              manifest: ${{ steps.lighthouse_audit.outputs.manifest }}[2].summary,
               links: ${{ steps.lighthouse_audit.outputs.links }}
             };
 
@@ -42,12 +42,12 @@ jobs:
             core.setOutput("comment", comment);
 
       - name: Find pull request
-        uses: jwalton/gh-find-current-pr@v1
+        uses: jwalton/gh-find-current-pr@v1.3.3
         id: finder
 
       - name: Add comment to PR
         id: comment_to_pr
-        uses: marocchino/sticky-pull-request-comment@v2.8.0
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
         with:
           recreate: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
