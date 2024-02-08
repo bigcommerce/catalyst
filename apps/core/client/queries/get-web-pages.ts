@@ -11,7 +11,7 @@ export const GET_WEB_PAGES_QUERY = /* GraphQL */ `
   query getWebPages {
     site {
       content {
-        pages {
+        pages(filters: { isVisibleInNavigation: true }) {
           edges {
             node {
               ...WebPage

@@ -3,52 +3,15 @@ import {
   FooterNav,
   FooterSection,
 } from '@bigcommerce/components/footer';
-import React from 'react';
-
-import { AvailableWebPages, getWebPages } from '~/client/queries/get-web-pages';
 
 import { StoreLogo } from '../store-logo';
 
 import { ContactInformation } from './contact-information';
 import { Copyright } from './copyright';
-import { BaseFooterMenu, BrandFooterMenu, CategoryFooterMenu } from './footer-menus';
+import { BrandFooterMenu, CategoryFooterMenu } from './footer-menus';
+import { WebPageFooterMenu } from './footer-menus/web-page-footer-menu';
 import { PaymentMethods } from './payment-methods';
 import { SocialIcons } from './social-icons';
-
-const filterActivePages = (availableStorePages: AvailableWebPages) =>
-  availableStorePages.reduce<Array<{ name: string; path: string }>>((visiblePages, currentPage) => {
-    if (currentPage.isVisibleInNavigation) {
-      const { name, __typename } = currentPage;
-
-      visiblePages.push({
-        name,
-        path: __typename === 'ExternalLinkPage' ? currentPage.link : currentPage.path,
-      });
-
-      return visiblePages;
-    }
-
-    return visiblePages;
-  }, []);
-
-const activeFooterWebPages = await (async (columnName: string) => {
-  const storeWebPages = await getWebPages();
-
-  return {
-    title: columnName,
-    items: filterActivePages(storeWebPages),
-  };
-})('Navigate');
-
-const WebPageFooterMenu = () => {
-  const { title, items } = activeFooterWebPages;
-
-  if (items.length > 0) {
-    return <BaseFooterMenu items={items} title={title} />;
-  }
-
-  return null;
-};
 
 export const Footer = () => {
   return (
