@@ -24,7 +24,7 @@ jobs:
             ${{ github.event.deployment_status.target_url }}
           uploadArtifacts: true
           temporaryPublicStorage: true
-          runs: 3
+          runs: 1
 
       - name: Format lighthouse score
         id: format_lighthouse_score
