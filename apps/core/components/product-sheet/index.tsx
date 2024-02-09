@@ -1,7 +1,5 @@
 'use client';
 
-import { Button } from '@bigcommerce/components/button';
-import { Rating } from '@bigcommerce/components/rating';
 import {
   Sheet,
   SheetClose,
@@ -9,25 +7,46 @@ import {
   SheetHeader,
   SheetOverlay,
   SheetTitle,
-  SheetTrigger,
 } from '@bigcommerce/components/sheet';
-import { Loader2 as Spinner } from 'lucide-react';
-import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
-import { PropsWithChildren, useEffect, useId, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-import { getProduct } from '~/client/queries/get-product';
-import { ProductForm } from '~/components/product-form';
-import { cn } from '~/lib/utils';
+import { ProductSheetContent } from './product-sheet-content';
 
-export const ProductSheet = ({ children, title }: PropsWithChildren<{ title: string }>) => {
+export const ProductSheet = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const productId = searchParams.get('showQuickAdd');
+
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    setOpen(!!productId);
+  }, [productId]);
+
+  const handleOnOpenChange = (newOpenState: boolean) => {
+    if (open && !newOpenState) {
+      const updatedParams = new URLSearchParams(searchParams.toString());
+
+      // Remove the 'showQuickAdd' parameter
+      updatedParams.delete('showQuickAdd');
+
+      // Remove any parameters that are numerical
+      // Numerical params are product options
+      Array.from(updatedParams.keys()).forEach((key) => {
+        if (!Number.isNaN(Number(key))) {
+          updatedParams.delete(key);
+        }
+      });
+
+      // Update the URL with the modified parameters
+      router.replace(`${pathname}?${updatedParams.toString()}`, { scroll: false });
+    }
+  };
+
   return (
-    <Sheet onOpenChange={setOpen} open={open}>
-      <SheetTrigger asChild>
-        <Button className="mt-2">{title}</Button>
-      </SheetTrigger>
+    <Sheet onOpenChange={handleOnOpenChange} open={open}>
       <SheetOverlay className="bg-transparent, backdrop-blur-none">
         <SheetContent side="right">
           <SheetHeader>
@@ -36,154 +55,9 @@ export const ProductSheet = ({ children, title }: PropsWithChildren<{ title: str
             </SheetTitle>
             <SheetClose />
           </SheetHeader>
-          {open && children}
+          {open && <ProductSheetContent />}
         </SheetContent>
       </SheetOverlay>
     </Sheet>
-  );
-};
-
-export const ProductSheetContent = ({ productId }: { productId: number }) => {
-  const summaryId = useId();
-  const searchParams = useSearchParams();
-  const [isError, setError] = useState(false);
-  const [product, setProduct] = useState<Awaited<ReturnType<typeof getProduct>>>(null);
-
-  useEffect(() => {
-    const fetchProduct = async () => {
-      setError(false);
-
-      try {
-        const paramsString = searchParams.toString();
-        const queryString = `${paramsString.length ? '?' : ''}${paramsString}`;
-
-        const url = `/api/product/${productId}${queryString}`;
-
-        const response = await fetch(url);
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const productResponse: Awaited<ReturnType<typeof getProduct>> = await response.json();
-
-        setProduct(productResponse);
-      } catch (error) {
-        setError(true);
-      }
-    };
-
-    void fetchProduct();
-  }, [productId, searchParams]);
-
-  if (isError) {
-    return (
-      <div className="flex h-full w-full">
-        <span>An error has ocurred.</span>
-      </div>
-    );
-  }
-
-  if (product) {
-    const currencyFormatter = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: product.prices?.price.currencyCode,
-    });
-
-    const showPriceRange =
-      product.prices?.priceRange.min.value !== product.prices?.priceRange.max.value;
-
-    return (
-      <>
-        <div className="flex">
-          <div className="square relative h-[144px] w-[144px] shrink-0 grow-0">
-            {product.defaultImage ? (
-              <Image
-                alt={product.defaultImage.altText}
-                className="object-contain"
-                fill
-                priority={false}
-                src={product.defaultImage.url}
-              />
-            ) : (
-              <div className="h-full w-full bg-gray-200" />
-            )}
-          </div>
-          <div className="flex-shrink ps-4">
-            {product.brand && (
-              <p className="mb-2 font-semibold uppercase text-gray-500">{product.brand.name}</p>
-            )}
-
-            <h5 className="mb-2 text-xl font-bold lg:text-2xl">{product.name}</h5>
-
-            <div className="mb-2 flex items-center gap-3">
-              <p
-                aria-describedby={summaryId}
-                className={cn(
-                  'flex flex-nowrap text-blue-primary',
-                  product.reviewSummary.numberOfReviews === 0 && 'text-gray-400',
-                )}
-              >
-                <Rating size={16} value={product.reviewSummary.averageRating || 0} />
-              </p>
-
-              <div className="text-xs font-normal text-gray-500" id={summaryId}>
-                {product.reviewSummary.averageRating !== 0 && (
-                  <>
-                    <span className="sr-only">Rating:</span>
-                    {product.reviewSummary.averageRating}
-                    <span className="sr-only">out of 5 stars.</span>{' '}
-                  </>
-                )}
-                <span className="sr-only">Number of reviews:</span>(
-                {product.reviewSummary.numberOfReviews})
-              </div>
-            </div>
-
-            {product.prices && (
-              <div>
-                {showPriceRange ? (
-                  <p className="text-2xl font-bold lg:text-3xl">
-                    {currencyFormatter.format(product.prices.priceRange.min.value)} -{' '}
-                    {currencyFormatter.format(product.prices.priceRange.max.value)}
-                  </p>
-                ) : (
-                  <>
-                    {product.prices.retailPrice?.value !== undefined && (
-                      <p className="text-2xl font-bold lg:text-3xl">
-                        MSRP:{' '}
-                        <span className="line-through">
-                          {currencyFormatter.format(product.prices.retailPrice.value)}
-                        </span>
-                      </p>
-                    )}
-                    {product.prices.salePrice?.value !== undefined &&
-                    product.prices.basePrice?.value !== undefined ? (
-                      <>
-                        Was:{' '}
-                        <span className="line-through">
-                          {currencyFormatter.format(product.prices.basePrice.value)}
-                        </span>
-                        <br />
-                        <>Now: {currencyFormatter.format(product.prices.salePrice.value)}</>
-                      </>
-                    ) : (
-                      product.prices.price.value && (
-                        <>{currencyFormatter.format(product.prices.price.value)}</>
-                      )
-                    )}
-                  </>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-        <ProductForm product={product} />
-      </>
-    );
-  }
-
-  return (
-    <div className="flex h-full w-full items-center justify-center text-blue-primary">
-      <Spinner aria-hidden="true" className="animate-spin" />
-      <span className="sr-only">Loading...</span>
-    </div>
   );
 };

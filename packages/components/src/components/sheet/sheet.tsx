@@ -12,8 +12,12 @@ const SheetTrigger = SheetPrimitive.Trigger;
 type SheetCloseProps = ComponentPropsWithoutRef<typeof SheetPrimitive.Close>;
 
 const SheetClose = forwardRef<ElementRef<typeof SheetPrimitive.Close>, SheetCloseProps>(
-  ({ children, ...props }, ref) => (
-    <SheetPrimitive.Close ref={ref} {...props}>
+  ({ children, className, ...props }, ref) => (
+    <SheetPrimitive.Close
+      className={cn('focus:outline-none focus:ring-4 focus:ring-blue-primary/20', className)}
+      ref={ref}
+      {...props}
+    >
       {children || (
         <X className="h-6 w-6">
           <title>Close</title>
