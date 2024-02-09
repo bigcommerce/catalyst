@@ -30,7 +30,10 @@ const HeaderNav = async ({
   className?: string;
   inCollapsedNav?: boolean;
 }) => {
-  const categoryTree = await getCategoryTree();
+  // To prevent the navigation menu from overflowing, we limit the number of categories to 6.
+  // To show a full list of categories, modify the `slice` method to remove the limit.
+  // Will require modification of navigation menu styles to accommodate the additional categories.
+  const categoryTree = (await getCategoryTree()).slice(0, 6);
 
   return (
     <>
@@ -92,19 +95,15 @@ const HeaderNav = async ({
           </NavigationMenuItem>
         ))}
       </NavigationMenuList>
-      <NavigationMenuList
-        className={cn(
-          'border-t border-gray-200 pt-6 lg:hidden',
-          !inCollapsedNav && 'hidden',
-          inCollapsedNav && 'flex-col items-start',
-        )}
-      >
-        <NavigationMenuItem className={cn(inCollapsedNav && 'w-full')}>
-          <NavigationMenuLink href="/login">
-            Your Account <User />
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-      </NavigationMenuList>
+      {inCollapsedNav && (
+        <NavigationMenuList className="flex-col items-start border-t border-gray-200 pt-6 lg:hidden">
+          <NavigationMenuItem className="w-full">
+            <NavigationMenuLink href="/login">
+              Your Account <User />
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      )}
     </>
   );
 };
