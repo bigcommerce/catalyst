@@ -1,10 +1,11 @@
 'use client';
 
+import { Button } from '@bigcommerce/components/button';
 import { AlertCircle, Check } from 'lucide-react';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 
 import { Link } from '../link';
-import { ProductSheet, ProductSheetContent } from '../product-sheet';
 
 import { addToCart } from './_actions/add-to-cart';
 import { AddToCart } from './add-to-cart';
@@ -12,14 +13,26 @@ import { AddToCart } from './add-to-cart';
 import { Product } from '.';
 
 export const Cart = ({ product }: { product: Partial<Product> }) => {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const newSearchParams = new URLSearchParams(searchParams.toString());
+
   if (!product.entityId) {
     return null;
   }
 
+  newSearchParams.set('showQuickAdd', String(product.entityId));
+
   return Array.isArray(product.productOptions) && product.productOptions.length > 0 ? (
-    <ProductSheet title="Quick add">
-      <ProductSheetContent productId={product.entityId} />
-    </ProductSheet>
+    <Button asChild>
+      <Link
+        className="mt-2 hover:text-white"
+        href={`${pathname}?${newSearchParams.toString()}`}
+        scroll={false}
+      >
+        Quick add
+      </Link>
+    </Button>
   ) : (
     <form
       action={async (formData: FormData) => {
