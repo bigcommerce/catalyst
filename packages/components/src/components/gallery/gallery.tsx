@@ -7,7 +7,6 @@ import {
   forwardRef,
   useContext,
   useEffect,
-  useRef,
   useState,
 } from 'react';
 
@@ -171,7 +170,7 @@ const GalleryThumbnailList = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef
       <nav
         aria-label="Thumbnail navigation"
         className={cn(
-          '-mx-1 mt-3 flex w-full flex-nowrap items-center gap-4 overflow-x-auto px-1 py-1 md:mt-5 md:gap-6',
+          'mt-3 flex w-full flex-wrap items-center gap-4 px-1 py-1 md:mt-5 md:gap-6',
           className,
         )}
         ref={ref}
@@ -199,7 +198,7 @@ const GalleryThumbnailItem = forwardRef<ElementRef<'button'>, GalleryThumbnailIt
         aria-label="Enlarge product image"
         aria-pressed={isActive}
         className={cn(
-          'inline-block h-24 w-24 flex-shrink-0 flex-grow-0 focus:outline-none focus:ring-4 focus:ring-blue-primary/20',
+          'inline-block h-12 w-12 flex-shrink-0 flex-grow-0 focus:outline-none focus:ring-4 focus:ring-blue-primary/20 md:h-24 md:w-24',
           className,
         )}
         onClick={(e) => {
@@ -228,22 +227,11 @@ interface GalleryThumbnailProps extends ComponentPropsWithRef<'img'> {
 }
 
 const GalleryThumbnail = forwardRef<ElementRef<'img'>, GalleryThumbnailProps>(
-  ({ asChild, className, ...props }, forwardedRef) => {
+  ({ asChild, className, ...props }, ref) => {
     const { selectedImageIndex } = useContext(GalleryContext);
     const { index } = useContext(ThumbnailContext);
 
-    const fallbackRef = useRef<HTMLImageElement | null>(null);
-    const ref = forwardedRef ?? fallbackRef;
-
     const isActive = selectedImageIndex === index;
-
-    useEffect(() => {
-      if (isActive) {
-        if (typeof ref !== 'function') {
-          ref.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-        }
-      }
-    }, [isActive, ref]);
 
     const Comp = asChild ? Slot : 'img';
 
