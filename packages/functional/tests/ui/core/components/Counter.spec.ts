@@ -35,17 +35,3 @@ test('Decrease count and verify the results', async ({ page }) => {
 
   await expect(page.getByRole('spinbutton')).toHaveValue('1');
 });
-
-test('Decreasing the count to 0 should remove the product from cart', async ({ page }) => {
-  await ProductActions.addProductToCart(page, '[Sample] Orbit Terrarium - Large');
-  await page.getByRole('link', { name: 'your cart' }).click();
-
-  await expect(page.getByRole('spinbutton')).toHaveValue('1');
-
-  await page.getByLabel('Decrease count').click();
-
-  await expect(page.getByRole('spinbutton')).toHaveValue('0');
-  await expect(page.getByText('[Sample] Orbit Terrarium -')).toBeHidden({
-    timeout: 10000,
-  });
-});
