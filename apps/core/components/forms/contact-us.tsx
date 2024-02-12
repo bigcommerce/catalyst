@@ -27,12 +27,10 @@ interface ContactUsProps {
   fields: string[];
   pageEntityId: number;
   reCaptchaSettings?: {
+    isEnabledOnStorefront: boolean;
     siteKey: string;
   };
 }
-
-// TODO: replace mocked var when enabled field will be added to GraphQL api
-const IS_RECAPTCHA_ENABLED = true;
 
 const fieldNameMapping = {
   fullname: 'Full name',
@@ -89,8 +87,7 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
   };
 
   const onSubmit = async (formData: FormData) => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (IS_RECAPTCHA_ENABLED && !reCaptchaToken) {
+    if (reCaptchaSettings?.isEnabledOnStorefront && !reCaptchaToken) {
       return setReCaptchaValid(false);
     }
 
@@ -202,23 +199,20 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
             </FieldMessage>
           </Field>
         </>
-        {
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          IS_RECAPTCHA_ENABLED && (
-            <Field className="relative col-span-full max-w-full space-y-2 pb-7" name="ReCAPTCHA">
-              <ReCAPTCHA
-                onChange={onReCatpchaChange}
-                ref={reCaptchaRef}
-                sitekey={reCaptchaSettings?.siteKey ?? ''}
-              />
-              {!isReCaptchaValid && (
-                <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200">
-                  Pass ReCAPTCHA check
-                </span>
-              )}
-            </Field>
-          )
-        }
+        {reCaptchaSettings?.isEnabledOnStorefront && (
+          <Field className="relative col-span-full max-w-full space-y-2 pb-7" name="ReCAPTCHA">
+            <ReCAPTCHA
+              onChange={onReCatpchaChange}
+              ref={reCaptchaRef}
+              sitekey={reCaptchaSettings.siteKey}
+            />
+            {!isReCaptchaValid && (
+              <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200">
+                Pass ReCAPTCHA check
+              </span>
+            )}
+          </Field>
+        )}
         <Submit />
       </Form>
     </>
