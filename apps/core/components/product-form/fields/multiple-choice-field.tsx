@@ -141,7 +141,11 @@ export const MultipleChoiceField = ({ option }: { option: MultipleChoiceOption }
           >
             {option.values.map((value) => (
               <div className="mb-2 flex" key={value.entityId}>
-                <RadioItem id={`${value.entityId}`} value={`${value.entityId}`} />
+                <RadioItem
+                  id={`${value.entityId}`}
+                  value={`${value.entityId}`}
+                  variant={error ? 'error' : undefined}
+                />
                 <Label className="cursor-pointer ps-4 font-normal" htmlFor={`${value.entityId}`}>
                   {value.label}
                 </Label>
