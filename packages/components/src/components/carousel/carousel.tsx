@@ -19,7 +19,7 @@ const CarouselContext = createContext<UseEmblaCarouselType>([() => null, undefin
 
 const Carousel = forwardRef<ElementRef<'section'>, ComponentPropsWithRef<'section'>>(
   ({ children, className, ...props }, ref) => {
-    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
 
     return (
       <CarouselContext.Provider value={[emblaRef, emblaApi]}>
