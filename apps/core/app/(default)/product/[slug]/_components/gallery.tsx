@@ -46,7 +46,7 @@ export const Gallery = ({ images }: Props) => {
             </GalleryImage>
             <GalleryControls />
           </GalleryContent>
-          <GalleryThumbnailList className="px-6 sm:-mx-1 sm:px-1">
+          <GalleryThumbnailList className="px-6 sm:px-1">
             {images.map((image, index) => {
               return (
                 <GalleryThumbnailItem imageIndex={index} key={image.url}>
