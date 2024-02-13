@@ -6,6 +6,7 @@ const GET_RECAPTCHA_SETTINGS_QUERY = /* GraphQL */ `
     site {
       settings {
         reCaptcha {
+          isEnabledOnStorefront
           siteKey
         }
       }
