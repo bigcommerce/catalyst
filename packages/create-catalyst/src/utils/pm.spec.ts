@@ -1,4 +1,4 @@
-import { getPackageManager } from './pm.js';
+import { getPackageManager } from './pm';
 
 describe('getPackageManager', () => {
   afterEach(() => {

@@ -6,9 +6,9 @@ import { satisfies } from 'semver';
 
 import PACKAGE_INFO from '../package.json';
 
-import { create } from './commands/create.js';
-import { init } from './commands/init.js';
-import { getPackageManager } from './utils/pm.js';
+import { create } from './commands/create';
+import { init } from './commands/init';
+import { getPackageManager } from './utils/pm';
 
 if (!satisfies(process.version, PACKAGE_INFO.engines.node)) {
   console.error(

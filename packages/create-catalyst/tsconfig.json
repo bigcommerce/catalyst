@@ -2,14 +2,13 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Node 18",
   "compilerOptions": {
-    "lib": ["es2023"],
-    "module": "node16",
-    "target": "es2022",
     "strict": true,
+    "target": "es6",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node16"
+    "forceConsistentCasingInFileNames": true
   }
 }

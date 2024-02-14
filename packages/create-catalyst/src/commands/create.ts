@@ -3,14 +3,14 @@ import chalk from 'chalk';
 import { exec as execCallback } from 'child_process';
 import { promisify } from 'util';
 
-import { type CreateCommandOptions } from '../index.js';
-import { cloneCatalyst } from '../utils/clone-catalyst.js';
-import { Https } from '../utils/https.js';
-import { installDependencies } from '../utils/install-dependencies.js';
-import { login } from '../utils/login.js';
-import { projectConfig } from '../utils/project-config.js';
-import { spinner } from '../utils/spinner.js';
-import { writeEnv } from '../utils/write-env.js';
+import { type CreateCommandOptions } from '../index';
+import { cloneCatalyst } from '../utils/clone-catalyst';
+import { Https } from '../utils/https';
+import { installDependencies } from '../utils/install-dependencies';
+import { login } from '../utils/login';
+import { projectConfig } from '../utils/project-config';
+import { spinner } from '../utils/spinner';
+import { writeEnv } from '../utils/write-env';
 
 const exec = promisify(execCallback);
 

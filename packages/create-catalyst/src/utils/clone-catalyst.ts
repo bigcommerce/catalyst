@@ -7,7 +7,7 @@ import unset from 'lodash.unset';
 import { join } from 'path';
 import * as z from 'zod';
 
-import { spinner } from './spinner.js';
+import { spinner } from './spinner';
 
 export const cloneCatalyst = async ({
   projectDir,

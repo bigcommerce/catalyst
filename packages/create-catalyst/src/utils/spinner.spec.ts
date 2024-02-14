@@ -1,6 +1,6 @@
 import { oraPromise } from 'ora';
 
-import { spinner } from './spinner.js';
+import { spinner } from './spinner';
 
 jest.mock('ora', () => ({
   oraPromise: jest.fn().mockResolvedValue('Result'),
