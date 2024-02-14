@@ -9,7 +9,9 @@ test.beforeEach(async ({ page }) => {
     .getByRole('tablist', { name: 'Slides' })
     .scrollIntoViewIfNeeded();
 
-  await expect(page.getByRole('link', { name: '[Sample] Tiered Wire Basket' })).toBeVisible();
+  await page.getByRole('link', { name: '[Sample] Able Brewing System' }).scrollIntoViewIfNeeded();
+
+  await expect(page.getByRole('link', { name: '[Sample] Able Brewing System' })).toBeVisible();
 });
 
 test('Navigate to next set of products', async ({ page }) => {
@@ -19,7 +21,7 @@ test('Navigate to next set of products', async ({ page }) => {
     .getByRole('button', { name: 'Next products' })
     .click();
 
-  await expect(page.getByRole('link', { name: '[Sample] Fog Linen Chambray' })).toBeVisible();
+  await expect(page.getByRole('link', { name: '[Sample] Orbit Terrarium - Large' })).toBeVisible();
 });
 
 test('Navigate to previous set of products', async ({ page }) => {
@@ -29,12 +31,10 @@ test('Navigate to previous set of products', async ({ page }) => {
     .getByRole('button', { name: 'Previous products' })
     .click();
 
-  await expect(page.getByRole('link', { name: '[Sample] Fog Linen Chambray' })).toBeVisible();
+  await expect(page.getByRole('link', { name: '[Sample] Orbit Terrarium - Large' })).toBeVisible();
 });
 
 test('Navigation on set of products is cyclic', async ({ page }) => {
-  await expect(page.getByRole('link', { name: '[Sample] Tiered Wire Basket' })).toBeVisible();
-
   await page
     .getByRole('region')
     .filter({ has: page.getByRole('heading', { name: 'Best Selling Products' }) })
@@ -47,5 +47,5 @@ test('Navigation on set of products is cyclic', async ({ page }) => {
     .getByRole('button', { name: 'Next products' })
     .click();
 
-  await expect(page.getByRole('link', { name: '[Sample] Tiered Wire Basket' })).toBeVisible();
+  await expect(page.getByRole('link', { name: '[Sample] Able Brewing System' })).toBeVisible();
 });
