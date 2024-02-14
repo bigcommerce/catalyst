@@ -2,11 +2,26 @@
 
 import chalk from 'chalk';
 import { Command, Option } from 'commander';
+import { satisfies } from 'semver';
 
 import PACKAGE_INFO from '../package.json';
 
 import { create } from './commands/create.js';
 import { init } from './commands/init.js';
+
+if (!satisfies(process.version, PACKAGE_INFO.engines.node)) {
+  console.error(
+    chalk.red(
+      `\nYou are using Node.js ${process.version}. Catalyst requires ${PACKAGE_INFO.engines.node}. Please upgrade your Node.js version to continue.\n`,
+    ),
+  );
+  console.log(
+    chalk.yellow(
+      'Tip: If you use nvm, you can run `nvm install 18` to install a compatible node version.\n',
+    ),
+  );
+  process.exit(1);
+}
 
 console.log(chalk.cyanBright(`\n◢ ${PACKAGE_INFO.name} v${PACKAGE_INFO.version}\n`));
 
