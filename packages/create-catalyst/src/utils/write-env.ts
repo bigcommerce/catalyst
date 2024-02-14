@@ -23,11 +23,12 @@ export const writeEnv = (
     join(projectDir, '.env.local'),
     [
       `AUTH_SECRET=${randomBytes(32).toString('hex')}`,
-      `ENABLE_ADMIN_ROUTE=true`,
       `BIGCOMMERCE_STORE_HASH=${storeHash}`,
       `BIGCOMMERCE_CHANNEL_ID=${channelId}`,
       `BIGCOMMERCE_ACCESS_TOKEN=${accessToken}`,
       `BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN=${customerImpersonationToken}`,
+      `CLIENT_LOGGER=false`,
+      `ENABLE_ADMIN_ROUTE=true`,
     ].join('\n'),
   );
 };

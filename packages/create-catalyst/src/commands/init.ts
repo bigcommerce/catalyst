@@ -1,10 +1,10 @@
 import { input, select } from '@inquirer/prompts';
 import chalk from 'chalk';
 
-import { type InitCommandOptions } from '../index.js';
-import { Https } from '../utils/https.js';
-import { login } from '../utils/login.js';
-import { writeEnv } from '../utils/write-env.js';
+import { type InitCommandOptions } from '../index';
+import { Https } from '../utils/https';
+import { login } from '../utils/login';
+import { writeEnv } from '../utils/write-env';
 
 export const init = async (options: InitCommandOptions) => {
   const projectDir = process.cwd();
@@ -54,13 +54,13 @@ export const init = async (options: InitCommandOptions) => {
       message: 'Which channel would you like to use?',
       choices: activeChannels
         .sort((a, b) => channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform))
-        .map((ch) => ({
-          name: ch.name,
-          value: ch,
+        .map((channel) => ({
+          name: channel.name,
+          value: channel,
           description: `Channel Platform: ${
-            ch.platform === 'bigcommerce'
+            channel.platform === 'bigcommerce'
               ? 'Stencil'
-              : ch.platform.charAt(0).toUpperCase() + ch.platform.slice(1)
+              : channel.platform.charAt(0).toUpperCase() + channel.platform.slice(1)
           }`,
         })),
     });

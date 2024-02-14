@@ -3,8 +3,8 @@
 import { confirm, input } from '@inquirer/prompts';
 import chalk from 'chalk';
 
-import { Https } from './https.js';
-import { spinner } from './spinner.js';
+import { Https } from './https';
+import { spinner } from './spinner';
 
 const DEVICE_OAUTH_ENABLED = process.env.DEVICE_OAUTH_ENABLED ?? false;
 

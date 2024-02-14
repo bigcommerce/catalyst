@@ -3,7 +3,31 @@
 import chalk from 'chalk';
 import { z } from 'zod';
 
-import { parse } from './parse.js';
+import { parse } from './parse';
+
+interface BigCommerceRestApiConfig {
+  bigCommerceApiUrl: string;
+  storeHash: string;
+  accessToken: string;
+}
+
+interface SampleDataApiConfig {
+  sampleDataApiUrl: string;
+  storeHash: string;
+  accessToken: string;
+}
+
+interface DeviceOAuthConfig {
+  bigCommerceAuthUrl: string;
+}
+
+interface HttpsConfig {
+  bigCommerceApiUrl?: string;
+  bigCommerceAuthUrl?: string;
+  sampleDataApiUrl?: string;
+  storeHash?: string;
+  accessToken?: string;
+}
 
 export class Https {
   DEVICE_OAUTH_CLIENT_ID = 'o094w49fnipwgbo0h9772pc2q6pw1p7';
@@ -14,38 +38,16 @@ export class Https {
   storeHash: string;
   accessToken: string;
 
-  constructor({
-    bigCommerceApiUrl,
-    storeHash,
-    accessToken,
-  }: {
-    bigCommerceApiUrl: string;
-    storeHash: string;
-    accessToken: string;
-  });
-  constructor({
-    sampleDataApiUrl,
-    storeHash,
-    accessToken,
-  }: {
-    sampleDataApiUrl: string;
-    storeHash: string;
-    accessToken: string;
-  });
-  constructor({ bigCommerceAuthUrl }: { bigCommerceAuthUrl: string });
+  constructor({ bigCommerceApiUrl, storeHash, accessToken }: BigCommerceRestApiConfig);
+  constructor({ sampleDataApiUrl, storeHash, accessToken }: SampleDataApiConfig);
+  constructor({ bigCommerceAuthUrl }: DeviceOAuthConfig);
   constructor({
     bigCommerceApiUrl,
     bigCommerceAuthUrl,
     sampleDataApiUrl,
     storeHash,
     accessToken,
-  }: {
-    bigCommerceApiUrl?: string;
-    bigCommerceAuthUrl?: string;
-    sampleDataApiUrl?: string;
-    storeHash?: string;
-    accessToken?: string;
-  }) {
+  }: HttpsConfig) {
     this.bigCommerceApiUrl = bigCommerceApiUrl || '';
     this.bigCommerceAuthUrl = bigCommerceAuthUrl || '';
     this.sampleDataApiUrl = sampleDataApiUrl || '';
