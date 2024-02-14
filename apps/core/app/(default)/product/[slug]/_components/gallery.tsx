@@ -12,13 +12,30 @@ import {
 import Image from 'next/image';
 
 import { getProduct } from '~/client/queries/get-product';
-import { ExistingResultType } from '~/client/util';
 
-interface Props {
-  images: ExistingResultType<typeof getProduct>['images'];
-}
+type Product = Awaited<ReturnType<typeof getProduct>>;
 
-export const Gallery = ({ images }: Props) => {
+export const Gallery = ({ product }: { product: NonNullable<Product> }) => {
+  // Make a copy of product.images
+  const images = product.images;
+
+  // Pick the top-level default image out of the `Image` response
+  const topLevelDefaultImg = product.images.find((image) => image.isDefault);
+
+  // If product.defaultImage exists, and product.defaultImage.url is not equal to the url of the isDefault image in the Image response,
+  // mark the existing isDefault image to "isDefault = false" and append the correct default image to images
+  if (product.defaultImage && topLevelDefaultImg?.url !== product.defaultImage.url) {
+    images.forEach((image) => {
+      image.isDefault = false;
+    });
+
+    images.push({
+      url: product.defaultImage.url,
+      altText: product.defaultImage.altText,
+      isDefault: true,
+    });
+  }
+
   const defaultImageIndex = images.findIndex((image) => image.isDefault);
 
   return (
