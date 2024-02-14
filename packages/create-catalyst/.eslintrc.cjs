@@ -6,6 +6,8 @@ const config = {
   extends: ['@bigcommerce/catalyst/base', '@bigcommerce/catalyst/prettier'],
   rules: {
     'no-console': 'off',
+    'import/no-named-as-default': 'off',
+    '@typescript-eslint/naming-convention': 'off',
   },
   ignorePatterns: ['/dist/**'],
 };
