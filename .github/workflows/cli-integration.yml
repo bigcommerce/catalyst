@@ -45,11 +45,11 @@ jobs:
       - name: Run CLI
         run: |
           node dist/index.js \
-          --ghRef ${{ github.sha }} \
-          --projectDir ${{ runner.temp }} \
-          --projectName catalyst-integration-test \
-          --channelId 1 \
-          --accessToken some_access_token \
-          --storeHash ${{ secrets.BIGCOMMERCE_STORE_HASH }} \
-          --customerImpersonationToken ${{ secrets.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN }}
+          --gh-ref ${{ github.sha }} \
+          --project-dir ${{ runner.temp }} \
+          --project-name catalyst-integration-test \
+          --channel-id 1 \
+          --access-token some_access_token \
+          --store-hash ${{ secrets.BIGCOMMERCE_STORE_HASH }} \
+          --customer-impersonation-token ${{ secrets.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN }}
         working-directory: packages/create-catalyst

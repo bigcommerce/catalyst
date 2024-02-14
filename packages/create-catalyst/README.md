@@ -5,13 +5,13 @@ Create a new Catalyst project, optionally connect the project to a BigCommerce s
 ## NPM
 
 ```sh
-npm create catalyst-storefront@latest --storeHash your_store_hash --accessToken your_access_token
+npm create catalyst-storefront@latest
 ```
 
 ## PNPM
 
 ```sh
-pnpm create catalyst-storefront@latest --storeHash your_store_hash --accessToken your_access_token
+pnpm create catalyst-storefront@latest
 ```
 
 # To Do

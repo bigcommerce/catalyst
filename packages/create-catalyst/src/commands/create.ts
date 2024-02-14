@@ -2,50 +2,22 @@ import { input, select } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { exec as execCallback } from 'child_process';
 import { promisify } from 'util';
-import { z } from 'zod';
 
+import { type CreateCommandOptions } from '../index.js';
 import { cloneCatalyst } from '../utils/clone-catalyst.js';
 import { Https } from '../utils/https.js';
 import { installDependencies } from '../utils/install-dependencies.js';
 import { login } from '../utils/login.js';
-import { parse } from '../utils/parse.js';
-import { getPackageManager } from '../utils/pm.js';
 import { projectConfig } from '../utils/project-config.js';
 import { spinner } from '../utils/spinner.js';
 import { writeEnv } from '../utils/write-env.js';
 
 const exec = promisify(execCallback);
 
-export const create = async (opts: unknown) => {
-  const ProjectNameSchema = z.string().optional();
-  const ProjectDirSchema = z.string().optional();
-  const BigCommerceHostnameSchema = z.string().min(1);
-  const SampleDataApiUrlSchema = z.string().url();
-  const PackageManagerSchema = z.enum(['npm', 'pnpm', 'yarn']).optional();
-  const GhRefSchema = z.string();
-  const StoreHashSchema = z.string().optional();
-  const AccessTokenSchema = z.string().optional();
-  const ChannelIdSchema = z.string().optional();
-  const CustomerImpersonationTokenSchema = z.string().optional();
-
-  const OptionsSchema = z.object({
-    projectName: ProjectNameSchema,
-    projectDir: ProjectDirSchema,
-    bigCommerceHostname: BigCommerceHostnameSchema,
-    sampleDataApiUrl: SampleDataApiUrlSchema,
-    packageManager: PackageManagerSchema,
-    ghRef: GhRefSchema,
-    storeHash: StoreHashSchema,
-    accessToken: AccessTokenSchema,
-    channelId: ChannelIdSchema,
-    customerImpersonationToken: CustomerImpersonationTokenSchema,
-  });
-
-  const options = parse(opts, OptionsSchema);
-
-  const pm = getPackageManager(options.packageManager);
-  const bigCommerceApiUrl = `https://api.${options.bigCommerceHostname}`;
-  const bigCommerceAuthUrl = `https://login.${options.bigCommerceHostname}`;
+export const create = async (options: CreateCommandOptions) => {
+  const pm = options.packageManager;
+  const bigCommerceApiUrl = `https://api.${options.bigcommerceHostname}`;
+  const bigCommerceAuthUrl = `https://login.${options.bigcommerceHostname}`;
   const { projectName, projectDir } = await projectConfig({
     projectDir: options.projectDir,
     projectName: options.projectName,

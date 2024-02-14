@@ -1,30 +1,15 @@
 import { input, select } from '@inquirer/prompts';
 import chalk from 'chalk';
-import * as z from 'zod';
 
+import { type InitCommandOptions } from '../index.js';
 import { Https } from '../utils/https.js';
 import { login } from '../utils/login.js';
-import { parse } from '../utils/parse.js';
 import { writeEnv } from '../utils/write-env.js';
 
-export const init = async (opts: unknown) => {
-  const BigCommerceHostnameSchema = z.string().min(1);
-  const SampleDataApiUrlSchema = z.string().url();
-  const StoreHashSchema = z.string().optional();
-  const AccessTokenSchema = z.string().optional();
-
-  const OptionsSchema = z.object({
-    bigCommerceHostname: BigCommerceHostnameSchema,
-    sampleDataApiUrl: SampleDataApiUrlSchema,
-    storeHash: StoreHashSchema,
-    accessToken: AccessTokenSchema,
-  });
-
-  const options = parse(opts, OptionsSchema);
-
-  const bigCommerceApiUrl = `https://api.${options.bigCommerceHostname}`;
-  const bigCommerceAuthUrl = `https://login.${options.bigCommerceHostname}`;
+export const init = async (options: InitCommandOptions) => {
   const projectDir = process.cwd();
+  const bigCommerceApiUrl = `https://api.${options.bigcommerceHostname}`;
+  const bigCommerceAuthUrl = `https://login.${options.bigcommerceHostname}`;
   const { storeHash, accessToken } = await login(
     bigCommerceAuthUrl,
     options.storeHash,
