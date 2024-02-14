@@ -15,17 +15,18 @@ export default async function Home() {
 
       <div className="my-10">
         <ProductCardCarousel
-          products={bestSellingProducts}
-          showCart={false}
-          showCompare={false}
-          title="Best Selling Products"
-        />
-
-        <ProductCardCarousel
           products={featuredProducts}
           showCart={false}
           showCompare={false}
-          title="Featured Products"
+          showReviews={false}
+          title="Featured products"
+        />
+        <ProductCardCarousel
+          products={bestSellingProducts}
+          showCart={false}
+          showCompare={false}
+          showReviews={false}
+          title="Popular products"
         />
       </div>
     </>

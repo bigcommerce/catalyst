@@ -16,5 +16,13 @@ export const RelatedProducts = async ({
     imageHeight: 500,
   });
 
-  return <ProductCardCarousel products={relatedProducts} title="Related Products" />;
+  return (
+    <ProductCardCarousel
+      products={relatedProducts}
+      showCart={false}
+      showCompare={false}
+      showReviews={false}
+      title="Related products"
+    />
+  );
 };

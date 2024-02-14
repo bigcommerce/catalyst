@@ -16,11 +16,13 @@ export const ProductCardCarousel = ({
   products,
   showCart = true,
   showCompare = true,
+  showReviews = true,
 }: {
   title: string;
   products: Array<Partial<Product>>;
   showCart?: boolean;
   showCompare?: boolean;
+  showReviews?: boolean;
 }) => {
   const id = useId();
 
@@ -68,6 +70,7 @@ export const ProductCardCarousel = ({
                 product={product}
                 showCart={showCart}
                 showCompare={showCompare}
+                showReviews={showReviews}
               />
             ))}
           </CarouselSlide>
