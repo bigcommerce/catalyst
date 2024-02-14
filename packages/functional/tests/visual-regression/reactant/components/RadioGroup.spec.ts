@@ -12,6 +12,16 @@ test('Base radio group', async ({ page }) => {
   ).toHaveScreenshot();
 });
 
+test('Radio group with error variant', async ({ page }) => {
+  await page.goto(`${storyBookElements.storyUrl}/radio-group--error`);
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toBeVisible();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
+});
+
 test('Radio group with icon', async ({ page }) => {
   await page.goto(`${storyBookElements.storyUrl}/radio-group--radio-group-with-icon`);
   await expect(
