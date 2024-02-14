@@ -13,7 +13,11 @@ export const metadata = {
 };
 
 export default async function NotFound() {
-  const featuredProducts = await getFeaturedProducts({ imageHeight: 500, imageWidth: 500 });
+  const featuredProducts = await getFeaturedProducts({
+    imageHeight: 500,
+    imageWidth: 500,
+    first: 4,
+  });
 
   return (
     <>
@@ -36,7 +40,13 @@ export default async function NotFound() {
           <h3 className="mb-8 text-3xl font-black lg:text-4xl">Featured products</h3>
           <div className="grid grid-cols-2 gap-x-8 gap-y-8 md:grid-cols-4">
             {featuredProducts.map((product) => (
-              <ProductCard key={product.entityId} product={product} />
+              <ProductCard
+                key={product.entityId}
+                product={product}
+                showCart={false}
+                showCompare={false}
+                showReviews={false}
+              />
             ))}
           </div>
         </section>

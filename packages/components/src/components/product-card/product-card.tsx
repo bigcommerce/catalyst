@@ -85,7 +85,7 @@ ProductCardInfoProductName.displayName = 'ProductCardInfoProductName';
 const ProductCardInfoPrice = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => {
     return (
-      <div className={cn('pt-2 text-base', className)} ref={ref} {...props}>
+      <div className={cn(className)} ref={ref} {...props}>
         {children}
       </div>
     );

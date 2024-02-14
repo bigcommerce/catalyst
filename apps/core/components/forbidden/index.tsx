@@ -10,7 +10,7 @@ const FeaturedProducts = async () => {
   return (
     <section className="w-full">
       <h3 className="mb-10 text-center text-3xl font-black sm:text-start lg:text-4xl">
-        Featured Products
+        Featured products
       </h3>
       <div className="grid grid-cols-2 gap-x-8 gap-y-8 md:grid-cols-4">
         {featuredProducts.map((product) => (
