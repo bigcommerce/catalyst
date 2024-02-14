@@ -18,7 +18,7 @@ export const Reviews = async ({ productId }: Props) => {
 
   return (
     <>
-      <h3 className="mb-4 mt-8 text-xl font-bold">
+      <h3 className="mb-4 mt-8 text-xl font-bold md:text-2xl">
         Reviews
         {reviews.length > 0 && (
           <span className="ms-2 ps-1 text-gray-500">
