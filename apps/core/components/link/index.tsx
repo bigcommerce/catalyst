@@ -9,8 +9,10 @@ type LinkType = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkPr
     children?: React.ReactNode;
   } & React.RefAttributes<HTMLAnchorElement>;
 
+const prefetchDefault = process.env.DEFAULT_PREFETCH_BEHAVIOR === 'true';
+
 export const Link = forwardRef<ElementRef<'a'>, LinkType>(
-  ({ href, prefetch = false, children, className, ...rest }, ref) => {
+  ({ href, prefetch = prefetchDefault, children, className, ...rest }, ref) => {
     return (
       <NextLink
         className={cn(
