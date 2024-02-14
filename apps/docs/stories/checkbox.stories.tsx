@@ -39,6 +39,13 @@ export const DisabledCheckedCheckbox: Story = {
   },
 };
 
+export const Error: Story = {
+  args: {
+    checked: true,
+    variant: 'error',
+  },
+};
+
 export const CheckboxWithLabel: Story = {
   args: {
     children: 'Label',

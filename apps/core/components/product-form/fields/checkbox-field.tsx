@@ -46,6 +46,7 @@ export const CheckboxField = ({ option }: { option: CheckboxOption }) => {
             }
           }}
           value={field.value}
+          variant={error ? 'error' : undefined}
         />
         <Label className="mx-3 font-normal" htmlFor={`${option.entityId}`}>
           {option.label}
