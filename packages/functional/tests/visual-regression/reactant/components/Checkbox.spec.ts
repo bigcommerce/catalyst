@@ -52,6 +52,16 @@ test('Disabled checked checkbox', async ({ page }) => {
   ).toHaveScreenshot();
 });
 
+test('Checkbox with error variant', async ({ page }) => {
+  await page.goto(`${storyBookElements.storyUrl}/checkbox--error`);
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toBeVisible();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
+});
+
 test('Checkbox with label', async ({ page }) => {
   await page.goto(`${storyBookElements.storyUrl}/checkbox--checkbox-with-label`);
   await expect(
