@@ -1,4 +1,3 @@
-import { FooterNavGroupList, FooterNavLink } from '@bigcommerce/components/footer';
 import React, { ComponentPropsWithoutRef } from 'react';
 
 import { Link } from '~/components/link';
@@ -21,13 +20,13 @@ export const BaseFooterMenu = ({
   return (
     <div {...props}>
       <h3 className="mb-4 text-lg font-bold">{title}</h3>
-      <FooterNavGroupList>
+      <ul className="flex flex-col gap-4">
         {items.map((item) => (
-          <FooterNavLink asChild key={item.path}>
-            <Link href={item.path}>{item.name}</Link>
-          </FooterNavLink>
+          <Link href={item.path} key={item.path}>
+            {item.name}
+          </Link>
         ))}
-      </FooterNavGroupList>
+      </ul>
     </div>
   );
 };
