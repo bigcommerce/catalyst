@@ -1,9 +1,9 @@
 import {
   Carousel,
   CarouselContent,
+  CarouselItem,
   CarouselNextIndicator,
   CarouselPreviousIndicator,
-  CarouselSlide,
 } from '@bigcommerce/components/carousel';
 import { useId } from 'react';
 
@@ -45,7 +45,7 @@ export const ProductCardCarousel = ({
   }, []);
 
   return (
-    <Carousel aria-labelledby="title" className="mb-14">
+    <Carousel aria-labelledby="title" className="mb-14" opts={{ loop: true }}>
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-black lg:text-4xl" id="title">
           {title}
@@ -57,7 +57,7 @@ export const ProductCardCarousel = ({
       </div>
       <CarouselContent>
         {groupedProducts.map((group, index) => (
-          <CarouselSlide
+          <CarouselItem
             aria-label={`${index + 1} of ${groupedProducts.length}`}
             id={`${id}-slide-${index + 1}`}
             index={index}
@@ -73,7 +73,7 @@ export const ProductCardCarousel = ({
                 showReviews={showReviews}
               />
             ))}
-          </CarouselSlide>
+          </CarouselItem>
         ))}
       </CarouselContent>
       <Pagination groupedProducts={groupedProducts} id={id} />

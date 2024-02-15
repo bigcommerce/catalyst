@@ -1,11 +1,11 @@
 import {
   Carousel,
   CarouselContent,
+  CarouselItem,
   CarouselNextIndicator,
   CarouselPagination,
   CarouselPaginationTab,
   CarouselPreviousIndicator,
-  CarouselSlide,
 } from '@bigcommerce/components/carousel';
 import {
   ProductCard,
@@ -41,7 +41,7 @@ export const MultipleSlides: Story = {
       </div>
 
       <CarouselContent>
-        <CarouselSlide aria-label="1 of 2" id="slide-1" index={0}>
+        <CarouselItem aria-label="1 of 2" id="slide-1" index={0}>
           <ProductCard>
             <ProductCardImage>
               <div className="h-[180px] w-full bg-gray-200" />
@@ -94,8 +94,8 @@ export const MultipleSlides: Story = {
               <ProductCardInfoPrice>$200</ProductCardInfoPrice>
             </ProductCardInfo>
           </ProductCard>
-        </CarouselSlide>
-        <CarouselSlide aria-label="2 of 2" id="slide-2" index={1}>
+        </CarouselItem>
+        <CarouselItem aria-label="2 of 2" id="slide-2" index={1}>
           <ProductCard>
             <ProductCardImage>
               <div className="h-[180px] w-full bg-gray-200" />
@@ -135,25 +135,11 @@ export const MultipleSlides: Story = {
               <ProductCardInfoPrice>$200</ProductCardInfoPrice>
             </ProductCardInfo>
           </ProductCard>
-        </CarouselSlide>
+        </CarouselItem>
       </CarouselContent>
       <CarouselPagination>
-        {({ selectedIndex, scrollTo }) => (
-          <>
-            <CarouselPaginationTab
-              aria-controls="slide-1"
-              aria-label="Slide 1"
-              isSelected={selectedIndex === 0}
-              onClick={() => scrollTo(0)}
-            />
-            <CarouselPaginationTab
-              aria-controls="slide-2"
-              aria-label="Slide 2"
-              isSelected={selectedIndex === 1}
-              onClick={() => scrollTo(1)}
-            />
-          </>
-        )}
+        <CarouselPaginationTab aria-controls="slide-1" aria-label="Go to slide 1" index={0} />
+        <CarouselPaginationTab aria-controls="slide-2" aria-label="Go to slide 2" index={1} />
       </CarouselPagination>
     </Carousel>
   ),
@@ -173,7 +159,7 @@ export const SingleSlide: Story = {
       </div>
 
       <CarouselContent>
-        <CarouselSlide aria-label="1 of 1" index={0}>
+        <CarouselItem aria-label="1 of 1" index={0}>
           <ProductCard>
             <ProductCardImage>
               <div className="h-[180px] w-full bg-gray-200" />
@@ -213,16 +199,10 @@ export const SingleSlide: Story = {
               <ProductCardInfoPrice>$200</ProductCardInfoPrice>
             </ProductCardInfo>
           </ProductCard>
-        </CarouselSlide>
+        </CarouselItem>
       </CarouselContent>
       <CarouselPagination>
-        {({ selectedIndex, scrollTo }) => (
-          <CarouselPaginationTab
-            aria-label="Slide 1"
-            isSelected={selectedIndex === 0}
-            onClick={() => scrollTo(0)}
-          />
-        )}
+        <CarouselPaginationTab aria-label="Go to slide 1" index={0} />
       </CarouselPagination>
     </Carousel>
   ),
