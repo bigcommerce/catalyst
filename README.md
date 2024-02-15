@@ -159,3 +159,29 @@ For example, if `3000` is in use, `core` will run on `3001`.
 | Components Storybook | http://localhost:6006 |
 
 ![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/catalyst_readme_hr.png)
+
+### Testing
+
+We use playwright to test our components and verify workflows on the UI. You can read all about playwright from the [official website documentation](https://playwright.dev/docs/intro).
+
+To run the UI tests locally:
+
+1. Setup an environment variable required to point the tests. You can use any catalyst latest deployment or localhost for running tests against your local changes.
+```
+PLAYWRIGHT_TEST_BASE_URL = 'https://catalyst-demo.site' || 'http://localhost:3000'
+```
+
+2. Navigate to test directory
+```
+cd packages/functional
+```
+
+3. Command to run all UI tests on chromium
+```
+npx playwright test tests/ui/* --ui --project=tests-chromium
+```
+
+4. Command to run specific test
+```
+npx playwright test tests/ui/core/components/Checkbox.spec.ts --ui --project=tests-chromium
+```
