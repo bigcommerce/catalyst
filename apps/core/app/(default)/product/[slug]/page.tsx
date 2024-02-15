@@ -3,164 +3,14 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
 import { getProduct } from '~/client/queries/get-product';
-import { ProductForm } from '~/components/product-form';
 
 import { BreadCrumbs } from './_components/breadcrumbs';
+import { Description } from './_components/description';
+import { Details } from './_components/details';
 import { Gallery } from './_components/gallery';
-import { ProductSchema } from './_components/product-schema';
 import { RelatedProducts } from './_components/related-products';
-import { ReviewSummary } from './_components/review-summary';
 import { Reviews } from './_components/reviews';
-
-type Product = Awaited<ReturnType<typeof getProduct>>;
-
-const currencyFormatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-});
-
-const ProductDetails = ({ product }: { product: NonNullable<Product> }) => {
-  const showPriceRange =
-    product.prices?.priceRange.min.value !== product.prices?.priceRange.max.value;
-
-  return (
-    <div>
-      {product.brand && (
-        <p className="mb-2 font-semibold uppercase text-gray-500">{product.brand.name}</p>
-      )}
-
-      <h1 className="mb-4 text-4xl font-black lg:text-5xl">{product.name}</h1>
-
-      <Suspense fallback="Loading...">
-        <ReviewSummary productId={product.entityId} />
-      </Suspense>
-
-      {product.prices && (
-        <div className="my-6 text-2xl font-bold lg:text-3xl">
-          {showPriceRange ? (
-            <span>
-              {currencyFormatter.format(product.prices.priceRange.min.value)} -{' '}
-              {currencyFormatter.format(product.prices.priceRange.max.value)}
-            </span>
-          ) : (
-            <>
-              {product.prices.retailPrice?.value !== undefined && (
-                <span>
-                  MSRP:{' '}
-                  <span className="line-through">
-                    {currencyFormatter.format(product.prices.retailPrice.value)}
-                  </span>
-                  <br />
-                </span>
-              )}
-              {product.prices.salePrice?.value !== undefined &&
-              product.prices.basePrice?.value !== undefined ? (
-                <>
-                  <span>
-                    Was:{' '}
-                    <span className="line-through">
-                      {currencyFormatter.format(product.prices.basePrice.value)}
-                    </span>
-                  </span>
-                  <br />
-                  <span>Now: {currencyFormatter.format(product.prices.salePrice.value)}</span>
-                </>
-              ) : (
-                product.prices.price.value && (
-                  <span>{currencyFormatter.format(product.prices.price.value)}</span>
-                )
-              )}
-            </>
-          )}
-        </div>
-      )}
-
-      <ProductForm product={product} />
-
-      <div className="my-12">
-        <h2 className="mb-4 text-xl font-bold md:text-2xl">Additional details</h2>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {Boolean(product.sku) && (
-            <div>
-              <h3 className="font-semibold">SKU</h3>
-              <p>{product.sku}</p>
-            </div>
-          )}
-          {Boolean(product.upc) && (
-            <div>
-              <h3 className="font-semibold">UPC</h3>
-              <p>{product.upc}</p>
-            </div>
-          )}
-          {Boolean(product.minPurchaseQuantity) && (
-            <div>
-              <h3 className="font-semibold">Minimum purchase</h3>
-              <p>{product.minPurchaseQuantity}</p>
-            </div>
-          )}
-          {Boolean(product.maxPurchaseQuantity) && (
-            <div>
-              <h3 className="font-semibold">Maxiumum purchase</h3>
-              <p>{product.maxPurchaseQuantity}</p>
-            </div>
-          )}
-          {Boolean(product.availabilityV2.description) && (
-            <div>
-              <h3 className="font-semibold">Availability</h3>
-              <p>{product.availabilityV2.description}</p>
-            </div>
-          )}
-          {Boolean(product.condition) && (
-            <div>
-              <h3 className="font-semibold">Condition</h3>
-              <p>{product.condition}</p>
-            </div>
-          )}
-          {Boolean(product.weight) && (
-            <div>
-              <h3 className="font-semibold">Weight</h3>
-              <p>
-                {product.weight?.value} {product.weight?.unit}
-              </p>
-            </div>
-          )}
-          {Boolean(product.customFields) &&
-            product.customFields.map((customField) => (
-              <div key={customField.entityId}>
-                <h3 className="font-semibold">{customField.name}</h3>
-                <p>{customField.value}</p>
-              </div>
-            ))}
-        </div>
-      </div>
-      <ProductSchema product={product} />
-    </div>
-  );
-};
-
-const ProductDescriptionAndReviews = ({ product }: { product: NonNullable<Product> }) => {
-  return (
-    <div className="lg:col-span-2">
-      {Boolean(product.description) && (
-        <>
-          <h2 className="mb-4 text-xl font-bold md:text-2xl">Description</h2>
-          <div dangerouslySetInnerHTML={{ __html: product.description }} />
-        </>
-      )}
-
-      {Boolean(product.warranty) && (
-        <>
-          <h2 className="mb-4 mt-8 text-xl font-bold md:text-2xl">Warranty</h2>
-          <p>{product.warranty}</p>
-        </>
-      )}
-
-      <Suspense fallback="Loading...">
-        <Reviews productId={product.entityId} />
-      </Suspense>
-    </div>
-  );
-};
+import { Warranty } from './_components/warranty';
 
 interface ProductPageProps {
   params: { slug: string };
@@ -214,36 +64,23 @@ export default async function Product({ params, searchParams }: ProductPageProps
     return notFound();
   }
 
-  // make a copy of product.images
-  const images = product.images;
-
-  // pick the top-level default image out of the `Image` response
-  const topLevelDefaultImg = product.images.find((image) => image.isDefault);
-
-  // if product.defaultImage exists, and product.defaultImage.url is not equal to the url of the isDefault image in the Image response, mark the existing isDefault image to "isDefault = false" and append the correct default image to images
-  if (product.defaultImage && topLevelDefaultImg?.url !== product.defaultImage.url) {
-    images.forEach((image) => {
-      image.isDefault = false;
-    });
-
-    images.push({
-      url: product.defaultImage.url,
-      altText: product.defaultImage.altText,
-      isDefault: true,
-    });
-  }
-
   return (
     <>
-      <BreadCrumbs productId={productId} />
+      <BreadCrumbs productId={product.entityId} />
       <div className="mb-12 mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
-        <Gallery images={images} />
-        <ProductDetails product={product} />
-        <ProductDescriptionAndReviews product={product} />
+        <Gallery product={product} />
+        <Details product={product} />
+        <div className="lg:col-span-2">
+          <Description product={product} />
+          <Warranty product={product} />
+          <Suspense fallback="Loading...">
+            <Reviews productId={product.entityId} />
+          </Suspense>
+        </div>
       </div>
 
       <Suspense fallback="Loading...">
-        <RelatedProducts optionValueIds={optionValueIds} productId={productId} />
+        <RelatedProducts productId={product.entityId} />
       </Suspense>
     </>
   );

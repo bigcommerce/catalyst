@@ -1,17 +1,9 @@
-import { OptionValueId } from '~/client/generated/graphql';
 import { getRelatedProducts } from '~/client/queries/get-related-products';
 import { ProductCardCarousel } from '~/components/product-card-carousel';
 
-export const RelatedProducts = async ({
-  productId,
-  optionValueIds,
-}: {
-  productId: number;
-  optionValueIds: OptionValueId[];
-}) => {
+export const RelatedProducts = async ({ productId }: { productId: number }) => {
   const relatedProducts = await getRelatedProducts({
     productId,
-    optionValueIds,
     imageWidth: 500,
     imageHeight: 500,
   });
