@@ -106,6 +106,7 @@ export const ProductCard = ({
               className="object-contain"
               fill
               priority={imagePriority}
+              sizes="(max-width: 768px) 50vw, (max-width: 1536px) 25vw, 500px"
               src={product.defaultImage.url ?? ''}
             />
           ) : (
