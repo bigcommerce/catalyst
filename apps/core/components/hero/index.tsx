@@ -23,6 +23,7 @@ export const Hero = () => (
             className="absolute -z-10 object-cover"
             fill
             priority
+            sizes="(max-width: 1536px) 100vw, 1536px"
             src={SlideshowBG}
           />
           <div className="flex flex-col gap-4 px-12 pb-48 pt-36">
