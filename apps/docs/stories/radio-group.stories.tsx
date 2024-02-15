@@ -69,6 +69,23 @@ export const BaseRadioGroup: Story = {
   ),
 };
 
+export const Error: Story = {
+  render: () => (
+    <form>
+      <RadioGroup defaultValue="M">
+        {MOCKED_SIZE_OPTIONS.map((option) => (
+          <div className="mb-2 flex" key={option.id}>
+            <RadioItem {...option} variant="error" />
+            <Label className="cursor-pointer ps-4" htmlFor={option.id}>
+              {option.value}
+            </Label>
+          </div>
+        ))}
+      </RadioGroup>
+    </form>
+  ),
+};
+
 export const RadioGroupWithIcon: Story = {
   render: () => (
     <form>
