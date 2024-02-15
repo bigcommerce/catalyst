@@ -1,4 +1,3 @@
-import { FooterNav, FooterNavGroupList, FooterNavLink } from '@bigcommerce/components/footer';
 import {
   SiFacebook,
   SiInstagram,
@@ -57,22 +56,20 @@ export const SocialIcons = async () => {
   }
 
   return (
-    <FooterNav aria-label="Social media links" className="block">
-      <FooterNavGroupList className="flex-row gap-6">
+    <nav aria-label="Social media links" className="block">
+      <ul className="flex gap-6">
         {socialMediaLinks.map((link) => {
           if (!socialIconNames.includes(link.name)) {
             return null;
           }
 
           return (
-            <FooterNavLink asChild key={link.name}>
-              <Link className="inline-block" href={link.url}>
-                <SocialIcon name={link.name} />
-              </Link>
-            </FooterNavLink>
+            <Link className="inline-block" href={link.url} key={link.name}>
+              <SocialIcon name={link.name} />
+            </Link>
           );
         })}
-      </FooterNavGroupList>
-    </FooterNav>
+      </ul>
+    </nav>
   );
 };
