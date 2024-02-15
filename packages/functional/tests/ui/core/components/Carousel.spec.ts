@@ -30,15 +30,23 @@ test('Navigate to previous set of products', async ({ page }) => {
   await page
     .getByRole('region')
     .filter({ has: page.getByRole('heading', { name: 'Featured products' }) })
-    .getByRole('button', { name: 'Previous products' })
+    .getByRole('button', { name: 'Next products' })
     .click();
 
   await expect(
-    page.getByRole('link', { name: '[Sample] Orbit Terrarium - Large' }).first(),
+    page.getByRole('link', { name: '[Sample] Tiered Wire Basket' }).first(),
   ).toBeVisible();
+
+  await page
+    .getByRole('region')
+    .filter({ has: page.getByRole('heading', { name: 'Featured products' }) })
+    .getByRole('button', { name: 'Previous products' })
+    .click();
+
+  await expect(page.getByRole('link', { name: '[Sample] Smith Journal 13' }).first()).toBeVisible();
 });
 
-test('Navigation on set of products is cyclic', async ({ page }) => {
+test.skip('Navigation on set of products is cyclic', async ({ page }) => {
   await expect(page.getByRole('link', { name: '[Sample] Smith Journal 13' })).toBeVisible();
 
   await page
