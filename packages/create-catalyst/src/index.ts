@@ -8,7 +8,7 @@ import PACKAGE_INFO from '../package.json';
 
 import { create } from './commands/create';
 import { init } from './commands/init';
-import { getPackageManager } from './utils/pm';
+import { getPackageManager, packageManagerChoices } from './utils/pm';
 
 if (!satisfies(process.version, PACKAGE_INFO.engines.node)) {
   console.error(
@@ -55,7 +55,7 @@ const createCommand = program
   )
   .addOption(
     new Option('--package-manager <pm>', 'Override detected package manager')
-      .choices(['npm', 'pnpm', 'yarn'] as const)
+      .choices(packageManagerChoices)
       .default(getPackageManager())
       .hideHelp(),
   )

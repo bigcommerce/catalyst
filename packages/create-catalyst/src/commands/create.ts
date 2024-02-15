@@ -15,7 +15,7 @@ import { writeEnv } from '../utils/write-env';
 const exec = promisify(execCallback);
 
 export const create = async (options: CreateCommandOptions) => {
-  const pm = options.packageManager;
+  const { packageManager } = options;
   const bigCommerceApiUrl = `https://api.${options.bigcommerceHostname}`;
   const bigCommerceAuthUrl = `https://login.${options.bigcommerceHostname}`;
   const { projectName, projectDir } = await projectConfig({
@@ -33,9 +33,9 @@ export const create = async (options: CreateCommandOptions) => {
 
     await cloneCatalyst({ projectDir, projectName, ghRef: options.ghRef });
 
-    console.log(`\nUsing ${chalk.bold(pm)}\n`);
+    console.log(`\nUsing ${chalk.bold(packageManager)}\n`);
 
-    await installDependencies(projectDir, pm);
+    await installDependencies(projectDir, packageManager);
 
     console.log(
       [
@@ -133,17 +133,17 @@ export const create = async (options: CreateCommandOptions) => {
     customerImpersonationToken,
   });
 
-  console.log(`\nUsing ${chalk.bold(pm)}\n`);
+  console.log(`\nUsing ${chalk.bold(packageManager)}\n`);
 
-  await installDependencies(projectDir, pm);
+  await installDependencies(projectDir, packageManager);
 
-  await spinner(exec(`${pm} run codegen`, { cwd: projectDir }), {
+  await spinner(exec(`${packageManager} run codegen`, { cwd: projectDir }), {
     text: 'Generating GraphQL types...',
     successText: 'GraphQL types generated successfully',
     failText: (err) => chalk.red(`Failed to generate GraphQL types: ${err.message}`),
   });
 
-  await spinner(exec(`${pm} run lint --fix`, { cwd: projectDir }), {
+  await spinner(exec(`${packageManager} run lint --fix`, { cwd: projectDir }), {
     text: 'Linting to validate generated types...',
     successText: 'GraphQL types validated successfully',
     failText: (err) => chalk.red(`Failed to validate GraphQL types: ${err.message}`),
@@ -152,6 +152,6 @@ export const create = async (options: CreateCommandOptions) => {
   console.log(
     `\n${chalk.green('Success!')} Created '${projectName}' at '${projectDir}'\n`,
     '\nNext steps:\n',
-    chalk.yellow(`\ncd ${projectName} && ${pm} run dev\n`),
+    chalk.yellow(`\ncd ${projectName} && ${packageManager} run dev\n`),
   );
 };
