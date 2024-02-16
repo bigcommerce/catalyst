@@ -30,7 +30,7 @@ interface HttpsConfig {
 }
 
 export class Https {
-  DEVICE_OAUTH_CLIENT_ID = 'o094w49fnipwgbo0h9772pc2q6pw1p7';
+  DEVICE_OAUTH_CLIENT_ID = 'acse0vvawm9r1n0evag4b8e1ea1fo90';
 
   bigCommerceApiUrl: string;
   bigCommerceAuthUrl: string;
@@ -118,10 +118,7 @@ export class Https {
     });
 
     if (response.status !== 200) {
-      console.error(
-        chalk.red(`\nPOST /device/token failed: ${response.status} ${response.statusText}\n`),
-      );
-      process.exit(1);
+      throw new Error('Device code not yet verified');
     }
 
     const DeviceCodeSuccessSchema = z.object({

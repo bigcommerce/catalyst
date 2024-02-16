@@ -1,12 +1,10 @@
 /* eslint-disable no-await-in-loop */
 
-import { confirm, input } from '@inquirer/prompts';
+import { confirm } from '@inquirer/prompts';
 import chalk from 'chalk';
 
 import { Https } from './https';
 import { spinner } from './spinner';
-
-const DEVICE_OAUTH_ENABLED = process.env.DEVICE_OAUTH_ENABLED ?? false;
 
 const poll = async (auth: Https, deviceCode: string, interval: number, expiresIn: number) => {
   const intervalMs = interval * 1000;
@@ -44,34 +42,6 @@ export const login = async (
     return { storeHash, accessToken };
   }
 
-  if (!DEVICE_OAUTH_ENABLED) {
-    console.log(
-      [
-        `\nPlease create an access token at ${chalk.cyan(
-          `${bigCommerceAuthUrl}/deep-links/settings/api-accounts/create`,
-        )} with the following scopes:`,
-        `  - Content: ${chalk.yellow('modify')}`,
-        `  - Information & settings: ${chalk.yellow('modify')}`,
-        `  - Products: ${chalk.yellow('modify')}`,
-        `  - Carts: ${chalk.yellow('read-only')}`,
-        `  - Sites & routes: ${chalk.yellow('modify')}`,
-        `  - Channel settings: ${chalk.yellow('modify')}`,
-        `  - Storefront API customer impersonation tokens: ${chalk.yellow('manage')}\n`,
-      ].join('\n'),
-    );
-
-    return {
-      storeHash: await input({
-        message: 'Enter your store hash',
-        validate: (i) => (i.length > 0 ? true : 'Store hash is required'),
-      }),
-      accessToken: await input({
-        message: 'Enter your access token',
-        validate: (i) => (i.length > 0 ? true : 'Access token is required'),
-      }),
-    };
-  }
-
   const auth = new Https({ bigCommerceAuthUrl });
 
   const deviceCode = await auth.getDeviceCode();
@@ -89,8 +59,8 @@ export const login = async (
     poll(auth, deviceCode.device_code, deviceCode.interval, deviceCode.expires_in),
     {
       text: 'Waiting for device code to be authorized',
-      successText: 'Device code authorized',
-      failText: 'Device code expired',
+      successText: 'Device code authorized\n',
+      failText: 'Device code expired\n',
     },
   );
 
