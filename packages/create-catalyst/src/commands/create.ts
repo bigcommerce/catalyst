@@ -71,8 +71,6 @@ export const create = async (options: CreateCommandOptions) => {
       canCreateChannel = false;
     } else if (channels.length >= limits.total_including_inactive) {
       canCreateChannel = false;
-    } else {
-      console.log(`${limits.active - activeChannels.length} active channels remaining.`);
     }
 
     if (!canCreateChannel) {
