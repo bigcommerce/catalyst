@@ -1,37 +1,95 @@
 import { input, select } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { exec as execCallback } from 'child_process';
+import { pathExistsSync } from 'fs-extra/esm';
+import kebabCase from 'lodash.kebabcase';
+import { join } from 'path';
 import { promisify } from 'util';
+import { z } from 'zod';
 
-import { type CreateCommandOptions } from '../index';
+import { type CreateCommandOptions } from '..';
+import { checkStorefrontLimit } from '../utils/check-storefront-limit';
 import { cloneCatalyst } from '../utils/clone-catalyst';
 import { Https } from '../utils/https';
 import { installDependencies } from '../utils/install-dependencies';
 import { login } from '../utils/login';
-import { projectConfig } from '../utils/project-config';
+import { parse } from '../utils/parse';
 import { spinner } from '../utils/spinner';
 import { writeEnv } from '../utils/write-env';
 
 const exec = promisify(execCallback);
 
 export const create = async (options: CreateCommandOptions) => {
-  const { packageManager } = options;
-  const bigCommerceApiUrl = `https://api.${options.bigcommerceHostname}`;
-  const bigCommerceAuthUrl = `https://login.${options.bigcommerceHostname}`;
-  const { projectName, projectDir } = await projectConfig({
-    projectDir: options.projectDir,
-    projectName: options.projectName,
-  });
-  const { storeHash, accessToken } = await login(
-    bigCommerceAuthUrl,
-    options.storeHash,
-    options.accessToken,
-  );
+  const { packageManager, ghRef } = options;
+
+  const URLSchema = z.string().url();
+  const sampleDataApiUrl = parse(options.sampleDataApiUrl, URLSchema);
+  const bigcommerceApiUrl = parse(`https://api.${options.bigcommerceHostname}`, URLSchema);
+  const bigcommerceAuthUrl = parse(`https://login.${options.bigcommerceHostname}`, URLSchema);
+
+  let projectName;
+  let projectDir;
+  let storeHash = options.storeHash;
+  let accessToken = options.accessToken;
+  let channelId;
+  let customerImpersonationToken = options.customerImpersonationToken;
+
+  if (options.channelId) {
+    channelId = parseInt(options.channelId, 10);
+  }
+
+  if (!pathExistsSync(options.projectDir)) {
+    console.error(chalk.red(`Error: --projectDir ${options.projectDir} is not a valid path\n`));
+    process.exit(1);
+  }
+
+  if (options.projectName) {
+    projectName = kebabCase(options.projectName);
+    projectDir = join(options.projectDir, projectName);
+
+    if (pathExistsSync(projectDir)) {
+      console.error(chalk.red(`Error: ${projectDir} already exists\n`));
+      process.exit(1);
+    }
+  }
+
+  if (!options.projectName) {
+    const validateProjectName = (i: string) => {
+      const formatted = kebabCase(i);
+
+      if (!formatted) return 'Project name is required';
+
+      const targetDir = join(options.projectDir, formatted);
+
+      if (pathExistsSync(targetDir)) return `Destination '${targetDir}' already exists`;
+
+      projectName = formatted;
+      projectDir = targetDir;
+
+      return true;
+    };
+
+    await input({
+      message: 'What is the name of your project?',
+      default: 'my-catalyst-app',
+      validate: validateProjectName,
+    });
+  }
+
+  if (!options.storeHash || !options.accessToken) {
+    const credentials = await login(bigcommerceAuthUrl);
+
+    storeHash = credentials.storeHash;
+    accessToken = credentials.accessToken;
+  }
+
+  if (!projectName) throw new Error('Someting went wrong, projectName is not defined');
+  if (!projectDir) throw new Error('Someting went wrong, projectDir is not defined');
 
   if (!storeHash || !accessToken) {
     console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
-    await cloneCatalyst({ projectDir, projectName, ghRef: options.ghRef });
+    await cloneCatalyst({ projectDir, projectName, ghRef });
 
     console.log(`\nUsing ${chalk.bold(packageManager)}\n`);
 
@@ -49,36 +107,54 @@ export const create = async (options: CreateCommandOptions) => {
     process.exit(0);
   }
 
-  const bc = new Https({ bigCommerceApiUrl, storeHash, accessToken });
-
-  let channelId = options.channelId ? options.channelId : 0;
-  let customerImpersonationToken = options.customerImpersonationToken
-    ? options.customerImpersonationToken
-    : '';
-
   if (!channelId || !customerImpersonationToken) {
-    const { data: channels } = await bc.channels();
-    const {
-      features: { storefront_limits: limits },
-    } = await bc.storeInformation();
+    const bc = new Https({ bigCommerceApiUrl: bigcommerceApiUrl, storeHash, accessToken });
 
-    const activeStatus = ['prelaunch', 'active', 'connected'];
-    const activeChannels = channels.filter((ch) => activeStatus.includes(ch.status));
+    const canCreateChannel = checkStorefrontLimit(bc);
 
-    let canCreateChannel = true;
+    let shouldCreateChannel;
 
-    if (activeChannels.length >= limits.active) {
-      canCreateChannel = false;
-    } else if (channels.length >= limits.total_including_inactive) {
-      canCreateChannel = false;
+    if (canCreateChannel) {
+      shouldCreateChannel = await select({
+        message: 'Would you like to create a new channel?',
+        choices: [
+          { name: 'Yes', value: true },
+          { name: 'No', value: false },
+        ],
+      });
     }
 
-    if (!canCreateChannel) {
+    if (shouldCreateChannel) {
+      const newChannelName = await input({
+        message: 'What would you like to name your new channel?',
+      });
+
+      const sampleDataApi = new Https({
+        sampleDataApiUrl,
+        storeHash,
+        accessToken,
+      });
+
+      const {
+        data: { id: createdChannelId, storefront_api_token: storefrontApiToken },
+      } = await sampleDataApi.createChannel(newChannelName);
+
+      channelId = createdChannelId;
+      customerImpersonationToken = storefrontApiToken;
+
+      /**
+       * @todo prompt sample data API
+       */
+    }
+
+    if (!shouldCreateChannel) {
+      const { data: channels } = await bc.channels('?available=true&type=storefront');
+
       const channelSortOrder = ['catalyst', 'next', 'bigcommerce'];
 
       const existingChannel = await select({
         message: 'Which channel would you like to use?',
-        choices: activeChannels
+        choices: channels
           .sort(
             (a, b) => channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
           )
@@ -100,29 +176,16 @@ export const create = async (options: CreateCommandOptions) => {
       } = await bc.customerImpersonationToken(channelId);
 
       customerImpersonationToken = token;
-    } else {
-      const newChannelName = await input({
-        message: 'What would you like to name your new channel?',
-      });
-
-      const sampleDataApi = new Https({
-        sampleDataApiUrl: options.sampleDataApiUrl,
-        storeHash,
-        accessToken,
-      });
-
-      const {
-        data: { id: createdChannelId, storefront_api_token: storefrontApiToken },
-      } = await sampleDataApi.createChannel(newChannelName);
-
-      channelId = createdChannelId;
-      customerImpersonationToken = storefrontApiToken;
     }
   }
 
+  if (!channelId) throw new Error('Someting went wrong, channelId is not defined');
+  if (!customerImpersonationToken)
+    throw new Error('Someting went wrong, customerImpersonationToken is not defined');
+
   console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
-  await cloneCatalyst({ projectDir, projectName, ghRef: options.ghRef });
+  await cloneCatalyst({ projectDir, projectName, ghRef });
 
   writeEnv(projectDir, {
     channelId: channelId.toString(),
