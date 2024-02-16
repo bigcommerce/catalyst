@@ -46,7 +46,7 @@ test('Navigate to previous set of products', async ({ page }) => {
   await expect(page.getByRole('link', { name: '[Sample] Smith Journal 13' }).first()).toBeVisible();
 });
 
-test.skip('Navigation on set of products is cyclic', async ({ page }) => {
+test('Navigation on set of products is cyclic', async ({ page }) => {
   await expect(page.getByRole('link', { name: '[Sample] Smith Journal 13' })).toBeVisible();
 
   await page
