@@ -39,13 +39,15 @@ export const getQuickSearchResults = cache(
     const query = graphql(GET_QUICK_SEARCH_RESULTS_QUERY);
     const customerId = await getSessionCustomerId();
 
+    const revalidate = process.env.NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET
+      ? Number(process.env.NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET)
+      : undefined;
+
     const response = await client.fetch({
       document: query,
       variables: { filters: { searchTerm }, imageHeight, imageWidth },
       customerId,
-      fetchOptions: {
-        cache: customerId ? 'no-store' : 'force-cache',
-      },
+      fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     const { products } = response.data.site.search.searchProducts;

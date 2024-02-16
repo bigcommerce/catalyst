@@ -71,15 +71,17 @@ export const getCategory = cache(
     const query = graphql(GET_CATEGORY_QUERY);
     const customerId = await getSessionCustomerId();
 
+    const revalidate = process.env.NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET
+      ? Number(process.env.NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET)
+      : undefined;
+
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
       document: query,
       variables: { categoryId, breadcrumbDepth, ...paginationArgs },
       customerId,
-      fetchOptions: {
-        cache: customerId ? 'no-store' : 'force-cache',
-      },
+      fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     const category = response.data.site.category;

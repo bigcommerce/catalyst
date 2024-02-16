@@ -43,12 +43,14 @@ export const getRelatedProducts = cache(
     const query = graphql(GET_RELATED_PRODUCTS);
     const customerId = await getSessionCustomerId();
 
+    const revalidate = process.env.NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET
+      ? Number(process.env.NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET)
+      : undefined;
+
     const response = await client.fetch({
       document: query,
       variables: { entityId: productId, optionValueIds, first, imageWidth, imageHeight },
-      fetchOptions: {
-        cache: customerId ? 'no-store' : 'force-cache',
-      },
+      fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     const { product } = response.data.site;
