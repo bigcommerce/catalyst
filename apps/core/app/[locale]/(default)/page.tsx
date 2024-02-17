@@ -19,8 +19,8 @@ export default async function Home({ params: { locale } }: Props) {
   const t = await getTranslations({ locale, namespace: 'Home' });
   const messages = await getMessages({ locale });
   const [newestProducts, featuredProducts] = await Promise.all([
-    getNewestProducts({ imageWidth: 500, imageHeight: 500 }),
-    getFeaturedProducts({ imageWidth: 500, imageHeight: 500 }),
+    getNewestProducts(),
+    getFeaturedProducts(),
   ]);
 
   return (

@@ -95,7 +95,7 @@ export const PRODUCT_OPTIONS_FRAGMENT = /* GraphQL */ `
                     __typename
                     defaultImage {
                       altText
-                      url(width: 48)
+                      url: urlTemplate
                     }
                     productId
                   }
@@ -155,13 +155,13 @@ export const GET_PRODUCT_QUERY = /* GraphQL */ `
         plainTextDescription(characterLimit: 2000)
         defaultImage {
           altText
-          url(width: 600)
+          url: urlTemplate
         }
         images {
           edges {
             node {
               altText
-              url(width: 600)
+              url: urlTemplate
               isDefault
             }
           }

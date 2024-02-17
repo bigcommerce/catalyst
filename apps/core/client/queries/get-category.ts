@@ -39,7 +39,7 @@ export const GET_CATEGORY_QUERY = /* GraphQL */ `
                 }
               }
               defaultImage {
-                url(width: 300)
+                url: urlTemplate
                 altText
               }
             }

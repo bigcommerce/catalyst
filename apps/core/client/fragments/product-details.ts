@@ -10,7 +10,7 @@ export const PRODUCT_DETAILS_FRAGMENT = /* GraphQL */ `
       path
     }
     defaultImage {
-      url(width: $imageWidth, height: $imageHeight)
+      url: urlTemplate
       altText
     }
     availabilityV2 {

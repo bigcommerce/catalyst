@@ -45,7 +45,7 @@ const GET_BLOG_POSTS_QUERY = /* GraphQL */ `
                   utc
                 }
                 thumbnailImage {
-                  url(width: 300)
+                  url: urlTemplate
                   altText
                 }
                 seo {

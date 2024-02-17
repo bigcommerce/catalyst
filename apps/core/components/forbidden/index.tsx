@@ -3,7 +3,7 @@ import { ProductCard } from '~/components/product-card';
 import { SearchForm } from '~/components/search-form';
 
 const FeaturedProducts = async () => {
-  const featuredProducts = await getFeaturedProducts({ imageHeight: 500, imageWidth: 500 });
+  const featuredProducts = await getFeaturedProducts();
 
   return (
     <section className="w-full">

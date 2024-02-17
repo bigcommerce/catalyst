@@ -26,8 +26,6 @@ const GET_PRODUCT_SEARCH_RESULTS_QUERY = /* GraphQL */ `
     $before: String
     $filters: SearchProductsFiltersInput!
     $sort: SearchProductsSortInput
-    $imageHeight: Int!
-    $imageWidth: Int!
   ) {
     site {
       search {

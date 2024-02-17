@@ -11,8 +11,6 @@ export const RelatedProducts = async ({ productId }: { productId: number }) => {
 
   const relatedProducts = await getRelatedProducts({
     productId,
-    imageWidth: 500,
-    imageHeight: 500,
   });
 
   return (

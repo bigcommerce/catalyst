@@ -9,16 +9,10 @@ import { revalidate } from '../revalidate-target';
 
 interface QuickSearch {
   searchTerm: string;
-  imageWidth?: number;
-  imageHeight?: number;
 }
 
 const GET_QUICK_SEARCH_RESULTS_QUERY = /* GraphQL */ `
-  query getQuickSearchResults(
-    $filters: SearchProductsFiltersInput!
-    $imageHeight: Int!
-    $imageWidth: Int!
-  ) {
+  query getQuickSearchResults($filters: SearchProductsFiltersInput!) {
     site {
       search {
         searchProducts(filters: $filters) {
@@ -35,22 +29,20 @@ const GET_QUICK_SEARCH_RESULTS_QUERY = /* GraphQL */ `
   }
 `;
 
-export const getQuickSearchResults = cache(
-  async ({ searchTerm, imageHeight = 300, imageWidth = 300 }: QuickSearch) => {
-    const query = graphql(GET_QUICK_SEARCH_RESULTS_QUERY);
-    const customerId = await getSessionCustomerId();
+export const getQuickSearchResults = cache(async ({ searchTerm }: QuickSearch) => {
+  const query = graphql(GET_QUICK_SEARCH_RESULTS_QUERY);
+  const customerId = await getSessionCustomerId();
 
-    const response = await client.fetch({
-      document: query,
-      variables: { filters: { searchTerm }, imageHeight, imageWidth },
-      customerId,
-      fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
-    });
+  const response = await client.fetch({
+    document: query,
+    variables: { filters: { searchTerm } },
+    customerId,
+    fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
+  });
 
-    const { products } = response.data.site.search.searchProducts;
+  const { products } = response.data.site.search.searchProducts;
 
-    return {
-      products: removeEdgesAndNodes(products),
-    };
-  },
-);
+  return {
+    products: removeEdgesAndNodes(products),
+  };
+});

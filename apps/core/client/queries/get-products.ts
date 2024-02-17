@@ -15,7 +15,7 @@ export interface GetProductsArguments {
 }
 
 const GET_PRODUCTS_QUERY = /* GraphQL */ `
-  query getProducts($entityIds: [Int!], $first: Int, $imageHeight: Int!, $imageWidth: Int!) {
+  query getProducts($entityIds: [Int!], $first: Int) {
     site {
       products(entityIds: $entityIds, first: $first) {
         edges {
