@@ -5,6 +5,7 @@ dist
 !.vscode/settings.example.json
 .idea
 .vercel
+.catalyst
 .env
 .env*.local
 test-results/
