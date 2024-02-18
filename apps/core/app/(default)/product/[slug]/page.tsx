@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
 import { getProduct } from '~/client/queries/get-product';
-import { envRuntime } from '~/runtime';
 
 import { BreadCrumbs } from './_components/breadcrumbs';
 import { Description } from './_components/description';
@@ -87,4 +86,4 @@ export default async function Product({ params, searchParams }: ProductPageProps
   );
 }
 
-export const runtime = `${envRuntime}`;
+export const runtime = process.env.NEXTJS_RUNTIME ? process.env.NEXTJS_RUNTIME : 'edge';

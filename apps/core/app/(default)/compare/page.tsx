@@ -8,7 +8,6 @@ import { Link } from '~/components/link';
 import { Pricing } from '~/components/pricing';
 import { SearchForm } from '~/components/search-form';
 import { cn } from '~/lib/utils';
-import { envRuntime } from '~/runtime';
 
 import { AddToCartForm } from './_components/add-to-cart-form';
 
@@ -249,4 +248,4 @@ export default async function Compare({
   );
 }
 
-export const runtime = `${envRuntime}`;
+export const runtime = process.env.NEXTJS_RUNTIME ? process.env.NEXTJS_RUNTIME : 'edge';

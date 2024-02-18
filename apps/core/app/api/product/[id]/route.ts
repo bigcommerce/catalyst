@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { getProduct } from '~/client/queries/get-product';
-import { envRuntime } from '~/runtime';
 
 export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
   const { id } = params;
@@ -23,4 +22,4 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
   return new Response('Missing product id.', { status: 400 });
 };
 
-export const runtime = `${envRuntime}`;
+export const runtime = process.env.NEXTJS_RUNTIME ? process.env.NEXTJS_RUNTIME : 'edge';

@@ -5,7 +5,6 @@ import { notFound } from 'next/navigation';
 import { getBrand } from '~/client/queries/get-brand';
 import { Link } from '~/components/link';
 import { ProductCard } from '~/components/product-card';
-import { envRuntime } from '~/runtime';
 
 import { FacetedSearch } from '../../_components/faceted-search';
 import { MobileSideNav } from '../../_components/mobile-side-nav';
@@ -122,4 +121,4 @@ export default async function Brand({ params, searchParams }: Props) {
   );
 }
 
-export const runtime = `${envRuntime}`;
+export const runtime = process.env.NEXTJS_RUNTIME ? process.env.NEXTJS_RUNTIME : 'edge';

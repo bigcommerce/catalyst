@@ -3,7 +3,6 @@ import { ReactNode } from 'react';
 
 import { getStoreSettings } from '~/client/queries/get-store-settings';
 import { StoreLogo } from '~/components/store-logo';
-import { envRuntime } from '~/runtime';
 
 const Container = ({ children }: { children: ReactNode }) => (
   <main className="mx-auto mt-[64px] px-6 md:px-10 lg:mt-[128px]">{children}</main>
@@ -53,4 +52,4 @@ export default async function MaintenancePage() {
   );
 }
 
-export const runtime = `${envRuntime}`;
+export const runtime = process.env.NEXTJS_RUNTIME ? process.env.NEXTJS_RUNTIME : 'edge';

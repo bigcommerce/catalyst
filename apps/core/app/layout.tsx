@@ -7,7 +7,6 @@ import { PropsWithChildren } from 'react';
 import './globals.css';
 
 import { getStoreSettings } from '~/client/queries/get-store-settings';
-import { envRuntime } from '~/runtime';
 
 import { Notifications } from './notifications';
 import { Providers } from './providers';
@@ -50,4 +49,4 @@ export default function RootLayout({ children }: PropsWithChildren) {
   );
 }
 
-export const runtime = `${envRuntime}`;
+export const runtime = process.env.NEXTJS_RUNTIME ? process.env.NEXTJS_RUNTIME : 'edge';

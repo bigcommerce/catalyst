@@ -1,5 +1,4 @@
 import { getBrands } from '~/client/queries/get-brands';
-import { envStaticRuntime } from '~/runtime';
 
 import BrandPage from '../page';
 
@@ -15,4 +14,6 @@ export async function generateStaticParams() {
 
 export const dynamic = 'force-static';
 export const revalidate = 600;
-export const runtime = `${envStaticRuntime}`;
+export const runtime = process.env.NEXTJS_STATIC_RUNTIME
+  ? process.env.NEXTJS_STATIC_RUNTIME
+  : 'nodejs';

@@ -59,6 +59,4 @@ export default async function BlogPostPage({ params: { tagId }, searchParams }: 
   );
 }
 
-import { envRuntime } from '~/runtime';
-
-export const runtime = `${envRuntime}`;
+export const runtime = process.env.NEXTJS_RUNTIME ? process.env.NEXTJS_RUNTIME : 'edge';

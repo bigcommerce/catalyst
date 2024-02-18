@@ -13,7 +13,6 @@ import { notFound } from 'next/navigation';
 import { getBlogPost } from '~/client/queries/get-blost-post';
 import { Link } from '~/components/link';
 import { SharingLinks } from '~/components/sharing-links';
-import { envRuntime } from '~/runtime';
 
 interface Props {
   params: {
@@ -92,4 +91,4 @@ export default async function BlogPostPage({ params: { blogId } }: Props) {
   );
 }
 
-export const runtime = `${envRuntime}`;
+export const runtime = process.env.NEXTJS_RUNTIME ? process.env.NEXTJS_RUNTIME : 'edge';

@@ -1,5 +1,4 @@
 import { getFeaturedProducts } from '~/client/queries/get-featured-products';
-import { envStaticRuntime } from '~/runtime';
 
 import ProductPage from '../page';
 
@@ -16,4 +15,6 @@ export async function generateStaticParams() {
 
 export const dynamic = 'force-static';
 export const revalidate = 600;
-export const runtime = `${envStaticRuntime}`;
+export const runtime = process.env.NEXTJS_STATIC_RUNTIME
+  ? process.env.NEXTJS_STATIC_RUNTIME
+  : 'nodejs';

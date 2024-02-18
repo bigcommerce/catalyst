@@ -1,7 +1,6 @@
 import { Button } from '@bigcommerce/components/button';
 
 import { Link } from '~/components/link';
-import { envRuntime } from '~/runtime';
 
 import { LoginForm } from './_components/login-form';
 
@@ -43,4 +42,4 @@ export default function Login() {
   );
 }
 
-export const runtime = `${envRuntime}`;
+export const runtime = process.env.NEXTJS_RUNTIME ? process.env.NEXTJS_RUNTIME : 'edge';
