@@ -1,15 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import NextLink, { type LinkProps } from 'next/link';
-import { ElementRef, forwardRef } from 'react';
+import NextLink from 'next/link';
+import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
 import { cn } from '~/lib/utils';
 
-type LinkType = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps> &
-  LinkProps & {
-    children?: React.ReactNode;
-  } & React.RefAttributes<HTMLAnchorElement>;
+type Props = ComponentPropsWithRef<typeof NextLink>;
 
-export const Link = forwardRef<ElementRef<'a'>, LinkType>(
+export const Link = forwardRef<ElementRef<'a'>, Props>(
   ({ href, prefetch = false, children, className, ...rest }, ref) => {
     return (
       <NextLink
