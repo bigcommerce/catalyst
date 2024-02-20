@@ -25,7 +25,7 @@ Would you like to connect to a BigCommerce store?
 Would you like to create a new channel?
 ```
 
-During the connection step, you'll be asked to login to your store using a browse and enter a code provided by the CLI.
+During the connection step, you'll be asked to login to your store using a browser and enter a code provided by the CLI.
 
 We recommend creating a new channel on your store for your new Catalyst storefront. More information about channels can be found in BigCommerce's [channels](https://developer.bigcommerce.com/docs/integrations/channels) documentation.
 
