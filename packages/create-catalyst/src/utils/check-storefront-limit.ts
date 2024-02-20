@@ -11,8 +11,8 @@ export const checkStorefrontLimit = (
 
   if (availableChannels.length >= features.storefront_limits.total_including_inactive) {
     console.error(
-      chalk.red(
-        `\nYou have reached the maximum number of storefronts allowed for your plan. Please purchase additional storefront seats in your BigCommerce Control Panel or contact BigCommerce Support: ${chalk.cyan(
+      chalk.yellow(
+        `You have reached the maximum number of storefronts allowed for your plan. Please select an existing channel below, purchase additional storefront seats in your BigCommerce Control Panel, or contact BigCommerce Support: ${chalk.cyan(
           'https://support.bigcommerce.com',
         )}\n`,
       ),
@@ -25,8 +25,8 @@ export const checkStorefrontLimit = (
 
   if (activeChannels.length >= features.storefront_limits.active) {
     console.error(
-      chalk.red(
-        '\nYou have reached the maximum number of active storefronts allowed for your plan. Please de-activate an active channel or purchase additional storefront seats in your BigCommerce Control Panel.\n',
+      chalk.yellow(
+        'You have reached the maximum number of active storefronts allowed for your plan. Please select an existing channel below, de-activate an active channel, or purchase additional storefront seats in your BigCommerce Control Panel.\n',
       ),
     );
 

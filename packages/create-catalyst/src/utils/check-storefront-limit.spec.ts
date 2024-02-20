@@ -1,7 +1,7 @@
 import { checkStorefrontLimit } from './check-storefront-limit';
 
 jest.mock('chalk', () => ({
-  red: jest.fn((text: string) => text),
+  yellow: jest.fn((text: string) => text),
   cyan: jest.fn((text: string) => text),
 }));
 
