@@ -21,7 +21,7 @@ This identifies the BigCommerce store to which this Catalyst storefront is conne
 > [!NOTE]
 > An Admin API access token is only temporarily required, and will be removed in a future version of Catalyst which removes direct dependency on the Admin API.
 
-This is an [Admin API token](https://support.bigcommerce.com/s/article/Store-API-Accounts?language=en_US#creating) for connecting to the BigCommerce Admin API for a critical API call Catalyst uses to generate Checkout Redirect URLs. The only [OAuth scope](https://developer.bigcommerce.com/docs/start/authentication/api-accounts#store-resource-scopes) required for this to work correctly is `store_cart_read_only`. If you wish to support checkout for logged-in customers, you should also add the `store_v2_customers_login` scope so that your [Client Secret](#bigcommerce_client_secret) can be used to generate valid Customer Login API JWTs.
+This is an [Admin API token](https://support.bigcommerce.com/s/article/Store-API-Accounts?language=en_US#creating) for connecting to the BigCommerce Admin API for a critical API call Catalyst uses to generate Checkout Redirect URLs. The only [OAuth scope](https://developer.bigcommerce.com/docs/start/authentication/api-accounts#store-resource-scopes) required for this to work correctly is `store_cart`. If you wish to support checkout for logged-in customers, you should also add the `store_v2_customers_login` scope so that your [Client Secret](#bigcommerce_client_secret) can be used to generate valid Customer Login API JWTs.
 
 #### `BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN`
 
