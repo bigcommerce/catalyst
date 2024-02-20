@@ -5,7 +5,7 @@
 
 ### Required
 * Node.js 18+
-* `npm` (or `pnpm`/`yarn`)
+* `npm` (or `pnpm`)
 * Login access to a BigCommerce store. You can create a trial store [here](https://www.bigcommerce.com/start-your-trial/) if needed.
     * You will need the [user permission to create new API tokens](https://support.bigcommerce.com/s/article/User-Permissions?language=en_US#highrisk) on the store, or to ask for help from someone who does
 
@@ -31,11 +31,13 @@ We recommend creating a new channel on your store for your new Catalyst storefro
 
 ### Running Catalyst
 
-Once you've completed the setup process, enter the new directory created by the CLI and run the following command to run your Catalyst storefront locally (`pnpm` is also supported).
+Once you've completed the setup process, enter the new directory created by the CLI and run the following command to run your Catalyst storefront locally.
 
 ```
 npm run dev
 ```
+
+(`pnpm` is also supported. `yarn` is _not_ currently supported.)
 
 Your Catalyst storefront is now connected to your BigCommerce store, running on `http://localhost:3000`!
 
