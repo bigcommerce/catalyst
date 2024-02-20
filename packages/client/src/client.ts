@@ -70,7 +70,6 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
         Authorization: `Bearer ${this.config.customerImpersonationToken}`,
         'User-Agent': this.backendUserAgent,
         ...(customerId && { 'X-Bc-Customer-Id': String(customerId) }),
-        'X-BC-Test-Header': 'test',
         ...headers,
       },
       body: JSON.stringify({
