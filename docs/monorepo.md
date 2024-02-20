@@ -25,7 +25,7 @@ This Catalyst monorepo contains the following:
     - Customer-specific product visibility
   - To extend into more complex B2C and B2B scenarios, you'll want to utilize more of our [GraphQL Storefront API](https://developer.bigcommerce.com/docs/storefront/graphql).
 - The storefront component library, in [packages/components](packages/components), and a [Storybook](https://storybook.js.org/) instance to view the collection.
-- The BigCommerce [GraphQL Storefront API](https://developer.bigcommerce.com/docs/graphql-storefront) client, in [packages/client](packages/client).
+- The BigCommerce [GraphQL Storefront API](https://developer.bigcommerce.com/docs/graphql-storefront) client, in [packages/client](/packages/client).
 
 ![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/catalyst_readme_hr.png)
 

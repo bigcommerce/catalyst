@@ -51,4 +51,4 @@ from within the directory containing your Catalyst project to go through the set
 npx create-catalyst-storefront@latest init
 ```
 
-If you prefer to have more control over how Catalyst is configured, you can also manually set Catalyst's [environment variables]().
+If you prefer to have more control over how Catalyst is configured, you can also manually set Catalyst's [environment variables](/docs/environment_variables.md).
