@@ -7,11 +7,11 @@
 * Node.js 18+
 * `npm` (or `pnpm`/`yarn`)
 * Login access to a BigCommerce store. You can create a trial store [here](https://www.bigcommerce.com/start-your-trial/) if needed.
-    * You will need the user permission to create new API tokens on the store, or to ask for help from someone who does
+    * You will need the [user permission to create new API tokens](https://support.bigcommerce.com/s/article/User-Permissions?language=en_US#highrisk) on the store, or to ask for help from someone who does
 
 ### Create a new Catalyst project
 
-Create a new Catalyst project by running the Calalyst CLI. This will create a new directory that contains your Catalyst project.
+Create a new Catalyst project by running the Catalyst CLI. This will create a new directory that contains your Catalyst project.
 
 ```
 npm create catalyst-storefront@latest
@@ -25,13 +25,13 @@ Would you like to connect to a BigCommerce store?
 Would you like to create a new channel?
 ```
 
-During the connection step, you'll be asked to login to your store using a browser and enter a code provided by the CLI.
+During the connection step, you will be asked to login to your store using a browser and enter a code provided by the CLI to authenticate your Catalyst project and generate the necessary credentials.
 
-We recommend creating a new channel on your store for your new Catalyst storefront. More information about channels can be found in BigCommerce's [channels](https://developer.bigcommerce.com/docs/integrations/channels) documentation.
+We recommend creating a new channel on your store for your new Catalyst storefront. More information about channels can be found in BigCommerce's [channels](https://developer.bigcommerce.com/docs/storefront/headless/channels) documentation.
 
 ### Running Catalyst
 
-Once you've completed the setup process, enter the new directory created by the CLI and run the following command to run your Catalyst storefront locally (`pnpm`/`yarn` are also supported).
+Once you've completed the setup process, enter the new directory created by the CLI and run the following command to run your Catalyst storefront locally (`pnpm` is also supported).
 
 ```
 npm run dev
