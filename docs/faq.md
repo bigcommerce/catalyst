@@ -38,5 +38,5 @@ Some recommended configurations to investigate include:
 - Implementing a caching backend such as Vercel KV to improve the performance of our [with-routes middleware](/docs/middleware)
 - Considering if you need the benefits of the middleware at all, or if you can remove it or customize it for your needs
 - Implementing additional data persistence, databases, and 3rd-party APIs to extend Catalyst with custom functionality
-- Tuning the performance of Catalyst based on your own understanding of your catalog, size, and complexity
+- Tuning the performance of Catalyst based on your own understanding of your catalog size, complexity, and rate of update
     - For example, a catalog with a small number of products and a low rate of update may be able to take more advantage of static generation than a large catalog that changes frequently
