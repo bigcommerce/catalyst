@@ -13,17 +13,14 @@ export const Pagination = ({
 }) => {
   return (
     <CarouselPagination>
-      {({ selectedIndex, scrollTo }) =>
-        groupedProducts.map((_, index) => (
-          <CarouselPaginationTab
-            aria-controls={`${id}-slide-${index + 1}`}
-            aria-label={`Slide ${index + 1}`}
-            isSelected={selectedIndex === index}
-            key={index}
-            onClick={() => scrollTo(index)}
-          />
-        ))
-      }
+      {groupedProducts.map((_, index) => (
+        <CarouselPaginationTab
+          aria-controls={`${id}-slide-${index + 1}`}
+          aria-label={`Go to slide ${index + 1}`}
+          index={index}
+          key={index}
+        />
+      ))}
     </CarouselPagination>
   );
 };
