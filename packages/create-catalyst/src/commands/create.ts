@@ -83,8 +83,8 @@ export const create = async (options: CreateCommandOptions) => {
     accessToken = credentials.accessToken;
   }
 
-  if (!projectName) throw new Error('Someting went wrong, projectName is not defined');
-  if (!projectDir) throw new Error('Someting went wrong, projectDir is not defined');
+  if (!projectName) throw new Error('Something went wrong, projectName is not defined');
+  if (!projectDir) throw new Error('Something went wrong, projectDir is not defined');
 
   if (!storeHash || !accessToken) {
     console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
@@ -109,8 +109,10 @@ export const create = async (options: CreateCommandOptions) => {
 
   if (!channelId || !customerImpersonationToken) {
     const bc = new Https({ bigCommerceApiUrl: bigcommerceApiUrl, storeHash, accessToken });
+    const availableChannels = await bc.channels('?available=true&type=storefront');
+    const storeInfo = await bc.storeInformation();
 
-    const canCreateChannel = checkStorefrontLimit(bc);
+    const canCreateChannel = checkStorefrontLimit(availableChannels, storeInfo);
 
     let shouldCreateChannel;
 
@@ -148,13 +150,11 @@ export const create = async (options: CreateCommandOptions) => {
     }
 
     if (!shouldCreateChannel) {
-      const { data: channels } = await bc.channels('?available=true&type=storefront');
-
       const channelSortOrder = ['catalyst', 'next', 'bigcommerce'];
 
       const existingChannel = await select({
         message: 'Which channel would you like to use?',
-        choices: channels
+        choices: availableChannels.data
           .sort(
             (a, b) => channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
           )
@@ -179,9 +179,9 @@ export const create = async (options: CreateCommandOptions) => {
     }
   }
 
-  if (!channelId) throw new Error('Someting went wrong, channelId is not defined');
+  if (!channelId) throw new Error('Something went wrong, channelId is not defined');
   if (!customerImpersonationToken)
-    throw new Error('Someting went wrong, customerImpersonationToken is not defined');
+    throw new Error('Something went wrong, customerImpersonationToken is not defined');
 
   console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
