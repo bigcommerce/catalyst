@@ -1,9 +1,13 @@
 ## Getting Started
 
+> [!NOTE]
+> If you are new to React or Next.js, you may want to start with [learn React](https://react.dev/learn), [learn Next.js](https://nextjs.org/learn-pages-router/basics/create-nextjs-app) and [Next.js documentation](https://nextjs.org/docs) first.
+
 ### Required
 * Node.js 18+
 * `npm` (or `pnpm`/`yarn`)
 * Login access to a BigCommerce store. You can create a trial store [here](https://www.bigcommerce.com/start-your-trial/) if needed.
+    * You will need the user permission to create new API tokens on the store, or to ask for help from someone who does
 
 ### Create a new Catalyst project
 
@@ -23,7 +27,7 @@ Would you like to create a new channel?
 
 During the connection step, you'll be asked to login to your store using a browse and enter a code provided by the CLI.
 
-We recommend creating a new channel on your store for your new Catalyst storefront. More information about channels can be found in BigCommerce' [channels](https://developer.bigcommerce.com/docs/integrations/channels) documentation.
+We recommend creating a new channel on your store for your new Catalyst storefront. More information about channels can be found in BigCommerce's [channels](https://developer.bigcommerce.com/docs/integrations/channels) documentation.
 
 ### Running Catalyst
 
