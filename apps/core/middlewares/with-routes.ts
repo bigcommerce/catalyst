@@ -144,7 +144,7 @@ const getRouteInfo = async (request: NextRequest) => {
   }
 };
 
-export const withCustomUrls: MiddlewareFactory = (next) => {
+export const withRoutes: MiddlewareFactory = (next) => {
   return async (request, event) => {
     const { node, status } = await getRouteInfo(request);
 
