@@ -13,11 +13,3 @@ npm create catalyst-storefront@latest
 ```sh
 pnpm create catalyst-storefront@latest
 ```
-
-# To Do
-
-- [ ] Channel Site Routes
-- [ ] Check Active Storeront Limit
-- [ ] Prompt Sample Data API for New Channels
-- [ ] Yarn module resolution bug
-- [ ] Write root `.vscode/settings.json`

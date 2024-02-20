@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 
-import { confirm } from '@inquirer/prompts';
+import { select } from '@inquirer/prompts';
 import chalk from 'chalk';
 
 import { Https } from './https';
@@ -34,8 +34,12 @@ export const login = async (
     return { storeHash, accessToken };
   }
 
-  const shouldLogin = await confirm({
+  const shouldLogin = await select({
     message: 'Would you like to connect to a BigCommerce store?',
+    choices: [
+      { name: 'Yes', value: true },
+      { name: 'No', value: false },
+    ],
   });
 
   if (!shouldLogin) {

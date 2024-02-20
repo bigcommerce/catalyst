@@ -178,8 +178,8 @@ export class Https {
     return parse(await res.json(), BigCommerceStoreInfo);
   }
 
-  async channels() {
-    const res = await this.api('/v3/channels');
+  async channels(query = '') {
+    const res = await this.api(`/v3/channels${query}`);
 
     if (!res.ok) {
       console.error(chalk.red(`\nGET /v3/channels failed: ${res.status} ${res.statusText}\n`));
