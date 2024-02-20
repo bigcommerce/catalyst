@@ -222,7 +222,7 @@ export default async function Compare({
                   return (
                     <td className="border-b px-4 pb-24 pt-12" key={product.entityId}>
                       <Button aria-label={product.name} asChild className="hover:text-white">
-                        <Link href={product.path} prefetch={false}>
+                        <Link href={product.path} prefetch="none">
                           Choose options
                         </Link>
                       </Button>
