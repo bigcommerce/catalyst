@@ -29,6 +29,36 @@ interface HttpsConfig {
   accessToken?: string;
 }
 
+const BigCommerceStoreInfo = z.object({
+  features: z.object({
+    storefront_limits: z.object({
+      active: z.number(),
+      total_including_inactive: z.number(),
+    }),
+  }),
+});
+
+export type BigCommerceStoreInfo = z.infer<typeof BigCommerceStoreInfo>;
+
+const BigCommerceV3ApiResponseSchema = <T>(schema: z.ZodType<T>) =>
+  z.object({
+    data: schema,
+    meta: z.object({}),
+  });
+
+const BigCommerceChannelsV3ResponseSchema = BigCommerceV3ApiResponseSchema(
+  z.array(
+    z.object({
+      id: z.number(),
+      name: z.string(),
+      status: z.string(),
+      platform: z.string(),
+    }),
+  ),
+);
+
+export type BigCommerceChannelsV3Response = z.infer<typeof BigCommerceChannelsV3ResponseSchema>;
+
 export class Https {
   DEVICE_OAUTH_CLIENT_ID = 'acse0vvawm9r1n0evag4b8e1ea1fo90';
 
@@ -131,12 +161,6 @@ export class Https {
     return parse(await response.json(), DeviceCodeSuccessSchema);
   }
 
-  BigCommerceV3ApiResponseSchema = <T>(schema: z.ZodType<T>) =>
-    z.object({
-      data: schema,
-      meta: z.object({}),
-    });
-
   api(path: string, opts: RequestInit = {}) {
     if (!this.bigCommerceApiUrl || !this.storeHash || !this.accessToken) {
       throw new Error(
@@ -166,15 +190,6 @@ export class Https {
       process.exit(1);
     }
 
-    const BigCommerceStoreInfo = z.object({
-      features: z.object({
-        storefront_limits: z.object({
-          active: z.number(),
-          total_including_inactive: z.number(),
-        }),
-      }),
-    });
-
     return parse(await res.json(), BigCommerceStoreInfo);
   }
 
@@ -185,17 +200,6 @@ export class Https {
       console.error(chalk.red(`\nGET /v3/channels failed: ${res.status} ${res.statusText}\n`));
       process.exit(1);
     }
-
-    const BigCommerceChannelsV3ResponseSchema = this.BigCommerceV3ApiResponseSchema(
-      z.array(
-        z.object({
-          id: z.number(),
-          name: z.string(),
-          status: z.string(),
-          platform: z.string(),
-        }),
-      ),
-    );
 
     return parse(await res.json(), BigCommerceChannelsV3ResponseSchema);
   }
