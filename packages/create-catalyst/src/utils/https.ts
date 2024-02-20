@@ -112,7 +112,7 @@ export class Https {
           'store_v2_content',
           'store_v2_information',
           'store_v2_products',
-          'store_cart_read_only',
+          'store_cart',
           'store_sites',
           'store_channel_settings',
           'store_storefront_api_customer_impersonation',
