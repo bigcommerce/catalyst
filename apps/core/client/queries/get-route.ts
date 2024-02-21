@@ -1,10 +1,18 @@
 import { client } from '..';
 import { graphql } from '../generated';
+import { Route } from '../generated/graphql';
 
 export const GET_ROUTE_QUERY = /* GraphQL */ `
   query getRoute($path: String!) {
     site {
       route(path: $path) {
+        redirect {
+          __typename
+          to {
+            __typename
+          }
+          toUrl
+        }
         node {
           __typename
           ... on Product {
@@ -22,7 +30,7 @@ export const GET_ROUTE_QUERY = /* GraphQL */ `
   }
 `;
 
-export const getRoute = async (path: string) => {
+export const getRoute = async (path: string): Promise<Route> => {
   const query = graphql(GET_ROUTE_QUERY);
 
   const response = await client.fetch({
@@ -30,5 +38,5 @@ export const getRoute = async (path: string) => {
     variables: { path },
   });
 
-  return response.data.site.route.node;
+  return response.data.site.route;
 };
