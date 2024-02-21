@@ -19,7 +19,7 @@ We welcome feedback in [GitHub Discussions](https://github.com/bigcommerce/catal
 
 ### What assumptions are baked into the default state of Catalyst, and how should I modify it for my needs?
 
-The out-of-the-box state of Catalyst is meant to be one-size-fits-all, and is focused on:
+The out-of-the-box state of Catalyst is focused on:
 
 - Minimizing infrastructure dependencies (only Next.js hosting is required)
 - Supporting as much of the BigCommerce platform functionality as possible, such that users of the BigCommerce Control Panel and Admin APIs have their actions in the control panel reflected as they expect on the storefront
