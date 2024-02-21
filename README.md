@@ -26,7 +26,8 @@ times before. You can instead go straight to work building your brand and making
 <p align="center">
  <a href="https://www.catalyst.dev">🚀 catalyst.dev</a> •
  <a href="https://developer.bigcommerce.com/community">🤗 BigCommerce Developer Community</a> •
- <a href="https://github.com/bigcommerce/catalyst/discussions">💬 GitHub Discussions</a>
+ <a href="https://github.com/bigcommerce/catalyst/discussions">💬 GitHub Discussions</a> •
+ <a href="/docs">💡 Docs in this repo</a>
 </p>
 
 ![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/catalyst_readme_hr.png)
@@ -83,4 +84,4 @@ Learn more about Catalyst at [catalyst.dev](https://catalyst.dev).
 
 > [!IMPORTANT]
 > If you just want to build a storefront, start with the [CLI](#quickstart) which will install the Next.js application in [/apps/core](/apps/core/).
-> If you wish to contribute back to Catalyst or create a fork of Catalyst, you can check the [documentation for this monorepo](/docs/monorepo.md) to get started.
+> If you wish to contribute back to Catalyst or create a fork of Catalyst, you can check the [docs for this monorepo](/docs/monorepo.md) to get started.
