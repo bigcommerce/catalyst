@@ -2,123 +2,23 @@ import { Button } from '@bigcommerce/components/button';
 import {
   NavigationMenu,
   NavigationMenuCollapsed,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuToggle,
-  NavigationMenuTrigger,
 } from '@bigcommerce/components/navigation-menu';
-import { ChevronDown, ShoppingCart, User } from 'lucide-react';
+import { ShoppingCart, User } from 'lucide-react';
 import { ReactNode, Suspense } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
-import { getCategoryTree } from '~/client/queries/get-category-tree';
 import { Link } from '~/components/link';
-import { cn } from '~/lib/utils';
 
 import { QuickSearch } from '../quick-search';
 import { StoreLogo } from '../store-logo';
 
+import { HeaderNav } from './_actions/header-nav';
 import { logout } from './_actions/logout';
 import { CartLink } from './cart';
-
-const HeaderNav = async ({
-  className,
-  inCollapsedNav = false,
-}: {
-  className?: string;
-  inCollapsedNav?: boolean;
-}) => {
-  // To prevent the navigation menu from overflowing, we limit the number of categories to 6.
-  // To show a full list of categories, modify the `slice` method to remove the limit.
-  // Will require modification of navigation menu styles to accommodate the additional categories.
-  const categoryTree = (await getCategoryTree()).slice(0, 6);
-  const customerId = await getSessionCustomerId();
-
-  return (
-    <>
-      <NavigationMenuList
-        className={cn(
-          !inCollapsedNav && 'lg:gap-4',
-          inCollapsedNav && 'flex-col items-start pb-6',
-          className,
-        )}
-      >
-        {categoryTree.map((category) => (
-          <NavigationMenuItem className={cn(inCollapsedNav && 'w-full')} key={category.path}>
-            {category.children.length > 0 ? (
-              <>
-                <NavigationMenuTrigger className="gap-0 p-0">
-                  <>
-                    <NavigationMenuLink asChild>
-                      <Link className="grow" href={category.path}>
-                        {category.name}
-                      </Link>
-                    </NavigationMenuLink>
-                    <span className={cn(inCollapsedNav && 'p-3')}>
-                      <ChevronDown
-                        aria-hidden="true"
-                        className="cursor-pointer transition duration-200 group-data-[state=open]/button:-rotate-180"
-                      />
-                    </span>
-                  </>
-                </NavigationMenuTrigger>
-                <NavigationMenuContent
-                  className={cn(
-                    !inCollapsedNav && 'mx-auto flex w-[700px] flex-row gap-20',
-                    inCollapsedNav && 'ps-3',
-                  )}
-                >
-                  {category.children.map((childCategory1) => (
-                    <ul className={cn(inCollapsedNav && 'pb-4')} key={childCategory1.entityId}>
-                      <NavigationMenuItem>
-                        <NavigationMenuLink href={childCategory1.path}>
-                          {childCategory1.name}
-                        </NavigationMenuLink>
-                      </NavigationMenuItem>
-                      {childCategory1.children.map((childCategory2) => (
-                        <NavigationMenuItem key={childCategory2.entityId}>
-                          <NavigationMenuLink className="font-normal" href={childCategory2.path}>
-                            {childCategory2.name}
-                          </NavigationMenuLink>
-                        </NavigationMenuItem>
-                      ))}
-                    </ul>
-                  ))}
-                </NavigationMenuContent>
-              </>
-            ) : (
-              <NavigationMenuLink asChild>
-                <Link href={category.path}>{category.name}</Link>
-              </NavigationMenuLink>
-            )}
-          </NavigationMenuItem>
-        ))}
-      </NavigationMenuList>
-      <NavigationMenuList
-        className={cn(
-          'border-t border-gray-200 pt-6 lg:hidden',
-          !inCollapsedNav && 'hidden',
-          inCollapsedNav && 'flex-col items-start',
-        )}
-      >
-        <NavigationMenuItem className={cn(inCollapsedNav && 'w-full')}>
-          {customerId ? (
-            <NavigationMenuLink href="/account">
-              Your Account <User />
-            </NavigationMenuLink>
-          ) : (
-            <NavigationMenuLink href="/login">
-              {/* TODO: add Log out for mobile */}
-              Log in <User />
-            </NavigationMenuLink>
-          )}
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </>
-  );
-};
 
 export const Header = async ({ cart }: { cart: ReactNode }) => {
   const customerId = await getSessionCustomerId();
@@ -131,8 +31,10 @@ export const Header = async ({ cart }: { cart: ReactNode }) => {
             <StoreLogo />
           </Link>
         </NavigationMenuLink>
-        <HeaderNav className="hidden lg:flex" />
-        <div className="flex lg:self-stretch">
+
+        <HeaderNav className="hidden xl:flex" />
+
+        <div className="flex">
           <NavigationMenuList className="h-full">
             <NavigationMenuItem>
               <QuickSearch>
@@ -141,7 +43,7 @@ export const Header = async ({ cart }: { cart: ReactNode }) => {
                 </Link>
               </QuickSearch>
             </NavigationMenuItem>
-            <NavigationMenuItem className={`hidden lg:flex ${customerId ? 'self-stretch' : ''}`}>
+            <NavigationMenuItem className={`hidden xl:flex ${customerId ? 'self-stretch' : ''}`}>
               {customerId ? (
                 <div className="group/account flex cursor-pointer items-center">
                   <Link
@@ -243,9 +145,10 @@ export const Header = async ({ cart }: { cart: ReactNode }) => {
                 </Suspense>
               </p>
             </NavigationMenuItem>
+            <NavigationMenuToggle className="xl:hidden" />
           </NavigationMenuList>
-          <NavigationMenuToggle className="ms-2 lg:hidden" />
         </div>
+
         <NavigationMenuCollapsed>
           <HeaderNav inCollapsedNav />
         </NavigationMenuCollapsed>
