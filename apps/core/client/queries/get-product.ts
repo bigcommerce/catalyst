@@ -5,6 +5,7 @@ import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 import { ExistingResultType } from '../util';
 
 type Product = ExistingResultType<typeof getInternalProduct>;
@@ -222,10 +223,6 @@ export const GET_PRODUCT_QUERY = /* GraphQL */ `
 const getInternalProduct = async (productId: number, optionValueIds?: OptionValueId[]) => {
   const query = graphql(GET_PRODUCT_QUERY);
   const customerId = await getSessionCustomerId();
-
-  const revalidate = process.env.NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET
-    ? Number(process.env.NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET)
-    : undefined;
 
   const response = await client.fetch({
     document: query,

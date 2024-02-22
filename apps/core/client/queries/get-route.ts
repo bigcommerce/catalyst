@@ -1,5 +1,6 @@
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 
 export const GET_ROUTE_QUERY = /* GraphQL */ `
   query getRoute($path: String!) {
@@ -38,6 +39,7 @@ export const getRoute = async (path: string) => {
   const response = await client.fetch({
     document: query,
     variables: { path },
+    fetchOptions: { next: { revalidate } },
   });
 
   return response.data.site.route;

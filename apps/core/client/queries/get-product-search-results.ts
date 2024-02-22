@@ -6,6 +6,7 @@ import { getSessionCustomerId } from '~/auth';
 import { client } from '..';
 import { graphql } from '../generated';
 import { SearchProductsFiltersInput, SearchProductsSortInput } from '../generated/graphql';
+import { revalidate } from '../revalidate-target';
 
 interface ProductSearch {
   limit?: number;
@@ -184,6 +185,7 @@ export const getProductSearchResults = cache(
     const items = removeEdgesAndNodes(searchResults.products).map((product) => ({
       ...product,
       productOptions: removeEdgesAndNodes(product.productOptions),
+      fetchOptions: { next: { revalidate } },
     }));
 
     return {

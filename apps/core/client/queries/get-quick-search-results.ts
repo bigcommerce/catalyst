@@ -5,6 +5,7 @@ import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 
 interface QuickSearch {
   searchTerm: string;
@@ -38,10 +39,6 @@ export const getQuickSearchResults = cache(
   async ({ searchTerm, imageHeight = 300, imageWidth = 300 }: QuickSearch) => {
     const query = graphql(GET_QUICK_SEARCH_RESULTS_QUERY);
     const customerId = await getSessionCustomerId();
-
-    const revalidate = process.env.NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET
-      ? Number(process.env.NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET)
-      : undefined;
 
     const response = await client.fetch({
       document: query,

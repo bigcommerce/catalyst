@@ -1,5 +1,6 @@
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 
 export const GET_STORE_STATUS_QUERY = /* GraphQL */ `
   query getStoreStatus {
@@ -13,7 +14,7 @@ export const GET_STORE_STATUS_QUERY = /* GraphQL */ `
 
 export const getStoreStatus = async () => {
   const query = graphql(GET_STORE_STATUS_QUERY);
-  const { data } = await client.fetch({ document: query });
+  const { data } = await client.fetch({ document: query, fetchOptions: { next: { revalidate } } });
 
   return data.site.settings?.status;
 };

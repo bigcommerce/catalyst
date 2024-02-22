@@ -5,6 +5,7 @@ import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 
 export const GET_NEWEST_PRODUCTS_QUERY = /* GraphQL */ `
   query getNewestProducts($first: Int, $imageHeight: Int!, $imageWidth: Int!) {
@@ -30,10 +31,6 @@ export const getNewestProducts = cache(
   async ({ first = 12, imageHeight = 300, imageWidth = 300 }: Options = {}) => {
     const query = graphql(GET_NEWEST_PRODUCTS_QUERY);
     const customerId = await getSessionCustomerId();
-
-    const revalidate = process.env.NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET
-      ? Number(process.env.NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET)
-      : undefined;
 
     const response = await client.fetch({
       document: query,

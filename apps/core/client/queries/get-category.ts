@@ -5,6 +5,7 @@ import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 
 export const GET_CATEGORY_QUERY = /* GraphQL */ `
   query getCategory(
@@ -70,10 +71,6 @@ export const getCategory = cache(
   async ({ categoryId, limit = 9, before, after, breadcrumbDepth = 10 }: CategoryOptions) => {
     const query = graphql(GET_CATEGORY_QUERY);
     const customerId = await getSessionCustomerId();
-
-    const revalidate = process.env.NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET
-      ? Number(process.env.NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET)
-      : undefined;
 
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 

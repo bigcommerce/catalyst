@@ -5,6 +5,7 @@ import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 
 export interface GetProductsArguments {
   productIds: number[];
@@ -31,10 +32,6 @@ export const getProducts = cache(
   async ({ productIds, first, imageWidth = 300, imageHeight = 300 }: GetProductsArguments) => {
     const query = graphql(GET_PRODUCTS_QUERY);
     const customerId = await getSessionCustomerId();
-
-    const revalidate = process.env.NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET
-      ? Number(process.env.NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET)
-      : undefined;
 
     const response = await client.fetch({
       document: query,

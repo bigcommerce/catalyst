@@ -3,6 +3,7 @@ import { cache } from 'react';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 
 interface GetBrandsOptions {
   first?: number;
@@ -31,6 +32,7 @@ export const getBrands = cache(async ({ first = 5, brandIds }: GetBrandsOptions 
   const response = await client.fetch({
     document: query,
     variables: { first, entityIds: brandIds },
+    fetchOptions: { next: { revalidate } },
   });
 
   const { brands } = response.data.site;
