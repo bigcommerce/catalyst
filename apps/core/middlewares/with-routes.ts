@@ -6,6 +6,7 @@ import { getSessionCustomerId } from '~/auth';
 import { StorefrontStatusType } from '~/client/generated/graphql';
 import { getRoute } from '~/client/queries/get-route';
 import { getStoreStatus } from '~/client/queries/get-store-status';
+import { routeCacheKvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
 
 import { kv } from '../lib/kv';
 
@@ -17,8 +18,6 @@ interface RouteCache {
   node: Node;
   expiryTime: number;
 }
-
-const STORE_STATUS_KEY = 'storeStatus';
 
 interface StorefrontStatusCache {
   status: StorefrontStatusType;
@@ -67,7 +66,7 @@ const getExistingRouteInfo = async (request: NextRequest) => {
     const pathname = request.nextUrl.pathname;
 
     const [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
-      pathname,
+      routeCacheKvKey(pathname),
       STORE_STATUS_KEY,
     );
 
@@ -123,7 +122,7 @@ const setKvRoute = async (request: NextRequest, route: z.infer<typeof RouteSchem
   try {
     const expiryTime = Date.now() + 1000 * 60 * 30; // 30 minutes;
 
-    await kv.set(request.nextUrl.pathname, { route, expiryTime });
+    await kv.set(routeCacheKvKey(request.nextUrl.pathname), { route, expiryTime });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
