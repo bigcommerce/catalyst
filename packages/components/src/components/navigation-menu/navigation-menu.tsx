@@ -9,7 +9,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useId,
   useRef,
   useState,
 } from 'react';
@@ -26,7 +25,7 @@ const ExpandedContext = createContext<{
 
 const NavigationMenu = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.Root>,
-  ComponentPropsWithRef<'div'>
+  ComponentPropsWithRef<typeof NavigationMenuPrimitive.Root>
 >(({ children, className, ...props }, ref) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [value, setValue] = useState('');
@@ -46,6 +45,7 @@ const NavigationMenu = forwardRef<
         onValueChange={(newValue) => setValue(newValue)}
         ref={ref}
         value={value}
+        {...props}
       >
         <FocusTrap active={isExpanded}>
           <div className="relative">
@@ -54,7 +54,6 @@ const NavigationMenu = forwardRef<
                 'group flex min-h-[92px] items-center justify-between gap-6 bg-white px-6 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0',
                 className,
               )}
-              {...props}
             >
               {children}
             </div>
@@ -72,7 +71,7 @@ const NavigationMenu = forwardRef<
   );
 });
 
-NavigationMenu.displayName = NavigationMenuPrimitive.NavigationMenu.displayName;
+NavigationMenu.displayName = NavigationMenuPrimitive.Root.displayName;
 
 const NavigationMenuList = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.List>,
@@ -87,22 +86,11 @@ const NavigationMenuList = forwardRef<
   </NavigationMenuPrimitive.List>
 ));
 
-NavigationMenuList.displayName = NavigationMenuPrimitive.NavigationMenuList.displayName;
+NavigationMenuList.displayName = NavigationMenuPrimitive.List.displayName;
 
-const NavigationMenuItem = forwardRef<
-  ElementRef<typeof NavigationMenuPrimitive.Item>,
-  ComponentPropsWithRef<typeof NavigationMenuPrimitive.Item>
->(({ children, className, ...props }, ref) => {
-  const id = useId();
+const NavigationMenuItem = NavigationMenuPrimitive.Item;
 
-  return (
-    <NavigationMenuPrimitive.Item className={cn(className)} ref={ref} value={id} {...props}>
-      {children}
-    </NavigationMenuPrimitive.Item>
-  );
-});
-
-NavigationMenuItem.displayName = NavigationMenuPrimitive.NavigationMenuItem.displayName;
+NavigationMenuItem.displayName = NavigationMenuPrimitive.Item.displayName;
 
 const NavigationMenuTrigger = forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Trigger>,
@@ -145,7 +133,7 @@ const NavigationMenuContent = forwardRef<
   );
 });
 
-NavigationMenuContent.displayName = NavigationMenuPrimitive.NavigationMenuContent.displayName;
+NavigationMenuContent.displayName = NavigationMenuPrimitive.Content.displayName;
 
 const NavigationMenuLink = forwardRef<
   ElementRef<typeof NavigationMenuPrimitive.Link>,
@@ -168,7 +156,7 @@ const NavigationMenuLink = forwardRef<
   );
 });
 
-NavigationMenuLink.displayName = NavigationMenuPrimitive.NavigationMenuLink.displayName;
+NavigationMenuLink.displayName = NavigationMenuPrimitive.Link.displayName;
 
 const NavigationMenuToggle = forwardRef<ElementRef<'button'>, ComponentPropsWithRef<'button'>>(
   ({ children, className, onClick, ...props }, ref) => {
