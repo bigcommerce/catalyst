@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { getSessionCustomerId } from '~/auth';
-import { Route, StorefrontStatusType } from '~/client/generated/graphql';
+import { StorefrontStatusType } from '~/client/generated/graphql';
 import { getRoute } from '~/client/queries/get-route';
 import { getStoreStatus } from '~/client/queries/get-store-status';
 
@@ -94,8 +94,7 @@ const getExistingRouteInfo = async (request: NextRequest) => {
     const parsedStatus = StorefrontStatusCacheSchema.safeParse(statusCache);
 
     return {
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      route: parsedRoute.success ? (parsedRoute.data.route as Route) : undefined,
+      route: parsedRoute.success ? parsedRoute.data.route : undefined,
       status: parsedStatus.success ? parsedStatus.data.status : undefined,
     };
   } catch (error) {
@@ -120,7 +119,7 @@ const setKvStatus = async (status?: StorefrontStatusType | null) => {
   }
 };
 
-const setKvRoute = async (request: NextRequest, route: Route) => {
+const setKvRoute = async (request: NextRequest, route: z.infer<typeof RouteSchema>) => {
   try {
     const expiryTime = Date.now() + 1000 * 60 * 30; // 30 minutes;
 
@@ -131,9 +130,7 @@ const setKvRoute = async (request: NextRequest, route: Route) => {
   }
 };
 
-const getRouteInfo = async (
-  request: NextRequest,
-): Promise<{ route: Route | undefined; status: StorefrontStatusType | undefined }> => {
+const getRouteInfo = async (request: NextRequest) => {
   try {
     let { status, route } = await getExistingRouteInfo(request);
 
@@ -149,8 +146,13 @@ const getRouteInfo = async (
     if (route === undefined) {
       const newRoute = await getRoute(request.nextUrl.pathname);
 
-      route = newRoute;
-      await setKvRoute(request, route);
+      const parsedNewRoute = RouteSchema.safeParse(newRoute);
+
+      if (parsedNewRoute.success) {
+        route = parsedNewRoute.data;
+
+        await setKvRoute(request, route);
+      }
     }
 
     return { route, status };

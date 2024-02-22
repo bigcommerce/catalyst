@@ -1,6 +1,5 @@
 import { client } from '..';
 import { graphql } from '../generated';
-import { Route } from '../generated/graphql';
 
 export const GET_ROUTE_QUERY = /* GraphQL */ `
   query getRoute($path: String!) {
@@ -30,7 +29,7 @@ export const GET_ROUTE_QUERY = /* GraphQL */ `
   }
 `;
 
-export const getRoute = async (path: string): Promise<Route> => {
+export const getRoute = async (path: string) => {
   const query = graphql(GET_ROUTE_QUERY);
 
   const response = await client.fetch({
