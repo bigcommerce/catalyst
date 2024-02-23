@@ -31,6 +31,9 @@ export async function handleAddToCart(data: ProductFormData) {
       let multiLineTextFieldOptionInput;
       let dateFieldOptionInput;
 
+      // Skip empty strings since option is empty
+      if (optionValueEntityId === '') return accum;
+
       switch (option.__typename) {
         case 'MultipleChoiceOption':
           multipleChoicesOptionInput = {
@@ -105,8 +108,6 @@ export async function handleAddToCart(data: ProductFormData) {
           return { ...accum, multiLineTextFields: [multiLineTextFieldOptionInput] };
 
         case 'DateFieldOption':
-          if (!optionValueEntityId) return accum;
-
           dateFieldOptionInput = {
             optionEntityId: option.entityId,
             date: new Date(String(optionValueEntityId)).toISOString(),
