@@ -1,12 +1,5 @@
 // @ts-check
 
-const cspHeader = `
-  base-uri 'self';
-  form-action 'self';
-  frame-ancestors 'none';
-  upgrade-insecure-requests;
-`
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -27,19 +20,6 @@ const nextConfig = {
   },
   // default URL generation in BigCommerce uses trailing slash
   trailingSlash: process.env.TRAILING_SLASH !== 'false',
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'Content-Security-Policy',
-            value: cspHeader.replace(/\n/g, ''),
-          },
-        ],
-      },
-    ]
-  }
 };
 
 module.exports = nextConfig;
