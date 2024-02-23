@@ -13,8 +13,7 @@ import { TextArea } from '@bigcommerce/components/text-area';
 import { Loader2 as Spinner } from 'lucide-react';
 import { ChangeEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
-// eslint-disable-next-line import/no-named-as-default
-import ReCAPTCHA from 'react-google-recaptcha';
+import { ReCAPTCHA } from 'react-google-recaptcha';
 
 import { submitContactForm } from './_actions/submit-contact-form';
 
