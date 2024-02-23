@@ -13,9 +13,9 @@ The following reference lists the environment variables that a Catalyst storefro
 ### BIGCOMMERCE_STORE_HASH
 
 > [!NOTE]
-> **Type**: string
-> **Permanently required**: true
-> **CLI-configured**: true
+> - **Type**: string
+> - **Permanently required**: true
+> - **CLI-configured**: true
 
 This identifies the BigCommerce store connected to this Catalyst storefront. The store hash is visible as part of the store's canonical URL, and you can also locate the store hash in the control panel URL, which takes the following form.
 
@@ -26,10 +26,10 @@ https://{BIGCOMMERCE_STORE_HASH}.mybigcommerce.com/manage
 ### BIGCOMMERCE_ACCESS_TOKEN
 
 > [!CAUTION]
-> **Sensitive secret**: true. Do not expose outside environment variables.
-> **Type**: string
-> **Permanently required**: false
-> **CLI-configured**: true <!-- ?? -->
+> - **Sensitive secret**: true. Do not expose outside environment variables.
+> - **Type**: string
+> - **Permanently required**: false
+> - **CLI-configured**: true <!-- ?? -->
 
 Catalyst requires this access token to make a few key API calls to the Management API and the Customer Login API. This dependency will be removed in a future version of Catalyst.
 
@@ -57,10 +57,10 @@ If you want to support checkout for signed-in customers, add the Customers Login
 ### BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN
 
 > [!CAUTION]
-> **Sensitive secret**: true. Do not expose outside environment variables.
-> **Type**: string
-> **Permanently required**: true
-> **CLI-configured**: true
+> - **Sensitive secret**: true. Do not expose outside environment variables.
+> - **Type**: string
+> - **Permanently required**: true
+> - **CLI-configured**: true
 
 This bearer token authorizes access to the [GraphQL Storefront API](https://developer.bigcommerce.com/docs/storefront/graphql) and supports operations that request information specific to individual customers, such as getting wishlist items.
 
@@ -74,9 +74,9 @@ Create a store-level or app-level API account with the following token creation 
 ### BIGCOMMERCE_CHANNEL_ID
 
 > [!NOTE]
-> **Type**: integer
-> **Permanently required**: true
-> **CLI-configured**: true
+> - **Type**: integer
+> - **Permanently required**: true
+> - **CLI-configured**: true
 
 This is the numeric channel ID that specifies which [sales channel](https://developer.bigcommerce.com/docs/rest-management/channels#channels) is associated with your Catalyst storefront.
 
@@ -88,10 +88,10 @@ The default Stencil storefront that comes with every BigCommerce store by defaul
 ### AUTH_SECRET
 
 > [!CAUTION]
-> **Sensitive secret**: true. Do not expose outside environment variables.
-> **Type**: string, hexadecimal
-> **Permanently required**: true
-> **CLI-configured**: true
+> - **Sensitive secret**: true. Do not expose outside environment variables.
+> - **Type**: string, hexadecimal
+> - **Permanently required**: true
+> - **CLI-configured**: true
 
 NextAuth uses this pseudo-random hex string to sign session JWTs. 
 
@@ -109,12 +109,12 @@ Catalyst does not require the following values to run, but we recommend setting 
 ### TURBO_REMOTE_CACHE_SIGNATURE_KEY
 
 > [!CAUTION]
-> **Sensitive secret**: true. Do not expose outside environment variables.
-> **Type**: string, hexadecimal
-> **Default**: no value
-> **Required**: false
-> **CLI-configured**: false
-> **Recommended**: true
+> - **Sensitive secret**: true. Do not expose outside environment variables.
+> - **Type**: string, hexadecimal
+> - **Default**: no value
+> - **Required**: false
+> - **CLI-configured**: false
+> - **Recommended**: true
 
 Providing a pseudo-random hex string for this environment variable lets you use the [Turborepo Remote Cache feature with signed artifacts](https://turbo.build/repo/docs/core-concepts/remote-caching#artifact-integrity-and-authenticity-verification), which will improve your build performance in Vercel and other environments that use Turborepo.
 
@@ -129,12 +129,12 @@ openssl rand -hex 32
 ### BIGCOMMERCE_CLIENT_SECRET
 
 > [!CAUTION]
-> **Sensitive secret**: true. Do not expose outside environment variables.
-> **Type**: string
-> **Default**: no value
-> **Required**: false
-> **CLI-configured**: false
-> **Recommended**: true
+> - **Sensitive secret**: true. Do not expose outside environment variables.
+> - **Type**: string
+> - **Default**: no value
+> - **Required**: false
+> - **CLI-configured**: false
+> - **Recommended**: true
 
 This is an API account client secret that you can use to sign [Customer Login API](https://developer.bigcommerce.com/docs/start/authentication/customer-login) JWTs. Providing this value lets shoppers preserve their logged-in state when Catalyst redirects them to checkout.
 
@@ -156,10 +156,10 @@ The following values are related to tuneable parameters of Catalyst which may no
 ### ENABLE_ADMIN_ROUTE
 
 > [!NOTE]
-> **Type**: boolean
-> **Default**: false
-> **Required**: false
-> **CLI-configured**: false
+> - **Type**: boolean
+> - **Default**: false
+> - **Required**: false
+> - **CLI-configured**: false
 
 This is a convenience feature for store admins.
 
@@ -172,10 +172,10 @@ If you wish to remove this feature entirely from your codebase, you can delete [
 ### NEXTAUTH_URL
 
 > [!NOTE]
-> **Type**: string, URL
-> **Default**: If deployed on Vercel, identical to `VERCEL_URL`. Otherwise, no value.
-> **Required**: false
-> **CLI-configured**: false
+> - **Type**: string, URL
+> - **Default**: If deployed on Vercel, identical to `VERCEL_URL`. Otherwise, no value.
+> - **Required**: false
+> - **CLI-configured**: false
 
 The `NEXTAUTH_URL` environment variable tells the [NextAuth library the root URL of the storefront](https://next-auth.js.org/configuration/options#nextauth_url).
 
@@ -184,10 +184,10 @@ If your storefront is deployed on Vercel, `NEXTAUTH_URL` is automatically detect
 ### TRAILING_SLASH
 
 > [!NOTE]
-> **Type**: boolean
-> **Default**: true
-> **Required**: false
-> **CLI-configured**: false
+> - **Type**: boolean
+> - **Default**: true
+> - **Required**: false
+> - **CLI-configured**: false
 
 Catalyst uses the existing URLs of your BigCommerce objects such as products and categories as the URL paths on your storefront.
 
