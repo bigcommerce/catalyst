@@ -23,6 +23,9 @@ export const GET_ROUTE_QUERY = /* GraphQL */ `
           ... on Brand {
             entityId
           }
+          ... on RawHtmlPage {
+            id
+          }
         }
       }
     }

@@ -49,6 +49,7 @@ const NodeSchema = z.union([
   z.object({ __typename: z.literal('Product'), entityId: z.number() }),
   z.object({ __typename: z.literal('Category'), entityId: z.number() }),
   z.object({ __typename: z.literal('Brand'), entityId: z.number() }),
+  z.object({ __typename: z.literal('RawHtmlPage'), id: z.string() }),
 ]);
 
 const RouteSchema = z.object({
@@ -188,6 +189,13 @@ export const withRoutes: MiddlewareFactory = (next) => {
 
       case 'Product': {
         const url = createRewriteUrl(`/product/${node.entityId}${postfix}`, request);
+
+        return NextResponse.rewrite(url);
+      }
+
+      case 'RawHtmlPage': {
+        // fast path for raw html pages
+        const url = createRewriteUrl(`/api/raw-page/${node.id}`, request);
 
         return NextResponse.rewrite(url);
       }
