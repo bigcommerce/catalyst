@@ -62,11 +62,13 @@ export default async function CartPage() {
     productEntityId,
     quantity,
     variantEntityId,
+    selectedOptions,
   }: (typeof cart.lineItems.physicalItems)[number]) => ({
     lineItemEntityId: entityId,
     productEntityId,
     quantity,
     variantEntityId,
+    selectedOptions,
   });
 
   return (

@@ -37,9 +37,11 @@ export const GET_CART_QUERY = /* GraphQL */ `
               name
               ... on CartSelectedMultipleChoiceOption {
                 value
+                valueEntityId
               }
               ... on CartSelectedCheckboxOption {
                 value
+                valueEntityId
               }
               ... on CartSelectedNumberFieldOption {
                 number

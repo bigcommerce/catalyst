@@ -15,6 +15,7 @@ export async function updateProductQuantity({
   productEntityId,
   quantity,
   variantEntityId,
+  selectedOptions,
 }: UpdateProductQuantityParams) {
   const cartId = cookies().get('cartId')?.value;
 
@@ -29,6 +30,7 @@ export async function updateProductQuantity({
   const cartLineItemData = Object.assign(
     { quantity, productEntityId },
     variantEntityId && { variantEntityId },
+    selectedOptions && { selectedOptions },
   );
 
   const updatedCart = await updateCartLineItem(cartId, lineItemEntityId, {
