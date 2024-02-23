@@ -6,6 +6,7 @@ import { getSessionCustomerId } from '~/auth';
 import { StorefrontStatusType } from '~/client/generated/graphql';
 import { getRoute } from '~/client/queries/get-route';
 import { getStoreStatus } from '~/client/queries/get-store-status';
+import { routeCacheKvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
 
 import { kv } from '../lib/kv';
 
@@ -17,8 +18,6 @@ interface RouteCache {
   node: Node;
   expiryTime: number;
 }
-
-const STORE_STATUS_KEY = 'storeStatus';
 
 interface StorefrontStatusCache {
   status: StorefrontStatusType;
@@ -38,8 +37,27 @@ const StorefrontStatusCacheSchema = z.object({
   expiryTime: z.number(),
 });
 
+const RedirectSchema = z.object({
+  __typename: z.string(),
+  to: z.object({
+    __typename: z.string(),
+  }),
+  toUrl: z.string(),
+});
+
+const NodeSchema = z.union([
+  z.object({ __typename: z.literal('Product'), entityId: z.number() }),
+  z.object({ __typename: z.literal('Category'), entityId: z.number() }),
+  z.object({ __typename: z.literal('Brand'), entityId: z.number() }),
+]);
+
+const RouteSchema = z.object({
+  redirect: z.nullable(RedirectSchema),
+  node: z.nullable(NodeSchema),
+});
+
 const RouteCacheSchema = z.object({
-  node: z.nullable(z.object({ __typename: z.string(), entityId: z.optional(z.number()) })),
+  route: z.nullable(RouteSchema),
   expiryTime: z.number(),
 });
 
@@ -48,7 +66,7 @@ const getExistingRouteInfo = async (request: NextRequest) => {
     const pathname = request.nextUrl.pathname;
 
     const [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
-      pathname,
+      routeCacheKvKey(pathname),
       STORE_STATUS_KEY,
     );
 
@@ -75,8 +93,7 @@ const getExistingRouteInfo = async (request: NextRequest) => {
     const parsedStatus = StorefrontStatusCacheSchema.safeParse(statusCache);
 
     return {
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      node: parsedRoute.success ? (parsedRoute.data.node as Node) : undefined,
+      route: parsedRoute.success ? parsedRoute.data.route : undefined,
       status: parsedStatus.success ? parsedStatus.data.status : undefined,
     };
   } catch (error) {
@@ -84,7 +101,7 @@ const getExistingRouteInfo = async (request: NextRequest) => {
     console.error(error);
 
     return {
-      node: undefined,
+      route: undefined,
       status: undefined,
     };
   }
@@ -101,11 +118,11 @@ const setKvStatus = async (status?: StorefrontStatusType | null) => {
   }
 };
 
-const setKvRoute = async (request: NextRequest, node: Node) => {
+const setKvRoute = async (request: NextRequest, route: z.infer<typeof RouteSchema>) => {
   try {
     const expiryTime = Date.now() + 1000 * 60 * 30; // 30 minutes;
 
-    await kv.set(request.nextUrl.pathname, { node, expiryTime });
+    await kv.set(routeCacheKvKey(request.nextUrl.pathname), { route, expiryTime });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
@@ -114,7 +131,7 @@ const setKvRoute = async (request: NextRequest, node: Node) => {
 
 const getRouteInfo = async (request: NextRequest) => {
   try {
-    let { node, status } = await getExistingRouteInfo(request);
+    let { status, route } = await getExistingRouteInfo(request);
 
     if (status === undefined) {
       const newStatus = await getStoreStatus();
@@ -125,20 +142,25 @@ const getRouteInfo = async (request: NextRequest) => {
       }
     }
 
-    if (node === undefined) {
-      const newNode = await getRoute(request.nextUrl.pathname);
+    if (route === undefined) {
+      const newRoute = await getRoute(request.nextUrl.pathname);
 
-      node = newNode;
-      await setKvRoute(request, node);
+      const parsedNewRoute = RouteSchema.safeParse(newRoute);
+
+      if (parsedNewRoute.success) {
+        route = parsedNewRoute.data;
+
+        await setKvRoute(request, route);
+      }
     }
 
-    return { node, status };
+    return { route, status };
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
 
     return {
-      node: undefined,
+      route: undefined,
       status: undefined,
     };
   }
@@ -146,11 +168,35 @@ const getRouteInfo = async (request: NextRequest) => {
 
 export const withRoutes: MiddlewareFactory = (next) => {
   return async (request, event) => {
-    const { node, status } = await getRouteInfo(request);
+    const { route, status } = await getRouteInfo(request);
 
     if (status === 'MAINTENANCE') {
       // 503 status code not working - https://github.com/vercel/next.js/issues/50155
       return NextResponse.rewrite(new URL(`/maintenance`, request.url), { status: 503 });
+    }
+
+    // Follow redirects if found on the route
+    // Use 301 status code as it is more universally supported by crawlers
+    const redirectConfig = { status: 301 };
+
+    if (route?.redirect) {
+      switch (route.redirect.to.__typename) {
+        case 'ManualRedirect': {
+          // For manual redirects, redirect to the full URL to handle cases
+          // where the destination URL might be external to the site
+          return NextResponse.redirect(route.redirect.toUrl, redirectConfig);
+        }
+
+        default: {
+          // For all other cases, assume an internal redirect and construct the URL
+          // based on the current request URL to maintain internal redirection
+          // in non-production environments
+          const redirectPathname = new URL(route.redirect.toUrl).pathname;
+          const redirectUrl = new URL(redirectPathname, request.url);
+
+          return NextResponse.redirect(redirectUrl, redirectConfig);
+        }
+      }
     }
 
     const customerId = await getSessionCustomerId();
@@ -160,6 +206,8 @@ export const withRoutes: MiddlewareFactory = (next) => {
     if (!request.nextUrl.search && !customerId && !cartId && request.method === 'GET') {
       postfix = '/static';
     }
+
+    const node = route?.node;
 
     switch (node?.__typename) {
       case 'Brand': {

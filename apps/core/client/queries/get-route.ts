@@ -5,6 +5,13 @@ export const GET_ROUTE_QUERY = /* GraphQL */ `
   query getRoute($path: String!) {
     site {
       route(path: $path) {
+        redirect {
+          __typename
+          to {
+            __typename
+          }
+          toUrl
+        }
         node {
           __typename
           ... on Product {
@@ -30,5 +37,5 @@ export const getRoute = async (path: string) => {
     variables: { path },
   });
 
-  return response.data.site.route.node;
+  return response.data.site.route;
 };

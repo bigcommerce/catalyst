@@ -2,10 +2,9 @@ import { NextResponse } from 'next/server';
 
 import { getStoreStatus } from '~/client/queries/get-store-status';
 import { kv } from '~/lib/kv';
+import { STORE_STATUS_KEY } from '~/lib/kv/keys';
 
 import { withInternalAuth } from '../../internal-auth';
-
-const STORE_STATUS_KEY = 'storeStatus';
 
 const handler = async () => {
   const status = await getStoreStatus();

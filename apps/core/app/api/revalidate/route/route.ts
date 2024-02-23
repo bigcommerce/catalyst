@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 import { getRoute } from '~/client/queries/get-route';
 import { kv } from '~/lib/kv';
+import { routeCacheKvKey } from '~/lib/kv/keys';
 
 import { withInternalAuth } from '../../internal-auth';
 
@@ -19,7 +20,7 @@ const handler = async (request: NextRequest) => {
   const expiryTime = Date.now() + 1000 * 60 * 30; // 30 minutes;
 
   try {
-    await kv.set(pathname, { node, expiryTime });
+    await kv.set(routeCacheKvKey(pathname), { node, expiryTime });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
