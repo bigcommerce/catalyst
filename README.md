@@ -71,6 +71,7 @@ Next steps:
 ```bash
 cd my-faster-storefront && npm run dev
 ```
+
 Learn more about Catalyst at [catalyst.dev](https://catalyst.dev).
 
 ## Resources

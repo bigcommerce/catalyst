@@ -13,42 +13,71 @@
 
 ## Create a new Catalyst project
 
-Create a new Catalyst project by running the Catalyst CLI. This will create a new directory that contains your Catalyst project.
+To create a new Catalyst project, use the Catalyst CLI. This will create a new directory that contains your Catalyst project. You don't need to clone the monorepo to use the CLI.
 
+When the CLI connects your project to the BigCommerce store you intend to use, you will be asked to sign in to the subject store using the browser and enter a code provided by the CLI. This step registers your Catalyst project and generates the access tokens the storefront needs to use our APIs. For a more in-depth explanation of authentication mechanisms in Catalyst, see [Advanced config]() in the Catalyst docs and [Authenticating Customers]() on the BigCommerce Dev Center.
+
+We recommend creating a new channel for the Catalyst storefront. For more about channel configuration, see BigCommerce's [channels docs](https://developer.bigcommerce.com/docs/storefront/headless/channels).
+
+To get started with the CLI, run the following command:
+
+```shell
+pnpm create catalyst-storefront@latest
 ```
+
+or
+
+```shell
 npm create catalyst-storefront@latest
 ```
 
-You will be asked the following prompts:
+The CLI will take you through the following prompts:
 
+```shell
+? What would you like to call your project?  fast-headless-storefront
+? Would you like to connect Catalyst to a BigCommerce store? Y
+  Please visit https://login.bigcommerce.com/device/connect and enter the code: <alphanumstr>
+
+The code will expire in 30 minutes
+
+✔ Device code authorized
+
+? Would you like to create a new channel? y
+
+? What would you like to name the new channel? Fast Headless Storefront
+
+Creating 'fast-headless-storefront' at '/Users/first.last/Documents/projects/fast-headless-storefront'
+
+✔ Catalyst template cloned successfully
+✔ Catalyst components cloned successfully
+
+Using pnpm
+
+✔ Dependencies installed successfully
+
+... generate GraphQL types ...
+
+Success! Created 'fast-headless-storefront' at '/Users/first.last/Documents/projects/fast-headless-storefront'
 ```
-What is the name of your project?
-Would you like to connect to a BigCommerce store?
-Would you like to create a new channel?
-```
-
-During the connection step, you will be asked to sign in to your store using a browser and enter a code provided by the CLI to authenticate your Catalyst project and generate the necessary credentials.
-
-We recommend creating a new channel on your store for your new Catalyst storefront. More information about channels can be found in BigCommerce's [channels](https://developer.bigcommerce.com/docs/storefront/headless/channels) documentation.
 
 ## Run Catalyst
 
-Once you've completed the setup process, enter the new directory created by the CLI and run the following command to run your Catalyst storefront locally.
+To run your Catalyst storefront locally, `cd` into the project directory the CLI created, and run the following command:
 
+```shell
+pnpm run dev
 ```
-npm run dev
-```
 
-(`pnpm` is also supported. `yarn` is _not_ currently supported.)
+Currently, Catalyst supports `npm` and `pnpm`. It does not currently support `yarn`.
 
-Your Catalyst storefront is now connected to your BigCommerce store, running on `http://localhost:3000`!
+The Catalyst storefront will run on `http://localhost:3000`.
 
 ## Configure your Catalyst project
 
-If you want to change which BigCommerce store your Catalyst project is linked to, run the following command 
-from within the directory containing your Catalyst project to go through the setup process again.
+If you want to link your Catalyst project to a different BigCommerce store, go through the setup process again. Run the following command from within the directory that contains your Catalyst project:
 
-```
+```shell
 npx create-catalyst-storefront@latest init
 ```
-If you prefer to have more control over how Catalyst is configured, you can also manually set Catalyst's [environment variables](/docs/environment-variables.md).
+
+If you prefer to have more control over how Catalyst is configured, you can also manually set Catalyst's [environment variables](/docs/environment-variables.md). For more information, see [Advanced config]().
