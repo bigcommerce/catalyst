@@ -11,6 +11,8 @@
 * Login access to a BigCommerce store or sandbox. You can [create a trial store](https://bigcommerce.com/start-your-trial/) or [spin up a sandbox](https://start.bigcommerce.com/developer-sandbox/).
 * [User permissions to create new store-level API accounts](https://support.bigcommerce.com/s/article/User-Permissions?language=en_US#highrisk) on the subject store, or help from someone who has permissions.
 
+<!-- At which step in this guide do we need the store-level API accounts? -->
+
 ## Create a new Catalyst project
 
 To create a new Catalyst project, use the Catalyst CLI. This will create a new directory that contains your Catalyst project. You don't need to clone the monorepo to use the CLI.
