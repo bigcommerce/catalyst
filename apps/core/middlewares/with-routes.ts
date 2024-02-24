@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { getSessionCustomerId } from '~/auth';
@@ -61,7 +61,7 @@ const RouteCacheSchema = z.object({
   expiryTime: z.number(),
 });
 
-const getExistingRouteInfo = async (request: NextRequest) => {
+const getExistingRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
   try {
     const pathname = request.nextUrl.pathname;
 
@@ -71,22 +71,30 @@ const getExistingRouteInfo = async (request: NextRequest) => {
     );
 
     if (statusCache && statusCache.expiryTime < Date.now()) {
-      void fetch(new URL(`/api/revalidate/store-status`, request.url), {
-        method: 'POST',
-        headers: {
-          'x-internal-token': process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '',
-        },
-      });
+      // Hit the revalidate route to update the cache,
+      // but use event.waitUntil to avoid holding up the page load
+      event.waitUntil(
+        fetch(new URL(`/api/revalidate/store-status`, request.url), {
+          method: 'POST',
+          headers: {
+            'x-internal-token': process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '',
+          },
+        }),
+      );
     }
 
     if (routeCache && routeCache.expiryTime < Date.now()) {
-      void fetch(new URL(`/api/revalidate/route`, request.url), {
-        method: 'POST',
-        body: JSON.stringify({ pathname }),
-        headers: {
-          'x-internal-token': process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '',
-        },
-      });
+      // Hit the revalidate API to update the cache,
+      // but use event.waitUntil to avoid holding up the page load
+      event.waitUntil(
+        fetch(new URL(`/api/revalidate/route`, request.url), {
+          method: 'POST',
+          body: JSON.stringify({ pathname }),
+          headers: {
+            'x-internal-token': process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '',
+          },
+        }),
+      );
     }
 
     const parsedRoute = RouteCacheSchema.safeParse(routeCache);
@@ -129,16 +137,17 @@ const setKvRoute = async (request: NextRequest, route: z.infer<typeof RouteSchem
   }
 };
 
-const getRouteInfo = async (request: NextRequest) => {
+const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
   try {
-    let { status, route } = await getExistingRouteInfo(request);
+    let { status, route } = await getExistingRouteInfo(request, event);
 
     if (status === undefined) {
       const newStatus = await getStoreStatus();
 
       if (newStatus) {
         status = newStatus;
-        await setKvStatus(status);
+        // Allow the middleware to proceed without waiting for KV write
+        event.waitUntil(setKvStatus(status));
       }
     }
 
@@ -150,7 +159,8 @@ const getRouteInfo = async (request: NextRequest) => {
       if (parsedNewRoute.success) {
         route = parsedNewRoute.data;
 
-        await setKvRoute(request, route);
+        // Allow the middleware to proceed without waiting for KV write
+        event.waitUntil(setKvRoute(request, route));
       }
     }
 
@@ -168,7 +178,7 @@ const getRouteInfo = async (request: NextRequest) => {
 
 export const withRoutes: MiddlewareFactory = (next) => {
   return async (request, event) => {
-    const { route, status } = await getRouteInfo(request);
+    const { route, status } = await getRouteInfo(request, event);
 
     if (status === 'MAINTENANCE') {
       // 503 status code not working - https://github.com/vercel/next.js/issues/50155
