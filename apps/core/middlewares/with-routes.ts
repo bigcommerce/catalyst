@@ -12,10 +12,10 @@ import { kv } from '../lib/kv';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
-type Node = Awaited<ReturnType<typeof getRoute>>;
+type Route = Awaited<ReturnType<typeof getRoute>>;
 
 interface RouteCache {
-  node: Node;
+  route: Route;
   expiryTime: number;
 }
 
@@ -61,40 +61,55 @@ const RouteCacheSchema = z.object({
   expiryTime: z.number(),
 });
 
-const getExistingRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
+const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promise<RouteCache> => {
+  const routeCache: RouteCache = {
+    route: await getRoute(pathname),
+    expiryTime: Date.now() + 1000 * 60 * 30, // 30 minutes
+  };
+
+  event.waitUntil(kv.set(routeCacheKvKey(pathname), routeCache));
+
+  return routeCache;
+};
+
+const updateStatusCache = async (event: NextFetchEvent): Promise<StorefrontStatusCache> => {
+  const status = await getStoreStatus();
+
+  if (status === undefined) {
+    throw new Error('Failed to fetch new storefront status');
+  }
+
+  const statusCache: StorefrontStatusCache = {
+    status,
+    expiryTime: Date.now() + 1000 * 60 * 5, // 5 minutes
+  };
+
+  event.waitUntil(kv.set(STORE_STATUS_KEY, statusCache));
+
+  return statusCache;
+};
+
+const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
   try {
     const pathname = request.nextUrl.pathname;
 
-    const [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
+    let [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
       routeCacheKvKey(pathname),
       STORE_STATUS_KEY,
     );
 
+    // If caches are old, update them in the background and return the old data (SWR-like behavior)
+    // If cache is missing, update it and return the new data, but write to KV in the background
     if (statusCache && statusCache.expiryTime < Date.now()) {
-      // Hit the revalidate route to update the cache,
-      // but use event.waitUntil to avoid holding up the page load
-      event.waitUntil(
-        fetch(new URL(`/api/revalidate/store-status`, request.url), {
-          method: 'POST',
-          headers: {
-            'x-internal-token': process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '',
-          },
-        }),
-      );
+      event.waitUntil(updateStatusCache(event));
+    } else if (!statusCache) {
+      statusCache = await updateStatusCache(event);
     }
 
     if (routeCache && routeCache.expiryTime < Date.now()) {
-      // Hit the revalidate API to update the cache,
-      // but use event.waitUntil to avoid holding up the page load
-      event.waitUntil(
-        fetch(new URL(`/api/revalidate/route`, request.url), {
-          method: 'POST',
-          body: JSON.stringify({ pathname }),
-          headers: {
-            'x-internal-token': process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '',
-          },
-        }),
-      );
+      event.waitUntil(updateRouteCache(pathname, event));
+    } else if (!routeCache) {
+      routeCache = await updateRouteCache(pathname, event);
     }
 
     const parsedRoute = RouteCacheSchema.safeParse(routeCache);
@@ -104,67 +119,6 @@ const getExistingRouteInfo = async (request: NextRequest, event: NextFetchEvent)
       route: parsedRoute.success ? parsedRoute.data.route : undefined,
       status: parsedStatus.success ? parsedStatus.data.status : undefined,
     };
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
-
-    return {
-      route: undefined,
-      status: undefined,
-    };
-  }
-};
-
-const setKvStatus = async (status?: StorefrontStatusType | null) => {
-  try {
-    const expiryTime = Date.now() + 1000 * 60 * 5; // 5 minutes;
-
-    await kv.set(STORE_STATUS_KEY, { status, expiryTime });
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
-  }
-};
-
-const setKvRoute = async (request: NextRequest, route: z.infer<typeof RouteSchema>) => {
-  try {
-    const expiryTime = Date.now() + 1000 * 60 * 30; // 30 minutes;
-
-    await kv.set(routeCacheKvKey(request.nextUrl.pathname), { route, expiryTime });
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
-  }
-};
-
-const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
-  try {
-    let { status, route } = await getExistingRouteInfo(request, event);
-
-    if (status === undefined) {
-      const newStatus = await getStoreStatus();
-
-      if (newStatus) {
-        status = newStatus;
-        // Allow the middleware to proceed without waiting for KV write
-        event.waitUntil(setKvStatus(status));
-      }
-    }
-
-    if (route === undefined) {
-      const newRoute = await getRoute(request.nextUrl.pathname);
-
-      const parsedNewRoute = RouteSchema.safeParse(newRoute);
-
-      if (parsedNewRoute.success) {
-        route = parsedNewRoute.data;
-
-        // Allow the middleware to proceed without waiting for KV write
-        event.waitUntil(setKvRoute(request, route));
-      }
-    }
-
-    return { route, status };
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
