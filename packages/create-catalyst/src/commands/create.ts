@@ -1,3 +1,5 @@
+/* eslint-disable complexity */
+
 import { input, select } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { exec as execCallback } from 'child_process';
@@ -197,6 +199,31 @@ export const create = async (options: CreateCommandOptions) => {
   console.log(`\nUsing ${chalk.bold(packageManager)}\n`);
 
   await installDependencies(projectDir, packageManager);
+
+  if (process.env.GITHUB_ACTIONS && process.env.GITHUB_WORKSPACE) {
+    await spinner(
+      exec(`${packageManager} link ${process.env.GITHUB_WORKSPACE}/packages/client`, {
+        cwd: projectDir,
+      }),
+      {
+        text: 'Linking client...',
+        successText: 'Linked client successfully',
+        failText: (err) => chalk.red(`Failed to link client: ${err.message}`),
+      },
+    );
+
+    await spinner(
+      exec(
+        `${packageManager} link ${process.env.GITHUB_WORKSPACE}/packages/eslint-config-catalyst`,
+        { cwd: projectDir },
+      ),
+      {
+        text: 'Linking ESLint config...',
+        successText: 'Linked ESLint config successfully',
+        failText: (err) => chalk.red(`Failed to link ESLint config: ${err.message}`),
+      },
+    );
+  }
 
   await spinner(exec(`${packageManager} run codegen`, { cwd: projectDir }), {
     text: 'Generating GraphQL types...',

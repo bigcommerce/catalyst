@@ -38,13 +38,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build CLI
-        run: pnpm build
-        working-directory: packages/create-catalyst
+      - name: Build Catalyst
+        run: pnpm build --filter @bigcommerce/create-catalyst --filter @bigcommerce/eslint-config-catalyst --filter @bigcommerce/catalyst-client
 
       - name: Run CLI
         run: |
           node dist/index.js \
+          --package-manager pnpm \
           --gh-ref ${{ github.sha }} \
           --project-dir ${{ runner.temp }} \
           --project-name catalyst-integration-test \
