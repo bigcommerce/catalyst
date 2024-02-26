@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { ProductActions } from '../../../../actions/product-actions';
+import { ProductActions } from '../../../../../actions/product-actions';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/');

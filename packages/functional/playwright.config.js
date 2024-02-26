@@ -35,5 +35,10 @@ export default defineConfig({
       name: 'tests-webkit',
       use: { ...devices['Desktop Safari'] },
     },
+
+    {
+      name: 'tests-ios',
+      use: { ...devices['iPhone 13'] },
+    },
   ],
 });

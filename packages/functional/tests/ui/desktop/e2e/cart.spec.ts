@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
-import { ProductActions } from '../../../actions/product-actions';
-import { CartPage } from '../../../pages/cart-page';
+import { ProductActions } from '../../../../actions/product-actions';
+import { CartPage } from '../../../../pages/cart-page';
 
 const sampleProduct = '[Sample] Able Brewing System';
 
