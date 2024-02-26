@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { getSessionCustomerId } from '~/auth';
@@ -12,10 +12,10 @@ import { kv } from '../lib/kv';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
-type Node = Awaited<ReturnType<typeof getRoute>>;
+type Route = Awaited<ReturnType<typeof getRoute>>;
 
 interface RouteCache {
-  node: Node;
+  route: Route;
   expiryTime: number;
 }
 
@@ -61,32 +61,55 @@ const RouteCacheSchema = z.object({
   expiryTime: z.number(),
 });
 
-const getExistingRouteInfo = async (request: NextRequest) => {
+const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promise<RouteCache> => {
+  const routeCache: RouteCache = {
+    route: await getRoute(pathname),
+    expiryTime: Date.now() + 1000 * 60 * 30, // 30 minutes
+  };
+
+  event.waitUntil(kv.set(routeCacheKvKey(pathname), routeCache));
+
+  return routeCache;
+};
+
+const updateStatusCache = async (event: NextFetchEvent): Promise<StorefrontStatusCache> => {
+  const status = await getStoreStatus();
+
+  if (status === undefined) {
+    throw new Error('Failed to fetch new storefront status');
+  }
+
+  const statusCache: StorefrontStatusCache = {
+    status,
+    expiryTime: Date.now() + 1000 * 60 * 5, // 5 minutes
+  };
+
+  event.waitUntil(kv.set(STORE_STATUS_KEY, statusCache));
+
+  return statusCache;
+};
+
+const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
   try {
     const pathname = request.nextUrl.pathname;
 
-    const [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
+    let [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
       routeCacheKvKey(pathname),
       STORE_STATUS_KEY,
     );
 
+    // If caches are old, update them in the background and return the old data (SWR-like behavior)
+    // If cache is missing, update it and return the new data, but write to KV in the background
     if (statusCache && statusCache.expiryTime < Date.now()) {
-      void fetch(new URL(`/api/revalidate/store-status`, request.url), {
-        method: 'POST',
-        headers: {
-          'x-internal-token': process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '',
-        },
-      });
+      event.waitUntil(updateStatusCache(event));
+    } else if (!statusCache) {
+      statusCache = await updateStatusCache(event);
     }
 
     if (routeCache && routeCache.expiryTime < Date.now()) {
-      void fetch(new URL(`/api/revalidate/route`, request.url), {
-        method: 'POST',
-        body: JSON.stringify({ pathname }),
-        headers: {
-          'x-internal-token': process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '',
-        },
-      });
+      event.waitUntil(updateRouteCache(pathname, event));
+    } else if (!routeCache) {
+      routeCache = await updateRouteCache(pathname, event);
     }
 
     const parsedRoute = RouteCacheSchema.safeParse(routeCache);
@@ -107,68 +130,9 @@ const getExistingRouteInfo = async (request: NextRequest) => {
   }
 };
 
-const setKvStatus = async (status?: StorefrontStatusType | null) => {
-  try {
-    const expiryTime = Date.now() + 1000 * 60 * 5; // 5 minutes;
-
-    await kv.set(STORE_STATUS_KEY, { status, expiryTime });
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
-  }
-};
-
-const setKvRoute = async (request: NextRequest, route: z.infer<typeof RouteSchema>) => {
-  try {
-    const expiryTime = Date.now() + 1000 * 60 * 30; // 30 minutes;
-
-    await kv.set(routeCacheKvKey(request.nextUrl.pathname), { route, expiryTime });
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
-  }
-};
-
-const getRouteInfo = async (request: NextRequest) => {
-  try {
-    let { status, route } = await getExistingRouteInfo(request);
-
-    if (status === undefined) {
-      const newStatus = await getStoreStatus();
-
-      if (newStatus) {
-        status = newStatus;
-        await setKvStatus(status);
-      }
-    }
-
-    if (route === undefined) {
-      const newRoute = await getRoute(request.nextUrl.pathname);
-
-      const parsedNewRoute = RouteSchema.safeParse(newRoute);
-
-      if (parsedNewRoute.success) {
-        route = parsedNewRoute.data;
-
-        await setKvRoute(request, route);
-      }
-    }
-
-    return { route, status };
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
-
-    return {
-      route: undefined,
-      status: undefined,
-    };
-  }
-};
-
 export const withRoutes: MiddlewareFactory = (next) => {
   return async (request, event) => {
-    const { route, status } = await getRouteInfo(request);
+    const { route, status } = await getRouteInfo(request, event);
 
     if (status === 'MAINTENANCE') {
       // 503 status code not working - https://github.com/vercel/next.js/issues/50155
