@@ -6,10 +6,10 @@ import { getSessionCustomerId } from '~/auth';
 import { client } from '..';
 import { graphql } from '../generated';
 
-export const GET_BEST_SELLING_PRODUCTS_QUERY = /* GraphQL */ `
-  query getBestSellingProducts($first: Int, $imageHeight: Int!, $imageWidth: Int!) {
+export const GET_NEWEST_PRODUCTS_QUERY = /* GraphQL */ `
+  query getNewestProducts($first: Int, $imageHeight: Int!, $imageWidth: Int!) {
     site {
-      bestSellingProducts(first: $first) {
+      newestProducts(first: $first) {
         edges {
           node {
             ...ProductDetails
@@ -26,9 +26,9 @@ interface Options {
   imageHeight?: number;
 }
 
-export const getBestSellingProducts = cache(
+export const getNewestProducts = cache(
   async ({ first = 12, imageHeight = 300, imageWidth = 300 }: Options = {}) => {
-    const query = graphql(GET_BEST_SELLING_PRODUCTS_QUERY);
+    const query = graphql(GET_NEWEST_PRODUCTS_QUERY);
     const customerId = await getSessionCustomerId();
 
     const response = await client.fetch({
@@ -42,9 +42,9 @@ export const getBestSellingProducts = cache(
 
     const { site } = response.data;
 
-    return removeEdgesAndNodes(site.bestSellingProducts).map((bestSellingProduct) => ({
-      ...bestSellingProduct,
-      productOptions: removeEdgesAndNodes(bestSellingProduct.productOptions),
+    return removeEdgesAndNodes(site.newestProducts).map((product) => ({
+      ...product,
+      productOptions: removeEdgesAndNodes(product.productOptions),
     }));
   },
 );

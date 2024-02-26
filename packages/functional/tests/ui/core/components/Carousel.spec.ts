@@ -9,9 +9,12 @@ test.beforeEach(async ({ page }) => {
     .getByRole('tablist', { name: 'Slides' })
     .scrollIntoViewIfNeeded();
 
-  await page.getByRole('link', { name: '[Sample] Able Brewing System' }).scrollIntoViewIfNeeded();
+  await page
+    .getByRole('link', { name: '[Sample] Smith Journal 13' })
+    .first()
+    .scrollIntoViewIfNeeded();
 
-  await expect(page.getByRole('link', { name: '[Sample] Able Brewing System' })).toBeVisible();
+  await expect(page.getByRole('link', { name: '[Sample] Smith Journal 13' }).first()).toBeVisible();
 });
 
 test('Navigate to next set of products', async ({ page }) => {
@@ -47,8 +50,6 @@ test('Navigate to previous set of products', async ({ page }) => {
 });
 
 test('Navigation on set of products is cyclic', async ({ page }) => {
-  await expect(page.getByRole('link', { name: '[Sample] Smith Journal 13' })).toBeVisible();
-
   await page
     .getByRole('region')
     .filter({ has: page.getByRole('heading', { name: 'Featured products' }) })
