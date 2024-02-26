@@ -65,8 +65,23 @@ export const cloneCatalyst = async ({
   unset(packageJson, 'devDependencies.react'); // will go away
   unset(packageJson, 'devDependencies.react-dom'); // will go away
 
-  set(packageJson, 'dependencies.@bigcommerce/catalyst-client', `^0.1.0`);
-  set(packageJson, 'devDependencies.@bigcommerce/eslint-config-catalyst', `^0.1.0`);
+  console.log('test');
+
+  if (process.env.GITHUB_ACTIONS && process.env.GITHUB_WORKSPACE) {
+    set(
+      packageJson,
+      'dependencies.@bigcommerce/catalyst-client',
+      `file:${process.env.GITHUB_WORKSPACE}/packages/client`,
+    );
+    set(
+      packageJson,
+      'devDependencies.@bigcommerce/eslint-config-catalyst',
+      `file:${process.env.GITHUB_WORKSPACE}/packages/eslint-config-catalyst`,
+    );
+  } else {
+    set(packageJson, 'dependencies.@bigcommerce/catalyst-client', `^0.1.0`);
+    set(packageJson, 'devDependencies.@bigcommerce/eslint-config-catalyst', `^0.1.0`);
+  }
 
   writeJsonSync(join(projectDir, 'package.json'), packageJson, { spaces: 2 });
 
