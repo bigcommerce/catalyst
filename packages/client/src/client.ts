@@ -131,7 +131,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       throw new Error(`Unable to get available Countries List: ${response.statusText}`);
     }
 
-    return response.json();
+    return response.json() as Promise<unknown>;
   }
 
   async fetchCountryStates(id: number) {
@@ -151,7 +151,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       throw new Error(`Unable to get available States or Provinces: ${response.statusText}`);
     }
 
-    return response.json();
+    return response.json() as Promise<unknown>;
   }
 
   async fetchShippingZones() {
@@ -171,7 +171,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       throw new Error(`Unable to get Shipping Zones: ${response.statusText}`);
     }
 
-    return response.json();
+    return response.json() as Promise<unknown>;
   }
 
   private getEndpoint() {
