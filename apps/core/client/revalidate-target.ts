@@ -1,3 +1,3 @@
 export const revalidate = process.env.NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET
   ? Number(process.env.NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET)
-  : undefined;
+  : 3600;
