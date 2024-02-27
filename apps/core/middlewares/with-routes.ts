@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 import { getSessionCustomerId } from '~/auth';
 import { StorefrontStatusType } from '~/client/generated/graphql';
+import { getRawWebPageContent } from '~/client/queries/get-raw-web-page-content';
 import { getRoute } from '~/client/queries/get-route';
 import { getStoreStatus } from '~/client/queries/get-store-status';
 import { routeCacheKvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
@@ -194,10 +195,11 @@ export const withRoutes: MiddlewareFactory = (next) => {
       }
 
       case 'RawHtmlPage': {
-        // fast path for raw html pages
-        const url = createRewriteUrl(`/api/raw-page/${node.id}`, request);
+        const { htmlBody } = await getRawWebPageContent(node.id);
 
-        return NextResponse.rewrite(url);
+        return new NextResponse(htmlBody, {
+          headers: { 'content-type': 'text/html' },
+        });
       }
 
       default: {
