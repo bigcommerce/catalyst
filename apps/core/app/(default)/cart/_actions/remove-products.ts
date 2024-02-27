@@ -21,9 +21,10 @@ export async function removeProduct(formData: FormData) {
   const updatedCart = await deleteCartLineItem(cartId, lineItemEntityId.toString());
 
   // If we remove the last item in a cart the cart is deleted
-  // so we need to remove the cartId cookie
+  // so we need to remove the cartId cookie and clear shipping data
   if (!updatedCart) {
     cookies().delete('cartId');
+    cookies().delete('shippingCosts');
     revalidateTag('cart');
   }
 
