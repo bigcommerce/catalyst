@@ -4,7 +4,7 @@ const cspHeader = `
   base-uri 'self';
   form-action 'self';
   frame-ancestors 'none';
-`
+`;
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -15,6 +15,9 @@ const nextConfig = {
         hostname: process.env.BIGCOMMERCE_CDN_HOSTNAME ?? '*.bigcommerce.com',
       },
     ],
+  },
+  experimental: {
+    optimizePackageImports: ['@icons-pack/react-simple-icons'],
   },
   transpilePackages: ['@bigcommerce/components'],
   typescript: {
@@ -37,8 +40,8 @@ const nextConfig = {
           },
         ],
       },
-    ]
-  }
+    ];
+  },
 };
 
 module.exports = nextConfig;
