@@ -5,6 +5,7 @@ import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 
 export interface GetProductsArguments {
   productIds: number[];
@@ -36,9 +37,7 @@ export const getProducts = cache(
       document: query,
       variables: { entityIds: productIds, first, imageWidth, imageHeight },
       customerId,
-      fetchOptions: {
-        cache: customerId ? 'no-store' : 'force-cache',
-      },
+      fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     const products = removeEdgesAndNodes(response.data.site.products);

@@ -3,6 +3,7 @@ import { cache } from 'react';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 
 const GET_PRODUCT_REVIEWS_QUERY = /* GraphQL */ `
   query getProductReviews($entityId: Int!) {
@@ -40,6 +41,7 @@ export const getProductReviews = cache(async (entityId: number) => {
   const response = await client.fetch({
     document: query,
     variables: { entityId },
+    fetchOptions: { next: { revalidate } },
   });
 
   const { product } = response.data.site;

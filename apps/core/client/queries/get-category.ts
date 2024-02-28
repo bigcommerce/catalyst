@@ -5,6 +5,7 @@ import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 
 export const GET_CATEGORY_QUERY = /* GraphQL */ `
   query getCategory(
@@ -77,9 +78,7 @@ export const getCategory = cache(
       document: query,
       variables: { categoryId, breadcrumbDepth, ...paginationArgs },
       customerId,
-      fetchOptions: {
-        cache: customerId ? 'no-store' : 'force-cache',
-      },
+      fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     const category = response.data.site.category;

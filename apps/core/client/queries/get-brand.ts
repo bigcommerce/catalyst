@@ -2,6 +2,7 @@ import { cache } from 'react';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 
 export interface GetBrandOptions {
   brandId: number;
@@ -25,6 +26,7 @@ export const getBrand = cache(async ({ brandId }: GetBrandOptions) => {
   const response = await client.fetch({
     document: query,
     variables: { entityId: brandId },
+    fetchOptions: { next: { revalidate } },
   });
 
   const brand = response.data.site.brand;

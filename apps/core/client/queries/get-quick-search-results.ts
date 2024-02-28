@@ -5,6 +5,7 @@ import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 
 interface QuickSearch {
   searchTerm: string;
@@ -43,9 +44,7 @@ export const getQuickSearchResults = cache(
       document: query,
       variables: { filters: { searchTerm }, imageHeight, imageWidth },
       customerId,
-      fetchOptions: {
-        cache: customerId ? 'no-store' : 'force-cache',
-      },
+      fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     const { products } = response.data.site.search.searchProducts;

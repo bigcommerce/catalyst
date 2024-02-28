@@ -5,6 +5,7 @@ import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 import { ExistingResultType } from '../util';
 
 type Product = ExistingResultType<typeof getInternalProduct>;
@@ -227,9 +228,7 @@ const getInternalProduct = async (productId: number, optionValueIds?: OptionValu
     document: query,
     variables: { productId, optionValueIds },
     customerId,
-    fetchOptions: {
-      cache: customerId ? 'no-store' : 'force-cache',
-    },
+    fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   const product = response.data.site.product;

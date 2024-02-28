@@ -29,6 +29,7 @@ export const writeEnv = (
       `BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN=${customerImpersonationToken}`,
       `CLIENT_LOGGER=false`,
       `ENABLE_ADMIN_ROUTE=true`,
+      `NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET=3600`,
     ].join('\n'),
   );
 };

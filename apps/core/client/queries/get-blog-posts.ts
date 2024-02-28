@@ -3,6 +3,7 @@ import { cache } from 'react';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 
 interface BlogPostsFiltersInput {
   tagId?: string;
@@ -71,6 +72,7 @@ export const getBlogPosts = cache(
     const response = await client.fetch({
       document: query,
       variables: { ...filterArgs, ...paginationArgs },
+      fetchOptions: { next: { revalidate } },
     });
 
     const { blog } = response.data.site.content;

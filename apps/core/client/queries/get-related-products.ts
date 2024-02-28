@@ -5,6 +5,7 @@ import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 
 import { GetProductOptions } from './get-product';
 
@@ -46,9 +47,7 @@ export const getRelatedProducts = cache(
     const response = await client.fetch({
       document: query,
       variables: { entityId: productId, optionValueIds, first, imageWidth, imageHeight },
-      fetchOptions: {
-        cache: customerId ? 'no-store' : 'force-cache',
-      },
+      fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     const { product } = response.data.site;

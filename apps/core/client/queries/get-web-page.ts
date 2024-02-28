@@ -2,6 +2,7 @@ import { cache } from 'react';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 
 export const GET_WEB_PAGE_QUERY = /* GraphQL */ `
   query getWebPage($path: String!, $characterLimit: Int = 120) {
@@ -59,6 +60,7 @@ export const getWebPage = cache(async ({ path, characterLimit = 120 }: Options) 
   const response = await client.fetch({
     document: query,
     variables: { path, characterLimit },
+    fetchOptions: { next: { revalidate } },
   });
 
   const webpage = response.data.site.route.node;

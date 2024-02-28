@@ -3,6 +3,7 @@ import { cache } from 'react';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 import { ExistingResultType } from '../util';
 
 export type AvailableWebPages = ExistingResultType<typeof getWebPages>;
@@ -43,6 +44,7 @@ export const getWebPages = cache(async () => {
 
   const response = await client.fetch({
     document: query,
+    fetchOptions: { next: { revalidate } },
   });
 
   const { pages } = response.data.site.content;

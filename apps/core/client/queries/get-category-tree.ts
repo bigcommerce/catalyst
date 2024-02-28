@@ -4,6 +4,7 @@ import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 
 export const GET_CATEGORY_TREE_QUERY = /* GraphQL */ `
   query getCategoryTree($categoryId: Int) {
@@ -35,9 +36,7 @@ export const getCategoryTree = cache(async (categoryId?: number) => {
     document: query,
     variables: { categoryId },
     customerId,
-    fetchOptions: {
-      cache: customerId ? 'no-store' : 'force-cache',
-    },
+    fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   return response.data.site.categoryTree;

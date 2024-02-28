@@ -5,6 +5,7 @@ import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 
 export const GET_NEWEST_PRODUCTS_QUERY = /* GraphQL */ `
   query getNewestProducts($first: Int, $imageHeight: Int!, $imageWidth: Int!) {
@@ -35,9 +36,7 @@ export const getNewestProducts = cache(
       document: query,
       variables: { first, imageWidth, imageHeight },
       customerId,
-      fetchOptions: {
-        cache: customerId ? 'no-store' : 'force-cache',
-      },
+      fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     const { site } = response.data;

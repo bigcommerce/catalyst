@@ -2,6 +2,7 @@ import { cache } from 'react';
 
 import { client } from '..';
 import { graphql } from '../generated';
+import { revalidate } from '../revalidate-target';
 
 const GET_BLOG_POST_QUERY = /* GraphQL */ `
   query getBlogPost($entityId: Int!) {
@@ -45,6 +46,7 @@ export const getBlogPost = cache(async (entityId: number) => {
   const response = await client.fetch({
     document: query,
     variables: { entityId },
+    fetchOptions: { next: { revalidate } },
   });
 
   const { blog } = response.data.site.content;
