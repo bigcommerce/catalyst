@@ -8,14 +8,14 @@ import { ReviewSummary } from './review-summary';
 
 type Product = Awaited<ReturnType<typeof getProduct>>;
 
-const currencyFormatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-});
-
 export const Details = ({ product }: { product: NonNullable<Product> }) => {
   const showPriceRange =
     product.prices?.priceRange.min.value !== product.prices?.priceRange.max.value;
+
+  const currencyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: product.prices?.price.currencyCode || 'USD',
+  });
 
   return (
     <div>
