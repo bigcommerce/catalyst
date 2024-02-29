@@ -25,16 +25,19 @@ export type CheckoutSummary = CartSummary & {
     currencyCode: string;
     value: number;
   };
+  consignmentEntityId: string;
 };
 export interface ShippingCosts {
   shippingCostTotal: number;
   handlingCostTotal: number;
+  selectedShippingOption: string;
 }
 type ShippingCountries = ExistingResultType<typeof getShippingCountries>;
 
 export const CheckoutContext = createContext<{
   availableShippingCountries: ShippingCountries;
   checkoutEntityId: string;
+  consignmentEntityId: string | null;
   shippingCosts: ShippingCosts | null;
   currencyCode: string;
   isShippingMethodSelected: boolean;
@@ -43,6 +46,7 @@ export const CheckoutContext = createContext<{
 }>({
   availableShippingCountries: [],
   checkoutEntityId: '',
+  consignmentEntityId: '',
   currencyCode: '',
   isShippingMethodSelected: false,
   setIsShippingMethodSelected: () => undefined,
@@ -57,10 +61,7 @@ export const CheckoutSummary = ({
 }: {
   cart: NonNullable<CartSummary>;
   shippingCountries: ShippingCountries;
-  shippingCosts: {
-    shippingCostTotal: number;
-    handlingCostTotal: number;
-  } | null;
+  shippingCosts: ShippingCosts | null;
 }) => {
   const [isShippingMethodSelected, setIsShippingMethodSelected] = useState(false);
   const [checkoutSummary, updateCheckoutSummary] = useState<CheckoutSummary>({
@@ -73,6 +74,7 @@ export const CheckoutSummary = ({
       currencyCode: cart.currencyCode,
       value: shippingCosts?.handlingCostTotal ?? 0,
     },
+    consignmentEntityId: '',
   });
 
   const currencyFormatter = createCurrencyFormatter(checkoutSummary.currencyCode);
@@ -93,6 +95,7 @@ export const CheckoutSummary = ({
       value={{
         availableShippingCountries: shippingCountries,
         checkoutEntityId: checkoutSummary.entityId,
+        consignmentEntityId: checkoutSummary.consignmentEntityId,
         currencyCode: checkoutSummary.currencyCode,
         isShippingMethodSelected,
         setIsShippingMethodSelected,
@@ -103,7 +106,7 @@ export const CheckoutSummary = ({
       <div className="flex justify-between border-t border-t-gray-200 py-4">
         <span className="text-base font-semibold">Subtotal</span>
         <span className="text-base">
-          {currencyFormatter.format(checkoutSummary.totalExtendedListPrice.value)}
+          {currencyFormatter.format(cart.totalExtendedListPrice.value)}
         </span>
       </div>
 

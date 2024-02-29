@@ -23,17 +23,15 @@ type StatesList = Array<{
 
 type ShippingInfoData = ExistingResultType<typeof submitShippingInfo>['data'];
 
-async function fetchStatesOnCountrySelect(
-  countryId: number | null,
-  SetterFn: Dispatch<SetStateAction<StatesList | null>>,
-) {
-  if (countryId) {
-    const res = await getShippingStates(countryId);
-    const states = res.status === 'success' && res.data ? res.data : null;
+const composeFetchStatesOnSelectedCountry =
+  (SetterFn: Dispatch<SetStateAction<StatesList | null>>) => async (countryId: number | null) => {
+    if (countryId) {
+      const res = await getShippingStates(countryId);
+      const states = res.status === 'success' && res.data ? res.data : null;
 
-    SetterFn(states);
-  }
-}
+      SetterFn(states);
+    }
+  };
 
 const SubmitFormButton = () => {
   const { pending } = useFormStatus();
@@ -65,6 +63,7 @@ export const ShippingInfo = ({
     setIsShippingMethodSelected,
     updateCheckoutSummary,
     currencyCode,
+    consignmentEntityId,
   } = useContext(CheckoutContext);
   const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
@@ -72,26 +71,20 @@ export const ShippingInfo = ({
   const [selectedStates, setSelectedStates] = useState<StatesList | null>(null);
   const [shippingInfo, setShippingInfo] = useState<ShippingInfoData | null>(null);
 
+  const fetchStatesOnSelectedCountry = composeFetchStatesOnSelectedCountry(setSelectedStates);
   const onSubmit = async (formData: FormData) => {
     const { status, data } = await submitShippingInfo(formData, {
       cartId: checkoutEntityId,
       cartItems,
+      shippingId: consignmentEntityId,
     });
 
     if (status === 'success' && data) {
       setShippingInfo(data);
     }
   };
-
-  useEffect(() => {
+  const resetFormFieldsOnCountryChange = () => {
     if (selectedCountry) {
-      // TODO: rename method later
-      void fetchStatesOnCountrySelect(
-        selectedCountry ? Number(selectedCountry) : null,
-        setSelectedStates,
-      );
-
-      // clear rest fields on Country change
       setSelectedCity('');
       setSelectedZipCode('');
       setIsShippingMethodSelected(false);
@@ -106,11 +99,15 @@ export const ShippingInfo = ({
           value: 0,
           currencyCode,
         },
+        consignmentEntityId: '',
       }));
-    } else {
-      setSelectedStates(null);
     }
-  }, [currencyCode, selectedCountry, setIsShippingMethodSelected, updateCheckoutSummary]);
+  };
+
+  // reset shipping method state after it's been selected
+  useEffect(() => {
+    setIsShippingMethodSelected(false);
+  });
 
   return (
     <>
@@ -129,9 +126,13 @@ export const ShippingInfo = ({
 
                   if (countryId) {
                     setSelectedCountry(countryId);
+
+                    void fetchStatesOnSelectedCountry(Number(countryId) || null);
                   } else {
                     setSelectedCountry('');
                   }
+
+                  resetFormFieldsOnCountryChange();
                 }}
                 placeholder="Select county"
               >

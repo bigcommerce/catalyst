@@ -26,9 +26,15 @@ export const submitShippingCosts = async (
       shippingOptionEntityId: parsedData.shippingOption,
     });
 
+    const selectedShippingOption =
+      shippingCost && shippingCost.shippingConsignments
+        ? shippingCost.shippingConsignments[0]?.selectedShippingOption?.description
+        : '';
+
     const shippingCosts = {
       shippingCostTotal: shippingCost?.shippingCostTotal?.value ?? 0,
       handlingCostTotal: shippingCost?.handlingCostTotal?.value ?? 0,
+      selectedShippingOption,
     };
 
     cookies().set({
