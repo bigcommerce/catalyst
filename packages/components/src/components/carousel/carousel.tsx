@@ -93,7 +93,6 @@ const CarouselSlide = forwardRef<ElementRef<'li'>, CarouselSlideProps>(
           className,
         )}
         ref={ref}
-        role="tabpanel"
         {...props}
       >
         {children}

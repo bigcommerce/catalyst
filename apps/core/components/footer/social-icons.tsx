@@ -64,9 +64,11 @@ export const SocialIcons = async () => {
           }
 
           return (
-            <Link className="inline-block" href={link.url} key={link.name}>
-              <SocialIcon name={link.name} />
-            </Link>
+            <li key={link.name}>
+              <Link className="inline-block" href={link.url}>
+                <SocialIcon name={link.name} />
+              </Link>
+            </li>
           );
         })}
       </ul>
