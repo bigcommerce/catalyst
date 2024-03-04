@@ -1,7 +1,7 @@
-import { DocumentTypeDecoration } from '@graphql-typed-document-node/core';
-
 import { BigCommerceAPIError } from './error';
+import { DocumentDecoration } from './types';
 import { getOperationInfo } from './utils/getOperationName';
+import { normalizeQuery } from './utils/normalizeQuery';
 import { getBackendUserAgent } from './utils/userAgent';
 
 export const graphqlApiDomain: string =
@@ -35,7 +35,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
   // Overload for documents that require variables
   async fetch<TResult, TVariables extends Record<string, unknown>>(config: {
-    document: DocumentTypeDecoration<TResult, TVariables>;
+    document: DocumentDecoration<TResult, TVariables>;
     variables: TVariables;
     customerId?: number;
     fetchOptions?: FetcherRequestInit;
@@ -43,7 +43,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
   // Overload for documents that do not require variables
   async fetch<TResult>(config: {
-    document: DocumentTypeDecoration<TResult, Record<string, never>>;
+    document: DocumentDecoration<TResult, Record<string, never>>;
     variables?: undefined;
     customerId?: number;
     fetchOptions?: FetcherRequestInit;
@@ -55,13 +55,14 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerId,
     fetchOptions = {} as FetcherRequestInit,
   }: {
-    document: DocumentTypeDecoration<TResult, TVariables>;
+    document: DocumentDecoration<TResult, TVariables>;
     variables?: TVariables;
     customerId?: number;
     fetchOptions?: FetcherRequestInit;
   }): Promise<BigCommerceResponse<TResult>> {
     const { cache, headers = {}, ...rest } = fetchOptions;
-    const log = this.requestLogger(document);
+    const query = normalizeQuery(document);
+    const log = this.requestLogger(query);
 
     const response = await fetch(this.graphqlUrl, {
       method: 'POST',
@@ -73,7 +74,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
         ...headers,
       },
       body: JSON.stringify({
-        query: document,
+        query,
         ...(variables && { variables }),
       }),
       ...(cache && { cache }),
@@ -182,9 +183,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     return `https://store-${this.config.storeHash}-${this.config.channelId}.${graphqlApiDomain}/graphql`;
   }
 
-  private requestLogger<TResult, TVariables>(
-    document: DocumentTypeDecoration<TResult, TVariables>,
-  ) {
+  private requestLogger(document: string) {
     if (!this.config.logger) {
       return () => {
         // noop
