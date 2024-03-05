@@ -15,7 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@main
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
 
       - name: Use Node.js
         uses: actions/setup-node@main
@@ -29,7 +29,7 @@ jobs:
       - name: Install Playwright Browsers
         run: |
           cd packages/functional
-          npx playwright install chromium
+          npx playwright install --with-deps
 
       - name: Run Playwright tests
         env:
