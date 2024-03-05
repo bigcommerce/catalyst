@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
+import createMiddleware from 'next-intl/middleware';
 import { z } from 'zod';
 
 import { getSessionCustomerId } from '~/auth';
@@ -9,6 +10,7 @@ import { getRoute } from '~/client/queries/get-route';
 import { getStoreStatus } from '~/client/queries/get-store-status';
 import { routeCacheKvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
 
+import { defaultLocale, localePrefix, LocalePrefixes, locales } from '../i18n';
 import { kv } from '../lib/kv';
 
 import { type MiddlewareFactory } from './compose-middlewares';
@@ -24,14 +26,6 @@ interface StorefrontStatusCache {
   status: StorefrontStatusType;
   expiryTime: number;
 }
-
-const createRewriteUrl = (path: string, request: NextRequest) => {
-  const url = new URL(path, request.url);
-
-  url.search = request.nextUrl.search;
-
-  return url;
-};
 
 const StorefrontStatusCacheSchema = z.object({
   status: z.nativeEnum(StorefrontStatusType),
@@ -91,9 +85,28 @@ const updateStatusCache = async (event: NextFetchEvent): Promise<StorefrontStatu
   return statusCache;
 };
 
+let locale: string;
+const clearLocaleFromPath = (path: string) => {
+  let res: string;
+
+  if (localePrefix === LocalePrefixes.ALWAYS) {
+    res = locale ? `/${path.split('/').slice(2).join('/')}` : path;
+
+    return res;
+  }
+
+  if (localePrefix === LocalePrefixes.ASNEEDED) {
+    res = locale && locale !== defaultLocale ? `/${path.split('/').slice(2).join('/')}` : path;
+
+    return res;
+  }
+
+  return path;
+};
+
 const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
   try {
-    const pathname = request.nextUrl.pathname;
+    const pathname = clearLocaleFromPath(request.nextUrl.pathname);
 
     let [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
       routeCacheKvKey(pathname),
@@ -132,13 +145,33 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
   }
 };
 
-export const withRoutes: MiddlewareFactory = (next) => {
+export const withRoutes: MiddlewareFactory = () => {
   return async (request, event) => {
+    locale = cookies().get('NEXT_LOCALE')?.value || '';
+
+    const intlMiddleware = createMiddleware({
+      locales,
+      localePrefix,
+      defaultLocale,
+      localeDetection: true,
+    });
+    const response = intlMiddleware(request);
+
+    // Early redirect to detected locale if needed
+    if (response.redirected) {
+      return response;
+    }
+
+    if (!locale) {
+      // Try to get locale detected by next-intl
+      locale = response.cookies.get('NEXT_LOCALE')?.value || '';
+    }
+
     const { route, status } = await getRouteInfo(request, event);
 
     if (status === 'MAINTENANCE') {
       // 503 status code not working - https://github.com/vercel/next.js/issues/50155
-      return NextResponse.rewrite(new URL(`/maintenance`, request.url), { status: 503 });
+      return NextResponse.rewrite(new URL(`/${locale}/maintenance`, request.url), { status: 503 });
     }
 
     // Follow redirects if found on the route
@@ -174,24 +207,22 @@ export const withRoutes: MiddlewareFactory = (next) => {
     }
 
     const node = route?.node;
+    let url: string;
 
     switch (node?.__typename) {
       case 'Brand': {
-        const url = createRewriteUrl(`/brand/${node.entityId}${postfix}`, request);
-
-        return NextResponse.rewrite(url);
+        url = `/${locale}/brand/${node.entityId}${postfix}`;
+        break;
       }
 
       case 'Category': {
-        const url = createRewriteUrl(`/category/${node.entityId}${postfix}`, request);
-
-        return NextResponse.rewrite(url);
+        url = `/${locale}/category/${node.entityId}${postfix}`;
+        break;
       }
 
       case 'Product': {
-        const url = createRewriteUrl(`/product/${node.entityId}${postfix}`, request);
-
-        return NextResponse.rewrite(url);
+        url = `/${locale}/product/${node.entityId}${postfix}`;
+        break;
       }
 
       case 'RawHtmlPage': {
@@ -204,15 +235,26 @@ export const withRoutes: MiddlewareFactory = (next) => {
 
       default: {
         const { pathname } = new URL(request.url);
+        const cleanPathName = clearLocaleFromPath(pathname);
 
-        if (pathname === '/' && postfix) {
-          const url = createRewriteUrl(postfix, request);
-
-          return NextResponse.rewrite(url);
+        if (cleanPathName === '/' && postfix) {
+          url = `/${locale}${postfix}`;
+          break;
         }
 
-        return next(request, event);
+        url = `/${locale}${cleanPathName}`;
       }
     }
+
+    const rewriteUrl = new URL(url, request.url);
+
+    rewriteUrl.search = request.nextUrl.search;
+
+    const rewrite = NextResponse.rewrite(rewriteUrl);
+
+    // Add rewrite header to response provided by next-intl
+    rewrite.headers.forEach((v, k) => response.headers.set(k, v));
+
+    return response;
   };
 };

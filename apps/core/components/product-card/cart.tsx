@@ -3,6 +3,7 @@
 import { Button } from '@bigcommerce/components/button';
 import { AlertCircle, Check } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { toast } from 'react-hot-toast';
 
 import { Link } from '../link';
@@ -16,6 +17,7 @@ export const Cart = ({ product }: { product: Partial<Product> }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const newSearchParams = new URLSearchParams(searchParams.toString());
+  const t = useTranslations('Product.ProductSheet');
 
   if (!product.entityId) {
     return null;
@@ -30,7 +32,7 @@ export const Cart = ({ product }: { product: Partial<Product> }) => {
         href={`${pathname}?${newSearchParams.toString()}`}
         scroll={false}
       >
-        Quick add
+        {t('quickAdd')}
       </Link>
     </Button>
   ) : (
@@ -49,10 +51,14 @@ export const Cart = ({ product }: { product: Partial<Product> }) => {
           () => (
             <div className="flex items-center gap-3">
               <span>
-                {quantity} {quantity === 1 ? 'Item' : 'Items'} added to{' '}
-                <Link className="font-semibold text-blue-primary" href="/cart" prefetch="none">
-                  your cart
-                </Link>
+                {t.rich('addedProductQuantity', {
+                  cartItems: quantity,
+                  cartLink: (chunks) => (
+                    <Link className="font-semibold text-blue-primary" href="/cart">
+                      {chunks}
+                    </Link>
+                  ),
+                })}
               </span>
             </div>
           ),

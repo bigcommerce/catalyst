@@ -11,6 +11,7 @@ import { Input } from '@bigcommerce/components/input';
 import { Message } from '@bigcommerce/components/message';
 import { TextArea } from '@bigcommerce/components/text-area';
 import { Loader2 as Spinner } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { ChangeEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { ReCAPTCHA } from 'react-google-recaptcha';
@@ -32,17 +33,18 @@ interface ContactUsProps {
 }
 
 const fieldNameMapping = {
-  fullname: 'Full name',
-  companyname: 'Company name',
-  phone: 'Phone',
-  orderno: 'Order number',
-  rma: 'RMA number',
+  fullname: 'fullNameLabel',
+  companyname: 'companyNameLabel',
+  phone: 'phoneLabel',
+  orderno: 'orderNoLabel',
+  rma: 'rmaLabel',
 } as const;
 
 type Field = keyof typeof fieldNameMapping;
 
 const Submit = () => {
   const { pending } = useFormStatus();
+  const t = useTranslations('AboutUs');
 
   return (
     <FormSubmit asChild>
@@ -57,10 +59,10 @@ const Submit = () => {
               <span className="absolute z-10 flex h-full w-full items-center justify-center bg-gray-400">
                 <Spinner aria-hidden="true" className="animate-spin" />
               </span>
-              <span className="sr-only">Submitting...</span>
+              <span className="sr-only">{t('onSubmitText')}</span>
             </>
           )}
-          <span aria-hidden={pending}>Submit form</span>
+          <span aria-hidden={pending}>{t('submitFormText')}</span>
         </>
       </Button>
     </FormSubmit>
@@ -75,6 +77,8 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
   const reCaptchaRef = useRef<ReCAPTCHA>(null);
   const [reCaptchaToken, setReCaptchaToken] = useState('');
   const [isReCaptchaValid, setReCaptchaValid] = useState(true);
+
+  const t = useTranslations('AboutUs');
 
   const onReCatpchaChange = (token: string | null) => {
     if (!token) {
@@ -98,7 +102,7 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
       form.current?.reset();
       setFormStatus({
         status: 'success',
-        message: "Thanks for reaching out. We'll get back to you soon.",
+        message: t('sucessSubmitMessage'),
       });
     }
 
@@ -138,17 +142,17 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
               const label = fieldNameMapping[field];
 
               return (
-                <Field className="relative space-y-2 pb-7" key={label} name={label}>
-                  <FieldLabel htmlFor={label}>{label}</FieldLabel>
+                <Field className="relative space-y-2 pb-7" key={label} name={field}>
+                  <FieldLabel htmlFor={field}>{t(label)}</FieldLabel>
                   <FieldControl asChild>
-                    <Input id={label} />
+                    <Input id={field} />
                   </FieldControl>
                 </Field>
               );
             })}
           <Field className="relative space-y-2 pb-7" key="email" name="email">
             <FieldLabel htmlFor="email" isRequired>
-              Email
+              {t('emailLabel')}
             </FieldLabel>
             <FieldControl asChild>
               <Input
@@ -164,13 +168,13 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
               className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200"
               match="valueMissing"
             >
-              Enter a valid email such as name@domain.com
+              {t('emailValidationMessage')}
             </FieldMessage>
             <FieldMessage
               className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200"
               match="typeMismatch"
             >
-              Enter a valid email such as name@domain.com
+              {t('emailValidationMessage')}
             </FieldMessage>
           </Field>
           <Field
@@ -179,7 +183,7 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
             name="comments"
           >
             <FieldLabel htmlFor="comments" isRequired>
-              Comments/questions
+              {t('commentsLabel')}
             </FieldLabel>
             <FieldControl asChild>
               <TextArea
@@ -194,7 +198,7 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
               className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200"
               match="valueMissing"
             >
-              Please provide a valid Comments
+              {t('commentsValidationMessage')}
             </FieldMessage>
           </Field>
         </>
@@ -207,7 +211,7 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
             />
             {!isReCaptchaValid && (
               <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200">
-                Pass ReCAPTCHA check
+                {t('recaptchaText')}
               </span>
             )}
           </Field>
