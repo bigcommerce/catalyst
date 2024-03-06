@@ -12,6 +12,7 @@ import { LocaleType } from '~/i18n';
 
 import { FacetedSearch } from '../../_components/faceted-search';
 import { MobileSideNav } from '../../_components/mobile-side-nav';
+import { Pagination } from '../../_components/pagination';
 import { SortBy } from '../../_components/sort-by';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
@@ -110,25 +111,14 @@ export default async function Brand({ params: { slug, locale }, searchParams }: 
               ))}
             </div>
 
-            <nav aria-label="Pagination" className="my-6 text-center text-blue-primary">
-              {hasPreviousPage ? (
-                <Link href={`${brand.path}?before=${String(startCursor)}`}>
-                  <span className="sr-only">{tPagination('prev')}</span>
-                  <ChevronLeft aria-hidden="true" className="inline-block h-8 w-8" />
-                </Link>
-              ) : (
-                <ChevronLeft aria-hidden="true" className="inline-block h-8 w-8 text-gray-200" />
-              )}
-
-              {hasNextPage ? (
-                <Link href={`${brand.path}?after=${String(endCursor)}`}>
-                  <span className="sr-only">{tPagination('next')}</span>
-                  <ChevronRight aria-hidden="true" className="inline-block h-8 w-8" />
-                </Link>
-              ) : (
-                <ChevronRight aria-hidden="true" className="inline-block h-8 w-8 text-gray-200" />
-              )}
-            </nav>
+            <Pagination
+              endCursor={endCursor}
+              hasNextPage={hasNextPage}
+              hasPreviousPage={hasPreviousPage}
+              nextLabel={tPagination('next')}
+              prevLabel={tPagination('prev')}
+              startCursor={startCursor}
+            />
           </section>
         </div>
       </NextIntlClientProvider>
