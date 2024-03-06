@@ -1,12 +1,10 @@
 import pick from 'lodash.pick';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
 import { getBrand } from '~/client/queries/get-brand';
-import { Link } from '~/components/link';
 import { ProductCard } from '~/components/product-card';
 import { LocaleType } from '~/i18n';
 

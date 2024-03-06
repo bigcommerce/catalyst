@@ -1,9 +1,7 @@
 import pick from 'lodash.pick';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 
-import { Link } from '~/components/link';
 import { ProductCard } from '~/components/product-card';
 import { SearchForm } from '~/components/search-form';
 import { LocaleType } from '~/i18n';
