@@ -95,7 +95,7 @@ export const RadioGroupWithIcon: Story = {
             <RadioItem {...option} className="group">
               <RadioIndicator className="h-3 w-3">
                 <Paintbrush
-                  className="stroke-blue-primary group-hover:stroke-blue-secondary group-disabled:stroke-gray-400"
+                  className="stroke-primary group-hover:stroke-secondary group-disabled:stroke-gray-400"
                   size="12"
                 />
               </RadioIndicator>

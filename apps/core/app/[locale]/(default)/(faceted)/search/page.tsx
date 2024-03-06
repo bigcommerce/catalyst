@@ -111,7 +111,7 @@ export default async function Search({ params: { locale }, searchParams }: Props
               ))}
             </div>
 
-            <nav aria-label="Pagination" className="my-6 text-center text-blue-primary">
+            <nav aria-label="Pagination" className="my-6 text-center text-primary">
               {hasPreviousPage ? (
                 <Link href={`/search?term=${searchTerm}&before=${String(startCursor)}`}>
                   <span className="sr-only">{tPagination('prev')}</span>

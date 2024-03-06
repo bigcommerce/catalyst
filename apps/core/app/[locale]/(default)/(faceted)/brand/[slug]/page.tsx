@@ -110,7 +110,7 @@ export default async function Brand({ params: { slug, locale }, searchParams }: 
               ))}
             </div>
 
-            <nav aria-label="Pagination" className="my-6 text-center text-blue-primary">
+            <nav aria-label="Pagination" className="my-6 text-center text-primary">
               {hasPreviousPage ? (
                 <Link href={`${brand.path}?before=${String(startCursor)}`}>
                   <span className="sr-only">{tPagination('prev')}</span>

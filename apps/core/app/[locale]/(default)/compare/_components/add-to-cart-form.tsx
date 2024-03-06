@@ -28,7 +28,7 @@ export const AddToCartForm = ({
         const quantity = Number(formData.get('quantity'));
 
         if (result?.error) {
-          toast.error(result.error, { icon: <AlertCircle className="text-red-100" /> });
+          toast.error(result.error, { icon: <AlertCircle className="text-error-secondary" /> });
 
           return;
         }
@@ -40,7 +40,7 @@ export const AddToCartForm = ({
                 {t.rich('addedProductQuantity', {
                   cartItems: quantity,
                   cartLink: (chunks) => (
-                    <Link className="font-semibold text-blue-primary" href="/cart">
+                    <Link className="font-semibold text-primary" href="/cart">
                       {chunks}
                     </Link>
                   ),
@@ -48,7 +48,7 @@ export const AddToCartForm = ({
               </span>
             </div>
           ),
-          { icon: <Check className="text-green-100" /> },
+          { icon: <Check className="text-success-secondary" /> },
         );
       }}
     >

@@ -121,7 +121,7 @@ export const ProductCard = ({
         <ProductCardInfoProductName>
           {product.path ? (
             <Link
-              className="focus:outline focus:outline-4 focus:outline-offset-2 focus:outline-blue-primary/20 focus:ring-0"
+              className="focus:outline focus:outline-4 focus:outline-offset-2 focus:outline-primary/20 focus:ring-0"
               href={product.path}
             >
               <span aria-hidden="true" className="absolute inset-0 bottom-20" />
@@ -136,7 +136,7 @@ export const ProductCard = ({
             <p
               aria-describedby={summaryId}
               className={cn(
-                'flex flex-nowrap text-blue-primary',
+                'flex flex-nowrap text-primary',
                 product.reviewSummary.numberOfReviews === 0 && 'text-gray-400',
               )}
             >

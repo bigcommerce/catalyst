@@ -29,8 +29,8 @@ const SwatchItem = forwardRef<ElementRef<typeof RadioGroupPrimitive.Item>, Swatc
   ({ children, className, disabled, variantColor, ...props }, ref) => (
     <RadioGroupPrimitive.Item
       className={cn(
-        'group h-12 w-12 border-2 bg-white p-1 hover:border-blue-primary focus:outline-none focus:ring-4 focus:ring-blue-primary/20 disabled:border-gray-100 disabled:hover:border-gray-100',
-        'data-[state=checked]:border-blue-primary',
+        'group h-12 w-12 border-2 bg-white p-1 hover:border-primary focus:outline-none focus:ring-4 focus:ring-primary/20 disabled:border-gray-100 disabled:hover:border-gray-100',
+        'data-[state=checked]:border-primary',
         className,
       )}
       disabled={disabled}
@@ -53,7 +53,7 @@ const SwatchItem = forwardRef<ElementRef<typeof RadioGroupPrimitive.Item>, Swatc
         >
           <span
             className={cn(
-              'absolute -start-px -top-[2px] w-[51px] origin-top-left rotate-45 border-t-2 border-red-100 group-disabled:opacity-30',
+              'absolute -start-px -top-[2px] w-[51px] origin-top-left rotate-45 border-t-2 border-error-secondary group-disabled:opacity-30',
             )}
           />
         </span>

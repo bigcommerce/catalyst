@@ -5,14 +5,14 @@ import { ComponentPropsWithRef, ElementRef, forwardRef, useRef, useState } from 
 import { cn } from '~/lib/utils';
 
 const inputVariants = cva(
-  'peer/input w-full border-2 border-gray-200 px-12 py-2.5 text-center text-base placeholder:text-gray-500 hover:border-blue-primary focus:border-blue-primary focus:outline-none focus:ring-4 focus:ring-blue-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200 peer-hover/down:border-blue-primary peer-hover/up:border-blue-primary peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200 [&::-webkit-inner-spin-button]:appearance-none',
+  'peer/input w-full border-2 border-gray-200 px-12 py-2.5 text-center text-base placeholder:text-gray-500 hover:border-primary focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200 peer-hover/down:border-primary peer-hover/up:border-primary peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200 [&::-webkit-inner-spin-button]:appearance-none',
   {
     variants: {
       variant: {
         success:
-          'border-green-100 focus:border-green-100 focus:ring-green-100/20 disabled:border-gray-200 hover:border-green-200 peer-hover/down:border-green-200 peer-hover/up:border-green-200 peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
+          'border-success-secondary focus:border-success-secondary focus:ring-success-secondary/20 disabled:border-gray-200 hover:border-success peer-hover/down:border-success peer-hover/up:border-success peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
         error:
-          'border-red-100 focus:border-red-100 focus:ring-red-100/20 disabled:border-gray-200 hover:border-red-200 peer-hover/down:border-red-200 peer-hover/up:border-red-200 peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
+          'border-error-secondary focus:border-error-secondary focus:ring-error-secondary/20 disabled:border-gray-200 hover:border-error peer-hover/down:border-error peer-hover/up:border-error peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
       },
     },
   },

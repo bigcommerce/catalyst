@@ -15,7 +15,7 @@ interface AccountItem {
 const AccountItem = ({ children, title, description, href }: AccountItem) => {
   return (
     <Link
-      className="flex items-center border border-gray-200 p-6 focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
+      className="flex items-center border border-gray-200 p-6 focus:outline-none focus:ring-4 focus:ring-primary/20"
       href={href}
     >
       {children}

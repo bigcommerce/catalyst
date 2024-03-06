@@ -26,7 +26,7 @@ const BlogPostBanner = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'
   ({ children, className, ...props }, ref) => {
     return (
       <div
-        className={cn('mb-3 flex h-44 justify-between bg-blue-primary/10 p-4 lg:h-56', className)}
+        className={cn('mb-3 flex h-44 justify-between bg-primary/10 p-4 lg:h-56', className)}
         ref={ref}
         {...props}
       >

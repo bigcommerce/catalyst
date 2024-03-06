@@ -35,7 +35,7 @@ export const ProductForm = ({ product }: { product: Product }) => {
 
     if (result?.error) {
       toast.error(result.error || t('errorMessage'), {
-        icon: <AlertCircle className="text-red-100" />,
+        icon: <AlertCircle className="text-error-secondary" />,
       });
 
       return;
@@ -49,7 +49,7 @@ export const ProductForm = ({ product }: { product: Product }) => {
               cartItems: quantity,
               cartLink: (chunks) => (
                 <Link
-                  className="font-semibold text-blue-primary hover:text-blue-secondary"
+                  className="font-semibold text-primary hover:text-secondary"
                   href="/cart"
                 >
                   {chunks}
@@ -59,7 +59,7 @@ export const ProductForm = ({ product }: { product: Product }) => {
           </span>
         </div>
       ),
-      { icon: <Check className="text-green-100" /> },
+      { icon: <Check className="text-success-secondary" /> },
     );
   };
 

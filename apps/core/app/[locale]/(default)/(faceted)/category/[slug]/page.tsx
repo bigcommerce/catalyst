@@ -118,7 +118,7 @@ export default async function Category({ params: { locale, slug }, searchParams 
               ))}
             </div>
 
-            <nav aria-label="Pagination" className="my-6 text-center text-blue-primary">
+            <nav aria-label="Pagination" className="my-6 text-center text-primary">
               {hasPreviousPage ? (
                 <Link href={`${category.path}?before=${String(startCursor)}`}>
                   <span className="sr-only">{tPagination('prev')}</span>
