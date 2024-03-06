@@ -16,7 +16,6 @@ const config = {
         secondary: '#C62828',
       },
       success: {
-        light: '#4FD055',
         DEFAULT: '#146622',
         secondary: '#388E3C',
       },
@@ -44,9 +43,6 @@ const config = {
       },
       animation: {
         revealVertical: 'revealVertical 400ms forwards cubic-bezier(0, 1, 0.25, 1)',
-      },
-      opacity: {
-        15: '.15',
       },
     },
   },
