@@ -39,8 +39,8 @@ Out-of-the-box, Catalyst has the following capabilities you can use to further b
 * **Scalable GraphQL implementation**. Catalyst features scalable implementation of the GraphQL Storefront API.
 * **Minimal infrastructure dependencies**. Catalyst can be deployed to any provider that supports Node.js.
 * **Making the most of modern Next.js features**. Catalyst uses [React server components](https://nextjs.org/docs/app/building-your-application/rendering/server-components) and [Suspense](https://react.dev/reference/react/Suspense) boundaries in preparation for [partial pre-rendering](https://nextjs.org/learn/dashboard-app/partial-prerendering).
-* **Components**. Providing _functionally_ complete ecommerce components and a site architecture that's pre-optimized for performance, SEO, and accessibility.
-* **Unopinionated visual design**. Visually, Catalyst is a "blank sheet of paper" that's ready to be transformed into a stellar ecommerce brand. To accelerate your work, the default components use the [Tailwind CSS](https://tailwindcss.com/) framework.
+* **Components**. Providing _functionally_ complete ecommerce components and a pre-optimized site architecture for performance, SEO, and accessibility.
+* **Unopinionated visual design**. Visually, Catalyst is a "blank sheet of paper" that's ready to be transformed into a stellar ecommerce brand. Catalyst components use [Tailwind CSS](https://tailwindcss.com/) to accelerate development.
 
 ### Shopper experience
 
