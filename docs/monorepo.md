@@ -8,7 +8,7 @@ The [main GitHub repository for Catalyst](https://github.com/bigcommerce/catalys
 * The [core Next.js reference storefront application, in /apps/core](https://github.com/bigcommerce/catalyst/tree/main/apps/core)
 * [The component library, in /packages/components](https://github.com/bigcommerce/catalyst/tree/main/packages/components)
 * [The API client, in /packages/client](https://github.com/bigcommerce/catalyst/tree/main/packages/client)
-* [A Storybook instance to help explore the component library, in /apps/docs](https://github.com/bigcommerce/catalyst/tree/main/apps/docs)
+* [A Storybook instance to help explore the component library in /apps/docs](https://github.com/bigcommerce/catalyst/tree/main/apps/docs)
 * [Product documentation, in /docs](https://github.com/bigcommerce/catalyst/tree/main/docs)
 * [Functional tests in Playwright, in /packages/functional](https://github.com/bigcommerce/catalyst/tree/main/packages/functional)
 
