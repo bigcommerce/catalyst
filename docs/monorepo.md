@@ -18,7 +18,7 @@ The [Catalyst CLI](https://www.npmjs.com/package/create-catalyst-storefront) ins
 
 If you are interested solely in building a headless storefront based on Catalyst, most of this monorepo is not relevant to you.
 
-If you wish to contribute to Catalyst itself, or wish to create a fork of Catalyst to package and re-distribute, start from the monorepo.
+Start from the monorepo if you wish to contribute to Catalyst itself or create a fork to package and re-distribute it.
 
 ## Contributing to the monorepo
 
