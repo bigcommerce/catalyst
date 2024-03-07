@@ -6,6 +6,8 @@ import { getCustomerAddresses } from '~/client/queries/get-customer-addresses';
 import { LocaleType } from '~/i18n';
 
 import { AddressesContent } from './_components/addresses-content';
+import { SettingsContent } from './_components/settings-content';
+import { TabHeading } from './_components/tab-heading';
 import { TabType } from './layout';
 
 interface Props {
@@ -28,19 +30,13 @@ export async function generateMetadata({ params: { tab, locale } }: Props): Prom
   };
 }
 
-const tabHeading = async (heading: string, locale: string) => {
-  const t = await getTranslations({ locale, namespace: 'Account.Home' });
-
-  return <h2 className="mb-8 text-3xl font-black lg:text-4xl">{t(heading)}</h2>;
-};
-
 export default async function AccountTabPage({ params: { tab, locale }, searchParams }: Props) {
   switch (tab) {
     case 'orders':
-      return tabHeading(tab, locale);
+      return <TabHeading heading={tab} locale={locale} />;
 
     case 'messages':
-      return tabHeading(tab, locale);
+      return <TabHeading heading={tab} locale={locale} />;
 
     case 'addresses': {
       const { before, after } = searchParams;
@@ -60,18 +56,18 @@ export default async function AccountTabPage({ params: { tab, locale }, searchPa
     }
 
     case 'wishlists':
-      return tabHeading(tab, locale);
+      return <TabHeading heading={tab} locale={locale} />;
 
     case 'recently-viewed':
-      return tabHeading('recentlyViewed', locale);
+      return <TabHeading heading={tab} locale={locale} />;
 
-    case 'settings':
-      return tabHeading(tab, locale);
+    case 'settings': {
+      return <SettingsContent action={searchParams.action} title={tab} />;
+    }
 
     default:
       return notFound();
   }
 }
 
-export { tabHeading };
 export const runtime = 'edge';

@@ -3,8 +3,8 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import { getCustomerAddresses } from '~/client/queries/get-customer-addresses';
 
 import { Pagination } from '../../../(faceted)/_components/pagination';
+import { TabHeading } from '../_components/tab-heading';
 import { TabType } from '../layout';
-import { tabHeading } from '../page';
 
 import { AddressesList } from './addresses-list';
 
@@ -23,7 +23,7 @@ export const AddressesContent = async ({ addresses, pageInfo, title }: Props) =>
 
   return (
     <>
-      {tabHeading(title, locale)}
+      <TabHeading heading={title} locale={locale} />
       <AddressesList customerAddressBook={addresses} />
       <Pagination
         endCursor={endCursor}
