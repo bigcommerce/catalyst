@@ -70,7 +70,7 @@ We plan to add full support for B2B Edition in a future release.
 
 We are also targeting improvements for brands and retailers who sell cross-border, such as language localization and currency features.
 
-We welcome feedback in [GitHub Discussions](https://github.com/bigcommerce/catalyst/discussions) on how we should prioritize these enhancements, where we will provide a public view into our roadmap.
+We welcome feedback in [GitHub Discussions](https://github.com/bigcommerce/catalyst/discussions) on how we should prioritize these enhancements, where we will provide a public view of our roadmap.
 
 ## Resources
 
