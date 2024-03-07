@@ -4,6 +4,7 @@ import { Label } from '@bigcommerce/components/label';
 import { Message } from '@bigcommerce/components/message';
 import { RadioGroup, RadioItem } from '@bigcommerce/components/radio-group';
 import { Loader2 as Spinner } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useContext } from 'react';
 import { useFormStatus } from 'react-dom';
 
@@ -23,16 +24,17 @@ type ShippingConsignments = ExistingResultType<
 
 const SubmitFormButton = () => {
   const { pending } = useFormStatus();
+  const t = useTranslations('Cart.SubmitShippingCost');
 
   return (
     <Button className="w-full items-center px-8 py-2" disabled={pending} variant="secondary">
       {pending ? (
         <>
           <Spinner aria-hidden="true" className="animate-spin" />
-          <span className="sr-only">Submitting...</span>
+          <span className="sr-only">{t('spinnerText')}</span>
         </>
       ) : (
-        <span>Update shipping costs</span>
+        <span>{t('submitText')}</span>
       )}
     </Button>
   );
@@ -69,6 +71,7 @@ export const ShippingCost = ({
   const { checkoutEntityId, currencyCode, setIsShippingMethodSelected, updateCheckoutSummary } =
     useContext(CheckoutContext);
   const currencyFormatter = createCurrencyFormatter(currencyCode);
+  const t = useTranslations('Cart.ShippingCost');
 
   const onSubmit = async (formData: FormData) => {
     const { status, data } = await submitShippingCosts(
@@ -103,9 +106,9 @@ export const ShippingCost = ({
   return shippingOptions && shippingOptions.length > 0 ? (
     <Form action={onSubmit} className={cn('mx-auto mb-4 mt-4 grid w-full grid-cols-1 gap-y-4')}>
       <Field className={cn('relative space-y-2')} id="shipping-option" name="option">
-        <FieldLabel htmlFor="shipping-option">Available options</FieldLabel>
+        <FieldLabel htmlFor="shipping-option">{t('shippingOptions')}</FieldLabel>
         <RadioGroup
-          aria-label="Available shipping options"
+          aria-label={t('radioGroupAriaLabel')}
           defaultValue={shippingOptions.find((option) => option.isDefault)?.shippingOptionEntityId}
           name="shippingOption"
           required={true}
@@ -137,9 +140,7 @@ export const ShippingCost = ({
     </Form>
   ) : (
     <Message aria-labelledby="error-message" aria-live="polite" role="region" variant="error">
-      <p id="error-message">
-        There are no available options for shipping. Please check provided details and try again!
-      </p>
+      <p id="error-message">{t('errorMessage')}</p>
     </Message>
   );
 };

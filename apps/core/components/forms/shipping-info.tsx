@@ -3,6 +3,7 @@ import { Field, FieldControl, FieldLabel, Form, FormSubmit } from '@bigcommerce/
 import { Input } from '@bigcommerce/components/input';
 import { Select, SelectContent, SelectItem } from '@bigcommerce/components/select';
 import { Loader2 as Spinner } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 
@@ -35,16 +36,17 @@ const composeFetchStatesOnSelectedCountry =
 
 const SubmitFormButton = () => {
   const { pending } = useFormStatus();
+  const t = useTranslations('Cart.SubmitShippingInfo');
 
   return (
     <Button className="w-full items-center px-8 py-2" disabled={pending} variant="secondary">
       {pending ? (
         <>
           <Spinner aria-hidden="true" className="animate-spin" />
-          <span className="sr-only">Submitting...</span>
+          <span className="sr-only">{t('spinnerText')}</span>
         </>
       ) : (
-        <span>Estimate shipping</span>
+        <span>{t('submitText')}</span>
       )}
     </Button>
   );
@@ -65,6 +67,7 @@ export const ShippingInfo = ({
     currencyCode,
     consignmentEntityId,
   } = useContext(CheckoutContext);
+  const t = useTranslations('Cart.ShippingInfo');
   const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
   const [selectedZipCode, setSelectedZipCode] = useState('');
@@ -117,7 +120,7 @@ export const ShippingInfo = ({
       >
         <>
           <Field className={cn('relative space-y-2')} name="country">
-            <FieldLabel>Country</FieldLabel>
+            <FieldLabel>{t('country')}</FieldLabel>
             <FieldControl asChild>
               <Select
                 autoComplete="country"
@@ -134,7 +137,7 @@ export const ShippingInfo = ({
 
                   resetFormFieldsOnCountryChange();
                 }}
-                placeholder="Select county"
+                placeholder={t('countryPlaceholder')}
               >
                 <SelectContent>
                   {availableShippingCountries.map(({ id, countryCode, name }) => {
@@ -149,10 +152,10 @@ export const ShippingInfo = ({
             </FieldControl>
           </Field>
           <Field className={cn('relative space-y-2')} name="state">
-            <FieldLabel>State/province</FieldLabel>
+            <FieldLabel>{t('state')}</FieldLabel>
             <FieldControl asChild>
               {selectedStates ? (
-                <Select placeholder="State/province...">
+                <Select placeholder={t('statePlaceholder')}>
                   <SelectContent>
                     {selectedStates.map(({ id, state }) => {
                       return (
@@ -164,31 +167,35 @@ export const ShippingInfo = ({
                   </SelectContent>
                 </Select>
               ) : (
-                <Input autoComplete="address-level1" placeholder="State/province..." type="text" />
+                <Input
+                  autoComplete="address-level1"
+                  placeholder={t('statePlaceholder')}
+                  type="text"
+                />
               )}
             </FieldControl>
           </Field>
           <Field className={cn('relative space-y-2')} name="city">
-            <FieldLabel htmlFor="city-field">Suburb/city</FieldLabel>
+            <FieldLabel htmlFor="city-field">{t('city')}</FieldLabel>
             <FieldControl asChild>
               <Input
                 autoComplete="address-level2"
                 id="city-field"
                 onChange={(e) => setSelectedCity(e.target.value)}
-                placeholder="Suburb/city..."
+                placeholder={t('cityPlaceholder')}
                 type="text"
                 value={selectedCity}
               />
             </FieldControl>
           </Field>
           <Field className={cn('relative space-y-2')} name="zip">
-            <FieldLabel htmlFor="zip-field">Zip/Postcode</FieldLabel>
+            <FieldLabel htmlFor="zip-field">{t('postcode')}</FieldLabel>
             <FieldControl asChild>
               <Input
                 autoComplete="postal-code"
                 id="zip-field"
                 onChange={(e) => setSelectedZipCode(e.target.value)}
-                placeholder="Zip/Postcode..."
+                placeholder={t('postcodePlaceholder')}
                 type="number"
                 value={selectedZipCode}
               />
