@@ -29,14 +29,14 @@ export default function Login({ params: { locale } }: Props) {
           <LoginForm />
         </NextIntlClientProvider>
         <div className="flex flex-col gap-4 bg-gray-100 p-8">
-          <h3 className="text-h5 mb-3">{t('Account.newCustomer')}</h3>
-          <p className="text-base font-semibold">{t('Account.createAccountCTA')}</p>
+          <h3 className="text-h5 mb-3">{t('CreateAccount.heading')}</h3>
+          <p className="text-base font-semibold">{t('CreateAccount.accountBenefits')}</p>
           <ul className="list-disc ps-4">
-            <li>{t('Account.checkFaster')}</li>
-            <li>{t('Account.saveAddresses')}</li>
-            <li>{t('Account.orderHistory')}</li>
-            <li>{t('Account.trackOrders')}</li>
-            <li>{t('Account.saveToWishList')}</li>
+            <li>{t('CreateAccount.fastCheckout')}</li>
+            <li>{t('CreateAccount.multipleAddresses')}</li>
+            <li>{t('CreateAccount.ordersHistory')}</li>
+            <li>{t('CreateAccount.ordersTracking')}</li>
+            <li>{t('CreateAccount.wishlists')}</li>
           </ul>
           <Button asChild className="w-fit items-center px-8 py-2">
             <Link
@@ -45,7 +45,7 @@ export default function Login({ params: { locale } }: Props) {
                 query: { action: 'create_account' },
               }}
             >
-              {t('Account.createAccount')}
+              {t('CreateAccount.createLink')}
             </Link>
           </Button>
         </div>

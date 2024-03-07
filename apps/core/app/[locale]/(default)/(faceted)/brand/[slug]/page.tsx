@@ -1,17 +1,16 @@
 import pick from 'lodash.pick';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
 import { getBrand } from '~/client/queries/get-brand';
-import { Link } from '~/components/link';
 import { ProductCard } from '~/components/product-card';
 import { LocaleType } from '~/i18n';
 
 import { FacetedSearch } from '../../_components/faceted-search';
 import { MobileSideNav } from '../../_components/mobile-side-nav';
+import { Pagination } from '../../_components/pagination';
 import { SortBy } from '../../_components/sort-by';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
@@ -110,25 +109,15 @@ export default async function Brand({ params: { slug, locale }, searchParams }: 
               ))}
             </div>
 
-            <nav aria-label="Pagination" className="my-6 text-center text-primary">
-              {hasPreviousPage ? (
-                <Link href={`${brand.path}?before=${String(startCursor)}`}>
-                  <span className="sr-only">{tPagination('prev')}</span>
-                  <ChevronLeft aria-hidden="true" className="inline-block h-8 w-8" />
-                </Link>
-              ) : (
-                <ChevronLeft aria-hidden="true" className="inline-block h-8 w-8 text-gray-200" />
-              )}
+            <Pagination
+              endCursor={endCursor}
+              hasNextPage={hasNextPage}
+              hasPreviousPage={hasPreviousPage}
+              nextLabel={tPagination('next')}
+              prevLabel={tPagination('prev')}
+              startCursor={startCursor}
+            />
 
-              {hasNextPage ? (
-                <Link href={`${brand.path}?after=${String(endCursor)}`}>
-                  <span className="sr-only">{tPagination('next')}</span>
-                  <ChevronRight aria-hidden="true" className="inline-block h-8 w-8" />
-                </Link>
-              ) : (
-                <ChevronRight aria-hidden="true" className="inline-block h-8 w-8 text-gray-200" />
-              )}
-            </nav>
           </section>
         </div>
       </NextIntlClientProvider>

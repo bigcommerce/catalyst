@@ -2,6 +2,10 @@
 
 import { Button } from '@bigcommerce/components/button';
 import { AlertCircle, Check } from 'lucide-react';
+// Using Next's Link until issue with next-intl Link is resolved:
+// https://github.com/amannn/next-intl/issues/918
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import NextLink from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-hot-toast';
@@ -16,24 +20,26 @@ import { Product } from '.';
 export const Cart = ({ product }: { product: Partial<Product> }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const newSearchParams = new URLSearchParams(searchParams.toString());
+
   const t = useTranslations('Product.ProductSheet');
 
   if (!product.entityId) {
     return null;
   }
 
+  const newSearchParams = new URLSearchParams(searchParams);
+
   newSearchParams.set('showQuickAdd', String(product.entityId));
 
   return Array.isArray(product.productOptions) && product.productOptions.length > 0 ? (
     <Button asChild>
-      <Link
+      <NextLink
         className="mt-2 hover:text-white"
         href={`${pathname}?${newSearchParams.toString()}`}
         scroll={false}
       >
         {t('quickAdd')}
-      </Link>
+      </NextLink>
     </Button>
   ) : (
     <form
