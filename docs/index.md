@@ -19,7 +19,7 @@ Catalyst has a basic business-to-consumer (B2C) ecommerce purchase funnel, inclu
 
 * Home page
 * Faceted search on product listing pages, or _PLPs_, which are dynamically created for each category and brand
-* Textual search
+* Full-text search
 * Product detail pages, or _PDPs_, which are dynamically created for each product and published to the Catalyst storefront channel
 * Shopping cart
 * Secure redirected headless checkout page, which can be themed to match the styling of the core Catalyst storefront
