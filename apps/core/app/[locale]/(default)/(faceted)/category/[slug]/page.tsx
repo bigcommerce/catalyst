@@ -1,18 +1,17 @@
 import pick from 'lodash.pick';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
 import { getCategory } from '~/client/queries/get-category';
-import { Link } from '~/components/link';
 import { ProductCard } from '~/components/product-card';
 import { LocaleType } from '~/i18n';
 
 import { Breadcrumbs } from '../../_components/breadcrumbs';
 import { FacetedSearch } from '../../_components/faceted-search';
 import { MobileSideNav } from '../../_components/mobile-side-nav';
+import { Pagination } from '../../_components/pagination';
 import { SortBy } from '../../_components/sort-by';
 import { SubCategories } from '../../_components/sub-categories';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
@@ -118,30 +117,17 @@ export default async function Category({ params: { locale, slug }, searchParams 
               ))}
             </div>
 
-            <nav aria-label="Pagination" className="my-6 text-center text-blue-primary">
-              {hasPreviousPage ? (
-                <Link href={`${category.path}?before=${String(startCursor)}`}>
-                  <span className="sr-only">{tPagination('prev')}</span>
-                  <ChevronLeft aria-hidden="true" className="inline-block h-8 w-8" />
-                </Link>
-              ) : (
-                <ChevronLeft aria-hidden="true" className="inline-block h-8 w-8 text-gray-200" />
-              )}
-
-              {hasNextPage ? (
-                <Link href={`${category.path}?after=${String(endCursor)}`}>
-                  <span className="sr-only">{tPagination('next')}</span>
-                  <ChevronRight aria-hidden="true" className="inline-block h-8 w-8" />
-                </Link>
-              ) : (
-                <ChevronRight aria-hidden="true" className="inline-block h-8 w-8 text-gray-200" />
-              )}
-            </nav>
+            <Pagination
+              endCursor={endCursor}
+              hasNextPage={hasNextPage}
+              hasPreviousPage={hasPreviousPage}
+              nextLabel={tPagination('next')}
+              prevLabel={tPagination('prev')}
+              startCursor={startCursor}
+            />
           </section>
         </div>
       </NextIntlClientProvider>
     </div>
   );
 }
-
-export const runtime = 'edge';
