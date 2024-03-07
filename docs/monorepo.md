@@ -86,7 +86,7 @@ To run the UI tests locally:
 PLAYWRIGHT_TEST_BASE_URL='https://catalyst-demo.site' || 'http://localhost:3000'
 ```
 
-2. Navigate to test directory:
+2. Navigate to the test directory:
 
 ```shell copy
 cd packages/functional
