@@ -9,7 +9,7 @@
 
 **Catalyst** is the composable, fully customizable headless ecommerce storefront framework for [BigCommerce](https://www.bigcommerce.com/). We've built Catalyst with [Next.js](https://nextjs.org/), [React](https://react.dev/) storefront components, and our [GraphQL Storefront API](https://developer.bigcommerce.com/docs/storefront/graphql).
 
-When you use Catalyst, you can spin up a fully functional storefront using our CLI and get to work without wiring up APIs or building ecommerce components from scratch that are optimized for SEO, accessibility, and performance. Catalyst is designed to take care of the essentials so you can focus your efforts on building your brand and adding those special features that take storefronts to the next level.
+When you use Catalyst, you can create a fully functional storefront using our CLI and get to work without wiring up APIs or building ecommerce components from scratch that are optimized for SEO, accessibility, and performance. Catalyst is designed to take care of the essentials so you can focus your efforts on building your brand and adding those special features that take storefronts to the next level.
 
 You can find a demo version of Catalyst at https://catalyst-demo.site/, hosted on Vercel in a US region.
 
