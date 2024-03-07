@@ -53,7 +53,7 @@ Out-of-the-box, Catalyst has the following capabilities you can use to further b
 
 ### Configuration recommendations
 
-We expect that you will prioritize some of these features over others as you make Catalyst your own. We recommend exploring the following configurations as you build:
+We expect you will prioritize some of these features over others as you make Catalyst your own. We recommend exploring the following configurations as you build:
 
 * **A caching backend**. For example, using Vercel KV may improve the performance of our [with-routes middleware](/docs/middleware).
 * **Using microservices**. Externally hosted databases and third-party APIs can expand the feature set and data persistence available to Catalyst storefronts.
