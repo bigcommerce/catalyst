@@ -43,7 +43,7 @@ The CLI will prompt you to enter this access token. The following steps will hel
 
 #### Creating the access token
 
-In the control panel of the subject store, [create a store-level API account](https://developer.bigcommerce.com/docs/start/authentication/api-accounts#creating-store-level-api-credentials) and add the following OAuth scopes. To learn more, see [OAuth scopes](https://developer.bigcommerce.com/docs/start/authentication/api-accounts#store-resource-scopes).
+In store's control panel, [create a store-level API account](https://developer.bigcommerce.com/docs/start/authentication/api-accounts#creating-store-level-api-credentials) and add the following OAuth scopes. To learn more, see [OAuth scopes](https://developer.bigcommerce.com/docs/start/authentication/api-accounts#store-resource-scopes).
 
 | UI Name | Permission | Parameter | Required |
 |:--------|:-----------|:----------|:---------|
