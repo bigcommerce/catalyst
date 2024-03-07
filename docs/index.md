@@ -31,7 +31,7 @@ Out-of-the-box, Catalyst has the following capabilities you can use to further b
 
 ### Brand or retailer experience
 
-* **Platform feature support**. Users' changes to the store control panel, Management APIs, and GraphQL Admin API should appear on the storefront as they expect.
+* **Platform feature support**. Users' changes made from the BigCommerce store control panel or through APIs appear on the storefront as expected.
 * **Complex catalog support**. Catalyst supports product catalogs of any size, complexity, or update frequency.
 
 ### Developer experience
