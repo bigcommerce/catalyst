@@ -3,10 +3,14 @@ import { z } from 'zod';
 import { client } from '..';
 import { graphql } from '../graphql';
 
-export const ChangePasswordSchema = z.object({
-  newPassword: z.string(),
-  confirmPassword: z.string(),
-});
+export const ChangePasswordSchema = z
+  .object({
+    customerId: z.string(),
+    customerToken: z.string(),
+    newPassword: z.string(),
+    confirmPassword: z.string(),
+  })
+  .required();
 
 interface SubmitChangePassword {
   newPassword: z.infer<typeof ChangePasswordSchema>['newPassword'];

@@ -159,6 +159,8 @@
     },
     "Login": {
       "heading": "Log In",
+      "resetPasswordHeading": "Reset password",
+      "changePasswordHeading": "Change password",
       "Form": {
         "errorMessage": "Your email address or password is incorrect. Try signing in again or reset your password",
         "emailLabel": "Email",
@@ -179,6 +181,16 @@
         "wishlists": "Save items to your Wish List",
         "createLink": "Create Account "
       }
+    },
+    "ChangePassword": {
+      "newPasswordLabel": "New password",
+      "confirmPasswordLabel": "Confirm password",
+      "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
+      "successMessage": "Password has been updated successfully!"
+    },
+    "SubmitChangePassword": {
+      "spinnerText": "Submitting...",
+      "submitText": "Change password"
     }
   },
   "NotFound": {
