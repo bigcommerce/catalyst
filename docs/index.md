@@ -18,9 +18,9 @@ You can find a demo version of Catalyst at https://catalyst-demo.site/, hosted o
 Catalyst has a production-ready business-to-consumer (B2C) ecommerce funnel, including the following features:
 
 * Home page
-* Faceted search on product listing pages, or _PLPs_, which are dynamically created for each category and brand
+* Faceted search on product listing pages (PLPs) which are dynamically created for each category and brand
 * Full-text search 
-* Product detail pages, or _PDPs_, which are dynamically created for each product and published to the Catalyst storefront channel
+* Product detail pages (PDPs) which are dynamically created for each product and published to the Catalyst storefront channel
 * Shopping cart
 * Secure redirected headless checkout page, which can be themed to match the styling of the core Catalyst storefront
 
@@ -45,7 +45,7 @@ Out-of-the-box, Catalyst has the following capabilities you can use to further b
 ### Shopper experience
 
 * **Optimized shopping experiences**. Catalyst provides a guest shopper experience optimized for speed and supports the dynamic experiences that matter to logged-in customers.
-* **Secure checkout**. Catalyst uses an optimized one-page redirected checkout on our hosted SaaS environment to simplify PCI compliance. By default, your headless storefront never collects or transmits personally identifiable information, or _PII_, such as credit card numbers.
+* **Secure checkout**. Catalyst uses an optimized one-page redirected checkout on our hosted SaaS environment to simplify PCI compliance. By default, your headless storefront never collects or transmits personally identifiable information (PII) such as credit card numbers.
 
 > [!NOTE]
 > Customers have accounts on the store and can sign in to see orders, manage their accounts, etc.
