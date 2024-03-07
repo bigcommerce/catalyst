@@ -62,7 +62,7 @@ We expect you will prioritize some of these features over others as you make Cat
 
 ## Future releases
 
-Over time, we plan to expand Catalyst to include all our default storefront features, including feature parity with our fully-hosted [Stencil storefront platform](https://developer.bigcommerce.com/docs/storefront/stencil).
+Over time, we plan to expand Catalyst to include all our default storefront features, including feature parity with our fully hosted [Stencil storefront platform](https://developer.bigcommerce.com/docs/storefront/stencil).
 
 Future releases of Catalyst will expand our feature set to include full coverage of customer-specific features, including price lists, customer groups, and checkout for logged-in customers. We are currently prioritizing the logged-in Customer **My Account** area, including but not limited to order history, customer profiles, etc.
 
