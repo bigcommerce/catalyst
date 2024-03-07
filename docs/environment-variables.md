@@ -176,7 +176,7 @@ To learn more, see any of the following docs:
 
 ## Optional
 
-The following values are related to tuneable parameters of Catalyst, which may not be relevant to all users, hosting platforms, or scenarios. Consider which ones are right for your implementation and phase of development.
+The following values relate to Catalyst's tuneable parameters, which may not be relevant to all users, hosting platforms, or scenarios. Consider which ones are right for your implementation and development phase.
 
 ### ENABLE_ADMIN_ROUTE
 
