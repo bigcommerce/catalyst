@@ -48,7 +48,7 @@ Out-of-the-box, Catalyst has the following capabilities you can use to further b
 * **Secure checkout**. Catalyst uses an optimized one-page redirected checkout on our hosted SaaS environment to simplify PCI compliance. By default, your headless storefront never collects or transmits personally identifiable information (PII) such as credit card numbers.
 
 > [!NOTE]
-> Customers have accounts on the store and can sign in to see orders, manage their accounts, etc.
+> Customers have accounts on the store and can sign in to see orders, manage their accounts, and more.
 > Shoppers browse the storefront, but don't have accounts.
 
 ### Configuration recommendations
