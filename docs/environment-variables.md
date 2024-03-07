@@ -55,7 +55,7 @@ The value of `BIGCOMMERCE_ACCESS_TOKEN` is the access token that's automatically
 
 #### Carts
 
-The call to the carts feature of the Management API generates checkout redirect URLs. This dependency will be removed in a future version of Catalyst.
+The Management API's call to the carts feature generates checkout redirect URLs. We will remove this dependency in a future version of Catalyst.
 
 #### Customer Login
 
