@@ -3,7 +3,7 @@
 
 > [!NOTE]
 > **Before you start**
-> The following overview assumes you have created a Catalyst storefront, either [using the CLI](/docs/getting_started.md) or following the [Advanced configuration guide](/docs/monorepo.md). Your project directory should contain only a single Next.js application, rather than the monorepo present in the [Catalyst GitHub repository](https://github.com/bigcommerce/catalyst). If you want to develop using the monorepo, you'll need to modify these instructions. For more information, see [Monorepo](/docs/monorepo.md).
+> This guide assumes you have created a Catalyst storefront using [the CLI](/docs/getting_started.md) or the [Advanced configuration guide](/docs/monorepo.md). Your project directory should contain only a Next.js application rather than the monorepo in the [Catalyst GitHub repository](https://github.com/bigcommerce/catalyst). If you want to develop using the monorepo, you must modify these instructions. For more information, see [Monorepo](/docs/monorepo.md).
 
 ## Deploy to Vercel from vercel.com
 
