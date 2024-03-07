@@ -25,6 +25,6 @@ The `with-routes` middleware also checks the [storefront status](https://develop
 
 The tradeoff is that this is a blocking API request required to render site pages, which has a performance penalty. Path-entity relationships are very cacheable, but Next.js middleware cannot use typical `cache()` functionality, so you must use an alternative caching backend. Currently, we have a [caching implementation](https://github.com/bigcommerce/catalyst/tree/main/apps/core/lib/kv) that uses [Vercel KV](https://vercel.com/docs/storage/vercel-kv) and is automatically enabled when you connect a Vercel KV instance to a Catalyst storefront. We plan to support other caching backends in future releases, such as a generic adapter for traditional Redis backends.
 
-If you don't want to use the control panel or API-configured URLs on your Catalyst storefront, and you also don't want to support storefront status checks, you can remove the `with-routes` middleware and gain a performance improvement.
+Suppose you don't want to use the control panel or API-configured URLs on your Catalyst storefront and don't want to support storefront status checks. In that case, you can remove the `with-routes` middleware and gain a performance improvement.
 
 For linking purposes, you may want to tightly control your URLs such that they are known in advance at build time, or engineer routing solutions in other ways.
