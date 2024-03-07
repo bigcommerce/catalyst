@@ -33,6 +33,6 @@ Next, open a terminal session and `cd` into the local directory that contains yo
 
 When everything looks good, run `vercel` to create a preview deployment or `vercel --prod` to create a production deployment. If this is your first time using the Vercel CLI from this project, the CLI will take you through a few prompts to connect an existing Vercel project or create a new one.
 
-If you are creating a new Vercel project using the CLI, you need to add the environment variables to the new Vercel project; your first build may fail if no environment variables are populated. You can add the variables one at a time using [vercel env add](https://vercel.com/docs/cli/env), or sign in to [vercel.com](https://vercel.com) and paste the contents of your `.env.local` file into the env var settings for your Vercel project.
+If you are creating a new Vercel project using the CLI, you need to add the environment variables; your first build may fail if no environment variables are populated. You can add the variables one at a time using [vercel env add](https://vercel.com/docs/cli/env), or sign in to [vercel.com](https://vercel.com) and paste the contents of your `.env.local` file into the env var settings for your Vercel project.
 
 For more information on the Vercel CLI, consult the [Vercel CLI Documentation](https://vercel.com/docs/cli).
