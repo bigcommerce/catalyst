@@ -15,7 +15,7 @@ You can find a demo version of Catalyst at https://catalyst-demo.site/, hosted o
 
 ## Ecommerce functionality
 
-Catalyst has a basic B2C ecommerce purchase funnel, including the following. These pages and features are production-ready.
+Catalyst has a basic business-to-consumer (B2C) ecommerce purchase funnel, including the following. These pages and features are production-ready.
 
 * Home page
 * Faceted search on product listing pages, or _PLPs_, which are dynamically created for each category and brand
