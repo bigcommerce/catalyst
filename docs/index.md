@@ -44,7 +44,7 @@ Out-of-the-box, Catalyst has the following capabilities you can use to further b
 
 ### Shopper experience
 
-* **Optimized shopping experiences**. Catalyst provides a very fast and optimized experience for guest shoppers and supports the dynamic experiences that matter to logged-in customers.
+* **Optimized shopping experiences**. Catalyst provides a guest shopper experience optimized for speed and supports the dynamic experiences that matter to logged-in customers.
 * **Secure checkout**. Catalyst uses an optimized one-page redirected checkout on our hosted SaaS environment to simplify PCI compliance. By default, your headless storefront never collects or transmits personally identifiable information, or _PII_, such as credit card numbers.
 
 > [!NOTE]
