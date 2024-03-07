@@ -114,7 +114,7 @@ The default Stencil storefront that comes with every BigCommerce store by defaul
 Auth.js, formerly NextAuth, uses this pseudo-random hex string to sign session JWTs.
 
 **Without the CLI**
-To generate, open the terminal and run the following command. Then copy-paste the output into your environment variables file. Learn more about how generation works under the hood in the [OpenSSL docs](https://www.openssl.org/docs/manmaster/man1/openssl-rand.html).
+To generate, open the terminal and run the following command. Then, copy-paste the output into your environment variables file. Learn more about how generation works under the hood in the [OpenSSL docs](https://www.openssl.org/docs/manmaster/man1/openssl-rand.html).
 
 ```shell copy
 openssl rand -hex 32
