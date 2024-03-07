@@ -1,5 +1,4 @@
 import { Message } from '@bigcommerce/components/message';
-import pick from 'lodash.pick';
 import { ShoppingCart } from 'lucide-react';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages, getTranslations } from 'next-intl/server';
@@ -40,7 +39,7 @@ export default async function NotFound() {
           <h2 className="text-4xl font-black lg:text-5xl">{t('heading')}</h2>
           <p className="text-lg">{t('message')}</p>
         </Message>
-        <NextIntlClientProvider locale={locale} messages={pick(messages, 'NotFound')}>
+        <NextIntlClientProvider locale={locale} messages={{ NotFound: messages.NotFound ?? {} }}>
           <SearchForm />
         </NextIntlClientProvider>
         <section>
@@ -50,7 +49,7 @@ export default async function NotFound() {
               <NextIntlClientProvider
                 key={product.entityId}
                 locale={locale}
-                messages={pick(messages, 'Product')}
+                messages={{ Product: messages.Product ?? {} }}
               >
                 <ProductCard
                   product={product}

@@ -1,4 +1,3 @@
-import pick from 'lodash.pick';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
@@ -63,7 +62,7 @@ export default async function Brand({ params: { slug, locale }, searchParams }: 
     <div>
       <NextIntlClientProvider
         locale={locale}
-        messages={pick(messages, ['FacetedGroup', 'Product'])}
+        messages={{ FacetedGroup: messages.FacetedGroup ?? {}, Product: messages.Product ?? {} }}
       >
         <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
           <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{brand.name}</h1>
