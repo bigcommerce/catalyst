@@ -2,8 +2,6 @@ import chalk from 'chalk';
 import { copySync, readJsonSync, removeSync, writeJsonSync } from 'fs-extra/esm';
 import { downloadTemplate } from 'giget';
 import merge from 'lodash.merge';
-import set from 'lodash.set';
-import unset from 'lodash.unset';
 import { join } from 'path';
 import * as z from 'zod';
 
@@ -46,7 +44,25 @@ export const cloneCatalyst = async ({
   copySync(join(projectDir, 'tmp/tailwind.config.js'), join(projectDir, 'tailwind.config.js'));
 
   const packageJson = z
-    .object({})
+    .object({
+      private: z.boolean().optional(),
+      exports: z.object({}).passthrough().optional(),
+      sideEffects: z.boolean().optional(),
+      peerDependencies: z.object({}).passthrough().optional(),
+      dependencies: z
+        .object({
+          '@bigcommerce/components': z.string().optional(),
+          '@bigcommerce/catalyst-client': z.string().optional(),
+        })
+        .passthrough(),
+      devDependencies: z
+        .object({
+          react: z.string().optional(),
+          'react-dom': z.string().optional(),
+          '@bigcommerce/eslint-config-catalyst': z.string().optional(),
+        })
+        .passthrough(),
+    })
     .passthrough()
     .parse(
       merge(
@@ -57,21 +73,33 @@ export const cloneCatalyst = async ({
       ),
     );
 
-  unset(packageJson, 'private');
-  unset(packageJson, 'exports');
-  unset(packageJson, 'sideEffects');
-  unset(packageJson, 'peerDependencies'); // will go away
-  unset(packageJson, 'dependencies.@bigcommerce/components'); // will go away
-  unset(packageJson, 'devDependencies.react'); // will go away
-  unset(packageJson, 'devDependencies.react-dom'); // will go away
+  delete packageJson.private;
+  delete packageJson.exports;
+  delete packageJson.sideEffects;
+  delete packageJson.peerDependencies; // will go away
+  delete packageJson.dependencies['@bigcommerce/components']; // will go away
+  delete packageJson.devDependencies.react; // will go away
+  delete packageJson.devDependencies['react-dom']; // will go away
 
-  set(packageJson, 'dependencies.@bigcommerce/catalyst-client', `^0.1.1`);
-  set(packageJson, 'devDependencies.@bigcommerce/eslint-config-catalyst', `^0.1.0`);
+  packageJson.dependencies['@bigcommerce/catalyst-client'] = `^0.1.1`;
+  packageJson.devDependencies['@bigcommerce/eslint-config-catalyst'] = `^0.1.0`;
 
   writeJsonSync(join(projectDir, 'package.json'), packageJson, { spaces: 2 });
 
   const tsConfigJson = z
-    .object({})
+    .object({
+      compilerOptions: z
+        .object({
+          declaration: z.boolean().optional(),
+          declarationMap: z.boolean().optional(),
+          paths: z
+            .object({
+              '@bigcommerce/components/*': z.string().array().optional(),
+            })
+            .passthrough(),
+        })
+        .passthrough(),
+    })
     .passthrough()
     .parse(
       merge(
@@ -81,10 +109,10 @@ export const cloneCatalyst = async ({
       ),
     );
 
-  unset(tsConfigJson, 'compilerOptions.declaration');
-  unset(tsConfigJson, 'compilerOptions.declarationMap');
+  delete tsConfigJson.compilerOptions.declaration;
+  delete tsConfigJson.compilerOptions.declarationMap;
 
-  set(tsConfigJson, 'compilerOptions.paths.@bigcommerce/components/*', ['./components/ui/*']);
+  tsConfigJson.compilerOptions.paths['@bigcommerce/components/*'] = ['./components/ui/*'];
 
   writeJsonSync(join(projectDir, 'tsconfig.json'), tsConfigJson, { spaces: 2 });
 
