@@ -15,7 +15,7 @@
 
 ## Create a new Catalyst project
 
-To create a new Catalyst project, use the Catalyst CLI. This will create a new directory that contains your Catalyst project. You don't need to clone the [Catalyst GitHub repository](https://github.com/bigcommerce/catalyst) monorepo to use the CLI.
+To create a new Catalyst project, use the Catalyst CLI to create a new directory containing your project. You don't need to clone the [Catalyst GitHub repository](https://github.com/bigcommerce/catalyst) monorepo to use the CLI.
 
 When the CLI connects your project to the BigCommerce store you intend to use, you will be asked to sign in to the subject store using the browser and enter a code provided by the CLI. This step registers your Catalyst project and generates the access tokens the storefront needs to use our APIs. For a more in-depth explanation of authentication mechanisms in Catalyst, see [Advanced config](/docs/monorepo.md) in the Catalyst docs and [Authenticating Customers](https://developer.bigcommerce.com/docs/start/authentication/customer-login) on the BigCommerce Dev Center.
 
