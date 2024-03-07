@@ -173,7 +173,7 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
                     return (
                       <li className="mb-3 last:mb-6" key={name}>
                         <a
-                          className="focus:ring-primary/20 align-items mb-6 flex gap-x-6 focus:outline-none focus:ring-4"
+                          className="align-items mb-6 flex gap-x-6 focus:outline-none focus:ring-4 focus:ring-primary/20"
                           href={path}
                         >
                           {name}
@@ -192,7 +192,7 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
                     return (
                       <li key={product.entityId}>
                         <a
-                          className="focus:ring-primary/20 align-items mb-6 flex gap-x-6 focus:outline-none focus:ring-4"
+                          className="align-items mb-6 flex gap-x-6 focus:outline-none focus:ring-4 focus:ring-primary/20"
                           href={product.path}
                         >
                           {product.defaultImage ? (
@@ -236,7 +236,7 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
                     return (
                       <li className="mb-3 last:mb-6" key={name}>
                         <a
-                          className="focus:ring-primary/20 align-items mb-6 flex gap-x-6 focus:outline-none focus:ring-4"
+                          className="align-items mb-6 flex gap-x-6 focus:outline-none focus:ring-4 focus:ring-primary/20"
                           href={path}
                         >
                           {name}

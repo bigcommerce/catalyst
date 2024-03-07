@@ -125,7 +125,6 @@ export default async function Category({ params: { locale, slug }, searchParams 
               prevLabel={tPagination('prev')}
               startCursor={startCursor}
             />
-            
           </section>
         </div>
       </NextIntlClientProvider>

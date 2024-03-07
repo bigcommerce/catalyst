@@ -117,7 +117,6 @@ export default async function Brand({ params: { slug, locale }, searchParams }: 
               prevLabel={tPagination('prev')}
               startCursor={startCursor}
             />
-
           </section>
         </div>
       </NextIntlClientProvider>

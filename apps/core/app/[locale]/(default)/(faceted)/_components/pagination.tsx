@@ -38,7 +38,7 @@ export const Pagination = ({
   afterSearchParams.set('after', String(endCursor));
 
   return (
-    <nav aria-label="Pagination" className="my-6 text-center text-blue-primary">
+    <nav aria-label="Pagination" className="text-blue-primary my-6 text-center">
       {hasPreviousPage ? (
         <NextLink href={`${pathname}?${beforeSearchParams.toString()}`}>
           <span className="sr-only">{prevLabel}</span>
