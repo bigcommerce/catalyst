@@ -141,7 +141,7 @@ Providing a pseudo-random hex string for this environment variable lets you use 
 
 Do not re-use the value from `AUTH_SECRET`.
 
-To generate, open the terminal and run the following command. Then copy-paste the output into your environment variables file. Learn more about how generation works under the hood in the [OpenSSL docs](https://www.openssl.org/docs/manmaster/man1/openssl-rand.html).
+To generate, open the terminal and run the following command. Then, copy-paste the output into your environment variables file. Learn more about how generation works under the hood in the [OpenSSL docs](https://www.openssl.org/docs/manmaster/man1/openssl-rand.html).
 
 ```shell copy
 openssl rand -hex 32
