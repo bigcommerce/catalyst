@@ -7,8 +7,8 @@ import { cn } from '~/lib/utils';
 const messageVariants = cva('flex w-full gap-x-2.5 justify-start p-3 text-base', {
   variants: {
     variant: {
-      success: 'bg-success/[.15] [&>svg]:text-success',
-      error: 'bg-error/[.15] [&>svg]:text-error-secondary',
+      success: 'bg-success-secondary/[.15] [&>svg]:text-success',
+      error: 'bg-error-secondary/[.15] [&>svg]:text-error',
     },
   },
 });
