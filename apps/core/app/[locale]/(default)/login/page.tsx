@@ -2,11 +2,13 @@ import { Button } from '@bigcommerce/components/button';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 
+import { getReCaptchaSettings } from '~/client/queries/get-recaptcha-settings';
 import { Link } from '~/components/link';
 import { LocaleType } from '~/i18n';
 
 import { ChangePasswordForm } from './_components/change-password-form';
 import { LoginForm } from './_components/login-form';
+import { ResetPasswordForm } from './_components/reset-password-form';
 
 export const metadata = {
   title: 'Login',
@@ -38,6 +40,19 @@ export default async function Login({ params: { locale }, searchParams }: Props)
         <h2 className="mb-8 text-4xl font-black lg:text-5xl">{t('changePasswordHeading')}</h2>
         <NextIntlClientProvider locale={locale} messages={{ Account }}>
           <ChangePasswordForm customerId={Number(customerId)} customerToken={customerToken} />
+        </NextIntlClientProvider>
+      </div>
+    );
+  }
+
+  if (action === 'reset_password') {
+    const reCaptchaSettings = await getReCaptchaSettings();
+
+    return (
+      <div className="mx-auto my-6 max-w-4xl">
+        <h2 className="mb-8 text-4xl font-black lg:text-5xl">{t('resetPasswordHeading')}</h2>
+        <NextIntlClientProvider locale={locale} messages={{ Account }}>
+          <ResetPasswordForm reCaptchaSettings={reCaptchaSettings} />
         </NextIntlClientProvider>
       </div>
     );
