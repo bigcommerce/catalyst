@@ -49,7 +49,7 @@ Out-of-the-box, Catalyst has the following capabilities you can use to further b
 
 > [!NOTE]
 > Customers have accounts on the store and can sign in to see orders, manage their accounts, and more.
-> Shoppers browse the storefront, but don't have accounts.
+> Shoppers browse the storefront but don't have accounts.
 
 ### Configuration recommendations
 
