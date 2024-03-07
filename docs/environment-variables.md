@@ -245,7 +245,7 @@ NextJS persists cached queries in its [data cache](https://nextjs.org/docs/app/b
 | Required | false |
 | CLI-configurable | true |
 
-This environment variable turns on and off the request logger that's built into the Catalyst API client.
+This environment variable turns the request logger built into the Catalyst API client on and off.
 
 When enabled, the client logger logs the following information:
 
