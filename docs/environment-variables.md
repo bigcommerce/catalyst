@@ -37,7 +37,7 @@ https://{BIGCOMMERCE_STORE_HASH}.mybigcommerce.com/manage
 | Permanently required | false |
 | CLI-configurable | true |
 
-This token is currently required; Catalyst requires this access token to make a few key API calls to the Management API and the Customer Login API. This dependency will be removed in a future version of Catalyst.
+This token is currently required; Catalyst requires this access token to make a few essential API calls to the Management API and the Customer Login API. This dependency will be removed in a future version of Catalyst.
 
 The CLI will prompt you to enter this access token. The following steps will help you create the necessary API account and collect the access token.
 
