@@ -219,7 +219,7 @@ If your storefront is deployed on Vercel, `NEXTAUTH_URL` is automatically detect
 
 This environment variable lets you choose your preferred URL appearance, with or without trailing slashes. This is purely cosmetic and has [no direct SEO implications, although it's a good idea to commit to one URL format](https://developers.google.com/search/blog/2010/04/to-slash-or-not-to-slash). Try not to create entity URLs with mixed cases of trailing slash and no-trailing slash—consistency is key.
 
-The `TRAILING_SLASH` variable defaults to `true`, and must be explicitly set to `false` in order to remove trailing slashes. If you set it to `false`, update your [Store Settings > URL Structure](https://login.bigcommerce.com/deep-links/manage/settings) in the store control panel. Note that this is currently a global setting, so the option you set will go into effect immediately on all the store's storefronts.
+The `TRAILING_SLASH` variable defaults to `true` and must be explicitly set to `false` to remove trailing slashes. If you set it to `false`, update your [Store Settings > URL Structure](https://login.bigcommerce.com/deep-links/manage/settings) in the store control panel. Note that this is currently a global setting, so the option you set will go into effect immediately on all the store's storefronts.
 
 Catalyst uses the existing URLs of your BigCommerce objects, such as products and categories, as the URL paths on your storefront. Default [paths for BigCommerce products, categories, etc.](https://support.bigcommerce.com/s/article/Store-Settings#url-structure) create URLs with a trailing slash, while the [Next.js default behavior](https://nextjs.org/docs/app/api-reference/next-config-js/trailingSlash) does not use trailing slashes on URLs.
 
