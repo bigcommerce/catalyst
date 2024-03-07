@@ -5,7 +5,7 @@ Catalyst uses [Next.js Middleware](https://nextjs.org/docs/app/building-your-app
 
 ## With auth
 
-The `with-auth` middleware is a wrapper over a minimal implementation of [Auth.js, formerly NextAuth.js](https://authjs.dev/reference). This provides Catalyst with session management for shopper's carts as well as the logged-in state of customers, and by default uses JWT cookies to avoid obligatory dependency on any persistence layer on the storefront itself. You may wish to extend this functionality to store more information in a session, or add a persistence layer yourself for more flexibility and control over shopper sessions.
+The `with-auth` middleware is a wrapper over a minimal implementation of [Auth.js, formerly NextAuth.js](https://authjs.dev/reference). This provides Catalyst with session management for shoppers' carts and customers' logged-in states. By default, it uses JWT cookies to avoid obligatory dependency on any persistence layer on the storefront itself. You may wish to extend this functionality to store more information in a session or add a persistence layer yourself for more flexibility and control over shopper sessions.
 
 ## With routes
 
