@@ -17,7 +17,7 @@ On the **Let's build something new** page, point Vercel to a GitHub, GitLab, or 
 
 ![Vercel project page](https://storage.googleapis.com/bigcommerce-production-dev-center/images/catalyst/deployment-vercel-project-page.jpg)
 
-Add the requested [environment variables](/docs/environment-variables.md). For optimal build performance on Vercel, add a value for `TURBO_REMOTE_CACHE_SIGNATURE_KEY` in addition to the required variables. After you add the environment variables, click **Deploy**. 
+Add the requested [environment variables](/docs/environment-variables.md). In addition to the required variables, add a value for `TURBO_REMOTE_CACHE_SIGNATURE_KEY` for optimal build performance on Vercel. After you add the environment variables, click **Deploy**. 
 
 ![Vercel environment variables](https://storage.googleapis.com/bigcommerce-production-dev-center/images/catalyst/deployment-vercel-environment-variables.jpg)
 
@@ -25,7 +25,7 @@ To learn more about deploying to Vercel, consult the [Vercel deployments overvie
 
 ## Deploy to Vercel using the Vercel CLI
 
-To deploy using the [Vercel CLI](https://vercel.com/docs/cli), install the Vercel CLI by running `npm i -g vercel` or `pnpm i -g vercel`.
+To deploy using the [Vercel CLI](https://vercel.com/docs/cli), install it by running `npm i -g vercel` or `pnpm i -g vercel`.
 
 Next, add the required [environment variables](/docs/environment-variables.md) to [.env.local](/.env.example). For optimal build performance on Vercel, add a value for `TURBO_REMOTE_CACHE_SIGNATURE_KEY` in addition to the required variables.
 
