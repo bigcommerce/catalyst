@@ -206,7 +206,7 @@ If you wish to remove this feature entirely from your codebase, you can delete [
 
 The `NEXTAUTH_URL` environment variable tells the [Auth.js library the root URL of the storefront](https://next-auth.js.org/configuration/options#nextauth_url).
 
-If your storefront is deployed on Vercel, `NEXTAUTH_URL` is automatically detected from `VERCEL_URL`, but for other environments you should set `NEXTAUTH_URL` explicitly.
+If your storefront is deployed on Vercel, `NEXTAUTH_URL` is automatically detected from `VERCEL_URL`, but for other environments, you should set `NEXTAUTH_URL` explicitly.
 
 ### TRAILING_SLASH
 
@@ -217,7 +217,7 @@ If your storefront is deployed on Vercel, `NEXTAUTH_URL` is automatically detect
 | Required | false |
 | CLI-configurable | false |
 
-This environment variable lets you choose your preferred URL appearance, with or without trailing slashes. This is purely cosmetic and has [no direct SEO implications, although it's a good idea to commit to one URL format](https://developers.google.com/search/blog/2010/04/to-slash-or-not-to-slash). Try not to create entity URLs with mixed cases of trailing-slash and no-trailing-slash - consistency is key.
+This environment variable lets you choose your preferred URL appearance, with or without trailing slashes. This is purely cosmetic and has [no direct SEO implications, although it's a good idea to commit to one URL format](https://developers.google.com/search/blog/2010/04/to-slash-or-not-to-slash). Try not to create entity URLs with mixed cases of trailing slash and no-trailing slash—consistency is key.
 
 The `TRAILING_SLASH` variable defaults to `true`, and must be explicitly set to `false` in order to remove trailing slashes. If you set it to `false`, update your [Store Settings > URL Structure](https://login.bigcommerce.com/deep-links/manage/settings) in the store control panel. Note that this is currently a global setting, so the option you set will go into effect immediately on all the store's storefronts.
 
