@@ -36,7 +36,7 @@ Out-of-the-box, Catalyst has the following capabilities you can use to further b
 
 ### Developer experience
 
-* **Scalable GraphQL implementation**. Catalyst models responsible, scalable implementation of the GraphQL Storefront API in headless storefront use cases.
+* **Scalable GraphQL implementation**. Catalyst features scalable implementation of the GraphQL Storefront API.
 * **Minimal infrastructure dependencies**. Catalyst only requires Next.js hosting.
 * **Making the most of modern Next.js features**. Catalyst uses [React server components](https://nextjs.org/docs/app/building-your-application/rendering/server-components) and [Suspense](https://react.dev/reference/react/Suspense) boundaries, in preparation for [partial pre-rendering](https://nextjs.org/learn/dashboard-app/partial-prerendering).
 * **Components**. Providing _functionally_ complete ecommerce components and a site architecture that's pre-optimized for performance, SEO, and accessibility.
