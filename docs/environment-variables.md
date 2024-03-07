@@ -122,7 +122,7 @@ openssl rand -hex 32
 
 ## Recommended
 
-Catalyst does not require the following values to run, but we recommend setting them for optimal performance.
+Catalyst does not require the following values, but we recommend setting them for optimal performance.
 
 ### TURBO_REMOTE_CACHE_SIGNATURE_KEY
 
