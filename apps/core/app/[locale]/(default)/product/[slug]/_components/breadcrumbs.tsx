@@ -22,7 +22,7 @@ export const BreadCrumbs = async ({ productId }: Props) => {
 
           return (
             <li
-              className={cn('p-1 ps-0 hover:text-blue-primary', {
+              className={cn('p-1 ps-0 hover:text-primary', {
                 'font-semibold': !isLast,
                 'font-extrabold': isLast,
               })}

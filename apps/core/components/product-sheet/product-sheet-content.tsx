@@ -95,7 +95,7 @@ export const ProductSheetContent = () => {
               <p
                 aria-describedby={summaryId}
                 className={cn(
-                  'flex flex-nowrap text-blue-primary',
+                  'flex flex-nowrap text-primary',
                   product.reviewSummary.numberOfReviews === 0 && 'text-gray-400',
                 )}
               >
@@ -166,7 +166,7 @@ export const ProductSheetContent = () => {
   }
 
   return (
-    <div className="flex h-full w-full items-center justify-center text-blue-primary">
+    <div className="flex h-full w-full items-center justify-center text-primary">
       <Spinner aria-hidden="true" className="animate-spin" />
       <span className="sr-only">{t('loading')}</span>
     </div>

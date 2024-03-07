@@ -63,10 +63,10 @@ export default async function BlogPostPage({ params: { blogId } }: Props) {
       ) : (
         <BlogPostBanner className="mb-6 h-40 sm:h-80 lg:h-96">
           <BlogPostTitle variant="inBanner">
-            <span className="text-blue-primary">{blogPost.name}</span>
+            <span className="text-primary">{blogPost.name}</span>
           </BlogPostTitle>
           <BlogPostDate variant="inBanner">
-            <span className="text-blue-primary">
+            <span className="text-primary">
               {new Intl.DateTimeFormat('en-US').format(new Date(blogPost.publishedDate.utc))}
             </span>
           </BlogPostDate>

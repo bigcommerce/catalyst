@@ -42,7 +42,7 @@ export const ShippingEstimator = ({
         <p className="inline-flex gap-2">
           <span className="text-base">{shippingCosts.selectedShippingOption}</span>
           <Button
-            className="w-fit p-0 text-base text-blue-primary"
+            className="w-fit p-0 text-base text-primary"
             onClick={() => setIsOpened((open) => !open)}
             variant="subtle"
           >
@@ -68,7 +68,7 @@ export const ShippingEstimator = ({
         <div className="inline-flex items-center justify-between">
           <span className="text-base font-semibold">{t('shippingCost')}</span>
           <Button
-            className="w-fit p-0 text-base text-blue-primary"
+            className="w-fit p-0 text-base text-primary"
             onClick={() => setIsOpened((open) => !open)}
             variant="subtle"
           >

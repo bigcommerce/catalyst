@@ -62,7 +62,7 @@ const CompareItem = ({
       </small>
       <Button
         aria-label={t('removeProductAriaLabel', { product: product.name })}
-        className="grow-1 ms-auto w-auto border-0 bg-transparent p-0 text-black hover:bg-transparent hover:text-blue-primary focus:text-blue-primary"
+        className="grow-1 ms-auto w-auto border-0 bg-transparent p-0 text-black hover:bg-transparent hover:text-primary focus:text-primary"
         onClick={removeItem}
         type="button"
       >
@@ -100,7 +100,7 @@ export const CompareDrawer = () => {
         <AccordionItem className="flex flex-col" value="compare">
           <div className="flex">
             <CompareLink products={products} />
-            <AccordionTrigger className="align-center flex aspect-square h-12 grow-0 justify-center border border-blue-primary text-blue-primary md:hidden [&[data-state=closed]>svg]:rotate-180 [&[data-state=open]>svg]:rotate-0" />
+            <AccordionTrigger className="align-center flex aspect-square h-12 grow-0 justify-center border border-primary text-primary md:hidden [&[data-state=closed]>svg]:rotate-180 [&[data-state=open]>svg]:rotate-0" />
           </div>
           <AccordionContent className="mt-4">
             <ul className="flex max-h-44 flex-col overflow-auto">

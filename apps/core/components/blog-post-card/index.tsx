@@ -34,10 +34,10 @@ export const BlogPostCard = ({ blogPost }: BlogPostCardProps) => (
     ) : (
       <BlogPostBanner>
         <BlogPostTitle variant="inBanner">
-          <span className="line-clamp-3 text-blue-primary">{blogPost.name}</span>
+          <span className="line-clamp-3 text-primary">{blogPost.name}</span>
         </BlogPostTitle>
         <BlogPostDate variant="inBanner">
-          <span className="text-blue-primary">
+          <span className="text-primary">
             {new Intl.DateTimeFormat('en-US').format(new Date(blogPost.publishedDate.utc))}
           </span>
         </BlogPostDate>

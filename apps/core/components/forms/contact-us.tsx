@@ -165,13 +165,13 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
               />
             </FieldControl>
             <FieldMessage
-              className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200"
+              className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error"
               match="valueMissing"
             >
               {t('emailValidationMessage')}
             </FieldMessage>
             <FieldMessage
-              className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200"
+              className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error"
               match="typeMismatch"
             >
               {t('emailValidationMessage')}
@@ -195,7 +195,7 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
               />
             </FieldControl>
             <FieldMessage
-              className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200"
+              className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error"
               match="valueMissing"
             >
               {t('commentsValidationMessage')}
@@ -210,7 +210,7 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
               sitekey={reCaptchaSettings.siteKey}
             />
             {!isReCaptchaValid && (
-              <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200">
+              <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error">
                 {t('recaptchaText')}
               </span>
             )}

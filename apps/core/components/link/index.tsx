@@ -46,7 +46,7 @@ export const Link = forwardRef<ElementRef<'a'>, Props>(
     return (
       <NavLink
         className={cn(
-          ' hover:text-blue-primary focus:outline-none focus:ring-4 focus:ring-blue-primary/20',
+          ' hover:text-primary focus:outline-none focus:ring-4 focus:ring-primary/20',
           className,
         )}
         href={href}

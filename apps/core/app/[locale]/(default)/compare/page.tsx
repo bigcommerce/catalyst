@@ -197,7 +197,7 @@ export default async function Compare({
                 >
                   <p
                     className={cn(
-                      'flex flex-nowrap text-blue-primary',
+                      'flex flex-nowrap text-primary',
                       product.reviewSummary.numberOfReviews === 0 && 'text-gray-400',
                     )}
                   >

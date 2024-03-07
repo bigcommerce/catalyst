@@ -5,14 +5,14 @@ import { ComponentPropsWithRef, createContext, ElementRef, forwardRef, useContex
 import { cn } from '~/lib/utils';
 
 const inputVariants = cva(
-  'peer focus:ring-blue-primary/20 w-full border-2 border-gray-200 py-2.5 px-4 text-base placeholder:text-gray-500 focus:border-blue-primary focus:outline-none focus:ring-4 hover:border-blue-primary disabled:bg-gray-100 disabled:hover:border-gray-200',
+  'peer focus:ring-primary/20 w-full border-2 border-gray-200 py-2.5 px-4 text-base placeholder:text-gray-500 focus:border-primary focus:outline-none focus:ring-4 hover:border-primary disabled:bg-gray-100 disabled:hover:border-gray-200',
   {
     variants: {
       variant: {
         success:
-          'pe-12 border-green-100 focus:border-green-100 focus:ring-green-100/20 disabled:border-gray-200 hover:border-green-200',
+          'pe-12 border-success-secondary focus:border-success-secondary focus:ring-success-secondary/20 disabled:border-gray-200 hover:border-success',
         error:
-          'pe-12 border-red-100 focus:border-red-100 focus:ring-red-100/20 disabled:border-gray-200 hover:border-red-200',
+          'pe-12 border-error-secondary focus:border-error-secondary focus:ring-error-secondary/20 disabled:border-gray-200 hover:border-error',
       },
     },
   },
@@ -35,8 +35,8 @@ const InputIcon = forwardRef<ElementRef<'span'>, ComponentPropsWithRef<'span'>>(
         aria-hidden="true"
         className={cn(
           'pointer-events-none absolute end-4 top-0 flex h-full items-center peer-disabled:text-gray-200',
-          variant === 'success' && 'text-green-100',
-          variant === 'error' && 'text-red-100',
+          variant === 'success' && 'text-success-secondary',
+          variant === 'error' && 'text-error-secondary',
           className,
         )}
         ref={ref}

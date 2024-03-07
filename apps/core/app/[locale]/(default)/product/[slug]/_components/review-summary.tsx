@@ -29,7 +29,7 @@ export const ReviewSummary = async ({ productId }: Props) => {
     <div className="flex items-center gap-3">
       <p
         aria-describedby={summaryId}
-        className={cn('flex flex-nowrap text-blue-primary', hasNoReviews && 'text-gray-400')}
+        className={cn('flex flex-nowrap text-primary', hasNoReviews && 'text-gray-400')}
       >
         <Rating value={averageRating} />
       </p>

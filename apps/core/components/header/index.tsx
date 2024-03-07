@@ -48,7 +48,7 @@ export const Header = async ({ cart }: { cart: ReactNode }) => {
                 <div className="group/account flex cursor-pointer items-center">
                   <Link
                     aria-label="Account"
-                    className="p-3 focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
+                    className="p-3 focus:outline-none focus:ring-4 focus:ring-primary/20"
                     href="/account"
                   >
                     <User aria-hidden="true" />
@@ -57,7 +57,7 @@ export const Header = async ({ cart }: { cart: ReactNode }) => {
                   <ul className="absolute -right-12 top-full z-10 hidden cursor-default bg-white p-6 pb-8 shadow-md group-hover/account:block [&>li]:mb-2">
                     <li>
                       <Link
-                        className="whitespace-nowrap font-semibold focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
+                        className="whitespace-nowrap font-semibold focus:outline-none focus:ring-4 focus:ring-primary/20"
                         href="/account"
                       >
                         My account

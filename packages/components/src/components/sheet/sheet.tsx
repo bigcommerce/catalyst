@@ -14,7 +14,7 @@ type SheetCloseProps = ComponentPropsWithoutRef<typeof SheetPrimitive.Close>;
 const SheetClose = forwardRef<ElementRef<typeof SheetPrimitive.Close>, SheetCloseProps>(
   ({ children, className, ...props }, ref) => (
     <SheetPrimitive.Close
-      className={cn('focus:outline-none focus:ring-4 focus:ring-blue-primary/20', className)}
+      className={cn('focus:outline-none focus:ring-4 focus:ring-primary/20', className)}
       ref={ref}
       {...props}
     >
