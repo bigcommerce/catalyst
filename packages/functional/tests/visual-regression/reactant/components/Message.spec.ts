@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 import * as storyBookElements from '../StoryBookElements';
 
 test('Default message', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/message--default`);
+  await page.goto(`${storyBookElements.storyUrl}/message--info`);
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).getByText('Here is your message for Users'),
   ).toBeVisible();
