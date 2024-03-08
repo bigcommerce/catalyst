@@ -56,7 +56,7 @@ export const Cart = ({ product }: { product: Partial<Product> }) => {
                 {t.rich('addedProductQuantity', {
                   cartItems: quantity,
                   cartLink: (chunks) => (
-                    <Link className="text-primary font-semibold" href="/cart">
+                    <Link className="font-semibold text-primary" href="/cart">
                       {chunks}
                     </Link>
                   ),

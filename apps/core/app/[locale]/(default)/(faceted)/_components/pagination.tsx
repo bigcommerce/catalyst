@@ -36,9 +36,9 @@ export const Pagination = ({
   afterSearchParams.set('after', String(endCursor));
 
   return (
-    <nav aria-label="Pagination" className="text-primary my-6 text-center">
+    <nav aria-label="Pagination" className="my-6 text-center text-primary">
       {hasPreviousPage ? (
-        <Link href={`${pathname}?${beforeSearchParams.toString()}`}>
+        <Link className="inline-block" href={`${pathname}?${beforeSearchParams.toString()}`}>
           <span className="sr-only">{prevLabel}</span>
           <ChevronLeft aria-hidden="true" className="inline-block h-8 w-8" />
         </Link>
@@ -47,7 +47,7 @@ export const Pagination = ({
       )}
 
       {hasNextPage ? (
-        <Link href={`${pathname}?${afterSearchParams.toString()}`}>
+        <Link className="inline-block" href={`${pathname}?${afterSearchParams.toString()}`}>
           <span className="sr-only">{nextLabel}</span>
           <ChevronRight aria-hidden="true" className="inline-block h-8 w-8" />
         </Link>
