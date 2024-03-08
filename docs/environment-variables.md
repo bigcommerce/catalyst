@@ -79,7 +79,7 @@ As of this writing, Catalyst requires the Information & Settings read-only scope
 This bearer token authorizes access to the [GraphQL Storefront API](https://developer.bigcommerce.com/docs/storefront/graphql) and supports operations that request information specific to individual customers, such as getting wishlist items.
 
 **Without the CLI**
-Create a store-level or app-level API account with the following token creation scope. Then, use the API account access token to [Create a customer impersonation token](https://developer.bigcommerce.com/docs/rest-authentication/tokens/customer-impersonation-token#create-a-token).
+Create a store-level or app-level API account with the following token creation scope. Then use the API account access token to [Create a customer impersonation token](https://developer.bigcommerce.com/docs/rest-authentication/tokens/customer-impersonation-token#create-a-token).
 
 | UI Name | Permission | Parameter |
 |:--------|:-----------|:----------|
@@ -114,7 +114,7 @@ The default Stencil storefront that comes with every BigCommerce store by defaul
 Auth.js, formerly NextAuth, uses this pseudo-random hex string to sign session JWTs.
 
 **Without the CLI**
-To generate, open the terminal and run the following command. Then, copy-paste the output into your environment variables file. Learn more about how generation works under the hood in the [OpenSSL docs](https://www.openssl.org/docs/manmaster/man1/openssl-rand.html).
+To generate, open the terminal and run the following command. Then copy-paste the output into your environment variables file. Learn more about how generation works under the hood in the [OpenSSL docs](https://www.openssl.org/docs/manmaster/man1/openssl-rand.html).
 
 ```shell copy
 openssl rand -hex 32
@@ -141,7 +141,7 @@ Providing a pseudo-random hex string for this environment variable lets you use 
 
 Do not re-use the value from `AUTH_SECRET`.
 
-To generate, open the terminal and run the following command. Then, copy-paste the output into your environment variables file. Learn more about how generation works under the hood in the [OpenSSL docs](https://www.openssl.org/docs/manmaster/man1/openssl-rand.html).
+To generate, open the terminal and run the following command. Then copy-paste the output into your environment variables file. Learn more about how generation works under the hood in the [OpenSSL docs](https://www.openssl.org/docs/manmaster/man1/openssl-rand.html).
 
 ```shell copy
 openssl rand -hex 32
