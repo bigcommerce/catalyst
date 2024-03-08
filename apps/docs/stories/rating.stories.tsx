@@ -13,14 +13,14 @@ type Story = StoryObj<typeof Rating>;
 export const FiveStarRating: Story = {
   args: {
     value: 5,
-    className: 'text-blue-primary',
+    className: 'text-primary',
   },
 };
 
 export const ZeroRating: Story = {
   args: {
     value: 0,
-    className: 'text-blue-primary',
+    className: 'text-primary',
   },
 };
 

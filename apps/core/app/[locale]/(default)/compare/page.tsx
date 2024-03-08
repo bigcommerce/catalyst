@@ -1,6 +1,5 @@
 import { Button } from '@bigcommerce/components/button';
 import { Rating } from '@bigcommerce/components/rating';
-import pick from 'lodash.pick';
 import Image from 'next/image';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
@@ -61,7 +60,7 @@ export default async function Compare({
         <div className="flex max-w-2xl flex-col gap-8 pb-8">
           <h1 className="text-4xl font-black lg:text-5xl">{t('nothingCompare')}</h1>
           <p className="text-lg">{t('helpingText')}</p>
-          <NextIntlClientProvider locale={locale} messages={pick(messages, 'NotFound')}>
+          <NextIntlClientProvider locale={locale} messages={{ NotFound: messages.NotFound ?? {} }}>
             <SearchForm />
           </NextIntlClientProvider>
         </div>
@@ -155,7 +154,10 @@ export default async function Compare({
 
                 return (
                   <td className="border-b px-4 pb-12" key={product.entityId}>
-                    <NextIntlClientProvider locale={locale} messages={pick(messages, 'Compare')}>
+                    <NextIntlClientProvider
+                      locale={locale}
+                      messages={{ Compare: messages.Compare ?? {} }}
+                    >
                       <AddToCartForm
                         availability={product.availabilityV2.status}
                         entityId={product.entityId}
@@ -197,7 +199,7 @@ export default async function Compare({
                 >
                   <p
                     className={cn(
-                      'flex flex-nowrap text-blue-primary',
+                      'flex flex-nowrap text-primary',
                       product.reviewSummary.numberOfReviews === 0 && 'text-gray-400',
                     )}
                   >
@@ -243,7 +245,10 @@ export default async function Compare({
 
                 return (
                   <td className="border-b px-4 pb-24 pt-12" key={product.entityId}>
-                    <NextIntlClientProvider locale={locale} messages={pick(messages, 'Compare')}>
+                    <NextIntlClientProvider
+                      locale={locale}
+                      messages={{ Compare: messages.Compare ?? {} }}
+                    >
                       <AddToCartForm
                         availability={product.availabilityV2.status}
                         entityId={product.entityId}

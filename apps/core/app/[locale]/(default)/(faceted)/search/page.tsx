@@ -1,4 +1,3 @@
-import pick from 'lodash.pick';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 
@@ -62,7 +61,7 @@ export default async function Search({ params: { locale }, searchParams }: Props
     <div>
       <NextIntlClientProvider
         locale={locale}
-        messages={pick(messages, ['FacetedGroup', 'Product'])}
+        messages={{ FacetedGroup: messages.FacetedGroup ?? {}, Product: messages.Product ?? {} }}
       >
         <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
           <h1 className="mb-3 text-base">

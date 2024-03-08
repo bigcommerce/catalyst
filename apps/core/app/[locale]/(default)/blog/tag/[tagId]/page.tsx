@@ -32,10 +32,10 @@ export default async function BlogPostPage({ params: { tagId, locale }, searchPa
         })}
       </div>
 
-      <nav aria-label="Pagination" className="mb-12 mt-10 flex justify-center text-blue-primary">
+      <nav aria-label="Pagination" className="mb-12 mt-10 flex justify-center text-primary">
         {blogPosts.posts.pageInfo.hasPreviousPage ? (
           <Link
-            className="focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
+            className="focus:outline-none focus:ring-4 focus:ring-primary/20"
             href={`/blog/tag/${tagId}?before=${String(blogPosts.posts.pageInfo.startCursor)}`}
             scroll={false}
           >
@@ -47,7 +47,7 @@ export default async function BlogPostPage({ params: { tagId, locale }, searchPa
         )}
         {blogPosts.posts.pageInfo.hasNextPage ? (
           <Link
-            className="focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
+            className="focus:outline-none focus:ring-4 focus:ring-primary/20"
             href={`/blog/tag/${tagId}?after=${String(blogPosts.posts.pageInfo.endCursor)}`}
             scroll={false}
           >

@@ -135,7 +135,7 @@ export const RefineBy = (props: Props) => {
       <div className="flex flex-row items-center justify-between pb-2">
         <h3 className="text-2xl font-bold">{t('refineBy')}</h3>
         {/* TODO: Make subtle variant */}
-        <button className="font-semibold text-blue-primary" onClick={clearAllRefinements}>
+        <button className="font-semibold text-primary" onClick={clearAllRefinements}>
           {t('clearAllRefinements')}
         </button>
       </div>

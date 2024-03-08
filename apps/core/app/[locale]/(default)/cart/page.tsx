@@ -1,5 +1,4 @@
 import { Button } from '@bigcommerce/components/button';
-import pick from 'lodash.pick';
 import { Trash2 as Trash } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
@@ -182,7 +181,7 @@ export default async function CartPage({ params: { locale } }: Props) {
         </ul>
 
         <div className="col-span-1 col-start-2 lg:col-start-3">
-          <NextIntlClientProvider locale={locale} messages={pick(messages, 'Cart')}>
+          <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
             <CheckoutSummary
               cart={cart}
               key={cart.totalExtendedListPrice.value}

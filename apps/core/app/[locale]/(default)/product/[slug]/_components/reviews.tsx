@@ -37,7 +37,7 @@ export const Reviews = async ({ productId }: Props) => {
           reviews.map((review) => {
             return (
               <li key={review.entityId}>
-                <p className="mb-3 flex flex-nowrap text-blue-primary">
+                <p className="mb-3 flex flex-nowrap text-primary">
                   <Rating value={review.rating} />
                   <span className="sr-only">{t('reviewRating', { rating: review.rating })}</span>
                 </p>

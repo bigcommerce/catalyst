@@ -1,4 +1,3 @@
-import pick from 'lodash.pick';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
@@ -49,7 +48,7 @@ export default async function WebPage({ params: { locale, page } }: Props) {
       return (
         <>
           <PageContent content={htmlBody} title={name} />
-          <NextIntlClientProvider locale={locale} messages={pick(messages, 'AboutUs')}>
+          <NextIntlClientProvider locale={locale} messages={{ AboutUs: messages.AboutUs ?? {} }}>
             <ContactUs
               fields={webpage.contactFields}
               pageEntityId={entityId}

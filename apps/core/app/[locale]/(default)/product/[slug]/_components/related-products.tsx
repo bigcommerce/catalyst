@@ -1,4 +1,3 @@
-import pick from 'lodash.pick';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages, getTranslations } from 'next-intl/server';
 
@@ -17,7 +16,7 @@ export const RelatedProducts = async ({ productId }: { productId: number }) => {
   });
 
   return (
-    <NextIntlClientProvider locale={locale} messages={pick(messages, 'Product')}>
+    <NextIntlClientProvider locale={locale} messages={{ Product: messages.Product ?? {} }}>
       <ProductCardCarousel
         products={relatedProducts}
         showCart={false}

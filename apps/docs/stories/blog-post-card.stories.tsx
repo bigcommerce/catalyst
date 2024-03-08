@@ -25,7 +25,7 @@ export const BlogPostCardWithImage: Story = {
         <div>
           <BlogPostImage>
             <a
-              className="block w-full focus:outline-none focus:ring-4 focus:ring-blue-primary/20"
+              className="block w-full focus:outline-none focus:ring-4 focus:ring-primary/20"
               href="/"
             >
               <div className="flex h-full w-full items-center justify-center bg-gray-200 text-2xl font-bold lg:text-3xl">
@@ -34,7 +34,7 @@ export const BlogPostCardWithImage: Story = {
             </a>
           </BlogPostImage>
           <BlogPostTitle>
-            <a className="focus:outline-none focus:ring-4 focus:ring-blue-primary/20" href="/">
+            <a className="focus:outline-none focus:ring-4 focus:ring-primary/20" href="/">
               Blog Post Title
             </a>
           </BlogPostTitle>
@@ -56,14 +56,14 @@ export const BlogPostCardWithoutImage: Story = {
         <div>
           <BlogPostBanner>
             <BlogPostTitle role="presentation" variant="inBanner">
-              <span className="text-blue-primary">Blog Post Title</span>
+              <span className="text-primary">Blog Post Title</span>
             </BlogPostTitle>
             <BlogPostDate variant="inBanner">
-              <span className="text-blue-primary">8/15/23</span>
+              <span className="text-primary">8/15/23</span>
             </BlogPostDate>
           </BlogPostBanner>
           <BlogPostTitle>
-            <a className="focus:outline-none focus:ring-4 focus:ring-blue-primary/20" href="/">
+            <a className="focus:outline-none focus:ring-4 focus:ring-primary/20" href="/">
               Blog Post Title
             </a>
           </BlogPostTitle>

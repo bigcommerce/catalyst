@@ -72,7 +72,7 @@ export const LoginForm = () => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-red-200"
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-error"
             match="valueMissing"
           >
             {t('Form.enterEmailMessage')}
@@ -91,7 +91,7 @@ export const LoginForm = () => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-red-200"
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-error"
             match="valueMissing"
           >
             {t('Form.entePasswordMessage')}
@@ -111,7 +111,7 @@ export const LoginForm = () => {
             </Button>
           </FormSubmit>
           <Link
-            className="my-5 inline-flex items-center justify-start text-blue-primary hover:text-blue-secondary md:my-0"
+            className="my-5 inline-flex items-center justify-start text-primary hover:text-secondary md:my-0"
             href={{
               pathname: '/login',
               query: { action: 'reset_password' },

@@ -1,4 +1,3 @@
-import pick from 'lodash.pick';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { unstable_setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren, Suspense } from 'react';
@@ -25,7 +24,7 @@ export default function DefaultLayout({ children, params: { locale } }: Props) {
         {children}
       </main>
       <Suspense fallback={null}>
-        <NextIntlClientProvider locale={locale} messages={pick(messages, 'Product')}>
+        <NextIntlClientProvider locale={locale} messages={{ Product: messages.Product ?? {} }}>
           <ProductSheet />
         </NextIntlClientProvider>
       </Suspense>

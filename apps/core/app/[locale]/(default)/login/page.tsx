@@ -1,5 +1,4 @@
 import { Button } from '@bigcommerce/components/button';
-import pick from 'lodash.pick';
 import { NextIntlClientProvider, useMessages, useTranslations } from 'next-intl';
 
 import { Link } from '~/components/link';
@@ -25,7 +24,7 @@ export default function Login({ params: { locale } }: Props) {
     <div className="mx-auto my-6 max-w-4xl">
       <h2 className="text-h2 mb-8">{t('heading')}</h2>
       <div className="mb-12 grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8">
-        <NextIntlClientProvider locale={locale} messages={pick(messages, 'Account')}>
+        <NextIntlClientProvider locale={locale} messages={{ Account: messages.Account ?? {} }}>
           <LoginForm />
         </NextIntlClientProvider>
         <div className="flex flex-col gap-4 bg-gray-100 p-8">

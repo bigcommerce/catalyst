@@ -252,7 +252,7 @@ export const Facets = ({ facets, pageType }: Props) => {
                         >
                           <div
                             className={cn('flex flex-row flex-nowrap', {
-                              'text-blue-primary': rating.isSelected,
+                              'text-primary': rating.isSelected,
                             })}
                           >
                             <Rating value={parseInt(rating.value, 10)} />

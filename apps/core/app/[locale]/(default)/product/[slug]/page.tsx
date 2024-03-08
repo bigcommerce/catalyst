@@ -1,4 +1,3 @@
-import pick from 'lodash.pick';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
@@ -79,7 +78,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
     <>
       <BreadCrumbs productId={product.entityId} />
       <div className="mb-12 mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
-        <NextIntlClientProvider locale={locale} messages={pick(messages, ['Product'])}>
+        <NextIntlClientProvider locale={locale} messages={{ Product: messages.Product ?? {} }}>
           <Gallery noImageText={t('noGalleryText')} product={product} />
           <Details product={product} />
           <div className="lg:col-span-2">
