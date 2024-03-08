@@ -1,4 +1,3 @@
-import pick from 'lodash.pick';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
@@ -29,7 +28,7 @@ export default async function Home({ params: { locale } }: Props) {
       <Hero />
 
       <div className="my-10">
-        <NextIntlClientProvider locale={locale} messages={pick(messages, 'Product')}>
+        <NextIntlClientProvider locale={locale} messages={{ Product: messages.Product ?? {} }}>
           <ProductCardCarousel
             products={featuredProducts}
             showCart={false}

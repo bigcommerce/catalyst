@@ -1,6 +1,5 @@
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import pick from 'lodash.pick';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
@@ -54,7 +53,7 @@ export default function RootLayout({ children, params: { locale } }: RootLayoutP
     <html className={`${inter.variable} font-sans`} lang={locale}>
       <body className="flex h-screen flex-col">
         <Notifications />
-        <NextIntlClientProvider locale={locale} messages={pick(messages, 'Providers')}>
+        <NextIntlClientProvider locale={locale} messages={{ Providers: messages.Providers ?? {} }}>
           <Providers>{children}</Providers>
         </NextIntlClientProvider>
         <Analytics />
