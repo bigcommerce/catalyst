@@ -37,13 +37,13 @@ https://{BIGCOMMERCE_STORE_HASH}.mybigcommerce.com/manage
 | Permanently required | false |
 | CLI-configurable | true |
 
-This token is currently required; Catalyst requires this access token to make a few key API calls to the Management API and the Customer Login API. This dependency will be removed in a future version of Catalyst.
+This token is currently required; Catalyst requires this access token to make a few essential API calls to the Management API and the Customer Login API. This dependency will be removed in a future version of Catalyst.
 
 The CLI will prompt you to enter this access token. The following steps will help you create the necessary API account and collect the access token.
 
 #### Creating the access token
 
-In the control panel of the subject store, [create a store-level API account](https://developer.bigcommerce.com/docs/start/authentication/api-accounts#creating-store-level-api-credentials) and add the following OAuth scopes. To learn more, see [OAuth scopes](https://developer.bigcommerce.com/docs/start/authentication/api-accounts#store-resource-scopes).
+In the store's control panel, [create a store-level API account](https://developer.bigcommerce.com/docs/start/authentication/api-accounts#creating-store-level-api-credentials) and add the following OAuth scopes. To learn more, see [OAuth scopes](https://developer.bigcommerce.com/docs/start/authentication/api-accounts#store-resource-scopes).
 
 | UI Name | Permission | Parameter | Required |
 |:--------|:-----------|:----------|:---------|
@@ -55,7 +55,7 @@ The value of `BIGCOMMERCE_ACCESS_TOKEN` is the access token that's automatically
 
 #### Carts
 
-The call to the carts feature of the Management API generates checkout redirect URLs. This dependency will be removed in a future version of Catalyst.
+The call to the carts feature of the Management API generates checkout redirect URLs. We will remove this dependency in a future version of Catalyst.
 
 #### Customer Login
 
@@ -122,7 +122,7 @@ openssl rand -hex 32
 
 ## Recommended
 
-Catalyst does not require the following values to run, but we recommend setting them for optimal performance.
+Catalyst does not require the following values, but we recommend setting them for optimal performance.
 
 ### TURBO_REMOTE_CACHE_SIGNATURE_KEY
 
@@ -160,7 +160,7 @@ openssl rand -hex 32
 | CLI-configurable | false |
 | Recommended | true |
 
-This is an API account client secret that you can use to sign [Customer Login API](https://developer.bigcommerce.com/docs/start/authentication/customer-login) JWTs. Providing this value lets shoppers preserve their logged-in state when Catalyst redirects them to checkout.
+You can use this API account client secret to sign [Customer Login API](https://developer.bigcommerce.com/docs/start/authentication/customer-login) JWTs. Providing this value lets shoppers preserve their logged-in state when Catalyst redirects them to checkout.
 
 You can use the client secret from the same API account you configured in [BIGCOMMERCE_ACCESS_TOKEN](#bigcommerce_access_token), or configure a dedicated API account with the following scope.
 
@@ -176,7 +176,7 @@ To learn more, see any of the following docs:
 
 ## Optional
 
-The following values are related to tuneable parameters of Catalyst, which may not be relevant to all users, hosting platforms, or scenarios. Consider which ones are right for your implementation and phase of development.
+The following values relate to Catalyst's tuneable parameters, which may not be relevant to all users, hosting platforms, or scenarios. Consider which ones are right for your implementation and development phase.
 
 ### ENABLE_ADMIN_ROUTE
 
@@ -206,7 +206,7 @@ If you wish to remove this feature entirely from your codebase, you can delete [
 
 The `NEXTAUTH_URL` environment variable tells the [Auth.js library the root URL of the storefront](https://next-auth.js.org/configuration/options#nextauth_url).
 
-If your storefront is deployed on Vercel, `NEXTAUTH_URL` is automatically detected from `VERCEL_URL`, but for other environments you should set `NEXTAUTH_URL` explicitly.
+If your storefront is deployed on Vercel, `NEXTAUTH_URL` is automatically detected from `VERCEL_URL`, but for other environments, you should set `NEXTAUTH_URL` explicitly.
 
 ### TRAILING_SLASH
 
@@ -217,9 +217,9 @@ If your storefront is deployed on Vercel, `NEXTAUTH_URL` is automatically detect
 | Required | false |
 | CLI-configurable | false |
 
-This environment variable lets you choose your preferred URL appearance, with or without trailing slashes. This is purely cosmetic and has [no direct SEO implications, although it's a good idea to commit to one URL format](https://developers.google.com/search/blog/2010/04/to-slash-or-not-to-slash). Try not to create entity URLs with mixed cases of trailing-slash and no-trailing-slash - consistency is key.
+This environment variable lets you choose your preferred URL appearance, with or without trailing slashes. This is purely cosmetic and has [no direct SEO implications, although it's a good idea to commit to one URL format](https://developers.google.com/search/blog/2010/04/to-slash-or-not-to-slash). Try not to create entity URLs with mixed cases of trailing slash and no-trailing slash—consistency is key.
 
-The `TRAILING_SLASH` variable defaults to `true`, and must be explicitly set to `false` in order to remove trailing slashes. If you set it to `false`, update your [Store Settings > URL Structure](https://login.bigcommerce.com/deep-links/manage/settings) in the store control panel. Note that this is currently a global setting, so the option you set will go into effect immediately on all the store's storefronts.
+The `TRAILING_SLASH` variable defaults to `true` and must be explicitly set to `false` to remove trailing slashes. If you set it to `false`, update your [Store Settings > URL Structure](https://login.bigcommerce.com/deep-links/manage/settings) in the store control panel. Note that this is a global setting, so the option you set will go into effect immediately on all the store's storefronts.
 
 Catalyst uses the existing URLs of your BigCommerce objects, such as products and categories, as the URL paths on your storefront. Default [paths for BigCommerce products, categories, etc.](https://support.bigcommerce.com/s/article/Store-Settings#url-structure) create URLs with a trailing slash, while the [Next.js default behavior](https://nextjs.org/docs/app/api-reference/next-config-js/trailingSlash) does not use trailing slashes on URLs.
 
@@ -245,7 +245,7 @@ NextJS persists cached queries in its [data cache](https://nextjs.org/docs/app/b
 | Required | false |
 | CLI-configurable | true |
 
-This environment variable turns on and off the request logger that's built into the Catalyst API client.
+This environment variable turns the request logger built into the Catalyst API client on and off.
 
 When enabled, the client logger logs the following information:
 
