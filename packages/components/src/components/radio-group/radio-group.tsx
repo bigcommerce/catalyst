@@ -45,7 +45,7 @@ const RadioItem = forwardRef<ElementRef<RadioItemType>, RadioItemProps>(
   ({ children, className, variant, ...props }, ref) => {
     return (
       <RadioGroupPrimitive.Item
-        className={radioGroupVariants({ variant, className })}
+        className={cn(radioGroupVariants({ variant, className }))}
         ref={ref}
         {...props}
       >
