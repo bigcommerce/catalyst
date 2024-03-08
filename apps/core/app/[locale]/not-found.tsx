@@ -1,4 +1,3 @@
-import { Message } from '@bigcommerce/components/message';
 import { ShoppingCart } from 'lucide-react';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages, getTranslations } from 'next-intl/server';
@@ -35,10 +34,10 @@ export default async function NotFound() {
         }
       />
       <main className="mx-auto mb-10 max-w-[835px] space-y-8 px-6 sm:px-10 lg:px-0">
-        <Message className="flex-col gap-8 px-0 py-16">
+        <div className="flex flex-col gap-8 px-0 py-16">
           <h2 className="text-4xl font-black lg:text-5xl">{t('heading')}</h2>
           <p className="text-lg">{t('message')}</p>
-        </Message>
+        </div>
         <NextIntlClientProvider locale={locale} messages={{ NotFound: messages.NotFound ?? {} }}>
           <SearchForm />
         </NextIntlClientProvider>
