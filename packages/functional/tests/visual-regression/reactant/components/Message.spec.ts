@@ -2,8 +2,18 @@ import { expect, test } from '@playwright/test';
 
 import * as storyBookElements from '../StoryBookElements';
 
-test('Default message', async ({ page }) => {
+test('Primary message', async ({ page }) => {
   await page.goto(`${storyBookElements.storyUrl}/message--default`);
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).getByText('Here is your message for Users'),
+  ).toBeVisible();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
+});
+
+test('Success message', async ({ page }) => {
+  await page.goto(`${storyBookElements.storyUrl}/message--success`);
   await expect(
     page
       .frameLocator(storyBookElements.storyBookFrame)

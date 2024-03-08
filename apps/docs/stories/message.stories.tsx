@@ -15,6 +15,12 @@ type Story = StoryObj<typeof Message>;
 
 export const Default: Story = {
   args: {
+    children: <p>Here is your message for Users</p>,
+  },
+};
+
+export const Success: Story = {
+  args: {
     children: (
       <p>
         Here is your message for Users on<strong> Successful Action</strong>
