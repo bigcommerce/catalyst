@@ -39,7 +39,7 @@ jobs:
           cd packages/functional
           npx playwright test tests/ui/ --project=tests-chromium 
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: playwright-report
