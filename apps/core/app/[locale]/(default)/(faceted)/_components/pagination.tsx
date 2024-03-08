@@ -1,11 +1,9 @@
 'use client';
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-// Using Next's Link until issue with next-intl Link is resolved:
-// https://github.com/amannn/next-intl/issues/918
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import NextLink from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
+
+import { Link } from '~/components/link';
 
 interface PaginationProps {
   endCursor: string | null;
@@ -38,21 +36,21 @@ export const Pagination = ({
   afterSearchParams.set('after', String(endCursor));
 
   return (
-    <nav aria-label="Pagination" className="text-blue-primary my-6 text-center">
+    <nav aria-label="Pagination" className="my-6 text-center text-primary">
       {hasPreviousPage ? (
-        <NextLink href={`${pathname}?${beforeSearchParams.toString()}`}>
+        <Link className="inline-block" href={`${pathname}?${beforeSearchParams.toString()}`}>
           <span className="sr-only">{prevLabel}</span>
           <ChevronLeft aria-hidden="true" className="inline-block h-8 w-8" />
-        </NextLink>
+        </Link>
       ) : (
         <ChevronLeft aria-hidden="true" className="inline-block h-8 w-8 text-gray-200" />
       )}
 
       {hasNextPage ? (
-        <NextLink href={`${pathname}?${afterSearchParams.toString()}`}>
+        <Link className="inline-block" href={`${pathname}?${afterSearchParams.toString()}`}>
           <span className="sr-only">{nextLabel}</span>
           <ChevronRight aria-hidden="true" className="inline-block h-8 w-8" />
-        </NextLink>
+        </Link>
       ) : (
         <ChevronRight aria-hidden="true" className="inline-block h-8 w-8 text-gray-200" />
       )}
