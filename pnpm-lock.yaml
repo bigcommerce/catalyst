@@ -53,6 +53,9 @@ importers:
       clsx:
         specifier: ^2.0.0
         version: 2.0.0
+      gql.tada:
+        specifier: ^1.3.2
+        version: 1.3.3(graphql@16.8.1)
       graphql:
         specifier: ^16.8.1
         version: 16.8.1
@@ -102,6 +105,9 @@ importers:
         specifier: ^3.22.4
         version: 3.22.4
     devDependencies:
+      '@0no-co/graphqlsp':
+        specifier: ^1.5.0
+        version: 1.5.0
       '@bigcommerce/eslint-config-catalyst':
         specifier: workspace:^
         version: link:../../packages/eslint-config-catalyst
@@ -550,6 +556,26 @@ importers:
         version: 5.3.3
 
 packages:
+
+  /@0no-co/graphql.web@1.0.4(graphql@16.8.1):
+    resolution: {integrity: sha512-W3ezhHGfO0MS1PtGloaTpg0PbaT8aZSmmaerL7idtU5F7oCI+uu25k+MsMS31BVFlp4aMkHSrNRxiD72IlK8TA==}
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+    peerDependenciesMeta:
+      graphql:
+        optional: true
+    dependencies:
+      graphql: 16.8.1
+    dev: false
+
+  /@0no-co/graphqlsp@1.5.0:
+    resolution: {integrity: sha512-NGMUwzj7m6DfIqudZxfTfUEmzKR2n9xphPssCKqkGsMEKe9qIzrNqLpXXwzXTWrGBS5FBELW+TXGUyTa0v1LAw==}
+    dependencies:
+      json5: 2.2.3
+      node-fetch: 2.7.0
+    transitivePeerDependencies:
+      - encoding
+    dev: true
 
   /@aashutoshrathi/word-wrap@1.2.6:
     resolution: {integrity: sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==}
@@ -2757,6 +2783,13 @@ packages:
     resolution: {integrity: sha512-zTwEpWOzZ2CiKcB93BLngUX59hQkuZjT2+SAQEscSm52peDW/getsawMcWF1rGRpMCX6D7nSJA3CzJ8gn13N/g==}
     dependencies:
       tslib: 2.6.2
+    dev: false
+
+  /@gql.tada/cli-utils@0.1.1:
+    resolution: {integrity: sha512-UwT7N1hY3WVUeqeq80MoRovV2mqqu4A8dUEcZThC5KklIYlvxOux6ql3XqKTV1dd9Sva8uCfm+Eym2i7eMFeEg==}
+    dependencies:
+      '@urql/introspection': 1.0.3(graphql@16.8.1)
+      graphql: 16.8.1
     dev: false
 
   /@graphql-codegen/add@5.0.0(graphql@16.8.1):
@@ -6830,6 +6863,14 @@ packages:
       crypto-js: 4.2.0
     dev: false
 
+  /@urql/introspection@1.0.3(graphql@16.8.1):
+    resolution: {integrity: sha512-5zgnfUDV10c3qudqYvfZ/rOtWVB2QvqanmoDMttqpt+TCCPkSUZdb2qcLCEB6DL7ph8mQRTZhXI29J57nTnqKg==}
+    peerDependencies:
+      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      graphql: 16.8.1
+    dev: false
+
   /@vercel/analytics@1.1.1:
     resolution: {integrity: sha512-+NqgNmSabg3IFfxYhrWCfB/H+RCUOCR5ExRudNG2+pcRehq628DJB5e1u1xqwpLtn4pAYii4D98w7kofORAGQA==}
     dependencies:
@@ -10177,6 +10218,16 @@ packages:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
     dependencies:
       get-intrinsic: 1.2.2
+
+  /gql.tada@1.3.3(graphql@16.8.1):
+    resolution: {integrity: sha512-enQSg6FIiK6yvgvTSpvc1qOqu7SzZF0J/9Vsm1LUvDwVoPZMN1sYsrIT19QcO/1UqHg72NpPF7CvyrHAiKvIzw==}
+    hasBin: true
+    dependencies:
+      '@0no-co/graphql.web': 1.0.4(graphql@16.8.1)
+      '@gql.tada/cli-utils': 0.1.1
+    transitivePeerDependencies:
+      - graphql
+    dev: false
 
   /graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
