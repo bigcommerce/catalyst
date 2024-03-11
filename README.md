@@ -85,4 +85,4 @@ Learn more about Catalyst at [catalyst.dev](https://catalyst.dev).
 
 > [!IMPORTANT]
 > If you just want to build a storefront, start with the [CLI](#quickstart) which will install the Next.js application in [/apps/core](/apps/core/).
-> If you wish to contribute back to Catalyst or create a fork of Catalyst, you can check the [docs for this monorepo](/docs/monorepo.md) to get started.
+> If you wish to contribute back to Catalyst or create a fork of Catalyst, you can check the [docs for this monorepo](https://catalyst.dev/docs/monorepo) to get started.
