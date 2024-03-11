@@ -22,6 +22,13 @@
     "plugins": [
       {
         "name": "next"
+      },
+      {
+        "name": "@0no-co/graphqlsp",
+        "schema": "./schema.graphql",
+        "tadaOutputLocation": "./graphql-env.d.ts",
+        "trackFieldUsage": false,
+        "shouldCheckForColocatedFragments": false
       }
     ],
     "baseUrl": ".",
