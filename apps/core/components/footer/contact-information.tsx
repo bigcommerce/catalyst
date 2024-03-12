@@ -22,7 +22,7 @@ export const ContactInformation = async () => {
       </address>
       {contact.phone ? (
         <a
-          className="hover:text-primary focus:outline-none focus:ring-4 focus:ring-primary/20"
+          className="hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
           href={`tel:${contact.phone}`}
         >
           <p>{contact.phone}</p>

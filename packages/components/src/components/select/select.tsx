@@ -6,14 +6,14 @@ import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 import { cn } from '~/lib/utils';
 
 const selectVariants = cva(
-  'focus:ring-primary/20 group flex h-12 w-full items-center justify-between border-2 border-gray-200 px-4 py-3 text-base text-black hover:border-primary focus:border-primary focus:outline-none focus:ring-4 disabled:bg-gray-100 disabled:hover:border-gray-200 data-[placeholder]:text-gray-500',
+  'focus-visible:ring-primary/20 group flex h-12 w-full items-center justify-between border-2 border-gray-200 px-4 py-3 text-base text-black hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 disabled:bg-gray-100 disabled:hover:border-gray-200 data-[placeholder]:text-gray-500',
   {
     variants: {
       variant: {
         success:
-          'border-success-secondary focus:border-success-secondary focus:ring-success-secondary/20 disabled:border-gray-200 hover:border-success',
+          'border-success-secondary focus-visible:border-success-secondary focus-visible:ring-success-secondary/20 disabled:border-gray-200 hover:border-success',
         error:
-          'border-error-secondary focus:border-error-secondary focus:ring-error-secondary/20 disabled:border-gray-200 hover:border-error',
+          'border-error-secondary focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 disabled:border-gray-200 hover:border-error',
       },
     },
   },
@@ -42,7 +42,7 @@ const Select = forwardRef<ElementRef<SelectTriggerType>, SelectProps>(
           <SelectPrimitive.Value placeholder={placeholder} />
           {/* TODO: For the sake of moving fast we are leaving this in, but in the future we need to figure out how enable custom icons */}
           <SelectPrimitive.Icon>
-            <ChevronDown className="inline group-focus:text-primary group-enabled:group-hover:text-primary" />
+            <ChevronDown className="inline group-focus-visible:text-primary group-enabled:group-hover:text-primary" />
           </SelectPrimitive.Icon>
         </SelectPrimitive.Trigger>
 
@@ -89,7 +89,7 @@ const SelectItem = forwardRef<ElementRef<SelectItemType>, ComponentPropsWithRef<
       <SelectPrimitive.Item
         {...props}
         className={cn(
-          'relative flex w-full cursor-pointer select-none items-center justify-between overflow-visible px-4 py-2 outline-none hover:bg-secondary/10 hover:text-primary focus:bg-secondary/10 data-[disabled]:pointer-events-none data-[state="checked"]:bg-secondary/10 data-[state="checked"]:text-primary data-[disabled]:opacity-50',
+          'relative flex w-full cursor-pointer select-none items-center justify-between overflow-visible px-4 py-2 outline-none hover:bg-secondary/10 hover:text-primary focus-visible:bg-secondary/10 data-[disabled]:pointer-events-none data-[state="checked"]:bg-secondary/10 data-[state="checked"]:text-primary data-[disabled]:opacity-50',
           className,
         )}
         ref={ref}

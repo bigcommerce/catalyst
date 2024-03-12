@@ -5,14 +5,14 @@ import { ComponentPropsWithRef, ElementRef, forwardRef, useRef, useState } from 
 import { cn } from '~/lib/utils';
 
 const inputVariants = cva(
-  'peer/input w-full border-2 border-gray-200 px-12 py-2.5 text-center text-base placeholder:text-gray-500 hover:border-primary focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200 peer-hover/down:border-primary peer-hover/up:border-primary peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200 [&::-webkit-inner-spin-button]:appearance-none',
+  'peer/input w-full border-2 border-gray-200 px-12 py-2.5 text-center text-base placeholder:text-gray-500 hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200 peer-hover/down:border-primary peer-hover/up:border-primary peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200 [&::-webkit-inner-spin-button]:appearance-none',
   {
     variants: {
       variant: {
         success:
-          'border-success-secondary focus:border-success-secondary focus:ring-success-secondary/20 disabled:border-gray-200 hover:border-success peer-hover/down:border-success peer-hover/up:border-success peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
+          'border-success-secondary focus-visible:border-success-secondary focus-visible:ring-success-secondary/20 disabled:border-gray-200 hover:border-success peer-hover/down:border-success peer-hover/up:border-success peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
         error:
-          'border-error-secondary focus:border-error-secondary focus:ring-error-secondary/20 disabled:border-gray-200 hover:border-error peer-hover/down:border-error peer-hover/up:border-error peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
+          'border-error-secondary focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 disabled:border-gray-200 hover:border-error peer-hover/down:border-error peer-hover/up:border-error peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
       },
     },
   },
@@ -108,7 +108,7 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
           aria-hidden="true"
           aria-label="Decrease count"
           className={cn(
-            'peer/down absolute start-0 top-0 flex h-full w-12 items-center justify-center focus:outline-none disabled:text-gray-200',
+            'peer/down absolute start-0 top-0 flex h-full w-12 items-center justify-center focus-visible:outline-none disabled:text-gray-200',
           )}
           disabled={!canDecrement()}
           onClick={() => {
@@ -126,7 +126,7 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
           aria-hidden="true"
           aria-label="Increase count"
           className={cn(
-            'peer/up absolute end-0 top-0 flex h-full w-12 items-center justify-center focus:outline-none disabled:text-gray-200',
+            'peer/up absolute end-0 top-0 flex h-full w-12 items-center justify-center focus-visible:outline-none disabled:text-gray-200',
           )}
           disabled={!canIncrement()}
           onClick={() => {

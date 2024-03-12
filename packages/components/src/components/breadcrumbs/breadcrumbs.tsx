@@ -31,7 +31,7 @@ const BreadcrumbItem = forwardRef<ElementRef<'li'>, BreadcrumbItemProps>(
         <Comp
           aria-current={isActive ? `page` : undefined}
           className={cn(
-            'p-1 font-semibold hover:text-primary focus:outline-none focus:ring-4 focus:ring-primary/20',
+            'p-1 font-semibold hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
             isActive && 'cursor-default font-extrabold hover:text-black',
             className,
           )}
