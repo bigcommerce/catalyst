@@ -21,7 +21,9 @@ interface ProductSearch {
 const GET_PRODUCT_SEARCH_RESULTS_QUERY = /* GraphQL */ `
   query getProductSearchResults(
     $first: Int
+    $last: Int
     $after: String
+    $before: String
     $filters: SearchProductsFiltersInput!
     $sort: SearchProductsSortInput
     $imageHeight: Int!
@@ -30,7 +32,7 @@ const GET_PRODUCT_SEARCH_RESULTS_QUERY = /* GraphQL */ `
     site {
       search {
         searchProducts(filters: $filters, sort: $sort) {
-          products(first: $first, after: $after) {
+          products(first: $first, after: $after, last: $last, before: $before) {
             pageInfo {
               ...PageDetails
             }
@@ -163,6 +165,7 @@ export const getProductSearchResults = cache(
   async ({
     limit = 9,
     after,
+    before,
     sort,
     filters,
     imageHeight = 300,
@@ -173,7 +176,23 @@ export const getProductSearchResults = cache(
 
     const response = await client.fetch({
       document: query,
-      variables: { first: limit, after, filters, sort, imageHeight, imageWidth },
+      variables: before
+        ? {
+            last: limit,
+            before,
+            filters,
+            sort,
+            imageHeight,
+            imageWidth,
+          }
+        : {
+            first: limit,
+            after,
+            filters,
+            sort,
+            imageHeight,
+            imageWidth,
+          },
       customerId,
       fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate: 300 } },
     });
