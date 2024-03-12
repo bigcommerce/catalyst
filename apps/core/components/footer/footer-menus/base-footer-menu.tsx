@@ -22,9 +22,9 @@ export const BaseFooterMenu = ({
       <h3 className="mb-4 text-lg font-bold">{title}</h3>
       <ul className="flex flex-col gap-4">
         {items.map((item) => (
-          <Link href={item.path} key={item.path}>
-            {item.name}
-          </Link>
+          <li key={item.path}>
+            <Link href={item.path}>{item.name}</Link>
+          </li>
         ))}
       </ul>
     </div>
