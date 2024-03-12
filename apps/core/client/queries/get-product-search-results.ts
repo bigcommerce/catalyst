@@ -173,26 +173,12 @@ export const getProductSearchResults = cache(
   }: ProductSearch) => {
     const query = graphql(GET_PRODUCT_SEARCH_RESULTS_QUERY);
     const customerId = await getSessionCustomerId();
+    const filterArgs = { filters, sort, imageHeight, imageWidth };
+    const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
       document: query,
-      variables: before
-        ? {
-            last: limit,
-            before,
-            filters,
-            sort,
-            imageHeight,
-            imageWidth,
-          }
-        : {
-            first: limit,
-            after,
-            filters,
-            sort,
-            imageHeight,
-            imageWidth,
-          },
+      variables: { ...filterArgs, ...paginationArgs },
       customerId,
       fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate: 300 } },
     });
