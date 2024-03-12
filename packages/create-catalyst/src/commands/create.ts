@@ -16,6 +16,7 @@ import { Https } from '../utils/https';
 import { installDependencies } from '../utils/install-dependencies';
 import { login } from '../utils/login';
 import { parse } from '../utils/parse';
+import { patchYarn } from '../utils/patch-yarn';
 import { getPackageManager, packageManagerChoices } from '../utils/pm';
 import { spinner } from '../utils/spinner';
 import { writeEnv } from '../utils/write-env';
@@ -252,6 +253,8 @@ export const create = new Command('create')
     });
 
     console.log(`\nUsing ${chalk.bold(packageManager)}\n`);
+
+    patchYarn({ projectDir });
 
     await installDependencies(projectDir, packageManager);
 
