@@ -145,7 +145,9 @@ export const Header = async ({ cart }: { cart: ReactNode }) => {
                 </Suspense>
               </p>
             </NavigationMenuItem>
-            <NavigationMenuToggle className="xl:hidden" />
+            <NavigationMenuItem>
+              <NavigationMenuToggle className="xl:hidden" />
+            </NavigationMenuItem>
           </NavigationMenuList>
         </div>
 
