@@ -3,7 +3,7 @@
 
 > [!NOTE]
 > **Before you start**
-> This guide assumes you have created a Catalyst storefront using [the CLI](/cli) or the [Advanced configuration guide](/monorepo). Your project directory should contain only a Next.js application rather than the monorepo in the [Catalyst GitHub repository](https://github.com/bigcommerce/catalyst). If you want to develop using the monorepo, you must modify these instructions. For more information, see [Monorepo](/monorepo).
+> This guide assumes you have created a Catalyst storefront using [the CLI](/docs/getting_started.md) or the [Advanced configuration guide](/docs/monorepo.md). Your project directory should contain only a Next.js application rather than the monorepo in the [Catalyst GitHub repository](https://github.com/bigcommerce/catalyst). If you want to develop using the monorepo, you must modify these instructions. For more information, see [Monorepo](/docs/monorepo.md).
 
 ## Deploy to Vercel from vercel.com
 
@@ -17,7 +17,7 @@ On the **Let's build something new** page, point Vercel to a GitHub, GitLab, or 
 
 ![Vercel project page](https://storage.googleapis.com/bigcommerce-production-dev-center/images/catalyst/deployment-vercel-project-page.jpg)
 
-Add the required [environment variables](/environment-variables). In addition to the required variables, add a value for `TURBO_REMOTE_CACHE_SIGNATURE_KEY` for optimal build performance on Vercel. After you add the environment variables, click **Deploy**. 
+Add the required [environment variables](/docs/environment-variables.md). In addition to the required variables, add a value for `TURBO_REMOTE_CACHE_SIGNATURE_KEY` for optimal build performance on Vercel. After you add the environment variables, click **Deploy**.
 
 ![Vercel environment variables](https://storage.googleapis.com/bigcommerce-production-dev-center/images/catalyst/deployment-vercel-environment-variables.jpg)
 
@@ -27,7 +27,7 @@ To learn more about deploying to Vercel, consult the [Vercel deployments overvie
 
 To deploy using the [Vercel CLI](https://vercel.com/docs/cli), install it by running `npm i -g vercel` or `pnpm i -g vercel`.
 
-Next, add the required [environment variables](/environment-variables) to your `.env.local` file. For optimal build performance on Vercel, add a value for `TURBO_REMOTE_CACHE_SIGNATURE_KEY` in addition to the required variables.
+Next, add the required [environment variables](/docs/environment-variables.md) to your `.env.local` file. For optimal build performance on Vercel, add a value for `TURBO_REMOTE_CACHE_SIGNATURE_KEY` in addition to the required variables.
 
 Next, open a terminal session and `cd` into the local directory that contains your Catalyst storefront's code. Install or update the project dependencies with `npm i` or `pnpm i`, then run `npm run dev` or `pnpm run dev` and make sure the storefront functions correctly.
 
