@@ -55,9 +55,9 @@ Out-of-the-box, Catalyst has the following capabilities you can use to further b
 
 We expect you will prioritize some of these features over others as you make Catalyst your own. We recommend exploring the following configurations as you build:
 
-* **A caching backend**. For example, using Vercel KV may improve the performance of our [with-routes middleware](/docs/middleware).
+* **A caching backend**. For example, using Vercel KV may improve the performance of our [with-routes middleware](/catalyst-middleware).
 * **Using microservices**. Externally hosted databases and third-party APIs can expand the feature set and data persistence available to Catalyst storefronts.
-* **Evaluating middleware**. Assess the costs and benefits of the [default Catalyst middleware](/docs/middleware). You may tailor the middleware for your use case or remove it altogether.
+* **Evaluating middleware**. Assess the costs and benefits of the [default Catalyst middleware](/catalyst-middleware). You may tailor the middleware for your use case or remove it altogether.
 * **Additional catalog optimization**. You can tune Catalyst's performance based on your store's catalog size, complexity, and update frequency. For example, a catalog with a small number of products and infrequent updates may be able to take advantage of static generation, whereas a large catalog with frequent changes may lean into an aggressive caching strategy that relies on webhooks.
 
 ## Future releases
