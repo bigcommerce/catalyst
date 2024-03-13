@@ -1,15 +1,25 @@
-# create-catalyst
+# @bigcommerce/create-catalyst
 
-Create a new Catalyst project, optionally connect the project to a BigCommerce store. Also supports "switching" the store that Catalyst is connected to by running `init`.
+Create a new Catalyst project, and optionally connect the project to a BigCommerce store. Add `--help` to the end of any command to learn about available subcommands and options.
 
-## NPM
+## Usage
+
+### Create a new Catalyst project
 
 ```sh
-npm create catalyst-storefront@latest
+npm create @bigcommerce/catalyst@latest
 ```
 
-## PNPM
+```sh
+pnpm create @bigcommerce/catalyst@latest
+```
+
+### Connect an existing Catalyst project to a BigCommerce store
 
 ```sh
-pnpm create catalyst-storefront@latest
+npm create @bigcommerce/catalyst@latest init
+```
+
+```sh
+pnpm create @bigcommerce/catalyst@latest init
 ```
