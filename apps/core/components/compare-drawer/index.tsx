@@ -62,7 +62,7 @@ const CompareItem = ({
       </small>
       <Button
         aria-label={t('removeProductAriaLabel', { product: product.name })}
-        className="grow-1 ms-auto w-auto border-0 bg-transparent p-0 text-black hover:bg-transparent hover:text-primary focus:text-primary"
+        className="grow-1 ms-auto w-auto border-0 bg-transparent p-0 text-black hover:bg-transparent hover:text-primary focus-visible:text-primary"
         onClick={removeItem}
         type="button"
       >

@@ -44,7 +44,7 @@ export default async function BlogPostPage({ params: { locale }, searchParams }:
       <nav aria-label="Pagination" className="mb-12 mt-10 flex justify-center text-primary">
         {blogPosts.posts.pageInfo.hasPreviousPage ? (
           <Link
-            className="focus:outline-none focus:ring-4 focus:ring-primary/20"
+            className="focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
             href={`/blog?before=${String(blogPosts.posts.pageInfo.startCursor)}`}
             scroll={false}
           >
@@ -56,7 +56,7 @@ export default async function BlogPostPage({ params: { locale }, searchParams }:
         )}
         {blogPosts.posts.pageInfo.hasNextPage ? (
           <Link
-            className="focus:outline-none focus:ring-4 focus:ring-primary/20"
+            className="focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
             href={`/blog?after=${String(blogPosts.posts.pageInfo.endCursor)}`}
             scroll={false}
           >

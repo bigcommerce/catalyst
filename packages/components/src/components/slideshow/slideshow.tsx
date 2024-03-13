@@ -197,7 +197,7 @@ const SlideshowAutoplayControl = forwardRef<ElementRef<'button'>, SlideshowAutop
       <button
         aria-label={isPaused ? 'Play slideshow' : 'Pause slideshow'}
         className={cn(
-          'inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4 focus:ring-primary/20',
+          'inline-flex h-12 w-12 items-center justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
           className,
         )}
         onClick={(e) => {
@@ -232,7 +232,7 @@ const SlideshowNextIndicator = forwardRef<ElementRef<'button'>, ComponentPropsWi
         aria-controls="slideshow-slides"
         aria-label="Next slide"
         className={cn(
-          'inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4 focus:ring-primary/20',
+          'inline-flex h-12 w-12 items-center justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
           className,
         )}
         onClick={scrollNext}
@@ -263,7 +263,7 @@ const SlideshowPreviousIndicator = forwardRef<
       aria-controls="slideshow-slides"
       aria-label="Previous slide"
       className={cn(
-        'inline-flex h-12 w-12 items-center justify-center focus:outline-none focus:ring-4 focus:ring-primary/20',
+        'inline-flex h-12 w-12 items-center justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
         className,
       )}
       onClick={scrollPrev}

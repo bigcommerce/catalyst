@@ -31,8 +31,8 @@ const PickListItem = forwardRef<ElementRef<RadioItemType>, ComponentPropsWithRef
         className={cn(
           'flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-gray-200',
           'hover:border-secondary',
-          'focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/20',
-          'focus:hover:border-secondary',
+          'focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
+          'focus-visible:hover:border-secondary',
           'radix-state-checked:border-primary radix-state-checked:bg-primary',
           'radix-state-checked:hover:border-secondary radix-state-checked:hover:bg-secondary',
           'disabled:pointer-events-none disabled:bg-gray-100',

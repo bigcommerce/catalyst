@@ -121,7 +121,7 @@ export const ProductCard = ({
         <ProductCardInfoProductName>
           {product.path ? (
             <Link
-              className="focus:outline focus:outline-4 focus:outline-offset-2 focus:outline-primary/20 focus:ring-0"
+              className="focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-primary/20 focus-visible:ring-0"
               href={product.path}
             >
               <span aria-hidden="true" className="absolute inset-0 bottom-20" />

@@ -39,7 +39,7 @@ const TagAction = forwardRef<ElementRef<'button'>, TagActionProps>(
     return (
       <button
         className={cn(
-          'box-content inline-flex h-8 w-8 items-center justify-center p-1 hover:bg-primary/10 focus:outline-none focus:ring-4 focus:ring-inset focus:ring-primary/20',
+          'box-content inline-flex h-8 w-8 items-center justify-center p-1 hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-primary/20',
         )}
         ref={ref}
         type="button"

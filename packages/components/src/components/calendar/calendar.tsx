@@ -32,7 +32,7 @@ export const Calendar = ({
           'relative flex h-10 w-10 items-center justify-center p-0 text-center text-xs font-normal focus-within:relative focus-within:z-20 focus-within:rounded focus-within:border focus-within:border-primary/20',
         ),
         day: cn(
-          'h-8 w-8 p-0 text-base hover:bg-secondary/10 focus:outline-none aria-selected:bg-primary aria-selected:text-white aria-selected:hover:bg-primary aria-selected:hover:text-white',
+          'h-8 w-8 p-0 text-base hover:bg-secondary/10 focus-visible:outline-none aria-selected:bg-primary aria-selected:text-white aria-selected:hover:bg-primary aria-selected:hover:text-white',
         ),
         day_today: 'bg-secondary/10',
         day_disabled: 'text-gray-400 aria-selected:bg-gray-100 aria-selected:text-white',

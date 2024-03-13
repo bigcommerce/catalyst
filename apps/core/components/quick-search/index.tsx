@@ -85,7 +85,7 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
       <SheetTrigger asChild>
         <Button
           aria-label="Open search popup"
-          className="border-0 bg-transparent p-3 text-black hover:bg-transparent hover:text-primary focus:text-primary"
+          className="border-0 bg-transparent p-3 text-black hover:bg-transparent hover:text-primary focus-visible:text-primary"
         >
           <Search />
         </Button>
@@ -119,13 +119,13 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
                     role="combobox"
                     value={term}
                   >
-                    <InputIcon className="start-3 peer-hover:text-primary peer-focus:text-primary">
+                    <InputIcon className="start-3 peer-hover:text-primary peer-focus-visible:text-primary">
                       <Search />
                     </InputIcon>
                     {term.length > 0 && !pending && (
                       <Button
                         aria-label="Clear search"
-                        className="absolute end-1.5 top-1/2 w-auto -translate-y-1/2 border-0 bg-transparent p-1.5 text-black hover:bg-transparent hover:text-primary focus:text-primary peer-hover:text-primary peer-focus:text-primary"
+                        className="absolute end-1.5 top-1/2 w-auto -translate-y-1/2 border-0 bg-transparent p-1.5 text-black hover:bg-transparent hover:text-primary focus-visible:text-primary peer-hover:text-primary peer-focus-visible:text-primary"
                         onClick={handleTermClear}
                         type="button"
                       >
@@ -145,7 +145,7 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
             <SheetClose asChild>
               <Button
                 aria-label="Close search popup"
-                className="w-auto justify-self-end border-0 bg-transparent p-2.5 text-black hover:bg-transparent hover:text-primary focus:text-primary peer-hover:text-primary peer-focus:text-primary"
+                className="w-auto justify-self-end border-0 bg-transparent p-2.5 text-black hover:bg-transparent hover:text-primary focus-visible:text-primary peer-hover:text-primary peer-focus-visible:text-primary"
               >
                 <small className="me-2 hidden text-base md:inline-flex">Close</small>
                 <X />
@@ -173,7 +173,7 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
                     return (
                       <li className="mb-3 last:mb-6" key={name}>
                         <a
-                          className="align-items mb-6 flex gap-x-6 focus:outline-none focus:ring-4 focus:ring-primary/20"
+                          className="align-items mb-6 flex gap-x-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
                           href={path}
                         >
                           {name}
@@ -192,7 +192,7 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
                     return (
                       <li key={product.entityId}>
                         <a
-                          className="align-items mb-6 flex gap-x-6 focus:outline-none focus:ring-4 focus:ring-primary/20"
+                          className="align-items mb-6 flex gap-x-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
                           href={product.path}
                         >
                           {product.defaultImage ? (
@@ -236,7 +236,7 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
                     return (
                       <li className="mb-3 last:mb-6" key={name}>
                         <a
-                          className="align-items mb-6 flex gap-x-6 focus:outline-none focus:ring-4 focus:ring-primary/20"
+                          className="align-items mb-6 flex gap-x-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
                           href={path}
                         >
                           {name}

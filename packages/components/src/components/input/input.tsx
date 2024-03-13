@@ -5,14 +5,14 @@ import { ComponentPropsWithRef, createContext, ElementRef, forwardRef, useContex
 import { cn } from '~/lib/utils';
 
 const inputVariants = cva(
-  'peer focus:ring-primary/20 w-full border-2 border-gray-200 py-2.5 px-4 text-base placeholder:text-gray-500 focus:border-primary focus:outline-none focus:ring-4 hover:border-primary disabled:bg-gray-100 disabled:hover:border-gray-200',
+  'peer focus-visible:ring-primary/20 w-full border-2 border-gray-200 py-2.5 px-4 text-base placeholder:text-gray-500 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 hover:border-primary disabled:bg-gray-100 disabled:hover:border-gray-200',
   {
     variants: {
       variant: {
         success:
-          'pe-12 border-success-secondary focus:border-success-secondary focus:ring-success-secondary/20 disabled:border-gray-200 hover:border-success',
+          'pe-12 border-success-secondary focus-visible:border-success-secondary focus-visible:ring-success-secondary/20 disabled:border-gray-200 hover:border-success',
         error:
-          'pe-12 border-error-secondary focus:border-error-secondary focus:ring-error-secondary/20 disabled:border-gray-200 hover:border-error',
+          'pe-12 border-error-secondary focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 disabled:border-gray-200 hover:border-error',
       },
     },
   },
