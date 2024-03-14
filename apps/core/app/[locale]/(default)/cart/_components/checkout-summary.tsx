@@ -127,7 +127,7 @@ export const CheckoutSummary = ({
       <div className="flex justify-between border-t border-t-gray-200 py-4">
         <span className="text-base font-semibold">{t('discounts')}</span>
         <span className="text-base">
-          {currencyFormatter.format(checkoutSummary.totalDiscountedAmount.value)}
+          {currencyFormatter.format(checkoutSummary.discountedAmount.value)}
         </span>
       </div>
 
