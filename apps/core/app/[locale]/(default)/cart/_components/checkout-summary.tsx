@@ -135,7 +135,7 @@ export const CheckoutSummary = ({
         <span className="text-h5">{t('grandTotal')}</span>
         <span className="text-h5">
           {currencyFormatter.format(
-            checkoutSummary.totalExtendedSalePrice.value +
+            checkoutSummary.amount.value +
               checkoutSummary.shippingCostTotal.value +
               checkoutSummary.handlingCostTotal.value,
           )}

@@ -57,6 +57,9 @@ export const GET_CART_QUERY = /* GraphQL */ `
             }
           }
         }
+        amount {
+          ...MoneyFields
+        }
         discountedAmount {
           ...MoneyFields
         }
@@ -91,19 +94,11 @@ export const getCart = cache(async (cartId?: string) => {
     return acc + item.extendedListPrice.value;
   }, 0);
 
-  const totalExtendedSalePrice = cart.lineItems.physicalItems.reduce((acc, item) => {
-    return acc + item.extendedSalePrice.value;
-  }, 0);
-
   return {
     ...cart,
     totalExtendedListPrice: {
       currencyCode: cart.currencyCode,
       value: totalExtendedListPrice,
-    },
-    totalExtendedSalePrice: {
-      currencyCode: cart.currencyCode,
-      value: totalExtendedSalePrice,
     },
   };
 });
