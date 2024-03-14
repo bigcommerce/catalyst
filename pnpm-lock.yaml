@@ -54,8 +54,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       gql.tada:
-        specifier: ^1.3.2
-        version: 1.3.3(graphql@16.8.1)
+        specifier: ^1.3.5
+        version: 1.3.5(graphql@16.8.1)
       graphql:
         specifier: ^16.8.1
         version: 16.8.1
@@ -111,6 +111,9 @@ importers:
       '@bigcommerce/eslint-config-catalyst':
         specifier: workspace:^
         version: link:../../packages/eslint-config-catalyst
+      '@gql.tada/cli-utils':
+        specifier: ^0.2.0
+        version: 0.2.0
       '@graphql-codegen/cli':
         specifier: ^5.0.0
         version: 5.0.0(@parcel/watcher@2.3.0)(@types/node@18.19.3)(graphql@16.8.1)
@@ -2785,12 +2788,11 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@gql.tada/cli-utils@0.1.1:
-    resolution: {integrity: sha512-UwT7N1hY3WVUeqeq80MoRovV2mqqu4A8dUEcZThC5KklIYlvxOux6ql3XqKTV1dd9Sva8uCfm+Eym2i7eMFeEg==}
+  /@gql.tada/cli-utils@0.2.0:
+    resolution: {integrity: sha512-S/1KdJ08G9wKbsHUrBBT6GK38OtGaC82lY9MIFwkIziR9rf/N1PmDxWOThvMWJsaKQaEf5PhioRxquVCjeIbtw==}
     dependencies:
       '@urql/introspection': 1.0.3(graphql@16.8.1)
       graphql: 16.8.1
-    dev: false
 
   /@graphql-codegen/add@5.0.0(graphql@16.8.1):
     resolution: {integrity: sha512-ynWDOsK2yxtFHwcJTB9shoSkUd7YXd6ZE57f0nk7W5cu/nAgxZZpEsnTPEpZB/Mjf14YRGe2uJHQ7AfElHjqUQ==}
@@ -6869,7 +6871,6 @@ packages:
       graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
     dependencies:
       graphql: 16.8.1
-    dev: false
 
   /@vercel/analytics@1.1.1:
     resolution: {integrity: sha512-+NqgNmSabg3IFfxYhrWCfB/H+RCUOCR5ExRudNG2+pcRehq628DJB5e1u1xqwpLtn4pAYii4D98w7kofORAGQA==}
@@ -10219,12 +10220,12 @@ packages:
     dependencies:
       get-intrinsic: 1.2.2
 
-  /gql.tada@1.3.3(graphql@16.8.1):
-    resolution: {integrity: sha512-enQSg6FIiK6yvgvTSpvc1qOqu7SzZF0J/9Vsm1LUvDwVoPZMN1sYsrIT19QcO/1UqHg72NpPF7CvyrHAiKvIzw==}
+  /gql.tada@1.3.5(graphql@16.8.1):
+    resolution: {integrity: sha512-g5ZtNc72fuOHrrMgxnok6vhDoXMt6Q1RJefiuFzAusHMPR0L3/8a3Yyc2HSfEnHBt+tYBgIrvKmWDYIRNl80jg==}
     hasBin: true
     dependencies:
       '@0no-co/graphql.web': 1.0.4(graphql@16.8.1)
-      '@gql.tada/cli-utils': 0.1.1
+      '@gql.tada/cli-utils': 0.2.0
     transitivePeerDependencies:
       - graphql
     dev: false

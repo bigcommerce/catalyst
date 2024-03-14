@@ -198,6 +198,12 @@ export const create = async (options: CreateCommandOptions) => {
 
   await installDependencies(projectDir, packageManager);
 
+  await spinner(exec(`${packageManager} run generate`, { cwd: projectDir }), {
+    text: 'Creating GraphQL schema...',
+    successText: 'Created GraphQL schema',
+    failText: (err) => chalk.red(`Failed to create GraphQL schema: ${err.message}`),
+  });
+
   await spinner(exec(`${packageManager} run codegen`, { cwd: projectDir }), {
     text: 'Generating GraphQL types...',
     successText: 'GraphQL types generated successfully',

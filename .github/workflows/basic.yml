@@ -38,6 +38,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Graphql Tada
+        run: pnpm run -r generate
+
       - name: Graphql Codegen
         run: pnpm run -r codegen
 
