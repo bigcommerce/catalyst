@@ -1,4 +1,4 @@
-import { auth } from 'auth';
+import { auth } from '~/auth';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
