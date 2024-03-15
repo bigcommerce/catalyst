@@ -2,4 +2,4 @@
 "@bigcommerce/catalyst-core": patch
 ---
 
-Use total discount value for cart
+Use amount and discount values for cart summary in Cart page
