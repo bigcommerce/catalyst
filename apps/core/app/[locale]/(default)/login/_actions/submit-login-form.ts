@@ -2,7 +2,7 @@
 
 import { isRedirectError } from 'next/dist/client/components/redirect';
 
-import { Credentials, signIn } from 'auth';
+import { Credentials, signIn } from '~/auth';
 
 export type State = { status: 'idle' } | { status: 'failed' };
 
