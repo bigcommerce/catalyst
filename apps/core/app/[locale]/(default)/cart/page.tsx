@@ -184,6 +184,7 @@ export default async function CartPage({ params: { locale } }: Props) {
           <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
             <CheckoutSummary
               cart={cart}
+              key={cart.totalExtendedListPrice.value}
               shippingCosts={shippingCosts}
               shippingCountries={shippingCountries}
             />
