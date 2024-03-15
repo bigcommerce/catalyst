@@ -28,9 +28,6 @@ export const GET_CART_QUERY = /* GraphQL */ `
             extendedSalePrice {
               ...MoneyFields
             }
-            discountedAmount {
-              ...MoneyFields
-            }
             selectedOptions {
               __typename
               entityId
@@ -59,6 +56,12 @@ export const GET_CART_QUERY = /* GraphQL */ `
               }
             }
           }
+        }
+        amount {
+          ...MoneyFields
+        }
+        discountedAmount {
+          ...MoneyFields
         }
       }
     }
@@ -91,27 +94,11 @@ export const getCart = cache(async (cartId?: string) => {
     return acc + item.extendedListPrice.value;
   }, 0);
 
-  const totalDiscountedAmount = cart.lineItems.physicalItems.reduce((acc, item) => {
-    return acc + item.discountedAmount.value;
-  }, 0);
-
-  const totalExtendedSalePrice = cart.lineItems.physicalItems.reduce((acc, item) => {
-    return acc + item.extendedSalePrice.value;
-  }, 0);
-
   return {
     ...cart,
     totalExtendedListPrice: {
       currencyCode: cart.currencyCode,
       value: totalExtendedListPrice,
-    },
-    totalDiscountedAmount: {
-      currencyCode: cart.currencyCode,
-      value: totalDiscountedAmount,
-    },
-    totalExtendedSalePrice: {
-      currencyCode: cart.currencyCode,
-      value: totalExtendedSalePrice,
     },
   };
 });
