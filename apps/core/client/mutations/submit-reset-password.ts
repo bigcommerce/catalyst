@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { client } from '..';
-import { graphql } from '../generated';
+import { graphql } from '../graphql';
 
 export const ResetPasswordSchema = z.object({
   email: z.string().email(),
@@ -11,7 +11,7 @@ type SubmitResetPassword = z.infer<typeof ResetPasswordSchema> & {
   reCaptchaToken?: string;
 };
 
-const SUBMIT_RESET_PASSWORD_MUTATION = /* GraphQL */ `
+const SUBMIT_RESET_PASSWORD_MUTATION = graphql(`
   mutation ResetPassword($input: RequestResetPasswordInput!, $reCaptcha: ReCaptchaV2Input) {
     customer {
       requestResetPassword(input: $input, reCaptchaV2: $reCaptcha) {
@@ -25,11 +25,9 @@ const SUBMIT_RESET_PASSWORD_MUTATION = /* GraphQL */ `
       }
     }
   }
-`;
+`);
 
 export const submitResetPassword = async ({ email, reCaptchaToken }: SubmitResetPassword) => {
-  const mutation = graphql(SUBMIT_RESET_PASSWORD_MUTATION);
-
   const variables = {
     input: {
       email,
@@ -38,7 +36,7 @@ export const submitResetPassword = async ({ email, reCaptchaToken }: SubmitReset
   };
 
   const response = await client.fetch({
-    document: mutation,
+    document: SUBMIT_RESET_PASSWORD_MUTATION,
     variables,
   });
 

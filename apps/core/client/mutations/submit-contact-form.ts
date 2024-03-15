@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { client } from '..';
-import { graphql } from '../generated';
+import { graphql } from '../graphql';
 
 export const ContactUsSchema = z.object({
   companyName: z.string().optional(),
@@ -19,7 +19,7 @@ interface SubmitContactForm {
   reCaptchaToken?: string;
 }
 
-const SUBMIT_CONTACT_FORM_MUTATION = /* GraphQL */ `
+const SUBMIT_CONTACT_FORM_MUTATION = graphql(`
   mutation submitContactUs($input: SubmitContactUsInput!, $reCaptchaV2: ReCaptchaV2Input) {
     submitContactUs(input: $input, reCaptchaV2: $reCaptchaV2) {
       __typename
@@ -31,15 +31,13 @@ const SUBMIT_CONTACT_FORM_MUTATION = /* GraphQL */ `
       }
     }
   }
-`;
+`);
 
 export const submitContactForm = async ({
   formFields,
   pageEntityId,
   reCaptchaToken,
 }: SubmitContactForm) => {
-  const mutation = graphql(SUBMIT_CONTACT_FORM_MUTATION);
-
   const variables = {
     input: {
       pageEntityId,
@@ -49,7 +47,7 @@ export const submitContactForm = async ({
   };
 
   const response = await client.fetch({
-    document: mutation,
+    document: SUBMIT_CONTACT_FORM_MUTATION,
     variables,
   });
 

@@ -1,10 +1,10 @@
 import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
-import { graphql } from '../generated';
 import { UpdateCartLineItemDataInput } from '../generated/graphql';
+import { graphql } from '../graphql';
 
-export const UPDATE_CART_LINE_ITEM_MUTATION = /* GraphQL */ `
+const UPDATE_CART_LINE_ITEM_MUTATION = graphql(`
   mutation UpdateCartLineItem($input: UpdateCartLineItemInput!) {
     cart {
       updateCartLineItem(input: $input) {
@@ -14,18 +14,17 @@ export const UPDATE_CART_LINE_ITEM_MUTATION = /* GraphQL */ `
       }
     }
   }
-`;
+`);
 
 export const updateCartLineItem = async (
   cartEntityId: string,
   lineItemEntityId: string,
   data: UpdateCartLineItemDataInput,
 ) => {
-  const mutation = graphql(UPDATE_CART_LINE_ITEM_MUTATION);
   const customerId = await getSessionCustomerId();
 
   const response = await client.fetch({
-    document: mutation,
+    document: UPDATE_CART_LINE_ITEM_MUTATION,
     variables: {
       input: {
         cartEntityId,
