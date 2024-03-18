@@ -1,7 +1,7 @@
 import { client } from '..';
-import { graphql } from '../generated';
+import { graphql } from '../graphql';
 
-export const SELECT_CHECKOUT_SHIPPING_OPTION_MUTATION = /* GraphQL */ `
+const SELECT_CHECKOUT_SHIPPING_OPTION_MUTATION = graphql(`
   mutation SelectCheckoutShippingOption($input: SelectCheckoutShippingOptionInput!) {
     checkout {
       selectCheckoutShippingOption(input: $input) {
@@ -31,7 +31,7 @@ export const SELECT_CHECKOUT_SHIPPING_OPTION_MUTATION = /* GraphQL */ `
       }
     }
   }
-`;
+`);
 
 export const selectCheckoutShippingOption = async ({
   checkoutEntityId,
@@ -42,10 +42,8 @@ export const selectCheckoutShippingOption = async ({
   consignmentEntityId: string;
   shippingOptionEntityId: string;
 }) => {
-  const mutation = graphql(SELECT_CHECKOUT_SHIPPING_OPTION_MUTATION);
-
   const response = await client.fetch({
-    document: mutation,
+    document: SELECT_CHECKOUT_SHIPPING_OPTION_MUTATION,
     variables: {
       input: {
         checkoutEntityId,

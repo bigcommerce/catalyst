@@ -1,8 +1,8 @@
 import { client } from '..';
-import { graphql } from '../generated';
 import { CheckoutAddressInput } from '../generated/graphql';
+import { graphql } from '../graphql';
 
-export const UPDATE_CHECKOUT_SHIPPING_INFO_MUTATION = /* GraphQL */ `
+const UPDATE_CHECKOUT_SHIPPING_INFO_MUTATION = graphql(`
   mutation UpdateCheckoutShippingInfo($input: UpdateCheckoutShippingConsignmentInput!) {
     checkout {
       updateCheckoutShippingConsignment(input: $input) {
@@ -41,7 +41,7 @@ export const UPDATE_CHECKOUT_SHIPPING_INFO_MUTATION = /* GraphQL */ `
       }
     }
   }
-`;
+`);
 
 interface UpdateCheckoutShippingInfoProps {
   cartId: string;
@@ -64,10 +64,8 @@ export const updateCheckoutShippingInfo = async ({
   cartItems,
   shouldSaveAddress = false,
 }: UpdateCheckoutShippingInfoProps) => {
-  const mutation = graphql(UPDATE_CHECKOUT_SHIPPING_INFO_MUTATION);
-
   const response = await client.fetch({
-    document: mutation,
+    document: UPDATE_CHECKOUT_SHIPPING_INFO_MUTATION,
     variables: {
       input: {
         checkoutEntityId: cartId,

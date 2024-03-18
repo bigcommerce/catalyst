@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { client } from '..';
-import { graphql } from '../generated';
+import { graphql } from '../graphql';
 
 export const ChangePasswordSchema = z.object({
   newPassword: z.string(),
@@ -14,7 +14,7 @@ interface SubmitChangePassword {
   customerEntityId: number;
 }
 
-const SUBMIT_CHANGE_PASSWORD_MUTATION = /* GraphQL */ `
+const SUBMIT_CHANGE_PASSWORD_MUTATION = graphql(`
   mutation ChangePassword($input: ResetPasswordInput!) {
     customer {
       resetPassword(input: $input) {
@@ -28,15 +28,13 @@ const SUBMIT_CHANGE_PASSWORD_MUTATION = /* GraphQL */ `
       }
     }
   }
-`;
+`);
 
 export const submitChangePassword = async ({
   newPassword,
   token,
   customerEntityId,
 }: SubmitChangePassword) => {
-  const mutation = graphql(SUBMIT_CHANGE_PASSWORD_MUTATION);
-
   const variables = {
     input: {
       token,
@@ -46,7 +44,7 @@ export const submitChangePassword = async ({
   };
 
   const response = await client.fetch({
-    document: mutation,
+    document: SUBMIT_CHANGE_PASSWORD_MUTATION,
     variables,
   });
 
