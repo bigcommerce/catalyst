@@ -55,12 +55,14 @@ export const ShippingEstimator = ({
           key={shippingCosts.selectedShippingOption}
         />
       </div>
-      <div className="inline-flex justify-between border-t border-t-gray-200 pt-4">
-        <span className="text-base font-semibold">{t('handlingCost')}</span>
-        <span className="text-base">
-          {currencyFormatter.format(shippingCosts.handlingCostTotal)}
-        </span>
-      </div>
+      {Boolean(shippingCosts.handlingCostTotal) && (
+        <div className="inline-flex justify-between border-t border-t-gray-200 pt-4">
+          <span className="text-base font-semibold">{t('handlingCost')}</span>
+          <span className="text-base">
+            {currencyFormatter.format(shippingCosts.handlingCostTotal)}
+          </span>
+        </div>
+      )}
     </div>
   ) : (
     <div className="flex flex-col justify-between gap-4 border-t border-t-gray-200 py-4">
