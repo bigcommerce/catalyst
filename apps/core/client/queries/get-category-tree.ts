@@ -3,10 +3,10 @@ import { cache } from 'react';
 import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
-import { graphql } from '../generated';
+import { graphql } from '../graphql';
 import { revalidate } from '../revalidate-target';
 
-export const GET_CATEGORY_TREE_QUERY = /* GraphQL */ `
+const GET_CATEGORY_TREE_QUERY = graphql(`
   query getCategoryTree($categoryId: Int) {
     site {
       categoryTree(rootEntityId: $categoryId) {
@@ -26,14 +26,13 @@ export const GET_CATEGORY_TREE_QUERY = /* GraphQL */ `
       }
     }
   }
-`;
+`);
 
 export const getCategoryTree = cache(async (categoryId?: number) => {
-  const query = graphql(GET_CATEGORY_TREE_QUERY);
   const customerId = await getSessionCustomerId();
 
   const response = await client.fetch({
-    document: query,
+    document: GET_CATEGORY_TREE_QUERY,
     variables: { categoryId },
     customerId,
     fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },

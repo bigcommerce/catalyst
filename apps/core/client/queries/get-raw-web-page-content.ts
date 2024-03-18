@@ -1,7 +1,7 @@
 import { client } from '..';
-import { graphql } from '../generated';
+import { graphql } from '../graphql';
 
-export const GET_RAW_WEB_PAGE_CONTENT_QUERY = /* GraphQL */ `
+const GET_RAW_WEB_PAGE_CONTENT_QUERY = graphql(`
   query getRawWebPageContent($id: ID!) {
     node(id: $id) {
       __typename
@@ -10,13 +10,11 @@ export const GET_RAW_WEB_PAGE_CONTENT_QUERY = /* GraphQL */ `
       }
     }
   }
-`;
+`);
 
 export const getRawWebPageContent = async (id: string) => {
-  const query = graphql(GET_RAW_WEB_PAGE_CONTENT_QUERY);
-
   const response = await client.fetch({
-    document: query,
+    document: GET_RAW_WEB_PAGE_CONTENT_QUERY,
     variables: { id },
   });
 
