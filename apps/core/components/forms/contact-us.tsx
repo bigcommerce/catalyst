@@ -14,7 +14,7 @@ import { Loader2 as Spinner } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { ReCAPTCHA } from 'react-google-recaptcha';
+import ReCaptcha from 'react-google-recaptcha';
 
 import { submitContactForm } from './_actions/submit-contact-form';
 
@@ -74,13 +74,13 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
   const [isTextFieldValid, setTextFieldValidation] = useState(true);
   const [isInputValid, setInputValidation] = useState(true);
-  const reCaptchaRef = useRef<ReCAPTCHA>(null);
+  const reCaptchaRef = useRef<ReCaptcha>(null);
   const [reCaptchaToken, setReCaptchaToken] = useState('');
   const [isReCaptchaValid, setReCaptchaValid] = useState(true);
 
   const t = useTranslations('AboutUs');
 
-  const onReCatpchaChange = (token: string | null) => {
+  const onReCaptchaChange = (token: string | null) => {
     if (!token) {
       return setReCaptchaValid(false);
     }
@@ -204,8 +204,8 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
         </>
         {reCaptchaSettings?.isEnabledOnStorefront && (
           <Field className="relative col-span-full max-w-full space-y-2 pb-7" name="ReCAPTCHA">
-            <ReCAPTCHA
-              onChange={onReCatpchaChange}
+            <ReCaptcha
+              onChange={onReCaptchaChange}
               ref={reCaptchaRef}
               sitekey={reCaptchaSettings.siteKey}
             />
