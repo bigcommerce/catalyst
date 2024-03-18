@@ -131,9 +131,9 @@ export const CheckoutSummary = ({
         </span>
       </div>
 
-      <div className="flex justify-between border-t border-t-gray-200 py-4">
-        <span className="text-h5">{t('grandTotal')}</span>
-        <span className="text-h5">
+      <div className="flex justify-between border-t border-t-gray-200 py-4 text-xl font-bold lg:text-2xl">
+        {t('grandTotal')}
+        <span>
           {currencyFormatter.format(
             checkoutSummary.amount.value +
               checkoutSummary.shippingCostTotal.value +
