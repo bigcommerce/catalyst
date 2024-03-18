@@ -1,10 +1,10 @@
 import { cache } from 'react';
 
 import { client } from '..';
-import { graphql } from '../generated';
+import { graphql } from '../graphql';
 import { revalidate } from '../revalidate-target';
 
-const GET_BLOG_POST_QUERY = /* GraphQL */ `
+const GET_BLOG_POST_QUERY = graphql(`
   query getBlogPost($entityId: Int!) {
     site {
       content {
@@ -38,13 +38,11 @@ const GET_BLOG_POST_QUERY = /* GraphQL */ `
       }
     }
   }
-`;
+`);
 
 export const getBlogPost = cache(async (entityId: number) => {
-  const query = graphql(GET_BLOG_POST_QUERY);
-
   const response = await client.fetch({
-    document: query,
+    document: GET_BLOG_POST_QUERY,
     variables: { entityId },
     fetchOptions: { next: { revalidate } },
   });

@@ -1,10 +1,10 @@
 import { cache } from 'react';
 
 import { client } from '..';
-import { graphql } from '../generated';
+import { graphql } from '../graphql';
 import { revalidate } from '../revalidate-target';
 
-export const GET_STORE_SETTINGS_QUERY = /* GraphQL */ `
+const GET_STORE_SETTINGS_QUERY = graphql(`
   query getStoreSettings {
     site {
       settings {
@@ -35,11 +35,13 @@ export const GET_STORE_SETTINGS_QUERY = /* GraphQL */ `
       }
     }
   }
-`;
+`);
 
 export const getStoreSettings = cache(async () => {
-  const query = graphql(GET_STORE_SETTINGS_QUERY);
-  const response = await client.fetch({ document: query, fetchOptions: { next: { revalidate } } });
+  const response = await client.fetch({
+    document: GET_STORE_SETTINGS_QUERY,
+    fetchOptions: { next: { revalidate } },
+  });
 
   return response.data.site.settings;
 });

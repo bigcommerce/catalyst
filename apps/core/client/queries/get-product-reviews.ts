@@ -2,10 +2,10 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
 import { client } from '..';
-import { graphql } from '../generated';
+import { graphql } from '../graphql';
 import { revalidate } from '../revalidate-target';
 
-const GET_PRODUCT_REVIEWS_QUERY = /* GraphQL */ `
+const GET_PRODUCT_REVIEWS_QUERY = graphql(`
   query getProductReviews($entityId: Int!) {
     site {
       product(entityId: $entityId) {
@@ -33,13 +33,11 @@ const GET_PRODUCT_REVIEWS_QUERY = /* GraphQL */ `
       }
     }
   }
-`;
+`);
 
 export const getProductReviews = cache(async (entityId: number) => {
-  const query = graphql(GET_PRODUCT_REVIEWS_QUERY);
-
   const response = await client.fetch({
-    document: query,
+    document: GET_PRODUCT_REVIEWS_QUERY,
     variables: { entityId },
     fetchOptions: { next: { revalidate } },
   });
