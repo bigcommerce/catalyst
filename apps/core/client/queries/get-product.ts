@@ -4,11 +4,11 @@ import { cache } from 'react';
 import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
-import { graphql } from '../generated';
+import { PRICES_FRAGMENT } from '../fragments/prices';
+import { graphql, ResultOf } from '../graphql';
 import { revalidate } from '../revalidate-target';
-import { ExistingResultType } from '../util';
 
-type Product = ExistingResultType<typeof getInternalProduct>;
+type Product = ResultOf<typeof PRODUCT_FRAGMENT>;
 
 export interface OptionValueId {
   optionEntityId: number;
@@ -20,54 +20,24 @@ export interface GetProductOptions {
   optionValueIds?: OptionValueId[];
 }
 
-export const PRICES_FRAGMENT = /* GraphQL */ `
-  fragment Prices on Product {
-    prices {
-      basePrice {
-        currencyCode
-        value
-      }
-      price {
-        currencyCode
-        value
-      }
-      retailPrice {
-        currencyCode
-        value
-      }
-      salePrice {
-        currencyCode
-        value
-      }
-      priceRange {
-        min {
-          value
-          currencyCode
-        }
-        max {
-          value
-          currencyCode
-        }
-      }
-    }
-  }
-`;
-
-export const BASIC_PRODUCT_FRAGMENT = /* GraphQL */ `
-  fragment BasicProduct on Product {
-    id
-    entityId
-    name
-    path
-    brand {
+const BASIC_PRODUCT_FRAGMENT = graphql(
+  `
+    fragment BasicProduct on Product {
+      id
+      entityId
       name
       path
+      brand {
+        name
+        path
+      }
+      ...Prices
     }
-    ...Prices
-  }
-`;
+  `,
+  [PRICES_FRAGMENT],
+);
 
-export const PRODUCT_OPTIONS_FRAGMENT = /* GraphQL */ `
+const PRODUCT_OPTIONS_FRAGMENT = graphql(`
   fragment ProductOptions on Product {
     productOptions(first: 10) {
       edges {
@@ -142,90 +112,101 @@ export const PRODUCT_OPTIONS_FRAGMENT = /* GraphQL */ `
       }
     }
   }
-`;
+`);
 
-export const GET_PRODUCT_QUERY = /* GraphQL */ `
-  query getProduct($productId: Int!, $optionValueIds: [OptionValueId!]) {
-    site {
-      product(entityId: $productId, optionValueIds: $optionValueIds) {
-        ...BasicProduct
-        sku
-        warranty
+const PRODUCT_FRAGMENT = graphql(
+  `
+    fragment Product on Product {
+      ...BasicProduct
+      sku
+      warranty
+      description
+      plainTextDescription(characterLimit: 2000)
+      defaultImage {
+        altText
+        url(width: 600)
+      }
+      images {
+        edges {
+          node {
+            altText
+            url(width: 600)
+            isDefault
+          }
+        }
+      }
+      availabilityV2 {
+        status
         description
-        plainTextDescription(characterLimit: 2000)
-        defaultImage {
-          altText
-          url(width: 600)
-        }
-        images {
-          edges {
-            node {
-              altText
-              url(width: 600)
-              isDefault
-            }
+      }
+      upc
+      path
+      mpn
+      gtin
+      condition
+      reviewSummary {
+        summationOfRatings
+        numberOfReviews
+        averageRating
+      }
+      weight {
+        unit
+        value
+      }
+      seo {
+        pageTitle
+        metaKeywords
+        metaDescription
+      }
+      customFields {
+        edges {
+          node {
+            name
+            entityId
+            value
           }
         }
-        availabilityV2 {
-          status
-          description
-        }
-        upc
-        path
-        mpn
-        gtin
-        condition
-        reviewSummary {
-          summationOfRatings
-          numberOfReviews
-          averageRating
-        }
-        weight {
-          unit
-          value
-        }
-        seo {
-          pageTitle
-          metaKeywords
-          metaDescription
-        }
-        customFields {
-          edges {
-            node {
-              name
-              entityId
-              value
-            }
-          }
-        }
-        categories(first: 1) {
-          edges {
-            node {
-              name
-              breadcrumbs(depth: 5) {
-                edges {
-                  node {
-                    name
-                  }
+      }
+      categories(first: 1) {
+        edges {
+          node {
+            name
+            breadcrumbs(depth: 5) {
+              edges {
+                node {
+                  name
                 }
               }
             }
           }
         }
-        minPurchaseQuantity
-        maxPurchaseQuantity
-        ...ProductOptions
+      }
+      minPurchaseQuantity
+      maxPurchaseQuantity
+      ...ProductOptions
+    }
+  `,
+  [BASIC_PRODUCT_FRAGMENT, PRODUCT_OPTIONS_FRAGMENT],
+);
+
+const GET_PRODUCT_QUERY = graphql(
+  `
+    query getProduct($productId: Int!, $optionValueIds: [OptionValueId!]) {
+      site {
+        product(entityId: $productId, optionValueIds: $optionValueIds) {
+          ...Product
+        }
       }
     }
-  }
-`;
+  `,
+  [PRODUCT_FRAGMENT],
+);
 
 const getInternalProduct = async (productId: number, optionValueIds?: OptionValueId[]) => {
-  const query = graphql(GET_PRODUCT_QUERY);
   const customerId = await getSessionCustomerId();
 
   const response = await client.fetch({
-    document: query,
+    document: GET_PRODUCT_QUERY,
     variables: { productId, optionValueIds },
     customerId,
     fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
