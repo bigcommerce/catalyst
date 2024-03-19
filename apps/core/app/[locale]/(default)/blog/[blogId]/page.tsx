@@ -10,7 +10,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
-import { getBlogPost } from '~/client/queries/get-blost-post';
+import { getBlogPost } from '~/client/queries/get-blog-post';
 import { Link } from '~/components/link';
 import { SharingLinks } from '~/components/sharing-links';
 import { LocaleType } from '~/i18n';

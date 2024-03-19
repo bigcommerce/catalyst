@@ -2,7 +2,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
 import { client } from '..';
-import { graphql } from '../generated';
+import { graphql } from '../graphql';
 import { revalidate } from '../revalidate-target';
 
 interface BlogPostsFiltersInput {
@@ -15,7 +15,7 @@ interface Pagination {
   after?: string;
 }
 
-const GET_BLOG_POSTS_QUERY = /* GraphQL */ `
+const GET_BLOG_POSTS_QUERY = graphql(`
   query getBlogPosts(
     $first: Int
     $after: String
@@ -31,15 +31,16 @@ const GET_BLOG_POSTS_QUERY = /* GraphQL */ `
           name
           posts(first: $first, after: $after, last: $last, before: $before, filters: $filters) {
             pageInfo {
-              ...PageDetails
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              endCursor
             }
             edges {
               node {
                 author
                 entityId
-                htmlBody
                 name
-                path
                 plainTextSummary
                 publishedDate {
                   utc
@@ -48,11 +49,6 @@ const GET_BLOG_POSTS_QUERY = /* GraphQL */ `
                   url(width: 300)
                   altText
                 }
-                seo {
-                  metaKeywords
-                  metaDescription
-                  pageTitle
-                }
               }
             }
           }
@@ -60,17 +56,15 @@ const GET_BLOG_POSTS_QUERY = /* GraphQL */ `
       }
     }
   }
-`;
+`);
 
 export const getBlogPosts = cache(
   async ({ tagId, limit = 9, before, after }: BlogPostsFiltersInput & Pagination) => {
     const filterArgs = tagId ? { filters: { tags: [tagId] } } : {};
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
-    const query = graphql(GET_BLOG_POSTS_QUERY);
-
     const response = await client.fetch({
-      document: query,
+      document: GET_BLOG_POSTS_QUERY,
       variables: { ...filterArgs, ...paginationArgs },
       fetchOptions: { next: { revalidate } },
     });
