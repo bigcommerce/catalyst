@@ -3,77 +3,86 @@ import { cache } from 'react';
 import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
-import { graphql } from '../generated';
+import { graphql } from '../graphql';
 
-export const GET_CART_QUERY = /* GraphQL */ `
-  query getCart($cartId: String) {
-    site {
-      cart(entityId: $cartId) {
-        entityId
-        isTaxIncluded
-        currencyCode
-        lineItems {
-          totalQuantity
-          physicalItems {
-            name
-            brand
-            imageUrl
-            entityId
-            quantity
-            productEntityId
-            variantEntityId
-            extendedListPrice {
-              ...MoneyFields
-            }
-            extendedSalePrice {
-              ...MoneyFields
-            }
-            selectedOptions {
-              __typename
-              entityId
+const MONEY_FIELDS_FRAGMENT = graphql(`
+  fragment MoneyFields on Money {
+    currencyCode
+    value
+  }
+`);
+
+const GET_CART_QUERY = graphql(
+  `
+    query getCart($cartId: String) {
+      site {
+        cart(entityId: $cartId) {
+          entityId
+          isTaxIncluded
+          currencyCode
+          lineItems {
+            totalQuantity
+            physicalItems {
               name
-              ... on CartSelectedMultipleChoiceOption {
-                value
-                valueEntityId
+              brand
+              imageUrl
+              entityId
+              quantity
+              productEntityId
+              variantEntityId
+              extendedListPrice {
+                ...MoneyFields
               }
-              ... on CartSelectedCheckboxOption {
-                value
-                valueEntityId
+              extendedSalePrice {
+                ...MoneyFields
               }
-              ... on CartSelectedNumberFieldOption {
-                number
-              }
-              ... on CartSelectedMultiLineTextFieldOption {
-                text
-              }
-              ... on CartSelectedTextFieldOption {
-                text
-              }
-              ... on CartSelectedDateFieldOption {
-                date {
-                  utc
+              selectedOptions {
+                __typename
+                entityId
+                name
+                ... on CartSelectedMultipleChoiceOption {
+                  value
+                  valueEntityId
+                }
+                ... on CartSelectedCheckboxOption {
+                  value
+                  valueEntityId
+                }
+                ... on CartSelectedNumberFieldOption {
+                  number
+                }
+                ... on CartSelectedMultiLineTextFieldOption {
+                  text
+                }
+                ... on CartSelectedTextFieldOption {
+                  text
+                }
+                ... on CartSelectedDateFieldOption {
+                  date {
+                    utc
+                  }
                 }
               }
             }
           }
-        }
-        amount {
-          ...MoneyFields
-        }
-        discountedAmount {
-          ...MoneyFields
+          amount {
+            ...MoneyFields
+          }
+          discountedAmount {
+            ...MoneyFields
+          }
         }
       }
     }
-  }
-`;
+  `,
+  [MONEY_FIELDS_FRAGMENT],
+);
 
 export const getCart = cache(async (cartId?: string) => {
-  const query = graphql(GET_CART_QUERY);
   const customerId = await getSessionCustomerId();
 
   const response = await client.fetch({
-    document: query,
+    document: GET_CART_QUERY,
     variables: { cartId },
     customerId,
     fetchOptions: {
