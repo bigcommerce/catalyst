@@ -48,7 +48,7 @@ Check out the [Next.js deployment documentation](https://nextjs.org/docs/deploym
 Create a new project interactively by running:
 
 ```bash
-npm create catalyst-storefront@latest
+npm create @bigcommerce/catalyst@latest
 ```
 
 You'll then get the following prompts:

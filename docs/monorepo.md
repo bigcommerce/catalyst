@@ -14,7 +14,7 @@ The [main GitHub repository for Catalyst](https://github.com/bigcommerce/catalys
 
 ### The monorepo and the CLI
 
-The [Catalyst CLI](https://www.npmjs.com/package/create-catalyst-storefront) installs just the Next.js application from `apps/core` onto your computer when you create a new Catalyst storefront.
+The [Catalyst CLI](https://www.npmjs.com/package/@bigcommerce/create-catalyst) installs just the Next.js application from `apps/core` onto your computer when you create a new Catalyst storefront.
 
 If you are interested solely in building a headless storefront based on Catalyst, most of this monorepo is not relevant to you.
 

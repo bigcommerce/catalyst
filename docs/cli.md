@@ -24,13 +24,13 @@ We recommend creating a new channel for the Catalyst storefront. For more about 
 To get started with the CLI, run the following command:
 
 ```shell
-pnpm create catalyst-storefront@latest
+pnpm create @bigcommerce/catalyst@latest
 ```
 
 or
 
 ```shell
-npm create catalyst-storefront@latest
+npm create @bigcommerce/catalyst@latest
 ```
 
 The CLI will take you through the following prompts:
@@ -81,7 +81,7 @@ The Catalyst storefront will run on `http://localhost:3000`.
 If you want to link your Catalyst project to a different BigCommerce store, repeat the setup process. Run the following command from within the directory that contains your Catalyst project:
 
 ```shell
-npx create-catalyst-storefront@latest init
+npx @bigcommerce/create-catalyst@latest init
 ```
 
 If you prefer more control over Catalyst's configuration, you can manually set Catalyst's [environment variables](/docs/environment-variables.md). For more information, see [Advanced config](/docs/monorepo.md).
