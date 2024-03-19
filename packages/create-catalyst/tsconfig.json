@@ -10,5 +10,6 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
-  }
+  },
+  "exclude": ["node_modules", "dist", "jest.config.cjs", "prettier.config.cjs"]
 }
