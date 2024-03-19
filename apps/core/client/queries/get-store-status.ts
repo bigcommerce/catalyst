@@ -1,7 +1,7 @@
 import { client } from '..';
-import { graphql } from '../generated';
+import { graphql } from '../graphql';
 
-export const GET_STORE_STATUS_QUERY = /* GraphQL */ `
+const GET_STORE_STATUS_QUERY = graphql(`
   query getStoreStatus {
     site {
       settings {
@@ -9,12 +9,11 @@ export const GET_STORE_STATUS_QUERY = /* GraphQL */ `
       }
     }
   }
-`;
+`);
 
 export const getStoreStatus = async () => {
-  const query = graphql(GET_STORE_STATUS_QUERY);
   const { data } = await client.fetch({
-    document: query,
+    document: GET_STORE_STATUS_QUERY,
     fetchOptions: { next: { revalidate: 300 } },
   });
 
