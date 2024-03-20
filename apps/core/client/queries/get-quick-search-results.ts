@@ -4,7 +4,8 @@ import { cache } from 'react';
 import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
-import { graphql } from '../generated';
+import { PRODUCT_DETAILS_FRAGMENT } from '../fragments/product-details';
+import { graphql } from '../graphql';
 import { revalidate } from '../revalidate-target';
 
 interface QuickSearch {
@@ -13,35 +14,37 @@ interface QuickSearch {
   imageHeight?: number;
 }
 
-const GET_QUICK_SEARCH_RESULTS_QUERY = /* GraphQL */ `
-  query getQuickSearchResults(
-    $filters: SearchProductsFiltersInput!
-    $imageHeight: Int!
-    $imageWidth: Int!
-  ) {
-    site {
-      search {
-        searchProducts(filters: $filters) {
-          products(first: 5) {
-            edges {
-              node {
-                ...ProductDetails
+const GET_QUICK_SEARCH_RESULTS_QUERY = graphql(
+  `
+    query getQuickSearchResults(
+      $filters: SearchProductsFiltersInput!
+      $imageHeight: Int!
+      $imageWidth: Int!
+    ) {
+      site {
+        search {
+          searchProducts(filters: $filters) {
+            products(first: 5) {
+              edges {
+                node {
+                  ...ProductDetails
+                }
               }
             }
           }
         }
       }
     }
-  }
-`;
+  `,
+  [PRODUCT_DETAILS_FRAGMENT],
+);
 
 export const getQuickSearchResults = cache(
   async ({ searchTerm, imageHeight = 300, imageWidth = 300 }: QuickSearch) => {
-    const query = graphql(GET_QUICK_SEARCH_RESULTS_QUERY);
     const customerId = await getSessionCustomerId();
 
     const response = await client.fetch({
-      document: query,
+      document: GET_QUICK_SEARCH_RESULTS_QUERY,
       variables: { filters: { searchTerm }, imageHeight, imageWidth },
       customerId,
       fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
