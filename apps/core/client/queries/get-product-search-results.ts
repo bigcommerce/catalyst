@@ -4,8 +4,10 @@ import { cache } from 'react';
 import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
-import { graphql } from '../generated';
+import { PAGE_DETAILS_FRAGMENT } from '../fragments/page-details';
+import { PRODUCT_DETAILS_FRAGMENT } from '../fragments/product-details';
 import { SearchProductsFiltersInput, SearchProductsSortInput } from '../generated/graphql';
+import { graphql } from '../graphql';
 import { revalidate } from '../revalidate-target';
 
 interface ProductSearch {
@@ -18,138 +20,140 @@ interface ProductSearch {
   imageHeight?: number;
 }
 
-const GET_PRODUCT_SEARCH_RESULTS_QUERY = /* GraphQL */ `
-  query getProductSearchResults(
-    $first: Int
-    $last: Int
-    $after: String
-    $before: String
-    $filters: SearchProductsFiltersInput!
-    $sort: SearchProductsSortInput
-    $imageHeight: Int!
-    $imageWidth: Int!
-  ) {
-    site {
-      search {
-        searchProducts(filters: $filters, sort: $sort) {
-          products(first: $first, after: $after, last: $last, before: $before) {
-            pageInfo {
-              ...PageDetails
-            }
-            collectionInfo {
-              totalItems
-            }
-            edges {
-              node {
-                ...ProductDetails
+const GET_PRODUCT_SEARCH_RESULTS_QUERY = graphql(
+  `
+    query getProductSearchResults(
+      $first: Int
+      $last: Int
+      $after: String
+      $before: String
+      $filters: SearchProductsFiltersInput!
+      $sort: SearchProductsSortInput
+      $imageHeight: Int!
+      $imageWidth: Int!
+    ) {
+      site {
+        search {
+          searchProducts(filters: $filters, sort: $sort) {
+            products(first: $first, after: $after, last: $last, before: $before) {
+              pageInfo {
+                ...PageDetails
+              }
+              collectionInfo {
+                totalItems
+              }
+              edges {
+                node {
+                  ...ProductDetails
+                }
               }
             }
-          }
-          filters {
-            edges {
-              node {
-                __typename
-                name
-                isCollapsedByDefault
-                ... on BrandSearchFilter {
-                  displayProductCount
-                  brands {
-                    pageInfo {
-                      ...PageDetails
-                    }
-                    edges {
-                      cursor
-                      node {
-                        entityId
-                        name
-                        isSelected
-                        productCount
+            filters {
+              edges {
+                node {
+                  __typename
+                  name
+                  isCollapsedByDefault
+                  ... on BrandSearchFilter {
+                    displayProductCount
+                    brands {
+                      pageInfo {
+                        ...PageDetails
+                      }
+                      edges {
+                        cursor
+                        node {
+                          entityId
+                          name
+                          isSelected
+                          productCount
+                        }
                       }
                     }
                   }
-                }
-                ... on CategorySearchFilter {
-                  displayProductCount
-                  categories {
-                    pageInfo {
-                      ...PageDetails
-                    }
-                    edges {
-                      cursor
-                      node {
-                        entityId
-                        name
-                        isSelected
-                        productCount
-                        subCategories {
-                          pageInfo {
-                            ...PageDetails
-                          }
-                          edges {
-                            cursor
-                            node {
-                              entityId
-                              name
-                              isSelected
-                              productCount
+                  ... on CategorySearchFilter {
+                    displayProductCount
+                    categories {
+                      pageInfo {
+                        ...PageDetails
+                      }
+                      edges {
+                        cursor
+                        node {
+                          entityId
+                          name
+                          isSelected
+                          productCount
+                          subCategories {
+                            pageInfo {
+                              ...PageDetails
+                            }
+                            edges {
+                              cursor
+                              node {
+                                entityId
+                                name
+                                isSelected
+                                productCount
+                              }
                             }
                           }
                         }
                       }
                     }
                   }
-                }
-                ... on ProductAttributeSearchFilter {
-                  displayProductCount
-                  filterName
-                  attributes {
-                    pageInfo {
-                      ...PageDetails
-                    }
-                    edges {
-                      cursor
-                      node {
-                        value
-                        isSelected
-                        productCount
+                  ... on ProductAttributeSearchFilter {
+                    displayProductCount
+                    filterName
+                    attributes {
+                      pageInfo {
+                        ...PageDetails
+                      }
+                      edges {
+                        cursor
+                        node {
+                          value
+                          isSelected
+                          productCount
+                        }
                       }
                     }
                   }
-                }
-                ... on RatingSearchFilter {
-                  ratings {
-                    pageInfo {
-                      ...PageDetails
-                    }
-                    edges {
-                      cursor
-                      node {
-                        value
-                        isSelected
-                        productCount
+                  ... on RatingSearchFilter {
+                    ratings {
+                      pageInfo {
+                        ...PageDetails
+                      }
+                      edges {
+                        cursor
+                        node {
+                          value
+                          isSelected
+                          productCount
+                        }
                       }
                     }
                   }
-                }
-                ... on PriceSearchFilter {
-                  selected {
-                    minPrice
-                    maxPrice
+                  ... on PriceSearchFilter {
+                    selected {
+                      minPrice
+                      maxPrice
+                    }
                   }
-                }
-                ... on OtherSearchFilter {
-                  displayProductCount
-                  freeShipping {
-                    isSelected
-                    productCount
-                  }
-                  isFeatured {
-                    isSelected
-                    productCount
-                  }
-                  isInStock {
-                    isSelected
-                    productCount
+                  ... on OtherSearchFilter {
+                    displayProductCount
+                    freeShipping {
+                      isSelected
+                      productCount
+                    }
+                    isFeatured {
+                      isSelected
+                      productCount
+                    }
+                    isInStock {
+                      isSelected
+                      productCount
+                    }
                   }
                 }
               }
@@ -158,8 +162,9 @@ const GET_PRODUCT_SEARCH_RESULTS_QUERY = /* GraphQL */ `
         }
       }
     }
-  }
-`;
+  `,
+  [PAGE_DETAILS_FRAGMENT, PRODUCT_DETAILS_FRAGMENT],
+);
 
 export const getProductSearchResults = cache(
   async ({
@@ -171,13 +176,12 @@ export const getProductSearchResults = cache(
     imageHeight = 300,
     imageWidth = 300,
   }: ProductSearch) => {
-    const query = graphql(GET_PRODUCT_SEARCH_RESULTS_QUERY);
     const customerId = await getSessionCustomerId();
     const filterArgs = { filters, sort, imageHeight, imageWidth };
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
-      document: query,
+      document: GET_PRODUCT_SEARCH_RESULTS_QUERY,
       variables: { ...filterArgs, ...paginationArgs },
       customerId,
       fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate: 300 } },

@@ -4,7 +4,8 @@ import { cache } from 'react';
 import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
-import { graphql } from '../generated';
+import { PRODUCT_DETAILS_FRAGMENT } from '../fragments/product-details';
+import { graphql } from '../graphql';
 import { revalidate } from '../revalidate-target';
 
 export interface GetProductsArguments {
@@ -14,27 +15,29 @@ export interface GetProductsArguments {
   imageHeight?: number;
 }
 
-const GET_PRODUCTS_QUERY = /* GraphQL */ `
-  query getProducts($entityIds: [Int!], $first: Int, $imageHeight: Int!, $imageWidth: Int!) {
-    site {
-      products(entityIds: $entityIds, first: $first) {
-        edges {
-          node {
-            ...ProductDetails
+const GET_PRODUCTS_QUERY = graphql(
+  `
+    query getProducts($entityIds: [Int!], $first: Int, $imageHeight: Int!, $imageWidth: Int!) {
+      site {
+        products(entityIds: $entityIds, first: $first) {
+          edges {
+            node {
+              ...ProductDetails
+            }
           }
         }
       }
     }
-  }
-`;
+  `,
+  [PRODUCT_DETAILS_FRAGMENT],
+);
 
 export const getProducts = cache(
   async ({ productIds, first, imageWidth = 300, imageHeight = 300 }: GetProductsArguments) => {
-    const query = graphql(GET_PRODUCTS_QUERY);
     const customerId = await getSessionCustomerId();
 
     const response = await client.fetch({
-      document: query,
+      document: GET_PRODUCTS_QUERY,
       variables: { entityIds: productIds, first, imageWidth, imageHeight },
       customerId,
       fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },

@@ -1,44 +1,51 @@
-export const PRODUCT_DETAILS_FRAGMENT = /* GraphQL */ `
-  fragment ProductDetails on Product {
-    entityId
-    name
-    description
-    path
-    ...Prices
-    brand {
+import { graphql } from '../graphql';
+
+import { PRICES_FRAGMENT } from './prices';
+
+export const PRODUCT_DETAILS_FRAGMENT = graphql(
+  `
+    fragment ProductDetails on Product {
+      entityId
       name
+      description
       path
-    }
-    defaultImage {
-      url(width: $imageWidth, height: $imageHeight)
-      altText
-    }
-    availabilityV2 {
-      status
-    }
-    inventory {
-      aggregated {
-        availableToSell
+      ...Prices
+      brand {
+        name
+        path
       }
-    }
-    reviewSummary {
-      averageRating
-      numberOfReviews
-    }
-    categories {
-      edges {
-        node {
-          name
-          path
+      defaultImage {
+        url(width: $imageWidth, height: $imageHeight)
+        altText
+      }
+      availabilityV2 {
+        status
+      }
+      inventory {
+        aggregated {
+          availableToSell
+        }
+      }
+      reviewSummary {
+        averageRating
+        numberOfReviews
+      }
+      categories {
+        edges {
+          node {
+            name
+            path
+          }
+        }
+      }
+      productOptions(first: 3) {
+        edges {
+          node {
+            entityId
+          }
         }
       }
     }
-    productOptions(first: 3) {
-      edges {
-        node {
-          entityId
-        }
-      }
-    }
-  }
-`;
+  `,
+  [PRICES_FRAGMENT],
+);
