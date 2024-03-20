@@ -1,8 +1,7 @@
 import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
-import { UnassignCartFromCustomerInput } from '../generated/graphql';
-import { graphql } from '../graphql';
+import { graphql, VariablesOf } from '../graphql';
 
 const UNASSIGN_CART_FROM_CUSTOMER_MUTATION = graphql(`
   mutation UnassignCartFromCustomer(
@@ -17,6 +16,9 @@ const UNASSIGN_CART_FROM_CUSTOMER_MUTATION = graphql(`
     }
   }
 `);
+
+type Variables = VariablesOf<typeof UNASSIGN_CART_FROM_CUSTOMER_MUTATION>;
+type UnassignCartFromCustomerInput = Variables['unassignCartFromCustomerInput'];
 
 export const unassignCartFromCustomer = async (
   cartEntityId: UnassignCartFromCustomerInput['cartEntityId'],

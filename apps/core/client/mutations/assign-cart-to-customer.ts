@@ -1,6 +1,5 @@
 import { client } from '..';
-import { AssignCartToCustomerInput } from '../generated/graphql';
-import { graphql } from '../graphql';
+import { graphql, VariablesOf } from '../graphql';
 
 const ASSIGN_CART_TO_CUSTOMER_MUTATION = graphql(`
   mutation AssignCartToCustomer($assignCartToCustomerInput: AssignCartToCustomerInput!) {
@@ -14,10 +13,10 @@ const ASSIGN_CART_TO_CUSTOMER_MUTATION = graphql(`
   }
 `);
 
-export const assignCartToCustomer = async (
-  customerId: string,
-  cartEntityId: AssignCartToCustomerInput['cartEntityId'],
-) => {
+type Variables = VariablesOf<typeof ASSIGN_CART_TO_CUSTOMER_MUTATION>;
+type CartEntityId = Variables['assignCartToCustomerInput']['cartEntityId'];
+
+export const assignCartToCustomer = async (customerId: string, cartEntityId: CartEntityId) => {
   const response = await client.fetch({
     document: ASSIGN_CART_TO_CUSTOMER_MUTATION,
     variables: {
