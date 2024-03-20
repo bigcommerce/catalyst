@@ -1,13 +1,13 @@
 import { client } from '..';
-import { graphql } from '../generated';
 import { RegisterCustomerInput } from '../generated/graphql';
+import { graphql } from '../graphql';
 
 interface RegisterCustomer {
   formFields: RegisterCustomerInput;
   reCaptchaToken?: string;
 }
 
-export const REGISTER_CUSTOMER_MUTATION = /* GraphQL */ `
+const REGISTER_CUSTOMER_MUTATION = graphql(`
   mutation registerCustomer($input: RegisterCustomerInput!, $reCaptchaV2: ReCaptchaV2Input) {
     customer {
       registerCustomer(input: $input, reCaptchaV2: $reCaptchaV2) {
@@ -32,18 +32,16 @@ export const REGISTER_CUSTOMER_MUTATION = /* GraphQL */ `
       }
     }
   }
-`;
+`);
 
 export const registerCustomer = async ({ formFields, reCaptchaToken }: RegisterCustomer) => {
-  const mutation = graphql(REGISTER_CUSTOMER_MUTATION);
-
   const variables = {
     input: formFields,
     ...(reCaptchaToken && { reCaptchaV2: { token: reCaptchaToken } }),
   };
 
   const response = await client.fetch({
-    document: mutation,
+    document: REGISTER_CUSTOMER_MUTATION,
     variables,
   });
 
