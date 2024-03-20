@@ -1,6 +1,5 @@
 import { client } from '..';
-import { CheckoutAddressInput } from '../generated/graphql';
-import { graphql } from '../graphql';
+import { graphql, VariablesOf } from '../graphql';
 
 const ADD_CHECKOUT_SHIPPING_INFO_MUTATION = graphql(`
   mutation AddCheckoutShippingInfo($input: AddCheckoutShippingConsignmentsInput!) {
@@ -43,14 +42,20 @@ const ADD_CHECKOUT_SHIPPING_INFO_MUTATION = graphql(`
   }
 `);
 
+type Input = VariablesOf<typeof ADD_CHECKOUT_SHIPPING_INFO_MUTATION>['input'];
+type CartId = Input['checkoutEntityId'];
+type Consignment = Input['data']['consignments'][number];
+type CheckoutAddressInput = Consignment['address'];
+type CartItemsInput = Consignment['lineItems'];
+
 interface AddCheckoutShippingInfoProps {
-  cartId: string;
+  cartId: CartId;
   countryCode: CheckoutAddressInput['countryCode'];
   stateOrProvince: CheckoutAddressInput['stateOrProvince'];
   city: CheckoutAddressInput['city'];
   postalCode: CheckoutAddressInput['postalCode'];
   shouldSaveAddress?: CheckoutAddressInput['shouldSaveAddress'];
-  cartItems: Array<{ quantity: number; lineItemEntityId: string }>;
+  cartItems: CartItemsInput;
 }
 
 export const addCheckoutShippingInfo = async ({
