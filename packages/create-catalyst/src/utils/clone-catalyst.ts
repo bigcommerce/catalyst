@@ -45,6 +45,10 @@ export const cloneCatalyst = async ({
 
   const packageJson = z
     .object({
+      name: z.string(),
+      description: z.string(),
+      version: z.string(),
+      scripts: z.object({}).passthrough().optional(),
       private: z.boolean().optional(),
       exports: z.object({}).passthrough().optional(),
       sideEffects: z.boolean().optional(),
