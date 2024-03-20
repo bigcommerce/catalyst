@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.1
+
+### Patch Changes
+
+- [#641](https://github.com/bigcommerce/catalyst/pull/641) [`43b1afd`](https://github.com/bigcommerce/catalyst/commit/43b1afdf8d9977daf329d0e828e73ea8c8b49acb) Thanks [@yurytut1993](https://github.com/yurytut1993)! - add register customer mutation
+
+- Updated dependencies [[`ac733cc`](https://github.com/bigcommerce/catalyst/commit/ac733cc0308b3ebe1189fe6a7d20214dbc382b3f), [`5af0e66`](https://github.com/bigcommerce/catalyst/commit/5af0e66e7b065ea1d158a0d062a6c3216752d5be)]:
+  - @bigcommerce/catalyst-client@0.2.0
+  - @bigcommerce/components@0.1.2
+
 ## 0.2.0
 
 ### Minor Changes

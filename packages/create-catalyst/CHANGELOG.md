@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1
+
+### Patch Changes
+
+- [#684](https://github.com/bigcommerce/catalyst/pull/684) [`1e12797`](https://github.com/bigcommerce/catalyst/commit/1e127977eedca306c58f3e243d7367f52ea7f077) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Adjust order of `package.json` properties created by the CLI
+
 ## 0.2.0
 
 ### Minor Changes
