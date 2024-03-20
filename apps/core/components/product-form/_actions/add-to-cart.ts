@@ -3,13 +3,15 @@
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
-import { CartSelectedOptionsInput } from '~/client/generated/graphql';
+import { graphql } from '~/client/graphql';
 import { addCartLineItem } from '~/client/mutations/add-cart-line-item';
 import { createCart } from '~/client/mutations/create-cart';
 import { getCart } from '~/client/queries/get-cart';
 import { getProduct } from '~/client/queries/get-product';
 
 import { ProductFormData } from '../use-product-form';
+
+type CartSelectedOptionsInput = ReturnType<typeof graphql.scalar<'CartSelectedOptionsInput'>>;
 
 export async function handleAddToCart(data: ProductFormData) {
   const productEntityId = Number(data.product_id);

@@ -3,8 +3,11 @@
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
-import { CartLineItemInput, UpdateCartLineItemInput } from '~/client/generated/graphql';
+import { graphql } from '~/client/graphql';
 import { updateCartLineItem } from '~/client/mutations/update-cart-line-item';
+
+type CartLineItemInput = ReturnType<typeof graphql.scalar<'CartLineItemInput'>>;
+type UpdateCartLineItemInput = ReturnType<typeof graphql.scalar<'UpdateCartLineItemInput'>>;
 
 interface UpdateProductQuantityParams extends CartLineItemInput {
   lineItemEntityId: UpdateCartLineItemInput['lineItemEntityId'];

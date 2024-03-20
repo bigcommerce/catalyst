@@ -1,8 +1,11 @@
 import { cache } from 'react';
 import { z } from 'zod';
 
-import { SearchProductsFiltersInput, SearchProductsSortInput } from '~/client/generated/graphql';
+import { graphql } from '~/client/graphql';
 import { getProductSearchResults } from '~/client/queries/get-product-search-results';
+
+type SearchProductsFiltersInput = ReturnType<typeof graphql.scalar<'SearchProductsFiltersInput'>>;
+type SearchProductsSortInput = ReturnType<typeof graphql.scalar<'SearchProductsSortInput'>>;
 
 const SearchParamSchema = z.union([z.string(), z.array(z.string()), z.undefined()]);
 
@@ -18,7 +21,17 @@ const SearchParamToArray = SearchParamSchema.transform((value) => {
   return undefined;
 });
 
-const PrivateSortParam = z.nativeEnum(SearchProductsSortInput);
+const PrivateSortParam = z.union([
+  z.literal('A_TO_Z'),
+  z.literal('BEST_REVIEWED'),
+  z.literal('BEST_SELLING'),
+  z.literal('FEATURED'),
+  z.literal('HIGHEST_PRICE'),
+  z.literal('LOWEST_PRICE'),
+  z.literal('NEWEST'),
+  z.literal('RELEVANCE'),
+  z.literal('Z_TO_A'),
+]) satisfies z.ZodType<SearchProductsSortInput>;
 
 const PublicSortParam = z.string().toUpperCase().pipe(PrivateSortParam);
 

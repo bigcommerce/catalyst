@@ -3,15 +3,14 @@
 import { Counter } from '@bigcommerce/components/counter';
 import { useState } from 'react';
 
-import {
-  CartLineItemInput,
-  CartPhysicalItem,
-  CartSelectedOptionsInput,
-  UpdateCartLineItemInput,
-} from '~/client/generated/graphql';
+import { graphql } from '~/client/graphql';
 import { getCart } from '~/client/queries/get-cart';
 
 import { updateProductQuantity } from '../_actions/update-product-quantity';
+
+type CartLineItemInput = ReturnType<typeof graphql.scalar<'CartLineItemInput'>>;
+type CartSelectedOptionsInput = ReturnType<typeof graphql.scalar<'CartSelectedOptionsInput'>>;
+type UpdateCartLineItemInput = ReturnType<typeof graphql.scalar<'UpdateCartLineItemInput'>>;
 
 type Cart = NonNullable<Awaited<ReturnType<typeof getCart>>>;
 
@@ -19,7 +18,7 @@ type CartItemData = Pick<
   Cart['lineItems']['physicalItems'][number],
   'quantity' | 'productEntityId' | 'variantEntityId' | 'selectedOptions'
 > & {
-  lineItemEntityId: CartPhysicalItem['entityId'];
+  lineItemEntityId: string;
 };
 
 interface UpdateProductQuantityData extends CartLineItemInput {

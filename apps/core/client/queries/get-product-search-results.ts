@@ -6,19 +6,8 @@ import { getSessionCustomerId } from '~/auth';
 import { client } from '..';
 import { PAGE_DETAILS_FRAGMENT } from '../fragments/page-details';
 import { PRODUCT_DETAILS_FRAGMENT } from '../fragments/product-details';
-import { SearchProductsFiltersInput, SearchProductsSortInput } from '../generated/graphql';
-import { graphql } from '../graphql';
+import { graphql, VariablesOf } from '../graphql';
 import { revalidate } from '../revalidate-target';
-
-interface ProductSearch {
-  limit?: number;
-  before?: string;
-  after?: string;
-  sort?: SearchProductsSortInput;
-  filters: SearchProductsFiltersInput;
-  imageWidth?: number;
-  imageHeight?: number;
-}
 
 const GET_PRODUCT_SEARCH_RESULTS_QUERY = graphql(
   `
@@ -165,6 +154,20 @@ const GET_PRODUCT_SEARCH_RESULTS_QUERY = graphql(
   `,
   [PAGE_DETAILS_FRAGMENT, PRODUCT_DETAILS_FRAGMENT],
 );
+
+type Variables = VariablesOf<typeof GET_PRODUCT_SEARCH_RESULTS_QUERY>;
+type SearchProductsSortInput = Variables['sort'];
+type SearchProductsFiltersInput = Variables['filters'];
+
+interface ProductSearch {
+  limit?: number;
+  before?: string;
+  after?: string;
+  sort?: SearchProductsSortInput;
+  filters: SearchProductsFiltersInput;
+  imageWidth?: number;
+  imageHeight?: number;
+}
 
 export const getProductSearchResults = cache(
   async ({
