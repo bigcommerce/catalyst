@@ -1,4 +1,4 @@
-name: Lint, Typecheck, GraphQL Codegen
+name: Lint, Typecheck, gql.tada
 
 on:
   push:
@@ -38,11 +38,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Graphql Tada
+      - name: Gql Tada
         run: pnpm run -r generate
-
-      - name: Graphql Codegen
-        run: pnpm run -r codegen
 
       - name: Lint
         run: pnpm run lint -- --max-warnings=0
