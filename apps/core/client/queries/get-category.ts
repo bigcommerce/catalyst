@@ -4,10 +4,10 @@ import { cache } from 'react';
 import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
-import { graphql } from '../generated';
+import { graphql } from '../graphql';
 import { revalidate } from '../revalidate-target';
 
-export const GET_CATEGORY_QUERY = /* GraphQL */ `
+const GET_CATEGORY_QUERY = graphql(`
   query getCategory(
     $after: String
     $before: String
@@ -19,11 +19,12 @@ export const GET_CATEGORY_QUERY = /* GraphQL */ `
     site {
       category(entityId: $categoryId) {
         name
-        description
-        path
         products(after: $after, before: $before, first: $first, last: $last) {
           pageInfo {
-            ...PageDetails
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
           }
           edges {
             node {
@@ -57,7 +58,7 @@ export const GET_CATEGORY_QUERY = /* GraphQL */ `
       }
     }
   }
-`;
+`);
 
 export interface CategoryOptions {
   after?: string;
@@ -69,13 +70,12 @@ export interface CategoryOptions {
 
 export const getCategory = cache(
   async ({ categoryId, limit = 9, before, after, breadcrumbDepth = 10 }: CategoryOptions) => {
-    const query = graphql(GET_CATEGORY_QUERY);
     const customerId = await getSessionCustomerId();
 
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
-      document: query,
+      document: GET_CATEGORY_QUERY,
       variables: { categoryId, breadcrumbDepth, ...paginationArgs },
       customerId,
       fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
