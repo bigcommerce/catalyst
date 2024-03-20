@@ -49,23 +49,12 @@ export const cloneCatalyst = async ({
       description: z.string(),
       version: z.string(),
       scripts: z.object({}).passthrough().optional(),
+      dependencies: z.object({}).passthrough(),
+      devDependencies: z.object({}).passthrough(),
       private: z.boolean().optional(),
       exports: z.object({}).passthrough().optional(),
       sideEffects: z.boolean().optional(),
       peerDependencies: z.object({}).passthrough().optional(),
-      dependencies: z
-        .object({
-          '@bigcommerce/components': z.string().optional(),
-          '@bigcommerce/catalyst-client': z.string().optional(),
-        })
-        .passthrough(),
-      devDependencies: z
-        .object({
-          react: z.string().optional(),
-          'react-dom': z.string().optional(),
-          '@bigcommerce/eslint-config-catalyst': z.string().optional(),
-        })
-        .passthrough(),
     })
     .passthrough()
     .parse(
@@ -82,11 +71,10 @@ export const cloneCatalyst = async ({
   delete packageJson.sideEffects;
   delete packageJson.peerDependencies; // will go away
   delete packageJson.dependencies['@bigcommerce/components']; // will go away
+  delete packageJson.dependencies['@bigcommerce/catalyst-client'];
   delete packageJson.devDependencies.react; // will go away
   delete packageJson.devDependencies['react-dom']; // will go away
-
-  packageJson.dependencies['@bigcommerce/catalyst-client'] = `^0.1.1`;
-  packageJson.devDependencies['@bigcommerce/eslint-config-catalyst'] = `^0.1.0`;
+  delete packageJson.devDependencies['@bigcommerce/eslint-config-catalyst'];
 
   writeJsonSync(join(projectDir, 'package.json'), packageJson, { spaces: 2 });
 
