@@ -15,7 +15,6 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { FormEvent, useRef } from 'react';
 
-import { RatingSearchFilterItem } from '~/client/generated/graphql';
 import { Link } from '~/components/link';
 import { cn } from '~/lib/utils';
 
@@ -36,10 +35,6 @@ const ProductCount = ({ shouldDisplay, count }: ProductCountProps) => {
       {count} <span className="sr-only">products</span>
     </span>
   );
-};
-
-const sortRatingsDescending = (a: RatingSearchFilterItem, b: RatingSearchFilterItem) => {
-  return parseInt(b.value, 10) - parseInt(a.value, 10);
 };
 
 export interface Props {
@@ -236,7 +231,7 @@ export const Facets = ({ facets, pageType }: Props) => {
                 <AccordionContent className="overflow-visible">
                   {facet.ratings
                     .filter((rating) => rating.value !== '5')
-                    .sort(sortRatingsDescending)
+                    .sort((a, b) => parseInt(b.value, 10) - parseInt(a.value, 10))
                     .map((rating) => {
                       const key = `${facet.name}-${rating.value}-${rating.isSelected.toString()}`;
 

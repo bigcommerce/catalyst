@@ -1,11 +1,5 @@
 import { client } from '..';
-import { RegisterCustomerInput } from '../generated/graphql';
-import { graphql } from '../graphql';
-
-interface RegisterCustomer {
-  formFields: RegisterCustomerInput;
-  reCaptchaToken?: string;
-}
+import { graphql, VariablesOf } from '../graphql';
 
 const REGISTER_CUSTOMER_MUTATION = graphql(`
   mutation registerCustomer($input: RegisterCustomerInput!, $reCaptchaV2: ReCaptchaV2Input) {
@@ -33,6 +27,14 @@ const REGISTER_CUSTOMER_MUTATION = graphql(`
     }
   }
 `);
+
+type Variables = VariablesOf<typeof REGISTER_CUSTOMER_MUTATION>;
+type Input = Variables['input'];
+
+interface RegisterCustomer {
+  formFields: Input;
+  reCaptchaToken?: string;
+}
 
 export const registerCustomer = async ({ formFields, reCaptchaToken }: RegisterCustomer) => {
   const variables = {
