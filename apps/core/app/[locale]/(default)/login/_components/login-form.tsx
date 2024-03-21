@@ -54,7 +54,7 @@ export const LoginForm = () => {
           role="region"
           variant="error"
         >
-          <p id="error-message">{t('form.errorMessage')}</p>
+          <p id="error-message">{t('Form.errorMessage')}</p>
         </Message>
       )}
       <Form action={formAction} className="mb-14 flex flex-col gap-3 md:p-8 lg:p-0">
