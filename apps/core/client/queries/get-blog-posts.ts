@@ -46,7 +46,7 @@ const GET_BLOG_POSTS_QUERY = graphql(`
                   utc
                 }
                 thumbnailImage {
-                  url(width: 300)
+                  url: urlTemplate
                   altText
                 }
               }

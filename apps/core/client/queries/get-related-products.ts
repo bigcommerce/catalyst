@@ -12,13 +12,7 @@ import { GetProductOptions } from './get-product';
 
 const GET_RELATED_PRODUCTS = graphql(
   `
-    query getRelatedProducts(
-      $entityId: Int!
-      $optionValueIds: [OptionValueId!]
-      $first: Int!
-      $imageHeight: Int!
-      $imageWidth: Int!
-    ) {
+    query getRelatedProducts($entityId: Int!, $optionValueIds: [OptionValueId!], $first: Int!) {
       site {
         product(entityId: $entityId, optionValueIds: $optionValueIds) {
           relatedProducts(first: $first) {
@@ -39,17 +33,15 @@ export const getRelatedProducts = cache(
   async (
     options: GetProductOptions & {
       first?: number;
-      imageWidth?: number;
-      imageHeight?: number;
     },
   ) => {
-    const { productId, optionValueIds, first = 12, imageWidth = 300, imageHeight = 300 } = options;
+    const { productId, optionValueIds, first = 12 } = options;
 
     const customerId = await getSessionCustomerId();
 
     const response = await client.fetch({
       document: GET_RELATED_PRODUCTS,
-      variables: { entityId: productId, optionValueIds, first, imageWidth, imageHeight },
+      variables: { entityId: productId, optionValueIds, first },
       fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
     });
 

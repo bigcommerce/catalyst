@@ -7,11 +7,12 @@ import {
   BlogPostTitle,
   BlogPostCard as ComponentsBlogPostCard,
 } from '@bigcommerce/components/blog-post-card';
-import Image from 'next/image';
 
 import { getBlogPosts } from '~/client/queries/get-blog-posts';
 import { ExistingResultType } from '~/client/util';
 import { Link } from '~/components/link';
+
+import { BcImage } from '../bc-image';
 
 interface BlogPostCardProps {
   blogPost: ExistingResultType<typeof getBlogPosts>['posts']['items'][number];
@@ -22,7 +23,7 @@ export const BlogPostCard = ({ blogPost }: BlogPostCardProps) => (
     {blogPost.thumbnailImage ? (
       <BlogPostImage>
         <Link className="block w-full" href={`/blog/${blogPost.entityId}`}>
-          <Image
+          <BcImage
             alt={blogPost.thumbnailImage.altText}
             className="h-full w-full object-cover object-center"
             height={300}

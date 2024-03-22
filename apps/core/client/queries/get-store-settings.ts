@@ -16,7 +16,7 @@ const GET_STORE_SETTINGS_QUERY = graphql(`
           }
           ... on StoreImageLogo {
             image {
-              url(width: 155)
+              url: urlTemplate
               altText
             }
           }

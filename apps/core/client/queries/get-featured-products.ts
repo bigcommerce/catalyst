@@ -10,7 +10,7 @@ import { revalidate } from '../revalidate-target';
 
 const GET_FEATURED_PRODUCTS_QUERY = graphql(
   `
-    query getFeaturedProducts($first: Int, $imageHeight: Int!, $imageWidth: Int!) {
+    query getFeaturedProducts($first: Int) {
       site {
         featuredProducts(first: $first) {
           edges {
@@ -27,26 +27,22 @@ const GET_FEATURED_PRODUCTS_QUERY = graphql(
 
 interface Options {
   first?: number;
-  imageWidth?: number;
-  imageHeight?: number;
 }
 
-export const getFeaturedProducts = cache(
-  async ({ first = 12, imageHeight = 300, imageWidth = 300 }: Options = {}) => {
-    const customerId = await getSessionCustomerId();
+export const getFeaturedProducts = cache(async ({ first = 12 }: Options = {}) => {
+  const customerId = await getSessionCustomerId();
 
-    const response = await client.fetch({
-      document: GET_FEATURED_PRODUCTS_QUERY,
-      variables: { first, imageWidth, imageHeight },
-      customerId,
-      fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
-    });
+  const response = await client.fetch({
+    document: GET_FEATURED_PRODUCTS_QUERY,
+    variables: { first },
+    customerId,
+    fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
+  });
 
-    const { site } = response.data;
+  const { site } = response.data;
 
-    return removeEdgesAndNodes(site.featuredProducts).map((featuredProduct) => ({
-      ...featuredProduct,
-      productOptions: removeEdgesAndNodes(featuredProduct.productOptions),
-    }));
-  },
-);
+  return removeEdgesAndNodes(site.featuredProducts).map((featuredProduct) => ({
+    ...featuredProduct,
+    productOptions: removeEdgesAndNodes(featuredProduct.productOptions),
+  }));
+});

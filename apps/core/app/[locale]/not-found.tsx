@@ -19,8 +19,6 @@ export default async function NotFound() {
   const messages = await getMessages({ locale });
 
   const featuredProducts = await getFeaturedProducts({
-    imageHeight: 500,
-    imageWidth: 500,
     first: 4,
   });
 

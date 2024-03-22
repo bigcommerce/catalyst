@@ -11,13 +11,11 @@ import { revalidate } from '../revalidate-target';
 export interface GetProductsArguments {
   productIds: number[];
   first: number;
-  imageWidth?: number;
-  imageHeight?: number;
 }
 
 const GET_PRODUCTS_QUERY = graphql(
   `
-    query getProducts($entityIds: [Int!], $first: Int, $imageHeight: Int!, $imageWidth: Int!) {
+    query getProducts($entityIds: [Int!], $first: Int) {
       site {
         products(entityIds: $entityIds, first: $first) {
           edges {
@@ -32,22 +30,20 @@ const GET_PRODUCTS_QUERY = graphql(
   [PRODUCT_DETAILS_FRAGMENT],
 );
 
-export const getProducts = cache(
-  async ({ productIds, first, imageWidth = 300, imageHeight = 300 }: GetProductsArguments) => {
-    const customerId = await getSessionCustomerId();
+export const getProducts = cache(async ({ productIds, first }: GetProductsArguments) => {
+  const customerId = await getSessionCustomerId();
 
-    const response = await client.fetch({
-      document: GET_PRODUCTS_QUERY,
-      variables: { entityIds: productIds, first, imageWidth, imageHeight },
-      customerId,
-      fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
-    });
+  const response = await client.fetch({
+    document: GET_PRODUCTS_QUERY,
+    variables: { entityIds: productIds, first },
+    customerId,
+    fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
+  });
 
-    const products = removeEdgesAndNodes(response.data.site.products);
+  const products = removeEdgesAndNodes(response.data.site.products);
 
-    return products.map((product) => ({
-      ...product,
-      productOptions: removeEdgesAndNodes(product.productOptions),
-    }));
-  },
-);
+  return products.map((product) => ({
+    ...product,
+    productOptions: removeEdgesAndNodes(product.productOptions),
+  }));
+});
