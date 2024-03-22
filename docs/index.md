@@ -60,6 +60,10 @@ We expect you will prioritize some of these features over others as you make Cat
 * **Evaluating middleware**. Assess the costs and benefits of the [default Catalyst middleware](/docs/catalyst-middleware.md). You may tailor the middleware for your use case or remove it altogether.
 * **Additional catalog optimization**. You can tune Catalyst's performance based on your store's catalog size, complexity, and update frequency. For example, a catalog with a small number of products and infrequent updates may be able to take advantage of static generation, whereas a large catalog with frequent changes may lean into an aggressive caching strategy that relies on webhooks.
 
+## Integrations
+
+Catalyst storefronts can use [Algolia](https://www.algolia.com/) for a global search across all products, categories, and more. For a basic integration, see the [Catalyst Algolia integration](https://github.com/gje4/catalyst-algolia?tab=readme-ov-file#integrating-algolia-searchbox-into-catalyst) guide.
+
 ## Future releases
 
 Over time, we plan to expand Catalyst to include all our default storefront features, including feature parity with our fully hosted [Stencil storefront platform](https://developer.bigcommerce.com/docs/storefront/stencil).
