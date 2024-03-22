@@ -7,10 +7,10 @@ import {
 } from '@bigcommerce/components/blog-post-card';
 import { Tag, TagContent } from '@bigcommerce/components/tag';
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
 import { getBlogPost } from '~/client/queries/get-blost-post';
+import { BcImage } from '~/components/bcImage';
 import { Link } from '~/components/link';
 import { SharingLinks } from '~/components/sharing-links';
 import { LocaleType } from '~/i18n';
@@ -52,7 +52,7 @@ export default async function BlogPostPage({ params: { blogId } }: Props) {
 
       {blogPost.thumbnailImage ? (
         <BlogPostImage className="mb-6 h-40 sm:h-80 lg:h-96">
-          <Image
+          <BcImage
             alt={blogPost.thumbnailImage.altText}
             className="h-full w-full object-cover object-center"
             height={900}

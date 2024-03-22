@@ -4,11 +4,11 @@ import { RadioGroup, RadioItem } from '@bigcommerce/components/radio-group';
 import { RectangleList, RectangleListItem } from '@bigcommerce/components/rectangle-list';
 import { Select, SelectContent, SelectItem } from '@bigcommerce/components/select';
 import { Swatch, SwatchItem } from '@bigcommerce/components/swatch';
-import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { getProduct } from '~/client/queries/get-product';
 import { ExistingResultType, Unpacked } from '~/client/util';
+import { BcImage } from '~/components/bcImage';
 
 import { useProductFieldController } from '../use-product-form';
 
@@ -213,7 +213,7 @@ export const MultipleChoiceField = ({ option }: { option: MultipleChoiceOption }
                 return (
                   <div className="flex items-center p-4" key={value.entityId}>
                     {Boolean(value.defaultImage) && (
-                      <Image
+                      <BcImage
                         alt={value.defaultImage?.altText || ''}
                         className="me-6"
                         height={48}

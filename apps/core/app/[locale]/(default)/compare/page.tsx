@@ -1,6 +1,6 @@
 import { Button } from '@bigcommerce/components/button';
 import { Rating } from '@bigcommerce/components/rating';
-import Image from 'next/image';
+import { BcImage } from '~/components/bcImage';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import * as z from 'zod';
@@ -96,7 +96,7 @@ export default async function Compare({
                   return (
                     <td className="px-4" key={product.entityId}>
                       <Link aria-label={product.name} href={product.path}>
-                        <Image
+                        <BcImage
                           alt={product.defaultImage.altText}
                           height={300}
                           src={product.defaultImage.url}

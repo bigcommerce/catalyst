@@ -10,7 +10,6 @@ import {
   SlideshowSlide,
 } from '@bigcommerce/components/slideshow';
 import Image from 'next/image';
-
 import SlideshowBG from './slideshow-bg-01.jpg';
 
 export const Hero = () => (
@@ -25,7 +24,6 @@ export const Hero = () => (
             priority
             sizes="(max-width: 1536px) 100vw, 1536px"
             src={SlideshowBG}
-            loader={undefined} // use the default loader
           />
           <div className="flex flex-col gap-4 px-12 pb-48 pt-36">
             <h2 className="text-5xl font-black lg:text-6xl">25% Off Sale</h2>

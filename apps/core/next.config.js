@@ -13,8 +13,8 @@ const cspHeader = `
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    loader: 'custom',
-    loaderFile: './lib/cdn-image-loader.ts',
+    // loader: 'custom',
+    // loaderFile: './lib/cdn-image-loader.ts',
     remotePatterns: [
       {
         protocol: 'https',

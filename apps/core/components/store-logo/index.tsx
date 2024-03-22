@@ -1,6 +1,5 @@
-import Image from 'next/image';
-
 import { getStoreSettings } from '~/client/queries/get-store-settings';
+import { BcImage } from '~/components/bcImage';
 
 export const StoreLogo = async () => {
   const settings = await getStoreSettings();
@@ -16,7 +15,7 @@ export const StoreLogo = async () => {
   }
 
   return (
-    <Image
+    <BcImage
       alt={logo.image.altText ? logo.image.altText : storeName}
       className="max-h-16 object-contain"
       height={32}
