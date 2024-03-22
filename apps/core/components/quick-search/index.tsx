@@ -13,13 +13,13 @@ import {
 } from '@bigcommerce/components/sheet';
 import debounce from 'lodash.debounce';
 import { Search, Loader2 as Spinner, X } from 'lucide-react';
-import Image from 'next/image';
 import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 
 import { getQuickSearchResults } from '~/client/queries/get-quick-search-results';
 import { ExistingResultType } from '~/client/util';
 import { cn } from '~/lib/utils';
 
+import { BcImage } from '../bc-image';
 import { Pricing } from '../pricing';
 
 import { getSearchResults } from './_actions/get-search-results';
@@ -196,7 +196,7 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
                           href={product.path}
                         >
                           {product.defaultImage ? (
-                            <Image
+                            <BcImage
                               alt={product.defaultImage.altText}
                               className="self-start object-contain"
                               height={80}

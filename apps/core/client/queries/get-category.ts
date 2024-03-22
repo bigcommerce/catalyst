@@ -40,7 +40,7 @@ const GET_CATEGORY_QUERY = graphql(`
                 }
               }
               defaultImage {
-                url(width: 300)
+                url: urlTemplate
                 altText
               }
             }

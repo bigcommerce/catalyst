@@ -1,13 +1,13 @@
 import { Button } from '@bigcommerce/components/button';
 import { Trash2 as Trash } from 'lucide-react';
 import { cookies } from 'next/headers';
-import Image from 'next/image';
 import { NextIntlClientProvider, useTranslations } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 
 import { getCheckoutUrl } from '~/client/management/get-checkout-url';
 import { getCart } from '~/client/queries/get-cart';
+import { BcImage } from '~/components/bc-image';
 import { LocaleType } from '~/i18n';
 
 import { getShippingCountries } from './_actions/get-shipping-countries';
@@ -93,7 +93,12 @@ export default async function CartPage({ params: { locale } }: Props) {
             <li key={product.entityId}>
               <div className="flex items-center gap-6 border-t border-t-gray-200 py-4">
                 <div>
-                  <Image alt={product.name} height={104} src={product.imageUrl ?? ''} width={104} />
+                  <BcImage
+                    alt={product.name}
+                    height={104}
+                    src={product.imageUrl ?? ''}
+                    width={104}
+                  />
                 </div>
 
                 <div className="flex-1">

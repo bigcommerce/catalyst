@@ -18,8 +18,6 @@ const GET_PRODUCT_SEARCH_RESULTS_QUERY = graphql(
       $before: String
       $filters: SearchProductsFiltersInput!
       $sort: SearchProductsSortInput
-      $imageHeight: Int!
-      $imageWidth: Int!
     ) {
       site {
         search {
@@ -165,22 +163,12 @@ interface ProductSearch {
   after?: string;
   sort?: SearchProductsSortInput;
   filters: SearchProductsFiltersInput;
-  imageWidth?: number;
-  imageHeight?: number;
 }
 
 export const getProductSearchResults = cache(
-  async ({
-    limit = 9,
-    after,
-    before,
-    sort,
-    filters,
-    imageHeight = 300,
-    imageWidth = 300,
-  }: ProductSearch) => {
+  async ({ limit = 9, after, before, sort, filters }: ProductSearch) => {
     const customerId = await getSessionCustomerId();
-    const filterArgs = { filters, sort, imageHeight, imageWidth };
+    const filterArgs = { filters, sort };
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
