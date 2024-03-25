@@ -1,7 +1,6 @@
 'use server';
 
 import { revalidateTag } from 'next/cache';
-import { cookies } from 'next/headers';
 import { z } from 'zod';
 
 import { selectCheckoutShippingOption } from '~/client/mutations/select-checkout-shipping-option';
@@ -26,27 +25,7 @@ export const submitShippingCosts = async (
       shippingOptionEntityId: parsedData.shippingOption,
     });
 
-    const selectedShippingOption =
-      shippingCost && shippingCost.shippingConsignments
-        ? shippingCost.shippingConsignments[0]?.selectedShippingOption?.description
-        : '';
-
-    const shippingCosts = {
-      shippingCostTotal: shippingCost?.shippingCostTotal?.value ?? 0,
-      handlingCostTotal: shippingCost?.handlingCostTotal?.value ?? 0,
-      selectedShippingOption,
-    };
-
-    cookies().set({
-      name: 'shippingCosts',
-      value: JSON.stringify(shippingCosts),
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: true,
-      path: '/',
-    });
-
-    revalidateTag('cart');
+    revalidateTag('checkout');
 
     return { status: 'success', data: shippingCost };
   } catch (e: unknown) {
