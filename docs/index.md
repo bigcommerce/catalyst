@@ -62,7 +62,7 @@ We expect you will prioritize some of these features over others as you make Cat
 
 ## Integrations
 
-Catalyst storefronts can use [Algolia](https://www.algolia.com/) for a global search across all products, categories, and more. For a basic integration, see the [Catalyst Algolia integration](https://github.com/gje4/catalyst-algolia?tab=readme-ov-file#integrating-algolia-searchbox-into-catalyst) guide.
+Catalyst storefronts can use [Algolia](https://www.algolia.com/) for a global search across all products, categories, and more. For a basic integration, see the [Catalyst Algolia integration](https://www.algolia.com/developers/code-exchange/bigcommerce-catalyst/) code exchange on the Algolia website.
 
 ## Future releases
 
