@@ -65,7 +65,7 @@ const PRODUCT_OPTIONS_FRAGMENT = graphql(`
                     __typename
                     defaultImage {
                       altText
-                      url(width: 48)
+                      url: urlTemplate
                     }
                     productId
                   }
@@ -124,13 +124,13 @@ const PRODUCT_FRAGMENT = graphql(
       plainTextDescription(characterLimit: 2000)
       defaultImage {
         altText
-        url(width: 600)
+        url: urlTemplate
       }
       images {
         edges {
           node {
             altText
-            url(width: 600)
+            url: urlTemplate
             isDefault
           }
         }

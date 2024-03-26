@@ -11,7 +11,7 @@ The `with-auth` middleware is a wrapper over a minimal implementation of [Auth.j
 
 The `with-routes` middleware overrides the default [Next.js file-based routing behavior](https://nextjs.org/docs/app/building-your-application/routing) to provide support for certain BigCommerce features in a way that allows changes users make with the store control panel and APIs to have the expected effect on the storefront.
 
-This middleware sends a relative path to BigCommerce using GraphQL Storefront API's [getRoute query](https://github.com/bigcommerce/catalyst/blob/main/apps/core/client/queries/get-route.ts) to determine the data entity that correlates with the supplied path.
+This middleware sends a relative path to BigCommerce using GraphQL Storefront API's [route() node](https://github.com/bigcommerce/catalyst/blob/main/apps/core/client/queries/get-route.ts) to determine the platform entity, such as a product, that correlates with the supplied path.
 
 The `with-routes` middleware then performs an internal Next.js rewrite to render at the supplied path the page that corresponds with the brand, category, cart, etc., that is configured for that `entityId`.
 

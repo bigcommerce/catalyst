@@ -204,12 +204,6 @@ export const create = async (options: CreateCommandOptions) => {
     failText: (err) => chalk.red(`Failed to create GraphQL schema: ${err.message}`),
   });
 
-  await spinner(exec(`${packageManager} run codegen`, { cwd: projectDir }), {
-    text: 'Generating GraphQL types...',
-    successText: 'GraphQL types generated successfully',
-    failText: (err) => chalk.red(`Failed to generate GraphQL types: ${err.message}`),
-  });
-
   await spinner(exec(`${packageManager} run lint -- --fix`, { cwd: projectDir }), {
     text: 'Linting to validate generated types...',
     successText: 'GraphQL types validated successfully',

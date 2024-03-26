@@ -21,7 +21,7 @@ const GET_BLOG_POST_QUERY = graphql(`
             tags
             thumbnailImage {
               altText
-              url(width: 900)
+              url: urlTemplate
             }
             seo {
               metaKeywords

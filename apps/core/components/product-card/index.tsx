@@ -7,13 +7,13 @@ import {
   ProductCardInfoProductName,
 } from '@bigcommerce/components/product-card';
 import { Rating } from '@bigcommerce/components/rating';
-import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { useId } from 'react';
 
 import { Link } from '~/components/link';
 import { cn } from '~/lib/utils';
 
+import { BcImage } from '../bc-image';
 import { Pricing } from '../pricing';
 
 import { Cart } from './cart';
@@ -103,7 +103,7 @@ export const ProductCard = ({
           })}
         >
           {product.defaultImage ? (
-            <Image
+            <BcImage
               alt={product.defaultImage.altText ?? product.name ?? ''}
               className="object-contain"
               fill

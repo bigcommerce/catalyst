@@ -8,12 +8,13 @@ import {
 } from '@bigcommerce/components/accordion';
 import { Button } from '@bigcommerce/components/button';
 import { X } from 'lucide-react';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 import { CheckedProduct, useCompareProductsContext } from '~/app/contexts/compare-products-context';
 import { Link } from '~/components/link';
+
+import { BcImage } from '../bc-image';
 
 const CompareLink = ({ products }: { products: CheckedProduct[] }) => {
   const t = useTranslations('Providers.Compare');
@@ -45,7 +46,7 @@ const CompareItem = ({
       key={product.id}
     >
       {product.image ? (
-        <Image
+        <BcImage
           alt={product.image.altText ?? product.name}
           className="object-contain"
           height={48}

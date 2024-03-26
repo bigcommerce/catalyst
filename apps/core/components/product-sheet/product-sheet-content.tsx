@@ -2,7 +2,6 @@
 
 import { Rating } from '@bigcommerce/components/rating';
 import { Loader2 as Spinner } from 'lucide-react';
-import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useEffect, useId, useState } from 'react';
@@ -10,6 +9,8 @@ import { useEffect, useId, useState } from 'react';
 import { getProduct } from '~/client/queries/get-product';
 import { ProductForm } from '~/components/product-form';
 import { cn } from '~/lib/utils';
+
+import { BcImage } from '../bc-image';
 
 export const ProductSheetContent = () => {
   const summaryId = useId();
@@ -73,7 +74,7 @@ export const ProductSheetContent = () => {
         <div className="flex">
           <div className="square relative h-[144px] w-[144px] shrink-0 grow-0">
             {product.defaultImage ? (
-              <Image
+              <BcImage
                 alt={product.defaultImage.altText}
                 className="object-contain"
                 fill

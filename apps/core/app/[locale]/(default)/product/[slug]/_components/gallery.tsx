@@ -9,9 +9,9 @@ import {
   GalleryThumbnailItem,
   GalleryThumbnailList,
 } from '@bigcommerce/components/gallery';
-import Image from 'next/image';
 
 import { getProduct } from '~/client/queries/get-product';
+import { BcImage } from '~/components/bc-image';
 
 type Product = Awaited<ReturnType<typeof getProduct>>;
 
@@ -52,7 +52,7 @@ export const Gallery = ({
             <GalleryImage>
               {({ selectedImage }) =>
                 selectedImage ? (
-                  <Image
+                  <BcImage
                     alt={selectedImage.altText}
                     className="h-full w-full object-contain"
                     fill
@@ -76,7 +76,7 @@ export const Gallery = ({
               return (
                 <GalleryThumbnailItem imageIndex={index} key={image.url}>
                   <GalleryThumbnail asChild>
-                    <Image alt={image.altText} priority={true} src={image.url} />
+                    <BcImage alt={image.altText} priority={true} src={image.url} />
                   </GalleryThumbnail>
                 </GalleryThumbnailItem>
               );
