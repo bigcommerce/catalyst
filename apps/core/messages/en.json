@@ -191,6 +191,17 @@
     "SubmitChangePassword": {
       "spinnerText": "Submitting...",
       "submitText": "Change password"
+    },
+    "ResetPassword": {
+      "description": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
+      "emailLabel": "Email",
+      "emailValidationMessage": "Enter a valid email such as name@domain.com",
+      "successMessage": "Your password reset email is on its way to {email}. If you don't see it, check your spam folder.",
+      "recaptchaText": "Pass ReCAPTCHA check"
+    },
+    "SubmitResetPassword": {
+      "spinnerText": "Submitting...",
+      "submitText": "Reset password"
     }
   },
   "NotFound": {
