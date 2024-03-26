@@ -1,6 +1,5 @@
 const cdnHostname = process.env.BIGCOMMERCE_CDN_HOSTNAME ?? 'cdn11.bigcommerce.com';
 const storeHash = process.env.BIGCOMMERCE_STORE_HASH ?? '';
-const commitSha = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA;
 
 /**
  * Build the CDN image URL.
@@ -13,7 +12,7 @@ const commitSha = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA;
  * @returns {string} The CDN image URL.
  */
 const cdnImageUrlBuilder = (sizeSegment: string, source: string, path: string): string => {
-  return `https://${cdnHostname}/s-${storeHash}/images/stencil/${sizeSegment}/${source}/${path}${commitSha ? `?v=${commitSha}` : ''}`;
+  return `https://${cdnHostname}/s-${storeHash}/images/stencil/${sizeSegment}/${source}/${path}`;
 };
 
 /**
@@ -26,7 +25,7 @@ const cdnImageUrlBuilder = (sizeSegment: string, source: string, path: string): 
  * @returns {string} The full URL to the content asset.
  */
 export const contentAssetUrl = (path: string): string => {
-  return `https://${cdnHostname}/s-${storeHash}/content/${path}${commitSha ? `?v=${commitSha}` : ''}`;
+  return `https://${cdnHostname}/s-${storeHash}/content/${path}`;
 };
 
 /**
