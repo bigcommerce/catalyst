@@ -45,18 +45,14 @@ const Field = forwardRef<
 
 Field.displayName = 'Field';
 
-interface FieldMessageProps
-  extends Omit<ComponentPropsWithRef<typeof FormPrimitive.Message>, 'match'> {
-  match?: ValidationPattern;
-}
-
-const FieldMessage = forwardRef<ElementRef<typeof FormPrimitive.Message>, FieldMessageProps>(
-  ({ className, children, ...props }, ref) => (
-    <FormPrimitive.Message className={cn(className)} ref={ref} {...props}>
-      {children}
-    </FormPrimitive.Message>
-  ),
-);
+const FieldMessage = forwardRef<
+  ElementRef<typeof FormPrimitive.Message>,
+  ComponentPropsWithRef<typeof FormPrimitive.Message>
+>(({ className, children, ...props }, ref) => (
+  <FormPrimitive.Message className={cn(className)} ref={ref} {...props}>
+    {children}
+  </FormPrimitive.Message>
+));
 
 FieldMessage.displayName = 'FieldMessage';
 

@@ -1,9 +1,11 @@
 import { Button } from '@bigcommerce/components/button';
-import { NextIntlClientProvider, useMessages, useTranslations } from 'next-intl';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages, getTranslations } from 'next-intl/server';
 
 import { Link } from '~/components/link';
 import { LocaleType } from '~/i18n';
 
+import { ChangePasswordForm } from './_components/change-password-form';
 import { LoginForm } from './_components/login-form';
 
 export const metadata = {
@@ -14,17 +16,38 @@ interface Props {
   params: {
     locale: LocaleType;
   };
+  searchParams: {
+    [key: string]: string | string[] | undefined;
+    action?: 'create_account' | 'reset_password' | 'change_password';
+    c?: string;
+    t?: string;
+  };
 }
 
-export default function Login({ params: { locale } }: Props) {
-  const messages = useMessages();
-  const t = useTranslations('Account.Login');
+export default async function Login({ params: { locale }, searchParams }: Props) {
+  const messages = await getMessages({ locale });
+  const Account = messages.Account ?? {};
+  const t = await getTranslations({ locale, namespace: 'Account.Login' });
+  const action = searchParams.action;
+  const customerId = searchParams.c;
+  const customerToken = searchParams.t;
+
+  if (action === 'change_password' && customerId && customerToken) {
+    return (
+      <div className="mx-auto my-6 max-w-4xl">
+        <h2 className="mb-8 text-4xl font-black lg:text-5xl">{t('changePasswordHeading')}</h2>
+        <NextIntlClientProvider locale={locale} messages={{ Account }}>
+          <ChangePasswordForm customerId={Number(customerId)} customerToken={customerToken} />
+        </NextIntlClientProvider>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto my-6 max-w-4xl">
-      <h2 className="text-h2 mb-8">{t('heading')}</h2>
+      <h2 className="text-h2 mb-8 text-4xl font-black lg:text-5xl">{t('heading')}</h2>
       <div className="mb-12 grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8">
-        <NextIntlClientProvider locale={locale} messages={{ Account: messages.Account ?? {} }}>
+        <NextIntlClientProvider locale={locale} messages={{ Account }}>
           <LoginForm />
         </NextIntlClientProvider>
         <div className="flex flex-col gap-4 bg-gray-100 p-8">
