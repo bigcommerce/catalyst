@@ -9,6 +9,7 @@ type NextImageProps = Omit<ComponentPropsWithRef<typeof Image>, 'quality'>;
 
 interface BcImageOptions {
   lossy?: boolean;
+  width: number;
 }
 
 type Props = NextImageProps & BcImageOptions;
