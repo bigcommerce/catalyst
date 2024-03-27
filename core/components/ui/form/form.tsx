@@ -20,7 +20,7 @@ type ValidationPattern =
 type ValidationFunction =
   | ((value: string, formData: FormData) => boolean)
   | ((value: string, formData: FormData) => Promise<boolean>);
-type ControlValidationPatterns = ValidationPattern & ValidationFunction;
+type ControlValidationPatterns = ValidationPattern | ValidationFunction;
 type BuiltInValidityState = {
   [pattern in ValidationPattern]: boolean;
 };
