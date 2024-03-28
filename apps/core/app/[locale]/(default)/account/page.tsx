@@ -1,11 +1,14 @@
 import { BookUser, Eye, Gift, Mail, Package, Settings } from 'lucide-react';
 import { redirect } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages, getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
 import { auth } from '~/auth';
 import { Link } from '~/components/link';
 import { LocaleType } from '~/i18n';
+
+import { ChangePasswordForm } from '../login/_components/change-password-form';
 
 interface AccountItem {
   children: ReactNode;
@@ -33,14 +36,30 @@ interface Props {
   params: {
     locale: LocaleType;
   };
+  searchParams: {
+    action?: 'reset_password';
+  };
 }
 
-export default async function AccountPage({ params: { locale } }: Props) {
+export default async function AccountPage({ params: { locale }, searchParams: { action } }: Props) {
   const session = await auth();
   const t = await getTranslations({ locale, namespace: 'Account.Home' });
+  const messages = await getMessages({ locale });
+  const Account = messages.Account ?? {};
 
   if (!session) {
     redirect('/login');
+  }
+
+  if (action === 'reset_password') {
+    return (
+      <div className="mx-auto my-6 max-w-4xl">
+        <h2 className="mb-8 text-4xl font-black lg:text-5xl">{t('changePassword')}</h2>
+        <NextIntlClientProvider locale={locale} messages={{ Account }}>
+          <ChangePasswordForm isLoggedIn={true} />
+        </NextIntlClientProvider>
+      </div>
+    );
   }
 
   return (
