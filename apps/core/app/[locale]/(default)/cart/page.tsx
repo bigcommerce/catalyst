@@ -1,8 +1,8 @@
 import { Button } from '@bigcommerce/components/button';
 import { Trash2 as Trash } from 'lucide-react';
 import { cookies } from 'next/headers';
-import { NextIntlClientProvider, useTranslations } from 'next-intl';
-import { getMessages, getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 
 import { getCheckoutUrl } from '~/client/management/get-checkout-url';
@@ -10,10 +10,9 @@ import { getCart } from '~/client/queries/get-cart';
 import { BcImage } from '~/components/bc-image';
 import { LocaleType } from '~/i18n';
 
-import { getShippingCountries } from './_actions/get-shipping-countries';
 import { removeProduct } from './_actions/remove-products';
 import { CartItemCounter } from './_components/cart-item-counter';
-import { CheckoutSummary, ShippingCosts } from './_components/checkout-summary';
+import { CheckoutSummary } from './_components/checkout-summary';
 
 export const metadata = {
   title: 'Cart',
@@ -51,20 +50,13 @@ interface Props {
 
 export default async function CartPage({ params: { locale } }: Props) {
   const t = await getTranslations({ locale, namespace: 'Cart' });
-  const messages = await getMessages({ locale });
   const cartId = cookies().get('cartId')?.value;
-  const shippingCostData = cookies().get('shippingCosts')?.value;
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const shippingCosts: ShippingCosts | null = shippingCostData
-    ? JSON.parse(shippingCostData)
-    : null;
 
   if (!cartId) {
     return <EmptyCart />;
   }
 
   const cart = await getCart(cartId);
-  const shippingCountries = await getShippingCountries();
 
   if (!cart) {
     return <EmptyCart />;
@@ -186,14 +178,7 @@ export default async function CartPage({ params: { locale } }: Props) {
         </ul>
 
         <div className="col-span-1 col-start-2 lg:col-start-3">
-          <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
-            <CheckoutSummary
-              cart={cart}
-              key={cart.totalExtendedListPrice.value}
-              shippingCosts={shippingCosts}
-              shippingCountries={shippingCountries}
-            />
-          </NextIntlClientProvider>
+          <CheckoutSummary cartId={cartId} locale={locale} />
 
           <Suspense fallback={t('loading')}>
             <CheckoutButton cartId={cartId} label={t('proceedToCheckout')} />

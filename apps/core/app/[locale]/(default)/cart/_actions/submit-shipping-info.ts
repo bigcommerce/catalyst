@@ -1,9 +1,10 @@
 'use server';
 
+import { revalidateTag } from 'next/cache';
 import { z } from 'zod';
 
-import { addCheckoutShippingInfo } from '~/client/mutations/add-checkout-shipping-info';
-import { updateCheckoutShippingInfo } from '~/client/mutations/update-checkout-shipping-info';
+import { addCheckoutShippingConsignments } from '~/client/mutations/add-checkout-shipping-consignments';
+import { updateCheckoutShippingConsignment } from '~/client/mutations/update-checkout-shipping-consigment';
 
 const ShippingInfoSchema = z.object({
   country: z.string(),
@@ -14,10 +15,10 @@ const ShippingInfoSchema = z.object({
 
 export const submitShippingInfo = async (
   formData: FormData,
-  cartData: {
-    cartId: string;
+  checkoutData: {
+    checkoutId: string;
     shippingId: string | null;
-    cartItems: Array<{ quantity: number; lineItemEntityId: string }>;
+    lineItems: Array<{ quantity: number; lineItemEntityId: string }>;
   },
 ) => {
   try {
@@ -27,30 +28,32 @@ export const submitShippingInfo = async (
       city: formData.get('city'),
       zipcode: formData.get('zip'),
     });
-    const { cartId, cartItems, shippingId } = cartData;
+    const { checkoutId, lineItems, shippingId } = checkoutData;
 
     let result;
 
     if (shippingId) {
-      result = await updateCheckoutShippingInfo({
-        cartId,
+      result = await updateCheckoutShippingConsignment({
+        checkoutId,
         shippingId,
-        cartItems,
+        lineItems,
         countryCode: parsedData.country.split('-')[0] ?? '',
         stateOrProvince: parsedData.state,
         city: parsedData.city,
         postalCode: parsedData.zipcode,
       });
     } else {
-      result = await addCheckoutShippingInfo({
-        cartId,
-        cartItems,
+      result = await addCheckoutShippingConsignments({
+        checkoutId,
+        lineItems,
         countryCode: parsedData.country.split('-')[0] ?? '',
         stateOrProvince: parsedData.state,
         city: parsedData.city,
         postalCode: parsedData.zipcode,
       });
     }
+
+    revalidateTag('checkout');
 
     return { status: 'success', data: result };
   } catch (e: unknown) {
