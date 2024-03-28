@@ -13,8 +13,10 @@ export const CheckoutSummary = async ({ cartId, locale }: { cartId: string; loca
   const t = await getTranslations({ locale, namespace: 'Cart.CheckoutSummary' });
   const messages = await getMessages({ locale });
 
-  const checkout = await getCheckout(cartId);
-  const shippingCountries = await getShippingCountries();
+  const [checkout, shippingCountries] = await Promise.all([
+    getCheckout(cartId),
+    getShippingCountries(),
+  ]);
 
   if (!checkout) {
     toast.error(t('errorMessage'), {
