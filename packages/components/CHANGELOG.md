@@ -1,5 +1,12 @@
 # @bigcommerce/components
 
+## 0.1.3
+
+### Patch Changes
+
+- [#638](https://github.com/bigcommerce/catalyst/pull/638) [`a1f7970`](https://github.com/bigcommerce/catalyst/commit/a1f797098eee668b4f8bf6763100d71d3882cb45) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - Add reset password functionality
+  Update props for message field
+
 ## 0.1.2
 
 ### Patch Changes
