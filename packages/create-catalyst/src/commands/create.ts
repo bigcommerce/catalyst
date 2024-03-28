@@ -20,12 +20,20 @@ import { writeEnv } from '../utils/write-env';
 const exec = promisify(execCallback);
 
 export const create = async (options: CreateCommandOptions) => {
-  const { packageManager, ghRef } = options;
+  const { packageManager } = options;
 
   const URLSchema = z.string().url();
   const sampleDataApiUrl = parse(options.sampleDataApiUrl, URLSchema);
   const bigcommerceApiUrl = parse(`https://api.${options.bigcommerceHostname}`, URLSchema);
   const bigcommerceAuthUrl = parse(`https://login.${options.bigcommerceHostname}`, URLSchema);
+
+  let ghRef: string;
+
+  if (options.ghRef instanceof Function) {
+    ghRef = await options.ghRef();
+  } else {
+    ghRef = options.ghRef;
+  }
 
   let projectName;
   let projectDir;

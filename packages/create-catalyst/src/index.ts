@@ -8,6 +8,7 @@ import PACKAGE_INFO from '../package.json';
 
 import { create } from './commands/create';
 import { init } from './commands/init';
+import { getLatestCoreTag } from './utils/get-latest-core-tag';
 import { getPackageManager, packageManagerChoices } from './utils/pm';
 
 if (!satisfies(process.version, PACKAGE_INFO.engines.node)) {
@@ -38,11 +39,16 @@ const createCommand = program
   .description('Command to scaffold and connect a Catalyst storefront to your BigCommerce store')
   .option('--project-name <name>', 'Name of your Catalyst project')
   .option('--project-dir <dir>', 'Directory in which to create your project', process.cwd())
-  .option('--gh-ref <url>', 'Clone a specific ref from the bigcommerce/catalyst repository', 'main')
   .option('--store-hash <hash>', 'BigCommerce store hash')
   .option('--access-token <token>', 'BigCommerce access token')
   .option('--channel-id <id>', 'BigCommerce channel ID')
   .option('--customer-impersonation-token <token>', 'BigCommerce customer impersonation token')
+  .addOption(
+    new Option(
+      '--gh-ref <ref>',
+      'Clone a specific ref from the bigcommerce/catalyst repository',
+    ).default(getLatestCoreTag),
+  )
   .addOption(
     new Option('--bigcommerce-hostname <hostname>', 'BigCommerce hostname')
       .default('bigcommerce.com')
