@@ -1,5 +1,12 @@
 # @bigcommerce/docs
 
+## 0.1.3
+
+### Patch Changes
+
+- Updated dependencies [[`a1f7970`](https://github.com/bigcommerce/catalyst/commit/a1f797098eee668b4f8bf6763100d71d3882cb45)]:
+  - @bigcommerce/components@0.1.3
+
 ## 0.1.2
 
 ### Patch Changes
