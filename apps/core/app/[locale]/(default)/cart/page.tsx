@@ -5,10 +5,10 @@ import { NextIntlClientProvider, useTranslations } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 
-import { getCheckoutUrl } from '~/client/management/get-checkout-url';
 import { getCart } from '~/client/queries/get-cart';
 import { BcImage } from '~/components/bc-image';
 import { LocaleType } from '~/i18n';
+import { redirectToCheckout } from '~/lib/checkout-action';
 
 import { getShippingCountries } from './_actions/get-shipping-countries';
 import { removeProduct } from './_actions/remove-products';
@@ -33,13 +33,13 @@ const EmptyCart = () => {
   );
 };
 
-const CheckoutButton = async ({ cartId, label }: { cartId: string; label: string }) => {
-  const checkoutUrl = await getCheckoutUrl(cartId);
-
+const CheckoutButton = ({ label }: { label: string }) => {
   return (
-    <Button asChild className="mt-6">
-      <a href={checkoutUrl}>{label}</a>
-    </Button>
+    <form action={redirectToCheckout}>
+      <Button className="mt-6" type="submit">
+        {label}
+      </Button>
+    </form>
   );
 };
 
@@ -196,7 +196,7 @@ export default async function CartPage({ params: { locale } }: Props) {
           </NextIntlClientProvider>
 
           <Suspense fallback={t('loading')}>
-            <CheckoutButton cartId={cartId} label={t('proceedToCheckout')} />
+            <CheckoutButton label={t('proceedToCheckout')} />
           </Suspense>
         </div>
       </div>

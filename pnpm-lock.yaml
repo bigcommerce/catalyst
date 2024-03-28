@@ -56,6 +56,9 @@ importers:
       graphql:
         specifier: ^16.8.1
         version: 16.8.1
+      jose:
+        specifier: 5.2.3
+        version: 5.2.3
       lodash.debounce:
         specifier: ^4.0.8
         version: 4.0.8
@@ -599,7 +602,7 @@ packages:
     dependencies:
       '@panva/hkdf': 1.1.1
       cookie: 0.6.0
-      jose: 5.1.3
+      jose: 5.2.3
       oauth4webapi: 2.4.0
       preact: 10.11.3
       preact-render-to-string: 5.2.3(preact@10.11.3)
@@ -10308,8 +10311,8 @@ packages:
     hasBin: true
     dev: true
 
-  /jose@5.1.3:
-    resolution: {integrity: sha512-GPExOkcMsCLBTi1YetY2LmkoY559fss0+0KVa6kOfb2YFe84nAM7Nm/XzuZozah4iHgmBGrCOHL5/cy670SBRw==}
+  /jose@5.2.3:
+    resolution: {integrity: sha512-KUXdbctm1uHVL8BYhnyHkgp3zDX5KW8ZhAKVFEfUbU2P8Alpzjb+48hHvjOdQIyPshoblhzsuqOwEEAbtHVirA==}
     dev: false
 
   /joycon@3.1.1:
