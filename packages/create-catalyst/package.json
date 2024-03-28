@@ -25,7 +25,6 @@
     "giget": "^1.2.3",
     "lodash.kebabcase": "^4.1.1",
     "lodash.merge": "^4.6.2",
-    "msw": "^2.1.7",
     "nypm": "^0.3.6",
     "ora": "^8.0.1",
     "semver": "^7.6.0",
@@ -46,6 +45,7 @@
     "@types/semver": "^7.5.7",
     "eslint": "^8.55.0",
     "jest": "^29.7.0",
+    "msw": "^2.1.7",
     "prettier": "^3.1.1",
     "tsup": "^6.7.0",
     "typescript": "^5.3.3"
