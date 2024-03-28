@@ -44,7 +44,7 @@ export default async function AccountPage({ params: { locale } }: Props) {
   }
 
   return (
-    <div className="mx-auto max-w-screen-xl">
+    <div className="mx-auto">
       <h1 className="my-6 my-8 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
 
       <div className="mb-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -63,7 +63,7 @@ export default async function AccountPage({ params: { locale } }: Props) {
         <AccountItem href="/account/recently-viewed" title={t('recentlyViewed')}>
           <Eye className="me-8" height={48} width={48} />
         </AccountItem>
-        <AccountItem href="/account/settings" title={t('accountSettings')}>
+        <AccountItem href="/account/settings" title={t('settings')}>
           <Settings className="me-8" height={48} width={48} />
         </AccountItem>
       </div>
