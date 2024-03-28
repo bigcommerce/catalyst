@@ -59,11 +59,11 @@ The call to the carts feature of the Management API generates checkout redirect 
 
 #### Customer Login
 
-If you want to support checkout for signed-in customers, add the Customers Login scope so you can generate valid Customer Login JWTs to pass to the [Customer Login API](https://developer.bigcommerce.com/docs/start/authentication/customer-login). To learn more, see [BIGCOMMERCE_CLIENT_SECRET](#bigcommerce_client_secret).
+If you want to support checkout for signed-in customers, add the Customers Login scope so you can generate valid Customer Login JWTs to pass to the [Customer Login API](https://developer.bigcommerce.com/docs/start/authentication/customer-login). To learn more, see [BIGCOMMERCE_CLIENT_SECRET](#bigcommerce_client_secret) and [BIGCOMMERCE_CLIENT_ID](#bigcommerce_client_id). We will remove this dependency in a future version of Catalyst.
 
 #### Information and Settings
 
-As of this writing, Catalyst requires the Information & Settings read-only scopes to estimate shipping costs using the Management API.
+As of this writing, Catalyst requires the Information & Settings read-only scopes to estimate shipping costs using the Management API. We will remove this dependency in a future version of Catalyst.
 
 ### BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN
 
@@ -173,6 +173,18 @@ To learn more, see any of the following docs:
 * [Customer Login](#customer-login) in this reference
 * Guide to the [Customer Login API](https://developer.bigcommerce.com/docs/start/authentication/customer-login), which describes how to make the necessary JWT
 * Reference for the endpoint to [Log a customer in](https://developer.bigcommerce.com/docs/rest-authentication/customer-login), which describes how to send the JWT to BigCommerce
+
+### BIGCOMMERCE_CLIENT_ID
+
+| Attribute | Value |
+|:----------|:------|
+| Type | string |
+| Default | no value |
+| Required | false |
+| CLI-configurable | false |
+| Recommended | true |
+
+If you create a dedicated API Account to support logged-in customer checkout, you should populate the `BIGCOMMERCE_CLIENT_ID` variable with the client ID corresponding to the `BIGCOMMERCE_CLIENT_SECRET`. Both of these values are necessary to sign Customer Login JWTs.
 
 ## Optional
 
