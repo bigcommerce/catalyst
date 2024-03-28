@@ -114,7 +114,8 @@
       "handlingCost": "Handling Cost",
       "add": "Add",
       "change": "Change",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "errorMessage": "Cart summary not found, please try again."
     },
     "ShippingInfo": {
       "country": "Country",
@@ -124,7 +125,8 @@
       "city": "Suburb/city",
       "cityPlaceholder": "State/province...",
       "postcode": "Zip/Postcode",
-      "postcodePlaceholder": "State/province..."
+      "postcodePlaceholder": "State/province...",
+      "errorMessage": "Something went wrong, please try again."
     },
     "SubmitShippingInfo": {
       "spinnerText": "Submitting...",
@@ -133,7 +135,8 @@
     "ShippingCost": {
       "shippingOptions": "Available options",
       "radioGroupAriaLabel": "Available shipping options",
-      "errorMessage": "There are no available options for shipping. Please check provided details and try again!"
+      "noAvailableOptions": "There are no available options for shipping. Please check provided details and try again!",
+      "errorMessage": "Something went wrong, please try again."
     },
     "SubmitShippingCost": {
       "spinnerText": "Submitting...",

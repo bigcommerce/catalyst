@@ -44,19 +44,5 @@ export async function updateProductQuantity({
     throw new Error('Failed to change product quantity in Cart');
   }
 
-  // reset shipping estimation on update product quantity
-  cookies().set({
-    name: 'shippingCosts',
-    value: JSON.stringify({
-      shippingCostTotal: 0,
-      handlingCostTotal: 0,
-      selectedShippingOption: '',
-    }),
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: true,
-    path: '/',
-  });
-
   revalidatePath('/cart');
 }

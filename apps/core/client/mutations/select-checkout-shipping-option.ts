@@ -7,26 +7,6 @@ const SELECT_CHECKOUT_SHIPPING_OPTION_MUTATION = graphql(`
       selectCheckoutShippingOption(input: $input) {
         checkout {
           entityId
-          shippingCostTotal {
-            value
-            currencyCode
-          }
-          handlingCostTotal {
-            value
-            currencyCode
-          }
-          shippingConsignments {
-            entityId
-            selectedShippingOption {
-              entityId
-              description
-              type
-              cost {
-                value
-                currencyCode
-              }
-            }
-          }
         }
       }
     }
