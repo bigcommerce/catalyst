@@ -22,6 +22,7 @@
  * @typedef {Object} LighthouseOutputs
  * @prop {Record<string, string>} links
  * @prop {Manifest[]} manifest
+ * @prop {string} preset
  */
 
 const formatScore = (/** @type { number } */ score) => Math.round(score * 100);
@@ -39,8 +40,9 @@ const scoreRow = (
 function makeComment(lighthouseOutputs) {
     const { summary } = lighthouseOutputs.manifest[2];
     const [[testedUrl, reportUrl]] = Object.entries(lighthouseOutputs.links);
+    const preset = lighthouseOutputs.preset;
 
-    const comment = `## ⚡️🏠 Lighthouse report
+    const comment = `## ⚡️🏠 Lighthouse report for ${preset}
 
 We ran Lighthouse against the changes and produced this [report](${reportUrl}). Here's the summary:
 
