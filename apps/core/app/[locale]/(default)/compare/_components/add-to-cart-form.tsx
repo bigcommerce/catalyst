@@ -40,7 +40,12 @@ export const AddToCartForm = ({
                 {t.rich('addedProductQuantity', {
                   cartItems: quantity,
                   cartLink: (chunks) => (
-                    <Link className="font-semibold text-primary" href="/cart">
+                    <Link
+                      className="font-semibold text-primary"
+                      href="/cart"
+                      prefetch="viewport"
+                      prefetchKind="full"
+                    >
                       {chunks}
                     </Link>
                   ),
