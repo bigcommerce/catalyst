@@ -115,7 +115,7 @@
       "add": "Add",
       "change": "Change",
       "cancel": "Cancel",
-      "errorMessage": "Something went wrong, please try again."
+      "errorMessage": "Cart summary not found, please try again."
     },
     "ShippingInfo": {
       "country": "Country",
