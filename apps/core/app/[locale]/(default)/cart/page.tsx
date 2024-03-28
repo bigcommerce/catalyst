@@ -1,5 +1,4 @@
 import { Button } from '@bigcommerce/components/button';
-import { Trash2 as Trash } from 'lucide-react';
 import { cookies } from 'next/headers';
 import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
@@ -7,11 +6,9 @@ import { Suspense } from 'react';
 
 import { getCheckoutUrl } from '~/client/management/get-checkout-url';
 import { getCart } from '~/client/queries/get-cart';
-import { BcImage } from '~/components/bc-image';
 import { LocaleType } from '~/i18n';
 
-import { removeProduct } from './_actions/remove-products';
-import { CartItemCounter } from './_components/cart-item-counter';
+import { CartItem } from './_components/cart-item';
 import { CheckoutSummary } from './_components/checkout-summary';
 
 export const metadata = {
@@ -62,118 +59,17 @@ export default async function CartPage({ params: { locale } }: Props) {
     return <EmptyCart />;
   }
 
-  const extractCartlineItemsData = ({
-    entityId,
-    productEntityId,
-    quantity,
-    variantEntityId,
-    selectedOptions,
-  }: (typeof cart.lineItems.physicalItems)[number]) => ({
-    lineItemEntityId: entityId,
-    productEntityId,
-    quantity,
-    variantEntityId,
-    selectedOptions,
-  });
-
   return (
     <div>
       <h1 className="pb-6 text-4xl font-black lg:pb-10 lg:text-5xl">{t('heading')}</h1>
       <div className="pb-12 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-3">
         <ul className="col-span-2">
           {cart.lineItems.physicalItems.map((product) => (
-            <li key={product.entityId}>
-              <div className="flex items-center gap-6 border-t border-t-gray-200 py-4">
-                <div>
-                  <BcImage
-                    alt={product.name}
-                    height={104}
-                    src={product.imageUrl ?? ''}
-                    width={104}
-                  />
-                </div>
+            <CartItem currencyCode={cart.currencyCode} key={product.entityId} product={product} />
+          ))}
 
-                <div className="flex-1">
-                  <p className="text-base text-gray-500">{product.brand}</p>
-                  <p className="text-xl font-bold lg:text-2xl">{product.name}</p>
-
-                  {product.selectedOptions.length > 0 && (
-                    <div className="mt-2">
-                      {product.selectedOptions.map((selectedOption) => {
-                        switch (selectedOption.__typename) {
-                          case 'CartSelectedMultipleChoiceOption':
-                            return (
-                              <div key={selectedOption.entityId}>
-                                <span>{selectedOption.name}:</span>{' '}
-                                <span className="font-semibold">{selectedOption.value}</span>
-                              </div>
-                            );
-
-                          case 'CartSelectedCheckboxOption':
-                            return (
-                              <div key={selectedOption.entityId}>
-                                <span>{selectedOption.name}:</span>{' '}
-                                <span className="font-semibold">{selectedOption.value}</span>
-                              </div>
-                            );
-
-                          case 'CartSelectedNumberFieldOption':
-                            return (
-                              <div key={selectedOption.entityId}>
-                                <span>{selectedOption.name}:</span>{' '}
-                                <span className="font-semibold">{selectedOption.number}</span>
-                              </div>
-                            );
-
-                          case 'CartSelectedMultiLineTextFieldOption':
-                            return (
-                              <div key={selectedOption.entityId}>
-                                <span>{selectedOption.name}:</span>{' '}
-                                <span className="font-semibold">{selectedOption.text}</span>
-                              </div>
-                            );
-
-                          case 'CartSelectedTextFieldOption':
-                            return (
-                              <div key={selectedOption.entityId}>
-                                <span>{selectedOption.name}:</span>{' '}
-                                <span className="font-semibold">{selectedOption.text}</span>
-                              </div>
-                            );
-
-                          case 'CartSelectedDateFieldOption':
-                            return (
-                              <div key={selectedOption.entityId}>
-                                <span>{selectedOption.name}:</span>{' '}
-                                <span className="font-semibold">
-                                  {Intl.DateTimeFormat().format(new Date(selectedOption.date.utc))}
-                                </span>
-                              </div>
-                            );
-                        }
-
-                        return null;
-                      })}
-                    </div>
-                  )}
-                </div>
-
-                <CartItemCounter itemData={extractCartlineItemsData(product)} />
-
-                <div>
-                  <p className="inline-flex w-24 justify-center text-lg font-bold">
-                    ${product.extendedSalePrice.value}
-                  </p>
-                </div>
-
-                <form action={removeProduct}>
-                  <input name="lineItemEntityId" type="hidden" value={product.entityId} />
-                  <button aria-label={t('removeFromCart')} type="submit">
-                    <Trash aria-hidden="true" />
-                  </button>
-                </form>
-              </div>
-            </li>
+          {cart.lineItems.digitalItems.map((product) => (
+            <CartItem currencyCode={cart.currencyCode} key={product.entityId} product={product} />
           ))}
         </ul>
 

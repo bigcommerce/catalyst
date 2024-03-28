@@ -8,6 +8,8 @@ import { getCart } from '~/client/queries/get-cart';
 
 import { updateProductQuantity } from '../_actions/update-product-quantity';
 
+import { Product } from './cart-item';
+
 type CartLineItemInput = ReturnType<typeof graphql.scalar<'CartLineItemInput'>>;
 type CartSelectedOptionsInput = ReturnType<typeof graphql.scalar<'CartSelectedOptionsInput'>>;
 type UpdateCartLineItemInput = ReturnType<typeof graphql.scalar<'UpdateCartLineItemInput'>>;
@@ -124,9 +126,8 @@ const parseSelectedOptions = (selectedOptions: CartItemData['selectedOptions']) 
   }, {});
 };
 
-export const CartItemCounter = ({ itemData }: { itemData: CartItemData }) => {
-  const { quantity, lineItemEntityId, productEntityId, variantEntityId, selectedOptions } =
-    itemData;
+export const CartItemCounter = ({ product }: { product: Product }) => {
+  const { quantity, entityId, productEntityId, variantEntityId, selectedOptions } = product;
 
   const [counterValue, setCounterValue] = useState<'' | number>(quantity);
   const handleCountUpdate = async (value: string | number) => {
@@ -140,7 +141,7 @@ export const CartItemCounter = ({ itemData }: { itemData: CartItemData }) => {
 
     const productData: UpdateProductQuantityData = Object.assign(
       {
-        lineItemEntityId,
+        lineItemEntityId: entityId,
         productEntityId,
         quantity: Number(value),
         selectedOptions: parseSelectedOptions(selectedOptions),

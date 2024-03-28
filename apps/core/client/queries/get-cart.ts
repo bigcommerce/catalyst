@@ -64,6 +64,48 @@ const GET_CART_QUERY = graphql(
                 }
               }
             }
+            digitalItems {
+              name
+              brand
+              imageUrl
+              entityId
+              quantity
+              productEntityId
+              variantEntityId
+              extendedListPrice {
+                ...MoneyFields
+              }
+              extendedSalePrice {
+                ...MoneyFields
+              }
+              selectedOptions {
+                __typename
+                entityId
+                name
+                ... on CartSelectedMultipleChoiceOption {
+                  value
+                  valueEntityId
+                }
+                ... on CartSelectedCheckboxOption {
+                  value
+                  valueEntityId
+                }
+                ... on CartSelectedNumberFieldOption {
+                  number
+                }
+                ... on CartSelectedMultiLineTextFieldOption {
+                  text
+                }
+                ... on CartSelectedTextFieldOption {
+                  text
+                }
+                ... on CartSelectedDateFieldOption {
+                  date {
+                    utc
+                  }
+                }
+              }
+            }
           }
           amount {
             ...MoneyFields
