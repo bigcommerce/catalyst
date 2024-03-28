@@ -4,7 +4,7 @@ import { Input } from '@bigcommerce/components/input';
 import { Select, SelectContent, SelectItem } from '@bigcommerce/components/select';
 import { AlertCircle, Loader2 as Spinner } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'react-hot-toast';
 
@@ -22,6 +22,14 @@ type StatesList = Array<{
   state_abbreviation: string;
   country_id: number;
 }>;
+
+interface FormValues {
+  country: string;
+  states: StatesList | null;
+  state: string;
+  city: string;
+  postcode: string;
+}
 
 const SubmitButton = () => {
   const { pending } = useFormStatus();
@@ -62,31 +70,33 @@ export const ShippingInfo = ({
     (country) => country.countryCode === shippingConsignment?.address.countryCode,
   );
 
-  const [selectedCountry, setSelectedCountry] = useState(
-    selectedShippingCountry
-      ? `${selectedShippingCountry.countryCode}-${selectedShippingCountry.id}`
-      : '',
-  );
-  const [selectedCity, setSelectedCity] = useState(shippingConsignment?.address.city || '');
-  const [selectedZipCode, setSelectedZipCode] = useState(
-    shippingConsignment?.address.postalCode || '',
-  );
-  const [selectedStates, setSelectedStates] = useState<StatesList | null>([]);
-  const [selectedState, setSelectedState] = useState(
-    shippingConsignment?.address.stateOrProvince || '',
+  const [formValues, setFormValues] = useReducer(
+    (currentValues: FormValues, newValues: Partial<FormValues>) => ({
+      ...currentValues,
+      ...newValues,
+    }),
+    {
+      country: selectedShippingCountry
+        ? `${selectedShippingCountry.countryCode}-${selectedShippingCountry.id}`
+        : '',
+      states: [],
+      state: shippingConsignment?.address.stateOrProvince || '',
+      city: shippingConsignment?.address.city || '',
+      postcode: shippingConsignment?.address.postalCode || '',
+    },
   );
 
   useEffect(() => {
-    if (selectedCountry) {
-      const countryId = selectedCountry.split('-')[1];
+    if (formValues.country) {
+      const countryId = formValues.country.split('-')[1];
 
       const fetchStates = async () => {
         const { status, data } = await getShippingStates(Number(countryId));
 
         if (status === 'success' && data) {
-          setSelectedStates(data);
+          setFormValues({ states: data });
         } else {
-          setSelectedStates(null);
+          setFormValues({ states: null });
         }
       };
 
@@ -94,7 +104,7 @@ export const ShippingInfo = ({
         void fetchStates();
       }
     }
-  }, [selectedCountry, t]);
+  }, [formValues.country, t]);
 
   const onSubmit = async (formData: FormData) => {
     const { status } = await submitShippingInfo(formData, {
@@ -115,11 +125,14 @@ export const ShippingInfo = ({
   };
 
   const resetFormFieldsOnCountryChange = () => {
-    if (selectedCountry) {
-      setSelectedStates([]);
-      setSelectedState('');
-      setSelectedCity('');
-      setSelectedZipCode('');
+    if (formValues.country) {
+      setFormValues({
+        states: [],
+        state: '',
+        city: '',
+        postcode: '',
+      });
+
       hideShippingOptions();
     }
   };
@@ -139,15 +152,15 @@ export const ShippingInfo = ({
                 const countryId = value.split('-')[1];
 
                 if (countryId) {
-                  setSelectedCountry(value);
+                  setFormValues({ country: value });
                 } else {
-                  setSelectedCountry('');
+                  setFormValues({ country: '' });
                 }
 
                 resetFormFieldsOnCountryChange();
               }}
               placeholder={t('countryPlaceholder')}
-              value={selectedCountry}
+              value={formValues.country}
             >
               <SelectContent>
                 {shippingCountries.map(({ id, countryCode, name }) => {
@@ -164,15 +177,15 @@ export const ShippingInfo = ({
         <Field className="relative space-y-2" name="state">
           <FieldLabel>{t('state')}</FieldLabel>
           <FieldControl asChild>
-            {selectedStates !== null ? (
+            {formValues.states !== null ? (
               <Select
-                disabled={selectedStates.length === 0}
-                onValueChange={setSelectedState}
+                disabled={formValues.states.length === 0}
+                onValueChange={(value) => setFormValues({ state: value })}
                 placeholder={t('statePlaceholder')}
-                value={selectedState}
+                value={formValues.state}
               >
                 <SelectContent>
-                  {selectedStates.map(({ id, state }) => {
+                  {formValues.states.map(({ id, state }) => {
                     return (
                       <SelectItem key={id} value={state}>
                         {state}
@@ -184,10 +197,10 @@ export const ShippingInfo = ({
             ) : (
               <Input
                 autoComplete="address-level1"
-                onChange={(e) => setSelectedState(e.target.value)}
+                onChange={(e) => setFormValues({ state: e.target.value })}
                 placeholder={t('statePlaceholder')}
                 type="text"
-                value={selectedState}
+                value={formValues.state}
               />
             )}
           </FieldControl>
@@ -198,10 +211,10 @@ export const ShippingInfo = ({
             <Input
               autoComplete="address-level2"
               id="city-field"
-              onChange={(e) => setSelectedCity(e.target.value)}
+              onChange={(e) => setFormValues({ city: e.target.value })}
               placeholder={t('cityPlaceholder')}
               type="text"
-              value={selectedCity}
+              value={formValues.city}
             />
           </FieldControl>
         </Field>
@@ -211,10 +224,10 @@ export const ShippingInfo = ({
             <Input
               autoComplete="postal-code"
               id="zip-field"
-              onChange={(e) => setSelectedZipCode(e.target.value)}
+              onChange={(e) => setFormValues({ postcode: e.target.value })}
               placeholder={t('postcodePlaceholder')}
               type="text"
-              value={selectedZipCode}
+              value={formValues.postcode}
             />
           </FieldControl>
         </Field>
