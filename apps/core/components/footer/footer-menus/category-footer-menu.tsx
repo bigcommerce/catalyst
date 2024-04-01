@@ -1,13 +1,24 @@
-import { getCategoryTree } from '~/client/queries/get-category-tree';
+import { FragmentOf, graphql } from '~/client/graphql';
 
 import { BaseFooterMenu } from './base-footer-menu';
 
-export const CategoryFooterMenu = async () => {
-  const categoryTree = await getCategoryTree();
+export const CategoryFooterMenuFragment = graphql(`
+  fragment CategoryFooterMenuFragment on Site {
+    categoryTree {
+      name
+      path
+    }
+  }
+`);
 
-  if (!categoryTree.length) {
+interface Props {
+  data: FragmentOf<typeof CategoryFooterMenuFragment>['categoryTree'];
+}
+
+export const CategoryFooterMenu = ({ data }: Props) => {
+  if (!data.length) {
     return null;
   }
 
-  return <BaseFooterMenu items={categoryTree} title="Categories" />;
+  return <BaseFooterMenu items={data} title="Categories" />;
 };

@@ -11,38 +11,60 @@ import { ShoppingCart, User } from 'lucide-react';
 import { ReactNode, Suspense } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
+import { FragmentOf, graphql } from '~/client/graphql';
 import { Link } from '~/components/link';
 
 import { QuickSearch } from '../quick-search';
-import { StoreLogo } from '../store-logo';
+import { StoreLogo, StoreLogoFragment } from '../store-logo';
 
-import { HeaderNav } from './_actions/header-nav';
+import { HeaderNav, HeaderNavFragment } from './_actions/header-nav';
 import { logout } from './_actions/logout';
 import { CartLink } from './cart';
 
-export const Header = async ({ cart }: { cart: ReactNode }) => {
+export const HeaderFragment = graphql(
+  `
+    fragment HeaderFragment on Site {
+      settings {
+        ...StoreLogoFragment
+      }
+      ...HeaderNavFragment
+    }
+  `,
+  [StoreLogoFragment, HeaderNavFragment],
+);
+
+interface Props {
+  cart: ReactNode;
+  data: FragmentOf<typeof HeaderFragment>;
+}
+
+export const Header = async ({ cart, data }: Props) => {
   const customerId = await getSessionCustomerId();
 
   return (
     <header>
       <NavigationMenu>
-        <NavigationMenuLink asChild className="shrink-0 px-0">
-          <Link href="/">
-            <StoreLogo />
-          </Link>
-        </NavigationMenuLink>
+        {data.settings && (
+          <NavigationMenuLink asChild className="shrink-0 px-0">
+            <Link href="/">
+              <StoreLogo data={data.settings} />
+            </Link>
+          </NavigationMenuLink>
+        )}
 
-        <HeaderNav className="hidden xl:flex" />
+        <HeaderNav className="hidden xl:flex" data={data.categoryTree} />
 
         <div className="flex">
           <NavigationMenuList className="h-full">
-            <NavigationMenuItem>
-              <QuickSearch>
-                <Link className="flex" href="/">
-                  <StoreLogo />
-                </Link>
-              </QuickSearch>
-            </NavigationMenuItem>
+            {data.settings && (
+              <NavigationMenuItem>
+                <QuickSearch>
+                  <Link className="flex" href="/">
+                    <StoreLogo data={data.settings} />
+                  </Link>
+                </QuickSearch>
+              </NavigationMenuItem>
+            )}
             <NavigationMenuItem className={`hidden xl:flex ${customerId ? 'self-stretch' : ''}`}>
               {customerId ? (
                 <div className="group/account flex cursor-pointer items-center">
@@ -152,7 +174,7 @@ export const Header = async ({ cart }: { cart: ReactNode }) => {
         </div>
 
         <NavigationMenuCollapsed>
-          <HeaderNav inCollapsedNav />
+          <HeaderNav data={data.categoryTree} inCollapsedNav />
         </NavigationMenuCollapsed>
       </NavigationMenu>
     </header>

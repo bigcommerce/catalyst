@@ -1,11 +1,45 @@
-import { getWebPages } from '~/client/queries/get-web-pages';
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+
+import { FragmentOf, graphql } from '~/client/graphql';
 
 import { BaseFooterMenu } from '../footer-menus';
 
-export const WebPageFooterMenu = async () => {
-  const storeWebPages = await getWebPages();
+export const WebPageFooterMenuFragment = graphql(`
+  fragment WebPageFooterMenuFragment on Content {
+    pages(filters: { isVisibleInNavigation: true }) {
+      edges {
+        node {
+          __typename
+          name
+          ... on RawHtmlPage {
+            path
+          }
+          ... on ContactPage {
+            path
+          }
+          ... on NormalPage {
+            path
+          }
+          ... on BlogIndexPage {
+            path
+          }
+          ... on ExternalLinkPage {
+            link
+          }
+        }
+      }
+    }
+  }
+`);
 
-  const items = storeWebPages.map((page) => ({
+interface Props {
+  data: FragmentOf<typeof WebPageFooterMenuFragment>;
+}
+
+export const WebPageFooterMenu = ({ data }: Props) => {
+  const pages = removeEdgesAndNodes(data.pages);
+
+  const items = pages.map((page) => ({
     name: page.name,
     path: page.__typename === 'ExternalLinkPage' ? page.link : page.path,
   }));

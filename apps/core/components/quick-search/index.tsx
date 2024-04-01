@@ -162,9 +162,7 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
                   {Object.entries(
                     searchResults.products.reduce<Record<string, string>>((categories, product) => {
                       product.categories.edges?.forEach((category) => {
-                        if (category) {
-                          categories[category.node.name] = category.node.path;
-                        }
+                        categories[category.node.name] = category.node.path;
                       });
 
                       return categories;

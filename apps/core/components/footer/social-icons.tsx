@@ -7,7 +7,7 @@ import {
   SiYoutube,
 } from '@icons-pack/react-simple-icons';
 
-import { getStoreSettings } from '~/client/queries/get-store-settings';
+import { FragmentOf, graphql } from '~/client/graphql';
 import { Link } from '~/components/link';
 
 const socialIconNames = [
@@ -46,12 +46,23 @@ const SocialIcon = ({ name }: { name: string }) => {
   }
 };
 
-export const SocialIcons = async () => {
-  const settings = await getStoreSettings();
+export const SocialIconsFragment = graphql(`
+  fragment SocialIconsFragment on Settings {
+    socialMediaLinks {
+      name
+      url
+    }
+  }
+`);
 
-  const socialMediaLinks = settings?.socialMediaLinks;
+interface Props {
+  data: FragmentOf<typeof SocialIconsFragment>;
+}
 
-  if (!socialMediaLinks || socialMediaLinks.length === 0) {
+export const SocialIcons = ({ data }: Props) => {
+  const socialMediaLinks = data.socialMediaLinks;
+
+  if (socialMediaLinks.length === 0) {
     return null;
   }
 
