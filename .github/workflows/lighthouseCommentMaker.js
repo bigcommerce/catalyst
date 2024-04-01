@@ -22,6 +22,7 @@
  * @typedef {Object} LighthouseOutputs
  * @prop {Record<string, string>} links
  * @prop {Manifest[]} manifest
+ * @prop {string} preset
  */
 
 const formatScore = (/** @type { number } */ score) => Math.round(score * 100);
@@ -39,10 +40,9 @@ const scoreRow = (
 function makeComment(lighthouseOutputs) {
     const { summary } = lighthouseOutputs.manifest[2];
     const [[testedUrl, reportUrl]] = Object.entries(lighthouseOutputs.links);
+    const preset = lighthouseOutputs.preset;
 
-    const comment = `## ⚡️🏠 Lighthouse report
-
-We ran Lighthouse against the changes and produced this [report](${reportUrl}). Here's the summary:
+    const comment = `We ran Lighthouse against the changes on a ${preset} and produced this [report](${reportUrl}). Here's the summary:
 
 | Category | Score |
 | -------- | ----- |
@@ -51,7 +51,6 @@ ${scoreRow('Accessibility', summary.accessibility)}
 ${scoreRow('Best practices', summary['best-practices'])}
 ${scoreRow('SEO', summary.seo)}
 
-*Lighthouse ran against [${testedUrl}](${testedUrl})*
 `;
 
     return comment;
