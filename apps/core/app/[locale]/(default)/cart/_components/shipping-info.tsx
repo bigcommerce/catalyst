@@ -86,6 +86,7 @@ export const ShippingInfo = ({
     },
   );
 
+  // Fetch states when country changes
   useEffect(() => {
     if (formValues.country) {
       const countryId = formValues.country.split('-')[1];
@@ -106,6 +107,7 @@ export const ShippingInfo = ({
     }
   }, [formValues.country, t]);
 
+  // Preselect first state when states array changes and state is empty
   useEffect(() => {
     if (formValues.states && !formValues.state) {
       setFormValues({ state: formValues.states[0]?.state || '' });
@@ -130,19 +132,6 @@ export const ShippingInfo = ({
     }
   };
 
-  const resetFormFieldsOnCountryChange = () => {
-    if (formValues.country) {
-      setFormValues({
-        states: [],
-        state: '',
-        city: '',
-        postcode: '',
-      });
-
-      hideShippingOptions();
-    }
-  };
-
   return (
     <Form
       action={onSubmit}
@@ -158,12 +147,12 @@ export const ShippingInfo = ({
                 const countryId = value.split('-')[1];
 
                 if (countryId) {
-                  setFormValues({ country: value });
+                  setFormValues({ country: value, states: [], state: '', city: '', postcode: '' });
                 } else {
-                  setFormValues({ country: '' });
+                  setFormValues({ country: '', states: [], state: '', city: '', postcode: '' });
                 }
 
-                resetFormFieldsOnCountryChange();
+                hideShippingOptions();
               }}
               placeholder={t('countryPlaceholder')}
               value={formValues.country}
