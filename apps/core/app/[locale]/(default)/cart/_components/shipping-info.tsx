@@ -106,6 +106,12 @@ export const ShippingInfo = ({
     }
   }, [formValues.country, t]);
 
+  useEffect(() => {
+    if (formValues.states && !formValues.state) {
+      setFormValues({ state: formValues.states[0]?.state || '' });
+    }
+  }, [formValues.state, formValues.states]);
+
   const onSubmit = async (formData: FormData) => {
     const { status } = await submitShippingInfo(formData, {
       checkoutId: checkout.entityId,
