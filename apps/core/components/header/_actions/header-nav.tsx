@@ -8,21 +8,41 @@ import {
 import { ChevronDown, User } from 'lucide-react';
 
 import { getSessionCustomerId } from '~/auth';
-import { getCategoryTree } from '~/client/queries/get-category-tree';
+import { FragmentOf, graphql } from '~/client/graphql';
 import { Link } from '~/components/link';
 import { cn } from '~/lib/utils';
 
-export const HeaderNav = async ({
-  className,
-  inCollapsedNav = false,
-}: {
+export const HeaderNavFragment = graphql(`
+  fragment HeaderNavFragment on Site {
+    categoryTree {
+      entityId
+      name
+      path
+      children {
+        entityId
+        name
+        path
+        children {
+          entityId
+          name
+          path
+        }
+      }
+    }
+  }
+`);
+
+interface Props {
+  data: FragmentOf<typeof HeaderNavFragment>['categoryTree'];
   className?: string;
   inCollapsedNav?: boolean;
-}) => {
+}
+
+export const HeaderNav = async ({ data, className, inCollapsedNav = false }: Props) => {
   // To prevent the navigation menu from overflowing, we limit the number of categories to 6.
   // To show a full list of categories, modify the `slice` method to remove the limit.
   // Will require modification of navigation menu styles to accommodate the additional categories.
-  const categoryTree = (await getCategoryTree()).slice(0, 6);
+  const categoryTree = data.slice(0, 6);
   const customerId = await getSessionCustomerId();
 
   return (

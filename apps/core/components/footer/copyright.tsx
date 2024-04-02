@@ -1,17 +1,19 @@
-import { ComponentPropsWithoutRef } from 'react';
+import { FragmentOf, graphql } from '~/client/graphql';
 
-import { getStoreSettings } from '~/client/queries/get-store-settings';
-
-export const Copyright = async (props: ComponentPropsWithoutRef<'p'>) => {
-  const settings = await getStoreSettings();
-
-  if (!settings) {
-    return null;
+export const CopyrightFragment = graphql(`
+  fragment CopyrightFragment on Settings {
+    storeName
   }
+`);
 
+interface Props {
+  data: FragmentOf<typeof CopyrightFragment>;
+}
+
+export const Copyright = ({ data }: Props) => {
   return (
-    <p className="text-gray-500 sm:order-first" {...props}>
-      © {new Date().getFullYear()} {settings.storeName} – Powered by BigCommerce
+    <p className="text-gray-500 sm:order-first">
+      © {new Date().getFullYear()} {data.storeName} – Powered by BigCommerce
     </p>
   );
 };

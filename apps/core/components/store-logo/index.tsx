@@ -1,15 +1,31 @@
-import { getStoreSettings } from '~/client/queries/get-store-settings';
+import { FragmentOf, graphql } from '~/client/graphql';
 
 import { BcImage } from '../bc-image';
 
-export const StoreLogo = async () => {
-  const settings = await getStoreSettings();
-
-  if (!settings) {
-    return null;
+export const StoreLogoFragment = graphql(`
+  fragment StoreLogoFragment on Settings {
+    storeName
+    logoV2 {
+      __typename
+      ... on StoreTextLogo {
+        text
+      }
+      ... on StoreImageLogo {
+        image {
+          url: urlTemplate
+          altText
+        }
+      }
+    }
   }
+`);
 
-  const { logoV2: logo, storeName } = settings;
+interface Props {
+  data: FragmentOf<typeof StoreLogoFragment>;
+}
+
+export const StoreLogo = ({ data }: Props) => {
+  const { logoV2: logo, storeName } = data;
 
   if (logo.__typename === 'StoreTextLogo') {
     return <span className="text-2xl font-black">{logo.text}</span>;

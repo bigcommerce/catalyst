@@ -8,7 +8,9 @@ import { PropsWithChildren } from 'react';
 
 import '../globals.css';
 
-import { getStoreSettings } from '~/client/queries/get-store-settings';
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
+import { revalidate } from '~/client/revalidate-target';
 
 import { Notifications } from '../notifications';
 import { Providers } from '../providers';
@@ -19,9 +21,23 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
+const RootLayoutMetadataQuery = graphql(`
+  query RootLayoutMetadataQuery {
+    site {
+      settings {
+        storeName
+      }
+    }
+  }
+`);
+
 export async function generateMetadata(): Promise<Metadata> {
-  const storeSettings = await getStoreSettings();
-  const title = storeSettings?.storeName ?? 'Catalyst Store';
+  const { data } = await client.fetch({
+    document: RootLayoutMetadataQuery,
+    fetchOptions: { next: { revalidate } },
+  });
+
+  const title = data.site.settings?.storeName ?? 'Catalyst Store';
 
   return {
     title: {
