@@ -128,7 +128,6 @@ export const getCart = cache(async (cartId?: string) => {
     variables: { cartId },
     customerId,
     fetchOptions: {
-      cache: 'no-store',
       next: {
         tags: ['cart'],
       },

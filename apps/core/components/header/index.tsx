@@ -7,8 +7,8 @@ import {
   NavigationMenuList,
   NavigationMenuToggle,
 } from '@bigcommerce/components/navigation-menu';
-import { ShoppingCart, User } from 'lucide-react';
-import { ReactNode, Suspense } from 'react';
+import { User } from 'lucide-react';
+import { Suspense } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
 import { FragmentOf, graphql } from '~/client/graphql';
@@ -19,7 +19,7 @@ import { StoreLogo, StoreLogoFragment } from '../store-logo';
 
 import { HeaderNav, HeaderNavFragment } from './_actions/header-nav';
 import { logout } from './_actions/logout';
-import { CartLink } from './cart';
+import { Cart, EmptyCart } from './cart';
 
 export const HeaderFragment = graphql(
   `
@@ -34,11 +34,10 @@ export const HeaderFragment = graphql(
 );
 
 interface Props {
-  cart: ReactNode;
   data: FragmentOf<typeof HeaderFragment>;
 }
 
-export const Header = async ({ cart, data }: Props) => {
+export const Header = async ({ data }: Props) => {
   const customerId = await getSessionCustomerId();
 
   return (
@@ -156,14 +155,8 @@ export const Header = async ({ cart, data }: Props) => {
             </NavigationMenuItem>
             <NavigationMenuItem>
               <p role="status">
-                <Suspense
-                  fallback={
-                    <CartLink>
-                      <ShoppingCart aria-label="cart" />
-                    </CartLink>
-                  }
-                >
-                  {cart}
+                <Suspense fallback={<EmptyCart />}>
+                  <Cart />
                 </Suspense>
               </p>
             </NavigationMenuItem>

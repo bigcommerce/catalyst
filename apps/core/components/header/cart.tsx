@@ -7,7 +7,7 @@ import { ReactNode } from 'react';
 import { getCart } from '~/client/queries/get-cart';
 import { Link } from '~/components/link';
 
-export const CartLink = ({ children }: { children: ReactNode }) => (
+const CartLink = ({ children }: { children: ReactNode }) => (
   <NavigationMenuLink asChild>
     <Link className="relative" href="/cart">
       {children}
@@ -15,15 +15,17 @@ export const CartLink = ({ children }: { children: ReactNode }) => (
   </NavigationMenuLink>
 );
 
+export const EmptyCart = () => (
+  <CartLink>
+    <ShoppingCart aria-label="cart" />
+  </CartLink>
+);
+
 export const Cart = async () => {
   const cartId = cookies().get('cartId')?.value;
 
   if (!cartId) {
-    return (
-      <CartLink>
-        <ShoppingCart aria-label="cart" />
-      </CartLink>
-    );
+    return <EmptyCart />;
   }
 
   const cart = await getCart(cartId);

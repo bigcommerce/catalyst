@@ -8,7 +8,6 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { Footer, FooterFragment } from '~/components/footer/footer';
 import { Header, HeaderFragment } from '~/components/header';
-import { Cart } from '~/components/header/cart';
 import { ProductSheet } from '~/components/product-sheet';
 import { LocaleType } from '~/i18n';
 
@@ -42,7 +41,7 @@ export default async function DefaultLayout({ children, params: { locale } }: Pr
 
   return (
     <>
-      <Header cart={<Cart />} data={data.site} />
+      <Header data={data.site} />
 
       <main className="flex-1 px-6 2xl:container sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0">
         {children}
