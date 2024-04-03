@@ -175,6 +175,7 @@ const PRODUCT_FRAGMENT = graphql(
               edges {
                 node {
                   name
+                  path
                 }
               }
             }
