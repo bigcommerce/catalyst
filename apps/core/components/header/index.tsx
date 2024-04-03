@@ -17,9 +17,9 @@ import { Link } from '~/components/link';
 import { QuickSearch } from '../quick-search';
 import { StoreLogo, StoreLogoFragment } from '../store-logo';
 
-import { HeaderNav, HeaderNavFragment } from './_actions/header-nav';
 import { logout } from './_actions/logout';
 import { CartLink } from './cart';
+import { HeaderNav, HeaderNavFragment } from './header-nav';
 
 export const HeaderFragment = graphql(
   `
