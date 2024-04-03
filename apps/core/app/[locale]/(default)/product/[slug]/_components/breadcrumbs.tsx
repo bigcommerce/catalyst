@@ -17,7 +17,7 @@ export const BreadCrumbs = async ({ productId }: Props) => {
   return (
     <nav>
       <ul className="m-0 flex flex-wrap items-center p-0 md:container md:mx-auto ">
-        {category.breadcrumbs.map((breadcrumb, i, arr) => {
+        {category.breadcrumbs.map(({ name, path }, i, arr) => {
           const isLast = arr.length - 1 === i;
 
           return (
@@ -26,9 +26,9 @@ export const BreadCrumbs = async ({ productId }: Props) => {
                 'font-semibold': !isLast,
                 'font-extrabold': isLast,
               })}
-              key={breadcrumb.name}
+              key={name}
             >
-              <Link href="#">{breadcrumb.name}</Link>
+              <Link href={path ?? '#'}>{name}</Link>
               {!isLast && <span className="mx-2">/</span>}
             </li>
           );
