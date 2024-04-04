@@ -42,10 +42,12 @@ export const CheckoutSummary = async ({ cartId, locale }: { cartId: string; loca
         <ShippingEstimator checkout={checkout} shippingCountries={shippingCountries} />
       </NextIntlClientProvider>
 
-      <div className="flex justify-between border-t border-t-gray-200 py-4">
-        <span className="font-semibold">{t('discounts')}</span>
-        <span>-{currencyFormatter.format(checkout.cart?.discountedAmount.value || 0)}</span>
-      </div>
+      {checkout.cart?.discountedAmount && (
+        <div className="flex justify-between border-t border-t-gray-200 py-4">
+          <span className="font-semibold">{t('discounts')}</span>
+          <span>-{currencyFormatter.format(checkout.cart.discountedAmount.value)}</span>
+        </div>
+      )}
 
       {checkout.taxTotal && (
         <div className="flex justify-between border-t border-t-gray-200 py-4">
