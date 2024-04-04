@@ -47,6 +47,11 @@ export const CheckoutSummary = async ({ cartId, locale }: { cartId: string; loca
         <span>-{currencyFormatter.format(checkout.cart?.discountedAmount.value || 0)}</span>
       </div>
 
+      <div className="flex justify-between border-t border-t-gray-200 py-4">
+        <span className="font-semibold">{t('tax')}</span>
+        <span>{currencyFormatter.format(checkout.taxTotal?.value || 0)}</span>
+      </div>
+
       <div className="flex justify-between border-t border-t-gray-200 py-4 text-xl font-bold lg:text-2xl">
         {t('grandTotal')}
         <span>{currencyFormatter.format(checkout.grandTotal?.value || 0)}</span>

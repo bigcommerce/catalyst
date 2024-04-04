@@ -108,6 +108,7 @@
     "CheckoutSummary": {
       "subTotal": "Subtotal",
       "discounts": "Discounts",
+      "tax": "Tax",
       "grandTotal": "Grand total",
       "shipping": "Shipping",
       "shippingCost": "Shipping Cost",
