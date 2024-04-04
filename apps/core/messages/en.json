@@ -108,11 +108,19 @@
     "CheckoutSummary": {
       "subTotal": "Subtotal",
       "discounts": "Discounts",
+      "coupon": "Coupon",
+      "couponCode": "Coupon code",
+      "addCoupon": "Add coupon",
+      "enterCouponCode": "Enter your coupon code",
+      "couponCodeRequired": "Please enter a coupon code.",
+      "couponCodeInvalid": "The coupon code you entered is not valid.",
+      "remove": "Remove",
+      "couponCodeRemoveFailed": "There was an error removing the coupon code. Please try again.",
       "tax": "Tax",
       "grandTotal": "Grand total",
       "shipping": "Shipping",
-      "shippingCost": "Shipping Cost",
-      "handlingCost": "Handling Cost",
+      "shippingCost": "Shipping cost",
+      "handlingCost": "Handling cost",
       "add": "Add",
       "change": "Change",
       "cancel": "Cancel",
@@ -142,6 +150,10 @@
     "SubmitShippingCost": {
       "spinnerText": "Submitting...",
       "submitText": "Update shipping costs"
+    },
+    "SubmitCouponCode": {
+      "spinnerText": "Submitting...",
+      "submitText": "Apply"
     }
   },
   "Search": {

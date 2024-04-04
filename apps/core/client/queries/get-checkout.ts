@@ -57,6 +57,13 @@ const GET_CHECKOUT_QUERY = graphql(
               type
             }
           }
+          coupons {
+            code
+            entityId
+            discountedAmount {
+              ...MoneyFields
+            }
+          }
           cart {
             currencyCode
             discountedAmount {
