@@ -39,7 +39,7 @@ export const CouponCode = ({ checkout }: { checkout: ExistingResultType<typeof g
   const t = useTranslations('Cart.CheckoutSummary');
   const [showAddCoupon, setShowAddCoupon] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState<Checkout['coupons'][number] | null>(
-    checkout.coupons[0] || null,
+    checkout.coupons.at(0) || null,
   );
 
   const currencyFormatter = new Intl.NumberFormat('en-US', {
