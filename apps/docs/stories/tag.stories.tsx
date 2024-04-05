@@ -1,4 +1,4 @@
-import { Tag, TagAction, TagContent, TagProps } from '@bigcommerce/components/tag';
+import { Tag, TagAction, TagContent } from '@bigcommerce/components/tag';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Tag> = {
@@ -14,7 +14,7 @@ export const BasicExample: Story = {
   args: {
     children: 'Tag',
   },
-  render: ({ children }: TagProps) => (
+  render: ({ children }) => (
     <Tag>
       <TagContent>{children}</TagContent>
       {/* eslint-disable-next-line no-alert */}
@@ -27,7 +27,7 @@ export const NoActionExample: Story = {
   args: {
     children: 'Tag',
   },
-  render: ({ children }: TagProps) => (
+  render: ({ children }) => (
     <Tag>
       <TagContent>{children}</TagContent>
     </Tag>
