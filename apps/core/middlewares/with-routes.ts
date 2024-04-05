@@ -205,10 +205,9 @@ export const withRoutes: MiddlewareFactory = () => {
     }
 
     const customerId = await getSessionCustomerId();
-    const cartId = cookies().get('cartId');
     let postfix = '';
 
-    if (!request.nextUrl.search && !customerId && !cartId && request.method === 'GET') {
+    if (!request.nextUrl.search && !customerId && request.method === 'GET') {
       postfix = '/static';
     }
 
