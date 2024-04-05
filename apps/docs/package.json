@@ -27,7 +27,7 @@
     "@storybook/react": "^7.6.17",
     "@storybook/react-vite": "^7.6.17",
     "@types/node": "^18.19.30",
-    "@types/react": "^18.2.43",
+    "@types/react": "^18.2.74",
     "@types/react-dom": "^18.2.24",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.19",
