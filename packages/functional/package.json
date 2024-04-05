@@ -8,14 +8,14 @@
     "lint": "eslint . --ext .ts,.js,.cjs --max-warnings 0"
   },
   "devDependencies": {
-    "@bigcommerce/eslint-config": "^2.7.0",
+    "@bigcommerce/eslint-config": "^2.8.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@faker-js/faker": "^8.4.1",
-    "@playwright/test": "^1.40.1",
+    "@playwright/test": "^1.43.0",
     "@types/node": "^18.17.12",
-    "dotenv": "^16.3.1",
-    "eslint": "^8.55.0",
-    "prettier": "^3.1.1",
-    "typescript": "^5.3.3"
+    "dotenv": "^16.4.5",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.4"
   }
 }
