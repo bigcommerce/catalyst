@@ -63,6 +63,7 @@ export const ShippingEstimator = ({
             <span>{currencyFormatter.format(checkout.shippingCostTotal?.value || 0)}</span>
           ) : (
             <Button
+              aria-controls="shipping-options"
               className="w-fit p-0 text-primary hover:bg-transparent"
               onClick={() => setShowShippingInfo((open) => !open)}
               variant="subtle"
@@ -76,6 +77,7 @@ export const ShippingEstimator = ({
           <div className="flex justify-between">
             <span>{selectedShippingConsignment.selectedShippingOption?.description}</span>
             <Button
+              aria-controls="shipping-options"
               className="w-fit p-0 text-primary hover:bg-transparent"
               onClick={() => setShowShippingInfo((open) => !open)}
               variant="subtle"
@@ -93,7 +95,7 @@ export const ShippingEstimator = ({
         />
 
         {showShippingOptions && checkout.shippingConsignments && (
-          <div className="flex flex-col">
+          <div className="flex flex-col" id="shipping-options">
             {checkout.shippingConsignments.map(({ entityId, availableShippingOptions }) => {
               return (
                 <ShippingOptions
