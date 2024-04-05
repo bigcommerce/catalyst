@@ -101,19 +101,28 @@ export const CouponCodes = ({ checkout }: { checkout: ExistingResultType<typeof 
       <div className="flex justify-between">
         <span className="font-semibold">{t('couponCode')}</span>
         <Button
+          aria-controls="coupon-code-form"
           className="w-fit p-0 text-primary hover:bg-transparent"
           onClick={() => setShowAddCoupon((open) => !open)}
-          type="submit"
           variant="subtle"
         >
           {showAddCoupon ? t('cancel') : t('add')}
         </Button>
       </div>
       {showAddCoupon && (
-        <Form action={onSubmitApplyCouponCode} className="my-4 flex flex-col gap-2">
+        <Form
+          action={onSubmitApplyCouponCode}
+          className="my-4 flex flex-col gap-2"
+          id="coupon-code-form"
+        >
           <Field name="couponCode">
             <FieldControl asChild>
-              <Input aria-label="" placeholder={t('enterCouponCode')} required type="text" />
+              <Input
+                aria-label={t('couponCode')}
+                placeholder={t('enterCouponCode')}
+                required
+                type="text"
+              />
             </FieldControl>
             <FieldMessage className="text-xs text-error" match="valueMissing">
               {t('couponCodeRequired')}
