@@ -1,3 +1,5 @@
+import { getSessionCustomerId } from '~/auth';
+
 import { client } from '..';
 import { graphql, VariablesOf } from '../graphql';
 
@@ -40,6 +42,8 @@ export const updateCheckoutShippingConsignment = async ({
   lineItems,
   shouldSaveAddress = false,
 }: UpdateCheckoutShippingConsignmentProps) => {
+  const customerId = await getSessionCustomerId();
+
   const response = await client.fetch({
     document: UPDATE_CHECKOUT_SHIPPING_CONSIGNMENT,
     variables: {
@@ -60,6 +64,8 @@ export const updateCheckoutShippingConsignment = async ({
         },
       },
     },
+    customerId,
+    fetchOptions: { cache: 'no-store' },
   });
 
   const checkout = response.data.checkout.updateCheckoutShippingConsignment?.checkout;
