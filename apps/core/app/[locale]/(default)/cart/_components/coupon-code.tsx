@@ -35,7 +35,7 @@ const SubmitButton = () => {
   );
 };
 
-export const CouponCodes = ({ checkout }: { checkout: ExistingResultType<typeof getCheckout> }) => {
+export const CouponCode = ({ checkout }: { checkout: ExistingResultType<typeof getCheckout> }) => {
   const t = useTranslations('Cart.CheckoutSummary');
   const [showAddCoupon, setShowAddCoupon] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState<Checkout['coupons'][number] | null>(

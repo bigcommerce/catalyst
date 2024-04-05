@@ -7,7 +7,7 @@ import { getCheckout } from '~/client/queries/get-checkout';
 
 import { getShippingCountries } from '../_actions/get-shipping-countries';
 
-import { CouponCodes } from './coupon-codes';
+import { CouponCode } from './coupon-code';
 import { ShippingEstimator } from './shipping-estimator';
 
 export const CheckoutSummary = async ({ cartId, locale }: { cartId: string; locale: string }) => {
@@ -51,7 +51,7 @@ export const CheckoutSummary = async ({ cartId, locale }: { cartId: string; loca
       )}
 
       <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
-        <CouponCodes checkout={checkout} />
+        <CouponCode checkout={checkout} />
       </NextIntlClientProvider>
 
       {checkout.taxTotal && (
