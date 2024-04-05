@@ -1,5 +1,18 @@
 # @bigcommerce/docs
 
+## 0.2.0
+
+### Minor Changes
+
+- [#717](https://github.com/bigcommerce/catalyst/pull/717) [`5af4856`](https://github.com/bigcommerce/catalyst/commit/5af4856510406080d75a1e1db16fe55f86082264) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - Add tabs component
+
+### Patch Changes
+
+- [#735](https://github.com/bigcommerce/catalyst/pull/735) [`3db9c5f`](https://github.com/bigcommerce/catalyst/commit/3db9c5fa603299a5c5a9a12bd5408f9024677b20) Thanks [@deini](https://github.com/deini)! - Bump dependencies
+
+- Updated dependencies [[`a1f7970`](https://github.com/bigcommerce/catalyst/commit/a1f797098eee668b4f8bf6763100d71d3882cb45), [`5af4856`](https://github.com/bigcommerce/catalyst/commit/5af4856510406080d75a1e1db16fe55f86082264), [`3db9c5f`](https://github.com/bigcommerce/catalyst/commit/3db9c5fa603299a5c5a9a12bd5408f9024677b20), [`e4dab93`](https://github.com/bigcommerce/catalyst/commit/e4dab93222b2a19d469315266b2d4627a7967294)]:
+  - @bigcommerce/components@0.2.0
+
 ## 0.1.2
 
 ### Patch Changes
