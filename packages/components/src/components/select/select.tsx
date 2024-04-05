@@ -66,12 +66,12 @@ const SelectContent = forwardRef<
         position="popper"
         {...props}
         className={cn(
-          'relative w-full bg-white shadow-md max-h-radix-select-content-available-height data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
+          'max-h-radix-select-content-available-height relative w-full bg-white shadow-md data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
           className,
         )}
         ref={ref}
       >
-        <SelectPrimitive.Viewport className="w-full min-w-[var(--radix-select-trigger-width)] h-radix-select-content-available-height">
+        <SelectPrimitive.Viewport className="h-radix-select-content-available-height w-full min-w-[var(--radix-select-trigger-width)]">
           {children}
         </SelectPrimitive.Viewport>
       </SelectPrimitive.Content>

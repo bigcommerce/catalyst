@@ -16,7 +16,7 @@ export const BasicExample: Story = {
     children: 12,
   },
   render: ({ children }) => (
-    <div className="min-h-6 min-w-6 relative mt-3 inline-block p-3" role="status">
+    <div className="relative mt-3 inline-block min-h-6 min-w-6 p-3" role="status">
       <Badge>{children}</Badge>
     </div>
   ),
@@ -27,7 +27,7 @@ export const WithIcon: Story = {
     children: 3,
   },
   render: ({ children }) => (
-    <div className="min-h-6 min-w-6 relative mt-3 inline-block p-3" role="status">
+    <div className="relative mt-3 inline-block min-h-6 min-w-6 p-3" role="status">
       <ShoppingCart aria-label="Shopping cart" />
       <Badge>{children}</Badge>
     </div>
