@@ -50,6 +50,7 @@ export const CouponCode = ({ checkout }: { checkout: ExistingResultType<typeof g
   useEffect(() => {
     if (checkout.coupons[0]) {
       setSelectedCoupon(checkout.coupons[0]);
+      setShowAddCoupon(false);
 
       return;
     }
