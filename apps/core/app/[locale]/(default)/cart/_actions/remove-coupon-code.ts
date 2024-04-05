@@ -6,16 +6,21 @@ import { z } from 'zod';
 import { unapplyCheckoutCoupon } from '~/client/mutations/unapply-checkout-coupon';
 
 const RemoveCouponCodeSchema = z.object({
+  checkoutEntityId: z.string(),
   couponCode: z.string(),
 });
 
-export async function removeCouponCode(formData: FormData, checkoutEntityId: string) {
+export async function removeCouponCode(formData: FormData) {
   try {
     const parsedData = RemoveCouponCodeSchema.parse({
+      checkoutEntityId: formData.get('checkoutEntityId'),
       couponCode: formData.get('couponCode'),
     });
 
-    const checkout = await unapplyCheckoutCoupon(checkoutEntityId, parsedData.couponCode);
+    const checkout = await unapplyCheckoutCoupon(
+      parsedData.checkoutEntityId,
+      parsedData.couponCode,
+    );
 
     if (!checkout?.entityId) {
       return { status: 'error', error: 'Error ocurred removing coupon' };

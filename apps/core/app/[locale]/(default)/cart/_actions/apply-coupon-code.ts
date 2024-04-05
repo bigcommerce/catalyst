@@ -6,16 +6,18 @@ import { z } from 'zod';
 import { applyCheckoutCoupon } from '~/client/mutations/apply-checkout-coupon';
 
 const ApplyCouponCodeSchema = z.object({
+  checkoutEntityId: z.string(),
   couponCode: z.string(),
 });
 
-export async function applyCouponCode(formData: FormData, checkoutEntityId: string) {
+export async function applyCouponCode(formData: FormData) {
   try {
     const parsedData = ApplyCouponCodeSchema.parse({
+      checkoutEntityId: formData.get('checkoutEntityId'),
       couponCode: formData.get('couponCode'),
     });
 
-    const checkout = await applyCheckoutCoupon(checkoutEntityId, parsedData.couponCode);
+    const checkout = await applyCheckoutCoupon(parsedData.checkoutEntityId, parsedData.couponCode);
 
     if (!checkout?.entityId) {
       return { status: 'error', error: 'Coupon code is invalid' };

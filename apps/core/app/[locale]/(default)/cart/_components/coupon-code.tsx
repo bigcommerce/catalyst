@@ -58,7 +58,7 @@ export const CouponCode = ({ checkout }: { checkout: ExistingResultType<typeof g
   }, [checkout]);
 
   const onSubmitApplyCouponCode = async (formData: FormData) => {
-    const { status } = await applyCouponCode(formData, checkout.entityId);
+    const { status } = await applyCouponCode(formData);
 
     if (status === 'error') {
       toast.error(t('couponCodeInvalid'), {
@@ -68,7 +68,7 @@ export const CouponCode = ({ checkout }: { checkout: ExistingResultType<typeof g
   };
 
   const onSubmitRemoveCouponCode = async (formData: FormData) => {
-    const { status } = await removeCouponCode(formData, checkout.entityId);
+    const { status } = await removeCouponCode(formData);
 
     if (status === 'error') {
       toast.error(t('couponCodeRemoveFailed'), {
@@ -86,6 +86,7 @@ export const CouponCode = ({ checkout }: { checkout: ExistingResultType<typeof g
         <span>{currencyFormatter.format(selectedCoupon.discountedAmount.value * -1)}</span>
       </div>
       <form action={onSubmitRemoveCouponCode}>
+        <input name="checkoutEntityId" type="hidden" value={checkout.entityId} />
         <input name="couponCode" type="hidden" value={selectedCoupon.code} />
         <Button
           className="w-fit p-0 text-primary hover:bg-transparent"
@@ -115,6 +116,7 @@ export const CouponCode = ({ checkout }: { checkout: ExistingResultType<typeof g
           className="my-4 flex flex-col gap-2"
           id="coupon-code-form"
         >
+          <input name="checkoutEntityId" type="hidden" value={checkout.entityId} />
           <Field name="couponCode">
             <FieldControl asChild>
               <Input
