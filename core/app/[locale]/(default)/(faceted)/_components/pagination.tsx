@@ -28,12 +28,18 @@ export const Pagination = ({
   const beforeSearchParams = new URLSearchParams(searchParams);
 
   beforeSearchParams.delete('after');
-  beforeSearchParams.set('before', String(startCursor));
+
+  if (startCursor) {
+    beforeSearchParams.set('before', String(startCursor));
+  }
 
   const afterSearchParams = new URLSearchParams(searchParams);
 
   afterSearchParams.delete('before');
-  afterSearchParams.set('after', String(endCursor));
+
+  if (endCursor) {
+    afterSearchParams.set('after', String(endCursor));
+  }
 
   return (
     <nav aria-label="Pagination" className="my-6 text-center text-primary">
