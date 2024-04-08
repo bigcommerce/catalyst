@@ -1,15 +1,13 @@
 # Localization 
 
-You can localize your Catalyst storefront so the theme appears in the shopper's preferred language when a shopper browses your storefront channel.
-You can provide static string translations for the storefront theme in various languages.  
-Catalyst storefronts display the language stored in the shopper's browser cookie if you provided translations for that language. 
+You can localize your Catalyst storefront so the theme appears in the shopper's preferred language.
+Your storefront displays the language stored in the shopper's browser cookie if you provided translations for that language. 
 Shoppers can then see theme content in the language of their choice throughout their browsing and checkout experience.
 This provides a personalized shopping experience when you sell products internationally. 
 
-This overview describes how you can display a specific language based on the language selected in the viewer's browser. 
+Catalyst uses [Next.js App Router Internationalization (i18n)](https://next-intl-docs.vercel.app/docs/getting-started/app-router) library to handle localization.
 
-
-who have selected the corresponding language in their browser's local preferences.
+This guide describes how to provide static string translations for shoppers, including the required subdirectory, file structure, and browser settings. 
 
 [!Note]
 > - Each storefront can only support a single language. To display multiple languages, we recommend setting up a separate store for each language.
@@ -85,11 +83,61 @@ In your newly-created JSON file, add a translation of the value in the new langu
 
 ## i18n.ts file
 
+You must add the language translations to the `i18n.ts` file.
 
+For example, if you created a `fr.json` file, include the `fr` [BCP 47 specification](https://tools.ietf.org/html/bcp47) when you define the locales:   
+
+```ts
+const locales = ['en', 'fr'] as const;
+```
+
+## page.tsx file
+
+For client-side components, the `getTranslations` method passes the desired translation keys from the `.json` files as a `namespace`. `NextIntlClientProvider` returns the namespace translations from your `.json` files.  
+
+The following shows an example for the `page.tsx` file for the storefront homepage.
+
+```tsx
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+
+import { getFeaturedProducts } from '~/client/queries/get-featured-products';
+import { ProductCardCarousel } from '~/components/product-card-carousel';
+import { LocaleType } from '~/i18n';
+
+interface Props {
+  params: {
+    locale: LocaleType;
+  };
+}
+
+export default async function Home({ params: { locale } }: Props) {
+  unstable_setRequestLocale(locale);
+
+  const t = await getTranslations({ locale, namespace: 'Home' });
+  const messages = await getMessages({ locale });
+  const [featuredProducts] = await Promise.all([
+    getFeaturedProducts({ imageWidth: 500, imageHeight: 500 }),
+  ]);
+
+  return (
+    <>
+      <div>
+        <NextIntlClientProvider locale={locale} messages={{ Product: messages.Product ?? {} }}>
+          <ProductCardCarousel
+            products={featuredProducts}
+            title={t('Carousel.featuredProducts')}
+          />
+        </NextIntlClientProvider>
+      </div>
+    </>
+  );
+}
+```
 
 ## Browser settings
 
-Catalyst uses the `Accept-Language` request HTTP header from the shopper's browser to determine which language translation to use. If you do not have a JSON file matching any of the visitor's preferred browser languages, the storefront theme will revert to the values in the default English-language JSON file.
-
-
-
+The storefront displays the language selected in the shopper's browser preferences. 
+[Next.js App Router Internationalization (i18n)](https://next-intl-docs.vercel.app/docs/getting-started/app-router) library creates a cookie that stores the shopper’s language in the browser. 
+Catalyst then uses the `Accept-Language` request HTTP header from the cookie to determine which language translation to use. 
+If you do not have a JSON file matching the shopper's browser language, the storefront theme will revert to the values in the default English-language JSON file.
