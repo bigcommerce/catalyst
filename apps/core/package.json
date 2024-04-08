@@ -43,7 +43,7 @@
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@gql.tada/cli-utils": "^0.3.3",
     "@tailwindcss/container-queries": "^0.1.1",
-    "@testing-library/react": "^14.2.2",
+    "@testing-library/react": "^14.3.0",
     "@types/lodash.debounce": "^4.0.7",
     "@types/node": "^18.19.30",
     "@types/react": "^18.2.43",
