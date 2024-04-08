@@ -37,7 +37,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   async fetch<TResult, TVariables extends Record<string, unknown>>(config: {
     document: DocumentDecoration<TResult, TVariables>;
     variables: TVariables;
-    customerId?: number;
+    customerId?: string;
     fetchOptions?: FetcherRequestInit;
   }): Promise<BigCommerceResponse<TResult>>;
 
@@ -45,7 +45,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   async fetch<TResult>(config: {
     document: DocumentDecoration<TResult, Record<string, never>>;
     variables?: undefined;
-    customerId?: number;
+    customerId?: string;
     fetchOptions?: FetcherRequestInit;
   }): Promise<BigCommerceResponse<TResult>>;
 
@@ -57,7 +57,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   }: {
     document: DocumentDecoration<TResult, TVariables>;
     variables?: TVariables;
-    customerId?: number;
+    customerId?: string;
     fetchOptions?: FetcherRequestInit;
   }): Promise<BigCommerceResponse<TResult>> {
     const { cache, headers = {}, ...rest } = fetchOptions;
@@ -70,7 +70,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${this.config.customerImpersonationToken}`,
         'User-Agent': this.backendUserAgent,
-        ...(customerId && { 'X-Bc-Customer-Id': String(customerId) }),
+        ...(customerId && { 'X-Bc-Customer-Id': customerId }),
         ...headers,
       },
       body: JSON.stringify({

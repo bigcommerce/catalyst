@@ -39,7 +39,7 @@ export default async function Login({ params: { locale }, searchParams }: Props)
       <div className="mx-auto my-6 max-w-4xl">
         <h2 className="mb-8 text-4xl font-black lg:text-5xl">{t('changePasswordHeading')}</h2>
         <NextIntlClientProvider locale={locale} messages={{ Account }}>
-          <ChangePasswordForm customerId={Number(customerId)} customerToken={customerToken} />
+          <ChangePasswordForm customerId={customerId} customerToken={customerToken} />
         </NextIntlClientProvider>
       </div>
     );

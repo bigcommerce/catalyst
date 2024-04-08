@@ -21,7 +21,7 @@ import { useRouter } from '~/navigation';
 import { submitChangePasswordForm } from '../_actions/submit-change-password-form';
 
 interface Props {
-  customerId: number;
+  customerId: string;
   customerToken: string;
 }
 
