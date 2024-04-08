@@ -32,7 +32,7 @@ export const unassignCartFromCustomer = async (
         cartEntityId,
       },
     },
-    customerId: Number(customerId),
+    customerId,
     fetchOptions: { cache: 'no-store' },
   });
 

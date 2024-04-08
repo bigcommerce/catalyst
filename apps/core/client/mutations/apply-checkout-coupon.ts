@@ -28,7 +28,7 @@ export const applyCheckoutCoupon = async (checkoutEntityId: string, couponCode: 
         },
       },
     },
-    customerId: Number(customerId),
+    customerId,
     fetchOptions: { cache: 'no-store' },
   });
 
