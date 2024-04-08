@@ -7,6 +7,7 @@ const config = {
   rules: {
     'check-file/filename-naming-convention': 'off',
   },
+  ignorePatterns: ['/playwright-report/**', '/test-results/**'],
 };
 
 module.exports = config;

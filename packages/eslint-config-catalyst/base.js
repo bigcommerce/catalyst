@@ -2,6 +2,9 @@
 const config = {
   extends: ['@bigcommerce/eslint-config/configs/base', 'prettier'],
   plugins: ['check-file'],
+  parserOptions: {
+    ecmaVersion: 'latest',
+  },
   overrides: [
     {
       files: ['*.ts', '*.tsx'],
