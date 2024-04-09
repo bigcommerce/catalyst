@@ -166,12 +166,13 @@
   "Account": {
     "Home": {
       "heading": "My Account",
+      "accountTabsLabel": "Account Tabs",
       "orders": "Orders",
       "messages": "Messages",
       "addresses": "Addresses",
       "wishlists": "Wish lists",
       "recentlyViewed": "Recently viewed",
-      "accountSettings": "Account settings"
+      "settings": "Account settings"
     },
     "Login": {
       "heading": "Log In",
