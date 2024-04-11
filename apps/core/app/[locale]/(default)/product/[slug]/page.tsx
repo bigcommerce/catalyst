@@ -4,14 +4,18 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
+import { getSessionCustomerId } from '~/auth';
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
 import { getProduct } from '~/client/queries/get-product';
+import { revalidate } from '~/client/revalidate-target';
 import { LocaleType } from '~/i18n';
 
 import { BreadCrumbs } from './_components/breadcrumbs';
 import { Description } from './_components/description';
 import { Details } from './_components/details';
 import { Gallery } from './_components/gallery';
-import { RelatedProducts } from './_components/related-products';
+import { RelatedProducts, RelatedProductsFragment } from './_components/related-products';
 import { Reviews } from './_components/reviews';
 import { Warranty } from './_components/warranty';
 
@@ -48,7 +52,22 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   };
 }
 
+const ProductPageQuery = graphql(
+  `
+    query ProductPageQuery($entityId: Int!, $optionValueIds: [OptionValueId!]) {
+      site {
+        product(entityId: $entityId, optionValueIds: $optionValueIds) {
+          ...RelatedProductsFragment
+        }
+      }
+    }
+  `,
+  [RelatedProductsFragment],
+);
+
 export default async function Product({ params, searchParams }: ProductPageProps) {
+  const customerId = await getSessionCustomerId();
+
   const { locale } = params;
 
   unstable_setRequestLocale(locale);
@@ -68,9 +87,24 @@ export default async function Product({ params, searchParams }: ProductPageProps
       (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
     );
 
-  const product = await getProduct(productId, optionValueIds);
+  // TODO: Here we are temporarily fetching the same product twice
+  // This is part of the ongoing effort of migrating to fragment collocation
+  const [product, { data }] = await Promise.all([
+    getProduct(productId, optionValueIds),
+
+    client.fetch({
+      document: ProductPageQuery,
+      variables: { entityId: productId, optionValueIds },
+      customerId,
+      fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
+    }),
+  ]);
 
   if (!product) {
+    return notFound();
+  }
+
+  if (!data.site.product) {
     return notFound();
   }
 
@@ -92,7 +126,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
       </div>
 
       <Suspense fallback={t('loading')}>
-        <RelatedProducts productId={product.entityId} />
+        <RelatedProducts data={data.site.product} />
       </Suspense>
     </>
   );
