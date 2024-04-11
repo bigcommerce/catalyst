@@ -1,4 +1,3 @@
-import { Trash } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 
 import { getCart } from '~/client/queries/get-cart';
@@ -8,6 +7,7 @@ import { BcImage } from '~/components/bc-image';
 import { removeProduct } from '../_actions/remove-products';
 
 import { CartItemCounter } from './cart-item-counter';
+import { RemoveFromCartButton } from './remove-from-cart-button';
 
 export type Product =
   | ExistingResultType<typeof getCart>['lineItems']['physicalItems'][number]
@@ -109,9 +109,7 @@ export const CartItem = async ({
 
         <form action={removeProduct}>
           <input name="lineItemEntityId" type="hidden" value={product.entityId} />
-          <button aria-label={t('removeFromCart')} type="submit">
-            <Trash aria-hidden="true" />
-          </button>
+          <RemoveFromCartButton label={t('removeFromCart')} spinnerLabel={t('spinnerText')} />
         </form>
       </div>
     </li>
