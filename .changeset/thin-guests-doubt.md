@@ -2,4 +2,4 @@
 "@bigcommerce/catalyst-core": patch
 ---
 
-Add loading state to remvoe item button in Cart
+Add loading state to remove item button in Cart
