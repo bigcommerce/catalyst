@@ -36,8 +36,8 @@ importers:
         specifier: workspace:^
         version: link:../../packages/components
       '@icons-pack/react-simple-icons':
-        specifier: ^9.4.0
-        version: 9.4.0(react@18.2.0)
+        specifier: ^9.4.1
+        version: 9.4.1(react@18.2.0)
       '@vercel/analytics':
         specifier: ^1.2.2
         version: 1.2.2(next@14.1.4)(react@18.2.0)
@@ -2992,8 +2992,8 @@ packages:
   /@humanwhocodes/object-schema@2.0.3:
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
 
-  /@icons-pack/react-simple-icons@9.4.0(react@18.2.0):
-    resolution: {integrity: sha512-fZtC4Zv53hE+IQE2dJlFt3EB6UOifwTrUNMuEu4hSXemtqMahd05Dpvj2K0j2ewVc+j/ibavud3xjfaMB2Nj7g==}
+  /@icons-pack/react-simple-icons@9.4.1(react@18.2.0):
+    resolution: {integrity: sha512-oDX8iE/AOyRIY0ys56+eybKSsyZODHQIPZ5mAGVxx3TszkA5l8lIxKl8HI9F801Y1CJxcySBjIk1XibrnFF0Hw==}
     peerDependencies:
       react: ^16.13 || ^17 || ^18
     dependencies:
