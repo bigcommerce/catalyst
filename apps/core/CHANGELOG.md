@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.5.0
+
+### Minor Changes
+
+- [#719](https://github.com/bigcommerce/catalyst/pull/719) [`ab67b34`](https://github.com/bigcommerce/catalyst/commit/ab67b34ea1c6c7b4b5192a0fe2455ab79f001a97) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - Add tabs for customer account
+
+### Patch Changes
+
+- [#740](https://github.com/bigcommerce/catalyst/pull/740) [`d586c21`](https://github.com/bigcommerce/catalyst/commit/d586c2122bf6513b2f7d923957636c7ea8aaf2ce) Thanks [@dependabot](https://github.com/apps/dependabot)! - chore: bump next-auth and use string for user id
+
+- [#749](https://github.com/bigcommerce/catalyst/pull/749) [`5041719`](https://github.com/bigcommerce/catalyst/commit/5041719a753ef36472f9cfac79bbca32b540b6e5) Thanks [@deini](https://github.com/deini)! - fix social icons type errors with latest @types/react
+
+- [#750](https://github.com/bigcommerce/catalyst/pull/750) [`c8973e2`](https://github.com/bigcommerce/catalyst/commit/c8973e2051042e832859f8c559d0fff456e2a621) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add loading state to remove item button in Cart
+
+- [#724](https://github.com/bigcommerce/catalyst/pull/724) [`045cd14`](https://github.com/bigcommerce/catalyst/commit/045cd14f9846ec939a6237c42f57e849425fa4dd) Thanks [@christensenep](https://github.com/christensenep)! - Support serving static pages when the cart is not empty
+
+- Updated dependencies [[`d586c21`](https://github.com/bigcommerce/catalyst/commit/d586c2122bf6513b2f7d923957636c7ea8aaf2ce)]:
+  - @bigcommerce/catalyst-client@0.2.2
+
 ## 0.4.0
 
 ### Minor Changes
