@@ -7,7 +7,7 @@
 
 ## Prerequisites
 
-* Node.js 18+, using `npm` or `pnpm`.
+* Node.js 20+, using `npm` or `pnpm`.
 * Login access to a BigCommerce store or sandbox. You can [create a trial store](https://bigcommerce.com/start-your-trial/) or [spin up a sandbox](https://start.bigcommerce.com/developer-sandbox/).
 * [User permissions to create new store-level API accounts](https://support.bigcommerce.com/s/article/User-Permissions#highrisk) on the subject store or help from someone who has permissions.
 

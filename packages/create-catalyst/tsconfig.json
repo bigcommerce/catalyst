@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Node 18",
+  "display": "Node",
   "compilerOptions": {
     "strict": true,
     "target": "es6",
