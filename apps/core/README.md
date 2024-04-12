@@ -33,7 +33,7 @@ times before. You can instead go straight to work building your brand and making
 
 ## Requirements
 
-- Node.js 18+
+- Node.js 20+
 - `npm` (or `pnpm`/`yarn`)
 
 ## Getting started

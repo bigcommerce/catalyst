@@ -28,7 +28,7 @@ See [CONTRIBUTING.md](https://github.com/bigcommerce/catalyst/tree/main/CONTRIBU
 
 ### Prerequisites
 
-* Node.js 18+
+* Node.js 20+
 * Corepack-managed `pnpm`
 
 ### Setup
