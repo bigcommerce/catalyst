@@ -59,19 +59,27 @@ type SelectContentType = typeof SelectPrimitive.Content;
 const SelectContent = forwardRef<
   ElementRef<SelectContentType>,
   ComponentPropsWithRef<SelectContentType>
->(({ children, className, ...props }, ref) => {
+>(({ children, className, position = 'popper', ...props }, ref) => {
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
-        position="popper"
+        position={position}
         {...props}
         className={cn(
-          'max-h-radix-select-content-available-height relative w-full bg-white shadow-md data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
+          'max-h-radix-select-content-available-height relative w-full bg-white shadow-md',
+          position === 'popper' &&
+            'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
           className,
         )}
         ref={ref}
       >
-        <SelectPrimitive.Viewport className="h-radix-select-content-available-height w-full min-w-[var(--radix-select-trigger-width)]">
+        <SelectPrimitive.Viewport
+          className={cn(
+            'w-full',
+            position === 'popper' &&
+              'h-[var(--radix-select-trigger-height)] min-w-[var(--radix-select-trigger-width)]',
+          )}
+        >
           {children}
         </SelectPrimitive.Viewport>
       </SelectPrimitive.Content>
