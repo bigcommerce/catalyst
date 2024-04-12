@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.6.0
+
+### Minor Changes
+
+- [#753](https://github.com/bigcommerce/catalyst/pull/753) [`48c040e`](https://github.com/bigcommerce/catalyst/commit/48c040e94745134f4c60b15cadcdb0a0bbcb2a36) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Deprecate `node@18` in favor of latest LTS version `node@20`.
+
+### Patch Changes
+
+- [#755](https://github.com/bigcommerce/catalyst/pull/755) [`6a6af43`](https://github.com/bigcommerce/catalyst/commit/6a6af432d95a221b1685328bd5211fb6fea8ad55) Thanks [@deini](https://github.com/deini)! - pin next version
+
+- [#757](https://github.com/bigcommerce/catalyst/pull/757) [`dac0199`](https://github.com/bigcommerce/catalyst/commit/dac019989c9c1a81526689dc9e75c9d3a0d0dce3) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Update cart select components to use the item-aligned select content in order to scroll with large Select content.
+
+- Updated dependencies [[`48c040e`](https://github.com/bigcommerce/catalyst/commit/48c040e94745134f4c60b15cadcdb0a0bbcb2a36), [`dac0199`](https://github.com/bigcommerce/catalyst/commit/dac019989c9c1a81526689dc9e75c9d3a0d0dce3)]:
+  - @bigcommerce/catalyst-client@0.3.0
+  - @bigcommerce/components@0.3.0
+
 ## 0.5.0
 
 ### Minor Changes
