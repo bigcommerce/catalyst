@@ -63,7 +63,7 @@ importers:
         specifier: ^0.365.0
         version: 0.365.0(react@18.2.0)
       next:
-        specifier: ^14.1.4
+        specifier: 14.1.4
         version: 14.1.4(@babel/core@7.24.4)(react-dom@18.2.0)(react@18.2.0)
       next-auth:
         specifier: 5.0.0-beta.16
@@ -145,7 +145,7 @@ importers:
         specifier: ^8.57.0
         version: 8.57.0
       eslint-config-next:
-        specifier: ^14.1.4
+        specifier: 14.1.4
         version: 14.1.4(eslint@8.57.0)(typescript@5.4.4)
       jest:
         specifier: ^29.7.0
@@ -7278,10 +7278,6 @@ packages:
     resolution: {integrity: sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==}
     engines: {node: '>=10'}
 
-  /caniuse-lite@1.0.30001605:
-    resolution: {integrity: sha512-nXwGlFWo34uliI9z3n6Qc0wZaf7zaZWA1CPZ169La5mV3I/gem7bst0vr5XQH5TJXZIMfDeZyOrZnSlVzKxxHQ==}
-    dev: false
-
   /caniuse-lite@1.0.30001606:
     resolution: {integrity: sha512-LPbwnW4vfpJId225pwjZJOgX1m9sGfbw/RKJvw/t0QhYOOaTXHvkjVGFGPpvwEzufrjvTlsULnVTxdy4/6cqkg==}
 
@@ -11272,7 +11268,7 @@ packages:
       '@next/env': 14.1.4
       '@swc/helpers': 0.5.2
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001605
+      caniuse-lite: 1.0.30001606
       graceful-fs: 4.2.11
       postcss: 8.4.31
       react: 18.2.0
