@@ -83,7 +83,7 @@ const locales = ['en', 'fr'] as const;
 
 ## Using keys in React components
 
-The following example shows how messages can be used in React server and client components:
+The following example shows how messages can be used in **server** component:
 
 ```tsx
 import { NextIntlClientProvider } from 'next-intl';
@@ -115,6 +115,24 @@ export default async function Home({ params: { locale } }: Props) {
     </div>
   );
 }
+```
+
+Usage in nested **client** component:
+```tsx
+'use client';
+
+// ...
+import { useTranslations } from 'next-intl';
+
+export const AddToCart = () => {
+  const t = useTranslations('Product.ProductSheet');
+
+  return (
+    <Button type="submit">
+        t('addToCart')
+    </Button>
+  );
+};
 ```
 
 ## Routing and locale detection
