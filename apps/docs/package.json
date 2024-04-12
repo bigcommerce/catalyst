@@ -1,7 +1,7 @@
 {
   "name": "@bigcommerce/docs",
   "description": "Components docs",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "dev": "storybook dev -p 6006 --no-open",

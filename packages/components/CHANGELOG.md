@@ -1,5 +1,11 @@
 # @bigcommerce/components
 
+## 0.3.0
+
+### Patch Changes
+
+- [#757](https://github.com/bigcommerce/catalyst/pull/757) [`dac0199`](https://github.com/bigcommerce/catalyst/commit/dac019989c9c1a81526689dc9e75c9d3a0d0dce3) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Update styles to scroll when Select content is long.
+
 ## 0.2.0
 
 ### Minor Changes
