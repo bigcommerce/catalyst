@@ -142,6 +142,7 @@ export const ShippingInfo = ({
           <FieldLabel>{t('country')}</FieldLabel>
           <FieldControl asChild>
             <Select
+              aria-label={t('countryAriaLabel')}
               autoComplete="country"
               onValueChange={(value: string) => {
                 const countryId = value.split('-')[1];
@@ -174,6 +175,7 @@ export const ShippingInfo = ({
           <FieldControl asChild>
             {formValues.states !== null ? (
               <Select
+                aria-label={t('stateAriaLabel')}
                 disabled={formValues.states.length === 0}
                 onValueChange={(value) => setFormValues({ state: value })}
                 placeholder={t('statePlaceholder')}
@@ -204,6 +206,7 @@ export const ShippingInfo = ({
           <FieldLabel htmlFor="city-field">{t('city')}</FieldLabel>
           <FieldControl asChild>
             <Input
+              aria-label={t('cityAriaLabel')}
               autoComplete="address-level2"
               id="city-field"
               onChange={(e) => setFormValues({ city: e.target.value })}
@@ -217,6 +220,7 @@ export const ShippingInfo = ({
           <FieldLabel htmlFor="zip-field">{t('postcode')}</FieldLabel>
           <FieldControl asChild>
             <Input
+              aria-label={t('postcodeAriaLabel')}
               autoComplete="postal-code"
               id="zip-field"
               onChange={(e) => setFormValues({ postcode: e.target.value })}

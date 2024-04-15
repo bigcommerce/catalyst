@@ -128,13 +128,17 @@
     },
     "ShippingInfo": {
       "country": "Country",
-      "countryPlaceholder": "Select county",
+      "countryAriaLabel": "Country",
+      "countryPlaceholder": "Select country",
       "state": "State/province",
-      "statePlaceholder": "State/province...",
+      "stateAriaLabel": "State",
+      "statePlaceholder": "Select state",
       "city": "Suburb/city",
-      "cityPlaceholder": "State/province...",
+      "cityAriaLabel": "City",
+      "cityPlaceholder": "City...",
       "postcode": "Zip/Postcode",
-      "postcodePlaceholder": "State/province...",
+      "postcodeAriaLabel": "Postcode",
+      "postcodePlaceholder": "Postal code...",
       "errorMessage": "Something went wrong, please try again."
     },
     "SubmitShippingInfo": {
