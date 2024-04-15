@@ -9,7 +9,7 @@
     "./react.js"
   ],
   "dependencies": {
-    "@bigcommerce/eslint-config": "^2.8.0",
+    "@bigcommerce/eslint-config": "^2.8.1",
     "@next/eslint-plugin-next": "^14.1.4",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-check-file": "^2.7.1",
