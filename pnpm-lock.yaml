@@ -29,6 +29,9 @@ importers:
 
   apps/core:
     dependencies:
+      '@bigcommerce-labs/bodl-events':
+        specifier: ^1.15.0
+        version: 1.15.0
       '@bigcommerce/catalyst-client':
         specifier: workspace:^
         version: link:../../packages/client
@@ -1942,6 +1945,14 @@ packages:
 
   /@bcoe/v8-coverage@0.2.3:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
+
+  /@bigcommerce-labs/bodl-events@1.15.0:
+    resolution: {integrity: sha512-uF1qk8u8GIMlODS3/EcUAne2S9M8xaCVNDWYYC+yp6f8P0StMiIBDJ5kPWBEsTIuioaowLw1ZjaD8GPfcCY2rw==, tarball: https://npm.pkg.github.com/download/@bigcommerce-labs/bodl-events/1.15.0/f827aab725f4b1a15b8e2b6adb0d9196286e7f99}
+    engines: {node: '>=17.0.0 <19.0.0'}
+    dependencies:
+      '@types/events': 3.0.3
+      events: 3.3.0
+    dev: false
 
   /@bigcommerce/eslint-config@2.8.0(eslint@8.57.0)(jest@29.7.0)(typescript@5.4.4):
     resolution: {integrity: sha512-5iGPsFZiszzhqusD5vw9HIgEVDQb9alcRPCeZ77jsLCBDcBBqVb55/lI7dqK54m7egsH7/TFB2D2Qt0qh6fkLQ==}
@@ -5958,6 +5969,10 @@ packages:
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
     dev: true
 
+  /@types/events@3.0.3:
+    resolution: {integrity: sha512-trOc4AAUThEz9hapPtSd7wf5tiQKvTtu5b371UxXdTuqzIh0ArcRspRP0i0Viu+LXstIQ1z96t1nsPxT9ol01g==}
+    dev: false
+
   /@types/express-serve-static-core@4.17.41:
     resolution: {integrity: sha512-OaJ7XLaelTgrvlZD8/aa0vvvxZdUmlCn6MtWeB7TkiKW70BQLc9XEPpDLPdbo52ZhXUCrznlWdCHWxJWtdyajA==}
     dependencies:
@@ -8935,7 +8950,6 @@ packages:
   /events@3.3.0:
     resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
     engines: {node: '>=0.8.x'}
-    dev: true
 
   /execa@5.1.1:
     resolution: {integrity: sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg==}

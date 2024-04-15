@@ -5,6 +5,7 @@ import { Inter } from 'next/font/google';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { unstable_setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
+import * as BodlEvents from '@bigcommerce-labs/bodl-events/dist/index.cjs';
 
 import '../globals.css';
 
@@ -14,6 +15,7 @@ import { revalidate } from '~/client/revalidate-target';
 
 import { Notifications } from '../notifications';
 import { Providers } from '../providers';
+import Script from "next/script";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -74,6 +76,15 @@ export default function RootLayout({ children, params: { locale } }: RootLayoutP
         </NextIntlClientProvider>
         <Analytics />
         <SpeedInsights />
+        {
+          BodlEvents && (
+            <Script>
+              {`
+              window.bodlEvents = JSON.parse(atob("${btoa(JSON.stringify(BodlEvents))}"));
+            `}
+            </Script>
+          )
+        }
       </body>
     </html>
   );
