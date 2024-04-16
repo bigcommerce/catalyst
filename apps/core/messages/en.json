@@ -105,6 +105,7 @@
     "removeFromCart": "Remove product from cart",
     "proceedToCheckout": "Proceed to checkout",
     "loading": "Loading...",
+    "spinnerText": "Updating...",
     "CheckoutSummary": {
       "subTotal": "Subtotal",
       "discounts": "Discounts",
