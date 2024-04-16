@@ -1,10 +1,16 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
-import { getFeaturedProducts } from '~/client/queries/get-featured-products';
-import { getNewestProducts } from '~/client/queries/get-newest-products';
+import { getSessionCustomerId } from '~/auth';
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
+import { revalidate } from '~/client/revalidate-target';
 import { Hero } from '~/components/hero';
-import { ProductCardCarousel } from '~/components/product-card-carousel';
+import {
+  ProductCardCarousel,
+  ProductCardCarouselFragment,
+} from '~/components/product-card-carousel';
 import { LocaleType } from '~/i18n';
 
 interface Props {
@@ -13,15 +19,46 @@ interface Props {
   };
 }
 
+const HomePageQuery = graphql(
+  `
+    query HomePageQuery {
+      site {
+        newestProducts(first: 12) {
+          edges {
+            node {
+              ...ProductCardCarouselFragment
+            }
+          }
+        }
+        featuredProducts(first: 12) {
+          edges {
+            node {
+              ...ProductCardCarouselFragment
+            }
+          }
+        }
+      }
+    }
+  `,
+  [ProductCardCarouselFragment],
+);
+
 export default async function Home({ params: { locale } }: Props) {
+  const customerId = await getSessionCustomerId();
+
   unstable_setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: 'Home' });
   const messages = await getMessages({ locale });
-  const [newestProducts, featuredProducts] = await Promise.all([
-    getNewestProducts(),
-    getFeaturedProducts(),
-  ]);
+
+  const { data } = await client.fetch({
+    document: HomePageQuery,
+    customerId,
+    fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
+  });
+
+  const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
+  const newestProducts = removeEdgesAndNodes(data.site.newestProducts);
 
   return (
     <>

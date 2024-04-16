@@ -7,9 +7,22 @@ import {
 } from '@bigcommerce/components/carousel';
 import { useId } from 'react';
 
-import { Product, ProductCard } from '../product-card';
+import { graphql, ResultOf } from '~/client/graphql';
+
+import { ProductCard, ProductCardFragment } from '../product-card';
 
 import { Pagination } from './pagination';
+
+export const ProductCardCarouselFragment = graphql(
+  `
+    fragment ProductCardCarouselFragment on Product {
+      ...ProductCardFragment
+    }
+  `,
+  [ProductCardFragment],
+);
+
+type Product = ResultOf<typeof ProductCardCarouselFragment>;
 
 export const ProductCardCarousel = ({
   title,
@@ -19,7 +32,7 @@ export const ProductCardCarousel = ({
   showReviews = true,
 }: {
   title: string;
-  products: Array<Partial<Product>>;
+  products: Product[];
   showCart?: boolean;
   showCompare?: boolean;
   showReviews?: boolean;
@@ -30,7 +43,7 @@ export const ProductCardCarousel = ({
     return null;
   }
 
-  const groupedProducts = products.reduce<Array<Array<Partial<Product>>>>((batches, _, index) => {
+  const groupedProducts = products.reduce<Product[][]>((batches, _, index) => {
     if (index % 4 === 0) {
       batches.push([]);
     }

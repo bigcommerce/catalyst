@@ -4,13 +4,12 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages, getTranslations } from 'next-intl/server';
 
 import { client } from '~/client';
-import { PRODUCT_DETAILS_FRAGMENT } from '~/client/fragments/product-details';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { Footer, FooterFragment } from '~/components/footer/footer';
 import { Header, HeaderFragment } from '~/components/header';
 import { CartLink } from '~/components/header/cart';
-import { ProductCard } from '~/components/product-card';
+import { ProductCard, ProductCardFragment } from '~/components/product-card';
 import { SearchForm } from '~/components/search-form';
 
 export const metadata = {
@@ -26,14 +25,14 @@ const NotFoundQuery = graphql(
         featuredProducts(first: 4) {
           edges {
             node {
-              ...ProductDetails
+              ...ProductCardFragment
             }
           }
         }
       }
     }
   `,
-  [HeaderFragment, FooterFragment, PRODUCT_DETAILS_FRAGMENT],
+  [HeaderFragment, FooterFragment, ProductCardFragment],
 );
 
 export default async function NotFound() {
@@ -46,12 +45,7 @@ export default async function NotFound() {
     fetchOptions: { next: { revalidate } },
   });
 
-  const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts).map(
-    (featuredProduct) => ({
-      ...featuredProduct,
-      productOptions: removeEdgesAndNodes(featuredProduct.productOptions),
-    }),
-  );
+  const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
 
   return (
     <>

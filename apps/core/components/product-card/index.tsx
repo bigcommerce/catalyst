@@ -10,66 +10,44 @@ import { Rating } from '@bigcommerce/components/rating';
 import { useTranslations } from 'next-intl';
 import { useId } from 'react';
 
+import { graphql, ResultOf } from '~/client/graphql';
 import { Link } from '~/components/link';
 import { cn } from '~/lib/utils';
 
 import { BcImage } from '../bc-image';
-import { Pricing } from '../pricing';
+import { Pricing, PricingFragment } from '../pricing';
 
 import { Cart } from './cart';
+import { CartFragment } from './cart/fragment';
 import { Compare } from './compare';
 
-export interface Product {
-  entityId: number;
-  name: string;
-  defaultImage?: {
-    altText?: string;
-    url?: string;
-  } | null;
-  path: string;
-  brand?: {
-    name: string;
-    path: string;
-  } | null;
-  prices?: {
-    price?: {
-      value?: number;
-      currencyCode?: string;
-    };
-    basePrice?: {
-      value?: number;
-      currencyCode?: string;
-    } | null;
-    retailPrice?: {
-      value?: number;
-      currencyCode?: string;
-    } | null;
-    salePrice?: {
-      value?: number;
-      currencyCode?: string;
-    } | null;
-    priceRange?: {
-      min?: {
-        value?: number;
-        currencyCode?: string;
-      } | null;
-      max?: {
-        value?: number;
-        currencyCode?: string;
-      } | null;
-    } | null;
-  } | null;
-  reviewSummary?: {
-    numberOfReviews: number;
-    averageRating: number;
-  } | null;
-  productOptions?: Array<{
-    entityId: number;
-  }>;
-}
+export const ProductCardFragment = graphql(
+  `
+    fragment ProductCardFragment on Product {
+      entityId
+      name
+      defaultImage {
+        altText
+        url: urlTemplate
+      }
+      path
+      brand {
+        name
+        path
+      }
+      reviewSummary {
+        numberOfReviews
+        averageRating
+      }
+      ...CartFragment
+      ...PricingFragment
+    }
+  `,
+  [PricingFragment, CartFragment],
+);
 
-interface ProductCardProps {
-  product: Partial<Product>;
+interface Props {
+  product: ResultOf<typeof ProductCardFragment>;
   imageSize?: 'tall' | 'wide' | 'square';
   imagePriority?: boolean;
   showCart?: boolean;
@@ -84,7 +62,7 @@ export const ProductCard = ({
   showCart = true,
   showCompare = true,
   showReviews = true,
-}: ProductCardProps) => {
+}: Props) => {
   const summaryId = useId();
   const t = useTranslations('Product.ProductSheet');
 
@@ -104,12 +82,12 @@ export const ProductCard = ({
         >
           {product.defaultImage ? (
             <BcImage
-              alt={product.defaultImage.altText ?? product.name ?? ''}
+              alt={product.defaultImage.altText || product.name}
               className="object-contain"
               fill
               priority={imagePriority}
               sizes="(max-width: 768px) 50vw, (max-width: 1536px) 25vw, 500px"
-              src={product.defaultImage.url ?? ''}
+              src={product.defaultImage.url}
             />
           ) : (
             <div className="h-full w-full bg-gray-200" />
@@ -131,7 +109,7 @@ export const ProductCard = ({
             product.name
           )}
         </ProductCardInfoProductName>
-        {product.reviewSummary && showReviews && (
+        {showReviews && (
           <div className="flex items-center gap-3">
             <p
               aria-describedby={summaryId}
@@ -160,18 +138,19 @@ export const ProductCard = ({
         )}
         <div className="flex flex-wrap items-end justify-between pt-1">
           <ProductCardInfoPrice>
-            <Pricing prices={product.prices} />
+            <Pricing data={product} />
           </ProductCardInfoPrice>
+
           {showCompare && (
             <Compare
               productId={product.entityId}
               productImage={product.defaultImage}
-              productName={product.name ?? ''}
+              productName={product.name}
             />
           )}
         </div>
       </ProductCardInfo>
-      {showCart && <Cart product={product} />}
+      {showCart && <Cart data={product} />}
     </ComponentsProductCard>
   );
 };
