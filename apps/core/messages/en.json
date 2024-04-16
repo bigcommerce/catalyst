@@ -129,13 +129,13 @@
     },
     "ShippingInfo": {
       "country": "Country",
-      "countryPlaceholder": "Select county",
+      "countryPlaceholder": "Select country",
       "state": "State/province",
-      "statePlaceholder": "State/province...",
+      "statePlaceholder": "Select state",
       "city": "Suburb/city",
-      "cityPlaceholder": "State/province...",
+      "cityPlaceholder": "City",
       "postcode": "Zip/Postcode",
-      "postcodePlaceholder": "State/province...",
+      "postcodePlaceholder": "Postal code",
       "errorMessage": "Something went wrong, please try again."
     },
     "SubmitShippingInfo": {
