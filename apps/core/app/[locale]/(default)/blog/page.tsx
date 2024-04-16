@@ -3,10 +3,11 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import { getBlogPosts } from '~/client/queries/get-blog-posts';
 import { BlogPostCard } from '~/components/blog-post-card';
 import { Link } from '~/components/link';
 import { LocaleType } from '~/i18n';
+
+import { getBlogPosts } from './page-data';
 
 interface Props {
   params: { locale: LocaleType };
@@ -37,7 +38,7 @@ export default async function BlogPostPage({ params: { locale }, searchParams }:
 
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
         {blogPosts.posts.items.map((post) => {
-          return <BlogPostCard blogPost={post} key={post.entityId} />;
+          return <BlogPostCard data={post} key={post.entityId} />;
         })}
       </div>
 
