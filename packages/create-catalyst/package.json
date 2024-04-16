@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@commander-js/extra-typings": "^12.0.1",
-    "@inquirer/prompts": "^4.3.2",
+    "@inquirer/prompts": "^5.0.0",
     "chalk": "^5.3.0",
     "commander": "^12.0.0",
     "fs-extra": "^11.2.0",
@@ -32,7 +32,7 @@
     "zod-validation-error": "^3.1.0"
   },
   "devDependencies": {
-    "@bigcommerce/eslint-config": "^2.8.0",
+    "@bigcommerce/eslint-config": "^2.8.1",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@swc/core": "^1.4.12",
     "@swc/jest": "^0.2.36",
