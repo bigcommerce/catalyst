@@ -10,14 +10,11 @@ export async function addEstimatedShippingCosts(
   await page.getByRole('combobox', { name: 'Country' }).click();
   await page.getByLabel(country).click();
 
-  await page
-    .getByRole('combobox', { name: 'State' })
-    .filter({ hasNotText: 'Select state' })
-    .click();
+  await page.getByRole('combobox', { name: 'State/province' }).click();
   await page.getByLabel(state).click();
 
-  await page.getByLabel('City').fill(city);
-  await page.getByLabel('Postcode').fill(zip);
+  await page.getByLabel('Suburb/city').fill(city);
+  await page.getByLabel('Zip/Postcode').fill(zip);
 
   await page.getByRole('button', { name: 'Estimate shipping' }).click();
   await page.getByRole('button', { name: 'Update shipping costs' }).click();

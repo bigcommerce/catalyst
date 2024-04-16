@@ -128,17 +128,13 @@
     },
     "ShippingInfo": {
       "country": "Country",
-      "countryAriaLabel": "Country",
       "countryPlaceholder": "Select country",
       "state": "State/province",
-      "stateAriaLabel": "State",
       "statePlaceholder": "Select state",
       "city": "Suburb/city",
-      "cityAriaLabel": "City",
-      "cityPlaceholder": "City...",
+      "cityPlaceholder": "City",
       "postcode": "Zip/Postcode",
-      "postcodeAriaLabel": "Postcode",
-      "postcodePlaceholder": "Postal code...",
+      "postcodePlaceholder": "Postal code",
       "errorMessage": "Something went wrong, please try again."
     },
     "SubmitShippingInfo": {
