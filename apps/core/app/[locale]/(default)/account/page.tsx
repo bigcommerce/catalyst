@@ -1,9 +1,7 @@
 import { BookUser, Eye, Gift, Mail, Package, Settings } from 'lucide-react';
-import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
-import { auth } from '~/auth';
 import { Link } from '~/components/link';
 import { LocaleType } from '~/i18n';
 
@@ -36,16 +34,11 @@ interface Props {
 }
 
 export default async function AccountPage({ params: { locale } }: Props) {
-  const session = await auth();
   const t = await getTranslations({ locale, namespace: 'Account.Home' });
-
-  if (!session) {
-    redirect('/login');
-  }
 
   return (
     <div className="mx-auto">
-      <h1 className="my-6 my-8 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
+      <h1 className="my-8 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
 
       <div className="mb-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <AccountItem href="/account/orders" title={t('orders')}>
