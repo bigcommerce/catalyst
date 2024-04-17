@@ -117,6 +117,10 @@ export default async function Home({ params: { locale } }: Props) {
 }
 ```
 
+> [!Note]
+> #### unstable_setRequestLocale
+> Please pay attention to `unstable_setRequestLocale` call. You can read more in [next-intl docs](https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-unstable_setrequestlocale-to-all-layouts-and-pages).
+
 Usage in nested **client** component:
 ```tsx
 'use client';
