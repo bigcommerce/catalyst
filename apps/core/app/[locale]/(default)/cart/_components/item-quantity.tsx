@@ -1,19 +1,19 @@
 'use client';
 
-import { Counter } from '@bigcommerce/components/counter';
-import { useState } from 'react';
+import { AlertCircle, Minus, Plus, Loader2 as Spinner } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { ComponentPropsWithoutRef, useEffect, useState } from 'react';
+import { useFormStatus } from 'react-dom';
+import { toast } from 'react-hot-toast';
 
 import { graphql } from '~/client/graphql';
 import { getCart } from '~/client/queries/get-cart';
 
-import { updateProductQuantity } from '../_actions/update-product-quantity';
+import { updateItemQuantity } from '../_actions/update-item-quantity';
 
 import { Product } from './cart-item';
 
-type CartLineItemInput = ReturnType<typeof graphql.scalar<'CartLineItemInput'>>;
 type CartSelectedOptionsInput = ReturnType<typeof graphql.scalar<'CartSelectedOptionsInput'>>;
-type UpdateCartLineItemInput = ReturnType<typeof graphql.scalar<'UpdateCartLineItemInput'>>;
-
 type Cart = NonNullable<Awaited<ReturnType<typeof getCart>>>;
 
 type CartItemData = Pick<
@@ -22,10 +22,6 @@ type CartItemData = Pick<
 > & {
   lineItemEntityId: string;
 };
-
-interface UpdateProductQuantityData extends CartLineItemInput {
-  lineItemEntityId: UpdateCartLineItemInput['lineItemEntityId'];
-}
 
 const parseSelectedOptions = (selectedOptions: CartItemData['selectedOptions']) => {
   return selectedOptions.reduce<CartSelectedOptionsInput>((accum, option) => {
@@ -126,38 +122,87 @@ const parseSelectedOptions = (selectedOptions: CartItemData['selectedOptions']) 
   }, {});
 };
 
-export const CartItemCounter = ({ product }: { product: Product }) => {
+const SubmitButton = ({ children, ...props }: ComponentPropsWithoutRef<'button'>) => {
+  const { pending } = useFormStatus();
+  const t = useTranslations('Cart.SubmitItemQuantity');
+
+  return (
+    <button
+      className="hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:text-gray-200"
+      disabled={pending}
+      type="submit"
+      {...props}
+    >
+      {children}
+      {pending && <span className="sr-only">{t('spinnerText')}</span>}
+    </button>
+  );
+};
+
+const Quantity = ({ value }: { value: number }) => {
+  const { pending } = useFormStatus();
+  const t = useTranslations('Cart.SubmitItemQuantity');
+
+  return (
+    <span className="flex w-10 justify-center">
+      {pending ? (
+        <>
+          <Spinner aria-hidden="true" className="animate-spin text-primary" />
+          <span className="sr-only">{t('spinnerText')}</span>
+        </>
+      ) : (
+        <span>{value}</span>
+      )}
+    </span>
+  );
+};
+
+export const ItemQuantity = ({ product }: { product: Product }) => {
+  const t = useTranslations('Cart.SubmitItemQuantity');
+
   const { quantity, entityId, productEntityId, variantEntityId, selectedOptions } = product;
+  const [productQuantity, setProductQuantity] = useState<number>(quantity);
 
-  const [counterValue, setCounterValue] = useState<'' | number>(quantity);
-  const handleCountUpdate = async (value: string | number) => {
-    if (value === '') {
-      setCounterValue(value);
+  useEffect(() => {
+    setProductQuantity(quantity);
+  }, [quantity]);
 
-      return;
+  const onSubmit = async (formData: FormData) => {
+    const { status } = await updateItemQuantity({
+      lineItemEntityId: entityId,
+      productEntityId,
+      quantity: Number(formData.get('quantity')),
+      selectedOptions: parseSelectedOptions(selectedOptions),
+      variantEntityId,
+    });
+
+    if (status === 'error') {
+      toast.error(t('errorMessage'), {
+        icon: <AlertCircle className="text-error-secondary" />,
+      });
     }
-
-    setCounterValue(Number(value));
-
-    const productData: UpdateProductQuantityData = Object.assign(
-      {
-        lineItemEntityId: entityId,
-        productEntityId,
-        quantity: Number(value),
-        selectedOptions: parseSelectedOptions(selectedOptions),
-      },
-      variantEntityId && { variantEntityId },
-    );
-
-    await updateProductQuantity(productData);
   };
 
   return (
-    <Counter
-      className="w-32 text-base font-bold"
-      min={1}
-      onChange={handleCountUpdate}
-      value={counterValue}
-    />
+    <div className="border-2 border-gray-200 p-2.5">
+      <form action={onSubmit} className="flex items-center">
+        <SubmitButton
+          aria-label={t('submitReduceText')}
+          onClick={() => setProductQuantity(productQuantity - 1)}
+        >
+          <Minus aria-hidden="true" />
+        </SubmitButton>
+
+        <input name="quantity" type="hidden" value={productQuantity} />
+        <Quantity value={productQuantity} />
+
+        <SubmitButton
+          aria-label={t('submitIncreaseText')}
+          onClick={() => setProductQuantity(productQuantity + 1)}
+        >
+          <Plus aria-hidden="true" />
+        </SubmitButton>
+      </form>
+    </div>
   );
 };

@@ -1,13 +1,12 @@
-import { getTranslations } from 'next-intl/server';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 
 import { getCart } from '~/client/queries/get-cart';
 import { ExistingResultType } from '~/client/util';
 import { BcImage } from '~/components/bc-image';
 
-import { removeProduct } from '../_actions/remove-products';
-
-import { CartItemCounter } from './cart-item-counter';
-import { RemoveFromCartButton } from './remove-from-cart-button';
+import { ItemQuantity } from './item-quantity';
+import { RemoveItem } from './remove-item';
 
 export type Product =
   | ExistingResultType<typeof getCart>['lineItems']['physicalItems'][number]
@@ -16,11 +15,13 @@ export type Product =
 export const CartItem = async ({
   currencyCode,
   product,
+  locale,
 }: {
   currencyCode: string;
   product: Product;
+  locale: string;
 }) => {
-  const t = await getTranslations('Cart');
+  const messages = await getMessages({ locale });
 
   const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -99,7 +100,9 @@ export const CartItem = async ({
           )}
         </div>
 
-        <CartItemCounter product={product} />
+        <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
+          <ItemQuantity product={product} />
+        </NextIntlClientProvider>
 
         <div>
           <p className="inline-flex w-24 justify-center text-lg font-bold">
@@ -107,10 +110,9 @@ export const CartItem = async ({
           </p>
         </div>
 
-        <form action={removeProduct}>
-          <input name="lineItemEntityId" type="hidden" value={product.entityId} />
-          <RemoveFromCartButton label={t('removeFromCart')} spinnerLabel={t('spinnerText')} />
-        </form>
+        <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
+          <RemoveItem lineItemEntityId={product.entityId} />
+        </NextIntlClientProvider>
       </div>
     </li>
   );

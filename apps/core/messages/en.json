@@ -102,7 +102,6 @@
     "heading": "Your cart",
     "empty": "Your cart is empty",
     "emptyDetails": "Looks like you have not addded anything to your cart. Go ahead & explore top categories",
-    "removeFromCart": "Remove product from cart",
     "proceedToCheckout": "Proceed to checkout",
     "loading": "Loading...",
     "spinnerText": "Updating...",
@@ -155,6 +154,17 @@
     "SubmitCouponCode": {
       "spinnerText": "Submitting...",
       "submitText": "Apply"
+    },
+    "SubmitItemQuantity": {
+      "spinnerText": "Updating...",
+      "submitReduceText": "Decrease count",
+      "submitIncreaseText": "Increase count",
+      "errorMessage": "Something went wrong while updating item quantity, please try again."
+    },
+    "SubmitRemoveItem": {
+      "spinnerText": "Removing...",
+      "submitText": "Remove item from cart",
+      "errorMessage": "Something went wrong while removing item, please try again."
     }
   },
   "Search": {
