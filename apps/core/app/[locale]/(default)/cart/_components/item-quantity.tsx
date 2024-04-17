@@ -186,21 +186,19 @@ export const ItemQuantity = ({ product }: { product: Product }) => {
   return (
     <div className="border-2 border-gray-200 p-2.5">
       <form action={onSubmit} className="flex items-center">
-        <SubmitButton
-          aria-label={t('submitReduceText')}
-          onClick={() => setProductQuantity(productQuantity - 1)}
-        >
-          <Minus aria-hidden="true" />
+        <SubmitButton onClick={() => setProductQuantity(productQuantity - 1)}>
+          <Minus>
+            <title>{t('submitReduceText')}</title>
+          </Minus>
         </SubmitButton>
 
         <input name="quantity" type="hidden" value={productQuantity} />
         <Quantity value={productQuantity} />
 
-        <SubmitButton
-          aria-label={t('submitIncreaseText')}
-          onClick={() => setProductQuantity(productQuantity + 1)}
-        >
-          <Plus aria-hidden="true" />
+        <SubmitButton onClick={() => setProductQuantity(productQuantity + 1)}>
+          <Plus>
+            <title>{t('submitIncreaseText')}</title>
+          </Plus>
         </SubmitButton>
       </form>
     </div>
