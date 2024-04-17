@@ -1,0 +1,114 @@
+name: Diff GraphQL Schema
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize]
+  merge_group:
+    types: [checks_requested]
+
+jobs:
+  private-schema:
+    name: Generate Private Schema
+
+    runs-on: ubuntu-latest
+
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      TURBO_REMOTE_CACHE_SIGNATURE_KEY: ${{ secrets.TURBO_REMOTE_CACHE_SIGNATURE_KEY }}
+      BIGCOMMERCE_STORE_HASH: ${{ secrets.BIGCOMMERCE_STORE_HASH }}
+      BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN: ${{ secrets.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@main
+        with:
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@main
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Gql Tada
+        run: pnpm run generate
+        working-directory: apps/core
+
+      - name: Rename schema
+        run: mv apps/core/schema.graphql apps/core/schema.private.graphql
+      
+      - name: Upload private schema
+        uses: actions/upload-artifact@v4
+        with:
+          name: private-schema
+          path: apps/core/schema.private.graphql
+
+  public-schema:
+    name: Generate Public Schema
+
+    runs-on: ubuntu-latest
+
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      TURBO_REMOTE_CACHE_SIGNATURE_KEY: ${{ secrets.TURBO_REMOTE_CACHE_SIGNATURE_KEY }}
+      BIGCOMMERCE_STORE_HASH: ${{ secrets.BIGCOMMERCE_STORE_HASH_GA }}
+      BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN: ${{ secrets.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN_GA }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@main
+        with:
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@main
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Gql Tada
+        run: pnpm run generate
+        working-directory: apps/core
+
+      - name: Rename schema
+        run: mv apps/core/schema.graphql apps/core/schema.public.graphql
+      
+      - name: Upload public schema
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-schema
+          path: apps/core/schema.public.graphql
+
+  diff:
+    name: Diff schemas
+    needs: [private-schema, public-schema]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download private schema
+        uses: actions/download-artifact@v4
+        with:
+          name: private-schema
+
+      - name: Download public schema
+        uses: actions/download-artifact@v4
+        with:
+          name: public-schema
+
+      - name: Diff schemas
+        run: diff schema.private.graphql schema.public.graphql
