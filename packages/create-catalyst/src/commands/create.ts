@@ -20,7 +20,7 @@ import { writeEnv } from '../utils/write-env';
 const exec = promisify(execCallback);
 
 export const create = async (options: CreateCommandOptions) => {
-  const { packageManager } = options;
+  const { packageManager, codeEditor } = options;
 
   const URLSchema = z.string().url();
   const sampleDataApiUrl = parse(options.sampleDataApiUrl, URLSchema);
@@ -97,7 +97,7 @@ export const create = async (options: CreateCommandOptions) => {
   if (!storeHash || !accessToken) {
     console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
-    await cloneCatalyst({ projectDir, projectName, ghRef });
+    await cloneCatalyst({ projectDir, projectName, ghRef, codeEditor });
 
     console.log(`\nUsing ${chalk.bold(packageManager)}\n`);
 
@@ -193,7 +193,7 @@ export const create = async (options: CreateCommandOptions) => {
 
   console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
-  await cloneCatalyst({ projectDir, projectName, ghRef });
+  await cloneCatalyst({ projectDir, projectName, ghRef, codeEditor });
 
   writeEnv(projectDir, {
     channelId: channelId.toString(),

@@ -65,6 +65,12 @@ const createCommand = program
       .default(getPackageManager())
       .hideHelp(),
   )
+  .addOption(
+    new Option('--code-editor <editor>', 'Your preferred code editor')
+      .choices(['vscode'])
+      .default('vscode')
+      .hideHelp(),
+  )
   .action((opts) => create(opts));
 
 export type CreateCommandOptions = Options<typeof createCommand>[0];
