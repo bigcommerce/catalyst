@@ -39,8 +39,8 @@ importers:
         specifier: ^9.4.1
         version: 9.4.1(react@18.2.0)
       '@next/third-parties':
-        specifier: ^14.2.1
-        version: 14.2.2(next@14.1.4)(react@18.2.0)
+        specifier: 14.1.4
+        version: 14.1.4(next@14.1.4)(react@18.2.0)
       '@vercel/analytics':
         specifier: ^1.2.2
         version: 1.2.2(next@14.1.4)(react@18.2.0)
@@ -3783,8 +3783,8 @@ packages:
     dev: false
     optional: true
 
-  /@next/third-parties@14.2.2(next@14.1.4)(react@18.2.0):
-    resolution: {integrity: sha512-udHgllytb8GPbqghxIDf09E7x/4hYgp7WjmfH1Z3u4EG29Mhf12NyXpc49wtd0k3rLydunqDa4MH9ej2y5Ph/A==}
+  /@next/third-parties@14.1.4(next@14.1.4)(react@18.2.0):
+    resolution: {integrity: sha512-e/kpEFq5/ZPhHkxpJkvhMfLp3OC6KCBou0/BV8BvgjXAPgEo6sa0ZXe0l4ZEb3wcA7NIEHIpqCmjU5Z7QAHcKQ==}
     peerDependencies:
       next: ^13.0.0 || ^14.0.0
       react: ^18.2.0
