@@ -13,7 +13,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@bigcommerce-labs/bodl-events": "^1.15.0",
     "@bigcommerce/catalyst-client": "workspace:^",
     "@bigcommerce/components": "workspace:^",
     "@icons-pack/react-simple-icons": "^9.4.1",
