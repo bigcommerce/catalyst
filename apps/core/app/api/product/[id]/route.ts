@@ -22,4 +22,4 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
   return new Response('Missing product id.', { status: 400 });
 };
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';

@@ -71,4 +71,4 @@ export default async function BlogPostPage({ params: { locale }, searchParams }:
   );
 }
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';

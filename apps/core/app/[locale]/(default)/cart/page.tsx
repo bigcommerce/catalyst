@@ -95,4 +95,4 @@ export default async function CartPage({ params: { locale } }: Props) {
   );
 }
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';

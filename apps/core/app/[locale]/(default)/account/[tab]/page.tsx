@@ -74,4 +74,4 @@ export default async function AccountTabPage({ params: { tab, locale }, searchPa
 }
 
 export { tabHeading };
-export const runtime = 'edge';
+export const runtime = 'nodejs';

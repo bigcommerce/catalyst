@@ -132,4 +132,4 @@ export default async function Product({ params, searchParams }: ProductPageProps
   );
 }
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';

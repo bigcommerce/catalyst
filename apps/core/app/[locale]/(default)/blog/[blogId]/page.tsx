@@ -93,4 +93,4 @@ export default async function BlogPostPage({ params: { blogId } }: Props) {
   );
 }
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';

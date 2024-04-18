@@ -15,4 +15,4 @@ export const GET = async () => {
   return NextResponse.json({ count: 0 });
 };
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
