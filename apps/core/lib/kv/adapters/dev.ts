@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/require-await */
+import { LRUCache } from 'lru-cache';
+
 import { KvAdapter } from '../types';
 
 interface CacheEntry {
@@ -7,7 +9,9 @@ interface CacheEntry {
 }
 
 export class DevKvAdapter implements KvAdapter {
-  private kv = new Map<string, CacheEntry>();
+  private kv = new LRUCache<string, CacheEntry>({
+    max: 500,
+  });
 
   constructor() {
     // eslint-disable-next-line no-console

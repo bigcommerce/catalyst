@@ -139,10 +139,11 @@ export const ShippingInfo = ({
     >
       <>
         <Field className="relative space-y-2" name="country">
-          <FieldLabel>{t('country')}</FieldLabel>
+          <FieldLabel htmlFor="country">{t('country')}</FieldLabel>
           <FieldControl asChild>
             <Select
               autoComplete="country"
+              id="country"
               onValueChange={(value: string) => {
                 const countryId = value.split('-')[1];
 
@@ -170,11 +171,12 @@ export const ShippingInfo = ({
           </FieldControl>
         </Field>
         <Field className="relative space-y-2" name="state">
-          <FieldLabel>{t('state')}</FieldLabel>
+          <FieldLabel htmlFor="state">{t('state')}</FieldLabel>
           <FieldControl asChild>
             {formValues.states !== null ? (
               <Select
                 disabled={formValues.states.length === 0}
+                id="state"
                 onValueChange={(value) => setFormValues({ state: value })}
                 placeholder={t('statePlaceholder')}
                 value={formValues.state}

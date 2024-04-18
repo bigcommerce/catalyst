@@ -27,16 +27,18 @@ interface SelectProps extends ComponentPropsWithRef<SelectType> {
   placeholder?: string;
   className?: string;
   'aria-label'?: string;
+  id?: string;
 }
 
-// We need to pass the ref to the Trigger component so we need to type it as such.
+// We need to pass the ref to the Trigger component so, we need to type it as such.
 const Select = forwardRef<ElementRef<SelectTriggerType>, SelectProps>(
-  ({ children, placeholder, className, variant, 'aria-label': ariaLabel, ...props }, ref) => {
+  ({ children, placeholder, className, variant, 'aria-label': ariaLabel, id, ...props }, ref) => {
     return (
       <SelectPrimitive.Root {...props}>
         <SelectPrimitive.Trigger
           aria-label={ariaLabel}
           className={cn(selectVariants({ variant, className }))}
+          id={id}
           ref={ref}
         >
           <SelectPrimitive.Value placeholder={placeholder} />

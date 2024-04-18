@@ -102,9 +102,9 @@
     "heading": "Your cart",
     "empty": "Your cart is empty",
     "emptyDetails": "Looks like you have not addded anything to your cart. Go ahead & explore top categories",
-    "removeFromCart": "Remove product from cart",
     "proceedToCheckout": "Proceed to checkout",
     "loading": "Loading...",
+    "spinnerText": "Updating...",
     "CheckoutSummary": {
       "subTotal": "Subtotal",
       "discounts": "Discounts",
@@ -128,13 +128,13 @@
     },
     "ShippingInfo": {
       "country": "Country",
-      "countryPlaceholder": "Select county",
+      "countryPlaceholder": "Select country",
       "state": "State/province",
-      "statePlaceholder": "State/province...",
+      "statePlaceholder": "Select state",
       "city": "Suburb/city",
-      "cityPlaceholder": "State/province...",
+      "cityPlaceholder": "City",
       "postcode": "Zip/Postcode",
-      "postcodePlaceholder": "State/province...",
+      "postcodePlaceholder": "Postal code",
       "errorMessage": "Something went wrong, please try again."
     },
     "SubmitShippingInfo": {
@@ -154,6 +154,17 @@
     "SubmitCouponCode": {
       "spinnerText": "Submitting...",
       "submitText": "Apply"
+    },
+    "SubmitItemQuantity": {
+      "spinnerText": "Updating...",
+      "submitReduceText": "Decrease count",
+      "submitIncreaseText": "Increase count",
+      "errorMessage": "Something went wrong while updating item quantity, please try again."
+    },
+    "SubmitRemoveItem": {
+      "spinnerText": "Removing...",
+      "submitText": "Remove item from cart",
+      "errorMessage": "Something went wrong while removing item, please try again."
     }
   },
   "Search": {

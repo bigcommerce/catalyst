@@ -1,17 +1,38 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages, getTranslations } from 'next-intl/server';
 
-import { getRelatedProducts } from '~/client/queries/get-related-products';
-import { ProductCardCarousel } from '~/components/product-card-carousel';
+import { graphql, ResultOf } from '~/client/graphql';
+import {
+  ProductCardCarousel,
+  ProductCardCarouselFragment,
+} from '~/components/product-card-carousel';
 
-export const RelatedProducts = async ({ productId }: { productId: number }) => {
+export const RelatedProductsFragment = graphql(
+  `
+    fragment RelatedProductsFragment on Product {
+      relatedProducts(first: 12) {
+        edges {
+          node {
+            ...ProductCardCarouselFragment
+          }
+        }
+      }
+    }
+  `,
+  [ProductCardCarouselFragment],
+);
+
+interface Props {
+  data: ResultOf<typeof RelatedProductsFragment>;
+}
+
+export const RelatedProducts = async ({ data }: Props) => {
   const t = await getTranslations('Product');
   const locale = await getLocale();
   const messages = await getMessages({ locale });
 
-  const relatedProducts = await getRelatedProducts({
-    productId,
-  });
+  const relatedProducts = removeEdgesAndNodes(data.relatedProducts);
 
   return (
     <NextIntlClientProvider locale={locale} messages={{ Product: messages.Product ?? {} }}>

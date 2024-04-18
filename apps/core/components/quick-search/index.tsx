@@ -209,7 +209,7 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
 
                           <span className="flex flex-col">
                             <p className="text-lg font-bold lg:text-2xl">{product.name}</p>
-                            <Pricing prices={product.prices} />
+                            <Pricing data={product} />
                           </span>
                         </a>
                       </li>
