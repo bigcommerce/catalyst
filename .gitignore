@@ -12,3 +12,4 @@ test-results/
 playwright-report/
 playwright/.cache/
 graphql-env.d.ts
+.DS_Store

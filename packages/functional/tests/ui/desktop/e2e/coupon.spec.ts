@@ -1,0 +1,61 @@
+import { expect, test } from '@playwright/test';
+
+import { ProductActions } from '../../../../actions/product-actions';
+
+const sampleProduct = '[Sample] Able Brewing System';
+const couponCode = 'OFF25';
+
+test.beforeEach(async ({ page }) => {
+  await page.goto('/');
+  await page.getByLabel('Main').getByRole('link', { name: 'Kitchen' }).click();
+
+  await expect(page.getByRole('heading', { level: 1, name: 'Kitchen' })).toBeVisible();
+  await ProductActions.addProductToCart(page, sampleProduct);
+
+  await page.getByRole('link', { name: 'Cart Items 1' }).click();
+
+  await expect(page.getByRole('heading', { level: 1, name: 'Your cart' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Proceed to checkout' })).toBeVisible();
+
+  await page.getByRole('button', { name: 'Add' }).nth(1).click();
+});
+
+test('Add coupon code', async ({ page }) => {
+  const couponCodeBox = page.getByPlaceholder('Enter your coupon code');
+
+  await couponCodeBox.fill(couponCode);
+  await couponCodeBox.press('Enter');
+
+  await expect(page.getByText(`Coupon (${couponCode})`)).toBeVisible();
+});
+
+test('Coupon code is required', async ({ page }) => {
+  const couponCodeBox = page.getByPlaceholder('Enter your coupon code');
+
+  await couponCodeBox.fill('');
+  await couponCodeBox.press('Enter');
+
+  await expect(page.getByText('Please enter a coupon code.')).toBeVisible();
+});
+
+test('Coupon code fails', async ({ page }) => {
+  const couponCodeBox = page.getByPlaceholder('Enter your coupon code');
+
+  await couponCodeBox.fill('INCORRECT_CODE');
+  await couponCodeBox.press('Enter');
+
+  await expect(page.getByText('The coupon code you entered is not valid.')).toBeVisible();
+});
+
+test('Apply coupon on checkout', async ({ page }) => {
+  await page.getByRole('link', { name: 'Proceed to checkout' }).click();
+
+  await expect(page.getByRole('link', { name: 'Coupon/Gift Certificate' })).toBeVisible();
+  await expect(page.getByText('Total (USD) $225.00')).toBeVisible();
+
+  await page.getByRole('link', { name: 'Coupon/Gift Certificate' }).click();
+  await page.getByLabel('Gift Certificate or Coupon Code').fill(couponCode);
+  await page.getByRole('button', { name: 'APPLY' }).click();
+
+  await expect(page.getByText('Total (USD) $168.75')).toBeVisible();
+});
