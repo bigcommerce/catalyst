@@ -4,9 +4,9 @@ import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 
-import { getCheckoutUrl } from '~/client/management/get-checkout-url';
 import { getCart } from '~/client/queries/get-cart';
 import { LocaleType } from '~/i18n';
+import { redirectToCheckout } from '~/lib/checkout-action';
 
 import { CartItem } from './_components/cart-item';
 import { CheckoutSummary } from './_components/checkout-summary';
@@ -29,13 +29,13 @@ const EmptyCart = () => {
   );
 };
 
-const CheckoutButton = async ({ cartId, label }: { cartId: string; label: string }) => {
-  const checkoutUrl = await getCheckoutUrl(cartId);
-
+const CheckoutButton = ({ label }: { label: string }) => {
   return (
-    <Button asChild className="mt-6">
-      <a href={checkoutUrl}>{label}</a>
-    </Button>
+    <form action={redirectToCheckout}>
+      <Button className="mt-6" type="submit">
+        {label}
+      </Button>
+    </form>
   );
 };
 
@@ -87,7 +87,7 @@ export default async function CartPage({ params: { locale } }: Props) {
           <CheckoutSummary cartId={cartId} locale={locale} />
 
           <Suspense fallback={t('loading')}>
-            <CheckoutButton cartId={cartId} label={t('proceedToCheckout')} />
+            <CheckoutButton label={t('proceedToCheckout')} />
           </Suspense>
         </div>
       </div>
