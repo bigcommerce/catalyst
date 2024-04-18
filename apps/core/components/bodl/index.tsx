@@ -10,35 +10,20 @@ export default function Bodl() {
 
   return (
     <>
-      {/* TODO: Consider afterInteractive or other less harmful strategy */}
-      <Script
-        id="_bc-bodl"
-        strategy="beforeInteractive"
-        src="https://microapps.bigcommerce.com/bodl-events/index.js"
-      />
-      <Script id="_bc-ga4" strategy="beforeInteractive" src="/js/google_analytics4.js" />
+      <Script id="_bc-bodl" src="https://microapps.bigcommerce.com/bodl-events/index.js" />
+      <Script id="_bc-ga4" src="/js/google_analytics4.js" />
+      <Script id="_bc-ga" src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+      {/* TODO: subscribing Bodl just before load event may be too late when consent manager is implemented */}
       <Script
         id="_bc-ga-init"
-        strategy="beforeInteractive"
+        strategy="lazyOnload"
         dangerouslySetInnerHTML={{
           __html: `
-            function initGA4(event) {
-              if (typeof subscribeOnBodlEvents === 'function') {
-                subscribeOnBodlEvents('${gaId}', '${developerId}', ${consentModeEnabled});
-              }
-
-              window.removeEventListener(event.type, initGA4);
+            if (typeof subscribeOnBodlEvents === 'function') {
+              subscribeOnBodlEvents('${gaId}', '${developerId}', ${consentModeEnabled});
             }
-          
-            var eventName = document.readyState === 'complete' ? 'consentScriptsLoaded' : 'load';
-            window.addEventListener(eventName, initGA4, false);
       `,
         }}
-      />
-      <Script
-        id="_bc-ga"
-        strategy="beforeInteractive"
-        src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
       />
     </>
   );
