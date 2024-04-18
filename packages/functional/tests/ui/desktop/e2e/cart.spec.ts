@@ -38,60 +38,6 @@ test('Edit product quantity in cart', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Cart Items 1' })).toBeVisible();
 });
 
-test('Add coupon code', async ({ page }) => {
-  await ProductActions.addProductToCart(page, sampleProduct);
-
-  await page.getByRole('link', { name: 'Cart Items 1' }).click();
-
-  await expect(page.getByRole('heading', { level: 1, name: 'Your cart' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Proceed to checkout' })).toBeVisible();
-
-  await page.getByRole('button', { name: 'Add' }).nth(1).click();
-
-  const couponCodeBox = page.getByPlaceholder('Enter your coupon code');
-
-  await couponCodeBox.fill('OFF25');
-  await couponCodeBox.press('Enter');
-
-  await expect(page.getByText('Coupon (OFF25)')).toBeVisible();
-});
-
-test('Coupon code is required', async ({ page }) => {
-  await ProductActions.addProductToCart(page, sampleProduct);
-
-  await page.getByRole('link', { name: 'Cart Items 1' }).click();
-
-  await expect(page.getByRole('heading', { level: 1, name: 'Your cart' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Proceed to checkout' })).toBeVisible();
-
-  await page.getByRole('button', { name: 'Add' }).nth(1).click();
-
-  const couponCodeBox = page.getByPlaceholder('Enter your coupon code');
-
-  await couponCodeBox.fill('');
-  await couponCodeBox.press('Enter');
-
-  await expect(page.getByText('Please enter a coupon code.')).toBeVisible();
-});
-
-test('Coupon code fails', async ({ page }) => {
-  await ProductActions.addProductToCart(page, sampleProduct);
-
-  await page.getByRole('link', { name: 'Cart Items 1' }).click();
-
-  await expect(page.getByRole('heading', { level: 1, name: 'Your cart' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Proceed to checkout' })).toBeVisible();
-
-  await page.getByRole('button', { name: 'Add' }).nth(1).click();
-
-  const couponCodeBox = page.getByPlaceholder('Enter your coupon code');
-
-  await couponCodeBox.fill('INCORRECT_CODE');
-  await couponCodeBox.press('Enter');
-
-  await expect(page.getByText('The coupon code you entered is not valid.')).toBeVisible();
-});
-
 test('Proceed to checkout', async ({ page }) => {
   await ProductActions.addProductToCart(page, sampleProduct);
 

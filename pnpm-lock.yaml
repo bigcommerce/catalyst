@@ -59,6 +59,9 @@ importers:
       lodash.debounce:
         specifier: ^4.0.8
         version: 4.0.8
+      lru-cache:
+        specifier: ^10.2.0
+        version: 10.2.0
       lucide-react:
         specifier: ^0.365.0
         version: 0.365.0(react@18.2.0)

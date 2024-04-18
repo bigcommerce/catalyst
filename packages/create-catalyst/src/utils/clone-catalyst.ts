@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { copySync, readJsonSync, removeSync, writeJsonSync } from 'fs-extra/esm';
+import { copySync, ensureDir, readJsonSync, removeSync, writeJsonSync } from 'fs-extra/esm';
 import { downloadTemplate } from 'giget';
 import merge from 'lodash.merge';
 import { join } from 'path';
@@ -8,10 +8,12 @@ import * as z from 'zod';
 import { spinner } from './spinner';
 
 export const cloneCatalyst = async ({
+  codeEditor,
   projectDir,
   projectName,
   ghRef = 'main',
 }: {
+  codeEditor: string;
   projectDir: string;
   projectName: string;
   ghRef?: string;
@@ -42,6 +44,21 @@ export const cloneCatalyst = async ({
 
   copySync(join(projectDir, 'tmp/src/components'), join(projectDir, 'components', 'ui'));
   copySync(join(projectDir, 'tmp/tailwind.config.js'), join(projectDir, 'tailwind.config.js'));
+
+  switch (codeEditor) {
+    case 'vscode':
+      await ensureDir(join(projectDir, '.vscode'));
+
+      writeJsonSync(
+        join(projectDir, '.vscode/settings.json'),
+        { 'typescript.tsdk': 'node_modules/typescript/lib' },
+        { spaces: 2 },
+      );
+      break;
+
+    default:
+      break;
+  }
 
   const packageJson = z
     .object({
