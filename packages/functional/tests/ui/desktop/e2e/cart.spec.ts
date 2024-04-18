@@ -30,11 +30,11 @@ test('Edit product quantity in cart', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1, name: 'Your cart' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Proceed to checkout' })).toBeVisible();
 
-  await page.getByLabel('Increase count').click();
+  await page.getByRole('button', { name: 'Increase count' }).click();
 
   await expect(page.getByRole('link', { name: 'Cart Items 2' })).toBeVisible();
 
-  await page.getByLabel('Decrease count').click();
+  await page.getByRole('button', { name: 'Decrease count' }).click();
   await expect(page.getByRole('link', { name: 'Cart Items 1' })).toBeVisible();
 });
 
