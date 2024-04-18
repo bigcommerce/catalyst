@@ -4,7 +4,7 @@
   "version": "0.6.0",
   "private": true,
   "scripts": {
-    "dev": "npm run generate && next dev",
+    "dev": "npm run generate && next dev --turbo",
     "generate": "dotenv -e .env.local -- node ./scripts/generate.cjs",
     "build": "npm run generate && next build",
     "start": "next start",
