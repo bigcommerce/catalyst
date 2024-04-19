@@ -4,9 +4,9 @@ You can localize your Catalyst storefront so that it appears in the shopper's pr
 This provides a personalized shopping experience when you sell products internationally. 
 
 > [!NOTE]
-> - Internationalization support in Catalyst is WIP. Full multi-lingual support in headless channels, like Catalyst, will be added in future releases.
-> - Currently each Catalyst storefront can only support a single language. To display multiple languages, we recommend setting up a separate channel for each language.
-> - To fully localize a store for a language or region, you will need to customize product catalog and storefront content in the BigCommerce control panel.
+> Internationalization support in Catalyst is WIP. Full multi-lingual support in headless channels, like Catalyst, will be added in future releases.
+> Currently each Catalyst storefront can only support a single language. To display multiple languages, we recommend setting up a separate channel for each language.
+> To fully localize a store for a language or region, you will need to customize product catalog and storefront content in the BigCommerce control panel.
 
 Catalyst uses [Next.js App Router Internationalization (i18n)](https://next-intl-docs.vercel.app/docs/getting-started/app-router) library to handle localization.
 
@@ -19,7 +19,7 @@ For your storefront to function properly, both the `/messages/` subdirectory and
 You can localize static phrases by providing other JSON translation files in the `/messages/` directory. 
 
 > [!NOTE]
-> #### Default language
+> **Default language**
 > Catalyst hardcodes the `en.json` file as the default language file, which contains U.S. English translations when you set up the project [using the CLI](https://www.catalyst.dev/docs/cli). You can adjust default phrases to your needs if desired.
 
 ## Translation file
@@ -118,7 +118,7 @@ export default async function Home({ params: { locale } }: Props) {
 ```
 
 > [!NOTE]
-> #### unstable_setRequestLocale
+> **unstable_setRequestLocale**
 > Please pay attention to `unstable_setRequestLocale` call. You can read more in [next-intl docs](https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-unstable_setrequestlocale-to-all-layouts-and-pages).
 
 Usage in nested **client** component:
