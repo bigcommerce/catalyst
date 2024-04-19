@@ -5,7 +5,7 @@ This provides a personalized shopping experience when you sell products internat
 
 > [!NOTE]
 > Internationalization support in Catalyst is a work in progress. Full multilingual support in headless channels, like Catalyst, will be added in future releases.
-> Currently each Catalyst storefront can only support a single language. To display multiple languages, we recommend setting up a separate channel for each language.
+> Currently, each Catalyst storefront can only support a single language. To display multiple languages, we recommend setting up a separate channel for each language.
 > To fully localize a store for a language or region, you will need to customize product catalog and storefront content in the BigCommerce control panel.
 
 Catalyst uses [Next.js App Router Internationalization (i18n)](https://next-intl-docs.vercel.app/docs/getting-started/app-router) library to handle localization.
@@ -40,7 +40,7 @@ You can find a list of code subtags in the [IANA Language Subtag Registry](http:
 
 ### Translation keys
 
-The JSON files should contain key-value pairs for each locale. You can define translations based on a pre-defined keys used to translate the Catalyst storefront's [basic ecommerce functionality](https://www.catalyst.dev/docs#ecommerce-functionality). The translated values you specify will display to shoppers as static string translations.
+The JSON files should contain key-value pairs for each locale. You can define translations based on pre-defined keys used to translate the Catalyst storefront's [basic ecommerce functionality](https://www.catalyst.dev/docs#ecommerce-functionality). The translated values you specify will display to shoppers as static string translations.
 
 Use the existing `en.json` file as a template for the schema.
 You can only provide translated values for the translation keys specified in the template.
@@ -75,7 +75,7 @@ Read more about i18n messages in [next-intl docs](https://next-intl-docs.vercel.
 
 After you created a language file, add its name to the `i18n.ts` config file.
 
-For example, if you created a `fr.json` file, include the `fr` when you define the locales:
+For example, if you created a `fr.json` file, include `fr` when you define the locales:
 
 ```ts
 const locales = ['en', 'fr'] as const;
