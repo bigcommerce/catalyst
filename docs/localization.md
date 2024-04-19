@@ -4,7 +4,7 @@ You can localize your Catalyst storefront so that it appears in the shopper's pr
 This provides a personalized shopping experience when you sell products internationally.
 
 > [!NOTE]
-> Internationalization support in Catalyst is WIP. Full multi-lingual support in headless channels, like Catalyst, will be added in future releases.
+> Internationalization support in Catalyst is a work in progress. Full multilingual support in headless channels, like Catalyst, will be added in future releases.
 > Currently each Catalyst storefront can only support a single language. To display multiple languages, we recommend setting up a separate channel for each language.
 > To fully localize a store for a language or region, you will need to customize product catalog and storefront content in the BigCommerce control panel.
 
@@ -45,7 +45,7 @@ The JSON files should contain key-value pairs for each locale. You can define tr
 Use the existing `en.json` file as a template for the schema.
 You can only provide translated values for the translation keys specified in the template.
 
-For example, the `en.json` file contains the following translation keys.
+For example, the `en.json` file contains the following translation keys:
 
 ```json
 "Home": {
@@ -57,7 +57,7 @@ For example, the `en.json` file contains the following translation keys.
 }
 ```
 
-In your newly-created JSON file, add a translation of the value to the new locale
+In your newly-created JSON file, add a translation of the value to the new locale.
 
 ```json
 "Home": {
@@ -121,7 +121,7 @@ export default async function Home({ params: { locale } }: Props) {
 > **unstable_setRequestLocale**
 > Please pay attention to `unstable_setRequestLocale` call. You can read more in [next-intl docs](https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-unstable_setrequestlocale-to-all-layouts-and-pages).
 
-Usage in nested **client** component:
+The following example shows usage in a nested **client** component:
 
 ```tsx
 'use client';
@@ -142,8 +142,8 @@ export const AddToCart = () => {
 
 ## Routing and locale detection
 
-Even though next-intl library supports several [locale detection strategies](https://next-intl-docs.vercel.app/docs/routing/middleware#strategies), at the moment Catalyst doesn't use any by default as full internationalization support is in progress. Strategy can be changed in `i18n.ts` config file.
+Even though next-intl library supports several [locale detection strategies](https://next-intl-docs.vercel.app/docs/routing/middleware#strategies), Catalyst doesn't use any by default, as full internationalization support is still in progress. This strategy can be changed in the `i18n.ts` config file.
 
-Currently storefront locale is detected by shopper's browser preferences by default.
-Catalyst uses the `Accept-Language` request HTTP header to determine which translation file to chose.
-Default English file will be used if you do not have a JSON file matching the shopper's browser language.
+Currently, storefront locale is detected by a shopper's browser preferences by default.
+Catalyst uses the `Accept-Language` request HTTP header to determine which translation file to choose.
+The default English file will be used if you do not have a JSON file matching the shopper's browser language.
