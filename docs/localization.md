@@ -3,7 +3,7 @@
 You can localize your Catalyst storefront so that it appears in the shopper's preferred language throughout browsing and checkout experience.
 This provides a personalized shopping experience when you sell products internationally. 
 
-> [!Note]
+> ![NOTE]
 > - Internationalization support in Catalyst is WIP. Full multi-lingual support in headless channels, like Catalyst, will be added in future releases.
 > - Currently each Catalyst storefront can only support a single language. To display multiple languages, we recommend setting up a separate channel for each language.
 > - To fully localize a store for a language or region, you will need to customize product catalog and storefront content in the BigCommerce control panel.
@@ -18,7 +18,7 @@ Each Catalyst project reserves a top level `/messages/` subdirectory for localiz
 For your storefront to function properly, both the `/messages/` subdirectory and the `/messages/en.json` file, which contains the default English phrases, must be present.
 You can localize static phrases by providing other JSON translation files in the `/messages/` directory. 
 
-> [!Note]
+> ![NOTE]
 > #### Default language
 > Catalyst hardcodes the `en.json` file as the default language file, which contains U.S. English translations when you set up the project [using the CLI](https://www.catalyst.dev/docs/cli). You can adjust default phrases to your needs if desired.
 
@@ -117,7 +117,7 @@ export default async function Home({ params: { locale } }: Props) {
 }
 ```
 
-> [!Note]
+> ![NOTE]
 > #### unstable_setRequestLocale
 > Please pay attention to `unstable_setRequestLocale` call. You can read more in [next-intl docs](https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-unstable_setrequestlocale-to-all-layouts-and-pages).
 
