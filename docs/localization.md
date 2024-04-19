@@ -20,21 +20,23 @@ You can localize static phrases by providing other JSON translation files in the
 
 > [!NOTE]
 > **Default language**
-> Catalyst hardcodes the `en.json` file as the default language file, which contains U.S. English translations when you set up the project [using the CLI](https://www.catalyst.dev/docs/cli). You can adjust default phrases to your needs if desired.
+> When you set up the project [using the CLI](https://www.catalyst.dev/docs/cli), Catalyst hardcodes the default language file in US English. You can adjust the phrase strings in the resulting `en.json` file to meet your needs.
 
 ## Translation file
 
 To translate static phrases, create a JSON file for each language you choose to support. Each language that you want to support must have its own JSON file.
 
-Name your translation files based on the [BCP 47 specification](https://tools.ietf.org/html/bcp47) of language tags and region codes. For an overview of how these language tags are constructed, see [Language tags in HTML and XML](http://www.w3.org/International/articles/language-tags/).
+Name your translation files based on the [BCP 47 specification](https://tools.ietf.org/html/bcp47) of language tags and country or region codes. For an overview of how these language tags are constructed, see [Language tags in HTML and XML](http://www.w3.org/International/articles/language-tags/).
 
 You can find a list of code subtags in the [IANA Language Subtag Registry](http://www.iana.org/assignments/language-subtag-registry). These subtags are primitives that you can combine to create file name prefixes for individual regions. Here are some examples:
 
 | Localization file name | Corresponding regional language variant | Subtags used |
 | ----------- | ----------- | ----------- |
-| `en.json` | English (default file)| en (English) |
-| `en-US.json` | American English | en (English) + US (United States) |
+| `en.json` (default) | English | en (English) |
+| `en-US.json` | US English | en (English) + US (United States) |
 | `en-AU.json` | Australian English | en (English) + AU (Australia) |
+| `es-US.json` | US Spanish | es (Spanish) + US (United States) |
+| `es-ES.json` | Castilian Spanish | es (Spanish) + ES (Spain) |
 | `fr.json` | French | en (French) |
 | `fr-CA.json` | Canadian French | fr (French) + CA (Canada) |
 
@@ -42,8 +44,7 @@ You can find a list of code subtags in the [IANA Language Subtag Registry](http:
 
 The JSON files should contain key-value pairs for each locale. You can define translations based on pre-defined keys used to translate the Catalyst storefront's [basic ecommerce functionality](https://www.catalyst.dev/docs#ecommerce-functionality). The translated values you specify will display to shoppers as static string translations.
 
-Use the existing `en.json` file as a template for the schema.
-You can only provide translated values for the translation keys specified in the template.
+Use the existing `en.json` file as a template for the schema. You can only provide translated values for the translation keys specified in the template.
 
 For example, the `en.json` file contains the following translation keys:
 
@@ -142,8 +143,6 @@ export const AddToCart = () => {
 
 ## Routing and locale detection
 
-Even though next-intl library supports several [locale detection strategies](https://next-intl-docs.vercel.app/docs/routing/middleware#strategies), Catalyst doesn't use any by default, as full internationalization support is still in progress. This strategy can be changed in the `i18n.ts` config file.
+Even though the next-intl library supports several [locale detection strategies](https://next-intl-docs.vercel.app/docs/routing/middleware#strategies), Catalyst doesn't use any by default, as full internationalization support is still in progress. This strategy can be changed in the `i18n.ts` config file.
 
-Currently, storefront locale is detected by a shopper's browser preferences by default.
-Catalyst uses the `Accept-Language` request HTTP header to determine which translation file to choose.
-The default English file will be used if you do not have a JSON file matching the shopper's browser language.
+Currently, the shopper's browser preferences storefront detect locale by default. Catalyst uses the `Accept-Language` request HTTP header to determine which translation file to choose. If you do not have a JSON file matching the shopper's browser language, Catalyst will use the default English file.
