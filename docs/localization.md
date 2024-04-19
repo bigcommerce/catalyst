@@ -1,7 +1,7 @@
-# Localization 
+# Localization
 
 You can localize your Catalyst storefront so that it appears in the shopper's preferred language throughout browsing and checkout experience.
-This provides a personalized shopping experience when you sell products internationally. 
+This provides a personalized shopping experience when you sell products internationally.
 
 > [!NOTE]
 > Internationalization support in Catalyst is WIP. Full multi-lingual support in headless channels, like Catalyst, will be added in future releases.
@@ -10,13 +10,13 @@ This provides a personalized shopping experience when you sell products internat
 
 Catalyst uses [Next.js App Router Internationalization (i18n)](https://next-intl-docs.vercel.app/docs/getting-started/app-router) library to handle localization.
 
-This guide describes how to provide static string translations for shoppers, including the required subdirectory, file structure and project configuration. 
+This guide describes how to provide static string translations for shoppers, including the required subdirectory, file structure and project configuration.
 
 ## Required subdirectory
 
 Each Catalyst project reserves a top level `/messages/` subdirectory for localization.
 For your storefront to function properly, both the `/messages/` subdirectory and the `/messages/en.json` file, which contains the default English phrases, must be present.
-You can localize static phrases by providing other JSON translation files in the `/messages/` directory. 
+You can localize static phrases by providing other JSON translation files in the `/messages/` directory.
 
 > [!NOTE]
 > **Default language**
@@ -43,9 +43,9 @@ You can find a list of code subtags in the [IANA Language Subtag Registry](http:
 The JSON files should contain key-value pairs for each locale. You can define translations based on a pre-defined keys used to translate the Catalyst storefront's [basic ecommerce functionality](https://www.catalyst.dev/docs#ecommerce-functionality). The translated values you specify will display to shoppers as static string translations.
 
 Use the existing `en.json` file as a template for the schema.
-You can only provide translated values for the translation keys specified in the template. 
+You can only provide translated values for the translation keys specified in the template.
 
-For example, the `en.json` file contains translation keys for 
+For example, the `en.json` file contains the following translation keys.
 
 ```json
 "Home": {
@@ -55,7 +55,7 @@ For example, the `en.json` file contains translation keys for
     "newestProducts": "Newest products"
   }
 }
-``` 
+```
 
 In your newly-created JSON file, add a translation of the value to the new locale
 
@@ -67,7 +67,7 @@ In your newly-created JSON file, add a translation of the value to the new local
     "newestProducts": "Produits les plus recentsProduits"
   }
 }
-``` 
+```
 
 Read more about i18n messages in [next-intl docs](https://next-intl-docs.vercel.app/docs/usage/messages).
 
@@ -75,7 +75,7 @@ Read more about i18n messages in [next-intl docs](https://next-intl-docs.vercel.
 
 After you created a language file, add its name to the `i18n.ts` config file.
 
-For example, if you created a `fr.json` file, include the `fr` when you define the locales:   
+For example, if you created a `fr.json` file, include the `fr` when you define the locales:
 
 ```ts
 const locales = ['en', 'fr'] as const;
@@ -122,6 +122,7 @@ export default async function Home({ params: { locale } }: Props) {
 > Please pay attention to `unstable_setRequestLocale` call. You can read more in [next-intl docs](https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-unstable_setrequestlocale-to-all-layouts-and-pages).
 
 Usage in nested **client** component:
+
 ```tsx
 'use client';
 
@@ -144,5 +145,5 @@ export const AddToCart = () => {
 Even though next-intl library supports several [locale detection strategies](https://next-intl-docs.vercel.app/docs/routing/middleware#strategies), at the moment Catalyst doesn't use any by default as full internationalization support is in progress. Strategy can be changed in `i18n.ts` config file.
 
 Currently storefront locale is detected by shopper's browser preferences by default.
-Catalyst uses the `Accept-Language` request HTTP header to determine which translation file to chose. 
+Catalyst uses the `Accept-Language` request HTTP header to determine which translation file to chose.
 Default English file will be used if you do not have a JSON file matching the shopper's browser language.
