@@ -71,21 +71,15 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
 }
 
 async function createKVAdapter() {
-  if (process.env.NODE_ENV === 'development' && !process.env.KV_REST_API_URL) {
-    const { DevKvAdapter } = await import('./adapters/dev');
-
-    return new DevKvAdapter();
-  }
-
   if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
     const { VercelKvAdapter } = await import('./adapters/vercel');
 
     return new VercelKvAdapter();
   }
 
-  const { NoopKvAdapter } = await import('./adapters/noop');
+  const { MemoryKvAdapter } = await import('./adapters/memory');
 
-  return new NoopKvAdapter();
+  return new MemoryKvAdapter();
 }
 
 const adapterInstance = new KV(createKVAdapter, {

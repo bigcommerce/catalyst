@@ -8,20 +8,10 @@ interface CacheEntry {
   expiresAt: number;
 }
 
-export class DevKvAdapter implements KvAdapter {
+export class MemoryKvAdapter implements KvAdapter {
   private kv = new LRUCache<string, CacheEntry>({
     max: 500,
   });
-
-  constructor() {
-    // eslint-disable-next-line no-console
-    console.log(`
-[BigCommerce] --------------------------------
-[BigCommerce] KV WARNING: Using DevKvAdapter.
-[BigCommerce] This KV adapter does not persist data.
-[BigCommerce] --------------------------------
-`);
-  }
 
   async get<Data>(key: string) {
     const entry = this.kv.get(key);

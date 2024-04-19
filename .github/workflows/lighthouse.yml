@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@main
+        uses: actions/checkout@v4
 
       - name: Lighthouse house audit on desktop
         id: lighthouse_audit_desktop
