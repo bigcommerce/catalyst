@@ -28,7 +28,7 @@
     "nypm": "^0.3.8",
     "ora": "^8.0.1",
     "semver": "^7.6.0",
-    "zod": "^3.22.4",
+    "zod": "^3.23.0",
     "zod-validation-error": "^3.1.0"
   },
   "devDependencies": {
