@@ -6,7 +6,7 @@ dist
 .idea
 .vercel
 .catalyst
-.env
+.env.local
 .env*.local
 test-results/
 playwright-report/
