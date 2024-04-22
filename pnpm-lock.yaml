@@ -99,8 +99,8 @@ importers:
         specifier: ^0.33.3
         version: 0.33.3
       tailwind-merge:
-        specifier: ^2.2.2
-        version: 2.2.2
+        specifier: ^2.3.0
+        version: 2.3.0
       zod:
         specifier: ^3.23.0
         version: 3.23.0
@@ -190,8 +190,8 @@ importers:
         specifier: ^7.6.17
         version: 7.6.17
       tailwind-merge:
-        specifier: ^2.2.2
-        version: 2.2.2
+        specifier: ^2.3.0
+        version: 2.3.0
     devDependencies:
       '@bigcommerce/eslint-config-catalyst':
         specifier: workspace:^
@@ -351,8 +351,8 @@ importers:
         specifier: ^8.10.1
         version: 8.10.1(date-fns@3.6.0)(react@18.2.0)
       tailwind-merge:
-        specifier: ^2.2.2
-        version: 2.2.2
+        specifier: ^2.3.0
+        version: 2.3.0
       tailwindcss-radix:
         specifier: ^3.0.3
         version: 3.0.3
@@ -13519,8 +13519,8 @@ packages:
     resolution: {integrity: sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==}
     dev: false
 
-  /tailwind-merge@2.2.2:
-    resolution: {integrity: sha512-tWANXsnmJzgw6mQ07nE3aCDkCK4QdT3ThPMCzawoYA2Pws7vSTCvz3Vrjg61jVUGfFZPJzxEP+NimbcW+EdaDw==}
+  /tailwind-merge@2.3.0:
+    resolution: {integrity: sha512-vkYrLpIP+lgR0tQCG6AP7zZXCTLc1Lnv/CCRT3BqJ9CZ3ui2++GPaGb1x/ILsINIMSYqqvrpqjUFsMNLlW99EA==}
     dependencies:
       '@babel/runtime': 7.24.4
     dev: false
