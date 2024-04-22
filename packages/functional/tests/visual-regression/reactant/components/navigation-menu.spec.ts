@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import * as storyBookElements from '../StoryBookElements';
+import * as storyBookElements from '../storybook-elements';
 
 test('Basic navigation', async ({ page }) => {
   await page.goto(`${storyBookElements.storyUrl}/navigation-menu--basic-example`);

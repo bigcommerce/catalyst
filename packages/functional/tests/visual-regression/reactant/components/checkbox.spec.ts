@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import * as storyBookElements from '../StoryBookElements';
+import * as storyBookElements from '../storybook-elements';
 
 test('Base checkbox', async ({ page }) => {
   await page.goto(`${storyBookElements.storyUrl}/checkbox--base-checkbox`);
