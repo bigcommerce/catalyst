@@ -20,7 +20,7 @@
     "@vercel/kv": "^1.0.1",
     "@vercel/speed-insights": "^1.0.10",
     "clsx": "^2.1.0",
-    "gql.tada": "^1.5.3",
+    "gql.tada": "^1.5.6",
     "graphql": "^16.8.1",
     "lodash.debounce": "^4.0.8",
     "lru-cache": "^10.2.0",
