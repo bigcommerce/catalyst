@@ -35,7 +35,7 @@
     "focus-trap-react": "^10.2.3",
     "lucide-react": "^0.371.0",
     "react-day-picker": "^8.10.1",
-    "tailwind-merge": "^2.2.2",
+    "tailwind-merge": "^2.3.0",
     "tailwindcss-radix": "^3.0.3"
   },
   "peerDependencies": {
