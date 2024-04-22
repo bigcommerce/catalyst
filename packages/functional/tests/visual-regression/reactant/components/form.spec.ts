@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import * as storyBookElements from '../StoryBookElements';
+import * as storyBookElements from '../storybook-elements';
 
 const inputField = 'input[name="Input Field"]';
 const inputEmail = 'input[name="email"]';

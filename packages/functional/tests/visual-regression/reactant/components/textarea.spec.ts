@@ -1,33 +1,35 @@
 import { expect, test } from '@playwright/test';
 
-import * as storyBookElements from '../StoryBookElements';
+import * as storyBookElements from '../storybook-elements';
 
-test('Multiple slides', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/slideshow--multiple-slides`);
+test('Text area default', async ({ page }) => {
+  await page.goto(`${storyBookElements.storyUrl}/text-area--default`);
   await page.getByRole('button', { name: 'Go full screen [F]' }).click();
   await expect(
-    page.frameLocator(storyBookElements.storyBookFrame).getByLabel('Pause slideshow'),
+    page.frameLocator(storyBookElements.storyBookFrame).getByPlaceholder('Placeholder...'),
   ).toBeVisible();
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toHaveScreenshot();
 });
 
-test('Single slide', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/slideshow--single-slide`);
+test('Text area success', async ({ page }) => {
+  await page.goto(`${storyBookElements.storyUrl}/text-area--success`);
   await page.getByRole('button', { name: 'Go full screen [F]' }).click();
   await expect(
-    page.frameLocator(storyBookElements.storyBookFrame).getByRole('link', { name: 'Shop now' }),
+    page.frameLocator(storyBookElements.storyBookFrame).getByPlaceholder('Placeholder...'),
   ).toBeVisible();
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toHaveScreenshot();
 });
 
-test('Custom controls and interval', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/slideshow--custom-controls-and-interval`);
+test('Text area error', async ({ page }) => {
+  await page.goto(`${storyBookElements.storyUrl}/text-area--error`);
   await page.getByRole('button', { name: 'Go full screen [F]' }).click();
-  await page.frameLocator(storyBookElements.storyBookFrame).getByLabel('Pause slideshow').click();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).getByPlaceholder('Placeholder...'),
+  ).toBeVisible();
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toHaveScreenshot();

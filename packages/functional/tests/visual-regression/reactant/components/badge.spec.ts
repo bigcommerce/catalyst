@@ -1,27 +1,23 @@
 import { expect, test } from '@playwright/test';
 
-import * as storyBookElements from '../StoryBookElements';
+import * as storyBookElements from '../storybook-elements';
 
-test('Counter default', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/counter--default`);
+test('badge', async ({ page }) => {
+  await page.goto(`${storyBookElements.storyUrl}/badge--basic-example`);
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
-  await page
-    .frameLocator(storyBookElements.storyBookFrame)
-    .locator(storyBookElements.storyBook)
-    .getByLabel('Increase count')
-    .click();
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toHaveScreenshot();
 });
 
-test('Counter disabled', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/counter--disabled`);
+test('badge zoomed', async ({ page }) => {
+  await page.goto(`${storyBookElements.storyUrl}/badge--basic-example`);
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
+  await page.getByRole('button', { name: 'Zoom in' }).click();
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toHaveScreenshot();

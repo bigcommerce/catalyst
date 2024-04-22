@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test';
 
-import * as storyBookElements from '../StoryBookElements';
+import * as storyBookElements from '../storybook-elements';
 
-test('Base radio group', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/radio-group--base-radio-group`);
+test('Five star rating', async ({ page }) => {
+  await page.goto(`${storyBookElements.storyUrl}/rating--five-star-rating`);
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
@@ -12,8 +12,8 @@ test('Base radio group', async ({ page }) => {
   ).toHaveScreenshot();
 });
 
-test('Radio group with error variant', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/radio-group--error`);
+test('Zero rating', async ({ page }) => {
+  await page.goto(`${storyBookElements.storyUrl}/rating--zero-rating`);
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
@@ -22,8 +22,8 @@ test('Radio group with error variant', async ({ page }) => {
   ).toHaveScreenshot();
 });
 
-test('Radio group with icon', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/radio-group--radio-group-with-icon`);
+test('Float rating', async ({ page }) => {
+  await page.goto(`${storyBookElements.storyUrl}/rating--float-rating`);
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();

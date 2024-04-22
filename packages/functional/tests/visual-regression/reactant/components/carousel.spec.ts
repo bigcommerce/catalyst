@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import * as storyBookElements from '../StoryBookElements';
+import * as storyBookElements from '../storybook-elements';
 
 test('Multiple slides', async ({ page }) => {
   await page.goto(`${storyBookElements.storyUrl}/carousel--multiple-slides`);

@@ -1,27 +1,27 @@
 import { expect, test } from '@playwright/test';
 
-import * as storyBookElements from '../StoryBookElements';
+import * as storyBookElements from '../storybook-elements';
 
-test('Default select', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/select--default`);
-  await expect(
-    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
-  ).toBeVisible();
-  await expect(
-    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
-  ).toHaveScreenshot();
-});
-
-test('Select with disabled items', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/select--disabled-items`);
+test('Counter default', async ({ page }) => {
+  await page.goto(`${storyBookElements.storyUrl}/counter--default`);
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
   await page
     .frameLocator(storyBookElements.storyBookFrame)
     .locator(storyBookElements.storyBook)
-    .getByRole('combobox')
+    .getByLabel('Increase count')
     .click();
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toHaveScreenshot();
+});
+
+test('Counter disabled', async ({ page }) => {
+  await page.goto(`${storyBookElements.storyUrl}/counter--disabled`);
+  await expect(
+    page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
+  ).toBeVisible();
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toHaveScreenshot();

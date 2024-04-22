@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import * as storyBookElements from '../StoryBookElements';
+import * as storyBookElements from '../storybook-elements';
 
 test('blog post card', async ({ page }) => {
   await page.goto(`${storyBookElements.storyUrl}/blog-post-card--blog-post-card-with-image`);

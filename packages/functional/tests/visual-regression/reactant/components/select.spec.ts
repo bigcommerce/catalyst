@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test';
 
-import * as storyBookElements from '../StoryBookElements';
+import * as storyBookElements from '../storybook-elements';
 
-test('badge', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/badge--basic-example`);
+test('Default select', async ({ page }) => {
+  await page.goto(`${storyBookElements.storyUrl}/select--default`);
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
@@ -12,12 +12,16 @@ test('badge', async ({ page }) => {
   ).toHaveScreenshot();
 });
 
-test('badge zoomed', async ({ page }) => {
-  await page.goto(`${storyBookElements.storyUrl}/badge--basic-example`);
+test('Select with disabled items', async ({ page }) => {
+  await page.goto(`${storyBookElements.storyUrl}/select--disabled-items`);
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'Zoom in' }).click();
+  await page
+    .frameLocator(storyBookElements.storyBookFrame)
+    .locator(storyBookElements.storyBook)
+    .getByRole('combobox')
+    .click();
   await expect(
     page.frameLocator(storyBookElements.storyBookFrame).locator(storyBookElements.storyBook),
   ).toHaveScreenshot();
