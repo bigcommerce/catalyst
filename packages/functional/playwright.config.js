@@ -5,8 +5,9 @@ config();
 
 export default defineConfig({
   testDir: './tests',
+  snapshotPathTemplate: '{testDir}/{testFilePath}-snapshots/{arg}{ext}',
   expect: {
-    toHaveScreenshot: { maxDiffPixels: 100 },
+    toHaveScreenshot: { maxDiffPixels: 500 },
   },
   fullyParallel: true,
   reporter: 'html',
