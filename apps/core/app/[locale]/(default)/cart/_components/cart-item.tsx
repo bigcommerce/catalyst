@@ -1,5 +1,5 @@
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+import { getFormatter, getMessages } from 'next-intl/server';
 
 import { getCart } from '~/client/queries/get-cart';
 import { ExistingResultType } from '~/client/util';
@@ -22,11 +22,7 @@ export const CartItem = async ({
   locale: string;
 }) => {
   const messages = await getMessages({ locale });
-
-  const currencyFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currencyCode,
-  });
+  const format = await getFormatter({ locale });
 
   return (
     <li>
@@ -88,7 +84,7 @@ export const CartItem = async ({
                       <div key={selectedOption.entityId}>
                         <span>{selectedOption.name}:</span>{' '}
                         <span className="font-semibold">
-                          {Intl.DateTimeFormat().format(new Date(selectedOption.date.utc))}
+                          {format.dateTime(new Date(selectedOption.date.utc))}
                         </span>
                       </div>
                     );
@@ -106,7 +102,10 @@ export const CartItem = async ({
 
         <div>
           <p className="inline-flex w-24 justify-center text-lg font-bold">
-            {currencyFormatter.format(product.extendedSalePrice.value)}
+            {format.number(product.extendedSalePrice.value, {
+              style: 'currency',
+              currency: currencyCode,
+            })}
           </p>
         </div>
 

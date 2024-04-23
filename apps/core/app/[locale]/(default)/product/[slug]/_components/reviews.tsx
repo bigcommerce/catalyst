@@ -1,5 +1,5 @@
 import { Rating } from '@bigcommerce/components/rating';
-import { getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { getProductReviews } from '~/client/queries/get-product-reviews';
 
@@ -12,6 +12,7 @@ interface Props {
 export const Reviews = async ({ productId }: Props) => {
   const product = await getProductReviews(productId);
   const t = await getTranslations('Product.DescriptionAndReviews');
+  const format = await getFormatter();
   const reviews = product?.reviews;
 
   if (!reviews) {
@@ -44,9 +45,9 @@ export const Reviews = async ({ productId }: Props) => {
                 <h4 className="text-base font-semibold">{review.title}</h4>
                 <p className="mb-2 text-gray-500">
                   {t('reviewAuthor', { author: review.author.name })}{' '}
-                  {new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(
-                    new Date(review.createdAt.utc),
-                  )}
+                  {format.dateTime(new Date(review.createdAt.utc), {
+                    dateStyle: 'medium',
+                  })}
                 </p>
                 <p className="mb-6">{review.text}</p>
               </li>

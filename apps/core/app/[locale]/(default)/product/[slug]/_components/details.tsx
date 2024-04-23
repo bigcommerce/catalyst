@@ -1,4 +1,4 @@
-import { useTranslations } from 'next-intl';
+import { useFormatter, useTranslations } from 'next-intl';
 import { Suspense } from 'react';
 
 import { getProduct } from '~/client/queries/get-product';
@@ -11,14 +11,10 @@ type Product = Awaited<ReturnType<typeof getProduct>>;
 
 export const Details = ({ product }: { product: NonNullable<Product> }) => {
   const t = useTranslations('Product.Details');
+  const format = useFormatter();
 
   const showPriceRange =
     product.prices?.priceRange.min.value !== product.prices?.priceRange.max.value;
-
-  const currencyFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: product.prices?.price.currencyCode || 'USD',
-  });
 
   return (
     <div>
@@ -36,8 +32,15 @@ export const Details = ({ product }: { product: NonNullable<Product> }) => {
         <div className="my-6 text-2xl font-bold lg:text-3xl">
           {showPriceRange ? (
             <span>
-              {currencyFormatter.format(product.prices.priceRange.min.value)} -{' '}
-              {currencyFormatter.format(product.prices.priceRange.max.value)}
+              {format.number(product.prices.priceRange.min.value, {
+                style: 'currency',
+                currency: product.prices.price.currencyCode,
+              })}{' '}
+              -{' '}
+              {format.number(product.prices.priceRange.max.value, {
+                style: 'currency',
+                currency: product.prices.price.currencyCode,
+              })}
             </span>
           ) : (
             <>
@@ -45,7 +48,10 @@ export const Details = ({ product }: { product: NonNullable<Product> }) => {
                 <span>
                   {t('Prices.msrp')}:{' '}
                   <span className="line-through">
-                    {currencyFormatter.format(product.prices.retailPrice.value)}
+                    {format.number(product.prices.retailPrice.value, {
+                      style: 'currency',
+                      currency: product.prices.price.currencyCode,
+                    })}
                   </span>
                   <br />
                 </span>
@@ -56,17 +62,29 @@ export const Details = ({ product }: { product: NonNullable<Product> }) => {
                   <span>
                     {t('Prices.was')}:{' '}
                     <span className="line-through">
-                      {currencyFormatter.format(product.prices.basePrice.value)}
+                      {format.number(product.prices.basePrice.value, {
+                        style: 'currency',
+                        currency: product.prices.price.currencyCode,
+                      })}
                     </span>
                   </span>
                   <br />
                   <span>
-                    {t('Prices.now')} {currencyFormatter.format(product.prices.salePrice.value)}
+                    {t('Prices.now')}{' '}
+                    {format.number(product.prices.salePrice.value, {
+                      style: 'currency',
+                      currency: product.prices.price.currencyCode,
+                    })}
                   </span>
                 </>
               ) : (
                 product.prices.price.value && (
-                  <span>{currencyFormatter.format(product.prices.price.value)}</span>
+                  <span>
+                    {format.number(product.prices.price.value, {
+                      style: 'currency',
+                      currency: product.prices.price.currencyCode,
+                    })}
+                  </span>
                 )
               )}
             </>
