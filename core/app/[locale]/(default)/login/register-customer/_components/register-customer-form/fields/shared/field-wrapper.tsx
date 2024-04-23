@@ -2,23 +2,7 @@
 
 import { PropsWithChildren } from 'react';
 
-export enum FieldNameToFieldId {
-  email = 1,
-  password,
-  confirmPassword,
-  firstName,
-  lastName,
-  company,
-  phone,
-  address1,
-  address2,
-  city,
-  countryCode,
-  stateOrProvince,
-  postalCode,
-  currentPassword = 24,
-  exclusiveOffers = 25,
-}
+import { FieldNameToFieldId } from '../utils';
 
 const LAYOUT_SINGLE_LINE_FIELDS = [
   FieldNameToFieldId.email,

@@ -4,7 +4,9 @@ import { ChangeEvent } from 'react';
 import { Field, FieldControl, FieldLabel, FieldMessage } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
 
-import { CustomerFields, FieldNameToFieldId } from '..';
+import { CustomerFields } from '..';
+
+import { FieldNameToFieldId } from './utils';
 
 type PasswordType = Extract<
   NonNullable<CustomerFields>[number],

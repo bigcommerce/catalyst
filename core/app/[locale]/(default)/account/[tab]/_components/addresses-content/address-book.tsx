@@ -8,11 +8,10 @@ import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 import { Message } from '~/components/ui/message';
 
-import { deleteAddress } from '../_actions/delete-address';
-import { State } from '../_actions/submit-customer-change-password-form';
-
-import { useAccountStatusContext } from './account-status-provider';
-import { Modal } from './modal';
+import { deleteAddress } from '../../_actions/delete-address';
+import { State } from '../../_actions/submit-customer-change-password-form';
+import { useAccountStatusContext } from '../account-status-provider';
+import { Modal } from '../modal';
 
 export type Addresses = NonNullable<Awaited<ReturnType<typeof getCustomerAddresses>>>['addresses'];
 
@@ -71,13 +70,13 @@ const AddressChangeButtons = ({
 };
 
 interface Props {
-  customerAddressBook: Addresses;
+  customerAddresses: Addresses;
   addressesCount: number;
 }
 
-export const AddressesList = ({ customerAddressBook, addressesCount }: Props) => {
+export const AddressBook = ({ customerAddresses, addressesCount }: Props) => {
   const t = useTranslations('Account.Addresses');
-  const [addressBook, setAddressBook] = useState(customerAddressBook);
+  const [addressBook, setAddressBook] = useState(customerAddresses);
   const { accountState, setAccountState } = useAccountStatusContext();
 
   return (
@@ -127,7 +126,9 @@ export const AddressesList = ({ customerAddressBook, addressesCount }: Props) =>
         )}
         <li className="flex w-full border-collapse flex-col justify-start gap-2 border-t border-gray-200 pt-8">
           <Button aria-label={t('addNewAddress')} asChild className="w-fit hover:text-white">
-            <Link href="/account/add-address">{t('addNewAddress')}</Link>
+            <Link href={{ pathname: '/account/addresses', query: { action: 'add-new-address' } }}>
+              {t('addNewAddress')}
+            </Link>
           </Button>
         </li>
       </ul>
