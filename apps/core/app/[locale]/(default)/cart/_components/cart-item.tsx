@@ -1,5 +1,5 @@
 import { NextIntlClientProvider } from 'next-intl';
-import { getFormatter, getMessages } from 'next-intl/server';
+import { getFormatter, getLocale, getMessages } from 'next-intl/server';
 
 import { getCart } from '~/client/queries/get-cart';
 import { ExistingResultType } from '~/client/util';
@@ -15,12 +15,11 @@ export type Product =
 export const CartItem = async ({
   currencyCode,
   product,
-  locale,
 }: {
   currencyCode: string;
   product: Product;
-  locale: string;
 }) => {
+  const locale = await getLocale();
   const messages = await getMessages({ locale });
   const format = await getFormatter({ locale });
 

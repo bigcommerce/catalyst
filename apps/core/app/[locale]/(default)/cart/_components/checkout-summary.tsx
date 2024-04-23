@@ -1,6 +1,6 @@
 import { AlertCircle } from 'lucide-react';
 import { NextIntlClientProvider } from 'next-intl';
-import { getFormatter, getMessages, getTranslations } from 'next-intl/server';
+import { getFormatter, getLocale, getMessages, getTranslations } from 'next-intl/server';
 import { toast } from 'react-hot-toast';
 
 import { getCheckout } from '~/client/queries/get-checkout';
@@ -10,7 +10,8 @@ import { getShippingCountries } from '../_actions/get-shipping-countries';
 import { CouponCode } from './coupon-code';
 import { ShippingEstimator } from './shipping-estimator';
 
-export const CheckoutSummary = async ({ cartId, locale }: { cartId: string; locale: string }) => {
+export const CheckoutSummary = async ({ cartId }: { cartId: string }) => {
+  const locale = await getLocale();
   const t = await getTranslations({ locale, namespace: 'Cart.CheckoutSummary' });
   const format = await getFormatter({ locale });
   const messages = await getMessages({ locale });
