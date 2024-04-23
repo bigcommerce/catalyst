@@ -7,14 +7,16 @@ import { TabType } from '../../layout';
 import { TabHeading } from '../tab-heading';
 
 import { AddressBook } from './address-book';
+import { CustomerEditAddress } from './customer-edit-address';
 import { CustomerNewAddress } from './customer-new-address';
 
 type CustomerAddresses = NonNullable<Awaited<ReturnType<typeof getCustomerAddresses>>>;
 
 interface Props {
   addresses: CustomerAddresses['addresses'];
+  activeAddressId?: string;
   addressesCount: number;
-  customerAction?: 'add-new-address';
+  customerAction?: 'add-new-address' | 'edit-address';
   pageInfo: CustomerAddresses['pageInfo'];
   title: TabType;
 }
@@ -22,6 +24,7 @@ interface Props {
 export const AddressesContent = async ({
   addresses,
   addressesCount,
+  activeAddressId,
   customerAction,
   pageInfo,
   title,
@@ -36,6 +39,21 @@ export const AddressesContent = async ({
       <div className="mx-auto mb-14 lg:w-2/3">
         <h1 className="my-8 text-3xl font-black lg:text-4xl">{t('newAddress')}</h1>
         <CustomerNewAddress />
+      </div>
+    );
+  }
+
+  if (customerAction === 'edit-address' && activeAddressId) {
+    const activeAddress = addresses
+      .filter(({ entityId }) => entityId.toString() === activeAddressId)
+      .shift();
+
+    return (
+      <div className="mx-auto mb-14 lg:w-2/3">
+        <h1 className="my-8 text-3xl font-black lg:text-4xl">{t('editAddress')}</h1>
+        {activeAddress && Object.keys(activeAddress).length > 0 ? (
+          <CustomerEditAddress address={activeAddress} isAddressRemovable={addresses.length > 1} />
+        ) : null}
       </div>
     );
   }
