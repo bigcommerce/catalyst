@@ -1,9 +1,10 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { client } from '..';
-import { graphql } from '../graphql';
-import { revalidate } from '../revalidate-target';
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
+import { revalidate } from '~/client/revalidate-target';
+import { BlogPostCardFragment } from '~/components/blog-post-card';
 
 interface BlogPostsFiltersInput {
   tagId?: string;
@@ -15,48 +16,41 @@ interface Pagination {
   after?: string;
 }
 
-const GET_BLOG_POSTS_QUERY = graphql(`
-  query getBlogPosts(
-    $first: Int
-    $after: String
-    $last: Int
-    $before: String
-    $filters: BlogPostsFiltersInput
-  ) {
-    site {
-      content {
-        blog {
-          id
-          isVisibleInNavigation
-          name
-          posts(first: $first, after: $after, last: $last, before: $before, filters: $filters) {
-            pageInfo {
-              hasNextPage
-              hasPreviousPage
-              startCursor
-              endCursor
-            }
-            edges {
-              node {
-                author
-                entityId
-                name
-                plainTextSummary
-                publishedDate {
-                  utc
+const BlogPostsPageQuery = graphql(
+  `
+    query BlogPostsPageQuery(
+      $first: Int
+      $after: String
+      $last: Int
+      $before: String
+      $filters: BlogPostsFiltersInput
+    ) {
+      site {
+        content {
+          blog {
+            isVisibleInNavigation
+            name
+            posts(first: $first, after: $after, last: $last, before: $before, filters: $filters) {
+              edges {
+                node {
+                  entityId
+                  ...BlogPostCardFragment
                 }
-                thumbnailImage {
-                  url: urlTemplate
-                  altText
-                }
+              }
+              pageInfo {
+                hasNextPage
+                hasPreviousPage
+                startCursor
+                endCursor
               }
             }
           }
         }
       }
     }
-  }
-`);
+  `,
+  [BlogPostCardFragment],
+);
 
 export const getBlogPosts = cache(
   async ({ tagId, limit = 9, before, after }: BlogPostsFiltersInput & Pagination) => {
@@ -64,7 +58,7 @@ export const getBlogPosts = cache(
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
-      document: GET_BLOG_POSTS_QUERY,
+      document: BlogPostsPageQuery,
       variables: { ...filterArgs, ...paginationArgs },
       fetchOptions: { next: { revalidate } },
     });

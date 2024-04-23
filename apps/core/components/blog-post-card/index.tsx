@@ -8,26 +8,41 @@ import {
   BlogPostCard as ComponentsBlogPostCard,
 } from '@bigcommerce/components/blog-post-card';
 
-import { getBlogPosts } from '~/client/queries/get-blog-posts';
-import { ExistingResultType } from '~/client/util';
+import { FragmentOf, graphql } from '~/client/graphql';
 import { Link } from '~/components/link';
 
 import { BcImage } from '../bc-image';
 
-interface BlogPostCardProps {
-  blogPost: ExistingResultType<typeof getBlogPosts>['posts']['items'][number];
+export const BlogPostCardFragment = graphql(`
+  fragment BlogPostCardFragment on BlogPost {
+    author
+    entityId
+    name
+    plainTextSummary
+    publishedDate {
+      utc
+    }
+    thumbnailImage {
+      url: urlTemplate
+      altText
+    }
+  }
+`);
+
+interface Props {
+  data: FragmentOf<typeof BlogPostCardFragment>;
 }
 
-export const BlogPostCard = ({ blogPost }: BlogPostCardProps) => (
+export const BlogPostCard = ({ data }: Props) => (
   <ComponentsBlogPostCard>
-    {blogPost.thumbnailImage ? (
+    {data.thumbnailImage ? (
       <BlogPostImage>
-        <Link className="block w-full" href={`/blog/${blogPost.entityId}`}>
+        <Link className="block w-full" href={`/blog/${data.entityId}`}>
           <BcImage
-            alt={blogPost.thumbnailImage.altText}
+            alt={data.thumbnailImage.altText}
             className="h-full w-full object-cover object-center"
             height={300}
-            src={blogPost.thumbnailImage.url}
+            src={data.thumbnailImage.url}
             width={300}
           />
         </Link>
@@ -35,23 +50,23 @@ export const BlogPostCard = ({ blogPost }: BlogPostCardProps) => (
     ) : (
       <BlogPostBanner>
         <BlogPostTitle variant="inBanner">
-          <span className="line-clamp-3 text-primary">{blogPost.name}</span>
+          <span className="line-clamp-3 text-primary">{data.name}</span>
         </BlogPostTitle>
         <BlogPostDate variant="inBanner">
           <span className="text-primary">
-            {new Intl.DateTimeFormat('en-US').format(new Date(blogPost.publishedDate.utc))}
+            {new Intl.DateTimeFormat('en-US').format(new Date(data.publishedDate.utc))}
           </span>
         </BlogPostDate>
       </BlogPostBanner>
     )}
 
     <BlogPostTitle>
-      <Link href={`/blog/${blogPost.entityId}`}>{blogPost.name}</Link>
+      <Link href={`/blog/${data.entityId}`}>{data.name}</Link>
     </BlogPostTitle>
-    <BlogPostContent>{blogPost.plainTextSummary}</BlogPostContent>
+    <BlogPostContent>{data.plainTextSummary}</BlogPostContent>
     <BlogPostDate>
-      {new Intl.DateTimeFormat('en-US').format(new Date(blogPost.publishedDate.utc))}
+      {new Intl.DateTimeFormat('en-US').format(new Date(data.publishedDate.utc))}
     </BlogPostDate>
-    {blogPost.author ? <BlogPostAuthor>, by {blogPost.author}</BlogPostAuthor> : null}
+    {data.author ? <BlogPostAuthor>, by {data.author}</BlogPostAuthor> : null}
   </ComponentsBlogPostCard>
 );
