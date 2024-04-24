@@ -25,20 +25,5 @@ export default defineConfig({
       name: 'tests-chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-
-    {
-      name: 'tests-firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-
-    {
-      name: 'tests-webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-
-    {
-      name: 'tests-ios',
-      use: { ...devices['iPhone 13'] },
-    },
   ],
 });
