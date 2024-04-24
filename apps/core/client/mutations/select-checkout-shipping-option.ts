@@ -41,11 +41,5 @@ export const selectCheckoutShippingOption = async ({
     fetchOptions: { cache: 'no-store' },
   });
 
-  const shippingCosts = response.data.checkout.selectCheckoutShippingOption?.checkout;
-
-  if (shippingCosts) {
-    return shippingCosts;
-  }
-
-  return null;
+  return response.data.checkout.selectCheckoutShippingOption?.checkout;
 };

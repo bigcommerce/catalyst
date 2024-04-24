@@ -52,5 +52,5 @@ export const submitChangePassword = async ({
     variables,
   });
 
-  return response.data;
+  return response.data.customer.resetPassword;
 };

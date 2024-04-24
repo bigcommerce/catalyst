@@ -35,13 +35,13 @@ export const submitContactForm = async ({
       reCaptchaToken,
     });
 
-    if (response.submitContactUs.errors.length === 0) {
+    if (response.errors.length === 0) {
       return { status: 'success', data: parsedData };
     }
 
     return {
       status: 'failed',
-      error: response.submitContactUs.errors.map((error) => error.message).join('\n'),
+      error: response.errors.map((error) => error.message).join('\n'),
     };
   } catch (e: unknown) {
     if (e instanceof Error || e instanceof z.ZodError) {

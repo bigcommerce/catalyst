@@ -43,5 +43,5 @@ export const deleteCustomerAddress = async (addressId: AddressId, reCaptchaToken
     },
   });
 
-  return response.data;
+  return response.data.customer.deleteCustomerAddress;
 };
