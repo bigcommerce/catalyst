@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@bigcommerce/components/button';
 import {
   Field,
@@ -10,6 +12,7 @@ import {
 import { Input } from '@bigcommerce/components/input';
 import { Message } from '@bigcommerce/components/message';
 import { TextArea } from '@bigcommerce/components/text-area';
+import { type FragmentOf } from 'gql.tada';
 import { Loader2 as Spinner } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, useRef, useState } from 'react';
@@ -17,19 +20,11 @@ import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
 import { submitContactForm } from './_actions/submit-contact-form';
+import { ContactUsFragment } from './fragment';
 
 interface FormStatus {
   status: 'success' | 'error';
   message: string;
-}
-
-interface ContactUsProps {
-  fields: string[];
-  pageEntityId: number;
-  reCaptchaSettings?: {
-    isEnabledOnStorefront: boolean;
-    siteKey: string;
-  };
 }
 
 const fieldNameMapping = {
@@ -69,7 +64,11 @@ const Submit = () => {
   );
 };
 
-export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUsProps) => {
+interface Props {
+  data: FragmentOf<typeof ContactUsFragment>;
+}
+
+export const ContactUs = ({ data }: Props) => {
   const form = useRef<HTMLFormElement>(null);
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
   const [isTextFieldValid, setTextFieldValidation] = useState(true);
@@ -79,6 +78,13 @@ export const ContactUs = ({ fields, pageEntityId, reCaptchaSettings }: ContactUs
   const [isReCaptchaValid, setReCaptchaValid] = useState(true);
 
   const t = useTranslations('AboutUs');
+
+  if (data.node?.__typename !== 'ContactPage') {
+    return null;
+  }
+
+  const { contactFields: fields, entityId: pageEntityId } = data.node;
+  const reCaptchaSettings = data.site.settings?.reCaptcha;
 
   const onReCaptchaChange = (token: string | null) => {
     if (!token) {
