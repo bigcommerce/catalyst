@@ -4,7 +4,7 @@ import { Label } from '@bigcommerce/components/label';
 import { Message } from '@bigcommerce/components/message';
 import { RadioGroup, RadioItem } from '@bigcommerce/components/radio-group';
 import { AlertCircle, Loader2 as Spinner } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useFormatter, useTranslations } from 'next-intl';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'react-hot-toast';
 
@@ -50,6 +50,7 @@ export const ShippingOptions = ({
   availableShippingOptions: AvailableShippingOptions[] | null;
 }) => {
   const t = useTranslations('Cart.ShippingCost');
+  const format = useFormatter();
 
   const shippingOptions = availableShippingOptions?.map(
     ({ cost, description, entityId: shippingOptionEntityId, isRecommended }) => ({
@@ -59,11 +60,6 @@ export const ShippingOptions = ({
       isDefault: isRecommended,
     }),
   );
-
-  const currencyFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: checkout.cart?.currencyCode,
-  });
 
   const onSubmit = async (formData: FormData) => {
     const { status } = await submitShippingCosts(formData, checkout.entityId, consignmentEntityId);
@@ -98,7 +94,12 @@ export const ShippingOptions = ({
                 >
                   <p className="inline-flex w-full justify-between">
                     <span>{option.description}</span>
-                    <span>{currencyFormatter.format(option.cost)}</span>
+                    <span>
+                      {format.number(option.cost, {
+                        style: 'currency',
+                        currency: checkout.cart?.currencyCode,
+                      })}
+                    </span>
                   </p>
                 </Label>
               </div>

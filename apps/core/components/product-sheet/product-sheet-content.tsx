@@ -3,7 +3,7 @@
 import { Rating } from '@bigcommerce/components/rating';
 import { Loader2 as Spinner } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useFormatter, useTranslations } from 'next-intl';
 import { useEffect, useId, useState } from 'react';
 
 import { getProduct } from '~/client/queries/get-product';
@@ -15,6 +15,7 @@ import { BcImage } from '../bc-image';
 export const ProductSheetContent = () => {
   const summaryId = useId();
   const t = useTranslations('Product.ProductSheet');
+  const format = useFormatter();
 
   const searchParams = useSearchParams();
   const productId = searchParams.get('showQuickAdd');
@@ -61,11 +62,6 @@ export const ProductSheetContent = () => {
   }
 
   if (product) {
-    const currencyFormatter = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: product.prices?.price.currencyCode,
-    });
-
     const showPriceRange =
       product.prices?.priceRange.min.value !== product.prices?.priceRange.max.value;
 
@@ -122,8 +118,15 @@ export const ProductSheetContent = () => {
               <div>
                 {showPriceRange ? (
                   <span>
-                    {currencyFormatter.format(product.prices.priceRange.min.value)} -{' '}
-                    {currencyFormatter.format(product.prices.priceRange.max.value)}
+                    {format.number(product.prices.priceRange.min.value, {
+                      style: 'currency',
+                      currency: product.prices.price.currencyCode,
+                    })}{' '}
+                    -{' '}
+                    {format.number(product.prices.priceRange.max.value, {
+                      style: 'currency',
+                      currency: product.prices.price.currencyCode,
+                    })}
                   </span>
                 ) : (
                   <>
@@ -131,7 +134,10 @@ export const ProductSheetContent = () => {
                       <span>
                         {t('msrp')}{' '}
                         <span className="line-through">
-                          {currencyFormatter.format(product.prices.retailPrice.value)}
+                          {format.number(product.prices.retailPrice.value, {
+                            style: 'currency',
+                            currency: product.prices.price.currencyCode,
+                          })}
                         </span>
                         <br />
                       </span>
@@ -142,17 +148,29 @@ export const ProductSheetContent = () => {
                         <span>
                           {t('was')}{' '}
                           <span className="line-through">
-                            {currencyFormatter.format(product.prices.basePrice.value)}
+                            {format.number(product.prices.basePrice.value, {
+                              style: 'currency',
+                              currency: product.prices.price.currencyCode,
+                            })}
                           </span>
                         </span>
                         <br />
                         <span>
-                          {t('now')} {currencyFormatter.format(product.prices.salePrice.value)}
+                          {t('now')}{' '}
+                          {format.number(product.prices.salePrice.value, {
+                            style: 'currency',
+                            currency: product.prices.price.currencyCode,
+                          })}
                         </span>
                       </>
                     ) : (
                       product.prices.price.value && (
-                        <span>{currencyFormatter.format(product.prices.price.value)}</span>
+                        <span>
+                          {format.number(product.prices.price.value, {
+                            style: 'currency',
+                            currency: product.prices.price.currencyCode,
+                          })}
+                        </span>
                       )
                     )}
                   </>

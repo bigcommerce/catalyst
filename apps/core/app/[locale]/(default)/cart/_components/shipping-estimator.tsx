@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@bigcommerce/components/button';
-import { useTranslations } from 'next-intl';
+import { useFormatter, useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
 import { getCheckout } from '~/client/queries/get-checkout';
@@ -20,14 +20,10 @@ export const ShippingEstimator = ({
   shippingCountries: ExistingResultType<typeof getShippingCountries>;
 }) => {
   const t = useTranslations('Cart.CheckoutSummary');
+  const format = useFormatter();
 
   const [showShippingInfo, setShowShippingInfo] = useState(false);
   const [showShippingOptions, setShowShippingOptions] = useState(false);
-
-  const currencyFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: checkout.cart?.currencyCode,
-  });
 
   const selectedShippingConsignment = checkout.shippingConsignments?.find(
     (shippingConsignment) => shippingConsignment.selectedShippingOption,
@@ -60,7 +56,12 @@ export const ShippingEstimator = ({
         <div className="flex justify-between">
           <span className="font-semibold">{t('shippingCost')}</span>
           {selectedShippingConsignment ? (
-            <span>{currencyFormatter.format(checkout.shippingCostTotal?.value || 0)}</span>
+            <span>
+              {format.number(checkout.shippingCostTotal?.value || 0, {
+                style: 'currency',
+                currency: checkout.cart?.currencyCode,
+              })}
+            </span>
           ) : (
             <Button
               aria-controls="shipping-options"
@@ -113,7 +114,12 @@ export const ShippingEstimator = ({
       {Boolean(checkout.handlingCostTotal?.value) && (
         <div className="flex justify-between border-t border-t-gray-200 py-4">
           <span className="font-semibold">{t('handlingCost')}</span>
-          <span>{currencyFormatter.format(checkout.handlingCostTotal?.value || 0)}</span>
+          <span>
+            {format.number(checkout.handlingCostTotal?.value || 0, {
+              style: 'currency',
+              currency: checkout.cart?.currencyCode,
+            })}
+          </span>
         </div>
       )}
     </>

@@ -4,7 +4,7 @@ import { Button } from '@bigcommerce/components/button';
 import { Field, FieldControl, FieldMessage, Form, FormSubmit } from '@bigcommerce/components/form';
 import { Input } from '@bigcommerce/components/input';
 import { AlertCircle, Loader2 as Spinner } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useFormatter, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'react-hot-toast';
@@ -37,15 +37,12 @@ const SubmitButton = () => {
 
 export const CouponCode = ({ checkout }: { checkout: ExistingResultType<typeof getCheckout> }) => {
   const t = useTranslations('Cart.CheckoutSummary');
+  const format = useFormatter();
+
   const [showAddCoupon, setShowAddCoupon] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState<Checkout['coupons'][number] | null>(
     checkout.coupons.at(0) || null,
   );
-
-  const currencyFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: checkout.cart?.currencyCode,
-  });
 
   useEffect(() => {
     if (checkout.coupons[0]) {
@@ -84,7 +81,12 @@ export const CouponCode = ({ checkout }: { checkout: ExistingResultType<typeof g
         <span className="font-semibold">
           {t('coupon')} ({selectedCoupon.code})
         </span>
-        <span>{currencyFormatter.format(selectedCoupon.discountedAmount.value * -1)}</span>
+        <span>
+          {format.number(selectedCoupon.discountedAmount.value * -1, {
+            style: 'currency',
+            currency: checkout.cart?.currencyCode,
+          })}
+        </span>
       </div>
       <form action={onSubmitRemoveCouponCode}>
         <input name="checkoutEntityId" type="hidden" value={checkout.entityId} />

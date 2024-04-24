@@ -1,5 +1,6 @@
 import { DatePicker } from '@bigcommerce/components/date-picker';
 import { Label } from '@bigcommerce/components/label';
+import { useFormatter } from 'next-intl';
 
 import { getProduct } from '~/client/queries/get-product';
 import { ExistingResultType, Unpacked } from '~/client/util';
@@ -33,15 +34,15 @@ const getDisabledDays = (option: DateFieldOption) => {
 };
 
 export const DateField = ({ option }: { option: DateFieldOption }) => {
+  const format = useFormatter();
+
   const disabledDays = getDisabledDays(option);
   const { field, fieldState } = useProductFieldController({
     name: `attribute_${option.entityId}`,
     rules: {
       required: option.isRequired ? 'Please select a date.' : false,
     },
-    defaultValue: option.defaultDate
-      ? Intl.DateTimeFormat().format(new Date(option.defaultDate))
-      : '',
+    defaultValue: option.defaultDate ? format.dateTime(new Date(option.defaultDate)) : '',
   });
   const { error } = fieldState;
 
