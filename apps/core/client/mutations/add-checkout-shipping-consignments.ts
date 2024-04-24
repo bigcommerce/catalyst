@@ -67,11 +67,5 @@ export const addCheckoutShippingConsignments = async ({
     fetchOptions: { cache: 'no-store' },
   });
 
-  const checkout = response.data.checkout.addCheckoutShippingConsignments?.checkout;
-
-  if (checkout) {
-    return checkout;
-  }
-
-  throw new Error('Something went wrong adding shipping info.');
+  return response.data.checkout.addCheckoutShippingConsignments?.checkout;
 };

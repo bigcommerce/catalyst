@@ -42,5 +42,5 @@ export const submitResetPassword = async ({ email, path, reCaptchaToken }: Submi
     variables,
   });
 
-  return response.data;
+  return response.data.customer.requestResetPassword;
 };
