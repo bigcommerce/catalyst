@@ -2,15 +2,24 @@ import { kv } from '@vercel/kv';
 
 import { KvAdapter, SetCommandOptions } from '../types';
 
+import { MemoryKvAdapter } from './memory';
+
+const memoryKv = new MemoryKvAdapter();
+
 export class VercelKvAdapter implements KvAdapter {
-  constructor(private adapter = kv) {}
+  private vercelKv = kv;
+  private memoryKv = memoryKv;
 
   async get<Data>(key: string) {
-    return this.adapter.get<Data>(key);
+    const memoryValue = await this.memoryKv.get<Data>(key);
+
+    return memoryValue ?? this.vercelKv.get<Data>(key);
   }
 
   async mget<Data>(...keys: string[]) {
-    return this.adapter.mget<Data[]>(keys);
+    const memoryValues = await this.memoryKv.mget<Data>(...keys);
+
+    return memoryValues.length ? memoryValues : this.vercelKv.mget<Data[]>(keys);
   }
 
   async set<Data, Options extends SetCommandOptions = SetCommandOptions>(
@@ -18,7 +27,9 @@ export class VercelKvAdapter implements KvAdapter {
     value: Data,
     opts?: Options,
   ) {
-    const response = await this.adapter.set(key, value, opts);
+    await this.memoryKv.set(key, value, opts);
+
+    const response = await this.vercelKv.set(key, value, opts);
 
     if (response === 'OK') {
       return null;
