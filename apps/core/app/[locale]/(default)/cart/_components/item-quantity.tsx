@@ -7,23 +7,14 @@ import { useFormStatus } from 'react-dom';
 import { toast } from 'react-hot-toast';
 
 import { graphql } from '~/client/graphql';
-import { getCart } from '~/client/queries/get-cart';
 
 import { updateItemQuantity } from '../_actions/update-item-quantity';
 
 import { Product } from './cart-item';
 
 type CartSelectedOptionsInput = ReturnType<typeof graphql.scalar<'CartSelectedOptionsInput'>>;
-type Cart = NonNullable<Awaited<ReturnType<typeof getCart>>>;
 
-type CartItemData = Pick<
-  Cart['lineItems']['physicalItems'][number],
-  'quantity' | 'productEntityId' | 'variantEntityId' | 'selectedOptions'
-> & {
-  lineItemEntityId: string;
-};
-
-const parseSelectedOptions = (selectedOptions: CartItemData['selectedOptions']) => {
+const parseSelectedOptions = (selectedOptions: Product['selectedOptions']) => {
   return selectedOptions.reduce<CartSelectedOptionsInput>((accum, option) => {
     let multipleChoicesOptionInput;
     let checkboxOptionInput;

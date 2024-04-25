@@ -1,24 +1,132 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getFormatter, getLocale, getMessages } from 'next-intl/server';
 
-import { getCart } from '~/client/queries/get-cart';
-import { ExistingResultType } from '~/client/util';
+import { FragmentOf, graphql } from '~/client/graphql';
 import { BcImage } from '~/components/bc-image';
 
 import { ItemQuantity } from './item-quantity';
 import { RemoveItem } from './remove-item';
 
-export type Product =
-  | ExistingResultType<typeof getCart>['lineItems']['physicalItems'][number]
-  | ExistingResultType<typeof getCart>['lineItems']['digitalItems'][number];
+const PhysicalItemFragment = graphql(`
+  fragment PhysicalItemFragment on CartPhysicalItem {
+    name
+    brand
+    imageUrl
+    entityId
+    quantity
+    productEntityId
+    variantEntityId
+    extendedListPrice {
+      currencyCode
+      value
+    }
+    extendedSalePrice {
+      currencyCode
+      value
+    }
+    selectedOptions {
+      __typename
+      entityId
+      name
+      ... on CartSelectedMultipleChoiceOption {
+        value
+        valueEntityId
+      }
+      ... on CartSelectedCheckboxOption {
+        value
+        valueEntityId
+      }
+      ... on CartSelectedNumberFieldOption {
+        number
+      }
+      ... on CartSelectedMultiLineTextFieldOption {
+        text
+      }
+      ... on CartSelectedTextFieldOption {
+        text
+      }
+      ... on CartSelectedDateFieldOption {
+        date {
+          utc
+        }
+      }
+    }
+  }
+`);
 
-export const CartItem = async ({
-  currencyCode,
-  product,
-}: {
-  currencyCode: string;
+const DigitalItemFragment = graphql(`
+  fragment DigitalItemFragment on CartDigitalItem {
+    name
+    brand
+    imageUrl
+    entityId
+    quantity
+    productEntityId
+    variantEntityId
+    extendedListPrice {
+      currencyCode
+      value
+    }
+    extendedSalePrice {
+      currencyCode
+      value
+    }
+    selectedOptions {
+      __typename
+      entityId
+      name
+      ... on CartSelectedMultipleChoiceOption {
+        value
+        valueEntityId
+      }
+      ... on CartSelectedCheckboxOption {
+        value
+        valueEntityId
+      }
+      ... on CartSelectedNumberFieldOption {
+        number
+      }
+      ... on CartSelectedMultiLineTextFieldOption {
+        text
+      }
+      ... on CartSelectedTextFieldOption {
+        text
+      }
+      ... on CartSelectedDateFieldOption {
+        date {
+          utc
+        }
+      }
+    }
+  }
+`);
+
+export const CartItemFragment = graphql(
+  `
+    fragment CartItemFragment on CartLineItems {
+      physicalItems {
+        ...PhysicalItemFragment
+      }
+      digitalItems {
+        ...DigitalItemFragment
+      }
+    }
+  `,
+  [PhysicalItemFragment, DigitalItemFragment],
+);
+
+type FragmentResult = FragmentOf<typeof CartItemFragment>;
+type PhysicalItem = FragmentResult['physicalItems'][number];
+type DigitalItem = FragmentResult['digitalItems'][number];
+
+export type Product = PhysicalItem | DigitalItem;
+
+interface Props {
   product: Product;
-}) => {
+  currencyCode: string;
+}
+
+export const CartItem = async ({ currencyCode, product }: Props) => {
   const locale = await getLocale();
   const messages = await getMessages({ locale });
   const format = await getFormatter({ locale });

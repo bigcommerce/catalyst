@@ -1,42 +1,19 @@
-import { Button } from '@bigcommerce/components/button';
 import { cookies } from 'next/headers';
-import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 
-import { getCheckoutUrl } from '~/client/management/get-checkout-url';
-import { getCart } from '~/client/queries/get-cart';
+import { getSessionCustomerId } from '~/auth';
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
 import { LocaleType } from '~/i18n';
 
-import { CartItem } from './_components/cart-item';
+import { CartItem, CartItemFragment } from './_components/cart-item';
+import { CheckoutButton } from './_components/checkout-button';
 import { CheckoutSummary } from './_components/checkout-summary';
+import { EmptyCart } from './_components/empty-cart';
 
 export const metadata = {
   title: 'Cart',
-};
-
-const EmptyCart = () => {
-  const t = useTranslations('Cart');
-
-  return (
-    <div className="flex h-full flex-col">
-      <h1 className="pb-6 text-4xl font-black lg:pb-10 lg:text-5xl">{t('heading')}</h1>
-      <div className="flex grow flex-col items-center justify-center gap-6 border-t border-t-gray-200 py-20">
-        <h2 className="text-xl font-bold lg:text-2xl">{t('empty')}</h2>
-        <p className="text-center">{t('emptyDetails')}</p>
-      </div>
-    </div>
-  );
-};
-
-const CheckoutButton = async ({ cartId, label }: { cartId: string; label: string }) => {
-  const checkoutUrl = await getCheckoutUrl(cartId);
-
-  return (
-    <Button asChild className="mt-6">
-      <a href={checkoutUrl}>{label}</a>
-    </Button>
-  );
 };
 
 interface Props {
@@ -45,30 +22,59 @@ interface Props {
   };
 }
 
+const CartPageQuery = graphql(
+  `
+    query getCart($cartId: String) {
+      site {
+        cart(entityId: $cartId) {
+          entityId
+          currencyCode
+          lineItems {
+            ...CartItemFragment
+          }
+        }
+      }
+    }
+  `,
+  [CartItemFragment],
+);
+
 export default async function CartPage({ params: { locale } }: Props) {
-  const t = await getTranslations({ locale, namespace: 'Cart' });
   const cartId = cookies().get('cartId')?.value;
 
   if (!cartId) {
-    return <EmptyCart />;
+    return <EmptyCart locale={locale} />;
   }
 
-  const cart = await getCart(cartId);
+  const t = await getTranslations({ locale, namespace: 'Cart' });
+  const customerId = await getSessionCustomerId();
+
+  const { data } = await client.fetch({
+    document: CartPageQuery,
+    variables: { cartId },
+    customerId,
+    fetchOptions: {
+      cache: 'no-store',
+      next: {
+        tags: ['cart'],
+      },
+    },
+  });
+
+  const cart = data.site.cart;
 
   if (!cart) {
-    return <EmptyCart />;
+    return <EmptyCart locale={locale} />;
   }
+
+  const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
 
   return (
     <div>
       <h1 className="pb-6 text-4xl font-black lg:pb-10 lg:text-5xl">{t('heading')}</h1>
       <div className="pb-12 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-3">
         <ul className="col-span-2">
-          {cart.lineItems.physicalItems.map((product) => (
-            <CartItem currencyCode={cart.currencyCode} key={product.entityId} product={product} />
-          ))}
-
-          {cart.lineItems.digitalItems.map((product) => (
+          {lineItems.map((product) => (
             <CartItem currencyCode={cart.currencyCode} key={product.entityId} product={product} />
           ))}
         </ul>
