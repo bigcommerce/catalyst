@@ -10,7 +10,14 @@ test('Account access is restricted for guest users', async ({ page }) => {
 
 test('My Account tabs are displayed and clickable', async ({ page }) => {
   await LoginPage.loginAsShopper(page);
-  await expect(page.getByRole('heading', { name: 'My Account' })).toBeVisible();
+  await page.getByRole('heading', { name: 'My Account' }).waitFor();
 
+  await expect(page).toHaveURL('/.*account');
+  await expect(page.getByRole('heading', { name: 'Orders' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Messages' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Addresses' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Wish lists' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Recently viewed' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Account settings' })).toBeVisible();
 
 })
