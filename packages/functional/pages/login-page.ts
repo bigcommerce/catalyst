@@ -9,6 +9,7 @@ export async function loginAsShopper(page: Page) {
     await page.getByLabel('Email').fill(testAccountEmail);
     await page.getByLabel('Password').fill(testAccountPassword);
     await page.getByRole('button', { name: 'Log in' }).click();
+    await page.getByRole('heading', { name: 'My Account' }).waitFor();
 }
 
 export * as LoginPage from './login-page';
