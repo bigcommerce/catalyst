@@ -28,7 +28,7 @@ jobs:
 
       - name: Install Playwright Browsers
         run: |
-          cd apps/core/tests
+          cd apps/core
           npx playwright install --with-deps
 
       - name: Run Playwright tests
@@ -38,8 +38,8 @@ jobs:
           TEST_ACCOUNT_EMAIL: ${{ secrets.TEST_ACCOUNT_EMAIL }}
           TEST_ACCOUNT_PASSWORD: ${{ secrets.TEST_ACCOUNT_PASSWORD }}
         run: |
-          cd apps/core/tests
-          npx playwright test ui/ --project=tests-chromium 
+          cd apps/core
+          npx playwright test tests/ui/ --project=tests-chromium 
 
       - uses: actions/upload-artifact@v4
         if: failure()

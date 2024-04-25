@@ -28,7 +28,7 @@ jobs:
 
       - name: Install Playwright Browsers
         run: |
-          cd apps/core/tests
+          cd apps/core
           npx playwright install chromium
 
       - name: Run Playwright tests
@@ -36,8 +36,8 @@ jobs:
           PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
           VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_PROTECTION_BYPASS_STORYBOOK }}
         run: |
-          cd apps/core/tests
-          npx playwright test visual-regression/reactant/components/ --project=tests-chromium
+          cd apps/core
+          npx playwright test tests/visual-regression/reactant/components/ --project=tests-chromium
 
       - uses: actions/upload-artifact@v4
         if: failure()

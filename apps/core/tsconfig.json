@@ -39,6 +39,7 @@
   },
   "include": [
     "next-env.d.ts",
+    "playwright.config.ts",
     "**/*.cjs",
     "**/*.mjs",
     "**/*.ts",

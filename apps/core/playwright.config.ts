@@ -4,7 +4,7 @@ import { config } from 'dotenv';
 config();
 
 export default defineConfig({
-  testDir: './',
+  testDir: './tests',
   expect: {
     toHaveScreenshot: { maxDiffPixels: 100 },
   },
@@ -16,7 +16,7 @@ export default defineConfig({
     video: 'retain-on-failure',
     trace: 'retain-on-failure',
     extraHTTPHeaders: {
-      'x-vercel-protection-bypass': process.env.VERCEL_PROTECTION_BYPASS,
+      'x-vercel-protection-bypass': process.env.VERCEL_PROTECTION_BYPASS || '',
       'x-vercel-set-bypass-cookie': process.env.CI ? 'true' : 'false',
     },
   },
