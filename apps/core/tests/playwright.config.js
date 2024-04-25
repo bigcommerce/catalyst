@@ -4,7 +4,7 @@ import { config } from 'dotenv';
 config();
 
 export default defineConfig({
-  testDir: './tests',
+  testDir: './',
   expect: {
     toHaveScreenshot: { maxDiffPixels: 100 },
   },

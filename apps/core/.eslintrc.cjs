@@ -32,7 +32,7 @@ const config = {
       },
     ],
   },
-  ignorePatterns: ['client/generated/**/*.ts'],
+  ignorePatterns: ['client/generated/**/*.ts', 'playwright-report/**', 'test-results/**'],
 };
 
 module.exports = config;
