@@ -8,6 +8,7 @@ import {
 import { Tag, TagContent } from '@bigcommerce/components/tag';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { getFormatter } from 'next-intl/server';
 
 import { getBlogPost } from '~/client/queries/get-blog-post';
 import { BcImage } from '~/components/bc-image';
@@ -32,7 +33,8 @@ export async function generateMetadata({ params: { blogId } }: Props): Promise<M
   };
 }
 
-export default async function BlogPostPage({ params: { blogId } }: Props) {
+export default async function BlogPostPage({ params: { blogId, locale } }: Props) {
+  const format = await getFormatter({ locale });
   const blogPost = await getBlogPost(+blogId);
 
   if (!blogPost || !blogPost.isVisibleInNavigation) {
@@ -45,7 +47,7 @@ export default async function BlogPostPage({ params: { blogId } }: Props) {
 
       <div className="mb-8 flex">
         <BlogPostDate className="mb-0">
-          {new Intl.DateTimeFormat('en-US').format(new Date(blogPost.publishedDate.utc))}
+          {format.dateTime(new Date(blogPost.publishedDate.utc))}
         </BlogPostDate>
         {blogPost.author ? <BlogPostAuthor>, by {blogPost.author}</BlogPostAuthor> : null}
       </div>
@@ -67,7 +69,7 @@ export default async function BlogPostPage({ params: { blogId } }: Props) {
           </BlogPostTitle>
           <BlogPostDate variant="inBanner">
             <span className="text-primary">
-              {new Intl.DateTimeFormat('en-US').format(new Date(blogPost.publishedDate.utc))}
+              {format.dateTime(new Date(blogPost.publishedDate.utc))}
             </span>
           </BlogPostDate>
         </BlogPostBanner>

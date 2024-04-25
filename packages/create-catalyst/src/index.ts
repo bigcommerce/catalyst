@@ -71,6 +71,11 @@ const createCommand = program
       .default('vscode')
       .hideHelp(),
   )
+  .addOption(
+    new Option('--include-functional-tests', 'Include the functional test suite')
+      .default(false)
+      .hideHelp(),
+  )
   .action((opts) => create(opts));
 
 export type CreateCommandOptions = Options<typeof createCommand>[0];

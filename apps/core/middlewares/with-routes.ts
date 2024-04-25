@@ -50,6 +50,8 @@ const NodeSchema = z.union([
   z.object({ __typename: z.literal('Product'), entityId: z.number() }),
   z.object({ __typename: z.literal('Category'), entityId: z.number() }),
   z.object({ __typename: z.literal('Brand'), entityId: z.number() }),
+  z.object({ __typename: z.literal('ContactPage'), id: z.string() }),
+  z.object({ __typename: z.literal('NormalPage'), id: z.string() }),
   z.object({ __typename: z.literal('RawHtmlPage'), id: z.string() }),
 ]);
 
@@ -227,6 +229,16 @@ export const withRoutes: MiddlewareFactory = () => {
 
       case 'Product': {
         url = `/${locale}/product/${node.entityId}${postfix}`;
+        break;
+      }
+
+      case 'NormalPage': {
+        url = `/${locale}/webpages/normal/${node.id}`;
+        break;
+      }
+
+      case 'ContactPage': {
+        url = `/${locale}/webpages/contact/${node.id}`;
         break;
       }
 

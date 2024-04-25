@@ -68,11 +68,5 @@ export const updateCheckoutShippingConsignment = async ({
     fetchOptions: { cache: 'no-store' },
   });
 
-  const checkout = response.data.checkout.updateCheckoutShippingConsignment?.checkout;
-
-  if (checkout) {
-    return checkout;
-  }
-
-  return null;
+  return response.data.checkout.updateCheckoutShippingConsignment?.checkout;
 };

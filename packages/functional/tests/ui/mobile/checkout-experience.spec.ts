@@ -1,26 +1,21 @@
 import { faker } from '@faker-js/faker';
 import { expect, test } from '@playwright/test';
 
-import { ProductActions } from '../../../actions/product-actions';
-import { CheckoutPage } from '../../../pages/checkout-page';
-
-const sampleProduct = '[Sample] Able Brewing System';
 const testUser = faker.person.firstName();
 
 test.use({ viewport: { width: 390, height: 844 } });
 
-test.beforeEach(async ({ page }) => {
+test('Checkout experience on ios mobile', async ({ page }) => {
   await page.goto('/');
   await page.getByLabel('Toggle navigation').click();
   await page.getByLabel('Main').getByRole('link', { name: 'Shop All' }).click();
+  await page.getByRole('link', { name: '[Sample] Able Brewing System' }).click();
 
   await expect(
-    page.getByRole('link', { name: '[Sample] Able Brewing System' }).first(),
+    page.getByRole('heading', { level: 1, name: '[Sample] Able Brewing System' }),
   ).toBeVisible();
-});
 
-test('Checkout experience on ios mobile', async ({ page }) => {
-  await ProductActions.addProductToCart(page, sampleProduct);
+  await page.getByRole('button', { name: 'Add to Cart' }).first().click();
 
   await page.getByRole('link', { name: 'Cart Items 1' }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Your cart' })).toBeVisible();
@@ -46,21 +41,13 @@ test('Checkout experience on ios mobile', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Payment', exact: true })).toBeVisible();
 
   await page
-    .frameLocator(CheckoutPage.BIGPAY_CC_NUMBER_IFRAME)
+    .frameLocator('#bigpaypay-ccNumber iframe')
     .getByLabel('Credit Card Number')
     .fill('4111 1111 1111 1111');
+  await page.frameLocator('#bigpaypay-ccExpiry iframe').getByPlaceholder('MM / YY').fill('02 / 27');
+  await page.frameLocator('#bigpaypay-ccName iframe').getByLabel('Name on Card').fill(testUser);
+  await page.frameLocator('#bigpaypay-ccCvv iframe').getByLabel('CVV').fill('211');
 
-  await page
-    .frameLocator(CheckoutPage.BIGPAY_CC_EXPIRY_IFRAME)
-    .getByPlaceholder('MM / YY')
-    .fill('02 / 27');
-
-  await page
-    .frameLocator(CheckoutPage.BIGPAY_CC_NAME_IFRAME)
-    .getByLabel('Name on Card')
-    .fill(testUser);
-
-  await page.frameLocator(CheckoutPage.BIGPAY_CC_CVV_IFRAME).getByLabel('CVV').fill('211');
   await page.getByRole('button', { name: 'Place Order' }).click();
   await page.waitForLoadState('networkidle');
   await expect(

@@ -1,3 +1,5 @@
+import { getFormatter, getLocale } from 'next-intl/server';
+
 import { graphql, ResultOf } from '~/client/graphql';
 
 export const PricingFragment = graphql(`
@@ -37,17 +39,15 @@ interface Props {
   data: ResultOf<typeof PricingFragment>;
 }
 
-export const Pricing = ({ data }: Props) => {
+export const Pricing = async ({ data }: Props) => {
+  const locale = await getLocale();
+  const format = await getFormatter({ locale });
+
   const { prices } = data;
 
   if (!prices) {
     return null;
   }
-
-  const currencyFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: prices.price.currencyCode,
-  });
 
   const showPriceRange = prices.priceRange.min.value !== prices.priceRange.max.value;
 
@@ -55,8 +55,15 @@ export const Pricing = ({ data }: Props) => {
     <p className="w-36 shrink-0">
       {showPriceRange ? (
         <>
-          {currencyFormatter.format(prices.priceRange.min.value)} -{' '}
-          {currencyFormatter.format(prices.priceRange.max.value)}
+          {format.number(prices.priceRange.min.value, {
+            style: 'currency',
+            currency: prices.price.currencyCode,
+          })}{' '}
+          -{' '}
+          {format.number(prices.priceRange.max.value, {
+            style: 'currency',
+            currency: prices.price.currencyCode,
+          })}
         </>
       ) : (
         <>
@@ -64,7 +71,10 @@ export const Pricing = ({ data }: Props) => {
             <>
               MSRP:{' '}
               <span className="line-through">
-                {currencyFormatter.format(prices.retailPrice.value)}
+                {format.number(prices.retailPrice.value, {
+                  style: 'currency',
+                  currency: prices.price.currencyCode,
+                })}
               </span>
               <br />
             </>
@@ -73,13 +83,29 @@ export const Pricing = ({ data }: Props) => {
             <>
               Was:{' '}
               <span className="line-through">
-                {currencyFormatter.format(prices.basePrice.value)}
+                {format.number(prices.basePrice.value, {
+                  style: 'currency',
+                  currency: prices.price.currencyCode,
+                })}
               </span>
               <br />
-              <>Now: {currencyFormatter.format(prices.salePrice.value)}</>
+              <>
+                Now:{' '}
+                {format.number(prices.salePrice.value, {
+                  style: 'currency',
+                  currency: prices.price.currencyCode,
+                })}
+              </>
             </>
           ) : (
-            prices.price.value && <>{currencyFormatter.format(prices.price.value)}</>
+            prices.price.value && (
+              <>
+                {format.number(prices.price.value, {
+                  style: 'currency',
+                  currency: prices.price.currencyCode,
+                })}
+              </>
+            )
           )}
         </>
       )}

@@ -20,7 +20,7 @@
     "@vercel/kv": "^1.0.1",
     "@vercel/speed-insights": "^1.0.10",
     "clsx": "^2.1.0",
-    "gql.tada": "^1.5.3",
+    "gql.tada": "^1.5.6",
     "graphql": "^16.8.1",
     "lodash.debounce": "^4.0.8",
     "lru-cache": "^10.2.0",
@@ -36,14 +36,14 @@
     "schema-dts": "^1.1.2",
     "server-only": "^0.0.1",
     "sharp": "^0.33.3",
-    "tailwind-merge": "^2.2.2",
+    "tailwind-merge": "^2.3.0",
     "uuid": "^9.0.1",
-    "zod": "^3.22.4"
+    "zod": "^3.23.0"
   },
   "devDependencies": {
-    "@0no-co/graphqlsp": "^1.10.1",
+    "@0no-co/graphqlsp": "^1.11.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
-    "@gql.tada/cli-utils": "^1.0.3",
+    "@gql.tada/cli-utils": "^1.2.0",
     "@tailwindcss/container-queries": "^0.1.1",
     "@testing-library/react": "^15.0.2",
     "@types/lodash.debounce": "^4.0.7",

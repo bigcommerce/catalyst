@@ -65,26 +65,16 @@ export default async function CartPage({ params: { locale } }: Props) {
       <div className="pb-12 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-3">
         <ul className="col-span-2">
           {cart.lineItems.physicalItems.map((product) => (
-            <CartItem
-              currencyCode={cart.currencyCode}
-              key={product.entityId}
-              locale={locale}
-              product={product}
-            />
+            <CartItem currencyCode={cart.currencyCode} key={product.entityId} product={product} />
           ))}
 
           {cart.lineItems.digitalItems.map((product) => (
-            <CartItem
-              currencyCode={cart.currencyCode}
-              key={product.entityId}
-              locale={locale}
-              product={product}
-            />
+            <CartItem currencyCode={cart.currencyCode} key={product.entityId} product={product} />
           ))}
         </ul>
 
         <div className="col-span-1 col-start-2 lg:col-start-3">
-          <CheckoutSummary cartId={cartId} locale={locale} />
+          <CheckoutSummary cartId={cartId} />
 
           <Suspense fallback={t('loading')}>
             <CheckoutButton cartId={cartId} label={t('proceedToCheckout')} />
