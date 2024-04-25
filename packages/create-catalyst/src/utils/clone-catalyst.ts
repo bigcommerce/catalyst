@@ -142,8 +142,8 @@ export const cloneCatalyst = async ({
 
   if (!includeFunctionalTests) {
     const eslint = (await readFile(join(projectDir, '.eslintrc.cjs'), { encoding: 'utf-8' }))
-      .replace(/['"]\/playwright-report\/\*\*['"],?/, '')
-      .replace(/['"]\/test-results\/\*\*['"],?/, '');
+      .replace(/['"]playwright-report\/\*\*['"],?/, '')
+      .replace(/['"]test-results\/\*\*['"],?/, '');
 
     await writeFile(join(projectDir, '.eslintrc.cjs'), eslint);
 
