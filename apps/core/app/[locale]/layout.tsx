@@ -5,13 +5,13 @@ import { Inter } from 'next/font/google';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { unstable_setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 import '../globals.css';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import Bodl from '~/components/bodl';
 
 import { Notifications } from '../notifications';
 import { Providers } from '../providers';
@@ -75,7 +75,7 @@ export default function RootLayout({ children, params: { locale } }: RootLayoutP
         </NextIntlClientProvider>
         <Analytics />
         <SpeedInsights />
-        <Bodl />
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ?? ''} />
       </body>
     </html>
   );
