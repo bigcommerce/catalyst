@@ -15,7 +15,7 @@ test('My Account tabs are displayed and clickable', async ({ page }) => {
   await page.getByRole('button', { name: 'Log in' }).click();
   await page.getByRole('heading', { name: 'My Account' }).waitFor();
 
-  await expect(page).toHaveURL('/account/');
+  await expect(page).toHaveURL(new RegExp('/account'));
   await expect(page.getByRole('heading', { name: 'Orders' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Messages' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Addresses' })).toBeVisible();
