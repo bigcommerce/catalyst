@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useBodl } from 'app/contexts/bodl-context';
 
 interface Props {
@@ -11,7 +12,9 @@ interface Props {
 export default function Bodl({ event, payload }: Props) {
   const bodl = useBodl();
 
-  bodl.sendEvent(event, payload);
+  useEffect(() => {
+    bodl.sendEvent(event, payload);
+  });
 
   return null;
 }

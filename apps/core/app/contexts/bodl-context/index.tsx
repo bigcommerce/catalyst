@@ -1,13 +1,16 @@
 import { createContext, PropsWithChildren, useContext } from 'react';
-import { BODL, GA4 } from '@bigcommerce/bodl';
+import { Bodl, Ga4 } from '@bigcommerce/bodl';
 
-const ga4: GA4 = {
-  // TODO: Add GA4 configuration
-};
+const ga4 = new Ga4({
+  // TODO: Replace with actual store configuration
+  gaId: process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ?? '',
+  developerId: 0,
+  consentModeEnabled: false,
+});
 
-const bodl = new BODL({ providers: [ga4] });
+const bodl = new Bodl([ga4]);
 
-const BodlContext = createContext<BODL | null>(null);
+const BodlContext = createContext<Bodl | null>(null);
 
 export const BodlProvider = ({ children }: PropsWithChildren) => {
   return <BodlContext.Provider value={bodl}>{children}</BodlContext.Provider>;
