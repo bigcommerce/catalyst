@@ -2,15 +2,13 @@ import { expect, test } from '@playwright/test';
 
 test('Carousel', async ({ page }) => {
   await page.goto('/');
-  await page
+
+  const slides = page
     .getByRole('region')
     .filter({ has: page.getByRole('heading', { name: 'Featured products' }) })
-    .getByRole('tablist', { name: 'Slides' })
-    .scrollIntoViewIfNeeded();
+    .getByRole('tablist', { name: 'Slides' });
 
-  await expect(
-    page
-      .getByRole('region')
-      .filter({ has: page.getByRole('heading', { name: 'Featured products' }) }),
-  ).toHaveScreenshot();
+  await slides.scrollIntoViewIfNeeded();
+
+  await expect(slides).toHaveScreenshot();
 });
