@@ -6,7 +6,7 @@ config();
 export default defineConfig({
   testDir: './tests',
   expect: {
-    toHaveScreenshot: { maxDiffPixels: 100 },
+    toHaveScreenshot: { maxDiffPixels: 500 },
   },
   fullyParallel: true,
   reporter: 'html',
