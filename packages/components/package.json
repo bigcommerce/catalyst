@@ -32,7 +32,7 @@
     "clsx": "^2.1.1",
     "embla-carousel-react": "8.0.2",
     "focus-trap-react": "^10.2.3",
-    "lucide-react": "^0.371.0",
+    "lucide-react": "^0.376.0",
     "react-day-picker": "^8.10.1",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-radix": "^3.0.3"

@@ -63,8 +63,8 @@ importers:
         specifier: ^10.2.0
         version: 10.2.0
       lucide-react:
-        specifier: ^0.371.0
-        version: 0.371.0(react@18.2.0)
+        specifier: ^0.376.0
+        version: 0.376.0(react@18.2.0)
       next:
         specifier: 14.1.4
         version: 14.1.4(react-dom@18.2.0)(react@18.2.0)
@@ -181,8 +181,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       lucide-react:
-        specifier: ^0.371.0
-        version: 0.371.0(react@18.2.0)
+        specifier: ^0.376.0
+        version: 0.376.0(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -345,8 +345,8 @@ importers:
         specifier: ^10.2.3
         version: 10.2.3(prop-types@15.8.1)(react-dom@18.2.0)(react@18.2.0)
       lucide-react:
-        specifier: ^0.371.0
-        version: 0.371.0(react@18.2.0)
+        specifier: ^0.376.0
+        version: 0.376.0(react@18.2.0)
       react-day-picker:
         specifier: ^8.10.1
         version: 8.10.1(date-fns@3.6.0)(react@18.2.0)
@@ -10966,8 +10966,8 @@ packages:
     dependencies:
       yallist: 4.0.0
 
-  /lucide-react@0.371.0(react@18.2.0):
-    resolution: {integrity: sha512-FpUup3kaya7JpGHaoNYn1o0Z8IFvR9w4LeXr2ad20DTr3RFLBXD69bVXagV/I8yWyCJu3it1d1B3bNSa5ui4AA==}
+  /lucide-react@0.376.0(react@18.2.0):
+    resolution: {integrity: sha512-g91IX3ERD6yUR1TL2dsL4BkcGygpZz/EsqjAeL/kcRQV0EApIOr/9eBfKhYOVyQIcGGuotFGjF3xKLHMEz+b7g==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:
