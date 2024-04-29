@@ -4,17 +4,18 @@ import { Input } from '@bigcommerce/components/input';
 import { Select, SelectContent, SelectItem } from '@bigcommerce/components/select';
 import { AlertCircle, Loader2 as Spinner } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import React, { useEffect, useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'react-hot-toast';
 
-import { getShippingCountries } from '~/app/[locale]/(default)/cart/_actions/get-shipping-countries';
-import { getCheckout } from '~/client/queries/get-checkout';
+import { getShippingCountries } from '~/app/[locale]/(default)/cart/_components/shipping-estimator/get-shipping-countries';
+import { FragmentOf } from '~/client/graphql';
 import { ExistingResultType } from '~/client/util';
 import { cn } from '~/lib/utils';
 
-import { getShippingStates } from '../_actions/get-shipping-states';
-import { submitShippingInfo } from '../_actions/submit-shipping-info';
+import { ShippingInfoFragment } from './fragment';
+import { getShippingStates } from './get-shipping-states';
+import { submitShippingInfo } from './submit-shipping-info';
 
 type StatesList = Array<{
   id: number;
@@ -55,7 +56,7 @@ export const ShippingInfo = ({
   isVisible,
   hideShippingOptions,
 }: {
-  checkout: ExistingResultType<typeof getCheckout>;
+  checkout: FragmentOf<typeof ShippingInfoFragment>;
   shippingCountries: ExistingResultType<typeof getShippingCountries>;
   isVisible: boolean;
   hideShippingOptions: () => void;

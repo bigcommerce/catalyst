@@ -1,56 +1,27 @@
-import { Button } from '@bigcommerce/components/button';
 import { Field, FieldLabel, Form, FormSubmit } from '@bigcommerce/components/form';
 import { Label } from '@bigcommerce/components/label';
 import { Message } from '@bigcommerce/components/message';
 import { RadioGroup, RadioItem } from '@bigcommerce/components/radio-group';
-import { AlertCircle, Loader2 as Spinner } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { useFormatter, useTranslations } from 'next-intl';
-import { useFormStatus } from 'react-dom';
 import { toast } from 'react-hot-toast';
 
-import { getCheckout } from '~/client/queries/get-checkout';
-import { ExistingResultType } from '~/client/util';
+import { FragmentOf } from '~/client/graphql';
 
-interface AvailableShippingOptions {
-  cost: {
-    value: number;
-  };
-  description: string;
-  entityId: string;
-  isRecommended: boolean;
+import { ShippingOptionsFragment } from './fragment';
+import { SubmitButton } from './submit-button';
+import { submitShippingCosts } from './submit-shipping-costs';
+
+interface Props {
+  data: FragmentOf<typeof ShippingOptionsFragment>;
+  checkoutEntityId: string;
+  currencyCode?: string;
 }
 
-import { submitShippingCosts } from '../_actions/submit-shipping-costs';
-
-const SubmitButton = () => {
-  const t = useTranslations('Cart.SubmitShippingCost');
-  const { pending } = useFormStatus();
-
-  return (
-    <Button className="w-full items-center px-8 py-2" disabled={pending} variant="secondary">
-      {pending ? (
-        <>
-          <Spinner aria-hidden="true" className="animate-spin" />
-          <span className="sr-only">{t('spinnerText')}</span>
-        </>
-      ) : (
-        <span>{t('submitText')}</span>
-      )}
-    </Button>
-  );
-};
-
-export const ShippingOptions = ({
-  checkout,
-  consignmentEntityId,
-  availableShippingOptions,
-}: {
-  checkout: ExistingResultType<typeof getCheckout>;
-  consignmentEntityId: string;
-  availableShippingOptions: AvailableShippingOptions[] | null;
-}) => {
+export const ShippingOptions = ({ data, checkoutEntityId, currencyCode }: Props) => {
   const t = useTranslations('Cart.ShippingCost');
   const format = useFormatter();
+  const { availableShippingOptions, entityId } = data;
 
   const shippingOptions = availableShippingOptions?.map(
     ({ cost, description, entityId: shippingOptionEntityId, isRecommended }) => ({
@@ -62,7 +33,7 @@ export const ShippingOptions = ({
   );
 
   const onSubmit = async (formData: FormData) => {
-    const { status } = await submitShippingCosts(formData, checkout.entityId, consignmentEntityId);
+    const { status } = await submitShippingCosts(formData, checkoutEntityId, entityId);
 
     if (status === 'failed') {
       toast.error(t('errorMessage'), {
@@ -97,7 +68,7 @@ export const ShippingOptions = ({
                     <span>
                       {format.number(option.cost, {
                         style: 'currency',
-                        currency: checkout.cart?.currencyCode,
+                        currency: currencyCode,
                       })}
                     </span>
                   </p>

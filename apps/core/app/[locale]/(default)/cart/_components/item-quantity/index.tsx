@@ -8,9 +8,9 @@ import { toast } from 'react-hot-toast';
 
 import { graphql } from '~/client/graphql';
 
-import { updateItemQuantity } from '../_actions/update-item-quantity';
+import { Product } from '../cart-item';
 
-import { Product } from './cart-item';
+import { updateItemQuantity } from './update-item-quantity';
 
 type CartSelectedOptionsInput = ReturnType<typeof graphql.scalar<'CartSelectedOptionsInput'>>;
 
