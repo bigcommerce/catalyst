@@ -45,7 +45,7 @@ export const Cart = ({ data: product }: Props) => {
         const result = await addToCart(formData);
         const quantity = Number(formData.get('quantity'));
 
-        if (result?.error) {
+        if (result.error) {
           toast.error(result.error, { icon: <AlertCircle className="text-error-secondary" /> });
 
           return;

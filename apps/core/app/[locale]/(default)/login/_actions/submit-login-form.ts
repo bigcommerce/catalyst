@@ -4,8 +4,6 @@ import { isRedirectError } from 'next/dist/client/components/redirect';
 
 import { Credentials, signIn } from '~/auth';
 
-export type State = { status: 'idle' } | { status: 'failed' };
-
 export const submitLoginForm = async (_previousState: unknown, formData: FormData) => {
   try {
     const credentials = Credentials.parse({
@@ -25,7 +23,7 @@ export const submitLoginForm = async (_previousState: unknown, formData: FormDat
     }
 
     return {
-      status: 'failed',
+      status: 'error',
     };
   }
 };

@@ -22,22 +22,21 @@ export async function removeItem({
       return { status: 'error', error: 'No lineItemEntityId found' };
     }
 
-    const updatedCart = await deleteCartLineItem(cartId, lineItemEntityId);
+    const cart = await deleteCartLineItem(cartId, lineItemEntityId);
 
     // If we remove the last item in a cart the cart is deleted
-    // so we need to remove the cartId cookie and clear shipping data
-    if (!updatedCart) {
+    // so we need to remove the cartId cookie
+    // TODO: We need to figure out if it actually failed.
+    if (!cart) {
       cookies().delete('cartId');
-      cookies().delete('shippingCosts');
-      revalidateTag('cart');
     }
 
     revalidateTag('cart');
 
-    return { status: 'success', data: updatedCart };
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      return { status: 'error', error: e.message };
+    return { status: 'success', data: cart };
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return { status: 'error', error: error.message };
     }
 
     return { status: 'error' };

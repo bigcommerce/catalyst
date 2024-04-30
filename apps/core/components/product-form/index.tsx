@@ -33,7 +33,7 @@ export const ProductForm = ({ product }: { product: Product }) => {
     const result = await handleAddToCart(data);
     const quantity = Number(data.quantity);
 
-    if (result?.error) {
+    if (result.error) {
       toast.error(result.error || t('errorMessage'), {
         icon: <AlertCircle className="text-error-secondary" />,
       });
