@@ -9,7 +9,7 @@ import { LocaleType } from '~/i18n';
 
 import { CartItem, CartItemFragment } from './_components/cart-item';
 import { CheckoutButton } from './_components/checkout-button';
-import { CheckoutSummary } from './_components/checkout-summary';
+import { CheckoutSummary, CheckoutSummaryFragment } from './_components/checkout-summary';
 import { EmptyCart } from './_components/empty-cart';
 
 export const metadata = {
@@ -33,10 +33,13 @@ const CartPageQuery = graphql(
             ...CartItemFragment
           }
         }
+        checkout(entityId: $cartId) {
+          ...CheckoutSummaryFragment
+        }
       }
     }
   `,
-  [CartItemFragment],
+  [CartItemFragment, CheckoutSummaryFragment],
 );
 
 export default async function CartPage({ params: { locale } }: Props) {
@@ -56,12 +59,13 @@ export default async function CartPage({ params: { locale } }: Props) {
     fetchOptions: {
       cache: 'no-store',
       next: {
-        tags: ['cart'],
+        tags: ['cart', 'checkout'],
       },
     },
   });
 
   const cart = data.site.cart;
+  const checkout = data.site.checkout;
 
   if (!cart) {
     return <EmptyCart locale={locale} />;
@@ -80,7 +84,7 @@ export default async function CartPage({ params: { locale } }: Props) {
         </ul>
 
         <div className="col-span-1 col-start-2 lg:col-start-3">
-          <CheckoutSummary cartId={cartId} />
+          {checkout && <CheckoutSummary data={checkout} />}
 
           <Suspense fallback={t('loading')}>
             <CheckoutButton cartId={cartId} label={t('proceedToCheckout')} />

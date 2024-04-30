@@ -9,13 +9,11 @@ import { useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'react-hot-toast';
 
-import { getCheckout } from '~/client/queries/get-checkout';
-import { ExistingResultType } from '~/client/util';
+import { FragmentOf } from '~/client/graphql';
 
-import { applyCouponCode } from '../_actions/apply-coupon-code';
-import { removeCouponCode } from '../_actions/remove-coupon-code';
-
-type Checkout = ExistingResultType<typeof getCheckout>;
+import { applyCouponCode } from './apply-coupon-code';
+import { CouponCodeFragment } from './fragment';
+import { removeCouponCode } from './remove-coupon-code';
 
 const SubmitButton = () => {
   const t = useTranslations('Cart.SubmitCouponCode');
@@ -35,14 +33,16 @@ const SubmitButton = () => {
   );
 };
 
-export const CouponCode = ({ checkout }: { checkout: ExistingResultType<typeof getCheckout> }) => {
+interface Props {
+  checkout: FragmentOf<typeof CouponCodeFragment>;
+}
+
+export const CouponCode = ({ checkout }: Props) => {
   const t = useTranslations('Cart.CheckoutSummary');
   const format = useFormatter();
 
   const [showAddCoupon, setShowAddCoupon] = useState(false);
-  const [selectedCoupon, setSelectedCoupon] = useState<Checkout['coupons'][number] | null>(
-    checkout.coupons.at(0) || null,
-  );
+  const [selectedCoupon, setSelectedCoupon] = useState(checkout.coupons.at(0) || null);
 
   useEffect(() => {
     if (checkout.coupons[0]) {

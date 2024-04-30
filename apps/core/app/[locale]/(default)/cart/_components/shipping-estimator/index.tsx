@@ -4,21 +4,21 @@ import { Button } from '@bigcommerce/components/button';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
-import { getCheckout } from '~/client/queries/get-checkout';
+import { FragmentOf } from '~/client/graphql';
 import { ExistingResultType } from '~/client/util';
 
-import { getShippingCountries } from '../_actions/get-shipping-countries';
+import { ShippingInfo } from '../shipping-info';
+import { ShippingOptions } from '../shipping-options';
 
-import { ShippingInfo } from './shipping-info';
-import { ShippingOptions } from './shipping-options';
+import { ShippingEstimatorFragment } from './fragment';
+import { getShippingCountries } from './get-shipping-countries';
 
-export const ShippingEstimator = ({
-  checkout,
-  shippingCountries,
-}: {
-  checkout: ExistingResultType<typeof getCheckout>;
+interface Props {
+  checkout: FragmentOf<typeof ShippingEstimatorFragment>;
   shippingCountries: ExistingResultType<typeof getShippingCountries>;
-}) => {
+}
+
+export const ShippingEstimator = ({ checkout, shippingCountries }: Props) => {
   const t = useTranslations('Cart.CheckoutSummary');
   const format = useFormatter();
 
@@ -97,13 +97,13 @@ export const ShippingEstimator = ({
 
         {showShippingOptions && checkout.shippingConsignments && (
           <div className="flex flex-col" id="shipping-options">
-            {checkout.shippingConsignments.map(({ entityId, availableShippingOptions }) => {
+            {checkout.shippingConsignments.map((consignment) => {
               return (
                 <ShippingOptions
-                  availableShippingOptions={availableShippingOptions}
-                  checkout={checkout}
-                  consignmentEntityId={entityId}
-                  key={entityId}
+                  checkoutEntityId={checkout.entityId}
+                  currencyCode={checkout.cart?.currencyCode}
+                  data={consignment}
+                  key={consignment.entityId}
                 />
               );
             })}

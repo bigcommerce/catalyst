@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 import { graphql } from '~/client/graphql';
 import { updateCartLineItem } from '~/client/mutations/update-cart-line-item';
 
-import { removeItem } from './remove-item';
+import { removeItem } from '../../_actions/remove-item';
 
 type CartLineItemInput = ReturnType<typeof graphql.scalar<'CartLineItemInput'>>;
 type UpdateCartLineItemInput = ReturnType<typeof graphql.scalar<'UpdateCartLineItemInput'>>;

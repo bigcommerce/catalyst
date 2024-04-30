@@ -2,7 +2,8 @@ import { getCountries } from '~/client/management/get-countries';
 import { getShippingZones } from '~/client/management/get-shipping-zones';
 
 export const getShippingCountries = async () => {
-  const shippingZones = await getShippingZones();
+  const [shippingZones, allCountries] = await Promise.all([getShippingZones(), getCountries()]);
+
   const uniqueCountryZones = shippingZones.reduce<string[]>((zones, item) => {
     item.locations.forEach(({ country_iso2 }) => {
       if (zones.length === 0) {
@@ -23,7 +24,6 @@ export const getShippingCountries = async () => {
     return zones;
   }, []);
 
-  const allCountries = await getCountries();
   const shippingCountries = allCountries.flatMap((countryDetails) => {
     const isCountryInTheList = uniqueCountryZones.includes(countryDetails.country_iso2);
 
