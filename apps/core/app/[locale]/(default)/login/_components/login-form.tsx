@@ -28,7 +28,7 @@ export const LoginForm = () => {
 
   const t = useTranslations('Account.Login');
 
-  const isFormInvalid = state?.status === 'failed';
+  const isFormInvalid = state?.status === 'error';
 
   const handleInputValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const validationStatus = e.target.validity.valueMissing;

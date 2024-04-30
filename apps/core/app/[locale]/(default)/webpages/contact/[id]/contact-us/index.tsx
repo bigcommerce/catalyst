@@ -112,7 +112,7 @@ export const ContactUs = ({ data }: Props) => {
       });
     }
 
-    if (submit.status === 'failed') {
+    if (submit.status === 'error') {
       setFormStatus({ status: 'error', message: submit.error ?? '' });
     }
 

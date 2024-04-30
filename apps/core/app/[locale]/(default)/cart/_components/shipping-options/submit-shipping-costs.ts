@@ -25,14 +25,18 @@ export const submitShippingCosts = async (
       shippingOptionEntityId: parsedData.shippingOption,
     });
 
+    if (!shippingCost?.entityId) {
+      return { status: 'error', error: 'Failed to submit shipping cost.' };
+    }
+
     revalidateTag('checkout');
 
     return { status: 'success', data: shippingCost };
-  } catch (e: unknown) {
-    if (e instanceof Error || e instanceof z.ZodError) {
-      return { status: 'failed', error: e.message };
+  } catch (error: unknown) {
+    if (error instanceof Error || error instanceof z.ZodError) {
+      return { status: 'error', error: error.message };
     }
 
-    return { status: 'failed' };
+    return { status: 'error', error: 'Failed to submit shipping cost.' };
   }
 };

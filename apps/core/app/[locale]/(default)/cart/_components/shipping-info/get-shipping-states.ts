@@ -9,9 +9,9 @@ export async function getShippingStates(id: number) {
     return { status: 'success', data: response };
   } catch (error: unknown) {
     if (error instanceof Error) {
-      return { status: 'failed', error: error.message };
+      return { status: 'error', error: error.message };
     }
 
-    return { status: 'failed', error };
+    return { status: 'error', error: 'An error occurred while fetching the shipping states.' };
   }
 }

@@ -35,7 +35,7 @@ export const ShippingOptions = ({ data, checkoutEntityId, currencyCode }: Props)
   const onSubmit = async (formData: FormData) => {
     const { status } = await submitShippingCosts(formData, checkoutEntityId, entityId);
 
-    if (status === 'failed') {
+    if (status === 'error') {
       toast.error(t('errorMessage'), {
         icon: <AlertCircle className="text-error-secondary" />,
       });

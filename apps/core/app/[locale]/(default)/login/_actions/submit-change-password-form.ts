@@ -7,11 +7,6 @@ import {
   submitChangePassword,
 } from '~/client/mutations/submit-change-password';
 
-export interface State {
-  status: 'idle' | 'error' | 'success';
-  message?: string;
-}
-
 export const submitChangePasswordForm = async (_previousState: unknown, formData: FormData) => {
   try {
     const parsedData = ChangePasswordSchema.parse({
@@ -52,6 +47,6 @@ export const submitChangePasswordForm = async (_previousState: unknown, formData
       };
     }
 
-    return { status: 'error', message: 'Unknown error' };
+    return { status: 'error', message: 'Unknown error.' };
   }
 };

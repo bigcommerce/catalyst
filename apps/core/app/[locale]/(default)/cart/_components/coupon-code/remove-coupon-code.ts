@@ -23,15 +23,15 @@ export async function removeCouponCode(formData: FormData) {
     );
 
     if (!checkout?.entityId) {
-      return { status: 'error', error: 'Error ocurred removing coupon' };
+      return { status: 'error', error: 'Error ocurred removing coupon.' };
     }
 
     revalidateTag('checkout');
 
     return { status: 'success', data: checkout };
-  } catch (e: unknown) {
-    if (e instanceof Error || e instanceof z.ZodError) {
-      return { status: 'error', error: e.message };
+  } catch (error: unknown) {
+    if (error instanceof Error || error instanceof z.ZodError) {
+      return { status: 'error', error: error.message };
     }
 
     return { status: 'error' };

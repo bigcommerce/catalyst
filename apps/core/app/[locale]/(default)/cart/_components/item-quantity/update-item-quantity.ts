@@ -45,20 +45,20 @@ export async function updateItemQuantity({
       selectedOptions && { selectedOptions },
     );
 
-    const updatedCart = await updateCartLineItem(cartId, lineItemEntityId, {
+    const cart = await updateCartLineItem(cartId, lineItemEntityId, {
       lineItem: cartLineItemData,
     });
 
-    if (!updatedCart) {
+    if (!cart) {
       return { status: 'error', error: 'Failed to change product quantity in Cart' };
     }
 
     revalidatePath('/cart');
 
-    return { status: 'success', data: updatedCart };
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      return { status: 'error', error: e.message };
+    return { status: 'success', data: cart };
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return { status: 'error', error: error.message };
     }
 
     return { status: 'error' };

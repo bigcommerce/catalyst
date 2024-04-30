@@ -43,7 +43,7 @@ const fetchSearchResults = debounce(
     term: string,
     setSearchResults: React.Dispatch<React.SetStateAction<SearchResults | null>>,
   ) => {
-    const searchResults = await getSearchResults(term);
+    const { data: searchResults } = await getSearchResults(term);
 
     if (isSearchQuery(searchResults)) {
       setSearchResults(searchResults);

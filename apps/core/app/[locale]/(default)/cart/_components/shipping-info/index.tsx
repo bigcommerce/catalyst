@@ -126,7 +126,7 @@ export const ShippingInfo = ({
       shippingId: shippingConsignment?.entityId ?? '',
     });
 
-    if (status === 'failed') {
+    if (status === 'error') {
       toast.error(t('errorMessage'), {
         icon: <AlertCircle className="text-error-secondary" />,
       });

@@ -40,14 +40,14 @@ export const submitContactForm = async ({
     }
 
     return {
-      status: 'failed',
+      status: 'error',
       error: response.errors.map((error) => error.message).join('\n'),
     };
-  } catch (e: unknown) {
-    if (e instanceof Error || e instanceof z.ZodError) {
-      return { status: 'failed', error: e.message };
+  } catch (error: unknown) {
+    if (error instanceof Error || error instanceof z.ZodError) {
+      return { status: 'error', error: error.message };
     }
 
-    return { status: 'failed', error: 'Unknown error' };
+    return { status: 'error', error: 'Unknown error.' };
   }
 };

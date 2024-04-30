@@ -39,6 +39,6 @@ export const submitResetPasswordForm = async ({
       return { status: 'error', error: error.message };
     }
 
-    return { status: 'error', error: 'Unknown error' };
+    return { status: 'error', error: 'Unknown error.' };
   }
 };
