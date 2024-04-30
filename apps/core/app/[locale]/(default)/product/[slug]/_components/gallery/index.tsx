@@ -1,5 +1,6 @@
 'use client';
 
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import {
   Gallery as ComponentsGallery,
   GalleryContent,
@@ -10,25 +11,23 @@ import {
   GalleryThumbnailList,
 } from '@bigcommerce/components/gallery';
 
-import { getProduct } from '~/client/queries/get-product';
+import { FragmentOf } from '~/client/graphql';
 import { BcImage } from '~/components/bc-image';
 
-type Product = Awaited<ReturnType<typeof getProduct>>;
+import { GalleryFragment } from './fragment';
 
-export const Gallery = ({
-  product,
-  noImageText,
-}: {
-  product: NonNullable<Product>;
+interface Props {
+  product: FragmentOf<typeof GalleryFragment>;
   noImageText?: string;
-}) => {
-  // Make a copy of product.images
-  const images = product.images;
+}
 
-  // Pick the top-level default image out of the `Image` response
-  const topLevelDefaultImg = product.images.find((image) => image.isDefault);
+export const Gallery = ({ product, noImageText }: Props) => {
+  const images = removeEdgesAndNodes(product.images);
 
-  // If product.defaultImage exists, and product.defaultImage.url is not equal to the url of the isDefault image in the Image response,
+  // Pick the top-level default image
+  const topLevelDefaultImg = images.find((image) => image.isDefault);
+
+  // If product.defaultImage exists, and product.defaultImage.url is not equal to the url of the isDefault image in images,
   // mark the existing isDefault image to "isDefault = false" and append the correct default image to images
   if (product.defaultImage && topLevelDefaultImg?.url !== product.defaultImage.url) {
     images.forEach((image) => {
