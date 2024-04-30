@@ -1,3 +1,4 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
@@ -11,7 +12,7 @@ import { getProduct } from '~/client/queries/get-product';
 import { revalidate } from '~/client/revalidate-target';
 import { LocaleType } from '~/i18n';
 
-import { BreadCrumbs } from './_components/breadcrumbs';
+import { Breadcrumbs, BreadcrumbsFragment } from './_components/breadcrumbs';
 import { Description } from './_components/description';
 import { Details } from './_components/details';
 import { Gallery } from './_components/gallery';
@@ -58,11 +59,18 @@ const ProductPageQuery = graphql(
       site {
         product(entityId: $entityId, optionValueIds: $optionValueIds) {
           ...RelatedProductsFragment
+          categories(first: 1) {
+            edges {
+              node {
+                ...BreadcrumbsFragment
+              }
+            }
+          }
         }
       }
     }
   `,
-  [RelatedProductsFragment],
+  [RelatedProductsFragment, BreadcrumbsFragment],
 );
 
 export default async function Product({ params, searchParams }: ProductPageProps) {
@@ -108,9 +116,12 @@ export default async function Product({ params, searchParams }: ProductPageProps
     return notFound();
   }
 
+  const category = removeEdgesAndNodes(data.site.product.categories).at(0);
+
   return (
     <>
-      <BreadCrumbs productId={product.entityId} />
+      {category && <Breadcrumbs category={category} />}
+
       <div className="mb-12 mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
         <NextIntlClientProvider locale={locale} messages={{ Product: messages.Product ?? {} }}>
           <Gallery noImageText={t('noGalleryText')} product={product} />
