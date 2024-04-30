@@ -69,8 +69,8 @@ importers:
         specifier: 14.1.4
         version: 14.1.4(react-dom@18.2.0)(react@18.2.0)
       next-auth:
-        specifier: 5.0.0-beta.16
-        version: 5.0.0-beta.16(next@14.1.4)(react@18.2.0)
+        specifier: 5.0.0-beta.17
+        version: 5.0.0-beta.17(next@14.1.4)(react@18.2.0)
       next-intl:
         specifier: ^3.11.3
         version: 3.11.3(next@14.1.4)(react@18.2.0)
@@ -563,8 +563,8 @@ packages:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  /@auth/core@0.28.1:
-    resolution: {integrity: sha512-gvp74mypYZADpTlfGRp6HE0G3pIHWvtJpy+KZ+8FvY0cmlIpHog+jdMOdd29dQtLtN25kF2YbfHsesCFuGUQbg==}
+  /@auth/core@0.30.0:
+    resolution: {integrity: sha512-8AE4m/nk+4EIiVCJwxZAsJeAQuzpEC8M8768mmKVn60CGDdupKQkVhxbRlm5Qh7eNRCoFFME+0DvtaX2aXrYaA==}
     peerDependencies:
       '@simplewebauthn/browser': ^9.0.1
       '@simplewebauthn/server': ^9.0.2
@@ -11290,8 +11290,8 @@ packages:
   /neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
 
-  /next-auth@5.0.0-beta.16(next@14.1.4)(react@18.2.0):
-    resolution: {integrity: sha512-dX2snB+ezN23tFzSes3n3uosT9iBf0eILPYWH/R2fd9n3ZzdMQlRzq7JIOPeS1aLc84IuRlyuyXyx9XmmZB6og==}
+  /next-auth@5.0.0-beta.17(next@14.1.4)(react@18.2.0):
+    resolution: {integrity: sha512-XA/7JtAjOgDfAeotJPFUsFZGGItZwzZrxLt9Gc9fE7EchLk6zydZfuZ22Vvwixs3IilkN644D5IoD5tEOAFGCQ==}
     peerDependencies:
       '@simplewebauthn/browser': ^9.0.1
       '@simplewebauthn/server': ^9.0.2
@@ -11306,7 +11306,7 @@ packages:
       nodemailer:
         optional: true
     dependencies:
-      '@auth/core': 0.28.1
+      '@auth/core': 0.30.0
       next: 14.1.4(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
     dev: false
