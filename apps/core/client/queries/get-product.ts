@@ -171,14 +171,6 @@ const PRODUCT_FRAGMENT = graphql(
         edges {
           node {
             name
-            breadcrumbs(depth: 5) {
-              edges {
-                node {
-                  name
-                  path
-                }
-              }
-            }
           }
         }
       }
@@ -229,12 +221,7 @@ const reshapeProductCategories = (product: Product) => {
     return undefined;
   }
 
-  return categories.map((category) => {
-    return {
-      ...category,
-      breadcrumbs: removeEdgesAndNodes(category.breadcrumbs),
-    };
-  });
+  return categories;
 };
 
 const reshapeProductOptions = (product: Product) => {
