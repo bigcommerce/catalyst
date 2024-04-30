@@ -89,7 +89,7 @@ PLAYWRIGHT_TEST_BASE_URL='https://catalyst-demo.site' || 'http://localhost:3000'
 2. Navigate to the test directory:
 
 ```shell copy
-cd packages/functional
+cd apps/core
 ```
 
 3. Run all UI tests in Chromium:
