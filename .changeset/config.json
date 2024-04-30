@@ -5,7 +5,7 @@
     { "repo": "bigcommerce/catalyst" }
   ],
   "commit": false,
-  "fixed": [["@bigcommerce/docs", "@bigcommerce/components"]],
+  "fixed": [["@bigcommerce/components"]],
   "linked": [],
   "access": "public",
   "privatePackages": {

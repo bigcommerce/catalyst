@@ -5,7 +5,7 @@
   "private": true,
   "packageManager": "pnpm@8.15.1",
   "scripts": {
-    "dev": "dotenv -e .env.local -- turbo run dev --concurrency 11",
+    "dev": "dotenv -e .env.local -- turbo run dev --concurrency 10",
     "build": "dotenv -e .env.local -- turbo run build",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck"
