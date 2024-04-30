@@ -1,11 +1,12 @@
 'use client';
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { Button } from '@bigcommerce/components/button';
 import { AlertCircle, Check } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-hot-toast';
+
+import { Button } from '~/components/ui/button';
 
 import { Link } from '../../link';
 import { addToCart } from '../_actions/add-to-cart';

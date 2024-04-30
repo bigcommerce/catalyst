@@ -1,11 +1,11 @@
 'use client';
 
-import { Button } from '@bigcommerce/components/button';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
 import { FragmentOf } from '~/client/graphql';
 import { ExistingResultType } from '~/client/util';
+import { Button } from '~/components/ui/button';
 
 import { ShippingInfo } from '../shipping-info';
 import { ShippingOptions } from '../shipping-options';

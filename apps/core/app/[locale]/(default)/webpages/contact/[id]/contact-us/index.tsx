@@ -1,6 +1,13 @@
 'use client';
 
-import { Button } from '@bigcommerce/components/button';
+import { type FragmentOf } from 'gql.tada';
+import { Loader2 as Spinner } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { ChangeEvent, useRef, useState } from 'react';
+import { useFormStatus } from 'react-dom';
+import ReCaptcha from 'react-google-recaptcha';
+
+import { Button } from '~/components/ui/button';
 import {
   Field,
   FieldControl,
@@ -8,16 +15,10 @@ import {
   FieldMessage,
   Form,
   FormSubmit,
-} from '@bigcommerce/components/form';
-import { Input } from '@bigcommerce/components/input';
-import { Message } from '@bigcommerce/components/message';
-import { TextArea } from '@bigcommerce/components/text-area';
-import { type FragmentOf } from 'gql.tada';
-import { Loader2 as Spinner } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import { ChangeEvent, useRef, useState } from 'react';
-import { useFormStatus } from 'react-dom';
-import ReCaptcha from 'react-google-recaptcha';
+} from '~/components/ui/form';
+import { Input } from '~/components/ui/input';
+import { Message } from '~/components/ui/message';
+import { TextArea } from '~/components/ui/text-area';
 
 import { submitContactForm } from './_actions/submit-contact-form';
 import { ContactUsFragment } from './fragment';

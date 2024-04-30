@@ -1,11 +1,3 @@
-import {
-  BlogPostAuthor,
-  BlogPostBanner,
-  BlogPostDate,
-  BlogPostImage,
-  BlogPostTitle,
-} from '@bigcommerce/components/blog-post-card';
-import { Tag, TagContent } from '@bigcommerce/components/tag';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter } from 'next-intl/server';
@@ -14,6 +6,14 @@ import { getBlogPost } from '~/client/queries/get-blog-post';
 import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
 import { SharingLinks } from '~/components/sharing-links';
+import {
+  BlogPostAuthor,
+  BlogPostBanner,
+  BlogPostDate,
+  BlogPostImage,
+  BlogPostTitle,
+} from '~/components/ui/blog-post-card';
+import { Tag, TagContent } from '~/components/ui/tag';
 import { LocaleType } from '~/i18n';
 
 interface Props {

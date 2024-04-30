@@ -1,8 +1,7 @@
-import { Label } from '@bigcommerce/components/label';
-import { TextArea } from '@bigcommerce/components/text-area';
-
 import { getProduct } from '~/client/queries/get-product';
 import { ExistingResultType, Unpacked } from '~/client/util';
+import { Label } from '~/components/ui/label';
+import { TextArea } from '~/components/ui/text-area';
 
 import { useProductFieldController } from '../use-product-form';
 

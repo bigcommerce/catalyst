@@ -1,8 +1,7 @@
-import { Input } from '@bigcommerce/components/input';
-import { Label } from '@bigcommerce/components/label';
-
 import { getProduct } from '~/client/queries/get-product';
 import { ExistingResultType, Unpacked } from '~/client/util';
+import { Input } from '~/components/ui/input';
+import { Label } from '~/components/ui/label';
 
 import { useProductFieldController } from '../use-product-form';
 

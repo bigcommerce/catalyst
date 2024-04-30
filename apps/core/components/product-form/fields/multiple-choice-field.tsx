@@ -1,14 +1,14 @@
-import { Label } from '@bigcommerce/components/label';
-import { PickList, PickListItem } from '@bigcommerce/components/pick-list';
-import { RadioGroup, RadioItem } from '@bigcommerce/components/radio-group';
-import { RectangleList, RectangleListItem } from '@bigcommerce/components/rectangle-list';
-import { Select, SelectContent, SelectItem } from '@bigcommerce/components/select';
-import { Swatch, SwatchItem } from '@bigcommerce/components/swatch';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { getProduct } from '~/client/queries/get-product';
 import { ExistingResultType, Unpacked } from '~/client/util';
 import { BcImage } from '~/components/bc-image';
+import { Label } from '~/components/ui/label';
+import { PickList, PickListItem } from '~/components/ui/pick-list';
+import { RadioGroup, RadioItem } from '~/components/ui/radio-group';
+import { RectangleList, RectangleListItem } from '~/components/ui/rectangle-list';
+import { Select, SelectContent, SelectItem } from '~/components/ui/select';
+import { Swatch, SwatchItem } from '~/components/ui/swatch';
 
 import { useProductFieldController } from '../use-product-form';
 

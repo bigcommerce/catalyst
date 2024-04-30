@@ -1,8 +1,8 @@
-import { Button } from '@bigcommerce/components/button';
 import { useTranslations } from 'next-intl';
 
 import { getCustomerAddresses } from '~/client/queries/get-customer-addresses';
 import { Link } from '~/components/link';
+import { Button } from '~/components/ui/button';
 
 type Addresses = NonNullable<Awaited<ReturnType<typeof getCustomerAddresses>>>['addresses'];
 

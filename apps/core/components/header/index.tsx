@@ -1,4 +1,10 @@
-import { Button } from '@bigcommerce/components/button';
+import { ShoppingCart, User } from 'lucide-react';
+import { ReactNode, Suspense } from 'react';
+
+import { getSessionCustomerId } from '~/auth';
+import { FragmentOf, graphql } from '~/client/graphql';
+import { Link } from '~/components/link';
+import { Button } from '~/components/ui/button';
 import {
   NavigationMenu,
   NavigationMenuCollapsed,
@@ -6,13 +12,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuToggle,
-} from '@bigcommerce/components/navigation-menu';
-import { ShoppingCart, User } from 'lucide-react';
-import { ReactNode, Suspense } from 'react';
-
-import { getSessionCustomerId } from '~/auth';
-import { FragmentOf, graphql } from '~/client/graphql';
-import { Link } from '~/components/link';
+} from '~/components/ui/navigation-menu';
 
 import { QuickSearch } from '../quick-search';
 import { StoreLogo, StoreLogoFragment } from '../store-logo';

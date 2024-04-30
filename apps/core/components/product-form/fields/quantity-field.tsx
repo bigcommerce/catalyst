@@ -1,6 +1,7 @@
-import { Counter } from '@bigcommerce/components/counter';
-import { Label } from '@bigcommerce/components/label';
 import { useTranslations } from 'next-intl';
+
+import { Counter } from '~/components/ui/counter';
+import { Label } from '~/components/ui/label';
 
 import { useProductFieldController } from '../use-product-form';
 

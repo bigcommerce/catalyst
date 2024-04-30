@@ -1,9 +1,10 @@
 'use client';
 
-import { Checkbox } from '@bigcommerce/components/checkbox';
-import { Label } from '@bigcommerce/components/label';
 import { useTranslations } from 'next-intl';
 import { useEffect, useId, useState } from 'react';
+
+import { Checkbox } from '~/components/ui/checkbox';
+import { Label } from '~/components/ui/label';
 
 import { useCompareProductsContext } from '../../app/contexts/compare-products-context';
 

@@ -1,8 +1,9 @@
 'use client';
 
-import { Select, SelectContent, SelectItem } from '@bigcommerce/components/select';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+
+import { Select, SelectContent, SelectItem } from '~/components/ui/select';
 
 export function SortBy() {
   const router = useRouter();

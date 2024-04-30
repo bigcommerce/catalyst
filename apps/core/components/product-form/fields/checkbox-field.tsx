@@ -1,8 +1,7 @@
-import { Checkbox } from '@bigcommerce/components/checkbox';
-import { Label } from '@bigcommerce/components/label';
-
 import { getProduct } from '~/client/queries/get-product';
 import { ExistingResultType, Unpacked } from '~/client/util';
+import { Checkbox } from '~/components/ui/checkbox';
+import { Label } from '~/components/ui/label';
 
 import { useProductFieldController } from '../use-product-form';
 

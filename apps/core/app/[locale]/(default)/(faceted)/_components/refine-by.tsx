@@ -1,8 +1,9 @@
 'use client';
 
-import { Tag, TagAction, TagContent } from '@bigcommerce/components/tag';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+
+import { Tag, TagAction, TagContent } from '~/components/ui/tag';
 
 import type { Facet, PageType, PublicParamKeys } from '../types';
 

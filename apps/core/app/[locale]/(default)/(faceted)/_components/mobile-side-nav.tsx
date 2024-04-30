@@ -1,6 +1,10 @@
 'use client';
 
-import { Button } from '@bigcommerce/components/button';
+import { Filter } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { PropsWithChildren, useEffect, useState } from 'react';
+
+import { Button } from '~/components/ui/button';
 import {
   Sheet,
   SheetClose,
@@ -9,10 +13,7 @@ import {
   SheetOverlay,
   SheetTitle,
   SheetTrigger,
-} from '@bigcommerce/components/sheet';
-import { Filter } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import { PropsWithChildren, useEffect, useState } from 'react';
+} from '~/components/ui/sheet';
 
 export const MobileSideNav = ({ children }: PropsWithChildren) => {
   const [open, setOpen] = useState(false);

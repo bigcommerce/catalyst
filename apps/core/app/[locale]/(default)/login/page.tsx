@@ -1,9 +1,9 @@
-import { Button } from '@bigcommerce/components/button';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 
 import { getReCaptchaSettings } from '~/client/queries/get-recaptcha-settings';
 import { Link } from '~/components/link';
+import { Button } from '~/components/ui/button';
 import { LocaleType } from '~/i18n';
 
 import { ChangePasswordForm } from './_components/change-password-form';
