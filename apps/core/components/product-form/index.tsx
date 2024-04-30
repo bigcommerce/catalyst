@@ -1,12 +1,12 @@
 'use client';
 
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { AlertCircle, Check, Heart } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { FormProvider } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
-import { getProduct } from '~/client/queries/get-product';
-import { ExistingResultType } from '~/client/util';
+import { FragmentOf } from '~/client/graphql';
 import { Button } from '~/components/ui/button';
 
 import { Link } from '../link';
@@ -20,12 +20,16 @@ import { MultipleChoiceField } from './fields/multiple-choice-field';
 import { NumberField } from './fields/number-field';
 import { QuantityField } from './fields/quantity-field';
 import { TextField } from './fields/text-field';
+import { ProductFormFragment } from './fragment';
 import { ProductFormData, useProductForm } from './use-product-form';
 
-type Product = ExistingResultType<typeof getProduct>;
+interface Props {
+  product: FragmentOf<typeof ProductFormFragment>;
+}
 
-export const ProductForm = ({ product }: { product: Product }) => {
+export const ProductForm = ({ product }: Props) => {
   const t = useTranslations('Product.Form');
+  const productOptions = removeEdgesAndNodes(product.productOptions);
 
   const { handleSubmit, register, ...methods } = useProductForm();
 
@@ -70,7 +74,7 @@ export const ProductForm = ({ product }: { product: Product }) => {
       <form className="flex flex-col gap-6 @container" onSubmit={handleSubmit(productFormSubmit)}>
         <input type="hidden" value={product.entityId} {...register('product_id')} />
 
-        {product.productOptions?.map((option) => {
+        {productOptions.map((option) => {
           if (option.__typename === 'MultipleChoiceOption') {
             return <MultipleChoiceField key={option.entityId} option={option} />;
           }

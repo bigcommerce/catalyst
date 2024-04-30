@@ -1,18 +1,17 @@
-import { getProduct } from '~/client/queries/get-product';
-import { ExistingResultType, Unpacked } from '~/client/util';
+import { FragmentOf } from '~/client/graphql';
 import { Label } from '~/components/ui/label';
 import { TextArea } from '~/components/ui/text-area';
 
-import { useProductFieldController } from '../use-product-form';
+import { useProductFieldController } from '../../use-product-form';
+import { ErrorMessage } from '../shared/error-message';
 
-import { ErrorMessage } from './shared/error-message';
+import { MultiLineTextFieldFragment } from './fragment';
 
-type MultiLineTextFieldOption = Extract<
-  Unpacked<ExistingResultType<typeof getProduct>['productOptions']>,
-  { __typename: 'MultiLineTextFieldOption' }
->;
+interface Props {
+  option: FragmentOf<typeof MultiLineTextFieldFragment>;
+}
 
-export const MultiLineTextField = ({ option }: { option: MultiLineTextFieldOption }) => {
+export const MultiLineTextField = ({ option }: Props) => {
   const { field, fieldState } = useProductFieldController({
     name: `attribute_${option.entityId}`,
     rules: {

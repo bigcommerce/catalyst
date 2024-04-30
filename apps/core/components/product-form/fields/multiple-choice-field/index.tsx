@@ -1,7 +1,7 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import { getProduct } from '~/client/queries/get-product';
-import { ExistingResultType, Unpacked } from '~/client/util';
+import { FragmentOf } from '~/client/graphql';
 import { BcImage } from '~/components/bc-image';
 import { Label } from '~/components/ui/label';
 import { PickList, PickListItem } from '~/components/ui/pick-list';
@@ -10,21 +10,22 @@ import { RectangleList, RectangleListItem } from '~/components/ui/rectangle-list
 import { Select, SelectContent, SelectItem } from '~/components/ui/select';
 import { Swatch, SwatchItem } from '~/components/ui/swatch';
 
-import { useProductFieldController } from '../use-product-form';
+import { useProductFieldController } from '../../use-product-form';
+import { ErrorMessage } from '../shared/error-message';
 
-import { ErrorMessage } from './shared/error-message';
+import { MultipleChoiceFieldFragment } from './fragment';
 
-type MultipleChoiceOption = Extract<
-  Unpacked<ExistingResultType<typeof getProduct>['productOptions']>,
-  { __typename: 'MultipleChoiceOption' }
->;
+interface Props {
+  option: FragmentOf<typeof MultipleChoiceFieldFragment>;
+}
 
-export const MultipleChoiceField = ({ option }: { option: MultipleChoiceOption }) => {
+export const MultipleChoiceField = ({ option }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const searchParamSelected = searchParams.get(String(option.entityId));
+  const values = removeEdgesAndNodes(option.values);
 
   const handleOnValueChange = ({ optionId, valueId }: { optionId: number; valueId: number }) => {
     const optionSearchParams = new URLSearchParams(searchParams.toString());
@@ -34,8 +35,8 @@ export const MultipleChoiceField = ({ option }: { option: MultipleChoiceOption }
     router.replace(`${pathname}?${optionSearchParams.toString()}`, { scroll: false });
   };
 
-  const selectedValue = option.values.find((value) => value.isSelected)?.entityId.toString();
-  const defaultValue = option.values.find((value) => value.isDefault)?.entityId.toString();
+  const selectedValue = values.find((value) => value.isSelected)?.entityId.toString();
+  const defaultValue = values.find((value) => value.isDefault)?.entityId.toString();
 
   const { field, fieldState } = useProductFieldController({
     name: `attribute_${option.entityId}`,
@@ -66,7 +67,7 @@ export const MultipleChoiceField = ({ option }: { option: MultipleChoiceOption }
             }}
             value={field.value?.toString()}
           >
-            {option.values.map((value) => {
+            {values.map((value) => {
               if ('__typename' in value && value.__typename === 'SwatchOptionValue') {
                 return (
                   <SwatchItem
@@ -104,7 +105,7 @@ export const MultipleChoiceField = ({ option }: { option: MultipleChoiceOption }
             }}
             value={field.value?.toString()}
           >
-            {option.values.map((value) => {
+            {values.map((value) => {
               return (
                 <RectangleListItem
                   key={value.entityId}
@@ -139,7 +140,7 @@ export const MultipleChoiceField = ({ option }: { option: MultipleChoiceOption }
             }}
             value={field.value?.toString()}
           >
-            {option.values.map((value) => (
+            {values.map((value) => (
               <div className="mb-2 flex" key={value.entityId}>
                 <RadioItem
                   id={`${value.entityId}`}
@@ -177,7 +178,7 @@ export const MultipleChoiceField = ({ option }: { option: MultipleChoiceOption }
             variant={error && 'error'}
           >
             <SelectContent>
-              {option.values.map((value) => (
+              {values.map((value) => (
                 <SelectItem key={value.entityId} value={`${value.entityId}`}>
                   {value.label}
                 </SelectItem>
@@ -208,7 +209,7 @@ export const MultipleChoiceField = ({ option }: { option: MultipleChoiceOption }
             }}
             value={field.value?.toString()}
           >
-            {option.values.map((value) => {
+            {values.map((value) => {
               if ('__typename' in value && value.__typename === 'ProductPickListOptionValue') {
                 return (
                   <div className="flex items-center p-4" key={value.entityId}>

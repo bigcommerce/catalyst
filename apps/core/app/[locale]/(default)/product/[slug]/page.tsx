@@ -14,7 +14,7 @@ import { LocaleType } from '~/i18n';
 
 import { Breadcrumbs, BreadcrumbsFragment } from './_components/breadcrumbs';
 import { Description } from './_components/description';
-import { Details } from './_components/details';
+import { Details, DetailsFragment } from './_components/details';
 import { Gallery } from './_components/gallery';
 import { GalleryFragment } from './_components/gallery/fragment';
 import { RelatedProducts, RelatedProductsFragment } from './_components/related-products';
@@ -61,6 +61,7 @@ const ProductPageQuery = graphql(
         product(entityId: $entityId, optionValueIds: $optionValueIds) {
           ...GalleryFragment
           ...RelatedProductsFragment
+          ...DetailsFragment
           categories(first: 1) {
             edges {
               node {
@@ -72,7 +73,7 @@ const ProductPageQuery = graphql(
       }
     }
   `,
-  [RelatedProductsFragment, BreadcrumbsFragment, GalleryFragment],
+  [RelatedProductsFragment, BreadcrumbsFragment, GalleryFragment, DetailsFragment],
 );
 
 export default async function Product({ params, searchParams }: ProductPageProps) {
@@ -127,7 +128,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
       <div className="mb-12 mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
         <NextIntlClientProvider locale={locale} messages={{ Product: messages.Product ?? {} }}>
           <Gallery noImageText={t('noGalleryText')} product={data.site.product} />
-          <Details product={product} />
+          <Details product={data.site.product} />
           <div className="lg:col-span-2">
             <Description product={product} />
             <Warranty product={product} />

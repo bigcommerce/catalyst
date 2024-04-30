@@ -1,18 +1,17 @@
-import { getProduct } from '~/client/queries/get-product';
-import { ExistingResultType, Unpacked } from '~/client/util';
+import { FragmentOf } from '~/client/graphql';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 
-import { useProductFieldController } from '../use-product-form';
+import { useProductFieldController } from '../../use-product-form';
+import { ErrorMessage } from '../shared/error-message';
 
-import { ErrorMessage } from './shared/error-message';
+import { TextFieldFragment } from './fragment';
 
-type TextFieldOption = Extract<
-  Unpacked<ExistingResultType<typeof getProduct>['productOptions']>,
-  { __typename: 'TextFieldOption' }
->;
+interface Props {
+  option: FragmentOf<typeof TextFieldFragment>;
+}
 
-export const TextField = ({ option }: { option: TextFieldOption }) => {
+export const TextField = ({ option }: Props) => {
   const { field, fieldState } = useProductFieldController({
     name: `attribute_${option.entityId}`,
     rules: {

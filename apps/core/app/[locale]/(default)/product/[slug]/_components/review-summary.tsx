@@ -1,27 +1,30 @@
 import { getLocale, getTranslations } from 'next-intl/server';
 import { useId } from 'react';
 
-import { getProductReviews } from '~/client/queries/get-product-reviews';
+import { FragmentOf, graphql } from '~/client/graphql';
 import { Rating } from '~/components/ui/rating';
 import { cn } from '~/lib/utils';
 
+export const ReviewSummaryFragment = graphql(`
+  fragment ReviewSummaryFragment on Product {
+    reviewSummary {
+      numberOfReviews
+      averageRating
+    }
+  }
+`);
+
 interface Props {
-  productId: number;
+  data: FragmentOf<typeof ReviewSummaryFragment>;
 }
 
-export const ReviewSummary = async ({ productId }: Props) => {
+export const ReviewSummary = async ({ data }: Props) => {
   const summaryId = useId();
   const locale = await getLocale();
 
   const t = await getTranslations({ locale, namespace: 'Product.Details.ReviewSummary' });
 
-  const reviews = await getProductReviews(productId);
-
-  if (!reviews) {
-    return null;
-  }
-
-  const { numberOfReviews, averageRating } = reviews.reviewSummary;
+  const { numberOfReviews, averageRating } = data.reviewSummary;
 
   const hasNoReviews = numberOfReviews === 0;
 

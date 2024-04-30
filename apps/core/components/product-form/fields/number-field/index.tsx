@@ -1,18 +1,17 @@
-import { getProduct } from '~/client/queries/get-product';
-import { ExistingResultType, Unpacked } from '~/client/util';
+import { FragmentOf } from '~/client/graphql';
 import { Counter } from '~/components/ui/counter';
 import { Label } from '~/components/ui/label';
 
-import { useProductFieldController } from '../use-product-form';
+import { useProductFieldController } from '../../use-product-form';
+import { ErrorMessage } from '../shared/error-message';
 
-import { ErrorMessage } from './shared/error-message';
+import { NumberFieldFragment } from './fragment';
 
-type NumberFieldOption = Extract<
-  Unpacked<ExistingResultType<typeof getProduct>['productOptions']>,
-  { __typename: 'NumberFieldOption' }
->;
+interface Props {
+  option: FragmentOf<typeof NumberFieldFragment>;
+}
 
-export const NumberField = ({ option }: { option: NumberFieldOption }) => {
+export const NumberField = ({ option }: Props) => {
   const { field, fieldState } = useProductFieldController({
     name: `attribute_${option.entityId}`,
     rules: {

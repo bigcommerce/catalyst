@@ -1,18 +1,17 @@
-import { getProduct } from '~/client/queries/get-product';
-import { ExistingResultType, Unpacked } from '~/client/util';
+import { FragmentOf } from '~/client/graphql';
 import { Checkbox } from '~/components/ui/checkbox';
 import { Label } from '~/components/ui/label';
 
-import { useProductFieldController } from '../use-product-form';
+import { useProductFieldController } from '../../use-product-form';
+import { ErrorMessage } from '../shared/error-message';
 
-import { ErrorMessage } from './shared/error-message';
+import { CheckboxFieldFragment } from './fragment';
 
-type CheckboxOption = Extract<
-  Unpacked<ExistingResultType<typeof getProduct>['productOptions']>,
-  { __typename: 'CheckboxOption' }
->;
+interface Props {
+  option: FragmentOf<typeof CheckboxFieldFragment>;
+}
 
-export const CheckboxField = ({ option }: { option: CheckboxOption }) => {
+export const CheckboxField = ({ option }: Props) => {
   const { field, fieldState } = useProductFieldController({
     name: `attribute_${option.entityId}`,
     rules: {
