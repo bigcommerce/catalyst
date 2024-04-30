@@ -1,21 +1,21 @@
 'use client';
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@bigcommerce/components/accordion';
-import { Button } from '@bigcommerce/components/button';
-import { Checkbox } from '@bigcommerce/components/checkbox';
-import { Input } from '@bigcommerce/components/input';
-import { Label } from '@bigcommerce/components/label';
-import { Rating } from '@bigcommerce/components/rating';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { FormEvent, useRef } from 'react';
 
 import { Link } from '~/components/link';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '~/components/ui/accordion';
+import { Button } from '~/components/ui/button';
+import { Checkbox } from '~/components/ui/checkbox';
+import { Input } from '~/components/ui/input';
+import { Label } from '~/components/ui/label';
+import { Rating } from '~/components/ui/rating';
 import { cn } from '~/lib/utils';
 
 import type { Facet, PageType } from '../types';

@@ -1,8 +1,8 @@
-import { Rating } from '@bigcommerce/components/rating';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { useId } from 'react';
 
 import { getProductReviews } from '~/client/queries/get-product-reviews';
+import { Rating } from '~/components/ui/rating';
 import { cn } from '~/lib/utils';
 
 interface Props {

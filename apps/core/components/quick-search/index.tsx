@@ -1,8 +1,14 @@
 'use client';
 
-import { Button } from '@bigcommerce/components/button';
-import { Field, FieldControl, Form } from '@bigcommerce/components/form';
-import { Input, InputIcon } from '@bigcommerce/components/input';
+import debounce from 'lodash.debounce';
+import { Search, Loader2 as Spinner, X } from 'lucide-react';
+import { PropsWithChildren, useEffect, useRef, useState } from 'react';
+
+import { getQuickSearchResults } from '~/client/queries/get-quick-search-results';
+import { ExistingResultType } from '~/client/util';
+import { Button } from '~/components/ui/button';
+import { Field, FieldControl, Form } from '~/components/ui/form';
+import { Input, InputIcon } from '~/components/ui/input';
 import {
   Sheet,
   SheetClose,
@@ -10,13 +16,7 @@ import {
   SheetOverlay,
   SheetTitle,
   SheetTrigger,
-} from '@bigcommerce/components/sheet';
-import debounce from 'lodash.debounce';
-import { Search, Loader2 as Spinner, X } from 'lucide-react';
-import { PropsWithChildren, useEffect, useRef, useState } from 'react';
-
-import { getQuickSearchResults } from '~/client/queries/get-quick-search-results';
-import { ExistingResultType } from '~/client/util';
+} from '~/components/ui/sheet';
 import { cn } from '~/lib/utils';
 
 import { BcImage } from '../bc-image';

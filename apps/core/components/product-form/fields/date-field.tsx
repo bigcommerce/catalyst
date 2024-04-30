@@ -1,9 +1,9 @@
-import { DatePicker } from '@bigcommerce/components/date-picker';
-import { Label } from '@bigcommerce/components/label';
 import { useFormatter } from 'next-intl';
 
 import { getProduct } from '~/client/queries/get-product';
 import { ExistingResultType, Unpacked } from '~/client/util';
+import { DatePicker } from '~/components/ui/date-picker';
+import { Label } from '~/components/ui/label';
 
 import { useProductFieldController } from '../use-product-form';
 

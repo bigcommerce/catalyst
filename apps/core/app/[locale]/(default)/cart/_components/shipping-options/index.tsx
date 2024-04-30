@@ -1,12 +1,12 @@
-import { Field, FieldLabel, Form, FormSubmit } from '@bigcommerce/components/form';
-import { Label } from '@bigcommerce/components/label';
-import { Message } from '@bigcommerce/components/message';
-import { RadioGroup, RadioItem } from '@bigcommerce/components/radio-group';
 import { AlertCircle } from 'lucide-react';
 import { useFormatter, useTranslations } from 'next-intl';
 import { toast } from 'react-hot-toast';
 
 import { FragmentOf } from '~/client/graphql';
+import { Field, FieldLabel, Form, FormSubmit } from '~/components/ui/form';
+import { Label } from '~/components/ui/label';
+import { Message } from '~/components/ui/message';
+import { RadioGroup, RadioItem } from '~/components/ui/radio-group';
 
 import { ShippingOptionsFragment } from './fragment';
 import { SubmitButton } from './submit-button';

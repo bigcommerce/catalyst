@@ -1,13 +1,13 @@
+import { useId } from 'react';
+
+import { graphql, ResultOf } from '~/client/graphql';
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNextIndicator,
   CarouselPreviousIndicator,
-} from '@bigcommerce/components/carousel';
-import { useId } from 'react';
-
-import { graphql, ResultOf } from '~/client/graphql';
+} from '~/components/ui/carousel';
 
 import { ProductCard, ProductCardFragment } from '../product-card';
 

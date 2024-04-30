@@ -1,3 +1,8 @@
+import { useTranslations } from 'next-intl';
+import { useId } from 'react';
+
+import { graphql, ResultOf } from '~/client/graphql';
+import { Link } from '~/components/link';
 import {
   ProductCard as ComponentsProductCard,
   ProductCardImage,
@@ -5,13 +10,8 @@ import {
   ProductCardInfoBrandName,
   ProductCardInfoPrice,
   ProductCardInfoProductName,
-} from '@bigcommerce/components/product-card';
-import { Rating } from '@bigcommerce/components/rating';
-import { useTranslations } from 'next-intl';
-import { useId } from 'react';
-
-import { graphql, ResultOf } from '~/client/graphql';
-import { Link } from '~/components/link';
+} from '~/components/ui/product-card';
+import { Rating } from '~/components/ui/rating';
 import { cn } from '~/lib/utils';
 
 import { BcImage } from '../bc-image';

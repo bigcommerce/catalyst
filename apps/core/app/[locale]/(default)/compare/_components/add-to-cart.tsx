@@ -1,9 +1,10 @@
 'use client';
 
-import { Button } from '@bigcommerce/components/button';
 import { Loader2 as Spinner } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useFormStatus } from 'react-dom';
+
+import { Button } from '~/components/ui/button';
 
 export const AddToCart = ({
   disabled = false,

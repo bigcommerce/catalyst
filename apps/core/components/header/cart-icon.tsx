@@ -1,9 +1,10 @@
 'use client';
 
-import { Badge } from '@bigcommerce/components/badge';
 import { ShoppingCart } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
+
+import { Badge } from '~/components/ui/badge';
 
 export const CartQuantityResponseSchema = z.object({
   count: z.number(),

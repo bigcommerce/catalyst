@@ -1,3 +1,7 @@
+import { getFormatter, getLocale } from 'next-intl/server';
+
+import { FragmentOf, graphql } from '~/client/graphql';
+import { Link } from '~/components/link';
 import {
   BlogPostAuthor,
   BlogPostBanner,
@@ -6,11 +10,7 @@ import {
   BlogPostImage,
   BlogPostTitle,
   BlogPostCard as ComponentsBlogPostCard,
-} from '@bigcommerce/components/blog-post-card';
-import { getFormatter, getLocale } from 'next-intl/server';
-
-import { FragmentOf, graphql } from '~/client/graphql';
-import { Link } from '~/components/link';
+} from '~/components/ui/blog-post-card';
 
 import { BcImage } from '../bc-image';
 

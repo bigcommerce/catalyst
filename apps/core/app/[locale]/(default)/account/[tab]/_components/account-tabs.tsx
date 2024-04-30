@@ -1,10 +1,10 @@
 'use client';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@bigcommerce/components/tabs';
 import { useTranslations } from 'next-intl';
 import { PropsWithChildren } from 'react';
 
 import { Link } from '~/components/link';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
 
 import { TabType } from '../layout';
 

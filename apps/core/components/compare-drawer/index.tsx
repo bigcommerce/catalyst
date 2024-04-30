@@ -1,18 +1,18 @@
 'use client';
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@bigcommerce/components/accordion';
-import { Button } from '@bigcommerce/components/button';
 import { X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 import { CheckedProduct, useCompareProductsContext } from '~/app/contexts/compare-products-context';
 import { Link } from '~/components/link';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '~/components/ui/accordion';
+import { Button } from '~/components/ui/button';
 
 import { BcImage } from '../bc-image';
 

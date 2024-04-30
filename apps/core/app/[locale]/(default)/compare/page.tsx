@@ -1,6 +1,4 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { Button } from '@bigcommerce/components/button';
-import { Rating } from '@bigcommerce/components/rating';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import * as z from 'zod';
@@ -13,6 +11,8 @@ import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
 import { Pricing, PricingFragment } from '~/components/pricing';
 import { SearchForm } from '~/components/search-form';
+import { Button } from '~/components/ui/button';
+import { Rating } from '~/components/ui/rating';
 import { LocaleType } from '~/i18n';
 import { cn } from '~/lib/utils';
 

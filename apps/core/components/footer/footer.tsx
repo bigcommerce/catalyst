@@ -1,6 +1,5 @@
-import { Footer as ComponentsFooter, FooterSection } from '@bigcommerce/components/footer';
-
 import { FragmentOf, graphql } from '~/client/graphql';
+import { Footer as ComponentsFooter, FooterSection } from '~/components/ui/footer';
 
 import { StoreLogo, StoreLogoFragment } from '../store-logo';
 

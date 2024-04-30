@@ -1,6 +1,9 @@
 'use client';
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+
+import { FragmentOf } from '~/client/graphql';
+import { BcImage } from '~/components/bc-image';
 import {
   Gallery as ComponentsGallery,
   GalleryContent,
@@ -9,10 +12,7 @@ import {
   GalleryThumbnail,
   GalleryThumbnailItem,
   GalleryThumbnailList,
-} from '@bigcommerce/components/gallery';
-
-import { FragmentOf } from '~/client/graphql';
-import { BcImage } from '~/components/bc-image';
+} from '~/components/ui/gallery';
 
 import { GalleryFragment } from './fragment';
 

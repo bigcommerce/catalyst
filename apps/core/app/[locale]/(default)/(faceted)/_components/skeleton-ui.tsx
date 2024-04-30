@@ -1,4 +1,4 @@
-import { Skeleton } from '@bigcommerce/components/skeleton';
+import { Skeleton } from '~/components/ui/skeleton';
 
 export const SkeletonIU = () => (
   <div>

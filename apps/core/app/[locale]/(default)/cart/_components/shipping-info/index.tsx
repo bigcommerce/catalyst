@@ -1,7 +1,3 @@
-import { Button } from '@bigcommerce/components/button';
-import { Field, FieldControl, FieldLabel, Form, FormSubmit } from '@bigcommerce/components/form';
-import { Input } from '@bigcommerce/components/input';
-import { Select, SelectContent, SelectItem } from '@bigcommerce/components/select';
 import { AlertCircle, Loader2 as Spinner } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useReducer } from 'react';
@@ -11,6 +7,10 @@ import { toast } from 'react-hot-toast';
 import { getShippingCountries } from '~/app/[locale]/(default)/cart/_components/shipping-estimator/get-shipping-countries';
 import { FragmentOf } from '~/client/graphql';
 import { ExistingResultType } from '~/client/util';
+import { Button } from '~/components/ui/button';
+import { Field, FieldControl, FieldLabel, Form, FormSubmit } from '~/components/ui/form';
+import { Input } from '~/components/ui/input';
+import { Select, SelectContent, SelectItem } from '~/components/ui/select';
 import { cn } from '~/lib/utils';
 
 import { ShippingInfoFragment } from './fragment';

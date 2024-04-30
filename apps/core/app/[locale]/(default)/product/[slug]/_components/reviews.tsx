@@ -1,7 +1,7 @@
-import { Rating } from '@bigcommerce/components/rating';
 import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { getProductReviews } from '~/client/queries/get-product-reviews';
+import { Rating } from '~/components/ui/rating';
 
 import { ProductReviewSchema } from './product-review-schema';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { CarouselPagination, CarouselPaginationTab } from '@bigcommerce/components/carousel';
+import { CarouselPagination, CarouselPaginationTab } from '~/components/ui/carousel';
 
 interface Props {
   id: string;

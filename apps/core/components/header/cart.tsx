@@ -1,9 +1,9 @@
-import { NavigationMenuLink } from '@bigcommerce/components/navigation-menu';
 import { cookies } from 'next/headers';
 import { ReactNode } from 'react';
 
 import { getCart } from '~/client/queries/get-cart';
 import { Link } from '~/components/link';
+import { NavigationMenuLink } from '~/components/ui/navigation-menu';
 
 import { CartIcon } from './cart-icon';
 
