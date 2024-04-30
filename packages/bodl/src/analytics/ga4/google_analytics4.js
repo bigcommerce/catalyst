@@ -1,5 +1,4 @@
-// THIS SCRIPT IS MAINTAINED BY BIGCOMMERCE. DO NOT MODIFY IT.
-function subscribeOnBodlEvents(measurementId, developerId, consentModeEnabled) {
+export default function subscribeOnBodlEvents(measurementId, developerId, consentModeEnabled) {
   window.dataLayer = window.dataLayer || [];
 
   if (!window || typeof window.bodlEvents === 'undefined') {

@@ -9,6 +9,7 @@ import { toast } from 'react-hot-toast';
 import { getProduct } from '~/client/queries/get-product';
 import { ExistingResultType } from '~/client/util';
 
+import { useBodl } from '~/app/contexts/bodl-context';
 import { Link } from '../link';
 
 import { handleAddToCart } from './_actions/add-to-cart';
@@ -21,12 +22,12 @@ import { NumberField } from './fields/number-field';
 import { QuantityField } from './fields/quantity-field';
 import { TextField } from './fields/text-field';
 import { ProductFormData, useProductForm } from './use-product-form';
-import { sendBodlEvent } from '~/components/bodl';
 
 type Product = ExistingResultType<typeof getProduct>;
 
 export const ProductForm = ({ product }: { product: Product }) => {
   const t = useTranslations('Product.Form');
+  const bodl = useBodl();
 
   const { handleSubmit, register, ...methods } = useProductForm();
 
@@ -42,24 +43,19 @@ export const ProductForm = ({ product }: { product: Product }) => {
       return;
     }
 
-    // Temporary event implementation using product data
-    sendBodlEvent({
-      cart: {
-        added: {
-          product_value: product.prices?.price.value * data.quantity,
+    bodl.sendEvent('bodl_v1_cart_product_added', {
+      product_value: product.prices?.price.value * data.quantity,
+      currency: product.prices?.price.currencyCode,
+      line_items: [
+        {
+          product_id: product.entityId,
+          product_name: product.name,
+          quantity: data.quantity,
+          sku: product.sku,
+          base_price: product.prices?.price.value,
           currency: product.prices?.price.currencyCode,
-          line_items: [
-            {
-              product_id: product.entityId,
-              product_name: product.name,
-              quantity: data.quantity,
-              sku: product.sku,
-              base_price: product.prices?.price.value,
-              currency: product.prices?.price.currencyCode,
-            },
-          ],
         },
-      },
+      ],
     });
 
     toast.success(

@@ -2,9 +2,10 @@
 
 import { useEffect } from 'react';
 import { useBodl } from 'app/contexts/bodl-context';
+import { bodlEvent } from '@bigcommerce/bodl/src/types';
 
 interface Props {
-  event: string;
+  event: bodlEvent;
   payload: any;
 }
 

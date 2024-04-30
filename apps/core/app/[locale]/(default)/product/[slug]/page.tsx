@@ -18,6 +18,7 @@ import { Gallery } from './_components/gallery';
 import { RelatedProducts, RelatedProductsFragment } from './_components/related-products';
 import { Reviews } from './_components/reviews';
 import { Warranty } from './_components/warranty';
+import Bodl from '~/components/bodl';
 
 interface ProductPageProps {
   params: { slug: string; locale: LocaleType };
@@ -128,6 +129,23 @@ export default async function Product({ params, searchParams }: ProductPageProps
       <Suspense fallback={t('loading')}>
         <RelatedProducts data={data.site.product} />
       </Suspense>
+
+      <Bodl
+        event="bodl_v1_product_page_viewed"
+        payload={{
+          product_value: product.prices?.price.value,
+          currency: product.prices?.price.currencyCode,
+          line_items: [
+            {
+              product_id: product.entityId,
+              product_name: product.name,
+              sku: product.sku,
+              base_price: product.prices?.price.value,
+              currency: product.prices?.price.currencyCode,
+            },
+          ],
+        }}
+      />
     </>
   );
 }

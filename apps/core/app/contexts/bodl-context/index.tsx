@@ -8,7 +8,7 @@ const ga4 = new Ga4({
   consentModeEnabled: false,
 });
 
-const bodl = new Bodl([ga4]);
+const bodl = new Bodl([ga4], { channel_id: process.env.BIGCOMMERCE_CHANNEL_ID ?? '1' });
 
 const BodlContext = createContext<Bodl | null>(null);
 

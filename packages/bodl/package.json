@@ -1,0 +1,30 @@
+{
+  "name": "@bigcommerce/bodl",
+  "description": "Big Open Data Layer for Headless Storefront Analytics.",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.js,.cjs --max-warnings 0",
+    "lint-fix": "eslint . --ext .ts,.js,.cjs --fix"
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@bigcommerce/eslint-config": "^2.8.1",
+    "@bigcommerce/eslint-config-catalyst": "workspace:^",
+    "@types/node": "^20.12.7",
+    "@types/uuid": "^9.0.8",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "uuid": "^9.0.1"
+  }
+}
