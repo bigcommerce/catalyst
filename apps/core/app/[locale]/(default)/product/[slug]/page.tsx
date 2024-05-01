@@ -19,7 +19,7 @@ import { Gallery } from './_components/gallery';
 import { GalleryFragment } from './_components/gallery/fragment';
 import { RelatedProducts, RelatedProductsFragment } from './_components/related-products';
 import { Reviews } from './_components/reviews';
-import { Warranty } from './_components/warranty';
+import { Warranty, WarrantyFragment } from './_components/warranty';
 
 interface ProductPageProps {
   params: { slug: string; locale: LocaleType };
@@ -63,6 +63,7 @@ const ProductPageQuery = graphql(
           ...RelatedProductsFragment
           ...DetailsFragment
           ...DescriptionFragment
+          ...WarrantyFragment
           categories(first: 1) {
             edges {
               node {
@@ -80,6 +81,7 @@ const ProductPageQuery = graphql(
     GalleryFragment,
     DetailsFragment,
     DescriptionFragment,
+    WarrantyFragment,
   ],
 );
 
@@ -138,7 +140,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
           <Details product={data.site.product} />
           <div className="lg:col-span-2">
             <Description product={data.site.product} />
-            <Warranty product={product} />
+            <Warranty product={data.site.product} />
             <Suspense fallback={t('loading')}>
               <Reviews productId={product.entityId} />
             </Suspense>
