@@ -1,5 +1,4 @@
 ---
-"@bigcommerce/components": patch
 "@bigcommerce/catalyst-core": patch
 ---
 

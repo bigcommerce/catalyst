@@ -1,5 +1,5 @@
 ---
-"@bigcommerce/components": minor
+"@bigcommerce/catalyst-core": minor
 ---
 
 Add dialog component
