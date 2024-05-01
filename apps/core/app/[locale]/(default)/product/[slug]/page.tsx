@@ -13,7 +13,7 @@ import { revalidate } from '~/client/revalidate-target';
 import { LocaleType } from '~/i18n';
 
 import { Breadcrumbs, BreadcrumbsFragment } from './_components/breadcrumbs';
-import { Description } from './_components/description';
+import { Description, DescriptionFragment } from './_components/description';
 import { Details, DetailsFragment } from './_components/details';
 import { Gallery } from './_components/gallery';
 import { GalleryFragment } from './_components/gallery/fragment';
@@ -62,6 +62,7 @@ const ProductPageQuery = graphql(
           ...GalleryFragment
           ...RelatedProductsFragment
           ...DetailsFragment
+          ...DescriptionFragment
           categories(first: 1) {
             edges {
               node {
@@ -73,7 +74,13 @@ const ProductPageQuery = graphql(
       }
     }
   `,
-  [RelatedProductsFragment, BreadcrumbsFragment, GalleryFragment, DetailsFragment],
+  [
+    RelatedProductsFragment,
+    BreadcrumbsFragment,
+    GalleryFragment,
+    DetailsFragment,
+    DescriptionFragment,
+  ],
 );
 
 export default async function Product({ params, searchParams }: ProductPageProps) {
@@ -130,7 +137,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
           <Gallery noImageText={t('noGalleryText')} product={data.site.product} />
           <Details product={data.site.product} />
           <div className="lg:col-span-2">
-            <Description product={product} />
+            <Description product={data.site.product} />
             <Warranty product={product} />
             <Suspense fallback={t('loading')}>
               <Reviews productId={product.entityId} />
