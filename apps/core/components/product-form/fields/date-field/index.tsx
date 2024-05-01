@@ -1,20 +1,17 @@
 import { useFormatter } from 'next-intl';
 
-import { getProduct } from '~/client/queries/get-product';
-import { ExistingResultType, Unpacked } from '~/client/util';
+import { FragmentOf } from '~/client/graphql';
 import { DatePicker } from '~/components/ui/date-picker';
 import { Label } from '~/components/ui/label';
 
-import { useProductFieldController } from '../use-product-form';
+import { useProductFieldController } from '../../use-product-form';
+import { ErrorMessage } from '../shared/error-message';
 
-import { ErrorMessage } from './shared/error-message';
+import { DateFieldFragment } from './fragment';
 
-type DateFieldOption = Extract<
-  Unpacked<ExistingResultType<typeof getProduct>['productOptions']>,
-  { __typename: 'DateFieldOption' }
->;
+type Option = FragmentOf<typeof DateFieldFragment>;
 
-const getDisabledDays = (option: DateFieldOption) => {
+const getDisabledDays = (option: Option) => {
   switch (option.limitDateBy) {
     case 'EARLIEST_DATE':
       return option.earliest ? [{ before: new Date(option.earliest) }] : [];
@@ -33,7 +30,11 @@ const getDisabledDays = (option: DateFieldOption) => {
   }
 };
 
-export const DateField = ({ option }: { option: DateFieldOption }) => {
+interface Props {
+  option: Option;
+}
+
+export const DateField = ({ option }: Props) => {
   const format = useFormatter();
 
   const disabledDays = getDisabledDays(option);

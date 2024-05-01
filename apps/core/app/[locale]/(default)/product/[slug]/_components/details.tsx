@@ -1,17 +1,82 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { useFormatter, useTranslations } from 'next-intl';
-import { Suspense } from 'react';
 
-import { getProduct } from '~/client/queries/get-product';
+import { FragmentOf, graphql } from '~/client/graphql';
 import { ProductForm } from '~/components/product-form';
+import { ProductFormFragment } from '~/components/product-form/fragment';
 
-import { ProductSchema } from './product-schema';
-import { ReviewSummary } from './review-summary';
+import { ProductSchema, ProductSchemaFragment } from './product-schema';
+import { ReviewSummary, ReviewSummaryFragment } from './review-summary';
 
-type Product = Awaited<ReturnType<typeof getProduct>>;
+export const DetailsFragment = graphql(
+  `
+    fragment DetailsFragment on Product {
+      ...ReviewSummaryFragment
+      ...ProductSchemaFragment
+      ...ProductFormFragment
+      entityId
+      name
+      sku
+      upc
+      minPurchaseQuantity
+      maxPurchaseQuantity
+      condition
+      weight {
+        value
+        unit
+      }
+      availabilityV2 {
+        description
+      }
+      customFields {
+        edges {
+          node {
+            entityId
+            name
+            value
+          }
+        }
+      }
+      brand {
+        name
+      }
+      prices {
+        priceRange {
+          min {
+            value
+          }
+          max {
+            value
+          }
+        }
+        retailPrice {
+          value
+        }
+        salePrice {
+          value
+        }
+        basePrice {
+          value
+        }
+        price {
+          value
+          currencyCode
+        }
+      }
+    }
+  `,
+  [ReviewSummaryFragment, ProductSchemaFragment, ProductFormFragment],
+);
 
-export const Details = ({ product }: { product: NonNullable<Product> }) => {
+interface Props {
+  product: FragmentOf<typeof DetailsFragment>;
+}
+
+export const Details = ({ product }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
+
+  const customFields = removeEdgesAndNodes(product.customFields);
 
   const showPriceRange =
     product.prices?.priceRange.min.value !== product.prices?.priceRange.max.value;
@@ -24,9 +89,7 @@ export const Details = ({ product }: { product: NonNullable<Product> }) => {
 
       <h1 className="mb-4 text-4xl font-black lg:text-5xl">{product.name}</h1>
 
-      <Suspense fallback={t('loading')}>
-        <ReviewSummary productId={product.entityId} />
-      </Suspense>
+      <ReviewSummary data={product} />
 
       {product.prices && (
         <div className="my-6 text-2xl font-bold lg:text-3xl">
@@ -141,8 +204,8 @@ export const Details = ({ product }: { product: NonNullable<Product> }) => {
               </p>
             </div>
           )}
-          {Boolean(product.customFields) &&
-            product.customFields.map((customField) => (
+          {Boolean(customFields) &&
+            customFields.map((customField) => (
               <div key={customField.entityId}>
                 <h3 className="font-semibold">{customField.name}</h3>
                 <p>{customField.value}</p>
