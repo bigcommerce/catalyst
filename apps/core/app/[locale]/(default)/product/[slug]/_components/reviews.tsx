@@ -1,23 +1,63 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations } from 'next-intl/server';
 
-import { getProductReviews } from '~/client/queries/get-product-reviews';
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
+import { revalidate } from '~/client/revalidate-target';
 import { Rating } from '~/components/ui/rating';
 
-import { ProductReviewSchema } from './product-review-schema';
+import { ProductReviewSchema, ProductReviewSchemaFragment } from './product-review-schema';
+
+export const ReviewsQuery = graphql(
+  `
+    query ReviewsQuery($entityId: Int!) {
+      site {
+        product(entityId: $entityId) {
+          reviews(first: 5) {
+            edges {
+              node {
+                ...ProductReviewSchemaFragment
+                author {
+                  name
+                }
+                entityId
+                title
+                text
+                rating
+                createdAt {
+                  utc
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+  [ProductReviewSchemaFragment],
+);
 
 interface Props {
   productId: number;
 }
 
 export const Reviews = async ({ productId }: Props) => {
-  const product = await getProductReviews(productId);
   const t = await getTranslations('Product.DescriptionAndReviews');
   const format = await getFormatter();
-  const reviews = product?.reviews;
 
-  if (!reviews) {
+  const { data } = await client.fetch({
+    document: ReviewsQuery,
+    variables: { entityId: productId },
+    fetchOptions: { next: { revalidate } },
+  });
+
+  const product = data.site.product;
+
+  if (!product) {
     return null;
   }
+
+  const reviews = removeEdgesAndNodes(product.reviews);
 
   return (
     <>

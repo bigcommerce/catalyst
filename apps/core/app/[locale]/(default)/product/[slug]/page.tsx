@@ -64,6 +64,7 @@ const ProductPageQuery = graphql(
           ...DetailsFragment
           ...DescriptionFragment
           ...WarrantyFragment
+          entityId
           categories(first: 1) {
             edges {
               node {
@@ -107,28 +108,20 @@ export default async function Product({ params, searchParams }: ProductPageProps
       (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
     );
 
-  // TODO: Here we are temporarily fetching the same product twice
-  // This is part of the ongoing effort of migrating to fragment collocation
-  const [product, { data }] = await Promise.all([
-    getProduct(productId, optionValueIds),
+  const { data } = await client.fetch({
+    document: ProductPageQuery,
+    variables: { entityId: productId, optionValueIds },
+    customerId,
+    fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
+  });
 
-    client.fetch({
-      document: ProductPageQuery,
-      variables: { entityId: productId, optionValueIds },
-      customerId,
-      fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
-    }),
-  ]);
+  const product = data.site.product;
 
   if (!product) {
     return notFound();
   }
 
-  if (!data.site.product) {
-    return notFound();
-  }
-
-  const category = removeEdgesAndNodes(data.site.product.categories).at(0);
+  const category = removeEdgesAndNodes(product.categories).at(0);
 
   return (
     <>
@@ -136,11 +129,11 @@ export default async function Product({ params, searchParams }: ProductPageProps
 
       <div className="mb-12 mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
         <NextIntlClientProvider locale={locale} messages={{ Product: messages.Product ?? {} }}>
-          <Gallery noImageText={t('noGalleryText')} product={data.site.product} />
-          <Details product={data.site.product} />
+          <Gallery noImageText={t('noGalleryText')} product={product} />
+          <Details product={product} />
           <div className="lg:col-span-2">
-            <Description product={data.site.product} />
-            <Warranty product={data.site.product} />
+            <Description product={product} />
+            <Warranty product={product} />
             <Suspense fallback={t('loading')}>
               <Reviews productId={product.entityId} />
             </Suspense>
@@ -149,7 +142,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
       </div>
 
       <Suspense fallback={t('loading')}>
-        <RelatedProducts data={data.site.product} />
+        <RelatedProducts data={product} />
       </Suspense>
     </>
   );
