@@ -65,9 +65,6 @@ export const cloneCatalyst = async ({
       }),
     );
 
-  delete packageJson.private;
-  delete packageJson.exports;
-  delete packageJson.sideEffects;
   delete packageJson.dependencies['@bigcommerce/catalyst-client'];
   delete packageJson.devDependencies['@bigcommerce/eslint-config-catalyst'];
 
@@ -81,19 +78,10 @@ export const cloneCatalyst = async ({
   if (!includeFunctionalTests) {
     const tsConfigJson = z
       .object({
-        compilerOptions: z
-          .object({
-            declaration: z.boolean().optional(),
-            declarationMap: z.boolean().optional(),
-          })
-          .passthrough(),
         include: z.array(z.string()).optional(),
       })
       .passthrough()
-      .parse(merge({}, readJsonSync(join(projectDir, 'tsconfig.json'))));
-
-    delete tsConfigJson.compilerOptions.declaration;
-    delete tsConfigJson.compilerOptions.declarationMap;
+      .parse(readJsonSync(join(projectDir, 'tsconfig.json')));
 
     tsConfigJson.include = tsConfigJson.include?.filter(
       (include) => !['tests/**/*', 'playwright.config.ts'].includes(include),
