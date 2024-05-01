@@ -8,5 +8,7 @@ export const client = createClient({
   storeHash: process.env.BIGCOMMERCE_STORE_HASH ?? '',
   channelId: process.env.BIGCOMMERCE_CHANNEL_ID,
   backendUserAgentExtensions: backendUserAgent,
-  logger: process.env.NODE_ENV !== 'production' || process.env.CLIENT_LOGGER === 'true',
+  logger:
+    (process.env.NODE_ENV !== 'production' && process.env.CLIENT_LOGGER !== 'false') ||
+    process.env.CLIENT_LOGGER === 'true',
 });
