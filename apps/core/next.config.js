@@ -15,7 +15,6 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['@icons-pack/react-simple-icons'],
   },
-  transpilePackages: ['@bigcommerce/components'],
   typescript: {
     ignoreBuildErrors: !!process.env.CI,
   },
