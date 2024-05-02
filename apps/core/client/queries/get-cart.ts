@@ -4,6 +4,7 @@ import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
 import { graphql } from '../graphql';
+import { TAGS } from '../tags';
 
 const MONEY_FIELDS_FRAGMENT = graphql(`
   fragment MoneyFields on Money {
@@ -130,7 +131,7 @@ export const getCart = cache(async (cartId?: string) => {
     fetchOptions: {
       cache: 'no-store',
       next: {
-        tags: ['cart'],
+        tags: [TAGS.cart],
       },
     },
   });

@@ -4,6 +4,7 @@ import { revalidateTag } from 'next/cache';
 import { z } from 'zod';
 
 import { selectCheckoutShippingOption } from '~/client/mutations/select-checkout-shipping-option';
+import { TAGS } from '~/client/tags';
 
 const ShippingCostSchema = z.object({
   shippingOption: z.string(),
@@ -29,7 +30,7 @@ export const submitShippingCosts = async (
       return { status: 'error', error: 'Failed to submit shipping cost.' };
     }
 
-    revalidateTag('checkout');
+    revalidateTag(TAGS.checkout);
 
     return { status: 'success', data: shippingCost };
   } catch (error: unknown) {

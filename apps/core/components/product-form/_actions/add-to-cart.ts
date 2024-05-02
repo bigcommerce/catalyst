@@ -8,6 +8,7 @@ import { addCartLineItem } from '~/client/mutations/add-cart-line-item';
 import { createCart } from '~/client/mutations/create-cart';
 import { getCart } from '~/client/queries/get-cart';
 import { getProduct } from '~/client/queries/get-product';
+import { TAGS } from '~/client/tags';
 
 import { ProductFormData } from '../use-product-form';
 
@@ -147,7 +148,7 @@ export async function handleAddToCart(data: ProductFormData) {
         return { status: 'error', error: 'Failed to add product to cart.' };
       }
 
-      revalidateTag('cart');
+      revalidateTag(TAGS.cart);
 
       return { status: 'success', data: cart };
     }
@@ -174,7 +175,7 @@ export async function handleAddToCart(data: ProductFormData) {
       path: '/',
     });
 
-    revalidateTag('cart');
+    revalidateTag(TAGS.cart);
 
     return { status: 'success', data: cart };
   } catch (error: unknown) {

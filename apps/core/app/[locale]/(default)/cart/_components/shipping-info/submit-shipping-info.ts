@@ -5,6 +5,7 @@ import { z } from 'zod';
 
 import { addCheckoutShippingConsignments } from '~/client/mutations/add-checkout-shipping-consignments';
 import { updateCheckoutShippingConsignment } from '~/client/mutations/update-checkout-shipping-consigment';
+import { TAGS } from '~/client/tags';
 
 const ShippingInfoSchema = z.object({
   country: z.string(),
@@ -57,7 +58,7 @@ export const submitShippingInfo = async (
       return { status: 'error', error: 'Failed to submit shipping info.' };
     }
 
-    revalidateTag('checkout');
+    revalidateTag(TAGS.checkout);
 
     return { status: 'success', data: result };
   } catch (error: unknown) {

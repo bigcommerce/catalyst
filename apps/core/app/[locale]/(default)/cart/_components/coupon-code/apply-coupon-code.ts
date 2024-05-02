@@ -4,6 +4,7 @@ import { revalidateTag } from 'next/cache';
 import { z } from 'zod';
 
 import { applyCheckoutCoupon } from '~/client/mutations/apply-checkout-coupon';
+import { TAGS } from '~/client/tags';
 
 const ApplyCouponCodeSchema = z.object({
   checkoutEntityId: z.string(),
@@ -23,7 +24,7 @@ export async function applyCouponCode(formData: FormData) {
       return { status: 'error', error: 'Coupon code is invalid.' };
     }
 
-    revalidateTag('checkout');
+    revalidateTag(TAGS.checkout);
 
     return { status: 'success', data: checkout };
   } catch (error: unknown) {

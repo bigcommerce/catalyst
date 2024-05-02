@@ -4,6 +4,7 @@ import { revalidateTag } from 'next/cache';
 import { z } from 'zod';
 
 import { unapplyCheckoutCoupon } from '~/client/mutations/unapply-checkout-coupon';
+import { TAGS } from '~/client/tags';
 
 const RemoveCouponCodeSchema = z.object({
   checkoutEntityId: z.string(),
@@ -26,7 +27,7 @@ export async function removeCouponCode(formData: FormData) {
       return { status: 'error', error: 'Error ocurred removing coupon.' };
     }
 
-    revalidateTag('checkout');
+    revalidateTag(TAGS.checkout);
 
     return { status: 'success', data: checkout };
   } catch (error: unknown) {
