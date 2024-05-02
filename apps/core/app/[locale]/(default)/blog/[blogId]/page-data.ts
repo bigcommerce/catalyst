@@ -4,7 +4,7 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 
-import { SharingLinksFragment } from './_components/sharing-links/fragment';
+import { SharingLinksFragment } from './_components/sharing-links';
 
 const BlogPostPageQuery = graphql(
   `

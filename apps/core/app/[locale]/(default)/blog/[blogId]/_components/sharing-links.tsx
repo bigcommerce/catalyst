@@ -1,11 +1,21 @@
-'use client';
-
 import { SiFacebook, SiLinkedin, SiPinterest, SiX } from '@icons-pack/react-simple-icons';
-import { Mail, Printer } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
-import { FragmentOf } from '~/client/graphql';
+import { FragmentOf, graphql } from '~/client/graphql';
 
-import { SharingLinksFragment } from './fragment';
+import { PrintButton } from './print-button';
+
+export const SharingLinksFragment = graphql(`
+  fragment SharingLinksFragment on BlogPost {
+    entityId
+    thumbnailImage {
+      url: urlTemplate
+    }
+    seo {
+      pageTitle
+    }
+  }
+`);
 
 interface Props {
   blogPost: FragmentOf<typeof SharingLinksFragment>;
@@ -37,19 +47,7 @@ export const SharingLinks = ({ blogPost, vanityUrl = '' }: Props) => {
           <title>Email</title>
         </Mail>
       </a>
-      <button
-        className="hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-        onClick={() => {
-          window.print();
-
-          return false;
-        }}
-        type="button"
-      >
-        <Printer size={24}>
-          <title>Print</title>
-        </Printer>
-      </button>
+      <PrintButton />
       <a
         className="hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
         href={`https://twitter.com/intent/tweet/?text=${encodedTitle}&url=${encodedUrl}`}
