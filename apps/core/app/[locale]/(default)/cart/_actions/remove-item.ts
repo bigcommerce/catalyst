@@ -5,6 +5,7 @@ import { cookies } from 'next/headers';
 
 import { graphql } from '~/client/graphql';
 import { deleteCartLineItem } from '~/client/mutations/delete-cart-line-item';
+import { TAGS } from '~/client/tags';
 
 type DeleteCartLineItemInput = ReturnType<typeof graphql.scalar<'DeleteCartLineItemInput'>>;
 
@@ -31,7 +32,7 @@ export async function removeItem({
       cookies().delete('cartId');
     }
 
-    revalidateTag('cart');
+    revalidateTag(TAGS.cart);
 
     return { status: 'success', data: cart };
   } catch (error: unknown) {

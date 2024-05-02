@@ -6,6 +6,7 @@ import { cookies } from 'next/headers';
 import { addCartLineItem } from '~/client/mutations/add-cart-line-item';
 import { createCart } from '~/client/mutations/create-cart';
 import { getCart } from '~/client/queries/get-cart';
+import { TAGS } from '~/client/tags';
 
 export const addToCart = async (data: FormData) => {
   const productEntityId = Number(data.get('product_id'));
@@ -31,7 +32,7 @@ export const addToCart = async (data: FormData) => {
         return { status: 'error', error: 'Failed to add product to cart.' };
       }
 
-      revalidateTag('cart');
+      revalidateTag(TAGS.cart);
 
       return { status: 'success', data: cart };
     }
@@ -51,7 +52,7 @@ export const addToCart = async (data: FormData) => {
       path: '/',
     });
 
-    revalidateTag('cart');
+    revalidateTag(TAGS.cart);
 
     return { status: 'success', data: cart };
   } catch (error: unknown) {

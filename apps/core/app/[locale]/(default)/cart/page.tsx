@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
+import { TAGS } from '~/client/tags';
 import { LocaleType } from '~/i18n';
 
 import { CartItem, CartItemFragment } from './_components/cart-item';
@@ -59,7 +60,7 @@ export default async function CartPage({ params: { locale } }: Props) {
     fetchOptions: {
       cache: 'no-store',
       next: {
-        tags: ['cart', 'checkout'],
+        tags: [TAGS.cart, TAGS.checkout],
       },
     },
   });
