@@ -3,23 +3,9 @@
 import { SiFacebook, SiLinkedin, SiPinterest, SiX } from '@icons-pack/react-simple-icons';
 import { Mail, Printer } from 'lucide-react';
 
-import { FragmentOf, graphql } from '~/client/graphql';
+import { FragmentOf } from '~/client/graphql';
 
-import { SEOFragment } from '../page-data';
-
-export const SharingLinksFragment = graphql(
-  `
-    fragment SharingLinksFragment on BlogPost {
-      entityId
-      thumbnailImage {
-        altText
-        url: urlTemplate
-      }
-      ...SEOFragment
-    }
-  `,
-  [SEOFragment],
-);
+import { SharingLinksFragment } from './fragment';
 
 interface Props {
   blogPost: FragmentOf<typeof SharingLinksFragment>;

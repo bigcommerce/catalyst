@@ -4,6 +4,8 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 
+import { SharingLinksFragment } from './_components/sharing-links/fragment';
+
 export const SEOFragment = graphql(`
   fragment SEOFragment on BlogPost {
     seo {
@@ -22,10 +24,8 @@ const BlogPostPageQuery = graphql(
           blog {
             isVisibleInNavigation
             post(entityId: $entityId) {
-              entityId
               author
               htmlBody
-              id
               name
               publishedDate {
                 utc
@@ -35,7 +35,10 @@ const BlogPostPageQuery = graphql(
                 altText
                 url: urlTemplate
               }
-              ...SEOFragment
+              seo {
+                pageTitle
+              }
+              ...SharingLinksFragment
             }
           }
         }
@@ -47,7 +50,7 @@ const BlogPostPageQuery = graphql(
       }
     }
   `,
-  [SEOFragment],
+  [SharingLinksFragment],
 );
 
 export const getBlogPost = cache(async ({ entityId }: { entityId: number }) => {
