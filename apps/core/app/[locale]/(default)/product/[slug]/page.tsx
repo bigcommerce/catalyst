@@ -17,7 +17,7 @@ import { Description, DescriptionFragment } from './_components/description';
 import { Details, DetailsFragment } from './_components/details';
 import { Gallery } from './_components/gallery';
 import { GalleryFragment } from './_components/gallery/fragment';
-import { RelatedProducts, RelatedProductsFragment } from './_components/related-products';
+import { RelatedProducts } from './_components/related-products';
 import { Reviews } from './_components/reviews';
 import { Warranty, WarrantyFragment } from './_components/warranty';
 
@@ -60,7 +60,6 @@ const ProductPageQuery = graphql(
       site {
         product(entityId: $entityId, optionValueIds: $optionValueIds) {
           ...GalleryFragment
-          ...RelatedProductsFragment
           ...DetailsFragment
           ...DescriptionFragment
           ...WarrantyFragment
@@ -76,14 +75,7 @@ const ProductPageQuery = graphql(
       }
     }
   `,
-  [
-    RelatedProductsFragment,
-    BreadcrumbsFragment,
-    GalleryFragment,
-    DetailsFragment,
-    DescriptionFragment,
-    WarrantyFragment,
-  ],
+  [BreadcrumbsFragment, GalleryFragment, DetailsFragment, DescriptionFragment, WarrantyFragment],
 );
 
 export default async function Product({ params, searchParams }: ProductPageProps) {
@@ -142,7 +134,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
       </div>
 
       <Suspense fallback={t('loading')}>
-        <RelatedProducts data={product} />
+        <RelatedProducts productId={product.entityId} />
       </Suspense>
     </>
   );
