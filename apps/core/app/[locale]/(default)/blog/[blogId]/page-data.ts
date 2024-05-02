@@ -6,9 +6,9 @@ import { revalidate } from '~/client/revalidate-target';
 
 import { SharingLinksFragment } from './_components/sharing-links';
 
-const BlogPostPageQuery = graphql(
+const PageQuery = graphql(
   `
-    query BlogPostPageQuery($entityId: Int!) {
+    query PageQuery($entityId: Int!) {
       site {
         content {
           blog {
@@ -28,24 +28,19 @@ const BlogPostPageQuery = graphql(
               seo {
                 pageTitle
               }
-              ...SharingLinksFragment
             }
           }
         }
-        settings {
-          url {
-            vanityUrl
-          }
-        }
+        ...SharingLinksFragment
       }
     }
   `,
   [SharingLinksFragment],
 );
 
-export const getBlogPost = cache(async ({ entityId }: { entityId: number }) => {
+export const getPageData = cache(async ({ entityId }: { entityId: number }) => {
   const response = await client.fetch({
-    document: BlogPostPageQuery,
+    document: PageQuery,
     variables: { entityId },
     fetchOptions: { next: { revalidate } },
   });
@@ -56,11 +51,5 @@ export const getBlogPost = cache(async ({ entityId }: { entityId: number }) => {
     return null;
   }
 
-  const { isVisibleInNavigation, post } = blog;
-
-  return {
-    ...post,
-    isVisibleInNavigation,
-    vanityUrl: response.data.site.settings?.url.vanityUrl,
-  };
+  return response.data.site;
 });

@@ -6,25 +6,43 @@ import { FragmentOf, graphql } from '~/client/graphql';
 import { PrintButton } from './print-button';
 
 export const SharingLinksFragment = graphql(`
-  fragment SharingLinksFragment on BlogPost {
-    entityId
-    thumbnailImage {
-      url: urlTemplate
+  fragment SharingLinksFragment on Site {
+    content {
+      blog {
+        post(entityId: $entityId) {
+          entityId
+          thumbnailImage {
+            url: urlTemplate
+          }
+          seo {
+            pageTitle
+          }
+        }
+      }
     }
-    seo {
-      pageTitle
+    settings {
+      url {
+        vanityUrl
+      }
     }
   }
 `);
 
 interface Props {
-  blogPost: FragmentOf<typeof SharingLinksFragment>;
-  vanityUrl?: string;
+  data: FragmentOf<typeof SharingLinksFragment>;
 }
 
-export const SharingLinks = ({ blogPost, vanityUrl = '' }: Props) => {
+export const SharingLinks = ({ data }: Props) => {
+  const blogPost = data.content.blog?.post;
+
+  if (!blogPost) {
+    return null;
+  }
+
   const encodedTitle = encodeURIComponent(blogPost.seo.pageTitle);
-  const encodedUrl = encodeURIComponent(`${vanityUrl}/blog/${blogPost.entityId}/`);
+  const encodedUrl = encodeURIComponent(
+    `${data.settings?.url.vanityUrl || ''}/blog/${blogPost.entityId}/`,
+  );
 
   return (
     <div className="mb-10 flex items-center [&>*:not(:last-child)]:me-2.5">

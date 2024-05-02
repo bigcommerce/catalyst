@@ -15,7 +15,7 @@ import { Tag, TagContent } from '~/components/ui/tag';
 import { LocaleType } from '~/i18n';
 
 import { SharingLinks } from './_components/sharing-links';
-import { getBlogPost } from './page-data';
+import { getPageData } from './page-data';
 
 interface Props {
   params: {
@@ -25,7 +25,8 @@ interface Props {
 }
 
 export async function generateMetadata({ params: { blogId } }: Props): Promise<Metadata> {
-  const blogPost = await getBlogPost({ entityId: Number(blogId) });
+  const data = await getPageData({ entityId: Number(blogId) });
+  const blogPost = data?.content.blog?.post;
 
   const title = blogPost?.seo.pageTitle ?? 'Blog';
 
@@ -37,9 +38,11 @@ export async function generateMetadata({ params: { blogId } }: Props): Promise<M
 export default async function BlogPostPage({ params: { blogId, locale } }: Props) {
   const format = await getFormatter({ locale });
 
-  const blogPost = await getBlogPost({ entityId: Number(blogId) });
+  const data = await getPageData({ entityId: Number(blogId) });
+  const blogPost = data?.content.blog?.post;
+  const isVisibleInNavigation = data?.content.blog?.isVisibleInNavigation;
 
-  if (!blogPost || !blogPost.isVisibleInNavigation) {
+  if (!blogPost || !isVisibleInNavigation) {
     return notFound();
   }
 
@@ -87,7 +90,7 @@ export default async function BlogPostPage({ params: { blogId, locale } }: Props
           </Link>
         ))}
       </div>
-      <SharingLinks blogPost={blogPost} vanityUrl={blogPost.vanityUrl} />
+      <SharingLinks data={data} />
     </div>
   );
 }
