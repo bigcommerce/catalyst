@@ -1,24 +1,48 @@
-'use client';
-
 import { SiFacebook, SiLinkedin, SiPinterest, SiX } from '@icons-pack/react-simple-icons';
-import { Mail, Printer } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
-interface SharingLinksProps {
-  blogPostId: string;
-  blogPostImageUrl?: string;
-  blogPostTitle?: string;
-  vanityUrl?: string;
+import { FragmentOf, graphql } from '~/client/graphql';
+
+import { PrintButton } from './print-button';
+
+export const SharingLinksFragment = graphql(`
+  fragment SharingLinksFragment on Site {
+    content {
+      blog {
+        post(entityId: $entityId) {
+          entityId
+          thumbnailImage {
+            url: urlTemplate
+          }
+          seo {
+            pageTitle
+          }
+        }
+      }
+    }
+    settings {
+      url {
+        vanityUrl
+      }
+    }
+  }
+`);
+
+interface Props {
+  data: FragmentOf<typeof SharingLinksFragment>;
 }
 
-export const SharingLinks = ({
-  blogPostId,
-  /* TODO: use default image */
-  blogPostImageUrl = '',
-  blogPostTitle = '',
-  vanityUrl = '',
-}: SharingLinksProps) => {
-  const encodedTitle = encodeURIComponent(blogPostTitle);
-  const encodedUrl = encodeURIComponent(`${vanityUrl}/blog/${blogPostId}/`);
+export const SharingLinks = ({ data }: Props) => {
+  const blogPost = data.content.blog?.post;
+
+  if (!blogPost) {
+    return null;
+  }
+
+  const encodedTitle = encodeURIComponent(blogPost.seo.pageTitle);
+  const encodedUrl = encodeURIComponent(
+    `${data.settings?.url.vanityUrl || ''}/blog/${blogPost.entityId}/`,
+  );
 
   return (
     <div className="mb-10 flex items-center [&>*:not(:last-child)]:me-2.5">
@@ -41,19 +65,7 @@ export const SharingLinks = ({
           <title>Email</title>
         </Mail>
       </a>
-      <button
-        className="hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-        onClick={() => {
-          window.print();
-
-          return false;
-        }}
-        type="button"
-      >
-        <Printer size={24}>
-          <title>Print</title>
-        </Printer>
-      </button>
+      <PrintButton />
       <a
         className="hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
         href={`https://twitter.com/intent/tweet/?text=${encodedTitle}&url=${encodedUrl}`}
@@ -72,7 +84,7 @@ export const SharingLinks = ({
       </a>
       <a
         className="hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-        href={`https://pinterest.com/pin/create/button/?url=${encodedUrl}&media=${blogPostImageUrl}&description=${encodedTitle}`}
+        href={`https://pinterest.com/pin/create/button/?url=${encodedUrl}&media=${blogPost.thumbnailImage?.url || ''}&description=${encodedTitle}`} // TODO: use default image if thumbnailImage is not available
         rel="noopener noreferrer"
         target="_blank"
       >
