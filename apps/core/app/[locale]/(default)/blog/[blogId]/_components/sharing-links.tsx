@@ -3,22 +3,32 @@
 import { SiFacebook, SiLinkedin, SiPinterest, SiX } from '@icons-pack/react-simple-icons';
 import { Mail, Printer } from 'lucide-react';
 
-interface SharingLinksProps {
-  blogPostId: string;
-  blogPostImageUrl?: string;
-  blogPostTitle?: string;
+import { FragmentOf, graphql } from '~/client/graphql';
+
+import { SEOFragment } from '../page-data';
+
+export const SharingLinksFragment = graphql(
+  `
+    fragment SharingLinksFragment on BlogPost {
+      entityId
+      thumbnailImage {
+        altText
+        url: urlTemplate
+      }
+      ...SEOFragment
+    }
+  `,
+  [SEOFragment],
+);
+
+interface Props {
+  blogPost: FragmentOf<typeof SharingLinksFragment>;
   vanityUrl?: string;
 }
 
-export const SharingLinks = ({
-  blogPostId,
-  /* TODO: use default image */
-  blogPostImageUrl = '',
-  blogPostTitle = '',
-  vanityUrl = '',
-}: SharingLinksProps) => {
-  const encodedTitle = encodeURIComponent(blogPostTitle);
-  const encodedUrl = encodeURIComponent(`${vanityUrl}/blog/${blogPostId}/`);
+export const SharingLinks = ({ blogPost, vanityUrl = '' }: Props) => {
+  const encodedTitle = encodeURIComponent(blogPost.seo.pageTitle);
+  const encodedUrl = encodeURIComponent(`${vanityUrl}/blog/${blogPost.entityId}/`);
 
   return (
     <div className="mb-10 flex items-center [&>*:not(:last-child)]:me-2.5">
@@ -72,7 +82,7 @@ export const SharingLinks = ({
       </a>
       <a
         className="hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-        href={`https://pinterest.com/pin/create/button/?url=${encodedUrl}&media=${blogPostImageUrl}&description=${encodedTitle}`}
+        href={`https://pinterest.com/pin/create/button/?url=${encodedUrl}&media=${blogPost.thumbnailImage?.url || ''}&description=${encodedTitle}`} // TODO: use default image if thumbnailImage is not available
         rel="noopener noreferrer"
         target="_blank"
       >

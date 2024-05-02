@@ -2,10 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter } from 'next-intl/server';
 
-import { getBlogPost } from '~/client/queries/get-blog-post';
 import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
-import { SharingLinks } from '~/components/sharing-links';
 import {
   BlogPostAuthor,
   BlogPostBanner,
@@ -16,6 +14,9 @@ import {
 import { Tag, TagContent } from '~/components/ui/tag';
 import { LocaleType } from '~/i18n';
 
+import { SharingLinks } from './_components/sharing-links';
+import { getBlogPost } from './page-data';
+
 interface Props {
   params: {
     blogId: string;
@@ -24,7 +25,7 @@ interface Props {
 }
 
 export async function generateMetadata({ params: { blogId } }: Props): Promise<Metadata> {
-  const blogPost = await getBlogPost(+blogId);
+  const blogPost = await getBlogPost({ entityId: Number(blogId) });
 
   const title = blogPost?.seo.pageTitle ?? 'Blog';
 
@@ -35,7 +36,8 @@ export async function generateMetadata({ params: { blogId } }: Props): Promise<M
 
 export default async function BlogPostPage({ params: { blogId, locale } }: Props) {
   const format = await getFormatter({ locale });
-  const blogPost = await getBlogPost(+blogId);
+
+  const blogPost = await getBlogPost({ entityId: Number(blogId) });
 
   if (!blogPost || !blogPost.isVisibleInNavigation) {
     return notFound();
@@ -85,12 +87,7 @@ export default async function BlogPostPage({ params: { blogId, locale } }: Props
           </Link>
         ))}
       </div>
-      <SharingLinks
-        blogPostId={blogId}
-        blogPostImageUrl={blogPost.thumbnailImage?.url}
-        blogPostTitle={blogPost.seo.pageTitle}
-        vanityUrl={blogPost.vanityUrl}
-      />
+      <SharingLinks blogPost={blogPost} vanityUrl={blogPost.vanityUrl} />
     </div>
   );
 }
