@@ -4,8 +4,8 @@ import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
 import { graphql } from '~/client/graphql';
-import { TAGS } from '~/client/tags';
 import { deleteCartLineItem } from '~/client/mutations/delete-cart-line-item';
+import { TAGS } from '~/client/tags';
 
 type DeleteCartLineItemInput = ReturnType<typeof graphql.scalar<'DeleteCartLineItemInput'>>;
 
