@@ -6,16 +6,6 @@ import { revalidate } from '~/client/revalidate-target';
 
 import { SharingLinksFragment } from './_components/sharing-links/fragment';
 
-export const SEOFragment = graphql(`
-  fragment SEOFragment on BlogPost {
-    seo {
-      metaKeywords
-      metaDescription
-      pageTitle
-    }
-  }
-`);
-
 const BlogPostPageQuery = graphql(
   `
     query BlogPostPageQuery($entityId: Int!) {
