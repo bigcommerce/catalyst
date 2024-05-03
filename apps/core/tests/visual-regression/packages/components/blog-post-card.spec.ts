@@ -3,10 +3,13 @@ import { expect, test } from '@playwright/test';
 import routes from '~/tests/routes';
 
 test('blog post card', async ({ page }) => {
+  // Arrange
   await page.goto(routes.BLOG);
-  await expect(page.getByRole('heading', { name: 'Blog', exact: true })).toBeVisible();
+  await page.getByRole('heading', { name: 'Blog', exact: true }).waitFor();
 
-  await expect(
-    page.getByRole('heading', { name: 'Blog', exact: true }).locator('..'),
-  ).toHaveScreenshot();
+  // Act
+  const blogPostCard = page.getByRole('listitem').filter({ hasText: 'Your first blog post!' });
+
+  // Assert
+  await expect(blogPostCard).toHaveScreenshot();
 });

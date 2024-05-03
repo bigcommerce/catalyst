@@ -3,19 +3,21 @@ import { expect, test } from '@playwright/test';
 const testAccountEmail = process.env.TEST_ACCOUNT_EMAIL || '';
 const testAccountPassword = process.env.TEST_ACCOUNT_PASSWORD || '';
 
-test('Tabs', async ({ page }) => {
+test('tabs', async ({ page }) => {
+  // Arrange
   await page.goto('/');
-
-  await page.getByLabel('Login').click();
-  await expect(page.getByLabel('Email')).toBeVisible();
-
+  await page.getByRole('link', { name: 'Login' }).click();
+  await page.getByRole('heading', { name: 'Log In', level: 2 }).waitFor();
   await page.getByLabel('Email').fill(testAccountEmail);
   await page.getByLabel('Password').fill(testAccountPassword);
   await page.getByRole('button', { name: 'Log in' }).click();
-  await expect(page.getByRole('heading', { name: 'My Account' })).toBeVisible();
+  await page.getByRole('heading', { name: 'My Account', level: 1 }).waitFor();
+  await page.getByRole('link', { name: 'Orders' }).click();
+  await page.getByRole('heading', { name: 'Orders', level: 2 }).waitFor();
 
-  await page.getByRole('link', { name: 'Account settings' }).click();
-  await expect(page.getByLabel('Account Tabs')).toBeVisible();
+  // Act
+  const accountTabs = page.getByRole('tablist', { name: 'Account Tabs' });
 
-  await expect(page.getByLabel('Account Tabs')).toHaveScreenshot();
+  // Assert
+  await expect(accountTabs).toHaveScreenshot();
 });
