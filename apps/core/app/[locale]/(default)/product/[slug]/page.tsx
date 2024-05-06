@@ -5,30 +5,30 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
-import { client } from '~/client';
-import { graphql } from '~/client/graphql';
-import { getProduct } from '~/client/queries/get-product';
-import { revalidate } from '~/client/revalidate-target';
 import { LocaleType } from '~/i18n';
 
-import { Breadcrumbs, BreadcrumbsFragment } from './_components/breadcrumbs';
-import { Description, DescriptionFragment } from './_components/description';
-import { Details, DetailsFragment } from './_components/details';
+import { Breadcrumbs } from './_components/breadcrumbs';
+import { Description } from './_components/description';
+import { Details } from './_components/details';
 import { Gallery } from './_components/gallery';
-import { GalleryFragment } from './_components/gallery/fragment';
 import { RelatedProducts } from './_components/related-products';
 import { Reviews } from './_components/reviews';
-import { Warranty, WarrantyFragment } from './_components/warranty';
+import { Warranty } from './_components/warranty';
+import { getProduct } from './page-data';
 
 interface ProductPageProps {
   params: { slug: string; locale: LocaleType };
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: ProductPageProps): Promise<Metadata> {
   const productId = Number(params.slug);
-  const product = await getProduct(productId);
+  const optionValueIds = getOptionValueIds({ searchParams });
+
+  const product = await getProduct({ entityId: productId, optionValueIds });
 
   if (!product) {
     return {};
@@ -54,33 +54,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   };
 }
 
-const ProductPageQuery = graphql(
-  `
-    query ProductPageQuery($entityId: Int!, $optionValueIds: [OptionValueId!]) {
-      site {
-        product(entityId: $entityId, optionValueIds: $optionValueIds) {
-          ...GalleryFragment
-          ...DetailsFragment
-          ...DescriptionFragment
-          ...WarrantyFragment
-          entityId
-          categories(first: 1) {
-            edges {
-              node {
-                ...BreadcrumbsFragment
-              }
-            }
-          }
-        }
-      }
-    }
-  `,
-  [BreadcrumbsFragment, GalleryFragment, DetailsFragment, DescriptionFragment, WarrantyFragment],
-);
-
 export default async function Product({ params, searchParams }: ProductPageProps) {
-  const customerId = await getSessionCustomerId();
-
   const { locale } = params;
 
   unstable_setRequestLocale(locale);
@@ -89,25 +63,10 @@ export default async function Product({ params, searchParams }: ProductPageProps
   const messages = await getMessages({ locale });
 
   const productId = Number(params.slug);
-  const { slug, ...options } = searchParams;
 
-  const optionValueIds = Object.keys(options)
-    .map((option) => ({
-      optionEntityId: Number(option),
-      valueEntityId: Number(searchParams[option]),
-    }))
-    .filter(
-      (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
-    );
+  const optionValueIds = getOptionValueIds({ searchParams });
 
-  const { data } = await client.fetch({
-    document: ProductPageQuery,
-    variables: { entityId: productId, optionValueIds },
-    customerId,
-    fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
-  });
-
-  const product = data.site.product;
+  const product = await getProduct({ entityId: productId, optionValueIds });
 
   if (!product) {
     return notFound();
@@ -138,6 +97,19 @@ export default async function Product({ params, searchParams }: ProductPageProps
       </Suspense>
     </>
   );
+}
+
+function getOptionValueIds({ searchParams }: { searchParams: ProductPageProps['searchParams'] }) {
+  const { slug, ...options } = searchParams;
+
+  return Object.keys(options)
+    .map((option) => ({
+      optionEntityId: Number(option),
+      valueEntityId: Number(searchParams[option]),
+    }))
+    .filter(
+      (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
+    );
 }
 
 export const runtime = 'edge';
