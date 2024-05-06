@@ -33,7 +33,7 @@
     "clsx": "^2.1.1",
     "embla-carousel-react": "8.0.1",
     "focus-trap-react": "^10.2.3",
-    "gql.tada": "^1.5.6",
+    "gql.tada": "^1.7.0",
     "graphql": "^16.8.1",
     "lodash.debounce": "^4.0.8",
     "lru-cache": "^10.2.0",
