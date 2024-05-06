@@ -28,7 +28,6 @@ const BlogPostsPageQuery = graphql(
       site {
         content {
           blog {
-            isVisibleInNavigation
             name
             posts(first: $first, after: $after, last: $last, before: $before, filters: $filters) {
               edges {

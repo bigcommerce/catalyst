@@ -19,7 +19,7 @@ export default async function BlogPostPage({ params: { tagId, locale }, searchPa
   const blogPosts = await getBlogPosts({ tagId, ...searchParams });
   const t = await getTranslations({ locale, namespace: 'Pagination' });
 
-  if (!blogPosts || !blogPosts.isVisibleInNavigation) {
+  if (!blogPosts) {
     return notFound();
   }
 
