@@ -27,12 +27,12 @@ const BreadcrumbItem = forwardRef<ElementRef<'li'>, BreadcrumbItemProps>(
     const Comp = asChild ? Slot : 'a';
 
     return (
-      <li className={cn('flex items-center text-xs font-semibold text-black')} ref={ref}>
+      <li className={cn('flex items-center text-sm font-semibold text-black')} ref={ref}>
         <Comp
           aria-current={isActive ? `page` : undefined}
           className={cn(
-            'p-1 font-semibold hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
-            isActive && 'cursor-default font-extrabold hover:text-black',
+            'font-semibold hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
+            isActive && 'font-extrabold',
             className,
           )}
           {...props}
