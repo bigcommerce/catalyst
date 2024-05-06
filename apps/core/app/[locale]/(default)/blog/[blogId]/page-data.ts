@@ -12,7 +12,6 @@ const PageQuery = graphql(
       site {
         content {
           blog {
-            isVisibleInNavigation
             post(entityId: $entityId) {
               author
               htmlBody

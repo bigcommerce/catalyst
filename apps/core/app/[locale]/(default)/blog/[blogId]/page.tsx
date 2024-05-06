@@ -40,9 +40,8 @@ export default async function BlogPostPage({ params: { blogId, locale } }: Props
 
   const data = await getPageData({ entityId: Number(blogId) });
   const blogPost = data?.content.blog?.post;
-  const isVisibleInNavigation = data?.content.blog?.isVisibleInNavigation;
 
-  if (!blogPost || !isVisibleInNavigation) {
+  if (!blogPost) {
     return notFound();
   }
 

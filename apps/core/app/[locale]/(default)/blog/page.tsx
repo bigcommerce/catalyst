@@ -28,7 +28,7 @@ export default async function BlogPostPage({ params: { locale }, searchParams }:
   const blogPosts = await getBlogPosts(searchParams);
   const t = await getTranslations({ locale, namespace: 'Pagination' });
 
-  if (!blogPosts || !blogPosts.isVisibleInNavigation) {
+  if (!blogPosts) {
     return notFound();
   }
 
