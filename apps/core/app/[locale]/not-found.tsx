@@ -66,7 +66,7 @@ export default async function NotFound() {
         <NextIntlClientProvider locale={locale} messages={{ NotFound: messages.NotFound ?? {} }}>
           <SearchForm />
         </NextIntlClientProvider>
-        {featuredProducts?.length ? (
+        {featuredProducts.length ? (
           <section>
             <h3 className="mb-8 text-3xl font-black lg:text-4xl">{t('featuredProducts')}</h3>
             <div className="grid grid-cols-2 gap-x-8 gap-y-8 md:grid-cols-4">
