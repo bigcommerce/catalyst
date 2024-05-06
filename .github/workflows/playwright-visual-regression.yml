@@ -9,7 +9,7 @@ jobs:
     name: Run Visual Regression Tests
     timeout-minutes: 30
     runs-on: macos-14
-    if: ${{ contains(fromJson('["Production – catalyst-storybook", "Preview – catalyst-storybook"]'), github.event.deployment_status.environment) }}
+    if: ${{ contains(fromJson('["Production – catalyst-latest", "Preview – catalyst-latest"]'), github.event.deployment_status.environment) }}
 
     steps:
       - name: Checkout code
@@ -34,10 +34,12 @@ jobs:
       - name: Run Playwright tests
         env:
           PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
+          TEST_ACCOUNT_EMAIL: ${{ secrets.TEST_ACCOUNT_EMAIL }}
+          TEST_ACCOUNT_PASSWORD: ${{ secrets.TEST_ACCOUNT_PASSWORD }}
           VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_PROTECTION_BYPASS_STORYBOOK }}
         run: |
           cd apps/core
-          npx playwright test tests/visual-regression/reactant/components/ --project=tests-chromium
+          npx playwright test tests/visual-regression/components/ --project=tests-chromium
 
       - uses: actions/upload-artifact@v4
         if: failure()
