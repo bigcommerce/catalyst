@@ -3,8 +3,14 @@ import { expect, test } from '@playwright/test';
 import routes from '~/tests/routes';
 
 test('Pick list', async ({ page }) => {
+  // Arrange
   await page.goto(routes.FOG_LINEN_CHAMBRAY);
-  await expect(page.getByLabel('Pick List')).toBeVisible();
 
-  await expect(page.getByLabel('Pick List').locator('..')).toHaveScreenshot();
+  // Act
+  const pickList = page.getByLabel('Pick List');
+
+  await pickList.waitFor();
+
+  // Assert
+  await expect(pickList.locator('..')).toHaveScreenshot();
 });

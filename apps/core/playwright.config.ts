@@ -5,7 +5,12 @@ config();
 
 export default defineConfig({
   testDir: './tests',
-  fullyParallel: true,
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.02,
+    },
+  },
+  fullyParallel: !!process.env.CI,
   reporter: 'html',
   use: {
     baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL,

@@ -37,7 +37,7 @@ jobs:
           VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_PROTECTION_BYPASS_STORYBOOK }}
         run: |
           cd apps/core
-          npx playwright test tests/visual-regression/packages/components/ --project=tests-chromium
+          npx playwright test tests/visual-regression/components/ --project=tests-chromium
 
       - uses: actions/upload-artifact@v4
         if: failure()

@@ -3,23 +3,32 @@ import { expect, test } from '@playwright/test';
 import routes from '~/tests/routes';
 
 test('Input with placeholder', async ({ page }) => {
+  // Arrange
   await page.goto(routes.SAMPLE_ABLE_BREWING_SYSTEM);
-  await expect(
-    page.getByRole('heading', { level: 1, name: '[Sample] Able Brewing System' }),
-  ).toBeVisible();
+  await page.getByRole('heading', { level: 1, name: '[Sample] Able Brewing System' }).waitFor();
+
+  // Act
   await page.getByRole('button', { name: 'Add to Cart' }).first().click();
   await page.getByRole('link', { name: 'Cart Items 1' }).click();
-  await expect(page.getByText('Shipping cost')).toBeVisible();
+  await page.getByText('Shipping cost').waitFor();
   await page.getByRole('button', { name: 'Add' }).first().click();
-  await expect(page.getByLabel('Suburb/city')).toBeVisible();
 
-  await expect(page.getByLabel('Suburb/city')).toHaveScreenshot();
+  const input = page.getByLabel('Suburb/city');
+
+  await input.waitFor();
+
+  // Assert
+  await expect(input).toHaveScreenshot();
 });
 
 test('Input error state', async ({ page }) => {
+  // Arrange
   await page.goto(routes.CONTACT_US);
-  await expect(page.getByRole('button', { name: 'Submit form' })).toBeVisible();
+  await page.getByRole('button', { name: 'Submit form' }).waitFor();
+
+  // Act
   await page.getByRole('button', { name: 'Submit form' }).click();
 
-  expect(await page.getByLabel('EmailRequired').screenshot()).toMatchSnapshot();
+  // Assert
+  await expect(page.getByLabel('EmailRequired')).toHaveScreenshot();
 });

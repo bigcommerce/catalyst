@@ -12,10 +12,16 @@ test.skip('Disabled checked checkbox', async () => {});
 test.skip('Checkbox with error variant', async () => {});
 
 test('Checked checkbox with label', async ({ page }) => {
+  // Arrange
   await page.goto(routes.SHOP_ALL);
-  await page.getByLabel('Common Good1 products').click();
 
-  await expect(page.getByLabel('Common Good1 products')).toHaveScreenshot();
+  // Act
+  const checkbox = page.getByLabel('Common Good1 products');
+
+  await checkbox.click();
+
+  // Assert
+  await expect(checkbox).toHaveScreenshot();
 });
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function

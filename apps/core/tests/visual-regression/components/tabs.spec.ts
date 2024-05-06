@@ -7,7 +7,7 @@ test('tabs', async ({ page }) => {
   // Arrange
   await page.goto('/');
   await page.getByRole('link', { name: 'Login' }).click();
-  await page.getByRole('heading', { name: 'Log In', level: 2 }).waitFor();
+  await expect(page.getByLabel('Email')).toBeVisible();
   await page.getByLabel('Email').fill(testAccountEmail);
   await page.getByLabel('Password').fill(testAccountPassword);
   await page.getByRole('button', { name: 'Log in' }).click();
