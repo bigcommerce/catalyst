@@ -6,6 +6,7 @@ import { ChangeEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
+import { type FragmentOf } from '~/client/graphql';
 import { Button } from '~/components/ui/button';
 import {
   Field,
@@ -18,13 +19,12 @@ import {
 import { Input } from '~/components/ui/input';
 import { Message } from '~/components/ui/message';
 
-import { submitResetPasswordForm } from '../_actions/submit-reset-password-form';
+import { submitResetPasswordForm } from '../../_actions/submit-reset-password-form';
+
+import { ResetPasswordFormFragment } from './fragment';
 
 interface Props {
-  reCaptchaSettings?: {
-    isEnabledOnStorefront: boolean;
-    siteKey: string;
-  };
+  reCaptchaSettings?: FragmentOf<typeof ResetPasswordFormFragment>;
 }
 
 interface FormStatus {

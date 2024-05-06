@@ -1,7 +1,9 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 
-import { getReCaptchaSettings } from '~/client/queries/get-recaptcha-settings';
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
+import { revalidate } from '~/client/revalidate-target';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 import { LocaleType } from '~/i18n';
@@ -9,10 +11,26 @@ import { LocaleType } from '~/i18n';
 import { ChangePasswordForm } from './_components/change-password-form';
 import { LoginForm } from './_components/login-form';
 import { ResetPasswordForm } from './_components/reset-password-form';
+import { ResetPasswordFormFragment } from './_components/reset-password-form/fragment';
 
 export const metadata = {
   title: 'Login',
 };
+
+const LoginPageQuery = graphql(
+  `
+    query LoginPageQuery {
+      site {
+        settings {
+          reCaptcha {
+            ...ResetPasswordFormFragment
+          }
+        }
+      }
+    }
+  `,
+  [ResetPasswordFormFragment],
+);
 
 interface Props {
   params: {
@@ -34,6 +52,11 @@ export default async function Login({ params: { locale }, searchParams }: Props)
   const customerId = searchParams.c;
   const customerToken = searchParams.t;
 
+  const { data } = await client.fetch({
+    document: LoginPageQuery,
+    fetchOptions: { next: { revalidate } },
+  });
+
   if (action === 'change_password' && customerId && customerToken) {
     return (
       <div className="mx-auto my-6 max-w-4xl">
@@ -46,13 +69,11 @@ export default async function Login({ params: { locale }, searchParams }: Props)
   }
 
   if (action === 'reset_password') {
-    const reCaptchaSettings = await getReCaptchaSettings();
-
     return (
       <div className="mx-auto my-6 max-w-4xl">
         <h2 className="mb-8 text-4xl font-black lg:text-5xl">{t('resetPasswordHeading')}</h2>
         <NextIntlClientProvider locale={locale} messages={{ Account }}>
-          <ResetPasswordForm reCaptchaSettings={reCaptchaSettings} />
+          <ResetPasswordForm reCaptchaSettings={data.site.settings?.reCaptcha} />
         </NextIntlClientProvider>
       </div>
     );
