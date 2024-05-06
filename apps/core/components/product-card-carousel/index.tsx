@@ -38,6 +38,7 @@ export const ProductCardCarousel = ({
   showReviews?: boolean;
 }) => {
   const id = useId();
+  const titleId = useId();
 
   if (products.length === 0) {
     return null;
@@ -58,9 +59,9 @@ export const ProductCardCarousel = ({
   }, []);
 
   return (
-    <Carousel aria-labelledby="title" className="mb-14" opts={{ loop: true }}>
+    <Carousel aria-labelledby={titleId} className="mb-14" opts={{ loop: true }}>
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-black lg:text-4xl" id="title">
+        <h2 className="text-3xl font-black lg:text-4xl" id={titleId}>
           {title}
         </h2>
         <span className="no-wrap flex">

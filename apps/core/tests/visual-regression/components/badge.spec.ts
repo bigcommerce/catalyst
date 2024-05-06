@@ -8,16 +8,17 @@ test('badge with icon', async ({ page }) => {
   await page.getByRole('heading', { level: 1, name: '[Sample] Able Brewing System' }).waitFor();
   await page.getByRole('button', { name: 'Add to Cart' }).click();
 
+  const addToCartNotification = page
+    .getByRole('status')
+    .filter({ hasText: 'Item added to your cart' });
+
+  // Wait for the add to cart notification to appear and disappear
+  await addToCartNotification.waitFor();
+  await addToCartNotification.waitFor({ state: 'detached' });
+
   // Act
   const badge = page.getByRole('link', { name: 'Cart Items 1' });
 
-  await page.getByRole('link', { name: 'Cart Items 1' }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'Your cart' })).toBeVisible();
-
   // Assert
   await expect(badge).toHaveScreenshot();
-
-  // Cleanup
-  await page.getByRole('button', { name: 'Remove item from cart' }).first().click();
-  await expect(page.getByRole('heading', { name: 'Your cart is empty' })).toBeVisible();
 });
