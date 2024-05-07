@@ -59,7 +59,7 @@
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@faker-js/faker": "^8.4.1",
     "@gql.tada/cli-utils": "^1.2.0",
-    "@playwright/test": "^1.43.1",
+    "@playwright/test": "^1.44.0",
     "@tailwindcss/container-queries": "^0.1.1",
     "@types/lodash.debounce": "^4.0.7",
     "@types/node": "^20.12.7",
