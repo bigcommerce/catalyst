@@ -1,5 +1,77 @@
 # Changelog
 
+## 0.7.0
+
+### Minor Changes
+
+- [#748](https://github.com/bigcommerce/catalyst/pull/748) [`dc03f50`](https://github.com/bigcommerce/catalyst/commit/dc03f50bb1734b26bd15ecf9c1f7fb6e34d3e86c) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - Add customer addresses tab content
+
+- [#760](https://github.com/bigcommerce/catalyst/pull/760) [`d3cb5bd`](https://github.com/bigcommerce/catalyst/commit/d3cb5bd51966aa1bf38453aba2a125f517869931) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - Add dialog component
+
+### Patch Changes
+
+- [#786](https://github.com/bigcommerce/catalyst/pull/786) [`8e6328f`](https://github.com/bigcommerce/catalyst/commit/8e6328fb577e91eede49a92eafa113c5778520de) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Apply the edge runtime to missing routes.
+
+- [#816](https://github.com/bigcommerce/catalyst/pull/816) [`7115843`](https://github.com/bigcommerce/catalyst/commit/711584393f829873ad8d3d48495f1aafa777e46d) Thanks [@avattipalli](https://github.com/avattipalli)! - Move functional tests to apps/core
+
+- [#776](https://github.com/bigcommerce/catalyst/pull/776) [`656693e`](https://github.com/bigcommerce/catalyst/commit/656693ed1ac30a162025b58763fa7beb4dfaad18) Thanks [@yurytut1993](https://github.com/yurytut1993)! - add update customer mutation
+
+- [#845](https://github.com/bigcommerce/catalyst/pull/845) [`dfd5b25`](https://github.com/bigcommerce/catalyst/commit/dfd5b25659cb90e909e73764f246f19322f60a4c) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Remove additional references to @bigcommerce/components.
+
+- [#808](https://github.com/bigcommerce/catalyst/pull/808) [`c0bca5d`](https://github.com/bigcommerce/catalyst/commit/c0bca5d12257218908dcca54b31d32bf84d087fb) Thanks [@jorgemoya](https://github.com/jorgemoya)! - use next-intl formatter to properly localize dates & prices
+
+- [#854](https://github.com/bigcommerce/catalyst/pull/854) [`0758464`](https://github.com/bigcommerce/catalyst/commit/0758464e4c43ab33e470bb91223249b01e36e780) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Respect isVisibleInNavigation for blog pages
+
+- [#779](https://github.com/bigcommerce/catalyst/pull/779) [`fe34b3e`](https://github.com/bigcommerce/catalyst/commit/fe34b3ed79992f73084214b369b7750141a17c39) Thanks [@deini](https://github.com/deini)! - use LRU cache for DevKvAdapter
+
+- [#789](https://github.com/bigcommerce/catalyst/pull/789) [`86403a6`](https://github.com/bigcommerce/catalyst/commit/86403a6fc66f52f93ace611631614c2844af5a87) Thanks [@deini](https://github.com/deini)! - best-effort in memory cache for vercel kv adapter
+
+- [#815](https://github.com/bigcommerce/catalyst/pull/815) [`984c30c`](https://github.com/bigcommerce/catalyst/commit/984c30ca51601fb8f1c0f6c83bce40c3650f9b23) Thanks [@deini](https://github.com/deini)! - pin nextjs version
+
+- [#814](https://github.com/bigcommerce/catalyst/pull/814) [`c0b5df4`](https://github.com/bigcommerce/catalyst/commit/c0b5df458f049d73b9cfb17426f132f827e4574f) Thanks [@jorgemoya](https://github.com/jorgemoya)! - standardize mutations by returning drilled response
+
+- [#759](https://github.com/bigcommerce/catalyst/pull/759) [`3602d91`](https://github.com/bigcommerce/catalyst/commit/3602d91144513ad0c14b646f2cfc68791d3c3198) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - Add delete customer address mutation
+
+- [#767](https://github.com/bigcommerce/catalyst/pull/767) [`c740cdd`](https://github.com/bigcommerce/catalyst/commit/c740cdd1b561b7abaab7390a8dfcab4d65c89d73) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Move /packages/components into core, update related configurations.
+
+- [#798](https://github.com/bigcommerce/catalyst/pull/798) [`56f3c48`](https://github.com/bigcommerce/catalyst/commit/56f3c4824dd0b31212c15b124cb29be79548fbf2) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Update `tailwindFunctions` to use the correct className utility function `cn`.
+
+- [#769](https://github.com/bigcommerce/catalyst/pull/769) [`1fa1c38`](https://github.com/bigcommerce/catalyst/commit/1fa1c38382871b78c3f51cbcf049532e1b05bbbc) Thanks [@avattipalli](https://github.com/avattipalli)! - add accessible attr for select component
+
+- [#810](https://github.com/bigcommerce/catalyst/pull/810) [`168cdda`](https://github.com/bigcommerce/catalyst/commit/168cddae51638a24a0fb53a3a2f5a5e03a7a4b38) Thanks [@deini](https://github.com/deini)! - split contact us and normal websites into individual pages
+
+- [#777](https://github.com/bigcommerce/catalyst/pull/777) [`fe5c221`](https://github.com/bigcommerce/catalyst/commit/fe5c221aa6e4a4049e89f69e177d722ee94b6f62) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - Add customer address mutation
+
+- [#831](https://github.com/bigcommerce/catalyst/pull/831) [`8349bbf`](https://github.com/bigcommerce/catalyst/commit/8349bbf928dee722fadb5c2119b41756bffaa317) Thanks [@jorgemoya](https://github.com/jorgemoya)! - chore: standardize actions
+
+- [#783](https://github.com/bigcommerce/catalyst/pull/783) [`301b775`](https://github.com/bigcommerce/catalyst/commit/301b775ef967b72ab9d3930eb7ec7488876b48b4) Thanks [@jorgemoya](https://github.com/jorgemoya)! - add loading state on item quantity update and remove when quantity equals 0
+
+- [#852](https://github.com/bigcommerce/catalyst/pull/852) [`3b7ec09`](https://github.com/bigcommerce/catalyst/commit/3b7ec09c26af506f48259806f8d06e4ba8493bc2) Thanks [@electricenjindevops](https://github.com/electricenjindevops)! - Conditionally show featuredProducts on 404 page.
+
+- [#836](https://github.com/bigcommerce/catalyst/pull/836) [`6cbfd02`](https://github.com/bigcommerce/catalyst/commit/6cbfd02e3621e3be72dfc4db6292f66d1575eb95) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Bump react to v18.3.1
+
+- [#793](https://github.com/bigcommerce/catalyst/pull/793) [`76fad25`](https://github.com/bigcommerce/catalyst/commit/76fad25074afaf5b15f9989fa2a6038af96bfdeb) Thanks [@deini](https://github.com/deini)! - use --turbo for next dev
+
+- [#873](https://github.com/bigcommerce/catalyst/pull/873) [`1c7f52f`](https://github.com/bigcommerce/catalyst/commit/1c7f52f13d9dc6faf8bd039c2208fac76ed88d03) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Set a min width to body.
+
+- [#838](https://github.com/bigcommerce/catalyst/pull/838) [`7a0e393`](https://github.com/bigcommerce/catalyst/commit/7a0e39369b5971be3036e0678455ec82bcb5e321) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Respects when `CLIENT_LOGGER="false"` or `KV_LOGGER="false"` is set in .env.local regardless of environment.
+
+- [#773](https://github.com/bigcommerce/catalyst/pull/773) [`7f70719`](https://github.com/bigcommerce/catalyst/commit/7f7071962a091671c64e376598950c2d6fa3ec1d) Thanks [@deini](https://github.com/deini)! - check for auth on /account pages
+
+- [#771](https://github.com/bigcommerce/catalyst/pull/771) [`8af0878`](https://github.com/bigcommerce/catalyst/commit/8af08780469f1ee0ecdf63449aa7a31c2b965c9e) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Add missing `Cart.spinnerText` translation.
+
+- [#778](https://github.com/bigcommerce/catalyst/pull/778) [`32c3373`](https://github.com/bigcommerce/catalyst/commit/32c33730364241d78ea2fb9817d1543bdd1c1e23) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - Add update address mutation
+
+- [#877](https://github.com/bigcommerce/catalyst/pull/877) [`017fa61`](https://github.com/bigcommerce/catalyst/commit/017fa6178dcbd99ee41d84f71dbe263cfcd76181) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Set mobile padding to 16px instead of 24px
+
+- [#875](https://github.com/bigcommerce/catalyst/pull/875) [`78a5f08`](https://github.com/bigcommerce/catalyst/commit/78a5f088e6dc4da5b804e2acee74f9d79ecb6ef7) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fix header overflow in mobile, hide search when screen width is extra small."
+
+- [#743](https://github.com/bigcommerce/catalyst/pull/743) [`30c7624`](https://github.com/bigcommerce/catalyst/commit/30c7624b4430d76ef3efea1314c18c3b400b966d) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - Add customer addresses query
+
+- [#768](https://github.com/bigcommerce/catalyst/pull/768) [`39feb4a`](https://github.com/bigcommerce/catalyst/commit/39feb4a7773719670a394edc19e5e391905158ba) Thanks [@yurytut1993](https://github.com/yurytut1993)! - add get customer query
+
+- [#846](https://github.com/bigcommerce/catalyst/pull/846) [`e2f4311`](https://github.com/bigcommerce/catalyst/commit/e2f43116e9038f676ea0520bb96de7d16bec6424) Thanks [@avattipalli](https://github.com/avattipalli)! - Migrate visual regression tests
+
 ## 0.6.0
 
 ### Minor Changes
