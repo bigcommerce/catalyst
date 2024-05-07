@@ -2,7 +2,7 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "eslint.workingDirectories": [
-    { "pattern": "apps/*/" },
+    { "pattern": "core/*/" },
     { "pattern": "packages/*/" }
   ]
 }
