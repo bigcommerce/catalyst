@@ -15,7 +15,7 @@ Footer.displayName = 'Footer';
 const FooterSection = forwardRef<ElementRef<'section'>, ComponentPropsWithRef<'div'>>(
   ({ children, className, ...props }, ref) => (
     <section
-      className={cn('border-t border-gray-200 px-6 py-8 sm:px-10 lg:px-12 2xl:px-0', className)}
+      className={cn('border-t border-gray-200 px-4 py-8 sm:px-10 lg:px-12 2xl:px-0', className)}
       {...props}
       ref={ref}
     >

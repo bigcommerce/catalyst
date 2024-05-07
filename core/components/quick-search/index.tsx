@@ -93,7 +93,7 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
       <SheetOverlay className="bg-transparent backdrop-blur-none">
         <SheetContent
           className={cn(
-            'flex min-h-[92px] flex-col px-6 py-4 data-[state=closed]:duration-0 data-[state=open]:duration-0 md:px-10 md:py-4 lg:px-12',
+            'flex min-h-[92px] flex-col px-4 py-4 data-[state=closed]:duration-0 data-[state=open]:duration-0 md:px-10 md:py-4 lg:px-12',
             searchResults && searchResults.products.length > 0 && 'h-full lg:h-3/4',
           )}
           side="top"

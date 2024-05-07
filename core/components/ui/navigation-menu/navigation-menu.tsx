@@ -51,7 +51,7 @@ const NavigationMenu = forwardRef<
           <div className="relative">
             <div
               className={cn(
-                'group flex min-h-[92px] items-center justify-between gap-1 overflow-x-hidden bg-white px-6 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0',
+                'group flex min-h-[92px] items-center justify-between gap-1 overflow-x-hidden bg-white px-4 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0',
                 className,
               )}
             >
@@ -218,7 +218,7 @@ const NavigationMenuCollapsed = forwardRef<ElementRef<'div'>, ComponentPropsWith
     return (
       <div
         className={cn(
-          'in-collapsed-nav group absolute start-0 top-full z-50 w-full bg-white px-6 pb-6 duration-200 animate-in slide-in-from-top-5 2xl:container sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0',
+          'in-collapsed-nav group absolute start-0 top-full z-50 w-full bg-white px-4 pb-6 duration-200 animate-in slide-in-from-top-5 2xl:container sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0',
           className,
           !isExpanded && 'hidden',
         )}

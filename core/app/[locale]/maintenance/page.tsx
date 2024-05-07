@@ -6,7 +6,7 @@ import { graphql } from '~/client/graphql';
 import { StoreLogo, StoreLogoFragment } from '~/components/store-logo';
 
 const Container = ({ children }: { children: ReactNode }) => (
-  <main className="mx-auto mt-[64px] px-6 md:px-10 lg:mt-[128px]">{children}</main>
+  <main className="mx-auto mt-[64px] px-4 md:px-10 lg:mt-[128px]">{children}</main>
 );
 
 export const metadata = {
