@@ -28,7 +28,7 @@ export const StoreLogo = ({ data }: Props) => {
   const { logoV2: logo, storeName } = data;
 
   if (logo.__typename === 'StoreTextLogo') {
-    return <span className="text-2xl font-black">{logo.text}</span>;
+    return <span className="truncate text-2xl font-black">{logo.text}</span>;
   }
 
   return (
