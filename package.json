@@ -15,7 +15,7 @@
     "@changesets/cli": "^2.27.1",
     "@inquirer/prompts": "^5.0.2",
     "dotenv-cli": "^7.4.2",
-    "turbo": "^1.13.2",
+    "turbo": "^1.13.3",
     "typescript": "^5.4.5"
   }
 }
