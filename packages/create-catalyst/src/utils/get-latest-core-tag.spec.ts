@@ -4,12 +4,9 @@ import { setupServer } from 'msw/node';
 import { getLatestCoreTag } from './get-latest-core-tag';
 
 const handlers = [
-  http.get(
-    'https://raw.githubusercontent.com/bigcommerce/catalyst/main/apps/core/package.json',
-    () => {
-      return new Response('{ "name": "@bigcommerce/catalyst-core", "version": "0.1.0" }');
-    },
-  ),
+  http.get('https://raw.githubusercontent.com/bigcommerce/catalyst/main/core/package.json', () => {
+    return new Response('{ "name": "@bigcommerce/catalyst-core", "version": "0.1.0" }');
+  }),
 ];
 
 const server = setupServer(...handlers);
@@ -28,7 +25,7 @@ describe('getLatestCoreTag', () => {
   it('should throw an error if the latest core tag is not found', async () => {
     server.use(
       http.get(
-        'https://raw.githubusercontent.com/bigcommerce/catalyst/main/apps/core/package.json',
+        'https://raw.githubusercontent.com/bigcommerce/catalyst/main/core/package.json',
         () => {
           return new Response('{ "name": "@bigcommerce/catalyst-core" }');
         },

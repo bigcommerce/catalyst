@@ -193,7 +193,7 @@ When this option is set to `true`, the Catalyst storefront's admin URL at `https
 
 In production, setting this option to `false` improves the security posture of the storefront.
 
-If you wish to remove this feature entirely from your codebase, you can delete [admin/route.ts](https://github.com/bigcommerce/catalyst/blob/main/apps/core/app/admin/route.ts).
+If you wish to remove this feature entirely from your codebase, you can delete [admin/route.ts](https://github.com/bigcommerce/catalyst/blob/main/core/app/admin/route.ts).
 
 ### NEXTAUTH_URL
 

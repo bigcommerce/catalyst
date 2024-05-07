@@ -22,7 +22,7 @@ export const cloneCatalyst = async ({
   ghRef?: string;
 }) => {
   await spinner(
-    downloadTemplate(`github:bigcommerce/catalyst/apps/core#${ghRef}`, {
+    downloadTemplate(`github:bigcommerce/catalyst/core#${ghRef}`, {
       dir: projectDir,
       offline: false,
     }),
