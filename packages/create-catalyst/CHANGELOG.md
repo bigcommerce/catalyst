@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.6.0
+
+### Minor Changes
+
+- [#782](https://github.com/bigcommerce/catalyst/pull/782) [`32f9d7c`](https://github.com/bigcommerce/catalyst/commit/32f9d7cad0529591d771106efe3e9cace48e50db) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Adds the `.vscode/settings.json` file pointing to the correct typescript sdk for gql-tada support.
+
+- [#806](https://github.com/bigcommerce/catalyst/pull/806) [`5655f81`](https://github.com/bigcommerce/catalyst/commit/5655f81f93041e6b1253d0c67ce50f70f99828bf) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Adds an option to include the functional test suite as part of the create command. Defaults to false.
+
+- [#876](https://github.com/bigcommerce/catalyst/pull/876) [`56735be`](https://github.com/bigcommerce/catalyst/commit/56735be7bef1f528642e333b20400268613dace6) Thanks [@matthewvolk](https://github.com/matthewvolk)! - The `create-catalyst` CLI will now create channel menus for new Catalyst channels
+
+### Patch Changes
+
+- [#839](https://github.com/bigcommerce/catalyst/pull/839) [`0e5e513`](https://github.com/bigcommerce/catalyst/commit/0e5e5139ced4410e0930e36b7eafa5841e2301c5) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Remove cloning logic for components.
+
 ## 0.5.0
 
 ### Minor Changes
