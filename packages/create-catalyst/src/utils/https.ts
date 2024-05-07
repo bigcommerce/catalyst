@@ -204,6 +204,30 @@ export class Https {
     return parse(await res.json(), BigCommerceChannelsV3ResponseSchema);
   }
 
+  async createChannelMenus(channelId: number) {
+    const res = await this.api(`/v3/channels/${channelId}/channel-menus`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        bigcommerce_protected_app_sections: [
+          'storefront_settings',
+          'currencies',
+          'domains',
+          'notifications',
+          'social',
+        ],
+      }),
+    });
+
+    if (!res.ok) {
+      console.warn(
+        chalk.yellow(
+          `\nFailed to create channel menus: ${res.status} ${res.statusText}. You may want to create these later: https://developer.bigcommerce.com/docs/rest-management/channels/menus#create-channel-menus\n`,
+        ),
+      );
+    }
+  }
+
   async customerImpersonationToken(channelId: number) {
     const res = await this.api('/v3/storefront/api-token-customer-impersonation', {
       method: 'POST',
