@@ -56,8 +56,8 @@
       },
       "Prices": {
         "msrp": "MSRP",
-        "was": "Was:",
-        "now": "Now:"
+        "was": "Was",
+        "now": "Now"
       }
     },
     "Form": {
@@ -75,8 +75,8 @@
       "numberReviews": "Number of reviews:",
       "productRating": "<rating>Rating:</rating> {currentRating} <stars> out of 5 stars.</stars>",
       "msrp": "MSRP",
-      "was": "Was:",
-      "now": "Now:",
+      "was": "Was",
+      "now": "Now",
       "quickAdd": "Quick add",
       "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
       "processing": "Processing...",

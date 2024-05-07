@@ -162,7 +162,7 @@ export const ProductSheetContent = () => {
                   product.prices.basePrice?.value !== undefined ? (
                     <>
                       <span>
-                        {t('was')}{' '}
+                        {t('was')}:{' '}
                         <span className="line-through">
                           {format.number(product.prices.basePrice.value, {
                             style: 'currency',
@@ -172,7 +172,7 @@ export const ProductSheetContent = () => {
                       </span>
                       <br />
                       <span>
-                        {t('now')}{' '}
+                        {t('now')}:{' '}
                         {format.number(product.prices.salePrice.value, {
                           style: 'currency',
                           currency: product.prices.price.currencyCode,
