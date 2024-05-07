@@ -45,7 +45,10 @@ export const Header = async ({ cart, data }: Props) => {
     <header>
       <NavigationMenu>
         {data.settings && (
-          <NavigationMenuLink asChild className="shrink-0 px-0">
+          <NavigationMenuLink
+            asChild
+            className="flex-1 overflow-hidden text-ellipsis px-0 xl:flex-none"
+          >
             <Link href="/">
               <StoreLogo data={data.settings} />
             </Link>
@@ -57,7 +60,7 @@ export const Header = async ({ cart, data }: Props) => {
         <div className="flex">
           <NavigationMenuList className="h-full">
             {data.settings && (
-              <NavigationMenuItem>
+              <NavigationMenuItem className="hidden sm:block">
                 <QuickSearch>
                   <Link className="flex" href="/">
                     <StoreLogo data={data.settings} />
