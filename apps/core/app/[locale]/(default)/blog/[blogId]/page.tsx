@@ -15,7 +15,7 @@ import { Tag, TagContent } from '~/components/ui/tag';
 import { LocaleType } from '~/i18n';
 
 import { SharingLinks } from './_components/sharing-links';
-import { getPageData } from './page-data';
+import { getBlogPageData } from './page-data';
 
 interface Props {
   params: {
@@ -25,7 +25,7 @@ interface Props {
 }
 
 export async function generateMetadata({ params: { blogId } }: Props): Promise<Metadata> {
-  const data = await getPageData({ entityId: Number(blogId) });
+  const data = await getBlogPageData({ entityId: Number(blogId) });
   const blogPost = data?.content.blog?.post;
 
   const title = blogPost?.seo.pageTitle ?? 'Blog';
@@ -38,7 +38,7 @@ export async function generateMetadata({ params: { blogId } }: Props): Promise<M
 export default async function BlogPostPage({ params: { blogId, locale } }: Props) {
   const format = await getFormatter({ locale });
 
-  const data = await getPageData({ entityId: Number(blogId) });
+  const data = await getBlogPageData({ entityId: Number(blogId) });
   const blogPost = data?.content.blog?.post;
 
   if (!blogPost) {

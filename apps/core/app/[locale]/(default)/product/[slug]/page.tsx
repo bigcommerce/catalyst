@@ -5,9 +5,9 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
+import { Breadcrumbs } from '~/components/breadcrumbs';
 import { LocaleType } from '~/i18n';
 
-import { Breadcrumbs } from './_components/breadcrumbs';
 import { Description } from './_components/description';
 import { Details } from './_components/details';
 import { Gallery } from './_components/gallery';

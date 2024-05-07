@@ -24,9 +24,9 @@ const BrandsQuery = graphql(`
   }
 `);
 
-type BrandsPageQueryVariables = VariablesOf<typeof BrandsQuery>;
+type BrandsQueryVariables = VariablesOf<typeof BrandsQuery>;
 
-const getBrands = cache(async (variables: BrandsPageQueryVariables = {}) => {
+const getBrands = cache(async (variables: BrandsQueryVariables = {}) => {
   const response = await client.fetch({
     document: BrandsQuery,
     variables,
