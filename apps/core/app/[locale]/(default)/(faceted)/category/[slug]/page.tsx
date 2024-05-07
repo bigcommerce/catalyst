@@ -14,7 +14,7 @@ import { SortBy } from '../../_components/sort-by';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { SubCategories } from './_components/sub-categories';
-import { getPageData } from './page-data';
+import { getCategoryPageData } from './page-data';
 
 interface Props {
   params: {
@@ -27,7 +27,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const categoryId = Number(params.slug);
 
-  const data = await getPageData({
+  const data = await getCategoryPageData({
     categoryId,
   });
 
@@ -48,7 +48,7 @@ export default async function Category({ params: { locale, slug }, searchParams 
   const categoryId = Number(slug);
   const search = await fetchFacetedSearch({ ...searchParams, category: [slug] });
 
-  const data = await getPageData({
+  const data = await getCategoryPageData({
     categoryId,
   });
 

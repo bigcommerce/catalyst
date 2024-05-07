@@ -6,9 +6,9 @@ import { revalidate } from '~/client/revalidate-target';
 
 import { SharingLinksFragment } from './_components/sharing-links';
 
-const PageQuery = graphql(
+const BlogPageQuery = graphql(
   `
-    query PageQuery($entityId: Int!) {
+    query BlogPageQuery($entityId: Int!) {
       site {
         content {
           blog {
@@ -37,9 +37,9 @@ const PageQuery = graphql(
   [SharingLinksFragment],
 );
 
-export const getPageData = cache(async ({ entityId }: { entityId: number }) => {
+export const getBlogPageData = cache(async ({ entityId }: { entityId: number }) => {
   const response = await client.fetch({
-    document: PageQuery,
+    document: BlogPageQuery,
     variables: { entityId },
     fetchOptions: { next: { revalidate } },
   });

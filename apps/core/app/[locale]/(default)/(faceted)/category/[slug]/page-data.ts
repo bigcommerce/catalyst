@@ -8,9 +8,9 @@ import { BreadcrumbsFragment } from '~/components/breadcrumbs';
 
 import { CategoryTreeFragment } from './_components/sub-categories';
 
-const PageQuery = graphql(
+const CategoryPageQuery = graphql(
   `
-    query PageQuery($categoryId: Int!) {
+    query CategoryPageQuery($categoryId: Int!) {
       site {
         category(entityId: $categoryId) {
           name
@@ -23,13 +23,13 @@ const PageQuery = graphql(
   [BreadcrumbsFragment, CategoryTreeFragment],
 );
 
-type CategoryPageQueryVariables = VariablesOf<typeof PageQuery>;
+type CategoryPageQueryVariables = VariablesOf<typeof CategoryPageQuery>;
 
-export const getPageData = cache(async (variables: CategoryPageQueryVariables) => {
+export const getCategoryPageData = cache(async (variables: CategoryPageQueryVariables) => {
   const customerId = await getSessionCustomerId();
 
   const response = await client.fetch({
-    document: PageQuery,
+    document: CategoryPageQuery,
     variables,
     customerId,
     fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
