@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
-import { graphql, ResultOf } from '~/client/graphql';
+import { FragmentOf, graphql } from '~/client/graphql';
 import { Link } from '~/components/link';
 
 export const CategoryTreeFragment = graphql(`
@@ -23,10 +23,11 @@ export const CategoryTreeFragment = graphql(`
   }
 `);
 
-type CategoryTreeFragmentResult = ResultOf<typeof CategoryTreeFragment>;
+type FragmentResult = FragmentOf<typeof CategoryTreeFragment>;
+type CategoryTree = FragmentResult['categoryTree'];
 
 interface Props {
-  categoryTree: CategoryTreeFragmentResult['categoryTree'];
+  categoryTree: CategoryTree;
 }
 
 export async function SubCategories({ categoryTree }: Props) {
