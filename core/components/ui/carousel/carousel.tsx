@@ -158,7 +158,7 @@ const CarouselContent = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div
 
     return (
       <div className="-mx-2 overflow-hidden px-2" ref={carouselRef}>
-        <div className={cn('-mx-6 mb-16 mt-8 flex lg:mt-10', className)} ref={ref} {...props}>
+        <div className={cn('-mx-4 mb-16 mt-8 flex lg:mt-10', className)} ref={ref} {...props}>
           {children}
         </div>
       </div>
@@ -178,7 +178,7 @@ const CarouselItem = forwardRef<
     <div
       aria-roledescription="slide"
       className={cn(
-        'grid min-w-0 shrink-0 grow-0 basis-full grid-cols-2 gap-6 px-6 md:grid-cols-4 lg:gap-8',
+        'grid min-w-0 shrink-0 grow-0 basis-full grid-cols-2 gap-6 px-4 md:grid-cols-4 lg:gap-8',
         !slidesInView.includes(index) && 'invisible',
         className,
       )}

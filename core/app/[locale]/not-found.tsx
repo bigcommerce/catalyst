@@ -58,7 +58,7 @@ export default async function NotFound() {
         data={data.site}
       />
 
-      <main className="mx-auto mb-10 max-w-[835px] space-y-8 px-6 sm:px-10 lg:px-0">
+      <main className="mx-auto mb-10 max-w-[835px] space-y-8 px-4 sm:px-10 lg:px-0">
         <div className="flex flex-col gap-8 px-0 py-16">
           <h2 className="text-4xl font-black lg:text-5xl">{t('heading')}</h2>
           <p className="text-lg">{t('message')}</p>
