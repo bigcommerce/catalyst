@@ -5,7 +5,7 @@
 
 The [main GitHub repository for Catalyst](https://github.com/bigcommerce/catalyst) is a [monorepo](https://en.wikipedia.org/wiki/Monorepo) with multiple codebases, including but not limited to the following:
 
-* The [core Next.js reference storefront application, in /apps/core](https://github.com/bigcommerce/catalyst/tree/main/apps/core)
+* The [core Next.js reference storefront application, in /core](https://github.com/bigcommerce/catalyst/tree/main/core)
 * [The component library, in /packages/components](https://github.com/bigcommerce/catalyst/tree/main/packages/components)
 * [The API client, in /packages/client](https://github.com/bigcommerce/catalyst/tree/main/packages/client)
 * [A Storybook instance to help explore the component library in /apps/docs](https://github.com/bigcommerce/catalyst/tree/main/apps/docs)
@@ -14,7 +14,7 @@ The [main GitHub repository for Catalyst](https://github.com/bigcommerce/catalys
 
 ### The monorepo and the CLI
 
-The [Catalyst CLI](https://www.npmjs.com/package/@bigcommerce/create-catalyst) installs just the Next.js application from `apps/core` onto your computer when you create a new Catalyst storefront.
+The [Catalyst CLI](https://www.npmjs.com/package/@bigcommerce/create-catalyst) installs just the Next.js application from `core/` onto your computer when you create a new Catalyst storefront.
 
 If you are interested solely in building a headless storefront based on Catalyst, most of this monorepo is not relevant to you.
 
@@ -89,7 +89,7 @@ PLAYWRIGHT_TEST_BASE_URL='https://catalyst-demo.site' || 'http://localhost:3000'
 2. Navigate to the test directory:
 
 ```shell copy
-cd apps/core
+cd core/
 ```
 
 3. Run all UI tests in Chromium:
