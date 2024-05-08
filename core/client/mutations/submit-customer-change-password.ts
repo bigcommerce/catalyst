@@ -1,21 +1,7 @@
-import { z } from 'zod';
-
 import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
-import { graphql } from '../graphql';
-
-export const CustomerChangePasswordSchema = z
-  .object({
-    currentPassword: z.string(),
-    newPassword: z.string(),
-    confirmPassword: z.string(),
-  })
-  .required();
-
-const Input = CustomerChangePasswordSchema.omit({ confirmPassword: true });
-
-type SubmitCustomerChangePassword = z.infer<typeof Input>;
+import { graphql, VariablesOf } from '../graphql';
 
 const SUBMIT_CUSTOMER_CHANGE_PASSWORD_MUTATION = graphql(`
   mutation CustomerChangePassword($input: ChangePasswordInput!) {
@@ -41,10 +27,12 @@ const SUBMIT_CUSTOMER_CHANGE_PASSWORD_MUTATION = graphql(`
   }
 `);
 
+type Variables = VariablesOf<typeof SUBMIT_CUSTOMER_CHANGE_PASSWORD_MUTATION>;
+
 export const submitCustomerChangePassword = async ({
   currentPassword,
   newPassword,
-}: SubmitCustomerChangePassword) => {
+}: Variables['input']) => {
   const customerId = await getSessionCustomerId();
   const variables = {
     input: {

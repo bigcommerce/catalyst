@@ -183,7 +183,8 @@
       "addresses": "Addresses",
       "wishlists": "Wish lists",
       "recentlyViewed": "Recently viewed",
-      "settings": "Account settings"
+      "settings": "Account settings",
+      "changePassword": "Change password"
     },
     "Addresses": {
       "defaultAddress": "Default",
@@ -218,9 +219,13 @@
       }
     },
     "ChangePassword": {
+      "currentPasswordLabel": "Current password",
       "newPasswordLabel": "New password",
       "confirmPasswordLabel": "Confirm password",
+      "cancel": "Cancel",
       "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
+      "newPasswordValidationMessage": "New password must be different from the current password or/and match confirm password.",
+      "notEmptyMessage": "Field should not be empty",
       "successMessage": "Password has been updated successfully!"
     },
     "SubmitChangePassword": {
