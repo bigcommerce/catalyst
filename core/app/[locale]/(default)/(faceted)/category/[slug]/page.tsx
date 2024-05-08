@@ -46,7 +46,7 @@ export default async function Category({ params: { locale, slug }, searchParams 
   const messages = await getMessages({ locale });
 
   const categoryId = Number(slug);
-  const search = await fetchFacetedSearch({ ...searchParams, category: [slug] });
+  const search = await fetchFacetedSearch({ ...searchParams, category: categoryId });
 
   const data = await getCategoryPageData({
     categoryId,
