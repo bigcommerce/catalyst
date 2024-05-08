@@ -43,7 +43,7 @@ const mapFacetsToRefinements = ({ facets, pageType }: Props) =>
           return facet.categories
             .filter((category) => category.isSelected)
             .map<FacetProps<PublicParamKeys>>(({ name, entityId }) => ({
-              key: 'category',
+              key: 'categoryIn',
               display_name: name,
               value: String(entityId),
             }));

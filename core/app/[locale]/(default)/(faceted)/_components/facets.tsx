@@ -151,7 +151,7 @@ export const Facets = ({ facets, pageType }: Props) => {
                           aria-labelledby={labelId}
                           defaultChecked={category.isSelected}
                           id={id}
-                          name="category"
+                          name="categoryIn"
                           onCheckedChange={submitForm}
                           value={category.entityId}
                         />
