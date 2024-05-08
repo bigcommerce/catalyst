@@ -43,9 +43,10 @@ export default async function Brand({ params: { slug, locale }, searchParams }: 
 
   const brandId = Number(slug);
 
-  const search = await fetchFacetedSearch({ ...searchParams, brand: [slug] });
-
-  const brand = await getBrand({ entityId: brandId });
+  const [brand, search] = await Promise.all([
+    getBrand({ entityId: brandId }),
+    fetchFacetedSearch({ ...searchParams, brand: [slug] }),
+  ]);
 
   if (!brand) {
     notFound();

@@ -46,13 +46,11 @@ export default async function Category({ params: { locale, slug }, searchParams 
   const messages = await getMessages({ locale });
 
   const categoryId = Number(slug);
-  const search = await fetchFacetedSearch({ ...searchParams, category: categoryId });
 
-  const data = await getCategoryPageData({
-    categoryId,
-  });
-
-  const { category, categoryTree } = data;
+  const [{ category, categoryTree }, search] = await Promise.all([
+    getCategoryPageData({ categoryId }),
+    fetchFacetedSearch({ ...searchParams, category: categoryId }),
+  ]);
 
   if (!category) {
     return notFound();
