@@ -9,10 +9,10 @@ test('Checkout experience on ios mobile', async ({ page }) => {
   await page.goto('/');
   await page.getByLabel('Toggle navigation').click();
   await page.getByLabel('Main').getByRole('link', { name: 'Shop All' }).click();
-  await page.getByRole('link', { name: '[Sample] Able Brewing System' }).click();
+  await page.getByRole('link', { name: '[Sample] Laundry Detergent' }).click();
 
   await expect(
-    page.getByRole('heading', { level: 1, name: '[Sample] Able Brewing System' }),
+    page.getByRole('heading', { level: 1, name: '[Sample] Laundry Detergent' }),
   ).toBeVisible();
 
   await page.getByRole('button', { name: 'Add to Cart' }).first().click();
