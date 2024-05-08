@@ -34,7 +34,7 @@
   "devDependencies": {
     "@bigcommerce/eslint-config": "^2.8.1",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
-    "@swc/core": "^1.5.3",
+    "@swc/core": "^1.5.5",
     "@swc/jest": "^0.2.36",
     "@types/fs-extra": "^11.0.4",
     "@types/jest": "^29.5.12",
