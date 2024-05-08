@@ -73,7 +73,9 @@ export const Reviews = async ({ productId }: Props) => {
 
       <ul className="lg:grid lg:grid-cols-2 lg:gap-8">
         {reviews.length === 0 ? (
-          <p className="pb-6 pt-1">{t('unreviewed')}</p>
+          <li>
+            <p className="pb-6 pt-1">{t('unreviewed')}</p>
+          </li>
         ) : (
           reviews.map((review) => {
             return (

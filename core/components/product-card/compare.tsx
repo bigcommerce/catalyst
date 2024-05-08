@@ -20,7 +20,7 @@ export const Compare = ({
   } | null;
   productName: string;
 }) => {
-  const checkboxId = useId();
+  const labelId = useId();
   const t = useTranslations('Product.ProductSheet');
   const [checkedState, setCheckedState] = useState(false);
   const { products, setProducts } = useCompareProductsContext();
@@ -46,12 +46,12 @@ export const Compare = ({
   return (
     <div className="flex items-center gap-3">
       <Checkbox
+        aria-labelledby={labelId}
         checked={checkedState}
         className="h-4 w-4"
-        id={checkboxId}
         onCheckedChange={handleOnCheckedChange}
       />
-      <Label className="font-normal" htmlFor={checkboxId}>
+      <Label className="font-normal" id={labelId}>
         {t('compare')}
       </Label>
     </div>
