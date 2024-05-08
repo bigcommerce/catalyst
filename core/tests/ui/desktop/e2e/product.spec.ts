@@ -28,19 +28,19 @@ test('Validate product page', async ({ page }) => {
 });
 
 test('Compare products', async ({ page }) => {
-  await selectProductForComparison(page, 'Orbit Terrarium - Large');
-  await selectProductForComparison(page, 'Orbit Terrarium - Small');
-  await selectProductForComparison(page, 'Able Brewing System');
+  await selectProductForComparison(page, 'Smith Journal 13');
+  await selectProductForComparison(page, 'Utility Caddy');
+  await selectProductForComparison(page, 'Laundry Detergent');
 
   await expect(page.getByRole('link', { name: 'Compare (3)' })).toBeVisible();
   await expect(
-    page.getByRole('button', { name: 'Remove [Sample] Orbit Terrarium - Large from compare list' }),
+    page.getByRole('button', { name: 'Remove [Sample] Smith Journal 13 from compare list' }),
   ).toBeAttached();
   await expect(
-    page.getByRole('button', { name: 'Remove [Sample] Orbit Terrarium - Small from compare list' }),
+    page.getByRole('button', { name: 'Remove [Sample] Utility Caddy from compare list' }),
   ).toBeAttached();
   await expect(
-    page.getByRole('button', { name: 'Remove [Sample] Able Brewing System from compare list' }),
+    page.getByRole('button', { name: 'Remove [Sample] Laundry Detergent from compare list' }),
   ).toBeAttached();
 
   await page.getByRole('link', { name: 'Compare (3)' }).click();
@@ -48,32 +48,23 @@ test('Compare products', async ({ page }) => {
 });
 
 test('Add and remove products to compare', async ({ page }) => {
-  await selectProductForComparison(page, 'Orbit Terrarium - Large');
-  await selectProductForComparison(page, 'Orbit Terrarium - Small');
-  await selectProductForComparison(page, 'Able Brewing System');
-  await selectProductForComparison(page, 'Fog Linen Chambray Towel');
+  await selectProductForComparison(page, 'Smith Journal 13');
+  await selectProductForComparison(page, 'Utility Caddy');
+  await selectProductForComparison(page, 'Laundry Detergent');
 
-  await expect(page.getByRole('link', { name: 'Compare (4)' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Compare (3)' })).toBeVisible();
   await expect(
-    page.getByRole('button', { name: 'Remove [Sample] Orbit Terrarium - Large from compare list' }),
+    page.getByRole('button', { name: 'Remove [Sample] Smith Journal 13 from compare list' }),
   ).toBeAttached();
   await expect(
-    page.getByRole('button', { name: 'Remove [Sample] Orbit Terrarium - Small from compare list' }),
+    page.getByRole('button', { name: 'Remove [Sample] Utility Caddy from compare list' }),
   ).toBeAttached();
   await expect(
-    page.getByRole('button', { name: 'Remove [Sample] Able Brewing System from compare list' }),
-  ).toBeAttached();
-  await expect(
-    page.getByRole('button', {
-      name: 'Remove [Sample] Fog Linen Chambray Towel - Beige Stripe from compare list',
-    }),
+    page.getByRole('button', { name: 'Remove [Sample] Laundry Detergent from compare list' }),
   ).toBeAttached();
 
   await page
-    .getByRole('button', { name: `Remove [Sample] Orbit Terrarium - Large from compare list` })
-    .click();
-  await page
-    .getByRole('button', { name: `Remove [Sample] Orbit Terrarium - Small from compare list` })
+    .getByRole('button', { name: `Remove [Sample] Smith Journal 13 from compare list` })
     .click();
   await expect(page.getByRole('link', { name: 'Compare (2)' })).toBeVisible();
 });
