@@ -8,9 +8,7 @@ The [main GitHub repository for Catalyst](https://github.com/bigcommerce/catalys
 * The [core Next.js reference storefront application, in /core](https://github.com/bigcommerce/catalyst/tree/main/core)
 * [The component library, in /packages/components](https://github.com/bigcommerce/catalyst/tree/main/packages/components)
 * [The API client, in /packages/client](https://github.com/bigcommerce/catalyst/tree/main/packages/client)
-* [A Storybook instance to help explore the component library in /apps/docs](https://github.com/bigcommerce/catalyst/tree/main/apps/docs)
 * [Product documentation, in /docs](https://github.com/bigcommerce/catalyst/tree/main/docs)
-* [Functional tests in Playwright, in /packages/functional](https://github.com/bigcommerce/catalyst/tree/main/packages/functional)
 
 ### The monorepo and the CLI
 
@@ -72,7 +70,6 @@ The following table lists localhost URLs with the default ports. When a port is 
 | Process | URL with port |
 |:--------|:--------------|
 | Catalyst storefront | `http://localhost:3000` |
-| Component reference in Storybook | `http://localhost:6006` |
 
 ## Testing
 
@@ -84,6 +81,10 @@ To run the UI tests locally:
 
 ```shell copy
 PLAYWRIGHT_TEST_BASE_URL='https://catalyst-demo.site' || 'http://localhost:3000'
+# Optional: Some tests will fail without these credentials.
+# Create a customer account on your store in order to populate these.
+TEST_ACCOUNT_EMAIL="<storefront-account-email>"
+TEST_ACCOUNT_PASSWORD="<storefront-account-password>"
 ```
 
 2. Navigate to the test directory:
@@ -95,11 +96,11 @@ cd core/
 3. Run all UI tests in Chromium:
 
 ```shell copy
-npx playwright test tests/ui/* --ui --project=tests-chromium
+pnpm exec playwright test tests/ui/ --project=tests-chromium
 ```
 
 4. Run a specific test in Chromium:
 
 ```shell copy
-npx playwright test tests/ui/core/components/Checkbox.spec.ts --ui --project=tests-chromium
+pnpm exec playwright tests/visual-regression/components/badge.spec.ts --project=tests-chromium
 ```
