@@ -4,13 +4,13 @@ Catalyst takes full advantage of the BigCommerce CDN to provide globally-distrib
 
 ## `<BcImage />` and `bcCdnImageLoader`
 
-For loading images from the BigCommerce platform, Catalyst provides [`<BcImage />`](https://github.com/bigcommerce/catalyst/blob/main/apps/core/components/bc-image/index.tsx) as a wrapper for Next's `<Image />` component to allow you to use the BigCommerce CDN directly to reduce load on the Next.js application and hosting costs.
+For loading images from the BigCommerce platform, Catalyst provides [`<BcImage />`](https://github.com/bigcommerce/catalyst/blob/main/core/components/bc-image/index.tsx) as a wrapper for Next's `<Image />` component to allow you to use the BigCommerce CDN directly to reduce load on the Next.js application and hosting costs.
 
-This component expects to receive the `urlTemplate` field from GraphQL Storefront API which contains a `{:size}` placeholder which the custom [`bcCdnImageLoader` image loader](https://github.com/bigcommerce/catalyst/blob/main/apps/core/lib/cdn-image-loader.ts) will replace with the desired image dimensions. Width is required and height is optional. You may also optionally supply a `lossy` parameter to indicate if you would like images to be compressed lossily; the default is `true`. If you supply `false`, lossless compression will be used.
+This component expects to receive the `urlTemplate` field from GraphQL Storefront API which contains a `{:size}` placeholder which the custom [`bcCdnImageLoader` image loader](https://github.com/bigcommerce/catalyst/blob/main/core/lib/cdn-image-loader.ts) will replace with the desired image dimensions. Width is required and height is optional. You may also optionally supply a `lossy` parameter to indicate if you would like images to be compressed lossily; the default is `true`. If you supply `false`, lossless compression will be used.
 
 ## Using store assets uploaded via WebDAV
 
-Two helper functions are provided in [lib/store-assets](https://github.com/bigcommerce/catalyst/blob/main/apps/core/lib/store-assets.ts) to help build URLs for assets living in your store's object storage.
+Two helper functions are provided in [lib/store-assets](https://github.com/bigcommerce/catalyst/blob/main/core/lib/store-assets.ts) to help build URLs for assets living in your store's object storage.
 
 `contentAssetUrl()` can be used to generate a URL to an arbitrary file asset in the `/content/` folder in WebDAV on your store.
 

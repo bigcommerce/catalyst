@@ -40,7 +40,7 @@ The easiest way to deploy your Catalyst Storefront is to use the [Vercel Platfor
 Check out the [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 <div align="left">
-  <a href="https://vercel.com/new/clone?repository-url=https://github.com/bigcommerce/catalyst&root-directory=apps/core&project-name=my-catalyst-storefront&repository-name=my-catalyst-storefront&integration-ids=oac_nsrwzogJLEFglVwt2060kB0y&external-id=catalyst&demo-title=BigCommerce+Catalyst+with+Vercel&demo-description=Create+a+BigCommerce+Catalyst+Storefront+and+Deploy+to+Vercel&demo-url=catalyst-demo.site&demo-image=https://storage.googleapis.com/s.mkswft.com/RmlsZTozODgzZmY3Yy1hNmVlLTQ1MGUtYjRkMS1mMjEyNzgxNjk5MTY%3D/Social-image-Catalyst.png"><img src="https://vercel.com/button" alt="Deploy with Vercel"/></a>
+  <a href="https://vercel.com/new/clone?repository-url=https://github.com/bigcommerce/catalyst&root-directory=core&project-name=my-catalyst-storefront&repository-name=my-catalyst-storefront&integration-ids=oac_nsrwzogJLEFglVwt2060kB0y&external-id=catalyst&demo-title=BigCommerce+Catalyst+with+Vercel&demo-description=Create+a+BigCommerce+Catalyst+Storefront+and+Deploy+to+Vercel&demo-url=catalyst-demo.site&demo-image=https://storage.googleapis.com/s.mkswft.com/RmlsZTozODgzZmY3Yy1hNmVlLTQ1MGUtYjRkMS1mMjEyNzgxNjk5MTY%3D/Social-image-Catalyst.png"><img src="https://vercel.com/button" alt="Deploy with Vercel"/></a>
 </div>
 
 ## Quickstart
@@ -84,5 +84,5 @@ Learn more about Catalyst at [catalyst.dev](https://catalyst.dev).
 ![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/catalyst_readme_hr.png)
 
 > [!IMPORTANT]
-> If you just want to build a storefront, start with the [CLI](#quickstart) which will install the Next.js application in [/apps/core](/apps/core/).
+> If you just want to build a storefront, start with the [CLI](#quickstart) which will install the Next.js application in [/core](/core/).
 > If you wish to contribute back to Catalyst or create a fork of Catalyst, you can check the [docs for this monorepo](https://catalyst.dev/docs/monorepo) to get started.

@@ -149,6 +149,8 @@ export const create = async (options: CreateCommandOptions) => {
         data: { id: createdChannelId, storefront_api_token: storefrontApiToken },
       } = await sampleDataApi.createChannel(newChannelName);
 
+      await bc.createChannelMenus(createdChannelId);
+
       channelId = createdChannelId;
       customerImpersonationToken = storefrontApiToken;
 

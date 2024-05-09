@@ -2,7 +2,7 @@ import * as z from 'zod';
 
 export const getLatestCoreTag = async () => {
   const rawPackageJsonUrl =
-    'https://raw.githubusercontent.com/bigcommerce/catalyst/main/apps/core/package.json';
+    'https://raw.githubusercontent.com/bigcommerce/catalyst/main/core/package.json';
 
   const response = await fetch(rawPackageJsonUrl);
 
