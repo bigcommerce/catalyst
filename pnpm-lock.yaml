@@ -150,8 +150,8 @@ importers:
         specifier: ^3.0.3
         version: 3.0.3
       zod:
-        specifier: ^3.23.6
-        version: 3.23.6
+        specifier: ^3.23.7
+        version: 3.23.7
     devDependencies:
       '@0no-co/graphqlsp':
         specifier: ^1.12.2
@@ -293,11 +293,11 @@ importers:
         specifier: ^7.6.1
         version: 7.6.1
       zod:
-        specifier: ^3.23.6
-        version: 3.23.6
+        specifier: ^3.23.7
+        version: 3.23.7
       zod-validation-error:
         specifier: ^3.2.0
-        version: 3.2.0(zod@3.23.6)
+        version: 3.2.0(zod@3.23.7)
     devDependencies:
       '@bigcommerce/eslint-config':
         specifier: ^2.8.1
@@ -9163,15 +9163,15 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  /zod-validation-error@3.2.0(zod@3.23.6):
+  /zod-validation-error@3.2.0(zod@3.23.7):
     resolution: {integrity: sha512-cYlPR6zuyrgmu2wRTdumEAJGuwI7eHVHGT+VyneAQxmRAKtGRL1/7pjz4wfLhz4J05f5qoSZc3rGacswgyTjjw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       zod: ^3.18.0
     dependencies:
-      zod: 3.23.6
+      zod: 3.23.7
     dev: false
 
-  /zod@3.23.6:
-    resolution: {integrity: sha512-RTHJlZhsRbuA8Hmp/iNL7jnfc4nZishjsanDAfEY1QpDQZCahUp3xDzl+zfweE9BklxMUcgBgS1b7Lvie/ZVwA==}
+  /zod@3.23.7:
+    resolution: {integrity: sha512-NBeIoqbtOiUMomACV/y+V3Qfs9+Okr18vR5c/5pHClPpufWOrsx8TENboDPe265lFdfewX2yBtNTLPvnmCxwog==}
     dev: false
