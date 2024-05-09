@@ -1,10 +1,47 @@
-import { getFeaturedProducts } from '~/client/queries/get-featured-products';
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { cache } from 'react';
+
+import { getSessionCustomerId } from '~/auth';
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
+import { revalidate as revalidateTarget } from '~/client/revalidate-target';
 import { locales } from '~/i18n';
 
 import ProductPage from '../page';
 
 export { generateMetadata } from '../page';
 export default ProductPage;
+
+const FeaturedProductsQuery = graphql(`
+  query FeaturedProductsQuery($first: Int) {
+    site {
+      featuredProducts(first: $first) {
+        edges {
+          node {
+            entityId
+          }
+        }
+      }
+    }
+  }
+`);
+
+interface Options {
+  first?: number;
+}
+
+const getFeaturedProducts = cache(async ({ first = 12 }: Options = {}) => {
+  const customerId = await getSessionCustomerId();
+
+  const response = await client.fetch({
+    document: FeaturedProductsQuery,
+    variables: { first },
+    customerId,
+    fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate: revalidateTarget } },
+  });
+
+  return removeEdgesAndNodes(response.data.site.featuredProducts);
+});
 
 export async function generateStaticParams() {
   const products = await getFeaturedProducts();
