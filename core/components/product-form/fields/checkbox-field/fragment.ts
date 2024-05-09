@@ -8,5 +8,6 @@ export const CheckboxFieldFragment = graphql(`
     checkedByDefault
     label
     checkedOptionValueEntityId
+    uncheckedOptionValueEntityId
   }
 `);
