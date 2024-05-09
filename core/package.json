@@ -52,7 +52,7 @@
     "sharp": "^0.33.3",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-radix": "^3.0.3",
-    "zod": "^3.23.7"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@0no-co/graphqlsp": "^1.12.2",
