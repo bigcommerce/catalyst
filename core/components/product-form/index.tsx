@@ -36,7 +36,7 @@ export const ProductForm = ({ product }: Props) => {
   const { handleSubmit, register, ...methods } = useProductForm();
 
   const productFormSubmit = async (data: ProductFormData) => {
-    const result = await handleAddToCart(data);
+    const result = await handleAddToCart(data, product);
     const quantity = Number(data.quantity);
 
     if (result.error) {
