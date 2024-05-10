@@ -162,6 +162,7 @@
       "errorMessage": "Something went wrong while updating item quantity, please try again."
     },
     "SubmitRemoveItem": {
+      "remove": "Remove",
       "spinnerText": "Removing...",
       "submitText": "Remove item from cart",
       "errorMessage": "Something went wrong while removing item, please try again."
