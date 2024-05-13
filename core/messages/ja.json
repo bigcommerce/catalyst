@@ -1,0 +1,329 @@
+{
+    "RootLayout": {
+        "Metadata": {
+            "title": "Catalyst Store",
+            "description": "Example store built with Catalyst",
+            "other": {
+                "platform": "bigcommerce.catalyst"
+            }
+        }
+    },
+    "Home": {
+        "Carousel": {
+            "bestSellingProducts": "Best Selling Products",
+            "featuredProducts": "おすすめ商品",
+            "newestProducts": "Newest products"
+        }
+    },
+    "Category": {
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "products": "商品",
+        "items": "お品物"
+    },
+    "Brand": {
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "products": "商品"
+    },
+    "Product": {
+        "loading": "ロード中…",
+        "carouselTitle": "関連商品",
+        "noGalleryText": "近日公開",
+        "DescriptionAndReviews": {
+            "description": "説明",
+            "warranty": "保証",
+            "loading": "ロード中…",
+            "reviews": "レビュー",
+            "reviewsCount": "Count:",
+            "unreviewed": "This product hasn't been reviewed yet.",
+            "reviewRating": "Rating: {rating} out of 5 stars",
+            "reviewAuthor": "Posted by {author} on"
+        },
+        "Details": {
+            "additionalDetails": "Additional details",
+            "sku": "SKU",
+            "upc": "UPC",
+            "minPurchase": "最小購入額",
+            "maxPurchase": "Maxiumum purchase",
+            "availability": "販売中",
+            "loading": "ロード中…",
+            "condition": "条件",
+            "weight": "重さ",
+            "ReviewSummary": {
+                "loading": "ロード中…",
+                "rating": "評価:",
+                "ratingRange": "out of 5 stars.",
+                "reviewsNumber": "Number of reviews:"
+            },
+            "Prices": {
+                "msrp": "メーカー希望小売価格",
+                "was": "Was",
+                "now": "Now"
+            }
+        },
+        "Form": {
+            "errorMessage": "問題が発生しました。 もう一度お試しください。",
+            "processing": "処理中...",
+            "addToCart": "カートに追加",
+            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+            "saveToWishlist": "Save to wishlist",
+            "quantityLabel": "数量"
+        },
+        "ProductSheet": {
+            "title": "Choose options",
+            "errorMessage": "An error has ocurred.",
+            "loading": "ロード中…",
+            "numberReviews": "Number of reviews:",
+            "productRating": "<rating>Rating:</rating> {currentRating} <stars> out of 5 stars.</stars>",
+            "msrp": "メーカー希望小売価格",
+            "was": "Was",
+            "now": "Now",
+            "quickAdd": "Quick add",
+            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+            "processing": "処理中...",
+            "addToCart": "カートに追加",
+            "compare": "価格比較"
+        }
+    },
+    "Compare": {
+        "nothingCompare": "Well, there's nothing to compare!",
+        "helpingText": "You somehow managed to land here, but you need to select a few products first.",
+        "comparingQuantity": "Comparing {quantity, plural, =1 {1 Product} other {# Products}}",
+        "productComparison": "Product Comparison",
+        "noImageText": "No Image",
+        "chooseOptions": "Choose options",
+        "description": "説明",
+        "rating": "評価",
+        "availability": "販売中",
+        "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+        "processing": "処理中...",
+        "addToCart": "カートに追加"
+    },
+    "Cart": {
+        "heading": "Your cart",
+        "empty": "あなたのカートは空です",
+        "emptyDetails": "Looks like you have not addded anything to your cart. Go ahead & explore top categories",
+        "proceedToCheckout": "支払いに進む",
+        "loading": "ロード中…",
+        "spinnerText": "Updating...",
+        "CheckoutSummary": {
+            "subTotal": "小計",
+            "discounts": "割引",
+            "coupon": "クーポン",
+            "couponCode": "クーポンコード",
+            "addCoupon": "Add coupon",
+            "enterCouponCode": "クーポンコードを入力してください",
+            "couponCodeRequired": "Please enter a coupon code.",
+            "couponCodeInvalid": "入力したクーポンコードが有効ではありません。",
+            "remove": "削除",
+            "couponCodeRemoveFailed": "There was an error removing the coupon code. Please try again.",
+            "tax": "税金",
+            "grandTotal": "総計",
+            "shipping": "配送",
+            "shippingCost": "送料",
+            "handlingCost": "Handling cost",
+            "add": "追加",
+            "change": "変更する",
+            "cancel": "キャンセル",
+            "errorMessage": "Cart summary not found, please try again."
+        },
+        "ShippingInfo": {
+            "country": "国",
+            "countryPlaceholder": "国選択",
+            "state": "州/県",
+            "statePlaceholder": "都/道/府/県選択",
+            "city": "市/区/町/村",
+            "cityPlaceholder": "市区町村",
+            "postcode": "郵便番号",
+            "postcodePlaceholder": "郵便番号",
+            "errorMessage": "エラーが発生しました。 もう一度お試しください。"
+        },
+        "SubmitShippingInfo": {
+            "spinnerText": "提出中…",
+            "submitText": "Estimate shipping"
+        },
+        "ShippingCost": {
+            "shippingOptions": "Available options",
+            "radioGroupAriaLabel": "Available shipping options",
+            "noAvailableOptions": "There are no available options for shipping. Please check provided details and try again!",
+            "errorMessage": "エラーが発生しました。 もう一度お試しください。"
+        },
+        "SubmitShippingCost": {
+            "spinnerText": "提出中…",
+            "submitText": "Update shipping costs"
+        },
+        "SubmitCouponCode": {
+            "spinnerText": "提出中…",
+            "submitText": "適用"
+        },
+        "SubmitItemQuantity": {
+            "spinnerText": "Updating...",
+            "submitReduceText": "Decrease count",
+            "submitIncreaseText": "Increase count",
+            "errorMessage": "Something went wrong while updating item quantity, please try again."
+        },
+        "SubmitRemoveItem": {
+            "remove": "削除",
+            "spinnerText": "Removing...",
+            "submitText": "Remove item from cart",
+            "errorMessage": "Something went wrong while removing item, please try again."
+        }
+    },
+    "Search": {
+        "heading": "検索",
+        "products": "商品",
+        "noResults": "No Results",
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "searchResults": "Search results for"
+    },
+    "Account": {
+        "Home": {
+            "heading": "マイアカウント",
+            "accountTabsLabel": "Account Tabs",
+            "orders": "注文",
+            "messages": "メッセージ",
+            "addresses": "住所",
+            "wishlists": "Wish lists",
+            "recentlyViewed": "Recently viewed",
+            "settings": "アカウント設定",
+            "changePassword": "パスワード変更"
+        },
+        "Addresses": {
+            "defaultAddress": "削除",
+            "alternativeAddress": "代替",
+            "addNewAddress": "Add new address",
+            "editButton": "編集",
+            "deleteButton": "削除する"
+        },
+        "Login": {
+            "heading": "Log In",
+            "resetPasswordHeading": "暗号を再設定",
+            "changePasswordHeading": "パスワード変更",
+            "Form": {
+                "errorMessage": "Your email address or password is incorrect. Try signing in again or reset your password",
+                "emailLabel": "Eメール",
+                "enterEmailMessage": "Enter your email",
+                "passwordLabel": "パスワード",
+                "entePasswordMessage": "Enter your password",
+                "submitting": "提出中…",
+                "logIn": "ログイン",
+                "forgotPassword": "パスワードをお忘れですか?"
+            },
+            "CreateAccount": {
+                "heading": "New customer?",
+                "accountBenefits": "アカウントを作成すると、次のことができるようになります:",
+                "fastCheckout": "スムーズにお支払い",
+                "multipleAddresses": "複数の配送先住所を保存する",
+                "ordersHistory": "注文履歴にアクセスする",
+                "ordersTracking": "新規注文の追跡",
+                "wishlists": "商品をウィッシュリストに保存する",
+                "createLink": "アカウント作成 "
+            }
+        },
+        "ChangePassword": {
+            "currentPasswordLabel": "現在のパスワード",
+            "newPasswordLabel": "新しいパスワード",
+            "confirmPasswordLabel": "パスワード確認",
+            "cancel": "キャンセル",
+            "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
+            "newPasswordValidationMessage": "New password must be different from the current password or/and match confirm password.",
+            "notEmptyMessage": "Field should not be empty",
+            "successMessage": "Password has been updated successfully!"
+        },
+        "SubmitChangePassword": {
+            "spinnerText": "提出中…",
+            "submitText": "パスワード変更"
+        },
+        "ResetPassword": {
+            "description": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
+            "emailLabel": "Eメール",
+            "emailValidationMessage": "Enter a valid email such as name@domain.com",
+            "successMessage": "Your password reset email is on its way to {email}. If you don't see it, check your spam folder.",
+            "recaptchaText": "Pass ReCAPTCHA check"
+        },
+        "SubmitResetPassword": {
+            "spinnerText": "提出中…",
+            "submitText": "暗号を再設定"
+        }
+    },
+    "NotFound": {
+        "heading": "We couldn't find that page!",
+        "message": "It looks like the page you requested has moved or no longer exists.",
+        "featuredProducts": "おすすめ商品",
+        "searchProducts": "Search for products",
+        "searchPlaceholder": "Placeholder...",
+        "searching": "Searching...",
+        "search": "検索"
+    },
+    "ServerError": {
+        "heading": "There was a server error!",
+        "message": "Please try again later."
+    },
+    "FacetedGroup": {
+        "MobileSideNav": {
+            "filters": "フィルター",
+            "showFilters": "フィルタを表示",
+            "subCategories": "カテゴリー"
+        },
+        "FacetedSearch": {
+            "filters": "フィルター",
+            "RefineBy": {
+                "refineBy": "絞込条件",
+                "clearAllRefinements": "すべてクリア"
+            },
+            "Facets": {
+                "updatePriceButton": "Update price",
+                "freeShippingLabel": "送料無料",
+                "isFeaturedLabel": "Is featured",
+                "inStockLabel": "在庫あり",
+                "rating": "{currentRating, plural, =1 {1 star} other {# stars}} & up",
+                "priceFilter": {
+                    "minPricePlaceholder": "{currencySign} min",
+                    "minPriceAriaLabel": "Minimum pricing",
+                    "maxPricePlaceholder": "{currencySign} max",
+                    "maxPriceAriaLabel": "Maximum pricing"
+                }
+            }
+        },
+        "SortBy": {
+            "ariaLabel": "Sort by:",
+            "featuredItems": "おすすめ商品",
+            "bestSellingItems": "Best selling items",
+            "newestItems": "最新商品",
+            "aToZ": "AからZ",
+            "zToA": "ZからA",
+            "byReview": "By review",
+            "priceAscending": "Price: ascending",
+            "priceDescending": "Price: descending",
+            "relevance": "関連性"
+        }
+    },
+    "Providers": {
+        "Compare": {
+            "compareButton": "Compare ({products})",
+            "productPhoto": "Photo",
+            "removeProductAriaLabel": "Remove {product} from compare list"
+        }
+    },
+    "Header": {
+        "account": "アカウント"
+    },
+    "Pagination": {
+        "next": "次へ",
+        "prev": "以前"
+    },
+    "AboutUs": {
+        "fullNameLabel": "Full name",
+        "companyNameLabel": "会社名",
+        "phoneLabel": "電話",
+        "orderNoLabel": "注文番号",
+        "rmaLabel": "RMA number",
+        "emailLabel": "Eメール",
+        "emailValidationMessage": "Enter a valid email such as name@domain.com",
+        "commentsLabel": "Comments/questions",
+        "commentsValidationMessage": "Please provide a valid Comments",
+        "recaptchaText": "Pass ReCAPTCHA check",
+        "onSubmitText": "提出中…",
+        "submitFormText": "Submit form",
+        "sucessSubmitMessage": "Thanks for reaching out. We'll get back to you soon."
+    }
+}

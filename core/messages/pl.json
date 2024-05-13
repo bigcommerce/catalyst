@@ -1,0 +1,329 @@
+{
+    "RootLayout": {
+        "Metadata": {
+            "title": "Catalyst Store",
+            "description": "Example store built with Catalyst",
+            "other": {
+                "platform": "bigcommerce.catalyst"
+            }
+        }
+    },
+    "Home": {
+        "Carousel": {
+            "bestSellingProducts": "Best Selling Products",
+            "featuredProducts": "Polecane produkty",
+            "newestProducts": "Newest products"
+        }
+    },
+    "Category": {
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "products": "Produkty",
+        "items": "produkty"
+    },
+    "Brand": {
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "products": "Produkty"
+    },
+    "Product": {
+        "loading": "Ładowanie...",
+        "carouselTitle": "Produkty powiązane",
+        "noGalleryText": "Już wkrótce",
+        "DescriptionAndReviews": {
+            "description": "Opis",
+            "warranty": "Gwarancja",
+            "loading": "Ładowanie...",
+            "reviews": "Opinie",
+            "reviewsCount": "Count:",
+            "unreviewed": "This product hasn't been reviewed yet.",
+            "reviewRating": "Rating: {rating} out of 5 stars",
+            "reviewAuthor": "Posted by {author} on"
+        },
+        "Details": {
+            "additionalDetails": "Additional details",
+            "sku": "SKU",
+            "upc": "UPC",
+            "minPurchase": "Minimalny zakup",
+            "maxPurchase": "Maxiumum purchase",
+            "availability": "Dostępność",
+            "loading": "Ładowanie...",
+            "condition": "Stan",
+            "weight": "Waga",
+            "ReviewSummary": {
+                "loading": "Ładowanie...",
+                "rating": "Ocena:",
+                "ratingRange": "out of 5 stars.",
+                "reviewsNumber": "Number of reviews:"
+            },
+            "Prices": {
+                "msrp": "SCDP",
+                "was": "Was",
+                "now": "Now"
+            }
+        },
+        "Form": {
+            "errorMessage": "Coś poszło nie tak. Proszę spróbować ponownie.",
+            "processing": "Przetwarzanie...",
+            "addToCart": "Dodaj do koszyka",
+            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+            "saveToWishlist": "Save to wishlist",
+            "quantityLabel": "Ilość"
+        },
+        "ProductSheet": {
+            "title": "Choose options",
+            "errorMessage": "An error has ocurred.",
+            "loading": "Ładowanie...",
+            "numberReviews": "Number of reviews:",
+            "productRating": "<rating>Rating:</rating> {currentRating} <stars> out of 5 stars.</stars>",
+            "msrp": "SCDP",
+            "was": "Was",
+            "now": "Now",
+            "quickAdd": "Quick add",
+            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+            "processing": "Przetwarzanie...",
+            "addToCart": "Dodaj do koszyka",
+            "compare": "Porównaj"
+        }
+    },
+    "Compare": {
+        "nothingCompare": "Well, there's nothing to compare!",
+        "helpingText": "You somehow managed to land here, but you need to select a few products first.",
+        "comparingQuantity": "Comparing {quantity, plural, =1 {1 Product} other {# Products}}",
+        "productComparison": "Product Comparison",
+        "noImageText": "No Image",
+        "chooseOptions": "Choose options",
+        "description": "Opis",
+        "rating": "Ocena",
+        "availability": "Dostępność",
+        "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+        "processing": "Przetwarzanie...",
+        "addToCart": "Dodaj do koszyka"
+    },
+    "Cart": {
+        "heading": "Your cart",
+        "empty": "Twój koszyk jest pusty",
+        "emptyDetails": "Looks like you have not addded anything to your cart. Go ahead & explore top categories",
+        "proceedToCheckout": "Przejdź do kasy",
+        "loading": "Ładowanie...",
+        "spinnerText": "Updating...",
+        "CheckoutSummary": {
+            "subTotal": "Suma cząstkowa",
+            "discounts": "Rabaty",
+            "coupon": "Kupon",
+            "couponCode": "Kod kuponu",
+            "addCoupon": "Add coupon",
+            "enterCouponCode": "Wpisz swój kod kuponu",
+            "couponCodeRequired": "Please enter a coupon code.",
+            "couponCodeInvalid": "Wprowadzony kupon jest nieprawidłowy.",
+            "remove": "Usuń",
+            "couponCodeRemoveFailed": "There was an error removing the coupon code. Please try again.",
+            "tax": "Podatek",
+            "grandTotal": "Suma całkowita",
+            "shipping": "Wysyłka",
+            "shippingCost": "Koszt wysyłki",
+            "handlingCost": "Handling cost",
+            "add": "Dodaj",
+            "change": "Zmiana",
+            "cancel": "Anuluj",
+            "errorMessage": "Cart summary not found, please try again."
+        },
+        "ShippingInfo": {
+            "country": "Kraj",
+            "countryPlaceholder": "Wybierz kraj",
+            "state": "Państwo/województwo",
+            "statePlaceholder": "Wybierz stan",
+            "city": "Przedmieście/miasto",
+            "cityPlaceholder": "Miasto",
+            "postcode": "Kod pocztowy",
+            "postcodePlaceholder": "Kod pocztowy",
+            "errorMessage": "Coś poszło nie tak, spróbuj ponownie."
+        },
+        "SubmitShippingInfo": {
+            "spinnerText": "Przekazanie...",
+            "submitText": "Estimate shipping"
+        },
+        "ShippingCost": {
+            "shippingOptions": "Available options",
+            "radioGroupAriaLabel": "Available shipping options",
+            "noAvailableOptions": "There are no available options for shipping. Please check provided details and try again!",
+            "errorMessage": "Coś poszło nie tak, spróbuj ponownie."
+        },
+        "SubmitShippingCost": {
+            "spinnerText": "Przekazanie...",
+            "submitText": "Update shipping costs"
+        },
+        "SubmitCouponCode": {
+            "spinnerText": "Przekazanie...",
+            "submitText": "Zgłoś się na"
+        },
+        "SubmitItemQuantity": {
+            "spinnerText": "Updating...",
+            "submitReduceText": "Decrease count",
+            "submitIncreaseText": "Increase count",
+            "errorMessage": "Something went wrong while updating item quantity, please try again."
+        },
+        "SubmitRemoveItem": {
+            "remove": "Usuń",
+            "spinnerText": "Removing...",
+            "submitText": "Remove item from cart",
+            "errorMessage": "Something went wrong while removing item, please try again."
+        }
+    },
+    "Search": {
+        "heading": "Szukaj na stronie",
+        "products": "Produkty",
+        "noResults": "No Results",
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "searchResults": "Search results for"
+    },
+    "Account": {
+        "Home": {
+            "heading": "Moje konto",
+            "accountTabsLabel": "Account Tabs",
+            "orders": "Zamówienia",
+            "messages": "Wiadomości",
+            "addresses": "Adresy",
+            "wishlists": "Wish lists",
+            "recentlyViewed": "Recently viewed",
+            "settings": "Ustawienia konta",
+            "changePassword": "Zmień hasło"
+        },
+        "Addresses": {
+            "defaultAddress": "Domyślnie",
+            "alternativeAddress": "Alternatywna strona",
+            "addNewAddress": "Add new address",
+            "editButton": "Edytuj",
+            "deleteButton": "Usuń"
+        },
+        "Login": {
+            "heading": "Log In",
+            "resetPasswordHeading": "Zresetuj hasło",
+            "changePasswordHeading": "Zmień hasło",
+            "Form": {
+                "errorMessage": "Your email address or password is incorrect. Try signing in again or reset your password",
+                "emailLabel": "Email",
+                "enterEmailMessage": "Enter your email",
+                "passwordLabel": "Hasło",
+                "entePasswordMessage": "Enter your password",
+                "submitting": "Przekazanie...",
+                "logIn": "Zaloguj się",
+                "forgotPassword": "Nie pamiętasz hasła?"
+            },
+            "CreateAccount": {
+                "heading": "New customer?",
+                "accountBenefits": "Załóż u nas konto, a będziesz mógł:",
+                "fastCheckout": "Sprawdź szybciej",
+                "multipleAddresses": "Zapisz wiele adresów wysyłki",
+                "ordersHistory": "Dostęp do historii zamówień",
+                "ordersTracking": "Śledzenie nowych zamówień",
+                "wishlists": "Zapisz przedmioty na swojej liście życzeń",
+                "createLink": "Utwórz konto "
+            }
+        },
+        "ChangePassword": {
+            "currentPasswordLabel": "Aktualne hasło",
+            "newPasswordLabel": "Nowe hasło",
+            "confirmPasswordLabel": "Potwierdź hasło",
+            "cancel": "Anuluj",
+            "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
+            "newPasswordValidationMessage": "New password must be different from the current password or/and match confirm password.",
+            "notEmptyMessage": "Field should not be empty",
+            "successMessage": "Password has been updated successfully!"
+        },
+        "SubmitChangePassword": {
+            "spinnerText": "Przekazanie...",
+            "submitText": "Zmień hasło"
+        },
+        "ResetPassword": {
+            "description": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
+            "emailLabel": "Email",
+            "emailValidationMessage": "Enter a valid email such as name@domain.com",
+            "successMessage": "Your password reset email is on its way to {email}. If you don't see it, check your spam folder.",
+            "recaptchaText": "Pass ReCAPTCHA check"
+        },
+        "SubmitResetPassword": {
+            "spinnerText": "Przekazanie...",
+            "submitText": "Zresetuj hasło"
+        }
+    },
+    "NotFound": {
+        "heading": "We couldn't find that page!",
+        "message": "It looks like the page you requested has moved or no longer exists.",
+        "featuredProducts": "Polecane produkty",
+        "searchProducts": "Search for products",
+        "searchPlaceholder": "Placeholder...",
+        "searching": "Searching...",
+        "search": "Szukaj na stronie"
+    },
+    "ServerError": {
+        "heading": "There was a server error!",
+        "message": "Please try again later."
+    },
+    "FacetedGroup": {
+        "MobileSideNav": {
+            "filters": "Filtry",
+            "showFilters": "Pokaż filtry",
+            "subCategories": "Kategorie"
+        },
+        "FacetedSearch": {
+            "filters": "Filtry",
+            "RefineBy": {
+                "refineBy": "Ulepszaj przez",
+                "clearAllRefinements": "Wyczyść wszystko"
+            },
+            "Facets": {
+                "updatePriceButton": "Update price",
+                "freeShippingLabel": "Darmowa wysyłka",
+                "isFeaturedLabel": "Is featured",
+                "inStockLabel": "Na stanie magazynowym",
+                "rating": "{currentRating, plural, =1 {1 star} other {# stars}} & up",
+                "priceFilter": {
+                    "minPricePlaceholder": "{currencySign} min",
+                    "minPriceAriaLabel": "Minimum pricing",
+                    "maxPricePlaceholder": "{currencySign} max",
+                    "maxPriceAriaLabel": "Maximum pricing"
+                }
+            }
+        },
+        "SortBy": {
+            "ariaLabel": "Sort by:",
+            "featuredItems": "Polecane produkty",
+            "bestSellingItems": "Best selling items",
+            "newestItems": "Najnowsze produkty",
+            "aToZ": "Od A do Z",
+            "zToA": "Z do A",
+            "byReview": "By review",
+            "priceAscending": "Price: ascending",
+            "priceDescending": "Price: descending",
+            "relevance": "Znaczenie"
+        }
+    },
+    "Providers": {
+        "Compare": {
+            "compareButton": "Compare ({products})",
+            "productPhoto": "Photo",
+            "removeProductAriaLabel": "Remove {product} from compare list"
+        }
+    },
+    "Header": {
+        "account": "Twoje konto"
+    },
+    "Pagination": {
+        "next": "Dalej",
+        "prev": "Poprzedni"
+    },
+    "AboutUs": {
+        "fullNameLabel": "Full name",
+        "companyNameLabel": "Nazwa firmy",
+        "phoneLabel": "Telefon",
+        "orderNoLabel": "Numer zamówienia",
+        "rmaLabel": "RMA number",
+        "emailLabel": "Email",
+        "emailValidationMessage": "Enter a valid email such as name@domain.com",
+        "commentsLabel": "Comments/questions",
+        "commentsValidationMessage": "Please provide a valid Comments",
+        "recaptchaText": "Pass ReCAPTCHA check",
+        "onSubmitText": "Przekazanie...",
+        "submitFormText": "Submit form",
+        "sucessSubmitMessage": "Thanks for reaching out. We'll get back to you soon."
+    }
+}

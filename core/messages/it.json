@@ -1,0 +1,329 @@
+{
+    "RootLayout": {
+        "Metadata": {
+            "title": "Catalyst Store",
+            "description": "Example store built with Catalyst",
+            "other": {
+                "platform": "bigcommerce.catalyst"
+            }
+        }
+    },
+    "Home": {
+        "Carousel": {
+            "bestSellingProducts": "Best Selling Products",
+            "featuredProducts": "Prodotti in primo piano",
+            "newestProducts": "Newest products"
+        }
+    },
+    "Category": {
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "products": "Prodotti",
+        "items": "articoli"
+    },
+    "Brand": {
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "products": "Prodotti"
+    },
+    "Product": {
+        "loading": "Caricamento in corso...",
+        "carouselTitle": "Prodotti simili",
+        "noGalleryText": "Presto disponibile",
+        "DescriptionAndReviews": {
+            "description": "Description",
+            "warranty": "Garanzia",
+            "loading": "Caricamento in corso...",
+            "reviews": "Recensioni",
+            "reviewsCount": "Count:",
+            "unreviewed": "This product hasn't been reviewed yet.",
+            "reviewRating": "Rating: {rating} out of 5 stars",
+            "reviewAuthor": "Posted by {author} on"
+        },
+        "Details": {
+            "additionalDetails": "Additional details",
+            "sku": "SKU",
+            "upc": "UPC",
+            "minPurchase": "Spesa minima",
+            "maxPurchase": "Maxiumum purchase",
+            "availability": "Disponibilità",
+            "loading": "Caricamento in corso...",
+            "condition": "Condizioni",
+            "weight": "Peso",
+            "ReviewSummary": {
+                "loading": "Caricamento in corso...",
+                "rating": "Valutazione:",
+                "ratingRange": "out of 5 stars.",
+                "reviewsNumber": "Number of reviews:"
+            },
+            "Prices": {
+                "msrp": "Prezzo di listino",
+                "was": "Was",
+                "now": "Now"
+            }
+        },
+        "Form": {
+            "errorMessage": "Si è verificato un errore. Riprova.",
+            "processing": "Elaborazione in corso...",
+            "addToCart": "Aggiungi al carrello",
+            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+            "saveToWishlist": "Save to wishlist",
+            "quantityLabel": "Quantità"
+        },
+        "ProductSheet": {
+            "title": "Choose options",
+            "errorMessage": "An error has ocurred.",
+            "loading": "Caricamento in corso...",
+            "numberReviews": "Number of reviews:",
+            "productRating": "<rating>Rating:</rating> {currentRating} <stars> out of 5 stars.</stars>",
+            "msrp": "Prezzo di listino",
+            "was": "Was",
+            "now": "Now",
+            "quickAdd": "Quick add",
+            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+            "processing": "Elaborazione in corso...",
+            "addToCart": "Aggiungi al carrello",
+            "compare": "Confronta"
+        }
+    },
+    "Compare": {
+        "nothingCompare": "Well, there's nothing to compare!",
+        "helpingText": "You somehow managed to land here, but you need to select a few products first.",
+        "comparingQuantity": "Comparing {quantity, plural, =1 {1 Product} other {# Products}}",
+        "productComparison": "Product Comparison",
+        "noImageText": "No Image",
+        "chooseOptions": "Choose options",
+        "description": "Description",
+        "rating": "Valutazione",
+        "availability": "Disponibilità",
+        "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+        "processing": "Elaborazione in corso...",
+        "addToCart": "Aggiungi al carrello"
+    },
+    "Cart": {
+        "heading": "Your cart",
+        "empty": "Il tuo carrello è vuoto",
+        "emptyDetails": "Looks like you have not addded anything to your cart. Go ahead & explore top categories",
+        "proceedToCheckout": "Procedi al checkout",
+        "loading": "Caricamento in corso...",
+        "spinnerText": "Updating...",
+        "CheckoutSummary": {
+            "subTotal": "Subtotale",
+            "discounts": "Sconti",
+            "coupon": "Coupon",
+            "couponCode": "Codice coupon",
+            "addCoupon": "Add coupon",
+            "enterCouponCode": "Inserisci il codice coupon",
+            "couponCodeRequired": "Please enter a coupon code.",
+            "couponCodeInvalid": "Il codice coupon inserito non è valido.",
+            "remove": "Rimuovi",
+            "couponCodeRemoveFailed": "There was an error removing the coupon code. Please try again.",
+            "tax": "Tasse",
+            "grandTotal": "Totale:",
+            "shipping": "Spedizioni",
+            "shippingCost": "Costo di spedizione",
+            "handlingCost": "Handling cost",
+            "add": "Aggiungi",
+            "change": "Cambia",
+            "cancel": "Annulla",
+            "errorMessage": "Cart summary not found, please try again."
+        },
+        "ShippingInfo": {
+            "country": "Paese",
+            "countryPlaceholder": "Seleziona paese",
+            "state": "Stato/provincia",
+            "statePlaceholder": "Seleziona stato",
+            "city": "Quartiere/città",
+            "cityPlaceholder": "Città",
+            "postcode": "CAP",
+            "postcodePlaceholder": "CAP",
+            "errorMessage": "Si è verificato un errore, riprova."
+        },
+        "SubmitShippingInfo": {
+            "spinnerText": "Invio in corso...",
+            "submitText": "Estimate shipping"
+        },
+        "ShippingCost": {
+            "shippingOptions": "Available options",
+            "radioGroupAriaLabel": "Available shipping options",
+            "noAvailableOptions": "There are no available options for shipping. Please check provided details and try again!",
+            "errorMessage": "Si è verificato un errore, riprova."
+        },
+        "SubmitShippingCost": {
+            "spinnerText": "Invio in corso...",
+            "submitText": "Update shipping costs"
+        },
+        "SubmitCouponCode": {
+            "spinnerText": "Invio in corso...",
+            "submitText": "Applica"
+        },
+        "SubmitItemQuantity": {
+            "spinnerText": "Updating...",
+            "submitReduceText": "Decrease count",
+            "submitIncreaseText": "Increase count",
+            "errorMessage": "Something went wrong while updating item quantity, please try again."
+        },
+        "SubmitRemoveItem": {
+            "remove": "Rimuovi",
+            "spinnerText": "Removing...",
+            "submitText": "Remove item from cart",
+            "errorMessage": "Something went wrong while removing item, please try again."
+        }
+    },
+    "Search": {
+        "heading": "Cerca",
+        "products": "Prodotti",
+        "noResults": "No Results",
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "searchResults": "Search results for"
+    },
+    "Account": {
+        "Home": {
+            "heading": "Il mio account",
+            "accountTabsLabel": "Account Tabs",
+            "orders": "Ordini",
+            "messages": "Messaggi",
+            "addresses": "Indirizzi",
+            "wishlists": "Wish lists",
+            "recentlyViewed": "Recently viewed",
+            "settings": "Impostazioni account",
+            "changePassword": "Cambia password"
+        },
+        "Addresses": {
+            "defaultAddress": "impostazione predefinita",
+            "alternativeAddress": "Alternativo",
+            "addNewAddress": "Add new address",
+            "editButton": "Modifica",
+            "deleteButton": "Elimina"
+        },
+        "Login": {
+            "heading": "Log In",
+            "resetPasswordHeading": "Reimposta password",
+            "changePasswordHeading": "Cambia password",
+            "Form": {
+                "errorMessage": "Your email address or password is incorrect. Try signing in again or reset your password",
+                "emailLabel": "E-mail",
+                "enterEmailMessage": "Enter your email",
+                "passwordLabel": "Password",
+                "entePasswordMessage": "Enter your password",
+                "submitting": "Invio in corso...",
+                "logIn": "Accedi",
+                "forgotPassword": "Hai dimenticato la password?"
+            },
+            "CreateAccount": {
+                "heading": "New customer?",
+                "accountBenefits": "Crea un account con noi e sarai in grado di:",
+                "fastCheckout": "Completare gli acquisti più velocemente",
+                "multipleAddresses": "Salvare molteplici indirizzi di spedizione",
+                "ordersHistory": "Accedere allo storico dei tuoi ordini",
+                "ordersTracking": "Tracciare i nuovi ordini",
+                "wishlists": "Salva articoli nella Lista desideri",
+                "createLink": "Crea account "
+            }
+        },
+        "ChangePassword": {
+            "currentPasswordLabel": "Password attuale",
+            "newPasswordLabel": "Nuova password",
+            "confirmPasswordLabel": "Conferma password",
+            "cancel": "Annulla",
+            "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
+            "newPasswordValidationMessage": "New password must be different from the current password or/and match confirm password.",
+            "notEmptyMessage": "Field should not be empty",
+            "successMessage": "Password has been updated successfully!"
+        },
+        "SubmitChangePassword": {
+            "spinnerText": "Invio in corso...",
+            "submitText": "Cambia password"
+        },
+        "ResetPassword": {
+            "description": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
+            "emailLabel": "E-mail",
+            "emailValidationMessage": "Enter a valid email such as name@domain.com",
+            "successMessage": "Your password reset email is on its way to {email}. If you don't see it, check your spam folder.",
+            "recaptchaText": "Pass ReCAPTCHA check"
+        },
+        "SubmitResetPassword": {
+            "spinnerText": "Invio in corso...",
+            "submitText": "Reimposta password"
+        }
+    },
+    "NotFound": {
+        "heading": "We couldn't find that page!",
+        "message": "It looks like the page you requested has moved or no longer exists.",
+        "featuredProducts": "Prodotti in primo piano",
+        "searchProducts": "Search for products",
+        "searchPlaceholder": "Placeholder...",
+        "searching": "Searching...",
+        "search": "Cerca"
+    },
+    "ServerError": {
+        "heading": "There was a server error!",
+        "message": "Please try again later."
+    },
+    "FacetedGroup": {
+        "MobileSideNav": {
+            "filters": "Filtri",
+            "showFilters": "Mostra filtri",
+            "subCategories": "Categorie"
+        },
+        "FacetedSearch": {
+            "filters": "Filtri",
+            "RefineBy": {
+                "refineBy": "Affina per",
+                "clearAllRefinements": "Cancella tutto"
+            },
+            "Facets": {
+                "updatePriceButton": "Update price",
+                "freeShippingLabel": "Spedizione gratuita",
+                "isFeaturedLabel": "Is featured",
+                "inStockLabel": "Disponibili",
+                "rating": "{currentRating, plural, =1 {1 star} other {# stars}} & up",
+                "priceFilter": {
+                    "minPricePlaceholder": "{currencySign} min",
+                    "minPriceAriaLabel": "Minimum pricing",
+                    "maxPricePlaceholder": "{currencySign} max",
+                    "maxPriceAriaLabel": "Maximum pricing"
+                }
+            }
+        },
+        "SortBy": {
+            "ariaLabel": "Sort by:",
+            "featuredItems": "Articoli in primo piano",
+            "bestSellingItems": "Best selling items",
+            "newestItems": "Articoli più recenti",
+            "aToZ": "da A a Z",
+            "zToA": "da Z a A",
+            "byReview": "By review",
+            "priceAscending": "Price: ascending",
+            "priceDescending": "Price: descending",
+            "relevance": "Rilevanza"
+        }
+    },
+    "Providers": {
+        "Compare": {
+            "compareButton": "Compare ({products})",
+            "productPhoto": "Photo",
+            "removeProductAriaLabel": "Remove {product} from compare list"
+        }
+    },
+    "Header": {
+        "account": "Il tuo account"
+    },
+    "Pagination": {
+        "next": "Avanti",
+        "prev": "Indietro"
+    },
+    "AboutUs": {
+        "fullNameLabel": "Full name",
+        "companyNameLabel": "Azienda",
+        "phoneLabel": "Telefono",
+        "orderNoLabel": "Numero di ordine",
+        "rmaLabel": "RMA number",
+        "emailLabel": "E-mail",
+        "emailValidationMessage": "Enter a valid email such as name@domain.com",
+        "commentsLabel": "Comments/questions",
+        "commentsValidationMessage": "Please provide a valid Comments",
+        "recaptchaText": "Pass ReCAPTCHA check",
+        "onSubmitText": "Invio in corso...",
+        "submitFormText": "Submit form",
+        "sucessSubmitMessage": "Thanks for reaching out. We'll get back to you soon."
+    }
+}
