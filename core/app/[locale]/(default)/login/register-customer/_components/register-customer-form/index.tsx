@@ -129,8 +129,8 @@ export const RegisterCustomerForm = ({
   const form = useRef<HTMLFormElement>(null);
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
 
-  const [textInputValid, setTextInputValid] = useState<{ [key: string]: boolean }>({});
-  const [passwordValid, setPassswordValid] = useState<{ [key: string]: boolean }>({
+  const [textInputValid, setTextInputValid] = useState<Record<string, boolean>>({});
+  const [passwordValid, setPassswordValid] = useState<Record<string, boolean>>({
     [FieldNameToFieldId.password]: true,
     [FieldNameToFieldId.confirmPassword]: true,
   });
@@ -149,18 +149,21 @@ export const RegisterCustomerForm = ({
     const validityState = e.target.validity;
     const validationStatus = validityState.valueMissing || validityState.typeMismatch;
 
-    return setTextInputValid({ ...textInputValid, [fieldId]: !validationStatus });
+    setTextInputValid({ ...textInputValid, [fieldId]: !validationStatus });
   };
 
   const handlePasswordValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const fieldId = e.target.id.split('-')[1] ?? '';
 
     switch (FieldNameToFieldId[Number(fieldId)]) {
-      case 'password':
-        return setPassswordValid((prevState) => ({
+      case 'password': {
+        setPassswordValid((prevState) => ({
           ...prevState,
           [fieldId]: !e.target.validity.valueMissing,
         }));
+
+        return;
+      }
 
       case 'confirmPassword': {
         const confirmPassword = e.target.value;
@@ -168,17 +171,20 @@ export const RegisterCustomerForm = ({
         const passwordFieldName = createFieldName('customer', FieldNameToFieldId.password);
         const password = new FormData(e.target.form ?? undefined).get(passwordFieldName);
 
-        return setPassswordValid((prevState) => ({
+        setPassswordValid((prevState) => ({
           ...prevState,
           [fieldId]: password === confirmPassword && !e.target.validity.valueMissing,
         }));
+
+        return;
       }
 
-      default:
-        return setPassswordValid((prevState) => ({
+      default: {
+        setPassswordValid((prevState) => ({
           ...prevState,
           [fieldId]: !e.target.validity.valueMissing,
         }));
+      }
     }
   };
 
@@ -190,7 +196,9 @@ export const RegisterCustomerForm = ({
 
   const onReCaptchaChange = (token: string | null) => {
     if (!token) {
-      return setReCaptchaValid(false);
+      setReCaptchaValid(false);
+
+      return;
     }
 
     setReCaptchaToken(token);
@@ -204,14 +212,18 @@ export const RegisterCustomerForm = ({
         message: t('equalPasswordValidatoinMessage'),
       });
 
-      return window.scrollTo({
+      window.scrollTo({
         top: 0,
         behavior: 'smooth',
       });
+
+      return;
     }
 
     if (reCaptchaSettings?.isEnabledOnStorefront && !reCaptchaToken) {
-      return setReCaptchaValid(false);
+      setReCaptchaValid(false);
+
+      return;
     }
 
     setReCaptchaValid(true);
@@ -364,7 +376,7 @@ export const RegisterCustomerForm = ({
         </div>
 
         <FormSubmit asChild>
-          <SubmitButton messages={{ submit: `${t('submit')}`, submitting: `${t('submitting')}` }} />
+          <SubmitButton messages={{ submit: t('submit'), submitting: t('submitting') }} />
         </FormSubmit>
       </Form>
     </>

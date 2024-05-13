@@ -71,7 +71,9 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
 
   const onReCatpchaChange = (token: string | null) => {
     if (!token) {
-      return setReCaptchaValid(false);
+      setReCaptchaValid(false);
+
+      return;
     }
 
     setReCaptchaToken(token);
@@ -81,12 +83,14 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
   const handleEmailValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const validationStatus = e.target.validity.valueMissing;
 
-    return setIsEmailValid(!validationStatus);
+    setIsEmailValid(!validationStatus);
   };
 
   const onSubmit = async (formData: FormData) => {
     if (reCaptchaSettings?.isEnabledOnStorefront && !reCaptchaToken) {
-      return setReCaptchaValid(false);
+      setReCaptchaValid(false);
+
+      return;
     }
 
     setReCaptchaValid(true);

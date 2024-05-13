@@ -15,7 +15,7 @@ export type PackageManager = 'npm' | 'pnpm' | 'yarn';
 export const packageManagerChoices: PackageManager[] = ['npm', 'pnpm', 'yarn'];
 
 export function getPackageManager(): PackageManager {
-  const userAgent = process.env.npm_config_user_agent || '';
+  const userAgent = process.env.npm_config_user_agent ?? '';
 
   if (userAgent.startsWith('yarn')) {
     return 'yarn';

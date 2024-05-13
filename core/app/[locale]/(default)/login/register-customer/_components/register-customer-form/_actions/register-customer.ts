@@ -22,8 +22,8 @@ export const registerCustomer = async ({ formData, reCaptchaToken }: RegisterCus
   formData.delete('customer-confirmPassword');
 
   const parsedData = Array.from(formData.entries()).reduce<{
-    [key: string]: FormDataEntryValue | { [key: string]: FormDataEntryValue };
-    address: { [key: string]: FormDataEntryValue };
+    [key: string]: FormDataEntryValue | Record<string, FormDataEntryValue>;
+    address: Record<string, FormDataEntryValue>;
   }>(
     (acc, [name, value]) => {
       const key = name.split('-').at(-1) ?? '';
