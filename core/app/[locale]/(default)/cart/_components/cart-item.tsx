@@ -24,6 +24,10 @@ const PhysicalItemFragment = graphql(`
       currencyCode
       value
     }
+    originalPrice {
+      currencyCode
+      value
+    }
     selectedOptions {
       __typename
       entityId
@@ -68,6 +72,10 @@ const DigitalItemFragment = graphql(`
       value
     }
     extendedSalePrice {
+      currencyCode
+      value
+    }
+    originalPrice {
       currencyCode
       value
     }
@@ -212,12 +220,23 @@ export const CartItem = async ({ currencyCode, product }: Props) => {
             </div>
 
             <div className="flex flex-col gap-2 md:items-end">
-              <p className="text-lg font-bold">
-                {format.number(product.extendedSalePrice.value, {
-                  style: 'currency',
-                  currency: currencyCode,
-                })}
-              </p>
+              <div>
+                {product.originalPrice.value &&
+                product.originalPrice.value !== product.extendedSalePrice.value ? (
+                  <p className="text-lg font-bold line-through">
+                    {format.number(product.originalPrice.value, {
+                      style: 'currency',
+                      currency: currencyCode,
+                    })}
+                  </p>
+                ) : null}
+                <p className="text-lg font-bold">
+                  {format.number(product.extendedSalePrice.value, {
+                    style: 'currency',
+                    currency: currencyCode,
+                  })}
+                </p>
+              </div>
 
               <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
                 <ItemQuantity product={product} />
