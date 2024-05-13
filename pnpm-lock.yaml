@@ -296,8 +296,8 @@ importers:
         specifier: ^3.23.8
         version: 3.23.8
       zod-validation-error:
-        specifier: ^3.2.0
-        version: 3.2.0(zod@3.23.8)
+        specifier: ^3.3.0
+        version: 3.3.0(zod@3.23.8)
     devDependencies:
       '@bigcommerce/eslint-config':
         specifier: ^2.8.1
@@ -9155,8 +9155,8 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  /zod-validation-error@3.2.0(zod@3.23.8):
-    resolution: {integrity: sha512-cYlPR6zuyrgmu2wRTdumEAJGuwI7eHVHGT+VyneAQxmRAKtGRL1/7pjz4wfLhz4J05f5qoSZc3rGacswgyTjjw==}
+  /zod-validation-error@3.3.0(zod@3.23.8):
+    resolution: {integrity: sha512-Syib9oumw1NTqEv4LT0e6U83Td9aVRk9iTXPUQr1otyV1PuXQKOvOwhMNqZIq5hluzHP2pMgnOmHEo7kPdI2mw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       zod: ^3.18.0
