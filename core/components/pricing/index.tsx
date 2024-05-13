@@ -1,4 +1,4 @@
-import { getFormatter, getLocale } from 'next-intl/server';
+import { useFormatter } from 'next-intl';
 
 import { graphql, ResultOf } from '~/client/graphql';
 
@@ -39,9 +39,8 @@ interface Props {
   data: ResultOf<typeof PricingFragment>;
 }
 
-export const Pricing = async ({ data }: Props) => {
-  const locale = await getLocale();
-  const format = await getFormatter({ locale });
+export const Pricing = ({ data }: Props) => {
+  const format = useFormatter();
 
   const { prices } = data;
 
