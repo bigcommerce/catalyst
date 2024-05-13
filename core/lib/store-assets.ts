@@ -37,7 +37,7 @@ export const contentAssetUrl = (path: string): string => {
  */
 export const contentImageUrl = (path: string, sizeParam?: string): string => {
   // return a urlTemplate that can be used with the <BcImage> component
-  return cdnImageUrlBuilder(`${sizeParam || '{:size}'}`, 'content', path);
+  return cdnImageUrlBuilder(sizeParam || '{:size}', 'content', path);
 };
 
 /**
@@ -49,5 +49,5 @@ export const contentImageUrl = (path: string, sizeParam?: string): string => {
  */
 export const imageManagerImageUrl = (filename: string, sizeParam?: string): string => {
   // return a urlTemplate that can be used with the <BcImage> component
-  return cdnImageUrlBuilder(`${sizeParam || '{:size}'}`, 'image-manager', filename);
+  return cdnImageUrlBuilder(sizeParam || '{:size}', 'image-manager', filename);
 };

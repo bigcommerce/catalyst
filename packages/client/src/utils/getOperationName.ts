@@ -1,7 +1,7 @@
-import { DefinitionNode, OperationDefinitionNode, parse } from 'graphql';
+import { DefinitionNode, Kind, OperationDefinitionNode, parse } from 'graphql';
 
 function isOperationDefinitionNode(node: DefinitionNode): node is OperationDefinitionNode {
-  return node.kind === 'OperationDefinition';
+  return node.kind === Kind.OPERATION_DEFINITION;
 }
 
 export const getOperationInfo = (document: string) => {

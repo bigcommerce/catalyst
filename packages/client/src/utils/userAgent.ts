@@ -25,7 +25,7 @@ export const getBackendUserAgent = (platform?: string, extensions?: string): str
   const userAgentParts = [`${name}/${version}`];
 
   // Used for host information
-  const platformValue = platform || detectedPlatform;
+  const platformValue = platform ?? detectedPlatform;
 
   userAgentParts.push(`(${platformValue})`);
 

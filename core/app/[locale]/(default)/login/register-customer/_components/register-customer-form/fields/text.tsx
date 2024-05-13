@@ -4,11 +4,9 @@ import { ChangeEvent } from 'react';
 import { Field, FieldControl, FieldLabel, FieldMessage } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
 
-import { AddressFields, CustomerFields, FieldNameToFieldId } from '..';
+import { CustomerFields, FieldNameToFieldId } from '..';
 
-type TextType =
-  | Extract<NonNullable<CustomerFields>[number], { __typename: 'TextFormField' }>
-  | Extract<NonNullable<AddressFields>[number], { __typename: 'TextFormField' }>;
+type TextType = Extract<NonNullable<CustomerFields>[number], { __typename: 'TextFormField' }>;
 
 interface TextProps {
   field: TextType;

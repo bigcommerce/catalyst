@@ -42,7 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: {
       template: `${title} - %s`,
-      default: `${title}`,
+      default: title,
     },
     description: 'Example store built with Catalyst',
     other: {
