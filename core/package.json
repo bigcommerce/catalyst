@@ -39,7 +39,7 @@
     "lru-cache": "^10.2.2",
     "lucide-react": "^0.378.0",
     "next": "14.1.4",
-    "next-auth": "5.0.0-beta.17",
+    "next-auth": "5.0.0-beta.18",
     "next-intl": "^3.13.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.0",
