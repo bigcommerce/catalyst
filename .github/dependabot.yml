@@ -11,3 +11,4 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: 'eslint'
         update-types: ['version-update:semver-major']
+      - dependency-name: '*next*'
