@@ -56,7 +56,7 @@ export default async function RegisterCustomer({ params: { locale } }: Props) {
 
   return (
     <div className="mx-auto mb-10 mt-8 text-base lg:w-2/3">
-      <h1 className="my-6 my-8 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
+      <h1 className="my-6 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
       <NextIntlClientProvider locale={locale} messages={{ Account }}>
         <RegisterCustomerForm
           addressFields={addressFields}
