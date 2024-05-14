@@ -90,31 +90,6 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     return response.json() as Promise<BigCommerceResponse<TResult>>;
   }
 
-  async fetchCartRedirectUrls<TResult>(cartId: string) {
-    const response = await fetch(
-      `https://${adminApiHostname}/stores/${this.config.storeHash}/v3/carts/${cartId}/redirect_urls`,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.config.xAuthToken,
-          'User-Agent': this.backendUserAgent,
-        },
-        cache: 'no-store',
-        body: JSON.stringify({
-          cart_id: cartId,
-        }),
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(`Unable to get checkout URL: ${response.statusText}`);
-    }
-
-    return response.json() as Promise<BigCommerceResponse<TResult>>;
-  }
-
   async fetchAvailableCountries() {
     const response = await fetch(
       `https://api.bigcommerce.com/stores/${this.config.storeHash}/v2/countries?limit=250`,

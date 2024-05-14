@@ -25,7 +25,7 @@ interface Props {
 
 const CartPageQuery = graphql(
   `
-    query getCart($cartId: String) {
+    query CartPageQuery($cartId: String) {
       site {
         cart(entityId: $cartId) {
           entityId
