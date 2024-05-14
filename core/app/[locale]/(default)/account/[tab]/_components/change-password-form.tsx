@@ -42,7 +42,7 @@ const validateAgainstCurrentPassword = ({
   currentPassword: Passwords['currentPassword'];
 }): boolean => newPassword !== currentPassword;
 
-export const validatePasswords = (
+const validatePasswords = (
   validationField: 'new-password' | 'confirm-password',
   formData?: FormData,
 ) => {
