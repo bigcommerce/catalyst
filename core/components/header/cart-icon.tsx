@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 import { Badge } from '~/components/ui/badge';
 
-export const CartQuantityResponseSchema = z.object({
+const CartQuantityResponseSchema = z.object({
   count: z.number(),
 });
 
