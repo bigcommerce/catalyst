@@ -1,4 +1,4 @@
-import { AlertCircle, Loader2 as Spinner } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useReducer } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast';
 import { getShippingCountries } from '~/app/[locale]/(default)/cart/_components/shipping-estimator/get-shipping-countries';
 import { FragmentOf } from '~/client/graphql';
 import { ExistingResultType } from '~/client/util';
-import { Button } from '~/components/ui/button';
+import { Button } from '~/components/button';
 import { Field, FieldControl, FieldLabel, Form, FormSubmit } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
 import { Select, SelectContent, SelectItem } from '~/components/ui/select';
@@ -37,15 +37,13 @@ const SubmitButton = () => {
   const t = useTranslations('Cart.SubmitShippingInfo');
 
   return (
-    <Button className="w-full items-center px-8 py-2" disabled={pending} variant="secondary">
-      {pending ? (
-        <>
-          <Spinner aria-hidden="true" className="animate-spin" />
-          <span className="sr-only">{t('spinnerText')}</span>
-        </>
-      ) : (
-        <span>{t('submitText')}</span>
-      )}
+    <Button
+      className="w-full items-center px-8 py-2"
+      loading={pending}
+      loadingText={t('spinnerText')}
+      variant="secondary"
+    >
+      {t('submitText')}
     </Button>
   );
 };

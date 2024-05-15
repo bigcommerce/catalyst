@@ -1,12 +1,11 @@
 'use client';
 
-import { Loader2 as Spinner } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 
+import { Button } from '~/components/button';
 import { Link } from '~/components/link';
-import { Button } from '~/components/ui/button';
 import {
   Field,
   FieldControl,
@@ -101,15 +100,13 @@ export const LoginForm = () => {
         </Field>
         <div className="flex flex-col items-start md:flex-row md:items-center md:justify-start md:gap-10">
           <FormSubmit asChild>
-            <Button className="w-auto" disabled={pending} variant="primary">
-              {pending ? (
-                <>
-                  <Spinner aria-hidden="true" className="animate-spin" />
-                  <span className="sr-only"> {t('Form.submitting')}</span>
-                </>
-              ) : (
-                <span>{t('Form.logIn')}</span>
-              )}
+            <Button
+              className="w-auto"
+              loading={pending}
+              loadingText={t('Form.submitting')}
+              variant="primary"
+            >
+              {t('Form.logIn')}
             </Button>
           </FormSubmit>
           <Link
