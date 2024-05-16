@@ -89,7 +89,9 @@ export const ContactUs = ({ data }: Props) => {
 
   const onReCaptchaChange = (token: string | null) => {
     if (!token) {
-      return setReCaptchaValid(false);
+      setReCaptchaValid(false);
+
+      return;
     }
 
     setReCaptchaToken(token);
@@ -98,7 +100,9 @@ export const ContactUs = ({ data }: Props) => {
 
   const onSubmit = async (formData: FormData) => {
     if (reCaptchaSettings?.isEnabledOnStorefront && !reCaptchaToken) {
-      return setReCaptchaValid(false);
+      setReCaptchaValid(false);
+
+      return;
     }
 
     setReCaptchaValid(true);
@@ -127,7 +131,7 @@ export const ContactUs = ({ data }: Props) => {
     const validityState = e.target.validity;
     const validationStatus = validityState.valueMissing || validityState.typeMismatch;
 
-    return setInputValidation(!validationStatus);
+    setInputValidation(!validationStatus);
   };
 
   return (

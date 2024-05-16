@@ -222,7 +222,7 @@ const SlideshowNextIndicator = forwardRef<ElementRef<'button'>, ComponentPropsWi
   ({ children, className, onClick, ...props }, ref) => {
     const [, emblaApi] = useContext(SlideshowContext);
 
-    const scrollNext = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
+    const scrollNext = (e: MouseEvent<HTMLButtonElement>) => {
       if (emblaApi) emblaApi.scrollNext();
       if (onClick) onClick(e);
     };
@@ -253,7 +253,7 @@ const SlideshowPreviousIndicator = forwardRef<
 >(({ children, className, onClick, ...props }, ref) => {
   const [, emblaApi] = useContext(SlideshowContext);
 
-  const scrollPrev = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
+  const scrollPrev = (e: MouseEvent<HTMLButtonElement>) => {
     if (emblaApi) emblaApi.scrollPrev();
     if (onClick) onClick(e);
   };

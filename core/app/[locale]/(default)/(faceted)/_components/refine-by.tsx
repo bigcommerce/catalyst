@@ -20,7 +20,7 @@ interface FacetProps<Key extends string> {
 
 const mapFacetsToRefinements = ({ facets, pageType }: Props) =>
   facets
-    .map<Array<FacetProps<PublicParamKeys | string>>>((facet) => {
+    .map<Array<FacetProps<string>>>((facet) => {
       switch (facet.__typename) {
         case 'BrandSearchFilter':
           if (pageType === 'brand') {
@@ -120,11 +120,11 @@ export const RefineBy = (props: Props) => {
 
     const params = new URLSearchParams(filteredParams);
 
-    return router.push(`${pathname}?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   const clearAllRefinements = () => {
-    return router.push(pathname);
+    router.push(pathname);
   };
 
   if (!refinements.length) {

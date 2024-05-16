@@ -51,7 +51,7 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
 
     this.logger(`SET - Key: ${fullKey} - Value: ${JSON.stringify(value, null, 2)}`);
 
-    return kv.set(`${fullKey}`, value, opts);
+    return kv.set(fullKey, value, opts);
   }
 
   private async getKv() {

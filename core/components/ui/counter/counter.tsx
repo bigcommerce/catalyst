@@ -149,7 +149,9 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
             const valueAsNumber = e.target.valueAsNumber;
 
             if (Number.isNaN(valueAsNumber)) {
-              return updateValue(min);
+              updateValue(min);
+
+              return;
             }
 
             if (valueAsNumber < min) {

@@ -34,13 +34,15 @@ export const LoginForm = () => {
     const validationStatus = e.target.validity.valueMissing;
 
     switch (e.target.name) {
-      case 'email':
-        return setIsEmailValid(!validationStatus);
+      case 'email': {
+        setIsEmailValid(!validationStatus);
 
-      case 'password':
-        return setIsPasswordValid(!validationStatus);
+        return;
+      }
 
-      default:
+      case 'password': {
+        setIsPasswordValid(!validationStatus);
+      }
     }
   };
 

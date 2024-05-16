@@ -39,7 +39,7 @@ export const Link = forwardRef<ElementRef<'a'>, Props>(
       // PrefetchKind enum is not exported
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
-      router.prefetch(href.toString(), { kind: prefetchKind });
+      router.prefetch(String(href), { kind: prefetchKind });
       setPrefetched();
     };
 

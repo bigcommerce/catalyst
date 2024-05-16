@@ -17,7 +17,7 @@ export function SortBy() {
 
     params.set('sort', sortValue);
 
-    return router.push(`${pathname}?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   return (

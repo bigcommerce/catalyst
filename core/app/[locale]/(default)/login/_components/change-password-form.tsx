@@ -78,7 +78,7 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
   const handleConfirmPasswordValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const confirmPassword = e.target.value;
 
-    return setIsConfirmPasswordValid(confirmPassword === newPassword);
+    setIsConfirmPasswordValid(confirmPassword === newPassword);
   };
 
   if (state.status === 'success') {

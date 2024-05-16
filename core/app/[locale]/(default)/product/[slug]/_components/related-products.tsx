@@ -11,7 +11,7 @@ import {
   ProductCardCarouselFragment,
 } from '~/components/product-card-carousel';
 
-export const RelatedProductsQuery = graphql(
+const RelatedProductsQuery = graphql(
   `
     query RelatedProductsQuery($entityId: Int!) {
       site {

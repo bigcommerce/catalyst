@@ -192,7 +192,9 @@
       "alternativeAddress": "Alternative",
       "addNewAddress": "Add new address",
       "editButton": "Edit",
-      "deleteButton": "Delete"
+      "deleteButton": "Delete",
+      "confirmDeleteAddress": "Delete address",
+      "deleteModalTitle": "Are you sure you want to delete this address?"
     },
     "Login": {
       "heading": "Log In",
@@ -218,6 +220,28 @@
         "wishlists": "Save items to your Wish List",
         "createLink": "Create Account "
       }
+    },
+    "Register": {
+        "heading": "New account",
+        "submit": "Create account",
+        "submitting": "Creating account...", 
+        "recaptchaText": "Pass ReCAPTCHA check",
+        "successMessage": "Dear {firstName} {lastName}, your account was successfully created. Redirecting to account...",
+        "stateProvincePrefix": "Choose state or province",
+        "validationMessages": {
+            "email": "Enter a valid email such as name@domain.com",
+            "empty": "This field can not be empty",
+            "firstName": "Enter your first name",
+            "lastName": "Enter your last name",
+            "password": "Enter a password",
+            "confirmPassword": "Passwords don't match",
+            "address1": "Enter an address",
+            "address2": "Enter an address",
+            "city": "Enter a suburb / city",
+            "company": "Enter a company name",
+            "phone": "Enter a phone number",
+            "postalCode": "Enter a zip / postcode"
+        }
     },
     "ChangePassword": {
       "currentPasswordLabel": "Current password",

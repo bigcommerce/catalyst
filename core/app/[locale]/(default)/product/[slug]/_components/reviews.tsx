@@ -8,7 +8,7 @@ import { Rating } from '~/components/ui/rating';
 
 import { ProductReviewSchema, ProductReviewSchemaFragment } from './product-review-schema';
 
-export const ReviewsQuery = graphql(
+const ReviewsQuery = graphql(
   `
     query ReviewsQuery($entityId: Int!) {
       site {
