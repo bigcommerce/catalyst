@@ -12,11 +12,12 @@ type CustomerAddresses = NonNullable<Awaited<ReturnType<typeof getCustomerAddres
 
 interface Props {
   addresses: CustomerAddresses['addresses'];
+  addressesCount: number;
   pageInfo: CustomerAddresses['pageInfo'];
   title: TabType;
 }
 
-export const AddressesContent = async ({ addresses, pageInfo, title }: Props) => {
+export const AddressesContent = async ({ addresses, addressesCount, pageInfo, title }: Props) => {
   const locale = await getLocale();
   const tPagination = await getTranslations({ locale, namespace: 'Pagination' });
   const { hasNextPage, hasPreviousPage, startCursor, endCursor } = pageInfo;
@@ -24,7 +25,11 @@ export const AddressesContent = async ({ addresses, pageInfo, title }: Props) =>
   return (
     <>
       <TabHeading heading={title} locale={locale} />
-      <AddressesList customerAddressBook={addresses} />
+      <AddressesList
+        addressesCount={addressesCount}
+        customerAddressBook={addresses}
+        key={endCursor}
+      />
       <Pagination
         endCursor={endCursor}
         hasNextPage={hasNextPage}

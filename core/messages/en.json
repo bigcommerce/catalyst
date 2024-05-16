@@ -192,7 +192,9 @@
       "alternativeAddress": "Alternative",
       "addNewAddress": "Add new address",
       "editButton": "Edit",
-      "deleteButton": "Delete"
+      "deleteButton": "Delete",
+      "confirmDeleteAddress": "Delete address",
+      "deleteModalTitle": "Are you sure you want to delete this address?"
     },
     "Login": {
       "heading": "Log In",
