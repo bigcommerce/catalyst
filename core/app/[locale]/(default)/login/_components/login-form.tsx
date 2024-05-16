@@ -19,8 +19,23 @@ import { Message } from '~/components/ui/message';
 
 import { submitLoginForm } from '../_actions/submit-login-form';
 
-export const LoginForm = () => {
+const SubmitButton = () => {
   const { pending } = useFormStatus();
+  const t = useTranslations('Account.Login');
+
+  return (
+    <Button
+      className="md:w-auto"
+      loading={pending}
+      loadingText={t('Form.submitting')}
+      variant="primary"
+    >
+      {t('Form.logIn')}
+    </Button>
+  );
+};
+
+export const LoginForm = () => {
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [state, formAction] = useFormState(submitLoginForm, { status: 'idle' });
@@ -100,14 +115,7 @@ export const LoginForm = () => {
         </Field>
         <div className="flex flex-col items-start md:flex-row md:items-center md:justify-start md:gap-10">
           <FormSubmit asChild>
-            <Button
-              className="w-auto"
-              loading={pending}
-              loadingText={t('Form.submitting')}
-              variant="primary"
-            >
-              {t('Form.logIn')}
-            </Button>
+            <SubmitButton />
           </FormSubmit>
           <Link
             className="my-5 inline-flex items-center justify-start text-primary hover:text-secondary md:my-0"

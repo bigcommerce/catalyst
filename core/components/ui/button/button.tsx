@@ -6,7 +6,7 @@ import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 import { cn } from '~/lib/utils';
 
 export const buttonVariants = cva(
-  'inline-flex w-full justify-center items-center border-2 py-2.5 px-[30px] text-base leading-6 font-semibold border-primary disabled:border-gray-400 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
+  'relative inline-flex w-full justify-center items-center border-2 py-2.5 px-[30px] text-base leading-6 font-semibold border-primary disabled:border-gray-400 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
   {
     variants: {
       variant: {
@@ -47,8 +47,13 @@ export const Button = forwardRef<ElementRef<'button'>, ButtonProps>(
       >
         {loading ? (
           <>
-            <Spinner aria-hidden="true" className="animate-spin" />
-            <span className="sr-only">{loadingText}</span>
+            <span className="absolute z-10 flex h-full w-full items-center justify-center bg-gray-400">
+              <Spinner aria-hidden="true" className="animate-spin" />
+              <span className="sr-only">{loadingText}</span>
+            </span>
+            <span aria-hidden="true" className="inline-flex">
+              {children}
+            </span>
           </>
         ) : (
           children
