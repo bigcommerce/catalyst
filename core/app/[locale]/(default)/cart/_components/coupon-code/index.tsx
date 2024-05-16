@@ -7,7 +7,7 @@ import { useFormStatus } from 'react-dom';
 import { toast } from 'react-hot-toast';
 
 import { FragmentOf } from '~/client/graphql';
-import { Button } from '~/components/button';
+import { Button } from '~/components/ui/button';
 import { Field, FieldControl, FieldMessage, Form, FormSubmit } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
 

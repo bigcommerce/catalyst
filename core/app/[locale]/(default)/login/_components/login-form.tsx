@@ -4,8 +4,8 @@ import { useTranslations } from 'next-intl';
 import { ChangeEvent, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 
-import { Button } from '~/components/button';
 import { Link } from '~/components/link';
+import { Button } from '~/components/ui/button';
 import {
   Field,
   FieldControl,

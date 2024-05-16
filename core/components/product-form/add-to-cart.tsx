@@ -4,7 +4,7 @@ import { ShoppingCart } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useFormContext } from 'react-hook-form';
 
-import { Button } from '../button';
+import { Button } from '~/components/ui/button';
 
 export const AddToCart = ({ disabled = false }: { disabled?: boolean }) => {
   const { formState } = useFormContext();

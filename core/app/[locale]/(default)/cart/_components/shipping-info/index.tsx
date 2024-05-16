@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast';
 import { getShippingCountries } from '~/app/[locale]/(default)/cart/_components/shipping-estimator/get-shipping-countries';
 import { FragmentOf } from '~/client/graphql';
 import { ExistingResultType } from '~/client/util';
-import { Button } from '~/components/button';
+import { Button } from '~/components/ui/button';
 import { Field, FieldControl, FieldLabel, Form, FormSubmit } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
 import { Select, SelectContent, SelectItem } from '~/components/ui/select';

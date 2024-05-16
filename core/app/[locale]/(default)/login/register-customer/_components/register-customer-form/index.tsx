@@ -6,7 +6,7 @@ import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
 import { getRegisterCustomerQuery } from '~/app/[locale]/(default)/login/register-customer/page-data';
-import { Button } from '~/components/button';
+import { Button } from '~/components/ui/button';
 import { Field, Form, FormSubmit } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 

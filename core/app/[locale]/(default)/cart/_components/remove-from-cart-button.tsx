@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { useFormStatus } from 'react-dom';
 
-import { Button } from '~/components/button';
+import { Button } from '~/components/ui/button';
 
 export const RemoveFromCartButton = () => {
   const { pending } = useFormStatus();

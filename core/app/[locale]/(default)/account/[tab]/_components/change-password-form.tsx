@@ -6,9 +6,9 @@ import { useFormState, useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
 import { CustomerChangePasswordSchema } from '~/client/mutations/submit-change-password';
-import { Button } from '~/components/button';
 import { logout } from '~/components/header/_actions/logout';
 import { Link } from '~/components/link';
+import { Button } from '~/components/ui/button';
 import {
   Field,
   FieldControl,

@@ -1,5 +1,6 @@
 import { Slot } from '@radix-ui/react-slot';
 import { cva } from 'class-variance-authority';
+import { Loader2 as Spinner } from 'lucide-react';
 import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
 import { cn } from '~/lib/utils';
@@ -26,15 +27,32 @@ export const buttonVariants = cva(
 export interface ButtonProps extends ComponentPropsWithRef<'button'> {
   variant?: 'primary' | 'secondary' | 'subtle';
   asChild?: boolean;
+  loading?: boolean;
+  loadingText?: string;
 }
 
 export const Button = forwardRef<ElementRef<'button'>, ButtonProps>(
-  ({ asChild = false, children, className, variant, ...props }, ref) => {
+  (
+    { asChild = false, children, className, variant, loading, loadingText, disabled, ...props },
+    ref,
+  ) => {
     const Comp = asChild ? Slot : 'button';
 
     return (
-      <Comp className={cn(buttonVariants({ variant, className }))} ref={ref} {...props}>
-        {children}
+      <Comp
+        className={cn(buttonVariants({ variant, className }))}
+        disabled={disabled || loading}
+        ref={ref}
+        {...props}
+      >
+        {loading ? (
+          <>
+            <Spinner aria-hidden="true" className="animate-spin" />
+            <span className="sr-only">{loadingText}</span>
+          </>
+        ) : (
+          children
+        )}
       </Comp>
     );
   },
