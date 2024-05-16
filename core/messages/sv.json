@@ -1,0 +1,329 @@
+{
+    "RootLayout": {
+        "Metadata": {
+            "title": "Catalyst Store",
+            "description": "Example store built with Catalyst",
+            "other": {
+                "platform": "bigcommerce.catalyst"
+            }
+        }
+    },
+    "Home": {
+        "Carousel": {
+            "bestSellingProducts": "Best Selling Products",
+            "featuredProducts": "Utvalda produkter",
+            "newestProducts": "Newest products"
+        }
+    },
+    "Category": {
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "products": "Produkter",
+        "items": "varor"
+    },
+    "Brand": {
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "products": "Produkter"
+    },
+    "Product": {
+        "loading": "Laddar…",
+        "carouselTitle": "Relaterade produkter",
+        "noGalleryText": "Kommer snart",
+        "DescriptionAndReviews": {
+            "description": "Beskrivning",
+            "warranty": "Garanti",
+            "loading": "Laddar…",
+            "reviews": "Recensioner",
+            "reviewsCount": "Count:",
+            "unreviewed": "This product hasn't been reviewed yet.",
+            "reviewRating": "Rating: {rating} out of 5 stars",
+            "reviewAuthor": "Posted by {author} on"
+        },
+        "Details": {
+            "additionalDetails": "Additional details",
+            "sku": "SKU",
+            "upc": "UPC",
+            "minPurchase": "Minsta köp:",
+            "maxPurchase": "Maxiumum purchase",
+            "availability": "Tillgänglighet",
+            "loading": "Laddar…",
+            "condition": "Skick",
+            "weight": "Vikt",
+            "ReviewSummary": {
+                "loading": "Laddar…",
+                "rating": "Gradering:",
+                "ratingRange": "out of 5 stars.",
+                "reviewsNumber": "Number of reviews:"
+            },
+            "Prices": {
+                "msrp": "MSRP",
+                "was": "Was",
+                "now": "Now"
+            }
+        },
+        "Form": {
+            "errorMessage": "Något gick fel. Var god försök igen.",
+            "processing": "Behandlar…",
+            "addToCart": "Lägg till i kundvagn",
+            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+            "saveToWishlist": "Save to wishlist",
+            "quantityLabel": "Kvantitet"
+        },
+        "ProductSheet": {
+            "title": "Choose options",
+            "errorMessage": "An error has ocurred.",
+            "loading": "Laddar…",
+            "numberReviews": "Number of reviews:",
+            "productRating": "<rating>Rating:</rating> {currentRating} <stars> out of 5 stars.</stars>",
+            "msrp": "MSRP",
+            "was": "Was",
+            "now": "Now",
+            "quickAdd": "Quick add",
+            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+            "processing": "Behandlar…",
+            "addToCart": "Lägg till i kundvagn",
+            "compare": "Jämför"
+        }
+    },
+    "Compare": {
+        "nothingCompare": "Well, there's nothing to compare!",
+        "helpingText": "You somehow managed to land here, but you need to select a few products first.",
+        "comparingQuantity": "Comparing {quantity, plural, =1 {1 Product} other {# Products}}",
+        "productComparison": "Product Comparison",
+        "noImageText": "No Image",
+        "chooseOptions": "Choose options",
+        "description": "Beskrivning",
+        "rating": "Bedömning",
+        "availability": "Tillgänglighet",
+        "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+        "processing": "Behandlar…",
+        "addToCart": "Lägg till i kundvagn"
+    },
+    "Cart": {
+        "heading": "Your cart",
+        "empty": "Din kundvagn är tom",
+        "emptyDetails": "Looks like you have not addded anything to your cart. Go ahead & explore top categories",
+        "proceedToCheckout": "Fortsätt till utcheckningen",
+        "loading": "Laddar…",
+        "spinnerText": "Updating...",
+        "CheckoutSummary": {
+            "subTotal": "Delsumma",
+            "discounts": "Rabatter",
+            "coupon": "Kupong",
+            "couponCode": "Kupongkod",
+            "addCoupon": "Add coupon",
+            "enterCouponCode": "Ange din kupongkod",
+            "couponCodeRequired": "Please enter a coupon code.",
+            "couponCodeInvalid": "Kupongkoden du angav är inte giltig.",
+            "remove": "Ta bort",
+            "couponCodeRemoveFailed": "There was an error removing the coupon code. Please try again.",
+            "tax": "Beskatta",
+            "grandTotal": "Totalsumma",
+            "shipping": "Frakt",
+            "shippingCost": "Fraktkostnad",
+            "handlingCost": "Handling cost",
+            "add": "Lägg till",
+            "change": "Ändra",
+            "cancel": "Annullera",
+            "errorMessage": "Cart summary not found, please try again."
+        },
+        "ShippingInfo": {
+            "country": "Land",
+            "countryPlaceholder": "Välj land",
+            "state": "Stat/provins",
+            "statePlaceholder": "Välj delstat",
+            "city": "Förort/stad",
+            "cityPlaceholder": "Stad",
+            "postcode": "Postnummer",
+            "postcodePlaceholder": "Postnummer",
+            "errorMessage": "Något gick fel. Försök igen."
+        },
+        "SubmitShippingInfo": {
+            "spinnerText": "Skickar ...",
+            "submitText": "Estimate shipping"
+        },
+        "ShippingCost": {
+            "shippingOptions": "Available options",
+            "radioGroupAriaLabel": "Available shipping options",
+            "noAvailableOptions": "There are no available options for shipping. Please check provided details and try again!",
+            "errorMessage": "Något gick fel. Försök igen."
+        },
+        "SubmitShippingCost": {
+            "spinnerText": "Skickar ...",
+            "submitText": "Update shipping costs"
+        },
+        "SubmitCouponCode": {
+            "spinnerText": "Skickar ...",
+            "submitText": "Tillämpa"
+        },
+        "SubmitItemQuantity": {
+            "spinnerText": "Updating...",
+            "submitReduceText": "Decrease count",
+            "submitIncreaseText": "Increase count",
+            "errorMessage": "Something went wrong while updating item quantity, please try again."
+        },
+        "SubmitRemoveItem": {
+            "remove": "Ta bort",
+            "spinnerText": "Removing...",
+            "submitText": "Remove item from cart",
+            "errorMessage": "Something went wrong while removing item, please try again."
+        }
+    },
+    "Search": {
+        "heading": "Sök",
+        "products": "Produkter",
+        "noResults": "No Results",
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "searchResults": "Search results for"
+    },
+    "Account": {
+        "Home": {
+            "heading": "Mitt konto",
+            "accountTabsLabel": "Account Tabs",
+            "orders": "Beställningar",
+            "messages": "Meddelanden",
+            "addresses": "Adresser",
+            "wishlists": "Wish lists",
+            "recentlyViewed": "Recently viewed",
+            "settings": "Kontoinställningar",
+            "changePassword": "Ändra lösenor"
+        },
+        "Addresses": {
+            "defaultAddress": "Standard",
+            "alternativeAddress": "Alternativ",
+            "addNewAddress": "Add new address",
+            "editButton": "Redigera",
+            "deleteButton": "Radera"
+        },
+        "Login": {
+            "heading": "Log In",
+            "resetPasswordHeading": "Återställ lösenord",
+            "changePasswordHeading": "Ändra lösenor",
+            "Form": {
+                "errorMessage": "Your email address or password is incorrect. Try signing in again or reset your password",
+                "emailLabel": "E-post",
+                "enterEmailMessage": "Enter your email",
+                "passwordLabel": "Lösenord",
+                "entePasswordMessage": "Enter your password",
+                "submitting": "Skickar ...",
+                "logIn": "Logga in",
+                "forgotPassword": "Glömt ditt lösenord?"
+            },
+            "CreateAccount": {
+                "heading": "New customer?",
+                "accountBenefits": "Skapa ett konto hos oss, så kan du:",
+                "fastCheckout": "Kolla snabbare",
+                "multipleAddresses": "Spara flera leveransadresser",
+                "ordersHistory": "Gå till din orderhistorik",
+                "ordersTracking": "Spåra nya beställningar",
+                "wishlists": "Spara objekt i din önskelista",
+                "createLink": "Skapa konto "
+            }
+        },
+        "ChangePassword": {
+            "currentPasswordLabel": "Nuvarande lösenord",
+            "newPasswordLabel": "Nytt lösenord",
+            "confirmPasswordLabel": "Bekräfta lösenord",
+            "cancel": "Annullera",
+            "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
+            "newPasswordValidationMessage": "New password must be different from the current password or/and match confirm password.",
+            "notEmptyMessage": "Field should not be empty",
+            "successMessage": "Password has been updated successfully!"
+        },
+        "SubmitChangePassword": {
+            "spinnerText": "Skickar ...",
+            "submitText": "Ändra lösenor"
+        },
+        "ResetPassword": {
+            "description": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
+            "emailLabel": "E-post",
+            "emailValidationMessage": "Enter a valid email such as name@domain.com",
+            "successMessage": "Your password reset email is on its way to {email}. If you don't see it, check your spam folder.",
+            "recaptchaText": "Pass ReCAPTCHA check"
+        },
+        "SubmitResetPassword": {
+            "spinnerText": "Skickar ...",
+            "submitText": "Återställ lösenord"
+        }
+    },
+    "NotFound": {
+        "heading": "We couldn't find that page!",
+        "message": "It looks like the page you requested has moved or no longer exists.",
+        "featuredProducts": "Utvalda produkter",
+        "searchProducts": "Search for products",
+        "searchPlaceholder": "Placeholder...",
+        "searching": "Searching...",
+        "search": "Sök"
+    },
+    "ServerError": {
+        "heading": "There was a server error!",
+        "message": "Please try again later."
+    },
+    "FacetedGroup": {
+        "MobileSideNav": {
+            "filters": "Filter",
+            "showFilters": "Visa filter",
+            "subCategories": "Kategorier"
+        },
+        "FacetedSearch": {
+            "filters": "Filter",
+            "RefineBy": {
+                "refineBy": "Förfina med",
+                "clearAllRefinements": "Rensa alla"
+            },
+            "Facets": {
+                "updatePriceButton": "Update price",
+                "freeShippingLabel": "Gratis frakt",
+                "isFeaturedLabel": "Is featured",
+                "inStockLabel": "I lager",
+                "rating": "{currentRating, plural, =1 {1 star} other {# stars}} & up",
+                "priceFilter": {
+                    "minPricePlaceholder": "{currencySign} min",
+                    "minPriceAriaLabel": "Minimum pricing",
+                    "maxPricePlaceholder": "{currencySign} max",
+                    "maxPriceAriaLabel": "Maximum pricing"
+                }
+            }
+        },
+        "SortBy": {
+            "ariaLabel": "Sort by:",
+            "featuredItems": "Erbjudna artiklar",
+            "bestSellingItems": "Best selling items",
+            "newestItems": "Nyaste artiklarna",
+            "aToZ": "A till Z",
+            "zToA": "Z till A",
+            "byReview": "By review",
+            "priceAscending": "Price: ascending",
+            "priceDescending": "Price: descending",
+            "relevance": "Relevans"
+        }
+    },
+    "Providers": {
+        "Compare": {
+            "compareButton": "Compare ({products})",
+            "productPhoto": "Photo",
+            "removeProductAriaLabel": "Remove {product} from compare list"
+        }
+    },
+    "Header": {
+        "account": "Ditt konto"
+    },
+    "Pagination": {
+        "next": "Nästa",
+        "prev": "Föregående"
+    },
+    "AboutUs": {
+        "fullNameLabel": "Full name",
+        "companyNameLabel": "Företagsnamn",
+        "phoneLabel": "Telefon",
+        "orderNoLabel": "Beställningsnummer:",
+        "rmaLabel": "RMA number",
+        "emailLabel": "E-post",
+        "emailValidationMessage": "Enter a valid email such as name@domain.com",
+        "commentsLabel": "Comments/questions",
+        "commentsValidationMessage": "Please provide a valid Comments",
+        "recaptchaText": "Pass ReCAPTCHA check",
+        "onSubmitText": "Skickar ...",
+        "submitFormText": "Submit form",
+        "sucessSubmitMessage": "Thanks for reaching out. We'll get back to you soon."
+    }
+}

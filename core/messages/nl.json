@@ -1,0 +1,329 @@
+{
+    "RootLayout": {
+        "Metadata": {
+            "title": "Catalyst Store",
+            "description": "Example store built with Catalyst",
+            "other": {
+                "platform": "bigcommerce.catalyst"
+            }
+        }
+    },
+    "Home": {
+        "Carousel": {
+            "bestSellingProducts": "Best Selling Products",
+            "featuredProducts": "Uitgelichte producten",
+            "newestProducts": "Newest products"
+        }
+    },
+    "Category": {
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "products": "Producten",
+        "items": "artikelen"
+    },
+    "Brand": {
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "products": "Producten"
+    },
+    "Product": {
+        "loading": "Laden...",
+        "carouselTitle": "Gerelateerde producten",
+        "noGalleryText": "Binnenkort beschikbaar",
+        "DescriptionAndReviews": {
+            "description": "Description",
+            "warranty": "Garantie",
+            "loading": "Laden...",
+            "reviews": "Beoordelingen",
+            "reviewsCount": "Count:",
+            "unreviewed": "This product hasn't been reviewed yet.",
+            "reviewRating": "Rating: {rating} out of 5 stars",
+            "reviewAuthor": "Posted by {author} on"
+        },
+        "Details": {
+            "additionalDetails": "Additional details",
+            "sku": "SKU",
+            "upc": "UPC",
+            "minPurchase": "Minimale aankoop",
+            "maxPurchase": "Maxiumum purchase",
+            "availability": "Beschikbaarheid",
+            "loading": "Laden...",
+            "condition": "Staat",
+            "weight": "Gewicht",
+            "ReviewSummary": {
+                "loading": "Laden...",
+                "rating": "Beoordeling:",
+                "ratingRange": "out of 5 stars.",
+                "reviewsNumber": "Number of reviews:"
+            },
+            "Prices": {
+                "msrp": "Adviesprijs",
+                "was": "Was",
+                "now": "Now"
+            }
+        },
+        "Form": {
+            "errorMessage": "Er is iets fout gegaan. Probeer het opnieuw.",
+            "processing": "Verwerken...",
+            "addToCart": "Toevoegen aan winkelmandje",
+            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+            "saveToWishlist": "Save to wishlist",
+            "quantityLabel": "Aantal"
+        },
+        "ProductSheet": {
+            "title": "Choose options",
+            "errorMessage": "An error has ocurred.",
+            "loading": "Laden...",
+            "numberReviews": "Number of reviews:",
+            "productRating": "<rating>Rating:</rating> {currentRating} <stars> out of 5 stars.</stars>",
+            "msrp": "Adviesprijs",
+            "was": "Was",
+            "now": "Now",
+            "quickAdd": "Quick add",
+            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+            "processing": "Verwerken...",
+            "addToCart": "Toevoegen aan winkelmandje",
+            "compare": "Vergelijken"
+        }
+    },
+    "Compare": {
+        "nothingCompare": "Well, there's nothing to compare!",
+        "helpingText": "You somehow managed to land here, but you need to select a few products first.",
+        "comparingQuantity": "Comparing {quantity, plural, =1 {1 Product} other {# Products}}",
+        "productComparison": "Product Comparison",
+        "noImageText": "No Image",
+        "chooseOptions": "Choose options",
+        "description": "Description",
+        "rating": "Beoordeling",
+        "availability": "Beschikbaarheid",
+        "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+        "processing": "Verwerken...",
+        "addToCart": "Toevoegen aan winkelmandje"
+    },
+    "Cart": {
+        "heading": "Your cart",
+        "empty": "Uw winkelmandje is leeg",
+        "emptyDetails": "Looks like you have not addded anything to your cart. Go ahead & explore top categories",
+        "proceedToCheckout": "Doorgaan naar betaalomgeving",
+        "loading": "Laden...",
+        "spinnerText": "Updating...",
+        "CheckoutSummary": {
+            "subTotal": "Subtotaal",
+            "discounts": "Kortingen",
+            "coupon": "Coupon",
+            "couponCode": "Couponcode",
+            "addCoupon": "Add coupon",
+            "enterCouponCode": "Voer uw couponcode in",
+            "couponCodeRequired": "Please enter a coupon code.",
+            "couponCodeInvalid": "De kortingscode die u hebt ingevoerd is niet geldig.",
+            "remove": "Verwijderen",
+            "couponCodeRemoveFailed": "There was an error removing the coupon code. Please try again.",
+            "tax": "Belasting",
+            "grandTotal": "Totaal",
+            "shipping": "Verzending",
+            "shippingCost": "Verzendkosten",
+            "handlingCost": "Handling cost",
+            "add": "Toevoegen",
+            "change": "Wijzigen",
+            "cancel": "Annuleren",
+            "errorMessage": "Cart summary not found, please try again."
+        },
+        "ShippingInfo": {
+            "country": "Land",
+            "countryPlaceholder": "Selecteer land",
+            "state": "Staat/provincie",
+            "statePlaceholder": "Selecteer staat",
+            "city": "Stadsdeel/stad",
+            "cityPlaceholder": "Plaats",
+            "postcode": "Postcode",
+            "postcodePlaceholder": "Postcode",
+            "errorMessage": "Er is iets fout gegaan, probeer het opnieuw."
+        },
+        "SubmitShippingInfo": {
+            "spinnerText": "Verzenden...",
+            "submitText": "Estimate shipping"
+        },
+        "ShippingCost": {
+            "shippingOptions": "Available options",
+            "radioGroupAriaLabel": "Available shipping options",
+            "noAvailableOptions": "There are no available options for shipping. Please check provided details and try again!",
+            "errorMessage": "Er is iets fout gegaan, probeer het opnieuw."
+        },
+        "SubmitShippingCost": {
+            "spinnerText": "Verzenden...",
+            "submitText": "Update shipping costs"
+        },
+        "SubmitCouponCode": {
+            "spinnerText": "Verzenden...",
+            "submitText": "Toepassen"
+        },
+        "SubmitItemQuantity": {
+            "spinnerText": "Updating...",
+            "submitReduceText": "Decrease count",
+            "submitIncreaseText": "Increase count",
+            "errorMessage": "Something went wrong while updating item quantity, please try again."
+        },
+        "SubmitRemoveItem": {
+            "remove": "Verwijderen",
+            "spinnerText": "Removing...",
+            "submitText": "Remove item from cart",
+            "errorMessage": "Something went wrong while removing item, please try again."
+        }
+    },
+    "Search": {
+        "heading": "Zoeken",
+        "products": "Producten",
+        "noResults": "No Results",
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "searchResults": "Search results for"
+    },
+    "Account": {
+        "Home": {
+            "heading": "Mijn account",
+            "accountTabsLabel": "Account Tabs",
+            "orders": "Bestellingen",
+            "messages": "Berichten",
+            "addresses": "Adressen",
+            "wishlists": "Wish lists",
+            "recentlyViewed": "Recently viewed",
+            "settings": "Accountinstellingen",
+            "changePassword": "Wachtwoord wijzigen"
+        },
+        "Addresses": {
+            "defaultAddress": "Standaard",
+            "alternativeAddress": "Alternatief",
+            "addNewAddress": "Add new address",
+            "editButton": "Bewerken",
+            "deleteButton": "Verwijderen"
+        },
+        "Login": {
+            "heading": "Log In",
+            "resetPasswordHeading": "Wachtwoord opnieuw instellen",
+            "changePasswordHeading": "Wachtwoord wijzigen",
+            "Form": {
+                "errorMessage": "Your email address or password is incorrect. Try signing in again or reset your password",
+                "emailLabel": "E-mailadres",
+                "enterEmailMessage": "Enter your email",
+                "passwordLabel": "Wachtwoord",
+                "entePasswordMessage": "Enter your password",
+                "submitting": "Verzenden...",
+                "logIn": "Inloggen",
+                "forgotPassword": "Wachtwoord vergeten?"
+            },
+            "CreateAccount": {
+                "heading": "New customer?",
+                "accountBenefits": "Maak een account aan bij ons om:",
+                "fastCheckout": "Sneller af te rekenen",
+                "multipleAddresses": "Meerdere verzendadressen op te slaan",
+                "ordersHistory": "Uw bestelgeschiedenis te bekijken",
+                "ordersTracking": "Nieuwe bestellingen te volgen",
+                "wishlists": "Artikelen opslaan in uw verlanglijstje",
+                "createLink": "Account aanmaken "
+            }
+        },
+        "ChangePassword": {
+            "currentPasswordLabel": "Huidig wachtwoord",
+            "newPasswordLabel": "Nieuw wachtwoord",
+            "confirmPasswordLabel": "Wachtwoord bevestigen",
+            "cancel": "Annuleren",
+            "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
+            "newPasswordValidationMessage": "New password must be different from the current password or/and match confirm password.",
+            "notEmptyMessage": "Field should not be empty",
+            "successMessage": "Password has been updated successfully!"
+        },
+        "SubmitChangePassword": {
+            "spinnerText": "Verzenden...",
+            "submitText": "Wachtwoord wijzigen"
+        },
+        "ResetPassword": {
+            "description": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
+            "emailLabel": "E-mailadres",
+            "emailValidationMessage": "Enter a valid email such as name@domain.com",
+            "successMessage": "Your password reset email is on its way to {email}. If you don't see it, check your spam folder.",
+            "recaptchaText": "Pass ReCAPTCHA check"
+        },
+        "SubmitResetPassword": {
+            "spinnerText": "Verzenden...",
+            "submitText": "Wachtwoord opnieuw instellen"
+        }
+    },
+    "NotFound": {
+        "heading": "We couldn't find that page!",
+        "message": "It looks like the page you requested has moved or no longer exists.",
+        "featuredProducts": "Uitgelichte producten",
+        "searchProducts": "Search for products",
+        "searchPlaceholder": "Placeholder...",
+        "searching": "Searching...",
+        "search": "Zoeken"
+    },
+    "ServerError": {
+        "heading": "There was a server error!",
+        "message": "Please try again later."
+    },
+    "FacetedGroup": {
+        "MobileSideNav": {
+            "filters": "Filters",
+            "showFilters": "Filters weergeven",
+            "subCategories": "Categorieën"
+        },
+        "FacetedSearch": {
+            "filters": "Filters",
+            "RefineBy": {
+                "refineBy": "Verfijnen op",
+                "clearAllRefinements": "Alles wissen"
+            },
+            "Facets": {
+                "updatePriceButton": "Update price",
+                "freeShippingLabel": "Gratis verzending",
+                "isFeaturedLabel": "Is featured",
+                "inStockLabel": "Op voorraad",
+                "rating": "{currentRating, plural, =1 {1 star} other {# stars}} & up",
+                "priceFilter": {
+                    "minPricePlaceholder": "{currencySign} min",
+                    "minPriceAriaLabel": "Minimum pricing",
+                    "maxPricePlaceholder": "{currencySign} max",
+                    "maxPriceAriaLabel": "Maximum pricing"
+                }
+            }
+        },
+        "SortBy": {
+            "ariaLabel": "Sort by:",
+            "featuredItems": "Uitgelichte items",
+            "bestSellingItems": "Best selling items",
+            "newestItems": "Nieuwste items",
+            "aToZ": "A tot Z",
+            "zToA": "Z tot A",
+            "byReview": "By review",
+            "priceAscending": "Price: ascending",
+            "priceDescending": "Price: descending",
+            "relevance": "Relevantie"
+        }
+    },
+    "Providers": {
+        "Compare": {
+            "compareButton": "Compare ({products})",
+            "productPhoto": "Photo",
+            "removeProductAriaLabel": "Remove {product} from compare list"
+        }
+    },
+    "Header": {
+        "account": "Uw account"
+    },
+    "Pagination": {
+        "next": "Volgende",
+        "prev": "Vorige"
+    },
+    "AboutUs": {
+        "fullNameLabel": "Full name",
+        "companyNameLabel": "Bedrijfsnaam",
+        "phoneLabel": "Telefoon",
+        "orderNoLabel": "Bestelnummer",
+        "rmaLabel": "RMA number",
+        "emailLabel": "E-mailadres",
+        "emailValidationMessage": "Enter a valid email such as name@domain.com",
+        "commentsLabel": "Comments/questions",
+        "commentsValidationMessage": "Please provide a valid Comments",
+        "recaptchaText": "Pass ReCAPTCHA check",
+        "onSubmitText": "Verzenden...",
+        "submitFormText": "Submit form",
+        "sucessSubmitMessage": "Thanks for reaching out. We'll get back to you soon."
+    }
+}
