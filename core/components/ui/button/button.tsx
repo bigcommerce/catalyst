@@ -45,13 +45,17 @@ export const Button = forwardRef<ElementRef<'button'>, ButtonProps>(
         ref={ref}
         {...props}
       >
-        {loading && (
-          <span className="absolute z-10 flex h-full w-full items-center justify-center">
-            <Spinner aria-hidden="true" className="animate-spin" />
-            <span className="sr-only">{loadingText}</span>
-          </span>
+        {loading ? (
+          <>
+            <span className="absolute z-10 flex h-full w-full items-center justify-center">
+              <Spinner aria-hidden="true" className="animate-spin" />
+              <span className="sr-only">{loadingText}</span>
+            </span>
+            <span className={cn('invisible flex items-center')}>{children}</span>
+          </>
+        ) : (
+          children
         )}
-        <span className={cn('flex items-center', loading && 'invisible')}>{children}</span>
       </Comp>
     );
   },
