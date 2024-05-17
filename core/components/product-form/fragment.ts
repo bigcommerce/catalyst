@@ -11,6 +11,13 @@ export const ProductFormFragment = graphql(
   `
     fragment ProductFormFragment on Product {
       entityId
+      variants {
+        edges {
+          node {
+            entityId
+          }
+        }
+      }
       availabilityV2 {
         status
       }
