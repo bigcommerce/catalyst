@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0
+
+### Minor Changes
+
+- [#910](https://github.com/bigcommerce/catalyst/pull/910) [`d0352c0`](https://github.com/bigcommerce/catalyst/commit/d0352c08b43e76b4cd838cb7916f9993228e3fa0) Thanks [@deini](https://github.com/deini)! - removes fetch cart redirect from client and fetch it with gql
+
 ## 0.3.0
 
 ### Minor Changes

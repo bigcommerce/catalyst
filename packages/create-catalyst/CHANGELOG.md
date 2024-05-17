@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.0
+
+### Minor Changes
+
+- [#921](https://github.com/bigcommerce/catalyst/pull/921) [`e093e7c`](https://github.com/bigcommerce/catalyst/commit/e093e7c6db06920718fa76591a7a776f3c575ae4) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Removes unnecessary lint task from create command
+
 ## 0.6.0
 
 ### Minor Changes
