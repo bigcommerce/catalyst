@@ -1,6 +1,5 @@
 'use client';
 
-import { Loader2 as Spinner } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useFormStatus } from 'react-dom';
 
@@ -13,15 +12,8 @@ const InternalButton = () => {
   const { pending } = useFormStatus();
 
   return (
-    <Button className="mt-6" disabled={pending}>
-      {pending ? (
-        <>
-          <Spinner aria-hidden="true" className="animate-spin text-primary " />
-          <span className="sr-only">{t('loading')}</span>
-        </>
-      ) : (
-        t('proceedToCheckout')
-      )}
+    <Button className="mt-6" loading={pending} loadingText={t('loading')}>
+      {t('proceedToCheckout')}
     </Button>
   );
 };
