@@ -47,3 +47,18 @@ test('My Account tabs are displayed and clickable', async ({ page }) => {
   await expect(page).toHaveURL('account/settings/');
   await expect(page.getByRole('heading', { name: 'Account settings' })).toBeVisible();
 });
+
+test('Account dropdown is visible in header', async ({ page }) => {
+  await page.goto('/login/');
+  await page.getByLabel('Login').click();
+  await page.getByLabel('Email').fill(process.env.TEST_ACCOUNT_EMAIL || '');
+  await page.getByLabel('Password').fill(process.env.TEST_ACCOUNT_PASSWORD || '');
+  await page.getByRole('button', { name: 'Log in' }).click();
+  await page.getByRole('heading', { name: 'My Account' }).waitFor();
+
+  await page.goto('/');
+
+  await page.getByRole('link', { name: 'Account' }).hover();
+
+  await expect(page.getByText('Log out')).toBeInViewport();
+});
