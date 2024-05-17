@@ -12,7 +12,7 @@ interface Props {
     tagId: string;
     locale: string;
   };
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
 export default async function BlogPostPage({ params: { tagId, locale }, searchParams }: Props) {

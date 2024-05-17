@@ -92,7 +92,7 @@ export default async function Compare({
   params: { locale },
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Record<string, string | string[] | undefined>;
   params: { locale: LocaleType };
 }) {
   const customerId = await getSessionCustomerId();

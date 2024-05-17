@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
-import { getTranslations } from 'next-intl/server';
-import { Suspense } from 'react';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages, getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
@@ -25,7 +25,7 @@ interface Props {
 
 const CartPageQuery = graphql(
   `
-    query getCart($cartId: String) {
+    query CartPageQuery($cartId: String) {
       site {
         cart(entityId: $cartId) {
           entityId
@@ -50,7 +50,10 @@ export default async function CartPage({ params: { locale } }: Props) {
     return <EmptyCart locale={locale} />;
   }
 
+  const messages = await getMessages({ locale });
+  const Cart = messages.Cart ?? {};
   const t = await getTranslations({ locale, namespace: 'Cart' });
+
   const customerId = await getSessionCustomerId();
 
   const { data } = await client.fetch({
@@ -87,9 +90,9 @@ export default async function CartPage({ params: { locale } }: Props) {
         <div className="col-span-1 col-start-2 lg:col-start-3">
           {checkout && <CheckoutSummary data={checkout} />}
 
-          <Suspense fallback={t('loading')}>
-            <CheckoutButton cartId={cartId} label={t('proceedToCheckout')} />
-          </Suspense>
+          <NextIntlClientProvider locale={locale} messages={{ Cart }}>
+            <CheckoutButton cartId={cartId} />
+          </NextIntlClientProvider>
         </div>
       </div>
     </div>

@@ -22,7 +22,7 @@ test('Edit product quantity in cart', async ({ page }) => {
   await page.getByRole('link', { name: 'Cart Items 1' }).click();
 
   await expect(page.getByRole('heading', { level: 1, name: 'Your cart' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Proceed to checkout' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Proceed to checkout' })).toBeVisible();
 
   await page.getByRole('button', { name: 'Increase count' }).click();
 
@@ -37,7 +37,7 @@ test('Proceed to checkout', async ({ page }) => {
 
   await expect(page.getByRole('heading', { level: 1, name: 'Your cart' })).toBeVisible();
 
-  await page.getByRole('link', { name: 'Proceed to checkout' }).click();
+  await page.getByRole('button', { name: 'Proceed to checkout' }).click();
 
   await expect(page.getByRole('heading', { name: 'Order Summary', level: 3 })).toBeVisible();
   await expect(page.getByRole('heading', { name: `1 x ${sampleProduct}`, level: 4 })).toBeVisible();

@@ -50,9 +50,16 @@ export default async function AccountTabPage({ params: { tab, locale }, searchPa
         notFound();
       }
 
-      const { addresses, pageInfo } = customerAddressesDetails;
+      const { addresses, pageInfo, addressesCount } = customerAddressesDetails;
 
-      return <AddressesContent addresses={addresses} pageInfo={pageInfo} title={tab} />;
+      return (
+        <AddressesContent
+          addresses={addresses}
+          addressesCount={addressesCount}
+          pageInfo={pageInfo}
+          title={tab}
+        />
+      );
     }
 
     case 'wishlists':

@@ -19,7 +19,7 @@ import { getProduct } from './page-data';
 
 interface ProductPageProps {
   params: { slug: string; locale: LocaleType };
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
 export async function generateMetadata({

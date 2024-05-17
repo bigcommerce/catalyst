@@ -102,7 +102,7 @@ const AttributeKey = z.custom<`attr_${string}`>((val) => {
   return typeof val === 'string' ? /^attr_\w+$/.test(val) : false;
 });
 
-export const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchParamToArray)
+const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchParamToArray)
   .transform((publicParams) => {
     const { after, before, limit, sort, ...filters } = publicParams;
 

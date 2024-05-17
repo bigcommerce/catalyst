@@ -11,7 +11,7 @@ import { getBlogPosts } from './page-data';
 
 interface Props {
   params: { locale: LocaleType };
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {

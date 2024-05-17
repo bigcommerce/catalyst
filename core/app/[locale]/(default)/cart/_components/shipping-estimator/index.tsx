@@ -38,7 +38,7 @@ export const ShippingEstimator = ({ checkout, shippingCountries }: Props) => {
       setShowShippingOptions(true);
     }
 
-    if (showShippingInfo === false) {
+    if (!showShippingInfo) {
       setShowShippingOptions(false);
     }
 

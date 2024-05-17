@@ -78,11 +78,11 @@ export class Https {
     storeHash,
     accessToken,
   }: HttpsConfig) {
-    this.bigCommerceApiUrl = bigCommerceApiUrl || '';
-    this.bigCommerceAuthUrl = bigCommerceAuthUrl || '';
-    this.sampleDataApiUrl = sampleDataApiUrl || '';
-    this.storeHash = storeHash || '';
-    this.accessToken = accessToken || '';
+    this.bigCommerceApiUrl = bigCommerceApiUrl ?? '';
+    this.bigCommerceAuthUrl = bigCommerceAuthUrl ?? '';
+    this.sampleDataApiUrl = sampleDataApiUrl ?? '';
+    this.storeHash = storeHash ?? '';
+    this.accessToken = accessToken ?? '';
   }
 
   auth(path: string, opts: RequestInit = {}) {

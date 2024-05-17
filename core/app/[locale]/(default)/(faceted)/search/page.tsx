@@ -13,7 +13,7 @@ import { fetchFacetedSearch } from '../fetch-faceted-search';
 
 interface Props {
   params: { locale: LocaleType };
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
 export const metadata = {
