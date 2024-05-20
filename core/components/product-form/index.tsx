@@ -105,7 +105,7 @@ export const ProductForm = ({ product }: Props) => {
         <QuantityField />
 
         <div className="mt-4 flex flex-col gap-4 @md:flex-row">
-          <AddToCart disabled={product.availabilityV2.status === 'Unavailable'} />
+          <AddToCart disabled={!product.inventory.isInStock} />
 
           {/* NOT IMPLEMENTED YET */}
           <div className="w-full">

@@ -11,8 +11,8 @@ export const ProductFormFragment = graphql(
   `
     fragment ProductFormFragment on Product {
       entityId
-      availabilityV2 {
-        status
+      inventory {
+        isInStock
       }
       productOptions(first: 10) {
         edges {
