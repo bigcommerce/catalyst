@@ -17,6 +17,7 @@ import { LocaleType } from '~/i18n';
 import { cn } from '~/lib/utils';
 
 import { AddToCartForm } from './_components/add-to-cart-form';
+import { CartFragment } from './_components/fragment';
 
 const MAX_COMPARE_LIMIT = 10;
 
@@ -75,9 +76,7 @@ const ComparePageQuery = graphql(
                   availableToSell
                 }
               }
-              availabilityV2 {
-                status
-              }
+              ...CartFragment
               ...PricingFragment
             }
           }
@@ -85,7 +84,7 @@ const ComparePageQuery = graphql(
       }
     }
   `,
-  [PricingFragment],
+  [CartFragment, PricingFragment],
 );
 
 export default async function Compare({
@@ -221,11 +220,7 @@ export default async function Compare({
                       locale={locale}
                       messages={{ Compare: messages.Compare ?? {} }}
                     >
-                      <AddToCartForm
-                        availability={product.availabilityV2.status}
-                        entityId={product.entityId}
-                        productName={product.name}
-                      />
+                      <AddToCartForm product={product} />
                     </NextIntlClientProvider>
                   </td>
                 );
@@ -312,11 +307,7 @@ export default async function Compare({
                       locale={locale}
                       messages={{ Compare: messages.Compare ?? {} }}
                     >
-                      <AddToCartForm
-                        availability={product.availabilityV2.status}
-                        entityId={product.entityId}
-                        productName={product.name}
-                      />
+                      <AddToCartForm product={product} />
                     </NextIntlClientProvider>
                   </td>
                 );

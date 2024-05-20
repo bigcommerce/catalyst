@@ -1,5 +1,6 @@
 'use client';
 
+import { FragmentOf } from 'gql.tada';
 import { AlertCircle, Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-hot-toast';
@@ -9,16 +10,9 @@ import { Link } from '~/components/link';
 import { addToCart } from '../_actions/add-to-cart';
 
 import { AddToCart } from './add-to-cart';
+import { CartFragment } from './fragment';
 
-export const AddToCartForm = ({
-  entityId,
-  availability,
-  productName,
-}: {
-  entityId: number;
-  availability: 'Unavailable' | 'Available' | 'Preorder';
-  productName: string;
-}) => {
+export const AddToCartForm = ({ product }: { product: FragmentOf<typeof CartFragment> }) => {
   const t = useTranslations('Compare');
 
   return (
@@ -57,9 +51,9 @@ export const AddToCartForm = ({
         );
       }}
     >
-      <input name="product_id" type="hidden" value={entityId} />
+      <input name="product_id" type="hidden" value={product.entityId} />
       <input name="quantity" type="hidden" value={1} />
-      <AddToCart disabled={availability === 'Unavailable'} productName={productName} />
+      <AddToCart disabled={!product.inventory.isInStock} productName={product.name} />
     </form>
   );
 };
