@@ -164,7 +164,6 @@
         "SubmitRemoveItem": {
             "remove": "削除",
             "spinnerText": "Removing...",
-            "submitText": "Remove item from cart",
             "errorMessage": "Something went wrong while removing item, please try again."
         }
     },
@@ -192,7 +191,9 @@
             "alternativeAddress": "代替",
             "addNewAddress": "Add new address",
             "editButton": "編集",
-            "deleteButton": "削除する"
+            "deleteButton": "削除する",
+            "confirmDeleteAddress": "アドレスの削除",
+            "deleteModalTitle": "このアドレスを削除しますか?"
         },
         "Login": {
             "heading": "Log In",
@@ -217,6 +218,28 @@
                 "ordersTracking": "新規注文の追跡",
                 "wishlists": "商品をウィッシュリストに保存する",
                 "createLink": "アカウント作成 "
+            }
+        },
+        "Register": {
+            "heading": "New account",
+            "submit": "アカウント作成",
+            "submitting": "Creating account...",
+            "recaptchaText": "Pass ReCAPTCHA check",
+            "successMessage": "Dear {firstName} {lastName}, your account was successfully created. Redirecting to account...",
+            "stateProvincePrefix": "Choose state or province",
+            "validationMessages": {
+                "email": "Enter a valid email such as name@domain.com",
+                "empty": "This field can not be empty",
+                "firstName": "Enter your first name",
+                "lastName": "Enter your last name",
+                "password": "Enter a password",
+                "confirmPassword": "Passwords don't match",
+                "address1": "Enter an address",
+                "address2": "Enter an address",
+                "city": "Enter a suburb / city",
+                "company": "Enter a company name",
+                "phone": "Enter a phone number",
+                "postalCode": "Enter a zip / postcode"
             }
         },
         "ChangePassword": {

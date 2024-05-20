@@ -2,7 +2,7 @@
     "RootLayout": {
         "Metadata": {
             "title": "Catalyst Store",
-            "description": "Example store built with Catalyst",
+            "description": "Eksempelbutikk bygget med Catalyst",
             "other": {
                 "platform": "bigcommerce.catalyst"
             }
@@ -10,18 +10,18 @@
     },
     "Home": {
         "Carousel": {
-            "bestSellingProducts": "Best Selling Products",
+            "bestSellingProducts": "Bestselgende produkter",
             "featuredProducts": "Utvalgt produkter",
-            "newestProducts": "Newest products"
+            "newestProducts": "Nyeste produkter"
         }
     },
     "Category": {
-        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "sortBy": "{items, plural, =0 {no items} =1 {1 vare} other {# varer}}",
         "products": "Produkter",
         "items": "Varer"
     },
     "Brand": {
-        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "sortBy": "{items, plural, =0 {no items} =1 {1 vare} other {# varer}}",
         "products": "Produkter"
     },
     "Product": {
@@ -33,17 +33,17 @@
             "warranty": "Garanti",
             "loading": "Laster inn …",
             "reviews": "Anmeldelser",
-            "reviewsCount": "Count:",
-            "unreviewed": "This product hasn't been reviewed yet.",
-            "reviewRating": "Rating: {rating} out of 5 stars",
-            "reviewAuthor": "Posted by {author} on"
+            "reviewsCount": "Antall:",
+            "unreviewed": "Dette produktet har ikke blitt anmeldt ennå.",
+            "reviewRating": "Vurdering: {rating} av 5 stjerner",
+            "reviewAuthor": "Skrevet av {author}"
         },
         "Details": {
-            "additionalDetails": "Additional details",
+            "additionalDetails": "Ytterligere detaljer",
             "sku": "Sku",
             "upc": "UPC",
             "minPurchase": "Minimumskjøp",
-            "maxPurchase": "Maxiumum purchase",
+            "maxPurchase": "Maksiumum kjøp",
             "availability": "Tilgjengelighet",
             "loading": "Laster inn …",
             "condition": "Tilstand",
@@ -51,80 +51,80 @@
             "ReviewSummary": {
                 "loading": "Laster inn …",
                 "rating": "Vurdering:",
-                "ratingRange": "out of 5 stars.",
-                "reviewsNumber": "Number of reviews:"
+                "ratingRange": "av 5 stjerner.",
+                "reviewsNumber": "Antall anmeldelser:"
             },
             "Prices": {
                 "msrp": "MSRP",
-                "was": "Was",
-                "now": "Now"
+                "was": "Var",
+                "now": "Nå"
             }
         },
         "Form": {
             "errorMessage": "Noe gikk galt. Prøv igjen.",
             "processing": "Behandler …",
             "addToCart": "Legg i handlekurv",
-            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-            "saveToWishlist": "Save to wishlist",
+            "addedProductQuantity": "{cartItems, plural, =1 {1 vare} other {# varer}} lagt til i <cartLink>handlekurven din</cartLink>",
+            "saveToWishlist": "Legg til på ønskeliste",
             "quantityLabel": "Mengde"
         },
         "ProductSheet": {
-            "title": "Choose options",
-            "errorMessage": "An error has ocurred.",
+            "title": "Velg alternativer",
+            "errorMessage": "Det oppsto en feil.",
             "loading": "Laster inn …",
-            "numberReviews": "Number of reviews:",
-            "productRating": "<rating>Rating:</rating> {currentRating} <stars> out of 5 stars.</stars>",
+            "numberReviews": "Antall anmeldelser:",
+            "productRating": "<rating>Vurdering:</rating> {currentRating} <stars> av 5 stjerner.</stars>",
             "msrp": "MSRP",
-            "was": "Was",
-            "now": "Now",
-            "quickAdd": "Quick add",
-            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+            "was": "Var",
+            "now": "Nå",
+            "quickAdd": "Legg til raskt",
+            "addedProductQuantity": "{cartItems, plural, =1 {1 vare} other {# varer}} lagt til i <cartLink>handlekurven din</cartLink>",
             "processing": "Behandler …",
             "addToCart": "Legg i handlekurv",
             "compare": "Sammenlign"
         }
     },
     "Compare": {
-        "nothingCompare": "Well, there's nothing to compare!",
-        "helpingText": "You somehow managed to land here, but you need to select a few products first.",
-        "comparingQuantity": "Comparing {quantity, plural, =1 {1 Product} other {# Products}}",
-        "productComparison": "Product Comparison",
-        "noImageText": "No Image",
-        "chooseOptions": "Choose options",
+        "nothingCompare": "Vel, det er ingenting å sammenligne!",
+        "helpingText": "Du har på en eller annen måte havnet her, men du må velge noen produkter først.",
+        "comparingQuantity": "Sammenligner {quantity, plural, =1 {1 produkt} other {# produkter}}",
+        "productComparison": "Produktsammenligning",
+        "noImageText": "Ikke bilde",
+        "chooseOptions": "Velg alternativer",
         "description": "Beskrivelse",
         "rating": "Vurdering",
         "availability": "Tilgjengelighet",
-        "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+        "addedProductQuantity": "{cartItems, plural, =1 {1 vare} other {# varer}} lagt til i <cartLink>handlekurven din</cartLink>",
         "processing": "Behandler …",
         "addToCart": "Legg i handlekurv"
     },
     "Cart": {
-        "heading": "Your cart",
+        "heading": "Din handlekurv",
         "empty": "Handlekurven din er tom",
-        "emptyDetails": "Looks like you have not addded anything to your cart. Go ahead & explore top categories",
+        "emptyDetails": "Det ser ut som du ikke har lagt til noe i handlekurven din. Gå videre og utforsk toppkategorier",
         "proceedToCheckout": "Fortsett til kassen",
         "loading": "Laster inn …",
-        "spinnerText": "Updating...",
+        "spinnerText": "Oppdaterer …",
         "CheckoutSummary": {
             "subTotal": "Delsum",
             "discounts": "Rabatter",
             "coupon": "Kupong",
             "couponCode": "Kupongkode",
-            "addCoupon": "Add coupon",
+            "addCoupon": "Legg til kupong",
             "enterCouponCode": "Skriv inn kupongkoden din",
-            "couponCodeRequired": "Please enter a coupon code.",
+            "couponCodeRequired": "Skriv inn en kupongkode.",
             "couponCodeInvalid": "Kupongkoden du skrev inn, er ikke gyldig.",
             "remove": "Fjern",
-            "couponCodeRemoveFailed": "There was an error removing the coupon code. Please try again.",
+            "couponCodeRemoveFailed": "Det oppsto en feil under fjerning av kupongkoden. Prøv igjen.",
             "tax": "Avgift",
             "grandTotal": "Totalsum",
             "shipping": "Frakt",
             "shippingCost": "Fraktkostnad",
-            "handlingCost": "Handling cost",
+            "handlingCost": "Håndtering av kostnader",
             "add": "Legg til",
             "change": "Endre",
             "cancel": "Avbryt",
-            "errorMessage": "Cart summary not found, please try again."
+            "errorMessage": "Handlekurv-sammendrag ikke funnet, prøv igjen."
         },
         "ShippingInfo": {
             "country": "Land",
@@ -139,77 +139,78 @@
         },
         "SubmitShippingInfo": {
             "spinnerText": "Sender inn …",
-            "submitText": "Estimate shipping"
+            "submitText": "Estimer frakt"
         },
         "ShippingCost": {
-            "shippingOptions": "Available options",
-            "radioGroupAriaLabel": "Available shipping options",
-            "noAvailableOptions": "There are no available options for shipping. Please check provided details and try again!",
+            "shippingOptions": "Tilgjengelige alternativer",
+            "radioGroupAriaLabel": "Tilgjengelige fraktalternativer",
+            "noAvailableOptions": "Det er ingen tilgjengelige alternativer for frakt. Sjekk oppgitt detaljer, og prøv på nytt!",
             "errorMessage": "Noe gikk galt, prøv igjen."
         },
         "SubmitShippingCost": {
             "spinnerText": "Sender inn …",
-            "submitText": "Update shipping costs"
+            "submitText": "Oppdater fraktkostnader"
         },
         "SubmitCouponCode": {
             "spinnerText": "Sender inn …",
             "submitText": "Bruk"
         },
         "SubmitItemQuantity": {
-            "spinnerText": "Updating...",
-            "submitReduceText": "Decrease count",
-            "submitIncreaseText": "Increase count",
-            "errorMessage": "Something went wrong while updating item quantity, please try again."
+            "spinnerText": "Oppdaterer …",
+            "submitReduceText": "Reduser antall",
+            "submitIncreaseText": "Øk antall",
+            "errorMessage": "Noe gikk galt under oppdatering av vareantall, prøv på nytt."
         },
         "SubmitRemoveItem": {
             "remove": "Fjern",
-            "spinnerText": "Removing...",
-            "submitText": "Remove item from cart",
-            "errorMessage": "Something went wrong while removing item, please try again."
+            "spinnerText": "Fjerner …",
+            "errorMessage": "Noe gikk galt under fjerning av elementet, prøv på nytt."
         }
     },
     "Search": {
         "heading": "Søk",
         "products": "Produkter",
-        "noResults": "No Results",
-        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
-        "searchResults": "Search results for"
+        "noResults": "ingen resultater",
+        "sortBy": "{items, plural, =0 {no items} =1 {1 vare} other {# varer}}",
+        "searchResults": "Søkeresultater for"
     },
     "Account": {
         "Home": {
             "heading": "Min konto",
-            "accountTabsLabel": "Account Tabs",
+            "accountTabsLabel": "Konto-faner",
             "orders": "Bestillinger",
             "messages": "Meldinger",
             "addresses": "Adresser",
-            "wishlists": "Wish lists",
-            "recentlyViewed": "Recently viewed",
+            "wishlists": "Ønskelister",
+            "recentlyViewed": "Nylig sett",
             "settings": "Kontoinnstillinger",
             "changePassword": "Endre passord"
         },
         "Addresses": {
             "defaultAddress": "Standard",
             "alternativeAddress": "Alternativ",
-            "addNewAddress": "Add new address",
+            "addNewAddress": "Legg til ny adresse",
             "editButton": "Rediger",
-            "deleteButton": "Slett"
+            "deleteButton": "Slett",
+            "confirmDeleteAddress": "Slett adresse",
+            "deleteModalTitle": "Er du sikker på at du vil slette denne adressen?"
         },
         "Login": {
-            "heading": "Log In",
+            "heading": "Logg inn",
             "resetPasswordHeading": "Tilbakestill passord",
             "changePasswordHeading": "Endre passord",
             "Form": {
-                "errorMessage": "Your email address or password is incorrect. Try signing in again or reset your password",
+                "errorMessage": "E-postadressen eller passordet er feil. Prøv å logge på igjen, eller tilbakestill passordet ditt.",
                 "emailLabel": "E-post",
-                "enterEmailMessage": "Enter your email",
+                "enterEmailMessage": "Skriv inn epostadressen din",
                 "passwordLabel": "Passord",
-                "entePasswordMessage": "Enter your password",
+                "entePasswordMessage": "Skriv inn passordet ditt.",
                 "submitting": "Sender inn …",
                 "logIn": "Logg inn",
                 "forgotPassword": "Har du glemt passordet?"
             },
             "CreateAccount": {
-                "heading": "New customer?",
+                "heading": "Ny kunde?",
                 "accountBenefits": "Opprett en konto hos oss, så kan du:",
                 "fastCheckout": "Betale raskere",
                 "multipleAddresses": "Lagre flere leveringsadresser",
@@ -219,26 +220,48 @@
                 "createLink": "Opprett konto "
             }
         },
+        "Register": {
+            "heading": "Ny konto",
+            "submit": "Opprett konto",
+            "submitting": "Oppretter konto …",
+            "recaptchaText": "Bestå reCAPTCHA-sjekk",
+            "successMessage": "{firstName} {lastName}, kontoen din ble opprettet. Omdirigerer til konto …",
+            "stateProvincePrefix": "Velg et fylke",
+            "validationMessages": {
+                "email": "Angi en gyldig e-postadresse, for eksempel navn@domene.com",
+                "empty": "Dette feltet kan ikke være tomt",
+                "firstName": "Skriv inn fornavnet ditt",
+                "lastName": "Skriv inn etternavnet ditt",
+                "password": "Skriv inn et passord",
+                "confirmPassword": "Passordene samsvarer ikke",
+                "address1": "Skriv inn en adresse",
+                "address2": "Skriv inn en adresse",
+                "city": "Skriv inn en forstad / by",
+                "company": "Skriv inn et firmanavn",
+                "phone": "Skriv inn et telefonnummer",
+                "postalCode": "Skriv inn et postnummer"
+            }
+        },
         "ChangePassword": {
             "currentPasswordLabel": "Nåværende passord",
             "newPasswordLabel": "Nytt passord",
             "confirmPasswordLabel": "Bekreft passord",
             "cancel": "Avbryt",
-            "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
-            "newPasswordValidationMessage": "New password must be different from the current password or/and match confirm password.",
-            "notEmptyMessage": "Field should not be empty",
-            "successMessage": "Password has been updated successfully!"
+            "confirmPasswordValidationMessage": "Oppgitte passord stemmer ikke overens. Prøv igjen.",
+            "newPasswordValidationMessage": "Nytt passord må være forskjellig fra gjeldende passord eller/og samsvare med bekreftelsen på passordet.",
+            "notEmptyMessage": "Feltet skal ikke være tomt",
+            "successMessage": "Passordet er oppdatert!"
         },
         "SubmitChangePassword": {
             "spinnerText": "Sender inn …",
             "submitText": "Endre passord"
         },
         "ResetPassword": {
-            "description": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
+            "description": "Skriv inn e-posten som er knyttet til kontoen din nedenfor. Vi sender deg instruksjoner for å tilbakestille passordet ditt.",
             "emailLabel": "E-post",
-            "emailValidationMessage": "Enter a valid email such as name@domain.com",
-            "successMessage": "Your password reset email is on its way to {email}. If you don't see it, check your spam folder.",
-            "recaptchaText": "Pass ReCAPTCHA check"
+            "emailValidationMessage": "Angi en gyldig e-postadresse, for eksempel navn@domene.com",
+            "successMessage": "E-posten din for tilbakestilling av passord er på vei til {email}. Hvis du ikke ser den, bør du sjekke søppelpostmappen din.",
+            "recaptchaText": "Bestå reCAPTCHA-sjekk"
         },
         "SubmitResetPassword": {
             "spinnerText": "Sender inn …",
@@ -246,17 +269,17 @@
         }
     },
     "NotFound": {
-        "heading": "We couldn't find that page!",
-        "message": "It looks like the page you requested has moved or no longer exists.",
+        "heading": "Vi fant ikke den siden!",
+        "message": "Det ser ut til at siden du ba om har flyttet eller ikke lenger eksisterer.",
         "featuredProducts": "Utvalgt produkter",
-        "searchProducts": "Search for products",
-        "searchPlaceholder": "Placeholder...",
-        "searching": "Searching...",
+        "searchProducts": "Søk etter produkter",
+        "searchPlaceholder": "Plassholder …",
+        "searching": "Søker etter …",
         "search": "Søk"
     },
     "ServerError": {
-        "heading": "There was a server error!",
-        "message": "Please try again later."
+        "heading": "Det oppstod en serverfeil!",
+        "message": "Prøv på nytt senere."
     },
     "FacetedGroup": {
         "MobileSideNav": {
@@ -271,37 +294,37 @@
                 "clearAllRefinements": "Fjern alle"
             },
             "Facets": {
-                "updatePriceButton": "Update price",
+                "updatePriceButton": "Oppdater pris",
                 "freeShippingLabel": "Gratis frakt",
-                "isFeaturedLabel": "Is featured",
+                "isFeaturedLabel": "Er omtalt",
                 "inStockLabel": "På lager",
-                "rating": "{currentRating, plural, =1 {1 star} other {# stars}} & up",
+                "rating": "{currentRating, plural, =1 {1 stjerne} other {# stjerner}} og oppover",
                 "priceFilter": {
-                    "minPricePlaceholder": "{currencySign} min",
-                    "minPriceAriaLabel": "Minimum pricing",
-                    "maxPricePlaceholder": "{currencySign} max",
-                    "maxPriceAriaLabel": "Maximum pricing"
+                    "minPricePlaceholder": "{currencySign} min.",
+                    "minPriceAriaLabel": "Minimumspriser",
+                    "maxPricePlaceholder": "{currencySign} maks.",
+                    "maxPriceAriaLabel": "Maksimal prissetting"
                 }
             }
         },
         "SortBy": {
-            "ariaLabel": "Sort by:",
+            "ariaLabel": "Sorter etter:",
             "featuredItems": "Utvalgte varer",
-            "bestSellingItems": "Best selling items",
+            "bestSellingItems": "Bestselgende varer",
             "newestItems": "Nyeste varer",
             "aToZ": "A til Å",
             "zToA": "Å til A",
-            "byReview": "By review",
-            "priceAscending": "Price: ascending",
-            "priceDescending": "Price: descending",
+            "byReview": "Etter anmeldelse",
+            "priceAscending": "Pris: Stigende",
+            "priceDescending": "Pris: Synkende",
             "relevance": "Relevans"
         }
     },
     "Providers": {
         "Compare": {
-            "compareButton": "Compare ({products})",
-            "productPhoto": "Photo",
-            "removeProductAriaLabel": "Remove {product} from compare list"
+            "compareButton": "Sammenlign ({products})",
+            "productPhoto": "Foto",
+            "removeProductAriaLabel": "Fjern {product} fra sammenligningslisten"
         }
     },
     "Header": {
@@ -312,18 +335,18 @@
         "prev": "Forrige"
     },
     "AboutUs": {
-        "fullNameLabel": "Full name",
+        "fullNameLabel": "Fullt navn",
         "companyNameLabel": "Firmanavn",
         "phoneLabel": "Telefon",
         "orderNoLabel": "Bestillingsnummer",
-        "rmaLabel": "RMA number",
+        "rmaLabel": "RMA-nummer",
         "emailLabel": "E-post",
-        "emailValidationMessage": "Enter a valid email such as name@domain.com",
-        "commentsLabel": "Comments/questions",
-        "commentsValidationMessage": "Please provide a valid Comments",
-        "recaptchaText": "Pass ReCAPTCHA check",
+        "emailValidationMessage": "Angi en gyldig e-postadresse, for eksempel navn@domene.com",
+        "commentsLabel": "Kommentarer/spørsmål",
+        "commentsValidationMessage": "Oppgi en gyldige kommentar",
+        "recaptchaText": "Bestå reCAPTCHA-sjekk",
         "onSubmitText": "Sender inn …",
-        "submitFormText": "Submit form",
-        "sucessSubmitMessage": "Thanks for reaching out. We'll get back to you soon."
+        "submitFormText": "Send inn skjema",
+        "sucessSubmitMessage": "Takk for at du tok kontakt. Vi kommer tilbake til deg snart."
     }
 }

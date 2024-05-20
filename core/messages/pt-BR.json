@@ -1,8 +1,8 @@
 {
     "RootLayout": {
         "Metadata": {
-            "title": "Catalyst Store",
-            "description": "Example store built with Catalyst",
+            "title": "Loja Catalyst",
+            "description": "Exemplo de loja criada com o Catalyst",
             "other": {
                 "platform": "bigcommerce.catalyst"
             }
@@ -10,18 +10,18 @@
     },
     "Home": {
         "Carousel": {
-            "bestSellingProducts": "Best Selling Products",
+            "bestSellingProducts": "Produtos mais vendidos",
             "featuredProducts": "Produtos em destaque",
-            "newestProducts": "Newest products"
+            "newestProducts": "Produtos mais recentes"
         }
     },
     "Category": {
-        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# itens}}",
         "products": "Produtos",
         "items": "itens"
     },
     "Brand": {
-        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# itens}}",
         "products": "Produtos"
     },
     "Product": {
@@ -33,17 +33,17 @@
             "warranty": "Garantia",
             "loading": "Carregando...",
             "reviews": "Avaliações",
-            "reviewsCount": "Count:",
-            "unreviewed": "This product hasn't been reviewed yet.",
-            "reviewRating": "Rating: {rating} out of 5 stars",
-            "reviewAuthor": "Posted by {author} on"
+            "reviewsCount": "Número:",
+            "unreviewed": "Este produto ainda não foi revisado.",
+            "reviewRating": "Classificação: {rating} de 5 estrelas",
+            "reviewAuthor": "Publicado por {author} em"
         },
         "Details": {
-            "additionalDetails": "Additional details",
+            "additionalDetails": "Mais detalhes",
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Compra mínima",
-            "maxPurchase": "Maxiumum purchase",
+            "maxPurchase": "Compra máxima",
             "availability": "Disponibilidade",
             "loading": "Carregando...",
             "condition": "Condição",
@@ -51,80 +51,80 @@
             "ReviewSummary": {
                 "loading": "Carregando...",
                 "rating": "Classificação:",
-                "ratingRange": "out of 5 stars.",
-                "reviewsNumber": "Number of reviews:"
+                "ratingRange": "de 5 estrelas.",
+                "reviewsNumber": "Número de avaliações:"
             },
             "Prices": {
                 "msrp": "MSRP",
-                "was": "Was",
-                "now": "Now"
+                "was": "era",
+                "now": "agora"
             }
         },
         "Form": {
             "errorMessage": "Ocorreu um erro. Tente novamente.",
             "processing": "Processando...",
             "addToCart": "Adicionar ao carrinho",
-            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-            "saveToWishlist": "Save to wishlist",
+            "addedProductQuantity": "{cartItems, plural, =1 {1 item} other {# itens}} adicionado(s) <cartLink> ao carrinho</cartLink>",
+            "saveToWishlist": "Salvar na lista de desejos",
             "quantityLabel": "Quantidade"
         },
         "ProductSheet": {
-            "title": "Choose options",
-            "errorMessage": "An error has ocurred.",
+            "title": "Selecionar opções",
+            "errorMessage": "Ocorreu um erro.",
             "loading": "Carregando...",
-            "numberReviews": "Number of reviews:",
-            "productRating": "<rating>Rating:</rating> {currentRating} <stars> out of 5 stars.</stars>",
+            "numberReviews": "Número de avaliações:",
+            "productRating": "<rating>Classificação:</rating> {currentRating} <stars> de 5 estrelas.</stars>",
             "msrp": "MSRP",
-            "was": "Was",
-            "now": "Now",
-            "quickAdd": "Quick add",
-            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+            "was": "era",
+            "now": "agora",
+            "quickAdd": "Adição rápida",
+            "addedProductQuantity": "{cartItems, plural, =1 {1 item} other {# itens}} adicionado(s) <cartLink> ao carrinho</cartLink>",
             "processing": "Processando...",
             "addToCart": "Adicionar ao carrinho",
             "compare": "Comparar"
         }
     },
     "Compare": {
-        "nothingCompare": "Well, there's nothing to compare!",
-        "helpingText": "You somehow managed to land here, but you need to select a few products first.",
-        "comparingQuantity": "Comparing {quantity, plural, =1 {1 Product} other {# Products}}",
-        "productComparison": "Product Comparison",
-        "noImageText": "No Image",
-        "chooseOptions": "Choose options",
+        "nothingCompare": "Não há nada para comparar!",
+        "helpingText": "Você deu um jeito de chegar até aqui, mas primeiro precisa selecionar alguns produtos.",
+        "comparingQuantity": "Comparando {quantity, plural, =1 {1 produto} other {# produtos}}",
+        "productComparison": "Comparação de produtos",
+        "noImageText": "Sem imagem",
+        "chooseOptions": "Selecionar opções",
         "description": "Descrição",
         "rating": "Taxa",
         "availability": "Disponibilidade",
-        "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+        "addedProductQuantity": "{cartItems, plural, =1 {1 item} other {# itens}} adicionado(s) <cartLink> ao carrinho</cartLink>",
         "processing": "Processando...",
         "addToCart": "Adicionar ao carrinho"
     },
     "Cart": {
-        "heading": "Your cart",
+        "heading": "Seu carrinho",
         "empty": "Seu carrinho está vazio",
-        "emptyDetails": "Looks like you have not addded anything to your cart. Go ahead & explore top categories",
+        "emptyDetails": "Parece que você não adicionou nada ao seu carrinho. Explore as principais categorias e escolha algo!",
         "proceedToCheckout": "Prosseguir para a finalização da compra",
         "loading": "Carregando...",
-        "spinnerText": "Updating...",
+        "spinnerText": "Atualizando...",
         "CheckoutSummary": {
             "subTotal": "Subtotal",
             "discounts": "Descontos",
             "coupon": "Cupom",
             "couponCode": "Código de cupom",
-            "addCoupon": "Add coupon",
+            "addCoupon": "Adicionar cupom",
             "enterCouponCode": "Insira o código do seu cupom",
-            "couponCodeRequired": "Please enter a coupon code.",
+            "couponCodeRequired": "Digite um código de cupom.",
             "couponCodeInvalid": "O código de cupom inserido não é válido.",
             "remove": "Remover",
-            "couponCodeRemoveFailed": "There was an error removing the coupon code. Please try again.",
+            "couponCodeRemoveFailed": "Ocorreu um erro ao remover o código do cupom. Tente novamente.",
             "tax": "Imposto",
             "grandTotal": "Total geral",
             "shipping": "Envio",
             "shippingCost": "Custo de envio",
-            "handlingCost": "Handling cost",
+            "handlingCost": "Código de manuseio",
             "add": "Adicionar",
             "change": "Alterar",
             "cancel": "Cancelar",
-            "errorMessage": "Cart summary not found, please try again."
+            "errorMessage": "Resumo do carrinho não encontrado, tente novamente."
         },
         "ShippingInfo": {
             "country": "País",
@@ -139,77 +139,78 @@
         },
         "SubmitShippingInfo": {
             "spinnerText": "Enviando...",
-            "submitText": "Estimate shipping"
+            "submitText": "Envio estimado"
         },
         "ShippingCost": {
-            "shippingOptions": "Available options",
-            "radioGroupAriaLabel": "Available shipping options",
-            "noAvailableOptions": "There are no available options for shipping. Please check provided details and try again!",
+            "shippingOptions": "Opções disponíveis",
+            "radioGroupAriaLabel": "Opções de envio disponíveis",
+            "noAvailableOptions": "Não há opções disponíveis para envio. Verifique as informações fornecidas e tente novamente!",
             "errorMessage": "Ocorreu um erro. Tente novamente."
         },
         "SubmitShippingCost": {
             "spinnerText": "Enviando...",
-            "submitText": "Update shipping costs"
+            "submitText": "Atualizar custos de envio"
         },
         "SubmitCouponCode": {
             "spinnerText": "Enviando...",
             "submitText": "Aplicar"
         },
         "SubmitItemQuantity": {
-            "spinnerText": "Updating...",
-            "submitReduceText": "Decrease count",
-            "submitIncreaseText": "Increase count",
-            "errorMessage": "Something went wrong while updating item quantity, please try again."
+            "spinnerText": "Atualizando...",
+            "submitReduceText": "Diminuir número",
+            "submitIncreaseText": "Aumentar número",
+            "errorMessage": "Ocorreu um erro ao atualizar a quantidade do item. Tente novamente."
         },
         "SubmitRemoveItem": {
             "remove": "Remover",
-            "spinnerText": "Removing...",
-            "submitText": "Remove item from cart",
-            "errorMessage": "Something went wrong while removing item, please try again."
+            "spinnerText": "Removendo...",
+            "errorMessage": "Ocorreu um erro ao remover o item. Tente novamente."
         }
     },
     "Search": {
         "heading": "Pesquisar",
         "products": "Produtos",
-        "noResults": "No Results",
-        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
-        "searchResults": "Search results for"
+        "noResults": "Nenhum resultado",
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# itens}}",
+        "searchResults": "Pesquisar resultados por"
     },
     "Account": {
         "Home": {
             "heading": "Minha conta",
-            "accountTabsLabel": "Account Tabs",
+            "accountTabsLabel": "Abas da conta",
             "orders": "Pedidos",
             "messages": "Mensagens",
             "addresses": "Endereços",
-            "wishlists": "Wish lists",
-            "recentlyViewed": "Recently viewed",
+            "wishlists": "Lista de desejos",
+            "recentlyViewed": "Visto recentemente",
             "settings": "Configurações da conta",
             "changePassword": "Alterar senha"
         },
         "Addresses": {
             "defaultAddress": "Padrão",
             "alternativeAddress": "Alternativo",
-            "addNewAddress": "Add new address",
+            "addNewAddress": "Adicionar novo endereço",
             "editButton": "Editar",
-            "deleteButton": "Excluir"
+            "deleteButton": "Excluir",
+            "confirmDeleteAddress": "Excluir endereço",
+            "deleteModalTitle": "Deseja mesmo excluir esse endereço?"
         },
         "Login": {
-            "heading": "Log In",
+            "heading": "Credencial de acesso",
             "resetPasswordHeading": "Redefinir senha",
             "changePasswordHeading": "Alterar senha",
             "Form": {
-                "errorMessage": "Your email address or password is incorrect. Try signing in again or reset your password",
+                "errorMessage": "O endereço de email ou a senha está incorreto. Tente fazer login novamente ou redefinir sua senha",
                 "emailLabel": "Email",
-                "enterEmailMessage": "Enter your email",
+                "enterEmailMessage": "Digite seu email",
                 "passwordLabel": "Senha",
-                "entePasswordMessage": "Enter your password",
+                "entePasswordMessage": "Digite sua senha",
                 "submitting": "Enviando...",
                 "logIn": "Credencial de acesso",
                 "forgotPassword": "Esqueceu sua senha?"
             },
             "CreateAccount": {
-                "heading": "New customer?",
+                "heading": "Cliente novo?",
                 "accountBenefits": "Crie uma conta conosco para poder:",
                 "fastCheckout": "Finalizar as compras mais rápido",
                 "multipleAddresses": "Salvar vários endereços de entrega",
@@ -219,26 +220,48 @@
                 "createLink": "Criar conta "
             }
         },
+        "Register": {
+            "heading": "Nova conta",
+            "submit": "Criar conta",
+            "submitting": "Criando conta...",
+            "recaptchaText": "Passar na verificação ReCAPTCHA",
+            "successMessage": "{firstName} {lastName}, sua conta foi criada com sucesso. Redirecionando para a conta...",
+            "stateProvincePrefix": "Selecione um estado ou província",
+            "validationMessages": {
+                "email": "Insira um e-mail válido, como nome@dominio.com",
+                "empty": "Este campo não pode ficar vazio",
+                "firstName": "Digite seu nome",
+                "lastName": "Digite seu sobrenome",
+                "password": "Digite uma senha",
+                "confirmPassword": "As senhas não conferem.",
+                "address1": "Insira um endereço",
+                "address2": "Insira um endereço",
+                "city": "Digite uma cidade",
+                "company": "Digite o nome da empresa",
+                "phone": "Digite um número de telefone",
+                "postalCode": "Digite um CEP"
+            }
+        },
         "ChangePassword": {
             "currentPasswordLabel": "Senha atual",
             "newPasswordLabel": "Nova senha",
             "confirmPasswordLabel": "Confirmar senha",
             "cancel": "Cancelar",
-            "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
-            "newPasswordValidationMessage": "New password must be different from the current password or/and match confirm password.",
-            "notEmptyMessage": "Field should not be empty",
-            "successMessage": "Password has been updated successfully!"
+            "confirmPasswordValidationMessage": "As senhas digitadas são diferentes. Tente novamente.",
+            "newPasswordValidationMessage": "A nova senha deve ser diferente da senha atual e/ou corresponder à senha de confirmação.",
+            "notEmptyMessage": "O campo não deve estar vazio",
+            "successMessage": "A senha foi atualizada com sucesso!"
         },
         "SubmitChangePassword": {
             "spinnerText": "Enviando...",
             "submitText": "Alterar senha"
         },
         "ResetPassword": {
-            "description": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
+            "description": "Insira abaixo o e-mail associado à sua conta. Enviaremos instruções para redefinir sua senha.",
             "emailLabel": "Email",
-            "emailValidationMessage": "Enter a valid email such as name@domain.com",
-            "successMessage": "Your password reset email is on its way to {email}. If you don't see it, check your spam folder.",
-            "recaptchaText": "Pass ReCAPTCHA check"
+            "emailValidationMessage": "Insira um e-mail válido, como nome@dominio.com",
+            "successMessage": "Enviamos um e-mail de redefinição de senha para {email}. Se não encontrá-lo, confira a pasta de spam.",
+            "recaptchaText": "Passar na verificação ReCAPTCHA"
         },
         "SubmitResetPassword": {
             "spinnerText": "Enviando...",
@@ -246,17 +269,17 @@
         }
     },
     "NotFound": {
-        "heading": "We couldn't find that page!",
-        "message": "It looks like the page you requested has moved or no longer exists.",
+        "heading": "Não encontramos essa página!",
+        "message": "Parece que a página que você solicitou foi movida ou não existe mais.",
         "featuredProducts": "Produtos em destaque",
-        "searchProducts": "Search for products",
-        "searchPlaceholder": "Placeholder...",
-        "searching": "Searching...",
+        "searchProducts": "Pesquisar produtos",
+        "searchPlaceholder": "Espaço reservado...",
+        "searching": "Pesquisando...",
         "search": "Pesquisar"
     },
     "ServerError": {
-        "heading": "There was a server error!",
-        "message": "Please try again later."
+        "heading": "Houve um erro no servidor!",
+        "message": "Tente novamente mais tarde."
     },
     "FacetedGroup": {
         "MobileSideNav": {
@@ -271,37 +294,37 @@
                 "clearAllRefinements": "Limpar tudo"
             },
             "Facets": {
-                "updatePriceButton": "Update price",
+                "updatePriceButton": "Atualizar preço",
                 "freeShippingLabel": "Frete gratuito",
-                "isFeaturedLabel": "Is featured",
+                "isFeaturedLabel": "Está em destaque",
                 "inStockLabel": "Em estoque",
-                "rating": "{currentRating, plural, =1 {1 star} other {# stars}} & up",
+                "rating": "{currentRating, plural, =1 {1 estrela} other {# estrelas}} ou mais",
                 "priceFilter": {
-                    "minPricePlaceholder": "{currencySign} min",
-                    "minPriceAriaLabel": "Minimum pricing",
-                    "maxPricePlaceholder": "{currencySign} max",
-                    "maxPriceAriaLabel": "Maximum pricing"
+                    "minPricePlaceholder": "{currencySign} mín.",
+                    "minPriceAriaLabel": "Preço mínimo",
+                    "maxPricePlaceholder": "{currencySign} máx.",
+                    "maxPriceAriaLabel": "Preço máximo"
                 }
             }
         },
         "SortBy": {
-            "ariaLabel": "Sort by:",
+            "ariaLabel": "Ordenar por:",
             "featuredItems": "Itens em destaque",
-            "bestSellingItems": "Best selling items",
+            "bestSellingItems": "Itens mais vendidos",
             "newestItems": "Itens mais recentes",
             "aToZ": "A a Z",
             "zToA": "Z a A",
-            "byReview": "By review",
-            "priceAscending": "Price: ascending",
-            "priceDescending": "Price: descending",
+            "byReview": "Por avaliação",
+            "priceAscending": "Preço: crescente",
+            "priceDescending": "Preço: decrescente",
             "relevance": "Relevância"
         }
     },
     "Providers": {
         "Compare": {
-            "compareButton": "Compare ({products})",
-            "productPhoto": "Photo",
-            "removeProductAriaLabel": "Remove {product} from compare list"
+            "compareButton": "Comparar ({products})",
+            "productPhoto": "Foto",
+            "removeProductAriaLabel": "Remover {product} da lista de comparação"
         }
     },
     "Header": {
@@ -312,18 +335,18 @@
         "prev": "Anterior"
     },
     "AboutUs": {
-        "fullNameLabel": "Full name",
+        "fullNameLabel": "Nome completo",
         "companyNameLabel": "Nome da empresa",
         "phoneLabel": "Telefone",
         "orderNoLabel": "Número do pedido",
-        "rmaLabel": "RMA number",
+        "rmaLabel": "Número do RMA",
         "emailLabel": "Email",
-        "emailValidationMessage": "Enter a valid email such as name@domain.com",
-        "commentsLabel": "Comments/questions",
-        "commentsValidationMessage": "Please provide a valid Comments",
-        "recaptchaText": "Pass ReCAPTCHA check",
+        "emailValidationMessage": "Insira um e-mail válido, como nome@dominio.com",
+        "commentsLabel": "Comentários/perguntas",
+        "commentsValidationMessage": "Forneça comentários válidos",
+        "recaptchaText": "Passar na verificação ReCAPTCHA",
         "onSubmitText": "Enviando...",
-        "submitFormText": "Submit form",
-        "sucessSubmitMessage": "Thanks for reaching out. We'll get back to you soon."
+        "submitFormText": "Enviar formulário",
+        "sucessSubmitMessage": "Agradecemos o contato. Responderemos em breve."
     }
 }
