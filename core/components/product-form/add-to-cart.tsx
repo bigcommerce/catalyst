@@ -15,7 +15,7 @@ export const AddToCart = ({ disabled = false }: { disabled?: boolean }) => {
   return (
     <Button disabled={disabled} loading={isSubmitting} loadingText={t('processing')} type="submit">
       <ShoppingCart aria-hidden="true" className="mx-2" />
-      <span>{t('addToCart')}</span>
+      <span>{disabled ? t('outOfStock') : t('addToCart')}</span>
     </Button>
   );
 };

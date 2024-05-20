@@ -64,6 +64,7 @@
       "errorMessage": "Something went wrong. Please try again.",
       "processing": "Processing...",
       "addToCart": "Add to cart",
+      "outOfStock": "Out of stock",
       "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
       "saveToWishlist": "Save to wishlist",
       "quantityLabel": "Quantity"
@@ -81,6 +82,7 @@
       "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
       "processing": "Processing...",
       "addToCart": "Add to cart",
+      "outOfStock": "Out of stock",
       "compare": "Compare"
     }
   },
@@ -96,7 +98,8 @@
     "availability": "Availability",
     "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
     "processing": "Processing...",
-    "addToCart": "Add to cart"
+    "addToCart": "Add to cart",
+    "outOfStock": "Out of stock"
   },
   "Cart": {
     "heading": "Your cart",

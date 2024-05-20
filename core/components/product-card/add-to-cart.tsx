@@ -17,7 +17,7 @@ export const AddToCart = ({ disabled = false }: { disabled?: boolean }) => {
       loadingText={t('processing')}
       type="submit"
     >
-      {t('addToCart')}
+      {disabled ? t('outOfStock') : t('addToCart')}
     </Button>
   );
 };
