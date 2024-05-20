@@ -2,6 +2,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
+import { ProductCardFragment } from '~/components/product-card';
 
 import { client } from '..';
 import { PAGE_DETAILS_FRAGMENT } from '../fragments/page-details';
@@ -32,6 +33,7 @@ const GET_PRODUCT_SEARCH_RESULTS_QUERY = graphql(
               edges {
                 node {
                   ...ProductDetails
+                  ...ProductCardFragment
                 }
               }
             }
@@ -150,7 +152,7 @@ const GET_PRODUCT_SEARCH_RESULTS_QUERY = graphql(
       }
     }
   `,
-  [PAGE_DETAILS_FRAGMENT, PRODUCT_DETAILS_FRAGMENT],
+  [PAGE_DETAILS_FRAGMENT, PRODUCT_DETAILS_FRAGMENT, ProductCardFragment],
 );
 
 type Variables = VariablesOf<typeof GET_PRODUCT_SEARCH_RESULTS_QUERY>;

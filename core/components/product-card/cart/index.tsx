@@ -78,7 +78,7 @@ export const Cart = ({ data: product }: Props) => {
     >
       <input name="product_id" type="hidden" value={product.entityId} />
       <input name="quantity" type="hidden" value={1} />
-      <AddToCart />
+      <AddToCart disabled={!product.inventory.isInStock} />
     </form>
   );
 };
