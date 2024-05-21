@@ -1,4 +1,4 @@
-import { graphql, ResultOf } from '~/client/graphql';
+import { graphql } from '~/client/graphql';
 
 export const CartFragment = graphql(`
   fragment CartFragment on Product {
@@ -15,5 +15,3 @@ export const CartFragment = graphql(`
     }
   }
 `);
-
-export type CartFragmentResult = ResultOf<typeof CartFragment>;

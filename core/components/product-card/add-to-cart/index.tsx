@@ -1,6 +1,7 @@
 'use client';
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { FragmentOf } from 'gql.tada';
 import { AlertCircle, Check } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -10,15 +11,15 @@ import { Button } from '~/components/ui/button';
 
 import { Link } from '../../link';
 import { addToCart } from '../_actions/add-to-cart';
-import { AddToCart } from '../add-to-cart';
 
-import { type CartFragmentResult } from './fragment';
+import { CartFragment } from './fragment';
+import { SubmitButton } from './submit-button';
 
 interface Props {
-  data: CartFragmentResult;
+  data: FragmentOf<typeof CartFragment>;
 }
 
-export const Cart = ({ data: product }: Props) => {
+export const AddToCart = ({ data: product }: Props) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -78,7 +79,7 @@ export const Cart = ({ data: product }: Props) => {
     >
       <input name="product_id" type="hidden" value={product.entityId} />
       <input name="quantity" type="hidden" value={1} />
-      <AddToCart disabled={!product.inventory.isInStock} />
+      <SubmitButton disabled={!product.inventory.isInStock} />
     </form>
   );
 };

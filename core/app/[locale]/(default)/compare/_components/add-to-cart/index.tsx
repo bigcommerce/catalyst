@@ -12,7 +12,7 @@ import { addToCart } from '../../_actions/add-to-cart';
 import { CartFragment } from './fragment';
 import { SubmitButton } from './submit-button';
 
-export const AddToCart = ({ product }: { product: FragmentOf<typeof CartFragment> }) => {
+export const AddToCart = ({ data: product }: { data: FragmentOf<typeof CartFragment> }) => {
   const t = useTranslations('Compare');
 
   return (

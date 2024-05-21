@@ -5,7 +5,7 @@ import { useFormStatus } from 'react-dom';
 
 import { Button } from '~/components/ui/button';
 
-export const AddToCart = ({ disabled = false }: { disabled?: boolean }) => {
+export const SubmitButton = ({ disabled = false }: { disabled?: boolean }) => {
   const { pending } = useFormStatus();
   const t = useTranslations('Product.ProductSheet');
 

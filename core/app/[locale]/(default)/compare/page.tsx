@@ -220,7 +220,7 @@ export default async function Compare({
                       locale={locale}
                       messages={{ Compare: messages.Compare ?? {} }}
                     >
-                      <AddToCart product={product} />
+                      <AddToCart data={product} />
                     </NextIntlClientProvider>
                   </td>
                 );
@@ -307,7 +307,7 @@ export default async function Compare({
                       locale={locale}
                       messages={{ Compare: messages.Compare ?? {} }}
                     >
-                      <AddToCart product={product} />
+                      <AddToCart data={product} />
                     </NextIntlClientProvider>
                   </td>
                 );

@@ -17,8 +17,8 @@ import { cn } from '~/lib/utils';
 import { BcImage } from '../bc-image';
 import { Pricing, PricingFragment } from '../pricing';
 
-import { Cart } from './cart';
-import { CartFragment } from './cart/fragment';
+import { AddToCart } from './add-to-cart';
+import { CartFragment } from './add-to-cart/fragment';
 import { Compare } from './compare';
 
 export const ProductCardFragment = graphql(
@@ -150,7 +150,7 @@ export const ProductCard = ({
           )}
         </div>
       </ProductCardInfo>
-      {showCart && <Cart data={product} />}
+      {showCart && <AddToCart data={product} />}
     </ComponentsProductCard>
   );
 };
