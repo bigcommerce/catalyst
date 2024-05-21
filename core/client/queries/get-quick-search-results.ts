@@ -21,6 +21,14 @@ const GET_QUICK_SEARCH_RESULTS_QUERY = graphql(
             products(first: 5) {
               edges {
                 node {
+                  categories {
+                    edges {
+                      node {
+                        name
+                        path
+                      }
+                    }
+                  }
                   ...ProductCardFragment
                 }
               }
