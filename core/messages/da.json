@@ -164,7 +164,6 @@
         "SubmitRemoveItem": {
             "remove": "Fjern",
             "spinnerText": "Fjerner ...",
-            "submitText": "Fjern varen fra indkøbskurven",
             "errorMessage": "Der opstod en fejl under fjernelse af varen. Prøv igen."
         }
     },
@@ -192,7 +191,9 @@
             "alternativeAddress": "Alternativ",
             "addNewAddress": "Tilføj ny adresse",
             "editButton": "Rediger",
-            "deleteButton": "Slet"
+            "deleteButton": "Slet",
+            "confirmDeleteAddress": "Slet adresse",
+            "deleteModalTitle": "Er du sikker på, at du vil slette denne adresse?"
         },
         "Login": {
             "heading": "Log på",
@@ -217,6 +218,28 @@
                 "ordersTracking": "Spore nye ordrer",
                 "wishlists": "Gemme varer til din ønskeliste",
                 "createLink": "Opret konto "
+            }
+        },
+        "Register": {
+            "heading": "Ny konto",
+            "submit": "Opret konto",
+            "submitting": "Opretter konto ...",
+            "recaptchaText": "Bestå ReCAPTCHA-kontrol",
+            "successMessage": "Kære {firstName} {lastName}, din konto er blevet oprettet. Omdirigerer til konto ...",
+            "stateProvincePrefix": "Vælg landsdel eller kommune",
+            "validationMessages": {
+                "email": "Indtast en gyldig e-mail, f.eks. navn@domæne.com",
+                "empty": "Dette felt må ikke være tomt",
+                "firstName": "Indtast dit fornavn",
+                "lastName": "Indtast dit efternavn",
+                "password": "Indtast en adgangskode",
+                "confirmPassword": "Adgangskoderne stemmer ikke overens",
+                "address1": "Indtast en adresse",
+                "address2": "Indtast en adresse",
+                "city": "Indtast en by",
+                "company": "Indtast et firmanavn",
+                "phone": "Indtast et telefonnummer",
+                "postalCode": "Indtast et postnummer"
             }
         },
         "ChangePassword": {
