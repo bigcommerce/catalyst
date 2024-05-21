@@ -68,3 +68,9 @@ test('Add and remove products to compare', async ({ page }) => {
     .click();
   await expect(page.getByRole('link', { name: 'Compare (2)' })).toBeVisible();
 });
+
+test('Out of stock products show disabled "Out of stock" button', async ({ page }) => {
+  await page.goto('1-l-le-parfait-jar/?112=117&111=113');
+
+  await expect(page.getByRole('button', { name: 'Out of stock' })).toBeDisabled();
+});
