@@ -6,7 +6,7 @@ import { useFormContext } from 'react-hook-form';
 
 import { Button } from '~/components/ui/button';
 
-export const AddToCart = ({ disabled = false }: { disabled?: boolean }) => {
+export const SubmitButton = ({ disabled = false }: { disabled?: boolean }) => {
   const { formState } = useFormContext();
   const { isSubmitting } = formState;
 
