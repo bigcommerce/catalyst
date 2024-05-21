@@ -16,8 +16,8 @@ import { Rating } from '~/components/ui/rating';
 import { LocaleType } from '~/i18n';
 import { cn } from '~/lib/utils';
 
-import { AddToCartForm } from './_components/add-to-cart-form';
-import { CartFragment } from './_components/fragment';
+import { AddToCart } from './_components/add-to-cart';
+import { CartFragment } from './_components/add-to-cart/fragment';
 
 const MAX_COMPARE_LIMIT = 10;
 
@@ -220,7 +220,7 @@ export default async function Compare({
                       locale={locale}
                       messages={{ Compare: messages.Compare ?? {} }}
                     >
-                      <AddToCartForm product={product} />
+                      <AddToCart product={product} />
                     </NextIntlClientProvider>
                   </td>
                 );
@@ -307,7 +307,7 @@ export default async function Compare({
                       locale={locale}
                       messages={{ Compare: messages.Compare ?? {} }}
                     >
-                      <AddToCartForm product={product} />
+                      <AddToCart product={product} />
                     </NextIntlClientProvider>
                   </td>
                 );

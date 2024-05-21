@@ -5,24 +5,12 @@ import { useFormStatus } from 'react-dom';
 
 import { Button } from '~/components/ui/button';
 
-export const AddToCart = ({
-  disabled = false,
-  productName,
-}: {
-  disabled?: boolean;
-  productName: string;
-}) => {
+export const SubmitButton = ({ disabled = false }: { disabled?: boolean }) => {
   const t = useTranslations('Compare');
   const { pending } = useFormStatus();
 
   return (
-    <Button
-      aria-label={productName}
-      disabled={disabled}
-      loading={pending}
-      loadingText={t('processing')}
-      type="submit"
-    >
+    <Button disabled={disabled} loading={pending} loadingText={t('processing')} type="submit">
       {disabled ? t('outOfStock') : t('addToCart')}
     </Button>
   );
