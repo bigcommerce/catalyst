@@ -6,7 +6,6 @@ import { ProductCardFragment } from '~/components/product-card';
 
 import { client } from '..';
 import { PAGE_DETAILS_FRAGMENT } from '../fragments/page-details';
-import { PRODUCT_DETAILS_FRAGMENT } from '../fragments/product-details';
 import { graphql, VariablesOf } from '../graphql';
 import { revalidate } from '../revalidate-target';
 
@@ -32,7 +31,6 @@ const GET_PRODUCT_SEARCH_RESULTS_QUERY = graphql(
               }
               edges {
                 node {
-                  ...ProductDetails
                   ...ProductCardFragment
                 }
               }
@@ -152,7 +150,7 @@ const GET_PRODUCT_SEARCH_RESULTS_QUERY = graphql(
       }
     }
   `,
-  [PAGE_DETAILS_FRAGMENT, PRODUCT_DETAILS_FRAGMENT, ProductCardFragment],
+  [PAGE_DETAILS_FRAGMENT, ProductCardFragment],
 );
 
 type Variables = VariablesOf<typeof GET_PRODUCT_SEARCH_RESULTS_QUERY>;
