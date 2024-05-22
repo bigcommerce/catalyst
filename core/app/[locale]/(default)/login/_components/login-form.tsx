@@ -118,13 +118,13 @@ export const LoginForm = () => {
             <SubmitButton />
           </FormSubmit>
           <Link
-            className="my-5 inline-flex items-center justify-start text-primary hover:text-secondary md:my-0"
+            className="my-5 inline-flex items-center justify-start font-semibold text-primary hover:text-secondary md:my-0"
             href={{
               pathname: '/login',
               query: { action: 'reset_password' },
             }}
           >
-            {t('Form.forgotPassword')}
+            {t('Form.resetPassword')}
           </Link>
         </div>
       </Form>

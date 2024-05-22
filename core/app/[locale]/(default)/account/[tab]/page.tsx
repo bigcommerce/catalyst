@@ -1,18 +1,17 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import { getCustomerAddresses } from '~/client/queries/get-customer-addresses';
-import { LocaleType } from '~/i18n';
 
 import { AddressesContent } from './_components/addresses-content';
 import { SettingsContent } from './_components/settings-content';
 import { TabHeading } from './_components/tab-heading';
 import { TabType } from './layout';
+import { getCustomerSettingsQuery } from './page-data';
 
 interface Props {
   params: {
-    locale: LocaleType;
     tab: TabType;
   };
   searchParams: {
@@ -23,7 +22,8 @@ interface Props {
   };
 }
 
-export async function generateMetadata({ params: { tab, locale } }: Props): Promise<Metadata> {
+export async function generateMetadata({ params: { tab } }: Props): Promise<Metadata> {
+  const locale = await getLocale();
   const t = await getTranslations({ locale, namespace: 'Account.Home' });
 
   return {
@@ -31,13 +31,13 @@ export async function generateMetadata({ params: { tab, locale } }: Props): Prom
   };
 }
 
-export default async function AccountTabPage({ params: { tab, locale }, searchParams }: Props) {
+export default async function AccountTabPage({ params: { tab }, searchParams }: Props) {
   switch (tab) {
     case 'orders':
-      return <TabHeading heading={tab} locale={locale} />;
+      return <TabHeading heading={tab} />;
 
     case 'messages':
-      return <TabHeading heading={tab} locale={locale} />;
+      return <TabHeading heading={tab} />;
 
     case 'addresses': {
       const { before, after, action } = searchParams;
@@ -59,19 +59,26 @@ export default async function AccountTabPage({ params: { tab, locale }, searchPa
           addressesCount={addressesCount}
           customerAction={action}
           pageInfo={pageInfo}
-          title={tab}
         />
       );
     }
 
     case 'wishlists':
-      return <TabHeading heading={tab} locale={locale} />;
+      return <TabHeading heading={tab} />;
 
     case 'recently-viewed':
-      return <TabHeading heading={tab} locale={locale} />;
+      return <TabHeading heading={tab} />;
 
     case 'settings': {
-      return <SettingsContent action={searchParams.action} title={tab} />;
+      const customerSettings = await getCustomerSettingsQuery({
+        address: { filters: { entityIds: [4, 5, 6, 7] } },
+      });
+
+      if (!customerSettings) {
+        notFound();
+      }
+
+      return <SettingsContent action={searchParams.action} customerSettings={customerSettings} />;
     }
 
     default:

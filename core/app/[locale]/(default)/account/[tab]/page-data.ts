@@ -5,14 +5,49 @@ import { client } from '~/client';
 import { FORM_FIELDS_FRAGMENT } from '~/client/fragments/form-fields';
 import { graphql, VariablesOf } from '~/client/graphql';
 
-const RegisterCustomerQuery = graphql(
+const CustomerSettingsQuery = graphql(
   `
-    query RegisterCustomerQuery(
+    query CustomerSettingsQuery(
       $customerFilters: FormFieldFiltersInput
       $customerSortBy: FormFieldSortInput
       $addressFilters: FormFieldFiltersInput
       $addressSortBy: FormFieldSortInput
     ) {
+      customer {
+        entityId
+        company
+        email
+        firstName
+        lastName
+        phone
+        formFields {
+          entityId
+          name
+          __typename
+          ... on CheckboxesFormFieldValue {
+            valueEntityIds
+            values
+          }
+          ... on DateFormFieldValue {
+            date {
+              utc
+            }
+          }
+          ... on MultipleChoiceFormFieldValue {
+            valueEntityId
+            value
+          }
+          ... on NumberFormFieldValue {
+            number
+          }
+          ... on PasswordFormFieldValue {
+            password
+          }
+          ... on TextFormFieldValue {
+            text
+          }
+        }
+      }
       site {
         settings {
           formFields {
@@ -23,28 +58,9 @@ const RegisterCustomerQuery = graphql(
               ...FormFields
             }
           }
-        }
-        settings {
-          contact {
-            country
-          }
           reCaptcha {
             isEnabledOnStorefront
             siteKey
-          }
-        }
-      }
-      geography {
-        countries {
-          code
-          entityId
-          name
-          __typename
-          statesOrProvinces {
-            abbreviation
-            entityId
-            name
-            __typename
           }
         }
       }
@@ -53,7 +69,7 @@ const RegisterCustomerQuery = graphql(
   [FORM_FIELDS_FRAGMENT],
 );
 
-type Variables = VariablesOf<typeof RegisterCustomerQuery>;
+type Variables = VariablesOf<typeof CustomerSettingsQuery>;
 
 interface Props {
   address?: {
@@ -67,11 +83,11 @@ interface Props {
   };
 }
 
-export const getRegisterCustomerQuery = cache(async ({ address, customer }: Props = {}) => {
+export const getCustomerSettingsQuery = cache(async ({ address, customer }: Props = {}) => {
   const customerId = await getSessionCustomerId();
 
   const response = await client.fetch({
-    document: RegisterCustomerQuery,
+    document: CustomerSettingsQuery,
     variables: {
       addressFilters: address?.filters,
       addressSortBy: address?.sortBy,
@@ -84,21 +100,18 @@ export const getRegisterCustomerQuery = cache(async ({ address, customer }: Prop
 
   const addressFields = response.data.site.settings?.formFields.shippingAddress;
   const customerFields = response.data.site.settings?.formFields.customer;
-
-  const countries = response.data.geography.countries;
-  const defaultCountry = response.data.site.settings?.contact?.country;
+  const customerInfo = response.data.customer;
 
   const reCaptchaSettings = response.data.site.settings?.reCaptcha;
 
-  if (!addressFields || !customerFields || !countries) {
+  if (!addressFields || !customerFields || !customerInfo) {
     return null;
   }
 
   return {
     addressFields,
     customerFields,
-    countries,
-    defaultCountry,
+    customerInfo,
     reCaptchaSettings,
   };
 });
