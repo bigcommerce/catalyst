@@ -2,8 +2,9 @@
   "name": "@bigcommerce/create-catalyst",
   "version": "0.7.0",
   "type": "module",
-  "bin": "dist/index.js",
+  "bin": "bin/index.cjs",
   "files": [
+    "bin",
     "dist"
   ],
   "scripts": {
