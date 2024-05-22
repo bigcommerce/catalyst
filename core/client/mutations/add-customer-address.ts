@@ -29,7 +29,7 @@ const ADD_CUSTOMER_ADDRESS_MUTATION = graphql(`
   }
 `);
 
-type AddCustomerAddressInput = VariablesOf<typeof ADD_CUSTOMER_ADDRESS_MUTATION>['input'];
+export type AddCustomerAddressInput = VariablesOf<typeof ADD_CUSTOMER_ADDRESS_MUTATION>['input'];
 
 interface AddCustomerAddress {
   input: AddCustomerAddressInput;

@@ -17,6 +17,7 @@ interface Props {
   };
   searchParams: {
     [key: string]: string | string[] | undefined;
+    action?: 'add-new-address';
     before?: string;
     after?: string;
   };
@@ -39,7 +40,7 @@ export default async function AccountTabPage({ params: { tab, locale }, searchPa
       return <TabHeading heading={tab} locale={locale} />;
 
     case 'addresses': {
-      const { before, after } = searchParams;
+      const { before, after, action } = searchParams;
       const customerAddressesDetails = await getCustomerAddresses({
         ...(after && { after }),
         ...(before && { before }),
@@ -56,6 +57,7 @@ export default async function AccountTabPage({ params: { tab, locale }, searchPa
         <AddressesContent
           addresses={addresses}
           addressesCount={addressesCount}
+          customerAction={action}
           pageInfo={pageInfo}
           title={tab}
         />

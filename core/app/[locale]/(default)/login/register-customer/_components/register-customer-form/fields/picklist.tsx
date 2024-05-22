@@ -1,7 +1,9 @@
 import { Field, FieldControl, FieldLabel } from '~/components/ui/form';
 import { Select, SelectContent, SelectItem } from '~/components/ui/select';
 
-import { AddressFields, FieldNameToFieldId } from '..';
+import { AddressFields } from '..';
+
+import { FieldNameToFieldId } from './utils';
 
 type PicklistType = Extract<
   NonNullable<AddressFields>[number],

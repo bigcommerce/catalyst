@@ -12,11 +12,16 @@ import { Message } from '~/components/ui/message';
 
 import { login } from './_actions/login';
 import { registerCustomer } from './_actions/register-customer';
-import { Password } from './fields/password';
-import { Picklist } from './fields/picklist';
-import { PicklistOrText } from './fields/picklist-or-text';
-import { FieldWrapper } from './fields/shared/field-wrapper';
-import { Text } from './fields/text';
+import {
+  createFieldName,
+  CUSTOMER_FIELDS_TO_EXCLUDE,
+  FieldNameToFieldId,
+  FieldWrapper,
+  Password,
+  Picklist,
+  PicklistOrText,
+  Text,
+} from './fields';
 
 interface FormStatus {
   status: 'success' | 'error';
@@ -48,51 +53,12 @@ interface RegisterCustomerProps {
   };
 }
 
-/* This mapping needed for aligning built-in fields names to their ids
- for creating valid register customer request object
- that will be sent in mutation */
-export enum FieldNameToFieldId {
-  email = 1,
-  password,
-  confirmPassword,
-  firstName,
-  lastName,
-  company,
-  phone,
-  address1,
-  address2,
-  city,
-  countryCode,
-  stateOrProvince,
-  postalCode,
-  currentPassword = 24,
-  exclusiveOffers = 25,
-}
-
-const CUSTOMER_FIELDS_TO_EXCLUDE = [
-  FieldNameToFieldId.currentPassword,
-  FieldNameToFieldId.exclusiveOffers,
-];
-
-export const BOTH_CUSTOMER_ADDRESS_FIELDS = [
-  FieldNameToFieldId.firstName,
-  FieldNameToFieldId.lastName,
-  FieldNameToFieldId.company,
-  FieldNameToFieldId.phone,
-];
-
 interface SumbitMessages {
   messages: {
     submit: string;
     submitting: string;
   };
 }
-
-const createFieldName = (fieldType: 'customer' | 'address', fieldId: number) => {
-  const secondFieldType = fieldType === 'customer' ? 'address' : 'customer';
-
-  return `${fieldType}-${BOTH_CUSTOMER_ADDRESS_FIELDS.includes(fieldId) ? `${secondFieldType}-` : ''}${FieldNameToFieldId[fieldId] || fieldId}`;
-};
 
 const SubmitButton = ({ messages }: SumbitMessages) => {
   const { pending } = useFormStatus();
