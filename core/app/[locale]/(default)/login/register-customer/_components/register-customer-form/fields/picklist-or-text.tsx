@@ -42,7 +42,7 @@ export const PicklistOrText = ({ defaultValue, field, name, options }: PicklistO
             placeholder={t('stateProvincePrefix')}
             required={field.isRequired}
           >
-            <SelectContent position="item-aligned">
+            <SelectContent>
               {options.map(({ entityId, label }) => {
                 return (
                   <SelectItem key={entityId} value={entityId.toString()}>
