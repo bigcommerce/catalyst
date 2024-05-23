@@ -33,7 +33,7 @@ export const Picklist = ({ defaultValue, field, name, onChange, options }: Pickl
           placeholder={field.choosePrefix}
           required={field.isRequired}
         >
-          <SelectContent position="item-aligned">
+          <SelectContent>
             {options.map(({ entityId, label }) => (
               <SelectItem key={entityId} value={entityId.toString()}>
                 {label}
