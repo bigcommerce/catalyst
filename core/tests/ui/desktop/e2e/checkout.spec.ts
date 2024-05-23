@@ -30,14 +30,11 @@ async function enterCreditCardDetails(page: Page) {
   await page.frameLocator('#bigpaypay-ccCvv iframe').getByLabel('CVV').fill('211');
 }
 
-test.beforeEach(async ({ page }) => {
+test('Complete checkout as a guest shopper', async ({ page }) => {
   await page.goto('/laundry-detergent/');
   await expect(page.getByRole('heading', { level: 1, name: sampleProduct })).toBeVisible();
 
   await page.getByRole('button', { name: 'Add to Cart' }).first().click();
-});
-
-test('Complete checkout as a guest shopper', async ({ page }) => {
   await page.getByRole('link', { name: 'Cart Items 1' }).click();
   await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
   await page.getByRole('button', { name: 'Proceed to checkout' }).click();
@@ -58,18 +55,21 @@ test('Complete checkout as a guest shopper', async ({ page }) => {
   ).toBeVisible();
 });
 
-test.skip('Complete checkout as a logged in shopper', async ({ page }) => {
+test('Complete checkout as a logged in shopper', async ({ page }) => {
   await page.goto('/login/');
   await page.getByLabel('Login').click();
   await page.getByLabel('Email').fill(process.env.TEST_ACCOUNT_EMAIL || '');
   await page.getByLabel('Password').fill(process.env.TEST_ACCOUNT_PASSWORD || '');
   await page.getByRole('button', { name: 'Log in' }).click();
   await page.getByRole('heading', { name: 'My Account' }).waitFor();
-  await page.getByRole('link', { name: 'Cart Items 1' }).click();
 
+  await page.goto('/laundry-detergent/');
+  await expect(page.getByRole('heading', { level: 1, name: sampleProduct })).toBeVisible();
+  await page.getByRole('button', { name: 'Add to Cart' }).first().click();
   await page.getByRole('link', { name: 'Cart Items 1' }).click();
   await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
   await page.getByRole('button', { name: 'Proceed to checkout' }).click();
+
   await page.getByLabel('Email').fill(faker.internet.email());
   await page.getByRole('button', { name: 'Continue' }).click();
 
