@@ -218,7 +218,7 @@ export default async function Compare({
                   <td className="border-b px-4 pb-12" key={product.entityId}>
                     <NextIntlClientProvider
                       locale={locale}
-                      messages={{ Compare: messages.Compare ?? {} }}
+                      messages={{ AddToCart: messages.AddToCart ?? {} }}
                     >
                       <AddToCart data={product} />
                     </NextIntlClientProvider>
@@ -305,7 +305,7 @@ export default async function Compare({
                   <td className="border-b px-4 pb-24 pt-12" key={product.entityId}>
                     <NextIntlClientProvider
                       locale={locale}
-                      messages={{ Compare: messages.Compare ?? {} }}
+                      messages={{ AddToCart: messages.AddToCart ?? {} }}
                     >
                       <AddToCart data={product} />
                     </NextIntlClientProvider>

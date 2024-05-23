@@ -2,4 +2,4 @@
 "@bigcommerce/catalyst-core": patch
 ---
 
-Use isInStock from inventory to check if a product/variant is available to be added to cart.
+Show correct status and messaging for the Add to Cart button.

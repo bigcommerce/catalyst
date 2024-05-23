@@ -12,6 +12,7 @@ import { Button } from '~/components/ui/button';
 import { Link } from '../link';
 
 import { handleAddToCart } from './_actions/add-to-cart';
+import { AddToCartButton } from './add-to-cart-button';
 import { CheckboxField } from './fields/checkbox-field';
 import { DateField } from './fields/date-field';
 import { MultiLineTextField } from './fields/multi-line-text-field';
@@ -20,7 +21,6 @@ import { NumberField } from './fields/number-field';
 import { QuantityField } from './fields/quantity-field';
 import { TextField } from './fields/text-field';
 import { ProductFormFragment } from './fragment';
-import { SubmitButton } from './submit-button';
 import { ProductFormData, useProductForm } from './use-product-form';
 
 interface Props {
@@ -29,6 +29,7 @@ interface Props {
 
 export const ProductForm = ({ product }: Props) => {
   const t = useTranslations('Product.Form');
+  const m = useTranslations('AddToCart');
   const productOptions = removeEdgesAndNodes(product.productOptions);
 
   const { handleSubmit, register, ...methods } = useProductForm();
@@ -38,7 +39,7 @@ export const ProductForm = ({ product }: Props) => {
     const quantity = Number(data.quantity);
 
     if (result.error) {
-      toast.error(result.error || t('errorMessage'), {
+      toast.error(m('errorAddingProductToCart'), {
         icon: <AlertCircle className="text-error-secondary" />,
       });
 
@@ -49,7 +50,7 @@ export const ProductForm = ({ product }: Props) => {
       () => (
         <div className="flex items-center gap-3">
           <span>
-            {t.rich('addedProductQuantity', {
+            {m.rich('addedProductQuantity', {
               cartItems: quantity,
               cartLink: (chunks) => (
                 <Link
@@ -105,7 +106,7 @@ export const ProductForm = ({ product }: Props) => {
         <QuantityField />
 
         <div className="mt-4 flex flex-col gap-4 @md:flex-row">
-          <SubmitButton disabled={!product.inventory.isInStock} />
+          <AddToCartButton data={product} />
 
           {/* NOT IMPLEMENTED YET */}
           <div className="w-full">

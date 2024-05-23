@@ -7,13 +7,13 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-hot-toast';
 
+import { AddToCartButton } from '~/components/add-to-cart-button';
 import { Button } from '~/components/ui/button';
 
 import { Link } from '../../link';
 import { addToCart } from '../_actions/add-to-cart';
 
 import { CartFragment } from './fragment';
-import { SubmitButton } from './submit-button';
 
 interface Props {
   data: FragmentOf<typeof CartFragment>;
@@ -23,7 +23,7 @@ export const AddToCart = ({ data: product }: Props) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const t = useTranslations('Product.ProductSheet');
+  const t = useTranslations('AddToCart');
 
   const newSearchParams = new URLSearchParams(searchParams);
 
@@ -48,7 +48,9 @@ export const AddToCart = ({ data: product }: Props) => {
         const quantity = Number(formData.get('quantity'));
 
         if (result.error) {
-          toast.error(result.error, { icon: <AlertCircle className="text-error-secondary" /> });
+          toast.error(t('errorAddingProductToCart'), {
+            icon: <AlertCircle className="text-error-secondary" />,
+          });
 
           return;
         }
@@ -79,7 +81,7 @@ export const AddToCart = ({ data: product }: Props) => {
     >
       <input name="product_id" type="hidden" value={product.entityId} />
       <input name="quantity" type="hidden" value={1} />
-      <SubmitButton disabled={!product.inventory.isInStock} />
+      <AddToCartButton className="mt-2" data={product} />
     </form>
   );
 };

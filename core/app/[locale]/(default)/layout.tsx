@@ -49,7 +49,10 @@ export default async function DefaultLayout({ children, params: { locale } }: Pr
       </main>
 
       <Suspense fallback={null}>
-        <NextIntlClientProvider locale={locale} messages={{ Product: messages.Product ?? {} }}>
+        <NextIntlClientProvider
+          locale={locale}
+          messages={{ Product: messages.Product ?? {}, AddToCart: messages.AddToCart ?? {} }}
+        >
           <ProductSheet />
         </NextIntlClientProvider>
       </Suspense>

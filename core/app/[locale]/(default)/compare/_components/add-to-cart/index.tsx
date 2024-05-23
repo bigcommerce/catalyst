@@ -5,15 +5,15 @@ import { AlertCircle, Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-hot-toast';
 
+import { AddToCartButton } from '~/components/add-to-cart-button';
 import { Link } from '~/components/link';
 
 import { addToCart } from '../../_actions/add-to-cart';
 
 import { CartFragment } from './fragment';
-import { SubmitButton } from './submit-button';
 
 export const AddToCart = ({ data: product }: { data: FragmentOf<typeof CartFragment> }) => {
-  const t = useTranslations('Compare');
+  const t = useTranslations('AddToCart');
 
   return (
     <form
@@ -22,7 +22,9 @@ export const AddToCart = ({ data: product }: { data: FragmentOf<typeof CartFragm
         const quantity = Number(formData.get('quantity'));
 
         if (result.error) {
-          toast.error(result.error, { icon: <AlertCircle className="text-error-secondary" /> });
+          toast.error(t('errorAddingProductToCart'), {
+            icon: <AlertCircle className="text-error-secondary" />,
+          });
 
           return;
         }
@@ -53,7 +55,7 @@ export const AddToCart = ({ data: product }: { data: FragmentOf<typeof CartFragm
     >
       <input name="product_id" type="hidden" value={product.entityId} />
       <input name="quantity" type="hidden" value={1} />
-      <SubmitButton disabled={!product.inventory.isInStock} />
+      <AddToCartButton data={product} />
     </form>
   );
 };
