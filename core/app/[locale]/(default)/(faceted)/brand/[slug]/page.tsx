@@ -128,4 +128,4 @@ export default async function Brand({ params: { slug, locale }, searchParams }: 
   );
 }
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';

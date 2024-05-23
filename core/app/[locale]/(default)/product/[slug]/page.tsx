@@ -123,4 +123,4 @@ function getOptionValueIds({ searchParams }: { searchParams: ProductPageProps['s
     );
 }
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';

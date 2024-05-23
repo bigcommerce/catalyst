@@ -60,4 +60,4 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
   return NextResponse.json({ status: 'error', message: 'Missing product id.' }, { status: 400 });
 };
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';

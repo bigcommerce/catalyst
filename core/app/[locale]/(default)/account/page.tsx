@@ -64,4 +64,4 @@ export default async function AccountPage({ params: { locale } }: Props) {
   );
 }
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';

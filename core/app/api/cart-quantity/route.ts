@@ -19,4 +19,4 @@ export const GET = async (request: NextRequest) => {
   return NextResponse.json({ count: 0 });
 };
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';

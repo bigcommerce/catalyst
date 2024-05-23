@@ -105,4 +105,4 @@ export default async function Login({ params: { locale }, searchParams }: Props)
   );
 }
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
