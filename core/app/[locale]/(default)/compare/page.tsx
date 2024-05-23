@@ -17,7 +17,7 @@ import { LocaleType } from '~/i18n';
 import { cn } from '~/lib/utils';
 
 import { AddToCart } from './_components/add-to-cart';
-import { CartFragment } from './_components/add-to-cart/fragment';
+import { AddToCartFragment } from './_components/add-to-cart/fragment';
 
 const MAX_COMPARE_LIMIT = 10;
 
@@ -76,7 +76,7 @@ const ComparePageQuery = graphql(
                   availableToSell
                 }
               }
-              ...CartFragment
+              ...AddToCartFragment
               ...PricingFragment
             }
           }
@@ -84,7 +84,7 @@ const ComparePageQuery = graphql(
       }
     }
   `,
-  [CartFragment, PricingFragment],
+  [AddToCartFragment, PricingFragment],
 );
 
 export default async function Compare({

@@ -3,6 +3,7 @@
 import { FragmentOf } from 'gql.tada';
 import { AlertCircle, Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useFormStatus } from 'react-dom';
 import { toast } from 'react-hot-toast';
 
 import { AddToCartButton } from '~/components/add-to-cart-button';
@@ -10,9 +11,15 @@ import { Link } from '~/components/link';
 
 import { addToCart } from '../../_actions/add-to-cart';
 
-import { CartFragment } from './fragment';
+import { AddToCartFragment } from './fragment';
 
-export const AddToCart = ({ data: product }: { data: FragmentOf<typeof CartFragment> }) => {
+const Submit = ({ data: product }: { data: FragmentOf<typeof AddToCartFragment> }) => {
+  const { pending } = useFormStatus();
+
+  return <AddToCartButton data={product} loading={pending} />;
+};
+
+export const AddToCart = ({ data: product }: { data: FragmentOf<typeof AddToCartFragment> }) => {
   const t = useTranslations('AddToCart');
 
   return (
@@ -55,7 +62,7 @@ export const AddToCart = ({ data: product }: { data: FragmentOf<typeof CartFragm
     >
       <input name="product_id" type="hidden" value={product.entityId} />
       <input name="quantity" type="hidden" value={1} />
-      <AddToCartButton data={product} />
+      <Submit data={product} />
     </form>
   );
 };

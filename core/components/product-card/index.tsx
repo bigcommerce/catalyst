@@ -18,7 +18,7 @@ import { BcImage } from '../bc-image';
 import { Pricing, PricingFragment } from '../pricing';
 
 import { AddToCart } from './add-to-cart';
-import { CartFragment } from './add-to-cart/fragment';
+import { AddToCartFragment } from './add-to-cart/fragment';
 import { Compare } from './compare';
 
 export const ProductCardFragment = graphql(
@@ -39,11 +39,11 @@ export const ProductCardFragment = graphql(
         numberOfReviews
         averageRating
       }
-      ...CartFragment
+      ...AddToCartFragment
       ...PricingFragment
     }
   `,
-  [PricingFragment, CartFragment],
+  [PricingFragment, AddToCartFragment],
 );
 
 interface Props {

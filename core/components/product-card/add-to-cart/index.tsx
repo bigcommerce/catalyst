@@ -5,6 +5,7 @@ import { FragmentOf } from 'gql.tada';
 import { AlertCircle, Check } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { useFormStatus } from 'react-dom';
 import { toast } from 'react-hot-toast';
 
 import { AddToCartButton } from '~/components/add-to-cart-button';
@@ -13,11 +14,17 @@ import { Button } from '~/components/ui/button';
 import { Link } from '../../link';
 import { addToCart } from '../_actions/add-to-cart';
 
-import { CartFragment } from './fragment';
+import { AddToCartFragment } from './fragment';
 
 interface Props {
-  data: FragmentOf<typeof CartFragment>;
+  data: FragmentOf<typeof AddToCartFragment>;
 }
+
+const Submit = ({ data: product }: Props) => {
+  const { pending } = useFormStatus();
+
+  return <AddToCartButton className="mt-2" data={product} loading={pending} />;
+};
 
 export const AddToCart = ({ data: product }: Props) => {
   const pathname = usePathname();
@@ -81,7 +88,7 @@ export const AddToCart = ({ data: product }: Props) => {
     >
       <input name="product_id" type="hidden" value={product.entityId} />
       <input name="quantity" type="hidden" value={1} />
-      <AddToCartButton className="mt-2" data={product} />
+      <Submit data={product} />
     </form>
   );
 };

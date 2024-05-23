@@ -3,16 +3,16 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { AlertCircle, Check, Heart } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { FormProvider } from 'react-hook-form';
+import { FormProvider, useFormContext } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
 import { FragmentOf } from '~/client/graphql';
 import { Button } from '~/components/ui/button';
 
+import { AddToCartButton } from '../add-to-cart-button';
 import { Link } from '../link';
 
 import { handleAddToCart } from './_actions/add-to-cart';
-import { AddToCartButton } from './add-to-cart-button';
 import { CheckboxField } from './fields/checkbox-field';
 import { DateField } from './fields/date-field';
 import { MultiLineTextField } from './fields/multi-line-text-field';
@@ -24,10 +24,17 @@ import { ProductFormFragment } from './fragment';
 import { ProductFormData, useProductForm } from './use-product-form';
 
 interface Props {
-  product: FragmentOf<typeof ProductFormFragment>;
+  data: FragmentOf<typeof ProductFormFragment>;
 }
 
-export const ProductForm = ({ product }: Props) => {
+export const Submit = ({ data: product }: Props) => {
+  const { formState } = useFormContext();
+  const { isSubmitting } = formState;
+
+  return <AddToCartButton data={product} loading={isSubmitting} showCartIcon={true} />;
+};
+
+export const ProductForm = ({ data: product }: Props) => {
   const t = useTranslations('Product.Form');
   const m = useTranslations('AddToCart');
   const productOptions = removeEdgesAndNodes(product.productOptions);
@@ -106,7 +113,7 @@ export const ProductForm = ({ product }: Props) => {
         <QuantityField />
 
         <div className="mt-4 flex flex-col gap-4 @md:flex-row">
-          <AddToCartButton data={product} />
+          <Submit data={product} />
 
           {/* NOT IMPLEMENTED YET */}
           <div className="w-full">
