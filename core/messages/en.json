@@ -185,7 +185,8 @@
       "wishlists": "Wish lists",
       "recentlyViewed": "Recently viewed",
       "settings": "Account settings",
-      "changePassword": "Change password"
+      "changePassword": "Change password",
+      "editAddress": "Edit address"
     },
     "Addresses": {
       "defaultAddress": "Default",
@@ -202,6 +203,18 @@
       "cancel": "Cancel",
       "submitting": "In progress..."
     },
+    "EditAddress": {
+      "recaptchaText": "Pass ReCAPTCHA check",
+      "emptyTextValidationMessage": "This field can not be empty",
+      "successMessage": "The address has been updated successfully.",
+      "cancel": "Cancel",
+      "deleteButton": "Delete",
+      "deleteAddress": "Address deleted from your account.",
+      "confirmDeleteAddress": "Delete address",
+      "deleteModalTitle": "Are you sure you want to delete this address?",
+      "submit": "Update address",
+      "submitting": "In progress..."
+    },  
     "Settings": {
         "emptyTextValidatoinMessage": "This field can not be empty",
         "cancel": "Cancel",

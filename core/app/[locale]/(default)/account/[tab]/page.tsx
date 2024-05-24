@@ -16,7 +16,7 @@ interface Props {
   };
   searchParams: {
     [key: string]: string | string[] | undefined;
-    action?: 'add-new-address';
+    action?: 'add-new-address' | 'edit-address';
     before?: string;
     after?: string;
   };
@@ -25,9 +25,10 @@ interface Props {
 export async function generateMetadata({ params: { tab } }: Props): Promise<Metadata> {
   const locale = await getLocale();
   const t = await getTranslations({ locale, namespace: 'Account.Home' });
+  const title = t(tab === 'recently-viewed' ? 'recentlyViewed' : tab);
 
   return {
-    title: t(tab === 'recently-viewed' ? 'recentlyViewed' : tab),
+    title,
   };
 }
 
@@ -44,7 +45,7 @@ export default async function AccountTabPage({ params: { tab }, searchParams }: 
       const customerAddressesDetails = await getCustomerAddresses({
         ...(after && { after }),
         ...(before && { before }),
-        limit: 2,
+        limit: action === 'edit-address' ? undefined : 2,
       });
 
       if (!customerAddressesDetails) {
@@ -55,6 +56,7 @@ export default async function AccountTabPage({ params: { tab }, searchParams }: 
 
       return (
         <AddressesContent
+          activeAddressId={searchParams['address-id']?.toString()}
           addresses={addresses}
           addressesCount={addressesCount}
           customerAction={action}
