@@ -3,7 +3,6 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import { getCustomerAddresses } from '~/client/queries/get-customer-addresses';
 
 import { Pagination } from '../../../../(faceted)/_components/pagination';
-import { TabType } from '../../layout';
 import { TabHeading } from '../tab-heading';
 
 import { AddressBook } from './address-book';
@@ -18,7 +17,6 @@ interface Props {
   addressesCount: number;
   customerAction?: 'add-new-address' | 'edit-address';
   pageInfo: CustomerAddresses['pageInfo'];
-  title: TabType;
 }
 
 export const AddressesContent = async ({
@@ -27,7 +25,6 @@ export const AddressesContent = async ({
   activeAddressId,
   customerAction,
   pageInfo,
-  title,
 }: Props) => {
   const locale = await getLocale();
   const t = await getTranslations({ locale, namespace: 'Account.Home' });
@@ -60,7 +57,7 @@ export const AddressesContent = async ({
 
   return (
     <>
-      <TabHeading heading={title} locale={locale} />
+      <TabHeading heading="addresses" />
       <AddressBook addressesCount={addressesCount} customerAddresses={addresses} key={endCursor} />
       <Pagination
         endCursor={endCursor}

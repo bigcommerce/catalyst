@@ -4,9 +4,9 @@ import { client } from '..';
 import { graphql, VariablesOf } from '../graphql';
 
 const UPDATE_CUSTOMER_MUTATION = graphql(`
-  mutation updateCustomer($input: UpdateCustomerInput!) {
+  mutation updateCustomer($input: UpdateCustomerInput!, $reCaptchaV2: ReCaptchaV2Input) {
     customer {
-      updateCustomer(input: $input) {
+      updateCustomer(input: $input, reCaptchaV2: $reCaptchaV2) {
         customer {
           firstName
           lastName

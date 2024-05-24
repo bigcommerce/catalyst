@@ -184,7 +184,7 @@ export const RegisterCustomerForm = ({
 
     setReCaptchaValid(true);
 
-    const submit = await registerCustomer({ formData });
+    const submit = await registerCustomer({ formData, reCaptchaToken });
 
     if (submit.status === 'success') {
       form.current?.reset();

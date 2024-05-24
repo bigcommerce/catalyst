@@ -214,6 +214,24 @@
       "deleteModalTitle": "Are you sure you want to delete this address?",
       "submit": "Update address",
       "submitting": "In progress..."
+    },  
+    "Settings": {
+        "emptyTextValidatoinMessage": "This field can not be empty",
+        "cancel": "Cancel",
+        "recaptchaText": "Pass ReCAPTCHA check",
+        "changePassword": "Reset password",
+        "submit": "Update settings",
+        "submitting": "Update settings...",
+        "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+        "validationMessages": {
+            "email": "Enter a valid email such as name@domain.com",
+            "empty": "This field can not be empty",
+            "firstName": "Enter your first name",
+            "lastName": "Enter your last name",
+            "city": "Enter a suburb / city",
+            "company": "Enter a company name",
+            "phone": "Enter a phone number"
+        }
     },
     "Login": {
       "heading": "Log In",
@@ -227,7 +245,15 @@
         "entePasswordMessage": "Enter your password",
         "submitting": "Submitting...",
         "logIn": "Log in",
-        "forgotPassword": "Forgot your password?"
+        "resetPassword": "Forgot your password?",
+        "validationMessages": {
+            "email": "Enter a valid email such as name@domain.com",
+            "firstName": "Enter your first name",
+            "lastName": "Enter your last name",
+            "city": "Enter a suburb / city",
+            "company": "Enter a company name",
+            "phone": "Enter a phone number"
+        }
       },
       "CreateAccount": {
         "heading": "New customer?",

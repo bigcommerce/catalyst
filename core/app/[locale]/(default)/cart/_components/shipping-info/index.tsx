@@ -157,7 +157,7 @@ export const ShippingInfo = ({
               placeholder={t('countryPlaceholder')}
               value={formValues.country}
             >
-              <SelectContent position="item-aligned">
+              <SelectContent>
                 {shippingCountries.map(({ id, countryCode, name }) => {
                   return (
                     <SelectItem key={id} value={`${countryCode}-${id}`}>
@@ -180,7 +180,7 @@ export const ShippingInfo = ({
                 placeholder={t('statePlaceholder')}
                 value={formValues.state}
               >
-                <SelectContent position="item-aligned">
+                <SelectContent>
                   {formValues.states.map(({ id, state }) => {
                     return (
                       <SelectItem key={id} value={state}>
