@@ -27,7 +27,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
     "@vercel/analytics": "^1.2.2",
-    "@vercel/kv": "^1.0.1",
+    "@vercel/kv": "^2.0.0",
     "@vercel/speed-insights": "^1.0.10",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
