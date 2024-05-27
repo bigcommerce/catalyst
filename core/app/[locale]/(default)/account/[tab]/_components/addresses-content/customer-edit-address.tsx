@@ -86,8 +86,8 @@ export async function CustomerEditAddress({
       <EditAddressForm
         address={address}
         addressFields={addressFields}
-        canBeDeleted={isAddressRemovable}
         countries={countries || []}
+        isAddressRemovable={isAddressRemovable}
         reCaptchaSettings={reCaptchaSettings}
       />
     </NextIntlClientProvider>

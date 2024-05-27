@@ -5,6 +5,10 @@ import { ChangeEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
+import {
+  createNumbersInputValidationHandler,
+  isAddressOrAccountFormField,
+} from '~/app/[locale]/(default)/account/[tab]/_components/addresses-content/address-field-handlers';
 import { getRegisterCustomerQuery } from '~/app/[locale]/(default)/login/register-customer/page-data';
 import { Button } from '~/components/ui/button';
 import { Field, Form, FormSubmit } from '~/components/ui/form';
@@ -17,6 +21,7 @@ import {
   CUSTOMER_FIELDS_TO_EXCLUDE,
   FieldNameToFieldId,
   FieldWrapper,
+  NumbersOnly,
   Password,
   Picklist,
   PicklistOrText,
@@ -37,6 +42,7 @@ export type AddressFields = NonNullable<
 type Countries = NonNullable<Awaited<ReturnType<typeof getRegisterCustomerQuery>>>['countries'];
 type CountryCode = Countries[number]['code'];
 type CountryStates = Countries[number]['statesOrProvinces'];
+export type AddressOrAccountFormField = AddressFields[number];
 
 interface RegisterCustomerProps {
   addressFields: AddressFields;
@@ -90,6 +96,7 @@ export const RegisterCustomerForm = ({
     [FieldNameToFieldId.password]: true,
     [FieldNameToFieldId.confirmPassword]: true,
   });
+  const [numbersInputValid, setNumbersInputValid] = useState<Record<string, boolean>>({});
 
   const [countryStates, setCountryStates] = useState(defaultCountry.states);
 
@@ -107,7 +114,10 @@ export const RegisterCustomerForm = ({
 
     setTextInputValid({ ...textInputValid, [fieldId]: !validationStatus });
   };
-
+  const handleNumbersInputValidation = createNumbersInputValidationHandler(
+    setNumbersInputValid,
+    numbersInputValid,
+  );
   const handlePasswordValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const fieldId = e.target.id.split('-')[1] ?? '';
 
@@ -123,8 +133,15 @@ export const RegisterCustomerForm = ({
 
       case 'confirmPassword': {
         const confirmPassword = e.target.value;
+        const field = customerFields.filter(
+          ({ entityId }) => entityId === Number(FieldNameToFieldId.password),
+        )[0];
 
-        const passwordFieldName = createFieldName('customer', FieldNameToFieldId.password);
+        if (!isAddressOrAccountFormField(field)) {
+          return;
+        }
+
+        const passwordFieldName = createFieldName(field, 'customer');
         const password = new FormData(e.target.form ?? undefined).get(passwordFieldName);
 
         setPassswordValid((prevState) => ({
@@ -230,12 +247,25 @@ export const RegisterCustomerForm = ({
                       <Text
                         field={field}
                         isValid={textInputValid[field.entityId]}
-                        name={createFieldName('customer', field.entityId)}
+                        name={createFieldName(field, 'customer')}
                         onChange={handleTextInputValidation}
                         type={FieldNameToFieldId[field.entityId]}
                       />
                     </FieldWrapper>
                   );
+
+                case 'NumberFormField': {
+                  return (
+                    <FieldWrapper fieldId={field.entityId} key={field.entityId}>
+                      <NumbersOnly
+                        field={field}
+                        isValid={numbersInputValid[field.entityId]}
+                        name={createFieldName(field, 'customer')}
+                        onChange={handleNumbersInputValidation}
+                      />
+                    </FieldWrapper>
+                  );
+                }
 
                 case 'PasswordFormField': {
                   return (
@@ -243,7 +273,7 @@ export const RegisterCustomerForm = ({
                       <Password
                         field={field}
                         isValid={passwordValid[field.entityId]}
-                        name={createFieldName('customer', field.entityId)}
+                        name={createFieldName(field, 'customer')}
                         onChange={handlePasswordValidation}
                       />
                     </FieldWrapper>
@@ -264,7 +294,7 @@ export const RegisterCustomerForm = ({
                     <Text
                       field={field}
                       isValid={textInputValid[field.entityId]}
-                      name={createFieldName('address', field.entityId)}
+                      name={createFieldName(field, 'address')}
                       onChange={handleTextInputValidation}
                     />
                   </FieldWrapper>
@@ -280,7 +310,7 @@ export const RegisterCustomerForm = ({
                           : undefined
                       }
                       field={field}
-                      name={createFieldName('address', field.entityId)}
+                      name={createFieldName(field, 'address')}
                       onChange={
                         field.entityId === FieldNameToFieldId.countryCode
                           ? handleCountryChange
@@ -303,7 +333,7 @@ export const RegisterCustomerForm = ({
                           : undefined
                       }
                       field={field}
-                      name={createFieldName('address', field.entityId)}
+                      name={createFieldName(field, 'address')}
                       options={countryStates.map(({ name }) => {
                         return { entityId: name, label: name };
                       })}

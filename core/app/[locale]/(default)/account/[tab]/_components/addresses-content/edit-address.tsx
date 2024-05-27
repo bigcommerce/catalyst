@@ -10,6 +10,7 @@ import {
   createFieldName,
   FieldNameToFieldId,
   FieldWrapper,
+  NumbersOnly,
   Picklist,
   PicklistOrText,
   Text,
@@ -27,6 +28,7 @@ import { Modal } from '../modal';
 import { AddressFields, Countries } from './add-address';
 import {
   createCountryChangeHandler,
+  createNumbersInputValidationHandler,
   createTextInputValidationHandler,
 } from './address-field-handlers';
 import { Address } from './customer-edit-address';
@@ -75,8 +77,8 @@ const SubmitButton = ({ messages }: SumbitMessages) => {
 interface EditAddressProps {
   address: Address;
   addressFields: AddressFields;
-  canBeDeleted: boolean;
   countries: Countries;
+  isAddressRemovable: boolean;
   reCaptchaSettings?: {
     isEnabledOnStorefront: boolean;
     siteKey: string;
@@ -86,13 +88,12 @@ interface EditAddressProps {
 export const EditAddress = ({
   address,
   addressFields,
-  canBeDeleted,
   countries,
+  isAddressRemovable,
   reCaptchaSettings,
 }: EditAddressProps) => {
   const form = useRef<HTMLFormElement>(null);
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
-
   const t = useTranslations('Account.EditAddress');
 
   const reCaptchaRef = useRef<ReCaptcha>(null);
@@ -102,6 +103,7 @@ export const EditAddress = ({
   const { setAccountState } = useAccountStatusContext();
 
   const [textInputValid, setTextInputValid] = useState<Record<string, boolean>>({});
+  const [numbersInputValid, setNumbersInputValid] = useState<Record<string, boolean>>({});
 
   const defaultStates = countries
     .filter((country) => country.code === address.countryCode)
@@ -111,6 +113,10 @@ export const EditAddress = ({
   const handleTextInputValidation = createTextInputValidationHandler(
     setTextInputValid,
     textInputValid,
+  );
+  const handleNumbersInputValidation = createNumbersInputValidationHandler(
+    setNumbersInputValid,
+    numbersInputValid,
   );
   const handleCountryChange = createCountryChangeHandler(setCountryStates, countries);
 
@@ -137,7 +143,6 @@ export const EditAddress = ({
     const submit = await updateAddress({ addressId: address.entityId, formData });
 
     if (submit.status === 'success') {
-      form.current?.reset();
       setFormStatus({
         status: 'success',
         message: t('successMessage'),
@@ -168,14 +173,7 @@ export const EditAddress = ({
       setAccountState({ status, message });
     }
 
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-
-    setTimeout(() => {
-      router.replace('/account/addresses');
-    }, 500);
+    router.replace('/account/addresses');
   };
 
   return (
@@ -188,24 +186,53 @@ export const EditAddress = ({
       <Form action={onSubmit} ref={form}>
         <div className="grid grid-cols-1 gap-y-3 lg:grid-cols-2 lg:gap-x-6">
           {addressFields.map((field) => {
-            const key = FieldNameToFieldId[field.entityId];
+            const fieldId = field.entityId;
+            const key = FieldNameToFieldId[fieldId];
+            let defaultValue;
+            let defaultCustomField;
 
-            if (!isExistedField(key)) {
-              return null;
+            if (isExistedField(key)) {
+              defaultValue = address[key] ?? undefined;
+            } else {
+              defaultCustomField = address.formFields.filter(
+                ({ entityId }) => entityId === fieldId,
+              )[0];
             }
-
-            const defaultValue = address[key] || undefined;
 
             switch (field.__typename) {
               case 'TextFormField': {
+                const defaultText =
+                  defaultCustomField?.__typename === `TextFormFieldValue`
+                    ? defaultCustomField.text
+                    : undefined;
+
                 return (
-                  <FieldWrapper fieldId={field.entityId} key={field.entityId}>
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <Text
-                      defaultValue={defaultValue}
+                      defaultValue={defaultValue ?? defaultText}
                       field={field}
-                      isValid={textInputValid[field.entityId]}
-                      name={createFieldName('address', field.entityId)}
+                      isValid={textInputValid[fieldId]}
+                      name={createFieldName(field, 'address')}
                       onChange={handleTextInputValidation}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
+              case 'NumberFormField': {
+                const defaultNumber =
+                  defaultCustomField?.__typename === `NumberFormFieldValue`
+                    ? defaultCustomField.number
+                    : undefined;
+
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <NumbersOnly
+                      defaultValue={defaultNumber}
+                      field={field}
+                      isValid={numbersInputValid[fieldId]}
+                      name={createFieldName(field, 'address')}
+                      onChange={handleNumbersInputValidation}
                     />
                   </FieldWrapper>
                 );
@@ -213,17 +240,15 @@ export const EditAddress = ({
 
               case 'PicklistFormField':
                 return (
-                  <FieldWrapper fieldId={field.entityId} key={field.entityId}>
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <Picklist
                       defaultValue={
-                        field.entityId === FieldNameToFieldId.countryCode ? defaultValue : undefined
+                        fieldId === FieldNameToFieldId.countryCode ? defaultValue : undefined
                       }
                       field={field}
-                      name={createFieldName('address', field.entityId)}
+                      name={createFieldName(field, 'address')}
                       onChange={
-                        field.entityId === FieldNameToFieldId.countryCode
-                          ? handleCountryChange
-                          : undefined
+                        fieldId === FieldNameToFieldId.countryCode ? handleCountryChange : undefined
                       }
                       options={countries.map(({ name, code }) => {
                         return { label: name, entityId: code };
@@ -234,16 +259,14 @@ export const EditAddress = ({
 
               case 'PicklistOrTextFormField': {
                 return (
-                  <FieldWrapper fieldId={field.entityId} key={field.entityId}>
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <PicklistOrText
                       defaultValue={
-                        field.entityId === FieldNameToFieldId.stateOrProvince
-                          ? defaultValue
-                          : undefined
+                        fieldId === FieldNameToFieldId.stateOrProvince ? defaultValue : undefined
                       }
                       field={field}
                       key={countryStates.length}
-                      name={createFieldName('address', field.entityId)}
+                      name={createFieldName(field, 'address')}
                       options={countryStates.map(({ name }) => {
                         return { entityId: name, label: name };
                       })}
@@ -287,7 +310,7 @@ export const EditAddress = ({
           >
             <Button
               className="ms-auto items-center px-8 md:w-fit"
-              disabled={!canBeDeleted}
+              disabled={!isAddressRemovable}
               variant="subtle"
             >
               {t('deleteButton')}
