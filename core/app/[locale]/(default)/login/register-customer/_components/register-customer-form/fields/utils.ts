@@ -1,3 +1,5 @@
+import { AddressOrAccountFormField } from '..';
+
 /* This mapping needed for aligning built-in fields names to their ids
  for creating valid register customer request object
  that will be sent in mutation */
@@ -19,6 +21,19 @@ export enum FieldNameToFieldId {
   exclusiveOffers = 25,
 }
 
+export enum FieldTypeToFieldInput {
+  'CheckboxesFormField' = 'checkboxes',
+  'DateFormField' = 'dates',
+  'NumberFormField' = 'numbers',
+  'PasswordFormField' = 'passwords',
+  'TextFormField' = 'texts',
+  'RadioButtonsFormField' = 'multipleChoices',
+  'MultilineTextFormField' = 'multilineTexts',
+  // TODO: add them later
+  'PicklistFormField' = 'mocked_PicklistFormField',
+  'PicklistOrTextFormField' = 'mocked_PicklistOrTextFormField',
+}
+
 export const CUSTOMER_FIELDS_TO_EXCLUDE = [
   FieldNameToFieldId.currentPassword,
   FieldNameToFieldId.exclusiveOffers,
@@ -31,8 +46,25 @@ export const BOTH_CUSTOMER_ADDRESS_FIELDS = [
   FieldNameToFieldId.phone,
 ];
 
-export const createFieldName = (fieldType: 'customer' | 'address', fieldId: number) => {
-  const secondFieldType = fieldType === 'customer' ? 'address' : 'customer';
+export const createFieldName = (
+  field: AddressOrAccountFormField,
+  fieldOrigin: 'customer' | 'address',
+) => {
+  const { isBuiltIn, entityId: fieldId, __typename: fieldType } = field;
+  const isCustomField = !isBuiltIn;
+  let secondFieldType = fieldOrigin;
 
-  return `${fieldType}-${BOTH_CUSTOMER_ADDRESS_FIELDS.includes(fieldId) ? `${secondFieldType}-` : ''}${FieldNameToFieldId[fieldId] || fieldId}`;
+  if (isCustomField) {
+    return `custom_${FieldTypeToFieldInput[fieldType]}-${fieldId}`;
+  }
+
+  if (fieldOrigin === 'address') {
+    secondFieldType = 'customer';
+  }
+
+  if (fieldOrigin === 'customer') {
+    secondFieldType = 'address';
+  }
+
+  return `${fieldOrigin}-${BOTH_CUSTOMER_ADDRESS_FIELDS.includes(fieldId) ? `${secondFieldType}-` : ''}${FieldNameToFieldId[fieldId] || fieldId}`;
 };

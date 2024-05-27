@@ -266,6 +266,9 @@
         "validationMessages": {
             "email": "Enter a valid email such as name@domain.com",
             "empty": "This field can not be empty",
+            "numbersOverflow": "Entered value exceeds max range of {max}",
+            "numbersUnderflow": "Entered value falls short of min range of {min}",
+            "numbersOnly": "Enter numbers only",
             "firstName": "Enter your first name",
             "lastName": "Enter your last name",
             "password": "Enter a password",
