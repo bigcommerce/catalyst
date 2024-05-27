@@ -38,6 +38,8 @@ const AddCustomerAddressMutation = graphql(`
 type Variables = VariablesOf<typeof AddCustomerAddressMutation>;
 type AddCustomerAddressInput = Variables['input'];
 
+import { parseAccountFormData } from '../../../login/register-customer/_components/register-customer-form/fields/parse-fields';
+
 const isAddCustomerAddressInput = (data: unknown): data is AddCustomerAddressInput => {
   if (typeof data === 'object' && data !== null && 'address1' in data) {
     return true;
@@ -56,22 +58,7 @@ export const addAddress = async ({
   const customerId = await getSessionCustomerId();
 
   try {
-    const parsed: unknown = [...formData.entries()].reduce<
-      Record<string, FormDataEntryValue | Record<string, FormDataEntryValue>>
-    >((parsedData, [name, value]) => {
-      const key = name.split('-').at(-1) ?? '';
-      const sections = name.split('-').slice(0, -1);
-
-      if (sections.includes('customer')) {
-        parsedData[key] = value;
-      }
-
-      if (sections.includes('address')) {
-        parsedData[key] = value;
-      }
-
-      return parsedData;
-    }, {});
+    const parsed = parseAccountFormData(formData);
 
     if (!isAddCustomerAddressInput(parsed)) {
       return {

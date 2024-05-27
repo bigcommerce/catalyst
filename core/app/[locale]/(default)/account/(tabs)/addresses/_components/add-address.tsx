@@ -10,6 +10,7 @@ import {
   createFieldName,
   FieldNameToFieldId,
   FieldWrapper,
+  NumbersOnly,
   Picklist,
   PicklistOrText,
   Text,
@@ -24,6 +25,7 @@ import { addAddress } from '../_actions/add-address';
 
 import {
   createCountryChangeHandler,
+  createNumbersInputValidationHandler,
   createTextInputValidationHandler,
 } from './address-field-handlers';
 import { NewAddressQueryResponseType } from './customer-new-address';
@@ -93,6 +95,7 @@ export const AddAddress = ({
   const [isReCaptchaValid, setReCaptchaValid] = useState(true);
 
   const [textInputValid, setTextInputValid] = useState<Record<string, boolean>>({});
+  const [numbersInputValid, setNumbersInputValid] = useState<Record<string, boolean>>({});
   const [countryStates, setCountryStates] = useState(defaultCountry.states);
 
   const { setAccountState } = useAccountStatusContext();
@@ -106,6 +109,10 @@ export const AddAddress = ({
     textInputValid,
   );
   const handleCountryChange = createCountryChangeHandler(setCountryStates, countries);
+  const handleNumbersInputValidation = createNumbersInputValidationHandler(
+    setNumbersInputValid,
+    numbersInputValid,
+  );
 
   const onReCaptchaChange = (token: string | null) => {
     if (!token) {
@@ -120,6 +127,8 @@ export const AddAddress = ({
   const onSubmit = async (formData: FormData) => {
     if (reCaptchaSettings?.isEnabledOnStorefront && !reCaptchaToken) {
       setReCaptchaValid(false);
+
+      return;
     }
 
     setReCaptchaValid(true);
@@ -164,8 +173,21 @@ export const AddAddress = ({
                     <Text
                       field={field}
                       isValid={textInputValid[field.entityId]}
-                      name={createFieldName('address', field.entityId)}
+                      name={createFieldName(field, 'address')}
                       onChange={handleTextInputValidation}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
+              case 'NumberFormField': {
+                return (
+                  <FieldWrapper fieldId={field.entityId} key={field.entityId}>
+                    <NumbersOnly
+                      field={field}
+                      isValid={numbersInputValid[field.entityId]}
+                      name={createFieldName(field, 'address')}
+                      onChange={handleNumbersInputValidation}
                     />
                   </FieldWrapper>
                 );
@@ -181,7 +203,7 @@ export const AddAddress = ({
                           : undefined
                       }
                       field={field}
-                      name={createFieldName('address', field.entityId)}
+                      name={createFieldName(field, 'address')}
                       onChange={
                         field.entityId === FieldNameToFieldId.countryCode
                           ? handleCountryChange
@@ -204,7 +226,7 @@ export const AddAddress = ({
                           : undefined
                       }
                       field={field}
-                      name={createFieldName('address', field.entityId)}
+                      name={createFieldName(field, 'address')}
                       options={countryStates.map(({ name }) => {
                         return { entityId: name, label: name };
                       })}
