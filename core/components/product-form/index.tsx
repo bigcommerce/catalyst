@@ -13,7 +13,7 @@ import { useAnalytics } from '~/app/contexts/analytics-context';
 import { Link } from '../link';
 
 import { handleAddToCart } from './_actions/add-to-cart';
-import { getBodlData } from './_actions/get-bodl-data';
+import { getCartData } from './_actions/get-cart-data';
 import { AddToCart } from './add-to-cart';
 import { CheckboxField } from './fields/checkbox-field';
 import { DateField } from './fields/date-field';
@@ -39,10 +39,7 @@ export const ProductForm = ({ product }: Props) => {
   const productFormSubmit = async (data: ProductFormData) => {
     const result = await handleAddToCart(data, product);
     const quantity = Number(data.quantity);
-    const bodlData = await getBodlData(result.data.entityId);
-    const categoryNames = removeEdgesAndNodes(product.categories)
-      .flatMap(category => removeEdgesAndNodes(category.breadcrumbs))
-      .map(breadcrumb => breadcrumb.name);
+    const cart = await getCartData(result.data?.entityId);
 
     if (result.error) {
       toast.error(result.error || t('errorMessage'), {
@@ -52,37 +49,12 @@ export const ProductForm = ({ product }: Props) => {
       return;
     }
 
-    const payload = {
-      currency: product.prices?.price.currencyCode,
-      product_value: product.prices?.price.value * quantity,
-      line_items: [
-        {
-          base_price: product.prices?.basePrice?.value,
-          brand_name: product.brand?.name,
-          category_names: categoryNames,
-          currency: product.prices?.price.currencyCode,
-          discount: bodlData?.discountedAmount.value,
-          gift_certificate_id: bodlData?.lineItems.giftCertificates.map((certificate: { entityId: string }) => certificate.entityId),
-          gift_certificate_name: bodlData?.lineItems.giftCertificates.map((certificate: { name: string }) => certificate.name),
-          gift_certificate_theme: bodlData?.lineItems.giftCertificates.map((certificate: { theme: string }) => certificate.theme),
-          product_id: data.product_id,
-          product_name: product.name,
-          purchase_price: product.prices?.price.value || product.prices?.salePrice?.value,
-          quantity,
-          retail_price: product.prices?.retailPrice?.value || null,
-          sale_price: product.prices?.salePrice?.value || null,
-          sku: product.sku,
-          variant_id: product.variants?.edges.map(variant => variant.node.entityId)
-        }
-      ]
-    }
-
-    bodl.sendEvent('bodl_v1_cart_product_added', payload);
     // Trigger browser event from client component
     analytics.trackEvent({
       type: 'cart_added',
       product,
-      quantity: data.quantity,
+      quantity,
+      cart,
     });
 
     toast.success(

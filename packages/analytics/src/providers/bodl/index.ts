@@ -91,6 +91,13 @@ export class Bodl implements AnalyticsProvider {
         break;
 
       case 'cart_added':
+        // const categoryNames = removeEdgesAndNodes(product.categories)
+        //   .flatMap((category) => removeEdgesAndNodes(category.breadcrumbs))
+        //   .map((breadcrumb) => breadcrumb.name);
+        const categoryNames = event.product.categories?.edges.map(
+          (category: { node: { name: any } }) => category.node.name,
+        );
+
         window.bodlEvents?.cart?.emit('bodl_v1_cart_product_added', {
           ...basicEvent,
           product_value: event.product.prices?.price.value * event.quantity,
@@ -99,10 +106,29 @@ export class Bodl implements AnalyticsProvider {
             {
               product_id: event.product.entityId,
               product_name: event.product.name,
+              category_names: categoryNames,
               quantity: event.quantity,
               sku: event.product.sku,
-              base_price: event.product.prices?.price.value,
               currency: event.product.prices?.price.currencyCode,
+              base_price: event.product.prices?.price.value,
+              retail_price: event.product.prices?.retailPrice?.value || null,
+              sale_price: event.product.prices?.salePrice?.value || null,
+              purchase_price:
+                event.product.prices?.price.value || event.product.prices?.salePrice?.value,
+              brand_name: event.product.brand?.name,
+              variant_id: event.product.variants?.edges.map(
+                (variant: { node: { entityId: any } }) => variant.node.entityId,
+              ),
+              discount: event.cart.discountedAmount.value,
+              gift_certificate_id: event.cart.lineItems.giftCertificates.map(
+                (certificate: { entityId: string }) => certificate.entityId,
+              ),
+              gift_certificate_name: event.cart.lineItems.giftCertificates.map(
+                (certificate: { name: string }) => certificate.name,
+              ),
+              gift_certificate_theme: event.cart.lineItems.giftCertificates.map(
+                (certificate: { theme: string }) => certificate.theme,
+              ),
             },
           ],
         });

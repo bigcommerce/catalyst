@@ -1,6 +1,7 @@
 // TODO: define real types of Product, Customer etc
 export type Product = any;
 export type Customer = any;
+export type Cart = any;
 
 // All events, supported by analytics provider, will be defined here
 export interface ProductViewedEvent {
@@ -11,6 +12,7 @@ export interface ProductViewedEvent {
 export interface CartAddedEvent {
   type: 'cart_added';
   product: Product;
+  cart: Cart;
   quantity: number;
 }
 

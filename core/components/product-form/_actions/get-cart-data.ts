@@ -2,13 +2,13 @@
 
 import { getCart } from '~/client/queries/get-cart';
 
-export async function getBodlData(cartId: string) {
+export async function getCartData(cartId: string) {
   try {
     const cart = await getCart(cartId);
 
     if (cart) {
-      if (!cart?.entityId) {
-        return { error: 'Failed to get Bodl Data.' };
+      if (!cart.entityId) {
+        return { error: 'Failed to get cart data.' };
       }
 
       return cart;
