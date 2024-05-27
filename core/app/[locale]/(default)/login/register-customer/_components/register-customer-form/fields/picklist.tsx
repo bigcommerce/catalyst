@@ -1,7 +1,9 @@
 import { Field, FieldControl, FieldLabel } from '~/components/ui/form';
 import { Select, SelectContent, SelectItem } from '~/components/ui/select';
 
-import { AddressFields, FieldNameToFieldId } from '..';
+import { AddressFields } from '..';
+
+import { FieldNameToFieldId } from './utils';
 
 type PicklistType = Extract<
   NonNullable<AddressFields>[number],
@@ -31,7 +33,7 @@ export const Picklist = ({ defaultValue, field, name, onChange, options }: Pickl
           placeholder={field.choosePrefix}
           required={field.isRequired}
         >
-          <SelectContent position="item-aligned">
+          <SelectContent>
             {options.map(({ entityId, label }) => (
               <SelectItem key={entityId} value={entityId.toString()}>
                 {label}

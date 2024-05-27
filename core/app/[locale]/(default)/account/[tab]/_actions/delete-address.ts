@@ -13,7 +13,7 @@ export const deleteAddress = async (addressId: number): Promise<State> => {
     revalidatePath('/account/addresses', 'page');
 
     if (response.errors.length === 0) {
-      return { status: 'success', message: 'The address has been deleted' };
+      return { status: 'success', message: 'Address deleted from your account.' };
     }
 
     return {
@@ -28,6 +28,6 @@ export const deleteAddress = async (addressId: number): Promise<State> => {
       };
     }
 
-    return { status: 'error', message: 'Unknown error' };
+    return { status: 'error', message: 'Unknown error.' };
   }
 };

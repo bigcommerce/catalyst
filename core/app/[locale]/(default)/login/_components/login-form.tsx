@@ -1,6 +1,5 @@
 'use client';
 
-import { Loader2 as Spinner } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
@@ -20,8 +19,23 @@ import { Message } from '~/components/ui/message';
 
 import { submitLoginForm } from '../_actions/submit-login-form';
 
-export const LoginForm = () => {
+const SubmitButton = () => {
   const { pending } = useFormStatus();
+  const t = useTranslations('Account.Login');
+
+  return (
+    <Button
+      className="md:w-auto"
+      loading={pending}
+      loadingText={t('Form.submitting')}
+      variant="primary"
+    >
+      {t('Form.logIn')}
+    </Button>
+  );
+};
+
+export const LoginForm = () => {
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [state, formAction] = useFormState(submitLoginForm, { status: 'idle' });
@@ -101,25 +115,16 @@ export const LoginForm = () => {
         </Field>
         <div className="flex flex-col items-start md:flex-row md:items-center md:justify-start md:gap-10">
           <FormSubmit asChild>
-            <Button className="w-auto" disabled={pending} variant="primary">
-              {pending ? (
-                <>
-                  <Spinner aria-hidden="true" className="animate-spin" />
-                  <span className="sr-only"> {t('Form.submitting')}</span>
-                </>
-              ) : (
-                <span>{t('Form.logIn')}</span>
-              )}
-            </Button>
+            <SubmitButton />
           </FormSubmit>
           <Link
-            className="my-5 inline-flex items-center justify-start text-primary hover:text-secondary md:my-0"
+            className="my-5 inline-flex items-center justify-start font-semibold text-primary hover:text-secondary md:my-0"
             href={{
               pathname: '/login',
               query: { action: 'reset_password' },
             }}
           >
-            {t('Form.forgotPassword')}
+            {t('Form.resetPassword')}
           </Link>
         </div>
       </Form>

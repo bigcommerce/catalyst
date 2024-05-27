@@ -1,6 +1,5 @@
 'use client';
 
-import { Loader2 as Spinner } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -40,20 +39,11 @@ const SubmitButton = () => {
     <Button
       className="relative w-fit items-center px-8 py-2"
       data-button
-      disabled={pending}
+      loading={pending}
+      loadingText={t('spinnerText')}
       variant="primary"
     >
-      <>
-        {pending && (
-          <>
-            <span className="absolute z-10 flex h-full w-full items-center justify-center bg-gray-400">
-              <Spinner aria-hidden="true" className="animate-spin" />
-            </span>
-            <span className="sr-only">{t('spinnerText')}</span>
-          </>
-        )}
-        <span aria-hidden={pending}>{t('submitText')}</span>
-      </>
+      {t('submitText')}
     </Button>
   );
 };

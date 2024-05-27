@@ -2,4 +2,4 @@
 "@bigcommerce/catalyst-core": minor
 ---
 
-create register customer page
+add update customer form

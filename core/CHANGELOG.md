@@ -1,5 +1,38 @@
 # Changelog
 
+## 0.8.0
+
+### Minor Changes
+
+- [#704](https://github.com/bigcommerce/catalyst/pull/704) [`6e93873`](https://github.com/bigcommerce/catalyst/commit/6e9387326cebf139bb7fb2459f5b9f29c81c876f) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - add change password for logged-in customer
+
+- [#730](https://github.com/bigcommerce/catalyst/pull/730) [`15e4b82`](https://github.com/bigcommerce/catalyst/commit/15e4b82845979e0ea92aae531055552636d433fb) Thanks [@yurytut1993](https://github.com/yurytut1993)! - create register customer page
+
+### Patch Changes
+
+- [#922](https://github.com/bigcommerce/catalyst/pull/922) [`321f67f`](https://github.com/bigcommerce/catalyst/commit/321f67f0f6576f2f6169e3d804705c7a82a9fb1a) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fix incorrect sale price showing when no sale was active in Cart
+
+- [#896](https://github.com/bigcommerce/catalyst/pull/896) [`b13fecf`](https://github.com/bigcommerce/catalyst/commit/b13fecfa145ceb489553511221f76533d65d6bf9) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Modify Cart page layout to fix mobile rendering issues.
+
+- [#787](https://github.com/bigcommerce/catalyst/pull/787) [`6198648`](https://github.com/bigcommerce/catalyst/commit/6198648c563be61ac6a5a413a005ed63a7d43a58) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - Add delete address functionality for account
+
+- [#909](https://github.com/bigcommerce/catalyst/pull/909) [`bf0e326`](https://github.com/bigcommerce/catalyst/commit/bf0e326e446d3014ae9a3c352173ee1e547f3de8) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Show original price of Cart item when on sale
+
+- [#912](https://github.com/bigcommerce/catalyst/pull/912) [`5ec3d76`](https://github.com/bigcommerce/catalyst/commit/5ec3d76c3af5847604dedfa9c6d1c870246808ef) Thanks [@deini](https://github.com/deini)! - fetch checkout redirect url when user clicks proceed to checkout button
+
+- [#916](https://github.com/bigcommerce/catalyst/pull/916) [`ff231c9`](https://github.com/bigcommerce/catalyst/commit/ff231c9c5d8ae5470fea61de7d42494b68b9f469) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add Button with loading state.
+
+- [#918](https://github.com/bigcommerce/catalyst/pull/918) [`f16936a`](https://github.com/bigcommerce/catalyst/commit/f16936a057de212baafad9e62f556d0d4bb2bfae) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fix issue with account dropdown in header.
+
+- [#919](https://github.com/bigcommerce/catalyst/pull/919) [`cde181e`](https://github.com/bigcommerce/catalyst/commit/cde181e4a3a768401bda6471562a8128dff3dcb2) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fix broken Slot functionality in Button
+
+- [#910](https://github.com/bigcommerce/catalyst/pull/910) [`d0352c0`](https://github.com/bigcommerce/catalyst/commit/d0352c08b43e76b4cd838cb7916f9993228e3fa0) Thanks [@deini](https://github.com/deini)! - removes fetch cart redirect from client and fetch it with gql
+
+- [#880](https://github.com/bigcommerce/catalyst/pull/880) [`af61999`](https://github.com/bigcommerce/catalyst/commit/af619997002f33b2a9a5276467ac632218cfc2f8) Thanks [@deini](https://github.com/deini)! - Category pages now use the `categoryEntityId` filter
+
+- Updated dependencies [[`d0352c0`](https://github.com/bigcommerce/catalyst/commit/d0352c08b43e76b4cd838cb7916f9993228e3fa0)]:
+  - @bigcommerce/catalyst-client@0.4.0
+
 ## 0.7.0
 
 ### Minor Changes

@@ -1,49 +1,51 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import { getCustomerAddresses } from '~/client/queries/get-customer-addresses';
-import { LocaleType } from '~/i18n';
 
 import { AddressesContent } from './_components/addresses-content';
 import { SettingsContent } from './_components/settings-content';
 import { TabHeading } from './_components/tab-heading';
 import { TabType } from './layout';
+import { getCustomerSettingsQuery } from './page-data';
 
 interface Props {
   params: {
-    locale: LocaleType;
     tab: TabType;
   };
   searchParams: {
     [key: string]: string | string[] | undefined;
+    action?: 'add-new-address' | 'edit-address';
     before?: string;
     after?: string;
   };
 }
 
-export async function generateMetadata({ params: { tab, locale } }: Props): Promise<Metadata> {
+export async function generateMetadata({ params: { tab } }: Props): Promise<Metadata> {
+  const locale = await getLocale();
   const t = await getTranslations({ locale, namespace: 'Account.Home' });
+  const title = t(tab === 'recently-viewed' ? 'recentlyViewed' : tab);
 
   return {
-    title: t(tab === 'recently-viewed' ? 'recentlyViewed' : tab),
+    title,
   };
 }
 
-export default async function AccountTabPage({ params: { tab, locale }, searchParams }: Props) {
+export default async function AccountTabPage({ params: { tab }, searchParams }: Props) {
   switch (tab) {
     case 'orders':
-      return <TabHeading heading={tab} locale={locale} />;
+      return <TabHeading heading={tab} />;
 
     case 'messages':
-      return <TabHeading heading={tab} locale={locale} />;
+      return <TabHeading heading={tab} />;
 
     case 'addresses': {
-      const { before, after } = searchParams;
+      const { before, after, action } = searchParams;
       const customerAddressesDetails = await getCustomerAddresses({
         ...(after && { after }),
         ...(before && { before }),
-        limit: 2,
+        limit: action === 'edit-address' ? undefined : 2,
       });
 
       if (!customerAddressesDetails) {
@@ -54,22 +56,31 @@ export default async function AccountTabPage({ params: { tab, locale }, searchPa
 
       return (
         <AddressesContent
+          activeAddressId={searchParams['address-id']?.toString()}
           addresses={addresses}
           addressesCount={addressesCount}
+          customerAction={action}
           pageInfo={pageInfo}
-          title={tab}
         />
       );
     }
 
     case 'wishlists':
-      return <TabHeading heading={tab} locale={locale} />;
+      return <TabHeading heading={tab} />;
 
     case 'recently-viewed':
-      return <TabHeading heading={tab} locale={locale} />;
+      return <TabHeading heading={tab} />;
 
     case 'settings': {
-      return <SettingsContent action={searchParams.action} title={tab} />;
+      const customerSettings = await getCustomerSettingsQuery({
+        address: { filters: { entityIds: [4, 5, 6, 7] } },
+      });
+
+      if (!customerSettings) {
+        notFound();
+      }
+
+      return <SettingsContent action={searchParams.action} customerSettings={customerSettings} />;
     }
 
     default:

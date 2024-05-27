@@ -4,7 +4,6 @@ import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { FORM_FIELDS_FRAGMENT } from '~/client/fragments/form-fields';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 
 const RegisterCustomerQuery = graphql(
   `
@@ -79,7 +78,7 @@ export const getRegisterCustomerQuery = cache(async ({ address, customer }: Prop
       customerFilters: customer?.filters,
       customerSortBy: customer?.sortBy,
     },
-    fetchOptions: { next: { revalidate } },
+    fetchOptions: { cache: 'no-store' },
     customerId,
   });
 

@@ -164,7 +164,6 @@
         "SubmitRemoveItem": {
             "remove": "Fjern",
             "spinnerText": "Fjerner ...",
-            "submitText": "Fjern varen fra indkøbskurven",
             "errorMessage": "Der opstod en fejl under fjernelse af varen. Prøv igen."
         }
     },
@@ -182,17 +181,57 @@
             "orders": "Ordrer",
             "messages": "Meddelelser",
             "addresses": "Adresser",
+            "newAddress": "New address",
             "wishlists": "Ønskelister",
             "recentlyViewed": "Set for nylig",
             "settings": "Kontoindstillinger",
-            "changePassword": "Skift adgangskode"
+            "changePassword": "Skift adgangskode",
+            "editAddress": "Rediger adresse"
         },
         "Addresses": {
             "defaultAddress": "Standard",
             "alternativeAddress": "Alternativ",
             "addNewAddress": "Tilføj ny adresse",
             "editButton": "Rediger",
-            "deleteButton": "Slet"
+            "deleteButton": "Slet",
+            "confirmDeleteAddress": "Slet adresse",
+            "deleteModalTitle": "Are you sure you want to delete address?",
+            "recaptchaText": "Bestå ReCAPTCHA-kontrol",
+            "emptyTextValidationMessage": "Dette felt må ikke være tomt",
+            "successMessage": "The address has been created successfully.",
+            "submit": "Tilføj ny adresse",
+            "cancel": "Annuller",
+            "submitting": "In progress..."
+        },
+        "EditAddress": {
+            "recaptchaText": "Bestå ReCAPTCHA-kontrol",
+            "emptyTextValidationMessage": "Dette felt må ikke være tomt",
+            "successMessage": "The address has been updated successfully.",
+            "cancel": "Annuller",
+            "deleteButton": "Slet",
+            "deleteAddress": "Address deleted from your account.",
+            "confirmDeleteAddress": "Slet adresse",
+            "deleteModalTitle": "Er du sikker på, at du vil slette denne adresse?",
+            "submit": "Update address",
+            "submitting": "In progress..."
+        },
+        "Settings": {
+            "emptyTextValidatoinMessage": "Dette felt må ikke være tomt",
+            "cancel": "Annuller",
+            "recaptchaText": "Bestå ReCAPTCHA-kontrol",
+            "changePassword": "Nulstil adgangskoden",
+            "submit": "Update settings",
+            "submitting": "Update settings...",
+            "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+            "validationMessages": {
+                "email": "Indtast en gyldig e-mail, f.eks. navn@domæne.com",
+                "empty": "Dette felt må ikke være tomt",
+                "firstName": "Indtast dit fornavn",
+                "lastName": "Indtast dit efternavn",
+                "city": "Indtast en by",
+                "company": "Indtast et firmanavn",
+                "phone": "Indtast et telefonnummer"
+            }
         },
         "Login": {
             "heading": "Log på",
@@ -206,7 +245,15 @@
                 "entePasswordMessage": "Indtast din adgangskode.",
                 "submitting": "Indsender ...",
                 "logIn": "Log ind",
-                "forgotPassword": "Har du glemt din adgangskode?"
+                "resetPassword": "Har du glemt din adgangskode?",
+                "validationMessages": {
+                    "email": "Indtast en gyldig e-mail, f.eks. navn@domæne.com",
+                    "firstName": "Indtast dit fornavn",
+                    "lastName": "Indtast dit efternavn",
+                    "city": "Indtast en by",
+                    "company": "Indtast et firmanavn",
+                    "phone": "Indtast et telefonnummer"
+                }
             },
             "CreateAccount": {
                 "heading": "Ny kunde?",
@@ -217,6 +264,28 @@
                 "ordersTracking": "Spore nye ordrer",
                 "wishlists": "Gemme varer til din ønskeliste",
                 "createLink": "Opret konto "
+            }
+        },
+        "Register": {
+            "heading": "Ny konto",
+            "submit": "Opret konto",
+            "submitting": "Opretter konto ...",
+            "recaptchaText": "Bestå ReCAPTCHA-kontrol",
+            "successMessage": "Kære {firstName} {lastName}, din konto er blevet oprettet. Omdirigerer til konto ...",
+            "stateProvincePrefix": "Vælg landsdel eller kommune",
+            "validationMessages": {
+                "email": "Indtast en gyldig e-mail, f.eks. navn@domæne.com",
+                "empty": "Dette felt må ikke være tomt",
+                "firstName": "Indtast dit fornavn",
+                "lastName": "Indtast dit efternavn",
+                "password": "Indtast en adgangskode",
+                "confirmPassword": "Adgangskoderne stemmer ikke overens",
+                "address1": "Indtast en adresse",
+                "address2": "Indtast en adresse",
+                "city": "Indtast en by",
+                "company": "Indtast et firmanavn",
+                "phone": "Indtast et telefonnummer",
+                "postalCode": "Indtast et postnummer"
             }
         },
         "ChangePassword": {

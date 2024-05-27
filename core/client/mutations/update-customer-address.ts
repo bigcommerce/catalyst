@@ -11,6 +11,7 @@ const UPDATE_CUSTOMER_ADDRESS_MUTATION = graphql(`
     customer {
       updateCustomerAddress(input: $input, reCaptchaV2: $reCaptchaV2) {
         errors {
+          __typename
           ... on CustomerAddressUpdateError {
             message
           }
@@ -32,7 +33,9 @@ const UPDATE_CUSTOMER_ADDRESS_MUTATION = graphql(`
   }
 `);
 
-type UpdateCustomerAddressInput = VariablesOf<typeof UPDATE_CUSTOMER_ADDRESS_MUTATION>['input'];
+export type UpdateCustomerAddressInput = VariablesOf<
+  typeof UPDATE_CUSTOMER_ADDRESS_MUTATION
+>['input'];
 
 interface UpdateCustomerAddress {
   input: UpdateCustomerAddressInput;

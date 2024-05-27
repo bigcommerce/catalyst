@@ -164,7 +164,6 @@
         "SubmitRemoveItem": {
             "remove": "削除",
             "spinnerText": "Removing...",
-            "submitText": "Remove item from cart",
             "errorMessage": "Something went wrong while removing item, please try again."
         }
     },
@@ -182,17 +181,57 @@
             "orders": "注文",
             "messages": "メッセージ",
             "addresses": "住所",
+            "newAddress": "New address",
             "wishlists": "Wish lists",
             "recentlyViewed": "Recently viewed",
             "settings": "アカウント設定",
-            "changePassword": "パスワード変更"
+            "changePassword": "パスワード変更",
+            "editAddress": "アドレスを編集"
         },
         "Addresses": {
             "defaultAddress": "削除",
             "alternativeAddress": "代替",
             "addNewAddress": "Add new address",
             "editButton": "編集",
-            "deleteButton": "削除する"
+            "deleteButton": "削除する",
+            "confirmDeleteAddress": "アドレスの削除",
+            "deleteModalTitle": "Are you sure you want to delete address?",
+            "recaptchaText": "Pass ReCAPTCHA check",
+            "emptyTextValidationMessage": "This field can not be empty",
+            "successMessage": "The address has been created successfully.",
+            "submit": "Add new address",
+            "cancel": "キャンセル",
+            "submitting": "In progress..."
+        },
+        "EditAddress": {
+            "recaptchaText": "Pass ReCAPTCHA check",
+            "emptyTextValidationMessage": "This field can not be empty",
+            "successMessage": "The address has been updated successfully.",
+            "cancel": "キャンセル",
+            "deleteButton": "削除する",
+            "deleteAddress": "Address deleted from your account.",
+            "confirmDeleteAddress": "アドレスの削除",
+            "deleteModalTitle": "このアドレスを削除しますか?",
+            "submit": "Update address",
+            "submitting": "In progress..."
+        },
+        "Settings": {
+            "emptyTextValidatoinMessage": "This field can not be empty",
+            "cancel": "キャンセル",
+            "recaptchaText": "Pass ReCAPTCHA check",
+            "changePassword": "暗号を再設定",
+            "submit": "Update settings",
+            "submitting": "Update settings...",
+            "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+            "validationMessages": {
+                "email": "Enter a valid email such as name@domain.com",
+                "empty": "This field can not be empty",
+                "firstName": "Enter your first name",
+                "lastName": "Enter your last name",
+                "city": "Enter a suburb / city",
+                "company": "Enter a company name",
+                "phone": "Enter a phone number"
+            }
         },
         "Login": {
             "heading": "Log In",
@@ -206,7 +245,15 @@
                 "entePasswordMessage": "Enter your password",
                 "submitting": "提出中…",
                 "logIn": "ログイン",
-                "forgotPassword": "パスワードをお忘れですか?"
+                "resetPassword": "パスワードをお忘れですか?",
+                "validationMessages": {
+                    "email": "Enter a valid email such as name@domain.com",
+                    "firstName": "Enter your first name",
+                    "lastName": "Enter your last name",
+                    "city": "Enter a suburb / city",
+                    "company": "Enter a company name",
+                    "phone": "Enter a phone number"
+                }
             },
             "CreateAccount": {
                 "heading": "New customer?",
@@ -217,6 +264,28 @@
                 "ordersTracking": "新規注文の追跡",
                 "wishlists": "商品をウィッシュリストに保存する",
                 "createLink": "アカウント作成 "
+            }
+        },
+        "Register": {
+            "heading": "New account",
+            "submit": "アカウント作成",
+            "submitting": "Creating account...",
+            "recaptchaText": "Pass ReCAPTCHA check",
+            "successMessage": "Dear {firstName} {lastName}, your account was successfully created. Redirecting to account...",
+            "stateProvincePrefix": "Choose state or province",
+            "validationMessages": {
+                "email": "Enter a valid email such as name@domain.com",
+                "empty": "This field can not be empty",
+                "firstName": "Enter your first name",
+                "lastName": "Enter your last name",
+                "password": "Enter a password",
+                "confirmPassword": "Passwords don't match",
+                "address1": "Enter an address",
+                "address2": "Enter an address",
+                "city": "Enter a suburb / city",
+                "company": "Enter a company name",
+                "phone": "Enter a phone number",
+                "postalCode": "Enter a zip / postcode"
             }
         },
         "ChangePassword": {

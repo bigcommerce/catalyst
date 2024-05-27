@@ -28,6 +28,10 @@ const PhysicalItemFragment = graphql(`
       currencyCode
       value
     }
+    listPrice {
+      currencyCode
+      value
+    }
     selectedOptions {
       __typename
       entityId
@@ -76,6 +80,10 @@ const DigitalItemFragment = graphql(`
       value
     }
     originalPrice {
+      currencyCode
+      value
+    }
+    listPrice {
       currencyCode
       value
     }
@@ -222,9 +230,9 @@ export const CartItem = async ({ currencyCode, product }: Props) => {
             <div className="flex flex-col gap-2 md:items-end">
               <div>
                 {product.originalPrice.value &&
-                product.originalPrice.value !== product.extendedSalePrice.value ? (
+                product.originalPrice.value !== product.listPrice.value ? (
                   <p className="text-lg font-bold line-through">
-                    {format.number(product.originalPrice.value, {
+                    {format.number(product.originalPrice.value * product.quantity, {
                       style: 'currency',
                       currency: currencyCode,
                     })}
