@@ -1,6 +1,6 @@
 {
-  "name": "@bigcommerce/bodl",
-  "description": "Big Open Data Layer for Headless Storefront Analytics.",
+  "name": "@bigcommerce/analytics",
+  "description": "Analytics for Headless Storefronts powered by BigCommerce.",
   "version": "0.1.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

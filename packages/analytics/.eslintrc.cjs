@@ -10,7 +10,7 @@ const config = {
     'no-underscore-dangle': ['error', { allow: ['__typename'] }],
     'check-file/filename-naming-convention': 'off',
   },
-  ignorePatterns: ['/src/generated/**', '/dist/**'],
+  ignorePatterns: ['/dist/**', '/src/providers/bodl/ga4/google_analytics4.js'],
 };
 
 module.exports = config;

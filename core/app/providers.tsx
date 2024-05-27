@@ -3,12 +3,12 @@
 import { PropsWithChildren } from 'react';
 
 import { CompareProductsProvider } from '~/app/contexts/compare-products-context';
-import { BodlProvider } from '~/app/contexts/bodl-context';
+import { AnalyticsProvider } from '~/app/contexts/analytics-context';
 
 export function Providers({ children }: PropsWithChildren) {
   return (
-    <BodlProvider>
+    <AnalyticsProvider>
       <CompareProductsProvider>{children}</CompareProductsProvider>
-    </BodlProvider>
+    </AnalyticsProvider>
   );
 }

@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@bigcommerce/bodl": "workspace:^",
+    "@bigcommerce/analytics": "workspace:^",
     "@bigcommerce/catalyst-client": "workspace:^",
     "@icons-pack/react-simple-icons": "^9.5.0",
     "@next/third-parties": "^14.2.3",

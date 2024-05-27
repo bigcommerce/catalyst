@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
+import { BcAnalytics } from '~/components/bc-analytics';
 import { Breadcrumbs } from '~/components/breadcrumbs';
 import { LocaleType } from '~/i18n';
 
@@ -14,7 +15,6 @@ import { Gallery } from './_components/gallery';
 import { RelatedProducts } from './_components/related-products';
 import { Reviews } from './_components/reviews';
 import { Warranty } from './_components/warranty';
-import Bodl from '~/components/bodl';
 import { getProduct } from './page-data';
 
 interface ProductPageProps {
@@ -97,20 +97,11 @@ export default async function Product({ params, searchParams }: ProductPageProps
         <RelatedProducts productId={product.entityId} />
       </Suspense>
 
-      <Bodl
-        event="bodl_v1_product_page_viewed"
-        payload={{
-          product_value: product.prices?.price.value,
-          currency: product.prices?.price.currencyCode,
-          line_items: [
-            {
-              product_id: product.entityId,
-              product_name: product.name,
-              sku: product.sku,
-              base_price: product.prices?.price.value,
-              currency: product.prices?.price.currencyCode,
-            },
-          ],
+      {/*Trigger browser event from server component with the help of client component*/}
+      <BcAnalytics
+        event={{
+          type: 'product_viewed',
+          product,
         }}
       />
     </>

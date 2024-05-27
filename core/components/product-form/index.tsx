@@ -9,7 +9,7 @@ import { toast } from 'react-hot-toast';
 import { FragmentOf } from '~/client/graphql';
 import { Button } from '~/components/ui/button';
 
-import { useBodl } from '~/app/contexts/bodl-context';
+import { useAnalytics } from '~/app/contexts/analytics-context';
 import { Link } from '../link';
 
 import { handleAddToCart } from './_actions/add-to-cart';
@@ -30,7 +30,7 @@ interface Props {
 
 export const ProductForm = ({ product }: Props) => {
   const t = useTranslations('Product.Form');
-  const bodl = useBodl();
+  const analytics = useAnalytics();
   const productOptions = removeEdgesAndNodes(product.productOptions);
 
   const { handleSubmit, register, ...methods } = useProductForm();
@@ -47,19 +47,11 @@ export const ProductForm = ({ product }: Props) => {
       return;
     }
 
-    bodl.sendEvent('bodl_v1_cart_product_added', {
-      product_value: product.prices?.price.value * data.quantity,
-      currency: product.prices?.price.currencyCode,
-      line_items: [
-        {
-          product_id: product.entityId,
-          product_name: product.name,
-          quantity: data.quantity,
-          sku: product.sku,
-          base_price: product.prices?.price.value,
-          currency: product.prices?.price.currencyCode,
-        },
-      ],
+    // Trigger browser event from client component
+    analytics.trackEvent({
+      type: 'cart_added',
+      product,
+      quantity: data.quantity,
     });
 
     toast.success(
