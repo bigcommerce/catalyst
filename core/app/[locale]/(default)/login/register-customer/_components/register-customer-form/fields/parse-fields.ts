@@ -62,6 +62,7 @@ const updateFormFields = ({
       break;
     }
 
+<<<<<<< HEAD
     case 'multilineTexts': {
       const customMultilineTexts = customFormFields[fieldType];
 
@@ -77,6 +78,8 @@ const updateFormFields = ({
       break;
     }
 
+=======
+>>>>>>> f743f42a (feat(core): add numbers-only field & utils for account form fields)
     case 'multipleChoices': {
       const customMultipleChoices = customFormFields[fieldType];
 
