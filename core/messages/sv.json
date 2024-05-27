@@ -181,10 +181,12 @@
             "orders": "Beställningar",
             "messages": "Meddelanden",
             "addresses": "Adresser",
+            "newAddress": "New address",
             "wishlists": "Önskelistor",
             "recentlyViewed": "Nyss sedda",
             "settings": "Kontoinställningar",
-            "changePassword": "Ändra lösenor"
+            "changePassword": "Ändra lösenor",
+            "editAddress": "Redigera adress"
         },
         "Addresses": {
             "defaultAddress": "Standard",
@@ -193,7 +195,43 @@
             "editButton": "Redigera",
             "deleteButton": "Radera",
             "confirmDeleteAddress": "Radera adress",
-            "deleteModalTitle": "Är du säker på att du vill ta bort den här adressen?"
+            "deleteModalTitle": "Are you sure you want to delete address?",
+            "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
+            "emptyTextValidationMessage": "Det här fältet får inte vara tomt",
+            "successMessage": "The address has been created successfully.",
+            "submit": "Lägg till ny adress",
+            "cancel": "Annullera",
+            "submitting": "In progress..."
+        },
+        "EditAddress": {
+            "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
+            "emptyTextValidationMessage": "Det här fältet får inte vara tomt",
+            "successMessage": "The address has been updated successfully.",
+            "cancel": "Annullera",
+            "deleteButton": "Radera",
+            "deleteAddress": "Address deleted from your account.",
+            "confirmDeleteAddress": "Radera adress",
+            "deleteModalTitle": "Är du säker på att du vill ta bort den här adressen?",
+            "submit": "Update address",
+            "submitting": "In progress..."
+        },
+        "Settings": {
+            "emptyTextValidatoinMessage": "Det här fältet får inte vara tomt",
+            "cancel": "Annullera",
+            "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
+            "changePassword": "Återställ lösenord",
+            "submit": "Update settings",
+            "submitting": "Update settings...",
+            "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+            "validationMessages": {
+                "email": "Ange en giltig e-postadress, t.ex. namn@domän.com",
+                "empty": "Det här fältet får inte vara tomt",
+                "firstName": "Ange ditt förnamn",
+                "lastName": "Ange ditt efternamn",
+                "city": "Ange en förort/stad",
+                "company": "Ange ett företagsnamn",
+                "phone": "Ange ett telefonnummer"
+            }
         },
         "Login": {
             "heading": "Logga in",
@@ -207,7 +245,15 @@
                 "entePasswordMessage": "Ange ditt lösenord",
                 "submitting": "Skickar ...",
                 "logIn": "Logga in",
-                "forgotPassword": "Glömt ditt lösenord?"
+                "resetPassword": "Glömt ditt lösenord?",
+                "validationMessages": {
+                    "email": "Ange en giltig e-postadress, t.ex. namn@domän.com",
+                    "firstName": "Ange ditt förnamn",
+                    "lastName": "Ange ditt efternamn",
+                    "city": "Ange en förort/stad",
+                    "company": "Ange ett företagsnamn",
+                    "phone": "Ange ett telefonnummer"
+                }
             },
             "CreateAccount": {
                 "heading": "Nya kunder?",

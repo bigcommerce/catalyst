@@ -181,10 +181,12 @@
             "orders": "Bestellungen",
             "messages": "Nachrichten",
             "addresses": "Adressen",
+            "newAddress": "New address",
             "wishlists": "Wunschlisten",
             "recentlyViewed": "Kürzlich angesehen",
             "settings": "Kontoeinstellungen",
-            "changePassword": "Passwort ändern"
+            "changePassword": "Passwort ändern",
+            "editAddress": "Adresse bearbeiten"
         },
         "Addresses": {
             "defaultAddress": "Standard",
@@ -193,7 +195,43 @@
             "editButton": "Bearbeiten",
             "deleteButton": "Löschen",
             "confirmDeleteAddress": "Adresse löschen",
-            "deleteModalTitle": "Möchten Sie diese Adresse wirklich löschen?"
+            "deleteModalTitle": "Are you sure you want to delete address?",
+            "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
+            "emptyTextValidationMessage": "Dieses Feld darf nicht leer sein",
+            "successMessage": "The address has been created successfully.",
+            "submit": "Neue Adresse hinzufügen",
+            "cancel": "Abbrechen",
+            "submitting": "In progress..."
+        },
+        "EditAddress": {
+            "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
+            "emptyTextValidationMessage": "Dieses Feld darf nicht leer sein",
+            "successMessage": "The address has been updated successfully.",
+            "cancel": "Abbrechen",
+            "deleteButton": "Löschen",
+            "deleteAddress": "Address deleted from your account.",
+            "confirmDeleteAddress": "Adresse löschen",
+            "deleteModalTitle": "Möchten Sie diese Adresse wirklich löschen?",
+            "submit": "Update address",
+            "submitting": "In progress..."
+        },
+        "Settings": {
+            "emptyTextValidatoinMessage": "Dieses Feld darf nicht leer sein",
+            "cancel": "Abbrechen",
+            "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
+            "changePassword": "Passwort zurücksetzen",
+            "submit": "Update settings",
+            "submitting": "Update settings...",
+            "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+            "validationMessages": {
+                "email": "Geben Sie eine gültige E-Mail-Adresse wie name@domain.com ein.",
+                "empty": "Dieses Feld darf nicht leer sein",
+                "firstName": "Geben Sie Ihren Vornamen ein",
+                "lastName": "Geben Sie Ihren Nachnamen ein",
+                "city": "Geben Sie einen Vorort / eine Stadt ein",
+                "company": "Geben Sie einen Firmennamen ein",
+                "phone": "Geben Sie eine Telefonnummer ein"
+            }
         },
         "Login": {
             "heading": "Anmelden",
@@ -207,7 +245,15 @@
                 "entePasswordMessage": "Geben Sie Ihr Passwort ein.",
                 "submitting": "Wird eingereicht ...",
                 "logIn": "Anmelden",
-                "forgotPassword": "Passwort vergessen?"
+                "resetPassword": "Passwort vergessen?",
+                "validationMessages": {
+                    "email": "Geben Sie eine gültige E-Mail-Adresse wie name@domain.com ein.",
+                    "firstName": "Geben Sie Ihren Vornamen ein",
+                    "lastName": "Geben Sie Ihren Nachnamen ein",
+                    "city": "Geben Sie einen Vorort / eine Stadt ein",
+                    "company": "Geben Sie einen Firmennamen ein",
+                    "phone": "Geben Sie eine Telefonnummer ein"
+                }
             },
             "CreateAccount": {
                 "heading": "Neuer Kunde?",

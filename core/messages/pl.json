@@ -181,10 +181,12 @@
             "orders": "Zamówienia",
             "messages": "Wiadomości",
             "addresses": "Adresy",
+            "newAddress": "Nowy adres",
             "wishlists": "Listy życzeń",
             "recentlyViewed": "Ostatnio oglądane",
             "settings": "Ustawienia konta",
-            "changePassword": "Zmień hasło"
+            "changePassword": "Zmień hasło",
+            "editAddress": "Edytuj adres"
         },
         "Addresses": {
             "defaultAddress": "Domyślnie",
@@ -193,7 +195,43 @@
             "editButton": "Edytuj",
             "deleteButton": "Usuń",
             "confirmDeleteAddress": "Usuń adres",
-            "deleteModalTitle": "Czy na pewno chcesz usunąć ten adres?"
+            "deleteModalTitle": "Czy na pewno chcesz usunąć adres?",
+            "recaptchaText": "Zdaj test ReCAPTCHA",
+            "emptyTextValidationMessage": "To pole nie może być puste",
+            "successMessage": "Adres został pomyślnie utworzony.",
+            "submit": "Dodaj nowy adres",
+            "cancel": "Anuluj",
+            "submitting": "W toku…"
+        },
+        "EditAddress": {
+            "recaptchaText": "Zdaj test ReCAPTCHA",
+            "emptyTextValidationMessage": "To pole nie może być puste",
+            "successMessage": "Adres został pomyślnie zaktualizowany.",
+            "cancel": "Anuluj",
+            "deleteButton": "Usuń",
+            "deleteAddress": "Adres został usunięty z Twojego konta.",
+            "confirmDeleteAddress": "Usuń adres",
+            "deleteModalTitle": "Czy na pewno chcesz usunąć ten adres?",
+            "submit": "Zaktualizuj adres",
+            "submitting": "W toku…"
+        },
+        "Settings": {
+            "emptyTextValidatoinMessage": "To pole nie może być puste",
+            "cancel": "Anuluj",
+            "recaptchaText": "Zdaj test ReCAPTCHA",
+            "changePassword": "Zresetuj hasło",
+            "submit": "Zaktualizuj ustawienia",
+            "submitting": "Zaktualizuj ustawienia...",
+            "successMessage": "Witaj, {firstName} {lastName}. Dane Twojego konta zostały pomyślnie zaktualizowane.",
+            "validationMessages": {
+                "email": "Podaj prawidłowy adres e-mail, np. nazwa@domena.com",
+                "empty": "To pole nie może być puste",
+                "firstName": "Wpisz swoje imię",
+                "lastName": "Wpisz swoje nazwisko",
+                "city": "Wprowadź dzielnicę/miasto",
+                "company": "Wprowadź nazwę firmy",
+                "phone": "Wprowadź numer telefonu"
+            }
         },
         "Login": {
             "heading": "Zaloguj",
@@ -207,7 +245,15 @@
                 "entePasswordMessage": "Podaj hasło",
                 "submitting": "Przekazanie...",
                 "logIn": "Zaloguj się",
-                "forgotPassword": "Nie pamiętasz hasła?"
+                "resetPassword": "Nie pamiętasz hasła?",
+                "validationMessages": {
+                    "email": "Podaj prawidłowy adres e-mail, np. nazwa@domena.com",
+                    "firstName": "Wpisz swoje imię",
+                    "lastName": "Wpisz swoje nazwisko",
+                    "city": "Wprowadź dzielnicę/miasto",
+                    "company": "Wprowadź nazwę firmy",
+                    "phone": "Wprowadź numer telefonu"
+                }
             },
             "CreateAccount": {
                 "heading": "Nowy klient?",

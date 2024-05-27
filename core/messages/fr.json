@@ -181,10 +181,12 @@
             "orders": "Commandes",
             "messages": "Messages",
             "addresses": "Adresses",
+            "newAddress": "New address",
             "wishlists": "Listes d'envies",
             "recentlyViewed": "Consultés récemment",
             "settings": "Paramètres des comptes",
-            "changePassword": "Modifier le mot de passe"
+            "changePassword": "Modifier le mot de passe",
+            "editAddress": "Modifier l'adresse"
         },
         "Addresses": {
             "defaultAddress": "Par défaut",
@@ -193,7 +195,43 @@
             "editButton": "Modifier",
             "deleteButton": "Supprimer",
             "confirmDeleteAddress": "Supprimer l'adresse",
-            "deleteModalTitle": "Voulez-vraiment supprimer cette adresse ?"
+            "deleteModalTitle": "Are you sure you want to delete address?",
+            "recaptchaText": "Réussir le test ReCAPTCHA",
+            "emptyTextValidationMessage": "Ce champ ne peut pas être vide",
+            "successMessage": "The address has been created successfully.",
+            "submit": "Ajouter une nouvelle adresse",
+            "cancel": "Annuler",
+            "submitting": "In progress..."
+        },
+        "EditAddress": {
+            "recaptchaText": "Réussir le test ReCAPTCHA",
+            "emptyTextValidationMessage": "Ce champ ne peut pas être vide",
+            "successMessage": "The address has been updated successfully.",
+            "cancel": "Annuler",
+            "deleteButton": "Supprimer",
+            "deleteAddress": "Address deleted from your account.",
+            "confirmDeleteAddress": "Supprimer l'adresse",
+            "deleteModalTitle": "Voulez-vraiment supprimer cette adresse ?",
+            "submit": "Update address",
+            "submitting": "In progress..."
+        },
+        "Settings": {
+            "emptyTextValidatoinMessage": "Ce champ ne peut pas être vide",
+            "cancel": "Annuler",
+            "recaptchaText": "Réussir le test ReCAPTCHA",
+            "changePassword": "Réinitialiser le mot de passe",
+            "submit": "Update settings",
+            "submitting": "Update settings...",
+            "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+            "validationMessages": {
+                "email": "Veuillez saisir une adresse e-mail valide, telle que nom@domaine.com",
+                "empty": "Ce champ ne peut pas être vide",
+                "firstName": "Saisissez votre prénom",
+                "lastName": "Saisissez votre nom de famille",
+                "city": "Saisissez une banlieue / une ville",
+                "company": "Saisissez un nom d'entreprise",
+                "phone": "Saisissez un numéro de téléphone"
+            }
         },
         "Login": {
             "heading": "Connexion",
@@ -207,7 +245,15 @@
                 "entePasswordMessage": "Veuillez saisir votre mot de passe.",
                 "submitting": "Envoi...",
                 "logIn": "Connexion",
-                "forgotPassword": "Mot de passe oublié ?"
+                "resetPassword": "Mot de passe oublié ?",
+                "validationMessages": {
+                    "email": "Veuillez saisir une adresse e-mail valide, telle que nom@domaine.com",
+                    "firstName": "Saisissez votre prénom",
+                    "lastName": "Saisissez votre nom de famille",
+                    "city": "Saisissez une banlieue / une ville",
+                    "company": "Saisissez un nom d'entreprise",
+                    "phone": "Saisissez un numéro de téléphone"
+                }
             },
             "CreateAccount": {
                 "heading": "Nouveau client ?",

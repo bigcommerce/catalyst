@@ -181,10 +181,12 @@
             "orders": "Pedidos",
             "messages": "Mensajes",
             "addresses": "Direcciones",
+            "newAddress": "New address",
             "wishlists": "Listas de deseos",
             "recentlyViewed": "Vistos recientemente",
             "settings": "Configuración de la cuenta",
-            "changePassword": "Cambiar contraseña"
+            "changePassword": "Cambiar contraseña",
+            "editAddress": "Editar dirección"
         },
         "Addresses": {
             "defaultAddress": "Predeterminado",
@@ -193,7 +195,43 @@
             "editButton": "Editar",
             "deleteButton": "Eliminar",
             "confirmDeleteAddress": "Eliminar dirección",
-            "deleteModalTitle": "¿Está seguro de que desea eliminar esta dirección?"
+            "deleteModalTitle": "Are you sure you want to delete address?",
+            "recaptchaText": "Pasar la verificación ReCAPTCHA",
+            "emptyTextValidationMessage": "Este campo no puede estar vacío",
+            "successMessage": "The address has been created successfully.",
+            "submit": "Añadir nueva dirección",
+            "cancel": "Cancelar",
+            "submitting": "In progress..."
+        },
+        "EditAddress": {
+            "recaptchaText": "Pasar la verificación ReCAPTCHA",
+            "emptyTextValidationMessage": "Este campo no puede estar vacío",
+            "successMessage": "The address has been updated successfully.",
+            "cancel": "Cancelar",
+            "deleteButton": "Eliminar",
+            "deleteAddress": "Address deleted from your account.",
+            "confirmDeleteAddress": "Eliminar dirección",
+            "deleteModalTitle": "¿Está seguro de que desea eliminar esta dirección?",
+            "submit": "Update address",
+            "submitting": "In progress..."
+        },
+        "Settings": {
+            "emptyTextValidatoinMessage": "Este campo no puede estar vacío",
+            "cancel": "Cancelar",
+            "recaptchaText": "Pasar la verificación ReCAPTCHA",
+            "changePassword": "Restablecer la contraseña",
+            "submit": "Update settings",
+            "submitting": "Update settings...",
+            "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+            "validationMessages": {
+                "email": "Introduce un correo electrónico válido, como nombre@dominio.com",
+                "empty": "Este campo no puede estar vacío",
+                "firstName": "Introduzca su nombre",
+                "lastName": "Introduzca su apellido",
+                "city": "Introduce un barrio/ciudad",
+                "company": "Introduce un nombre de empresa",
+                "phone": "Introduce un número de teléfono"
+            }
         },
         "Login": {
             "heading": "Iniciar sesión",
@@ -207,7 +245,15 @@
                 "entePasswordMessage": "Introduce tu contraseña.",
                 "submitting": "Enviando...",
                 "logIn": "Iniciar sesión",
-                "forgotPassword": "¿Olvidó su contraseña?"
+                "resetPassword": "¿Olvidó su contraseña?",
+                "validationMessages": {
+                    "email": "Introduce un correo electrónico válido, como nombre@dominio.com",
+                    "firstName": "Introduzca su nombre",
+                    "lastName": "Introduzca su apellido",
+                    "city": "Introduce un barrio/ciudad",
+                    "company": "Introduce un nombre de empresa",
+                    "phone": "Introduce un número de teléfono"
+                }
             },
             "CreateAccount": {
                 "heading": "¿Cliente nuevo?",
