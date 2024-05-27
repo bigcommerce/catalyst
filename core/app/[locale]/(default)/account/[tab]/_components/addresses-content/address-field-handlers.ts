@@ -5,7 +5,20 @@ import {
   FieldNameToFieldId,
 } from '~/app/[locale]/(default)/login/register-customer/_components/register-customer-form/fields';
 
-import { Countries } from './add-address';
+import { AddressFields, Countries } from './add-address';
+
+export const isAddressOrAccountFormField = (field: unknown): field is AddressFields[number] => {
+  if (
+    typeof field === 'object' &&
+    field !== null &&
+    '__typename' in field &&
+    'isBuiltIn' in field
+  ) {
+    return true;
+  }
+
+  return false;
+};
 
 type FieldState = Record<string, boolean>;
 
@@ -23,8 +36,20 @@ const createTextInputValidationHandler =
     textInputStateSetter({ ...textInputState, [fieldId]: !validationStatus });
   };
 
+const createNumbersInputValidationHandler =
+  (numbersInputStateSetter: FieldStateSetFn<FieldState>, numbersInputState: FieldState) =>
+  (e: ChangeEvent<HTMLInputElement>) => {
+    const fieldId = Number(e.target.id.split('-')[1]);
+
+    const { valueMissing, typeMismatch, rangeUnderflow, rangeOverflow } = e.target.validity;
+    const validationStatus = valueMissing || typeMismatch || rangeUnderflow || rangeOverflow;
+
+    numbersInputStateSetter({ ...numbersInputState, [fieldId]: !validationStatus });
+  };
+
 const createPasswordValidationHandler =
-  (passwordStateSetter: FieldStateSetFn<FieldState>) => (e: ChangeEvent<HTMLInputElement>) => {
+  (passwordStateSetter: FieldStateSetFn<FieldState>, fields: AddressFields) =>
+  (e: ChangeEvent<HTMLInputElement>) => {
     const fieldId = e.target.id.split('-')[1] ?? '';
 
     switch (FieldNameToFieldId[Number(fieldId)]) {
@@ -39,8 +64,15 @@ const createPasswordValidationHandler =
 
       case 'confirmPassword': {
         const confirmPassword = e.target.value;
+        const field = fields.filter(
+          ({ entityId }) => entityId === Number(FieldNameToFieldId.password),
+        )[0];
 
-        const passwordFieldName = createFieldName('customer', +fieldId);
+        if (!isAddressOrAccountFormField(field)) {
+          return;
+        }
+
+        const passwordFieldName = createFieldName(field, 'customer');
         const password = new FormData(e.target.form ?? undefined).get(passwordFieldName);
 
         passwordStateSetter((prevState) => ({
@@ -82,4 +114,5 @@ export {
   createPicklistOrTextValidationHandler,
   createPasswordValidationHandler,
   createCountryChangeHandler,
+  createNumbersInputValidationHandler,
 };

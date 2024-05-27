@@ -4,41 +4,48 @@ import { cache } from 'react';
 import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
+import { FORM_FIELDS_VALUES_FRAGMENT } from '../fragments/form-fields-values';
 import { graphql } from '../graphql';
 
-const GET_CUSTOMER_ADDRESSES_QUERY = graphql(`
-  query getCustomerAddresses($after: String, $before: String, $first: Int, $last: Int) {
-    customer {
-      entityId
-      addresses(before: $before, after: $after, first: $first, last: $last) {
-        pageInfo {
-          hasNextPage
-          hasPreviousPage
-          startCursor
-          endCursor
-        }
-        collectionInfo {
-          totalItems
-        }
-        edges {
-          node {
-            entityId
-            firstName
-            lastName
-            address1
-            address2
-            city
-            stateOrProvince
-            countryCode
-            phone
-            postalCode
-            company
+const GET_CUSTOMER_ADDRESSES_QUERY = graphql(
+  `
+    query getCustomerAddresses($after: String, $before: String, $first: Int, $last: Int) {
+      customer {
+        entityId
+        addresses(before: $before, after: $after, first: $first, last: $last) {
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+          }
+          collectionInfo {
+            totalItems
+          }
+          edges {
+            node {
+              entityId
+              firstName
+              lastName
+              address1
+              address2
+              city
+              stateOrProvince
+              countryCode
+              phone
+              postalCode
+              company
+              formFields {
+                ...FormFieldsValues
+              }
+            }
           }
         }
       }
     }
-  }
-`);
+  `,
+  [FORM_FIELDS_VALUES_FRAGMENT],
+);
 
 export interface CustomerAddressesArgs {
   after?: string;
