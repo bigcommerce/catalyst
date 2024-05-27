@@ -181,10 +181,12 @@
             "orders": "Pedidos",
             "messages": "Mensagens",
             "addresses": "Endereços",
+            "newAddress": "Novo endereço",
             "wishlists": "Lista de desejos",
             "recentlyViewed": "Visto recentemente",
             "settings": "Configurações da conta",
-            "changePassword": "Alterar senha"
+            "changePassword": "Alterar senha",
+            "editAddress": "Editar endereço"
         },
         "Addresses": {
             "defaultAddress": "Padrão",
@@ -193,7 +195,43 @@
             "editButton": "Editar",
             "deleteButton": "Excluir",
             "confirmDeleteAddress": "Excluir endereço",
-            "deleteModalTitle": "Deseja mesmo excluir esse endereço?"
+            "deleteModalTitle": "Deseja mesmo excluir o endereço?",
+            "recaptchaText": "Passar na verificação ReCAPTCHA",
+            "emptyTextValidationMessage": "Este campo não pode ficar vazio",
+            "successMessage": "O endereço foi criado.",
+            "submit": "Adicionar novo endereço",
+            "cancel": "Cancelar",
+            "submitting": "Em andamento..."
+        },
+        "EditAddress": {
+            "recaptchaText": "Passar na verificação ReCAPTCHA",
+            "emptyTextValidationMessage": "Este campo não pode ficar vazio",
+            "successMessage": "O endereço foi atualizado.",
+            "cancel": "Cancelar",
+            "deleteButton": "Excluir",
+            "deleteAddress": "Endereço excluído da sua conta.",
+            "confirmDeleteAddress": "Excluir endereço",
+            "deleteModalTitle": "Deseja mesmo excluir esse endereço?",
+            "submit": "Atualizar endereço",
+            "submitting": "Em andamento..."
+        },
+        "Settings": {
+            "emptyTextValidatoinMessage": "Este campo não pode ficar vazio",
+            "cancel": "Cancelar",
+            "recaptchaText": "Passar na verificação ReCAPTCHA",
+            "changePassword": "Redefinir senha",
+            "submit": "Atualizar configurações",
+            "submitting": "Atualizar configurações...",
+            "successMessage": "{firstName} {lastName}, os dados da sua conta foram atualizados.",
+            "validationMessages": {
+                "email": "Insira um e-mail válido, como nome@dominio.com",
+                "empty": "Este campo não pode ficar vazio",
+                "firstName": "Digite seu nome",
+                "lastName": "Digite seu sobrenome",
+                "city": "Digite uma cidade",
+                "company": "Digite o nome da empresa",
+                "phone": "Digite um número de telefone"
+            }
         },
         "Login": {
             "heading": "Credencial de acesso",
@@ -207,7 +245,15 @@
                 "entePasswordMessage": "Digite sua senha",
                 "submitting": "Enviando...",
                 "logIn": "Credencial de acesso",
-                "forgotPassword": "Esqueceu sua senha?"
+                "resetPassword": "Esqueceu sua senha?",
+                "validationMessages": {
+                    "email": "Insira um e-mail válido, como nome@dominio.com",
+                    "firstName": "Digite seu nome",
+                    "lastName": "Digite seu sobrenome",
+                    "city": "Digite uma cidade",
+                    "company": "Digite o nome da empresa",
+                    "phone": "Digite um número de telefone"
+                }
             },
             "CreateAccount": {
                 "heading": "Cliente novo?",

@@ -181,10 +181,12 @@
             "orders": "Bestillinger",
             "messages": "Meldinger",
             "addresses": "Adresser",
+            "newAddress": "New address",
             "wishlists": "Ønskelister",
             "recentlyViewed": "Nylig sett",
             "settings": "Kontoinnstillinger",
-            "changePassword": "Endre passord"
+            "changePassword": "Endre passord",
+            "editAddress": "Rediger adresse"
         },
         "Addresses": {
             "defaultAddress": "Standard",
@@ -193,7 +195,43 @@
             "editButton": "Rediger",
             "deleteButton": "Slett",
             "confirmDeleteAddress": "Slett adresse",
-            "deleteModalTitle": "Er du sikker på at du vil slette denne adressen?"
+            "deleteModalTitle": "Are you sure you want to delete address?",
+            "recaptchaText": "Bestå reCAPTCHA-sjekk",
+            "emptyTextValidationMessage": "Dette feltet kan ikke være tomt",
+            "successMessage": "The address has been created successfully.",
+            "submit": "Legg til ny adresse",
+            "cancel": "Avbryt",
+            "submitting": "In progress..."
+        },
+        "EditAddress": {
+            "recaptchaText": "Bestå reCAPTCHA-sjekk",
+            "emptyTextValidationMessage": "Dette feltet kan ikke være tomt",
+            "successMessage": "The address has been updated successfully.",
+            "cancel": "Avbryt",
+            "deleteButton": "Slett",
+            "deleteAddress": "Address deleted from your account.",
+            "confirmDeleteAddress": "Slett adresse",
+            "deleteModalTitle": "Er du sikker på at du vil slette denne adressen?",
+            "submit": "Update address",
+            "submitting": "In progress..."
+        },
+        "Settings": {
+            "emptyTextValidatoinMessage": "Dette feltet kan ikke være tomt",
+            "cancel": "Avbryt",
+            "recaptchaText": "Bestå reCAPTCHA-sjekk",
+            "changePassword": "Tilbakestill passord",
+            "submit": "Update settings",
+            "submitting": "Update settings...",
+            "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+            "validationMessages": {
+                "email": "Angi en gyldig e-postadresse, for eksempel navn@domene.com",
+                "empty": "Dette feltet kan ikke være tomt",
+                "firstName": "Skriv inn fornavnet ditt",
+                "lastName": "Skriv inn etternavnet ditt",
+                "city": "Skriv inn en forstad / by",
+                "company": "Skriv inn et firmanavn",
+                "phone": "Skriv inn et telefonnummer"
+            }
         },
         "Login": {
             "heading": "Logg inn",
@@ -207,7 +245,15 @@
                 "entePasswordMessage": "Skriv inn passordet ditt.",
                 "submitting": "Sender inn …",
                 "logIn": "Logg inn",
-                "forgotPassword": "Har du glemt passordet?"
+                "resetPassword": "Har du glemt passordet?",
+                "validationMessages": {
+                    "email": "Angi en gyldig e-postadresse, for eksempel navn@domene.com",
+                    "firstName": "Skriv inn fornavnet ditt",
+                    "lastName": "Skriv inn etternavnet ditt",
+                    "city": "Skriv inn en forstad / by",
+                    "company": "Skriv inn et firmanavn",
+                    "phone": "Skriv inn et telefonnummer"
+                }
             },
             "CreateAccount": {
                 "heading": "Ny kunde?",
