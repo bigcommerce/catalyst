@@ -12,7 +12,6 @@ export interface ProductViewedEvent {
 export interface CartAddedEvent {
   type: 'cart_added';
   product: Product;
-  cart: Cart;
   quantity: number;
 }
 

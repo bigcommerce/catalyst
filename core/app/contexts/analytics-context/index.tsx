@@ -1,7 +1,7 @@
 import { createContext, PropsWithChildren, useContext } from 'react';
-import { BcAnalytics, Bodl as BodlType } from '@bigcommerce/analytics';
+import { BcAnalytics, Bodl as BodlAnalytics } from '@bigcommerce/analytics';
 
-const Bodl = new BodlType({
+const Bodl = new BodlAnalytics({
   // TODO: Replace with actual store configuration
   ga4: {
     gaId: process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ?? '',

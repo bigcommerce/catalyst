@@ -13,7 +13,6 @@ import { useAnalytics } from '~/app/contexts/analytics-context';
 import { Link } from '../link';
 
 import { handleAddToCart } from './_actions/add-to-cart';
-import { getCartData } from './_actions/get-cart-data';
 import { AddToCart } from './add-to-cart';
 import { CheckboxField } from './fields/checkbox-field';
 import { DateField } from './fields/date-field';
@@ -39,7 +38,6 @@ export const ProductForm = ({ product }: Props) => {
   const productFormSubmit = async (data: ProductFormData) => {
     const result = await handleAddToCart(data, product);
     const quantity = Number(data.quantity);
-    const cart = await getCartData(result.data?.entityId);
 
     if (result.error) {
       toast.error(result.error || t('errorMessage'), {
@@ -54,7 +52,6 @@ export const ProductForm = ({ product }: Props) => {
       type: 'cart_added',
       product,
       quantity,
-      cart,
     });
 
     toast.success(
