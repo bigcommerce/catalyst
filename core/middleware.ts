@@ -14,6 +14,6 @@ export const config = {
      * - _vercel (vercel internals, eg: web vitals)
      * - favicon.ico (favicon file)
      */
-    '/((?!api|admin|js|_next/static|_next/image|_vercel|favicon.ico).*)',
+    '/((?!api|admin|_next/static|_next/image|_vercel|favicon.ico).*)',
   ],
 };

@@ -23,11 +23,6 @@ const GET_CART_QUERY = graphql(
           currencyCode
           lineItems {
             totalQuantity
-            giftCertificates {
-              entityId
-              name
-              theme
-            }
             physicalItems {
               name
               brand
