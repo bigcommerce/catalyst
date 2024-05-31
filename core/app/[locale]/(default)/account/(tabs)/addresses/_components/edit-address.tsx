@@ -8,6 +8,7 @@ import ReCaptcha from 'react-google-recaptcha';
 
 import {
   createFieldName,
+  DateField,
   FieldNameToFieldId,
   FieldWrapper,
   NumbersOnly,
@@ -28,6 +29,7 @@ import { updateAddress } from '../_actions/update-address';
 import { AddressFields, Countries } from './add-address';
 import {
   createCountryChangeHandler,
+  createDatesValidationHandler,
   createNumbersInputValidationHandler,
   createTextInputValidationHandler,
 } from './address-field-handlers';
@@ -108,6 +110,7 @@ export const EditAddress = ({
 
   const [textInputValid, setTextInputValid] = useState<Record<string, boolean>>({});
   const [numbersInputValid, setNumbersInputValid] = useState<Record<string, boolean>>({});
+  const [datesValid, setDatesValid] = useState<Record<string, boolean>>({});
 
   const defaultStates = countries
     .filter((country) => country.code === address.countryCode)
@@ -123,6 +126,7 @@ export const EditAddress = ({
     numbersInputValid,
   );
   const handleCountryChange = createCountryChangeHandler(setCountryStates, countries);
+  const handleDatesValidation = createDatesValidationHandler(setDatesValid, datesValid);
 
   const onReCaptchaChange = (token: string | null) => {
     if (!token) {
@@ -198,9 +202,7 @@ export const EditAddress = ({
             if (isExistedField(key)) {
               defaultValue = address[key] ?? undefined;
             } else {
-              defaultCustomField = address.formFields.filter(
-                ({ entityId }) => entityId === fieldId,
-              )[0];
+              defaultCustomField = address.formFields.find(({ entityId }) => entityId === fieldId);
             }
 
             switch (field.__typename) {
@@ -237,6 +239,26 @@ export const EditAddress = ({
                       isValid={numbersInputValid[fieldId]}
                       name={createFieldName(field, 'address')}
                       onChange={handleNumbersInputValidation}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
+              case 'DateFormField': {
+                const defaultDate =
+                  defaultCustomField?.__typename === `DateFormFieldValue`
+                    ? defaultCustomField.date.utc
+                    : undefined;
+
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <DateField
+                      defaultValue={defaultDate}
+                      field={field}
+                      isValid={datesValid[fieldId]}
+                      name={createFieldName(field, 'address')}
+                      onChange={handleDatesValidation}
+                      onValidate={setDatesValid}
                     />
                   </FieldWrapper>
                 );

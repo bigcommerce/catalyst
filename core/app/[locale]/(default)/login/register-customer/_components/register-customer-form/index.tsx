@@ -6,6 +6,7 @@ import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
 import {
+  createDatesValidationHandler,
   createNumbersInputValidationHandler,
   isAddressOrAccountFormField,
 } from '~/app/[locale]/(default)/account/[tab]/_components/addresses-content/address-field-handlers';
@@ -20,6 +21,7 @@ import { registerCustomer } from './_actions/register-customer';
 import {
   createFieldName,
   CUSTOMER_FIELDS_TO_EXCLUDE,
+  DateField,
   FieldNameToFieldId,
   FieldWrapper,
   NumbersOnly,
@@ -94,7 +96,7 @@ export const RegisterCustomerForm = ({
     [FieldNameToFieldId.confirmPassword]: true,
   });
   const [numbersInputValid, setNumbersInputValid] = useState<Record<string, boolean>>({});
-
+  const [datesValid, setDatesValid] = useState<Record<string, boolean>>({});
   const [countryStates, setCountryStates] = useState(defaultCountry.states);
 
   const reCaptchaRef = useRef<ReCaptcha>(null);
@@ -115,6 +117,7 @@ export const RegisterCustomerForm = ({
     setNumbersInputValid,
     numbersInputValid,
   );
+  const handleDatesValidation = createDatesValidationHandler(setDatesValid, datesValid);
   const handlePasswordValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const fieldId = e.target.id.split('-')[1] ?? '';
 
@@ -228,26 +231,28 @@ export const RegisterCustomerForm = ({
           {customerFields
             .filter((field) => !CUSTOMER_FIELDS_TO_EXCLUDE.includes(field.entityId))
             .map((field) => {
+              const fieldId = field.entityId;
+
               switch (field.__typename) {
                 case 'TextFormField':
                   return (
-                    <FieldWrapper fieldId={field.entityId} key={field.entityId}>
+                    <FieldWrapper fieldId={fieldId} key={fieldId}>
                       <Text
                         field={field}
-                        isValid={textInputValid[field.entityId]}
+                        isValid={textInputValid[fieldId]}
                         name={createFieldName(field, 'customer')}
                         onChange={handleTextInputValidation}
-                        type={FieldNameToFieldId[field.entityId]}
+                        type={FieldNameToFieldId[fieldId]}
                       />
                     </FieldWrapper>
                   );
 
                 case 'NumberFormField': {
                   return (
-                    <FieldWrapper fieldId={field.entityId} key={field.entityId}>
+                    <FieldWrapper fieldId={fieldId} key={fieldId}>
                       <NumbersOnly
                         field={field}
-                        isValid={numbersInputValid[field.entityId]}
+                        isValid={numbersInputValid[fieldId]}
                         name={createFieldName(field, 'customer')}
                         onChange={handleNumbersInputValidation}
                       />
@@ -255,12 +260,26 @@ export const RegisterCustomerForm = ({
                   );
                 }
 
+                case 'DateFormField': {
+                  return (
+                    <FieldWrapper fieldId={fieldId} key={fieldId}>
+                      <DateField
+                        field={field}
+                        isValid={datesValid[fieldId]}
+                        name={createFieldName(field, 'customer')}
+                        onChange={handleDatesValidation}
+                        onValidate={setDatesValid}
+                      />
+                    </FieldWrapper>
+                  );
+                }
+
                 case 'PasswordFormField': {
                   return (
-                    <FieldWrapper fieldId={field.entityId} key={field.entityId}>
+                    <FieldWrapper fieldId={fieldId} key={fieldId}>
                       <Password
                         field={field}
-                        isValid={passwordValid[field.entityId]}
+                        isValid={passwordValid[fieldId]}
                         name={createFieldName(field, 'customer')}
                         onChange={handlePasswordValidation}
                       />
@@ -275,34 +294,60 @@ export const RegisterCustomerForm = ({
         </div>
         <div className="grid grid-cols-1 gap-y-6 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-2">
           {addressFields.map((field) => {
+            const fieldId = field.entityId;
+
             switch (field.__typename) {
-              case 'TextFormField':
+              case 'TextFormField': {
                 return (
-                  <FieldWrapper fieldId={field.entityId} key={field.entityId}>
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <Text
                       field={field}
-                      isValid={textInputValid[field.entityId]}
+                      isValid={textInputValid[fieldId]}
                       name={createFieldName(field, 'address')}
                       onChange={handleTextInputValidation}
                     />
                   </FieldWrapper>
                 );
+              }
 
-              case 'PicklistFormField':
+              case 'NumberFormField': {
                 return (
-                  <FieldWrapper fieldId={field.entityId} key={field.entityId}>
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <NumbersOnly
+                      field={field}
+                      isValid={numbersInputValid[fieldId]}
+                      name={createFieldName(field, 'address')}
+                      onChange={handleNumbersInputValidation}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
+              case 'DateFormField': {
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <DateField
+                      field={field}
+                      isValid={datesValid[fieldId]}
+                      name={createFieldName(field, 'address')}
+                      onChange={handleDatesValidation}
+                      onValidate={setDatesValid}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
+              case 'PicklistFormField': {
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <Picklist
                       defaultValue={
-                        field.entityId === FieldNameToFieldId.countryCode
-                          ? defaultCountry.code
-                          : undefined
+                        fieldId === FieldNameToFieldId.countryCode ? defaultCountry.code : undefined
                       }
                       field={field}
                       name={createFieldName(field, 'address')}
                       onChange={
-                        field.entityId === FieldNameToFieldId.countryCode
-                          ? handleCountryChange
-                          : undefined
+                        fieldId === FieldNameToFieldId.countryCode ? handleCountryChange : undefined
                       }
                       options={countries.map(({ code, name }) => {
                         return { entityId: code, label: name };
@@ -310,13 +355,14 @@ export const RegisterCustomerForm = ({
                     />
                   </FieldWrapper>
                 );
+              }
 
-              case 'PicklistOrTextFormField':
+              case 'PicklistOrTextFormField': {
                 return (
-                  <FieldWrapper fieldId={field.entityId} key={field.entityId}>
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <PicklistOrText
                       defaultValue={
-                        field.entityId === FieldNameToFieldId.stateOrProvince
+                        fieldId === FieldNameToFieldId.stateOrProvince
                           ? countryStates[0]?.name
                           : undefined
                       }
@@ -328,6 +374,7 @@ export const RegisterCustomerForm = ({
                     />
                   </FieldWrapper>
                 );
+              }
 
               default:
                 return null;

@@ -8,6 +8,7 @@ import { FieldNameToFieldId } from './update-settings-form';
 interface TextProps {
   defaultValue?: string;
   entityId: number;
+  name?: string;
   isRequired?: boolean;
   isValid?: boolean;
   label: string;
@@ -20,17 +21,18 @@ export const TextField = ({
   entityId,
   isRequired = false,
   isValid,
+  name,
   label,
   onChange,
   type = 'text',
 }: TextProps) => {
   const t = useTranslations('Account.Settings.validationMessages');
-  const fieldName = FieldNameToFieldId[entityId];
-  const name = fieldName ?? `field-${entityId}`;
+  const nameById = FieldNameToFieldId[entityId];
+  const fieldName = name ?? nameById ?? `field-${entityId}`;
 
   return (
-    <Field className="relative space-y-2 pb-7" name={name}>
-      <FieldLabel htmlFor={name} isRequired={isRequired}>
+    <Field className="relative space-y-2 pb-7" name={fieldName}>
+      <FieldLabel htmlFor={fieldName} isRequired={isRequired}>
         {label}
       </FieldLabel>
       <FieldControl asChild>
@@ -49,7 +51,7 @@ export const TextField = ({
           className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary"
           match="valueMissing"
         >
-          {t(fieldName ?? 'empty')}
+          {t(nameById ?? 'empty')}
         </FieldMessage>
       )}
     </Field>

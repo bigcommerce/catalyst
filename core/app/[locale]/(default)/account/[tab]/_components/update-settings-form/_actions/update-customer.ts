@@ -38,9 +38,9 @@ const UpdateCustomerMutation = graphql(`
   }
 `);
 
-type AddCustomerAddressInput = VariablesOf<typeof UpdateCustomerMutation>['input'];
+type CustomerAddressInput = VariablesOf<typeof UpdateCustomerMutation>['input'];
 
-const isUpdateCustomerInput = (data: unknown): data is AddCustomerAddressInput => {
+const isUpdateCustomerInput = (data: unknown): data is CustomerAddressInput => {
   if (
     typeof data === 'object' &&
     data !== null &&

@@ -49,6 +49,9 @@ const CustomerSettingsQuery = graphql(
           ... on TextFormFieldValue {
             text
           }
+          ... on MultilineTextFormFieldValue {
+            multilineText
+          }
         }
       }
       site {
