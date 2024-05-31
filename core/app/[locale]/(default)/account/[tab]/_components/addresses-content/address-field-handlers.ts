@@ -47,6 +47,15 @@ const createNumbersInputValidationHandler =
     numbersInputStateSetter({ ...numbersInputState, [fieldId]: !validationStatus });
   };
 
+const createDatesValidationHandler =
+  (dateStateSetter: FieldStateSetFn<FieldState>, dateFieldState: FieldState) =>
+  (e: React.ChangeEvent<HTMLInputElement>) => {
+    const fieldId = Number(e.target.id);
+    const validationStatus = e.target.validity.valueMissing;
+
+    dateStateSetter({ ...dateFieldState, [fieldId]: !validationStatus });
+  };
+
 const createPasswordValidationHandler =
   (passwordStateSetter: FieldStateSetFn<FieldState>, fields: AddressFields) =>
   (e: ChangeEvent<HTMLInputElement>) => {
@@ -64,9 +73,9 @@ const createPasswordValidationHandler =
 
       case 'confirmPassword': {
         const confirmPassword = e.target.value;
-        const field = fields.filter(
+        const field = fields.find(
           ({ entityId }) => entityId === Number(FieldNameToFieldId.password),
-        )[0];
+        );
 
         if (!isAddressOrAccountFormField(field)) {
           return;
@@ -115,4 +124,5 @@ export {
   createPasswordValidationHandler,
   createCountryChangeHandler,
   createNumbersInputValidationHandler,
+  createDatesValidationHandler,
 };

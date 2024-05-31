@@ -8,7 +8,7 @@ import { Calendar } from '../calendar';
 import { Input, InputIcon, InputProps } from '../input';
 import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 
-type DatePickerProps = Omit<InputProps, 'defaultValue'> & {
+type DatePickerProps = Omit<InputProps, 'defaultValue' | 'onSelect'> & {
   defaultValue?: string | Date;
   selected?: DayPickerSingleProps['selected'];
   onSelect?: DayPickerSingleProps['onSelect'];
@@ -41,7 +41,7 @@ export const DatePicker = React.forwardRef<React.ElementRef<'div'>, DatePickerPr
           <PopoverTrigger asChild>
             <Input
               placeholder={placeholder}
-              readOnly={true}
+              readOnly={!required}
               required={required}
               type="text"
               value={formattedSelected ?? formattedDate ?? ''}

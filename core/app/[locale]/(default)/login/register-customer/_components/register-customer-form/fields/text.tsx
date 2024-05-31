@@ -30,7 +30,7 @@ export const Text = ({ defaultValue, field, isValid, name, onChange, type }: Tex
       </FieldLabel>
       <FieldControl asChild>
         <Input
-          defaultValue={field.defaultText ?? defaultValue}
+          defaultValue={defaultValue ?? field.defaultText ?? ''}
           id={`field-${field.entityId}`}
           maxLength={field.maxLength ?? undefined}
           onChange={field.isRequired ? onChange : undefined}
