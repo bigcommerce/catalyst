@@ -8,6 +8,7 @@ import ReCaptcha from 'react-google-recaptcha';
 
 import {
   createFieldName,
+  DateField,
   FieldNameToFieldId,
   FieldWrapper,
   NumbersOnly,
@@ -24,6 +25,7 @@ import { addAddress } from '../../_actions/add-address';
 
 import {
   createCountryChangeHandler,
+  createDatesValidationHandler,
   createNumbersInputValidationHandler,
   createTextInputValidationHandler,
 } from './address-field-handlers';
@@ -95,6 +97,7 @@ export const AddAddress = ({
 
   const [textInputValid, setTextInputValid] = useState<Record<string, boolean>>({});
   const [numbersInputValid, setNumbersInputValid] = useState<Record<string, boolean>>({});
+  const [datesValid, setDatesValid] = useState<Record<string, boolean>>({});
   const [countryStates, setCountryStates] = useState(defaultCountry.states);
 
   const handleTextInputValidation = createTextInputValidationHandler(
@@ -106,6 +109,7 @@ export const AddAddress = ({
     setNumbersInputValid,
     numbersInputValid,
   );
+  const handleDatesValidation = createDatesValidationHandler(setDatesValid, datesValid);
 
   const onReCaptchaChange = (token: string | null) => {
     if (!token) {
@@ -160,13 +164,15 @@ export const AddAddress = ({
       <Form action={onSubmit} ref={form}>
         <div className="grid grid-cols-1 gap-y-6 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-2">
           {addressFields.map((field) => {
+            const fieldId = field.entityId;
+
             switch (field.__typename) {
               case 'TextFormField': {
                 return (
-                  <FieldWrapper fieldId={field.entityId} key={field.entityId}>
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <Text
                       field={field}
-                      isValid={textInputValid[field.entityId]}
+                      isValid={textInputValid[fieldId]}
                       name={createFieldName(field, 'address')}
                       onChange={handleTextInputValidation}
                     />
@@ -176,10 +182,10 @@ export const AddAddress = ({
 
               case 'NumberFormField': {
                 return (
-                  <FieldWrapper fieldId={field.entityId} key={field.entityId}>
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <NumbersOnly
                       field={field}
-                      isValid={numbersInputValid[field.entityId]}
+                      isValid={numbersInputValid[fieldId]}
                       name={createFieldName(field, 'address')}
                       onChange={handleNumbersInputValidation}
                     />
@@ -187,21 +193,31 @@ export const AddAddress = ({
                 );
               }
 
+              case 'DateFormField': {
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <DateField
+                      field={field}
+                      isValid={datesValid[fieldId]}
+                      name={createFieldName(field, 'address')}
+                      onChange={handleDatesValidation}
+                      onValidate={setDatesValid}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
               case 'PicklistFormField':
                 return (
-                  <FieldWrapper fieldId={field.entityId} key={field.entityId}>
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <Picklist
                       defaultValue={
-                        field.entityId === FieldNameToFieldId.countryCode
-                          ? defaultCountry.code
-                          : undefined
+                        fieldId === FieldNameToFieldId.countryCode ? defaultCountry.code : undefined
                       }
                       field={field}
                       name={createFieldName(field, 'address')}
                       onChange={
-                        field.entityId === FieldNameToFieldId.countryCode
-                          ? handleCountryChange
-                          : undefined
+                        fieldId === FieldNameToFieldId.countryCode ? handleCountryChange : undefined
                       }
                       options={countries.map(({ name, code }) => {
                         return { label: name, entityId: code };
@@ -212,10 +228,10 @@ export const AddAddress = ({
 
               case 'PicklistOrTextFormField':
                 return (
-                  <FieldWrapper fieldId={field.entityId} key={field.entityId}>
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <PicklistOrText
                       defaultValue={
-                        field.entityId === FieldNameToFieldId.stateOrProvince
+                        fieldId === FieldNameToFieldId.stateOrProvince
                           ? countryStates[0]?.name
                           : undefined
                       }
