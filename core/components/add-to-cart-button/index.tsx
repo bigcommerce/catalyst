@@ -1,7 +1,6 @@
 'use client';
 
 import { FragmentOf } from 'gql.tada';
-import { ShoppingCart } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { Button } from '~/components/ui/button';
@@ -9,15 +8,15 @@ import { Button } from '~/components/ui/button';
 import { AddToCartButtonFragment } from './fragment';
 
 export const AddToCartButton = ({
+  children,
   data: product,
   className,
   loading = false,
-  showCartIcon = false,
 }: {
+  children?: React.ReactNode;
   data: FragmentOf<typeof AddToCartButtonFragment>;
   className?: string;
   loading?: boolean;
-  showCartIcon?: boolean;
 }) => {
   const t = useTranslations('AddToCart');
 
@@ -48,7 +47,7 @@ export const AddToCartButton = ({
       loadingText={t('processing')}
       type="submit"
     >
-      {showCartIcon && <ShoppingCart className="mr-2" />}
+      {children}
       {buttonText()}
     </Button>
   );

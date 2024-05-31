@@ -1,7 +1,7 @@
 'use client';
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { AlertCircle, Check, Heart } from 'lucide-react';
+import { AlertCircle, Check, Heart, ShoppingCart } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
@@ -31,7 +31,11 @@ export const Submit = ({ data: product }: Props) => {
   const { formState } = useFormContext();
   const { isSubmitting } = formState;
 
-  return <AddToCartButton data={product} loading={isSubmitting} showCartIcon={true} />;
+  return (
+    <AddToCartButton data={product} loading={isSubmitting}>
+      <ShoppingCart className="mr-2" />
+    </AddToCartButton>
+  );
 };
 
 export const ProductForm = ({ data: product }: Props) => {
@@ -118,7 +122,7 @@ export const ProductForm = ({ data: product }: Props) => {
           {/* NOT IMPLEMENTED YET */}
           <div className="w-full">
             <Button disabled type="submit" variant="secondary">
-              <Heart aria-hidden="true" className="mx-2" />
+              <Heart aria-hidden="true" className="mr-2" />
               <span>{t('saveToWishlist')}</span>
             </Button>
           </div>
