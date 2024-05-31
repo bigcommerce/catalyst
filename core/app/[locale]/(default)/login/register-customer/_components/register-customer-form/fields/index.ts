@@ -1,3 +1,4 @@
+export * from './date';
 export * from './password';
 export * from './text';
 export * from './numbers-only';

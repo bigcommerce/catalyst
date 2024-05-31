@@ -5,12 +5,22 @@ import { ChangeEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
+import {
+  createFieldName,
+  DateField,
+  FieldWrapper,
+  NumbersOnly,
+} from '~/app/[locale]/(default)/login/register-customer/_components/register-customer-form/fields';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 import { Field, Form, FormSubmit } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 
 import { getCustomerSettingsQuery } from '../../page-data';
+import {
+  createDatesValidationHandler,
+  createNumbersInputValidationHandler,
+} from '../addresses-content/address-field-handlers';
 
 import { updateCustomer } from './_actions/update-customer';
 import { Text } from './fields/text';
@@ -90,6 +100,8 @@ export const UpdateSettingsForm = ({
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
 
   const [textInputValid, setTextInputValid] = useState<Record<string, boolean>>({});
+  const [numbersInputValid, setNumbersInputValid] = useState<Record<string, boolean>>({});
+  const [datesValid, setDatesValid] = useState<Record<string, boolean>>({});
 
   const reCaptchaRef = useRef<ReCaptcha>(null);
   const [reCaptchaToken, setReCaptchaToken] = useState('');
@@ -105,6 +117,11 @@ export const UpdateSettingsForm = ({
 
     setTextInputValid({ ...textInputValid, [fieldId]: !validationStatus });
   };
+  const handleNumbersInputValidation = createNumbersInputValidationHandler(
+    setNumbersInputValid,
+    numbersInputValid,
+  );
+  const handleDatesValidation = createDatesValidationHandler(setDatesValid, datesValid);
 
   const onReCaptchaChange = (token: string | null) => {
     if (!token) {
@@ -167,6 +184,7 @@ export const UpdateSettingsForm = ({
                 isValid={textInputValid[field.entityId]}
                 key={field.entityId}
                 label={field.label}
+                name={createFieldName(field, 'address')}
                 onChange={handleTextInputValidation}
               />
             );
@@ -181,10 +199,86 @@ export const UpdateSettingsForm = ({
                 customerFields.find((field) => field.entityId === FieldNameToFieldId.email)
                   ?.label ?? ''
               }
+              name="customer-email"
               onChange={handleTextInputValidation}
               type="email"
             />
           </div>
+          {customerFields
+            .filter(({ isBuiltIn }) => !isBuiltIn)
+            .map((field) => {
+              const fieldId = field.entityId;
+              const previouslySubmittedField = customerInfo.formFields.find(
+                ({ entityId: id }) => id === fieldId,
+              );
+
+              switch (field.__typename) {
+                case 'NumberFormField': {
+                  const submittedValue =
+                    previouslySubmittedField?.__typename === 'NumberFormFieldValue'
+                      ? previouslySubmittedField.number
+                      : undefined;
+
+                  return (
+                    <FieldWrapper fieldId={fieldId} key={fieldId}>
+                      <NumbersOnly
+                        defaultValue={submittedValue}
+                        field={field}
+                        isValid={numbersInputValid[fieldId]}
+                        name={createFieldName(field, 'customer')}
+                        onChange={handleNumbersInputValidation}
+                      />
+                    </FieldWrapper>
+                  );
+                }
+
+                case 'DateFormField': {
+                  const submittedValue =
+                    previouslySubmittedField?.__typename === 'DateFormFieldValue'
+                      ? previouslySubmittedField.date.utc
+                      : undefined;
+
+                  return (
+                    <FieldWrapper fieldId={fieldId} key={fieldId}>
+                      <DateField
+                        defaultValue={submittedValue}
+                        field={field}
+                        isValid={datesValid[fieldId]}
+                        name={createFieldName(field, 'customer')}
+                        onChange={handleDatesValidation}
+                        onValidate={setDatesValid}
+                      />
+                    </FieldWrapper>
+                  );
+                }
+
+                case 'TextFormField': {
+                  const submittedValue =
+                    previouslySubmittedField?.__typename === 'TextFormFieldValue'
+                      ? previouslySubmittedField.text
+                      : undefined;
+
+                  return (
+                    <FieldWrapper fieldId={fieldId} key={fieldId}>
+                      <Text
+                        defaultValue={submittedValue}
+                        entityId={FieldNameToFieldId.email}
+                        isValid={textInputValid[fieldId]}
+                        label={
+                          customerFields.find(({ entityId: id }) => id === fieldId)?.label ?? ''
+                        }
+                        name={createFieldName(field, 'address')}
+                        onChange={handleTextInputValidation}
+                        type="text"
+                      />
+                    </FieldWrapper>
+                  );
+                }
+
+                default:
+                  return null;
+              }
+            })}
           {reCaptchaSettings?.isEnabledOnStorefront && (
             <Field className="relative col-span-full max-w-full space-y-2 pb-7" name="ReCAPTCHA">
               <ReCaptcha
