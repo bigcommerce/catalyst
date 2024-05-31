@@ -348,7 +348,6 @@ export const UpdateSettingsForm = ({
                   return null;
               }
             })}
-
           {reCaptchaSettings?.isEnabledOnStorefront && (
             <Field className="relative col-span-full max-w-full space-y-2 pb-7" name="ReCAPTCHA">
               <ReCaptcha
