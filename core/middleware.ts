@@ -13,7 +13,8 @@ export const config = {
      * - _next/image (image optimization files)
      * - _vercel (vercel internals, eg: web vitals)
      * - favicon.ico (favicon file)
+     * - xmlsitemap.php (sitemap route)
      */
-    '/((?!api|admin|_next/static|_next/image|_vercel|favicon.ico).*)',
+    '/((?!api|admin|_next/static|_next/image|_vercel|favicon.ico|xmlsitemap.php).*)',
   ],
 };
