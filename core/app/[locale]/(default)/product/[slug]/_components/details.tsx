@@ -155,7 +155,7 @@ export const Details = ({ product }: Props) => {
         </div>
       )}
 
-      <ProductForm product={product} />
+      <ProductForm data={product} />
 
       <div className="my-12">
         <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>

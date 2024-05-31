@@ -1,25 +1,26 @@
 'use client';
 
+import { FragmentOf } from 'gql.tada';
 import { AlertCircle, Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useFormStatus } from 'react-dom';
 import { toast } from 'react-hot-toast';
 
+import { AddToCartButton } from '~/components/add-to-cart-button';
 import { Link } from '~/components/link';
 
-import { addToCart } from '../_actions/add-to-cart';
+import { addToCart } from '../../_actions/add-to-cart';
 
-import { AddToCart } from './add-to-cart';
+import { AddToCartFragment } from './fragment';
 
-export const AddToCartForm = ({
-  entityId,
-  availability,
-  productName,
-}: {
-  entityId: number;
-  availability: 'Unavailable' | 'Available' | 'Preorder';
-  productName: string;
-}) => {
-  const t = useTranslations('Compare');
+const Submit = ({ data: product }: { data: FragmentOf<typeof AddToCartFragment> }) => {
+  const { pending } = useFormStatus();
+
+  return <AddToCartButton data={product} loading={pending} />;
+};
+
+export const AddToCart = ({ data: product }: { data: FragmentOf<typeof AddToCartFragment> }) => {
+  const t = useTranslations('AddToCart');
 
   return (
     <form
@@ -28,7 +29,9 @@ export const AddToCartForm = ({
         const quantity = Number(formData.get('quantity'));
 
         if (result.error) {
-          toast.error(result.error, { icon: <AlertCircle className="text-error-secondary" /> });
+          toast.error(t('errorAddingProductToCart'), {
+            icon: <AlertCircle className="text-error-secondary" />,
+          });
 
           return;
         }
@@ -57,9 +60,9 @@ export const AddToCartForm = ({
         );
       }}
     >
-      <input name="product_id" type="hidden" value={entityId} />
+      <input name="product_id" type="hidden" value={product.entityId} />
       <input name="quantity" type="hidden" value={1} />
-      <AddToCart disabled={availability === 'Unavailable'} productName={productName} />
+      <Submit data={product} />
     </form>
   );
 };
