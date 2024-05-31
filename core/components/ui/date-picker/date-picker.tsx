@@ -8,14 +8,14 @@ import { Calendar } from '../calendar';
 import { Input, InputIcon, InputProps } from '../input';
 import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 
-type DatePickerProps = Omit<InputProps, 'defaultValue'> & {
+type DatePickerProps = Omit<InputProps, 'defaultValue' | 'onSelect'> & {
   defaultValue?: string | Date;
   selected?: DayPickerSingleProps['selected'];
   onSelect?: DayPickerSingleProps['onSelect'];
   disabledDays?: DayPickerSingleProps['disabled'];
 };
 
-export const DatePicker = React.forwardRef<React.ElementRef<'div'>, DatePickerProps>(
+export const DatePicker = React.forwardRef<React.ElementRef<'input'>, DatePickerProps>(
   (
     {
       defaultValue,
@@ -36,12 +36,14 @@ export const DatePicker = React.forwardRef<React.ElementRef<'div'>, DatePickerPr
     const formattedDate = date ? Intl.DateTimeFormat().format(date) : undefined;
 
     return (
-      <div ref={ref}>
+      <div>
         <Popover>
           <PopoverTrigger asChild>
             <Input
               placeholder={placeholder}
-              readOnly={true}
+              //  If the element is read-only, then the element's value can not be updated by the user, and does not participate in constraint validation.
+              readOnly={!required}
+              ref={ref}
               required={required}
               type="text"
               value={formattedSelected ?? formattedDate ?? ''}
