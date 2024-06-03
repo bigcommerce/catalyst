@@ -31,6 +31,23 @@ const SubmitButton = () => {
   );
 };
 
+export const RemoveButton = () => {
+  const t = useTranslations('Cart.CheckoutSummary');
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      className="w-auto items-center p-0 text-primary hover:bg-transparent disabled:text-primary disabled:hover:text-primary"
+      loading={pending}
+      loadingText={t('spinnerText')}
+      type="submit"
+      variant="subtle"
+    >
+      {t('remove')}
+    </Button>
+  );
+};
+
 interface Props {
   checkout: FragmentOf<typeof CouponCodeFragment>;
 }
@@ -89,13 +106,7 @@ export const CouponCode = ({ checkout }: Props) => {
       <form action={onSubmitRemoveCouponCode}>
         <input name="checkoutEntityId" type="hidden" value={checkout.entityId} />
         <input name="couponCode" type="hidden" value={selectedCoupon.code} />
-        <Button
-          className="w-fit p-0 text-primary hover:bg-transparent"
-          type="submit"
-          variant="subtle"
-        >
-          {t('remove')}
-        </Button>
+        <RemoveButton />
       </form>
     </div>
   ) : (
