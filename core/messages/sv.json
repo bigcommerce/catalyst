@@ -61,10 +61,6 @@
             }
         },
         "Form": {
-            "errorMessage": "Något gick fel. Var god försök igen.",
-            "processing": "Behandlar…",
-            "addToCart": "Lägg till i kundvagn",
-            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
             "saveToWishlist": "Spara i önskelistan",
             "quantityLabel": "Kvantitet"
         },
@@ -77,10 +73,6 @@
             "msrp": "MSRP",
             "was": "var",
             "now": "nu",
-            "quickAdd": "Snabbtillägg",
-            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
-            "processing": "Behandlar…",
-            "addToCart": "Lägg till i kundvagn",
             "compare": "Jämför"
         }
     },
@@ -93,10 +85,7 @@
         "chooseOptions": "Välj alternativ",
         "description": "Beskrivning",
         "rating": "Bedömning",
-        "availability": "Tillgänglighet",
-        "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
-        "processing": "Behandlar…",
-        "addToCart": "Lägg till i kundvagn"
+        "availability": "Tillgänglighet"
     },
     "Cart": {
         "heading": "Din vagn",
@@ -181,7 +170,7 @@
             "orders": "Beställningar",
             "messages": "Meddelanden",
             "addresses": "Adresser",
-            "newAddress": "New address",
+            "newAddress": "Ny adress",
             "wishlists": "Önskelistor",
             "recentlyViewed": "Nyss sedda",
             "settings": "Kontoinställningar",
@@ -195,34 +184,34 @@
             "editButton": "Redigera",
             "deleteButton": "Radera",
             "confirmDeleteAddress": "Radera adress",
-            "deleteModalTitle": "Are you sure you want to delete address?",
+            "deleteModalTitle": "Är du säker på att du vill radera adressen?",
             "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
             "emptyTextValidationMessage": "Det här fältet får inte vara tomt",
-            "successMessage": "The address has been created successfully.",
+            "successMessage": "Adressen har skapats.",
             "submit": "Lägg till ny adress",
             "cancel": "Annullera",
-            "submitting": "In progress..."
+            "submitting": "Pågår ..."
         },
         "EditAddress": {
             "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
             "emptyTextValidationMessage": "Det här fältet får inte vara tomt",
-            "successMessage": "The address has been updated successfully.",
+            "successMessage": "Adressen har uppdaterats.",
             "cancel": "Annullera",
             "deleteButton": "Radera",
-            "deleteAddress": "Address deleted from your account.",
+            "deleteAddress": "Adressen har raderats från ditt konto.",
             "confirmDeleteAddress": "Radera adress",
             "deleteModalTitle": "Är du säker på att du vill ta bort den här adressen?",
-            "submit": "Update address",
-            "submitting": "In progress..."
+            "submit": "Uppdatera adress",
+            "submitting": "Pågår ..."
         },
         "Settings": {
             "emptyTextValidatoinMessage": "Det här fältet får inte vara tomt",
             "cancel": "Annullera",
             "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
             "changePassword": "Återställ lösenord",
-            "submit": "Update settings",
-            "submitting": "Update settings...",
-            "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+            "submit": "Uppdatera inställningar",
+            "submitting": "Uppdatera inställningar ...",
+            "successMessage": "Bästa {firstName} {lastName}, du har uppdaterat dina kontouppgifter",
             "validationMessages": {
                 "email": "Ange en giltig e-postadress, t.ex. namn@domän.com",
                 "empty": "Det här fältet får inte vara tomt",
@@ -394,5 +383,15 @@
         "onSubmitText": "Skickar ...",
         "submitFormText": "Skicka formulär",
         "sucessSubmitMessage": "Tack för att du hörde av dig. Vi återkommer till dig inom kort."
+    },
+    "AddToCart": {
+        "addToCart": "Lägg till i kundvagn",
+        "quickAdd": "Snabbtillägg",
+        "outOfStock": "Ej i lager",
+        "preorder": "Förboka",
+        "unavailable": "Inte tillgänglig",
+        "processing": "Behandlar…",
+        "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
+        "errorAddingProductToCart": "Produkten kunde inte läggas till i kundvagnen. Försök igen."
     }
 }

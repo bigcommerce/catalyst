@@ -61,10 +61,6 @@
             }
         },
         "Form": {
-            "errorMessage": "問題が発生しました。 もう一度お試しください。",
-            "processing": "処理中...",
-            "addToCart": "カートに追加",
-            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
             "saveToWishlist": "Save to wishlist",
             "quantityLabel": "数量"
         },
@@ -77,10 +73,6 @@
             "msrp": "メーカー希望小売価格",
             "was": "Was",
             "now": "Now",
-            "quickAdd": "Quick add",
-            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-            "processing": "処理中...",
-            "addToCart": "カートに追加",
             "compare": "価格比較"
         }
     },
@@ -93,10 +85,7 @@
         "chooseOptions": "Choose options",
         "description": "説明",
         "rating": "評価",
-        "availability": "販売中",
-        "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-        "processing": "処理中...",
-        "addToCart": "カートに追加"
+        "availability": "販売中"
     },
     "Cart": {
         "heading": "Your cart",
@@ -394,5 +383,15 @@
         "onSubmitText": "提出中…",
         "submitFormText": "Submit form",
         "sucessSubmitMessage": "Thanks for reaching out. We'll get back to you soon."
+    },
+    "AddToCart": {
+        "addToCart": "カートに追加",
+        "quickAdd": "Quick add",
+        "outOfStock": "品切れ",
+        "preorder": "Preorder",
+        "unavailable": "利用不可",
+        "processing": "処理中...",
+        "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+        "errorAddingProductToCart": "Error adding product to cart. Please try again."
     }
 }

@@ -61,10 +61,6 @@
             }
         },
         "Form": {
-            "errorMessage": "Coś poszło nie tak. Proszę spróbować ponownie.",
-            "processing": "Przetwarzanie...",
-            "addToCart": "Dodaj do koszyka",
-            "addedProductQuantity": "Dodano {cartItems, plural, =1 {1 produkt} other {# produkty(-ów)}} <cartLink>do koszyka</cartLink>",
             "saveToWishlist": "Zapisz na liście życzeń",
             "quantityLabel": "Ilość"
         },
@@ -77,10 +73,6 @@
             "msrp": "SCDP",
             "was": "Było",
             "now": "Teraz",
-            "quickAdd": "Szybkie dodawanie",
-            "addedProductQuantity": "Dodano {cartItems, plural, =1 {1 produkt} other {# produkty(-ów)}} <cartLink>do koszyka</cartLink>",
-            "processing": "Przetwarzanie...",
-            "addToCart": "Dodaj do koszyka",
             "compare": "Porównaj"
         }
     },
@@ -93,10 +85,7 @@
         "chooseOptions": "Wybierz opcje",
         "description": "Opis",
         "rating": "Ocena",
-        "availability": "Dostępność",
-        "addedProductQuantity": "Dodano {cartItems, plural, =1 {1 produkt} other {# produkty(-ów)}} <cartLink>do koszyka</cartLink>",
-        "processing": "Przetwarzanie...",
-        "addToCart": "Dodaj do koszyka"
+        "availability": "Dostępność"
     },
     "Cart": {
         "heading": "Twój koszyk",
@@ -394,5 +383,15 @@
         "onSubmitText": "Przekazanie...",
         "submitFormText": "Prześlij formularz",
         "sucessSubmitMessage": "Dziękuję za kontakt. Skontaktujemy się z Tobą wkrótce."
+    },
+    "AddToCart": {
+        "addToCart": "Dodaj do koszyka",
+        "quickAdd": "Szybkie dodawanie",
+        "outOfStock": "Brak w magazynie",
+        "preorder": "Zamówienie wstępne",
+        "unavailable": "Niedostępne",
+        "processing": "Przetwarzanie...",
+        "addedProductQuantity": "Dodano {cartItems, plural, =1 {1 produkt} other {# produkty(-ów)}} <cartLink>do koszyka</cartLink>",
+        "errorAddingProductToCart": "Błąd podczas dodawania produktu do koszyka. Spróbuj ponownie."
     }
 }
