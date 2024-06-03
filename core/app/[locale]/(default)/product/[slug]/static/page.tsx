@@ -9,7 +9,6 @@ import { locales } from '~/i18n';
 
 import ProductPage from '../page';
 
-export { generateMetadata } from '../page';
 export default ProductPage;
 
 const FeaturedProductsQuery = graphql(`
