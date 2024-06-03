@@ -9,6 +9,7 @@ import { BreadcrumbsFragment } from '~/components/breadcrumbs';
 import { DescriptionFragment } from './_components/description';
 import { DetailsFragment } from './_components/details';
 import { GalleryFragment } from './_components/gallery/fragment';
+import { ProductViewedFragment } from './_components/product-viewed';
 import { WarrantyFragment } from './_components/warranty';
 
 const ProductPageQuery = graphql(
@@ -18,6 +19,7 @@ const ProductPageQuery = graphql(
         product(entityId: $entityId, optionValueIds: $optionValueIds) {
           ...GalleryFragment
           ...DetailsFragment
+          ...ProductViewedFragment
           ...DescriptionFragment
           ...WarrantyFragment
           entityId
@@ -42,7 +44,14 @@ const ProductPageQuery = graphql(
       }
     }
   `,
-  [BreadcrumbsFragment, GalleryFragment, DetailsFragment, DescriptionFragment, WarrantyFragment],
+  [
+    BreadcrumbsFragment,
+    GalleryFragment,
+    DetailsFragment,
+    ProductViewedFragment,
+    DescriptionFragment,
+    WarrantyFragment,
+  ],
 );
 
 type ProductPageQueryVariables = VariablesOf<typeof ProductPageQuery>;

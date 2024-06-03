@@ -1,13 +1,29 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider, Customer, Product } from '../../types';
+import {
+  CartViewedPayload,
+  CategoryViewedPayload,
+  Product,
+  ProductAddedPayload,
+  ProductRemovedPayload,
+  ProductViewedPayload,
+  Provider,
+  SearchPayload,
+} from '../../types';
 
 import { type Ga4Config, subscribeOnBodlEvents } from './ga4';
 
 // TODO: import this types from bodl-events package?
 declare global {
   interface Window {
-    bodlEvents?: any;
+    bodlEvents?: {
+      cart?: {
+        emit: (event: string, payload: unknown) => void;
+      };
+      product?: {
+        emit: (event: string, payload: unknown) => void;
+      };
+    };
   }
 }
 
@@ -16,12 +32,72 @@ export interface BodlConfig {
   ga4?: Ga4Config;
 }
 
-export class Bodl implements AnalyticsProvider {
+const lineItemTransform = (product: Product) => {
+  const categoryNames = product.categories?.edges
+    .map((category: { node: { breadcrumbs: any } }) => category.node.breadcrumbs.edges)
+    .map((breadcrumb: { node: { name: any } }) => breadcrumb.node.name);
+
+  return {
+    product_id: product.entityId,
+    product_name: product.name,
+    brand_name: product.brand?.name,
+    sku: product.sku,
+    sale_price: product.prices?.salePrice?.value,
+    purchase_price: product.prices?.price.value || product.prices?.salePrice?.value,
+    base_price: product.prices?.price.value,
+    retail_price: product.prices?.retailPrice?.value || null,
+    currency: product.prices?.price.currencyCode,
+    category_names: categoryNames,
+    variant_id: product.variants?.edges.map(
+      (variant: { node: { entityId: any } }) => variant.node.entityId,
+    ),
+  };
+};
+
+export class BodlProvider implements Provider {
   private initialized = false;
 
   constructor(private config: BodlConfig) {}
 
-  init(globalConfig?: AnalyticsConfig) {
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  navigation = {
+    search: (payload: SearchPayload) => null,
+    productViewed: (payload: ProductViewedPayload) => {
+      window.bodlEvents.product?.emit('bodl_v1_product_page_viewed', {
+        event_id: uuidv4(),
+        product_value: payload.product.prices?.price.value,
+        currency: payload.product.prices?.price.currencyCode,
+        line_items: [lineItemTransform(payload.product)],
+      });
+    },
+    categoryViewed: (payload: CategoryViewedPayload) => null,
+  };
+
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  cart = {
+    productAdded: (payload: ProductAddedPayload) => {
+      window.bodlEvents?.cart?.emit('bodl_v1_cart_product_added', {
+        event_id: uuidv4(),
+        product_value: payload.product.prices?.price.value * payload.quantity,
+        currency: payload.product.prices?.price.currencyCode,
+        line_items: [
+          {
+            ...lineItemTransform(payload.product),
+            quantity: payload.quantity,
+          },
+        ],
+      });
+    },
+    productRemoved: (payload: ProductRemovedPayload) => null,
+    cartViewed: (payload: CartViewedPayload) => null,
+  };
+
+  customEvent(payload: unknown) {
+    return null;
+  }
+
+  // RECOMMENDATION: This method could be return a singleton that could be called in every event call to avoid multiple initialization
+  init() {
     if (typeof window == 'undefined') {
       console.warn('Bodl must be initialized in browser environment.');
 
@@ -56,74 +132,5 @@ export class Bodl implements AnalyticsProvider {
     script.onload = load;
     el.appendChild(script);
     this.initialized = true;
-  }
-
-  trackEvent(event: AnalyticsEvent, globalConfig?: AnalyticsConfig) {
-    if (!window.bodlEvents) {
-      // TODO: temporary hack - wait for bodl-events script to be loaded
-      setTimeout(() => this.trackEvent(event, globalConfig), 1000);
-
-      console.warn('Bodl is not initialized, call init method first.');
-      return;
-    }
-
-    const basicEvent = {
-      event_id: uuidv4(),
-      ...globalConfig,
-    };
-
-    const lineItemTransform = (product: Product) => {
-      const categoryNames = product.categories?.edges
-        .flatMap((category: { node: { breadcrumbs: any } }) => category.node.breadcrumbs.edges)
-        .map((breadcrumb: { node: { name: any } }) => breadcrumb.node.name);
-
-      return {
-        product_id: product.entityId,
-        product_name: product.name,
-        brand_name: product.brand?.name,
-        sku: product.sku,
-        sale_price: product.prices?.salePrice?.value,
-        purchase_price: product.prices?.price.value || product.prices?.salePrice?.value,
-        base_price: product.prices?.price.value,
-        retail_price: product.prices?.retailPrice?.value || null,
-        currency: product.prices?.price.currencyCode,
-        category_names: categoryNames,
-        variant_id: product.variants?.edges.map(
-          (variant: { node: { entityId: any } }) => variant.node.entityId,
-        ),
-      };
-    };
-
-    switch (event.type) {
-      case 'product_viewed':
-        window.bodlEvents?.product?.emit('bodl_v1_product_page_viewed', {
-          ...basicEvent,
-          product_value: event.product.prices?.price.value,
-          currency: event.product.prices?.price.currencyCode,
-          line_items: [lineItemTransform(event.product)],
-        });
-        break;
-
-      case 'cart_added':
-        window.bodlEvents?.cart?.emit('bodl_v1_cart_product_added', {
-          ...basicEvent,
-          product_value: event.product.prices?.price.value * event.quantity,
-          currency: event.product.prices?.price.currencyCode,
-          line_items: [
-            {
-              ...lineItemTransform(event.product),
-              quantity: event.quantity,
-            },
-          ],
-        });
-        break;
-
-      default:
-        console.warn('Event is not supported by BODL', event);
-    }
-  }
-
-  setCustomer(customer: Customer, globalConfig?: AnalyticsConfig) {
-    console.log('setCustomer', customer, this.config, globalConfig);
   }
 }

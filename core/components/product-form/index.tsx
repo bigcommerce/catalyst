@@ -6,10 +6,10 @@ import { useTranslations } from 'next-intl';
 import { FormProvider } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
+import { useAnalytics } from '~/app/contexts/analytics-context';
 import { FragmentOf } from '~/client/graphql';
 import { Button } from '~/components/ui/button';
 
-import { useAnalytics } from '~/app/contexts/analytics-context';
 import { Link } from '../link';
 
 import { handleAddToCart } from './_actions/add-to-cart';
@@ -48,8 +48,7 @@ export const ProductForm = ({ product }: Props) => {
     }
 
     // Trigger browser event from client component
-    analytics.trackEvent({
-      type: 'cart_added',
+    analytics.cart.productAdded({
       product,
       quantity,
     });

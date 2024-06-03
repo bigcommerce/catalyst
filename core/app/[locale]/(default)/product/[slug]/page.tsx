@@ -5,13 +5,13 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
-import { BcAnalytics } from '~/components/bc-analytics';
 import { Breadcrumbs } from '~/components/breadcrumbs';
 import { LocaleType } from '~/i18n';
 
 import { Description } from './_components/description';
 import { Details } from './_components/details';
 import { Gallery } from './_components/gallery';
+import { ProductViewed } from './_components/product-viewed';
 import { RelatedProducts } from './_components/related-products';
 import { Reviews } from './_components/reviews';
 import { Warranty } from './_components/warranty';
@@ -97,13 +97,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
         <RelatedProducts productId={product.entityId} />
       </Suspense>
 
-      {/*Trigger browser event from server component with the help of client component*/}
-      <BcAnalytics
-        event={{
-          type: 'product_viewed',
-          product,
-        }}
-      />
+      <ProductViewed />
     </>
   );
 }

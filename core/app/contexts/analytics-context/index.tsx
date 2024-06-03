@@ -1,7 +1,7 @@
+import { AnalyticsProvider as BcAnalyticsProvider, BodlProvider } from '@bigcommerce/analytics';
 import { createContext, PropsWithChildren, useContext } from 'react';
-import { BcAnalytics, Bodl as BodlAnalytics } from '@bigcommerce/analytics';
 
-const Bodl = new BodlAnalytics({
+const Bodl = new BodlProvider({
   // TODO: Replace with actual store configuration
   ga4: {
     gaId: process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ?? '',
@@ -10,11 +10,9 @@ const Bodl = new BodlAnalytics({
   },
 });
 
-const Analytics = new BcAnalytics([Bodl], {
-  channel_id: process.env.BIGCOMMERCE_CHANNEL_ID ?? '1',
-});
+const Analytics = new BcAnalyticsProvider([Bodl]);
 
-const AnalyticsContext = createContext<BcAnalytics | null>(null);
+const AnalyticsContext = createContext<BcAnalyticsProvider | null>(null);
 
 export const AnalyticsProvider = ({ children }: PropsWithChildren) => {
   return <AnalyticsContext.Provider value={Analytics}>{children}</AnalyticsContext.Provider>;
