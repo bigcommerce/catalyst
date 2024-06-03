@@ -45,7 +45,7 @@ const SwatchItem = forwardRef<ElementRef<typeof RadioGroupPrimitive.Item>, Swatc
       ) : (
         <span
           className={cn(
-            'relative block h-9 w-9 overflow-hidden border border-gray-200 group-disabled:border-gray-100 ',
+            'relative block h-9 w-9 overflow-hidden border border-gray-200 group-disabled:border-gray-100',
             className,
           )}
           ref={ref}
