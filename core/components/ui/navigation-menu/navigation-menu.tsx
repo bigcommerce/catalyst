@@ -119,7 +119,7 @@ const NavigationMenuContent = forwardRef<
   return (
     <NavigationMenuPrimitive.Content
       className={cn(
-        '2xl:container  2xl:mx-auto',
+        '2xl:container 2xl:mx-auto',
         !isExpanded &&
           'data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52',
         isExpanded && 'duration-200 animate-in slide-in-from-top-2',
