@@ -61,10 +61,6 @@
             }
         },
         "Form": {
-            "errorMessage": "Ocorreu um erro. Tente novamente.",
-            "processing": "Processando...",
-            "addToCart": "Adicionar ao carrinho",
-            "addedProductQuantity": "{cartItems, plural, =1 {1 item} other {# itens}} adicionado(s) <cartLink> ao carrinho</cartLink>",
             "saveToWishlist": "Salvar na lista de desejos",
             "quantityLabel": "Quantidade"
         },
@@ -77,10 +73,6 @@
             "msrp": "MSRP",
             "was": "era",
             "now": "agora",
-            "quickAdd": "Adição rápida",
-            "addedProductQuantity": "{cartItems, plural, =1 {1 item} other {# itens}} adicionado(s) <cartLink> ao carrinho</cartLink>",
-            "processing": "Processando...",
-            "addToCart": "Adicionar ao carrinho",
             "compare": "Comparar"
         }
     },
@@ -93,10 +85,7 @@
         "chooseOptions": "Selecionar opções",
         "description": "Descrição",
         "rating": "Taxa",
-        "availability": "Disponibilidade",
-        "addedProductQuantity": "{cartItems, plural, =1 {1 item} other {# itens}} adicionado(s) <cartLink> ao carrinho</cartLink>",
-        "processing": "Processando...",
-        "addToCart": "Adicionar ao carrinho"
+        "availability": "Disponibilidade"
     },
     "Cart": {
         "heading": "Seu carrinho",
@@ -394,5 +383,15 @@
         "onSubmitText": "Enviando...",
         "submitFormText": "Enviar formulário",
         "sucessSubmitMessage": "Agradecemos o contato. Responderemos em breve."
+    },
+    "AddToCart": {
+        "addToCart": "Adicionar ao carrinho",
+        "quickAdd": "Adição rápida",
+        "outOfStock": "Fora do estoque",
+        "preorder": "Pré-venda",
+        "unavailable": "Indisponível",
+        "processing": "Processando...",
+        "addedProductQuantity": "{cartItems, plural, =1 {1 item} other {# itens}} adicionado(s) <cartLink> ao carrinho</cartLink>",
+        "errorAddingProductToCart": "Erro ao colocar o produto no carrinho. Tente novamente."
     }
 }

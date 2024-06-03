@@ -61,10 +61,6 @@
             }
         },
         "Form": {
-            "errorMessage": "Er is iets fout gegaan. Probeer het opnieuw.",
-            "processing": "Verwerken...",
-            "addToCart": "Toevoegen aan winkelmandje",
-            "addedProductQuantity": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>",
             "saveToWishlist": "Opslaan in verlanglijstje",
             "quantityLabel": "Aantal"
         },
@@ -77,10 +73,6 @@
             "msrp": "Adviesprijs",
             "was": "was",
             "now": "nu",
-            "quickAdd": "Snel toevoegen",
-            "addedProductQuantity": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>",
-            "processing": "Verwerken...",
-            "addToCart": "Toevoegen aan winkelmandje",
             "compare": "Vergelijken"
         }
     },
@@ -93,10 +85,7 @@
         "chooseOptions": "Opties kiezen",
         "description": "Description",
         "rating": "Beoordeling",
-        "availability": "Beschikbaarheid",
-        "addedProductQuantity": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>",
-        "processing": "Verwerken...",
-        "addToCart": "Toevoegen aan winkelmandje"
+        "availability": "Beschikbaarheid"
     },
     "Cart": {
         "heading": "Uw winkelmandje",
@@ -181,7 +170,7 @@
             "orders": "Bestellingen",
             "messages": "Berichten",
             "addresses": "Adressen",
-            "newAddress": "New address",
+            "newAddress": "Nieuw adres",
             "wishlists": "Verlanglijstjes",
             "recentlyViewed": "Recent weergegeven",
             "settings": "Accountinstellingen",
@@ -195,34 +184,34 @@
             "editButton": "Bewerken",
             "deleteButton": "Verwijderen",
             "confirmDeleteAddress": "Adres verwijderen",
-            "deleteModalTitle": "Are you sure you want to delete address?",
+            "deleteModalTitle": "Weet je zeker dat je dit adres wilt verwijderen?",
             "recaptchaText": "reCAPTCHA-check doorstaan",
             "emptyTextValidationMessage": "Dit veld mag niet leeg zijn",
-            "successMessage": "The address has been created successfully.",
+            "successMessage": "Het adres is aangemaakt.",
             "submit": "Nieuw adres toevoegen",
             "cancel": "Annuleren",
-            "submitting": "In progress..."
+            "submitting": "In uitvoering..."
         },
         "EditAddress": {
             "recaptchaText": "reCAPTCHA-check doorstaan",
             "emptyTextValidationMessage": "Dit veld mag niet leeg zijn",
-            "successMessage": "The address has been updated successfully.",
+            "successMessage": "Het adres is bijgewerkt.",
             "cancel": "Annuleren",
             "deleteButton": "Verwijderen",
-            "deleteAddress": "Address deleted from your account.",
+            "deleteAddress": "Adres is verwijderd uit je account.",
             "confirmDeleteAddress": "Adres verwijderen",
             "deleteModalTitle": "Weet u zeker dat u dit adres wilt verwijderen?",
-            "submit": "Update address",
-            "submitting": "In progress..."
+            "submit": "Adres bijwerken",
+            "submitting": "In uitvoering..."
         },
         "Settings": {
             "emptyTextValidatoinMessage": "Dit veld mag niet leeg zijn",
             "cancel": "Annuleren",
             "recaptchaText": "reCAPTCHA-check doorstaan",
             "changePassword": "Wachtwoord opnieuw instellen",
-            "submit": "Update settings",
-            "submitting": "Update settings...",
-            "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+            "submit": "INSTELLINGEN BIJWERKEN",
+            "submitting": "Instellingen bijwerken...",
+            "successMessage": "Beste {firstName} {lastName}, je accountgegevens zijn bijgewerkt.",
             "validationMessages": {
                 "email": "Voer een geldig e-mailadres in, zoals naam@domein.com",
                 "empty": "Dit veld mag niet leeg zijn",
@@ -394,5 +383,15 @@
         "onSubmitText": "Verzenden...",
         "submitFormText": "Formulier indienen",
         "sucessSubmitMessage": "Bedankt voor je bericht. We nemen snel contact met je op."
+    },
+    "AddToCart": {
+        "addToCart": "Toevoegen aan winkelmandje",
+        "quickAdd": "Snel toevoegen",
+        "outOfStock": "Niet op voorraad",
+        "preorder": "Vooruitbestellen",
+        "unavailable": "Niet beschikbaar",
+        "processing": "Verwerken...",
+        "addedProductQuantity": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>",
+        "errorAddingProductToCart": "Fout opgetreden bij het toevoegen van product aan winkelwagen. Probeer het opnieuw."
     }
 }

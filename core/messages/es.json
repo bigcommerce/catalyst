@@ -61,10 +61,6 @@
             }
         },
         "Form": {
-            "errorMessage": "Algo ha salido mal. Vuelva a intentarlo.",
-            "processing": "Procesando...",
-            "addToCart": "Añadir al carrito",
-            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} añadidos <cartLink> al carrito</cartLink>",
             "saveToWishlist": "Guardar en la lista de deseos",
             "quantityLabel": "Cantidad"
         },
@@ -77,10 +73,6 @@
             "msrp": "PVP",
             "was": "era",
             "now": "ahora",
-            "quickAdd": "Añadir ahora",
-            "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} añadidos <cartLink> al carrito</cartLink>",
-            "processing": "Procesando...",
-            "addToCart": "Añadir al carrito",
             "compare": "Comparar"
         }
     },
@@ -93,10 +85,7 @@
         "chooseOptions": "Elegir opciones",
         "description": "Descripción",
         "rating": "Calificación",
-        "availability": "Disponibilidad",
-        "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} añadidos <cartLink> al carrito</cartLink>",
-        "processing": "Procesando...",
-        "addToCart": "Añadir al carrito"
+        "availability": "Disponibilidad"
     },
     "Cart": {
         "heading": "Su carrito",
@@ -181,7 +170,7 @@
             "orders": "Pedidos",
             "messages": "Mensajes",
             "addresses": "Direcciones",
-            "newAddress": "New address",
+            "newAddress": "Nueva dirección",
             "wishlists": "Listas de deseos",
             "recentlyViewed": "Vistos recientemente",
             "settings": "Configuración de la cuenta",
@@ -195,34 +184,34 @@
             "editButton": "Editar",
             "deleteButton": "Eliminar",
             "confirmDeleteAddress": "Eliminar dirección",
-            "deleteModalTitle": "Are you sure you want to delete address?",
+            "deleteModalTitle": "¿Seguro que quieres eliminar la dirección?",
             "recaptchaText": "Pasar la verificación ReCAPTCHA",
             "emptyTextValidationMessage": "Este campo no puede estar vacío",
-            "successMessage": "The address has been created successfully.",
+            "successMessage": "La dirección se ha creado correctamente.",
             "submit": "Añadir nueva dirección",
             "cancel": "Cancelar",
-            "submitting": "In progress..."
+            "submitting": "En curso..."
         },
         "EditAddress": {
             "recaptchaText": "Pasar la verificación ReCAPTCHA",
             "emptyTextValidationMessage": "Este campo no puede estar vacío",
-            "successMessage": "The address has been updated successfully.",
+            "successMessage": "La dirección se ha actualizado correctamente.",
             "cancel": "Cancelar",
             "deleteButton": "Eliminar",
-            "deleteAddress": "Address deleted from your account.",
+            "deleteAddress": "Dirección eliminada de tu cuenta.",
             "confirmDeleteAddress": "Eliminar dirección",
             "deleteModalTitle": "¿Está seguro de que desea eliminar esta dirección?",
-            "submit": "Update address",
-            "submitting": "In progress..."
+            "submit": "Actualizar dirección",
+            "submitting": "En curso..."
         },
         "Settings": {
             "emptyTextValidatoinMessage": "Este campo no puede estar vacío",
             "cancel": "Cancelar",
             "recaptchaText": "Pasar la verificación ReCAPTCHA",
             "changePassword": "Restablecer la contraseña",
-            "submit": "Update settings",
-            "submitting": "Update settings...",
-            "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+            "submit": "ACTUALICE LA CONFIGURACIÓN",
+            "submitting": "Actualizando la configuración...",
+            "successMessage": "Estimado/a {firstName} {lastName}, has actualizado correctamente los datos de tu cuenta.",
             "validationMessages": {
                 "email": "Introduce un correo electrónico válido, como nombre@dominio.com",
                 "empty": "Este campo no puede estar vacío",
@@ -394,5 +383,15 @@
         "onSubmitText": "Enviando...",
         "submitFormText": "Enviar formulario",
         "sucessSubmitMessage": "Gracias por ponerte en contacto con nosotros. Nos pondremos en contacto contigo pronto."
+    },
+    "AddToCart": {
+        "addToCart": "Añadir al carrito",
+        "quickAdd": "Añadir ahora",
+        "outOfStock": "Sin existencias",
+        "preorder": "Preorder",
+        "unavailable": "No disponible",
+        "processing": "Procesando...",
+        "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} añadidos <cartLink> al carrito</cartLink>",
+        "errorAddingProductToCart": "Error adding product to cart. Please try again."
     }
 }
