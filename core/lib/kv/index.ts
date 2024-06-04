@@ -77,6 +77,12 @@ async function createKVAdapter() {
     return new VercelKvAdapter();
   }
 
+  if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+    const { UpstashKvAdapter } = await import('./adapters/upstash');
+
+    return new UpstashKvAdapter();
+  }
+
   const { MemoryKvAdapter } = await import('./adapters/memory');
 
   return new MemoryKvAdapter();
