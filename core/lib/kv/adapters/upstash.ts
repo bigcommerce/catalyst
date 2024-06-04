@@ -7,12 +7,8 @@ import { MemoryKvAdapter } from './memory';
 const memoryKv = new MemoryKvAdapter();
 
 export class UpstashKvAdapter implements KvAdapter {
-  private upstashKv: Redis;
+  private upstashKv = Redis.fromEnv();
   private memoryKv = memoryKv;
-
-  constructor() {
-    this.upstashKv = Redis.fromEnv();
-  }
 
   async get<Data>(key: string) {
     const memoryValue = await this.memoryKv.get<Data>(key);
