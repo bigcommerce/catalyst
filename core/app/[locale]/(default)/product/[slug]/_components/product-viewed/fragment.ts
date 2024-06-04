@@ -1,14 +1,8 @@
-'use client';
-
-import { FragmentOf, graphql } from 'gql.tada';
-import { useEffect } from 'react';
+import { graphql } from 'gql.tada';
 
 import { ProductFormFragment } from '~/components/product-form/fragment';
-
-import { useAnalytics } from '../../../../../contexts/analytics-context';
-
-import { ProductSchemaFragment } from './product-schema';
-import { ReviewSummaryFragment } from './review-summary';
+import { ProductSchemaFragment } from '../product-schema';
+import { ReviewSummaryFragment } from '../review-summary';
 
 export const ProductViewedFragment = graphql(
   `
@@ -69,17 +63,3 @@ export const ProductViewedFragment = graphql(
   `,
   [ReviewSummaryFragment, ProductSchemaFragment, ProductFormFragment],
 );
-
-interface Props {
-  product: FragmentOf<typeof ProductViewedFragment>;
-}
-
-export const ProductViewed = ({ product }: Props) => {
-  const analytics = useAnalytics();
-
-  useEffect(() => {
-    analytics.navigation.productViewed({ product });
-  }, [analytics.navigation, product]);
-
-  return null;
-};

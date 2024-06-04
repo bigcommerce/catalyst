@@ -97,7 +97,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
         <RelatedProducts productId={product.entityId} />
       </Suspense>
 
-      <ProductViewed />
+      <ProductViewed product={product} />
     </>
   );
 }

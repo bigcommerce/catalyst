@@ -63,7 +63,7 @@ export class BodlProvider implements Provider {
   navigation = {
     search: (payload: SearchPayload) => null,
     productViewed: (payload: ProductViewedPayload) => {
-      window.bodlEvents.product?.emit('bodl_v1_product_page_viewed', {
+      window.bodlEvents?.product?.emit('bodl_v1_product_page_viewed', {
         event_id: uuidv4(),
         product_value: payload.product.prices?.price.value,
         currency: payload.product.prices?.price.currencyCode,

@@ -9,7 +9,7 @@ import { BreadcrumbsFragment } from '~/components/breadcrumbs';
 import { DescriptionFragment } from './_components/description';
 import { DetailsFragment } from './_components/details';
 import { GalleryFragment } from './_components/gallery/fragment';
-import { ProductViewedFragment } from './_components/product-viewed';
+import { ProductViewedFragment } from './_components/product-viewed/fragment';
 import { WarrantyFragment } from './_components/warranty';
 
 const ProductPageQuery = graphql(
