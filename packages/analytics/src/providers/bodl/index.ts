@@ -28,6 +28,7 @@ declare global {
 }
 
 export interface BodlConfig {
+  channel_id: string;
   // More analytics providers supported by BODL can be added here
   ga4?: Ga4Config;
 }
@@ -65,6 +66,7 @@ export class BodlProvider implements Provider {
     productViewed: (payload: ProductViewedPayload) => {
       window.bodlEvents?.product?.emit('bodl_v1_product_page_viewed', {
         event_id: uuidv4(),
+        channel_id: this.config.channel_id,
         product_value: payload.product.prices?.price.value,
         currency: payload.product.prices?.price.currencyCode,
         line_items: [lineItemTransform(payload.product)],
@@ -78,6 +80,7 @@ export class BodlProvider implements Provider {
     productAdded: (payload: ProductAddedPayload) => {
       window.bodlEvents?.cart?.emit('bodl_v1_cart_product_added', {
         event_id: uuidv4(),
+        channel_id: this.config.channel_id,
         product_value: payload.product.prices?.price.value * payload.quantity,
         currency: payload.product.prices?.price.currencyCode,
         line_items: [

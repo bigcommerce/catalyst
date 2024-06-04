@@ -2,6 +2,7 @@ import { AnalyticsProvider as BcAnalyticsProvider, BodlProvider } from '@bigcomm
 import { createContext, PropsWithChildren, useContext } from 'react';
 
 const Bodl = new BodlProvider({
+  channel_id: process.env.BIGCOMMERCE_CHANNEL_ID ?? '1',
   // TODO: Replace with actual store configuration
   ga4: {
     gaId: process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ?? '',
