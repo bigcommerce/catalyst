@@ -27,6 +27,9 @@ export const getRoute = async (path: string) => {
   const token = process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '';
   const channelId = process.env.BIGCOMMERCE_CHANNEL_ID ?? 1;
 
+  // eslint-disable-next-line no-console
+  console.time('getRoute');
+
   const data = await fetch(
     `https://catalyst-worker.bigcommerce-testing-7727.workers.dev/v1/${storeHash}/${channelId}/route?path=${path}`,
     // `http://localhost:8787/v1/${storeHash}/${channelId}/route?path=${path}`,
@@ -38,6 +41,9 @@ export const getRoute = async (path: string) => {
       },
     },
   );
+
+  // eslint-disable-next-line no-console
+  console.timeEnd('getRoute');
 
   return RouteSchema.parse(await data.json());
 };
