@@ -49,11 +49,12 @@ const AddressChangeButtons = ({ addressId, isAddressRemovable, onDelete }: Addre
         actionHandler={handleDeleteAddress}
         confirmationText={t('confirmDeleteAddress')}
         title={t('deleteModalTitle')}
-      >
-        <Button aria-label={t('deleteButton')} disabled={!isAddressRemovable} variant="subtle">
-          {t('deleteButton')}
-        </Button>
-      </Modal>
+        trigger={
+          <Button aria-label={t('deleteButton')} disabled={!isAddressRemovable} variant="subtle">
+            {t('deleteButton')}
+          </Button>
+        }
+      />
     </div>
   );
 };
