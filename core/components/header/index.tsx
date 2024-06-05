@@ -63,6 +63,7 @@ export const Header = async ({ cart }: Props) => {
             items={[
               { href: '/account', label: t('Account.myAccount') },
               { href: '/account/addresses', label: t('Account.addresses') },
+              { href: '/account/wishlists', label: t('Account.wishlists') },
               { href: '/account/settings', label: t('Account.accountSettings') },
               { action: logout, name: t('Account.logout') },
             ]}

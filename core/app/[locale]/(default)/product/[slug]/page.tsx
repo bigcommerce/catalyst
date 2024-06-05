@@ -39,7 +39,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const productId = Number(params.slug);
   const optionValueIds = getOptionValueIds({ searchParams });
 
-  const product = await getProduct({
+  const { product } = await getProduct({
     entityId: productId,
     optionValueIds,
     useDefaultOptionSelections: true,
@@ -83,7 +83,7 @@ export default async function Product(props: Props) {
 
   const optionValueIds = getOptionValueIds({ searchParams });
 
-  const product = await getProduct({
+  const { product, wishlists } = await getProduct({
     entityId: productId,
     optionValueIds,
     useDefaultOptionSelections: true,
@@ -101,7 +101,7 @@ export default async function Product(props: Props) {
 
       <div className="mb-12 mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
         <Gallery product={product} />
-        <Details product={product} />
+        <Details product={product} wishlists={wishlists} />
         <div className="lg:col-span-2">
           <Description product={product} />
           <Warranty product={product} />

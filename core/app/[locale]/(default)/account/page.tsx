@@ -1,11 +1,13 @@
-import { BookUser, Settings } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { BookUser, Gift, Settings } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
+import { createWishlist } from '~/client/mutations/create-wishlist';
 import { Link } from '~/components/link';
+import { LocaleType } from '~/i18n/routing';
 
 import { AccountNotification } from './(tabs)/_components/account-notification';
+import { getAccountData } from './page-data';
 
 interface AccountItem {
   children: ReactNode;
@@ -37,8 +39,21 @@ export async function generateMetadata() {
   };
 }
 
-export default function Account() {
-  const t = useTranslations('Account.Home');
+interface Props {
+  params: {
+    locale: LocaleType;
+  };
+}
+
+export default async function Account({ params: { locale } }: Props) {
+  const accountData = await getAccountData();
+
+  const { wishlists } = accountData;
+  const t = await getTranslations({ locale, namespace: 'Account.Home' });
+
+  if (wishlists.length === 0) {
+    await createWishlist({ input: { name: t('favorites'), isPublic: true } });
+  }
 
   return (
     <div className="mx-auto">
@@ -49,6 +64,9 @@ export default function Account() {
       <div className="mb-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <AccountItem href="/account/addresses" title={t('addresses')}>
           <BookUser className="me-8" size={48} strokeWidth={1.5} />
+        </AccountItem>
+        <AccountItem href="/account/wishlists" title={t('wishlists')}>
+          <Gift className="me-8" size={48} strokeWidth={1.5} />
         </AccountItem>
         <AccountItem href="/account/settings" title={t('settings')}>
           <Settings className="me-8" size={48} strokeWidth={1.5} />

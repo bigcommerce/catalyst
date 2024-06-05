@@ -6,7 +6,7 @@ import { Link } from '~/components/link';
 import { usePathname } from '~/i18n/routing';
 import { cn } from '~/lib/utils';
 
-const tabList = ['addresses', 'settings'] as const;
+const tabList = ['addresses', 'wishlists', 'settings'] as const;
 
 export type TabType = (typeof tabList)[number];
 
@@ -17,6 +17,7 @@ export const TabNavigation = () => {
 
   const tabsTitles = {
     addresses: t('addresses'),
+    wishlists: t('wishlists'),
     settings: t('settings'),
   };
 

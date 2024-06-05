@@ -7,6 +7,8 @@ import { useTranslations } from 'next-intl';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
+import { WishlistSheet } from '~/app/[locale]/(default)/account/(tabs)/wishlists/_components/wishlist-sheet';
+import { Wishlists } from '~/app/[locale]/(default)/product/[slug]/_components/details';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { AddToCartButton } from '~/components/add-to-cart-button';
 import { useCart } from '~/components/header/cart-provider';
@@ -26,6 +28,12 @@ import { ProductFormData, useProductForm } from './use-product-form';
 
 interface Props {
   data: FragmentOf<typeof ProductItemFragment>;
+}
+
+interface ProductFormProps {
+  data: FragmentOf<typeof ProductItemFragment>;
+  isLogged?: boolean;
+  wishlists?: Wishlists;
 }
 
 const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
@@ -58,7 +66,7 @@ export const Submit = ({ data: product }: Props) => {
   );
 };
 
-export const ProductForm = ({ data: product }: Props) => {
+export const ProductForm = ({ data: product, isLogged, wishlists }: ProductFormProps) => {
   const t = useTranslations('Product.Form');
   const productOptions = removeEdgesAndNodes(product.productOptions);
 
@@ -157,14 +165,16 @@ export const ProductForm = ({ data: product }: Props) => {
 
         <div className="mt-4 flex flex-col gap-4 @md:flex-row">
           <Submit data={product} />
-
-          {/* NOT IMPLEMENTED YET */}
-          <div className="w-full">
-            <Button disabled type="submit" variant="secondary">
-              <Heart aria-hidden="true" className="mr-2" />
-              <span>{t('saveToWishlist')}</span>
+          {isLogged && wishlists ? (
+            <WishlistSheet productId={product.entityId} wishlistsData={wishlists} />
+          ) : (
+            <Button asChild type="button" variant="secondary">
+              <Link href="/login">
+                <Heart aria-hidden="true" className="mr-2" />
+                <span>{t('saveToWishlist')}</span>
+              </Link>
             </Button>
-          </div>
+          )}
         </div>
       </form>
     </FormProvider>
