@@ -45,15 +45,12 @@ export const getRoute = async (path: string) => {
 
   const data = await fetch(
     `https://catalyst-worker.bigcommerce-testing-7727.workers.dev/v1/${storeHash}/${channelId}/route?path=${path}`,
-    // `http://localhost:8787/v1/${storeHash}/${channelId}/route?path=${path}`,
     {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'x-token': token,
-        'x-db-type': 'kv',
       },
-      cache: 'force-cache',
     },
   );
 
