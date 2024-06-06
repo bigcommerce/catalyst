@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
 import { State as AccountState } from '../_actions/submit-customer-change-password-form';
 
@@ -9,16 +9,22 @@ export const AccountStatusContext = createContext<{
   setAccountState: (state: AccountState | ((prevState: AccountState) => AccountState)) => void;
 } | null>(null);
 
-export const AccountStatusProvider = ({ children }: PropsWithChildren) => {
+export const AccountStatusProvider = ({
+  children,
+  isPermanentBanner = false,
+}: {
+  children: ReactNode;
+  isPermanentBanner?: boolean;
+}) => {
   const [accountState, setAccountState] = useState<AccountState>({ status: 'idle', message: '' });
 
   useEffect(() => {
-    if (accountState.status !== 'idle') {
+    if (accountState.status !== 'idle' && !isPermanentBanner) {
       setTimeout(() => {
         setAccountState({ status: 'idle', message: '' });
       }, 3000);
     }
-  }, [accountState, setAccountState]);
+  }, [accountState, setAccountState, isPermanentBanner]);
 
   return (
     <AccountStatusContext.Provider value={{ accountState, setAccountState }}>
