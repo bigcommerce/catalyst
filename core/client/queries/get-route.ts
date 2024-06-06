@@ -36,6 +36,8 @@ export const getRoute = async (path: string) => {
   if (response) {
     // eslint-disable-next-line no-console
     console.log('Response found in memory kv!');
+
+    return response;
   }
 
   // eslint-disable-next-line no-console
