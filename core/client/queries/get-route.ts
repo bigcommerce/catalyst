@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
-import { kv } from '~/lib/kv';
+import { MemoryKvAdapter } from '~/lib/kv/adapters/memory';
+
+const kv = new MemoryKvAdapter();
 
 const RedirectSchema = z.object({
   __typename: z.string(),
