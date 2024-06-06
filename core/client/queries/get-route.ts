@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { kv } from '~/lib/kv';
+
 const RedirectSchema = z.object({
   __typename: z.string(),
   to: z.object({
@@ -27,6 +29,13 @@ export const getRoute = async (path: string) => {
   const token = process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '';
   const channelId = process.env.BIGCOMMERCE_CHANNEL_ID ?? 1;
 
+  const response = await kv.get<z.infer<typeof RouteSchema>>(path);
+
+  if (response) {
+    // eslint-disable-next-line no-console
+    console.log('Response found in memory kv!');
+  }
+
   // eslint-disable-next-line no-console
   console.time('getRoute');
 
@@ -46,5 +55,9 @@ export const getRoute = async (path: string) => {
   // eslint-disable-next-line no-console
   console.timeEnd('getRoute');
 
-  return RouteSchema.parse(await data.json());
+  const route = RouteSchema.parse(await data.json());
+
+  await kv.set(path, route);
+
+  return route;
 };
