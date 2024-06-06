@@ -53,6 +53,7 @@ export const getRoute = async (path: string) => {
         'x-token': token,
         'x-db-type': 'kv',
       },
+      cache: 'force-cache',
     },
   );
 
