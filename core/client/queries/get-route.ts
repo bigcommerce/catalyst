@@ -38,6 +38,7 @@ export const getRoute = async (path: string) => {
       headers: {
         'Content-Type': 'application/json',
         'x-token': token,
+        'x-db-type': 'kv',
       },
     },
   );
