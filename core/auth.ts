@@ -13,6 +13,7 @@ export const Credentials = z.object({
 });
 
 const config = {
+  trustHost: true,
   session: {
     strategy: 'jwt',
   },

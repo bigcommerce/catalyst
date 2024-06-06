@@ -1,4 +1,3 @@
-import { cookies } from 'next/headers';
 import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { z } from 'zod';
@@ -155,8 +154,6 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
 
 export const withRoutes: MiddlewareFactory = () => {
   return async (request, event) => {
-    locale = cookies().get('NEXT_LOCALE')?.value || '';
-
     const intlMiddleware = createMiddleware({
       locales,
       localePrefix,
@@ -165,14 +162,16 @@ export const withRoutes: MiddlewareFactory = () => {
     });
     const response = intlMiddleware(request);
 
-    // Early redirect to detected locale if needed
+    locale = response.cookies.get('NEXT_LOCALE')?.value || defaultLocale;
+
     if (response.redirected) {
       return response;
     }
 
-    if (!locale) {
-      // Try to get locale detected by next-intl
-      locale = response.cookies.get('NEXT_LOCALE')?.value || '';
+    if (request.headers.has('x-action-redirect')) {
+      const redirectUrl = new URL(request.headers.get('x-action-redirect') ?? '', request.url);
+
+      return NextResponse.rewrite(new URL(`/${locale}${redirectUrl.pathname}`, request.url));
     }
 
     const { route, status } = await getRouteInfo(request, event);
@@ -184,14 +183,12 @@ export const withRoutes: MiddlewareFactory = () => {
 
     // Follow redirects if found on the route
     // Use 301 status code as it is more universally supported by crawlers
-    const redirectConfig = { status: 301 };
-
     if (route?.redirect) {
       switch (route.redirect.to.__typename) {
         case 'ManualRedirect': {
           // For manual redirects, redirect to the full URL to handle cases
           // where the destination URL might be external to the site
-          return NextResponse.redirect(route.redirect.toUrl, redirectConfig);
+          return NextResponse.redirect(route.redirect.toUrl, { status: 301 });
         }
 
         default: {
@@ -201,7 +198,7 @@ export const withRoutes: MiddlewareFactory = () => {
           const redirectPathname = new URL(route.redirect.toUrl).pathname;
           const redirectUrl = new URL(redirectPathname, request.url);
 
-          return NextResponse.redirect(redirectUrl, redirectConfig);
+          return NextResponse.redirect(redirectUrl, { status: 301 });
         }
       }
     }
