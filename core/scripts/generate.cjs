@@ -44,18 +44,24 @@ const getEndpoint = () => {
 };
 
 const generate = async () => {
-  await generateSchema({
-    input: getEndpoint(),
-    headers: { Authorization: `Bearer ${getToken()}` },
-    output: join(__dirname, '../schema.graphql'),
-    tsconfig: undefined,
-  });
+  try {
+    await generateSchema({
+      input: getEndpoint(),
+      headers: { Authorization: `Bearer ${getToken()}` },
+      output: join(__dirname, '../bigcommerce.graphql'),
+      tsconfig: undefined,
+    });
 
-  await generateOutput({
-    disablePreprocessing: false,
-    output: join(__dirname, '../graphql-env.d.ts'),
-    tsconfig: undefined,
-  });
+    await generateOutput({
+      disablePreprocessing: false,
+      output: undefined,
+      tsconfig: undefined,
+    });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+    process.exit(1);
+  }
 };
 
 generate();

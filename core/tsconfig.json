@@ -25,10 +25,15 @@
       },
       {
         "name": "@0no-co/graphqlsp",
-        "schema": "./schema.graphql",
-        "tadaOutputLocation": "./graphql-env.d.ts",
         "trackFieldUsage": false,
-        "shouldCheckForColocatedFragments": false
+        "shouldCheckForColocatedFragments": false,
+        "schemas": [
+          {
+            "name": "bigcommerce",
+            "schema": "./bigcommerce.graphql",
+            "tadaOutputLocation": "./bigcommerce-graphql.d.ts"
+          }
+        ]
       }
     ],
     "baseUrl": ".",
