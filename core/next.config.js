@@ -14,6 +14,7 @@ const nextConfig = {
   reactStrictMode: true,
   experimental: {
     optimizePackageImports: ['@icons-pack/react-simple-icons'],
+    instrumentationHook: true,
   },
   typescript: {
     ignoreBuildErrors: !!process.env.CI,
