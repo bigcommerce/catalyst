@@ -25,11 +25,9 @@ interface BigCommerceResponse<T> {
 }
 
 class Client<FetcherRequestInit extends RequestInit = RequestInit> {
-  private graphqlUrl: string;
   private backendUserAgent: string;
 
   constructor(private config: Config) {
-    this.graphqlUrl = this.getEndpoint();
     this.backendUserAgent = getBackendUserAgent(config.platform, config.backendUserAgentExtensions);
   }
 
@@ -39,6 +37,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     variables: TVariables;
     customerId?: string;
     fetchOptions?: FetcherRequestInit;
+    channelId?: string;
   }): Promise<BigCommerceResponse<TResult>>;
 
   // Overload for documents that do not require variables
@@ -47,6 +46,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     variables?: undefined;
     customerId?: string;
     fetchOptions?: FetcherRequestInit;
+    channelId?: string;
   }): Promise<BigCommerceResponse<TResult>>;
 
   async fetch<TResult, TVariables>({
@@ -54,17 +54,21 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     variables,
     customerId,
     fetchOptions = {} as FetcherRequestInit,
+    channelId,
   }: {
     document: DocumentDecoration<TResult, TVariables>;
     variables?: TVariables;
     customerId?: string;
     fetchOptions?: FetcherRequestInit;
+    channelId?: string;
   }): Promise<BigCommerceResponse<TResult>> {
     const { cache, headers = {}, ...rest } = fetchOptions;
     const query = normalizeQuery(document);
     const log = this.requestLogger(query);
 
-    const response = await fetch(this.graphqlUrl, {
+    const graphqlUrl = this.getEndpoint(channelId);
+
+    const response = await fetch(graphqlUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -150,8 +154,12 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     return response.json() as Promise<unknown>;
   }
 
-  private getEndpoint() {
-    if (!this.config.channelId || this.config.channelId === '1') {
+  private getEndpoint(channelId?: string) {
+    if (channelId && channelId !== '1') {
+      return `https://store-${this.config.storeHash}-${channelId}.${graphqlApiDomain}/graphql`;
+    }
+
+    if (!this.config.channelId || this.config.channelId === '1' || channelId === '1') {
       return `https://store-${this.config.storeHash}.${graphqlApiDomain}/graphql`;
     }
 
