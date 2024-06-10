@@ -155,6 +155,10 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   }
 
   private getEndpoint(channelId?: string) {
+    if (!channelId && !this.config.channelId) {
+      throw new Error('Missing channelId');
+    }
+
     return `https://store-${this.config.storeHash}-${channelId ?? this.config.channelId}.${graphqlApiDomain}/graphql`;
   }
 
