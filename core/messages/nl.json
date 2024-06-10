@@ -104,6 +104,7 @@
             "couponCodeRequired": "Voer een kortingscode in.",
             "couponCodeInvalid": "De kortingscode die u hebt ingevoerd is niet geldig.",
             "remove": "Verwijderen",
+            "spinnerText": "Verwijderen...",
             "couponCodeRemoveFailed": "Er is een fout opgetreden bij het verwijderen van de kortingscode. Probeer het opnieuw.",
             "tax": "Belasting",
             "grandTotal": "Totaal",

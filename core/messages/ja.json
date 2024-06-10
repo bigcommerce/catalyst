@@ -104,6 +104,7 @@
             "couponCodeRequired": "Please enter a coupon code.",
             "couponCodeInvalid": "入力したクーポンコードが有効ではありません。",
             "remove": "削除",
+            "spinnerText": "Removing...",
             "couponCodeRemoveFailed": "There was an error removing the coupon code. Please try again.",
             "tax": "税金",
             "grandTotal": "総計",

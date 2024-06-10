@@ -104,6 +104,7 @@
             "couponCodeRequired": "Indtast en kuponkode.",
             "couponCodeInvalid": "Den kuponkode, du indtastede, er ikke gyldig.",
             "remove": "Fjern",
+            "spinnerText": "Fjerner ...",
             "couponCodeRemoveFailed": "Der opstod en fejl under fjernelse af kuponkoden. Prøv igen.",
             "tax": "Moms",
             "grandTotal": "Samlet beløb",
@@ -388,10 +389,10 @@
         "addToCart": "Føj til kurv",
         "quickAdd": "Hurtig tilføjelse",
         "outOfStock": "Udsolgt",
-        "preorder": "Preorder",
+        "preorder": "Forudbestil",
         "unavailable": "Ikke tilgængelig",
         "processing": "Behandler...",
         "addedProductQuantity": "<cartLink>{CartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
-        "errorAddingProductToCart": "Error adding product to cart. Please try again."
+        "errorAddingProductToCart": "Fejl ved tilføjelse af produkt til indkøbskurv. Prøv igen."
     }
 }

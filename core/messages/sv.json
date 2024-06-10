@@ -104,6 +104,7 @@
             "couponCodeRequired": "Ange en kupongkod.",
             "couponCodeInvalid": "Kupongkoden du angav är inte giltig.",
             "remove": "Ta bort",
+            "spinnerText": "Tar bort ...",
             "couponCodeRemoveFailed": "Det gick inte att ta bort kupongkoden. Försök igen.",
             "tax": "Beskatta",
             "grandTotal": "Totalsumma",

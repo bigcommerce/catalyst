@@ -104,6 +104,7 @@
             "couponCodeRequired": "Bitte geben Sie einen Gutscheincode ein.",
             "couponCodeInvalid": "Der eingegebene Gutscheincode ist ungültig.",
             "remove": "Entfernen",
+            "spinnerText": "Entfernen ...",
             "couponCodeRemoveFailed": "Beim Entfernen des Gutscheincodes ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
             "tax": "Steuern",
             "grandTotal": "Gesamtsumme",

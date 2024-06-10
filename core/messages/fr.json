@@ -104,6 +104,7 @@
             "couponCodeRequired": "Veuillez saisir un code promotionnel.",
             "couponCodeInvalid": "Le code de réduction saisi n'est pas valide.",
             "remove": "Supprimer",
+            "spinnerText": "Retirer...",
             "couponCodeRemoveFailed": "Une erreur s'est produite dans la suppression du code promotionnel. Veuillez réessayer.",
             "tax": "Taxes",
             "grandTotal": "Total",

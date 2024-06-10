@@ -104,6 +104,7 @@
             "couponCodeRequired": "Skriv inn en kupongkode.",
             "couponCodeInvalid": "Kupongkoden du skrev inn, er ikke gyldig.",
             "remove": "Fjern",
+            "spinnerText": "Fjerner …",
             "couponCodeRemoveFailed": "Det oppsto en feil under fjerning av kupongkoden. Prøv igjen.",
             "tax": "Avgift",
             "grandTotal": "Totalsum",
