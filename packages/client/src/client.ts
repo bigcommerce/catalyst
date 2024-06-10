@@ -155,15 +155,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   }
 
   private getEndpoint(channelId?: string) {
-    if (channelId && channelId !== '1') {
-      return `https://store-${this.config.storeHash}-${channelId}.${graphqlApiDomain}/graphql`;
-    }
-
-    if (!this.config.channelId || this.config.channelId === '1' || channelId === '1') {
-      return `https://store-${this.config.storeHash}.${graphqlApiDomain}/graphql`;
-    }
-
-    return `https://store-${this.config.storeHash}-${this.config.channelId}.${graphqlApiDomain}/graphql`;
+    return `https://store-${this.config.storeHash}-${channelId ?? this.config.channelId}.${graphqlApiDomain}/graphql`;
   }
 
   private requestLogger(document: string) {
