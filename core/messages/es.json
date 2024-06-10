@@ -104,6 +104,7 @@
             "couponCodeRequired": "Introduce un código de cupón.",
             "couponCodeInvalid": "El código de cupón que has introducido no es válido.",
             "remove": "Eliminar",
+            "spinnerText": "Eliminando...",
             "couponCodeRemoveFailed": "Se ha producido un error al eliminar el código del cupón. Inténtalo de nuevo.",
             "tax": "Impuesto",
             "grandTotal": "Total",
@@ -388,10 +389,10 @@
         "addToCart": "Añadir al carrito",
         "quickAdd": "Añadir ahora",
         "outOfStock": "Sin existencias",
-        "preorder": "Preorder",
+        "preorder": "Pedido en preventa",
         "unavailable": "No disponible",
         "processing": "Procesando...",
         "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} añadidos <cartLink> al carrito</cartLink>",
-        "errorAddingProductToCart": "Error adding product to cart. Please try again."
+        "errorAddingProductToCart": "Error al añadir el producto al carrito. Inténtalo de nuevo."
     }
 }

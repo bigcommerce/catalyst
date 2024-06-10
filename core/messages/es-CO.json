@@ -104,6 +104,7 @@
             "couponCodeRequired": "Ingresa un código de cupón.",
             "couponCodeInvalid": "El código de cupón que ingresaste no es válido.",
             "remove": "Quitar",
+            "spinnerText": "Eliminando…",
             "couponCodeRemoveFailed": "Hubo un error al eliminar el código de cupón. Vuelve a intentarlo.",
             "tax": "Impuesto",
             "grandTotal": "Total",
