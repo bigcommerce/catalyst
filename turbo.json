@@ -1,12 +1,22 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDotEnv": [".env.local"],
-  "pipeline": {
+  "remoteCache": {
+    "signature": true
+  },
+  "globalDependencies": [
+    ".env.local"
+  ],
+  "tasks": {
     "topo": {
-      "dependsOn": ["^topo"]
+      "dependsOn": [
+        "^topo"
+      ]
     },
     "build": {
-      "dependsOn": ["^build"],
+      "env": ["*"],
+      "dependsOn": [
+        "^build"
+      ],
       "outputs": [
         "dist/**",
         ".next/**",
@@ -14,18 +24,24 @@
       ]
     },
     "lint": {
-      "dependsOn": ["^build"]
+      "env": ["*"],
+      "dependsOn": [
+        "^build"
+      ]
     },
     "typecheck": {
-      "dependsOn": ["topo"],
-      "outputs": ["node_modules/.cache/tsbuildinfo.json"]
+      "env": ["*"],
+      "dependsOn": [
+        "topo"
+      ],
+      "outputs": [
+        "node_modules/.cache/tsbuildinfo.json"
+      ]
     },
     "dev": {
+      "env": ["*"],
       "cache": false,
       "persistent": true
     }
-  },
-  "remoteCache": {
-    "signature": true
   }
 }
