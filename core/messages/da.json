@@ -61,10 +61,6 @@
             }
         },
         "Form": {
-            "errorMessage": "Noget gik galt. Prøv igen.",
-            "processing": "Behandler...",
-            "addToCart": "Føj til kurv",
-            "addedProductQuantity": "<cartLink>{CartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
             "saveToWishlist": "Gem i ønskeliste",
             "quantityLabel": "Antal"
         },
@@ -77,10 +73,6 @@
             "msrp": "Producents anbefalede detailpris",
             "was": "var",
             "now": "Nu",
-            "quickAdd": "Hurtig tilføjelse",
-            "addedProductQuantity": "<cartLink>{CartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
-            "processing": "Behandler...",
-            "addToCart": "Føj til kurv",
             "compare": "Sammenlign"
         }
     },
@@ -93,10 +85,7 @@
         "chooseOptions": "Vælg valgmuligheder",
         "description": "Beskrivelse",
         "rating": "Bedømmelse",
-        "availability": "Tilgængelighed",
-        "addedProductQuantity": "<cartLink>{CartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
-        "processing": "Behandler...",
-        "addToCart": "Føj til kurv"
+        "availability": "Tilgængelighed"
     },
     "Cart": {
         "heading": "Din indkøbskurv",
@@ -115,6 +104,7 @@
             "couponCodeRequired": "Indtast en kuponkode.",
             "couponCodeInvalid": "Den kuponkode, du indtastede, er ikke gyldig.",
             "remove": "Fjern",
+            "spinnerText": "Fjerner ...",
             "couponCodeRemoveFailed": "Der opstod en fejl under fjernelse af kuponkoden. Prøv igen.",
             "tax": "Moms",
             "grandTotal": "Samlet beløb",
@@ -181,7 +171,7 @@
             "orders": "Ordrer",
             "messages": "Meddelelser",
             "addresses": "Adresser",
-            "newAddress": "New address",
+            "newAddress": "Ny adresse",
             "wishlists": "Ønskelister",
             "recentlyViewed": "Set for nylig",
             "settings": "Kontoindstillinger",
@@ -195,34 +185,34 @@
             "editButton": "Rediger",
             "deleteButton": "Slet",
             "confirmDeleteAddress": "Slet adresse",
-            "deleteModalTitle": "Are you sure you want to delete address?",
+            "deleteModalTitle": "Er du sikker på, at du vil slette adressen?",
             "recaptchaText": "Bestå ReCAPTCHA-kontrol",
             "emptyTextValidationMessage": "Dette felt må ikke være tomt",
-            "successMessage": "The address has been created successfully.",
+            "successMessage": "Adressen er blevet oprettet.",
             "submit": "Tilføj ny adresse",
             "cancel": "Annuller",
-            "submitting": "In progress..."
+            "submitting": "I gang ..."
         },
         "EditAddress": {
             "recaptchaText": "Bestå ReCAPTCHA-kontrol",
             "emptyTextValidationMessage": "Dette felt må ikke være tomt",
-            "successMessage": "The address has been updated successfully.",
+            "successMessage": "Adressen er blevet opdateret.",
             "cancel": "Annuller",
             "deleteButton": "Slet",
-            "deleteAddress": "Address deleted from your account.",
+            "deleteAddress": "Adressen er slettet fra din konto.",
             "confirmDeleteAddress": "Slet adresse",
             "deleteModalTitle": "Er du sikker på, at du vil slette denne adresse?",
-            "submit": "Update address",
-            "submitting": "In progress..."
+            "submit": "Opdatér adresse",
+            "submitting": "I gang ..."
         },
         "Settings": {
             "emptyTextValidatoinMessage": "Dette felt må ikke være tomt",
             "cancel": "Annuller",
             "recaptchaText": "Bestå ReCAPTCHA-kontrol",
             "changePassword": "Nulstil adgangskoden",
-            "submit": "Update settings",
-            "submitting": "Update settings...",
-            "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+            "submit": "Opdater indstillinger",
+            "submitting": "Opdater indstillinger ...",
+            "successMessage": "Kære {firstName} {lastName}, du har opdateret dine kontodata",
             "validationMessages": {
                 "email": "Indtast en gyldig e-mail, f.eks. navn@domæne.com",
                 "empty": "Dette felt må ikke være tomt",
@@ -394,5 +384,15 @@
         "onSubmitText": "Indsender ...",
         "submitFormText": "Indsend formular",
         "sucessSubmitMessage": "Tak for din henvendelse. Vi vender snart tilbage til dig."
+    },
+    "AddToCart": {
+        "addToCart": "Føj til kurv",
+        "quickAdd": "Hurtig tilføjelse",
+        "outOfStock": "Udsolgt",
+        "preorder": "Forudbestil",
+        "unavailable": "Ikke tilgængelig",
+        "processing": "Behandler...",
+        "addedProductQuantity": "<cartLink>{CartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
+        "errorAddingProductToCart": "Fejl ved tilføjelse af produkt til indkøbskurv. Prøv igen."
     }
 }

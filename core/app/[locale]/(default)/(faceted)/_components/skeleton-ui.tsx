@@ -6,7 +6,7 @@ export const SkeletonIU = () => (
       <div className="flex flex-col items-center gap-3 whitespace-nowrap md:flex-row">
         <div className="flex w-full flex-col gap-3 md:flex-row md:justify-between lg:hidden">
           <Skeleton className="h-12 w-full md:w-56" />
-          <Skeleton className="h-12  w-full md:w-56" />
+          <Skeleton className="h-12 w-full md:w-56" />
         </div>
       </div>
     </div>

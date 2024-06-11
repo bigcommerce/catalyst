@@ -70,9 +70,6 @@ test('Complete checkout as a logged in shopper', async ({ page }) => {
   await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
   await page.getByRole('button', { name: 'Proceed to checkout' }).click();
 
-  await page.getByLabel('Email').fill(faker.internet.email());
-  await page.getByRole('button', { name: 'Continue' }).click();
-
   await enterShopperDetails(page);
 
   await page.getByRole('button', { name: 'Continue' }).click();

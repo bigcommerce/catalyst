@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.8.0
+
+### Minor Changes
+
+- [#936](https://github.com/bigcommerce/catalyst/pull/936) [`8416cd0`](https://github.com/bigcommerce/catalyst/commit/8416cd068c541c9e298ca31422ba5954a59dc868) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Adds more helpful error messaging when using older versions of Node (<12) with the CLI
+
+### Patch Changes
+
+- [#935](https://github.com/bigcommerce/catalyst/pull/935) [`9e9c0e9`](https://github.com/bigcommerce/catalyst/commit/9e9c0e93d707edd160d5cfd7156ab26e45a4847a) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Move CLI command configuration closer to command action handlers
+
 ## 0.7.0
 
 ### Minor Changes

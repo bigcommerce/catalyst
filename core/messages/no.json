@@ -61,10 +61,6 @@
             }
         },
         "Form": {
-            "errorMessage": "Noe gikk galt. Prøv igjen.",
-            "processing": "Behandler …",
-            "addToCart": "Legg i handlekurv",
-            "addedProductQuantity": "{cartItems, plural, =1 {1 vare} other {# varer}} lagt til i <cartLink>handlekurven din</cartLink>",
             "saveToWishlist": "Legg til på ønskeliste",
             "quantityLabel": "Mengde"
         },
@@ -77,10 +73,6 @@
             "msrp": "MSRP",
             "was": "Var",
             "now": "Nå",
-            "quickAdd": "Legg til raskt",
-            "addedProductQuantity": "{cartItems, plural, =1 {1 vare} other {# varer}} lagt til i <cartLink>handlekurven din</cartLink>",
-            "processing": "Behandler …",
-            "addToCart": "Legg i handlekurv",
             "compare": "Sammenlign"
         }
     },
@@ -93,10 +85,7 @@
         "chooseOptions": "Velg alternativer",
         "description": "Beskrivelse",
         "rating": "Vurdering",
-        "availability": "Tilgjengelighet",
-        "addedProductQuantity": "{cartItems, plural, =1 {1 vare} other {# varer}} lagt til i <cartLink>handlekurven din</cartLink>",
-        "processing": "Behandler …",
-        "addToCart": "Legg i handlekurv"
+        "availability": "Tilgjengelighet"
     },
     "Cart": {
         "heading": "Din handlekurv",
@@ -115,6 +104,7 @@
             "couponCodeRequired": "Skriv inn en kupongkode.",
             "couponCodeInvalid": "Kupongkoden du skrev inn, er ikke gyldig.",
             "remove": "Fjern",
+            "spinnerText": "Fjerner …",
             "couponCodeRemoveFailed": "Det oppsto en feil under fjerning av kupongkoden. Prøv igjen.",
             "tax": "Avgift",
             "grandTotal": "Totalsum",
@@ -181,7 +171,7 @@
             "orders": "Bestillinger",
             "messages": "Meldinger",
             "addresses": "Adresser",
-            "newAddress": "New address",
+            "newAddress": "Ny adresse",
             "wishlists": "Ønskelister",
             "recentlyViewed": "Nylig sett",
             "settings": "Kontoinnstillinger",
@@ -195,34 +185,34 @@
             "editButton": "Rediger",
             "deleteButton": "Slett",
             "confirmDeleteAddress": "Slett adresse",
-            "deleteModalTitle": "Are you sure you want to delete address?",
+            "deleteModalTitle": "Er du sikker på at du vil slette adressen?",
             "recaptchaText": "Bestå reCAPTCHA-sjekk",
             "emptyTextValidationMessage": "Dette feltet kan ikke være tomt",
-            "successMessage": "The address has been created successfully.",
+            "successMessage": "Adressen er opprettet.",
             "submit": "Legg til ny adresse",
             "cancel": "Avbryt",
-            "submitting": "In progress..."
+            "submitting": "Pågår …"
         },
         "EditAddress": {
             "recaptchaText": "Bestå reCAPTCHA-sjekk",
             "emptyTextValidationMessage": "Dette feltet kan ikke være tomt",
-            "successMessage": "The address has been updated successfully.",
+            "successMessage": "Adressen er oppdatert.",
             "cancel": "Avbryt",
             "deleteButton": "Slett",
-            "deleteAddress": "Address deleted from your account.",
+            "deleteAddress": "Adresse slettet fra kontoen din.",
             "confirmDeleteAddress": "Slett adresse",
             "deleteModalTitle": "Er du sikker på at du vil slette denne adressen?",
-            "submit": "Update address",
-            "submitting": "In progress..."
+            "submit": "Oppdater adressen",
+            "submitting": "Pågår …"
         },
         "Settings": {
             "emptyTextValidatoinMessage": "Dette feltet kan ikke være tomt",
             "cancel": "Avbryt",
             "recaptchaText": "Bestå reCAPTCHA-sjekk",
             "changePassword": "Tilbakestill passord",
-            "submit": "Update settings",
-            "submitting": "Update settings...",
-            "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+            "submit": "Oppdater innstillingene",
+            "submitting": "Oppdater innstillingene …",
+            "successMessage": "{firstName} {lastName}, du har oppdatert kontodataene dine",
             "validationMessages": {
                 "email": "Angi en gyldig e-postadresse, for eksempel navn@domene.com",
                 "empty": "Dette feltet kan ikke være tomt",
@@ -394,5 +384,15 @@
         "onSubmitText": "Sender inn …",
         "submitFormText": "Send inn skjema",
         "sucessSubmitMessage": "Takk for at du tok kontakt. Vi kommer tilbake til deg snart."
+    },
+    "AddToCart": {
+        "addToCart": "Legg i handlekurv",
+        "quickAdd": "Legg til raskt",
+        "outOfStock": "Utsolgt",
+        "preorder": "Forhåndsbestill",
+        "unavailable": "Utilgjengelig",
+        "processing": "Behandler …",
+        "addedProductQuantity": "{cartItems, plural, =1 {1 vare} other {# varer}} lagt til i <cartLink>handlekurven din</cartLink>",
+        "errorAddingProductToCart": "Feil da produktet skulle legges til i handlekurven. Prøv igjen."
     }
 }

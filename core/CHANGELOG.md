@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.9.0
+
+### Minor Changes
+
+- [#794](https://github.com/bigcommerce/catalyst/pull/794) [`956d738`](https://github.com/bigcommerce/catalyst/commit/956d7389bce81e8af8e8cdbe0bae78e3b3f20423) Thanks [@yurytut1993](https://github.com/yurytut1993)! - add update customer form
+
+### Patch Changes
+
+- [#942](https://github.com/bigcommerce/catalyst/pull/942) [`c7c65e0`](https://github.com/bigcommerce/catalyst/commit/c7c65e002d6f473292713c4c5ffa4ab2690cc6f8) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Make select scrollable with popover functionality.
+
+- [#957](https://github.com/bigcommerce/catalyst/pull/957) [`0a3b519`](https://github.com/bigcommerce/catalyst/commit/0a3b5191d1eba6ea70eeb91ef39638d5a6fbf1ca) Thanks [@deini](https://github.com/deini)! - fix custom 404 page not being used
+
+- [#941](https://github.com/bigcommerce/catalyst/pull/941) [`19a3d14`](https://github.com/bigcommerce/catalyst/commit/19a3d147b6b12b38d974649c147a709c0d47557a) Thanks [@bc-yevhenii-buliuk](https://github.com/bc-yevhenii-buliuk)! - update icons on the account page
+
+- [#811](https://github.com/bigcommerce/catalyst/pull/811) [`6661e3e`](https://github.com/bigcommerce/catalyst/commit/6661e3e56e1cc703506f5ee509a7377fb19174f0) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - Add new address for customer
+
 ## 0.8.0
 
 ### Minor Changes

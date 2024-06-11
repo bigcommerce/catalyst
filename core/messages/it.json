@@ -61,10 +61,6 @@
             }
         },
         "Form": {
-            "errorMessage": "Si è verificato un errore. Riprova.",
-            "processing": "Elaborazione in corso...",
-            "addToCart": "Aggiungi al carrello",
-            "addedProductQuantity": "{cartItems, plural, =1 {1 articolo} other {# articoli}} aggiunto/i al <cartLink> carrello</cartLink>",
             "saveToWishlist": "Salva nella lista dei desideri",
             "quantityLabel": "Quantità"
         },
@@ -77,10 +73,6 @@
             "msrp": "Prezzo di listino",
             "was": "prezzo precedente",
             "now": "ora",
-            "quickAdd": "Aggiunta rapida",
-            "addedProductQuantity": "{cartItems, plural, =1 {1 articolo} other {# articoli}} aggiunto/i al <cartLink> carrello</cartLink>",
-            "processing": "Elaborazione in corso...",
-            "addToCart": "Aggiungi al carrello",
             "compare": "Confronta"
         }
     },
@@ -93,10 +85,7 @@
         "chooseOptions": "Scegli opzioni",
         "description": "Description",
         "rating": "Valutazione",
-        "availability": "Disponibilità",
-        "addedProductQuantity": "{cartItems, plural, =1 {1 articolo} other {# articoli}} aggiunto/i al <cartLink> carrello</cartLink>",
-        "processing": "Elaborazione in corso...",
-        "addToCart": "Aggiungi al carrello"
+        "availability": "Disponibilità"
     },
     "Cart": {
         "heading": "Il tuo carrello",
@@ -115,6 +104,7 @@
             "couponCodeRequired": "Inserisci un codice promozionale.",
             "couponCodeInvalid": "Il codice coupon inserito non è valido.",
             "remove": "Rimuovi",
+            "spinnerText": "Rimozione...",
             "couponCodeRemoveFailed": "Si è verificato un errore durante la rimozione del codice promozionale. Riprova.",
             "tax": "Tasse",
             "grandTotal": "Totale:",
@@ -181,7 +171,7 @@
             "orders": "Ordini",
             "messages": "Messaggi",
             "addresses": "Indirizzi",
-            "newAddress": "New address",
+            "newAddress": "Nuovo indirizzo",
             "wishlists": "Liste desideri",
             "recentlyViewed": "Visualizzati di recente",
             "settings": "Impostazioni account",
@@ -195,34 +185,34 @@
             "editButton": "Modifica",
             "deleteButton": "Elimina",
             "confirmDeleteAddress": "Cancella indirizzo",
-            "deleteModalTitle": "Are you sure you want to delete address?",
+            "deleteModalTitle": "Vuoi davvero eliminare l'indirizzo?",
             "recaptchaText": "Supera il controllo ReCAPTCHA",
             "emptyTextValidationMessage": "Questo campo non può essere vuoto",
-            "successMessage": "The address has been created successfully.",
+            "successMessage": "L'indirizzo è stato creato correttamente.",
             "submit": "Aggiungi un nuovo indirizzo",
             "cancel": "Annulla",
-            "submitting": "In progress..."
+            "submitting": "In corso..."
         },
         "EditAddress": {
             "recaptchaText": "Supera il controllo ReCAPTCHA",
             "emptyTextValidationMessage": "Questo campo non può essere vuoto",
-            "successMessage": "The address has been updated successfully.",
+            "successMessage": "L'indirizzo è stato aggiornato correttamente.",
             "cancel": "Annulla",
             "deleteButton": "Elimina",
-            "deleteAddress": "Address deleted from your account.",
+            "deleteAddress": "Indirizzo eliminato dal tuo account.",
             "confirmDeleteAddress": "Cancella indirizzo",
             "deleteModalTitle": "Vuoi davvero eliminare questo indirizzo?",
-            "submit": "Update address",
-            "submitting": "In progress..."
+            "submit": "Aggiorna indirizzo",
+            "submitting": "In corso..."
         },
         "Settings": {
             "emptyTextValidatoinMessage": "Questo campo non può essere vuoto",
             "cancel": "Annulla",
             "recaptchaText": "Supera il controllo ReCAPTCHA",
             "changePassword": "Reimposta password",
-            "submit": "Update settings",
-            "submitting": "Update settings...",
-            "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+            "submit": "AGGIORNA IMPOSTAZIONI",
+            "submitting": "Aggiorna impostazioni...",
+            "successMessage": "Gentile {firstName} {lastName}, hai aggiornato con successo i dati del tuo account",
             "validationMessages": {
                 "email": "Inserisci un indirizzo e-mail valido, ad esempio nome@dominio.com",
                 "empty": "Questo campo non può essere vuoto",
@@ -394,5 +384,15 @@
         "onSubmitText": "Invio in corso...",
         "submitFormText": "Invia modulo",
         "sucessSubmitMessage": "Grazie per averci contattato. Ti risponderemo al più presto."
+    },
+    "AddToCart": {
+        "addToCart": "Aggiungi al carrello",
+        "quickAdd": "Aggiunta rapida",
+        "outOfStock": "Esaurito",
+        "preorder": "Pre-ordine",
+        "unavailable": "Non disponibile",
+        "processing": "Elaborazione in corso...",
+        "addedProductQuantity": "{cartItems, plural, =1 {1 articolo} other {# articoli}} aggiunto/i al <cartLink> carrello</cartLink>",
+        "errorAddingProductToCart": "Errore durante l'aggiunta del prodotto al carrello. Riprova."
     }
 }

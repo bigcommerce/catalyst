@@ -63,7 +63,11 @@ export default async function Search({ params: { locale }, searchParams }: Props
     <div>
       <NextIntlClientProvider
         locale={locale}
-        messages={{ FacetedGroup: messages.FacetedGroup ?? {}, Product: messages.Product ?? {} }}
+        messages={{
+          FacetedGroup: messages.FacetedGroup ?? {},
+          Product: messages.Product ?? {},
+          AddToCart: messages.AddToCart ?? {},
+        }}
       >
         <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
           <h1 className="mb-3 text-base">

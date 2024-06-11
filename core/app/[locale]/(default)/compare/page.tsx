@@ -16,7 +16,8 @@ import { Rating } from '~/components/ui/rating';
 import { LocaleType } from '~/i18n';
 import { cn } from '~/lib/utils';
 
-import { AddToCartForm } from './_components/add-to-cart-form';
+import { AddToCart } from './_components/add-to-cart';
+import { AddToCartFragment } from './_components/add-to-cart/fragment';
 
 const MAX_COMPARE_LIMIT = 10;
 
@@ -75,9 +76,7 @@ const ComparePageQuery = graphql(
                   availableToSell
                 }
               }
-              availabilityV2 {
-                status
-              }
+              ...AddToCartFragment
               ...PricingFragment
             }
           }
@@ -85,7 +84,7 @@ const ComparePageQuery = graphql(
       }
     }
   `,
-  [PricingFragment],
+  [AddToCartFragment, PricingFragment],
 );
 
 export default async function Compare({
@@ -219,13 +218,9 @@ export default async function Compare({
                   <td className="border-b px-4 pb-12" key={product.entityId}>
                     <NextIntlClientProvider
                       locale={locale}
-                      messages={{ Compare: messages.Compare ?? {} }}
+                      messages={{ AddToCart: messages.AddToCart ?? {} }}
                     >
-                      <AddToCartForm
-                        availability={product.availabilityV2.status}
-                        entityId={product.entityId}
-                        productName={product.name}
-                      />
+                      <AddToCart data={product} />
                     </NextIntlClientProvider>
                   </td>
                 );
@@ -310,13 +305,9 @@ export default async function Compare({
                   <td className="border-b px-4 pb-24 pt-12" key={product.entityId}>
                     <NextIntlClientProvider
                       locale={locale}
-                      messages={{ Compare: messages.Compare ?? {} }}
+                      messages={{ AddToCart: messages.AddToCart ?? {} }}
                     >
-                      <AddToCartForm
-                        availability={product.availabilityV2.status}
-                        entityId={product.entityId}
-                        productName={product.name}
-                      />
+                      <AddToCart data={product} />
                     </NextIntlClientProvider>
                   </td>
                 );

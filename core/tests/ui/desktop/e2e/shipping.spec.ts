@@ -62,3 +62,31 @@ test('Add shipping estimates for Canada', async ({ page }) => {
   await addEstimatedShippingCosts(page, 'Canada', 'British Columbia', 'Vancouver', '98617');
   await expect(page.getByRole('button', { name: 'Change' })).toBeVisible();
 });
+
+/**
+ * @description When the item in cart is modified after shipping estimation is calculated, shipping estimation
+ * is reset but shipping information is persisted.
+ */
+test('Updating cart items should reset shipping costs but retain shipping information', async ({
+  page,
+}) => {
+  await expect(page.getByText('Shipping cost')).toBeVisible();
+  await page.getByRole('button', { name: 'Add' }).first().click();
+
+  await addEstimatedShippingCosts(page, 'United States', 'Texas', 'Austin', '76267');
+  await page.getByRole('button', { name: 'Change' }).waitFor();
+
+  await page.getByRole('button', { name: 'Increase count' }).click();
+  await page.getByRole('link', { name: 'Cart Items 2' }).waitFor();
+
+  await page.getByRole('button', { name: 'Add' }).first().click();
+
+  await expect(
+    page.getByRole('combobox', { name: 'Country' }).filter({ hasText: 'United States' }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('combobox', { name: 'State/province' }).filter({ hasText: 'Texas' }),
+  ).toBeVisible();
+  await expect(page.getByPlaceholder('City')).toHaveValue('Austin');
+  await expect(page.getByPlaceholder('Postal code')).toHaveValue('76267');
+});

@@ -1,28 +1,36 @@
 'use client';
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { FragmentOf } from 'gql.tada';
 import { AlertCircle, Check } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { useFormStatus } from 'react-dom';
 import { toast } from 'react-hot-toast';
 
+import { AddToCartButton } from '~/components/add-to-cart-button';
 import { Button } from '~/components/ui/button';
 
 import { Link } from '../../link';
 import { addToCart } from '../_actions/add-to-cart';
-import { AddToCart } from '../add-to-cart';
 
-import { type CartFragmentResult } from './fragment';
+import { AddToCartFragment } from './fragment';
 
 interface Props {
-  data: CartFragmentResult;
+  data: FragmentOf<typeof AddToCartFragment>;
 }
 
-export const Cart = ({ data: product }: Props) => {
+const Submit = ({ data: product }: Props) => {
+  const { pending } = useFormStatus();
+
+  return <AddToCartButton className="mt-2" data={product} loading={pending} />;
+};
+
+export const AddToCart = ({ data: product }: Props) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const t = useTranslations('Product.ProductSheet');
+  const t = useTranslations('AddToCart');
 
   const newSearchParams = new URLSearchParams(searchParams);
 
@@ -47,7 +55,9 @@ export const Cart = ({ data: product }: Props) => {
         const quantity = Number(formData.get('quantity'));
 
         if (result.error) {
-          toast.error(result.error, { icon: <AlertCircle className="text-error-secondary" /> });
+          toast.error(t('errorAddingProductToCart'), {
+            icon: <AlertCircle className="text-error-secondary" />,
+          });
 
           return;
         }
@@ -78,7 +88,7 @@ export const Cart = ({ data: product }: Props) => {
     >
       <input name="product_id" type="hidden" value={product.entityId} />
       <input name="quantity" type="hidden" value={1} />
-      <AddToCart />
+      <Submit data={product} />
     </form>
   );
 };

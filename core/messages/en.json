@@ -61,10 +61,6 @@
       }
     },
     "Form": {
-      "errorMessage": "Something went wrong. Please try again.",
-      "processing": "Processing...",
-      "addToCart": "Add to cart",
-      "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
       "saveToWishlist": "Save to wishlist",
       "quantityLabel": "Quantity"
     },
@@ -77,10 +73,6 @@
       "msrp": "MSRP",
       "was": "Was",
       "now": "Now",
-      "quickAdd": "Quick add",
-      "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-      "processing": "Processing...",
-      "addToCart": "Add to cart",
       "compare": "Compare"
     }
   },
@@ -93,10 +85,7 @@
     "chooseOptions": "Choose options",
     "description": "Description",
     "rating": "Rating",
-    "availability": "Availability",
-    "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-    "processing": "Processing...",
-    "addToCart": "Add to cart"
+    "availability": "Availability"
   },
   "Cart": {
     "heading": "Your cart",
@@ -115,6 +104,7 @@
       "couponCodeRequired": "Please enter a coupon code.",
       "couponCodeInvalid": "The coupon code you entered is not valid.",
       "remove": "Remove",
+      "spinnerText": "Removing...",
       "couponCodeRemoveFailed": "There was an error removing the coupon code. Please try again.",
       "tax": "Tax",
       "grandTotal": "Grand total",
@@ -394,5 +384,15 @@
     "onSubmitText": "Submitting...",
     "submitFormText": "Submit form",
     "sucessSubmitMessage": "Thanks for reaching out. We'll get back to you soon."
+  },
+  "AddToCart": {
+    "addToCart": "Add to cart",
+    "quickAdd": "Quick add",
+    "outOfStock": "Out of stock", 
+    "preorder": "Preorder",
+    "unavailable": "Unavailable",
+    "processing": "Processing...",
+    "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+    "errorAddingProductToCart": "Error adding product to cart. Please try again."
   }
 }

@@ -2,9 +2,9 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
+import { ProductCardFragment } from '~/components/product-card';
 
 import { client } from '..';
-import { PRODUCT_DETAILS_FRAGMENT } from '../fragments/product-details';
 import { graphql } from '../graphql';
 import { revalidate } from '../revalidate-target';
 
@@ -21,7 +21,15 @@ const GET_QUICK_SEARCH_RESULTS_QUERY = graphql(
             products(first: 5) {
               edges {
                 node {
-                  ...ProductDetails
+                  categories {
+                    edges {
+                      node {
+                        name
+                        path
+                      }
+                    }
+                  }
+                  ...ProductCardFragment
                 }
               }
             }
@@ -30,7 +38,7 @@ const GET_QUICK_SEARCH_RESULTS_QUERY = graphql(
       }
     }
   `,
-  [PRODUCT_DETAILS_FRAGMENT],
+  [ProductCardFragment],
 );
 
 export const getQuickSearchResults = cache(async ({ searchTerm }: QuickSearch) => {

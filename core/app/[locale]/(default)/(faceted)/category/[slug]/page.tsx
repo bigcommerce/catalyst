@@ -65,7 +65,11 @@ export default async function Category({ params: { locale, slug }, searchParams 
       <Breadcrumbs category={category} />
       <NextIntlClientProvider
         locale={locale}
-        messages={{ FacetedGroup: messages.FacetedGroup ?? {}, Product: messages.Product ?? {} }}
+        messages={{
+          FacetedGroup: messages.FacetedGroup ?? {},
+          Product: messages.Product ?? {},
+          AddToCart: messages.AddToCart ?? {},
+        }}
       >
         <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
           <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{category.name}</h1>

@@ -1,5 +1,7 @@
 import { graphql } from '~/client/graphql';
 
+import { AddToCartButtonFragment } from '../add-to-cart-button/fragment';
+
 import { CheckboxFieldFragment } from './fields/checkbox-field/fragment';
 import { DateFieldFragment } from './fields/date-field/fragment';
 import { MultiLineTextFieldFragment } from './fields/multi-line-text-field/fragment';
@@ -18,9 +20,6 @@ export const ProductFormFragment = graphql(
           }
         }
       }
-      availabilityV2 {
-        status
-      }
       productOptions(first: 10) {
         edges {
           node {
@@ -38,6 +37,7 @@ export const ProductFormFragment = graphql(
           }
         }
       }
+      ...AddToCartButtonFragment
     }
   `,
   [
@@ -47,5 +47,6 @@ export const ProductFormFragment = graphql(
     TextFieldFragment,
     MultiLineTextFieldFragment,
     DateFieldFragment,
+    AddToCartButtonFragment,
   ],
 );

@@ -195,7 +195,7 @@ export const ProductSheetContent = () => {
           )}
         </div>
       </div>
-      <ProductForm product={product} />
+      <ProductForm data={product} />
     </>
   );
 };
