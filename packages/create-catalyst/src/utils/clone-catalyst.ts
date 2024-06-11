@@ -65,6 +65,9 @@ export const cloneCatalyst = async ({
       }),
     );
 
+  delete packageJson.dependencies['@opentelemetry/api'];
+  delete packageJson.dependencies['@vercel/otel'];
+
   delete packageJson.dependencies['@bigcommerce/catalyst-client'];
   delete packageJson.devDependencies['@bigcommerce/eslint-config-catalyst'];
 
@@ -72,6 +75,13 @@ export const cloneCatalyst = async ({
     delete packageJson.devDependencies['@faker-js/faker'];
     delete packageJson.devDependencies['@playwright/test'];
   }
+
+  const nextConfig = (
+    await readFile(join(projectDir, 'next.config.js'), { encoding: 'utf-8' })
+  ).replace('instrumentationHook: true,', 'instrumentationHook: false,');
+
+  await writeFile(join(projectDir, 'next.config.js'), nextConfig);
+  removeSync(join(projectDir, 'instrumentation.ts'));
 
   writeJsonSync(join(projectDir, 'package.json'), packageJson, { spaces: 2 });
 
