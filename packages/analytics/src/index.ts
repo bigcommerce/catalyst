@@ -12,39 +12,48 @@ import {
 export { BodlProvider } from './providers/bodl';
 
 export class AnalyticsProvider implements BaseProvider {
+  private initialized = false;
+
   constructor(private providers: Provider[]) {}
+
+  private call(func: (provider: Provider) => void): void {
+    // Make sure init method is called only once before every event
+    if (!this.initialized) {
+      this.providers.forEach((provider) => provider.init());
+      this.initialized = true;
+    }
+
+    this.providers.forEach(func);
+  }
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   navigation = {
     search: (payload: SearchPayload) => {
-      this.providers.forEach((provider) => provider.navigation.search(payload));
+      this.call((provider) => provider.navigation.search(payload));
     },
     productViewed: (payload: ProductViewedPayload) => {
-      this.providers.forEach((provider) => provider.navigation.productViewed(payload));
+      this.call((provider) => provider.navigation.productViewed(payload));
     },
     categoryViewed: (payload: CategoryViewedPayload) => {
-      this.providers.forEach((provider) => provider.navigation.categoryViewed(payload));
+      this.call((provider) => provider.navigation.categoryViewed(payload));
     },
   };
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   cart = {
     productAdded: (payload: ProductAddedPayload) => {
-      this.providers.forEach((provider) => provider.cart.productAdded(payload));
+      this.call((provider) => provider.cart.productAdded(payload));
     },
     productRemoved: (payload: ProductRemovedPayload) => {
-      this.providers.forEach((provider) => provider.cart.productRemoved(payload));
+      this.call((provider) => provider.cart.productRemoved(payload));
     },
     cartViewed: (payload: CartViewedPayload) => {
-      this.providers.forEach((provider) => provider.cart.cartViewed(payload));
+      this.call((provider) => provider.cart.cartViewed(payload));
     },
   };
 
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   customEvent(payload: unknown): void {
-    this.providers.forEach((provider) => provider.customEvent(payload));
-  }
-
-  init() {
-    this.providers.forEach((provider) => provider.init());
+    this.call((provider) => provider.customEvent(payload));
   }
 }

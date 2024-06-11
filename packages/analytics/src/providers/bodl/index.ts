@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import {
   CartViewedPayload,
+  Category,
   CategoryViewedPayload,
   Product,
   ProductAddedPayload,
@@ -12,6 +13,7 @@ import {
 } from '../../types';
 
 import { type Ga4Config, subscribeOnBodlEvents } from './ga4';
+import { removeEdgesAndNodes } from './removeEdgesAndNodes';
 
 // TODO: import this types from bodl-events package?
 declare global {
@@ -34,9 +36,10 @@ export interface BodlConfig {
 }
 
 const lineItemTransform = (product: Product) => {
-  const categoryNames = product.categories?.edges
-    .map((category: { node: { breadcrumbs: any } }) => category.node.breadcrumbs.edges)
-    .map((breadcrumb: { node: { name: any } }) => breadcrumb.node.name);
+  const category: Category = removeEdgesAndNodes(product.categories).at(0);
+  const breadcrumbs: Array<{ name: string; path: string }> = removeEdgesAndNodes(
+    category.breadcrumbs,
+  );
 
   return {
     product_id: product.entityId,
@@ -48,7 +51,7 @@ const lineItemTransform = (product: Product) => {
     base_price: product.prices?.price.value,
     retail_price: product.prices?.retailPrice?.value || null,
     currency: product.prices?.price.currencyCode,
-    category_names: categoryNames,
+    category_names: breadcrumbs.map(({ name }) => name),
     variant_id: product.variants?.edges.map(
       (variant: { node: { entityId: any } }) => variant.node.entityId,
     ),
@@ -56,14 +59,12 @@ const lineItemTransform = (product: Product) => {
 };
 
 export class BodlProvider implements Provider {
-  private initialized = false;
-
   constructor(private config: BodlConfig) {}
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   navigation = {
-    search: (payload: SearchPayload) => null,
-    productViewed: (payload: ProductViewedPayload) => {
+    search: this.call((payload: SearchPayload) => null),
+    productViewed: this.call((payload: ProductViewedPayload) => {
       window.bodlEvents?.product?.emit('bodl_v1_product_page_viewed', {
         event_id: uuidv4(),
         channel_id: this.config.channel_id,
@@ -71,13 +72,13 @@ export class BodlProvider implements Provider {
         currency: payload.product.prices?.price.currencyCode,
         line_items: [lineItemTransform(payload.product)],
       });
-    },
-    categoryViewed: (payload: CategoryViewedPayload) => null,
+    }),
+    categoryViewed: this.call((payload: CategoryViewedPayload) => null),
   };
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   cart = {
-    productAdded: (payload: ProductAddedPayload) => {
+    productAdded: this.call((payload: ProductAddedPayload) => {
       window.bodlEvents?.cart?.emit('bodl_v1_cart_product_added', {
         event_id: uuidv4(),
         channel_id: this.config.channel_id,
@@ -90,16 +91,15 @@ export class BodlProvider implements Provider {
           },
         ],
       });
-    },
-    productRemoved: (payload: ProductRemovedPayload) => null,
-    cartViewed: (payload: CartViewedPayload) => null,
+    }),
+    productRemoved: this.call((payload: ProductRemovedPayload) => null),
+    cartViewed: this.call((payload: CartViewedPayload) => null),
   };
 
   customEvent(payload: unknown) {
     return null;
   }
 
-  // RECOMMENDATION: This method could be return a singleton that could be called in every event call to avoid multiple initialization
   init() {
     if (typeof window == 'undefined') {
       console.warn('Bodl must be initialized in browser environment.');
@@ -110,10 +110,6 @@ export class BodlProvider implements Provider {
     if (!this.config.ga4) {
       console.warn('GA4 configuration is missing.');
 
-      return;
-    }
-
-    if (this.initialized) {
       return;
     }
 
@@ -134,6 +130,18 @@ export class BodlProvider implements Provider {
     script.src = 'https://microapps.bigcommerce.com/bodl-events/index.js';
     script.onload = load;
     el.appendChild(script);
-    this.initialized = true;
+  }
+
+  private call(originalMethod: (payload: any) => void) {
+    return (payload: any) => {
+      if (!window.bodlEvents) {
+        // TODO: temporary hack - wait for bodl-events script to be loaded
+        setTimeout(originalMethod.bind(this, payload), 500);
+
+        console.warn('Bodl is not initialized, call init method first.');
+        return;
+      }
+      originalMethod.apply(this, [payload]);
+    };
   }
 }
