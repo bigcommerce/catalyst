@@ -1,9 +1,9 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-type LocaleToChannelsMapping = Record<string, string | undefined>;
+type localeToChannelsMappings = Record<string, string | undefined>;
 
-import localeToChannelsMapping from '~/channels.config';
+import localeToChannelsMappings from '~/channels.config';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -11,5 +11,5 @@ export function cn(...inputs: ClassValue[]) {
 
 export function getChannelFromLocale(locale: string) {
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  return (localeToChannelsMapping as LocaleToChannelsMapping)[locale];
+  return (localeToChannelsMappings as localeToChannelsMappings)[locale];
 }

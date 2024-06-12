@@ -18,7 +18,7 @@ interface Config {
   platform?: string;
   backendUserAgentExtensions?: string;
   logger?: boolean;
-  getChannelId?: () => Promise<string | undefined> | string | undefined;
+  getChannelId?: () => Promise<string | undefined> | string;
 }
 
 interface BigCommerceResponse<T> {

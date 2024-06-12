@@ -69,8 +69,9 @@ const RouteCacheSchema = z.object({
 let locale: string;
 
 const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promise<RouteCache> => {
+  const channelId = getChannelFromLocale(locale);
   const routeCache: RouteCache = {
-    route: await getRoute(pathname, getChannelFromLocale(locale)),
+    route: await getRoute(pathname, channelId),
     expiryTime: Date.now() + 1000 * 60 * 30, // 30 minutes
   };
 
@@ -80,7 +81,8 @@ const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promis
 };
 
 const updateStatusCache = async (event: NextFetchEvent): Promise<StorefrontStatusCache> => {
-  const status = await getStoreStatus(getChannelFromLocale(locale));
+  const channelId = getChannelFromLocale(locale);
+  const status = await getStoreStatus(channelId);
 
   if (status === undefined) {
     throw new Error('Failed to fetch new storefront status');
