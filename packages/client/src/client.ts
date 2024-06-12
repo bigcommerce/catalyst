@@ -18,6 +18,7 @@ interface Config {
   platform?: string;
   backendUserAgentExtensions?: string;
   logger?: boolean;
+  getChannelId?: () => Promise<string | undefined> | string | undefined;
 }
 
 interface BigCommerceResponse<T> {
@@ -66,7 +67,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     const query = normalizeQuery(document);
     const log = this.requestLogger(query);
 
-    const graphqlUrl = this.getEndpoint(channelId);
+    const graphqlUrl = await this.getEndpoint(channelId);
 
     const response = await fetch(graphqlUrl, {
       method: 'POST',
@@ -154,12 +155,23 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     return response.json() as Promise<unknown>;
   }
 
-  private getEndpoint(channelId?: string) {
-    if (!channelId && !this.config.channelId) {
+  private async getEndpoint(channelId?: string) {
+    let resolvedChannelId;
+
+    // We want to prioritize the channelId passed in before we try other methods
+    if (channelId) {
+      return `https://store-${this.config.storeHash}-${channelId}.${graphqlApiDomain}/graphql`;
+    }
+
+    if (this.config.getChannelId) {
+      resolvedChannelId = await this.config.getChannelId();
+    }
+
+    if (!resolvedChannelId && !this.config.channelId) {
       throw new Error('Missing channelId');
     }
 
-    return `https://store-${this.config.storeHash}-${channelId ?? this.config.channelId}.${graphqlApiDomain}/graphql`;
+    return `https://store-${this.config.storeHash}-${resolvedChannelId ?? this.config.channelId}.${graphqlApiDomain}/graphql`;
   }
 
   private requestLogger(document: string) {
