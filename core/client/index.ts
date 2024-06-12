@@ -1,4 +1,7 @@
 import { createClient } from '@bigcommerce/catalyst-client';
+import { getLocale } from 'next-intl/server';
+
+import { getChannelFromLocale } from '~/lib/utils';
 
 import { backendUserAgent } from '../userAgent';
 
@@ -11,4 +14,9 @@ export const client = createClient({
   logger:
     (process.env.NODE_ENV !== 'production' && process.env.CLIENT_LOGGER !== 'false') ||
     process.env.CLIENT_LOGGER === 'true',
+  getChannelId: async () => {
+    const locale = await getLocale();
+
+    return getChannelFromLocale(locale);
+  },
 });

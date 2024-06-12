@@ -9,6 +9,7 @@ import { getRawWebPageContent } from '~/client/queries/get-raw-web-page-content'
 import { getRoute } from '~/client/queries/get-route';
 import { getStoreStatus } from '~/client/queries/get-store-status';
 import { routeCacheKvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
+import { getChannelFromLocale } from '~/lib/utils';
 
 import { defaultLocale, localePrefix, LocalePrefixes, locales } from '../i18n';
 import { kv } from '../lib/kv';
@@ -65,9 +66,11 @@ const RouteCacheSchema = z.object({
   expiryTime: z.number(),
 });
 
+let locale: string;
+
 const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promise<RouteCache> => {
   const routeCache: RouteCache = {
-    route: await getRoute(pathname),
+    route: await getRoute(pathname, getChannelFromLocale(locale)),
     expiryTime: Date.now() + 1000 * 60 * 30, // 30 minutes
   };
 
@@ -77,7 +80,7 @@ const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promis
 };
 
 const updateStatusCache = async (event: NextFetchEvent): Promise<StorefrontStatusCache> => {
-  const status = await getStoreStatus();
+  const status = await getStoreStatus(getChannelFromLocale(locale));
 
   if (status === undefined) {
     throw new Error('Failed to fetch new storefront status');
@@ -93,7 +96,6 @@ const updateStatusCache = async (event: NextFetchEvent): Promise<StorefrontStatu
   return statusCache;
 };
 
-let locale: string;
 const clearLocaleFromPath = (path: string) => {
   let res: string;
 
