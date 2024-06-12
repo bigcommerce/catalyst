@@ -1,0 +1,8 @@
+{
+  "$schema": "./manifest.schema.json",
+  "name": "Makeswift",
+  "dependencies": ["@makeswift/runtime"],
+  "environmentVariables": [
+    "MAKESWIFT_SITE_API_KEY"
+  ]
+}
