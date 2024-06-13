@@ -29,6 +29,7 @@ const getCategoryTree = cache(async (variables: CategoryTreeQueryVariables = {})
     document: CategoryTreeQuery,
     variables,
     fetchOptions: { next: { revalidate: revalidateTarget } },
+    channelId: process.env.BIGCOMMERCE_CHANNEL_ID,
   });
 
   return response.data.site.categoryTree;
