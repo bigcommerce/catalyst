@@ -1,9 +1,9 @@
 import { locales } from './i18n';
 
-type localesKeys = (typeof locales)[number];
+export type LocalesKeys = (typeof locales)[number];
 
-type RecordFromLocales = {
-  [K in localesKeys]: string;
+export type RecordFromLocales = {
+  [K in LocalesKeys]: string;
 };
 
 // Set overrides per locale
