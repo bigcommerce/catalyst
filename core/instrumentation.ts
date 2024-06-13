@@ -1,12 +1,8 @@
-import { OTLPHttpProtoTraceExporter, registerOTel } from '@vercel/otel';
-
-const traceExporter = new OTLPHttpProtoTraceExporter({
-  url: 'https://ingest.lightstep.com:443',
-  headers: {
-    'lightstep-access-token': process.env.LIGHTSTEP_ACCESS_TOKEN || '',
-  },
-});
+import { registerOTel } from '@vercel/otel';
 
 export function register() {
-  registerOTel({ serviceName: 'catalyst', traceExporter });
+  registerOTel({
+    serviceName: 'catalyst',
+    attributes: { storeHash: process.env.BIGCOMMERCE_STORE_HASH },
+  });
 }
