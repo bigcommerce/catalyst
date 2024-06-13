@@ -71,6 +71,12 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
 }
 
 async function createKVAdapter() {
+  if (process.env.BC_KV_REST_API_URL && process.env.BC_KV_REST_API_TOKEN) {
+    const { BcKvAdapter } = await import('./adapters/bc');
+
+    return new BcKvAdapter();
+  }
+
   if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
     const { VercelKvAdapter } = await import('./adapters/vercel');
 
