@@ -1,6 +1,7 @@
 import { graphql, HttpResponse } from 'msw';
 
 let channel = '';
+
 if (process.env.BIGCOMMERCE_CHANNEL_ID && process.env.BIGCOMMERCE_CHANNEL_ID !== '1') {
   channel = `-${process.env.BIGCOMMERCE_CHANNEL_ID}`;
 }
