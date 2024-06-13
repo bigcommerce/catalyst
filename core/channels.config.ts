@@ -1,24 +1,14 @@
-const DEFAULT_CHANNEL_ID = process.env.BIGCOMMERCE_CHANNEL_ID;
+import { locales } from './i18n';
 
-export default {
-  en: DEFAULT_CHANNEL_ID,
-  da: DEFAULT_CHANNEL_ID,
-  de: DEFAULT_CHANNEL_ID,
-  'es-419': DEFAULT_CHANNEL_ID,
-  'es-AR': DEFAULT_CHANNEL_ID,
-  'es-CL': DEFAULT_CHANNEL_ID,
-  'es-CO': DEFAULT_CHANNEL_ID,
-  'es-LA': DEFAULT_CHANNEL_ID,
-  'es-MX': DEFAULT_CHANNEL_ID,
-  'es-PE': DEFAULT_CHANNEL_ID,
-  es: DEFAULT_CHANNEL_ID,
-  fr: DEFAULT_CHANNEL_ID,
-  it: DEFAULT_CHANNEL_ID,
-  ja: DEFAULT_CHANNEL_ID,
-  nl: DEFAULT_CHANNEL_ID,
-  no: DEFAULT_CHANNEL_ID,
-  pl: DEFAULT_CHANNEL_ID,
-  'pt-BR': DEFAULT_CHANNEL_ID,
-  pt: DEFAULT_CHANNEL_ID,
-  sv: DEFAULT_CHANNEL_ID,
+type localesKeys = (typeof locales)[number];
+
+type RecordFromLocales = {
+  [K in localesKeys]: string;
 };
+
+// Set overrides per locale
+const localeToChannelsMappings: Partial<RecordFromLocales> = {
+  es: process.env.BIGCOMMERCE_CHANNEL_ID,
+};
+
+export default localeToChannelsMappings;
