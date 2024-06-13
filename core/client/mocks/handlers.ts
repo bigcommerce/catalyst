@@ -13,6 +13,7 @@ export const handlers = [
   // More operations - https://mswjs.io/docs/api/graphql
   gql.query('RootLayoutMetadataQuery', ({ query }) => {
     console.log('Intercepted a "RootLayoutMetadataQuery" query:', query);
+
     return HttpResponse.json({
       data: {
         site: {
@@ -23,8 +24,34 @@ export const handlers = [
       },
     });
   }),
-  gql.operation(({ query, variables }) => {
-    // Intercept all GraphQL operations for debugging purposes.
-    // console.log('Intercepted a GraphQL query:', query);
+
+  graphql.mutation('registerCustomer', ({ query, variables }) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { input, reCaptchaV2 } = variables;
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    console.log('Intercepted a "registerCustomer" mutation:', { query, input });
+
+    // Simulating successful registration
+    return HttpResponse.json({
+      data: {
+        customer: {
+          registerCustomer: {
+            customer: {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
+              firstName: input.firstName,
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
+              lastName: input.lastName,
+            },
+            errors: [],
+          },
+        },
+      },
+    });
   }),
+
+  // gql.operation(({ query, variables }) => {
+  // Intercept all GraphQL operations for debugging purposes.
+  // console.log('Intercepted a GraphQL query:', query);
+  // }),
 ];
