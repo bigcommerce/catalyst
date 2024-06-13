@@ -8,7 +8,7 @@ export type RecordFromLocales = {
 
 // Set overrides per locale
 const localeToChannelsMappings: Partial<RecordFromLocales> = {
-  es: process.env.BIGCOMMERCE_CHANNEL_ID,
+  // es: '123456',
 };
 
 export default localeToChannelsMappings;
