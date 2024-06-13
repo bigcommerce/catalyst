@@ -2,7 +2,7 @@
 
 import { Loader2 as Spinner } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
-import { useFormatter, useTranslations } from 'next-intl';
+import { useFormatter, useLocale, useTranslations } from 'next-intl';
 import { useEffect, useId, useState } from 'react';
 
 import { FragmentOf } from '~/client/graphql';
@@ -27,6 +27,8 @@ export const ProductSheetContent = () => {
   const [isError, setError] = useState(false);
   const [product, setProduct] = useState<Product | null>(null);
 
+  const locale = useLocale();
+
   useEffect(() => {
     const fetchProduct = async () => {
       setError(false);
@@ -38,7 +40,11 @@ export const ProductSheetContent = () => {
       }
 
       try {
-        const paramsString = searchParams.toString();
+        const updatedSearchParams = new URLSearchParams(searchParams);
+
+        updatedSearchParams.set('locale', locale);
+
+        const paramsString = updatedSearchParams.toString();
         const queryString = `${paramsString.length ? '?' : ''}${paramsString}`;
 
         const url = `/api/product/${productId}${queryString}`;
@@ -59,7 +65,7 @@ export const ProductSheetContent = () => {
     };
 
     void fetchProduct();
-  }, [productId, searchParams]);
+  }, [locale, productId, searchParams]);
 
   if (isError) {
     return (

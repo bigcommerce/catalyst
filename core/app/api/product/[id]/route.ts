@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { ProductSheetContentFragment } from '~/components/product-sheet/fragment';
+import { getChannelFromLocale } from '~/lib/utils';
 
 const GetProductQuery = graphql(
   `
@@ -29,7 +30,12 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
   }
 
   const { id } = params;
+
   const searchParams = request.nextUrl.searchParams;
+
+  const locale = searchParams.get('locale') ?? undefined;
+
+  searchParams.delete('locale');
 
   const optionValueIds = Array.from(searchParams.entries(), ([option, value]) => ({
     optionEntityId: Number(option),
@@ -42,6 +48,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
     const { data } = await client.fetch({
       document: GetProductQuery,
       variables: { productId: Number(id), optionValueIds },
+      channelId: getChannelFromLocale(locale) ?? process.env.BIGCOMMERCE_CHANNEL_ID,
     });
 
     return NextResponse.json(data.site.product);
