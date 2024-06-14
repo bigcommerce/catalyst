@@ -2,8 +2,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
 import { KvAdapter } from '../types';
 
-import { MemoryKvAdapter } from './memory';
-
 class Kv {
   private endpoint: string;
   private apiKey: string;
@@ -86,49 +84,17 @@ class Kv {
   }
 }
 
-const memoryKv = new MemoryKvAdapter();
-
 export class BcKvAdapter implements KvAdapter {
   private kv = new Kv();
-  private memoryKv = memoryKv;
-
-  async get<Data>(key: string) {
-    const [value] = await this.mget<Data>(key);
-
-    return value ?? null;
-  }
 
   async mget<Data>(...keys: string[]) {
-    const memoryValues = (await this.memoryKv.mget<Data>(...keys)).filter(Boolean);
+    const values = await this.kv.mget<Data[]>(keys);
 
-    if (memoryValues.length === keys.length) {
-      return memoryValues;
-    }
-
-    const remoteKvValues = await this.kv.mget<Data[]>(keys);
-
-    await Promise.all(
-      remoteKvValues.map(async (value, index) => {
-        const key = keys[index];
-
-        if (!key) {
-          return;
-        }
-
-        await this.memoryKv.set(key, value);
-      }),
-    );
-
-    return remoteKvValues;
+    return values;
   }
 
   async set<Data>(key: string, value: Data, opts?: { ttlMs?: number }) {
-    const ex = opts?.ttlMs ? Date.now() + opts.ttlMs : undefined;
-
-    await Promise.all([
-      this.memoryKv.set(key, value, { ex }),
-      this.kv.set(key, value, opts?.ttlMs),
-    ]);
+    await this.kv.set(key, value, opts?.ttlMs);
 
     return value;
   }
