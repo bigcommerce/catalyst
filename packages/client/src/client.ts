@@ -163,7 +163,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       return `https://store-${this.config.storeHash}-${channelId}.${graphqlApiDomain}/graphql`;
     }
 
-    if (this.config.getChannelId) {
+    if (typeof this.config.getChannelId === 'function') {
       resolvedChannelId = await this.config.getChannelId();
     }
 
