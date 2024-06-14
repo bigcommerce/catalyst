@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function getChannelFromLocale(locale?: string) {
+export function getChannelIdFromLocale(locale?: string) {
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   return localeToChannelsMappings[locale as LocalesKeys];
 }

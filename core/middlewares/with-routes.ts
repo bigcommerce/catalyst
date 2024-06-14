@@ -9,7 +9,7 @@ import { getRawWebPageContent } from '~/client/queries/get-raw-web-page-content'
 import { getRoute } from '~/client/queries/get-route';
 import { getStoreStatus } from '~/client/queries/get-store-status';
 import { routeCacheKvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
-import { getChannelFromLocale } from '~/lib/utils';
+import { getChannelIdFromLocale } from '~/lib/utils';
 
 import { defaultLocale, localePrefix, LocalePrefixes, locales } from '../i18n';
 import { kv } from '../lib/kv';
@@ -69,7 +69,8 @@ const RouteCacheSchema = z.object({
 let locale: string;
 
 const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promise<RouteCache> => {
-  const channelId = getChannelFromLocale(locale) ?? process.env.BIGCOMMERCE_CHANNEL_ID;
+  const channelId = getChannelIdFromLocale(locale) ?? process.env.BIGCOMMERCE_CHANNEL_ID;
+
   const routeCache: RouteCache = {
     route: await getRoute(pathname, channelId),
     expiryTime: Date.now() + 1000 * 60 * 30, // 30 minutes
@@ -81,7 +82,7 @@ const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promis
 };
 
 const updateStatusCache = async (event: NextFetchEvent): Promise<StorefrontStatusCache> => {
-  const channelId = getChannelFromLocale(locale) ?? process.env.BIGCOMMERCE_CHANNEL_ID;
+  const channelId = getChannelIdFromLocale(locale) ?? process.env.BIGCOMMERCE_CHANNEL_ID;
 
   const status = await getStoreStatus(channelId);
 

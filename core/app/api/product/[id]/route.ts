@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { ProductSheetContentFragment } from '~/components/product-sheet/fragment';
-import { getChannelFromLocale } from '~/lib/utils';
+import { getChannelIdFromLocale } from '~/lib/utils';
 
 const GetProductQuery = graphql(
   `
@@ -48,7 +48,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
     const { data } = await client.fetch({
       document: GetProductQuery,
       variables: { productId: Number(id), optionValueIds },
-      channelId: getChannelFromLocale(locale) ?? process.env.BIGCOMMERCE_CHANNEL_ID,
+      channelId: getChannelIdFromLocale(locale) ?? process.env.BIGCOMMERCE_CHANNEL_ID,
     });
 
     return NextResponse.json(data.site.product);
