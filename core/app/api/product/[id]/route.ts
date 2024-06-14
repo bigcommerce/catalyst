@@ -48,7 +48,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
     const { data } = await client.fetch({
       document: GetProductQuery,
       variables: { productId: Number(id), optionValueIds },
-      channelId: getChannelIdFromLocale(locale) ?? process.env.BIGCOMMERCE_CHANNEL_ID,
+      channelId: getChannelIdFromLocale(locale),
     });
 
     return NextResponse.json(data.site.product);

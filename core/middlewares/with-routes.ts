@@ -69,7 +69,7 @@ const RouteCacheSchema = z.object({
 let locale: string;
 
 const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promise<RouteCache> => {
-  const channelId = getChannelIdFromLocale(locale) ?? process.env.BIGCOMMERCE_CHANNEL_ID;
+  const channelId = getChannelIdFromLocale(locale);
 
   const routeCache: RouteCache = {
     route: await getRoute(pathname, channelId),
@@ -82,7 +82,7 @@ const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promis
 };
 
 const updateStatusCache = async (event: NextFetchEvent): Promise<StorefrontStatusCache> => {
-  const channelId = getChannelIdFromLocale(locale) ?? process.env.BIGCOMMERCE_CHANNEL_ID;
+  const channelId = getChannelIdFromLocale(locale);
 
   const status = await getStoreStatus(channelId);
 
