@@ -5,7 +5,6 @@ import { Inter } from 'next/font/google';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { unstable_setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
-import { GoogleAnalytics } from '@next/third-parties/google';
 
 import '../globals.css';
 
@@ -75,7 +74,6 @@ export default function RootLayout({ children, params: { locale } }: RootLayoutP
         </NextIntlClientProvider>
         <Analytics />
         <SpeedInsights />
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ?? ''} />
       </body>
     </html>
   );
