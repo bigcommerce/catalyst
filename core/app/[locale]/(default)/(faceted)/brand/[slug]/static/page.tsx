@@ -31,7 +31,6 @@ const getBrands = cache(async (variables: BrandsQueryVariables = {}) => {
     document: BrandsQuery,
     variables,
     fetchOptions: { next: { revalidate: revalidateTarget } },
-    channelId: process.env.BIGCOMMERCE_CHANNEL_ID,
   });
 
   return removeEdgesAndNodes(response.data.site.brands);

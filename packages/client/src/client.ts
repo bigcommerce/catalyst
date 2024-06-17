@@ -164,7 +164,12 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     }
 
     if (typeof this.config.getChannelId === 'function') {
-      resolvedChannelId = await this.config.getChannelId();
+      try {
+        resolvedChannelId = await this.config.getChannelId();
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log('Error getting channelId, using default channelId instead');
+      }
     }
 
     if (!resolvedChannelId && !this.config.channelId) {

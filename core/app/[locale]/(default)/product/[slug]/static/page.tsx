@@ -38,7 +38,6 @@ const getFeaturedProducts = cache(async ({ first = 12 }: Options = {}) => {
     variables: { first },
     customerId,
     fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate: revalidateTarget } },
-    channelId: process.env.BIGCOMMERCE_CHANNEL_ID,
   });
 
   return removeEdgesAndNodes(response.data.site.featuredProducts);
