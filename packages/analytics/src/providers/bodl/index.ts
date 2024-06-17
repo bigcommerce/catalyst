@@ -47,7 +47,7 @@ const lineItemTransform = (product: Product) => {
     brand_name: product.brand?.name,
     sku: product.sku,
     sale_price: product.prices?.salePrice?.value,
-    purchase_price: product.prices?.price.value || product.prices?.salePrice?.value,
+    purchase_price: product.prices?.salePrice?.value || product.prices?.price.value,
     base_price: product.prices?.price.value,
     retail_price: product.prices?.retailPrice?.value || null,
     currency: product.prices?.price.currencyCode,
