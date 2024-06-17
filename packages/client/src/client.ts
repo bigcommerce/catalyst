@@ -18,7 +18,7 @@ interface Config {
   platform?: string;
   backendUserAgentExtensions?: string;
   logger?: boolean;
-  getChannelId?: () => Promise<string | undefined> | string;
+  getChannelId?: (defaultChannelId: string) => Promise<string | undefined> | string;
 }
 
 interface BigCommerceResponse<T> {
@@ -163,13 +163,8 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       return `https://store-${this.config.storeHash}-${channelId}.${graphqlApiDomain}/graphql`;
     }
 
-    if (typeof this.config.getChannelId === 'function') {
-      try {
-        resolvedChannelId = await this.config.getChannelId();
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log('Error getting channelId, using default channelId instead');
-      }
+    if (typeof this.config.getChannelId === 'function' && this.config.channelId) {
+      resolvedChannelId = await this.config.getChannelId(this.config.channelId);
     }
 
     if (!resolvedChannelId && !this.config.channelId) {

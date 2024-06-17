@@ -14,9 +14,13 @@ export const client = createClient({
   logger:
     (process.env.NODE_ENV !== 'production' && process.env.CLIENT_LOGGER !== 'false') ||
     process.env.CLIENT_LOGGER === 'true',
-  getChannelId: async () => {
-    const locale = await getLocale();
+  getChannelId: async (defaultChannelId: string) => {
+    try {
+      const locale = await getLocale();
 
-    return getChannelIdFromLocale(locale);
+      return getChannelIdFromLocale(locale);
+    } catch (error) {
+      return defaultChannelId;
+    }
   },
 });

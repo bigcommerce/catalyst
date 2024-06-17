@@ -9,12 +9,5 @@ export function cn(...inputs: ClassValue[]) {
 
 export function getChannelIdFromLocale(locale?: string) {
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  const channelId = localeToChannelsMappings[locale as LocalesKeys];
-
-  if (channelId) {
-    return channelId;
-  }
-
-  // Return default if no mapping found
-  return process.env.BIGCOMMERCE_CHANNEL_ID;
+  return localeToChannelsMappings[locale as LocalesKeys];
 }
