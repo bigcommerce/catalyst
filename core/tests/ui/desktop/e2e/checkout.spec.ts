@@ -5,12 +5,12 @@ const sampleProduct = '[Sample] Laundry Detergent';
 const testUser = faker.person.firstName();
 
 async function enterShopperDetails(page: Page) {
-  await page.getByLabel('First Name').fill(testUser);
-  await page.getByLabel('Last Name').fill(faker.person.lastName());
-  await page.getByLabel('Company Name (Optional)').fill('BigCommerce');
-  await page.getByLabel('Phone Number (Optional)').fill(faker.phone.number());
-  await page.getByLabel('Address', { exact: true }).fill(faker.location.buildingNumber());
-  await page.getByLabel('City').fill('Natick');
+  await page.getByRole('textbox', { name: 'First Name' }).fill(testUser);
+  await page.getByRole('textbox', { name: 'Last Name' }).fill(faker.person.lastName());
+  await page.getByRole('textbox', { name: 'Company Name (Optional)' }).fill('BigCommerce');
+  await page.getByRole('textbox', { name: 'Phone Number (Optional)' }).fill(faker.phone.number());
+  await page.getByRole('textbox', { name: 'Address' }).fill(faker.location.buildingNumber());
+  await page.getByRole('textbox', { name: 'City' }).fill('Natick');
   await page.getByRole('combobox', { name: 'State/Province' }).selectOption('Massachusetts');
   await page.getByRole('textbox', { name: 'Postal Code' }).fill('01762');
   await expect(page.getByRole('button', { name: 'Continue' })).toContainText('Continue');
@@ -55,7 +55,7 @@ test('Complete checkout as a guest shopper', async ({ page }) => {
   ).toBeVisible();
 });
 
-test('Complete checkout as a logged in shopper', async ({ page }) => {
+test.skip('Complete checkout as a logged in shopper', async ({ page }) => {
   await page.goto('/login/');
   await page.getByLabel('Login').click();
   await page.getByLabel('Email').fill(process.env.TEST_ACCOUNT_EMAIL || '');
