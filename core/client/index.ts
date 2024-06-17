@@ -18,7 +18,7 @@ export const client = createClient({
     try {
       const locale = await getLocale();
 
-      return getChannelIdFromLocale(locale);
+      return getChannelIdFromLocale(locale) ?? defaultChannelId;
     } catch (error) {
       return defaultChannelId;
     }

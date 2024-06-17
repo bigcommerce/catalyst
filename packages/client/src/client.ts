@@ -18,7 +18,7 @@ interface Config {
   platform?: string;
   backendUserAgentExtensions?: string;
   logger?: boolean;
-  getChannelId?: (defaultChannelId: string) => Promise<string | undefined> | string;
+  getChannelId?: (defaultChannelId: string) => Promise<string> | string;
 }
 
 interface BigCommerceResponse<T> {
@@ -27,9 +27,13 @@ interface BigCommerceResponse<T> {
 
 class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   private backendUserAgent: string;
+  private getChannelId: (defaultChannelId: string) => Promise<string> | string;
 
   constructor(private config: Config) {
     this.backendUserAgent = getBackendUserAgent(config.platform, config.backendUserAgentExtensions);
+    this.getChannelId = config.getChannelId
+      ? config.getChannelId
+      : (defaultChannelId) => defaultChannelId;
   }
 
   // Overload for documents that require variables
@@ -156,22 +160,18 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   }
 
   private async getEndpoint(channelId?: string) {
-    let resolvedChannelId;
+    if (!this.config.channelId) {
+      throw new Error('Missing default channelId');
+    }
 
     // We want to prioritize the channelId passed in before we try other methods
     if (channelId) {
       return `https://store-${this.config.storeHash}-${channelId}.${graphqlApiDomain}/graphql`;
     }
 
-    if (typeof this.config.getChannelId === 'function' && this.config.channelId) {
-      resolvedChannelId = await this.config.getChannelId(this.config.channelId);
-    }
+    const resolvedChannelId = await this.getChannelId(this.config.channelId);
 
-    if (!resolvedChannelId && !this.config.channelId) {
-      throw new Error('Missing channelId');
-    }
-
-    return `https://store-${this.config.storeHash}-${resolvedChannelId ?? this.config.channelId}.${graphqlApiDomain}/graphql`;
+    return `https://store-${this.config.storeHash}-${resolvedChannelId}.${graphqlApiDomain}/graphql`;
   }
 
   private requestLogger(document: string) {
