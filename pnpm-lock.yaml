@@ -78,8 +78,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       '@vercel/speed-insights':
-        specifier: ^1.0.11
-        version: 1.0.11(next@14.1.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(svelte@4.2.18)
+        specifier: ^1.0.12
+        version: 1.0.12(next@14.1.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(svelte@4.2.18)
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -2148,8 +2148,8 @@ packages:
     resolution: {integrity: sha512-zdVrhbzZBYo5d1Hfn4bKtqCeKf0FuzW8rSHauzQVMUgv1+1JOwof2mWcBuI+YMJy8s0G0oqAUfQ7HgUDzb8EbA==}
     engines: {node: '>=14.6'}
 
-  '@vercel/speed-insights@1.0.11':
-    resolution: {integrity: sha512-l9hzSNmJvb2Yqpgd/BzpiT0J0aQDdtqxOf3Xm+iW4PICxVvhY1ef7Otdx4GXI+88dVkws57qMzXiShz19gXzSQ==}
+  '@vercel/speed-insights@1.0.12':
+    resolution: {integrity: sha512-ZGQ+a7bcfWJD2VYEp2R1LHvRAMyyaFBYytZXsfnbOMkeOvzGNVxUL7aVUvisIrTZjXTSsxG45DKX7yiw6nq2Jw==}
     peerDependencies:
       '@sveltejs/kit': ^1 || ^2
       next: '>= 13'
@@ -7377,7 +7377,7 @@ snapshots:
     dependencies:
       '@upstash/redis': 1.31.3
 
-  '@vercel/speed-insights@1.0.11(next@14.1.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(svelte@4.2.18)':
+  '@vercel/speed-insights@1.0.12(next@14.1.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(svelte@4.2.18)':
     optionalDependencies:
       next: 14.1.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
