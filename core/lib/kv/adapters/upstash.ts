@@ -10,12 +10,6 @@ export class UpstashKvAdapter implements KvAdapter {
   private upstashKv = Redis.fromEnv();
   private memoryKv = memoryKv;
 
-  async get<Data>(key: string) {
-    const memoryValue = await this.memoryKv.get<Data>(key);
-
-    return memoryValue ?? this.upstashKv.get<Data>(key);
-  }
-
   async mget<Data>(...keys: string[]) {
     const memoryValues = await this.memoryKv.mget<Data>(...keys);
 
