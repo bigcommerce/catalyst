@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { useTransition } from 'react';
 
 import { Select, SelectContent, SelectItem } from '~/components/ui/select';
 
@@ -9,6 +10,8 @@ export function SortBy() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
+
   const t = useTranslations('FacetedGroup.SortBy');
   const value = searchParams.get('sort') ?? 'featured';
 
@@ -17,7 +20,9 @@ export function SortBy() {
 
     params.set('sort', sortValue);
 
-    router.push(`${pathname}?${params.toString()}`);
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`);
+    });
   };
 
   return (
@@ -27,6 +32,8 @@ export function SortBy() {
       onValueChange={onSort}
       value={value}
     >
+      <span className="hidden" data-pending={isPending ? '' : undefined} />
+
       <SelectContent>
         <SelectItem value="featured">{t('featuredItems')}</SelectItem>
         <SelectItem value="newest">{t('newestItems')}</SelectItem>

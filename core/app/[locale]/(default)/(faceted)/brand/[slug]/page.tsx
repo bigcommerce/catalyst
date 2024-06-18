@@ -57,7 +57,7 @@ export default async function Brand({ params: { slug, locale }, searchParams }: 
   const { hasNextPage, hasPreviousPage, endCursor, startCursor } = productsCollection.pageInfo;
 
   return (
-    <div>
+    <div className="group">
       <NextIntlClientProvider
         locale={locale}
         messages={{
@@ -94,7 +94,10 @@ export default async function Brand({ params: { slug, locale }, searchParams }: 
             pageType="brand"
           />
 
-          <section aria-labelledby="product-heading" className="col-span-4 lg:col-span-3">
+          <section
+            aria-labelledby="product-heading"
+            className="col-span-4 group-has-[[data-pending]]:animate-pulse lg:col-span-3"
+          >
             <h2 className="sr-only" id="product-heading">
               {t('products')}
             </h2>
