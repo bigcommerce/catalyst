@@ -27,9 +27,15 @@ interface BigCommerceResponse<T> {
 
 class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   private backendUserAgent: string;
+  private readonly defaultChannelId: string;
   private getChannelId: (defaultChannelId: string) => Promise<string> | string;
 
   constructor(private config: Config) {
+    if (!config.channelId) {
+      throw new Error('Client configuration must include a channelId.');
+    }
+
+    this.defaultChannelId = config.channelId;
     this.backendUserAgent = getBackendUserAgent(config.platform, config.backendUserAgentExtensions);
     this.getChannelId = config.getChannelId
       ? config.getChannelId
@@ -160,16 +166,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   }
 
   private async getEndpoint(channelId?: string) {
-    if (!this.config.channelId) {
-      throw new Error('Missing default channelId');
-    }
-
-    // We want to prioritize the channelId passed in before we try other methods
-    if (channelId) {
-      return `https://store-${this.config.storeHash}-${channelId}.${graphqlApiDomain}/graphql`;
-    }
-
-    const resolvedChannelId = await this.getChannelId(this.config.channelId);
+    const resolvedChannelId = channelId ?? (await this.getChannelId(this.defaultChannelId));
 
     return `https://store-${this.config.storeHash}-${resolvedChannelId}.${graphqlApiDomain}/graphql`;
   }
