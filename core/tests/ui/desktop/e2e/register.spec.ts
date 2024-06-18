@@ -19,6 +19,6 @@ test('Account register', async ({ page }) => {
   await page.getByLabel('Zip/PostcodeRequired').fill(testUser.zipCode);
 
   await page.getByRole('button', { name: 'Create account' }).click();
-  await page.getByRole('heading', { name: 'New account' }).waitFor();
+  await page.getByRole('heading', { name: 'My Account' }).waitFor();
   await expect(page).toHaveURL('account/');
 });
