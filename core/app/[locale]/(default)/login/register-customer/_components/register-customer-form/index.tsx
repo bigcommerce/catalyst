@@ -187,18 +187,9 @@ export const RegisterCustomerForm = ({
     const submit = await registerCustomer({ formData, reCaptchaToken });
 
     if (submit.status === 'success') {
-      form.current?.reset();
-      setFormStatus({
-        status: 'success',
-        message: t('successMessage', {
-          firstName: submit.data?.firstName,
-          lastName: submit.data?.lastName,
-        }),
-      });
+      void login(formData);
 
-      setTimeout(() => {
-        void login(formData);
-      }, 3000);
+      return;
     }
 
     if (submit.status === 'error') {

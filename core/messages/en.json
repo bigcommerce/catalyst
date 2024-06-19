@@ -171,7 +171,8 @@
       "messages": "Messages",
       "addresses": "Addresses",
       "newAddress": "New address",
-      "wishlists": "Wish lists",
+      "wishlists": "Wishlists",
+      "favorites": "Favorites",
       "recentlyViewed": "Recently viewed",
       "settings": "Account settings",
       "changePassword": "Change password",
@@ -203,7 +204,25 @@
       "deleteModalTitle": "Are you sure you want to delete this address?",
       "submit": "Update address",
       "submitting": "In progress..."
-    },  
+    },
+    "Wishlist": {
+        "noItems": "No items added",
+        "new": "New wishlist",
+        "cancel": "Cancel",
+        "create": "Create",
+        "delete": "Delete",
+        "createPopupDescription": "Create new wishlist popup window",
+        "inputLabel": "Wishlist name",
+        "emptyName": "Provide wishlist name",
+        "onSubmitText": "Submitting...",
+        "deleteTitle": "Are you sure you want to delete wishlist {name}?",
+        "favorites": "Favorites",
+        "noGalleryText": "Coming Soon",
+        "messages": {
+            "created": "Your wishlist {name} was created successfully",
+            "deleted": "Your wishlist {name} was deleted successfully"
+        }
+    },
     "Settings": {
         "emptyTextValidatoinMessage": "This field can not be empty",
         "cancel": "Cancel",
@@ -251,7 +270,7 @@
         "multipleAddresses": "Save multiple shipping addresses",
         "ordersHistory": "Access your order history",
         "ordersTracking":  "Track new orders",
-        "wishlists": "Save items to your Wish List",
+        "wishlists": "Save items to your Wishlist",
         "createLink": "Create Account "
       }
     },
@@ -262,6 +281,7 @@
         "recaptchaText": "Pass ReCAPTCHA check",
         "successMessage": "Dear {firstName} {lastName}, your account was successfully created. Redirecting to account...",
         "stateProvincePrefix": "Choose state or province",
+        "favorites": "Favorites",
         "validationMessages": {
             "email": "Enter a valid email such as name@domain.com",
             "empty": "This field can not be empty",

@@ -2,8 +2,11 @@ import { BookUser, Eye, Gift, Mail, Package, Settings } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
+import { createWishlist } from '~/client/mutations/create-wishlist';
 import { Link } from '~/components/link';
 import { LocaleType } from '~/i18n';
+
+import { getAccountData } from './page-data';
 
 interface AccountItem {
   children: ReactNode;
@@ -34,7 +37,14 @@ interface Props {
 }
 
 export default async function AccountPage({ params: { locale } }: Props) {
+  const accountData = await getAccountData();
+
+  const { wishlists } = accountData;
   const t = await getTranslations({ locale, namespace: 'Account.Home' });
+
+  if (wishlists.length === 0) {
+    await createWishlist({ input: { name: t('favorites'), isPublic: true } });
+  }
 
   return (
     <div className="mx-auto">
