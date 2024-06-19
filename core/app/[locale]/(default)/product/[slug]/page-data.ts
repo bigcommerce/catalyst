@@ -1,5 +1,7 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
+import { WishlistSheetFragment } from '~/app/[locale]/(default)/account/[tab]/_components/wishlist-sheet/fragment';
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
@@ -48,9 +50,21 @@ const ProductPageQuery = graphql(
           }
         }
       }
+      customer {
+        wishlists(first: 50) {
+          ...WishlistSheetFragment
+        }
+      }
     }
   `,
-  [BreadcrumbsFragment, GalleryFragment, DetailsFragment, DescriptionFragment, WarrantyFragment],
+  [
+    BreadcrumbsFragment,
+    GalleryFragment,
+    DetailsFragment,
+    DescriptionFragment,
+    WarrantyFragment,
+    WishlistSheetFragment,
+  ],
 );
 
 type ProductPageQueryVariables = VariablesOf<typeof ProductPageQuery>;
@@ -65,5 +79,14 @@ export const getProduct = cache(async (variables: ProductPageQueryVariables) => 
     fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
-  return data.site.product;
+  const wishlists = data.customer?.wishlists
+    ? removeEdgesAndNodes(data.customer.wishlists).map((wishlist) => {
+        return {
+          ...wishlist,
+          items: removeEdgesAndNodes(wishlist.items),
+        };
+      })
+    : [];
+
+  return { product: data.site.product, wishlists };
 });

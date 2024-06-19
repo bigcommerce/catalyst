@@ -1,9 +1,12 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { useFormatter, useTranslations } from 'next-intl';
+import { getFormatter, getTranslations } from 'next-intl/server';
 
+import { auth } from '~/auth';
 import { FragmentOf, graphql } from '~/client/graphql';
 import { ProductForm } from '~/components/product-form';
 import { ProductFormFragment } from '~/components/product-form/fragment';
+
+import { getProduct } from '../page-data';
 
 import { ProductSchema, ProductSchemaFragment } from './product-schema';
 import { ReviewSummary, ReviewSummaryFragment } from './review-summary';
@@ -68,13 +71,17 @@ export const DetailsFragment = graphql(
   [ReviewSummaryFragment, ProductSchemaFragment, ProductFormFragment],
 );
 
+export type Wishlists = NonNullable<Awaited<ReturnType<typeof getProduct>>>['wishlists'];
+
 interface Props {
   product: FragmentOf<typeof DetailsFragment>;
+  wishlists: Wishlists;
 }
 
-export const Details = ({ product }: Props) => {
-  const t = useTranslations('Product.Details');
-  const format = useFormatter();
+export const Details = async ({ product, wishlists }: Props) => {
+  const t = await getTranslations('Product.Details');
+  const format = await getFormatter();
+  const session = await auth();
 
   const customFields = removeEdgesAndNodes(product.customFields);
 
@@ -155,7 +162,7 @@ export const Details = ({ product }: Props) => {
         </div>
       )}
 
-      <ProductForm data={product} />
+      <ProductForm data={product} isLogged={Boolean(session)} wishlists={wishlists} />
 
       <div className="my-12">
         <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>

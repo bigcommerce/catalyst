@@ -221,6 +221,16 @@
         "messages": {
             "created": "Your wishlist {name} was created successfully",
             "deleted": "Your wishlist {name} was deleted successfully"
+        },
+        "Sheet": {
+            "title": "Add to list",
+            "new": "New list",
+            "save": "Save",
+            "saveToWishlist": "Save to wishlist",
+            "saved": "Saved",
+            "createTitle": "New wishlist",
+            "selectCta": "Select from available lists:",
+            "favorites": "Favorites"
         }
     },
     "Settings": {
@@ -418,8 +428,9 @@
     "unavailable": "Unavailable",
     "processing": "Processing...",
     "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-    "errorAddingProductToCart": "Error adding product to cart. Please try again."
-  },
+    "errorAddingProductToCart": "Error adding product to cart. Please try again.",
+    "saveToWishlist": "Save to wishlist"
+},
   "StoreSelector": {
     "heading": "Select a language and region"
   }

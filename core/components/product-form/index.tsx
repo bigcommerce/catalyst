@@ -6,11 +6,13 @@ import { useTranslations } from 'next-intl';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
+import { Wishlists } from '~/app/[locale]/(default)/product/[slug]/_components/details';
 import { FragmentOf } from '~/client/graphql';
-import { Button } from '~/components/ui/button';
 
+import { WishlistSheet } from '../../app/[locale]/(default)/account/[tab]/_components/wishlist-sheet';
 import { AddToCartButton } from '../add-to-cart-button';
 import { Link } from '../link';
+import { Button } from '../ui/button';
 
 import { handleAddToCart } from './_actions/add-to-cart';
 import { CheckboxField } from './fields/checkbox-field';
@@ -23,11 +25,17 @@ import { TextField } from './fields/text-field';
 import { ProductFormFragment } from './fragment';
 import { ProductFormData, useProductForm } from './use-product-form';
 
-interface Props {
+interface SubmitProps {
   data: FragmentOf<typeof ProductFormFragment>;
 }
 
-export const Submit = ({ data: product }: Props) => {
+interface ProductFormProps {
+  data: FragmentOf<typeof ProductFormFragment>;
+  isLogged?: boolean;
+  wishlists?: Wishlists;
+}
+
+export const Submit = ({ data: product }: SubmitProps) => {
   const { formState } = useFormContext();
   const { isSubmitting } = formState;
 
@@ -38,9 +46,8 @@ export const Submit = ({ data: product }: Props) => {
   );
 };
 
-export const ProductForm = ({ data: product }: Props) => {
-  const t = useTranslations('Product.Form');
-  const m = useTranslations('AddToCart');
+export const ProductForm = ({ data: product, isLogged, wishlists }: ProductFormProps) => {
+  const t = useTranslations('AddToCart');
   const productOptions = removeEdgesAndNodes(product.productOptions);
 
   const { handleSubmit, register, ...methods } = useProductForm();
@@ -50,7 +57,7 @@ export const ProductForm = ({ data: product }: Props) => {
     const quantity = Number(data.quantity);
 
     if (result.error) {
-      toast.error(m('errorAddingProductToCart'), {
+      toast.error(t('errorAddingProductToCart'), {
         icon: <AlertCircle className="text-error-secondary" />,
       });
 
@@ -61,7 +68,7 @@ export const ProductForm = ({ data: product }: Props) => {
       () => (
         <div className="flex items-center gap-3">
           <span>
-            {m.rich('addedProductQuantity', {
+            {t.rich('addedProductQuantity', {
               cartItems: quantity,
               cartLink: (chunks) => (
                 <Link
@@ -118,14 +125,16 @@ export const ProductForm = ({ data: product }: Props) => {
 
         <div className="mt-4 flex flex-col gap-4 @md:flex-row">
           <Submit data={product} />
-
-          {/* NOT IMPLEMENTED YET */}
-          <div className="w-full">
-            <Button disabled type="submit" variant="secondary">
-              <Heart aria-hidden="true" className="mr-2" />
-              <span>{t('saveToWishlist')}</span>
+          {isLogged && wishlists ? (
+            <WishlistSheet productId={product.entityId} wishlistsData={wishlists} />
+          ) : (
+            <Button asChild type="button" variant="secondary">
+              <Link href="/login">
+                <Heart aria-hidden="true" className="mr-2" />
+                <span>{t('saveToWishlist')}</span>
+              </Link>
             </Button>
-          </div>
+          )}
         </div>
       </form>
     </FormProvider>
