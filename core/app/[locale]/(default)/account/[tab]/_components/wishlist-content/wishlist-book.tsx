@@ -46,14 +46,14 @@ const QuantityDisplay = ({ itemsLength }: WishlistItems) => {
   return (
     <>
       {smItems > 0 && (
-        <div className="list-item w-40 md:!hidden">
-          <div className="flex h-40 w-full items-center justify-center bg-gray-200 font-semibold text-gray-500">
+        <div className="list-item w-32 sm:w-40 md:!hidden">
+          <div className="flex h-32 w-full items-center justify-center bg-gray-200 font-semibold text-gray-500 sm:h-40">
             +{smItems}
           </div>
         </div>
       )}
       {mdItems > 0 && (
-        <div className="hidden w-36 w-36 md:list-item lg:hidden">
+        <div className="hidden w-36 md:list-item lg:hidden">
           <div className="flex h-36 w-full items-center justify-center bg-gray-200 font-semibold text-gray-500">
             +{mdItems}
           </div>
@@ -100,9 +100,9 @@ const Wishlist = ({ onDeleteWishlist, wishlist: { items, entityId, name } }: Wis
                   const defaultImage = product.images.find(({ isDefault }) => isDefault);
 
                   return (
-                    <li className="w-40 md:w-36" key={productId}>
+                    <li className="w-32 sm:w-40 md:w-36" key={productId}>
                       <Link className="mb-2 flex" href={product.path}>
-                        <div className="h-40 w-full md:h-36">
+                        <div className="h-32 w-full sm:h-40 md:h-36">
                           {defaultImage ? (
                             <BcImage
                               alt={defaultImage.altText}
