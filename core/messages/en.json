@@ -228,6 +228,7 @@
         "deleteTitle": "Are you sure you want to delete wish list {name}?",
         "confirmDelete": "Delete {name}",
         "favorites": "Favorites",
+        "noGalleryText": "Coming Soon",
         "messages": {
             "created": "Your wish list {name} was created successfully",
             "notCreated": "Error occured while creating your wish list",

@@ -34,7 +34,7 @@ enum VisibleWishlistItemsPerDevice {
   sm = 1,
   md = 3,
   lg = 4,
-  xl = 6,
+  xl = 5,
 }
 
 const QuantityDisplay = ({ itemsLength }: WishlistItems) => {
@@ -112,7 +112,9 @@ const Wishlist = ({ onDeleteWishlist, wishlist: { items, entityId, name } }: Wis
                               width={300}
                             />
                           ) : (
-                            <div className="h-full w-full bg-gray-200" />
+                            <div className="flex h-full w-full items-center justify-center bg-gray-200 font-semibold text-gray-500">
+                              {t('noGalleryText')}
+                            </div>
                           )}
                         </div>
                       </Link>
