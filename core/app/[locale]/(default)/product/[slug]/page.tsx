@@ -28,7 +28,7 @@ export async function generateMetadata({
   const productId = Number(params.slug);
   const optionValueIds = getOptionValueIds({ searchParams });
 
-  const product = await getProduct({
+  const { product } = await getProduct({
     entityId: productId,
     optionValueIds,
     useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
@@ -70,7 +70,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
 
   const optionValueIds = getOptionValueIds({ searchParams });
 
-  const product = await getProduct({
+  const { product, wishlists } = await getProduct({
     entityId: productId,
     optionValueIds,
     useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
@@ -89,10 +89,14 @@ export default async function Product({ params, searchParams }: ProductPageProps
       <div className="mb-12 mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
         <NextIntlClientProvider
           locale={locale}
-          messages={{ Product: messages.Product ?? {}, AddToCart: messages.AddToCart ?? {} }}
+          messages={{
+            Product: messages.Product ?? {},
+            AddToCart: messages.AddToCart ?? {},
+            Account: messages.Account ?? {},
+          }}
         >
           <Gallery noImageText={t('noGalleryText')} product={product} />
-          <Details product={product} />
+          <Details product={product} wishlists={wishlists} />
           <div className="lg:col-span-2">
             <Description product={product} />
             <Warranty product={product} />

@@ -5,6 +5,8 @@ import { FragmentOf, graphql } from '~/client/graphql';
 import { ProductForm } from '~/components/product-form';
 import { ProductFormFragment } from '~/components/product-form/fragment';
 
+import { getProduct } from '../page-data';
+
 import { ProductSchema, ProductSchemaFragment } from './product-schema';
 import { ReviewSummary, ReviewSummaryFragment } from './review-summary';
 
@@ -68,11 +70,14 @@ export const DetailsFragment = graphql(
   [ReviewSummaryFragment, ProductSchemaFragment, ProductFormFragment],
 );
 
+export type Wishlists = NonNullable<Awaited<ReturnType<typeof getProduct>>>['wishlists'];
+
 interface Props {
   product: FragmentOf<typeof DetailsFragment>;
+  wishlists: Wishlists;
 }
 
-export const Details = ({ product }: Props) => {
+export const Details = ({ product, wishlists }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
 
@@ -155,7 +160,7 @@ export const Details = ({ product }: Props) => {
         </div>
       )}
 
-      <ProductForm data={product} />
+      <ProductForm data={product} wishlists={wishlists} />
 
       <div className="my-12">
         <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
