@@ -284,15 +284,16 @@ export const EditAddress = ({
             actionHandler={onDeleteAddress}
             confirmationText={t('confirmDeleteAddress')}
             title={t('deleteModalTitle')}
-          >
-            <Button
-              className="ms-auto items-center px-8 md:w-fit"
-              disabled={!canBeDeleted}
-              variant="subtle"
-            >
-              {t('deleteButton')}
-            </Button>
-          </Modal>
+            trigger={
+              <Button
+                className="ms-auto items-center px-8 md:w-fit"
+                disabled={!canBeDeleted}
+                variant="subtle"
+              >
+                {t('deleteButton')}
+              </Button>
+            }
+          />
         </div>
       </Form>
     </>
