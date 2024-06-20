@@ -57,13 +57,12 @@ export const CreateWishlistForm = ({ onWishlistCreated }: Props) => {
     const submit = await createWishlist(formData);
 
     if (submit.status === 'success') {
-      setAccountState({
-        status: submit.status,
-        message: t('messages.created', { name: submit.data?.name }),
-      });
-
       if (submit.data) {
         onWishlistCreated(submit.data);
+        setAccountState({
+          status: submit.status,
+          message: t('messages.created', { name: submit.data.name }),
+        });
       }
     }
 
@@ -73,7 +72,7 @@ export const CreateWishlistForm = ({ onWishlistCreated }: Props) => {
   };
 
   return (
-    <Form action={onSubmit}>
+    <Form action={onSubmit} className="w-full">
       <Field className="relative space-y-2 pb-7" name="name">
         <FieldLabel>{t('inputLabel')}</FieldLabel>
         <FieldControl asChild>

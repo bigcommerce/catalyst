@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
 import { createWishlist as createWishlistClient } from '~/client/mutations/create-wishlist';
@@ -18,17 +19,25 @@ export const createWishlist = async (formData: FormData) => {
     isPublic: true,
   };
 
-  const newWishlist = await createWishlistClient(input);
+  try {
+    const newWishlist = await createWishlistClient(input);
 
-  if (newWishlist) {
-    return {
-      status: 'success',
-      data: newWishlist,
-    };
+    revalidatePath('/account/wishlists', 'page');
+
+    if (newWishlist) {
+      return {
+        status: 'success',
+        data: newWishlist,
+      };
+    }
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return {
+        status: 'error',
+        message: error.message,
+      };
+    }
   }
 
-  return {
-    status: 'error',
-    message: 'Wish list was not created. Please try again',
-  };
+  return { status: 'error', message: 'Unknown error.' };
 };
