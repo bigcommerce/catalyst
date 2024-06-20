@@ -90,7 +90,7 @@
   "Cart": {
     "heading": "Your cart",
     "empty": "Your cart is empty",
-    "emptyDetails": "Looks like you have not addded anything to your cart. Go ahead & explore top categories",
+    "emptyDetails": "Looks like you have not added anything to your cart. Go ahead & explore top categories",
     "proceedToCheckout": "Proceed to checkout",
     "loading": "Loading...",
     "spinnerText": "Updating...",

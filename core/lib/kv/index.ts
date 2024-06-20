@@ -1,11 +1,15 @@
+import { MemoryKvAdapter } from './adapters/memory';
 import { KvAdapter, SetCommandOptions } from './types';
 
 interface Config {
   logger?: boolean;
 }
 
+const memoryKv = new MemoryKvAdapter();
+
 class KV<Adapter extends KvAdapter> implements KvAdapter {
   private kv?: Adapter;
+  private memoryKv = memoryKv;
   private namespace: string;
 
   constructor(
@@ -20,23 +24,41 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
   }
 
   async get<Data>(key: string) {
-    const kv = await this.getKv();
-    const fullKey = `${this.namespace}_${key}`;
+    const [value] = await this.mget<Data>(key);
 
-    const value = await kv.get<Data>(fullKey);
-
-    this.logger(`GET - Key: ${fullKey} - Value: ${JSON.stringify(value, null, 2)}`);
-
-    return value;
+    return value ?? null;
   }
 
   async mget<Data>(...keys: string[]) {
     const kv = await this.getKv();
     const fullKeys = keys.map((key) => `${this.namespace}_${key}`);
 
+    const memoryValues = (await this.memoryKv.mget<Data>(...fullKeys)).filter(Boolean);
+
+    if (memoryValues.length === keys.length) {
+      this.logger(
+        `MGET - Keys: ${fullKeys.toString()} - Value: ${JSON.stringify(memoryValues, null, 2)}`,
+      );
+
+      return memoryValues;
+    }
+
     const values = await kv.mget<Data>(...fullKeys);
 
     this.logger(`MGET - Keys: ${fullKeys.toString()} - Value: ${JSON.stringify(values, null, 2)}`);
+
+    // Store the values in memory kv
+    await Promise.all(
+      values.map(async (value, index) => {
+        const key = fullKeys[index];
+
+        if (!key) {
+          return;
+        }
+
+        await this.memoryKv.set(key, value);
+      }),
+    );
 
     return values;
   }
@@ -51,7 +73,9 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
 
     this.logger(`SET - Key: ${fullKey} - Value: ${JSON.stringify(value, null, 2)}`);
 
-    return kv.set(fullKey, value, opts);
+    await Promise.all([this.memoryKv.set(fullKey, value, opts), kv.set(fullKey, value, opts)]);
+
+    return value;
   }
 
   private async getKv() {
@@ -71,6 +95,12 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
 }
 
 async function createKVAdapter() {
+  if (process.env.BC_KV_REST_API_URL && process.env.BC_KV_REST_API_TOKEN) {
+    const { BcKvAdapter } = await import('./adapters/bc');
+
+    return new BcKvAdapter();
+  }
+
   if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
     const { VercelKvAdapter } = await import('./adapters/vercel');
 
@@ -82,8 +112,6 @@ async function createKVAdapter() {
 
     return new UpstashKvAdapter();
   }
-
-  const { MemoryKvAdapter } = await import('./adapters/memory');
 
   return new MemoryKvAdapter();
 }

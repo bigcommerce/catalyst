@@ -13,21 +13,6 @@ export class MemoryKvAdapter implements KvAdapter {
     max: 500,
   });
 
-  async get<Data>(key: string) {
-    const entry = this.kv.get(key);
-
-    if (!entry) {
-      return null;
-    }
-
-    if (entry.expiresAt < Date.now()) {
-      return null;
-    }
-
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return entry.value as Data;
-  }
-
   async mget<Data>(...keys: string[]) {
     const entries = keys.map((key) => this.kv.get(key)?.value);
 
@@ -42,5 +27,20 @@ export class MemoryKvAdapter implements KvAdapter {
     });
 
     return value;
+  }
+
+  private async get<Data>(key: string) {
+    const entry = this.kv.get(key);
+
+    if (!entry) {
+      return null;
+    }
+
+    if (entry.expiresAt < Date.now()) {
+      return null;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return entry.value as Data;
   }
 }
