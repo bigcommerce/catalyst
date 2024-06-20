@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { useTransition } from 'react';
 
 import { Tag, TagAction, TagContent } from '~/components/ui/tag';
 
@@ -110,6 +111,8 @@ export const RefineBy = (props: Props) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
+
   const refinements = mapFacetsToRefinements(props);
   const t = useTranslations('FacetedGroup.FacetedSearch.RefineBy');
 
@@ -120,11 +123,15 @@ export const RefineBy = (props: Props) => {
 
     const params = new URLSearchParams(filteredParams);
 
-    router.push(`${pathname}?${params.toString()}`);
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`);
+    });
   };
 
   const clearAllRefinements = () => {
-    router.push(pathname);
+    startTransition(() => {
+      router.push(pathname);
+    });
   };
 
   if (!refinements.length) {
@@ -132,7 +139,7 @@ export const RefineBy = (props: Props) => {
   }
 
   return (
-    <div>
+    <div data-pending={isPending ? '' : undefined}>
       <div className="flex flex-row items-center justify-between pb-2">
         <h3 className="text-2xl font-bold">{t('refineBy')}</h3>
         {/* TODO: Make subtle variant */}

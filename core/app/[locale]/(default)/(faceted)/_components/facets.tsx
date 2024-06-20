@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { FormEvent, useRef } from 'react';
+import { FormEvent, useRef, useTransition } from 'react';
 
 import { Link } from '~/components/link';
 import {
@@ -46,6 +46,8 @@ export const Facets = ({ facets, pageType }: Props) => {
   const ref = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const pathname = usePathname();
+  const [isPending, startTransition] = useTransition();
+
   const searchParams = useSearchParams();
   const t = useTranslations('FacetedGroup.FacetedSearch.Facets');
 
@@ -81,12 +83,14 @@ export const Facets = ({ facets, pageType }: Props) => {
       newSearchParams.append('term', searchParam);
     }
 
-    router.push(`${pathname}?${newSearchParams.toString()}`);
+    startTransition(() => {
+      router.push(`${pathname}?${newSearchParams.toString()}`);
+    });
   };
 
   return (
     <Accordion defaultValue={defaultOpenFacets} type="multiple">
-      <form onSubmit={handleSubmit} ref={ref}>
+      <form data-pending={isPending ? '' : undefined} onSubmit={handleSubmit} ref={ref}>
         {facets.map((facet) => {
           if (facet.__typename === 'BrandSearchFilter' && pageType !== 'brand') {
             return (
