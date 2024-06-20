@@ -7,7 +7,7 @@ import { getCustomerAddresses } from '~/client/queries/get-customer-addresses';
 import { AddressesContent } from './_components/addresses-content';
 import { SettingsContent } from './_components/settings-content';
 import { TabHeading } from './_components/tab-heading';
-import { WishlistContent } from './_components/wishlist-content';
+import { WishlistContent, WISHLISTS_PER_PAGE } from './_components/wishlist-content';
 import { TabType } from './layout';
 import { getCustomerSettingsQuery, getWishlistQuery } from './page-data';
 
@@ -67,13 +67,19 @@ export default async function AccountTabPage({ params: { tab }, searchParams }: 
     }
 
     case 'wishlists': {
-      const wishlists = await getWishlistQuery();
+      const { before, after } = searchParams;
 
-      if (!wishlists) {
+      const wishlistDetails = await getWishlistQuery({
+        ...(after && { after }),
+        ...(before && { before }),
+        limit: WISHLISTS_PER_PAGE,
+      });
+
+      if (!wishlistDetails) {
         notFound();
       }
 
-      return <WishlistContent wishlists={wishlists} />;
+      return <WishlistContent {...wishlistDetails} />;
     }
 
     case 'recently-viewed':

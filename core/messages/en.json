@@ -231,7 +231,6 @@
         "noGalleryText": "Coming Soon",
         "messages": {
             "created": "Your wish list {name} was created successfully",
-            "notCreated": "Error occured while creating your wish list",
             "deleted": "Your wish list {name} was deleted successfully"
         }
     },

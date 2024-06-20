@@ -1,7 +1,8 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
@@ -15,7 +16,7 @@ import { Modal } from '../modal';
 
 import { CreateWishlistForm } from './create-wishlist-form';
 
-import { Wishlists } from '.';
+import { Wishlists, WISHLISTS_PER_PAGE } from '.';
 
 interface Wishlist {
   onDeleteWishlist?: (id: number, name: string) => Promise<void>;
@@ -23,25 +24,26 @@ interface Wishlist {
 }
 
 interface WishlistBook {
+  hasPreviousPage: boolean;
   wishlists: Wishlists;
 }
 
-interface WishlistItems {
-  itemsLength: number;
+interface WishlistItemsCount {
+  itemsQuantity: number;
 }
 
 enum VisibleWishlistItemsPerDevice {
-  sm = 1,
+  xs = 1,
   md = 3,
   lg = 4,
   xl = 5,
 }
 
-const QuantityDisplay = ({ itemsLength }: WishlistItems) => {
-  const smItems = itemsLength - VisibleWishlistItemsPerDevice.sm;
-  const mdItems = itemsLength - VisibleWishlistItemsPerDevice.md;
-  const lgItems = itemsLength - VisibleWishlistItemsPerDevice.lg;
-  const xlItems = itemsLength - VisibleWishlistItemsPerDevice.xl;
+const HiddenQuantity = ({ itemsQuantity }: WishlistItemsCount) => {
+  const smItems = itemsQuantity - VisibleWishlistItemsPerDevice.xs;
+  const mdItems = itemsQuantity - VisibleWishlistItemsPerDevice.md;
+  const lgItems = itemsQuantity - VisibleWishlistItemsPerDevice.lg;
+  const xlItems = itemsQuantity - VisibleWishlistItemsPerDevice.xl;
 
   return (
     <>
@@ -132,7 +134,7 @@ const Wishlist = ({ onDeleteWishlist, wishlist: { items, entityId, name } }: Wis
                   );
                 })}
             </ul>
-            <QuantityDisplay itemsLength={items.length} />
+            <HiddenQuantity itemsQuantity={items.length} />
           </div>
         )}
         {onDeleteWishlist && (
@@ -154,15 +156,37 @@ const Wishlist = ({ onDeleteWishlist, wishlist: { items, entityId, name } }: Wis
   );
 };
 
-export const WishlistBook = ({ wishlists }: WishlistBook) => {
+export const WishlistBook = ({ hasPreviousPage, wishlists }: WishlistBook) => {
   const t = useTranslations('Account.Wishlist');
   const [wishlistBook, setWishlistBook] = useState(wishlists);
   const { accountState, setAccountState } = useAccountStatusContext();
   const [ceateWishlistModalOpen, setCreateWishlistModalOpen] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    setWishlistBook(wishlists);
+  }, [wishlists]);
+
+  useEffect(() => {
+    if (hasPreviousPage && wishlistBook.length === 0) {
+      const timer = setTimeout(() => {
+        router.back();
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [hasPreviousPage, router, wishlistBook]);
 
   const handleWishlistCreated = (newWishlist: Wishlists[number]) => {
-    setWishlistBook((prevWishlistBook) => [...prevWishlistBook, newWishlist]);
+    setWishlistBook((prevWishlistBook) => {
+      if (prevWishlistBook.length < WISHLISTS_PER_PAGE) {
+        return [...prevWishlistBook, newWishlist];
+      }
+
+      return prevWishlistBook;
+    });
     setCreateWishlistModalOpen(false);
+
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
@@ -172,16 +196,24 @@ export const WishlistBook = ({ wishlists }: WishlistBook) => {
   const handleDeleteWishlist = async (id: number, name: string) => {
     const result = await deleteWishlists({ entityIds: [id] });
 
-    if (result === 'success') {
+    if (result.status === 'success') {
       setWishlistBook((prevWishlistBook) =>
         prevWishlistBook.filter(({ entityId }) => entityId !== id),
       );
-      setAccountState({ status: 'success', message: t('messages.deleted', { name }) });
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
+
+      const message = t('messages.deleted', { name });
+
+      setAccountState({ status: 'success', message });
     }
+
+    if (result.status === 'error') {
+      setAccountState({ status: result.status, message: result.message });
+    }
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   };
 
   return (
@@ -193,7 +225,7 @@ export const WishlistBook = ({ wishlists }: WishlistBook) => {
       )}
 
       <ul className="mb-8">
-        {wishlistBook.length === 0 && (
+        {!hasPreviousPage && wishlistBook.length === 0 && (
           <li className="border-y py-4">
             <Wishlist wishlist={{ isPublic: true, items: [], name: t('favorites'), entityId: 0 }} />
           </li>

@@ -58,11 +58,19 @@ const WishlistQuery = graphql(
   [GalleryFragment, PricingFragment],
 );
 
-export const getWishlistQuery = cache(async () => {
+export interface WishlistArgs {
+  after?: string;
+  before?: string;
+  limit?: number;
+}
+
+export const getWishlistQuery = cache(async ({ before, after, limit = 3 }: WishlistArgs) => {
   const customerId = await getSessionCustomerId();
+  const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
   const response = await client.fetch({
     document: WishlistQuery,
+    variables: { ...paginationArgs },
     fetchOptions: { cache: 'no-store' },
     customerId,
   });
@@ -73,20 +81,23 @@ export const getWishlistQuery = cache(async () => {
     return undefined;
   }
 
-  return removeEdgesAndNodes(customer.wishlists).map((wishlist) => {
-    return {
-      ...wishlist,
-      items: removeEdgesAndNodes(wishlist.items).map((item) => {
-        return {
-          ...item,
-          product: {
-            ...item.product,
-            images: removeEdgesAndNodes(item.product.images),
-          },
-        };
-      }),
-    };
-  });
+  return {
+    pageInfo: customer.wishlists.pageInfo,
+    wishlists: removeEdgesAndNodes(customer.wishlists).map((wishlist) => {
+      return {
+        ...wishlist,
+        items: removeEdgesAndNodes(wishlist.items).map((item) => {
+          return {
+            ...item,
+            product: {
+              ...item.product,
+              images: removeEdgesAndNodes(item.product.images),
+            },
+          };
+        }),
+      };
+    }),
+  };
 });
 
 const CustomerSettingsQuery = graphql(
