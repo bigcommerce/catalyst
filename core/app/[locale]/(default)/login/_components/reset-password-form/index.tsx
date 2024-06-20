@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -18,6 +19,7 @@ import {
 import { Input } from '~/components/ui/input';
 import { Message } from '~/components/ui/message';
 
+import { useAccountStatusContext } from '../../../account/[tab]/_components/account-status-provider';
 import { submitResetPasswordForm } from '../../_actions/submit-reset-password-form';
 
 import { ResetPasswordFormFragment } from './fragment';
@@ -58,6 +60,8 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
   const reCaptchaRef = useRef<ReCaptcha>(null);
   const [reCaptchaToken, setReCaptchaToken] = useState('');
   const [isReCaptchaValid, setReCaptchaValid] = useState(true);
+  const { setAccountState } = useAccountStatusContext();
+  const router = useRouter();
 
   const onReCatpchaChange = (token: string | null) => {
     if (!token) {
@@ -96,10 +100,11 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
 
       const customerEmail = formData.get('email');
 
-      setFormStatus({
+      setAccountState({
         status: 'success',
-        message: t('successMessage', { email: customerEmail?.toString() }),
+        message: t('confirmResetPassword', { email: customerEmail?.toString() }),
       });
+      router.push('/login');
     }
 
     if (submit.status === 'error') {
@@ -111,7 +116,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
 
   return (
     <>
-      {formStatus && (
+      {formStatus?.status === 'error' && (
         <Message className="mb-8 w-full" variant={formStatus.status}>
           <p>{formStatus.message}</p>
         </Message>

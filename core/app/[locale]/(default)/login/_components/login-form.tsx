@@ -17,6 +17,7 @@ import {
 import { Input } from '~/components/ui/input';
 import { Message } from '~/components/ui/message';
 
+import { useAccountStatusContext } from '../../account/[tab]/_components/account-status-provider';
 import { submitLoginForm } from '../_actions/submit-login-form';
 
 const SubmitButton = () => {
@@ -39,6 +40,7 @@ export const LoginForm = () => {
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [state, formAction] = useFormState(submitLoginForm, { status: 'idle' });
+  const { accountState } = useAccountStatusContext();
 
   const t = useTranslations('Account.Login');
 
@@ -62,6 +64,12 @@ export const LoginForm = () => {
 
   return (
     <>
+      {accountState.status === 'success' && (
+        <Message className="col-span-full mb-8 w-full text-gray-500" variant={accountState.status}>
+          <p>{accountState.message}</p>
+        </Message>
+      )}
+
       {isFormInvalid && (
         <Message
           aria-labelledby="error-message"
