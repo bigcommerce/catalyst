@@ -1,15 +1,14 @@
 import { expect, test } from '@playwright/test';
 
-const testAccountEmail = process.env.TEST_ACCOUNT_EMAIL || '';
-const testAccountPassword = process.env.TEST_ACCOUNT_PASSWORD || '';
+import { testUser } from '~/tests/test-data';
 
 test('tabs', async ({ page }) => {
   // Arrange
   await page.goto('/');
   await page.getByRole('link', { name: 'Login' }).click();
   await expect(page.getByLabel('Email')).toBeVisible();
-  await page.getByLabel('Email').fill(testAccountEmail);
-  await page.getByLabel('Password').fill(testAccountPassword);
+  await page.getByLabel('Email').fill(testUser.emailAddress);
+  await page.getByLabel('Password').fill(testUser.password);
   await page.getByRole('button', { name: 'Log in' }).click();
   await page.getByRole('heading', { name: 'My Account', level: 1 }).waitFor();
   await page.getByRole('link', { name: 'Orders' }).click();
