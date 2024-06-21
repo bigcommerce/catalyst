@@ -13,12 +13,17 @@ test('Account register', async ({ page }) => {
   await page.getByLabel('Confirm PasswordRequired').fill(testUser.password);
   await page.getByLabel('First NameRequired').fill(testUser.firstName);
   await page.getByLabel('Last NameRequired').fill(testUser.lastName);
-  await page.getByLabel('Phone NumberRequired').fill(testUser.phoneNumber);
+  await page.getByLabel('Phone Number').fill(testUser.phoneNumber);
   await page.getByLabel('Address Line 1Required').fill(testUser.streetAddress);
   await page.getByLabel('Suburb/CityRequired').fill(testUser.city);
   await page.getByLabel('Zip/PostcodeRequired').fill(testUser.zipCode);
 
   await page.getByRole('button', { name: 'Create account' }).click();
+  expect(
+    page.getByLabel(
+      `Dear ${testUser.firstName} ${testUser.lastName}, your account was successfully created. Redirecting to account...`,
+    ),
+  );
   await page.getByRole('heading', { name: 'My Account' }).waitFor();
   await expect(page).toHaveURL('account/');
 });
