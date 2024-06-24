@@ -286,7 +286,8 @@
             "confirmPasswordValidationMessage": "As senhas digitadas são diferentes. Tente novamente.",
             "newPasswordValidationMessage": "A nova senha deve ser diferente da senha atual e/ou corresponder à senha de confirmação.",
             "notEmptyMessage": "O campo não deve estar vazio",
-            "successMessage": "A senha foi atualizada com sucesso!"
+            "successMessage": "A senha foi atualizada com sucesso!",
+            "confirmChangePassword": "Your password has been successfully updated. Please log in using your new credentials."
         },
         "SubmitChangePassword": {
             "spinnerText": "Enviando...",
@@ -297,7 +298,8 @@
             "emailLabel": "Email",
             "emailValidationMessage": "Insira um e-mail válido, como nome@dominio.com",
             "successMessage": "Enviamos um e-mail de redefinição de senha para {email}. Se não encontrá-lo, confira a pasta de spam.",
-            "recaptchaText": "Passar na verificação ReCAPTCHA"
+            "recaptchaText": "Passar na verificação ReCAPTCHA",
+            "confirmResetPassword": "If the email address {email} is linked to an account in our store, we have sent you a password reset email. Please check your inbox and spam folder if you don't see it."
         },
         "SubmitResetPassword": {
             "spinnerText": "Enviando...",

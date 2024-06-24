@@ -286,7 +286,8 @@
             "confirmPasswordValidationMessage": "Angivna lösenord stämmer inte överens. Försök igen.",
             "newPasswordValidationMessage": "Det nya lösenordet måste skilja sig från det aktuella lösenordet och/eller matcha det bekräftade lösenordet.",
             "notEmptyMessage": "Fältet får inte vara tomt",
-            "successMessage": "Lösenordet har uppdaterats!"
+            "successMessage": "Lösenordet har uppdaterats!",
+            "confirmChangePassword": "Your password has been successfully updated. Please log in using your new credentials."
         },
         "SubmitChangePassword": {
             "spinnerText": "Skickar ...",
@@ -297,7 +298,8 @@
             "emailLabel": "E-post",
             "emailValidationMessage": "Ange en giltig e-postadress, t.ex. namn@domän.com",
             "successMessage": "Meddelandet för lösenordsåterställning är på väg till {email}. Kontrollera skräppostmappen om du inte hittar det.",
-            "recaptchaText": "Godkänd ReCAPTCHA-kontroll"
+            "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
+            "confirmResetPassword": "If the email address {email} is linked to an account in our store, we have sent you a password reset email. Please check your inbox and spam folder if you don't see it."
         },
         "SubmitResetPassword": {
             "spinnerText": "Skickar ...",

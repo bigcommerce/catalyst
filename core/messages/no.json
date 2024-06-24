@@ -286,7 +286,8 @@
             "confirmPasswordValidationMessage": "Oppgitte passord stemmer ikke overens. Prøv igjen.",
             "newPasswordValidationMessage": "Nytt passord må være forskjellig fra gjeldende passord eller/og samsvare med bekreftelsen på passordet.",
             "notEmptyMessage": "Feltet skal ikke være tomt",
-            "successMessage": "Passordet er oppdatert!"
+            "successMessage": "Passordet er oppdatert!",
+            "confirmChangePassword": "Your password has been successfully updated. Please log in using your new credentials."
         },
         "SubmitChangePassword": {
             "spinnerText": "Sender inn …",
@@ -297,7 +298,8 @@
             "emailLabel": "E-post",
             "emailValidationMessage": "Angi en gyldig e-postadresse, for eksempel navn@domene.com",
             "successMessage": "E-posten din for tilbakestilling av passord er på vei til {email}. Hvis du ikke ser den, bør du sjekke søppelpostmappen din.",
-            "recaptchaText": "Bestå reCAPTCHA-sjekk"
+            "recaptchaText": "Bestå reCAPTCHA-sjekk",
+            "confirmResetPassword": "If the email address {email} is linked to an account in our store, we have sent you a password reset email. Please check your inbox and spam folder if you don't see it."
         },
         "SubmitResetPassword": {
             "spinnerText": "Sender inn …",
