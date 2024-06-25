@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { graphql, HttpResponse } from 'msw';
 
 let channel = '';
