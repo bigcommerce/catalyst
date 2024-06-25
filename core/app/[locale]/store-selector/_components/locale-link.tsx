@@ -11,35 +11,26 @@ type LocaleLanguageRegionMap = {
  * Temporary solution until we have a better way to include regions for all locales
  */
 const localeLanguageRegionMap: LocaleLanguageRegionMap = {
-  da: { language: 'Dansk', region: 'Danmark', flag: 'dk' },
-  en: { language: 'English', region: 'United States', flag: 'us' },
+  da: { language: 'Dansk', region: 'Danmark', flag: '🇩🇰' },
+  en: { language: 'English', region: 'United States', flag: '🇺🇸' },
   'es-419': { language: 'Español', region: 'America Latina', flag: '' },
-  'es-AR': { language: 'Español', region: 'Argentina', flag: 'ar' },
-  'es-CL': { language: 'Español', region: 'Chile', flag: 'cl' },
-  'es-CO': { language: 'Español', region: 'Colombia', flag: 'co' },
+  'es-AR': { language: 'Español', region: 'Argentina', flag: '🇦🇷' },
+  'es-CL': { language: 'Español', region: 'Chile', flag: '🇨🇱' },
+  'es-CO': { language: 'Español', region: 'Colombia', flag: '🇨🇴' },
   'es-LA': { language: 'Español', region: 'America Latina', flag: '' },
-  'es-MX': { language: 'Español', region: 'México', flag: 'mx' },
-  'es-PE': { language: 'Español', region: 'Perú', flag: 'pe' },
-  es: { language: 'Español', region: 'España', flag: 'es' },
-  it: { language: 'Italiano', region: 'Italia', flag: 'it' },
-  nl: { language: 'Nederlands', region: 'Nederland', flag: 'nl' },
-  pl: { language: 'Polski', region: 'Polska', flag: 'pl' },
-  pt: { language: 'Português', region: 'Portugal', flag: 'pt' },
-  de: { language: 'Deutsch', region: 'Deutschland', flag: 'de' },
-  fr: { language: 'Français', region: 'France', flag: 'fr' },
-  ja: { language: '日本語', region: '日本', flag: 'jp' },
-  no: { language: 'Norsk', region: 'Norge', flag: 'no' },
-  'pt-BR': { language: 'Português', region: 'Brasil', flag: 'br' },
-  sv: { language: 'Svenska', region: 'Sverige', flag: 'se' },
-};
-
-const getCountryFlagEmoji = (countryCode: string) => {
-  const codePoints = countryCode
-    .toUpperCase()
-    .split('')
-    .map((char) => 127397 + char.charCodeAt(0));
-
-  return String.fromCodePoint(...codePoints);
+  'es-MX': { language: 'Español', region: 'México', flag: '🇲🇽' },
+  'es-PE': { language: 'Español', region: 'Perú', flag: '🇵🇪' },
+  es: { language: 'Español', region: 'España', flag: '🇪🇸' },
+  it: { language: 'Italiano', region: 'Italia', flag: '🇮🇹' },
+  nl: { language: 'Nederlands', region: 'Nederland', flag: '🇳🇱' },
+  pl: { language: 'Polski', region: 'Polska', flag: '🇵🇱' },
+  pt: { language: 'Português', region: 'Portugal', flag: '🇵🇹' },
+  de: { language: 'Deutsch', region: 'Deutschland', flag: '🇩🇪' },
+  fr: { language: 'Français', region: 'France', flag: '🇫🇷' },
+  ja: { language: '日本語', region: '日本', flag: '🇯🇵' },
+  no: { language: 'Norsk', region: 'Norge', flag: '🇳🇴' },
+  'pt-BR': { language: 'Português', region: 'Brasil', flag: '🇧🇷' },
+  sv: { language: 'Svenska', region: 'Sverige', flag: '🇸🇪' },
 };
 
 export const LocaleLink = ({ locale, selected }: { locale: LocaleType; selected: boolean }) => {
@@ -53,7 +44,7 @@ export const LocaleLink = ({ locale, selected }: { locale: LocaleType; selected:
       locale={locale}
     >
       <div className="flex h-full items-center gap-2">
-        <div className="text-2xl">{getCountryFlagEmoji(localeLanguageRegionMap[locale].flag)}</div>
+        <div className="text-2xl">{localeLanguageRegionMap[locale].flag}</div>
         <div className="flex flex-col gap-1">
           <span className="font-bold">{localeLanguageRegionMap[locale].language}</span>
           <span>{localeLanguageRegionMap[locale].region}</span>
