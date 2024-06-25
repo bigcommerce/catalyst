@@ -12,6 +12,7 @@ import {
   CategoryFooterMenuFragment,
 } from './footer-menus';
 import { WebPageFooterMenu, WebPageFooterMenuFragment } from './footer-menus/web-page-footer-menu';
+import { Locale } from './locale';
 import { PaymentMethods } from './payment-methods';
 import { SocialIcons, SocialIconsFragment } from './social-icons';
 
@@ -69,10 +70,21 @@ export const Footer = ({ data }: Props) => {
         </div>
       </FooterSection>
 
-      <FooterSection className="flex flex-col justify-between gap-10 sm:flex-row sm:gap-8 sm:py-6">
-        <PaymentMethods />
+      <FooterSection className="flex flex-col gap-10 sm:gap-8 sm:py-6 lg:hidden">
+        <Locale />
 
+        <div className="flex w-full flex-col justify-between gap-10 sm:flex-row sm:gap-8">
+          <PaymentMethods />
+          {data.settings && <Copyright data={data.settings} />}
+        </div>
+      </FooterSection>
+
+      <FooterSection className="hidden justify-between gap-8 py-6 lg:flex">
         {data.settings && <Copyright data={data.settings} />}
+        <div className="flex gap-8">
+          <Locale />
+          <PaymentMethods />
+        </div>
       </FooterSection>
     </ComponentsFooter>
   );
