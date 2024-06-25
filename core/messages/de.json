@@ -398,7 +398,6 @@
         "errorAddingProductToCart": "Fehler beim Hinzufügen des Produkts zum Warenkorb. Bitte versuchen Sie es erneut."
     },
     "StoreSelector": {
-        "heading": "Store selector",
-        "message": "Select your preferred language and delivery location"
+        "heading": "Select a language and region"
     }
 }

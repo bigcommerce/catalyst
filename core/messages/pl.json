@@ -398,7 +398,6 @@
         "errorAddingProductToCart": "Błąd podczas dodawania produktu do koszyka. Spróbuj ponownie."
     },
     "StoreSelector": {
-        "heading": "Store selector",
-        "message": "Select your preferred language and delivery location"
+        "heading": "Select a language and region"
     }
 }
