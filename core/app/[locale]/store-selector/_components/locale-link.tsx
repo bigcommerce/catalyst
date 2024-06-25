@@ -2,11 +2,15 @@ import { Link } from '~/components/link';
 import { LocaleType } from '~/i18n';
 import { cn } from '~/lib/utils';
 
+type LocaleLanguageRegionMap = {
+  [key in LocaleType]: { language: string; region: string; flag: string };
+};
+
 /**
  * Custom map of locale to language and region
  * Temporary solution until we have a better way to include regions for all locales
  */
-const localeLanguageRegionMap = {
+const localeLanguageRegionMap: LocaleLanguageRegionMap = {
   da: { language: 'Dansk', region: 'Danmark', flag: 'dk' },
   en: { language: 'English', region: 'United States', flag: 'us' },
   'es-419': { language: 'Español', region: 'America Latina', flag: '' },
