@@ -396,5 +396,9 @@
         "processing": "Verarbeitung ...",
         "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} wurde zu<cartLink> Ihrem Warenkorb</cartLink> hinzugefügt",
         "errorAddingProductToCart": "Fehler beim Hinzufügen des Produkts zum Warenkorb. Bitte versuchen Sie es erneut."
+    },
+    "StoreSelector": {
+        "heading": "Store selector",
+        "message": "Select your preferred language and delivery location"
     }
 }

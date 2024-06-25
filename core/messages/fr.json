@@ -396,5 +396,9 @@
         "processing": "Traitement en cours…",
         "addedProductQuantity": "<cartLink>{CartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
         "errorAddingProductToCart": "Erreur lors de l'ajout d'un produit au panier. Veuillez réessayer."
+    },
+    "StoreSelector": {
+        "heading": "Store selector",
+        "message": "Select your preferred language and delivery location"
     }
 }
