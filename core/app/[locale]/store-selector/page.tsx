@@ -55,9 +55,8 @@ export default async function StoreSelector({
         </NavigationMenu>
       </header>
 
-      <div className="px-4 lg:container sm:px-10 lg:mx-auto lg:max-w-[1000px] lg:px-12">
+      <div className="flex flex-col gap-2 px-4 lg:container sm:px-10 lg:mx-auto lg:max-w-[1000px] lg:px-12">
         <h1 className="text-3xl font-black lg:text-4xl">{t('heading')}</h1>
-        <p className="py-2 text-lg">{t('message')}</p>
 
         <div className="grid grid-cols-1 gap-6 py-6 md:grid-cols-3 md:gap-11 lg:grid-cols-4 lg:gap-8">
           {locales.map((locale) => (
