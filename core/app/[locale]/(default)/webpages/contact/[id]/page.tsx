@@ -88,5 +88,3 @@ export default async function WebPage({ params: { locale, id } }: Props) {
     </>
   );
 }
-
-export const runtime = 'edge';

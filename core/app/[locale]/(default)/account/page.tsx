@@ -63,5 +63,3 @@ export default async function AccountPage({ params: { locale } }: Props) {
     </div>
   );
 }
-
-export const runtime = 'edge';

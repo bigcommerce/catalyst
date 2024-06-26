@@ -122,5 +122,3 @@ function getOptionValueIds({ searchParams }: { searchParams: ProductPageProps['s
       (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
     );
 }
-
-export const runtime = 'edge';

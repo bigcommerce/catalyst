@@ -87,5 +87,3 @@ export default async function AccountTabPage({ params: { tab }, searchParams }: 
       return notFound();
   }
 }
-
-export const runtime = 'edge';

@@ -136,5 +136,3 @@ export default async function Category({ params: { locale, slug }, searchParams 
     </div>
   );
 }
-
-export const runtime = 'edge';

@@ -73,5 +73,3 @@ export default async function MaintenancePage() {
     </Container>
   );
 }
-
-export const runtime = 'edge';
