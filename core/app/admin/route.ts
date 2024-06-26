@@ -16,5 +16,3 @@ export const GET = () => {
       : 'https://login.bigcommerce.com',
   );
 };
-
-export const runtime = 'edge';
