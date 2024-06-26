@@ -38,7 +38,8 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./*"]
+      "~/*": ["./*"],
+      "react": [ "./node_modules/@types/react" ],
     },
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
   },
