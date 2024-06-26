@@ -1,27 +1,34 @@
 import { graphql } from '~/client/graphql';
 
-export const ShippingInfoFragment = graphql(`
-  fragment ShippingInfoFragment on Checkout {
-    entityId
-    shippingConsignments {
+import { ShippingOptionsFragment } from '../shipping-options/fragment';
+
+export const ShippingInfoFragment = graphql(
+  `
+    fragment ShippingInfoFragment on Checkout {
       entityId
-      selectedShippingOption {
+      shippingConsignments {
         entityId
-      }
-      address {
-        city
-        countryCode
-        stateOrProvince
-        postalCode
-      }
-    }
-    cart {
-      lineItems {
-        physicalItems {
+        ...ShippingOptionsFragment
+        selectedShippingOption {
           entityId
-          quantity
+          description
+        }
+        address {
+          city
+          countryCode
+          stateOrProvince
+          postalCode
+        }
+      }
+      cart {
+        lineItems {
+          physicalItems {
+            entityId
+            quantity
+          }
         }
       }
     }
-  }
-`);
+  `,
+  [ShippingOptionsFragment],
+);
