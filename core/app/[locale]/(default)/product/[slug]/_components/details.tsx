@@ -1,10 +1,14 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { useFormatter, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
+import { Suspense } from 'react';
 
 import { FragmentOf, graphql } from '~/client/graphql';
 import { ProductForm } from '~/components/product-form';
 import { ProductFormFragment } from '~/components/product-form/fragment';
 
+import { getOptionValueIds } from '../page';
+
+import { Prices } from './prices';
 import { ProductSchema, ProductSchemaFragment } from './product-schema';
 import { ReviewSummary, ReviewSummaryFragment } from './review-summary';
 
@@ -40,29 +44,6 @@ export const DetailsFragment = graphql(
       brand {
         name
       }
-      prices {
-        priceRange {
-          min {
-            value
-          }
-          max {
-            value
-          }
-        }
-        retailPrice {
-          value
-        }
-        salePrice {
-          value
-        }
-        basePrice {
-          value
-        }
-        price {
-          value
-          currencyCode
-        }
-      }
     }
   `,
   [ReviewSummaryFragment, ProductSchemaFragment, ProductFormFragment],
@@ -70,16 +51,13 @@ export const DetailsFragment = graphql(
 
 interface Props {
   product: FragmentOf<typeof DetailsFragment>;
+  optionValueIds: ReturnType<typeof getOptionValueIds>;
 }
 
-export const Details = ({ product }: Props) => {
+export const Details = ({ product, optionValueIds }: Props) => {
   const t = useTranslations('Product.Details');
-  const format = useFormatter();
 
   const customFields = removeEdgesAndNodes(product.customFields);
-
-  const showPriceRange =
-    product.prices?.priceRange.min.value !== product.prices?.priceRange.max.value;
 
   return (
     <div>
@@ -91,69 +69,9 @@ export const Details = ({ product }: Props) => {
 
       <ReviewSummary data={product} />
 
-      {product.prices && (
-        <div className="my-6 text-2xl font-bold lg:text-3xl">
-          {showPriceRange ? (
-            <span>
-              {format.number(product.prices.priceRange.min.value, {
-                style: 'currency',
-                currency: product.prices.price.currencyCode,
-              })}{' '}
-              -{' '}
-              {format.number(product.prices.priceRange.max.value, {
-                style: 'currency',
-                currency: product.prices.price.currencyCode,
-              })}
-            </span>
-          ) : (
-            <>
-              {product.prices.retailPrice?.value !== undefined && (
-                <span>
-                  {t('Prices.msrp')}:{' '}
-                  <span className="line-through">
-                    {format.number(product.prices.retailPrice.value, {
-                      style: 'currency',
-                      currency: product.prices.price.currencyCode,
-                    })}
-                  </span>
-                  <br />
-                </span>
-              )}
-              {product.prices.salePrice?.value !== undefined &&
-              product.prices.basePrice?.value !== undefined ? (
-                <>
-                  <span>
-                    {t('Prices.was')}:{' '}
-                    <span className="line-through">
-                      {format.number(product.prices.basePrice.value, {
-                        style: 'currency',
-                        currency: product.prices.price.currencyCode,
-                      })}
-                    </span>
-                  </span>
-                  <br />
-                  <span>
-                    {t('Prices.now')}:{' '}
-                    {format.number(product.prices.salePrice.value, {
-                      style: 'currency',
-                      currency: product.prices.price.currencyCode,
-                    })}
-                  </span>
-                </>
-              ) : (
-                product.prices.price.value && (
-                  <span>
-                    {format.number(product.prices.price.value, {
-                      style: 'currency',
-                      currency: product.prices.price.currencyCode,
-                    })}
-                  </span>
-                )
-              )}
-            </>
-          )}
-        </div>
-      )}
+      <Suspense>
+        <Prices entityId={product.entityId} optionValueIds={optionValueIds} />
+      </Suspense>
 
       <ProductForm data={product} />
 

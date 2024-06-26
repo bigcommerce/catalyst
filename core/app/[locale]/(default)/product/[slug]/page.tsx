@@ -92,7 +92,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
           messages={{ Product: messages.Product ?? {}, AddToCart: messages.AddToCart ?? {} }}
         >
           <Gallery noImageText={t('noGalleryText')} product={product} />
-          <Details product={product} />
+          <Details optionValueIds={optionValueIds} product={product} />
           <div className="lg:col-span-2">
             <Description product={product} />
             <Warranty product={product} />
@@ -110,7 +110,11 @@ export default async function Product({ params, searchParams }: ProductPageProps
   );
 }
 
-function getOptionValueIds({ searchParams }: { searchParams: ProductPageProps['searchParams'] }) {
+export function getOptionValueIds({
+  searchParams,
+}: {
+  searchParams: ProductPageProps['searchParams'];
+}) {
   const { slug, ...options } = searchParams;
 
   return Object.keys(options)
