@@ -7,27 +7,29 @@ enum LocalePrefixes {
   ASNEEDED = 'as-needed', // removes prefix on default locale
 }
 
+// Enable locales by including them here
+// List includes locales with existing messages support
 const locales = [
-  'da',
   'en',
-  'es-419',
-  'es-AR',
-  'es-CL',
-  'es-CO',
-  'es-LA',
-  'es-MX',
-  'es-PE',
-  'es',
-  'it',
-  'nl',
-  'pl',
-  'pt',
-  'de',
-  'fr',
-  'ja',
-  'no',
-  'pt-BR',
-  'sv',
+  // 'da',
+  // 'es-419',
+  // 'es-AR',
+  // 'es-CL',
+  // 'es-CO',
+  // 'es-LA',
+  // 'es-MX',
+  // 'es-PE',
+  // 'es',
+  // 'it',
+  // 'nl',
+  // 'pl',
+  // 'pt',
+  // 'de',
+  // 'fr',
+  // 'ja',
+  // 'no',
+  // 'pt-BR',
+  // 'sv',
 ] as const;
 
 type LocalePrefixesType = `${LocalePrefixes}`;
