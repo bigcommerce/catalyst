@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { expect, test } from '@playwright/test';
 
 import { testUser } from '~/tests/test-data';
@@ -8,9 +9,11 @@ test('Account register', async ({ page }) => {
   await page.getByRole('link', { name: 'Create Account' }).click();
   await page.getByRole('heading', { name: 'New account' }).waitFor();
 
-  await page.getByLabel('Email Address').fill(testUser.emailAddress);
-  await page.getByLabel('PasswordRequired', { exact: true }).fill(testUser.password);
-  await page.getByLabel('Confirm PasswordRequired').fill(testUser.password);
+  const password = faker.internet.password();
+
+  await page.getByLabel('Email Address').fill(faker.internet.email());
+  await page.getByLabel('PasswordRequired', { exact: true }).fill(password);
+  await page.getByLabel('Confirm PasswordRequired').fill(password);
   await page.getByLabel('First NameRequired').fill(testUser.firstName);
   await page.getByLabel('Last NameRequired').fill(testUser.lastName);
   await page.getByLabel('Phone Number').fill(testUser.phoneNumber);
