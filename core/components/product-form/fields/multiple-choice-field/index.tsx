@@ -19,6 +19,12 @@ interface Props {
   option: FragmentOf<typeof MultipleChoiceFieldFragment>;
 }
 
+interface InteractionOptions {
+  optionId: number;
+  valueId: number;
+  prefetch?: boolean;
+}
+
 export const MultipleChoiceField = ({ option }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -27,12 +33,26 @@ export const MultipleChoiceField = ({ option }: Props) => {
   const searchParamSelected = searchParams.get(String(option.entityId));
   const values = removeEdgesAndNodes(option.values);
 
-  const handleOnValueChange = ({ optionId, valueId }: { optionId: number; valueId: number }) => {
+  const handleInteraction = ({ optionId, valueId, prefetch = false }: InteractionOptions) => {
     const optionSearchParams = new URLSearchParams(searchParams.toString());
 
     optionSearchParams.set(String(optionId), String(valueId));
 
-    router.replace(`${pathname}?${optionSearchParams.toString()}`, { scroll: false });
+    const newUrl = `${pathname}?${optionSearchParams.toString()}`;
+
+    if (prefetch) {
+      router.prefetch(newUrl);
+    } else {
+      router.replace(newUrl, { scroll: false });
+    }
+  };
+
+  const handleOnValueChange = ({ optionId, valueId }: InteractionOptions) => {
+    handleInteraction({ optionId, valueId });
+  };
+
+  const handleMouseEnter = ({ optionId, valueId }: InteractionOptions) => {
+    handleInteraction({ optionId, valueId, prefetch: true });
   };
 
   const selectedValue = values.find((value) => value.isSelected)?.entityId.toString();
@@ -72,6 +92,12 @@ export const MultipleChoiceField = ({ option }: Props) => {
                 return (
                   <SwatchItem
                     key={value.entityId}
+                    onMouseEnter={() => {
+                      handleMouseEnter({
+                        optionId: option.entityId,
+                        valueId: Number(value.entityId),
+                      });
+                    }}
                     title={`${option.displayName} ${value.label}`}
                     value={String(value.entityId)}
                     variantColor={value.hexColors[0]}
@@ -109,6 +135,12 @@ export const MultipleChoiceField = ({ option }: Props) => {
               return (
                 <RectangleListItem
                   key={value.entityId}
+                  onMouseEnter={() => {
+                    handleMouseEnter({
+                      optionId: option.entityId,
+                      valueId: Number(value.entityId),
+                    });
+                  }}
                   title={`${option.displayName} ${value.label}`}
                   value={String(value.entityId)}
                 >
@@ -144,6 +176,12 @@ export const MultipleChoiceField = ({ option }: Props) => {
               <div className="mb-2 flex" key={value.entityId}>
                 <RadioItem
                   id={`${value.entityId}`}
+                  onMouseEnter={() => {
+                    handleMouseEnter({
+                      optionId: option.entityId,
+                      valueId: Number(value.entityId),
+                    });
+                  }}
                   value={`${value.entityId}`}
                   variant={error ? 'error' : undefined}
                 />
@@ -179,7 +217,16 @@ export const MultipleChoiceField = ({ option }: Props) => {
           >
             <SelectContent>
               {values.map((value) => (
-                <SelectItem key={value.entityId} value={`${value.entityId}`}>
+                <SelectItem
+                  key={value.entityId}
+                  onMouseEnter={() => {
+                    handleMouseEnter({
+                      optionId: option.entityId,
+                      valueId: Number(value.entityId),
+                    });
+                  }}
+                  value={`${value.entityId}`}
+                >
                   {value.label}
                 </SelectItem>
               ))}
@@ -212,7 +259,16 @@ export const MultipleChoiceField = ({ option }: Props) => {
             {values.map((value) => {
               if ('__typename' in value && value.__typename === 'ProductPickListOptionValue') {
                 return (
-                  <div className="flex items-center p-4" key={value.entityId}>
+                  <div
+                    className="flex items-center p-4"
+                    key={value.entityId}
+                    onMouseEnter={() => {
+                      handleMouseEnter({
+                        optionId: option.entityId,
+                        valueId: Number(value.entityId),
+                      });
+                    }}
+                  >
                     {Boolean(value.defaultImage) && (
                       <BcImage
                         alt={value.defaultImage?.altText || ''}

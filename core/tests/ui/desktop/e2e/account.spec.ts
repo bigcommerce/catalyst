@@ -85,7 +85,7 @@ test('Add and remove new address', async ({ page }) => {
 
   await page.getByRole('textbox', { name: 'Suburb/City Required' }).fill(city);
   await page.getByRole('combobox', { name: 'Choose state or province' }).click();
-  await page.getByLabel(state).click();
+  await page.getByLabel(state, { exact: true }).click();
   await page.getByRole('textbox', { name: 'Zip/Postcode Required' }).fill(zipCode);
 
   await page.getByRole('button', { name: 'Add new address' }).click();

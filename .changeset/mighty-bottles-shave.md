@@ -2,4 +2,4 @@
 "@bigcommerce/catalyst-core": patch
 ---
 
-Add upstash kv adapter.
+prefetch product option data on hover

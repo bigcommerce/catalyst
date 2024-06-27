@@ -17,6 +17,7 @@ import { Input } from '~/components/ui/input';
 import { Message } from '~/components/ui/message';
 import { useRouter } from '~/navigation';
 
+import { useAccountStatusContext } from '../../account/[tab]/_components/account-status-provider';
 import { submitChangePasswordForm } from '../_actions/submit-change-password-form';
 
 interface Props {
@@ -51,16 +52,13 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
 
   const [newPassword, setNewPasssword] = useState('');
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
+  const { setAccountState } = useAccountStatusContext();
 
   const t = useTranslations('Account.ChangePassword');
   let messageText = '';
 
   if (state.status === 'error') {
     messageText = state.message;
-  }
-
-  if (state.status === 'success') {
-    messageText = t('successMessage');
   }
 
   const handleNewPasswordChange = (e: ChangeEvent<HTMLInputElement>) =>
@@ -72,12 +70,13 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
   };
 
   if (state.status === 'success') {
-    setTimeout(() => router.push('/login'), 2000);
+    setAccountState({ status: 'success', message: t('confirmChangePassword') });
+    router.push('/login');
   }
 
   return (
     <>
-      {(state.status === 'error' || state.status === 'success') && (
+      {state.status === 'error' && (
         <Message className="mb-8 w-full text-gray-500" variant={state.status}>
           <p>{messageText}</p>
         </Message>

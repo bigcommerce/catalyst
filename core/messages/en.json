@@ -259,7 +259,7 @@
     "Register": {
         "heading": "New account",
         "submit": "Create account",
-        "submitting": "Creating account...", 
+        "submitting": "Creating account...",
         "recaptchaText": "Pass ReCAPTCHA check",
         "successMessage": "Dear {firstName} {lastName}, your account was successfully created. Redirecting to account...",
         "stateProvincePrefix": "Choose state or province",
@@ -286,7 +286,8 @@
       "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
       "newPasswordValidationMessage": "New password must be different from the current password or/and match confirm password.",
       "notEmptyMessage": "Field should not be empty",
-      "successMessage": "Password has been updated successfully!"
+      "successMessage": "Password has been updated successfully!",
+      "confirmChangePassword": "Your password has been successfully updated. Please log in using your new credentials."
     },
     "SubmitChangePassword": {
       "spinnerText": "Submitting...",
@@ -297,7 +298,8 @@
       "emailLabel": "Email",
       "emailValidationMessage": "Enter a valid email such as name@domain.com",
       "successMessage": "Your password reset email is on its way to {email}. If you don't see it, check your spam folder.",
-      "recaptchaText": "Pass ReCAPTCHA check"
+      "recaptchaText": "Pass ReCAPTCHA check",
+      "confirmResetPassword": "If the email address {email} is linked to an account in our store, we have sent you a password reset email. Please check your inbox and spam folder if you don't see it."
     },
     "SubmitResetPassword": {
       "spinnerText": "Submitting...",
