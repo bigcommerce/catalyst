@@ -214,7 +214,26 @@
       "deleteModalTitle": "Are you sure you want to delete this address?",
       "submit": "Update address",
       "submitting": "In progress..."
-    },  
+    },
+    "Wishlist": {
+        "noItems": "No items added",
+        "new": "New Wishlist",
+        "createTitle": "New wish list",
+        "inputLabel": "Wish list name",
+        "emptyName": "Provide wishlist name",
+        "submitFormText": "Create wishlist",
+        "onSubmitText": "Creating wishlist...",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "deleteTitle": "Are you sure you want to delete wish list {name}?",
+        "confirmDelete": "Delete {name}",
+        "favorites": "Favorites",
+        "noGalleryText": "Coming Soon",
+        "messages": {
+            "created": "Your wish list {name} was created successfully",
+            "deleted": "Your wish list {name} was deleted successfully"
+        }
+    },
     "Settings": {
         "emptyTextValidatoinMessage": "This field can not be empty",
         "cancel": "Cancel",

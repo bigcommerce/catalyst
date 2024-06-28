@@ -1,0 +1,44 @@
+import { getLocale, getTranslations } from 'next-intl/server';
+
+import { Pagination } from '../../../../(faceted)/_components/pagination';
+import { getWishlistQuery } from '../../page-data';
+import { TabHeading } from '../tab-heading';
+
+import { WishlistBook } from './wishlist-book';
+
+type WishlistsDetails = NonNullable<Awaited<ReturnType<typeof getWishlistQuery>>>;
+export type Wishlists = WishlistsDetails['wishlists'];
+
+interface Props {
+  wishlists: Wishlists;
+  pageInfo: WishlistsDetails['pageInfo'];
+}
+
+export interface FormStatus {
+  status: 'success' | 'error';
+  message: string;
+}
+
+export const WISHLISTS_PER_PAGE = 4;
+
+export const WishlistContent = async ({ pageInfo, wishlists }: Props) => {
+  const locale = await getLocale();
+  const t = await getTranslations({ locale, namespace: 'Pagination' });
+
+  const { hasNextPage, hasPreviousPage, startCursor, endCursor } = pageInfo;
+
+  return (
+    <>
+      <TabHeading heading="wishlists" />
+      <WishlistBook hasPreviousPage={hasPreviousPage} key={endCursor} wishlists={wishlists} />
+      <Pagination
+        endCursor={endCursor}
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        nextLabel={t('next')}
+        prevLabel={t('prev')}
+        startCursor={startCursor}
+      />
+    </>
+  );
+};
