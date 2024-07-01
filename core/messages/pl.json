@@ -286,7 +286,8 @@
             "confirmPasswordValidationMessage": "Podane hasła są niezgodne. Spróbuj ponownie.",
             "newPasswordValidationMessage": "Nowe hasło musi różnić się od aktualnego hasła i/lub być zgodne z potwierdzeniem hasła.",
             "notEmptyMessage": "Pole nie powinno być puste",
-            "successMessage": "Hasło zostało pomyślnie zaktualizowane!"
+            "successMessage": "Hasło zostało pomyślnie zaktualizowane!",
+            "confirmChangePassword": "Hasło zostało pomyślnie zmienione. Zaloguj się przy użyciu nowych danych uwierzytelniających."
         },
         "SubmitChangePassword": {
             "spinnerText": "Przekazanie...",
@@ -297,7 +298,8 @@
             "emailLabel": "Email",
             "emailValidationMessage": "Podaj prawidłowy adres e-mail, np. nazwa@domena.com",
             "successMessage": "Wysłaliśmy e-mail z instrukcjami resetowania hasła na adres {email}. Jeśli nie możesz jej znaleźć, sprawdź folder spamu.",
-            "recaptchaText": "Zdaj test ReCAPTCHA"
+            "recaptchaText": "Zdaj test ReCAPTCHA",
+            "confirmResetPassword": "Jeśli adres e-mail {email} jest powiązany z kontem w naszym sklepie, otrzymasz wiadomość e-mail umożliwiającą zresetowanie hasła. Jeśli jej nie widzisz, sprawdź skrzynkę odbiorczą i folder ze spamem."
         },
         "SubmitResetPassword": {
             "spinnerText": "Przekazanie...",
