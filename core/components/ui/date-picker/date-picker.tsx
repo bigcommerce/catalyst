@@ -15,7 +15,7 @@ type DatePickerProps = Omit<InputProps, 'defaultValue' | 'onSelect'> & {
   disabledDays?: DayPickerSingleProps['disabled'];
 };
 
-export const DatePicker = React.forwardRef<React.ElementRef<'ref'>, DatePickerProps>(
+export const DatePicker = React.forwardRef<React.ElementRef<'div'>, DatePickerProps>(
   (
     {
       defaultValue,
