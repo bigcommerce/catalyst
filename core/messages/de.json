@@ -286,7 +286,8 @@
             "confirmPasswordValidationMessage": "Die eingegebenen Passwörter stimmen nicht überein. Bitte versuchen Sie es erneut.",
             "newPasswordValidationMessage": "Das neue Passwort muss sich vom aktuellen Passwort unterscheiden oder/und mit dem Bestätigungspasswort übereinstimmen.",
             "notEmptyMessage": "Feld sollte nicht leer sein",
-            "successMessage": "Passwort wurde erfolgreich aktualisiert!"
+            "successMessage": "Passwort wurde erfolgreich aktualisiert!",
+            "confirmChangePassword": "Ihr Passwort wurde erfolgreich aktualisiert. Bitte melden Sie sich mit Ihren neuen Zugangsdaten an."
         },
         "SubmitChangePassword": {
             "spinnerText": "Wird eingereicht ...",
@@ -297,7 +298,8 @@
             "emailLabel": "E-Mail",
             "emailValidationMessage": "Geben Sie eine gültige E-Mail-Adresse wie name@domain.com ein.",
             "successMessage": "Ihre E-Mail zum Zurücksetzen des Passworts ist auf dem Weg zu {email}. Wenn Sie sie nicht sehen, überprüfen Sie Ihren Spam-Ordner.",
-            "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung"
+            "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
+            "confirmResetPassword": "Wenn die E-Mail-Adresse {email} mit einem Konto in unserem Geschäft verknüpft ist, haben wir Ihnen eine E-Mail zum Zurücksetzen des Passworts gesendet. Bitte überprüfen Sie Ihren Posteingang und Spam-Ordner, wenn Sie sie nicht sehen."
         },
         "SubmitResetPassword": {
             "spinnerText": "Wird eingereicht ...",

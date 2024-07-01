@@ -90,7 +90,7 @@
     "Cart": {
         "heading": "Votre panier",
         "empty": "Votre panier est vide",
-        "emptyDetails": "Il semblerait que vous n'ayez rien ajouté à votre panier. Explorez les meilleures catégories",
+        "emptyDetails": "Il semblerait que vous n'ayez rien ajouté à votre panier. Explorez les meilleures catégories.",
         "proceedToCheckout": "Procéder au paiement",
         "loading": "Chargement...",
         "spinnerText": "Mise à jour en cours…",
@@ -286,7 +286,8 @@
             "confirmPasswordValidationMessage": "Les mots de passe saisis ne correspondent pas. Veuillez réessayer.",
             "newPasswordValidationMessage": "Le nouveau mot de passe doit être différent du mot de passe actuel et/ou correspondre au mot de passe de confirmation.",
             "notEmptyMessage": "Le champ ne doit pas être vide",
-            "successMessage": "Le mot de passe a bien été mis à jour !"
+            "successMessage": "Le mot de passe a bien été mis à jour !",
+            "confirmChangePassword": "Votre mot de passe a été mis à jour. Veuillez vous connecter en utilisant vos nouveaux identifiants."
         },
         "SubmitChangePassword": {
             "spinnerText": "Envoi...",
@@ -297,7 +298,8 @@
             "emailLabel": "E-mail",
             "emailValidationMessage": "Veuillez saisir une adresse e-mail valide, telle que nom@domaine.com",
             "successMessage": "L'e-mail de réinitialisation de mot de passe a été envoyé à {email}. Si vous ne le voyez pas apparaître dans votre boîte de réception, vérifiez votre dossier de courrier indésirable.",
-            "recaptchaText": "Réussir le test ReCAPTCHA"
+            "recaptchaText": "Réussir le test ReCAPTCHA",
+            "confirmResetPassword": "Si l'adresse e-mail {email} est liée à un compte dans notre boutique, vous recevrez un e-mail pour réinitialiser votre mot de passe. Veuillez consulter votre boîte de réception, ainsi que votre dossier de courrier indésirable si vous ne trouvez pas cet e-mail."
         },
         "SubmitResetPassword": {
             "spinnerText": "Envoi...",
