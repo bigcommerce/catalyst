@@ -228,7 +228,7 @@ importers:
     devDependencies:
       '@bigcommerce/eslint-config':
         specifier: ^2.9.0
-        version: 2.9.0(eslint@8.57.0)(jest@29.7.0)(typescript@5.5.2)
+        version: 2.9.0(eslint@8.57.0)(jest@29.7.0(@types/node@20.14.9))(typescript@5.5.2)
       '@bigcommerce/eslint-config-catalyst':
         specifier: workspace:^
         version: link:../eslint-config-catalyst
@@ -260,8 +260,8 @@ importers:
         specifier: ^12.1.0
         version: 12.1.0(commander@12.1.0)
       '@inquirer/prompts':
-        specifier: ^5.0.6
-        version: 5.0.6
+        specifier: ^5.1.0
+        version: 5.1.0
       chalk:
         specifier: ^5.3.0
         version: 5.3.0
@@ -298,7 +298,7 @@ importers:
     devDependencies:
       '@bigcommerce/eslint-config':
         specifier: ^2.9.0
-        version: 2.9.0(eslint@8.57.0)(jest@29.7.0)(typescript@5.5.2)
+        version: 2.9.0(eslint@8.57.0)(jest@29.7.0(@types/node@20.14.9))(typescript@5.5.2)
       '@bigcommerce/eslint-config-catalyst':
         specifier: workspace:^
         version: link:../eslint-config-catalyst
@@ -1014,12 +1014,12 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@inquirer/checkbox@2.3.6':
-    resolution: {integrity: sha512-BziU88BEwBaGclY0RM59QOop2zyPgAr1EH/czvW6/J9ELXYN4vbGTI4KM/ogNnh+Y0yNnVvKxAQqFsI2Ra2BtA==}
+  '@inquirer/checkbox@2.3.8':
+    resolution: {integrity: sha512-r6q3ViCa80EjBBCduaaiAlNwYtVX3MfFSqwvLOvBBVzGRve7jgghXnP8o+iAcTA564YGRyXDpcAKTIRRZj9m8g==}
     engines: {node: '>=18'}
 
-  '@inquirer/confirm@3.1.10':
-    resolution: {integrity: sha512-/aAHu83Njy6yf44T+ZrRPUkMcUqprrOiIKsyMvf9jOV+vF5BNb2ja1aLP33MK36W8eaf91MTL/mU/e6METuENg==}
+  '@inquirer/confirm@3.1.12':
+    resolution: {integrity: sha512-s5Sod79QsBBi5Qm7zxCq9DcAD0i7WRcjd/LzsiIAWqWZKW4+OJTGrCgVSLGIHTulwbZgdxM4AAxpCXe86hv4/Q==}
     engines: {node: '>=18'}
 
   '@inquirer/confirm@3.1.9':
@@ -1030,44 +1030,52 @@ packages:
     resolution: {integrity: sha512-K8SuNX45jEFlX3EBJpu9B+S2TISzMPGXZIuJ9ME924SqbdW6Pt6fIkKvXg7mOEOKJ4WxpQsxj0UTfcL/A434Ww==}
     engines: {node: '>=18'}
 
-  '@inquirer/core@8.2.3':
-    resolution: {integrity: sha512-WrpDVPAaxJQjHid3Ra4FhUO70YBzkHSYVyW5X48L5zHYdudoPISJqTRRWSeamHfaXda7PNNaC5Py5MEo7QwBNA==}
+  '@inquirer/core@9.0.0':
+    resolution: {integrity: sha512-y3q+fkCTGmvwk9Wf6yZlI3QGlLXbEm5M7Y7Eh8abaUbv+ffvmw2aB4FxSUrWaoaozwvEJSG60raHbCaUorXEzA==}
     engines: {node: '>=18'}
 
-  '@inquirer/editor@2.1.10':
-    resolution: {integrity: sha512-5e4OlRNzi1TFVKJVBk4WtWYPtVqpKyIGvltP/bqnZ0AQ9bA9Cgukcs8LniUXsgkw3+IAPFQfP8yBxFX/qIz+2g==}
+  '@inquirer/editor@2.1.12':
+    resolution: {integrity: sha512-rKd/mOkLlqVqQqQihgD6KM8FqRYRcgF1Y0oiYI8BYUk/KJOit7noWxsydJFQoHfrSU6mrpDtc6a+6wcVYH/V6A==}
     engines: {node: '>=18'}
 
-  '@inquirer/expand@2.1.10':
-    resolution: {integrity: sha512-5wyrw7wH24DqACWnwRhdZioCS4Bq8tvkh2BDyz2a827Zn2QAxZ/o+m17GBD9xPfvTdtxlfYsyKPTSQmGvG+BJA==}
+  '@inquirer/expand@2.1.12':
+    resolution: {integrity: sha512-Q3pG0TD0Ra4hhlKcgXEJf8FACp70F2mW6NXXIbsIEDLKDdiihlAc4Y98RnsME9b0zwqbBMYlUrGJ/bYgXt3cIw==}
     engines: {node: '>=18'}
 
   '@inquirer/figures@1.0.3':
     resolution: {integrity: sha512-ErXXzENMH5pJt5/ssXV0DfWUZqly8nGzf0UcBV9xTnP+KyffE2mqyxIMBrZ8ijQck2nU0TQm40EQB53YreyWHw==}
     engines: {node: '>=18'}
 
-  '@inquirer/input@2.1.10':
-    resolution: {integrity: sha512-KEnho7O0YBj+peA40ZGOuBYf00EQnYbQlPsORgZYdjdUVUrMqQPW3qIvRNJIq+lYlc9RZrfHeMoAv+tWAoZFQg==}
+  '@inquirer/input@2.1.12':
+    resolution: {integrity: sha512-buCMz8eVevE+TGEriC4hG6w1jaf4jDHUb7qcIVAgUG8BydtHw8YRkgwtcbxVaKBd9CvMLzF607fyZnMtEteDPg==}
     engines: {node: '>=18'}
 
-  '@inquirer/password@2.1.10':
-    resolution: {integrity: sha512-hwRi8bITIloH7+30inpIkS0C/+lsdM+HSS/6F5J46Jdo9JLRnUwV4D9ovc4pz6zf2vjCFH/MYlxUBOFe/ix3Tw==}
+  '@inquirer/number@1.0.0':
+    resolution: {integrity: sha512-CFQVgqXDi5Yd+BZMLPZN8wO85t0THoK1eDLlBY1wkRuUdxb87Umz4BkVcK9LVM9rTa9bzUSVgJ91waeo6ACp3Q==}
     engines: {node: '>=18'}
 
-  '@inquirer/prompts@5.0.6':
-    resolution: {integrity: sha512-1Fc/8d8tCoYuMXJSG0C5F7Bzs4ViL4VNyOJr35FNnnEvx2GX/unBJDL9ZcYHx/Ps7yQuRAUr50SOvw8QbmJxvg==}
+  '@inquirer/password@2.1.12':
+    resolution: {integrity: sha512-nXGVXOlEAqDXqggy5Vk1eQuSya7HOffQTFzBpCUg9PT5vhIsgApRp6jRqAn7creWkkn9on+mZfezGLVolCOerw==}
     engines: {node: '>=18'}
 
-  '@inquirer/rawlist@2.1.10':
-    resolution: {integrity: sha512-tGi2O9DP+jDw2/lXKdRlv0YcCfwHcEZAzM+fRe5YjoDyBwUbKzYrDlD4xa6H9hIpPSrOpSpncTEDL9lbUDwXFw==}
+  '@inquirer/prompts@5.1.0':
+    resolution: {integrity: sha512-3rEwrBnGT9opMCiA3Lij98kH5E+JuXAVLYKlXnlK1qIWDvx7tIfypF+z1oK6m61HZ5NHGPF3HtjhVga80DR1PA==}
     engines: {node: '>=18'}
 
-  '@inquirer/select@2.3.6':
-    resolution: {integrity: sha512-eLqlZXre69Jenmar5s+3018xF3lpaGfxVZLHkCzkrhtuTuFjpYtb0YpiYeZNKZm9pa+ih3s9acN/zRt+dDh+qA==}
+  '@inquirer/rawlist@2.1.12':
+    resolution: {integrity: sha512-avwuYZp4R69BtDTpb93hAR+Zk5QKBhZYEf59IhVlW6oYTAztA80vW5m9heh+D4tv58Xy41qbVKbCF7tVl/WNpA==}
+    engines: {node: '>=18'}
+
+  '@inquirer/select@2.3.8':
+    resolution: {integrity: sha512-x4gJq9OVw8i0K03V3tJwTt2svz4J7ghqEhXaFBprRTnmbYJwQZRnnLf3PFBg+fWOti7b7fD0Oc4SLXqGeQLByg==}
     engines: {node: '>=18'}
 
   '@inquirer/type@1.3.3':
     resolution: {integrity: sha512-xTUt0NulylX27/zMx04ZYar/kr1raaiFTVvQ5feljQsiAgdm0WPj4S73/ye0fbslh+15QrIuDvfCXTek7pMY5A==}
+    engines: {node: '>=18'}
+
+  '@inquirer/type@1.4.0':
+    resolution: {integrity: sha512-AjOqykVyjdJQvtfkNDGUyMYGF8xN50VUxftCQWsOyIo4DFRLr6VQhW0VItGI1JIyQGCGgIpKa7hMMwNhZb4OIw==}
     engines: {node: '>=18'}
 
   '@isaacs/cliui@8.0.2':
@@ -5168,6 +5176,10 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
+  yoctocolors-cjs@2.1.1:
+    resolution: {integrity: sha512-c6T13b6qYcJZvck7QbEFXrFX/Mu2KOjvAGiKHmYMUg96jxNpfP6i+psGW72BOPxOIDUJrORG+Kyu7quMX9CQBQ==}
+    engines: {node: '>=18'}
+
   zod-validation-error@3.3.0:
     resolution: {integrity: sha512-Syib9oumw1NTqEv4LT0e6U83Td9aVRk9iTXPUQr1otyV1PuXQKOvOwhMNqZIq5hluzHP2pMgnOmHEo7kPdI2mw==}
     engines: {node: '>=18.0.0'}
@@ -5416,6 +5428,35 @@ snapshots:
       to-fast-properties: 2.0.0
 
   '@bcoe/v8-coverage@0.2.3': {}
+
+  '@bigcommerce/eslint-config@2.9.0(eslint@8.57.0)(jest@29.7.0(@types/node@20.14.9))(typescript@5.5.2)':
+    dependencies:
+      '@bigcommerce/eslint-plugin': 1.3.0(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint@8.57.0)(typescript@5.5.2)
+      '@rushstack/eslint-patch': 1.10.3
+      '@stylistic/eslint-plugin': 2.1.0(eslint@8.57.0)(typescript@5.5.2)
+      '@typescript-eslint/eslint-plugin': 7.12.0(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint@8.57.0)(typescript@5.5.2)
+      '@typescript-eslint/parser': 7.12.0(eslint@8.57.0)(typescript@5.5.2)
+      eslint: 8.57.0
+      eslint-config-prettier: 9.1.0(eslint@8.57.0)
+      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-gettext: 1.2.0
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-jest: 28.6.0(@typescript-eslint/eslint-plugin@7.12.0(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint@8.57.0)(typescript@5.5.2))(eslint@8.57.0)(jest@29.7.0)(typescript@5.5.2)
+      eslint-plugin-jest-formatting: 3.1.0(eslint@8.57.0)
+      eslint-plugin-jsdoc: 48.2.9(eslint@8.57.0)
+      eslint-plugin-jsx-a11y: 6.8.0(eslint@8.57.0)
+      eslint-plugin-prettier: 4.2.1(eslint-config-prettier@9.1.0(eslint@8.57.0))(eslint@8.57.0)(prettier@2.8.8)
+      eslint-plugin-react: 7.34.2(eslint@8.57.0)
+      eslint-plugin-react-hooks: 4.6.2(eslint@8.57.0)
+      eslint-plugin-switch-case: 1.1.2
+      prettier: 2.8.8
+    optionalDependencies:
+      typescript: 5.5.2
+    transitivePeerDependencies:
+      - eslint-import-resolver-node
+      - eslint-import-resolver-webpack
+      - jest
+      - supports-color
 
   '@bigcommerce/eslint-config@2.9.0(eslint@8.57.0)(jest@29.7.0)(typescript@5.5.2)':
     dependencies:
@@ -5901,18 +5942,18 @@ snapshots:
   '@img/sharp-win32-x64@0.33.4':
     optional: true
 
-  '@inquirer/checkbox@2.3.6':
+  '@inquirer/checkbox@2.3.8':
     dependencies:
-      '@inquirer/core': 8.2.3
+      '@inquirer/core': 9.0.0
       '@inquirer/figures': 1.0.3
-      '@inquirer/type': 1.3.3
+      '@inquirer/type': 1.4.0
       ansi-escapes: 4.3.2
-      chalk: 4.1.2
+      yoctocolors-cjs: 2.1.1
 
-  '@inquirer/confirm@3.1.10':
+  '@inquirer/confirm@3.1.12':
     dependencies:
-      '@inquirer/core': 8.2.3
-      '@inquirer/type': 1.3.3
+      '@inquirer/core': 9.0.0
+      '@inquirer/type': 1.4.0
 
   '@inquirer/confirm@3.1.9':
     dependencies:
@@ -5935,73 +5976,83 @@ snapshots:
       strip-ansi: 6.0.1
       wrap-ansi: 6.2.0
 
-  '@inquirer/core@8.2.3':
+  '@inquirer/core@9.0.0':
     dependencies:
       '@inquirer/figures': 1.0.3
-      '@inquirer/type': 1.3.3
+      '@inquirer/type': 1.4.0
       '@types/mute-stream': 0.0.4
       '@types/node': 20.14.9
       '@types/wrap-ansi': 3.0.0
       ansi-escapes: 4.3.2
-      chalk: 4.1.2
       cli-spinners: 2.9.2
       cli-width: 4.1.0
       mute-stream: 1.0.0
       signal-exit: 4.1.0
       strip-ansi: 6.0.1
       wrap-ansi: 6.2.0
+      yoctocolors-cjs: 2.1.1
 
-  '@inquirer/editor@2.1.10':
+  '@inquirer/editor@2.1.12':
     dependencies:
-      '@inquirer/core': 8.2.3
-      '@inquirer/type': 1.3.3
+      '@inquirer/core': 9.0.0
+      '@inquirer/type': 1.4.0
       external-editor: 3.1.0
 
-  '@inquirer/expand@2.1.10':
+  '@inquirer/expand@2.1.12':
     dependencies:
-      '@inquirer/core': 8.2.3
-      '@inquirer/type': 1.3.3
-      chalk: 4.1.2
+      '@inquirer/core': 9.0.0
+      '@inquirer/type': 1.4.0
+      yoctocolors-cjs: 2.1.1
 
   '@inquirer/figures@1.0.3': {}
 
-  '@inquirer/input@2.1.10':
+  '@inquirer/input@2.1.12':
     dependencies:
-      '@inquirer/core': 8.2.3
-      '@inquirer/type': 1.3.3
+      '@inquirer/core': 9.0.0
+      '@inquirer/type': 1.4.0
 
-  '@inquirer/password@2.1.10':
+  '@inquirer/number@1.0.0':
     dependencies:
-      '@inquirer/core': 8.2.3
-      '@inquirer/type': 1.3.3
+      '@inquirer/core': 9.0.0
+      '@inquirer/type': 1.4.0
+
+  '@inquirer/password@2.1.12':
+    dependencies:
+      '@inquirer/core': 9.0.0
+      '@inquirer/type': 1.4.0
       ansi-escapes: 4.3.2
 
-  '@inquirer/prompts@5.0.6':
+  '@inquirer/prompts@5.1.0':
     dependencies:
-      '@inquirer/checkbox': 2.3.6
-      '@inquirer/confirm': 3.1.10
-      '@inquirer/editor': 2.1.10
-      '@inquirer/expand': 2.1.10
-      '@inquirer/input': 2.1.10
-      '@inquirer/password': 2.1.10
-      '@inquirer/rawlist': 2.1.10
-      '@inquirer/select': 2.3.6
+      '@inquirer/checkbox': 2.3.8
+      '@inquirer/confirm': 3.1.12
+      '@inquirer/editor': 2.1.12
+      '@inquirer/expand': 2.1.12
+      '@inquirer/input': 2.1.12
+      '@inquirer/number': 1.0.0
+      '@inquirer/password': 2.1.12
+      '@inquirer/rawlist': 2.1.12
+      '@inquirer/select': 2.3.8
 
-  '@inquirer/rawlist@2.1.10':
+  '@inquirer/rawlist@2.1.12':
     dependencies:
-      '@inquirer/core': 8.2.3
-      '@inquirer/type': 1.3.3
-      chalk: 4.1.2
+      '@inquirer/core': 9.0.0
+      '@inquirer/type': 1.4.0
+      yoctocolors-cjs: 2.1.1
 
-  '@inquirer/select@2.3.6':
+  '@inquirer/select@2.3.8':
     dependencies:
-      '@inquirer/core': 8.2.3
+      '@inquirer/core': 9.0.0
       '@inquirer/figures': 1.0.3
-      '@inquirer/type': 1.3.3
+      '@inquirer/type': 1.4.0
       ansi-escapes: 4.3.2
-      chalk: 4.1.2
+      yoctocolors-cjs: 2.1.1
 
   '@inquirer/type@1.3.3': {}
+
+  '@inquirer/type@1.4.0':
+    dependencies:
+      mute-stream: 1.0.0
 
   '@isaacs/cliui@8.0.2':
     dependencies:
@@ -7998,7 +8049,7 @@ snapshots:
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       eslint-plugin-jsx-a11y: 6.9.0(eslint@8.57.0)
       eslint-plugin-react: 7.34.3(eslint@8.57.0)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.0)
@@ -8018,6 +8069,23 @@ snapshots:
       is-core-module: 2.13.1
       resolve: 1.22.8
     transitivePeerDependencies:
+      - supports-color
+
+  eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint@8.57.0))(eslint@8.57.0):
+    dependencies:
+      debug: 4.3.5
+      enhanced-resolve: 5.17.0
+      eslint: 8.57.0
+      eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      fast-glob: 3.3.2
+      get-tsconfig: 4.7.5
+      is-core-module: 2.13.1
+      is-glob: 4.0.3
+    transitivePeerDependencies:
+      - '@typescript-eslint/parser'
+      - eslint-import-resolver-node
+      - eslint-import-resolver-webpack
       - supports-color
 
   eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-plugin-import@2.29.1)(eslint@8.57.0):
@@ -8043,7 +8111,7 @@ snapshots:
       enhanced-resolve: 5.17.0
       eslint: 8.57.0
       eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.5
       is-core-module: 2.13.1
@@ -8052,6 +8120,17 @@ snapshots:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-node
       - eslint-import-resolver-webpack
+      - supports-color
+
+  eslint-module-utils@2.8.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0):
+    dependencies:
+      debug: 3.2.7
+    optionalDependencies:
+      '@typescript-eslint/parser': 7.12.0(eslint@8.57.0)(typescript@5.5.2)
+      eslint: 8.57.0
+      eslint-import-resolver-node: 0.3.9
+      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint@8.57.0))(eslint@8.57.0)
+    transitivePeerDependencies:
       - supports-color
 
   eslint-module-utils@2.8.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-plugin-import@2.29.1)(eslint@8.57.0))(eslint@8.57.0):
@@ -8086,6 +8165,33 @@ snapshots:
     dependencies:
       gettext-parser: 4.2.0
 
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0):
+    dependencies:
+      array-includes: 3.1.8
+      array.prototype.findlastindex: 1.2.5
+      array.prototype.flat: 1.3.2
+      array.prototype.flatmap: 1.3.2
+      debug: 3.2.7
+      doctrine: 2.1.0
+      eslint: 8.57.0
+      eslint-import-resolver-node: 0.3.9
+      eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      hasown: 2.0.2
+      is-core-module: 2.13.1
+      is-glob: 4.0.3
+      minimatch: 3.1.2
+      object.fromentries: 2.0.8
+      object.groupby: 1.0.3
+      object.values: 1.2.0
+      semver: 6.3.1
+      tsconfig-paths: 3.15.0
+    optionalDependencies:
+      '@typescript-eslint/parser': 7.12.0(eslint@8.57.0)(typescript@5.5.2)
+    transitivePeerDependencies:
+      - eslint-import-resolver-typescript
+      - eslint-import-resolver-webpack
+      - supports-color
+
   eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.12.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0):
     dependencies:
       array-includes: 3.1.8
@@ -8113,7 +8219,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0):
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.2))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
@@ -10712,6 +10818,8 @@ snapshots:
       yargs-parser: 21.1.1
 
   yocto-queue@0.1.0: {}
+
+  yoctocolors-cjs@2.1.1: {}
 
   zod-validation-error@3.3.0(zod@3.23.8):
     dependencies:
