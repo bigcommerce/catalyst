@@ -35,6 +35,8 @@ const RegisterCustomerMutation = graphql(`
 type Variables = VariablesOf<typeof RegisterCustomerMutation>;
 type RegisterCustomerInput = Variables['input'];
 
+import { parseAccountFormData } from '../fields/parse-fields';
+
 interface RegisterCustomerForm {
   formData: FormData;
   reCaptchaToken?: string;
@@ -51,26 +53,7 @@ const isRegisterCustomerInput = (data: unknown): data is RegisterCustomerInput =
 export const registerCustomer = async ({ formData, reCaptchaToken }: RegisterCustomerForm) => {
   formData.delete('customer-confirmPassword');
 
-  const parsedData = Array.from(formData.entries()).reduce<{
-    [key: string]: FormDataEntryValue | Record<string, FormDataEntryValue>;
-    address: Record<string, FormDataEntryValue>;
-  }>(
-    (acc, [name, value]) => {
-      const key = name.split('-').at(-1) ?? '';
-      const sections = name.split('-').slice(0, -1);
-
-      if (sections.includes('customer')) {
-        acc[key] = value;
-      }
-
-      if (sections.includes('address')) {
-        acc.address[key] = value;
-      }
-
-      return acc;
-    },
-    { address: {} },
-  );
+  const parsedData = parseAccountFormData(formData);
 
   if (!isRegisterCustomerInput(parsedData)) {
     return {
