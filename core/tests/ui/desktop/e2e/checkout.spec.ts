@@ -65,7 +65,10 @@ test.describe(() => {
     ).toBeVisible();
   });
 
-  test('Complete checkout as a logged in shopper', async ({ page }) => {
+  test('Complete checkout as a logged in shopper', async ({ browser }) => {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
     await page.goto('/login/');
     await page.getByLabel('Login').click();
     await page.getByLabel('Email').fill(process.env.TEST_ACCOUNT_EMAIL || '');
