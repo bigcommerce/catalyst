@@ -396,5 +396,8 @@
         "processing": "Przetwarzanie...",
         "addedProductQuantity": "Dodano {cartItems, plural, =1 {1 produkt} other {# produkty(-ów)}} <cartLink>do koszyka</cartLink>",
         "errorAddingProductToCart": "Błąd podczas dodawania produktu do koszyka. Spróbuj ponownie."
+    },
+    "StoreSelector": {
+        "heading": "Select a language and region"
     }
 }

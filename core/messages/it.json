@@ -396,5 +396,8 @@
         "processing": "Elaborazione in corso...",
         "addedProductQuantity": "{cartItems, plural, =1 {1 articolo} other {# articoli}} aggiunto/i al <cartLink> carrello</cartLink>",
         "errorAddingProductToCart": "Errore durante l'aggiunta del prodotto al carrello. Riprova."
+    },
+    "StoreSelector": {
+        "heading": "Select a language and region"
     }
 }

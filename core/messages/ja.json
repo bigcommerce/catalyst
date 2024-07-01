@@ -396,5 +396,8 @@
         "processing": "処理中...",
         "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
         "errorAddingProductToCart": "Error adding product to cart. Please try again."
+    },
+    "StoreSelector": {
+        "heading": "Select a language and region"
     }
 }

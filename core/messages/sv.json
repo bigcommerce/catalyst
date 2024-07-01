@@ -396,5 +396,8 @@
         "processing": "Behandlar…",
         "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
         "errorAddingProductToCart": "Produkten kunde inte läggas till i kundvagnen. Försök igen."
+    },
+    "StoreSelector": {
+        "heading": "Select a language and region"
     }
 }
