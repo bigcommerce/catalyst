@@ -8,6 +8,8 @@ import ReCaptcha from 'react-google-recaptcha';
 import {
   createDatesValidationHandler,
   createNumbersInputValidationHandler,
+  createPreSubmitPicklistValidationHandler,
+  createRadioButtonsValidationHandler,
   isAddressOrAccountFormField,
 } from '~/app/[locale]/(default)/account/[tab]/_components/addresses-content/address-field-handlers';
 import { getRegisterCustomerQuery } from '~/app/[locale]/(default)/login/register-customer/page-data';
@@ -27,6 +29,7 @@ import {
   Password,
   Picklist,
   PicklistOrText,
+  RadioButtons,
   Text,
 } from './fields';
 
@@ -101,6 +104,8 @@ export const RegisterCustomerForm = ({
   const [numbersInputValid, setNumbersInputValid] = useState<Record<string, boolean>>({});
   const [datesValid, setDatesValid] = useState<Record<string, boolean>>({});
   const [countryStates, setCountryStates] = useState(defaultCountry.states);
+  const [radioButtonsValid, setRadioButtonsValid] = useState<Record<string, boolean>>({});
+  const [picklistValid, setPicklistValid] = useState<Record<string, boolean>>({});
 
   const reCaptchaRef = useRef<ReCaptcha>(null);
   const [reCaptchaToken, setReCaptchaToken] = useState('');
@@ -169,6 +174,14 @@ export const RegisterCustomerForm = ({
 
     setCountryStates(states ?? []);
   };
+  const handleRadioButtonsChange = createRadioButtonsValidationHandler(
+    setRadioButtonsValid,
+    radioButtonsValid,
+  );
+  const validatePicklistFields = createPreSubmitPicklistValidationHandler(
+    [...customerFields, ...addressFields],
+    setPicklistValid,
+  );
 
   const onReCaptchaChange = (token: string | null) => {
     if (!token) {
@@ -238,7 +251,7 @@ export const RegisterCustomerForm = ({
           <p>{formStatus.message}</p>
         </Message>
       )}
-      <Form action={onSubmit} ref={form}>
+      <Form action={onSubmit} onClick={() => validatePicklistFields(form.current)} ref={form}>
         <div className="mb-6 grid grid-cols-1 gap-y-6 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-2">
           {customerFields
             .filter((field) => !CUSTOMER_FIELDS_TO_EXCLUDE.includes(field.entityId))
@@ -281,6 +294,33 @@ export const RegisterCustomerForm = ({
                         name={createFieldName(field, 'customer')}
                         onChange={handleDatesValidation}
                         onValidate={setDatesValid}
+                      />
+                    </FieldWrapper>
+                  );
+                }
+
+                case 'RadioButtonsFormField': {
+                  return (
+                    <FieldWrapper fieldId={fieldId} key={fieldId}>
+                      <RadioButtons
+                        field={field}
+                        isValid={radioButtonsValid[fieldId]}
+                        name={createFieldName(field, 'customer')}
+                        onChange={handleRadioButtonsChange}
+                      />
+                    </FieldWrapper>
+                  );
+                }
+
+                case 'PicklistFormField': {
+                  return (
+                    <FieldWrapper fieldId={fieldId} key={fieldId}>
+                      <Picklist
+                        field={field}
+                        isValid={picklistValid[fieldId]}
+                        name={createFieldName(field, 'customer')}
+                        onValidate={setPicklistValid}
+                        options={field.options}
                       />
                     </FieldWrapper>
                   );
@@ -349,21 +389,35 @@ export const RegisterCustomerForm = ({
                 );
               }
 
+              case 'RadioButtonsFormField': {
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <RadioButtons
+                      field={field}
+                      isValid={radioButtonsValid[fieldId]}
+                      name={createFieldName(field, 'address')}
+                      onChange={handleRadioButtonsChange}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
               case 'PicklistFormField': {
+                const isCountrySelector = fieldId === FieldNameToFieldId.countryCode;
+                const picklistOptions = isCountrySelector
+                  ? countries.map(({ name, code }) => ({ label: name, entityId: code }))
+                  : field.options;
+
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <Picklist
-                      defaultValue={
-                        fieldId === FieldNameToFieldId.countryCode ? defaultCountry.code : undefined
-                      }
+                      defaultValue={isCountrySelector ? defaultCountry.code : undefined}
                       field={field}
+                      isValid={picklistValid[fieldId]}
                       name={createFieldName(field, 'address')}
-                      onChange={
-                        fieldId === FieldNameToFieldId.countryCode ? handleCountryChange : undefined
-                      }
-                      options={countries.map(({ code, name }) => {
-                        return { entityId: code, label: name };
-                      })}
+                      onChange={isCountrySelector ? handleCountryChange : undefined}
+                      onValidate={setPicklistValid}
+                      options={picklistOptions}
                     />
                   </FieldWrapper>
                 );

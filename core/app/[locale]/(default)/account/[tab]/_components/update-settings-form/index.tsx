@@ -10,6 +10,8 @@ import {
   DateField,
   FieldWrapper,
   NumbersOnly,
+  Picklist,
+  RadioButtons,
 } from '~/app/[locale]/(default)/login/register-customer/_components/register-customer-form/fields';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
@@ -20,6 +22,8 @@ import { getCustomerSettingsQuery } from '../../page-data';
 import {
   createDatesValidationHandler,
   createNumbersInputValidationHandler,
+  createPreSubmitPicklistValidationHandler,
+  createRadioButtonsValidationHandler,
 } from '../addresses-content/address-field-handlers';
 
 import { updateCustomer } from './_actions/update-customer';
@@ -101,6 +105,8 @@ export const UpdateSettingsForm = ({
 
   const [textInputValid, setTextInputValid] = useState<Record<string, boolean>>({});
   const [numbersInputValid, setNumbersInputValid] = useState<Record<string, boolean>>({});
+  const [radioButtonsValid, setRadioButtonsValid] = useState<Record<string, boolean>>({});
+  const [picklistValid, setPicklistValid] = useState<Record<string, boolean>>({});
   const [datesValid, setDatesValid] = useState<Record<string, boolean>>({});
 
   const reCaptchaRef = useRef<ReCaptcha>(null);
@@ -122,6 +128,14 @@ export const UpdateSettingsForm = ({
     numbersInputValid,
   );
   const handleDatesValidation = createDatesValidationHandler(setDatesValid, datesValid);
+  const handleRadioButtonsChange = createRadioButtonsValidationHandler(
+    setRadioButtonsValid,
+    radioButtonsValid,
+  );
+  const validatePicklistFields = createPreSubmitPicklistValidationHandler(
+    customerFields,
+    setPicklistValid,
+  );
 
   const onReCaptchaChange = (token: string | null) => {
     if (!token) {
@@ -167,7 +181,7 @@ export const UpdateSettingsForm = ({
           <p>{formStatus.message}</p>
         </Message>
       )}
-      <Form action={onSubmit} ref={form}>
+      <Form action={onSubmit} onClick={() => validatePicklistFields(form.current)} ref={form}>
         <div className="mb-10 mt-8 grid grid-cols-1 gap-y-6 text-base lg:grid-cols-2 lg:gap-x-6 lg:gap-y-2">
           {addressFields.map((field) => {
             const fieldName = FieldNameToFieldId[field.entityId] ?? '';
@@ -247,6 +261,45 @@ export const UpdateSettingsForm = ({
                         name={createFieldName(field, 'customer')}
                         onChange={handleDatesValidation}
                         onValidate={setDatesValid}
+                      />
+                    </FieldWrapper>
+                  );
+                }
+
+                case 'RadioButtonsFormField': {
+                  const submittedValue =
+                    previouslySubmittedField?.__typename === `MultipleChoiceFormFieldValue`
+                      ? previouslySubmittedField.valueEntityId.toString()
+                      : undefined;
+
+                  return (
+                    <FieldWrapper fieldId={fieldId} key={fieldId}>
+                      <RadioButtons
+                        defaultValue={submittedValue}
+                        field={field}
+                        isValid={radioButtonsValid[fieldId]}
+                        name={createFieldName(field, 'customer')}
+                        onChange={handleRadioButtonsChange}
+                      />
+                    </FieldWrapper>
+                  );
+                }
+
+                case 'PicklistFormField': {
+                  const submittedValue =
+                    previouslySubmittedField?.__typename === `MultipleChoiceFormFieldValue`
+                      ? previouslySubmittedField.valueEntityId.toString()
+                      : undefined;
+
+                  return (
+                    <FieldWrapper fieldId={fieldId} key={fieldId}>
+                      <Picklist
+                        defaultValue={submittedValue}
+                        field={field}
+                        isValid={picklistValid[fieldId]}
+                        name={createFieldName(field, 'customer')}
+                        onValidate={setPicklistValid}
+                        options={field.options}
                       />
                     </FieldWrapper>
                   );
