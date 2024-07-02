@@ -18,6 +18,7 @@ interface Config {
   platform?: string;
   backendUserAgentExtensions?: string;
   logger?: boolean;
+  getChannelId?: (defaultChannelId: string) => Promise<string> | string;
 }
 
 interface BigCommerceResponse<T> {
@@ -26,9 +27,19 @@ interface BigCommerceResponse<T> {
 
 class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   private backendUserAgent: string;
+  private readonly defaultChannelId: string;
+  private getChannelId: (defaultChannelId: string) => Promise<string> | string;
 
   constructor(private config: Config) {
+    if (!config.channelId) {
+      throw new Error('Client configuration must include a channelId.');
+    }
+
+    this.defaultChannelId = config.channelId;
     this.backendUserAgent = getBackendUserAgent(config.platform, config.backendUserAgentExtensions);
+    this.getChannelId = config.getChannelId
+      ? config.getChannelId
+      : (defaultChannelId) => defaultChannelId;
   }
 
   // Overload for documents that require variables
@@ -66,7 +77,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     const query = normalizeQuery(document);
     const log = this.requestLogger(query);
 
-    const graphqlUrl = this.getEndpoint(channelId);
+    const graphqlUrl = await this.getEndpoint(channelId);
 
     const response = await fetch(graphqlUrl, {
       method: 'POST',
@@ -154,12 +165,10 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     return response.json() as Promise<unknown>;
   }
 
-  private getEndpoint(channelId?: string) {
-    if (!channelId && !this.config.channelId) {
-      throw new Error('Missing channelId');
-    }
+  private async getEndpoint(channelId?: string) {
+    const resolvedChannelId = channelId ?? (await this.getChannelId(this.defaultChannelId));
 
-    return `https://store-${this.config.storeHash}-${channelId ?? this.config.channelId}.${graphqlApiDomain}/graphql`;
+    return `https://store-${this.config.storeHash}-${resolvedChannelId}.${graphqlApiDomain}/graphql`;
   }
 
   private requestLogger(document: string) {

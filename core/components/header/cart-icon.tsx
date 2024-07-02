@@ -1,6 +1,7 @@
 'use client';
 
 import { ShoppingCart } from 'lucide-react';
+import { useLocale } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
 
@@ -17,10 +18,11 @@ interface CartIconProps {
 export const CartIcon = ({ count }: CartIconProps) => {
   const [fetchedCount, setFetchedCount] = useState<number | null>();
   const computedCount = count ?? fetchedCount;
+  const locale = useLocale();
 
   useEffect(() => {
     async function fetchCartQuantity() {
-      const response = await fetch(`/api/cart-quantity/`);
+      const response = await fetch(`/api/cart-quantity/?locale=${locale}`);
       const parsedData = CartQuantityResponseSchema.parse(await response.json());
 
       setFetchedCount(parsedData.count);
@@ -32,7 +34,7 @@ export const CartIcon = ({ count }: CartIconProps) => {
     if (count === undefined) {
       void fetchCartQuantity();
     }
-  }, [count]);
+  }, [count, locale]);
 
   if (!computedCount) {
     return <ShoppingCart aria-label="cart" />;

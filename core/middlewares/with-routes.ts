@@ -4,6 +4,7 @@ import createMiddleware from 'next-intl/middleware';
 import { z } from 'zod';
 
 import { getSessionCustomerId } from '~/auth';
+import { getChannelIdFromLocale } from '~/channels.config';
 import { graphql } from '~/client/graphql';
 import { getRawWebPageContent } from '~/client/queries/get-raw-web-page-content';
 import { getRoute } from '~/client/queries/get-route';
@@ -65,9 +66,13 @@ const RouteCacheSchema = z.object({
   expiryTime: z.number(),
 });
 
+let locale: string;
+
 const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promise<RouteCache> => {
+  const channelId = getChannelIdFromLocale(locale);
+
   const routeCache: RouteCache = {
-    route: await getRoute(pathname),
+    route: await getRoute(pathname, channelId),
     expiryTime: Date.now() + 1000 * 60 * 30, // 30 minutes
   };
 
@@ -77,7 +82,9 @@ const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promis
 };
 
 const updateStatusCache = async (event: NextFetchEvent): Promise<StorefrontStatusCache> => {
-  const status = await getStoreStatus();
+  const channelId = getChannelIdFromLocale(locale);
+
+  const status = await getStoreStatus(channelId);
 
   if (status === undefined) {
     throw new Error('Failed to fetch new storefront status');
@@ -93,7 +100,6 @@ const updateStatusCache = async (event: NextFetchEvent): Promise<StorefrontStatu
   return statusCache;
 };
 
-let locale: string;
 const clearLocaleFromPath = (path: string) => {
   let res: string;
 

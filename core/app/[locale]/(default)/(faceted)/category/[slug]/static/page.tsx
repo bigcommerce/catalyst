@@ -1,5 +1,6 @@
 import { cache } from 'react';
 
+import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate as revalidateTarget } from '~/client/revalidate-target';
@@ -29,6 +30,7 @@ const getCategoryTree = cache(async (variables: CategoryTreeQueryVariables = {})
     document: CategoryTreeQuery,
     variables,
     fetchOptions: { next: { revalidate: revalidateTarget } },
+    channelId: getChannelIdFromLocale(), // Using default channel id
   });
 
   return response.data.site.categoryTree;
