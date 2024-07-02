@@ -39,7 +39,7 @@ const getFeaturedProducts = cache(async ({ first = 12 }: Options = {}) => {
     variables: { first },
     customerId,
     fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate: revalidateTarget } },
-    channelId: getChannelIdFromLocale(),
+    channelId: getChannelIdFromLocale(), // Using default channel id
   });
 
   return removeEdgesAndNodes(response.data.site.featuredProducts);

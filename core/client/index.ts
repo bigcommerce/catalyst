@@ -1,5 +1,4 @@
 import { createClient } from '@bigcommerce/catalyst-client';
-// import { headers } from 'next/headers';
 import { getLocale } from 'next-intl/server';
 
 import { getChannelIdFromLocale } from '~/channels.config';
