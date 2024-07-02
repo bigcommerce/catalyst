@@ -4,6 +4,7 @@ import { getMessages, getTranslations } from 'next-intl/server';
 
 import { auth } from '~/auth';
 import { LocaleType } from '~/i18n';
+import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
 import { RegisterCustomerForm } from './_components/register-customer-form';
 import { getRegisterCustomerQuery } from './page-data';
@@ -63,9 +64,11 @@ export default async function RegisterCustomer({ params: { locale } }: Props) {
           countries={countries}
           customerFields={customerFields}
           defaultCountry={{ entityId, code, states: statesOrProvinces ?? [] }}
-          reCaptchaSettings={reCaptchaSettings}
+          reCaptchaSettings={bypassReCaptcha(reCaptchaSettings)}
         />
       </NextIntlClientProvider>
     </div>
   );
 }
+
+export const runtime = 'edge';
