@@ -29,14 +29,14 @@ const LayoutQuery = graphql(
 );
 
 export default async function DefaultLayout({ children, params: { locale } }: Props) {
+  unstable_setRequestLocale(locale);
+
   const customerId = await getSessionCustomerId();
 
   const { data } = await client.fetch({
     document: LayoutQuery,
     fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
   });
-
-  unstable_setRequestLocale(locale);
 
   const messages = await getMessages({ locale });
 

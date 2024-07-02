@@ -121,7 +121,7 @@ const GET_CART_QUERY = graphql(
   [MONEY_FIELDS_FRAGMENT],
 );
 
-export const getCart = cache(async (cartId?: string) => {
+export const getCart = cache(async (cartId?: string, channelId?: string) => {
   const customerId = await getSessionCustomerId();
 
   const response = await client.fetch({
@@ -134,6 +134,7 @@ export const getCart = cache(async (cartId?: string) => {
         tags: [TAGS.cart],
       },
     },
+    channelId,
   });
 
   const cart = response.data.site.cart;

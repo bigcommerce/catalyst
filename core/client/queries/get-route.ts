@@ -31,11 +31,12 @@ const GET_ROUTE_QUERY = graphql(`
   }
 `);
 
-export const getRoute = async (path: string) => {
+export const getRoute = async (path: string, channelId?: string) => {
   const response = await client.fetch({
     document: GET_ROUTE_QUERY,
     variables: { path },
     fetchOptions: { next: { revalidate } },
+    channelId,
   });
 
   return response.data.site.route;

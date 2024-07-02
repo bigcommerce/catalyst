@@ -1,6 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
+import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate as revalidateTarget } from '~/client/revalidate-target';
@@ -31,6 +32,7 @@ const getBrands = cache(async (variables: BrandsQueryVariables = {}) => {
     document: BrandsQuery,
     variables,
     fetchOptions: { next: { revalidate: revalidateTarget } },
+    channelId: getChannelIdFromLocale(),
   });
 
   return removeEdgesAndNodes(response.data.site.brands);

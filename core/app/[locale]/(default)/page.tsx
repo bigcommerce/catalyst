@@ -44,9 +44,9 @@ const HomePageQuery = graphql(
 );
 
 export default async function Home({ params: { locale } }: Props) {
-  const customerId = await getSessionCustomerId();
-
   unstable_setRequestLocale(locale);
+
+  const customerId = await getSessionCustomerId();
 
   const t = await getTranslations({ locale, namespace: 'Home' });
   const messages = await getMessages({ locale });
