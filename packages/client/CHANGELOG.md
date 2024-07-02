@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.1
+
+### Patch Changes
+
+- [#994](https://github.com/bigcommerce/catalyst/pull/994) [`8766305`](https://github.com/bigcommerce/catalyst/commit/8766305b65ca10422e7921b2fd15796e0a09d27a) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add channelId param to client to allow fetching from multiple channels with the same client.
+
 ## 0.4.0
 
 ### Minor Changes

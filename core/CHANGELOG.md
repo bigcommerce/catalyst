@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.2
+
+### Patch Changes
+
+- [#1032](https://github.com/bigcommerce/catalyst/pull/1032) [`982b19c`](https://github.com/bigcommerce/catalyst/commit/982b19c5e80d4b427ec207cc0d72ef5014e4bee8) Thanks [@deini](https://github.com/deini)! - prefetch product option data on hover
+
+- Updated dependencies [[`8766305`](https://github.com/bigcommerce/catalyst/commit/8766305b65ca10422e7921b2fd15796e0a09d27a)]:
+  - @bigcommerce/catalyst-client@0.4.1
+
 ## 0.9.1
 
 ### Patch Changes
