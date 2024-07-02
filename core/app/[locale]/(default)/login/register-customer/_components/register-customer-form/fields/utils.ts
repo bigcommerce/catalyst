@@ -29,9 +29,6 @@ export enum FieldTypeToFieldInput {
   'TextFormField' = 'texts',
   'RadioButtonsFormField' = 'multipleChoices',
   'MultilineTextFormField' = 'multilineTexts',
-  // TODO: add them later
-  'PicklistFormField' = 'mocked_PicklistFormField',
-  'PicklistOrTextFormField' = 'mocked_PicklistOrTextFormField',
 }
 
 export const CUSTOMER_FIELDS_TO_EXCLUDE = [
@@ -54,8 +51,11 @@ export const createFieldName = (
   const isCustomField = !isBuiltIn;
   let secondFieldType = fieldOrigin;
 
-  if (isCustomField) {
-    return `custom_${FieldTypeToFieldInput[fieldType]}-${fieldId}`;
+  if (isCustomField && fieldType !== 'PicklistOrTextFormField') {
+    const customFieldInputType =
+      fieldType === 'PicklistFormField' ? 'multipleChoices' : FieldTypeToFieldInput[fieldType];
+
+    return `custom_${customFieldInputType}-${fieldId}`;
   }
 
   if (fieldOrigin === 'address') {

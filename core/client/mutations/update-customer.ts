@@ -32,7 +32,7 @@ const UPDATE_CUSTOMER_MUTATION = graphql(`
 `);
 
 type Variables = VariablesOf<typeof UPDATE_CUSTOMER_MUTATION>;
-type Input = Variables['input'];
+export type Input = Variables['input'];
 
 interface UpdateCustomer {
   formFields: Input;
