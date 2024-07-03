@@ -1,3 +1,5 @@
+import { FormFieldValueType } from '~/client/fragments/form-fields-values';
+
 import { AddressOrAccountFormField } from '..';
 
 /* This mapping needed for aligning built-in fields names to their ids
@@ -67,4 +69,30 @@ export const createFieldName = (
   }
 
   return `${fieldOrigin}-${BOTH_CUSTOMER_ADDRESS_FIELDS.includes(fieldId) ? `${secondFieldType}-` : ''}${FieldNameToFieldId[fieldId] || fieldId}`;
+};
+
+export const getPreviouslySubmittedValue = (fieldValue?: FormFieldValueType) => {
+  if (!fieldValue) {
+    return {};
+  }
+
+  switch (fieldValue.__typename) {
+    case 'TextFormFieldValue':
+      return { TextFormField: fieldValue.text };
+
+    case 'NumberFormFieldValue':
+      return { NumberFormField: fieldValue.number };
+
+    case 'MultilineTextFormFieldValue':
+      return { MultilineTextFormField: fieldValue.multilineText };
+
+    case 'DateFormFieldValue':
+      return { DateFormField: fieldValue.date.utc };
+
+    case 'MultipleChoiceFormFieldValue':
+      return { MultipleChoiceFormField: fieldValue.valueEntityId.toString() };
+
+    case 'CheckboxesFormFieldValue':
+      return { CheckboxesFormField: fieldValue.valueEntityIds };
+  }
 };

@@ -1,4 +1,6 @@
-import { graphql } from '../graphql';
+import { FragmentOf, graphql } from '../graphql';
+
+export type FormFieldValueType = FragmentOf<typeof FORM_FIELDS_VALUES_FRAGMENT>;
 
 export const FORM_FIELDS_VALUES_FRAGMENT = graphql(`
   fragment FormFieldsValues on CustomerFormFieldValue {
@@ -26,6 +28,9 @@ export const FORM_FIELDS_VALUES_FRAGMENT = graphql(`
     }
     ... on TextFormFieldValue {
       text
+    }
+    ... on MultilineTextFormFieldValue {
+      multilineText
     }
   }
 `);

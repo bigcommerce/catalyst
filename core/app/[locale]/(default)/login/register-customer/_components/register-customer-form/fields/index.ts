@@ -1,6 +1,7 @@
 export * from './date';
 export * from './password';
 export * from './text';
+export * from './multiline-text';
 export * from './numbers-only';
 export * from './radio-buttons';
 export * from './picklist';

@@ -62,6 +62,21 @@ const updateFormFields = ({
       break;
     }
 
+    case 'multilineTexts': {
+      const customMultilineTexts = customFormFields[fieldType];
+
+      const fieldData = {
+        multilineText: fieldValue,
+        fieldEntityId,
+      };
+
+      customFormFields[fieldType] = customMultilineTexts
+        ? [...customMultilineTexts, fieldData]
+        : [fieldData];
+
+      break;
+    }
+
     case 'multipleChoices': {
       const customMultipleChoices = customFormFields[fieldType];
 

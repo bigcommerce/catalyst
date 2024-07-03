@@ -11,6 +11,8 @@ import {
   DateField,
   FieldNameToFieldId,
   FieldWrapper,
+  getPreviouslySubmittedValue,
+  MultilineText,
   NumbersOnly,
   Picklist,
   PicklistOrText,
@@ -31,6 +33,7 @@ import { AddressFields, Countries } from './add-address';
 import {
   createCountryChangeHandler,
   createDatesValidationHandler,
+  createMultilineTextValidationHandler,
   createNumbersInputValidationHandler,
   createPreSubmitPicklistValidationHandler,
   createRadioButtonsValidationHandler,
@@ -112,6 +115,7 @@ export const EditAddress = ({
   const [datesValid, setDatesValid] = useState<Record<string, boolean>>({});
   const [radioButtonsValid, setRadioButtonsValid] = useState<Record<string, boolean>>({});
   const [picklistValid, setPicklistValid] = useState<Record<string, boolean>>({});
+  const [multiTextValid, setMultiTextValid] = useState<Record<string, boolean>>({});
 
   const defaultStates = countries
     .filter((country) => country.code === address.countryCode)
@@ -131,6 +135,10 @@ export const EditAddress = ({
   const handleRadioButtonsChange = createRadioButtonsValidationHandler(
     setRadioButtonsValid,
     radioButtonsValid,
+  );
+  const handleMultiTextValidation = createMultilineTextValidationHandler(
+    setMultiTextValid,
+    multiTextValid,
   );
 
   const onReCaptchaChange = (token: string | null) => {
@@ -203,49 +211,59 @@ export const EditAddress = ({
         <div className="grid grid-cols-1 gap-y-6 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-2">
           {addressFields.map((field) => {
             const fieldId = field.entityId;
+            const fieldName = createFieldName(field, 'address');
             const key = FieldNameToFieldId[fieldId];
-            let defaultValue;
-            let defaultCustomField;
-
-            if (isExistedField(key)) {
-              defaultValue = address[key] ?? undefined;
-            } else {
-              defaultCustomField = address.formFields.find(({ entityId }) => entityId === fieldId);
-            }
+            const defaultCustomField = address.formFields.find(
+              ({ entityId }) => entityId === fieldId,
+            );
+            const defaultValue = (isExistedField(key) && address[key]) || undefined;
 
             switch (field.__typename) {
               case 'TextFormField': {
-                const defaultText =
-                  defaultCustomField?.__typename === `TextFormFieldValue`
-                    ? defaultCustomField.text
-                    : undefined;
+                const previousTextValue =
+                  getPreviouslySubmittedValue(defaultCustomField)?.TextFormField;
 
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <Text
-                      defaultValue={defaultValue ?? defaultText}
+                      defaultValue={defaultValue ?? previousTextValue}
                       field={field}
                       isValid={textInputValid[fieldId]}
-                      name={createFieldName(field, 'address')}
+                      name={fieldName}
                       onChange={handleTextInputValidation}
                     />
                   </FieldWrapper>
                 );
               }
 
+              case 'MultilineTextFormField': {
+                const previousMultiTextValue =
+                  getPreviouslySubmittedValue(defaultCustomField)?.MultilineTextFormField;
+
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <MultilineText
+                      defaultValue={previousMultiTextValue}
+                      field={field}
+                      isValid={multiTextValid[fieldId]}
+                      name={fieldName}
+                      onChange={handleMultiTextValidation}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
               case 'NumberFormField': {
-                const defaultNumber =
-                  defaultCustomField?.__typename === `NumberFormFieldValue`
-                    ? defaultCustomField.number
-                    : undefined;
+                const previousNumberValue =
+                  getPreviouslySubmittedValue(defaultCustomField)?.NumberFormField;
 
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <NumbersOnly
-                      defaultValue={defaultNumber}
+                      defaultValue={previousNumberValue}
                       field={field}
                       isValid={numbersInputValid[fieldId]}
-                      name={createFieldName(field, 'address')}
+                      name={fieldName}
                       onChange={handleNumbersInputValidation}
                     />
                   </FieldWrapper>
@@ -253,18 +271,16 @@ export const EditAddress = ({
               }
 
               case 'DateFormField': {
-                const defaultDate =
-                  defaultCustomField?.__typename === `DateFormFieldValue`
-                    ? defaultCustomField.date.utc
-                    : undefined;
+                const previousDateValue =
+                  getPreviouslySubmittedValue(defaultCustomField)?.DateFormField;
 
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <DateField
-                      defaultValue={defaultDate}
+                      defaultValue={previousDateValue}
                       field={field}
                       isValid={datesValid[fieldId]}
-                      name={createFieldName(field, 'address')}
+                      name={fieldName}
                       onChange={handleDatesValidation}
                       onValidate={setDatesValid}
                     />
@@ -273,18 +289,16 @@ export const EditAddress = ({
               }
 
               case 'RadioButtonsFormField': {
-                const defaultMultipleChoiceValue =
-                  defaultCustomField?.__typename === `MultipleChoiceFormFieldValue`
-                    ? defaultCustomField.valueEntityId.toString()
-                    : undefined;
+                const previousMultipleChoiceValue =
+                  getPreviouslySubmittedValue(defaultCustomField)?.MultipleChoiceFormField;
 
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <RadioButtons
-                      defaultValue={defaultMultipleChoiceValue}
+                      defaultValue={previousMultipleChoiceValue}
                       field={field}
                       isValid={radioButtonsValid[fieldId]}
-                      name={createFieldName(field, 'address')}
+                      name={fieldName}
                       onChange={handleRadioButtonsChange}
                     />
                   </FieldWrapper>
@@ -293,10 +307,8 @@ export const EditAddress = ({
 
               case 'PicklistFormField': {
                 const isCountrySelector = fieldId === FieldNameToFieldId.countryCode;
-                const defaultMultipleChoiceValue =
-                  defaultCustomField?.__typename === `MultipleChoiceFormFieldValue`
-                    ? defaultCustomField.valueEntityId.toString()
-                    : undefined;
+                const previousMultipleChoiceValue =
+                  getPreviouslySubmittedValue(defaultCustomField)?.MultipleChoiceFormField;
                 const picklistOptions = isCountrySelector
                   ? countries.map(({ name, code }) => ({ label: name, entityId: code }))
                   : field.options;
@@ -304,10 +316,10 @@ export const EditAddress = ({
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <Picklist
-                      defaultValue={isCountrySelector ? defaultValue : defaultMultipleChoiceValue}
+                      defaultValue={isCountrySelector ? defaultValue : previousMultipleChoiceValue}
                       field={field}
                       isValid={picklistValid[fieldId]}
-                      name={createFieldName(field, 'address')}
+                      name={fieldName}
                       onChange={isCountrySelector ? handleCountryChange : undefined}
                       onValidate={setPicklistValid}
                       options={picklistOptions}
@@ -325,10 +337,8 @@ export const EditAddress = ({
                       }
                       field={field}
                       key={countryStates.length}
-                      name={createFieldName(field, 'address')}
-                      options={countryStates.map(({ name }) => {
-                        return { entityId: name, label: name };
-                      })}
+                      name={fieldName}
+                      options={countryStates.map(({ name }) => ({ entityId: name, label: name }))}
                     />
                   </FieldWrapper>
                 );
