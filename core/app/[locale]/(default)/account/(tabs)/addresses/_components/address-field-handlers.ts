@@ -80,6 +80,15 @@ const createTextInputValidationHandler =
     textInputStateSetter({ ...textInputState, [fieldId]: !validationStatus });
   };
 
+const createMultilineTextValidationHandler =
+  (multiTextStateSetter: FieldStateSetFn<FieldState>, multiTextState: FieldState) =>
+  (e: ChangeEvent<HTMLTextAreaElement>) => {
+    const fieldId = Number(e.target.id);
+    const validityState = e.target.validity;
+
+    multiTextStateSetter({ ...multiTextState, [fieldId]: !validityState.valueMissing });
+  };
+
 const createNumbersInputValidationHandler =
   (numbersInputStateSetter: FieldStateSetFn<FieldState>, numbersInputState: FieldState) =>
   (e: ChangeEvent<HTMLInputElement>) => {
@@ -173,6 +182,7 @@ const createCountryChangeHandler =
 
 export {
   createTextInputValidationHandler,
+  createMultilineTextValidationHandler,
   createPicklistOrTextValidationHandler,
   createRadioButtonsValidationHandler,
   createPasswordValidationHandler,
