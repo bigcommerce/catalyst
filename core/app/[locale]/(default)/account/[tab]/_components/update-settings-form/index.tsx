@@ -9,6 +9,8 @@ import {
   createFieldName,
   DateField,
   FieldWrapper,
+  getPreviouslySubmittedValue,
+  MultilineText,
   NumbersOnly,
   Picklist,
   RadioButtons,
@@ -21,6 +23,7 @@ import { Message } from '~/components/ui/message';
 import { getCustomerSettingsQuery } from '../../page-data';
 import {
   createDatesValidationHandler,
+  createMultilineTextValidationHandler,
   createNumbersInputValidationHandler,
   createPreSubmitPicklistValidationHandler,
   createRadioButtonsValidationHandler,
@@ -104,6 +107,7 @@ export const UpdateSettingsForm = ({
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
 
   const [textInputValid, setTextInputValid] = useState<Record<string, boolean>>({});
+  const [multiTextValid, setMultiTextValid] = useState<Record<string, boolean>>({});
   const [numbersInputValid, setNumbersInputValid] = useState<Record<string, boolean>>({});
   const [radioButtonsValid, setRadioButtonsValid] = useState<Record<string, boolean>>({});
   const [picklistValid, setPicklistValid] = useState<Record<string, boolean>>({});
@@ -123,6 +127,10 @@ export const UpdateSettingsForm = ({
 
     setTextInputValid({ ...textInputValid, [fieldId]: !validationStatus });
   };
+  const handleMultiTextValidation = createMultilineTextValidationHandler(
+    setMultiTextValid,
+    multiTextValid,
+  );
   const handleNumbersInputValidation = createNumbersInputValidationHandler(
     setNumbersInputValid,
     numbersInputValid,
@@ -208,7 +216,7 @@ export const UpdateSettingsForm = ({
               defaultValue={customerInfo.email}
               entityId={FieldNameToFieldId.email}
               isRequired
-              isValid={textInputValid.email}
+              isValid={textInputValid[FieldNameToFieldId.email]}
               label={
                 customerFields.find((field) => field.entityId === FieldNameToFieldId.email)
                   ?.label ?? ''
@@ -222,6 +230,7 @@ export const UpdateSettingsForm = ({
             .filter(({ isBuiltIn }) => !isBuiltIn)
             .map((field) => {
               const fieldId = field.entityId;
+              const fieldName = createFieldName(field, 'customer');
               const previouslySubmittedField = customerInfo.formFields.find(
                 ({ entityId: id }) => id === fieldId,
               );
@@ -229,9 +238,7 @@ export const UpdateSettingsForm = ({
               switch (field.__typename) {
                 case 'NumberFormField': {
                   const submittedValue =
-                    previouslySubmittedField?.__typename === 'NumberFormFieldValue'
-                      ? previouslySubmittedField.number
-                      : undefined;
+                    getPreviouslySubmittedValue(previouslySubmittedField)?.NumberFormField;
 
                   return (
                     <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -239,8 +246,25 @@ export const UpdateSettingsForm = ({
                         defaultValue={submittedValue}
                         field={field}
                         isValid={numbersInputValid[fieldId]}
-                        name={createFieldName(field, 'customer')}
+                        name={fieldName}
                         onChange={handleNumbersInputValidation}
+                      />
+                    </FieldWrapper>
+                  );
+                }
+
+                case 'MultilineTextFormField': {
+                  const submittedValue =
+                    getPreviouslySubmittedValue(previouslySubmittedField)?.MultilineTextFormField;
+
+                  return (
+                    <FieldWrapper fieldId={fieldId} key={fieldId}>
+                      <MultilineText
+                        defaultValue={submittedValue}
+                        field={field}
+                        isValid={multiTextValid[fieldId]}
+                        name={fieldName}
+                        onChange={handleMultiTextValidation}
                       />
                     </FieldWrapper>
                   );
@@ -248,9 +272,7 @@ export const UpdateSettingsForm = ({
 
                 case 'DateFormField': {
                   const submittedValue =
-                    previouslySubmittedField?.__typename === 'DateFormFieldValue'
-                      ? previouslySubmittedField.date.utc
-                      : undefined;
+                    getPreviouslySubmittedValue(previouslySubmittedField)?.DateFormField;
 
                   return (
                     <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -258,7 +280,7 @@ export const UpdateSettingsForm = ({
                         defaultValue={submittedValue}
                         field={field}
                         isValid={datesValid[fieldId]}
-                        name={createFieldName(field, 'customer')}
+                        name={fieldName}
                         onChange={handleDatesValidation}
                         onValidate={setDatesValid}
                       />
@@ -268,9 +290,7 @@ export const UpdateSettingsForm = ({
 
                 case 'RadioButtonsFormField': {
                   const submittedValue =
-                    previouslySubmittedField?.__typename === `MultipleChoiceFormFieldValue`
-                      ? previouslySubmittedField.valueEntityId.toString()
-                      : undefined;
+                    getPreviouslySubmittedValue(previouslySubmittedField)?.MultipleChoiceFormField;
 
                   return (
                     <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -278,7 +298,7 @@ export const UpdateSettingsForm = ({
                         defaultValue={submittedValue}
                         field={field}
                         isValid={radioButtonsValid[fieldId]}
-                        name={createFieldName(field, 'customer')}
+                        name={fieldName}
                         onChange={handleRadioButtonsChange}
                       />
                     </FieldWrapper>
@@ -287,9 +307,7 @@ export const UpdateSettingsForm = ({
 
                 case 'PicklistFormField': {
                   const submittedValue =
-                    previouslySubmittedField?.__typename === `MultipleChoiceFormFieldValue`
-                      ? previouslySubmittedField.valueEntityId.toString()
-                      : undefined;
+                    getPreviouslySubmittedValue(previouslySubmittedField)?.MultipleChoiceFormField;
 
                   return (
                     <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -297,7 +315,7 @@ export const UpdateSettingsForm = ({
                         defaultValue={submittedValue}
                         field={field}
                         isValid={picklistValid[fieldId]}
-                        name={createFieldName(field, 'customer')}
+                        name={fieldName}
                         onValidate={setPicklistValid}
                         options={field.options}
                       />
@@ -307,9 +325,7 @@ export const UpdateSettingsForm = ({
 
                 case 'TextFormField': {
                   const submittedValue =
-                    previouslySubmittedField?.__typename === 'TextFormFieldValue'
-                      ? previouslySubmittedField.text
-                      : undefined;
+                    getPreviouslySubmittedValue(previouslySubmittedField)?.TextFormField;
 
                   return (
                     <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -320,7 +336,7 @@ export const UpdateSettingsForm = ({
                         label={
                           customerFields.find(({ entityId: id }) => id === fieldId)?.label ?? ''
                         }
-                        name={createFieldName(field, 'address')}
+                        name={fieldName}
                         onChange={handleTextInputValidation}
                         type="text"
                       />
@@ -332,6 +348,7 @@ export const UpdateSettingsForm = ({
                   return null;
               }
             })}
+
           {reCaptchaSettings?.isEnabledOnStorefront && (
             <Field className="relative col-span-full max-w-full space-y-2 pb-7" name="ReCAPTCHA">
               <ReCaptcha

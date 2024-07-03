@@ -74,6 +74,7 @@ export default async function AccountTabPage({ params: { tab }, searchParams }: 
     case 'settings': {
       const customerSettings = await getCustomerSettingsQuery({
         address: { filters: { entityIds: [4, 5, 6, 7] } },
+        customer: { sortBy: 'SORT_ORDER' },
       });
 
       if (!customerSettings) {

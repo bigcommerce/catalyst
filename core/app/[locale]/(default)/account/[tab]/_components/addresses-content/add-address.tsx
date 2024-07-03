@@ -11,6 +11,7 @@ import {
   DateField,
   FieldNameToFieldId,
   FieldWrapper,
+  MultilineText,
   NumbersOnly,
   Picklist,
   PicklistOrText,
@@ -27,6 +28,7 @@ import { addAddress } from '../../_actions/add-address';
 import {
   createCountryChangeHandler,
   createDatesValidationHandler,
+  createMultilineTextValidationHandler,
   createNumbersInputValidationHandler,
   createPreSubmitPicklistValidationHandler,
   createRadioButtonsValidationHandler,
@@ -103,6 +105,7 @@ export const AddAddress = ({
   const [datesValid, setDatesValid] = useState<Record<string, boolean>>({});
   const [radioButtonsValid, setRadioButtonsValid] = useState<Record<string, boolean>>({});
   const [picklistValid, setPicklistValid] = useState<Record<string, boolean>>({});
+  const [multiTextValid, setMultiTextValid] = useState<Record<string, boolean>>({});
   const [countryStates, setCountryStates] = useState(defaultCountry.states);
 
   const handleTextInputValidation = createTextInputValidationHandler(
@@ -118,6 +121,10 @@ export const AddAddress = ({
   const handleRadioButtonsChange = createRadioButtonsValidationHandler(
     setRadioButtonsValid,
     radioButtonsValid,
+  );
+  const handleMultiTextValidation = createMultilineTextValidationHandler(
+    setMultiTextValid,
+    multiTextValid,
   );
   const validatePicklistFields = createPreSubmitPicklistValidationHandler(
     addressFields,
@@ -178,6 +185,7 @@ export const AddAddress = ({
         <div className="grid grid-cols-1 gap-y-6 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-2">
           {addressFields.map((field) => {
             const fieldId = field.entityId;
+            const fieldName = createFieldName(field, 'address');
 
             switch (field.__typename) {
               case 'TextFormField': {
@@ -186,8 +194,21 @@ export const AddAddress = ({
                     <Text
                       field={field}
                       isValid={textInputValid[fieldId]}
-                      name={createFieldName(field, 'address')}
+                      name={fieldName}
                       onChange={handleTextInputValidation}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
+              case 'MultilineTextFormField': {
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <MultilineText
+                      field={field}
+                      isValid={multiTextValid[fieldId]}
+                      name={fieldName}
+                      onChange={handleMultiTextValidation}
                     />
                   </FieldWrapper>
                 );
@@ -199,7 +220,7 @@ export const AddAddress = ({
                     <NumbersOnly
                       field={field}
                       isValid={numbersInputValid[fieldId]}
-                      name={createFieldName(field, 'address')}
+                      name={fieldName}
                       onChange={handleNumbersInputValidation}
                     />
                   </FieldWrapper>
@@ -212,7 +233,7 @@ export const AddAddress = ({
                     <DateField
                       field={field}
                       isValid={datesValid[fieldId]}
-                      name={createFieldName(field, 'address')}
+                      name={fieldName}
                       onChange={handleDatesValidation}
                       onValidate={setDatesValid}
                     />
@@ -226,7 +247,7 @@ export const AddAddress = ({
                     <RadioButtons
                       field={field}
                       isValid={radioButtonsValid[fieldId]}
-                      name={createFieldName(field, 'address')}
+                      name={fieldName}
                       onChange={handleRadioButtonsChange}
                     />
                   </FieldWrapper>
@@ -248,7 +269,7 @@ export const AddAddress = ({
                       defaultValue={defaultMultipleChoiceValue}
                       field={field}
                       isValid={picklistValid[fieldId]}
-                      name={createFieldName(field, 'address')}
+                      name={fieldName}
                       onChange={
                         fieldId === FieldNameToFieldId.countryCode ? handleCountryChange : undefined
                       }
@@ -269,7 +290,7 @@ export const AddAddress = ({
                           : undefined
                       }
                       field={field}
-                      name={createFieldName(field, 'address')}
+                      name={fieldName}
                       options={countryStates.map(({ name }) => {
                         return { entityId: name, label: name };
                       })}

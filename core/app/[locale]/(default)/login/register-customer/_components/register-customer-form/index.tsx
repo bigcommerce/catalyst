@@ -7,6 +7,7 @@ import ReCaptcha from 'react-google-recaptcha';
 
 import {
   createDatesValidationHandler,
+  createMultilineTextValidationHandler,
   createNumbersInputValidationHandler,
   createPreSubmitPicklistValidationHandler,
   createRadioButtonsValidationHandler,
@@ -25,6 +26,7 @@ import {
   DateField,
   FieldNameToFieldId,
   FieldWrapper,
+  MultilineText,
   NumbersOnly,
   Password,
   Picklist,
@@ -106,6 +108,7 @@ export const RegisterCustomerForm = ({
   const [countryStates, setCountryStates] = useState(defaultCountry.states);
   const [radioButtonsValid, setRadioButtonsValid] = useState<Record<string, boolean>>({});
   const [picklistValid, setPicklistValid] = useState<Record<string, boolean>>({});
+  const [multiTextValid, setMultiTextValid] = useState<Record<string, boolean>>({});
 
   const reCaptchaRef = useRef<ReCaptcha>(null);
   const [reCaptchaToken, setReCaptchaToken] = useState('');
@@ -124,6 +127,10 @@ export const RegisterCustomerForm = ({
   const handleNumbersInputValidation = createNumbersInputValidationHandler(
     setNumbersInputValid,
     numbersInputValid,
+  );
+  const handleMultiTextValidation = createMultilineTextValidationHandler(
+    setMultiTextValid,
+    multiTextValid,
   );
   const handleDatesValidation = createDatesValidationHandler(setDatesValid, datesValid);
   const handlePasswordValidation = (e: ChangeEvent<HTMLInputElement>) => {
@@ -257,6 +264,7 @@ export const RegisterCustomerForm = ({
             .filter((field) => !CUSTOMER_FIELDS_TO_EXCLUDE.includes(field.entityId))
             .map((field) => {
               const fieldId = field.entityId;
+              const fieldName = createFieldName(field, 'customer');
 
               switch (field.__typename) {
                 case 'TextFormField':
@@ -265,12 +273,25 @@ export const RegisterCustomerForm = ({
                       <Text
                         field={field}
                         isValid={textInputValid[fieldId]}
-                        name={createFieldName(field, 'customer')}
+                        name={fieldName}
                         onChange={handleTextInputValidation}
                         type={FieldNameToFieldId[fieldId]}
                       />
                     </FieldWrapper>
                   );
+
+                case 'MultilineTextFormField': {
+                  return (
+                    <FieldWrapper fieldId={fieldId} key={fieldId}>
+                      <MultilineText
+                        field={field}
+                        isValid={multiTextValid[fieldId]}
+                        name={fieldName}
+                        onChange={handleMultiTextValidation}
+                      />
+                    </FieldWrapper>
+                  );
+                }
 
                 case 'NumberFormField': {
                   return (
@@ -278,7 +299,7 @@ export const RegisterCustomerForm = ({
                       <NumbersOnly
                         field={field}
                         isValid={numbersInputValid[fieldId]}
-                        name={createFieldName(field, 'customer')}
+                        name={fieldName}
                         onChange={handleNumbersInputValidation}
                       />
                     </FieldWrapper>
@@ -291,7 +312,7 @@ export const RegisterCustomerForm = ({
                       <DateField
                         field={field}
                         isValid={datesValid[fieldId]}
-                        name={createFieldName(field, 'customer')}
+                        name={fieldName}
                         onChange={handleDatesValidation}
                         onValidate={setDatesValid}
                       />
@@ -305,7 +326,7 @@ export const RegisterCustomerForm = ({
                       <RadioButtons
                         field={field}
                         isValid={radioButtonsValid[fieldId]}
-                        name={createFieldName(field, 'customer')}
+                        name={fieldName}
                         onChange={handleRadioButtonsChange}
                       />
                     </FieldWrapper>
@@ -318,7 +339,7 @@ export const RegisterCustomerForm = ({
                       <Picklist
                         field={field}
                         isValid={picklistValid[fieldId]}
-                        name={createFieldName(field, 'customer')}
+                        name={fieldName}
                         onValidate={setPicklistValid}
                         options={field.options}
                       />
@@ -332,7 +353,7 @@ export const RegisterCustomerForm = ({
                       <Password
                         field={field}
                         isValid={passwordValid[fieldId]}
-                        name={createFieldName(field, 'customer')}
+                        name={fieldName}
                         onChange={handlePasswordValidation}
                       />
                     </FieldWrapper>
@@ -347,6 +368,7 @@ export const RegisterCustomerForm = ({
         <div className="grid grid-cols-1 gap-y-6 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-2">
           {addressFields.map((field) => {
             const fieldId = field.entityId;
+            const fieldName = createFieldName(field, 'address');
 
             switch (field.__typename) {
               case 'TextFormField': {
@@ -355,8 +377,21 @@ export const RegisterCustomerForm = ({
                     <Text
                       field={field}
                       isValid={textInputValid[fieldId]}
-                      name={createFieldName(field, 'address')}
+                      name={fieldName}
                       onChange={handleTextInputValidation}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
+              case 'MultilineTextFormField': {
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <MultilineText
+                      field={field}
+                      isValid={multiTextValid[fieldId]}
+                      name={fieldName}
+                      onChange={handleMultiTextValidation}
                     />
                   </FieldWrapper>
                 );
@@ -368,7 +403,7 @@ export const RegisterCustomerForm = ({
                     <NumbersOnly
                       field={field}
                       isValid={numbersInputValid[fieldId]}
-                      name={createFieldName(field, 'address')}
+                      name={fieldName}
                       onChange={handleNumbersInputValidation}
                     />
                   </FieldWrapper>
@@ -381,7 +416,7 @@ export const RegisterCustomerForm = ({
                     <DateField
                       field={field}
                       isValid={datesValid[fieldId]}
-                      name={createFieldName(field, 'address')}
+                      name={fieldName}
                       onChange={handleDatesValidation}
                       onValidate={setDatesValid}
                     />
@@ -395,7 +430,7 @@ export const RegisterCustomerForm = ({
                     <RadioButtons
                       field={field}
                       isValid={radioButtonsValid[fieldId]}
-                      name={createFieldName(field, 'address')}
+                      name={fieldName}
                       onChange={handleRadioButtonsChange}
                     />
                   </FieldWrapper>
@@ -414,7 +449,7 @@ export const RegisterCustomerForm = ({
                       defaultValue={isCountrySelector ? defaultCountry.code : undefined}
                       field={field}
                       isValid={picklistValid[fieldId]}
-                      name={createFieldName(field, 'address')}
+                      name={fieldName}
                       onChange={isCountrySelector ? handleCountryChange : undefined}
                       onValidate={setPicklistValid}
                       options={picklistOptions}
@@ -433,7 +468,7 @@ export const RegisterCustomerForm = ({
                           : undefined
                       }
                       field={field}
-                      name={createFieldName(field, 'address')}
+                      name={fieldName}
                       options={countryStates.map(({ name }) => {
                         return { entityId: name, label: name };
                       })}
