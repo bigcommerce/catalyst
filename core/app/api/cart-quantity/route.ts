@@ -1,13 +1,17 @@
 import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
+import { getChannelIdFromLocale } from '~/channels.config';
 import { getCart } from '~/client/queries/get-cart';
 
-export const GET = async () => {
+export const GET = async (request: NextRequest) => {
   const cartId = cookies().get('cartId')?.value;
 
+  const searchParams = request.nextUrl.searchParams;
+  const locale = searchParams.get('locale') ?? undefined;
+
   if (cartId) {
-    const cart = await getCart(cartId);
+    const cart = await getCart(cartId, getChannelIdFromLocale(locale));
 
     return NextResponse.json({ count: cart?.lineItems.totalQuantity ?? 0 });
   }

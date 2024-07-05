@@ -286,7 +286,8 @@
             "confirmPasswordValidationMessage": "Las contraseñas ingresadas no coinciden. Vuelve a intentarlo.",
             "newPasswordValidationMessage": "La nueva contraseña debe ser diferente de la contraseña actual o coincidir con la contraseña de confirmación.",
             "notEmptyMessage": "El campo no debe estar vacío",
-            "successMessage": "¡La contraseña se actualizó correctamente!"
+            "successMessage": "¡La contraseña se actualizó correctamente!",
+            "confirmChangePassword": "Tu contraseña se ha actualizado correctamente. Inicia sesión con tus nuevas credenciales."
         },
         "SubmitChangePassword": {
             "spinnerText": "Enviando...",
@@ -297,7 +298,8 @@
             "emailLabel": "Correo electrónico",
             "emailValidationMessage": "Ingresa un correo electrónico válido, como nombre@dominio.com",
             "successMessage": "Te enviamos un correo electrónico para restablecer tu contraseña a {email}. Si no lo encuentras, revisa tu carpeta de correo no deseado.",
-            "recaptchaText": "Pasar la comprobación de ReCAPTCHA"
+            "recaptchaText": "Pasar la comprobación de ReCAPTCHA",
+            "confirmResetPassword": "Si la dirección de correo electrónico {email} está vinculada a una cuenta en nuestra tienda, te hemos enviado un correo electrónico de restablecimiento de contraseña. Revisa tu bandeja de entrada y tu carpeta de correo no deseado si no lo ves."
         },
         "SubmitResetPassword": {
             "spinnerText": "Enviando...",

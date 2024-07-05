@@ -18,6 +18,7 @@ interface Config {
   platform?: string;
   backendUserAgentExtensions?: string;
   logger?: boolean;
+  getChannelId?: (defaultChannelId: string) => Promise<string> | string;
 }
 
 interface BigCommerceResponse<T> {
@@ -25,12 +26,20 @@ interface BigCommerceResponse<T> {
 }
 
 class Client<FetcherRequestInit extends RequestInit = RequestInit> {
-  private graphqlUrl: string;
   private backendUserAgent: string;
+  private readonly defaultChannelId: string;
+  private getChannelId: (defaultChannelId: string) => Promise<string> | string;
 
   constructor(private config: Config) {
-    this.graphqlUrl = this.getEndpoint();
+    if (!config.channelId) {
+      throw new Error('Client configuration must include a channelId.');
+    }
+
+    this.defaultChannelId = config.channelId;
     this.backendUserAgent = getBackendUserAgent(config.platform, config.backendUserAgentExtensions);
+    this.getChannelId = config.getChannelId
+      ? config.getChannelId
+      : (defaultChannelId) => defaultChannelId;
   }
 
   // Overload for documents that require variables
@@ -39,6 +48,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     variables: TVariables;
     customerId?: string;
     fetchOptions?: FetcherRequestInit;
+    channelId?: string;
   }): Promise<BigCommerceResponse<TResult>>;
 
   // Overload for documents that do not require variables
@@ -47,6 +57,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     variables?: undefined;
     customerId?: string;
     fetchOptions?: FetcherRequestInit;
+    channelId?: string;
   }): Promise<BigCommerceResponse<TResult>>;
 
   async fetch<TResult, TVariables>({
@@ -54,17 +65,21 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     variables,
     customerId,
     fetchOptions = {} as FetcherRequestInit,
+    channelId,
   }: {
     document: DocumentDecoration<TResult, TVariables>;
     variables?: TVariables;
     customerId?: string;
     fetchOptions?: FetcherRequestInit;
+    channelId?: string;
   }): Promise<BigCommerceResponse<TResult>> {
     const { cache, headers = {}, ...rest } = fetchOptions;
     const query = normalizeQuery(document);
     const log = this.requestLogger(query);
 
-    const response = await fetch(this.graphqlUrl, {
+    const graphqlUrl = await this.getEndpoint(channelId);
+
+    const response = await fetch(graphqlUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -150,12 +165,10 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     return response.json() as Promise<unknown>;
   }
 
-  private getEndpoint() {
-    if (!this.config.channelId || this.config.channelId === '1') {
-      return `https://store-${this.config.storeHash}.${graphqlApiDomain}/graphql`;
-    }
+  private async getEndpoint(channelId?: string) {
+    const resolvedChannelId = channelId ?? (await this.getChannelId(this.defaultChannelId));
 
-    return `https://store-${this.config.storeHash}-${this.config.channelId}.${graphqlApiDomain}/graphql`;
+    return `https://store-${this.config.storeHash}-${resolvedChannelId}.${graphqlApiDomain}/graphql`;
   }
 
   private requestLogger(document: string) {

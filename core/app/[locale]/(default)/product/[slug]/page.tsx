@@ -29,7 +29,11 @@ export async function generateMetadata({
   const productId = Number(params.slug);
   const optionValueIds = getOptionValueIds({ searchParams });
 
-  const product = await getProduct({ entityId: productId, optionValueIds });
+  const product = await getProduct({
+    entityId: productId,
+    optionValueIds,
+    useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
+  });
 
   if (!product) {
     return {};
@@ -67,7 +71,11 @@ export default async function Product({ params, searchParams }: ProductPageProps
 
   const optionValueIds = getOptionValueIds({ searchParams });
 
-  const product = await getProduct({ entityId: productId, optionValueIds });
+  const product = await getProduct({
+    entityId: productId,
+    optionValueIds,
+    useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
+  });
 
   if (!product) {
     return notFound();

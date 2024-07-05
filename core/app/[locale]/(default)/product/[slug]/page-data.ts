@@ -14,9 +14,17 @@ import { WarrantyFragment } from './_components/warranty';
 
 const ProductPageQuery = graphql(
   `
-    query ProductPageQuery($entityId: Int!, $optionValueIds: [OptionValueId!]) {
+    query ProductPageQuery(
+      $entityId: Int!
+      $optionValueIds: [OptionValueId!]
+      $useDefaultOptionSelections: Boolean
+    ) {
       site {
-        product(entityId: $entityId, optionValueIds: $optionValueIds) {
+        product(
+          entityId: $entityId
+          optionValueIds: $optionValueIds
+          useDefaultOptionSelections: $useDefaultOptionSelections
+        ) {
           ...GalleryFragment
           ...DetailsFragment
           ...ProductItemFragment

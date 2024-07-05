@@ -90,7 +90,7 @@
     "Cart": {
         "heading": "Uw winkelmandje",
         "empty": "Uw winkelmandje is leeg",
-        "emptyDetails": "Het lijkt erop dat je nog niets aan uw winkelmandje hebt toegevoegd. Ga je gang en ontdek de populairste categorieën",
+        "emptyDetails": "Het lijkt erop dat je nog niets aan je winkelmandje hebt toegevoegd. Ga je gang en ontdek de populairste categorieën",
         "proceedToCheckout": "Doorgaan naar betaalomgeving",
         "loading": "Laden...",
         "spinnerText": "Bijwerken ...",
@@ -286,7 +286,8 @@
             "confirmPasswordValidationMessage": "Ingevoerde wachtwoorden komen niet overeen. Probeer het opnieuw.",
             "newPasswordValidationMessage": "Het nieuwe wachtwoord moet anders zijn dan het huidige wachtwoord en/of overeenkomen met het bevestigingswachtwoord.",
             "notEmptyMessage": "Het veld mag niet leeg zijn",
-            "successMessage": "Wachtwoord is succesvol bijgewerkt!"
+            "successMessage": "Wachtwoord is succesvol bijgewerkt!",
+            "confirmChangePassword": "Je wachtwoord is bijgewerkt. Log in met je nieuwe gegevens."
         },
         "SubmitChangePassword": {
             "spinnerText": "Verzenden...",
@@ -297,7 +298,8 @@
             "emailLabel": "E-mailadres",
             "emailValidationMessage": "Voer een geldig e-mailadres in, zoals naam@domein.com",
             "successMessage": "Je e-mailadres voor het opnieuw instellen van je wachtwoord is onderweg naar {email}. Controleer zo nodig je spamfolder.",
-            "recaptchaText": "reCAPTCHA-check doorstaan"
+            "recaptchaText": "reCAPTCHA-check doorstaan",
+            "confirmResetPassword": "Als het e-mailadres {email} is gekoppeld aan een account in onze winkel, hebben we je een e-mail gestuurd om je wachtwoord opnieuw in te stellen. Controleer je inbox en spammap als je de e-mail niet ziet."
         },
         "SubmitResetPassword": {
             "spinnerText": "Verzenden...",
