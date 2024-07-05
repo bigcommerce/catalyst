@@ -26,9 +26,9 @@ importers:
 
   core:
     dependencies:
-      '@bigcommerce/analytics':
+      '@bigcommerce/bodl':
         specifier: workspace:^
-        version: link:../packages/analytics
+        version: link:../packages/bodl
       '@bigcommerce/catalyst-client':
         specifier: workspace:^
         version: link:../packages/client
@@ -223,7 +223,7 @@ importers:
         specifier: ^5.5.2
         version: 5.5.2
 
-  packages/analytics:
+  packages/bodl:
     dependencies:
       uuid:
         specifier: ^9.0.1
@@ -231,13 +231,13 @@ importers:
     devDependencies:
       '@bigcommerce/eslint-config':
         specifier: ^2.9.0
-        version: 2.9.0(eslint@8.57.0)(jest@29.7.0)(typescript@5.4.5)
+        version: 2.9.0(eslint@8.57.0)(jest@29.7.0)(typescript@5.5.2)
       '@bigcommerce/eslint-config-catalyst':
         specifier: workspace:^
         version: link:../eslint-config-catalyst
       '@types/node':
-        specifier: ^20.14.2
-        version: 20.14.2
+        specifier: ^20.14.9
+        version: 20.14.9
       '@types/uuid':
         specifier: ^9.0.8
         version: 9.0.8
@@ -245,14 +245,14 @@ importers:
         specifier: ^8.57.0
         version: 8.57.0
       prettier:
-        specifier: ^3.3.1
-        version: 3.3.1
+        specifier: ^3.3.2
+        version: 3.3.2
       tsup:
         specifier: ^8.1.0
-        version: 8.1.0(@swc/core@1.6.1(@swc/helpers@0.5.2))(postcss@8.4.38)(typescript@5.4.5)
+        version: 8.1.0(@swc/core@1.6.5(@swc/helpers@0.5.11))(postcss@8.4.38)(typescript@5.5.2)
       typescript:
-        specifier: ^5.4.5
-        version: 5.4.5
+        specifier: ^5.5.2
+        version: 5.5.2
 
   packages/client:
     dependencies:

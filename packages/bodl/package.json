@@ -1,6 +1,6 @@
 {
-  "name": "@bigcommerce/analytics",
-  "description": "Analytics for Headless Storefronts powered by BigCommerce.",
+  "name": "@bigcommerce/bodl",
+  "description": "Big Open Data Layer for storefront analytics.",
   "version": "0.1.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,12 +17,12 @@
   "devDependencies": {
     "@bigcommerce/eslint-config": "^2.9.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
-    "@types/node": "^20.14.2",
+    "@types/node": "^20.14.9",
     "@types/uuid": "^9.0.8",
     "eslint": "^8.57.0",
-    "prettier": "^3.3.1",
+    "prettier": "^3.3.2",
     "tsup": "^8.1.0",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.2"
   },
   "dependencies": {
     "uuid": "^9.0.1"

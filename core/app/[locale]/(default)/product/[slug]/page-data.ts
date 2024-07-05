@@ -2,6 +2,7 @@ import { cache } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
+import { ProductItemFragment } from '~/client/fragments/product-item';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { BreadcrumbsFragment } from '~/components/breadcrumbs';
@@ -9,7 +10,6 @@ import { BreadcrumbsFragment } from '~/components/breadcrumbs';
 import { DescriptionFragment } from './_components/description';
 import { DetailsFragment } from './_components/details';
 import { GalleryFragment } from './_components/gallery/fragment';
-import { ProductViewedFragment } from './_components/product-viewed/fragment';
 import { WarrantyFragment } from './_components/warranty';
 
 const ProductPageQuery = graphql(
@@ -19,7 +19,7 @@ const ProductPageQuery = graphql(
         product(entityId: $entityId, optionValueIds: $optionValueIds) {
           ...GalleryFragment
           ...DetailsFragment
-          ...ProductViewedFragment
+          ...ProductItemFragment
           ...DescriptionFragment
           ...WarrantyFragment
           entityId
@@ -48,7 +48,7 @@ const ProductPageQuery = graphql(
     BreadcrumbsFragment,
     GalleryFragment,
     DetailsFragment,
-    ProductViewedFragment,
+    ProductItemFragment,
     DescriptionFragment,
     WarrantyFragment,
   ],

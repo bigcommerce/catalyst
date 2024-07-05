@@ -6,9 +6,10 @@ import { useTranslations } from 'next-intl';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
-import { useAnalytics } from '~/app/contexts/analytics-context';
+import { ProductItemFragment } from '~/client/fragments/product-item';
 import { FragmentOf } from '~/client/graphql';
 import { Button } from '~/components/ui/button';
+import { bodl, productItemTransform } from '~/lib/bodl';
 
 import { AddToCartButton } from '../add-to-cart-button';
 import { Link } from '../link';
@@ -21,11 +22,10 @@ import { MultipleChoiceField } from './fields/multiple-choice-field';
 import { NumberField } from './fields/number-field';
 import { QuantityField } from './fields/quantity-field';
 import { TextField } from './fields/text-field';
-import { ProductFormFragment } from './fragment';
 import { ProductFormData, useProductForm } from './use-product-form';
 
 interface Props {
-  data: FragmentOf<typeof ProductFormFragment>;
+  data: FragmentOf<typeof ProductItemFragment>;
 }
 
 export const Submit = ({ data: product }: Props) => {
@@ -42,7 +42,6 @@ export const Submit = ({ data: product }: Props) => {
 export const ProductForm = ({ data: product }: Props) => {
   const t = useTranslations('Product.Form');
   const m = useTranslations('AddToCart');
-  const analytics = useAnalytics();
   const productOptions = removeEdgesAndNodes(product.productOptions);
 
   const { handleSubmit, register, ...methods } = useProductForm();
@@ -60,9 +59,16 @@ export const ProductForm = ({ data: product }: Props) => {
     }
 
     // Trigger browser event from client component
-    analytics.cart.productAdded({
-      product,
-      quantity,
+    const transformedProduct = productItemTransform(product);
+    bodl.cart.productAdded({
+      product_value: transformedProduct.purchase_price * quantity,
+      currency: transformedProduct.currency,
+      line_items: [
+        {
+          ...transformedProduct,
+          quantity,
+        },
+      ],
     });
 
     toast.success(
