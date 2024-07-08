@@ -71,6 +71,8 @@ let locale: string;
 const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promise<RouteCache> => {
   const channelId = getChannelIdFromLocale(locale);
 
+  kv.setChannelId(channelId);
+
   const routeCache: RouteCache = {
     route: await getRoute(pathname, channelId),
     expiryTime: Date.now() + 1000 * 60 * 30, // 30 minutes
@@ -83,6 +85,8 @@ const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promis
 
 const updateStatusCache = async (event: NextFetchEvent): Promise<StorefrontStatusCache> => {
   const channelId = getChannelIdFromLocale(locale);
+
+  kv.setChannelId(channelId);
 
   const status = await getStoreStatus(channelId);
 
@@ -120,6 +124,10 @@ const clearLocaleFromPath = (path: string) => {
 
 const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
   try {
+    const channelId = getChannelIdFromLocale(locale);
+
+    kv.setChannelId(channelId);
+
     const pathname = clearLocaleFromPath(request.nextUrl.pathname);
 
     let [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(

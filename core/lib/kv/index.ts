@@ -10,17 +10,13 @@ const memoryKv = new MemoryKvAdapter();
 class KV<Adapter extends KvAdapter> implements KvAdapter {
   private kv?: Adapter;
   private memoryKv = memoryKv;
-  private namespace: string;
+  private channelId: string;
 
   constructor(
     private createAdapter: () => Promise<Adapter>,
     private config: Config = {},
   ) {
-    this.namespace =
-      process.env.KV_NAMESPACE ??
-      `${process.env.BIGCOMMERCE_STORE_HASH ?? 'store'}_${
-        process.env.BIGCOMMERCE_CHANNEL_ID ?? '1'
-      }`;
+    this.channelId = process.env.BIGCOMMERCE_CHANNEL_ID ?? '1';
   }
 
   async get<Data>(key: string) {
@@ -31,7 +27,8 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
 
   async mget<Data>(...keys: string[]) {
     const kv = await this.getKv();
-    const fullKeys = keys.map((key) => `${this.namespace}_${key}`);
+    const namespace = this.getNamespace();
+    const fullKeys = keys.map((key) => `${namespace}_${key}`);
 
     const memoryValues = (await this.memoryKv.mget<Data>(...fullKeys)).filter(Boolean);
 
@@ -69,7 +66,8 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
     opts?: Options,
   ) {
     const kv = await this.getKv();
-    const fullKey = `${this.namespace}_${key}`;
+    const namespace = this.getNamespace();
+    const fullKey = `${namespace}_${key}`;
 
     this.logger(`SET - Key: ${fullKey} - Value: ${JSON.stringify(value, null, 2)}`);
 
@@ -78,12 +76,23 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
     return value;
   }
 
+  setChannelId(channelId?: string) {
+    this.channelId = channelId ?? process.env.BIGCOMMERCE_CHANNEL_ID ?? '1';
+  }
+
   private async getKv() {
     if (!this.kv) {
       this.kv = await this.createAdapter();
     }
 
     return this.kv;
+  }
+
+  private getNamespace() {
+    return (
+      process.env.KV_NAMESPACE ??
+      `${process.env.BIGCOMMERCE_STORE_HASH ?? 'store'}_${this.channelId}`
+    );
   }
 
   private logger(message: string) {
