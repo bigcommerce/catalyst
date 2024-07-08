@@ -3,6 +3,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server';
 
+import { getSessionCustomerId } from '~/auth';
 import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
@@ -22,6 +23,8 @@ const GetProductQuery = graphql(
 );
 
 export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
+  const customerId = await getSessionCustomerId();
+
   if (request.headers.get('x-catalyst-product-sheet') !== 'true') {
     return NextResponse.json(
       { status: 'error', message: 'Endpoint only available for product-sheet component.' },
@@ -48,6 +51,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
       document: GetProductQuery,
       variables: { productId: Number(id), optionValueIds },
       channelId: getChannelIdFromLocale(locale),
+      customerId,
     });
 
     return NextResponse.json(data.site.product);
