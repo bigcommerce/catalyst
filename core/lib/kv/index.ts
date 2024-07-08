@@ -16,11 +16,7 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
     private createAdapter: () => Promise<Adapter>,
     private config: Config = {},
   ) {
-    this.namespace =
-      process.env.KV_NAMESPACE ??
-      `${process.env.BIGCOMMERCE_STORE_HASH ?? 'store'}_${
-        process.env.BIGCOMMERCE_CHANNEL_ID ?? '1'
-      }`;
+    this.namespace = process.env.KV_NAMESPACE ?? process.env.BIGCOMMERCE_STORE_HASH ?? 'store';
   }
 
   async get<Data>(key: string) {
