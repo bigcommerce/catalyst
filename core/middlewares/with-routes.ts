@@ -76,7 +76,7 @@ const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promis
     expiryTime: Date.now() + 1000 * 60 * 30, // 30 minutes
   };
 
-  event.waitUntil(kv.set(kvKey(`v3_${pathname}`, channelId), routeCache));
+  event.waitUntil(kv.set(kvKey(pathname, channelId), routeCache));
 
   return routeCache;
 };
@@ -124,7 +124,7 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
     const pathname = clearLocaleFromPath(request.nextUrl.pathname);
 
     let [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
-      kvKey(`v3_${pathname}`, channelId),
+      kvKey(pathname, channelId),
       kvKey(STORE_STATUS_KEY, channelId),
     );
 
