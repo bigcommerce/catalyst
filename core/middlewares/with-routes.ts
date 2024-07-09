@@ -9,7 +9,7 @@ import { graphql } from '~/client/graphql';
 import { getRawWebPageContent } from '~/client/queries/get-raw-web-page-content';
 import { getRoute } from '~/client/queries/get-route';
 import { getStoreStatus } from '~/client/queries/get-store-status';
-import { routeCacheKvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
+import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
 
 import { defaultLocale, localePrefix, LocalePrefixes, locales } from '../i18n';
 import { kv } from '../lib/kv';
@@ -76,7 +76,7 @@ const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promis
     expiryTime: Date.now() + 1000 * 60 * 30, // 30 minutes
   };
 
-  event.waitUntil(kv.set(routeCacheKvKey(pathname), routeCache));
+  event.waitUntil(kv.set(kvKey(pathname, channelId), routeCache));
 
   return routeCache;
 };
@@ -95,7 +95,7 @@ const updateStatusCache = async (event: NextFetchEvent): Promise<StorefrontStatu
     expiryTime: Date.now() + 1000 * 60 * 5, // 5 minutes
   };
 
-  event.waitUntil(kv.set(STORE_STATUS_KEY, statusCache));
+  event.waitUntil(kv.set(kvKey(STORE_STATUS_KEY, channelId), statusCache));
 
   return statusCache;
 };
@@ -120,11 +120,12 @@ const clearLocaleFromPath = (path: string) => {
 
 const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
   try {
+    const channelId = getChannelIdFromLocale(locale);
     const pathname = clearLocaleFromPath(request.nextUrl.pathname);
 
     let [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
-      routeCacheKvKey(pathname),
-      STORE_STATUS_KEY,
+      kvKey(pathname, channelId),
+      kvKey(STORE_STATUS_KEY, channelId),
     );
 
     // If caches are old, update them in the background and return the old data (SWR-like behavior)
