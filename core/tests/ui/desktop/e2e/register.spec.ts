@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { expect, test } from '@playwright/test';
 
-const password = faker.internet.password();
+const password = faker.internet.password({ length: 10 });
 const firstName = faker.person.firstName();
 const lastName = faker.person.lastName();
 
@@ -25,7 +25,7 @@ test('Account register', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Create account' }).click();
   await expect(
-    page.getByLabel(
+    page.getByText(
       `Dear ${firstName} ${lastName}, your account was successfully created. Redirecting to account...`,
     ),
   ).toBeVisible();
