@@ -6,7 +6,6 @@ import { Link } from '~/components/link';
 import { StoreLogo, StoreLogoFragment } from '~/components/store-logo';
 import { NavigationMenu, NavigationMenuLink } from '~/components/ui/navigation-menu';
 import { locales, LocaleType } from '~/i18n';
-import { redirect } from '~/navigation';
 
 import { LocaleLink } from './_components/locale-link';
 
@@ -33,11 +32,6 @@ export default async function StoreSelector({
   params: { locale: LocaleType };
 }) {
   unstable_setRequestLocale(selectedLocale);
-
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (locales.length === 1) {
-    redirect('/');
-  }
 
   const t = await getTranslations('StoreSelector');
 
