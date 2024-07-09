@@ -24,11 +24,11 @@ test('Account register', async ({ page }) => {
   await page.getByLabel('Zip/PostcodeRequired').fill(faker.location.zipCode());
 
   await page.getByRole('button', { name: 'Create account' }).click();
-  expect(
+  await expect(
     page.getByLabel(
       `Dear ${firstName} ${lastName}, your account was successfully created. Redirecting to account...`,
     ),
-  );
+  ).toBeVisible();
   await page.getByRole('heading', { name: 'My Account' }).waitFor();
   await expect(page).toHaveURL('account/');
 });
