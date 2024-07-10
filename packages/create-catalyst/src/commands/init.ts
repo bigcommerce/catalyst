@@ -117,7 +117,7 @@ export const init = new Command('init')
 
       const {
         data: { token },
-      } = await bc.customerImpersonationToken(channelId);
+      } = await bc.customerImpersonationToken();
 
       customerImpersonationToken = token;
     }
