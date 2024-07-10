@@ -2,8 +2,13 @@
 
 import { z } from 'zod';
 
-import { CustomerChangePasswordSchema } from '~/client/mutations/submit-change-password';
+import { ChangePasswordFieldsSchema } from '~/client/mutations/submit-change-password';
 import { submitCustomerChangePassword } from '~/client/mutations/submit-customer-change-password';
+
+export const CustomerChangePasswordSchema = ChangePasswordFieldsSchema.omit({
+  customerId: true,
+  customerToken: true,
+});
 
 export interface State {
   status: 'idle' | 'error' | 'success';

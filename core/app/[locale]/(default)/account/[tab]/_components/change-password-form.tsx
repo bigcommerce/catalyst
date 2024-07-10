@@ -5,7 +5,6 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
-import { CustomerChangePasswordSchema } from '~/client/mutations/submit-change-password';
 import { logout } from '~/components/header/_actions/logout';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
@@ -21,7 +20,10 @@ import { Input } from '~/components/ui/input';
 import { Message } from '~/components/ui/message';
 import { useRouter } from '~/navigation';
 
-import { submitCustomerChangePasswordForm } from '../_actions/submit-customer-change-password-form';
+import {
+  CustomerChangePasswordSchema,
+  submitCustomerChangePasswordForm,
+} from '../_actions/submit-customer-change-password-form';
 
 type Passwords = z.infer<typeof CustomerChangePasswordSchema>;
 
