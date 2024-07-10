@@ -1,6 +1,8 @@
 // @ts-check
+const createWithMakeswift = require('@makeswift/runtime/next/plugin');
 const createNextIntlPlugin = require('next-intl/plugin');
 
+const withMakeswift = createWithMakeswift({ previewMode: false });
 const withNextIntl = createNextIntlPlugin();
 
 const { cspHeader } = require('./lib/content-security-policy');
@@ -47,4 +49,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withNextIntl(nextConfig);
+module.exports = withMakeswift(withNextIntl(nextConfig));

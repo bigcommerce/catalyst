@@ -1,8 +1,10 @@
 import useEmblaCarousel from 'embla-carousel-react';
 import { ArrowLeft, ArrowRight, Pause, Play } from 'lucide-react';
-import { ComponentPropsWithRef, ReactNode, useEffect, useReducer, useState } from 'react';
+import { ComponentPropsWithoutRef, ReactNode, useEffect, useReducer, useState } from 'react';
 
-interface Props extends ComponentPropsWithRef<'section'> {
+import { cn } from '~/lib/utils';
+
+interface Props extends ComponentPropsWithoutRef<'section'> {
   slides: ReactNode[];
   interval?: number;
 }
@@ -72,7 +74,7 @@ const Slideshow = ({ children, className, interval = 15_000, slides, style, ...p
     <section
       aria-label="Interactive slide show"
       aria-roledescription="carousel"
-      className="relative -mx-6 overflow-hidden sm:-mx-10 md:-mx-12 lg:mx-0"
+      className={cn('relative -mx-6 overflow-hidden sm:-mx-10 md:-mx-12 lg:mx-0', className)}
       onBlur={() => setIsHoverPaused(false)}
       onFocus={() => setIsHoverPaused(true)}
       onMouseEnter={() => setIsHoverPaused(true)}
