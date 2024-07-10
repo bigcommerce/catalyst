@@ -15,6 +15,7 @@
   "dependencies": {
     "@bigcommerce/catalyst-client": "workspace:^",
     "@icons-pack/react-simple-icons": "^10.1.0",
+    "@makeswift/runtime": "^0.21.3",
     "@radix-ui/react-accordion": "^1.2.1",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-checkbox": "^1.1.2",
@@ -58,6 +59,7 @@
     "tailwindcss-radix": "^3.0.5",
     "uuid": "^11.0.3",
     "webpack": "^5.96.1",
+    "set-cookie-parser": "^2.6.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -76,6 +78,7 @@
     "@types/react-google-recaptcha": "^2.1.9",
     "@types/uuid": "^10.0.0",
     "autoprefixer": "^10.4.20",
+    "@types/set-cookie-parser": "^2.4.10",
     "dotenv": "^16.4.5",
     "dotenv-cli": "^7.4.2",
     "eslint": "^8.57.1",
