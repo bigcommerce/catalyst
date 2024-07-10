@@ -228,11 +228,11 @@ export class Https {
     }
   }
 
-  async customerImpersonationToken(channelId: number) {
+  async customerImpersonationToken() {
     const res = await this.api('/v3/storefront/api-token-customer-impersonation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ expires_at: 2147483647, channel_id: channelId }),
+      body: JSON.stringify({ expires_at: 2147483647, channel_ids: [] }),
     });
 
     if (!res.ok) {
