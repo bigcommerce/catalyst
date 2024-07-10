@@ -49,11 +49,19 @@ const updateFormFields = ({
 
     case 'checkboxes': {
       const customCheckboxes = customFormFields[fieldType];
-
       const fieldData = {
         fieldValueEntityIds: [Number(fieldValue)],
         fieldEntityId,
       };
+      const previouslyParsedCheckbox = customCheckboxes?.find(
+        (checkbox) => fieldEntityId === checkbox.fieldEntityId,
+      );
+
+      if (customCheckboxes && previouslyParsedCheckbox) {
+        previouslyParsedCheckbox.fieldValueEntityIds.push(Number(fieldValue));
+
+        break;
+      }
 
       customFormFields[fieldType] = customCheckboxes
         ? [...customCheckboxes, fieldData]
@@ -90,6 +98,21 @@ const updateFormFields = ({
 
       customFormFields[fieldType] = customMultipleChoices
         ? [...customMultipleChoices, fieldData]
+        : [fieldData];
+
+      break;
+    }
+
+    case 'multilineTexts': {
+      const customMultilineTexts = customFormFields[fieldType];
+
+      const fieldData = {
+        multilineText: fieldValue,
+        fieldEntityId,
+      };
+
+      customFormFields[fieldType] = customMultilineTexts
+        ? [...customMultilineTexts, fieldData]
         : [fieldData];
 
       break;

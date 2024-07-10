@@ -1,0 +1,110 @@
+import { useTranslations } from 'next-intl';
+import { useCallback, useEffect, useState } from 'react';
+
+import { Checkbox } from '~/components/ui/checkbox';
+import { Field, FieldLabel, FieldMessage } from '~/components/ui/form';
+import { Label } from '~/components/ui/label';
+
+import { AddressFields } from '..';
+
+type CheckboxesType = Extract<
+  NonNullable<AddressFields>[number],
+  { __typename: 'CheckboxesFormField' }
+>;
+
+type CheckboxesValidationState = Record<string, boolean>;
+
+interface CheckboxesTypeProps {
+  defaultValue?: number[];
+  field: CheckboxesType;
+  name: string;
+  isValid?: boolean;
+  onChange?: (value: string) => void;
+  onValidate?: (
+    state:
+      | CheckboxesValidationState
+      | ((prevState: CheckboxesValidationState) => CheckboxesValidationState),
+  ) => void;
+  options: Array<{ label: string; entityId: string | number }>;
+}
+
+export const Checkboxes = ({
+  defaultValue,
+  field,
+  name,
+  isValid,
+  onValidate,
+  options,
+}: CheckboxesTypeProps) => {
+  const t = useTranslations('Account.Register.validationMessages');
+  const validationError = field.isRequired && isValid === false;
+  const [checkboxValues, setCheckboxValues] = useState(defaultValue ?? []);
+  const checkboxId = field.entityId.toString();
+  const setCheckboxValidityState = useCallback(
+    (validityStatus: boolean, validitySetter?: typeof onValidate) => {
+      if (validitySetter) {
+        validitySetter((prevState) => ({
+          ...prevState,
+          [checkboxId]: validityStatus,
+        }));
+      }
+    },
+    [checkboxId],
+  );
+
+  useEffect(() => {
+    setCheckboxValidityState(checkboxValues.length > 0, onValidate);
+  }, [checkboxValues, onValidate, checkboxId, setCheckboxValues, setCheckboxValidityState]);
+
+  useEffect(() => {
+    setCheckboxValidityState(true, onValidate);
+  }, [onValidate, setCheckboxValidityState]);
+
+  return (
+    <Field className="relative space-y-2 pb-7" name={name}>
+      <fieldset>
+        <FieldLabel isRequired={field.isRequired}>{field.label}</FieldLabel>
+        <div className="flex flex-col">
+          {options.map(({ label, entityId }) => {
+            const optionId = `option-${checkboxId}-${entityId}`;
+
+            return (
+              <div className="inline-flex py-2 ps-1" key={entityId}>
+                <Checkbox
+                  aria-labelledby={`${entityId}`}
+                  checked={checkboxValues.includes(Number(entityId))}
+                  id={optionId}
+                  name={name}
+                  onCheckedChange={(checked: boolean) => {
+                    if (checked) {
+                      setCheckboxValues((prevState) => [...prevState, +entityId]);
+                    } else {
+                      setCheckboxValues((prevState) => {
+                        return prevState.filter((prevValue) => prevValue !== +entityId);
+                      });
+                    }
+                  }}
+                  required={field.isRequired && checkboxValues.length === 0 ? true : undefined}
+                  value={entityId}
+                  variant={validationError ? 'error' : undefined}
+                />
+                <Label
+                  className="cursor-pointer ps-3 font-normal"
+                  htmlFor={optionId}
+                  id={`${entityId}`}
+                >
+                  {label}
+                </Label>
+              </div>
+            );
+          })}
+        </div>
+        {validationError && (
+          <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary">
+            {t('empty')}
+          </FieldMessage>
+        )}
+      </fieldset>
+    </Field>
+  );
+};

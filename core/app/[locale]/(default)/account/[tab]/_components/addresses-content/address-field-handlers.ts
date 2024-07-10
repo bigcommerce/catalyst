@@ -69,6 +69,54 @@ const createPreSubmitPicklistValidationHandler = (
   };
 };
 
+const createPreSubmitCheckboxesValidationHandler = (
+  formFields: AddressFields,
+  validitationSetter: FieldStateSetFn<FieldState>,
+) => {
+  const checkboxes = formFields.filter(
+    ({ __typename: type, isBuiltIn, isRequired }) =>
+      type === 'CheckboxesFormField' && !isBuiltIn && isRequired,
+  );
+
+  return (form: HTMLFormElement | null) => {
+    if (!form) return;
+
+    const checkboxesFormFields = Object.fromEntries(
+      [...new FormData(form).entries()]
+        .filter(
+          (fieldEntry): fieldEntry is [string, string] =>
+            fieldEntry[0].includes('custom_checkboxes-') && typeof fieldEntry[1] === 'string',
+        )
+        .map(([checkboxKey, checkboxValue]: [string, string]) => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const fieldId = checkboxKey.split('-')[1]!;
+
+          return [fieldId, checkboxValue];
+        }),
+    );
+
+    checkboxes.forEach(({ entityId: checkboxId }) => {
+      const checkboxIdList = Object.keys(checkboxesFormFields);
+
+      if (checkboxes.length > 0 && checkboxIdList.length === 0) {
+        validitationSetter((prevValidationState) => ({
+          ...prevValidationState,
+          [checkboxId]: false,
+        }));
+      }
+
+      if (checkboxIdList.includes(checkboxId.toString())) {
+        const currentValue = checkboxesFormFields[checkboxId];
+
+        validitationSetter((prevValidationState) => ({
+          ...prevValidationState,
+          [checkboxId]: (currentValue && currentValue.length > 0) || false,
+        }));
+      }
+    });
+  };
+};
+
 const createTextInputValidationHandler =
   (textInputStateSetter: FieldStateSetFn<FieldState>, textInputState: FieldState) =>
   (e: ChangeEvent<HTMLInputElement>) => {
@@ -190,4 +238,5 @@ export {
   createNumbersInputValidationHandler,
   createDatesValidationHandler,
   createPreSubmitPicklistValidationHandler,
+  createPreSubmitCheckboxesValidationHandler,
 };

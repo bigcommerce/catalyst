@@ -1,11 +1,12 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
 import {
+  Checkboxes,
   createFieldName,
   DateField,
   FieldWrapper,
@@ -25,6 +26,7 @@ import {
   createDatesValidationHandler,
   createMultilineTextValidationHandler,
   createNumbersInputValidationHandler,
+  createPreSubmitCheckboxesValidationHandler,
   createPreSubmitPicklistValidationHandler,
   createRadioButtonsValidationHandler,
 } from '../addresses-content/address-field-handlers';
@@ -111,6 +113,7 @@ export const UpdateSettingsForm = ({
   const [numbersInputValid, setNumbersInputValid] = useState<Record<string, boolean>>({});
   const [radioButtonsValid, setRadioButtonsValid] = useState<Record<string, boolean>>({});
   const [picklistValid, setPicklistValid] = useState<Record<string, boolean>>({});
+  const [checkboxesValid, setCheckboxesValid] = useState<Record<string, boolean>>({});
   const [datesValid, setDatesValid] = useState<Record<string, boolean>>({});
 
   const reCaptchaRef = useRef<ReCaptcha>(null);
@@ -144,6 +147,18 @@ export const UpdateSettingsForm = ({
     customerFields,
     setPicklistValid,
   );
+  const validateCheckboxFields = createPreSubmitCheckboxesValidationHandler(
+    customerFields,
+    setCheckboxesValid,
+  );
+  const preSubmitFieldsValidation = (
+    e: MouseEvent<HTMLFormElement> & { target: HTMLButtonElement },
+  ) => {
+    if (e.target.nodeName === 'BUTTON' && e.target.type === 'submit') {
+      validatePicklistFields(form.current);
+      validateCheckboxFields(form.current);
+    }
+  };
 
   const onReCaptchaChange = (token: string | null) => {
     if (!token) {
@@ -164,6 +179,8 @@ export const UpdateSettingsForm = ({
     }
 
     setReCaptchaValid(true);
+
+    console.log('## submit handler', checkboxesValid);
 
     const submit = await updateCustomer({ formData, reCaptchaToken });
 
@@ -189,7 +206,7 @@ export const UpdateSettingsForm = ({
           <p>{formStatus.message}</p>
         </Message>
       )}
-      <Form action={onSubmit} onClick={() => validatePicklistFields(form.current)} ref={form}>
+      <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>
         <div className="mb-10 mt-8 grid grid-cols-1 gap-y-6 text-base lg:grid-cols-2 lg:gap-x-6 lg:gap-y-2">
           {addressFields.map((field) => {
             const fieldName = FieldNameToFieldId[field.entityId] ?? '';
@@ -248,6 +265,24 @@ export const UpdateSettingsForm = ({
                         isValid={numbersInputValid[fieldId]}
                         name={fieldName}
                         onChange={handleNumbersInputValidation}
+                      />
+                    </FieldWrapper>
+                  );
+                }
+
+                case 'CheckboxesFormField': {
+                  const submittedValue =
+                    getPreviouslySubmittedValue(previouslySubmittedField)?.CheckboxesFormField;
+
+                  return (
+                    <FieldWrapper fieldId={fieldId} key={fieldId}>
+                      <Checkboxes
+                        defaultValue={submittedValue}
+                        field={field}
+                        isValid={checkboxesValid[fieldId]}
+                        name={fieldName}
+                        onValidate={setCheckboxesValid}
+                        options={field.options}
                       />
                     </FieldWrapper>
                   );
