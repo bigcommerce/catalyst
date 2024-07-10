@@ -16,9 +16,13 @@ const disallow = ['/cart', '/account'];
 
 // Robots.txt config https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots#generate-a-robots-file
 export default function robots(): MetadataRoute.Robots {
+  const baseUrl = parseUrl(
+    process.env.NEXTAUTH_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || '',
+  );
+
   return {
     // Infer base URL from environment variables
-    sitemap: parseUrl(process.env.NEXTAUTH_URL || process.env.VERCEL_URL || '').origin,
+    sitemap: `${baseUrl.origin}/sitemap.xml`,
     rules: [
       {
         userAgent: '*',
