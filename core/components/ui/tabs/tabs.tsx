@@ -10,7 +10,7 @@ interface Props {
   className?: string;
   defaultValue?: string;
   label: string;
-  onValueChange: (value: string) => void;
+  onValueChange?: (value: string) => void;
   tabs: Tab[];
   value?: string;
 }
