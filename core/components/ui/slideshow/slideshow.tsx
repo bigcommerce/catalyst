@@ -1,3 +1,5 @@
+'use client';
+
 import useEmblaCarousel from 'embla-carousel-react';
 import { ArrowLeft, ArrowRight, Pause, Play } from 'lucide-react';
 import { StaticImageData } from 'next/image';
