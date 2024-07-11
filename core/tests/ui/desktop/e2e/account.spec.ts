@@ -103,3 +103,20 @@ test('Add and remove new address', async ({ page }) => {
     visible: false,
   });
 });
+
+test('Add and remove new wish list', async ({ page }) => {
+  await loginWithUserAccount(page, testUserEmail, testUserPassword);
+  await page.goto('/account/wishlists');
+  await page.getByRole('heading', { name: 'Wish lists' }).waitFor();
+
+  await page.getByRole('button', { name: 'New Wishlist' }).click();
+  await page.locator('#wishlist').fill('test');
+  await page.getByRole('button', { name: 'Create wishlist' }).click();
+  await expect(page.getByText('Your wish list test was created successfully')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'test' })).toBeVisible();
+
+  await page.getByRole('button', { name: 'Delete' }).click();
+  await page.getByRole('button', { name: /Delete/ }).click();
+  await expect(page.getByText('Your wish list test was deleted successfully')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'test' })).toBeHidden();
+});
