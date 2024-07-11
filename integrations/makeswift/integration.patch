@@ -1,0 +1,267 @@
+diff --git a/core/.env.example b/core/.env.example
+index b0425c70..f26e063e 100644
+--- a/core/.env.example
++++ b/core/.env.example
+@@ -1,3 +1,7 @@
++# Makeswift Site API Key
++# In the Makeswift builder, go to Settings > Host and copy the API key for the site.
++MAKESWIFT_SITE_API_KEY=
++
+ # The hash visible in the subject store's URL when signed in to the store control panel.
+ # The control panel URL is of the form `https://store-{hash}.mybigcommerce.com`. 
+ BIGCOMMERCE_STORE_HASH=
+diff --git a/core/app/[locale]/(default)/[...rest]/page.tsx b/core/app/[locale]/(default)/[...rest]/page.tsx
+index 71d40507..9179455c 100644
+--- a/core/app/[locale]/(default)/[...rest]/page.tsx
++++ b/core/app/[locale]/(default)/[...rest]/page.tsx
+@@ -1,5 +1,42 @@
++import { Page as MakeswiftPage } from '@makeswift/runtime/next';
++import { getSiteVersion } from '@makeswift/runtime/next/server';
+ import { notFound } from 'next/navigation';
+ 
+-export default function CatchAllPage() {
+-  notFound();
++import { locales } from '~/i18n';
++import { client } from '~/lib/makeswift/client';
++import { MakeswiftProvider } from '~/lib/makeswift/provider';
++
++interface CatchAllParams {
++  locale: string;
++  rest: string[];
++}
++
++export async function generateStaticParams() {
++  const pages = await client.getPages().toArray();
++
++  return pages.flatMap((page) =>
++    locales.map((locale) => ({
++      rest: page.path.split('/').filter((segment) => segment !== ''),
++      locale,
++    })),
++  );
++}
++
++export default async function CatchAllPage({ params }: { params: CatchAllParams }) {
++  const path = `/${params.rest.join('/')}`;
++
++  const snapshot = await client.getPageSnapshot(path, {
++    siteVersion: getSiteVersion(),
++    locale: params.locale,
++  });
++
++  if (snapshot == null) return notFound();
++
++  return (
++    <MakeswiftProvider>
++      <MakeswiftPage snapshot={snapshot} />
++    </MakeswiftProvider>
++  );
+ }
++
++export const runtime = 'nodejs';
+diff --git a/core/app/[locale]/layout.tsx b/core/app/[locale]/layout.tsx
+index 65b466d6..33973272 100644
+--- a/core/app/[locale]/layout.tsx
++++ b/core/app/[locale]/layout.tsx
+@@ -1,3 +1,4 @@
++import { DraftModeScript } from '@makeswift/runtime/next/server';
+ import { Analytics } from '@vercel/analytics/react';
+ import { SpeedInsights } from '@vercel/speed-insights/next';
+ import type { Metadata } from 'next';
+@@ -66,6 +67,9 @@ export default function RootLayout({ children, params: { locale } }: RootLayoutP
+ 
+   return (
+     <html className={`${inter.variable} font-sans`} lang={locale}>
++      <head>
++        <DraftModeScript />
++      </head>
+       <body className="flex h-screen min-w-[375px] flex-col">
+         <Notifications />
+         <NextIntlClientProvider locale={locale} messages={{ Providers: messages.Providers ?? {} }}>
+diff --git a/core/app/api/makeswift/[...makeswift]/route.ts b/core/app/api/makeswift/[...makeswift]/route.ts
+new file mode 100644
+index 00000000..e8b86fdb
+--- /dev/null
++++ b/core/app/api/makeswift/[...makeswift]/route.ts
+@@ -0,0 +1,12 @@
++import { MakeswiftApiHandler } from '@makeswift/runtime/next/server';
++import { strict } from 'assert';
++
++import { runtime } from '~/lib/makeswift/runtime';
++
++strict(process.env.MAKESWIFT_SITE_API_KEY, 'MAKESWIFT_SITE_API_KEY is required');
++
++const handler = MakeswiftApiHandler(process.env.MAKESWIFT_SITE_API_KEY, {
++  runtime,
++});
++
++export { handler as GET, handler as POST };
+diff --git a/core/app/api/makeswift/draft-mode/route.ts b/core/app/api/makeswift/draft-mode/route.ts
+new file mode 100644
+index 00000000..4013f3ff
+--- /dev/null
++++ b/core/app/api/makeswift/draft-mode/route.ts
+@@ -0,0 +1,10 @@
++import { draftMode } from 'next/headers';
++import { NextRequest } from 'next/server';
++
++export const GET = (request: NextRequest) => {
++  if (request.headers.get('x-makeswift-api-key') === process.env.MAKESWIFT_SITE_API_KEY) {
++    draftMode().enable();
++  }
++
++  return new Response(null);
++};
+diff --git a/core/lib/makeswift/client.ts b/core/lib/makeswift/client.ts
+new file mode 100644
+index 00000000..f504bbc0
+--- /dev/null
++++ b/core/lib/makeswift/client.ts
+@@ -0,0 +1,10 @@
++import { Makeswift } from '@makeswift/runtime/next';
++import { strict } from 'assert';
++
++import { runtime } from '~/lib/makeswift/runtime';
++
++strict(process.env.MAKESWIFT_SITE_API_KEY, 'MAKESWIFT_SITE_API_KEY is required');
++
++export const client = new Makeswift(process.env.MAKESWIFT_SITE_API_KEY, {
++  runtime,
++});
+diff --git a/core/lib/makeswift/components.tsx b/core/lib/makeswift/components.tsx
+new file mode 100644
+index 00000000..87ef18b4
+--- /dev/null
++++ b/core/lib/makeswift/components.tsx
+@@ -0,0 +1,23 @@
++import { Select, Style, TextInput } from '@makeswift/runtime/controls';
++
++import { Button } from '~/components/ui/button';
++
++import { runtime } from './runtime';
++
++runtime.registerComponent(Button, {
++  type: 'catalyst-button',
++  label: 'Catalyst/Button',
++  props: {
++    className: Style(),
++    children: TextInput({ defaultValue: 'Button', label: 'Button Text' }),
++    variant: Select({
++      label: 'Variant',
++      options: [
++        { value: 'primary', label: 'Primary' },
++        { value: 'secondary', label: 'Secondary' },
++        { value: 'subtle', label: 'Subtle' },
++      ],
++      defaultValue: 'primary',
++    }),
++  },
++});
+diff --git a/core/lib/makeswift/provider.tsx b/core/lib/makeswift/provider.tsx
+new file mode 100644
+index 00000000..674aab77
+--- /dev/null
++++ b/core/lib/makeswift/provider.tsx
+@@ -0,0 +1,14 @@
++'use client';
++
++import { ReactRuntimeProvider, RootStyleRegistry } from '@makeswift/runtime/next';
++
++import { runtime } from '~/lib/makeswift/runtime';
++import '~/lib/makeswift/components';
++
++export function MakeswiftProvider({ children }: { children: React.ReactNode }) {
++  return (
++    <ReactRuntimeProvider runtime={runtime}>
++      <RootStyleRegistry>{children}</RootStyleRegistry>
++    </ReactRuntimeProvider>
++  );
++}
+diff --git a/core/lib/makeswift/runtime.ts b/core/lib/makeswift/runtime.ts
+new file mode 100644
+index 00000000..e988b5cf
+--- /dev/null
++++ b/core/lib/makeswift/runtime.ts
+@@ -0,0 +1,3 @@
++import { ReactRuntime } from '@makeswift/runtime/react';
++
++export const runtime = new ReactRuntime();
+diff --git a/core/middleware.ts b/core/middleware.ts
+index 0be31944..4aaeda80 100644
+--- a/core/middleware.ts
++++ b/core/middleware.ts
+@@ -1,8 +1,9 @@
+ import { composeMiddlewares } from './middlewares/compose-middlewares';
+ import { withAuth } from './middlewares/with-auth';
++import { withMakeswift } from './middlewares/with-makeswift';
+ import { withRoutes } from './middlewares/with-routes';
+ 
+-export const middleware = composeMiddlewares(withAuth, withRoutes);
++export const middleware = composeMiddlewares(withAuth, withMakeswift, withRoutes);
+ 
+ export const config = {
+   matcher: [
+diff --git a/core/middlewares/with-makeswift.ts b/core/middlewares/with-makeswift.ts
+new file mode 100644
+index 00000000..e1eed268
+--- /dev/null
++++ b/core/middlewares/with-makeswift.ts
+@@ -0,0 +1,39 @@
++import { NextRequest } from 'next/server';
++import { parse as parseSetCookie } from 'set-cookie-parser';
++
++import { MiddlewareFactory } from './compose-middlewares';
++
++export const withMakeswift: MiddlewareFactory = (middleware) => {
++  return async (request, event) => {
++    const apiKey = request.nextUrl.searchParams.get('x-makeswift-draft-mode');
++
++    if (apiKey === process.env.MAKESWIFT_SITE_API_KEY) {
++      const response = await fetch(new URL('/api/makeswift/draft-mode', request.nextUrl.origin), {
++        headers: {
++          'x-makeswift-api-key': apiKey,
++        },
++      });
++
++      const cookies = parseSetCookie(response.headers.get('set-cookie') || '');
++      const prerenderBypassValue = cookies.find((c) => c.name === '__prerender_bypass')?.value;
++
++      if (!prerenderBypassValue) {
++        return middleware(request, event);
++      }
++
++      // https://github.com/vercel/next.js/issues/52967#issuecomment-1644675602
++      // if we don't pass request twice, headers are stripped
++      const proxiedRequest = new NextRequest(request, request);
++
++      proxiedRequest.cookies.set('__prerender_bypass', prerenderBypassValue);
++      proxiedRequest.cookies.set(
++        'x-makeswift-draft-data',
++        JSON.stringify({ makeswift: true, siteVersion: 'Working' }),
++      );
++
++      return middleware(proxiedRequest, event);
++    }
++
++    return middleware(request, event);
++  };
++};
+diff --git a/core/next.config.js b/core/next.config.js
+index 71197b0e..e41ab68d 100644
+--- a/core/next.config.js
++++ b/core/next.config.js
+@@ -1,6 +1,8 @@
+ // @ts-check
++const createWithMakeswift = require('@makeswift/runtime/next/plugin');
+ const createNextIntlPlugin = require('next-intl/plugin');
+ 
++const withMakeswift = createWithMakeswift({ previewMode: false });
+ const withNextIntl = createNextIntlPlugin();
+ 
+ const { cspHeader } = require('./lib/content-security-policy');
+@@ -47,4 +49,4 @@ const nextConfig = {
+   },
+ };
+ 
+-module.exports = withNextIntl(nextConfig);
++module.exports = withMakeswift(withNextIntl(nextConfig));

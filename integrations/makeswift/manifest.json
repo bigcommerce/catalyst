@@ -1,0 +1,13 @@
+{
+  "name": "Makeswift",
+  "dependencies": [
+    "@makeswift/runtime",
+    "set-cookie-parser"
+  ],
+  "devDependencies": [
+    "@types/set-cookie-parser"
+  ],
+  "environmentVariables": [
+    "MAKESWIFT_SITE_API_KEY"
+  ]
+}

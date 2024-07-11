@@ -8,6 +8,7 @@ import { join } from 'path';
 import { promisify } from 'util';
 import { z } from 'zod';
 
+import { applyIntegrations } from '../utils/apply-integrations';
 import { checkStorefrontLimit } from '../utils/check-storefront-limit';
 import { cloneCatalyst } from '../utils/clone-catalyst';
 import { getLatestCoreTag } from '../utils/get-latest-core-tag';
@@ -29,6 +30,7 @@ export const create = new Command('create')
   .option('--access-token <token>', 'BigCommerce access token')
   .option('--channel-id <id>', 'BigCommerce channel ID')
   .option('--customer-impersonation-token <token>', 'BigCommerce customer impersonation token')
+  .option('--integrations <providers...>', 'Integrations to include in your project')
   .addOption(
     new Option(
       '--gh-ref <ref>',
@@ -146,6 +148,8 @@ export const create = new Command('create')
 
       await installDependencies(projectDir, packageManager);
 
+      await applyIntegrations(options.integrations, { projectDir });
+
       console.log(
         [
           `\n${chalk.green('Success!')} Created '${projectName}' at '${projectDir}'\n`,
@@ -256,6 +260,8 @@ export const create = new Command('create')
       successText: 'Created GraphQL schema',
       failText: (err) => chalk.red(`Failed to create GraphQL schema: ${err.message}`),
     });
+
+    await applyIntegrations(options.integrations, { projectDir });
 
     console.log(
       `\n${chalk.green('Success!')} Created '${projectName}' at '${projectDir}'\n`,

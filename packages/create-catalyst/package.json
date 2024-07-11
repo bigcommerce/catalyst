@@ -29,6 +29,7 @@
     "nypm": "^0.3.9",
     "ora": "^8.0.1",
     "semver": "^7.6.3",
+    "simple-git": "^3.25.0",
     "zod": "^3.23.8",
     "zod-validation-error": "^3.3.0"
   },
