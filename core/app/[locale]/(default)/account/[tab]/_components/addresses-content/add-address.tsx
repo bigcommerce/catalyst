@@ -149,7 +149,7 @@ export const AddAddress = ({
         </Message>
       )}
       <Form action={onSubmit} ref={form}>
-        <div className="grid grid-cols-1 gap-y-6 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-2">
+        <div className="grid grid-cols-1 gap-y-3 lg:grid-cols-2 lg:gap-x-6">
           {addressFields.map((field) => {
             switch (field.__typename) {
               case 'TextFormField': {

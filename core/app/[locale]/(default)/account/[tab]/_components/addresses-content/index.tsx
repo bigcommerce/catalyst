@@ -34,7 +34,7 @@ export const AddressesContent = async ({
   if (customerAction === 'add-new-address') {
     return (
       <div className="mx-auto mb-14 lg:w-2/3">
-        <h1 className="my-8 text-3xl font-black lg:text-4xl">{t('newAddress')}</h1>
+        <h1 className="mb-8 text-3xl font-black lg:text-4xl">{t('newAddress')}</h1>
         <CustomerNewAddress />
       </div>
     );
@@ -47,7 +47,7 @@ export const AddressesContent = async ({
 
     return (
       <div className="mx-auto mb-14 lg:w-2/3">
-        <h1 className="my-8 text-3xl font-black lg:text-4xl">{t('editAddress')}</h1>
+        <h1 className="mb-8 text-3xl font-black lg:text-4xl">{t('editAddress')}</h1>
         {activeAddress && Object.keys(activeAddress).length > 0 ? (
           <CustomerEditAddress address={activeAddress} isAddressRemovable={addresses.length > 1} />
         ) : null}
