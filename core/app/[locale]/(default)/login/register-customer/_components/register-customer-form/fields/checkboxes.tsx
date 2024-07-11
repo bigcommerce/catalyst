@@ -63,7 +63,14 @@ export const Checkboxes = ({
   return (
     <Field className="relative space-y-2 pb-7" name={name}>
       <fieldset>
-        <FieldLabel isRequired={field.isRequired}>{field.label}</FieldLabel>
+        <FieldLabel asChild>
+          <legend className="mb-2.5 inline-flex w-full items-center justify-between text-base font-semibold">
+            <span>{field.label}</span>
+            {field.isRequired && (
+              <span className="text-xs font-normal text-gray-500">Required</span>
+            )}
+          </legend>
+        </FieldLabel>
         <div className="flex flex-col">
           {options.map(({ label, entityId }) => {
             const optionId = `option-${checkboxId}-${entityId}`;

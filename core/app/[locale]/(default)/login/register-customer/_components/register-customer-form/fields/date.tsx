@@ -76,7 +76,7 @@ export const DateField = ({
       <FieldControl asChild>
         <DatePicker
           disabledDays={disabledDays}
-          id={`${field.entityId}`}
+          id={`field-${field.entityId}`}
           onChange={field.isRequired ? onChange : undefined}
           onInvalid={field.isRequired ? onChange : undefined}
           onSelect={handleDateSelect}

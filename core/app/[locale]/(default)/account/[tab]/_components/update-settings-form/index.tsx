@@ -180,8 +180,6 @@ export const UpdateSettingsForm = ({
 
     setReCaptchaValid(true);
 
-    console.log('## submit handler', checkboxesValid);
-
     const submit = await updateCustomer({ formData, reCaptchaToken });
 
     if (submit.status === 'success') {
@@ -197,6 +195,11 @@ export const UpdateSettingsForm = ({
     if (submit.status === 'error') {
       setFormStatus({ status: 'error', message: submit.error ?? '' });
     }
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   };
 
   return (

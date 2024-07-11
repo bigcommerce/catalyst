@@ -44,7 +44,8 @@ const createPreSubmitPicklistValidationHandler = (
       [...new FormData(form).entries()]
         .filter(
           (fieldEntry): fieldEntry is [string, string] =>
-            fieldEntry[0].includes('custom_multipleChoices-') && typeof fieldEntry[1] === 'string',
+            /^custom_(address|customer)-multipleChoices-\d+/.test(fieldEntry[0]) &&
+            typeof fieldEntry[1] === 'string',
         )
         .map(([picklistKey, picklistValue]: [string, string]) => {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -85,7 +86,8 @@ const createPreSubmitCheckboxesValidationHandler = (
       [...new FormData(form).entries()]
         .filter(
           (fieldEntry): fieldEntry is [string, string] =>
-            fieldEntry[0].includes('custom_checkboxes-') && typeof fieldEntry[1] === 'string',
+            /^custom_(address|customer)-checkboxes-\d+/.test(fieldEntry[0]) &&
+            typeof fieldEntry[1] === 'string',
         )
         .map(([checkboxKey, checkboxValue]: [string, string]) => {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -131,7 +133,7 @@ const createTextInputValidationHandler =
 const createMultilineTextValidationHandler =
   (multiTextStateSetter: FieldStateSetFn<FieldState>, multiTextState: FieldState) =>
   (e: ChangeEvent<HTMLTextAreaElement>) => {
-    const fieldId = Number(e.target.id);
+    const fieldId = Number(e.target.id.split('-')[1]);
     const validityState = e.target.validity;
 
     multiTextStateSetter({ ...multiTextState, [fieldId]: !validityState.valueMissing });
@@ -160,7 +162,7 @@ const createRadioButtonsValidationHandler =
 const createDatesValidationHandler =
   (dateStateSetter: FieldStateSetFn<FieldState>, dateFieldState: FieldState) =>
   (e: React.ChangeEvent<HTMLInputElement>) => {
-    const fieldId = Number(e.target.id);
+    const fieldId = Number(e.target.name.split('-')[1]);
     const validationStatus = e.target.validity.valueMissing;
 
     dateStateSetter({ ...dateFieldState, [fieldId]: !validationStatus });
@@ -215,7 +217,6 @@ const createPicklistOrTextValidationHandler =
   (picklistWithTextStateSetter: FieldStateSetFn<FieldState>, picklistWithTextState: FieldState) =>
   (e: ChangeEvent<HTMLInputElement>) => {
     const fieldId = Number(e.target.id.split('-')[1]);
-
     const validationStatus = e.target.validity.valueMissing;
 
     picklistWithTextStateSetter({ ...picklistWithTextState, [fieldId]: !validationStatus });

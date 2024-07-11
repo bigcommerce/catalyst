@@ -1,7 +1,12 @@
 import { UpdateCustomerAddressInput } from '~/client/mutations/update-customer-address';
 
 type FormFieldsType = UpdateCustomerAddressInput['data']['formFields'];
-type ReturnedFormData = Record<string, unknown>;
+
+interface ReturnedFormData {
+  [k: string]: unknown;
+  address: Record<string, unknown>;
+  formFields: Record<string, unknown>;
+}
 
 const updateFormFields = ({
   formFields,
@@ -22,127 +27,105 @@ const updateFormFields = ({
 
   switch (fieldType) {
     case 'texts': {
-      const customTexts = customFormFields[fieldType];
-
-      const fieldData = {
+      const definedTexts = customFormFields[fieldType];
+      const newText = {
         text: fieldValue,
         fieldEntityId,
       };
 
-      customFormFields[fieldType] = customTexts ? [...customTexts, fieldData] : [fieldData];
+      customFormFields[fieldType] = definedTexts ? [...definedTexts, newText] : [newText];
 
       break;
     }
 
     case 'passwords': {
-      const customPasswords = customFormFields[fieldType];
-
-      const fieldData = {
+      const definedPasswords = customFormFields[fieldType];
+      const newPassword = {
         password: fieldValue,
         fieldEntityId,
       };
 
-      customFormFields[fieldType] = customPasswords ? [...customPasswords, fieldData] : [fieldData];
+      customFormFields[fieldType] = definedPasswords
+        ? [...definedPasswords, newPassword]
+        : [newPassword];
 
       break;
     }
 
     case 'checkboxes': {
-      const customCheckboxes = customFormFields[fieldType];
-      const fieldData = {
+      const definedCheckboxes = customFormFields[fieldType];
+      const newCheckbox = {
         fieldValueEntityIds: [Number(fieldValue)],
         fieldEntityId,
       };
-      const previouslyParsedCheckbox = customCheckboxes?.find(
-        (checkbox) => fieldEntityId === checkbox.fieldEntityId,
+      const previouslyParsedCheckbox = definedCheckboxes?.find(
+        (defined) => fieldEntityId === defined.fieldEntityId,
       );
 
-      if (customCheckboxes && previouslyParsedCheckbox) {
+      if (previouslyParsedCheckbox) {
         previouslyParsedCheckbox.fieldValueEntityIds.push(Number(fieldValue));
 
         break;
       }
 
-      customFormFields[fieldType] = customCheckboxes
-        ? [...customCheckboxes, fieldData]
-        : [fieldData];
+      customFormFields[fieldType] = definedCheckboxes
+        ? [...definedCheckboxes, newCheckbox]
+        : [newCheckbox];
 
       break;
     }
 
-<<<<<<< HEAD
-    case 'multilineTexts': {
-      const customMultilineTexts = customFormFields[fieldType];
-
-      const fieldData = {
-        multilineText: fieldValue,
-        fieldEntityId,
-      };
-
-      customFormFields[fieldType] = customMultilineTexts
-        ? [...customMultilineTexts, fieldData]
-        : [fieldData];
-
-      break;
-    }
-
-=======
->>>>>>> f743f42a (feat(core): add numbers-only field & utils for account form fields)
     case 'multipleChoices': {
-      const customMultipleChoices = customFormFields[fieldType];
-
-      const fieldData = {
+      const definedMultipleChoices = customFormFields[fieldType];
+      const newMultipleChoice = {
         fieldValueEntityId: Number(fieldValue),
         fieldEntityId,
       };
 
-      customFormFields[fieldType] = customMultipleChoices
-        ? [...customMultipleChoices, fieldData]
-        : [fieldData];
+      customFormFields[fieldType] = definedMultipleChoices
+        ? [...definedMultipleChoices, newMultipleChoice]
+        : [newMultipleChoice];
 
       break;
     }
 
     case 'multilineTexts': {
-      const customMultilineTexts = customFormFields[fieldType];
-
-      const fieldData = {
+      const definedMultilineTexts = customFormFields[fieldType];
+      const newMultilineText = {
         multilineText: fieldValue,
         fieldEntityId,
       };
 
-      customFormFields[fieldType] = customMultilineTexts
-        ? [...customMultilineTexts, fieldData]
-        : [fieldData];
+      customFormFields[fieldType] = definedMultilineTexts
+        ? [...definedMultilineTexts, newMultilineText]
+        : [newMultilineText];
 
       break;
     }
 
     case 'numbers': {
-      const customNumbers = customFormFields[fieldType];
-
-      const fieldData = {
+      const definedNumbers = customFormFields[fieldType];
+      const newNumber = {
         number: Number(fieldValue),
         fieldEntityId,
       };
 
-      customFormFields[fieldType] = customNumbers ? [...customNumbers, fieldData] : [fieldData];
+      customFormFields[fieldType] = definedNumbers ? [...definedNumbers, newNumber] : [newNumber];
 
       break;
     }
 
     case 'dates': {
-      const customDates = customFormFields[fieldType];
-
+      const definedDates = customFormFields[fieldType];
       const [day, mm, year] = fieldValue.split('/');
       const month = Number(mm) - 1;
       const date = new Date(Date.UTC(Number(year), month, Number(day))).toISOString();
-      const fieldData = {
+      const newDate = {
         date,
         fieldEntityId,
       };
 
-      customFormFields[fieldType] = customDates ? [...customDates, fieldData] : [fieldData];
+      customFormFields[fieldType] = definedDates ? [...definedDates, newDate] : [newDate];
 
       break;
     }
@@ -169,7 +152,7 @@ const isFormFieldsType = (data: unknown): data is FormFieldsType => {
 };
 
 export const parseAccountFormData = (accountFormData: FormData): unknown =>
-  [...accountFormData.entries()].reduce<ReturnedFormData>((parsedData, [name, value]) => {
+  [...accountFormData.entries()].reduce<Record<string, unknown>>((parsedData, [name, value]) => {
     // files are not supported in Form Fields
     if (typeof value !== 'string') {
       return parsedData;
@@ -191,12 +174,10 @@ export const parseAccountFormData = (accountFormData: FormData): unknown =>
     }
 
     // merchant defined Form Fields
-    if (sections.every((section) => section.startsWith('custom_'))) {
-      const customFieldType = sections[0]?.split('_').at(-1) ?? '';
-
+    if (sections.some((section) => section.startsWith('custom_'))) {
       parsedData.formFields = updateFormFields({
         formFields: isFormFieldsType(parsedData.formFields) ? parsedData.formFields : null,
-        fieldType: customFieldType,
+        fieldType: sections[1] ?? '',
         fieldEntityId: Number(key),
         fieldValue: value,
       });
@@ -204,3 +185,49 @@ export const parseAccountFormData = (accountFormData: FormData): unknown =>
 
     return parsedData;
   }, {});
+
+export const parseRegisterCustomerFormData = (registerFormData: FormData): unknown =>
+  [...registerFormData.entries()].reduce<ReturnedFormData>(
+    (parsedData, [name, value]) => {
+      // files are not supported in Form Fields
+      if (typeof value !== 'string') {
+        return parsedData;
+      }
+
+      const key = name.split('-').at(-1) ?? '';
+      const sections = name.split('-').slice(0, -1);
+
+      if (sections.includes('customer')) {
+        parsedData[key] = value;
+      }
+
+      if (sections.some((section) => section.startsWith('custom_customer'))) {
+        parsedData.formFields = updateFormFields({
+          formFields: isFormFieldsType(parsedData.formFields) ? parsedData.formFields : null,
+          fieldType: sections[1] ?? '',
+          fieldEntityId: Number(key),
+          fieldValue: value,
+        });
+      }
+
+      if (sections.includes('address')) {
+        parsedData.address[key] = value;
+      }
+
+      if (sections.some((section) => section.startsWith('custom_address'))) {
+        const fields = updateFormFields({
+          formFields: isFormFieldsType(parsedData.address.formFields)
+            ? parsedData.address.formFields
+            : null,
+          fieldType: sections[1] ?? '',
+          fieldEntityId: Number(key),
+          fieldValue: value,
+        });
+
+        parsedData.address = { ...parsedData.address, formFields: { ...fields } };
+      }
+
+      return parsedData;
+    },
+    { formFields: {}, address: {} },
+  );

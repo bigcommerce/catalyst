@@ -28,18 +28,19 @@ export const Text = ({
   type = 'text',
 }: TextProps) => {
   const t = useTranslations('Account.Settings.validationMessages');
-  const nameById = FieldNameToFieldId[entityId];
-  const fieldName = name ?? nameById ?? `field-${entityId}`;
+  const fieldNameById = FieldNameToFieldId[entityId];
+  const fieldId = name?.startsWith('custom_') ? `custom_field-${entityId}` : `field-${entityId}`;
+  const fieldName = name || fieldNameById || fieldId;
 
   return (
     <Field className="relative space-y-2 pb-7" name={fieldName}>
-      <FieldLabel htmlFor={fieldName} isRequired={isRequired}>
+      <FieldLabel htmlFor={fieldId} isRequired={isRequired}>
         {label}
       </FieldLabel>
       <FieldControl asChild>
         <Input
           defaultValue={defaultValue}
-          id={`field-${entityId}`}
+          id={fieldId}
           onChange={isRequired ? onChange : undefined}
           onInvalid={isRequired ? onChange : undefined}
           required={isRequired}
@@ -52,7 +53,7 @@ export const Text = ({
           className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary"
           match="valueMissing"
         >
-          {t(nameById ?? 'empty')}
+          {t(fieldNameById ?? 'empty')}
         </FieldMessage>
       )}
     </Field>

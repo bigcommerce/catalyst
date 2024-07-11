@@ -36,8 +36,8 @@ export const MultilineText = ({
       <FieldControl asChild>
         <TextArea
           className="h-auto"
-          defaultValue={field.defaultText ?? defaultValue}
-          id={`${field.entityId}`}
+          defaultValue={defaultValue || field.defaultText || undefined}
+          id={`field-${field.entityId}`}
           onChange={onChange}
           onInvalid={onChange}
           required
