@@ -396,5 +396,8 @@
         "processing": "Procesando…",
         "addedProductQuantity": "{cartItems, plural, =1 {1 artículo} other {# artículos}} agregado(s) a <cartLink>tu carrito</cartLink>",
         "errorAddingProductToCart": "Error al agregar un producto al carrito. Vuelve a intentarlo."
+    },
+    "StoreSelector": {
+        "heading": "Select a language and region"
     }
 }
