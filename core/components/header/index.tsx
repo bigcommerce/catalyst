@@ -76,7 +76,7 @@ export const Header = async ({ cart, data }: Props) => {
             { path: '/account/orders', name: 'Orders' },
             { path: '/account/messages', name: 'Messages' },
             { path: '/account/addresses', name: 'Addresses' },
-            { path: '/account/wishlists', name: 'Wish lists' },
+            { path: '/account/wishlists', name: 'Wishlists' },
             { path: '/account/recently-viewed', name: 'Recently viewed' },
             { path: '/account/settings', name: 'Account settings' },
             { action: logout, name: 'Log out' },
