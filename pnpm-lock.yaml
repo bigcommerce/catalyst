@@ -102,8 +102,8 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
       lru-cache:
-        specifier: ^10.4.0
-        version: 10.4.0
+        specifier: ^11.0.0
+        version: 11.0.0
       lucide-react:
         specifier: ^0.408.0
         version: 0.408.0(react@18.3.1)
@@ -869,13 +869,6 @@ packages:
 
   '@formatjs/intl-localematcher@0.5.4':
     resolution: {integrity: sha512-zTwEpWOzZ2CiKcB93BLngUX59hQkuZjT2+SAQEscSm52peDW/getsawMcWF1rGRpMCX6D7nSJA3CzJ8gn13N/g==}
-
-  '@gql.tada/cli-utils@1.5.0':
-    resolution: {integrity: sha512-BqbrcpKmE2FyM3tQgK3vzTIn1ghCOf+lH9MThPow7NbtS9K2+bH4u/1fPAhZMR1Zg5GExKsDvij+zLP64Ge6Ig==}
-    peerDependencies:
-      '@0no-co/graphqlsp': ^1.12.9
-      graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
-      typescript: ^5.0.0
 
   '@gql.tada/cli-utils@1.5.1':
     resolution: {integrity: sha512-JVLpoXLa4msrE7MHnmW/7fYnIl8dncLom8T/Ghsxu+Kz5iMGnzK2joJN5cZt4ewCAqfCV3HZZ0VH189OalGd9g==}
@@ -3890,6 +3883,10 @@ packages:
     resolution: {integrity: sha512-bfJaPTuEiTYBu+ulDaeQ0F+uLmlfFkMgXj4cbwfuMSjgObGMzb55FMMbDvbRU0fAHZ4sLGkz2mKwcMg8Dvm8Ww==}
     engines: {node: '>=18'}
 
+  lru-cache@11.0.0:
+    resolution: {integrity: sha512-Qv32eSV1RSCfhY3fpPE2GNZ8jgM9X7rdAfemLWqTUxwiyIC4jJ6Sy0fZ8H+oLWevO6i4/bizg7c8d8i6bxrzbA==}
+    engines: {node: 20 || >=22}
+
   lru-cache@4.1.5:
     resolution: {integrity: sha512-sWZlbEP2OsHNkXrMl5GYk/jKk70MBng6UU4YI/qGDYbgf6YbP4EvmqISbXCoJiRKs+1bSpFHVgQxvJ17F2li5g==}
 
@@ -5851,18 +5848,6 @@ snapshots:
   '@formatjs/intl-localematcher@0.5.4':
     dependencies:
       tslib: 2.6.3
-
-  '@gql.tada/cli-utils@1.5.0(@0no-co/graphqlsp@1.12.11(graphql@16.9.0)(typescript@5.5.3))(graphql@16.9.0)(svelte@4.2.18)(typescript@5.5.3)':
-    dependencies:
-      '@0no-co/graphqlsp': 1.12.11(graphql@16.9.0)(typescript@5.5.3)
-      '@gql.tada/internal': 1.0.3(graphql@16.9.0)(typescript@5.5.3)
-      '@vue/compiler-dom': 3.4.31
-      '@vue/language-core': 2.0.26(typescript@5.5.3)
-      graphql: 16.9.0
-      svelte2tsx: 0.7.13(svelte@4.2.18)(typescript@5.5.3)
-      typescript: 5.5.3
-    transitivePeerDependencies:
-      - svelte
 
   '@gql.tada/cli-utils@1.5.1(@0no-co/graphqlsp@1.12.11(graphql@16.9.0)(typescript@5.5.3))(graphql@16.9.0)(svelte@4.2.18)(typescript@5.5.3)':
     dependencies:
@@ -9521,6 +9506,8 @@ snapshots:
       tslib: 2.6.3
 
   lru-cache@10.4.0: {}
+
+  lru-cache@11.0.0: {}
 
   lru-cache@4.1.5:
     dependencies:
