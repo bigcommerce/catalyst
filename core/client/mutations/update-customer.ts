@@ -13,6 +13,9 @@ const UPDATE_CUSTOMER_MUTATION = graphql(`
         }
         errors {
           __typename
+          ... on UnexpectedUpdateCustomerError {
+            message
+          }
           ... on EmailAlreadyInUseError {
             message
           }
