@@ -93,8 +93,8 @@ importers:
         specifier: ^10.2.3
         version: 10.2.3(prop-types@15.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       gql.tada:
-        specifier: ^1.8.1
-        version: 1.8.1(graphql@16.9.0)(svelte@4.2.18)(typescript@5.5.3)
+        specifier: ^1.8.2
+        version: 1.8.2(graphql@16.9.0)(svelte@4.2.18)(typescript@5.5.3)
       graphql:
         specifier: ^16.9.0
         version: 16.9.0
@@ -3299,8 +3299,8 @@ packages:
   gopd@1.0.1:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
 
-  gql.tada@1.8.1:
-    resolution: {integrity: sha512-SKiWid+21JP1rCqXsWJr+A+fPcEUY2kz4XcQ6marzbMaFyXaf8LSLdYQPaZAFfqQ6tP2ZabG6Al7RFYByAsZwg==}
+  gql.tada@1.8.2:
+    resolution: {integrity: sha512-LLt+2RcLY6i+Rq+LQQwx3uiEAPfA+pmEaAo/bJjUdaV1CVJBy3Wowds6GHeerW5kvekRM/XdbPTJw5OvnLq/DQ==}
     hasBin: true
     peerDependencies:
       typescript: ^5.0.0
@@ -8790,12 +8790,12 @@ snapshots:
     dependencies:
       get-intrinsic: 1.2.4
 
-  gql.tada@1.8.1(graphql@16.9.0)(svelte@4.2.18)(typescript@5.5.3):
+  gql.tada@1.8.2(graphql@16.9.0)(svelte@4.2.18)(typescript@5.5.3):
     dependencies:
       '@0no-co/graphql.web': 1.0.7(graphql@16.9.0)
       '@0no-co/graphqlsp': 1.12.11(graphql@16.9.0)(typescript@5.5.3)
-      '@gql.tada/cli-utils': 1.5.0(@0no-co/graphqlsp@1.12.11(graphql@16.9.0)(typescript@5.5.3))(graphql@16.9.0)(svelte@4.2.18)(typescript@5.5.3)
-      '@gql.tada/internal': 1.0.3(graphql@16.9.0)(typescript@5.5.3)
+      '@gql.tada/cli-utils': 1.5.1(@0no-co/graphqlsp@1.12.11(graphql@16.9.0)(typescript@5.5.3))(graphql@16.9.0)(svelte@4.2.18)(typescript@5.5.3)
+      '@gql.tada/internal': 1.0.4(graphql@16.9.0)(typescript@5.5.3)
       typescript: 5.5.3
     transitivePeerDependencies:
       - graphql
