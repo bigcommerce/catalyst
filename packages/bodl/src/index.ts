@@ -13,7 +13,8 @@ interface BodlConfig {
 }
 
 export class Bodl {
-  private static instance: Bodl | null = null;
+  private static globalSingleton: Bodl | null = null;
+
   constructor(private config: BodlConfig) {
     if (typeof window == 'undefined') {
       console.warn('Bodl must be initialized in browser environment.');
@@ -27,12 +28,24 @@ export class Bodl {
       return;
     }
 
+    this.bindJavascriptLibrary();
+
+    if (!Bodl.globalSingleton) {
+      Bodl.globalSingleton = this;
+
+      return this;
+    }
+
+    return Bodl.globalSingleton;
+  }
+
+  private bindJavascriptLibrary() {
     // Subscribe analytic providers to BODL events here
     const load = () => {
       subscribeOnBodlEvents(
-        config.ga4?.gaId,
-        config.ga4?.developerId,
-        config.ga4?.consentModeEnabled,
+        this.config.ga4?.gaId,
+        this.config.ga4?.developerId,
+        this.config.ga4?.consentModeEnabled,
       );
     };
 
@@ -44,13 +57,6 @@ export class Bodl {
     script.src = 'https://microapps.bigcommerce.com/bodl-events/index.js';
     script.onload = load;
     el.appendChild(script);
-  }
-
-  static init(config: BodlConfig) {
-    if (Bodl.instance === null) {
-      Bodl.instance = new Bodl(config);
-    }
-    return Bodl.instance;
   }
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
@@ -90,8 +96,10 @@ export class Bodl {
         setTimeout(originalMethod.bind(this, payload), 500);
 
         console.warn('Bodl is not initialized, call init method first.');
+
         return;
       }
+
       originalMethod.apply(this, [payload]);
     };
   }

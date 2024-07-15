@@ -60,6 +60,7 @@ export const ProductForm = ({ data: product }: Props) => {
 
     // Trigger browser event from client component
     const transformedProduct = productItemTransform(product);
+
     bodl.cart.productAdded({
       product_value: transformedProduct.purchase_price * quantity,
       currency: transformedProduct.currency,

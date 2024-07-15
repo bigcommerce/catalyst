@@ -4,7 +4,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { FragmentOf } from '~/client/graphql';
 
-export const bodl = Bodl.init({
+export const bodl = new Bodl({
   channel_id: Number(process.env.BIGCOMMERCE_CHANNEL_ID ?? 1),
   // TODO: Replace with actual store configuration
   ga4: {
