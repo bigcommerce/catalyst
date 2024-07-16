@@ -28,9 +28,9 @@ export class Bodl {
       return;
     }
 
-    this.bindJavascriptLibrary();
-
     if (!Bodl.globalSingleton) {
+      this.bindJavascriptLibrary();
+
       Bodl.globalSingleton = this;
 
       return this;
