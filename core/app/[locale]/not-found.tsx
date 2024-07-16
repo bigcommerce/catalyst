@@ -76,12 +76,7 @@ export default async function NotFound() {
                   locale={locale}
                   messages={{ Product: messages.Product ?? {} }}
                 >
-                  <ProductCard
-                    product={product}
-                    showCart={false}
-                    showCompare={false}
-                    showReviews={false}
-                  />
+                  <ProductCard product={product} showCart={false} showCompare={false} />
                 </NextIntlClientProvider>
               ))}
             </div>

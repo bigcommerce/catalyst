@@ -1,12 +1,10 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
 import { useEffect, useId, useState } from 'react';
 
-import { Checkbox } from '~/components/ui/checkbox';
-import { Label } from '~/components/ui/label';
+import { useCompareProductsContext } from '~/app/contexts/compare-products-context';
 
-import { useCompareProductsContext } from '../../app/contexts/compare-products-context';
+import { Checkbox } from '../checkbox';
 
 export const Compare = ({
   productId,
@@ -20,8 +18,8 @@ export const Compare = ({
   } | null;
   productName: string;
 }) => {
-  const labelId = useId();
-  const t = useTranslations('Product.ProductSheet');
+  const checkboxId = useId();
+
   const [checkedState, setCheckedState] = useState(false);
   const { products, setProducts } = useCompareProductsContext();
 
@@ -46,14 +44,14 @@ export const Compare = ({
   return (
     <div className="flex items-center gap-3">
       <Checkbox
-        aria-labelledby={labelId}
         checked={checkedState}
         className="h-4 w-4"
+        id={checkboxId}
         onCheckedChange={handleOnCheckedChange}
       />
-      <Label className="font-normal" id={labelId}>
-        {t('compare')}
-      </Label>
+      <label className="font-normal" htmlFor={checkboxId}>
+        Compare
+      </label>
     </div>
   );
 };
