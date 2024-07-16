@@ -107,7 +107,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
   async fetchAvailableCountries() {
     const response = await fetch(
-      `https://api.bigcommerce.com/stores/${this.config.storeHash}/v2/countries?limit=250`,
+      `https://${adminApiHostname}/stores/${this.config.storeHash}/v2/countries?limit=250`,
       {
         method: 'GET',
         headers: {
@@ -128,7 +128,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
   async fetchCountryStates(id: number) {
     const response = await fetch(
-      `https://api.bigcommerce.com/stores/${this.config.storeHash}/v2/countries/${id}/states?limit=60`,
+      `https://${adminApiHostname}/stores/${this.config.storeHash}/v2/countries/${id}/states?limit=60`,
       {
         method: 'GET',
         headers: {
@@ -149,7 +149,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
   async fetchShippingZones() {
     const response = await fetch(
-      `https://api.bigcommerce.com/stores/${this.config.storeHash}/v2/shipping/zones`,
+      `https://${adminApiHostname}/stores/${this.config.storeHash}/v2/shipping/zones`,
       {
         method: 'GET',
         headers: {
@@ -190,7 +190,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   private async getCanonicalUrl(channelId?: string) {
     const resolvedChannelId = channelId ?? (await this.getChannelId(this.defaultChannelId));
 
-    return `https://store-${this.config.storeHash}-${resolvedChannelId}.mybigcommerce.com`;
+    return `https://store-${this.config.storeHash}-${resolvedChannelId}.${graphqlApiDomain}`;
   }
 
   private async getGraphQLEndpoint(channelId?: string) {
