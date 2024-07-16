@@ -77,7 +77,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     const query = normalizeQuery(document);
     const log = this.requestLogger(query);
 
-    const graphqlUrl = await this.getEndpoint(channelId);
+    const graphqlUrl = await this.getGraphQLEndpoint(channelId);
 
     const response = await fetch(graphqlUrl, {
       method: 'POST',
@@ -114,6 +114,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
           Accept: 'application/json',
           'Content-Type': 'application/json',
           'X-Auth-Token': this.config.xAuthToken,
+          'User-Agent': this.backendUserAgent,
         },
       },
     );
@@ -134,6 +135,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
           Accept: 'application/json',
           'Content-Type': 'application/json',
           'X-Auth-Token': this.config.xAuthToken,
+          'User-Agent': this.backendUserAgent,
         },
       },
     );
@@ -154,6 +156,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
           Accept: 'application/json',
           'Content-Type': 'application/json',
           'X-Auth-Token': this.config.xAuthToken,
+          'User-Agent': this.backendUserAgent,
         },
       },
     );
@@ -165,10 +168,33 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     return response.json() as Promise<unknown>;
   }
 
-  private async getEndpoint(channelId?: string) {
+  async fetchSitemapIndex(channelId?: string): Promise<string> {
+    const sitemapIndexUrl = `${await this.getCanonicalUrl(channelId)}/xmlsitemap.php`;
+
+    const response = await fetch(sitemapIndexUrl, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/xml',
+        'Content-Type': 'application/xml',
+        'User-Agent': this.backendUserAgent,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Unable to get Sitemap Index: ${response.statusText}`);
+    }
+
+    return response.text();
+  }
+
+  private async getCanonicalUrl(channelId?: string) {
     const resolvedChannelId = channelId ?? (await this.getChannelId(this.defaultChannelId));
 
-    return `https://store-${this.config.storeHash}-${resolvedChannelId}.${graphqlApiDomain}/graphql`;
+    return `https://store-${this.config.storeHash}-${resolvedChannelId}.mybigcommerce.com`;
+  }
+
+  private async getGraphQLEndpoint(channelId?: string) {
+    return `${await this.getCanonicalUrl(channelId)}/graphql`;
   }
 
   private requestLogger(document: string) {
