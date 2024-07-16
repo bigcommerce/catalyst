@@ -226,7 +226,7 @@ export const create = new Command('create')
 
         const {
           data: { token },
-        } = await bc.customerImpersonationToken(channelId);
+        } = await bc.customerImpersonationToken();
 
         customerImpersonationToken = token;
       }

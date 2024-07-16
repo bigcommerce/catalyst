@@ -3,17 +3,12 @@ import { z } from 'zod';
 import { client } from '..';
 import { graphql, VariablesOf } from '../graphql';
 
-const ChangePasswordFieldsSchema = z.object({
+export const ChangePasswordFieldsSchema = z.object({
   customerId: z.string(),
   customerToken: z.string(),
   currentPassword: z.string().min(1),
   newPassword: z.string().min(1),
   confirmPassword: z.string().min(1),
-});
-
-export const CustomerChangePasswordSchema = ChangePasswordFieldsSchema.omit({
-  customerId: true,
-  customerToken: true,
 });
 
 export const ChangePasswordSchema = ChangePasswordFieldsSchema.omit({

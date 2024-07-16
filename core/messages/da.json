@@ -396,5 +396,8 @@
         "processing": "Behandler...",
         "addedProductQuantity": "<cartLink>{CartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
         "errorAddingProductToCart": "Fejl ved tilføjelse af produkt til indkøbskurv. Prøv igen."
+    },
+    "StoreSelector": {
+        "heading": "Select a language and region"
     }
 }

@@ -396,5 +396,8 @@
         "processing": "Verwerken...",
         "addedProductQuantity": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>",
         "errorAddingProductToCart": "Fout opgetreden bij het toevoegen van product aan winkelwagen. Probeer het opnieuw."
+    },
+    "StoreSelector": {
+        "heading": "Select a language and region"
     }
 }
