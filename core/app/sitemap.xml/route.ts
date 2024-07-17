@@ -3,12 +3,16 @@
  * Proxy to the existing BigCommerce sitemap index on the canonical URL
  */
 
-const storeHash = process.env.BIGCOMMERCE_STORE_HASH;
-const channelId = process.env.BIGCOMMERCE_CHANNEL_ID;
-const canonicalDomain: string = process.env.BIGCOMMERCE_GRAPHQL_API_DOMAIN ?? 'mybigcommerce.com';
+import { client } from '~/client';
 
-const remoteSitemapUrl = `https://store-${storeHash}-${channelId}.${canonicalDomain}/xmlsitemap.php`;
+export const GET = async () => {
+  const sitemapIndex = await client.fetchSitemapIndex();
 
-export const GET = async () => fetch(remoteSitemapUrl);
+  return new Response(sitemapIndex, {
+    headers: {
+      'Content-Type': 'application/xml',
+    },
+  });
+};
 
 export const runtime = 'edge';
