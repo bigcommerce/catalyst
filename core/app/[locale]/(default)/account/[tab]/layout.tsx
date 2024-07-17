@@ -33,9 +33,8 @@ export default async function AccountTabLayout({ children, params: { locale, tab
     <NextIntlClientProvider locale={locale} messages={{ Account: messages.Account ?? {} }}>
       <AccountStatusProvider>
         <h1 className="my-6 my-8 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
-        <AccountTabs activeTab={tab} tabs={[...tabList]}>
-          {children}
-        </AccountTabs>
+        <AccountTabs activeTab={tab} tabs={[...tabList]} />
+        {children}
       </AccountStatusProvider>
     </NextIntlClientProvider>
   );

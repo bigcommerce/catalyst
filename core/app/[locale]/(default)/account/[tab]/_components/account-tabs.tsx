@@ -1,10 +1,10 @@
 'use client';
 
+import * as TabsPrimitive from '@radix-ui/react-tabs';
 import { useTranslations } from 'next-intl';
 import { PropsWithChildren } from 'react';
 
 import { Link } from '~/components/link';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
 
 import { TabType } from '../layout';
 
@@ -13,14 +13,22 @@ interface Props extends PropsWithChildren {
   activeTab?: TabType;
 }
 
-export const AccountTabs = ({ children, activeTab, tabs }: Props) => {
+export const AccountTabs = ({ activeTab, tabs }: Props) => {
   const t = useTranslations('Account.Home');
 
   return (
-    <Tabs activationMode="manual" defaultValue={activeTab}>
-      <TabsList aria-label={t('accountTabsLabel')} className="mb-5 pb-3 pt-1">
+    <TabsPrimitive.Root activationMode="manual" defaultValue={activeTab}>
+      <TabsPrimitive.List
+        aria-label={t('accountTabsLabel')}
+        className="mb-5 flex list-none items-start overflow-x-auto pb-3 pt-1 text-base"
+      >
         {tabs.map((tab) => (
-          <TabsTrigger asChild key={tab} value={tab}>
+          <TabsPrimitive.Trigger
+            asChild
+            className="px-4 pb-2 data-[state=active]:border-b-4 data-[state=active]:border-primary data-[state=active]:text-primary"
+            key={tab}
+            value={tab}
+          >
             <Link
               className="whitespace-nowrap font-semibold"
               href={`/account/${tab}`}
@@ -29,10 +37,9 @@ export const AccountTabs = ({ children, activeTab, tabs }: Props) => {
             >
               {tab === 'recently-viewed' ? t('recentlyViewed') : t(tab)}
             </Link>
-          </TabsTrigger>
+          </TabsPrimitive.Trigger>
         ))}
-      </TabsList>
-      <TabsContent value={activeTab ?? ''}>{children}</TabsContent>
-    </Tabs>
+      </TabsPrimitive.List>
+    </TabsPrimitive.Root>
   );
 };
