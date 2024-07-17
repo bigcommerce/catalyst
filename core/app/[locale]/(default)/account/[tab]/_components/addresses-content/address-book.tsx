@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { PropsWithChildren, useState } from 'react';
 
 import { getCustomerAddresses } from '~/client/queries/get-customer-addresses';
 import { Link } from '~/components/link';
@@ -34,7 +34,7 @@ const AddressChangeButtons = ({ addressId, isAddressRemovable, onDelete }: Addre
   };
 
   return (
-    <div className="my-2 flex w-fit gap-x-2 divide-y-0">
+    <div className="flex w-fit gap-x-2 divide-y-0">
       <Button aria-label={t('editButton')} asChild variant="secondary">
         <Link
           href={{
@@ -63,7 +63,11 @@ interface AddressBookProps {
   addressesCount: number;
 }
 
-export const AddressBook = ({ addressesCount, customerAddresses }: AddressBookProps) => {
+export const AddressBook = ({
+  children,
+  addressesCount,
+  customerAddresses,
+}: PropsWithChildren<AddressBookProps>) => {
   const t = useTranslations('Account.Addresses');
   const [addressBook, setAddressBook] = useState(customerAddresses);
   const { accountState } = useAccountStatusContext();
@@ -89,7 +93,7 @@ export const AddressBook = ({ addressesCount, customerAddresses }: AddressBookPr
             countryCode,
           }) => (
             <li
-              className="flex w-full border-collapse flex-col justify-start gap-2 border-t border-gray-200 pb-3 pt-5"
+              className="flex w-full border-collapse flex-col justify-start gap-3 border-t border-gray-200 py-6"
               key={entityId}
             >
               <div className="inline-flex flex-col justify-start text-base">
@@ -111,12 +115,17 @@ export const AddressBook = ({ addressesCount, customerAddresses }: AddressBookPr
             </li>
           ),
         )}
-        <li className="flex w-full border-collapse flex-col justify-start gap-2 border-t border-gray-200 pt-8">
-          <Button aria-label={t('addNewAddress')} asChild className="w-fit hover:text-white">
+        <li className="align-center flex w-full border-collapse flex-col justify-center gap-2 border-t border-gray-200 pt-8 md:flex-row md:justify-between">
+          <Button
+            aria-label={t('addNewAddress')}
+            asChild
+            className="w-full hover:text-white md:w-fit"
+          >
             <Link href={{ pathname: '/account/addresses', query: { action: 'add-new-address' } }}>
               {t('addNewAddress')}
             </Link>
           </Button>
+          {children}
         </li>
       </ul>
     </>

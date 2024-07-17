@@ -58,15 +58,17 @@ export const AddressesContent = async ({
   return (
     <>
       <TabHeading heading="addresses" />
-      <AddressBook addressesCount={addressesCount} customerAddresses={addresses} key={endCursor} />
-      <Pagination
-        endCursor={endCursor}
-        hasNextPage={hasNextPage}
-        hasPreviousPage={hasPreviousPage}
-        nextLabel={tPagination('next')}
-        prevLabel={tPagination('prev')}
-        startCursor={startCursor}
-      />
+      <AddressBook addressesCount={addressesCount} customerAddresses={addresses} key={endCursor}>
+        <Pagination
+          className="my-0 flex inline-flex justify-center text-center"
+          endCursor={endCursor}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          nextLabel={tPagination('next')}
+          prevLabel={tPagination('prev')}
+          startCursor={startCursor}
+        />
+      </AddressBook>
     </>
   );
 };
