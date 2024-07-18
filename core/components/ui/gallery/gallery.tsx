@@ -1,14 +1,13 @@
-import { Slot } from '@radix-ui/react-slot';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import {
+  ComponentPropsWithoutRef,
   ComponentPropsWithRef,
-  createContext,
   ElementRef,
   forwardRef,
-  useContext,
   useEffect,
   useState,
 } from 'react';
+import { BcImage } from '~/components/bc-image';
 
 import { cn } from '~/lib/utils';
 
@@ -17,282 +16,156 @@ interface Image {
   altText: string;
 }
 
-const GalleryContext = createContext<{
-  images: Image[] | [];
-  selectedImageIndex: number;
-  setSelectedImageIndex: React.Dispatch<React.SetStateAction<number>>;
-}>({
-  images: [],
-  selectedImageIndex: 0,
-  setSelectedImageIndex: () => null,
-});
+const GalleryPreviousIndicator = ({
+  children,
+  className,
+  onClick,
+  ...props
+}: ComponentPropsWithoutRef<'button'>) => {
+  return (
+    <button
+      aria-label="Previous product image"
+      className={cn(
+        'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
+        className,
+      )}
+      onClick={(e) => {
+        if (onClick) {
+          onClick(e);
+        }
+      }}
+      {...props}
+    >
+      {children || <ChevronLeft />}
+    </button>
+  );
+};
 
-const ThumbnailContext = createContext<{
-  index: number;
-}>({
-  index: 0,
-});
+const GalleryNextIndicator = ({
+  children,
+  className,
+  onClick,
+  ...props
+}: ComponentPropsWithoutRef<'button'>) => {
+  return (
+    <button
+      aria-label="Next product image"
+      className={cn(
+        'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
+        className,
+      )}
+      onClick={(e) => {
+        if (onClick) {
+          onClick(e);
+        }
+      }}
+      {...props}
+    >
+      {children || <ChevronRight />}
+    </button>
+  );
+};
 
-const GalleryPreviousIndicator = forwardRef<ElementRef<'button'>, ComponentPropsWithRef<'button'>>(
-  ({ children, className, onClick, ...props }, ref) => {
-    const { images, selectedImageIndex, setSelectedImageIndex } = useContext(GalleryContext);
-    const previousIndex = selectedImageIndex === 0 ? images.length - 1 : selectedImageIndex - 1;
-
-    return (
-      <button
-        aria-label="Previous product image"
-        className={cn(
-          'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
-          className,
-        )}
-        onClick={(e) => {
-          setSelectedImageIndex(previousIndex);
-
-          if (onClick) {
-            onClick(e);
-          }
-        }}
-        ref={ref}
-        {...props}
-      >
-        {children || <ChevronLeft />}
-      </button>
-    );
-  },
-);
-
-GalleryPreviousIndicator.displayName = 'GalleryPreviousIndicator';
-
-const GalleryNextIndicator = forwardRef<ElementRef<'button'>, ComponentPropsWithRef<'button'>>(
-  ({ children, className, onClick, ...props }, ref) => {
-    const { images, selectedImageIndex, setSelectedImageIndex } = useContext(GalleryContext);
-    const nextIndex = selectedImageIndex + 1 < images.length ? selectedImageIndex + 1 : 0;
-
-    return (
-      <button
-        aria-label="Next product image"
-        className={cn(
-          'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
-          className,
-        )}
-        onClick={(e) => {
-          setSelectedImageIndex(nextIndex);
-
-          if (onClick) {
-            onClick(e);
-          }
-        }}
-        ref={ref}
-        {...props}
-      >
-        {children || <ChevronRight />}
-      </button>
-    );
-  },
-);
-
-GalleryNextIndicator.displayName = 'GalleryNextIndicator';
-
-const GalleryControls = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
-  ({ children, className, ...props }, ref) => {
-    const { images } = useContext(GalleryContext);
-
-    if (images.length <= 1) {
-      return null;
-    }
-
-    return (
-      <div
-        className={cn(
-          'absolute top-1/2 flex w-full -translate-y-1/2 justify-between px-5 sm:px-0',
-          className,
-        )}
-        ref={ref}
-        {...props}
-      >
-        {children || (
-          <>
-            <GalleryPreviousIndicator />
-            <GalleryNextIndicator />
-          </>
-        )}
-      </div>
-    );
-  },
-);
-
-GalleryControls.displayName = 'GalleryControls';
-
-interface GalleryImageProps extends Omit<ComponentPropsWithRef<'img'>, 'children'> {
-  children?: (({ selectedImage }: { selectedImage?: Image }) => React.ReactNode) | React.ReactNode;
-}
-
-const GalleryImage = forwardRef<ElementRef<'img'>, GalleryImageProps>(
-  ({ className, children, ...props }, ref) => {
-    const { images, selectedImageIndex } = useContext(GalleryContext);
-    const selectedImage = images.length > 0 ? images[selectedImageIndex] : undefined;
-
-    if (typeof children === 'function') {
-      return children({ selectedImage });
-    }
-
-    if (selectedImage) {
-      return (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          alt={selectedImage.altText}
-          className={cn('h-full w-full object-contain', className)}
-          ref={ref}
-          sizes="100vw"
-          src={selectedImage.url}
-          {...props}
-        />
-      );
-    }
-  },
-);
-
-GalleryImage.displayName = 'GalleryImage';
-
-const GalleryContent = forwardRef<ElementRef<'figure'>, ComponentPropsWithRef<'figure'>>(
-  ({ className, children, ...props }, ref) => {
-    return (
-      <figure
-        className={cn('relative aspect-square h-full max-h-[548px] w-full', className)}
-        ref={ref}
-        {...props}
-      >
-        {children}
-      </figure>
-    );
-  },
-);
-
-GalleryContent.displayName = 'GalleryContent';
-
-const GalleryThumbnailList = forwardRef<ElementRef<'nav'>, ComponentPropsWithRef<'nav'>>(
-  ({ children, className, ...props }, ref) => {
-    return (
-      <nav
-        aria-label="Thumbnail navigation"
-        className={cn(
-          'mt-3 flex w-full flex-wrap items-center gap-4 px-1 py-1 md:mt-5 md:gap-6',
-          className,
-        )}
-        ref={ref}
-        {...props}
-      >
-        {children}
-      </nav>
-    );
-  },
-);
-
-GalleryThumbnailList.displayName = 'GalleryThumbnailList';
-
-interface GalleryThumbnailItemProps extends ComponentPropsWithRef<'button'> {
-  imageIndex: number;
-}
-
-const GalleryThumbnailItem = forwardRef<ElementRef<'button'>, GalleryThumbnailItemProps>(
-  ({ className, children, imageIndex, onClick, ...props }, ref) => {
-    const { selectedImageIndex, setSelectedImageIndex } = useContext(GalleryContext);
-    const isActive = selectedImageIndex === imageIndex;
-
-    return (
-      <button
-        aria-label="Enlarge product image"
-        aria-pressed={isActive}
-        className={cn(
-          'inline-block h-12 w-12 flex-shrink-0 flex-grow-0 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 md:h-24 md:w-24',
-          className,
-        )}
-        onClick={(e) => {
-          setSelectedImageIndex(imageIndex);
-
-          if (onClick) {
-            onClick(e);
-          }
-        }}
-        ref={ref}
-        type="button"
-        {...props}
-      >
-        <ThumbnailContext.Provider value={{ index: imageIndex }}>
-          {children}
-        </ThumbnailContext.Provider>
-      </button>
-    );
-  },
-);
-
-GalleryThumbnailItem.displayName = 'GalleryThumbnailItem';
-
-interface GalleryThumbnailProps extends ComponentPropsWithRef<'img'> {
-  asChild?: boolean;
-}
-
-const GalleryThumbnail = forwardRef<ElementRef<'img'>, GalleryThumbnailProps>(
-  ({ asChild, className, ...props }, ref) => {
-    const { selectedImageIndex } = useContext(GalleryContext);
-    const { index } = useContext(ThumbnailContext);
-
-    const isActive = selectedImageIndex === index;
-
-    const Comp = asChild ? Slot : 'img';
-
-    return (
-      <Comp
-        className={cn(
-          'flex cursor-pointer items-center justify-center border-2 hover:border-primary',
-          isActive && 'border-primary',
-          'h-full w-full object-contain',
-          className,
-        )}
-        height={94}
-        ref={ref}
-        width={94}
-        {...props}
-      />
-    );
-  },
-);
-
-GalleryThumbnail.displayName = 'GalleryThumbnail';
-
-interface GalleryProps extends ComponentPropsWithRef<'div'> {
+interface GalleryProps extends ComponentPropsWithoutRef<'div'> {
   images: Image[] | [];
   defaultImageIndex?: number;
+  noImageText?: string;
 }
 
-const Gallery = forwardRef<ElementRef<'div'>, GalleryProps>(
-  ({ className, children, images, defaultImageIndex = 0, ...props }, ref) => {
-    const [selectedImageIndex, setSelectedImageIndex] = useState(defaultImageIndex);
+export const Gallery = ({
+  className,
+  children,
+  images,
+  defaultImageIndex = 0,
+  noImageText,
+  ...props
+}: GalleryProps) => {
+  const [selectedImageIndex, setSelectedImageIndex] = useState(defaultImageIndex);
 
-    useEffect(() => {
-      setSelectedImageIndex(defaultImageIndex);
-    }, [defaultImageIndex]);
+  useEffect(() => {
+    setSelectedImageIndex(defaultImageIndex);
+  }, [defaultImageIndex]);
 
-    return (
-      <GalleryContext.Provider value={{ images, selectedImageIndex, setSelectedImageIndex }}>
-        <div aria-live="polite" className={cn(className)} ref={ref} {...props}>
-          {children}
-        </div>
-      </GalleryContext.Provider>
-    );
-  },
-);
+  const selectedImage = images.length > 0 ? images[selectedImageIndex] : undefined;
 
-Gallery.displayName = 'Gallery';
-
-export {
-  Gallery,
-  GalleryThumbnail,
-  GalleryThumbnailItem,
-  GalleryThumbnailList,
-  GalleryContent,
-  GalleryImage,
-  GalleryControls,
-  GalleryNextIndicator,
-  GalleryPreviousIndicator,
+  return (
+    <div aria-live="polite" className={className} {...props}>
+      <figure className="relative aspect-square h-full max-h-[548px] w-full">
+        {selectedImage ? (
+          <BcImage
+            alt={selectedImage.altText}
+            className="h-full w-full object-contain"
+            fill
+            priority={true}
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            src={selectedImage.url}
+          />
+        ) : (
+          <div className="flex aspect-square items-center justify-center bg-gray-200">
+            <div className="text-base font-semibold text-gray-500">
+              {noImageText ?? 'Coming soon'}
+            </div>
+          </div>
+        )}
+        {images.length > 1 && (
+          <div className="absolute top-1/2 flex w-full -translate-y-1/2 justify-between px-5 sm:px-0">
+            <GalleryPreviousIndicator
+              onClick={() =>
+                setSelectedImageIndex((prev) => {
+                  if (prev === 0) {
+                    return images.length - 1;
+                  }
+                  return prev - 1;
+                })
+              }
+            />
+            <GalleryNextIndicator
+              onClick={() =>
+                setSelectedImageIndex((prev) => {
+                  if (prev === images.length - 1) {
+                    return 0;
+                  }
+                  return prev + 1;
+                })
+              }
+            />
+          </div>
+        )}
+      </figure>
+      <nav
+        aria-label="Thumbnail navigation"
+        className="mt-3 flex w-full flex-wrap items-center gap-4 px-1 py-1 md:mt-5 md:gap-6"
+      >
+        {images.map((image, index) => {
+          return (
+            <button
+              aria-label="Enlarge product image"
+              aria-pressed={selectedImageIndex === index}
+              className="inline-block h-12 w-12 flex-shrink-0 flex-grow-0 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 md:h-24 md:w-24"
+              onClick={(e) => {
+                setSelectedImageIndex(index);
+              }}
+              type="button"
+            >
+              <div
+                className={cn(
+                  'flex cursor-pointer items-center justify-center border-2 hover:border-primary',
+                  selectedImageIndex === index && 'border-primary',
+                  'h-full w-full object-contain',
+                )}
+              >
+                <BcImage
+                  alt={image.altText}
+                  priority={true}
+                  src={image.url}
+                  height={94}
+                  width={94}
+                />
+              </div>
+            </button>
+          );
+        })}
+      </nav>
+    </div>
+  );
 };
