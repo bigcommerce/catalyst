@@ -15,14 +15,42 @@ interface BodlConfig {
 export class Bodl {
   private static globalSingleton: Bodl | null = null;
 
+  navigation = {
+    // search: this.call((payload: any) => null),
+    productViewed: this.call<bodl_v1_product_page_viewed>((payload) => {
+      window.bodlEvents?.product?.emit('bodl_v1_product_page_viewed', {
+        event_id: uuidv4(),
+        channel_id: this.config.channel_id,
+        ...payload,
+      });
+    }),
+    // categoryViewed: this.call((payload: any) => null),
+  };
+
+  cart = {
+    productAdded: this.call<bodl_v1_cart_product_added>((payload) => {
+      window.bodlEvents?.cart?.emit('bodl_v1_cart_product_added', {
+        event_id: uuidv4(),
+        channel_id: this.config.channel_id,
+        ...payload,
+      });
+    }),
+    // productRemoved: this.call((payload: any) => null),
+    // cartViewed: this.call((payload: any) => null),
+  };
+
+  // customEvent = this.call((payload: any) => null);
+
   constructor(private config: BodlConfig) {
     if (typeof window == 'undefined') {
+      // eslint-disable-next-line no-console
       console.warn('Bodl must be initialized in browser environment.');
 
       return;
     }
 
     if (!config.ga4) {
+      // eslint-disable-next-line no-console
       console.warn('GA4 configuration is missing.');
 
       return;
@@ -59,43 +87,14 @@ export class Bodl {
     el.appendChild(script);
   }
 
-  // eslint-disable-next-line @typescript-eslint/member-ordering
-  navigation = {
-    search: this.call((payload: any) => null),
-    productViewed: this.call<bodl_v1_product_page_viewed>((payload) => {
-      window.bodlEvents?.product?.emit('bodl_v1_product_page_viewed', {
-        event_id: uuidv4(),
-        channel_id: this.config.channel_id,
-        ...payload,
-      });
-    }),
-    categoryViewed: this.call((payload: any) => null),
-  };
-
-  // eslint-disable-next-line @typescript-eslint/member-ordering
-  cart = {
-    productAdded: this.call<bodl_v1_cart_product_added>((payload) => {
-      window.bodlEvents?.cart?.emit('bodl_v1_cart_product_added', {
-        event_id: uuidv4(),
-        channel_id: this.config.channel_id,
-        ...payload,
-      });
-    }),
-    productRemoved: this.call((payload: any) => null),
-    cartViewed: this.call((payload: any) => null),
-  };
-
-  customEvent(payload: unknown) {
-    return null;
-  }
-
   private call<T>(originalMethod: (payload: T) => void) {
     return (payload: T) => {
       if (!window.bodlEvents) {
         // TODO: temporary hack - wait for bodl-events script to be loaded
         setTimeout(originalMethod.bind(this, payload), 500);
 
-        console.warn('Bodl is not initialized, call init method first.');
+        // eslint-disable-next-line no-console
+        console.warn('Bodl is not initialized, call constructor first.');
 
         return;
       }
