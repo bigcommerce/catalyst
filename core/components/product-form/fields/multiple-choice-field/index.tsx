@@ -5,7 +5,7 @@ import { FragmentOf } from '~/client/graphql';
 import { BcImage } from '~/components/bc-image';
 import { Label } from '~/components/ui/label';
 import { PickList, PickListItem } from '~/components/ui/pick-list';
-import { RadioGroup, RadioItem } from '~/components/ui/radio-group';
+import { RadioGroup } from '~/components/ui/radio-group';
 import { RectangleList, RectangleListItem } from '~/components/ui/rectangle-list';
 import { Select, SelectContent, SelectItem } from '~/components/ui/select';
 import { Swatch, SwatchItem } from '~/components/ui/swatch';
@@ -161,6 +161,10 @@ export const MultipleChoiceField = ({ option }: Props) => {
           </Label>
           <RadioGroup
             aria-labelledby={`label-${option.entityId}`}
+            items={values.map((value) => ({
+              label: value.label,
+              value: value.entityId.toString(),
+            }))}
             name={field.name}
             onValueChange={(value) => {
               field.onChange(value);
@@ -171,26 +175,7 @@ export const MultipleChoiceField = ({ option }: Props) => {
               });
             }}
             value={field.value?.toString()}
-          >
-            {values.map((value) => (
-              <div className="mb-2 flex" key={value.entityId}>
-                <RadioItem
-                  id={`${value.entityId}`}
-                  onMouseEnter={() => {
-                    handleMouseEnter({
-                      optionId: option.entityId,
-                      valueId: Number(value.entityId),
-                    });
-                  }}
-                  value={`${value.entityId}`}
-                  variant={error ? 'error' : undefined}
-                />
-                <Label className="cursor-pointer ps-4 font-normal" htmlFor={`${value.entityId}`}>
-                  {value.label}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
+          />
           {error && <ErrorMessage>{error.message}</ErrorMessage>}
         </div>
       );
