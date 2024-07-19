@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.0
+
+### Minor Changes
+
+- [#1083](https://github.com/bigcommerce/catalyst/pull/1083) [`bd6be02`](https://github.com/bigcommerce/catalyst/commit/bd6be02d3d3547be6c014c581e1937278ed20d0a) Thanks [@bookernath](https://github.com/bookernath)! - Generate multi-channel GraphQL Storefront API tokens on catalyst provisioning
+
 ## 0.8.0
 
 ### Minor Changes
