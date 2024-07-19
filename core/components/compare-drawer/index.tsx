@@ -6,12 +6,7 @@ import { useTranslations } from 'next-intl';
 
 import { CheckedProduct, useCompareProductsContext } from '~/app/contexts/compare-products-context';
 import { Link } from '~/components/link';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '~/components/ui/accordion';
+import { Accordions } from '~/components/ui/accordion';
 import { Button } from '~/components/ui/button';
 
 import { BcImage } from '../bc-image';
@@ -97,27 +92,31 @@ export const CompareDrawer = () => {
           })}
         </ul>
       </div>
-      <Accordion className="w-full md:hidden" collapsible defaultValue="compare" type="single">
-        <AccordionItem className="flex flex-col" value="compare">
-          <div className="flex">
-            <CompareLink products={products} />
-            <AccordionTrigger className="align-center flex aspect-square h-12 grow-0 justify-center border border-primary text-primary md:hidden [&[data-state=closed]>svg]:rotate-180 [&[data-state=open]>svg]:rotate-0" />
-          </div>
-          <AccordionContent className="mt-4">
-            <ul className="flex max-h-44 flex-col overflow-auto">
-              {products.map((product) => {
-                return (
-                  <CompareItem
-                    key={product.id}
-                    product={product}
-                    removeItem={() => setProducts(products.filter(({ id }) => id !== product.id))}
-                  />
-                );
-              })}
-            </ul>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+      <Accordions
+        accordions={[
+          {
+            title: <CompareLink products={products} />,
+            body: (
+              <ul className="flex max-h-44 flex-col overflow-auto">
+                {products.map((product) => {
+                  return (
+                    <CompareItem
+                      key={product.id}
+                      product={product}
+                      removeItem={() => setProducts(products.filter(({ id }) => id !== product.id))}
+                    />
+                  );
+                })}
+              </ul>
+            ),
+            value: 'compare',
+          },
+        ]}
+        className="w-full md:hidden"
+        collapsible
+        defaultValue="compare"
+        type="single"
+      />
     </div>
   );
 };
