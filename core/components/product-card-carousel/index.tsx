@@ -17,15 +17,13 @@ type Product = ResultOf<typeof ProductCardCarouselFragment>;
 export const ProductCardCarousel = ({
   title,
   products,
-  showCart = true,
-  showCompare = true,
-  showReviews = true,
+  showCart,
+  showCompare,
 }: {
   title: string;
   products: Product[];
   showCart?: boolean;
   showCompare?: boolean;
-  showReviews?: boolean;
 }) => {
   if (products.length === 0) {
     return null;
@@ -38,7 +36,6 @@ export const ProductCardCarousel = ({
       product={product}
       showCart={showCart}
       showCompare={showCompare}
-      showReviews={showReviews}
     />
   ));
 
