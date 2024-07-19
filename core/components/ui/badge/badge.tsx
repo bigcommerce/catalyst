@@ -20,4 +20,4 @@ const Badge = ({ children, className, label, ...props }: Props) => {
   );
 };
 
-export default Badge;
+export { Badge };
