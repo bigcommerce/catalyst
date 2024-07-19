@@ -3,7 +3,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 
 import { FragmentOf } from '~/client/graphql';
-import { BcImage } from '~/components/bc-image';
 import { Gallery as ComponentsGallery } from '~/components/ui/gallery';
 
 import { GalleryFragment } from './fragment';
@@ -13,7 +12,7 @@ interface Props {
   noImageText?: string;
 }
 
-export const Gallery = ({ product, noImageText }: Props) => {
+export const Gallery = ({ product }: Props) => {
   const images = removeEdgesAndNodes(product.images);
 
   // Pick the top-level default image
