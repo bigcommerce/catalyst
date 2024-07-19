@@ -44,7 +44,7 @@ export const CartIcon = ({ count }: CartIconProps) => {
     <>
       <span className="sr-only">Cart Items</span>
       <ShoppingCart aria-hidden="true" />
-      <Badge label={`${computedCount}`} />
+      <Badge>computedCount</Badge>
     </>
   );
 };
