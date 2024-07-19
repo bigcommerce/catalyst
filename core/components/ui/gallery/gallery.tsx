@@ -1,14 +1,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import {
-  ComponentPropsWithoutRef,
-  ComponentPropsWithRef,
-  ElementRef,
-  forwardRef,
-  useEffect,
-  useState,
-} from 'react';
-import { BcImage } from '~/components/bc-image';
+import { ComponentPropsWithoutRef, useState } from 'react';
 
+import { BcImage } from '~/components/bc-image';
 import { cn } from '~/lib/utils';
 
 interface Image {
@@ -53,6 +46,7 @@ const Gallery = ({ className, children, images, defaultImageIndex = 0, ...props 
                   if (prev === 0) {
                     return images.length - 1;
                   }
+
                   return prev - 1;
                 })
               }
@@ -67,6 +61,7 @@ const Gallery = ({ className, children, images, defaultImageIndex = 0, ...props 
                   if (prev === images.length - 1) {
                     return 0;
                   }
+
                   return prev + 1;
                 })
               }
@@ -82,24 +77,26 @@ const Gallery = ({ className, children, images, defaultImageIndex = 0, ...props 
       >
         {images.map((image, index) => {
           const isActive = selectedImageIndex === index;
+
           return (
             <button
               aria-label="Enlarge product image"
               aria-pressed={isActive}
               className="inline-block h-12 w-12 flex-shrink-0 flex-grow-0 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 md:h-24 md:w-24"
-              onClick={(e) => {
+              key={image.url}
+              onClick={() => {
                 setSelectedImageIndex(index);
               }}
             >
               <BcImage
+                alt={image.altText}
                 className={cn(
                   'flex h-full w-full cursor-pointer items-center justify-center border-2 object-contain hover:border-primary',
                   isActive && 'border-primary',
                 )}
-                alt={image.altText}
+                height={94}
                 priority={true}
                 src={image.url}
-                height={94}
                 width={94}
               />
             </button>
