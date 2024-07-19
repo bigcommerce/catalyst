@@ -1,69 +1,69 @@
 'use client';
 
+import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { CalendarIcon } from 'lucide-react';
-import * as React from 'react';
+import { useState } from 'react';
 import { DayPickerSingleProps } from 'react-day-picker';
 
 import { Calendar } from '../calendar';
 import { Input, InputIcon, InputProps } from '../input';
-import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 
-type DatePickerProps = Omit<InputProps, 'defaultValue'> & {
+type Props = Omit<InputProps, 'defaultValue'> & {
   defaultValue?: string | Date;
   selected?: DayPickerSingleProps['selected'];
   onSelect?: DayPickerSingleProps['onSelect'];
   disabledDays?: DayPickerSingleProps['disabled'];
 };
 
-export const DatePicker = React.forwardRef<React.ElementRef<'div'>, DatePickerProps>(
-  (
-    {
-      defaultValue,
-      disabledDays,
-      selected,
-      onSelect,
-      placeholder = 'MM/DD/YYYY',
-      required,
-      ...props
-    },
-    ref,
-  ) => {
-    const [date, setDate] = React.useState<Date | undefined>(
-      defaultValue ? new Date(defaultValue) : undefined,
-    );
+export const DatePicker = ({
+  defaultValue,
+  disabledDays,
+  selected,
+  onSelect,
+  placeholder = 'MM/DD/YYYY',
+  required,
+  ...props
+}: Props) => {
+  const [date, setDate] = useState<Date | undefined>(
+    defaultValue ? new Date(defaultValue) : undefined,
+  );
 
-    const formattedSelected = selected ? Intl.DateTimeFormat().format(selected) : undefined;
-    const formattedDate = date ? Intl.DateTimeFormat().format(date) : undefined;
+  const formattedSelected = selected ? Intl.DateTimeFormat().format(selected) : undefined;
+  const formattedDate = date ? Intl.DateTimeFormat().format(date) : undefined;
 
-    return (
-      <div ref={ref}>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Input
-              placeholder={placeholder}
-              readOnly={true}
-              required={required}
-              type="text"
-              value={formattedSelected ?? formattedDate ?? ''}
-              {...props}
-            >
-              <InputIcon>
-                <CalendarIcon />
-              </InputIcon>
-            </Input>
-          </PopoverTrigger>
-          <PopoverContent align="start" className="w-auto p-0">
-            <Calendar
-              disabled={disabledDays}
-              initialFocus
-              mode="single"
-              onSelect={onSelect || setDate}
-              required={required}
-              selected={selected ?? date}
-            />
-          </PopoverContent>
-        </Popover>
-      </div>
-    );
-  },
-);
+  return (
+    <PopoverPrimitive.Root>
+      <PopoverPrimitive.Trigger asChild>
+        <Input
+          placeholder={placeholder}
+          readOnly={true}
+          required={required}
+          type="text"
+          value={formattedSelected ?? formattedDate ?? ''}
+          {...props}
+        >
+          <InputIcon>
+            <CalendarIcon />
+          </InputIcon>
+        </Input>
+      </PopoverPrimitive.Trigger>
+
+      <PopoverPrimitive.Portal>
+        <PopoverPrimitive.Content
+          align="start"
+          className="z-50 w-auto bg-white p-0 text-base shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
+          sideOffset={4}
+        >
+          <Calendar
+            disabled={disabledDays}
+            initialFocus
+            mode="single"
+            onSelect={onSelect || setDate}
+            required={required}
+            selected={selected ?? date}
+          />
+        </PopoverPrimitive.Content>
+      </PopoverPrimitive.Portal>
+    </PopoverPrimitive.Root>
+  );
+};
