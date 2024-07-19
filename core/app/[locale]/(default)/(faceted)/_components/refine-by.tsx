@@ -4,7 +4,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useTransition } from 'react';
 
-import { Tag, TagAction, TagContent } from '~/components/ui/tag';
+import { Tag } from '~/components/ui/tag';
 
 import type { Facet, PageType, PublicParamKeys } from '../types';
 
@@ -150,10 +150,10 @@ export const RefineBy = (props: Props) => {
       <ul className="mb-4 flex flex-row flex-wrap gap-2 py-2">
         {refinements.map((refinement) => (
           <li key={`${refinement.key}-${refinement.value}`}>
-            <Tag>
-              <TagContent>{refinement.display_name}</TagContent>
-              <TagAction onClick={() => removeRefinement(refinement)} />
-            </Tag>
+            <Tag
+              tagAction={() => removeRefinement(refinement)}
+              tagContent={refinement.display_name}
+            />
           </li>
         ))}
       </ul>

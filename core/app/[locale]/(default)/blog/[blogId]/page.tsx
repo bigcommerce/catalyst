@@ -11,7 +11,7 @@ import {
   BlogPostImage,
   BlogPostTitle,
 } from '~/components/ui/blog-post-card';
-import { Tag, TagContent } from '~/components/ui/tag';
+import { Tag } from '~/components/ui/tag';
 import { LocaleType } from '~/i18n';
 
 import { SharingLinks } from './_components/sharing-links';
@@ -83,9 +83,7 @@ export default async function BlogPostPage({ params: { blogId, locale } }: Props
       <div className="mb-10 flex">
         {blogPost.tags.map((tag) => (
           <Link className="me-3 block cursor-pointer" href={`/blog/tag/${tag}`} key={tag}>
-            <Tag>
-              <TagContent>{tag}</TagContent>
-            </Tag>
+            <Tag tagContent={tag} />
           </Link>
         ))}
       </div>
