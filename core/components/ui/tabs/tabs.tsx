@@ -1,11 +1,11 @@
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import { ComponentPropsWithoutRef, ReactNode } from 'react';
 
-type Tab = {
+interface Tab {
   content: ReactNode;
   title: ReactNode;
   value: string;
-};
+}
 
 interface Props extends ComponentPropsWithoutRef<typeof TabsPrimitive.Root> {
   defaultValue?: string;
@@ -18,10 +18,8 @@ export function Tabs({ className, tabs, defaultValue, ...props }: Props) {
       <TabsPrimitive.List className="mb-8 flex list-none items-start overflow-x-auto text-base">
         {tabs.map((tab) => (
           <TabsPrimitive.Trigger
+            className="px-4 pb-2 data-[state=active]:border-b-4 data-[state=active]:border-primary data-[state=active]:text-primary"
             key={tab.value}
-            className={
-              'px-4 pb-2 data-[state=active]:border-b-4 data-[state=active]:border-primary data-[state=active]:text-primary'
-            }
             value={tab.value}
           >
             {tab.title}
