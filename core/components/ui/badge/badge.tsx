@@ -2,11 +2,7 @@ import { ComponentPropsWithoutRef } from 'react';
 
 import { cn } from '~/lib/utils';
 
-interface Props extends ComponentPropsWithoutRef<'span'> {
-  label: string;
-}
-
-const Badge = ({ children, className, label, ...props }: Props) => {
+const Badge = ({ children, className, ...props }: ComponentPropsWithoutRef<'span'>) => {
   return (
     <span
       className={cn(
@@ -15,7 +11,7 @@ const Badge = ({ children, className, label, ...props }: Props) => {
       )}
       {...props}
     >
-      {label}
+      {children}
     </span>
   );
 };
