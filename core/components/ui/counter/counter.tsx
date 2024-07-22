@@ -1,33 +1,23 @@
-import { cva } from 'class-variance-authority';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { ComponentPropsWithRef, ElementRef, forwardRef, useRef, useState } from 'react';
+import {
+  ComponentPropsWithRef,
+  ElementRef,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 
 import { cn } from '~/lib/utils';
 
-const inputVariants = cva(
-  'peer/input w-full border-2 border-gray-200 px-12 py-2.5 text-center text-base placeholder:text-gray-500 hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200 peer-hover/down:border-primary peer-hover/up:border-primary peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200 [&::-webkit-inner-spin-button]:appearance-none',
-  {
-    variants: {
-      variant: {
-        success:
-          'border-success-secondary focus-visible:border-success-secondary focus-visible:ring-success-secondary/20 disabled:border-gray-200 hover:border-success peer-hover/down:border-success peer-hover/up:border-success peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
-        error:
-          'border-error-secondary focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 disabled:border-gray-200 hover:border-error peer-hover/down:border-error peer-hover/up:border-error peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
-      },
-    },
-  },
-);
-
-type VariantTypes = 'success' | 'error';
-
-interface CounterProps extends Omit<ComponentPropsWithRef<'input'>, 'onChange'> {
+interface Props extends Omit<ComponentPropsWithRef<'input'>, 'onChange'> {
   defaultValue?: number | '';
   isInteger?: boolean;
   max?: number;
   min?: number;
   step?: number;
   value?: number | '';
-  variant?: VariantTypes;
+  variant?: 'success' | 'error';
   onChange?: (value: number | '') => void;
 }
 
@@ -43,7 +33,7 @@ const getDefaultValue = (defaultValue: number | '', min: number, max: number) =>
   return defaultValue;
 };
 
-export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
+const Counter = forwardRef<ElementRef<'input'>, Props>(
   (
     {
       children,
@@ -64,6 +54,10 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
   ) => {
     const [value, setValue] = useState<number | ''>(getDefaultValue(defaultValue, min, max));
     const inputRef = useRef<ElementRef<'input'>>(null);
+
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/non-nullable-type-assertion-style
+    useImperativeHandle(ref, () => inputRef.current as ElementRef<'input'>);
+
     const currValue = valueProp ?? value;
 
     const updateValue = (newValue: number | '') => {
@@ -103,13 +97,11 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
     };
 
     return (
-      <div className={cn('relative')} ref={ref}>
+      <div className={cn('relative', className)}>
         <button
           aria-hidden="true"
           aria-label="Decrease count"
-          className={cn(
-            'peer/down absolute start-0 top-0 flex h-full w-12 items-center justify-center focus-visible:outline-none disabled:text-gray-200',
-          )}
+          className="peer/down absolute start-0 top-0 flex h-full w-12 items-center justify-center focus-visible:outline-none disabled:text-gray-200"
           disabled={!canDecrement()}
           onClick={() => {
             decrement();
@@ -125,9 +117,7 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
         <button
           aria-hidden="true"
           aria-label="Increase count"
-          className={cn(
-            'peer/up absolute end-0 top-0 flex h-full w-12 items-center justify-center focus-visible:outline-none disabled:text-gray-200',
-          )}
+          className="peer/up absolute end-0 top-0 flex h-full w-12 items-center justify-center focus-visible:outline-none disabled:text-gray-200"
           disabled={!canIncrement()}
           onClick={() => {
             increment();
@@ -141,7 +131,13 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
         </button>
 
         <input
-          className={cn(inputVariants({ variant, className }))}
+          className={cn(
+            'peer/input w-full border-2 border-gray-200 px-12 py-2.5 text-center text-base placeholder:text-gray-500 hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200 peer-hover/down:border-primary peer-hover/up:border-primary peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200 [&::-webkit-inner-spin-button]:appearance-none',
+            variant === 'success' &&
+              'border-success-secondary hover:border-success focus-visible:border-success-secondary focus-visible:ring-success-secondary/20 disabled:border-gray-200 peer-hover/down:border-success peer-hover/up:border-success peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
+            variant === 'error' &&
+              'border-error-secondary hover:border-error focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 disabled:border-gray-200 peer-hover/down:border-error peer-hover/up:border-error peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
+          )}
           disabled={disabled}
           max={max}
           min={min}
@@ -168,11 +164,11 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
 
             updateValue(Number.isNaN(valueAsNumber) ? '' : valueAsNumber);
           }}
+          ref={inputRef}
           step={step}
           type="number"
           value={currValue}
           {...props}
-          ref={inputRef}
         />
       </div>
     );
@@ -180,3 +176,5 @@ export const Counter = forwardRef<ElementRef<'div'>, CounterProps>(
 );
 
 Counter.displayName = 'Counter';
+
+export { Counter };
