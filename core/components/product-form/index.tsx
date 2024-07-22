@@ -58,7 +58,6 @@ export const ProductForm = ({ data: product }: Props) => {
       return;
     }
 
-    // Trigger browser event from client component
     const transformedProduct = productItemTransform(product);
 
     bodl.cart.productAdded({

@@ -33,6 +33,12 @@ export interface bodl_v1_product_page_viewed {
   line_items: line_item[];
 }
 
+export interface bodl_v1_product_category_viewed {
+  category_id: number;
+  category_name: string;
+  line_items: line_item[];
+}
+
 export interface bodl_v1_cart_product_added {
   currency: string;
   product_value: number;

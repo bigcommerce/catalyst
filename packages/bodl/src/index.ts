@@ -1,7 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import { subscribeOnBodlEvents } from './providers/ga4/google_analytics4';
-import { bodl_v1_cart_product_added, bodl_v1_product_page_viewed } from './types';
+import {
+  bodl_v1_cart_product_added,
+  bodl_v1_product_category_viewed,
+  bodl_v1_product_page_viewed,
+} from './types';
 
 interface BodlConfig {
   channel_id: number;
@@ -24,7 +28,15 @@ export class Bodl {
         ...payload,
       });
     }),
-    // categoryViewed: this.call((payload: any) => null),
+    categoryViewed: this.call<bodl_v1_product_category_viewed>(
+      (payload: bodl_v1_product_category_viewed) => {
+        window.bodlEvents?.product?.emit('bodl_v1_product_category_viewed', {
+          event_id: uuidv4(),
+          channel_id: this.config.channel_id,
+          ...payload,
+        });
+      },
+    ),
   };
 
   cart = {

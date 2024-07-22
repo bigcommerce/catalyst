@@ -13,6 +13,7 @@ import { Pagination } from '../../_components/pagination';
 import { SortBy } from '../../_components/sort-by';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
+import { CategoryViewed } from './_components/category-viewed';
 import { SubCategories } from './_components/sub-categories';
 import { getCategoryPageData } from './page-data';
 
@@ -133,6 +134,7 @@ export default async function Category({ params: { locale, slug }, searchParams 
           </section>
         </div>
       </NextIntlClientProvider>
+      <CategoryViewed category={category} categoryId={categoryId} products={products} />
     </div>
   );
 }
