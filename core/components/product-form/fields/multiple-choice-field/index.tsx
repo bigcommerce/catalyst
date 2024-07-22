@@ -161,7 +161,6 @@ export const MultipleChoiceField = ({ option }: Props) => {
           </Label>
           <RadioGroup
             aria-labelledby={`label-${option.entityId}`}
-            error={Boolean(error)}
             items={values.map((value) => ({
               label: value.label,
               value: value.entityId.toString(),
@@ -176,6 +175,7 @@ export const MultipleChoiceField = ({ option }: Props) => {
               });
             }}
             value={field.value?.toString()}
+            variant={error ? 'error' : undefined}
           />
           {error && <ErrorMessage>{error.message}</ErrorMessage>}
         </div>
