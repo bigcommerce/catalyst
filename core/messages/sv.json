@@ -398,6 +398,6 @@
         "errorAddingProductToCart": "Produkten kunde inte läggas till i kundvagnen. Försök igen."
     },
     "StoreSelector": {
-        "heading": "Select a language and region"
+        "heading": "Välj språk och region"
     }
 }

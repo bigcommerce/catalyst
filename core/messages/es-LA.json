@@ -398,6 +398,6 @@
         "errorAddingProductToCart": "Error al agregar un producto al carrito. Vuelve a intentarlo."
     },
     "StoreSelector": {
-        "heading": "Select a language and region"
+        "heading": "Selecciona un idioma y una región"
     }
 }
