@@ -161,6 +161,7 @@ export const MultipleChoiceField = ({ option }: Props) => {
           </Label>
           <RadioGroup
             aria-labelledby={`label-${option.entityId}`}
+            error={Boolean(error)}
             items={values.map((value) => ({
               label: value.label,
               value: value.entityId.toString(),
