@@ -89,6 +89,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      content-security-policy-builder:
+        specifier: ^2.2.0
+        version: 2.2.0
       embla-carousel-react:
         specifier: 8.1.6
         version: 8.1.6(react@18.3.1)
@@ -2707,6 +2710,10 @@ packages:
   consola@3.2.3:
     resolution: {integrity: sha512-I5qxpzLv+sJhTVEoLYNcTW+bThDCPsit0vLNKShZx6rLtpilNpmmeTPaeqJb9ZE9dV3DGaeby6Vuhrw38WjeyQ==}
     engines: {node: ^14.18.0 || >=16.10.0}
+
+  content-security-policy-builder@2.2.0:
+    resolution: {integrity: sha512-IZhbHYV3O6xBpbvuMJz0FP8s79aTz7ymq4JQVC8TMzTdRToxrupCY1C/GlzC6GaDfKvD7AceewH+LsTV5OO/Kg==}
+    engines: {node: '>=18.0.0'}
 
   content-type@1.0.5:
     resolution: {integrity: sha512-nTjqfcBFEipKdXCv4YDQWCfmcLZKm81ldF0pAopTvyrFGVbcR6P/VAAd5G7N+0tTr8QqiU0tFadD6FK4NtJwOA==}
@@ -8363,6 +8370,8 @@ snapshots:
   confbox@0.1.7: {}
 
   consola@3.2.3: {}
+
+  content-security-policy-builder@2.2.0: {}
 
   content-type@1.0.5: {}
 
