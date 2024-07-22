@@ -398,6 +398,6 @@
         "errorAddingProductToCart": "Feil da produktet skulle legges til i handlekurven. Prøv igjen."
     },
     "StoreSelector": {
-        "heading": "Select a language and region"
+        "heading": "Velg språk og region"
     }
 }
