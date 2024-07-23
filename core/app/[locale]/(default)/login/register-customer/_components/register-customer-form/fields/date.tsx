@@ -1,8 +1,7 @@
 import { useTranslations } from 'next-intl';
 import React, { ChangeEvent, useState } from 'react';
 
-import { DatePicker } from '~/components/ui/date-picker';
-import { Field, FieldControl, FieldLabel, FieldMessage } from '~/components/ui/form';
+import { DatePicker, Field, FieldLabel, FieldMessage } from '~/components/ui/form';
 
 import { AddressFields } from '..';
 
@@ -70,30 +69,35 @@ export const DateField = ({
 
   return (
     <Field className="relative space-y-2 pb-7" name={name}>
-      <FieldLabel htmlFor={`field-${field.entityId}`} isRequired={field.isRequired}>
-        {field.label}
-      </FieldLabel>
-      <FieldControl asChild>
+      <fieldset className="space-y-2">
+        <FieldLabel htmlFor={name} isRequired={field.isRequired}>
+          {field.label}
+        </FieldLabel>
+        <input
+          id={`field-${field.entityId}`}
+          name={name}
+          type="hidden"
+          value={date ? new Date(date).toLocaleDateString('en-US') : ''}
+        />
         <DatePicker
           disabledDays={disabledDays}
           error={isValid === false}
-          id={`${field.entityId}`}
+          id={name}
           onChange={field.isRequired ? onChange : undefined}
           onInvalid={field.isRequired ? onChange : undefined}
           onSelect={handleDateSelect}
           required={field.isRequired}
           selected={date ? new Date(date) : undefined}
-          variant={isValid === false ? 'error' : undefined}
         />
-      </FieldControl>
-      {field.isRequired && !isValid && (
-        <FieldMessage
-          className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary"
-          match="valueMissing"
-        >
-          {t('empty')}
-        </FieldMessage>
-      )}
+        {field.isRequired && !isValid && (
+          <FieldMessage
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary"
+            match="valueMissing"
+          >
+            {t('empty')}
+          </FieldMessage>
+        )}
+      </fieldset>
     </Field>
   );
 };

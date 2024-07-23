@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
@@ -9,6 +9,7 @@ import {
   createDatesValidationHandler,
   createMultilineTextValidationHandler,
   createNumbersInputValidationHandler,
+  createPreSubmitCheckboxesValidationHandler,
   createPreSubmitPicklistValidationHandler,
   createRadioButtonsValidationHandler,
   isAddressOrAccountFormField,
@@ -22,6 +23,7 @@ import { Message } from '~/components/ui/message';
 import { login } from './_actions/login';
 import { registerCustomer } from './_actions/register-customer';
 import {
+  Checkboxes,
   createFieldName,
   CUSTOMER_FIELDS_TO_EXCLUDE,
   DateField,
@@ -105,6 +107,7 @@ export const RegisterCustomerForm = ({
   const [countryStates, setCountryStates] = useState(defaultCountry.states);
   const [radioButtonsValid, setRadioButtonsValid] = useState<Record<string, boolean>>({});
   const [picklistValid, setPicklistValid] = useState<Record<string, boolean>>({});
+  const [checkboxesValid, setCheckboxesValid] = useState<Record<string, boolean>>({});
   const [multiTextValid, setMultiTextValid] = useState<Record<string, boolean>>({});
 
   const reCaptchaRef = useRef<ReCaptcha>(null);
@@ -186,6 +189,18 @@ export const RegisterCustomerForm = ({
     [...customerFields, ...addressFields],
     setPicklistValid,
   );
+  const validateCheckboxFields = createPreSubmitCheckboxesValidationHandler(
+    [...customerFields, ...addressFields],
+    setCheckboxesValid,
+  );
+  const preSubmitFieldsValidation = (
+    e: MouseEvent<HTMLFormElement> & { target: HTMLButtonElement },
+  ) => {
+    if (e.target.nodeName === 'BUTTON' && e.target.type === 'submit') {
+      validatePicklistFields(form.current);
+      validateCheckboxFields(form.current);
+    }
+  };
 
   const onReCaptchaChange = (token: string | null) => {
     if (!token) {
@@ -246,7 +261,7 @@ export const RegisterCustomerForm = ({
           <p>{formStatus.message}</p>
         </Message>
       )}
-      <Form action={onSubmit} onClick={() => validatePicklistFields(form.current)} ref={form}>
+      <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>
         <div className="mb-6 grid grid-cols-1 gap-y-6 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-2">
           {customerFields
             .filter((field) => !CUSTOMER_FIELDS_TO_EXCLUDE.includes(field.entityId))
@@ -329,6 +344,20 @@ export const RegisterCustomerForm = ({
                         isValid={picklistValid[fieldId]}
                         name={fieldName}
                         onValidate={setPicklistValid}
+                        options={field.options}
+                      />
+                    </FieldWrapper>
+                  );
+                }
+
+                case 'CheckboxesFormField': {
+                  return (
+                    <FieldWrapper fieldId={fieldId} key={fieldId}>
+                      <Checkboxes
+                        field={field}
+                        isValid={checkboxesValid[fieldId]}
+                        name={fieldName}
+                        onValidate={setCheckboxesValid}
                         options={field.options}
                       />
                     </FieldWrapper>
@@ -441,6 +470,20 @@ export const RegisterCustomerForm = ({
                       onChange={isCountrySelector ? handleCountryChange : undefined}
                       onValidate={setPicklistValid}
                       options={picklistOptions}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
+              case 'CheckboxesFormField': {
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <Checkboxes
+                      field={field}
+                      isValid={checkboxesValid[fieldId]}
+                      name={fieldName}
+                      onValidate={setCheckboxesValid}
+                      options={field.options}
                     />
                   </FieldWrapper>
                 );
