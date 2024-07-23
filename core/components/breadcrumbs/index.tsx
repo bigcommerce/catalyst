@@ -4,12 +4,7 @@ import { Fragment } from 'react';
 
 import { FragmentOf, graphql } from '~/client/graphql';
 import { Link } from '~/components/link';
-
-import {
-  BreadcrumbDivider,
-  BreadcrumbItem,
-  Breadcrumbs as ComponentsBreadcrumbs,
-} from '../ui/breadcrumbs';
+import { cn } from '~/lib/utils';
 
 export const BreadcrumbsFragment = graphql(`
   fragment BreadcrumbsFragment on Category {
@@ -32,23 +27,34 @@ export const Breadcrumbs = ({ category }: Props) => {
   const breadcrumbs = removeEdgesAndNodes(category.breadcrumbs);
 
   return (
-    <ComponentsBreadcrumbs className="py-4">
-      {breadcrumbs.map(({ name, path }, i, arr) => {
-        const isLast = arr.length - 1 === i;
+    <nav aria-label="Breadcrumb">
+      <ul className="flex flex-wrap items-center py-4">
+        {breadcrumbs.map(({ name, path }, i, arr) => {
+          const isLast = arr.length - 1 === i;
 
-        return (
-          <Fragment key={name}>
-            <BreadcrumbItem asChild isActive={isLast}>
-              <Link href={path ?? '#'}>{name}</Link>
-            </BreadcrumbItem>
-            {!isLast ? (
-              <BreadcrumbDivider>
-                <ChevronRight aria-hidden="true" size={20} />
-              </BreadcrumbDivider>
-            ) : null}
-          </Fragment>
-        );
-      })}
-    </ComponentsBreadcrumbs>
+          return (
+            <Fragment key={name}>
+              <li className="flex items-center text-sm font-semibold text-black">
+                <Link
+                  aria-current={isLast ? `page` : undefined}
+                  className={cn(
+                    'font-semibold hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
+                    isLast && 'font-extrabold',
+                  )}
+                  href={path ?? '#'}
+                >
+                  {name}
+                </Link>
+              </li>
+              {!isLast ? (
+                <span className="mx-1">
+                  <ChevronRight aria-hidden="true" size={20} />
+                </span>
+              ) : null}
+            </Fragment>
+          );
+        })}
+      </ul>
+    </nav>
   );
 };
