@@ -175,6 +175,7 @@ export const MultipleChoiceField = ({ option }: Props) => {
               });
             }}
             value={field.value?.toString()}
+            variant={error ? 'error' : undefined}
           />
           {error && <ErrorMessage>{error.message}</ErrorMessage>}
         </div>
