@@ -1,14 +1,13 @@
 'use client';
 
 import debounce from 'lodash.debounce';
-import { Search, Loader2 as Spinner, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 
 import { getQuickSearchResults } from '~/client/queries/get-quick-search-results';
 import { ExistingResultType } from '~/client/util';
 import { Button } from '~/components/ui/button';
 import { Field, FieldControl, Form } from '~/components/ui/form';
-import { Input, InputIcon } from '~/components/ui/input';
 import {
   Sheet,
   SheetClose,
@@ -23,6 +22,7 @@ import { BcImage } from '../bc-image';
 import { Pricing } from '../pricing';
 
 import { getSearchResults } from './_actions/get-search-results';
+import { SearchInput } from './search-input';
 
 interface SearchProps extends PropsWithChildren {
   initialTerm?: string;
@@ -109,36 +109,18 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
             >
               <Field className="w-full" name="term">
                 <FieldControl asChild required>
-                  <Input
+                  <SearchInput
                     aria-controls="categories products brands"
                     aria-expanded={!!searchResults}
-                    className="peer appearance-none border-2 px-12 py-3"
                     onChange={handleTermChange}
+                    onClickClear={handleTermClear}
+                    pending={pending}
                     placeholder="Search..."
                     ref={inputRef}
                     role="combobox"
+                    showClear={term.length > 0}
                     value={term}
-                  >
-                    <InputIcon className="start-3 peer-hover:text-primary peer-focus-visible:text-primary">
-                      <Search />
-                    </InputIcon>
-                    {term.length > 0 && !pending && (
-                      <Button
-                        aria-label="Clear search"
-                        className="absolute end-1.5 top-1/2 w-auto -translate-y-1/2 border-0 bg-transparent p-1.5 text-black hover:bg-transparent hover:text-primary focus-visible:text-primary peer-hover:text-primary peer-focus-visible:text-primary"
-                        onClick={handleTermClear}
-                        type="button"
-                      >
-                        <X />
-                      </Button>
-                    )}
-                    {pending && (
-                      <InputIcon className="end-3 text-primary">
-                        <Spinner aria-hidden="true" className="animate-spin" />
-                        <span className="sr-only">Processing...</span>
-                      </InputIcon>
-                    )}
-                  </Input>
+                  />
                 </FieldControl>
               </Field>
             </Form>
