@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { DayPickerSingleProps } from 'react-day-picker';
 
 import { Calendar } from '../calendar';
-import { Input, InputIcon, InputProps } from '../input';
+import { Input, InputProps } from '../input';
 
 type Props = Omit<InputProps, 'defaultValue'> & {
   defaultValue?: string | Date;
@@ -35,17 +35,14 @@ export const DatePicker = ({
     <PopoverPrimitive.Root>
       <PopoverPrimitive.Trigger asChild>
         <Input
+          icon={<CalendarIcon />}
           placeholder={placeholder}
           readOnly={true}
           required={required}
           type="text"
           value={formattedSelected ?? formattedDate ?? ''}
           {...props}
-        >
-          <InputIcon>
-            <CalendarIcon />
-          </InputIcon>
-        </Input>
+        />
       </PopoverPrimitive.Trigger>
 
       <PopoverPrimitive.Portal>
