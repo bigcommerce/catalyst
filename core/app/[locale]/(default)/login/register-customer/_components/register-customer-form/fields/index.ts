@@ -1,4 +1,5 @@
 export * from './date';
+export * from './checkboxes';
 export * from './password';
 export * from './text';
 export * from './multiline-text';

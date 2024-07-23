@@ -2,11 +2,12 @@
 
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useRef, useState } from 'react';
+import { MouseEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
 import {
+  Checkboxes,
   createFieldName,
   DateField,
   FieldNameToFieldId,
@@ -35,6 +36,7 @@ import {
   createDatesValidationHandler,
   createMultilineTextValidationHandler,
   createNumbersInputValidationHandler,
+  createPreSubmitCheckboxesValidationHandler,
   createPreSubmitPicklistValidationHandler,
   createRadioButtonsValidationHandler,
   createTextInputValidationHandler,
@@ -115,6 +117,7 @@ export const EditAddress = ({
   const [datesValid, setDatesValid] = useState<Record<string, boolean>>({});
   const [radioButtonsValid, setRadioButtonsValid] = useState<Record<string, boolean>>({});
   const [picklistValid, setPicklistValid] = useState<Record<string, boolean>>({});
+  const [checkboxesValid, setCheckboxesValid] = useState<Record<string, boolean>>({});
   const [multiTextValid, setMultiTextValid] = useState<Record<string, boolean>>({});
 
   const defaultStates = countries
@@ -155,6 +158,19 @@ export const EditAddress = ({
     addressFields,
     setPicklistValid,
   );
+  const validateCheckboxFields = createPreSubmitCheckboxesValidationHandler(
+    addressFields,
+    setCheckboxesValid,
+  );
+  const preSubmitFieldsValidation = (
+    e: MouseEvent<HTMLFormElement> & { target: HTMLButtonElement },
+  ) => {
+    if (e.target.nodeName === 'BUTTON' && e.target.type === 'submit') {
+      validatePicklistFields(form.current);
+      validateCheckboxFields(form.current);
+    }
+  };
+
   const onSubmit = async (formData: FormData) => {
     if (reCaptchaSettings?.isEnabledOnStorefront && !reCaptchaToken) {
       setReCaptchaValid(false);
@@ -207,7 +223,7 @@ export const EditAddress = ({
           <p>{formStatus.message}</p>
         </Message>
       )}
-      <Form action={onSubmit} onClick={() => validatePicklistFields(form.current)} ref={form}>
+      <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>
         <div className="grid grid-cols-1 gap-y-6 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-2">
           {addressFields.map((field) => {
             const fieldId = field.entityId;
@@ -265,6 +281,24 @@ export const EditAddress = ({
                       isValid={numbersInputValid[fieldId]}
                       name={fieldName}
                       onChange={handleNumbersInputValidation}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
+              case 'CheckboxesFormField': {
+                const previousCheckboxesValue =
+                  getPreviouslySubmittedValue(defaultCustomField)?.CheckboxesFormField;
+
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <Checkboxes
+                      defaultValue={previousCheckboxesValue}
+                      field={field}
+                      isValid={checkboxesValid[fieldId]}
+                      name={fieldName}
+                      onValidate={setCheckboxesValid}
+                      options={field.options}
                     />
                   </FieldWrapper>
                 );

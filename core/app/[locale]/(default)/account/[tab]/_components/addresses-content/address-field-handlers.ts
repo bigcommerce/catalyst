@@ -44,7 +44,8 @@ const createPreSubmitPicklistValidationHandler = (
       [...new FormData(form).entries()]
         .filter(
           (fieldEntry): fieldEntry is [string, string] =>
-            fieldEntry[0].includes('custom_multipleChoices-') && typeof fieldEntry[1] === 'string',
+            /^custom_(address|customer)-multipleChoices-\d+/.test(fieldEntry[0]) &&
+            typeof fieldEntry[1] === 'string',
         )
         .map(([picklistKey, picklistValue]: [string, string]) => {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -69,6 +70,55 @@ const createPreSubmitPicklistValidationHandler = (
   };
 };
 
+const createPreSubmitCheckboxesValidationHandler = (
+  formFields: AddressFields,
+  validitationSetter: FieldStateSetFn<FieldState>,
+) => {
+  const checkboxes = formFields.filter(
+    ({ __typename: type, isBuiltIn, isRequired }) =>
+      type === 'CheckboxesFormField' && !isBuiltIn && isRequired,
+  );
+
+  return (form: HTMLFormElement | null) => {
+    if (!form) return;
+
+    const checkboxesFormFields = Object.fromEntries(
+      [...new FormData(form).entries()]
+        .filter(
+          (fieldEntry): fieldEntry is [string, string] =>
+            /^custom_(address|customer)-checkboxes-\d+/.test(fieldEntry[0]) &&
+            typeof fieldEntry[1] === 'string',
+        )
+        .map(([checkboxKey, checkboxValue]: [string, string]) => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const fieldId = checkboxKey.split('-')[1]!;
+
+          return [fieldId, checkboxValue];
+        }),
+    );
+
+    checkboxes.forEach(({ entityId: checkboxId }) => {
+      const checkboxIdList = Object.keys(checkboxesFormFields);
+
+      if (checkboxes.length > 0 && checkboxIdList.length === 0) {
+        validitationSetter((prevValidationState) => ({
+          ...prevValidationState,
+          [checkboxId]: false,
+        }));
+      }
+
+      if (checkboxIdList.includes(checkboxId.toString())) {
+        const currentValue = checkboxesFormFields[checkboxId];
+
+        validitationSetter((prevValidationState) => ({
+          ...prevValidationState,
+          [checkboxId]: (currentValue && currentValue.length > 0) || false,
+        }));
+      }
+    });
+  };
+};
+
 const createTextInputValidationHandler =
   (textInputStateSetter: FieldStateSetFn<FieldState>, textInputState: FieldState) =>
   (e: ChangeEvent<HTMLInputElement>) => {
@@ -83,7 +133,7 @@ const createTextInputValidationHandler =
 const createMultilineTextValidationHandler =
   (multiTextStateSetter: FieldStateSetFn<FieldState>, multiTextState: FieldState) =>
   (e: ChangeEvent<HTMLTextAreaElement>) => {
-    const fieldId = Number(e.target.id);
+    const fieldId = Number(e.target.id.split('-')[1]);
     const validityState = e.target.validity;
 
     multiTextStateSetter({ ...multiTextState, [fieldId]: !validityState.valueMissing });
@@ -112,7 +162,7 @@ const createRadioButtonsValidationHandler =
 const createDatesValidationHandler =
   (dateStateSetter: FieldStateSetFn<FieldState>, dateFieldState: FieldState) =>
   (e: React.ChangeEvent<HTMLInputElement>) => {
-    const fieldId = Number(e.target.id);
+    const fieldId = Number(e.target.name.split('-')[1]);
     const validationStatus = e.target.validity.valueMissing;
 
     dateStateSetter({ ...dateFieldState, [fieldId]: !validationStatus });
@@ -167,7 +217,6 @@ const createPicklistOrTextValidationHandler =
   (picklistWithTextStateSetter: FieldStateSetFn<FieldState>, picklistWithTextState: FieldState) =>
   (e: ChangeEvent<HTMLInputElement>) => {
     const fieldId = Number(e.target.id.split('-')[1]);
-
     const validationStatus = e.target.validity.valueMissing;
 
     picklistWithTextStateSetter({ ...picklistWithTextState, [fieldId]: !validationStatus });
@@ -190,4 +239,5 @@ export {
   createNumbersInputValidationHandler,
   createDatesValidationHandler,
   createPreSubmitPicklistValidationHandler,
+  createPreSubmitCheckboxesValidationHandler,
 };

@@ -5,7 +5,7 @@ import {
   registerCustomer as registerCustomerClient,
 } from '~/client/mutations/register-customer';
 
-import { parseAccountFormData } from '../fields/parse-fields';
+import { parseRegisterCustomerFormData } from '../fields/parse-fields';
 
 interface RegisterCustomerForm {
   formData: FormData;
@@ -13,7 +13,7 @@ interface RegisterCustomerForm {
 }
 
 const isRegisterCustomerInput = (data: unknown): data is Input => {
-  if (typeof data === 'object' && data !== null && 'email' in data) {
+  if (typeof data === 'object' && data !== null && 'email' in data && 'address' in data) {
     return true;
   }
 
@@ -23,7 +23,7 @@ const isRegisterCustomerInput = (data: unknown): data is Input => {
 export const registerCustomer = async ({ formData, reCaptchaToken }: RegisterCustomerForm) => {
   formData.delete('customer-confirmPassword');
 
-  const parsedData = parseAccountFormData(formData);
+  const parsedData = parseRegisterCustomerFormData(formData);
 
   if (!isRegisterCustomerInput(parsedData)) {
     return {

@@ -57,7 +57,7 @@ export const createFieldName = (
     const customFieldInputType =
       fieldType === 'PicklistFormField' ? 'multipleChoices' : FieldTypeToFieldInput[fieldType];
 
-    return `custom_${customFieldInputType}-${fieldId}`;
+    return `custom_${fieldOrigin}-${customFieldInputType}-${fieldId}`;
   }
 
   if (fieldOrigin === 'address') {
