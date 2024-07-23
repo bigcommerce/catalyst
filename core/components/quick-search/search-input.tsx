@@ -11,7 +11,7 @@ interface Props extends ComponentPropsWithRef<'input'> {
 }
 
 export const SearchInput = forwardRef<ElementRef<'input'>, Props>(
-  ({ pending, showClear, onClickClear, ...props }, ref) => (
+  ({ className, pending, showClear, onClickClear, ...props }, ref) => (
     <div className="relative">
       <input
         className="peer w-full appearance-none border-2 border-gray-200 px-12 py-3 text-base placeholder:text-gray-500 hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200"
