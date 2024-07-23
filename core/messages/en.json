@@ -170,17 +170,18 @@
       "orders": "Orders",
       "messages": "Messages",
       "addresses": "Addresses",
-      "newAddress": "New address",
       "wishlists": "Wish lists",
       "recentlyViewed": "Recently viewed",
       "settings": "Account settings",
-      "changePassword": "Change password",
-      "editAddress": "Edit address"
+      "changePassword": "Change password"
     },
     "Addresses": {
       "defaultAddress": "Default",
       "alternativeAddress": "Alternative",
+      "newAddress": "New address",
       "addNewAddress": "Add new address",
+      "addNewAddressSuccessMessage": "Address added to your account",
+      "editAddress": "Edit address",
       "editButton": "Edit",
       "deleteButton": "Delete",
       "confirmDeleteAddress": "Delete address",

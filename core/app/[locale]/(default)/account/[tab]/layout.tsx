@@ -44,7 +44,7 @@ export default async function AccountTabLayout({
 
   return (
     <NextIntlClientProvider locale={locale} messages={{ Account: messages.Account ?? {} }}>
-      <AccountStatusProvider>
+      <AccountStatusProvider isPermanentBanner={true}>
         <h1 className="my-8 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
         <nav aria-label={t('accountTabsLabel')}>
           <ul className="mb-8 flex items-start overflow-x-auto">
