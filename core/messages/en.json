@@ -184,6 +184,7 @@
       "editAddress": "Edit address",
       "editButton": "Edit",
       "deleteButton": "Delete",
+      "deleteAddress": "Address deleted from your account.",
       "confirmDeleteAddress": "Delete address",
       "deleteModalTitle": "Are you sure you want to delete address?",
       "recaptchaText": "Pass ReCAPTCHA check",
