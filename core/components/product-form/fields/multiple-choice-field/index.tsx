@@ -2,9 +2,8 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { FragmentOf } from '~/client/graphql';
-import { BcImage } from '~/components/bc-image';
 import { Label } from '~/components/ui/label';
-import { PickList, PickListItem } from '~/components/ui/pick-list';
+import { PickList } from '~/components/ui/pick-list';
 import { RadioGroup } from '~/components/ui/radio-group';
 import { RectangleList, RectangleListItem } from '~/components/ui/rectangle-list';
 import { Select, SelectContent, SelectItem } from '~/components/ui/select';
@@ -230,6 +229,22 @@ export const MultipleChoiceField = ({ option }: Props) => {
           </Label>
           <PickList
             aria-labelledby={`label-${option.entityId}`}
+            items={values
+              .filter(
+                (value) =>
+                  '__typename' in value && value.__typename === 'ProductPickListOptionValue',
+              )
+              .map((value) => ({
+                value: value.entityId.toString(),
+                label: value.label,
+                defaultImage: value.defaultImage,
+                prefetchHandler: () => {
+                  handleMouseEnter({
+                    optionId: option.entityId,
+                    valueId: Number(value.entityId),
+                  });
+                },
+              }))}
             name={field.name}
             onValueChange={(value) => {
               field.onChange(value);
@@ -240,43 +255,7 @@ export const MultipleChoiceField = ({ option }: Props) => {
               });
             }}
             value={field.value?.toString()}
-          >
-            {values.map((value) => {
-              if ('__typename' in value && value.__typename === 'ProductPickListOptionValue') {
-                return (
-                  <div
-                    className="flex items-center p-4"
-                    key={value.entityId}
-                    onMouseEnter={() => {
-                      handleMouseEnter({
-                        optionId: option.entityId,
-                        valueId: Number(value.entityId),
-                      });
-                    }}
-                  >
-                    {Boolean(value.defaultImage) && (
-                      <BcImage
-                        alt={value.defaultImage?.altText || ''}
-                        className="me-6"
-                        height={48}
-                        src={value.defaultImage?.url || ''}
-                        width={48}
-                      />
-                    )}
-                    <PickListItem id={`${value.entityId}`} value={`${value.entityId}`} />
-                    <Label
-                      className="cursor-pointer ps-4 font-normal"
-                      htmlFor={`${value.entityId}`}
-                    >
-                      {value.label}
-                    </Label>
-                  </div>
-                );
-              }
-
-              return null;
-            })}
-          </PickList>
+          />
           {error && <ErrorMessage>{error.message}</ErrorMessage>}
         </div>
       );
