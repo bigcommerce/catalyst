@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker';
-import { expect, Page, test } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
+
+import { test } from '~/tests/fixtures';
 
 const sampleProduct = '[Sample] Laundry Detergent';
 const testUser = faker.person.firstName();

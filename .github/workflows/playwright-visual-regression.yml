@@ -45,5 +45,5 @@ jobs:
         if: failure()
         with:
           name: playwright-report
-          path: core/playwright-report/
+          path: core/test-results/
           retention-days: 30

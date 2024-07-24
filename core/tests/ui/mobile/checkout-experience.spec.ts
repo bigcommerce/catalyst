@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker';
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
+
+import { test } from '~/tests/fixtures';
 
 const testUser = faker.person.firstName();
 
