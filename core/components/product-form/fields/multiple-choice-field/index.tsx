@@ -6,7 +6,7 @@ import { Label } from '~/components/ui/label';
 import { PickList } from '~/components/ui/pick-list';
 import { RadioGroup } from '~/components/ui/radio-group';
 import { RectangleList, RectangleListItem } from '~/components/ui/rectangle-list';
-import { Select, SelectContent, SelectItem } from '~/components/ui/select';
+import { Select } from '~/components/ui/select';
 import { Swatch, SwatchItem } from '~/components/ui/swatch';
 
 import { useProductFieldController } from '../../use-product-form';
@@ -183,11 +183,11 @@ export const MultipleChoiceField = ({ option }: Props) => {
     case 'DropdownList':
       return (
         <div key={option.entityId}>
-          <Label className="mb-2 inline-block font-semibold" id={`label-${option.entityId}`}>
+          <Label className="mb-2 inline-block font-semibold" htmlFor={`label-${option.entityId}`}>
             {option.displayName}
           </Label>
           <Select
-            aria-labelledby={`label-${option.entityId}`}
+            id={`label-${option.entityId}`}
             name={field.name}
             onValueChange={(value) => {
               field.onChange(value);
@@ -197,26 +197,19 @@ export const MultipleChoiceField = ({ option }: Props) => {
                 valueId: Number(value),
               });
             }}
+            options={values.map((value) => ({
+              label: value.label,
+              value: value.entityId.toString(),
+              onMouseEnter: () => {
+                handleMouseEnter({
+                  optionId: option.entityId,
+                  valueId: Number(value.entityId),
+                });
+              },
+            }))}
             value={field.value?.toString()}
             variant={error && 'error'}
-          >
-            <SelectContent>
-              {values.map((value) => (
-                <SelectItem
-                  key={value.entityId}
-                  onMouseEnter={() => {
-                    handleMouseEnter({
-                      optionId: option.entityId,
-                      valueId: Number(value.entityId),
-                    });
-                  }}
-                  value={`${value.entityId}`}
-                >
-                  {value.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          />
           {error && <ErrorMessage>{error.message}</ErrorMessage>}
         </div>
       );

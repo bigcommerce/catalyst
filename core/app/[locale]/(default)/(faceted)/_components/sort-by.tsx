@@ -4,7 +4,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useTransition } from 'react';
 
-import { Select, SelectContent, SelectItem } from '~/components/ui/select';
+import { Select } from '~/components/ui/select';
 
 export function SortBy() {
   const router = useRouter();
@@ -26,25 +26,24 @@ export function SortBy() {
   };
 
   return (
-    <Select
-      aria-label={t('ariaLabel')}
-      className="order-2 min-w-[224px] md:order-3 md:w-auto"
-      onValueChange={onSort}
-      value={value}
-    >
+    <div className="order-2 min-w-[224px] md:order-3 md:w-auto">
       <span className="hidden" data-pending={isPending ? '' : undefined} />
-
-      <SelectContent>
-        <SelectItem value="featured">{t('featuredItems')}</SelectItem>
-        <SelectItem value="newest">{t('newestItems')}</SelectItem>
-        <SelectItem value="best_selling">{t('bestSellingItems')}</SelectItem>
-        <SelectItem value="a_to_z">{t('aToZ')}</SelectItem>
-        <SelectItem value="z_to_a">{t('zToA')}</SelectItem>
-        <SelectItem value="best_reviewed">{t('byReview')}</SelectItem>
-        <SelectItem value="lowest_price">{t('priceAscending')}</SelectItem>
-        <SelectItem value="highest_price">{t('priceDescending')}</SelectItem>
-        <SelectItem value="relevance">{t('relevance')}</SelectItem>
-      </SelectContent>
-    </Select>
+      <Select
+        aria-label={t('ariaLabel')}
+        onValueChange={onSort}
+        options={[
+          { value: 'featured', label: t('featuredItems') },
+          { value: 'newest', label: t('newestItems') },
+          { value: 'best_selling', label: t('bestSellingItems') },
+          { value: 'a_to_z', label: t('aToZ') },
+          { value: 'z_to_a', label: t('zToA') },
+          { value: 'best_reviewed', label: t('byReview') },
+          { value: 'lowest_price', label: t('priceAscending') },
+          { value: 'highest_price', label: t('priceDescending') },
+          { value: 'relevance', label: t('relevance') },
+        ]}
+        value={value}
+      />
+    </div>
   );
 }

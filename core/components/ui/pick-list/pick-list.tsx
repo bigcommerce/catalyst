@@ -27,7 +27,7 @@ const PickList = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
           <div
             className="flex items-center p-4"
             key={item.value}
-            onMouseEnter={() => item.prefetchHandler?.()}
+            onMouseEnter={item.prefetchHandler}
           >
             {Boolean(item.defaultImage) && (
               <BcImage

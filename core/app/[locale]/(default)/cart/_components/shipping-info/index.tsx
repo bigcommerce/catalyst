@@ -10,7 +10,7 @@ import { ExistingResultType } from '~/client/util';
 import { Button } from '~/components/ui/button';
 import { Field, FieldControl, FieldLabel, Form, FormSubmit } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
-import { Select, SelectContent, SelectItem } from '~/components/ui/select';
+import { Select } from '~/components/ui/select';
 import { cn } from '~/lib/utils';
 
 import { ShippingInfoFragment } from './fragment';
@@ -154,19 +154,13 @@ export const ShippingInfo = ({
 
                 hideShippingOptions();
               }}
+              options={shippingCountries.map(({ id, countryCode, name }) => ({
+                value: `${countryCode}-${id}`,
+                label: name,
+              }))}
               placeholder={t('countryPlaceholder')}
               value={formValues.country}
-            >
-              <SelectContent>
-                {shippingCountries.map(({ id, countryCode, name }) => {
-                  return (
-                    <SelectItem key={id} value={`${countryCode}-${id}`}>
-                      {name}
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
+            />
           </FieldControl>
         </Field>
         <Field className="relative space-y-2" name="state">
@@ -177,19 +171,10 @@ export const ShippingInfo = ({
                 disabled={formValues.states.length === 0}
                 id="state"
                 onValueChange={(value) => setFormValues({ state: value })}
+                options={formValues.states.map(({ state }) => ({ value: state, label: state }))}
                 placeholder={t('statePlaceholder')}
                 value={formValues.state}
-              >
-                <SelectContent>
-                  {formValues.states.map(({ id, state }) => {
-                    return (
-                      <SelectItem key={id} value={state}>
-                        {state}
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
+              />
             ) : (
               <Input
                 autoComplete="address-level1"
