@@ -11,6 +11,7 @@ const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
     name
     brand
+    sku
     imageUrl
     entityId
     quantity
@@ -66,6 +67,7 @@ const DigitalItemFragment = graphql(`
   fragment DigitalItemFragment on CartDigitalItem {
     name
     brand
+    sku
     imageUrl
     entityId
     quantity

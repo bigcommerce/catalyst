@@ -22,7 +22,7 @@ interface line_item {
   base_price?: number;
   retail_price?: number;
   currency: string;
-  category_names: string[];
+  category_names?: string[];
   variant_id?: number[];
   quantity?: number;
 }
@@ -42,5 +42,11 @@ export interface bodl_v1_product_category_viewed {
 export interface bodl_v1_cart_product_added {
   currency: string;
   product_value: number;
+  line_items: line_item[];
+}
+
+export interface bodl_v1_cart_viewed {
+  currency: string;
+  cart_value: number;
   line_items: line_item[];
 }

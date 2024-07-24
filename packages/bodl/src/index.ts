@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { subscribeOnBodlEvents } from './providers/ga4/google_analytics4';
 import {
   bodl_v1_cart_product_added,
+  bodl_v1_cart_viewed,
   bodl_v1_product_category_viewed,
   bodl_v1_product_page_viewed,
 } from './types';
@@ -28,15 +29,13 @@ export class Bodl {
         ...payload,
       });
     }),
-    categoryViewed: this.call<bodl_v1_product_category_viewed>(
-      (payload: bodl_v1_product_category_viewed) => {
-        window.bodlEvents?.product?.emit('bodl_v1_product_category_viewed', {
-          event_id: uuidv4(),
-          channel_id: this.config.channel_id,
-          ...payload,
-        });
-      },
-    ),
+    categoryViewed: this.call<bodl_v1_product_category_viewed>((payload) => {
+      window.bodlEvents?.product?.emit('bodl_v1_product_category_viewed', {
+        event_id: uuidv4(),
+        channel_id: this.config.channel_id,
+        ...payload,
+      });
+    }),
   };
 
   cart = {
@@ -48,7 +47,13 @@ export class Bodl {
       });
     }),
     // productRemoved: this.call((payload: any) => null),
-    // cartViewed: this.call((payload: any) => null),
+    cartViewed: this.call<bodl_v1_cart_viewed>((payload) => {
+      window.bodlEvents?.cart?.emit('bodl_v1_cart_viewed', {
+        event_id: uuidv4(),
+        channel_id: this.config.channel_id,
+        ...payload,
+      });
+    }),
   };
 
   // customEvent = this.call((payload: any) => null);
