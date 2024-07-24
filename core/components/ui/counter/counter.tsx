@@ -33,6 +33,8 @@ const getDefaultValue = (defaultValue: number | '', min: number, max: number) =>
   return defaultValue;
 };
 
+type CounterRef = ElementRef<'input'> | null;
+
 const Counter = forwardRef<ElementRef<'input'>, Props>(
   (
     {
@@ -53,10 +55,9 @@ const Counter = forwardRef<ElementRef<'input'>, Props>(
     ref,
   ) => {
     const [value, setValue] = useState<number | ''>(getDefaultValue(defaultValue, min, max));
-    const inputRef = useRef<ElementRef<'input'>>(null);
+    const inputRef = useRef<CounterRef>(null);
 
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/non-nullable-type-assertion-style
-    useImperativeHandle(ref, () => inputRef.current as ElementRef<'input'>);
+    useImperativeHandle<CounterRef, CounterRef>(ref, () => inputRef.current);
 
     const currValue = valueProp ?? value;
 
