@@ -1,8 +1,4 @@
 import { Bodl } from '@bigcommerce/bodl';
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-
-import { ProductItemFragment } from '~/client/fragments/product-item';
-import { FragmentOf } from '~/client/graphql';
 
 export const bodl = new Bodl({
   // TODO: get channel id from locale in multi-lang setup
@@ -14,22 +10,3 @@ export const bodl = new Bodl({
     consentModeEnabled: false,
   },
 });
-
-export const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
-  const category = removeEdgesAndNodes(p.categories).at(0);
-  const breadcrumbs = category ? removeEdgesAndNodes(category.breadcrumbs) : [];
-
-  return {
-    product_id: p.entityId.toString(),
-    product_name: p.name,
-    brand_name: p.brand?.name,
-    sku: p.sku,
-    sale_price: p.prices?.salePrice?.value,
-    purchase_price: p.prices?.salePrice?.value || p.prices?.price.value || 0,
-    base_price: p.prices?.price.value,
-    retail_price: p.prices?.retailPrice?.value,
-    currency: p.prices?.price.currencyCode || 'USD',
-    category_names: breadcrumbs.map(({ name }) => name),
-    variant_id: p.variants.edges?.map((variant) => variant.node.entityId),
-  };
-};

@@ -1,13 +1,13 @@
 'use client';
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { FragmentOf } from 'gql.tada';
 import { AlertCircle, Check } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'react-hot-toast';
 
+import { FragmentOf } from '~/client/graphql';
 import { AddToCartButton } from '~/components/add-to-cart-button';
 import { Button } from '~/components/ui/button';
 
