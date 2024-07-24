@@ -3,6 +3,8 @@ import { ComponentPropsWithoutRef, ReactNode, useId } from 'react';
 
 import { cn } from '~/lib/utils';
 
+import { Label } from '../label';
+
 interface Item extends ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> {
   label: ReactNode;
 }
@@ -36,9 +38,9 @@ const RadioGroup = ({ children, className, variant, items, ...props }: Props) =>
             >
               <RadioGroupPrimitive.Indicator className="h-2 w-2 rounded-full bg-white" />
             </RadioGroupPrimitive.Item>
-            <label className="w-full" htmlFor={`${id}-${item.value}`}>
+            <Label className="w-full" htmlFor={`${id}-${item.value}`}>
               {label}
-            </label>
+            </Label>
           </div>
         );
       })}

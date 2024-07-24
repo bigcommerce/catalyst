@@ -106,7 +106,7 @@ export const Facets = ({ facets, pageType }: Props) => {
                   onCheckedChange={submitForm}
                   value={brand.entityId}
                 />
-                <Label className="cursor-pointer ps-3 font-normal" htmlFor={id} id={labelId}>
+                <Label className="cursor-pointer ps-3" htmlFor={id} id={labelId}>
                   {brand.name}
                   <ProductCount
                     count={brand.productCount}
@@ -140,7 +140,7 @@ export const Facets = ({ facets, pageType }: Props) => {
                   onCheckedChange={submitForm}
                   value={category.entityId}
                 />
-                <Label className="cursor-pointer ps-3 font-normal" htmlFor={id} id={labelId}>
+                <Label className="cursor-pointer ps-3" htmlFor={id} id={labelId}>
                   {category.name}
                   <ProductCount
                     count={category.productCount}
@@ -175,7 +175,7 @@ export const Facets = ({ facets, pageType }: Props) => {
                   onCheckedChange={submitForm}
                   value={attribute.value}
                 />
-                <Label className="cursor-pointer ps-3 font-normal" htmlFor={id} id={labelId}>
+                <Label className="cursor-pointer ps-3" htmlFor={id} id={labelId}>
                   {attribute.value}
                   <ProductCount
                     count={attribute.productCount}
@@ -262,7 +262,7 @@ export const Facets = ({ facets, pageType }: Props) => {
                 value="free_shipping"
               />
               <Label
-                className="cursor-pointer ps-3 font-normal"
+                className="cursor-pointer ps-3"
                 htmlFor="shipping-free_shipping"
                 id="shipping-free_shipping-label"
               >
@@ -283,11 +283,7 @@ export const Facets = ({ facets, pageType }: Props) => {
                 name="isFeatured"
                 onCheckedChange={submitForm}
               />
-              <Label
-                className="cursor-pointer ps-3 font-normal"
-                htmlFor="isFeatured"
-                id="isFeatured-label"
-              >
+              <Label className="cursor-pointer ps-3" htmlFor="isFeatured" id="isFeatured-label">
                 {t('isFeaturedLabel')}
                 <ProductCount
                   count={facet.isFeatured.productCount}
@@ -307,7 +303,7 @@ export const Facets = ({ facets, pageType }: Props) => {
                 value="in_stock"
               />
               <Label
-                className="cursor-pointer ps-3 font-normal"
+                className="cursor-pointer ps-3"
                 htmlFor="stock-in_stock"
                 id="stock-in_stock-label"
               >

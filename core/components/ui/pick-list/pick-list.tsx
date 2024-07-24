@@ -10,6 +10,8 @@ import {
 import { BcImage } from '~/components/bc-image';
 import { cn } from '~/lib/utils';
 
+import { Label } from '../label';
+
 interface Item extends ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> {
   label: string;
   defaultImage: { altText: string; url: string } | null;
@@ -52,9 +54,9 @@ const PickList = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
               >
                 <RadioGroupPrimitive.Indicator className="h-2 w-2 rounded-full bg-white" />
               </RadioGroupPrimitive.Item>
-              <label className="w-full cursor-pointer ps-4" htmlFor={`${id}-${value}`}>
+              <Label className="w-full cursor-pointer ps-4" htmlFor={`${id}-${value}`}>
                 {label}
-              </label>
+              </Label>
             </div>
           );
         })}
