@@ -5,7 +5,7 @@ import { FragmentOf } from '~/client/graphql';
 import { Label } from '~/components/ui/label';
 import { PickList } from '~/components/ui/pick-list';
 import { RadioGroup } from '~/components/ui/radio-group';
-import { RectangleList, RectangleListItem } from '~/components/ui/rectangle-list';
+import { RectangleList } from '~/components/ui/rectangle-list';
 import { Select } from '~/components/ui/select';
 import { Swatch } from '~/components/ui/swatch';
 
@@ -111,6 +111,14 @@ export const MultipleChoiceField = ({ option }: Props) => {
           </Label>
           <RectangleList
             aria-labelledby={`label-${option.entityId}`}
+            items={values.map((value) => ({
+              label: value.label,
+              value: value.entityId.toString(),
+              title: `${option.displayName} ${value.label}`,
+              onMouseEnter: () => {
+                handleMouseEnter({ optionId: option.entityId, valueId: Number(value.entityId) });
+              },
+            }))}
             name={field.name}
             onValueChange={(value) => {
               field.onChange(value);
@@ -121,25 +129,7 @@ export const MultipleChoiceField = ({ option }: Props) => {
               });
             }}
             value={field.value?.toString()}
-          >
-            {values.map((value) => {
-              return (
-                <RectangleListItem
-                  key={value.entityId}
-                  onMouseEnter={() => {
-                    handleMouseEnter({
-                      optionId: option.entityId,
-                      valueId: Number(value.entityId),
-                    });
-                  }}
-                  title={`${option.displayName} ${value.label}`}
-                  value={String(value.entityId)}
-                >
-                  {value.label}
-                </RectangleListItem>
-              );
-            })}
-          </RectangleList>
+          />
           {error && <ErrorMessage>{error.message}</ErrorMessage>}
         </div>
       );
