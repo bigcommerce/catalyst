@@ -1,4 +1,6 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
+
+import { test } from '~/tests/fixtures';
 
 test('Selecting various options on color panel should update query parameters', async ({
   page,
