@@ -214,7 +214,7 @@ export const MultipleChoiceField = ({ option }: Props) => {
                 value: value.entityId.toString(),
                 label: value.label,
                 defaultImage: value.defaultImage,
-                prefetchHandler: () => {
+                onMouseEnter: () => {
                   handleMouseEnter({
                     optionId: option.entityId,
                     valueId: Number(value.entityId),
