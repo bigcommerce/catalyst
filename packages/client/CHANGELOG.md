@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.5.0
+
+### Minor Changes
+
+- [#1098](https://github.com/bigcommerce/catalyst/pull/1098) [`405e791`](https://github.com/bigcommerce/catalyst/commit/405e791af8e7ecc1422f2ce18cb216a8c04cc73b) Thanks [@bookernath](https://github.com/bookernath)! - Move Sitemap Index fetching into the client & normalize user agents
+
+### Patch Changes
+
+- [#994](https://github.com/bigcommerce/catalyst/pull/994) [`8766305`](https://github.com/bigcommerce/catalyst/commit/8766305b65ca10422e7921b2fd15796e0a09d27a) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add channelId param to client to allow fetching from multiple channels with the same client.
+
+- [#1055](https://github.com/bigcommerce/catalyst/pull/1055) [`52214a3`](https://github.com/bigcommerce/catalyst/commit/52214a376bba1fdaa584de31c36f7d6cdc078624) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add getChannelId param to dynamically fetch a channel on requests.
+
 ## 0.4.0
 
 ### Minor Changes

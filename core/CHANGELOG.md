@@ -1,5 +1,38 @@
 # Changelog
 
+## 0.10.0
+
+### Minor Changes
+
+- [#1057](https://github.com/bigcommerce/catalyst/pull/1057) [`22dd481`](https://github.com/bigcommerce/catalyst/commit/22dd4818edea8ea9f7efc721a598cd978684ede5) Thanks [@bookernath](https://github.com/bookernath)! - Added /sitemap.xml as a proxy to hosted BigCommerce sitemap
+
+### Patch Changes
+
+- [#1098](https://github.com/bigcommerce/catalyst/pull/1098) [`405e791`](https://github.com/bigcommerce/catalyst/commit/405e791af8e7ecc1422f2ce18cb216a8c04cc73b) Thanks [@bookernath](https://github.com/bookernath)! - Move Sitemap Index fetching into the client & normalize user agents
+
+- [#1086](https://github.com/bigcommerce/catalyst/pull/1086) [`e0926ee`](https://github.com/bigcommerce/catalyst/commit/e0926ee21664503f208dafcc8e5939c363801ee1) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - add minor changes to address form layout
+
+- [#1055](https://github.com/bigcommerce/catalyst/pull/1055) [`52214a3`](https://github.com/bigcommerce/catalyst/commit/52214a376bba1fdaa584de31c36f7d6cdc078624) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Make client.fetch channel aware per locale.
+
+- [#1071](https://github.com/bigcommerce/catalyst/pull/1071) [`5d0975b`](https://github.com/bigcommerce/catalyst/commit/5d0975be8accd733e2ed909dba85f04d6d1042f5) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Use customerId in product API to get correct product information.
+
+- [#1077](https://github.com/bigcommerce/catalyst/pull/1077) [`e86f46f`](https://github.com/bigcommerce/catalyst/commit/e86f46fea3bd5630311d3afccb4b2d70aa68f6fe) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Uses the deployment URL for the robots.txt sitemap field rather than another environment variable.
+
+- [#1075](https://github.com/bigcommerce/catalyst/pull/1075) [`4bf7d16`](https://github.com/bigcommerce/catalyst/commit/4bf7d1680df4a7dcc2adcdf24e4faf9e4e470726) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Append channel to kv keys.
+
+- [#1034](https://github.com/bigcommerce/catalyst/pull/1034) [`e648a62`](https://github.com/bigcommerce/catalyst/commit/e648a62bed956a0c2ea43b9bc3ca68e009b57cfc) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add store selector page.
+
+- [#1032](https://github.com/bigcommerce/catalyst/pull/1032) [`982b19c`](https://github.com/bigcommerce/catalyst/commit/982b19c5e80d4b427ec207cc0d72ef5014e4bee8) Thanks [@deini](https://github.com/deini)! - prefetch product option data on hover
+
+- [#1095](https://github.com/bigcommerce/catalyst/pull/1095) [`5df38cf`](https://github.com/bigcommerce/catalyst/commit/5df38cf3b521e5b2077026e045f85e8ddbaee8a7) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Fixes a missing GraphQL field for the updateCustomer mutation.
+
+- [#1056](https://github.com/bigcommerce/catalyst/pull/1056) [`ad7bda7`](https://github.com/bigcommerce/catalyst/commit/ad7bda7387f25b04dc53b4df06ca8929791bc5d6) Thanks [@bc-yevhenii-buliuk](https://github.com/bc-yevhenii-buliuk)! - make selected account tab visible on mobile devices
+
+- [#1087](https://github.com/bigcommerce/catalyst/pull/1087) [`b21a139`](https://github.com/bigcommerce/catalyst/commit/b21a139c447eeb132a2cabef3951f0cb7f779341) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - change pagination layout and minor changes to address book
+
+- Updated dependencies [[`405e791`](https://github.com/bigcommerce/catalyst/commit/405e791af8e7ecc1422f2ce18cb216a8c04cc73b), [`8766305`](https://github.com/bigcommerce/catalyst/commit/8766305b65ca10422e7921b2fd15796e0a09d27a), [`52214a3`](https://github.com/bigcommerce/catalyst/commit/52214a376bba1fdaa584de31c36f7d6cdc078624)]:
+  - @bigcommerce/catalyst-client@0.5.0
+
 ## 0.9.1
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 {
   "name": "@bigcommerce/catalyst-client",
   "description": "BigCommerce API client for Catalyst.",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -29,7 +29,7 @@
     "eslint": "^8.57.0",
     "graphql": "^16.9.0",
     "prettier": "^3.3.3",
-    "tsup": "^8.1.0",
+    "tsup": "^8.2.2",
     "typescript": "^5.5.3"
   }
 }

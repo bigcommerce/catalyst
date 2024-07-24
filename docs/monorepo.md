@@ -6,7 +6,7 @@
 The [main GitHub repository for Catalyst](https://github.com/bigcommerce/catalyst) is a [monorepo](https://en.wikipedia.org/wiki/Monorepo) with multiple codebases, including but not limited to the following:
 
 * The [core Next.js reference storefront application, in /core](https://github.com/bigcommerce/catalyst/tree/main/core)
-* [The component library, in /packages/components](https://github.com/bigcommerce/catalyst/tree/main/packages/components)
+* [The component library, in /core/components/ui](https://github.com/bigcommerce/catalyst/tree/main/core/components/ui)
 * [The API client, in /packages/client](https://github.com/bigcommerce/catalyst/tree/main/packages/client)
 * [Product documentation, in /docs](https://github.com/bigcommerce/catalyst/tree/main/docs)
 

@@ -1,10 +1,19 @@
 'use client';
 
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import {
+  createContext,
+  ReactNode,
+  RefObject,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { State as AccountState } from '../_actions/submit-customer-change-password-form';
 
 export const AccountStatusContext = createContext<{
+  activeTabRef: RefObject<HTMLAnchorElement>;
   accountState: AccountState;
   setAccountState: (state: AccountState | ((prevState: AccountState) => AccountState)) => void;
 } | null>(null);
@@ -17,6 +26,7 @@ export const AccountStatusProvider = ({
   isPermanentBanner?: boolean;
 }) => {
   const [accountState, setAccountState] = useState<AccountState>({ status: 'idle', message: '' });
+  const activeTabRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
     if (accountState.status !== 'idle' && !isPermanentBanner) {
@@ -27,7 +37,7 @@ export const AccountStatusProvider = ({
   }, [accountState, setAccountState, isPermanentBanner]);
 
   return (
-    <AccountStatusContext.Provider value={{ accountState, setAccountState }}>
+    <AccountStatusContext.Provider value={{ accountState, setAccountState, activeTabRef }}>
       {children}
     </AccountStatusContext.Provider>
   );
