@@ -2,7 +2,7 @@ import { useTranslations } from 'next-intl';
 
 import { Field, FieldControl, FieldLabel } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
-import { Select, SelectContent, SelectItem } from '~/components/ui/select';
+import { Select } from '~/components/ui/select';
 
 import { AddressFields } from '..';
 
@@ -39,19 +39,13 @@ export const PicklistOrText = ({ defaultValue, field, name, options }: PicklistO
             defaultValue={defaultValue}
             id={`field-${field.entityId}`}
             key={defaultValue}
+            options={options.map(({ entityId, label }) => ({
+              label,
+              value: entityId.toString(),
+            }))}
             placeholder={t('stateProvincePrefix')}
             required={field.isRequired}
-          >
-            <SelectContent>
-              {options.map(({ entityId, label }) => {
-                return (
-                  <SelectItem key={entityId} value={entityId.toString()}>
-                    {label}
-                  </SelectItem>
-                );
-              })}
-            </SelectContent>
-          </Select>
+          />
         )}
       </FieldControl>
     </Field>

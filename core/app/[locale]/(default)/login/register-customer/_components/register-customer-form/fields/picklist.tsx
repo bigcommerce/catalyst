@@ -1,5 +1,5 @@
 import { Field, FieldControl, FieldLabel } from '~/components/ui/form';
-import { Select, SelectContent, SelectItem } from '~/components/ui/select';
+import { Select } from '~/components/ui/select';
 
 import { AddressFields } from '..';
 
@@ -30,17 +30,13 @@ export const Picklist = ({ defaultValue, field, name, onChange, options }: Pickl
           defaultValue={defaultValue}
           id={`field-${field.entityId}`}
           onValueChange={field.entityId === FieldNameToFieldId.countryCode ? onChange : undefined}
+          options={options.map(({ entityId, label }) => ({
+            label,
+            value: entityId.toString(),
+          }))}
           placeholder={field.choosePrefix}
           required={field.isRequired}
-        >
-          <SelectContent>
-            {options.map(({ entityId, label }) => (
-              <SelectItem key={entityId} value={entityId.toString()}>
-                {label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        />
       </FieldControl>
     </Field>
   );
