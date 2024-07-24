@@ -7,7 +7,7 @@ import { PickList } from '~/components/ui/pick-list';
 import { RadioGroup } from '~/components/ui/radio-group';
 import { RectangleList, RectangleListItem } from '~/components/ui/rectangle-list';
 import { Select } from '~/components/ui/select';
-import { Swatch, SwatchItem } from '~/components/ui/swatch';
+import { Swatch } from '~/components/ui/swatch';
 
 import { useProductFieldController } from '../../use-product-form';
 import { ErrorMessage } from '../shared/error-message';
@@ -75,6 +75,19 @@ export const MultipleChoiceField = ({ option }: Props) => {
           </Label>
           <Swatch
             aria-labelledby={`label-${option.entityId}`}
+            items={values
+              .filter((value) => '__typename' in value && value.__typename === 'SwatchOptionValue')
+              .map((value) => ({
+                label: `${option.displayName} ${value.label}`,
+                value: value.entityId.toString(),
+                variantColor: value.hexColors[0],
+                onMouseEnter: () => {
+                  handleMouseEnter({
+                    optionId: option.entityId,
+                    valueId: Number(value.entityId),
+                  });
+                },
+              }))}
             name={field.name}
             onValueChange={(value) => {
               field.onChange(value);
@@ -85,28 +98,7 @@ export const MultipleChoiceField = ({ option }: Props) => {
               });
             }}
             value={field.value?.toString()}
-          >
-            {values.map((value) => {
-              if ('__typename' in value && value.__typename === 'SwatchOptionValue') {
-                return (
-                  <SwatchItem
-                    key={value.entityId}
-                    onMouseEnter={() => {
-                      handleMouseEnter({
-                        optionId: option.entityId,
-                        valueId: Number(value.entityId),
-                      });
-                    }}
-                    title={`${option.displayName} ${value.label}`}
-                    value={String(value.entityId)}
-                    variantColor={value.hexColors[0]}
-                  />
-                );
-              }
-
-              return null;
-            })}
-          </Swatch>
+          />
           {error && <ErrorMessage>{error.message}</ErrorMessage>}
         </div>
       );
