@@ -1,136 +1,65 @@
-import { Slot } from '@radix-ui/react-slot';
-import { cva } from 'class-variance-authority';
-import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
+import { ComponentPropsWithRef } from 'react';
 
+import { BcImage } from '~/components/bc-image';
+import { Link } from '~/components/link';
 import { cn } from '~/lib/utils';
 
-interface BlogPostCardProps extends ComponentPropsWithRef<'li'> {
-  asChild?: boolean;
+interface Props extends ComponentPropsWithRef<'div'> {
+  author?: string | null;
+  content: string;
+  date: string;
+  link: { href: string };
+  thumbnail?: { altText: string; url: string } | null;
+  title: string;
 }
 
-const BlogPostCard = forwardRef<ElementRef<'li'>, BlogPostCardProps>(
-  ({ asChild = false, children, className, ...props }, ref) => {
-    const Comp = asChild ? Slot : 'li';
+const BlogPostCard = ({
+  author,
+  children,
+  className,
+  content,
+  date,
+  link,
+  thumbnail,
+  title,
+  ...props
+}: Props) => {
+  return (
+    <div className={cn('flex flex-col', className)} {...props}>
+      {thumbnail ? (
+        <div className="mb-2 flex h-44 lg:h-56">
+          <Link className="block w-full" href={link.href}>
+            <BcImage
+              alt={thumbnail.altText}
+              className="h-full w-full object-cover object-center"
+              height={300}
+              src={thumbnail.url}
+              width={300}
+            />
+          </Link>
+        </div>
+      ) : (
+        <div className="mb-3 flex h-44 justify-between bg-primary/10 p-4 lg:h-56">
+          <h3 className="mb-0 line-clamp-3 flex-none basis-1/2 self-start text-3xl font-bold text-primary">
+            {title}
+          </h3>
+          <small className="mb-0 flex-none self-end text-xl font-bold text-primary">{date}</small>
+        </div>
+      )}
 
-    return (
-      <Comp className={cn('group relative list-none flex-col', className)} ref={ref} {...props}>
-        {children}
-      </Comp>
-    );
-  },
-);
+      <h3 className="mb-2 text-2xl font-bold">
+        <Link href={link.href}>{title}</Link>
+      </h3>
+
+      <p className="mb-2">{content}</p>
+
+      <small className="mb-2 text-base text-gray-500">{date}</small>
+
+      {Boolean(author) && <small className="text-base text-gray-500">, by {author}</small>}
+    </div>
+  );
+};
 
 BlogPostCard.displayName = 'BlogPostCard';
 
-const BlogPostBanner = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
-  ({ children, className, ...props }, ref) => {
-    return (
-      <div
-        className={cn('mb-3 flex h-44 justify-between bg-primary/10 p-4 lg:h-56', className)}
-        ref={ref}
-        {...props}
-      >
-        {children}
-      </div>
-    );
-  },
-);
-
-BlogPostBanner.displayName = 'BlogPostBanner';
-
-const BlogPostImage = forwardRef<ElementRef<'div'>, ComponentPropsWithRef<'div'>>(
-  ({ children, className, ...props }, ref) => {
-    return (
-      <div className={cn('mb-2 flex h-44 lg:h-56', className)} ref={ref} {...props}>
-        {children}
-      </div>
-    );
-  },
-);
-
-BlogPostImage.displayName = 'BlogPostImage';
-
-interface TitleProps extends ComponentPropsWithRef<'h3'> {
-  asChild?: boolean;
-  variant?: 'inBanner';
-}
-
-const titleVariants = cva('mb-2 text-2xl font-bold', {
-  variants: {
-    variant: {
-      inBanner: 'mb-0 flex-none basis-1/2 self-start text-3xl font-bold',
-    },
-  },
-});
-
-const BlogPostTitle = forwardRef<ElementRef<'h3'>, TitleProps>(
-  ({ asChild = false, children, className, variant, ...props }, ref) => {
-    const Comp = asChild ? Slot : 'h3';
-
-    return (
-      <Comp className={cn(titleVariants({ variant, className }))} ref={ref} {...props}>
-        {children}
-      </Comp>
-    );
-  },
-);
-
-BlogPostTitle.displayName = 'BlogPostTitle';
-
-const BlogPostContent = forwardRef<ElementRef<'p'>, ComponentPropsWithRef<'p'>>(
-  ({ children, className, ...props }, ref) => {
-    return (
-      <p className={cn('mb-2 text-base', className)} {...props} ref={ref}>
-        {children}
-      </p>
-    );
-  },
-);
-
-BlogPostContent.displayName = 'BlogPostContent';
-
-interface DateProps extends ComponentPropsWithRef<'small'> {
-  variant?: 'inBanner';
-}
-
-const dateVariants = cva('mb-2 text-base text-gray-500', {
-  variants: {
-    variant: {
-      inBanner: 'mb-0 flex-none self-end text-xl font-bold',
-    },
-  },
-});
-
-const BlogPostDate = forwardRef<ElementRef<'small'>, DateProps>(
-  ({ children, className, variant, ...props }, ref) => {
-    return (
-      <small className={cn(dateVariants({ variant, className }))} {...props} ref={ref}>
-        {children}
-      </small>
-    );
-  },
-);
-
-BlogPostDate.displayName = 'BlogPostDate';
-
-const BlogPostAuthor = forwardRef<ElementRef<'small'>, ComponentPropsWithRef<'small'>>(
-  ({ children, className, ...props }, ref) => {
-    return (
-      <small className={cn('text-base text-gray-500', className)} {...props} ref={ref}>
-        {children}
-      </small>
-    );
-  },
-);
-
-BlogPostAuthor.displayName = 'BlogPostAuthor';
-
-export {
-  BlogPostCard,
-  BlogPostBanner,
-  BlogPostImage,
-  BlogPostTitle,
-  BlogPostContent,
-  BlogPostDate,
-  BlogPostAuthor,
-};
+export { BlogPostCard };
