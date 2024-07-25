@@ -3,7 +3,7 @@ import { expect } from '@playwright/test';
 
 import { test } from '~/tests/fixtures';
 
-const password = faker.internet.password({ length: 10 });
+const password = faker.internet.password({ pattern: /[a-zA-Z0-9]/, length: 10 });
 const firstName = faker.person.firstName();
 const lastName = faker.person.lastName();
 
