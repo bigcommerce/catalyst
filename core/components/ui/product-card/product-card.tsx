@@ -1,8 +1,8 @@
 import { ComponentPropsWithRef, ReactNode } from 'react';
 
 import { BcImage } from '~/components/bc-image';
+import { Link } from '~/components/link';
 import { cn } from '~/lib/utils';
-import { Link } from '~/navigation';
 
 import { Compare } from './compare';
 
