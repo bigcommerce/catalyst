@@ -10,6 +10,9 @@ import { graphql } from './client/graphql';
 const LoginMutation = graphql(`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
+      customerAccessToken {
+        value
+      }
       customer {
         entityId
         firstName
@@ -66,11 +69,21 @@ const config = {
         token.id = user.id;
       }
 
+      // user can actually be undefined
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (user?.customerAccessToken) {
+        token.customerAccessToken = user.customerAccessToken;
+      }
+
       return token;
     },
     session({ session, token }) {
       if (token.id) {
         session.user.id = token.id;
+      }
+
+      if (token.customerAccessToken) {
+        session.customerAccessToken = token.customerAccessToken;
       }
 
       return session;
@@ -145,7 +158,7 @@ const config = {
 
         const result = response.data.login;
 
-        if (!result.customer) {
+        if (!result.customer || !result.customerAccessToken) {
           return null;
         }
 
@@ -153,6 +166,7 @@ const config = {
           id: result.customer.entityId.toString(),
           name: `${result.customer.firstName} ${result.customer.lastName}`,
           email: result.customer.email,
+          customerAccessToken: result.customerAccessToken.value,
         };
       },
     }),
@@ -171,24 +185,37 @@ const getSessionCustomerId = async () => {
   }
 };
 
-export { handlers, auth, signIn, signOut, getSessionCustomerId };
+const getSessionCustomerAccessToken = async () => {
+  try {
+    const session = await auth();
+
+    return session?.customerAccessToken;
+  } catch {
+    // No empty
+  }
+};
+
+export { handlers, auth, signIn, signOut, getSessionCustomerId, getSessionCustomerAccessToken };
 
 declare module 'next-auth' {
   interface Session {
     user: {
       id: string;
     } & DefaultSession['user'];
+    customerAccessToken?: string;
   }
 
   interface User {
     id?: string;
     name?: string | null;
     email?: string | null;
+    customerAccessToken?: string;
   }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT {
     id?: string;
+    customerAccessToken?: string;
   }
 }
