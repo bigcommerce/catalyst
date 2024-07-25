@@ -4,7 +4,6 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { Link } from '~/components/link';
 import { StoreLogo, StoreLogoFragment } from '~/components/store-logo';
-import { NavigationMenu, NavigationMenuLink } from '~/components/ui/navigation-menu';
 import { locales, LocaleType } from '~/i18n';
 
 import { LocaleLink } from './_components/locale-link';
@@ -43,16 +42,12 @@ export default async function StoreSelector({
 
   return (
     <>
-      <header>
-        <NavigationMenu>
-          <NavigationMenuLink asChild>
-            {storeSettings && (
-              <Link className="p-0" href="/">
-                <StoreLogo data={storeSettings} />
-              </Link>
-            )}
-          </NavigationMenuLink>
-        </NavigationMenu>
+      <header className="flex h-[92px] items-center bg-white px-4 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0">
+        {storeSettings && (
+          <Link className="p-0" href="/">
+            <StoreLogo data={storeSettings} />
+          </Link>
+        )}
       </header>
 
       <div className="flex flex-col gap-2 px-4 lg:container sm:px-10 lg:mx-auto lg:max-w-[1000px] lg:px-12">
