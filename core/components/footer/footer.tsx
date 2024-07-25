@@ -1,91 +1,149 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import {
+  SiFacebook,
+  SiInstagram,
+  SiLinkedin,
+  SiPinterest,
+  SiX,
+  SiYoutube,
+} from '@icons-pack/react-simple-icons';
+
 import { FragmentOf, graphql } from '~/client/graphql';
-import { Footer as ComponentsFooter, FooterSection } from '~/components/ui/footer';
+import { Footer as ComponentsFooter } from '~/components/ui/footer';
 
 import { StoreLogo, StoreLogoFragment } from '../store-logo';
 
-import { ContactInformation, ContactInformationFragment } from './contact-information';
 import { Copyright, CopyrightFragment } from './copyright';
-import {
-  BrandFooterMenu,
-  BrandsFooterMenuFragment,
-  CategoryFooterMenu,
-  CategoryFooterMenuFragment,
-} from './footer-menus';
-import { WebPageFooterMenu, WebPageFooterMenuFragment } from './footer-menus/web-page-footer-menu';
 import { Locale } from './locale';
 import { PaymentMethods } from './payment-methods';
-import { SocialIcons, SocialIconsFragment } from './social-icons';
 
 export const FooterFragment = graphql(
   `
     fragment FooterFragment on Site {
       settings {
-        ...ContactInformationFragment
+        storeName
+        contact {
+          address
+          phone
+        }
+        socialMediaLinks {
+          name
+          url
+        }
         ...CopyrightFragment
-        ...SocialIconsFragment
         ...StoreLogoFragment
       }
       content {
-        ...WebPageFooterMenuFragment
+        pages(filters: { isVisibleInNavigation: true }) {
+          edges {
+            node {
+              __typename
+              name
+              ... on RawHtmlPage {
+                path
+              }
+              ... on ContactPage {
+                path
+              }
+              ... on NormalPage {
+                path
+              }
+              ... on BlogIndexPage {
+                path
+              }
+              ... on ExternalLinkPage {
+                link
+              }
+            }
+          }
+        }
       }
       brands(first: 5) {
-        ...BrandsFooterMenuFragment
+        edges {
+          node {
+            entityId
+            name
+            path
+          }
+        }
       }
-      ...CategoryFooterMenuFragment
+      categoryTree {
+        name
+        path
+      }
     }
   `,
-  [
-    BrandsFooterMenuFragment,
-    CategoryFooterMenuFragment,
-    ContactInformationFragment,
-    CopyrightFragment,
-    SocialIconsFragment,
-    StoreLogoFragment,
-    WebPageFooterMenuFragment,
-  ],
+  [CopyrightFragment, StoreLogoFragment],
 );
+
+const socialIcons: Record<string, { icon: JSX.Element }> = {
+  Facebook: { icon: <SiFacebook title="Facebook" /> },
+  Twitter: { icon: <SiX title="Twitter" /> },
+  X: { icon: <SiX title="X" /> },
+  Pinterest: { icon: <SiPinterest title="Pinterest" /> },
+  Instagram: { icon: <SiInstagram title="Instagram" /> },
+  LinkedIn: { icon: <SiLinkedin title="LinkedIn" /> },
+  YouTube: { icon: <SiYoutube title="YouTube" /> },
+};
 
 interface Props {
   data: FragmentOf<typeof FooterFragment>;
 }
 
 export const Footer = ({ data }: Props) => {
+  const items = [
+    {
+      title: 'Categories',
+      links: data.categoryTree.map((category) => ({
+        name: category.name,
+        path: category.path,
+      })),
+    },
+    {
+      title: 'Brands',
+      links: removeEdgesAndNodes(data.brands).map((brand) => ({
+        name: brand.name,
+        path: brand.path,
+      })),
+    },
+    {
+      title: 'Navigate',
+      links: removeEdgesAndNodes(data.content.pages).map((page) => ({
+        name: page.name,
+        path: page.__typename === 'ExternalLinkPage' ? page.link : page.path,
+      })),
+    },
+  ];
+
   return (
-    <ComponentsFooter>
-      <FooterSection className="flex flex-col gap-8 py-10 md:flex-row lg:gap-4">
-        <nav className="grid flex-auto auto-cols-fr gap-8 sm:grid-flow-col">
-          <CategoryFooterMenu data={data.categoryTree} />
-          <BrandFooterMenu data={data.brands} />
-          <WebPageFooterMenu data={data.content} />
-        </nav>
-
-        <div className="flex flex-col gap-4 md:order-first md:grow">
-          {data.settings && (
-            <h3>
-              <StoreLogo data={data.settings} />
-            </h3>
-          )}
-          {data.settings && <ContactInformation data={data.settings} />}
-          {data.settings && <SocialIcons data={data.settings} />}
-        </div>
-      </FooterSection>
-
-      <FooterSection className="flex flex-col gap-10 sm:gap-8 sm:py-6 lg:hidden">
+    <ComponentsFooter
+      contactInformation={data.settings?.contact}
+      items={items}
+      logo={data.settings ? <StoreLogo data={data.settings} /> : null}
+      socialMediaLinks={data.settings?.socialMediaLinks
+        .filter((socialMediaLink) => Boolean(socialIcons[socialMediaLink.name]))
+        .map((socialMediaLink) => ({
+          name: socialMediaLink.name,
+          url: socialMediaLink.url,
+          icon: socialIcons[socialMediaLink.name]?.icon,
+        }))}
+    >
+      <section className="flex flex-col gap-10 border-t border-gray-200 px-4 py-8 sm:gap-8 sm:px-10 sm:py-6 lg:hidden lg:px-12 2xl:px-0">
         <Locale />
 
         <div className="flex w-full flex-col justify-between gap-10 sm:flex-row sm:gap-8">
           <PaymentMethods />
           {data.settings && <Copyright data={data.settings} />}
         </div>
-      </FooterSection>
+      </section>
 
-      <FooterSection className="hidden justify-between gap-8 py-6 lg:flex">
+      <section className="hidden justify-between gap-8 border-t border-gray-200 px-4 py-6 sm:px-10 lg:flex lg:px-12 2xl:px-0">
         {data.settings && <Copyright data={data.settings} />}
         <div className="flex gap-8">
           <Locale />
           <PaymentMethods />
         </div>
-      </FooterSection>
+      </section>
     </ComponentsFooter>
   );
 };
