@@ -4,6 +4,9 @@ import { graphql } from '../graphql';
 const LOGIN_MUTATION = graphql(`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
+      customerAccessToken {
+        value
+      }
       customer {
         entityId
         firstName

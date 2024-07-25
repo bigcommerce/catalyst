@@ -28,11 +28,21 @@ const config = {
         token.id = user.id;
       }
 
+      // user can actually be undefined
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (user?.customerAccessToken) {
+        token.customerAccessToken = user.customerAccessToken;
+      }
+
       return token;
     },
     session({ session, token }) {
       if (token.id) {
         session.user.id = token.id;
+      }
+
+      if (token.customerAccessToken) {
+        session.customerAccessToken = token.customerAccessToken;
       }
 
       return session;
@@ -75,7 +85,7 @@ const config = {
 
         const response = await login(email, password);
 
-        if (!response.customer) {
+        if (!response.customer || !response.customerAccessToken) {
           return null;
         }
 
@@ -83,6 +93,7 @@ const config = {
           id: response.customer.entityId.toString(),
           name: `${response.customer.firstName} ${response.customer.lastName}`,
           email: response.customer.email,
+          customerAccessToken: response.customerAccessToken.value,
         };
       },
     }),
@@ -101,24 +112,37 @@ const getSessionCustomerId = async () => {
   }
 };
 
-export { handlers, auth, signIn, signOut, getSessionCustomerId };
+const getSessionCustomerAccessToken = async () => {
+  try {
+    const session = await auth();
+
+    return session?.customerAccessToken;
+  } catch {
+    // No empty
+  }
+};
+
+export { handlers, auth, signIn, signOut, getSessionCustomerId, getSessionCustomerAccessToken };
 
 declare module 'next-auth' {
   interface Session {
     user: {
       id: string;
     } & DefaultSession['user'];
+    customerAccessToken?: string;
   }
 
   interface User {
     id?: string;
     name?: string | null;
     email?: string | null;
+    customerAccessToken?: string;
   }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT {
     id?: string;
+    customerAccessToken?: string;
   }
 }
