@@ -6,6 +6,9 @@ const LOGIN_MUTATION = graphql(`
     login(email: $email, password: $password) {
       customer {
         entityId
+        firstName
+        lastName
+        email
       }
     }
   }
@@ -17,5 +20,5 @@ export const login = async (email: string, password: string) => {
     variables: { email, password },
   });
 
-  return response.data.login.customer;
+  return response.data.login;
 };

@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
-import NextAuth, { type NextAuthConfig } from 'next-auth';
+import NextAuth, { type DefaultSession, type NextAuthConfig } from 'next-auth';
+import 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { z } from 'zod';
 
@@ -20,9 +21,18 @@ const config = {
     signIn: '/login',
   },
   callbacks: {
+    jwt: ({ token, user }) => {
+      // user can actually be undefined
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (user?.id) {
+        token.id = user.id;
+      }
+
+      return token;
+    },
     session({ session, token }) {
-      if (token.sub) {
-        session.user.id = token.sub;
+      if (token.id) {
+        session.user.id = token.id;
       }
 
       return session;
@@ -63,14 +73,16 @@ const config = {
       async authorize(credentials) {
         const { email, password } = Credentials.parse(credentials);
 
-        const customer = await login(email, password);
+        const response = await login(email, password);
 
-        if (!customer) {
+        if (!response.customer) {
           return null;
         }
 
         return {
-          id: customer.entityId.toString(),
+          id: response.customer.entityId.toString(),
+          name: `${response.customer.firstName} ${response.customer.lastName}`,
+          email: response.customer.email,
         };
       },
     }),
@@ -83,10 +95,30 @@ const getSessionCustomerId = async () => {
   try {
     const session = await auth();
 
-    return session?.user?.id;
+    return session?.user.id;
   } catch {
     // No empty
   }
 };
 
 export { handlers, auth, signIn, signOut, getSessionCustomerId };
+
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      id: string;
+    } & DefaultSession['user'];
+  }
+
+  interface User {
+    id?: string;
+    name?: string | null;
+    email?: string | null;
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    id?: string;
+  }
+}
