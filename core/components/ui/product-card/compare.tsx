@@ -5,6 +5,7 @@ import { useEffect, useId, useState } from 'react';
 import { useCompareProductsContext } from '~/app/contexts/compare-products-context';
 
 import { Checkbox } from '../checkbox';
+import { Label } from '../label';
 
 export const Compare = ({
   productId,
@@ -49,9 +50,9 @@ export const Compare = ({
         id={checkboxId}
         onCheckedChange={handleOnCheckedChange}
       />
-      <label className="font-normal" htmlFor={checkboxId}>
+      <Label className="font-normal" htmlFor={checkboxId}>
         Compare
-      </label>
+      </Label>
     </div>
   );
 };
