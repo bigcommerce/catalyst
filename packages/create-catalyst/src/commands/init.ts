@@ -37,6 +37,7 @@ export const init = new Command('init')
     let accessToken = options.accessToken;
     let channelId;
     let customerImpersonationToken;
+    let storefrontToken;
 
     if (!options.storeHash || !options.accessToken) {
       const credentials = await login(bigCommerceAuthUrl);
@@ -89,8 +90,15 @@ export const init = new Command('init')
         data: { id: createdChannelId, storefront_api_token: storefrontApiToken },
       } = await sampleDataApi.createChannel(newChannelName);
 
+      // This is temporary until we switch the `createChannel` call to return a
+      // storefront token instead of the default customer impersonation token.
+      const {
+        data: { token },
+      } = await bc.storefrontToken();
+
       channelId = createdChannelId;
       customerImpersonationToken = storefrontApiToken;
+      storefrontToken = token;
 
       /**
        * @todo prompt sample data API
@@ -124,17 +132,23 @@ export const init = new Command('init')
       const {
         data: { token },
       } = await bc.customerImpersonationToken();
+      const {
+        data: { token: sfToken },
+      } = await bc.storefrontToken();
 
       customerImpersonationToken = token;
+      storefrontToken = sfToken;
     }
 
     if (!channelId) throw new Error('Something went wrong, channelId is not defined');
     if (!customerImpersonationToken)
       throw new Error('Something went wrong, customerImpersonationToken is not defined');
+    if (!storefrontToken) throw new Error('Something went wrong, storefrontToken is not defined');
 
     writeEnv(projectDir, {
       channelId: channelId.toString(),
       storeHash,
       customerImpersonationToken,
+      storefrontToken,
     });
   });
