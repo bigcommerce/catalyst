@@ -70,7 +70,7 @@ export const MultipleChoiceField = ({ option }: Props) => {
     case 'Swatch':
       return (
         <div key={option.entityId}>
-          <Label className="mb-2 inline-block" id={`label-${option.entityId}`}>
+          <Label className="mb-2 inline-block font-semibold" id={`label-${option.entityId}`}>
             {option.displayName}
           </Label>
           <Swatch
@@ -106,7 +106,7 @@ export const MultipleChoiceField = ({ option }: Props) => {
     case 'RectangleBoxes':
       return (
         <div key={option.entityId}>
-          <Label className="mb-2 inline-block" id={`label-${option.entityId}`}>
+          <Label className="mb-2 inline-block font-semibold" id={`label-${option.entityId}`}>
             {option.displayName}
           </Label>
           <RectangleList
