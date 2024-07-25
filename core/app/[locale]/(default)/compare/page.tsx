@@ -262,7 +262,7 @@ export default async function Compare({
                     )}
                   >
                     <Rating
-                      alt={
+                      aria-label={
                         product.reviewSummary.numberOfReviews === 0
                           ? `${product.name} has no rating specified`
                           : `${product.name} rating is ${product.reviewSummary.averageRating} out of 5 stars`
