@@ -1,7 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
@@ -32,13 +32,15 @@ interface Options {
 }
 
 const getFeaturedProducts = cache(async ({ first = 12 }: Options = {}) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: FeaturedProductsQuery,
     variables: { first },
-    customerId,
-    fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate: revalidateTarget } },
+    customerAccessToken,
+    fetchOptions: customerAccessToken
+      ? { cache: 'no-store' }
+      : { next: { revalidate: revalidateTarget } },
     channelId: getChannelIdFromLocale(), // Using default channel id
   });
 

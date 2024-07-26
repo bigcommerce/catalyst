@@ -1,7 +1,7 @@
 import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -294,10 +294,10 @@ export const withRoutes: MiddlewareFactory = () => {
       }
     }
 
-    const customerId = await getSessionCustomerId();
+    const customerAccessToken = await getSessionCustomerAccessToken();
     let postfix = '';
 
-    if (!request.nextUrl.search && !customerId && request.method === 'GET') {
+    if (!request.nextUrl.search && !customerAccessToken && request.method === 'GET') {
       postfix = '/static';
     }
 

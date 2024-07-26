@@ -96,7 +96,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.config.customerImpersonationToken}`,
+        Authorization: `Bearer ${this.config.storefrontToken}`,
         'User-Agent': this.backendUserAgent,
         ...(customerId && { 'X-Bc-Customer-Id': customerId }),
         ...(customerAccessToken && { 'X-Bc-Customer-Access-Token': customerAccessToken }),
