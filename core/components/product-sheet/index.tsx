@@ -42,13 +42,7 @@ export const ProductSheet = () => {
   };
 
   return (
-    <Sheet
-      onOpenChange={handleOnOpenChange}
-      open={open}
-      side="right"
-      title={t('title')}
-      transparentOverlay={true}
-    >
+    <Sheet onOpenChange={handleOnOpenChange} open={open} side="right" title={t('title')}>
       {open && <ProductSheetContent />}
     </Sheet>
   );
