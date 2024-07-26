@@ -17,12 +17,13 @@ type CarouselApi = UseEmblaCarouselType[1];
 interface Props extends ComponentPropsWithoutRef<'div'> {
   items: ReactNode[];
   title: string;
+  pageSize?: 2 | 3 | 4;
 }
 
-const Carousel = ({ className, children, title, items, ...props }: Props) => {
+const Carousel = ({ className, children, pageSize = 4, title, items, ...props }: Props) => {
   const id = useId();
   const titleId = useId();
-  const itemsPerGroup = 4;
+  const itemsPerGroup = pageSize;
 
   const [carouselRef, api] = useEmblaCarousel({
     loop: true,
@@ -150,7 +151,10 @@ const Carousel = ({ className, children, title, items, ...props }: Props) => {
               aria-label={`${index + 1} of ${groupedItems.length}`}
               aria-roledescription="slide"
               className={cn(
-                'grid min-w-0 shrink-0 grow-0 basis-full grid-cols-2 gap-6 px-4 md:grid-cols-4 lg:gap-8',
+                'grid min-w-0 shrink-0 grow-0 basis-full grid-cols-2 gap-6 px-4 lg:gap-8',
+                pageSize === 2 && 'md:grid-cols-2',
+                pageSize === 3 && 'md:grid-cols-3',
+                pageSize === 4 && 'md:grid-cols-4',
                 !slidesInView.includes(index) && 'invisible',
               )}
               id={`${id}-slide-${index + 1}`}
