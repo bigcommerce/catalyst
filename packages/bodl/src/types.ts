@@ -50,3 +50,9 @@ export interface bodl_v1_cart_viewed {
   cart_value: number;
   line_items: line_item[];
 }
+
+export interface bodl_v1_cart_product_removed {
+  currency: string;
+  product_value: number;
+  line_items: line_item[];
+}

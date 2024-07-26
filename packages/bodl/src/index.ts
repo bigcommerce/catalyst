@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { subscribeOnBodlEvents } from './providers/ga4/google_analytics4';
 import {
   bodl_v1_cart_product_added,
+  bodl_v1_cart_product_removed,
   bodl_v1_cart_viewed,
   bodl_v1_product_category_viewed,
   bodl_v1_product_page_viewed,
@@ -46,7 +47,13 @@ export class Bodl {
         ...payload,
       });
     }),
-    // productRemoved: this.call((payload: any) => null),
+    productRemoved: this.call<bodl_v1_cart_product_removed>((payload) => {
+      window.bodlEvents?.cart?.emit('bodl_v1_cart_product_removed', {
+        event_id: uuidv4(),
+        channel_id: this.config.channel_id,
+        ...payload,
+      });
+    }),
     cartViewed: this.call<bodl_v1_cart_viewed>((payload) => {
       window.bodlEvents?.cart?.emit('bodl_v1_cart_viewed', {
         event_id: uuidv4(),

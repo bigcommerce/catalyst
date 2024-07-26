@@ -8,9 +8,10 @@ import { bodl } from '~/lib/bodl';
 import { CartItemFragment } from './cart-item';
 import { CheckoutSummaryFragment } from './checkout-summary';
 
-type lineItem =
-  | FragmentOf<typeof CartItemFragment>['physicalItems'][0]
-  | FragmentOf<typeof CartItemFragment>['digitalItems'][0];
+type FragmentResult = FragmentOf<typeof CartItemFragment>;
+type PhysicalItem = FragmentResult['physicalItems'][number];
+type DigitalItem = FragmentResult['digitalItems'][number];
+type lineItem = PhysicalItem | DigitalItem;
 
 interface Props {
   checkout: FragmentOf<typeof CheckoutSummaryFragment> | null;

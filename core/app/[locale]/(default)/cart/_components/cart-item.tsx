@@ -224,7 +224,7 @@ export const CartItem = async ({ currencyCode, product }: Props) => {
 
               <div className="hidden md:block">
                 <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
-                  <RemoveItem lineItemEntityId={product.entityId} />
+                  <RemoveItem currency={currencyCode} product={product} />
                 </NextIntlClientProvider>
               </div>
             </div>
@@ -256,7 +256,7 @@ export const CartItem = async ({ currencyCode, product }: Props) => {
 
           <div className="mt-4 md:hidden">
             <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
-              <RemoveItem lineItemEntityId={product.entityId} />
+              <RemoveItem currency={currencyCode} product={product} />
             </NextIntlClientProvider>
           </div>
         </div>
