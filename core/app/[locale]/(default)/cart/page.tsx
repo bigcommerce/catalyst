@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
@@ -53,12 +53,12 @@ export default async function Cart() {
 
   const t = await getTranslations('Cart');
 
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data } = await client.fetch({
     document: CartPageQuery,
     variables: { cartId },
-    customerId,
+    customerAccessToken,
     fetchOptions: {
       cache: 'no-store',
       next: {

@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, ResultOf } from '~/client/graphql';
 import { FormFieldsFragment } from '~/components/form-fields/fragment';
@@ -69,12 +69,11 @@ export async function generateMetadata() {
 
 export default async function AddPage() {
   const t = await getTranslations('Account.Addresses.Add');
-
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data } = await client.fetch({
     document: CustomerNewAdressQuery,
-    customerId,
+    customerAccessToken,
     fetchOptions: { cache: 'no-store' },
     variables: {
       shippingSorting: 'SORT_ORDER',

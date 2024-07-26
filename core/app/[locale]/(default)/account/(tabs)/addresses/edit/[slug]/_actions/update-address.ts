@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { parseAccountFormData } from '~/components/form-fields/shared/parse-fields';
@@ -61,8 +61,7 @@ export const updateAddress = async ({
   reCaptchaToken?: string;
 }) => {
   const t = await getTranslations('Account.Addresses.Edit.Form');
-
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   try {
     const parsed = parseAccountFormData(formData);
@@ -76,7 +75,7 @@ export const updateAddress = async ({
 
     const response = await client.fetch({
       document: UpdateCustomerAddressMutation,
-      customerId,
+      customerAccessToken,
       fetchOptions: { cache: 'no-store' },
       variables: {
         input: {
