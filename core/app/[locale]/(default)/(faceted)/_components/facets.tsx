@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { FormEvent, useRef, useTransition } from 'react';
 
 import { Link } from '~/components/link';
-import { Accordions } from '~/components/ui/accordion';
+import { Accordions } from '~/components/ui/accordions';
 import { Button } from '~/components/ui/button';
 import { Checkbox } from '~/components/ui/checkbox';
 import { Input } from '~/components/ui/input';
@@ -84,10 +84,10 @@ export const Facets = ({ facets, pageType }: Props) => {
   };
 
   const accordions = facets.map((facet) => {
-    let body = null;
+    let content = null;
 
     if (facet.__typename === 'BrandSearchFilter' && pageType !== 'brand') {
-      body = (
+      content = (
         <>
           {facet.brands.map((brand) => {
             const normalizedBrandName = brand.name.replace(/\s/g, '-').toLowerCase();
@@ -121,7 +121,7 @@ export const Facets = ({ facets, pageType }: Props) => {
     }
 
     if (facet.__typename === 'CategorySearchFilter' && pageType !== 'category') {
-      body = (
+      content = (
         <>
           {facet.categories.map((category) => {
             const normalizedCategoryName = category.name.replace(/\s/g, '-').toLowerCase();
@@ -155,7 +155,7 @@ export const Facets = ({ facets, pageType }: Props) => {
     }
 
     if (facet.__typename === 'ProductAttributeSearchFilter') {
-      body = (
+      content = (
         <>
           {facet.attributes.map((attribute) => {
             const normalizedFilterName = facet.filterName.replace(/\s/g, '-').toLowerCase();
@@ -190,7 +190,7 @@ export const Facets = ({ facets, pageType }: Props) => {
     }
 
     if (facet.__typename === 'RatingSearchFilter') {
-      body = (
+      content = (
         <>
           {facet.ratings
             .filter((rating) => rating.value !== '5')
@@ -227,7 +227,7 @@ export const Facets = ({ facets, pageType }: Props) => {
     }
 
     if (facet.__typename === 'PriceSearchFilter') {
-      body = (
+      content = (
         <div className="grid grid-cols-2 gap-4 p-1">
           <Input
             aria-label={t('priceFilter.minPriceAriaLabel')}
@@ -249,7 +249,7 @@ export const Facets = ({ facets, pageType }: Props) => {
     }
 
     if (facet.__typename === 'OtherSearchFilter') {
-      body = (
+      content = (
         <>
           {facet.freeShipping && (
             <div className="flex max-w-sm items-center py-2 ps-1">
@@ -320,8 +320,7 @@ export const Facets = ({ facets, pageType }: Props) => {
     }
 
     return {
-      title: <h3>{facet.name}</h3>,
-      body,
+      content,
       value: facet.name,
     };
   });
