@@ -1,4 +1,5 @@
 import { client } from '..';
+import { getSessionCustomerAccessToken } from '../../auth';
 import { graphql, VariablesOf } from '../graphql';
 
 const ASSIGN_CART_TO_CUSTOMER_MUTATION = graphql(`
@@ -16,7 +17,9 @@ const ASSIGN_CART_TO_CUSTOMER_MUTATION = graphql(`
 type Variables = VariablesOf<typeof ASSIGN_CART_TO_CUSTOMER_MUTATION>;
 type CartEntityId = Variables['assignCartToCustomerInput']['cartEntityId'];
 
-export const assignCartToCustomer = async (customerId: string, cartEntityId: CartEntityId) => {
+export const assignCartToCustomer = async (cartEntityId: CartEntityId) => {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+
   const response = await client.fetch({
     document: ASSIGN_CART_TO_CUSTOMER_MUTATION,
     variables: {
@@ -24,7 +27,7 @@ export const assignCartToCustomer = async (customerId: string, cartEntityId: Car
         cartEntityId,
       },
     },
-    customerId,
+    customerAccessToken,
     fetchOptions: { cache: 'no-store' },
   });
 

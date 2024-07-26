@@ -2,7 +2,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -46,15 +46,15 @@ const HomePageQuery = graphql(
 export default async function Home({ params: { locale } }: Props) {
   unstable_setRequestLocale(locale);
 
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const t = await getTranslations({ locale, namespace: 'Home' });
   const messages = await getMessages({ locale });
 
   const { data } = await client.fetch({
     document: HomePageQuery,
-    customerId,
-    fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);

@@ -1,4 +1,4 @@
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 
 import { client } from '..';
 import { graphql, VariablesOf } from '../graphql';
@@ -19,12 +19,12 @@ type Variables = VariablesOf<typeof ADD_TO_CART_LINE_ITEM_MUTATION>;
 type Input = Variables['input'];
 
 export const addCartLineItem = async (cartEntityId: Input['cartEntityId'], data: Input['data']) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: ADD_TO_CART_LINE_ITEM_MUTATION,
     variables: { input: { cartEntityId, data } },
-    customerId,
+    customerAccessToken,
     fetchOptions: { cache: 'no-store' },
   });
 

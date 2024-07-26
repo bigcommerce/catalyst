@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 
@@ -21,13 +21,13 @@ const CheckoutRedirectMutation = graphql(`
 
 export const redirectToCheckout = async (formData: FormData) => {
   const cartId = z.string().parse(formData.get('cartId'));
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data } = await client.fetch({
     document: CheckoutRedirectMutation,
     variables: { cartId },
     fetchOptions: { cache: 'no-store' },
-    customerId,
+    customerAccessToken,
   });
 
   const url = data.cart.createCartRedirectUrls.redirectUrls?.redirectedCheckoutUrl;

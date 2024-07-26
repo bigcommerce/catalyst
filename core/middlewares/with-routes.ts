@@ -3,7 +3,7 @@ import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { z } from 'zod';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { getChannelIdFromLocale } from '~/channels.config';
 import { graphql } from '~/client/graphql';
 import { getRawWebPageContent } from '~/client/queries/get-raw-web-page-content';
@@ -213,10 +213,10 @@ export const withRoutes: MiddlewareFactory = () => {
       }
     }
 
-    const customerId = await getSessionCustomerId();
+    const customerAccessToken = await getSessionCustomerAccessToken();
     let postfix = '';
 
-    if (!request.nextUrl.search && !customerId && request.method === 'GET') {
+    if (!request.nextUrl.search && !customerAccessToken && request.method === 'GET') {
       postfix = '/static';
     }
 

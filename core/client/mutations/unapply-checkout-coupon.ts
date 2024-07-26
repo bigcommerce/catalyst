@@ -1,4 +1,4 @@
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 
 import { client } from '..';
 import { graphql } from '../graphql';
@@ -16,7 +16,7 @@ const UNAPPLY_CHECKOUT_COUPON = graphql(`
 `);
 
 export const unapplyCheckoutCoupon = async (checkoutEntityId: string, couponCode: string) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: UNAPPLY_CHECKOUT_COUPON,
@@ -28,7 +28,7 @@ export const unapplyCheckoutCoupon = async (checkoutEntityId: string, couponCode
         },
       },
     },
-    customerId,
+    customerAccessToken,
     fetchOptions: { cache: 'no-store' },
   });
 

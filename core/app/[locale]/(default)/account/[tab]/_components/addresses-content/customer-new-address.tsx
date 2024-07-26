@@ -1,7 +1,7 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { FORM_FIELDS_FRAGMENT } from '~/client/fragments/form-fields';
 import { graphql, ResultOf } from '~/client/graphql';
@@ -60,12 +60,12 @@ const FALLBACK_COUNTRY = {
 };
 
 export async function CustomerNewAddress() {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
   const locale = await getLocale();
   const messages = await getMessages();
   const { data } = await client.fetch({
     document: CustomerNewAdressQuery,
-    customerId,
+    customerAccessToken,
     fetchOptions: { cache: 'no-store' },
     variables: {
       shippingSorting: 'SORT_ORDER',

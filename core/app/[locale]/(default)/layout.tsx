@@ -2,7 +2,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, unstable_setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren, Suspense } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -31,11 +31,11 @@ const LayoutQuery = graphql(
 export default async function DefaultLayout({ children, params: { locale } }: Props) {
   unstable_setRequestLocale(locale);
 
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data } = await client.fetch({
     document: LayoutQuery,
-    fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   const messages = await getMessages({ locale });

@@ -1,4 +1,4 @@
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 
 import { client } from '..';
 import { graphql } from '../graphql';
@@ -24,7 +24,7 @@ export const selectCheckoutShippingOption = async ({
   consignmentEntityId: string;
   shippingOptionEntityId: string;
 }) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: SELECT_CHECKOUT_SHIPPING_OPTION_MUTATION,
@@ -37,7 +37,7 @@ export const selectCheckoutShippingOption = async ({
         },
       },
     },
-    customerId,
+    customerAccessToken,
     fetchOptions: { cache: 'no-store' },
   });
 

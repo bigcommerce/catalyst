@@ -1,4 +1,4 @@
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 
 import { client } from '..';
 import { graphql } from '../graphql';
@@ -16,7 +16,7 @@ const DELETE_CART_LINE_ITEM = graphql(`
 `);
 
 export const deleteCartLineItem = async (cartEntityId: string, lineItemEntityId: string) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: DELETE_CART_LINE_ITEM,
@@ -26,7 +26,7 @@ export const deleteCartLineItem = async (cartEntityId: string, lineItemEntityId:
         lineItemEntityId,
       },
     },
-    customerId,
+    customerAccessToken,
     fetchOptions: { cache: 'no-store' },
   });
 

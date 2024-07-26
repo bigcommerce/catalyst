@@ -3,7 +3,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
@@ -23,7 +23,7 @@ const GetProductQuery = graphql(
 );
 
 export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   if (request.headers.get('x-catalyst-product-sheet') !== 'true') {
     return NextResponse.json(
@@ -51,7 +51,7 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
       document: GetProductQuery,
       variables: { productId: Number(id), optionValueIds },
       channelId: getChannelIdFromLocale(locale),
-      customerId,
+      customerAccessToken,
     });
 
     return NextResponse.json(data.site.product);

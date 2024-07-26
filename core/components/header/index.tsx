@@ -3,7 +3,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import { ReactNode, Suspense } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
+import { auth } from '~/auth';
 import { FragmentOf, graphql } from '~/client/graphql';
 
 import { Link } from '../link';
@@ -49,7 +49,7 @@ interface Props {
 }
 
 export const Header = async ({ cart, data }: Props) => {
-  const customerId = await getSessionCustomerId();
+  const session = await auth();
 
   const locale = await getLocale();
   const messages = await getMessages({ locale });
@@ -69,7 +69,7 @@ export const Header = async ({ cart, data }: Props) => {
         </Link>
       </QuickSearch>
 
-      {customerId ? (
+      {session ? (
         <Dropdown
           items={[
             { path: '/account', name: 'My account' },

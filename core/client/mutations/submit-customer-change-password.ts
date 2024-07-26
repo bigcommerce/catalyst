@@ -1,4 +1,4 @@
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 
 import { client } from '..';
 import { graphql, VariablesOf } from '../graphql';
@@ -33,18 +33,17 @@ export const submitCustomerChangePassword = async ({
   currentPassword,
   newPassword,
 }: Variables['input']) => {
-  const customerId = await getSessionCustomerId();
-  const variables = {
-    input: {
-      currentPassword,
-      newPassword,
-    },
-  };
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: SUBMIT_CUSTOMER_CHANGE_PASSWORD_MUTATION,
-    variables,
-    customerId,
+    variables: {
+      input: {
+        currentPassword,
+        newPassword,
+      },
+    },
+    customerAccessToken,
   });
 
   return response.data.customer.changePassword;

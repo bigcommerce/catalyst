@@ -1,4 +1,4 @@
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 
 import { client } from '..';
 import { graphql, VariablesOf } from '../graphql';
@@ -29,11 +29,11 @@ const DELETE_CUSTOMER_ADDRESS_MUTATION = graphql(`
 type AddressId = VariablesOf<typeof DELETE_CUSTOMER_ADDRESS_MUTATION>['input']['addressEntityId'];
 
 export const deleteCustomerAddress = async (addressId: AddressId, reCaptchaToken?: string) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: DELETE_CUSTOMER_ADDRESS_MUTATION,
-    customerId,
+    customerAccessToken,
     fetchOptions: { cache: 'no-store' },
     variables: {
       input: {

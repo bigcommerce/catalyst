@@ -49,12 +49,12 @@ const config = {
     },
   },
   events: {
-    async signIn({ user }) {
+    async signIn() {
       const cookieCartId = cookies().get('cartId')?.value;
 
-      if (cookieCartId && user.id) {
+      if (cookieCartId) {
         try {
-          await assignCartToCustomer(user.id, cookieCartId);
+          await assignCartToCustomer(cookieCartId);
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error(error);
@@ -102,16 +102,6 @@ const config = {
 
 const { handlers, auth, signIn, signOut } = NextAuth(config);
 
-const getSessionCustomerId = async () => {
-  try {
-    const session = await auth();
-
-    return session?.user.id;
-  } catch {
-    // No empty
-  }
-};
-
 const getSessionCustomerAccessToken = async () => {
   try {
     const session = await auth();
@@ -122,11 +112,11 @@ const getSessionCustomerAccessToken = async () => {
   }
 };
 
-export { handlers, auth, signIn, signOut, getSessionCustomerId, getSessionCustomerAccessToken };
+export { handlers, auth, signIn, signOut, getSessionCustomerAccessToken };
 
 declare module 'next-auth' {
   interface Session {
-    user: {
+    user?: {
       id: string;
     } & DefaultSession['user'];
     customerAccessToken?: string;

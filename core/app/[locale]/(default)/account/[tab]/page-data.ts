@@ -1,6 +1,6 @@
 import { cache } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { FORM_FIELDS_FRAGMENT } from '~/client/fragments/form-fields';
 import { graphql, VariablesOf } from '~/client/graphql';
@@ -84,7 +84,7 @@ interface Props {
 }
 
 export const getCustomerSettingsQuery = cache(async ({ address, customer }: Props = {}) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: CustomerSettingsQuery,
@@ -95,7 +95,7 @@ export const getCustomerSettingsQuery = cache(async ({ address, customer }: Prop
       customerSortBy: customer?.sortBy,
     },
     fetchOptions: { cache: 'no-store' },
-    customerId,
+    customerAccessToken,
   });
 
   const addressFields = response.data.site.settings?.formFields.shippingAddress;

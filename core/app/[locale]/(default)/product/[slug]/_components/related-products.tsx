@@ -2,7 +2,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages, getTranslations } from 'next-intl/server';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -35,7 +35,7 @@ interface Props {
 }
 
 export const RelatedProducts = async ({ productId }: Props) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const t = await getTranslations('Product');
   const locale = await getLocale();
@@ -44,8 +44,8 @@ export const RelatedProducts = async ({ productId }: Props) => {
   const { data } = await client.fetch({
     document: RelatedProductsQuery,
     variables: { entityId: productId },
-    customerId,
-    fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   const product = data.site.product;

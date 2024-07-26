@@ -1,7 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { ProductCardFragment } from '~/components/product-card';
 
 import { client } from '..';
@@ -42,13 +42,13 @@ const GET_QUICK_SEARCH_RESULTS_QUERY = graphql(
 );
 
 export const getQuickSearchResults = cache(async ({ searchTerm }: QuickSearch) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: GET_QUICK_SEARCH_RESULTS_QUERY,
     variables: { filters: { searchTerm } },
-    customerId,
-    fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   const { products } = response.data.site.search.searchProducts;

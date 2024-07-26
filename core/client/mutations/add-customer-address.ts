@@ -1,4 +1,4 @@
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 
 import { client } from '..';
 import { graphql, VariablesOf } from '../graphql';
@@ -37,11 +37,11 @@ interface AddCustomerAddress {
 }
 
 export const addCustomerAddress = async ({ input, reCaptchaToken }: AddCustomerAddress) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: ADD_CUSTOMER_ADDRESS_MUTATION,
-    customerId,
+    customerAccessToken,
     fetchOptions: { cache: 'no-store' },
     variables: {
       input,

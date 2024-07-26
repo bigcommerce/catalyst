@@ -1,4 +1,4 @@
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 
 import { client } from '..';
 import { graphql, VariablesOf } from '../graphql';
@@ -23,7 +23,7 @@ type UnassignCartFromCustomerInput = Variables['unassignCartFromCustomerInput'];
 export const unassignCartFromCustomer = async (
   cartEntityId: UnassignCartFromCustomerInput['cartEntityId'],
 ) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: UNASSIGN_CART_FROM_CUSTOMER_MUTATION,
@@ -32,7 +32,7 @@ export const unassignCartFromCustomer = async (
         cartEntityId,
       },
     },
-    customerId,
+    customerAccessToken,
     fetchOptions: { cache: 'no-store' },
   });
 

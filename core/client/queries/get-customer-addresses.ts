@@ -1,7 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 
 import { client } from '..';
 import { graphql } from '../graphql';
@@ -48,13 +48,13 @@ export interface CustomerAddressesArgs {
 
 export const getCustomerAddresses = cache(
   async ({ before = '', after = '', limit = 9 }: CustomerAddressesArgs) => {
-    const customerId = await getSessionCustomerId();
+    const customerAccessToken = await getSessionCustomerAccessToken();
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
       document: GET_CUSTOMER_ADDRESSES_QUERY,
       variables: { ...paginationArgs },
-      customerId,
+      customerAccessToken,
       fetchOptions: { cache: 'no-store' },
     });
 

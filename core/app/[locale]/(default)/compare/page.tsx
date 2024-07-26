@@ -3,7 +3,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import * as z from 'zod';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -94,7 +94,7 @@ export default async function Compare({
   searchParams: Record<string, string | string[] | undefined>;
   params: { locale: LocaleType };
 }) {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
   const t = await getTranslations({ locale, namespace: 'Compare' });
   const messages = await getMessages({ locale });
 
@@ -107,8 +107,8 @@ export default async function Compare({
       entityIds: productIds ?? [],
       first: productIds?.length ? MAX_COMPARE_LIMIT : 0,
     },
-    customerId,
-    fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   const products = removeEdgesAndNodes(data.site.products).map((product) => ({
