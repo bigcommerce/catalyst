@@ -65,12 +65,6 @@ const config = {
     jwt: ({ token, user }) => {
       // user can actually be undefined
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (user?.id) {
-        token.id = user.id;
-      }
-
-      // user can actually be undefined
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (user?.customerAccessToken) {
         token.customerAccessToken = user.customerAccessToken;
       }
@@ -78,10 +72,6 @@ const config = {
       return token;
     },
     session({ session, token }) {
-      if (token.id) {
-        session.user.id = token.id;
-      }
-
       if (token.customerAccessToken) {
         session.customerAccessToken = token.customerAccessToken;
       }
@@ -90,10 +80,10 @@ const config = {
     },
   },
   events: {
-    async signIn({ user }) {
+    async signIn({ user: { customerAccessToken } }) {
       const cookieCartId = cookies().get('cartId')?.value;
 
-      if (cookieCartId && user.id) {
+      if (cookieCartId) {
         try {
           await client.fetch({
             document: AssignCartToCustomerMutation,
@@ -102,7 +92,7 @@ const config = {
                 cartEntityId: cookieCartId,
               },
             },
-            customerId: user.id,
+            customerAccessToken,
             fetchOptions: {
               cache: 'no-store',
             },
@@ -116,9 +106,9 @@ const config = {
     async signOut(message) {
       const cookieCartId = cookies().get('cartId')?.value;
 
-      const customerId = 'token' in message ? message.token?.id : null;
+      const customerAccessToken = 'token' in message ? message.token?.customerAccessToken : null;
 
-      if (customerId && cookieCartId) {
+      if (customerAccessToken && cookieCartId) {
         try {
           await client.fetch({
             document: UnassignCartFromCustomerMutation,
@@ -127,7 +117,7 @@ const config = {
                 cartEntityId: cookieCartId,
               },
             },
-            customerId,
+            customerAccessToken,
             fetchOptions: {
               cache: 'no-store',
             },
@@ -163,7 +153,6 @@ const config = {
         }
 
         return {
-          id: result.customer.entityId.toString(),
           name: `${result.customer.firstName} ${result.customer.lastName}`,
           email: result.customer.email,
           customerAccessToken: result.customerAccessToken.value,
@@ -175,16 +164,6 @@ const config = {
 
 const { handlers, auth, signIn, signOut } = NextAuth(config);
 
-const getSessionCustomerId = async () => {
-  try {
-    const session = await auth();
-
-    return session?.user.id;
-  } catch {
-    // No empty
-  }
-};
-
 const getSessionCustomerAccessToken = async () => {
   try {
     const session = await auth();
@@ -195,18 +174,15 @@ const getSessionCustomerAccessToken = async () => {
   }
 };
 
-export { handlers, auth, signIn, signOut, getSessionCustomerId, getSessionCustomerAccessToken };
+export { handlers, auth, signIn, signOut, getSessionCustomerAccessToken };
 
 declare module 'next-auth' {
   interface Session {
-    user: {
-      id: string;
-    } & DefaultSession['user'];
+    user?: DefaultSession['user'];
     customerAccessToken?: string;
   }
 
   interface User {
-    id?: string;
     name?: string | null;
     email?: string | null;
     customerAccessToken?: string;
