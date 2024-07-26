@@ -1,4 +1,6 @@
-import { expect, Page, test } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
+
+import { test } from '~/tests/fixtures';
 
 async function addEstimatedShippingCosts(
   page: Page,

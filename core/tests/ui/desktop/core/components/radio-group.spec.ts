@@ -1,4 +1,6 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
+
+import { test } from '~/tests/fixtures';
 
 test('Changing selection on radio button options should update query parameters', async ({
   page,

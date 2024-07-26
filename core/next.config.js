@@ -22,6 +22,18 @@ const nextConfig = {
     ignoreDuringBuilds: !!process.env.CI,
     dirs: ['app', 'client', 'components', 'lib', 'middlewares'],
   },
+  webpack: (config) => {
+    if (process.env.NODE_V8_COVERAGE) {
+      Object.defineProperty(config, 'devtool', {
+        get() {
+          return 'source-map';
+        },
+        set() {},
+      });
+    }
+
+    return config;
+  },
   // default URL generation in BigCommerce uses trailing slash
   trailingSlash: process.env.TRAILING_SLASH !== 'false',
   async headers() {
