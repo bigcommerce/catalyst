@@ -1,12 +1,12 @@
 'use client';
 
-import { X } from 'lucide-react';
+import * as AccordionPrimitive from '@radix-ui/react-accordion';
+import { ChevronDown, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 import { CheckedProduct, useCompareProductsContext } from '~/app/contexts/compare-products-context';
 import { Link } from '~/components/link';
-import { Accordions } from '~/components/ui/accordion';
 import { Button } from '~/components/ui/button';
 
 import { BcImage } from '../bc-image';
@@ -92,31 +92,30 @@ export const CompareDrawer = () => {
           })}
         </ul>
       </div>
-      <Accordions
-        accordions={[
-          {
-            title: <CompareLink products={products} />,
-            body: (
-              <ul className="flex max-h-44 flex-col overflow-auto">
-                {products.map((product) => {
-                  return (
-                    <CompareItem
-                      key={product.id}
-                      product={product}
-                      removeItem={() => setProducts(products.filter(({ id }) => id !== product.id))}
-                    />
-                  );
-                })}
-              </ul>
-            ),
-            value: 'compare',
-          },
-        ]}
-        className="w-full md:hidden"
-        collapsible
-        defaultValue="compare"
-        type="single"
-      />
+
+      <AccordionPrimitive.Root className="w-full md:hidden" collapsible type="single">
+        <AccordionPrimitive.Item value="compare">
+          <AccordionPrimitive.Header className="flex">
+            <AccordionPrimitive.Trigger className="flex flex-1 items-center justify-between py-[9.5px] text-lg font-bold outline-none transition-all hover:text-secondary focus-visible:text-secondary [&[data-state=open]>svg]:rotate-180">
+              <CompareLink products={products} />
+              <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
+            </AccordionPrimitive.Trigger>
+          </AccordionPrimitive.Header>
+          <AccordionPrimitive.Content className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down mb-4 overflow-hidden transition-all">
+            <ul className="flex max-h-44 flex-col overflow-auto">
+              {products.map((product) => {
+                return (
+                  <CompareItem
+                    key={product.id}
+                    product={product}
+                    removeItem={() => setProducts(products.filter(({ id }) => id !== product.id))}
+                  />
+                );
+              })}
+            </ul>
+          </AccordionPrimitive.Content>
+        </AccordionPrimitive.Item>
+      </AccordionPrimitive.Root>
     </div>
   );
 };
