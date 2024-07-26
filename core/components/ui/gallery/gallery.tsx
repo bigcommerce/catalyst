@@ -10,7 +10,7 @@ interface Image {
 }
 
 interface Props extends ComponentPropsWithoutRef<'div'> {
-  images: Image[] | [];
+  images: Image[];
   defaultImageIndex?: number;
 }
 
