@@ -3,11 +3,7 @@ const createNextIntlPlugin = require('next-intl/plugin');
 
 const withNextIntl = createNextIntlPlugin();
 
-const cspHeader = `
-  base-uri 'self';
-  form-action 'self';
-  frame-ancestors 'none';
-`;
+const { cspHeader } = require('./lib/content-security-policy');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
