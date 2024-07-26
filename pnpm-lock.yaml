@@ -237,7 +237,7 @@ importers:
     devDependencies:
       '@bigcommerce/eslint-config':
         specifier: ^2.9.0
-        version: 2.9.0(eslint@8.57.0)(jest@29.7.0(@types/node@20.14.10))(typescript@5.5.3)
+        version: 2.9.0(eslint@8.57.0)(jest@29.7.0)(typescript@5.5.3)
       '@bigcommerce/eslint-config-catalyst':
         specifier: workspace:^
         version: link:../eslint-config-catalyst
@@ -7935,7 +7935,7 @@ snapshots:
 
   code-red@1.0.4:
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.4.15
+      '@jridgewell/sourcemap-codec': 1.5.0
       '@types/estree': 1.0.5
       acorn: 8.12.1
       estree-walker: 3.0.3
@@ -9815,7 +9815,7 @@ snapshots:
 
   magic-string@0.30.10:
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.4.15
+      '@jridgewell/sourcemap-codec': 1.5.0
 
   make-dir@4.0.0:
     dependencies:
@@ -10813,7 +10813,7 @@ snapshots:
   svelte@4.2.18:
     dependencies:
       '@ampproject/remapping': 2.3.0
-      '@jridgewell/sourcemap-codec': 1.4.15
+      '@jridgewell/sourcemap-codec': 1.5.0
       '@jridgewell/trace-mapping': 0.3.25
       '@types/estree': 1.0.5
       acorn: 8.12.1
