@@ -46,15 +46,15 @@ export async function generateMetadata({ params: { id } }: Props): Promise<Metad
   const webpage = await getWebpageData({ id });
 
   if (!webpage) {
-    notFound();
+    return {};
   }
 
-  const { seo } = webpage;
+  const { pageTitle, metaDescription, metaKeywords } = webpage.seo;
 
   return {
-    title: seo.pageTitle,
-    description: seo.metaDescription,
-    keywords: seo.metaKeywords,
+    title: pageTitle || webpage.name,
+    description: metaDescription,
+    keywords: metaKeywords ? metaKeywords.split(',') : null,
   };
 }
 
