@@ -12,6 +12,8 @@ import CategoryPage from '../page';
 
 export default CategoryPage;
 
+export { generateMetadata } from '../page';
+
 const CategoryTreeQuery = graphql(
   `
     query CategoryTreeQuery($categoryId: Int) {

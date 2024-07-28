@@ -11,6 +11,8 @@ import BrandPage from '../page';
 
 export default BrandPage;
 
+export { generateMetadata } from '../page';
+
 const BrandsQuery = graphql(`
   query BrandsQuery($first: Int, $entityIds: [Int!]) {
     site {
