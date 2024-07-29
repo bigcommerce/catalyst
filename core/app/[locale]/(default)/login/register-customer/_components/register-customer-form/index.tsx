@@ -197,7 +197,7 @@ export const RegisterCustomerForm = ({
       });
 
       setTimeout(() => {
-        void login(formData.get('customer-email'), formData.get('customer-password'));
+        void login(formData);
       }, 3000);
     }
 

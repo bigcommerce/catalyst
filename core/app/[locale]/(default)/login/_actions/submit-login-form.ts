@@ -1,6 +1,7 @@
 'use server';
 
 import { isRedirectError } from 'next/dist/client/components/redirect';
+import { redirect } from 'next/navigation';
 
 import { Credentials, signIn } from '~/auth';
 
@@ -13,9 +14,12 @@ export const submitLoginForm = async (_previousState: unknown, formData: FormDat
 
     await signIn('credentials', {
       ...credentials,
-      // TODO: Redirect to previous page
-      redirectTo: '/account',
+      // We want to use next/navigation for the redirect as it
+      // follows basePath and trailing slash configurations.
+      redirect: false,
     });
+
+    redirect('/account');
   } catch (error: unknown) {
     // We need to throw this error to trigger the redirect as Next.js uses error boundaries to redirect.
     if (isRedirectError(error)) {
