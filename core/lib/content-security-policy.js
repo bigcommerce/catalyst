@@ -11,8 +11,8 @@ const builder = require('content-security-policy-builder');
 const cspHeader = builder({
   directives: {
     baseUri: ['self'],
-    formAction: ['self'],
     frameAncestors: [frameAncestors],
+    // formAction: ['self'],
     // defaultSrc: ['self'],
     // scriptSrc: ['self'],
     // styleSrc: ['self'],
