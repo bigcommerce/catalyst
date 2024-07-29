@@ -9,13 +9,17 @@ interface Tab {
 
 interface Props extends ComponentPropsWithoutRef<typeof TabsPrimitive.Root> {
   defaultValue?: string;
+  label: string;
   tabs: Tab[];
 }
 
-export function Tabs({ className, tabs, defaultValue, ...props }: Props) {
+export function Tabs({ className, defaultValue, label, tabs, ...props }: Props) {
   return (
     <TabsPrimitive.Root activationMode="manual" defaultValue={defaultValue} {...props}>
-      <TabsPrimitive.List className="mb-8 flex list-none items-start overflow-x-auto text-base">
+      <TabsPrimitive.List
+        aria-label={label}
+        className="mb-8 flex list-none items-start overflow-x-auto text-base"
+      >
         {tabs.map((tab) => (
           <TabsPrimitive.Trigger
             className="px-4 pb-2 data-[state=active]:border-b-4 data-[state=active]:border-primary data-[state=active]:text-primary"
