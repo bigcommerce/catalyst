@@ -31,6 +31,7 @@ export const AccountTabs = ({ children, activeTab, tabs }: Props) => {
 
   return (
     <Tabs
+      aria-label="Account tabs"
       defaultValue={activeTab}
       tabs={tabs.map((tab) => ({
         value: tab,
