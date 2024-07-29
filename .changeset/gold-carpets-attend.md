@@ -40,20 +40,19 @@ Before refactor:
 
 ```
 <Select
-    aria-label={t('ariaLabel')}
     onValueChange={onSort}
     value={value}
 >
     <SelectContent>
-        <SelectItem value="featured">{t('featuredItems')}</SelectItem>
-        <SelectItem value="newest">{t('newestItems')}</SelectItem>
-        <SelectItem value="best_selling">{t('bestSellingItems')}</SelectItem>
-        <SelectItem value="a_to_z">{t('aToZ')}</SelectItem>
-        <SelectItem value="z_to_a">{t('zToA')}</SelectItem>
-        <SelectItem value="best_reviewed">{t('byReview')}</SelectItem>
-        <SelectItem value="lowest_price">{t('priceAscending')}</SelectItem>
-        <SelectItem value="highest_price">{t('priceDescending')}</SelectItem>
-        <SelectItem value="relevance">{t('relevance')}</SelectItem>
+        <SelectItem value="featured">Featured</SelectItem>
+        <SelectItem value="newest">Newest</SelectItem>
+        <SelectItem value="best_selling">Best selling</SelectItem>
+        <SelectItem value="a_to_z">A to Z</SelectItem>
+        <SelectItem value="z_to_a">Z to A</SelectItem>
+        <SelectItem value="best_reviewed">By reviews</SelectItem>
+        <SelectItem value="lowest_price">Price ascending</SelectItem>
+        <SelectItem value="highest_price">Price descending</SelectItem>
+        <SelectItem value="relevance">Relevance</SelectItem>
     </SelectContent>
 </Select>
 ```
@@ -62,18 +61,17 @@ After refactor:
 
 ```
 <Select
-    aria-label={t('ariaLabel')}
     onValueChange={onSort}
     options={[
-        { value: 'featured', label: t('featuredItems') },
-        { value: 'newest', label: t('newestItems') },
-        { value: 'best_selling', label: t('bestSellingItems') },
-        { value: 'a_to_z', label: t('aToZ') },
-        { value: 'z_to_a', label: t('zToA') },
-        { value: 'best_reviewed', label: t('byReview') },
-        { value: 'lowest_price', label: t('priceAscending') },
-        { value: 'highest_price', label: t('priceDescending') },
-        { value: 'relevance', label: t('relevance') },
+        { value: 'featured', label: 'Featured' },
+        { value: 'newest', label: 'Newest' },
+        { value: 'best_selling', label: 'Best selling' },
+        { value: 'a_to_z', label: 'A to Z' },
+        { value: 'z_to_a', label: 'Z to A' },
+        { value: 'best_reviewed', label: 'By reviews'},
+        { value: 'lowest_price', label: 'Price ascending' },
+        { value: 'highest_price', label: 'Price descending' },
+        { value: 'relevance', label: 'Relevance' },
     ]}
     value={value}
 />
