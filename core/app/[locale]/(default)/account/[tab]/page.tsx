@@ -5,10 +5,11 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import { getCustomerAddresses } from '~/client/queries/get-customer-addresses';
 
 import { AddressesContent } from './_components/addresses-content';
+import { OrdersContent } from './_components/orders-content';
 import { SettingsContent } from './_components/settings-content';
 import { TabHeading } from './_components/tab-heading';
 import { TabType } from './layout';
-import { getCustomerSettingsQuery } from './page-data';
+import { getCustomerOrders, getCustomerSettingsQuery } from './page-data';
 
 interface Props {
   params: {
@@ -34,8 +35,25 @@ export async function generateMetadata({ params: { tab } }: Props): Promise<Meta
 
 export default async function AccountTabPage({ params: { tab }, searchParams }: Props) {
   switch (tab) {
-    case 'orders':
-      return <TabHeading heading={tab} />;
+    case 'orders': {
+      const { before, after } = searchParams;
+      const customerOrdersDetails = await getCustomerOrders({
+        ...(after && { after }),
+        ...(before && { before }),
+      });
+
+      if (!customerOrdersDetails) {
+        notFound();
+      }
+
+      if (searchParams.order) {
+        return <div>Order # {searchParams.order}</div>;
+      }
+
+      const { orders, pageInfo } = customerOrdersDetails;
+
+      return <OrdersContent orders={orders} pageInfo={pageInfo} />;
+    }
 
     case 'messages':
       return <TabHeading heading={tab} />;
