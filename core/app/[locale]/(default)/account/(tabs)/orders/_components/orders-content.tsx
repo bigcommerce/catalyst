@@ -1,23 +1,32 @@
+import { notFound } from 'next/navigation';
 import { getLocale, getTranslations } from 'next-intl/server';
 
 import { Pagination } from '~/components/ui/pagination';
 
 import { TabHeading } from '../../_components/tab-heading';
-import { getCustomerOrders } from '../page-data';
+import { getCustomerOrders, getOrderDetails } from '../page-data';
 
+import { OrderDetails } from './order-details';
 import { OrdersList } from './orders-list';
 
 type CustomerOrders = NonNullable<Awaited<ReturnType<typeof getCustomerOrders>>>;
 
 interface Props {
+  orderId?: string;
   orders: CustomerOrders['orders'];
   pageInfo: CustomerOrders['pageInfo'];
 }
 
-export const OrdersContent = async ({ orders, pageInfo }: Props) => {
+export const OrdersContent = async ({ orderId, orders, pageInfo }: Props) => {
   const locale = await getLocale();
   const t = await getTranslations({ locale, namespace: 'Account.Orders' });
   const { hasNextPage, hasPreviousPage, startCursor, endCursor } = pageInfo;
+
+  if (orderId) {
+    const orderData = await getOrderDetails({ orderId });
+
+    return orderData ? <OrderDetails data={orderData} /> : notFound();
+  }
 
   return (
     <>
