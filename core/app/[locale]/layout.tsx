@@ -1,5 +1,3 @@
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
@@ -80,8 +78,6 @@ export default function RootLayout({ children, params: { locale } }: RootLayoutP
         <NextIntlClientProvider locale={locale} messages={{ Providers: messages.Providers ?? {} }}>
           <Providers>{children}</Providers>
         </NextIntlClientProvider>
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );
