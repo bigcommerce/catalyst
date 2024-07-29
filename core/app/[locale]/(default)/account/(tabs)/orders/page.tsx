@@ -8,11 +8,12 @@ interface Props {
     [key: string]: string | string[] | undefined;
     before?: string;
     after?: string;
+    order?: string;
   };
 }
 
 export default async function OrdersPage({ searchParams }: Props) {
-  const { before, after } = searchParams;
+  const { before, after, order } = searchParams;
   const customerOrdersDetails = await getCustomerOrders({
     ...(after && { after }),
     ...(before && { before }),
@@ -22,13 +23,9 @@ export default async function OrdersPage({ searchParams }: Props) {
     notFound();
   }
 
-  if (searchParams.order) {
-    return <div>Order # {searchParams.order}</div>;
-  }
-
   const { orders, pageInfo } = customerOrdersDetails;
 
-  return <OrdersContent orders={orders} pageInfo={pageInfo} />;
+  return <OrdersContent orderId={order} orders={orders} pageInfo={pageInfo} />;
 }
 
 export const runtime = 'edge';
