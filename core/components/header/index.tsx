@@ -129,15 +129,17 @@ export const Header = async ({ cart, data }: Props) => {
           <User />
         </Link>
       )}
-      <Suspense
-        fallback={
-          <CartLink>
-            <ShoppingCart aria-label="cart" />
-          </CartLink>
-        }
-      >
-        {cart}
-      </Suspense>
+      <p role="status">
+        <Suspense
+          fallback={
+            <CartLink>
+              <ShoppingCart aria-label="cart" />
+            </CartLink>
+          }
+        >
+          {cart}
+        </Suspense>
+      </p>
     </ComponentsHeader>
   );
 };
