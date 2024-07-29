@@ -78,7 +78,7 @@ export const MultipleChoiceField = ({ option }: Props) => {
             items={values
               .filter((value) => '__typename' in value && value.__typename === 'SwatchOptionValue')
               .map((value) => ({
-                label: `${option.displayName} ${value.label}`,
+                label: value.label,
                 value: value.entityId.toString(),
                 variantColor: value.hexColors[0],
                 onMouseEnter: () => {
@@ -114,7 +114,6 @@ export const MultipleChoiceField = ({ option }: Props) => {
             items={values.map((value) => ({
               label: value.label,
               value: value.entityId.toString(),
-              title: `${option.displayName} ${value.label}`,
               onMouseEnter: () => {
                 handleMouseEnter({ optionId: option.entityId, valueId: Number(value.entityId) });
               },

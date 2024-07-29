@@ -15,17 +15,17 @@ test('Selecting various options on color panel should update query parameters', 
 
   await expect(page.getByRole('dialog', { name: 'Choose options' })).toBeVisible();
 
-  await page.getByRole('radio', { name: 'Color Silver' }).click();
+  await page.getByRole('radio', { name: 'Silver' }).click();
 
   await expect(page).toHaveURL('bath/?showQuickAdd=77&109=103');
 
   await expect(page.getByRole('dialog', { name: 'Choose options' })).toBeVisible();
 
-  await page.getByRole('radio', { name: 'Color Purple' }).click();
+  await page.getByRole('radio', { name: 'Purple' }).click();
 
   await expect(page).toHaveURL('bath/?showQuickAdd=77&109=105');
 
-  await page.getByRole('radio', { name: 'Color Orange' }).click();
+  await page.getByRole('radio', { name: 'Orange' }).click();
 
   await expect(page).toHaveURL('bath/?showQuickAdd=77&109=109');
 });
