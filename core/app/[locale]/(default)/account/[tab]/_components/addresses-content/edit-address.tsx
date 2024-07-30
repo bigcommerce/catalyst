@@ -137,15 +137,14 @@ export const EditAddress = ({
     const submit = await updateAddress({ addressId: address.entityId, formData });
 
     if (submit.status === 'success') {
-      form.current?.reset();
-      setFormStatus({
+      setAccountState({
         status: 'success',
         message: t('successMessage'),
       });
 
-      setTimeout(() => {
-        router.replace('/account/addresses');
-      }, 3000);
+      router.push('/account/addresses');
+
+      return;
     }
 
     if (submit.status === 'error') {
@@ -168,14 +167,11 @@ export const EditAddress = ({
       setAccountState({ status, message });
     }
 
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
+    router.push('/account/addresses');
+  };
 
-    setTimeout(() => {
-      router.replace('/account/addresses');
-    }, 500);
+  const onCancelChange = () => {
+    setAccountState({ status: 'idle' });
   };
 
   return (
@@ -277,7 +273,12 @@ export const EditAddress = ({
           <FormSubmit asChild>
             <SubmitButton messages={{ submit: t('submit'), submitting: t('submitting') }} />
           </FormSubmit>
-          <Button asChild className="items-center px-8 md:ms-6 md:w-fit" variant="secondary">
+          <Button
+            asChild
+            className="items-center px-8 md:ms-6 md:w-fit"
+            onClick={onCancelChange}
+            variant="secondary"
+          >
             <Link href="/account/addresses">{t('cancel')}</Link>
           </Button>
           <Modal

@@ -27,7 +27,7 @@ export const AddressesContent = async ({
   pageInfo,
 }: Props) => {
   const locale = await getLocale();
-  const t = await getTranslations({ locale, namespace: 'Account.Home' });
+  const t = await getTranslations({ locale, namespace: 'Account.Addresses' });
   const tPagination = await getTranslations({ locale, namespace: 'Pagination' });
   const { hasNextPage, hasPreviousPage, startCursor, endCursor } = pageInfo;
 
