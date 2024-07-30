@@ -8,7 +8,6 @@ import { Compare } from './compare';
 
 interface Props extends ComponentPropsWithRef<'div'> {
   addToCart?: ReactNode;
-  brand?: string;
   image?: { url: string; altText: string } | null;
   imagePriority?: boolean;
   imageSize?: 'square' | 'tall' | 'wide';
@@ -16,12 +15,12 @@ interface Props extends ComponentPropsWithRef<'div'> {
   price?: ReactNode;
   productId: number;
   showCompare?: boolean;
+  subtitle?: string;
   title: string;
 }
 
 const ProductCard = ({
   addToCart,
-  brand,
   className,
   image,
   imagePriority = false,
@@ -30,6 +29,7 @@ const ProductCard = ({
   price,
   productId,
   showCompare = true,
+  subtitle,
   title,
   ...props
 }: Props) => {
@@ -58,7 +58,7 @@ const ProductCard = ({
         </div>
       </div>
       <div className={cn('flex flex-1 flex-col gap-1', Boolean(addToCart) && 'justify-end')}>
-        {brand ? <p className="text-base text-gray-500">{brand}</p> : null}
+        {subtitle ? <p className="text-base text-gray-500">{subtitle}</p> : null}
         <h3 className="text-xl font-bold lg:text-2xl">
           <Link
             className="focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-primary/20 focus-visible:ring-0"
