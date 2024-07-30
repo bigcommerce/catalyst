@@ -6,7 +6,6 @@ export const bodl = new Bodl({
   // TODO: Replace with actual store configuration
   ga4: {
     gaId: process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ?? '',
-    developerId: 0,
     consentModeEnabled: false,
   },
 });

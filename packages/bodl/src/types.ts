@@ -12,6 +12,14 @@ declare global {
   }
 }
 
+export interface BodlConfig {
+  channel_id: number;
+  ga4?: {
+    gaId: string;
+    consentModeEnabled: boolean;
+  };
+}
+
 interface line_item {
   product_id: string;
   product_name: string;

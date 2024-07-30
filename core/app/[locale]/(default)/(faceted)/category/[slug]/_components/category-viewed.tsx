@@ -19,7 +19,6 @@ interface Props {
 }
 
 const productItemTransform = (p: productSearchItem, c: Category) => {
-  // const category = removeEdgesAndNodes(p.categories).at(0);
   const breadcrumbs = c ? removeEdgesAndNodes(c.breadcrumbs) : [];
 
   return {

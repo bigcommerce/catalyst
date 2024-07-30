@@ -1,6 +1,6 @@
+import { ProductItemFragment } from '~/client/fragments/product-item';
 import { graphql } from '~/client/graphql';
 
-import { ProductItemFragment } from '../../client/fragments/product-item';
 import { ProductFormFragment } from '../product-form/fragment';
 
 export const ProductSheetContentFragment = graphql(
