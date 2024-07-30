@@ -33,5 +33,5 @@ test('Account register', async ({ page }) => {
     ),
   ).toBeVisible();
   await page.getByRole('heading', { name: 'My Account' }).waitFor();
-  await expect(page).toHaveURL('/account');
+  await expect(page).toHaveURL('/account/');
 });

@@ -31,7 +31,7 @@ test('Account access is restricted for guest users', async ({ page }) => {
 test('My Account tabs are displayed and clickable', async ({ page }) => {
   await loginWithUserAccount(page, testUserEmail, testUserPassword);
 
-  await expect(page).toHaveURL('/account');
+  await expect(page).toHaveURL('/account/');
   await expect(page.getByRole('heading', { name: 'Orders' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Messages' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Addresses' })).toBeVisible();
