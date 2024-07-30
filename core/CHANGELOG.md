@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.11.0
+
+### Minor Changes
+
+- [#1156](https://github.com/bigcommerce/catalyst/pull/1156) [`7d91478`](https://github.com/bigcommerce/catalyst/commit/7d9147894deb17ca17048ac95b86e5a8a0def515) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Adds customer information onto the session for consumption in both server and client components
+
+### Patch Changes
+
+- [#1183](https://github.com/bigcommerce/catalyst/pull/1183) [`4e7ed57`](https://github.com/bigcommerce/catalyst/commit/4e7ed57979a82b04cc1fcb47025356c4b746db82) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Uses `next/navigation` for logging in as a customer instead of the built-in `redirectTo` option. That option was not following the `trailingSlash` config set in `next.config.js` which caused test failures.
+
+- [#1179](https://github.com/bigcommerce/catalyst/pull/1179) [`ae8d985`](https://github.com/bigcommerce/catalyst/commit/ae8d985a89c229f945a596d7a905828dfcbe490e) Thanks [@deini](https://github.com/deini)! - bump next to 14.2.5
+
+- Updated dependencies []:
+  - @bigcommerce/catalyst-client@0.5.0
+
 ## 0.10.0
 
 ### Minor Changes
