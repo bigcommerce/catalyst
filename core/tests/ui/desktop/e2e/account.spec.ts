@@ -69,7 +69,7 @@ test('Account dropdown is visible in header', async ({ page }) => {
 
   await page.goto('/');
 
-  await page.getByRole('link', { name: 'Account' }).hover();
+  await page.getByRole('button', { name: 'Account' }).click();
 
   await expect(page.getByText('Log out')).toBeInViewport();
 });

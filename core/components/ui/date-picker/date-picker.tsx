@@ -1,21 +1,51 @@
-'use client';
+import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
+import { ComponentPropsWithoutRef, ElementRef, forwardRef, useState } from 'react';
+import { DayPicker, DayPickerSingleProps } from 'react-day-picker';
 
-import { CalendarIcon } from 'lucide-react';
-import * as React from 'react';
-import { DayPickerSingleProps } from 'react-day-picker';
+import { Input, InputProps } from '../input';
+import { Popover } from '../popover';
 
-import { Calendar } from '../calendar';
-import { Input, InputIcon, InputProps } from '../input';
-import { Popover, PopoverContent, PopoverTrigger } from '../popover';
+const Calendar = ({ ...props }: ComponentPropsWithoutRef<typeof DayPicker>) => {
+  return (
+    <DayPicker
+      className="w-[304px]"
+      classNames={{
+        month: 'space-y-4',
+        caption: 'flex justify-center pt-1 relative items-center',
+        caption_label: 'text-base',
+        nav: 'space-x-1 flex items-center',
+        nav_button:
+          'relative flex h-8 w-8 items-center justify-center border-2 border-none border-primary bg-transparent p-0 text-base font-semibold leading-6 text-primary hover:bg-secondary hover:bg-opacity-10 hover:text-secondary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-gray-400 disabled:text-gray-400 disabled:hover:bg-transparent disabled:hover:text-gray-400',
+        nav_button_previous: 'absolute start-1',
+        nav_button_next: 'absolute end-1',
+        head_row: 'flex',
+        head_cell: 'text-gray-400 w-10 text-xs font-normal font-normal',
+        row: 'flex w-full',
+        cell: 'relative flex h-10 w-10 items-center justify-center p-0 text-center text-xs font-normal focus-within:relative focus-within:z-20 focus-within:rounded focus-within:border focus-within:border-primary/20',
+        day: 'h-8 w-8 p-0 text-base hover:bg-secondary/10 focus-visible:outline-none aria-selected:bg-primary aria-selected:text-white aria-selected:hover:bg-primary aria-selected:hover:text-white',
 
-type DatePickerProps = Omit<InputProps, 'defaultValue'> & {
+        day_today: 'bg-secondary/10',
+        day_disabled: 'text-gray-400 aria-selected:bg-gray-100 aria-selected:text-white',
+      }}
+      components={{
+        IconLeft: () => <ChevronLeftIcon className="h-6 w-6" />,
+        IconRight: () => <ChevronRightIcon className="h-6 w-6" />,
+      }}
+      {...props}
+    />
+  );
+};
+
+Calendar.displayName = 'Calendar';
+
+type Props = Omit<InputProps, 'defaultValue'> & {
   defaultValue?: string | Date;
   selected?: DayPickerSingleProps['selected'];
   onSelect?: DayPickerSingleProps['onSelect'];
   disabledDays?: DayPickerSingleProps['disabled'];
 };
 
-export const DatePicker = React.forwardRef<React.ElementRef<'div'>, DatePickerProps>(
+const DatePicker = forwardRef<ElementRef<'input'>, Props>(
   (
     {
       defaultValue,
@@ -28,7 +58,7 @@ export const DatePicker = React.forwardRef<React.ElementRef<'div'>, DatePickerPr
     },
     ref,
   ) => {
-    const [date, setDate] = React.useState<Date | undefined>(
+    const [date, setDate] = useState<Date | undefined>(
       defaultValue ? new Date(defaultValue) : undefined,
     );
 
@@ -36,34 +66,34 @@ export const DatePicker = React.forwardRef<React.ElementRef<'div'>, DatePickerPr
     const formattedDate = date ? Intl.DateTimeFormat().format(date) : undefined;
 
     return (
-      <div ref={ref}>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Input
-              placeholder={placeholder}
-              readOnly={true}
-              required={required}
-              type="text"
-              value={formattedSelected ?? formattedDate ?? ''}
-              {...props}
-            >
-              <InputIcon>
-                <CalendarIcon />
-              </InputIcon>
-            </Input>
-          </PopoverTrigger>
-          <PopoverContent align="start" className="w-auto p-0">
-            <Calendar
-              disabled={disabledDays}
-              initialFocus
-              mode="single"
-              onSelect={onSelect || setDate}
-              required={required}
-              selected={selected ?? date}
-            />
-          </PopoverContent>
-        </Popover>
-      </div>
+      <Popover
+        align="start"
+        trigger={
+          <Input
+            icon={<CalendarIcon />}
+            placeholder={placeholder}
+            readOnly={true}
+            ref={ref}
+            required={required}
+            type="text"
+            value={formattedSelected ?? formattedDate ?? ''}
+            {...props}
+          />
+        }
+      >
+        <Calendar
+          disabled={disabledDays}
+          initialFocus
+          mode="single"
+          onSelect={onSelect || setDate}
+          required={required}
+          selected={selected ?? date}
+        />
+      </Popover>
     );
   },
 );
+
+DatePicker.displayName = 'DatePicker';
+
+export { DatePicker };

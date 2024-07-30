@@ -1,66 +1,65 @@
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
-import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
+import {
+  ComponentPropsWithoutRef,
+  ComponentPropsWithRef,
+  ElementRef,
+  forwardRef,
+  useId,
+} from 'react';
 
+import { BcImage } from '~/components/bc-image';
 import { cn } from '~/lib/utils';
 
-type RadioIndicatorType = typeof RadioGroupPrimitive.Indicator;
+import { Label } from '../label';
 
-const PickListIndicator = forwardRef<
-  ElementRef<RadioIndicatorType>,
-  ComponentPropsWithRef<RadioIndicatorType>
->(({ children, className, ...props }, ref) => {
-  return (
-    <RadioGroupPrimitive.Indicator
-      className={cn('h-2 w-2 rounded-full bg-white', className)}
-      {...props}
-      ref={ref}
-    >
-      {children}
-    </RadioGroupPrimitive.Indicator>
-  );
-});
+interface Item extends ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> {
+  label: string;
+  defaultImage: { altText: string; url: string } | null;
+  onMouseEnter?: () => void;
+}
 
-PickListIndicator.displayName = 'PickListIndicator';
+interface Props extends ComponentPropsWithRef<typeof RadioGroupPrimitive.Root> {
+  items: Item[];
+}
 
-type RadioItemType = typeof RadioGroupPrimitive.Item;
+const PickList = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
+  ({ children, items, className, ...props }, ref) => {
+    const id = useId();
 
-const PickListItem = forwardRef<ElementRef<RadioItemType>, ComponentPropsWithRef<RadioItemType>>(
-  ({ children, className, ...props }, ref) => {
-    return (
-      <RadioGroupPrimitive.Item
-        className={cn(
-          'flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-gray-200',
-          'hover:border-secondary',
-          'focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
-          'focus-visible:hover:border-secondary',
-          'radix-state-checked:border-primary radix-state-checked:bg-primary',
-          'radix-state-checked:hover:border-secondary radix-state-checked:hover:bg-secondary',
-          'disabled:pointer-events-none disabled:bg-gray-100',
-          'radix-state-checked:disabled:border-gray-400 radix-state-checked:disabled:bg-gray-400',
-          className,
-        )}
-        ref={ref}
-        {...props}
-      >
-        {children || <PickListIndicator />}
-      </RadioGroupPrimitive.Item>
-    );
-  },
-);
-
-PickListItem.displayName = 'PickListItem';
-
-type RadioGroupType = typeof RadioGroupPrimitive.Root;
-
-const PickList = forwardRef<ElementRef<RadioGroupType>, ComponentPropsWithRef<RadioGroupType>>(
-  ({ children, className, ...props }, ref) => {
     return (
       <RadioGroupPrimitive.Root
         className={cn('grid auto-rows-fr divide-y divide-solid divide-gray-200 border', className)}
         ref={ref}
         {...props}
       >
-        {children}
+        {items.map((item) => {
+          const { defaultImage, label, value, onMouseEnter, ...itemProps } = item;
+
+          return (
+            <div className="flex items-center p-4" key={value} onMouseEnter={onMouseEnter}>
+              {Boolean(defaultImage) && (
+                <BcImage
+                  alt={defaultImage?.altText || ''}
+                  className="me-6"
+                  height={48}
+                  src={defaultImage?.url || ''}
+                  width={48}
+                />
+              )}
+              <RadioGroupPrimitive.Item
+                {...itemProps}
+                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-gray-200 hover:border-secondary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 focus-visible:hover:border-secondary disabled:pointer-events-none disabled:bg-gray-100 radix-state-checked:border-primary radix-state-checked:bg-primary radix-state-checked:hover:border-secondary radix-state-checked:hover:bg-secondary radix-state-checked:disabled:border-gray-400 radix-state-checked:disabled:bg-gray-400"
+                id={`${id}-${value}`}
+                value={value}
+              >
+                <RadioGroupPrimitive.Indicator className="h-2 w-2 rounded-full bg-white" />
+              </RadioGroupPrimitive.Item>
+              <Label className="w-full cursor-pointer ps-4" htmlFor={`${id}-${value}`}>
+                {label}
+              </Label>
+            </div>
+          );
+        })}
       </RadioGroupPrimitive.Root>
     );
   },
@@ -68,4 +67,4 @@ const PickList = forwardRef<ElementRef<RadioGroupType>, ComponentPropsWithRef<Ra
 
 PickList.displayName = 'PickList';
 
-export { PickList, PickListItem, PickListIndicator };
+export { PickList };

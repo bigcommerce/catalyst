@@ -2,13 +2,12 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { FragmentOf } from '~/client/graphql';
-import { BcImage } from '~/components/bc-image';
 import { Label } from '~/components/ui/label';
-import { PickList, PickListItem } from '~/components/ui/pick-list';
-import { RadioGroup, RadioItem } from '~/components/ui/radio-group';
-import { RectangleList, RectangleListItem } from '~/components/ui/rectangle-list';
-import { Select, SelectContent, SelectItem } from '~/components/ui/select';
-import { Swatch, SwatchItem } from '~/components/ui/swatch';
+import { PickList } from '~/components/ui/pick-list';
+import { RadioGroup } from '~/components/ui/radio-group';
+import { RectangleList } from '~/components/ui/rectangle-list';
+import { Select } from '~/components/ui/select';
+import { Swatch } from '~/components/ui/swatch';
 
 import { useProductFieldController } from '../../use-product-form';
 import { ErrorMessage } from '../shared/error-message';
@@ -71,11 +70,24 @@ export const MultipleChoiceField = ({ option }: Props) => {
     case 'Swatch':
       return (
         <div key={option.entityId}>
-          <Label className="mb-2 inline-block" id={`label-${option.entityId}`}>
+          <Label className="mb-2 inline-block font-semibold" id={`label-${option.entityId}`}>
             {option.displayName}
           </Label>
           <Swatch
             aria-labelledby={`label-${option.entityId}`}
+            items={values
+              .filter((value) => '__typename' in value && value.__typename === 'SwatchOptionValue')
+              .map((value) => ({
+                label: value.label,
+                value: value.entityId.toString(),
+                variantColor: value.hexColors[0],
+                onMouseEnter: () => {
+                  handleMouseEnter({
+                    optionId: option.entityId,
+                    valueId: Number(value.entityId),
+                  });
+                },
+              }))}
             name={field.name}
             onValueChange={(value) => {
               field.onChange(value);
@@ -86,28 +98,7 @@ export const MultipleChoiceField = ({ option }: Props) => {
               });
             }}
             value={field.value?.toString()}
-          >
-            {values.map((value) => {
-              if ('__typename' in value && value.__typename === 'SwatchOptionValue') {
-                return (
-                  <SwatchItem
-                    key={value.entityId}
-                    onMouseEnter={() => {
-                      handleMouseEnter({
-                        optionId: option.entityId,
-                        valueId: Number(value.entityId),
-                      });
-                    }}
-                    title={`${option.displayName} ${value.label}`}
-                    value={String(value.entityId)}
-                    variantColor={value.hexColors[0]}
-                  />
-                );
-              }
-
-              return null;
-            })}
-          </Swatch>
+          />
           {error && <ErrorMessage>{error.message}</ErrorMessage>}
         </div>
       );
@@ -115,11 +106,18 @@ export const MultipleChoiceField = ({ option }: Props) => {
     case 'RectangleBoxes':
       return (
         <div key={option.entityId}>
-          <Label className="mb-2 inline-block" id={`label-${option.entityId}`}>
+          <Label className="mb-2 inline-block font-semibold" id={`label-${option.entityId}`}>
             {option.displayName}
           </Label>
           <RectangleList
             aria-labelledby={`label-${option.entityId}`}
+            items={values.map((value) => ({
+              label: value.label,
+              value: value.entityId.toString(),
+              onMouseEnter: () => {
+                handleMouseEnter({ optionId: option.entityId, valueId: Number(value.entityId) });
+              },
+            }))}
             name={field.name}
             onValueChange={(value) => {
               field.onChange(value);
@@ -130,25 +128,7 @@ export const MultipleChoiceField = ({ option }: Props) => {
               });
             }}
             value={field.value?.toString()}
-          >
-            {values.map((value) => {
-              return (
-                <RectangleListItem
-                  key={value.entityId}
-                  onMouseEnter={() => {
-                    handleMouseEnter({
-                      optionId: option.entityId,
-                      valueId: Number(value.entityId),
-                    });
-                  }}
-                  title={`${option.displayName} ${value.label}`}
-                  value={String(value.entityId)}
-                >
-                  {value.label}
-                </RectangleListItem>
-              );
-            })}
-          </RectangleList>
+          />
           {error && <ErrorMessage>{error.message}</ErrorMessage>}
         </div>
       );
@@ -161,6 +141,10 @@ export const MultipleChoiceField = ({ option }: Props) => {
           </Label>
           <RadioGroup
             aria-labelledby={`label-${option.entityId}`}
+            items={values.map((value) => ({
+              label: value.label,
+              value: value.entityId.toString(),
+            }))}
             name={field.name}
             onValueChange={(value) => {
               field.onChange(value);
@@ -171,26 +155,8 @@ export const MultipleChoiceField = ({ option }: Props) => {
               });
             }}
             value={field.value?.toString()}
-          >
-            {values.map((value) => (
-              <div className="mb-2 flex" key={value.entityId}>
-                <RadioItem
-                  id={`${value.entityId}`}
-                  onMouseEnter={() => {
-                    handleMouseEnter({
-                      optionId: option.entityId,
-                      valueId: Number(value.entityId),
-                    });
-                  }}
-                  value={`${value.entityId}`}
-                  variant={error ? 'error' : undefined}
-                />
-                <Label className="cursor-pointer ps-4 font-normal" htmlFor={`${value.entityId}`}>
-                  {value.label}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
+            variant={error ? 'error' : undefined}
+          />
           {error && <ErrorMessage>{error.message}</ErrorMessage>}
         </div>
       );
@@ -198,11 +164,11 @@ export const MultipleChoiceField = ({ option }: Props) => {
     case 'DropdownList':
       return (
         <div key={option.entityId}>
-          <Label className="mb-2 inline-block font-semibold" id={`label-${option.entityId}`}>
+          <Label className="mb-2 inline-block font-semibold" htmlFor={`label-${option.entityId}`}>
             {option.displayName}
           </Label>
           <Select
-            aria-labelledby={`label-${option.entityId}`}
+            id={`label-${option.entityId}`}
             name={field.name}
             onValueChange={(value) => {
               field.onChange(value);
@@ -212,26 +178,19 @@ export const MultipleChoiceField = ({ option }: Props) => {
                 valueId: Number(value),
               });
             }}
+            options={values.map((value) => ({
+              label: value.label,
+              value: value.entityId.toString(),
+              onMouseEnter: () => {
+                handleMouseEnter({
+                  optionId: option.entityId,
+                  valueId: Number(value.entityId),
+                });
+              },
+            }))}
             value={field.value?.toString()}
             variant={error && 'error'}
-          >
-            <SelectContent>
-              {values.map((value) => (
-                <SelectItem
-                  key={value.entityId}
-                  onMouseEnter={() => {
-                    handleMouseEnter({
-                      optionId: option.entityId,
-                      valueId: Number(value.entityId),
-                    });
-                  }}
-                  value={`${value.entityId}`}
-                >
-                  {value.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          />
           {error && <ErrorMessage>{error.message}</ErrorMessage>}
         </div>
       );
@@ -245,6 +204,22 @@ export const MultipleChoiceField = ({ option }: Props) => {
           </Label>
           <PickList
             aria-labelledby={`label-${option.entityId}`}
+            items={values
+              .filter(
+                (value) =>
+                  '__typename' in value && value.__typename === 'ProductPickListOptionValue',
+              )
+              .map((value) => ({
+                value: value.entityId.toString(),
+                label: value.label,
+                defaultImage: value.defaultImage,
+                onMouseEnter: () => {
+                  handleMouseEnter({
+                    optionId: option.entityId,
+                    valueId: Number(value.entityId),
+                  });
+                },
+              }))}
             name={field.name}
             onValueChange={(value) => {
               field.onChange(value);
@@ -255,43 +230,7 @@ export const MultipleChoiceField = ({ option }: Props) => {
               });
             }}
             value={field.value?.toString()}
-          >
-            {values.map((value) => {
-              if ('__typename' in value && value.__typename === 'ProductPickListOptionValue') {
-                return (
-                  <div
-                    className="flex items-center p-4"
-                    key={value.entityId}
-                    onMouseEnter={() => {
-                      handleMouseEnter({
-                        optionId: option.entityId,
-                        valueId: Number(value.entityId),
-                      });
-                    }}
-                  >
-                    {Boolean(value.defaultImage) && (
-                      <BcImage
-                        alt={value.defaultImage?.altText || ''}
-                        className="me-6"
-                        height={48}
-                        src={value.defaultImage?.url || ''}
-                        width={48}
-                      />
-                    )}
-                    <PickListItem id={`${value.entityId}`} value={`${value.entityId}`} />
-                    <Label
-                      className="cursor-pointer ps-4 font-normal"
-                      htmlFor={`${value.entityId}`}
-                    >
-                      {value.label}
-                    </Label>
-                  </div>
-                );
-              }
-
-              return null;
-            })}
-          </PickList>
+          />
           {error && <ErrorMessage>{error.message}</ErrorMessage>}
         </div>
       );

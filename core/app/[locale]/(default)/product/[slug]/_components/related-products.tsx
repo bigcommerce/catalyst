@@ -62,7 +62,6 @@ export const RelatedProducts = async ({ productId }: Props) => {
         products={relatedProducts}
         showCart={false}
         showCompare={false}
-        showReviews={false}
         title={t('carouselTitle')}
       />
     </NextIntlClientProvider>

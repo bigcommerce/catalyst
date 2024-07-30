@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('Navigation menu', async ({ page }) => {
+test('Header', async ({ page }) => {
   // Arrange
   await page.goto('/');
 
