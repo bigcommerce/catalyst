@@ -3,7 +3,6 @@ import { ComponentPropsWithoutRef, ReactNode } from 'react';
 
 interface Tab {
   content: ReactNode;
-  title: ReactNode;
   value: string;
 }
 
@@ -26,7 +25,7 @@ export function Tabs({ className, defaultValue, label, tabs, ...props }: Props) 
             key={tab.value}
             value={tab.value}
           >
-            {tab.title}
+            {tab.value}
           </TabsPrimitive.Trigger>
         ))}
       </TabsPrimitive.List>
