@@ -40,27 +40,27 @@ test('My Account tabs are displayed and clickable', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Account settings' })).toBeVisible();
 
   await page.getByRole('heading', { name: 'Orders' }).click();
-  await expect(page).toHaveURL('account/orders/');
+  await expect(page).toHaveURL('/account/orders/');
   await expect(page.getByRole('heading', { name: 'Orders' })).toBeVisible();
 
   await page.getByRole('tab', { name: 'Messages' }).click();
-  await expect(page).toHaveURL('account/messages/');
+  await expect(page).toHaveURL('/account/messages/');
   await expect(page.getByRole('heading', { name: 'Messages' })).toBeVisible();
 
   await page.getByRole('tab', { name: 'Addresses' }).click();
-  await expect(page).toHaveURL('account/addresses/');
+  await expect(page).toHaveURL('/account/addresses/');
   await expect(page.getByRole('heading', { name: 'Addresses' })).toBeVisible();
 
   await page.getByRole('tab', { name: 'Wish lists' }).click();
-  await expect(page).toHaveURL('account/wishlists/');
+  await expect(page).toHaveURL('/account/wishlists/');
   await expect(page.getByRole('heading', { name: 'Wish lists' })).toBeVisible();
 
   await page.getByRole('tab', { name: 'Recently viewed' }).click();
-  await expect(page).toHaveURL('account/recently-viewed/');
+  await expect(page).toHaveURL('/account/recently-viewed/');
   await expect(page.getByRole('heading', { name: 'Recently viewed' })).toBeVisible();
 
   await page.getByRole('tab', { name: 'Account settings' }).click();
-  await expect(page).toHaveURL('account/settings/');
+  await expect(page).toHaveURL('/account/settings/');
   await expect(page.getByRole('heading', { name: 'Account settings' })).toBeVisible();
 });
 
