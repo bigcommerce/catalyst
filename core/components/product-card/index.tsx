@@ -51,7 +51,6 @@ export const ProductCard = ({
   return (
     <ComponentProductCard
       addToCart={showCart && <AddToCart data={product} />}
-      brand={brand?.name}
       image={defaultImage}
       imagePriority={imagePriority}
       imageSize={imageSize}
@@ -59,6 +58,7 @@ export const ProductCard = ({
       price={<Pricing data={product} />}
       productId={entityId}
       showCompare={showCompare}
+      subtitle={brand?.name}
       title={name}
     />
   );
