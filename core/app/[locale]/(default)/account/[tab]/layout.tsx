@@ -33,12 +33,21 @@ export default async function AccountTabLayout({
 
   const messages = await getMessages();
 
+  const tabsTitles = {
+    orders: t('orders'),
+    messages: t('messages'),
+    addresses: t('addresses'),
+    wishlists: t('wishlists'),
+    'recently-viewed': t('recentlyViewed'),
+    settings: t('settings'),
+  };
+
   return (
     <NextIntlClientProvider locale={locale} messages={{ Account: messages.Account ?? {} }}>
       <AccountStatusProvider>
         <h1 className="my-8 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
         <nav aria-label={t('accountTabsLabel')}>
-          <ul className="mb-8 flex list-none items-start overflow-x-auto text-base">
+          <ul className="mb-8 flex items-start overflow-x-auto">
             {tabList.map((tab) => (
               <li key={tab}>
                 <Link
@@ -50,7 +59,7 @@ export default async function AccountTabLayout({
                   prefetch="viewport"
                   prefetchKind="full"
                 >
-                  {tab === 'recently-viewed' ? t('recentlyViewed') : t(tab)}
+                  {tabsTitles[tab]}
                 </Link>
               </li>
             ))}
