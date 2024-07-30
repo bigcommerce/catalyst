@@ -3,7 +3,10 @@ import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
 import { Link } from '~/components/link';
+import { Message } from '~/components/ui/message';
 import { LocaleType } from '~/i18n';
+
+import { getStoreName } from './page-data';
 
 interface AccountItem {
   children: ReactNode;
@@ -27,18 +30,31 @@ const AccountItem = ({ children, title, description, href }: AccountItem) => {
   );
 };
 
+interface SearchParams {
+  register?: string;
+}
+
 interface Props {
   params: {
     locale: LocaleType;
   };
+  searchParams?: SearchParams;
 }
 
-export default async function AccountPage({ params: { locale } }: Props) {
+export default async function AccountPage({ params: { locale }, searchParams }: Props) {
   const t = await getTranslations({ locale, namespace: 'Account.Home' });
+  const storeName = await getStoreName();
+  const isRegister = searchParams?.register?.toLowerCase() === 'true';
 
   return (
     <div className="mx-auto">
       <h1 className="my-8 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
+
+      {isRegister && (
+        <Message className="col-span-full mb-8 w-full text-gray-500" variant="success">
+          <p>{t('successMessage', { storeName: storeName || 'Catalyst' })}</p>
+        </Message>
+      )}
 
       <div className="mb-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <AccountItem href="/account/orders" title={t('orders')}>

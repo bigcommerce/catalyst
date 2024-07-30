@@ -12,7 +12,7 @@ export const login = async (
     return await signIn('credentials', {
       email,
       password,
-      redirectTo: '/account',
+      redirectTo: '/account?register=true',
     });
   } catch (error: unknown) {
     if (isRedirectError(error)) {

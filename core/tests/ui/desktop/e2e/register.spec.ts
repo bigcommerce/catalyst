@@ -4,8 +4,6 @@ import { expect } from '@playwright/test';
 import { test } from '~/tests/fixtures';
 
 const password = faker.internet.password({ pattern: /[a-zA-Z0-9]/, length: 10 });
-const firstName = faker.person.firstName();
-const lastName = faker.person.lastName();
 
 test('Account register', async ({ page }) => {
   await page.goto('/login');
@@ -18,19 +16,14 @@ test('Account register', async ({ page }) => {
     .fill(faker.internet.email({ provider: 'mybigcommerce.com' }));
   await page.getByLabel('PasswordRequired', { exact: true }).fill(password);
   await page.getByLabel('Confirm PasswordRequired').fill(password);
-  await page.getByLabel('First NameRequired').fill(firstName);
-  await page.getByLabel('Last NameRequired').fill(lastName);
+  await page.getByLabel('First NameRequired').fill(faker.person.firstName());
+  await page.getByLabel('Last NameRequired').fill(faker.person.lastName());
   await page.getByLabel('Phone Number').fill(faker.phone.number());
   await page.getByLabel('Address Line 1Required').fill(faker.location.streetAddress());
   await page.getByLabel('Suburb/CityRequired').fill(faker.location.city());
   await page.getByLabel('Zip/PostcodeRequired').fill(faker.location.zipCode());
 
   await page.getByRole('button', { name: 'Create account' }).click();
-  await expect(
-    page.getByText(
-      `Dear ${firstName} ${lastName}, your account was successfully created. Redirecting to account...`,
-    ),
-  ).toBeVisible();
-  await page.getByRole('heading', { name: 'My Account' }).waitFor();
-  await expect(page).toHaveURL('account/');
+  await expect(page.getByText('Your account has been successfully created')).toBeVisible();
+  await expect(page).toHaveURL('account/?register=true');
 });
