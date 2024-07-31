@@ -105,6 +105,10 @@ export class Bodl {
 
   private call<T>(originalMethod: (payload: T) => void) {
     return (payload: T) => {
+      if (Bodl.globalSingleton === null) {
+        return;
+      }
+
       if (!window.bodlEvents) {
         // TODO: temporary hack - wait for bodl-events script to be loaded
         setTimeout(originalMethod.bind(this, payload), 500);
