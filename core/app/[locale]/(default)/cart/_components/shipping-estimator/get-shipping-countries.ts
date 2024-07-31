@@ -1,8 +1,15 @@
-import { getCountries } from '~/client/management/get-countries';
+import { FragmentOf } from 'gql.tada';
+
 import { getShippingZones } from '~/client/management/get-shipping-zones';
 
-export const getShippingCountries = async () => {
-  const [shippingZones, allCountries] = await Promise.all([getShippingZones(), getCountries()]);
+import { GeographyFragment } from './fragment';
+
+interface GetShippingCountries {
+  geography: FragmentOf<typeof GeographyFragment>;
+}
+
+export const getShippingCountries = async ({ geography }: GetShippingCountries) => {
+  const shippingZones = await getShippingZones();
 
   const uniqueCountryZones = shippingZones.reduce<string[]>((zones, item) => {
     item.locations.forEach(({ country_iso2 }) => {
@@ -24,11 +31,12 @@ export const getShippingCountries = async () => {
     return zones;
   }, []);
 
-  const shippingCountries = allCountries.flatMap((countryDetails) => {
-    const isCountryInTheList = uniqueCountryZones.includes(countryDetails.country_iso2);
+  const countries = geography.countries ?? [];
+  const shippingCountries = countries.flatMap((countryDetails) => {
+    const isCountryInTheList = uniqueCountryZones.includes(countryDetails.code);
 
     if (isCountryInTheList) {
-      const { id, country: name, country_iso2: countryCode } = countryDetails;
+      const { entityId: id, name, code: countryCode } = countryDetails;
 
       return { id, name, countryCode };
     }

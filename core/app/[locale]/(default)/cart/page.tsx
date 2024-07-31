@@ -12,6 +12,7 @@ import { CartItem, CartItemFragment } from './_components/cart-item';
 import { CheckoutButton } from './_components/checkout-button';
 import { CheckoutSummary, CheckoutSummaryFragment } from './_components/checkout-summary';
 import { EmptyCart } from './_components/empty-cart';
+import { GeographyFragment } from './_components/shipping-estimator/fragment';
 
 export const metadata = {
   title: 'Cart',
@@ -38,9 +39,12 @@ const CartPageQuery = graphql(
           ...CheckoutSummaryFragment
         }
       }
+      geography {
+        ...GeographyFragment
+      }
     }
   `,
-  [CartItemFragment, CheckoutSummaryFragment],
+  [CartItemFragment, CheckoutSummaryFragment, GeographyFragment],
 );
 
 export default async function CartPage({ params: { locale } }: Props) {
@@ -70,6 +74,7 @@ export default async function CartPage({ params: { locale } }: Props) {
 
   const cart = data.site.cart;
   const checkout = data.site.checkout;
+  const geography = data.geography;
 
   if (!cart) {
     return <EmptyCart locale={locale} />;
@@ -88,7 +93,7 @@ export default async function CartPage({ params: { locale } }: Props) {
         </ul>
 
         <div className="col-span-1 col-start-2 lg:col-start-3">
-          {checkout && <CheckoutSummary data={checkout} />}
+          {checkout && <CheckoutSummary checkout={checkout} geography={geography} />}
 
           <NextIntlClientProvider locale={locale} messages={{ Cart }}>
             <CheckoutButton cartId={cartId} />
