@@ -1,20 +1,10 @@
 'use client';
 
+import * as DialogPrimitive from '@radix-ui/react-alert-dialog';
 import { X } from 'lucide-react';
-import { MouseEventHandler, PropsWithChildren } from 'react';
+import { MouseEventHandler, PropsWithChildren, useId } from 'react';
 
 import { Button } from '~/components/ui/button';
-import {
-  Dialog,
-  DialogAction,
-  DialogCancel,
-  DialogContent,
-  DialogDescription,
-  DialogOverlay,
-  DialogPortal,
-  DialogTitle,
-  DialogTrigger,
-} from '~/components/ui/dialog';
 
 interface Props extends PropsWithChildren {
   actionHandler?: MouseEventHandler<HTMLButtonElement>;
@@ -32,39 +22,49 @@ export const Modal = ({
   title,
   children,
 }: Props) => {
+  const id = useId();
+
   return (
-    <Dialog>
-      <DialogTrigger aria-controls="modal-content" asChild>
+    <DialogPrimitive.Root>
+      <DialogPrimitive.Trigger aria-controls={id} asChild>
         {children}
-      </DialogTrigger>
-      <DialogPortal>
-        <DialogOverlay />
-        <DialogContent className="w-full sm:w-8/12 md:w-6/12 lg:w-5/12" id="modal-content">
+      </DialogPrimitive.Trigger>
+
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay className="data-[state=open]:animate-overlayShow fixed inset-0 bg-black/[.2]" />
+        <DialogPrimitive.Content
+          className="data-[state=open]:animate-contentShow fixed left-[50%] top-[50%] w-full translate-x-[-50%] translate-y-[-50%] bg-white shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none sm:w-8/12 md:w-3/4 md:w-6/12 lg:w-3/5 lg:w-5/12"
+          id={id}
+        >
           <div className="flex justify-between gap-4 p-6">
-            <DialogTitle>{title}</DialogTitle>
-            <DialogCancel asChild>
+            <DialogPrimitive.Title className="w-5/6 grow font-semibold">
+              {title}
+            </DialogPrimitive.Title>
+            <DialogPrimitive.Cancel asChild>
               <Button className="ms-auto w-min p-2" type="button" variant="subtle">
                 <X>
                   <title>{abortText}</title>
                 </X>
               </Button>
-            </DialogCancel>
+            </DialogPrimitive.Cancel>
           </div>
-          {Boolean(descriptionText) && <DialogDescription>{descriptionText}</DialogDescription>}
+          {Boolean(descriptionText) && (
+            <DialogPrimitive.Description>{descriptionText}</DialogPrimitive.Description>
+          )}
           <div className="flex flex-col gap-2 p-6 lg:flex-row">
-            <DialogAction asChild>
+            <DialogPrimitive.Action asChild>
               <Button className="w-full lg:w-fit" onClick={actionHandler} variant="primary">
                 {confirmationText}
               </Button>
-            </DialogAction>
-            <DialogCancel asChild>
+            </DialogPrimitive.Action>
+            <DialogPrimitive.Cancel asChild>
               <Button className="w-full lg:w-fit" variant="subtle">
                 {abortText}
               </Button>
-            </DialogCancel>
+            </DialogPrimitive.Cancel>
           </div>
-        </DialogContent>
-      </DialogPortal>
-    </Dialog>
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
   );
 };

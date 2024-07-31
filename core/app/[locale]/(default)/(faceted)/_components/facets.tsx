@@ -5,12 +5,7 @@ import { useTranslations } from 'next-intl';
 import { FormEvent, useRef, useTransition } from 'react';
 
 import { Link } from '~/components/link';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '~/components/ui/accordion';
+import { Accordions } from '~/components/ui/accordions';
 import { Button } from '~/components/ui/button';
 import { Checkbox } from '~/components/ui/checkbox';
 import { Input } from '~/components/ui/input';
@@ -88,304 +83,251 @@ export const Facets = ({ facets, pageType }: Props) => {
     });
   };
 
-  return (
-    <Accordion defaultValue={defaultOpenFacets} type="multiple">
-      <form data-pending={isPending ? '' : undefined} onSubmit={handleSubmit} ref={ref}>
-        {facets.map((facet) => {
-          if (facet.__typename === 'BrandSearchFilter' && pageType !== 'brand') {
+  const accordions = facets.map((facet) => {
+    let content = null;
+
+    if (facet.__typename === 'BrandSearchFilter' && pageType !== 'brand') {
+      content = (
+        <>
+          {facet.brands.map((brand) => {
+            const normalizedBrandName = brand.name.replace(/\s/g, '-').toLowerCase();
+            const id = `${normalizedBrandName}-${brand.entityId}`;
+            const labelId = `${normalizedBrandName}-${brand.entityId}-label`;
+
+            const key = `${brand.entityId}-${brand.isSelected.toString()}`;
+
             return (
-              <AccordionItem key={facet.__typename} value={facet.name}>
-                <AccordionTrigger>
-                  <h3>{facet.name}</h3>
-                </AccordionTrigger>
-                <AccordionContent>
-                  {facet.brands.map((brand) => {
-                    const normalizedBrandName = brand.name.replace(/\s/g, '-').toLowerCase();
-                    const id = `${normalizedBrandName}-${brand.entityId}`;
-                    const labelId = `${normalizedBrandName}-${brand.entityId}-label`;
-
-                    const key = `${brand.entityId}-${brand.isSelected.toString()}`;
-
-                    return (
-                      <div className="flex max-w-sm items-center py-2 ps-1" key={key}>
-                        <Checkbox
-                          aria-labelledby={labelId}
-                          defaultChecked={brand.isSelected}
-                          id={id}
-                          name="brand"
-                          onCheckedChange={submitForm}
-                          value={brand.entityId}
-                        />
-                        <Label
-                          className="cursor-pointer ps-3 font-normal"
-                          htmlFor={id}
-                          id={labelId}
-                        >
-                          {brand.name}
-                          <ProductCount
-                            count={brand.productCount}
-                            shouldDisplay={facet.displayProductCount}
-                          />
-                        </Label>
-                      </div>
-                    );
-                  })}
-                </AccordionContent>
-              </AccordionItem>
+              <div className="flex max-w-sm items-center py-2 ps-1" key={key}>
+                <Checkbox
+                  aria-labelledby={labelId}
+                  defaultChecked={brand.isSelected}
+                  id={id}
+                  name="brand"
+                  onCheckedChange={submitForm}
+                  value={brand.entityId}
+                />
+                <Label className="cursor-pointer ps-3" htmlFor={id} id={labelId}>
+                  {brand.name}
+                  <ProductCount
+                    count={brand.productCount}
+                    shouldDisplay={facet.displayProductCount}
+                  />
+                </Label>
+              </div>
             );
-          }
+          })}
+        </>
+      );
+    }
 
-          if (facet.__typename === 'CategorySearchFilter' && pageType !== 'category') {
+    if (facet.__typename === 'CategorySearchFilter' && pageType !== 'category') {
+      content = (
+        <>
+          {facet.categories.map((category) => {
+            const normalizedCategoryName = category.name.replace(/\s/g, '-').toLowerCase();
+            const id = `${normalizedCategoryName}-${category.entityId}`;
+            const labelId = `${normalizedCategoryName}-${category.entityId}-label`;
+
+            const key = `${category.entityId}-${category.isSelected.toString()}`;
+
             return (
-              <AccordionItem key={facet.__typename} value={facet.name}>
-                <AccordionTrigger>
-                  <h3>{facet.name}</h3>
-                </AccordionTrigger>
-                <AccordionContent>
-                  {facet.categories.map((category) => {
-                    const normalizedCategoryName = category.name.replace(/\s/g, '-').toLowerCase();
-                    const id = `${normalizedCategoryName}-${category.entityId}`;
-                    const labelId = `${normalizedCategoryName}-${category.entityId}-label`;
-
-                    const key = `${category.entityId}-${category.isSelected.toString()}`;
-
-                    return (
-                      <div className="flex max-w-sm items-center py-2 ps-1" key={key}>
-                        <Checkbox
-                          aria-labelledby={labelId}
-                          defaultChecked={category.isSelected}
-                          id={id}
-                          name="categoryIn"
-                          onCheckedChange={submitForm}
-                          value={category.entityId}
-                        />
-                        <Label
-                          className="cursor-pointer ps-3 font-normal"
-                          htmlFor={id}
-                          id={labelId}
-                        >
-                          {category.name}
-                          <ProductCount
-                            count={category.productCount}
-                            shouldDisplay={facet.displayProductCount}
-                          />
-                        </Label>
-                      </div>
-                    );
-                  })}
-                </AccordionContent>
-              </AccordionItem>
+              <div className="flex max-w-sm items-center py-2 ps-1" key={key}>
+                <Checkbox
+                  aria-labelledby={labelId}
+                  defaultChecked={category.isSelected}
+                  id={id}
+                  name="categoryIn"
+                  onCheckedChange={submitForm}
+                  value={category.entityId}
+                />
+                <Label className="cursor-pointer ps-3" htmlFor={id} id={labelId}>
+                  {category.name}
+                  <ProductCount
+                    count={category.productCount}
+                    shouldDisplay={facet.displayProductCount}
+                  />
+                </Label>
+              </div>
             );
-          }
+          })}
+        </>
+      );
+    }
 
-          if (facet.__typename === 'ProductAttributeSearchFilter') {
+    if (facet.__typename === 'ProductAttributeSearchFilter') {
+      content = (
+        <>
+          {facet.attributes.map((attribute) => {
+            const normalizedFilterName = facet.filterName.replace(/\s/g, '-').toLowerCase();
+            const normalizedAttributeValue = attribute.value.replace(/\s/g, '-').toLowerCase();
+            const id = `${normalizedFilterName}-${attribute.value}`;
+            const labelId = `${normalizedFilterName}-${normalizedAttributeValue}-label`;
+
+            const key = `${attribute.value}-${attribute.value}-${attribute.isSelected.toString()}`;
+
             return (
-              <AccordionItem key={`${facet.__typename}-${facet.filterName}`} value={facet.name}>
-                <AccordionTrigger>
-                  <h3>{facet.name}</h3>
-                </AccordionTrigger>
-                <AccordionContent>
-                  {facet.attributes.map((attribute) => {
-                    const normalizedFilterName = facet.filterName.replace(/\s/g, '-').toLowerCase();
-                    const normalizedAttributeValue = attribute.value
-                      .replace(/\s/g, '-')
-                      .toLowerCase();
-                    const id = `${normalizedFilterName}-${attribute.value}`;
-                    const labelId = `${normalizedFilterName}-${normalizedAttributeValue}-label`;
-
-                    const key = `${attribute.value}-${
-                      attribute.value
-                    }-${attribute.isSelected.toString()}`;
-
-                    return (
-                      <div className="flex max-w-sm items-center py-2 ps-1" key={key}>
-                        <Checkbox
-                          aria-labelledby={labelId}
-                          defaultChecked={attribute.isSelected}
-                          id={id}
-                          name={`attr_${facet.filterName}`}
-                          onCheckedChange={submitForm}
-                          value={attribute.value}
-                        />
-                        <Label
-                          className="cursor-pointer ps-3 font-normal"
-                          htmlFor={id}
-                          id={labelId}
-                        >
-                          {attribute.value}
-                          <ProductCount
-                            count={attribute.productCount}
-                            shouldDisplay={facet.displayProductCount}
-                          />
-                        </Label>
-                      </div>
-                    );
-                  })}
-                </AccordionContent>
-              </AccordionItem>
+              <div className="flex max-w-sm items-center py-2 ps-1" key={key}>
+                <Checkbox
+                  aria-labelledby={labelId}
+                  defaultChecked={attribute.isSelected}
+                  id={id}
+                  name={`attr_${facet.filterName}`}
+                  onCheckedChange={submitForm}
+                  value={attribute.value}
+                />
+                <Label className="cursor-pointer ps-3" htmlFor={id} id={labelId}>
+                  {attribute.value}
+                  <ProductCount
+                    count={attribute.productCount}
+                    shouldDisplay={facet.displayProductCount}
+                  />
+                </Label>
+              </div>
             );
-          }
+          })}
+        </>
+      );
+    }
 
-          if (facet.__typename === 'RatingSearchFilter') {
-            return (
-              <AccordionItem key={facet.__typename} value={facet.name}>
-                <AccordionTrigger>
-                  <h3>{facet.name}</h3>
-                </AccordionTrigger>
-                <AccordionContent className="overflow-visible">
-                  {facet.ratings
-                    .filter((rating) => rating.value !== '5')
-                    .sort((a, b) => parseInt(b.value, 10) - parseInt(a.value, 10))
-                    .map((rating) => {
-                      const key = `${facet.name}-${rating.value}-${rating.isSelected.toString()}`;
+    if (facet.__typename === 'RatingSearchFilter') {
+      content = (
+        <>
+          {facet.ratings
+            .filter((rating) => rating.value !== '5')
+            .sort((a, b) => parseInt(b.value, 10) - parseInt(a.value, 10))
+            .map((rating) => {
+              const key = `${facet.name}-${rating.value}-${rating.isSelected.toString()}`;
 
-                      const search = new URLSearchParams(searchParams);
+              const search = new URLSearchParams(searchParams);
 
-                      search.set('minRating', rating.value);
+              search.set('minRating', rating.value);
 
-                      return (
-                        <Link
-                          className="flex flex-row flex-nowrap py-2"
-                          href={{ search: `?${search.toString()}` }}
-                          key={key}
-                        >
-                          <div
-                            className={cn('flex flex-row flex-nowrap', {
-                              'text-primary': rating.isSelected,
-                            })}
-                          >
-                            <Rating value={parseInt(rating.value, 10)} />
-                          </div>
-                          <span className="ps-2">
-                            <span className="sr-only">
-                              {t('rating', { currentRating: rating.value })}
-                            </span>
-                          </span>
-                          <ProductCount count={rating.productCount} shouldDisplay={true} />
-                        </Link>
-                      );
+              return (
+                <Link
+                  className="flex flex-row flex-nowrap py-2"
+                  href={{ search: `?${search.toString()}` }}
+                  key={key}
+                >
+                  <div
+                    className={cn('flex flex-row flex-nowrap', {
+                      'text-primary': rating.isSelected,
                     })}
-                </AccordionContent>
-              </AccordionItem>
-            );
-          }
-
-          if (facet.__typename === 'PriceSearchFilter') {
-            return (
-              <AccordionItem key={facet.__typename} value={facet.name}>
-                <AccordionTrigger>
-                  <h3>{facet.name}</h3>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="grid grid-cols-2 gap-4 p-1">
-                    <Input
-                      aria-label={t('priceFilter.minPriceAriaLabel')}
-                      defaultValue={facet.selected?.minPrice ?? ''}
-                      name="minPrice"
-                      placeholder={t('priceFilter.minPricePlaceholder', { currencySign: '$' })}
-                    />
-                    <Input
-                      aria-label={t('priceFilter.maxPriceAriaLabel')}
-                      defaultValue={facet.selected?.maxPrice ?? ''}
-                      name="maxPrice"
-                      placeholder={t('priceFilter.maxPricePlaceholder', { currencySign: '$' })}
-                    />
-                    <Button className="col-span-2" type="submit" variant="secondary">
-                      {t('updatePriceButton')}
-                    </Button>
+                  >
+                    <Rating value={parseInt(rating.value, 10)} />
                   </div>
-                </AccordionContent>
-              </AccordionItem>
-            );
-          }
+                  <span className="ps-2">
+                    <span className="sr-only">{t('rating', { currentRating: rating.value })}</span>
+                  </span>
+                  <ProductCount count={rating.productCount} shouldDisplay={true} />
+                </Link>
+              );
+            })}
+        </>
+      );
+    }
 
-          if (facet.__typename === 'OtherSearchFilter') {
-            const key = `${facet.__typename}-${String(facet.isInStock?.isSelected)}-${String(
-              facet.isFeatured?.isSelected,
-            )}-${String(facet.freeShipping?.isSelected)}`;
+    if (facet.__typename === 'PriceSearchFilter') {
+      content = (
+        <div className="grid grid-cols-2 gap-4 p-1">
+          <Input
+            aria-label={t('priceFilter.minPriceAriaLabel')}
+            defaultValue={facet.selected?.minPrice ?? ''}
+            name="minPrice"
+            placeholder={t('priceFilter.minPricePlaceholder', { currencySign: '$' })}
+          />
+          <Input
+            aria-label={t('priceFilter.maxPriceAriaLabel')}
+            defaultValue={facet.selected?.maxPrice ?? ''}
+            name="maxPrice"
+            placeholder={t('priceFilter.maxPricePlaceholder', { currencySign: '$' })}
+          />
+          <Button className="col-span-2" type="submit" variant="secondary">
+            {t('updatePriceButton')}
+          </Button>
+        </div>
+      );
+    }
 
-            return (
-              <AccordionItem key={key} value={facet.name}>
-                <AccordionTrigger>
-                  <h3>{facet.name}</h3>
-                </AccordionTrigger>
-                <AccordionContent>
-                  {facet.freeShipping && (
-                    <div className="flex max-w-sm items-center py-2 ps-1">
-                      <Checkbox
-                        aria-labelledby="shipping-free_shipping-label"
-                        defaultChecked={facet.freeShipping.isSelected}
-                        id="shipping-free_shipping"
-                        name="shipping"
-                        onCheckedChange={submitForm}
-                        value="free_shipping"
-                      />
-                      <Label
-                        className="cursor-pointer ps-3 font-normal"
-                        htmlFor="shipping-free_shipping"
-                        id="shipping-free_shipping-label"
-                      >
-                        {t('freeShippingLabel')}
-                        <ProductCount
-                          count={facet.freeShipping.productCount}
-                          shouldDisplay={facet.displayProductCount}
-                        />
-                      </Label>
-                    </div>
-                  )}
-                  {facet.isFeatured && (
-                    <div className="flex max-w-sm items-center py-2 ps-1">
-                      <Checkbox
-                        aria-labelledby="isFeatured-label"
-                        defaultChecked={facet.isFeatured.isSelected}
-                        id="isFeatured"
-                        name="isFeatured"
-                        onCheckedChange={submitForm}
-                      />
-                      <Label
-                        className="cursor-pointer ps-3 font-normal"
-                        htmlFor="isFeatured"
-                        id="isFeatured-label"
-                      >
-                        {t('isFeaturedLabel')}
-                        <ProductCount
-                          count={facet.isFeatured.productCount}
-                          shouldDisplay={facet.displayProductCount}
-                        />
-                      </Label>
-                    </div>
-                  )}
-                  {facet.isInStock && (
-                    <div className="flex max-w-sm items-center py-2 ps-1">
-                      <Checkbox
-                        aria-labelledby="stock-in_stock-label"
-                        defaultChecked={facet.isInStock.isSelected}
-                        id="stock-in_stock"
-                        name="stock"
-                        onCheckedChange={submitForm}
-                        value="in_stock"
-                      />
-                      <Label
-                        className="cursor-pointer ps-3 font-normal"
-                        htmlFor="stock-in_stock"
-                        id="stock-in_stock-label"
-                      >
-                        {t('inStockLabel')}
-                        <ProductCount
-                          count={facet.isInStock.productCount}
-                          shouldDisplay={facet.displayProductCount}
-                        />
-                      </Label>
-                    </div>
-                  )}
-                </AccordionContent>
-              </AccordionItem>
-            );
-          }
+    if (facet.__typename === 'OtherSearchFilter') {
+      content = (
+        <>
+          {facet.freeShipping && (
+            <div className="flex max-w-sm items-center py-2 ps-1">
+              <Checkbox
+                aria-labelledby="shipping-free_shipping-label"
+                defaultChecked={facet.freeShipping.isSelected}
+                id="shipping-free_shipping"
+                name="shipping"
+                onCheckedChange={submitForm}
+                value="free_shipping"
+              />
+              <Label
+                className="cursor-pointer ps-3"
+                htmlFor="shipping-free_shipping"
+                id="shipping-free_shipping-label"
+              >
+                {t('freeShippingLabel')}
+                <ProductCount
+                  count={facet.freeShipping.productCount}
+                  shouldDisplay={facet.displayProductCount}
+                />
+              </Label>
+            </div>
+          )}
+          {facet.isFeatured && (
+            <div className="flex max-w-sm items-center py-2 ps-1">
+              <Checkbox
+                aria-labelledby="isFeatured-label"
+                defaultChecked={facet.isFeatured.isSelected}
+                id="isFeatured"
+                name="isFeatured"
+                onCheckedChange={submitForm}
+              />
+              <Label className="cursor-pointer ps-3" htmlFor="isFeatured" id="isFeatured-label">
+                {t('isFeaturedLabel')}
+                <ProductCount
+                  count={facet.isFeatured.productCount}
+                  shouldDisplay={facet.displayProductCount}
+                />
+              </Label>
+            </div>
+          )}
+          {facet.isInStock && (
+            <div className="flex max-w-sm items-center py-2 ps-1">
+              <Checkbox
+                aria-labelledby="stock-in_stock-label"
+                defaultChecked={facet.isInStock.isSelected}
+                id="stock-in_stock"
+                name="stock"
+                onCheckedChange={submitForm}
+                value="in_stock"
+              />
+              <Label
+                className="cursor-pointer ps-3"
+                htmlFor="stock-in_stock"
+                id="stock-in_stock-label"
+              >
+                {t('inStockLabel')}
+                <ProductCount
+                  count={facet.isInStock.productCount}
+                  shouldDisplay={facet.displayProductCount}
+                />
+              </Label>
+            </div>
+          )}
+        </>
+      );
+    }
 
-          return null;
-        })}
-      </form>
-    </Accordion>
+    return {
+      content,
+      value: facet.name,
+    };
+  });
+
+  return (
+    <form data-pending={isPending ? '' : undefined} onSubmit={handleSubmit} ref={ref}>
+      <Accordions accordions={accordions} defaultValue={defaultOpenFacets} type="multiple" />
+    </form>
   );
 };

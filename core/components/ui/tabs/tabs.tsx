@@ -1,46 +1,39 @@
 import * as TabsPrimitive from '@radix-ui/react-tabs';
-import { ComponentPropsWithoutRef, ElementRef, forwardRef } from 'react';
+import { ComponentPropsWithoutRef, ReactNode } from 'react';
 
-import { cn } from '~/lib/utils';
+interface Tab {
+  content: ReactNode;
+  value: string;
+}
 
-const Tabs = TabsPrimitive.Root;
+interface Props extends ComponentPropsWithoutRef<typeof TabsPrimitive.Root> {
+  defaultValue?: string;
+  label: string;
+  tabs: Tab[];
+}
 
-const TabsList = forwardRef<
-  ElementRef<typeof TabsPrimitive.List>,
-  ComponentPropsWithoutRef<typeof TabsPrimitive.List>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.List
-    className={cn('mb-8 flex list-none items-start overflow-x-auto text-base', className)}
-    ref={ref}
-    {...props}
-  />
-));
-
-TabsList.displayName = TabsPrimitive.List.displayName;
-
-const TabsTrigger = forwardRef<
-  ElementRef<typeof TabsPrimitive.Trigger>,
-  ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.Trigger
-    className={cn(
-      'px-4 pb-2 data-[state=active]:border-b-4 data-[state=active]:border-primary data-[state=active]:text-primary',
-      className,
-    )}
-    ref={ref}
-    {...props}
-  />
-));
-
-TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
-
-const TabsContent = forwardRef<
-  ElementRef<typeof TabsPrimitive.Content>,
-  ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.Content className={cn('', className)} ref={ref} {...props} />
-));
-
-TabsContent.displayName = TabsPrimitive.Content.displayName;
-
-export { Tabs, TabsList, TabsTrigger, TabsContent };
+export function Tabs({ className, defaultValue, label, tabs, ...props }: Props) {
+  return (
+    <TabsPrimitive.Root activationMode="manual" defaultValue={defaultValue} {...props}>
+      <TabsPrimitive.List
+        aria-label={label}
+        className="mb-8 flex list-none items-start overflow-x-auto text-base"
+      >
+        {tabs.map((tab) => (
+          <TabsPrimitive.Trigger
+            className="px-4 pb-2 data-[state=active]:border-b-4 data-[state=active]:border-primary data-[state=active]:text-primary"
+            key={tab.value}
+            value={tab.value}
+          >
+            {tab.value}
+          </TabsPrimitive.Trigger>
+        ))}
+      </TabsPrimitive.List>
+      {tabs.map((tab) => (
+        <TabsPrimitive.Content key={tab.value} value={tab.value}>
+          {tab.content}
+        </TabsPrimitive.Content>
+      ))}
+    </TabsPrimitive.Root>
+  );
+}

@@ -70,14 +70,12 @@ export default async function Home({ params: { locale } }: Props) {
             products={featuredProducts}
             showCart={false}
             showCompare={false}
-            showReviews={false}
             title={t('Carousel.featuredProducts')}
           />
           <ProductCardCarousel
             products={newestProducts}
             showCart={false}
             showCompare={false}
-            showReviews={false}
             title={t('Carousel.newestProducts')}
           />
         </NextIntlClientProvider>

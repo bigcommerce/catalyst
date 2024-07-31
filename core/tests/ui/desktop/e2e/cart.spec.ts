@@ -41,6 +41,10 @@ test('Proceed to checkout', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Proceed to checkout' }).click();
 
+  await page.waitForURL('**/checkout', {
+    waitUntil: 'networkidle',
+  });
+
   await expect(page.getByRole('heading', { name: 'Order Summary', level: 3 })).toBeVisible();
   await expect(page.getByRole('heading', { name: `1 x ${sampleProduct}`, level: 4 })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Shipping', level: 2 })).toBeVisible();

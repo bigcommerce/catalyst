@@ -1,5 +1,99 @@
 # Changelog
 
+## 0.12.0
+
+### Minor Changes
+
+- [#1178](https://github.com/bigcommerce/catalyst/pull/1178) [`f592d9f`](https://github.com/bigcommerce/catalyst/commit/f592d9fe0b71ddd7ceb5e1326ea0280f7b90c3c9) Thanks [@jorgemoya](https://github.com/jorgemoya)! - This refactor changes the structure of our UI components by replacing composability with a prop-based configuration. This change simplifies the use of our components, eliminating the need to build them individually from a composable approach. Additionally, it provides a single location for all class customizations, improving the experience when fully customizing the component. We believe this approach will make it easier to use components correctly and safeguard against incorrect usage. Ultimately, by adopting a prop-based configuration, we aim to achieve full replaceability and simplify theming for our components.
+
+  Before refactor:
+
+  ```
+  <Accordions>
+      <AccordionsItem>
+          <AccordionsTrigger>
+              Title 1
+          </AccordionsTrigger>
+          <AccordionsContent>
+              Item Content 1
+          </AccordionsContent>
+      </AccordionsItem>
+      <AccordionsItem>
+          <AccordionsTrigger>
+              Title 2
+          </AccordionsTrigger>
+          <AccordionsContent>
+              Item Content 2
+          </AccordionsContent>
+      </AccordionsItem>
+  </Accordions>
+  ```
+
+  After refactor:
+
+  ```
+  <Accordions accordions={[
+      {value: 'Title 1', content: 'Item Content 1'},
+      {value: 'Title 2', content: 'Item Content 2'}
+  ]}>
+  ```
+
+  Before refactor:
+
+  ```
+  <Select
+      onValueChange={onSort}
+      value={value}
+  >
+      <SelectContent>
+          <SelectItem value="featured">Featured</SelectItem>
+          <SelectItem value="newest">Newest</SelectItem>
+          <SelectItem value="best_selling">Best selling</SelectItem>
+          <SelectItem value="a_to_z">A to Z</SelectItem>
+          <SelectItem value="z_to_a">Z to A</SelectItem>
+          <SelectItem value="best_reviewed">By reviews</SelectItem>
+          <SelectItem value="lowest_price">Price ascending</SelectItem>
+          <SelectItem value="highest_price">Price descending</SelectItem>
+          <SelectItem value="relevance">Relevance</SelectItem>
+      </SelectContent>
+  </Select>
+  ```
+
+  After refactor:
+
+  ```
+  <Select
+      onValueChange={onSort}
+      options={[
+          { value: 'featured', label: 'Featured' },
+          { value: 'newest', label: 'Newest' },
+          { value: 'best_selling', label: 'Best selling' },
+          { value: 'a_to_z', label: 'A to Z' },
+          { value: 'z_to_a', label: 'Z to A' },
+          { value: 'best_reviewed', label: 'By reviews'},
+          { value: 'lowest_price', label: 'Price ascending' },
+          { value: 'highest_price', label: 'Price descending' },
+          { value: 'relevance', label: 'Relevance' },
+      ]}
+      value={value}
+  />
+  ```
+
+## 0.11.0
+
+### Minor Changes
+
+- [#1156](https://github.com/bigcommerce/catalyst/pull/1156) [`7d91478`](https://github.com/bigcommerce/catalyst/commit/7d9147894deb17ca17048ac95b86e5a8a0def515) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Adds customer information onto the session for consumption in both server and client components
+
+### Patch Changes
+
+- [#1183](https://github.com/bigcommerce/catalyst/pull/1183) [`4e7ed57`](https://github.com/bigcommerce/catalyst/commit/4e7ed57979a82b04cc1fcb47025356c4b746db82) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Uses `next/navigation` for logging in as a customer instead of the built-in `redirectTo` option. That option was not following the `trailingSlash` config set in `next.config.js` which caused test failures.
+
+- [#1179](https://github.com/bigcommerce/catalyst/pull/1179) [`ae8d985`](https://github.com/bigcommerce/catalyst/commit/ae8d985a89c229f945a596d7a905828dfcbe490e) Thanks [@deini](https://github.com/deini)! - bump next to 14.2.5
+
+- Updated dependencies []:
+  - @bigcommerce/catalyst-client@0.5.0
+
 ## 0.10.0
 
 ### Minor Changes

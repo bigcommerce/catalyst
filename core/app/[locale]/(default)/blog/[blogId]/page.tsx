@@ -4,14 +4,7 @@ import { getFormatter } from 'next-intl/server';
 
 import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
-import {
-  BlogPostAuthor,
-  BlogPostBanner,
-  BlogPostDate,
-  BlogPostImage,
-  BlogPostTitle,
-} from '~/components/ui/blog-post-card';
-import { Tag, TagContent } from '~/components/ui/tag';
+import { Tag } from '~/components/ui/tag';
 import { LocaleType } from '~/i18n';
 
 import { SharingLinks } from './_components/sharing-links';
@@ -50,14 +43,17 @@ export default async function BlogPostPage({ params: { blogId, locale } }: Props
       <h1 className="mb-2 text-3xl font-black lg:text-5xl">{blogPost.name}</h1>
 
       <div className="mb-8 flex">
-        <BlogPostDate className="mb-0">
+        <small className="mb-0 text-base text-gray-500">
           {format.dateTime(new Date(blogPost.publishedDate.utc))}
-        </BlogPostDate>
-        {blogPost.author ? <BlogPostAuthor>, by {blogPost.author}</BlogPostAuthor> : null}
+        </small>
+
+        {Boolean(blogPost.author) && (
+          <small className="text-base text-gray-500">, by {blogPost.author}</small>
+        )}
       </div>
 
       {blogPost.thumbnailImage ? (
-        <BlogPostImage className="mb-6 h-40 sm:h-80 lg:h-96">
+        <div className="mb-6 flex h-40 sm:h-80 lg:h-96">
           <BcImage
             alt={blogPost.thumbnailImage.altText}
             className="h-full w-full object-cover object-center"
@@ -65,27 +61,23 @@ export default async function BlogPostPage({ params: { blogId, locale } }: Props
             src={blogPost.thumbnailImage.url}
             width={900}
           />
-        </BlogPostImage>
+        </div>
       ) : (
-        <BlogPostBanner className="mb-6 h-40 sm:h-80 lg:h-96">
-          <BlogPostTitle variant="inBanner">
-            <span className="text-primary">{blogPost.name}</span>
-          </BlogPostTitle>
-          <BlogPostDate variant="inBanner">
-            <span className="text-primary">
-              {format.dateTime(new Date(blogPost.publishedDate.utc))}
-            </span>
-          </BlogPostDate>
-        </BlogPostBanner>
+        <div className="mb-6 flex h-40 justify-between bg-primary/10 p-4 sm:h-80 lg:h-96">
+          <h3 className="mb-0 flex-none basis-1/2 self-start text-3xl font-bold text-primary">
+            {blogPost.name}
+          </h3>
+          <small className="mb-0 flex-none self-end text-xl font-bold text-primary">
+            {format.dateTime(new Date(blogPost.publishedDate.utc))}
+          </small>
+        </div>
       )}
 
       <div className="mb-10 text-base" dangerouslySetInnerHTML={{ __html: blogPost.htmlBody }} />
       <div className="mb-10 flex">
         {blogPost.tags.map((tag) => (
           <Link className="me-3 block cursor-pointer" href={`/blog/tag/${tag}`} key={tag}>
-            <Tag>
-              <TagContent>{tag}</TagContent>
-            </Tag>
+            <Tag tagContent={tag} />
           </Link>
         ))}
       </div>

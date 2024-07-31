@@ -4,14 +4,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetHeader,
-  SheetOverlay,
-  SheetTitle,
-} from '~/components/ui/sheet';
+import { Sheet } from '~/components/ui/sheet';
 
 import { ProductSheetContent } from './product-sheet-content';
 
@@ -49,18 +42,8 @@ export const ProductSheet = () => {
   };
 
   return (
-    <Sheet onOpenChange={handleOnOpenChange} open={open}>
-      <SheetOverlay className="bg-transparent, backdrop-blur-none">
-        <SheetContent side="right">
-          <SheetHeader>
-            <SheetTitle asChild>
-              <h2>{t('title')}</h2>
-            </SheetTitle>
-            <SheetClose />
-          </SheetHeader>
-          {open && <ProductSheetContent />}
-        </SheetContent>
-      </SheetOverlay>
+    <Sheet onOpenChange={handleOnOpenChange} open={open} side="right" title={t('title')}>
+      {open && <ProductSheetContent />}
     </Sheet>
   );
 };

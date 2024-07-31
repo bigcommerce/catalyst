@@ -1,74 +1,51 @@
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
-import { cva } from 'class-variance-authority';
-import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
+import { ComponentPropsWithoutRef, ReactNode, useId } from 'react';
 
 import { cn } from '~/lib/utils';
 
-type RadioIndicatorType = typeof RadioGroupPrimitive.Indicator;
+import { Label } from '../label';
 
-const radioGroupVariants = cva(
-  'flex h-6 w-6 items-center justify-center rounded-full border-2 border-gray-200 hover:border-secondary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 focus-visible:hover:border-secondary radix-state-checked:border-primary radix-state-checked:bg-primary radix-state-checked:hover:border-secondary radix-state-checked:hover:bg-secondary disabled:pointer-events-none disabled:bg-gray-100 radix-state-checked:disabled:border-gray-400 radix-state-checked:disabled:bg-gray-400',
-  {
-    variants: {
-      variant: {
-        error:
-          'border-error-secondary focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 hover:border-error focus-visible:hover:border-error disabled:border-gray-200 radix-state-checked:border-error-secondary radix-state-checked:bg-error-secondary radix-state-checked:hover:border-error radix-state-checked:hover:bg-error',
-      },
-    },
-  },
-);
-
-const RadioIndicator = forwardRef<
-  ElementRef<RadioIndicatorType>,
-  ComponentPropsWithRef<RadioIndicatorType>
->(({ children, className, ...props }, ref) => {
-  return (
-    <RadioGroupPrimitive.Indicator
-      className={cn('h-2 w-2 rounded-full bg-white', className)}
-      {...props}
-      ref={ref}
-    >
-      {children}
-    </RadioGroupPrimitive.Indicator>
-  );
-});
-
-RadioIndicator.displayName = 'RadioIndicator';
-
-type RadioItemType = typeof RadioGroupPrimitive.Item;
-
-export interface RadioItemProps extends ComponentPropsWithRef<RadioItemType> {
-  variant?: 'error';
+interface Item extends ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> {
+  label: ReactNode;
 }
 
-const RadioItem = forwardRef<ElementRef<RadioItemType>, RadioItemProps>(
-  ({ children, className, variant, ...props }, ref) => {
-    return (
-      <RadioGroupPrimitive.Item
-        className={cn(radioGroupVariants({ variant, className }))}
-        ref={ref}
-        {...props}
-      >
-        {children || <RadioIndicator />}
-      </RadioGroupPrimitive.Item>
-    );
-  },
-);
+interface Props extends ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root> {
+  variant?: 'success' | 'error';
+  items: Item[];
+}
 
-RadioItem.displayName = 'RadioItem';
+const RadioGroup = ({ children, className, variant, items, ...props }: Props) => {
+  const id = useId();
 
-type RadioGroupType = typeof RadioGroupPrimitive.Root;
+  return (
+    <RadioGroupPrimitive.Root className={className} {...props}>
+      {items.map((item) => {
+        const { label, value, ...itemProps } = item;
 
-const RadioGroup = forwardRef<ElementRef<RadioGroupType>, ComponentPropsWithRef<RadioGroupType>>(
-  ({ children, className, ...props }, ref) => {
-    return (
-      <RadioGroupPrimitive.Root className={cn(className)} ref={ref} {...props}>
-        {children}
-      </RadioGroupPrimitive.Root>
-    );
-  },
-);
+        return (
+          <div className="mb-2 flex w-full gap-4" key={`${id}-${value}`}>
+            <RadioGroupPrimitive.Item
+              {...itemProps}
+              className={cn(
+                'flex h-6 w-6 items-center justify-center rounded-full border-2 border-gray-200 hover:border-secondary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 focus-visible:hover:border-secondary disabled:pointer-events-none disabled:bg-gray-100 radix-state-checked:border-primary radix-state-checked:bg-primary radix-state-checked:hover:border-secondary radix-state-checked:hover:bg-secondary radix-state-checked:disabled:border-gray-400 radix-state-checked:disabled:bg-gray-400',
+                variant === 'success' &&
+                  'border-success-secondary hover:border-success focus-visible:border-success-secondary focus-visible:ring-success-secondary/20 focus-visible:hover:border-success disabled:border-gray-200 radix-state-checked:border-success-secondary radix-state-checked:bg-success-secondary radix-state-checked:hover:border-success radix-state-checked:hover:bg-success',
+                variant === 'error' &&
+                  'border-error-secondary hover:border-error focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 focus-visible:hover:border-error disabled:border-gray-200 radix-state-checked:border-error-secondary radix-state-checked:bg-error-secondary radix-state-checked:hover:border-error radix-state-checked:hover:bg-error',
+              )}
+              id={`${id}-${value}`}
+              value={value}
+            >
+              <RadioGroupPrimitive.Indicator className="h-2 w-2 rounded-full bg-white" />
+            </RadioGroupPrimitive.Item>
+            <Label className="w-full" htmlFor={`${id}-${item.value}`}>
+              {label}
+            </Label>
+          </div>
+        );
+      })}
+    </RadioGroupPrimitive.Root>
+  );
+};
 
-RadioGroup.displayName = 'RadioGroup';
-
-export { RadioGroup, RadioItem, RadioIndicator };
+export { RadioGroup };

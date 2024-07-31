@@ -13,8 +13,8 @@ const coverageReportOptions: CoverageReportOptions = {
 
   sourceFilter: (sourcePath) => {
     return (
-        sourcePath.startsWith('bigcommerce/catalyst-core') &&
-        (sourcePath.endsWith('.ts') || sourcePath.endsWith('.tsx'))
+      sourcePath.startsWith('bigcommerce/catalyst-core') &&
+      (sourcePath.endsWith('.ts') || sourcePath.endsWith('.tsx'))
     );
   },
 
@@ -42,12 +42,15 @@ export default defineConfig({
   },
   fullyParallel: !!process.env.CI,
   reporter: process.env.CI
-      ? [['list'], ['monocart-reporter']]
-      : [['list'], ['monocart-reporter',
-        {
-          coverage: coverageReportOptions,
-        },
-      ],
+    ? [['list'], ['monocart-reporter']]
+    : [
+        ['list'],
+        [
+          'monocart-reporter',
+          {
+            coverage: coverageReportOptions,
+          },
+        ],
       ],
   globalTeardown: './tests/global-teardown.js',
   use: {

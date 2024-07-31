@@ -3,23 +3,16 @@ import { ReactNode, Suspense } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
 import { FragmentOf, graphql } from '~/client/graphql';
-import { Link } from '~/components/link';
-import { Button } from '~/components/ui/button';
-import {
-  NavigationMenu,
-  NavigationMenuCollapsed,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuToggle,
-} from '~/components/ui/navigation-menu';
 
+import { Link } from '../link';
 import { QuickSearch } from '../quick-search';
 import { StoreLogo, StoreLogoFragment } from '../store-logo';
+import { Button } from '../ui/button';
+import { Header as ComponentsHeader } from '../ui/header';
+import { Popover } from '../ui/popover';
 
 import { logout } from './_actions/logout';
 import { CartLink } from './cart';
-import { HeaderNav, HeaderNavFragment } from './header-nav';
 
 export const HeaderFragment = graphql(
   `
@@ -27,10 +20,24 @@ export const HeaderFragment = graphql(
       settings {
         ...StoreLogoFragment
       }
-      ...HeaderNavFragment
+      categoryTree {
+        entityId
+        name
+        path
+        children {
+          entityId
+          name
+          path
+          children {
+            entityId
+            name
+            path
+          }
+        }
+      }
     }
   `,
-  [StoreLogoFragment, HeaderNavFragment],
+  [StoreLogoFragment],
 );
 
 interface Props {
@@ -41,145 +48,98 @@ interface Props {
 export const Header = async ({ cart, data }: Props) => {
   const customerId = await getSessionCustomerId();
 
+  /**  To prevent the navigation menu from overflowing, we limit the number of categories to 6.
+   To show a full list of categories, modify the `slice` method to remove the limit.
+   Will require modification of navigation menu styles to accommodate the additional categories.
+   */
+  const categoryTree = data.categoryTree.slice(0, 6);
+  const logo = data.settings && <StoreLogo data={data.settings} />;
+
   return (
-    <header>
-      <NavigationMenu>
-        {data.settings && (
-          <NavigationMenuLink
-            asChild
-            className="flex-1 overflow-hidden text-ellipsis px-0 xl:flex-none"
-          >
-            <Link href="/">
-              <StoreLogo data={data.settings} />
-            </Link>
-          </NavigationMenuLink>
-        )}
+    <ComponentsHeader items={categoryTree} logo={logo}>
+      <QuickSearch>
+        <Link className="overflow-hidden text-ellipsis py-3" href="/">
+          {logo}
+        </Link>
+      </QuickSearch>
 
-        <HeaderNav className="hidden xl:flex" data={data.categoryTree} />
-
-        <div className="flex">
-          <NavigationMenuList className="h-full">
-            {data.settings && (
-              <NavigationMenuItem className="hidden sm:block">
-                <QuickSearch>
-                  <Link className="flex" href="/">
-                    <StoreLogo data={data.settings} />
-                  </Link>
-                </QuickSearch>
-              </NavigationMenuItem>
-            )}
-            <NavigationMenuItem className={`hidden xl:flex ${customerId ? 'self-stretch' : ''}`}>
-              {customerId ? (
-                <div className="group/account flex cursor-pointer items-center">
-                  <Link
-                    aria-label="Account"
-                    className="p-3 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-                    href="/account"
-                  >
-                    <User aria-hidden="true" />
-                  </Link>
-
-                  <ul className="absolute -right-12 top-full z-10 hidden cursor-default bg-white p-6 pb-8 shadow-md group-hover/account:block [&>li]:mb-2">
-                    <li>
-                      <Link
-                        className="whitespace-nowrap font-semibold focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-                        href="/account"
-                      >
-                        My account
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="whitespace-nowrap focus-visible:outline-none focus-visible:ring-4"
-                        href="/account/orders"
-                      >
-                        Orders
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="whitespace-nowrap focus-visible:outline-none focus-visible:ring-4"
-                        href="/account/messages"
-                      >
-                        Messages
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="whitespace-nowrap focus-visible:outline-none focus-visible:ring-4"
-                        href="/account/addresses"
-                      >
-                        Addresses
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="whitespace-nowrap focus-visible:outline-none focus-visible:ring-4"
-                        href="/account/wishlists"
-                      >
-                        Wish lists
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="whitespace-nowrap focus-visible:outline-none focus-visible:ring-4"
-                        href="/account/recently-viewed"
-                      >
-                        Recently viewed
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="whitespace-nowrap focus-visible:outline-none focus-visible:ring-4"
-                        href="/account/settings"
-                      >
-                        Account Settings
-                      </Link>
-                    </li>
-                    <li>
-                      <form action={logout}>
-                        <Button
-                          className="justify-start p-0 font-normal text-black hover:bg-transparent hover:text-black"
-                          type="submit"
-                          variant="subtle"
-                        >
-                          Log out
-                        </Button>
-                      </form>
-                    </li>
-                  </ul>
-                </div>
-              ) : (
-                <NavigationMenuLink asChild>
-                  <Link aria-label="Login" href="/login">
-                    <User />
-                  </Link>
-                </NavigationMenuLink>
-              )}
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <p role="status">
-                <Suspense
-                  fallback={
-                    <CartLink>
-                      <ShoppingCart aria-label="cart" />
-                    </CartLink>
-                  }
+      {customerId ? (
+        <Popover
+          trigger={
+            <Button
+              aria-label="Account"
+              className="p-3 text-black hover:bg-transparent hover:text-primary"
+              variant="subtle"
+            >
+              <User aria-hidden="true" />
+            </Button>
+          }
+        >
+          <ul className="flex flex-col gap-2">
+            <li>
+              <Link className="block whitespace-nowrap p-3 font-semibold" href="/account">
+                My account
+              </Link>
+            </li>
+            <li>
+              <Link className="block whitespace-nowrap p-3" href="/account/orders">
+                Orders
+              </Link>
+            </li>
+            <li>
+              <Link className="block whitespace-nowrap p-3" href="/account/messages">
+                Messages
+              </Link>
+            </li>
+            <li>
+              <Link className="block whitespace-nowrap p-3" href="/account/addresses">
+                Addresses
+              </Link>
+            </li>
+            <li>
+              <Link className="block whitespace-nowrap p-3" href="/account/wishlists">
+                Wish lists
+              </Link>
+            </li>
+            <li>
+              <Link className="block whitespace-nowrap p-3" href="/account/recently-viewed">
+                Recently viewed
+              </Link>
+            </li>
+            <li>
+              <Link className="block whitespace-nowrap p-3" href="/account/settings">
+                Account settings
+              </Link>
+            </li>
+            <li>
+              <form action={logout}>
+                <Button
+                  className="justify-start p-3 text-black hover:bg-transparent hover:text-primary"
+                  type="submit"
+                  variant="subtle"
                 >
-                  {cart}
-                </Suspense>
-              </p>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuToggle className="xl:hidden" />
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </div>
-
-        <NavigationMenuCollapsed>
-          <HeaderNav data={data.categoryTree} inCollapsedNav />
-        </NavigationMenuCollapsed>
-      </NavigationMenu>
-    </header>
+                  Log out
+                </Button>
+              </form>
+            </li>
+          </ul>
+        </Popover>
+      ) : (
+        <Link aria-label="Login" className="block p-3" href="/login">
+          <User />
+        </Link>
+      )}
+      <p role="status">
+        <Suspense
+          fallback={
+            <CartLink>
+              <ShoppingCart aria-label="cart" />
+            </CartLink>
+          }
+        >
+          {cart}
+        </Suspense>
+      </p>
+    </ComponentsHeader>
   );
 };
