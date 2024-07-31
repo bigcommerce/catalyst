@@ -15,6 +15,7 @@ const Sheet = ({ title, children, side = 'left', trigger, ...props }: Props) => 
     {Boolean(trigger) && <SheetPrimitive.Trigger asChild>{trigger}</SheetPrimitive.Trigger>}
     <SheetPrimitive.Portal>
       <SheetPrimitive.Content
+        aria-describedby={undefined}
         className={cn(
           'fixed gap-4 overflow-auto bg-white p-6 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out md:p-10',
           side === 'top' &&
@@ -28,8 +29,8 @@ const Sheet = ({ title, children, side = 'left', trigger, ...props }: Props) => 
         )}
       >
         <div className="mb-6 flex flex-row items-center justify-between">
-          <SheetPrimitive.Title asChild className="text-2xl font-bold">
-            <h2>{title}</h2>
+          <SheetPrimitive.Title asChild>
+            <h2 className="text-2xl font-bold">{title}</h2>
           </SheetPrimitive.Title>
           <SheetPrimitive.Close className="focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20">
             <X className="h-6 w-6">
