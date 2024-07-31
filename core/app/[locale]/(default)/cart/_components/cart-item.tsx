@@ -11,7 +11,9 @@ const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
     name
     brand
-    imageUrl
+    image {
+      url: urlTemplate
+    }
     entityId
     quantity
     productEntityId
@@ -66,7 +68,9 @@ const DigitalItemFragment = graphql(`
   fragment DigitalItemFragment on CartDigitalItem {
     name
     brand
-    imageUrl
+    image {
+      url: urlTemplate
+    }
     entityId
     quantity
     productEntityId
@@ -151,7 +155,11 @@ export const CartItem = async ({ currencyCode, product }: Props) => {
     <li>
       <div className="flex gap-4 border-t border-t-gray-200 py-4 md:flex-row">
         <div className="w-24 flex-none md:w-[144px]">
-          <BcImage alt={product.name} height={144} src={product.imageUrl ?? ''} width={144} />
+          {product.image?.url ? (
+            <BcImage alt={product.name} height={144} src={product.image.url} width={144} />
+          ) : (
+            <div className="h-full w-full bg-gray-200" />
+          )}
         </div>
 
         <div className="flex-1">
