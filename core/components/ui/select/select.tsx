@@ -60,16 +60,16 @@ const Select = forwardRef<ElementRef<typeof SelectPrimitive.Trigger>, Props>(
             </SelectPrimitive.ScrollUpButton>
             <SelectPrimitive.Viewport className="h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]">
               {options.map((option) => {
-                const { value, label, ...optionProps } = option;
+                const { className: optionClassName, value, label, ...optionProps } = option;
 
                 return (
                   <SelectPrimitive.Item
-                    {...optionProps}
                     className={
                       'relative flex w-full cursor-pointer select-none items-center justify-between overflow-visible px-4 py-2 outline-none hover:bg-secondary/10 hover:text-primary focus-visible:bg-secondary/10 data-[disabled]:pointer-events-none data-[state="checked"]:bg-secondary/10 data-[state="checked"]:text-primary data-[disabled]:opacity-50'
                     }
                     key={`${id}-${value}`}
                     value={value}
+                    {...optionProps}
                   >
                     <SelectPrimitive.ItemText>{label}</SelectPrimitive.ItemText>
                     <SelectPrimitive.ItemIndicator>

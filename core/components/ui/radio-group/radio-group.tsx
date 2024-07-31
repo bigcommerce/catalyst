@@ -20,12 +20,11 @@ const RadioGroup = ({ children, className, variant, items, ...props }: Props) =>
   return (
     <RadioGroupPrimitive.Root className={className} {...props}>
       {items.map((item) => {
-        const { label, value, ...itemProps } = item;
+        const { className: itemClassName, label, value, ...itemProps } = item;
 
         return (
           <div className="mb-2 flex w-full gap-4" key={`${id}-${value}`}>
             <RadioGroupPrimitive.Item
-              {...itemProps}
               className={cn(
                 'flex h-6 w-6 items-center justify-center rounded-full border-2 border-gray-200 hover:border-secondary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 focus-visible:hover:border-secondary disabled:pointer-events-none disabled:bg-gray-100 radix-state-checked:border-primary radix-state-checked:bg-primary radix-state-checked:hover:border-secondary radix-state-checked:hover:bg-secondary radix-state-checked:disabled:border-gray-400 radix-state-checked:disabled:bg-gray-400',
                 variant === 'success' &&
@@ -35,6 +34,7 @@ const RadioGroup = ({ children, className, variant, items, ...props }: Props) =>
               )}
               id={`${id}-${value}`}
               value={value}
+              {...itemProps}
             >
               <RadioGroupPrimitive.Indicator className="h-2 w-2 rounded-full bg-white" />
             </RadioGroupPrimitive.Item>
