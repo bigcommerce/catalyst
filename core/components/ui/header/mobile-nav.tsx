@@ -37,7 +37,13 @@ export const MobileNav = ({ items, logo }: Props) => {
       </SheetPrimitive.Trigger>
       <SheetPrimitive.Portal>
         <SheetPrimitive.Overlay className="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-        <SheetPrimitive.Content className="fixed inset-y-0 left-0 z-50 h-full w-3/4 border-r bg-white p-6 pt-0 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm">
+        <SheetPrimitive.Content
+          aria-describedby={undefined}
+          className="fixed inset-y-0 left-0 z-50 h-full w-3/4 border-r bg-white p-6 pt-0 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm"
+        >
+          <SheetPrimitive.Title asChild>
+            <h2 className="sr-only">Navigation menu</h2>
+          </SheetPrimitive.Title>
           <div className="flex h-[92px] items-center justify-between">
             <div className="overflow-hidden text-ellipsis py-3">{logo}</div>
             <SheetPrimitive.DialogClose>
