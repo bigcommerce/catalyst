@@ -51,7 +51,7 @@ export const Picklist = ({
       : undefined;
 
   return (
-    <Field className="relative space-y-2 pb-7" name={name}>
+    <Field className="relative space-y-2" name={name}>
       <FieldLabel htmlFor={`field-${field.entityId}`} isRequired={field.isRequired}>
         {field.label}
       </FieldLabel>
@@ -74,11 +74,13 @@ export const Picklist = ({
           required={field.isRequired}
         />
       </FieldControl>
-      {validationError && (
-        <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary">
-          {t('empty')}
-        </FieldMessage>
-      )}
+      <div className="relative h-7">
+        {validationError && (
+          <FieldMessage className="inline-flex w-full text-xs font-normal text-error-secondary">
+            {t('empty')}
+          </FieldMessage>
+        )}
+      </div>
     </Field>
   );
 };

@@ -61,7 +61,7 @@ export const Checkboxes = ({
   }, [onValidate, setCheckboxValidityState]);
 
   return (
-    <Field className="relative space-y-2 pb-7" name={name}>
+    <Field className="relative space-y-2" name={name}>
       <fieldset>
         <FieldLabel asChild>
           <legend className="mb-2.5 inline-flex w-full items-center justify-between text-base font-semibold">
@@ -106,11 +106,13 @@ export const Checkboxes = ({
             );
           })}
         </div>
-        {validationError && (
-          <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary">
-            {t('empty')}
-          </FieldMessage>
-        )}
+        <div className="relative h-7">
+          {validationError && (
+            <FieldMessage className="inline-flex w-full text-xs font-normal text-error-secondary">
+              {t('empty')}
+            </FieldMessage>
+          )}
+        </div>
       </fieldset>
     </Field>
   );

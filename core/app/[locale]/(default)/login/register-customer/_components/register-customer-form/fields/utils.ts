@@ -94,5 +94,8 @@ export const getPreviouslySubmittedValue = (fieldValue?: FormFieldValueType) => 
 
     case 'CheckboxesFormFieldValue':
       return { CheckboxesFormField: fieldValue.valueEntityIds };
+
+    case 'PasswordFormFieldValue':
+      return { PasswordFormField: fieldValue.password };
   }
 };

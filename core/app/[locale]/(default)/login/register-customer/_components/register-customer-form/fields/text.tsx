@@ -23,7 +23,7 @@ export const Text = ({ defaultValue, field, isValid, name, onChange, type }: Tex
   const fieldName = FieldNameToFieldId[field.entityId];
 
   return (
-    <Field className="relative space-y-2 pb-7" name={name}>
+    <Field className="relative space-y-2" name={name}>
       <FieldLabel htmlFor={`field-${field.entityId}`} isRequired={field.isRequired}>
         {field.label}
       </FieldLabel>
@@ -39,22 +39,24 @@ export const Text = ({ defaultValue, field, isValid, name, onChange, type }: Tex
           type={type === 'email' ? 'email' : 'text'}
         />
       </FieldControl>
-      {field.isRequired && (
-        <FieldMessage
-          className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary"
-          match="valueMissing"
-        >
-          {t(fieldName ?? 'empty')}
-        </FieldMessage>
-      )}
-      {fieldName === 'email' && (
-        <FieldMessage
-          className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary"
-          match="typeMismatch"
-        >
-          {t('email')}
-        </FieldMessage>
-      )}
+      <div className="relative h-7">
+        {field.isRequired && (
+          <FieldMessage
+            className="inline-flex w-full text-xs font-normal text-error-secondary"
+            match="valueMissing"
+          >
+            {t(fieldName ?? 'empty')}
+          </FieldMessage>
+        )}
+        {fieldName === 'email' && (
+          <FieldMessage
+            className="inline-flex w-full text-xs font-normal text-error-secondary"
+            match="typeMismatch"
+          >
+            {t('email')}
+          </FieldMessage>
+        )}
+      </div>
     </Field>
   );
 };

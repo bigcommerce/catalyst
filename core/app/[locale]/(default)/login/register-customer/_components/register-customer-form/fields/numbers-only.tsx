@@ -23,7 +23,7 @@ export const NumbersOnly = ({ defaultValue, field, isValid, name, onChange }: Nu
   const t = useTranslations('Account.Register.validationMessages');
 
   return (
-    <Field className="relative space-y-2 pb-7" name={name}>
+    <Field className="relative space-y-2" name={name}>
       <FieldLabel htmlFor={`field-${field.entityId}`} isRequired={field.isRequired}>
         {field.label}
       </FieldLabel>
@@ -41,36 +41,38 @@ export const NumbersOnly = ({ defaultValue, field, isValid, name, onChange }: Nu
           variant={isValid === false ? 'error' : undefined}
         />
       </FieldControl>
-      {field.isRequired && (
+      <div className="relative h-7">
+        {field.isRequired && (
+          <FieldMessage
+            className="inline-flex w-full text-xs font-normal text-error-secondary"
+            match="valueMissing"
+          >
+            {t('empty')}
+          </FieldMessage>
+        )}
         <FieldMessage
-          className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary"
-          match="valueMissing"
+          className="inline-flex w-full text-xs font-normal text-error-secondary"
+          match="typeMismatch"
         >
-          {t('empty')}
+          {t('numbersOnly')}
         </FieldMessage>
-      )}
-      <FieldMessage
-        className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary"
-        match="typeMismatch"
-      >
-        {t('numbersOnly')}
-      </FieldMessage>
-      {Boolean(field.minNumber) && (
-        <FieldMessage
-          className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary"
-          match="rangeUnderflow"
-        >
-          {t('numbersUnderflow', { min: field.minNumber })}
-        </FieldMessage>
-      )}
-      {Boolean(field.maxNumber) && (
-        <FieldMessage
-          className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary"
-          match="rangeOverflow"
-        >
-          {t('numbersOverflow', { max: field.maxNumber })}
-        </FieldMessage>
-      )}
+        {Boolean(field.minNumber) && (
+          <FieldMessage
+            className="inline-flex w-full text-xs font-normal text-error-secondary"
+            match="rangeUnderflow"
+          >
+            {t('numbersUnderflow', { min: field.minNumber })}
+          </FieldMessage>
+        )}
+        {Boolean(field.maxNumber) && (
+          <FieldMessage
+            className="inline-flex w-full text-xs font-normal text-error-secondary"
+            match="rangeOverflow"
+          >
+            {t('numbersOverflow', { max: field.maxNumber })}
+          </FieldMessage>
+        )}
+      </div>
     </Field>
   );
 };

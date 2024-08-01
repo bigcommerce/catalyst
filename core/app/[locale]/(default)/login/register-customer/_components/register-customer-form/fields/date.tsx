@@ -54,6 +54,7 @@ export const DateField = ({
   const [date, setDate] = useState<Date | string | undefined>(selectedDate);
   const t = useTranslations('Account.Register.validationMessages');
   const disabledDays = getDisabledDays({ earliest: field.minDate, latest: field.maxDate });
+  const validationError = field.isRequired && isValid === false;
   const handleDateSelect = field.isRequired
     ? (d: Date | undefined) => {
         if (onValidate) {
@@ -89,14 +90,13 @@ export const DateField = ({
           required={field.isRequired}
           selected={date ? new Date(date) : undefined}
         />
-        {field.isRequired && !isValid && (
-          <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary"
-            match="valueMissing"
-          >
-            {t('empty')}
-          </FieldMessage>
-        )}
+        <div className="relative h-7">
+          {validationError && (
+            <FieldMessage className="inline-flex w-full text-xs font-normal text-error-secondary">
+              {t('empty')}
+            </FieldMessage>
+          )}
+        </div>
       </fieldset>
     </Field>
   );

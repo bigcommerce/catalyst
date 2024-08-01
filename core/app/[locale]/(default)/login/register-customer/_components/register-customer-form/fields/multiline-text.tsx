@@ -29,13 +29,13 @@ export const MultilineText = ({
   const t = useTranslations('Account.Register.validationMessages');
 
   return (
-    <Field className="relative space-y-2 pb-7" name={name}>
+    <Field className="relative space-y-2" name={name}>
       <FieldLabel htmlFor={`field-${field.entityId}`} isRequired={field.isRequired}>
         {field.label}
       </FieldLabel>
       <FieldControl asChild>
         <TextArea
-          className="h-auto"
+          className="h-auto min-h-12"
           defaultValue={defaultValue || field.defaultText || undefined}
           id={`field-${field.entityId}`}
           onChange={onChange}
@@ -45,14 +45,16 @@ export const MultilineText = ({
           variant={isValid === false ? 'error' : undefined}
         />
       </FieldControl>
-      {field.isRequired && (
-        <FieldMessage
-          className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary"
-          match="valueMissing"
-        >
-          {t('empty')}
-        </FieldMessage>
-      )}
+      <div className="relative h-7">
+        {field.isRequired && (
+          <FieldMessage
+            className="inline-flex w-full text-xs font-normal text-error-secondary"
+            match="valueMissing"
+          >
+            {t('empty')}
+          </FieldMessage>
+        )}
+      </div>
     </Field>
   );
 };

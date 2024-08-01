@@ -49,7 +49,7 @@ const createPreSubmitPicklistValidationHandler = (
         )
         .map(([picklistKey, picklistValue]: [string, string]) => {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const fieldId = picklistKey.split('-')[1]!;
+          const fieldId = picklistKey.split('-')[2]!;
 
           return [fieldId, picklistValue];
         }),
@@ -91,7 +91,7 @@ const createPreSubmitCheckboxesValidationHandler = (
         )
         .map(([checkboxKey, checkboxValue]: [string, string]) => {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const fieldId = checkboxKey.split('-')[1]!;
+          const fieldId = checkboxKey.split('-')[2]!;
 
           return [fieldId, checkboxValue];
         }),
@@ -153,7 +153,7 @@ const createNumbersInputValidationHandler =
 const createRadioButtonsValidationHandler =
   (radioButtonsStateSetter: FieldStateSetFn<FieldState>, radioButtonsState: FieldState) =>
   (e: React.ChangeEvent<HTMLInputElement>) => {
-    const fieldId = Number(e.target.name.split('-')[1]);
+    const fieldId = Number(e.target.name.split('-')[2]);
     const { valueMissing } = e.target.validity;
 
     radioButtonsStateSetter({ ...radioButtonsState, [fieldId]: !valueMissing });
@@ -162,7 +162,7 @@ const createRadioButtonsValidationHandler =
 const createDatesValidationHandler =
   (dateStateSetter: FieldStateSetFn<FieldState>, dateFieldState: FieldState) =>
   (e: React.ChangeEvent<HTMLInputElement>) => {
-    const fieldId = Number(e.target.name.split('-')[1]);
+    const fieldId = Number(e.target.id.split('-')[1]);
     const validationStatus = e.target.validity.valueMissing;
 
     dateStateSetter({ ...dateFieldState, [fieldId]: !validationStatus });

@@ -205,7 +205,7 @@ export const UpdateSettingsForm = ({
         </Message>
       )}
       <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>
-        <div className="mb-10 mt-8 grid grid-cols-1 gap-y-6 text-base lg:grid-cols-2 lg:gap-x-6 lg:gap-y-2">
+        <div className="mb-10 mt-8 grid grid-cols-1 gap-y-6 text-base lg:grid-cols-2 lg:gap-x-6 lg:gap-y-4">
           {addressFields.map((field) => {
             const fieldName = FieldNameToFieldId[field.entityId] ?? '';
 
@@ -253,7 +253,7 @@ export const UpdateSettingsForm = ({
               switch (field.__typename) {
                 case 'NumberFormField': {
                   const submittedValue =
-                    getPreviouslySubmittedValue(previouslySubmittedField)?.NumberFormField;
+                    getPreviouslySubmittedValue(previouslySubmittedField).NumberFormField;
 
                   return (
                     <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -270,7 +270,7 @@ export const UpdateSettingsForm = ({
 
                 case 'CheckboxesFormField': {
                   const submittedValue =
-                    getPreviouslySubmittedValue(previouslySubmittedField)?.CheckboxesFormField;
+                    getPreviouslySubmittedValue(previouslySubmittedField).CheckboxesFormField;
 
                   return (
                     <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -288,7 +288,7 @@ export const UpdateSettingsForm = ({
 
                 case 'MultilineTextFormField': {
                   const submittedValue =
-                    getPreviouslySubmittedValue(previouslySubmittedField)?.MultilineTextFormField;
+                    getPreviouslySubmittedValue(previouslySubmittedField).MultilineTextFormField;
 
                   return (
                     <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -305,7 +305,7 @@ export const UpdateSettingsForm = ({
 
                 case 'DateFormField': {
                   const submittedValue =
-                    getPreviouslySubmittedValue(previouslySubmittedField)?.DateFormField;
+                    getPreviouslySubmittedValue(previouslySubmittedField).DateFormField;
 
                   return (
                     <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -323,7 +323,7 @@ export const UpdateSettingsForm = ({
 
                 case 'RadioButtonsFormField': {
                   const submittedValue =
-                    getPreviouslySubmittedValue(previouslySubmittedField)?.MultipleChoiceFormField;
+                    getPreviouslySubmittedValue(previouslySubmittedField).MultipleChoiceFormField;
 
                   return (
                     <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -340,7 +340,7 @@ export const UpdateSettingsForm = ({
 
                 case 'PicklistFormField': {
                   const submittedValue =
-                    getPreviouslySubmittedValue(previouslySubmittedField)?.MultipleChoiceFormField;
+                    getPreviouslySubmittedValue(previouslySubmittedField).MultipleChoiceFormField;
 
                   return (
                     <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -358,7 +358,7 @@ export const UpdateSettingsForm = ({
 
                 case 'TextFormField': {
                   const submittedValue =
-                    getPreviouslySubmittedValue(previouslySubmittedField)?.TextFormField;
+                    getPreviouslySubmittedValue(previouslySubmittedField).TextFormField;
 
                   return (
                     <FieldWrapper fieldId={fieldId} key={fieldId}>
