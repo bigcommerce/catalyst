@@ -205,7 +205,7 @@ export const UpdateSettingsForm = ({
         </Message>
       )}
       <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>
-        <div className="mb-10 mt-8 grid grid-cols-1 gap-y-6 text-base lg:grid-cols-2 lg:gap-x-6 lg:gap-y-4">
+        <div className="mb-10 mt-8 grid grid-cols-1 gap-y-3 text-base lg:grid-cols-2 lg:gap-x-6">
           {addressFields.map((field) => {
             const fieldName = FieldNameToFieldId[field.entityId] ?? '';
 
