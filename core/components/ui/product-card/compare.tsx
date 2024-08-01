@@ -2,9 +2,8 @@
 
 import { useEffect, useId, useState } from 'react';
 
-import { useCompareProductsContext } from '~/app/contexts/compare-products-context';
-
 import { Checkbox } from '../checkbox';
+import { useCompareDrawerContext } from '../compare-drawer';
 import { Label } from '../label';
 
 export const Compare = ({
@@ -22,7 +21,7 @@ export const Compare = ({
   const checkboxId = useId();
 
   const [checkedState, setCheckedState] = useState(false);
-  const { products, setProducts } = useCompareProductsContext();
+  const { products, setProducts } = useCompareDrawerContext();
 
   useEffect(() => {
     setCheckedState(products.some(({ id }) => id === productId));

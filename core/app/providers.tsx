@@ -2,8 +2,8 @@
 
 import { PropsWithChildren } from 'react';
 
-import { CompareProductsProvider } from '~/app/contexts/compare-products-context';
+import { CompareDrawerProvider } from '~/components/ui/compare-drawer';
 
 export function Providers({ children }: PropsWithChildren) {
-  return <CompareProductsProvider>{children}</CompareProductsProvider>;
+  return <CompareDrawerProvider>{children}</CompareDrawerProvider>;
 }

@@ -1,15 +1,14 @@
-'use client';
-
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
-import { ChevronDown, X } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { ChevronDown } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
-import { CheckedProduct, useCompareProductsContext } from '~/app/contexts/compare-products-context';
 import { Link } from '~/components/link';
-import { Button } from '~/components/ui/button';
+import { usePathname } from '~/navigation';
 
-import { BcImage } from '../bc-image';
+import { Button } from '../button';
+import { ProductChip } from '../product-chip';
+
+import { CheckedProduct, useCompareDrawerContext } from './context';
 
 const CompareLink = ({ products }: { products: CheckedProduct[] }) => {
   const t = useTranslations('Providers.Compare');
@@ -26,51 +25,10 @@ const CompareLink = ({ products }: { products: CheckedProduct[] }) => {
   );
 };
 
-const CompareItem = ({
-  product,
-  removeItem,
-}: {
-  product: CheckedProduct;
-  removeItem: () => void;
-}) => {
-  const t = useTranslations('Providers.Compare');
-
-  return (
-    <li
-      className="mb-4 flex h-12 flex-shrink-0 items-center overflow-hidden border border-gray-200 pe-3 last:mb-0 md:mb-0 md:me-4"
-      key={product.id}
-    >
-      {product.image ? (
-        <BcImage
-          alt={product.image.altText ?? product.name}
-          className="object-contain"
-          height={48}
-          src={product.image.url ?? ''}
-          width={48}
-        />
-      ) : (
-        <span className="flex h-12 w-12 items-center justify-center bg-gray-200 text-[8px] text-gray-500">
-          {t('productPhoto')}
-        </span>
-      )}
-      <small className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap px-4 text-base font-semibold">
-        {product.name}
-      </small>
-      <Button
-        aria-label={t('removeProductAriaLabel', { product: product.name })}
-        className="grow-1 ms-auto w-auto border-0 bg-transparent p-0 text-black hover:bg-transparent hover:text-primary focus-visible:text-primary"
-        onClick={removeItem}
-        type="button"
-      >
-        <X />
-      </Button>
-    </li>
-  );
-};
-
-export const CompareDrawer = () => {
+const CompareDrawer = () => {
   const pathname = usePathname();
-  const { products, setProducts } = useCompareProductsContext();
+
+  const { products, setProducts } = useCompareDrawerContext();
 
   if (pathname === '/compare' || products.length === 0) {
     return null;
@@ -83,10 +41,10 @@ export const CompareDrawer = () => {
         <ul className="flex overflow-auto">
           {products.map((product) => {
             return (
-              <CompareItem
+              <ProductChip
                 key={product.id}
+                onDismiss={() => setProducts(products.filter(({ id }) => id !== product.id))}
                 product={product}
-                removeItem={() => setProducts(products.filter(({ id }) => id !== product.id))}
               />
             );
           })}
@@ -105,10 +63,10 @@ export const CompareDrawer = () => {
             <ul className="flex max-h-44 flex-col overflow-auto">
               {products.map((product) => {
                 return (
-                  <CompareItem
+                  <ProductChip
                     key={product.id}
+                    onDismiss={() => setProducts(products.filter(({ id }) => id !== product.id))}
                     product={product}
-                    removeItem={() => setProducts(products.filter(({ id }) => id !== product.id))}
                   />
                 );
               })}
@@ -119,3 +77,5 @@ export const CompareDrawer = () => {
     </div>
   );
 };
+
+export { CompareDrawer };

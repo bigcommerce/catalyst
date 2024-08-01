@@ -1,6 +1,6 @@
-'use client';
-
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
+
+import { CompareDrawer } from './compare-drawer';
 
 export interface CheckedProduct {
   id: number;
@@ -11,9 +11,7 @@ export interface CheckedProduct {
   } | null;
 }
 
-import { CompareDrawer } from '~/components/compare-drawer';
-
-const CompareProductsContext = createContext<{
+const CompareDrawerContext = createContext<{
   products: CheckedProduct[];
   setProducts: (products: CheckedProduct[]) => void;
 } | null>(null);
@@ -25,7 +23,7 @@ const isCheckedProducts = (products: unknown): products is CheckedProduct[] => {
   );
 };
 
-export const CompareProductsProvider = ({ children }: PropsWithChildren) => {
+const CompareDrawerProvider = ({ children }: PropsWithChildren) => {
   const [products, setProducts] = useState<CheckedProduct[]>([]);
 
   useEffect(() => {
@@ -49,19 +47,21 @@ export const CompareProductsProvider = ({ children }: PropsWithChildren) => {
   }, [products]);
 
   return (
-    <CompareProductsContext.Provider value={{ products, setProducts }}>
+    <CompareDrawerContext.Provider value={{ products, setProducts }}>
       {children}
       <CompareDrawer />
-    </CompareProductsContext.Provider>
+    </CompareDrawerContext.Provider>
   );
 };
 
-export function useCompareProductsContext() {
-  const context = useContext(CompareProductsContext);
+function useCompareDrawerContext() {
+  const context = useContext(CompareDrawerContext);
 
   if (!context) {
-    throw new Error('useCompareProductsContext must be used within a CompareProductsProvider');
+    throw new Error('useCompareDrawerContext must be used within a CompareDrawerProvider');
   }
 
   return context;
 }
+
+export { CompareDrawerProvider, useCompareDrawerContext };
