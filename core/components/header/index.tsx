@@ -1,4 +1,6 @@
 import { ShoppingCart, User } from 'lucide-react';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
 import { ReactNode, Suspense } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
@@ -13,6 +15,7 @@ import { Popover } from '../ui/popover';
 
 import { logout } from './_actions/logout';
 import { CartLink } from './cart';
+import { LocaleSwitcher } from './locale-switcher';
 
 export const HeaderFragment = graphql(
   `
@@ -47,6 +50,9 @@ interface Props {
 
 export const Header = async ({ cart, data }: Props) => {
   const customerId = await getSessionCustomerId();
+
+  const locale = await getLocale();
+  const messages = await getMessages({ locale });
 
   /**  To prevent the navigation menu from overflowing, we limit the number of categories to 6.
    To show a full list of categories, modify the `slice` method to remove the limit.
@@ -140,6 +146,9 @@ export const Header = async ({ cart, data }: Props) => {
           {cart}
         </Suspense>
       </p>
+      <NextIntlClientProvider locale={locale} messages={{ Header: messages.Header ?? {} }}>
+        <LocaleSwitcher />
+      </NextIntlClientProvider>
     </ComponentsHeader>
   );
 };

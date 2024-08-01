@@ -367,7 +367,9 @@
     }
   },
   "Header": {
-    "account": "Your Account"
+    "account": "Your Account",
+    "chooseCountryAndLanguage": "Choose your country and language",
+    "goToSite": "Go to site"
   },
   "Pagination": {
     "next": "Next",
