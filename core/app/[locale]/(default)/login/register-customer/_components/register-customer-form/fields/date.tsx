@@ -2,7 +2,7 @@ import { useTranslations } from 'next-intl';
 import React, { ChangeEvent, useState } from 'react';
 
 import { DatePicker } from '~/components/ui/date-picker';
-import { Field, FieldControl, FieldLabel, FieldMessage } from '~/components/ui/form';
+import { Field, FieldLabel, FieldMessage } from '~/components/ui/form';
 
 import { AddressFields } from '..';
 
@@ -55,6 +55,7 @@ export const DateField = ({
   const [date, setDate] = useState<Date | string | undefined>(selectedDate);
   const t = useTranslations('Account.Register.validationMessages');
   const disabledDays = getDisabledDays({ earliest: field.minDate, latest: field.maxDate });
+  const validationError = field.isRequired && isValid === false;
   const handleDateSelect = field.isRequired
     ? (d: Date | undefined) => {
         if (onValidate) {
@@ -69,30 +70,30 @@ export const DateField = ({
     : (d?: Date) => setDate(d);
 
   return (
-    <Field className="relative space-y-2 pb-7" name={name}>
-      <FieldLabel htmlFor={`field-${field.entityId}`} isRequired={field.isRequired}>
-        {field.label}
-      </FieldLabel>
-      <FieldControl asChild>
+    <Field className="relative" name={name}>
+      <fieldset className="space-y-2">
+        <FieldLabel htmlFor={`field-${field.entityId}`} isRequired={field.isRequired}>
+          {field.label}
+        </FieldLabel>
         <DatePicker
           disabledDays={disabledDays}
           id={`field-${field.entityId}`}
+          name={name}
           onChange={field.isRequired ? onChange : undefined}
           onInvalid={field.isRequired ? onChange : undefined}
           onSelect={handleDateSelect}
           required={field.isRequired}
           selected={date ? new Date(date) : undefined}
-          variant={isValid === false ? 'error' : undefined}
+          variant={validationError ? 'error' : undefined}
         />
-      </FieldControl>
-      {field.isRequired && !isValid && (
-        <FieldMessage
-          className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary"
-          match="valueMissing"
-        >
-          {t('empty')}
-        </FieldMessage>
-      )}
+        <div className="relative h-7">
+          {validationError && (
+            <FieldMessage className="inline-flex w-full text-xs font-normal text-error-secondary">
+              {t('empty')}
+            </FieldMessage>
+          )}
+        </div>
+      </fieldset>
     </Field>
   );
 };

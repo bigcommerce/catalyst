@@ -14,6 +14,7 @@ import {
   FieldWrapper,
   MultilineText,
   NumbersOnly,
+  Password,
   Picklist,
   PicklistOrText,
   RadioButtons,
@@ -31,6 +32,7 @@ import {
   createDatesValidationHandler,
   createMultilineTextValidationHandler,
   createNumbersInputValidationHandler,
+  createPasswordValidationHandler,
   createPreSubmitCheckboxesValidationHandler,
   createPreSubmitPicklistValidationHandler,
   createRadioButtonsValidationHandler,
@@ -105,6 +107,7 @@ export const AddAddress = ({
   const [textInputValid, setTextInputValid] = useState<Record<string, boolean>>({});
   const [numbersInputValid, setNumbersInputValid] = useState<Record<string, boolean>>({});
   const [datesValid, setDatesValid] = useState<Record<string, boolean>>({});
+  const [passwordValid, setPasswordValid] = useState<Record<string, boolean>>({});
   const [radioButtonsValid, setRadioButtonsValid] = useState<Record<string, boolean>>({});
   const [picklistValid, setPicklistValid] = useState<Record<string, boolean>>({});
   const [checkboxesValid, setCheckboxesValid] = useState<Record<string, boolean>>({});
@@ -115,6 +118,7 @@ export const AddAddress = ({
     setTextInputValid,
     textInputValid,
   );
+  const handlePasswordValidation = createPasswordValidationHandler(setPasswordValid, addressFields);
   const handleCountryChange = createCountryChangeHandler(setCountryStates, countries);
   const handleNumbersInputValidation = createNumbersInputValidationHandler(
     setNumbersInputValid,
@@ -326,6 +330,19 @@ export const AddAddress = ({
                     />
                   </FieldWrapper>
                 );
+
+              case 'PasswordFormField': {
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <Password
+                      field={field}
+                      isValid={passwordValid[fieldId]}
+                      name={fieldName}
+                      onChange={handlePasswordValidation}
+                    />
+                  </FieldWrapper>
+                );
+              }
 
               default:
                 return null;

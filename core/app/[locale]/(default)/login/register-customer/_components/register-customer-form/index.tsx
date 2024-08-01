@@ -242,7 +242,6 @@ export const RegisterCustomerForm = ({
     const submit = await registerCustomer({ formData, reCaptchaToken });
 
     if (submit.status === 'success') {
-      form.current?.reset();
       setFormStatus({
         status: 'success',
         message: t('successMessage', {
@@ -274,7 +273,7 @@ export const RegisterCustomerForm = ({
         </Message>
       )}
       <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>
-        <div className="mb-6 grid grid-cols-1 gap-y-6 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-2">
+        <div className="mb-4 grid grid-cols-1 gap-y-6 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-4">
           {customerFields
             .filter((field) => !CUSTOMER_FIELDS_TO_EXCLUDE.includes(field.entityId))
             .map((field) => {
@@ -394,7 +393,7 @@ export const RegisterCustomerForm = ({
               }
             })}
         </div>
-        <div className="grid grid-cols-1 gap-y-6 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-2">
+        <div className="grid grid-cols-1 gap-y-6 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-4">
           {addressFields.map((field) => {
             const fieldId = field.entityId;
             const fieldName = createFieldName(field, 'address');
@@ -515,6 +514,19 @@ export const RegisterCustomerForm = ({
                       options={countryStates.map(({ name }) => {
                         return { entityId: name, label: name };
                       })}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
+              case 'PasswordFormField': {
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <Password
+                      field={field}
+                      isValid={passwordValid[fieldId]}
+                      name={fieldName}
+                      onChange={handlePasswordValidation}
                     />
                   </FieldWrapper>
                 );

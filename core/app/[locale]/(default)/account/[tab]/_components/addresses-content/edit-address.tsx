@@ -15,6 +15,7 @@ import {
   getPreviouslySubmittedValue,
   MultilineText,
   NumbersOnly,
+  Password,
   Picklist,
   PicklistOrText,
   RadioButtons,
@@ -36,6 +37,7 @@ import {
   createDatesValidationHandler,
   createMultilineTextValidationHandler,
   createNumbersInputValidationHandler,
+  createPasswordValidationHandler,
   createPreSubmitCheckboxesValidationHandler,
   createPreSubmitPicklistValidationHandler,
   createRadioButtonsValidationHandler,
@@ -113,6 +115,7 @@ export const EditAddress = ({
   const { setAccountState } = useAccountStatusContext();
 
   const [textInputValid, setTextInputValid] = useState<Record<string, boolean>>({});
+  const [passwordValid, setPasswordValid] = useState<Record<string, boolean>>({});
   const [numbersInputValid, setNumbersInputValid] = useState<Record<string, boolean>>({});
   const [datesValid, setDatesValid] = useState<Record<string, boolean>>({});
   const [radioButtonsValid, setRadioButtonsValid] = useState<Record<string, boolean>>({});
@@ -129,6 +132,7 @@ export const EditAddress = ({
     setTextInputValid,
     textInputValid,
   );
+  const handlePasswordValidation = createPasswordValidationHandler(setPasswordValid, addressFields);
   const handleNumbersInputValidation = createNumbersInputValidationHandler(
     setNumbersInputValid,
     numbersInputValid,
@@ -224,7 +228,7 @@ export const EditAddress = ({
         </Message>
       )}
       <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>
-        <div className="grid grid-cols-1 gap-y-6 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-2">
+        <div className="grid grid-cols-1 gap-y-6 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-4">
           {addressFields.map((field) => {
             const fieldId = field.entityId;
             const fieldName = createFieldName(field, 'address');
@@ -237,7 +241,7 @@ export const EditAddress = ({
             switch (field.__typename) {
               case 'TextFormField': {
                 const previousTextValue =
-                  getPreviouslySubmittedValue(defaultCustomField)?.TextFormField;
+                  getPreviouslySubmittedValue(defaultCustomField).TextFormField;
 
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -254,7 +258,7 @@ export const EditAddress = ({
 
               case 'MultilineTextFormField': {
                 const previousMultiTextValue =
-                  getPreviouslySubmittedValue(defaultCustomField)?.MultilineTextFormField;
+                  getPreviouslySubmittedValue(defaultCustomField).MultilineTextFormField;
 
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -271,7 +275,7 @@ export const EditAddress = ({
 
               case 'NumberFormField': {
                 const previousNumberValue =
-                  getPreviouslySubmittedValue(defaultCustomField)?.NumberFormField;
+                  getPreviouslySubmittedValue(defaultCustomField).NumberFormField;
 
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -288,7 +292,7 @@ export const EditAddress = ({
 
               case 'CheckboxesFormField': {
                 const previousCheckboxesValue =
-                  getPreviouslySubmittedValue(defaultCustomField)?.CheckboxesFormField;
+                  getPreviouslySubmittedValue(defaultCustomField).CheckboxesFormField;
 
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -306,7 +310,7 @@ export const EditAddress = ({
 
               case 'DateFormField': {
                 const previousDateValue =
-                  getPreviouslySubmittedValue(defaultCustomField)?.DateFormField;
+                  getPreviouslySubmittedValue(defaultCustomField).DateFormField;
 
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -324,7 +328,7 @@ export const EditAddress = ({
 
               case 'RadioButtonsFormField': {
                 const previousMultipleChoiceValue =
-                  getPreviouslySubmittedValue(defaultCustomField)?.MultipleChoiceFormField;
+                  getPreviouslySubmittedValue(defaultCustomField).MultipleChoiceFormField;
 
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -342,7 +346,7 @@ export const EditAddress = ({
               case 'PicklistFormField': {
                 const isCountrySelector = fieldId === FieldNameToFieldId.countryCode;
                 const previousMultipleChoiceValue =
-                  getPreviouslySubmittedValue(defaultCustomField)?.MultipleChoiceFormField;
+                  getPreviouslySubmittedValue(defaultCustomField).MultipleChoiceFormField;
                 const picklistOptions = isCountrySelector
                   ? countries.map(({ name, code }) => ({ label: name, entityId: code }))
                   : field.options;
@@ -373,6 +377,23 @@ export const EditAddress = ({
                       key={countryStates.length}
                       name={fieldName}
                       options={countryStates.map(({ name }) => ({ entityId: name, label: name }))}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
+              case 'PasswordFormField': {
+                const previousPasswordValue =
+                  getPreviouslySubmittedValue(defaultCustomField).PasswordFormField;
+
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <Password
+                      defaultValue={previousPasswordValue}
+                      field={field}
+                      isValid={passwordValid[fieldId]}
+                      name={fieldName}
+                      onChange={handlePasswordValidation}
                     />
                   </FieldWrapper>
                 );
