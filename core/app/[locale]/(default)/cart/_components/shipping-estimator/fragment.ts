@@ -29,3 +29,16 @@ export const ShippingEstimatorFragment = graphql(
   `,
   [ShippingOptionsFragment, ShippingInfoFragment],
 );
+
+export const GeographyFragment = graphql(
+  `
+    fragment GeographyFragment on Geography {
+      countries {
+        entityId
+        name
+        code
+      }
+    }
+  `,
+  [],
+);
