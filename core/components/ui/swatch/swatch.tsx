@@ -34,9 +34,9 @@ const Swatch = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
 
           return (
             <RadioGroupPrimitive.Item
+              key={`${id}-${value}`}
               {...itemProps}
               className="group h-12 w-12 border-2 bg-white p-1 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-gray-100 disabled:hover:border-gray-100 data-[state=checked]:border-primary"
-              key={`${id}-${value}`}
               title={label}
               value={value}
             >
