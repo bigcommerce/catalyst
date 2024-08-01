@@ -29,14 +29,14 @@ const RectangleList = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Pr
         {...props}
       >
         {items.map((item) => {
-          const { className: itemClassName, label, value, ...itemProps } = item;
+          const { label, value, ...itemProps } = item;
 
           return (
             <RadioGroupPrimitive.Item
-              className="border-2 px-6 py-2.5 font-semibold text-black hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-gray-100 disabled:text-gray-400 disabled:hover:border-gray-100 data-[state=checked]:border-primary"
               key={`${id}-${value}`}
-              value={value}
               {...itemProps}
+              className="border-2 px-6 py-2.5 font-semibold text-black hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-gray-100 disabled:text-gray-400 disabled:hover:border-gray-100 data-[state=checked]:border-primary"
+              value={value}
             >
               {item.label}
             </RadioGroupPrimitive.Item>
