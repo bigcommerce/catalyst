@@ -7,8 +7,9 @@ test('Header', async ({ page }) => {
   // Act
   const navigation = page.getByRole('navigation', { name: 'Main' });
 
-  await navigation.waitFor();
+  await page.waitForLoadState('networkidle');
 
   // Assert
+  await expect(navigation).toBeInViewport();
   await expect(navigation).toHaveScreenshot();
 });
