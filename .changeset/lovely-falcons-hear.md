@@ -2,4 +2,4 @@
 "@bigcommerce/catalyst-core": patch
 ---
 
-Fixes an issue with keys for input components.
+Set key before spreading prop in some form components.
