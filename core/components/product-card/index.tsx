@@ -1,7 +1,7 @@
-import { graphql, ResultOf } from '~/client/graphql';
-import { ProductCard as ComponentProductCard } from '~/components/ui/product-card';
+import { getFormatter } from 'next-intl/server';
 
-import { Pricing, PricingFragment } from '../pricing';
+import { graphql, ResultOf } from '~/client/graphql';
+import { ProductCard as ComponentProductCard, Price } from '~/components/ui/product-card';
 
 import { AddToCart } from './add-to-cart';
 import { AddToCartFragment } from './add-to-cart/fragment';
@@ -24,11 +24,38 @@ export const ProductCardFragment = graphql(
         numberOfReviews
         averageRating
       }
+      prices {
+        price {
+          value
+          currencyCode
+        }
+        basePrice {
+          value
+          currencyCode
+        }
+        retailPrice {
+          value
+          currencyCode
+        }
+        salePrice {
+          value
+          currencyCode
+        }
+        priceRange {
+          min {
+            value
+            currencyCode
+          }
+          max {
+            value
+            currencyCode
+          }
+        }
+      }
       ...AddToCartFragment
-      ...PricingFragment
     }
   `,
-  [AddToCartFragment, PricingFragment],
+  [AddToCartFragment],
 );
 
 interface Props {
@@ -39,14 +66,61 @@ interface Props {
   showCart?: boolean;
 }
 
-export const ProductCard = ({
+export const ProductCard = async ({
   product,
   imageSize = 'square',
   imagePriority = false,
   showCart = true,
   showCompare = true,
 }: Props) => {
-  const { name, entityId, defaultImage, brand, path } = product;
+  const { name, entityId, defaultImage, brand, path, prices } = product;
+
+  const format = await getFormatter();
+
+  const formattedPrice = (): Price | null => {
+    if (!prices) {
+      return null;
+    }
+
+    const isPriceRange = prices.priceRange.min.value !== prices.priceRange.max.value;
+    const isSalePrice = prices.salePrice?.value !== prices.basePrice?.value;
+
+    if (isPriceRange) {
+      return {
+        type: 'range',
+        min: format.number(prices.priceRange.min.value, {
+          style: 'currency',
+          currency: prices.price.currencyCode,
+        }),
+        max: format.number(prices.priceRange.max.value, {
+          style: 'currency',
+          currency: prices.price.currencyCode,
+        }),
+      };
+    }
+
+    if (isSalePrice && prices.salePrice && prices.basePrice) {
+      return {
+        type: 'sale',
+        originalAmount: format.number(prices.basePrice.value, {
+          style: 'currency',
+          currency: prices.price.currencyCode,
+        }),
+        amount: format.number(prices.salePrice.value, {
+          style: 'currency',
+          currency: prices.price.currencyCode,
+        }),
+      };
+    }
+
+    return {
+      type: 'fixed',
+      amount: format.number(prices.price.value, {
+        style: 'currency',
+        currency: prices.price.currencyCode,
+      }),
+    };
+  };
 
   return (
     <ComponentProductCard
@@ -55,7 +129,7 @@ export const ProductCard = ({
       imagePriority={imagePriority}
       imageSize={imageSize}
       link={path}
-      price={<Pricing data={product} />}
+      price={formattedPrice() ?? undefined}
       productId={entityId}
       showCompare={showCompare}
       subtitle={brand?.name}

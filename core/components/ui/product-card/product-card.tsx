@@ -6,13 +6,26 @@ import { cn } from '~/lib/utils';
 
 import { Compare } from './compare';
 
+type Price =
+  | {
+      type: 'range';
+      min: string;
+      max: string;
+    }
+  | {
+      type: 'fixed';
+      amount: string;
+      msrp?: string;
+    }
+  | { type: 'sale'; originalAmount: string; amount: string; msrp?: string };
+
 interface Props extends ComponentPropsWithRef<'div'> {
   addToCart?: ReactNode;
   image?: { url: string; altText: string } | null;
   imagePriority?: boolean;
   imageSize?: 'square' | 'tall' | 'wide';
   link: string;
-  price?: ReactNode;
+  price?: Price;
   productId: number;
   showCompare?: boolean;
   subtitle?: string;
@@ -69,7 +82,33 @@ const ProductCard = ({
           </Link>
         </h3>
         <div className="flex flex-wrap items-end justify-between pt-1">
-          {price}
+          {price && (
+            <p className="flex flex-col gap-1">
+              {price.type === 'range' && (
+                <span>
+                  {price.min} - {price.max}
+                </span>
+              )}
+
+              {price.type === 'fixed' && price.amount}
+
+              {price.type === 'sale' && (
+                <>
+                  {Boolean(price.msrp) && (
+                    <span>
+                      MSRP: <span className="line-through">{price.msrp}</span>
+                    </span>
+                  )}
+                  <>
+                    <span>
+                      Was: <span className="line-through">{price.originalAmount}</span>
+                    </span>
+                    <span>Now: {price.amount}</span>
+                  </>
+                </>
+              )}
+            </p>
+          )}
 
           {showCompare && (
             <Compare productId={productId} productImage={image} productName={title} />
@@ -83,4 +122,4 @@ const ProductCard = ({
 
 ProductCard.displayName = 'ProductCard';
 
-export { ProductCard };
+export { ProductCard, type Price };
