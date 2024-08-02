@@ -18,7 +18,7 @@ const nextConfig = {
     ignoreDuringBuilds: !!process.env.CI,
     dirs: ['app', 'client', 'components', 'lib', 'middlewares'],
   },
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     if (process.env.NODE_V8_COVERAGE) {
       Object.defineProperty(config, 'devtool', {
         get() {
@@ -26,6 +26,17 @@ const nextConfig = {
         },
         set() {},
       });
+    }
+
+    // Limit the number of chunks to reduce CDN requests, which contribute to Edge Request costs
+    if (!isServer) {
+      config.plugins.push(
+        new (require('webpack').optimize.LimitChunkCountPlugin)({
+          maxChunks: process.env.WEBPACK_MAX_CHUNKS
+            ? parseInt(process.env.WEBPACK_MAX_CHUNKS, 10)
+            : 5,
+        }),
+      );
     }
 
     return config;
