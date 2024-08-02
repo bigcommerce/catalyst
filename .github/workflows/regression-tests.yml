@@ -124,6 +124,10 @@ jobs:
           cd core
           npx playwright install --with-deps
 
+      - name: Find pull request
+        uses: jwalton/gh-find-current-pr@v1.3.3
+        id: finder
+
       - name: Run Playwright tests
         run: |
           cd core
@@ -135,6 +139,20 @@ jobs:
           name: playwright-report-ui
           path: core/test-results/
           retention-days: 30
+
+      - name: Send slack notification
+        uses: slackapi/slack-github-action@v1.26.0
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          payload: |
+            {
+              "Job": "${{ github.job }}",
+              "Status": "Fail",
+              "Pull_Request": "https://github.com/bigcommerce/catalyst/pull/${{ steps.finder.outputs.pr }}",
+              "Commit_Message" : "${{ steps.finder.outputs.title }}"
+            }
 
   visual-regression-tests:
     name: Playwright Visual Regression Tests
@@ -162,6 +180,10 @@ jobs:
           cd core
           npx playwright install chromium
 
+      - name: Find pull request
+        uses: jwalton/gh-find-current-pr@v1.3.3
+        id: finder
+
       - name: Run Playwright tests
         run: |
           cd core
@@ -174,3 +196,16 @@ jobs:
           path: core/test-results/
           retention-days: 30
 
+      - name: Send slack notification
+        uses: slackapi/slack-github-action@v1.26.0
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          payload: |
+            {
+              "Job": "${{ github.job }}",
+              "Status": "Fail",
+              "Pull_Request": "https://github.com/bigcommerce/catalyst/pull/${{ steps.finder.outputs.pr }}",
+              "Commit_Message" : "${{ steps.finder.outputs.title }}"
+            }
