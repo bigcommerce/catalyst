@@ -8,8 +8,8 @@ interface Props extends ComponentPropsWithRef<'div'> {
   author?: string | null;
   content: string;
   date: string;
+  image?: { altText: string; url: string } | null;
   link: { href: string };
-  thumbnail?: { altText: string; url: string } | null;
   title: string;
 }
 
@@ -19,21 +19,21 @@ const BlogPostCard = ({
   className,
   content,
   date,
+  image,
   link,
-  thumbnail,
   title,
   ...props
 }: Props) => {
   return (
     <div className={cn('flex flex-col', className)} {...props}>
-      {thumbnail ? (
+      {image ? (
         <div className="mb-2 flex h-44 lg:h-56">
           <Link className="block w-full" href={link.href}>
             <BcImage
-              alt={thumbnail.altText}
+              alt={image.altText}
               className="h-full w-full object-cover object-center"
               height={300}
-              src={thumbnail.url}
+              src={image.url}
               width={300}
             />
           </Link>
