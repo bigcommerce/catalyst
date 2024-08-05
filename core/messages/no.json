@@ -160,7 +160,6 @@
     "Search": {
         "heading": "Søk",
         "products": "Produkter",
-        "noResults": "ingen resultater",
         "sortBy": "{items, plural, =0 {no items} =1 {1 vare} other {# varer}}",
         "searchResults": "Søkeresultater for"
     },
@@ -313,7 +312,9 @@
         "searchProducts": "Søk etter produkter",
         "searchPlaceholder": "Plassholder …",
         "searching": "Søker etter …",
-        "search": "Søk"
+        "search": "Søk",
+        "noSearchResults": "Beklager, ingen resultater for {term}.",
+        "checkSpelling": "Kontroller stavemåten, eller prøv et annet søk."
     },
     "ServerError": {
         "heading": "Det oppstod en serverfeil!",
@@ -366,7 +367,9 @@
         }
     },
     "Header": {
-        "account": "Kontoen din"
+        "account": "Kontoen din",
+        "chooseCountryAndLanguage": "Choose your country and language",
+        "goToSite": "Go to site"
     },
     "Pagination": {
         "next": "Neste",

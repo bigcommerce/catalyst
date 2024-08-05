@@ -160,7 +160,6 @@
     "Search": {
         "heading": "Zoeken",
         "products": "Producten",
-        "noResults": "Geen resultaten",
         "sortBy": "{items, plural, =0 {geen items} =1 {1 item} other {# items}}",
         "searchResults": "Zoekresultaten voor"
     },
@@ -313,7 +312,9 @@
         "searchProducts": "Zoek producten...",
         "searchPlaceholder": "Tijdelijke aanduiding...",
         "searching": "Zoeken...",
-        "search": "Zoeken"
+        "search": "Zoeken",
+        "noSearchResults": "Helaas, geen resultaten voor {term}.",
+        "checkSpelling": "Controleer de spelling of probeer een andere zoekopdracht."
     },
     "ServerError": {
         "heading": "Er is een serverfout opgetreden!",
@@ -366,7 +367,9 @@
         }
     },
     "Header": {
-        "account": "Uw account"
+        "account": "Uw account",
+        "chooseCountryAndLanguage": "Choose your country and language",
+        "goToSite": "Go to site"
     },
     "Pagination": {
         "next": "Volgende",
