@@ -72,13 +72,18 @@ export const DateField = ({
   return (
     <Field className="relative" name={name}>
       <fieldset className="space-y-2">
-        <FieldLabel htmlFor={`field-${field.entityId}`} isRequired={field.isRequired}>
+        <FieldLabel htmlFor={name} isRequired={field.isRequired}>
           {field.label}
         </FieldLabel>
-        <DatePicker
-          disabledDays={disabledDays}
+        <input
           id={`field-${field.entityId}`}
           name={name}
+          type="hidden"
+          value={date ? new Date(date).toLocaleDateString('en-US') : ''}
+        />
+        <DatePicker
+          disabledDays={disabledDays}
+          id={name}
           onChange={field.isRequired ? onChange : undefined}
           onInvalid={field.isRequired ? onChange : undefined}
           onSelect={handleDateSelect}

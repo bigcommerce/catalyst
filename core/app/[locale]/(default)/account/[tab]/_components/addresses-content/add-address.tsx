@@ -172,7 +172,6 @@ export const AddAddress = ({
     const submit = await addAddress({ formData, reCaptchaToken });
 
     if (submit.status === 'success') {
-      form.current?.reset();
       setFormStatus({
         status: 'success',
         message: t('successMessage'),

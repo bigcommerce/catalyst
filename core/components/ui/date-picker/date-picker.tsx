@@ -40,6 +40,7 @@ export const DatePicker = React.forwardRef<React.ElementRef<'div'>, DatePickerPr
         <Popover>
           <PopoverTrigger asChild>
             <Input
+              className={required ? 'caret-transparent' : ''}
               placeholder={placeholder}
               readOnly={!required}
               required={required}

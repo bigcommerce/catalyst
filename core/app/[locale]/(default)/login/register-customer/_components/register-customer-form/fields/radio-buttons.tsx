@@ -53,14 +53,14 @@ export const RadioButtons = ({
             const itemId = option.entityId;
 
             return (
-              <div className="mb-2 flex" key={itemId}>
-                <RadioItem
-                  id={`${itemId}`}
-                  value={`${itemId}`}
-                  variant={validationError ? 'error' : undefined}
-                />
-                <Label className="w-full cursor-pointer ps-4 font-normal" htmlFor={`${itemId}`}>
-                  <p className="inline-flex w-full justify-between">{option.label}</p>
+              <div className="mb-2" key={itemId}>
+                <Label className="flex w-full cursor-pointer gap-3 ps-4 font-normal">
+                  <RadioItem
+                    id={`${itemId}`}
+                    value={`${itemId}`}
+                    variant={validationError ? 'error' : undefined}
+                  />
+                  <p>{option.label}</p>
                 </Label>
               </div>
             );

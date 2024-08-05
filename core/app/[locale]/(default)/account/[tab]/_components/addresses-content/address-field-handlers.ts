@@ -162,7 +162,7 @@ const createRadioButtonsValidationHandler =
 const createDatesValidationHandler =
   (dateStateSetter: FieldStateSetFn<FieldState>, dateFieldState: FieldState) =>
   (e: React.ChangeEvent<HTMLInputElement>) => {
-    const fieldId = Number(e.target.id.split('-')[1]);
+    const fieldId = Number(e.target.id.split('-')[2]);
     const validationStatus = e.target.validity.valueMissing;
 
     dateStateSetter({ ...dateFieldState, [fieldId]: !validationStatus });
