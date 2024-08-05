@@ -32,8 +32,8 @@ export const BlogPostCard = async ({ data }: Props) => {
       author={data.author}
       content={data.plainTextSummary}
       date={format.dateTime(new Date(data.publishedDate.utc))}
+      image={data.thumbnailImage}
       link={{ href: `/blog/${data.entityId}` }}
-      thumbnail={data.thumbnailImage}
       title={data.name}
     />
   );
