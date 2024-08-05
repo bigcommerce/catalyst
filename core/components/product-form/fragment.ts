@@ -13,7 +13,7 @@ export const ProductFormFragment = graphql(
   `
     fragment ProductFormFragment on Product {
       entityId
-      productOptions(first: 10) {
+      productOptions {
         edges {
           node {
             __typename
