@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@commander-js/extra-typings": "^12.1.0",
-    "@inquirer/prompts": "^5.3.5",
+    "@inquirer/prompts": "^5.3.7",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "fs-extra": "^11.2.0",
