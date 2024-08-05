@@ -62,7 +62,7 @@ export const Header = async ({ cart, data }: Props) => {
   const logo = data.settings && <StoreLogo data={data.settings} />;
 
   return (
-    <ComponentsHeader items={categoryTree} logo={logo}>
+    <ComponentsHeader links={categoryTree} logo={logo}>
       <QuickSearch>
         <Link className="overflow-hidden text-ellipsis py-3" href="/">
           {logo}
