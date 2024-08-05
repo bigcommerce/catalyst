@@ -117,7 +117,7 @@ const updateFormFields = ({
 
     case 'dates': {
       const definedDates = customFormFields[fieldType];
-      const [day, mm, year] = fieldValue.split('/');
+      const [mm, day, year] = fieldValue.split('/');
       const month = Number(mm) - 1;
       const date = new Date(Date.UTC(Number(year), month, Number(day))).toISOString();
       const newDate = {

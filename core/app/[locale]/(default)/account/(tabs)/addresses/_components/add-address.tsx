@@ -179,7 +179,11 @@ export const AddAddress = ({
     const submit = await addAddress({ formData, reCaptchaToken });
 
     if (submit.status === 'success') {
+<<<<<<< HEAD
       setAccountState({
+=======
+      setFormStatus({
+>>>>>>> 33eb8074 (refactor(core): update date form field)
         status: 'success',
         message: t('addNewAddressSuccessMessage'),
       });
