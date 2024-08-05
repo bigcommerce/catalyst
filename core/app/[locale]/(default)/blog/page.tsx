@@ -17,10 +17,12 @@ interface Props {
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const blogPosts = await getBlogPosts(searchParams);
 
-  const title = blogPosts?.name ?? 'Blog';
-
   return {
-    title,
+    title: blogPosts?.name ?? 'Blog',
+    description:
+      blogPosts?.description && blogPosts.description.length > 150
+        ? `${blogPosts.description.substring(0, 150)}...`
+        : blogPosts?.description,
   };
 }
 

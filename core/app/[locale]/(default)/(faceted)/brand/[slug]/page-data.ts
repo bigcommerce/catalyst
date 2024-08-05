@@ -9,6 +9,11 @@ const BrandQuery = graphql(`
     site {
       brand(entityId: $entityId) {
         name
+        seo {
+          pageTitle
+          metaDescription
+          metaKeywords
+        }
       }
     }
   }

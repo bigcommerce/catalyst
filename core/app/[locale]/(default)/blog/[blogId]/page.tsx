@@ -21,10 +21,16 @@ export async function generateMetadata({ params: { blogId } }: Props): Promise<M
   const data = await getBlogPageData({ entityId: Number(blogId) });
   const blogPost = data?.content.blog?.post;
 
-  const title = blogPost?.seo.pageTitle ?? 'Blog';
+  if (!blogPost) {
+    return {};
+  }
+
+  const { pageTitle, metaDescription, metaKeywords } = blogPost.seo;
 
   return {
-    title,
+    title: pageTitle || blogPost.name,
+    description: metaDescription,
+    keywords: metaKeywords ? metaKeywords.split(',') : null,
   };
 }
 

@@ -31,10 +31,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     categoryId,
   });
 
-  const title = data.category?.name;
+  const category = data.category;
+
+  if (!category) {
+    return {};
+  }
+
+  const { pageTitle, metaDescription, metaKeywords } = category.seo;
 
   return {
-    title,
+    title: pageTitle || category.name,
+    description: metaDescription,
+    keywords: metaKeywords ? metaKeywords.split(',') : null,
   };
 }
 

@@ -26,6 +26,8 @@ const BlogPageQuery = graphql(
               }
               seo {
                 pageTitle
+                metaDescription
+                metaKeywords
               }
             }
           }

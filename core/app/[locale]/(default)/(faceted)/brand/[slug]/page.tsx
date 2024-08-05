@@ -27,10 +27,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const brand = await getBrand({ entityId: brandId });
 
-  const title = brand?.name;
+  if (!brand) {
+    return {};
+  }
+
+  const { pageTitle, metaDescription, metaKeywords } = brand.seo;
 
   return {
-    title,
+    title: pageTitle || brand.name,
+    description: metaDescription,
+    keywords: metaKeywords ? metaKeywords.split(',') : null,
   };
 }
 
