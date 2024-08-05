@@ -321,7 +321,7 @@ export const Facets = ({ facets, pageType }: Props) => {
 
     return {
       content,
-      value: facet.name,
+      title: facet.name,
     };
   });
 
