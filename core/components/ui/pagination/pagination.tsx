@@ -1,13 +1,11 @@
-'use client';
-
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { ComponentPropsWithoutRef } from 'react';
 
 import { Link } from '~/components/link';
 import { cn } from '~/lib/utils';
 
-interface PaginationProps {
-  className?: string;
+interface Props extends ComponentPropsWithoutRef<'nav'> {
   endCursor: string | null;
   hasPreviousPage: boolean;
   hasNextPage: boolean;
@@ -16,15 +14,17 @@ interface PaginationProps {
   nextLabel: string;
 }
 
-export const Pagination = ({
+const Pagination = ({
   className,
+  children,
   endCursor,
   hasPreviousPage,
   hasNextPage,
   startCursor,
   prevLabel,
   nextLabel,
-}: PaginationProps) => {
+  ...props
+}: Props) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -45,7 +45,11 @@ export const Pagination = ({
   }
 
   return (
-    <nav aria-label="Pagination" className={cn('my-6 text-center text-primary', className)}>
+    <nav
+      aria-label="Pagination"
+      className={cn('my-6 text-center text-primary', className)}
+      {...props}
+    >
       {hasPreviousPage ? (
         <Link className="inline-block" href={`${pathname}?${beforeSearchParams.toString()}`}>
           <span className="sr-only">{prevLabel}</span>
@@ -66,3 +70,5 @@ export const Pagination = ({
     </nav>
   );
 };
+
+export { Pagination };
