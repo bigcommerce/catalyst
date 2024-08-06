@@ -1,8 +1,8 @@
 import { getLocale, getTranslations } from 'next-intl/server';
 
 import { getCustomerAddresses } from '~/client/queries/get-customer-addresses';
+import { Pagination } from '~/components/ui/pagination';
 
-import { Pagination } from '../../../../(faceted)/_components/pagination';
 import { TabHeading } from '../tab-heading';
 
 import { AddressBook } from './address-book';
@@ -60,7 +60,7 @@ export const AddressesContent = async ({
       <TabHeading heading="addresses" />
       <AddressBook addressesCount={addressesCount} customerAddresses={addresses} key={endCursor}>
         <Pagination
-          className="my-0 flex inline-flex justify-center text-center"
+          className="my-0 inline-flex justify-center text-center"
           endCursor={endCursor}
           hasNextPage={hasNextPage}
           hasPreviousPage={hasPreviousPage}

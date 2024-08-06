@@ -3,11 +3,11 @@ import { getMessages, getTranslations } from 'next-intl/server';
 
 import { ProductCard } from '~/components/product-card';
 import { SearchForm } from '~/components/search-form';
+import { Pagination } from '~/components/ui/pagination';
 import { LocaleType } from '~/i18n';
 
 import { FacetedSearch } from '../_components/faceted-search';
 import { MobileSideNav } from '../_components/mobile-side-nav';
-import { Pagination } from '../_components/pagination';
 import { SortBy } from '../_components/sort-by';
 import { fetchFacetedSearch } from '../fetch-faceted-search';
 
