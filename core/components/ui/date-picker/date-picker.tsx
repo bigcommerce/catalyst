@@ -1,9 +1,9 @@
+import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { ComponentPropsWithoutRef, ElementRef, forwardRef, useState } from 'react';
 import { DayPicker, DayPickerSingleProps } from 'react-day-picker';
 
 import { Input, InputProps } from '../input';
-import { Popover } from '../popover';
 
 const Calendar = ({ ...props }: ComponentPropsWithoutRef<typeof DayPicker>) => {
   return (
@@ -66,9 +66,8 @@ const DatePicker = forwardRef<ElementRef<'input'>, Props>(
     const formattedDate = date ? Intl.DateTimeFormat().format(date) : undefined;
 
     return (
-      <Popover
-        align="start"
-        trigger={
+      <PopoverPrimitive.Root>
+        <PopoverPrimitive.Trigger asChild>
           <Input
             icon={<CalendarIcon />}
             placeholder={placeholder}
@@ -79,17 +78,24 @@ const DatePicker = forwardRef<ElementRef<'input'>, Props>(
             value={formattedSelected ?? formattedDate ?? ''}
             {...props}
           />
-        }
-      >
-        <Calendar
-          disabled={disabledDays}
-          initialFocus
-          mode="single"
-          onSelect={onSelect || setDate}
-          required={required}
-          selected={selected ?? date}
-        />
-      </Popover>
+        </PopoverPrimitive.Trigger>
+        <PopoverPrimitive.Portal>
+          <PopoverPrimitive.Content
+            align="start"
+            className="z-50 bg-white p-4 text-base shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
+            sideOffset={4}
+          >
+            <Calendar
+              disabled={disabledDays}
+              initialFocus
+              mode="single"
+              onSelect={onSelect || setDate}
+              required={required}
+              selected={selected ?? date}
+            />
+          </PopoverPrimitive.Content>
+        </PopoverPrimitive.Portal>
+      </PopoverPrimitive.Root>
     );
   },
 );
