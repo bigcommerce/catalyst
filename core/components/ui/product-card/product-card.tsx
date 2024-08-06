@@ -90,7 +90,16 @@ const ProductCard = ({
                 </span>
               )}
 
-              {price.type === 'fixed' && price.amount}
+              {price.type === 'fixed' && (
+                <>
+                  {Boolean(price.msrp) && (
+                    <span>
+                      MSRP: <span className="line-through">{price.msrp}</span>
+                    </span>
+                  )}
+                  <span>{price.amount}</span>
+                </>
+              )}
 
               {price.type === 'sale' && (
                 <>

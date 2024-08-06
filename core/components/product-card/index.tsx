@@ -110,6 +110,13 @@ export const ProductCard = async ({
           style: 'currency',
           currency: prices.price.currencyCode,
         }),
+        msrp:
+          prices.retailPrice && prices.retailPrice.value !== prices.basePrice.value
+            ? format.number(prices.retailPrice.value, {
+                style: 'currency',
+                currency: prices.price.currencyCode,
+              })
+            : undefined,
       };
     }
 
@@ -119,6 +126,13 @@ export const ProductCard = async ({
         style: 'currency',
         currency: prices.price.currencyCode,
       }),
+      msrp:
+        prices.retailPrice && prices.retailPrice.value !== prices.price.value
+          ? format.number(prices.retailPrice.value, {
+              style: 'currency',
+              currency: prices.price.currencyCode,
+            })
+          : undefined,
     };
   };
 
