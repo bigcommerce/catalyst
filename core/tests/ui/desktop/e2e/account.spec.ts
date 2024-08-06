@@ -18,7 +18,8 @@ async function loginWithUserAccount(page: Page, email: string, password: string)
   await page.getByLabel('Email').fill(email);
   await page.getByLabel('Password').fill(password);
   await page.getByRole('button', { name: 'Log in' }).click();
-  await page.getByRole('heading', { name: 'My Account' }).waitFor();
+
+  await page.waitForURL('/account/');
 }
 
 test('Account access is restricted for guest users', async ({ page }) => {

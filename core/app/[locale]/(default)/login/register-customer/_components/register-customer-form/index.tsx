@@ -188,17 +188,8 @@ export const RegisterCustomerForm = ({
 
     if (submit.status === 'success') {
       form.current?.reset();
-      setFormStatus({
-        status: 'success',
-        message: t('successMessage', {
-          firstName: submit.data?.firstName,
-          lastName: submit.data?.lastName,
-        }),
-      });
 
-      setTimeout(() => {
-        void login(formData);
-      }, 3000);
+      await login(formData);
     }
 
     if (submit.status === 'error') {

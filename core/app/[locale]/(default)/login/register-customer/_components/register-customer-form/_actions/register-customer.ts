@@ -1,5 +1,7 @@
 'use server';
 
+import { BigCommerceAPIError } from '@bigcommerce/catalyst-client';
+
 import {
   Input,
   registerCustomer as registerCustomerClient,
@@ -49,17 +51,34 @@ export const registerCustomer = async ({ formData, reCaptchaToken }: RegisterCus
     };
   }
 
-  const response = await registerCustomerClient({
-    formFields: parsedData,
-    reCaptchaToken,
-  });
+  try {
+    const response = await registerCustomerClient({
+      formFields: parsedData,
+      reCaptchaToken,
+    });
 
-  if (response.errors.length === 0) {
-    return { status: 'success', data: parsedData };
+    if (response.errors.length === 0) {
+      return { status: 'success', data: parsedData };
+    }
+
+    return {
+      status: 'error',
+      error: response.errors.map((error) => error.message).join('\n'),
+    };
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+
+    if (error instanceof BigCommerceAPIError) {
+      return {
+        status: 'error',
+        error: 'Looks like we are experience a server error, please try again in a few minutes.',
+      };
+    }
+
+    return {
+      status: 'error',
+      error: 'Something went wrong. Please try again later.',
+    };
   }
-
-  return {
-    status: 'error',
-    error: response.errors.map((error) => error.message).join('\n'),
-  };
 };
