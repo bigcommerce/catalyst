@@ -17,6 +17,6 @@ test('Account login and logout', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'My Account' })).toBeVisible();
 
   await page.getByLabel('Account').click();
-  await page.getByRole('button', { name: 'Log out' }).click();
+  await page.getByRole('menuitem', { name: 'Log out' }).click();
   await expect(page.getByRole('heading', { name: 'Log in' })).toBeVisible();
 });

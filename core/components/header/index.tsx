@@ -10,8 +10,8 @@ import { Link } from '../link';
 import { QuickSearch } from '../quick-search';
 import { StoreLogo, StoreLogoFragment } from '../store-logo';
 import { Button } from '../ui/button';
+import { Dropdown } from '../ui/dropdown';
 import { Header as ComponentsHeader } from '../ui/header';
-import { Popover } from '../ui/popover';
 
 import { logout } from './_actions/logout';
 import { CartLink } from './cart';
@@ -70,7 +70,17 @@ export const Header = async ({ cart, data }: Props) => {
       </QuickSearch>
 
       {customerId ? (
-        <Popover
+        <Dropdown
+          items={[
+            { path: '/account', name: 'My account' },
+            { path: '/account/orders', name: 'Orders' },
+            { path: '/account/messages', name: 'Messages' },
+            { path: '/account/addresses', name: 'Addresses' },
+            { path: '/account/wishlists', name: 'Wish lists' },
+            { path: '/account/recently-viewed', name: 'Recently viewed' },
+            { path: '/account/settings', name: 'Account settings' },
+            { action: logout, name: 'Log out' },
+          ]}
           trigger={
             <Button
               aria-label="Account"
@@ -80,56 +90,7 @@ export const Header = async ({ cart, data }: Props) => {
               <User aria-hidden="true" />
             </Button>
           }
-        >
-          <ul className="flex flex-col gap-2">
-            <li>
-              <Link className="block whitespace-nowrap p-3 font-semibold" href="/account">
-                My account
-              </Link>
-            </li>
-            <li>
-              <Link className="block whitespace-nowrap p-3" href="/account/orders">
-                Orders
-              </Link>
-            </li>
-            <li>
-              <Link className="block whitespace-nowrap p-3" href="/account/messages">
-                Messages
-              </Link>
-            </li>
-            <li>
-              <Link className="block whitespace-nowrap p-3" href="/account/addresses">
-                Addresses
-              </Link>
-            </li>
-            <li>
-              <Link className="block whitespace-nowrap p-3" href="/account/wishlists">
-                Wish lists
-              </Link>
-            </li>
-            <li>
-              <Link className="block whitespace-nowrap p-3" href="/account/recently-viewed">
-                Recently viewed
-              </Link>
-            </li>
-            <li>
-              <Link className="block whitespace-nowrap p-3" href="/account/settings">
-                Account settings
-              </Link>
-            </li>
-            <li>
-              <form action={logout}>
-                <Button
-                  className="justify-start p-3 text-black hover:bg-transparent hover:text-primary"
-                  type="submit"
-                  variant="subtle"
-                >
-                  Log out
-                </Button>
-              </form>
-            </li>
-          </ul>
-        </Popover>
+        />
       ) : (
         <Link aria-label="Login" className="block p-3" href="/login">
           <User />
