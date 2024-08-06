@@ -1,5 +1,6 @@
 'use client';
 
+import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
@@ -7,7 +8,6 @@ import { localeLanguageRegionMap, locales, LocaleType } from '~/i18n';
 import { useRouter } from '~/navigation';
 
 import { Button } from '../ui/button';
-import { Popover } from '../ui/popover';
 import { Select } from '../ui/select';
 
 type LanguagesByRegionMap = Record<
@@ -84,38 +84,43 @@ export const LocaleSwitcher = () => {
 
   return (
     Object.keys(locales).length > 1 && (
-      <Popover
-        align="end"
-        onOpenChange={handleOnOpenChange}
-        trigger={
+      <PopoverPrimitive.Root onOpenChange={handleOnOpenChange}>
+        <PopoverPrimitive.Trigger asChild>
           <button className="flex h-12 items-center p-3 text-2xl">{selectedLocale.flag}</button>
-        }
-      >
-        <form className="flex flex-col gap-4" onSubmit={handleOnSubmit}>
-          <p>{t('chooseCountryAndLanguage')}</p>
-          <Select
-            onValueChange={handleRegionChange}
-            options={regions.map((region) => ({
-              value: region,
-              label: `${languagesByRegionMap[region]?.flag} ${region}`,
-            }))}
-            value={regionSelected}
-          />
-          <Select
-            onValueChange={handleLanguageChange}
-            options={
-              languagesByRegionMap[regionSelected]?.languages.map((language) => ({
-                value: language,
-                label: language,
-              })) || []
-            }
-            value={languageSelected}
-          />
-          <Button className="w-auto" type="submit">
-            {t('goToSite')}
-          </Button>
-        </form>
-      </Popover>
+        </PopoverPrimitive.Trigger>
+        <PopoverPrimitive.Portal>
+          <PopoverPrimitive.Content
+            align="end"
+            className="z-50 bg-white p-4 text-base shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+            sideOffset={4}
+          >
+            <form className="flex flex-col gap-4" onSubmit={handleOnSubmit}>
+              <p>{t('chooseCountryAndLanguage')}</p>
+              <Select
+                onValueChange={handleRegionChange}
+                options={regions.map((region) => ({
+                  value: region,
+                  label: `${languagesByRegionMap[region]?.flag} ${region}`,
+                }))}
+                value={regionSelected}
+              />
+              <Select
+                onValueChange={handleLanguageChange}
+                options={
+                  languagesByRegionMap[regionSelected]?.languages.map((language) => ({
+                    value: language,
+                    label: language,
+                  })) || []
+                }
+                value={languageSelected}
+              />
+              <Button className="w-auto" type="submit">
+                {t('goToSite')}
+              </Button>
+            </form>
+          </PopoverPrimitive.Content>
+        </PopoverPrimitive.Portal>
+      </PopoverPrimitive.Root>
     )
   );
 };
