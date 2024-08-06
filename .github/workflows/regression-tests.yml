@@ -4,6 +4,12 @@ on:
   deployment_status:
     states: ['success']
 
+env:
+  PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
+  TEST_ACCOUNT_EMAIL: ${{ secrets.TEST_ACCOUNT_EMAIL }}
+  TEST_ACCOUNT_PASSWORD: ${{ secrets.TEST_ACCOUNT_PASSWORD }}
+  VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_PROTECTION_BYPASS_CATALYST_LATEST }}
+
 jobs:
   generate-lighthouse-audit:
     name: Lighthouse Audit
@@ -119,11 +125,6 @@ jobs:
           npx playwright install --with-deps
 
       - name: Run Playwright tests
-        env:
-          PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
-          TEST_ACCOUNT_EMAIL: ${{ secrets.TEST_ACCOUNT_EMAIL }}
-          TEST_ACCOUNT_PASSWORD: ${{ secrets.TEST_ACCOUNT_PASSWORD }}
-          VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_PROTECTION_BYPASS_CATALYST_LATEST }}
         run: |
           cd core
           npx playwright test tests/ui/ --project=tests-chromium 
@@ -162,11 +163,6 @@ jobs:
           npx playwright install chromium
 
       - name: Run Playwright tests
-        env:
-          PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
-          TEST_ACCOUNT_EMAIL: ${{ secrets.TEST_ACCOUNT_EMAIL }}
-          TEST_ACCOUNT_PASSWORD: ${{ secrets.TEST_ACCOUNT_PASSWORD }}
-          VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_PROTECTION_BYPASS_CATALYST_LATEST }}
         run: |
           cd core
           npx playwright test tests/visual-regression/components/ --project=tests-chromium
