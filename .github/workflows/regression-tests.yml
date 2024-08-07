@@ -151,7 +151,8 @@ jobs:
               "Job": "${{ github.job }}",
               "Status": "Fail",
               "Pull_Request": "https://github.com/bigcommerce/catalyst/pull/${{ steps.finder.outputs.pr }}",
-              "Commit_Message" : "${{ steps.finder.outputs.title }}"
+              "Commit_Message" : "${{ steps.finder.outputs.title }}",
+              "Job_Run": "https://github.com/bigcommerce/catalyst/actions/runs/${{ github.run_id }}"
             }
 
   visual-regression-tests:
@@ -207,5 +208,6 @@ jobs:
               "Job": "${{ github.job }}",
               "Status": "Fail",
               "Pull_Request": "https://github.com/bigcommerce/catalyst/pull/${{ steps.finder.outputs.pr }}",
-              "Commit_Message" : "${{ steps.finder.outputs.title }}"
+              "Commit_Message" : "${{ steps.finder.outputs.title }}",
+              "Job_Run": "https://github.com/bigcommerce/catalyst/actions/runs/${{ github.run_id }}"
             }
