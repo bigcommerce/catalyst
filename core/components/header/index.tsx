@@ -7,7 +7,6 @@ import { getSessionCustomerId } from '~/auth';
 import { FragmentOf, graphql } from '~/client/graphql';
 
 import { Link } from '../link';
-import { QuickSearch } from '../quick-search';
 import { StoreLogo, StoreLogoFragment } from '../store-logo';
 import { Button } from '../ui/button';
 import { Dropdown } from '../ui/dropdown';
@@ -16,6 +15,7 @@ import { Header as ComponentsHeader } from '../ui/header';
 import { logout } from './_actions/logout';
 import { CartLink } from './cart';
 import { LocaleSwitcher } from './locale-switcher';
+import { QuickSearch } from './quick-search';
 
 export const HeaderFragment = graphql(
   `
@@ -63,11 +63,7 @@ export const Header = async ({ cart, data }: Props) => {
 
   return (
     <ComponentsHeader links={categoryTree} logo={logo}>
-      <QuickSearch>
-        <Link className="overflow-hidden text-ellipsis py-3" href="/">
-          {logo}
-        </Link>
-      </QuickSearch>
+      <QuickSearch logo={logo} />
 
       {customerId ? (
         <Dropdown
