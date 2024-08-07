@@ -11,19 +11,14 @@ import { spinner } from './spinner';
 
 const exec = promisify(execCallback);
 
-export async function applyIntegrations(
-  integrations: string[] | undefined,
+export async function applyIntegration(
+  integration: string | undefined,
   { projectDir, packageManager }: { projectDir: string; packageManager: PackageManager },
 ) {
-  if (!integrations) {
+  if (!integration) {
     return;
   }
 
-  if (integrations.length > 1) {
-    console.warn('Applying multiple integrations is not supported yet');
-  }
-
-  const integration = integrations[0];
   const integrationDir = join(projectDir, 'integrations', integration);
 
   await spinner(
