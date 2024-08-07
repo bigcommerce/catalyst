@@ -13,6 +13,7 @@ import {
   getPreviouslySubmittedValue,
   MultilineText,
   NumbersOnly,
+  Password,
   Picklist,
   RadioButtons,
 } from '~/app/[locale]/(default)/login/register-customer/_components/register-customer-form/fields';
@@ -26,9 +27,11 @@ import {
   createDatesValidationHandler,
   createMultilineTextValidationHandler,
   createNumbersInputValidationHandler,
+  createPasswordValidationHandler,
   createPreSubmitCheckboxesValidationHandler,
   createPreSubmitPicklistValidationHandler,
   createRadioButtonsValidationHandler,
+  createTextInputValidationHandler,
 } from '../../addresses/_components/address-field-handlers';
 import { updateCustomer } from '../_actions/update-customer';
 import { getCustomerSettingsQuery } from '../page-data';
@@ -110,6 +113,7 @@ export const UpdateSettingsForm = ({
   const [picklistValid, setPicklistValid] = useState<Record<string, boolean>>({});
   const [checkboxesValid, setCheckboxesValid] = useState<Record<string, boolean>>({});
   const [datesValid, setDatesValid] = useState<Record<string, boolean>>({});
+  const [passwordValid, setPasswordValid] = useState<Record<string, boolean>>({});
 
   const reCaptchaRef = useRef<ReCaptcha>(null);
   const [reCaptchaToken, setReCaptchaToken] = useState('');
@@ -145,6 +149,14 @@ export const UpdateSettingsForm = ({
   const validateCheckboxFields = createPreSubmitCheckboxesValidationHandler(
     customerFields,
     setCheckboxesValid,
+  );
+  const handlePasswordValidation = createPasswordValidationHandler(
+    setPasswordValid,
+    customerFields,
+  );
+  const handleCustomTextValidation = createTextInputValidationHandler(
+    setTextInputValid,
+    textInputValid,
   );
   const preSubmitFieldsValidation = (
     e: MouseEvent<HTMLFormElement> & { target: HTMLButtonElement },
@@ -364,15 +376,32 @@ export const UpdateSettingsForm = ({
                     <FieldWrapper fieldId={fieldId} key={fieldId}>
                       <TextField
                         defaultValue={submittedValue}
-                        entityId={FieldNameToFieldId.email}
+                        entityId={fieldId}
                         isRequired={field.isRequired}
                         isValid={textInputValid[fieldId]}
                         label={
                           customerFields.find(({ entityId: id }) => id === fieldId)?.label ?? ''
                         }
                         name={fieldName}
-                        onChange={handleTextInputValidation}
+                        onChange={handleCustomTextValidation}
                         type="text"
+                      />
+                    </FieldWrapper>
+                  );
+                }
+
+                case 'PasswordFormField': {
+                  const submittedValue =
+                    getPreviouslySubmittedValue(previouslySubmittedField).PasswordFormField;
+
+                  return (
+                    <FieldWrapper fieldId={fieldId} key={fieldId}>
+                      <Password
+                        defaultValue={submittedValue}
+                        field={field}
+                        isValid={passwordValid[fieldId]}
+                        name={fieldName}
+                        onChange={handlePasswordValidation}
                       />
                     </FieldWrapper>
                   );

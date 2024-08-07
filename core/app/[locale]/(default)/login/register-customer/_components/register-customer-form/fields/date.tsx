@@ -33,7 +33,7 @@ interface DateProps {
   defaultValue?: Date | string;
   field: DateType;
   isValid?: boolean;
-  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: ChangeEvent<HTMLInputElement> & { nativeEvent: { inputType: string } }) => void;
   onValidate?: (
     state:
       | Record<string, boolean>
