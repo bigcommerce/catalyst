@@ -161,9 +161,15 @@ const createRadioButtonsValidationHandler =
 
 const createDatesValidationHandler =
   (dateStateSetter: FieldStateSetFn<FieldState>, dateFieldState: FieldState) =>
-  (e: React.ChangeEvent<HTMLInputElement>) => {
+  (e: React.ChangeEvent<HTMLInputElement> & { nativeEvent: { inputType: string } }) => {
     const fieldId = Number(e.target.id.split('-')[2]);
     const validationStatus = e.target.validity.valueMissing;
+
+    // cancel validation on attempt to delete input content via keyboard since
+    // DayPicker won't allow the user to unselect the selected date when it's required
+    if (e.nativeEvent.inputType === 'deleteContentBackward') {
+      return;
+    }
 
     dateStateSetter({ ...dateFieldState, [fieldId]: !validationStatus });
   };
