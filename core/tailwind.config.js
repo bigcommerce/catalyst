@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 const config = {
-  content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}'],
+  content: [
+    './app/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    '!./node_modules/**', // Exclude everything in node_modules to speed up builds
+  ],
   theme: {
     extend: {
       colors: {
@@ -47,11 +51,10 @@ const config = {
 
   plugins: [
     // @ts-ignore
-    /* eslint-disable global-require */
+
     require('tailwindcss-radix')(),
     require('tailwindcss-animate'),
     require('@tailwindcss/container-queries'),
-    /* eslint-enable global-require */
   ],
 };
 
