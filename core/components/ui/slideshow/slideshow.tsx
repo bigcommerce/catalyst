@@ -1,8 +1,8 @@
 import useEmblaCarousel from 'embla-carousel-react';
 import { ArrowLeft, ArrowRight, Pause, Play } from 'lucide-react';
-import { ComponentPropsWithRef, ReactNode, useEffect, useReducer, useState } from 'react';
+import { ComponentPropsWithoutRef, ReactNode, useEffect, useReducer, useState } from 'react';
 
-interface Props extends ComponentPropsWithRef<'section'> {
+interface Props extends ComponentPropsWithoutRef<'section'> {
   slides: ReactNode[];
   interval?: number;
 }
