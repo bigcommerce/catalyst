@@ -1,5 +1,6 @@
 import { Command } from '@commander-js/extra-typings';
 import { exec as execCb } from 'child_process';
+import { parse } from 'dotenv';
 import { outputFileSync, writeJsonSync } from 'fs-extra/esm';
 import kebabCase from 'lodash.kebabcase';
 import { coerce, compare } from 'semver';
@@ -85,27 +86,10 @@ export const integration = new Command('integration')
       latestCoreTagJson.devDependencies,
     );
 
-    const { stdout: envVarDiff } = await exec(
-      `git diff ${latestCoreTag}...${sourceRef} -- core/.env.example`,
-    );
+    const { stdout: latestCoreEnv } = await exec(`git show ${latestCoreTag}:core/.env.example`);
+    const { stdout: integrationEnv } = await exec(`git show ${sourceRef}:core/.env.example`);
 
-    if (envVarDiff.length > 0) {
-      const envVars: string[] = [];
-      const lines = envVarDiff.split('\n');
-      const addedEnvVarPattern = /^\+([A-Z_]+)=/;
-
-      lines.forEach((line) => {
-        const match = line.match(addedEnvVarPattern);
-
-        if (match) {
-          envVars.push(match[1]);
-        }
-      });
-
-      if (envVars.length > 0) {
-        manifest.environmentVariables = envVars;
-      }
-    }
+    manifest.environmentVariables = diffObjectKeys(parse(integrationEnv), parse(latestCoreEnv));
 
     const { stdout: integrationDiff } = await exec(
       `git diff ${latestCoreTag}...${sourceRef} -- ':(exclude)core/package.json' ':(exclude)pnpm-lock.yaml'`,
