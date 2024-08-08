@@ -1,7 +1,7 @@
 import * as SelectPrimitive from '@radix-ui/react-select';
 import { cva } from 'class-variance-authority';
 import { Check, ChevronDown, ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
-import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
+import { ComponentPropsWithRef, ElementRef, forwardRef, ReactNode } from 'react';
 
 import { cn } from '~/lib/utils';
 
@@ -24,7 +24,7 @@ type SelectTriggerType = typeof SelectPrimitive.Trigger;
 
 interface SelectProps extends ComponentPropsWithRef<SelectType> {
   variant?: 'success' | 'error';
-  placeholder?: string;
+  placeholder?: string | ReactNode;
   className?: string;
   'aria-label'?: string;
   id?: string;
@@ -40,7 +40,10 @@ const Select = forwardRef<ElementRef<SelectTriggerType>, SelectProps>(
           id={id}
           ref={ref}
         >
-          <SelectPrimitive.Value placeholder={placeholder} />
+          <SelectPrimitive.Value
+            asChild={typeof placeholder !== 'string'}
+            placeholder={placeholder}
+          />
           <SelectPrimitive.Icon>
             <ChevronDown className="inline group-focus-visible:text-primary group-enabled:group-hover:text-primary" />
           </SelectPrimitive.Icon>

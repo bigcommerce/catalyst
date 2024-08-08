@@ -66,7 +66,7 @@ export const Picklist = ({
               ? onChange
               : validateAgainstMissingValue
           }
-          placeholder={field.choosePrefix}
+          placeholder={<span className="truncate">{field.choosePrefix}</span>}
           required={field.isRequired}
           variant={isValid === false ? 'error' : undefined}
         >
