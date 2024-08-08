@@ -54,6 +54,7 @@
   ],
   "exclude": [
     "node_modules",
-    ".next"
+    ".next",
+    "**/google_analytics4.js"
   ]
 }

@@ -1,4 +1,4 @@
-import { Bodl } from '@bigcommerce/bodl';
+import { Bodl } from './bodl';
 
 export const bodl = new Bodl({
   // TODO: get channel id from locale in multi-lang setup

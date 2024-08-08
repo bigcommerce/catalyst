@@ -95,6 +95,9 @@ export class Bodl {
 
     // TODO: This is a workaround init while import from @bigcommerce/bodl-events doesn't work properly
     const el = document.getElementsByTagName('body')[0];
+
+    if (!el) return;
+
     const script = document.createElement('script');
 
     script.type = 'text/javascript';
