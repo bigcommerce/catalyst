@@ -1,15 +1,14 @@
-'use client';
-
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDown, X } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
-import { CheckedProduct, useCompareProductsContext } from '~/app/contexts/compare-products-context';
+import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
-import { Button } from '~/components/ui/button';
+import { usePathname } from '~/navigation';
 
-import { BcImage } from '../bc-image';
+import { Button } from '../button';
+
+import { type CheckedProduct, useCompareDrawerContext } from './context';
 
 const CompareLink = ({ products }: { products: CheckedProduct[] }) => {
   const t = useTranslations('Providers.Compare');
@@ -26,13 +25,7 @@ const CompareLink = ({ products }: { products: CheckedProduct[] }) => {
   );
 };
 
-const CompareItem = ({
-  product,
-  removeItem,
-}: {
-  product: CheckedProduct;
-  removeItem: () => void;
-}) => {
+const Product = ({ product, onDismiss }: { product: CheckedProduct; onDismiss: () => void }) => {
   const t = useTranslations('Providers.Compare');
 
   return (
@@ -59,7 +52,7 @@ const CompareItem = ({
       <Button
         aria-label={t('removeProductAriaLabel', { product: product.name })}
         className="grow-1 ms-auto w-auto border-0 bg-transparent p-0 text-black hover:bg-transparent hover:text-primary focus-visible:text-primary"
-        onClick={removeItem}
+        onClick={onDismiss}
         type="button"
       >
         <X />
@@ -68,9 +61,10 @@ const CompareItem = ({
   );
 };
 
-export const CompareDrawer = () => {
+const CompareDrawer = () => {
   const pathname = usePathname();
-  const { products, setProducts } = useCompareProductsContext();
+
+  const { products, setProducts } = useCompareDrawerContext();
 
   if (pathname === '/compare' || products.length === 0) {
     return null;
@@ -83,10 +77,10 @@ export const CompareDrawer = () => {
         <ul className="flex overflow-auto">
           {products.map((product) => {
             return (
-              <CompareItem
+              <Product
                 key={product.id}
+                onDismiss={() => setProducts(products.filter(({ id }) => id !== product.id))}
                 product={product}
-                removeItem={() => setProducts(products.filter(({ id }) => id !== product.id))}
               />
             );
           })}
@@ -105,10 +99,10 @@ export const CompareDrawer = () => {
             <ul className="flex max-h-44 flex-col overflow-auto">
               {products.map((product) => {
                 return (
-                  <CompareItem
+                  <Product
                     key={product.id}
+                    onDismiss={() => setProducts(products.filter(({ id }) => id !== product.id))}
                     product={product}
-                    removeItem={() => setProducts(products.filter(({ id }) => id !== product.id))}
                   />
                 );
               })}
@@ -119,3 +113,5 @@ export const CompareDrawer = () => {
     </div>
   );
 };
+
+export { CompareDrawer };

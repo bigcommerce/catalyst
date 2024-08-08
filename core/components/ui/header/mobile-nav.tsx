@@ -16,11 +16,11 @@ interface Children {
 }
 
 interface Props {
-  items: Array<{ name: string; path: string; children?: Children[] }>;
+  links: Array<{ name: string; path: string; children?: Children[] }>;
   logo: ReactNode;
 }
 
-export const MobileNav = ({ items, logo }: Props) => {
+export const MobileNav = ({ links, logo }: Props) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -37,7 +37,13 @@ export const MobileNav = ({ items, logo }: Props) => {
       </SheetPrimitive.Trigger>
       <SheetPrimitive.Portal>
         <SheetPrimitive.Overlay className="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-        <SheetPrimitive.Content className="fixed inset-y-0 left-0 z-50 h-full w-3/4 border-r bg-white p-6 pt-0 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm">
+        <SheetPrimitive.Content
+          aria-describedby={undefined}
+          className="fixed inset-y-0 left-0 z-50 h-full w-3/4 border-r bg-white p-6 pt-0 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm"
+        >
+          <SheetPrimitive.Title asChild>
+            <h2 className="sr-only">Navigation menu</h2>
+          </SheetPrimitive.Title>
           <div className="flex h-[92px] items-center justify-between">
             <div className="overflow-hidden text-ellipsis py-3">{logo}</div>
             <SheetPrimitive.DialogClose>
@@ -48,16 +54,16 @@ export const MobileNav = ({ items, logo }: Props) => {
           </div>
           <NavigationMenuPrimitive.Root orientation="vertical">
             <NavigationMenuPrimitive.List className="flex flex-col gap-2 pb-6 lg:gap-4">
-              {items.map((item) =>
-                item.children && item.children.length > 0 ? (
-                  <NavigationMenuPrimitive.Item key={item.path}>
+              {links.map((link) =>
+                link.children && link.children.length > 0 ? (
+                  <NavigationMenuPrimitive.Item key={link.path}>
                     <NavigationMenuPrimitive.Trigger className="group/button flex w-full items-center justify-between p-3 ps-0 font-semibold hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20">
                       <Link
                         className="font-semibold"
-                        href={item.path}
+                        href={link.path}
                         onClick={() => setOpen(false)}
                       >
-                        {item.name}
+                        {link.name}
                       </Link>
                       <ChevronDown
                         aria-hidden="true"
@@ -65,7 +71,7 @@ export const MobileNav = ({ items, logo }: Props) => {
                       />
                     </NavigationMenuPrimitive.Trigger>
                     <NavigationMenuPrimitive.Content className="flex flex-col gap-4 py-2 ps-2 duration-200 animate-in slide-in-from-top-2">
-                      {item.children.map((child) => (
+                      {link.children.map((child) => (
                         <ul className="flex flex-col" key={child.path}>
                           <li>
                             <NavigationMenuPrimitive.Link asChild>
@@ -98,14 +104,14 @@ export const MobileNav = ({ items, logo }: Props) => {
                     </NavigationMenuPrimitive.Content>
                   </NavigationMenuPrimitive.Item>
                 ) : (
-                  <NavigationMenuPrimitive.Item key={item.path}>
+                  <NavigationMenuPrimitive.Item key={link.path}>
                     <NavigationMenuPrimitive.Link asChild>
                       <Link
                         className="block w-full p-3 ps-0 font-semibold"
-                        href={item.path}
+                        href={link.path}
                         onClick={() => setOpen(false)}
                       >
-                        {item.name}
+                        {link.name}
                       </Link>
                     </NavigationMenuPrimitive.Link>
                   </NavigationMenuPrimitive.Item>

@@ -36,7 +36,11 @@ const PickList = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
           const { defaultImage, label, value, onMouseEnter, ...itemProps } = item;
 
           return (
-            <div className="flex items-center p-4" key={value} onMouseEnter={onMouseEnter}>
+            <div
+              className="flex items-center p-4"
+              key={`${id}-${value}`}
+              onMouseEnter={onMouseEnter}
+            >
               {Boolean(defaultImage) && (
                 <BcImage
                   alt={defaultImage?.altText || ''}

@@ -51,15 +51,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const webpage = data.node?.__typename === 'ContactPage' ? data.node : null;
 
   if (!webpage) {
-    notFound();
+    return {};
   }
 
-  const { seo } = webpage;
+  const { pageTitle, metaDescription, metaKeywords } = webpage.seo;
 
   return {
-    title: seo.pageTitle,
-    description: seo.metaDescription,
-    keywords: seo.metaKeywords,
+    title: pageTitle,
+    description: metaDescription,
+    keywords: metaKeywords,
   };
 }
 

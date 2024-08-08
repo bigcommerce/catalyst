@@ -1,5 +1,4 @@
-import { LucideIcon } from 'lucide-react';
-import { ComponentPropsWithoutRef, FC, ReactElement } from 'react';
+import { ComponentPropsWithoutRef, ReactElement } from 'react';
 
 import { cn } from '~/lib/utils';
 
@@ -12,45 +11,27 @@ const roundHalf = (num: number) => {
   return Math.round(num * 2) / 2;
 };
 
-type StarIconType = FC<ComponentPropsWithoutRef<'svg'>> | LucideIcon;
-
 interface Props extends ComponentPropsWithoutRef<'span'> {
+  rating: number;
   size?: number;
-  starEmptyIcon?: StarIconType;
-  starFilledIcon?: StarIconType;
-  starHalfIcon?: StarIconType;
-  strokeColor?: string;
-  value: number;
 }
 
-const Rating = ({
-  className,
-  size = 24,
-  starEmptyIcon,
-  starFilledIcon,
-  starHalfIcon,
-  value,
-  ...props
-}: Props) => {
+const Rating = ({ className, rating, size = 24 }: Props) => {
   const stars: ReactElement[] = [];
-  const rating = roundHalf(value);
-
-  const StarHalf = starHalfIcon || StarHalfIcon;
-  const StarEmpty = starEmptyIcon || StarEmptyIcon;
-  const StarFilled = starFilledIcon || StarFilledIcon;
+  const roundedRating = roundHalf(rating);
 
   for (let i = 1; i <= MAX_RATING; i += 1) {
-    if (rating - i >= 0) {
-      stars.push(<StarFilled height={size} key={i} width={size} />);
-    } else if (rating - i > -1) {
-      stars.push(<StarHalf height={size} key={i} width={size} />);
+    if (roundedRating - i >= 0) {
+      stars.push(<StarFilledIcon height={size} key={i} width={size} />);
+    } else if (roundedRating - i > -1) {
+      stars.push(<StarHalfIcon height={size} key={i} width={size} />);
     } else {
-      stars.push(<StarEmpty height={size} key={i} width={size} />);
+      stars.push(<StarEmptyIcon height={size} key={i} width={size} />);
     }
   }
 
   return (
-    <span className={cn('inline-flex fill-current', className)} role="img" {...props}>
+    <span className={cn('inline-flex fill-current', className)} role="img">
       {stars}
     </span>
   );

@@ -160,7 +160,6 @@
     "Search": {
         "heading": "Pesquisar",
         "products": "Produtos",
-        "noResults": "Nenhum resultado",
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# itens}}",
         "searchResults": "Pesquisar resultados por"
     },
@@ -313,7 +312,9 @@
         "searchProducts": "Pesquisar produtos",
         "searchPlaceholder": "Espaço reservado...",
         "searching": "Pesquisando...",
-        "search": "Pesquisar"
+        "search": "Pesquisar",
+        "noSearchResults": "Não há resultados para {term}.",
+        "checkSpelling": "Verifique a ortografia ou tente outra pesquisa."
     },
     "ServerError": {
         "heading": "Houve um erro no servidor!",
@@ -366,7 +367,9 @@
         }
     },
     "Header": {
-        "account": "Sua conta"
+        "account": "Sua conta",
+        "chooseCountryAndLanguage": "Choose your country and language",
+        "goToSite": "Go to site"
     },
     "Pagination": {
         "next": "Próximo",

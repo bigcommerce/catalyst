@@ -1,12 +1,18 @@
-name: Lighthouse Report
+name: Regression Tests
 
 on:
   deployment_status:
     states: ['success']
 
+env:
+  PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
+  TEST_ACCOUNT_EMAIL: ${{ secrets.TEST_ACCOUNT_EMAIL }}
+  TEST_ACCOUNT_PASSWORD: ${{ secrets.TEST_ACCOUNT_PASSWORD }}
+  VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_PROTECTION_BYPASS_CATALYST_LATEST }}
+
 jobs:
-  generate_lighthouse_audit:
-    name: Deployment Audit
+  generate-lighthouse-audit:
+    name: Lighthouse Audit
     timeout-minutes: 30
     runs-on: ubuntu-latest
     if: ${{ contains(fromJson('["Production – catalyst-latest", "Preview – catalyst-latest"]'), github.event.deployment_status.environment) }}
@@ -91,3 +97,80 @@ jobs:
             ## 📱 Mobile
             
             ${{ steps.format_lighthouse_score_mobile.outputs.comment }}
+
+  ui-tests:
+    name: Playwright UI Tests
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    if: ${{ contains(fromJson('["Production – catalyst-latest", "Preview – catalyst-latest"]'), github.event.deployment_status.environment) }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Browsers
+        run: |
+          cd core
+          npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: |
+          cd core
+          npx playwright test tests/ui/ --project=tests-chromium 
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-ui
+          path: core/test-results/
+          retention-days: 30
+
+  visual-regression-tests:
+    name: Playwright Visual Regression Tests
+    timeout-minutes: 30
+    runs-on: macos-14
+    if: ${{ contains(fromJson('["Production – catalyst-latest", "Preview – catalyst-latest"]'), github.event.deployment_status.environment) }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Browsers
+        run: |
+          cd core
+          npx playwright install chromium
+
+      - name: Run Playwright tests
+        run: |
+          cd core
+          npx playwright test tests/visual-regression/components/ --project=tests-chromium
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-visual-regression
+          path: core/test-results/
+          retention-days: 30
+

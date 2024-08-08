@@ -7,8 +7,8 @@ enum LocalePrefixes {
   ASNEEDED = 'as-needed', // removes prefix on default locale
 }
 
-// Enable locales by including them here
-// List includes locales with existing messages support
+// Enable locales by including them here.
+// List includes locales with existing messages support.
 const locales = [
   'en',
   // 'da',
@@ -32,17 +32,23 @@ const locales = [
   // 'sv',
 ] as const;
 
-type LocaleLanguageRegionMap = {
-  [key in LocaleType]: { language: string; region: string; flag: string };
+interface LocaleEntry {
+  language: string;
+  region: string;
+  flag: string;
+}
+
+type LocalLanguageRegionMap = {
+  [key in LocaleType]: LocaleEntry;
 };
 
 /**
- * Custom map of locale to language and region
- * Temporary solution until we have a better way to include regions for all locales
+ * Custom map of locale to language and region.
+ * Temporary solution until we have a better way to include regions for all locales.
  */
-export const localeLanguageRegionMap: LocaleLanguageRegionMap = {
+export const localeLanguageRegionMap: LocalLanguageRegionMap = {
   en: { language: 'English', region: 'United States', flag: '🇺🇸' },
-  // da: { language: 'Dansk', region: 'Danmark', flag: '🇩🇰' }
+  // da: { language: 'Dansk', region: 'Danmark', flag: '🇩🇰' },
   // 'es-419': { language: 'Español', region: 'America Latina', flag: '' },
   // 'es-AR': { language: 'Español', region: 'Argentina', flag: '🇦🇷' },
   // 'es-CL': { language: 'Español', region: 'Chile', flag: '🇨🇱' },

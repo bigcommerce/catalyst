@@ -213,7 +213,7 @@ export const Facets = ({ facets, pageType }: Props) => {
                       'text-primary': rating.isSelected,
                     })}
                   >
-                    <Rating value={parseInt(rating.value, 10)} />
+                    <Rating rating={parseInt(rating.value, 10)} />
                   </div>
                   <span className="ps-2">
                     <span className="sr-only">{t('rating', { currentRating: rating.value })}</span>
@@ -321,7 +321,7 @@ export const Facets = ({ facets, pageType }: Props) => {
 
     return {
       content,
-      value: facet.name,
+      title: facet.name,
     };
   });
 

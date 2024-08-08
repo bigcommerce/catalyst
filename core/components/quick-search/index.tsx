@@ -86,12 +86,16 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
       <SheetPrimitive.Overlay className="fixed inset-0 bg-transparent backdrop-blur-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0">
         <SheetPrimitive.Portal>
           <SheetPrimitive.Content
+            aria-describedby={undefined}
             className={cn(
               'fixed inset-x-0 top-0 items-center overflow-auto border-b bg-white px-4 shadow-lg transition ease-in-out data-[state=closed]:duration-0 data-[state=open]:duration-0 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top md:px-10 lg:px-12',
               searchResults && searchResults.products.length > 0 && 'h-full lg:h-3/4',
             )}
           >
-            <h2 className="sr-only">Search bar</h2>
+            <SheetPrimitive.Title asChild>
+              <h2 className="sr-only">Search bar</h2>
+            </SheetPrimitive.Title>
+
             <div className="grid h-[92px] w-full grid-cols-5 items-center">
               <div className="me-2 hidden lg:block lg:justify-self-start">{children}</div>
               <Form

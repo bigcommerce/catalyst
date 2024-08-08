@@ -267,7 +267,7 @@ export default async function Compare({
                           ? `${product.name} has no rating specified`
                           : `${product.name} rating is ${product.reviewSummary.averageRating} out of 5 stars`
                       }
-                      value={product.reviewSummary.averageRating}
+                      rating={product.reviewSummary.averageRating}
                     />
                   </p>
                 </td>

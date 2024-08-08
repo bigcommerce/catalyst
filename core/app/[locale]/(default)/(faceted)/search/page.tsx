@@ -3,11 +3,11 @@ import { getMessages, getTranslations } from 'next-intl/server';
 
 import { ProductCard } from '~/components/product-card';
 import { SearchForm } from '~/components/search-form';
+import { Pagination } from '~/components/ui/pagination';
 import { LocaleType } from '~/i18n';
 
 import { FacetedSearch } from '../_components/faceted-search';
 import { MobileSideNav } from '../_components/mobile-side-nav';
-import { Pagination } from '../_components/pagination';
 import { SortBy } from '../_components/sort-by';
 import { fetchFacetedSearch } from '../fetch-faceted-search';
 
@@ -46,13 +46,9 @@ export default async function Search({ params: { locale }, searchParams }: Props
   if (products.length === 0) {
     return (
       <div>
-        <h1 className="mb-3 text-4xl font-black lg:text-5xl">{t('heading')}</h1>
         <NextIntlClientProvider locale={locale} messages={{ NotFound: messages.NotFound ?? {} }}>
           <SearchForm initialTerm={searchTerm} />
         </NextIntlClientProvider>
-        <p className="pv-6">
-          <em>{t('noResults')}</em>
-        </p>
       </div>
     );
   }

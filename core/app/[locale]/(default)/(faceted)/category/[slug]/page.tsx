@@ -5,11 +5,11 @@ import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-in
 
 import { Breadcrumbs } from '~/components/breadcrumbs';
 import { ProductCard } from '~/components/product-card';
+import { Pagination } from '~/components/ui/pagination';
 import { LocaleType } from '~/i18n';
 
 import { FacetedSearch } from '../../_components/faceted-search';
 import { MobileSideNav } from '../../_components/mobile-side-nav';
-import { Pagination } from '../../_components/pagination';
 import { SortBy } from '../../_components/sort-by';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
@@ -32,10 +32,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     categoryId,
   });
 
-  const title = data.category?.name;
+  const category = data.category;
+
+  if (!category) {
+    return {};
+  }
+
+  const { pageTitle, metaDescription, metaKeywords } = category.seo;
 
   return {
-    title,
+    title: pageTitle || category.name,
+    description: metaDescription,
+    keywords: metaKeywords ? metaKeywords.split(',') : null,
   };
 }
 

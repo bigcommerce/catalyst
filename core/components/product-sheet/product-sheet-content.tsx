@@ -118,7 +118,7 @@ export const ProductSheetContent = () => {
                 product.reviewSummary.numberOfReviews === 0 && 'text-gray-400',
               )}
             >
-              <Rating size={16} value={product.reviewSummary.averageRating || 0} />
+              <Rating rating={product.reviewSummary.averageRating || 0} size={16} />
             </p>
 
             <div className="text-xs font-normal text-gray-500" id={summaryId}>

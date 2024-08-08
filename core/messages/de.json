@@ -160,7 +160,6 @@
     "Search": {
         "heading": "Suchen",
         "products": "Produkte",
-        "noResults": "Keine Ergebnisse",
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
         "searchResults": "Suchergebnisse für"
     },
@@ -313,7 +312,9 @@
         "searchProducts": "Nach Produkten suchen",
         "searchPlaceholder": "Platzhalter ...",
         "searching": "Suche ...",
-        "search": "Suchen"
+        "search": "Suchen",
+        "noSearchResults": "Leider keine Ergebnisse für {term}.",
+        "checkSpelling": "Bitte überprüfen Sie die Rechtschreibung oder versuchen Sie es mit einer anderen Suche."
     },
     "ServerError": {
         "heading": "Es ist ein Serverfehler aufgetreten!",
@@ -366,7 +367,9 @@
         }
     },
     "Header": {
-        "account": "Ihr Konto"
+        "account": "Ihr Konto",
+        "chooseCountryAndLanguage": "Choose your country and language",
+        "goToSite": "Go to site"
     },
     "Pagination": {
         "next": "Weiter",

@@ -34,7 +34,7 @@ export const ReviewSummary = async ({ data }: Props) => {
         aria-describedby={summaryId}
         className={cn('flex flex-nowrap text-primary', hasNoReviews && 'text-gray-400')}
       >
-        <Rating value={averageRating} />
+        <Rating rating={averageRating} />
       </p>
 
       <div className="font-semibold" id={summaryId}>

@@ -6,7 +6,7 @@ import { FragmentOf, graphql } from '~/client/graphql';
 import { CouponCode } from './coupon-code';
 import { CouponCodeFragment } from './coupon-code/fragment';
 import { ShippingEstimator } from './shipping-estimator';
-import { ShippingEstimatorFragment } from './shipping-estimator/fragment';
+import { GeographyFragment, ShippingEstimatorFragment } from './shipping-estimator/fragment';
 import { getShippingCountries } from './shipping-estimator/get-shipping-countries';
 
 const MoneyFieldsFragment = graphql(`
@@ -42,18 +42,19 @@ export const CheckoutSummaryFragment = graphql(
 );
 
 interface Props {
-  data: FragmentOf<typeof CheckoutSummaryFragment>;
+  checkout: FragmentOf<typeof CheckoutSummaryFragment>;
+  geography: FragmentOf<typeof GeographyFragment>;
 }
 
-export const CheckoutSummary = async ({ data }: Props) => {
+export const CheckoutSummary = async ({ checkout, geography }: Props) => {
   const locale = await getLocale();
   const t = await getTranslations({ locale, namespace: 'Cart.CheckoutSummary' });
   const format = await getFormatter({ locale });
   const messages = await getMessages({ locale });
 
-  const shippingCountries = await getShippingCountries();
+  const { cart, grandTotal, subtotal, taxTotal } = checkout;
 
-  const { cart, grandTotal, subtotal, taxTotal } = data;
+  const shippingCountries = await getShippingCountries({ geography });
 
   return (
     <>
@@ -68,7 +69,7 @@ export const CheckoutSummary = async ({ data }: Props) => {
       </div>
 
       <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
-        <ShippingEstimator checkout={data} shippingCountries={shippingCountries} />
+        <ShippingEstimator checkout={checkout} shippingCountries={shippingCountries} />
       </NextIntlClientProvider>
 
       {cart?.discountedAmount && (
@@ -85,7 +86,7 @@ export const CheckoutSummary = async ({ data }: Props) => {
       )}
 
       <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
-        <CouponCode checkout={data} />
+        <CouponCode checkout={checkout} />
       </NextIntlClientProvider>
 
       {taxTotal && (
