@@ -70,7 +70,7 @@ export const Picklist = ({
             label,
             value: entityId.toString(),
           }))}
-          placeholder={field.choosePrefix}
+          placeholder={<span className="truncate">{field.choosePrefix}</span>}
           required={field.isRequired}
         />
       </FieldControl>
