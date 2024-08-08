@@ -9,16 +9,14 @@ import { z } from 'zod';
 
 const exec = promisify(execCb);
 
-interface Manifest {
-  name: string;
-  dependencies: {
-    add: string[];
-  };
-  devDependencies: {
-    add: string[];
-  };
-  environmentVariables: string[];
-}
+export const ManifestSchema = z.object({
+  name: z.string(),
+  dependencies: z.object({ add: z.array(z.string()) }),
+  devDependencies: z.object({ add: z.array(z.string()) }),
+  environmentVariables: z.array(z.string()),
+});
+
+type Manifest = z.infer<typeof ManifestSchema>;
 
 export const integration = new Command('integration')
   .argument('<integration-name>', 'Formatted name of the integration')

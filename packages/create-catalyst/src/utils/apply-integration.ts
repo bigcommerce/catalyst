@@ -4,7 +4,8 @@ import { downloadTemplate } from 'giget';
 import { addDependency, addDevDependency } from 'nypm';
 import { join } from 'path';
 import { promisify } from 'util';
-import * as z from 'zod';
+
+import { ManifestSchema } from '../commands/integration';
 
 import { PackageManager } from './pm';
 import { spinner } from './spinner';
@@ -43,17 +44,11 @@ export async function applyIntegration(
     return;
   }
 
-  const manifest = z
-    .object({
-      dependencies: z.array(z.string()),
-      devDependencies: z.array(z.string()),
-      environmentVariables: z.array(z.string()),
-    })
-    .parse(readJsonSync(join(integrationDir, 'manifest.json')));
+  const manifest = ManifestSchema.parse(readJsonSync(join(integrationDir, 'manifest.json')));
 
-  if (manifest.dependencies.length) {
+  if (manifest.dependencies.add.length) {
     await spinner(
-      addDependency(manifest.dependencies, {
+      addDependency(manifest.dependencies.add, {
         cwd: projectDir,
         silent: true,
         packageManager,
@@ -66,9 +61,9 @@ export async function applyIntegration(
     );
   }
 
-  if (manifest.devDependencies.length) {
+  if (manifest.devDependencies.add.length) {
     await spinner(
-      addDevDependency(manifest.devDependencies, {
+      addDevDependency(manifest.devDependencies.add, {
         cwd: projectDir,
         silent: true,
         packageManager,
