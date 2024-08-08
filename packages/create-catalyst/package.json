@@ -30,7 +30,7 @@
     "ora": "^8.0.1",
     "semver": "^7.6.3",
     "zod": "^3.23.8",
-    "zod-validation-error": "^3.3.0"
+    "zod-validation-error": "^3.3.1"
   },
   "devDependencies": {
     "@bigcommerce/eslint-config": "^2.9.0",
