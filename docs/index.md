@@ -64,6 +64,51 @@ We expect you will prioritize some of these features over others as you make Cat
 
 Catalyst storefronts can use [Algolia](https://www.algolia.com/) for a global search across all products, categories, and more. For a basic integration, see the [Catalyst Algolia integration](https://www.algolia.com/developers/code-exchange/bigcommerce-catalyst/) code exchange on the Algolia website.
 
+### Develop a native integration for a new Catalyst project
+
+> **Note:** Currently there aren't any anticipated use cases that require the usage of the `integration` command outside of the Catalyst monorepo. Therefore, `pnpm` is assumed to be the most common package manager that this command will be executed with.
+
+```sh
+pnpm create @bigcommerce/catalyst@latest integration
+```
+
+#### How to develop a native integration for new Catalyst projects
+
+If you are interested in developing a native integration for Catalyst, you can use the `integration` command documented above.
+
+First, you'll need to write the code that makes your integration work with Catalyst. Begin by forking the [`bigcommerce/catalyst` repository](https://github.com/bigcommerce/catalyst), clone the fork locally, and [follow the steps to get started with local monorepo development](https://www.catalyst.dev/docs/monorepo). Be sure to add the original `bigcommerce/catalyst` repository as a remote (often named `upstream`) so that you can pull in latest updates pushed to `bigcommerce/catalyst:main`.
+
+As a note, all integrations should be based off the latest `@bigcommerce/catalyst-core` release tag. This is because new Catalyst projects are created based off that tag, and if your integration is compatible with the latest tag, then it will be compatible with all Catalyst projects created from that tag. 
+
+Next, create a branch based off the latest `@bigcommerce/catalyst-core` release tag and name it following the convention `integrations/your-integration-name`. This branch is where you'll be building your integration into Catalyst, and the naming convention helps us organize all integration branches inside the Catalyst monorepo.
+
+```bash
+git checkout -b integrations/your-integration-name @bigcommerce/catalyst-core@X.X.X
+```
+
+> [!IMPORTANT]
+>
+> #### Things to consider when building integrations:
+>
+> - In order to ensure your integration applies cleanly to new Catalyst projects, your integration should be 100% contained within the `core` folder of the monorepo. With the exception of installing packages inside of `core` (which in turn modifies the root `pnpm-lock.yaml` file), none of your integration code should live outside of the `core` folder.
+> - If your integration requires environment variables to work, be sure to add those environment variables to `core/.env.example`. This allows the `integrate` CLI to track which environment variables are required for the integration to work.
+
+When you've finished building your integration, commit your changes to the branch, and then run the following command:
+
+```bash
+pnpm create @bigcommerce/catalyst@latest integration --integration-name="Your Integration Name" --source-branch=integrations/your-integration-name
+```
+
+The command above will create a new folder in your working tree called `integrations/your-integration-name/` with two files: `integration.patch` and `manifest.json`. You'll want to create a PR to merge just this created folder into `main`:
+
+```bash
+git checkout main &&
+git checkout -b integrations/your-integration-name-patch
+```
+
+Once that branch is created, commit your changes, push it to your fork, and open a pull request from your remote branch into `bigcommerce/catalyst:main`. Once your branch is merged into main, the CLI will register your new integration for users to choose from when creating a new Catalyst project.
+
+
 ## Future releases
 
 Over time, we plan to expand Catalyst to include all our default storefront features, including feature parity with our fully hosted [Stencil storefront platform](https://developer.bigcommerce.com/docs/storefront/stencil).
