@@ -1,65 +1,82 @@
-'use client';
-
 import * as SheetPrimitive from '@radix-ui/react-dialog';
+import * as Form from '@radix-ui/react-form';
 import debounce from 'lodash.debounce';
-import { Search, X } from 'lucide-react';
-import { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import { Search as SearchIcon, X } from 'lucide-react';
+import { Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
 
-import { getQuickSearchResults } from '~/client/queries/get-quick-search-results';
-import { ExistingResultType } from '~/client/util';
-import { Button } from '~/components/ui/button';
-import { Field, FieldControl, Form } from '~/components/ui/form';
+import { BcImage } from '~/components/bc-image';
+import { Link } from '~/components/link';
 import { cn } from '~/lib/utils';
 
-import { BcImage } from '../bc-image';
-import { Pricing } from '../pricing';
+import { Button } from '../button';
 
-import { getSearchResults } from './_actions/get-search-results';
-import { SearchInput } from './search-input';
+import { Input } from './input';
 
-interface SearchProps extends PropsWithChildren {
-  initialTerm?: string;
+type Price =
+  | {
+      type: 'range';
+      min: string;
+      max: string;
+    }
+  | {
+      type: 'fixed';
+      amount: string;
+      msrp?: string;
+    }
+  | { type: 'sale'; originalAmount: string; amount: string; msrp?: string };
+
+interface Product {
+  path: string;
+  name: string;
+  price?: Price;
+  image?: {
+    url: string;
+    altText: string;
+  };
 }
 
-type SearchResults = ExistingResultType<typeof getQuickSearchResults>;
+interface Category {
+  path: string;
+  name: string;
+}
 
-const isSearchQuery = (data: unknown): data is SearchResults => {
-  if (typeof data === 'object' && data !== null && 'products' in data) {
-    return true;
-  }
+interface Brand {
+  path: string;
+  name: string;
+}
 
-  return false;
-};
+interface SearchResults {
+  products: Product[];
+  categories: Category[];
+  brands: Brand[];
+}
 
-const fetchSearchResults = debounce(
-  async (
+interface Props {
+  initialTerm?: string;
+  logo: ReactNode;
+  onSearch: (
     term: string,
-    setSearchResults: React.Dispatch<React.SetStateAction<SearchResults | null>>,
-  ) => {
-    const { data: searchResults } = await getSearchResults(term);
+    setSearchResults: Dispatch<SetStateAction<SearchResults | null>>,
+  ) => Promise<void>;
+}
 
-    if (isSearchQuery(searchResults)) {
-      setSearchResults(searchResults);
-    }
-  },
-  1000,
-);
-
-export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
+const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
   const [term, setTerm] = useState(initialTerm);
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchResults | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const debouncedOnSearch = useMemo(() => debounce(onSearch, 1000), [onSearch]);
+
   useEffect(() => {
     if (term.length < 3) {
       setSearchResults(null);
     } else {
       setPending(true);
-      void fetchSearchResults(term, setSearchResults);
+      void debouncedOnSearch(term, setSearchResults);
     }
-  }, [term]);
+  }, [term, debouncedOnSearch]);
 
   useEffect(() => {
     setPending(false);
@@ -80,7 +97,7 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
           aria-label="Open search popup"
           className="border-0 bg-transparent p-3 text-black hover:bg-transparent hover:text-primary focus-visible:text-primary"
         >
-          <Search />
+          <SearchIcon />
         </Button>
       </SheetPrimitive.Trigger>
       <SheetPrimitive.Overlay className="fixed inset-0 bg-transparent backdrop-blur-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0">
@@ -97,16 +114,20 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
             </SheetPrimitive.Title>
 
             <div className="grid h-[92px] w-full grid-cols-5 items-center">
-              <div className="me-2 hidden lg:block lg:justify-self-start">{children}</div>
-              <Form
+              <div className="me-2 hidden lg:block lg:justify-self-start">
+                <Link className="overflow-hidden text-ellipsis py-3" href="/">
+                  {logo}
+                </Link>
+              </div>
+              <Form.Root
                 action="/search"
                 className="col-span-4 flex lg:col-span-3"
                 method="get"
                 role="search"
               >
-                <Field className="w-full" name="term">
-                  <FieldControl asChild required>
-                    <SearchInput
+                <Form.Field className="w-full" name="term">
+                  <Form.Control asChild required>
+                    <Input
                       aria-controls="categories products brands"
                       aria-expanded={!!searchResults}
                       onChange={handleTermChange}
@@ -118,9 +139,9 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
                       showClear={term.length > 0}
                       value={term}
                     />
-                  </FieldControl>
-                </Field>
-              </Form>
+                  </Form.Control>
+                </Form.Field>
+              </Form.Root>
               <SheetPrimitive.Close asChild>
                 <Button
                   aria-label="Close search popup"
@@ -138,18 +159,7 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
                     Categories
                   </h3>
                   <ul id="categories" role="listbox">
-                    {Object.entries(
-                      searchResults.products.reduce<Record<string, string>>(
-                        (categories, product) => {
-                          product.categories.edges?.forEach((category) => {
-                            categories[category.node.name] = category.node.path;
-                          });
-
-                          return categories;
-                        },
-                        {},
-                      ),
-                    ).map(([name, path]) => {
+                    {searchResults.categories.map(({ name, path }) => {
                       return (
                         <li className="mb-3 last:mb-6" key={name}>
                           <a
@@ -168,19 +178,19 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
                     Products
                   </h3>
                   <ul id="products" role="listbox">
-                    {searchResults.products.map((product) => {
+                    {searchResults.products.map(({ name, path, price, image }) => {
                       return (
-                        <li key={product.entityId}>
+                        <li key={path}>
                           <a
                             className="align-items mb-6 flex gap-x-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-                            href={product.path}
+                            href={path}
                           >
-                            {product.defaultImage ? (
+                            {image ? (
                               <BcImage
-                                alt={product.defaultImage.altText}
+                                alt={image.altText}
                                 className="self-start object-contain"
                                 height={80}
-                                src={product.defaultImage.url}
+                                src={image.url}
                                 width={80}
                               />
                             ) : (
@@ -190,8 +200,46 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
                             )}
 
                             <span className="flex flex-col">
-                              <p className="text-lg font-bold lg:text-2xl">{product.name}</p>
-                              <Pricing data={product} />
+                              <p className="text-lg font-bold lg:text-2xl">{name}</p>
+                              {price && (
+                                <p className="flex flex-col gap-1">
+                                  {price.type === 'range' && (
+                                    <span>
+                                      {price.min} - {price.max}
+                                    </span>
+                                  )}
+
+                                  {price.type === 'fixed' && (
+                                    <>
+                                      {Boolean(price.msrp) && (
+                                        <span>
+                                          MSRP: <span className="line-through">{price.msrp}</span>
+                                        </span>
+                                      )}
+                                      <span>{price.amount}</span>
+                                    </>
+                                  )}
+
+                                  {price.type === 'sale' && (
+                                    <>
+                                      {Boolean(price.msrp) && (
+                                        <span>
+                                          MSRP: <span className="line-through">{price.msrp}</span>
+                                        </span>
+                                      )}
+                                      <>
+                                        <span>
+                                          Was:{' '}
+                                          <span className="line-through">
+                                            {price.originalAmount}
+                                          </span>
+                                        </span>
+                                        <span>Now: {price.amount}</span>
+                                      </>
+                                    </>
+                                  )}
+                                </p>
+                              )}
                             </span>
                           </a>
                         </li>
@@ -204,15 +252,7 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
                     Brands
                   </h3>
                   <ul id="brands" role="listbox">
-                    {Object.entries(
-                      searchResults.products.reduce<Record<string, string>>((brands, product) => {
-                        if (product.brand) {
-                          brands[product.brand.name] = product.brand.path;
-                        }
-
-                        return brands;
-                      }, {}),
-                    ).map(([name, path]) => {
+                    {searchResults.brands.map(({ name, path }) => {
                       return (
                         <li className="mb-3 last:mb-6" key={name}>
                           <a
@@ -239,3 +279,5 @@ export const QuickSearch = ({ children, initialTerm = '' }: SearchProps) => {
     </SheetPrimitive.Root>
   );
 };
+
+export { Search, type SearchResults, type Price };
