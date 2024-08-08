@@ -244,7 +244,7 @@ export default async function Compare({
                                 <br />
                                 <>
                                   Now:{' '}
-                                  {format.number(product.prices.salePrice.value, {
+                                  {format.number(product.prices.price.value, {
                                     style: 'currency',
                                     currency: product.prices.price.currencyCode,
                                   })}

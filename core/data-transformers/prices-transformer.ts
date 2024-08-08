@@ -37,7 +37,7 @@ export const pricesTransformer = (
         style: 'currency',
         currency: prices.price.currencyCode,
       }),
-      amount: format.number(prices.salePrice.value, {
+      amount: format.number(prices.price.value, {
         style: 'currency',
         currency: prices.price.currencyCode,
       }),
