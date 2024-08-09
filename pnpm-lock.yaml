@@ -220,8 +220,8 @@ importers:
         specifier: ^2.10.0
         version: 2.10.0
       monocart-reporter:
-        specifier: ^2.6.2
-        version: 2.6.2
+        specifier: ^2.6.3
+        version: 2.6.3
       postcss:
         specifier: ^8.4.40
         version: 8.4.40
@@ -1230,9 +1230,6 @@ packages:
 
   '@jridgewell/source-map@0.3.6':
     resolution: {integrity: sha512-1ZJTZebgqllO79ue2bm3rIGud/bOe0pP5BjSRCRxxYkEZS8STV7zN84UBbiYu7jy+eCKSnVIUgoWWE/tt+shMQ==}
-
-  '@jridgewell/sourcemap-codec@1.4.15':
-    resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
 
   '@jridgewell/sourcemap-codec@1.5.0':
     resolution: {integrity: sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ==}
@@ -2385,11 +2382,6 @@ packages:
 
   acorn@8.11.3:
     resolution: {integrity: sha512-Y9rRfJG5jcKOE0CLisYbojUjIrIEE7AGMzA/Sm4BslANhbS+cDMpgBdcPT91oJ7OuJ9hYJBx59RjbhxVnrF8Xg==}
-    engines: {node: '>=0.4.0'}
-    hasBin: true
-
-  acorn@8.12.0:
-    resolution: {integrity: sha512-RTvkC4w+KNXrM39/lWCUaG0IbRkWdCv7W/IOW9oU6SawyxulvkQy5HQPVTKxEjczcUvapcrw3cFx/60VN/NRNw==}
     engines: {node: '>=0.4.0'}
     hasBin: true
 
@@ -4287,11 +4279,15 @@ packages:
     resolution: {integrity: sha512-PxMFUGQ3gDVmQVbKejfwgXHncDDFX5zldPQLLbYNacDq7qFft2K8hvroEDGztQ5DionF9ztiqlbgKIGmeMyBeA==}
     hasBin: true
 
+  monocart-coverage-reports@2.10.1:
+    resolution: {integrity: sha512-BYjyBxxcg+qoSWtZBN6yeFi9HoySHzsNB9vxUvjpFe63FdnN2olbsvmG64hC5K3mE9y/Ptb75KNNOA0O55ITgQ==}
+    hasBin: true
+
   monocart-locator@1.0.2:
     resolution: {integrity: sha512-v8W5hJLcWMIxLCcSi/MHh+VeefI+ycFmGz23Froer9QzWjrbg4J3gFJBuI/T1VLNoYxF47bVPPxq8ZlNX4gVCw==}
 
-  monocart-reporter@2.6.2:
-    resolution: {integrity: sha512-OYg79uwvLEHSTbxfZ9QBqC0sS2+PXBF8JI/FH6RWyQO1LNbVJzVNtQoHGVMCGEzUYEXaT07c0sz3Uyz6A8myDQ==}
+  monocart-reporter@2.6.3:
+    resolution: {integrity: sha512-sUVwrjv8FjIUrB80KPx2wpDbgEKk7lg3BG+bMre2waZiGi6r8bcoU5D33htnZn6/S293YKUZCSePyrGYw2FyVw==}
     hasBin: true
 
   mri@1.2.0:
@@ -6767,14 +6763,12 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@jridgewell/sourcemap-codec@1.4.15': {}
-
   '@jridgewell/sourcemap-codec@1.5.0': {}
 
   '@jridgewell/trace-mapping@0.3.25':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
-      '@jridgewell/sourcemap-codec': 1.4.15
+      '@jridgewell/sourcemap-codec': 1.5.0
 
   '@manypkg/find-root@1.1.0':
     dependencies:
@@ -7396,7 +7390,7 @@ snapshots:
   '@stylistic/eslint-plugin-js@2.1.0(eslint@8.57.0)':
     dependencies:
       '@types/eslint': 8.56.10
-      acorn: 8.11.3
+      acorn: 8.12.1
       eslint: 8.57.0
       eslint-visitor-keys: 4.0.0
       espree: 10.0.1
@@ -7990,8 +7984,6 @@ snapshots:
       acorn: 8.12.1
 
   acorn@8.11.3: {}
-
-  acorn@8.12.0: {}
 
   acorn@8.12.1: {}
 
@@ -10332,7 +10324,7 @@ snapshots:
 
   mlly@1.7.1:
     dependencies:
-      acorn: 8.12.0
+      acorn: 8.12.1
       pathe: 1.1.2
       pkg-types: 1.1.2
       ufo: 1.5.3
@@ -10354,16 +10346,33 @@ snapshots:
       lz-utils: 2.1.0
       monocart-locator: 1.0.2
 
+  monocart-coverage-reports@2.10.1:
+    dependencies:
+      '@bcoe/v8-coverage': 0.2.3
+      '@jridgewell/sourcemap-codec': 1.5.0
+      acorn: 8.12.1
+      acorn-loose: 8.4.0
+      acorn-walk: 8.3.3
+      commander: 12.1.0
+      console-grid: 2.2.2
+      eight-colors: 1.3.0
+      foreground-child: 3.2.1
+      istanbul-lib-coverage: 3.2.2
+      istanbul-lib-report: 3.0.1
+      istanbul-reports: 3.1.7
+      lz-utils: 2.1.0
+      monocart-locator: 1.0.2
+
   monocart-locator@1.0.2: {}
 
-  monocart-reporter@2.6.2:
+  monocart-reporter@2.6.3:
     dependencies:
       console-grid: 2.2.2
       eight-colors: 1.3.0
       koa: 2.15.3
       koa-static-resolver: 1.0.6
       lz-utils: 2.1.0
-      monocart-coverage-reports: 2.10.0
+      monocart-coverage-reports: 2.10.1
       monocart-locator: 1.0.2
       nodemailer: 6.9.14
     transitivePeerDependencies:
