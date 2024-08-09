@@ -74,8 +74,17 @@ jobs:
             core.setOutput("comment", comment);
 
       - name: Find pull request
-        uses: jwalton/gh-find-current-pr@v1.3.3
-        id: finder
+        id: find_pull_request
+        uses: actions/github-script@v7
+        with:
+          script: |
+            return (
+              await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                commit_sha: context.sha,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+              })
+            ).data[0];
 
       - name: Add comment to PR
         id: comment_to_pr
@@ -83,7 +92,7 @@ jobs:
         with:
           recreate: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          number: ${{ steps.finder.outputs.pr }}
+          number: ${{ fromJson(steps.find_pull_request.outputs.result).number }}
           header: lighthouse
           message: |
             # ⚡️🏠 Lighthouse report
@@ -125,8 +134,17 @@ jobs:
           npx playwright install --with-deps
 
       - name: Find pull request
-        uses: jwalton/gh-find-current-pr@v1.3.3
-        id: finder
+        id: find_pull_request
+        uses: actions/github-script@v7
+        with:
+          script: |
+            return (
+              await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                commit_sha: context.sha,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+              })
+            ).data[0];
 
       - name: Run Playwright tests
         run: |
@@ -150,8 +168,9 @@ jobs:
             {
               "Job": "${{ github.job }}",
               "Status": "Failed",
-              "Pull_Request": "https://github.com/bigcommerce/catalyst/pull/${{ steps.finder.outputs.pr }}",
-              "Commit_Message" : "${{ steps.finder.outputs.title }}",
+              "Environment": "${{ github.event.deployment_status.environment }}",
+              "Pull_Request": "${{ fromJson(steps.find_pull_request.outputs.result).html_url }}",
+              "Commit_Message" : "${{ fromJson(steps.find_pull_request.outputs.result).title }}",
               "Job_Run": "https://github.com/bigcommerce/catalyst/actions/runs/${{ github.run_id }}"
             }
 
@@ -182,8 +201,17 @@ jobs:
           npx playwright install chromium
 
       - name: Find pull request
-        uses: jwalton/gh-find-current-pr@v1.3.3
-        id: finder
+        id: find_pull_request
+        uses: actions/github-script@v7
+        with:
+          script: |
+            return (
+              await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                commit_sha: context.sha,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+              })
+            ).data[0];
 
       - name: Run Playwright tests
         run: |
@@ -207,7 +235,8 @@ jobs:
             {
               "Job": "${{ github.job }}",
               "Status": "Failed",
-              "Pull_Request": "https://github.com/bigcommerce/catalyst/pull/${{ steps.finder.outputs.pr }}",
-              "Commit_Message" : "${{ steps.finder.outputs.title }}",
+              "Environment": "${{ github.event.deployment_status.environment }}",
+              "Pull_Request": "${{ fromJson(steps.find_pull_request.outputs.result).html_url }}",
+              "Commit_Message" : "${{ fromJson(steps.find_pull_request.outputs.result).title }}",
               "Job_Run": "https://github.com/bigcommerce/catalyst/actions/runs/${{ github.run_id }}"
             }
