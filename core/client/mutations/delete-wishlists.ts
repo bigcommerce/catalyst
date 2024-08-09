@@ -16,7 +16,11 @@ const DELETE_WISHLISTS_MUTATION = graphql(`
 type Variables = VariablesOf<typeof DELETE_WISHLISTS_MUTATION>;
 export type Input = Variables['input'];
 
-export const deleteWishlists = async (input: Input) => {
+interface DeleteWishlists {
+  input: Input;
+}
+
+export const deleteWishlists = async ({ input }: DeleteWishlists) => {
   const customerId = await getSessionCustomerId();
 
   const response = await client.fetch({

@@ -48,6 +48,7 @@
       "loading": "Loading...",
       "condition": "Condition",
       "weight": "Weight",
+      "saveToWishlist": "Save to wishlist",
       "ReviewSummary": {
         "loading": "Loading...",
         "rating": "Rating:",
@@ -171,7 +172,7 @@
       "messages": "Messages",
       "addresses": "Addresses",
       "newAddress": "New address",
-      "wishlists": "Wish lists",
+      "wishlists": "Wishlists",
       "recentlyViewed": "Recently viewed",
       "settings": "Account settings",
       "changePassword": "Change password",
@@ -203,7 +204,38 @@
       "deleteModalTitle": "Are you sure you want to delete this address?",
       "submit": "Update address",
       "submitting": "In progress..."
-    },  
+    },
+    "Wishlist": {
+        "noItems": "No items added",
+        "new": "New Wishlist",
+        "createTitle": "New wishlist",
+        "inputLabel": "Wishlist name",
+        "emptyName": "Provide wishlist name",
+        "submitFormText": "Create",
+        "onSubmitText": "Creating...",
+        "deleteSubmitFormText": "Delete",
+        "onDeleteSubmitText": "Deleting...",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "deleteTitle": "Are you sure you want to delete wish list {name}?",
+        "confirmDelete": "Delete",
+        "favorites": "Favorites",
+        "noGalleryText": "Coming Soon",
+        "messages": {
+            "created": "Your wish list {name} was created successfully",
+            "deleted": "Your wish list {name} was deleted successfully"
+        },
+        "Sheet": {
+            "title": "Add to list",
+            "new": "New list",
+            "save": "Save",
+            "saveToWishlist": "Save to wishlist",
+            "saved": "Saved",
+            "createTitle": "New wishlist",
+            "selectCta": "Select from available lists:",
+            "favorites": "Favorites"
+        }
+    },
     "Settings": {
         "emptyTextValidatoinMessage": "This field can not be empty",
         "cancel": "Cancel",
@@ -262,6 +294,7 @@
         "recaptchaText": "Pass ReCAPTCHA check",
         "successMessage": "Dear {firstName} {lastName}, your account was successfully created. Redirecting to account...",
         "stateProvincePrefix": "Choose state or province",
+        "favorites": "Favorites",
         "validationMessages": {
             "email": "Enter a valid email such as name@domain.com",
             "empty": "This field can not be empty",
