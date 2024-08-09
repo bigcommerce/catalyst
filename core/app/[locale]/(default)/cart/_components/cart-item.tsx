@@ -11,6 +11,7 @@ const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
     name
     brand
+    sku
     image {
       url: urlTemplate
     }
@@ -68,6 +69,7 @@ const DigitalItemFragment = graphql(`
   fragment DigitalItemFragment on CartDigitalItem {
     name
     brand
+    sku
     image {
       url: urlTemplate
     }
@@ -230,7 +232,7 @@ export const CartItem = async ({ currencyCode, product }: Props) => {
 
               <div className="hidden md:block">
                 <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
-                  <RemoveItem lineItemEntityId={product.entityId} />
+                  <RemoveItem currency={currencyCode} product={product} />
                 </NextIntlClientProvider>
               </div>
             </div>
@@ -262,7 +264,7 @@ export const CartItem = async ({ currencyCode, product }: Props) => {
 
           <div className="mt-4 md:hidden">
             <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
-              <RemoveItem lineItemEntityId={product.entityId} />
+              <RemoveItem currency={currencyCode} product={product} />
             </NextIntlClientProvider>
           </div>
         </div>

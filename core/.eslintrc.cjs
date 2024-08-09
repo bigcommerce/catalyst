@@ -37,7 +37,7 @@ const config = {
       },
     ],
   },
-  ignorePatterns: ['client/generated/**/*.ts', 'playwright-report/**', 'test-results/**'],
+  ignorePatterns: ['client/generated/**/*.ts', 'playwright-report/**', 'test-results/**', '**/google_analytics4.js'],
 };
 
 module.exports = config;

@@ -11,6 +11,7 @@ import { LocaleType } from '~/i18n';
 import { Description } from './_components/description';
 import { Details } from './_components/details';
 import { Gallery } from './_components/gallery';
+import { ProductViewed } from './_components/product-viewed';
 import { RelatedProducts } from './_components/related-products';
 import { Reviews } from './_components/reviews';
 import { Warranty } from './_components/warranty';
@@ -106,6 +107,8 @@ export default async function Product({ params, searchParams }: ProductPageProps
       <Suspense fallback={t('loading')}>
         <RelatedProducts productId={product.entityId} />
       </Suspense>
+
+      <ProductViewed product={product} />
     </>
   );
 }

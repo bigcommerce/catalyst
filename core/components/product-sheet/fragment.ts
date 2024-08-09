@@ -1,3 +1,4 @@
+import { ProductItemFragment } from '~/client/fragments/product-item';
 import { graphql } from '~/client/graphql';
 
 import { ProductFormFragment } from '../product-form/fragment';
@@ -6,6 +7,7 @@ export const ProductSheetContentFragment = graphql(
   `
     fragment ProductSheetContentFragment on Product {
       ...ProductFormFragment
+      ...ProductItemFragment
       name
       defaultImage {
         url: urlTemplate
@@ -43,5 +45,5 @@ export const ProductSheetContentFragment = graphql(
       }
     }
   `,
-  [ProductFormFragment],
+  [ProductFormFragment, ProductItemFragment],
 );

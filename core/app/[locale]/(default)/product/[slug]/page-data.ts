@@ -2,6 +2,7 @@ import { cache } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
+import { ProductItemFragment } from '~/client/fragments/product-item';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { BreadcrumbsFragment } from '~/components/breadcrumbs';
@@ -26,6 +27,7 @@ const ProductPageQuery = graphql(
         ) {
           ...GalleryFragment
           ...DetailsFragment
+          ...ProductItemFragment
           ...DescriptionFragment
           ...WarrantyFragment
           entityId
@@ -50,7 +52,14 @@ const ProductPageQuery = graphql(
       }
     }
   `,
-  [BreadcrumbsFragment, GalleryFragment, DetailsFragment, DescriptionFragment, WarrantyFragment],
+  [
+    BreadcrumbsFragment,
+    GalleryFragment,
+    DetailsFragment,
+    ProductItemFragment,
+    DescriptionFragment,
+    WarrantyFragment,
+  ],
 );
 
 type ProductPageQueryVariables = VariablesOf<typeof ProductPageQuery>;

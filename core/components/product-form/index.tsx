@@ -6,8 +6,10 @@ import { useTranslations } from 'next-intl';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
+import { ProductItemFragment } from '~/client/fragments/product-item';
 import { FragmentOf } from '~/client/graphql';
 import { Button } from '~/components/ui/button';
+import { bodl } from '~/lib/bodl';
 
 import { AddToCartButton } from '../add-to-cart-button';
 import { Link } from '../link';
@@ -20,12 +22,30 @@ import { MultipleChoiceField } from './fields/multiple-choice-field';
 import { NumberField } from './fields/number-field';
 import { QuantityField } from './fields/quantity-field';
 import { TextField } from './fields/text-field';
-import { ProductFormFragment } from './fragment';
 import { ProductFormData, useProductForm } from './use-product-form';
 
 interface Props {
-  data: FragmentOf<typeof ProductFormFragment>;
+  data: FragmentOf<typeof ProductItemFragment>;
 }
+
+const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
+  const category = removeEdgesAndNodes(p.categories).at(0);
+  const breadcrumbs = category ? removeEdgesAndNodes(category.breadcrumbs) : [];
+
+  return {
+    product_id: p.entityId.toString(),
+    product_name: p.name,
+    brand_name: p.brand?.name,
+    sku: p.sku,
+    sale_price: p.prices?.salePrice?.value,
+    purchase_price: p.prices?.salePrice?.value || p.prices?.price.value || 0,
+    base_price: p.prices?.price.value,
+    retail_price: p.prices?.retailPrice?.value,
+    currency: p.prices?.price.currencyCode || 'USD',
+    category_names: breadcrumbs.map(({ name }) => name),
+    variant_id: p.variants.edges?.map((variant) => variant.node.entityId),
+  };
+};
 
 export const Submit = ({ data: product }: Props) => {
   const { formState } = useFormContext();
@@ -56,6 +76,19 @@ export const ProductForm = ({ data: product }: Props) => {
 
       return;
     }
+
+    const transformedProduct = productItemTransform(product);
+
+    bodl.cart.productAdded({
+      product_value: transformedProduct.purchase_price * quantity,
+      currency: transformedProduct.currency,
+      line_items: [
+        {
+          ...transformedProduct,
+          quantity,
+        },
+      ],
+    });
 
     toast.success(
       () => (

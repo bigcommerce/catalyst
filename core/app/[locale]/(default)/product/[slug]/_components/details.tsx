@@ -1,6 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { useFormatter, useTranslations } from 'next-intl';
 
+import { ProductItemFragment } from '~/client/fragments/product-item';
 import { FragmentOf, graphql } from '~/client/graphql';
 import { ProductForm } from '~/components/product-form';
 import { ProductFormFragment } from '~/components/product-form/fragment';
@@ -14,6 +15,7 @@ export const DetailsFragment = graphql(
       ...ReviewSummaryFragment
       ...ProductSchemaFragment
       ...ProductFormFragment
+      ...ProductItemFragment
       entityId
       name
       sku
@@ -65,7 +67,7 @@ export const DetailsFragment = graphql(
       }
     }
   `,
-  [ReviewSummaryFragment, ProductSchemaFragment, ProductFormFragment],
+  [ReviewSummaryFragment, ProductSchemaFragment, ProductFormFragment, ProductItemFragment],
 );
 
 interface Props {

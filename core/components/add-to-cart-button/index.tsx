@@ -1,8 +1,8 @@
 'use client';
 
-import { FragmentOf } from 'gql.tada';
 import { useTranslations } from 'next-intl';
 
+import { FragmentOf } from '~/client/graphql';
 import { Button } from '~/components/ui/button';
 
 import { AddToCartButtonFragment } from './fragment';

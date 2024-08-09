@@ -9,6 +9,7 @@ import { TAGS } from '~/client/tags';
 import { LocaleType } from '~/i18n';
 
 import { CartItem, CartItemFragment } from './_components/cart-item';
+import { CartViewed } from './_components/cart-viewed';
 import { CheckoutButton } from './_components/checkout-button';
 import { CheckoutSummary, CheckoutSummaryFragment } from './_components/checkout-summary';
 import { EmptyCart } from './_components/empty-cart';
@@ -100,6 +101,7 @@ export default async function CartPage({ params: { locale } }: Props) {
           </NextIntlClientProvider>
         </div>
       </div>
+      <CartViewed checkout={checkout} currencyCode={cart.currencyCode} lineItems={lineItems} />
     </div>
   );
 }
