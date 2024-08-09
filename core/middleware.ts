@@ -1,8 +1,8 @@
 import { composeMiddlewares } from './middlewares/compose-middlewares';
 import { withAuth } from './middlewares/with-auth';
-import { withRoutes } from './middlewares/with-routes';
+import { withIntl } from './middlewares/with-intl';
 
-export const middleware = composeMiddlewares(withAuth, withRoutes);
+export const middleware = composeMiddlewares(withAuth, withIntl);
 
 export const config = {
   matcher: [
@@ -18,6 +18,10 @@ export const config = {
      * - xmlsitemap.php (legacy sitemap route)
      * - robots.txt (robots route)
      */
-    '/((?!api|admin|_next/static|_next/image|_vercel|favicon.ico|xmlsitemap.php|sitemap.xml|robots.txt).*)',
+    {
+      source:
+        '/((?!api|admin|_next/static|_next/image|_vercel|favicon.ico|xmlsitemap.php|sitemap.xml|robots.txt).*)',
+      missing: [{ type: 'header', key: 'x-bc-bypass-middleware' }],
+    },
   ],
 };

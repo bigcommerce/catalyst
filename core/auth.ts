@@ -17,6 +17,7 @@ const config = {
   session: {
     strategy: 'jwt',
   },
+  trustHost: true,
   pages: {
     signIn: '/login',
   },
