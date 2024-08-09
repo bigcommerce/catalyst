@@ -10,10 +10,9 @@ import {
   BodlConfig,
 } from './types';
 
-const GA4_DEVELOPER_ID = 'dMjk3Nj';
-
 export class Bodl {
   private static globalSingleton: Bodl | null = null;
+  private static ga4DeveloperId = 'dMjk3Nj';
 
   navigation = {
     // search: this.call((payload: any) => null),
@@ -88,7 +87,7 @@ export class Bodl {
     const load = () => {
       subscribeOnBodlEvents(
         this.config.ga4?.gaId,
-        GA4_DEVELOPER_ID,
+        Bodl.ga4DeveloperId,
         this.config.ga4?.consentModeEnabled,
       );
     };
