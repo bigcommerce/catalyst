@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.0
+
+### Minor Changes
+
+- [#1200](https://github.com/bigcommerce/catalyst/pull/1200) [`51704d9`](https://github.com/bigcommerce/catalyst/commit/51704d9b9a7158c625c84f79e2ba95f98c6dc673) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Remove the `fetchAvailableCountries` query as it is no longer needed in Catalyst. This helps us remove queries that are dependent on the access token.
+
 ## 0.5.0
 
 ### Minor Changes

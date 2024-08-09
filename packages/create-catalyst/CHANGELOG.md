@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.10.0
+
+### Minor Changes
+
+- [#1192](https://github.com/bigcommerce/catalyst/pull/1192) [`d7d5a96`](https://github.com/bigcommerce/catalyst/commit/d7d5a961498053182a2d075ceb01f45c06f9cbec) Thanks [@matthewvolk](https://github.com/matthewvolk)! - add `integration` command to help with developing native Catalyst integrations
+
+- [#1193](https://github.com/bigcommerce/catalyst/pull/1193) [`aa72351`](https://github.com/bigcommerce/catalyst/commit/aa72351dc37094518e29849fc590dd10044fa955) Thanks [@matthewvolk](https://github.com/matthewvolk)! - add `--integration` option to `create-catalyst` to apply an integration to your newly created storefront
+
+- [#1242](https://github.com/bigcommerce/catalyst/pull/1242) [`733535a`](https://github.com/bigcommerce/catalyst/commit/733535ae4c12b93972b26471b1022cdfd925ed96) Thanks [@matthewvolk](https://github.com/matthewvolk)! - fix: define a single source of truth for integrations manifest file
+
+### Patch Changes
+
+- [#1240](https://github.com/bigcommerce/catalyst/pull/1240) [`dc2cc0d`](https://github.com/bigcommerce/catalyst/commit/dc2cc0d92ce81ae84d61881b2e933e3693f73151) Thanks [@matthewvolk](https://github.com/matthewvolk)! - refactor: parse env using `dotenv` package
+
 ## 0.9.0
 
 ### Minor Changes

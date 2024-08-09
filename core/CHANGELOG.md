@@ -1,5 +1,72 @@
 # Changelog
 
+## 0.13.0
+
+### Minor Changes
+
+- [#1166](https://github.com/bigcommerce/catalyst/pull/1166) [`0661e53`](https://github.com/bigcommerce/catalyst/commit/0661e53e66a12713a5ad23292a0a0eb25cddd9dc) Thanks [@bookernath](https://github.com/bookernath)! - Use default SEO settings from store for pages without SEO information specified, normalize SEO implementation across pages
+
+- [#1194](https://github.com/bigcommerce/catalyst/pull/1194) [`b455b05`](https://github.com/bigcommerce/catalyst/commit/b455b05a6121b005bd5147a25c964b9554b1b350) Thanks [@BC-krasnoshapka](https://github.com/BC-krasnoshapka)! - Add basic support for Google Analytics via [Big Open Data Layer](https://developer.bigcommerce.com/docs/integrations/hosted-analytics). BODL and GA4 integration is encapsulated in `bodl` library which hides current complexity and limitations that will be improved in future. It can be extended with more events and integrations with other analytics providers later. Data transformation from Catalyst data models to BODL and firing events is done in client components, as only frontend events are supported by BODL for now.
+
+  List of currently supported events:
+
+  - View product category
+  - View product page
+  - Add product to cart
+  - View cart
+  - Remove product from cart
+
+  In order to configure you need to specify `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` environment variable which is essentially your GA4 ID.
+
+### Patch Changes
+
+- [#1225](https://github.com/bigcommerce/catalyst/pull/1225) [`127f3b6`](https://github.com/bigcommerce/catalyst/commit/127f3b6000f0345a1e277d038025edadeaa09d71) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Change prop `items` to `links` in Header.
+
+- [#1232](https://github.com/bigcommerce/catalyst/pull/1232) [`b7d4986`](https://github.com/bigcommerce/catalyst/commit/b7d4986b390932be770de9adcf12112df4bb58e1) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Remove `Popover` component, utilize radix primitives instead.
+
+- [#1196](https://github.com/bigcommerce/catalyst/pull/1196) [`b793661`](https://github.com/bigcommerce/catalyst/commit/b793661ab145a2acec5b2fa5aa0c5f1d6865cad9) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add locale picker in header.
+
+- [#1231](https://github.com/bigcommerce/catalyst/pull/1231) [`befb122`](https://github.com/bigcommerce/catalyst/commit/befb122d033ba56b87cb04f31e0f34fe4386d285) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add `Dropdown` component.
+
+- [#1209](https://github.com/bigcommerce/catalyst/pull/1209) [`ef2f3cb`](https://github.com/bigcommerce/catalyst/commit/ef2f3cbddb872a5a2ad1c188f40cd5671eaf77b7) Thanks [@bookernath](https://github.com/bookernath)! - Limit number of chunks in webpack, customizable via env
+
+- [#1239](https://github.com/bigcommerce/catalyst/pull/1239) [`9a37c6a`](https://github.com/bigcommerce/catalyst/commit/9a37c6a25ccaed7b7373cdb3637706c6826a380a) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add `Search` component.
+
+- [#1199](https://github.com/bigcommerce/catalyst/pull/1199) [`e8bf185`](https://github.com/bigcommerce/catalyst/commit/e8bf185f34061be96cfe6a118431c3a4c62df7a2) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add more context when no result is found in search page.
+
+- [#1236](https://github.com/bigcommerce/catalyst/pull/1236) [`7d9e865`](https://github.com/bigcommerce/catalyst/commit/7d9e86568c5422cb74ef512ba851ee709e9d59f0) Thanks [@bookernath](https://github.com/bookernath)! - Exclude node_modules from tailwind config to improve build time
+
+- [#1214](https://github.com/bigcommerce/catalyst/pull/1214) [`4e890ff`](https://github.com/bigcommerce/catalyst/commit/4e890ffe203605c4a77be1acdf33622ff871405d) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Change prop `value` to `title` in Accordions.
+
+- [#1197](https://github.com/bigcommerce/catalyst/pull/1197) [`c831677`](https://github.com/bigcommerce/catalyst/commit/c831677cb873e67a898ffd1efeda0c518c6ab97d) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Set key before spreading prop in some form components.
+
+- [#1188](https://github.com/bigcommerce/catalyst/pull/1188) [`5c77f41`](https://github.com/bigcommerce/catalyst/commit/5c77f41eb6ced4677d85fef1adf898fe697a0452) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Rename brand prop to subtitle in Product Card.
+
+- [#1234](https://github.com/bigcommerce/catalyst/pull/1234) [`052e94a`](https://github.com/bigcommerce/catalyst/commit/052e94abd76b52700badde189ec36aee6cc383b1) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add `Breadcrumbs` component.
+
+- [#1224](https://github.com/bigcommerce/catalyst/pull/1224) [`5f934f9`](https://github.com/bigcommerce/catalyst/commit/5f934f91b790b9dd9001f133bdd75ce06951465c) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Change prop `thumbnail` to `image` in BlogPostCard.
+
+- [#1206](https://github.com/bigcommerce/catalyst/pull/1206) [`d1cf327`](https://github.com/bigcommerce/catalyst/commit/d1cf327d4c2c28f01940391a74cc4750d79b03b7) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add `Slide` component to be used in `Slideshow`.
+
+- [#1198](https://github.com/bigcommerce/catalyst/pull/1198) [`22dc862`](https://github.com/bigcommerce/catalyst/commit/22dc86260daaaeec20276a84b89c152a3ae246a3) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add missing accessibility components to Sheet/Mobile Nav.
+
+- [#1226](https://github.com/bigcommerce/catalyst/pull/1226) [`d6d1224`](https://github.com/bigcommerce/catalyst/commit/d6d1224521d4304bbdb515763aaee402b1a97c94) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Rename `value` to `rating` for Rating component, remove unused props.
+
+- [#1190](https://github.com/bigcommerce/catalyst/pull/1190) [`d01b4e0`](https://github.com/bigcommerce/catalyst/commit/d01b4e0560b1b8b2b3df9ed348231a2fc375f785) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Remove title prop from Tabs, remove Tabs from /account since it's not needed.
+
+- [#1204](https://github.com/bigcommerce/catalyst/pull/1204) [`bde94ba`](https://github.com/bigcommerce/catalyst/commit/bde94bab5299b933047c58cd3c64a73022c039bc) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add missing accisibility components to Quick Search.
+
+- [#1200](https://github.com/bigcommerce/catalyst/pull/1200) [`51704d9`](https://github.com/bigcommerce/catalyst/commit/51704d9b9a7158c625c84f79e2ba95f98c6dc673) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Use the `geography` node to retrieve a list of countries. This removes one less dependency on the access token.
+
+- [#1235](https://github.com/bigcommerce/catalyst/pull/1235) [`53ccd31`](https://github.com/bigcommerce/catalyst/commit/53ccd31f51e5b6d8f311a340d0bf70b7edb632aa) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add `Pagination` component.
+
+- [#1211](https://github.com/bigcommerce/catalyst/pull/1211) [`ec81a3a`](https://github.com/bigcommerce/catalyst/commit/ec81a3a69182d015395d6dc7bfff1e9af2adb6f9) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Update price prop in ProductCard to accept an object instead of a ReactNode.
+
+- [#1208](https://github.com/bigcommerce/catalyst/pull/1208) [`315ed15`](https://github.com/bigcommerce/catalyst/commit/315ed154e1ccfe316dc4d1037e674b79c3bad308) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Move CompareDrawer to ui components.
+
+- Updated dependencies [[`51704d9`](https://github.com/bigcommerce/catalyst/commit/51704d9b9a7158c625c84f79e2ba95f98c6dc673)]:
+  - @bigcommerce/catalyst-client@0.6.0
+
 ## 0.12.0
 
 ### Minor Changes
