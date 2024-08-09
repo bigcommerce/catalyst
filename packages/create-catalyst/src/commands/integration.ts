@@ -1,5 +1,6 @@
 import { Command } from '@commander-js/extra-typings';
 import { exec as execCb } from 'child_process';
+import { parse } from 'dotenv';
 import { outputFileSync, writeJsonSync } from 'fs-extra/esm';
 import kebabCase from 'lodash.kebabcase';
 import { coerce, compare } from 'semver';
@@ -8,16 +9,14 @@ import { z } from 'zod';
 
 const exec = promisify(execCb);
 
-interface Manifest {
-  name: string;
-  dependencies: {
-    add: string[];
-  };
-  devDependencies: {
-    add: string[];
-  };
-  environmentVariables: string[];
-}
+export const ManifestSchema = z.object({
+  name: z.string(),
+  dependencies: z.object({ add: z.array(z.string()) }),
+  devDependencies: z.object({ add: z.array(z.string()) }),
+  environmentVariables: z.array(z.string()),
+});
+
+type Manifest = z.infer<typeof ManifestSchema>;
 
 export const integration = new Command('integration')
   .argument('<integration-name>', 'Formatted name of the integration')
@@ -85,27 +84,10 @@ export const integration = new Command('integration')
       latestCoreTagJson.devDependencies,
     );
 
-    const { stdout: envVarDiff } = await exec(
-      `git diff ${latestCoreTag}...${sourceRef} -- core/.env.example`,
-    );
+    const { stdout: latestCoreEnv } = await exec(`git show ${latestCoreTag}:core/.env.example`);
+    const { stdout: integrationEnv } = await exec(`git show ${sourceRef}:core/.env.example`);
 
-    if (envVarDiff.length > 0) {
-      const envVars: string[] = [];
-      const lines = envVarDiff.split('\n');
-      const addedEnvVarPattern = /^\+([A-Z_]+)=/;
-
-      lines.forEach((line) => {
-        const match = line.match(addedEnvVarPattern);
-
-        if (match) {
-          envVars.push(match[1]);
-        }
-      });
-
-      if (envVars.length > 0) {
-        manifest.environmentVariables = envVars;
-      }
-    }
+    manifest.environmentVariables = diffObjectKeys(parse(integrationEnv), parse(latestCoreEnv));
 
     const { stdout: integrationDiff } = await exec(
       `git diff ${latestCoreTag}...${sourceRef} -- ':(exclude)core/package.json' ':(exclude)pnpm-lock.yaml'`,
