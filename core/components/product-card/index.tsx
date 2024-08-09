@@ -1,10 +1,44 @@
+import { getFormatter } from 'next-intl/server';
+
 import { graphql, ResultOf } from '~/client/graphql';
 import { ProductCard as ComponentProductCard } from '~/components/ui/product-card';
-
-import { Pricing, PricingFragment } from '../pricing';
+import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
 import { AddToCart } from './add-to-cart';
 import { AddToCartFragment } from './add-to-cart/fragment';
+
+export const PricingFragment = graphql(`
+  fragment PricingFragment on Product {
+    prices {
+      price {
+        value
+        currencyCode
+      }
+      basePrice {
+        value
+        currencyCode
+      }
+      retailPrice {
+        value
+        currencyCode
+      }
+      salePrice {
+        value
+        currencyCode
+      }
+      priceRange {
+        min {
+          value
+          currencyCode
+        }
+        max {
+          value
+          currencyCode
+        }
+      }
+    }
+  }
+`);
 
 export const ProductCardFragment = graphql(
   `
@@ -39,14 +73,18 @@ interface Props {
   showCart?: boolean;
 }
 
-export const ProductCard = ({
+export const ProductCard = async ({
   product,
   imageSize = 'square',
   imagePriority = false,
   showCart = true,
   showCompare = true,
 }: Props) => {
-  const { name, entityId, defaultImage, brand, path } = product;
+  const format = await getFormatter();
+
+  const { name, entityId, defaultImage, brand, path, prices } = product;
+
+  const price = pricesTransformer(prices, format);
 
   return (
     <ComponentProductCard
@@ -55,7 +93,7 @@ export const ProductCard = ({
       imagePriority={imagePriority}
       imageSize={imageSize}
       link={path}
-      price={<Pricing data={product} />}
+      price={price}
       productId={entityId}
       showCompare={showCompare}
       subtitle={brand?.name}

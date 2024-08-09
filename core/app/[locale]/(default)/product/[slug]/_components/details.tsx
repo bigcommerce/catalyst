@@ -136,7 +136,7 @@ export const Details = ({ product }: Props) => {
                   <br />
                   <span>
                     {t('Prices.now')}:{' '}
-                    {format.number(product.prices.salePrice.value, {
+                    {format.number(product.prices.price.value, {
                       style: 'currency',
                       currency: product.prices.price.currencyCode,
                     })}

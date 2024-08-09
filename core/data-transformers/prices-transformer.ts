@@ -2,8 +2,8 @@ import { ResultOf } from 'gql.tada';
 import { getFormatter } from 'next-intl/server';
 
 import { ExistingResultType } from '~/client/util';
-import { PricingFragment } from '~/components/pricing';
-import { Price } from '~/components/ui/search';
+import { PricingFragment } from '~/components/product-card';
+import { Price } from '~/components/ui/product-card';
 
 export const pricesTransformer = (
   prices: ResultOf<typeof PricingFragment>['prices'],
@@ -37,7 +37,7 @@ export const pricesTransformer = (
         style: 'currency',
         currency: prices.price.currencyCode,
       }),
-      amount: format.number(prices.salePrice.value, {
+      amount: format.number(prices.price.value, {
         style: 'currency',
         currency: prices.price.currencyCode,
       }),

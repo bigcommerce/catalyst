@@ -1,6 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, getTranslations } from 'next-intl/server';
+import { getFormatter, getMessages, getTranslations } from 'next-intl/server';
 import * as z from 'zod';
 
 import { getSessionCustomerId } from '~/auth';
@@ -9,7 +9,7 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
-import { Pricing, PricingFragment } from '~/components/pricing';
+import { PricingFragment } from '~/components/product-card';
 import { SearchForm } from '~/components/search-form';
 import { Button } from '~/components/ui/button';
 import { Rating } from '~/components/ui/rating';
@@ -100,6 +100,8 @@ export default async function Compare({
 
   const parsed = CompareParamsSchema.parse(searchParams);
   const productIds = parsed.ids?.filter((id) => !Number.isNaN(id));
+
+  const format = await getFormatter();
 
   const { data } = await client.fetch({
     document: ComparePageQuery,
@@ -195,12 +197,76 @@ export default async function Compare({
               ))}
             </tr>
             <tr>
-              {products.map((product) => (
-                <td className="px-4 py-4 align-bottom text-base" key={product.entityId}>
-                  {/* TODO: add translations */}
-                  <Pricing data={product} />
-                </td>
-              ))}
+              {products.map((product) => {
+                const showPriceRange =
+                  product.prices?.priceRange.min.value !== product.prices?.priceRange.max.value;
+
+                return (
+                  <td className="px-4 py-4 align-bottom text-base" key={product.entityId}>
+                    {product.prices && (
+                      <p className="w-36 shrink-0">
+                        {showPriceRange ? (
+                          <>
+                            {format.number(product.prices.priceRange.min.value, {
+                              style: 'currency',
+                              currency: product.prices.price.currencyCode,
+                            })}{' '}
+                            -{' '}
+                            {format.number(product.prices.priceRange.max.value, {
+                              style: 'currency',
+                              currency: product.prices.price.currencyCode,
+                            })}
+                          </>
+                        ) : (
+                          <>
+                            {product.prices.retailPrice?.value !== undefined && (
+                              <>
+                                MSRP:{' '}
+                                <span className="line-through">
+                                  {format.number(product.prices.retailPrice.value, {
+                                    style: 'currency',
+                                    currency: product.prices.price.currencyCode,
+                                  })}
+                                </span>
+                                <br />
+                              </>
+                            )}
+                            {product.prices.salePrice?.value !== undefined &&
+                            product.prices.basePrice?.value !== undefined ? (
+                              <>
+                                Was:{' '}
+                                <span className="line-through">
+                                  {format.number(product.prices.basePrice.value, {
+                                    style: 'currency',
+                                    currency: product.prices.price.currencyCode,
+                                  })}
+                                </span>
+                                <br />
+                                <>
+                                  Now:{' '}
+                                  {format.number(product.prices.price.value, {
+                                    style: 'currency',
+                                    currency: product.prices.price.currencyCode,
+                                  })}
+                                </>
+                              </>
+                            ) : (
+                              product.prices.price.value && (
+                                <>
+                                  {format.number(product.prices.price.value, {
+                                    style: 'currency',
+                                    currency: product.prices.price.currencyCode,
+                                  })}
+                                </>
+                              )
+                            )}
+                          </>
+                        )}
+                      </p>
+                    )}
+                  </td>
+                );
+              })}
             </tr>
             <tr>
               {products.map((product) => {
