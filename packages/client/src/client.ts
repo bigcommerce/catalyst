@@ -23,6 +23,11 @@ interface Config {
 
 interface BigCommerceResponse<T> {
   data: T;
+  errors?: Array<{
+    message: string;
+    path: string[];
+    locations: Array<{ line: number; column: number }>;
+  }>;
 }
 
 class Client<FetcherRequestInit extends RequestInit = RequestInit> {

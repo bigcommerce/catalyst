@@ -47,5 +47,7 @@ export const registerCustomer = async ({ formFields, reCaptchaToken }: RegisterC
     variables,
   });
 
+  console.warn('Register Customer Response: ', response);
+
   return response.data.customer.registerCustomer;
 };
