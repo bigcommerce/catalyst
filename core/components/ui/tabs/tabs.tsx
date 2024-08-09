@@ -1,15 +1,18 @@
 import * as TabsPrimitive from '@radix-ui/react-tabs';
-import { ComponentPropsWithoutRef, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 interface Tab {
   content: ReactNode;
   value: string;
 }
 
-interface Props extends ComponentPropsWithoutRef<typeof TabsPrimitive.Root> {
+interface Props {
+  className?: string;
   defaultValue?: string;
   label: string;
+  onValueChange: (value: string) => void;
   tabs: Tab[];
+  value?: string;
 }
 
 export function Tabs({ className, defaultValue, label, tabs, ...props }: Props) {

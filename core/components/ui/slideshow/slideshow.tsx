@@ -1,13 +1,36 @@
 import useEmblaCarousel from 'embla-carousel-react';
 import { ArrowLeft, ArrowRight, Pause, Play } from 'lucide-react';
-import { ComponentPropsWithoutRef, ReactNode, useEffect, useReducer, useState } from 'react';
+import Image, { StaticImageData } from 'next/image';
+import { useEffect, useReducer, useState } from 'react';
 
-interface Props extends ComponentPropsWithoutRef<'section'> {
-  slides: ReactNode[];
-  interval?: number;
+import { cn } from '~/lib/utils';
+
+import { Button } from '../button';
+
+interface Link {
+  label: string;
+  href: string;
 }
 
-const Slideshow = ({ children, className, interval = 15_000, slides, style, ...props }: Props) => {
+interface Image {
+  alt: string;
+  blurDataUrl?: string;
+  src: string | StaticImageData;
+}
+
+interface Slide {
+  cta?: Link;
+  description?: string;
+  image?: Image;
+  title: string;
+}
+
+interface Props {
+  className?: string;
+  slides: Slide[];
+}
+
+const Slideshow = ({ className, slides }: Props) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
 
   const [isHoverPaused, setIsHoverPaused] = useState(false);
@@ -27,10 +50,10 @@ const Slideshow = ({ children, className, interval = 15_000, slides, style, ...p
       if (visibilityState === 'hidden') return;
 
       emblaApi.scrollNext();
-    }, interval);
+    }, 15_000);
 
     return () => clearInterval(autoplay);
-  }, [emblaApi, isHoverPaused, interval, isPaused, visibilityState]);
+  }, [emblaApi, isHoverPaused, isPaused, visibilityState]);
 
   useEffect(() => {
     window.addEventListener('visibilitychange', () => {
@@ -72,12 +95,11 @@ const Slideshow = ({ children, className, interval = 15_000, slides, style, ...p
     <section
       aria-label="Interactive slide show"
       aria-roledescription="carousel"
-      className="relative -mx-6 overflow-hidden sm:-mx-10 md:-mx-12 lg:mx-0"
+      className={cn('relative -mx-6 overflow-hidden sm:-mx-10 md:-mx-12 lg:mx-0', className)}
       onBlur={() => setIsHoverPaused(false)}
       onFocus={() => setIsHoverPaused(true)}
       onMouseEnter={() => setIsHoverPaused(true)}
       onMouseLeave={() => setIsHoverPaused(false)}
-      {...props}
     >
       <div ref={emblaRef}>
         <ul className="flex" id="slideshow-slides">
@@ -90,7 +112,34 @@ const Slideshow = ({ children, className, interval = 15_000, slides, style, ...p
               inert={index === activeSlide - 1 ? null : 'true'}
               key={index}
             >
-              {slide}
+              <div className="relative">
+                {slide.image && (
+                  <Image
+                    alt={slide.image.alt}
+                    blurDataURL={slide.image.blurDataUrl}
+                    className="absolute -z-10 object-cover"
+                    fill
+                    placeholder="blur"
+                    priority
+                    sizes="(max-width: 1536px) 100vw, 1536px"
+                    src={slide.image.src}
+                  />
+                )}
+                <div
+                  className={cn(
+                    'flex flex-col gap-4 px-12 pb-48 pt-36',
+                    !slide.image && 'bg-gray-100',
+                  )}
+                >
+                  <h2 className="text-5xl font-black lg:text-6xl">{slide.title}</h2>
+                  {Boolean(slide.description) && <p className="max-w-xl">{slide.description}</p>}
+                  {slide.cta && (
+                    <Button asChild className="w-fit">
+                      <a href={slide.cta.href}>{slide.cta.label}</a>
+                    </Button>
+                  )}
+                </div>
+              </div>
             </li>
           ))}
         </ul>

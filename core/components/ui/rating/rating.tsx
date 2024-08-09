@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, ReactElement } from 'react';
+import { ReactElement } from 'react';
 
 import { cn } from '~/lib/utils';
 
@@ -11,7 +11,8 @@ const roundHalf = (num: number) => {
   return Math.round(num * 2) / 2;
 };
 
-interface Props extends ComponentPropsWithoutRef<'span'> {
+interface Props {
+  className?: string;
   rating: number;
   size?: number;
 }

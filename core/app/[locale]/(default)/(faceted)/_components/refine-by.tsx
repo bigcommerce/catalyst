@@ -150,10 +150,7 @@ export const RefineBy = (props: Props) => {
       <ul className="mb-4 flex flex-row flex-wrap gap-2 py-2">
         {refinements.map((refinement) => (
           <li key={`${refinement.key}-${refinement.value}`}>
-            <Tag
-              tagAction={() => removeRefinement(refinement)}
-              tagContent={refinement.display_name}
-            />
+            <Tag content={refinement.display_name} onRemove={() => removeRefinement(refinement)} />
           </li>
         ))}
       </ul>

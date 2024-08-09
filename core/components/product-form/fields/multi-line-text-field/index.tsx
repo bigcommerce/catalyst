@@ -1,6 +1,5 @@
 import { FragmentOf } from '~/client/graphql';
-import { Label } from '~/components/ui/label';
-import { TextArea } from '~/components/ui/text-area';
+import { Label, TextArea } from '~/components/ui/form';
 
 import { useProductFieldController } from '../../use-product-form';
 import { ErrorMessage } from '../shared/error-message';
@@ -45,12 +44,12 @@ export const MultiLineTextField = ({ option }: Props) => {
         )}
       </Label>
       <TextArea
+        error={Boolean(error)}
         id={`${option.entityId}`}
         name={field.name}
         onChange={field.onChange}
         rows={option.maxLines ?? 1}
         value={field.value}
-        variant={error && 'error'}
       />
       {error && <ErrorMessage>{error.message}</ErrorMessage>}
     </div>

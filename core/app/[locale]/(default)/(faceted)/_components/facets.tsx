@@ -7,9 +7,7 @@ import { FormEvent, useRef, useTransition } from 'react';
 import { Link } from '~/components/link';
 import { Accordions } from '~/components/ui/accordions';
 import { Button } from '~/components/ui/button';
-import { Checkbox } from '~/components/ui/checkbox';
-import { Input } from '~/components/ui/input';
-import { Label } from '~/components/ui/label';
+import { Checkbox, Input, Label } from '~/components/ui/form';
 import { Rating } from '~/components/ui/rating';
 import { cn } from '~/lib/utils';
 

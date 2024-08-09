@@ -1,19 +1,28 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { ComponentPropsWithoutRef, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
-import { Link } from '~/components/link';
+import { Link as CustomLink } from '~/components/link';
 
 import { Button } from '../button';
 
-interface Props extends ComponentPropsWithoutRef<typeof DropdownMenu.Root> {
+interface Link {
+  href: string;
+  label: string;
+}
+
+interface Action {
+  action: () => Promise<void> | void;
+  name: string;
+}
+
+interface Props {
   align?: 'start' | 'center' | 'end';
   className?: string;
-  items: Array<{ path: string; name: string } | { action: () => Promise<void>; name: string }>;
-  sideOffset?: number;
+  items: Array<Link | Action>;
   trigger: ReactNode;
 }
 
-const Dropdown = ({ align = 'center', className, items, sideOffset = 4, trigger }: Props) => {
+const Dropdown = ({ align = 'center', className, items, trigger }: Props) => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild className={className}>
@@ -24,17 +33,17 @@ const Dropdown = ({ align = 'center', className, items, sideOffset = 4, trigger 
         <DropdownMenu.Content
           align={align}
           className="z-50 bg-white p-4 text-base shadow-md outline-none hover:focus-visible:ring-0 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
-          sideOffset={sideOffset}
+          sideOffset={4}
         >
           {items.map((item) =>
-            'path' in item ? (
-              <DropdownMenu.Item asChild key={item.path}>
-                <Link
+            'href' in item ? (
+              <DropdownMenu.Item asChild key={item.href}>
+                <CustomLink
                   className="block whitespace-nowrap p-3 hover:focus-visible:ring-0"
-                  href={item.path}
+                  href={item.href}
                 >
-                  {item.name}
-                </Link>
+                  {item.label}
+                </CustomLink>
               </DropdownMenu.Item>
             ) : (
               <DropdownMenu.Item asChild key={item.name}>

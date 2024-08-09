@@ -1,25 +1,21 @@
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
-import {
-  ComponentPropsWithoutRef,
-  ComponentPropsWithRef,
-  ElementRef,
-  forwardRef,
-  useId,
-} from 'react';
+import { ComponentPropsWithRef, ElementRef, forwardRef, useId } from 'react';
 
 import { cn } from '~/lib/utils';
 
-interface Item extends ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> {
+interface Swatch {
+  color?: string;
   label: string;
-  variantColor?: string;
+  value: string;
 }
 
 interface Props extends ComponentPropsWithRef<typeof RadioGroupPrimitive.Root> {
-  items: Item[];
+  error?: boolean;
+  swatches: Swatch[];
 }
 
 const Swatch = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
-  ({ children, className, items, ...props }, ref) => {
+  ({ children, className, error = false, swatches, ...props }, ref) => {
     const id = useId();
 
     return (
@@ -29,23 +25,27 @@ const Swatch = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
         role="radiogroup"
         {...props}
       >
-        {items.map((item) => {
-          const { label, value, variantColor, ...itemProps } = item;
+        {swatches.map((swatch) => {
+          const { label, value, color, ...itemProps } = swatch;
 
           return (
             <RadioGroupPrimitive.Item
               key={`${id}-${value}`}
               {...itemProps}
-              className="group h-12 w-12 border-2 bg-white p-1 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-gray-100 disabled:hover:border-gray-100 data-[state=checked]:border-primary"
+              className={cn(
+                'group h-12 w-12 border-2 bg-white p-1 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-gray-100 disabled:hover:border-gray-100 data-[state=checked]:border-primary',
+                error &&
+                  'border-error-secondary hover:border-error focus-visible:border-error-secondary focus-visible:ring-error/20 disabled:border-gray-200 data-[state=checked]:border-error-secondary',
+              )}
               title={label}
               value={value}
             >
-              {variantColor ? (
+              {color ? (
                 <span
                   className="block h-9 w-9 group-disabled:bg-gray-200 group-disabled:opacity-30"
                   style={{
-                    backgroundColor: variantColor,
-                    backgroundImage: `url(${variantColor})`,
+                    backgroundColor: color,
+                    backgroundImage: `url(${color})`,
                   }}
                 />
               ) : (

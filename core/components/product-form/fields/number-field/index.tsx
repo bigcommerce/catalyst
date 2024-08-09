@@ -1,6 +1,5 @@
 import { FragmentOf } from '~/client/graphql';
-import { Counter } from '~/components/ui/counter';
-import { Label } from '~/components/ui/label';
+import { Counter, Label } from '~/components/ui/form';
 
 import { useProductFieldController } from '../../use-product-form';
 import { ErrorMessage } from '../shared/error-message';
@@ -46,6 +45,7 @@ export const NumberField = ({ option }: Props) => {
       </Label>
       <div className="@md:w-32">
         <Counter
+          error={Boolean(error)}
           id={`${option.entityId}`}
           isInteger={option.isIntegerOnly}
           max={Number(option.highest)}
@@ -53,7 +53,6 @@ export const NumberField = ({ option }: Props) => {
           name={field.name}
           onChange={field.onChange}
           value={field.value ? Number(field.value) : ''}
-          variant={error && 'error'}
         />
       </div>
       {error && <ErrorMessage>{error.message}</ErrorMessage>}

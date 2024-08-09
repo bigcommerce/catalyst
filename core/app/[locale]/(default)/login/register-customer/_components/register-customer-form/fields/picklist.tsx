@@ -1,5 +1,4 @@
-import { Field, FieldControl, FieldLabel } from '~/components/ui/form';
-import { Select } from '~/components/ui/select';
+import { Field, FieldControl, FieldLabel, Select } from '~/components/ui/form';
 
 import { AddressFields } from '..';
 

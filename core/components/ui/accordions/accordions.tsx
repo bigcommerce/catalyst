@@ -2,14 +2,24 @@ import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDown } from 'lucide-react';
 import { ReactNode } from 'react';
 
-interface AccordionItem {
+interface Accordion {
   content: ReactNode;
   title: string;
 }
 
-type Props = React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Root> & {
-  accordions: AccordionItem[];
-};
+type Props =
+  | {
+      accordions: Accordion[];
+      className?: string;
+      defaultValue?: string;
+      type: 'single';
+    }
+  | {
+      accordions: Accordion[];
+      className?: string;
+      defaultValue?: string[];
+      type: 'multiple';
+    };
 
 const Accordions = ({ accordions, ...props }: Props) => {
   return (

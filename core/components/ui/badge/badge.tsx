@@ -1,8 +1,13 @@
-import { ComponentPropsWithoutRef } from 'react';
+import { ReactNode } from 'react';
 
 import { cn } from '~/lib/utils';
 
-const Badge = ({ children, className, ...props }: ComponentPropsWithoutRef<'span'>) => {
+interface Props {
+  children: ReactNode;
+  className?: string;
+}
+
+const Badge = ({ children, className, ...props }: Props) => {
   return (
     <span
       className={cn(

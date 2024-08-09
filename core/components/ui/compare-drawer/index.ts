@@ -1,3 +1,3 @@
 'use client';
 
-export * from './context';
+export { CompareDrawerProvider, useCompareDrawerContext } from './context';

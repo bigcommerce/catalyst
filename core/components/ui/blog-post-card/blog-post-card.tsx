@@ -1,26 +1,29 @@
-import { ComponentPropsWithRef } from 'react';
-
 import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
 import { cn } from '~/lib/utils';
 
-interface Props extends ComponentPropsWithRef<'div'> {
-  author?: string | null;
+interface Image {
+  altText: string;
+  src: string;
+}
+
+interface Props {
+  author?: string;
+  className?: string;
   content: string;
   date: string;
-  image?: { altText: string; url: string } | null;
-  link: { href: string };
+  href: string;
+  image?: Image;
   title: string;
 }
 
 const BlogPostCard = ({
   author,
-  children,
   className,
   content,
   date,
+  href,
   image,
-  link,
   title,
   ...props
 }: Props) => {
@@ -28,12 +31,12 @@ const BlogPostCard = ({
     <div className={cn('flex flex-col', className)} {...props}>
       {image ? (
         <div className="mb-2 flex h-44 lg:h-56">
-          <Link className="block w-full" href={link.href}>
+          <Link className="block w-full" href={href}>
             <BcImage
               alt={image.altText}
               className="h-full w-full object-cover object-center"
               height={300}
-              src={image.url}
+              src={image.src}
               width={300}
             />
           </Link>
@@ -48,7 +51,7 @@ const BlogPostCard = ({
       )}
 
       <h3 className="mb-2 text-2xl font-bold">
-        <Link href={link.href}>{title}</Link>
+        <Link href={href}>{title}</Link>
       </h3>
 
       <p className="mb-2">{content}</p>

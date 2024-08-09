@@ -1,47 +1,53 @@
 import { ShoppingCart, User } from 'lucide-react';
-import { NextIntlClientProvider } from 'next-intl';
-import { getLocale, getMessages } from 'next-intl/server';
+import { getLocale } from 'next-intl/server';
 import { ReactNode, Suspense } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
 import { FragmentOf, graphql } from '~/client/graphql';
+import { logoTransformer } from '~/data-transformers/logo-transformer';
+import { localeLanguageRegionMap } from '~/i18n';
 
+import { headerLinksTransformer } from '../../data-transformers/header-links-transformer';
 import { Link } from '../link';
-import { StoreLogo, StoreLogoFragment } from '../store-logo';
 import { Button } from '../ui/button';
 import { Dropdown } from '../ui/dropdown';
 import { Header as ComponentsHeader } from '../ui/header';
 
 import { logout } from './_actions/logout';
 import { CartLink } from './cart';
-import { LocaleSwitcher } from './locale-switcher';
 import { QuickSearch } from './quick-search';
 
-export const HeaderFragment = graphql(
-  `
-    fragment HeaderFragment on Site {
-      settings {
-        ...StoreLogoFragment
-      }
-      categoryTree {
-        entityId
-        name
-        path
-        children {
-          entityId
-          name
-          path
-          children {
-            entityId
-            name
-            path
+export const HeaderFragment = graphql(`
+  fragment HeaderFragment on Site {
+    settings {
+      storeName
+      logoV2 {
+        __typename
+        ... on StoreTextLogo {
+          text
+        }
+        ... on StoreImageLogo {
+          image {
+            url: urlTemplate
+            altText
           }
         }
       }
     }
-  `,
-  [StoreLogoFragment],
-);
+    categoryTree {
+      name
+      path
+      children {
+        name
+        path
+        children {
+          name
+          path
+        }
+      }
+    }
+  }
+`);
 
 interface Props {
   cart: ReactNode;
@@ -52,60 +58,62 @@ export const Header = async ({ cart, data }: Props) => {
   const customerId = await getSessionCustomerId();
 
   const locale = await getLocale();
-  const messages = await getMessages({ locale });
 
   /**  To prevent the navigation menu from overflowing, we limit the number of categories to 6.
    To show a full list of categories, modify the `slice` method to remove the limit.
    Will require modification of navigation menu styles to accommodate the additional categories.
    */
   const categoryTree = data.categoryTree.slice(0, 6);
-  const logo = data.settings && <StoreLogo data={data.settings} />;
 
   return (
-    <ComponentsHeader links={categoryTree} logo={logo}>
-      <QuickSearch logo={logo} />
-
-      {customerId ? (
-        <Dropdown
-          items={[
-            { path: '/account', name: 'My account' },
-            { path: '/account/orders', name: 'Orders' },
-            { path: '/account/messages', name: 'Messages' },
-            { path: '/account/addresses', name: 'Addresses' },
-            { path: '/account/wishlists', name: 'Wish lists' },
-            { path: '/account/recently-viewed', name: 'Recently viewed' },
-            { path: '/account/settings', name: 'Account settings' },
-            { action: logout, name: 'Log out' },
-          ]}
-          trigger={
-            <Button
-              aria-label="Account"
-              className="p-3 text-black hover:bg-transparent hover:text-primary"
-              variant="subtle"
-            >
-              <User aria-hidden="true" />
-            </Button>
-          }
-        />
-      ) : (
-        <Link aria-label="Login" className="block p-3" href="/login">
-          <User />
-        </Link>
-      )}
-      <p role="status">
-        <Suspense
-          fallback={
-            <CartLink>
-              <ShoppingCart aria-label="cart" />
-            </CartLink>
-          }
-        >
-          {cart}
-        </Suspense>
-      </p>
-      <NextIntlClientProvider locale={locale} messages={{ Header: messages.Header ?? {} }}>
-        <LocaleSwitcher />
-      </NextIntlClientProvider>
-    </ComponentsHeader>
+    <ComponentsHeader
+      account={
+        customerId ? (
+          <Dropdown
+            items={[
+              { href: '/account', label: 'My account' },
+              { href: '/account/orders', label: 'Orders' },
+              { href: '/account/messages', label: 'Messages' },
+              { href: '/account/addresses', label: 'Addresses' },
+              { href: '/account/wishlists', label: 'Wish lists' },
+              { href: '/account/recently-viewed', label: 'Recently viewed' },
+              { href: '/account/settings', label: 'Account settings' },
+              { action: logout, name: 'Log out' },
+            ]}
+            trigger={
+              <Button
+                aria-label="Account"
+                className="p-3 text-black hover:bg-transparent hover:text-primary"
+                variant="subtle"
+              >
+                <User aria-hidden="true" />
+              </Button>
+            }
+          />
+        ) : (
+          <Link aria-label="Login" className="block p-3" href="/login">
+            <User />
+          </Link>
+        )
+      }
+      activeLocale={locale}
+      cart={
+        <p role="status">
+          <Suspense
+            fallback={
+              <CartLink>
+                <ShoppingCart aria-label="cart" />
+              </CartLink>
+            }
+          >
+            {cart}
+          </Suspense>
+        </p>
+      }
+      links={headerLinksTransformer(categoryTree)}
+      locales={localeLanguageRegionMap}
+      logo={data.settings ? logoTransformer(data.settings) : undefined}
+      search={<QuickSearch logo={data.settings ? logoTransformer(data.settings) : ''} />}
+    />
   );
 };

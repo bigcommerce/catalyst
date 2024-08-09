@@ -1,6 +1,5 @@
 import { FragmentOf } from '~/client/graphql';
-import { Checkbox } from '~/components/ui/checkbox';
-import { Label } from '~/components/ui/label';
+import { Checkbox, Label } from '~/components/ui/form';
 
 import { useProductFieldController } from '../../use-product-form';
 import { ErrorMessage } from '../shared/error-message';
@@ -34,6 +33,7 @@ export const CheckboxField = ({ option }: Props) => {
       </legend>
       <div className="flex items-center" key={option.entityId}>
         <Checkbox
+          error={Boolean(error)}
           id={`${option.entityId}`}
           name={field.name}
           onCheckedChange={(checked) => {
@@ -44,7 +44,6 @@ export const CheckboxField = ({ option }: Props) => {
             }
           }}
           value={field.value}
-          variant={error ? 'error' : undefined}
         />
         <Label className="mx-3" htmlFor={`${option.entityId}`}>
           {option.label}

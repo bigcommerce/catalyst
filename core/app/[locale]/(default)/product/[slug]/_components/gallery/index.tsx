@@ -37,7 +37,10 @@ export const Gallery = ({ product }: Props) => {
   return (
     <div className="-mx-6 mb-10 sm:-mx-0 md:mb-12">
       <div className="lg:sticky lg:top-0">
-        <ComponentsGallery defaultImageIndex={defaultImageIndex} images={images} />
+        <ComponentsGallery
+          defaultImageIndex={defaultImageIndex}
+          images={images.map((image) => ({ src: image.url, altText: image.altText }))}
+        />
       </div>
     </div>
   );

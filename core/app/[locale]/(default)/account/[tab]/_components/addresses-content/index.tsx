@@ -28,7 +28,6 @@ export const AddressesContent = async ({
 }: Props) => {
   const locale = await getLocale();
   const t = await getTranslations({ locale, namespace: 'Account.Home' });
-  const tPagination = await getTranslations({ locale, namespace: 'Pagination' });
   const { hasNextPage, hasPreviousPage, startCursor, endCursor } = pageInfo;
 
   if (customerAction === 'add-new-address') {
@@ -61,12 +60,10 @@ export const AddressesContent = async ({
       <AddressBook addressesCount={addressesCount} customerAddresses={addresses} key={endCursor}>
         <Pagination
           className="my-0 inline-flex justify-center text-center"
-          endCursor={endCursor}
+          endCursor={endCursor ?? undefined}
           hasNextPage={hasNextPage}
           hasPreviousPage={hasPreviousPage}
-          nextLabel={tPagination('next')}
-          prevLabel={tPagination('prev')}
-          startCursor={startCursor}
+          startCursor={startCursor ?? undefined}
         />
       </AddressBook>
     </>

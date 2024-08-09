@@ -1,14 +1,14 @@
 'use client';
 
 import * as PopoverPrimitive from '@radix-ui/react-popover';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
-import { localeLanguageRegionMap, locales, LocaleType } from '~/i18n';
+import { LocaleType } from '~/i18n';
 import { useRouter } from '~/navigation';
 
-import { Button } from '../ui/button';
-import { Select } from '../ui/select';
+import { Button } from '../button';
+import { Select } from '../form';
 
 type LanguagesByRegionMap = Record<
   string,
@@ -18,36 +18,47 @@ type LanguagesByRegionMap = Record<
   }
 >;
 
-export const LocaleSwitcher = () => {
-  const locale = useLocale();
+interface Locale {
+  id: string;
+  region: string;
+  language: string;
+  flag: string;
+}
+
+interface Props {
+  activeLocale: string;
+  locales: Locale[];
+}
+
+const LocaleSwitcher = ({ activeLocale, locales }: Props) => {
   const router = useRouter();
 
   const t = useTranslations('Header');
 
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  const selectedLocale = localeLanguageRegionMap[locale as LocaleType];
+  const selectedLocale = locales.find((locale) => locale.id === activeLocale);
 
-  const [regionSelected, setRegionSelected] = useState(selectedLocale.region);
-  const [languageSelected, setLanguageSelected] = useState(selectedLocale.language);
+  const [regionSelected, setRegionSelected] = useState(selectedLocale?.region || '');
+  const [languageSelected, setLanguageSelected] = useState(selectedLocale?.language || '');
 
   const languagesByRegionMap = useMemo(
     () =>
-      Object.values(localeLanguageRegionMap).reduce<LanguagesByRegionMap>(
-        (acc, { region, language, flag }) => {
-          if (!acc[region]) {
-            acc[region] = { languages: [language], flag };
-          }
+      locales.reduce<LanguagesByRegionMap>((acc, { region, language, flag }) => {
+        if (!acc[region]) {
+          acc[region] = { languages: [language], flag };
+        }
 
-          if (!acc[region].languages.includes(language)) {
-            acc[region].languages.push(language);
-          }
+        if (!acc[region].languages.includes(language)) {
+          acc[region].languages.push(language);
+        }
 
-          return acc;
-        },
-        {},
-      ),
-    [],
+        return acc;
+      }, {}),
+    [locales],
   );
+
+  if (!selectedLocale) {
+    return null;
+  }
 
   const regions = Object.keys(languagesByRegionMap);
 
@@ -68,17 +79,13 @@ export const LocaleSwitcher = () => {
   };
 
   const handleOnSubmit = () => {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    const keys = Object.keys(localeLanguageRegionMap) as LocaleType[];
-
-    const newLocale = keys.find(
-      (key) =>
-        localeLanguageRegionMap[key].language === languageSelected &&
-        localeLanguageRegionMap[key].region === regionSelected,
+    const newLocale = locales.find(
+      (locale) => locale.language === languageSelected && locale.region === regionSelected,
     );
 
     if (newLocale) {
-      router.replace('/', { locale: newLocale });
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      router.replace('/', { locale: newLocale.id as LocaleType });
     }
   };
 
@@ -124,3 +131,5 @@ export const LocaleSwitcher = () => {
     )
   );
 };
+
+export { LocaleSwitcher, type Locale };

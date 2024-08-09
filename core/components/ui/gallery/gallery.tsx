@@ -1,26 +1,27 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { ComponentPropsWithoutRef, useState } from 'react';
+import { useState } from 'react';
 
 import { BcImage } from '~/components/bc-image';
 import { cn } from '~/lib/utils';
 
 interface Image {
-  url: string;
   altText: string;
+  src: string;
 }
 
-interface Props extends ComponentPropsWithoutRef<'div'> {
-  images: Image[];
+interface Props {
+  className?: string;
   defaultImageIndex?: number;
+  images: Image[];
 }
 
-const Gallery = ({ className, children, images, defaultImageIndex = 0, ...props }: Props) => {
+const Gallery = ({ className, images, defaultImageIndex = 0 }: Props) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(defaultImageIndex);
 
   const selectedImage = images.length > 0 ? images[selectedImageIndex] : undefined;
 
   return (
-    <div aria-live="polite" className={className} {...props}>
+    <div aria-live="polite" className={className}>
       <figure className="relative aspect-square h-full max-h-[548px] w-full">
         {selectedImage ? (
           <BcImage
@@ -29,7 +30,7 @@ const Gallery = ({ className, children, images, defaultImageIndex = 0, ...props 
             fill
             priority={true}
             sizes="(min-width: 1024px) 50vw, 100vw"
-            src={selectedImage.url}
+            src={selectedImage.src}
           />
         ) : (
           <div className="flex aspect-square items-center justify-center bg-gray-200">
@@ -83,7 +84,7 @@ const Gallery = ({ className, children, images, defaultImageIndex = 0, ...props 
               aria-label="Enlarge product image"
               aria-pressed={isActive}
               className="inline-block h-12 w-12 flex-shrink-0 flex-grow-0 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 md:h-24 md:w-24"
-              key={image.url}
+              key={image.src}
               onClick={() => {
                 setSelectedImageIndex(index);
               }}
@@ -96,7 +97,7 @@ const Gallery = ({ className, children, images, defaultImageIndex = 0, ...props 
                 )}
                 height={94}
                 priority={true}
-                src={image.url}
+                src={image.src}
                 width={94}
               />
             </button>

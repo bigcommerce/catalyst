@@ -15,8 +15,8 @@ import {
   FieldMessage,
   Form,
   FormSubmit,
+  Input,
 } from '~/components/ui/form';
-import { Input } from '~/components/ui/input';
 import { Message } from '~/components/ui/message';
 
 import { useAccountStatusContext } from '../../../account/[tab]/_components/account-status-provider';
@@ -130,12 +130,12 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
           <FieldControl asChild>
             <Input
               autoComplete="email"
+              error={!isEmailValid}
               id="email"
               onChange={handleEmailValidation}
               onInvalid={handleEmailValidation}
               required
               type="email"
-              variant={!isEmailValid ? 'error' : undefined}
             />
           </FieldControl>
           <FieldMessage

@@ -1,9 +1,15 @@
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
-import { ComponentPropsWithoutRef, ElementRef, forwardRef, useState } from 'react';
+import {
+  ComponentPropsWithoutRef,
+  ComponentPropsWithRef,
+  ElementRef,
+  forwardRef,
+  useState,
+} from 'react';
 import { DayPicker, DayPickerSingleProps } from 'react-day-picker';
 
-import { Input, InputProps } from '../input';
+import { Input } from '../input';
 
 const Calendar = ({ ...props }: ComponentPropsWithoutRef<typeof DayPicker>) => {
   return (
@@ -38,22 +44,24 @@ const Calendar = ({ ...props }: ComponentPropsWithoutRef<typeof DayPicker>) => {
 
 Calendar.displayName = 'Calendar';
 
-type Props = Omit<InputProps, 'defaultValue'> & {
+interface Props extends Omit<ComponentPropsWithRef<'input'>, 'defaultValue' | 'onSelect'> {
   defaultValue?: string | Date;
+  error?: boolean;
   selected?: DayPickerSingleProps['selected'];
   onSelect?: DayPickerSingleProps['onSelect'];
   disabledDays?: DayPickerSingleProps['disabled'];
-};
+}
 
 const DatePicker = forwardRef<ElementRef<'input'>, Props>(
   (
     {
       defaultValue,
       disabledDays,
-      selected,
+      error = false,
       onSelect,
       placeholder = 'MM/DD/YYYY',
       required,
+      selected,
       ...props
     },
     ref,
@@ -69,6 +77,7 @@ const DatePicker = forwardRef<ElementRef<'input'>, Props>(
       <PopoverPrimitive.Root>
         <PopoverPrimitive.Trigger asChild>
           <Input
+            error={error}
             icon={<CalendarIcon />}
             placeholder={placeholder}
             readOnly={true}

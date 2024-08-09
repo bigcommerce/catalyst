@@ -1,8 +1,7 @@
 import { useFormatter } from 'next-intl';
 
 import { FragmentOf } from '~/client/graphql';
-import { DatePicker } from '~/components/ui/date-picker';
-import { Label } from '~/components/ui/label';
+import { DatePicker, Label } from '~/components/ui/form';
 
 import { useProductFieldController } from '../../use-product-form';
 import { ErrorMessage } from '../shared/error-message';
@@ -60,10 +59,10 @@ export const DateField = ({ option }: Props) => {
       </Label>
       <DatePicker
         disabledDays={disabledDays}
+        error={Boolean(error)}
         id={`${option.entityId}`}
         onSelect={field.onChange}
         selected={field.value ? new Date(field.value) : undefined}
-        variant={error && 'error'}
       />
       {error && <ErrorMessage>{error.message}</ErrorMessage>}
     </div>

@@ -22,7 +22,6 @@ export const metadata = {
 
 export default async function Search({ params: { locale }, searchParams }: Props) {
   const t = await getTranslations('Search');
-  const tPagination = await getTranslations({ locale, namespace: 'Pagination' });
 
   const messages = await getMessages({ locale });
   const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : undefined;
@@ -115,12 +114,10 @@ export default async function Search({ params: { locale }, searchParams }: Props
             </div>
 
             <Pagination
-              endCursor={endCursor}
+              endCursor={endCursor ?? undefined}
               hasNextPage={hasNextPage}
               hasPreviousPage={hasPreviousPage}
-              nextLabel={tPagination('next')}
-              prevLabel={tPagination('prev')}
-              startCursor={startCursor}
+              startCursor={startCursor ?? undefined}
             />
           </section>
         </div>

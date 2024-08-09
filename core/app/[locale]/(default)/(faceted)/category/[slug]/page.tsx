@@ -51,7 +51,6 @@ export default async function Category({ params: { locale, slug }, searchParams 
   unstable_setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: 'Category' });
-  const tPagination = await getTranslations({ locale, namespace: 'Pagination' });
   const messages = await getMessages({ locale });
 
   const categoryId = Number(slug);
@@ -132,12 +131,10 @@ export default async function Category({ params: { locale, slug }, searchParams 
             </div>
 
             <Pagination
-              endCursor={endCursor}
+              endCursor={endCursor ?? undefined}
               hasNextPage={hasNextPage}
               hasPreviousPage={hasPreviousPage}
-              nextLabel={tPagination('next')}
-              prevLabel={tPagination('prev')}
-              startCursor={startCursor}
+              startCursor={startCursor ?? undefined}
             />
           </section>
         </div>

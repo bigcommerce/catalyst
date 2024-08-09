@@ -2,21 +2,23 @@ import { createContext, PropsWithChildren, useContext, useEffect, useState } fro
 
 import { CompareDrawer } from './compare-drawer';
 
-interface CheckedProduct {
-  id: number;
+interface Image {
+  altText: string;
+  src: string;
+}
+
+interface Product {
+  id: string;
   name: string;
-  image?: {
-    altText?: string;
-    url?: string;
-  } | null;
+  image?: Image;
 }
 
 const CompareDrawerContext = createContext<{
-  products: CheckedProduct[];
-  setProducts: (products: CheckedProduct[]) => void;
+  products: Product[];
+  setProducts: (products: Product[]) => void;
 } | null>(null);
 
-const isCheckedProducts = (products: unknown): products is CheckedProduct[] => {
+const isCheckedProducts = (products: unknown): products is Product[] => {
   return (
     Array.isArray(products) &&
     products.every((product) => product !== null && typeof product === 'object' && 'id' in product)
@@ -24,7 +26,7 @@ const isCheckedProducts = (products: unknown): products is CheckedProduct[] => {
 };
 
 const CompareDrawerProvider = ({ children }: PropsWithChildren) => {
-  const [products, setProducts] = useState<CheckedProduct[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const stringProducts = sessionStorage.getItem('compareProducts');
@@ -64,4 +66,4 @@ function useCompareDrawerContext() {
   return context;
 }
 
-export { CompareDrawerProvider, useCompareDrawerContext, type CheckedProduct };
+export { CompareDrawerProvider, useCompareDrawerContext, type Product };

@@ -13,8 +13,8 @@ import {
   FieldMessage,
   Form,
   FormSubmit,
+  Input,
 } from '~/components/ui/form';
-import { Input } from '~/components/ui/input';
 import { Message } from '~/components/ui/message';
 
 import { useAccountStatusContext } from '../../account/[tab]/_components/account-status-provider';
@@ -71,14 +71,8 @@ export const LoginForm = () => {
       )}
 
       {isFormInvalid && (
-        <Message
-          aria-labelledby="error-message"
-          aria-live="polite"
-          className="mb-8 lg:col-span-2"
-          role="region"
-          variant="error"
-        >
-          <p id="error-message">{t('Form.errorMessage')}</p>
+        <Message className="mb-8 lg:col-span-2" variant="error">
+          <p>{t('Form.errorMessage')}</p>
         </Message>
       )}
       <Form action={formAction} className="mb-14 flex flex-col gap-3 md:p-8 lg:p-0">
@@ -87,12 +81,12 @@ export const LoginForm = () => {
           <FieldControl asChild>
             <Input
               autoComplete="email"
+              error={!isEmailValid}
               id="email"
               onChange={handleInputValidation}
               onInvalid={handleInputValidation}
               required
               type="email"
-              variant={!isEmailValid ? 'error' : undefined}
             />
           </FieldControl>
           <FieldMessage
@@ -106,12 +100,12 @@ export const LoginForm = () => {
           <FieldLabel htmlFor="password">{t('Form.passwordLabel')}</FieldLabel>
           <FieldControl asChild>
             <Input
+              error={!isPasswordValid}
               id="password"
               onChange={handleInputValidation}
               onInvalid={handleInputValidation}
               required
               type="password"
-              variant={!isPasswordValid ? 'error' : undefined}
             />
           </FieldControl>
           <FieldMessage

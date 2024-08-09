@@ -1,8 +1,6 @@
 import { useTranslations } from 'next-intl';
 
-import { Field, FieldControl, FieldLabel } from '~/components/ui/form';
-import { Input } from '~/components/ui/input';
-import { Select } from '~/components/ui/select';
+import { Field, FieldControl, FieldLabel, Input, Select } from '~/components/ui/form';
 
 import { AddressFields } from '..';
 
@@ -35,10 +33,10 @@ export const PicklistOrText = ({ defaultValue, field, name, options }: PicklistO
           <Input id={`field-${field.entityId}`} type="text" />
         ) : (
           <Select
-            aria-label={t('stateProvincePrefix')}
             defaultValue={defaultValue}
             id={`field-${field.entityId}`}
             key={defaultValue}
+            label={t('stateProvincePrefix')}
             options={options.map(({ entityId, label }) => ({
               label,
               value: entityId.toString(),

@@ -1,10 +1,8 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
 
 import { BlogPostCard } from '~/components/blog-post-card';
-import { Link } from '~/components/link';
+import { Pagination } from '~/components/ui/pagination';
 import { LocaleType } from '~/i18n';
 
 import { getBlogPosts } from './page-data';
@@ -26,9 +24,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   };
 }
 
-export default async function BlogPostPage({ params: { locale }, searchParams }: Props) {
+export default async function BlogPostPage({ searchParams }: Props) {
   const blogPosts = await getBlogPosts(searchParams);
-  const t = await getTranslations({ locale, namespace: 'Pagination' });
 
   if (!blogPosts) {
     return notFound();
@@ -44,32 +41,12 @@ export default async function BlogPostPage({ params: { locale }, searchParams }:
         })}
       </div>
 
-      <nav aria-label="Pagination" className="mb-12 mt-10 flex justify-center text-primary">
-        {blogPosts.posts.pageInfo.hasPreviousPage ? (
-          <Link
-            className="focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-            href={`/blog?before=${String(blogPosts.posts.pageInfo.startCursor)}`}
-            scroll={false}
-          >
-            <span className="sr-only">{t('prev')}</span>
-            <ChevronLeft aria-hidden="true" className="inline-block h-8 w-8" />
-          </Link>
-        ) : (
-          <ChevronLeft aria-hidden="true" className="inline-block h-8 w-8 text-gray-200" />
-        )}
-        {blogPosts.posts.pageInfo.hasNextPage ? (
-          <Link
-            className="focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-            href={`/blog?after=${String(blogPosts.posts.pageInfo.endCursor)}`}
-            scroll={false}
-          >
-            <span className="sr-only">{t('next')}</span>
-            <ChevronRight aria-hidden="true" className="inline-block h-8 w-8" />
-          </Link>
-        ) : (
-          <ChevronRight aria-hidden="true" className="inline-block h-8 w-8 text-gray-200" />
-        )}
-      </nav>
+      <Pagination
+        endCursor={blogPosts.posts.pageInfo.endCursor ?? undefined}
+        hasNextPage={blogPosts.posts.pageInfo.hasNextPage}
+        hasPreviousPage={blogPosts.posts.pageInfo.hasPreviousPage}
+        startCursor={blogPosts.posts.pageInfo.startCursor ?? undefined}
+      />
     </div>
   );
 }

@@ -19,11 +19,11 @@ export const pricesTransformer = (
   if (isPriceRange) {
     return {
       type: 'range',
-      min: format.number(prices.priceRange.min.value, {
+      minValue: format.number(prices.priceRange.min.value, {
         style: 'currency',
         currency: prices.price.currencyCode,
       }),
-      max: format.number(prices.priceRange.max.value, {
+      maxValue: format.number(prices.priceRange.max.value, {
         style: 'currency',
         currency: prices.price.currencyCode,
       }),
@@ -33,36 +33,19 @@ export const pricesTransformer = (
   if (isSalePrice && prices.salePrice && prices.basePrice) {
     return {
       type: 'sale',
-      originalAmount: format.number(prices.basePrice.value, {
+      previousValue: format.number(prices.basePrice.value, {
         style: 'currency',
         currency: prices.price.currencyCode,
       }),
-      amount: format.number(prices.price.value, {
+      currentValue: format.number(prices.price.value, {
         style: 'currency',
         currency: prices.price.currencyCode,
       }),
-      msrp:
-        prices.retailPrice && prices.retailPrice.value !== prices.basePrice.value
-          ? format.number(prices.retailPrice.value, {
-              style: 'currency',
-              currency: prices.price.currencyCode,
-            })
-          : undefined,
     };
   }
 
-  return {
-    type: 'fixed',
-    amount: format.number(prices.price.value, {
-      style: 'currency',
-      currency: prices.price.currencyCode,
-    }),
-    msrp:
-      prices.retailPrice && prices.retailPrice.value !== prices.price.value
-        ? format.number(prices.retailPrice.value, {
-            style: 'currency',
-            currency: prices.price.currencyCode,
-          })
-        : undefined,
-  };
+  return format.number(prices.price.value, {
+    style: 'currency',
+    currency: prices.price.currencyCode,
+  });
 };

@@ -4,7 +4,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useTransition } from 'react';
 
-import { Select } from '~/components/ui/select';
+import { Select } from '~/components/ui/form';
 
 export function SortBy() {
   const router = useRouter();
@@ -29,7 +29,7 @@ export function SortBy() {
     <div className="order-2 min-w-[224px] md:order-3 md:w-auto">
       <span className="hidden" data-pending={isPending ? '' : undefined} />
       <Select
-        aria-label={t('ariaLabel')}
+        label={t('ariaLabel')}
         onValueChange={onSort}
         options={[
           { value: 'featured', label: t('featuredItems') },

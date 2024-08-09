@@ -14,8 +14,10 @@ export const searchResultsTransformer = (
 
     return {
       name: product.name,
-      path: product.path,
-      image: product.defaultImage ?? undefined,
+      href: product.path,
+      image: product.defaultImage
+        ? { src: product.defaultImage.url, altText: product.defaultImage.altText }
+        : undefined,
       price,
     };
   }),
@@ -30,7 +32,7 @@ export const searchResultsTransformer = (
             return categories;
           }, {}),
         ).map(([name, path]) => {
-          return { name, path };
+          return { label: name, href: path };
         })
       : [],
   brands:
@@ -44,7 +46,7 @@ export const searchResultsTransformer = (
             return brands;
           }, {}),
         ).map(([name, path]) => {
-          return { name, path };
+          return { label: name, href: path };
         })
       : [],
 });
