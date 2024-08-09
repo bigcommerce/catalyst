@@ -260,7 +260,6 @@
         "submit": "Create account",
         "submitting": "Creating account...",
         "recaptchaText": "Pass ReCAPTCHA check",
-        "successMessage": "Dear {firstName} {lastName}, your account was successfully created. Redirecting to account...",
         "stateProvincePrefix": "Choose state or province",
         "validationMessages": {
             "email": "Enter a valid email such as name@domain.com",

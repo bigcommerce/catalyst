@@ -14,9 +14,18 @@ test('Account login and logout', async ({ page }) => {
   await page.getByLabel('Email').fill(testAccountEmail);
   await page.getByLabel('Password').fill(testAccountPassword);
   await page.getByRole('button', { name: 'Log in' }).click();
+
+  await page.waitForURL('/account/');
+
   await expect(page.getByRole('heading', { name: 'My Account' })).toBeVisible();
 
   await page.getByLabel('Account').click();
+
+  await expect(page.getByRole('menu', { name: 'Account' })).toBeVisible();
+
   await page.getByRole('menuitem', { name: 'Log out' }).click();
+
+  await page.waitForURL('/login/');
+
   await expect(page.getByRole('heading', { name: 'Log in' })).toBeVisible();
 });

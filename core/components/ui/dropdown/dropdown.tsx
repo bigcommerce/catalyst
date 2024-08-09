@@ -37,17 +37,17 @@ const Dropdown = ({ align = 'center', className, items, sideOffset = 4, trigger 
                 </Link>
               </DropdownMenu.Item>
             ) : (
-              <form action={item.action} key={item.name}>
-                <DropdownMenu.Item asChild>
+              <DropdownMenu.Item asChild key={item.name}>
+                <form action={item.action} className="hover:focus-visible:ring-0">
                   <Button
-                    className="justify-start p-3 hover:bg-transparent hover:text-primary hover:focus-visible:ring-0"
+                    className="justify-start p-3 hover:bg-transparent hover:text-primary"
                     type="submit"
                     variant="subtle"
                   >
                     {item.name}
                   </Button>
-                </DropdownMenu.Item>
-              </form>
+                </form>
+              </DropdownMenu.Item>
             ),
           )}
         </DropdownMenu.Content>
