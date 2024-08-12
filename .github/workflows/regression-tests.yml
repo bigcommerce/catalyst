@@ -15,9 +15,6 @@ jobs:
     name: Lighthouse Audit
     timeout-minutes: 30
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: read
     if: ${{ contains(fromJson('["Production – catalyst-latest", "Preview – catalyst-latest"]'), github.event.deployment_status.environment) }}
 
     steps:
@@ -95,7 +92,7 @@ jobs:
         with:
           recreate: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          number: ${{ fromJson(steps.find_pull_request.outputs.result).number }}
+          number: ${{ steps.find_pull_request.outputs.result && fromJson(steps.find_pull_request.outputs.result).number }}
           header: lighthouse
           message: |
             # ⚡️🏠 Lighthouse report
@@ -114,9 +111,6 @@ jobs:
     name: Playwright UI Tests
     timeout-minutes: 30
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: read
     if: ${{ contains(fromJson('["Production – catalyst-latest", "Preview – catalyst-latest"]'), github.event.deployment_status.environment) }}
 
     steps:
@@ -184,9 +178,6 @@ jobs:
     name: Playwright Visual Regression Tests
     timeout-minutes: 30
     runs-on: macos-14
-    permissions:
-      contents: read
-      pull-requests: read
     if: ${{ contains(fromJson('["Production – catalyst-latest", "Preview – catalyst-latest"]'), github.event.deployment_status.environment) }}
 
     steps:
