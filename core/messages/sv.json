@@ -260,7 +260,6 @@
             "submit": "Skapa konto",
             "submitting": "Skapar konto...",
             "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
-            "successMessage": "Bästa {firstName} {lastName}, ditt konto har skapats. Omdirigering till konto...",
             "stateProvincePrefix": "Välj delstat eller provins",
             "validationMessages": {
                 "email": "Ange en giltig e-postadress, t.ex. namn@domän.com",
@@ -368,8 +367,8 @@
     },
     "Header": {
         "account": "Ditt konto",
-        "chooseCountryAndLanguage": "Choose your country and language",
-        "goToSite": "Go to site"
+        "chooseCountryAndLanguage": "Välj land och språk",
+        "goToSite": "Gå till webbplatsen"
     },
     "Pagination": {
         "next": "Nästa",

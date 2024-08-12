@@ -260,7 +260,6 @@
             "submit": "Crear cuenta",
             "submitting": "Creando cuenta…",
             "recaptchaText": "Pasar la comprobación de ReCAPTCHA",
-            "successMessage": "Estimado(a) {firstName} {lastName}: Tu cuenta se creó correctamente. Redirigiendo a tu cuenta…",
             "stateProvincePrefix": "Elige un estado o una provincia",
             "validationMessages": {
                 "email": "Ingresa un correo electrónico válido, como nombre@dominio.com",
@@ -368,8 +367,8 @@
     },
     "Header": {
         "account": "Tu cuenta",
-        "chooseCountryAndLanguage": "Choose your country and language",
-        "goToSite": "Go to site"
+        "chooseCountryAndLanguage": "Elige tu país y tu idioma",
+        "goToSite": "Ve al sitio"
     },
     "Pagination": {
         "next": "Siguiente",
