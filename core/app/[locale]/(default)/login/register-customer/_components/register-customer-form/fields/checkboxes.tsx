@@ -1,9 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Checkbox } from '~/components/ui/checkbox';
-import { Field, FieldLabel, FieldMessage } from '~/components/ui/form';
-import { Label } from '~/components/ui/label';
+import { Checkbox, Field, FieldLabel, FieldMessage, Label } from '~/components/ui/form';
 
 import { AddressFields } from '..';
 
@@ -80,6 +78,7 @@ export const Checkboxes = ({
                 <Checkbox
                   aria-labelledby={`${entityId}`}
                   checked={checkboxValues.includes(Number(entityId))}
+                  error={validationError}
                   id={optionId}
                   name={name}
                   onCheckedChange={(checked: boolean) => {
@@ -93,7 +92,6 @@ export const Checkboxes = ({
                   }}
                   required={field.isRequired && checkboxValues.length === 0 ? true : undefined}
                   value={entityId}
-                  variant={validationError ? 'error' : undefined}
                 />
                 <Label
                   className="cursor-pointer ps-3 font-normal"

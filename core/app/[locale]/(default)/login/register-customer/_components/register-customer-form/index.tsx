@@ -13,7 +13,7 @@ import {
   createPreSubmitPicklistValidationHandler,
   createRadioButtonsValidationHandler,
   isAddressOrAccountFormField,
-} from '~/app/[locale]/(default)/account/[tab]/_components/addresses-content/address-field-handlers';
+} from '~/app/[locale]/(default)/account/(tabs)/addresses/_components/address-field-handlers';
 import { getRegisterCustomerQuery } from '~/app/[locale]/(default)/login/register-customer/page-data';
 import { ExistingResultType } from '~/client/util';
 import { Button } from '~/components/ui/button';

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
+import { parseAccountFormData } from '~/app/[locale]/(default)/login/register-customer/_components/register-customer-form/fields/parse-fields';
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
@@ -37,9 +38,7 @@ const UpdateCustomerAddressMutation = graphql(`
 `);
 
 type Variables = VariablesOf<typeof UpdateCustomerAddressMutation>;
-type UpdateCustomerAddressInput = Variables['input'];
-
-import { parseAccountFormData } from '../../../login/register-customer/_components/register-customer-form/fields/parse-fields';
+export type UpdateCustomerAddressInput = Variables['input'];
 
 const isUpdateCustomerAddressInput = (
   data: unknown,

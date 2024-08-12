@@ -71,7 +71,7 @@ export const DateField = ({
   return (
     <Field className="relative space-y-2 pb-7" name={name}>
       <fieldset className="space-y-2">
-        <FieldLabel htmlFor={name} isRequired={field.isRequired}>
+        <FieldLabel className="font-semibold" htmlFor={name} isRequired={field.isRequired}>
           {field.label}
         </FieldLabel>
         <input

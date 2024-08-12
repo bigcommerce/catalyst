@@ -52,7 +52,11 @@ export const Picklist = ({
 
   return (
     <Field className="relative space-y-2" name={name}>
-      <FieldLabel htmlFor={`field-${field.entityId}`} isRequired={field.isRequired}>
+      <FieldLabel
+        className="font-semibold"
+        htmlFor={`field-${field.entityId}`}
+        isRequired={field.isRequired}
+      >
         {field.label}
       </FieldLabel>
       <FieldControl asChild>
@@ -70,7 +74,11 @@ export const Picklist = ({
             label,
             value: entityId.toString(),
           }))}
-          placeholder={<span className="truncate">{field.choosePrefix}</span>}
+          placeholder={
+            <span className="absolute inset-0 inline-flex w-5/6 items-center truncate ps-4">
+              {field.choosePrefix}
+            </span>
+          }
           required={field.isRequired}
         />
       </FieldControl>

@@ -1,4 +1,4 @@
-import { UpdateCustomerAddressInput } from '~/client/mutations/update-customer-address';
+import { UpdateCustomerAddressInput } from '~/app/[locale]/(default)/account/(tabs)/addresses/_actions/update-address';
 
 type FormFieldsType = UpdateCustomerAddressInput['data']['formFields'];
 

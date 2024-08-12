@@ -1,9 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { ChangeEvent } from 'react';
 
-import { Field, FieldLabel, FieldMessage } from '~/components/ui/form';
-import { Label } from '~/components/ui/label';
-import { RadioGroup, RadioItem } from '~/components/ui/radio-group';
+import { Field, FieldLabel, FieldMessage, RadioGroup } from '~/components/ui/form';
 
 import { AddressFields } from '..';
 
@@ -33,39 +31,27 @@ export const RadioButtons = ({
   return (
     <Field className="relative space-y-2" name={name}>
       <fieldset>
+        <FieldLabel asChild id={name}>
+          <legend className="mb-2.5 inline-flex w-full items-center justify-between text-base font-semibold">
+            <span>{field.label}</span>
+            {field.isRequired && (
+              <span className="text-xs font-normal text-gray-500">Required</span>
+            )}
+          </legend>
+        </FieldLabel>
         <RadioGroup
           aria-labelledby={name}
           defaultValue={defaultValue}
+          error={validationError}
+          items={field.options.map(({ label, entityId }) => ({
+            label,
+            value: entityId.toString(),
+          }))}
           name={name}
           onChange={onChange}
           onInvalid={onChange}
           required={field.isRequired}
-        >
-          <FieldLabel asChild id={name}>
-            <legend className="mb-2.5 inline-flex w-full items-center justify-between text-base font-semibold">
-              <span>{field.label}</span>
-              {field.isRequired && (
-                <span className="text-xs font-normal text-gray-500">Required</span>
-              )}
-            </legend>
-          </FieldLabel>
-          {field.options.map((option) => {
-            const itemId = option.entityId;
-
-            return (
-              <div className="mb-2" key={itemId}>
-                <Label className="flex w-full cursor-pointer gap-3 ps-4 font-normal">
-                  <RadioItem
-                    id={`${itemId}`}
-                    value={`${itemId}`}
-                    variant={validationError ? 'error' : undefined}
-                  />
-                  <p>{option.label}</p>
-                </Label>
-              </div>
-            );
-          })}
-        </RadioGroup>
+        />
         <div className="relative h-7">
           {validationError && (
             <FieldMessage className="inline-flex w-full text-xs font-normal text-error-secondary">

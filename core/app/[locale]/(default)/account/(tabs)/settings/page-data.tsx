@@ -1,3 +1,4 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
@@ -6,7 +7,6 @@ import { FormFieldsFragment } from '~/client/fragments/form-fields';
 import { FORM_FIELDS_VALUES_FRAGMENT } from '~/client/fragments/form-fields-values';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 
 const CustomerSettingsQuery = graphql(
   `
