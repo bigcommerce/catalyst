@@ -89,10 +89,11 @@ jobs:
       - name: Add comment to PR
         id: comment_to_pr
         uses: marocchino/sticky-pull-request-comment@v2.9.0
+        if: ${{ steps.find_pull_request.outputs.result }}
         with:
           recreate: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          number: ${{ steps.find_pull_request.outputs.result && fromJson(steps.find_pull_request.outputs.result).number }}
+          number: ${{ fromJson(steps.find_pull_request.outputs.result).number }}
           header: lighthouse
           message: |
             # ⚡️🏠 Lighthouse report
