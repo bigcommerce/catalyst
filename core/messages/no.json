@@ -260,7 +260,6 @@
             "submit": "Opprett konto",
             "submitting": "Oppretter konto …",
             "recaptchaText": "Bestå reCAPTCHA-sjekk",
-            "successMessage": "{firstName} {lastName}, kontoen din ble opprettet. Omdirigerer til konto …",
             "stateProvincePrefix": "Velg et fylke",
             "validationMessages": {
                 "email": "Angi en gyldig e-postadresse, for eksempel navn@domene.com",
@@ -368,8 +367,8 @@
     },
     "Header": {
         "account": "Kontoen din",
-        "chooseCountryAndLanguage": "Choose your country and language",
-        "goToSite": "Go to site"
+        "chooseCountryAndLanguage": "Velg land og språk",
+        "goToSite": "Gå til nettstedet"
     },
     "Pagination": {
         "next": "Neste",

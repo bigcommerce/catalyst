@@ -260,7 +260,6 @@
             "submit": "Account aanmaken",
             "submitting": "Account aanmaken...",
             "recaptchaText": "reCAPTCHA-check doorstaan",
-            "successMessage": "Beste {firstName} {lastName}, je account is aangemaakt! Je wordt doorgestuurd naar je account...",
             "stateProvincePrefix": "Kies een staat/provincie",
             "validationMessages": {
                 "email": "Voer een geldig e-mailadres in, zoals naam@domein.com",
@@ -368,8 +367,8 @@
     },
     "Header": {
         "account": "Uw account",
-        "chooseCountryAndLanguage": "Choose your country and language",
-        "goToSite": "Go to site"
+        "chooseCountryAndLanguage": "Kies je land en taal",
+        "goToSite": "Ga naar de site"
     },
     "Pagination": {
         "next": "Volgende",
