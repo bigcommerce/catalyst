@@ -7,7 +7,6 @@ import { getChannelIdFromLocale } from '~/channels.config';
 import { backendUserAgent } from '../userAgent';
 
 export const client = createClient({
-  customerImpersonationToken: process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN ?? '',
   storefrontToken: process.env.BIGCOMMERCE_STOREFRONT_TOKEN ?? '',
   xAuthToken: process.env.BIGCOMMERCE_ACCESS_TOKEN ?? '',
   storeHash: process.env.BIGCOMMERCE_STORE_HASH ?? '',
