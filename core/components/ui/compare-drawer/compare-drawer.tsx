@@ -3,7 +3,7 @@ import { ChevronDown, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { BcImage } from '~/components/bc-image';
-import { Link } from '~/components/link';
+import { Link as CustomLink } from '~/components/link';
 import { usePathname } from '~/navigation';
 
 import { Button } from '../button';
@@ -18,9 +18,9 @@ const CompareLink = ({ products }: { products: Product[] }) => {
       asChild
       className="me-4 h-12 w-auto grow whitespace-nowrap px-8 hover:text-white md:grow-0"
     >
-      <Link href={`/compare?ids=${products.map(({ id }) => id).join(',')}`}>
+      <CustomLink href={`/compare?ids=${products.map(({ id }) => id).join(',')}`}>
         {t('compareButton', { products: products.length })}
-      </Link>
+      </CustomLink>
     </Button>
   );
 };

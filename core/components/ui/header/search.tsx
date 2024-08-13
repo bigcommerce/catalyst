@@ -7,7 +7,7 @@ import { Search as SearchIcon, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { BcImage } from '~/components/bc-image';
-import { Link } from '~/components/link';
+import { Link as CustomLink } from '~/components/link';
 import { cn } from '~/lib/utils';
 
 import { Button } from '../button';
@@ -120,7 +120,7 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
 
             <div className="grid h-[92px] w-full grid-cols-5 items-center">
               <div className="me-2 hidden lg:block lg:justify-self-start">
-                <Link className="overflow-hidden text-ellipsis py-3" href="/">
+                <CustomLink className="overflow-hidden text-ellipsis py-3" href="/">
                   {typeof logo === 'object' ? (
                     <BcImage
                       alt={logo.altText}
@@ -133,7 +133,7 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
                   ) : (
                     <span className="truncate text-2xl font-black">{logo}</span>
                   )}
-                </Link>
+                </CustomLink>
               </div>
               <Form.Root
                 action="/search"

@@ -5,13 +5,13 @@ import { getMessages } from 'next-intl/server';
 import { ComponentPropsWithoutRef, ReactNode } from 'react';
 
 import { BcImage } from '~/components/bc-image';
-import { Link } from '~/components/link';
+import { Link as CustomLink } from '~/components/link';
 import { cn } from '~/lib/utils';
 
 import { type Locale, LocaleSwitcher } from './locale-switcher';
 import { MobileNav } from './mobile-nav';
 
-interface LinkType {
+interface Link {
   label: string;
   href: string;
 }
@@ -19,7 +19,7 @@ interface LinkType {
 interface Group {
   label: string;
   href: string;
-  links?: LinkType[];
+  links?: Link[];
 }
 
 interface Image {
@@ -59,7 +59,7 @@ const Header = async ({
   return (
     <div className={cn('relative', className)}>
       <header className="flex h-[92px] items-center justify-between gap-1 overflow-y-visible bg-white px-4 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0">
-        <Link className="overflow-hidden text-ellipsis py-3" href="/">
+        <CustomLink className="overflow-hidden text-ellipsis py-3" href="/">
           {typeof logo === 'object' ? (
             <BcImage
               alt={logo.altText}
@@ -72,7 +72,7 @@ const Header = async ({
           ) : (
             <span className="truncate text-2xl font-black">{logo}</span>
           )}
-        </Link>
+        </CustomLink>
 
         <NavigationMenuPrimitive.Root className="hidden lg:block">
           <NavigationMenuPrimitive.List className="flex items-center gap-2 lg:gap-4">
@@ -80,9 +80,9 @@ const Header = async ({
               link.groups && link.groups.length > 0 ? (
                 <NavigationMenuPrimitive.Item key={link.href}>
                   <NavigationMenuPrimitive.Trigger className="group/button flex items-center font-semibold hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20">
-                    <Link className="p-3 font-semibold" href={link.href}>
+                    <CustomLink className="p-3 font-semibold" href={link.href}>
                       {link.label}
-                    </Link>
+                    </CustomLink>
                     <ChevronDown
                       aria-hidden="true"
                       className="cursor-pointer transition duration-200 group-data-[state=open]/button:-rotate-180"
@@ -93,9 +93,9 @@ const Header = async ({
                       <ul className="flex flex-col" key={group.href}>
                         <li>
                           <NavigationMenuPrimitive.Link asChild>
-                            <Link className="block p-3 font-semibold" href={group.href}>
+                            <CustomLink className="block p-3 font-semibold" href={group.href}>
                               {group.label}
-                            </Link>
+                            </CustomLink>
                           </NavigationMenuPrimitive.Link>
                         </li>
                         {group.links &&
@@ -103,9 +103,9 @@ const Header = async ({
                           group.links.map((nestedLink) => (
                             <li key={nestedLink.href}>
                               <NavigationMenuPrimitive.Link asChild>
-                                <Link className="block p-3" href={nestedLink.href}>
+                                <CustomLink className="block p-3" href={nestedLink.href}>
                                   {nestedLink.label}
-                                </Link>
+                                </CustomLink>
                               </NavigationMenuPrimitive.Link>
                             </li>
                           ))}
@@ -116,9 +116,9 @@ const Header = async ({
               ) : (
                 <NavigationMenuPrimitive.Item key={link.href}>
                   <NavigationMenuPrimitive.Link asChild>
-                    <Link className="p-3 font-semibold" href={link.href}>
+                    <CustomLink className="p-3 font-semibold" href={link.href}>
                       {link.label}
-                    </Link>
+                    </CustomLink>
                   </NavigationMenuPrimitive.Link>
                 </NavigationMenuPrimitive.Item>
               ),

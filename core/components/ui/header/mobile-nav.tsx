@@ -6,7 +6,7 @@ import { ChevronDown, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 
 import { BcImage } from '~/components/bc-image';
-import { Link } from '~/components/link';
+import { Link as CustomLink } from '~/components/link';
 
 import { Button } from '../button';
 
@@ -73,13 +73,13 @@ export const MobileNav = ({ links, logo }: Props) => {
                 link.groups && link.groups.length > 0 ? (
                   <NavigationMenuPrimitive.Item key={link.href}>
                     <NavigationMenuPrimitive.Trigger className="group/button flex w-full items-center justify-between p-3 ps-0 font-semibold hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20">
-                      <Link
+                      <CustomLink
                         className="font-semibold"
                         href={link.href}
                         onClick={() => setOpen(false)}
                       >
                         {link.label}
-                      </Link>
+                      </CustomLink>
                       <ChevronDown
                         aria-hidden="true"
                         className="cursor-pointer transition duration-200 group-data-[state=open]/button:-rotate-180"
@@ -90,13 +90,13 @@ export const MobileNav = ({ links, logo }: Props) => {
                         <ul className="flex flex-col" key={group.href}>
                           <li>
                             <NavigationMenuPrimitive.Link asChild>
-                              <Link
+                              <CustomLink
                                 className="block w-full p-3 ps-0 font-semibold"
                                 href={group.href}
                                 onClick={() => setOpen(false)}
                               >
                                 {group.label}
-                              </Link>
+                              </CustomLink>
                             </NavigationMenuPrimitive.Link>
                           </li>
                           {group.links &&
@@ -104,13 +104,13 @@ export const MobileNav = ({ links, logo }: Props) => {
                             group.links.map((nestedLink) => (
                               <li key={nestedLink.href}>
                                 <NavigationMenuPrimitive.Link asChild>
-                                  <Link
+                                  <CustomLink
                                     className="block w-full p-3 ps-0"
                                     href={nestedLink.href}
                                     onClick={() => setOpen(false)}
                                   >
                                     {nestedLink.label}
-                                  </Link>
+                                  </CustomLink>
                                 </NavigationMenuPrimitive.Link>
                               </li>
                             ))}
@@ -121,13 +121,13 @@ export const MobileNav = ({ links, logo }: Props) => {
                 ) : (
                   <NavigationMenuPrimitive.Item key={link.href}>
                     <NavigationMenuPrimitive.Link asChild>
-                      <Link
+                      <CustomLink
                         className="block w-full p-3 ps-0 font-semibold"
                         href={link.href}
                         onClick={() => setOpen(false)}
                       >
                         {link.label}
-                      </Link>
+                      </CustomLink>
                     </NavigationMenuPrimitive.Link>
                   </NavigationMenuPrimitive.Item>
                 ),
