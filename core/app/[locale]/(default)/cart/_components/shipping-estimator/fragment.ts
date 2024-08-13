@@ -37,6 +37,11 @@ export const GeographyFragment = graphql(
         entityId
         name
         code
+        statesOrProvinces {
+          entityId
+          name
+          abbreviation
+        }
       }
     }
   `,

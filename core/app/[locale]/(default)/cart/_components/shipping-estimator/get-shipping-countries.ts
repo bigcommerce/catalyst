@@ -10,6 +10,7 @@ interface GetShippingCountries {
 
 export const getShippingCountries = async ({ geography }: GetShippingCountries) => {
   const shippingZones = await getShippingZones();
+  const countries = geography.countries ?? [];
 
   const uniqueCountryZones = shippingZones.reduce<string[]>((zones, item) => {
     item.locations.forEach(({ country_iso2 }) => {
@@ -31,18 +32,9 @@ export const getShippingCountries = async ({ geography }: GetShippingCountries) 
     return zones;
   }, []);
 
-  const countries = geography.countries ?? [];
-  const shippingCountries = countries.flatMap((countryDetails) => {
+  return countries.filter((countryDetails) => {
     const isCountryInTheList = uniqueCountryZones.includes(countryDetails.code);
 
-    if (isCountryInTheList) {
-      const { entityId: id, name, code: countryCode } = countryDetails;
-
-      return { id, name, countryCode };
-    }
-
-    return [];
+    return isCountryInTheList;
   });
-
-  return shippingCountries;
 };
