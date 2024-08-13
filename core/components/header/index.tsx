@@ -4,10 +4,10 @@ import { ReactNode, Suspense } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
 import { FragmentOf, graphql } from '~/client/graphql';
+import { headerLinksTransformer } from '~/data-transformers/header-links-transformer';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 import { localeLanguageRegionMap } from '~/i18n';
 
-import { headerLinksTransformer } from '../../data-transformers/header-links-transformer';
 import { Link } from '../link';
 import { Button } from '../ui/button';
 import { Dropdown } from '../ui/dropdown';
