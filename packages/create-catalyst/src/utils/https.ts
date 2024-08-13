@@ -117,7 +117,6 @@ export class Https {
           'store_channel_settings',
           'store_sites',
           'store_storefront_api',
-          'store_storefront_api_customer_impersonation',
           'store_v2_content',
           'store_v2_information',
           'store_v2_products',
@@ -235,31 +234,6 @@ export class Https {
     }
   }
 
-  async customerImpersonationToken() {
-    const res = await this.api('/v3/storefront/api-token-customer-impersonation', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ expires_at: this.MAX_EPOC_EXPIRES_AT, channel_ids: [] }),
-    });
-
-    if (!res.ok) {
-      console.error(
-        chalk.red(
-          `\nPOST /v3/storefront/api-token-customer-impersonation failed: ${res.status} ${res.statusText}\n`,
-        ),
-      );
-      process.exit(1);
-    }
-
-    const BigCommerceCustomerImpersonationTokenSchema = z.object({
-      data: z.object({
-        token: z.string(),
-      }),
-    });
-
-    return parse(await res.json(), BigCommerceCustomerImpersonationTokenSchema);
-  }
-
   async storefrontToken() {
     const res = await this.api('/v3/storefront/api-token', {
       method: 'POST',
@@ -333,7 +307,7 @@ export class Https {
 
   async createChannel(channelName: string) {
     const res = await this.sampleDataApi('/v3/channels/catalyst', {
-      body: JSON.stringify({ name: channelName }),
+      body: JSON.stringify({ name: channelName, tokenType: 'normal' }),
     });
 
     if (!res.ok) {
