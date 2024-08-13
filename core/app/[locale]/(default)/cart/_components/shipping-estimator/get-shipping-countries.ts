@@ -9,7 +9,8 @@ interface GetShippingCountries {
 }
 
 export const getShippingCountries = async ({ geography }: GetShippingCountries) => {
-  const shippingZones = await getShippingZones();
+  const hasAccessToken = Boolean(process.env.BIGCOMMERCE_ACCESS_TOKEN);
+  const shippingZones = hasAccessToken ? await getShippingZones() : [];
   const countries = geography.countries ?? [];
 
   const uniqueCountryZones = shippingZones.reduce<string[]>((zones, item) => {
@@ -35,6 +36,6 @@ export const getShippingCountries = async ({ geography }: GetShippingCountries) 
   return countries.filter((countryDetails) => {
     const isCountryInTheList = uniqueCountryZones.includes(countryDetails.code);
 
-    return isCountryInTheList;
+    return isCountryInTheList || !hasAccessToken;
   });
 };
