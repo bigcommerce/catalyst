@@ -220,8 +220,8 @@ importers:
         specifier: ^2.10.2
         version: 2.10.2
       monocart-reporter:
-        specifier: ^2.6.3
-        version: 2.6.3
+        specifier: ^2.6.5
+        version: 2.6.5
       postcss:
         specifier: ^8.4.40
         version: 8.4.40
@@ -4277,8 +4277,8 @@ packages:
   monocart-locator@1.0.2:
     resolution: {integrity: sha512-v8W5hJLcWMIxLCcSi/MHh+VeefI+ycFmGz23Froer9QzWjrbg4J3gFJBuI/T1VLNoYxF47bVPPxq8ZlNX4gVCw==}
 
-  monocart-reporter@2.6.3:
-    resolution: {integrity: sha512-sUVwrjv8FjIUrB80KPx2wpDbgEKk7lg3BG+bMre2waZiGi6r8bcoU5D33htnZn6/S293YKUZCSePyrGYw2FyVw==}
+  monocart-reporter@2.6.5:
+    resolution: {integrity: sha512-eQ9aZo/YhvvvOj72qDX7rU9180+TlfBh104In4Wf5RC28iMTmfHqAZ1d6w8H4m8q4NZhPWwVXfUCiSVEfbE/SQ==}
     hasBin: true
 
   mri@1.2.0:
@@ -10417,7 +10417,7 @@ snapshots:
 
   monocart-locator@1.0.2: {}
 
-  monocart-reporter@2.6.3:
+  monocart-reporter@2.6.5:
     dependencies:
       console-grid: 2.2.2
       eight-colors: 1.3.0
