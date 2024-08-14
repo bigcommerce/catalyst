@@ -3,21 +3,23 @@
 import * as SheetPrimitive from '@radix-ui/react-dialog';
 import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu';
 import { ChevronDown, Menu, X } from 'lucide-react';
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 
-import { Link } from '~/components/link';
+import { BcImage } from '~/components/bc-image';
+import { Link as CustomLink } from '~/components/link';
 
 import { Button } from '../button';
 
-interface Children {
-  name: string;
-  path: string;
-  children?: Children[];
+import { Links } from './header';
+
+interface Image {
+  altText: string;
+  src: string;
 }
 
 interface Props {
-  links: Array<{ name: string; path: string; children?: Children[] }>;
-  logo: ReactNode;
+  links: Links[];
+  logo?: string | Image;
 }
 
 export const MobileNav = ({ links, logo }: Props) => {
@@ -45,7 +47,20 @@ export const MobileNav = ({ links, logo }: Props) => {
             <h2 className="sr-only">Navigation menu</h2>
           </SheetPrimitive.Title>
           <div className="flex h-[92px] items-center justify-between">
-            <div className="overflow-hidden text-ellipsis py-3">{logo}</div>
+            <div className="overflow-hidden text-ellipsis py-3">
+              {typeof logo === 'object' ? (
+                <BcImage
+                  alt={logo.altText}
+                  className="max-h-16 object-contain"
+                  height={32}
+                  priority
+                  src={logo.src}
+                  width={155}
+                />
+              ) : (
+                <span className="truncate text-2xl font-black">{logo}</span>
+              )}
+            </div>
             <SheetPrimitive.DialogClose>
               <div className="p-3">
                 <X className="h-6 w-6" />
@@ -55,47 +70,47 @@ export const MobileNav = ({ links, logo }: Props) => {
           <NavigationMenuPrimitive.Root orientation="vertical">
             <NavigationMenuPrimitive.List className="flex flex-col gap-2 pb-6 lg:gap-4">
               {links.map((link) =>
-                link.children && link.children.length > 0 ? (
-                  <NavigationMenuPrimitive.Item key={link.path}>
+                link.groups && link.groups.length > 0 ? (
+                  <NavigationMenuPrimitive.Item key={link.href}>
                     <NavigationMenuPrimitive.Trigger className="group/button flex w-full items-center justify-between p-3 ps-0 font-semibold hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20">
-                      <Link
+                      <CustomLink
                         className="font-semibold"
-                        href={link.path}
+                        href={link.href}
                         onClick={() => setOpen(false)}
                       >
-                        {link.name}
-                      </Link>
+                        {link.label}
+                      </CustomLink>
                       <ChevronDown
                         aria-hidden="true"
                         className="cursor-pointer transition duration-200 group-data-[state=open]/button:-rotate-180"
                       />
                     </NavigationMenuPrimitive.Trigger>
                     <NavigationMenuPrimitive.Content className="flex flex-col gap-4 py-2 ps-2 duration-200 animate-in slide-in-from-top-2">
-                      {link.children.map((child) => (
-                        <ul className="flex flex-col" key={child.path}>
+                      {link.groups.map((group) => (
+                        <ul className="flex flex-col" key={group.href}>
                           <li>
                             <NavigationMenuPrimitive.Link asChild>
-                              <Link
+                              <CustomLink
                                 className="block w-full p-3 ps-0 font-semibold"
-                                href={child.path}
+                                href={group.href}
                                 onClick={() => setOpen(false)}
                               >
-                                {child.name}
-                              </Link>
+                                {group.label}
+                              </CustomLink>
                             </NavigationMenuPrimitive.Link>
                           </li>
-                          {child.children &&
-                            child.children.length > 0 &&
-                            child.children.map((child2) => (
-                              <li key={child2.path}>
+                          {group.links &&
+                            group.links.length > 0 &&
+                            group.links.map((nestedLink) => (
+                              <li key={nestedLink.href}>
                                 <NavigationMenuPrimitive.Link asChild>
-                                  <Link
+                                  <CustomLink
                                     className="block w-full p-3 ps-0"
-                                    href={child2.path}
+                                    href={nestedLink.href}
                                     onClick={() => setOpen(false)}
                                   >
-                                    {child2.name}
-                                  </Link>
+                                    {nestedLink.label}
+                                  </CustomLink>
                                 </NavigationMenuPrimitive.Link>
                               </li>
                             ))}
@@ -104,15 +119,15 @@ export const MobileNav = ({ links, logo }: Props) => {
                     </NavigationMenuPrimitive.Content>
                   </NavigationMenuPrimitive.Item>
                 ) : (
-                  <NavigationMenuPrimitive.Item key={link.path}>
+                  <NavigationMenuPrimitive.Item key={link.href}>
                     <NavigationMenuPrimitive.Link asChild>
-                      <Link
+                      <CustomLink
                         className="block w-full p-3 ps-0 font-semibold"
-                        href={link.path}
+                        href={link.href}
                         onClick={() => setOpen(false)}
                       >
-                        {link.name}
-                      </Link>
+                        {link.label}
+                      </CustomLink>
                     </NavigationMenuPrimitive.Link>
                   </NavigationMenuPrimitive.Item>
                 ),

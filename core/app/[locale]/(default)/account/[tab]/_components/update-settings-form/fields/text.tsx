@@ -1,8 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { ChangeEvent } from 'react';
 
-import { Field, FieldControl, FieldLabel, FieldMessage } from '~/components/ui/form';
-import { Input } from '~/components/ui/input';
+import { Field, FieldControl, FieldLabel, FieldMessage, Input } from '~/components/ui/form';
 
 import { FieldNameToFieldId } from '..';
 
@@ -37,12 +36,12 @@ export const Text = ({
       <FieldControl asChild>
         <Input
           defaultValue={defaultValue}
+          error={isValid === false}
           id={`field-${entityId}`}
           onChange={isRequired ? onChange : undefined}
           onInvalid={isRequired ? onChange : undefined}
           required={isRequired}
           type={type}
-          variant={isValid === false ? 'error' : undefined}
         />
       </FieldControl>
       {isRequired && (

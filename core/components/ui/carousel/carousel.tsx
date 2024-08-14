@@ -1,26 +1,19 @@
 import useEmblaCarousel, { UseEmblaCarouselType } from 'embla-carousel-react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import {
-  ComponentPropsWithoutRef,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useState,
-} from 'react';
+import { ReactNode, useCallback, useEffect, useId, useMemo, useState } from 'react';
 
 import { cn } from '~/lib/utils';
 
 type CarouselApi = UseEmblaCarouselType[1];
 
-interface Props extends ComponentPropsWithoutRef<'div'> {
-  items: ReactNode[];
-  title: string;
+interface Props {
+  className?: string;
   pageSize?: 2 | 3 | 4;
+  products: ReactNode[];
+  title: string;
 }
 
-const Carousel = ({ className, children, pageSize = 4, title, items, ...props }: Props) => {
+const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props) => {
   const id = useId();
   const titleId = useId();
   const itemsPerGroup = pageSize;
@@ -30,21 +23,21 @@ const Carousel = ({ className, children, pageSize = 4, title, items, ...props }:
     axis: 'x',
   });
 
-  const groupedItems = useMemo(() => {
-    return items.reduce<ReactNode[][]>((batches, _, index) => {
+  const groupedProducts = useMemo(() => {
+    return products.reduce<ReactNode[][]>((batches, _, index) => {
       if (index % itemsPerGroup === 0) {
         batches.push([]);
       }
 
-      const item = items[index];
+      const product = products[index];
 
-      if (batches[batches.length - 1] && item) {
-        batches[batches.length - 1]?.push(item);
+      if (batches[batches.length - 1] && product) {
+        batches[batches.length - 1]?.push(product);
       }
 
       return batches;
     }, []);
-  }, [items, itemsPerGroup]);
+  }, [products, itemsPerGroup]);
 
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
@@ -146,15 +139,12 @@ const Carousel = ({ className, children, pageSize = 4, title, items, ...props }:
 
       <div className="-mx-2 overflow-hidden px-2" ref={carouselRef}>
         <div className="-mx-4 mb-16 mt-8 flex lg:mt-10">
-          {groupedItems.map((group, index) => (
+          {groupedProducts.map((group, index) => (
             <div
-              aria-label={`${index + 1} of ${groupedItems.length}`}
+              aria-label={`${index + 1} of ${groupedProducts.length}`}
               aria-roledescription="slide"
               className={cn(
-                'grid min-w-0 shrink-0 grow-0 basis-full grid-cols-2 gap-6 px-4 lg:gap-8',
-                pageSize === 2 && 'md:grid-cols-2',
-                pageSize === 3 && 'md:grid-cols-3',
-                pageSize === 4 && 'md:grid-cols-4',
+                'grid min-w-0 shrink-0 grow-0 basis-full grid-cols-2 gap-6 px-4 md:grid-cols-4 lg:gap-8',
                 !slidesInView.includes(index) && 'invisible',
               )}
               id={`${id}-slide-${index + 1}`}
@@ -175,7 +165,7 @@ const Carousel = ({ className, children, pageSize = 4, title, items, ...props }:
         )}
         role="tablist"
       >
-        {groupedItems.map((_, index) => (
+        {groupedProducts.map((_, index) => (
           <button
             aria-controls={`${id}-slide-${index + 1}`}
             aria-label={`Go to slide ${index + 1}`}

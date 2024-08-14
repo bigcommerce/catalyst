@@ -1,29 +1,30 @@
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
-import {
-  ComponentPropsWithoutRef,
-  ComponentPropsWithRef,
-  ElementRef,
-  forwardRef,
-  useId,
-} from 'react';
+import { ComponentPropsWithRef, ElementRef, forwardRef, useId } from 'react';
 
 import { BcImage } from '~/components/bc-image';
 import { cn } from '~/lib/utils';
 
 import { Label } from '../label';
 
-interface Item extends ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> {
+interface Image {
+  altText: string;
+  url: string;
+}
+
+interface Item {
   label: string;
-  defaultImage: { altText: string; url: string } | null;
-  onMouseEnter?: () => void;
+  image?: Image;
+  onMouseEnter: () => void;
+  value: string;
 }
 
 interface Props extends ComponentPropsWithRef<typeof RadioGroupPrimitive.Root> {
+  error?: boolean;
   items: Item[];
 }
 
 const PickList = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
-  ({ children, items, className, ...props }, ref) => {
+  ({ children, error = false, items, className, ...props }, ref) => {
     const id = useId();
 
     return (
@@ -33,7 +34,7 @@ const PickList = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
         {...props}
       >
         {items.map((item) => {
-          const { defaultImage, label, value, onMouseEnter, ...itemProps } = item;
+          const { image, label, value, onMouseEnter, ...itemProps } = item;
 
           return (
             <div
@@ -41,18 +42,22 @@ const PickList = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
               key={`${id}-${value}`}
               onMouseEnter={onMouseEnter}
             >
-              {Boolean(defaultImage) && (
+              {image && (
                 <BcImage
-                  alt={defaultImage?.altText || ''}
+                  alt={image.altText}
                   className="me-6"
                   height={48}
-                  src={defaultImage?.url || ''}
+                  src={image.url}
                   width={48}
                 />
               )}
               <RadioGroupPrimitive.Item
                 {...itemProps}
-                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-gray-200 hover:border-secondary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 focus-visible:hover:border-secondary disabled:pointer-events-none disabled:bg-gray-100 radix-state-checked:border-primary radix-state-checked:bg-primary radix-state-checked:hover:border-secondary radix-state-checked:hover:bg-secondary radix-state-checked:disabled:border-gray-400 radix-state-checked:disabled:bg-gray-400"
+                className={cn(
+                  'flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-gray-200 hover:border-secondary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 focus-visible:hover:border-secondary disabled:pointer-events-none disabled:bg-gray-100 radix-state-checked:border-primary radix-state-checked:bg-primary radix-state-checked:hover:border-secondary radix-state-checked:hover:bg-secondary radix-state-checked:disabled:border-gray-400 radix-state-checked:disabled:bg-gray-400',
+                  error &&
+                    'border-error-secondary hover:border-error focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 focus-visible:hover:border-error disabled:border-gray-200 radix-state-checked:border-error-secondary radix-state-checked:bg-error-secondary radix-state-checked:hover:border-error radix-state-checked:hover:bg-error',
+                )}
                 id={`${id}-${value}`}
                 value={value}
               >

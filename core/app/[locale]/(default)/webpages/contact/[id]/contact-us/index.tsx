@@ -14,10 +14,10 @@ import {
   FieldMessage,
   Form,
   FormSubmit,
+  Input,
+  TextArea,
 } from '~/components/ui/form';
-import { Input } from '~/components/ui/input';
 import { Message } from '~/components/ui/message';
-import { TextArea } from '~/components/ui/text-area';
 
 import { submitContactForm } from './_actions/submit-contact-form';
 import { ContactUsFragment } from './fragment';
@@ -157,12 +157,12 @@ export const ContactUs = ({ data }: Props) => {
             </FieldLabel>
             <FieldControl asChild>
               <Input
+                error={!isInputValid}
                 id="email"
                 onChange={handleInputValidation}
                 onInvalid={handleInputValidation}
                 required
                 type="email"
-                variant={!isInputValid ? 'error' : undefined}
               />
             </FieldControl>
             <FieldMessage
@@ -188,11 +188,11 @@ export const ContactUs = ({ data }: Props) => {
             </FieldLabel>
             <FieldControl asChild>
               <TextArea
+                error={!isTextFieldValid}
                 id="comments"
                 onChange={handleTextFieldValidation}
                 onInvalid={handleTextFieldValidation}
                 required
-                variant={!isTextFieldValid ? 'error' : undefined}
               />
             </FieldControl>
             <FieldMessage

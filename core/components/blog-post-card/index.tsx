@@ -29,11 +29,15 @@ export const BlogPostCard = async ({ data }: Props) => {
 
   return (
     <ComponentsBlogPostCard
-      author={data.author}
+      author={data.author ?? undefined}
       content={data.plainTextSummary}
       date={format.dateTime(new Date(data.publishedDate.utc))}
-      image={data.thumbnailImage}
-      link={{ href: `/blog/${data.entityId}` }}
+      href={`/blog/${data.entityId}`}
+      image={
+        data.thumbnailImage
+          ? { altText: data.thumbnailImage.altText, src: data.thumbnailImage.url }
+          : undefined
+      }
       title={data.name}
     />
   );

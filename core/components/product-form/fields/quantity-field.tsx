@@ -1,7 +1,6 @@
 import { useTranslations } from 'next-intl';
 
-import { Counter } from '~/components/ui/counter';
-import { Label } from '~/components/ui/label';
+import { Counter, Label } from '~/components/ui/form';
 
 import { useProductFieldController } from '../use-product-form';
 

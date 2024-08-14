@@ -1,48 +1,40 @@
+'use client';
+
 import * as SheetPrimitive from '@radix-ui/react-dialog';
 import * as Form from '@radix-ui/react-form';
 import debounce from 'lodash.debounce';
 import { Search as SearchIcon, X } from 'lucide-react';
-import { Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { BcImage } from '~/components/bc-image';
-import { Link } from '~/components/link';
+import { Link as CustomLink } from '~/components/link';
 import { cn } from '~/lib/utils';
 
 import { Button } from '../button';
+import { Price } from '../product-card';
 
 import { Input } from './input';
 
-type Price =
-  | {
-      type: 'range';
-      min: string;
-      max: string;
-    }
-  | {
-      type: 'fixed';
-      amount: string;
-      msrp?: string;
-    }
-  | { type: 'sale'; originalAmount: string; amount: string; msrp?: string };
+interface Image {
+  src: string;
+  altText: string;
+}
 
 interface Product {
-  path: string;
+  href: string;
   name: string;
   price?: Price;
-  image?: {
-    url: string;
-    altText: string;
-  };
+  image?: Image;
 }
 
 interface Category {
-  path: string;
-  name: string;
+  href: string;
+  label: string;
 }
 
 interface Brand {
-  path: string;
-  name: string;
+  href: string;
+  label: string;
 }
 
 interface SearchResults {
@@ -53,11 +45,8 @@ interface SearchResults {
 
 interface Props {
   initialTerm?: string;
-  logo: ReactNode;
-  onSearch: (
-    term: string,
-    setSearchResults: Dispatch<SetStateAction<SearchResults | null>>,
-  ) => Promise<void>;
+  logo: string | Image;
+  onSearch: (term: string) => Promise<SearchResults | null>;
 }
 
 const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
@@ -67,16 +56,32 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
   const [searchResults, setSearchResults] = useState<SearchResults | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const debouncedOnSearch = useMemo(() => debounce(onSearch, 1000), [onSearch]);
+  const debouncedOnSearch = useMemo(
+    () =>
+      debounce(async (query: string) => {
+        const results = await onSearch(query);
+
+        setSearchResults(results);
+      }, 1000),
+    [onSearch],
+  );
+
+  const fetchSearchResults = useCallback(
+    async (query: string) => {
+      await debouncedOnSearch(query);
+    },
+    [debouncedOnSearch],
+  );
 
   useEffect(() => {
     if (term.length < 3) {
       setSearchResults(null);
     } else {
       setPending(true);
-      void debouncedOnSearch(term, setSearchResults);
+
+      void fetchSearchResults(term);
     }
-  }, [term, debouncedOnSearch]);
+  }, [term, fetchSearchResults]);
 
   useEffect(() => {
     setPending(false);
@@ -115,9 +120,20 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
 
             <div className="grid h-[92px] w-full grid-cols-5 items-center">
               <div className="me-2 hidden lg:block lg:justify-self-start">
-                <Link className="overflow-hidden text-ellipsis py-3" href="/">
-                  {logo}
-                </Link>
+                <CustomLink className="overflow-hidden text-ellipsis py-3" href="/">
+                  {typeof logo === 'object' ? (
+                    <BcImage
+                      alt={logo.altText}
+                      className="max-h-16 object-contain"
+                      height={32}
+                      priority
+                      src={logo.src}
+                      width={155}
+                    />
+                  ) : (
+                    <span className="truncate text-2xl font-black">{logo}</span>
+                  )}
+                </CustomLink>
               </div>
               <Form.Root
                 action="/search"
@@ -159,14 +175,14 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
                     Categories
                   </h3>
                   <ul id="categories" role="listbox">
-                    {searchResults.categories.map(({ name, path }) => {
+                    {searchResults.categories.map(({ label, href }) => {
                       return (
-                        <li className="mb-3 last:mb-6" key={name}>
+                        <li className="mb-3 last:mb-6" key={label}>
                           <a
                             className="align-items mb-6 flex gap-x-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-                            href={path}
+                            href={href}
                           >
-                            {name}
+                            {label}
                           </a>
                         </li>
                       );
@@ -178,19 +194,19 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
                     Products
                   </h3>
                   <ul id="products" role="listbox">
-                    {searchResults.products.map(({ name, path, price, image }) => {
+                    {searchResults.products.map(({ name, href, price, image }) => {
                       return (
-                        <li key={path}>
+                        <li key={href}>
                           <a
                             className="align-items mb-6 flex gap-x-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-                            href={path}
+                            href={href}
                           >
                             {image ? (
                               <BcImage
                                 alt={image.altText}
                                 className="self-start object-contain"
                                 height={80}
-                                src={image.url}
+                                src={image.src}
                                 width={80}
                               />
                             ) : (
@@ -201,45 +217,30 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
 
                             <span className="flex flex-col">
                               <p className="text-lg font-bold lg:text-2xl">{name}</p>
-                              {price && (
-                                <p className="flex flex-col gap-1">
-                                  {price.type === 'range' && (
-                                    <span>
-                                      {price.min} - {price.max}
-                                    </span>
-                                  )}
+                              {Boolean(price) &&
+                                (typeof price === 'object' ? (
+                                  <p className="flex flex-col gap-1">
+                                    {price.type === 'range' && (
+                                      <span>
+                                        {price.minValue} - {price.maxValue}
+                                      </span>
+                                    )}
 
-                                  {price.type === 'fixed' && (
-                                    <>
-                                      {Boolean(price.msrp) && (
-                                        <span>
-                                          MSRP: <span className="line-through">{price.msrp}</span>
-                                        </span>
-                                      )}
-                                      <span>{price.amount}</span>
-                                    </>
-                                  )}
-
-                                  {price.type === 'sale' && (
-                                    <>
-                                      {Boolean(price.msrp) && (
-                                        <span>
-                                          MSRP: <span className="line-through">{price.msrp}</span>
-                                        </span>
-                                      )}
+                                    {price.type === 'sale' && (
                                       <>
                                         <span>
                                           Was:{' '}
                                           <span className="line-through">
-                                            {price.originalAmount}
+                                            {price.previousValue}
                                           </span>
                                         </span>
-                                        <span>Now: {price.amount}</span>
+                                        <span>Now: {price.currentValue}</span>
                                       </>
-                                    </>
-                                  )}
-                                </p>
-                              )}
+                                    )}
+                                  </p>
+                                ) : (
+                                  <span>{price}</span>
+                                ))}
                             </span>
                           </a>
                         </li>
@@ -252,14 +253,14 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
                     Brands
                   </h3>
                   <ul id="brands" role="listbox">
-                    {searchResults.brands.map(({ name, path }) => {
+                    {searchResults.brands.map(({ label, href }) => {
                       return (
-                        <li className="mb-3 last:mb-6" key={name}>
+                        <li className="mb-3 last:mb-6" key={label}>
                           <a
                             className="align-items mb-6 flex gap-x-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-                            href={path}
+                            href={href}
                           >
-                            {name}
+                            {label}
                           </a>
                         </li>
                       );
@@ -280,4 +281,4 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
   );
 };
 
-export { Search, type SearchResults, type Price };
+export { Search, type SearchResults };

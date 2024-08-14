@@ -8,9 +8,15 @@ import { getShippingCountries } from '~/app/[locale]/(default)/cart/_components/
 import { FragmentOf } from '~/client/graphql';
 import { ExistingResultType } from '~/client/util';
 import { Button } from '~/components/ui/button';
-import { Field, FieldControl, FieldLabel, Form, FormSubmit } from '~/components/ui/form';
-import { Input } from '~/components/ui/input';
-import { Select } from '~/components/ui/select';
+import {
+  Field,
+  FieldControl,
+  FieldLabel,
+  Form,
+  FormSubmit,
+  Input,
+  Select,
+} from '~/components/ui/form';
 import { cn } from '~/lib/utils';
 
 import { ShippingInfoFragment } from './fragment';

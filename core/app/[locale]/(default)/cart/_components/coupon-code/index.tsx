@@ -8,8 +8,7 @@ import { toast } from 'react-hot-toast';
 
 import { FragmentOf } from '~/client/graphql';
 import { Button } from '~/components/ui/button';
-import { Field, FieldControl, FieldMessage, Form, FormSubmit } from '~/components/ui/form';
-import { Input } from '~/components/ui/input';
+import { Field, FieldControl, FieldMessage, Form, FormSubmit, Input } from '~/components/ui/form';
 
 import { applyCouponCode } from './apply-coupon-code';
 import { CouponCodeFragment } from './fragment';

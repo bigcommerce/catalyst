@@ -3,14 +3,14 @@ import { ChevronDown, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { BcImage } from '~/components/bc-image';
-import { Link } from '~/components/link';
+import { Link as CustomLink } from '~/components/link';
 import { usePathname } from '~/navigation';
 
 import { Button } from '../button';
 
-import { type CheckedProduct, useCompareDrawerContext } from './context';
+import { type Product, useCompareDrawerContext } from './context';
 
-const CompareLink = ({ products }: { products: CheckedProduct[] }) => {
+const CompareLink = ({ products }: { products: Product[] }) => {
   const t = useTranslations('Providers.Compare');
 
   return (
@@ -18,14 +18,14 @@ const CompareLink = ({ products }: { products: CheckedProduct[] }) => {
       asChild
       className="me-4 h-12 w-auto grow whitespace-nowrap px-8 hover:text-white md:grow-0"
     >
-      <Link href={`/compare?ids=${products.map(({ id }) => id).join(',')}`}>
+      <CustomLink href={`/compare?ids=${products.map(({ id }) => id).join(',')}`}>
         {t('compareButton', { products: products.length })}
-      </Link>
+      </CustomLink>
     </Button>
   );
 };
 
-const Product = ({ product, onDismiss }: { product: CheckedProduct; onDismiss: () => void }) => {
+const Product = ({ product, onDismiss }: { product: Product; onDismiss: () => void }) => {
   const t = useTranslations('Providers.Compare');
 
   return (
@@ -35,10 +35,10 @@ const Product = ({ product, onDismiss }: { product: CheckedProduct; onDismiss: (
     >
       {product.image ? (
         <BcImage
-          alt={product.image.altText ?? product.name}
+          alt={product.image.altText}
           className="object-contain"
           height={48}
-          src={product.image.url ?? ''}
+          src={product.image.src}
           width={48}
         />
       ) : (

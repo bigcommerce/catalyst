@@ -83,7 +83,7 @@ export default async function BlogPostPage({ params: { blogId, locale } }: Props
       <div className="mb-10 flex">
         {blogPost.tags.map((tag) => (
           <Link className="me-3 block cursor-pointer" href={`/blog/tag/${tag}`} key={tag}>
-            <Tag tagContent={tag} />
+            <Tag content={tag} />
           </Link>
         ))}
       </div>

@@ -89,15 +89,15 @@ export const ProductCard = async ({
   return (
     <ComponentProductCard
       addToCart={showCart && <AddToCart data={product} />}
-      image={defaultImage}
+      href={path}
+      id={entityId.toString()}
+      image={defaultImage ? { src: defaultImage.url, altText: defaultImage.altText } : undefined}
       imagePriority={imagePriority}
       imageSize={imageSize}
-      link={path}
+      name={name}
       price={price}
-      productId={entityId}
       showCompare={showCompare}
       subtitle={brand?.name}
-      title={name}
     />
   );
 };

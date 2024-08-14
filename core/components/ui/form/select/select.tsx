@@ -1,44 +1,33 @@
 import * as SelectPrimitive from '@radix-ui/react-select';
 import { Check, ChevronDown, ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
-import {
-  ComponentPropsWithoutRef,
-  ComponentPropsWithRef,
-  ElementRef,
-  forwardRef,
-  useId,
-} from 'react';
+import { ComponentPropsWithRef, ElementRef, forwardRef, useId } from 'react';
 
 import { cn } from '~/lib/utils';
 
-interface Options extends ComponentPropsWithoutRef<typeof SelectPrimitive.Item> {
+interface Option {
   label: string;
+  value: string;
 }
 
 interface Props extends ComponentPropsWithRef<typeof SelectPrimitive.Root> {
-  'aria-label'?: string;
-  className?: string;
+  error?: boolean;
   id?: string;
-  options: Options[];
+  label?: string;
+  options: Option[];
   placeholder?: string;
-  variant?: 'success' | 'error';
 }
 
 const Select = forwardRef<ElementRef<typeof SelectPrimitive.Trigger>, Props>(
-  (
-    { 'aria-label': ariaLabel, children, id: triggerId, options, placeholder, variant, ...props },
-    ref,
-  ) => {
+  ({ children, id: triggerId, label, options, placeholder, error = false, ...props }, ref) => {
     const id = useId();
 
     return (
       <SelectPrimitive.Root {...props}>
         <SelectPrimitive.Trigger
-          aria-label={ariaLabel}
+          aria-label={label}
           className={cn(
             'group flex h-12 w-full items-center justify-between border-2 border-gray-200 px-4 py-3 text-base text-black hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200 data-[placeholder]:text-gray-500',
-            variant === 'success' &&
-              'border-success-secondary hover:border-success focus-visible:border-success-secondary focus-visible:ring-success-secondary/20 disabled:border-gray-200',
-            variant === 'error' &&
+            error &&
               'border-error-secondary hover:border-error focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 disabled:border-gray-200',
           )}
           id={triggerId}
@@ -60,7 +49,7 @@ const Select = forwardRef<ElementRef<typeof SelectPrimitive.Trigger>, Props>(
             </SelectPrimitive.ScrollUpButton>
             <SelectPrimitive.Viewport className="h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]">
               {options.map((option) => {
-                const { value, label, ...optionProps } = option;
+                const { value, label: optionLabel, ...optionProps } = option;
 
                 return (
                   <SelectPrimitive.Item
@@ -71,7 +60,7 @@ const Select = forwardRef<ElementRef<typeof SelectPrimitive.Trigger>, Props>(
                     }
                     value={value}
                   >
-                    <SelectPrimitive.ItemText>{label}</SelectPrimitive.ItemText>
+                    <SelectPrimitive.ItemText>{optionLabel}</SelectPrimitive.ItemText>
                     <SelectPrimitive.ItemIndicator>
                       <Check />
                     </SelectPrimitive.ItemIndicator>

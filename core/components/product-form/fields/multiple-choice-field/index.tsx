@@ -2,12 +2,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { FragmentOf } from '~/client/graphql';
-import { Label } from '~/components/ui/label';
-import { PickList } from '~/components/ui/pick-list';
-import { RadioGroup } from '~/components/ui/radio-group';
-import { RectangleList } from '~/components/ui/rectangle-list';
-import { Select } from '~/components/ui/select';
-import { Swatch } from '~/components/ui/swatch';
+import { Label, PickList, RadioGroup, RectangleList, Select, Swatch } from '~/components/ui/form';
 
 import { useProductFieldController } from '../../use-product-form';
 import { ErrorMessage } from '../shared/error-message';
@@ -75,19 +70,7 @@ export const MultipleChoiceField = ({ option }: Props) => {
           </Label>
           <Swatch
             aria-labelledby={`label-${option.entityId}`}
-            items={values
-              .filter((value) => '__typename' in value && value.__typename === 'SwatchOptionValue')
-              .map((value) => ({
-                label: value.label,
-                value: value.entityId.toString(),
-                variantColor: value.hexColors[0],
-                onMouseEnter: () => {
-                  handleMouseEnter({
-                    optionId: option.entityId,
-                    valueId: Number(value.entityId),
-                  });
-                },
-              }))}
+            error={Boolean(error)}
             name={field.name}
             onValueChange={(value) => {
               field.onChange(value);
@@ -97,6 +80,19 @@ export const MultipleChoiceField = ({ option }: Props) => {
                 valueId: Number(value),
               });
             }}
+            swatches={values
+              .filter((value) => '__typename' in value && value.__typename === 'SwatchOptionValue')
+              .map((value) => ({
+                label: value.label,
+                value: value.entityId.toString(),
+                color: value.hexColors[0],
+                onMouseEnter: () => {
+                  handleMouseEnter({
+                    optionId: option.entityId,
+                    valueId: Number(value.entityId),
+                  });
+                },
+              }))}
             value={field.value?.toString()}
           />
           {error && <ErrorMessage>{error.message}</ErrorMessage>}
@@ -111,6 +107,7 @@ export const MultipleChoiceField = ({ option }: Props) => {
           </Label>
           <RectangleList
             aria-labelledby={`label-${option.entityId}`}
+            error={Boolean(error)}
             items={values.map((value) => ({
               label: value.label,
               value: value.entityId.toString(),
@@ -141,9 +138,16 @@ export const MultipleChoiceField = ({ option }: Props) => {
           </Label>
           <RadioGroup
             aria-labelledby={`label-${option.entityId}`}
+            error={Boolean(error)}
             items={values.map((value) => ({
               label: value.label,
               value: value.entityId.toString(),
+              onMouseEnter: () => {
+                handleMouseEnter({
+                  optionId: option.entityId,
+                  valueId: Number(value.entityId),
+                });
+              },
             }))}
             name={field.name}
             onValueChange={(value) => {
@@ -155,7 +159,6 @@ export const MultipleChoiceField = ({ option }: Props) => {
               });
             }}
             value={field.value?.toString()}
-            variant={error ? 'error' : undefined}
           />
           {error && <ErrorMessage>{error.message}</ErrorMessage>}
         </div>
@@ -168,6 +171,7 @@ export const MultipleChoiceField = ({ option }: Props) => {
             {option.displayName}
           </Label>
           <Select
+            error={Boolean(error)}
             id={`label-${option.entityId}`}
             name={field.name}
             onValueChange={(value) => {
@@ -189,7 +193,6 @@ export const MultipleChoiceField = ({ option }: Props) => {
               },
             }))}
             value={field.value?.toString()}
-            variant={error && 'error'}
           />
           {error && <ErrorMessage>{error.message}</ErrorMessage>}
         </div>
@@ -204,6 +207,7 @@ export const MultipleChoiceField = ({ option }: Props) => {
           </Label>
           <PickList
             aria-labelledby={`label-${option.entityId}`}
+            error={Boolean(error)}
             items={values
               .filter(
                 (value) =>
@@ -212,7 +216,12 @@ export const MultipleChoiceField = ({ option }: Props) => {
               .map((value) => ({
                 value: value.entityId.toString(),
                 label: value.label,
-                defaultImage: value.defaultImage,
+                image: value.defaultImage
+                  ? {
+                      url: value.defaultImage.url,
+                      altText: value.defaultImage.altText,
+                    }
+                  : undefined,
                 onMouseEnter: () => {
                   handleMouseEnter({
                     optionId: option.entityId,

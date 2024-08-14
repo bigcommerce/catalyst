@@ -4,8 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useFormStatus } from 'react-dom';
 
 import { Button } from '~/components/ui/button';
-import { Field, FieldControl, Form, FormSubmit } from '~/components/ui/form';
-import { Input } from '~/components/ui/input';
+import { Field, FieldControl, Form, FormSubmit, Input } from '~/components/ui/form';
 
 interface Props {
   initialTerm?: string;

@@ -5,10 +5,10 @@ import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 import { cn } from '~/lib/utils';
 
 interface Props extends ComponentPropsWithRef<'button'> {
-  variant?: 'primary' | 'secondary' | 'subtle';
   asChild?: boolean;
   loading?: boolean;
   loadingText?: string;
+  variant?: 'primary' | 'secondary' | 'subtle';
 }
 
 const Button = forwardRef<ElementRef<'button'>, Props>(

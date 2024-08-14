@@ -3,9 +3,8 @@ import { useFormatter, useTranslations } from 'next-intl';
 import { toast } from 'react-hot-toast';
 
 import { FragmentOf } from '~/client/graphql';
-import { Field, FieldLabel, Form, FormSubmit } from '~/components/ui/form';
+import { Field, FieldLabel, Form, FormSubmit, RadioGroup } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
-import { RadioGroup } from '~/components/ui/radio-group';
 
 import { ShippingOptionsFragment } from './fragment';
 import { SubmitButton } from './submit-button';
@@ -43,12 +42,7 @@ export const ShippingOptions = ({ data, checkoutEntityId, currencyCode }: Props)
 
   const items = shippingOptions?.map((option) => ({
     value: option.shippingOptionEntityId,
-    label: (
-      <p className="inline-flex w-full justify-between">
-        {option.description ? <span>{option.description}</span> : null}
-        <span>{format.number(option.cost, { style: 'currency', currency: currencyCode })}</span>
-      </p>
-    ),
+    label: `${option.description} - ${format.number(option.cost, { style: 'currency', currency: currencyCode })}`,
   }));
 
   const defaultValue = shippingOptions?.find((option) => option.isDefault)?.shippingOptionEntityId;
@@ -70,8 +64,8 @@ export const ShippingOptions = ({ data, checkoutEntityId, currencyCode }: Props)
       </FormSubmit>
     </Form>
   ) : (
-    <Message aria-labelledby="error-message" aria-live="polite" role="region" variant="error">
-      <p id="error-message">{t('noAvailableOptions')}</p>
+    <Message variant="error">
+      <p>{t('noAvailableOptions')}</p>
     </Message>
   );
 };

@@ -1,6 +1,5 @@
 import { FragmentOf } from '~/client/graphql';
-import { Input } from '~/components/ui/input';
-import { Label } from '~/components/ui/label';
+import { Input, Label } from '~/components/ui/form';
 
 import { useProductFieldController } from '../../use-product-form';
 import { ErrorMessage } from '../shared/error-message';
@@ -45,11 +44,11 @@ export const TextField = ({ option }: Props) => {
         )}
       </Label>
       <Input
+        error={Boolean(error)}
         id={`${option.entityId}`}
         name={field.name}
         onChange={field.onChange}
         value={field.value}
-        variant={error && 'error'}
       />
       {error && <ErrorMessage>{error.message}</ErrorMessage>}
     </div>

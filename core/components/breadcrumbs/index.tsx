@@ -22,7 +22,10 @@ interface Props {
 }
 
 export const Breadcrumbs = ({ category }: Props) => {
-  const breadcrumbs = removeEdgesAndNodes(category.breadcrumbs);
+  const breadcrumbs = removeEdgesAndNodes(category.breadcrumbs).map(({ name, path }) => ({
+    label: name,
+    href: path ?? '#',
+  }));
 
   return <ComponentsBreadcrumbs breadcrumbs={breadcrumbs} />;
 };

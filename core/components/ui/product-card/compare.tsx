@@ -2,40 +2,47 @@
 
 import { useEffect, useId, useState } from 'react';
 
-import { Checkbox } from '../checkbox';
 import { useCompareDrawerContext } from '../compare-drawer';
-import { Label } from '../label';
+import { Checkbox } from '../form/checkbox';
+import { Label } from '../form/label';
 
-export const Compare = ({
-  productId,
-  productImage,
-  productName,
-}: {
-  productId: number;
-  productImage?: {
-    altText?: string;
-    url?: string;
-  } | null;
-  productName: string;
-}) => {
+interface Image {
+  altText?: string;
+  src?: string;
+}
+
+interface Props {
+  id: string;
+  image?: Image;
+  name: string;
+}
+
+export const Compare = ({ id, image, name }: Props) => {
   const checkboxId = useId();
 
   const [checkedState, setCheckedState] = useState(false);
   const { products, setProducts } = useCompareDrawerContext();
 
   useEffect(() => {
-    setCheckedState(products.some(({ id }) => id === productId));
-  }, [products, productId]);
+    setCheckedState(products.some(({ id: productId }) => productId === id));
+  }, [products, id]);
 
   const handleOnCheckedChange = (isChecked: boolean) => {
     setCheckedState(isChecked);
 
     if (isChecked) {
-      setProducts([...products, { id: productId, image: productImage, name: productName }]);
+      setProducts([
+        ...products,
+        {
+          id,
+          image: image?.src ? { src: image.src, altText: image.altText ?? name } : undefined,
+          name,
+        },
+      ]);
     } else {
       setProducts(
-        products.filter(({ id }) => {
-          return id !== productId;
+        products.filter(({ id: productId }) => {
+          return productId !== id;
         }),
       );
     }

@@ -44,7 +44,6 @@ export default async function Brand({ params: { slug, locale }, searchParams }: 
   unstable_setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: 'Brand' });
-  const tPagination = await getTranslations({ locale, namespace: 'Pagination' });
   const messages = await getMessages({ locale });
 
   const brandId = Number(slug);
@@ -120,12 +119,10 @@ export default async function Brand({ params: { slug, locale }, searchParams }: 
             </div>
 
             <Pagination
-              endCursor={endCursor}
+              endCursor={endCursor ?? undefined}
               hasNextPage={hasNextPage}
               hasPreviousPage={hasPreviousPage}
-              nextLabel={tPagination('next')}
-              prevLabel={tPagination('prev')}
-              startCursor={startCursor}
+              startCursor={startCursor ?? undefined}
             />
           </section>
         </div>

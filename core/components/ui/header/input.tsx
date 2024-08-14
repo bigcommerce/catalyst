@@ -1,3 +1,5 @@
+'use client';
+
 import { Search, Loader2 as Spinner, X } from 'lucide-react';
 import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 

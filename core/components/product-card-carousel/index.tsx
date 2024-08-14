@@ -39,5 +39,5 @@ export const ProductCardCarousel = ({
     />
   ));
 
-  return <Carousel className="mb-14" items={items} title={title} />;
+  return <Carousel className="mb-14" products={items} title={title} />;
 };

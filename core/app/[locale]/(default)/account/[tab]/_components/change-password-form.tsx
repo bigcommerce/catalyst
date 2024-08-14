@@ -15,8 +15,8 @@ import {
   FieldMessage,
   Form,
   FormSubmit,
+  Input,
 } from '~/components/ui/form';
-import { Input } from '~/components/ui/input';
 import { Message } from '~/components/ui/message';
 import { useRouter } from '~/navigation';
 
@@ -161,12 +161,12 @@ export const ChangePasswordForm = () => {
           <FieldControl asChild>
             <Input
               autoComplete="none"
+              error={!isCurrentPasswordValid}
               id="current-password"
               onChange={handleCurrentPasswordChange}
               onInvalid={handleCurrentPasswordChange}
               required
               type="password"
-              variant={!isCurrentPasswordValid ? 'error' : undefined}
             />
           </FieldControl>
           <FieldMessage
@@ -183,12 +183,12 @@ export const ChangePasswordForm = () => {
           <FieldControl asChild>
             <Input
               autoComplete="none"
+              error={!isNewPasswordValid}
               id="new-password"
               onChange={handleNewPasswordChange}
               onInvalid={handleNewPasswordChange}
               required
               type="password"
-              variant={!isNewPasswordValid ? 'error' : undefined}
             />
           </FieldControl>
           <FieldMessage
@@ -230,12 +230,12 @@ export const ChangePasswordForm = () => {
           <FieldControl asChild>
             <Input
               autoComplete="none"
+              error={!isConfirmPasswordValid}
               id="confirm-password"
               onChange={handleConfirmPasswordValidation}
               onInvalid={handleConfirmPasswordValidation}
               required
               type="password"
-              variant={!isConfirmPasswordValid ? 'error' : undefined}
             />
           </FieldControl>
           <FieldMessage

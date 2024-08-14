@@ -1,8 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { ChangeEvent } from 'react';
 
-import { Field, FieldControl, FieldLabel, FieldMessage } from '~/components/ui/form';
-import { Input } from '~/components/ui/input';
+import { Field, FieldControl, FieldLabel, FieldMessage, Input } from '~/components/ui/form';
 
 import { CustomerFields } from '..';
 
@@ -32,12 +31,12 @@ export const Password = ({ field, isValid, name, onChange }: PasswordProps) => {
       <FieldControl asChild>
         <Input
           defaultValue={field.defaultText ?? undefined}
+          error={isValid === false}
           id={`field-${field.entityId}`}
           onChange={onChange}
           onInvalid={onChange}
           required={field.isRequired}
           type="password"
-          variant={isValid === false ? 'error' : undefined}
         />
       </FieldControl>
       {field.isRequired && (

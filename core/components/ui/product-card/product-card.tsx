@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
@@ -6,30 +6,40 @@ import { cn } from '~/lib/utils';
 
 import { Compare } from './compare';
 
+interface Image {
+  altText: string;
+  src: string;
+}
+
 type Price =
+  | string
+  | {
+      type: 'sale';
+      currentValue: string;
+      previousValue: string;
+    }
   | {
       type: 'range';
-      min: string;
-      max: string;
-    }
-  | {
-      type: 'fixed';
-      amount: string;
-      msrp?: string;
-    }
-  | { type: 'sale'; originalAmount: string; amount: string; msrp?: string };
+      minValue: string;
+      maxValue: string;
+    };
 
-interface Props extends ComponentPropsWithoutRef<'div'> {
+interface Product {
+  id: string;
+  name: string;
+  href: string;
+  image?: Image;
+  price?: Price;
+  subtitle?: string;
+  badge?: string;
+}
+
+interface Props extends Product {
   addToCart?: ReactNode;
-  image?: { url: string; altText: string } | null;
+  className?: string;
   imagePriority?: boolean;
   imageSize?: 'square' | 'tall' | 'wide';
-  link: string;
-  price?: Price;
-  productId: number;
   showCompare?: boolean;
-  subtitle?: string;
-  title: string;
 }
 
 const ProductCard = ({
@@ -38,12 +48,12 @@ const ProductCard = ({
   image,
   imagePriority = false,
   imageSize,
-  link,
+  href,
   price,
-  productId,
+  id,
   showCompare = true,
   subtitle,
-  title,
+  name,
   ...props
 }: Props) => (
   <div className={cn('group relative flex flex-col overflow-visible', className)} {...props}>
@@ -62,7 +72,7 @@ const ProductCard = ({
             fill
             priority={imagePriority}
             sizes="(max-width: 768px) 50vw, (max-width: 1536px) 25vw, 500px"
-            src={image.url}
+            src={image.src}
           />
         ) : (
           <div className="h-full w-full bg-gray-200" />
@@ -74,51 +84,36 @@ const ProductCard = ({
       <h3 className="text-xl font-bold lg:text-2xl">
         <Link
           className="focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-primary/20 focus-visible:ring-0"
-          href={link}
+          href={href}
         >
           <span aria-hidden="true" className="absolute inset-0 bottom-20" />
-          {title}
+          {name}
         </Link>
       </h3>
       <div className="flex flex-wrap items-end justify-between pt-1">
-        {price && (
-          <p className="flex flex-col gap-1">
-            {price.type === 'range' && (
-              <span>
-                {price.min} - {price.max}
-              </span>
-            )}
+        {Boolean(price) &&
+          (typeof price === 'object' ? (
+            <p className="flex flex-col gap-1">
+              {price.type === 'range' && (
+                <span>
+                  {price.minValue} - {price.maxValue}
+                </span>
+              )}
 
-            {price.type === 'fixed' && (
-              <>
-                {Boolean(price.msrp) && (
-                  <span>
-                    MSRP: <span className="line-through">{price.msrp}</span>
-                  </span>
-                )}
-                <span>{price.amount}</span>
-              </>
-            )}
-
-            {price.type === 'sale' && (
-              <>
-                {Boolean(price.msrp) && (
-                  <span>
-                    MSRP: <span className="line-through">{price.msrp}</span>
-                  </span>
-                )}
+              {price.type === 'sale' && (
                 <>
                   <span>
-                    Was: <span className="line-through">{price.originalAmount}</span>
+                    Was: <span className="line-through">{price.previousValue}</span>
                   </span>
-                  <span>Now: {price.amount}</span>
+                  <span>Now: {price.currentValue}</span>
                 </>
-              </>
-            )}
-          </p>
-        )}
+              )}
+            </p>
+          ) : (
+            <span>{price}</span>
+          ))}
 
-        {showCompare && <Compare productId={productId} productImage={image} productName={title} />}
+        {showCompare && <Compare id={id} image={image} name={name} />}
       </div>
     </div>
     {addToCart}

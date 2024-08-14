@@ -1,14 +1,17 @@
 import { AlertCircle, Check, Info } from 'lucide-react';
-import { ComponentPropsWithoutRef } from 'react';
+import { ReactNode } from 'react';
 
 import { cn } from '~/lib/utils';
 
-interface Props extends ComponentPropsWithoutRef<'div'> {
-  readonly variant?: 'info' | 'error' | 'success';
+interface Props {
+  className?: string;
+  children?: ReactNode;
+  variant?: 'info' | 'error' | 'success';
 }
 
 const Message = ({ className, children, variant = 'info', ...props }: Props) => (
   <div
+    aria-live="polite"
     className={cn(
       'flex w-full justify-start gap-x-2.5 p-3 text-base',
       variant === 'info' && 'bg-secondary/[.15] [&>svg]:text-primary',
@@ -16,6 +19,7 @@ const Message = ({ className, children, variant = 'info', ...props }: Props) => 
       variant === 'error' && 'bg-error-secondary/[.15] [&>svg]:text-error',
       className,
     )}
+    role="region"
     {...props}
   >
     {variant === 'info' && <Info className="flex-none" />}
