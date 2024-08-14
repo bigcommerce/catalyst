@@ -105,27 +105,6 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     return response.json() as Promise<BigCommerceResponse<TResult>>;
   }
 
-  async fetchCountryStates(id: number) {
-    const response = await fetch(
-      `https://${adminApiHostname}/stores/${this.config.storeHash}/v2/countries/${id}/states?limit=60`,
-      {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.config.xAuthToken,
-          'User-Agent': this.backendUserAgent,
-        },
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(`Unable to get available States or Provinces: ${response.statusText}`);
-    }
-
-    return response.json() as Promise<unknown>;
-  }
-
   async fetchShippingZones() {
     const response = await fetch(
       `https://${adminApiHostname}/stores/${this.config.storeHash}/v2/shipping/zones`,

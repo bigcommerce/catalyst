@@ -14,19 +14,10 @@ import { Select } from '~/components/ui/select';
 import { cn } from '~/lib/utils';
 
 import { ShippingInfoFragment } from './fragment';
-import { getShippingStates } from './get-shipping-states';
 import { submitShippingInfo } from './submit-shipping-info';
-
-type StatesList = Array<{
-  id: number;
-  state: string;
-  state_abbreviation: string;
-  country_id: number;
-}>;
 
 interface FormValues {
   country: string;
-  states: StatesList | null;
   state: string;
   city: string;
   postcode: string;
@@ -65,53 +56,27 @@ export const ShippingInfo = ({
     checkout.shippingConsignments?.find((consignment) => consignment.selectedShippingOption) ||
     checkout.shippingConsignments?.[0];
 
-  const selectedShippingCountry = shippingCountries.find(
-    (country) => country.countryCode === shippingConsignment?.address.countryCode,
-  );
-
   const [formValues, setFormValues] = useReducer(
     (currentValues: FormValues, newValues: Partial<FormValues>) => ({
       ...currentValues,
       ...newValues,
     }),
     {
-      country: selectedShippingCountry
-        ? `${selectedShippingCountry.countryCode}-${selectedShippingCountry.id}`
-        : '',
-      states: [],
-      state: shippingConsignment?.address.stateOrProvince || '',
-      city: shippingConsignment?.address.city || '',
-      postcode: shippingConsignment?.address.postalCode || '',
+      country: shippingConsignment?.address.countryCode ?? '',
+      state: shippingConsignment?.address.stateOrProvince ?? '',
+      city: shippingConsignment?.address.city ?? '',
+      postcode: shippingConsignment?.address.postalCode ?? '',
     },
   );
 
-  // Fetch states when country changes
-  useEffect(() => {
-    if (formValues.country) {
-      const countryId = formValues.country.split('-')[1];
-
-      const fetchStates = async () => {
-        const { status, data } = await getShippingStates(Number(countryId));
-
-        if (status === 'success' && data) {
-          setFormValues({ states: data });
-        } else {
-          setFormValues({ states: null });
-        }
-      };
-
-      if (countryId) {
-        void fetchStates();
-      }
-    }
-  }, [formValues.country, t]);
+  const selectedCountry = shippingCountries.find(({ code }) => code === formValues.country);
 
   // Preselect first state when states array changes and state is empty
   useEffect(() => {
-    if (formValues.states && !formValues.state) {
-      setFormValues({ state: formValues.states[0]?.state || '' });
+    if (!!selectedCountry?.statesOrProvinces && !formValues.state) {
+      setFormValues({ state: selectedCountry.statesOrProvinces[0]?.name || '' });
     }
-  }, [formValues.state, formValues.states]);
+  }, [formValues.state, selectedCountry?.statesOrProvinces]);
 
   const onSubmit = async (formData: FormData) => {
     const { status } = await submitShippingInfo(formData, {
@@ -144,18 +109,16 @@ export const ShippingInfo = ({
               autoComplete="country"
               id="country"
               onValueChange={(value: string) => {
-                const countryId = value.split('-')[1];
-
-                if (countryId) {
-                  setFormValues({ country: value, states: [], state: '', city: '', postcode: '' });
+                if (value) {
+                  setFormValues({ country: value, state: '', city: '', postcode: '' });
                 } else {
-                  setFormValues({ country: '', states: [], state: '', city: '', postcode: '' });
+                  setFormValues({ country: '', state: '', city: '', postcode: '' });
                 }
 
                 hideShippingOptions();
               }}
-              options={shippingCountries.map(({ id, countryCode, name }) => ({
-                value: `${countryCode}-${id}`,
+              options={shippingCountries.map(({ code, name }) => ({
+                value: code,
                 label: name,
               }))}
               placeholder={t('countryPlaceholder')}
@@ -166,12 +129,15 @@ export const ShippingInfo = ({
         <Field className="relative space-y-2" name="state">
           <FieldLabel htmlFor="state">{t('state')}</FieldLabel>
           <FieldControl asChild>
-            {formValues.states !== null ? (
+            {selectedCountry?.statesOrProvinces ? (
               <Select
-                disabled={formValues.states.length === 0}
+                disabled={selectedCountry.statesOrProvinces.length === 0}
                 id="state"
                 onValueChange={(value) => setFormValues({ state: value })}
-                options={formValues.states.map(({ state }) => ({ value: state, label: state }))}
+                options={selectedCountry.statesOrProvinces.map(({ name }) => ({
+                  value: name,
+                  label: name,
+                }))}
                 placeholder={t('statePlaceholder')}
                 value={formValues.state}
               />
