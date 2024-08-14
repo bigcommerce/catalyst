@@ -1,51 +1,29 @@
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-
-import { GalleryFragment } from '~/app/[locale]/(default)/product/[slug]/_components/gallery/fragment';
 import { getSessionCustomerId } from '~/auth';
-import { PricingFragment } from '~/components/pricing';
 
 import { client } from '..';
 import { graphql, VariablesOf } from '../graphql';
 
-const CREATE_WISHLIST_MUTATION = graphql(
-  `
-    mutation CreateWishlist($input: CreateWishlistInput!) {
-      wishlist {
-        createWishlist(input: $input) {
-          result {
-            entityId
-            name
-            isPublic
-            items {
-              edges {
-                node {
-                  entityId
-                  product {
-                    entityId
-                    name
-                    path
-                    brand {
-                      name
-                      path
-                    }
-                    ...GalleryFragment
-                    ...PricingFragment
-                  }
-                }
-              }
-            }
-          }
+const CREATE_WISHLIST_MUTATION = graphql(`
+  mutation CreateWishlist($input: CreateWishlistInput!) {
+    wishlist {
+      createWishlist(input: $input) {
+        result {
+          entityId
+          name
         }
       }
     }
-  `,
-  [GalleryFragment, PricingFragment],
-);
+  }
+`);
 
 type Variables = VariablesOf<typeof CREATE_WISHLIST_MUTATION>;
 type Input = Variables['input'];
 
-export const createWishlist = async (input: Input) => {
+export interface CreateWishlist {
+  input: Input;
+}
+
+export const createWishlist = async ({ input }: CreateWishlist) => {
   const customerId = await getSessionCustomerId();
 
   const response = await client.fetch({
@@ -61,16 +39,5 @@ export const createWishlist = async (input: Input) => {
     return undefined;
   }
 
-  return {
-    ...newWishlist,
-    items: removeEdgesAndNodes(newWishlist.items).map((item) => {
-      return {
-        ...item,
-        product: {
-          ...item.product,
-          images: removeEdgesAndNodes(item.product.images),
-        },
-      };
-    }),
-  };
+  return newWishlist;
 };
