@@ -16,9 +16,6 @@ export const writeEnv = (
     customerImpersonationToken: string;
   },
 ) => {
-  /**
-   * @todo silence request logs by default
-   */
   outputFileSync(
     join(projectDir, '.env.local'),
     [
