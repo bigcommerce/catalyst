@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.14.0
+
+### Minor Changes
+
+- [#1261](https://github.com/bigcommerce/catalyst/pull/1261) [`f715067`](https://github.com/bigcommerce/catalyst/commit/f715067aa36616b3818c9424c57fa08e28936cde) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Remove the need of fetching shipping countries by using the GraphQL data.
+
+- [#1261](https://github.com/bigcommerce/catalyst/pull/1261) [`f715067`](https://github.com/bigcommerce/catalyst/commit/f715067aa36616b3818c9424c57fa08e28936cde) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Fetch shipping zones if access token exists, otherwise regress back to using the geography node on graphql for shipping information. This is part of an effort to remove the need of the `BIGCOMMERCE_ACCESS_TOKEN`.
+
+### Patch Changes
+
+- [#1256](https://github.com/bigcommerce/catalyst/pull/1256) [`686abe9`](https://github.com/bigcommerce/catalyst/commit/686abe9eae18cd2241e7ac17e17f7139d6b87bd6) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Consistency improvements to prop APIs for UI components.
+
+- Updated dependencies [[`f715067`](https://github.com/bigcommerce/catalyst/commit/f715067aa36616b3818c9424c57fa08e28936cde)]:
+  - @bigcommerce/catalyst-client@0.7.0
+
 ## 0.13.0
 
 ### Minor Changes
