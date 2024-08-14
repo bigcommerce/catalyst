@@ -16,14 +16,16 @@ jobs:
     timeout-minutes: 30
     runs-on: ubuntu-latest
     if: ${{ contains(fromJson('["Production – catalyst-latest", "Preview – catalyst-latest"]'), github.event.deployment_status.environment) }}
+    permissions:
+      pull-requests: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Find pull request
-        uses: jwalton/gh-find-current-pr@v1.3.3
-        id: finder
+      - name: Log info
+        run: |
+          echo "Event info: ${{ toJson(github.event) }}"
 
       - name: Lighthouse house audit on desktop
         id: lighthouse_audit_desktop
@@ -77,14 +79,23 @@ jobs:
             const comment = lighthouseCommentMaker({ lighthouseOutputs });
             core.setOutput("comment", comment);
 
+      - name: Write to workflow job summary
+        run: |
+          echo "# ⚡️🏠 Lighthouse report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "*Lighthouse ran against ${{ github.event.deployment_status.target_url }}*" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 🖥️ Desktop" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.format_lighthouse_score_desktop.outputs.comment }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📱 Mobile" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.format_lighthouse_score_mobile.outputs.comment }}" >> $GITHUB_STEP_SUMMARY
+      
       - name: Add comment to PR
-        id: comment_to_pr
         uses: marocchino/sticky-pull-request-comment@v2.9.0
-        if: ${{ steps.finder.outputs.pr }}
         with:
-          recreate: true
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          number: ${{ steps.finder.outputs.pr }}
           header: lighthouse
           message: |
             # ⚡️🏠 Lighthouse report
