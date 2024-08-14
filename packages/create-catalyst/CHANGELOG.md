@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.11.0
+
+### Minor Changes
+
+- [#1267](https://github.com/bigcommerce/catalyst/pull/1267) [`d442efc`](https://github.com/bigcommerce/catalyst/commit/d442efcbdbf73f3d6f2e57ddc18049fffc727deb) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Added initial Makeswift integration source folder, which allows developers to create new Catalyst storefronts that are integrated with Makeswift out of the box by running:
+
+  ```sh
+  pnpm create @bigcommerce/catalyst@latest --integration=makeswift
+  ```
+
+- [#1266](https://github.com/bigcommerce/catalyst/pull/1266) [`6fa0d48`](https://github.com/bigcommerce/catalyst/commit/6fa0d4874e5f7c05cc43019efe8ca4838b504ca1) Thanks [@matthewvolk](https://github.com/matthewvolk)! - remove already completed todo comment
+
 ## 0.10.0
 
 ### Minor Changes
