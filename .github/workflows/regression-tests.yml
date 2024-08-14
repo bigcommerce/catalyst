@@ -26,7 +26,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const prData = require('./.github/workflows/prData.js');
+            const prData = require('./.github/workflows/pull-request-data.js');
             await prData({ github, context, core });
 
       - name: Lighthouse house audit on desktop
@@ -124,18 +124,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Playwright Browsers
-        run: |
-          cd core
-          npx playwright install --with-deps
-
       - name: Pull Request Details
         id: pr_details
         uses: actions/github-script@v7
         with:
           script: |
-            const prData = require('./.github/workflows/prData.js');
+            const prData = require('./.github/workflows/pull-request-data.js');
             await prData({ github, context, core });
+
+      - name: Install Playwright Browsers
+        run: |
+          cd core
+          npx playwright install --with-deps
 
       - name: Run Playwright tests
         run: |
@@ -186,18 +186,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Playwright Browsers
-        run: |
-          cd core
-          npx playwright install chromium
-
       - name: Pull Request Details
         id: pr_details
         uses: actions/github-script@v7
         with:
           script: |
-            const prData = require('./.github/workflows/prData.js');
+            const prData = require('./.github/workflows/pull-request-data.js');
             await prData({ github, context, core });
+
+      - name: Install Playwright Browsers
+        run: |
+          cd core
+          npx playwright install chromium
 
       - name: Run Playwright tests
         run: |

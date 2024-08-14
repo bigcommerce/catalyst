@@ -5,7 +5,7 @@ module.exports = async ({ github, context, core }) => {
         commit_sha: context.sha,
     });
 
-    core.setOutput('pr', result.data[0].number);
-    core.setOutput('title', result.data[0].title);
-    core.setOutput('url', result.data[0].html_url);
+    core.setOutput('pr', result?.data[0]?.number || '');
+    core.setOutput('title', result?.data[0]?.title || '');
+    core.setOutput('url', result?.data[0]?.html_url || '');
 }
