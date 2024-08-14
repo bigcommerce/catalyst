@@ -27,10 +27,11 @@ interface Slide {
 
 interface Props {
   className?: string;
+  interval?: number;
   slides: Slide[];
 }
 
-const Slideshow = ({ className, slides }: Props) => {
+const Slideshow = ({ className, interval = 15_000, slides }: Props) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
 
   const [isHoverPaused, setIsHoverPaused] = useState(false);
@@ -50,10 +51,10 @@ const Slideshow = ({ className, slides }: Props) => {
       if (visibilityState === 'hidden') return;
 
       emblaApi.scrollNext();
-    }, 15_000);
+    }, interval);
 
     return () => clearInterval(autoplay);
-  }, [emblaApi, isHoverPaused, isPaused, visibilityState]);
+  }, [emblaApi, interval, isHoverPaused, isPaused, visibilityState]);
 
   useEffect(() => {
     window.addEventListener('visibilitychange', () => {
