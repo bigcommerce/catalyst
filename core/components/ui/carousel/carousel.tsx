@@ -8,14 +8,15 @@ type CarouselApi = UseEmblaCarouselType[1];
 
 interface Props {
   className?: string;
+  pageSize?: 2 | 3 | 4;
   products: ReactNode[];
   title: string;
 }
 
-const Carousel = ({ className, title, products, ...props }: Props) => {
+const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props) => {
   const id = useId();
   const titleId = useId();
-  const itemsPerGroup = 4;
+  const itemsPerGroup = pageSize;
 
   const [carouselRef, api] = useEmblaCarousel({
     loop: true,
