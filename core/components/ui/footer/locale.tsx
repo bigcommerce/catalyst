@@ -7,7 +7,7 @@ import { Link as CustomLink } from '../../link';
 export const Locale = async () => {
   const locale = await getLocale();
 
-  const selectedLocale = localeLanguageRegionMap.find((localeMap) => localeMap.id === locale);
+  const selectedLocale = localeLanguageRegionMap.find(({ id }) => id === locale);
 
   if (!selectedLocale) {
     return null;

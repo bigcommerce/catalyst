@@ -3,7 +3,7 @@ import { localeLanguageRegionMap, LocaleType } from '~/i18n';
 import { cn } from '~/lib/utils';
 
 export const LocaleLink = ({ locale, selected }: { locale: string; selected: boolean }) => {
-  const selectedLocale = localeLanguageRegionMap.find((localeMap) => localeMap.id === locale);
+  const selectedLocale = localeLanguageRegionMap.find(({ id }) => id === locale);
 
   if (!selectedLocale) {
     return null;
