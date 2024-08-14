@@ -86,7 +86,9 @@ export const Header = async ({ cart, data }: Props) => {
                 className="p-3 text-black hover:bg-transparent hover:text-primary"
                 variant="subtle"
               >
-                <User aria-hidden="true" />
+                <User>
+                  <title>Account</title>
+                </User>
               </Button>
             }
           />
