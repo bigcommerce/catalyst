@@ -151,7 +151,7 @@ jobs:
 
       - name: Send slack notification
         uses: slackapi/slack-github-action@v1.26.0
-        if: failure()
+        if: ${{ steps.pr_details.outputs.draft != 'true' && failure() }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:
@@ -213,7 +213,7 @@ jobs:
 
       - name: Send slack notification
         uses: slackapi/slack-github-action@v1.26.0
-        if: failure()
+        if: ${{ steps.pr_details.outputs.draft != 'true' && failure() }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:
