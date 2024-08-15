@@ -215,16 +215,16 @@ index 00000000..2073f07a
 +});
 diff --git a/core/components/ui/carousel/carousel.makeswift.tsx b/core/components/ui/carousel/carousel.makeswift.tsx
 new file mode 100644
-index 00000000..e143627f
+index 00000000..a5e69ba5
 --- /dev/null
 +++ b/core/components/ui/carousel/carousel.makeswift.tsx
-@@ -0,0 +1,67 @@
+@@ -0,0 +1,75 @@
 +import { Select, Style, TextInput } from '@makeswift/runtime/controls';
 +import { useEffect, useState } from 'react';
 +
 +import { ResultOf } from '~/client/graphql';
-+import { ProductCard } from '~/components/product-card';
 +import { ProductCardCarouselFragment } from '~/components/product-card-carousel';
++import { ProductCard } from '~/components/ui/product-card';
 +import { runtime } from '~/lib/makeswift/runtime';
 +
 +import { Carousel } from './carousel';
@@ -255,17 +255,25 @@ index 00000000..e143627f
 +
 +    const items = products.map((product) => (
 +      <ProductCard
-+        imageSize="tall"
++        href={product.path}
++        id={product.entityId.toString()}
++        image={
++          product.defaultImage
++            ? { src: product.defaultImage.url, altText: product.defaultImage.altText }
++            : undefined
++        }
++        imagePriority={false}
++        imageSize="square"
 +        key={product.entityId}
-+        product={product}
-+        showCart={false}
++        name={product.name}
 +        showCompare={false}
++        subtitle={product.brand?.name}
 +      />
 +    ));
 +
 +    return (
 +      <div className={className}>
-+        <Carousel className="mb-14" items={items} title={title} />
++        <Carousel className="mb-14" products={items} title={title} />
 +      </div>
 +    );
 +  },
@@ -288,44 +296,59 @@ index 00000000..e143627f
 +);
 diff --git a/core/components/ui/slideshow/slideshow.makeswift.tsx b/core/components/ui/slideshow/slideshow.makeswift.tsx
 new file mode 100644
-index 00000000..e9795e86
+index 00000000..042a19f7
 --- /dev/null
 +++ b/core/components/ui/slideshow/slideshow.makeswift.tsx
-@@ -0,0 +1,63 @@
-+import { List, Shape, Style, TextInput } from '@makeswift/runtime/controls';
+@@ -0,0 +1,83 @@
++import { List, Number, Shape, Style, TextInput } from '@makeswift/runtime/controls';
++import { StaticImageData } from 'next/image';
 +
 +import { runtime } from '~/lib/makeswift/runtime';
 +
-+import { Button } from '../button';
-+
 +import { Slideshow } from './slideshow';
 +
++interface Link {
++  label: string;
++  href: string;
++}
++
++interface Image {
++  alt: string;
++  blurDataUrl?: string;
++  src: string | StaticImageData;
++}
++
 +interface Slide {
++  cta?: Link;
++  description?: string;
++  image?: Image;
 +  title: string;
-+  description: string;
-+  ctaText: string;
-+  ctaUrl: string;
 +}
 +
 +interface Props {
-+  slides: Slide[];
 +  className?: string;
++  interval?: number;
++  slides: Slide[];
 +}
 +
 +runtime.registerComponent(
-+  function MakeswiftSlideshow({ slides, className }: Props) {
++  function MakeswiftSlideshow({ slides, interval, className }: Props) {
 +    return (
 +      <Slideshow
 +        className={className}
-+        slides={slides.map(({ title, description, ctaText, ctaUrl }) => (
-+          <div className="flex flex-col gap-4 bg-gray-100 px-12 pb-48 pt-36" key={1}>
-+            <h2 className="text-5xl font-black lg:text-6xl">{title}</h2>
-+            <p className="max-w-xl">{description}</p>
-+            <Button asChild className="w-fit">
-+              <a href={ctaUrl}>{ctaText}</a>
-+            </Button>
-+          </div>
-+        ))}
++        interval={interval}
++        slides={slides.map((slide) => ({
++          cta: slide.cta ? { label: slide.cta.label, href: slide.cta.href } : undefined,
++          description: slide.description,
++          image: slide.image
++            ? {
++                alt: slide.image.alt,
++                blurDataUrl: slide.image.blurDataUrl,
++                src: slide.image.src,
++              }
++            : undefined,
++          title: slide.title,
++        }))}
 +      />
 +    );
 +  },
@@ -334,6 +357,7 @@ index 00000000..e9795e86
 +    label: 'Catalyst / Slideshow',
 +    props: {
 +      className: Style(),
++      interval: Number({ label: 'Interval' }),
 +      slides: List({
 +        label: 'Slides',
 +        type: Shape({
@@ -344,8 +368,12 @@ index 00000000..e9795e86
 +              defaultValue:
 +                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.',
 +            }),
-+            ctaText: TextInput({ label: 'CTA Text', defaultValue: 'Shop now' }),
-+            ctaUrl: TextInput({ label: 'CTA URL', defaultValue: '/#' }),
++            cta: Shape({
++              type: {
++                label: TextInput({ label: 'Label', defaultValue: 'Shop now' }),
++                href: TextInput({ label: 'Href', defaultValue: '/#' }),
++              },
++            }),
 +          },
 +        }),
 +        getItemLabel(item) {
@@ -355,28 +383,6 @@ index 00000000..e9795e86
 +    },
 +  },
 +);
-diff --git a/core/components/ui/slideshow/slideshow.tsx b/core/components/ui/slideshow/slideshow.tsx
-index b0d72034..a9efd93b 100644
---- a/core/components/ui/slideshow/slideshow.tsx
-+++ b/core/components/ui/slideshow/slideshow.tsx
-@@ -2,6 +2,8 @@ import useEmblaCarousel from 'embla-carousel-react';
- import { ArrowLeft, ArrowRight, Pause, Play } from 'lucide-react';
- import { ComponentPropsWithoutRef, ReactNode, useEffect, useReducer, useState } from 'react';
- 
-+import { cn } from '~/lib/utils';
-+
- interface Props extends ComponentPropsWithoutRef<'section'> {
-   slides: ReactNode[];
-   interval?: number;
-@@ -72,7 +74,7 @@ const Slideshow = ({ children, className, interval = 15_000, slides, style, ...p
-     <section
-       aria-label="Interactive slide show"
-       aria-roledescription="carousel"
--      className="relative -mx-6 overflow-hidden sm:-mx-10 md:-mx-12 lg:mx-0"
-+      className={cn('relative -mx-6 overflow-hidden sm:-mx-10 md:-mx-12 lg:mx-0', className)}
-       onBlur={() => setIsHoverPaused(false)}
-       onFocus={() => setIsHoverPaused(true)}
-       onMouseEnter={() => setIsHoverPaused(true)}
 diff --git a/core/components/ui/tabs/tabs.makeswift.tsx b/core/components/ui/tabs/tabs.makeswift.tsx
 new file mode 100644
 index 00000000..8f8135fd
