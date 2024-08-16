@@ -9,6 +9,7 @@ import { LocaleType } from '~/i18n';
 
 import { SharingLinks } from './_components/sharing-links';
 import { getBlogPageData } from './page-data';
+import { StrapiBlocksClientRenderer } from '~/lib/strapi/client-components';
 
 interface Props {
   params: {
@@ -17,27 +18,21 @@ interface Props {
   };
 }
 
-export async function generateMetadata({ params: { blogId } }: Props): Promise<Metadata> {
-  const data = await getBlogPageData({ entityId: Number(blogId) });
+export async function generateMetadata({ params: { blogId, locale } }: Props): Promise<Metadata> {
+  const data = await getBlogPageData({ entityId: Number(blogId), locale });
   const blogPost = data?.content.blog?.post;
 
-  if (!blogPost) {
-    return {};
-  }
-
-  const { pageTitle, metaDescription, metaKeywords } = blogPost.seo;
+  const title = blogPost?.seo.pageTitle ?? 'Blog';
 
   return {
-    title: pageTitle || blogPost.name,
-    description: metaDescription,
-    keywords: metaKeywords ? metaKeywords.split(',') : null,
+    title,
   };
 }
 
 export default async function BlogPostPage({ params: { blogId, locale } }: Props) {
   const format = await getFormatter({ locale });
 
-  const data = await getBlogPageData({ entityId: Number(blogId) });
+  const data = await getBlogPageData({ entityId: Number(blogId), locale });
   const blogPost = data?.content.blog?.post;
 
   if (!blogPost) {
@@ -78,8 +73,11 @@ export default async function BlogPostPage({ params: { blogId, locale } }: Props
           </small>
         </div>
       )}
+      
+      <div className="mb-10 space-y-4 text-base">
+        <StrapiBlocksClientRenderer content={blogPost.content} />
+      </div>
 
-      <div className="mb-10 text-base" dangerouslySetInnerHTML={{ __html: blogPost.htmlBody }} />
       <div className="mb-10 flex">
         {blogPost.tags.map((tag) => (
           <Link className="me-3 block cursor-pointer" href={`/blog/tag/${tag}`} key={tag}>

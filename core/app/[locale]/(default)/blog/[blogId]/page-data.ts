@@ -1,56 +1,25 @@
 import { cache } from 'react';
+import { getNewsPost } from '~/lib/strapi/data-fetcher';
 
-import { client } from '~/client';
-import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+export const getBlogPageData = cache(
+  async ({ entityId, locale }: { entityId: number; locale: string | undefined }) => {
+    const blogPost = await getNewsPost({ blogId: entityId.toString(), locale });
 
-import { SharingLinksFragment } from './_components/sharing-links';
-
-const BlogPageQuery = graphql(
-  `
-    query BlogPageQuery($entityId: Int!) {
-      site {
-        content {
-          blog {
-            post(entityId: $entityId) {
-              author
-              htmlBody
-              name
-              publishedDate {
-                utc
-              }
-              tags
-              thumbnailImage {
-                altText
-                url: urlTemplate
-              }
-              seo {
-                pageTitle
-                metaDescription
-                metaKeywords
-              }
-            }
-          }
-        }
-        ...SharingLinksFragment
-      }
+    if (!blogPost) {
+      return null;
     }
-  `,
-  [SharingLinksFragment],
+
+    return {
+      content: {
+        blog: {
+          post: {...blogPost, entityId },
+        },
+      },
+      settings: {
+        url: {
+          vanityUrl: blogPost.vanityUrl,
+        },
+      },
+    };
+  },
 );
-
-export const getBlogPageData = cache(async ({ entityId }: { entityId: number }) => {
-  const response = await client.fetch({
-    document: BlogPageQuery,
-    variables: { entityId },
-    fetchOptions: { next: { revalidate } },
-  });
-
-  const { blog } = response.data.site.content;
-
-  if (!blog?.post) {
-    return null;
-  }
-
-  return response.data.site;
-});
