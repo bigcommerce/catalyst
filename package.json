@@ -1,6 +1,14 @@
 {
   "name": "@bigcommerce/catalyst",
-  "description": "BigCommerce Catalyst is a Next.js starter kit for building headless BigCommerce storefronts.",
+  "description": "Catalyst is BigCommerce's composable front-end framework designed for building custom ecommerce storefronts.",
+  "keywords":[
+    "bigcommerce",
+    "ecommerce",
+    "storefront",
+    "headless",
+    "composable",
+    "nextjs"
+  ],
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@9.7.0",
