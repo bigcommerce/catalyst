@@ -49,16 +49,14 @@ const BlogPostCard = ({
           <small className="mb-0 flex-none self-end text-xl font-bold text-primary">{date}</small>
         </div>
       )}
-
       <h3 className="mb-2 text-2xl font-bold">
         <Link href={href}>{title}</Link>
       </h3>
-
       <p className="mb-2">{content}</p>
-
-      <small className="mb-2 text-base text-gray-500">{date}</small>
-
-      {Boolean(author) && <small className="text-base text-gray-500">, by {author}</small>}
+      <span>
+        <small className="mb-2 text-base text-gray-500">{date}</small>
+        {Boolean(author) && <small className="text-base text-gray-500">, by {author}</small>}
+      </span>
     </div>
   );
 };
