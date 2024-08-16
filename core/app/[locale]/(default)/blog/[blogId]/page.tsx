@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter } from 'next-intl/server';
+import { unstable_setRequestLocale } from 'next-intl/server';
 
 import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
@@ -14,7 +15,7 @@ import { StrapiBlocksClientRenderer } from '~/lib/strapi/client-components';
 interface Props {
   params: {
     blogId: string;
-    locale?: LocaleType;
+    locale: LocaleType;
   };
 }
 
@@ -30,6 +31,8 @@ export async function generateMetadata({ params: { blogId, locale } }: Props): P
 }
 
 export default async function BlogPostPage({ params: { blogId, locale } }: Props) {
+  unstable_setRequestLocale(locale);
+
   const format = await getFormatter({ locale });
 
   const data = await getBlogPageData({ entityId: Number(blogId), locale });
@@ -73,7 +76,7 @@ export default async function BlogPostPage({ params: { blogId, locale } }: Props
           </small>
         </div>
       )}
-      
+
       <div className="mb-10 space-y-4 text-base">
         <StrapiBlocksClientRenderer content={blogPost.content} />
       </div>

@@ -12,7 +12,7 @@ export const getBlogPageData = cache(
     return {
       content: {
         blog: {
-          post: {...blogPost, entityId },
+          post: { ...blogPost, entityId },
         },
       },
       settings: {

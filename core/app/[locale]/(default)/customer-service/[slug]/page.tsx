@@ -1,4 +1,5 @@
 import { BlocksRenderer, type BlocksContent } from '@strapi/blocks-react-renderer';
+import { unstable_setRequestLocale } from 'next-intl/server';
 import { Link } from '~/components/link';
 import { LocaleType } from '~/i18n';
 import { fetchStrapiData } from '~/lib/strapi/data-fetcher';
@@ -8,6 +9,8 @@ interface Props {
 }
 
 export default async function Home({ params: { locale, slug } }: Props) {
+  unstable_setRequestLocale(locale);
+
   const strapiSiteContentData = await fetchStrapiData({
     endpoint: `/api/static-site-content?locale=${locale}`,
   });
@@ -24,7 +27,7 @@ export default async function Home({ params: { locale, slug } }: Props) {
   return (
     <main className="mx-auto max-w-5xl py-4">
       <div className="flex flex-col md:flex-row">
-        <div className="w-full flex-none md:w-64 ">
+        <div className="w-full flex-none md:w-64">
           <Link
             href={`/customer-service/`}
             className="mb-4 mt-2 flex items-center text-black hover:text-primary"

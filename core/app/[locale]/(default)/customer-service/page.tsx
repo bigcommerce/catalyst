@@ -1,3 +1,4 @@
+import { unstable_setRequestLocale } from 'next-intl/server';
 import { Link } from '~/components/link';
 import { LocaleType } from '~/i18n';
 import { fetchStrapiData } from '~/lib/strapi/data-fetcher';
@@ -6,7 +7,9 @@ interface Props {
   params: { locale: LocaleType };
 }
 
-export default async function Home({ params: { locale } }: Props) {
+export default async function CustomerService({ params: { locale } }: Props) {
+  unstable_setRequestLocale(locale);
+  
   const strapiSiteContentData = await fetchStrapiData({
     endpoint: `/api/static-site-content?locale=${locale}`,
   });
