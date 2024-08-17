@@ -1,6 +1,6 @@
 # Security
 
-Since Catalyst is optimized for production commerce sites utilizing BigCommerce, it benefits from the security standards of BigCommerce's platform in addition to the implementation of strong best practices for the Next.js framework.
+Since Catalyst is optimized for production ecommerce sites utilizing BigCommerce, it benefits from the security standards of BigCommerce's platform in addition to the implementation of strong best practices for the Next.js framework.
 
 ## BigCommerce certifications
 
@@ -26,27 +26,29 @@ All commerce operations and checkout functionality by default utilize BigCommerc
 
 You can learn more about these certifications and request a security review at [security.bigcommerce.com](https://security.bigcommerce.com).
 
+### Security vulnerability monitoring
+
+Catalyst is a part of BigCommerce's bug bounty program and the security team actively monitors and responds to reports, in addition to automatically scanning and manually accessing this codebase internally. Learn more within SECURITY.md [here](https://github.com/bigcommerce/catalyst/blob/main/SECURITY.md).
+
 ## Best practices implemented
 
-### Limited Data Access
+### Limited data access
 
-Out-of-the-box, Catalyst is 100% powered by a GraphQL Storefront API that has zero access to admin functionality. It's scoped only to the storefront and either anonymous or authenticated shoppers.
+By default, Catalyst is 100% powered by a GraphQL Storefront API that has zero access to admin functionality. It's scoped only to the storefront and either anonymous or authenticated shoppers.
 
 ### Content Security Policy (CSP)
 
 Catalyst implements a default Content Security Policy (CSP), which can be extended to meet your organization’s specific security standards. This enables you to specify the sources of content that are allowed to be loaded on your site, which helps to prevent Cross-Site Scripting (XSS) and data injection attacks.
 
-More details on customizing your CSP policy can be found here:
-[Configuring Content Security Policy](https://nextjs.org/docs/app/building-your-application/configuring/content-security-policy)
+You can customize your CSP policy in the codebase [here](https://github.com/bigcommerce/catalyst/blob/main/core/lib/content-security-policy.js#L10).
 
 ## Framework benefits
 
-### Next.js Security Record
+### Next.js security record
 
-The Next.js framework used by Catalyst has a rock solid track record of security, aided by hundreds of active contributors, and shares the same health rating as React from Snyk:
-[Next.js Security Rating by Snyk](https://snyk.io/advisor/npm-package/next)
+The Next.js framework used by Catalyst has a solid track record of security, aided by hundreds of active contributors, including a consistently high [package health score](https://snyk.io/advisor/npm-package/next) as reported by Snyk.
 
-### Industry Adoption
 
-You're in good company! Next.js is trusted by many companies handling millions of users and sensitive data across various sectors, including commerce, ticketing, and media. Explore some of these use cases here:
-[Next.js Showcase](https://nextjs.org/showcase)
+### Industry adoption
+
+You're in good company! Next.js is trusted by many companies handling millions of users and sensitive data across various sectors, including commerce, ticketing, and media. Explore some of these use cases [here](https://nextjs.org/showcase).
