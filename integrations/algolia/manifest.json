@@ -1,0 +1,17 @@
+{
+  "name": "algolia",
+  "dependencies": {
+    "add": [
+      "@algolia/requester-fetch",
+      "algoliasearch"
+    ]
+  },
+  "devDependencies": {
+    "add": []
+  },
+  "environmentVariables": [
+    "NEXT_PUBLIC_ALGOLIA_APP_ID",
+    "NEXT_PUBLIC_ALGOLIA_APP_KEY",
+    "NEXT_PUBLIC_ALGOLIA_INDEXNAME"
+  ]
+}
