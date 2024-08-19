@@ -23,6 +23,7 @@ Catalyst has a production-ready business-to-consumer (B2C) ecommerce funnel, inc
 * Product detail pages (PDPs) which are dynamically created for each product and published to the Catalyst storefront channel
 * Shopping cart
 * Secure redirected headless checkout page, which can be themed to match the styling of the core Catalyst storefront
+* Order information for logged-in customers. This includes order history, order status, order details, tracking information, and tracking info and shipment addresses for each consignment
 
 
 ## Default state of Catalyst
