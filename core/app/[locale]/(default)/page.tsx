@@ -6,11 +6,11 @@ import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { Hero } from '~/components/hero';
 import {
   ProductCardCarousel,
   ProductCardCarouselFragment,
 } from '~/components/product-card-carousel';
+import { Slideshow } from '~/components/slideshow';
 import { LocaleType } from '~/i18n';
 
 interface Props {
@@ -62,7 +62,7 @@ export default async function Home({ params: { locale } }: Props) {
 
   return (
     <>
-      <Hero />
+      <Slideshow />
 
       <div className="my-10">
         <NextIntlClientProvider locale={locale} messages={{ Product: messages.Product ?? {} }}>

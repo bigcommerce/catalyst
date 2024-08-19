@@ -13,7 +13,7 @@ interface Link {
 }
 
 interface Image {
-  alt: string;
+  altText: string;
   blurDataUrl?: string;
   src: string | StaticImageData;
 }
@@ -116,7 +116,7 @@ const Slideshow = ({ className, interval = 15_000, slides }: Props) => {
               <div className="relative">
                 {slide.image && (
                   <NextImage
-                    alt={slide.image.alt}
+                    alt={slide.image.altText}
                     blurDataURL={slide.image.blurDataUrl}
                     className="absolute -z-10 object-cover"
                     fill
