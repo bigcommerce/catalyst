@@ -40,7 +40,7 @@
     "graphql": "^16.9.0",
     "lodash.debounce": "^4.0.8",
     "lru-cache": "^11.0.0",
-    "lucide-react": "^0.427.0",
+    "lucide-react": "^0.428.0",
     "next": "14.2.5",
     "next-auth": "5.0.0-beta.20",
     "next-intl": "^3.17.2",
