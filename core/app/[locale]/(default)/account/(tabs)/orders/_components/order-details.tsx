@@ -1,5 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { getFormatter } from 'next-intl/server';
+import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
@@ -10,13 +10,18 @@ import { OrderDetailsDataType } from '../page-data';
 import { assembleProductData, ProductSnippet } from './product-snippet';
 
 const OrderState = async ({ orderState }: { orderState: OrderDetailsDataType['orderState'] }) => {
+  const locale = await getLocale();
+  const t = await getTranslations({ locale, namespace: 'Account.Orders' });
   const format = await getFormatter();
   const { orderId, orderDate, status } = orderState;
 
   return (
     <div className="mb-6 flex flex-col gap-6 md:flex-row">
       <div>
-        <h2 className="mb-2 text-3xl font-bold lg:text-4xl">Order #{orderId}</h2>
+        <h2 className="mb-2 text-3xl font-bold lg:text-4xl">
+          {t('orderNumber')}
+          {orderId}
+        </h2>
         <p>
           {format.dateTime(new Date(orderDate.utc), {
             year: 'numeric',
@@ -37,6 +42,8 @@ const OrderSummaryInfo = async ({
 }: {
   summaryInfo: OrderDetailsDataType['summaryInfo'];
 }) => {
+  const locale = await getLocale();
+  const t = await getTranslations({ locale, namespace: 'Account.Orders' });
   const format = await getFormatter();
   const { subtotal, shipping, tax, discounts, grandTotal } = summaryInfo;
   const totalDiscountSum = discounts.couponDiscounts.reduce((sum, discount) => {
@@ -49,10 +56,10 @@ const OrderSummaryInfo = async ({
 
   return (
     <div className="border border-gray-200 p-6">
-      <p className="pb-4 text-lg font-semibold">Order Summary</p>
+      <p className="pb-4 text-lg font-semibold">{t('orderSummary')}</p>
       <div className="flex border-collapse flex-col gap-2 border-y border-gray-200 py-4">
         <p className="flex justify-between">
-          <span>Subtotal:</span>
+          <span>{t('orderSubtotal')}</span>
           <span>
             {format.number(subtotal.value, {
               style: 'currency',
@@ -61,7 +68,7 @@ const OrderSummaryInfo = async ({
           </span>
         </p>
         <p className="flex justify-between">
-          <span>Discount:</span>
+          <span>{t('orderDiscount')}</span>
           <span>
             {discounts.couponDiscounts.length > 0
               ? format.number(totalDiscountSum, {
@@ -75,7 +82,7 @@ const OrderSummaryInfo = async ({
           </span>
         </p>
         <p className="flex justify-between">
-          <span>Shipping:</span>
+          <span>{t('orderShipping')}</span>
           <span>
             {format.number(shipping.value, {
               style: 'currency',
@@ -84,7 +91,7 @@ const OrderSummaryInfo = async ({
           </span>
         </p>
         <p className="flex justify-between">
-          <span>Tax:</span>
+          <span>{t('orderTax')}</span>
           <span>
             {format.number(tax.value, {
               style: 'currency',
@@ -95,7 +102,7 @@ const OrderSummaryInfo = async ({
       </div>
       <div className="pt-4 text-base font-semibold">
         <p className="flex justify-between">
-          <span>Grand total:</span>
+          <span>{t('orderGrandtotal')}</span>
           <span>
             {format.number(grandTotal.value, {
               style: 'currency',
@@ -104,15 +111,16 @@ const OrderSummaryInfo = async ({
           </span>
         </p>
       </div>
+      {/* NOTE: temporary it's not supported yet */}
       <div className="mt-4 flex flex-col gap-2 md:flex-row lg:flex-col">
-        <Button aria-label="Print Invoice" asChild className="w-full" variant="secondary">
-          <Link href="TODO:add_path_later">Print Invoice</Link>
+        <Button aria-label={t('printInvoice')} className="w-full" disabled variant="secondary">
+          {t('printInvoice')}
         </Button>
-        <Button aria-label="Repurchase" asChild className="w-full" variant="secondary">
-          <Link href="TODO:add_path_later">Repurchase</Link>
+        <Button aria-label={t('repurchaseOrder')} className="w-full" disabled variant="secondary">
+          {t('repurchaseOrder')}
         </Button>
-        <Button aria-label="Return" asChild className="w-full" variant="secondary">
-          <Link href={{ pathname: 'TODO:ADD_PATH_LATER' }}>Return</Link>
+        <Button aria-label={t('return')} className="w-full" disabled variant="secondary">
+          {t('return')}
         </Button>
       </div>
     </div>
@@ -138,10 +146,12 @@ const combineShippingMethodInfo = async (
     return [];
   }
 
+  const locale = await getLocale();
+  const t = await getTranslations({ locale, namespace: 'Account.Orders' });
   const format = await getFormatter();
   const { shippingProviderName, shippingMethodName, shippedAt } = shipment;
   const providerWithMethod = `${shippingProviderName} - ${shippingMethodName}`;
-  const shippedDate = `Shipped on ${format.dateTime(new Date(shippedAt.utc), {
+  const shippedDate = `${t('shippedDate')} ${format.dateTime(new Date(shippedAt.utc), {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -159,6 +169,8 @@ const ShippingInfo = async ({
   isMutiConsignments: boolean;
   shippingNumber?: number;
 }) => {
+  const locale = await getLocale();
+  const t = await getTranslations({ locale, namespace: 'Account.Orders' });
   const orderShipments = consignments.shipping
     ? consignments.shipping.map(({ shipments, shippingAddress }) => ({
         shipments: removeEdgesAndNodes(shipments),
@@ -180,7 +192,7 @@ const ShippingInfo = async ({
     customerShippingMethod = await combineShippingMethodInfo(orderShipments[0].shipments[0]);
   }
 
-  if (isMutiConsignments && shippingNumber && orderShipments[shippingNumber]) {
+  if (isMutiConsignments && shippingNumber !== undefined && orderShipments[shippingNumber]) {
     trackingData = orderShipments[shippingNumber].shipments[0]?.tracking;
     customerShippingAddress = combineAddressInfo(orderShipments[shippingNumber].shippingAddress);
     customerShippingMethod = await combineShippingMethodInfo(
@@ -198,12 +210,17 @@ const ShippingInfo = async ({
       : null;
 
   return (
-    <div className="border border-gray-200 p-6">
-      <p className="border-b border-gray-200 pb-4 text-lg font-semibold">
-        {isMutiConsignments ? `Shipment ${shippingNumber}/${orderShipments.length}` : 'Shipping'}
-      </p>
+    <div
+      className={cn(
+        'border border-gray-200 p-6',
+        isMutiConsignments && 'flex flex-col gap-4 border-none md:flex-row md:gap-16',
+      )}
+    >
+      {!isMutiConsignments ? (
+        <p className="border-b border-gray-200 pb-4 text-lg font-semibold">{t('shippingTitle')}</p>
+      ) : null}
       <div className="flex flex-col gap-2 py-4">
-        <p className="font-semibold">Shipping address</p>
+        <p className="font-semibold">{t('shippingAddress')}</p>
         {customerShippingAddress.map((line) => (
           <p key={line}>{line}</p>
         ))}
@@ -214,12 +231,12 @@ const ShippingInfo = async ({
           isMutiConsignments && 'border-0',
         )}
       >
-        <p className="font-semibold">Shipping method</p>
+        <p className="font-semibold">{t('shippingMethod')}</p>
         {customerShippingMethod.map((line) => (
           <p key={line}>{line}</p>
         ))}
         {typeof trackingUrl === 'string' && Boolean(trackingNumber) && (
-          <Button aria-label="track order" asChild className="w-full" variant="subtle">
+          <Button aria-label={t('trackOrder')} asChild className="w-full" variant="subtle">
             <Link href={trackingUrl}>{trackingNumber}</Link>
           </Button>
         )}
@@ -228,19 +245,25 @@ const ShippingInfo = async ({
   );
 };
 
-const PaymentInfo = ({ paymentData }: { paymentData: OrderDetailsDataType['paymentInfo'] }) => {
+const PaymentInfo = async ({
+  paymentData,
+}: {
+  paymentData: OrderDetailsDataType['paymentInfo'];
+}) => {
+  const locale = await getLocale();
+  const t = await getTranslations({ locale, namespace: 'Account.Orders' });
   const { billingAddress } = paymentData;
   const customerBillingAddress = combineAddressInfo(billingAddress);
 
   return (
     <div className="border border-gray-200 p-6">
-      <p className="border-b border-gray-200 pb-4 text-lg font-semibold">Payment</p>
+      <p className="border-b border-gray-200 pb-4 text-lg font-semibold">{t('shippingPayment')}</p>
       <div className="flex flex-col gap-2 py-4">
-        <p className="font-semibold">Payment method</p>
-        <p>TBD</p>
+        <p className="font-semibold">{t('shippingPaymentMethod')}</p>
+        <p>N/A</p>
       </div>
       <div className="flex flex-col gap-2 border-t border-gray-200 pt-4 text-base">
-        <p className="font-semibold">Billing address</p>
+        <p className="font-semibold">{t('billingAddress')}</p>
         {customerBillingAddress.map((line) => (
           <p key={line}>{line}</p>
         ))}
@@ -249,14 +272,11 @@ const PaymentInfo = ({ paymentData }: { paymentData: OrderDetailsDataType['payme
   );
 };
 
-interface OrderDetailsProps {
-  data: OrderDetailsDataType;
-}
-
-export const OrderDetails = ({ data }: OrderDetailsProps) => {
+export const OrderDetails = async ({ data }: { data: OrderDetailsDataType }) => {
+  const locale = await getLocale();
+  const t = await getTranslations({ locale, namespace: 'Account.Orders' });
   const { orderState, summaryInfo, consignments, paymentInfo } = data;
-  const isMultiShippingConsignments =
-    (consignments.shipping && consignments.shipping.length > 1) || false;
+  const isMultiShippingConsignments = consignments.shipping && consignments.shipping.length > 1;
 
   const orderContent = consignments.shipping
     ? consignments.shipping.map(({ lineItems }) => ({
@@ -266,12 +286,9 @@ export const OrderDetails = ({ data }: OrderDetailsProps) => {
 
   return (
     <div className="mb-14">
-      {/* NOTE: state of order */}
       <OrderState orderState={orderState} />
-      {/* NOTE: order details grid */}
       <div className="flex flex-col gap-8 lg:flex-row">
-        {/* TODO: Shipments Content */}
-        <div className="flex flex-col lg:w-2/3">
+        <div className="flex flex-col gap-8 lg:w-2/3">
           {orderContent?.map((consignment, idx) => {
             const { lineItems } = consignment;
 
@@ -279,9 +296,16 @@ export const OrderDetails = ({ data }: OrderDetailsProps) => {
               <div className="w-full border border-gray-200 p-6" key={idx}>
                 <p className="border-b border-gray-200 pb-4 text-xl font-semibold lg:text-2xl">
                   {isMultiShippingConsignments
-                    ? `Shipping ${idx + 1}/${orderContent.length}`
-                    : 'Order content'}
+                    ? `${t('shipmentTitle')} ${idx + 1}/${orderContent.length}`
+                    : t('orderContents')}
                 </p>
+                {isMultiShippingConsignments && (
+                  <ShippingInfo
+                    consignments={consignments}
+                    isMutiConsignments={true}
+                    shippingNumber={idx}
+                  />
+                )}
                 <ul className="my-6 flex flex-col gap-6">
                   {lineItems.map((shipment) => {
                     return (
@@ -300,7 +324,6 @@ export const OrderDetails = ({ data }: OrderDetailsProps) => {
             );
           })}
         </div>
-        {/* Payments & Price Sub-block */}
         <div className="flex grow flex-col gap-8">
           <OrderSummaryInfo summaryInfo={summaryInfo} />
           {!isMultiShippingConsignments && (
