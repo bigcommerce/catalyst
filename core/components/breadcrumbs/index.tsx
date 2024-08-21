@@ -1,21 +1,10 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 
-import { FragmentOf, graphql } from '~/client/graphql';
+import { FragmentOf } from '~/client/graphql';
 
 import { Breadcrumbs as ComponentsBreadcrumbs } from '../ui/breadcrumbs';
 
-export const BreadcrumbsFragment = graphql(`
-  fragment BreadcrumbsFragment on Category {
-    breadcrumbs(depth: 5) {
-      edges {
-        node {
-          name
-          path
-        }
-      }
-    }
-  }
-`);
+import { BreadcrumbsFragment } from './fragment';
 
 interface Props {
   category: FragmentOf<typeof BreadcrumbsFragment>;

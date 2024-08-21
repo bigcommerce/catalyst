@@ -5,13 +5,14 @@ export const AddToCartFragment = graphql(
   `
     fragment AddToCartFragment on Product {
       entityId
-      productOptions(first: 3) {
+      productOptions(first: 1) {
         edges {
           node {
             entityId
           }
         }
       }
+
       ...AddToCartButtonFragment
     }
   `,

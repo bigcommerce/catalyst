@@ -2,17 +2,45 @@
 
 import { BigCommerceAPIError } from '@bigcommerce/catalyst-client';
 
-import {
-  Input,
-  registerCustomer as registerCustomerClient,
-} from '~/client/mutations/register-customer';
+import { client } from '~/client';
+import { graphql, VariablesOf } from '~/client/graphql';
+
+const RegisterCustomerMutation = graphql(`
+  mutation RegisterCustomer($input: RegisterCustomerInput!, $reCaptchaV2: ReCaptchaV2Input) {
+    customer {
+      registerCustomer(input: $input, reCaptchaV2: $reCaptchaV2) {
+        customer {
+          firstName
+          lastName
+        }
+        errors {
+          ... on EmailAlreadyInUseError {
+            message
+          }
+          ... on AccountCreationDisabledError {
+            message
+          }
+          ... on CustomerRegistrationError {
+            message
+          }
+          ... on ValidationError {
+            message
+          }
+        }
+      }
+    }
+  }
+`);
+
+type Variables = VariablesOf<typeof RegisterCustomerMutation>;
+type RegisterCustomerInput = Variables['input'];
 
 interface RegisterCustomerForm {
   formData: FormData;
   reCaptchaToken?: string;
 }
 
-const isRegisterCustomerInput = (data: unknown): data is Input => {
+const isRegisterCustomerInput = (data: unknown): data is RegisterCustomerInput => {
   if (typeof data === 'object' && data !== null && 'email' in data) {
     return true;
   }
@@ -52,18 +80,23 @@ export const registerCustomer = async ({ formData, reCaptchaToken }: RegisterCus
   }
 
   try {
-    const response = await registerCustomerClient({
-      formFields: parsedData,
-      reCaptchaToken,
+    const response = await client.fetch({
+      document: RegisterCustomerMutation,
+      variables: {
+        input: parsedData,
+        ...(reCaptchaToken && { reCaptchaV2: { token: reCaptchaToken } }),
+      },
     });
 
-    if (response.errors.length === 0) {
+    const result = response.data.customer.registerCustomer;
+
+    if (result.errors.length === 0) {
       return { status: 'success', data: parsedData };
     }
 
     return {
       status: 'error',
-      error: response.errors.map((error) => error.message).join('\n'),
+      error: result.errors.map((error) => error.message).join('\n'),
     };
   } catch (error) {
     // eslint-disable-next-line no-console

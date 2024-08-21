@@ -25,9 +25,9 @@ const CategoryTreeQuery = graphql(
   [CategoryTreeFragment],
 );
 
-type CategoryTreeQueryVariables = VariablesOf<typeof CategoryTreeQuery>;
+type Variables = VariablesOf<typeof CategoryTreeQuery>;
 
-const getCategoryTree = cache(async (variables: CategoryTreeQueryVariables = {}) => {
+const getCategoryTree = cache(async (variables: Variables = {}) => {
   const response = await client.fetch({
     document: CategoryTreeQuery,
     variables,

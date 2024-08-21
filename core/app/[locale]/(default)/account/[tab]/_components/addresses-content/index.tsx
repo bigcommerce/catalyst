@@ -1,15 +1,16 @@
 import { getLocale, getTranslations } from 'next-intl/server';
 
-import { getCustomerAddresses } from '~/client/queries/get-customer-addresses';
+import { ExistingResultType } from '~/client/util';
 import { Pagination } from '~/components/ui/pagination';
 
+import { getCustomerAddresses } from '../../page-data';
 import { TabHeading } from '../tab-heading';
 
 import { AddressBook } from './address-book';
 import { CustomerEditAddress } from './customer-edit-address';
 import { CustomerNewAddress } from './customer-new-address';
 
-type CustomerAddresses = NonNullable<Awaited<ReturnType<typeof getCustomerAddresses>>>;
+type CustomerAddresses = ExistingResultType<typeof getCustomerAddresses>;
 
 interface Props {
   addresses: CustomerAddresses['addresses'];

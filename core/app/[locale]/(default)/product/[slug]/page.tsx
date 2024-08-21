@@ -17,15 +17,25 @@ import { Reviews } from './_components/reviews';
 import { Warranty } from './_components/warranty';
 import { getProduct } from './page-data';
 
-interface ProductPageProps {
+interface Props {
   params: { slug: string; locale: LocaleType };
   searchParams: Record<string, string | string[] | undefined>;
 }
 
-export async function generateMetadata({
-  params,
-  searchParams,
-}: ProductPageProps): Promise<Metadata> {
+function getOptionValueIds({ searchParams }: { searchParams: Props['searchParams'] }) {
+  const { slug, ...options } = searchParams;
+
+  return Object.keys(options)
+    .map((option) => ({
+      optionEntityId: Number(option),
+      valueEntityId: Number(searchParams[option]),
+    }))
+    .filter(
+      (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
+    );
+}
+
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const productId = Number(params.slug);
   const optionValueIds = getOptionValueIds({ searchParams });
 
@@ -59,7 +69,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function Product({ params, searchParams }: ProductPageProps) {
+export default async function Product({ params, searchParams }: Props) {
   const { locale } = params;
 
   unstable_setRequestLocale(locale);
@@ -111,19 +121,6 @@ export default async function Product({ params, searchParams }: ProductPageProps
       <ProductViewed product={product} />
     </>
   );
-}
-
-function getOptionValueIds({ searchParams }: { searchParams: ProductPageProps['searchParams'] }) {
-  const { slug, ...options } = searchParams;
-
-  return Object.keys(options)
-    .map((option) => ({
-      optionEntityId: Number(option),
-      valueEntityId: Number(searchParams[option]),
-    }))
-    .filter(
-      (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
-    );
 }
 
 export const runtime = 'edge';

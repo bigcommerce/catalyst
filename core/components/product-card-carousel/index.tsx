@@ -1,16 +1,9 @@
-import { graphql, ResultOf } from '~/client/graphql';
+import { ResultOf } from '~/client/graphql';
 import { Carousel } from '~/components/ui/carousel';
 
-import { ProductCard, ProductCardFragment } from '../product-card';
+import { ProductCard } from '../product-card';
 
-export const ProductCardCarouselFragment = graphql(
-  `
-    fragment ProductCardCarouselFragment on Product {
-      ...ProductCardFragment
-    }
-  `,
-  [ProductCardFragment],
-);
+import { ProductCardCarouselFragment } from './fragment';
 
 type Product = ResultOf<typeof ProductCardCarouselFragment>;
 

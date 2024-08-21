@@ -5,7 +5,7 @@ import { client } from '~/client';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { BreadcrumbsFragment } from '~/components/breadcrumbs';
+import { BreadcrumbsFragment } from '~/components/breadcrumbs/fragment';
 
 import { DescriptionFragment } from './_components/description';
 import { DetailsFragment } from './_components/details';
@@ -62,9 +62,9 @@ const ProductPageQuery = graphql(
   ],
 );
 
-type ProductPageQueryVariables = VariablesOf<typeof ProductPageQuery>;
+type Variables = VariablesOf<typeof ProductPageQuery>;
 
-export const getProduct = cache(async (variables: ProductPageQueryVariables) => {
+export const getProduct = cache(async (variables: Variables) => {
   const customerId = await getSessionCustomerId();
 
   const { data } = await client.fetch({

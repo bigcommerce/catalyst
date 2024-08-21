@@ -20,10 +20,20 @@ import {
 import { Message } from '~/components/ui/message';
 import { useRouter } from '~/navigation';
 
-import {
-  CustomerChangePasswordSchema,
-  submitCustomerChangePasswordForm,
-} from '../_actions/submit-customer-change-password-form';
+import { submitCustomerChangePasswordForm } from '../_actions/submit-customer-change-password-form';
+
+const ChangePasswordFieldsSchema = z.object({
+  customerId: z.string(),
+  customerToken: z.string(),
+  currentPassword: z.string().min(1),
+  newPassword: z.string().min(1),
+  confirmPassword: z.string().min(1),
+});
+
+const CustomerChangePasswordSchema = ChangePasswordFieldsSchema.omit({
+  customerId: true,
+  customerToken: true,
+});
 
 type Passwords = z.infer<typeof CustomerChangePasswordSchema>;
 

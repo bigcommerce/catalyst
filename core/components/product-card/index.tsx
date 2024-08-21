@@ -1,69 +1,11 @@
 import { getFormatter } from 'next-intl/server';
 
-import { graphql, ResultOf } from '~/client/graphql';
+import { ResultOf } from '~/client/graphql';
 import { ProductCard as ComponentProductCard } from '~/components/ui/product-card';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
 import { AddToCart } from './add-to-cart';
-import { AddToCartFragment } from './add-to-cart/fragment';
-
-export const PricingFragment = graphql(`
-  fragment PricingFragment on Product {
-    prices {
-      price {
-        value
-        currencyCode
-      }
-      basePrice {
-        value
-        currencyCode
-      }
-      retailPrice {
-        value
-        currencyCode
-      }
-      salePrice {
-        value
-        currencyCode
-      }
-      priceRange {
-        min {
-          value
-          currencyCode
-        }
-        max {
-          value
-          currencyCode
-        }
-      }
-    }
-  }
-`);
-
-export const ProductCardFragment = graphql(
-  `
-    fragment ProductCardFragment on Product {
-      entityId
-      name
-      defaultImage {
-        altText
-        url: urlTemplate
-      }
-      path
-      brand {
-        name
-        path
-      }
-      reviewSummary {
-        numberOfReviews
-        averageRating
-      }
-      ...AddToCartFragment
-      ...PricingFragment
-    }
-  `,
-  [AddToCartFragment, PricingFragment],
-);
+import { ProductCardFragment } from './fragment';
 
 interface Props {
   product: ResultOf<typeof ProductCardFragment>;

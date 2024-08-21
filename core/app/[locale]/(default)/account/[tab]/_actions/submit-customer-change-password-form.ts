@@ -2,13 +2,46 @@
 
 import { z } from 'zod';
 
-import { ChangePasswordFieldsSchema } from '~/client/mutations/submit-change-password';
-import { submitCustomerChangePassword } from '~/client/mutations/submit-customer-change-password';
+import { getSessionCustomerId } from '~/auth';
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
 
-export const CustomerChangePasswordSchema = ChangePasswordFieldsSchema.omit({
+const ChangePasswordFieldsSchema = z.object({
+  customerId: z.string(),
+  customerToken: z.string(),
+  currentPassword: z.string().min(1),
+  newPassword: z.string().min(1),
+  confirmPassword: z.string().min(1),
+});
+
+const CustomerChangePasswordSchema = ChangePasswordFieldsSchema.omit({
   customerId: true,
   customerToken: true,
 });
+
+const CustomerChangePasswordMutation = graphql(`
+  mutation CustomerChangePasswordMutation($input: ChangePasswordInput!) {
+    customer {
+      changePassword(input: $input) {
+        errors {
+          ... on ValidationError {
+            message
+            path
+          }
+          ... on CustomerDoesNotExistError {
+            message
+          }
+          ... on CustomerPasswordError {
+            message
+          }
+          ... on CustomerNotLoggedInError {
+            message
+          }
+        }
+      }
+    }
+  }
+`);
 
 export interface State {
   status: 'idle' | 'error' | 'success';
@@ -19,6 +52,8 @@ export const submitCustomerChangePasswordForm = async (
   _previousState: unknown,
   formData: FormData,
 ) => {
+  const customerId = await getSessionCustomerId();
+
   try {
     const parsedData = CustomerChangePasswordSchema.parse({
       newPassword: formData.get('new-password'),
@@ -26,18 +61,26 @@ export const submitCustomerChangePasswordForm = async (
       confirmPassword: formData.get('confirm-password'),
     });
 
-    const response = await submitCustomerChangePassword({
-      newPassword: parsedData.newPassword,
-      currentPassword: parsedData.currentPassword,
+    const response = await client.fetch({
+      document: CustomerChangePasswordMutation,
+      variables: {
+        input: {
+          currentPassword: parsedData.currentPassword,
+          newPassword: parsedData.newPassword,
+        },
+      },
+      customerId,
     });
 
-    if (response.errors.length === 0) {
+    const result = response.data.customer.changePassword;
+
+    if (result.errors.length === 0) {
       return { status: 'success', message: 'Password has been updated successfully.' };
     }
 
     return {
       status: 'error',
-      message: response.errors.map((error) => error.message).join('\n'),
+      message: result.errors.map((error) => error.message).join('\n'),
     };
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {

@@ -3,13 +3,27 @@
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
-import { graphql } from '~/client/graphql';
-import { updateCartLineItem } from '~/client/mutations/update-cart-line-item';
+import { getSessionCustomerId } from '~/auth';
+import { client } from '~/client';
+import { graphql, VariablesOf } from '~/client/graphql';
 
 import { removeItem } from '../../_actions/remove-item';
 
+const UpdateCartLineItemMutation = graphql(`
+  mutation UpdateCartLineItem($input: UpdateCartLineItemInput!) {
+    cart {
+      updateCartLineItem(input: $input) {
+        cart {
+          entityId
+        }
+      }
+    }
+  }
+`);
+
 type CartLineItemInput = ReturnType<typeof graphql.scalar<'CartLineItemInput'>>;
-type UpdateCartLineItemInput = ReturnType<typeof graphql.scalar<'UpdateCartLineItemInput'>>;
+type Variables = VariablesOf<typeof UpdateCartLineItemMutation>;
+type UpdateCartLineItemInput = Variables['input'];
 
 interface UpdateProductQuantityParams extends CartLineItemInput {
   lineItemEntityId: UpdateCartLineItemInput['lineItemEntityId'];
@@ -22,6 +36,8 @@ export async function updateItemQuantity({
   variantEntityId,
   selectedOptions,
 }: UpdateProductQuantityParams) {
+  const customerId = await getSessionCustomerId();
+
   try {
     const cartId = cookies().get('cartId')?.value;
 
@@ -45,9 +61,22 @@ export async function updateItemQuantity({
       selectedOptions && { selectedOptions },
     );
 
-    const cart = await updateCartLineItem(cartId, lineItemEntityId, {
-      lineItem: cartLineItemData,
+    const response = await client.fetch({
+      document: UpdateCartLineItemMutation,
+      variables: {
+        input: {
+          cartEntityId: cartId,
+          lineItemEntityId,
+          data: {
+            lineItem: cartLineItemData,
+          },
+        },
+      },
+      customerId,
+      fetchOptions: { cache: 'no-store' },
     });
+
+    const cart = response.data.cart.updateCartLineItem?.cart;
 
     if (!cart) {
       return { status: 'error', error: 'Failed to change product quantity in Cart' };

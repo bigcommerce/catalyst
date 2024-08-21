@@ -6,10 +6,8 @@ import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import {
-  ProductCardCarousel,
-  ProductCardCarouselFragment,
-} from '~/components/product-card-carousel';
+import { ProductCardCarousel } from '~/components/product-card-carousel';
+import { ProductCardCarouselFragment } from '~/components/product-card-carousel/fragment';
 
 const RelatedProductsQuery = graphql(
   `

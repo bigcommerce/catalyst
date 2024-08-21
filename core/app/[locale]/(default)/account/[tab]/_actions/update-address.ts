@@ -2,10 +2,42 @@
 
 import { revalidatePath } from 'next/cache';
 
-import {
-  updateCustomerAddress,
-  UpdateCustomerAddressInput,
-} from '~/client/mutations/update-customer-address';
+import { getSessionCustomerId } from '~/auth';
+import { client } from '~/client';
+import { graphql, VariablesOf } from '~/client/graphql';
+
+const UpdateCustomerAddressMutation = graphql(`
+  mutation UpdateCustomerAddressMutation(
+    $input: UpdateCustomerAddressInput!
+    $reCaptchaV2: ReCaptchaV2Input
+  ) {
+    customer {
+      updateCustomerAddress(input: $input, reCaptchaV2: $reCaptchaV2) {
+        errors {
+          __typename
+          ... on CustomerAddressUpdateError {
+            message
+          }
+          ... on CustomerNotLoggedInError {
+            message
+          }
+          ... on ValidationError {
+            message
+            path
+          }
+        }
+        address {
+          entityId
+          firstName
+          lastName
+        }
+      }
+    }
+  }
+`);
+
+type Variables = VariablesOf<typeof UpdateCustomerAddressMutation>;
+type UpdateCustomerAddressInput = Variables['input'];
 
 const isUpdateCustomerAddressInput = (
   data: unknown,
@@ -26,6 +58,8 @@ export const updateAddress = async ({
   formData: FormData;
   reCaptchaToken?: string;
 }) => {
+  const customerId = await getSessionCustomerId();
+
   try {
     const parsed: unknown = [...formData.entries()].reduce<
       Record<string, FormDataEntryValue | Record<string, FormDataEntryValue>>
@@ -51,23 +85,30 @@ export const updateAddress = async ({
       };
     }
 
-    const response = await updateCustomerAddress({
-      input: {
-        addressEntityId: addressId,
-        data: parsed,
+    const response = await client.fetch({
+      document: UpdateCustomerAddressMutation,
+      customerId,
+      fetchOptions: { cache: 'no-store' },
+      variables: {
+        input: {
+          addressEntityId: addressId,
+          data: parsed,
+        },
+        ...(reCaptchaToken && { reCaptchaV2: { token: reCaptchaToken } }),
       },
-      reCaptchaToken,
     });
+
+    const result = response.data.customer.updateCustomerAddress;
 
     revalidatePath('/account/addresses', 'page');
 
-    if (response.errors.length === 0) {
+    if (result.errors.length === 0) {
       return { status: 'success', message: 'The address has been updated.' };
     }
 
     return {
       status: 'error',
-      message: response.errors
+      message: result.errors
         .map((error) => {
           if (error.__typename === 'AddressDoesNotExistError') {
             return 'Address does not exist.';

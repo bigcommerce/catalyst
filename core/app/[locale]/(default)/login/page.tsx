@@ -13,10 +13,6 @@ import { LoginForm } from './_components/login-form';
 import { ResetPasswordForm } from './_components/reset-password-form';
 import { ResetPasswordFormFragment } from './_components/reset-password-form/fragment';
 
-export const metadata = {
-  title: 'Login',
-};
-
 const LoginPageQuery = graphql(
   `
     query LoginPageQuery {
@@ -31,6 +27,10 @@ const LoginPageQuery = graphql(
   `,
   [ResetPasswordFormFragment],
 );
+
+export const metadata = {
+  title: 'Login',
+};
 
 interface Props {
   params: {

@@ -4,9 +4,47 @@ import 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { z } from 'zod';
 
-import { assignCartToCustomer } from './client/mutations/assign-cart-to-customer';
-import { login } from './client/mutations/login';
-import { unassignCartFromCustomer } from './client/mutations/unassign-cart-from-customer';
+import { client } from './client';
+import { graphql } from './client/graphql';
+
+const LoginMutation = graphql(`
+  mutation Login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      customer {
+        entityId
+        firstName
+        lastName
+        email
+      }
+    }
+  }
+`);
+
+const AssignCartToCustomerMutation = graphql(`
+  mutation AssignCartToCustomer($assignCartToCustomerInput: AssignCartToCustomerInput!) {
+    cart {
+      assignCartToCustomer(input: $assignCartToCustomerInput) {
+        cart {
+          entityId
+        }
+      }
+    }
+  }
+`);
+
+const UnassignCartFromCustomerMutation = graphql(`
+  mutation UnassignCartFromCustomer(
+    $unassignCartFromCustomerInput: UnassignCartFromCustomerInput!
+  ) {
+    cart {
+      unassignCartFromCustomer(input: $unassignCartFromCustomerInput) {
+        cart {
+          entityId
+        }
+      }
+    }
+  }
+`);
 
 export const Credentials = z.object({
   email: z.string().email(),
@@ -44,19 +82,39 @@ const config = {
 
       if (cookieCartId && user.id) {
         try {
-          await assignCartToCustomer(user.id, cookieCartId);
+          await client.fetch({
+            document: AssignCartToCustomerMutation,
+            variables: {
+              assignCartToCustomerInput: {
+                cartEntityId: cookieCartId,
+              },
+            },
+            customerId: user.id,
+            fetchOptions: { cache: 'no-store' },
+          });
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error(error);
         }
       }
     },
-    async signOut() {
+    async signOut(message) {
       const cookieCartId = cookies().get('cartId')?.value;
 
-      if (cookieCartId) {
+      const customerId = 'token' in message ? message.token?.id : null;
+
+      if (customerId && cookieCartId) {
         try {
-          await unassignCartFromCustomer(cookieCartId);
+          await client.fetch({
+            document: UnassignCartFromCustomerMutation,
+            variables: {
+              unassignCartFromCustomerInput: {
+                cartEntityId: cookieCartId,
+              },
+            },
+            customerId,
+            fetchOptions: { cache: 'no-store' },
+          });
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error(error);
@@ -73,16 +131,21 @@ const config = {
       async authorize(credentials) {
         const { email, password } = Credentials.parse(credentials);
 
-        const response = await login(email, password);
+        const response = await client.fetch({
+          document: LoginMutation,
+          variables: { email, password },
+        });
 
-        if (!response.customer) {
+        const result = response.data.login;
+
+        if (!result.customer) {
           return null;
         }
 
         return {
-          id: response.customer.entityId.toString(),
-          name: `${response.customer.firstName} ${response.customer.lastName}`,
-          email: response.customer.email,
+          id: result.customer.entityId.toString(),
+          name: `${result.customer.firstName} ${result.customer.lastName}`,
+          email: result.customer.email,
         };
       },
     }),

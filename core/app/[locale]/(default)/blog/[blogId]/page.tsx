@@ -34,7 +34,7 @@ export async function generateMetadata({ params: { blogId } }: Props): Promise<M
   };
 }
 
-export default async function BlogPostPage({ params: { blogId, locale } }: Props) {
+export default async function Blog({ params: { blogId, locale } }: Props) {
   const format = await getFormatter({ locale });
 
   const data = await getBlogPageData({ entityId: Number(blogId) });

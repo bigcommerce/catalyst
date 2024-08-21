@@ -6,18 +6,10 @@ import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import {
-  ProductCardCarousel,
-  ProductCardCarouselFragment,
-} from '~/components/product-card-carousel';
+import { ProductCardCarousel } from '~/components/product-card-carousel';
+import { ProductCardCarouselFragment } from '~/components/product-card-carousel/fragment';
 import { Slideshow } from '~/components/slideshow';
 import { LocaleType } from '~/i18n';
-
-interface Props {
-  params: {
-    locale: LocaleType;
-  };
-}
 
 const HomePageQuery = graphql(
   `
@@ -42,6 +34,12 @@ const HomePageQuery = graphql(
   `,
   [ProductCardCarouselFragment],
 );
+
+interface Props {
+  params: {
+    locale: LocaleType;
+  };
+}
 
 export default async function Home({ params: { locale } }: Props) {
   unstable_setRequestLocale(locale);

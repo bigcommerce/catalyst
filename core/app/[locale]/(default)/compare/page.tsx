@@ -5,11 +5,11 @@ import * as z from 'zod';
 
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
+import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
-import { PricingFragment } from '~/components/product-card';
 import { SearchForm } from '~/components/search-form';
 import { Button } from '~/components/ui/button';
 import { Rating } from '~/components/ui/rating';
@@ -20,10 +20,6 @@ import { AddToCart } from './_components/add-to-cart';
 import { AddToCartFragment } from './_components/add-to-cart/fragment';
 
 const MAX_COMPARE_LIMIT = 10;
-
-export const metadata = {
-  title: 'Compare',
-};
 
 const CompareParamsSchema = z.object({
   ids: z
@@ -44,7 +40,7 @@ const CompareParamsSchema = z.object({
 
 const ComparePageQuery = graphql(
   `
-    query ComparePage($entityIds: [Int!], $first: Int) {
+    query ComparePageQuery($entityIds: [Int!], $first: Int) {
       site {
         products(entityIds: $entityIds, first: $first) {
           edges {
@@ -87,13 +83,18 @@ const ComparePageQuery = graphql(
   [AddToCartFragment, PricingFragment],
 );
 
-export default async function Compare({
-  params: { locale },
-  searchParams,
-}: {
+export const metadata = {
+  title: 'Compare',
+};
+
+interface Props {
+  params: {
+    locale: LocaleType;
+  };
   searchParams: Record<string, string | string[] | undefined>;
-  params: { locale: LocaleType };
-}) {
+}
+
+export default async function Compare({ params: { locale }, searchParams }: Props) {
   const customerId = await getSessionCustomerId();
   const t = await getTranslations({ locale, namespace: 'Compare' });
   const messages = await getMessages({ locale });

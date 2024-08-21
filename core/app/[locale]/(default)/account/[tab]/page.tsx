@@ -2,13 +2,11 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getLocale, getTranslations } from 'next-intl/server';
 
-import { getCustomerAddresses } from '~/client/queries/get-customer-addresses';
-
 import { AddressesContent } from './_components/addresses-content';
 import { SettingsContent } from './_components/settings-content';
 import { TabHeading } from './_components/tab-heading';
 import { TabType } from './layout';
-import { getCustomerSettingsQuery } from './page-data';
+import { getCustomerAddresses, getCustomerSettingsQuery } from './page-data';
 
 interface Props {
   params: {

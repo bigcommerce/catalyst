@@ -2,49 +2,13 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
-import { cache } from 'react';
-
-import { client } from '~/client';
-import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 
 import { ContactUs } from './contact-us';
-import { ContactUsFragment } from './contact-us/fragment';
+import { getWebpageData } from './page-data';
 
 interface Props {
   params: { id: string; locale: string };
 }
-
-const WebPageQuery = graphql(
-  `
-    query WebPage($id: ID!) {
-      ...ContactUsFragment
-      node(id: $id) {
-        __typename
-        ... on ContactPage {
-          name
-          htmlBody
-          seo {
-            pageTitle
-            metaKeywords
-            metaDescription
-          }
-        }
-      }
-    }
-  `,
-  [ContactUsFragment],
-);
-
-const getWebpageData = cache(async (variables: { id: string }) => {
-  const { data } = await client.fetch({
-    document: WebPageQuery,
-    variables,
-    fetchOptions: { next: { revalidate } },
-  });
-
-  return data;
-});
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await getWebpageData({ id: decodeURIComponent(params.id) });

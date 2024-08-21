@@ -3,14 +3,14 @@ import { getLocale, getMessages } from 'next-intl/server';
 
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
-import { FORM_FIELDS_FRAGMENT } from '~/client/fragments/form-fields';
+import { FormFieldsFragment } from '~/client/fragments/form-fields';
 import { graphql, ResultOf } from '~/client/graphql';
 
 import { AddAddress as AddAddressForm } from './add-address';
 
 const CustomerNewAdressQuery = graphql(
   `
-    query customerNewAddress(
+    query CustomerNewAddress(
       $countryCode: String
       $shippingFilters: FormFieldFiltersInput
       $shippingSorting: FormFieldSortInput
@@ -26,7 +26,7 @@ const CustomerNewAdressQuery = graphql(
           }
           formFields {
             shippingAddress(filters: $shippingFilters, sortBy: $shippingSorting) {
-              ...FormFields
+              ...FormFieldsFragment
             }
           }
         }
@@ -47,7 +47,7 @@ const CustomerNewAdressQuery = graphql(
       }
     }
   `,
-  [FORM_FIELDS_FRAGMENT],
+  [FormFieldsFragment],
 );
 
 export type NewAddressQueryResponseType = ResultOf<typeof CustomerNewAdressQuery>;
@@ -59,10 +59,11 @@ const FALLBACK_COUNTRY = {
   states: [],
 };
 
-export async function CustomerNewAddress() {
+export const CustomerNewAddress = async () => {
   const customerId = await getSessionCustomerId();
   const locale = await getLocale();
   const messages = await getMessages();
+
   const { data } = await client.fetch({
     document: CustomerNewAdressQuery,
     customerId,
@@ -93,4 +94,4 @@ export async function CustomerNewAddress() {
       />
     </NextIntlClientProvider>
   );
-}
+};

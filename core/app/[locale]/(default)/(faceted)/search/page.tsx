@@ -11,14 +11,14 @@ import { MobileSideNav } from '../_components/mobile-side-nav';
 import { SortBy } from '../_components/sort-by';
 import { fetchFacetedSearch } from '../fetch-faceted-search';
 
+export const metadata = {
+  title: 'Search Results',
+};
+
 interface Props {
   params: { locale: LocaleType };
   searchParams: Record<string, string | string[] | undefined>;
 }
-
-export const metadata = {
-  title: 'Search Results',
-};
 
 export default async function Search({ params: { locale }, searchParams }: Props) {
   const t = await getTranslations('Search');

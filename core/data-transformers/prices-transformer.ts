@@ -1,8 +1,8 @@
 import { ResultOf } from 'gql.tada';
 import { getFormatter } from 'next-intl/server';
 
+import { PricingFragment } from '~/client/fragments/pricing';
 import { ExistingResultType } from '~/client/util';
-import { PricingFragment } from '~/components/product-card';
 import { Price } from '~/components/ui/product-card';
 
 export const pricesTransformer = (

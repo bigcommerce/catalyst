@@ -1,8 +1,10 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
-import { FORM_FIELDS_FRAGMENT } from '~/client/fragments/form-fields';
+import { FormFieldsFragment } from '~/client/fragments/form-fields';
+import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql, VariablesOf } from '~/client/graphql';
 
 const CustomerSettingsQuery = graphql(
@@ -52,10 +54,10 @@ const CustomerSettingsQuery = graphql(
         settings {
           formFields {
             customer(filters: $customerFilters, sortBy: $customerSortBy) {
-              ...FormFields
+              ...FormFieldsFragment
             }
             shippingAddress(filters: $addressFilters, sortBy: $addressSortBy) {
-              ...FormFields
+              ...FormFieldsFragment
             }
           }
           reCaptcha {
@@ -66,7 +68,7 @@ const CustomerSettingsQuery = graphql(
       }
     }
   `,
-  [FORM_FIELDS_FRAGMENT],
+  [FormFieldsFragment],
 );
 
 type Variables = VariablesOf<typeof CustomerSettingsQuery>;
@@ -115,3 +117,69 @@ export const getCustomerSettingsQuery = cache(async ({ address, customer }: Prop
     reCaptchaSettings,
   };
 });
+
+const GetCustomerAddressesQuery = graphql(
+  `
+    query GetCustomerAddresses($after: String, $before: String, $first: Int, $last: Int) {
+      customer {
+        entityId
+        addresses(before: $before, after: $after, first: $first, last: $last) {
+          pageInfo {
+            ...PaginationFragment
+          }
+          collectionInfo {
+            totalItems
+          }
+          edges {
+            node {
+              entityId
+              firstName
+              lastName
+              address1
+              address2
+              city
+              stateOrProvince
+              countryCode
+              phone
+              postalCode
+              company
+            }
+          }
+        }
+      }
+    }
+  `,
+  [PaginationFragment],
+);
+
+export interface CustomerAddressesArgs {
+  after?: string;
+  before?: string;
+  limit?: number;
+}
+
+export const getCustomerAddresses = cache(
+  async ({ before = '', after = '', limit = 9 }: CustomerAddressesArgs) => {
+    const customerId = await getSessionCustomerId();
+    const paginationArgs = before ? { last: limit, before } : { first: limit, after };
+
+    const response = await client.fetch({
+      document: GetCustomerAddressesQuery,
+      variables: { ...paginationArgs },
+      customerId,
+      fetchOptions: { cache: 'no-store' },
+    });
+
+    const addresses = response.data.customer?.addresses;
+
+    if (!addresses) {
+      return undefined;
+    }
+
+    return {
+      pageInfo: addresses.pageInfo,
+      addressesCount: addresses.collectionInfo?.totalItems ?? 0,
+      addresses: removeEdgesAndNodes({ edges: addresses.edges }),
+    };
+  },
+);

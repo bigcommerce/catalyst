@@ -3,8 +3,8 @@ import { getSessionCustomerId } from '~/auth';
 import { client } from '..';
 import { graphql, VariablesOf } from '../graphql';
 
-const ADD_TO_CART_LINE_ITEM_MUTATION = graphql(`
-  mutation AddCartLineItem($input: AddCartLineItemsInput!) {
+const AddCartLineItemMutation = graphql(`
+  mutation AddCartLineItemMutation($input: AddCartLineItemsInput!) {
     cart {
       addCartLineItems(input: $input) {
         cart {
@@ -15,14 +15,17 @@ const ADD_TO_CART_LINE_ITEM_MUTATION = graphql(`
   }
 `);
 
-type Variables = VariablesOf<typeof ADD_TO_CART_LINE_ITEM_MUTATION>;
-type Input = Variables['input'];
+type Variables = VariablesOf<typeof AddCartLineItemMutation>;
+type AddCartLineItemsInput = Variables['input'];
 
-export const addCartLineItem = async (cartEntityId: Input['cartEntityId'], data: Input['data']) => {
+export const addCartLineItem = async (
+  cartEntityId: AddCartLineItemsInput['cartEntityId'],
+  data: AddCartLineItemsInput['data'],
+) => {
   const customerId = await getSessionCustomerId();
 
   const response = await client.fetch({
-    document: ADD_TO_CART_LINE_ITEM_MUTATION,
+    document: AddCartLineItemMutation,
     variables: { input: { cartEntityId, data } },
     customerId,
     fetchOptions: { cache: 'no-store' },

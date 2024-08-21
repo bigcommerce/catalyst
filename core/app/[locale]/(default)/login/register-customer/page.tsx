@@ -9,17 +9,17 @@ import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 import { RegisterCustomerForm } from './_components/register-customer-form';
 import { getRegisterCustomerQuery } from './page-data';
 
-interface Props {
-  params: {
-    locale: LocaleType;
-  };
-}
-
 const FALLBACK_COUNTRY = {
   entityId: 226,
   name: 'United States',
   code: 'US',
 };
+
+interface Props {
+  params: {
+    locale: LocaleType;
+  };
+}
 
 export default async function RegisterCustomer({ params: { locale } }: Props) {
   const session = await auth();

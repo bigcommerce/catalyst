@@ -6,6 +6,7 @@ import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
 import { getRegisterCustomerQuery } from '~/app/[locale]/(default)/login/register-customer/page-data';
+import { ExistingResultType } from '~/client/util';
 import { Button } from '~/components/ui/button';
 import { Field, Form, FormSubmit } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
@@ -28,13 +29,9 @@ interface FormStatus {
   message: string;
 }
 
-export type CustomerFields = NonNullable<
-  Awaited<ReturnType<typeof getRegisterCustomerQuery>>
->['customerFields'];
-export type AddressFields = NonNullable<
-  Awaited<ReturnType<typeof getRegisterCustomerQuery>>
->['addressFields'];
-type Countries = NonNullable<Awaited<ReturnType<typeof getRegisterCustomerQuery>>>['countries'];
+export type CustomerFields = ExistingResultType<typeof getRegisterCustomerQuery>['customerFields'];
+export type AddressFields = ExistingResultType<typeof getRegisterCustomerQuery>['addressFields'];
+type Countries = ExistingResultType<typeof getRegisterCustomerQuery>['countries'];
 type CountryCode = Countries[number]['code'];
 type CountryStates = Countries[number]['statesOrProvinces'];
 

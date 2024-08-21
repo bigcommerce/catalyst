@@ -3,7 +3,9 @@
 import { revalidateTag } from 'next/cache';
 import { z } from 'zod';
 
-import { applyCheckoutCoupon } from '~/client/mutations/apply-checkout-coupon';
+import { getSessionCustomerId } from '~/auth';
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
 
 const ApplyCouponCodeSchema = z.object({
@@ -11,14 +13,42 @@ const ApplyCouponCodeSchema = z.object({
   couponCode: z.string(),
 });
 
-export async function applyCouponCode(formData: FormData) {
+const ApplyCheckoutCouponMutation = graphql(`
+  mutation ApplyCheckoutCouponMutation($applyCheckoutCouponInput: ApplyCheckoutCouponInput!) {
+    checkout {
+      applyCheckoutCoupon(input: $applyCheckoutCouponInput) {
+        checkout {
+          entityId
+        }
+      }
+    }
+  }
+`);
+
+export const applyCouponCode = async (formData: FormData) => {
+  const customerId = await getSessionCustomerId();
+
   try {
     const parsedData = ApplyCouponCodeSchema.parse({
       checkoutEntityId: formData.get('checkoutEntityId'),
       couponCode: formData.get('couponCode'),
     });
 
-    const checkout = await applyCheckoutCoupon(parsedData.checkoutEntityId, parsedData.couponCode);
+    const response = await client.fetch({
+      document: ApplyCheckoutCouponMutation,
+      variables: {
+        applyCheckoutCouponInput: {
+          checkoutEntityId: parsedData.checkoutEntityId,
+          data: {
+            couponCode: parsedData.couponCode,
+          },
+        },
+      },
+      customerId,
+      fetchOptions: { cache: 'no-store' },
+    });
+
+    const checkout = response.data.checkout.applyCheckoutCoupon?.checkout;
 
     if (!checkout?.entityId) {
       return { status: 'error', error: 'Coupon code is invalid.' };
@@ -34,4 +64,4 @@ export async function applyCouponCode(formData: FormData) {
 
     return { status: 'error' };
   }
-}
+};

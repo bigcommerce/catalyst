@@ -15,7 +15,7 @@ interface Props {
   searchParams: Record<string, string | string[] | undefined>;
 }
 
-export default async function BlogPostPage({ params: { tagId, locale }, searchParams }: Props) {
+export default async function Tag({ params: { tagId, locale }, searchParams }: Props) {
   const blogPosts = await getBlogPosts({ tagId, ...searchParams });
   const t = await getTranslations({ locale, namespace: 'Pagination' });
 

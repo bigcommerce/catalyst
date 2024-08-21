@@ -24,7 +24,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   };
 }
 
-export default async function BlogPostPage({ searchParams }: Props) {
+export default async function Blog({ searchParams }: Props) {
   const blogPosts = await getBlogPosts(searchParams);
 
   if (!blogPosts) {

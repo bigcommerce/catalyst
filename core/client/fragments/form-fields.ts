@@ -1,7 +1,7 @@
 import { graphql } from '../graphql';
 
-export const FORM_FIELDS_FRAGMENT = graphql(`
-  fragment FormFields on FormField {
+export const FormFieldsFragment = graphql(`
+  fragment FormFieldsFragment on FormField {
     entityId
     label
     sortOrder
