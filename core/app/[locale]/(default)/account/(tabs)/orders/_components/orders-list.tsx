@@ -24,7 +24,7 @@ enum VisibleListItemsPerDevice {
   xl = 5,
 }
 
-const HiddenQuantity = ({ itemsQuantity }: { itemsQuantity: number }) => {
+const TruncatedCard = ({ itemsQuantity }: { itemsQuantity: number }) => {
   const smItems = itemsQuantity - VisibleListItemsPerDevice.xs;
   const mdItems = itemsQuantity - VisibleListItemsPerDevice.md;
   const lgItems = itemsQuantity - VisibleListItemsPerDevice.lg;
@@ -64,19 +64,19 @@ const HiddenQuantity = ({ itemsQuantity }: { itemsQuantity: number }) => {
   );
 };
 
-interface ActionButtonsProps {
+interface ManageOrderButtonsProps {
   className: string;
   orderId: number;
   orderTrackingUrl?: string;
   orderStatus: string | null;
 }
 
-const OrderActionButtons = ({
+const ManageOrderButtons = ({
   className,
   orderId,
   orderStatus,
   orderTrackingUrl,
-}: ActionButtonsProps) => {
+}: ManageOrderButtonsProps) => {
   const t = useTranslations('Account.Orders');
 
   return (
@@ -221,7 +221,7 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
                   });
                 })}
               </ul>
-              <HiddenQuantity
+              <TruncatedCard
                 itemsQuantity={(consignments.shipping ?? []).reduce((orderItems, shipment) => {
                   const totalQuantity = shipment.lineItems.reduce(
                     (total, items) => total + items.quantity,
@@ -231,14 +231,14 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
                   return orderItems + totalQuantity;
                 }, 0)}
               />
-              <OrderActionButtons
+              <ManageOrderButtons
                 className="hidden lg:ms-auto lg:inline-flex lg:flex-col lg:gap-2"
                 orderId={entityId}
                 orderStatus={status.value}
                 orderTrackingUrl={trackingUrl}
               />
             </div>
-            <OrderActionButtons
+            <ManageOrderButtons
               className="inline-flex flex-col gap-2 md:flex-row lg:hidden"
               orderId={entityId}
               orderStatus={status.value}
