@@ -145,6 +145,24 @@
       "changePassword": "Change password",
       "successMessage": "Your account has been successfully created"
     },
+    "Orders": {
+      "noOrders": "No orders yet",
+      "orderNumber": "Order #",
+      "placedDate": "Order placed",
+      "totalPrice": "Total",
+      "viewDetails": "View Details",
+      "trackOrder": "Track order",
+      "returnOrder": "Return items"
+    },
+    "Orders": {
+      "noOrders": "No orders yet",
+      "orderNumber": "Order #",
+      "placedDate": "Order placed",
+      "totalPrice": "Total",
+      "viewDetails": "View Details",
+      "trackOrder": "Track order",
+      "returnOrder": "Return items"
+    },
     "Addresses": {
       "title": "Addresses",
       "addNewAddress": "Add new address",
