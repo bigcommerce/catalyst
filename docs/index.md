@@ -146,3 +146,4 @@ We welcome feedback in [GitHub Discussions](https://github.com/bigcommerce/catal
 * [GraphQL Storefront API Playground](https://developer.bigcommerce.com/graphql-storefront/playground)
 * [GraphQL Storefront API Explorer](https://developer.bigcommerce.com/graphql-storefront/explorer)
 * [BigCommerce DevDocs](https://developer.bigcommerce.com/docs/build)
+* [MIT license](https://github.com/bigcommerce/catalyst/blob/main/LICENSE)
