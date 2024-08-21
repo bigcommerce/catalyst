@@ -1,7 +1,7 @@
 {
   "name": "@bigcommerce/catalyst",
   "description": "Catalyst is BigCommerce's composable front-end framework designed for building custom ecommerce storefronts.",
-  "keywords":[
+  "keywords": [
     "bigcommerce",
     "ecommerce",
     "storefront",
@@ -9,6 +9,7 @@
     "composable",
     "nextjs"
   ],
+  "license": "MIT",
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@9.7.0",
