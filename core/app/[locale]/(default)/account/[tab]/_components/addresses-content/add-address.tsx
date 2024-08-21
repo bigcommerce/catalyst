@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
@@ -96,6 +96,10 @@ export const AddAddress = ({
   const [countryStates, setCountryStates] = useState(defaultCountry.states);
 
   const { setAccountState } = useAccountStatusContext();
+
+  useEffect(() => {
+    setAccountState({ status: 'idle' });
+  }, [setAccountState]);
 
   const handleTextInputValidation = createTextInputValidationHandler(
     setTextInputValid,

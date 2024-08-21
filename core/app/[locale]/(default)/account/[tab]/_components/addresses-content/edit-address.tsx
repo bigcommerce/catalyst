@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
@@ -101,6 +101,10 @@ export const EditAddress = ({
   const [isReCaptchaValid, setReCaptchaValid] = useState(true);
   const { setAccountState } = useAccountStatusContext();
 
+  useEffect(() => {
+    setAccountState({ status: 'idle' });
+  }, [setAccountState]);
+
   const [textInputValid, setTextInputValid] = useState<Record<string, boolean>>({});
 
   const defaultStates = countries
@@ -168,10 +172,6 @@ export const EditAddress = ({
     }
 
     router.push('/account/addresses');
-  };
-
-  const onCancelChange = () => {
-    setAccountState({ status: 'idle' });
   };
 
   return (
@@ -273,12 +273,7 @@ export const EditAddress = ({
           <FormSubmit asChild>
             <SubmitButton messages={{ submit: t('submit'), submitting: t('submitting') }} />
           </FormSubmit>
-          <Button
-            asChild
-            className="items-center px-8 md:ms-6 md:w-fit"
-            onClick={onCancelChange}
-            variant="secondary"
-          >
+          <Button asChild className="items-center px-8 md:ms-6 md:w-fit" variant="secondary">
             <Link href="/account/addresses">{t('cancel')}</Link>
           </Button>
           <Modal
