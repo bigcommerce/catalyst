@@ -71,6 +71,15 @@
       "settings": "Account settings",
       "changePassword": "Change password"
     },
+    "Orders": {
+      "noOrders": "No orders yet",
+      "orderNumber": "Order #",
+      "placedDate": "Order placed",
+      "totalPrice": "Total",
+      "viewDetails": "View Details",
+      "trackOrder": "Track order",
+      "returnOrder": "Return items"
+    },
     "Addresses": {
       "defaultAddress": "Default",
       "alternativeAddress": "Alternative",

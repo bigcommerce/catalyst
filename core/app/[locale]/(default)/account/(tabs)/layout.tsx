@@ -8,7 +8,7 @@ import { cn } from '~/lib/utils';
 
 import { AccountStatusProvider } from './_components/account-status-provider';
 
-const tabList = ['addresses', 'settings'] as const;
+const tabList = ['addresses', 'settings', 'orders'] as const;
 
 export type TabType = (typeof tabList)[number];
 
@@ -24,6 +24,7 @@ export default function AccountTabLayout({ children, params: { locale } }: Props
   const tabsTitles = {
     addresses: t('addresses'),
     settings: t('settings'),
+    orders: t('orders'),
   };
 
   return (
