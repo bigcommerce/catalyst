@@ -78,7 +78,6 @@ test('Account dropdown is visible in header', async ({ page }) => {
 test('Add and remove new address', async ({ page }) => {
   await loginWithUserAccount(page, testUserEmail, testUserPassword);
   await page.goto('/account/addresses');
-  await page.getByRole('heading', { name: 'Addresses' }).waitFor();
 
   await page.getByRole('link', { name: 'Add new address' }).click();
   await page.getByRole('heading', { name: 'New address' }).waitFor();
@@ -93,12 +92,14 @@ test('Add and remove new address', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Add new address' }).click();
 
-  await page.getByRole('heading', { name: 'Addresses' }).waitFor();
+  await expect(page.getByText('Address added to your account')).toBeVisible();
   await expect(page.getByText(streetAddress, { exact: true })).toBeVisible();
 
   await page.getByRole('button', { name: 'Delete' }).nth(1).click();
 
   await page.getByRole('button', { name: 'Delete address' }).click();
+
+  await expect(page.getByText('Address deleted from your account')).toBeVisible();
 
   await expect(page.getByText(streetAddress, { exact: true })).toBeVisible({
     visible: false,

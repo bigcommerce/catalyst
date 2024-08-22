@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
@@ -20,6 +20,7 @@ import { Field, Form, FormSubmit } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 
 import { addAddress } from '../../_actions/add-address';
+import { useAccountStatusContext } from '../account-status-provider';
 
 import {
   createCountryChangeHandler,
@@ -94,6 +95,12 @@ export const AddAddress = ({
   const [textInputValid, setTextInputValid] = useState<Record<string, boolean>>({});
   const [countryStates, setCountryStates] = useState(defaultCountry.states);
 
+  const { setAccountState } = useAccountStatusContext();
+
+  useEffect(() => {
+    setAccountState({ status: 'idle' });
+  }, [setAccountState]);
+
   const handleTextInputValidation = createTextInputValidationHandler(
     setTextInputValid,
     textInputValid,
@@ -120,15 +127,14 @@ export const AddAddress = ({
     const submit = await addAddress({ formData, reCaptchaToken });
 
     if (submit.status === 'success') {
-      form.current?.reset();
-      setFormStatus({
+      setAccountState({
         status: 'success',
-        message: t('successMessage'),
+        message: t('addNewAddressSuccessMessage'),
       });
 
-      setTimeout(() => {
-        router.replace('/account/addresses');
-      }, 3000);
+      router.push('/account/addresses');
+
+      return;
     }
 
     if (submit.status === 'error') {
