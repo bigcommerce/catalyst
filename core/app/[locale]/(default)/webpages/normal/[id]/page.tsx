@@ -43,7 +43,7 @@ const getWebpageData = cache(async (variables: { id: string }) => {
 });
 
 export async function generateMetadata({ params: { id } }: Props): Promise<Metadata> {
-  const webpage = await getWebpageData({ id });
+  const webpage = await getWebpageData({ id: decodeURIComponent(id) });
 
   if (!webpage) {
     return {};
@@ -59,7 +59,7 @@ export async function generateMetadata({ params: { id } }: Props): Promise<Metad
 }
 
 export default async function WebPage({ params: { id } }: Props) {
-  const webpage = await getWebpageData({ id });
+  const webpage = await getWebpageData({ id: decodeURIComponent(id) });
 
   if (!webpage) {
     notFound();
