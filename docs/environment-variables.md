@@ -1,4 +1,5 @@
 **Reference**
+
 # Environment variables
 
 The following reference lists the environment variables that a Catalyst storefront can use, along with a description of their data types and approximate values.
@@ -12,11 +13,11 @@ Catalyst storefronts require the following variables to function.
 
 ### BIGCOMMERCE_STORE_HASH
 
-| Attribute | Value |
-|:----------|:------|
-| Type | string |
-| Permanently required | true |
-| CLI-configurable | true |
+| Attribute            | Value  |
+| :------------------- | :----- |
+| Type                 | string |
+| Permanently required | true   |
+| CLI-configurable     | true   |
 
 The store hash identifies the BigCommerce store connected to this Catalyst storefront.
 
@@ -31,11 +32,11 @@ https://{BIGCOMMERCE_STORE_HASH}.mybigcommerce.com/manage
 > [!CAUTION]
 > This token is a **sensitive secret**. Do not expose outside environment variables.
 
-| Attribute | Value |
-|:----------|:------|
-| Type | string |
-| Permanently required | false |
-| CLI-configurable | true |
+| Attribute            | Value  |
+| :------------------- | :----- |
+| Type                 | string |
+| Permanently required | false  |
+| CLI-configurable     | true   |
 
 This token is currently required; Catalyst requires this access token to make a few essential API calls to the Management API and the Customer Login API. This dependency will be removed in a future version of Catalyst.
 
@@ -45,11 +46,11 @@ The CLI will prompt you to enter this access token. The following steps will hel
 
 In the store's control panel, [create a store-level API account](https://developer.bigcommerce.com/docs/start/authentication/api-accounts#creating-store-level-api-credentials) and add the following OAuth scopes. To learn more, see [OAuth scopes](https://developer.bigcommerce.com/docs/start/authentication/api-accounts#store-resource-scopes).
 
-| UI Name | Permission | Parameter | Required |
-|:--------|:-----------|:----------|:---------|
-| Carts | modify| `store_cart` | true. See [Carts](#carts). |
-| Customers Login | modify | `store_v2_customers_login` | false. See [Customer Login](#customer-login). |
-| Information & Settings | read-only | `store_v2_information_read_only` | true. See [Information and Settings](#information-and-settings). |
+| UI Name                | Permission | Parameter                        | Required                                                         |
+| :--------------------- | :--------- | :------------------------------- | :--------------------------------------------------------------- |
+| Carts                  | modify     | `store_cart`                     | true. See [Carts](#carts).                                       |
+| Customers Login        | modify     | `store_v2_customers_login`       | false. See [Customer Login](#customer-login).                    |
+| Information & Settings | read-only  | `store_v2_information_read_only` | true. See [Information and Settings](#information-and-settings). |
 
 The value of `BIGCOMMERCE_ACCESS_TOKEN` is the access token that's automatically generated when you create this API account.
 
@@ -70,28 +71,28 @@ As of this writing, Catalyst requires the Information & Settings read-only scope
 > [!CAUTION]
 > This token is a **sensitive secret**. Do not expose outside environment variables.
 
-| Attribute | Value |
-|:----------|:------|
-| Type | string |
-| Permanently required | true |
-| CLI-configurable | true |
+| Attribute            | Value  |
+| :------------------- | :----- |
+| Type                 | string |
+| Permanently required | true   |
+| CLI-configurable     | true   |
 
 This bearer token authorizes access to the [GraphQL Storefront API](https://developer.bigcommerce.com/docs/storefront/graphql) and supports operations that request information specific to individual customers, such as getting wishlist items.
 
 **Without the CLI**
 Create a store-level or app-level API account with the following token creation scope. Then use the API account access token to [Create a customer impersonation token](https://developer.bigcommerce.com/docs/rest-authentication/tokens/customer-impersonation-token#create-a-token).
 
-| UI Name | Permission | Parameter |
-|:--------|:-----------|:----------|
-| Storefront API Customer Impersonation Tokens | modify | `store_storefront_api_customer_impersonation` |
+| UI Name                                      | Permission | Parameter                                     |
+| :------------------------------------------- | :--------- | :-------------------------------------------- |
+| Storefront API Customer Impersonation Tokens | modify     | `store_storefront_api_customer_impersonation` |
 
 ### BIGCOMMERCE_CHANNEL_ID
 
-| Attribute | Value |
-|:----------|:------|
-| Type | integer |
-| Permanently required | true |
-| CLI-configurable | true |
+| Attribute            | Value   |
+| :------------------- | :------ |
+| Type                 | integer |
+| Permanently required | true    |
+| CLI-configurable     | true    |
 
 This numeric channel ID specifies which [sales channel](https://developer.bigcommerce.com/docs/rest-management/channels#channels) is associated with your Catalyst storefront.
 
@@ -105,11 +106,11 @@ The default Stencil storefront that comes with every BigCommerce store by defaul
 > [!CAUTION]
 > This token is a **sensitive secret**. Do not expose outside environment variables.
 
-| Attribute | Value |
-|:----------|:------|
-| Type | string, hexadecimal |
-| Permanently required | true |
-| CLI-configurable | true |
+| Attribute            | Value               |
+| :------------------- | :------------------ |
+| Type                 | string, hexadecimal |
+| Permanently required | true                |
+| CLI-configurable     | true                |
 
 Auth.js, formerly NextAuth, uses this pseudo-random hex string to sign session JWTs.
 
@@ -129,13 +130,13 @@ Catalyst does not require the following values, but we recommend setting them fo
 > [!CAUTION]
 > This token is a **sensitive secret**. Do not expose outside environment variables.
 
-| Attribute | Value |
-|:----------|:------|
-| Type | string, hexadecimal |
-| Default | no value |
-| Required | false |
-| CLI-configurable | false |
-| Recommended | true |
+| Attribute        | Value               |
+| :--------------- | :------------------ |
+| Type             | string, hexadecimal |
+| Default          | no value            |
+| Required         | false               |
+| CLI-configurable | false               |
+| Recommended      | true                |
 
 Providing a pseudo-random hex string for this environment variable lets you use the [Turborepo Remote Cache feature with signed artifacts](https://turbo.build/repo/docs/core-concepts/remote-caching#artifact-integrity-and-authenticity-verification), which will improve your build performance in Vercel and other environments that use Turborepo.
 
@@ -152,27 +153,27 @@ openssl rand -hex 32
 > [!CAUTION]
 > This token is a **sensitive secret**. Do not expose outside environment variables.
 
-| Attribute | Value |
-|:----------|:------|
-| Type | string |
-| Default | no value |
-| Required | false |
-| CLI-configurable | false |
-| Recommended | true |
+| Attribute        | Value    |
+| :--------------- | :------- |
+| Type             | string   |
+| Default          | no value |
+| Required         | false    |
+| CLI-configurable | false    |
+| Recommended      | true     |
 
 You can use this API account client secret to sign [Customer Login API](https://developer.bigcommerce.com/docs/start/authentication/customer-login) JWTs. Providing this value lets shoppers preserve their logged-in state when Catalyst redirects them to checkout.
 
 You can use the client secret from the same API account you configured in [BIGCOMMERCE_ACCESS_TOKEN](#bigcommerce_access_token), or configure a dedicated API account with the following scope.
 
-| UI Name | Permission | Parameter |
-|:--------|:-----------|:----------|
-| Customers Login | modify | `store_v2_customers_login` |
+| UI Name         | Permission | Parameter                  |
+| :-------------- | :--------- | :------------------------- |
+| Customers Login | modify     | `store_v2_customers_login` |
 
 To learn more, see any of the following docs:
 
-* [Customer Login](#customer-login) in this reference
-* Guide to the [Customer Login API](https://developer.bigcommerce.com/docs/start/authentication/customer-login), which describes how to make the necessary JWT
-* Reference for the endpoint to [Log a customer in](https://developer.bigcommerce.com/docs/rest-authentication/customer-login), which describes how to send the JWT to BigCommerce
+- [Customer Login](#customer-login) in this reference
+- Guide to the [Customer Login API](https://developer.bigcommerce.com/docs/start/authentication/customer-login), which describes how to make the necessary JWT
+- Reference for the endpoint to [Log a customer in](https://developer.bigcommerce.com/docs/rest-authentication/customer-login), which describes how to send the JWT to BigCommerce
 
 ## Optional
 
@@ -180,12 +181,12 @@ The following values relate to Catalyst's tuneable parameters, which may not be 
 
 ### ENABLE_ADMIN_ROUTE
 
-| Attribute | Value |
-|:----------|:------|
-| Type | boolean |
-| Default | false |
-| Required | false |
-| CLI-configurable | false |
+| Attribute        | Value   |
+| :--------------- | :------ |
+| Type             | boolean |
+| Default          | false   |
+| Required         | false   |
+| CLI-configurable | false   |
 
 This is a convenience feature for store admins.
 
@@ -197,12 +198,12 @@ If you wish to remove this feature entirely from your codebase, you can delete [
 
 ### NEXTAUTH_URL
 
-| Attribute | Value |
-|:----------|:------|
-| Type | string, URL |
-| Default | If deployed on Vercel, identical to `VERCEL_URL`. Otherwise, no value. |
-| Required | false |
-| CLI-configurable | false |
+| Attribute        | Value                                                                  |
+| :--------------- | :--------------------------------------------------------------------- |
+| Type             | string, URL                                                            |
+| Default          | If deployed on Vercel, identical to `VERCEL_URL`. Otherwise, no value. |
+| Required         | false                                                                  |
+| CLI-configurable | false                                                                  |
 
 The `NEXTAUTH_URL` environment variable tells the [Auth.js library the root URL of the storefront](https://next-auth.js.org/configuration/options#nextauth_url).
 
@@ -210,12 +211,12 @@ If your storefront is deployed on Vercel, `NEXTAUTH_URL` is automatically detect
 
 ### TRAILING_SLASH
 
-| Attribute | Value |
-|:----------|:------|
-| Type | boolean |
-| Default | true |
-| Required | false |
-| CLI-configurable | false |
+| Attribute        | Value   |
+| :--------------- | :------ |
+| Type             | boolean |
+| Default          | true    |
+| Required         | false   |
+| CLI-configurable | false   |
 
 This environment variable lets you choose your preferred URL appearance, with or without trailing slashes. This is purely cosmetic and has [no direct SEO implications, although it's a good idea to commit to one URL format](https://developers.google.com/search/blog/2010/04/to-slash-or-not-to-slash). Try not to create entity URLs with mixed cases of trailing slash and no-trailing slash—consistency is key.
 
@@ -225,12 +226,12 @@ Catalyst uses the existing URLs of your BigCommerce objects, such as products an
 
 ### NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET
 
-| Attribute | Value |
-|:----------|:------|
-| Type | integer representing seconds or boolean: false |
-| Default | 0 |
-| Required | false |
-| CLI-configurable | false |
+| Attribute        | Value                                          |
+| :--------------- | :--------------------------------------------- |
+| Type             | integer representing seconds or boolean: false |
+| Default          | 0                                              |
+| Required         | false                                          |
+| CLI-configurable | false                                          |
 
 This environment variable sets a sensible revalidation target for cached requests.
 
@@ -238,17 +239,28 @@ NextJS persists cached queries in its [data cache](https://nextjs.org/docs/app/b
 
 ### CLIENT_LOGGER
 
-| Attribute | Value |
-|:----------|:------|
-| Type | boolean |
-| Default | false |
-| Required | false |
-| CLI-configurable | true |
+| Attribute        | Value   |
+| :--------------- | :------ |
+| Type             | boolean |
+| Default          | false   |
+| Required         | false   |
+| CLI-configurable | true    |
 
 This environment variable turns the request logger built into the Catalyst API client on and off.
 
 When enabled, the client logger logs the following information:
 
-* Which GraphQL operation is being performed; for example, `getProducts`.
-* How long the request took in milliseconds.
-* The complexity score of the GraphQL request payload, as indicated by the `X-Bc-Graphql-Complexity` response header.
+- Which GraphQL operation is being performed; for example, `getProducts`.
+- How long the request took in milliseconds.
+- The complexity score of the GraphQL request payload, as indicated by the `X-Bc-Graphql-Complexity` response header.
+
+### WEBPACK_MAX_CHUNKS
+
+| Attribute        | Value   |
+| :--------------- | :------ |
+| Type             | integer |
+| Default          | 50      |
+| Required         | false   |
+| CLI-configurable | false   |
+
+This environment variable sets a limit on the number of JS chunks webpack will generate via the `LimitChunkCountPlugin` in `next.config.js`. Generally speaking, using more chunks can improve performance, but will increase the number of requests to the origin to download these files. For hosts that charge for each asset request, this may make your site more expensive to serve. You can decrease this number to decrease the number of individual JS files that will be requested on each page, but each file will be larger, which may decrease Lighthouse scores due to more time spent on script parsing and more unused JS code in each chunk on a given page.
