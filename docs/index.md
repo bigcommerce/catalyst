@@ -71,12 +71,24 @@ In order to create your Catalyst storefront with an out-of-the-box integration, 
 pnpm create @bigcommerce/catalyst@latest --integration=<integration-name>
 ```
 
+> [!IMPORTANT]
+> If you are using `npm` instead of `pnpm` - don't forget to add the argument delimiter detailed in the NPM documentation: https://docs.npmjs.com/cli/v10/commands/npm-run-script#description
+> ```bash
+> npm create @bigcommerce/catalyst@latest -- --integration=<integration-name>
+> ```
+
 Replace `<integration-name>` with the name of a folder inside the `integrations` directory of the Catalyst monorepo: https://github.com/bigcommerce/catalyst/tree/main/integrations
 
 For example, you can create a Catalyst storefront with the Makeswift integration by running:
 
 ```bash
 pnpm create @bigcommerce/catalyst@latest --integration=makeswift
+```
+
+If using `npm`:
+
+```bash
+npm create @bigcommerce/catalyst@latest -- --integration=makeswift
 ```
 
 ### Developing a native integration for Catalyst
