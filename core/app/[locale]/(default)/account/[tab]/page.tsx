@@ -7,8 +7,9 @@ import { getCustomerAddresses } from '~/client/queries/get-customer-addresses';
 import { AddressesContent } from './_components/addresses-content';
 import { SettingsContent } from './_components/settings-content';
 import { TabHeading } from './_components/tab-heading';
+import { WishlistContent, WISHLISTS_PER_PAGE } from './_components/wishlist-content';
 import { TabType } from './layout';
-import { getCustomerSettingsQuery } from './page-data';
+import { getCustomerSettingsQuery, getWishlists } from './page-data';
 
 interface Props {
   params: {
@@ -65,8 +66,21 @@ export default async function AccountTabPage({ params: { tab }, searchParams }: 
       );
     }
 
-    case 'wishlists':
-      return <TabHeading heading={tab} />;
+    case 'wishlists': {
+      const { before, after } = searchParams;
+
+      const wishlistDetails = await getWishlists({
+        ...(after && { after }),
+        ...(before && { before }),
+        limit: WISHLISTS_PER_PAGE,
+      });
+
+      if (!wishlistDetails) {
+        notFound();
+      }
+
+      return <WishlistContent {...wishlistDetails} />;
+    }
 
     case 'recently-viewed':
       return <TabHeading heading={tab} />;

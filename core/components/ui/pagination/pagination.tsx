@@ -6,6 +6,7 @@ import { Link } from '~/components/link';
 import { cn } from '~/lib/utils';
 
 interface Props extends ComponentPropsWithoutRef<'nav'> {
+  className?: string;
   endCursor: string | null;
   hasPreviousPage: boolean;
   hasNextPage: boolean;

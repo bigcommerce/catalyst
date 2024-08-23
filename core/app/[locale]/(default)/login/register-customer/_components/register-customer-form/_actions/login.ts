@@ -1,7 +1,6 @@
 'use server';
 
 import { isRedirectError } from 'next/dist/client/components/redirect';
-import { redirect } from 'next/navigation';
 
 import { Credentials, signIn } from '~/auth';
 
@@ -16,10 +15,8 @@ export const login = async (formData: FormData) => {
       ...credentials,
       // We want to use next/navigation for the redirect as it
       // follows basePath and trailing slash configurations.
-      redirect: false,
+      redirectTo: '/account?register=true',
     });
-
-    redirect('/account');
   } catch (error: unknown) {
     if (isRedirectError(error)) {
       throw error;
