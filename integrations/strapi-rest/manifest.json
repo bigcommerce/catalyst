@@ -1,0 +1,15 @@
+{
+  "name": "strapi-rest",
+  "dependencies": {
+    "add": [
+      "@strapi/blocks-react-renderer"
+    ]
+  },
+  "devDependencies": {
+    "add": []
+  },
+  "environmentVariables": [
+    "STRAPI_BASE_URL",
+    "STRAPI_API_KEY"
+  ]
+}

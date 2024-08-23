@@ -21,6 +21,7 @@ interface AddressChangeProps {
 }
 
 const AddressChangeButtons = ({ addressId, isAddressRemovable, onDelete }: AddressChangeProps) => {
+  const { setAccountState } = useAccountStatusContext();
   const t = useTranslations('Account.Addresses');
 
   const handleDeleteAddress = async () => {
@@ -30,6 +31,11 @@ const AddressChangeButtons = ({ addressId, isAddressRemovable, onDelete }: Addre
       onDelete((prevAddressBook) =>
         prevAddressBook.filter(({ entityId }) => entityId !== addressId),
       );
+
+      setAccountState({
+        status: 'success',
+        message: t('deleteAddress'),
+      });
     }
   };
 

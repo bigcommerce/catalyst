@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
@@ -101,6 +101,10 @@ export const EditAddress = ({
   const [isReCaptchaValid, setReCaptchaValid] = useState(true);
   const { setAccountState } = useAccountStatusContext();
 
+  useEffect(() => {
+    setAccountState({ status: 'idle' });
+  }, [setAccountState]);
+
   const [textInputValid, setTextInputValid] = useState<Record<string, boolean>>({});
 
   const defaultStates = countries
@@ -137,15 +141,14 @@ export const EditAddress = ({
     const submit = await updateAddress({ addressId: address.entityId, formData });
 
     if (submit.status === 'success') {
-      form.current?.reset();
-      setFormStatus({
+      setAccountState({
         status: 'success',
         message: t('successMessage'),
       });
 
-      setTimeout(() => {
-        router.replace('/account/addresses');
-      }, 3000);
+      router.push('/account/addresses');
+
+      return;
     }
 
     if (submit.status === 'error') {
@@ -168,14 +171,7 @@ export const EditAddress = ({
       setAccountState({ status, message });
     }
 
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-
-    setTimeout(() => {
-      router.replace('/account/addresses');
-    }, 500);
+    router.push('/account/addresses');
   };
 
   return (

@@ -29,12 +29,14 @@ const nextConfig = {
     }
 
     // Limit the number of chunks to reduce CDN requests, which contribute to Edge Request costs
+    // Making this number higher may improve performance, but making it lower will reduce total requests and costs
+    // Simply set the WEBPACK_MAX_CHUNKS environment variable to the desired number of chunks
     if (!isServer) {
       config.plugins.push(
         new (require('webpack').optimize.LimitChunkCountPlugin)({
           maxChunks: process.env.WEBPACK_MAX_CHUNKS
             ? parseInt(process.env.WEBPACK_MAX_CHUNKS, 10)
-            : 5,
+            : 50,
         }),
       );
     }
