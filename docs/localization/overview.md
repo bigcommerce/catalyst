@@ -19,7 +19,7 @@ To fully localize a store for a language or region, you will need to customize p
 
 Catalyst supports the following locale-specific URLs that you can use to localize your storefronts. Learn more about the pro and cons for each [locale-specific URL](https://developers.google.com/search/docs/specialty/international/managing-multi-regional-sites#locale-specific-urls) in the Google Documentation.
 
-Each Catalyst storefront can support one language per channel. However, Catalyst can service multiple languages by connecting multiple channels to the storefront and routing each language through different subpaths. To display multiple languages, we recommend setting up ag separate channel for each lanuage.
+Each Catalyst storefront can support one language per channel. However, Catalyst can service multiple languages by connecting multiple channels to the storefront and routing each language through different subpaths. To display multiple languages, we recommend setting up a separate channel for each lanuage.
 
 | URL structure | Example | Recommended use case | How to implement for Catalyst | 
 | :-- | :-- | :-- | :-- | 
