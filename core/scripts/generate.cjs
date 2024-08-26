@@ -1,5 +1,6 @@
 // @ts-check
 const { generateSchema, generateOutput } = require('@gql.tada/cli-utils');
+const { strict } = require('assert');
 const { join } = require('path');
 
 const graphqlApiDomain = process.env.BIGCOMMERCE_GRAPHQL_API_DOMAIN ?? 'mybigcommerce.com';
@@ -30,6 +31,18 @@ const getToken = () => {
   return token;
 };
 
+const getContentfulEndpoint = () => {
+  strict(process.env.CONTENTFUL_SPACE_ID, 'Missing Contentful space ID');
+
+  return `https://graphql.contentful.com/content/v1/spaces/${process.env.CONTENTFUL_SPACE_ID}`;
+};
+
+const getContentfulToken = () => {
+  strict(process.env.CONTENTFUL_ACCESS_TOKEN, 'Missing Contentful access token');
+
+  return process.env.CONTENTFUL_ACCESS_TOKEN;
+};
+
 const getEndpoint = () => {
   const storeHash = getStoreHash();
   const channelId = getChannelId();
@@ -49,6 +62,13 @@ const generate = async () => {
       input: getEndpoint(),
       headers: { Authorization: `Bearer ${getToken()}` },
       output: join(__dirname, '../bigcommerce.graphql'),
+      tsconfig: undefined,
+    });
+
+    await generateSchema({
+      input: getContentfulEndpoint(),
+      headers: { Authorization: `Bearer ${getContentfulToken()}` },
+      output: join(__dirname, '../contentful.graphql'),
       tsconfig: undefined,
     });
 
