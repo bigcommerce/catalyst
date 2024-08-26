@@ -19,7 +19,7 @@ import {
 } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 
-import { useAccountStatusContext } from '../../../account/[tab]/_components/account-status-provider';
+import { useAccountStatusContext } from '../../../account/(tabs)/_components/account-status-provider';
 import { submitResetPasswordForm } from '../../_actions/submit-reset-password-form';
 
 import { ResetPasswordFormFragment } from './fragment';

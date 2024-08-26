@@ -6,7 +6,6 @@ import { ExistingResultType } from '~/client/util';
 import { getCustomerSettingsQuery } from '../page-data';
 
 import { ChangePasswordForm } from './change-password-form';
-import { TabHeading } from './tab-heading';
 import { UpdateSettingsForm } from './update-settings-form';
 
 interface Props {
@@ -23,7 +22,6 @@ export const SettingsContent = async ({ action, customerSettings }: Props) => {
   if (action === 'change_password') {
     return (
       <div className="mx-auto lg:w-2/3">
-        <TabHeading heading={action} />
         <NextIntlClientProvider locale={locale} messages={{ Account: messages.Account ?? {} }}>
           <ChangePasswordForm />
         </NextIntlClientProvider>
@@ -33,7 +31,6 @@ export const SettingsContent = async ({ action, customerSettings }: Props) => {
 
   return (
     <div className="mx-auto lg:w-2/3">
-      <TabHeading heading="settings" />
       <UpdateSettingsForm {...customerSettings} />
     </div>
   );

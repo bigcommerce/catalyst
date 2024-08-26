@@ -9,11 +9,11 @@ import { cn } from '~/lib/utils';
 import { AccountStatusProvider } from './_components/account-status-provider';
 
 const tabList = [
-  'orders',
-  'messages',
+  // 'orders',
+  // 'messages',
   'addresses',
-  'wishlists',
-  'recently-viewed',
+  // 'wishlists',
+  // 'recently-viewed',
   'settings',
 ] as const;
 
@@ -23,10 +23,7 @@ interface Props extends PropsWithChildren {
   params: { locale: LocaleType; tab?: TabType };
 }
 
-export default async function AccountTabLayout({
-  children,
-  params: { locale, tab: activeTab },
-}: Props) {
+export default async function AccountTabLayout({ children, params: { locale } }: Props) {
   unstable_setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: 'Account.Home' });
@@ -51,10 +48,7 @@ export default async function AccountTabLayout({
             {tabList.map((tab) => (
               <li key={tab}>
                 <Link
-                  className={cn(
-                    'block whitespace-nowrap px-4 pb-2 font-semibold',
-                    activeTab === tab && 'border-b-4 border-primary text-primary',
-                  )}
+                  className={cn('block whitespace-nowrap px-4 pb-2 font-semibold')}
                   href={`/account/${tab}`}
                   prefetch="viewport"
                   prefetchKind="full"

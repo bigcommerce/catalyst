@@ -19,10 +19,10 @@ import { Button } from '~/components/ui/button';
 import { Field, Form, FormSubmit } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 
-import { deleteAddress } from '../../_actions/delete-address';
-import { updateAddress } from '../../_actions/update-address';
-import { useAccountStatusContext } from '../account-status-provider';
-import { Modal } from '../modal';
+import { useAccountStatusContext } from '../../_components/account-status-provider';
+import { Modal } from '../../_components/modal';
+import { deleteAddress } from '../_actions/delete-address';
+import { updateAddress } from '../_actions/update-address';
 
 import { AddressFields, Countries } from './add-address';
 import {

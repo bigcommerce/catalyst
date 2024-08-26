@@ -7,7 +7,7 @@ import { FormFieldsFragment } from '~/client/fragments/form-fields';
 import { graphql, ResultOf } from '~/client/graphql';
 import { ExistingResultType } from '~/client/util';
 
-import { getCustomerAddresses } from '../../page-data';
+import { getCustomerAddresses } from '../page-data';
 
 import { EditAddress as EditAddressForm } from './edit-address';
 

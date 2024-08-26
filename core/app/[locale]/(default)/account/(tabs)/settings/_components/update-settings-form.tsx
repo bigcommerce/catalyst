@@ -11,10 +11,10 @@ import { Button } from '~/components/ui/button';
 import { Field, Form, FormSubmit } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 
-import { getCustomerSettingsQuery } from '../../page-data';
+import { updateCustomer } from '../_actions/update-customer';
+import { getCustomerSettingsQuery } from '../page-data';
 
-import { updateCustomer } from './_actions/update-customer';
-import { Text } from './fields/text';
+import { TextField } from './text-field';
 
 type CustomerInfo = ExistingResultType<typeof getCustomerSettingsQuery>['customerInfo'];
 type CustomerFields = ExistingResultType<typeof getCustomerSettingsQuery>['customerFields'];
@@ -155,7 +155,7 @@ export const UpdateSettingsForm = ({
             }
 
             return (
-              <Text
+              <TextField
                 defaultValue={customerInfo[fieldName]}
                 entityId={field.entityId}
                 isRequired={field.isRequired}
@@ -167,7 +167,7 @@ export const UpdateSettingsForm = ({
             );
           })}
           <div className="lg:col-span-2">
-            <Text
+            <TextField
               defaultValue={customerInfo.email}
               entityId={FieldNameToFieldId.email}
               isRequired

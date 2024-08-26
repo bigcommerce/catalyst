@@ -8,10 +8,10 @@ import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 import { Message } from '~/components/ui/message';
 
-import { deleteAddress } from '../../_actions/delete-address';
-import { getCustomerAddresses } from '../../page-data';
-import { useAccountStatusContext } from '../account-status-provider';
-import { Modal } from '../modal';
+import { useAccountStatusContext } from '../../_components/account-status-provider';
+import { Modal } from '../../_components/modal';
+import { deleteAddress } from '../_actions/delete-address';
+import { getCustomerAddresses } from '../page-data';
 
 export type Addresses = ExistingResultType<typeof getCustomerAddresses>['addresses'];
 
