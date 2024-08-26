@@ -27,8 +27,8 @@
     "giget": "^1.2.3",
     "lodash.kebabcase": "^4.1.1",
     "lodash.merge": "^4.6.2",
-    "nypm": "^0.3.9",
-    "ora": "^8.0.1",
+    "nypm": "^0.3.11",
+    "ora": "^8.1.0",
     "semver": "^7.6.3",
     "zod": "^3.23.8",
     "zod-validation-error": "^3.3.1"
@@ -36,7 +36,7 @@
   "devDependencies": {
     "@bigcommerce/eslint-config": "^2.9.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
-    "@swc/core": "^1.7.14",
+    "@swc/core": "^1.7.18",
     "@swc/jest": "^0.2.36",
     "@types/fs-extra": "^11.0.4",
     "@types/jest": "^29.5.12",
