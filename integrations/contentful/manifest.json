@@ -1,0 +1,13 @@
+{
+  "name": "contentful",
+  "dependencies": {
+    "add": []
+  },
+  "devDependencies": {
+    "add": []
+  },
+  "environmentVariables": [
+    "CONTENTFUL_SPACE_ID",
+    "CONTENTFUL_ACCESS_TOKEN"
+  ]
+}
