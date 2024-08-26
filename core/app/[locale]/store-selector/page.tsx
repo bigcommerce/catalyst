@@ -3,18 +3,15 @@ import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { Link } from '~/components/link';
-import { StoreLogo, StoreLogoFragment } from '~/components/store-logo';
+import { StoreLogo } from '~/components/store-logo';
+import { StoreLogoFragment } from '~/components/store-logo/fragment';
 import { locales, LocaleType } from '~/i18n';
 
 import { LocaleLink } from './_components/locale-link';
 
-export const metadata = {
-  title: 'Location selector',
-};
-
 const StoreSelectorPageQuery = graphql(
   `
-    query LocationSelectorPageQuery {
+    query StoreSelectorPageQuery {
       site {
         settings {
           ...StoreLogoFragment
@@ -25,11 +22,15 @@ const StoreSelectorPageQuery = graphql(
   [StoreLogoFragment],
 );
 
-export default async function StoreSelector({
-  params: { locale: selectedLocale },
-}: {
+export const metadata = {
+  title: 'Location selector',
+};
+
+interface Props {
   params: { locale: LocaleType };
-}) {
+}
+
+export default async function StoreSelector({ params: { locale: selectedLocale } }: Props) {
   unstable_setRequestLocale(selectedLocale);
 
   const t = await getTranslations('StoreSelector');

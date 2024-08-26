@@ -2,7 +2,28 @@
 
 import { z } from 'zod';
 
-import { ResetPasswordSchema, submitResetPassword } from '~/client/mutations/submit-reset-password';
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
+
+const ResetPasswordSchema = z.object({
+  email: z.string().email(),
+});
+
+const ResetPasswordMutation = graphql(`
+  mutation ResetPassword($input: RequestResetPasswordInput!, $reCaptcha: ReCaptchaV2Input) {
+    customer {
+      requestResetPassword(input: $input, reCaptchaV2: $reCaptcha) {
+        __typename
+        errors {
+          __typename
+          ... on Error {
+            message
+          }
+        }
+      }
+    }
+  }
+`);
 
 interface SubmitResetPasswordForm {
   formData: FormData;
@@ -20,19 +41,26 @@ export const submitResetPasswordForm = async ({
       email: formData.get('email'),
     });
 
-    const response = await submitResetPassword({
-      email: parsedData.email,
-      path,
-      reCaptchaToken,
+    const response = await client.fetch({
+      document: ResetPasswordMutation,
+      variables: {
+        input: {
+          email: parsedData.email,
+          path,
+        },
+        ...(reCaptchaToken && { reCaptchaV2: { token: reCaptchaToken } }),
+      },
     });
 
-    if (response.errors.length === 0) {
+    const result = response.data.customer.requestResetPassword;
+
+    if (result.errors.length === 0) {
       return { status: 'success', data: parsedData };
     }
 
     return {
       status: 'error',
-      error: response.errors.map((error) => error.message).join('\n'),
+      error: result.errors.map((error) => error.message).join('\n'),
     };
   } catch (error: unknown) {
     if (error instanceof Error || error instanceof z.ZodError) {

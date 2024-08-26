@@ -5,6 +5,7 @@ import { ChangeEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
+import { ExistingResultType } from '~/client/util';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 import { Field, Form, FormSubmit } from '~/components/ui/form';
@@ -15,15 +16,9 @@ import { getCustomerSettingsQuery } from '../../page-data';
 import { updateCustomer } from './_actions/update-customer';
 import { Text } from './fields/text';
 
-type CustomerInfo = NonNullable<
-  Awaited<ReturnType<typeof getCustomerSettingsQuery>>
->['customerInfo'];
-type CustomerFields = NonNullable<
-  Awaited<ReturnType<typeof getCustomerSettingsQuery>>
->['customerFields'];
-type AddressFields = NonNullable<
-  Awaited<ReturnType<typeof getCustomerSettingsQuery>>
->['addressFields'];
+type CustomerInfo = ExistingResultType<typeof getCustomerSettingsQuery>['customerInfo'];
+type CustomerFields = ExistingResultType<typeof getCustomerSettingsQuery>['customerFields'];
+type AddressFields = ExistingResultType<typeof getCustomerSettingsQuery>['addressFields'];
 
 interface FormProps {
   addressFields: AddressFields;

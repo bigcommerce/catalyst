@@ -3,8 +3,22 @@
 import { revalidateTag } from 'next/cache';
 import { z } from 'zod';
 
-import { selectCheckoutShippingOption } from '~/client/mutations/select-checkout-shipping-option';
+import { getSessionCustomerId } from '~/auth';
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
+
+const SelectCheckoutShippingOptionMutation = graphql(`
+  mutation SelectCheckoutShippingOption($input: SelectCheckoutShippingOptionInput!) {
+    checkout {
+      selectCheckoutShippingOption(input: $input) {
+        checkout {
+          entityId
+        }
+      }
+    }
+  }
+`);
 
 const ShippingCostSchema = z.object({
   shippingOption: z.string(),
@@ -15,16 +29,29 @@ export const submitShippingCosts = async (
   checkoutEntityId: string,
   consignmentEntityId: string,
 ) => {
+  const customerId = await getSessionCustomerId();
+
   try {
     const parsedData = ShippingCostSchema.parse({
       shippingOption: formData.get('shippingOption'),
     });
 
-    const shippingCost = await selectCheckoutShippingOption({
-      checkoutEntityId,
-      consignmentEntityId,
-      shippingOptionEntityId: parsedData.shippingOption,
+    const response = await client.fetch({
+      document: SelectCheckoutShippingOptionMutation,
+      variables: {
+        input: {
+          checkoutEntityId,
+          consignmentEntityId,
+          data: {
+            shippingOptionEntityId: parsedData.shippingOption,
+          },
+        },
+      },
+      customerId,
+      fetchOptions: { cache: 'no-store' },
     });
+
+    const shippingCost = response.data.checkout.selectCheckoutShippingOption?.checkout;
 
     if (!shippingCost?.entityId) {
       return { status: 'error', error: 'Failed to submit shipping cost.' };

@@ -1,3 +1,4 @@
+import { PricingFragment } from '~/client/fragments/pricing';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { graphql } from '~/client/graphql';
 
@@ -6,8 +7,6 @@ import { ProductFormFragment } from '../product-form/fragment';
 export const ProductSheetContentFragment = graphql(
   `
     fragment ProductSheetContentFragment on Product {
-      ...ProductFormFragment
-      ...ProductItemFragment
       name
       defaultImage {
         url: urlTemplate
@@ -20,30 +19,10 @@ export const ProductSheetContentFragment = graphql(
         averageRating
         numberOfReviews
       }
-      prices {
-        price {
-          currencyCode
-          value
-        }
-        retailPrice {
-          value
-        }
-        salePrice {
-          value
-        }
-        basePrice {
-          value
-        }
-        priceRange {
-          min {
-            value
-          }
-          max {
-            value
-          }
-        }
-      }
+      ...PricingFragment
+      ...ProductFormFragment
+      ...ProductItemFragment
     }
   `,
-  [ProductFormFragment, ProductItemFragment],
+  [PricingFragment, ProductFormFragment, ProductItemFragment],
 );

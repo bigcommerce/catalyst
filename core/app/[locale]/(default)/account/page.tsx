@@ -33,7 +33,7 @@ interface Props {
   };
 }
 
-export default async function AccountPage({ params: { locale } }: Props) {
+export default async function Account({ params: { locale } }: Props) {
   const t = await getTranslations({ locale, namespace: 'Account.Home' });
 
   return (

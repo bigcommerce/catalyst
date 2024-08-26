@@ -2,9 +2,8 @@
 
 import { useFormatter } from 'next-intl';
 
-import { getQuickSearchResults } from '~/client/queries/get-quick-search-results';
 import { ExistingResultType } from '~/client/util';
-import { searchResultsTransformer } from '~/data-transformers/search-results-transformer';
+import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
 import { Search } from '../ui/header';
 
@@ -19,7 +18,7 @@ interface SearchProps {
   logo: string | Image;
 }
 
-type QuickSearchResults = ExistingResultType<typeof getQuickSearchResults>;
+type QuickSearchResults = ExistingResultType<typeof getSearchResults>;
 
 const isSearchQuery = (data: unknown): data is QuickSearchResults => {
   if (typeof data === 'object' && data !== null && 'products' in data) {
@@ -36,7 +35,48 @@ export const QuickSearch = ({ logo }: SearchProps) => {
     const { data: searchResults } = await getSearchResults(term);
 
     if (isSearchQuery(searchResults)) {
-      return searchResultsTransformer(searchResults, format);
+      return {
+        products: searchResults.products.map((product) => {
+          const price = pricesTransformer(product.prices, format);
+
+          return {
+            name: product.name,
+            href: product.path,
+            image: product.defaultImage
+              ? { src: product.defaultImage.url, altText: product.defaultImage.altText }
+              : undefined,
+            price,
+          };
+        }),
+        categories:
+          searchResults.products.length > 0
+            ? Object.entries(
+                searchResults.products.reduce<Record<string, string>>((categories, product) => {
+                  product.categories.edges?.forEach((category) => {
+                    categories[category.node.name] = category.node.path;
+                  });
+
+                  return categories;
+                }, {}),
+              ).map(([name, path]) => {
+                return { label: name, href: path };
+              })
+            : [],
+        brands:
+          searchResults.products.length > 0
+            ? Object.entries(
+                searchResults.products.reduce<Record<string, string>>((brands, product) => {
+                  if (product.brand) {
+                    brands[product.brand.name] = product.brand.path;
+                  }
+
+                  return brands;
+                }, {}),
+              ).map(([name, path]) => {
+                return { label: name, href: path };
+              })
+            : [],
+      };
     }
 
     return null;

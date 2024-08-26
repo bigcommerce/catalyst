@@ -1,6 +1,8 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 
+import { ExistingResultType } from '~/client/util';
+
 import { getCustomerSettingsQuery } from '../page-data';
 
 import { ChangePasswordForm } from './change-password-form';
@@ -12,7 +14,7 @@ interface Props {
   customerSettings: CustomerSettings;
 }
 
-type CustomerSettings = NonNullable<Awaited<ReturnType<typeof getCustomerSettingsQuery>>>;
+type CustomerSettings = ExistingResultType<typeof getCustomerSettingsQuery>;
 
 export const SettingsContent = async ({ action, customerSettings }: Props) => {
   const locale = await getLocale();

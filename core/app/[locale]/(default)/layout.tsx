@@ -6,9 +6,11 @@ import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { Footer, FooterFragment } from '~/components/footer/footer';
-import { Header, HeaderFragment } from '~/components/header';
+import { Footer } from '~/components/footer/footer';
+import { FooterFragment } from '~/components/footer/fragment';
+import { Header } from '~/components/header';
 import { Cart } from '~/components/header/cart';
+import { HeaderFragment } from '~/components/header/fragment';
 import { ProductSheet } from '~/components/product-sheet';
 import { LocaleType } from '~/i18n';
 

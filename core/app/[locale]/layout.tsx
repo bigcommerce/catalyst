@@ -60,13 +60,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const fetchCache = 'default-cache';
-
-interface RootLayoutProps extends PropsWithChildren {
+interface Props extends PropsWithChildren {
   params: { locale: string };
 }
 
-export default function RootLayout({ children, params: { locale } }: RootLayoutProps) {
+export default function RootLayout({ children, params: { locale } }: Props) {
   // need to call this method everywhere where static rendering is enabled
   // https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-unstable_setrequestlocale-to-all-layouts-and-pages
   unstable_setRequestLocale(locale);
@@ -86,3 +84,5 @@ export default function RootLayout({ children, params: { locale } }: RootLayoutP
     </html>
   );
 }
+
+export const fetchCache = 'default-cache';

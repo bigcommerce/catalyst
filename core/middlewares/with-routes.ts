@@ -5,16 +5,101 @@ import { z } from 'zod';
 
 import { getSessionCustomerId } from '~/auth';
 import { getChannelIdFromLocale } from '~/channels.config';
+import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { getRawWebPageContent } from '~/client/queries/get-raw-web-page-content';
-import { getRoute } from '~/client/queries/get-route';
-import { getStoreStatus } from '~/client/queries/get-store-status';
+import { revalidate } from '~/client/revalidate-target';
 import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
 
 import { defaultLocale, localePrefix, LocalePrefixes, locales } from '../i18n';
 import { kv } from '../lib/kv';
 
 import { type MiddlewareFactory } from './compose-middlewares';
+
+const GetRouteQuery = graphql(`
+  query getRoute($path: String!) {
+    site {
+      route(path: $path) {
+        redirect {
+          __typename
+          to {
+            __typename
+          }
+          toUrl
+        }
+        node {
+          __typename
+          id
+          ... on Product {
+            entityId
+          }
+          ... on Category {
+            entityId
+          }
+          ... on Brand {
+            entityId
+          }
+        }
+      }
+    }
+  }
+`);
+
+const getRoute = async (path: string, channelId?: string) => {
+  const response = await client.fetch({
+    document: GetRouteQuery,
+    variables: { path },
+    fetchOptions: { next: { revalidate } },
+    channelId,
+  });
+
+  return response.data.site.route;
+};
+
+const getRawWebPageContentQuery = graphql(`
+  query getRawWebPageContent($id: ID!) {
+    node(id: $id) {
+      __typename
+      ... on RawHtmlPage {
+        htmlBody
+      }
+    }
+  }
+`);
+
+const getRawWebPageContent = async (id: string) => {
+  const response = await client.fetch({
+    document: getRawWebPageContentQuery,
+    variables: { id },
+  });
+
+  const node = response.data.node;
+
+  if (node?.__typename !== 'RawHtmlPage') {
+    throw new Error('Failed to fetch raw web page content');
+  }
+
+  return node;
+};
+
+const GetStoreStatusQuery = graphql(`
+  query getStoreStatus {
+    site {
+      settings {
+        status
+      }
+    }
+  }
+`);
+
+const getStoreStatus = async (channelId?: string) => {
+  const { data } = await client.fetch({
+    document: GetStoreStatusQuery,
+    fetchOptions: { next: { revalidate: 300 } },
+    channelId,
+  });
+
+  return data.site.settings?.status;
+};
 
 type Route = Awaited<ReturnType<typeof getRoute>>;
 type StorefrontStatusType = ReturnType<typeof graphql.scalar<'StorefrontStatusType'>>;

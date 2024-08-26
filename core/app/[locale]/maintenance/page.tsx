@@ -3,15 +3,8 @@ import { ReactNode } from 'react';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { StoreLogo, StoreLogoFragment } from '~/components/store-logo';
-
-const Container = ({ children }: { children: ReactNode }) => (
-  <main className="mx-auto mt-[64px] px-4 md:px-10 lg:mt-[128px]">{children}</main>
-);
-
-export const metadata = {
-  title: 'Maintenance',
-};
+import { StoreLogo } from '~/components/store-logo';
+import { StoreLogoFragment } from '~/components/store-logo/fragment';
 
 const MaintenancePageQuery = graphql(
   `
@@ -30,7 +23,15 @@ const MaintenancePageQuery = graphql(
   [StoreLogoFragment],
 );
 
-export default async function MaintenancePage() {
+export const metadata = {
+  title: 'Maintenance',
+};
+
+const Container = ({ children }: { children: ReactNode }) => (
+  <main className="mx-auto mt-[64px] px-4 md:px-10 lg:mt-[128px]">{children}</main>
+);
+
+export default async function Maintenance() {
   const { data } = await client.fetch({
     document: MaintenancePageQuery,
   });

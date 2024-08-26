@@ -1,6 +1,8 @@
 import { graphql } from '~/client/graphql';
-import { BreadcrumbsFragment } from '~/components/breadcrumbs';
+import { BreadcrumbsFragment } from '~/components/breadcrumbs/fragment';
 import { ProductFormFragment } from '~/components/product-form/fragment';
+
+import { PricingFragment } from './pricing';
 
 export const ProductItemFragment = graphql(
   `
@@ -18,31 +20,9 @@ export const ProductItemFragment = graphql(
       brand {
         name
       }
-      prices {
-        priceRange {
-          min {
-            value
-          }
-          max {
-            value
-          }
-        }
-        retailPrice {
-          value
-        }
-        salePrice {
-          value
-        }
-        basePrice {
-          value
-        }
-        price {
-          value
-          currencyCode
-        }
-      }
+      ...PricingFragment
       ...ProductFormFragment
     }
   `,
-  [BreadcrumbsFragment, ProductFormFragment],
+  [BreadcrumbsFragment, PricingFragment, ProductFormFragment],
 );

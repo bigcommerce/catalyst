@@ -4,7 +4,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { useEffect } from 'react';
 
 import { FragmentOf } from '~/client/graphql';
-import { ProductCardFragment } from '~/components/product-card';
+import { ProductCardFragment } from '~/components/product-card/fragment';
 import { bodl } from '~/lib/bodl';
 
 import { getCategoryPageData } from '../page-data';

@@ -1,11 +1,37 @@
 'use server';
 
-import { ZodError } from 'zod';
+import { z, ZodError } from 'zod';
 
-import {
-  ChangePasswordSchema,
-  submitChangePassword,
-} from '~/client/mutations/submit-change-password';
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
+
+const ChangePasswordFieldsSchema = z.object({
+  customerId: z.string(),
+  customerToken: z.string(),
+  currentPassword: z.string().min(1),
+  newPassword: z.string().min(1),
+  confirmPassword: z.string().min(1),
+});
+
+const ChangePasswordSchema = ChangePasswordFieldsSchema.omit({
+  currentPassword: true,
+}).required();
+
+const ChangePasswordMutation = graphql(`
+  mutation ChangePassword($input: ResetPasswordInput!) {
+    customer {
+      resetPassword(input: $input) {
+        __typename
+        errors {
+          __typename
+          ... on Error {
+            message
+          }
+        }
+      }
+    }
+  }
+`);
 
 export const submitChangePasswordForm = async (_previousState: unknown, formData: FormData) => {
   try {
@@ -16,19 +42,26 @@ export const submitChangePasswordForm = async (_previousState: unknown, formData
       confirmPassword: formData.get('confirm-password'),
     });
 
-    const response = await submitChangePassword({
-      newPassword: parsedData.newPassword,
-      token: parsedData.customerToken,
-      customerEntityId: Number(parsedData.customerId),
+    const response = await client.fetch({
+      document: ChangePasswordMutation,
+      variables: {
+        input: {
+          token: parsedData.customerToken,
+          customerEntityId: Number(parsedData.customerId),
+          newPassword: parsedData.newPassword,
+        },
+      },
     });
 
-    if (response.errors.length === 0) {
+    const result = response.data.customer.resetPassword;
+
+    if (result.errors.length === 0) {
       return { status: 'success', message: '' };
     }
 
     return {
       status: 'error',
-      message: response.errors.map((error) => error.message).join('\n'),
+      message: result.errors.map((error) => error.message).join('\n'),
     };
   } catch (error: unknown) {
     if (error instanceof ZodError) {

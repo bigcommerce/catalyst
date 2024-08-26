@@ -15,16 +15,6 @@ import { CheckoutSummary, CheckoutSummaryFragment } from './_components/checkout
 import { EmptyCart } from './_components/empty-cart';
 import { GeographyFragment } from './_components/shipping-estimator/fragment';
 
-export const metadata = {
-  title: 'Cart',
-};
-
-interface Props {
-  params: {
-    locale: LocaleType;
-  };
-}
-
 const CartPageQuery = graphql(
   `
     query CartPageQuery($cartId: String) {
@@ -48,7 +38,17 @@ const CartPageQuery = graphql(
   [CartItemFragment, CheckoutSummaryFragment, GeographyFragment],
 );
 
-export default async function CartPage({ params: { locale } }: Props) {
+export const metadata = {
+  title: 'Cart',
+};
+
+interface Props {
+  params: {
+    locale: LocaleType;
+  };
+}
+
+export default async function Cart({ params: { locale } }: Props) {
   const cartId = cookies().get('cartId')?.value;
 
   if (!cartId) {
@@ -56,7 +56,6 @@ export default async function CartPage({ params: { locale } }: Props) {
   }
 
   const messages = await getMessages({ locale });
-  const Cart = messages.Cart ?? {};
   const t = await getTranslations({ locale, namespace: 'Cart' });
 
   const customerId = await getSessionCustomerId();
@@ -96,7 +95,7 @@ export default async function CartPage({ params: { locale } }: Props) {
         <div className="col-span-1 col-start-2 lg:col-start-3">
           {checkout && <CheckoutSummary checkout={checkout} geography={geography} />}
 
-          <NextIntlClientProvider locale={locale} messages={{ Cart }}>
+          <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
             <CheckoutButton cartId={cartId} />
           </NextIntlClientProvider>
         </div>

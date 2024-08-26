@@ -2,7 +2,7 @@ import { cache } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
-import { FORM_FIELDS_FRAGMENT } from '~/client/fragments/form-fields';
+import { FormFieldsFragment } from '~/client/fragments/form-fields';
 import { graphql, VariablesOf } from '~/client/graphql';
 
 const RegisterCustomerQuery = graphql(
@@ -17,10 +17,10 @@ const RegisterCustomerQuery = graphql(
         settings {
           formFields {
             customer(filters: $customerFilters, sortBy: $customerSortBy) {
-              ...FormFields
+              ...FormFieldsFragment
             }
             shippingAddress(filters: $addressFilters, sortBy: $addressSortBy) {
-              ...FormFields
+              ...FormFieldsFragment
             }
           }
         }
@@ -50,7 +50,7 @@ const RegisterCustomerQuery = graphql(
       }
     }
   `,
-  [FORM_FIELDS_FRAGMENT],
+  [FormFieldsFragment],
 );
 
 type Variables = VariablesOf<typeof RegisterCustomerQuery>;

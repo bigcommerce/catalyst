@@ -1,6 +1,39 @@
 'use server';
 
-import { updateCustomer as updateCustomerClient } from '~/client/mutations/update-customer';
+import { getSessionCustomerId } from '~/auth';
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
+
+const UpdateCustomerMutation = graphql(`
+  mutation UpdateCustomerMutation($input: UpdateCustomerInput!, $reCaptchaV2: ReCaptchaV2Input) {
+    customer {
+      updateCustomer(input: $input, reCaptchaV2: $reCaptchaV2) {
+        customer {
+          firstName
+          lastName
+        }
+        errors {
+          __typename
+          ... on UnexpectedUpdateCustomerError {
+            message
+          }
+          ... on EmailAlreadyInUseError {
+            message
+          }
+          ... on ValidationError {
+            message
+          }
+          ... on CustomerDoesNotExistError {
+            message
+          }
+          ... on CustomerNotLoggedInError {
+            message
+          }
+        }
+      }
+    }
+  }
+`);
 
 interface UpdateCustomerForm {
   formData: FormData;
@@ -8,14 +41,26 @@ interface UpdateCustomerForm {
 }
 
 export const updateCustomer = async ({ formData, reCaptchaToken }: UpdateCustomerForm) => {
+  const customerId = await getSessionCustomerId();
+
   formData.delete('g-recaptcha-response');
 
   const formFields = Object.fromEntries(formData.entries());
 
-  const response = await updateCustomerClient({ formFields, reCaptchaToken });
+  const response = await client.fetch({
+    document: UpdateCustomerMutation,
+    customerId,
+    fetchOptions: { cache: 'no-store' },
+    variables: {
+      input: formFields,
+      ...(reCaptchaToken && { reCaptchaV2: { token: reCaptchaToken } }),
+    },
+  });
 
-  if (response.errors.length === 0) {
-    const { customer } = response;
+  const result = response.data.customer.updateCustomer;
+
+  if (result.errors.length === 0) {
+    const { customer } = result;
 
     if (!customer) {
       return {
@@ -31,6 +76,6 @@ export const updateCustomer = async ({ formData, reCaptchaToken }: UpdateCustome
 
   return {
     status: 'error',
-    error: response.errors.map((error) => error.message).join('\n'),
+    error: result.errors.map((error) => error.message).join('\n'),
   };
 };

@@ -3,15 +3,17 @@ import { getLocale, getMessages } from 'next-intl/server';
 
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
-import { FORM_FIELDS_FRAGMENT } from '~/client/fragments/form-fields';
+import { FormFieldsFragment } from '~/client/fragments/form-fields';
 import { graphql, ResultOf } from '~/client/graphql';
-import { getCustomerAddresses } from '~/client/queries/get-customer-addresses';
+import { ExistingResultType } from '~/client/util';
+
+import { getCustomerAddresses } from '../../page-data';
 
 import { EditAddress as EditAddressForm } from './edit-address';
 
 export const CustomerEditAdressQuery = graphql(
   `
-    query customerNewAddress(
+    query CustomerEditAdressQuery(
       $countryCode: String
       $shippingFilters: FormFieldFiltersInput
       $shippingSorting: FormFieldSortInput
@@ -27,7 +29,7 @@ export const CustomerEditAdressQuery = graphql(
           }
           formFields {
             shippingAddress(filters: $shippingFilters, sortBy: $shippingSorting) {
-              ...FormFields
+              ...FormFieldsFragment
             }
           }
         }
@@ -48,12 +50,12 @@ export const CustomerEditAdressQuery = graphql(
       }
     }
   `,
-  [FORM_FIELDS_FRAGMENT],
+  [FormFieldsFragment],
 );
 
 export type EditAddressQueryResponseType = ResultOf<typeof CustomerEditAdressQuery>;
 
-type CustomerAddresses = NonNullable<Awaited<ReturnType<typeof getCustomerAddresses>>>;
+type CustomerAddresses = ExistingResultType<typeof getCustomerAddresses>;
 
 export type Address = CustomerAddresses['addresses'][number];
 

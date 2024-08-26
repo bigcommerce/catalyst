@@ -1,11 +1,233 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 import { z } from 'zod';
 
-import { graphql } from '~/client/graphql';
-import { getProductSearchResults } from '~/client/queries/get-product-search-results';
+import { getSessionCustomerId } from '~/auth';
+import { client } from '~/client';
+import { PaginationFragment } from '~/client/fragments/pagination';
+import { graphql, VariablesOf } from '~/client/graphql';
+import { revalidate } from '~/client/revalidate-target';
+import { ProductCardFragment } from '~/components/product-card/fragment';
 
-type SearchProductsFiltersInput = ReturnType<typeof graphql.scalar<'SearchProductsFiltersInput'>>;
-type SearchProductsSortInput = ReturnType<typeof graphql.scalar<'SearchProductsSortInput'>>;
+const GetProductSearchResultsQuery = graphql(
+  `
+    query GetProductSearchResultsQuery(
+      $first: Int
+      $last: Int
+      $after: String
+      $before: String
+      $filters: SearchProductsFiltersInput!
+      $sort: SearchProductsSortInput
+    ) {
+      site {
+        search {
+          searchProducts(filters: $filters, sort: $sort) {
+            products(first: $first, after: $after, last: $last, before: $before) {
+              pageInfo {
+                ...PaginationFragment
+              }
+              collectionInfo {
+                totalItems
+              }
+              edges {
+                node {
+                  ...ProductCardFragment
+                }
+              }
+            }
+            filters {
+              edges {
+                node {
+                  __typename
+                  name
+                  isCollapsedByDefault
+                  ... on BrandSearchFilter {
+                    displayProductCount
+                    brands {
+                      pageInfo {
+                        ...PaginationFragment
+                      }
+                      edges {
+                        cursor
+                        node {
+                          entityId
+                          name
+                          isSelected
+                          productCount
+                        }
+                      }
+                    }
+                  }
+                  ... on CategorySearchFilter {
+                    displayProductCount
+                    categories {
+                      pageInfo {
+                        ...PaginationFragment
+                      }
+                      edges {
+                        cursor
+                        node {
+                          entityId
+                          name
+                          isSelected
+                          productCount
+                          subCategories {
+                            pageInfo {
+                              ...PaginationFragment
+                            }
+                            edges {
+                              cursor
+                              node {
+                                entityId
+                                name
+                                isSelected
+                                productCount
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                  ... on ProductAttributeSearchFilter {
+                    displayProductCount
+                    filterName
+                    attributes {
+                      pageInfo {
+                        ...PaginationFragment
+                      }
+                      edges {
+                        cursor
+                        node {
+                          value
+                          isSelected
+                          productCount
+                        }
+                      }
+                    }
+                  }
+                  ... on RatingSearchFilter {
+                    ratings {
+                      pageInfo {
+                        ...PaginationFragment
+                      }
+                      edges {
+                        cursor
+                        node {
+                          value
+                          isSelected
+                          productCount
+                        }
+                      }
+                    }
+                  }
+                  ... on PriceSearchFilter {
+                    selected {
+                      minPrice
+                      maxPrice
+                    }
+                  }
+                  ... on OtherSearchFilter {
+                    displayProductCount
+                    freeShipping {
+                      isSelected
+                      productCount
+                    }
+                    isFeatured {
+                      isSelected
+                      productCount
+                    }
+                    isInStock {
+                      isSelected
+                      productCount
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+  [PaginationFragment, ProductCardFragment],
+);
+
+type Variables = VariablesOf<typeof GetProductSearchResultsQuery>;
+type SearchProductsSortInput = Variables['sort'];
+type SearchProductsFiltersInput = Variables['filters'];
+
+interface ProductSearch {
+  limit?: number;
+  before?: string;
+  after?: string;
+  sort?: SearchProductsSortInput;
+  filters: SearchProductsFiltersInput;
+}
+
+const getProductSearchResults = cache(
+  async ({ limit = 9, after, before, sort, filters }: ProductSearch) => {
+    const customerId = await getSessionCustomerId();
+    const filterArgs = { filters, sort };
+    const paginationArgs = before ? { last: limit, before } : { first: limit, after };
+
+    const response = await client.fetch({
+      document: GetProductSearchResultsQuery,
+      variables: { ...filterArgs, ...paginationArgs },
+      customerId,
+      fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate: 300 } },
+    });
+
+    const { site } = response.data;
+
+    const searchResults = site.search.searchProducts;
+
+    const items = removeEdgesAndNodes(searchResults.products).map((product) => ({
+      ...product,
+      fetchOptions: { next: { revalidate } },
+    }));
+
+    return {
+      facets: {
+        items: removeEdgesAndNodes(searchResults.filters).map((node) => {
+          switch (node.__typename) {
+            case 'BrandSearchFilter':
+              return {
+                ...node,
+                brands: removeEdgesAndNodes(node.brands),
+              };
+
+            case 'CategorySearchFilter':
+              return {
+                ...node,
+                categories: removeEdgesAndNodes(node.categories),
+              };
+
+            case 'ProductAttributeSearchFilter':
+              return {
+                ...node,
+                attributes: removeEdgesAndNodes(node.attributes),
+              };
+
+            case 'RatingSearchFilter':
+              return {
+                ...node,
+                ratings: removeEdgesAndNodes(node.ratings),
+              };
+
+            default:
+              return node;
+          }
+        }),
+      },
+      products: {
+        collectionInfo: searchResults.products.collectionInfo,
+        pageInfo: searchResults.products.pageInfo,
+        items,
+      },
+    };
+  },
+);
 
 const SearchParamSchema = z.union([z.string(), z.array(z.string()), z.undefined()]);
 

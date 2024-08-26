@@ -2,10 +2,41 @@
 
 import { revalidatePath } from 'next/cache';
 
-import {
-  addCustomerAddress,
-  AddCustomerAddressInput,
-} from '~/client/mutations/add-customer-address';
+import { getSessionCustomerId } from '~/auth';
+import { client } from '~/client';
+import { graphql, VariablesOf } from '~/client/graphql';
+
+const AddCustomerAddressMutation = graphql(`
+  mutation AddCustomerAddressMutation(
+    $input: AddCustomerAddressInput!
+    $reCaptchaV2: ReCaptchaV2Input
+  ) {
+    customer {
+      addCustomerAddress(input: $input, reCaptchaV2: $reCaptchaV2) {
+        errors {
+          ... on CustomerAddressCreationError {
+            message
+          }
+          ... on CustomerNotLoggedInError {
+            message
+          }
+          ... on ValidationError {
+            message
+            path
+          }
+        }
+        address {
+          entityId
+          firstName
+          lastName
+        }
+      }
+    }
+  }
+`);
+
+type Variables = VariablesOf<typeof AddCustomerAddressMutation>;
+type AddCustomerAddressInput = Variables['input'];
 
 const isAddCustomerAddressInput = (data: unknown): data is AddCustomerAddressInput => {
   if (typeof data === 'object' && data !== null && 'address1' in data) {
@@ -22,6 +53,8 @@ export const addAddress = async ({
   formData: FormData;
   reCaptchaToken?: string;
 }) => {
+  const customerId = await getSessionCustomerId();
+
   try {
     const parsed: unknown = [...formData.entries()].reduce<
       Record<string, FormDataEntryValue | Record<string, FormDataEntryValue>>
@@ -47,20 +80,27 @@ export const addAddress = async ({
       };
     }
 
-    const response = await addCustomerAddress({
-      input: parsed,
-      reCaptchaToken,
+    const response = await client.fetch({
+      document: AddCustomerAddressMutation,
+      customerId,
+      fetchOptions: { cache: 'no-store' },
+      variables: {
+        input: parsed,
+        ...(reCaptchaToken && { reCaptchaV2: { token: reCaptchaToken } }),
+      },
     });
+
+    const result = response.data.customer.addCustomerAddress;
 
     revalidatePath('/account/addresses', 'page');
 
-    if (response.errors.length === 0) {
+    if (result.errors.length === 0) {
       return { status: 'success', message: 'The address has been added.' };
     }
 
     return {
       status: 'error',
-      message: response.errors.map((error) => error.message).join('\n'),
+      message: result.errors.map((error) => error.message).join('\n'),
     };
   } catch (error: unknown) {
     if (error instanceof Error) {

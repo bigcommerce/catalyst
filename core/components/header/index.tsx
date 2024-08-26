@@ -3,8 +3,7 @@ import { getLocale } from 'next-intl/server';
 import { ReactNode, Suspense } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
-import { FragmentOf, graphql } from '~/client/graphql';
-import { headerLinksTransformer } from '~/data-transformers/header-links-transformer';
+import { FragmentOf } from '~/client/graphql';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 import { localeLanguageRegionMap } from '~/i18n';
 
@@ -15,39 +14,8 @@ import { Header as ComponentsHeader } from '../ui/header';
 
 import { logout } from './_actions/logout';
 import { CartLink } from './cart';
+import { HeaderFragment } from './fragment';
 import { QuickSearch } from './quick-search';
-
-export const HeaderFragment = graphql(`
-  fragment HeaderFragment on Site {
-    settings {
-      storeName
-      logoV2 {
-        __typename
-        ... on StoreTextLogo {
-          text
-        }
-        ... on StoreImageLogo {
-          image {
-            url: urlTemplate
-            altText
-          }
-        }
-      }
-    }
-    categoryTree {
-      name
-      path
-      children {
-        name
-        path
-        children {
-          name
-          path
-        }
-      }
-    }
-  }
-`);
 
 interface Props {
   cart: ReactNode;
@@ -64,6 +32,19 @@ export const Header = async ({ cart, data }: Props) => {
    Will require modification of navigation menu styles to accommodate the additional categories.
    */
   const categoryTree = data.categoryTree.slice(0, 6);
+
+  const links = categoryTree.map(({ name, path, children }) => ({
+    label: name,
+    href: path,
+    groups: children.map((firstChild) => ({
+      label: firstChild.name,
+      href: firstChild.path,
+      links: firstChild.children.map((secondChild) => ({
+        label: secondChild.name,
+        href: secondChild.path,
+      })),
+    })),
+  }));
 
   return (
     <ComponentsHeader
@@ -112,7 +93,7 @@ export const Header = async ({ cart, data }: Props) => {
           </Suspense>
         </p>
       }
-      links={headerLinksTransformer(categoryTree)}
+      links={links}
       locales={localeLanguageRegionMap}
       logo={data.settings ? logoTransformer(data.settings) : undefined}
       search={<QuickSearch logo={data.settings ? logoTransformer(data.settings) : ''} />}

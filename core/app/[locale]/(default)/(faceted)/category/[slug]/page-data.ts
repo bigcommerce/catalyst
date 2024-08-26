@@ -4,7 +4,7 @@ import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { BreadcrumbsFragment } from '~/components/breadcrumbs';
+import { BreadcrumbsFragment } from '~/components/breadcrumbs/fragment';
 
 import { CategoryTreeFragment } from './_components/sub-categories';
 
@@ -28,9 +28,9 @@ const CategoryPageQuery = graphql(
   [BreadcrumbsFragment, CategoryTreeFragment],
 );
 
-type CategoryPageQueryVariables = VariablesOf<typeof CategoryPageQuery>;
+type Variables = VariablesOf<typeof CategoryPageQuery>;
 
-export const getCategoryPageData = cache(async (variables: CategoryPageQueryVariables) => {
+export const getCategoryPageData = cache(async (variables: Variables) => {
   const customerId = await getSessionCustomerId();
 
   const response = await client.fetch({

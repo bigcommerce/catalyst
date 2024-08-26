@@ -3,16 +3,17 @@
 import { useTranslations } from 'next-intl';
 import { PropsWithChildren, useState } from 'react';
 
-import { getCustomerAddresses } from '~/client/queries/get-customer-addresses';
+import { ExistingResultType } from '~/client/util';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 import { Message } from '~/components/ui/message';
 
 import { deleteAddress } from '../../_actions/delete-address';
+import { getCustomerAddresses } from '../../page-data';
 import { useAccountStatusContext } from '../account-status-provider';
 import { Modal } from '../modal';
 
-export type Addresses = NonNullable<Awaited<ReturnType<typeof getCustomerAddresses>>>['addresses'];
+export type Addresses = ExistingResultType<typeof getCustomerAddresses>['addresses'];
 
 interface AddressChangeProps {
   addressId: number;
