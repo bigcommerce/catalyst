@@ -35,7 +35,7 @@ test('My Account tabs are displayed and clickable', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Orders' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Messages' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Addresses' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Wish lists' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Wishlists' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Recently viewed' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Account settings' })).toBeVisible();
 
@@ -51,9 +51,9 @@ test('My Account tabs are displayed and clickable', async ({ page }) => {
   await expect(page).toHaveURL('/account/addresses/');
   await expect(page.getByRole('heading', { name: 'Addresses' })).toBeVisible();
 
-  await page.getByRole('link', { name: 'Wish lists' }).click();
+  await page.getByRole('link', { name: 'Wishlists' }).click();
   await expect(page).toHaveURL('/account/wishlists/');
-  await expect(page.getByRole('heading', { name: 'Wish lists' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Wishlists' })).toBeVisible();
 
   await page.getByRole('link', { name: 'Recently viewed' }).click();
   await expect(page).toHaveURL('/account/recently-viewed/');
@@ -104,19 +104,19 @@ test('Add and remove new address', async ({ page }) => {
   });
 });
 
-test('Add and remove new wish list', async ({ page }) => {
+test('Add and remove new wishlist', async ({ page }) => {
   await loginWithUserAccount(page, testUserEmail, testUserPassword);
   await page.goto('/account/wishlists');
-  await page.getByRole('heading', { name: 'Wish lists' }).waitFor();
+  await page.getByRole('heading', { name: 'Wishlists' }).waitFor();
 
-  await page.getByRole('button', { name: 'New Wishlist' }).click();
-  await page.locator('#wishlist').fill('test');
-  await page.getByRole('button', { name: 'Create wishlist' }).click();
-  await expect(page.getByText('Your wish list test was created successfully')).toBeVisible();
+  await page.getByRole('button', { name: 'New wishlist' }).click();
+  await page.getByLabel('Wishlist name').fill('test');
+  await page.getByRole('button', { name: 'Create' }).click();
+  await expect(page.getByText('Your wishlist test was created successfully')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'test' })).toBeVisible();
 
   await page.getByRole('button', { name: 'Delete' }).click();
   await page.getByRole('button', { name: /Delete/ }).click();
-  await expect(page.getByText('Your wish list test was deleted successfully')).toBeVisible();
+  await expect(page.getByText('Your wishlist test was deleted successfully')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'test' })).toBeHidden();
 });
