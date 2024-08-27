@@ -1,0 +1,198 @@
+diff --git a/core/.env.example b/core/.env.example
+index b0425c70..659b3543 100644
+--- a/core/.env.example
++++ b/core/.env.example
+@@ -1,3 +1,7 @@
++# Contentful
++CONTENTFUL_SPACE_ID=
++CONTENTFUL_ACCESS_TOKEN=
++
+ # The hash visible in the subject store's URL when signed in to the store control panel.
+ # The control panel URL is of the form `https://store-{hash}.mybigcommerce.com`. 
+ BIGCOMMERCE_STORE_HASH=
+diff --git a/core/app/[locale]/(default)/contentful/page.tsx b/core/app/[locale]/(default)/contentful/page.tsx
+new file mode 100644
+index 00000000..2e97d84d
+--- /dev/null
++++ b/core/app/[locale]/(default)/contentful/page.tsx
+@@ -0,0 +1,48 @@
++import Image from 'next/image';
++
++import { contentfulClient, contentfulGraphql } from '~/lib/contentful/client';
++
++export default async function ContentfulPage() {
++  const GetBlogPostsQuery = contentfulGraphql(`
++    query GetBlogPosts {
++      blogPostCollection {
++        items {
++          sys {
++            id
++          }
++          _id
++          title
++          excerpt
++          published
++          author
++          image {
++            description
++            url
++          }
++        }
++      }
++    }
++  `);
++
++  const data = await contentfulClient.query(GetBlogPostsQuery, {});
++
++  return (
++    <div className="space-y-4">
++      <h1>Contentful Page</h1>
++      {data.data?.blogPostCollection?.items.map((post) => (
++        <div className="rounded-lg border p-4" key={post?.sys.id}>
++          <h2>{post?.title}</h2>
++          <p>{post?.excerpt}</p>
++          <p>{post?.published}</p>
++          <p>{post?.author}</p>
++          <Image
++            alt={post?.image?.description ?? ''}
++            height={200}
++            src={post?.image?.url ?? ''}
++            width={200}
++          />
++        </div>
++      ))}
++    </div>
++  );
++}
+diff --git a/core/lib/contentful/client.ts b/core/lib/contentful/client.ts
+new file mode 100644
+index 00000000..46faf324
+--- /dev/null
++++ b/core/lib/contentful/client.ts
+@@ -0,0 +1,46 @@
++import { cacheExchange, Client, fetchExchange } from '@urql/core';
++import { strict } from 'assert';
++import { initGraphQLTada } from 'gql.tada';
++
++import type { introspection } from '~/contentful-graphql';
++
++export const contentfulGraphql = initGraphQLTada<{
++  introspection: introspection;
++  disableMasking: true;
++  scalars: {
++    DateTime: string;
++  };
++}>();
++
++const getContentfulGraphqlEndpoint = () => {
++  strict(process.env.CONTENTFUL_SPACE_ID, 'CONTENTFUL_SPACE_ID environment variable is required');
++
++  return `https://graphql.contentful.com/content/v1/spaces/${process.env.CONTENTFUL_SPACE_ID}`;
++};
++
++const getContentfulAccessToken = () => {
++  strict(
++    process.env.CONTENTFUL_ACCESS_TOKEN,
++    'CONTENTFUL_ACCESS_TOKEN environment variable is required',
++  );
++
++  return process.env.CONTENTFUL_ACCESS_TOKEN;
++};
++
++export const contentfulClient = new Client({
++  url: getContentfulGraphqlEndpoint(),
++  exchanges: [cacheExchange, fetchExchange],
++  fetchOptions: () => ({
++    headers: {
++      Authorization: `Bearer ${getContentfulAccessToken()}`,
++    },
++
++    // @todo implement better cache strategy
++    cache: 'no-cache',
++  }),
++
++  /**
++   * requestPolicy overrides cache property in fetchOptions
++   */
++  requestPolicy: 'cache-and-network',
++});
+diff --git a/core/next.config.js b/core/next.config.js
+index f49bd33d..73672b16 100644
+--- a/core/next.config.js
++++ b/core/next.config.js
+@@ -56,6 +56,15 @@ const nextConfig = {
+       },
+     ];
+   },
++
++  images: {
++    remotePatterns: [
++      {
++        protocol: 'https',
++        hostname: 'images.ctfassets.net',
++      },
++    ],
++  },
+ };
+ 
+ module.exports = withNextIntl(nextConfig);
+diff --git a/core/scripts/generate.cjs b/core/scripts/generate.cjs
+index 84c8be1a..422b7b35 100644
+--- a/core/scripts/generate.cjs
++++ b/core/scripts/generate.cjs
+@@ -1,5 +1,6 @@
+ // @ts-check
+ const { generateSchema, generateOutput } = require('@gql.tada/cli-utils');
++const { strict } = require('assert');
+ const { join } = require('path');
+ 
+ const graphqlApiDomain = process.env.BIGCOMMERCE_GRAPHQL_API_DOMAIN ?? 'mybigcommerce.com';
+@@ -30,6 +31,18 @@ const getToken = () => {
+   return token;
+ };
+ 
++const getContentfulEndpoint = () => {
++  strict(process.env.CONTENTFUL_SPACE_ID, 'Missing Contentful space ID');
++
++  return `https://graphql.contentful.com/content/v1/spaces/${process.env.CONTENTFUL_SPACE_ID}`;
++};
++
++const getContentfulToken = () => {
++  strict(process.env.CONTENTFUL_ACCESS_TOKEN, 'Missing Contentful access token');
++
++  return process.env.CONTENTFUL_ACCESS_TOKEN;
++};
++
+ const getEndpoint = () => {
+   const storeHash = getStoreHash();
+   const channelId = getChannelId();
+@@ -52,6 +65,13 @@ const generate = async () => {
+       tsconfig: undefined,
+     });
+ 
++    await generateSchema({
++      input: getContentfulEndpoint(),
++      headers: { Authorization: `Bearer ${getContentfulToken()}` },
++      output: join(__dirname, '../contentful.graphql'),
++      tsconfig: undefined,
++    });
++
+     await generateOutput({
+       disablePreprocessing: false,
+       output: undefined,
+diff --git a/core/tsconfig.json b/core/tsconfig.json
+index f5fb73a0..b8c148dd 100644
+--- a/core/tsconfig.json
++++ b/core/tsconfig.json
+@@ -32,6 +32,11 @@
+             "name": "bigcommerce",
+             "schema": "./bigcommerce.graphql",
+             "tadaOutputLocation": "./bigcommerce-graphql.d.ts"
++          },
++          {
++            "name": "contentful",
++            "schema": "./contentful.graphql",
++            "tadaOutputLocation": "./contentful-graphql.d.ts"
+           }
+         ]
+       }
