@@ -1,6 +1,5 @@
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, unstable_setRequestLocale } from 'next-intl/server';
-import { PropsWithChildren, Suspense } from 'react';
+import { unstable_setRequestLocale } from 'next-intl/server';
+import { PropsWithChildren } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
@@ -11,7 +10,6 @@ import { FooterFragment } from '~/components/footer/fragment';
 import { Header } from '~/components/header';
 import { Cart } from '~/components/header/cart';
 import { HeaderFragment } from '~/components/header/fragment';
-import { ProductSheet } from '~/components/product-sheet';
 import { LocaleType } from '~/i18n';
 
 interface Props extends PropsWithChildren {
@@ -40,8 +38,6 @@ export default async function DefaultLayout({ children, params: { locale } }: Pr
     fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
-  const messages = await getMessages({ locale });
-
   return (
     <>
       <Header cart={<Cart />} data={data.site} />
@@ -49,15 +45,6 @@ export default async function DefaultLayout({ children, params: { locale } }: Pr
       <main className="flex-1 px-4 2xl:container sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0">
         {children}
       </main>
-
-      <Suspense fallback={null}>
-        <NextIntlClientProvider
-          locale={locale}
-          messages={{ Product: messages.Product ?? {}, AddToCart: messages.AddToCart ?? {} }}
-        >
-          <ProductSheet />
-        </NextIntlClientProvider>
-      </Suspense>
 
       <Footer data={data.site} />
     </>

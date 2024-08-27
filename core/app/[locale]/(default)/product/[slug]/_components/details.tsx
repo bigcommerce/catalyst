@@ -4,9 +4,9 @@ import { useFormatter, useTranslations } from 'next-intl';
 import { PricingFragment } from '~/client/fragments/pricing';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { FragmentOf, graphql } from '~/client/graphql';
-import { ProductForm } from '~/components/product-form';
-import { ProductFormFragment } from '~/components/product-form/fragment';
 
+import { ProductForm } from './product-form';
+import { ProductFormFragment } from './product-form/fragment';
 import { ProductSchema, ProductSchemaFragment } from './product-schema';
 import { ReviewSummary, ReviewSummaryFragment } from './review-summary';
 

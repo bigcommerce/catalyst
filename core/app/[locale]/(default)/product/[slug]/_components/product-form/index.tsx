@@ -1,18 +1,17 @@
 'use client';
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { FragmentOf } from 'gql.tada';
 import { AlertCircle, Check, Heart, ShoppingCart } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
 import { ProductItemFragment } from '~/client/fragments/product-item';
-import { FragmentOf } from '~/client/graphql';
+import { AddToCartButton } from '~/components/add-to-cart-button';
+import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 import { bodl } from '~/lib/bodl';
-
-import { AddToCartButton } from '../add-to-cart-button';
-import { Link } from '../link';
 
 import { handleAddToCart } from './_actions/add-to-cart';
 import { CheckboxField } from './fields/checkbox-field';

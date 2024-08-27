@@ -393,7 +393,7 @@
   },
   "AddToCart": {
     "addToCart": "Add to cart",
-    "quickAdd": "Quick add",
+    "viewOptions": "View options",
     "outOfStock": "Out of stock", 
     "preorder": "Preorder",
     "unavailable": "Unavailable",
