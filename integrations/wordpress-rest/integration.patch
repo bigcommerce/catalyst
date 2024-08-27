@@ -1,0 +1,479 @@
+diff --git a/core/.env.example b/core/.env.example
+index b0425c70..fdb9c408 100644
+--- a/core/.env.example
++++ b/core/.env.example
+@@ -34,3 +34,7 @@ TURBO_REMOTE_CACHE_SIGNATURE_KEY=
+ # https://nextjs.org/docs/app/building-your-application/caching#data-cache
+ # This sets a sensible revalidation target for cached requests
+ NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET=3600
++
++# WordPress config
++# Use site url without trailing slash i.e. https://www.mywordpressite.com
++WORDPRESS_URL=
+diff --git a/core/app/[locale]/(default)/blog/[blogId]/_components/sharing-links.tsx b/core/app/[locale]/(default)/blog/[blogId]/_components/sharing-links.tsx
+index fdbc90f2..02c06147 100644
+--- a/core/app/[locale]/(default)/blog/[blogId]/_components/sharing-links.tsx
++++ b/core/app/[locale]/(default)/blog/[blogId]/_components/sharing-links.tsx
+@@ -1,35 +1,29 @@
+ import { SiFacebook, SiLinkedin, SiPinterest, SiX } from '@icons-pack/react-simple-icons';
+ import { Mail } from 'lucide-react';
+ 
+-import { FragmentOf, graphql } from '~/client/graphql';
+-
+ import { PrintButton } from './print-button';
+ 
+-export const SharingLinksFragment = graphql(`
+-  fragment SharingLinksFragment on Site {
+-    content {
+-      blog {
+-        post(entityId: $entityId) {
+-          entityId
+-          thumbnailImage {
+-            url: urlTemplate
+-          }
+-          seo {
+-            pageTitle
+-          }
+-        }
+-      }
+-    }
+-    settings {
+-      url {
+-        vanityUrl
+-      }
+-    }
+-  }
+-`);
+-
+ interface Props {
+-  data: FragmentOf<typeof SharingLinksFragment>;
++  data: {
++    content: {
++      blog: {
++        post: {
++          entityId: string;
++          thumbnailImage: {
++            url: string;
++          } | null;
++          seo: {
++            pageTitle: string;
++          };
++        } | null;
++      } | null;
++    };
++    settings: {
++      url: {
++        vanityUrl: string;
++      };
++    } | null;
++  };
+ }
+ 
+ export const SharingLinks = ({ data }: Props) => {
+diff --git a/core/app/[locale]/(default)/blog/[blogId]/page-data.ts b/core/app/[locale]/(default)/blog/[blogId]/page-data.ts
+index 47701103..0eb4e9e1 100644
+--- a/core/app/[locale]/(default)/blog/[blogId]/page-data.ts
++++ b/core/app/[locale]/(default)/blog/[blogId]/page-data.ts
+@@ -1,56 +1,26 @@
+ import { cache } from 'react';
++import { getWordPressPost } from '~/lib/wordpress/data-fetcher';
+ 
+-import { client } from '~/client';
+-import { graphql } from '~/client/graphql';
+-import { revalidate } from '~/client/revalidate-target';
++export const getBlogPageData = cache(
++  async ({ entityId, locale }: { entityId: string; locale: string | undefined }) => {
++    console.log('entityId', entityId)
++    const blogPost = await getWordPressPost({ blogId: entityId.toString(), locale });
+ 
+-import { SharingLinksFragment } from './_components/sharing-links';
+-
+-const BlogPageQuery = graphql(
+-  `
+-    query BlogPageQuery($entityId: Int!) {
+-      site {
+-        content {
+-          blog {
+-            post(entityId: $entityId) {
+-              author
+-              htmlBody
+-              name
+-              publishedDate {
+-                utc
+-              }
+-              tags
+-              thumbnailImage {
+-                altText
+-                url: urlTemplate
+-              }
+-              seo {
+-                pageTitle
+-                metaDescription
+-                metaKeywords
+-              }
+-            }
+-          }
+-        }
+-        ...SharingLinksFragment
+-      }
++    if (!blogPost) {
++      return null;
+     }
+-  `,
+-  [SharingLinksFragment],
+-);
+-
+-export const getBlogPageData = cache(async ({ entityId }: { entityId: number }) => {
+-  const response = await client.fetch({
+-    document: BlogPageQuery,
+-    variables: { entityId },
+-    fetchOptions: { next: { revalidate } },
+-  });
+ 
+-  const { blog } = response.data.site.content;
+-
+-  if (!blog?.post) {
+-    return null;
+-  }
+-
+-  return response.data.site;
+-});
++    return {
++      content: {
++        blog: {
++          post: { ...blogPost, entityId },
++        },
++      },
++      settings: {
++        url: {
++          vanityUrl: blogPost.vanityUrl,
++        },
++      },
++    };
++  },
++);
+diff --git a/core/app/[locale]/(default)/blog/[blogId]/page.tsx b/core/app/[locale]/(default)/blog/[blogId]/page.tsx
+index 3edd5ac4..e733b1fa 100644
+--- a/core/app/[locale]/(default)/blog/[blogId]/page.tsx
++++ b/core/app/[locale]/(default)/blog/[blogId]/page.tsx
+@@ -17,8 +17,8 @@ interface Props {
+   };
+ }
+ 
+-export async function generateMetadata({ params: { blogId } }: Props): Promise<Metadata> {
+-  const data = await getBlogPageData({ entityId: Number(blogId) });
++export async function generateMetadata({ params: { blogId, locale } }: Props): Promise<Metadata> {
++  const data = await getBlogPageData({ entityId: blogId, locale });
+   const blogPost = data?.content.blog?.post;
+ 
+   if (!blogPost) {
+@@ -37,7 +37,7 @@ export async function generateMetadata({ params: { blogId } }: Props): Promise<M
+ export default async function BlogPostPage({ params: { blogId, locale } }: Props) {
+   const format = await getFormatter({ locale });
+ 
+-  const data = await getBlogPageData({ entityId: Number(blogId) });
++  const data = await getBlogPageData({ entityId: blogId, locale });
+   const blogPost = data?.content.blog?.post;
+ 
+   if (!blogPost) {
+@@ -79,11 +79,11 @@ export default async function BlogPostPage({ params: { blogId, locale } }: Props
+         </div>
+       )}
+ 
+-      <div className="mb-10 text-base" dangerouslySetInnerHTML={{ __html: blogPost.htmlBody }} />
++      <div className="mb-10 text-base space-y-4" dangerouslySetInnerHTML={{ __html: blogPost.htmlBody }} />
+       <div className="mb-10 flex">
+-        {blogPost.tags.map((tag) => (
+-          <Link className="me-3 block cursor-pointer" href={`/blog/tag/${tag}`} key={tag}>
+-            <Tag content={tag} />
++        {blogPost.tags.map((tag: { name: string, href: string }) => (
++          <Link className="me-3 block cursor-pointer" href={tag.href} key={tag.name}>
++            <Tag content={tag.name} />
+           </Link>
+         ))}
+       </div>
+diff --git a/core/app/[locale]/(default)/blog/page-data.ts b/core/app/[locale]/(default)/blog/page-data.ts
+index 5ce86f84..32cea561 100644
+--- a/core/app/[locale]/(default)/blog/page-data.ts
++++ b/core/app/[locale]/(default)/blog/page-data.ts
+@@ -1,13 +1,10 @@
+-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+ import { cache } from 'react';
+ 
+-import { client } from '~/client';
+-import { graphql } from '~/client/graphql';
+-import { revalidate } from '~/client/revalidate-target';
+-import { BlogPostCardFragment } from '~/components/blog-post-card';
++import { getWordPressPosts } from '~/lib/wordpress/data-fetcher';
+ 
+ interface BlogPostsFiltersInput {
+   tagId?: string;
++  locale?: string;
+ }
+ 
+ interface Pagination {
+@@ -16,65 +13,24 @@ interface Pagination {
+   after?: string;
+ }
+ 
+-const BlogPostsPageQuery = graphql(
+-  `
+-    query BlogPostsPageQuery(
+-      $first: Int
+-      $after: String
+-      $last: Int
+-      $before: String
+-      $filters: BlogPostsFiltersInput
+-    ) {
+-      site {
+-        content {
+-          blog {
+-            name
+-            description
+-            posts(first: $first, after: $after, last: $last, before: $before, filters: $filters) {
+-              edges {
+-                node {
+-                  entityId
+-                  ...BlogPostCardFragment
+-                }
+-              }
+-              pageInfo {
+-                hasNextPage
+-                hasPreviousPage
+-                startCursor
+-                endCursor
+-              }
+-            }
+-          }
+-        }
+-      }
+-    }
+-  `,
+-  [BlogPostCardFragment],
+-);
+-
+ export const getBlogPosts = cache(
+-  async ({ tagId, limit = 9, before, after }: BlogPostsFiltersInput & Pagination) => {
+-    const filterArgs = tagId ? { filters: { tags: [tagId] } } : {};
+-    const paginationArgs = before ? { last: limit, before } : { first: limit, after };
++  async ({ tagId, limit = 9, before, after, locale }: BlogPostsFiltersInput & Pagination) => {
++    let page = 1;
++    
++    if (before) {
++      page = parseInt(before) - 1;
++    }
+ 
+-    const response = await client.fetch({
+-      document: BlogPostsPageQuery,
+-      variables: { ...filterArgs, ...paginationArgs },
+-      fetchOptions: { next: { revalidate } },
+-    });
++    if (after) {
++      page = parseInt(after);
++    }
+ 
+-    const { blog } = response.data.site.content;
++    const blogPosts = await getWordPressPosts({ tagId, perPage: limit, page, locale })
+ 
+-    if (!blog) {
++    if (!blogPosts) {
+       return null;
+     }
+ 
+-    return {
+-      ...blog,
+-      posts: {
+-        pageInfo: blog.posts.pageInfo,
+-        items: removeEdgesAndNodes(blog.posts),
+-      },
+-    };
++    return blogPosts;
+   },
+-);
++);
+\ No newline at end of file
+diff --git a/core/lib/wordpress/data-fetcher.ts b/core/lib/wordpress/data-fetcher.ts
+new file mode 100644
+index 00000000..63c1992e
+--- /dev/null
++++ b/core/lib/wordpress/data-fetcher.ts
+@@ -0,0 +1,179 @@
++type PostsListParams = {
++  tagId?: string;
++  page?: number;
++  perPage?: number;
++  offset?: number;
++  order?: 'asc' | 'desc';
++  orderby?: 'date' | 'relevance' | 'id' | 'include' | 'title' | 'slug';
++  locale?: string;
++};
++
++type SinglePostParams = {
++  blogId: string;
++  locale?: string;
++};
++
++type SinglePageParams = {
++  path: string;
++  locale?: string;
++};
++
++const SITE_URL = process.env.WORDPRESS_URL || '';
++
++export async function getWordPressPosts(searchParams: PostsListParams) {
++  const {
++    tagId,
++    page = 1,
++    perPage = 9,
++    offset,
++    order = 'desc',
++    orderby = 'date',
++    locale = 'en',
++  } = searchParams;
++
++  console.log('searchParams', searchParams)
++
++  let url = `${SITE_URL}/wp-json/wp/v2/posts?_embed&page=${page}&per_page=${perPage}&order=${order}&orderby=${orderby}`;
++
++  let tagName = '';
++  if (tagId) {
++    // The tagId param is a string, so the url is human readable, while the WP API filter uses
++    // an integer ID to filter posts on tags. So we will reach out to the WP API to get the tag integer ID.
++    const tagsApiUrl = `${SITE_URL}/wp-json/wp/v2/tags?slug=${tagId}`;
++    const tagsResponse = await fetch(tagsApiUrl);
++    if (!tagsResponse.ok) {
++        throw new Error(`WordPress API fetch error: ${tagsApiUrl} (code: ${tagsResponse.status})`);
++    }
++
++    const tags = await tagsResponse.json();
++    if (tags.length === 0) {
++        return null
++    }
++
++    tagName = tags[0].name
++
++    url += `&tags=${tags[0].id}`;
++  }
++  if (offset) {
++    url += `&offset=${offset}`;
++  }
++
++  console.log('url', url)
++
++  const response = await fetch(url);
++  if (!response.ok) {
++    throw new Error(`WordPress API fetch error: ${url} (code: ${response.status})`);
++  }
++
++  const posts = await response.json();
++  const totalPosts = parseInt(response.headers.get('X-WP-Total') || '0', 10);
++  const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0', 10);
++
++  const pageTitle = 'Blog' + (tagName ? `: ${tagName}` : '')
++
++  return transformDataToBlogPosts(posts, pageTitle, totalPosts, totalPages, page, perPage);
++}
++
++export async function getWordPressPost(postParams: SinglePostParams) {
++  const { blogId, locale = 'en' } = postParams;
++
++  const url = `${SITE_URL}/wp-json/wp/v2/posts?slug=${blogId}&_embed`;
++
++  const response = await fetch(url);
++  if (!response.ok) {
++    throw new Error(`API fetch error: ${response.status}`);
++  }
++
++  const posts = await response.json();
++  if (posts.length === 0) {
++    return null;
++  }
++
++  return transformDataToBlogPost(posts[0]);
++}
++
++export async function getWordPressPage(params: SinglePageParams) {
++  const { path, locale = 'en' } = params;
++  const url = `${SITE_URL}/wp-json/wp/v2/pages?slug=${path.split('/').pop()}&_embed`;
++
++  const response = await fetch(url);
++  if (!response.ok) {
++    throw new Error(`API fetch error: ${response.status}`);
++  }
++
++  const pages = await response.json();
++  if (pages.length === 0) {
++    return null;
++  }
++
++  return pages[0];
++}
++
++function transformDataToBlogPosts(
++  posts: any[],
++  pageTitle: string,
++  totalPosts: number,
++  totalPages: number,
++  currentPage: number,
++  perPage: number,
++) {
++  return {
++    name: pageTitle,
++    description: '',
++    posts: {
++      pageInfo: {
++        hasNextPage: currentPage < totalPages,
++        hasPreviousPage: currentPage > 1,
++        startCursor: currentPage.toString(),
++        endCursor: (currentPage + 1).toString(),
++        currentPage,
++        totalPages,
++        totalPosts,
++        perPage,
++      },
++      items: posts.map((post: any) => ({
++        author: post._embedded?.author?.[0]?.name || '',
++        entityId: post.slug,
++        name: post.title.rendered.replaceAll('&#8217;', "'").replaceAll('&#8220;', '"').replaceAll('&#8221;', '"'),
++        plainTextSummary: post.excerpt.rendered.replace(/(<([^>]+)>)/gi, '').replaceAll('&#8217;', "'").replace('&#8230;', '...').replace('Continue Reading', ''),
++        publishedDate: { utc: post.date_gmt },
++        thumbnailImage: post._embedded?.['wp:featuredmedia']?.[0]
++          ? {
++              altText: post._embedded['wp:featuredmedia'][0].alt_text || '',
++              url: post._embedded['wp:featuredmedia'][0].source_url,
++            }
++          : null,
++      })),
++    },
++    isVisibleInNavigation: true,
++  };
++}
++
++function transformDataToBlogPost(post: any) {
++  return {
++    author: post._embedded?.author?.[0]?.name || '',
++    htmlBody: post.content.rendered,
++    content: post.content.rendered,
++    id: post.slug,
++    name: post.title.rendered,
++    publishedDate: { utc: post.date_gmt },
++    tags:
++      post._embedded?.['wp:term']?.[1]?.map((tag: { name: string, slug: string }) => ({
++        name: tag.name,
++        href: `/blog/tag/${tag.slug}`,
++      })) || [],
++    thumbnailImage: post._embedded?.['wp:featuredmedia']?.[0]
++      ? {
++          altText: post._embedded['wp:featuredmedia'][0].alt_text || '',
++          url: post._embedded['wp:featuredmedia'][0].source_url,
++        }
++      : null,
++    seo: {
++      metaKeywords: post._embedded?.['wp:term']?.[1]?.map((tag: { name: string, slug: string }) => tag.name).join(',') || '',
++      metaDescription: post.excerpt.rendered.replace(/(<([^>]+)>)/gi, ''),
++      pageTitle: post.title.rendered,
++    },
++    isVisibleInNavigation: true,
++    vanityUrl: post.link,
++  };
++}

@@ -1,0 +1,12 @@
+{
+  "name": "wordpress-rest",
+  "dependencies": {
+    "add": []
+  },
+  "devDependencies": {
+    "add": []
+  },
+  "environmentVariables": [
+    "WORDPRESS_URL"
+  ]
+}
