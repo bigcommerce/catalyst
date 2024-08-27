@@ -5,6 +5,7 @@ export const AddToCartFragment = graphql(
   `
     fragment AddToCartFragment on Product {
       entityId
+      path
       productOptions(first: 1) {
         edges {
           node {

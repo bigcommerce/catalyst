@@ -4,7 +4,7 @@ import routes from '~/tests/routes';
 
 test('Counter default', async ({ page }) => {
   // Arrange
-  await page.goto(routes.QUICK_ADD_77);
+  await page.goto(routes.FOG_LINEN_CHAMBRAY);
 
   // Act
   const spinButton = page.getByRole('spinbutton', { name: 'Number' });

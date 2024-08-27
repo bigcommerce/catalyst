@@ -4,7 +4,7 @@ import routes from '~/tests/routes';
 
 test('Default radio group', async ({ page }) => {
   // Arrange
-  await page.goto(routes.QUICK_ADD_77);
+  await page.goto(routes.FOG_LINEN_CHAMBRAY);
 
   // Act
   const radioGroup = page.getByRole('radiogroup', { name: 'Radio' });
@@ -17,7 +17,7 @@ test('Default radio group', async ({ page }) => {
 
 test('Default radio group selected', async ({ page }) => {
   // Arrange
-  await page.goto(routes.QUICK_ADD_77);
+  await page.goto(routes.FOG_LINEN_CHAMBRAY);
 
   // Act
   const radioGroup = page.getByRole('radiogroup', { name: 'Radio' });

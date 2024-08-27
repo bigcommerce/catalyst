@@ -1,0 +1,72 @@
+'use client';
+
+import { FragmentOf } from 'gql.tada';
+import { AlertCircle, Check } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { useFormStatus } from 'react-dom';
+import { toast } from 'react-hot-toast';
+
+import { AddToCartButton } from '~/components/add-to-cart-button';
+import { Link } from '~/components/link';
+
+import { AddToCartFragment } from '../fragment';
+
+import { addToCart } from './_actions/add-to-cart';
+
+interface Props {
+  data: FragmentOf<typeof AddToCartFragment>;
+}
+
+const SubmitButton = ({ data: product }: Props) => {
+  const { pending } = useFormStatus();
+
+  return <AddToCartButton className="mt-2" data={product} loading={pending} />;
+};
+
+export const Form = ({ data: product }: Props) => {
+  const t = useTranslations('AddToCart');
+
+  return (
+    <form
+      action={async (formData: FormData) => {
+        const result = await addToCart(formData);
+        const quantity = Number(formData.get('quantity'));
+
+        if (result.error) {
+          toast.error(t('errorAddingProductToCart'), {
+            icon: <AlertCircle className="text-error-secondary" />,
+          });
+
+          return;
+        }
+
+        toast.success(
+          () => (
+            <div className="flex items-center gap-3">
+              <span>
+                {t.rich('addedProductQuantity', {
+                  cartItems: quantity,
+                  cartLink: (chunks) => (
+                    <Link
+                      className="font-semibold text-primary"
+                      href="/cart"
+                      prefetch="viewport"
+                      prefetchKind="full"
+                    >
+                      {chunks}
+                    </Link>
+                  ),
+                })}
+              </span>
+            </div>
+          ),
+          { icon: <Check className="text-success-secondary" /> },
+        );
+      }}
+    >
+      <input name="product_id" type="hidden" value={product.entityId} />
+      <input name="quantity" type="hidden" value={1} />
+      <SubmitButton data={product} />
+    </form>
+  );
+};

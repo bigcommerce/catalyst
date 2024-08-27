@@ -1,6 +1,5 @@
 import { graphql } from '~/client/graphql';
-
-import { AddToCartButtonFragment } from '../add-to-cart-button/fragment';
+import { AddToCartButtonFragment } from '~/components/add-to-cart-button/fragment';
 
 import { CheckboxFieldFragment } from './fields/checkbox-field/fragment';
 import { DateFieldFragment } from './fields/date-field/fragment';

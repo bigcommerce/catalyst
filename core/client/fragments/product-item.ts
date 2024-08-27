@@ -1,6 +1,6 @@
+import { ProductFormFragment } from '~/app/[locale]/(default)/product/[slug]/_components/product-form/fragment';
 import { graphql } from '~/client/graphql';
 import { BreadcrumbsFragment } from '~/components/breadcrumbs/fragment';
-import { ProductFormFragment } from '~/components/product-form/fragment';
 
 import { PricingFragment } from './pricing';
 

@@ -4,10 +4,10 @@ import routes from '~/tests/routes';
 
 test('Date picker', async ({ page }) => {
   // Arrange
-  await page.goto(routes.QUICK_ADD_77);
+  await page.goto(routes.FOG_LINEN_CHAMBRAY);
 
   // Act
-  const datePicker = page.getByRole('dialog').getByPlaceholder('MM/DD/YYYY');
+  const datePicker = page.getByPlaceholder('MM/DD/YYYY');
 
   await datePicker.waitFor();
 

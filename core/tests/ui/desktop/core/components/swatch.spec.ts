@@ -1,31 +1,36 @@
 import { expect } from '@playwright/test';
 
 import { test } from '~/tests/fixtures';
+import routes from '~/tests/routes';
 
 test('Selecting various options on color panel should update query parameters', async ({
   page,
 }) => {
-  await page.goto('/');
+  await page.goto(routes.FOG_LINEN_CHAMBRAY);
 
-  await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Bath' }).click();
-
-  await expect(page).toHaveURL('bath/');
-
-  await page.getByRole('link', { name: 'Quick add' }).first().click();
-
-  await expect(page.getByRole('dialog', { name: 'Choose options' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', {
+      level: 1,
+      name: '[Sample] Fog Linen Chambray Towel - Beige Stripe',
+    }),
+  ).toBeVisible();
 
   await page.getByRole('radio', { name: 'Silver' }).click();
 
-  await expect(page).toHaveURL('bath/?showQuickAdd=77&109=103');
+  await expect(page).toHaveURL('fog-linen-chambray-towel-beige-stripe/?109=103');
 
-  await expect(page.getByRole('dialog', { name: 'Choose options' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', {
+      level: 1,
+      name: '[Sample] Fog Linen Chambray Towel - Beige Stripe',
+    }),
+  ).toBeVisible();
 
   await page.getByRole('radio', { name: 'Purple' }).click();
 
-  await expect(page).toHaveURL('bath/?showQuickAdd=77&109=105');
+  await expect(page).toHaveURL('fog-linen-chambray-towel-beige-stripe/?109=105');
 
   await page.getByRole('radio', { name: 'Orange' }).click();
 
-  await expect(page).toHaveURL('bath/?showQuickAdd=77&109=109');
+  await expect(page).toHaveURL('fog-linen-chambray-towel-beige-stripe/?109=109');
 });
