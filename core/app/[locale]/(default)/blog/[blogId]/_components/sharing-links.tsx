@@ -1,35 +1,29 @@
 import { SiFacebook, SiLinkedin, SiPinterest, SiX } from '@icons-pack/react-simple-icons';
 import { Mail } from 'lucide-react';
 
-import { FragmentOf, graphql } from '~/client/graphql';
-
 import { PrintButton } from './print-button';
 
-export const SharingLinksFragment = graphql(`
-  fragment SharingLinksFragment on Site {
-    content {
-      blog {
-        post(entityId: $entityId) {
-          entityId
-          thumbnailImage {
-            url: urlTemplate
-          }
-          seo {
-            pageTitle
-          }
-        }
-      }
-    }
-    settings {
-      url {
-        vanityUrl
-      }
-    }
-  }
-`);
-
 interface Props {
-  data: FragmentOf<typeof SharingLinksFragment>;
+  data: {
+    content: {
+      blog: {
+        post: {
+          entityId: string;
+          thumbnailImage: {
+            url: string;
+          } | null;
+          seo: {
+            pageTitle: string;
+          };
+        } | null;
+      } | null;
+    };
+    settings: {
+      url: {
+        vanityUrl: string;
+      };
+    } | null;
+  };
 }
 
 export const SharingLinks = ({ data }: Props) => {
