@@ -306,7 +306,7 @@
       "featuredProducts": "Featured products"
     }
   },
-  "ServerError": {
+  "Error": {
     "heading": "There was a server error!",
     "message": "Please try again later."
   },
