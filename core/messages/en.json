@@ -394,6 +394,10 @@
     "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
     "errorAddingProductToCart": "Error adding product to cart. Please try again."
   },
+  "Maintenance": {
+    "message": "We are down for maintenance",
+    "contactUs": "You can contact us at:"
+  },
   "StoreSelector": {
     "heading": "Select a language and region"
   }
