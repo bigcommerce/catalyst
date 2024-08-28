@@ -39,7 +39,7 @@ type Field = keyof typeof fieldNameMapping;
 
 const Submit = () => {
   const { pending } = useFormStatus();
-  const t = useTranslations('AboutUs');
+  const t = useTranslations('ContactUs.Form');
 
   return (
     <FormSubmit asChild>
@@ -68,7 +68,7 @@ export const ContactUs = ({ data }: Props) => {
   const [reCaptchaToken, setReCaptchaToken] = useState('');
   const [isReCaptchaValid, setReCaptchaValid] = useState(true);
 
-  const t = useTranslations('AboutUs');
+  const t = useTranslations('ContactUs.Form');
 
   if (data.node?.__typename !== 'ContactPage') {
     return null;
@@ -103,7 +103,7 @@ export const ContactUs = ({ data }: Props) => {
       form.current?.reset();
       setFormStatus({
         status: 'success',
-        message: t('sucessSubmitMessage'),
+        message: t('success'),
       });
     }
 

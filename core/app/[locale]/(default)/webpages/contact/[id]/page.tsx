@@ -46,7 +46,7 @@ export default async function WebPage({ params: { locale, id } }: Props) {
         <div dangerouslySetInnerHTML={{ __html: htmlBody }} />
       </div>
 
-      <NextIntlClientProvider locale={locale} messages={{ AboutUs: messages.AboutUs ?? {} }}>
+      <NextIntlClientProvider locale={locale} messages={{ ContactUs: messages.ContactUs ?? {} }}>
         <ContactUs data={data} />
       </NextIntlClientProvider>
     </>
