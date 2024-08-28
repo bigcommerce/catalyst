@@ -1,8 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
 import { Breadcrumbs } from '~/components/breadcrumbs';
@@ -75,7 +74,6 @@ export default async function Product({ params, searchParams }: Props) {
   unstable_setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: 'Product' });
-  const messages = await getMessages({ locale });
 
   const productId = Number(params.slug);
 
@@ -98,20 +96,15 @@ export default async function Product({ params, searchParams }: Props) {
       {category && <Breadcrumbs category={category} />}
 
       <div className="mb-12 mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
-        <NextIntlClientProvider
-          locale={locale}
-          messages={{ Product: messages.Product ?? {}, AddToCart: messages.AddToCart ?? {} }}
-        >
-          <Gallery noImageText={t('noGalleryText')} product={product} />
-          <Details product={product} />
-          <div className="lg:col-span-2">
-            <Description product={product} />
-            <Warranty product={product} />
-            <Suspense fallback={t('loading')}>
-              <Reviews productId={product.entityId} />
-            </Suspense>
-          </div>
-        </NextIntlClientProvider>
+        <Gallery product={product} />
+        <Details product={product} />
+        <div className="lg:col-span-2">
+          <Description product={product} />
+          <Warranty product={product} />
+          <Suspense fallback={t('loading')}>
+            <Reviews productId={product.entityId} />
+          </Suspense>
+        </div>
       </div>
 
       <Suspense fallback={t('loading')}>

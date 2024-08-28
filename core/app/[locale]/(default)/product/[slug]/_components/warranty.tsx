@@ -13,7 +13,7 @@ interface Props {
 }
 
 export const Warranty = ({ product }: Props) => {
-  const t = useTranslations('Product.DescriptionAndReviews');
+  const t = useTranslations('Product.Warranty');
 
   if (!product.warranty) {
     return null;
@@ -21,7 +21,7 @@ export const Warranty = ({ product }: Props) => {
 
   return (
     <>
-      <h2 className="mb-4 mt-8 text-xl font-bold md:text-2xl">{t('warranty')}</h2>
+      <h2 className="mb-4 mt-8 text-xl font-bold md:text-2xl">{t('heading')}</h2>
       <p>{product.warranty}</p>
     </>
   );

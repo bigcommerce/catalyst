@@ -16,13 +16,23 @@
   },
   "Product": {
     "loading": "Loading...",
-    "carouselTitle": "Related Products",
-    "noGalleryText": "Coming Soon",
-    "DescriptionAndReviews": {
-      "description": "Description",
-      "warranty": "Warranty",
-      "loading": "Loading...",
-      "reviews": "Reviews",
+    "Carousel": {
+      "relatedProducts": "Related products"
+    },
+    "Form": {
+      "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+      "error": "Error adding product to cart. Please try again.",
+      "saveToWishlist": "Save to wishlist",
+      "quantityLabel": "Quantity"
+    },
+    "Description": {
+      "heading": "Description"
+    },
+    "Warranty": {
+      "heading": "Warranty"
+    },
+    "Reviews": {
+      "heading": "Reviews",
       "reviewsCount": "Count:",
       "unreviewed": "This product hasn't been reviewed yet.",
       "reviewRating": "Rating: {rating} out of 5 stars",
@@ -35,35 +45,18 @@
       "minPurchase": "Minimum purchase",
       "maxPurchase": "Maxiumum purchase",
       "availability": "Availability",
-      "loading": "Loading...",
       "condition": "Condition",
       "weight": "Weight",
-      "ReviewSummary": {
-        "loading": "Loading...",
-        "rating": "Rating:",
-        "ratingRange": "out of 5 stars.",
-        "reviewsNumber": "Number of reviews:"
-      },
       "Prices": {
         "msrp": "MSRP",
         "was": "Was",
         "now": "Now"
+      },
+      "ReviewSummary": {
+        "rating": "Rating:",
+        "ratingRange": "out of 5 stars.",
+        "reviewsNumber": "Number of reviews:"
       }
-    },
-    "Form": {
-      "saveToWishlist": "Save to wishlist",
-      "quantityLabel": "Quantity"
-    },
-    "ProductSheet": {
-      "title": "Choose options",
-      "errorMessage": "An error has ocurred.",
-      "loading": "Loading...",
-      "numberReviews": "Number of reviews:",
-      "productRating": "<rating>Rating:</rating> {currentRating} <stars> out of 5 stars.</stars>",
-      "msrp": "MSRP",
-      "was": "Was",
-      "now": "Now",
-      "compare": "Compare"
     }
   },
   "Compare": {

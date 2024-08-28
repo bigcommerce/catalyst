@@ -9,7 +9,6 @@ import { GalleryFragment } from './fragment';
 
 interface Props {
   product: FragmentOf<typeof GalleryFragment>;
-  noImageText?: string;
 }
 
 export const Gallery = ({ product }: Props) => {
