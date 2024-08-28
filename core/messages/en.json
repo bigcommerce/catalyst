@@ -367,10 +367,6 @@
     "chooseCountryAndLanguage": "Choose your country and language",
     "goToSite": "Go to site"
   },
-  "Pagination": {
-    "next": "Next",
-    "prev": "Previous"
-  },
   "AboutUs": {
     "fullNameLabel": "Full name",
     "companyNameLabel": "Company name",
