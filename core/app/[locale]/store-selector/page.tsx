@@ -33,7 +33,7 @@ interface Props {
 export default async function StoreSelector({ params: { locale: selectedLocale } }: Props) {
   unstable_setRequestLocale(selectedLocale);
 
-  const t = await getTranslations('StoreSelector');
+  const t = await getTranslations({ locale: selectedLocale, namespace: 'StoreSelector' });
 
   const { data } = await client.fetch({
     document: StoreSelectorPageQuery,
