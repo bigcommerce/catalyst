@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
@@ -62,6 +62,10 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
   const [isReCaptchaValid, setReCaptchaValid] = useState(true);
   const { setAccountState } = useAccountStatusContext();
   const router = useRouter();
+
+  useEffect(() => {
+    setAccountState({ status: 'idle' });
+  }, [setAccountState]);
 
   const onReCatpchaChange = (token: string | null) => {
     if (!token) {

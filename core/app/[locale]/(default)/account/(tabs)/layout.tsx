@@ -6,8 +6,6 @@ import { Link } from '~/components/link';
 import { LocaleType } from '~/i18n';
 import { cn } from '~/lib/utils';
 
-import { AccountStatusProvider } from './_components/account-status-provider';
-
 const tabList = ['addresses', 'settings'] as const;
 
 export type TabType = (typeof tabList)[number];
@@ -27,7 +25,7 @@ export default function AccountTabLayout({ children, params: { locale } }: Props
   };
 
   return (
-    <AccountStatusProvider isPermanentBanner={true}>
+    <>
       <h1 className="my-8 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
       <nav aria-label={t('accountTabsLabel')}>
         <ul className="mb-8 flex items-start overflow-x-auto">
@@ -46,6 +44,6 @@ export default function AccountTabLayout({ children, params: { locale } }: Props
         </ul>
       </nav>
       {children}
-    </AccountStatusProvider>
+    </>
   );
 }
