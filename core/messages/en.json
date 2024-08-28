@@ -302,13 +302,9 @@
   "NotFound": {
     "heading": "We couldn't find that page!",
     "message": "It looks like the page you requested has moved or no longer exists.",
-    "featuredProducts": "Featured products",
-    "searchProducts": "Search for products",
-    "searchPlaceholder": "Placeholder...",
-    "searching": "Searching...",
-    "search": "Search",
-    "noSearchResults": "Sorry, no results for {term}.",
-    "checkSpelling": "Please check the spelling or try another search."
+    "Carousel": {
+      "featuredProducts": "Featured products"
+    }
   },
   "ServerError": {
     "heading": "There was a server error!",
@@ -400,5 +396,14 @@
   },
   "StoreSelector": {
     "heading": "Select a language and region"
+  },
+  "Components": {
+    "SearchForm": {
+      "searchProducts": "Search for products",
+      "searchPlaceholder": "Placeholder...",
+      "search": "Search",
+      "noSearchResults": "Sorry, no results for {term}.",
+      "checkSpelling": "Please check the spelling or try another search."
+    }
   }
 }

@@ -11,8 +11,8 @@ import { FooterFragment } from '~/components/footer/fragment';
 import { Header } from '~/components/header';
 import { CartLink } from '~/components/header/cart';
 import { HeaderFragment } from '~/components/header/fragment';
-import { ProductCard } from '~/components/product-card';
 import { ProductCardFragment } from '~/components/product-card/fragment';
+import { ProductCardCarousel } from '~/components/product-card-carousel';
 import { SearchForm } from '~/components/search-form';
 
 const NotFoundQuery = graphql(
@@ -40,7 +40,7 @@ export const metadata = {
 
 export default async function NotFound() {
   const locale = await getLocale();
-  const t = await getTranslations('NotFound');
+  const t = await getTranslations({ locale, namespace: 'NotFound' });
   const messages = await getMessages({ locale });
 
   const { data } = await client.fetch({
@@ -66,25 +66,18 @@ export default async function NotFound() {
           <h2 className="text-4xl font-black lg:text-5xl">{t('heading')}</h2>
           <p className="text-lg">{t('message')}</p>
         </div>
-        <NextIntlClientProvider locale={locale} messages={{ NotFound: messages.NotFound ?? {} }}>
+        <NextIntlClientProvider
+          locale={locale}
+          messages={{ Components: messages.Components ?? {} }}
+        >
           <SearchForm />
         </NextIntlClientProvider>
-        {featuredProducts.length ? (
-          <section>
-            <h3 className="mb-8 text-3xl font-black lg:text-4xl">{t('featuredProducts')}</h3>
-            <div className="grid grid-cols-2 gap-x-8 gap-y-8 md:grid-cols-4">
-              {featuredProducts.map((product) => (
-                <NextIntlClientProvider
-                  key={product.entityId}
-                  locale={locale}
-                  messages={{ Product: messages.Product ?? {} }}
-                >
-                  <ProductCard product={product} showCart={false} showCompare={false} />
-                </NextIntlClientProvider>
-              ))}
-            </div>
-          </section>
-        ) : null}
+        <ProductCardCarousel
+          products={featuredProducts}
+          showCart={false}
+          showCompare={false}
+          title={t('Carousel.featuredProducts')}
+        />
       </main>
 
       <Footer data={data.site} />
