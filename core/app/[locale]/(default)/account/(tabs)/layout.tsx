@@ -8,14 +8,7 @@ import { cn } from '~/lib/utils';
 
 import { AccountStatusProvider } from './_components/account-status-provider';
 
-const tabList = [
-  // 'orders',
-  // 'messages',
-  'addresses',
-  // 'wishlists',
-  // 'recently-viewed',
-  'settings',
-] as const;
+const tabList = ['addresses', 'settings'] as const;
 
 export type TabType = (typeof tabList)[number];
 
@@ -31,11 +24,7 @@ export default async function AccountTabLayout({ children, params: { locale } }:
   const messages = await getMessages();
 
   const tabsTitles = {
-    orders: t('orders'),
-    messages: t('messages'),
     addresses: t('addresses'),
-    wishlists: t('wishlists'),
-    'recently-viewed': t('recentlyViewed'),
     settings: t('settings'),
   };
 
