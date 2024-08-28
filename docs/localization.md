@@ -51,7 +51,6 @@ For example, the `en.json` file contains the following translation keys:
 ```json
 "Home": {
   "Carousel": {
-    "bestSellingProducts": "Best Selling Products",
     "featuredProducts": "Featured Products",
     "newestProducts": "Newest products"
   }
@@ -63,7 +62,6 @@ In your newly-created JSON file, add a translation of the value to the new local
 ```json
 "Home": {
   "Carousel": {
-    "bestSellingProducts": "Produits les plus vendus",
     "featuredProducts": "Produits populaires",
     "newestProducts": "Produits les plus recentsProduits"
   }

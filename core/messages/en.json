@@ -1,16 +1,6 @@
 {
-  "RootLayout": {
-    "Metadata": {
-      "title": "Catalyst Store",
-      "description": "Example store built with Catalyst",
-      "other": {
-        "platform": "bigcommerce.catalyst"
-      }
-    }
-  },
   "Home": {
     "Carousel": {
-      "bestSellingProducts": "Best Selling Products",
       "featuredProducts": "Featured Products",
       "newestProducts": "Newest products"
     }
