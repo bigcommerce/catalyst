@@ -33,7 +33,7 @@ interface Props {
 const LocaleSwitcher = ({ activeLocale, locales }: Props) => {
   const router = useRouter();
 
-  const t = useTranslations('Header');
+  const t = useTranslations('Components.Header.LocaleSwitcher');
 
   const selectedLocale = locales.find((locale) => locale.id === activeLocale);
 

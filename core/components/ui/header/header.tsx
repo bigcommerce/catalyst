@@ -138,7 +138,7 @@ const Header = async ({
           {activeLocale && locales.length > 0 ? (
             <NextIntlClientProvider
               locale={activeLocale}
-              messages={{ Header: messages.Header ?? {} }}
+              messages={{ Components: messages.Components ?? {} }}
             >
               <LocaleSwitcher activeLocale={activeLocale} locales={locales} />
             </NextIntlClientProvider>

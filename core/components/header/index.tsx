@@ -1,5 +1,5 @@
 import { ShoppingCart, User } from 'lucide-react';
-import { getLocale } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { ReactNode, Suspense } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
@@ -26,6 +26,7 @@ export const Header = async ({ cart, data }: Props) => {
   const customerId = await getSessionCustomerId();
 
   const locale = await getLocale();
+  const t = await getTranslations({ locale, namespace: 'Components.Header' });
 
   /**  To prevent the navigation menu from overflowing, we limit the number of categories to 6.
    To show a full list of categories, modify the `slice` method to remove the limit.
@@ -52,25 +53,25 @@ export const Header = async ({ cart, data }: Props) => {
         customerId ? (
           <Dropdown
             items={[
-              { href: '/account', label: 'My account' },
-              { href: '/account/addresses', label: 'Addresses' },
-              { href: '/account/settings', label: 'Account settings' },
-              { action: logout, name: 'Log out' },
+              { href: '/account', label: t('Account.myAccount') },
+              { href: '/account/addresses', label: t('Account.addresses') },
+              { href: '/account/settings', label: t('Account.accountSettings') },
+              { action: logout, name: t('Account.logout') },
             ]}
             trigger={
               <Button
-                aria-label="Account"
+                aria-label={t('Account.account')}
                 className="p-3 text-black hover:bg-transparent hover:text-primary"
                 variant="subtle"
               >
                 <User>
-                  <title>Account</title>
+                  <title>{t('Account.account')}</title>
                 </User>
               </Button>
             }
           />
         ) : (
-          <Link aria-label="Login" className="block p-3" href="/login">
+          <Link aria-label={t('Account.login')} className="block p-3" href="/login">
             <User />
           </Link>
         )
