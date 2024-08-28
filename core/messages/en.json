@@ -405,5 +405,12 @@
       "noSearchResults": "Sorry, no results for {term}.",
       "checkSpelling": "Please check the spelling or try another search."
     }
+  },
+  "Blog": {
+    "SharingLinks": {
+      "share": "Share",
+      "email": "Email",
+      "print": "Print"
+    }
   }
 }
