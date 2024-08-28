@@ -8,14 +8,7 @@ import { cn } from '~/lib/utils';
 
 import { AccountStatusProvider } from './_components/account-status-provider';
 
-const tabList = [
-  'orders',
-  'messages',
-  'addresses',
-  'wishlists',
-  'recently-viewed',
-  'settings',
-] as const;
+const tabList = ['addresses', 'settings'] as const;
 
 export type TabType = (typeof tabList)[number];
 
@@ -23,10 +16,7 @@ interface Props extends PropsWithChildren {
   params: { locale: LocaleType; tab?: TabType };
 }
 
-export default async function AccountTabLayout({
-  children,
-  params: { locale, tab: activeTab },
-}: Props) {
+export default async function AccountTabLayout({ children, params: { locale } }: Props) {
   unstable_setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: 'Account.Home' });
@@ -34,11 +24,7 @@ export default async function AccountTabLayout({
   const messages = await getMessages();
 
   const tabsTitles = {
-    orders: t('orders'),
-    messages: t('messages'),
     addresses: t('addresses'),
-    wishlists: t('wishlists'),
-    'recently-viewed': t('recentlyViewed'),
     settings: t('settings'),
   };
 
@@ -51,10 +37,7 @@ export default async function AccountTabLayout({
             {tabList.map((tab) => (
               <li key={tab}>
                 <Link
-                  className={cn(
-                    'block whitespace-nowrap px-4 pb-2 font-semibold',
-                    activeTab === tab && 'border-b-4 border-primary text-primary',
-                  )}
+                  className={cn('block whitespace-nowrap px-4 pb-2 font-semibold')}
                   href={`/account/${tab}`}
                   prefetch="viewport"
                   prefetchKind="full"

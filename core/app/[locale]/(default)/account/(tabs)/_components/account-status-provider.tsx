@@ -2,7 +2,7 @@
 
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
-import { State as AccountState } from '../_actions/submit-customer-change-password-form';
+import { State as AccountState } from '../settings/_actions/submit-customer-change-password-form';
 
 export const AccountStatusContext = createContext<{
   accountState: AccountState;
