@@ -69,13 +69,19 @@
   "Compare": {
     "nothingCompare": "Well, there's nothing to compare!",
     "helpingText": "You somehow managed to land here, but you need to select a few products first.",
-    "comparingQuantity": "Comparing {quantity, plural, =1 {1 Product} other {# Products}}",
-    "productComparison": "Product Comparison",
-    "noImageText": "No Image",
-    "chooseOptions": "Choose options",
-    "description": "Description",
-    "rating": "Rating",
-    "availability": "Availability"
+    "heading": "Comparing {quantity, plural, =1 {1 Product} other {# Products}}",
+    "Table": {
+      "caption": "Product comparison",
+      "noImage": "No image",
+      "chooseOptions": "Choose options",
+      "description": "Description",
+      "rating": "Rating",
+      "availability": "Availability"
+    },
+    "AddToCart": {
+      "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+      "error": "Error adding product to cart. Please try again."
+    }
   },
   "Cart": {
     "heading": "Your cart",
@@ -380,16 +386,6 @@
     "submitFormText": "Submit form",
     "sucessSubmitMessage": "Thanks for reaching out. We'll get back to you soon."
   },
-  "AddToCart": {
-    "addToCart": "Add to cart",
-    "viewOptions": "View options",
-    "outOfStock": "Out of stock", 
-    "preorder": "Preorder",
-    "unavailable": "Unavailable",
-    "processing": "Processing...",
-    "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-    "errorAddingProductToCart": "Error adding product to cart. Please try again."
-  },
   "Maintenance": {
     "message": "We are down for maintenance",
     "contactUs": "You can contact us at:"
@@ -400,10 +396,18 @@
   "Components": {
     "SearchForm": {
       "searchProducts": "Search for products",
-      "searchPlaceholder": "Placeholder...",
+      "searchPlaceholder": "Search...",
       "search": "Search",
       "noSearchResults": "Sorry, no results for {term}.",
       "checkSpelling": "Please check the spelling or try another search."
+    },
+    "AddToCart": {
+      "addToCart": "Add to cart",
+      "viewOptions": "View options",
+      "outOfStock": "Out of stock", 
+      "preorder": "Preorder",
+      "unavailable": "Unavailable",
+      "processing": "Processing..."
     }
   },
   "Blog": {

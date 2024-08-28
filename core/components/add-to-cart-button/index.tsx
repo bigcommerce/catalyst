@@ -18,7 +18,7 @@ export const AddToCartButton = ({
   className?: string;
   loading?: boolean;
 }) => {
-  const t = useTranslations('AddToCart');
+  const t = useTranslations('Components.AddToCart');
 
   const isProductDisabled =
     product.availabilityV2.status === 'Unavailable' || !product.inventory.isInStock;

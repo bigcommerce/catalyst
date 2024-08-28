@@ -96,6 +96,7 @@ interface Props {
 
 export default async function Compare({ params: { locale }, searchParams }: Props) {
   const customerId = await getSessionCustomerId();
+
   const t = await getTranslations({ locale, namespace: 'Compare' });
   const messages = await getMessages({ locale });
 
@@ -125,7 +126,10 @@ export default async function Compare({ params: { locale }, searchParams }: Prop
         <div className="flex max-w-2xl flex-col gap-8 pb-8">
           <h1 className="text-4xl font-black lg:text-5xl">{t('nothingCompare')}</h1>
           <p className="text-lg">{t('helpingText')}</p>
-          <NextIntlClientProvider locale={locale} messages={{ NotFound: messages.NotFound ?? {} }}>
+          <NextIntlClientProvider
+            locale={locale}
+            messages={{ Components: messages.Components ?? {} }}
+          >
             <SearchForm />
           </NextIntlClientProvider>
         </div>
@@ -136,12 +140,12 @@ export default async function Compare({ params: { locale }, searchParams }: Prop
   return (
     <>
       <h1 className="pb-8 text-4xl font-black lg:text-5xl">
-        {t('comparingQuantity', { quantity: products.length })}
+        {t('heading', { quantity: products.length })}
       </h1>
 
       <div className="-mx-6 overflow-auto overscroll-x-contain px-4 sm:-mx-10 sm:px-10 lg:-mx-12 lg:px-12">
         <table className="mx-auto w-full max-w-full table-fixed text-base md:w-fit">
-          <caption className="sr-only">{t('productComparison')}</caption>
+          <caption className="sr-only">{t('Table.caption')}</caption>
 
           <colgroup>
             <col className="w-80" span={products.length} />
@@ -176,7 +180,7 @@ export default async function Compare({ params: { locale }, searchParams }: Prop
                   <td className="px-4" key={product.entityId}>
                     <Link aria-label={product.name} href={product.path}>
                       <div className="flex aspect-square items-center justify-center bg-gray-200 text-gray-500">
-                        <p className="text-lg">{t('noImageText')}</p>
+                        <p className="text-lg">{t('Table.noImage')}</p>
                       </div>
                     </Link>
                   </td>
@@ -275,7 +279,7 @@ export default async function Compare({ params: { locale }, searchParams }: Prop
                   return (
                     <td className="border-b px-4 pb-12" key={product.entityId}>
                       <Button aria-label={product.name} asChild className="hover:text-white">
-                        <Link href={product.path}>{t('chooseOptions')}</Link>
+                        <Link href={product.path}>{t('Table.chooseOptions')}</Link>
                       </Button>
                     </td>
                   );
@@ -285,7 +289,10 @@ export default async function Compare({ params: { locale }, searchParams }: Prop
                   <td className="border-b px-4 pb-12" key={product.entityId}>
                     <NextIntlClientProvider
                       locale={locale}
-                      messages={{ AddToCart: messages.AddToCart ?? {} }}
+                      messages={{
+                        Components: messages.Components ?? {},
+                        Compare: messages.Compare ?? {},
+                      }}
                     >
                       <AddToCart data={product} />
                     </NextIntlClientProvider>
@@ -297,7 +304,7 @@ export default async function Compare({ params: { locale }, searchParams }: Prop
           <tbody>
             <tr className="absolute mt-6">
               <th className="sticky start-0 top-0 m-0 ps-4 text-start" id="product-description">
-                {t('description')}
+                {t('Table.description')}
               </th>
             </tr>
             <tr>
@@ -312,7 +319,7 @@ export default async function Compare({ params: { locale }, searchParams }: Prop
             </tr>
             <tr className="absolute mt-6">
               <th className="sticky start-0 top-0 m-0 ps-4 text-start" id="product-rating">
-                {t('rating')}
+                {t('Table.rating')}
               </th>
             </tr>
             <tr>
@@ -342,7 +349,7 @@ export default async function Compare({ params: { locale }, searchParams }: Prop
             </tr>
             <tr className="absolute mt-6">
               <th className="sticky start-0 top-0 m-0 ps-4 text-start" id="product-availability">
-                {t('availability')}
+                {t('Table.availability')}
               </th>
             </tr>
             <tr>
@@ -362,7 +369,7 @@ export default async function Compare({ params: { locale }, searchParams }: Prop
                   return (
                     <td className="border-b px-4 pb-24 pt-12" key={product.entityId}>
                       <Button aria-label={product.name} asChild className="hover:text-white">
-                        <Link href={product.path}>{t('chooseOptions')}</Link>
+                        <Link href={product.path}>{t('Table.chooseOptions')}</Link>
                       </Button>
                     </td>
                   );
@@ -372,7 +379,10 @@ export default async function Compare({ params: { locale }, searchParams }: Prop
                   <td className="border-b px-4 pb-24 pt-12" key={product.entityId}>
                     <NextIntlClientProvider
                       locale={locale}
-                      messages={{ AddToCart: messages.AddToCart ?? {} }}
+                      messages={{
+                        Components: messages.Components ?? {},
+                        Compare: messages.Compare ?? {},
+                      }}
                     >
                       <AddToCart data={product} />
                     </NextIntlClientProvider>
