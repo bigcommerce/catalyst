@@ -214,7 +214,7 @@ export default async function Compare({ searchParams }: Props) {
                           <>
                             {product.prices.retailPrice?.value !== undefined && (
                               <>
-                                MSRP:{' '}
+                                {t('Table.Prices.msrp')}:{' '}
                                 <span className="line-through">
                                   {format.number(product.prices.retailPrice.value, {
                                     style: 'currency',
@@ -227,7 +227,7 @@ export default async function Compare({ searchParams }: Props) {
                             {product.prices.salePrice?.value !== undefined &&
                             product.prices.basePrice?.value !== undefined ? (
                               <>
-                                Was:{' '}
+                                {t('Table.Prices.was')}:{' '}
                                 <span className="line-through">
                                   {format.number(product.prices.basePrice.value, {
                                     style: 'currency',
@@ -236,7 +236,7 @@ export default async function Compare({ searchParams }: Props) {
                                 </span>
                                 <br />
                                 <>
-                                  Now:{' '}
+                                  {t('Table.Prices.now')}:{' '}
                                   {format.number(product.prices.price.value, {
                                     style: 'currency',
                                     currency: product.prices.price.currencyCode,

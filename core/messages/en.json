@@ -321,7 +321,12 @@
       "viewOptions": "View options",
       "description": "Description",
       "rating": "Rating",
-      "availability": "Availability"
+      "availability": "Availability",
+      "Prices": {
+        "msrp": "MSRP",
+        "was": "Was",
+        "now": "Now"
+      }
     },
     "AddToCart": {
       "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
