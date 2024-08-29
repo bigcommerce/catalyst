@@ -1,6 +1,3 @@
-import { NextIntlClientProvider } from 'next-intl';
-import { getLocale, getMessages } from 'next-intl/server';
-
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { FormFieldsFragment } from '~/client/fragments/form-fields';
@@ -67,8 +64,6 @@ export async function CustomerEditAddress({
   isAddressRemovable: boolean;
 }) {
   const customerId = await getSessionCustomerId();
-  const locale = await getLocale();
-  const messages = await getMessages();
 
   const { data } = await client.fetch({
     document: CustomerEditAdressQuery,
@@ -84,14 +79,12 @@ export async function CustomerEditAddress({
   const addressFields = [...(data.site.settings?.formFields.shippingAddress ?? [])];
 
   return (
-    <NextIntlClientProvider locale={locale} messages={{ Account: messages.Account ?? {} }}>
-      <EditAddressForm
-        address={address}
-        addressFields={addressFields}
-        countries={countries || []}
-        isAddressRemovable={isAddressRemovable}
-        reCaptchaSettings={reCaptchaSettings}
-      />
-    </NextIntlClientProvider>
+    <EditAddressForm
+      address={address}
+      addressFields={addressFields}
+      countries={countries || []}
+      isAddressRemovable={isAddressRemovable}
+      reCaptchaSettings={reCaptchaSettings}
+    />
   );
 }

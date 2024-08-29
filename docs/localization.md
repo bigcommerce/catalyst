@@ -85,8 +85,7 @@ const locales = ['en', 'fr'] as const;
 The following example shows how messages can be used in **server** component:
 
 ```tsx
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 // ...
 import { LocaleType } from '~/i18n';
 
@@ -100,18 +99,35 @@ export default async function Home({ params: { locale } }: Props) {
   unstable_setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: 'Home' });
-  const messages = await getMessages({ locale });
   // ...
 
   return (
     <div>
-      <NextIntlClientProvider locale={locale} messages={{ Product: messages.Product ?? {} }}>
-        <ProductCardCarousel
-          products={featuredProducts}
-          title={t('Carousel.featuredProducts')}
-        />
-      </NextIntlClientProvider>
+      <ProductCardCarousel
+        products={featuredProducts}
+        title={t('Carousel.featuredProducts')}
+      />
     </div>
+  );
+}
+```
+
+**Client** and **shared** components use regular hooks to translate messages:
+
+```tsx
+'use client';
+
+import { useTranslations } from 'next-intl';
+// ...
+
+const Component = () => {
+  const t = await getTranslations('Cart');
+  // ...
+
+  return (
+    <Button>
+      {t('proceedToCheckout')}
+    </Button>
   );
 }
 ```

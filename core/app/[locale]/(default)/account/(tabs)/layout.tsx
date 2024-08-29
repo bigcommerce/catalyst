@@ -1,5 +1,4 @@
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
 
 import { Link } from '~/components/link';
@@ -21,35 +20,31 @@ export default async function AccountTabLayout({ children, params: { locale } }:
 
   const t = await getTranslations({ locale, namespace: 'Account.Home' });
 
-  const messages = await getMessages();
-
   const tabsTitles = {
     addresses: t('addresses'),
     settings: t('settings'),
   };
 
   return (
-    <NextIntlClientProvider locale={locale} messages={{ Account: messages.Account ?? {} }}>
-      <AccountStatusProvider isPermanentBanner={true}>
-        <h1 className="my-8 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
-        <nav aria-label={t('accountTabsLabel')}>
-          <ul className="mb-8 flex items-start overflow-x-auto">
-            {tabList.map((tab) => (
-              <li key={tab}>
-                <Link
-                  className={cn('block whitespace-nowrap px-4 pb-2 font-semibold')}
-                  href={`/account/${tab}`}
-                  prefetch="viewport"
-                  prefetchKind="full"
-                >
-                  {tabsTitles[tab]}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        {children}
-      </AccountStatusProvider>
-    </NextIntlClientProvider>
+    <AccountStatusProvider isPermanentBanner={true}>
+      <h1 className="my-8 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
+      <nav aria-label={t('accountTabsLabel')}>
+        <ul className="mb-8 flex items-start overflow-x-auto">
+          {tabList.map((tab) => (
+            <li key={tab}>
+              <Link
+                className={cn('block whitespace-nowrap px-4 pb-2 font-semibold')}
+                href={`/account/${tab}`}
+                prefetch="viewport"
+                prefetchKind="full"
+              >
+                {tabsTitles[tab]}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      {children}
+    </AccountStatusProvider>
   );
 }

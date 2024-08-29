@@ -1,15 +1,10 @@
 import createMiddleware from 'next-intl/middleware';
 
-import { defaultLocale, localePrefix, locales } from '../i18n';
+import { routing } from '~/routing';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
-const intlMiddleware = createMiddleware({
-  locales,
-  localePrefix,
-  defaultLocale,
-  localeDetection: true,
-});
+const intlMiddleware = createMiddleware(routing);
 
 export const withIntl: MiddlewareFactory = (next) => {
   return async (request, event) => {

@@ -1,5 +1,4 @@
-import { NextIntlClientProvider } from 'next-intl';
-import { getFormatter, getLocale, getMessages } from 'next-intl/server';
+import { getFormatter, getLocale } from 'next-intl/server';
 
 import { FragmentOf, graphql } from '~/client/graphql';
 import { BcImage } from '~/components/bc-image';
@@ -150,7 +149,6 @@ interface Props {
 
 export const CartItem = async ({ currencyCode, product }: Props) => {
   const locale = await getLocale();
-  const messages = await getMessages({ locale });
   const format = await getFormatter({ locale });
 
   return (
@@ -231,9 +229,7 @@ export const CartItem = async ({ currencyCode, product }: Props) => {
               )}
 
               <div className="hidden md:block">
-                <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
-                  <RemoveItem currency={currencyCode} product={product} />
-                </NextIntlClientProvider>
+                <RemoveItem currency={currencyCode} product={product} />
               </div>
             </div>
 
@@ -256,16 +252,12 @@ export const CartItem = async ({ currencyCode, product }: Props) => {
                 </p>
               </div>
 
-              <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
-                <ItemQuantity product={product} />
-              </NextIntlClientProvider>
+              <ItemQuantity product={product} />
             </div>
           </div>
 
           <div className="mt-4 md:hidden">
-            <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
-              <RemoveItem currency={currencyCode} product={product} />
-            </NextIntlClientProvider>
+            <RemoveItem currency={currencyCode} product={product} />
           </div>
         </div>
       </div>

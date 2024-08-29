@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 
 import { BcImage } from '~/components/bc-image';
 import { Link as CustomLink } from '~/components/link';
-import { usePathname } from '~/navigation';
+import { usePathname } from '~/routing';
 
 import { Button } from '../button';
 

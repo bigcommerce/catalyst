@@ -43,7 +43,7 @@
     "lucide-react": "^0.436.0",
     "next": "14.2.6",
     "next-auth": "5.0.0-beta.20",
-    "next-intl": "^3.17.6",
+    "next-intl": "^3.18.1",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.0",
     "react-dom": "^18.3.1",

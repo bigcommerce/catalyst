@@ -1,6 +1,5 @@
 import { notFound, redirect } from 'next/navigation';
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, getTranslations } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 
 import { auth } from '~/auth';
 import { LocaleType } from '~/i18n';
@@ -28,7 +27,6 @@ export default async function RegisterCustomer({ params: { locale } }: Props) {
     redirect('/account');
   }
 
-  const messages = await getMessages({ locale });
   const t = await getTranslations({ locale, namespace: 'Login.Register' });
 
   const registerCustomerData = await getRegisterCustomerQuery({
@@ -57,15 +55,13 @@ export default async function RegisterCustomer({ params: { locale } }: Props) {
   return (
     <div className="mx-auto mb-10 mt-8 text-base lg:w-2/3">
       <h1 className="my-6 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
-      <NextIntlClientProvider locale={locale} messages={{ Login: messages.Login ?? {} }}>
-        <RegisterCustomerForm
-          addressFields={addressFields}
-          countries={countries}
-          customerFields={customerFields}
-          defaultCountry={{ entityId, code, states: statesOrProvinces ?? [] }}
-          reCaptchaSettings={bypassReCaptcha(reCaptchaSettings)}
-        />
-      </NextIntlClientProvider>
+      <RegisterCustomerForm
+        addressFields={addressFields}
+        countries={countries}
+        customerFields={customerFields}
+        defaultCountry={{ entityId, code, states: statesOrProvinces ?? [] }}
+        reCaptchaSettings={bypassReCaptcha(reCaptchaSettings)}
+      />
     </div>
   );
 }

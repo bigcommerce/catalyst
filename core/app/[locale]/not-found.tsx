@@ -1,7 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { ShoppingCart } from 'lucide-react';
-import { NextIntlClientProvider } from 'next-intl';
-import { getLocale, getMessages, getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
@@ -41,7 +40,6 @@ export const metadata = {
 export default async function NotFound() {
   const locale = await getLocale();
   const t = await getTranslations({ locale, namespace: 'NotFound' });
-  const messages = await getMessages({ locale });
 
   const { data } = await client.fetch({
     document: NotFoundQuery,
@@ -66,12 +64,7 @@ export default async function NotFound() {
           <h2 className="text-4xl font-black lg:text-5xl">{t('heading')}</h2>
           <p className="text-lg">{t('message')}</p>
         </div>
-        <NextIntlClientProvider
-          locale={locale}
-          messages={{ Components: messages.Components ?? {} }}
-        >
-          <SearchForm />
-        </NextIntlClientProvider>
+        <SearchForm />
         <ProductCardCarousel
           products={featuredProducts}
           showCart={false}

@@ -1,6 +1,3 @@
-import { NextIntlClientProvider } from 'next-intl';
-import { getLocale, getMessages } from 'next-intl/server';
-
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { FormFieldsFragment } from '~/client/fragments/form-fields';
@@ -61,8 +58,6 @@ const FALLBACK_COUNTRY = {
 
 export const CustomerNewAddress = async () => {
   const customerId = await getSessionCustomerId();
-  const locale = await getLocale();
-  const messages = await getMessages();
 
   const { data } = await client.fetch({
     document: CustomerNewAdressQuery,
@@ -85,13 +80,11 @@ export const CustomerNewAddress = async () => {
   } = countries?.find(({ name: country }) => country === defaultCountry) || {};
 
   return (
-    <NextIntlClientProvider locale={locale} messages={{ Account: messages.Account ?? {} }}>
-      <AddAddressForm
-        addressFields={addressFields}
-        countries={countries || []}
-        defaultCountry={{ id: entityId, code, states: defaultCountryStates }}
-        reCaptchaSettings={reCaptchaSettings}
-      />
-    </NextIntlClientProvider>
+    <AddAddressForm
+      addressFields={addressFields}
+      countries={countries || []}
+      defaultCountry={{ id: entityId, code, states: defaultCountryStates }}
+      reCaptchaSettings={reCaptchaSettings}
+    />
   );
 };

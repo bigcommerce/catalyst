@@ -1,5 +1,4 @@
-import { NextIntlClientProvider } from 'next-intl';
-import { getFormatter, getLocale, getMessages, getTranslations } from 'next-intl/server';
+import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 
 import { FragmentOf, graphql } from '~/client/graphql';
 
@@ -50,7 +49,6 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
   const locale = await getLocale();
   const t = await getTranslations({ locale, namespace: 'Cart.CheckoutSummary' });
   const format = await getFormatter({ locale });
-  const messages = await getMessages({ locale });
 
   const { cart, grandTotal, subtotal, taxTotal } = checkout;
 
@@ -68,9 +66,7 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
         </span>
       </div>
 
-      <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
-        <ShippingEstimator checkout={checkout} shippingCountries={shippingCountries} />
-      </NextIntlClientProvider>
+      <ShippingEstimator checkout={checkout} shippingCountries={shippingCountries} />
 
       {cart?.discountedAmount && (
         <div className="flex justify-between border-t border-t-gray-200 py-4">
@@ -85,9 +81,7 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
         </div>
       )}
 
-      <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
-        <CouponCode checkout={checkout} />
-      </NextIntlClientProvider>
+      <CouponCode checkout={checkout} />
 
       {taxTotal && (
         <div className="flex justify-between border-t border-t-gray-200 py-4">

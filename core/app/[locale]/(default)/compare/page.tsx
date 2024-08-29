@@ -1,6 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { NextIntlClientProvider } from 'next-intl';
-import { getFormatter, getMessages, getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations } from 'next-intl/server';
 import * as z from 'zod';
 
 import { getSessionCustomerId } from '~/auth';
@@ -95,10 +94,9 @@ interface Props {
 }
 
 export default async function Compare({ params: { locale }, searchParams }: Props) {
-  const customerId = await getSessionCustomerId();
-
   const t = await getTranslations({ locale, namespace: 'Compare' });
-  const messages = await getMessages({ locale });
+
+  const customerId = await getSessionCustomerId();
 
   const parsed = CompareParamsSchema.parse(searchParams);
   const productIds = parsed.ids?.filter((id) => !Number.isNaN(id));
@@ -126,12 +124,7 @@ export default async function Compare({ params: { locale }, searchParams }: Prop
         <div className="flex max-w-2xl flex-col gap-8 pb-8">
           <h1 className="text-4xl font-black lg:text-5xl">{t('nothingCompare')}</h1>
           <p className="text-lg">{t('helpingText')}</p>
-          <NextIntlClientProvider
-            locale={locale}
-            messages={{ Components: messages.Components ?? {} }}
-          >
-            <SearchForm />
-          </NextIntlClientProvider>
+          <SearchForm />
         </div>
       </div>
     );
@@ -287,15 +280,7 @@ export default async function Compare({ params: { locale }, searchParams }: Prop
 
                 return (
                   <td className="border-b px-4 pb-12" key={product.entityId}>
-                    <NextIntlClientProvider
-                      locale={locale}
-                      messages={{
-                        Components: messages.Components ?? {},
-                        Compare: messages.Compare ?? {},
-                      }}
-                    >
-                      <AddToCart data={product} />
-                    </NextIntlClientProvider>
+                    <AddToCart data={product} />
                   </td>
                 );
               })}
@@ -377,15 +362,7 @@ export default async function Compare({ params: { locale }, searchParams }: Prop
 
                 return (
                   <td className="border-b px-4 pb-24 pt-12" key={product.entityId}>
-                    <NextIntlClientProvider
-                      locale={locale}
-                      messages={{
-                        Components: messages.Components ?? {},
-                        Compare: messages.Compare ?? {},
-                      }}
-                    >
-                      <AddToCart data={product} />
-                    </NextIntlClientProvider>
+                    <AddToCart data={product} />
                   </td>
                 );
               })}

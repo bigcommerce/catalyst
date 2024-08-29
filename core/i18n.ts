@@ -81,8 +81,8 @@ export default getRequestConfig(async (params) => {
   if (!locales.includes(lang)) notFound();
 
   return {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    messages: await import(`./messages/${lang}`),
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    messages: (await import(`./messages/${lang}`)).default,
   };
 });
 

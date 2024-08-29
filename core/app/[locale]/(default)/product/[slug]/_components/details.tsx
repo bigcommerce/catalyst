@@ -1,11 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import {
-  NextIntlClientProvider,
-  useFormatter,
-  useLocale,
-  useMessages,
-  useTranslations,
-} from 'next-intl';
+import { useFormatter, useTranslations } from 'next-intl';
 
 import { PricingFragment } from '~/client/fragments/pricing';
 import { ProductItemFragment } from '~/client/fragments/product-item';
@@ -66,9 +60,7 @@ interface Props {
 }
 
 export const Details = ({ product }: Props) => {
-  const locale = useLocale();
   const t = useTranslations('Product.Details');
-  const messages = useMessages();
 
   const format = useFormatter();
 
@@ -151,12 +143,7 @@ export const Details = ({ product }: Props) => {
         </div>
       )}
 
-      <NextIntlClientProvider
-        locale={locale}
-        messages={{ Product: messages.Product ?? {}, Components: messages.Components ?? {} }}
-      >
-        <ProductForm data={product} />
-      </NextIntlClientProvider>
+      <ProductForm data={product} />
 
       <div className="my-12">
         <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>

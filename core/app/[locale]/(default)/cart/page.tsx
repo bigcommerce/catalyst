@@ -1,6 +1,5 @@
 import { cookies } from 'next/headers';
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, getTranslations } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
@@ -55,7 +54,6 @@ export default async function Cart({ params: { locale } }: Props) {
     return <EmptyCart locale={locale} />;
   }
 
-  const messages = await getMessages({ locale });
   const t = await getTranslations({ locale, namespace: 'Cart' });
 
   const customerId = await getSessionCustomerId();
@@ -95,9 +93,7 @@ export default async function Cart({ params: { locale } }: Props) {
         <div className="col-span-1 col-start-2 lg:col-start-3">
           {checkout && <CheckoutSummary checkout={checkout} geography={geography} />}
 
-          <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
-            <CheckoutButton cartId={cartId} />
-          </NextIntlClientProvider>
+          <CheckoutButton cartId={cartId} />
         </div>
       </div>
       <CartViewed checkout={checkout} currencyCode={cart.currencyCode} lineItems={lineItems} />
