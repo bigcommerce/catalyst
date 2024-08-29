@@ -312,9 +312,9 @@
     }
   },
   "Compare": {
-    "nothingCompare": "Well, there's nothing to compare!",
-    "helpingText": "You somehow managed to land here, but you need to select a few products first.",
     "heading": "Comparing {quantity, plural, =1 {1 Product} other {# Products}}",
+    "nothingToCompare": "Well, there's nothing to compare!",
+    "helpingText": "You somehow managed to land here, but you need to select a few products first.",
     "Table": {
       "caption": "Product comparison",
       "noImage": "No image",
