@@ -3,8 +3,7 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import { ExistingResultType } from '~/client/util';
 import { Pagination } from '~/components/ui/pagination';
 
-import { getCustomerAddresses } from '../../page-data';
-import { TabHeading } from '../tab-heading';
+import { getCustomerAddresses } from '../page-data';
 
 import { AddressBook } from './address-book';
 import { CustomerEditAddress } from './customer-edit-address';
@@ -56,17 +55,14 @@ export const AddressesContent = async ({
   }
 
   return (
-    <>
-      <TabHeading heading="addresses" />
-      <AddressBook addressesCount={addressesCount} customerAddresses={addresses} key={endCursor}>
-        <Pagination
-          className="my-0 inline-flex justify-center text-center"
-          endCursor={endCursor ?? undefined}
-          hasNextPage={hasNextPage}
-          hasPreviousPage={hasPreviousPage}
-          startCursor={startCursor ?? undefined}
-        />
-      </AddressBook>
-    </>
+    <AddressBook addressesCount={addressesCount} customerAddresses={addresses} key={endCursor}>
+      <Pagination
+        className="my-0 inline-flex justify-center text-center"
+        endCursor={endCursor ?? undefined}
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        startCursor={startCursor ?? undefined}
+      />
+    </AddressBook>
   );
 };

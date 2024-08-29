@@ -19,8 +19,8 @@ import { Button } from '~/components/ui/button';
 import { Field, Form, FormSubmit } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 
-import { addAddress } from '../../_actions/add-address';
-import { useAccountStatusContext } from '../account-status-provider';
+import { useAccountStatusContext } from '../../_components/account-status-provider';
+import { addAddress } from '../_actions/add-address';
 
 import {
   createCountryChangeHandler,

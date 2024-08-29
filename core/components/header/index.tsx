@@ -53,11 +53,7 @@ export const Header = async ({ cart, data }: Props) => {
           <Dropdown
             items={[
               { href: '/account', label: 'My account' },
-              { href: '/account/orders', label: 'Orders' },
-              { href: '/account/messages', label: 'Messages' },
               { href: '/account/addresses', label: 'Addresses' },
-              { href: '/account/wishlists', label: 'Wish lists' },
-              { href: '/account/recently-viewed', label: 'Recently viewed' },
               { href: '/account/settings', label: 'Account settings' },
               { action: logout, name: 'Log out' },
             ]}

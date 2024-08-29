@@ -3,7 +3,7 @@ import { ChangeEvent } from 'react';
 
 import { Field, FieldControl, FieldLabel, FieldMessage, Input } from '~/components/ui/form';
 
-import { FieldNameToFieldId } from '..';
+import { FieldNameToFieldId } from './update-settings-form';
 
 interface TextProps {
   defaultValue?: string;
@@ -15,7 +15,7 @@ interface TextProps {
   type?: 'text' | 'email';
 }
 
-export const Text = ({
+export const TextField = ({
   defaultValue,
   entityId,
   isRequired = false,

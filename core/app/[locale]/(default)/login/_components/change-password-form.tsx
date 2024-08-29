@@ -17,7 +17,7 @@ import {
 import { Message } from '~/components/ui/message';
 import { useRouter } from '~/navigation';
 
-import { useAccountStatusContext } from '../../account/[tab]/_components/account-status-provider';
+import { useAccountStatusContext } from '../../account/(tabs)/_components/account-status-provider';
 import { submitChangePasswordForm } from '../_actions/submit-change-password-form';
 
 interface Props {

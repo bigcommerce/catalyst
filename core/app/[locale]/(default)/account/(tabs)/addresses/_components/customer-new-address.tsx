@@ -10,7 +10,7 @@ import { AddAddress as AddAddressForm } from './add-address';
 
 const CustomerNewAdressQuery = graphql(
   `
-    query CustomerNewAddress(
+    query CustomerNewAdressQuery(
       $countryCode: String
       $shippingFilters: FormFieldFiltersInput
       $shippingSorting: FormFieldSortInput
