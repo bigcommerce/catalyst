@@ -61,7 +61,6 @@ interface Props {
 
 export const Details = ({ product }: Props) => {
   const t = useTranslations('Product.Details');
-
   const format = useFormatter();
 
   const customFields = removeEdgesAndNodes(product.customFields);
