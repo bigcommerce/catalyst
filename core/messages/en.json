@@ -318,7 +318,7 @@
     "Table": {
       "caption": "Product comparison",
       "noImage": "No image",
-      "chooseOptions": "Choose options",
+      "viewOptions": "View options",
       "description": "Description",
       "rating": "Rating",
       "availability": "Availability"

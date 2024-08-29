@@ -267,7 +267,7 @@ export default async function Compare({ searchParams }: Props) {
                   return (
                     <td className="border-b px-4 pb-12" key={product.entityId}>
                       <Button aria-label={product.name} asChild className="hover:text-white">
-                        <Link href={product.path}>{t('Table.chooseOptions')}</Link>
+                        <Link href={product.path}>{t('Table.viewOptions')}</Link>
                       </Button>
                     </td>
                   );
@@ -349,7 +349,7 @@ export default async function Compare({ searchParams }: Props) {
                   return (
                     <td className="border-b px-4 pb-24 pt-12" key={product.entityId}>
                       <Button aria-label={product.name} asChild className="hover:text-white">
-                        <Link href={product.path}>{t('Table.chooseOptions')}</Link>
+                        <Link href={product.path}>{t('Table.viewOptions')}</Link>
                       </Button>
                     </td>
                   );
