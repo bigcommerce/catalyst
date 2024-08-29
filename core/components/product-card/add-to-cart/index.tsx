@@ -1,5 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 
 import { FragmentOf } from '~/client/graphql';
 import { Button } from '~/components/ui/button';
@@ -13,8 +13,8 @@ interface Props {
   data: FragmentOf<typeof AddToCartFragment>;
 }
 
-export const AddToCart = async ({ data: product }: Props) => {
-  const t = await getTranslations('AddToCart');
+export const AddToCart = ({ data: product }: Props) => {
+  const t = useTranslations('AddToCart');
 
   const productOptions = removeEdgesAndNodes(product.productOptions);
 

@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Category({ params: { locale, slug }, searchParams }: Props) {
   unstable_setRequestLocale(locale);
 
-  const t = await getTranslations({ locale, namespace: 'Category' });
+  const t = await getTranslations('Category');
 
   const categoryId = Number(slug);
 

@@ -2,7 +2,6 @@ import { notFound, redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
 import { auth } from '~/auth';
-import { LocaleType } from '~/i18n';
 import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
 import { RegisterCustomerForm } from './_components/register-customer-form';
@@ -14,20 +13,14 @@ const FALLBACK_COUNTRY = {
   code: 'US',
 };
 
-interface Props {
-  params: {
-    locale: LocaleType;
-  };
-}
-
-export default async function RegisterCustomer({ params: { locale } }: Props) {
+export default async function RegisterCustomer() {
   const session = await auth();
 
   if (session) {
     redirect('/account');
   }
 
-  const t = await getTranslations({ locale, namespace: 'Login.Register' });
+  const t = await getTranslations('Login.Register');
 
   const registerCustomerData = await getRegisterCustomerQuery({
     address: { sortBy: 'SORT_ORDER' },

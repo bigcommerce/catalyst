@@ -40,7 +40,7 @@ interface Props {
 export default async function Maintenance({ params: { locale } }: Props) {
   unstable_setRequestLocale(locale);
 
-  const t = await getTranslations({ locale, namespace: 'Maintenance' });
+  const t = await getTranslations('Maintenance');
 
   const { data } = await client.fetch({
     document: MaintenancePageQuery,

@@ -68,14 +68,12 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   };
 }
 
-export default async function Product({ params, searchParams }: Props) {
-  const { locale } = params;
-
+export default async function Product({ params: { locale, slug }, searchParams }: Props) {
   unstable_setRequestLocale(locale);
 
-  const t = await getTranslations({ locale, namespace: 'Product' });
+  const t = await getTranslations('Product');
 
-  const productId = Number(params.slug);
+  const productId = Number(slug);
 
   const optionValueIds = getOptionValueIds({ searchParams });
 

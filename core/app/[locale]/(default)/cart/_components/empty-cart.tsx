@@ -1,11 +1,7 @@
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 
-interface Props {
-  locale: string;
-}
-
-export const EmptyCart = async ({ locale }: Props) => {
-  const t = await getTranslations({ locale, namespace: 'Cart' });
+export const EmptyCart = () => {
+  const t = useTranslations('Cart');
 
   return (
     <div className="flex h-full flex-col">

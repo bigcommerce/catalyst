@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Brand({ params: { slug, locale }, searchParams }: Props) {
   unstable_setRequestLocale(locale);
 
-  const t = await getTranslations({ locale, namespace: 'Brand' });
+  const t = await getTranslations('Brand');
 
   const brandId = Number(slug);
 

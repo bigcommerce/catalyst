@@ -1,4 +1,4 @@
-import { getFormatter } from 'next-intl/server';
+import { useFormatter } from 'next-intl';
 
 import { ResultOf } from '~/client/graphql';
 import { ProductCard as ComponentProductCard } from '~/components/ui/product-card';
@@ -15,14 +15,14 @@ interface Props {
   showCart?: boolean;
 }
 
-export const ProductCard = async ({
+export const ProductCard = ({
   product,
   imageSize = 'square',
   imagePriority = false,
   showCart = true,
   showCompare = true,
 }: Props) => {
-  const format = await getFormatter();
+  const format = useFormatter();
 
   const { name, entityId, defaultImage, brand, path, prices } = product;
 

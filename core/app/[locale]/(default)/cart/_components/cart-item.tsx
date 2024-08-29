@@ -1,4 +1,4 @@
-import { getFormatter, getLocale } from 'next-intl/server';
+import { useFormatter } from 'next-intl';
 
 import { FragmentOf, graphql } from '~/client/graphql';
 import { BcImage } from '~/components/bc-image';
@@ -147,9 +147,8 @@ interface Props {
   currencyCode: string;
 }
 
-export const CartItem = async ({ currencyCode, product }: Props) => {
-  const locale = await getLocale();
-  const format = await getFormatter({ locale });
+export const CartItem = ({ currencyCode, product }: Props) => {
+  const format = useFormatter();
 
   return (
     <li>

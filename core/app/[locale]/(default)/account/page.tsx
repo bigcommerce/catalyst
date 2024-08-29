@@ -1,9 +1,8 @@
 import { BookUser, Settings } from 'lucide-react';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { ReactNode } from 'react';
 
 import { Link } from '~/components/link';
-import { LocaleType } from '~/i18n';
 
 interface AccountItem {
   children: ReactNode;
@@ -27,14 +26,8 @@ const AccountItem = ({ children, title, description, href }: AccountItem) => {
   );
 };
 
-interface Props {
-  params: {
-    locale: LocaleType;
-  };
-}
-
-export default async function Account({ params: { locale } }: Props) {
-  const t = await getTranslations({ locale, namespace: 'Account.Home' });
+export default function Account() {
+  const t = useTranslations('Account.Home');
 
   return (
     <div className="mx-auto">

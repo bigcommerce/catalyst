@@ -85,20 +85,11 @@ const locales = ['en', 'fr'] as const;
 The following example shows how messages can be used in **server** component:
 
 ```tsx
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 // ...
-import { LocaleType } from '~/i18n';
 
-interface Props {
-  params: {
-    locale: LocaleType;
-  };
-}
-
-export default async function Home({ params: { locale } }: Props) {
-  unstable_setRequestLocale(locale);
-
-  const t = await getTranslations({ locale, namespace: 'Home' });
+export default async function Home() {
+  const t = await getTranslations('Home');
   // ...
 
   return (

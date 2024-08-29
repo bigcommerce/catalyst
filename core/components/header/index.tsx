@@ -23,10 +23,10 @@ interface Props {
 }
 
 export const Header = async ({ cart, data }: Props) => {
-  const customerId = await getSessionCustomerId();
-
   const locale = await getLocale();
-  const t = await getTranslations({ locale, namespace: 'Components.Header' });
+  const t = await getTranslations('Components.Header');
+
+  const customerId = await getSessionCustomerId();
 
   /**  To prevent the navigation menu from overflowing, we limit the number of categories to 6.
    To show a full list of categories, modify the `slice` method to remove the limit.

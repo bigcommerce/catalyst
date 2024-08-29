@@ -1,6 +1,6 @@
 import { SiFacebook, SiLinkedin, SiPinterest, SiX } from '@icons-pack/react-simple-icons';
 import { Mail } from 'lucide-react';
-import { getLocale, getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 
 import { FragmentOf, graphql } from '~/client/graphql';
 
@@ -33,9 +33,8 @@ interface Props {
   data: FragmentOf<typeof SharingLinksFragment>;
 }
 
-export const SharingLinks = async ({ data }: Props) => {
-  const locale = await getLocale();
-  const t = await getTranslations({ locale, namespace: 'Blog.SharingLinks' });
+export const SharingLinks = ({ data }: Props) => {
+  const t = useTranslations('Blog.SharingLinks');
 
   const blogPost = data.content.blog?.post;
 

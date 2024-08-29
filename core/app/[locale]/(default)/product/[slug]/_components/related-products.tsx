@@ -32,9 +32,9 @@ interface Props {
 }
 
 export const RelatedProducts = async ({ productId }: Props) => {
-  const customerId = await getSessionCustomerId();
-
   const t = await getTranslations('Product.Carousel');
+
+  const customerId = await getSessionCustomerId();
 
   const { data } = await client.fetch({
     document: RelatedProductsQuery,

@@ -12,7 +12,6 @@ import { Link } from '~/components/link';
 import { SearchForm } from '~/components/search-form';
 import { Button } from '~/components/ui/button';
 import { Rating } from '~/components/ui/rating';
-import { LocaleType } from '~/i18n';
 import { cn } from '~/lib/utils';
 
 import { AddToCart } from './_components/add-to-cart';
@@ -87,21 +86,17 @@ export const metadata = {
 };
 
 interface Props {
-  params: {
-    locale: LocaleType;
-  };
   searchParams: Record<string, string | string[] | undefined>;
 }
 
-export default async function Compare({ params: { locale }, searchParams }: Props) {
-  const t = await getTranslations({ locale, namespace: 'Compare' });
+export default async function Compare({ searchParams }: Props) {
+  const t = await getTranslations('Compare');
+  const format = await getFormatter();
 
   const customerId = await getSessionCustomerId();
 
   const parsed = CompareParamsSchema.parse(searchParams);
   const productIds = parsed.ids?.filter((id) => !Number.isNaN(id));
-
-  const format = await getFormatter();
 
   const { data } = await client.fetch({
     document: ComparePageQuery,

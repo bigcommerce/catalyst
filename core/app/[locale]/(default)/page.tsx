@@ -43,9 +43,9 @@ interface Props {
 export default async function Home({ params: { locale } }: Props) {
   unstable_setRequestLocale(locale);
 
-  const customerId = await getSessionCustomerId();
+  const t = await getTranslations('Home');
 
-  const t = await getTranslations({ locale, namespace: 'Home' });
+  const customerId = await getSessionCustomerId();
 
   const { data } = await client.fetch({
     document: HomePageQuery,

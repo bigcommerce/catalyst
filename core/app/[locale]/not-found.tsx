@@ -1,6 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { ShoppingCart } from 'lucide-react';
-import { getLocale, getTranslations } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
@@ -38,8 +38,7 @@ export const metadata = {
 };
 
 export default async function NotFound() {
-  const locale = await getLocale();
-  const t = await getTranslations({ locale, namespace: 'NotFound' });
+  const t = await getTranslations('NotFound');
 
   const { data } = await client.fetch({
     document: NotFoundQuery,
@@ -77,5 +76,3 @@ export default async function NotFound() {
     </>
   );
 }
-
-export const runtime = 'edge';

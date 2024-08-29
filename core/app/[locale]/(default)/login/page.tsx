@@ -5,7 +5,6 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
-import { LocaleType } from '~/i18n';
 
 import { ChangePasswordForm } from './_components/change-password-form';
 import { LoginForm } from './_components/login-form';
@@ -32,9 +31,6 @@ export const metadata = {
 };
 
 interface Props {
-  params: {
-    locale: LocaleType;
-  };
   searchParams: {
     [key: string]: string | string[] | undefined;
     action?: 'create_account' | 'reset_password' | 'change_password';
@@ -43,8 +39,8 @@ interface Props {
   };
 }
 
-export default async function Login({ params: { locale }, searchParams }: Props) {
-  const t = await getTranslations({ locale, namespace: 'Login' });
+export default async function Login({ searchParams }: Props) {
+  const t = await getTranslations('Login');
 
   const action = searchParams.action;
   const customerId = searchParams.c;
@@ -96,5 +92,3 @@ export default async function Login({ params: { locale }, searchParams }: Props)
     </div>
   );
 }
-
-export const runtime = 'edge';

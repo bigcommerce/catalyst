@@ -5,7 +5,6 @@ import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
-import { LocaleType } from '~/i18n';
 
 import { CartItem, CartItemFragment } from './_components/cart-item';
 import { CartViewed } from './_components/cart-viewed';
@@ -41,20 +40,14 @@ export const metadata = {
   title: 'Cart',
 };
 
-interface Props {
-  params: {
-    locale: LocaleType;
-  };
-}
-
-export default async function Cart({ params: { locale } }: Props) {
+export default async function Cart() {
   const cartId = cookies().get('cartId')?.value;
 
   if (!cartId) {
-    return <EmptyCart locale={locale} />;
+    return <EmptyCart />;
   }
 
-  const t = await getTranslations({ locale, namespace: 'Cart' });
+  const t = await getTranslations('Cart');
 
   const customerId = await getSessionCustomerId();
 
@@ -75,7 +68,7 @@ export default async function Cart({ params: { locale } }: Props) {
   const geography = data.geography;
 
   if (!cart) {
-    return <EmptyCart locale={locale} />;
+    return <EmptyCart />;
   }
 
   const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];

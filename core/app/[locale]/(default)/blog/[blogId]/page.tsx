@@ -5,7 +5,6 @@ import { getFormatter } from 'next-intl/server';
 import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
 import { Tag } from '~/components/ui/tag';
-import { LocaleType } from '~/i18n';
 
 import { SharingLinks } from './_components/sharing-links';
 import { getBlogPageData } from './page-data';
@@ -13,7 +12,6 @@ import { getBlogPageData } from './page-data';
 interface Props {
   params: {
     blogId: string;
-    locale?: LocaleType;
   };
 }
 
@@ -34,8 +32,8 @@ export async function generateMetadata({ params: { blogId } }: Props): Promise<M
   };
 }
 
-export default async function Blog({ params: { blogId, locale } }: Props) {
-  const format = await getFormatter({ locale });
+export default async function Blog({ params: { blogId } }: Props) {
+  const format = await getFormatter();
 
   const data = await getBlogPageData({ entityId: Number(blogId) });
   const blogPost = data?.content.blog?.post;

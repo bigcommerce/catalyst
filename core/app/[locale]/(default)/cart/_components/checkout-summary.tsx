@@ -1,4 +1,4 @@
-import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { FragmentOf, graphql } from '~/client/graphql';
 
@@ -46,9 +46,8 @@ interface Props {
 }
 
 export const CheckoutSummary = async ({ checkout, geography }: Props) => {
-  const locale = await getLocale();
-  const t = await getTranslations({ locale, namespace: 'Cart.CheckoutSummary' });
-  const format = await getFormatter({ locale });
+  const t = await getTranslations('Cart.CheckoutSummary');
+  const format = await getFormatter();
 
   const { cart, grandTotal, subtotal, taxTotal } = checkout;
 

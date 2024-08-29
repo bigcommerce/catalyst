@@ -1,4 +1,5 @@
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
+import { unstable_setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
 
 import { Link } from '~/components/link';
@@ -15,10 +16,10 @@ interface Props extends PropsWithChildren {
   params: { locale: LocaleType; tab?: TabType };
 }
 
-export default async function AccountTabLayout({ children, params: { locale } }: Props) {
+export default function AccountTabLayout({ children, params: { locale } }: Props) {
   unstable_setRequestLocale(locale);
 
-  const t = await getTranslations({ locale, namespace: 'Account.Home' });
+  const t = useTranslations('Account.Home');
 
   const tabsTitles = {
     addresses: t('addresses'),

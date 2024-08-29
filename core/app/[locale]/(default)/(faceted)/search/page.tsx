@@ -3,7 +3,6 @@ import { getTranslations } from 'next-intl/server';
 import { ProductCard } from '~/components/product-card';
 import { SearchForm } from '~/components/search-form';
 import { Pagination } from '~/components/ui/pagination';
-import { LocaleType } from '~/i18n';
 
 import { FacetedSearch } from '../_components/faceted-search';
 import { MobileSideNav } from '../_components/mobile-side-nav';
@@ -15,12 +14,11 @@ export const metadata = {
 };
 
 interface Props {
-  params: { locale: LocaleType };
   searchParams: Record<string, string | string[] | undefined>;
 }
 
-export default async function Search({ params: { locale }, searchParams }: Props) {
-  const t = await getTranslations({ locale, namespace: 'Search' });
+export default async function Search({ searchParams }: Props) {
+  const t = await getTranslations('Search');
 
   const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : undefined;
 

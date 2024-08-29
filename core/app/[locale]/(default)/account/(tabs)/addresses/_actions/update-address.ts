@@ -61,6 +61,7 @@ export const updateAddress = async ({
   reCaptchaToken?: string;
 }) => {
   const t = await getTranslations('Account.Addresses.UpdateAddress');
+
   const customerId = await getSessionCustomerId();
 
   try {
