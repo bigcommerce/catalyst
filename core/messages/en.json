@@ -5,211 +5,66 @@
       "newestProducts": "Newest products"
     }
   },
-  "Category": {
-    "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
-    "products": "Products",
-    "items": "items"
+  "Providers": {
+    "Compare": {
+      "compareButton": "Compare ({products})",
+      "productPhoto": "Photo",
+      "removeProductAriaLabel": "Remove {product} from compare list"
+    }
+  },
+  "FacetedGroup": {
+    "MobileSideNav": {
+      "filters": "Filters",
+      "showFilters": "Show Filters",
+      "subCategories": "Categories"
+    },
+    "FacetedSearch": {
+      "filters": "Filters",
+      "RefineBy": {
+        "refineBy": "Refine by",
+        "clearAllRefinements": "Clear all"
+      },
+      "Facets": {
+        "updatePriceButton": "Update price",
+        "freeShippingLabel": "Free shipping",
+        "isFeaturedLabel": "Is featured",
+        "inStockLabel": "In stock",
+        "rating": "{currentRating, plural, =1 {1 star} other {# stars}} & up",
+        "priceFilter": {
+          "minPricePlaceholder": "{currencySign} min",
+          "minPriceAriaLabel": "Minimum pricing",
+          "maxPricePlaceholder": "{currencySign} max",
+          "maxPriceAriaLabel": "Maximum pricing"
+        }
+      }
+    },
+    "SortBy": {
+      "ariaLabel": "Sort by:",
+      "featuredItems": "Featured items",
+      "bestSellingItems": "Best selling items",
+      "newestItems": "Newest items",
+      "aToZ": "A to Z",
+      "zToA": "Z to A",
+      "byReview": "By review",
+      "priceAscending": "Price: ascending",
+      "priceDescending": "Price: descending",
+      "relevance": "Relevance"
+    }
   },
   "Brand": {
     "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
     "products": "Products"
   },
-  "Product": {
-    "loading": "Loading...",
-    "Carousel": {
-      "relatedProducts": "Related products"
-    },
-    "Form": {
-      "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-      "error": "Error adding product to cart. Please try again.",
-      "saveToWishlist": "Save to wishlist",
-      "quantityLabel": "Quantity"
-    },
-    "Description": {
-      "heading": "Description"
-    },
-    "Warranty": {
-      "heading": "Warranty"
-    },
-    "Reviews": {
-      "heading": "Reviews",
-      "reviewsCount": "Count:",
-      "unreviewed": "This product hasn't been reviewed yet.",
-      "reviewRating": "Rating: {rating} out of 5 stars",
-      "reviewAuthor": "Posted by {author} on"
-    },
-    "Details": {
-      "additionalDetails": "Additional details",
-      "sku": "SKU",
-      "upc": "UPC",
-      "minPurchase": "Minimum purchase",
-      "maxPurchase": "Maxiumum purchase",
-      "availability": "Availability",
-      "condition": "Condition",
-      "weight": "Weight",
-      "Prices": {
-        "msrp": "MSRP",
-        "was": "Was",
-        "now": "Now"
-      },
-      "ReviewSummary": {
-        "rating": "Rating:",
-        "ratingRange": "out of 5 stars.",
-        "reviewsNumber": "Number of reviews:"
-      }
-    }
-  },
-  "Compare": {
-    "nothingCompare": "Well, there's nothing to compare!",
-    "helpingText": "You somehow managed to land here, but you need to select a few products first.",
-    "heading": "Comparing {quantity, plural, =1 {1 Product} other {# Products}}",
-    "Table": {
-      "caption": "Product comparison",
-      "noImage": "No image",
-      "chooseOptions": "Choose options",
-      "description": "Description",
-      "rating": "Rating",
-      "availability": "Availability"
-    },
-    "AddToCart": {
-      "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-      "error": "Error adding product to cart. Please try again."
-    }
-  },
-  "Cart": {
-    "heading": "Your cart",
-    "empty": "Your cart is empty",
-    "emptyDetails": "Looks like you have not added anything to your cart. Go ahead & explore top categories",
-    "proceedToCheckout": "Proceed to checkout",
-    "loading": "Loading...",
-    "spinnerText": "Updating...",
-    "CheckoutSummary": {
-      "subTotal": "Subtotal",
-      "discounts": "Discounts",
-      "coupon": "Coupon",
-      "couponCode": "Coupon code",
-      "addCoupon": "Add coupon",
-      "enterCouponCode": "Enter your coupon code",
-      "couponCodeRequired": "Please enter a coupon code.",
-      "couponCodeInvalid": "The coupon code you entered is not valid.",
-      "remove": "Remove",
-      "spinnerText": "Removing...",
-      "couponCodeRemoveFailed": "There was an error removing the coupon code. Please try again.",
-      "tax": "Tax",
-      "grandTotal": "Grand total",
-      "shipping": "Shipping",
-      "shippingCost": "Shipping cost",
-      "handlingCost": "Handling cost",
-      "add": "Add",
-      "change": "Change",
-      "cancel": "Cancel",
-      "errorMessage": "Cart summary not found, please try again."
-    },
-    "ShippingInfo": {
-      "country": "Country",
-      "countryPlaceholder": "Select country",
-      "state": "State/province",
-      "statePlaceholder": "Select state",
-      "city": "Suburb/city",
-      "cityPlaceholder": "City",
-      "postcode": "Zip/Postcode",
-      "postcodePlaceholder": "Postal code",
-      "errorMessage": "Something went wrong, please try again."
-    },
-    "SubmitShippingInfo": {
-      "spinnerText": "Submitting...",
-      "submitText": "Estimate shipping"
-    },
-    "ShippingCost": {
-      "shippingOptions": "Available options",
-      "radioGroupAriaLabel": "Available shipping options",
-      "noAvailableOptions": "There are no available options for shipping. Please check provided details and try again!",
-      "errorMessage": "Something went wrong, please try again."
-    },
-    "SubmitShippingCost": {
-      "spinnerText": "Submitting...",
-      "submitText": "Update shipping costs"
-    },
-    "SubmitCouponCode": {
-      "spinnerText": "Submitting...",
-      "submitText": "Apply"
-    },
-    "SubmitItemQuantity": {
-      "spinnerText": "Updating...",
-      "submitReduceText": "Decrease count",
-      "submitIncreaseText": "Increase count",
-      "errorMessage": "Something went wrong while updating item quantity, please try again."
-    },
-    "SubmitRemoveItem": {
-      "remove": "Remove",
-      "spinnerText": "Removing...",
-      "errorMessage": "Something went wrong while removing item, please try again."
-    }
+  "Category": {
+    "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+    "products": "Products",
+    "items": "items"
   },
   "Search": {
     "heading": "Search",
     "products": "Products",
     "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
     "searchResults": "Search results for"
-  },
-  "Login": {
-    "heading": "Log In",
-    "resetPasswordHeading": "Reset password",
-    "changePasswordHeading": "Change password",
-    "Form": {
-      "errorMessage": "Your email address or password is incorrect. Try signing in again or reset your password",
-      "emailLabel": "Email",
-      "enterEmailMessage": "Enter your email",
-      "passwordLabel": "Password",
-      "entePasswordMessage": "Enter your password",
-      "submitting": "Submitting...",
-      "logIn": "Log in",
-      "resetPassword": "Forgot your password?",
-      "validationMessages": {
-          "email": "Enter a valid email such as name@domain.com",
-          "firstName": "Enter your first name",
-          "lastName": "Enter your last name",
-          "city": "Enter a suburb / city",
-          "company": "Enter a company name",
-          "phone": "Enter a phone number"
-      }
-    },
-    "CreateAccount": {
-      "heading": "New customer?",
-      "accountBenefits": "Create an account with us and you'll be able to:",
-      "fastCheckout": "Check out faster",
-      "multipleAddresses": "Save multiple shipping addresses",
-      "ordersHistory": "Access your order history",
-      "ordersTracking":  "Track new orders",
-      "wishlists": "Save items to your Wish List",
-      "createLink": "Create Account "
-    },
-    "Register": {
-      "heading": "New account",
-      "submit": "Create account",
-      "submitting": "Creating account...",
-      "recaptchaText": "Pass ReCAPTCHA check",
-      "stateProvincePrefix": "Choose state or province",
-      "validationMessages": {
-          "email": "Enter a valid email such as name@domain.com",
-          "empty": "This field can not be empty",
-          "firstName": "Enter your first name",
-          "lastName": "Enter your last name",
-          "password": "Enter a password",
-          "confirmPassword": "Passwords don't match",
-          "address1": "Enter an address",
-          "address2": "Enter an address",
-          "city": "Enter a suburb / city",
-          "company": "Enter a company name",
-          "phone": "Enter a phone number",
-          "postalCode": "Enter a zip / postcode"
-      },
-      "Errors": {
-        "inputError": "Something went wrong with proccessing user input.",
-        "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
-        "error": "Something went wrong. Please try again later."
-      }
-    }
   },
   "Account": {
     "Home": {
@@ -386,61 +241,202 @@
       "submitText": "Reset password"
     }
   },
-  "NotFound": {
-    "heading": "We couldn't find that page!",
-    "message": "It looks like the page you requested has moved or no longer exists.",
-    "Carousel": {
-      "featuredProducts": "Featured products"
+  "Blog": {
+    "SharingLinks": {
+      "share": "Share",
+      "email": "Email",
+      "print": "Print"
     }
   },
-  "Error": {
-    "heading": "There was a server error!",
-    "message": "Please try again later."
-  },
-  "FacetedGroup": {
-    "MobileSideNav": {
-      "filters": "Filters",
-      "showFilters": "Show Filters",
-      "subCategories": "Categories"
+  "Cart": {
+    "heading": "Your cart",
+    "empty": "Your cart is empty",
+    "emptyDetails": "Looks like you have not added anything to your cart. Go ahead & explore top categories",
+    "proceedToCheckout": "Proceed to checkout",
+    "loading": "Loading...",
+    "spinnerText": "Updating...",
+    "CheckoutSummary": {
+      "subTotal": "Subtotal",
+      "discounts": "Discounts",
+      "coupon": "Coupon",
+      "couponCode": "Coupon code",
+      "addCoupon": "Add coupon",
+      "enterCouponCode": "Enter your coupon code",
+      "couponCodeRequired": "Please enter a coupon code.",
+      "couponCodeInvalid": "The coupon code you entered is not valid.",
+      "remove": "Remove",
+      "spinnerText": "Removing...",
+      "couponCodeRemoveFailed": "There was an error removing the coupon code. Please try again.",
+      "tax": "Tax",
+      "grandTotal": "Grand total",
+      "shipping": "Shipping",
+      "shippingCost": "Shipping cost",
+      "handlingCost": "Handling cost",
+      "add": "Add",
+      "change": "Change",
+      "cancel": "Cancel",
+      "errorMessage": "Cart summary not found, please try again."
     },
-    "FacetedSearch": {
-      "filters": "Filters",
-      "RefineBy": {
-        "refineBy": "Refine by",
-        "clearAllRefinements": "Clear all"
-      },
-      "Facets": {
-        "updatePriceButton": "Update price",
-        "freeShippingLabel": "Free shipping",
-        "isFeaturedLabel": "Is featured",
-        "inStockLabel": "In stock",
-        "rating": "{currentRating, plural, =1 {1 star} other {# stars}} & up",
-        "priceFilter": {
-          "minPricePlaceholder": "{currencySign} min",
-          "minPriceAriaLabel": "Minimum pricing",
-          "maxPricePlaceholder": "{currencySign} max",
-          "maxPriceAriaLabel": "Maximum pricing"
-        }
+    "ShippingInfo": {
+      "country": "Country",
+      "countryPlaceholder": "Select country",
+      "state": "State/province",
+      "statePlaceholder": "Select state",
+      "city": "Suburb/city",
+      "cityPlaceholder": "City",
+      "postcode": "Zip/Postcode",
+      "postcodePlaceholder": "Postal code",
+      "errorMessage": "Something went wrong, please try again."
+    },
+    "SubmitShippingInfo": {
+      "spinnerText": "Submitting...",
+      "submitText": "Estimate shipping"
+    },
+    "ShippingCost": {
+      "shippingOptions": "Available options",
+      "radioGroupAriaLabel": "Available shipping options",
+      "noAvailableOptions": "There are no available options for shipping. Please check provided details and try again!",
+      "errorMessage": "Something went wrong, please try again."
+    },
+    "SubmitShippingCost": {
+      "spinnerText": "Submitting...",
+      "submitText": "Update shipping costs"
+    },
+    "SubmitCouponCode": {
+      "spinnerText": "Submitting...",
+      "submitText": "Apply"
+    },
+    "SubmitItemQuantity": {
+      "spinnerText": "Updating...",
+      "submitReduceText": "Decrease count",
+      "submitIncreaseText": "Increase count",
+      "errorMessage": "Something went wrong while updating item quantity, please try again."
+    },
+    "SubmitRemoveItem": {
+      "remove": "Remove",
+      "spinnerText": "Removing...",
+      "errorMessage": "Something went wrong while removing item, please try again."
+    }
+  },
+  "Compare": {
+    "nothingCompare": "Well, there's nothing to compare!",
+    "helpingText": "You somehow managed to land here, but you need to select a few products first.",
+    "heading": "Comparing {quantity, plural, =1 {1 Product} other {# Products}}",
+    "Table": {
+      "caption": "Product comparison",
+      "noImage": "No image",
+      "chooseOptions": "Choose options",
+      "description": "Description",
+      "rating": "Rating",
+      "availability": "Availability"
+    },
+    "AddToCart": {
+      "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+      "error": "Error adding product to cart. Please try again."
+    }
+  },
+  "Login": {
+    "heading": "Log In",
+    "resetPasswordHeading": "Reset password",
+    "changePasswordHeading": "Change password",
+    "Form": {
+      "errorMessage": "Your email address or password is incorrect. Try signing in again or reset your password",
+      "emailLabel": "Email",
+      "enterEmailMessage": "Enter your email",
+      "passwordLabel": "Password",
+      "entePasswordMessage": "Enter your password",
+      "submitting": "Submitting...",
+      "logIn": "Log in",
+      "resetPassword": "Forgot your password?",
+      "validationMessages": {
+          "email": "Enter a valid email such as name@domain.com",
+          "firstName": "Enter your first name",
+          "lastName": "Enter your last name",
+          "city": "Enter a suburb / city",
+          "company": "Enter a company name",
+          "phone": "Enter a phone number"
       }
     },
-    "SortBy": {
-      "ariaLabel": "Sort by:",
-      "featuredItems": "Featured items",
-      "bestSellingItems": "Best selling items",
-      "newestItems": "Newest items",
-      "aToZ": "A to Z",
-      "zToA": "Z to A",
-      "byReview": "By review",
-      "priceAscending": "Price: ascending",
-      "priceDescending": "Price: descending",
-      "relevance": "Relevance"
+    "CreateAccount": {
+      "heading": "New customer?",
+      "accountBenefits": "Create an account with us and you'll be able to:",
+      "fastCheckout": "Check out faster",
+      "multipleAddresses": "Save multiple shipping addresses",
+      "ordersHistory": "Access your order history",
+      "ordersTracking":  "Track new orders",
+      "wishlists": "Save items to your Wish List",
+      "createLink": "Create Account "
+    },
+    "Register": {
+      "heading": "New account",
+      "submit": "Create account",
+      "submitting": "Creating account...",
+      "recaptchaText": "Pass ReCAPTCHA check",
+      "stateProvincePrefix": "Choose state or province",
+      "validationMessages": {
+          "email": "Enter a valid email such as name@domain.com",
+          "empty": "This field can not be empty",
+          "firstName": "Enter your first name",
+          "lastName": "Enter your last name",
+          "password": "Enter a password",
+          "confirmPassword": "Passwords don't match",
+          "address1": "Enter an address",
+          "address2": "Enter an address",
+          "city": "Enter a suburb / city",
+          "company": "Enter a company name",
+          "phone": "Enter a phone number",
+          "postalCode": "Enter a zip / postcode"
+      },
+      "Errors": {
+        "inputError": "Something went wrong with proccessing user input.",
+        "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
+        "error": "Something went wrong. Please try again later."
+      }
     }
   },
-  "Providers": {
-    "Compare": {
-      "compareButton": "Compare ({products})",
-      "productPhoto": "Photo",
-      "removeProductAriaLabel": "Remove {product} from compare list"
+  "Product": {
+    "loading": "Loading...",
+    "Carousel": {
+      "relatedProducts": "Related products"
+    },
+    "Form": {
+      "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+      "error": "Error adding product to cart. Please try again.",
+      "saveToWishlist": "Save to wishlist",
+      "quantityLabel": "Quantity"
+    },
+    "Description": {
+      "heading": "Description"
+    },
+    "Warranty": {
+      "heading": "Warranty"
+    },
+    "Reviews": {
+      "heading": "Reviews",
+      "reviewsCount": "Count:",
+      "unreviewed": "This product hasn't been reviewed yet.",
+      "reviewRating": "Rating: {rating} out of 5 stars",
+      "reviewAuthor": "Posted by {author} on"
+    },
+    "Details": {
+      "additionalDetails": "Additional details",
+      "sku": "SKU",
+      "upc": "UPC",
+      "minPurchase": "Minimum purchase",
+      "maxPurchase": "Maxiumum purchase",
+      "availability": "Availability",
+      "condition": "Condition",
+      "weight": "Weight",
+      "Prices": {
+        "msrp": "MSRP",
+        "was": "Was",
+        "now": "Now"
+      },
+      "ReviewSummary": {
+        "rating": "Rating:",
+        "ratingRange": "out of 5 stars.",
+        "reviewsNumber": "Number of reviews:"
+      }
     }
   },
   "ContactUs": {
@@ -466,6 +462,17 @@
   },
   "StoreSelector": {
     "heading": "Select a language and region"
+  },
+  "Error": {
+    "heading": "There was a server error!",
+    "message": "Please try again later."
+  },
+  "NotFound": {
+    "heading": "We couldn't find that page!",
+    "message": "It looks like the page you requested has moved or no longer exists.",
+    "Carousel": {
+      "featuredProducts": "Featured products"
+    }
   },
   "Components": {
     "Header": {
@@ -496,13 +503,6 @@
       "preorder": "Preorder",
       "unavailable": "Unavailable",
       "processing": "Processing..."
-    }
-  },
-  "Blog": {
-    "SharingLinks": {
-      "share": "Share",
-      "email": "Email",
-      "print": "Print"
     }
   }
 }
