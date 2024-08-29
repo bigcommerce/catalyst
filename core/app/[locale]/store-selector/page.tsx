@@ -68,3 +68,5 @@ export default async function StoreSelector({ params: { locale: selectedLocale }
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
+
+export const dynamic = 'force-static';
