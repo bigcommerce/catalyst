@@ -46,8 +46,8 @@ interface Props {
 
 export default async function Login({ params: { locale }, searchParams }: Props) {
   const messages = await getMessages({ locale });
-  const Account = messages.Account ?? {};
-  const t = await getTranslations({ locale, namespace: 'Account.Login' });
+  const t = await getTranslations({ locale, namespace: 'Login' });
+
   const action = searchParams.action;
   const customerId = searchParams.c;
   const customerToken = searchParams.t;
@@ -61,7 +61,7 @@ export default async function Login({ params: { locale }, searchParams }: Props)
     return (
       <div className="mx-auto my-6 max-w-4xl">
         <h2 className="mb-8 text-4xl font-black lg:text-5xl">{t('changePasswordHeading')}</h2>
-        <NextIntlClientProvider locale={locale} messages={{ Account }}>
+        <NextIntlClientProvider locale={locale} messages={{ Account: messages.Account ?? {} }}>
           <ChangePasswordForm customerId={customerId} customerToken={customerToken} />
         </NextIntlClientProvider>
       </div>
@@ -72,7 +72,7 @@ export default async function Login({ params: { locale }, searchParams }: Props)
     return (
       <div className="mx-auto my-6 max-w-4xl">
         <h2 className="mb-8 text-4xl font-black lg:text-5xl">{t('resetPasswordHeading')}</h2>
-        <NextIntlClientProvider locale={locale} messages={{ Account }}>
+        <NextIntlClientProvider locale={locale} messages={{ Account: messages.Account ?? {} }}>
           <ResetPasswordForm reCaptchaSettings={data.site.settings?.reCaptcha} />
         </NextIntlClientProvider>
       </div>
@@ -83,7 +83,7 @@ export default async function Login({ params: { locale }, searchParams }: Props)
     <div className="mx-auto my-6 max-w-4xl">
       <h2 className="text-h2 mb-8 text-4xl font-black lg:text-5xl">{t('heading')}</h2>
       <div className="mb-12 grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8">
-        <NextIntlClientProvider locale={locale} messages={{ Account }}>
+        <NextIntlClientProvider locale={locale} messages={{ Login: messages.Login ?? {} }}>
           <LoginForm />
         </NextIntlClientProvider>
         <div className="flex flex-col gap-4 bg-gray-100 p-8">

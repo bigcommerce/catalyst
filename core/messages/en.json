@@ -152,6 +152,65 @@
     "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
     "searchResults": "Search results for"
   },
+  "Login": {
+    "heading": "Log In",
+    "resetPasswordHeading": "Reset password",
+    "changePasswordHeading": "Change password",
+    "Form": {
+      "errorMessage": "Your email address or password is incorrect. Try signing in again or reset your password",
+      "emailLabel": "Email",
+      "enterEmailMessage": "Enter your email",
+      "passwordLabel": "Password",
+      "entePasswordMessage": "Enter your password",
+      "submitting": "Submitting...",
+      "logIn": "Log in",
+      "resetPassword": "Forgot your password?",
+      "validationMessages": {
+          "email": "Enter a valid email such as name@domain.com",
+          "firstName": "Enter your first name",
+          "lastName": "Enter your last name",
+          "city": "Enter a suburb / city",
+          "company": "Enter a company name",
+          "phone": "Enter a phone number"
+      }
+    },
+    "CreateAccount": {
+      "heading": "New customer?",
+      "accountBenefits": "Create an account with us and you'll be able to:",
+      "fastCheckout": "Check out faster",
+      "multipleAddresses": "Save multiple shipping addresses",
+      "ordersHistory": "Access your order history",
+      "ordersTracking":  "Track new orders",
+      "wishlists": "Save items to your Wish List",
+      "createLink": "Create Account "
+    },
+    "Register": {
+      "heading": "New account",
+      "submit": "Create account",
+      "submitting": "Creating account...",
+      "recaptchaText": "Pass ReCAPTCHA check",
+      "stateProvincePrefix": "Choose state or province",
+      "validationMessages": {
+          "email": "Enter a valid email such as name@domain.com",
+          "empty": "This field can not be empty",
+          "firstName": "Enter your first name",
+          "lastName": "Enter your last name",
+          "password": "Enter a password",
+          "confirmPassword": "Passwords don't match",
+          "address1": "Enter an address",
+          "address2": "Enter an address",
+          "city": "Enter a suburb / city",
+          "company": "Enter a company name",
+          "phone": "Enter a phone number",
+          "postalCode": "Enter a zip / postcode"
+      },
+      "Errors": {
+        "inputError": "Something went wrong with proccessing user input.",
+        "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
+        "error": "Something went wrong. Please try again later."
+      }
+    }
+  },
   "Account": {
     "Home": {
       "heading": "My Account",

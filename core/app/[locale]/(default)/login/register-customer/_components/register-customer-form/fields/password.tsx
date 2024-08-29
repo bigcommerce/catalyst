@@ -21,7 +21,7 @@ interface PasswordProps {
 }
 
 export const Password = ({ defaultValue, field, isValid, name, onChange }: PasswordProps) => {
-  const t = useTranslations('Account.Register.validationMessages');
+  const t = useTranslations('Login.Register.validationMessages');
   const fieldName = FieldNameToFieldId[field.entityId];
 
   return (

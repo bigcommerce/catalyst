@@ -19,7 +19,7 @@ interface TextProps {
 }
 
 export const Text = ({ defaultValue, field, isValid, name, onChange, type }: TextProps) => {
-  const t = useTranslations('Account.Register.validationMessages');
+  const t = useTranslations('Login.Register.validationMessages');
   const fieldName = FieldNameToFieldId[field.entityId];
 
   return (
