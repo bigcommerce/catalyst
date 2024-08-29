@@ -1,5 +1,6 @@
 'use server';
 
+import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
 import { getSessionCustomerId } from '~/auth';
@@ -52,6 +53,8 @@ export const submitCustomerChangePasswordForm = async (
   _previousState: unknown,
   formData: FormData,
 ) => {
+  const t = await getTranslations('Account.Settings.ChangePassword');
+
   const customerId = await getSessionCustomerId();
 
   try {
@@ -75,7 +78,7 @@ export const submitCustomerChangePasswordForm = async (
     const result = response.data.customer.changePassword;
 
     if (result.errors.length === 0) {
-      return { status: 'success', message: 'Password has been updated successfully.' };
+      return { status: 'success', message: t('success') };
     }
 
     return {
@@ -99,6 +102,6 @@ export const submitCustomerChangePasswordForm = async (
       };
     }
 
-    return { status: 'error', message: 'Unknown error.' };
+    return { status: 'error', message: t('error') };
   }
 };

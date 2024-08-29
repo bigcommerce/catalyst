@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
@@ -32,6 +33,7 @@ const DeleteCustomerAddressMutation = graphql(`
 `);
 
 export const deleteAddress = async (addressId: number): Promise<State> => {
+  const t = await getTranslations('Account.Addresses.DeleteAddress');
   const customerId = await getSessionCustomerId();
 
   try {
@@ -51,7 +53,7 @@ export const deleteAddress = async (addressId: number): Promise<State> => {
     revalidatePath('/account/addresses', 'page');
 
     if (result.errors.length === 0) {
-      return { status: 'success', message: 'Address deleted from your account.' };
+      return { status: 'success', message: t('success') };
     }
 
     return {
@@ -66,6 +68,6 @@ export const deleteAddress = async (addressId: number): Promise<State> => {
       };
     }
 
-    return { status: 'error', message: 'Unknown error.' };
+    return { status: 'error', message: t('error') };
   }
 };

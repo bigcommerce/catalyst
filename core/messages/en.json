@@ -242,6 +242,25 @@
       "cancel": "Cancel",
       "submitting": "In progress..."
     },
+    "AddAddress": {
+      "success": "The address has been added.",
+      "Errors": {
+        "inputError": "Something went wrong with proccessing user input.",
+        "error": "Unknown error."
+      }
+    },
+    "DeleteAddress": {
+      "success": "Address deleted from your account.",
+      "error": "Unknown error."
+    },
+    "UpdateAddress": {
+      "success": "The address has been updated.",
+      "Errors": {
+        "inputError": "Something went wrong with proccessing user input.",
+        "notFound": "Address does not exist.",
+        "error": "Unknown error."
+      }
+    },
     "EditAddress": {
       "recaptchaText": "Pass ReCAPTCHA check",
       "emptyTextValidationMessage": "This field can not be empty",
@@ -255,22 +274,32 @@
       "submitting": "In progress..."
     },  
     "Settings": {
-        "emptyTextValidatoinMessage": "This field can not be empty",
-        "cancel": "Cancel",
-        "recaptchaText": "Pass ReCAPTCHA check",
-        "changePassword": "Reset password",
-        "submit": "Update settings",
-        "submitting": "Update settings...",
-        "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
-        "validationMessages": {
-            "email": "Enter a valid email such as name@domain.com",
-            "empty": "This field can not be empty",
-            "firstName": "Enter your first name",
-            "lastName": "Enter your last name",
-            "city": "Enter a suburb / city",
-            "company": "Enter a company name",
-            "phone": "Enter a phone number"
+      "emptyTextValidatoinMessage": "This field can not be empty",
+      "cancel": "Cancel",
+      "recaptchaText": "Pass ReCAPTCHA check",
+      "changePassword": "Reset password",
+      "submit": "Update settings",
+      "submitting": "Update settings...",
+      "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+      "validationMessages": {
+          "email": "Enter a valid email such as name@domain.com",
+          "empty": "This field can not be empty",
+          "firstName": "Enter your first name",
+          "lastName": "Enter your last name",
+          "city": "Enter a suburb / city",
+          "company": "Enter a company name",
+          "phone": "Enter a phone number"
+      },
+      "ChangePassword": {
+        "success": "Password has been updated successfully.",
+        "error": "Unknown error."
+      },
+      "UpdateCustomer": {
+        "Errors": {
+          "inputError": "Something went wrong with proccessing user input.",
+          "notFound": "Customer does not exist"
         }
+      }
     },
     "Login": {
       "heading": "Log In",
