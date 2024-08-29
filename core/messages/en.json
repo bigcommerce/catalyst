@@ -5,13 +5,6 @@
       "newestProducts": "Newest products"
     }
   },
-  "Providers": {
-    "Compare": {
-      "compareButton": "Compare ({products})",
-      "productPhoto": "Photo",
-      "removeProductAriaLabel": "Remove {product} from compare list"
-    }
-  },
   "FacetedGroup": {
     "MobileSideNav": {
       "filters": "Filters",
@@ -491,6 +484,11 @@
         "chooseCountryAndLanguage": "Choose your country and language",
         "goToSite": "Go to site"
       }
+    },
+    "Compare": {
+      "compareButton": "Compare ({products})",
+      "productPhoto": "Photo",
+      "removeProductAriaLabel": "Remove {product} from compare list"
     },
     "SearchForm": {
       "searchProducts": "Search for products",

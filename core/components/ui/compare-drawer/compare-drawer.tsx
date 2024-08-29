@@ -11,7 +11,7 @@ import { Button } from '../button';
 import { type Product, useCompareDrawerContext } from './context';
 
 const CompareLink = ({ products }: { products: Product[] }) => {
-  const t = useTranslations('Providers.Compare');
+  const t = useTranslations('Components.Compare');
 
   return (
     <Button
@@ -26,7 +26,7 @@ const CompareLink = ({ products }: { products: Product[] }) => {
 };
 
 const Product = ({ product, onDismiss }: { product: Product; onDismiss: () => void }) => {
-  const t = useTranslations('Providers.Compare');
+  const t = useTranslations('Components.Compare');
 
   return (
     <li
