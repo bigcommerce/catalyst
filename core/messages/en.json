@@ -497,9 +497,8 @@
       "noSearchResults": "Sorry, no results for {term}.",
       "checkSpelling": "Please check the spelling or try another search."
     },
-    "AddToCart": {
+    "AddToCartButton": {
       "addToCart": "Add to cart",
-      "viewOptions": "View options",
       "outOfStock": "Out of stock", 
       "preorder": "Preorder",
       "unavailable": "Unavailable",
