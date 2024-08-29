@@ -1,5 +1,6 @@
 'use server';
 
+import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
 import { client } from '~/client';
@@ -40,6 +41,8 @@ export const submitContactForm = async ({
   pageEntityId,
   reCaptchaToken,
 }: SubmitContactForm) => {
+  const t = await getTranslations('WebPages.ContactUs.Form');
+
   try {
     const parsedData = ContactUsSchema.parse({
       email: formData.get('email'),
@@ -77,6 +80,6 @@ export const submitContactForm = async ({
       return { status: 'error', error: error.message };
     }
 
-    return { status: 'error', error: 'Unknown error.' };
+    return { status: 'error', error: t('error') };
   }
 };

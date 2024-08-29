@@ -439,21 +439,24 @@
       }
     }
   },
-  "ContactUs": {
-    "Form": {
-      "success": "Thanks for reaching out. We'll get back to you soon.",
-      "fullNameLabel": "Full name",
-      "companyNameLabel": "Company name",
-      "phoneLabel": "Phone",
-      "orderNoLabel": "Order number",
-      "rmaLabel": "RMA number",
-      "emailLabel": "Email",
-      "emailValidationMessage": "Enter a valid email such as name@domain.com",
-      "commentsLabel": "Comments/questions",
-      "commentsValidationMessage": "Please provide a valid Comments",
-      "recaptchaText": "Pass ReCAPTCHA check",
-      "onSubmitText": "Submitting...",
-      "submitFormText": "Submit form"
+  "WebPages": {
+    "ContactUs": {
+      "Form": {
+        "success": "Thanks for reaching out. We'll get back to you soon.",
+        "error": "Unknown error.",
+        "fullNameLabel": "Full name",
+        "companyNameLabel": "Company name",
+        "phoneLabel": "Phone",
+        "orderNoLabel": "Order number",
+        "rmaLabel": "RMA number",
+        "emailLabel": "Email",
+        "emailValidationMessage": "Enter a valid email such as name@domain.com",
+        "commentsLabel": "Comments/questions",
+        "commentsValidationMessage": "Please provide a valid Comments",
+        "recaptchaText": "Pass ReCAPTCHA check",
+        "onSubmitText": "Submitting...",
+        "submitFormText": "Submit form"
+      }
     }
   },
   "Maintenance": {
