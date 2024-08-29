@@ -112,7 +112,7 @@ import { useTranslations } from 'next-intl';
 // ...
 
 const Component = () => {
-  const t = await getTranslations('Cart');
+  const t = useTranslations('Cart');
   // ...
 
   return (
