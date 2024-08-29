@@ -24,7 +24,7 @@ const SubmitButton = ({ data: product }: Props) => {
 };
 
 export const Form = ({ data: product }: Props) => {
-  const t = useTranslations('AddToCart');
+  const t = useTranslations('Components.ProductCard.AddToCart');
 
   return (
     <form
@@ -33,7 +33,7 @@ export const Form = ({ data: product }: Props) => {
         const quantity = Number(formData.get('quantity'));
 
         if (result.error) {
-          toast.error(t('errorAddingProductToCart'), {
+          toast.error(t('error'), {
             icon: <AlertCircle className="text-error-secondary" />,
           });
 
@@ -44,7 +44,7 @@ export const Form = ({ data: product }: Props) => {
           () => (
             <div className="flex items-center gap-3">
               <span>
-                {t.rich('addedProductQuantity', {
+                {t.rich('success', {
                   cartItems: quantity,
                   cartLink: (chunks) => (
                     <Link

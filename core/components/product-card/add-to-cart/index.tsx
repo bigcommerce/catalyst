@@ -14,7 +14,7 @@ interface Props {
 }
 
 export const AddToCart = ({ data: product }: Props) => {
-  const t = useTranslations('AddToCart');
+  const t = useTranslations('Components.ProductCard.AddToCart');
 
   const productOptions = removeEdgesAndNodes(product.productOptions);
 
