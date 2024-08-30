@@ -1,16 +1,12 @@
-import { cookies } from 'next/headers';
 import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
-import createMiddleware from 'next-intl/middleware';
 import { z } from 'zod';
 
 import { getSessionCustomerId } from '~/auth';
-import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
 
-import { defaultLocale, localePrefix, LocalePrefixes, locales } from '../i18n';
 import { kv } from '../lib/kv';
 
 import { type MiddlewareFactory } from './compose-middlewares';
@@ -151,11 +147,11 @@ const RouteCacheSchema = z.object({
   expiryTime: z.number(),
 });
 
-let locale: string;
-
-const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promise<RouteCache> => {
-  const channelId = getChannelIdFromLocale(locale);
-
+const updateRouteCache = async (
+  pathname: string,
+  channelId: string,
+  event: NextFetchEvent,
+): Promise<RouteCache> => {
   const routeCache: RouteCache = {
     route: await getRoute(pathname, channelId),
     expiryTime: Date.now() + 1000 * 60 * 30, // 30 minutes
@@ -166,9 +162,10 @@ const updateRouteCache = async (pathname: string, event: NextFetchEvent): Promis
   return routeCache;
 };
 
-const updateStatusCache = async (event: NextFetchEvent): Promise<StorefrontStatusCache> => {
-  const channelId = getChannelIdFromLocale(locale);
-
+const updateStatusCache = async (
+  channelId: string,
+  event: NextFetchEvent,
+): Promise<StorefrontStatusCache> => {
   const status = await getStoreStatus(channelId);
 
   if (status === undefined) {
@@ -185,28 +182,20 @@ const updateStatusCache = async (event: NextFetchEvent): Promise<StorefrontStatu
   return statusCache;
 };
 
-const clearLocaleFromPath = (path: string) => {
-  let res: string;
-
-  if (localePrefix === LocalePrefixes.ALWAYS) {
-    res = locale ? `/${path.split('/').slice(2).join('/')}` : path;
-
-    return res;
-  }
-
-  if (localePrefix === LocalePrefixes.ASNEEDED) {
-    res = locale && locale !== defaultLocale ? `/${path.split('/').slice(2).join('/')}` : path;
-
-    return res;
+const clearLocaleFromPath = (path: string, locale: string) => {
+  if (path.startsWith(`/${locale}/`)) {
+    return path.replace(`/${locale}`, '');
   }
 
   return path;
 };
 
 const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
+  const locale = request.headers.get('x-bc-locale') ?? '';
+  const channelId = request.headers.get('x-bc-channel-id') ?? '';
+
   try {
-    const channelId = getChannelIdFromLocale(locale);
-    const pathname = clearLocaleFromPath(request.nextUrl.pathname);
+    const pathname = clearLocaleFromPath(request.nextUrl.pathname, locale);
 
     let [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
       kvKey(pathname, channelId),
@@ -216,15 +205,15 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
     // If caches are old, update them in the background and return the old data (SWR-like behavior)
     // If cache is missing, update it and return the new data, but write to KV in the background
     if (statusCache && statusCache.expiryTime < Date.now()) {
-      event.waitUntil(updateStatusCache(event));
+      event.waitUntil(updateStatusCache(channelId, event));
     } else if (!statusCache) {
-      statusCache = await updateStatusCache(event);
+      statusCache = await updateStatusCache(channelId, event);
     }
 
     if (routeCache && routeCache.expiryTime < Date.now()) {
-      event.waitUntil(updateRouteCache(pathname, event));
+      event.waitUntil(updateRouteCache(pathname, channelId, event));
     } else if (!routeCache) {
-      routeCache = await updateRouteCache(pathname, event);
+      routeCache = await updateRouteCache(pathname, channelId, event);
     }
 
     const parsedRoute = RouteCacheSchema.safeParse(routeCache);
@@ -247,25 +236,7 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
 
 export const withRoutes: MiddlewareFactory = () => {
   return async (request, event) => {
-    locale = cookies().get('NEXT_LOCALE')?.value || '';
-
-    const intlMiddleware = createMiddleware({
-      locales,
-      localePrefix,
-      defaultLocale,
-      localeDetection: true,
-    });
-    const response = intlMiddleware(request);
-
-    // Early redirect to detected locale if needed
-    if (response.redirected) {
-      return response;
-    }
-
-    if (!locale) {
-      // Try to get locale detected by next-intl
-      locale = response.cookies.get('NEXT_LOCALE')?.value || '';
-    }
+    const locale = request.headers.get('x-bc-locale') ?? '';
 
     const { route, status } = await getRouteInfo(request, event);
 
@@ -344,7 +315,8 @@ export const withRoutes: MiddlewareFactory = () => {
 
       default: {
         const { pathname } = new URL(request.url);
-        const cleanPathName = clearLocaleFromPath(pathname);
+
+        const cleanPathName = clearLocaleFromPath(pathname, locale);
 
         if (cleanPathName === '/' && postfix) {
           url = `/${locale}${postfix}`;
@@ -359,11 +331,6 @@ export const withRoutes: MiddlewareFactory = () => {
 
     rewriteUrl.search = request.nextUrl.search;
 
-    const rewrite = NextResponse.rewrite(rewriteUrl);
-
-    // Add rewrite header to response provided by next-intl
-    rewrite.headers.forEach((v, k) => response.headers.set(k, v));
-
-    return response;
+    return NextResponse.rewrite(rewriteUrl);
   };
 };
