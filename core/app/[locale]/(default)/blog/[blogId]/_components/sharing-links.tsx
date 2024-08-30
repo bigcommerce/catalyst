@@ -1,5 +1,6 @@
 import { SiFacebook, SiLinkedin, SiPinterest, SiX } from '@icons-pack/react-simple-icons';
 import { Mail } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 import { FragmentOf, graphql } from '~/client/graphql';
 
@@ -33,6 +34,8 @@ interface Props {
 }
 
 export const SharingLinks = ({ data }: Props) => {
+  const t = useTranslations('Blog.SharingLinks');
+
   const blogPost = data.content.blog?.post;
 
   if (!blogPost) {
@@ -46,7 +49,7 @@ export const SharingLinks = ({ data }: Props) => {
 
   return (
     <div className="mb-10 flex items-center [&>*:not(:last-child)]:me-2.5">
-      <h3 className="text-xl font-bold lg:text-2xl">Share</h3>
+      <h3 className="text-xl font-bold lg:text-2xl">{t('share')}</h3>
       <a
         className="hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
         href={`https://facebook.com/sharer/sharer.php?u=${encodedUrl}`}
@@ -62,10 +65,11 @@ export const SharingLinks = ({ data }: Props) => {
         target="_self"
       >
         <Mail size={24}>
-          <title>Email</title>
+          <title>{t('email')}</title>
         </Mail>
       </a>
       <PrintButton />
+
       <a
         className="hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
         href={`https://twitter.com/intent/tweet/?text=${encodedTitle}&url=${encodedUrl}`}

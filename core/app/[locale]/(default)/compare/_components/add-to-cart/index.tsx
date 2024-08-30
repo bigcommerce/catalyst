@@ -20,7 +20,7 @@ const Submit = ({ data: product }: { data: FragmentOf<typeof AddToCartFragment> 
 };
 
 export const AddToCart = ({ data: product }: { data: FragmentOf<typeof AddToCartFragment> }) => {
-  const t = useTranslations('AddToCart');
+  const t = useTranslations('Compare.AddToCart');
 
   return (
     <form
@@ -29,7 +29,7 @@ export const AddToCart = ({ data: product }: { data: FragmentOf<typeof AddToCart
         const quantity = Number(formData.get('quantity'));
 
         if (result.error) {
-          toast.error(t('errorAddingProductToCart'), {
+          toast.error(t('error'), {
             icon: <AlertCircle className="text-error-secondary" />,
           });
 
@@ -40,7 +40,7 @@ export const AddToCart = ({ data: product }: { data: FragmentOf<typeof AddToCart
           () => (
             <div className="flex items-center gap-3">
               <span>
-                {t.rich('addedProductQuantity', {
+                {t.rich('success', {
                   cartItems: quantity,
                   cartLink: (chunks) => (
                     <Link

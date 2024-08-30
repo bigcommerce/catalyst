@@ -1,6 +1,7 @@
 'use server';
 
 import { BigCommerceAPIError } from '@bigcommerce/catalyst-client';
+import { getTranslations } from 'next-intl/server';
 
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
@@ -51,6 +52,8 @@ const isRegisterCustomerInput = (data: unknown): data is RegisterCustomerInput =
 };
 
 export const registerCustomer = async ({ formData, reCaptchaToken }: RegisterCustomerForm) => {
+  const t = await getTranslations('Login.Register');
+
   formData.delete('customer-confirmPassword');
 
   const parsedData = parseRegisterCustomerFormData(formData);
@@ -58,7 +61,7 @@ export const registerCustomer = async ({ formData, reCaptchaToken }: RegisterCus
   if (!isRegisterCustomerInput(parsedData)) {
     return {
       status: 'error',
-      error: 'Something went wrong with proccessing user input',
+      error: t('Errors.inputError'),
     };
   }
 
@@ -88,13 +91,13 @@ export const registerCustomer = async ({ formData, reCaptchaToken }: RegisterCus
     if (error instanceof BigCommerceAPIError) {
       return {
         status: 'error',
-        error: 'Looks like we are experience a server error, please try again in a few minutes.',
+        error: t('Errors.apiError'),
       };
     }
 
     return {
       status: 'error',
-      error: 'Something went wrong. Please try again later.',
+      error: t('Errors.error'),
     };
   }
 };

@@ -18,7 +18,7 @@ interface PicklistOrTextProps {
 }
 
 export const PicklistOrText = ({ defaultValue, field, name, options }: PicklistOrTextProps) => {
-  const t = useTranslations('Account.Register');
+  const t = useTranslations('Login.Register');
 
   return (
     <Field className="relative space-y-2 pb-7" name={name}>

@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 
 import { FragmentOf, graphql } from '~/client/graphql';
 import { Link } from '~/components/link';
@@ -30,8 +30,8 @@ interface Props {
   categoryTree: CategoryTree;
 }
 
-export async function SubCategories({ categoryTree }: Props) {
-  const t = await getTranslations('FacetedGroup.MobileSideNav');
+export function SubCategories({ categoryTree }: Props) {
+  const t = useTranslations('FacetedGroup.MobileSideNav');
 
   if (!categoryTree[0]?.children?.length) {
     return null;

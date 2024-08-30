@@ -1,4 +1,4 @@
-import { getLocale, getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 
 import { ExistingResultType } from '~/client/util';
 import { Pagination } from '~/components/ui/pagination';
@@ -19,15 +19,15 @@ interface Props {
   pageInfo: CustomerAddresses['pageInfo'];
 }
 
-export const AddressesContent = async ({
+export const AddressesContent = ({
   addresses,
   addressesCount,
   activeAddressId,
   customerAction,
   pageInfo,
 }: Props) => {
-  const locale = await getLocale();
-  const t = await getTranslations({ locale, namespace: 'Account.Addresses' });
+  const t = useTranslations('Account.Addresses');
+
   const { hasNextPage, hasPreviousPage, startCursor, endCursor } = pageInfo;
 
   if (customerAction === 'add-new-address') {

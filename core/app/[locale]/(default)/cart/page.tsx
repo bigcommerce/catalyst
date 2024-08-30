@@ -1,12 +1,10 @@
 import { cookies } from 'next/headers';
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, getTranslations } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
-import { LocaleType } from '~/i18n';
 
 import { CartItem, CartItemFragment } from './_components/cart-item';
 import { CartViewed } from './_components/cart-viewed';
@@ -42,21 +40,14 @@ export const metadata = {
   title: 'Cart',
 };
 
-interface Props {
-  params: {
-    locale: LocaleType;
-  };
-}
-
-export default async function Cart({ params: { locale } }: Props) {
+export default async function Cart() {
   const cartId = cookies().get('cartId')?.value;
 
   if (!cartId) {
-    return <EmptyCart locale={locale} />;
+    return <EmptyCart />;
   }
 
-  const messages = await getMessages({ locale });
-  const t = await getTranslations({ locale, namespace: 'Cart' });
+  const t = await getTranslations('Cart');
 
   const customerId = await getSessionCustomerId();
 
@@ -77,7 +68,7 @@ export default async function Cart({ params: { locale } }: Props) {
   const geography = data.geography;
 
   if (!cart) {
-    return <EmptyCart locale={locale} />;
+    return <EmptyCart />;
   }
 
   const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
@@ -95,9 +86,7 @@ export default async function Cart({ params: { locale } }: Props) {
         <div className="col-span-1 col-start-2 lg:col-start-3">
           {checkout && <CheckoutSummary checkout={checkout} geography={geography} />}
 
-          <NextIntlClientProvider locale={locale} messages={{ Cart: messages.Cart ?? {} }}>
-            <CheckoutButton cartId={cartId} />
-          </NextIntlClientProvider>
+          <CheckoutButton cartId={cartId} />
         </div>
       </div>
       <CartViewed checkout={checkout} currencyCode={cart.currencyCode} lineItems={lineItems} />

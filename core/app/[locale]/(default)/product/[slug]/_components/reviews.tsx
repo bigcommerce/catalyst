@@ -42,7 +42,7 @@ interface Props {
 }
 
 export const Reviews = async ({ productId }: Props) => {
-  const t = await getTranslations('Product.DescriptionAndReviews');
+  const t = await getTranslations('Product.Reviews');
   const format = await getFormatter();
 
   const { data } = await client.fetch({
@@ -62,7 +62,7 @@ export const Reviews = async ({ productId }: Props) => {
   return (
     <>
       <h3 className="mb-4 mt-8 text-xl font-bold md:text-2xl">
-        {t('reviews')}
+        {t('heading')}
         {reviews.length > 0 && (
           <span className="ms-2 ps-1 text-gray-500">
             <span className="sr-only">{t('reviewsCount')}</span>

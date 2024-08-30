@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
 import { LocaleType } from '~/i18n';
-import { useRouter } from '~/navigation';
+import { useRouter } from '~/routing';
 
 import { Button } from '../button';
 import { Select } from '../form';
@@ -33,7 +33,7 @@ interface Props {
 const LocaleSwitcher = ({ activeLocale, locales }: Props) => {
   const router = useRouter();
 
-  const t = useTranslations('Header');
+  const t = useTranslations('Components.Header.LocaleSwitcher');
 
   const selectedLocale = locales.find((locale) => locale.id === activeLocale);
 

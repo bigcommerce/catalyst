@@ -1,6 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
@@ -44,10 +43,9 @@ interface Props {
 export default async function Home({ params: { locale } }: Props) {
   unstable_setRequestLocale(locale);
 
-  const customerId = await getSessionCustomerId();
+  const t = await getTranslations('Home');
 
-  const t = await getTranslations({ locale, namespace: 'Home' });
-  const messages = await getMessages({ locale });
+  const customerId = await getSessionCustomerId();
 
   const { data } = await client.fetch({
     document: HomePageQuery,
@@ -63,20 +61,18 @@ export default async function Home({ params: { locale } }: Props) {
       <Slideshow />
 
       <div className="my-10">
-        <NextIntlClientProvider locale={locale} messages={{ Product: messages.Product ?? {} }}>
-          <ProductCardCarousel
-            products={featuredProducts}
-            showCart={false}
-            showCompare={false}
-            title={t('Carousel.featuredProducts')}
-          />
-          <ProductCardCarousel
-            products={newestProducts}
-            showCart={false}
-            showCompare={false}
-            title={t('Carousel.newestProducts')}
-          />
-        </NextIntlClientProvider>
+        <ProductCardCarousel
+          products={featuredProducts}
+          showCart={false}
+          showCompare={false}
+          title={t('Carousel.featuredProducts')}
+        />
+        <ProductCardCarousel
+          products={newestProducts}
+          showCart={false}
+          showCompare={false}
+          title={t('Carousel.newestProducts')}
+        />
       </div>
     </>
   );

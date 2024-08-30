@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { getTranslations } from 'next-intl/server';
 
 import { parseAccountFormData } from '~/app/[locale]/(default)/login/register-customer/_components/register-customer-form/fields/parse-fields';
 import { getSessionCustomerId } from '~/auth';
@@ -59,6 +60,8 @@ export const updateAddress = async ({
   formData: FormData;
   reCaptchaToken?: string;
 }) => {
+  const t = await getTranslations('Account.Addresses.UpdateAddress');
+
   const customerId = await getSessionCustomerId();
 
   try {
@@ -67,7 +70,7 @@ export const updateAddress = async ({
     if (!isUpdateCustomerAddressInput(parsed)) {
       return {
         status: 'error',
-        error: 'Something went wrong with proccessing user input.',
+        error: t('Errors.inputError'),
       };
     }
 
@@ -89,7 +92,7 @@ export const updateAddress = async ({
     revalidatePath('/account/addresses', 'page');
 
     if (result.errors.length === 0) {
-      return { status: 'success', message: 'The address has been updated.' };
+      return { status: 'success', message: t('success') };
     }
 
     return {
@@ -97,7 +100,7 @@ export const updateAddress = async ({
       message: result.errors
         .map((error) => {
           if (error.__typename === 'AddressDoesNotExistError') {
-            return 'Address does not exist.';
+            return t('Errors.notFound');
           }
 
           return error.message;
@@ -112,6 +115,6 @@ export const updateAddress = async ({
       };
     }
 
-    return { status: 'error', message: 'Unknown error.' };
+    return { status: 'error', message: t('Errors.error') };
   }
 };

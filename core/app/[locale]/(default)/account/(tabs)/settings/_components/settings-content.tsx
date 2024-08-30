@@ -1,6 +1,3 @@
-import { NextIntlClientProvider } from 'next-intl';
-import { getLocale, getMessages } from 'next-intl/server';
-
 import { ExistingResultType } from '~/client/util';
 
 import { getCustomerSettingsQuery } from '../page-data';
@@ -15,16 +12,11 @@ interface Props {
 
 type CustomerSettings = ExistingResultType<typeof getCustomerSettingsQuery>;
 
-export const SettingsContent = async ({ action, customerSettings }: Props) => {
-  const locale = await getLocale();
-  const messages = await getMessages({ locale });
-
+export const SettingsContent = ({ action, customerSettings }: Props) => {
   if (action === 'change_password') {
     return (
       <div className="mx-auto lg:w-2/3">
-        <NextIntlClientProvider locale={locale} messages={{ Account: messages.Account ?? {} }}>
-          <ChangePasswordForm />
-        </NextIntlClientProvider>
+        <ChangePasswordForm />
       </div>
     );
   }

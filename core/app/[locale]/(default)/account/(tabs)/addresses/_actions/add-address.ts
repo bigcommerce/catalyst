@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { getTranslations } from 'next-intl/server';
 
 import { parseAccountFormData } from '~/app/[locale]/(default)/login/register-customer/_components/register-customer-form/fields/parse-fields';
 import { getSessionCustomerId } from '~/auth';
@@ -54,6 +55,8 @@ export const addAddress = async ({
   formData: FormData;
   reCaptchaToken?: string;
 }) => {
+  const t = await getTranslations('Account.Addresses.AddAddress');
+
   const customerId = await getSessionCustomerId();
 
   try {
@@ -62,7 +65,7 @@ export const addAddress = async ({
     if (!isAddCustomerAddressInput(parsed)) {
       return {
         status: 'error',
-        error: 'Something went wrong with proccessing user input.',
+        error: t('Errors.inputError'),
       };
     }
 
@@ -81,7 +84,7 @@ export const addAddress = async ({
     revalidatePath('/account/addresses', 'page');
 
     if (result.errors.length === 0) {
-      return { status: 'success', message: 'The address has been added.' };
+      return { status: 'success', message: t('success') };
     }
 
     return {
@@ -96,6 +99,6 @@ export const addAddress = async ({
       };
     }
 
-    return { status: 'error', message: 'Unknown error.' };
+    return { status: 'error', message: t('Errors.error') };
   }
 };

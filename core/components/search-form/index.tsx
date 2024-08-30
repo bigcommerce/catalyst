@@ -1,7 +1,6 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useFormStatus } from 'react-dom';
 
 import { Button } from '~/components/ui/button';
 import { Field, FieldControl, Form, FormSubmit, Input } from '~/components/ui/form';
@@ -11,8 +10,7 @@ interface Props {
 }
 
 export const SearchForm = ({ initialTerm = '' }: Props) => {
-  const { pending } = useFormStatus();
-  const t = useTranslations('NotFound');
+  const t = useTranslations('Components.SearchForm');
 
   return (
     <div className="flex flex-col gap-8 py-16">
@@ -31,7 +29,7 @@ export const SearchForm = ({ initialTerm = '' }: Props) => {
           </FieldControl>
         </Field>
         <FormSubmit asChild>
-          <Button className="w-auto" loading={pending} loadingText={t('searching')} type="submit">
+          <Button className="w-auto" type="submit">
             {t('search')}
           </Button>
         </FormSubmit>

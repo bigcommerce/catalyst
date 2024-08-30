@@ -1,12 +1,10 @@
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, getTranslations } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
-import { LocaleType } from '~/i18n';
 
 import { ChangePasswordForm } from './_components/change-password-form';
 import { LoginForm } from './_components/login-form';
@@ -33,9 +31,6 @@ export const metadata = {
 };
 
 interface Props {
-  params: {
-    locale: LocaleType;
-  };
   searchParams: {
     [key: string]: string | string[] | undefined;
     action?: 'create_account' | 'reset_password' | 'change_password';
@@ -44,10 +39,9 @@ interface Props {
   };
 }
 
-export default async function Login({ params: { locale }, searchParams }: Props) {
-  const messages = await getMessages({ locale });
-  const Account = messages.Account ?? {};
-  const t = await getTranslations({ locale, namespace: 'Account.Login' });
+export default async function Login({ searchParams }: Props) {
+  const t = await getTranslations('Login');
+
   const action = searchParams.action;
   const customerId = searchParams.c;
   const customerToken = searchParams.t;
@@ -61,9 +55,7 @@ export default async function Login({ params: { locale }, searchParams }: Props)
     return (
       <div className="mx-auto my-6 max-w-4xl">
         <h2 className="mb-8 text-4xl font-black lg:text-5xl">{t('changePasswordHeading')}</h2>
-        <NextIntlClientProvider locale={locale} messages={{ Account }}>
-          <ChangePasswordForm customerId={customerId} customerToken={customerToken} />
-        </NextIntlClientProvider>
+        <ChangePasswordForm customerId={customerId} customerToken={customerToken} />
       </div>
     );
   }
@@ -72,9 +64,7 @@ export default async function Login({ params: { locale }, searchParams }: Props)
     return (
       <div className="mx-auto my-6 max-w-4xl">
         <h2 className="mb-8 text-4xl font-black lg:text-5xl">{t('resetPasswordHeading')}</h2>
-        <NextIntlClientProvider locale={locale} messages={{ Account }}>
-          <ResetPasswordForm reCaptchaSettings={data.site.settings?.reCaptcha} />
-        </NextIntlClientProvider>
+        <ResetPasswordForm reCaptchaSettings={data.site.settings?.reCaptcha} />
       </div>
     );
   }
@@ -83,9 +73,7 @@ export default async function Login({ params: { locale }, searchParams }: Props)
     <div className="mx-auto my-6 max-w-4xl">
       <h2 className="text-h2 mb-8 text-4xl font-black lg:text-5xl">{t('heading')}</h2>
       <div className="mb-12 grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8">
-        <NextIntlClientProvider locale={locale} messages={{ Account }}>
-          <LoginForm />
-        </NextIntlClientProvider>
+        <LoginForm />
         <div className="flex flex-col gap-4 bg-gray-100 p-8">
           <h3 className="text-h5 mb-3">{t('CreateAccount.heading')}</h3>
           <p className="text-base font-semibold">{t('CreateAccount.accountBenefits')}</p>
@@ -104,5 +92,3 @@ export default async function Login({ params: { locale }, searchParams }: Props)
     </div>
   );
 }
-
-export const runtime = 'edge';

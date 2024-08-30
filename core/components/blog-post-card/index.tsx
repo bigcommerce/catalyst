@@ -1,4 +1,4 @@
-import { getFormatter, getLocale } from 'next-intl/server';
+import { useFormatter } from 'next-intl';
 
 import { FragmentOf } from '~/client/graphql';
 import { BlogPostCard as ComponentsBlogPostCard } from '~/components/ui/blog-post-card';
@@ -9,9 +9,8 @@ interface Props {
   data: FragmentOf<typeof BlogPostCardFragment>;
 }
 
-export const BlogPostCard = async ({ data }: Props) => {
-  const locale = await getLocale();
-  const format = await getFormatter({ locale });
+export const BlogPostCard = ({ data }: Props) => {
+  const format = useFormatter();
 
   return (
     <ComponentsBlogPostCard

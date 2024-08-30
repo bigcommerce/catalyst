@@ -59,7 +59,6 @@ export const Submit = ({ data: product }: Props) => {
 
 export const ProductForm = ({ data: product }: Props) => {
   const t = useTranslations('Product.Form');
-  const m = useTranslations('AddToCart');
   const productOptions = removeEdgesAndNodes(product.productOptions);
 
   const { handleSubmit, register, ...methods } = useProductForm();
@@ -69,7 +68,7 @@ export const ProductForm = ({ data: product }: Props) => {
     const quantity = Number(data.quantity);
 
     if (result.error) {
-      toast.error(m('errorAddingProductToCart'), {
+      toast.error(t('error'), {
         icon: <AlertCircle className="text-error-secondary" />,
       });
 
@@ -93,7 +92,7 @@ export const ProductForm = ({ data: product }: Props) => {
       () => (
         <div className="flex items-center gap-3">
           <span>
-            {m.rich('addedProductQuantity', {
+            {t.rich('success', {
               cartItems: quantity,
               cartLink: (chunks) => (
                 <Link

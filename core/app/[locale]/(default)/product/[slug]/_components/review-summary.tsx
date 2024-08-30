@@ -1,4 +1,4 @@
-import { getLocale, getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { useId } from 'react';
 
 import { FragmentOf, graphql } from '~/client/graphql';
@@ -18,11 +18,10 @@ interface Props {
   data: FragmentOf<typeof ReviewSummaryFragment>;
 }
 
-export const ReviewSummary = async ({ data }: Props) => {
-  const summaryId = useId();
-  const locale = await getLocale();
+export const ReviewSummary = ({ data }: Props) => {
+  const t = useTranslations('Product.Details.ReviewSummary');
 
-  const t = await getTranslations({ locale, namespace: 'Product.Details.ReviewSummary' });
+  const summaryId = useId();
 
   const { numberOfReviews, averageRating } = data.reviewSummary;
 

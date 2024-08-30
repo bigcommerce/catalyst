@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { getTranslations } from 'next-intl/server';
 
 import { parseAccountFormData } from '~/app/[locale]/(default)/login/register-customer/_components/register-customer-form/fields/parse-fields';
 import { getSessionCustomerId } from '~/auth';
@@ -63,6 +64,8 @@ interface UpdateCustomerForm {
 }
 
 export const updateCustomer = async ({ formData, reCaptchaToken }: UpdateCustomerForm) => {
+  const t = await getTranslations('Account.Settings.UpdateCustomer');
+
   const customerId = await getSessionCustomerId();
 
   formData.delete('g-recaptcha-response');
@@ -72,7 +75,7 @@ export const updateCustomer = async ({ formData, reCaptchaToken }: UpdateCustome
   if (!isUpdateCustomerInput(parsed)) {
     return {
       status: 'error',
-      error: 'Something went wrong with proccessing user input.',
+      error: t('Errors.inputError'),
     };
   }
 
@@ -96,7 +99,7 @@ export const updateCustomer = async ({ formData, reCaptchaToken }: UpdateCustome
     if (!customer) {
       return {
         status: 'error',
-        error: 'Customer does not exist',
+        error: t('Errors.notFound'),
       };
     }
 

@@ -51,7 +51,6 @@ For example, the `en.json` file contains the following translation keys:
 ```json
 "Home": {
   "Carousel": {
-    "bestSellingProducts": "Best Selling Products",
     "featuredProducts": "Featured Products",
     "newestProducts": "Newest products"
   }
@@ -63,7 +62,6 @@ In your newly-created JSON file, add a translation of the value to the new local
 ```json
 "Home": {
   "Carousel": {
-    "bestSellingProducts": "Produits les plus vendus",
     "featuredProducts": "Produits populaires",
     "newestProducts": "Produits les plus recentsProduits"
   }
@@ -87,33 +85,40 @@ const locales = ['en', 'fr'] as const;
 The following example shows how messages can be used in **server** component:
 
 ```tsx
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 // ...
-import { LocaleType } from '~/i18n';
 
-interface Props {
-  params: {
-    locale: LocaleType;
-  };
-}
-
-export default async function Home({ params: { locale } }: Props) {
-  unstable_setRequestLocale(locale);
-
-  const t = await getTranslations({ locale, namespace: 'Home' });
-  const messages = await getMessages({ locale });
+export default async function Home() {
+  const t = await getTranslations('Home');
   // ...
 
   return (
     <div>
-      <NextIntlClientProvider locale={locale} messages={{ Product: messages.Product ?? {} }}>
-        <ProductCardCarousel
-          products={featuredProducts}
-          title={t('Carousel.featuredProducts')}
-        />
-      </NextIntlClientProvider>
+      <ProductCardCarousel
+        products={featuredProducts}
+        title={t('Carousel.featuredProducts')}
+      />
     </div>
+  );
+}
+```
+
+**Client** and **shared** components use regular hooks to translate messages:
+
+```tsx
+'use client';
+
+import { useTranslations } from 'next-intl';
+// ...
+
+const Component = () => {
+  const t = useTranslations('Cart');
+  // ...
+
+  return (
+    <Button>
+      {t('proceedToCheckout')}
+    </Button>
   );
 }
 ```

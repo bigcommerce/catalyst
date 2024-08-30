@@ -22,7 +22,7 @@ import { submitLoginForm } from '../_actions/submit-login-form';
 
 const SubmitButton = () => {
   const { pending } = useFormStatus();
-  const t = useTranslations('Account.Login');
+  const t = useTranslations('Login');
 
   return (
     <Button
@@ -42,7 +42,7 @@ export const LoginForm = () => {
   const [state, formAction] = useFormState(submitLoginForm, { status: 'idle' });
   const { accountState } = useAccountStatusContext();
 
-  const t = useTranslations('Account.Login');
+  const t = useTranslations('Login');
 
   const isFormInvalid = state.status === 'error';
 

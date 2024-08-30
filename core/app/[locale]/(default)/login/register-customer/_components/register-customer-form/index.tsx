@@ -114,7 +114,7 @@ export const RegisterCustomerForm = ({
   const [reCaptchaToken, setReCaptchaToken] = useState('');
   const [isReCaptchaValid, setReCaptchaValid] = useState(true);
 
-  const t = useTranslations('Account.Register');
+  const t = useTranslations('Login.Register');
 
   const handleTextInputValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const fieldId = Number(e.target.id.split('-')[1]);

@@ -1,6 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { NextIntlClientProvider } from 'next-intl';
-import { getLocale, getMessages, getTranslations } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
@@ -33,11 +32,9 @@ interface Props {
 }
 
 export const RelatedProducts = async ({ productId }: Props) => {
-  const customerId = await getSessionCustomerId();
+  const t = await getTranslations('Product.Carousel');
 
-  const t = await getTranslations('Product');
-  const locale = await getLocale();
-  const messages = await getMessages({ locale });
+  const customerId = await getSessionCustomerId();
 
   const { data } = await client.fetch({
     document: RelatedProductsQuery,
@@ -55,13 +52,11 @@ export const RelatedProducts = async ({ productId }: Props) => {
   const relatedProducts = removeEdgesAndNodes(product.relatedProducts);
 
   return (
-    <NextIntlClientProvider locale={locale} messages={{ Product: messages.Product ?? {} }}>
-      <ProductCardCarousel
-        products={relatedProducts}
-        showCart={false}
-        showCompare={false}
-        title={t('carouselTitle')}
-      />
-    </NextIntlClientProvider>
+    <ProductCardCarousel
+      products={relatedProducts}
+      showCart={false}
+      showCompare={false}
+      title={t('relatedProducts')}
+    />
   );
 };

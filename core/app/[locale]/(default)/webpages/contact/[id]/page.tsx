@@ -1,13 +1,11 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
 
 import { ContactUs } from './contact-us';
 import { getWebpageData } from './page-data';
 
 interface Props {
-  params: { id: string; locale: string };
+  params: { id: string };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -27,15 +25,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function WebPage({ params: { locale, id } }: Props) {
+export default async function WebPage({ params: { id } }: Props) {
   const data = await getWebpageData({ id: decodeURIComponent(id) });
   const webpage = data.node?.__typename === 'ContactPage' ? data.node : null;
 
   if (!webpage) {
     notFound();
   }
-
-  const messages = await getMessages({ locale });
 
   const { name, htmlBody } = webpage;
 
@@ -46,9 +42,7 @@ export default async function WebPage({ params: { locale, id } }: Props) {
         <div dangerouslySetInnerHTML={{ __html: htmlBody }} />
       </div>
 
-      <NextIntlClientProvider locale={locale} messages={{ AboutUs: messages.AboutUs ?? {} }}>
-        <ContactUs data={data} />
-      </NextIntlClientProvider>
+      <ContactUs data={data} />
     </>
   );
 }
