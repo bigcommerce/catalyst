@@ -33,8 +33,13 @@ test('My Account tabs are displayed and clickable', async ({ page }) => {
   await loginWithUserAccount(page, testUserEmail, testUserPassword);
 
   await expect(page).toHaveURL('/account/');
+  await expect(page.getByRole('link', { name: 'Orders' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Addresses' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Account settings' })).toBeVisible();
+
+  await page.getByRole('link', { name: 'Orders' }).click();
+  await expect(page).toHaveURL('/account/orders/');
+  await expect(page.getByRole('heading', { name: 'Orders' })).toBeVisible();
 
   await page.getByRole('link', { name: 'Addresses' }).click();
   await expect(page).toHaveURL('/account/addresses/');

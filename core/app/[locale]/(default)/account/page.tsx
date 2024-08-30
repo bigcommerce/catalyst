@@ -1,4 +1,4 @@
-import { BookUser, Settings } from 'lucide-react';
+import { BookUser, Package, Settings } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { ReactNode } from 'react';
 
@@ -34,6 +34,9 @@ export default function Account() {
       <h1 className="my-8 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
 
       <div className="mb-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <AccountItem href="/account/orders" title={t('orders')}>
+          <Package className="me-8" size={48} strokeWidth={1.5} />
+        </AccountItem>
         <AccountItem href="/account/addresses" title={t('addresses')}>
           <BookUser className="me-8" size={48} strokeWidth={1.5} />
         </AccountItem>

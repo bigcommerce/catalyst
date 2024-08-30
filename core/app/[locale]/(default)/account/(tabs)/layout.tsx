@@ -8,7 +8,7 @@ import { cn } from '~/lib/utils';
 
 import { AccountStatusProvider } from './_components/account-status-provider';
 
-const tabList = ['addresses', 'settings', 'orders'] as const;
+const tabList = ['orders', 'addresses', 'settings'] as const;
 
 export type TabType = (typeof tabList)[number];
 
