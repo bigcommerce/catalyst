@@ -176,7 +176,7 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
   return (
     <ul className="flex w-full flex-col">
       {ordersHistory.map(({ entityId, orderedAt, status, totalIncTax, consignments }) => {
-        // NOTE: url will be supported later
+        // NOTE: tracking url will be supported later
         const trackingUrl = consignments.shipping
           ? consignments.shipping
               .flatMap(({ shipments }) =>
