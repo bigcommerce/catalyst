@@ -1,9 +1,6 @@
 import { ChangeEvent } from 'react';
 
-import {
-  createFieldName,
-  FieldNameToFieldId,
-} from '~/app/[locale]/(default)/login/register-customer/_components/register-customer-form/fields';
+import { createFieldName, FieldNameToFieldId } from '~/components/form-fields';
 
 import { AddressFields, Countries } from './add-address';
 

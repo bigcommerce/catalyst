@@ -5,6 +5,74 @@
       "newestProducts": "Newest products"
     }
   },
+  "ChangePassword": {
+    "heading": "Change password",
+    "Form": {
+      "newPasswordLabel": "New password",
+      "confirmPasswordLabel": "Confirm password",
+      "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
+      "successMessage": "Password has been updated successfully!",
+      "confirmChangePassword": "Your password has been successfully updated. Please log in using your new credentials.",
+      "submit": "Change password",
+      "submitting": "Submitting..."
+    },
+    "Errors": {
+      "error": "Unknown error."
+    }
+  },
+  "Login": {
+    "heading": "Log In",
+    "Form": {
+      "error": "Your email address or password is incorrect. Try signing in again or reset your password",
+      "emailLabel": "Email",
+      "enterEmailMessage": "Enter your email",
+      "passwordLabel": "Password",
+      "entePasswordMessage": "Enter your password",
+      "submitting": "Submitting...",
+      "logIn": "Log in",
+      "resetPassword": "Forgot your password?"
+    },
+    "CreateAccount": {
+      "heading": "New customer?",
+      "accountBenefits": "Create an account with us and you'll be able to:",
+      "fastCheckout": "Check out faster",
+      "multipleAddresses": "Save multiple shipping addresses",
+      "ordersHistory": "Access your order history",
+      "ordersTracking":  "Track new orders",
+      "wishlists": "Save items to your Wish List",
+      "createLink": "Create Account "
+    }
+  },
+  "Register": {
+    "heading": "New account",
+    "Form": {
+      "submit": "Create account",
+      "submitting": "Creating account...",
+      "recaptchaText": "Pass ReCAPTCHA check",
+      "confirmPassword": "Passwords don't match",
+      "success": "Dear {firstName} {lastName}, you successfully created your account."
+    },
+    "Errors": {
+      "inputError": "Something went wrong with proccessing user input.",
+      "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
+      "error": "Something went wrong. Please try again later."
+    }
+  },
+  "Reset": {
+    "heading": "Reset password",
+    "Form": {
+      "description": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
+      "emailLabel": "Email",
+      "emailValidationMessage": "Enter a valid email such as name@domain.com",
+      "recaptchaText": "Pass ReCAPTCHA check",
+      "confirmResetPassword": "If the email address {email} is linked to an account in our store, we have sent you a password reset email. Please check your inbox and spam folder if you don't see it.",
+      "submitting": "Submitting...",
+      "submit": "Reset password"
+    },
+    "Errors": {
+      "error":"Unknown error."
+    }
+  },
   "FacetedGroup": {
     "MobileSideNav": {
       "filters": "Filters",
@@ -150,63 +218,6 @@
         }
       }
     },
-    "Login": {
-      "heading": "Log In",
-      "resetPasswordHeading": "Reset password",
-      "changePasswordHeading": "Change password",
-      "Form": {
-        "errorMessage": "Your email address or password is incorrect. Try signing in again or reset your password",
-        "emailLabel": "Email",
-        "enterEmailMessage": "Enter your email",
-        "passwordLabel": "Password",
-        "entePasswordMessage": "Enter your password",
-        "submitting": "Submitting...",
-        "logIn": "Log in",
-        "resetPassword": "Forgot your password?",
-        "validationMessages": {
-            "email": "Enter a valid email such as name@domain.com",
-            "firstName": "Enter your first name",
-            "lastName": "Enter your last name",
-            "city": "Enter a suburb / city",
-            "company": "Enter a company name",
-            "phone": "Enter a phone number"
-        }
-      },
-      "CreateAccount": {
-        "heading": "New customer?",
-        "accountBenefits": "Create an account with us and you'll be able to:",
-        "fastCheckout": "Check out faster",
-        "multipleAddresses": "Save multiple shipping addresses",
-        "ordersHistory": "Access your order history",
-        "ordersTracking":  "Track new orders",
-        "wishlists": "Save items to your Wish List",
-        "createLink": "Create Account "
-      }
-    },
-    "Register": {
-        "heading": "New account",
-        "submit": "Create account",
-        "submitting": "Creating account...",
-        "recaptchaText": "Pass ReCAPTCHA check",
-        "stateProvincePrefix": "Choose state or province",
-        "validationMessages": {
-            "email": "Enter a valid email such as name@domain.com",
-            "empty": "This field can not be empty",
-            "numbersOverflow": "Entered value exceeds max range of {max}",
-            "numbersUnderflow": "Entered value falls short of min range of {min}",
-            "numbersOnly": "Enter numbers only",
-            "firstName": "Enter your first name",
-            "lastName": "Enter your last name",
-            "password": "Enter a password",
-            "confirmPassword": "Passwords don't match",
-            "address1": "Enter an address",
-            "address2": "Enter an address",
-            "city": "Enter a suburb / city",
-            "company": "Enter a company name",
-            "phone": "Enter a phone number",
-            "postalCode": "Enter a zip / postcode"
-        }
-    },
     "ChangePassword": {
       "currentPasswordLabel": "Current password",
       "newPasswordLabel": "New password",
@@ -221,18 +232,6 @@
     "SubmitChangePassword": {
       "spinnerText": "Submitting...",
       "submitText": "Change password"
-    },
-    "ResetPassword": {
-      "description": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
-      "emailLabel": "Email",
-      "emailValidationMessage": "Enter a valid email such as name@domain.com",
-      "successMessage": "Your password reset email is on its way to {email}. If you don't see it, check your spam folder.",
-      "recaptchaText": "Pass ReCAPTCHA check",
-      "confirmResetPassword": "If the email address {email} is linked to an account in our store, we have sent you a password reset email. Please check your inbox and spam folder if you don't see it."
-    },
-    "SubmitResetPassword": {
-      "spinnerText": "Submitting...",
-      "submitText": "Reset password"
     }
   },
   "Blog": {
@@ -332,65 +331,6 @@
     "AddToCart": {
       "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
       "error": "Error adding product to cart. Please try again."
-    }
-  },
-  "Login": {
-    "heading": "Log In",
-    "resetPasswordHeading": "Reset password",
-    "changePasswordHeading": "Change password",
-    "Form": {
-      "errorMessage": "Your email address or password is incorrect. Try signing in again or reset your password",
-      "emailLabel": "Email",
-      "enterEmailMessage": "Enter your email",
-      "passwordLabel": "Password",
-      "entePasswordMessage": "Enter your password",
-      "submitting": "Submitting...",
-      "logIn": "Log in",
-      "resetPassword": "Forgot your password?",
-      "validationMessages": {
-          "email": "Enter a valid email such as name@domain.com",
-          "firstName": "Enter your first name",
-          "lastName": "Enter your last name",
-          "city": "Enter a suburb / city",
-          "company": "Enter a company name",
-          "phone": "Enter a phone number"
-      }
-    },
-    "CreateAccount": {
-      "heading": "New customer?",
-      "accountBenefits": "Create an account with us and you'll be able to:",
-      "fastCheckout": "Check out faster",
-      "multipleAddresses": "Save multiple shipping addresses",
-      "ordersHistory": "Access your order history",
-      "ordersTracking":  "Track new orders",
-      "wishlists": "Save items to your Wish List",
-      "createLink": "Create Account "
-    },
-    "Register": {
-      "heading": "New account",
-      "submit": "Create account",
-      "submitting": "Creating account...",
-      "recaptchaText": "Pass ReCAPTCHA check",
-      "stateProvincePrefix": "Choose state or province",
-      "validationMessages": {
-          "email": "Enter a valid email such as name@domain.com",
-          "empty": "This field can not be empty",
-          "firstName": "Enter your first name",
-          "lastName": "Enter your last name",
-          "password": "Enter a password",
-          "confirmPassword": "Passwords don't match",
-          "address1": "Enter an address",
-          "address2": "Enter an address",
-          "city": "Enter a suburb / city",
-          "company": "Enter a company name",
-          "phone": "Enter a phone number",
-          "postalCode": "Enter a zip / postcode"
-      },
-      "Errors": {
-        "inputError": "Something went wrong with proccessing user input.",
-        "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
-        "error": "Something went wrong. Please try again later."
-      }
     }
   },
   "Product": {
@@ -515,6 +455,25 @@
         "viewOptions": "View options",
         "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
         "error": "Error adding product to cart. Please try again."
+      }
+    },
+    "FormFields": {
+      "Validation": {
+        "address1": "Enter an address",
+        "address2": "Enter an address",
+        "city": "Enter a suburb / city",
+        "company": "Enter a company name",
+        "confirmPassword": "Passwords don't match",
+        "email": "Enter a valid email such as name@domain.com",
+        "empty": "This field can not be empty",
+        "firstName": "Enter your first name",
+        "lastName": "Enter your last name",
+        "numbersOnly": "Enter numbers only",
+        "numbersOverflow": "Entered value exceeds max range of {max}",
+        "numbersUnderflow": "Entered value falls short of min range of {min}",
+        "password": "Enter a password",
+        "phone": "Enter a phone number",
+        "postalCode": "Enter a zip / postcode"
       }
     }
   }
