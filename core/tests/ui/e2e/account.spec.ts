@@ -15,8 +15,14 @@ test('My Account tabs are displayed and clickable', async ({ page, account }) =>
   // Prepending locale to URL as a workaround for issue in next-intl
   // More info: https://github.com/amannn/next-intl/issues/1335
   await expect(page).toHaveURL('/account/');
+
+  await expect(page.getByRole('link', { name: 'Orders' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Addresses' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Account settings' })).toBeVisible();
+
+  await page.getByRole('link', { name: 'Orders' }).click();
+  await expect(page).toHaveURL('/account/orders/');
+  await expect(page.getByRole('heading', { name: 'Orders' })).toBeVisible();
 
   await page.getByRole('link', { name: 'Addresses' }).click();
   await expect(page).toHaveURL('/account/addresses/');
