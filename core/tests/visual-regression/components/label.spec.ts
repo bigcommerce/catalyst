@@ -12,5 +12,5 @@ test('Label with input', async ({ page }) => {
   await label.waitFor();
 
   // Assert
-  await expect(label.locator('..').locator('..')).toHaveScreenshot();
+  await expect(label.locator('..')).toHaveScreenshot();
 });
