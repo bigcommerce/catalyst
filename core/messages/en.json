@@ -152,15 +152,6 @@
       "totalPrice": "Total",
       "viewDetails": "View Details",
       "trackOrder": "Track order",
-      "returnOrder": "Return items"
-    },
-    "Orders": {
-      "noOrders": "No orders yet",
-      "orderNumber": "Order #",
-      "placedDate": "Order placed",
-      "totalPrice": "Total",
-      "viewDetails": "View Details",
-      "trackOrder": "Track order",
       "returnOrder": "Return items",
       "orderSummary": "Order Summary",
       "orderContents": "Order contents",
@@ -460,6 +451,7 @@
       "Account": {
         "account": "Account",
         "myAccount": "My account",
+        "orders": "Orders",
         "addresses": "Addresses",
         "accountSettings": "Account settings",
         "login": "Login",

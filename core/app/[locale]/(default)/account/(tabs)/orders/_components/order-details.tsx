@@ -111,7 +111,7 @@ const OrderSummaryInfo = async ({
           </span>
         </p>
       </div>
-      {/* NOTE: temporary it's not supported yet */}
+      {/* NOTE: it is temporary disabled since not supported yet */}
       <div className="mt-4 flex flex-col gap-2 md:flex-row lg:flex-col">
         <Button aria-label={t('printInvoice')} className="w-full" disabled variant="secondary">
           {t('printInvoice')}
@@ -258,11 +258,11 @@ const PaymentInfo = async ({
   return (
     <div className="border border-gray-200 p-6">
       <p className="border-b border-gray-200 pb-4 text-lg font-semibold">{t('shippingPayment')}</p>
-      <div className="flex flex-col gap-2 py-4">
+      {/* <div className="flex flex-col gap-2 py-4">
         <p className="font-semibold">{t('shippingPaymentMethod')}</p>
-        <p>N/A</p>
-      </div>
-      <div className="flex flex-col gap-2 border-t border-gray-200 pt-4 text-base">
+        <p>TODO: add payments info</p>
+      </div> */}
+      <div className="flex flex-col gap-2 border-0 border-gray-200 pt-4 text-base">
         <p className="font-semibold">{t('billingAddress')}</p>
         {customerBillingAddress.map((line) => (
           <p key={line}>{line}</p>

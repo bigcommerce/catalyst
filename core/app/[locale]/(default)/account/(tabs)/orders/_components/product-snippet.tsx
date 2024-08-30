@@ -2,11 +2,11 @@ import { useFormatter } from 'next-intl';
 
 import { FragmentOf, graphql, ResultOf } from '~/client/graphql';
 import { BcImage } from '~/components/bc-image';
+import { Link } from '~/components/link';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { Price as PricesType } from '~/components/ui/product-card';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { cn } from '~/lib/utils';
-import { Link } from '~/navigation';
 
 export const OrderItemFragment = graphql(`
   fragment OrderItemFragment on OrderPhysicalLineItem {
