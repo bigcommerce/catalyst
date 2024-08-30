@@ -194,7 +194,7 @@
       "emptyTextValidatoinMessage": "This field can not be empty",
       "cancel": "Cancel",
       "recaptchaText": "Pass ReCAPTCHA check",
-      "changePassword": "Reset password",
+      "changePassword": "Change password",
       "submit": "Update settings",
       "submitting": "Update settings...",
       "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
