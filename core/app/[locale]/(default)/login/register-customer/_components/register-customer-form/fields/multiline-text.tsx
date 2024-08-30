@@ -1,28 +1,31 @@
 import { useTranslations } from 'next-intl';
 import { ChangeEvent } from 'react';
 
-import { Field, FieldControl, FieldLabel, FieldMessage, Input } from '~/components/ui/form';
+import { Field, FieldControl, FieldLabel, FieldMessage, TextArea } from '~/components/ui/form';
 
 import { CustomerFields } from '..';
 
-import { FieldNameToFieldId } from './utils';
-
-type PasswordType = Extract<
+type MultilineTextType = Extract<
   NonNullable<CustomerFields>[number],
-  { __typename: 'PasswordFormField' }
+  { __typename: 'MultilineTextFormField' }
 >;
 
-interface PasswordProps {
-  defaultValue?: string;
-  field: PasswordType;
-  isValid?: boolean;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+interface MultilineTextProps {
+  field: MultilineTextType;
   name: string;
+  onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
+  isValid?: boolean;
+  defaultValue?: string;
 }
 
-export const Password = ({ defaultValue, field, isValid, name, onChange }: PasswordProps) => {
+export const MultilineText = ({
+  defaultValue,
+  field,
+  isValid,
+  name,
+  onChange,
+}: MultilineTextProps) => {
   const t = useTranslations('Account.Register.validationMessages');
-  const fieldName = FieldNameToFieldId[field.entityId];
 
   return (
     <Field className="relative space-y-2" name={name}>
@@ -34,14 +37,15 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
         {field.label}
       </FieldLabel>
       <FieldControl asChild>
-        <Input
+        <TextArea
+          className="h-auto min-h-12"
           defaultValue={defaultValue || field.defaultText || undefined}
           error={isValid === false}
           id={`field-${field.entityId}`}
           onChange={onChange}
           onInvalid={onChange}
-          required={field.isRequired}
-          type="password"
+          required
+          rows={field.rows}
         />
       </FieldControl>
       <div className="relative h-7">
@@ -50,17 +54,7 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
             className="inline-flex w-full text-xs font-normal text-error-secondary"
             match="valueMissing"
           >
-            {t('password')}
-          </FieldMessage>
-        )}
-        {fieldName === 'confirmPassword' && (
-          <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-error-secondary"
-            match={() => {
-              return !isValid;
-            }}
-          >
-            {t('confirmPassword')}
+            {t('empty')}
           </FieldMessage>
         )}
       </div>

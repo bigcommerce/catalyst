@@ -2,19 +2,22 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
 import { getSessionCustomerId } from '~/auth';
-import { client } from '~/client';
-import { FORM_FIELDS_VALUES_FRAGMENT } from '~/client/fragments/form-fields-values';
-import { PaginationFragment } from '~/client/fragments/pagination';
-import { graphql } from '~/client/graphql';
 
-const GetCustomerAddressesQuery = graphql(
+import { client } from '..';
+import { FORM_FIELDS_VALUES_FRAGMENT } from '../fragments/form-fields-values';
+import { graphql } from '../graphql';
+
+const GET_CUSTOMER_ADDRESSES_QUERY = graphql(
   `
-    query GetCustomerAddressesQuery($after: String, $before: String, $first: Int, $last: Int) {
+    query getCustomerAddresses($after: String, $before: String, $first: Int, $last: Int) {
       customer {
         entityId
         addresses(before: $before, after: $after, first: $first, last: $last) {
           pageInfo {
-            ...PaginationFragment
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
           }
           collectionInfo {
             totalItems
@@ -41,7 +44,7 @@ const GetCustomerAddressesQuery = graphql(
       }
     }
   `,
-  [PaginationFragment, FORM_FIELDS_VALUES_FRAGMENT],
+  [FORM_FIELDS_VALUES_FRAGMENT],
 );
 
 export interface CustomerAddressesArgs {
@@ -56,7 +59,7 @@ export const getCustomerAddresses = cache(
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
-      document: GetCustomerAddressesQuery,
+      document: GET_CUSTOMER_ADDRESSES_QUERY,
       variables: { ...paginationArgs },
       customerId,
       fetchOptions: { cache: 'no-store' },

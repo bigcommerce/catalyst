@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
+import { parseAccountFormData } from '~/app/[locale]/(default)/login/register-customer/_components/register-customer-form/fields/parse-fields';
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
@@ -37,7 +38,7 @@ const UpdateCustomerAddressMutation = graphql(`
 `);
 
 type Variables = VariablesOf<typeof UpdateCustomerAddressMutation>;
-type UpdateCustomerAddressInput = Variables['input'];
+export type UpdateCustomerAddressInput = Variables['input'];
 
 const isUpdateCustomerAddressInput = (
   data: unknown,
@@ -61,22 +62,7 @@ export const updateAddress = async ({
   const customerId = await getSessionCustomerId();
 
   try {
-    const parsed: unknown = [...formData.entries()].reduce<
-      Record<string, FormDataEntryValue | Record<string, FormDataEntryValue>>
-    >((parsedData, [name, value]) => {
-      const key = name.split('-').at(-1) ?? '';
-      const sections = name.split('-').slice(0, -1);
-
-      if (sections.includes('customer')) {
-        parsedData[key] = value;
-      }
-
-      if (sections.includes('address')) {
-        parsedData[key] = value;
-      }
-
-      return parsedData;
-    }, {});
+    const parsed = parseAccountFormData(formData);
 
     if (!isUpdateCustomerAddressInput(parsed)) {
       return {

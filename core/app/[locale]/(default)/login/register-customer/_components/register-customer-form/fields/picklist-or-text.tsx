@@ -23,6 +23,7 @@ export const PicklistOrText = ({ defaultValue, field, name, options }: PicklistO
   return (
     <Field className="relative space-y-2 pb-7" name={name}>
       <FieldLabel
+        className="font-semibold"
         htmlFor={`field-${field.entityId}`}
         isRequired={options.length !== 0 ? field.isRequired : false}
       >

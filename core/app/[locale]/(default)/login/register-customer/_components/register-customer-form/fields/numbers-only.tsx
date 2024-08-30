@@ -5,22 +5,21 @@ import { Field, FieldControl, FieldLabel, FieldMessage, Input } from '~/componen
 
 import { CustomerFields } from '..';
 
-import { FieldNameToFieldId } from './utils';
+type NumbersOnlyType = Extract<
+  NonNullable<CustomerFields>[number],
+  { __typename: 'NumberFormField' }
+>;
 
-type TextType = Extract<NonNullable<CustomerFields>[number], { __typename: 'TextFormField' }>;
-
-interface TextProps {
-  defaultValue?: string;
-  field: TextType;
-  isValid?: boolean;
+interface NumbersOnlyProps {
+  field: NumbersOnlyType;
   name: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  type?: string;
+  isValid?: boolean;
+  defaultValue?: number;
 }
 
-export const Text = ({ defaultValue, field, isValid, name, onChange, type }: TextProps) => {
+export const NumbersOnly = ({ defaultValue, field, isValid, name, onChange }: NumbersOnlyProps) => {
   const t = useTranslations('Account.Register.validationMessages');
-  const fieldName = FieldNameToFieldId[field.entityId];
 
   return (
     <Field className="relative space-y-2" name={name}>
@@ -33,14 +32,16 @@ export const Text = ({ defaultValue, field, isValid, name, onChange, type }: Tex
       </FieldLabel>
       <FieldControl asChild>
         <Input
-          defaultValue={defaultValue || field.defaultText || ''}
+          defaultValue={field.defaultNumber ?? defaultValue}
           error={isValid === false}
           id={`field-${field.entityId}`}
-          maxLength={field.maxLength ?? undefined}
+          max={field.maxNumber ?? undefined}
+          min={field.minNumber ?? undefined}
+          minLength={field.minNumber ?? undefined}
           onChange={field.isRequired ? onChange : undefined}
           onInvalid={field.isRequired ? onChange : undefined}
           required={field.isRequired}
-          type={type === 'email' ? 'email' : 'text'}
+          type="number"
         />
       </FieldControl>
       <div className="relative h-7">
@@ -49,15 +50,29 @@ export const Text = ({ defaultValue, field, isValid, name, onChange, type }: Tex
             className="inline-flex w-full text-xs font-normal text-error-secondary"
             match="valueMissing"
           >
-            {t(fieldName ?? 'empty')}
+            {t('empty')}
           </FieldMessage>
         )}
-        {fieldName === 'email' && (
+        <FieldMessage
+          className="inline-flex w-full text-xs font-normal text-error-secondary"
+          match="typeMismatch"
+        >
+          {t('numbersOnly')}
+        </FieldMessage>
+        {Boolean(field.minNumber) && (
           <FieldMessage
             className="inline-flex w-full text-xs font-normal text-error-secondary"
-            match="typeMismatch"
+            match="rangeUnderflow"
           >
-            {t('email')}
+            {t('numbersUnderflow', { min: field.minNumber })}
+          </FieldMessage>
+        )}
+        {Boolean(field.maxNumber) && (
+          <FieldMessage
+            className="inline-flex w-full text-xs font-normal text-error-secondary"
+            match="rangeOverflow"
+          >
+            {t('numbersOverflow', { max: field.maxNumber })}
           </FieldMessage>
         )}
       </div>

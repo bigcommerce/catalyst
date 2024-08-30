@@ -1,3 +1,7 @@
+import { FormFieldValueType } from '~/client/fragments/form-fields-values';
+
+import { AddressOrAccountFormField } from '..';
+
 /* This mapping needed for aligning built-in fields names to their ids
  for creating valid register customer request object
  that will be sent in mutation */
@@ -19,6 +23,16 @@ export enum FieldNameToFieldId {
   exclusiveOffers = 25,
 }
 
+export enum FieldTypeToFieldInput {
+  'CheckboxesFormField' = 'checkboxes',
+  'DateFormField' = 'dates',
+  'NumberFormField' = 'numbers',
+  'PasswordFormField' = 'passwords',
+  'TextFormField' = 'texts',
+  'RadioButtonsFormField' = 'multipleChoices',
+  'MultilineTextFormField' = 'multilineTexts',
+}
+
 export const CUSTOMER_FIELDS_TO_EXCLUDE = [
   FieldNameToFieldId.currentPassword,
   FieldNameToFieldId.exclusiveOffers,
@@ -31,8 +45,57 @@ export const BOTH_CUSTOMER_ADDRESS_FIELDS = [
   FieldNameToFieldId.phone,
 ];
 
-export const createFieldName = (fieldType: 'customer' | 'address', fieldId: number) => {
-  const secondFieldType = fieldType === 'customer' ? 'address' : 'customer';
+export const createFieldName = (
+  field: AddressOrAccountFormField,
+  fieldOrigin: 'customer' | 'address',
+) => {
+  const { isBuiltIn, entityId: fieldId, __typename: fieldType } = field;
+  const isCustomField = !isBuiltIn;
+  let secondFieldType = fieldOrigin;
 
-  return `${fieldType}-${BOTH_CUSTOMER_ADDRESS_FIELDS.includes(fieldId) ? `${secondFieldType}-` : ''}${FieldNameToFieldId[fieldId] || fieldId}`;
+  if (isCustomField && fieldType !== 'PicklistOrTextFormField') {
+    const customFieldInputType =
+      fieldType === 'PicklistFormField' ? 'multipleChoices' : FieldTypeToFieldInput[fieldType];
+
+    return `custom_${fieldOrigin}-${customFieldInputType}-${fieldId}`;
+  }
+
+  if (fieldOrigin === 'address') {
+    secondFieldType = 'customer';
+  }
+
+  if (fieldOrigin === 'customer') {
+    secondFieldType = 'address';
+  }
+
+  return `${fieldOrigin}-${BOTH_CUSTOMER_ADDRESS_FIELDS.includes(fieldId) ? `${secondFieldType}-` : ''}${FieldNameToFieldId[fieldId] || fieldId}`;
+};
+
+export const getPreviouslySubmittedValue = (fieldValue?: FormFieldValueType) => {
+  if (!fieldValue) {
+    return {};
+  }
+
+  switch (fieldValue.__typename) {
+    case 'TextFormFieldValue':
+      return { TextFormField: fieldValue.text };
+
+    case 'NumberFormFieldValue':
+      return { NumberFormField: fieldValue.number };
+
+    case 'MultilineTextFormFieldValue':
+      return { MultilineTextFormField: fieldValue.multilineText };
+
+    case 'DateFormFieldValue':
+      return { DateFormField: fieldValue.date.utc };
+
+    case 'MultipleChoiceFormFieldValue':
+      return { MultipleChoiceFormField: fieldValue.valueEntityId.toString() };
+
+    case 'CheckboxesFormFieldValue':
+      return { CheckboxesFormField: fieldValue.valueEntityIds };
+
+    case 'PasswordFormFieldValue':
+      return { PasswordFormField: fieldValue.password };
+  }
 };

@@ -1,8 +1,11 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
+
+import { parseAccountFormData } from '~/app/[locale]/(default)/login/register-customer/_components/register-customer-form/fields/parse-fields';
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
-import { graphql } from '~/client/graphql';
+import { graphql, VariablesOf } from '~/client/graphql';
 
 const UpdateCustomerMutation = graphql(`
   mutation UpdateCustomerMutation($input: UpdateCustomerInput!, $reCaptchaV2: ReCaptchaV2Input) {
@@ -35,6 +38,25 @@ const UpdateCustomerMutation = graphql(`
   }
 `);
 
+type AddCustomerAddressInput = VariablesOf<typeof UpdateCustomerMutation>['input'];
+
+const isUpdateCustomerInput = (data: unknown): data is AddCustomerAddressInput => {
+  if (
+    typeof data === 'object' &&
+    data !== null &&
+    ('firstName' in data ||
+      'lastName' in data ||
+      'email' in data ||
+      'phone' in data ||
+      'company' in data ||
+      'formFields' in data)
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
 interface UpdateCustomerForm {
   formData: FormData;
   reCaptchaToken?: string;
@@ -45,17 +67,26 @@ export const updateCustomer = async ({ formData, reCaptchaToken }: UpdateCustome
 
   formData.delete('g-recaptcha-response');
 
-  const formFields = Object.fromEntries(formData.entries());
+  const parsed = parseAccountFormData(formData);
+
+  if (!isUpdateCustomerInput(parsed)) {
+    return {
+      status: 'error',
+      error: 'Something went wrong with proccessing user input.',
+    };
+  }
 
   const response = await client.fetch({
     document: UpdateCustomerMutation,
     customerId,
     fetchOptions: { cache: 'no-store' },
     variables: {
-      input: formFields,
+      input: parsed,
       ...(reCaptchaToken && { reCaptchaV2: { token: reCaptchaToken } }),
     },
   });
+
+  revalidatePath('/account/settings', 'page');
 
   const result = response.data.customer.updateCustomer;
 
