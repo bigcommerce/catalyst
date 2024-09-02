@@ -1,91 +1,245 @@
 {
-    "RootLayout": {
-        "Metadata": {
-            "title": "Catalyst Store",
-            "description": "Example store built with Catalyst",
-            "other": {
-                "platform": "bigcommerce.catalyst"
-            }
-        }
-    },
     "Home": {
         "Carousel": {
-            "bestSellingProducts": "Best Selling Products",
             "featuredProducts": "おすすめ商品",
             "newestProducts": "Newest products"
         }
+    },
+    "FacetedGroup": {
+        "MobileSideNav": {
+            "filters": "フィルター",
+            "showFilters": "フィルタを表示",
+            "subCategories": "カテゴリー"
+        },
+        "FacetedSearch": {
+            "filters": "フィルター",
+            "RefineBy": {
+                "refineBy": "絞込条件",
+                "clearAllRefinements": "すべてクリア"
+            },
+            "Facets": {
+                "updatePriceButton": "Update price",
+                "freeShippingLabel": "送料無料",
+                "isFeaturedLabel": "Is featured",
+                "inStockLabel": "在庫あり",
+                "rating": "{currentRating, plural, =1 {1 star} other {# stars}} & up",
+                "priceFilter": {
+                    "minPricePlaceholder": "{currencySign} min",
+                    "minPriceAriaLabel": "Minimum pricing",
+                    "maxPricePlaceholder": "{currencySign} max",
+                    "maxPriceAriaLabel": "Maximum pricing"
+                }
+            }
+        },
+        "SortBy": {
+            "ariaLabel": "Sort by:",
+            "featuredItems": "おすすめ商品",
+            "bestSellingItems": "Best selling items",
+            "newestItems": "最新商品",
+            "aToZ": "AからZ",
+            "zToA": "ZからA",
+            "byReview": "By review",
+            "priceAscending": "Price: ascending",
+            "priceDescending": "Price: descending",
+            "relevance": "関連性"
+        }
+    },
+    "Brand": {
+        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+        "products": "商品"
     },
     "Category": {
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
         "products": "商品",
         "items": "お品物"
     },
-    "Brand": {
+    "Search": {
+        "heading": "検索",
+        "products": "商品",
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
-        "products": "商品"
+        "searchResults": "Search results for"
     },
-    "Product": {
-        "loading": "ロード中…",
-        "carouselTitle": "関連商品",
-        "noGalleryText": "近日公開",
-        "DescriptionAndReviews": {
-            "description": "説明",
-            "warranty": "保証",
-            "loading": "ロード中…",
-            "reviews": "レビュー",
-            "reviewsCount": "Count:",
-            "unreviewed": "This product hasn't been reviewed yet.",
-            "reviewRating": "Rating: {rating} out of 5 stars",
-            "reviewAuthor": "Posted by {author} on"
+    "Account": {
+        "Home": {
+            "heading": "マイアカウント",
+            "accountTabsLabel": "Account Tabs",
+            "orders": "注文",
+            "messages": "メッセージ",
+            "addresses": "住所",
+            "wishlists": "Wish lists",
+            "recentlyViewed": "Recently viewed",
+            "settings": "アカウント設定",
+            "changePassword": "パスワード変更"
         },
-        "Details": {
-            "additionalDetails": "Additional details",
-            "sku": "SKU",
-            "upc": "UPC",
-            "minPurchase": "最小購入額",
-            "maxPurchase": "Maxiumum purchase",
-            "availability": "販売中",
-            "loading": "ロード中…",
-            "condition": "条件",
-            "weight": "重さ",
-            "ReviewSummary": {
-                "loading": "ロード中…",
-                "rating": "評価:",
-                "ratingRange": "out of 5 stars.",
-                "reviewsNumber": "Number of reviews:"
-            },
-            "Prices": {
-                "msrp": "メーカー希望小売価格",
-                "was": "Was",
-                "now": "Now"
+        "Addresses": {
+            "defaultAddress": "削除",
+            "alternativeAddress": "代替",
+            "newAddress": "New address",
+            "addNewAddress": "Add new address",
+            "addNewAddressSuccessMessage": "Address added to your account",
+            "editAddress": "アドレスを編集",
+            "editButton": "編集",
+            "deleteButton": "削除する",
+            "deleteAddress": "Address deleted from your account.",
+            "confirmDeleteAddress": "アドレスの削除",
+            "deleteModalTitle": "Are you sure you want to delete address?",
+            "recaptchaText": "Pass ReCAPTCHA check",
+            "emptyTextValidationMessage": "This field can not be empty",
+            "successMessage": "The address has been created successfully.",
+            "submit": "Add new address",
+            "cancel": "キャンセル",
+            "submitting": "In progress..."
+        },
+        "AddAddress": {
+            "success": "The address has been added.",
+            "Errors": {
+                "inputError": "Something went wrong with proccessing user input.",
+                "error": "Unknown error."
             }
         },
-        "Form": {
-            "saveToWishlist": "Save to wishlist",
-            "quantityLabel": "数量"
+        "DeleteAddress": {
+            "success": "Address deleted from your account.",
+            "error": "Unknown error."
         },
-        "ProductSheet": {
-            "title": "Choose options",
-            "errorMessage": "An error has ocurred.",
-            "loading": "ロード中…",
-            "numberReviews": "Number of reviews:",
-            "productRating": "<rating>Rating:</rating> {currentRating} <stars> out of 5 stars.</stars>",
-            "msrp": "メーカー希望小売価格",
-            "was": "Was",
-            "now": "Now",
-            "compare": "価格比較"
+        "UpdateAddress": {
+            "success": "The address has been updated.",
+            "Errors": {
+                "inputError": "Something went wrong with proccessing user input.",
+                "notFound": "Address does not exist.",
+                "error": "Unknown error."
+            }
+        },
+        "EditAddress": {
+            "recaptchaText": "Pass ReCAPTCHA check",
+            "emptyTextValidationMessage": "This field can not be empty",
+            "successMessage": "The address has been updated successfully.",
+            "cancel": "キャンセル",
+            "deleteButton": "削除する",
+            "deleteAddress": "Address deleted from your account.",
+            "confirmDeleteAddress": "アドレスの削除",
+            "deleteModalTitle": "このアドレスを削除しますか?",
+            "submit": "Update address",
+            "submitting": "In progress..."
+        },
+        "Settings": {
+            "emptyTextValidatoinMessage": "This field can not be empty",
+            "cancel": "キャンセル",
+            "recaptchaText": "Pass ReCAPTCHA check",
+            "changePassword": "暗号を再設定",
+            "submit": "Update settings",
+            "submitting": "Update settings...",
+            "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+            "validationMessages": {
+                "email": "Enter a valid email such as name@domain.com",
+                "empty": "This field can not be empty",
+                "firstName": "Enter your first name",
+                "lastName": "Enter your last name",
+                "city": "Enter a suburb / city",
+                "company": "Enter a company name",
+                "phone": "Enter a phone number"
+            },
+            "ChangePassword": {
+                "success": "Password has been updated successfully.",
+                "error": "Unknown error."
+            },
+            "UpdateCustomer": {
+                "Errors": {
+                    "inputError": "Something went wrong with proccessing user input.",
+                    "notFound": "Customer does not exist"
+                }
+            }
+        },
+        "Login": {
+            "heading": "Log In",
+            "resetPasswordHeading": "暗号を再設定",
+            "changePasswordHeading": "パスワード変更",
+            "Form": {
+                "errorMessage": "Your email address or password is incorrect. Try signing in again or reset your password",
+                "emailLabel": "Eメール",
+                "enterEmailMessage": "Enter your email",
+                "passwordLabel": "パスワード",
+                "entePasswordMessage": "Enter your password",
+                "submitting": "提出中…",
+                "logIn": "ログイン",
+                "resetPassword": "パスワードをお忘れですか?",
+                "validationMessages": {
+                    "email": "Enter a valid email such as name@domain.com",
+                    "firstName": "Enter your first name",
+                    "lastName": "Enter your last name",
+                    "city": "Enter a suburb / city",
+                    "company": "Enter a company name",
+                    "phone": "Enter a phone number"
+                }
+            },
+            "CreateAccount": {
+                "heading": "New customer?",
+                "accountBenefits": "アカウントを作成すると、次のことができるようになります:",
+                "fastCheckout": "スムーズにお支払い",
+                "multipleAddresses": "複数の配送先住所を保存する",
+                "ordersHistory": "注文履歴にアクセスする",
+                "ordersTracking": "新規注文の追跡",
+                "wishlists": "商品をウィッシュリストに保存する",
+                "createLink": "アカウント作成 "
+            }
+        },
+        "Register": {
+            "heading": "New account",
+            "submit": "アカウント作成",
+            "submitting": "Creating account...",
+            "recaptchaText": "Pass ReCAPTCHA check",
+            "stateProvincePrefix": "Choose state or province",
+            "validationMessages": {
+                "email": "Enter a valid email such as name@domain.com",
+                "empty": "This field can not be empty",
+                "numbersOverflow": "Entered value exceeds max range of {max}",
+                "numbersUnderflow": "Entered value falls short of min range of {min}",
+                "numbersOnly": "Enter numbers only",
+                "firstName": "Enter your first name",
+                "lastName": "Enter your last name",
+                "password": "Enter a password",
+                "confirmPassword": "Passwords don't match",
+                "address1": "Enter an address",
+                "address2": "Enter an address",
+                "city": "Enter a suburb / city",
+                "company": "Enter a company name",
+                "phone": "Enter a phone number",
+                "postalCode": "Enter a zip / postcode"
+            }
+        },
+        "ChangePassword": {
+            "currentPasswordLabel": "現在のパスワード",
+            "newPasswordLabel": "新しいパスワード",
+            "confirmPasswordLabel": "パスワード確認",
+            "cancel": "キャンセル",
+            "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
+            "newPasswordValidationMessage": "New password must be different from the current password or/and match confirm password.",
+            "notEmptyMessage": "Field should not be empty",
+            "successMessage": "Password has been updated successfully!",
+            "confirmChangePassword": "Your password has been successfully updated. Please log in using your new credentials."
+        },
+        "SubmitChangePassword": {
+            "spinnerText": "提出中…",
+            "submitText": "パスワード変更"
+        },
+        "ResetPassword": {
+            "description": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
+            "emailLabel": "Eメール",
+            "emailValidationMessage": "Enter a valid email such as name@domain.com",
+            "successMessage": "Your password reset email is on its way to {email}. If you don't see it, check your spam folder.",
+            "recaptchaText": "Pass ReCAPTCHA check",
+            "confirmResetPassword": "If the email address {email} is linked to an account in our store, we have sent you a password reset email. Please check your inbox and spam folder if you don't see it."
+        },
+        "SubmitResetPassword": {
+            "spinnerText": "提出中…",
+            "submitText": "暗号を再設定"
         }
     },
-    "Compare": {
-        "nothingCompare": "Well, there's nothing to compare!",
-        "helpingText": "You somehow managed to land here, but you need to select a few products first.",
-        "comparingQuantity": "Comparing {quantity, plural, =1 {1 Product} other {# Products}}",
-        "productComparison": "Product Comparison",
-        "noImageText": "No Image",
-        "chooseOptions": "Choose options",
-        "description": "説明",
-        "rating": "評価",
-        "availability": "販売中"
+    "Blog": {
+        "SharingLinks": {
+            "share": "共有",
+            "email": "Eメール",
+            "print": "印刷"
+        }
     },
     "Cart": {
         "heading": "Your cart",
@@ -157,66 +311,43 @@
             "errorMessage": "Something went wrong while removing item, please try again."
         }
     },
-    "Search": {
-        "heading": "検索",
-        "products": "商品",
-        "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
-        "searchResults": "Search results for"
+    "Compare": {
+        "heading": "Comparing {quantity, plural, =1 {1 Product} other {# Products}}",
+        "nothingToCompare": "Well, there's nothing to compare!",
+        "helpingText": "You somehow managed to land here, but you need to select a few products first.",
+        "Table": {
+            "caption": "Product comparison",
+            "noImage": "No image",
+            "viewOptions": "View options",
+            "description": "説明",
+            "rating": "評価",
+            "availability": "販売中",
+            "Prices": {
+                "msrp": "メーカー希望小売価格",
+                "was": "Was",
+                "now": "Now"
+            }
+        },
+        "AddToCart": {
+            "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+            "error": "Error adding product to cart. Please try again."
+        }
     },
-    "Account": {
-        "Home": {
-            "heading": "マイアカウント",
-            "accountTabsLabel": "Account Tabs",
-            "orders": "注文",
-            "messages": "メッセージ",
-            "addresses": "住所",
-            "wishlists": "Wish lists",
-            "recentlyViewed": "Recently viewed",
-            "settings": "アカウント設定",
-            "changePassword": "パスワード変更"
-        },
-        "Addresses": {
-            "defaultAddress": "削除",
-            "alternativeAddress": "代替",
-            "newAddress": "New address",
-            "addNewAddress": "Add new address",
-            "addNewAddressSuccessMessage": "Address added to your account",
-            "editAddress": "アドレスを編集",
-            "editButton": "編集",
-            "deleteButton": "削除する",
-            "deleteAddress": "Address deleted from your account.",
-            "confirmDeleteAddress": "アドレスの削除",
-            "deleteModalTitle": "Are you sure you want to delete address?",
-            "recaptchaText": "Pass ReCAPTCHA check",
-            "emptyTextValidationMessage": "This field can not be empty",
-            "successMessage": "The address has been created successfully.",
-            "submit": "Add new address",
-            "cancel": "キャンセル",
-            "submitting": "In progress..."
-        },
-        "EditAddress": {
-            "recaptchaText": "Pass ReCAPTCHA check",
-            "emptyTextValidationMessage": "This field can not be empty",
-            "successMessage": "The address has been updated successfully.",
-            "cancel": "キャンセル",
-            "deleteButton": "削除する",
-            "deleteAddress": "Address deleted from your account.",
-            "confirmDeleteAddress": "アドレスの削除",
-            "deleteModalTitle": "このアドレスを削除しますか?",
-            "submit": "Update address",
-            "submitting": "In progress..."
-        },
-        "Settings": {
-            "emptyTextValidatoinMessage": "This field can not be empty",
-            "cancel": "キャンセル",
-            "recaptchaText": "Pass ReCAPTCHA check",
-            "changePassword": "暗号を再設定",
-            "submit": "Update settings",
-            "submitting": "Update settings...",
-            "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+    "Login": {
+        "heading": "Log In",
+        "resetPasswordHeading": "暗号を再設定",
+        "changePasswordHeading": "パスワード変更",
+        "Form": {
+            "errorMessage": "Your email address or password is incorrect. Try signing in again or reset your password",
+            "emailLabel": "Eメール",
+            "enterEmailMessage": "Enter your email",
+            "passwordLabel": "パスワード",
+            "entePasswordMessage": "Enter your password",
+            "submitting": "提出中…",
+            "logIn": "ログイン",
+            "resetPassword": "パスワードをお忘れですか?",
             "validationMessages": {
                 "email": "Enter a valid email such as name@domain.com",
-                "empty": "This field can not be empty",
                 "firstName": "Enter your first name",
                 "lastName": "Enter your last name",
                 "city": "Enter a suburb / city",
@@ -224,38 +355,15 @@
                 "phone": "Enter a phone number"
             }
         },
-        "Login": {
-            "heading": "Log In",
-            "resetPasswordHeading": "暗号を再設定",
-            "changePasswordHeading": "パスワード変更",
-            "Form": {
-                "errorMessage": "Your email address or password is incorrect. Try signing in again or reset your password",
-                "emailLabel": "Eメール",
-                "enterEmailMessage": "Enter your email",
-                "passwordLabel": "パスワード",
-                "entePasswordMessage": "Enter your password",
-                "submitting": "提出中…",
-                "logIn": "ログイン",
-                "resetPassword": "パスワードをお忘れですか?",
-                "validationMessages": {
-                    "email": "Enter a valid email such as name@domain.com",
-                    "firstName": "Enter your first name",
-                    "lastName": "Enter your last name",
-                    "city": "Enter a suburb / city",
-                    "company": "Enter a company name",
-                    "phone": "Enter a phone number"
-                }
-            },
-            "CreateAccount": {
-                "heading": "New customer?",
-                "accountBenefits": "アカウントを作成すると、次のことができるようになります:",
-                "fastCheckout": "スムーズにお支払い",
-                "multipleAddresses": "複数の配送先住所を保存する",
-                "ordersHistory": "注文履歴にアクセスする",
-                "ordersTracking": "新規注文の追跡",
-                "wishlists": "商品をウィッシュリストに保存する",
-                "createLink": "アカウント作成 "
-            }
+        "CreateAccount": {
+            "heading": "New customer?",
+            "accountBenefits": "アカウントを作成すると、次のことができるようになります:",
+            "fastCheckout": "スムーズにお支払い",
+            "multipleAddresses": "複数の配送先住所を保存する",
+            "ordersHistory": "注文履歴にアクセスする",
+            "ordersTracking": "新規注文の追跡",
+            "wishlists": "商品をウィッシュリストに保存する",
+            "createLink": "アカウント作成 "
         },
         "Register": {
             "heading": "New account",
@@ -276,132 +384,137 @@
                 "company": "Enter a company name",
                 "phone": "Enter a phone number",
                 "postalCode": "Enter a zip / postcode"
+            },
+            "Errors": {
+                "inputError": "Something went wrong with proccessing user input.",
+                "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
+                "error": "何か問題が発生しました。後でもう一度やり直してください。"
             }
-        },
-        "ChangePassword": {
-            "currentPasswordLabel": "現在のパスワード",
-            "newPasswordLabel": "新しいパスワード",
-            "confirmPasswordLabel": "パスワード確認",
-            "cancel": "キャンセル",
-            "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
-            "newPasswordValidationMessage": "New password must be different from the current password or/and match confirm password.",
-            "notEmptyMessage": "Field should not be empty",
-            "successMessage": "Password has been updated successfully!",
-            "confirmChangePassword": "Your password has been successfully updated. Please log in using your new credentials."
-        },
-        "SubmitChangePassword": {
-            "spinnerText": "提出中…",
-            "submitText": "パスワード変更"
-        },
-        "ResetPassword": {
-            "description": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
-            "emailLabel": "Eメール",
-            "emailValidationMessage": "Enter a valid email such as name@domain.com",
-            "successMessage": "Your password reset email is on its way to {email}. If you don't see it, check your spam folder.",
-            "recaptchaText": "Pass ReCAPTCHA check",
-            "confirmResetPassword": "If the email address {email} is linked to an account in our store, we have sent you a password reset email. Please check your inbox and spam folder if you don't see it."
-        },
-        "SubmitResetPassword": {
-            "spinnerText": "提出中…",
-            "submitText": "暗号を再設定"
         }
+    },
+    "Product": {
+        "loading": "ロード中…",
+        "Carousel": {
+            "relatedProducts": "関連商品"
+        },
+        "Form": {
+            "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+            "error": "Error adding product to cart. Please try again.",
+            "saveToWishlist": "Save to wishlist",
+            "quantityLabel": "数量"
+        },
+        "Description": {
+            "heading": "説明"
+        },
+        "Warranty": {
+            "heading": "保証"
+        },
+        "Reviews": {
+            "heading": "レビュー",
+            "reviewsCount": "Count:",
+            "unreviewed": "This product hasn't been reviewed yet.",
+            "reviewRating": "Rating: {rating} out of 5 stars",
+            "reviewAuthor": "Posted by {author} on"
+        },
+        "Details": {
+            "additionalDetails": "Additional details",
+            "sku": "SKU",
+            "upc": "UPC",
+            "minPurchase": "最小購入額",
+            "maxPurchase": "Maxiumum purchase",
+            "availability": "販売中",
+            "condition": "条件",
+            "weight": "重さ",
+            "Prices": {
+                "msrp": "メーカー希望小売価格",
+                "was": "Was",
+                "now": "Now"
+            },
+            "ReviewSummary": {
+                "rating": "評価:",
+                "ratingRange": "out of 5 stars.",
+                "reviewsNumber": "Number of reviews:"
+            }
+        }
+    },
+    "WebPages": {
+        "ContactUs": {
+            "Form": {
+                "success": "Thanks for reaching out. We'll get back to you soon.",
+                "error": "Unknown error.",
+                "fullNameLabel": "Full name",
+                "companyNameLabel": "会社名",
+                "phoneLabel": "電話",
+                "orderNoLabel": "注文番号",
+                "rmaLabel": "RMA number",
+                "emailLabel": "Eメール",
+                "emailValidationMessage": "Enter a valid email such as name@domain.com",
+                "commentsLabel": "Comments/questions",
+                "commentsValidationMessage": "Please provide a valid Comments",
+                "recaptchaText": "Pass ReCAPTCHA check",
+                "onSubmitText": "提出中…",
+                "submitFormText": "Submit form"
+            }
+        }
+    },
+    "Maintenance": {
+        "message": "We are down for maintenance",
+        "contactUs": "You can contact us at:"
+    },
+    "StoreSelector": {
+        "heading": "Select a language and region"
+    },
+    "Error": {
+        "heading": "There was a server error!",
+        "message": "Please try again later."
     },
     "NotFound": {
         "heading": "We couldn't find that page!",
         "message": "It looks like the page you requested has moved or no longer exists.",
-        "featuredProducts": "おすすめ商品",
-        "searchProducts": "Search for products",
-        "searchPlaceholder": "Placeholder...",
-        "searching": "Searching...",
-        "search": "検索",
-        "noSearchResults": "Sorry, no results for {term}.",
-        "checkSpelling": "Please check the spelling or try another search."
-    },
-    "ServerError": {
-        "heading": "There was a server error!",
-        "message": "Please try again later."
-    },
-    "FacetedGroup": {
-        "MobileSideNav": {
-            "filters": "フィルター",
-            "showFilters": "フィルタを表示",
-            "subCategories": "カテゴリー"
-        },
-        "FacetedSearch": {
-            "filters": "フィルター",
-            "RefineBy": {
-                "refineBy": "絞込条件",
-                "clearAllRefinements": "すべてクリア"
-            },
-            "Facets": {
-                "updatePriceButton": "Update price",
-                "freeShippingLabel": "送料無料",
-                "isFeaturedLabel": "Is featured",
-                "inStockLabel": "在庫あり",
-                "rating": "{currentRating, plural, =1 {1 star} other {# stars}} & up",
-                "priceFilter": {
-                    "minPricePlaceholder": "{currencySign} min",
-                    "minPriceAriaLabel": "Minimum pricing",
-                    "maxPricePlaceholder": "{currencySign} max",
-                    "maxPriceAriaLabel": "Maximum pricing"
-                }
-            }
-        },
-        "SortBy": {
-            "ariaLabel": "Sort by:",
-            "featuredItems": "おすすめ商品",
-            "bestSellingItems": "Best selling items",
-            "newestItems": "最新商品",
-            "aToZ": "AからZ",
-            "zToA": "ZからA",
-            "byReview": "By review",
-            "priceAscending": "Price: ascending",
-            "priceDescending": "Price: descending",
-            "relevance": "関連性"
+        "Carousel": {
+            "featuredProducts": "おすすめ商品"
         }
     },
-    "Providers": {
+    "Components": {
+        "Header": {
+            "Account": {
+                "account": "アカウント",
+                "myAccount": "My account",
+                "addresses": "住所",
+                "accountSettings": "アカウント設定",
+                "login": "ログイン",
+                "logout": "ログアウト"
+            },
+            "LocaleSwitcher": {
+                "chooseCountryAndLanguage": "Choose your country and language",
+                "goToSite": "Go to site"
+            }
+        },
         "Compare": {
             "compareButton": "Compare ({products})",
             "productPhoto": "Photo",
             "removeProductAriaLabel": "Remove {product} from compare list"
+        },
+        "SearchForm": {
+            "searchProducts": "Search for products",
+            "searchPlaceholder": "検索…",
+            "search": "検索",
+            "noSearchResults": "Sorry, no results for {term}.",
+            "checkSpelling": "Please check the spelling or try another search."
+        },
+        "AddToCartButton": {
+            "addToCart": "カートに追加",
+            "outOfStock": "品切れ",
+            "preorder": "Preorder",
+            "unavailable": "利用不可",
+            "processing": "処理中..."
+        },
+        "ProductCard": {
+            "AddToCart": {
+                "viewOptions": "View options",
+                "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
+                "error": "Error adding product to cart. Please try again."
+            }
         }
-    },
-    "Header": {
-        "account": "アカウント",
-        "chooseCountryAndLanguage": "Choose your country and language",
-        "goToSite": "Go to site"
-    },
-    "Pagination": {
-        "next": "次へ",
-        "prev": "以前"
-    },
-    "AboutUs": {
-        "fullNameLabel": "Full name",
-        "companyNameLabel": "会社名",
-        "phoneLabel": "電話",
-        "orderNoLabel": "注文番号",
-        "rmaLabel": "RMA number",
-        "emailLabel": "Eメール",
-        "emailValidationMessage": "Enter a valid email such as name@domain.com",
-        "commentsLabel": "Comments/questions",
-        "commentsValidationMessage": "Please provide a valid Comments",
-        "recaptchaText": "Pass ReCAPTCHA check",
-        "onSubmitText": "提出中…",
-        "submitFormText": "Submit form",
-        "sucessSubmitMessage": "Thanks for reaching out. We'll get back to you soon."
-    },
-    "AddToCart": {
-        "addToCart": "カートに追加",
-        "quickAdd": "Quick add",
-        "outOfStock": "品切れ",
-        "preorder": "Preorder",
-        "unavailable": "利用不可",
-        "processing": "処理中...",
-        "addedProductQuantity": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-        "errorAddingProductToCart": "Error adding product to cart. Please try again."
-    },
-    "StoreSelector": {
-        "heading": "Select a language and region"
     }
 }

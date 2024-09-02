@@ -1,91 +1,245 @@
 {
-    "RootLayout": {
-        "Metadata": {
-            "title": "Boutique Catalyst",
-            "description": "Exemple de boutique créée avec Catalyst",
-            "other": {
-                "platform": "bigcommerce.catalyst"
-            }
-        }
-    },
     "Home": {
         "Carousel": {
-            "bestSellingProducts": "Produits les plus vendus",
             "featuredProducts": "Produits en vedette",
             "newestProducts": "Nouveaux produits"
         }
+    },
+    "FacetedGroup": {
+        "MobileSideNav": {
+            "filters": "Filtres",
+            "showFilters": "Afficher les filtres",
+            "subCategories": "Catégories"
+        },
+        "FacetedSearch": {
+            "filters": "Filtres",
+            "RefineBy": {
+                "refineBy": "Affiner par",
+                "clearAllRefinements": "Effacer tout"
+            },
+            "Facets": {
+                "updatePriceButton": "Mettre à jour le prix",
+                "freeShippingLabel": "Livraison gratuite",
+                "isFeaturedLabel": "En vedette",
+                "inStockLabel": "En stock",
+                "rating": "{currentRating, plural, =1 {1 étoile} other {# étoiles}} et plus",
+                "priceFilter": {
+                    "minPricePlaceholder": "{currencySign} min",
+                    "minPriceAriaLabel": "Prix minimum",
+                    "maxPricePlaceholder": "{currencySign} max",
+                    "maxPriceAriaLabel": "Prix maximum"
+                }
+            }
+        },
+        "SortBy": {
+            "ariaLabel": "Trier par :",
+            "featuredItems": "Articles en vedette",
+            "bestSellingItems": "Articles les plus vendus",
+            "newestItems": "Nouveautés",
+            "aToZ": "A à Z",
+            "zToA": "Z à A",
+            "byReview": "Par avis",
+            "priceAscending": "Prix : par ordre croissant",
+            "priceDescending": "Prix : par ordre décroissant",
+            "relevance": "Pertinence"
+        }
+    },
+    "Brand": {
+        "sortBy": "{items, plural, =0 {aucun article} =1 {1 article} other {# articles}}",
+        "products": "Produits"
     },
     "Category": {
         "sortBy": "{items, plural, =0 {aucun article} =1 {1 article} other {# articles}}",
         "products": "Produits",
         "items": "articles"
     },
-    "Brand": {
+    "Search": {
+        "heading": "Rechercher",
+        "products": "Produits",
         "sortBy": "{items, plural, =0 {aucun article} =1 {1 article} other {# articles}}",
-        "products": "Produits"
+        "searchResults": "Résultats de recherche pour"
     },
-    "Product": {
-        "loading": "Chargement...",
-        "carouselTitle": "Produits associés",
-        "noGalleryText": "Prochainement disponible·s",
-        "DescriptionAndReviews": {
-            "description": "Description",
-            "warranty": "Garantie",
-            "loading": "Chargement...",
-            "reviews": "Avis",
-            "reviewsCount": "Compte :",
-            "unreviewed": "Ce produit n'a pas encore été évalué.",
-            "reviewRating": "Note : {rating} étoile(s) sur 5",
-            "reviewAuthor": "Publié par {author} le"
+    "Account": {
+        "Home": {
+            "heading": "Mon compte",
+            "accountTabsLabel": "Onglets Compte",
+            "orders": "Commandes",
+            "messages": "Messages",
+            "addresses": "Adresses",
+            "wishlists": "Listes d'envies",
+            "recentlyViewed": "Consultés récemment",
+            "settings": "Paramètres des comptes",
+            "changePassword": "Modifier le mot de passe"
         },
-        "Details": {
-            "additionalDetails": "Informations supplémentaires",
-            "sku": "SKU",
-            "upc": "CUP",
-            "minPurchase": "Quantité minimale d'achat",
-            "maxPurchase": "Achat maximum",
-            "availability": "Disponibilité",
-            "loading": "Chargement...",
-            "condition": "Condition",
-            "weight": "Poids",
-            "ReviewSummary": {
-                "loading": "Chargement...",
-                "rating": "Note :",
-                "ratingRange": "sur 5 étoiles.",
-                "reviewsNumber": "Nombre d'avis :"
-            },
-            "Prices": {
-                "msrp": "PDSF",
-                "was": "était",
-                "now": "maintenant"
+        "Addresses": {
+            "defaultAddress": "Par défaut",
+            "alternativeAddress": "Alternatif",
+            "newAddress": "Nouvelle adresse",
+            "addNewAddress": "Ajouter une nouvelle adresse",
+            "addNewAddressSuccessMessage": "Adresse ajoutée à votre compte.",
+            "editAddress": "Modifier l'adresse",
+            "editButton": "Modifier",
+            "deleteButton": "Supprimer",
+            "deleteAddress": "Adresse supprimée de votre compte.",
+            "confirmDeleteAddress": "Supprimer l'adresse",
+            "deleteModalTitle": "Voulez-vous vraiment supprimer l'adresse ?",
+            "recaptchaText": "Réussir le test ReCAPTCHA",
+            "emptyTextValidationMessage": "Ce champ ne peut pas être vide",
+            "successMessage": "L'adresse a bien été créée.",
+            "submit": "Ajouter une nouvelle adresse",
+            "cancel": "Annuler",
+            "submitting": "En cours..."
+        },
+        "AddAddress": {
+            "success": "The address has been added.",
+            "Errors": {
+                "inputError": "Something went wrong with proccessing user input.",
+                "error": "Unknown error."
             }
         },
-        "Form": {
-            "saveToWishlist": "Enregistrer dans la liste d'envies",
-            "quantityLabel": "Quantité"
+        "DeleteAddress": {
+            "success": "Adresse supprimée de votre compte.",
+            "error": "Unknown error."
         },
-        "ProductSheet": {
-            "title": "Choisir les options",
-            "errorMessage": "Une erreur s'est produite.",
-            "loading": "Chargement...",
-            "numberReviews": "Nombre d'avis :",
-            "productRating": "<rating>Note :</rating> {currentRating} <stars>étoile(s) sur 5.</stars>",
-            "msrp": "PDSF",
-            "was": "était",
-            "now": "maintenant",
-            "compare": "Comparer"
+        "UpdateAddress": {
+            "success": "The address has been updated.",
+            "Errors": {
+                "inputError": "Something went wrong with proccessing user input.",
+                "notFound": "Address does not exist.",
+                "error": "Unknown error."
+            }
+        },
+        "EditAddress": {
+            "recaptchaText": "Réussir le test ReCAPTCHA",
+            "emptyTextValidationMessage": "Ce champ ne peut pas être vide",
+            "successMessage": "L'adresse a bien été mise à jour.",
+            "cancel": "Annuler",
+            "deleteButton": "Supprimer",
+            "deleteAddress": "Adresse supprimée de votre compte.",
+            "confirmDeleteAddress": "Supprimer l'adresse",
+            "deleteModalTitle": "Voulez-vraiment supprimer cette adresse ?",
+            "submit": "Mettre à jour l'adresse",
+            "submitting": "En cours..."
+        },
+        "Settings": {
+            "emptyTextValidatoinMessage": "Ce champ ne peut pas être vide",
+            "cancel": "Annuler",
+            "recaptchaText": "Réussir le test ReCAPTCHA",
+            "changePassword": "Réinitialiser le mot de passe",
+            "submit": "MODIFIER LES PARAMÈTRES",
+            "submitting": "MODIFIER LES PARAMÈTRES...",
+            "successMessage": "Bonjour {firstName} {lastName}, les données de votre compte ont bien été mises à jour",
+            "validationMessages": {
+                "email": "Veuillez saisir une adresse e-mail valide, telle que nom@domaine.com",
+                "empty": "Ce champ ne peut pas être vide",
+                "firstName": "Saisissez votre prénom",
+                "lastName": "Saisissez votre nom de famille",
+                "city": "Saisissez une banlieue / une ville",
+                "company": "Saisissez un nom d'entreprise",
+                "phone": "Saisissez un numéro de téléphone"
+            },
+            "ChangePassword": {
+                "success": "Password has been updated successfully.",
+                "error": "Unknown error."
+            },
+            "UpdateCustomer": {
+                "Errors": {
+                    "inputError": "Something went wrong with proccessing user input.",
+                    "notFound": "Customer does not exist"
+                }
+            }
+        },
+        "Login": {
+            "heading": "Connexion",
+            "resetPasswordHeading": "Réinitialiser le mot de passe",
+            "changePasswordHeading": "Modifier le mot de passe",
+            "Form": {
+                "errorMessage": "Votre adresse e-mail ou votre mot de passe est incorrect. Essayez de vous reconnecter ou réinitialisez votre mot de passe",
+                "emailLabel": "E-mail",
+                "enterEmailMessage": "Saisissez votre adresse e-mail",
+                "passwordLabel": "Mot de passe",
+                "entePasswordMessage": "Veuillez saisir votre mot de passe.",
+                "submitting": "Envoi...",
+                "logIn": "Connexion",
+                "resetPassword": "Mot de passe oublié ?",
+                "validationMessages": {
+                    "email": "Veuillez saisir une adresse e-mail valide, telle que nom@domaine.com",
+                    "firstName": "Saisissez votre prénom",
+                    "lastName": "Saisissez votre nom de famille",
+                    "city": "Saisissez une banlieue / une ville",
+                    "company": "Saisissez un nom d'entreprise",
+                    "phone": "Saisissez un numéro de téléphone"
+                }
+            },
+            "CreateAccount": {
+                "heading": "Nouveau client ?",
+                "accountBenefits": "Créez un compte sur notre site et vous pourrez :",
+                "fastCheckout": "Accélérer le processus de paiement",
+                "multipleAddresses": "Enregistrer plusieurs adresses de livraison",
+                "ordersHistory": "Accéder à votre historique de commande",
+                "ordersTracking": "Suivre les nouvelles commandes",
+                "wishlists": "Enregistrer des articles dans votre liste d'envies",
+                "createLink": "Créer un compte "
+            }
+        },
+        "Register": {
+            "heading": "Nouveau compte",
+            "submit": "Créer un compte",
+            "submitting": "Création du compte...",
+            "recaptchaText": "Réussir le test ReCAPTCHA",
+            "stateProvincePrefix": "Choisir un État ou une province",
+            "validationMessages": {
+                "email": "Veuillez saisir une adresse e-mail valide, telle que nom@domaine.com",
+                "empty": "Ce champ ne peut pas être vide",
+                "numbersOverflow": "Entered value exceeds max range of {max}",
+                "numbersUnderflow": "Entered value falls short of min range of {min}",
+                "numbersOnly": "Enter numbers only",
+                "firstName": "Saisissez votre prénom",
+                "lastName": "Saisissez votre nom de famille",
+                "password": "Saisissez un mot de passe",
+                "confirmPassword": "Les mots de passe ne correspondent pas",
+                "address1": "Saisissez une adresse",
+                "address2": "Saisissez une adresse",
+                "city": "Saisissez une banlieue / une ville",
+                "company": "Saisissez un nom d'entreprise",
+                "phone": "Saisissez un numéro de téléphone",
+                "postalCode": "Saisissez un code postal"
+            }
+        },
+        "ChangePassword": {
+            "currentPasswordLabel": "Mot de passe actuel",
+            "newPasswordLabel": "Nouveau mot de passe",
+            "confirmPasswordLabel": "Confirmer le mot de passe",
+            "cancel": "Annuler",
+            "confirmPasswordValidationMessage": "Les mots de passe saisis ne correspondent pas. Veuillez réessayer.",
+            "newPasswordValidationMessage": "Le nouveau mot de passe doit être différent du mot de passe actuel et/ou correspondre au mot de passe de confirmation.",
+            "notEmptyMessage": "Le champ ne doit pas être vide",
+            "successMessage": "Le mot de passe a bien été mis à jour !",
+            "confirmChangePassword": "Votre mot de passe a été mis à jour. Veuillez vous connecter en utilisant vos nouveaux identifiants."
+        },
+        "SubmitChangePassword": {
+            "spinnerText": "Envoi...",
+            "submitText": "Modifier le mot de passe"
+        },
+        "ResetPassword": {
+            "description": "Veuillez saisir ci-dessous l'adresse e-mail associée à votre compte. Nous vous enverrons des instructions pour réinitialiser votre mot de passe.",
+            "emailLabel": "E-mail",
+            "emailValidationMessage": "Veuillez saisir une adresse e-mail valide, telle que nom@domaine.com",
+            "successMessage": "L'e-mail de réinitialisation de mot de passe a été envoyé à {email}. Si vous ne le voyez pas apparaître dans votre boîte de réception, vérifiez votre dossier de courrier indésirable.",
+            "recaptchaText": "Réussir le test ReCAPTCHA",
+            "confirmResetPassword": "Si l'adresse e-mail {email} est liée à un compte dans notre boutique, vous recevrez un e-mail pour réinitialiser votre mot de passe. Veuillez consulter votre boîte de réception, ainsi que votre dossier de courrier indésirable si vous ne trouvez pas cet e-mail."
+        },
+        "SubmitResetPassword": {
+            "spinnerText": "Envoi...",
+            "submitText": "Réinitialiser le mot de passe"
         }
     },
-    "Compare": {
-        "nothingCompare": "Il n'y a rien à comparer !",
-        "helpingText": "Vous avez réussi à arriver jusqu'ici, mais vous devez d'abord sélectionner quelques produits.",
-        "comparingQuantity": "Comparaison de {quantity, plural, =1 {1 produit} other {# produits}}",
-        "productComparison": "Comparaison de produits",
-        "noImageText": "Aucune image",
-        "chooseOptions": "Choisir les options",
-        "description": "Description",
-        "rating": "Note",
-        "availability": "Disponibilité"
+    "Blog": {
+        "SharingLinks": {
+            "share": "Partager",
+            "email": "E-mail",
+            "print": "Imprimer"
+        }
     },
     "Cart": {
         "heading": "Votre panier",
@@ -157,66 +311,43 @@
             "errorMessage": "Une erreur s'est produite lors de la suppression de l'article. Veuillez réessayer."
         }
     },
-    "Search": {
-        "heading": "Rechercher",
-        "products": "Produits",
-        "sortBy": "{items, plural, =0 {aucun article} =1 {1 article} other {# articles}}",
-        "searchResults": "Résultats de recherche pour"
+    "Compare": {
+        "heading": "Comparaison de {quantity, plural, =1 {1 produit} other {# produits}}",
+        "nothingToCompare": "Il n'y a rien à comparer !",
+        "helpingText": "Vous avez réussi à arriver jusqu'ici, mais vous devez d'abord sélectionner quelques produits.",
+        "Table": {
+            "caption": "Product comparison",
+            "noImage": "No image",
+            "viewOptions": "Afficher les options",
+            "description": "Description",
+            "rating": "Note",
+            "availability": "Disponibilité",
+            "Prices": {
+                "msrp": "PDSF",
+                "was": "était",
+                "now": "maintenant"
+            }
+        },
+        "AddToCart": {
+            "success": "<cartLink>{CartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
+            "error": "Erreur lors de l'ajout d'un produit au panier. Veuillez réessayer."
+        }
     },
-    "Account": {
-        "Home": {
-            "heading": "Mon compte",
-            "accountTabsLabel": "Onglets Compte",
-            "orders": "Commandes",
-            "messages": "Messages",
-            "addresses": "Adresses",
-            "wishlists": "Listes d'envies",
-            "recentlyViewed": "Consultés récemment",
-            "settings": "Paramètres des comptes",
-            "changePassword": "Modifier le mot de passe"
-        },
-        "Addresses": {
-            "defaultAddress": "Par défaut",
-            "alternativeAddress": "Alternatif",
-            "newAddress": "Nouvelle adresse",
-            "addNewAddress": "Ajouter une nouvelle adresse",
-            "addNewAddressSuccessMessage": "Address added to your account",
-            "editAddress": "Modifier l'adresse",
-            "editButton": "Modifier",
-            "deleteButton": "Supprimer",
-            "deleteAddress": "Adresse supprimée de votre compte.",
-            "confirmDeleteAddress": "Supprimer l'adresse",
-            "deleteModalTitle": "Voulez-vous vraiment supprimer l'adresse ?",
-            "recaptchaText": "Réussir le test ReCAPTCHA",
-            "emptyTextValidationMessage": "Ce champ ne peut pas être vide",
-            "successMessage": "L'adresse a bien été créée.",
-            "submit": "Ajouter une nouvelle adresse",
-            "cancel": "Annuler",
-            "submitting": "En cours..."
-        },
-        "EditAddress": {
-            "recaptchaText": "Réussir le test ReCAPTCHA",
-            "emptyTextValidationMessage": "Ce champ ne peut pas être vide",
-            "successMessage": "L'adresse a bien été mise à jour.",
-            "cancel": "Annuler",
-            "deleteButton": "Supprimer",
-            "deleteAddress": "Adresse supprimée de votre compte.",
-            "confirmDeleteAddress": "Supprimer l'adresse",
-            "deleteModalTitle": "Voulez-vraiment supprimer cette adresse ?",
-            "submit": "Mettre à jour l'adresse",
-            "submitting": "En cours..."
-        },
-        "Settings": {
-            "emptyTextValidatoinMessage": "Ce champ ne peut pas être vide",
-            "cancel": "Annuler",
-            "recaptchaText": "Réussir le test ReCAPTCHA",
-            "changePassword": "Réinitialiser le mot de passe",
-            "submit": "MODIFIER LES PARAMÈTRES",
-            "submitting": "MODIFIER LES PARAMÈTRES...",
-            "successMessage": "Bonjour {firstName} {lastName}, les données de votre compte ont bien été mises à jour",
+    "Login": {
+        "heading": "Connexion",
+        "resetPasswordHeading": "Réinitialiser le mot de passe",
+        "changePasswordHeading": "Modifier le mot de passe",
+        "Form": {
+            "errorMessage": "Votre adresse e-mail ou votre mot de passe est incorrect. Essayez de vous reconnecter ou réinitialisez votre mot de passe",
+            "emailLabel": "E-mail",
+            "enterEmailMessage": "Saisissez votre adresse e-mail",
+            "passwordLabel": "Mot de passe",
+            "entePasswordMessage": "Veuillez saisir votre mot de passe.",
+            "submitting": "Envoi...",
+            "logIn": "Connexion",
+            "resetPassword": "Mot de passe oublié ?",
             "validationMessages": {
                 "email": "Veuillez saisir une adresse e-mail valide, telle que nom@domaine.com",
-                "empty": "Ce champ ne peut pas être vide",
                 "firstName": "Saisissez votre prénom",
                 "lastName": "Saisissez votre nom de famille",
                 "city": "Saisissez une banlieue / une ville",
@@ -224,38 +355,15 @@
                 "phone": "Saisissez un numéro de téléphone"
             }
         },
-        "Login": {
-            "heading": "Connexion",
-            "resetPasswordHeading": "Réinitialiser le mot de passe",
-            "changePasswordHeading": "Modifier le mot de passe",
-            "Form": {
-                "errorMessage": "Votre adresse e-mail ou votre mot de passe est incorrect. Essayez de vous reconnecter ou réinitialisez votre mot de passe",
-                "emailLabel": "E-mail",
-                "enterEmailMessage": "Saisissez votre adresse e-mail",
-                "passwordLabel": "Mot de passe",
-                "entePasswordMessage": "Veuillez saisir votre mot de passe.",
-                "submitting": "Envoi...",
-                "logIn": "Connexion",
-                "resetPassword": "Mot de passe oublié ?",
-                "validationMessages": {
-                    "email": "Veuillez saisir une adresse e-mail valide, telle que nom@domaine.com",
-                    "firstName": "Saisissez votre prénom",
-                    "lastName": "Saisissez votre nom de famille",
-                    "city": "Saisissez une banlieue / une ville",
-                    "company": "Saisissez un nom d'entreprise",
-                    "phone": "Saisissez un numéro de téléphone"
-                }
-            },
-            "CreateAccount": {
-                "heading": "Nouveau client ?",
-                "accountBenefits": "Créez un compte sur notre site et vous pourrez :",
-                "fastCheckout": "Accélérer le processus de paiement",
-                "multipleAddresses": "Enregistrer plusieurs adresses de livraison",
-                "ordersHistory": "Accéder à votre historique de commande",
-                "ordersTracking": "Suivre les nouvelles commandes",
-                "wishlists": "Enregistrer des articles dans votre liste d'envies",
-                "createLink": "Créer un compte "
-            }
+        "CreateAccount": {
+            "heading": "Nouveau client ?",
+            "accountBenefits": "Créez un compte sur notre site et vous pourrez :",
+            "fastCheckout": "Accélérer le processus de paiement",
+            "multipleAddresses": "Enregistrer plusieurs adresses de livraison",
+            "ordersHistory": "Accéder à votre historique de commande",
+            "ordersTracking": "Suivre les nouvelles commandes",
+            "wishlists": "Enregistrer des articles dans votre liste d'envies",
+            "createLink": "Créer un compte "
         },
         "Register": {
             "heading": "Nouveau compte",
@@ -276,132 +384,137 @@
                 "company": "Saisissez un nom d'entreprise",
                 "phone": "Saisissez un numéro de téléphone",
                 "postalCode": "Saisissez un code postal"
+            },
+            "Errors": {
+                "inputError": "Something went wrong with proccessing user input.",
+                "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
+                "error": "Une erreur s'est produite. Veuillez réessayer plus tard."
             }
-        },
-        "ChangePassword": {
-            "currentPasswordLabel": "Mot de passe actuel",
-            "newPasswordLabel": "Nouveau mot de passe",
-            "confirmPasswordLabel": "Confirmer le mot de passe",
-            "cancel": "Annuler",
-            "confirmPasswordValidationMessage": "Les mots de passe saisis ne correspondent pas. Veuillez réessayer.",
-            "newPasswordValidationMessage": "Le nouveau mot de passe doit être différent du mot de passe actuel et/ou correspondre au mot de passe de confirmation.",
-            "notEmptyMessage": "Le champ ne doit pas être vide",
-            "successMessage": "Le mot de passe a bien été mis à jour !",
-            "confirmChangePassword": "Votre mot de passe a été mis à jour. Veuillez vous connecter en utilisant vos nouveaux identifiants."
-        },
-        "SubmitChangePassword": {
-            "spinnerText": "Envoi...",
-            "submitText": "Modifier le mot de passe"
-        },
-        "ResetPassword": {
-            "description": "Veuillez saisir ci-dessous l'adresse e-mail associée à votre compte. Nous vous enverrons des instructions pour réinitialiser votre mot de passe.",
-            "emailLabel": "E-mail",
-            "emailValidationMessage": "Veuillez saisir une adresse e-mail valide, telle que nom@domaine.com",
-            "successMessage": "L'e-mail de réinitialisation de mot de passe a été envoyé à {email}. Si vous ne le voyez pas apparaître dans votre boîte de réception, vérifiez votre dossier de courrier indésirable.",
-            "recaptchaText": "Réussir le test ReCAPTCHA",
-            "confirmResetPassword": "Si l'adresse e-mail {email} est liée à un compte dans notre boutique, vous recevrez un e-mail pour réinitialiser votre mot de passe. Veuillez consulter votre boîte de réception, ainsi que votre dossier de courrier indésirable si vous ne trouvez pas cet e-mail."
-        },
-        "SubmitResetPassword": {
-            "spinnerText": "Envoi...",
-            "submitText": "Réinitialiser le mot de passe"
         }
+    },
+    "Product": {
+        "loading": "Chargement...",
+        "Carousel": {
+            "relatedProducts": "Produits associés"
+        },
+        "Form": {
+            "success": "<cartLink>{CartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
+            "error": "Erreur lors de l'ajout d'un produit au panier. Veuillez réessayer.",
+            "saveToWishlist": "Enregistrer dans la liste d'envies",
+            "quantityLabel": "Quantité"
+        },
+        "Description": {
+            "heading": "Description"
+        },
+        "Warranty": {
+            "heading": "Garantie"
+        },
+        "Reviews": {
+            "heading": "Avis",
+            "reviewsCount": "Compte :",
+            "unreviewed": "Ce produit n'a pas encore été évalué.",
+            "reviewRating": "Note : {rating} étoile(s) sur 5",
+            "reviewAuthor": "Publié par {author} le"
+        },
+        "Details": {
+            "additionalDetails": "Informations supplémentaires",
+            "sku": "SKU",
+            "upc": "CUP",
+            "minPurchase": "Quantité minimale d'achat",
+            "maxPurchase": "Achat maximum",
+            "availability": "Disponibilité",
+            "condition": "Condition",
+            "weight": "Poids",
+            "Prices": {
+                "msrp": "PDSF",
+                "was": "était",
+                "now": "maintenant"
+            },
+            "ReviewSummary": {
+                "rating": "Note :",
+                "ratingRange": "sur 5 étoiles.",
+                "reviewsNumber": "Nombre d'avis :"
+            }
+        }
+    },
+    "WebPages": {
+        "ContactUs": {
+            "Form": {
+                "success": "Merci de nous avoir contactés. Nous reviendrons vers vous bientôt.",
+                "error": "Unknown error.",
+                "fullNameLabel": "Nom complet",
+                "companyNameLabel": "Nom de l'entreprise",
+                "phoneLabel": "Numéro de téléphone",
+                "orderNoLabel": "Numéro de commande",
+                "rmaLabel": "Numéro Autorisation de retour de marchandise (RMA)",
+                "emailLabel": "E-mail",
+                "emailValidationMessage": "Veuillez saisir une adresse e-mail valide, telle que nom@domaine.com",
+                "commentsLabel": "Commentaires/Questions",
+                "commentsValidationMessage": "Veuillez fournir un commentaire valide",
+                "recaptchaText": "Réussir le test ReCAPTCHA",
+                "onSubmitText": "Envoi...",
+                "submitFormText": "Envoyer le formulaire"
+            }
+        }
+    },
+    "Maintenance": {
+        "message": "We are down for maintenance",
+        "contactUs": "You can contact us at:"
+    },
+    "StoreSelector": {
+        "heading": "Sélectionnez une langue et une région"
+    },
+    "Error": {
+        "heading": "Une erreur de serveur s'est produite !",
+        "message": "Veuillez réessayer plus tard."
     },
     "NotFound": {
         "heading": "Page introuvable !",
         "message": "Il semblerait que la page que vous avez demandée ait été déplacée ou n'existe plus.",
-        "featuredProducts": "Produits en vedette",
-        "searchProducts": "Rechercher des produits",
-        "searchPlaceholder": "Paramètre fictif...",
-        "searching": "Recherche en cours...",
-        "search": "Rechercher",
-        "noSearchResults": "Désolé, il n'y a aucun résultat pour « {term} ».",
-        "checkSpelling": "Veuillez vérifier l’orthographe ou modifier votre recherche."
-    },
-    "ServerError": {
-        "heading": "Une erreur de serveur s'est produite !",
-        "message": "Veuillez réessayer plus tard."
-    },
-    "FacetedGroup": {
-        "MobileSideNav": {
-            "filters": "Filtres",
-            "showFilters": "Afficher les filtres",
-            "subCategories": "Catégories"
-        },
-        "FacetedSearch": {
-            "filters": "Filtres",
-            "RefineBy": {
-                "refineBy": "Affiner par",
-                "clearAllRefinements": "Effacer tout"
-            },
-            "Facets": {
-                "updatePriceButton": "Mettre à jour le prix",
-                "freeShippingLabel": "Livraison gratuite",
-                "isFeaturedLabel": "En vedette",
-                "inStockLabel": "En stock",
-                "rating": "{currentRating, plural, =1 {1 étoile} other {# étoiles}} et plus",
-                "priceFilter": {
-                    "minPricePlaceholder": "{currencySign} min",
-                    "minPriceAriaLabel": "Prix minimum",
-                    "maxPricePlaceholder": "{currencySign} max",
-                    "maxPriceAriaLabel": "Prix maximum"
-                }
-            }
-        },
-        "SortBy": {
-            "ariaLabel": "Trier par :",
-            "featuredItems": "Articles en vedette",
-            "bestSellingItems": "Articles les plus vendus",
-            "newestItems": "Nouveautés",
-            "aToZ": "A à Z",
-            "zToA": "Z à A",
-            "byReview": "Par avis",
-            "priceAscending": "Prix : par ordre croissant",
-            "priceDescending": "Prix : par ordre décroissant",
-            "relevance": "Pertinence"
+        "Carousel": {
+            "featuredProducts": "Produits en vedette"
         }
     },
-    "Providers": {
+    "Components": {
+        "Header": {
+            "Account": {
+                "account": "Compte",
+                "myAccount": "My account",
+                "addresses": "Adresses",
+                "accountSettings": "Paramètres des comptes",
+                "login": "Connexion",
+                "logout": "Déconnexion"
+            },
+            "LocaleSwitcher": {
+                "chooseCountryAndLanguage": "Sélectionnez le pays et la langue.",
+                "goToSite": "Accéder au site"
+            }
+        },
         "Compare": {
             "compareButton": "Comparer ({products})",
             "productPhoto": "Photo",
             "removeProductAriaLabel": "Retirer {product} de la liste de comparaison"
+        },
+        "SearchForm": {
+            "searchProducts": "Rechercher des produits",
+            "searchPlaceholder": "Recherche...",
+            "search": "Rechercher",
+            "noSearchResults": "Désolé, il n'y a aucun résultat pour « {term} ».",
+            "checkSpelling": "Veuillez vérifier l’orthographe ou modifier votre recherche."
+        },
+        "AddToCartButton": {
+            "addToCart": "Ajouter au panier",
+            "outOfStock": "En rupture de stock",
+            "preorder": "Précommander",
+            "unavailable": "Indisponible",
+            "processing": "Traitement en cours…"
+        },
+        "ProductCard": {
+            "AddToCart": {
+                "viewOptions": "Afficher les options",
+                "success": "<cartLink>{CartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
+                "error": "Erreur lors de l'ajout d'un produit au panier. Veuillez réessayer."
+            }
         }
-    },
-    "Header": {
-        "account": "Votre compte",
-        "chooseCountryAndLanguage": "Sélectionnez le pays et la langue.",
-        "goToSite": "Accéder au site"
-    },
-    "Pagination": {
-        "next": "Suivant",
-        "prev": "Précédent"
-    },
-    "AboutUs": {
-        "fullNameLabel": "Nom complet",
-        "companyNameLabel": "Nom de l'entreprise",
-        "phoneLabel": "Numéro de téléphone",
-        "orderNoLabel": "Numéro de commande",
-        "rmaLabel": "Numéro Autorisation de retour de marchandise (RMA)",
-        "emailLabel": "E-mail",
-        "emailValidationMessage": "Veuillez saisir une adresse e-mail valide, telle que nom@domaine.com",
-        "commentsLabel": "Commentaires/Questions",
-        "commentsValidationMessage": "Veuillez fournir un commentaire valide",
-        "recaptchaText": "Réussir le test ReCAPTCHA",
-        "onSubmitText": "Envoi...",
-        "submitFormText": "Envoyer le formulaire",
-        "sucessSubmitMessage": "Merci de nous avoir contactés. Nous reviendrons vers vous bientôt."
-    },
-    "AddToCart": {
-        "addToCart": "Ajouter au panier",
-        "quickAdd": "Ajout rapide",
-        "outOfStock": "En rupture de stock",
-        "preorder": "Précommander",
-        "unavailable": "Indisponible",
-        "processing": "Traitement en cours…",
-        "addedProductQuantity": "<cartLink>{CartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
-        "errorAddingProductToCart": "Erreur lors de l'ajout d'un produit au panier. Veuillez réessayer."
-    },
-    "StoreSelector": {
-        "heading": "Sélectionnez une langue et une région"
     }
 }
