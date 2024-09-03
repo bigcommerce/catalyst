@@ -2,6 +2,7 @@ import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { FormFieldsFragment } from '~/client/fragments/form-fields';
 import { graphql, ResultOf } from '~/client/graphql';
+import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
 import { AddAddress as AddAddressForm } from './add-address';
 
@@ -84,7 +85,7 @@ export const CustomerNewAddress = async () => {
       addressFields={addressFields}
       countries={countries || []}
       defaultCountry={{ id: entityId, code, states: defaultCountryStates }}
-      reCaptchaSettings={reCaptchaSettings}
+      reCaptchaSettings={bypassReCaptcha(reCaptchaSettings)}
     />
   );
 };

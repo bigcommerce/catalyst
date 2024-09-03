@@ -5,6 +5,7 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
+import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
 import { ChangePasswordForm } from './_components/change-password-form';
 import { LoginForm } from './_components/login-form';
@@ -64,7 +65,7 @@ export default async function Login({ searchParams }: Props) {
     return (
       <div className="mx-auto my-6 max-w-4xl">
         <h2 className="mb-8 text-4xl font-black lg:text-5xl">{t('resetPasswordHeading')}</h2>
-        <ResetPasswordForm reCaptchaSettings={data.site.settings?.reCaptcha} />
+        <ResetPasswordForm reCaptchaSettings={bypassReCaptcha(data.site.settings?.reCaptcha)} />
       </div>
     );
   }
