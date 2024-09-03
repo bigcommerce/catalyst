@@ -1,3 +1,5 @@
+'use client';
+
 export * from './date';
 export * from './checkboxes';
 export * from './password';
