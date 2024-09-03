@@ -19,6 +19,8 @@ export function SortBy() {
     const params = new URLSearchParams(searchParams);
 
     params.set('sort', sortValue);
+    params.delete('before');
+    params.delete('after');  
 
     startTransition(() => {
       router.push(`${pathname}?${params.toString()}`);
