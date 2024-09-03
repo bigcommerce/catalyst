@@ -1,91 +1,245 @@
 {
-    "RootLayout": {
-        "Metadata": {
-            "title": "Catalyst Store",
-            "description": "Voorbeeldwinkel gebouwd met Catalyst",
-            "other": {
-                "platform": "bigcommerce.catalyst"
-            }
-        }
-    },
     "Home": {
         "Carousel": {
-            "bestSellingProducts": "Bestverkopende producten",
             "featuredProducts": "Uitgelichte producten",
             "newestProducts": "Nieuwste producten"
         }
+    },
+    "FacetedGroup": {
+        "MobileSideNav": {
+            "filters": "Filters",
+            "showFilters": "Filters weergeven",
+            "subCategories": "Categorieën"
+        },
+        "FacetedSearch": {
+            "filters": "Filters",
+            "RefineBy": {
+                "refineBy": "Verfijnen op",
+                "clearAllRefinements": "Alles wissen"
+            },
+            "Facets": {
+                "updatePriceButton": "Prijs bijwerken",
+                "freeShippingLabel": "Gratis verzending",
+                "isFeaturedLabel": "Uitgelicht",
+                "inStockLabel": "Op voorraad",
+                "rating": "{currentRating, plural, =1 {1 ster} other {# sterren}} en hoger",
+                "priceFilter": {
+                    "minPricePlaceholder": "{currencySign} min",
+                    "minPriceAriaLabel": "Minimale prijs",
+                    "maxPricePlaceholder": "{currencySign} max",
+                    "maxPriceAriaLabel": "Maximale prijs"
+                }
+            }
+        },
+        "SortBy": {
+            "ariaLabel": "Sorteren op:",
+            "featuredItems": "Uitgelichte items",
+            "bestSellingItems": "Bestverkopende items",
+            "newestItems": "Nieuwste items",
+            "aToZ": "A tot Z",
+            "zToA": "Z tot A",
+            "byReview": "Beoordeling",
+            "priceAscending": "Prijs: oplopend",
+            "priceDescending": "Prijs: aflopend",
+            "relevance": "Relevantie"
+        }
+    },
+    "Brand": {
+        "sortBy": "{items, plural, =0 {geen items} =1 {1 item} other {# items}}",
+        "products": "Producten"
     },
     "Category": {
         "sortBy": "{items, plural, =0 {geen items} =1 {1 item} other {# items}}",
         "products": "Producten",
         "items": "artikelen"
     },
-    "Brand": {
+    "Search": {
+        "heading": "Zoeken",
+        "products": "Producten",
         "sortBy": "{items, plural, =0 {geen items} =1 {1 item} other {# items}}",
-        "products": "Producten"
+        "searchResults": "Zoekresultaten voor"
     },
-    "Product": {
-        "loading": "Laden...",
-        "carouselTitle": "Gerelateerde producten",
-        "noGalleryText": "Binnenkort beschikbaar",
-        "DescriptionAndReviews": {
-            "description": "Description",
-            "warranty": "Garantie",
-            "loading": "Laden...",
-            "reviews": "Beoordelingen",
-            "reviewsCount": "Aantal:",
-            "unreviewed": "Dit product is nog niet beoordeeld.",
-            "reviewRating": "Beoordeling: {rating} van 5 sterren",
-            "reviewAuthor": "Geplaatst door {author} op"
+    "Account": {
+        "Home": {
+            "heading": "Mijn account",
+            "accountTabsLabel": "Accounttabbladen",
+            "orders": "Bestellingen",
+            "messages": "Berichten",
+            "addresses": "Adressen",
+            "wishlists": "Verlanglijstjes",
+            "recentlyViewed": "Recent weergegeven",
+            "settings": "Accountinstellingen",
+            "changePassword": "Wachtwoord wijzigen"
         },
-        "Details": {
-            "additionalDetails": "Aanvullende details",
-            "sku": "SKU",
-            "upc": "UPC",
-            "minPurchase": "Minimale aankoop",
-            "maxPurchase": "Maximale aankoop",
-            "availability": "Beschikbaarheid",
-            "loading": "Laden...",
-            "condition": "Staat",
-            "weight": "Gewicht",
-            "ReviewSummary": {
-                "loading": "Laden...",
-                "rating": "Beoordeling:",
-                "ratingRange": "van de 5 sterren.",
-                "reviewsNumber": "Aantal beoordelingen:"
-            },
-            "Prices": {
-                "msrp": "Adviesprijs",
-                "was": "was",
-                "now": "nu"
+        "Addresses": {
+            "defaultAddress": "Standaard",
+            "alternativeAddress": "Alternatief",
+            "newAddress": "Nieuw adres",
+            "addNewAddress": "Nieuw adres toevoegen",
+            "addNewAddressSuccessMessage": "Adres is toegevoegd aan je account",
+            "editAddress": "Adres bewerken",
+            "editButton": "Bewerken",
+            "deleteButton": "Verwijderen",
+            "deleteAddress": "Adres is verwijderd uit je account.",
+            "confirmDeleteAddress": "Adres verwijderen",
+            "deleteModalTitle": "Weet je zeker dat je dit adres wilt verwijderen?",
+            "recaptchaText": "reCAPTCHA-check doorstaan",
+            "emptyTextValidationMessage": "Dit veld mag niet leeg zijn",
+            "successMessage": "Het adres is aangemaakt.",
+            "submit": "Nieuw adres toevoegen",
+            "cancel": "Annuleren",
+            "submitting": "In uitvoering..."
+        },
+        "AddAddress": {
+            "success": "The address has been added.",
+            "Errors": {
+                "inputError": "Something went wrong with proccessing user input.",
+                "error": "Unknown error."
             }
         },
-        "Form": {
-            "saveToWishlist": "Opslaan in verlanglijstje",
-            "quantityLabel": "Aantal"
+        "DeleteAddress": {
+            "success": "Adres is verwijderd uit je account.",
+            "error": "Unknown error."
         },
-        "ProductSheet": {
-            "title": "Opties kiezen",
-            "errorMessage": "Er is een fout opgetreden.",
-            "loading": "Laden...",
-            "numberReviews": "Aantal beoordelingen:",
-            "productRating": "<rating>Beoordeling:</rating> {currentRating} <stars> van 5 sterren.</stars>",
-            "msrp": "Adviesprijs",
-            "was": "was",
-            "now": "nu",
-            "compare": "Vergelijken"
+        "UpdateAddress": {
+            "success": "The address has been updated.",
+            "Errors": {
+                "inputError": "Something went wrong with proccessing user input.",
+                "notFound": "Address does not exist.",
+                "error": "Unknown error."
+            }
+        },
+        "EditAddress": {
+            "recaptchaText": "reCAPTCHA-check doorstaan",
+            "emptyTextValidationMessage": "Dit veld mag niet leeg zijn",
+            "successMessage": "Het adres is bijgewerkt.",
+            "cancel": "Annuleren",
+            "deleteButton": "Verwijderen",
+            "deleteAddress": "Adres is verwijderd uit je account.",
+            "confirmDeleteAddress": "Adres verwijderen",
+            "deleteModalTitle": "Weet u zeker dat u dit adres wilt verwijderen?",
+            "submit": "Adres bijwerken",
+            "submitting": "In uitvoering..."
+        },
+        "Settings": {
+            "emptyTextValidatoinMessage": "Dit veld mag niet leeg zijn",
+            "cancel": "Annuleren",
+            "recaptchaText": "reCAPTCHA-check doorstaan",
+            "changePassword": "Wachtwoord opnieuw instellen",
+            "submit": "INSTELLINGEN BIJWERKEN",
+            "submitting": "Instellingen bijwerken...",
+            "successMessage": "Beste {firstName} {lastName}, je accountgegevens zijn bijgewerkt.",
+            "validationMessages": {
+                "email": "Voer een geldig e-mailadres in, zoals naam@domein.com",
+                "empty": "Dit veld mag niet leeg zijn",
+                "firstName": "Vul uw voornaam in",
+                "lastName": "Vul uw achternaam in",
+                "city": "Voer een plaats in",
+                "company": "Voer een bedrijfsnaam in",
+                "phone": "Voer een telefoonnummer in"
+            },
+            "ChangePassword": {
+                "success": "Password has been updated successfully.",
+                "error": "Unknown error."
+            },
+            "UpdateCustomer": {
+                "Errors": {
+                    "inputError": "Something went wrong with proccessing user input.",
+                    "notFound": "Customer does not exist"
+                }
+            }
+        },
+        "Login": {
+            "heading": "Inloggen",
+            "resetPasswordHeading": "Wachtwoord opnieuw instellen",
+            "changePasswordHeading": "Wachtwoord wijzigen",
+            "Form": {
+                "errorMessage": "Je e-mailadres of wachtwoord is niet correct. Probeer opnieuw in te loggen of stel je wachtwoord opnieuw in",
+                "emailLabel": "E-mailadres",
+                "enterEmailMessage": "Voer uw e-mail in",
+                "passwordLabel": "Wachtwoord",
+                "entePasswordMessage": "Voer je wachtwoord in",
+                "submitting": "Verzenden...",
+                "logIn": "Inloggen",
+                "resetPassword": "Wachtwoord vergeten?",
+                "validationMessages": {
+                    "email": "Voer een geldig e-mailadres in, zoals naam@domein.com",
+                    "firstName": "Vul uw voornaam in",
+                    "lastName": "Vul uw achternaam in",
+                    "city": "Voer een plaats in",
+                    "company": "Voer een bedrijfsnaam in",
+                    "phone": "Voer een telefoonnummer in"
+                }
+            },
+            "CreateAccount": {
+                "heading": "Nieuwe klant?",
+                "accountBenefits": "Maak een account aan bij ons om:",
+                "fastCheckout": "Sneller af te rekenen",
+                "multipleAddresses": "Meerdere verzendadressen op te slaan",
+                "ordersHistory": "Uw bestelgeschiedenis te bekijken",
+                "ordersTracking": "Nieuwe bestellingen te volgen",
+                "wishlists": "Artikelen opslaan in uw verlanglijstje",
+                "createLink": "Account aanmaken "
+            }
+        },
+        "Register": {
+            "heading": "Nieuw account",
+            "submit": "Account aanmaken",
+            "submitting": "Account aanmaken...",
+            "recaptchaText": "reCAPTCHA-check doorstaan",
+            "stateProvincePrefix": "Kies een staat/provincie",
+            "validationMessages": {
+                "email": "Voer een geldig e-mailadres in, zoals naam@domein.com",
+                "empty": "Dit veld mag niet leeg zijn",
+                "numbersOverflow": "Entered value exceeds max range of {max}",
+                "numbersUnderflow": "Entered value falls short of min range of {min}",
+                "numbersOnly": "Enter numbers only",
+                "firstName": "Vul uw voornaam in",
+                "lastName": "Vul uw achternaam in",
+                "password": "Vul een wachtwoord in",
+                "confirmPassword": "Wachtwoorden komen niet overeen",
+                "address1": "Voer een adres in",
+                "address2": "Voer een adres in",
+                "city": "Voer een plaats in",
+                "company": "Voer een bedrijfsnaam in",
+                "phone": "Voer een telefoonnummer in",
+                "postalCode": "Voer een postcode in"
+            }
+        },
+        "ChangePassword": {
+            "currentPasswordLabel": "Huidig wachtwoord",
+            "newPasswordLabel": "Nieuw wachtwoord",
+            "confirmPasswordLabel": "Wachtwoord bevestigen",
+            "cancel": "Annuleren",
+            "confirmPasswordValidationMessage": "Ingevoerde wachtwoorden komen niet overeen. Probeer het opnieuw.",
+            "newPasswordValidationMessage": "Het nieuwe wachtwoord moet anders zijn dan het huidige wachtwoord en/of overeenkomen met het bevestigingswachtwoord.",
+            "notEmptyMessage": "Het veld mag niet leeg zijn",
+            "successMessage": "Wachtwoord is succesvol bijgewerkt!",
+            "confirmChangePassword": "Je wachtwoord is bijgewerkt. Log in met je nieuwe gegevens."
+        },
+        "SubmitChangePassword": {
+            "spinnerText": "Verzenden...",
+            "submitText": "Wachtwoord wijzigen"
+        },
+        "ResetPassword": {
+            "description": "Voer hieronder het e-mailadres in dat aan je account is gekoppeld. We sturen je instructies om je wachtwoord opnieuw in te stellen.",
+            "emailLabel": "E-mailadres",
+            "emailValidationMessage": "Voer een geldig e-mailadres in, zoals naam@domein.com",
+            "successMessage": "Je e-mailadres voor het opnieuw instellen van je wachtwoord is onderweg naar {email}. Controleer zo nodig je spamfolder.",
+            "recaptchaText": "reCAPTCHA-check doorstaan",
+            "confirmResetPassword": "Als het e-mailadres {email} is gekoppeld aan een account in onze winkel, hebben we je een e-mail gestuurd om je wachtwoord opnieuw in te stellen. Controleer je inbox en spammap als je de e-mail niet ziet."
+        },
+        "SubmitResetPassword": {
+            "spinnerText": "Verzenden...",
+            "submitText": "Wachtwoord opnieuw instellen"
         }
     },
-    "Compare": {
-        "nothingCompare": "Er valt niets te vergelijken!",
-        "helpingText": "Op de een of andere manier ben je hier terechtgekomen, maar je moet eerst een paar producten selecteren.",
-        "comparingQuantity": "{quantity, plural, =1 {1 product} other {# producten}} vergelijken",
-        "productComparison": "Productvergelijking",
-        "noImageText": "Geen afbeelding",
-        "chooseOptions": "Opties kiezen",
-        "description": "Description",
-        "rating": "Beoordeling",
-        "availability": "Beschikbaarheid"
+    "Blog": {
+        "SharingLinks": {
+            "share": "Delen",
+            "email": "E-mailadres",
+            "print": "Afdrukken"
+        }
     },
     "Cart": {
         "heading": "Uw winkelmandje",
@@ -157,66 +311,43 @@
             "errorMessage": "Er is iets fout gegaan bij het verwijderen van het item, probeer het opnieuw."
         }
     },
-    "Search": {
-        "heading": "Zoeken",
-        "products": "Producten",
-        "sortBy": "{items, plural, =0 {geen items} =1 {1 item} other {# items}}",
-        "searchResults": "Zoekresultaten voor"
+    "Compare": {
+        "heading": "{quantity, plural, =1 {1 product} other {# producten}} vergelijken",
+        "nothingToCompare": "Er valt niets te vergelijken!",
+        "helpingText": "Op de een of andere manier ben je hier terechtgekomen, maar je moet eerst een paar producten selecteren.",
+        "Table": {
+            "caption": "Product comparison",
+            "noImage": "No image",
+            "viewOptions": "Opties weergeven",
+            "description": "Description",
+            "rating": "Beoordeling",
+            "availability": "Beschikbaarheid",
+            "Prices": {
+                "msrp": "Adviesprijs",
+                "was": "was",
+                "now": "nu"
+            }
+        },
+        "AddToCart": {
+            "success": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>",
+            "error": "Fout opgetreden bij het toevoegen van product aan winkelwagen. Probeer het opnieuw."
+        }
     },
-    "Account": {
-        "Home": {
-            "heading": "Mijn account",
-            "accountTabsLabel": "Accounttabbladen",
-            "orders": "Bestellingen",
-            "messages": "Berichten",
-            "addresses": "Adressen",
-            "wishlists": "Verlanglijstjes",
-            "recentlyViewed": "Recent weergegeven",
-            "settings": "Accountinstellingen",
-            "changePassword": "Wachtwoord wijzigen"
-        },
-        "Addresses": {
-            "defaultAddress": "Standaard",
-            "alternativeAddress": "Alternatief",
-            "newAddress": "Nieuw adres",
-            "addNewAddress": "Nieuw adres toevoegen",
-            "addNewAddressSuccessMessage": "Address added to your account",
-            "editAddress": "Adres bewerken",
-            "editButton": "Bewerken",
-            "deleteButton": "Verwijderen",
-            "deleteAddress": "Adres is verwijderd uit je account.",
-            "confirmDeleteAddress": "Adres verwijderen",
-            "deleteModalTitle": "Weet je zeker dat je dit adres wilt verwijderen?",
-            "recaptchaText": "reCAPTCHA-check doorstaan",
-            "emptyTextValidationMessage": "Dit veld mag niet leeg zijn",
-            "successMessage": "Het adres is aangemaakt.",
-            "submit": "Nieuw adres toevoegen",
-            "cancel": "Annuleren",
-            "submitting": "In uitvoering..."
-        },
-        "EditAddress": {
-            "recaptchaText": "reCAPTCHA-check doorstaan",
-            "emptyTextValidationMessage": "Dit veld mag niet leeg zijn",
-            "successMessage": "Het adres is bijgewerkt.",
-            "cancel": "Annuleren",
-            "deleteButton": "Verwijderen",
-            "deleteAddress": "Adres is verwijderd uit je account.",
-            "confirmDeleteAddress": "Adres verwijderen",
-            "deleteModalTitle": "Weet u zeker dat u dit adres wilt verwijderen?",
-            "submit": "Adres bijwerken",
-            "submitting": "In uitvoering..."
-        },
-        "Settings": {
-            "emptyTextValidatoinMessage": "Dit veld mag niet leeg zijn",
-            "cancel": "Annuleren",
-            "recaptchaText": "reCAPTCHA-check doorstaan",
-            "changePassword": "Wachtwoord opnieuw instellen",
-            "submit": "INSTELLINGEN BIJWERKEN",
-            "submitting": "Instellingen bijwerken...",
-            "successMessage": "Beste {firstName} {lastName}, je accountgegevens zijn bijgewerkt.",
+    "Login": {
+        "heading": "Inloggen",
+        "resetPasswordHeading": "Wachtwoord opnieuw instellen",
+        "changePasswordHeading": "Wachtwoord wijzigen",
+        "Form": {
+            "errorMessage": "Je e-mailadres of wachtwoord is niet correct. Probeer opnieuw in te loggen of stel je wachtwoord opnieuw in",
+            "emailLabel": "E-mailadres",
+            "enterEmailMessage": "Voer uw e-mail in",
+            "passwordLabel": "Wachtwoord",
+            "entePasswordMessage": "Voer je wachtwoord in",
+            "submitting": "Verzenden...",
+            "logIn": "Inloggen",
+            "resetPassword": "Wachtwoord vergeten?",
             "validationMessages": {
                 "email": "Voer een geldig e-mailadres in, zoals naam@domein.com",
-                "empty": "Dit veld mag niet leeg zijn",
                 "firstName": "Vul uw voornaam in",
                 "lastName": "Vul uw achternaam in",
                 "city": "Voer een plaats in",
@@ -224,38 +355,15 @@
                 "phone": "Voer een telefoonnummer in"
             }
         },
-        "Login": {
-            "heading": "Inloggen",
-            "resetPasswordHeading": "Wachtwoord opnieuw instellen",
-            "changePasswordHeading": "Wachtwoord wijzigen",
-            "Form": {
-                "errorMessage": "Je e-mailadres of wachtwoord is niet correct. Probeer opnieuw in te loggen of stel je wachtwoord opnieuw in",
-                "emailLabel": "E-mailadres",
-                "enterEmailMessage": "Voer uw e-mail in",
-                "passwordLabel": "Wachtwoord",
-                "entePasswordMessage": "Voer je wachtwoord in",
-                "submitting": "Verzenden...",
-                "logIn": "Inloggen",
-                "resetPassword": "Wachtwoord vergeten?",
-                "validationMessages": {
-                    "email": "Voer een geldig e-mailadres in, zoals naam@domein.com",
-                    "firstName": "Vul uw voornaam in",
-                    "lastName": "Vul uw achternaam in",
-                    "city": "Voer een plaats in",
-                    "company": "Voer een bedrijfsnaam in",
-                    "phone": "Voer een telefoonnummer in"
-                }
-            },
-            "CreateAccount": {
-                "heading": "Nieuwe klant?",
-                "accountBenefits": "Maak een account aan bij ons om:",
-                "fastCheckout": "Sneller af te rekenen",
-                "multipleAddresses": "Meerdere verzendadressen op te slaan",
-                "ordersHistory": "Uw bestelgeschiedenis te bekijken",
-                "ordersTracking": "Nieuwe bestellingen te volgen",
-                "wishlists": "Artikelen opslaan in uw verlanglijstje",
-                "createLink": "Account aanmaken "
-            }
+        "CreateAccount": {
+            "heading": "Nieuwe klant?",
+            "accountBenefits": "Maak een account aan bij ons om:",
+            "fastCheckout": "Sneller af te rekenen",
+            "multipleAddresses": "Meerdere verzendadressen op te slaan",
+            "ordersHistory": "Uw bestelgeschiedenis te bekijken",
+            "ordersTracking": "Nieuwe bestellingen te volgen",
+            "wishlists": "Artikelen opslaan in uw verlanglijstje",
+            "createLink": "Account aanmaken "
         },
         "Register": {
             "heading": "Nieuw account",
@@ -276,132 +384,137 @@
                 "company": "Voer een bedrijfsnaam in",
                 "phone": "Voer een telefoonnummer in",
                 "postalCode": "Voer een postcode in"
+            },
+            "Errors": {
+                "inputError": "Something went wrong with proccessing user input.",
+                "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
+                "error": "Er is iets fout gegaan. Probeer het later opnieuw."
             }
-        },
-        "ChangePassword": {
-            "currentPasswordLabel": "Huidig wachtwoord",
-            "newPasswordLabel": "Nieuw wachtwoord",
-            "confirmPasswordLabel": "Wachtwoord bevestigen",
-            "cancel": "Annuleren",
-            "confirmPasswordValidationMessage": "Ingevoerde wachtwoorden komen niet overeen. Probeer het opnieuw.",
-            "newPasswordValidationMessage": "Het nieuwe wachtwoord moet anders zijn dan het huidige wachtwoord en/of overeenkomen met het bevestigingswachtwoord.",
-            "notEmptyMessage": "Het veld mag niet leeg zijn",
-            "successMessage": "Wachtwoord is succesvol bijgewerkt!",
-            "confirmChangePassword": "Je wachtwoord is bijgewerkt. Log in met je nieuwe gegevens."
-        },
-        "SubmitChangePassword": {
-            "spinnerText": "Verzenden...",
-            "submitText": "Wachtwoord wijzigen"
-        },
-        "ResetPassword": {
-            "description": "Voer hieronder het e-mailadres in dat aan je account is gekoppeld. We sturen je instructies om je wachtwoord opnieuw in te stellen.",
-            "emailLabel": "E-mailadres",
-            "emailValidationMessage": "Voer een geldig e-mailadres in, zoals naam@domein.com",
-            "successMessage": "Je e-mailadres voor het opnieuw instellen van je wachtwoord is onderweg naar {email}. Controleer zo nodig je spamfolder.",
-            "recaptchaText": "reCAPTCHA-check doorstaan",
-            "confirmResetPassword": "Als het e-mailadres {email} is gekoppeld aan een account in onze winkel, hebben we je een e-mail gestuurd om je wachtwoord opnieuw in te stellen. Controleer je inbox en spammap als je de e-mail niet ziet."
-        },
-        "SubmitResetPassword": {
-            "spinnerText": "Verzenden...",
-            "submitText": "Wachtwoord opnieuw instellen"
         }
+    },
+    "Product": {
+        "loading": "Laden...",
+        "Carousel": {
+            "relatedProducts": "Gerelateerde producten"
+        },
+        "Form": {
+            "success": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>",
+            "error": "Fout opgetreden bij het toevoegen van product aan winkelwagen. Probeer het opnieuw.",
+            "saveToWishlist": "Opslaan in verlanglijstje",
+            "quantityLabel": "Aantal"
+        },
+        "Description": {
+            "heading": "Description"
+        },
+        "Warranty": {
+            "heading": "Garantie"
+        },
+        "Reviews": {
+            "heading": "Beoordelingen",
+            "reviewsCount": "Aantal:",
+            "unreviewed": "Dit product is nog niet beoordeeld.",
+            "reviewRating": "Beoordeling: {rating} van 5 sterren",
+            "reviewAuthor": "Geplaatst door {author} op"
+        },
+        "Details": {
+            "additionalDetails": "Aanvullende details",
+            "sku": "SKU",
+            "upc": "UPC",
+            "minPurchase": "Minimale aankoop",
+            "maxPurchase": "Maximale aankoop",
+            "availability": "Beschikbaarheid",
+            "condition": "Staat",
+            "weight": "Gewicht",
+            "Prices": {
+                "msrp": "Adviesprijs",
+                "was": "was",
+                "now": "nu"
+            },
+            "ReviewSummary": {
+                "rating": "Beoordeling:",
+                "ratingRange": "van de 5 sterren.",
+                "reviewsNumber": "Aantal beoordelingen:"
+            }
+        }
+    },
+    "WebPages": {
+        "ContactUs": {
+            "Form": {
+                "success": "Bedankt voor je bericht. We nemen snel contact met je op.",
+                "error": "Unknown error.",
+                "fullNameLabel": "Volledige naam",
+                "companyNameLabel": "Bedrijfsnaam",
+                "phoneLabel": "Telefoon",
+                "orderNoLabel": "Bestelnummer",
+                "rmaLabel": "RMA-nummer",
+                "emailLabel": "E-mailadres",
+                "emailValidationMessage": "Voer een geldig e-mailadres in, zoals naam@domein.com",
+                "commentsLabel": "Opmerkingen/vragen",
+                "commentsValidationMessage": "Voer een geldige opmerking in",
+                "recaptchaText": "reCAPTCHA-check doorstaan",
+                "onSubmitText": "Verzenden...",
+                "submitFormText": "Formulier indienen"
+            }
+        }
+    },
+    "Maintenance": {
+        "message": "We are down for maintenance",
+        "contactUs": "You can contact us at:"
+    },
+    "StoreSelector": {
+        "heading": "Selecteer een taal en regio"
+    },
+    "Error": {
+        "heading": "Er is een serverfout opgetreden!",
+        "message": "Probeer het later opnieuw."
     },
     "NotFound": {
         "heading": "We hebben die pagina niet gevonden!",
         "message": "De pagina die je zoekt, is verhuisd of bestaat niet meer.",
-        "featuredProducts": "Uitgelichte producten",
-        "searchProducts": "Zoek producten...",
-        "searchPlaceholder": "Tijdelijke aanduiding...",
-        "searching": "Zoeken...",
-        "search": "Zoeken",
-        "noSearchResults": "Helaas, geen resultaten voor {term}.",
-        "checkSpelling": "Controleer de spelling of probeer een andere zoekopdracht."
-    },
-    "ServerError": {
-        "heading": "Er is een serverfout opgetreden!",
-        "message": "Probeer het later opnieuw."
-    },
-    "FacetedGroup": {
-        "MobileSideNav": {
-            "filters": "Filters",
-            "showFilters": "Filters weergeven",
-            "subCategories": "Categorieën"
-        },
-        "FacetedSearch": {
-            "filters": "Filters",
-            "RefineBy": {
-                "refineBy": "Verfijnen op",
-                "clearAllRefinements": "Alles wissen"
-            },
-            "Facets": {
-                "updatePriceButton": "Prijs bijwerken",
-                "freeShippingLabel": "Gratis verzending",
-                "isFeaturedLabel": "Uitgelicht",
-                "inStockLabel": "Op voorraad",
-                "rating": "{currentRating, plural, =1 {1 ster} other {# sterren}} en hoger",
-                "priceFilter": {
-                    "minPricePlaceholder": "{currencySign} min",
-                    "minPriceAriaLabel": "Minimale prijs",
-                    "maxPricePlaceholder": "{currencySign} max",
-                    "maxPriceAriaLabel": "Maximale prijs"
-                }
-            }
-        },
-        "SortBy": {
-            "ariaLabel": "Sorteren op:",
-            "featuredItems": "Uitgelichte items",
-            "bestSellingItems": "Bestverkopende items",
-            "newestItems": "Nieuwste items",
-            "aToZ": "A tot Z",
-            "zToA": "Z tot A",
-            "byReview": "Beoordeling",
-            "priceAscending": "Prijs: oplopend",
-            "priceDescending": "Prijs: aflopend",
-            "relevance": "Relevantie"
+        "Carousel": {
+            "featuredProducts": "Uitgelichte producten"
         }
     },
-    "Providers": {
+    "Components": {
+        "Header": {
+            "Account": {
+                "account": "Account",
+                "myAccount": "My account",
+                "addresses": "Adressen",
+                "accountSettings": "Accountinstellingen",
+                "login": "Inloggen",
+                "logout": "Uitloggen"
+            },
+            "LocaleSwitcher": {
+                "chooseCountryAndLanguage": "Kies je land en taal",
+                "goToSite": "Ga naar de site"
+            }
+        },
         "Compare": {
             "compareButton": "Vergelijken ({products})",
             "productPhoto": "Foto",
             "removeProductAriaLabel": "{product} verwijderen van de vergelijkingslijst"
+        },
+        "SearchForm": {
+            "searchProducts": "Zoek producten...",
+            "searchPlaceholder": "Zoeken...",
+            "search": "Zoeken",
+            "noSearchResults": "Helaas, geen resultaten voor {term}.",
+            "checkSpelling": "Controleer de spelling of probeer een andere zoekopdracht."
+        },
+        "AddToCartButton": {
+            "addToCart": "Toevoegen aan winkelmandje",
+            "outOfStock": "Niet op voorraad",
+            "preorder": "Vooruitbestellen",
+            "unavailable": "Niet beschikbaar",
+            "processing": "Verwerken..."
+        },
+        "ProductCard": {
+            "AddToCart": {
+                "viewOptions": "Opties weergeven",
+                "success": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>",
+                "error": "Fout opgetreden bij het toevoegen van product aan winkelwagen. Probeer het opnieuw."
+            }
         }
-    },
-    "Header": {
-        "account": "Uw account",
-        "chooseCountryAndLanguage": "Kies je land en taal",
-        "goToSite": "Ga naar de site"
-    },
-    "Pagination": {
-        "next": "Volgende",
-        "prev": "Vorige"
-    },
-    "AboutUs": {
-        "fullNameLabel": "Volledige naam",
-        "companyNameLabel": "Bedrijfsnaam",
-        "phoneLabel": "Telefoon",
-        "orderNoLabel": "Bestelnummer",
-        "rmaLabel": "RMA-nummer",
-        "emailLabel": "E-mailadres",
-        "emailValidationMessage": "Voer een geldig e-mailadres in, zoals naam@domein.com",
-        "commentsLabel": "Opmerkingen/vragen",
-        "commentsValidationMessage": "Voer een geldige opmerking in",
-        "recaptchaText": "reCAPTCHA-check doorstaan",
-        "onSubmitText": "Verzenden...",
-        "submitFormText": "Formulier indienen",
-        "sucessSubmitMessage": "Bedankt voor je bericht. We nemen snel contact met je op."
-    },
-    "AddToCart": {
-        "addToCart": "Toevoegen aan winkelmandje",
-        "quickAdd": "Snel toevoegen",
-        "outOfStock": "Niet op voorraad",
-        "preorder": "Vooruitbestellen",
-        "unavailable": "Niet beschikbaar",
-        "processing": "Verwerken...",
-        "addedProductQuantity": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>",
-        "errorAddingProductToCart": "Fout opgetreden bij het toevoegen van product aan winkelwagen. Probeer het opnieuw."
-    },
-    "StoreSelector": {
-        "heading": "Selecteer een taal en regio"
     }
 }
