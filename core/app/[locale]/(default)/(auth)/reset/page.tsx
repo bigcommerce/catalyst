@@ -4,6 +4,7 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { locales, LocaleType } from '~/i18n';
+import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
 import { ResetPasswordForm } from './_components/reset-password-form';
 import { ResetPasswordFormFragment } from './_components/reset-password-form/fragment';
@@ -44,7 +45,7 @@ export default async function Reset({ params: { locale } }: Props) {
   return (
     <div className="mx-auto my-6 max-w-4xl">
       <h2 className="mb-8 text-4xl font-black lg:text-5xl">{t('heading')}</h2>
-      <ResetPasswordForm reCaptchaSettings={data.site.settings?.reCaptcha} />
+      <ResetPasswordForm reCaptchaSettings={bypassReCaptcha(data.site.settings?.reCaptcha)} />
     </div>
   );
 }
