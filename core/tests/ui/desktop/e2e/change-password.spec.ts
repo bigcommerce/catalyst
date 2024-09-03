@@ -11,8 +11,8 @@ test('Change password', async ({ page }) => {
 
   await page.getByRole('heading', { name: 'Change password' }).waitFor();
 
-  await page.getByLabel('PasswordRequired', { exact: true }).fill(password);
-  await page.getByLabel('Confirm PasswordRequired').fill(password);
+  await page.getByLabel('New passwordRequired', { exact: true }).fill(password);
+  await page.getByLabel('Confirm passwordRequired').fill(password);
 
   await page.getByRole('button', { name: 'Change password' }).click();
 

@@ -11,7 +11,6 @@ test.describe.configure({ mode: 'serial' });
 test('Account register', async ({ page }) => {
   await page.goto('/register');
 
-  await page.getByRole('link', { name: 'Create Account' }).click();
   await page.getByRole('heading', { name: 'New account' }).waitFor();
 
   await page
