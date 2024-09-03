@@ -7,6 +7,7 @@ import { FormFieldsFragment } from '~/client/fragments/form-fields';
 import { FORM_FIELDS_VALUES_FRAGMENT } from '~/client/fragments/form-fields-values';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql, VariablesOf } from '~/client/graphql';
+import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
 const CustomerSettingsQuery = graphql(
   `
@@ -108,7 +109,7 @@ export const getCustomerSettingsQuery = cache(async ({ address, customer }: Prop
   const customerFields = response.data.site.settings?.formFields.customer;
   const customerInfo = response.data.customer;
 
-  const reCaptchaSettings = response.data.site.settings?.reCaptcha;
+  const reCaptchaSettings = bypassReCaptcha(response.data.site.settings?.reCaptcha);
 
   if (!addressFields || !customerFields || !customerInfo) {
     return null;

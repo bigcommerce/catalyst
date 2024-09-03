@@ -1,6 +1,6 @@
 'use client';
 
-import { type FragmentOf } from 'gql.tada';
+import { ResultOf } from 'gql.tada';
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -56,10 +56,14 @@ const Submit = () => {
 };
 
 interface Props {
-  data: FragmentOf<typeof ContactUsFragment>;
+  node: ResultOf<typeof ContactUsFragment>['node'];
+  reCaptchaSettings?: {
+    isEnabledOnStorefront: boolean;
+    siteKey: string;
+  };
 }
 
-export const ContactUs = ({ data }: Props) => {
+export const ContactUs = ({ node, reCaptchaSettings }: Props) => {
   const form = useRef<HTMLFormElement>(null);
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
   const [isTextFieldValid, setTextFieldValidation] = useState(true);
@@ -70,12 +74,11 @@ export const ContactUs = ({ data }: Props) => {
 
   const t = useTranslations('WebPages.ContactUs.Form');
 
-  if (data.node?.__typename !== 'ContactPage') {
+  if (node?.__typename !== 'ContactPage') {
     return null;
   }
 
-  const { contactFields: fields, entityId: pageEntityId } = data.node;
-  const reCaptchaSettings = data.site.settings?.reCaptcha;
+  const { contactFields: fields, entityId: pageEntityId } = node;
 
   const onReCaptchaChange = (token: string | null) => {
     if (!token) {

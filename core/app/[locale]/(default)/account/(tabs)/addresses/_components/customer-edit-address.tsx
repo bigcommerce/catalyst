@@ -3,6 +3,7 @@ import { client } from '~/client';
 import { FormFieldsFragment } from '~/client/fragments/form-fields';
 import { graphql, ResultOf } from '~/client/graphql';
 import { ExistingResultType } from '~/client/util';
+import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
 import { getCustomerAddresses } from '../page-data';
 
@@ -84,7 +85,7 @@ export async function CustomerEditAddress({
       addressFields={addressFields}
       countries={countries || []}
       isAddressRemovable={isAddressRemovable}
-      reCaptchaSettings={reCaptchaSettings}
+      reCaptchaSettings={bypassReCaptcha(reCaptchaSettings)}
     />
   );
 }

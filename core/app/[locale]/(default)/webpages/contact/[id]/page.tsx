@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
+
 import { ContactUs } from './contact-us';
 import { getWebpageData } from './page-data';
 
@@ -28,6 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function WebPage({ params: { id } }: Props) {
   const data = await getWebpageData({ id: decodeURIComponent(id) });
   const webpage = data.node?.__typename === 'ContactPage' ? data.node : null;
+  const recaptchaSettings = data.site.settings?.reCaptcha;
 
   if (!webpage) {
     notFound();
@@ -42,7 +45,7 @@ export default async function WebPage({ params: { id } }: Props) {
         <div dangerouslySetInnerHTML={{ __html: htmlBody }} />
       </div>
 
-      <ContactUs data={data} />
+      <ContactUs node={webpage} reCaptchaSettings={bypassReCaptcha(recaptchaSettings)} />
     </>
   );
 }
