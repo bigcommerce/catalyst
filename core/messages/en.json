@@ -49,8 +49,7 @@
       "submit": "Create account",
       "submitting": "Creating account...",
       "recaptchaText": "Pass ReCAPTCHA check",
-      "confirmPassword": "Passwords don't match",
-      "success": "Dear {firstName} {lastName}, you successfully created your account."
+      "confirmPassword": "Passwords don't match"
     },
     "Errors": {
       "inputError": "Something went wrong with proccessing user input.",
