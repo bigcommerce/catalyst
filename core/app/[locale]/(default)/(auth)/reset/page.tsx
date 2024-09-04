@@ -1,9 +1,8 @@
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { locales, LocaleType } from '~/i18n';
 import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
 import { ResetPasswordForm } from './_components/reset-password-form';
@@ -28,13 +27,7 @@ export const metadata = {
   title: 'Reset password',
 };
 
-interface Props {
-  params: { locale: LocaleType };
-}
-
-export default async function Reset({ params: { locale } }: Props) {
-  unstable_setRequestLocale(locale);
-
+export default async function Reset() {
   const t = await getTranslations('Reset');
 
   const { data } = await client.fetch({
@@ -48,10 +41,6 @@ export default async function Reset({ params: { locale } }: Props) {
       <ResetPasswordForm reCaptchaSettings={bypassReCaptcha(data.site.settings?.reCaptcha)} />
     </div>
   );
-}
-
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
 }
 
 export const runtime = 'edge';

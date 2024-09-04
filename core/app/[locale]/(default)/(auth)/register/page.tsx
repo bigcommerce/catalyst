@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 
-import { locales, LocaleType } from '~/i18n';
 import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
 import { RegisterCustomerForm } from './_components/register-customer-form';
@@ -17,13 +16,7 @@ export const metadata = {
   title: 'Register account',
 };
 
-interface Props {
-  params: { locale: LocaleType };
-}
-
-export default async function Register({ params: { locale } }: Props) {
-  unstable_setRequestLocale(locale);
-
+export default async function Register() {
   const t = await getTranslations('Register');
 
   const registerCustomerData = await getRegisterCustomerQuery({
@@ -61,10 +54,6 @@ export default async function Register({ params: { locale } }: Props) {
       />
     </div>
   );
-}
-
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
 }
 
 export const runtime = 'edge';

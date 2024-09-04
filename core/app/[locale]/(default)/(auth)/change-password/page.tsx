@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 import { ChangePasswordForm } from './_components/change-password-form';
@@ -19,6 +20,10 @@ export default function ChangePassword({ searchParams }: Props) {
   const customerId = searchParams.c;
   const customerToken = searchParams.t;
 
+  if (!customerId || !customerToken) {
+    redirect('/login');
+  }
+
   if (customerId && customerToken) {
     return (
       <div className="mx-auto my-6 max-w-4xl">
@@ -27,6 +32,8 @@ export default function ChangePassword({ searchParams }: Props) {
       </div>
     );
   }
+
+  return null;
 }
 
 export const runtime = 'edge';
