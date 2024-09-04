@@ -2,10 +2,9 @@
 
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { useTranslations } from 'next-intl';
-import { useMemo, useState } from 'react';
+import { FormEvent, useMemo, useState } from 'react';
 
-import { LocaleType } from '~/i18n';
-import { useRouter } from '~/routing';
+import { LocaleType, useRouter } from '~/i18n/routing';
 
 import { Button } from '../button';
 import { Select } from '../form';
@@ -78,7 +77,9 @@ const LocaleSwitcher = ({ activeLocale, locales }: Props) => {
     }
   };
 
-  const handleOnSubmit = () => {
+  const handleOnSubmit = (event: FormEvent) => {
+    event.preventDefault();
+
     const newLocale = locales.find(
       (locale) => locale.language === languageSelected && locale.region === regionSelected,
     );

@@ -1,15 +1,9 @@
-import { notFound } from 'next/navigation';
-import { getRequestConfig } from 'next-intl/server';
-
-enum LocalePrefixes {
-  ALWAYS = 'always',
-  NEVER = 'never',
-  ASNEEDED = 'as-needed', // removes prefix on default locale
-}
+import { createSharedPathnamesNavigation } from 'next-intl/navigation';
+import { defineRouting, LocalePrefix } from 'next-intl/routing';
 
 // Enable locales by including them here.
 // List includes locales with existing messages support.
-const locales = [
+export const locales = [
   'en',
   // 'da',
   // 'es-419',
@@ -31,6 +25,8 @@ const locales = [
   // 'pt-BR',
   // 'sv',
 ] as const;
+
+export type LocaleType = (typeof locales)[number];
 
 interface LocaleEntry {
   id: LocaleType;
@@ -66,25 +62,26 @@ export const localeLanguageRegionMap: LocaleEntry[] = [
   // { id: 'sv', language: 'Svenska', region: 'Sverige', flag: '🇸🇪' },
 ];
 
-type LocalePrefixesType = `${LocalePrefixes}`;
+enum LocalePrefixes {
+  ALWAYS = 'always',
+  NEVER = 'never',
+  ASNEEDED = 'as-needed', // removes prefix on default locale
+}
 
 // Temporary we use NEVER prefix to prioritize accept-language header
 // & disable internationalized routes due to incomplete multilingual implementation
-const localePrefix: LocalePrefixesType = LocalePrefixes.NEVER;
-const defaultLocale = 'en';
+export const localePrefix: LocalePrefix = LocalePrefixes.NEVER;
 
-type LocaleType = (typeof locales)[number];
+export const defaultLocale = 'en';
 
-export default getRequestConfig(async (params) => {
-  let lang = params.locale as LocaleType; // eslint-disable-line
-
-  if (!locales.includes(lang)) notFound();
-
-  return {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    messages: (await import(`./messages/${lang}`)).default,
-  };
+export const routing = defineRouting({
+  locales,
+  defaultLocale,
+  localePrefix: {
+    mode: localePrefix,
+  },
 });
 
-export { LocalePrefixes, locales, localePrefix, defaultLocale };
-export type { LocaleType };
+// Lightweight wrappers around Next.js' navigation APIs
+// that will consider the routing configuration
+export const { Link, redirect, usePathname, useRouter } = createSharedPathnamesNavigation(routing);

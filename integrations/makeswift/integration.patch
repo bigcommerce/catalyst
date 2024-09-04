@@ -21,7 +21,7 @@ index 71d40507..9179455c 100644
  
 -export default function CatchAllPage() {
 -  notFound();
-+import { locales } from '~/i18n';
++import { locales } from '~/i18n/routing';
 +import { client } from '~/lib/makeswift/client';
 +import { MakeswiftProvider } from '~/lib/makeswift/provider';
 +

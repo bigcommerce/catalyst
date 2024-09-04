@@ -3,7 +3,7 @@ import { unstable_setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
 
 import { Link } from '~/components/link';
-import { LocaleType } from '~/i18n';
+import { LocaleType } from '~/i18n/routing';
 import { cn } from '~/lib/utils';
 
 const tabList = ['addresses', 'settings'] as const;

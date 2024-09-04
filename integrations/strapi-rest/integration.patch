@@ -105,7 +105,7 @@ index 3edd5ac4..4b7c2c40 100644
  
  import { BcImage } from '~/components/bc-image';
  import { Link } from '~/components/link';
-@@ -9,35 +10,32 @@ import { LocaleType } from '~/i18n';
+@@ -9,35 +10,32 @@ import { LocaleType } from '~/i18n/routing';
  
  import { SharingLinks } from './_components/sharing-links';
  import { getBlogPageData } from './page-data';
@@ -261,7 +261,7 @@ index 00000000..6d2a5579
 +import { BlocksRenderer, type BlocksContent } from '@strapi/blocks-react-renderer';
 +import { unstable_setRequestLocale } from 'next-intl/server';
 +import { Link } from '~/components/link';
-+import { LocaleType } from '~/i18n';
++import { LocaleType } from '~/i18n/routing';
 +import { fetchStrapiData } from '~/lib/strapi/data-fetcher';
 +
 +interface Props {
@@ -352,7 +352,7 @@ index 00000000..54a634d2
 @@ -0,0 +1,71 @@
 +import { unstable_setRequestLocale } from 'next-intl/server';
 +import { Link } from '~/components/link';
-+import { LocaleType } from '~/i18n';
++import { LocaleType } from '~/i18n/routing';
 +import { fetchStrapiData } from '~/lib/strapi/data-fetcher';
 +
 +interface Props {

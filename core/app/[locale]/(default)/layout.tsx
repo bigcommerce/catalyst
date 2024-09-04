@@ -10,7 +10,7 @@ import { FooterFragment } from '~/components/footer/fragment';
 import { Header } from '~/components/header';
 import { Cart } from '~/components/header/cart';
 import { HeaderFragment } from '~/components/header/fragment';
-import { LocaleType } from '~/i18n';
+import { LocaleType } from '~/i18n/routing';
 
 interface Props extends PropsWithChildren {
   params: { locale: LocaleType };
