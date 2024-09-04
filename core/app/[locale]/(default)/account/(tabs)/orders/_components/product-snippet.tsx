@@ -1,4 +1,4 @@
-import { useFormatter } from 'next-intl';
+import { useFormatter, useTranslations } from 'next-intl';
 
 import { FragmentOf, graphql, ResultOf } from '~/client/graphql';
 import { BcImage } from '~/components/bc-image';
@@ -73,6 +73,8 @@ export const assembleProductData = (orderItem: FragmentOf<typeof OrderItemFragme
 };
 
 const Price = ({ price }: { price?: PricesType }) => {
+  const t = useTranslations('Product.Details.Prices');
+
   if (!price) {
     return;
   }
@@ -90,9 +92,11 @@ const Price = ({ price }: { price?: PricesType }) => {
         {price.type === 'sale' && (
           <>
             <span>
-              Was: <span className="line-through">{price.previousValue}</span>
+              {t('was')}: <span className="line-through">{price.previousValue}</span>
             </span>
-            <span>Now: {price.currentValue}</span>
+            <span>
+              {t('now')}: {price.currentValue}
+            </span>
           </>
         )}
       </p>
@@ -120,20 +124,23 @@ export const ProductSnippet = ({
   productSize,
 }: Props) => {
   const format = useFormatter();
+  const t = useTranslations('Product.Details');
   const { name, defaultImage, brand, path, prices } = product;
   const price = pricesTransformer(prices, format);
+  // TODO: clear once API is ready
+  const isImageAvailable = isExtended && defaultImage?.url === 'string';
 
   return (
-    <div className={cn('relative flex flex-col overflow-visible', isExtended && 'flex-row gap-4')}>
-      <div className={cn('relative flex justify-center pb-3', isExtended && 'w-1/4')}>
-        <div
-          className={cn('relative flex-auto', {
-            'aspect-square': imageSize === 'square',
-            'aspect-[4/5]': imageSize === 'tall',
-            'aspect-[7/5]': imageSize === 'wide',
-          })}
-        >
-          {defaultImage?.url ? (
+    <div className={cn('relative flex flex-col overflow-visible', isExtended && 'flex-row')}>
+      <div className={cn('relative flex justify-center pb-3', isImageAvailable && 'w-1/4')}>
+        {isImageAvailable && (
+          <div
+            className={cn('relative flex-auto', {
+              'aspect-square': imageSize === 'square',
+              'aspect-[4/5]': imageSize === 'tall',
+              'aspect-[7/5]': imageSize === 'wide',
+            })}
+          >
             <BcImage
               alt={defaultImage.altText || name}
               className="object-contain"
@@ -142,10 +149,15 @@ export const ProductSnippet = ({
               sizes="(max-width: 768px) 50vw, (max-width: 1536px) 25vw, 500px"
               src={defaultImage.url}
             />
-          ) : (
-            <div className="h-full w-full bg-gray-200" />
-          )}
-        </div>
+          </div>
+        )}
+        {!isExtended && defaultImage?.url !== 'string' && (
+          <div className="relative aspect-square flex-auto">
+            <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
+              <span>{t('comingSoon')}</span>
+            </div>
+          </div>
+        )}
       </div>
       <div className={cn('flex flex-1 flex-col gap-1', isExtended && 'w-3/4')}>
         {brand ? <p className={cn('text-base text-gray-500', brandSize)}>{brand.name}</p> : null}
@@ -171,7 +183,7 @@ export const ProductSnippet = ({
                   );
                 })}
                 <p className="flex gap-1 text-xs">
-                  <span>Qty:</span>
+                  <span>{t('qty')}:</span>
                   <span className="font-semibold">{product.quantity}</span>
                 </p>
               </div>
