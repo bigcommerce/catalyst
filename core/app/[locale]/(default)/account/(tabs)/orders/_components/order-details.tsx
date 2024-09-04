@@ -111,18 +111,7 @@ const OrderSummaryInfo = async ({
           </span>
         </p>
       </div>
-      {/* NOTE: it is temporary disabled since not supported yet */}
-      <div className="mt-4 flex flex-col gap-2 md:flex-row lg:flex-col">
-        <Button aria-label={t('printInvoice')} className="w-full" disabled variant="secondary">
-          {t('printInvoice')}
-        </Button>
-        <Button aria-label={t('repurchaseOrder')} className="w-full" disabled variant="secondary">
-          {t('repurchaseOrder')}
-        </Button>
-        <Button aria-label={t('return')} className="w-full" disabled variant="secondary">
-          {t('return')}
-        </Button>
-      </div>
+      {/* TODO: add manage-order buttons */}
     </div>
   );
 };
@@ -171,12 +160,10 @@ const ShippingInfo = async ({
 }) => {
   const locale = await getLocale();
   const t = await getTranslations({ locale, namespace: 'Account.Orders' });
-  const orderShipments = consignments.shipping
-    ? consignments.shipping.map(({ shipments, shippingAddress }) => ({
-        shipments: removeEdgesAndNodes(shipments),
-        shippingAddress,
-      }))
-    : null;
+  const orderShipments = consignments.shipping?.map(({ shipments, shippingAddress }) => ({
+    shipments: removeEdgesAndNodes(shipments),
+    shippingAddress,
+  }));
 
   if (!orderShipments) {
     return;
@@ -200,10 +187,6 @@ const ShippingInfo = async ({
     );
   }
 
-  const trackingUrl =
-    trackingData && trackingData.__typename !== 'OrderShipmentNumberOnlyTracking'
-      ? trackingData.url
-      : null;
   const trackingNumber =
     trackingData && trackingData.__typename !== 'OrderShipmentUrlOnlyTracking'
       ? trackingData.number
@@ -235,38 +218,17 @@ const ShippingInfo = async ({
         {customerShippingMethod.map((line) => (
           <p key={line}>{line}</p>
         ))}
-        {typeof trackingUrl === 'string' && Boolean(trackingNumber) && (
-          <Button aria-label={t('trackOrder')} asChild className="w-full" variant="subtle">
-            <Link href={trackingUrl}>{trackingNumber}</Link>
+        {Boolean(trackingNumber) && (
+          <Button
+            aria-label={t('trackOrder')}
+            asChild
+            className="justify-start p-0"
+            variant="subtle"
+          >
+            {/* TODO: add link when tracking url available */}
+            <Link href="#">{trackingNumber}</Link>
           </Button>
         )}
-      </div>
-    </div>
-  );
-};
-
-const PaymentInfo = async ({
-  paymentData,
-}: {
-  paymentData: OrderDetailsDataType['paymentInfo'];
-}) => {
-  const locale = await getLocale();
-  const t = await getTranslations({ locale, namespace: 'Account.Orders' });
-  const { billingAddress } = paymentData;
-  const customerBillingAddress = combineAddressInfo(billingAddress);
-
-  return (
-    <div className="border border-gray-200 p-6">
-      <p className="border-b border-gray-200 pb-4 text-lg font-semibold">{t('shippingPayment')}</p>
-      {/* <div className="flex flex-col gap-2 py-4">
-        <p className="font-semibold">{t('shippingPaymentMethod')}</p>
-        <p>TODO: add payments info</p>
-      </div> */}
-      <div className="flex flex-col gap-2 border-0 border-gray-200 pt-4 text-base">
-        <p className="font-semibold">{t('billingAddress')}</p>
-        {customerBillingAddress.map((line) => (
-          <p key={line}>{line}</p>
-        ))}
       </div>
     </div>
   );
@@ -275,14 +237,12 @@ const PaymentInfo = async ({
 export const OrderDetails = async ({ data }: { data: OrderDetailsDataType }) => {
   const locale = await getLocale();
   const t = await getTranslations({ locale, namespace: 'Account.Orders' });
-  const { orderState, summaryInfo, consignments, paymentInfo } = data;
+  const { orderState, summaryInfo, consignments } = data;
   const isMultiShippingConsignments = consignments.shipping && consignments.shipping.length > 1;
 
-  const orderContent = consignments.shipping
-    ? consignments.shipping.map(({ lineItems }) => ({
-        lineItems: removeEdgesAndNodes(lineItems),
-      }))
-    : null;
+  const orderContent = consignments.shipping?.map(({ lineItems }) => ({
+    lineItems: removeEdgesAndNodes(lineItems),
+  }));
 
   return (
     <div className="mb-14">
@@ -306,7 +266,7 @@ export const OrderDetails = async ({ data }: { data: OrderDetailsDataType }) => 
                     shippingNumber={idx}
                   />
                 )}
-                <ul className="my-6 flex flex-col gap-6">
+                <ul className="my-4 flex flex-col gap-4">
                   {lineItems.map((shipment) => {
                     return (
                       <li key={shipment.entityId}>
@@ -329,7 +289,7 @@ export const OrderDetails = async ({ data }: { data: OrderDetailsDataType }) => 
           {!isMultiShippingConsignments && (
             <ShippingInfo consignments={consignments} isMutiConsignments={false} />
           )}
-          <PaymentInfo paymentData={paymentInfo} />
+          {/* TODO: add PaymentInfo component later */}
         </div>
       </div>
     </div>
