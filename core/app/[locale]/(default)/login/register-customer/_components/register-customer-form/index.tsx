@@ -5,6 +5,7 @@ import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
+import { useAccountStatusContext } from '~/app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
 import {
   createDatesValidationHandler,
   createMultilineTextValidationHandler,
@@ -113,6 +114,8 @@ export const RegisterCustomerForm = ({
   const reCaptchaRef = useRef<ReCaptcha>(null);
   const [reCaptchaToken, setReCaptchaToken] = useState('');
   const [isReCaptchaValid, setReCaptchaValid] = useState(true);
+
+  const { setAccountState } = useAccountStatusContext();
 
   const t = useTranslations('Login.Register');
 
@@ -239,13 +242,7 @@ export const RegisterCustomerForm = ({
     const submit = await registerCustomer({ formData, reCaptchaToken });
 
     if (submit.status === 'success') {
-      setFormStatus({
-        status: 'success',
-        message: t('successMessage', {
-          firstName: submit.data?.firstName,
-          lastName: submit.data?.lastName,
-        }),
-      });
+      setAccountState({ status: 'success' });
 
       await login(formData);
     }

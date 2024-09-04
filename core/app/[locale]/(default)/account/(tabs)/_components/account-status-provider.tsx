@@ -1,30 +1,27 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
 import { State as AccountState } from '../settings/_actions/submit-customer-change-password-form';
+
+const defaultState: AccountState = { status: 'idle', message: '' };
 
 export const AccountStatusContext = createContext<{
   accountState: AccountState;
   setAccountState: (state: AccountState | ((prevState: AccountState) => AccountState)) => void;
 } | null>(null);
 
-export const AccountStatusProvider = ({
-  children,
-  isPermanentBanner = false,
-}: {
-  children: ReactNode;
-  isPermanentBanner?: boolean;
-}) => {
-  const [accountState, setAccountState] = useState<AccountState>({ status: 'idle', message: '' });
+export const AccountStatusProvider = ({ children }: { children: ReactNode }) => {
+  const [accountState, setAccountState] = useState<AccountState>(defaultState);
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (accountState.status !== 'idle' && !isPermanentBanner) {
-      setTimeout(() => {
-        setAccountState({ status: 'idle', message: '' });
-      }, 3000);
+    // Reset account state when changing the route except the Account Page
+    if (pathname !== '/account/') {
+      setAccountState(defaultState);
     }
-  }, [accountState, setAccountState, isPermanentBanner]);
+  }, [pathname]);
 
   return (
     <AccountStatusContext.Provider value={{ accountState, setAccountState }}>
