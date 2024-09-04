@@ -5,7 +5,7 @@ import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
 import { Breadcrumbs } from '~/components/breadcrumbs';
-import { LocaleType } from '~/i18n';
+import { LocaleType } from '~/i18n/routing';
 
 import { Description } from './_components/description';
 import { Details } from './_components/details';

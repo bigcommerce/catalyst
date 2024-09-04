@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 
 import { BlogPostCard } from '~/components/blog-post-card';
 import { Pagination } from '~/components/ui/pagination';
-import { LocaleType } from '~/i18n';
+import { LocaleType } from '~/i18n/routing';
 
 import { getBlogPosts } from './page-data';
 

@@ -18,7 +18,7 @@ import {
   Input,
 } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
-import { useRouter } from '~/routing';
+import { useRouter } from '~/i18n/routing';
 
 import { submitCustomerChangePasswordForm } from '../_actions/submit-customer-change-password-form';
 

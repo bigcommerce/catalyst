@@ -1,6 +1,6 @@
 import { getLocale } from 'next-intl/server';
 
-import { localeLanguageRegionMap, locales } from '~/i18n';
+import { localeLanguageRegionMap, locales } from '~/i18n/routing';
 
 import { Link as CustomLink } from '../../link';
 

@@ -1,6 +1,6 @@
 import createMiddleware from 'next-intl/middleware';
 
-import { routing } from '~/routing';
+import { routing } from '~/i18n/routing';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 

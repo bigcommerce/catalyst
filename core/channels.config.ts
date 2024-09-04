@@ -1,4 +1,4 @@
-import { type LocaleType } from './i18n';
+import { type LocaleType } from './i18n/routing';
 
 export type RecordFromLocales = {
   [K in LocaleType]: string;

@@ -5,7 +5,7 @@ import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate as revalidateTarget } from '~/client/revalidate-target';
 import { ExistingResultType } from '~/client/util';
-import { locales } from '~/i18n';
+import { locales } from '~/i18n/routing';
 
 import { CategoryTreeFragment } from '../_components/sub-categories';
 import CategoryPage from '../page';

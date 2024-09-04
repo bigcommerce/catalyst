@@ -1,5 +1,5 @@
 import { Link } from '~/components/link';
-import { localeLanguageRegionMap, LocaleType } from '~/i18n';
+import { localeLanguageRegionMap, LocaleType } from '~/i18n/routing';
 import { cn } from '~/lib/utils';
 
 export const LocaleLink = ({ locale, selected }: { locale: string; selected: boolean }) => {

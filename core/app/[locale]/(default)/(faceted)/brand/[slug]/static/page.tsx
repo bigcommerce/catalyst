@@ -5,7 +5,7 @@ import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate as revalidateTarget } from '~/client/revalidate-target';
-import { locales } from '~/i18n';
+import { locales } from '~/i18n/routing';
 
 import BrandPage from '../page';
 

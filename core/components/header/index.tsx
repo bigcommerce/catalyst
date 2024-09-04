@@ -5,7 +5,7 @@ import { ReactNode, Suspense } from 'react';
 import { getSessionCustomerId } from '~/auth';
 import { FragmentOf } from '~/client/graphql';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
-import { localeLanguageRegionMap } from '~/i18n';
+import { localeLanguageRegionMap } from '~/i18n/routing';
 
 import { Link } from '../link';
 import { Button } from '../ui/button';

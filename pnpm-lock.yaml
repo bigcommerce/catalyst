@@ -120,8 +120,8 @@ importers:
         specifier: 5.0.0-beta.20
         version: 5.0.0-beta.20(next@14.2.6(@playwright/test@1.46.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(nodemailer@6.9.14)(react@18.3.1)
       next-intl:
-        specifier: ^3.18.1
-        version: 3.18.1(next@14.2.6(@playwright/test@1.46.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
+        specifier: ^3.19.0
+        version: 3.19.0(next@14.2.6(@playwright/test@1.46.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -4248,8 +4248,8 @@ packages:
       nodemailer:
         optional: true
 
-  next-intl@3.18.1:
-    resolution: {integrity: sha512-ht8HyroJeiJIte9yhg1f0Nc2rlZmkvSYQ3nhqFVJLzhq7T1Xb8nfjilffrOJc3sA8kEjBOS4bdIrg4YX8REO0Q==}
+  next-intl@3.19.0:
+    resolution: {integrity: sha512-ciiHYBwR3ztoMdJZgFmt0LII7GYTsLA/MFt3y681q4Lw4fI5EYNCZSYb9XA/BIt3ZX5S1TLUP1uOERy1dIQvMg==}
     peerDependencies:
       next: ^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0 || ^14.0.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
@@ -5411,8 +5411,8 @@ packages:
       '@types/react':
         optional: true
 
-  use-intl@3.18.1:
-    resolution: {integrity: sha512-BFNhVnszG1AB04DbNvJ+TLLd1oBDGergAKI8t9xaE4vDJYZaVKQH4zmpdArbegzTu5U9XMen6w14d1P1hBwKOQ==}
+  use-intl@3.19.0:
+    resolution: {integrity: sha512-JOA73+YdtArxkvFKrneLAhH55m+x+sA9Wj8w8rYkHkHvcW/76w5T3szSmBG063vH3UqLoIKlsDVBBUfpkB7GMg==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
@@ -10181,13 +10181,13 @@ snapshots:
     optionalDependencies:
       nodemailer: 6.9.14
 
-  next-intl@3.18.1(next@14.2.6(@playwright/test@1.46.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1):
+  next-intl@3.19.0(next@14.2.6(@playwright/test@1.46.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1):
     dependencies:
       '@formatjs/intl-localematcher': 0.5.4
       negotiator: 0.6.3
       next: 14.2.6(@playwright/test@1.46.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
-      use-intl: 3.18.1(react@18.3.1)
+      use-intl: 3.19.0(react@18.3.1)
 
   next@14.2.6(@playwright/test@1.46.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
@@ -11340,7 +11340,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.3.4
 
-  use-intl@3.18.1(react@18.3.1):
+  use-intl@3.19.0(react@18.3.1):
     dependencies:
       '@formatjs/fast-memoize': 2.2.0
       intl-messageformat: 10.5.14
