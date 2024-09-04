@@ -10,8 +10,8 @@ export const withIntl: MiddlewareFactory = (next) => {
   return async (request, event) => {
     const intlResponse = intlMiddleware(request);
 
-    // If intlMiddleware redirects, return it immediately
-    if (intlResponse.redirected) {
+    // If intlMiddleware redirects, or returns a non-200 return it immediately
+    if (!intlResponse.ok) {
       return intlResponse;
     }
 
