@@ -3,7 +3,7 @@ import { unstable_setRequestLocale } from 'next-intl/server';
 
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
-import { locales, LocaleType } from '~/i18n';
+import { locales, LocaleType } from '~/i18n/routing';
 
 import { LoginForm } from './_components/login-form';
 
