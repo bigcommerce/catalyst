@@ -451,6 +451,8 @@
       "maxPurchase": "Maxiumum purchase",
       "availability": "Availability",
       "condition": "Condition",
+      "comingSoon": "Coming Soon",
+      "qty": "Qty",
       "weight": "Weight",
       "Prices": {
         "msrp": "MSRP",
