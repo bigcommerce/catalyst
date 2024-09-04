@@ -1,4 +1,4 @@
-import { DocumentNode, print } from 'graphql';
+import { DocumentNode, print } from '@0no-co/graphql.web';
 
 import { DocumentDecoration } from '../types';
 
