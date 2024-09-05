@@ -7,6 +7,7 @@ import {
   SiX,
   SiYoutube,
 } from '@icons-pack/react-simple-icons';
+import { JSX } from 'react';
 
 import { FragmentOf } from '~/client/graphql';
 import { Footer as ComponentsFooter } from '~/components/ui/footer';

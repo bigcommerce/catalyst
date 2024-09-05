@@ -151,9 +151,9 @@ export const RegisterCustomerForm = ({
 
       case 'confirmPassword': {
         const confirmPassword = e.target.value;
-        const field = customerFields.filter(
+        const field = customerFields.find(
           ({ entityId }) => entityId === Number(FieldNameToFieldId.password),
-        )[0];
+        );
 
         if (!isAddressOrAccountFormField(field)) {
           return;

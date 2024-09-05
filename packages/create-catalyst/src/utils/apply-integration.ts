@@ -36,7 +36,7 @@ export async function applyIntegration(
 
   try {
     readJsonSync(join(integrationDir, 'manifest.json'));
-  } catch (err) {
+  } catch {
     console.error(
       `\nNo manifest.json found in the ${integration} integration folder. Please check that the integration exists in the Catalyst monorepo: https://github.com/bigcommerce/catalyst`,
     );

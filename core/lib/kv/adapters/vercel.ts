@@ -16,11 +16,7 @@ export class VercelKvAdapter implements KvAdapter {
     return memoryValues.length ? memoryValues : this.vercelKv.mget<Data[]>(keys);
   }
 
-  async set<Data, Options extends SetCommandOptions = SetCommandOptions>(
-    key: string,
-    value: Data,
-    opts?: Options,
-  ) {
+  async set<Data>(key: string, value: Data, opts?: SetCommandOptions) {
     await this.memoryKv.set(key, value, opts);
 
     const response = await this.vercelKv.set(key, value, opts);
