@@ -37,7 +37,6 @@ const LocaleSwitcher = ({ activeLocale, locales }: Props) => {
 
   const [regionSelected, setRegionSelected] = useState(selectedLocale?.region || '');
   const [languageSelected, setLanguageSelected] = useState(selectedLocale?.language || '');
-  const [newLocale, setNewLocale] = useState<LocaleType | null>(null);
 
   const languagesByRegionMap = useMemo(
     () =>
@@ -53,17 +52,9 @@ const LocaleSwitcher = ({ activeLocale, locales }: Props) => {
     [locales],
   );
 
-  useEffect(() => {
-    if (regionSelected && languageSelected) {
-      const nextLocale = locales.find(
-        (locale) => locale.language === languageSelected && locale.region === regionSelected,
-      );
-
-      if (nextLocale) {
-        setNewLocale(nextLocale.id);
-      }
-    }
-  }, [regionSelected, languageSelected, locales]);
+  const newLocale = useMemo(() => locales.find(
+      (locale) => locale.language === languageSelected && locale.region === regionSelected,
+    ), [languageSelected, regionSelected]);
 
   if (!selectedLocale) {
     return null;
@@ -118,7 +109,7 @@ const LocaleSwitcher = ({ activeLocale, locales }: Props) => {
                 value={languageSelected}
               />
               <Button asChild>
-                <Link className="hover:text-white" href="/" locale={newLocale ?? defaultLocale}>
+                <Link className="hover:text-white" href="/" locale={newLocale?.id ?? defaultLocale}>
                   {t('goToSite')}
                 </Link>
               </Button>
