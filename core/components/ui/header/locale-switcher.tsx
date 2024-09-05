@@ -2,10 +2,10 @@
 
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { useTranslations } from 'next-intl';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { Link } from '~/components/link';
-import { defaultLocale, LocaleType } from '~/i18n/routing';
+import { LocaleType } from '~/i18n/routing';
 
 import { Button } from '../button';
 import { Select } from '../form';
@@ -109,7 +109,7 @@ const LocaleSwitcher = ({ activeLocale, locales }: Props) => {
                 value={languageSelected}
               />
               <Button asChild>
-                <Link className="hover:text-white" href="/" locale={newLocale?.id ?? defaultLocale}>
+                <Link className="hover:text-white" href="/" locale={newLocale?.id}>
                   {t('goToSite')}
                 </Link>
               </Button>
