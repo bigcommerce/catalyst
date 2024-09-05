@@ -55,9 +55,7 @@ const Select = forwardRef<ElementRef<typeof SelectPrimitive.Trigger>, Props>(
                   <SelectPrimitive.Item
                     key={`${id}-${value}`}
                     {...optionProps}
-                    className={
-                      'relative flex w-full cursor-pointer select-none items-center justify-between overflow-visible px-4 py-2 outline-none hover:bg-secondary/10 hover:text-primary focus-visible:bg-secondary/10 data-[disabled]:pointer-events-none data-[state="checked"]:bg-secondary/10 data-[state="checked"]:text-primary data-[disabled]:opacity-50'
-                    }
+                    className='relative flex w-full cursor-pointer select-none items-center justify-between overflow-visible px-4 py-2 outline-none hover:bg-secondary/10 hover:text-primary focus-visible:bg-secondary/10 data-[disabled]:pointer-events-none data-[state="checked"]:bg-secondary/10 data-[state="checked"]:text-primary data-[disabled]:opacity-50'
                     value={value}
                   >
                     <SelectPrimitive.ItemText>{optionLabel}</SelectPrimitive.ItemText>

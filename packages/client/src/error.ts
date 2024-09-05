@@ -19,7 +19,7 @@ export class BigCommerceAPIError extends Error {
       assertIsErrorResponse(errorResponse);
 
       return new BigCommerceAPIError(response.status, errorResponse.errors);
-    } catch (jsonParseError) {
+    } catch {
       return new BigCommerceAPIError(response.status);
     }
   }

@@ -14,7 +14,7 @@ const poll = async (auth: Https, deviceCode: string, interval: number, expiresIn
   for (let i = 0; i < retries; i += 1) {
     try {
       return await auth.checkDeviceCode(deviceCode);
-    } catch (err) {
+    } catch {
       // noop
     }
 

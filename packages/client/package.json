@@ -22,7 +22,7 @@
     "graphql": "^16.0.0"
   },
   "devDependencies": {
-    "@bigcommerce/eslint-config": "^2.9.0",
+    "@bigcommerce/eslint-config": "^2.9.1",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@types/node": "^20.16.1",
     "dotenv-cli": "^7.4.2",

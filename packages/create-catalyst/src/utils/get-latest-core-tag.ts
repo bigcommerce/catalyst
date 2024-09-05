@@ -10,7 +10,7 @@ export const getLatestCoreTag = async () => {
     const { version } = z.object({ version: z.string() }).parse(await response.json());
 
     return `@bigcommerce/catalyst-core@${version}`;
-  } catch (err) {
+  } catch {
     throw new Error('Unable to determine the latest valid Catalyst release');
   }
 };

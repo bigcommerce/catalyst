@@ -16,11 +16,7 @@ export class UpstashKvAdapter implements KvAdapter {
     return memoryValues.length ? memoryValues : this.upstashKv.mget<Data[]>(keys);
   }
 
-  async set<Data, Options extends SetCommandOptions = SetCommandOptions>(
-    key: string,
-    value: Data,
-    opts?: Options,
-  ) {
+  async set<Data>(key: string, value: Data, opts?: SetCommandOptions) {
     await this.memoryKv.set(key, value, opts);
 
     const response = await this.upstashKv.set(key, value, opts);
