@@ -131,25 +131,6 @@ const Component = () => {
 > **unstable_setRequestLocale**
 > Please pay attention to `unstable_setRequestLocale` call. You can read more in [next-intl docs](https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-unstable_setrequestlocale-to-all-layouts-and-pages).
 
-The following example shows usage in a nested **client** component:
-
-```tsx
-'use client';
-
-// ...
-import { useTranslations } from 'next-intl';
-
-export const AddToCart = () => {
-  const t = useTranslations('Product.ProductSheet');
-
-  return (
-    <Button type="submit">
-        t('addToCart')
-    </Button>
-  );
-};
-```
-
 ## Routing and locale detection
 
 Even though the next-intl library supports several [locale detection strategies](https://next-intl-docs.vercel.app/docs/routing/middleware#strategies), Catalyst doesn't use any by default, as full internationalization support is still in progress. This strategy can be changed in the `i18n.ts` config file.
