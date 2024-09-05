@@ -52,9 +52,13 @@ const LocaleSwitcher = ({ activeLocale, locales }: Props) => {
     [locales],
   );
 
-  const newLocale = useMemo(() => locales.find(
-      (locale) => locale.language === languageSelected && locale.region === regionSelected,
-    ), [languageSelected, regionSelected]);
+  const newLocale = useMemo(
+    () =>
+      locales.find(
+        (locale) => locale.language === languageSelected && locale.region === regionSelected,
+      ),
+    [languageSelected, locales, regionSelected],
+  );
 
   if (!selectedLocale) {
     return null;
