@@ -64,7 +64,7 @@ Read more about i18n messages in [next-intl docs](https://next-intl-docs.vercel.
 
 ## i18n configuration
 
-After you created a language file, add its name to the `i18n.ts` config file.
+After you created a language file, add its name to the `routing.ts` config file.
 
 For example, if you created a `fr.json` file, include `fr` when you define the locales:
 
