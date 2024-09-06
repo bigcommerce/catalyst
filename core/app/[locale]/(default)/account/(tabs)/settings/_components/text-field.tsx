@@ -26,7 +26,8 @@ export const TextField = ({
   onChange,
   type = 'text',
 }: TextProps) => {
-  const t = useTranslations('Account.Settings.validationMessages');
+  const t = useTranslations('Components.FormFields.Validation');
+
   const fieldNameById = FieldNameToFieldId[entityId];
   const fieldId = name?.startsWith('custom_') ? `custom_field-${entityId}` : `field-${entityId}`;
   const fieldName = name || fieldNameById || fieldId;

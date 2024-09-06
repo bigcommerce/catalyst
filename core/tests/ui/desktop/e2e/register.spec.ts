@@ -9,9 +9,8 @@ const password = faker.internet.password({ pattern: /[a-zA-Z0-9]/, prefix: '1At'
 test.describe.configure({ mode: 'serial' });
 
 test('Account register', async ({ page }) => {
-  await page.goto('/login');
+  await page.goto('/register');
 
-  await page.getByRole('link', { name: 'Create Account' }).click();
   await page.getByRole('heading', { name: 'New account' }).waitFor();
 
   await page

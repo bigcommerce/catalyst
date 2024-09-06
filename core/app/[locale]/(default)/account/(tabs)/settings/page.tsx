@@ -14,7 +14,7 @@ interface Props {
   };
 }
 
-export default async function SettingsPage({ searchParams }: Props) {
+export default async function Settings({ searchParams }: Props) {
   const customerSettings = await getCustomerSettingsQuery({
     address: { filters: { entityIds: [4, 5, 6, 7] } },
   });

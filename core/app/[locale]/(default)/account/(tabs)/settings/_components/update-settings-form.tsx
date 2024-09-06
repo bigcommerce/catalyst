@@ -5,6 +5,7 @@ import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
+import { ExistingResultType } from '~/client/util';
 import {
   Checkboxes,
   createFieldName,
@@ -16,8 +17,7 @@ import {
   Password,
   Picklist,
   RadioButtons,
-} from '~/app/[locale]/(default)/login/register-customer/_components/register-customer-form/fields';
-import { ExistingResultType } from '~/client/util';
+} from '~/components/form-fields';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 import { Field, Form, FormSubmit } from '~/components/ui/form';

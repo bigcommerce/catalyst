@@ -23,6 +23,11 @@ async function loginWithUserAccount(page: Page, email: string, password: string)
 
 test.describe.configure({ mode: 'serial' });
 
+async function logout(page: Page) {
+  await page.getByRole('button', { name: 'Account' }).click();
+  await page.getByRole('menuitem', { name: 'Log out' }).click();
+}
+
 test('Account access is restricted for guest users', async ({ page }) => {
   await page.goto('/account/settings');
 
@@ -44,6 +49,8 @@ test('My Account tabs are displayed and clickable', async ({ page }) => {
   await page.getByRole('link', { name: 'Account settings' }).click();
   await expect(page).toHaveURL('/account/settings/');
   await expect(page.getByRole('heading', { name: 'Account settings' })).toBeVisible();
+
+  await logout(page);
 });
 
 test('Account dropdown is visible in header', async ({ page }) => {
@@ -53,7 +60,9 @@ test('Account dropdown is visible in header', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Account' }).click();
 
-  await expect(page.getByText('Log out')).toBeInViewport();
+  await expect(page.getByRole('menuitem', { name: 'Log out' })).toBeInViewport();
+
+  await page.getByRole('menuitem', { name: 'Log out' }).click();
 });
 
 test('Add and remove new address', async ({ page }) => {
@@ -67,7 +76,7 @@ test('Add and remove new address', async ({ page }) => {
   await page.getByRole('textbox', { name: 'Address Line 1 Required' }).fill(streetAddress);
 
   await page.getByRole('textbox', { name: 'Suburb/City Required' }).fill(city);
-  await page.getByRole('combobox', { name: 'Choose state or province' }).click();
+  await page.getByRole('combobox', { name: 'State/Province Required' }).click();
   await page.getByLabel(state, { exact: true }).click();
   await page.getByRole('textbox', { name: 'Zip/Postcode Required' }).fill(zipCode);
 
@@ -85,4 +94,6 @@ test('Add and remove new address', async ({ page }) => {
   await expect(page.getByText(streetAddress, { exact: true })).toBeVisible({
     visible: false,
   });
+
+  await logout(page);
 });

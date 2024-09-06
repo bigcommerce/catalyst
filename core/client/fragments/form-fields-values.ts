@@ -1,9 +1,7 @@
-import { FragmentOf, graphql } from '../graphql';
+import { graphql } from '../graphql';
 
-export type FormFieldValueType = FragmentOf<typeof FORM_FIELDS_VALUES_FRAGMENT>;
-
-export const FORM_FIELDS_VALUES_FRAGMENT = graphql(`
-  fragment FormFieldsValues on CustomerFormFieldValue {
+export const FormFieldValuesFragment = graphql(`
+  fragment FormFieldValuesFragment on CustomerFormFieldValue {
     entityId
     __typename
     name

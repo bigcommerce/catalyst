@@ -4,7 +4,7 @@ import { cache } from 'react';
 import { getSessionCustomerId } from '~/auth';
 
 import { client } from '..';
-import { FORM_FIELDS_VALUES_FRAGMENT } from '../fragments/form-fields-values';
+import { FormFieldValuesFragment } from '../fragments/form-fields-values';
 import { graphql } from '../graphql';
 
 const GET_CUSTOMER_ADDRESSES_QUERY = graphql(
@@ -36,7 +36,7 @@ const GET_CUSTOMER_ADDRESSES_QUERY = graphql(
               postalCode
               company
               formFields {
-                ...FormFieldsValues
+                ...FormFieldValuesFragment
               }
             }
           }
@@ -44,7 +44,7 @@ const GET_CUSTOMER_ADDRESSES_QUERY = graphql(
       }
     }
   `,
-  [FORM_FIELDS_VALUES_FRAGMENT],
+  [FormFieldValuesFragment],
 );
 
 export interface CustomerAddressesArgs {
