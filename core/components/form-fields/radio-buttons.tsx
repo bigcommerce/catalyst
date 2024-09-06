@@ -1,12 +1,13 @@
+import { FragmentOf } from 'gql.tada';
 import { useTranslations } from 'next-intl';
 import { ChangeEvent } from 'react';
 
 import { Field, FieldLabel, FieldMessage, RadioGroup } from '~/components/ui/form';
 
-import { AddressFields } from '../../app/[locale]/(default)/(auth)/register/_components/register-customer-form';
+import { FormFieldsFragment } from './fragment';
 
 type RadioButtonsType = Extract<
-  NonNullable<AddressFields>[number],
+  FragmentOf<typeof FormFieldsFragment>,
   { __typename: 'RadioButtonsFormField' }
 >;
 

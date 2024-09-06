@@ -1,13 +1,13 @@
+import { FragmentOf } from 'gql.tada';
 import { useTranslations } from 'next-intl';
 import { ChangeEvent } from 'react';
 
 import { Field, FieldControl, FieldLabel, FieldMessage, Input } from '~/components/ui/form';
 
-import { CustomerFields } from '../../app/[locale]/(default)/(auth)/register/_components/register-customer-form';
-
+import { FormFieldsFragment } from './fragment';
 import { FieldNameToFieldId } from './utils';
 
-type TextType = Extract<NonNullable<CustomerFields>[number], { __typename: 'TextFormField' }>;
+type TextType = Extract<FragmentOf<typeof FormFieldsFragment>, { __typename: 'TextFormField' }>;
 
 interface TextProps {
   defaultValue?: string;

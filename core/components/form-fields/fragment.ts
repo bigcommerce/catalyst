@@ -1,4 +1,4 @@
-import { graphql } from '../graphql';
+import { graphql } from '~/client/graphql';
 
 export const FormFieldsFragment = graphql(`
   fragment FormFieldsFragment on FormField {

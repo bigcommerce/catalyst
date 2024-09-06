@@ -1,13 +1,13 @@
+import { FragmentOf } from 'gql.tada';
 import { useTranslations } from 'next-intl';
 
 import { Field, FieldControl, FieldLabel, FieldMessage, Select } from '~/components/ui/form';
 
-import { AddressFields } from '../../app/[locale]/(default)/(auth)/register/_components/register-customer-form';
-
+import { FormFieldsFragment } from './fragment';
 import { FieldNameToFieldId } from './utils';
 
 type PicklistType = Extract<
-  NonNullable<AddressFields>[number],
+  FragmentOf<typeof FormFieldsFragment>,
   { __typename: 'PicklistFormField' }
 >;
 

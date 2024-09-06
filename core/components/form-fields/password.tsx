@@ -1,14 +1,14 @@
+import { FragmentOf } from 'gql.tada';
 import { useTranslations } from 'next-intl';
 import { ChangeEvent } from 'react';
 
 import { Field, FieldControl, FieldLabel, FieldMessage, Input } from '~/components/ui/form';
 
-import { CustomerFields } from '../../app/[locale]/(default)/(auth)/register/_components/register-customer-form';
-
+import { FormFieldsFragment } from './fragment';
 import { FieldNameToFieldId } from './utils';
 
 type PasswordType = Extract<
-  NonNullable<CustomerFields>[number],
+  FragmentOf<typeof FormFieldsFragment>,
   { __typename: 'PasswordFormField' }
 >;
 

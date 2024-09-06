@@ -1,11 +1,12 @@
 'use client';
 
+import { FragmentOf } from 'gql.tada';
 import { useTranslations } from 'next-intl';
 import React, { ChangeEvent, useState } from 'react';
 
 import { DatePicker, Field, FieldLabel, FieldMessage } from '~/components/ui/form';
 
-import { AddressFields } from '../../app/[locale]/(default)/(auth)/register/_components/register-customer-form';
+import { FormFieldsFragment } from './fragment';
 
 const getDisabledDays = ({
   earliest,
@@ -29,7 +30,7 @@ const getDisabledDays = ({
   return [];
 };
 
-type DateType = Extract<NonNullable<AddressFields>[number], { __typename: 'DateFormField' }>;
+type DateType = Extract<FragmentOf<typeof FormFieldsFragment>, { __typename: 'DateFormField' }>;
 
 interface DateProps {
   defaultValue?: Date | string;

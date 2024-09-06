@@ -1,6 +1,8 @@
-import { FormFieldValueType } from '~/client/fragments/form-fields-values';
+import { FragmentOf } from 'gql.tada';
 
-import { AddressOrAccountFormField } from '../../app/[locale]/(default)/(auth)/register/_components/register-customer-form';
+import { FormFieldValuesFragment } from '~/client/fragments/form-fields-values';
+
+import { FormFieldsFragment } from './fragment';
 
 /* This mapping needed for aligning built-in fields names to their ids
  for creating valid register customer request object
@@ -46,7 +48,7 @@ export const BOTH_CUSTOMER_ADDRESS_FIELDS = [
 ];
 
 export const createFieldName = (
-  field: AddressOrAccountFormField,
+  field: FragmentOf<typeof FormFieldsFragment>,
   fieldOrigin: 'customer' | 'address',
 ) => {
   const { isBuiltIn, entityId: fieldId, __typename: fieldType } = field;
@@ -71,7 +73,9 @@ export const createFieldName = (
   return `${fieldOrigin}-${BOTH_CUSTOMER_ADDRESS_FIELDS.includes(fieldId) ? `${secondFieldType}-` : ''}${FieldNameToFieldId[fieldId] || fieldId}`;
 };
 
-export const getPreviouslySubmittedValue = (fieldValue?: FormFieldValueType) => {
+export const getPreviouslySubmittedValue = (
+  fieldValue?: FragmentOf<typeof FormFieldValuesFragment>,
+) => {
   if (!fieldValue) {
     return {};
   }

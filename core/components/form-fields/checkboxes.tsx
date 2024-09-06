@@ -1,14 +1,15 @@
 'use client';
 
+import { FragmentOf } from 'gql.tada';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 
 import { Checkbox, Field, FieldLabel, FieldMessage, Label } from '~/components/ui/form';
 
-import { AddressFields } from '../../app/[locale]/(default)/(auth)/register/_components/register-customer-form';
+import { FormFieldsFragment } from './fragment';
 
 type CheckboxesType = Extract<
-  NonNullable<AddressFields>[number],
+  FragmentOf<typeof FormFieldsFragment>,
   { __typename: 'CheckboxesFormField' }
 >;
 
