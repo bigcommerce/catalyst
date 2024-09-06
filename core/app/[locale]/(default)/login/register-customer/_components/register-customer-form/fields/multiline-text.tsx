@@ -44,7 +44,7 @@ export const MultilineText = ({
           id={`field-${field.entityId}`}
           onChange={onChange}
           onInvalid={onChange}
-          required
+          required={field.isRequired}
           rows={field.rows}
         />
       </FieldControl>
