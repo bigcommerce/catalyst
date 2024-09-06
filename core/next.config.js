@@ -6,7 +6,7 @@ const withNextIntl = createNextIntlPlugin();
 const { cspHeader } = require('./lib/content-security-policy');
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+let nextConfig = {
   reactStrictMode: true,
   experimental: {
     optimizePackageImports: ['@icons-pack/react-simple-icons'],
@@ -64,4 +64,13 @@ const nextConfig = {
   },
 };
 
-module.exports = withNextIntl(nextConfig);
+// Apply withNextIntl to the config
+nextConfig = withNextIntl(nextConfig);
+
+if (process.env.ANALYZE === 'true') {
+  const withBundleAnalyzer = require('@next/bundle-analyzer')();
+
+  nextConfig = withBundleAnalyzer(nextConfig);
+}
+
+module.exports = nextConfig;

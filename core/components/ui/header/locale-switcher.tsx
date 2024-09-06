@@ -4,8 +4,8 @@ import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
-import { LocaleType } from '~/i18n';
-import { useRouter } from '~/routing';
+import { Link } from '~/components/link';
+import { LocaleType } from '~/i18n/routing';
 
 import { Button } from '../button';
 import { Select } from '../form';
@@ -19,7 +19,7 @@ type LanguagesByRegionMap = Record<
 >;
 
 interface Locale {
-  id: string;
+  id: LocaleType;
   region: string;
   language: string;
   flag: string;
@@ -31,8 +31,6 @@ interface Props {
 }
 
 const LocaleSwitcher = ({ activeLocale, locales }: Props) => {
-  const router = useRouter();
-
   const t = useTranslations('Components.Header.LocaleSwitcher');
 
   const selectedLocale = locales.find((locale) => locale.id === activeLocale);
@@ -45,15 +43,21 @@ const LocaleSwitcher = ({ activeLocale, locales }: Props) => {
       locales.reduce<LanguagesByRegionMap>((acc, { region, language, flag }) => {
         if (!acc[region]) {
           acc[region] = { languages: [language], flag };
-        }
-
-        if (!acc[region].languages.includes(language)) {
+        } else if (!acc[region].languages.includes(language)) {
           acc[region].languages.push(language);
         }
 
         return acc;
       }, {}),
     [locales],
+  );
+
+  const newLocale = useMemo(
+    () =>
+      locales.find(
+        (locale) => locale.language === languageSelected && locale.region === regionSelected,
+      ),
+    [languageSelected, locales, regionSelected],
   );
 
   if (!selectedLocale) {
@@ -73,24 +77,11 @@ const LocaleSwitcher = ({ activeLocale, locales }: Props) => {
   };
 
   const handleLanguageChange = (language: string) => {
-    if (language) {
-      setLanguageSelected(language);
-    }
-  };
-
-  const handleOnSubmit = () => {
-    const newLocale = locales.find(
-      (locale) => locale.language === languageSelected && locale.region === regionSelected,
-    );
-
-    if (newLocale) {
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      router.replace('/', { locale: newLocale.id as LocaleType });
-    }
+    setLanguageSelected(language);
   };
 
   return (
-    Object.keys(locales).length > 1 && (
+    locales.length > 1 && (
       <PopoverPrimitive.Root onOpenChange={handleOnOpenChange}>
         <PopoverPrimitive.Trigger asChild>
           <button className="flex h-12 items-center p-3 text-2xl">{selectedLocale.flag}</button>
@@ -101,7 +92,7 @@ const LocaleSwitcher = ({ activeLocale, locales }: Props) => {
             className="z-50 bg-white p-4 text-base shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
             sideOffset={4}
           >
-            <form className="flex flex-col gap-4" onSubmit={handleOnSubmit}>
+            <div className="flex flex-col gap-4">
               <p>{t('chooseCountryAndLanguage')}</p>
               <Select
                 onValueChange={handleRegionChange}
@@ -121,10 +112,12 @@ const LocaleSwitcher = ({ activeLocale, locales }: Props) => {
                 }
                 value={languageSelected}
               />
-              <Button className="w-auto" type="submit">
-                {t('goToSite')}
+              <Button asChild>
+                <Link className="hover:text-white" href="/" locale={newLocale?.id}>
+                  {t('goToSite')}
+                </Link>
               </Button>
-            </form>
+            </div>
           </PopoverPrimitive.Content>
         </PopoverPrimitive.Portal>
       </PopoverPrimitive.Root>

@@ -4,7 +4,7 @@ import { ComponentPropsWithRef, ElementRef, forwardRef, useReducer } from 'react
 
 import { cn } from '~/lib/utils';
 
-import { Link as NavLink, useRouter } from '../../routing';
+import { Link as NavLink, useRouter } from '../../i18n/routing';
 
 type NextLinkProps = Omit<ComponentPropsWithRef<typeof NavLink>, 'prefetch'>;
 

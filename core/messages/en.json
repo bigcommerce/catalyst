@@ -69,7 +69,8 @@
       "wishlists": "Wish lists",
       "recentlyViewed": "Recently viewed",
       "settings": "Account settings",
-      "changePassword": "Change password"
+      "changePassword": "Change password",
+      "successMessage": "Your account has been successfully created"
     },
     "Addresses": {
       "defaultAddress": "Default",

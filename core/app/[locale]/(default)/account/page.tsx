@@ -4,6 +4,8 @@ import { ReactNode } from 'react';
 
 import { Link } from '~/components/link';
 
+import { AccountNotification } from './(tabs)/_components/account-notification';
+
 interface AccountItem {
   children: ReactNode;
   description?: string;
@@ -32,6 +34,8 @@ export default function Account() {
   return (
     <div className="mx-auto">
       <h1 className="my-8 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
+
+      <AccountNotification message={t('successMessage')} />
 
       <div className="mb-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <AccountItem href="/account/addresses" title={t('addresses')}>

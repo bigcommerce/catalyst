@@ -11,17 +11,17 @@ index b0425c70..f26e063e 100644
  # The control panel URL is of the form `https://store-{hash}.mybigcommerce.com`. 
  BIGCOMMERCE_STORE_HASH=
 diff --git a/core/app/[locale]/(default)/[...rest]/page.tsx b/core/app/[locale]/(default)/[...rest]/page.tsx
-index 71d40507..9179455c 100644
+index 71d40507..70c1c4ed 100644
 --- a/core/app/[locale]/(default)/[...rest]/page.tsx
 +++ b/core/app/[locale]/(default)/[...rest]/page.tsx
-@@ -1,5 +1,42 @@
+@@ -1,5 +1,43 @@
 +import { Page as MakeswiftPage } from '@makeswift/runtime/next';
 +import { getSiteVersion } from '@makeswift/runtime/next/server';
  import { notFound } from 'next/navigation';
  
 -export default function CatchAllPage() {
 -  notFound();
-+import { locales } from '~/i18n';
++import { defaultLocale, locales } from '~/i18n';
 +import { client } from '~/lib/makeswift/client';
 +import { MakeswiftProvider } from '~/lib/makeswift/provider';
 +
@@ -36,7 +36,8 @@ index 71d40507..9179455c 100644
 +  return pages.flatMap((page) =>
 +    locales.map((locale) => ({
 +      rest: page.path.split('/').filter((segment) => segment !== ''),
-+      locale,
++      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
++      locale: locale === defaultLocale ? undefined : locale,
 +    })),
 +  );
 +}
@@ -46,7 +47,7 @@ index 71d40507..9179455c 100644
 +
 +  const snapshot = await client.getPageSnapshot(path, {
 +    siteVersion: getSiteVersion(),
-+    locale: params.locale,
++    locale: params.locale === defaultLocale ? undefined : params.locale,
 +  });
 +
 +  if (snapshot == null) return notFound();

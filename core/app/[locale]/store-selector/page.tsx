@@ -5,7 +5,7 @@ import { graphql } from '~/client/graphql';
 import { Link } from '~/components/link';
 import { StoreLogo } from '~/components/store-logo';
 import { StoreLogoFragment } from '~/components/store-logo/fragment';
-import { locales, LocaleType } from '~/i18n';
+import { locales, LocaleType } from '~/i18n/routing';
 
 import { LocaleLink } from './_components/locale-link';
 

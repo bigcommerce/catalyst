@@ -5,8 +5,8 @@ import { test } from '~/tests/fixtures';
 
 // Prefix is added to ensure that the password requirements are met
 const password = faker.internet.password({ pattern: /[a-zA-Z0-9]/, prefix: '1At', length: 10 });
-const firstName = faker.person.firstName();
-const lastName = faker.person.lastName();
+
+test.describe.configure({ mode: 'serial' });
 
 test('Account register', async ({ page }) => {
   await page.goto('/login');
@@ -19,8 +19,8 @@ test('Account register', async ({ page }) => {
     .fill(faker.internet.email({ provider: 'mybigcommerce.com' }));
   await page.getByLabel('PasswordRequired', { exact: true }).fill(password);
   await page.getByLabel('Confirm PasswordRequired').fill(password);
-  await page.getByLabel('First NameRequired').fill(firstName);
-  await page.getByLabel('Last NameRequired').fill(lastName);
+  await page.getByLabel('First NameRequired').fill(faker.person.firstName());
+  await page.getByLabel('Last NameRequired').fill(faker.person.lastName());
   await page.getByLabel('Phone Number').fill(faker.phone.number());
   await page.getByLabel('Address Line 1Required').fill(faker.location.streetAddress());
   await page.getByLabel('Suburb/CityRequired').fill(faker.location.city());
@@ -29,5 +29,5 @@ test('Account register', async ({ page }) => {
   await page.getByRole('button', { name: 'Create account' }).click();
 
   await expect(page).toHaveURL('/account/');
-  await expect(page.getByRole('heading', { name: 'My Account' })).toBeVisible();
+  await expect(page.getByText('Your account has been successfully created')).toBeVisible();
 });

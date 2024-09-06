@@ -34,7 +34,7 @@
     "zod-validation-error": "^3.3.1"
   },
   "devDependencies": {
-    "@bigcommerce/eslint-config": "^2.9.0",
+    "@bigcommerce/eslint-config": "^2.9.1",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@swc/core": "^1.7.18",
     "@swc/jest": "^0.2.36",

@@ -38,7 +38,7 @@ const CompareDrawerProvider = ({ children }: PropsWithChildren) => {
         if (isCheckedProducts(parsedProducts)) {
           setProducts(parsedProducts);
         }
-      } catch (e) {
+      } catch {
         throw new Error('Error parsing compareProducts from sessionStorage');
       }
     }
