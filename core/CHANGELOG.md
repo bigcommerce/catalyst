@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.14.2
+
+### Patch Changes
+
+- Updated dependencies [[`88663d1`](https://github.com/bigcommerce/catalyst/commit/88663d165691380b35f83726f0589896bdc73bf2)]:
+  - @bigcommerce/catalyst-client@0.8.0
+
 ## 0.14.1
 
 ### Patch Changes
