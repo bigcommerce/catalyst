@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.0
+
+### Minor Changes
+
+- [#1350](https://github.com/bigcommerce/catalyst/pull/1350) [`88663d1`](https://github.com/bigcommerce/catalyst/commit/88663d165691380b35f83726f0589896bdc73bf2) Thanks [@deini](https://github.com/deini)! - remove graphql and use @0no-co/graphql.web for a smaller bundle size
+
 ## 0.7.0
 
 ### Minor Changes
