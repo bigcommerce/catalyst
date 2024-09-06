@@ -44,12 +44,11 @@ interface FormStatus {
   message: string;
 }
 
-export type CustomerFields = ExistingResultType<typeof getRegisterCustomerQuery>['customerFields'];
-export type AddressFields = ExistingResultType<typeof getRegisterCustomerQuery>['addressFields'];
+type CustomerFields = ExistingResultType<typeof getRegisterCustomerQuery>['customerFields'];
+type AddressFields = ExistingResultType<typeof getRegisterCustomerQuery>['addressFields'];
 type Countries = ExistingResultType<typeof getRegisterCustomerQuery>['countries'];
 type CountryCode = Countries[number]['code'];
 type CountryStates = Countries[number]['statesOrProvinces'];
-export type AddressOrAccountFormField = AddressFields[number];
 
 interface RegisterCustomerProps {
   addressFields: AddressFields;

@@ -15,7 +15,7 @@ export const withAuth: MiddlewareFactory = (next) => {
       }
 
       // Continue the middleware chain
-      return await next(req, event);
+      return next(req, event);
     });
 
     // @ts-expect-error: The `auth` function doesn't have the correct type to support it as a MiddlewareFactory.
