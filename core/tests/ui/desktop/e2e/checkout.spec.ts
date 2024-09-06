@@ -3,23 +3,35 @@ import { expect, Page } from '@playwright/test';
 
 import { test } from '~/tests/fixtures';
 
-const sampleProduct = '[Sample] Laundry Detergent';
-const testUser = faker.person.firstName();
-const actionTimeout = 10000;
+const testAccountEmail = process.env.TEST_ACCOUNT_EMAIL || '';
+const testAccountPassword = process.env.TEST_ACCOUNT_PASSWORD || '';
+const firstName = faker.person.firstName();
+const lastName = faker.person.lastName();
+
+async function waitForShippingForm(page: Page, isMobile: boolean) {
+  // Wait for the shipping form to load as playwright can fill out the form faster than the form is loaded in.
+  await page.waitForRequest('**/internalapi/v1/store/countries');
+  await page
+    .locator('.checkout-step--shipping .checkout-view-content[aria-busy="false"]')
+    .waitFor();
+
+  if (!isMobile) {
+    // Redirected checkout auto focuses when the section changes on desktop devices, therefore we need to wait for it to be focused.
+    await expect(page.getByLabel('First Name')).toBeFocused();
+  }
+}
 
 async function enterShopperDetails(page: Page) {
-  await page.getByLabel('First Name').fill(testUser, { timeout: actionTimeout });
-  await page.getByLabel('Last Name').fill(faker.person.lastName(), { timeout: actionTimeout });
-  await page.getByLabel('Company Name (Optional)').fill('BigCommerce', { timeout: actionTimeout });
-  await page
-    .getByLabel('Phone Number (Optional)')
-    .fill(faker.phone.number(), { timeout: actionTimeout });
+  await page.getByLabel('First Name').pressSequentially(firstName);
+  await page.getByLabel('Last Name').pressSequentially(lastName);
+  await page.getByLabel('Company Name (Optional)').pressSequentially('BigCommerce');
+  await page.getByLabel('Phone Number (Optional)').pressSequentially(faker.phone.number());
   await page
     .getByLabel('Address', { exact: true })
-    .fill(faker.location.buildingNumber(), { timeout: actionTimeout });
-  await page.getByLabel('City').fill('Natick', { timeout: actionTimeout });
+    .pressSequentially(faker.location.buildingNumber());
+  await page.getByLabel('City').pressSequentially('Natick');
   await page.getByRole('combobox', { name: 'State/Province' }).selectOption('Massachusetts');
-  await page.getByRole('textbox', { name: 'Postal Code' }).fill('01762');
+  await page.getByRole('textbox', { name: 'Postal Code' }).pressSequentially('01762');
   await expect(page.getByRole('button', { name: 'Continue' })).toContainText('Continue');
 
   await page.getByRole('heading', { name: 'Customer' }).waitFor();
@@ -31,28 +43,33 @@ async function enterCreditCardDetails(page: Page) {
   await page
     .frameLocator('#bigpaypay-ccNumber iframe')
     .getByLabel('Credit Card Number')
-    .fill('4111 1111 1111 1111', { timeout: actionTimeout });
+    .fill('4111 1111 1111 1111');
   await page.frameLocator('#bigpaypay-ccExpiry iframe').getByPlaceholder('MM / YY').fill('02 / 27');
-  await page.frameLocator('#bigpaypay-ccName iframe').getByLabel('Name on Card').fill(testUser);
+  await page
+    .frameLocator('#bigpaypay-ccName iframe')
+    .getByLabel('Name on Card')
+    .fill(`${firstName} ${lastName}`);
   await page.frameLocator('#bigpaypay-ccCvv iframe').getByLabel('CVV').fill('211');
 }
 
-test.describe(() => {
-  // Typing into many form fields has made this test a little flaky. Retry failing test until we
-  // fix the test
-  test.describe.configure({ retries: 2 });
+test.describe('desktop', () => {
+  test.describe.configure({ mode: 'serial' });
 
-  test('Complete checkout as a guest shopper', async ({ page }) => {
+  test('Complete checkout as a guest shopper', async ({ page, isMobile }) => {
     await page.goto('/laundry-detergent/');
-    await expect(page.getByRole('heading', { level: 1, name: sampleProduct })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: '[Sample] Laundry Detergent' }),
+    ).toBeVisible();
 
     await page.getByRole('button', { name: 'Add to Cart' }).first().click();
     await page.getByRole('link', { name: 'Cart Items 1' }).click();
     await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
     await page.getByRole('button', { name: 'Proceed to checkout' }).click();
-    await page.getByLabel('Email').fill(faker.internet.email());
+    await page.getByLabel('Email').fill(faker.internet.email({ firstName, lastName }));
+
     await page.getByRole('button', { name: 'Continue' }).click();
 
+    await waitForShippingForm(page, isMobile);
     await enterShopperDetails(page);
 
     await page.getByRole('button', { name: 'Continue' }).click();
@@ -63,28 +80,28 @@ test.describe(() => {
     await page.getByRole('button', { name: 'Place Order' }).click();
     await page.waitForLoadState('networkidle');
     await expect(
-      page.getByRole('heading', { name: `Thank you ${testUser}!`, level: 1 }),
+      page.getByRole('heading', { name: `Thank you ${firstName}!`, level: 1 }),
     ).toBeVisible();
   });
 
-  test('Complete checkout as a logged in shopper', async ({ browser }) => {
-    const context = await browser.newContext();
-    const page = await context.newPage();
-
+  test('Complete checkout as a logged in shopper', async ({ page, isMobile }) => {
     await page.goto('/login/');
     await page.getByLabel('Login').click();
-    await page.getByLabel('Email').fill(process.env.TEST_ACCOUNT_EMAIL || '');
-    await page.getByLabel('Password').fill(process.env.TEST_ACCOUNT_PASSWORD || '');
+    await page.getByLabel('Email').fill(testAccountEmail);
+    await page.getByLabel('Password').fill(testAccountPassword);
     await page.getByRole('button', { name: 'Log in' }).click();
     await page.getByRole('heading', { name: 'My Account' }).waitFor();
 
     await page.goto('/laundry-detergent/');
-    await expect(page.getByRole('heading', { level: 1, name: sampleProduct })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: '[Sample] Laundry Detergent' }),
+    ).toBeVisible();
     await page.getByRole('button', { name: 'Add to Cart' }).first().click();
     await page.getByRole('link', { name: 'Cart Items 1' }).click();
     await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
     await page.getByRole('button', { name: 'Proceed to checkout' }).click();
 
+    await waitForShippingForm(page, isMobile);
     await enterShopperDetails(page);
 
     await page.getByRole('button', { name: 'Continue' }).click();
@@ -95,7 +112,40 @@ test.describe(() => {
     await page.getByRole('button', { name: 'Place Order' }).click();
     await page.waitForLoadState('networkidle');
     await expect(
-      page.getByRole('heading', { name: `Thank you ${testUser}!`, level: 1 }),
+      page.getByRole('heading', { name: `Thank you ${firstName}!`, level: 1 }),
+    ).toBeVisible();
+  });
+});
+
+test.describe('mobile', () => {
+  test.use({ viewport: { width: 390, height: 844 }, isMobile: true });
+  test.describe.configure({ mode: 'serial' });
+
+  test('Complete checkout as a guest shopper', async ({ page, isMobile }) => {
+    await page.goto('/laundry-detergent/');
+    await expect(
+      page.getByRole('heading', { level: 1, name: '[Sample] Laundry Detergent' }),
+    ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Add to Cart' }).first().click();
+    await page.getByRole('link', { name: 'Cart Items 1' }).click();
+    await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
+    await page.getByRole('button', { name: 'Proceed to checkout' }).click();
+    await page.getByLabel('Email').fill(faker.internet.email({ firstName, lastName }));
+    await page.getByRole('button', { name: 'Continue' }).click();
+
+    await waitForShippingForm(page, isMobile);
+    await enterShopperDetails(page);
+
+    await page.getByRole('button', { name: 'Continue' }).click();
+    await page.getByRole('heading', { name: 'Payment', exact: true }).waitFor();
+
+    await enterCreditCardDetails(page);
+
+    await page.getByRole('button', { name: 'Place Order' }).click();
+    await page.waitForLoadState('networkidle');
+    await expect(
+      page.getByRole('heading', { name: `Thank you ${firstName}!`, level: 1 }),
     ).toBeVisible();
   });
 });

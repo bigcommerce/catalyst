@@ -14,13 +14,14 @@ const zipCode = '76286';
 
 async function loginWithUserAccount(page: Page, email: string, password: string) {
   await page.goto('/login/');
-  await page.getByLabel('Login').click();
   await page.getByLabel('Email').fill(email);
   await page.getByLabel('Password').fill(password);
   await page.getByRole('button', { name: 'Log in' }).click();
 
   await page.waitForURL('/account/');
 }
+
+test.describe.configure({ mode: 'serial' });
 
 test('Account access is restricted for guest users', async ({ page }) => {
   await page.goto('/account/settings');
