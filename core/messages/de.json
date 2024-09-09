@@ -5,6 +5,73 @@
             "newestProducts": "Neueste Produkte"
         }
     },
+    "ChangePassword": {
+        "heading": "Passwort ändern",
+        "Form": {
+            "newPasswordLabel": "Neues Passwort",
+            "confirmPasswordLabel": "Passwort bestätigen",
+            "confirmPasswordValidationMessage": "Die eingegebenen Passwörter stimmen nicht überein. Bitte versuchen Sie es erneut.",
+            "successMessage": "Passwort wurde erfolgreich aktualisiert!",
+            "confirmChangePassword": "Ihr Passwort wurde erfolgreich aktualisiert. Bitte melden Sie sich mit Ihren neuen Zugangsdaten an.",
+            "submit": "Passwort ändern",
+            "submitting": "Wird eingereicht ..."
+        },
+        "Errors": {
+            "error": "Unbekannter Fehler."
+        }
+    },
+    "Login": {
+        "heading": "Anmelden",
+        "Form": {
+            "error": "Ihre E-Mail-Adresse oder Ihr Passwort ist falsch. Versuchen Sie, sich erneut anzumelden, oder setzen Sie Ihr Passwort zurück",
+            "emailLabel": "E-Mail",
+            "enterEmailMessage": "Geben Sie Ihre E-Mail-Adresse ein",
+            "passwordLabel": "Passwort",
+            "entePasswordMessage": "Geben Sie Ihr Passwort ein.",
+            "submitting": "Wird eingereicht ...",
+            "logIn": "Anmelden",
+            "resetPassword": "Passwort vergessen?"
+        },
+        "CreateAccount": {
+            "heading": "Neuer Kunde?",
+            "accountBenefits": "Wenn Sie ein Konto bei uns erstellen, haben Sie folgende Möglichkeiten:",
+            "fastCheckout": "Schnellerer Bezahlvorgang",
+            "multipleAddresses": "Speicherung mehrerer Lieferadressen",
+            "ordersHistory": "Zugang zu Ihrem Bestellverlauf",
+            "ordersTracking": "Tracking von neuen Bestellungen",
+            "wishlists": "Hinzufügen von Artikeln zu Ihrer Wunschliste",
+            "createLink": "Konto erstellen "
+        }
+    },
+    "Register": {
+        "heading": "Neues Konto",
+        "Form": {
+            "submit": "Konto erstellen",
+            "submitting": "Konto erstellen ...",
+            "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
+            "confirmPassword": "Die Passwörter stimmen nicht überein"
+        },
+        "Errors": {
+            "inputError": "Bei der Verarbeitung der Benutzereingabe ist ein Fehler aufgetreten.",
+            "apiError": "Es scheint ein Serverfehler vorzuliegen. Bitte versuchen Sie es in ein paar Minuten erneut.",
+            "error": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
+        }
+    },
+    "Reset": {
+        "heading": "Passwort zurücksetzen",
+        "Form": {
+            "description": "Geben Sie unten die mit Ihrem Konto verknüpfte E-Mail-Adresse ein. Wir senden Ihnen Anweisungen zum Zurücksetzen Ihres Passworts.",
+            "emailLabel": "E-Mail",
+            "emailValidationMessage": "Geben Sie eine gültige E-Mail-Adresse wie name@domain.com ein.",
+            "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
+            "confirmResetPassword": "Wenn die E-Mail-Adresse {email} mit einem Konto in unserem Geschäft verknüpft ist, haben wir Ihnen eine E-Mail zum Zurücksetzen des Passworts gesendet. Bitte überprüfen Sie Ihren Posteingang und Spam-Ordner, wenn Sie sie nicht sehen.",
+            "submitting": "Wird eingereicht ...",
+            "submit": "Passwort zurücksetzen"
+        },
+        "Errors": {
+            "error": "Unbekannter Fehler."
+        }
+    },
     "FacetedGroup": {
         "MobileSideNav": {
             "filters": "Filter",
@@ -69,7 +136,8 @@
             "wishlists": "Wunschlisten",
             "recentlyViewed": "Kürzlich angesehen",
             "settings": "Kontoeinstellungen",
-            "changePassword": "Passwort ändern"
+            "changePassword": "Passwort ändern",
+            "successMessage": "Ihr Konto wurde erfolgreich erstellt"
         },
         "Addresses": {
             "defaultAddress": "Standard",
@@ -91,22 +159,22 @@
             "submitting": "In Bearbeitung ..."
         },
         "AddAddress": {
-            "success": "The address has been added.",
+            "success": "Die Adresse wurde hinzugefügt.",
             "Errors": {
-                "inputError": "Something went wrong with proccessing user input.",
-                "error": "Unknown error."
+                "inputError": "Bei der Verarbeitung der Benutzereingabe ist ein Fehler aufgetreten.",
+                "error": "Unbekannter Fehler."
             }
         },
         "DeleteAddress": {
             "success": "Adresse aus Ihrem Konto gelöscht.",
-            "error": "Unknown error."
+            "error": "Unbekannter Fehler."
         },
         "UpdateAddress": {
-            "success": "The address has been updated.",
+            "success": "Die Adresse wurde aktualisiert.",
             "Errors": {
-                "inputError": "Something went wrong with proccessing user input.",
-                "notFound": "Address does not exist.",
-                "error": "Unknown error."
+                "inputError": "Bei der Verarbeitung der Benutzereingabe ist ein Fehler aufgetreten.",
+                "notFound": "Adresse existiert nicht.",
+                "error": "Unbekannter Fehler."
             }
         },
         "EditAddress": {
@@ -125,7 +193,7 @@
             "emptyTextValidatoinMessage": "Dieses Feld darf nicht leer sein",
             "cancel": "Abbrechen",
             "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
-            "changePassword": "Passwort zurücksetzen",
+            "changePassword": "Passwort ändern",
             "submit": "EINSTELLUNGEN AKTUALISIEREN",
             "submitting": "Einstellungen aktualisieren ...",
             "successMessage": "Sehr geehrte/r {firstName} {lastName}, Sie haben Ihre Kontodaten erfolgreich aktualisiert",
@@ -139,71 +207,14 @@
                 "phone": "Geben Sie eine Telefonnummer ein"
             },
             "ChangePassword": {
-                "success": "Password has been updated successfully.",
-                "error": "Unknown error."
+                "success": "Passwort wurde erfolgreich aktualisiert.",
+                "error": "Unbekannter Fehler."
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Something went wrong with proccessing user input.",
-                    "notFound": "Customer does not exist"
+                    "inputError": "Bei der Verarbeitung der Benutzereingabe ist ein Fehler aufgetreten.",
+                    "notFound": "Kunde existiert nicht"
                 }
-            }
-        },
-        "Login": {
-            "heading": "Anmelden",
-            "resetPasswordHeading": "Passwort zurücksetzen",
-            "changePasswordHeading": "Passwort ändern",
-            "Form": {
-                "errorMessage": "Ihre E-Mail-Adresse oder Ihr Passwort ist falsch. Versuchen Sie, sich erneut anzumelden, oder setzen Sie Ihr Passwort zurück",
-                "emailLabel": "E-Mail",
-                "enterEmailMessage": "Geben Sie Ihre E-Mail-Adresse ein",
-                "passwordLabel": "Passwort",
-                "entePasswordMessage": "Geben Sie Ihr Passwort ein.",
-                "submitting": "Wird eingereicht ...",
-                "logIn": "Anmelden",
-                "resetPassword": "Passwort vergessen?",
-                "validationMessages": {
-                    "email": "Geben Sie eine gültige E-Mail-Adresse wie name@domain.com ein.",
-                    "firstName": "Geben Sie Ihren Vornamen ein",
-                    "lastName": "Geben Sie Ihren Nachnamen ein",
-                    "city": "Geben Sie einen Vorort / eine Stadt ein",
-                    "company": "Geben Sie einen Firmennamen ein",
-                    "phone": "Geben Sie eine Telefonnummer ein"
-                }
-            },
-            "CreateAccount": {
-                "heading": "Neuer Kunde?",
-                "accountBenefits": "Wenn Sie ein Konto bei uns erstellen, haben Sie folgende Möglichkeiten:",
-                "fastCheckout": "Schnellerer Bezahlvorgang",
-                "multipleAddresses": "Speicherung mehrerer Lieferadressen",
-                "ordersHistory": "Zugang zu Ihrem Bestellverlauf",
-                "ordersTracking": "Tracking von neuen Bestellungen",
-                "wishlists": "Hinzufügen von Artikeln zu Ihrer Wunschliste",
-                "createLink": "Konto erstellen "
-            }
-        },
-        "Register": {
-            "heading": "Neues Konto",
-            "submit": "Konto erstellen",
-            "submitting": "Konto erstellen ...",
-            "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
-            "stateProvincePrefix": "Bundesland oder Provinz auswählen",
-            "validationMessages": {
-                "email": "Geben Sie eine gültige E-Mail-Adresse wie name@domain.com ein.",
-                "empty": "Dieses Feld darf nicht leer sein",
-                "numbersOverflow": "Entered value exceeds max range of {max}",
-                "numbersUnderflow": "Entered value falls short of min range of {min}",
-                "numbersOnly": "Enter numbers only",
-                "firstName": "Geben Sie Ihren Vornamen ein",
-                "lastName": "Geben Sie Ihren Nachnamen ein",
-                "password": "Geben Sie ein Passwort ein",
-                "confirmPassword": "Die Passwörter stimmen nicht überein",
-                "address1": "Geben Sie eine Adresse ein",
-                "address2": "Geben Sie eine Adresse ein",
-                "city": "Geben Sie einen Vorort / eine Stadt ein",
-                "company": "Geben Sie einen Firmennamen ein",
-                "phone": "Geben Sie eine Telefonnummer ein",
-                "postalCode": "Geben Sie eine Postleitzahl ein"
             }
         },
         "ChangePassword": {
@@ -220,18 +231,6 @@
         "SubmitChangePassword": {
             "spinnerText": "Wird eingereicht ...",
             "submitText": "Passwort ändern"
-        },
-        "ResetPassword": {
-            "description": "Geben Sie unten die mit Ihrem Konto verknüpfte E-Mail-Adresse ein. Wir senden Ihnen Anweisungen zum Zurücksetzen Ihres Passworts.",
-            "emailLabel": "E-Mail",
-            "emailValidationMessage": "Geben Sie eine gültige E-Mail-Adresse wie name@domain.com ein.",
-            "successMessage": "Ihre E-Mail zum Zurücksetzen des Passworts ist auf dem Weg zu {email}. Wenn Sie sie nicht sehen, überprüfen Sie Ihren Spam-Ordner.",
-            "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
-            "confirmResetPassword": "Wenn die E-Mail-Adresse {email} mit einem Konto in unserem Geschäft verknüpft ist, haben wir Ihnen eine E-Mail zum Zurücksetzen des Passworts gesendet. Bitte überprüfen Sie Ihren Posteingang und Spam-Ordner, wenn Sie sie nicht sehen."
-        },
-        "SubmitResetPassword": {
-            "spinnerText": "Wird eingereicht ...",
-            "submitText": "Passwort zurücksetzen"
         }
     },
     "Blog": {
@@ -316,8 +315,8 @@
         "nothingToCompare": "Nun, es gibt nichts Vergleichbares!",
         "helpingText": "Sie haben es irgendwie geschafft, hier zu landen, aber Sie müssen erst noch ein paar Produkte auswählen.",
         "Table": {
-            "caption": "Product comparison",
-            "noImage": "No image",
+            "caption": "Produktvergleich",
+            "noImage": "Kein Bild",
             "viewOptions": "Optionen anzeigen",
             "description": "Beschreibung",
             "rating": "Bewertung",
@@ -331,65 +330,6 @@
         "AddToCart": {
             "success": "{cartItems, plural, =1 {1 Item} other {# Items}} wurde zu<cartLink> Ihrem Warenkorb</cartLink> hinzugefügt",
             "error": "Fehler beim Hinzufügen des Produkts zum Warenkorb. Bitte versuchen Sie es erneut."
-        }
-    },
-    "Login": {
-        "heading": "Anmelden",
-        "resetPasswordHeading": "Passwort zurücksetzen",
-        "changePasswordHeading": "Passwort ändern",
-        "Form": {
-            "errorMessage": "Ihre E-Mail-Adresse oder Ihr Passwort ist falsch. Versuchen Sie, sich erneut anzumelden, oder setzen Sie Ihr Passwort zurück",
-            "emailLabel": "E-Mail",
-            "enterEmailMessage": "Geben Sie Ihre E-Mail-Adresse ein",
-            "passwordLabel": "Passwort",
-            "entePasswordMessage": "Geben Sie Ihr Passwort ein.",
-            "submitting": "Wird eingereicht ...",
-            "logIn": "Anmelden",
-            "resetPassword": "Passwort vergessen?",
-            "validationMessages": {
-                "email": "Geben Sie eine gültige E-Mail-Adresse wie name@domain.com ein.",
-                "firstName": "Geben Sie Ihren Vornamen ein",
-                "lastName": "Geben Sie Ihren Nachnamen ein",
-                "city": "Geben Sie einen Vorort / eine Stadt ein",
-                "company": "Geben Sie einen Firmennamen ein",
-                "phone": "Geben Sie eine Telefonnummer ein"
-            }
-        },
-        "CreateAccount": {
-            "heading": "Neuer Kunde?",
-            "accountBenefits": "Wenn Sie ein Konto bei uns erstellen, haben Sie folgende Möglichkeiten:",
-            "fastCheckout": "Schnellerer Bezahlvorgang",
-            "multipleAddresses": "Speicherung mehrerer Lieferadressen",
-            "ordersHistory": "Zugang zu Ihrem Bestellverlauf",
-            "ordersTracking": "Tracking von neuen Bestellungen",
-            "wishlists": "Hinzufügen von Artikeln zu Ihrer Wunschliste",
-            "createLink": "Konto erstellen "
-        },
-        "Register": {
-            "heading": "Neues Konto",
-            "submit": "Konto erstellen",
-            "submitting": "Konto erstellen ...",
-            "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
-            "stateProvincePrefix": "Bundesland oder Provinz auswählen",
-            "validationMessages": {
-                "email": "Geben Sie eine gültige E-Mail-Adresse wie name@domain.com ein.",
-                "empty": "Dieses Feld darf nicht leer sein",
-                "firstName": "Geben Sie Ihren Vornamen ein",
-                "lastName": "Geben Sie Ihren Nachnamen ein",
-                "password": "Geben Sie ein Passwort ein",
-                "confirmPassword": "Die Passwörter stimmen nicht überein",
-                "address1": "Geben Sie eine Adresse ein",
-                "address2": "Geben Sie eine Adresse ein",
-                "city": "Geben Sie einen Vorort / eine Stadt ein",
-                "company": "Geben Sie einen Firmennamen ein",
-                "phone": "Geben Sie eine Telefonnummer ein",
-                "postalCode": "Geben Sie eine Postleitzahl ein"
-            },
-            "Errors": {
-                "inputError": "Something went wrong with proccessing user input.",
-                "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
-                "error": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
-            }
         }
     },
     "Product": {
@@ -441,7 +381,7 @@
         "ContactUs": {
             "Form": {
                 "success": "Vielen Dank für Ihre Kontaktaufnahme. Wir melden uns bald bei Ihnen.",
-                "error": "Unknown error.",
+                "error": "Unbekannter Fehler.",
                 "fullNameLabel": "Vollständiger Name",
                 "companyNameLabel": "Firmenname",
                 "phoneLabel": "Telefon",
@@ -458,8 +398,8 @@
         }
     },
     "Maintenance": {
-        "message": "We are down for maintenance",
-        "contactUs": "You can contact us at:"
+        "message": "Wir sind wegen Wartungsarbeiten nicht erreichbar",
+        "contactUs": "Sie können uns kontaktieren unter:"
     },
     "StoreSelector": {
         "heading": "Wählen Sie eine Sprache und Region aus"
@@ -479,7 +419,7 @@
         "Header": {
             "Account": {
                 "account": "Konto",
-                "myAccount": "My account",
+                "myAccount": "Mein Konto",
                 "addresses": "Adressen",
                 "accountSettings": "Kontoeinstellungen",
                 "login": "Anmelden",
@@ -514,6 +454,25 @@
                 "viewOptions": "Optionen anzeigen",
                 "success": "{cartItems, plural, =1 {1 Item} other {# Items}} wurde zu<cartLink> Ihrem Warenkorb</cartLink> hinzugefügt",
                 "error": "Fehler beim Hinzufügen des Produkts zum Warenkorb. Bitte versuchen Sie es erneut."
+            }
+        },
+        "FormFields": {
+            "Validation": {
+                "address1": "Geben Sie eine Adresse ein",
+                "address2": "Geben Sie eine Adresse ein",
+                "city": "Geben Sie einen Vorort / eine Stadt ein",
+                "company": "Geben Sie einen Firmennamen ein",
+                "confirmPassword": "Die Passwörter stimmen nicht überein",
+                "email": "Geben Sie eine gültige E-Mail-Adresse wie name@domain.com ein.",
+                "empty": "Dieses Feld darf nicht leer sein",
+                "firstName": "Geben Sie Ihren Vornamen ein",
+                "lastName": "Geben Sie Ihren Nachnamen ein",
+                "numbersOnly": "Nur Zahlen eingeben",
+                "numbersOverflow": "Der eingegebene Wert überschreitet den maximalen Bereich von {max}",
+                "numbersUnderflow": "Der eingegebene Wert unterschreitet den minimalen Bereich von {min}",
+                "password": "Geben Sie ein Passwort ein",
+                "phone": "Geben Sie eine Telefonnummer ein",
+                "postalCode": "Geben Sie eine Postleitzahl ein"
             }
         }
     }
