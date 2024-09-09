@@ -5,6 +5,73 @@
             "newestProducts": "Prodotti più recenti"
         }
     },
+    "ChangePassword": {
+        "heading": "Cambia password",
+        "Form": {
+            "newPasswordLabel": "Nuova password",
+            "confirmPasswordLabel": "Conferma password",
+            "confirmPasswordValidationMessage": "Le password inserite non corrispondono. Riprova.",
+            "successMessage": "La password è stata aggiornata!",
+            "confirmChangePassword": "Password aggiornata. Effettua l'accesso con le nuove credenziali.",
+            "submit": "Cambia password",
+            "submitting": "Invio in corso..."
+        },
+        "Errors": {
+            "error": "Errore sconosciuto."
+        }
+    },
+    "Login": {
+        "heading": "Accedi",
+        "Form": {
+            "error": "L'indirizzo e-mail o la password non sono corretti. Prova ad accedere di nuovo o reimposta la password",
+            "emailLabel": "E-mail",
+            "enterEmailMessage": "Inserisci la tua e-mail",
+            "passwordLabel": "Password",
+            "entePasswordMessage": "Inserisci la tua password",
+            "submitting": "Invio in corso...",
+            "logIn": "Accedi",
+            "resetPassword": "Hai dimenticato la password?"
+        },
+        "CreateAccount": {
+            "heading": "Nuovo cliente?",
+            "accountBenefits": "Crea un account con noi e sarai in grado di:",
+            "fastCheckout": "Completare gli acquisti più velocemente",
+            "multipleAddresses": "Salvare molteplici indirizzi di spedizione",
+            "ordersHistory": "Accedere allo storico dei tuoi ordini",
+            "ordersTracking": "Tracciare i nuovi ordini",
+            "wishlists": "Salva articoli nella Lista desideri",
+            "createLink": "Crea account "
+        }
+    },
+    "Register": {
+        "heading": "Nuovo account",
+        "Form": {
+            "submit": "Crea account",
+            "submitting": "Creazione dell'account...",
+            "recaptchaText": "Supera il controllo ReCAPTCHA",
+            "confirmPassword": "Le password non corrispondono."
+        },
+        "Errors": {
+            "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
+            "apiError": "Sembra che si sia verificato un errore del server, riprova tra qualche minuto.",
+            "error": "Si è verificato un errore. Riprova più tardi."
+        }
+    },
+    "Reset": {
+        "heading": "Reimposta password",
+        "Form": {
+            "description": "Inserisci di seguito l'e-mail associata al tuo account. Ti invieremo le istruzioni per reimpostare la password.",
+            "emailLabel": "E-mail",
+            "emailValidationMessage": "Inserisci un indirizzo e-mail valido, ad esempio nome@dominio.com",
+            "recaptchaText": "Supera il controllo ReCAPTCHA",
+            "confirmResetPassword": "Se l'indirizzo e-mail {email} è collegato a un account nel nostro negozio, ti abbiamo inviato un'e-mail per reimpostare la password. Se non la trovi, controlla le cartelle di posta in arrivo e indesiderata.",
+            "submitting": "Invio in corso...",
+            "submit": "Reimposta password"
+        },
+        "Errors": {
+            "error": "Errore sconosciuto."
+        }
+    },
     "FacetedGroup": {
         "MobileSideNav": {
             "filters": "Filtri",
@@ -69,7 +136,8 @@
             "wishlists": "Liste desideri",
             "recentlyViewed": "Visualizzati di recente",
             "settings": "Impostazioni account",
-            "changePassword": "Cambia password"
+            "changePassword": "Cambia password",
+            "successMessage": "Il tuo account è stato creato"
         },
         "Addresses": {
             "defaultAddress": "impostazione predefinita",
@@ -91,22 +159,22 @@
             "submitting": "In corso..."
         },
         "AddAddress": {
-            "success": "The address has been added.",
+            "success": "L'indirizzo è stato aggiunto.",
             "Errors": {
-                "inputError": "Something went wrong with proccessing user input.",
-                "error": "Unknown error."
+                "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
+                "error": "Errore sconosciuto."
             }
         },
         "DeleteAddress": {
             "success": "Indirizzo eliminato dal tuo account.",
-            "error": "Unknown error."
+            "error": "Errore sconosciuto."
         },
         "UpdateAddress": {
-            "success": "The address has been updated.",
+            "success": "L'indirizzo è stato aggiornato.",
             "Errors": {
-                "inputError": "Something went wrong with proccessing user input.",
-                "notFound": "Address does not exist.",
-                "error": "Unknown error."
+                "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
+                "notFound": "L'indirizzo non esiste.",
+                "error": "Errore sconosciuto."
             }
         },
         "EditAddress": {
@@ -125,7 +193,7 @@
             "emptyTextValidatoinMessage": "Questo campo non può essere vuoto",
             "cancel": "Annulla",
             "recaptchaText": "Supera il controllo ReCAPTCHA",
-            "changePassword": "Reimposta password",
+            "changePassword": "Cambia password",
             "submit": "AGGIORNA IMPOSTAZIONI",
             "submitting": "Aggiorna impostazioni...",
             "successMessage": "Gentile {firstName} {lastName}, hai aggiornato con successo i dati del tuo account",
@@ -139,71 +207,14 @@
                 "phone": "Inserisci un numero di telefono"
             },
             "ChangePassword": {
-                "success": "Password has been updated successfully.",
-                "error": "Unknown error."
+                "success": "La password è stata aggiornata.",
+                "error": "Errore sconosciuto."
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Something went wrong with proccessing user input.",
-                    "notFound": "Customer does not exist"
+                    "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
+                    "notFound": "Il cliente non esiste"
                 }
-            }
-        },
-        "Login": {
-            "heading": "Accedi",
-            "resetPasswordHeading": "Reimposta password",
-            "changePasswordHeading": "Cambia password",
-            "Form": {
-                "errorMessage": "L'indirizzo e-mail o la password non sono corretti. Prova ad accedere di nuovo o reimposta la password",
-                "emailLabel": "E-mail",
-                "enterEmailMessage": "Inserisci la tua e-mail",
-                "passwordLabel": "Password",
-                "entePasswordMessage": "Inserisci la tua password",
-                "submitting": "Invio in corso...",
-                "logIn": "Accedi",
-                "resetPassword": "Hai dimenticato la password?",
-                "validationMessages": {
-                    "email": "Inserisci un indirizzo e-mail valido, ad esempio nome@dominio.com",
-                    "firstName": "Inserisci il tuo nome",
-                    "lastName": "Inserisci il tuo cognome",
-                    "city": "Inserisci una frazione/città",
-                    "company": "Inserisci una ragione sociale",
-                    "phone": "Inserisci un numero di telefono"
-                }
-            },
-            "CreateAccount": {
-                "heading": "Nuovo cliente?",
-                "accountBenefits": "Crea un account con noi e sarai in grado di:",
-                "fastCheckout": "Completare gli acquisti più velocemente",
-                "multipleAddresses": "Salvare molteplici indirizzi di spedizione",
-                "ordersHistory": "Accedere allo storico dei tuoi ordini",
-                "ordersTracking": "Tracciare i nuovi ordini",
-                "wishlists": "Salva articoli nella Lista desideri",
-                "createLink": "Crea account "
-            }
-        },
-        "Register": {
-            "heading": "Nuovo account",
-            "submit": "Crea account",
-            "submitting": "Creazione dell'account...",
-            "recaptchaText": "Supera il controllo ReCAPTCHA",
-            "stateProvincePrefix": "Scegli stato o provincia",
-            "validationMessages": {
-                "email": "Inserisci un indirizzo e-mail valido, ad esempio nome@dominio.com",
-                "empty": "Questo campo non può essere vuoto",
-                "numbersOverflow": "Entered value exceeds max range of {max}",
-                "numbersUnderflow": "Entered value falls short of min range of {min}",
-                "numbersOnly": "Enter numbers only",
-                "firstName": "Inserisci il tuo nome",
-                "lastName": "Inserisci il tuo cognome",
-                "password": "Inserisci una password",
-                "confirmPassword": "Le password non corrispondono.",
-                "address1": "Inserisci un indirizzo",
-                "address2": "Inserisci un indirizzo",
-                "city": "Inserisci una frazione/città",
-                "company": "Inserisci una ragione sociale",
-                "phone": "Inserisci un numero di telefono",
-                "postalCode": "Inserisci un codice postale"
             }
         },
         "ChangePassword": {
@@ -220,18 +231,6 @@
         "SubmitChangePassword": {
             "spinnerText": "Invio in corso...",
             "submitText": "Cambia password"
-        },
-        "ResetPassword": {
-            "description": "Inserisci di seguito l'e-mail associata al tuo account. Ti invieremo le istruzioni per reimpostare la password.",
-            "emailLabel": "E-mail",
-            "emailValidationMessage": "Inserisci un indirizzo e-mail valido, ad esempio nome@dominio.com",
-            "successMessage": "Un'e-mail per la reimpostazione della password è stata inviata a {email}. Se non la vedi, controlla la cartella di posta indesiderata.",
-            "recaptchaText": "Supera il controllo ReCAPTCHA",
-            "confirmResetPassword": "Se l'indirizzo e-mail {email} è collegato a un account nel nostro negozio, ti abbiamo inviato un'e-mail per reimpostare la password. Se non la trovi, controlla le cartelle di posta in arrivo e indesiderata."
-        },
-        "SubmitResetPassword": {
-            "spinnerText": "Invio in corso...",
-            "submitText": "Reimposta password"
         }
     },
     "Blog": {
@@ -316,8 +315,8 @@
         "nothingToCompare": "Non c'è niente da confrontare!",
         "helpingText": "Anche se ora sei qui, devi prima selezionare alcuni prodotti.",
         "Table": {
-            "caption": "Product comparison",
-            "noImage": "No image",
+            "caption": "Confronto prodotti",
+            "noImage": "Nessuna immagine",
             "viewOptions": "Visualizza le opzioni",
             "description": "Description",
             "rating": "Valutazione",
@@ -331,65 +330,6 @@
         "AddToCart": {
             "success": "{cartItems, plural, =1 {1 articolo} other {# articoli}} aggiunto/i al <cartLink> carrello</cartLink>",
             "error": "Errore durante l'aggiunta del prodotto al carrello. Riprova."
-        }
-    },
-    "Login": {
-        "heading": "Accedi",
-        "resetPasswordHeading": "Reimposta password",
-        "changePasswordHeading": "Cambia password",
-        "Form": {
-            "errorMessage": "L'indirizzo e-mail o la password non sono corretti. Prova ad accedere di nuovo o reimposta la password",
-            "emailLabel": "E-mail",
-            "enterEmailMessage": "Inserisci la tua e-mail",
-            "passwordLabel": "Password",
-            "entePasswordMessage": "Inserisci la tua password",
-            "submitting": "Invio in corso...",
-            "logIn": "Accedi",
-            "resetPassword": "Hai dimenticato la password?",
-            "validationMessages": {
-                "email": "Inserisci un indirizzo e-mail valido, ad esempio nome@dominio.com",
-                "firstName": "Inserisci il tuo nome",
-                "lastName": "Inserisci il tuo cognome",
-                "city": "Inserisci una frazione/città",
-                "company": "Inserisci una ragione sociale",
-                "phone": "Inserisci un numero di telefono"
-            }
-        },
-        "CreateAccount": {
-            "heading": "Nuovo cliente?",
-            "accountBenefits": "Crea un account con noi e sarai in grado di:",
-            "fastCheckout": "Completare gli acquisti più velocemente",
-            "multipleAddresses": "Salvare molteplici indirizzi di spedizione",
-            "ordersHistory": "Accedere allo storico dei tuoi ordini",
-            "ordersTracking": "Tracciare i nuovi ordini",
-            "wishlists": "Salva articoli nella Lista desideri",
-            "createLink": "Crea account "
-        },
-        "Register": {
-            "heading": "Nuovo account",
-            "submit": "Crea account",
-            "submitting": "Creazione dell'account...",
-            "recaptchaText": "Supera il controllo ReCAPTCHA",
-            "stateProvincePrefix": "Scegli stato o provincia",
-            "validationMessages": {
-                "email": "Inserisci un indirizzo e-mail valido, ad esempio nome@dominio.com",
-                "empty": "Questo campo non può essere vuoto",
-                "firstName": "Inserisci il tuo nome",
-                "lastName": "Inserisci il tuo cognome",
-                "password": "Inserisci una password",
-                "confirmPassword": "Le password non corrispondono.",
-                "address1": "Inserisci un indirizzo",
-                "address2": "Inserisci un indirizzo",
-                "city": "Inserisci una frazione/città",
-                "company": "Inserisci una ragione sociale",
-                "phone": "Inserisci un numero di telefono",
-                "postalCode": "Inserisci un codice postale"
-            },
-            "Errors": {
-                "inputError": "Something went wrong with proccessing user input.",
-                "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
-                "error": "Si è verificato un errore. Riprova più tardi."
-            }
         }
     },
     "Product": {
@@ -441,7 +381,7 @@
         "ContactUs": {
             "Form": {
                 "success": "Grazie per averci contattato. Ti risponderemo al più presto.",
-                "error": "Unknown error.",
+                "error": "Errore sconosciuto.",
                 "fullNameLabel": "Nome completo",
                 "companyNameLabel": "Azienda",
                 "phoneLabel": "Telefono",
@@ -458,8 +398,8 @@
         }
     },
     "Maintenance": {
-        "message": "We are down for maintenance",
-        "contactUs": "You can contact us at:"
+        "message": "Stiamo effettuando la manutenzione",
+        "contactUs": "Puoi contattarci all'indirizzo:"
     },
     "StoreSelector": {
         "heading": "Seleziona una lingua e una regione"
@@ -479,7 +419,7 @@
         "Header": {
             "Account": {
                 "account": "Account",
-                "myAccount": "My account",
+                "myAccount": "Il mio account",
                 "addresses": "Indirizzi",
                 "accountSettings": "Impostazioni account",
                 "login": "Accedi",
@@ -514,6 +454,25 @@
                 "viewOptions": "Visualizza le opzioni",
                 "success": "{cartItems, plural, =1 {1 articolo} other {# articoli}} aggiunto/i al <cartLink> carrello</cartLink>",
                 "error": "Errore durante l'aggiunta del prodotto al carrello. Riprova."
+            }
+        },
+        "FormFields": {
+            "Validation": {
+                "address1": "Inserisci un indirizzo",
+                "address2": "Inserisci un indirizzo",
+                "city": "Inserisci una frazione/città",
+                "company": "Inserisci una ragione sociale",
+                "confirmPassword": "Le password non corrispondono.",
+                "email": "Inserisci un indirizzo e-mail valido, ad esempio nome@dominio.com",
+                "empty": "Questo campo non può essere vuoto",
+                "firstName": "Inserisci il tuo nome",
+                "lastName": "Inserisci il tuo cognome",
+                "numbersOnly": "Immetti solo numeri",
+                "numbersOverflow": "Il valore immesso supera l'intervallo massimo di {max}",
+                "numbersUnderflow": "Il valore immesso è inferiore all'intervallo minimo di {min}",
+                "password": "Inserisci una password",
+                "phone": "Inserisci un numero di telefono",
+                "postalCode": "Inserisci un codice postale"
             }
         }
     }

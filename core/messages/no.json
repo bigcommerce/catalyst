@@ -5,6 +5,73 @@
             "newestProducts": "Nyeste produkter"
         }
     },
+    "ChangePassword": {
+        "heading": "Endre passord",
+        "Form": {
+            "newPasswordLabel": "Nytt passord",
+            "confirmPasswordLabel": "Bekreft passord",
+            "confirmPasswordValidationMessage": "Oppgitte passord stemmer ikke overens. Prøv igjen.",
+            "successMessage": "Passordet er oppdatert!",
+            "confirmChangePassword": "Passordet ditt har blitt oppdatert. Logg på med din nye legitimasjon.",
+            "submit": "Endre passord",
+            "submitting": "Sender inn …"
+        },
+        "Errors": {
+            "error": "Ukjent feil."
+        }
+    },
+    "Login": {
+        "heading": "Logg inn",
+        "Form": {
+            "error": "E-postadressen eller passordet er feil. Prøv å logge på igjen, eller tilbakestill passordet ditt.",
+            "emailLabel": "E-post",
+            "enterEmailMessage": "Skriv inn epostadressen din",
+            "passwordLabel": "Passord",
+            "entePasswordMessage": "Skriv inn passordet ditt.",
+            "submitting": "Sender inn …",
+            "logIn": "Logg inn",
+            "resetPassword": "Har du glemt passordet?"
+        },
+        "CreateAccount": {
+            "heading": "Ny kunde?",
+            "accountBenefits": "Opprett en konto hos oss, så kan du:",
+            "fastCheckout": "Betale raskere",
+            "multipleAddresses": "Lagre flere leveringsadresser",
+            "ordersHistory": "Få tilgang til bestillingshistorikken din",
+            "ordersTracking": "Spore nye bestillinger",
+            "wishlists": "Legge til varer på ønskelisten din",
+            "createLink": "Opprett konto "
+        }
+    },
+    "Register": {
+        "heading": "Ny konto",
+        "Form": {
+            "submit": "Opprett konto",
+            "submitting": "Oppretter konto …",
+            "recaptchaText": "Bestå reCAPTCHA-sjekk",
+            "confirmPassword": "Passordene samsvarer ikke"
+        },
+        "Errors": {
+            "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
+            "apiError": "Det ser ut til at vi opplever en serverfeil, vennligst prøv igjen om noen minutter.",
+            "error": "Noe gikk galt. Prøv igjen senere."
+        }
+    },
+    "Reset": {
+        "heading": "Tilbakestill passord",
+        "Form": {
+            "description": "Skriv inn e-posten som er knyttet til kontoen din nedenfor. Vi sender deg instruksjoner for å tilbakestille passordet ditt.",
+            "emailLabel": "E-post",
+            "emailValidationMessage": "Angi en gyldig e-postadresse, for eksempel navn@domene.com",
+            "recaptchaText": "Bestå reCAPTCHA-sjekk",
+            "confirmResetPassword": "Hvis e-postadressen {email} er koblet til en konto i butikken vår, har vi sendt deg en e-post for tilbakestilling av passord. Sjekk innboksen og søppelpostmappen hvis du ikke ser den.",
+            "submitting": "Sender inn …",
+            "submit": "Tilbakestill passord"
+        },
+        "Errors": {
+            "error": "Ukjent feil."
+        }
+    },
     "FacetedGroup": {
         "MobileSideNav": {
             "filters": "Filtre",
@@ -69,7 +136,8 @@
             "wishlists": "Ønskelister",
             "recentlyViewed": "Nylig sett",
             "settings": "Kontoinnstillinger",
-            "changePassword": "Endre passord"
+            "changePassword": "Endre passord",
+            "successMessage": "Kontoen din har blitt opprettet"
         },
         "Addresses": {
             "defaultAddress": "Standard",
@@ -91,22 +159,22 @@
             "submitting": "Pågår …"
         },
         "AddAddress": {
-            "success": "The address has been added.",
+            "success": "Adressen er lagt til.",
             "Errors": {
-                "inputError": "Something went wrong with proccessing user input.",
-                "error": "Unknown error."
+                "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
+                "error": "Ukjent feil."
             }
         },
         "DeleteAddress": {
             "success": "Adresse slettet fra kontoen din.",
-            "error": "Unknown error."
+            "error": "Ukjent feil."
         },
         "UpdateAddress": {
-            "success": "The address has been updated.",
+            "success": "Adressen er oppdatert.",
             "Errors": {
-                "inputError": "Something went wrong with proccessing user input.",
-                "notFound": "Address does not exist.",
-                "error": "Unknown error."
+                "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
+                "notFound": "Adressen finnes ikke.",
+                "error": "Ukjent feil."
             }
         },
         "EditAddress": {
@@ -125,7 +193,7 @@
             "emptyTextValidatoinMessage": "Dette feltet kan ikke være tomt",
             "cancel": "Avbryt",
             "recaptchaText": "Bestå reCAPTCHA-sjekk",
-            "changePassword": "Tilbakestill passord",
+            "changePassword": "Endre passord",
             "submit": "Oppdater innstillingene",
             "submitting": "Oppdater innstillingene …",
             "successMessage": "{firstName} {lastName}, du har oppdatert kontodataene dine",
@@ -139,71 +207,14 @@
                 "phone": "Skriv inn et telefonnummer"
             },
             "ChangePassword": {
-                "success": "Password has been updated successfully.",
-                "error": "Unknown error."
+                "success": "Passordet er oppdatert!",
+                "error": "Ukjent feil."
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Something went wrong with proccessing user input.",
-                    "notFound": "Customer does not exist"
+                    "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
+                    "notFound": "Kunden eksisterer ikke"
                 }
-            }
-        },
-        "Login": {
-            "heading": "Logg inn",
-            "resetPasswordHeading": "Tilbakestill passord",
-            "changePasswordHeading": "Endre passord",
-            "Form": {
-                "errorMessage": "E-postadressen eller passordet er feil. Prøv å logge på igjen, eller tilbakestill passordet ditt.",
-                "emailLabel": "E-post",
-                "enterEmailMessage": "Skriv inn epostadressen din",
-                "passwordLabel": "Passord",
-                "entePasswordMessage": "Skriv inn passordet ditt.",
-                "submitting": "Sender inn …",
-                "logIn": "Logg inn",
-                "resetPassword": "Har du glemt passordet?",
-                "validationMessages": {
-                    "email": "Angi en gyldig e-postadresse, for eksempel navn@domene.com",
-                    "firstName": "Skriv inn fornavnet ditt",
-                    "lastName": "Skriv inn etternavnet ditt",
-                    "city": "Skriv inn en forstad / by",
-                    "company": "Skriv inn et firmanavn",
-                    "phone": "Skriv inn et telefonnummer"
-                }
-            },
-            "CreateAccount": {
-                "heading": "Ny kunde?",
-                "accountBenefits": "Opprett en konto hos oss, så kan du:",
-                "fastCheckout": "Betale raskere",
-                "multipleAddresses": "Lagre flere leveringsadresser",
-                "ordersHistory": "Få tilgang til bestillingshistorikken din",
-                "ordersTracking": "Spore nye bestillinger",
-                "wishlists": "Legge til varer på ønskelisten din",
-                "createLink": "Opprett konto "
-            }
-        },
-        "Register": {
-            "heading": "Ny konto",
-            "submit": "Opprett konto",
-            "submitting": "Oppretter konto …",
-            "recaptchaText": "Bestå reCAPTCHA-sjekk",
-            "stateProvincePrefix": "Velg et fylke",
-            "validationMessages": {
-                "email": "Angi en gyldig e-postadresse, for eksempel navn@domene.com",
-                "empty": "Dette feltet kan ikke være tomt",
-                "numbersOverflow": "Entered value exceeds max range of {max}",
-                "numbersUnderflow": "Entered value falls short of min range of {min}",
-                "numbersOnly": "Enter numbers only",
-                "firstName": "Skriv inn fornavnet ditt",
-                "lastName": "Skriv inn etternavnet ditt",
-                "password": "Skriv inn et passord",
-                "confirmPassword": "Passordene samsvarer ikke",
-                "address1": "Skriv inn en adresse",
-                "address2": "Skriv inn en adresse",
-                "city": "Skriv inn en forstad / by",
-                "company": "Skriv inn et firmanavn",
-                "phone": "Skriv inn et telefonnummer",
-                "postalCode": "Skriv inn et postnummer"
             }
         },
         "ChangePassword": {
@@ -220,18 +231,6 @@
         "SubmitChangePassword": {
             "spinnerText": "Sender inn …",
             "submitText": "Endre passord"
-        },
-        "ResetPassword": {
-            "description": "Skriv inn e-posten som er knyttet til kontoen din nedenfor. Vi sender deg instruksjoner for å tilbakestille passordet ditt.",
-            "emailLabel": "E-post",
-            "emailValidationMessage": "Angi en gyldig e-postadresse, for eksempel navn@domene.com",
-            "successMessage": "E-posten din for tilbakestilling av passord er på vei til {email}. Hvis du ikke ser den, bør du sjekke søppelpostmappen din.",
-            "recaptchaText": "Bestå reCAPTCHA-sjekk",
-            "confirmResetPassword": "Hvis e-postadressen {email} er koblet til en konto i butikken vår, har vi sendt deg en e-post for tilbakestilling av passord. Sjekk innboksen og søppelpostmappen hvis du ikke ser den."
-        },
-        "SubmitResetPassword": {
-            "spinnerText": "Sender inn …",
-            "submitText": "Tilbakestill passord"
         }
     },
     "Blog": {
@@ -316,8 +315,8 @@
         "nothingToCompare": "Vel, det er ingenting å sammenligne!",
         "helpingText": "Du har på en eller annen måte havnet her, men du må velge noen produkter først.",
         "Table": {
-            "caption": "Product comparison",
-            "noImage": "No image",
+            "caption": "Produktsammenligning",
+            "noImage": "Ikke bilde",
             "viewOptions": "Vis alternativer",
             "description": "Beskrivelse",
             "rating": "Vurdering",
@@ -331,65 +330,6 @@
         "AddToCart": {
             "success": "{cartItems, plural, =1 {1 vare} other {# varer}} lagt til i <cartLink>handlekurven din</cartLink>",
             "error": "Feil da produktet skulle legges til i handlekurven. Prøv igjen."
-        }
-    },
-    "Login": {
-        "heading": "Logg inn",
-        "resetPasswordHeading": "Tilbakestill passord",
-        "changePasswordHeading": "Endre passord",
-        "Form": {
-            "errorMessage": "E-postadressen eller passordet er feil. Prøv å logge på igjen, eller tilbakestill passordet ditt.",
-            "emailLabel": "E-post",
-            "enterEmailMessage": "Skriv inn epostadressen din",
-            "passwordLabel": "Passord",
-            "entePasswordMessage": "Skriv inn passordet ditt.",
-            "submitting": "Sender inn …",
-            "logIn": "Logg inn",
-            "resetPassword": "Har du glemt passordet?",
-            "validationMessages": {
-                "email": "Angi en gyldig e-postadresse, for eksempel navn@domene.com",
-                "firstName": "Skriv inn fornavnet ditt",
-                "lastName": "Skriv inn etternavnet ditt",
-                "city": "Skriv inn en forstad / by",
-                "company": "Skriv inn et firmanavn",
-                "phone": "Skriv inn et telefonnummer"
-            }
-        },
-        "CreateAccount": {
-            "heading": "Ny kunde?",
-            "accountBenefits": "Opprett en konto hos oss, så kan du:",
-            "fastCheckout": "Betale raskere",
-            "multipleAddresses": "Lagre flere leveringsadresser",
-            "ordersHistory": "Få tilgang til bestillingshistorikken din",
-            "ordersTracking": "Spore nye bestillinger",
-            "wishlists": "Legge til varer på ønskelisten din",
-            "createLink": "Opprett konto "
-        },
-        "Register": {
-            "heading": "Ny konto",
-            "submit": "Opprett konto",
-            "submitting": "Oppretter konto …",
-            "recaptchaText": "Bestå reCAPTCHA-sjekk",
-            "stateProvincePrefix": "Velg et fylke",
-            "validationMessages": {
-                "email": "Angi en gyldig e-postadresse, for eksempel navn@domene.com",
-                "empty": "Dette feltet kan ikke være tomt",
-                "firstName": "Skriv inn fornavnet ditt",
-                "lastName": "Skriv inn etternavnet ditt",
-                "password": "Skriv inn et passord",
-                "confirmPassword": "Passordene samsvarer ikke",
-                "address1": "Skriv inn en adresse",
-                "address2": "Skriv inn en adresse",
-                "city": "Skriv inn en forstad / by",
-                "company": "Skriv inn et firmanavn",
-                "phone": "Skriv inn et telefonnummer",
-                "postalCode": "Skriv inn et postnummer"
-            },
-            "Errors": {
-                "inputError": "Something went wrong with proccessing user input.",
-                "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
-                "error": "Noe gikk galt. Prøv igjen senere."
-            }
         }
     },
     "Product": {
@@ -441,7 +381,7 @@
         "ContactUs": {
             "Form": {
                 "success": "Takk for at du tok kontakt. Vi kommer tilbake til deg snart.",
-                "error": "Unknown error.",
+                "error": "Ukjent feil.",
                 "fullNameLabel": "Fullt navn",
                 "companyNameLabel": "Firmanavn",
                 "phoneLabel": "Telefon",
@@ -458,8 +398,8 @@
         }
     },
     "Maintenance": {
-        "message": "We are down for maintenance",
-        "contactUs": "You can contact us at:"
+        "message": "Vi er nede for vedlikehold",
+        "contactUs": "Du kan kontakte oss på:"
     },
     "StoreSelector": {
         "heading": "Velg språk og region"
@@ -479,7 +419,7 @@
         "Header": {
             "Account": {
                 "account": "Konto",
-                "myAccount": "My account",
+                "myAccount": "Min konto",
                 "addresses": "Adresser",
                 "accountSettings": "Kontoinnstillinger",
                 "login": "Logg inn",
@@ -514,6 +454,25 @@
                 "viewOptions": "Vis alternativer",
                 "success": "{cartItems, plural, =1 {1 vare} other {# varer}} lagt til i <cartLink>handlekurven din</cartLink>",
                 "error": "Feil da produktet skulle legges til i handlekurven. Prøv igjen."
+            }
+        },
+        "FormFields": {
+            "Validation": {
+                "address1": "Skriv inn en adresse",
+                "address2": "Skriv inn en adresse",
+                "city": "Skriv inn en forstad / by",
+                "company": "Skriv inn et firmanavn",
+                "confirmPassword": "Passordene samsvarer ikke",
+                "email": "Angi en gyldig e-postadresse, for eksempel navn@domene.com",
+                "empty": "Dette feltet kan ikke være tomt",
+                "firstName": "Skriv inn fornavnet ditt",
+                "lastName": "Skriv inn etternavnet ditt",
+                "numbersOnly": "Skriv bare inn tall",
+                "numbersOverflow": "Den angitte verdien overskrider maksområdet på {max}",
+                "numbersUnderflow": "Den angitte verdien faller under minimumsområdet på {min}",
+                "password": "Skriv inn et passord",
+                "phone": "Skriv inn et telefonnummer",
+                "postalCode": "Skriv inn et postnummer"
             }
         }
     }

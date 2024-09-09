@@ -5,6 +5,73 @@
             "newestProducts": "Senaste produkterna"
         }
     },
+    "ChangePassword": {
+        "heading": "Ändra lösenor",
+        "Form": {
+            "newPasswordLabel": "Nytt lösenord",
+            "confirmPasswordLabel": "Bekräfta lösenord",
+            "confirmPasswordValidationMessage": "Angivna lösenord stämmer inte överens. Försök igen.",
+            "successMessage": "Lösenordet har uppdaterats!",
+            "confirmChangePassword": "Ditt lösenord har uppdaterats. Logga in med dina nya inloggningsuppgifter.",
+            "submit": "Ändra lösenor",
+            "submitting": "Skickar ..."
+        },
+        "Errors": {
+            "error": "Okänt fel."
+        }
+    },
+    "Login": {
+        "heading": "Logga in",
+        "Form": {
+            "error": "Din e-postadress eller ditt lösenord är felaktigt. Försök att logga in igen eller återställ ditt lösenord",
+            "emailLabel": "E-post",
+            "enterEmailMessage": "Ange din e-postadress",
+            "passwordLabel": "Lösenord",
+            "entePasswordMessage": "Ange ditt lösenord",
+            "submitting": "Skickar ...",
+            "logIn": "Logga in",
+            "resetPassword": "Glömt ditt lösenord?"
+        },
+        "CreateAccount": {
+            "heading": "Nya kunder?",
+            "accountBenefits": "Skapa ett konto hos oss, så kan du:",
+            "fastCheckout": "Kolla snabbare",
+            "multipleAddresses": "Spara flera leveransadresser",
+            "ordersHistory": "Gå till din orderhistorik",
+            "ordersTracking": "Spåra nya beställningar",
+            "wishlists": "Spara objekt i din önskelista",
+            "createLink": "Skapa konto "
+        }
+    },
+    "Register": {
+        "heading": "Nytt konto",
+        "Form": {
+            "submit": "Skapa konto",
+            "submitting": "Skapar konto...",
+            "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
+            "confirmPassword": "Lösenorden stämmer inte överens"
+        },
+        "Errors": {
+            "inputError": "Något gick fel när användarens inmatning bearbetades.",
+            "apiError": "Det verkar som om vi har ett serverfel. Försök igen om några minuter.",
+            "error": "Någonting gick fel. Vänligen försök igen senare."
+        }
+    },
+    "Reset": {
+        "heading": "Återställ lösenord",
+        "Form": {
+            "description": "Ange e-postadressen som är kopplad till ditt konto nedan. Vi skickar instruktioner för att återställa ditt lösenord.",
+            "emailLabel": "E-post",
+            "emailValidationMessage": "Ange en giltig e-postadress, t.ex. namn@domän.com",
+            "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
+            "confirmResetPassword": "Om e-postadressen {email} är kopplad till ett konto i vår butik har vi skickat ett e-postmeddelande om återställning av lösenord. Kontrollera din inkorg och skräppostmapp om du inte ser meddelandet.",
+            "submitting": "Skickar ...",
+            "submit": "Återställ lösenord"
+        },
+        "Errors": {
+            "error": "Okänt fel."
+        }
+    },
     "FacetedGroup": {
         "MobileSideNav": {
             "filters": "Filter",
@@ -69,7 +136,8 @@
             "wishlists": "Önskelistor",
             "recentlyViewed": "Nyss sedda",
             "settings": "Kontoinställningar",
-            "changePassword": "Ändra lösenor"
+            "changePassword": "Ändra lösenor",
+            "successMessage": "Ditt konto har skapats"
         },
         "Addresses": {
             "defaultAddress": "Standard",
@@ -91,22 +159,22 @@
             "submitting": "Pågår ..."
         },
         "AddAddress": {
-            "success": "The address has been added.",
+            "success": "Adressen har lagts till.",
             "Errors": {
-                "inputError": "Something went wrong with proccessing user input.",
-                "error": "Unknown error."
+                "inputError": "Något gick fel när användarens inmatning bearbetades.",
+                "error": "Okänt fel."
             }
         },
         "DeleteAddress": {
             "success": "Adressen har raderats från ditt konto.",
-            "error": "Unknown error."
+            "error": "Okänt fel."
         },
         "UpdateAddress": {
-            "success": "The address has been updated.",
+            "success": "Adressen har uppdaterats.",
             "Errors": {
-                "inputError": "Something went wrong with proccessing user input.",
-                "notFound": "Address does not exist.",
-                "error": "Unknown error."
+                "inputError": "Något gick fel när användarens inmatning bearbetades.",
+                "notFound": "Adressen finns inte.",
+                "error": "Okänt fel."
             }
         },
         "EditAddress": {
@@ -125,7 +193,7 @@
             "emptyTextValidatoinMessage": "Det här fältet får inte vara tomt",
             "cancel": "Annullera",
             "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
-            "changePassword": "Återställ lösenord",
+            "changePassword": "Ändra lösenor",
             "submit": "Uppdatera inställningar",
             "submitting": "Uppdatera inställningar ...",
             "successMessage": "Bästa {firstName} {lastName}, du har uppdaterat dina kontouppgifter",
@@ -139,71 +207,14 @@
                 "phone": "Ange ett telefonnummer"
             },
             "ChangePassword": {
-                "success": "Password has been updated successfully.",
-                "error": "Unknown error."
+                "success": "Ditt lösenord har uppdaterats.",
+                "error": "Okänt fel."
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Something went wrong with proccessing user input.",
-                    "notFound": "Customer does not exist"
+                    "inputError": "Något gick fel när användarens inmatning bearbetades.",
+                    "notFound": "Kunden finns inte"
                 }
-            }
-        },
-        "Login": {
-            "heading": "Logga in",
-            "resetPasswordHeading": "Återställ lösenord",
-            "changePasswordHeading": "Ändra lösenor",
-            "Form": {
-                "errorMessage": "Din e-postadress eller ditt lösenord är felaktigt. Försök att logga in igen eller återställ ditt lösenord",
-                "emailLabel": "E-post",
-                "enterEmailMessage": "Ange din e-postadress",
-                "passwordLabel": "Lösenord",
-                "entePasswordMessage": "Ange ditt lösenord",
-                "submitting": "Skickar ...",
-                "logIn": "Logga in",
-                "resetPassword": "Glömt ditt lösenord?",
-                "validationMessages": {
-                    "email": "Ange en giltig e-postadress, t.ex. namn@domän.com",
-                    "firstName": "Ange ditt förnamn",
-                    "lastName": "Ange ditt efternamn",
-                    "city": "Ange en förort/stad",
-                    "company": "Ange ett företagsnamn",
-                    "phone": "Ange ett telefonnummer"
-                }
-            },
-            "CreateAccount": {
-                "heading": "Nya kunder?",
-                "accountBenefits": "Skapa ett konto hos oss, så kan du:",
-                "fastCheckout": "Kolla snabbare",
-                "multipleAddresses": "Spara flera leveransadresser",
-                "ordersHistory": "Gå till din orderhistorik",
-                "ordersTracking": "Spåra nya beställningar",
-                "wishlists": "Spara objekt i din önskelista",
-                "createLink": "Skapa konto "
-            }
-        },
-        "Register": {
-            "heading": "Nytt konto",
-            "submit": "Skapa konto",
-            "submitting": "Skapar konto...",
-            "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
-            "stateProvincePrefix": "Välj delstat eller provins",
-            "validationMessages": {
-                "email": "Ange en giltig e-postadress, t.ex. namn@domän.com",
-                "empty": "Det här fältet får inte vara tomt",
-                "numbersOverflow": "Entered value exceeds max range of {max}",
-                "numbersUnderflow": "Entered value falls short of min range of {min}",
-                "numbersOnly": "Enter numbers only",
-                "firstName": "Ange ditt förnamn",
-                "lastName": "Ange ditt efternamn",
-                "password": "Ange ett lösenord",
-                "confirmPassword": "Lösenorden stämmer inte överens",
-                "address1": "Ange en adress",
-                "address2": "Ange en adress",
-                "city": "Ange en förort/stad",
-                "company": "Ange ett företagsnamn",
-                "phone": "Ange ett telefonnummer",
-                "postalCode": "Ange ett postnummer"
             }
         },
         "ChangePassword": {
@@ -220,18 +231,6 @@
         "SubmitChangePassword": {
             "spinnerText": "Skickar ...",
             "submitText": "Ändra lösenor"
-        },
-        "ResetPassword": {
-            "description": "Ange e-postadressen som är kopplad till ditt konto nedan. Vi skickar instruktioner för att återställa ditt lösenord.",
-            "emailLabel": "E-post",
-            "emailValidationMessage": "Ange en giltig e-postadress, t.ex. namn@domän.com",
-            "successMessage": "Meddelandet för lösenordsåterställning är på väg till {email}. Kontrollera skräppostmappen om du inte hittar det.",
-            "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
-            "confirmResetPassword": "Om e-postadressen {email} är kopplad till ett konto i vår butik har vi skickat ett e-postmeddelande om återställning av lösenord. Kontrollera din inkorg och skräppostmapp om du inte ser meddelandet."
-        },
-        "SubmitResetPassword": {
-            "spinnerText": "Skickar ...",
-            "submitText": "Återställ lösenord"
         }
     },
     "Blog": {
@@ -316,9 +315,9 @@
         "nothingToCompare": "Det finns inget att jämföra!",
         "helpingText": "Du lyckades på något sätt landa här, men du måste välja några produkter först.",
         "Table": {
-            "caption": "Product comparison",
-            "noImage": "No image",
-            "viewOptions": "View options",
+            "caption": "Jämförelse av produkter",
+            "noImage": "Ingen bild",
+            "viewOptions": "Visa alternativ",
             "description": "Beskrivning",
             "rating": "Bedömning",
             "availability": "Tillgänglighet",
@@ -331,65 +330,6 @@
         "AddToCart": {
             "success": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
             "error": "Produkten kunde inte läggas till i kundvagnen. Försök igen."
-        }
-    },
-    "Login": {
-        "heading": "Logga in",
-        "resetPasswordHeading": "Återställ lösenord",
-        "changePasswordHeading": "Ändra lösenor",
-        "Form": {
-            "errorMessage": "Din e-postadress eller ditt lösenord är felaktigt. Försök att logga in igen eller återställ ditt lösenord",
-            "emailLabel": "E-post",
-            "enterEmailMessage": "Ange din e-postadress",
-            "passwordLabel": "Lösenord",
-            "entePasswordMessage": "Ange ditt lösenord",
-            "submitting": "Skickar ...",
-            "logIn": "Logga in",
-            "resetPassword": "Glömt ditt lösenord?",
-            "validationMessages": {
-                "email": "Ange en giltig e-postadress, t.ex. namn@domän.com",
-                "firstName": "Ange ditt förnamn",
-                "lastName": "Ange ditt efternamn",
-                "city": "Ange en förort/stad",
-                "company": "Ange ett företagsnamn",
-                "phone": "Ange ett telefonnummer"
-            }
-        },
-        "CreateAccount": {
-            "heading": "Nya kunder?",
-            "accountBenefits": "Skapa ett konto hos oss, så kan du:",
-            "fastCheckout": "Kolla snabbare",
-            "multipleAddresses": "Spara flera leveransadresser",
-            "ordersHistory": "Gå till din orderhistorik",
-            "ordersTracking": "Spåra nya beställningar",
-            "wishlists": "Spara objekt i din önskelista",
-            "createLink": "Skapa konto "
-        },
-        "Register": {
-            "heading": "Nytt konto",
-            "submit": "Skapa konto",
-            "submitting": "Skapar konto...",
-            "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
-            "stateProvincePrefix": "Välj delstat eller provins",
-            "validationMessages": {
-                "email": "Ange en giltig e-postadress, t.ex. namn@domän.com",
-                "empty": "Det här fältet får inte vara tomt",
-                "firstName": "Ange ditt förnamn",
-                "lastName": "Ange ditt efternamn",
-                "password": "Ange ett lösenord",
-                "confirmPassword": "Lösenorden stämmer inte överens",
-                "address1": "Ange en adress",
-                "address2": "Ange en adress",
-                "city": "Ange en förort/stad",
-                "company": "Ange ett företagsnamn",
-                "phone": "Ange ett telefonnummer",
-                "postalCode": "Ange ett postnummer"
-            },
-            "Errors": {
-                "inputError": "Something went wrong with proccessing user input.",
-                "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
-                "error": "Någonting gick fel. Vänligen försök igen senare."
-            }
         }
     },
     "Product": {
@@ -441,7 +381,7 @@
         "ContactUs": {
             "Form": {
                 "success": "Tack för att du hörde av dig. Vi återkommer till dig inom kort.",
-                "error": "Unknown error.",
+                "error": "Okänt fel.",
                 "fullNameLabel": "Fullständigt namn",
                 "companyNameLabel": "Företagsnamn",
                 "phoneLabel": "Telefon",
@@ -458,8 +398,8 @@
         }
     },
     "Maintenance": {
-        "message": "We are down for maintenance",
-        "contactUs": "You can contact us at:"
+        "message": "Vi är nere för underhåll",
+        "contactUs": "Kontakta oss på:"
     },
     "StoreSelector": {
         "heading": "Välj språk och region"
@@ -479,7 +419,7 @@
         "Header": {
             "Account": {
                 "account": "Konto",
-                "myAccount": "My account",
+                "myAccount": "Mitt konto",
                 "addresses": "Adresser",
                 "accountSettings": "Kontoinställningar",
                 "login": "Logga in",
@@ -511,9 +451,28 @@
         },
         "ProductCard": {
             "AddToCart": {
-                "viewOptions": "View options",
+                "viewOptions": "Visa alternativ",
                 "success": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
                 "error": "Produkten kunde inte läggas till i kundvagnen. Försök igen."
+            }
+        },
+        "FormFields": {
+            "Validation": {
+                "address1": "Ange en adress",
+                "address2": "Ange en adress",
+                "city": "Ange en förort/stad",
+                "company": "Ange ett företagsnamn",
+                "confirmPassword": "Lösenorden stämmer inte överens",
+                "email": "Ange en giltig e-postadress, t.ex. namn@domän.com",
+                "empty": "Det här fältet får inte vara tomt",
+                "firstName": "Ange ditt förnamn",
+                "lastName": "Ange ditt efternamn",
+                "numbersOnly": "Ange endast siffror",
+                "numbersOverflow": "Det angivna värdet överskrider maxvärdet {max}",
+                "numbersUnderflow": "Det angivna värdet ligger under minimivärdet {min}",
+                "password": "Ange ett lösenord",
+                "phone": "Ange ett telefonnummer",
+                "postalCode": "Ange ett postnummer"
             }
         }
     }
