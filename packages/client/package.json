@@ -1,7 +1,7 @@
 {
   "name": "@bigcommerce/catalyst-client",
   "description": "BigCommerce API client for Catalyst.",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -16,18 +16,15 @@
     "dist"
   ],
   "dependencies": {
+    "@0no-co/graphql.web": "^1.0.8",
     "std-env": "^3.7.0"
   },
-  "peerDependencies": {
-    "graphql": "^16.0.0"
-  },
   "devDependencies": {
-    "@bigcommerce/eslint-config": "^2.9.0",
+    "@bigcommerce/eslint-config": "^2.9.1",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
-    "@types/node": "^20.16.1",
+    "@types/node": "^20.16.5",
     "dotenv-cli": "^7.4.2",
     "eslint": "^8.57.0",
-    "graphql": "^16.9.0",
     "prettier": "^3.3.3",
     "tsup": "^8.2.4",
     "typescript": "^5.5.4"

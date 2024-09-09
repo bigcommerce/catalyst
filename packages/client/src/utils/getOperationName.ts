@@ -1,10 +1,16 @@
-import { DefinitionNode, Kind, OperationDefinitionNode, parse } from 'graphql';
+import { DefinitionNode, OperationDefinitionNode, parse } from '@0no-co/graphql.web';
 
 function isOperationDefinitionNode(node: DefinitionNode): node is OperationDefinitionNode {
-  return node.kind === Kind.OPERATION_DEFINITION;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+  return node.kind === 'OperationDefinition';
 }
 
-export const getOperationInfo = (document: string) => {
+interface OperationInfo {
+  name?: string;
+  type: 'query' | 'mutation' | 'subscription';
+}
+
+export const getOperationInfo = (document: string): OperationInfo => {
   const documentNode = parse(document);
 
   const operationInfo = documentNode.definitions.filter(isOperationDefinitionNode).map((def) => {

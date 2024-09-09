@@ -1,7 +1,7 @@
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
-import { FormFieldsFragment } from '~/client/fragments/form-fields';
 import { graphql, ResultOf } from '~/client/graphql';
+import { FormFieldsFragment } from '~/components/form-fields/fragment';
 import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
 import { AddAddress as AddAddressForm } from './add-address';

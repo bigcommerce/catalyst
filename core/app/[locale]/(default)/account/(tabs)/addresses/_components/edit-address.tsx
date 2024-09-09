@@ -20,7 +20,7 @@ import {
   PicklistOrText,
   RadioButtons,
   Text,
-} from '~/app/[locale]/(default)/login/register-customer/_components/register-customer-form/fields';
+} from '~/components/form-fields';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 import { Field, Form, FormSubmit } from '~/components/ui/form';

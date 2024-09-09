@@ -40,7 +40,6 @@ export default defineConfig({
       maxDiffPixelRatio: 0.02,
     },
   },
-  fullyParallel: !!process.env.CI,
   reporter: process.env.CI
     ? [['list'], ['monocart-reporter']]
     : [

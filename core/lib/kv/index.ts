@@ -55,11 +55,7 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
     return values;
   }
 
-  async set<Data, Options extends SetCommandOptions = SetCommandOptions>(
-    key: string,
-    value: Data,
-    opts?: Options,
-  ) {
+  async set<Data>(key: string, value: Data, opts?: SetCommandOptions) {
     const kv = await this.getKv();
 
     this.logger(`SET - Key: ${key} - Value: ${JSON.stringify(value, null, 2)}`);

@@ -6,10 +6,11 @@ import { test } from '~/tests/fixtures';
 // Prefix is added to ensure that the password requirements are met
 const password = faker.internet.password({ pattern: /[a-zA-Z0-9]/, prefix: '1At', length: 10 });
 
-test('Account register', async ({ page }) => {
-  await page.goto('/login');
+test.describe.configure({ mode: 'serial' });
 
-  await page.getByRole('link', { name: 'Create Account' }).click();
+test('Account register', async ({ page }) => {
+  await page.goto('/register');
+
   await page.getByRole('heading', { name: 'New account' }).waitFor();
 
   await page

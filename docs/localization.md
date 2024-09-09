@@ -1,16 +1,8 @@
 # Localization
 
-You can localize your Catalyst storefront so that it appears in the shopper's preferred language throughout browsing and checkout experience.
-This provides a personalized shopping experience when you sell products internationally.
-
-> [!NOTE]
-> Internationalization support in Catalyst is a work in progress. Full multilingual support in headless channels, like Catalyst, will be added in future releases.
-> Currently, each Catalyst storefront can only support a single language. To display multiple languages, we recommend setting up a separate channel for each language.
-> To fully localize a store for a language or region, you will need to customize product catalog and storefront content in the BigCommerce control panel.
+This guide describes how to provide static string translations for shoppers, including the required subdirectory, file structure, and project configuration.
 
 Catalyst uses [Next.js App Router Internationalization (i18n)](https://next-intl-docs.vercel.app/docs/getting-started/app-router) library to handle localization.
-
-This guide describes how to provide static string translations for shoppers, including the required subdirectory, file structure and project configuration.
 
 ## Required subdirectory
 
@@ -72,12 +64,24 @@ Read more about i18n messages in [next-intl docs](https://next-intl-docs.vercel.
 
 ## i18n configuration
 
-After you created a language file, add its name to the `i18n.ts` config file.
+After you created a language file, add its name to the `routing.ts` config file.
 
 For example, if you created a `fr.json` file, include `fr` when you define the locales:
 
 ```ts
 const locales = ['en', 'fr'] as const;
+```
+
+## Subpath configuration (optional)
+
+If you are using domain subpaths to localize your storefront for a specific language, map the subpath to a channel in the `channels.config.ts` file.
+
+For example, if you want the `/fr` subpath to point a channel ID of `12345`, include the following:
+
+```ts
+const localeToChannelsMappings: Partial<RecordFromLocales> = {
+  fr: '12345',
+};
 ```
 
 ## Using keys in React components
@@ -126,25 +130,6 @@ const Component = () => {
 > [!NOTE]
 > **unstable_setRequestLocale**
 > Please pay attention to `unstable_setRequestLocale` call. You can read more in [next-intl docs](https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-unstable_setrequestlocale-to-all-layouts-and-pages).
-
-The following example shows usage in a nested **client** component:
-
-```tsx
-'use client';
-
-// ...
-import { useTranslations } from 'next-intl';
-
-export const AddToCart = () => {
-  const t = useTranslations('Product.ProductSheet');
-
-  return (
-    <Button type="submit">
-        t('addToCart')
-    </Button>
-  );
-};
-```
 
 ## Routing and locale detection
 

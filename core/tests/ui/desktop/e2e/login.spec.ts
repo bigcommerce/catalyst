@@ -5,6 +5,8 @@ import { test } from '~/tests/fixtures';
 const testAccountEmail = process.env.TEST_ACCOUNT_EMAIL || '';
 const testAccountPassword = process.env.TEST_ACCOUNT_PASSWORD || '';
 
+test.describe.configure({ mode: 'serial' });
+
 test('Account login and logout', async ({ page }) => {
   await page.goto('/');
 
