@@ -6,15 +6,6 @@ import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
 import { useAccountStatusContext } from '~/app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
-import {
-  createDatesValidationHandler,
-  createMultilineTextValidationHandler,
-  createNumbersInputValidationHandler,
-  createPreSubmitCheckboxesValidationHandler,
-  createPreSubmitPicklistValidationHandler,
-  createRadioButtonsValidationHandler,
-  isAddressOrAccountFormField,
-} from '~/app/[locale]/(default)/account/(tabs)/addresses/_components/address-field-handlers';
 import { ExistingResultType } from '~/client/util';
 import {
   Checkboxes,
@@ -31,6 +22,15 @@ import {
   RadioButtons,
   Text,
 } from '~/components/form-fields';
+import {
+  createDatesValidationHandler,
+  createMultilineTextValidationHandler,
+  createNumbersInputValidationHandler,
+  createPreSubmitCheckboxesValidationHandler,
+  createPreSubmitPicklistValidationHandler,
+  createRadioButtonsValidationHandler,
+  isAddressOrAccountFormField,
+} from '~/components/form-fields/shared/field-handlers';
 import { Button } from '~/components/ui/button';
 import { Field, Form, FormSubmit } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';

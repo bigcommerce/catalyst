@@ -33,7 +33,7 @@ const DeleteCustomerAddressMutation = graphql(`
 `);
 
 export const deleteAddress = async (addressId: number): Promise<State> => {
-  const t = await getTranslations('Account.Addresses.DeleteAddress');
+  const t = await getTranslations('Account.Addresses.Delete');
 
   const customerId = await getSessionCustomerId();
 

@@ -26,16 +26,16 @@ const AddressChangeButtons = ({ addressId, isAddressRemovable, onDelete }: Addre
   const t = useTranslations('Account.Addresses');
 
   const handleDeleteAddress = async () => {
-    const { status } = await deleteAddress(addressId);
+    const submit = await deleteAddress(addressId);
 
-    if (status === 'success') {
+    if (submit.status === 'success') {
       onDelete((prevAddressBook) =>
         prevAddressBook.filter(({ entityId }) => entityId !== addressId),
       );
 
       setAccountState({
         status: 'success',
-        message: t('deleteAddress'),
+        message: submit.message || '',
       });
     }
   };
@@ -43,14 +43,7 @@ const AddressChangeButtons = ({ addressId, isAddressRemovable, onDelete }: Addre
   return (
     <div className="flex w-fit gap-x-2 divide-y-0">
       <Button aria-label={t('editButton')} asChild variant="secondary">
-        <Link
-          href={{
-            pathname: '/account/addresses',
-            query: { action: 'edit-address', 'address-id': addressId },
-          }}
-        >
-          {t('editButton')}
-        </Link>
+        <Link href={`/account/addresses/edit/${addressId}`}>{t('editButton')}</Link>
       </Button>
       <Modal
         actionHandler={handleDeleteAddress}
@@ -128,9 +121,7 @@ export const AddressBook = ({
             asChild
             className="w-full hover:text-white md:w-fit"
           >
-            <Link href={{ pathname: '/account/addresses', query: { action: 'add-new-address' } }}>
-              {t('addNewAddress')}
-            </Link>
+            <Link href="/account/addresses/add">{t('addNewAddress')}</Link>
           </Button>
           {children}
         </li>

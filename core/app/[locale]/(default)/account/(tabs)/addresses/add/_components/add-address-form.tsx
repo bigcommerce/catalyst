@@ -12,7 +12,6 @@ import {
   DateField,
   FieldNameToFieldId,
   FieldWrapper,
-  getPreviouslySubmittedValue,
   MultilineText,
   NumbersOnly,
   Password,
@@ -21,19 +20,7 @@ import {
   RadioButtons,
   Text,
 } from '~/components/form-fields';
-import { Link } from '~/components/link';
-import { Button } from '~/components/ui/button';
-import { Field, Form, FormSubmit } from '~/components/ui/form';
-import { Message } from '~/components/ui/message';
-
-import { useAccountStatusContext } from '../../_components/account-status-provider';
-import { Modal } from '../../_components/modal';
-import { deleteAddress } from '../_actions/delete-address';
-import { updateAddress } from '../_actions/update-address';
-
-import { AddressFields, Countries } from './add-address';
 import {
-  createCountryChangeHandler,
   createDatesValidationHandler,
   createMultilineTextValidationHandler,
   createNumbersInputValidationHandler,
@@ -42,27 +29,36 @@ import {
   createPreSubmitPicklistValidationHandler,
   createRadioButtonsValidationHandler,
   createTextInputValidationHandler,
-} from './address-field-handlers';
-import { Address } from './customer-edit-address';
+  type FieldStateSetFn,
+} from '~/components/form-fields/shared/field-handlers';
+import { Link } from '~/components/link';
+import { Button } from '~/components/ui/button';
+import { Field, Form, FormSubmit } from '~/components/ui/form';
+import { Message } from '~/components/ui/message';
+
+import { useAccountStatusContext } from '../../../_components/account-status-provider';
+import { addAddress } from '../_actions/add-address';
+import { NewAddressQueryResult } from '../page';
 
 interface FormStatus {
   status: 'success' | 'error';
   message: string;
 }
 
+type AddressFields = NonNullable<
+  NewAddressQueryResult['site']['settings']
+>['formFields']['shippingAddress'];
+
+type Countries = NonNullable<NewAddressQueryResult['geography']['countries']>;
+type CountryCode = Countries[number]['code'];
 type CountryStates = Countries[number]['statesOrProvinces'];
-type FieldUnionType = Exclude<
-  keyof typeof FieldNameToFieldId,
-  'email' | 'password' | 'confirmPassword' | 'exclusiveOffers' | 'currentPassword'
->;
 
-const isExistedField = (name: unknown): name is FieldUnionType => {
-  if (typeof name === 'string' && name in FieldNameToFieldId) {
-    return true;
-  }
+const createCountryChangeHandler =
+  (provinceSetter: FieldStateSetFn<CountryStates>, countries: Countries) => (value: string) => {
+    const states = countries.find(({ code }) => code === value)?.statesOrProvinces;
 
-  return false;
-};
+    provinceSetter(states ?? []);
+  };
 
 interface SumbitMessages {
   messages: {
@@ -86,62 +82,61 @@ const SubmitButton = ({ messages }: SumbitMessages) => {
   );
 };
 
-interface EditAddressProps {
-  address: Address;
+interface AddAddressProps {
   addressFields: AddressFields;
   countries: Countries;
-  isAddressRemovable: boolean;
+  defaultCountry: {
+    id: number;
+    code: CountryCode;
+    states: CountryStates;
+  };
   reCaptchaSettings?: {
     isEnabledOnStorefront: boolean;
     siteKey: string;
   };
 }
 
-export const EditAddress = ({
-  address,
+export const AddAddressForm = ({
   addressFields,
   countries,
-  isAddressRemovable,
+  defaultCountry,
   reCaptchaSettings,
-}: EditAddressProps) => {
+}: AddAddressProps) => {
   const form = useRef<HTMLFormElement>(null);
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
-  const t = useTranslations('Account.EditAddress');
 
   const reCaptchaRef = useRef<ReCaptcha>(null);
   const router = useRouter();
+  const t = useTranslations('Account.Addresses.Add.Form');
   const [reCaptchaToken, setReCaptchaToken] = useState('');
   const [isReCaptchaValid, setReCaptchaValid] = useState(true);
+
+  const [textInputValid, setTextInputValid] = useState<Record<string, boolean>>({});
+  const [numbersInputValid, setNumbersInputValid] = useState<Record<string, boolean>>({});
+  const [datesValid, setDatesValid] = useState<Record<string, boolean>>({});
+  const [passwordValid, setPasswordValid] = useState<Record<string, boolean>>({});
+  const [radioButtonsValid, setRadioButtonsValid] = useState<Record<string, boolean>>({});
+  const [picklistValid, setPicklistValid] = useState<Record<string, boolean>>({});
+  const [checkboxesValid, setCheckboxesValid] = useState<Record<string, boolean>>({});
+  const [multiTextValid, setMultiTextValid] = useState<Record<string, boolean>>({});
+  const [countryStates, setCountryStates] = useState(defaultCountry.states);
+
   const { setAccountState } = useAccountStatusContext();
 
   useEffect(() => {
     setAccountState({ status: 'idle' });
   }, [setAccountState]);
 
-  const [textInputValid, setTextInputValid] = useState<Record<string, boolean>>({});
-  const [passwordValid, setPasswordValid] = useState<Record<string, boolean>>({});
-  const [numbersInputValid, setNumbersInputValid] = useState<Record<string, boolean>>({});
-  const [datesValid, setDatesValid] = useState<Record<string, boolean>>({});
-  const [radioButtonsValid, setRadioButtonsValid] = useState<Record<string, boolean>>({});
-  const [picklistValid, setPicklistValid] = useState<Record<string, boolean>>({});
-  const [checkboxesValid, setCheckboxesValid] = useState<Record<string, boolean>>({});
-  const [multiTextValid, setMultiTextValid] = useState<Record<string, boolean>>({});
-
-  const defaultStates = countries
-    .filter((country) => country.code === address.countryCode)
-    .flatMap((country) => country.statesOrProvinces);
-  const [countryStates, setCountryStates] = useState<CountryStates>(defaultStates);
-
   const handleTextInputValidation = createTextInputValidationHandler(
     setTextInputValid,
     textInputValid,
   );
   const handlePasswordValidation = createPasswordValidationHandler(setPasswordValid, addressFields);
+  const handleCountryChange = createCountryChangeHandler(setCountryStates, countries);
   const handleNumbersInputValidation = createNumbersInputValidationHandler(
     setNumbersInputValid,
     numbersInputValid,
   );
-  const handleCountryChange = createCountryChangeHandler(setCountryStates, countries);
   const handleDatesValidation = createDatesValidationHandler(setDatesValid, datesValid);
   const handleRadioButtonsChange = createRadioButtonsValidationHandler(
     setRadioButtonsValid,
@@ -151,17 +146,6 @@ export const EditAddress = ({
     setMultiTextValid,
     multiTextValid,
   );
-
-  const onReCaptchaChange = (token: string | null) => {
-    if (!token) {
-      setReCaptchaValid(false);
-
-      return;
-    }
-
-    setReCaptchaToken(token);
-    setReCaptchaValid(true);
-  };
   const validatePicklistFields = createPreSubmitPicklistValidationHandler(
     addressFields,
     setPicklistValid,
@@ -179,6 +163,16 @@ export const EditAddress = ({
     }
   };
 
+  const onReCaptchaChange = (token: string | null) => {
+    if (!token) {
+      setReCaptchaValid(false);
+
+      return;
+    }
+
+    setReCaptchaToken(token);
+    setReCaptchaValid(true);
+  };
   const onSubmit = async (formData: FormData) => {
     if (reCaptchaSettings?.isEnabledOnStorefront && !reCaptchaToken) {
       setReCaptchaValid(false);
@@ -188,12 +182,12 @@ export const EditAddress = ({
 
     setReCaptchaValid(true);
 
-    const submit = await updateAddress({ addressId: address.entityId, formData });
+    const submit = await addAddress({ formData, reCaptchaToken });
 
     if (submit.status === 'success') {
       setAccountState({
         status: 'success',
-        message: t('successMessage'),
+        message: submit.message || '',
       });
 
       router.push('/account/addresses');
@@ -210,19 +204,6 @@ export const EditAddress = ({
       behavior: 'smooth',
     });
   };
-  const onDeleteAddress = async () => {
-    const { status, message } = await deleteAddress(address.entityId);
-
-    if (status === 'success') {
-      setAccountState({ status, message: t('deleteAddress') });
-    }
-
-    if (status === 'error') {
-      setAccountState({ status, message });
-    }
-
-    router.push('/account/addresses');
-  };
 
   return (
     <>
@@ -236,21 +217,12 @@ export const EditAddress = ({
           {addressFields.map((field) => {
             const fieldId = field.entityId;
             const fieldName = createFieldName(field, 'address');
-            const key = FieldNameToFieldId[fieldId];
-            const defaultCustomField = address.formFields.find(
-              ({ entityId }) => entityId === fieldId,
-            );
-            const defaultValue = (isExistedField(key) && address[key]) || undefined;
 
             switch (field.__typename) {
               case 'TextFormField': {
-                const previousTextValue =
-                  getPreviouslySubmittedValue(defaultCustomField).TextFormField;
-
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <Text
-                      defaultValue={defaultValue ?? previousTextValue}
                       field={field}
                       isValid={textInputValid[fieldId]}
                       name={fieldName}
@@ -261,13 +233,9 @@ export const EditAddress = ({
               }
 
               case 'MultilineTextFormField': {
-                const previousMultiTextValue =
-                  getPreviouslySubmittedValue(defaultCustomField).MultilineTextFormField;
-
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <MultilineText
-                      defaultValue={previousMultiTextValue}
                       field={field}
                       isValid={multiTextValid[fieldId]}
                       name={fieldName}
@@ -278,13 +246,9 @@ export const EditAddress = ({
               }
 
               case 'NumberFormField': {
-                const previousNumberValue =
-                  getPreviouslySubmittedValue(defaultCustomField).NumberFormField;
-
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <NumbersOnly
-                      defaultValue={previousNumberValue}
                       field={field}
                       isValid={numbersInputValid[fieldId]}
                       name={fieldName}
@@ -295,13 +259,9 @@ export const EditAddress = ({
               }
 
               case 'CheckboxesFormField': {
-                const previousCheckboxesValue =
-                  getPreviouslySubmittedValue(defaultCustomField).CheckboxesFormField;
-
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <Checkboxes
-                      defaultValue={previousCheckboxesValue}
                       field={field}
                       isValid={checkboxesValid[fieldId]}
                       name={fieldName}
@@ -313,13 +273,9 @@ export const EditAddress = ({
               }
 
               case 'DateFormField': {
-                const previousDateValue =
-                  getPreviouslySubmittedValue(defaultCustomField).DateFormField;
-
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <DateField
-                      defaultValue={previousDateValue}
                       field={field}
                       isValid={datesValid[fieldId]}
                       name={fieldName}
@@ -331,13 +287,9 @@ export const EditAddress = ({
               }
 
               case 'RadioButtonsFormField': {
-                const previousMultipleChoiceValue =
-                  getPreviouslySubmittedValue(defaultCustomField).MultipleChoiceFormField;
-
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <RadioButtons
-                      defaultValue={previousMultipleChoiceValue}
                       field={field}
                       isValid={radioButtonsValid[fieldId]}
                       name={fieldName}
@@ -349,20 +301,23 @@ export const EditAddress = ({
 
               case 'PicklistFormField': {
                 const isCountrySelector = fieldId === FieldNameToFieldId.countryCode;
-                const previousMultipleChoiceValue =
-                  getPreviouslySubmittedValue(defaultCustomField).MultipleChoiceFormField;
                 const picklistOptions = isCountrySelector
                   ? countries.map(({ name, code }) => ({ label: name, entityId: code }))
                   : field.options;
+                const defaultMultipleChoiceValue = isCountrySelector
+                  ? defaultCountry.code
+                  : undefined;
 
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <Picklist
-                      defaultValue={isCountrySelector ? defaultValue : previousMultipleChoiceValue}
+                      defaultValue={defaultMultipleChoiceValue}
                       field={field}
                       isValid={picklistValid[fieldId]}
                       name={fieldName}
-                      onChange={isCountrySelector ? handleCountryChange : undefined}
+                      onChange={
+                        fieldId === FieldNameToFieldId.countryCode ? handleCountryChange : undefined
+                      }
                       onValidate={setPicklistValid}
                       options={picklistOptions}
                     />
@@ -370,30 +325,28 @@ export const EditAddress = ({
                 );
               }
 
-              case 'PicklistOrTextFormField': {
+              case 'PicklistOrTextFormField':
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <PicklistOrText
                       defaultValue={
-                        fieldId === FieldNameToFieldId.stateOrProvince ? defaultValue : undefined
+                        fieldId === FieldNameToFieldId.stateOrProvince
+                          ? countryStates[0]?.name
+                          : undefined
                       }
                       field={field}
-                      key={countryStates.length}
                       name={fieldName}
-                      options={countryStates.map(({ name }) => ({ entityId: name, label: name }))}
+                      options={countryStates.map(({ name }) => {
+                        return { entityId: name, label: name };
+                      })}
                     />
                   </FieldWrapper>
                 );
-              }
 
               case 'PasswordFormField': {
-                const previousPasswordValue =
-                  getPreviouslySubmittedValue(defaultCustomField).PasswordFormField;
-
                 return (
                   <FieldWrapper fieldId={fieldId} key={fieldId}>
                     <Password
-                      defaultValue={previousPasswordValue}
                       field={field}
                       isValid={passwordValid[fieldId]}
                       name={fieldName}
@@ -424,26 +377,13 @@ export const EditAddress = ({
           )}
         </div>
 
-        <div className="mt-8 flex flex-col justify-stretch gap-2 md:flex-row md:justify-between md:gap-0">
+        <div className="mt-8 flex flex-col justify-stretch gap-2 md:flex-row md:justify-start md:gap-6">
           <FormSubmit asChild>
             <SubmitButton messages={{ submit: t('submit'), submitting: t('submitting') }} />
           </FormSubmit>
-          <Button asChild className="items-center px-8 md:ms-6 md:w-fit" variant="secondary">
+          <Button asChild className="items-center px-8 md:w-fit" variant="secondary">
             <Link href="/account/addresses">{t('cancel')}</Link>
           </Button>
-          <Modal
-            actionHandler={onDeleteAddress}
-            confirmationText={t('confirmDeleteAddress')}
-            title={t('deleteModalTitle')}
-          >
-            <Button
-              className="ms-auto items-center px-8 md:w-fit"
-              disabled={!isAddressRemovable}
-              variant="subtle"
-            >
-              {t('deleteButton')}
-            </Button>
-          </Modal>
         </div>
       </Form>
     </>

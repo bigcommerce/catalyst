@@ -140,40 +140,45 @@
       "successMessage": "Your account has been successfully created"
     },
     "Addresses": {
-      "defaultAddress": "Default",
-      "alternativeAddress": "Alternative",
-      "newAddress": "New address",
       "addNewAddress": "Add new address",
-      "addNewAddressSuccessMessage": "Address added to your account",
-      "editAddress": "Edit address",
       "editButton": "Edit",
       "deleteButton": "Delete",
-      "deleteAddress": "Address deleted from your account.",
       "confirmDeleteAddress": "Delete address",
       "deleteModalTitle": "Are you sure you want to delete address?",
-      "recaptchaText": "Pass ReCAPTCHA check",
-      "emptyTextValidationMessage": "This field can not be empty",
-      "successMessage": "The address has been created successfully.",
-      "submit": "Add new address",
-      "cancel": "Cancel",
-      "submitting": "In progress..."
-    },
-    "AddAddress": {
-      "success": "The address has been added.",
-      "Errors": {
-        "inputError": "Something went wrong with proccessing user input.",
-        "error": "Unknown error."
-      }
-    },
-    "DeleteAddress": {
-      "success": "Address deleted from your account.",
-      "error": "Unknown error."
-    },
-    "UpdateAddress": {
-      "success": "The address has been updated.",
-      "Errors": {
-        "inputError": "Something went wrong with proccessing user input.",
-        "notFound": "Address does not exist.",
+      "Add": {
+        "heading": "New address",
+        "Form": {
+          "recaptchaText": "Pass ReCAPTCHA check",
+          "submit": "Add new address",
+          "submitting": "Saving address...",
+          "cancel": "Cancel",
+          "success": "Address added to your account.",
+          "Errors": {
+            "inputError": "Something went wrong with proccessing user input.",
+            "error": "Unknown error."
+          }
+        }
+      },
+      "Edit": {
+        "heading": "Edit address",
+        "Form": {
+          "recaptchaText": "Pass ReCAPTCHA check",
+          "submit": "Edit address",
+          "submitting": "Updating address...",
+          "cancel": "Cancel",
+          "confirmDeleteAddress": "Delete address",
+          "deleteModalTitle": "Are you sure you want to delete address?",
+          "deleteButton": "Delete",
+          "success": "The address has been succesfully updated.",
+          "Errors": {
+            "inputError": "Something went wrong with proccessing user input.",
+            "notFound": "Address does not exist.",
+            "error": "Unknown error."
+          }
+        }
+      },
+      "Delete": {
+        "success": "Address deleted from your account.",
         "error": "Unknown error."
       }
     },

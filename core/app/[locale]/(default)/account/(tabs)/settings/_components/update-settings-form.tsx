@@ -18,11 +18,6 @@ import {
   Picklist,
   RadioButtons,
 } from '~/components/form-fields';
-import { Link } from '~/components/link';
-import { Button } from '~/components/ui/button';
-import { Field, Form, FormSubmit } from '~/components/ui/form';
-import { Message } from '~/components/ui/message';
-
 import {
   createDatesValidationHandler,
   createMultilineTextValidationHandler,
@@ -32,7 +27,12 @@ import {
   createPreSubmitPicklistValidationHandler,
   createRadioButtonsValidationHandler,
   createTextInputValidationHandler,
-} from '../../addresses/_components/address-field-handlers';
+} from '~/components/form-fields/shared/field-handlers';
+import { Link } from '~/components/link';
+import { Button } from '~/components/ui/button';
+import { Field, Form, FormSubmit } from '~/components/ui/form';
+import { Message } from '~/components/ui/message';
+
 import { updateCustomer } from '../_actions/update-customer';
 import { getCustomerSettingsQuery } from '../page-data';
 

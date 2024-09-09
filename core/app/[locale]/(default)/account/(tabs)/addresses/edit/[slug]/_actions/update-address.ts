@@ -6,17 +6,18 @@ import { getTranslations } from 'next-intl/server';
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { parseAccountFormData } from '~/components/form-fields';
+import { parseAccountFormData } from '~/components/form-fields/shared/parse-fields';
 
-const AddCustomerAddressMutation = graphql(`
-  mutation AddCustomerAddressMutation(
-    $input: AddCustomerAddressInput!
+const UpdateCustomerAddressMutation = graphql(`
+  mutation UpdateCustomerAddressMutation(
+    $input: UpdateCustomerAddressInput!
     $reCaptchaV2: ReCaptchaV2Input
   ) {
     customer {
-      addCustomerAddress(input: $input, reCaptchaV2: $reCaptchaV2) {
+      updateCustomerAddress(input: $input, reCaptchaV2: $reCaptchaV2) {
         errors {
-          ... on CustomerAddressCreationError {
+          __typename
+          ... on CustomerAddressUpdateError {
             message
           }
           ... on CustomerNotLoggedInError {
@@ -37,10 +38,12 @@ const AddCustomerAddressMutation = graphql(`
   }
 `);
 
-type Variables = VariablesOf<typeof AddCustomerAddressMutation>;
-type AddCustomerAddressInput = Variables['input'];
+type Variables = VariablesOf<typeof UpdateCustomerAddressMutation>;
+export type UpdateCustomerAddressInput = Variables['input'];
 
-const isAddCustomerAddressInput = (data: unknown): data is AddCustomerAddressInput => {
+const isUpdateCustomerAddressInput = (
+  data: unknown,
+): data is UpdateCustomerAddressInput['data'] => {
   if (typeof data === 'object' && data !== null && 'address1' in data) {
     return true;
   }
@@ -48,21 +51,23 @@ const isAddCustomerAddressInput = (data: unknown): data is AddCustomerAddressInp
   return false;
 };
 
-export const addAddress = async ({
+export const updateAddress = async ({
+  addressId,
   formData,
   reCaptchaToken,
 }: {
+  addressId: number;
   formData: FormData;
   reCaptchaToken?: string;
 }) => {
-  const t = await getTranslations('Account.Addresses.AddAddress');
+  const t = await getTranslations('Account.Addresses.Edit.Form');
 
   const customerId = await getSessionCustomerId();
 
   try {
     const parsed = parseAccountFormData(formData);
 
-    if (!isAddCustomerAddressInput(parsed)) {
+    if (!isUpdateCustomerAddressInput(parsed)) {
       return {
         status: 'error',
         error: t('Errors.inputError'),
@@ -70,16 +75,19 @@ export const addAddress = async ({
     }
 
     const response = await client.fetch({
-      document: AddCustomerAddressMutation,
+      document: UpdateCustomerAddressMutation,
       customerId,
       fetchOptions: { cache: 'no-store' },
       variables: {
-        input: parsed,
+        input: {
+          addressEntityId: addressId,
+          data: parsed,
+        },
         ...(reCaptchaToken && { reCaptchaV2: { token: reCaptchaToken } }),
       },
     });
 
-    const result = response.data.customer.addCustomerAddress;
+    const result = response.data.customer.updateCustomerAddress;
 
     revalidatePath('/account/addresses', 'page');
 
@@ -89,7 +97,15 @@ export const addAddress = async ({
 
     return {
       status: 'error',
-      message: result.errors.map((error) => error.message).join('\n'),
+      message: result.errors
+        .map((error) => {
+          if (error.__typename === 'AddressDoesNotExistError') {
+            return t('Errors.notFound');
+          }
+
+          return error.message;
+        })
+        .join('\n'),
     };
   } catch (error: unknown) {
     if (error instanceof Error) {
