@@ -39,7 +39,7 @@ const UpdateCustomerAddressMutation = graphql(`
 `);
 
 type Variables = VariablesOf<typeof UpdateCustomerAddressMutation>;
-export type UpdateCustomerAddressInput = Variables['input'];
+type UpdateCustomerAddressInput = Variables['input'];
 
 const isUpdateCustomerAddressInput = (
   data: unknown,
