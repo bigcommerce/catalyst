@@ -26,7 +26,7 @@ async function logout(page: Page) {
   await page.getByRole('menuitem', { name: 'Log out' }).click();
 }
 
-test('Add and remove new address', async ({ page }) => {
+test('Add new address', async ({ page }) => {
   await loginWithUserAccount(page, testUserEmail, testUserPassword);
   await page.goto('/account/addresses');
 
@@ -49,6 +49,35 @@ test('Add and remove new address', async ({ page }) => {
   await page.waitForURL('/account/addresses/');
 
   await expect(page.getByText('Address added to your account.')).toBeVisible();
+  await logout(page);
+});
+
+test('Edit address', async ({ page }) => {
+  await loginWithUserAccount(page, testUserEmail, testUserPassword);
+  await page.goto('/account/addresses');
+
+  await page.getByRole('link', { name: 'Edit' }).click();
+
+  await page.waitForURL('/account/addresses/edit/');
+
+  await page.getByRole('heading', { name: 'Edit address' }).waitFor();
+  await page.getByRole('button', { name: 'Edit address' }).click();
+
+  await page.waitForURL('/account/addresses/');
+
+  await expect(page.getByText('The address has been succesfully updated.')).toBeVisible();
+
+  await expect(page.getByText(streetAddress, { exact: true })).toBeVisible({
+    visible: false,
+  });
+
+  await logout(page);
+});
+
+test('Remove address', async ({ page }) => {
+  await loginWithUserAccount(page, testUserEmail, testUserPassword);
+  await page.goto('/account/addresses');
+
   await expect(page.getByText(streetAddress, { exact: true })).toBeVisible();
 
   await page.getByRole('button', { name: 'Delete' }).nth(1).click();
