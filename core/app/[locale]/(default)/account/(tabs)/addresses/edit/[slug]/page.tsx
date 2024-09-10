@@ -122,9 +122,9 @@ export default async function Edit({ params: { slug } }: Props) {
     return notFound();
   }
 
-  const address = addresses.find((ad) => ad.entityId.toString() === slug);
+  const existingAddress = addresses.find((address) => address.entityId.toString() === slug);
 
-  if (!address) {
+  if (!existingAddress) {
     return notFound();
   }
 
@@ -132,7 +132,7 @@ export default async function Edit({ params: { slug } }: Props) {
     <div className="mx-auto mb-14 lg:w-2/3">
       <h1 className="mb-8 text-3xl font-black lg:text-4xl">{t('heading')}</h1>
       <EditAddressForm
-        address={address}
+        address={existingAddress}
         addressFields={addressFields}
         countries={countries || []}
         isAddressRemovable={addresses.length > 1}
