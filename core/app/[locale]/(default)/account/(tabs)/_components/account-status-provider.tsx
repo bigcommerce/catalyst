@@ -17,7 +17,6 @@ export const AccountStatusProvider = ({ children }: { children: ReactNode }) => 
   const pathname = usePathname();
 
   useEffect(() => {
-    // Reset account state when changing the route except the Account Page
     if (pathname !== '/account/' && pathname !== '/login/' && pathname !== '/account/addresses/') {
       setAccountState(defaultState);
     }
