@@ -25,7 +25,7 @@ export default async function Addresses({ searchParams }: Props) {
   const data = await getCustomerAddresses({
     ...(after && { after }),
     ...(before && { before }),
-    limit: 4,
+    limit: 10,
   });
 
   if (!data) {
