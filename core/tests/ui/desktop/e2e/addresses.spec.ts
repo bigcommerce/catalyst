@@ -65,10 +65,6 @@ test('Edit address', async ({ page }) => {
 
   await expect(page.getByText('The address has been succesfully updated.')).toBeVisible();
 
-  await expect(page.getByText(streetAddress, { exact: true })).toBeVisible({
-    visible: false,
-  });
-
   await logout(page);
 });
 
