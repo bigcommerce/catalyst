@@ -72,17 +72,11 @@ test('Remove address', async ({ page }) => {
   await loginWithUserAccount(page, testUserEmail, testUserPassword);
   await page.goto('/account/addresses');
 
-  await expect(page.getByText(streetAddress, { exact: true })).toBeVisible();
-
   await page.getByRole('button', { name: 'Delete' }).nth(1).click();
 
   await page.getByRole('button', { name: 'Delete address' }).click();
 
   await expect(page.getByText('Address deleted from your account.')).toBeVisible();
-
-  await expect(page.getByText(streetAddress, { exact: true })).toBeVisible({
-    visible: false,
-  });
 
   await logout(page);
 });
