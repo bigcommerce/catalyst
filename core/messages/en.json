@@ -144,7 +144,7 @@
       "editButton": "Edit",
       "deleteButton": "Delete",
       "confirmDeleteAddress": "Delete address",
-      "deleteModalTitle": "Are you sure you want to delete address?",
+      "deleteModalTitle": "Are you sure you want to delete this address?",
       "Add": {
         "heading": "New address",
         "Form": {
@@ -167,7 +167,7 @@
           "submitting": "Updating address...",
           "cancel": "Cancel",
           "confirmDeleteAddress": "Delete address",
-          "deleteModalTitle": "Are you sure you want to delete address?",
+          "deleteModalTitle": "Are you sure you want to delete this address?",
           "deleteButton": "Delete",
           "success": "The address has been succesfully updated.",
           "Errors": {
