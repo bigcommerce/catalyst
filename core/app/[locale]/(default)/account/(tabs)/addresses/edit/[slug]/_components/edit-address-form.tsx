@@ -177,14 +177,17 @@ export const EditAddressForm = ({
     setReCaptchaToken(token);
     setReCaptchaValid(true);
   };
+
   const validatePicklistFields = createPreSubmitPicklistValidationHandler(
     addressFields,
     setPicklistValid,
   );
+
   const validateCheckboxFields = createPreSubmitCheckboxesValidationHandler(
     addressFields,
     setCheckboxesValid,
   );
+
   const preSubmitFieldsValidation = (
     e: MouseEvent<HTMLFormElement> & { target: HTMLButtonElement },
   ) => {
@@ -225,6 +228,7 @@ export const EditAddressForm = ({
       behavior: 'smooth',
     });
   };
+
   const onDeleteAddress = async () => {
     const submit = await deleteAddress(address.entityId);
 
