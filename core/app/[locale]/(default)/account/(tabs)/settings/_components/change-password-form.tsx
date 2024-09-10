@@ -18,8 +18,8 @@ import {
   Input,
 } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
-import { useRouter } from '~/i18n/routing';
 
+import { useAccountStatusContext } from '../../_components/account-status-provider';
 import { submitCustomerChangePasswordForm } from '../_actions/submit-customer-change-password-form';
 
 const ChangePasswordFieldsSchema = z.object({
@@ -95,7 +95,6 @@ const SubmitButton = () => {
 };
 
 export const ChangePasswordForm = () => {
-  const router = useRouter();
   const form = useRef<HTMLFormElement>(null);
   const t = useTranslations('Account.ChangePassword');
   const [state, formAction] = useFormState(submitCustomerChangePasswordForm, {
@@ -107,14 +106,18 @@ export const ChangePasswordForm = () => {
   const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
 
+  const { setAccountState } = useAccountStatusContext();
+
   useEffect(() => {
     if (state.status === 'success') {
-      setTimeout(() => {
-        void logout();
-        router.push('/login');
-      }, 2000);
+      void logout();
+
+      setAccountState({
+        status: 'success',
+        message: t('confirmChangePassword'),
+      });
     }
-  }, [state, router]);
+  }, [state, setAccountState, t]);
 
   let messageText = '';
 
@@ -157,7 +160,7 @@ export const ChangePasswordForm = () => {
 
   return (
     <>
-      {(state.status === 'error' || state.status === 'success') && (
+      {state.status === 'error' && (
         <Message className="mb-8 w-full text-gray-500" variant={state.status}>
           <p>{messageText}</p>
         </Message>
