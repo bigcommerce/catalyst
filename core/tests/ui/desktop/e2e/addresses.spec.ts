@@ -56,9 +56,7 @@ test('Edit address', async ({ page }) => {
   await loginWithUserAccount(page, testUserEmail, testUserPassword);
   await page.goto('/account/addresses');
 
-  await page.getByRole('link', { name: 'Edit' }).click();
-
-  await page.waitForURL('/account/addresses/edit/');
+  await page.getByRole('link', { name: 'Edit' }).nth(1).click();
 
   await page.getByRole('heading', { name: 'Edit address' }).waitFor();
   await page.getByRole('button', { name: 'Edit address' }).click();
