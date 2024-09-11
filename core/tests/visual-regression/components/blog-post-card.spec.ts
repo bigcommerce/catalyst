@@ -2,8 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import routes from '~/tests/routes';
 
-// TODO: Fix visual regression test
-test.skip('blog post card', async ({ page }) => {
+test('blog post card', async ({ page }) => {
   // Arrange
   await page.goto(routes.BLOG);
   await page.getByRole('heading', { name: 'Blog', exact: true }).waitFor();

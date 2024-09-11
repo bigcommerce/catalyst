@@ -1,7 +1,11 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-import routes from '~/tests/routes';
+test('Tags', async ({ page }) => {
+  await page.goto('/shop-all/?brand=37');
 
-test.skip('Tags', async ({ page }) => {
-  await page.goto(routes.FOG_LINEN_CHAMBRAY);
+  const tag = page.getByLabel('Filters').getByRole('listitem').filter({ hasText: 'Common Good' });
+
+  await tag.waitFor();
+
+  await expect(tag).toHaveScreenshot();
 });
