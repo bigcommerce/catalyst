@@ -328,7 +328,7 @@
             }
         },
         "AddToCart": {
-            "success": "<cartLink>{CartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
+            "success": "<cartLink>{cartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
             "error": "Erreur lors de l'ajout d'un produit au panier. Veuillez réessayer."
         }
     },
@@ -338,7 +338,7 @@
             "relatedProducts": "Produits associés"
         },
         "Form": {
-            "success": "<cartLink>{CartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
+            "success": "<cartLink>{cartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
             "error": "Erreur lors de l'ajout d'un produit au panier. Veuillez réessayer.",
             "saveToWishlist": "Enregistrer dans la liste d'envies",
             "quantityLabel": "Quantité"
@@ -452,7 +452,7 @@
         "ProductCard": {
             "AddToCart": {
                 "viewOptions": "Afficher les options",
-                "success": "<cartLink>{CartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
+                "success": "<cartLink>{cartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
                 "error": "Erreur lors de l'ajout d'un produit au panier. Veuillez réessayer."
             }
         },

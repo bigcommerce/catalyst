@@ -328,7 +328,7 @@
             }
         },
         "AddToCart": {
-            "success": "<cartLink>{CartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
+            "success": "<cartLink>{cartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
             "error": "Fejl ved tilføjelse af produkt til indkøbskurv. Prøv igen."
         }
     },
@@ -338,7 +338,7 @@
             "relatedProducts": "Relaterede produkter"
         },
         "Form": {
-            "success": "<cartLink>{CartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
+            "success": "<cartLink>{cartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
             "error": "Fejl ved tilføjelse af produkt til indkøbskurv. Prøv igen.",
             "saveToWishlist": "Gem i ønskeliste",
             "quantityLabel": "Antal"
@@ -452,7 +452,7 @@
         "ProductCard": {
             "AddToCart": {
                 "viewOptions": "Se muligheder",
-                "success": "<cartLink>{CartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
+                "success": "<cartLink>{cartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
                 "error": "Fejl ved tilføjelse af produkt til indkøbskurv. Prøv igen."
             }
         },
