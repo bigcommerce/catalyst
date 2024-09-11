@@ -19,8 +19,8 @@ import {
 } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 
-import { useAccountStatusContext } from '../../_components/account-status-provider';
-import { submitCustomerChangePasswordForm } from '../_actions/submit-customer-change-password-form';
+import { useAccountStatusContext } from '../../../_components/account-status-provider';
+import { changePassword } from '../_actions/change-password';
 
 const ChangePasswordFieldsSchema = z.object({
   customerId: z.string(),
@@ -79,7 +79,7 @@ const validatePasswords = (
 
 const SubmitButton = () => {
   const { pending } = useFormStatus();
-  const t = useTranslations('Account.SubmitChangePassword');
+  const t = useTranslations('Account.Settings.ChangePassword');
 
   return (
     <Button
@@ -96,8 +96,8 @@ const SubmitButton = () => {
 
 export const ChangePasswordForm = () => {
   const form = useRef<HTMLFormElement>(null);
-  const t = useTranslations('Account.ChangePassword');
-  const [state, formAction] = useFormState(submitCustomerChangePasswordForm, {
+  const t = useTranslations('Account.Settings.ChangePassword');
+  const [state, formAction] = useFormState(changePassword, {
     status: 'idle',
     message: '',
   });
@@ -126,11 +126,12 @@ export const ChangePasswordForm = () => {
   }
 
   if (state.status === 'success') {
-    messageText = t('successMessage');
+    messageText = state.message;
   }
 
   const handleCurrentPasswordChange = (e: ChangeEvent<HTMLInputElement>) =>
     setIsCurrentPasswordValid(!e.target.validity.valueMissing);
+
   const handleNewPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     let formData;
 
@@ -146,6 +147,7 @@ export const ChangePasswordForm = () => {
 
     setIsNewPasswordValid(isValid);
   };
+
   const handleConfirmPasswordValidation = (e: ChangeEvent<HTMLInputElement>) => {
     let formData;
 
