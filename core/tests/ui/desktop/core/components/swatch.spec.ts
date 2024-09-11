@@ -1,6 +1,5 @@
-import { expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-import { test } from '~/tests/fixtures';
 import routes from '~/tests/routes';
 
 test('Selecting various options on color panel should update query parameters', async ({

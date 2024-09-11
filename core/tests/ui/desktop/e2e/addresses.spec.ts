@@ -1,7 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { expect, Page } from '@playwright/test';
-
-import { test } from '~/tests/fixtures';
+import { expect, Page, test } from '@playwright/test';
 
 const testUserEmail: string = process.env.TEST_ACCOUNT_EMAIL || '';
 const testUserPassword: string = process.env.TEST_ACCOUNT_PASSWORD || '';

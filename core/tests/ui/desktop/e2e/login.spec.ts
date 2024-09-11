@@ -1,6 +1,4 @@
-import { expect } from '@playwright/test';
-
-import { test } from '~/tests/fixtures';
+import { expect, test } from '@playwright/test';
 
 const testAccountEmail = process.env.TEST_ACCOUNT_EMAIL || '';
 const testAccountPassword = process.env.TEST_ACCOUNT_PASSWORD || '';

@@ -79,8 +79,6 @@
     "dotenv-cli": "^7.4.2",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.8",
-    "monocart-coverage-reports": "^2.10.3",
-    "monocart-reporter": "^2.8.0",
     "postcss": "^8.4.45",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.6",

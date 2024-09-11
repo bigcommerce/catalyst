@@ -1,6 +1,4 @@
-import { expect } from '@playwright/test';
-
-import { test } from '~/tests/fixtures';
+import { expect, test } from '@playwright/test';
 
 test('Verify breadcrumbs on product selection', async ({ page }) => {
   await page.goto('/kitchen/knives/most-popular/');

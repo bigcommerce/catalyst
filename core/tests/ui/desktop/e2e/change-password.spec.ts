@@ -1,7 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { expect } from '@playwright/test';
-
-import { test } from '~/tests/fixtures';
+import { expect, test } from '@playwright/test';
 
 // Prefix is added to ensure that the password requirements are met
 const password = faker.internet.password({ pattern: /[a-zA-Z0-9]/, prefix: '1At', length: 10 });

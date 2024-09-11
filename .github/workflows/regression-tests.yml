@@ -146,7 +146,7 @@ jobs:
         if: failure()
         with:
           name: playwright-report-ui
-          path: core/test-results/
+          path: core/playwright-report/
           retention-days: 30
 
       - name: Send slack notification
@@ -208,7 +208,7 @@ jobs:
         if: failure()
         with:
           name: playwright-report-visual-regression
-          path: core/test-results/
+          path: core/playwright-report/
           retention-days: 30
 
       - name: Send slack notification

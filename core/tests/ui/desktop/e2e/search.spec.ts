@@ -1,6 +1,4 @@
-import { expect } from '@playwright/test';
-
-import { test } from '~/tests/fixtures';
+import { expect, test } from '@playwright/test';
 
 const productName = '[Sample] Smith Journal 13';
 

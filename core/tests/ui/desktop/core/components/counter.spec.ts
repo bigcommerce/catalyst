@@ -1,6 +1,4 @@
-import { expect } from '@playwright/test';
-
-import { test } from '~/tests/fixtures';
+import { expect, test } from '@playwright/test';
 
 test('Increase count and verify the results', async ({ page }) => {
   await page.goto('/orbit-terrarium-large/');
