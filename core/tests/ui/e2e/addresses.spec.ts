@@ -24,8 +24,6 @@ async function logout(page: Page) {
   await page.getByRole('menuitem', { name: 'Log out' }).click();
 }
 
-test.describe.configure({ mode: 'serial' });
-
 test('Add new address', async ({ page }) => {
   await loginWithUserAccount(page, testUserEmail, testUserPassword);
   await page.goto('/account/addresses');

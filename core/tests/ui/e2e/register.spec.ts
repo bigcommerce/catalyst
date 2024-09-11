@@ -4,8 +4,6 @@ import { expect, test } from '@playwright/test';
 // Prefix is added to ensure that the password requirements are met
 const password = faker.internet.password({ pattern: /[a-zA-Z0-9]/, prefix: '1At', length: 10 });
 
-test.describe.configure({ mode: 'serial' });
-
 test('Account register', async ({ page }) => {
   await page.goto('/register');
 

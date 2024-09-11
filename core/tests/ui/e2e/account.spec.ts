@@ -12,8 +12,6 @@ async function loginWithUserAccount(page: Page, email: string, password: string)
   await page.waitForURL('/account/');
 }
 
-test.describe.configure({ mode: 'serial' });
-
 async function logout(page: Page) {
   await page.getByRole('button', { name: 'Account' }).click();
   await page.getByRole('menuitem', { name: 'Log out' }).click();

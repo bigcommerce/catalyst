@@ -51,8 +51,6 @@ async function enterCreditCardDetails(page: Page) {
 }
 
 test.describe('desktop', () => {
-  test.describe.configure({ mode: 'serial' });
-
   test('Complete checkout as a guest shopper', async ({ page, isMobile }) => {
     await page.goto('/laundry-detergent/');
     await expect(
@@ -117,7 +115,6 @@ test.describe('desktop', () => {
 
 test.describe('mobile', () => {
   test.use({ viewport: { width: 390, height: 844 }, isMobile: true });
-  test.describe.configure({ mode: 'serial' });
 
   test('Complete checkout as a guest shopper', async ({ page, isMobile }) => {
     await page.goto('/laundry-detergent/');
