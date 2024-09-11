@@ -17,7 +17,7 @@ export const AccountStatusProvider = ({ children }: { children: ReactNode }) => 
   const pathname = usePathname();
 
   useEffect(() => {
-    if (pathname !== '/account/' && pathname !== '/login/') {
+    if (pathname !== '/account/' && pathname !== '/login/' && pathname !== '/account/addresses/') {
       setAccountState(defaultState);
     }
   }, [pathname]);

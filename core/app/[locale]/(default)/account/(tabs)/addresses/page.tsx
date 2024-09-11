@@ -1,43 +1,52 @@
 import { notFound } from 'next/navigation';
 
+import { Pagination } from '~/components/ui/pagination';
+
 import { TabHeading } from '../_components/tab-heading';
 
-import { AddressesContent } from './_components/addresses-content';
+import { AddressBook } from './_components/address-book';
 import { getCustomerAddresses } from './page-data';
 
 interface Props {
   searchParams: {
     [key: string]: string | string[] | undefined;
-    action?: 'add-new-address' | 'edit-address';
     before?: string;
     after?: string;
   };
 }
 
-export default async function AddressesPage({ searchParams }: Props) {
-  const { before, after, action } = searchParams;
-  const customerAddressesDetails = await getCustomerAddresses({
+export const metadata = {
+  title: 'Addresses',
+};
+
+export default async function Addresses({ searchParams }: Props) {
+  const { before, after } = searchParams;
+
+  const data = await getCustomerAddresses({
     ...(after && { after }),
     ...(before && { before }),
-    limit: action === 'edit-address' ? undefined : 2,
+    limit: 10,
   });
 
-  if (!customerAddressesDetails) {
+  if (!data) {
     notFound();
   }
 
-  const { addresses, pageInfo, addressesCount } = customerAddressesDetails;
+  const { addresses, pageInfo, addressesCount } = data;
+  const { hasNextPage, hasPreviousPage, startCursor, endCursor } = pageInfo;
 
   return (
     <>
       <TabHeading heading="addresses" />
-      <AddressesContent
-        activeAddressId={searchParams['address-id']?.toString()}
-        addresses={addresses}
-        addressesCount={addressesCount}
-        customerAction={action}
-        pageInfo={pageInfo}
-      />
+      <AddressBook addressesCount={addressesCount} customerAddresses={addresses} key={endCursor}>
+        <Pagination
+          className="my-0 inline-flex justify-center text-center"
+          endCursor={endCursor ?? undefined}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          startCursor={startCursor ?? undefined}
+        />
+      </AddressBook>
     </>
   );
 }

@@ -6,7 +6,7 @@ import { getTranslations } from 'next-intl/server';
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { parseAccountFormData } from '~/components/form-fields';
+import { parseAccountFormData } from '~/components/form-fields/shared/parse-fields';
 
 const AddCustomerAddressMutation = graphql(`
   mutation AddCustomerAddressMutation(
@@ -55,7 +55,7 @@ export const addAddress = async ({
   formData: FormData;
   reCaptchaToken?: string;
 }) => {
-  const t = await getTranslations('Account.Addresses.AddAddress');
+  const t = await getTranslations('Account.Addresses.Add.Form');
 
   const customerId = await getSessionCustomerId();
 

@@ -44,14 +44,14 @@ const GetCustomerAddressesQuery = graphql(
   [PaginationFragment, FormFieldValuesFragment],
 );
 
-export interface CustomerAddressesArgs {
+interface Pagination {
   after?: string;
   before?: string;
   limit?: number;
 }
 
 export const getCustomerAddresses = cache(
-  async ({ before = '', after = '', limit = 9 }: CustomerAddressesArgs) => {
+  async ({ before = '', after = '', limit = 9 }: Pagination) => {
     const customerId = await getSessionCustomerId();
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 

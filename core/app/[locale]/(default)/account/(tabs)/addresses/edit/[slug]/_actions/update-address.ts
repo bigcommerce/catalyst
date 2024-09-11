@@ -6,7 +6,7 @@ import { getTranslations } from 'next-intl/server';
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { parseAccountFormData } from '~/components/form-fields';
+import { parseAccountFormData } from '~/components/form-fields/shared/parse-fields';
 
 const UpdateCustomerAddressMutation = graphql(`
   mutation UpdateCustomerAddressMutation(
@@ -39,7 +39,7 @@ const UpdateCustomerAddressMutation = graphql(`
 `);
 
 type Variables = VariablesOf<typeof UpdateCustomerAddressMutation>;
-export type UpdateCustomerAddressInput = Variables['input'];
+type UpdateCustomerAddressInput = Variables['input'];
 
 const isUpdateCustomerAddressInput = (
   data: unknown,
@@ -60,7 +60,7 @@ export const updateAddress = async ({
   formData: FormData;
   reCaptchaToken?: string;
 }) => {
-  const t = await getTranslations('Account.Addresses.UpdateAddress');
+  const t = await getTranslations('Account.Addresses.Edit.Form');
 
   const customerId = await getSessionCustomerId();
 

@@ -1,6 +1,21 @@
-import { UpdateCustomerAddressInput } from '~/app/[locale]/(default)/account/(tabs)/addresses/_actions/update-address';
+import { graphql, VariablesOf } from '~/client/graphql';
 
-type FormFieldsType = UpdateCustomerAddressInput['data']['formFields'];
+// Faking mutation to get input type
+// Not ideal but best way to make sure input type is up to date
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const FakeMutation = graphql(`
+  mutation UpdateCustomerMutation($input: UpdateCustomerInput!, $reCaptchaV2: ReCaptchaV2Input) {
+    customer {
+      updateCustomer(input: $input, reCaptchaV2: $reCaptchaV2) {
+        customer {
+          firstName
+        }
+      }
+    }
+  }
+`);
+
+type FormFieldsType = VariablesOf<typeof FakeMutation>['input']['formFields'];
 
 interface ReturnedFormData {
   [k: string]: unknown;

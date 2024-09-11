@@ -1,10 +1,15 @@
+import { FragmentOf } from 'gql.tada';
 import { ChangeEvent } from 'react';
 
 import { createFieldName, FieldNameToFieldId } from '~/components/form-fields';
 
-import { AddressFields, Countries } from './add-address';
+import { FormFieldsFragment } from '../fragment';
 
-export const isAddressOrAccountFormField = (field: unknown): field is AddressFields[number] => {
+type FormFields = Array<FragmentOf<typeof FormFieldsFragment>>;
+
+type FieldState = Record<string, boolean>;
+
+export const isAddressOrAccountFormField = (field: unknown): field is FormFields[number] => {
   if (
     typeof field === 'object' &&
     field !== null &&
@@ -17,13 +22,10 @@ export const isAddressOrAccountFormField = (field: unknown): field is AddressFie
   return false;
 };
 
-type FieldState = Record<string, boolean>;
-
-type StateOrProvince = Countries[number]['statesOrProvinces'];
-type FieldStateSetFn<Type> = (state: Type | ((prevState: Type) => Type)) => void;
+export type FieldStateSetFn<Type> = (state: Type | ((prevState: Type) => Type)) => void;
 
 const createPreSubmitPicklistValidationHandler = (
-  formFields: AddressFields,
+  formFields: FormFields,
   validitationSetter: FieldStateSetFn<FieldState>,
 ) => {
   const picklists = formFields.filter(
@@ -68,7 +70,7 @@ const createPreSubmitPicklistValidationHandler = (
 };
 
 const createPreSubmitCheckboxesValidationHandler = (
-  formFields: AddressFields,
+  formFields: FormFields,
   validitationSetter: FieldStateSetFn<FieldState>,
 ) => {
   const checkboxes = formFields.filter(
@@ -172,7 +174,7 @@ const createDatesValidationHandler =
   };
 
 const createPasswordValidationHandler =
-  (passwordStateSetter: FieldStateSetFn<FieldState>, fields: AddressFields) =>
+  (passwordStateSetter: FieldStateSetFn<FieldState>, fields: FormFields) =>
   (e: ChangeEvent<HTMLInputElement>) => {
     const fieldId = e.target.id.split('-')[1] ?? '';
 
@@ -225,20 +227,12 @@ const createPicklistOrTextValidationHandler =
     picklistWithTextStateSetter({ ...picklistWithTextState, [fieldId]: !validationStatus });
   };
 
-const createCountryChangeHandler =
-  (provinceSetter: FieldStateSetFn<StateOrProvince>, countries: Countries) => (value: string) => {
-    const states = countries.find(({ code }) => code === value)?.statesOrProvinces;
-
-    provinceSetter(states ?? []);
-  };
-
 export {
   createTextInputValidationHandler,
   createMultilineTextValidationHandler,
   createPicklistOrTextValidationHandler,
   createRadioButtonsValidationHandler,
   createPasswordValidationHandler,
-  createCountryChangeHandler,
   createNumbersInputValidationHandler,
   createDatesValidationHandler,
   createPreSubmitPicklistValidationHandler,

@@ -6,7 +6,7 @@ import { getTranslations } from 'next-intl/server';
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { parseAccountFormData } from '~/components/form-fields';
+import { parseAccountFormData } from '~/components/form-fields/shared/parse-fields';
 
 const UpdateCustomerMutation = graphql(`
   mutation UpdateCustomerMutation($input: UpdateCustomerInput!, $reCaptchaV2: ReCaptchaV2Input) {

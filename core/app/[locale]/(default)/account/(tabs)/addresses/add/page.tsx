@@ -1,17 +1,16 @@
+import { getTranslations } from 'next-intl/server';
+
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql, ResultOf } from '~/client/graphql';
-import { ExistingResultType } from '~/client/util';
 import { FormFieldsFragment } from '~/components/form-fields/fragment';
 import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
-import { getCustomerAddresses } from '../page-data';
+import { AddAddressForm } from './_components/add-address-form';
 
-import { EditAddress as EditAddressForm } from './edit-address';
-
-export const CustomerEditAdressQuery = graphql(
+const CustomerNewAdressQuery = graphql(
   `
-    query CustomerEditAdressQuery(
+    query CustomerNewAdressQuery(
       $countryCode: String
       $shippingFilters: FormFieldFiltersInput
       $shippingSorting: FormFieldSortInput
@@ -51,41 +50,55 @@ export const CustomerEditAdressQuery = graphql(
   [FormFieldsFragment],
 );
 
-export type EditAddressQueryResponseType = ResultOf<typeof CustomerEditAdressQuery>;
+export type NewAddressQueryResult = ResultOf<typeof CustomerNewAdressQuery>;
 
-type CustomerAddresses = ExistingResultType<typeof getCustomerAddresses>;
+const FALLBACK_COUNTRY = {
+  entityId: 226,
+  name: 'United States',
+  code: 'US',
+  states: [],
+};
 
-export type Address = CustomerAddresses['addresses'][number];
+export const metadata = {
+  title: 'Add address',
+};
 
-export async function CustomerEditAddress({
-  address,
-  isAddressRemovable,
-}: {
-  address: Address;
-  isAddressRemovable: boolean;
-}) {
+export default async function AddPage() {
+  const t = await getTranslations('Account.Addresses.Add');
+
   const customerId = await getSessionCustomerId();
 
   const { data } = await client.fetch({
-    document: CustomerEditAdressQuery,
+    document: CustomerNewAdressQuery,
     customerId,
     fetchOptions: { cache: 'no-store' },
     variables: {
-      countryCode: null,
       shippingSorting: 'SORT_ORDER',
     },
   });
+
+  const addressFields = [...(data.site.settings?.formFields.shippingAddress ?? [])];
   const reCaptchaSettings = data.site.settings?.reCaptcha;
   const countries = data.geography.countries;
-  const addressFields = [...(data.site.settings?.formFields.shippingAddress ?? [])];
+  const defaultCountry = data.site.settings?.contact?.country || FALLBACK_COUNTRY.name;
+
+  const {
+    code = FALLBACK_COUNTRY.code,
+    entityId = FALLBACK_COUNTRY.entityId,
+    statesOrProvinces: defaultCountryStates = FALLBACK_COUNTRY.states,
+  } = countries?.find(({ name: country }) => country === defaultCountry) || {};
 
   return (
-    <EditAddressForm
-      address={address}
-      addressFields={addressFields}
-      countries={countries || []}
-      isAddressRemovable={isAddressRemovable}
-      reCaptchaSettings={bypassReCaptcha(reCaptchaSettings)}
-    />
+    <div className="mx-auto mb-14 lg:w-2/3">
+      <h1 className="mb-8 text-3xl font-black lg:text-4xl">{t('heading')}</h1>
+      <AddAddressForm
+        addressFields={addressFields}
+        countries={countries || []}
+        defaultCountry={{ id: entityId, code, states: defaultCountryStates }}
+        reCaptchaSettings={bypassReCaptcha(reCaptchaSettings)}
+      />
+    </div>
   );
 }
+
+export const runtime = 'edge';
