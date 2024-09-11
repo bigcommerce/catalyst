@@ -182,18 +182,6 @@
         "error": "Unknown error."
       }
     },
-    "EditAddress": {
-      "recaptchaText": "Pass ReCAPTCHA check",
-      "emptyTextValidationMessage": "This field can not be empty",
-      "successMessage": "The address has been updated successfully.",
-      "cancel": "Cancel",
-      "deleteButton": "Delete",
-      "deleteAddress": "Address deleted from your account.",
-      "confirmDeleteAddress": "Delete address",
-      "deleteModalTitle": "Are you sure you want to delete this address?",
-      "submit": "Update address",
-      "submitting": "In progress..."
-    },  
     "Settings": {
       "emptyTextValidatoinMessage": "This field can not be empty",
       "cancel": "Cancel",
@@ -213,7 +201,17 @@
       },
       "ChangePassword": {
         "success": "Password has been updated successfully.",
-        "error": "Unknown error."
+        "error": "Unknown error.",
+        "currentPasswordLabel": "Current password",
+        "newPasswordLabel": "New password",
+        "confirmPasswordLabel": "Confirm password",
+        "cancel": "Cancel",
+        "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
+        "newPasswordValidationMessage": "New password must be different from the current password or/and match confirm password.",
+        "notEmptyMessage": "Field should not be empty",
+        "confirmChangePassword": "Your password has been successfully updated. Please log in using your new credentials.",
+        "spinnerText": "Submitting...",
+        "submitText": "Change password"
       },
       "UpdateCustomer": {
         "Errors": {
@@ -221,21 +219,6 @@
           "notFound": "Customer does not exist"
         }
       }
-    },
-    "ChangePassword": {
-      "currentPasswordLabel": "Current password",
-      "newPasswordLabel": "New password",
-      "confirmPasswordLabel": "Confirm password",
-      "cancel": "Cancel",
-      "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
-      "newPasswordValidationMessage": "New password must be different from the current password or/and match confirm password.",
-      "notEmptyMessage": "Field should not be empty",
-      "successMessage": "Password has been updated successfully!",
-      "confirmChangePassword": "Your password has been successfully updated. Please log in using your new credentials."
-    },
-    "SubmitChangePassword": {
-      "spinnerText": "Submitting...",
-      "submitText": "Change password"
     }
   },
   "Blog": {

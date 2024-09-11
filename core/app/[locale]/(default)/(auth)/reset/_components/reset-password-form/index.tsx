@@ -97,7 +97,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
     const submit = await resetPassword({
       formData,
       reCaptchaToken,
-      path: '/change_password',
+      path: '/change-password',
     });
 
     if (submit.status === 'success') {

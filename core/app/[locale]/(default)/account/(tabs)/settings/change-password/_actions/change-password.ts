@@ -49,10 +49,7 @@ export interface State {
   message?: string;
 }
 
-export const submitCustomerChangePasswordForm = async (
-  _previousState: unknown,
-  formData: FormData,
-) => {
+export const changePassword = async (_previousState: unknown, formData: FormData) => {
   const t = await getTranslations('Account.Settings.ChangePassword');
 
   const customerId = await getSessionCustomerId();
