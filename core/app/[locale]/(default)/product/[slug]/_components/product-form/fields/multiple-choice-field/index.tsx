@@ -1,8 +1,9 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 import { FragmentOf } from '~/client/graphql';
 import { Label, PickList, RadioGroup, RectangleList, Select, Swatch } from '~/components/ui/form';
+import { usePathname, useRouter } from '~/i18n/routing';
 
 import { useProductFieldController } from '../../use-product-form';
 import { ErrorMessage } from '../shared/error-message';

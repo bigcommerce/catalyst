@@ -1,5 +1,6 @@
-import { redirect } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+
+import { redirect } from '~/i18n/routing';
 
 import { ChangePasswordForm } from './_components/change-password-form';
 

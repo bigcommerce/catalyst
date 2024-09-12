@@ -1,5 +1,5 @@
 /* eslint-disable check-file/folder-naming-convention */
-import { permanentRedirect } from 'next/navigation';
+import { permanentRedirect } from '~/i18n/routing';
 
 /*
  * This route is used to redirect the legacy Stencil sitemap that lives on /xmlsitemap.php

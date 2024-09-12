@@ -1,7 +1,7 @@
-import { redirect } from 'next/navigation';
 import { PropsWithChildren } from 'react';
 
 import { auth } from '~/auth';
+import { redirect } from '~/i18n/routing';
 
 export default async function AccountLayout({ children }: PropsWithChildren) {
   const session = await auth();

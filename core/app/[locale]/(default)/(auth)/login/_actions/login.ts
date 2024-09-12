@@ -1,9 +1,9 @@
 'use server';
 
 import { isRedirectError } from 'next/dist/client/components/redirect';
-import { redirect } from 'next/navigation';
 
 import { Credentials, signIn } from '~/auth';
+import { redirect } from '~/i18n/routing';
 
 export const login = async (_previousState: unknown, formData: FormData) => {
   try {

@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { FormEvent, useRef, useTransition } from 'react';
 
@@ -9,6 +9,7 @@ import { Accordions } from '~/components/ui/accordions';
 import { Button } from '~/components/ui/button';
 import { Checkbox, Input, Label } from '~/components/ui/form';
 import { Rating } from '~/components/ui/rating';
+import { usePathname, useRouter } from '~/i18n/routing';
 import { cn } from '~/lib/utils';
 
 import type { Facet, PageType } from '../types';

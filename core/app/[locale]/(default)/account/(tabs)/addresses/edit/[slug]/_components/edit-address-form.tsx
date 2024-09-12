@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -36,6 +35,7 @@ import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 import { Field, Form, FormSubmit } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
+import { useRouter } from '~/i18n/routing';
 
 import { useAccountStatusContext } from '../../../../_components/account-status-provider';
 import { Modal } from '../../../../_components/modal';
