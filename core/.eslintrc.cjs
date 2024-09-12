@@ -35,12 +35,12 @@ const config = {
           {
             name: 'next/router',
             importNames: ['useRouter'],
-            message: 'Please import from `@/i18n/routing` instead.',
+            message: 'Please import from `~/i18n/routing` instead.',
           },
           {
             name: 'next/navigation',
             importNames: ['redirect', 'permanentRedirect', 'useRouter', 'usePathname'],
-            message: 'Please import from `@/i18n/routing` instead.',
+            message: 'Please import from `~/i18n/routing` instead.',
           },
         ],
       },
