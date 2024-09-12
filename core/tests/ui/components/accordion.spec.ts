@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '~/tests/fixtures';
 
 test('Verify accordion behavior on header', async ({ page }) => {
   await page.goto('/');

@@ -1,27 +1,22 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '~/tests/fixtures';
 
-const testAccountEmail = process.env.TEST_ACCOUNT_EMAIL || '';
-const testAccountPassword = process.env.TEST_ACCOUNT_PASSWORD || '';
+test('Account login and logout', async ({ page, account }) => {
+  const customer = await account.create();
 
-test('Account login and logout', async ({ page }) => {
   await page.goto('/');
 
   await page.getByLabel('Login').click();
   await expect(page.getByLabel('Email')).toBeVisible();
 
-  await page.getByLabel('Email').fill(testAccountEmail);
-  await page.getByLabel('Password').fill(testAccountPassword);
+  await page.getByLabel('Email').fill(customer.email);
+  await page.getByLabel('Password').fill(customer.password);
   await page.getByRole('button', { name: 'Log in' }).click();
 
   await page.waitForURL('/account/');
 
   await expect(page.getByRole('heading', { name: 'My Account' })).toBeVisible();
 
-  await page.getByLabel('Account').click();
-
-  await expect(page.getByRole('menu', { name: 'Account' })).toBeVisible();
-
-  await page.getByRole('menuitem', { name: 'Log out' }).click();
+  await customer.logout();
 
   await page.waitForURL('/en/login/');
 

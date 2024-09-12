@@ -1,8 +1,7 @@
 import { faker } from '@faker-js/faker';
-import { expect, Page, test } from '@playwright/test';
 
-const testAccountEmail = process.env.TEST_ACCOUNT_EMAIL || '';
-const testAccountPassword = process.env.TEST_ACCOUNT_PASSWORD || '';
+import { expect, Page, test } from '~/tests/fixtures';
+
 const firstName = faker.person.firstName();
 const lastName = faker.person.lastName();
 
@@ -80,13 +79,10 @@ test.describe('desktop', () => {
     ).toBeVisible();
   });
 
-  test('Complete checkout as a logged in shopper', async ({ page, isMobile }) => {
-    await page.goto('/login/');
-    await page.getByLabel('Login').click();
-    await page.getByLabel('Email').fill(testAccountEmail);
-    await page.getByLabel('Password').fill(testAccountPassword);
-    await page.getByRole('button', { name: 'Log in' }).click();
-    await page.getByRole('heading', { name: 'My Account' }).waitFor();
+  test('Complete checkout as a logged in shopper', async ({ page, isMobile, account }) => {
+    const customer = await account.create();
+
+    await customer.login();
 
     await page.goto('/laundry-detergent/');
     await expect(

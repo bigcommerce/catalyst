@@ -6,9 +6,9 @@ on:
 
 env:
   PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
-  TEST_ACCOUNT_EMAIL: ${{ secrets.TEST_ACCOUNT_EMAIL }}
-  TEST_ACCOUNT_PASSWORD: ${{ secrets.TEST_ACCOUNT_PASSWORD }}
   VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_PROTECTION_BYPASS_CATALYST_LATEST }}
+  BIGCOMMERCE_ACCESS_TOKEN: ${{ secrets.BIGCOMMERCE_ACCESS_TOKEN }}
+  BIGCOMMERCE_STORE_HASH: ${{ secrets.BIGCOMMERCE_STORE_HASH }}
 
 jobs:
   generate-lighthouse-audit:

@@ -82,9 +82,9 @@ To run the UI tests locally:
 ```shell copy
 PLAYWRIGHT_TEST_BASE_URL='https://catalyst-demo.site' || 'http://localhost:3000'
 # Optional: Some tests will fail without these credentials.
-# Create a customer account on your store in order to populate these.
-TEST_ACCOUNT_EMAIL="<storefront-account-email>"
-TEST_ACCOUNT_PASSWORD="<storefront-account-password>"
+# The environment variables allow automatic creation of customer accounts. These will cleanup themselves after the tests are done.
+BIGCOMMERCE_ACCESS_TOKEN="<access-token>"
+BIGCOMMERCE_STORE_HASH="<store-hash>"
 ```
 
 2. Navigate to the test directory:

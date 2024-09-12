@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
-import { expect, test } from '@playwright/test';
+
+import { expect, test } from '~/tests/fixtures';
 
 const email = faker.internet.email({ provider: 'mybigcommerce.com' });
 

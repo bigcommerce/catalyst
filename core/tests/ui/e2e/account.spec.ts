@@ -1,21 +1,4 @@
-import { expect, Page, test } from '@playwright/test';
-
-const testUserEmail: string = process.env.TEST_ACCOUNT_EMAIL || '';
-const testUserPassword: string = process.env.TEST_ACCOUNT_PASSWORD || '';
-
-async function loginWithUserAccount(page: Page, email: string, password: string) {
-  await page.goto('/login/');
-  await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Password').fill(password);
-  await page.getByRole('button', { name: 'Log in' }).click();
-
-  await page.waitForURL('/account/');
-}
-
-async function logout(page: Page) {
-  await page.getByRole('button', { name: 'Account' }).click();
-  await page.getByRole('menuitem', { name: 'Log out' }).click();
-}
+import { expect, test } from '~/tests/fixtures';
 
 test('Account access is restricted for guest users', async ({ page }) => {
   await page.goto('/account/settings');
@@ -24,8 +7,10 @@ test('Account access is restricted for guest users', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Log in' })).toBeVisible();
 });
 
-test('My Account tabs are displayed and clickable', async ({ page }) => {
-  await loginWithUserAccount(page, testUserEmail, testUserPassword);
+test('My Account tabs are displayed and clickable', async ({ page, account }) => {
+  const customer = await account.create();
+
+  await customer.login();
 
   await expect(page).toHaveURL('/account/');
   await expect(page.getByRole('link', { name: 'Addresses' })).toBeVisible();
@@ -39,11 +24,13 @@ test('My Account tabs are displayed and clickable', async ({ page }) => {
   await expect(page).toHaveURL('/account/settings/');
   await expect(page.getByRole('heading', { name: 'Account settings' })).toBeVisible();
 
-  await logout(page);
+  await customer.logout();
 });
 
-test('Account dropdown is visible in header', async ({ page }) => {
-  await loginWithUserAccount(page, testUserEmail, testUserPassword);
+test('Account dropdown is visible in header', async ({ page, account }) => {
+  const customer = await account.create();
+
+  await customer.login();
 
   await page.goto('/');
 
@@ -51,5 +38,8 @@ test('Account dropdown is visible in header', async ({ page }) => {
 
   await expect(page.getByRole('menuitem', { name: 'Log out' })).toBeInViewport();
 
-  await page.getByRole('menuitem', { name: 'Log out' }).click();
+  // Click outside to close the dropdown
+  await page.locator('html').click();
+
+  await customer.logout();
 });
