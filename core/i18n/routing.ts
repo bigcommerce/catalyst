@@ -64,13 +64,13 @@ export const localeLanguageRegionMap: LocaleEntry[] = [
 
 enum LocalePrefixes {
   ALWAYS = 'always',
-  NEVER = 'never',
+  // Don't use NEVER as there is a issue that causes cache problems and returns the wrong messages.
+  // More info: https://github.com/amannn/next-intl/issues/786
+  // NEVER = 'never',
   ASNEEDED = 'as-needed', // removes prefix on default locale
 }
 
-// Temporary we use NEVER prefix to prioritize accept-language header
-// & disable internationalized routes due to incomplete multilingual implementation
-export const localePrefix: LocalePrefix = LocalePrefixes.NEVER;
+export const localePrefix: LocalePrefix = LocalePrefixes.ASNEEDED;
 
 export const defaultLocale = 'en';
 
