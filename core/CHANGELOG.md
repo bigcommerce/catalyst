@@ -1,5 +1,39 @@
 # Changelog
 
+## 0.15.0
+
+### Minor Changes
+
+- [#1362](https://github.com/bigcommerce/catalyst/pull/1362) [`0814afe`](https://github.com/bigcommerce/catalyst/commit/0814afefca00b2497dddb0622df45f4d50865882) Thanks [@deini](https://github.com/deini)! - If app is not running on Vercel's infra, `<Analytics />` and `<SpeedInsights />` are not rendered.
+
+  Opt-out of vercel analytics and speed insights by setting the following env vars to `true`
+
+  - `DISABLE_VERCEL_ANALYTICS`
+  - `DISABLE_VERCEL_SPEED_INSIGHTS`
+
+- [#1354](https://github.com/bigcommerce/catalyst/pull/1354) [`3d298c7`](https://github.com/bigcommerce/catalyst/commit/3d298c7190e01309ee706c0b9696f8851071e73c) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Move address forms in account to their own /add and /edit pages.
+
+- [#1280](https://github.com/bigcommerce/catalyst/pull/1280) [`27cbfd2`](https://github.com/bigcommerce/catalyst/commit/27cbfd20307d630f44c2c236e2e0c61a9e57be33) Thanks [@bookernath](https://github.com/bookernath)! - Add dynamic favicon from API on a static route
+
+- [#1357](https://github.com/bigcommerce/catalyst/pull/1357) [`3176491`](https://github.com/bigcommerce/catalyst/commit/317649109861e75fa46794e0cbf67dca500947a6) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add /account/settings/change-password route for change password form.
+
+### Patch Changes
+
+- [#1361](https://github.com/bigcommerce/catalyst/pull/1361) [`dd10d06`](https://github.com/bigcommerce/catalyst/commit/dd10d064156e8fc0376f0cce6f698dc8b834f95e) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Enforce use of next-intl's wrapper navigation APIs.
+
+- [#1360](https://github.com/bigcommerce/catalyst/pull/1360) [`00f72dd`](https://github.com/bigcommerce/catalyst/commit/00f72ddc7e3c2cff780430e074341ee72bc0c893) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Change LocalePrefix mode to `as-needed`, since there's an issue that is causing caching problems when using `never`.
+
+  More info about LocalePrefixes: https://next-intl-docs.vercel.app/docs/routing#shared-configuration
+  Open issue: https://github.com/amannn/next-intl/issues/786
+
+- [#1338](https://github.com/bigcommerce/catalyst/pull/1338) [`d50613a`](https://github.com/bigcommerce/catalyst/commit/d50613a669696f34a695bc35b9d40099eeea0660) Thanks [@bc-yevhenii-buliuk](https://github.com/bc-yevhenii-buliuk)! - improve redirect behavior after change password on account page
+
+- [#1358](https://github.com/bigcommerce/catalyst/pull/1358) [`48db1b8`](https://github.com/bigcommerce/catalyst/commit/48db1b80a8aeb8e63fb920bf4374413c0d6c67c5) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Update da and fr translations to use correct string templates.
+
+- [#1368](https://github.com/bigcommerce/catalyst/pull/1368) [`d032e65`](https://github.com/bigcommerce/catalyst/commit/d032e659ba0ea1b45dc47e3afcb9094ca4f38afc) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Localize metadata titles.
+
+- [#1369](https://github.com/bigcommerce/catalyst/pull/1369) [`c9a5ab5`](https://github.com/bigcommerce/catalyst/commit/c9a5ab58be4dad966dc8d406ade8433f0f2b5d25) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Pass in default channel to favicon query, since `getLocale` can't be used in routes.
+
 ## 0.14.2
 
 ### Patch Changes

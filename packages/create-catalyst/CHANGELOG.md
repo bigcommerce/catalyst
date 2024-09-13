@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.0
+
+### Minor Changes
+
+- [#1365](https://github.com/bigcommerce/catalyst/pull/1365) [`896b4d3`](https://github.com/bigcommerce/catalyst/commit/896b4d359cea39536f41c3fa3427fb6bf429d196) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Changes the default behavior of the `create-catalyst` CLI such that it no longer writes the access token created by the OAuth device flow to the created project's `.env.local` file
+
+- [#1366](https://github.com/bigcommerce/catalyst/pull/1366) [`6d7c508`](https://github.com/bigcommerce/catalyst/commit/6d7c508b453d9e2cbe073b9ab7a7844220c2d22c) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Renames leftover `NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET` environment variables - continuation of bigcommerce/catalyst#1317
+
 ## 0.11.0
 
 ### Minor Changes
