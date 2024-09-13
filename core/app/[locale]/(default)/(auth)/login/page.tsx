@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl';
-import { unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
@@ -7,9 +7,13 @@ import { locales, LocaleType } from '~/i18n/routing';
 
 import { LoginForm } from './_components/login-form';
 
-export const metadata = {
-  title: 'Login',
-};
+export async function generateMetadata() {
+  const t = await getTranslations('Login');
+
+  return {
+    title: t('title'),
+  };
+}
 
 interface Props {
   params: { locale: LocaleType };

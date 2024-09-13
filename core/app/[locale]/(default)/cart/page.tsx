@@ -36,9 +36,13 @@ const CartPageQuery = graphql(
   [CartItemFragment, CheckoutSummaryFragment, GeographyFragment],
 );
 
-export const metadata = {
-  title: 'Cart',
-};
+export async function generateMetadata() {
+  const t = await getTranslations('Cart');
+
+  return {
+    title: t('title'),
+  };
+}
 
 export default async function Cart() {
   const cartId = cookies().get('cartId')?.value;

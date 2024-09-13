@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 
 import { BlogPostCard } from '~/components/blog-post-card';
 import { Pagination } from '~/components/ui/pagination';
@@ -13,10 +14,11 @@ interface Props {
 }
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const t = await getTranslations('Blog');
   const blogPosts = await getBlogPosts(searchParams);
 
   return {
-    title: blogPosts?.name ?? 'Blog',
+    title: blogPosts?.name ?? t('title'),
     description:
       blogPosts?.description && blogPosts.description.length > 150
         ? `${blogPosts.description.substring(0, 150)}...`
