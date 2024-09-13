@@ -1,10 +1,11 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useTransition } from 'react';
 
 import { Tag } from '~/components/ui/tag';
+import { usePathname, useRouter } from '~/i18n/routing';
 
 import type { Facet, PageType, PublicParamKeys } from '../types';
 

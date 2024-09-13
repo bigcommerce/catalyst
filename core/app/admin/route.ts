@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation';
+import { redirect } from '~/i18n/routing';
 
 const canonicalDomain: string = process.env.BIGCOMMERCE_GRAPHQL_API_DOMAIN ?? 'mybigcommerce.com';
 const BIGCOMMERCE_STORE_HASH = process.env.BIGCOMMERCE_STORE_HASH;

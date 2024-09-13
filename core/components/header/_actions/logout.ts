@@ -1,8 +1,7 @@
 'use server';
 
-import { redirect } from 'next/navigation';
-
 import { signOut } from '~/auth';
+import { redirect } from '~/i18n/routing';
 
 export const logout = async () => {
   await signOut({ redirect: false });

@@ -27,6 +27,6 @@ test('Account register', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Create account' }).click();
 
-  await expect(page).toHaveURL('/account/');
+  await expect(page).toHaveURL('/en/account/');
   await expect(page.getByText('Your account has been successfully created')).toBeVisible();
 });

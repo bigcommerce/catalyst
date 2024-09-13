@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -19,6 +18,7 @@ import {
   Input,
 } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
+import { useRouter } from '~/i18n/routing';
 
 import { resetPassword } from '../../_actions/reset-password';
 

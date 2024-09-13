@@ -1,7 +1,8 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 import { Link as CustomLink } from '~/components/link';
+import { usePathname } from '~/i18n/routing';
 import { cn } from '~/lib/utils';
 
 interface Props {

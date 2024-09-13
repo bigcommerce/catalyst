@@ -27,7 +27,7 @@ test('Account login and logout', async ({ page }) => {
 
   await page.getByRole('menuitem', { name: 'Log out' }).click();
 
-  await page.waitForURL('/login/');
+  await page.waitForURL('/en/login/');
 
   await expect(page.getByRole('heading', { name: 'Log in' })).toBeVisible();
 });

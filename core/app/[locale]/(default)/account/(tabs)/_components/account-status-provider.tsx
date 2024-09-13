@@ -1,7 +1,8 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+
+import { usePathname } from '~/i18n/routing';
 
 import { State as AccountState } from '../settings/change-password/_actions/change-password';
 
