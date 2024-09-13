@@ -12,9 +12,13 @@ const FALLBACK_COUNTRY = {
   code: 'US',
 };
 
-export const metadata = {
-  title: 'Register account',
-};
+export async function generateMetadata() {
+  const t = await getTranslations('Register');
+
+  return {
+    title: t('title'),
+  };
+}
 
 export default async function Register() {
   const t = await getTranslations('Register');

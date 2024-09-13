@@ -33,10 +33,6 @@ const NotFoundQuery = graphql(
   [HeaderFragment, FooterFragment, ProductCardFragment],
 );
 
-export const metadata = {
-  title: 'Not Found',
-};
-
 export default async function NotFound() {
   const t = await getTranslations('NotFound');
 

@@ -6,6 +6,7 @@
     }
   },
   "ChangePassword": {
+    "title": "Change password",
     "heading": "Change password",
     "Form": {
       "newPasswordLabel": "New password",
@@ -21,6 +22,7 @@
     }
   },
   "Login": {
+    "title": "Login",
     "heading": "Log In",
     "Form": {
       "error": "Your email address or password is incorrect. Try signing in again or reset your password",
@@ -44,6 +46,7 @@
     }
   },
   "Register": {
+    "title": "Register account",
     "heading": "New account",
     "Form": {
       "submit": "Create account",
@@ -58,6 +61,7 @@
     }
   },
   "Reset": {
+    "title": "Reset password",
     "heading": "Reset password",
     "Form": {
       "description": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
@@ -121,6 +125,7 @@
     "items": "items"
   },
   "Search": {
+    "title": "Search results",
     "heading": "Search",
     "products": "Products",
     "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
@@ -140,13 +145,15 @@
       "successMessage": "Your account has been successfully created"
     },
     "Addresses": {
+      "title": "Addresses",
       "addNewAddress": "Add new address",
       "editButton": "Edit",
       "deleteButton": "Delete",
       "confirmDeleteAddress": "Delete address",
       "deleteModalTitle": "Are you sure you want to delete this address?",
       "Add": {
-        "heading": "New address",
+        "title": "Add address",
+        "heading": "Add address",
         "Form": {
           "recaptchaText": "Pass ReCAPTCHA check",
           "submit": "Add new address",
@@ -160,6 +167,7 @@
         }
       },
       "Edit": {
+        "title": "Edit address",
         "heading": "Edit address",
         "Form": {
           "recaptchaText": "Pass ReCAPTCHA check",
@@ -183,6 +191,7 @@
       }
     },
     "Settings": {
+      "title": "Account settings",
       "emptyTextValidatoinMessage": "This field can not be empty",
       "cancel": "Cancel",
       "recaptchaText": "Pass ReCAPTCHA check",
@@ -200,6 +209,7 @@
           "phone": "Enter a phone number"
       },
       "ChangePassword": {
+        "title": "Change password",
         "success": "Password has been updated successfully.",
         "error": "Unknown error.",
         "currentPasswordLabel": "Current password",
@@ -222,6 +232,7 @@
     }
   },
   "Blog": {
+    "title": "Blog",
     "SharingLinks": {
       "share": "Share",
       "email": "Email",
@@ -229,6 +240,7 @@
     }
   },
   "Cart": {
+    "title": "Cart",
     "heading": "Your cart",
     "empty": "Your cart is empty",
     "emptyDetails": "Looks like you have not added anything to your cart. Go ahead & explore top categories",
@@ -299,6 +311,7 @@
     }
   },
   "Compare": {
+    "title": "Compare",
     "heading": "Comparing {quantity, plural, =1 {1 Product} other {# Products}}",
     "nothingToCompare": "Well, there's nothing to compare!",
     "helpingText": "You somehow managed to land here, but you need to select a few products first.",
@@ -386,10 +399,12 @@
     }
   },
   "Maintenance": {
+    "title": "Maintenance",
     "message": "We are down for maintenance",
     "contactUs": "You can contact us at:"
   },
   "StoreSelector": {
+    "title": "Store selector",
     "heading": "Select a language and region"
   },
   "Error": {

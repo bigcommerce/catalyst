@@ -22,9 +22,13 @@ const StoreSelectorPageQuery = graphql(
   [StoreLogoFragment],
 );
 
-export const metadata = {
-  title: 'Location selector',
-};
+export async function generateMetadata() {
+  const t = await getTranslations('StoreSelector');
+
+  return {
+    title: t('title'),
+  };
+}
 
 interface Props {
   params: { locale: LocaleType };

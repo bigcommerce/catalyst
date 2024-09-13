@@ -1,4 +1,4 @@
-import { unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
 import { locales, LocaleType } from '~/i18n/routing';
 
@@ -6,9 +6,13 @@ import { TabHeading } from '../../_components/tab-heading';
 
 import { ChangePasswordForm } from './_components/change-password-form';
 
-export const metadata = {
-  title: 'Change password',
-};
+export async function generateMetadata() {
+  const t = await getTranslations('Account.Settings.ChangePassword');
+
+  return {
+    title: t('title'),
+  };
+}
 
 interface Props {
   params: { locale: LocaleType };
