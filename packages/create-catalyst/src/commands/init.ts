@@ -129,7 +129,6 @@ export const init = new Command('init')
     writeEnv(projectDir, {
       channelId: channelId.toString(),
       storeHash,
-      accessToken,
       customerImpersonationToken,
     });
   });
