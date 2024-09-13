@@ -24,7 +24,7 @@ export const writeEnv = (
       `AUTH_SECRET=${randomBytes(32).toString('hex')}`,
       `CLIENT_LOGGER=false`,
       `ENABLE_ADMIN_ROUTE=true`,
-      `NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET=3600`,
+      `DEFAULT_REVALIDATE_TARGET=3600`,
     ].join('\n'),
   );
 };
