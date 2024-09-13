@@ -9,10 +9,12 @@
  *
  */
 
+import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
+import { defaultLocale } from '~/i18n/routing';
 
-const GET_FAVICON_QUERY = graphql(`
+const GetFaviconQuery = graphql(`
   query GetFavicon {
     site {
       settings {
@@ -24,7 +26,8 @@ const GET_FAVICON_QUERY = graphql(`
 
 export const GET = async () => {
   const { data } = await client.fetch({
-    document: GET_FAVICON_QUERY,
+    document: GetFaviconQuery,
+    channelId: getChannelIdFromLocale(defaultLocale),
   });
 
   const faviconUrl = data.site.settings?.faviconUrl;
