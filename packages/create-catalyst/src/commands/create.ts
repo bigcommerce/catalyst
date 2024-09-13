@@ -247,7 +247,6 @@ export const create = new Command('create')
     writeEnv(projectDir, {
       channelId: channelId.toString(),
       storeHash,
-      accessToken,
       customerImpersonationToken,
     });
 

@@ -7,23 +7,21 @@ export const writeEnv = (
   {
     channelId,
     storeHash,
-    accessToken,
     customerImpersonationToken,
   }: {
     channelId: string;
     storeHash: string;
-    accessToken: string;
     customerImpersonationToken: string;
   },
 ) => {
   outputFileSync(
     join(projectDir, '.env.local'),
     [
-      `AUTH_SECRET=${randomBytes(32).toString('hex')}`,
       `BIGCOMMERCE_STORE_HASH=${storeHash}`,
       `BIGCOMMERCE_CHANNEL_ID=${channelId}`,
-      `BIGCOMMERCE_ACCESS_TOKEN=${accessToken}`,
       `BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN=${customerImpersonationToken}`,
+      '',
+      `AUTH_SECRET=${randomBytes(32).toString('hex')}`,
       `CLIENT_LOGGER=false`,
       `ENABLE_ADMIN_ROUTE=true`,
       `NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET=3600`,
