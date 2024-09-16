@@ -15,7 +15,7 @@ export class Account {
     await this.page.getByLabel('Email').fill(this.email);
     await this.page.getByLabel('Password').fill(this.password);
     await this.page.getByRole('button', { name: 'Log in' }).click();
-    await this.page.waitForURL('/account/');
+    await this.page.waitForURL('/en/account/');
   }
 
   async logout() {
