@@ -1,5 +1,6 @@
 import { BookUser, Settings } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
 import { Link } from '~/components/link';
@@ -27,6 +28,14 @@ const AccountItem = ({ children, title, description, href }: AccountItem) => {
     </Link>
   );
 };
+
+export async function generateMetadata() {
+  const t = await getTranslations('Account.Home');
+
+  return {
+    title: t('title'),
+  };
+}
 
 export default function Account() {
   const t = useTranslations('Account.Home');
