@@ -1,0 +1,34 @@
+name: Create translations patch
+
+on:
+  pull_request:
+    types:
+      - opened
+    branches:
+      - main
+
+jobs:
+  create-translations-patch:
+    if: github.actor == 'jorgemoya'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Create a translations changeset
+        run: |
+          mkdir -p .changeset
+          echo "---
+          \"@bigcommerce/catalyst-core\": patch
+          ---
+
+          Update translations." > .changeset/translations-patch.md
+
+      - name: Commit and push changeset
+        run: |
+          git config --global user.name 'bc-svc-local'
+          git config --global user.email 'bc-svc-local@users.noreply.github.com'
+          git add .changeset/translations-patch.md
+          git commit -m "chore(core): create translations patch"
+          git push
