@@ -12,12 +12,14 @@ test('Account login and logout', async ({ page, account }) => {
   await page.getByLabel('Password').fill(customer.password);
   await page.getByRole('button', { name: 'Log in' }).click();
 
-  await page.waitForURL('/account/');
+  await page.waitForURL('/en/account/');
 
   await expect(page.getByRole('heading', { name: 'My Account' })).toBeVisible();
 
   await customer.logout();
 
+  // Prepending locale to URL as a workaround for issue in next-intl
+  // More info: https://github.com/amannn/next-intl/issues/1335
   await page.waitForURL('/en/login/');
 
   await expect(page.getByRole('heading', { name: 'Log in' })).toBeVisible();
