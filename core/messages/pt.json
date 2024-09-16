@@ -6,6 +6,7 @@
         }
     },
     "ChangePassword": {
+        "title": "Alterar senha",
         "heading": "Alterar senha",
         "Form": {
             "newPasswordLabel": "Nova senha",
@@ -21,6 +22,7 @@
         }
     },
     "Login": {
+        "title": "Acesso",
         "heading": "Credencial de acesso",
         "Form": {
             "error": "O endereço de email ou a senha está incorreto. Tente fazer login novamente ou redefinir sua senha",
@@ -44,6 +46,7 @@
         }
     },
     "Register": {
+        "title": "Register account",
         "heading": "Nova conta",
         "Form": {
             "submit": "Criar conta",
@@ -58,6 +61,7 @@
         }
     },
     "Reset": {
+        "title": "Redefinir senha",
         "heading": "Redefinir senha",
         "Form": {
             "description": "Insira abaixo o e-mail associado à sua conta. Enviaremos instruções para redefinir sua senha.",
@@ -121,6 +125,7 @@
         "items": "itens"
     },
     "Search": {
+        "title": "Resultados da pesquisa",
         "heading": "Pesquisar",
         "products": "Produtos",
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# itens}}",
@@ -140,56 +145,53 @@
             "successMessage": "Sua conta foi criada com sucesso"
         },
         "Addresses": {
-            "defaultAddress": "Padrão",
-            "alternativeAddress": "Alternativo",
-            "newAddress": "Novo endereço",
+            "title": "Endereços",
             "addNewAddress": "Adicionar novo endereço",
-            "addNewAddressSuccessMessage": "Endereço adicionado à sua conta",
-            "editAddress": "Editar endereço",
             "editButton": "Editar",
             "deleteButton": "Excluir",
-            "deleteAddress": "Endereço excluído da sua conta.",
-            "confirmDeleteAddress": "Excluir endereço",
-            "deleteModalTitle": "Deseja mesmo excluir o endereço?",
-            "recaptchaText": "Passar na verificação ReCAPTCHA",
-            "emptyTextValidationMessage": "Este campo não pode ficar vazio",
-            "successMessage": "O endereço foi criado.",
-            "submit": "Adicionar novo endereço",
-            "cancel": "Cancelar",
-            "submitting": "Em andamento..."
-        },
-        "AddAddress": {
-            "success": "O endereço foi adicionado.",
-            "Errors": {
-                "inputError": "Houve um erro no processamento da entrada do usuário.",
-                "error": "Erro desconhecido."
-            }
-        },
-        "DeleteAddress": {
-            "success": "Endereço excluído da sua conta.",
-            "error": "Erro desconhecido."
-        },
-        "UpdateAddress": {
-            "success": "O endereço foi atualizado.",
-            "Errors": {
-                "inputError": "Houve um erro no processamento da entrada do usuário.",
-                "notFound": "O endereço não existe.",
-                "error": "Erro desconhecido."
-            }
-        },
-        "EditAddress": {
-            "recaptchaText": "Passar na verificação ReCAPTCHA",
-            "emptyTextValidationMessage": "Este campo não pode ficar vazio",
-            "successMessage": "O endereço foi atualizado.",
-            "cancel": "Cancelar",
-            "deleteButton": "Excluir",
-            "deleteAddress": "Endereço excluído da sua conta.",
             "confirmDeleteAddress": "Excluir endereço",
             "deleteModalTitle": "Deseja mesmo excluir esse endereço?",
-            "submit": "Atualizar endereço",
-            "submitting": "Em andamento..."
+            "Add": {
+                "title": "Adicionar endereço",
+                "heading": "Novo endereço",
+                "Form": {
+                    "recaptchaText": "Passar na verificação ReCAPTCHA",
+                    "submit": "Adicionar novo endereço",
+                    "submitting": "Saving address...",
+                    "cancel": "Cancelar",
+                    "success": "Address added to your account.",
+                    "Errors": {
+                        "inputError": "Houve um erro no processamento da entrada do usuário.",
+                        "error": "Erro desconhecido."
+                    }
+                }
+            },
+            "Edit": {
+                "title": "Editar endereço",
+                "heading": "Editar endereço",
+                "Form": {
+                    "recaptchaText": "Passar na verificação ReCAPTCHA",
+                    "submit": "Editar endereço",
+                    "submitting": "Updating address...",
+                    "cancel": "Cancelar",
+                    "confirmDeleteAddress": "Excluir endereço",
+                    "deleteModalTitle": "Deseja mesmo excluir esse endereço?",
+                    "deleteButton": "Excluir",
+                    "success": "The address has been succesfully updated.",
+                    "Errors": {
+                        "inputError": "Houve um erro no processamento da entrada do usuário.",
+                        "notFound": "O endereço não existe.",
+                        "error": "Erro desconhecido."
+                    }
+                }
+            },
+            "Delete": {
+                "success": "Endereço excluído da sua conta.",
+                "error": "Erro desconhecido."
+            }
         },
         "Settings": {
+            "title": "Configurações da conta",
             "emptyTextValidatoinMessage": "Este campo não pode ficar vazio",
             "cancel": "Cancelar",
             "recaptchaText": "Passar na verificação ReCAPTCHA",
@@ -207,8 +209,19 @@
                 "phone": "Digite um número de telefone"
             },
             "ChangePassword": {
+                "title": "Alterar senha",
                 "success": "A senha foi atualizada com sucesso.",
-                "error": "Erro desconhecido."
+                "error": "Erro desconhecido.",
+                "currentPasswordLabel": "Senha atual",
+                "newPasswordLabel": "Nova senha",
+                "confirmPasswordLabel": "Confirmar senha",
+                "cancel": "Cancelar",
+                "confirmPasswordValidationMessage": "As senhas digitadas são diferentes. Tente novamente.",
+                "newPasswordValidationMessage": "A nova senha deve ser diferente da senha atual e/ou corresponder à senha de confirmação.",
+                "notEmptyMessage": "O campo não deve estar vazio",
+                "confirmChangePassword": "Sua senha foi atualizada. Use suas novas credenciais para fazer login.",
+                "spinnerText": "Enviando...",
+                "submitText": "Alterar senha"
             },
             "UpdateCustomer": {
                 "Errors": {
@@ -216,24 +229,10 @@
                     "notFound": "O cliente não existe"
                 }
             }
-        },
-        "ChangePassword": {
-            "currentPasswordLabel": "Senha atual",
-            "newPasswordLabel": "Nova senha",
-            "confirmPasswordLabel": "Confirmar senha",
-            "cancel": "Cancelar",
-            "confirmPasswordValidationMessage": "As senhas digitadas são diferentes. Tente novamente.",
-            "newPasswordValidationMessage": "A nova senha deve ser diferente da senha atual e/ou corresponder à senha de confirmação.",
-            "notEmptyMessage": "O campo não deve estar vazio",
-            "successMessage": "A senha foi atualizada com sucesso!",
-            "confirmChangePassword": "Sua senha foi atualizada. Use suas novas credenciais para fazer login."
-        },
-        "SubmitChangePassword": {
-            "spinnerText": "Enviando...",
-            "submitText": "Alterar senha"
         }
     },
     "Blog": {
+        "title": "Blog",
         "SharingLinks": {
             "share": "Compartilhar",
             "email": "Email",
@@ -241,6 +240,7 @@
         }
     },
     "Cart": {
+        "title": "Carrinho",
         "heading": "Seu carrinho",
         "empty": "Seu carrinho está vazio",
         "emptyDetails": "Parece que você não adicionou nada ao seu carrinho. Explore as principais categorias e escolha algo!",
@@ -311,6 +311,7 @@
         }
     },
     "Compare": {
+        "title": "Comparar",
         "heading": "Comparando {quantity, plural, =1 {1 produto} other {# produtos}}",
         "nothingToCompare": "Não há nada para comparar!",
         "helpingText": "Você deu um jeito de chegar até aqui, mas primeiro precisa selecionar alguns produtos.",
@@ -398,10 +399,12 @@
         }
     },
     "Maintenance": {
+        "title": "Maintenance",
         "message": "Estamos em manutenção",
         "contactUs": "Entre em contato conosco em:"
     },
     "StoreSelector": {
+        "title": "Seletor de lojas",
         "heading": "Selecione um idioma e uma região"
     },
     "Error": {
