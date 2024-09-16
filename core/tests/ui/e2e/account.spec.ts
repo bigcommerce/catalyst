@@ -12,7 +12,7 @@ test('My Account tabs are displayed and clickable', async ({ page, account }) =>
 
   await customer.login();
 
-  await expect(page).toHaveURL('/account/');
+  await expect(page).toHaveURL('/en/account/');
   await expect(page.getByRole('link', { name: 'Addresses' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Account settings' })).toBeVisible();
 

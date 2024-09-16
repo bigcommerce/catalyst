@@ -52,7 +52,7 @@
             "confirmPassword": "Passwords don't match"
         },
         "Errors": {
-            "inputError": "Something went wrong with proccessing user input.",
+            "inputError": "Something went wrong with processing user input.",
             "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
             "error": "何か問題が発生しました。後でもう一度やり直してください。"
         }
@@ -161,7 +161,7 @@
         "AddAddress": {
             "success": "The address has been added.",
             "Errors": {
-                "inputError": "Something went wrong with proccessing user input.",
+                "inputError": "Something went wrong with processing user input.",
                 "error": "Unknown error."
             }
         },
@@ -172,7 +172,7 @@
         "UpdateAddress": {
             "success": "The address has been updated.",
             "Errors": {
-                "inputError": "Something went wrong with proccessing user input.",
+                "inputError": "Something went wrong with processing user input.",
                 "notFound": "Address does not exist.",
                 "error": "Unknown error."
             }
@@ -212,7 +212,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Something went wrong with proccessing user input.",
+                    "inputError": "Something went wrong with processing user input.",
                     "notFound": "Customer does not exist"
                 }
             }

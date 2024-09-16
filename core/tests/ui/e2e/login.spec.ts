@@ -12,7 +12,7 @@ test('Account login and logout', async ({ page, account }) => {
   await page.getByLabel('Password').fill(customer.password);
   await page.getByRole('button', { name: 'Log in' }).click();
 
-  await page.waitForURL('/account/');
+  await page.waitForURL('/en/account/');
 
   await expect(page.getByRole('heading', { name: 'My Account' })).toBeVisible();
 
