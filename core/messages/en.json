@@ -133,7 +133,8 @@
   },
   "Account": {
     "Home": {
-      "heading": "My Account",
+      "title": "My account",
+      "heading": "My account",
       "accountTabsLabel": "Account Tabs",
       "orders": "Orders",
       "messages": "Messages",
