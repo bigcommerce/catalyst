@@ -6,7 +6,9 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { FeaturedProductsCarousel } from '~/components/featured-products-carousel';
-import { ProductCardCarouselFragment } from '~/components/product-card-carousel/fragment';
+import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
+import { FeaturedProductsList } from '~/components/featured-products-list';
+import { FeaturedProductsListFragment } from '~/components/featured-products-list/fragment';
 import { Slideshow } from '~/components/slideshow';
 import { FeaturedImage } from '~/components/vibes/featured-image';
 import { LocaleType } from '~/i18n/routing';
@@ -20,21 +22,22 @@ const HomePageQuery = graphql(
         newestProducts(first: 12) {
           edges {
             node {
-              ...ProductCardCarouselFragment
+              ...FeaturedProductsCarouselFragment
             }
           }
         }
         featuredProducts(first: 12) {
           edges {
             node {
-              ...ProductCardCarouselFragment
+              ...FeaturedProductsCarouselFragment
+              ...FeaturedProductsListFragment
             }
           }
         }
       }
     }
   `,
-  [ProductCardCarouselFragment],
+  [FeaturedProductsCarouselFragment, FeaturedProductsListFragment],
 );
 
 interface Props {
@@ -63,6 +66,8 @@ export default async function Home({ params: { locale } }: Props) {
     <>
       <Slideshow />
 
+      <FeaturedProductsCarousel products={newestProducts} title={t('Carousel.newestProducts')} />
+
       <FeaturedImage
         cta={{ href: '/#', label: 'Shop now' }}
         description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
@@ -73,7 +78,12 @@ export default async function Home({ params: { locale } }: Props) {
         title="Title"
       />
 
-      <FeaturedProductsCarousel products={newestProducts} title={t('Carousel.newestProducts')} />
+      <FeaturedProductsList
+        cta={{ href: '/#', label: 'Shop now' }}
+        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        products={featuredProducts}
+        title="Featured products"
+      />
 
       <FeaturedProductsCarousel products={featuredProducts} title="Recently viewed" />
     </>
