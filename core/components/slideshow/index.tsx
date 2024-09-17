@@ -1,4 +1,4 @@
-import { Slideshow as ComponentsSlideshow } from '~/components/ui/slideshow';
+import { Slideshow as ComponentsSlideshow } from '~/components/vibes/slideshow';
 
 import SlideshowBG1 from './slideshow-bg-01.jpg';
 import SlideshowBG2 from './slideshow-bg-02.jpg';
