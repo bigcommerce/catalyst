@@ -20,6 +20,22 @@ const LoginMutation = graphql(`
   }
 `);
 
+const CustomerLoginJWTMutation = graphql(`
+  mutation CustomerLoginJWT($token: String!) {
+    loginWithCustomerLoginJwt(jwt: $token) {
+      customerAccessToken {
+        value
+      }
+      customer {
+        entityId
+        email
+        firstName
+        lastName
+      }
+    }
+  }
+`);
+
 const AssignCartToCustomerMutation = graphql(`
   mutation AssignCartToCustomer($assignCartToCustomerInput: AssignCartToCustomerInput!) {
     cart {
@@ -49,6 +65,10 @@ const UnassignCartFromCustomerMutation = graphql(`
 export const Credentials = z.object({
   email: z.string().email(),
   password: z.string().min(1),
+});
+
+export const JWTCredentials = z.object({
+  token: z.string(),
 });
 
 const config = {
@@ -137,6 +157,32 @@ const config = {
         });
 
         const result = response.data.login;
+
+        if (!result.customer) {
+          return null;
+        }
+
+        return {
+          id: result.customer.entityId.toString(),
+          name: `${result.customer.firstName} ${result.customer.lastName}`,
+          email: result.customer.email,
+        };
+      },
+    }),
+    CredentialsProvider({
+      id: 'jwt',
+      credentials: {
+        token: { label: 'Token', type: 'text' },
+      },
+      authorize: async (credentials) => {
+        const { token } = JWTCredentials.parse(credentials);
+
+        const response = await client.fetch({
+          document: CustomerLoginJWTMutation,
+          variables: { token },
+        });
+
+        const result = response.data.loginWithCustomerLoginJwt;
 
         if (!result.customer) {
           return null;

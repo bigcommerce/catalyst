@@ -19,6 +19,7 @@ import { Message } from '~/components/ui/message';
 
 import { useAccountStatusContext } from '../../../account/(tabs)/_components/account-status-provider';
 import { login } from '../_actions/login';
+import { sendMagicLink } from '../_actions/send-magic-link';
 
 const SubmitButton = () => {
   const { pending } = useFormStatus();
@@ -75,58 +76,70 @@ export const LoginForm = () => {
           <p>{t('Form.error')}</p>
         </Message>
       )}
-      <Form action={formAction} className="mb-14 flex flex-col gap-3 md:p-8 lg:p-0">
-        <Field className="relative space-y-2 pb-7" name="email">
-          <FieldLabel htmlFor="email">{t('Form.emailLabel')}</FieldLabel>
-          <FieldControl asChild>
-            <Input
-              autoComplete="email"
-              error={!isEmailValid}
-              id="email"
-              onChange={handleInputValidation}
-              onInvalid={handleInputValidation}
-              required
-              type="email"
-            />
-          </FieldControl>
-          <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-error"
-            match="valueMissing"
-          >
-            {t('Form.enterEmailMessage')}
-          </FieldMessage>
-        </Field>
-        <Field className="relative space-y-2 pb-7" name="password">
-          <FieldLabel htmlFor="password">{t('Form.passwordLabel')}</FieldLabel>
-          <FieldControl asChild>
-            <Input
-              error={!isPasswordValid}
-              id="password"
-              onChange={handleInputValidation}
-              onInvalid={handleInputValidation}
-              required
-              type="password"
-            />
-          </FieldControl>
-          <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-error"
-            match="valueMissing"
-          >
-            {t('Form.entePasswordMessage')}
-          </FieldMessage>
-        </Field>
-        <div className="flex flex-col items-start md:flex-row md:items-center md:justify-start md:gap-10">
-          <FormSubmit asChild>
-            <SubmitButton />
-          </FormSubmit>
-          <Link
-            className="my-5 inline-flex items-center justify-start font-semibold text-primary hover:text-secondary md:my-0"
-            href="/reset"
-          >
-            {t('Form.resetPassword')}
-          </Link>
-        </div>
-      </Form>
+      <div>
+        <Form action={formAction} className="mb-14 flex flex-col gap-3 md:p-8 lg:p-0">
+          <Field className="relative space-y-2 pb-7" name="email">
+            <FieldLabel htmlFor="email">{t('Form.emailLabel')}</FieldLabel>
+            <FieldControl asChild>
+              <Input
+                autoComplete="email"
+                error={!isEmailValid}
+                id="email"
+                onChange={handleInputValidation}
+                onInvalid={handleInputValidation}
+                required
+                type="email"
+              />
+            </FieldControl>
+            <FieldMessage
+              className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-error"
+              match="valueMissing"
+            >
+              {t('Form.enterEmailMessage')}
+            </FieldMessage>
+          </Field>
+          <Field className="relative space-y-2 pb-7" name="password">
+            <FieldLabel htmlFor="password">{t('Form.passwordLabel')}</FieldLabel>
+            <FieldControl asChild>
+              <Input
+                error={!isPasswordValid}
+                id="password"
+                onChange={handleInputValidation}
+                onInvalid={handleInputValidation}
+                required
+                type="password"
+              />
+            </FieldControl>
+            <FieldMessage
+              className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-error"
+              match="valueMissing"
+            >
+              {t('Form.entePasswordMessage')}
+            </FieldMessage>
+          </Field>
+          <div className="flex flex-col items-start md:flex-row md:items-center md:justify-start md:gap-10">
+            <FormSubmit asChild>
+              <SubmitButton />
+            </FormSubmit>
+            <Link
+              className="my-5 inline-flex items-center justify-start font-semibold text-primary hover:text-secondary md:my-0"
+              href="/reset"
+            >
+              {t('Form.resetPassword')}
+            </Link>
+          </div>
+        </Form>
+        <Form action={sendMagicLink}>
+          <small className="mb-8 block text-center">Or...</small>
+          <Field className="relative space-y-2 pb-7" name="email-passwordless">
+            <FieldLabel htmlFor="email-passwordless">{t('Form.emailLabel')}</FieldLabel>
+            <FieldControl asChild>
+              <Input autoComplete="email" id="email-passwordless" required type="email" />
+            </FieldControl>
+          </Field>
+          <button>Send magic link</button>
+        </Form>
+      </div>
     </>
   );
 };
