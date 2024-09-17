@@ -6,6 +6,7 @@
         }
     },
     "ChangePassword": {
+        "title": "パスワード変更",
         "heading": "パスワード変更",
         "Form": {
             "newPasswordLabel": "新しいパスワード",
@@ -21,6 +22,7 @@
         }
     },
     "Login": {
+        "title": "ログイン",
         "heading": "Log In",
         "Form": {
             "error": "Your email address or password is incorrect. Try signing in again or reset your password",
@@ -44,6 +46,7 @@
         }
     },
     "Register": {
+        "title": "Register account",
         "heading": "New account",
         "Form": {
             "submit": "アカウント作成",
@@ -58,6 +61,7 @@
         }
     },
     "Reset": {
+        "title": "暗号を再設定",
         "heading": "暗号を再設定",
         "Form": {
             "description": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
@@ -121,6 +125,7 @@
         "items": "お品物"
     },
     "Search": {
+        "title": "検索結果",
         "heading": "検索",
         "products": "商品",
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
@@ -140,56 +145,53 @@
             "successMessage": "Your account has been successfully created"
         },
         "Addresses": {
-            "defaultAddress": "削除",
-            "alternativeAddress": "代替",
-            "newAddress": "New address",
+            "title": "住所",
             "addNewAddress": "Add new address",
-            "addNewAddressSuccessMessage": "Address added to your account",
-            "editAddress": "アドレスを編集",
             "editButton": "編集",
             "deleteButton": "削除する",
-            "deleteAddress": "Address deleted from your account.",
-            "confirmDeleteAddress": "アドレスの削除",
-            "deleteModalTitle": "Are you sure you want to delete address?",
-            "recaptchaText": "Pass ReCAPTCHA check",
-            "emptyTextValidationMessage": "This field can not be empty",
-            "successMessage": "The address has been created successfully.",
-            "submit": "Add new address",
-            "cancel": "キャンセル",
-            "submitting": "In progress..."
-        },
-        "AddAddress": {
-            "success": "The address has been added.",
-            "Errors": {
-                "inputError": "Something went wrong with proccessing user input.",
-                "error": "Unknown error."
-            }
-        },
-        "DeleteAddress": {
-            "success": "Address deleted from your account.",
-            "error": "Unknown error."
-        },
-        "UpdateAddress": {
-            "success": "The address has been updated.",
-            "Errors": {
-                "inputError": "Something went wrong with proccessing user input.",
-                "notFound": "Address does not exist.",
-                "error": "Unknown error."
-            }
-        },
-        "EditAddress": {
-            "recaptchaText": "Pass ReCAPTCHA check",
-            "emptyTextValidationMessage": "This field can not be empty",
-            "successMessage": "The address has been updated successfully.",
-            "cancel": "キャンセル",
-            "deleteButton": "削除する",
-            "deleteAddress": "Address deleted from your account.",
             "confirmDeleteAddress": "アドレスの削除",
             "deleteModalTitle": "このアドレスを削除しますか?",
-            "submit": "Update address",
-            "submitting": "In progress..."
+            "Add": {
+                "title": "アドレスを追加",
+                "heading": "New address",
+                "Form": {
+                    "recaptchaText": "Pass ReCAPTCHA check",
+                    "submit": "Add new address",
+                    "submitting": "Saving address...",
+                    "cancel": "キャンセル",
+                    "success": "Address added to your account.",
+                    "Errors": {
+                        "inputError": "Something went wrong with proccessing user input.",
+                        "error": "Unknown error."
+                    }
+                }
+            },
+            "Edit": {
+                "title": "アドレスを編集",
+                "heading": "アドレスを編集",
+                "Form": {
+                    "recaptchaText": "Pass ReCAPTCHA check",
+                    "submit": "アドレスを編集",
+                    "submitting": "Updating address...",
+                    "cancel": "キャンセル",
+                    "confirmDeleteAddress": "アドレスの削除",
+                    "deleteModalTitle": "このアドレスを削除しますか?",
+                    "deleteButton": "削除する",
+                    "success": "The address has been succesfully updated.",
+                    "Errors": {
+                        "inputError": "Something went wrong with proccessing user input.",
+                        "notFound": "Address does not exist.",
+                        "error": "Unknown error."
+                    }
+                }
+            },
+            "Delete": {
+                "success": "Address deleted from your account.",
+                "error": "Unknown error."
+            }
         },
         "Settings": {
+            "title": "アカウント設定",
             "emptyTextValidatoinMessage": "This field can not be empty",
             "cancel": "キャンセル",
             "recaptchaText": "Pass ReCAPTCHA check",
@@ -207,8 +209,19 @@
                 "phone": "Enter a phone number"
             },
             "ChangePassword": {
+                "title": "パスワード変更",
                 "success": "Password has been updated successfully.",
-                "error": "Unknown error."
+                "error": "Unknown error.",
+                "currentPasswordLabel": "現在のパスワード",
+                "newPasswordLabel": "新しいパスワード",
+                "confirmPasswordLabel": "パスワード確認",
+                "cancel": "キャンセル",
+                "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
+                "newPasswordValidationMessage": "New password must be different from the current password or/and match confirm password.",
+                "notEmptyMessage": "Field should not be empty",
+                "confirmChangePassword": "Your password has been successfully updated. Please log in using your new credentials.",
+                "spinnerText": "提出中…",
+                "submitText": "パスワード変更"
             },
             "UpdateCustomer": {
                 "Errors": {
@@ -216,24 +229,10 @@
                     "notFound": "Customer does not exist"
                 }
             }
-        },
-        "ChangePassword": {
-            "currentPasswordLabel": "現在のパスワード",
-            "newPasswordLabel": "新しいパスワード",
-            "confirmPasswordLabel": "パスワード確認",
-            "cancel": "キャンセル",
-            "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
-            "newPasswordValidationMessage": "New password must be different from the current password or/and match confirm password.",
-            "notEmptyMessage": "Field should not be empty",
-            "successMessage": "Password has been updated successfully!",
-            "confirmChangePassword": "Your password has been successfully updated. Please log in using your new credentials."
-        },
-        "SubmitChangePassword": {
-            "spinnerText": "提出中…",
-            "submitText": "パスワード変更"
         }
     },
     "Blog": {
+        "title": "ブログ",
         "SharingLinks": {
             "share": "共有",
             "email": "Eメール",
@@ -241,6 +240,7 @@
         }
     },
     "Cart": {
+        "title": "ショッピングカート",
         "heading": "Your cart",
         "empty": "あなたのカートは空です",
         "emptyDetails": "Looks like you have not added anything to your cart. Go ahead & explore top categories",
@@ -311,6 +311,7 @@
         }
     },
     "Compare": {
+        "title": "価格比較",
         "heading": "Comparing {quantity, plural, =1 {1 Product} other {# Products}}",
         "nothingToCompare": "Well, there's nothing to compare!",
         "helpingText": "You somehow managed to land here, but you need to select a few products first.",
@@ -398,10 +399,12 @@
         }
     },
     "Maintenance": {
+        "title": "Maintenance",
         "message": "We are down for maintenance",
         "contactUs": "You can contact us at:"
     },
     "StoreSelector": {
+        "title": "ストアセレクタ",
         "heading": "Select a language and region"
     },
     "Error": {

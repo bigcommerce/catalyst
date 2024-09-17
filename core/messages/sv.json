@@ -6,6 +6,7 @@
         }
     },
     "ChangePassword": {
+        "title": "Ändra lösenor",
         "heading": "Ändra lösenor",
         "Form": {
             "newPasswordLabel": "Nytt lösenord",
@@ -21,6 +22,7 @@
         }
     },
     "Login": {
+        "title": "Logga in",
         "heading": "Logga in",
         "Form": {
             "error": "Din e-postadress eller ditt lösenord är felaktigt. Försök att logga in igen eller återställ ditt lösenord",
@@ -44,6 +46,7 @@
         }
     },
     "Register": {
+        "title": "Register account",
         "heading": "Nytt konto",
         "Form": {
             "submit": "Skapa konto",
@@ -58,6 +61,7 @@
         }
     },
     "Reset": {
+        "title": "Återställ lösenord",
         "heading": "Återställ lösenord",
         "Form": {
             "description": "Ange e-postadressen som är kopplad till ditt konto nedan. Vi skickar instruktioner för att återställa ditt lösenord.",
@@ -121,6 +125,7 @@
         "items": "varor"
     },
     "Search": {
+        "title": "Sökresultat",
         "heading": "Sök",
         "products": "Produkter",
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
@@ -140,56 +145,53 @@
             "successMessage": "Ditt konto har skapats"
         },
         "Addresses": {
-            "defaultAddress": "Standard",
-            "alternativeAddress": "Alternativ",
-            "newAddress": "Ny adress",
+            "title": "Adresser",
             "addNewAddress": "Lägg till ny adress",
-            "addNewAddressSuccessMessage": "Adress har lagts till på ditt konto",
-            "editAddress": "Redigera adress",
             "editButton": "Redigera",
             "deleteButton": "Radera",
-            "deleteAddress": "Adressen har raderats från ditt konto.",
-            "confirmDeleteAddress": "Radera adress",
-            "deleteModalTitle": "Är du säker på att du vill radera adressen?",
-            "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
-            "emptyTextValidationMessage": "Det här fältet får inte vara tomt",
-            "successMessage": "Adressen har skapats.",
-            "submit": "Lägg till ny adress",
-            "cancel": "Annullera",
-            "submitting": "Pågår ..."
-        },
-        "AddAddress": {
-            "success": "Adressen har lagts till.",
-            "Errors": {
-                "inputError": "Något gick fel när användarens inmatning bearbetades.",
-                "error": "Okänt fel."
-            }
-        },
-        "DeleteAddress": {
-            "success": "Adressen har raderats från ditt konto.",
-            "error": "Okänt fel."
-        },
-        "UpdateAddress": {
-            "success": "Adressen har uppdaterats.",
-            "Errors": {
-                "inputError": "Något gick fel när användarens inmatning bearbetades.",
-                "notFound": "Adressen finns inte.",
-                "error": "Okänt fel."
-            }
-        },
-        "EditAddress": {
-            "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
-            "emptyTextValidationMessage": "Det här fältet får inte vara tomt",
-            "successMessage": "Adressen har uppdaterats.",
-            "cancel": "Annullera",
-            "deleteButton": "Radera",
-            "deleteAddress": "Adressen har raderats från ditt konto.",
             "confirmDeleteAddress": "Radera adress",
             "deleteModalTitle": "Är du säker på att du vill ta bort den här adressen?",
-            "submit": "Uppdatera adress",
-            "submitting": "Pågår ..."
+            "Add": {
+                "title": "Lägg till adress",
+                "heading": "Ny adress",
+                "Form": {
+                    "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
+                    "submit": "Lägg till ny adress",
+                    "submitting": "Saving address...",
+                    "cancel": "Annullera",
+                    "success": "Address added to your account.",
+                    "Errors": {
+                        "inputError": "Något gick fel när användarens inmatning bearbetades.",
+                        "error": "Okänt fel."
+                    }
+                }
+            },
+            "Edit": {
+                "title": "Redigera adress",
+                "heading": "Redigera adress",
+                "Form": {
+                    "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
+                    "submit": "Redigera adress",
+                    "submitting": "Updating address...",
+                    "cancel": "Annullera",
+                    "confirmDeleteAddress": "Radera adress",
+                    "deleteModalTitle": "Är du säker på att du vill ta bort den här adressen?",
+                    "deleteButton": "Radera",
+                    "success": "The address has been succesfully updated.",
+                    "Errors": {
+                        "inputError": "Något gick fel när användarens inmatning bearbetades.",
+                        "notFound": "Adressen finns inte.",
+                        "error": "Okänt fel."
+                    }
+                }
+            },
+            "Delete": {
+                "success": "Adressen har raderats från ditt konto.",
+                "error": "Okänt fel."
+            }
         },
         "Settings": {
+            "title": "Kontoinställningar",
             "emptyTextValidatoinMessage": "Det här fältet får inte vara tomt",
             "cancel": "Annullera",
             "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
@@ -207,8 +209,19 @@
                 "phone": "Ange ett telefonnummer"
             },
             "ChangePassword": {
+                "title": "Ändra lösenor",
                 "success": "Ditt lösenord har uppdaterats.",
-                "error": "Okänt fel."
+                "error": "Okänt fel.",
+                "currentPasswordLabel": "Nuvarande lösenord",
+                "newPasswordLabel": "Nytt lösenord",
+                "confirmPasswordLabel": "Bekräfta lösenord",
+                "cancel": "Annullera",
+                "confirmPasswordValidationMessage": "Angivna lösenord stämmer inte överens. Försök igen.",
+                "newPasswordValidationMessage": "Det nya lösenordet måste skilja sig från det aktuella lösenordet och/eller matcha det bekräftade lösenordet.",
+                "notEmptyMessage": "Fältet får inte vara tomt",
+                "confirmChangePassword": "Ditt lösenord har uppdaterats. Logga in med dina nya inloggningsuppgifter.",
+                "spinnerText": "Skickar ...",
+                "submitText": "Ändra lösenor"
             },
             "UpdateCustomer": {
                 "Errors": {
@@ -216,24 +229,10 @@
                     "notFound": "Kunden finns inte"
                 }
             }
-        },
-        "ChangePassword": {
-            "currentPasswordLabel": "Nuvarande lösenord",
-            "newPasswordLabel": "Nytt lösenord",
-            "confirmPasswordLabel": "Bekräfta lösenord",
-            "cancel": "Annullera",
-            "confirmPasswordValidationMessage": "Angivna lösenord stämmer inte överens. Försök igen.",
-            "newPasswordValidationMessage": "Det nya lösenordet måste skilja sig från det aktuella lösenordet och/eller matcha det bekräftade lösenordet.",
-            "notEmptyMessage": "Fältet får inte vara tomt",
-            "successMessage": "Lösenordet har uppdaterats!",
-            "confirmChangePassword": "Ditt lösenord har uppdaterats. Logga in med dina nya inloggningsuppgifter."
-        },
-        "SubmitChangePassword": {
-            "spinnerText": "Skickar ...",
-            "submitText": "Ändra lösenor"
         }
     },
     "Blog": {
+        "title": "Blogg",
         "SharingLinks": {
             "share": "Dela med sig",
             "email": "E-post",
@@ -241,6 +240,7 @@
         }
     },
     "Cart": {
+        "title": "Kundvagn",
         "heading": "Din vagn",
         "empty": "Din kundvagn är tom",
         "emptyDetails": "Det verkar som att du inte har lagt till något i din kundvagn. Fortsätt och utforska toppkategorierna",
@@ -311,6 +311,7 @@
         }
     },
     "Compare": {
+        "title": "Jämför",
         "heading": "Jämför {quantity, plural, =1 {1 Product} other {# Products}}",
         "nothingToCompare": "Det finns inget att jämföra!",
         "helpingText": "Du lyckades på något sätt landa här, men du måste välja några produkter först.",
@@ -398,10 +399,12 @@
         }
     },
     "Maintenance": {
+        "title": "Maintenance",
         "message": "Vi är nere för underhåll",
         "contactUs": "Kontakta oss på:"
     },
     "StoreSelector": {
+        "title": "Butiksväljare",
         "heading": "Välj språk och region"
     },
     "Error": {
