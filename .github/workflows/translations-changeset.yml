@@ -4,12 +4,13 @@ on:
   pull_request:
     types:
       - opened
+      - reopened
     branches:
       - main
 
 jobs:
   create-translations-patch:
-    if: github.actor == 'bc-svc-local'
+    if: github.actor == 'jorgemoya'
     runs-on: ubuntu-latest
 
     steps:
@@ -18,6 +19,10 @@ jobs:
         with:
           fetch-depth: 2
 
+      - name: Generate random word
+        id: random-word
+        run: echo "word=$(shuf -n1 /usr/share/dict/words)" >> $GITHUB_ENV
+
       - name: Create a translations changeset
         run: |
           mkdir -p .changeset
@@ -25,7 +30,7 @@ jobs:
           \"@bigcommerce/catalyst-core\": patch
           ---
 
-          Update translations." > .changeset/translations-patch.md
+          Update translations." > .changeset/translations-patch-${{ env.word }}.md
 
       - name: Commit changeset
         run: |
