@@ -1,6 +1,5 @@
-import { ShoppingCart, User } from 'lucide-react';
 import { getLocale, getTranslations } from 'next-intl/server';
-import { ReactNode, Suspense } from 'react';
+import { ReactNode } from 'react';
 
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
 import { getSessionCustomerId } from '~/auth';
@@ -10,15 +9,9 @@ import { revalidate } from '~/client/revalidate-target';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 import { localeLanguageRegionMap } from '~/i18n/routing';
 
-import { Link } from '../link';
-import { Button } from '../ui/button';
-import { Dropdown } from '../ui/dropdown';
-import { Header as ComponentsHeader } from '../ui/header';
+import { Header as ComponentsHeader } from '../vibes/header';
 
-import { logout } from './_actions/logout';
-import { CartLink } from './cart';
 import { HeaderFragment } from './fragment';
-import { QuickSearch } from './quick-search';
 
 interface Props {
   cart: ReactNode;
@@ -57,51 +50,26 @@ export const Header = async ({ cart }: Props) => {
 
   return (
     <ComponentsHeader
-      account={
-        customerId ? (
-          <Dropdown
-            items={[
-              { href: '/account', label: t('Account.myAccount') },
-              { href: '/account/addresses', label: t('Account.addresses') },
-              { href: '/account/settings', label: t('Account.accountSettings') },
-              { action: logout, name: t('Account.logout') },
-            ]}
-            trigger={
-              <Button
-                aria-label={t('Account.account')}
-                className="p-3 text-black hover:bg-transparent hover:text-primary"
-                variant="subtle"
-              >
-                <User>
-                  <title>{t('Account.account')}</title>
-                </User>
-              </Button>
-            }
-          />
-        ) : (
-          <Link aria-label={t('Account.login')} className="block p-3" href="/login">
-            <User />
-          </Link>
-        )
-      }
+      accountHref="/account"
       activeLocale={locale}
-      cart={
-        <p role="status">
-          <Suspense
-            fallback={
-              <CartLink>
-                <ShoppingCart aria-label="cart" />
-              </CartLink>
-            }
-          >
-            {cart}
-          </Suspense>
-        </p>
-      }
+      cartHref="/cart"
+      // cart={
+      //   <p role="status">
+      //     <Suspense
+      //       fallback={
+      //         <CartLink>
+      //           <ShoppingCart aria-label="cart" />
+      //         </CartLink>
+      //       }
+      //     >
+      //       {cart}
+      //     </Suspense>
+      //   </p>
+      // }
       links={links}
       locales={localeLanguageRegionMap}
       logo={data.settings ? logoTransformer(data.settings) : undefined}
-      search={<QuickSearch logo={data.settings ? logoTransformer(data.settings) : ''} />}
+      // search={<QuickSearch logo={data.settings ? logoTransformer(data.settings) : ''} />}
     />
   );
 };
