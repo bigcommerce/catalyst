@@ -23,7 +23,7 @@ jobs:
         id: generate-sha
         run: |
           short_sha=$(echo "${GITHUB_SHA}" | cut -c1-8)
-          echo "SHORT_SHA=$short_sha" >> $GITHUB_ENV
+          echo "SHORT_SHA=$short_sha" >> $GITHUB_OUTPUT
 
       - name: Create a translations changeset
         env:
