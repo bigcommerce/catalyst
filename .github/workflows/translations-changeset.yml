@@ -21,7 +21,10 @@ jobs:
 
       - name: Generate random word
         id: random-word
-        run: echo "RANDOM_WORD=$(shuf -n1 /usr/share/dict/words)" >> $GITHUB_ENV
+        run: |
+          random_word=$(shuf -n1 /usr/share/dict/words)
+          echo "RANDOM_WORD=$random_word" >> $GITHUB_ENV
+          echo "::set-output name=random_word::$random_word"
 
       - name: Create a translations changeset
         run: |
@@ -30,13 +33,13 @@ jobs:
           \"@bigcommerce/catalyst-core\": patch
           ---
 
-          Update translations." > .changeset/translations-patch-${{ env.RANDOM_WORD }}.md
+          Update translations." > .changeset/translations-patch-${{ steps.random-word.outputs.random_word }}.md
 
       - name: Commit changeset
         run: |
           git config --global user.name 'bc-svc-local'
           git config --global user.email 'bc-svc-local@users.noreply.github.com'
-          git add .changeset/translations-patch-${{ env.RANDOM_WORD }}.md
+          git add .changeset/translations-patch-${{ steps.random-word.outputs.random_word }}.md
           git commit -m "chore(core): create translations patch"
       
       - name: Push changeset
