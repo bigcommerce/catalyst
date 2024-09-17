@@ -6,10 +6,12 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { FeaturedProductsCarousel } from '~/components/featured-products-carousel';
-import { ProductCardCarousel } from '~/components/product-card-carousel';
 import { ProductCardCarouselFragment } from '~/components/product-card-carousel/fragment';
 import { Slideshow } from '~/components/slideshow';
+import { FeaturedImage } from '~/components/vibes/featured-image';
 import { LocaleType } from '~/i18n/routing';
+
+import image from './_images/featured1.jpg';
 
 const HomePageQuery = graphql(
   `
@@ -60,6 +62,16 @@ export default async function Home({ params: { locale } }: Props) {
   return (
     <>
       <Slideshow />
+
+      <FeaturedImage
+        cta={{ href: '/#', label: 'Shop now' }}
+        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
+        image={{
+          src: image,
+          altText: 'An assortment of brandless products against a blank background',
+        }}
+        title="Title"
+      />
 
       <FeaturedProductsCarousel products={newestProducts} title={t('Carousel.newestProducts')} />
 
