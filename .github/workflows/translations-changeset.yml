@@ -4,13 +4,12 @@ on:
   pull_request:
     types:
       - opened
-      - reopened
     branches:
       - main
 
 jobs:
   create-translations-patch:
-    if: github.actor == 'jorgemoya'
+    if: github.actor == 'bc-svc-local'
     runs-on: ubuntu-latest
 
     steps:
