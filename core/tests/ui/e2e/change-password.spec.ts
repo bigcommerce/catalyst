@@ -27,7 +27,6 @@ test('Change password from Account Settings and log in', async ({ page, account 
 
   await page.goto('/account/settings/');
   await page.getByRole('link', { name: 'Change password' }).click();
-  // await page.reload();
   await page.getByLabel('Current passwordRequired', { exact: true }).fill(customer.password);
   await page.getByLabel('New passwordRequired', { exact: true }).fill(`${customer.password}1`);
   await page.getByLabel('Confirm passwordRequired', { exact: true }).fill(`${customer.password}1`);
