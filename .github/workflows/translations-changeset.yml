@@ -22,11 +22,12 @@ jobs:
       - name: Use commit SHA for filename
         id: generate-sha
         run: |
-          short_sha="${{ github.sha::0:8 }}"
+          short_sha=$(echo "${GITHUB_SHA}" | cut -c1-8)
           echo "SHORT_SHA=$short_sha" >> $GITHUB_ENV
-          echo "::set-output name=short_sha::$short_sha"
 
       - name: Create a translations changeset
+        env:
+          SHORT_SHA: ${{ steps.generate-sha.outputs.SHORT_SHA }}
         run: |
           mkdir -p .changeset
           echo "---
@@ -36,6 +37,8 @@ jobs:
           Update translations." > .changeset/translations-patch-${{ steps.generate-sha.outputs.short_sha }}.md
 
       - name: Commit changeset
+        env:
+          SHORT_SHA: ${{ steps.generate-sha.outputs.SHORT_SHA }}
         run: |
           git config --global user.name 'bc-svc-local'
           git config --global user.email 'bc-svc-local@users.noreply.github.com'
