@@ -5,6 +5,7 @@ import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { FeaturedProductsCarousel } from '~/components/featured-products-carousel';
 import { ProductCardCarousel } from '~/components/product-card-carousel';
 import { ProductCardCarouselFragment } from '~/components/product-card-carousel/fragment';
 import { Slideshow } from '~/components/slideshow';
@@ -60,20 +61,9 @@ export default async function Home({ params: { locale } }: Props) {
     <>
       <Slideshow />
 
-      <div className="my-10">
-        <ProductCardCarousel
-          products={featuredProducts}
-          showCart={false}
-          showCompare={false}
-          title={t('Carousel.featuredProducts')}
-        />
-        <ProductCardCarousel
-          products={newestProducts}
-          showCart={false}
-          showCompare={false}
-          title={t('Carousel.newestProducts')}
-        />
-      </div>
+      <FeaturedProductsCarousel products={newestProducts} title={t('Carousel.newestProducts')} />
+
+      <FeaturedProductsCarousel products={featuredProducts} title="Recently viewed" />
     </>
   );
 }
