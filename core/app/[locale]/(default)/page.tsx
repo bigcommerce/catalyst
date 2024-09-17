@@ -20,17 +20,16 @@ const HomePageQuery = graphql(
   `
     query HomePageQuery {
       site {
-        newestProducts(first: 12) {
+        newestProducts(first: 8) {
           edges {
             node {
               ...FeaturedProductsCarouselFragment
             }
           }
         }
-        featuredProducts(first: 12) {
+        featuredProducts(first: 6) {
           edges {
             node {
-              ...FeaturedProductsCarouselFragment
               ...FeaturedProductsListFragment
             }
           }
@@ -85,8 +84,6 @@ export default async function Home({ params: { locale } }: Props) {
         products={featuredProducts}
         title="Featured products"
       />
-
-      <FeaturedProductsCarousel products={featuredProducts} title="Recently viewed" />
 
       <Subscribe
         description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
