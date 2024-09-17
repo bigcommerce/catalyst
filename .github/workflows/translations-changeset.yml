@@ -22,7 +22,7 @@ jobs:
       - name: Generate random word
         id: random-word
         run: |
-          random_word=$(shuf -n1 /usr/share/dict/words)
+          random_word=$(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 8 | head -n 1)
           echo "RANDOM_WORD=$random_word" >> $GITHUB_ENV
           echo "::set-output name=random_word::$random_word"
 
