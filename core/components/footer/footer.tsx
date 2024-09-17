@@ -14,7 +14,7 @@ import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { Footer as ComponentsFooter } from '~/components/ui/footer';
+import { Footer as ComponentsFooter } from '~/components/vibes/footer';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 
 import { FooterFragment } from './fragment';
