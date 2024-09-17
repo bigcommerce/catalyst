@@ -11,6 +11,7 @@ import { FeaturedProductsList } from '~/components/featured-products-list';
 import { FeaturedProductsListFragment } from '~/components/featured-products-list/fragment';
 import { Slideshow } from '~/components/slideshow';
 import { FeaturedImage } from '~/components/vibes/featured-image';
+import { Subscribe } from '~/components/vibes/subscribe';
 import { LocaleType } from '~/i18n/routing';
 
 import image from './_images/featured1.jpg';
@@ -86,6 +87,11 @@ export default async function Home({ params: { locale } }: Props) {
       />
 
       <FeaturedProductsCarousel products={featuredProducts} title="Recently viewed" />
+
+      <Subscribe
+        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
+        title="Sign up for our newsletter"
+      />
     </>
   );
 }
