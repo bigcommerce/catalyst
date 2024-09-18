@@ -13,7 +13,7 @@ import { forwardRef, Ref, useEffect, useRef, useState } from 'react';
 import ReactHeadroom from 'react-headroom';
 
 import { Link } from '~/components/link';
-import { usePathname } from '~/i18n/routing';
+import { LocaleType, usePathname, useRouter } from '~/i18n/routing';
 
 import { HamburgerMenuButton } from './hamburguer-menu-button';
 
@@ -68,10 +68,11 @@ export const Header = forwardRef(function Header(
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(0);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState<string | undefined>(activeLocale);
   const [headerHeight, setHeaderHeight] = useState<number>(0);
   const menuTriggerRef = useRef<HTMLAnchorElement | null>(null);
   const firstCategoryLinkRef = useRef<HTMLAnchorElement>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     setNavOpen(false);
@@ -283,7 +284,7 @@ export const Header = forwardRef(function Header(
                   searchOpen ? 'text-contrast-300' : 'text-foreground',
                 )}
               >
-                {selectedLanguage}
+                {activeLocale}
                 <ChevronDown
                   className={clsx('w-4', searchOpen && 'stroke-contrast-300')}
                   strokeWidth={1.5}
@@ -296,11 +297,15 @@ export const Header = forwardRef(function Header(
                       'cursor-default rounded-xl px-3 py-2 text-sm font-medium uppercase text-contrast-400 outline-none transition-colors',
                       'hover:text-foreground focus:bg-contrast-100 @4xl:text-base',
                       {
-                        'text-foreground': selectedLanguage === language,
+                        'text-foreground': activeLocale === language,
                       },
                     )}
                     key={id}
-                    onSelect={() => setSelectedLanguage(language)}
+                    onSelect={() => {
+                      // setSelectedLanguage(language);
+                      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                      router.replace('/', { locale: id as LocaleType });
+                    }}
                   >
                     {language}
                   </DropdownMenuItem>
