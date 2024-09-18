@@ -32,7 +32,6 @@ export const FeaturedProductsList = ({
       : undefined,
     price: pricesTransformer(product.prices, format),
     subtitle: product.brand?.name ?? undefined,
-    badge: 'new',
   }));
 
   return <FeaturedProductsListComponent products={formattedProducts} title={title} />;
