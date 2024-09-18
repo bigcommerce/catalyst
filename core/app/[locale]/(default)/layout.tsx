@@ -1,14 +1,11 @@
+import { useTranslations } from 'next-intl';
 import { unstable_setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren, Suspense } from 'react';
 
 import { Footer } from '~/components/footer/footer';
 import { Header, HeaderSkeleton } from '~/components/header';
 import { Cart } from '~/components/header/cart';
-<<<<<<< HEAD
-=======
-import { HeaderFragment } from '~/components/header/fragment';
-import { Subscribe } from '~/components/subscribe';
->>>>>>> c00a5870 (fix: move subscribe to layout)
+import { Subscribe } from '~/components/vibes/subscribe';
 import { LocaleType } from '~/i18n/routing';
 
 interface Props extends PropsWithChildren {
@@ -18,6 +15,8 @@ interface Props extends PropsWithChildren {
 export default function DefaultLayout({ children, params: { locale } }: Props) {
   unstable_setRequestLocale(locale);
 
+  const t = useTranslations('Home');
+
   return (
     <>
       <Suspense fallback={<HeaderSkeleton />}>
@@ -25,6 +24,11 @@ export default function DefaultLayout({ children, params: { locale } }: Props) {
       </Suspense>
 
       <main>{children}</main>
+
+      <Subscribe
+        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
+        title={t('Subscribe.title')}
+      />
 
       <Suspense>
         <Footer />
