@@ -54,24 +54,10 @@ export const Header = async ({ cart }: Props) => {
       accountHref="/account"
       activeLocale={locale}
       cartHref="/cart"
-      // cart={
-      //   <p role="status">
-      //     <Suspense
-      //       fallback={
-      //         <CartLink>
-      //           <ShoppingCart aria-label="cart" />
-      //         </CartLink>
-      //       }
-      //     >
-      //       {cart}
-      //     </Suspense>
-      //   </p>
-      // }
       links={links}
       locales={localeLanguageRegionMap}
       logo={data.settings ? logoTransformer(data.settings) : undefined}
       searchAction={search}
-      // search={<QuickSearch logo={data.settings ? logoTransformer(data.settings) : ''} />}
     />
   );
 };
