@@ -12,9 +12,6 @@
       "altText": "An assortment of brandless products against a blank background",
       "cta": "Shop now"
     },
-    "Subscribe": {
-      "title": "Sign up for our newsletter"
-    },
     "Slides": {
       "Slide1": {
         "title": "25% Off Sale",
@@ -506,6 +503,9 @@
         "phone": "Enter a phone number",
         "postalCode": "Enter a zip / postcode"
       }
+    },
+    "Subscribe": {
+      "title": "Sign up for our newsletter"
     }
   }
 }
