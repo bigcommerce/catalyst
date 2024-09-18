@@ -11,6 +11,7 @@ import { localeLanguageRegionMap } from '~/i18n/routing';
 
 import { Header as ComponentsHeader } from '../vibes/header';
 
+import { search } from './_actions/search';
 import { HeaderFragment } from './fragment';
 
 interface Props {
@@ -69,6 +70,7 @@ export const Header = async ({ cart }: Props) => {
       links={links}
       locales={localeLanguageRegionMap}
       logo={data.settings ? logoTransformer(data.settings) : undefined}
+      searchAction={search}
       // search={<QuickSearch logo={data.settings ? logoTransformer(data.settings) : ''} />}
     />
   );
