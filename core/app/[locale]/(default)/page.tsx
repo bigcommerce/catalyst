@@ -66,28 +66,28 @@ export default async function Home({ params: { locale } }: Props) {
     <>
       <Slideshow />
 
-      <FeaturedProductsCarousel products={newestProducts} title={t('Carousel.newestProducts')} />
+      <FeaturedProductsCarousel products={newestProducts} title={t('Carousel.title')} />
 
       <FeaturedImage
-        cta={{ href: '/#', label: 'Shop now' }}
+        cta={{ href: '/#', label: t('FeaturedImage.cta') }}
         description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
         image={{
           src: image,
-          altText: 'An assortment of brandless products against a blank background',
+          altText: t('FeaturedImage.altText'),
         }}
-        title="Title"
+        title={t('FeaturedImage.title')}
       />
 
       <FeaturedProductsList
-        cta={{ href: '/#', label: 'Shop now' }}
+        cta={{ href: '/#', label: t('List.cta') }}
         description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         products={featuredProducts}
-        title="Featured products"
+        title={t('List.title')}
       />
 
       <Subscribe
         description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
-        title="Sign up for our newsletter"
+        title={t('Subscribe.title')}
       />
     </>
   );
