@@ -10,10 +10,7 @@ const config = {
   theme: {
     extend: {
       colors: {
-<<<<<<< HEAD
         secondary: '#3071EF', // TODO: REMOVE WHEN MERGE
-=======
->>>>>>> 71e9a225 (chore: setup tailwind config and layout fonts)
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           highlight: 'color-mix(in oklab, hsl(var(--primary)), white 75%)',
@@ -33,10 +30,7 @@ const config = {
           DEFAULT: 'hsl(var(--error))',
           highlight: 'color-mix(in oklab, hsl(var(--error)), white 75%)',
           shadow: 'color-mix(in oklab, hsl(var(--error)), black 75%)',
-<<<<<<< HEAD
           secondary: '#C62828', // TODO: REMOVE WHEN MERGE
-=======
->>>>>>> 71e9a225 (chore: setup tailwind config and layout fonts)
         },
         warning: {
           DEFAULT: 'hsl(var(--warning))',
