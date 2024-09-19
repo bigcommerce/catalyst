@@ -47,7 +47,7 @@ test('Edit address', async ({ page, account }) => {
   await page.getByRole('button', { name: 'Edit address' }).click();
   await page.waitForURL('/account/addresses/');
 
-  await expect(page.getByText('The address has been succesfully updated.')).toBeVisible();
+  await expect(page.getByText('The address has been successfully updated.')).toBeVisible();
 
   await customer.logout();
 });

@@ -177,7 +177,7 @@
                     "confirmDeleteAddress": "Radera adress",
                     "deleteModalTitle": "Är du säker på att du vill ta bort den här adressen?",
                     "deleteButton": "Radera",
-                    "success": "The address has been succesfully updated.",
+                    "success": "The address has been successfully updated.",
                     "Errors": {
                         "inputError": "Något gick fel när användarens inmatning bearbetades.",
                         "notFound": "Adressen finns inte.",

@@ -177,7 +177,7 @@
                     "confirmDeleteAddress": "Slett adresse",
                     "deleteModalTitle": "Er du sikker på at du vil slette denne adressen?",
                     "deleteButton": "Slett",
-                    "success": "The address has been succesfully updated.",
+                    "success": "The address has been successfully updated.",
                     "Errors": {
                         "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
                         "notFound": "Adressen finnes ikke.",
