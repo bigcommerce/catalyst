@@ -177,7 +177,7 @@
                     "confirmDeleteAddress": "Cancella indirizzo",
                     "deleteModalTitle": "Vuoi davvero eliminare questo indirizzo?",
                     "deleteButton": "Elimina",
-                    "success": "The address has been succesfully updated.",
+                    "success": "The address has been successfully updated.",
                     "Errors": {
                         "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
                         "notFound": "L'indirizzo non esiste.",

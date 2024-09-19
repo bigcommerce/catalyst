@@ -177,7 +177,7 @@
                     "confirmDeleteAddress": "Eliminar dirección",
                     "deleteModalTitle": "¿Está seguro de que desea eliminar esta dirección?",
                     "deleteButton": "Eliminar",
-                    "success": "The address has been succesfully updated.",
+                    "success": "The address has been successfully updated.",
                     "Errors": {
                         "inputError": "Algo salió mal al procesar los datos del usuario.",
                         "notFound": "La dirección no existe.",
