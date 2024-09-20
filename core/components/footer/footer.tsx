@@ -9,7 +9,11 @@ import {
 } from '@icons-pack/react-simple-icons';
 import { JSX } from 'react';
 
-import { FragmentOf } from '~/client/graphql';
+import { LayoutQuery } from '~/app/[locale]/(default)/query';
+import { getSessionCustomerId } from '~/auth';
+import { client } from '~/client';
+import { readFragment } from '~/client/graphql';
+import { revalidate } from '~/client/revalidate-target';
 import { Footer as ComponentsFooter } from '~/components/ui/footer';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 
@@ -31,11 +35,16 @@ const socialIcons: Record<string, { icon: JSX.Element }> = {
   YouTube: { icon: <SiYoutube title="YouTube" /> },
 };
 
-interface Props {
-  data: FragmentOf<typeof FooterFragment>;
-}
+export const Footer = async () => {
+  const customerId = await getSessionCustomerId();
 
-export const Footer = ({ data }: Props) => {
+  const { data: response } = await client.fetch({
+    document: LayoutQuery,
+    fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
+  });
+
+  const data = readFragment(FooterFragment, response).site;
+
   const sections = [
     {
       title: 'Categories',
