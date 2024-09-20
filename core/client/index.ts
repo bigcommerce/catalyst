@@ -46,6 +46,7 @@ export const client = createClient({
         return {
           headers: {
             'X-Forwarded-For': ipAddress,
+            'True-Client-IP': ipAddress,
           },
         };
       }
