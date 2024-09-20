@@ -60,13 +60,14 @@ const BigCommerceChannelsV3ResponseSchema = BigCommerceV3ApiResponseSchema(
 export type BigCommerceChannelsV3Response = z.infer<typeof BigCommerceChannelsV3ResponseSchema>;
 
 export class Https {
-  DEVICE_OAUTH_CLIENT_ID = 'acse0vvawm9r1n0evag4b8e1ea1fo90';
-
   bigCommerceApiUrl: string;
   bigCommerceAuthUrl: string;
   sampleDataApiUrl: string;
   storeHash: string;
   accessToken: string;
+
+  private DEVICE_OAUTH_CLIENT_ID = 'acse0vvawm9r1n0evag4b8e1ea1fo90';
+  private MAX_EPOC_EXPIRES_AT = 2147483647;
 
   constructor({ bigCommerceApiUrl, storeHash, accessToken }: BigCommerceRestApiConfig);
   constructor({ sampleDataApiUrl, storeHash, accessToken }: SampleDataApiConfig);
@@ -115,7 +116,7 @@ export class Https {
           'store_cart',
           'store_sites',
           'store_channel_settings',
-          'store_storefront_api_customer_impersonation',
+          'store_storefront_api',
         ].join(' '),
         client_id: this.DEVICE_OAUTH_CLIENT_ID,
       }),
@@ -228,29 +229,27 @@ export class Https {
     }
   }
 
-  async customerImpersonationToken() {
-    const res = await this.api('/v3/storefront/api-token-customer-impersonation', {
+  async storefrontToken() {
+    const res = await this.api('/v3/storefront/api-token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ expires_at: 2147483647, channel_ids: [] }),
+      body: JSON.stringify({ expires_at: this.MAX_EPOC_EXPIRES_AT, channel_ids: [] }),
     });
 
     if (!res.ok) {
       console.error(
-        chalk.red(
-          `\nPOST /v3/storefront/api-token-customer-impersonation failed: ${res.status} ${res.statusText}\n`,
-        ),
+        chalk.red(`\nPOST /v3/storefront/api-token failed: ${res.status} ${res.statusText}\n`),
       );
       process.exit(1);
     }
 
-    const BigCommerceCustomerImpersonationTokenSchema = z.object({
+    const BigCommerceStorefrontTokenSchema = z.object({
       data: z.object({
         token: z.string(),
       }),
     });
 
-    return parse(await res.json(), BigCommerceCustomerImpersonationTokenSchema);
+    return parse(await res.json(), BigCommerceStorefrontTokenSchema);
   }
 
   sampleDataApi(path: string, opts: RequestInit = {}) {
@@ -278,7 +277,7 @@ export class Https {
 
   async createChannel(channelName: string) {
     const res = await this.sampleDataApi('/v3/channels/catalyst', {
-      body: JSON.stringify({ name: channelName }),
+      body: JSON.stringify({ name: channelName, tokenType: 'normal' }),
     });
 
     if (!res.ok) {

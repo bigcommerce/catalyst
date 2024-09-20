@@ -66,7 +66,7 @@ If you want to support checkout for signed-in customers, add the Customers Login
 
 As of this writing, Catalyst requires the Information & Settings read-only scopes to estimate shipping costs using the Management API.
 
-### BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN
+### BIGCOMMERCE_STOREFRONT_TOKEN
 
 > [!CAUTION]
 > This token is a **sensitive secret**. Do not expose outside environment variables.
@@ -80,11 +80,11 @@ As of this writing, Catalyst requires the Information & Settings read-only scope
 This bearer token authorizes access to the [GraphQL Storefront API](https://developer.bigcommerce.com/docs/storefront/graphql) and supports operations that request information specific to individual customers, such as getting wishlist items.
 
 **Without the CLI**
-Create a store-level or app-level API account with the following token creation scope. Then use the API account access token to [Create a customer impersonation token](https://developer.bigcommerce.com/docs/rest-authentication/tokens/customer-impersonation-token#create-a-token).
+Create a store-level or app-level API account with the following token creation scope. Then use the API account access token to [Create a storefront token](https://developer.bigcommerce.com/docs/rest-authentication/tokens#create-a-token).
 
-| UI Name                                      | Permission | Parameter                                     |
-| :------------------------------------------- | :--------- | :-------------------------------------------- |
-| Storefront API Customer Impersonation Tokens | modify     | `store_storefront_api_customer_impersonation` |
+| UI Name               | Permission | Parameter              |
+|:----------------------|:-----------|:-----------------------|
+| Storefront API tokens | modify     | `store_storefront_api` |
 
 ### BIGCOMMERCE_CHANNEL_ID
 

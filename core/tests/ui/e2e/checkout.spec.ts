@@ -79,34 +79,44 @@ test.describe('desktop', () => {
     ).toBeVisible();
   });
 
-  test('Complete checkout as a logged in shopper', async ({ page, isMobile, account }) => {
-    const customer = await account.create();
+  test.skip(
+    'Complete checkout as a logged in shopper',
+    {
+      annotation: {
+        type: 'regression',
+        description:
+          'Transferring logged in customer information is not available until session-sync is ready. We are accepting this regression for now.',
+      },
+    },
+    async ({ page, isMobile, account }) => {
+      const customer = await account.create();
 
-    await customer.login();
+      await customer.login();
 
-    await page.goto('/laundry-detergent/');
-    await expect(
-      page.getByRole('heading', { level: 1, name: '[Sample] Laundry Detergent' }),
-    ).toBeVisible();
-    await page.getByRole('button', { name: 'Add to Cart' }).first().click();
-    await page.getByRole('link', { name: 'Cart Items 1' }).click();
-    await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
-    await page.getByRole('button', { name: 'Proceed to checkout' }).click();
+      await page.goto('/laundry-detergent/');
+      await expect(
+        page.getByRole('heading', { level: 1, name: '[Sample] Laundry Detergent' }),
+      ).toBeVisible();
+      await page.getByRole('button', { name: 'Add to Cart' }).first().click();
+      await page.getByRole('link', { name: 'Cart Items 1' }).click();
+      await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
+      await page.getByRole('button', { name: 'Proceed to checkout' }).click();
 
-    await waitForShippingForm(page, isMobile);
-    await enterShopperDetails(page);
+      await waitForShippingForm(page, isMobile);
+      await enterShopperDetails(page);
 
-    await page.getByRole('button', { name: 'Continue' }).click();
-    await page.getByRole('heading', { name: 'Payment', exact: true }).waitFor();
+      await page.getByRole('button', { name: 'Continue' }).click();
+      await page.getByRole('heading', { name: 'Payment', exact: true }).waitFor();
 
-    await enterCreditCardDetails(page);
+      await enterCreditCardDetails(page);
 
-    await page.getByRole('button', { name: 'Place Order' }).click();
-    await page.waitForLoadState('networkidle');
-    await expect(
-      page.getByRole('heading', { name: `Thank you ${firstName}!`, level: 1 }),
-    ).toBeVisible();
-  });
+      await page.getByRole('button', { name: 'Place Order' }).click();
+      await page.waitForLoadState('networkidle');
+      await expect(
+        page.getByRole('heading', { name: `Thank you ${firstName}!`, level: 1 }),
+      ).toBeVisible();
+    },
+  );
 });
 
 test.describe('mobile', () => {

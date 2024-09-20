@@ -3,7 +3,7 @@
 import { revalidateTag } from 'next/cache';
 import { z } from 'zod';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
@@ -26,7 +26,7 @@ const UnapplyCheckoutCouponMutation = graphql(`
 `);
 
 export const removeCouponCode = async (formData: FormData) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   try {
     const parsedData = RemoveCouponCodeSchema.parse({
@@ -44,7 +44,7 @@ export const removeCouponCode = async (formData: FormData) => {
           },
         },
       },
-      customerId,
+      customerAccessToken,
       fetchOptions: { cache: 'no-store' },
     });
 

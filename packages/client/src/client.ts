@@ -12,7 +12,7 @@ export const adminApiHostname: string =
 
 interface Config<FetcherRequestInit extends RequestInit = RequestInit> {
   storeHash: string;
-  customerImpersonationToken: string;
+  storefrontToken: string;
   xAuthToken: string;
   channelId?: string;
   platform?: string;
@@ -51,7 +51,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   async fetch<TResult, TVariables extends Record<string, unknown>>(config: {
     document: DocumentDecoration<TResult, TVariables>;
     variables: TVariables;
-    customerId?: string;
+    customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
   }): Promise<BigCommerceResponse<TResult>>;
@@ -60,7 +60,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   async fetch<TResult>(config: {
     document: DocumentDecoration<TResult, Record<string, never>>;
     variables?: undefined;
-    customerId?: string;
+    customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
   }): Promise<BigCommerceResponse<TResult>>;
@@ -68,13 +68,13 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   async fetch<TResult, TVariables>({
     document,
     variables,
-    customerId,
+    customerAccessToken,
     fetchOptions = {} as FetcherRequestInit,
     channelId,
   }: {
     document: DocumentDecoration<TResult, TVariables>;
     variables?: TVariables;
-    customerId?: string;
+    customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
   }): Promise<BigCommerceResponse<TResult>> {
@@ -90,9 +90,9 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.config.customerImpersonationToken}`,
+        Authorization: `Bearer ${this.config.storefrontToken}`,
         'User-Agent': this.backendUserAgent,
-        ...(customerId && { 'X-Bc-Customer-Id': customerId }),
+        ...(customerAccessToken && { 'X-Bc-Customer-Access-Token': customerAccessToken }),
         ...additionalFetchHeaders,
         ...headers,
       },
