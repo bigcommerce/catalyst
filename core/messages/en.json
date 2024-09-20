@@ -41,7 +41,7 @@
       "multipleAddresses": "Save multiple shipping addresses",
       "ordersHistory": "Access your order history",
       "ordersTracking":  "Track new orders",
-      "wishlists": "Save items to your Wish List",
+      "wishlists": "Save items to your Wishlist",
       "createLink": "Create Account "
     }
   },
@@ -363,7 +363,7 @@
       "sku": "SKU",
       "upc": "UPC",
       "minPurchase": "Minimum purchase",
-      "maxPurchase": "Maxiumum purchase",
+      "maxPurchase": "Maximum purchase",
       "availability": "Availability",
       "condition": "Condition",
       "weight": "Weight",
