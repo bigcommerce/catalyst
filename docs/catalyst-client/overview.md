@@ -2,7 +2,7 @@
 
 Catalyst allows you to retrieve info from BigCommerce's APIs through the Catalyst Client.
 
-The client allows you to execute all queries and mutations available for the Storefront GraphQL API. You can also retrieve some information from BigCommerce's Management APIss.
+The client allows you to execute all queries and mutations available for the Storefront GraphQL API.
 
 The client simplifies what you need to do to handle queries, requests, and responses. For example, you don't need to construct request URLs, configure request headers, or parse JSON responses. The client uses the channel ID and authorization tokens configured in the `.env` file by default.
 
