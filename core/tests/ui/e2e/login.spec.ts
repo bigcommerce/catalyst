@@ -24,3 +24,17 @@ test('Account login and logout', async ({ page, account }) => {
 
   await expect(page.getByRole('heading', { name: 'Log in' })).toBeVisible();
 });
+
+test('Login fails with invalid credentials', async ({ page }) => {
+  await page.goto('/login');
+
+  await page.getByLabel('Email').fill('email@address.com');
+  await page.getByLabel('Password').fill('1QwpO8b');
+  await page.getByRole('button', { name: 'Log in' }).click();
+
+  await expect(
+    page.getByText(
+      'Your email address or password is incorrect. Try signing in again or reset your password',
+    ),
+  ).toBeVisible();
+});
