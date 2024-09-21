@@ -1,8 +1,36 @@
-# Fetch
+# Catalyst Client
 
-The `client.fetch()` method lets you send GraphQL queries or mutations to the [GraphQL Storefront API](https://developer.bigcommerce.com/docs/storefront/graphql).
+Catalyst allows you to retrieve info from BigCommerce's APIs through the Catalyst Client.<br /><br />
 
-## Parameters
+```ts
+import { client } from '~/client';
+```
+
+The client simplifies what you need to do to handle requests and responses. For example, you don't need to construct request URLs, configure request headers, or parse JSON responses. The client uses the channel ID and authorization tokens configured in the `.env` file by default.
+
+## Methods
+
+- `fetch()`: allows you to interact with BigCommerce's [GraphQL Storefront API](https://developer.bigcommerce.com/docs/storefront/graphql). You can execute all queries and mutations available in [BigCommerce's Storefront graph](https://developer.bigcommerce.com/graphql-storefront/reference).
+
+- `fetchSitemapIndex(channelId?: string)`: fetches the sitemap index for the store, which provides a URL to the XML sitemap.
+
+- `getCanonicalUrl(channelId?: string)`: constructs and returns the canonical URL for the BigCommerce store. This URL is used for constructing various API endpoint URLs and is based on the store's hash and the provided or default channel ID.
+
+- `getGraphQLEndpoint(channelId?: string)`: returns the GraphQL endpoint URL for the store, incorporating the optional channel ID to specify which store channel's GraphQL API to access. This URL is used for sending GraphQL queries and mutations.
+
+- `requestLogger(document: string)`: provides a logging function to help debug and monitor performance. Logs the operation type, name, request duration, and query complexity.
+
+### Deprecated
+
+The following method is deprecated and requires the `BIGCOMMERCE_ACCESS_TOKEN` to be set in the `.env` file.
+
+- `fetchShippingZones()`: retrieves shipping zones for the BigCommerce store. It sends an HTTP GET request to the [BigCommerce Management API](https://developer.bigcommerce.com/docs/rest-management/shipping-v2/shipping-zones), but simplifies how you would make a direct request to fetch shipping zones.
+
+## Fetch
+
+The `fetch()` method lets you send GraphQL queries or mutations to the [GraphQL Storefront API](https://developer.bigcommerce.com/docs/storefront/graphql).
+
+### Parameters
 
 | Parameter name | Type | Required? | Description |
 | - | - | - | - |
@@ -10,36 +38,34 @@ The `client.fetch()` method lets you send GraphQL queries or mutations to the [G
 | `variables` | object `TVariables` | No | Variables to be passed to the GraphQL query or mutation. <br /><br />This is a generic type constrained to `Record<string, unknown>`, meaning it can be any object where the keys are strings and the values are of any type. This allows you to pass variables into the query/mutation dynamically. |
 | `customerId` | string | No | The ID of the customer to impersonate. <br /><br />If you want to fetch data as a specific customer, you can provide their ID here. This will add an `X-Bc-Customer-Id` header to the request. |
 | `fetchOptions` | object `FetcherRequestInit` | No |  Custom options for the `fetch` request. <br /><br />`FetcherRequestInit` extends the global `RequestInit` interface in JavaScript, which includes parameters such as `method`, `headers`, `body`, and `options` for caching and credentials. |
-| `channelId` | string | No | Allows you to specify a different channel for the request. <br /><br />If no channelId is provided, the `defaultChannelId` from the `Client` configuration is used. This is useful if you are dealing with a multi-channel setup in BigCommerce. |
+| `channelId` | string | No | Allows you to specify a different storefront channel for the request. <br /><br />Defaults to the channel ID in the `.env` file. |
 
-## Request headers
+### Request headers
 
 The `fetch` method automatically sets the following headers:
 
 - `"Content-Type": "application/json"`
 - `"Authorization": "Bearer <customerImpersonationToken>"`
 - `"User-Agent": <backendUserAgent>`
-- Optionally, `"X-Bc-Customer-Id"` if a `customerId` is provided.
+- (Optional) `"X-Bc-Customer-Id"` if you provide a `customerId`
 
-## Return value
+### Return value
 
 The `fetch` method returns a promise that resolves to a response object containing the requested data. The response follows the structure defined in the GraphQL query.
 
 - Return Type: `Promise<BigCommerceResponse<TResult>>`
 
-The `BigCommerceResponse` type wraps the actual data returned from the API, where `TResult` represents the expected shape of the response data.
+  The `BigCommerceResponse` type wraps the actual data returned from the API, where `TResult` represents the expected shape of the response data.
 
-Inside `BigCommerceResponse`, the `data` field holds the actual data returned by the GraphQL API, which matches the structure of the query or mutation you executed.
+  Inside `BigCommerceResponse`, the `data` field holds the actual data returned by the GraphQL API, which matches the structure of the query or mutation you executed.<br /><br />
 
 - `Error Handling`:
 
-If the response is not `ok` (i.e., the request fails), the method throws a `BigCommerceAPIError`, which includes the HTTP status and any GraphQL errors returned in the response.
+  If the response is not `ok` (i.e., the request fails), the method throws a `BigCommerceAPIError`, which includes the HTTP status and any GraphQL errors returned in the response.
 
-## Examples
+### Examples
 
-### Get product reviews
-
-For the `fetchOptions` parameter, the example uses `cache: 'no-store'` to prevent the request from being cached. Additional headers can also be passed in `fetchOptions`.  
+#### Get product reviews
 
 ```ts
 import { client } from '~/client';
@@ -113,7 +139,7 @@ The example output in the console:
 }
 ```
 
-### Error handling
+#### Error handling
 
 The `BigCommerceAPIError` class provides error handling and is instantiated when the fetch fails.
 
@@ -123,8 +149,8 @@ if (!response.ok) {
 }
 ```
 
-## Logging
+### Logging
 
-You can log the request's operation name, type, and execution time to the console, along with the [complexity of the query](https://developer.bigcommerce.com/docs/storefront/graphql#complexity-limits).
+You can log the request's operation name, type, and execution time to the console, along with the [query complexity](https://developer.bigcommerce.com/docs/storefront/graphql#complexity-limits).
 
-To enable logging, configure the [environment variable](/docs/environment-variables#client_logger) for logging.
+To use this feature, enable logging through the [`CLIENT_LOGGER` environment variable](/docs/environment-variables#client_logger). When you run the `fetch` method, it will invoke the `requestLogger()` function internally to capture and log the information.
