@@ -22,14 +22,14 @@ The following method is deprecated and requires the `BIGCOMMERCE_ACCESS_TOKEN` t
 
 ## Fetch
 
-The `fetch()` method lets you send GraphQL queries or mutations to the [GraphQL Storefront API](https://developer.bigcommerce.com/docs/storefront/graphql).
+The following sections describe the `fetch()` method.
 
 ### Parameters
 
 | Parameter name | Type | Required? | Description |
 | - | - | - | - |
 | `document` | object `DocumentDecoration<TResult, TVariables>` | Yes | The GraphQL query or mutation you want to execute. It must be in the form of a string or a GraphQL AST (Abstract Syntax Tree) that defines the query. <br /><br /> The `DocumentDecoration` interface supports types from `@graphql-typed-document-node/core` and `TypedQueryDocumentNode`. These ensure the types of variables and results match. The document could be a GraphQL query or mutation. |
-| `variables` | object `TVariables` | No | Variables to be passed to the GraphQL query or mutation. <br /><br />This is a generic type constrained to `Record<string, unknown>`, meaning it can be any object where the keys are strings and the values are of any type. This allows you to pass variables into the query/mutation dynamically. |
+| `variables` | object `TVariables` | No | Variables to be passed to the GraphQL query or mutation. |
 | `customerId` | string | No | The ID of the customer to impersonate. <br /><br />If you want to fetch data as a specific customer, you can provide their ID here. This will add an `X-Bc-Customer-Id` header to the request. |
 | `fetchOptions` | object `FetcherRequestInit` | No |  Custom options for the `fetch` request. <br /><br />`FetcherRequestInit` extends the global `RequestInit` interface in JavaScript, which includes parameters such as `method`, `headers`, `body`, and `options` for caching and credentials. |
 | `channelId` | string | No | Allows you to specify a different storefront channel for the request. <br /><br />Defaults to the channel ID in the `.env` file. |
