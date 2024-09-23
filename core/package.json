@@ -68,6 +68,7 @@
     "@next/bundle-analyzer": "^14.2.14",
     "@playwright/test": "^1.47.2",
     "@tailwindcss/container-queries": "^0.1.1",
+    "@tailwindcss/typography": "^0.5.15",
     "@types/gtag.js": "^0.0.20",
     "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^20.16.10",
