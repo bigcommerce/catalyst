@@ -6,6 +6,7 @@
         }
     },
     "ChangePassword": {
+        "title": "Modifier le mot de passe",
         "heading": "Modifier le mot de passe",
         "Form": {
             "newPasswordLabel": "Nouveau mot de passe",
@@ -21,6 +22,7 @@
         }
     },
     "Login": {
+        "title": "Connexion",
         "heading": "Connexion",
         "Form": {
             "error": "Votre adresse e-mail ou votre mot de passe est incorrect. Essayez de vous reconnecter ou réinitialisez votre mot de passe",
@@ -44,6 +46,7 @@
         }
     },
     "Register": {
+        "title": "Register account",
         "heading": "Nouveau compte",
         "Form": {
             "submit": "Créer un compte",
@@ -58,6 +61,7 @@
         }
     },
     "Reset": {
+        "title": "Réinitialiser le mot de passe",
         "heading": "Réinitialiser le mot de passe",
         "Form": {
             "description": "Veuillez saisir ci-dessous l'adresse e-mail associée à votre compte. Nous vous enverrons des instructions pour réinitialiser votre mot de passe.",
@@ -121,6 +125,7 @@
         "items": "articles"
     },
     "Search": {
+        "title": "Résultats de recherche",
         "heading": "Rechercher",
         "products": "Produits",
         "sortBy": "{items, plural, =0 {aucun article} =1 {1 article} other {# articles}}",
@@ -140,56 +145,53 @@
             "successMessage": "Votre compte a été créé avec succès"
         },
         "Addresses": {
-            "defaultAddress": "Par défaut",
-            "alternativeAddress": "Alternatif",
-            "newAddress": "Nouvelle adresse",
+            "title": "Adresses",
             "addNewAddress": "Ajouter une nouvelle adresse",
-            "addNewAddressSuccessMessage": "Adresse ajoutée à votre compte.",
-            "editAddress": "Modifier l'adresse",
             "editButton": "Modifier",
             "deleteButton": "Supprimer",
-            "deleteAddress": "Adresse supprimée de votre compte.",
-            "confirmDeleteAddress": "Supprimer l'adresse",
-            "deleteModalTitle": "Voulez-vous vraiment supprimer l'adresse ?",
-            "recaptchaText": "Réussir le test ReCAPTCHA",
-            "emptyTextValidationMessage": "Ce champ ne peut pas être vide",
-            "successMessage": "L'adresse a bien été créée.",
-            "submit": "Ajouter une nouvelle adresse",
-            "cancel": "Annuler",
-            "submitting": "En cours..."
-        },
-        "AddAddress": {
-            "success": "L'adresse a été ajoutée.",
-            "Errors": {
-                "inputError": "Un problème est survenu lors du traitement des saisies de l'utilisateur.",
-                "error": "Erreur inconnue."
-            }
-        },
-        "DeleteAddress": {
-            "success": "Adresse supprimée de votre compte.",
-            "error": "Erreur inconnue."
-        },
-        "UpdateAddress": {
-            "success": "L'adresse a été mise à jour.",
-            "Errors": {
-                "inputError": "Un problème est survenu lors du traitement des saisies de l'utilisateur.",
-                "notFound": "L'adresse n'existe pas",
-                "error": "Erreur inconnue."
-            }
-        },
-        "EditAddress": {
-            "recaptchaText": "Réussir le test ReCAPTCHA",
-            "emptyTextValidationMessage": "Ce champ ne peut pas être vide",
-            "successMessage": "L'adresse a bien été mise à jour.",
-            "cancel": "Annuler",
-            "deleteButton": "Supprimer",
-            "deleteAddress": "Adresse supprimée de votre compte.",
             "confirmDeleteAddress": "Supprimer l'adresse",
             "deleteModalTitle": "Voulez-vraiment supprimer cette adresse ?",
-            "submit": "Mettre à jour l'adresse",
-            "submitting": "En cours..."
+            "Add": {
+                "title": "Ajouter une adresse",
+                "heading": "Nouvelle adresse",
+                "Form": {
+                    "recaptchaText": "Réussir le test ReCAPTCHA",
+                    "submit": "Ajouter une nouvelle adresse",
+                    "submitting": "Saving address...",
+                    "cancel": "Annuler",
+                    "success": "Address added to your account.",
+                    "Errors": {
+                        "inputError": "Un problème est survenu lors du traitement des saisies de l'utilisateur.",
+                        "error": "Erreur inconnue."
+                    }
+                }
+            },
+            "Edit": {
+                "title": "Modifier l'adresse",
+                "heading": "Modifier l'adresse",
+                "Form": {
+                    "recaptchaText": "Réussir le test ReCAPTCHA",
+                    "submit": "Modifier l'adresse",
+                    "submitting": "Updating address...",
+                    "cancel": "Annuler",
+                    "confirmDeleteAddress": "Supprimer l'adresse",
+                    "deleteModalTitle": "Voulez-vraiment supprimer cette adresse ?",
+                    "deleteButton": "Supprimer",
+                    "success": "The address has been successfully updated.",
+                    "Errors": {
+                        "inputError": "Un problème est survenu lors du traitement des saisies de l'utilisateur.",
+                        "notFound": "L'adresse n'existe pas",
+                        "error": "Erreur inconnue."
+                    }
+                }
+            },
+            "Delete": {
+                "success": "Adresse supprimée de votre compte.",
+                "error": "Erreur inconnue."
+            }
         },
         "Settings": {
+            "title": "Paramètres des comptes",
             "emptyTextValidatoinMessage": "Ce champ ne peut pas être vide",
             "cancel": "Annuler",
             "recaptchaText": "Réussir le test ReCAPTCHA",
@@ -207,8 +209,19 @@
                 "phone": "Saisissez un numéro de téléphone"
             },
             "ChangePassword": {
+                "title": "Modifier le mot de passe",
                 "success": "Le mot de passe a été mis à jour.",
-                "error": "Erreur inconnue."
+                "error": "Erreur inconnue.",
+                "currentPasswordLabel": "Mot de passe actuel",
+                "newPasswordLabel": "Nouveau mot de passe",
+                "confirmPasswordLabel": "Confirmer le mot de passe",
+                "cancel": "Annuler",
+                "confirmPasswordValidationMessage": "Les mots de passe saisis ne correspondent pas. Veuillez réessayer.",
+                "newPasswordValidationMessage": "Le nouveau mot de passe doit être différent du mot de passe actuel et/ou correspondre au mot de passe de confirmation.",
+                "notEmptyMessage": "Le champ ne doit pas être vide",
+                "confirmChangePassword": "Votre mot de passe a été mis à jour. Veuillez vous connecter en utilisant vos nouveaux identifiants.",
+                "spinnerText": "Envoi...",
+                "submitText": "Modifier le mot de passe"
             },
             "UpdateCustomer": {
                 "Errors": {
@@ -216,24 +229,10 @@
                     "notFound": "Le client n'existe pas"
                 }
             }
-        },
-        "ChangePassword": {
-            "currentPasswordLabel": "Mot de passe actuel",
-            "newPasswordLabel": "Nouveau mot de passe",
-            "confirmPasswordLabel": "Confirmer le mot de passe",
-            "cancel": "Annuler",
-            "confirmPasswordValidationMessage": "Les mots de passe saisis ne correspondent pas. Veuillez réessayer.",
-            "newPasswordValidationMessage": "Le nouveau mot de passe doit être différent du mot de passe actuel et/ou correspondre au mot de passe de confirmation.",
-            "notEmptyMessage": "Le champ ne doit pas être vide",
-            "successMessage": "Le mot de passe a bien été mis à jour !",
-            "confirmChangePassword": "Votre mot de passe a été mis à jour. Veuillez vous connecter en utilisant vos nouveaux identifiants."
-        },
-        "SubmitChangePassword": {
-            "spinnerText": "Envoi...",
-            "submitText": "Modifier le mot de passe"
         }
     },
     "Blog": {
+        "title": "Blog",
         "SharingLinks": {
             "share": "Partager",
             "email": "E-mail",
@@ -241,6 +240,7 @@
         }
     },
     "Cart": {
+        "title": "Panier",
         "heading": "Votre panier",
         "empty": "Votre panier est vide",
         "emptyDetails": "Il semblerait que vous n'ayez rien ajouté à votre panier. Explorez les meilleures catégories.",
@@ -311,6 +311,7 @@
         }
     },
     "Compare": {
+        "title": "Comparer",
         "heading": "Comparaison de {quantity, plural, =1 {1 produit} other {# produits}}",
         "nothingToCompare": "Il n'y a rien à comparer !",
         "helpingText": "Vous avez réussi à arriver jusqu'ici, mais vous devez d'abord sélectionner quelques produits.",
@@ -328,7 +329,7 @@
             }
         },
         "AddToCart": {
-            "success": "<cartLink>{CartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
+            "success": "<cartLink>{cartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
             "error": "Erreur lors de l'ajout d'un produit au panier. Veuillez réessayer."
         }
     },
@@ -338,7 +339,7 @@
             "relatedProducts": "Produits associés"
         },
         "Form": {
-            "success": "<cartLink>{CartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
+            "success": "<cartLink>{cartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
             "error": "Erreur lors de l'ajout d'un produit au panier. Veuillez réessayer.",
             "saveToWishlist": "Enregistrer dans la liste d'envies",
             "quantityLabel": "Quantité"
@@ -398,10 +399,12 @@
         }
     },
     "Maintenance": {
+        "title": "Maintenance",
         "message": "En raison de procédures de maintenance, nos services sont indisponibles.",
         "contactUs": "Vous pouvez nous contacter à :"
     },
     "StoreSelector": {
+        "title": "Sélecteur de boutique",
         "heading": "Sélectionnez une langue et une région"
     },
     "Error": {
@@ -452,7 +455,7 @@
         "ProductCard": {
             "AddToCart": {
                 "viewOptions": "Afficher les options",
-                "success": "<cartLink>{CartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
+                "success": "<cartLink>{cartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
                 "error": "Erreur lors de l'ajout d'un produit au panier. Veuillez réessayer."
             }
         },

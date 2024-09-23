@@ -224,7 +224,7 @@ The `TRAILING_SLASH` variable defaults to `true` and must be explicitly set to `
 
 Catalyst uses the existing URLs of your BigCommerce objects, such as products and categories, as the URL paths on your storefront. Default [paths for BigCommerce products, categories, etc.](https://support.bigcommerce.com/s/article/Store-Settings#url-structure) create URLs with a trailing slash, while the [Next.js default behavior](https://nextjs.org/docs/app/api-reference/next-config-js/trailingSlash) does not use trailing slashes on URLs.
 
-### NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET
+### DEFAULT_REVALIDATE_TARGET
 
 | Attribute        | Value                                          |
 | :--------------- | :--------------------------------------------- |

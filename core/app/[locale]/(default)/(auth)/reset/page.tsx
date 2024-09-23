@@ -23,9 +23,13 @@ const ResetPageQuery = graphql(
   [ResetPasswordFormFragment],
 );
 
-export const metadata = {
-  title: 'Reset password',
-};
+export async function generateMetadata() {
+  const t = await getTranslations('Reset');
+
+  return {
+    title: t('title'),
+  };
+}
 
 export default async function Reset() {
   const t = await getTranslations('Reset');

@@ -81,9 +81,13 @@ const ComparePageQuery = graphql(
   [AddToCartFragment, PricingFragment],
 );
 
-export const metadata = {
-  title: 'Compare',
-};
+export async function generateMetadata() {
+  const t = await getTranslations('Compare');
+
+  return {
+    title: t('title'),
+  };
+}
 
 interface Props {
   searchParams: Record<string, string | string[] | undefined>;

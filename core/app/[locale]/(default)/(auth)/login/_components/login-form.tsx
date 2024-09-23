@@ -44,7 +44,7 @@ export const LoginForm = () => {
   const [state, formAction] = useFormState(login, { status: 'idle' });
   const { accountState } = useAccountStatusContext();
 
-  const isFormInvalid = state.status === 'error';
+  const isFormInvalid = state?.status === 'error';
 
   const handleInputValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const validationStatus = e.target.validity.valueMissing;

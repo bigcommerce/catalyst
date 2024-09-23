@@ -1,4 +1,5 @@
 import { createClient } from '@bigcommerce/catalyst-client';
+import { headers } from 'next/headers';
 import { getLocale } from 'next-intl/server';
 
 import { getChannelIdFromLocale } from '~/channels.config';
@@ -32,9 +33,23 @@ export const client = createClient({
       return getChannelIdFromLocale(locale) ?? defaultChannelId;
     } catch {
       // eslint-disable-next-line no-console
-      console.error('Error using `getLocale`, using default channel id instead.');
+      console.error('Warning: issue using `getLocale`, using default channel id instead.');
 
       return defaultChannelId;
+    }
+  },
+  beforeRequest: (fetchOptions) => {
+    if (fetchOptions?.cache && ['no-store', 'no-cache'].includes(fetchOptions.cache)) {
+      const ipAddress = headers().get('X-Forwarded-For');
+
+      if (ipAddress) {
+        return {
+          headers: {
+            'X-Forwarded-For': ipAddress,
+            'True-Client-IP': ipAddress,
+          },
+        };
+      }
     }
   },
 });

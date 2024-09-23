@@ -25,9 +25,13 @@ const MaintenancePageQuery = graphql(
   [StoreLogoFragment],
 );
 
-export const metadata = {
-  title: 'Maintenance',
-};
+export async function generateMetadata() {
+  const t = await getTranslations('Maintenance');
+
+  return {
+    title: t('title'),
+  };
+}
 
 const Container = ({ children }: { children: ReactNode }) => (
   <main className="mx-auto mt-[64px] px-4 md:px-10 lg:mt-[128px]">{children}</main>

@@ -1,11 +1,11 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
+import { redirect } from '~/i18n/routing';
 
 const CheckoutRedirectMutation = graphql(`
   mutation CheckoutRedirectMutation($cartId: String!) {

@@ -90,7 +90,9 @@ const config = {
               },
             },
             customerId: user.id,
-            fetchOptions: { cache: 'no-store' },
+            fetchOptions: {
+              cache: 'no-store',
+            },
           });
         } catch (error) {
           // eslint-disable-next-line no-console
@@ -113,7 +115,9 @@ const config = {
               },
             },
             customerId,
-            fetchOptions: { cache: 'no-store' },
+            fetchOptions: {
+              cache: 'no-store',
+            },
           });
         } catch (error) {
           // eslint-disable-next-line no-console
@@ -134,6 +138,9 @@ const config = {
         const response = await client.fetch({
           document: LoginMutation,
           variables: { email, password },
+          fetchOptions: {
+            cache: 'no-store',
+          },
         });
 
         const result = response.data.login;

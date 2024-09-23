@@ -59,9 +59,13 @@ const FALLBACK_COUNTRY = {
   states: [],
 };
 
-export const metadata = {
-  title: 'Add address',
-};
+export async function generateMetadata() {
+  const t = await getTranslations('Account.Addresses.Add');
+
+  return {
+    title: t('title'),
+  };
+}
 
 export default async function AddPage() {
   const t = await getTranslations('Account.Addresses.Add');

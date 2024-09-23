@@ -7,7 +7,7 @@ import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 
-import { State } from '../../settings/_actions/submit-customer-change-password-form';
+import { State } from '../../settings/change-password/_actions/change-password';
 
 const DeleteCustomerAddressMutation = graphql(`
   mutation DeleteCustomerAddressMutation(

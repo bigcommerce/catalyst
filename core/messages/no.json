@@ -6,6 +6,7 @@
         }
     },
     "ChangePassword": {
+        "title": "Endre passord",
         "heading": "Endre passord",
         "Form": {
             "newPasswordLabel": "Nytt passord",
@@ -21,6 +22,7 @@
         }
     },
     "Login": {
+        "title": "Logg inn",
         "heading": "Logg inn",
         "Form": {
             "error": "E-postadressen eller passordet er feil. Prøv å logge på igjen, eller tilbakestill passordet ditt.",
@@ -44,6 +46,7 @@
         }
     },
     "Register": {
+        "title": "Register account",
         "heading": "Ny konto",
         "Form": {
             "submit": "Opprett konto",
@@ -58,6 +61,7 @@
         }
     },
     "Reset": {
+        "title": "Tilbakestill passord",
         "heading": "Tilbakestill passord",
         "Form": {
             "description": "Skriv inn e-posten som er knyttet til kontoen din nedenfor. Vi sender deg instruksjoner for å tilbakestille passordet ditt.",
@@ -121,6 +125,7 @@
         "items": "Varer"
     },
     "Search": {
+        "title": "Søkeresultater",
         "heading": "Søk",
         "products": "Produkter",
         "sortBy": "{items, plural, =0 {no items} =1 {1 vare} other {# varer}}",
@@ -140,56 +145,53 @@
             "successMessage": "Kontoen din har blitt opprettet"
         },
         "Addresses": {
-            "defaultAddress": "Standard",
-            "alternativeAddress": "Alternativ",
-            "newAddress": "Ny adresse",
+            "title": "Adresser",
             "addNewAddress": "Legg til ny adresse",
-            "addNewAddressSuccessMessage": "Adressen er lagt til på kontoen din.",
-            "editAddress": "Rediger adresse",
             "editButton": "Rediger",
             "deleteButton": "Slett",
-            "deleteAddress": "Adresse slettet fra kontoen din.",
-            "confirmDeleteAddress": "Slett adresse",
-            "deleteModalTitle": "Er du sikker på at du vil slette adressen?",
-            "recaptchaText": "Bestå reCAPTCHA-sjekk",
-            "emptyTextValidationMessage": "Dette feltet kan ikke være tomt",
-            "successMessage": "Adressen er opprettet.",
-            "submit": "Legg til ny adresse",
-            "cancel": "Avbryt",
-            "submitting": "Pågår …"
-        },
-        "AddAddress": {
-            "success": "Adressen er lagt til.",
-            "Errors": {
-                "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
-                "error": "Ukjent feil."
-            }
-        },
-        "DeleteAddress": {
-            "success": "Adresse slettet fra kontoen din.",
-            "error": "Ukjent feil."
-        },
-        "UpdateAddress": {
-            "success": "Adressen er oppdatert.",
-            "Errors": {
-                "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
-                "notFound": "Adressen finnes ikke.",
-                "error": "Ukjent feil."
-            }
-        },
-        "EditAddress": {
-            "recaptchaText": "Bestå reCAPTCHA-sjekk",
-            "emptyTextValidationMessage": "Dette feltet kan ikke være tomt",
-            "successMessage": "Adressen er oppdatert.",
-            "cancel": "Avbryt",
-            "deleteButton": "Slett",
-            "deleteAddress": "Adresse slettet fra kontoen din.",
             "confirmDeleteAddress": "Slett adresse",
             "deleteModalTitle": "Er du sikker på at du vil slette denne adressen?",
-            "submit": "Oppdater adressen",
-            "submitting": "Pågår …"
+            "Add": {
+                "title": "Legg til adresse",
+                "heading": "Ny adresse",
+                "Form": {
+                    "recaptchaText": "Bestå reCAPTCHA-sjekk",
+                    "submit": "Legg til ny adresse",
+                    "submitting": "Saving address...",
+                    "cancel": "Avbryt",
+                    "success": "Address added to your account.",
+                    "Errors": {
+                        "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
+                        "error": "Ukjent feil."
+                    }
+                }
+            },
+            "Edit": {
+                "title": "Rediger adresse",
+                "heading": "Rediger adresse",
+                "Form": {
+                    "recaptchaText": "Bestå reCAPTCHA-sjekk",
+                    "submit": "Rediger adresse",
+                    "submitting": "Updating address...",
+                    "cancel": "Avbryt",
+                    "confirmDeleteAddress": "Slett adresse",
+                    "deleteModalTitle": "Er du sikker på at du vil slette denne adressen?",
+                    "deleteButton": "Slett",
+                    "success": "The address has been successfully updated.",
+                    "Errors": {
+                        "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
+                        "notFound": "Adressen finnes ikke.",
+                        "error": "Ukjent feil."
+                    }
+                }
+            },
+            "Delete": {
+                "success": "Adresse slettet fra kontoen din.",
+                "error": "Ukjent feil."
+            }
         },
         "Settings": {
+            "title": "Kontoinnstillinger",
             "emptyTextValidatoinMessage": "Dette feltet kan ikke være tomt",
             "cancel": "Avbryt",
             "recaptchaText": "Bestå reCAPTCHA-sjekk",
@@ -207,8 +209,19 @@
                 "phone": "Skriv inn et telefonnummer"
             },
             "ChangePassword": {
+                "title": "Endre passord",
                 "success": "Passordet er oppdatert!",
-                "error": "Ukjent feil."
+                "error": "Ukjent feil.",
+                "currentPasswordLabel": "Nåværende passord",
+                "newPasswordLabel": "Nytt passord",
+                "confirmPasswordLabel": "Bekreft passord",
+                "cancel": "Avbryt",
+                "confirmPasswordValidationMessage": "Oppgitte passord stemmer ikke overens. Prøv igjen.",
+                "newPasswordValidationMessage": "Nytt passord må være forskjellig fra gjeldende passord eller/og samsvare med bekreftelsen på passordet.",
+                "notEmptyMessage": "Feltet skal ikke være tomt",
+                "confirmChangePassword": "Passordet ditt har blitt oppdatert. Logg på med din nye legitimasjon.",
+                "spinnerText": "Sender inn …",
+                "submitText": "Endre passord"
             },
             "UpdateCustomer": {
                 "Errors": {
@@ -216,24 +229,10 @@
                     "notFound": "Kunden eksisterer ikke"
                 }
             }
-        },
-        "ChangePassword": {
-            "currentPasswordLabel": "Nåværende passord",
-            "newPasswordLabel": "Nytt passord",
-            "confirmPasswordLabel": "Bekreft passord",
-            "cancel": "Avbryt",
-            "confirmPasswordValidationMessage": "Oppgitte passord stemmer ikke overens. Prøv igjen.",
-            "newPasswordValidationMessage": "Nytt passord må være forskjellig fra gjeldende passord eller/og samsvare med bekreftelsen på passordet.",
-            "notEmptyMessage": "Feltet skal ikke være tomt",
-            "successMessage": "Passordet er oppdatert!",
-            "confirmChangePassword": "Passordet ditt har blitt oppdatert. Logg på med din nye legitimasjon."
-        },
-        "SubmitChangePassword": {
-            "spinnerText": "Sender inn …",
-            "submitText": "Endre passord"
         }
     },
     "Blog": {
+        "title": "blogg",
         "SharingLinks": {
             "share": "Del",
             "email": "E-post",
@@ -241,6 +240,7 @@
         }
     },
     "Cart": {
+        "title": "Handlekurv",
         "heading": "Din handlekurv",
         "empty": "Handlekurven din er tom",
         "emptyDetails": "Det ser ut som du ikke har lagt til noe i handlekurven din. Gå videre og utforsk toppkategorier",
@@ -311,6 +311,7 @@
         }
     },
     "Compare": {
+        "title": "Sammenlign",
         "heading": "Sammenligner {quantity, plural, =1 {1 produkt} other {# produkter}}",
         "nothingToCompare": "Vel, det er ingenting å sammenligne!",
         "helpingText": "Du har på en eller annen måte havnet her, men du må velge noen produkter først.",
@@ -398,10 +399,12 @@
         }
     },
     "Maintenance": {
+        "title": "Maintenance",
         "message": "Vi er nede for vedlikehold",
         "contactUs": "Du kan kontakte oss på:"
     },
     "StoreSelector": {
+        "title": "Butikkvelger",
         "heading": "Velg språk og region"
     },
     "Error": {

@@ -1,11 +1,17 @@
-import { redirect } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
+
+import { redirect } from '~/i18n/routing';
 
 import { ChangePasswordForm } from './_components/change-password-form';
 
-export const metadata = {
-  title: 'Change password',
-};
+export async function generateMetadata() {
+  const t = await getTranslations('ChangePassword');
+
+  return {
+    title: t('title'),
+  };
+}
 
 interface Props {
   searchParams: {

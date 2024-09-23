@@ -6,6 +6,7 @@
         }
     },
     "ChangePassword": {
+        "title": "Cambiar contraseña",
         "heading": "Cambiar contraseña",
         "Form": {
             "newPasswordLabel": "Nueva contraseña",
@@ -21,6 +22,7 @@
         }
     },
     "Login": {
+        "title": "Iniciar sesión",
         "heading": "Iniciar sesión",
         "Form": {
             "error": "Tu dirección de correo electrónico o contraseña son incorrectas. Intenta iniciar sesión de nuevo o restablece tu contraseña",
@@ -44,6 +46,7 @@
         }
     },
     "Register": {
+        "title": "Register account",
         "heading": "Cuenta nueva",
         "Form": {
             "submit": "Crear cuenta",
@@ -58,6 +61,7 @@
         }
     },
     "Reset": {
+        "title": "Restablecer la contraseña",
         "heading": "Restablecer la contraseña",
         "Form": {
             "description": "Introduce a continuación la dirección de correo electrónico asociada a tu cuenta. Te enviaremos instrucciones para restablecer tu contraseña.",
@@ -121,6 +125,7 @@
         "items": "artículos"
     },
     "Search": {
+        "title": "Resultados de la búsqueda",
         "heading": "Buscar",
         "products": "Productos",
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
@@ -140,56 +145,53 @@
             "successMessage": "Tu cuenta se ha creado correctamente"
         },
         "Addresses": {
-            "defaultAddress": "Predeterminado",
-            "alternativeAddress": "Alternativo",
-            "newAddress": "Nueva dirección",
+            "title": "Direcciones",
             "addNewAddress": "Añadir nueva dirección",
-            "addNewAddressSuccessMessage": "Dirección añadida a tu cuenta",
-            "editAddress": "Editar dirección",
             "editButton": "Editar",
             "deleteButton": "Eliminar",
-            "deleteAddress": "Dirección eliminada de tu cuenta.",
-            "confirmDeleteAddress": "Eliminar dirección",
-            "deleteModalTitle": "¿Seguro que quieres eliminar la dirección?",
-            "recaptchaText": "Pasar la verificación ReCAPTCHA",
-            "emptyTextValidationMessage": "Este campo no puede estar vacío",
-            "successMessage": "La dirección se ha creado correctamente.",
-            "submit": "Añadir nueva dirección",
-            "cancel": "Cancelar",
-            "submitting": "En curso..."
-        },
-        "AddAddress": {
-            "success": "Se ha añadido la dirección.",
-            "Errors": {
-                "inputError": "Algo salió mal al procesar los datos del usuario.",
-                "error": "Error desconocido."
-            }
-        },
-        "DeleteAddress": {
-            "success": "Dirección eliminada de tu cuenta.",
-            "error": "Error desconocido."
-        },
-        "UpdateAddress": {
-            "success": "Se ha actualizado la dirección.",
-            "Errors": {
-                "inputError": "Algo salió mal al procesar los datos del usuario.",
-                "notFound": "La dirección no existe.",
-                "error": "Error desconocido."
-            }
-        },
-        "EditAddress": {
-            "recaptchaText": "Pasar la verificación ReCAPTCHA",
-            "emptyTextValidationMessage": "Este campo no puede estar vacío",
-            "successMessage": "La dirección se ha actualizado correctamente.",
-            "cancel": "Cancelar",
-            "deleteButton": "Eliminar",
-            "deleteAddress": "Dirección eliminada de tu cuenta.",
             "confirmDeleteAddress": "Eliminar dirección",
             "deleteModalTitle": "¿Está seguro de que desea eliminar esta dirección?",
-            "submit": "Actualizar dirección",
-            "submitting": "En curso..."
+            "Add": {
+                "title": "Añadir dirección",
+                "heading": "Nueva dirección",
+                "Form": {
+                    "recaptchaText": "Pasar la verificación ReCAPTCHA",
+                    "submit": "Añadir nueva dirección",
+                    "submitting": "Saving address...",
+                    "cancel": "Cancelar",
+                    "success": "Address added to your account.",
+                    "Errors": {
+                        "inputError": "Algo salió mal al procesar los datos del usuario.",
+                        "error": "Error desconocido."
+                    }
+                }
+            },
+            "Edit": {
+                "title": "Editar dirección",
+                "heading": "Editar dirección",
+                "Form": {
+                    "recaptchaText": "Pasar la verificación ReCAPTCHA",
+                    "submit": "Editar dirección",
+                    "submitting": "Updating address...",
+                    "cancel": "Cancelar",
+                    "confirmDeleteAddress": "Eliminar dirección",
+                    "deleteModalTitle": "¿Está seguro de que desea eliminar esta dirección?",
+                    "deleteButton": "Eliminar",
+                    "success": "The address has been successfully updated.",
+                    "Errors": {
+                        "inputError": "Algo salió mal al procesar los datos del usuario.",
+                        "notFound": "La dirección no existe.",
+                        "error": "Error desconocido."
+                    }
+                }
+            },
+            "Delete": {
+                "success": "Dirección eliminada de tu cuenta.",
+                "error": "Error desconocido."
+            }
         },
         "Settings": {
+            "title": "Configuración de la cuenta",
             "emptyTextValidatoinMessage": "Este campo no puede estar vacío",
             "cancel": "Cancelar",
             "recaptchaText": "Pasar la verificación ReCAPTCHA",
@@ -207,8 +209,19 @@
                 "phone": "Introduce un número de teléfono"
             },
             "ChangePassword": {
+                "title": "Cambiar contraseña",
                 "success": "La contraseña se ha actualizado correctamente.",
-                "error": "Error desconocido."
+                "error": "Error desconocido.",
+                "currentPasswordLabel": "Contraseña actual",
+                "newPasswordLabel": "Nueva contraseña",
+                "confirmPasswordLabel": "Confirmar contraseña",
+                "cancel": "Cancelar",
+                "confirmPasswordValidationMessage": "Las contraseñas introducidas no coinciden. Inténtalo de nuevo.",
+                "newPasswordValidationMessage": "La nueva contraseña debe ser diferente de la actual y/o coincidir con la contraseña de confirmación.",
+                "notEmptyMessage": "Este campo no debe estar vacío",
+                "confirmChangePassword": "Tu contraseña se actualizó correctamente. Inicia sesión con tus nuevas credenciales.",
+                "spinnerText": "Enviando...",
+                "submitText": "Cambiar contraseña"
             },
             "UpdateCustomer": {
                 "Errors": {
@@ -216,24 +229,10 @@
                     "notFound": "El cliente no existe"
                 }
             }
-        },
-        "ChangePassword": {
-            "currentPasswordLabel": "Contraseña actual",
-            "newPasswordLabel": "Nueva contraseña",
-            "confirmPasswordLabel": "Confirmar contraseña",
-            "cancel": "Cancelar",
-            "confirmPasswordValidationMessage": "Las contraseñas introducidas no coinciden. Inténtalo de nuevo.",
-            "newPasswordValidationMessage": "La nueva contraseña debe ser diferente de la actual y/o coincidir con la contraseña de confirmación.",
-            "notEmptyMessage": "Este campo no debe estar vacío",
-            "successMessage": "La contraseña se ha actualizado correctamente.",
-            "confirmChangePassword": "Tu contraseña se actualizó correctamente. Inicia sesión con tus nuevas credenciales."
-        },
-        "SubmitChangePassword": {
-            "spinnerText": "Enviando...",
-            "submitText": "Cambiar contraseña"
         }
     },
     "Blog": {
+        "title": "Blog",
         "SharingLinks": {
             "share": "Compartir",
             "email": "Correo electrónico",
@@ -241,6 +240,7 @@
         }
     },
     "Cart": {
+        "title": "Carrito",
         "heading": "Su carrito",
         "empty": "Su carrito está vacío",
         "emptyDetails": "Parece que no has añadido nada a tu cesta. Continúa y explora las categorías principales",
@@ -311,6 +311,7 @@
         }
     },
     "Compare": {
+        "title": "Comparar",
         "heading": "Comparar {quantity, plural, =1 {1 Product} other {# Products}}",
         "nothingToCompare": "Pues no hay nada que comparar.",
         "helpingText": "No sabemos muy bien cómo has acabado aquí, pero primero tienes que seleccionar algún producto.",
@@ -398,10 +399,12 @@
         }
     },
     "Maintenance": {
+        "title": "Maintenance",
         "message": "Estamos fuera de servicio por mantenimiento",
         "contactUs": "Puedes ponerte en contacto con nosotros en:"
     },
     "StoreSelector": {
+        "title": "Selector de tiendas",
         "heading": "Selecciona un idioma y una región"
     },
     "Error": {

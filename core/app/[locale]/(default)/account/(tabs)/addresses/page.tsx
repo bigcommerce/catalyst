@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 
 import { Pagination } from '~/components/ui/pagination';
 
@@ -15,9 +16,13 @@ interface Props {
   };
 }
 
-export const metadata = {
-  title: 'Addresses',
-};
+export async function generateMetadata() {
+  const t = await getTranslations('Account.Addresses');
+
+  return {
+    title: t('title'),
+  };
+}
 
 export default async function Addresses({ searchParams }: Props) {
   const { before, after } = searchParams;

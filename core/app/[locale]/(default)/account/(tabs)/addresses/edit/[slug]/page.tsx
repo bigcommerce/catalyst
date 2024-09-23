@@ -89,9 +89,13 @@ const CustomerEditAddressQuery = graphql(
 
 export type CustomerEditAddressQueryResult = ResultOf<typeof CustomerEditAddressQuery>;
 
-export const metadata = {
-  title: 'Edit address',
-};
+export async function generateMetadata() {
+  const t = await getTranslations('Account.Addresses.Edit');
+
+  return {
+    title: t('title'),
+  };
+}
 
 interface Props {
   params: { slug: string };

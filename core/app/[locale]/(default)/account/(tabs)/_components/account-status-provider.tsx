@@ -1,9 +1,10 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
-import { State as AccountState } from '../settings/_actions/submit-customer-change-password-form';
+import { usePathname } from '~/i18n/routing';
+
+import { State as AccountState } from '../settings/change-password/_actions/change-password';
 
 const defaultState: AccountState = { status: 'idle', message: '' };
 
