@@ -3,7 +3,7 @@ import { unstable_setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren, Suspense } from 'react';
 
 import { Footer } from '~/components/footer/footer';
-import { Header, HeaderSkeleton } from '~/components/header';
+import { Header } from '~/components/header';
 import { Cart } from '~/components/header/cart';
 import { Subscribe } from '~/components/vibes/subscribe';
 import { LocaleType } from '~/i18n/routing';
@@ -19,7 +19,7 @@ export default function DefaultLayout({ children, params: { locale } }: Props) {
 
   return (
     <>
-      <Suspense fallback={<HeaderSkeleton />}>
+      <Suspense>
         <Header cart={<Cart />} />
       </Suspense>
 

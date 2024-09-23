@@ -1,4 +1,4 @@
-import { getLocale, getTranslations } from 'next-intl/server';
+import { getLocale } from 'next-intl/server';
 import { ReactNode } from 'react';
 
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
@@ -20,7 +20,6 @@ interface Props {
 
 export const Header = async ({ cart }: Props) => {
   const locale = await getLocale();
-  const t = await getTranslations('Components.Header');
   const customerId = await getSessionCustomerId();
 
   const { data: response } = await client.fetch({
@@ -61,27 +60,3 @@ export const Header = async ({ cart }: Props) => {
     />
   );
 };
-
-export const HeaderSkeleton = () => (
-  <header className="flex min-h-[92px] animate-pulse items-center justify-between gap-1 overflow-y-visible bg-white px-4 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0">
-    <div className="h-16 w-40 rounded bg-slate-200" />
-    <div className="hidden space-x-4 lg:flex">
-      <div className="h-6 w-20 rounded bg-slate-200" />
-      <div className="h-6 w-20 rounded bg-slate-200" />
-      <div className="h-6 w-20 rounded bg-slate-200" />
-      <div className="h-6 w-20 rounded bg-slate-200" />
-    </div>
-    <div className="flex items-center gap-2 lg:gap-4">
-      <div className="h-8 w-8 rounded-full bg-slate-200" />
-
-      <div className="flex gap-2 lg:gap-4">
-        <div className="h-8 w-8 rounded-full bg-slate-200" />
-        <div className="h-8 w-8 rounded-full bg-slate-200" />
-      </div>
-
-      <div className="h-8 w-20 rounded bg-slate-200" />
-
-      <div className="h-8 w-8 rounded bg-slate-200 lg:hidden" />
-    </div>
-  </header>
-);
