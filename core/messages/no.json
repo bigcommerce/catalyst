@@ -41,12 +41,12 @@
             "multipleAddresses": "Lagre flere leveringsadresser",
             "ordersHistory": "Få tilgang til bestillingshistorikken din",
             "ordersTracking": "Spore nye bestillinger",
-            "wishlists": "Legge til varer på ønskelisten din",
+            "wishlists": "Save items to your Wishlist",
             "createLink": "Opprett konto "
         }
     },
     "Register": {
-        "title": "Register account",
+        "title": "Registrer deg for en konto",
         "heading": "Ny konto",
         "Form": {
             "submit": "Opprett konto",
@@ -55,7 +55,7 @@
             "confirmPassword": "Passordene samsvarer ikke"
         },
         "Errors": {
-            "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
+            "inputError": "Something went wrong with processing user input.",
             "apiError": "Det ser ut til at vi opplever en serverfeil, vennligst prøv igjen om noen minutter.",
             "error": "Noe gikk galt. Prøv igjen senere."
         }
@@ -133,6 +133,7 @@
     },
     "Account": {
         "Home": {
+            "title": "Min konto",
             "heading": "Min konto",
             "accountTabsLabel": "Konto-faner",
             "orders": "Bestillinger",
@@ -157,11 +158,11 @@
                 "Form": {
                     "recaptchaText": "Bestå reCAPTCHA-sjekk",
                     "submit": "Legg til ny adresse",
-                    "submitting": "Saving address...",
+                    "submitting": "Lagrer adresse …",
                     "cancel": "Avbryt",
-                    "success": "Address added to your account.",
+                    "success": "Adressen er lagt til på kontoen din.",
                     "Errors": {
-                        "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
+                        "inputError": "Something went wrong with processing user input.",
                         "error": "Ukjent feil."
                     }
                 }
@@ -172,14 +173,14 @@
                 "Form": {
                     "recaptchaText": "Bestå reCAPTCHA-sjekk",
                     "submit": "Rediger adresse",
-                    "submitting": "Updating address...",
+                    "submitting": "Oppdaterer adresse …",
                     "cancel": "Avbryt",
                     "confirmDeleteAddress": "Slett adresse",
                     "deleteModalTitle": "Er du sikker på at du vil slette denne adressen?",
                     "deleteButton": "Slett",
                     "success": "The address has been successfully updated.",
                     "Errors": {
-                        "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
+                        "inputError": "Something went wrong with processing user input.",
                         "notFound": "Adressen finnes ikke.",
                         "error": "Ukjent feil."
                     }
@@ -225,7 +226,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
+                    "inputError": "Something went wrong with processing user input.",
                     "notFound": "Kunden eksisterer ikke"
                 }
             }
@@ -362,7 +363,7 @@
             "sku": "Sku",
             "upc": "UPC",
             "minPurchase": "Minimumskjøp",
-            "maxPurchase": "Maksiumum kjøp",
+            "maxPurchase": "Maximum purchase",
             "availability": "Tilgjengelighet",
             "condition": "Tilstand",
             "weight": "Vekt",
@@ -399,7 +400,7 @@
         }
     },
     "Maintenance": {
-        "title": "Maintenance",
+        "title": "Vedlikehold",
         "message": "Vi er nede for vedlikehold",
         "contactUs": "Du kan kontakte oss på:"
     },

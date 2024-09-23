@@ -41,12 +41,12 @@
             "multipleAddresses": "Gemme flere forsendelsesadresser",
             "ordersHistory": "Få adgang til din ordrehistorik",
             "ordersTracking": "Spore nye ordrer",
-            "wishlists": "Gemme varer til din ønskeliste",
+            "wishlists": "Save items to your Wishlist",
             "createLink": "Opret konto "
         }
     },
     "Register": {
-        "title": "Register account",
+        "title": "Registrer konto",
         "heading": "Ny konto",
         "Form": {
             "submit": "Opret konto",
@@ -55,7 +55,7 @@
             "confirmPassword": "Adgangskoderne stemmer ikke overens"
         },
         "Errors": {
-            "inputError": "Noget gik galt med behandling af brugerinput.",
+            "inputError": "Something went wrong with processing user input.",
             "apiError": "Det ser ud til, at vi oplever en serverfejl. Prøv igen om et par minutter.",
             "error": "Noget gik galt. Prøv igen senere."
         }
@@ -133,6 +133,7 @@
     },
     "Account": {
         "Home": {
+            "title": "Min konto",
             "heading": "Min konto",
             "accountTabsLabel": "Konto-faner",
             "orders": "Ordrer",
@@ -157,11 +158,11 @@
                 "Form": {
                     "recaptchaText": "Bestå ReCAPTCHA-kontrol",
                     "submit": "Tilføj ny adresse",
-                    "submitting": "Saving address...",
+                    "submitting": "Gemmer adresse ...",
                     "cancel": "Annuller",
-                    "success": "Address added to your account.",
+                    "success": "Adressen er tilføjet til din konto.",
                     "Errors": {
-                        "inputError": "Noget gik galt med behandling af brugerinput.",
+                        "inputError": "Something went wrong with processing user input.",
                         "error": "Ukendt fejl."
                     }
                 }
@@ -172,14 +173,14 @@
                 "Form": {
                     "recaptchaText": "Bestå ReCAPTCHA-kontrol",
                     "submit": "Rediger adresse",
-                    "submitting": "Updating address...",
+                    "submitting": "Opdaterer adresse ...",
                     "cancel": "Annuller",
                     "confirmDeleteAddress": "Slet adresse",
                     "deleteModalTitle": "Er du sikker på, at du vil slette denne adresse?",
                     "deleteButton": "Slet",
                     "success": "The address has been successfully updated.",
                     "Errors": {
-                        "inputError": "Noget gik galt med behandling af brugerinput.",
+                        "inputError": "Something went wrong with processing user input.",
                         "notFound": "Adressen findes ikke.",
                         "error": "Ukendt fejl."
                     }
@@ -225,7 +226,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Noget gik galt med behandling af brugerinput.",
+                    "inputError": "Something went wrong with processing user input.",
                     "notFound": "Kunden findes ikke."
                 }
             }
@@ -362,7 +363,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Minimumskøb",
-            "maxPurchase": "Maxiumumkøb",
+            "maxPurchase": "Maximum purchase",
             "availability": "Tilgængelighed",
             "condition": "Tilstand",
             "weight": "Vægt",
@@ -399,7 +400,7 @@
         }
     },
     "Maintenance": {
-        "title": "Maintenance",
+        "title": "Vedligeholdelse",
         "message": "Vi er nede på grund af vedligeholdelse",
         "contactUs": "Du kan kontakte os på:"
     },

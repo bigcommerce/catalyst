@@ -41,12 +41,12 @@
             "multipleAddresses": "Spara flera leveransadresser",
             "ordersHistory": "Gå till din orderhistorik",
             "ordersTracking": "Spåra nya beställningar",
-            "wishlists": "Spara objekt i din önskelista",
+            "wishlists": "Save items to your Wishlist",
             "createLink": "Skapa konto "
         }
     },
     "Register": {
-        "title": "Register account",
+        "title": "Registrera konto",
         "heading": "Nytt konto",
         "Form": {
             "submit": "Skapa konto",
@@ -55,7 +55,7 @@
             "confirmPassword": "Lösenorden stämmer inte överens"
         },
         "Errors": {
-            "inputError": "Något gick fel när användarens inmatning bearbetades.",
+            "inputError": "Something went wrong with processing user input.",
             "apiError": "Det verkar som om vi har ett serverfel. Försök igen om några minuter.",
             "error": "Någonting gick fel. Vänligen försök igen senare."
         }
@@ -133,6 +133,7 @@
     },
     "Account": {
         "Home": {
+            "title": "Mitt konto",
             "heading": "Mitt konto",
             "accountTabsLabel": "Kontoflikar",
             "orders": "Beställningar",
@@ -157,11 +158,11 @@
                 "Form": {
                     "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
                     "submit": "Lägg till ny adress",
-                    "submitting": "Saving address...",
+                    "submitting": "Sparar adress ...",
                     "cancel": "Annullera",
-                    "success": "Address added to your account.",
+                    "success": "Adressen har lagts till på ditt konto.",
                     "Errors": {
-                        "inputError": "Något gick fel när användarens inmatning bearbetades.",
+                        "inputError": "Something went wrong with processing user input.",
                         "error": "Okänt fel."
                     }
                 }
@@ -172,14 +173,14 @@
                 "Form": {
                     "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
                     "submit": "Redigera adress",
-                    "submitting": "Updating address...",
+                    "submitting": "Uppdaterar adress ...",
                     "cancel": "Annullera",
                     "confirmDeleteAddress": "Radera adress",
                     "deleteModalTitle": "Är du säker på att du vill ta bort den här adressen?",
                     "deleteButton": "Radera",
                     "success": "The address has been successfully updated.",
                     "Errors": {
-                        "inputError": "Något gick fel när användarens inmatning bearbetades.",
+                        "inputError": "Something went wrong with processing user input.",
                         "notFound": "Adressen finns inte.",
                         "error": "Okänt fel."
                     }
@@ -225,7 +226,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Något gick fel när användarens inmatning bearbetades.",
+                    "inputError": "Something went wrong with processing user input.",
                     "notFound": "Kunden finns inte"
                 }
             }
@@ -362,7 +363,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Minsta köp:",
-            "maxPurchase": "Maxköp",
+            "maxPurchase": "Maximum purchase",
             "availability": "Tillgänglighet",
             "condition": "Skick",
             "weight": "Vikt",
@@ -399,7 +400,7 @@
         }
     },
     "Maintenance": {
-        "title": "Maintenance",
+        "title": "Underhåll",
         "message": "Vi är nere för underhåll",
         "contactUs": "Kontakta oss på:"
     },

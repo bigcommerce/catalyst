@@ -41,12 +41,12 @@
             "multipleAddresses": "Salvar vários endereços de entrega",
             "ordersHistory": "Acessar seu histórico de pedidos",
             "ordersTracking": "Rastrear novos pedidos",
-            "wishlists": "Salvar itens na sua lista de desejos",
+            "wishlists": "Save items to your Wishlist",
             "createLink": "Criar conta "
         }
     },
     "Register": {
-        "title": "Register account",
+        "title": "Registrar conta",
         "heading": "Nova conta",
         "Form": {
             "submit": "Criar conta",
@@ -55,7 +55,7 @@
             "confirmPassword": "As senhas não conferem."
         },
         "Errors": {
-            "inputError": "Houve um erro no processamento da entrada do usuário.",
+            "inputError": "Something went wrong with processing user input.",
             "apiError": "Ocorreu um erro no servidor. Tente novamente em alguns minutos.",
             "error": "Ocorreu um erro. Tente novamente mais tarde."
         }
@@ -133,6 +133,7 @@
     },
     "Account": {
         "Home": {
+            "title": "Minha conta",
             "heading": "Minha conta",
             "accountTabsLabel": "Abas da conta",
             "orders": "Pedidos",
@@ -157,11 +158,11 @@
                 "Form": {
                     "recaptchaText": "Passar na verificação ReCAPTCHA",
                     "submit": "Adicionar novo endereço",
-                    "submitting": "Saving address...",
+                    "submitting": "Salvando endereço...",
                     "cancel": "Cancelar",
-                    "success": "Address added to your account.",
+                    "success": "Endereço adicionado à sua conta.",
                     "Errors": {
-                        "inputError": "Houve um erro no processamento da entrada do usuário.",
+                        "inputError": "Something went wrong with processing user input.",
                         "error": "Erro desconhecido."
                     }
                 }
@@ -172,14 +173,14 @@
                 "Form": {
                     "recaptchaText": "Passar na verificação ReCAPTCHA",
                     "submit": "Editar endereço",
-                    "submitting": "Updating address...",
+                    "submitting": "Atualizando endereço...",
                     "cancel": "Cancelar",
                     "confirmDeleteAddress": "Excluir endereço",
                     "deleteModalTitle": "Deseja mesmo excluir esse endereço?",
                     "deleteButton": "Excluir",
                     "success": "The address has been successfully updated.",
                     "Errors": {
-                        "inputError": "Houve um erro no processamento da entrada do usuário.",
+                        "inputError": "Something went wrong with processing user input.",
                         "notFound": "O endereço não existe.",
                         "error": "Erro desconhecido."
                     }
@@ -225,7 +226,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Houve um erro no processamento da entrada do usuário.",
+                    "inputError": "Something went wrong with processing user input.",
                     "notFound": "O cliente não existe"
                 }
             }
@@ -362,7 +363,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Compra mínima",
-            "maxPurchase": "Compra máxima",
+            "maxPurchase": "Maximum purchase",
             "availability": "Disponibilidade",
             "condition": "Condição",
             "weight": "Peso",
@@ -399,7 +400,7 @@
         }
     },
     "Maintenance": {
-        "title": "Maintenance",
+        "title": "Manutenção",
         "message": "Estamos em manutenção",
         "contactUs": "Entre em contato conosco em:"
     },

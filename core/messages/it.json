@@ -41,12 +41,12 @@
             "multipleAddresses": "Salvare molteplici indirizzi di spedizione",
             "ordersHistory": "Accedere allo storico dei tuoi ordini",
             "ordersTracking": "Tracciare i nuovi ordini",
-            "wishlists": "Salva articoli nella Lista desideri",
+            "wishlists": "Save items to your Wishlist",
             "createLink": "Crea account "
         }
     },
     "Register": {
-        "title": "Register account",
+        "title": "Registra un account",
         "heading": "Nuovo account",
         "Form": {
             "submit": "Crea account",
@@ -55,7 +55,7 @@
             "confirmPassword": "Le password non corrispondono."
         },
         "Errors": {
-            "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
+            "inputError": "Something went wrong with processing user input.",
             "apiError": "Sembra che si sia verificato un errore del server, riprova tra qualche minuto.",
             "error": "Si è verificato un errore. Riprova più tardi."
         }
@@ -133,6 +133,7 @@
     },
     "Account": {
         "Home": {
+            "title": "Il mio account",
             "heading": "Il mio account",
             "accountTabsLabel": "Schede account",
             "orders": "Ordini",
@@ -157,11 +158,11 @@
                 "Form": {
                     "recaptchaText": "Supera il controllo ReCAPTCHA",
                     "submit": "Aggiungi un nuovo indirizzo",
-                    "submitting": "Saving address...",
+                    "submitting": "Salvataggio dell'indirizzo in corso...",
                     "cancel": "Annulla",
-                    "success": "Address added to your account.",
+                    "success": "Indirizzo aggiunto al tuo account.",
                     "Errors": {
-                        "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
+                        "inputError": "Something went wrong with processing user input.",
                         "error": "Errore sconosciuto."
                     }
                 }
@@ -172,14 +173,14 @@
                 "Form": {
                     "recaptchaText": "Supera il controllo ReCAPTCHA",
                     "submit": "Modifica indirizzo",
-                    "submitting": "Updating address...",
+                    "submitting": "Aggiornamento indirizzo in corso...",
                     "cancel": "Annulla",
                     "confirmDeleteAddress": "Cancella indirizzo",
                     "deleteModalTitle": "Vuoi davvero eliminare questo indirizzo?",
                     "deleteButton": "Elimina",
                     "success": "The address has been successfully updated.",
                     "Errors": {
-                        "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
+                        "inputError": "Something went wrong with processing user input.",
                         "notFound": "L'indirizzo non esiste.",
                         "error": "Errore sconosciuto."
                     }
@@ -225,7 +226,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
+                    "inputError": "Something went wrong with processing user input.",
                     "notFound": "Il cliente non esiste"
                 }
             }
@@ -362,7 +363,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Spesa minima",
-            "maxPurchase": "Acquisto massimo",
+            "maxPurchase": "Maximum purchase",
             "availability": "Disponibilità",
             "condition": "Condizioni",
             "weight": "Peso",
@@ -399,7 +400,7 @@
         }
     },
     "Maintenance": {
-        "title": "Maintenance",
+        "title": "MANUTENZIONE",
         "message": "Stiamo effettuando la manutenzione",
         "contactUs": "Puoi contattarci all'indirizzo:"
     },

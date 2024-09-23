@@ -41,12 +41,12 @@
             "multipleAddresses": "Zapisz wiele adresów wysyłki",
             "ordersHistory": "Dostęp do historii zamówień",
             "ordersTracking": "Śledzenie nowych zamówień",
-            "wishlists": "Zapisz przedmioty na swojej liście życzeń",
+            "wishlists": "Save items to your Wishlist",
             "createLink": "Utwórz konto "
         }
     },
     "Register": {
-        "title": "Register account",
+        "title": "Zarejestruj konto",
         "heading": "Nowe konto",
         "Form": {
             "submit": "Utwórz konto",
@@ -55,7 +55,7 @@
             "confirmPassword": "Hasła nie są zgodne"
         },
         "Errors": {
-            "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
+            "inputError": "Something went wrong with processing user input.",
             "apiError": "Wygląda na to, że wystąpił błąd serwera, spróbuj ponownie za kilka minut.",
             "error": "Coś poszło nie tak. Proszę spróbować później."
         }
@@ -133,6 +133,7 @@
     },
     "Account": {
         "Home": {
+            "title": "Moje konto",
             "heading": "Moje konto",
             "accountTabsLabel": "Karty konta",
             "orders": "Zamówienia",
@@ -157,11 +158,11 @@
                 "Form": {
                     "recaptchaText": "Zdaj test ReCAPTCHA",
                     "submit": "Dodaj nowy adres",
-                    "submitting": "Saving address...",
+                    "submitting": "Zapisywanie adresu...",
                     "cancel": "Anuluj",
-                    "success": "Address added to your account.",
+                    "success": "Adres został dodany do Twojego konta.",
                     "Errors": {
-                        "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
+                        "inputError": "Something went wrong with processing user input.",
                         "error": "Nieznany błąd."
                     }
                 }
@@ -172,14 +173,14 @@
                 "Form": {
                     "recaptchaText": "Zdaj test ReCAPTCHA",
                     "submit": "Edytuj adres",
-                    "submitting": "Updating address...",
+                    "submitting": "Aktualizowanie adresu...",
                     "cancel": "Anuluj",
                     "confirmDeleteAddress": "Usuń adres",
                     "deleteModalTitle": "Czy na pewno chcesz usunąć ten adres?",
                     "deleteButton": "Usuń",
                     "success": "The address has been successfully updated.",
                     "Errors": {
-                        "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
+                        "inputError": "Something went wrong with processing user input.",
                         "notFound": "Adres nie istnieje.",
                         "error": "Nieznany błąd."
                     }
@@ -225,7 +226,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
+                    "inputError": "Something went wrong with processing user input.",
                     "notFound": "Klient nie istnieje"
                 }
             }
@@ -362,7 +363,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Minimalny zakup",
-            "maxPurchase": "Maksymalny zakup",
+            "maxPurchase": "Maximum purchase",
             "availability": "Dostępność",
             "condition": "Stan",
             "weight": "Waga",
@@ -399,7 +400,7 @@
         }
     },
     "Maintenance": {
-        "title": "Maintenance",
+        "title": "Konserwacja",
         "message": "Przerwa z powodu konserwacji",
         "contactUs": "Możesz skontaktować się z nami:"
     },
