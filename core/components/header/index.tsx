@@ -10,7 +10,6 @@ import { localeLanguageRegionMap } from '~/i18n/routing';
 
 import { Header as ComponentsHeader } from '../vibes/header';
 
-import { search } from './_actions/search';
 import { HeaderFragment } from './fragment';
 
 export const Header = async () => {
@@ -51,7 +50,7 @@ export const Header = async () => {
       links={links}
       locales={localeLanguageRegionMap}
       logo={data.settings ? logoTransformer(data.settings) : undefined}
-      searchAction={search}
+      searchHref="/search"
     />
   );
 };
