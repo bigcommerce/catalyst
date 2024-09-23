@@ -1,5 +1,4 @@
 import { getLocale } from 'next-intl/server';
-import { ReactNode } from 'react';
 
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
 import { getSessionCustomerId } from '~/auth';
@@ -14,11 +13,7 @@ import { Header as ComponentsHeader } from '../vibes/header';
 import { search } from './_actions/search';
 import { HeaderFragment } from './fragment';
 
-interface Props {
-  cart: ReactNode;
-}
-
-export const Header = async ({ cart }: Props) => {
+export const Header = async () => {
   const locale = await getLocale();
   const customerId = await getSessionCustomerId();
 
