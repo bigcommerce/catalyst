@@ -6,14 +6,14 @@ export const GalleryFragment = graphql(`
       edges {
         node {
           altText
-          url: urlTemplate
+          url: urlTemplate(lossy: true)
           isDefault
         }
       }
     }
     defaultImage {
       altText
-      url: urlTemplate
+      url: urlTemplate(lossy: true)
     }
   }
 `);

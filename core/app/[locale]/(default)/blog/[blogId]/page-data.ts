@@ -22,7 +22,7 @@ const BlogPageQuery = graphql(
               tags
               thumbnailImage {
                 altText
-                url: urlTemplate
+                url: urlTemplate(lossy: true)
               }
               seo {
                 pageTitle
