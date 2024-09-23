@@ -51,7 +51,7 @@ const ComparePageQuery = graphql(
               }
               defaultImage {
                 altText
-                url: urlTemplate
+                url: urlTemplate(lossy: true)
               }
               reviewSummary {
                 numberOfReviews

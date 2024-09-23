@@ -13,7 +13,7 @@ export const SharingLinksFragment = graphql(`
         post(entityId: $entityId) {
           entityId
           thumbnailImage {
-            url: urlTemplate
+            url: urlTemplate(lossy: true)
           }
           seo {
             pageTitle
