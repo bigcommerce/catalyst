@@ -14,12 +14,6 @@ The client simplifies what you need to do to handle requests and responses. For 
 
 - `fetchSitemapIndex(channelId?: string)`: fetches the sitemap index for the store, which provides a URL to the XML sitemap.
 
-- `getCanonicalUrl(channelId?: string)`: constructs and returns the canonical URL for the BigCommerce store. This URL is used for constructing various API endpoint URLs and is based on the store's hash and the provided or default channel ID.
-
-- `getGraphQLEndpoint(channelId?: string)`: returns the GraphQL endpoint URL for the store, incorporating the optional channel ID to specify which store channel's GraphQL API to access. This URL is used for sending GraphQL queries and mutations.
-
-- `requestLogger(document: string)`: provides a logging function to help debug and monitor performance. Logs the operation type, name, request duration, and query complexity.
-
 ### Deprecated
 
 The following method is deprecated and requires the `BIGCOMMERCE_ACCESS_TOKEN` to be set in the `.env` file.
