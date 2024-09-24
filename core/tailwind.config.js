@@ -4,8 +4,8 @@ const config = {
   content: [
     './app/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
-    '!./node_modules/**', // Exclude everything in node_modules to speed up builds
     './vibes/**/*.{ts,tsx}',
+    '!./node_modules/**', // Exclude everything in node_modules to speed up builds
   ],
   prefix: '',
   theme: {
