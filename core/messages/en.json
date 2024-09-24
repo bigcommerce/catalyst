@@ -337,6 +337,11 @@
       "remove": "Remove",
       "spinnerText": "Removing...",
       "errorMessage": "Something went wrong while removing item, please try again."
+    },
+    "Errors": {
+      "cartNotFound": "Cart not found.",
+      "itemNotFound": "Item not found.",
+      "failedToUpdateQuantity": "Failed to update item quantity. Please try again."
     }
   },
   "Compare": {

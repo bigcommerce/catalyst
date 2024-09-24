@@ -24,6 +24,7 @@ export const Counter = function Counter({ current = 0, max = 20 }: Props) {
 
   return (
     <div className="flex items-center rounded-lg border">
+      <input name="quantity" type="hidden" value={count} />
       <button
         aria-label="Decrease count"
         className="group rounded-l-lg p-3 hover:bg-primary-highlight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
