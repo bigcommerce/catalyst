@@ -9,7 +9,7 @@ import { Pause, Play } from 'lucide-react';
 import Image, { StaticImageData } from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Button } from '../button';
+import { Button } from '@/vibes/soul/components/button';
 
 interface Link {
   label: string;
