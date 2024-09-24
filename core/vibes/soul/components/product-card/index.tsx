@@ -1,13 +1,11 @@
 import { clsx } from 'clsx';
 import { ComponentPropsWithoutRef } from 'react';
 
+import { Badge } from '@/vibes/soul/components/badge';
+import { Compare } from '@/vibes/soul/components/product-card/compare';
+import { Price, ProductPrice } from '@/vibes/soul/components/product-card/price';
 import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
-
-import { Badge } from '../badge';
-
-import { Compare } from './compare';
-import { Price, ProductPrice } from './price';
 
 interface Image {
   altText: string;
