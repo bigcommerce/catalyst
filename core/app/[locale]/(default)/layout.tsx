@@ -2,9 +2,9 @@ import { useTranslations } from 'next-intl';
 import { unstable_setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren, Suspense } from 'react';
 
+import { Subscribe } from '@/vibes/soul/components/subscribe';
 import { Footer } from '~/components/footer/footer';
 import { Header } from '~/components/header';
-import { Subscribe } from '~/components/vibes/subscribe';
 import { LocaleType } from '~/i18n/routing';
 
 interface Props extends PropsWithChildren {

@@ -1,6 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
+import { FeaturedImage } from '@/vibes/soul/components/featured-image';
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
@@ -10,7 +11,6 @@ import { FeaturedProductsCarouselFragment } from '~/components/featured-products
 import { FeaturedProductsList } from '~/components/featured-products-list';
 import { FeaturedProductsListFragment } from '~/components/featured-products-list/fragment';
 import { Slideshow } from '~/components/slideshow';
-import { FeaturedImage } from '~/components/vibes/featured-image';
 import { LocaleType } from '~/i18n/routing';
 
 import image from './_images/featured1.jpg';

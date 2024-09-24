@@ -1,9 +1,8 @@
 import { useFormatter } from 'next-intl';
 
+import { FeaturedProductsCarousel as FeaturedProductsCarouselComponent } from '@/vibes/soul/components/featured-products-carousel';
 import { ResultOf } from '~/client/graphql';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
-
-import { FeaturedProductsCarousel as FeaturedProductsCarouselComponent } from '../vibes/featured-products-carousel';
 
 import { FeaturedProductsCarouselFragment } from './fragment';
 

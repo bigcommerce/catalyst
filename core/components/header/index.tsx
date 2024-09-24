@@ -1,5 +1,6 @@
 import { getLocale } from 'next-intl/server';
 
+import { Header as ComponentsHeader } from '@/vibes/soul/components/header';
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
@@ -7,8 +8,6 @@ import { readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 import { localeLanguageRegionMap } from '~/i18n/routing';
-
-import { Header as ComponentsHeader } from '../vibes/header';
 
 import { HeaderFragment } from './fragment';
 

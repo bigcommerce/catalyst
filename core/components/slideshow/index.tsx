@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 
-import { Slideshow as ComponentsSlideshow } from '~/components/vibes/slideshow';
+import { Slideshow as ComponentsSlideshow } from '@/vibes/soul/components/slideshow';
 
 import SlideshowBG1 from './slideshow-bg-01.jpg';
 import SlideshowBG2 from './slideshow-bg-02.jpg';
