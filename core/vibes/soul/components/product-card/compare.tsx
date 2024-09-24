@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { Checkbox } from '../checkbox';
+import { Checkbox } from '@/vibes/soul/components/checkbox';
 
 import { Product } from '.';
 

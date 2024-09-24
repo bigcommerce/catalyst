@@ -1,9 +1,8 @@
 import { clsx } from 'clsx';
 import Image, { StaticImageData } from 'next/image';
 
+import { Button } from '@/vibes/soul/components/button';
 import { Link } from '~/components/link';
-
-import { Button } from '../button';
 
 export interface FeaturedImageProps {
   title: string;

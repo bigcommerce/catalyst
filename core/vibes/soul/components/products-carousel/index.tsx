@@ -1,4 +1,5 @@
-import { Carousel } from '../carousel';
+import { Carousel } from '@/vibes/soul/components/carousel';
+
 import { Product, ProductCard, ProductCardSkeleton } from '../product-card';
 
 interface Props {

@@ -1,7 +1,7 @@
 import { clsx } from 'clsx';
 import Image from 'next/image';
 
-import { InlineEmailForm } from '../inline-email-form';
+import { InlineEmailForm } from '@/vibes/soul/components/inline-email-form';
 
 interface Props {
   image?: {

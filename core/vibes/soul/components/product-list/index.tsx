@@ -1,6 +1,6 @@
 import { clsx } from 'clsx';
 
-import { Product, ProductCard, ProductCardSkeleton } from '../product-card';
+import { Product, ProductCard, ProductCardSkeleton } from '@/vibes/soul/components/product-card';
 
 interface Props {
   products: Product[];
