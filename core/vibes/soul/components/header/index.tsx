@@ -11,6 +11,7 @@ import { ArrowRight, ChevronDown, Search, SearchIcon, ShoppingBag, User } from '
 import Image from 'next/image';
 import { forwardRef, Ref, useEffect, useRef, useState } from 'react';
 import ReactHeadroom from 'react-headroom';
+import { z } from 'zod';
 
 import { Link } from '~/components/link';
 import { LocaleType, usePathname, useRouter } from '~/i18n/routing';
@@ -40,10 +41,10 @@ interface Props {
   cartCount?: number;
   accountHref: string;
   links: Links[];
-  searchAction: (formData: FormData) => Promise<void>;
   logo?: string | Image;
   activeLocale?: string;
   locales?: Array<{ id: string; region: string; language: string }>;
+  searchHref: string;
 }
 
 export const Header = forwardRef(function Header(
@@ -55,7 +56,7 @@ export const Header = forwardRef(function Header(
     logo,
     activeLocale,
     locales,
-    searchAction,
+    searchHref,
     ...rest
   }: Props,
   ref: Ref<HTMLDivElement>,
@@ -317,7 +318,13 @@ export const Header = forwardRef(function Header(
 
         {/* Search Dropdown */}
         <form
-          action={searchAction}
+          action={(formData: FormData) => {
+            const searchTerm = z.string().parse(formData.get('searchTerm'));
+
+            if (searchTerm) {
+              router.push(`${searchHref}?term=${searchTerm}`);
+            }
+          }}
           className={clsx(
             'absolute inset-x-0 mx-1.5 mt-1.5 flex items-center gap-3 overflow-y-auto rounded-3xl px-3 py-4 shadow-[2px_4px_24px_#00000010] transition-all duration-300 ease-in-out @xl:px-5 @4xl:mx-5',
             searchOpen

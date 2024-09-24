@@ -9,12 +9,12 @@ import {
 } from '@icons-pack/react-simple-icons';
 import { JSX } from 'react';
 
+import { Footer as ComponentsFooter } from '@/vibes/soul/components/footer';
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { Footer as ComponentsFooter } from '~/components/ui/footer';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 
 import { FooterFragment } from './fragment';

@@ -1,5 +1,4 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { ShoppingCart } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 
@@ -7,8 +6,7 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { Footer } from '~/components/footer/footer';
-import { Header, HeaderSkeleton } from '~/components/header';
-import { CartLink } from '~/components/header/cart';
+import { Header } from '~/components/header';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { ProductCardCarousel } from '~/components/product-card-carousel';
 import { SearchForm } from '~/components/search-form';
@@ -42,14 +40,8 @@ export default async function NotFound() {
 
   return (
     <>
-      <Suspense fallback={<HeaderSkeleton />}>
-        <Header
-          cart={
-            <CartLink>
-              <ShoppingCart aria-label="cart" />
-            </CartLink>
-          }
-        />
+      <Suspense>
+        <Header />
       </Suspense>
 
       <main className="mx-auto mb-10 max-w-[835px] space-y-8 px-4 sm:px-10 lg:px-0">

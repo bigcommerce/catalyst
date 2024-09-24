@@ -60,7 +60,6 @@ export default async function StoreSelector({ params: { locale: selectedLocale }
 
         <div className="grid grid-cols-1 gap-6 py-6 md:grid-cols-3 md:gap-11 lg:grid-cols-4 lg:gap-8">
           {locales.map((locale) => (
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             <LocaleLink key={locale} locale={locale} selected={selectedLocale === locale} />
           ))}
         </div>

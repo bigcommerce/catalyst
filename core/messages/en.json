@@ -1,8 +1,36 @@
 {
   "Home": {
     "Carousel": {
-      "featuredProducts": "Featured Products",
-      "newestProducts": "Newest products"
+      "title": "Newest products"
+    },
+    "List": {
+      "title": "Featured products",
+      "cta": "Shop now"
+    },
+    "FeaturedImage": {
+      "title": "Title",
+      "altText": "An assortment of brandless products against a blank background",
+      "cta": "Shop now"
+    },
+    "Slides": {
+      "Slide1": {
+        "title": "25% Off Sale",
+        "altText": "An assortment of brandless products against a blank background",
+        "cta": "Shop now" 
+      },
+      "Slide2": {
+        "title": "Great Deals",
+        "altText": "An assortment of brandless products against a blank background",
+        "cta": "Shop now" 
+      },
+      "Slide3": {
+        "title": "Low Prices",
+        "altText": "An assortment of brandless products against a blank background",
+        "cta": "Shop now" 
+      }
+    },
+    "Subscribe": {
+      "title": "Sign up for our newsletter"
     }
   },
   "ChangePassword": {
