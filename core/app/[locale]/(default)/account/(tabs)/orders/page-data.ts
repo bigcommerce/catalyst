@@ -31,7 +31,7 @@ const OrderShipmentFragment = graphql(`
 const CustomerAllOrders = graphql(
   `
     query CustomerAllOrders($after: String, $before: String, $first: Int, $last: Int) {
-      site {
+      customer {
         orders(after: $after, before: $before, first: $first, last: $last) {
           pageInfo {
             ...PaginationFragment
@@ -199,7 +199,7 @@ export const getCustomerOrders = cache(
       fetchOptions: { cache: 'no-store' },
     });
 
-    const orders = response.data.site.orders;
+    const orders = response.data.customer?.orders;
 
     if (!orders) {
       return undefined;
