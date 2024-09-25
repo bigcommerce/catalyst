@@ -235,45 +235,15 @@ export const Cart = function Cart({
                         <Counter current={quantity} name="quantity" />
                       </form>
 
-                      {/* Remove Item Button & Confirmation Modal */}
-                      <Modal
-                        content={
-                          <div className="max-w-xs">
-                            <h2 className="text-center font-heading text-2xl font-medium">
-                              Remove Item From Cart?
-                            </h2>
-                            <p className="mt-2 text-center text-sm text-contrast-400">
-                              Are you sure you want to remove this item from your cart? Once
-                              removed, you cannot undo it.
-                            </p>
-                            <Button
-                              className="mt-6 w-full bg-error [&>div]:text-white"
-                              onClick={() => {
-                                // TODO: Remove Item from Cart
-                                removeItem({ lineItemEntityId: id });
-                                setRemoveItemModalIsOpen(false);
-                              }}
-                              variant="primary"
-                            >
-                              Remove From Cart
-                            </Button>
-                            <Button
-                              className="mt-2 w-full"
-                              onClick={() => setRemoveItemModalIsOpen(false)}
-                              variant="secondary"
-                            >
-                              Cancel
-                            </Button>
-                          </div>
-                        }
-                        isOpen={removeItemModalIsOpen}
-                        setOpen={setRemoveItemModalIsOpen}
-                        trigger={
-                          <button className="-ml-1 flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 hover:bg-contrast-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4">
-                            <Trash2 size={18} strokeWidth={1} />
-                          </button>
-                        }
-                      />
+                      <button
+                        className="-ml-1 flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 hover:bg-contrast-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4"
+                        onClick={() => {
+                          // TODO: Remove Item from Cart
+                          removeItem({ lineItemEntityId: id });
+                        }}
+                      >
+                        <Trash2 size={18} strokeWidth={1} />
+                      </button>
                     </div>
                   </div>
                 </li>
