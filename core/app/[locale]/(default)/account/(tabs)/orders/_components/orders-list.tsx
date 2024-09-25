@@ -222,14 +222,10 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
                 })}
               </ul>
               <TruncatedCard
-                itemsQuantity={(consignments.shipping ?? []).reduce((orderItems, shipment) => {
-                  const totalQuantity = shipment.lineItems.reduce(
-                    (total, items) => total + items.quantity,
-                    0,
-                  );
-
-                  return orderItems + totalQuantity;
-                }, 0)}
+                itemsQuantity={(consignments.shipping ?? []).reduce(
+                  (orderItems, shipment) => orderItems + shipment.lineItems.length,
+                  0,
+                )}
               />
               <ManageOrderButtons
                 className="hidden lg:ms-auto lg:inline-flex lg:flex-col lg:gap-2"
