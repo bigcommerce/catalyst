@@ -232,10 +232,7 @@ export const Cart = function Cart({
                           });
                         }}
                       >
-                        <input name="id" type="hidden" value={id} />
-                        <input name="productEntityId" type="hidden" value={productEntityId} />
-                        <input name="variantEntityId" type="hidden" value={variantEntityId} />
-                        <Counter current={quantity} />
+                        <Counter current={quantity} name="quantity" />
                       </form>
 
                       {/* Remove Item Button & Confirmation Modal */}
