@@ -1,14 +1,12 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getFormatter, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
-import { ProductCard } from '~/components/product-card';
-import { Pagination } from '~/components/ui/pagination';
+import { CompareProducts } from '@/vibes/soul/components/compare-products';
+import { facetsTransformer } from '~/data-transformers/facets-transformer';
+import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { LocaleType } from '~/i18n/routing';
 
-import { FacetedSearch } from '../../_components/faceted-search';
-import { MobileSideNav } from '../../_components/mobile-side-nav';
-import { SortBy } from '../../_components/sort-by';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { getBrand } from './page-data';
@@ -42,7 +40,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Brand({ params: { slug, locale }, searchParams }: Props) {
   unstable_setRequestLocale(locale);
 
-  const t = await getTranslations('Brand');
+  const t = await getTranslations('FacetedGroup.SortBy');
+  const format = await getFormatter();
 
   const brandId = Number(slug);
 
@@ -56,67 +55,67 @@ export default async function Brand({ params: { slug, locale }, searchParams }: 
   }
 
   const productsCollection = search.products;
-  const products = productsCollection.items;
+  const products = productsCollection.items.map((product) => ({
+    id: product.entityId.toString(),
+    name: product.name,
+    href: product.path,
+    image: product.defaultImage
+      ? { src: product.defaultImage.url, altText: product.defaultImage.altText }
+      : undefined,
+    price: pricesTransformer(product.prices, format),
+    subtitle: product.brand?.name ?? undefined,
+  }));
+
+  const totalProducts = productsCollection.collectionInfo?.totalItems ?? 0;
+
   const { hasNextPage, hasPreviousPage, endCursor, startCursor } = productsCollection.pageInfo;
 
+  const facets = search.facets.items.filter((facet) => facet.__typename !== 'BrandSearchFilter');
+  const filters = await facetsTransformer(facets);
+
+  const selectedSort = searchParams.sort ?? 'featured';
+
   return (
-    <div className="group">
-      <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
-        <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{brand.name}</h1>
-
-        <div className="flex flex-col items-center gap-3 whitespace-nowrap md:flex-row">
-          <MobileSideNav>
-            <FacetedSearch
-              facets={search.facets.items}
-              headingId="mobile-filter-heading"
-              pageType="brand"
-            />
-          </MobileSideNav>
-          <div className="flex w-full flex-col items-start gap-4 md:flex-row md:items-center md:justify-end md:gap-6">
-            <SortBy />
-            <div className="order-3 py-4 text-base font-semibold md:order-2 md:py-0">
-              {t('sortBy', { items: productsCollection.collectionInfo?.totalItems ?? 0 })}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-4 gap-8">
-        <FacetedSearch
-          className="mb-8 hidden lg:block"
-          facets={search.facets.items}
-          headingId="desktop-filter-heading"
-          pageType="brand"
-        />
-
-        <section
-          aria-labelledby="product-heading"
-          className="col-span-4 group-has-[[data-pending]]:animate-pulse lg:col-span-3"
-        >
-          <h2 className="sr-only" id="product-heading">
-            {t('products')}
-          </h2>
-
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 sm:gap-8">
-            {products.map((product, index) => (
-              <ProductCard
-                imagePriority={index <= 3}
-                imageSize="wide"
-                key={product.entityId}
-                product={product}
-              />
-            ))}
-          </div>
-
-          <Pagination
-            endCursor={endCursor ?? undefined}
-            hasNextPage={hasNextPage}
-            hasPreviousPage={hasPreviousPage}
-            startCursor={startCursor ?? undefined}
-          />
-        </section>
-      </div>
-    </div>
+    <CompareProducts
+      breadcrumbs={[]}
+      filters={filters}
+      pagination={{
+        endCursor: endCursor ?? undefined,
+        hasNextPage,
+        hasPreviousPage,
+        startCursor: startCursor ?? undefined,
+      }}
+      products={products}
+      sort={[
+        { value: 'featured', label: t('featuredItems'), selected: selectedSort === 'featured' },
+        { value: 'newest', label: t('newestItems'), selected: selectedSort === 'newest' },
+        {
+          value: 'best_selling',
+          label: t('bestSellingItems'),
+          selected: selectedSort === 'best_selling',
+        },
+        { value: 'a_to_z', label: t('aToZ'), selected: selectedSort === 'a_to_z' },
+        { value: 'z_to_a', label: t('zToA'), selected: selectedSort === 'z_to_a' },
+        {
+          value: 'best_reviewed',
+          label: t('byReview'),
+          selected: selectedSort === 'best_reviewed',
+        },
+        {
+          value: 'lowest_price',
+          label: t('priceAscending'),
+          selected: selectedSort === 'lowest_price',
+        },
+        {
+          value: 'highest_price',
+          label: t('priceDescending'),
+          selected: selectedSort === 'highest_price',
+        },
+        { value: 'relevance', label: t('relevance'), selected: selectedSort === 'relevance' },
+      ]}
+      title={brand.name}
+      totalProducts={totalProducts}
+    />
   );
 }
 
