@@ -1,6 +1,6 @@
 import { Button } from '@/vibes/soul/components/button';
 import { Product } from '@/vibes/soul/components/product-card';
-import { ProductsList } from '@/vibes/soul/components/product-list';
+import { ProductsList } from '@/vibes/soul/components/products-list';
 import { Link } from '~/components/link';
 
 interface Link {
