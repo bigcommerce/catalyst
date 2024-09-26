@@ -2,6 +2,7 @@
 
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
+import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
@@ -26,17 +27,18 @@ type DeleteCartLineItemInput = Variables['input'];
 export async function removeItem({
   lineItemEntityId,
 }: Omit<DeleteCartLineItemInput, 'cartEntityId'>) {
+  const t = await getTranslations('Cart.Errors');
   const customerId = await getSessionCustomerId();
 
   try {
     const cartId = cookies().get('cartId')?.value;
 
     if (!cartId) {
-      return { status: 'error', error: 'No cartId cookie found' };
+      return { status: 'error', error: t('cartNotFound') };
     }
 
     if (!lineItemEntityId) {
-      return { status: 'error', error: 'No lineItemEntityId found' };
+      return { status: 'error', error: t('itemNotFound') };
     }
 
     const response = await client.fetch({

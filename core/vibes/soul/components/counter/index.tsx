@@ -6,9 +6,10 @@ import { useState } from 'react';
 interface Props {
   current?: number;
   max?: number;
+  name: string;
 }
 
-export const Counter = function Counter({ current = 0, max = 20 }: Props) {
+export const Counter = function Counter({ current = 0, max = 20, name }: Props) {
   const [count, setCount] = useState(current);
 
   const decrement = () => {
@@ -24,6 +25,7 @@ export const Counter = function Counter({ current = 0, max = 20 }: Props) {
 
   return (
     <div className="flex items-center rounded-lg border">
+      <input name={name} type="hidden" value={count} />
       <button
         aria-label="Decrease count"
         className="group rounded-l-lg p-3 hover:bg-primary-highlight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
