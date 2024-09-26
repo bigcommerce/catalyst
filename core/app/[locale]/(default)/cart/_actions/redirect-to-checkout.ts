@@ -1,6 +1,6 @@
 'use server';
 
-import { z } from 'zod';
+import { cookies } from 'next/headers';
 
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
@@ -19,8 +19,14 @@ const CheckoutRedirectMutation = graphql(`
   }
 `);
 
-export const redirectToCheckout = async (formData: FormData) => {
-  const cartId = z.string().parse(formData.get('cartId'));
+// TODO: return error status?
+export const redirectToCheckout = async () => {
+  const cartId = cookies().get('cartId')?.value;
+
+  if (!cartId) {
+    throw new Error('No cartId cookie found');
+  }
+
   const customerId = await getSessionCustomerId();
 
   const { data } = await client.fetch({
