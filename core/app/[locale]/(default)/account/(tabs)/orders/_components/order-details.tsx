@@ -1,5 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
@@ -10,8 +10,7 @@ import { OrderDetailsDataType } from '../page-data';
 import { assembleProductData, ProductSnippet } from './product-snippet';
 
 const OrderState = async ({ orderState }: { orderState: OrderDetailsDataType['orderState'] }) => {
-  const locale = await getLocale();
-  const t = await getTranslations({ locale, namespace: 'Account.Orders' });
+  const t = await getTranslations('Account.Orders');
   const format = await getFormatter();
   const { orderId, orderDate, status } = orderState;
 
@@ -42,8 +41,7 @@ const OrderSummaryInfo = async ({
 }: {
   summaryInfo: OrderDetailsDataType['summaryInfo'];
 }) => {
-  const locale = await getLocale();
-  const t = await getTranslations({ locale, namespace: 'Account.Orders' });
+  const t = await getTranslations('Account.Orders');
   const format = await getFormatter();
   const { subtotal, shipping, tax, discounts, grandTotal } = summaryInfo;
   const totalDiscountSum = discounts.couponDiscounts.reduce((sum, discount) => {
@@ -135,8 +133,7 @@ const combineShippingMethodInfo = async (
     return [];
   }
 
-  const locale = await getLocale();
-  const t = await getTranslations({ locale, namespace: 'Account.Orders' });
+  const t = await getTranslations('Account.Orders');
   const format = await getFormatter();
   const { shippingProviderName, shippingMethodName, shippedAt } = shipment;
   const providerWithMethod = `${shippingProviderName} - ${shippingMethodName}`;
@@ -158,8 +155,7 @@ const ShippingInfo = async ({
   isMutiConsignments: boolean;
   shippingNumber?: number;
 }) => {
-  const locale = await getLocale();
-  const t = await getTranslations({ locale, namespace: 'Account.Orders' });
+  const t = await getTranslations('Account.Orders');
   const orderShipments = consignments.shipping?.map(({ shipments, shippingAddress }) => ({
     shipments: removeEdgesAndNodes(shipments),
     shippingAddress,
@@ -235,8 +231,7 @@ const ShippingInfo = async ({
 };
 
 export const OrderDetails = async ({ data }: { data: OrderDetailsDataType }) => {
-  const locale = await getLocale();
-  const t = await getTranslations({ locale, namespace: 'Account.Orders' });
+  const t = await getTranslations('Account.Orders');
   const { orderState, summaryInfo, consignments } = data;
   const isMultiShippingConsignments = consignments.shipping && consignments.shipping.length > 1;
 

@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getLocale, getTranslations } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 
 import { Pagination } from '~/components/ui/pagination';
 
@@ -18,8 +18,7 @@ interface Props {
 }
 
 export const OrdersContent = async ({ orderId, orders, pageInfo }: Props) => {
-  const locale = await getLocale();
-  const t = await getTranslations({ locale, namespace: 'Account.Orders' });
+  const t = await getTranslations('Account.Orders');
   const { hasNextPage, hasPreviousPage, startCursor, endCursor } = pageInfo;
 
   if (orderId) {
