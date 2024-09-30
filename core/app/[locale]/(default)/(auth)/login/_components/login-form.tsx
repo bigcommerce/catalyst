@@ -121,7 +121,7 @@ export const LoginForm = () => {
           </FormSubmit>
           <Link
             className="my-5 inline-flex items-center justify-start font-semibold text-primary hover:text-secondary md:my-0"
-            href="/reset"
+            href="/login/reset-password"
           >
             {t('Form.resetPassword')}
           </Link>
