@@ -109,7 +109,9 @@ const Wishlist = ({ setWishlistBook, wishlist }: WishlistProps) => {
 
   return (
     <>
-      <h3 className="mb-2 text-lg font-bold">{name}</h3>
+      <h3 className="mb-2 text-lg font-bold">
+        <Link href={`?wishlistId=${entityId}`}>{name}</Link>
+      </h3>
       <div className="flex w-full flex-col items-start justify-between lg:flex-row">
         {items.length === 0 ? (
           <p className="flex-1 py-4 text-center">{t('noItems')}</p>
@@ -168,7 +170,7 @@ const Wishlist = ({ setWishlistBook, wishlist }: WishlistProps) => {
                           <>
                             {product.prices.retailPrice?.value !== undefined && (
                               <>
-                                {t('Table.Prices.msrp')}:{' '}
+                                {t('Prices.msrp')}:{' '}
                                 <span className="line-through">
                                   {format.number(product.prices.retailPrice.value, {
                                     style: 'currency',
@@ -181,7 +183,7 @@ const Wishlist = ({ setWishlistBook, wishlist }: WishlistProps) => {
                             {product.prices.salePrice?.value !== undefined &&
                             product.prices.basePrice?.value !== undefined ? (
                               <>
-                                {t('Table.Prices.was')}:{' '}
+                                {t('Prices.was')}:{' '}
                                 <span className="line-through">
                                   {format.number(product.prices.basePrice.value, {
                                     style: 'currency',
@@ -190,7 +192,7 @@ const Wishlist = ({ setWishlistBook, wishlist }: WishlistProps) => {
                                 </span>
                                 <br />
                                 <>
-                                  {t('Table.Prices.now')}:{' '}
+                                  {t('Prices.now')}:{' '}
                                   {format.number(product.prices.price.value, {
                                     style: 'currency',
                                     currency: product.prices.price.currencyCode,
@@ -239,7 +241,7 @@ const Wishlist = ({ setWishlistBook, wishlist }: WishlistProps) => {
               <DeleteWishlistForm
                 id={entityId}
                 name={name}
-                onWishistDeleted={handleWishlistDeleted}
+                onWishlistDeleted={handleWishlistDeleted}
               />
             </Modal>
           </div>

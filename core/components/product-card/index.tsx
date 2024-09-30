@@ -5,6 +5,7 @@ import { ProductCard as ComponentProductCard } from '~/components/ui/product-car
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
 import { AddToCart } from './add-to-cart';
+import { DeleteWishlistItemForm, DeleteWishlistItemFormProps } from './delete-wishlist-item-form';
 import { ProductCardFragment } from './fragment';
 
 interface Props {
@@ -13,6 +14,8 @@ interface Props {
   imagePriority?: boolean;
   showCompare?: boolean;
   showCart?: boolean;
+  showWishlist?: boolean;
+  wishlistData?: DeleteWishlistItemFormProps;
 }
 
 export const ProductCard = ({
@@ -21,6 +24,8 @@ export const ProductCard = ({
   imagePriority = false,
   showCart = true,
   showCompare = true,
+  showWishlist = false,
+  wishlistData,
 }: Props) => {
   const format = useFormatter();
 
@@ -31,6 +36,9 @@ export const ProductCard = ({
   return (
     <ComponentProductCard
       addToCart={showCart && <AddToCart data={product} />}
+      deleteFromWishlist={
+        showWishlist && wishlistData && <DeleteWishlistItemForm {...wishlistData} />
+      }
       href={path}
       id={entityId.toString()}
       image={defaultImage ? { src: defaultImage.url, altText: defaultImage.altText } : undefined}

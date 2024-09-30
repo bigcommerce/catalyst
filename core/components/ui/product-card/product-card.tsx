@@ -39,6 +39,7 @@ interface Props extends Product {
   className?: string;
   imagePriority?: boolean;
   imageSize?: 'square' | 'tall' | 'wide';
+  deleteFromWishlist?: ReactNode;
   showCompare?: boolean;
 }
 
@@ -51,6 +52,7 @@ const ProductCard = ({
   href,
   price,
   id,
+  deleteFromWishlist,
   showCompare = true,
   subtitle,
   name,
@@ -116,6 +118,7 @@ const ProductCard = ({
         {showCompare && <Compare id={id} image={image} name={name} />}
       </div>
     </div>
+    {deleteFromWishlist ? <div className="absolute right-0 top-0">{deleteFromWishlist}</div> : null}
     {addToCart}
   </div>
 );

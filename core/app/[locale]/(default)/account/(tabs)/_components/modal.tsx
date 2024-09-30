@@ -9,7 +9,7 @@ import { Button } from '~/components/ui/button';
 interface Props extends PropsWithChildren {
   actionHandler?: MouseEventHandler<HTMLButtonElement>;
   title: string;
-  trigger: React.ReactNode;
+  trigger?: React.ReactNode;
   descriptionText?: string;
   confirmationText?: string;
   abortText?: string;
