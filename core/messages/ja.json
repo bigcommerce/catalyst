@@ -41,7 +41,7 @@
             "multipleAddresses": "複数の配送先住所を保存する",
             "ordersHistory": "注文履歴にアクセスする",
             "ordersTracking": "新規注文の追跡",
-            "wishlists": "商品をウィッシュリストに保存する",
+            "wishlists": "Save items to your Wishlist",
             "createLink": "アカウント作成 "
         }
     },
@@ -133,7 +133,8 @@
     },
     "Account": {
         "Home": {
-            "heading": "マイアカウント",
+            "title": "My account",
+            "heading": "My account",
             "accountTabsLabel": "Account Tabs",
             "orders": "注文",
             "messages": "メッセージ",

@@ -46,7 +46,7 @@
         }
     },
     "Register": {
-        "title": "Register account",
+        "title": "Registrar cuenta",
         "heading": "Cuenta nueva",
         "Form": {
             "submit": "Crear cuenta",
@@ -133,6 +133,7 @@
     },
     "Account": {
         "Home": {
+            "title": "Mi cuenta",
             "heading": "Mi cuenta",
             "accountTabsLabel": "Pestañas de la cuenta",
             "orders": "Pedidos",
@@ -157,9 +158,9 @@
                 "Form": {
                     "recaptchaText": "Pasar la verificación ReCAPTCHA",
                     "submit": "Añadir nueva dirección",
-                    "submitting": "Saving address...",
+                    "submitting": "Guardando dirección...",
                     "cancel": "Cancelar",
-                    "success": "Address added to your account.",
+                    "success": "Dirección añadida a tu cuenta.",
                     "Errors": {
                         "inputError": "Algo salió mal al procesar los datos del usuario.",
                         "error": "Error desconocido."
@@ -172,12 +173,12 @@
                 "Form": {
                     "recaptchaText": "Pasar la verificación ReCAPTCHA",
                     "submit": "Editar dirección",
-                    "submitting": "Updating address...",
+                    "submitting": "Actualizando dirección...",
                     "cancel": "Cancelar",
                     "confirmDeleteAddress": "Eliminar dirección",
                     "deleteModalTitle": "¿Está seguro de que desea eliminar esta dirección?",
                     "deleteButton": "Eliminar",
-                    "success": "The address has been successfully updated.",
+                    "success": "La dirección se ha actualizado correctamente.",
                     "Errors": {
                         "inputError": "Algo salió mal al procesar los datos del usuario.",
                         "notFound": "La dirección no existe.",
@@ -399,7 +400,7 @@
         }
     },
     "Maintenance": {
-        "title": "Maintenance",
+        "title": "Mantenimiento",
         "message": "Estamos fuera de servicio por mantenimiento",
         "contactUs": "Puedes ponerte en contacto con nosotros en:"
     },
