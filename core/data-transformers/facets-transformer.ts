@@ -19,6 +19,7 @@ export const facetsTransformer = async (
           label: category.name,
           value: category.entityId.toString(),
           amount: facet.displayProductCount ? category.productCount : undefined,
+          defaultSelected: category.isSelected,
         })),
       };
     }
@@ -33,6 +34,7 @@ export const facetsTransformer = async (
           label: brand.name,
           value: brand.entityId.toString(),
           amount: facet.displayProductCount ? brand.productCount : undefined,
+          defaultSelected: true,
         })),
       };
     }
@@ -47,6 +49,7 @@ export const facetsTransformer = async (
           label: attribute.value,
           value: attribute.value,
           amount: facet.displayProductCount ? attribute.productCount : undefined,
+          defaultSelected: attribute.isSelected,
         })),
       };
     }
@@ -61,6 +64,7 @@ export const facetsTransformer = async (
           label: `Rating ${rating.value} & up`,
           value: rating.value,
           amount: rating.productCount,
+          defaultSelected: rating.isSelected,
         })),
       };
     }
@@ -91,6 +95,7 @@ export const facetsTransformer = async (
         key: 'shipping',
         value: 'free_shipping',
         amount: facet.displayProductCount ? facet.freeShipping.productCount : undefined,
+        defaultSelected: facet.freeShipping.isSelected,
       });
     }
 
@@ -100,6 +105,7 @@ export const facetsTransformer = async (
         key: 'isFeatured',
         value: 'on',
         amount: facet.displayProductCount ? facet.isFeatured.productCount : undefined,
+        defaultSelected: facet.isFeatured.isSelected,
       });
     }
 
@@ -109,6 +115,7 @@ export const facetsTransformer = async (
         key: 'stock',
         value: 'in_stock',
         amount: facet.displayProductCount ? facet.isInStock.productCount : undefined,
+        defaultSelected: facet.isInStock.isSelected,
       });
     }
 

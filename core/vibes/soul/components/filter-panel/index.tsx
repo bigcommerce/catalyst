@@ -27,6 +27,7 @@ export type Filters = Array<
         value: string;
         amount?: number;
         key?: string;
+        defaultSelected?: boolean;
       }>;
     }
   | {
@@ -49,12 +50,35 @@ export const FilterPanel = function FilterPanel({ filters }: Props) {
 
   const searchParams = useSearchParams();
 
-  const [filterOpen, setFilterOpen] = useState(false);
-  const [selectedTags, setSelectedTags] = useState<Array<[string, string]>>(
-    Array.from(searchParams.entries()).filter(([key]) => key !== 'sort' && key !== 'term'),
+  const defaultOptions = useMemo(
+    () =>
+      filters.reduce<Array<[string, string]>>((acc, filter) => {
+        if (filter.type === 'range') {
+          return acc;
+        }
+
+        return [
+          ...acc,
+          ...filter.options
+            .filter(({ defaultSelected }) => defaultSelected === true)
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            .map(({ key, value }) => [key ?? filter.name, value] as [string, string]),
+        ];
+      }, []),
+    [filters],
   );
 
-  console.log(selectedTags);
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  const [selectedTags, setSelectedTags] = useState<Array<[string, string]>>(
+    [
+      ...Array.from(searchParams.entries()).filter(([key]) => key !== 'sort' && key !== 'term'),
+      ...defaultOptions,
+    ].filter(
+      (item, index, self) =>
+        index === self.findIndex(([key, value]) => key === item[0] && value === item[1]),
+    ),
+  );
 
   const clearAllFilters = () => {
     startTransition(() => {
@@ -158,7 +182,7 @@ export const FilterPanel = function FilterPanel({ filters }: Props) {
             content: (
               <div className="flex flex-wrap gap-2">
                 {Boolean(filter.options.length) &&
-                  filter.options.map(({ label, value, key }, index) => {
+                  filter.options.map(({ label, value, key, defaultSelected }, index) => {
                     const isFilterSelected = selectedTags.some(
                       ([tagKey, tagValue]) =>
                         (tagKey === filter.name || tagKey === key) && tagValue === value,
@@ -170,7 +194,7 @@ export const FilterPanel = function FilterPanel({ filters }: Props) {
                           'whitespace-nowrap rounded-full px-2 py-1 text-sm font-normal',
                           'ring-primary focus-visible:outline-0 focus-visible:ring-2',
                           'border border-transparent transition-colors',
-                          isFilterSelected
+                          defaultSelected || isFilterSelected
                             ? 'bg-foreground text-background'
                             : 'bg-contrast-100 hover:border-contrast-300',
                         )}
