@@ -60,7 +60,9 @@ test.describe('desktop', () => {
     await page.getByRole('link', { name: 'Cart Items 1' }).click();
     await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
     await page.getByRole('button', { name: 'Proceed to checkout' }).click();
-    await page.getByLabel('Email').fill(faker.internet.email({ firstName, lastName }));
+    await page
+      .getByLabel('Email')
+      .fill(faker.internet.email({ firstName, lastName, provider: 'example.com' }));
 
     await page.getByRole('button', { name: 'Continue' }).click();
 
@@ -122,7 +124,9 @@ test.describe('mobile', () => {
     await page.getByRole('link', { name: 'Cart Items 1' }).click();
     await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
     await page.getByRole('button', { name: 'Proceed to checkout' }).click();
-    await page.getByLabel('Email').fill(faker.internet.email({ firstName, lastName }));
+    await page
+      .getByLabel('Email')
+      .fill(faker.internet.email({ firstName, lastName, provider: 'example.com' }));
     await page.getByRole('button', { name: 'Continue' }).click();
 
     await waitForShippingForm(page, isMobile);

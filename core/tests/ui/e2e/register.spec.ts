@@ -10,9 +10,7 @@ test('Account register', async ({ page }) => {
 
   await page.getByRole('heading', { name: 'New account' }).waitFor();
 
-  await page
-    .getByLabel('Email Address')
-    .fill(faker.internet.email({ provider: 'mybigcommerce.com' }));
+  await page.getByLabel('Email Address').fill(faker.internet.email({ provider: 'example.com' }));
   await page.getByLabel('PasswordRequired', { exact: true }).fill(password);
   await page.getByLabel('Confirm PasswordRequired').fill(password);
   await page.getByLabel('First NameRequired').fill(faker.person.firstName());
