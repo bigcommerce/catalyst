@@ -46,7 +46,7 @@
         }
     },
     "Register": {
-        "title": "Register account",
+        "title": "Registrar conta",
         "heading": "Nova conta",
         "Form": {
             "submit": "Criar conta",
@@ -133,6 +133,7 @@
     },
     "Account": {
         "Home": {
+            "title": "Minha conta",
             "heading": "Minha conta",
             "accountTabsLabel": "Abas da conta",
             "orders": "Pedidos",
@@ -157,9 +158,9 @@
                 "Form": {
                     "recaptchaText": "Passar na verificação ReCAPTCHA",
                     "submit": "Adicionar novo endereço",
-                    "submitting": "Saving address...",
+                    "submitting": "Salvando endereço...",
                     "cancel": "Cancelar",
-                    "success": "Address added to your account.",
+                    "success": "Endereço adicionado à sua conta.",
                     "Errors": {
                         "inputError": "Houve um erro no processamento da entrada do usuário.",
                         "error": "Erro desconhecido."
@@ -172,12 +173,12 @@
                 "Form": {
                     "recaptchaText": "Passar na verificação ReCAPTCHA",
                     "submit": "Editar endereço",
-                    "submitting": "Updating address...",
+                    "submitting": "Atualizando endereço...",
                     "cancel": "Cancelar",
                     "confirmDeleteAddress": "Excluir endereço",
                     "deleteModalTitle": "Deseja mesmo excluir esse endereço?",
                     "deleteButton": "Excluir",
-                    "success": "The address has been successfully updated.",
+                    "success": "O endereço foi atualizado.",
                     "Errors": {
                         "inputError": "Houve um erro no processamento da entrada do usuário.",
                         "notFound": "O endereço não existe.",
@@ -399,7 +400,7 @@
         }
     },
     "Maintenance": {
-        "title": "Maintenance",
+        "title": "Manutenção",
         "message": "Estamos em manutenção",
         "contactUs": "Entre em contato conosco em:"
     },

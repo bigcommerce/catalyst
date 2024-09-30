@@ -41,12 +41,12 @@
             "multipleAddresses": "Zapisz wiele adresów wysyłki",
             "ordersHistory": "Dostęp do historii zamówień",
             "ordersTracking": "Śledzenie nowych zamówień",
-            "wishlists": "Zapisz przedmioty na swojej liście życzeń",
+            "wishlists": "Zapisz elementy na swojej liście życzeń",
             "createLink": "Utwórz konto "
         }
     },
     "Register": {
-        "title": "Register account",
+        "title": "Zarejestruj konto",
         "heading": "Nowe konto",
         "Form": {
             "submit": "Utwórz konto",
@@ -133,6 +133,7 @@
     },
     "Account": {
         "Home": {
+            "title": "Moje konto",
             "heading": "Moje konto",
             "accountTabsLabel": "Karty konta",
             "orders": "Zamówienia",
@@ -157,9 +158,9 @@
                 "Form": {
                     "recaptchaText": "Zdaj test ReCAPTCHA",
                     "submit": "Dodaj nowy adres",
-                    "submitting": "Saving address...",
+                    "submitting": "Zapisywanie adresu...",
                     "cancel": "Anuluj",
-                    "success": "Address added to your account.",
+                    "success": "Adres został dodany do Twojego konta.",
                     "Errors": {
                         "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
                         "error": "Nieznany błąd."
@@ -172,12 +173,12 @@
                 "Form": {
                     "recaptchaText": "Zdaj test ReCAPTCHA",
                     "submit": "Edytuj adres",
-                    "submitting": "Updating address...",
+                    "submitting": "Aktualizowanie adresu...",
                     "cancel": "Anuluj",
                     "confirmDeleteAddress": "Usuń adres",
                     "deleteModalTitle": "Czy na pewno chcesz usunąć ten adres?",
                     "deleteButton": "Usuń",
-                    "success": "The address has been successfully updated.",
+                    "success": "Adres został pomyślnie zaktualizowany.",
                     "Errors": {
                         "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
                         "notFound": "Adres nie istnieje.",
@@ -399,7 +400,7 @@
         }
     },
     "Maintenance": {
-        "title": "Maintenance",
+        "title": "Konserwacja",
         "message": "Przerwa z powodu konserwacji",
         "contactUs": "Możesz skontaktować się z nami:"
     },

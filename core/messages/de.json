@@ -46,7 +46,7 @@
         }
     },
     "Register": {
-        "title": "Register account",
+        "title": "Konto registrieren",
         "heading": "Neues Konto",
         "Form": {
             "submit": "Konto erstellen",
@@ -133,6 +133,7 @@
     },
     "Account": {
         "Home": {
+            "title": "Mein Konto",
             "heading": "Mein Konto",
             "accountTabsLabel": "Konto-Registerkarten",
             "orders": "Bestellungen",
@@ -157,9 +158,9 @@
                 "Form": {
                     "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
                     "submit": "Neue Adresse hinzufügen",
-                    "submitting": "Saving address...",
+                    "submitting": "Adresse wird gespeichert...",
                     "cancel": "Abbrechen",
-                    "success": "Address added to your account.",
+                    "success": "Adresse zu Ihrem Konto hinzugefügt",
                     "Errors": {
                         "inputError": "Bei der Verarbeitung der Benutzereingabe ist ein Fehler aufgetreten.",
                         "error": "Unbekannter Fehler."
@@ -172,12 +173,12 @@
                 "Form": {
                     "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
                     "submit": "Adresse bearbeiten",
-                    "submitting": "Updating address...",
+                    "submitting": "Adresse wird aktualisiert...",
                     "cancel": "Abbrechen",
                     "confirmDeleteAddress": "Adresse löschen",
                     "deleteModalTitle": "Möchten Sie diese Adresse wirklich löschen?",
                     "deleteButton": "Löschen",
-                    "success": "The address has been successfully updated.",
+                    "success": "Die Adresse wurde erfolgreich aktualisiert.",
                     "Errors": {
                         "inputError": "Bei der Verarbeitung der Benutzereingabe ist ein Fehler aufgetreten.",
                         "notFound": "Adresse existiert nicht.",
@@ -362,7 +363,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Mindestkaufwert",
-            "maxPurchase": "Maximale Abnahme",
+            "maxPurchase": "Höchstkaufwert",
             "availability": "Verfügbarkeit",
             "condition": "Zustand",
             "weight": "Gewicht",
@@ -399,7 +400,7 @@
         }
     },
     "Maintenance": {
-        "title": "Maintenance",
+        "title": "WARTUNG",
         "message": "Wir sind wegen Wartungsarbeiten nicht erreichbar",
         "contactUs": "Sie können uns kontaktieren unter:"
     },

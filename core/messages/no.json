@@ -46,7 +46,7 @@
         }
     },
     "Register": {
-        "title": "Register account",
+        "title": "Registrer deg for en konto",
         "heading": "Ny konto",
         "Form": {
             "submit": "Opprett konto",
@@ -133,6 +133,7 @@
     },
     "Account": {
         "Home": {
+            "title": "Min konto",
             "heading": "Min konto",
             "accountTabsLabel": "Konto-faner",
             "orders": "Bestillinger",
@@ -157,9 +158,9 @@
                 "Form": {
                     "recaptchaText": "Bestå reCAPTCHA-sjekk",
                     "submit": "Legg til ny adresse",
-                    "submitting": "Saving address...",
+                    "submitting": "Lagrer adresse …",
                     "cancel": "Avbryt",
-                    "success": "Address added to your account.",
+                    "success": "Adressen er lagt til på kontoen din.",
                     "Errors": {
                         "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
                         "error": "Ukjent feil."
@@ -172,12 +173,12 @@
                 "Form": {
                     "recaptchaText": "Bestå reCAPTCHA-sjekk",
                     "submit": "Rediger adresse",
-                    "submitting": "Updating address...",
+                    "submitting": "Oppdaterer adresse …",
                     "cancel": "Avbryt",
                     "confirmDeleteAddress": "Slett adresse",
                     "deleteModalTitle": "Er du sikker på at du vil slette denne adressen?",
                     "deleteButton": "Slett",
-                    "success": "The address has been successfully updated.",
+                    "success": "Adressen er oppdatert.",
                     "Errors": {
                         "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
                         "notFound": "Adressen finnes ikke.",
@@ -362,7 +363,7 @@
             "sku": "Sku",
             "upc": "UPC",
             "minPurchase": "Minimumskjøp",
-            "maxPurchase": "Maksiumum kjøp",
+            "maxPurchase": "Maksimalt kjøp",
             "availability": "Tilgjengelighet",
             "condition": "Tilstand",
             "weight": "Vekt",
@@ -399,7 +400,7 @@
         }
     },
     "Maintenance": {
-        "title": "Maintenance",
+        "title": "Vedlikehold",
         "message": "Vi er nede for vedlikehold",
         "contactUs": "Du kan kontakte oss på:"
     },
