@@ -34,7 +34,7 @@ export const facetsTransformer = async (
           label: brand.name,
           value: brand.entityId.toString(),
           amount: facet.displayProductCount ? brand.productCount : undefined,
-          defaultSelected: true,
+          defaultSelected: brand.isSelected,
         })),
       };
     }
