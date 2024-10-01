@@ -44,13 +44,7 @@ const OrderSummaryInfo = async ({
   const t = await getTranslations('Account.Orders');
   const format = await getFormatter();
   const { subtotal, shipping, tax, discounts, grandTotal } = summaryInfo;
-  const totalDiscountSum = discounts.couponDiscounts.reduce((sum, discount) => {
-    let totalDiscount = sum;
-
-    totalDiscount += discount.discountedAmount.value;
-
-    return totalDiscount;
-  }, 0);
+  const { nonCouponDiscountTotal, couponDiscounts } = discounts;
 
   return (
     <div className="border border-gray-200 p-6">
@@ -65,20 +59,30 @@ const OrderSummaryInfo = async ({
             })}
           </span>
         </p>
-        <p className="flex justify-between">
-          <span>{t('orderDiscount')}</span>
-          <span>
-            {discounts.couponDiscounts.length > 0
-              ? format.number(totalDiscountSum, {
-                  style: 'currency',
-                  currency: discounts.couponDiscounts[0]?.discountedAmount.currencyCode,
-                })
-              : format.number(0, {
-                  style: 'currency',
-                  currency: subtotal.currencyCode,
-                })}
-          </span>
-        </p>
+        {nonCouponDiscountTotal.value > 0 && (
+          <p className="flex justify-between">
+            <span>{t('orderDiscount')}</span>
+            <span>
+              -
+              {format.number(nonCouponDiscountTotal.value, {
+                style: 'currency',
+                currency: nonCouponDiscountTotal.currencyCode,
+              })}
+            </span>
+          </p>
+        )}
+        {couponDiscounts.map(({ couponCode, discountedAmount }, index) => (
+          <p className="flex justify-between" key={index}>
+            <span>{t('orderAppliedCoupon', { code: couponCode })}</span>
+            <span>
+              -
+              {format.number(discountedAmount.value, {
+                style: 'currency',
+                currency: discountedAmount.currencyCode,
+              })}
+            </span>
+          </p>
+        ))}
         <p className="flex justify-between">
           <span>{t('orderShipping')}</span>
           <span>

@@ -158,6 +158,7 @@
       "orderSubtotal": "Subtotal:",
       "orderGrandtotal": "Grand total:",
       "orderDiscount": "Discount:",
+      "orderAppliedCoupon": "Coupon code ({code}):",
       "orderShipping": "Shipping:",
       "orderTax": "Tax:",
       "printInvoice": "Print Invoice",
