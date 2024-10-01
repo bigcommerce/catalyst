@@ -2,7 +2,7 @@ import { clsx } from 'clsx';
 
 interface Props {
   label: string;
-  amount: number;
+  amount?: number;
   onClick: () => void;
   selected: boolean;
 }

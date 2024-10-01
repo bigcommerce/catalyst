@@ -1,22 +1,46 @@
 'use client';
 
-import React from 'react';
+import { useSearchParams } from 'next/navigation';
+import React, { startTransition } from 'react';
 
 import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/components/breadcrumbs';
 import { Dropdown } from '@/vibes/soul/components/dropdown';
-import { FilterPanel } from '@/vibes/soul/components/filter-panel';
+import { FilterPanel, type Filters } from '@/vibes/soul/components/filter-panel';
+import { usePathname, useRouter } from '~/i18n/routing';
+
+export type Sort = Array<{ value: string; label: string; selected?: boolean }>;
 
 interface Props {
   breadcrumbs?: Breadcrumb[];
   title: string;
   numberOfProducts: number;
+  filters: Filters;
+  sort: Sort;
 }
 
 export const ProductsHeader = function ProductsHeader({
   breadcrumbs,
   title,
   numberOfProducts,
+  filters,
+  sort,
 }: Props) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const onSort = (sortValue: string) => {
+    const params = new URLSearchParams(searchParams);
+
+    params.set('sort', sortValue);
+    params.delete('before');
+    params.delete('after');
+
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`);
+    });
+  };
+
   return (
     <div className="relative z-10 pb-10 @container">
       {breadcrumbs && (
@@ -32,9 +56,13 @@ export const ProductsHeader = function ProductsHeader({
         </h1>
         <div className="ml-auto flex gap-2 pr-3 @xl:pr-6 @5xl:pr-20">
           {/* Filter Button & Panel */}
-          <FilterPanel />
+          <FilterPanel filters={filters} />
           <Dropdown
-            items={['Most Recent', 'Most Popular', 'Price: Low to High', 'Price: High to Low']}
+            items={sort.map(({ value, label, selected }) => ({
+              textValue: label,
+              onSelect: () => onSort(value),
+              selected,
+            }))}
             label="Sort"
             // eslint-disable-next-line react/style-prop-object
             style="round"

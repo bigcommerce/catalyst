@@ -1,95 +1,97 @@
 'use client';
 
 import { clsx } from 'clsx';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 
 import { Link } from '~/components/link';
 import { usePathname } from '~/i18n/routing';
 
-export const Pagination = function Pagination({ pages: totalPages }: { pages: number }) {
+interface Props {
+  className?: string;
+  endCursor?: string;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+  startCursor?: string;
+}
+
+export const Pagination = function Pagination({
+  className,
+  endCursor,
+  hasPreviousPage,
+  hasNextPage,
+  startCursor,
+}: Props) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const initialPage = parseInt(searchParams.get('page') ?? '1', 10);
 
-  const [currentPage, setCurrentPage] = useState(initialPage);
+  const beforeSearchParams = new URLSearchParams(searchParams);
 
-  useEffect(() => {
-    const current = parseInt(searchParams.get('page') ?? '1', 10);
+  beforeSearchParams.delete('after');
 
-    if (current !== currentPage) {
-      setCurrentPage(current);
-    }
-  }, [currentPage, searchParams]);
+  if (startCursor) {
+    beforeSearchParams.set('before', String(startCursor));
+  }
 
-  const renderPagination = () => {
-    const pages = [];
+  const afterSearchParams = new URLSearchParams(searchParams);
 
-    if (totalPages <= 4) {
-      // eslint-disable-next-line no-plusplus
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      pages.push(1);
+  afterSearchParams.delete('before');
 
-      if (currentPage > 3) {
-        pages.push('...');
-      }
-
-      if (currentPage > 2 && currentPage < totalPages - 1) {
-        pages.push(currentPage - 1);
-        pages.push(currentPage);
-        pages.push(currentPage + 1);
-      } else if (currentPage <= 2) {
-        pages.push(2);
-        pages.push(3);
-      } else {
-        pages.push(totalPages - 2);
-        pages.push(totalPages - 1);
-      }
-
-      if (currentPage < totalPages - 2) {
-        pages.push('...');
-      }
-
-      if (totalPages > 1) {
-        pages.push(totalPages);
-      }
-    }
-
-    return pages;
-  };
+  if (endCursor) {
+    afterSearchParams.set('after', String(endCursor));
+  }
 
   return (
-    <div className="flex w-full justify-center bg-background py-10 text-xs">
+    <nav className={clsx('flex w-full justify-center bg-background py-10 text-xs', className)}>
       <div className="flex gap-2">
-        {renderPagination().map((page, index) =>
-          typeof page === 'string' ? (
-            <span
-              className="hidden h-12 w-12 items-center justify-center text-foreground @lg:flex"
-              key={index}
-            >
-              ...
-            </span>
-          ) : (
-            <Link
-              className={clsx(
-                'flex h-12 w-12 items-center justify-center rounded-full border transition-colors duration-300',
-                'ring-primary focus-visible:outline-0 focus-visible:ring-2',
-                page === currentPage
-                  ? 'border-foreground bg-foreground text-background'
-                  : 'border-contrast-100 text-foreground hover:bg-contrast-100',
-              )}
-              href={`${pathname}?page=${page.toString()}`}
-              key={index}
-              onClick={() => setCurrentPage(page)}
-            >
-              {page}
-            </Link>
-          ),
+        {hasPreviousPage ? (
+          <Link
+            className={clsx(
+              'flex h-12 w-12 items-center justify-center rounded-full border transition-colors duration-300',
+              'ring-primary focus-visible:outline-0 focus-visible:ring-2',
+              'border-contrast-100 text-foreground hover:bg-contrast-100',
+            )}
+            href={`${pathname}?${beforeSearchParams.toString()}`}
+          >
+            <span className="sr-only">Previous</span>
+            <ChevronLeft aria-hidden="true" className="" />
+          </Link>
+        ) : (
+          <span
+            className={clsx(
+              'flex h-12 w-12 items-center justify-center rounded-full border transition-colors duration-300',
+              'ring-primary focus-visible:outline-0 focus-visible:ring-2',
+              'border-contrast-100 text-foreground',
+            )}
+          >
+            <ChevronLeft aria-hidden="true" className="m-2 inline-block h-8 w-8 text-gray-200" />
+          </span>
+        )}
+
+        {hasNextPage ? (
+          <Link
+            className={clsx(
+              'flex h-12 w-12 items-center justify-center rounded-full border transition-colors duration-300',
+              'ring-primary focus-visible:outline-0 focus-visible:ring-2',
+              'border-contrast-100 text-foreground hover:bg-contrast-100',
+            )}
+            href={`${pathname}?${afterSearchParams.toString()}`}
+          >
+            <span className="sr-only">Next</span>
+            <ChevronRight aria-hidden="true" className="m-2 inline-block h-8 w-8" />
+          </Link>
+        ) : (
+          <span
+            className={clsx(
+              'flex h-12 w-12 items-center justify-center rounded-full border transition-colors duration-300',
+              'ring-primary focus-visible:outline-0 focus-visible:ring-2',
+              'border-contrast-100 text-foreground',
+            )}
+          >
+            <ChevronRight aria-hidden="true" className="m-2 inline-block h-8 w-8 text-gray-200" />
+          </span>
         )}
       </div>
-    </div>
+    </nav>
   );
 };

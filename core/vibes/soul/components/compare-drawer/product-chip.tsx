@@ -2,9 +2,9 @@
 
 import { clsx } from 'clsx';
 import { X } from 'lucide-react';
-import Image from 'next/image';
 
 import { Product } from '@/vibes/soul/components/product-card';
+import { BcImage } from '~/components/bc-image';
 
 interface Props {
   product: Product;
@@ -36,7 +36,7 @@ export const ProductChip = function ProductChip({ product, setCompareProducts }:
     >
       <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-[11px] bg-primary-highlight bg-opacity-10 @4xl:rounded-r-none">
         {product.image?.src != null ? (
-          <Image
+          <BcImage
             alt={product.image.altText}
             className="object-cover"
             height={50}
