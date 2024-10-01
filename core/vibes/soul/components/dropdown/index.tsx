@@ -4,6 +4,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuItemProps,
   DropdownMenuTrigger,
   DropdownMenuTriggerProps,
 } from '@radix-ui/react-dropdown-menu';
@@ -17,7 +18,11 @@ interface Props {
   label: string;
   labelOnTop?: boolean;
   style?: 'round' | 'rectangle';
-  items: string[];
+  items: Array<{
+    textValue: string;
+    onSelect: DropdownMenuItemProps['onSelect'];
+    selected?: boolean;
+  }>;
 }
 
 export const Dropdown = function Dropdown({
@@ -53,13 +58,13 @@ export const Dropdown = function Dropdown({
                 'w-full cursor-default select-none rounded-xl px-3 py-2 text-sm font-medium text-contrast-400 outline-none transition-colors',
                 'hover:bg-contrast-100 hover:text-foreground @4xl:text-base',
                 {
-                  'text-foreground': selectedItem === item,
+                  'text-foreground': item.selected,
                 },
               )}
-              key={item}
-              onSelect={() => setSelectedItem(item)}
+              key={item.textValue}
+              onSelect={item.onSelect}
             >
-              {item}
+              {item.textValue}
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
