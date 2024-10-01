@@ -32,7 +32,7 @@
       "entePasswordMessage": "Enter your password",
       "submitting": "Submitting...",
       "logIn": "Log in",
-      "resetPassword": "Forgot your password?"
+      "forgotPassword": "Forgot your password?"
     },
     "CreateAccount": {
       "heading": "New customer?",
@@ -43,6 +43,22 @@
       "ordersTracking":  "Track new orders",
       "wishlists": "Save items to your Wishlist",
       "createLink": "Create Account "
+    },
+    "ForgotPassword": {
+      "title": "Forgot password",
+      "heading": "Forgot password",
+      "Form": {
+        "description": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
+        "emailLabel": "Email",
+        "emailValidationMessage": "Enter a valid email such as name@domain.com",
+        "recaptchaText": "Pass ReCAPTCHA check",
+        "confirmResetPassword": "If the email address {email} is linked to an account in our store, we have sent you a password reset email. Please check your inbox and spam folder if you don't see it.",
+        "submitting": "Submitting...",
+        "submit": "Reset password"
+      },
+      "Errors": {
+        "error":"Unknown error."
+      }
     }
   },
   "Register": {
@@ -58,22 +74,6 @@
       "inputError": "Something went wrong with processing user input.",
       "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
       "error": "Something went wrong. Please try again later."
-    }
-  },
-  "Reset": {
-    "title": "Reset password",
-    "heading": "Reset password",
-    "Form": {
-      "description": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
-      "emailLabel": "Email",
-      "emailValidationMessage": "Enter a valid email such as name@domain.com",
-      "recaptchaText": "Pass ReCAPTCHA check",
-      "confirmResetPassword": "If the email address {email} is linked to an account in our store, we have sent you a password reset email. Please check your inbox and spam folder if you don't see it.",
-      "submitting": "Submitting...",
-      "submit": "Reset password"
-    },
-    "Errors": {
-      "error":"Unknown error."
     }
   },
   "FacetedGroup": {
