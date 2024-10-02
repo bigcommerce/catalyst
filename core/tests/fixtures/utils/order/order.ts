@@ -4,19 +4,23 @@ export class Order {
   constructor(
     private readonly page: Page,
     readonly id: number,
-    readonly statusId: number,
     readonly customerId: number,
+    readonly date_created: string,
+    readonly statusId: number,
+    readonly status: string,
+    readonly subtotal_ex_tax: string,
+    readonly subtotal_tax: string,
+    readonly total_inc_tax: string,
+    readonly items_total: number,
+    readonly discount_amount: string,
+    readonly coupon_discount: string,
     readonly billingAddress: Address,
-    readonly shippingAddresses: Address[],
-    readonly products: OrderProduct[],
   ) {}
 }
 export interface Address {
   first_name: string;
   last_name: string;
-  company?: string;
   street_1: string;
-  street_2?: string;
   city: string;
   state: string;
   zip: string;
@@ -25,6 +29,5 @@ export interface Address {
 
 export interface OrderProduct {
   product_id: number;
-  variant_id: number;
   quantity: number;
 }
