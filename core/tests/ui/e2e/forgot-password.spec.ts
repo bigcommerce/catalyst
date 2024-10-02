@@ -11,7 +11,7 @@ test('Forgot password', async ({ page }) => {
 
   await page.getByLabel('Email').fill(email);
 
-  await page.getByRole('button', { name: 'Forgot password' }).click();
+  await page.getByRole('button', { name: 'Reset password' }).click();
 
   await expect(page).toHaveURL('/login/');
   await expect(page.getByRole('region')).toHaveText(
