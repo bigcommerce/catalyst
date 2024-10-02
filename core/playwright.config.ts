@@ -12,6 +12,9 @@ export default defineConfig({
   },
   reporter: [['list'], ['html']],
   use: {
+    launchOptions: {
+      args: ['--disable-web-security'],
+    },
     baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL,
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
