@@ -26,6 +26,10 @@ export class Bodl {
   readonly cart = this.getCartEvents();
   readonly navigation = this.getNavigationEvents();
 
+  private readonly bodlScriptId = 'bodl-events-script';
+  private readonly dataLayerScriptId = 'data-layer-script';
+  private readonly gtagScriptId = 'gtag-script';
+
   constructor(private config: BodlConfig) {
     if (Bodl.#instance) {
       return Bodl.#instance;
@@ -58,7 +62,16 @@ export class Bodl {
         throw new Error('Bodl is only available in the browser environment');
       }
 
-      this.bindJavascriptLibrary();
+      this.initializeBodlEvents();
+      this.initializeDataLayer();
+      this.initializeGTM();
+
+      Bodl.waitForBodlEvents(() => {
+        subscribeOnBodlEvents(
+          this.config.googleAnalytics.id,
+          this.config.googleAnalytics.consentModeEnabled,
+        );
+      });
     } catch (error) {
       // eslint-disable-next-line no-console
       console.warn(error);
@@ -75,26 +88,60 @@ export class Bodl {
     }
   }
 
-  private bindJavascriptLibrary() {
-    // Subscribe analytic providers to BODL events here
-    const load = () => {
-      subscribeOnBodlEvents(
-        this.config.googleAnalytics.id,
-        this.config.googleAnalytics.developerId,
-        this.config.googleAnalytics.consentModeEnabled,
-      );
-    };
+  private initializeBodlEvents() {
+    const existingScript = document.getElementById(this.bodlScriptId);
 
-    const el = document.getElementsByTagName('body')[0];
-
-    if (!el) return;
+    if (existingScript) {
+      return;
+    }
 
     const script = document.createElement('script');
 
+    script.id = this.bodlScriptId;
     script.type = 'text/javascript';
     script.src = 'https://microapps.bigcommerce.com/bodl-events/index.js';
-    script.onload = load;
-    el.appendChild(script);
+
+    document.body.appendChild(script);
+  }
+
+  private initializeDataLayer() {
+    const existingScript = document.getElementById(this.dataLayerScriptId);
+
+    if (existingScript) {
+      return;
+    }
+
+    const script = document.createElement('script');
+
+    script.id = this.dataLayerScriptId;
+    script.type = 'text/javascript';
+    script.innerHTML = `
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('set', 'developer_id.${this.config.googleAnalytics.developerId}', true);
+      gtag('config', '${this.config.googleAnalytics.id}');
+    `;
+
+    document.body.appendChild(script);
+  }
+
+  private initializeGTM() {
+    const existingScript = document.getElementById(this.gtagScriptId);
+
+    if (existingScript) {
+      return;
+    }
+
+    const script = document.createElement('script');
+
+    script.id = this.gtagScriptId;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${this.config.googleAnalytics.id}`;
+    script.async = true;
+
+    document.head.appendChild(script);
   }
 
   private getCartEvents() {
