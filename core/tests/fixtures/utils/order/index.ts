@@ -9,17 +9,23 @@ export class OrderFactory {
 
   constructor(private readonly page: Page) {}
 
-  async create(customerId: number, productId: number, variant_id: number) {
-    const orderData = await createOrder(customerId, productId, variant_id);
+  async create(customerId: number, productId: number) {
+    const orderData = await createOrder(customerId, productId);
 
     const order = new Order(
       this.page,
       orderData.id,
-      orderData.status_id,
       orderData.customer_id,
+      orderData.date_created,
+      orderData.status_id,
+      orderData.status,
+      orderData.subtotal_ex_tax,
+      orderData.subtotal_tax,
+      orderData.total_inc_tax,
+      orderData.items_total,
+      orderData.discount_amount,
+      orderData.coupon_discount,
       orderData.billing_address,
-      orderData.shipping_addresses,
-      orderData.products,
     );
 
     this.orders.push(order);

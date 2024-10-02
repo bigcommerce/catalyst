@@ -14,6 +14,5 @@ export class Product {
     readonly price: number | null,
     readonly id: number,
     readonly url: string,
-    readonly variants: ProductVariant[],
   ) {}
 }
