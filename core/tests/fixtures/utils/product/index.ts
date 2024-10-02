@@ -20,6 +20,7 @@ export class ProductFactory {
       productData.price,
       productData.id,
       productData.url,
+      productData.variants,
     );
 
     this.products.push(product);

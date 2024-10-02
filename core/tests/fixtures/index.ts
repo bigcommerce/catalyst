@@ -3,6 +3,7 @@ import { test as base } from '@playwright/test';
 import { ProductFactory } from '~/tests/fixtures/utils/product';
 
 import { AccountFactory } from './utils/account';
+import { OrderFactory } from '~/tests/fixtures/utils/order';
 
 interface Fixtures {
   /**
@@ -10,6 +11,7 @@ interface Fixtures {
    */
   account: AccountFactory;
   product: ProductFactory;
+  order: OrderFactory;
 }
 
 export const test = base.extend<Fixtures>({
@@ -30,6 +32,16 @@ export const test = base.extend<Fixtures>({
       await use(productFactory);
 
       await productFactory.cleanup();
+    },
+    { scope: 'test' },
+  ],
+  order: [
+    async ({ page }, use) => {
+      const orderFactory = new OrderFactory(page);
+
+      await use(orderFactory);
+
+      await orderFactory.cleanup();
     },
     { scope: 'test' },
   ],

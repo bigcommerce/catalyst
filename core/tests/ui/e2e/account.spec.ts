@@ -1,6 +1,6 @@
 import { expect, test } from '~/tests/fixtures';
 
-test.skip('Account access is restricted for guest users', async ({ page }) => {
+test('Account access is restricted for guest users', async ({ page }) => {
   await page.goto('/account/settings');
 
   await expect(page.getByRole('heading', { name: 'My Account' })).toBeVisible({ visible: false });
@@ -11,12 +11,6 @@ test('My Account tabs are displayed and clickable', async ({ page, account, prod
   const customer = await account.create();
 
   await customer.login();
-
-  const catalogProduct = await product.create();
-
-  await page.goto(catalogProduct.url);
-
-  await page.pause();
 
   // Prepending locale to URL as a workaround for issue in next-intl
   // More info: https://github.com/amannn/next-intl/issues/1335
@@ -40,7 +34,7 @@ test('My Account tabs are displayed and clickable', async ({ page, account, prod
   await customer.logout();
 });
 
-test.skip('Account dropdown is visible in header', async ({ page, account }) => {
+test('Account dropdown is visible in header', async ({ page, account }) => {
   const customer = await account.create();
 
   await customer.login();

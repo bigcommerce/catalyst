@@ -5,6 +5,12 @@ const CustomUrl = z.object({
   url: z.string(),
 });
 
+const ProductVariant = z.object({
+  id: z.number(),
+  product_id: z.number(),
+  price: z.number(),
+});
+
 const Product = z.object({
   id: z.number(),
   name: z.string(),
@@ -12,6 +18,12 @@ const Product = z.object({
   weight: z.number().nullable(),
   price: z.number().nullable(),
   custom_url: CustomUrl,
+  availability: z.string(),
+  cost_price: z.number(),
+  retail_price: z.number(),
+  sale_price: z.number(),
+  tax_class_id: z.number(),
+  variants: z.array(ProductVariant),
 });
 
 const CreateProductResponse = z.object({
@@ -22,7 +34,7 @@ export async function createProduct() {
   const name = faker.commerce.productName();
   const type = 'physical'; // Assuming the product type is physical
   const weight = faker.number.int({ min: 1, max: 10 });
-  const price = faker.number.float({ min: 1, max: 100 });
+  const price = faker.number.int({ min: 1, max: 100 });
 
   if (!process.env.BIGCOMMERCE_ACCESS_TOKEN) {
     throw new Error('BIGCOMMERCE_ACCESS_TOKEN is not set');
@@ -97,5 +109,6 @@ export async function createProduct() {
     type: product.type,
     price: product.price,
     url: product.custom_url.url,
+    variants: product.variants,
   };
 }
