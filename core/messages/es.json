@@ -41,7 +41,7 @@
             "multipleAddresses": "Guardar varias direcciones de envío",
             "ordersHistory": "Acceder a su historial de pedidos",
             "ordersTracking": "Hacer seguimiento de pedidos nuevos",
-            "wishlists": "Guardar artículos en su lista de deseos",
+            "wishlists": "Save items to your Wishlist",
             "createLink": "Crear cuenta "
         }
     },
@@ -55,7 +55,7 @@
             "confirmPassword": "Las contraseñas no coinciden."
         },
         "Errors": {
-            "inputError": "Algo salió mal al procesar los datos del usuario.",
+            "inputError": "Something went wrong with processing user input.",
             "apiError": "Estamos teniendo problemas con el servidor. Vuelve a intentarlo en unos minutos.",
             "error": "Algo salió mal. Vuelva a intentarlo más tarde."
         }
@@ -162,7 +162,7 @@
                     "cancel": "Cancelar",
                     "success": "Dirección añadida a tu cuenta.",
                     "Errors": {
-                        "inputError": "Algo salió mal al procesar los datos del usuario.",
+                        "inputError": "Something went wrong with processing user input.",
                         "error": "Error desconocido."
                     }
                 }
@@ -180,7 +180,7 @@
                     "deleteButton": "Eliminar",
                     "success": "La dirección se ha actualizado correctamente.",
                     "Errors": {
-                        "inputError": "Algo salió mal al procesar los datos del usuario.",
+                        "inputError": "Something went wrong with processing user input.",
                         "notFound": "La dirección no existe.",
                         "error": "Error desconocido."
                     }
@@ -226,7 +226,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Algo salió mal al procesar los datos del usuario.",
+                    "inputError": "Something went wrong with processing user input.",
                     "notFound": "El cliente no existe"
                 }
             }
@@ -363,7 +363,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Compra mínima",
-            "maxPurchase": "Compra máxima",
+            "maxPurchase": "Maximum purchase",
             "availability": "Disponibilidad",
             "condition": "Condición",
             "weight": "Peso",

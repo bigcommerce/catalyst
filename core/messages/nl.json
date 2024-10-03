@@ -363,7 +363,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Minimale aankoop",
-            "maxPurchase": "Maximale aankoop",
+            "maxPurchase": "Maximum purchase",
             "availability": "Beschikbaarheid",
             "condition": "Staat",
             "weight": "Gewicht",

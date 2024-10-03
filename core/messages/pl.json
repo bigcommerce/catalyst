@@ -55,7 +55,7 @@
             "confirmPassword": "Hasła nie są zgodne"
         },
         "Errors": {
-            "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
+            "inputError": "Something went wrong with processing user input.",
             "apiError": "Wygląda na to, że wystąpił błąd serwera, spróbuj ponownie za kilka minut.",
             "error": "Coś poszło nie tak. Proszę spróbować później."
         }
@@ -162,7 +162,7 @@
                     "cancel": "Anuluj",
                     "success": "Adres został dodany do Twojego konta.",
                     "Errors": {
-                        "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
+                        "inputError": "Something went wrong with processing user input.",
                         "error": "Nieznany błąd."
                     }
                 }
@@ -180,7 +180,7 @@
                     "deleteButton": "Usuń",
                     "success": "Adres został pomyślnie zaktualizowany.",
                     "Errors": {
-                        "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
+                        "inputError": "Something went wrong with processing user input.",
                         "notFound": "Adres nie istnieje.",
                         "error": "Nieznany błąd."
                     }
@@ -226,7 +226,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
+                    "inputError": "Something went wrong with processing user input.",
                     "notFound": "Klient nie istnieje"
                 }
             }
@@ -363,7 +363,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Minimalny zakup",
-            "maxPurchase": "Maksymalny zakup",
+            "maxPurchase": "Maximum purchase",
             "availability": "Dostępność",
             "condition": "Stan",
             "weight": "Waga",

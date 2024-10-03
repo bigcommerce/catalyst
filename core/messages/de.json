@@ -41,7 +41,7 @@
             "multipleAddresses": "Speicherung mehrerer Lieferadressen",
             "ordersHistory": "Zugang zu Ihrem Bestellverlauf",
             "ordersTracking": "Tracking von neuen Bestellungen",
-            "wishlists": "Hinzufügen von Artikeln zu Ihrer Wunschliste",
+            "wishlists": "Save items to your Wishlist",
             "createLink": "Konto erstellen "
         }
     },
@@ -55,7 +55,7 @@
             "confirmPassword": "Die Passwörter stimmen nicht überein"
         },
         "Errors": {
-            "inputError": "Bei der Verarbeitung der Benutzereingabe ist ein Fehler aufgetreten.",
+            "inputError": "Something went wrong with processing user input.",
             "apiError": "Es scheint ein Serverfehler vorzuliegen. Bitte versuchen Sie es in ein paar Minuten erneut.",
             "error": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
         }
@@ -162,7 +162,7 @@
                     "cancel": "Abbrechen",
                     "success": "Adresse zu Ihrem Konto hinzugefügt",
                     "Errors": {
-                        "inputError": "Bei der Verarbeitung der Benutzereingabe ist ein Fehler aufgetreten.",
+                        "inputError": "Something went wrong with processing user input.",
                         "error": "Unbekannter Fehler."
                     }
                 }
@@ -180,7 +180,7 @@
                     "deleteButton": "Löschen",
                     "success": "Die Adresse wurde erfolgreich aktualisiert.",
                     "Errors": {
-                        "inputError": "Bei der Verarbeitung der Benutzereingabe ist ein Fehler aufgetreten.",
+                        "inputError": "Something went wrong with processing user input.",
                         "notFound": "Adresse existiert nicht.",
                         "error": "Unbekannter Fehler."
                     }
@@ -226,7 +226,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Bei der Verarbeitung der Benutzereingabe ist ein Fehler aufgetreten.",
+                    "inputError": "Something went wrong with processing user input.",
                     "notFound": "Kunde existiert nicht"
                 }
             }

@@ -41,7 +41,7 @@
             "multipleAddresses": "Salvare molteplici indirizzi di spedizione",
             "ordersHistory": "Accedere allo storico dei tuoi ordini",
             "ordersTracking": "Tracciare i nuovi ordini",
-            "wishlists": "Salva articoli nella Lista desideri",
+            "wishlists": "Save items to your Wishlist",
             "createLink": "Crea account "
         }
     },
@@ -55,7 +55,7 @@
             "confirmPassword": "Le password non corrispondono."
         },
         "Errors": {
-            "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
+            "inputError": "Something went wrong with processing user input.",
             "apiError": "Sembra che si sia verificato un errore del server, riprova tra qualche minuto.",
             "error": "Si è verificato un errore. Riprova più tardi."
         }
@@ -162,7 +162,7 @@
                     "cancel": "Annulla",
                     "success": "Indirizzo aggiunto al tuo account.",
                     "Errors": {
-                        "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
+                        "inputError": "Something went wrong with processing user input.",
                         "error": "Errore sconosciuto."
                     }
                 }
@@ -180,7 +180,7 @@
                     "deleteButton": "Elimina",
                     "success": "L'indirizzo è stato aggiornato correttamente.",
                     "Errors": {
-                        "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
+                        "inputError": "Something went wrong with processing user input.",
                         "notFound": "L'indirizzo non esiste.",
                         "error": "Errore sconosciuto."
                     }
@@ -226,7 +226,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
+                    "inputError": "Something went wrong with processing user input.",
                     "notFound": "Il cliente non esiste"
                 }
             }

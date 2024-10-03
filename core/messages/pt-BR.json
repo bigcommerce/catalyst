@@ -41,7 +41,7 @@
             "multipleAddresses": "Salvar vários endereços de entrega",
             "ordersHistory": "Acessar seu histórico de pedidos",
             "ordersTracking": "Rastrear novos pedidos",
-            "wishlists": "Salvar itens na sua lista de desejos",
+            "wishlists": "Save items to your Wishlist",
             "createLink": "Criar conta "
         }
     },
@@ -55,7 +55,7 @@
             "confirmPassword": "As senhas não conferem."
         },
         "Errors": {
-            "inputError": "Houve um erro no processamento da entrada do usuário.",
+            "inputError": "Something went wrong with processing user input.",
             "apiError": "Ocorreu um erro no servidor. Tente novamente em alguns minutos.",
             "error": "Ocorreu um erro. Tente novamente mais tarde."
         }
@@ -162,7 +162,7 @@
                     "cancel": "Cancelar",
                     "success": "Endereço adicionado à sua conta.",
                     "Errors": {
-                        "inputError": "Houve um erro no processamento da entrada do usuário.",
+                        "inputError": "Something went wrong with processing user input.",
                         "error": "Erro desconhecido."
                     }
                 }
@@ -180,7 +180,7 @@
                     "deleteButton": "Excluir",
                     "success": "O endereço foi atualizado.",
                     "Errors": {
-                        "inputError": "Houve um erro no processamento da entrada do usuário.",
+                        "inputError": "Something went wrong with processing user input.",
                         "notFound": "O endereço não existe.",
                         "error": "Erro desconhecido."
                     }
@@ -226,7 +226,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Houve um erro no processamento da entrada do usuário.",
+                    "inputError": "Something went wrong with processing user input.",
                     "notFound": "O cliente não existe"
                 }
             }
@@ -363,7 +363,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Compra mínima",
-            "maxPurchase": "Compra máxima",
+            "maxPurchase": "Maximum purchase",
             "availability": "Disponibilidade",
             "condition": "Condição",
             "weight": "Peso",
