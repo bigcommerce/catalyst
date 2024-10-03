@@ -71,6 +71,9 @@ export const registerCustomer = async ({ formData, reCaptchaToken }: RegisterCus
         input: parsedData,
         ...(reCaptchaToken && { reCaptchaV2: { token: reCaptchaToken } }),
       },
+      fetchOptions: {
+        cache: 'no-store',
+      },
     });
 
     const result = response.data.customer.registerCustomer;
