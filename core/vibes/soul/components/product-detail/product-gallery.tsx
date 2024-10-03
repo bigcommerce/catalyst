@@ -2,8 +2,9 @@
 
 import { clsx } from 'clsx';
 import useEmblaCarousel from 'embla-carousel-react';
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
+
+import { BcImage } from '~/components/bc-image';
 
 interface Image {
   altText: string;
@@ -44,7 +45,7 @@ export const ProductGallery = ({ images }: ProductGalleryProps) => {
               className="relative h-full w-full min-w-0 shrink-0 grow-0 basis-full items-center"
               key={idx}
             >
-              <Image
+              <BcImage
                 alt={image.altText}
                 className="object-cover"
                 fill
@@ -68,7 +69,7 @@ export const ProductGallery = ({ images }: ProductGalleryProps) => {
             key={index}
             onClick={() => selectImage(index)}
           >
-            <Image
+            <BcImage
               alt={image.altText}
               className="h-full w-full bg-contrast-100 object-cover"
               height={256}

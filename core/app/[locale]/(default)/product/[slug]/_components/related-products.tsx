@@ -5,8 +5,8 @@ import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { ProductCardCarousel } from '~/components/product-card-carousel';
-import { ProductCardCarouselFragment } from '~/components/product-card-carousel/fragment';
+import { FeaturedProductsCarousel } from '~/components/featured-products-carousel';
+import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
 
 const RelatedProductsQuery = graphql(
   `
@@ -16,7 +16,7 @@ const RelatedProductsQuery = graphql(
           relatedProducts(first: 12) {
             edges {
               node {
-                ...ProductCardCarouselFragment
+                ...FeaturedProductsCarouselFragment
               }
             }
           }
@@ -24,7 +24,7 @@ const RelatedProductsQuery = graphql(
       }
     }
   `,
-  [ProductCardCarouselFragment],
+  [FeaturedProductsCarouselFragment],
 );
 
 interface Props {
@@ -52,10 +52,9 @@ export const RelatedProducts = async ({ productId }: Props) => {
   const relatedProducts = removeEdgesAndNodes(product.relatedProducts);
 
   return (
-    <ProductCardCarousel
+    <FeaturedProductsCarousel
+      cta={{ label: t('seeAll'), href: '#' }} // TODO: remove?
       products={relatedProducts}
-      showCart={false}
-      showCompare={false}
       title={t('relatedProducts')}
     />
   );

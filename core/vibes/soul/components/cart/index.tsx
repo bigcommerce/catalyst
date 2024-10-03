@@ -232,7 +232,7 @@ export const Cart = function Cart({
                           });
                         }}
                       >
-                        <Counter current={quantity} name="quantity" />
+                        <Counter current={quantity} name="quantity" type="submit" />
                       </form>
 
                       <button

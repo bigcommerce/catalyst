@@ -1,19 +1,18 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getFormatter, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
-import { Breadcrumbs } from '~/components/breadcrumbs';
+import { IconBlock } from '@/vibes/soul/components/icon-block';
+import { ProductDescription } from '@/vibes/soul/components/product-description';
+import { ProductDetail } from '@/vibes/soul/components/product-detail';
+import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { LocaleType } from '~/i18n/routing';
 
-import { Description } from './_components/description';
-import { Details } from './_components/details';
-import { Gallery } from './_components/gallery';
-import { ProductViewed } from './_components/product-viewed';
+import { addToCart } from './_actions/add-to-cart';
 import { RelatedProducts } from './_components/related-products';
 import { Reviews } from './_components/reviews';
-import { Warranty } from './_components/warranty';
 import { getProduct } from './page-data';
 
 interface Props {
@@ -33,6 +32,30 @@ function getOptionValueIds({ searchParams }: { searchParams: Props['searchParams
       (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
     );
 }
+
+// TODO: Temporary accordions
+const accordions = [
+  {
+    title: 'What is your return policy?',
+    content:
+      'We want you to be completely satisfied with your purchase. If you’re not happy with your plant, you can return it within 30 days of delivery. Please ensure the plant is in its original condition and packaging. For detailed return instructions, visit our Return Policy page or contact our customer support team.',
+  },
+  {
+    title: 'How do I care for my new plants?',
+    content:
+      'Caring for your new plants involves understanding their specific needs. Most indoor plants require indirect sunlight, regular watering, and occasional feeding. Check the plant care tag that comes with your purchase for detailed instructions. If you need more help, our Care Guide section offers detailed advice for each plant type.',
+  },
+  {
+    title: 'Do you offer plant delivery services?',
+    content:
+      'Yes, we offer nationwide delivery for all our plants. Our plants are carefully packaged to ensure they arrive healthy and safe. Delivery times vary depending on your location but typically range from 3 to 7 business days. For more information, check our Delivery Information page or enter your zip code at checkout for estimated delivery times.',
+  },
+  {
+    title: 'Can I get advice on choosing the right plant?',
+    content:
+      'Absolutely! Choosing the right plant can depend on several factors such as your living space, light availability, and personal preferences. Our Plant Finder tool can help you select the perfect plant for your environment. Additionally, our customer service team is available to offer personalized recommendations based on your needs.',
+  },
+];
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const productId = Number(params.slug);
@@ -71,6 +94,8 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 export default async function Product({ params: { locale, slug }, searchParams }: Props) {
   unstable_setRequestLocale(locale);
 
+  const format = await getFormatter();
+
   const t = await getTranslations('Product');
 
   const productId = Number(slug);
@@ -87,31 +112,70 @@ export default async function Product({ params: { locale, slug }, searchParams }
     return notFound();
   }
 
-  const category = removeEdgesAndNodes(product.categories).at(0);
+  // TODO: add breadcrumb
+  // const category = removeEdgesAndNodes(product.categories).at(0);
+
+  const formattedProduct = {
+    id: product.entityId.toString(),
+    name: product.name,
+    href: product.path,
+    image: { src: product.defaultImage?.url ?? '', altText: product.defaultImage?.altText ?? '' },
+    images: removeEdgesAndNodes(product.images).map((image) => ({
+      src: image.url,
+      altText: image.altText,
+    })),
+    price: pricesTransformer(product.prices, format),
+    subtitle: product.brand?.name,
+    description: product.description,
+    rating: product.reviewSummary.averageRating,
+  };
+
+  const action = async (formData: FormData) => {
+    'use server';
+
+    await addToCart(formData, product);
+  };
 
   return (
     <>
-      {category && <Breadcrumbs category={category} />}
+      <ProductDetail action={action} product={formattedProduct} />
 
-      <div className="mb-12 mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
-        <Gallery product={product} />
-        <Details product={product} />
-        <div className="lg:col-span-2">
-          <Description product={product} />
-          <Warranty product={product} />
-          <Suspense fallback={t('loading')}>
-            <Reviews productId={product.entityId} />
-          </Suspense>
-        </div>
-      </div>
+      <ProductDescription
+        accordions={accordions}
+        image={{
+          src: product.defaultImage?.url ?? '',
+          altText: product.defaultImage?.altText ?? '',
+        }}
+      />
+
+      {/* TODO: Temporary */}
+      <IconBlock
+        list={[
+          {
+            icon: 'Truck',
+            title: 'Free Shipping',
+            description: 'On orders over $250',
+          },
+          {
+            icon: 'RotateCcw',
+            title: 'Free Returns',
+            description: 'On full priced items only',
+          },
+          {
+            icon: 'Star',
+            title: '2 Year Warranty',
+            description: 'As standard',
+          },
+        ]}
+      />
 
       <Suspense fallback={t('loading')}>
         <RelatedProducts productId={product.entityId} />
       </Suspense>
 
-      <ProductViewed product={product} />
+      <Suspense fallback={t('loading')}>
+        <Reviews productId={product.entityId} />
+      </Suspense>
     </>
   );
 }
-
-export const runtime = 'edge';

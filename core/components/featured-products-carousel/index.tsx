@@ -11,9 +11,11 @@ type Product = ResultOf<typeof FeaturedProductsCarouselFragment>;
 export const FeaturedProductsCarousel = ({
   products,
   title,
+  cta,
 }: {
   products: Product[];
   title: string;
+  cta?: { label: string; href: string };
 }) => {
   const format = useFormatter();
 
@@ -28,5 +30,5 @@ export const FeaturedProductsCarousel = ({
     subtitle: product.brand?.name ?? undefined,
   }));
 
-  return <FeaturedProductsCarouselComponent products={formattedProducts} title={title} />;
+  return <FeaturedProductsCarouselComponent cta={cta} products={formattedProducts} title={title} />;
 };
