@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { getFormatter } from 'next-intl/server';
 
 import { Reviews as ReviewsComponent } from '@/vibes/soul/components/reviews';
 import { client } from '~/client';
@@ -35,6 +36,8 @@ interface Props {
 }
 
 export const Reviews = async ({ productId }: Props) => {
+  const format = await getFormatter();
+
   const { data } = await client.fetch({
     document: ReviewsQuery,
     variables: { entityId: productId },
@@ -53,7 +56,11 @@ export const Reviews = async ({ productId }: Props) => {
     id: review.entityId.toString(),
     review: review.text,
     name: review.author.name,
-    date: review.createdAt.utc,
+    date: format.dateTime(new Date(review.createdAt.utc), {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    }),
   }));
 
   return (
