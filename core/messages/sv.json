@@ -55,7 +55,7 @@
             "confirmPassword": "Lösenorden stämmer inte överens"
         },
         "Errors": {
-            "inputError": "Something went wrong with processing user input.",
+            "inputError": "Något gick fel när användarens inmatning skulle bearbetas.",
             "apiError": "Det verkar som om vi har ett serverfel. Försök igen om några minuter.",
             "error": "Någonting gick fel. Vänligen försök igen senare."
         }
@@ -162,7 +162,7 @@
                     "cancel": "Annullera",
                     "success": "Adressen har lagts till på ditt konto.",
                     "Errors": {
-                        "inputError": "Something went wrong with processing user input.",
+                        "inputError": "Något gick fel när användarens inmatning skulle bearbetas.",
                         "error": "Okänt fel."
                     }
                 }
@@ -178,9 +178,9 @@
                     "confirmDeleteAddress": "Radera adress",
                     "deleteModalTitle": "Är du säker på att du vill ta bort den här adressen?",
                     "deleteButton": "Radera",
-                    "success": "The address has been successfully updated.",
+                    "success": "Adressen har uppdaterats.",
                     "Errors": {
-                        "inputError": "Something went wrong with processing user input.",
+                        "inputError": "Något gick fel när användarens inmatning skulle bearbetas.",
                         "notFound": "Adressen finns inte.",
                         "error": "Okänt fel."
                     }
@@ -226,7 +226,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Something went wrong with processing user input.",
+                    "inputError": "Något gick fel när användarens inmatning skulle bearbetas.",
                     "notFound": "Kunden finns inte"
                 }
             }
@@ -363,7 +363,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Minsta köp:",
-            "maxPurchase": "Maximum purchase",
+            "maxPurchase": "Maximalt köp:",
             "availability": "Tillgänglighet",
             "condition": "Skick",
             "weight": "Vikt",

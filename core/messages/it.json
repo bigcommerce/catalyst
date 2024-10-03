@@ -178,7 +178,7 @@
                     "confirmDeleteAddress": "Cancella indirizzo",
                     "deleteModalTitle": "Vuoi davvero eliminare questo indirizzo?",
                     "deleteButton": "Elimina",
-                    "success": "The address has been successfully updated.",
+                    "success": "L'indirizzo è stato aggiornato correttamente.",
                     "Errors": {
                         "inputError": "Something went wrong with processing user input.",
                         "notFound": "L'indirizzo non esiste.",
@@ -363,7 +363,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Spesa minima",
-            "maxPurchase": "Maximum purchase",
+            "maxPurchase": "Spesa massima",
             "availability": "Disponibilità",
             "condition": "Condizioni",
             "weight": "Peso",

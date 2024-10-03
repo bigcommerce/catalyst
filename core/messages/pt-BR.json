@@ -178,7 +178,7 @@
                     "confirmDeleteAddress": "Excluir endereço",
                     "deleteModalTitle": "Deseja mesmo excluir esse endereço?",
                     "deleteButton": "Excluir",
-                    "success": "The address has been successfully updated.",
+                    "success": "O endereço foi atualizado.",
                     "Errors": {
                         "inputError": "Something went wrong with processing user input.",
                         "notFound": "O endereço não existe.",

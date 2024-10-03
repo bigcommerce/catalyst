@@ -41,7 +41,7 @@
             "multipleAddresses": "Zapisz wiele adresów wysyłki",
             "ordersHistory": "Dostęp do historii zamówień",
             "ordersTracking": "Śledzenie nowych zamówień",
-            "wishlists": "Save items to your Wishlist",
+            "wishlists": "Zapisz elementy na swojej liście życzeń",
             "createLink": "Utwórz konto "
         }
     },
@@ -178,7 +178,7 @@
                     "confirmDeleteAddress": "Usuń adres",
                     "deleteModalTitle": "Czy na pewno chcesz usunąć ten adres?",
                     "deleteButton": "Usuń",
-                    "success": "The address has been successfully updated.",
+                    "success": "Adres został pomyślnie zaktualizowany.",
                     "Errors": {
                         "inputError": "Something went wrong with processing user input.",
                         "notFound": "Adres nie istnieje.",

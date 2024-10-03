@@ -178,7 +178,7 @@
                     "confirmDeleteAddress": "Slet adresse",
                     "deleteModalTitle": "Er du sikker på, at du vil slette denne adresse?",
                     "deleteButton": "Slet",
-                    "success": "The address has been successfully updated.",
+                    "success": "Adressen er blevet opdateret.",
                     "Errors": {
                         "inputError": "Something went wrong with processing user input.",
                         "notFound": "Adressen findes ikke.",
@@ -363,7 +363,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Minimumskøb",
-            "maxPurchase": "Maximum purchase",
+            "maxPurchase": "Maksimumkøb",
             "availability": "Tilgængelighed",
             "condition": "Tilstand",
             "weight": "Vægt",
