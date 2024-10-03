@@ -41,12 +41,12 @@
             "multipleAddresses": "Enregistrer plusieurs adresses de livraison",
             "ordersHistory": "Accéder à votre historique de commande",
             "ordersTracking": "Suivre les nouvelles commandes",
-            "wishlists": "Enregistrer des articles dans votre liste d'envies",
+            "wishlists": "Save items to your Wishlist",
             "createLink": "Créer un compte "
         }
     },
     "Register": {
-        "title": "Register account",
+        "title": "Enregistrer un compte",
         "heading": "Nouveau compte",
         "Form": {
             "submit": "Créer un compte",
@@ -133,6 +133,7 @@
     },
     "Account": {
         "Home": {
+            "title": "Mon compte",
             "heading": "Mon compte",
             "accountTabsLabel": "Onglets Compte",
             "orders": "Commandes",
@@ -157,9 +158,9 @@
                 "Form": {
                     "recaptchaText": "Réussir le test ReCAPTCHA",
                     "submit": "Ajouter une nouvelle adresse",
-                    "submitting": "Saving address...",
+                    "submitting": "Enregistrer l'adresse...",
                     "cancel": "Annuler",
-                    "success": "Address added to your account.",
+                    "success": "Adresse ajoutée à votre compte.",
                     "Errors": {
                         "inputError": "Un problème est survenu lors du traitement des saisies de l'utilisateur.",
                         "error": "Erreur inconnue."
@@ -172,12 +173,12 @@
                 "Form": {
                     "recaptchaText": "Réussir le test ReCAPTCHA",
                     "submit": "Modifier l'adresse",
-                    "submitting": "Updating address...",
+                    "submitting": "Mise à jour de l'adresse...",
                     "cancel": "Annuler",
                     "confirmDeleteAddress": "Supprimer l'adresse",
                     "deleteModalTitle": "Voulez-vraiment supprimer cette adresse ?",
                     "deleteButton": "Supprimer",
-                    "success": "The address has been successfully updated.",
+                    "success": "L'adresse a bien été mise à jour.",
                     "Errors": {
                         "inputError": "Un problème est survenu lors du traitement des saisies de l'utilisateur.",
                         "notFound": "L'adresse n'existe pas",
@@ -362,7 +363,7 @@
             "sku": "SKU",
             "upc": "CUP",
             "minPurchase": "Quantité minimale d'achat",
-            "maxPurchase": "Achat maximum",
+            "maxPurchase": "Maximum purchase",
             "availability": "Disponibilité",
             "condition": "Condition",
             "weight": "Poids",
