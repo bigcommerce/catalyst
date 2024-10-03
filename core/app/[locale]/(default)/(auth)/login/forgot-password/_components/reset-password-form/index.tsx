@@ -34,7 +34,7 @@ interface FormStatus {
 }
 
 const SubmitButton = () => {
-  const t = useTranslations('Reset.Form');
+  const t = useTranslations('Login.ForgotPassword.Form');
 
   const { pending } = useFormStatus();
 
@@ -52,7 +52,7 @@ const SubmitButton = () => {
 };
 
 export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
-  const t = useTranslations('Reset.Form');
+  const t = useTranslations('Login.ForgotPassword.Form');
 
   const form = useRef<HTMLFormElement>(null);
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);

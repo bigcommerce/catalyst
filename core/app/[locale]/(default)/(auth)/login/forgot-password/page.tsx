@@ -24,7 +24,7 @@ const ResetPageQuery = graphql(
 );
 
 export async function generateMetadata() {
-  const t = await getTranslations('Reset');
+  const t = await getTranslations('Login.ForgotPassword');
 
   return {
     title: t('title'),
@@ -32,7 +32,7 @@ export async function generateMetadata() {
 }
 
 export default async function Reset() {
-  const t = await getTranslations('Reset');
+  const t = await getTranslations('Login.ForgotPassword');
 
   const { data } = await client.fetch({
     document: ResetPageQuery,
