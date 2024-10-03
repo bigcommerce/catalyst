@@ -4,7 +4,7 @@ import { auth } from '~/auth';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
-const AUTH_PATHS = ['/login/', '/register/', '/reset/', '/change-password/'];
+const AUTH_PATHS = ['/login/', '/register/', '/change-password/'];
 
 export const withAuth: MiddlewareFactory = (next) => {
   return async (request, event) => {
