@@ -198,7 +198,6 @@ export const getCustomerOrders = cache(
       customerId,
       fetchOptions: { cache: 'no-store' },
     });
-    console.log('Customer Id is:', customerId, response);
 
     const orders = response.data.customer?.orders;
 

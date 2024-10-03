@@ -7,7 +7,7 @@ test('Account access is restricted for guest users', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Log in' })).toBeVisible();
 });
 
-test('My Account tabs are displayed and clickable', async ({ page, account, product }) => {
+test('My Account tabs are displayed and clickable', async ({ page, account }) => {
   const customer = await account.create();
 
   await customer.login();

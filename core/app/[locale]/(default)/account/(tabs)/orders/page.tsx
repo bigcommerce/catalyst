@@ -18,7 +18,6 @@ export default async function OrdersPage({ searchParams }: Props) {
     ...(after && { after }),
     ...(before && { before }),
   });
-  console.log(customerOrdersDetails);
 
   if (!customerOrdersDetails) {
     notFound();
