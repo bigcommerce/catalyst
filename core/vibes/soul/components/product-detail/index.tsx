@@ -5,6 +5,7 @@ import { clsx } from 'clsx';
 import { useState } from 'react';
 
 import { Button } from '@/vibes/soul/components/button';
+import { Counter } from '@/vibes/soul/components/counter';
 import { Favorite } from '@/vibes/soul/components/favorite';
 import { Label } from '@/vibes/soul/components/label';
 import { Product } from '@/vibes/soul/components/product-card';
@@ -31,9 +32,10 @@ interface ProductDetailType extends Product {
 
 export interface ProductDetailProps {
   product: ProductDetailType;
+  action?: (formData: FormData) => void;
 }
 
-export const ProductDetail = function ProductDetail({ product }: ProductDetailProps) {
+export const ProductDetail = function ProductDetail({ product, action }: ProductDetailProps) {
   const [favorited, setFavorited] = useState(false);
   const [selectedOption, setSelectedOption] = useState(product.options?.[0] ?? null);
   const [selectedSwatch, setSelectedSwatch] = useState(product.swatches?.[0] ?? null);
@@ -52,7 +54,8 @@ export const ProductDetail = function ProductDetail({ product }: ProductDetailPr
           )}
           <Price className="!text-2xl" price={product.price ?? ''} />
 
-          <form className="mt-6 flex flex-col gap-4 @4xl:mt-12">
+          <form action={action} className="mt-6 flex flex-col gap-4 @4xl:mt-12">
+            <input name="product_id" type="hidden" value={product.id} />
             {/* Options */}
             {product.options && (
               <>
@@ -113,8 +116,14 @@ export const ProductDetail = function ProductDetail({ product }: ProductDetailPr
               </>
             )}
 
+            <div className="w-[116px]">
+              <Counter current={1} name="quantity" />
+            </div>
+
             <div className="mt-4 flex max-w-sm gap-2">
-              <Button className="flex-grow">Add to Cart</Button>
+              <Button className="flex-grow" type="submit">
+                Add to Cart
+              </Button>
               <Favorite checked={favorited} setChecked={setFavorited} />
             </div>
           </form>

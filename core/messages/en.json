@@ -370,7 +370,8 @@
   "Product": {
     "loading": "Loading...",
     "Carousel": {
-      "relatedProducts": "Related products"
+      "relatedProducts": "Related products",
+      "seeAll": "See all"
     },
     "Form": {
       "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
