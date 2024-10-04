@@ -1,16 +1,13 @@
 import { test as base } from '@playwright/test';
 
-import { OrderFactory } from '~/tests/fixtures/utils/order';
-import { ProductFactory } from '~/tests/fixtures/utils/product';
-
 import { AccountFactory } from './utils/account';
+import { OrderFactory } from './utils/order';
 
 interface Fixtures {
   /**
    * This fixture enables the creation, deletion, and the ability to login and logout of customer accounts.
    */
   account: AccountFactory;
-  product: ProductFactory;
   order: OrderFactory;
 }
 
@@ -22,14 +19,6 @@ export const test = base.extend<Fixtures>({
       await use(accountFactory);
 
       await accountFactory.cleanup();
-    },
-    { scope: 'test' },
-  ],
-  product: [
-    async ({ page }, use) => {
-      const productFactory = new ProductFactory(page);
-
-      await use(productFactory);
     },
     { scope: 'test' },
   ],
