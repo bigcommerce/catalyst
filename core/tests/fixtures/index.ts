@@ -1,9 +1,9 @@
 import { test as base } from '@playwright/test';
 
+import { OrderFactory } from '~/tests/fixtures/utils/order';
 import { ProductFactory } from '~/tests/fixtures/utils/product';
 
 import { AccountFactory } from './utils/account';
-import { OrderFactory } from '~/tests/fixtures/utils/order';
 
 interface Fixtures {
   /**
@@ -30,8 +30,6 @@ export const test = base.extend<Fixtures>({
       const productFactory = new ProductFactory(page);
 
       await use(productFactory);
-
-      await productFactory.cleanup();
     },
     { scope: 'test' },
   ],
