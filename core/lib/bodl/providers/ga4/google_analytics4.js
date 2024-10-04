@@ -1,12 +1,6 @@
-export function subscribeOnBodlEvents(measurementId, developerId, consentModeEnabled) {
-  window.dataLayer = window.dataLayer || [];
-
+export function subscribeOnBodlEvents(measurementId, consentModeEnabled) {
   if (!window || typeof window.bodlEvents === 'undefined') {
     return;
-  }
-
-  function gtag() {
-    dataLayer.push(arguments);
   }
 
   function addDestination(payload) {
@@ -360,26 +354,6 @@ export function subscribeOnBodlEvents(measurementId, developerId, consentModeEna
     subscribeOnConsentEvents();
   }
 
-  function setupGtag() {
-    function configureGtag() {
-      gtag('js', new Date());
-      gtag('set', 'developer_id.' + developerId, true);
-      gtag('config', measurementId);
-    }
-
-    function addGtagScript() {
-      var script = document.createElement('script');
-
-      script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-      script.async = true;
-
-      document.head.appendChild(script);
-    }
-
-    addGtagScript();
-    configureGtag();
-  }
-
   function subscribeOnEcommerceEvents() {
     subscribeOnCheckoutEvents();
     subscribeOnCartEvents();
@@ -388,6 +362,5 @@ export function subscribeOnBodlEvents(measurementId, developerId, consentModeEna
   }
 
   setupConsent();
-  setupGtag();
   subscribeOnEcommerceEvents();
 }
