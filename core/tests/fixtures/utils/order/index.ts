@@ -1,7 +1,8 @@
 import { type Page } from '@playwright/test';
-import { Order } from './order';
+
 import { createOrder } from './create';
 import { deleteOrder } from './delete';
+import { Order } from './order';
 
 export class OrderFactory {
   autoCleanup = false;

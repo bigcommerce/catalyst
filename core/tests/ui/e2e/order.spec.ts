@@ -26,19 +26,16 @@ test('Orders page has empty state', async ({ page, account }) => {
   await expect(page.getByText('No orders yet')).toBeVisible();
 });
 
-test('Order details are visible on Orders page', async ({ page, account, product, order }) => {
+test('Order details are visible on Orders page', async ({ page, account, order }) => {
   const customer = await account.create();
 
   await customer.login();
 
-  const orderProduct = await product.get(88);
-
-  const orderDetails = await order.create(customer.id, 88);
+  const orderDetails = await order.create(88, customer.id);
 
   await page.goto('/account/orders/');
 
   const formattedTotal = formatAmount(parseFloat(orderDetails.total_inc_tax));
-  const formattedProductPrice = formatAmount(orderProduct.price ?? 0);
   const formattedDate = formatDate(orderDetails.date_created);
 
   await expect(page.getByRole('link', { name: `Order # ${orderDetails.id}` })).toBeVisible();
@@ -47,6 +44,6 @@ test('Order details are visible on Orders page', async ({ page, account, product
   await expect(page.getByText('Total')).toBeVisible();
   await expect(page.getByText(formattedTotal)).toBeVisible();
   await expect(page.getByText(orderDetails.status)).toBeVisible();
-  await expect(page.getByRole('link', { name: orderProduct.name })).toBeVisible();
-  await expect(page.getByText(formattedProductPrice)).toBeVisible();
+  await expect(page.getByRole('link', { name: '[Sample] Chemex Coffeemaker 3 Cup' })).toBeVisible();
+  await expect(page.getByText('$49.50')).toBeVisible();
 });

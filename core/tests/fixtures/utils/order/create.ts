@@ -26,7 +26,7 @@ const OrderResponse = z.object({
   billing_address: Address,
 });
 
-export async function createOrder(customerId: number, productId: number) {
+export async function createOrder(productId: number, customerId?: number) {
   const status_id = 1;
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
@@ -46,7 +46,7 @@ export async function createOrder(customerId: number, productId: number) {
 
   const orderData = {
     status_id,
-    customer_id: customerId,
+    customer_id: customerId ?? 0,
     billing_address: {
       first_name: firstName,
       last_name: lastName,
@@ -79,13 +79,13 @@ export async function createOrder(customerId: number, productId: number) {
 
   if (!response.ok) {
     const errorText = await response.text();
+
     throw new Error(
       `Order creation API request failed with status ${response.status}: ${errorText}`,
     );
   }
 
   const data: unknown = await response.json();
-  const order = OrderResponse.parse(data);
 
-  return order;
+  return OrderResponse.parse(data);
 }
