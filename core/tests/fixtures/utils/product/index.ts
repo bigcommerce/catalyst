@@ -2,6 +2,7 @@ import { type Page } from '@playwright/test';
 
 import { createProduct } from './create';
 import { deleteProduct } from './delete';
+import { getProduct } from './get';
 import { Product } from './product';
 
 export class ProductFactory {
@@ -25,6 +26,19 @@ export class ProductFactory {
     this.products.push(product);
 
     return product;
+  }
+
+  async get(productId: number) {
+    const productData = await getProduct(productId);
+
+    return new Product(
+      this.page,
+      productData.name,
+      productData.type,
+      productData.price,
+      productData.id,
+      productData.custom_url.url,
+    );
   }
 
   async cleanup() {

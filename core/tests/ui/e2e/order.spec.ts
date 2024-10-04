@@ -14,6 +14,7 @@ function formatDate(s: string): string {
     day: 'numeric',
   });
 }
+
 test('Orders page has empty state', async ({ page, account }) => {
   const customer = await account.create();
 
@@ -30,9 +31,9 @@ test('Order details are visible on Orders page', async ({ page, account, product
 
   await customer.login();
 
-  const orderProduct = await product.create();
+  const orderProduct = await product.get(88);
 
-  const orderDetails = await order.create(customer.id, orderProduct.id);
+  const orderDetails = await order.create(customer.id, 88);
 
   await page.goto('/account/orders/');
 
@@ -45,7 +46,7 @@ test('Order details are visible on Orders page', async ({ page, account, product
   await expect(page.getByText(formattedDate)).toBeVisible();
   await expect(page.getByText('Total')).toBeVisible();
   await expect(page.getByText(formattedTotal)).toBeVisible();
-  await expect(page.getByText(`${orderDetails.status}`)).toBeVisible();
-  await expect(page.getByRole('link', { name: `${orderProduct.name}` })).toBeVisible();
+  await expect(page.getByText(orderDetails.status)).toBeVisible();
+  await expect(page.getByRole('link', { name: orderProduct.name })).toBeVisible();
   await expect(page.getByText(formattedProductPrice)).toBeVisible();
 });
