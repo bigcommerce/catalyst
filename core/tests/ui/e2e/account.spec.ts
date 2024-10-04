@@ -17,7 +17,6 @@ test('My Account tabs are displayed and clickable', async ({ page, account }) =>
   await expect(page).toHaveURL('/account/');
   await expect(page.getByRole('link', { name: 'Addresses' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Wishlists' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Recently viewed' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Account settings' })).toBeVisible();
 
   await page.getByRole('link', { name: 'Addresses' }).click();
@@ -27,10 +26,6 @@ test('My Account tabs are displayed and clickable', async ({ page, account }) =>
   await page.getByRole('link', { name: 'Wishlists' }).click();
   await expect(page).toHaveURL('/account/wishlists/');
   await expect(page.getByRole('heading', { name: 'Wishlists' })).toBeVisible();
-
-  await page.getByRole('link', { name: 'Recently viewed' }).click();
-  await expect(page).toHaveURL('/account/recently-viewed/');
-  await expect(page.getByRole('heading', { name: 'Recently viewed' })).toBeVisible();
 
   await page.getByRole('link', { name: 'Account settings' }).click();
   await expect(page).toHaveURL('/account/settings/');
