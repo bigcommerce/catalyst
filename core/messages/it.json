@@ -32,7 +32,7 @@
             "entePasswordMessage": "Inserisci la tua password",
             "submitting": "Invio in corso...",
             "logIn": "Accedi",
-            "resetPassword": "Hai dimenticato la password?"
+            "forgotPassword": "Hai dimenticato la password?"
         },
         "CreateAccount": {
             "heading": "Nuovo cliente?",
@@ -41,8 +41,24 @@
             "multipleAddresses": "Salvare molteplici indirizzi di spedizione",
             "ordersHistory": "Accedere allo storico dei tuoi ordini",
             "ordersTracking": "Tracciare i nuovi ordini",
-            "wishlists": "Save items to your Wishlist",
+            "wishlists": "Salva articoli nella Lista desideri",
             "createLink": "Crea account "
+        },
+        "ForgotPassword": {
+            "title": "Forgot password",
+            "heading": "Forgot password",
+            "Form": {
+                "description": "Inserisci di seguito l'e-mail associata al tuo account. Ti invieremo le istruzioni per reimpostare la password.",
+                "emailLabel": "E-mail",
+                "emailValidationMessage": "Inserisci un indirizzo e-mail valido, ad esempio nome@dominio.com",
+                "recaptchaText": "Supera il controllo ReCAPTCHA",
+                "confirmResetPassword": "Se l'indirizzo e-mail {email} è collegato a un account nel nostro negozio, ti abbiamo inviato un'e-mail per reimpostare la password. Se non la trovi, controlla le cartelle di posta in arrivo e indesiderata.",
+                "submitting": "Invio in corso...",
+                "submit": "Reimposta password"
+            },
+            "Errors": {
+                "error": "Errore sconosciuto."
+            }
         }
     },
     "Register": {
@@ -55,25 +71,9 @@
             "confirmPassword": "Le password non corrispondono."
         },
         "Errors": {
-            "inputError": "Something went wrong with processing user input.",
+            "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
             "apiError": "Sembra che si sia verificato un errore del server, riprova tra qualche minuto.",
             "error": "Si è verificato un errore. Riprova più tardi."
-        }
-    },
-    "Reset": {
-        "title": "Reimposta password",
-        "heading": "Reimposta password",
-        "Form": {
-            "description": "Inserisci di seguito l'e-mail associata al tuo account. Ti invieremo le istruzioni per reimpostare la password.",
-            "emailLabel": "E-mail",
-            "emailValidationMessage": "Inserisci un indirizzo e-mail valido, ad esempio nome@dominio.com",
-            "recaptchaText": "Supera il controllo ReCAPTCHA",
-            "confirmResetPassword": "Se l'indirizzo e-mail {email} è collegato a un account nel nostro negozio, ti abbiamo inviato un'e-mail per reimpostare la password. Se non la trovi, controlla le cartelle di posta in arrivo e indesiderata.",
-            "submitting": "Invio in corso...",
-            "submit": "Reimposta password"
-        },
-        "Errors": {
-            "error": "Errore sconosciuto."
         }
     },
     "FacetedGroup": {
@@ -162,7 +162,7 @@
                     "cancel": "Annulla",
                     "success": "Indirizzo aggiunto al tuo account.",
                     "Errors": {
-                        "inputError": "Something went wrong with processing user input.",
+                        "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
                         "error": "Errore sconosciuto."
                     }
                 }
@@ -180,7 +180,7 @@
                     "deleteButton": "Elimina",
                     "success": "L'indirizzo è stato aggiornato correttamente.",
                     "Errors": {
-                        "inputError": "Something went wrong with processing user input.",
+                        "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
                         "notFound": "L'indirizzo non esiste.",
                         "error": "Errore sconosciuto."
                     }
@@ -226,7 +226,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Something went wrong with processing user input.",
+                    "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
                     "notFound": "Il cliente non esiste"
                 }
             }

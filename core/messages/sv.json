@@ -32,7 +32,7 @@
             "entePasswordMessage": "Ange ditt lösenord",
             "submitting": "Skickar ...",
             "logIn": "Logga in",
-            "resetPassword": "Glömt ditt lösenord?"
+            "forgotPassword": "Glömt ditt lösenord?"
         },
         "CreateAccount": {
             "heading": "Nya kunder?",
@@ -41,8 +41,24 @@
             "multipleAddresses": "Spara flera leveransadresser",
             "ordersHistory": "Gå till din orderhistorik",
             "ordersTracking": "Spåra nya beställningar",
-            "wishlists": "Save items to your Wishlist",
+            "wishlists": "Spara objekt i din önskelista",
             "createLink": "Skapa konto "
+        },
+        "ForgotPassword": {
+            "title": "Forgot password",
+            "heading": "Forgot password",
+            "Form": {
+                "description": "Ange e-postadressen som är kopplad till ditt konto nedan. Vi skickar instruktioner för att återställa ditt lösenord.",
+                "emailLabel": "E-post",
+                "emailValidationMessage": "Ange en giltig e-postadress, t.ex. namn@domän.com",
+                "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
+                "confirmResetPassword": "Om e-postadressen {email} är kopplad till ett konto i vår butik har vi skickat ett e-postmeddelande om återställning av lösenord. Kontrollera din inkorg och skräppostmapp om du inte ser meddelandet.",
+                "submitting": "Skickar ...",
+                "submit": "Återställ lösenord"
+            },
+            "Errors": {
+                "error": "Okänt fel."
+            }
         }
     },
     "Register": {
@@ -58,22 +74,6 @@
             "inputError": "Något gick fel när användarens inmatning skulle bearbetas.",
             "apiError": "Det verkar som om vi har ett serverfel. Försök igen om några minuter.",
             "error": "Någonting gick fel. Vänligen försök igen senare."
-        }
-    },
-    "Reset": {
-        "title": "Återställ lösenord",
-        "heading": "Återställ lösenord",
-        "Form": {
-            "description": "Ange e-postadressen som är kopplad till ditt konto nedan. Vi skickar instruktioner för att återställa ditt lösenord.",
-            "emailLabel": "E-post",
-            "emailValidationMessage": "Ange en giltig e-postadress, t.ex. namn@domän.com",
-            "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
-            "confirmResetPassword": "Om e-postadressen {email} är kopplad till ett konto i vår butik har vi skickat ett e-postmeddelande om återställning av lösenord. Kontrollera din inkorg och skräppostmapp om du inte ser meddelandet.",
-            "submitting": "Skickar ...",
-            "submit": "Återställ lösenord"
-        },
-        "Errors": {
-            "error": "Okänt fel."
         }
     },
     "FacetedGroup": {
