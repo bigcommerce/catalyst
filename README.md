@@ -27,7 +27,7 @@ times before. You can instead go straight to work building your brand and making
  <a href="https://www.catalyst.dev">🚀 catalyst.dev</a> •
  <a href="https://developer.bigcommerce.com/community">🤗 BigCommerce Developer Community</a> •
  <a href="https://github.com/bigcommerce/catalyst/discussions">💬 GitHub Discussions</a> •
- <a href="/docs">💡 Docs in this repo</a>
+ <a href="https://github.com/bigcommerce/catalyst/tree/main/docs">💡 Docs in this repo</a>
 </p>
 
 ![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/catalyst_readme_hr.png)
@@ -35,9 +35,9 @@ times before. You can instead go straight to work building your brand and making
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Catalyst Storefront is to use the [Vercel Platform](https://vercel.com/new) from the creators of Next.js.
+The easiest way to deploy your Catalyst Storefront is to use [Vercel](https://vercel.com), the platform created by the team behind Next.js
 
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Check out their [integration guide](https://vercel.com/docs/integrations/ecommerce/bigcommerce) for more details.
 
 <div align="left">
   <a href="https://vercel.com/new/clone?repository-url=https://github.com/bigcommerce/catalyst&root-directory=core&project-name=my-catalyst-storefront&repository-name=my-catalyst-storefront&integration-ids=oac_nsrwzogJLEFglVwt2060kB0y&external-id=catalyst&demo-title=BigCommerce+Catalyst+with+Vercel&demo-description=Create+a+BigCommerce+Catalyst+Storefront+and+Deploy+to+Vercel&demo-url=catalyst-demo.site&demo-image=https://storage.googleapis.com/s.mkswft.com/RmlsZTozODgzZmY3Yy1hNmVlLTQ1MGUtYjRkMS1mMjEyNzgxNjk5MTY%3D/Social-image-Catalyst.png"><img src="https://vercel.com/button" alt="Deploy with Vercel"/></a>
@@ -83,6 +83,6 @@ Learn more about Catalyst at [catalyst.dev](https://catalyst.dev).
 
 ![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/catalyst_readme_hr.png)
 
-> [!IMPORTANT]
-> If you just want to build a storefront, start with the [CLI](#quickstart) which will install the Next.js application in [/core](/core/).
+> **Important:**
+> If you just want to build a storefront, start with the [CLI](#quickstart) which will install the Next.js application in [/core](https://github.com/bigcommerce/catalyst/tree/main/core).
 > If you wish to contribute back to Catalyst or create a fork of Catalyst, you can check the [docs for this monorepo](https://catalyst.dev/docs/monorepo) to get started.
