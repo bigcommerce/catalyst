@@ -25,6 +25,7 @@ export class Bodl {
 
   readonly cart = this.getCartEvents();
   readonly navigation = this.getNavigationEvents();
+  readonly consent = this.getConsentEvents();
 
   private readonly bodlScriptId = 'bodl-events-script';
   private readonly dataLayerScriptId = 'data-layer-script';
@@ -65,6 +66,9 @@ export class Bodl {
       this.initializeBodlEvents();
       this.initializeDataLayer();
       this.initializeGTM();
+      this.initializeConsentMode();
+
+      this.bindEvents();
 
       Bodl.waitForBodlEvents(() => {
         subscribeOnBodlEvents(
@@ -144,6 +148,24 @@ export class Bodl {
     document.head.appendChild(script);
   }
 
+  private initializeConsentMode() {
+    if (!this.config.googleAnalytics.consentModeEnabled) {
+      return;
+    }
+
+    gtag('consent', 'default', {
+      ad_personalization: 'denied',
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      analytics_storage: 'denied',
+      functionality_storage: 'denied',
+    });
+  }
+
+  private bindEvents() {
+    this.bindConsentEvents();
+  }
+
   private getCartEvents() {
     return {
       productAdded: (payload) => {
@@ -197,5 +219,50 @@ export class Bodl {
         });
       },
     } satisfies Analytics.Navigation.Events;
+  }
+
+  private getConsentEvents() {
+    return {
+      consentLoaded: (payload) => {
+        Bodl.waitForBodlEvents(() => {
+          window.bodlEvents?.consent.emit('bodl_v1_consent_loaded', {
+            event_id: uuidv4(),
+            ...payload,
+          });
+        });
+      },
+      consentUpdated: (payload) => {
+        Bodl.waitForBodlEvents(() => {
+          window.bodlEvents?.consent.emit('bodl_v1_consent_updated', {
+            event_id: uuidv4(),
+            ...payload,
+          });
+        });
+      },
+    } satisfies Analytics.Consent.Events;
+  }
+
+  private bindConsentEvents() {
+    Bodl.waitForBodlEvents(() => {
+      window.bodlEvents?.consent.loaded((payload) => {
+        gtag('consent', 'update', {
+          ad_personalization: payload.advertising ? 'granted' : 'denied',
+          ad_storage: payload.advertising ? 'granted' : 'denied',
+          ad_user_data: payload.advertising ? 'granted' : 'denied',
+          analytics_storage: payload.analytics ? 'granted' : 'denied',
+          functionality_storage: payload.functional ? 'granted' : 'denied',
+        });
+      });
+
+      window.bodlEvents?.consent.updated((payload) => {
+        gtag('consent', 'update', {
+          ad_personalization: payload.advertising ? 'granted' : 'denied',
+          ad_storage: payload.advertising ? 'granted' : 'denied',
+          ad_user_data: payload.advertising ? 'granted' : 'denied',
+          analytics_storage: payload.analytics ? 'granted' : 'denied',
+          functionality_storage: payload.functional ? 'granted' : 'denied',
+        });
+      });
+    });
   }
 }

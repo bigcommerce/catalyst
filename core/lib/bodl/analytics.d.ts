@@ -73,4 +73,23 @@ declare namespace Analytics {
       productRemoved: (payload: ProductRemovedPayload) => void;
     }
   }
+
+  export namespace Consent {
+    interface ConsentLoadedPayload {
+      functional: boolean;
+      analytics: boolean;
+      advertising: boolean;
+    }
+
+    interface ConsentUpdatedPayload {
+      functional: boolean;
+      analytics: boolean;
+      advertising: boolean;
+    }
+
+    export interface Events {
+      consentLoaded: (payload: ConsentLoadedPayload) => void;
+      consentUpdated: (payload: ConsentUpdatedPayload) => void;
+    }
+  }
 }
