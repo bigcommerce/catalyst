@@ -32,7 +32,7 @@
             "entePasswordMessage": "Digite sua senha",
             "submitting": "Enviando...",
             "logIn": "Credencial de acesso",
-            "resetPassword": "Esqueceu sua senha?"
+            "forgotPassword": "Esqueceu sua senha?"
         },
         "CreateAccount": {
             "heading": "Cliente novo?",
@@ -41,8 +41,24 @@
             "multipleAddresses": "Salvar vários endereços de entrega",
             "ordersHistory": "Acessar seu histórico de pedidos",
             "ordersTracking": "Rastrear novos pedidos",
-            "wishlists": "Save items to your Wishlist",
+            "wishlists": "Salvar itens na sua lista de desejos",
             "createLink": "Criar conta "
+        },
+        "ForgotPassword": {
+            "title": "Forgot password",
+            "heading": "Forgot password",
+            "Form": {
+                "description": "Insira abaixo o e-mail associado à sua conta. Enviaremos instruções para redefinir sua senha.",
+                "emailLabel": "Email",
+                "emailValidationMessage": "Insira um e-mail válido, como nome@dominio.com",
+                "recaptchaText": "Passar na verificação ReCAPTCHA",
+                "confirmResetPassword": "Se o endereço de e-mail {email} está vinculado a uma conta na nossa loja, enviamos um e-mail de redefinição de senha. Verifique sua caixa de entrada e, caso não encontre, confira a pasta de spam.",
+                "submitting": "Enviando...",
+                "submit": "Redefinir senha"
+            },
+            "Errors": {
+                "error": "Erro desconhecido."
+            }
         }
     },
     "Register": {
@@ -55,25 +71,9 @@
             "confirmPassword": "As senhas não conferem."
         },
         "Errors": {
-            "inputError": "Something went wrong with processing user input.",
+            "inputError": "Houve um erro no processamento da entrada do usuário.",
             "apiError": "Ocorreu um erro no servidor. Tente novamente em alguns minutos.",
             "error": "Ocorreu um erro. Tente novamente mais tarde."
-        }
-    },
-    "Reset": {
-        "title": "Redefinir senha",
-        "heading": "Redefinir senha",
-        "Form": {
-            "description": "Insira abaixo o e-mail associado à sua conta. Enviaremos instruções para redefinir sua senha.",
-            "emailLabel": "Email",
-            "emailValidationMessage": "Insira um e-mail válido, como nome@dominio.com",
-            "recaptchaText": "Passar na verificação ReCAPTCHA",
-            "confirmResetPassword": "Se o endereço de e-mail {email} está vinculado a uma conta na nossa loja, enviamos um e-mail de redefinição de senha. Verifique sua caixa de entrada e, caso não encontre, confira a pasta de spam.",
-            "submitting": "Enviando...",
-            "submit": "Redefinir senha"
-        },
-        "Errors": {
-            "error": "Erro desconhecido."
         }
     },
     "FacetedGroup": {
@@ -162,7 +162,7 @@
                     "cancel": "Cancelar",
                     "success": "Endereço adicionado à sua conta.",
                     "Errors": {
-                        "inputError": "Something went wrong with processing user input.",
+                        "inputError": "Houve um erro no processamento da entrada do usuário.",
                         "error": "Erro desconhecido."
                     }
                 }
@@ -180,7 +180,7 @@
                     "deleteButton": "Excluir",
                     "success": "O endereço foi atualizado.",
                     "Errors": {
-                        "inputError": "Something went wrong with processing user input.",
+                        "inputError": "Houve um erro no processamento da entrada do usuário.",
                         "notFound": "O endereço não existe.",
                         "error": "Erro desconhecido."
                     }
@@ -226,7 +226,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Something went wrong with processing user input.",
+                    "inputError": "Houve um erro no processamento da entrada do usuário.",
                     "notFound": "O cliente não existe"
                 }
             }
@@ -363,7 +363,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Compra mínima",
-            "maxPurchase": "Maximum purchase",
+            "maxPurchase": "Compra máxima",
             "availability": "Disponibilidade",
             "condition": "Condição",
             "weight": "Peso",

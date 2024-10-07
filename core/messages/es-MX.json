@@ -32,7 +32,7 @@
             "entePasswordMessage": "Ingresa tu contraseña",
             "submitting": "Enviando...",
             "logIn": "Inicio de sesión",
-            "resetPassword": "¿Olvidaste tu contraseña?"
+            "forgotPassword": "¿Olvidaste tu contraseña?"
         },
         "CreateAccount": {
             "heading": "¿Nuevo cliente?",
@@ -41,8 +41,24 @@
             "multipleAddresses": "Guardar varias direcciones de envío",
             "ordersHistory": "Acceder a tu historial de pedidos",
             "ordersTracking": "Rastrear nuevos pedidos",
-            "wishlists": "Save items to your Wishlist",
+            "wishlists": "Guardar artículos en tu lista de deseos",
             "createLink": "Crear cuenta "
+        },
+        "ForgotPassword": {
+            "title": "Forgot password",
+            "heading": "Forgot password",
+            "Form": {
+                "description": "A continuación, ingresa el correo electrónico asociado a tu cuenta. Te enviaremos instrucciones para restablecer tu contraseña.",
+                "emailLabel": "Correo electrónico",
+                "emailValidationMessage": "Ingresa un correo electrónico válido, como nombre@dominio.com",
+                "recaptchaText": "Pasar la comprobación de ReCAPTCHA",
+                "confirmResetPassword": "Si la dirección de correo electrónico {email} está vinculada a una cuenta en nuestra tienda, te hemos enviado un correo electrónico de restablecimiento de contraseña. Revisa tu bandeja de entrada y tu carpeta de correo no deseado si no lo ves.",
+                "submitting": "Enviando...",
+                "submit": "Restablecer la contraseña"
+            },
+            "Errors": {
+                "error": "Error desconocido."
+            }
         }
     },
     "Register": {
@@ -58,22 +74,6 @@
             "inputError": "Ocurrió un error en el procesamiento de la entrada del usuario.",
             "apiError": "Parece que estamos experimentando un error en el servidor, inténtalo de nuevo en unos minutos.",
             "error": "Algo salió mal. Vuelva a intentarlo más tarde."
-        }
-    },
-    "Reset": {
-        "title": "Restablecer la contraseña",
-        "heading": "Restablecer la contraseña",
-        "Form": {
-            "description": "A continuación, ingresa el correo electrónico asociado a tu cuenta. Te enviaremos instrucciones para restablecer tu contraseña.",
-            "emailLabel": "Correo electrónico",
-            "emailValidationMessage": "Ingresa un correo electrónico válido, como nombre@dominio.com",
-            "recaptchaText": "Pasar la comprobación de ReCAPTCHA",
-            "confirmResetPassword": "Si la dirección de correo electrónico {email} está vinculada a una cuenta en nuestra tienda, te hemos enviado un correo electrónico de restablecimiento de contraseña. Revisa tu bandeja de entrada y tu carpeta de correo no deseado si no lo ves.",
-            "submitting": "Enviando...",
-            "submit": "Restablecer la contraseña"
-        },
-        "Errors": {
-            "error": "Error desconocido."
         }
     },
     "FacetedGroup": {
@@ -363,7 +363,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Compra mínima",
-            "maxPurchase": "Maximum purchase",
+            "maxPurchase": "Compra máxima",
             "availability": "Disponibilidad",
             "condition": "Condición",
             "weight": "Peso",

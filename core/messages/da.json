@@ -32,7 +32,7 @@
             "entePasswordMessage": "Indtast din adgangskode.",
             "submitting": "Indsender ...",
             "logIn": "Log ind",
-            "resetPassword": "Har du glemt din adgangskode?"
+            "forgotPassword": "Har du glemt din adgangskode?"
         },
         "CreateAccount": {
             "heading": "Ny kunde?",
@@ -41,8 +41,24 @@
             "multipleAddresses": "Gemme flere forsendelsesadresser",
             "ordersHistory": "Få adgang til din ordrehistorik",
             "ordersTracking": "Spore nye ordrer",
-            "wishlists": "Save items to your Wishlist",
+            "wishlists": "Gemme varer til din ønskeliste",
             "createLink": "Opret konto "
+        },
+        "ForgotPassword": {
+            "title": "Forgot password",
+            "heading": "Forgot password",
+            "Form": {
+                "description": "Indtast den e-mail, der er knyttet til din konto, nedenfor. Vi sender dig instruktioner til nulstilling af din adgangskode.",
+                "emailLabel": "E-mail",
+                "emailValidationMessage": "Indtast en gyldig e-mail, f.eks. navn@domæne.com",
+                "recaptchaText": "Bestå ReCAPTCHA-kontrol",
+                "confirmResetPassword": "Hvis e-mailadressen {email} er knyttet til en konto i vores butik, har vi sendt dig en e-mail til nulstilling af adgangskode. Tjek din indbakke og spam-mappe, hvis du ikke kan se den.",
+                "submitting": "Indsender ...",
+                "submit": "Nulstil adgangskoden"
+            },
+            "Errors": {
+                "error": "Ukendt fejl."
+            }
         }
     },
     "Register": {
@@ -55,25 +71,9 @@
             "confirmPassword": "Adgangskoderne stemmer ikke overens"
         },
         "Errors": {
-            "inputError": "Something went wrong with processing user input.",
+            "inputError": "Noget gik galt med behandling af brugerinput.",
             "apiError": "Det ser ud til, at vi oplever en serverfejl. Prøv igen om et par minutter.",
             "error": "Noget gik galt. Prøv igen senere."
-        }
-    },
-    "Reset": {
-        "title": "Nulstil adgangskoden",
-        "heading": "Nulstil adgangskoden",
-        "Form": {
-            "description": "Indtast den e-mail, der er knyttet til din konto, nedenfor. Vi sender dig instruktioner til nulstilling af din adgangskode.",
-            "emailLabel": "E-mail",
-            "emailValidationMessage": "Indtast en gyldig e-mail, f.eks. navn@domæne.com",
-            "recaptchaText": "Bestå ReCAPTCHA-kontrol",
-            "confirmResetPassword": "Hvis e-mailadressen {email} er knyttet til en konto i vores butik, har vi sendt dig en e-mail til nulstilling af adgangskode. Tjek din indbakke og spam-mappe, hvis du ikke kan se den.",
-            "submitting": "Indsender ...",
-            "submit": "Nulstil adgangskoden"
-        },
-        "Errors": {
-            "error": "Ukendt fejl."
         }
     },
     "FacetedGroup": {
@@ -162,7 +162,7 @@
                     "cancel": "Annuller",
                     "success": "Adressen er tilføjet til din konto.",
                     "Errors": {
-                        "inputError": "Something went wrong with processing user input.",
+                        "inputError": "Noget gik galt med behandling af brugerinput.",
                         "error": "Ukendt fejl."
                     }
                 }
@@ -180,7 +180,7 @@
                     "deleteButton": "Slet",
                     "success": "Adressen er blevet opdateret.",
                     "Errors": {
-                        "inputError": "Something went wrong with processing user input.",
+                        "inputError": "Noget gik galt med behandling af brugerinput.",
                         "notFound": "Adressen findes ikke.",
                         "error": "Ukendt fejl."
                     }
@@ -226,7 +226,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Something went wrong with processing user input.",
+                    "inputError": "Noget gik galt med behandling af brugerinput.",
                     "notFound": "Kunden findes ikke."
                 }
             }

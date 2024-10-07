@@ -32,7 +32,7 @@
             "entePasswordMessage": "Skriv inn passordet ditt.",
             "submitting": "Sender inn …",
             "logIn": "Logg inn",
-            "resetPassword": "Har du glemt passordet?"
+            "forgotPassword": "Har du glemt passordet?"
         },
         "CreateAccount": {
             "heading": "Ny kunde?",
@@ -41,8 +41,24 @@
             "multipleAddresses": "Lagre flere leveringsadresser",
             "ordersHistory": "Få tilgang til bestillingshistorikken din",
             "ordersTracking": "Spore nye bestillinger",
-            "wishlists": "Save items to your Wishlist",
+            "wishlists": "Legge til varer på ønskelisten din",
             "createLink": "Opprett konto "
+        },
+        "ForgotPassword": {
+            "title": "Forgot password",
+            "heading": "Forgot password",
+            "Form": {
+                "description": "Skriv inn e-posten som er knyttet til kontoen din nedenfor. Vi sender deg instruksjoner for å tilbakestille passordet ditt.",
+                "emailLabel": "E-post",
+                "emailValidationMessage": "Angi en gyldig e-postadresse, for eksempel navn@domene.com",
+                "recaptchaText": "Bestå reCAPTCHA-sjekk",
+                "confirmResetPassword": "Hvis e-postadressen {email} er koblet til en konto i butikken vår, har vi sendt deg en e-post for tilbakestilling av passord. Sjekk innboksen og søppelpostmappen hvis du ikke ser den.",
+                "submitting": "Sender inn …",
+                "submit": "Tilbakestill passord"
+            },
+            "Errors": {
+                "error": "Ukjent feil."
+            }
         }
     },
     "Register": {
@@ -55,25 +71,9 @@
             "confirmPassword": "Passordene samsvarer ikke"
         },
         "Errors": {
-            "inputError": "Something went wrong with processing user input.",
+            "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
             "apiError": "Det ser ut til at vi opplever en serverfeil, vennligst prøv igjen om noen minutter.",
             "error": "Noe gikk galt. Prøv igjen senere."
-        }
-    },
-    "Reset": {
-        "title": "Tilbakestill passord",
-        "heading": "Tilbakestill passord",
-        "Form": {
-            "description": "Skriv inn e-posten som er knyttet til kontoen din nedenfor. Vi sender deg instruksjoner for å tilbakestille passordet ditt.",
-            "emailLabel": "E-post",
-            "emailValidationMessage": "Angi en gyldig e-postadresse, for eksempel navn@domene.com",
-            "recaptchaText": "Bestå reCAPTCHA-sjekk",
-            "confirmResetPassword": "Hvis e-postadressen {email} er koblet til en konto i butikken vår, har vi sendt deg en e-post for tilbakestilling av passord. Sjekk innboksen og søppelpostmappen hvis du ikke ser den.",
-            "submitting": "Sender inn …",
-            "submit": "Tilbakestill passord"
-        },
-        "Errors": {
-            "error": "Ukjent feil."
         }
     },
     "FacetedGroup": {
@@ -162,7 +162,7 @@
                     "cancel": "Avbryt",
                     "success": "Adressen er lagt til på kontoen din.",
                     "Errors": {
-                        "inputError": "Something went wrong with processing user input.",
+                        "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
                         "error": "Ukjent feil."
                     }
                 }
@@ -180,7 +180,7 @@
                     "deleteButton": "Slett",
                     "success": "Adressen er oppdatert.",
                     "Errors": {
-                        "inputError": "Something went wrong with processing user input.",
+                        "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
                         "notFound": "Adressen finnes ikke.",
                         "error": "Ukjent feil."
                     }
@@ -226,7 +226,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Something went wrong with processing user input.",
+                    "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
                     "notFound": "Kunden eksisterer ikke"
                 }
             }

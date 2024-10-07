@@ -32,7 +32,7 @@
             "entePasswordMessage": "Introduce tu contraseña.",
             "submitting": "Enviando...",
             "logIn": "Iniciar sesión",
-            "resetPassword": "¿Olvidó su contraseña?"
+            "forgotPassword": "¿Olvidó su contraseña?"
         },
         "CreateAccount": {
             "heading": "¿Cliente nuevo?",
@@ -41,8 +41,24 @@
             "multipleAddresses": "Guardar varias direcciones de envío",
             "ordersHistory": "Acceder a su historial de pedidos",
             "ordersTracking": "Hacer seguimiento de pedidos nuevos",
-            "wishlists": "Save items to your Wishlist",
+            "wishlists": "Guardar artículos en su lista de deseos",
             "createLink": "Crear cuenta "
+        },
+        "ForgotPassword": {
+            "title": "Forgot password",
+            "heading": "Forgot password",
+            "Form": {
+                "description": "Introduce a continuación la dirección de correo electrónico asociada a tu cuenta. Te enviaremos instrucciones para restablecer tu contraseña.",
+                "emailLabel": "Correo electrónico",
+                "emailValidationMessage": "Introduce un correo electrónico válido, como nombre@dominio.com",
+                "recaptchaText": "Pasar la verificación ReCAPTCHA",
+                "confirmResetPassword": "Si la dirección de correo electrónico {email} está vinculada a una cuenta en nuestra tienda, te hemos enviado un correo electrónico de restablecimiento de contraseña. Comprueba tu bandeja de entrada y tu carpeta de correo no deseado si no lo ves.",
+                "submitting": "Enviando...",
+                "submit": "Restablecer la contraseña"
+            },
+            "Errors": {
+                "error": "Error desconocido."
+            }
         }
     },
     "Register": {
@@ -55,25 +71,9 @@
             "confirmPassword": "Las contraseñas no coinciden."
         },
         "Errors": {
-            "inputError": "Something went wrong with processing user input.",
+            "inputError": "Algo salió mal al procesar los datos del usuario.",
             "apiError": "Estamos teniendo problemas con el servidor. Vuelve a intentarlo en unos minutos.",
             "error": "Algo salió mal. Vuelva a intentarlo más tarde."
-        }
-    },
-    "Reset": {
-        "title": "Restablecer la contraseña",
-        "heading": "Restablecer la contraseña",
-        "Form": {
-            "description": "Introduce a continuación la dirección de correo electrónico asociada a tu cuenta. Te enviaremos instrucciones para restablecer tu contraseña.",
-            "emailLabel": "Correo electrónico",
-            "emailValidationMessage": "Introduce un correo electrónico válido, como nombre@dominio.com",
-            "recaptchaText": "Pasar la verificación ReCAPTCHA",
-            "confirmResetPassword": "Si la dirección de correo electrónico {email} está vinculada a una cuenta en nuestra tienda, te hemos enviado un correo electrónico de restablecimiento de contraseña. Comprueba tu bandeja de entrada y tu carpeta de correo no deseado si no lo ves.",
-            "submitting": "Enviando...",
-            "submit": "Restablecer la contraseña"
-        },
-        "Errors": {
-            "error": "Error desconocido."
         }
     },
     "FacetedGroup": {
@@ -162,7 +162,7 @@
                     "cancel": "Cancelar",
                     "success": "Dirección añadida a tu cuenta.",
                     "Errors": {
-                        "inputError": "Something went wrong with processing user input.",
+                        "inputError": "Algo salió mal al procesar los datos del usuario.",
                         "error": "Error desconocido."
                     }
                 }
@@ -180,7 +180,7 @@
                     "deleteButton": "Eliminar",
                     "success": "La dirección se ha actualizado correctamente.",
                     "Errors": {
-                        "inputError": "Something went wrong with processing user input.",
+                        "inputError": "Algo salió mal al procesar los datos del usuario.",
                         "notFound": "La dirección no existe.",
                         "error": "Error desconocido."
                     }
@@ -226,7 +226,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Something went wrong with processing user input.",
+                    "inputError": "Algo salió mal al procesar los datos del usuario.",
                     "notFound": "El cliente no existe"
                 }
             }
@@ -363,7 +363,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Compra mínima",
-            "maxPurchase": "Maximum purchase",
+            "maxPurchase": "Compra máxima",
             "availability": "Disponibilidad",
             "condition": "Condición",
             "weight": "Peso",

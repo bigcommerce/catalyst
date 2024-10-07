@@ -32,7 +32,7 @@
             "entePasswordMessage": "Podaj hasło",
             "submitting": "Przekazanie...",
             "logIn": "Zaloguj się",
-            "resetPassword": "Nie pamiętasz hasła?"
+            "forgotPassword": "Nie pamiętasz hasła?"
         },
         "CreateAccount": {
             "heading": "Nowy klient?",
@@ -43,6 +43,22 @@
             "ordersTracking": "Śledzenie nowych zamówień",
             "wishlists": "Zapisz elementy na swojej liście życzeń",
             "createLink": "Utwórz konto "
+        },
+        "ForgotPassword": {
+            "title": "Forgot password",
+            "heading": "Forgot password",
+            "Form": {
+                "description": "Podaj poniżej adres e-mail powiązany z Twoim kontem. Wyślemy Ci instrukcje resetowania hasła.",
+                "emailLabel": "Email",
+                "emailValidationMessage": "Podaj prawidłowy adres e-mail, np. nazwa@domena.com",
+                "recaptchaText": "Zdaj test ReCAPTCHA",
+                "confirmResetPassword": "Jeśli adres e-mail {email} jest powiązany z kontem w naszym sklepie, otrzymasz wiadomość e-mail umożliwiającą zresetowanie hasła. Jeśli jej nie widzisz, sprawdź skrzynkę odbiorczą i folder ze spamem.",
+                "submitting": "Przekazanie...",
+                "submit": "Zresetuj hasło"
+            },
+            "Errors": {
+                "error": "Nieznany błąd."
+            }
         }
     },
     "Register": {
@@ -55,25 +71,9 @@
             "confirmPassword": "Hasła nie są zgodne"
         },
         "Errors": {
-            "inputError": "Something went wrong with processing user input.",
+            "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
             "apiError": "Wygląda na to, że wystąpił błąd serwera, spróbuj ponownie za kilka minut.",
             "error": "Coś poszło nie tak. Proszę spróbować później."
-        }
-    },
-    "Reset": {
-        "title": "Zresetuj hasło",
-        "heading": "Zresetuj hasło",
-        "Form": {
-            "description": "Podaj poniżej adres e-mail powiązany z Twoim kontem. Wyślemy Ci instrukcje resetowania hasła.",
-            "emailLabel": "Email",
-            "emailValidationMessage": "Podaj prawidłowy adres e-mail, np. nazwa@domena.com",
-            "recaptchaText": "Zdaj test ReCAPTCHA",
-            "confirmResetPassword": "Jeśli adres e-mail {email} jest powiązany z kontem w naszym sklepie, otrzymasz wiadomość e-mail umożliwiającą zresetowanie hasła. Jeśli jej nie widzisz, sprawdź skrzynkę odbiorczą i folder ze spamem.",
-            "submitting": "Przekazanie...",
-            "submit": "Zresetuj hasło"
-        },
-        "Errors": {
-            "error": "Nieznany błąd."
         }
     },
     "FacetedGroup": {
@@ -162,7 +162,7 @@
                     "cancel": "Anuluj",
                     "success": "Adres został dodany do Twojego konta.",
                     "Errors": {
-                        "inputError": "Something went wrong with processing user input.",
+                        "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
                         "error": "Nieznany błąd."
                     }
                 }
@@ -180,7 +180,7 @@
                     "deleteButton": "Usuń",
                     "success": "Adres został pomyślnie zaktualizowany.",
                     "Errors": {
-                        "inputError": "Something went wrong with processing user input.",
+                        "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
                         "notFound": "Adres nie istnieje.",
                         "error": "Nieznany błąd."
                     }
@@ -226,7 +226,7 @@
             },
             "UpdateCustomer": {
                 "Errors": {
-                    "inputError": "Something went wrong with processing user input.",
+                    "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
                     "notFound": "Klient nie istnieje"
                 }
             }
@@ -363,7 +363,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Minimalny zakup",
-            "maxPurchase": "Maximum purchase",
+            "maxPurchase": "Maksymalny zakup",
             "availability": "Dostępność",
             "condition": "Stan",
             "weight": "Waga",

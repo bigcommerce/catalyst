@@ -32,7 +32,7 @@
             "entePasswordMessage": "Veuillez saisir votre mot de passe.",
             "submitting": "Envoi...",
             "logIn": "Connexion",
-            "resetPassword": "Mot de passe oublié ?"
+            "forgotPassword": "Mot de passe oublié ?"
         },
         "CreateAccount": {
             "heading": "Nouveau client ?",
@@ -43,6 +43,22 @@
             "ordersTracking": "Suivre les nouvelles commandes",
             "wishlists": "Enregistrer les articles dans votre liste d'envies",
             "createLink": "Créer un compte "
+        },
+        "ForgotPassword": {
+            "title": "Forgot password",
+            "heading": "Forgot password",
+            "Form": {
+                "description": "Veuillez saisir ci-dessous l'adresse e-mail associée à votre compte. Nous vous enverrons des instructions pour réinitialiser votre mot de passe.",
+                "emailLabel": "E-mail",
+                "emailValidationMessage": "Veuillez saisir une adresse e-mail valide, telle que nom@domaine.com",
+                "recaptchaText": "Réussir le test ReCAPTCHA",
+                "confirmResetPassword": "Si l'adresse e-mail {email} est liée à un compte dans notre boutique, vous recevrez un e-mail pour réinitialiser votre mot de passe. Veuillez consulter votre boîte de réception, ainsi que votre dossier de courrier indésirable si vous ne trouvez pas cet e-mail.",
+                "submitting": "Envoi...",
+                "submit": "Réinitialiser le mot de passe"
+            },
+            "Errors": {
+                "error": "Erreur inconnue."
+            }
         }
     },
     "Register": {
@@ -58,22 +74,6 @@
             "inputError": "Un problème est survenu lors du traitement des saisies de l'utilisateur.",
             "apiError": "Il semble qu'une erreur de serveur se soit produite, veuillez réessayer dans quelques minutes.",
             "error": "Une erreur s'est produite. Veuillez réessayer plus tard."
-        }
-    },
-    "Reset": {
-        "title": "Réinitialiser le mot de passe",
-        "heading": "Réinitialiser le mot de passe",
-        "Form": {
-            "description": "Veuillez saisir ci-dessous l'adresse e-mail associée à votre compte. Nous vous enverrons des instructions pour réinitialiser votre mot de passe.",
-            "emailLabel": "E-mail",
-            "emailValidationMessage": "Veuillez saisir une adresse e-mail valide, telle que nom@domaine.com",
-            "recaptchaText": "Réussir le test ReCAPTCHA",
-            "confirmResetPassword": "Si l'adresse e-mail {email} est liée à un compte dans notre boutique, vous recevrez un e-mail pour réinitialiser votre mot de passe. Veuillez consulter votre boîte de réception, ainsi que votre dossier de courrier indésirable si vous ne trouvez pas cet e-mail.",
-            "submitting": "Envoi...",
-            "submit": "Réinitialiser le mot de passe"
-        },
-        "Errors": {
-            "error": "Erreur inconnue."
         }
     },
     "FacetedGroup": {

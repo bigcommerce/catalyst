@@ -32,7 +32,7 @@
             "entePasswordMessage": "Voer je wachtwoord in",
             "submitting": "Verzenden...",
             "logIn": "Inloggen",
-            "resetPassword": "Wachtwoord vergeten?"
+            "forgotPassword": "Wachtwoord vergeten?"
         },
         "CreateAccount": {
             "heading": "Nieuwe klant?",
@@ -43,6 +43,22 @@
             "ordersTracking": "Nieuwe bestellingen te volgen",
             "wishlists": "Artikelen in uw verlanglijstje op te slaan",
             "createLink": "Account aanmaken "
+        },
+        "ForgotPassword": {
+            "title": "Forgot password",
+            "heading": "Forgot password",
+            "Form": {
+                "description": "Voer hieronder het e-mailadres in dat aan je account is gekoppeld. We sturen je instructies om je wachtwoord opnieuw in te stellen.",
+                "emailLabel": "E-mailadres",
+                "emailValidationMessage": "Voer een geldig e-mailadres in, zoals naam@domein.com",
+                "recaptchaText": "reCAPTCHA-check doorstaan",
+                "confirmResetPassword": "Als het e-mailadres {email} is gekoppeld aan een account in onze winkel, hebben we je een e-mail gestuurd om je wachtwoord opnieuw in te stellen. Controleer je inbox en spammap als je de e-mail niet ziet.",
+                "submitting": "Verzenden...",
+                "submit": "Wachtwoord opnieuw instellen"
+            },
+            "Errors": {
+                "error": "Onbekende fout."
+            }
         }
     },
     "Register": {
@@ -58,22 +74,6 @@
             "inputError": "Er is iets misgegaan bij het verwerken van de gebruikersinvoer.",
             "apiError": "Het lijkt erop dat er een serverfout is opgetreden. Probeer het over een paar minuten opnieuw.",
             "error": "Er is iets fout gegaan. Probeer het later opnieuw."
-        }
-    },
-    "Reset": {
-        "title": "Wachtwoord opnieuw instellen",
-        "heading": "Wachtwoord opnieuw instellen",
-        "Form": {
-            "description": "Voer hieronder het e-mailadres in dat aan je account is gekoppeld. We sturen je instructies om je wachtwoord opnieuw in te stellen.",
-            "emailLabel": "E-mailadres",
-            "emailValidationMessage": "Voer een geldig e-mailadres in, zoals naam@domein.com",
-            "recaptchaText": "reCAPTCHA-check doorstaan",
-            "confirmResetPassword": "Als het e-mailadres {email} is gekoppeld aan een account in onze winkel, hebben we je een e-mail gestuurd om je wachtwoord opnieuw in te stellen. Controleer je inbox en spammap als je de e-mail niet ziet.",
-            "submitting": "Verzenden...",
-            "submit": "Wachtwoord opnieuw instellen"
-        },
-        "Errors": {
-            "error": "Onbekende fout."
         }
     },
     "FacetedGroup": {
@@ -363,7 +363,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Minimale aankoop",
-            "maxPurchase": "Maximum purchase",
+            "maxPurchase": "Maximale aankoop",
             "availability": "Beschikbaarheid",
             "condition": "Staat",
             "weight": "Gewicht",
