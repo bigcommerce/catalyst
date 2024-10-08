@@ -125,7 +125,7 @@ const Wishlist = ({ setWishlistBook, wishlist }: WishlistProps) => {
                 return (
                   <li className="w-32 sm:w-40 md:w-36" key={productId}>
                     <Link className="mb-2 flex" href={product.path}>
-                      <div className="h-32 w-full sm:h-40 md:h-36">
+                      <div className="flex h-32 w-full sm:h-40 md:h-36">
                         {defaultImage ? (
                           <BcImage
                             alt={defaultImage.altText}
