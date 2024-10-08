@@ -198,22 +198,32 @@
       }
     },
     "Wishlist": {
+        "items": "{items, plural, =1 {1 item} other {# items}}",
         "noItems": "No items added",
         "new": "New wishlist",
         "cancel": "Cancel",
         "create": "Create",
+        "edit": "Edit",
         "delete": "Delete",
         "createPopupDescription": "Create new wishlist popup window",
         "inputLabel": "Wishlist name",
         "emptyName": "Provide wishlist name",
         "onSubmitText": "Submitting...",
+        "editWishlist": "Update wishlist",
         "deleteTitle": "Are you sure you want to delete wishlist {name}?",
         "favorites": "Favorites",
         "noGalleryText": "Coming Soon",
+        "update": "Update",
+        "differentName": "New wishlist name should be different from current",
         "messages": {
             "created": "Your wishlist {name} was created successfully",
             "deleted": "Your wishlist {name} was deleted successfully"
         },
+        "Prices": {
+            "msrp": "MSRP",
+            "was": "Was",
+            "now": "Now"
+        },    
         "Sheet": {
             "title": "Add to list",
             "new": "New list",
@@ -493,6 +503,11 @@
         "viewOptions": "View options",
         "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
         "error": "Error adding product to cart. Please try again."
+      },
+      "DeleteWishlistItem": {
+        "success": "Item removed from wishlist. <undoButton>Undo</undoButton> ",
+        "delete": "Delete",
+        "deleteAriaLabel": "Delete from wishlist"
       }
     },
     "FormFields": {
