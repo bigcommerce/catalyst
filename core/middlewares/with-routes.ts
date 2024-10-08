@@ -249,12 +249,7 @@ export const withRoutes: MiddlewareFactory = () => {
     // Use 301 status code as it is more universally supported by crawlers
     const redirectConfig = { status: 301 };
 
-    if (route?.node && route.node.__typename === 'Product') {
-      // If there's a valid Product node, process it as a normal product page
-      const productUrl = new URL(`/${locale}/product/${route.node.entityId}`, request.url);
-
-      return NextResponse.rewrite(productUrl);
-    } else if (route?.redirect) {
+    if (route?.redirect) {
       switch (route.redirect.to.__typename) {
         case 'ManualRedirect': {
           // For manual redirects, redirect to the full URL to handle cases
@@ -273,7 +268,7 @@ export const withRoutes: MiddlewareFactory = () => {
         }
       }
     }
-    
+
     const customerId = await getSessionCustomerId();
     let postfix = '';
 
