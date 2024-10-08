@@ -26,17 +26,17 @@ const SubmitButton = () => {
 interface DeleteWishlistFormProps {
   id: number;
   name: string;
-  onWishistDeleted: (id: number, name: string) => void;
+  onWishlistDeleted: (id: number, name: string) => void;
 }
 
-export const DeleteWishlistForm = ({ onWishistDeleted, id, name }: DeleteWishlistFormProps) => {
+export const DeleteWishlistForm = ({ onWishlistDeleted, id, name }: DeleteWishlistFormProps) => {
   const t = useTranslations('Account.Wishlist');
 
   const onSubmit = async (formData: FormData) => {
     const submit = await deleteWishlists(formData);
 
     if (submit.status === 'success') {
-      onWishistDeleted(id, name);
+      onWishlistDeleted(id, name);
     }
   };
 
