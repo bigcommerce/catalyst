@@ -14,11 +14,25 @@ import { type MiddlewareFactory } from './compose-middlewares';
 const GetRouteQuery = graphql(`
   query getRoute($path: String!) {
     site {
-      route(path: $path) {
+      route(path: $path, redirectBehavior: FOLLOW) {
         redirect {
-          __typename
           to {
             __typename
+            ... on BlogPostRedirect {
+              path
+            }
+            ... on BrandRedirect {
+              path
+            }
+            ... on CategoryRedirect {
+              path
+            }
+            ... on PageRedirect {
+              path
+            }
+            ... on ProductRedirect {
+              path
+            }
           }
           toUrl
         }
@@ -121,10 +135,14 @@ const StorefrontStatusCacheSchema = z.object({
 });
 
 const RedirectSchema = z.object({
-  __typename: z.string(),
-  to: z.object({
-    __typename: z.string(),
-  }),
+  to: z.union([
+    z.object({ __typename: z.literal('BlogPostRedirect'), path: z.string() }),
+    z.object({ __typename: z.literal('BrandRedirect'), path: z.string() }),
+    z.object({ __typename: z.literal('CategoryRedirect'), path: z.string() }),
+    z.object({ __typename: z.literal('PageRedirect'), path: z.string() }),
+    z.object({ __typename: z.literal('ProductRedirect'), path: z.string() }),
+    z.object({ __typename: z.literal('ManualRedirect') }),
+  ]),
   toUrl: z.string(),
 });
 
@@ -245,26 +263,33 @@ export const withRoutes: MiddlewareFactory = () => {
       return NextResponse.rewrite(new URL(`/${locale}/maintenance`, request.url), { status: 503 });
     }
 
-    // Follow redirects if found on the route
-    // Use 301 status code as it is more universally supported by crawlers
-    const redirectConfig = { status: 301 };
+    const redirectConfig = {
+      // Use 301 status code as it is more universally supported by crawlers
+      status: 301,
+      nextConfig: {
+        // Preserve the trailing slash if it was present in the original URL
+        // BigCommerce by default returns the trailing slash.
+        trailingSlash: process.env.TRAILING_SLASH !== 'false',
+      },
+    };
 
     if (route?.redirect) {
       switch (route.redirect.to.__typename) {
-        case 'ManualRedirect': {
-          // For manual redirects, redirect to the full URL to handle cases
-          // where the destination URL might be external to the site
-          return NextResponse.redirect(route.redirect.toUrl, redirectConfig);
+        case 'BlogPostRedirect':
+        case 'BrandRedirect':
+        case 'CategoryRedirect':
+        case 'PageRedirect':
+        case 'ProductRedirect': {
+          // For dynamic redirects, assume an internal redirect and construct the URL from the path
+          const redirectUrl = new URL(route.redirect.to.path, request.url);
+
+          return NextResponse.redirect(redirectUrl, redirectConfig);
         }
 
         default: {
-          // For all other cases, assume an internal redirect and construct the URL
-          // based on the current request URL to maintain internal redirection
-          // in non-production environments
-          const redirectPathname = new URL(route.redirect.toUrl).pathname;
-          const redirectUrl = new URL(redirectPathname, request.url);
-
-          return NextResponse.redirect(redirectUrl, redirectConfig);
+          // For manual redirects, redirect to the full URL to handle cases
+          // where the destination URL might be external to the site.
+          return NextResponse.redirect(route.redirect.toUrl, redirectConfig);
         }
       }
     }
