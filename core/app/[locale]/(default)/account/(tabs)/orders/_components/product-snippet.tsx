@@ -14,10 +14,6 @@ export const OrderItemFragment = graphql(`
     brand
     name
     quantity
-    image {
-      altText
-      url: urlTemplate
-    }
     subTotalListPrice {
       value
       currencyCode
@@ -43,7 +39,7 @@ export type ProductSnippetFragment = Omit<
 };
 
 export const assembleProductData = (orderItem: FragmentOf<typeof OrderItemFragment>) => {
-  const { entityId: productId, name, brand, subTotalListPrice, image, productOptions } = orderItem;
+  const { entityId: productId, name, brand, subTotalListPrice, productOptions } = orderItem;
 
   return {
     entityId: productId,
@@ -52,10 +48,8 @@ export const assembleProductData = (orderItem: FragmentOf<typeof OrderItemFragme
       name: brand ?? '',
       path: '', // will be added later
     },
-    defaultImage: {
-      url: image?.url ?? '',
-      altText: image?.altText ?? name,
-    },
+    // NOTE: update later when API is ready
+    defaultImage: null,
     productOptions,
     path: '', // will be added later
     quantity: orderItem.quantity,
