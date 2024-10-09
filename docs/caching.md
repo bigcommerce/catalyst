@@ -1,27 +1,48 @@
-**Development**
-
 # Caching
 
-Catalyst leverages a variety of caching mechanisms available in Next.js, including request memoization, the Data Cache, and the Full Route Cache. These caching mechanisms are designed to enhance performance, minimize redundant requests, and reduce rendering costs.
+Catalyst uses several caching mechanisms in Next.js, including request memoization, the Data Cache, and the Full Route Cache. These are designed to improve performance, reduce redundant requests, and lower rendering costs. For more details, check out the [Caching documentation](https://nextjs.org/docs/app/building-your-application/caching) on Next.js.
 
 ## How Catalyst Uses Next.js Caching Features
 
-- **Request Memoization**: Catalyst makes use of Next.js’s request memoization feature to ensure data is fetched only once during the React render cycle, even when requested multiple times within a component tree. This reduces unnecessary network requests and improves performance across your storefront. 
-<!-- @todo explain how request memoization works with GQL POST requests -->
+### Request Memoization
 
-- **Data Cache**: Catalyst extends the native `fetch` API in Next.js to cache data across requests, ensuring your application can reuse cached data until it is explicitly revalidated or invalidated. This helps maintain faster response times while reducing the load on external APIs.
+Catalyst utilizes Next.js’s [request memoization](https://nextjs.org/docs/app/building-your-application/caching#request-memoization) to ensure data is fetched once during the React render cycle, even if requested multiple times within the component tree. This reduces unnecessary network requests, improving performance across your storefront.
 
-- **Full Route Cache**: Static routes in Catalyst are rendered and cached at build time, reducing the need for server-side rendering on each request. This enables faster page loads by serving cached HTML and React Server Component Payloads to users. Catalyst also supports dynamic rendering for routes that require fresh data on each request.
+For pages that need the same information for both metadata and content, we wrap async functions with the `cache` utility. This memoizes the result and returns the cached value on subsequent calls. This function is used in both the Page or Layout server component and the [`generateMetadata`](https://nextjs.org/docs/app/api-reference/functions/generate-metadata#generatemetadata-function) function, ensuring data is fetched only once during the render cycle.
+
+### Data Cache
+
+Next.js extends the native `fetch` API to cache data across requests, allowing cached data reuse until it's invalidated. This ensures faster response times and reduces the load on external APIs, like BigCommerce.
+
+For data that is not customer-specific, we usually apply a default caching strategy of 1 hour, adjustable via the `revalidate` property in the `fetch` function. Most functions use a value based on the `DEFAULT_REVALIDATE_TARGET` environment variable. Adjust this value depending on your store's needs. Here’s a recommendation guide:
+
+| Traffic | Product/Category Updates | Recommendation |
+| --- | --- | --- |
+| High | High | 1-8 hours |
+| High | Low | 8-24 hours |
+| Low | High | 1-8 hours |
+| Low | Low | 24-48 hours |
+
+> [!CAUTION]
+> The lower the `DEFAULT_REVALIDATE_TARGET`, the more requests your store will make to the BigCommerce API, leading to rate limiting and increased costs. Monitor API usage and adjust the `DEFAULT_REVALIDATE_TARGET` accordingly.
+
+### Full Route Cache
+
+Static routes in Catalyst are rendered and cached at build time, reducing server-side rendering on each request. This provides faster page loads by serving cached HTML and React Server Component Payloads. Catalyst supports dynamic rendering for routes needing fresh data on each request.
 
 ## Catalyst-Specific Caching Mechanisms
 
-In addition to Next.js's built-in caching mechanisms, Catalyst introduces additional optimizations:
+In addition to Next.js's built-in caching, Catalyst offers further optimizations:
 
-- **Middleware-Based Caching**: Catalyst employs custom middleware that detects requests lacking unique headers or query parameters (e.g., anonymous visitors or pages without personalized content). In these cases, the middleware redirects the request to a statically rendered version of the target page using `export const dynamic = 'force-static';`. This ensures that repeatable, non-unique requests benefit from the performance of static pages, further optimizing response times and reducing server load.
+### Guest vs. Logged-in Customer Caching
 
-This combination of Next.js’s caching features and Catalyst-specific enhancements ensures that your storefront delivers a high-performance, efficient experience, while still allowing dynamic rendering when necessary.
+Catalyst includes paths containing a `/static/page.tsx` file with `export const dynamic = 'force-static';` for generating static pages at build time for guest shoppers.
 
-<!-- @todo kv store in middleware -->
-- Doesn't exist in Vercel, recommend enterprise users to use Upstash
+- **Guest shoppers**: Requests are rewritten to statically built pages for better performance.
+- **Logged-in customers**: Dynamic rendering is used, and requests are rewritten to the regular path (`/page.tsx`).
 
-<!-- @todo DEFAULT_REVALIDATE_TARGET -->
+This setup ensures non-unique, repeatable requests benefit from the performance of static pages while maintaining dynamic rendering when necessary.
+
+### Rate Limiting
+
+BigCommerce GraphQL mutations are rate-limited by the request IP. Catalyst adds the shopper’s IP address to the request headers when a `fetch` request has a `cache` value of `no-store` or `no-cache`. This helps prevent rate limiting and ensures your store can handle high traffic.
