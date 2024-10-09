@@ -67,6 +67,13 @@ export const create = new Command('create')
   // eslint-disable-next-line complexity
   .action(async (options) => {
     try {
+      execSync('which git', { stdio: 'ignore' });
+    } catch {
+      console.error(chalk.red('Error: git is required to create a Catalyst project\n'));
+      process.exit(1);
+    }
+
+    try {
       execSync('which pnpm', { stdio: 'ignore' });
     } catch {
       console.error(chalk.red('Error: pnpm is required to create a Catalyst project\n'));
