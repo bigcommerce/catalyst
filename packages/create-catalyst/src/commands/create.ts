@@ -10,7 +10,6 @@ import { z } from 'zod';
 
 import { checkStorefrontLimit } from '../utils/check-storefront-limit';
 import { cloneCatalyst } from '../utils/clone-catalyst';
-import { getLatestCoreTag } from '../utils/get-latest-core-tag';
 import { Https } from '../utils/https';
 import { installDependencies } from '../utils/install-dependencies';
 import { login } from '../utils/login';
@@ -29,12 +28,7 @@ export const create = new Command('create')
   .option('--access-token <token>', 'BigCommerce access token')
   .option('--channel-id <id>', 'BigCommerce channel ID')
   .option('--customer-impersonation-token <token>', 'BigCommerce customer impersonation token')
-  .addOption(
-    new Option(
-      '--gh-ref <ref>',
-      'Clone a specific ref from the bigcommerce/catalyst repository',
-    ).default(getLatestCoreTag),
-  )
+  .option('--gh-ref <ref>', 'Clone a specific ref from the bigcommerce/catalyst repository')
   .addOption(
     new Option('--bigcommerce-hostname <hostname>', 'BigCommerce hostname')
       .default('bigcommerce.com')
@@ -51,19 +45,10 @@ export const create = new Command('create')
       .default(getPackageManager())
       .hideHelp(),
   )
-  .addOption(
-    new Option('--code-editor <editor>', 'Your preferred code editor')
-      .choices(['vscode'])
-      .default('vscode')
-      .hideHelp(),
-  )
-  .addOption(
-    new Option('--include-functional-tests', 'Include the functional test suite')
-      .default(false)
-      .hideHelp(),
-  )
   // eslint-disable-next-line complexity
   .action(async (options) => {
+    const { ghRef, packageManager } = options;
+
     try {
       execSync('which git', { stdio: 'ignore' });
     } catch {
@@ -79,20 +64,10 @@ export const create = new Command('create')
       process.exit(1);
     }
 
-    const { packageManager, codeEditor, includeFunctionalTests } = options;
-
     const URLSchema = z.string().url();
     const sampleDataApiUrl = parse(options.sampleDataApiUrl, URLSchema);
     const bigcommerceApiUrl = parse(`https://api.${options.bigcommerceHostname}`, URLSchema);
     const bigcommerceAuthUrl = parse(`https://login.${options.bigcommerceHostname}`, URLSchema);
-
-    let ghRef: string;
-
-    if (options.ghRef instanceof Function) {
-      ghRef = await options.ghRef();
-    } else {
-      ghRef = options.ghRef;
-    }
 
     let projectName;
     let projectDir;
@@ -156,7 +131,7 @@ export const create = new Command('create')
     if (!storeHash || !accessToken) {
       console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
-      await cloneCatalyst({ projectDir, projectName, ghRef, codeEditor, includeFunctionalTests });
+      cloneCatalyst({ projectDir, projectName, ghRef });
 
       console.log(`\nUsing ${chalk.bold(packageManager)}\n`);
 
@@ -254,7 +229,7 @@ export const create = new Command('create')
 
     console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
-    await cloneCatalyst({ projectDir, projectName, ghRef, codeEditor, includeFunctionalTests });
+    cloneCatalyst({ projectDir, projectName, ghRef });
 
     writeEnv(projectDir, {
       channelId: channelId.toString(),
