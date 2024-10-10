@@ -1,11 +1,10 @@
 import { Command, Option } from '@commander-js/extra-typings';
 import { input, select } from '@inquirer/prompts';
 import chalk from 'chalk';
-import { exec as execCallback, execSync } from 'child_process';
+import { execSync } from 'child_process';
 import { pathExistsSync } from 'fs-extra/esm';
 import kebabCase from 'lodash.kebabcase';
 import { join } from 'path';
-import { promisify } from 'util';
 import { z } from 'zod';
 
 import { checkStorefrontLimit } from '../utils/check-storefront-limit';
@@ -14,10 +13,7 @@ import { Https } from '../utils/https';
 import { installDependencies } from '../utils/install-dependencies';
 import { login } from '../utils/login';
 import { parse } from '../utils/parse';
-import { spinner } from '../utils/spinner';
 import { writeEnv } from '../utils/write-env';
-
-const exec = promisify(execCallback);
 
 export const create = new Command('create')
   .description('Command to scaffold and connect a Catalyst storefront to your BigCommerce store')
@@ -229,12 +225,6 @@ export const create = new Command('create')
     });
 
     await installDependencies(projectDir);
-
-    await spinner(exec(`pnpm run --prefix ${projectDir} generate`), {
-      text: 'Creating GraphQL schema...',
-      successText: 'Created GraphQL schema',
-      failText: (err) => chalk.red(`Failed to create GraphQL schema: ${err.message}`),
-    });
 
     console.log(
       `\n${chalk.green('Success!')} Created '${projectName}' at '${projectDir}'\n`,
