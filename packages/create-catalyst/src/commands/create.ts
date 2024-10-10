@@ -1,7 +1,7 @@
 import { Command, Option } from '@commander-js/extra-typings';
 import { input, select } from '@inquirer/prompts';
 import chalk from 'chalk';
-import { exec as execCallback } from 'child_process';
+import { exec as execCallback, execSync } from 'child_process';
 import { pathExistsSync } from 'fs-extra/esm';
 import kebabCase from 'lodash.kebabcase';
 import { join } from 'path';
@@ -64,7 +64,16 @@ export const create = new Command('create')
       .default(false)
       .hideHelp(),
   )
+  // eslint-disable-next-line complexity
   .action(async (options) => {
+    try {
+      execSync('which pnpm', { stdio: 'ignore' });
+    } catch {
+      console.error(chalk.red('Error: pnpm is required to create a Catalyst project\n'));
+      console.error(chalk.yellow('Tip: Enable it by running `corepack enable pnpm`\n'));
+      process.exit(1);
+    }
+
     const { packageManager, codeEditor, includeFunctionalTests } = options;
 
     const URLSchema = z.string().url();
