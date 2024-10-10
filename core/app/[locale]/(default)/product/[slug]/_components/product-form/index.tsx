@@ -9,6 +9,7 @@ import { toast } from 'react-hot-toast';
 
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { AddToCartButton } from '~/components/add-to-cart-button';
+import { useCart } from '~/components/header/cart-provider';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 import { bodl } from '~/lib/bodl';
@@ -61,32 +62,14 @@ export const ProductForm = ({ data: product }: Props) => {
   const t = useTranslations('Product.Form');
   const productOptions = removeEdgesAndNodes(product.productOptions);
 
+  const cart = useCart();
   const { handleSubmit, register, ...methods } = useProductForm();
 
   const productFormSubmit = async (data: ProductFormData) => {
-    const result = await handleAddToCart(data, product);
     const quantity = Number(data.quantity);
 
-    if (result.error) {
-      toast.error(t('error'), {
-        icon: <AlertCircle className="text-error-secondary" />,
-      });
-
-      return;
-    }
-
-    const transformedProduct = productItemTransform(product);
-
-    bodl.cart.productAdded({
-      product_value: transformedProduct.purchase_price * quantity,
-      currency: transformedProduct.currency,
-      line_items: [
-        {
-          ...transformedProduct,
-          quantity,
-        },
-      ],
-    });
+    // Optimistic update
+    cart.increment(quantity);
 
     toast.success(
       () => (
@@ -110,6 +93,31 @@ export const ProductForm = ({ data: product }: Props) => {
       ),
       { icon: <Check className="text-success-secondary" /> },
     );
+
+    const result = await handleAddToCart(data, product);
+
+    if (result.error) {
+      toast.error(t('error'), {
+        icon: <AlertCircle className="text-error-secondary" />,
+      });
+
+      cart.decrement(quantity);
+
+      return;
+    }
+
+    const transformedProduct = productItemTransform(product);
+
+    bodl.cart.productAdded({
+      product_value: transformedProduct.purchase_price * quantity,
+      currency: transformedProduct.currency,
+      line_items: [
+        {
+          ...transformedProduct,
+          quantity,
+        },
+      ],
+    });
   };
 
   return (
