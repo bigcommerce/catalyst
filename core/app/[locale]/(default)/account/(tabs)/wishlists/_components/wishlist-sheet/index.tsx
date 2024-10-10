@@ -2,15 +2,16 @@ import { Heart } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { PropsWithChildren, useEffect, useState } from 'react';
 
-import { addWishlistItems } from '~/client/mutations/add-wishlist-items';
+import { ExistingResultType } from '~/client/util';
 import { Button } from '~/components/ui/button';
 import { Sheet } from '~/components/ui/sheet';
 
 import { AccountStatusProvider } from '../../../_components/account-status-provider';
 
+import { addWishlistItems } from './update-wishlists-form/_actions/add-wishlist-items';
 import { WishlistSheetContent } from './wishlist-sheet-content';
 
-export type Wishlist = NonNullable<Awaited<ReturnType<typeof addWishlistItems>>>;
+export type Wishlist = NonNullable<ExistingResultType<typeof addWishlistItems>['data']>;
 
 interface WishlistSheetProps extends PropsWithChildren {
   productId: number;
