@@ -135,7 +135,7 @@ export const create = new Command('create')
 
       console.log(`\nUsing ${chalk.bold(packageManager)}\n`);
 
-      await installDependencies(projectDir, packageManager);
+      await installDependencies(projectDir);
 
       console.log(
         [
@@ -239,7 +239,7 @@ export const create = new Command('create')
 
     console.log(`\nUsing ${chalk.bold(packageManager)}\n`);
 
-    await installDependencies(projectDir, packageManager);
+    await installDependencies(projectDir);
 
     await spinner(exec(`${packageManager} run --prefix ${projectDir} generate`), {
       text: 'Creating GraphQL schema...',
