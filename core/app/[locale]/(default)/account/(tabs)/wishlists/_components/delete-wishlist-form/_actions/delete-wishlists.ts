@@ -1,41 +1,69 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
-import { deleteWishlists as deleteWishlistsMutation } from '~/client/mutations/delete-wishlists';
+import { getSessionCustomerId } from '~/auth';
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
+
+const DeleteWishlistsMutation = graphql(`
+  mutation DeleteWishlists($input: DeleteWishlistsInput!) {
+    wishlist {
+      deleteWishlists(input: $input) {
+        result
+      }
+    }
+  }
+`);
 
 const DeleteWishlistSchema = z.object({
   entityIds: z.array(z.number()),
 });
 
 export const deleteWishlists = async (formData: FormData) => {
-  const parsedData = DeleteWishlistSchema.parse({
-    entityIds: [Number(formData.get('id'))],
-  });
-
-  const input = {
-    ...parsedData,
-  };
+  const t = await getTranslations('Account.Wishlist');
+  const customerId = await getSessionCustomerId();
 
   try {
-    const result = await deleteWishlistsMutation({ input });
+    const parsedData = DeleteWishlistSchema.parse({
+      entityIds: [Number(formData.get('id'))],
+    });
+
+    const response = await client.fetch({
+      document: DeleteWishlistsMutation,
+      variables: {
+        input: {
+          ...parsedData,
+        },
+      },
+      customerId,
+      fetchOptions: { cache: 'no-store' },
+    });
 
     revalidatePath('/account/wishlists', 'page');
 
-    if (result === 'success') {
+    const { deleteWishlists: deletedWishlists } = response.data.wishlist;
+
+    if (deletedWishlists?.result === 'success') {
       return {
         status: 'success' as const,
       };
     }
+
+    return {
+      status: 'error' as const,
+      message: t('Errors.error'),
+    };
   } catch (error: unknown) {
-    if (error instanceof Error) {
+    if (error instanceof Error || error instanceof z.ZodError) {
       return {
         status: 'error' as const,
         message: error.message,
       };
     }
-  }
 
-  return { status: 'error' as const, message: 'Unknown error.' };
+    return { status: 'error' as const, message: t('error') };
+  }
 };

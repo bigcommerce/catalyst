@@ -1,8 +1,24 @@
 'use server';
 
+import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
-import { updateWishlist as updateWishlistMutation } from '~/client/mutations/update-wishlist';
+import { getSessionCustomerId } from '~/auth';
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
+
+const UpdateWishlistMutation = graphql(`
+  mutation UpdateWishlist($input: UpdateWishlistInput!) {
+    wishlist {
+      updateWishlist(input: $input) {
+        result {
+          entityId
+          name
+        }
+      }
+    }
+  }
+`);
 
 const UpdateWishlistSchema = z.object({
   entityId: z.string(),
@@ -10,35 +26,50 @@ const UpdateWishlistSchema = z.object({
 });
 
 export const updateWishlist = async (formData: FormData) => {
-  const { entityId, name } = UpdateWishlistSchema.parse({
-    entityId: formData.get('entityId'),
-    name: formData.get('name'),
-  });
+  const t = await getTranslations('Account.Wishlist');
+  const customerId = await getSessionCustomerId();
 
   try {
-    const updatedWishlist = await updateWishlistMutation({
-      input: {
-        data: {
-          name,
-        },
-        entityId: +entityId,
-      },
+    const { entityId, name } = UpdateWishlistSchema.parse({
+      entityId: formData.get('entityId'),
+      name: formData.get('name'),
     });
+
+    const response = await client.fetch({
+      document: UpdateWishlistMutation,
+      variables: {
+        input: {
+          data: {
+            name,
+          },
+          entityId: +entityId,
+        },
+      },
+      customerId,
+      fetchOptions: { cache: 'no-store' },
+    });
+
+    const { updateWishlist: updatedWishlist } = response.data.wishlist;
 
     if (updatedWishlist) {
       return {
         status: 'success' as const,
-        data: updatedWishlist,
+        data: updatedWishlist.result,
       };
     }
+
+    return {
+      status: 'error' as const,
+      message: t('Errors.error'),
+    };
   } catch (error: unknown) {
-    if (error instanceof Error) {
+    if (error instanceof Error || error instanceof z.ZodError) {
       return {
         status: 'error' as const,
         message: error.message,
       };
     }
-  }
 
-  return { status: 'error' as const, message: 'Unknown error.' };
+    return { status: 'error' as const, message: t('error') };
+  }
 };
