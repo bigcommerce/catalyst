@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
+import { Suspense } from 'react';
 
-import { BlogPostCard } from '~/components/blog-post-card';
-import { Pagination } from '~/components/ui/pagination';
+import { FeaturedBlogPostList } from '@/vibes/soul/components/featured-blog-post-list';
 import { LocaleType } from '~/i18n/routing';
 
+import { BlogPostList } from './_components/blog-post-list';
 import { getBlogPosts } from './page-data';
 
 interface Props {
@@ -26,34 +26,11 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   };
 }
 
-export default async function Blog({ searchParams }: Props) {
-  const blogPosts = await getBlogPosts(searchParams);
-
-  if (!blogPosts) {
-    return notFound();
-  }
-
+export default function Blog({ searchParams }: Props) {
   return (
-    <div className="mx-auto max-w-screen-xl">
-      <h1 className="mb-8 text-3xl font-black lg:text-5xl">{blogPosts.name}</h1>
-
-      <ul className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-        {blogPosts.posts.items.map((post) => {
-          return (
-            <li key={post.entityId}>
-              <BlogPostCard data={post} />
-            </li>
-          );
-        })}
-      </ul>
-
-      <Pagination
-        endCursor={blogPosts.posts.pageInfo.endCursor ?? undefined}
-        hasNextPage={blogPosts.posts.pageInfo.hasNextPage}
-        hasPreviousPage={blogPosts.posts.pageInfo.hasPreviousPage}
-        startCursor={blogPosts.posts.pageInfo.startCursor ?? undefined}
-      />
-    </div>
+    <Suspense fallback={<FeaturedBlogPostList posts={[]} title="Blog" />}>
+      <BlogPostList searchParams={searchParams} />
+    </Suspense>
   );
 }
 
