@@ -14,7 +14,6 @@ import { Https } from '../utils/https';
 import { installDependencies } from '../utils/install-dependencies';
 import { login } from '../utils/login';
 import { parse } from '../utils/parse';
-import { getPackageManager, packageManagerChoices } from '../utils/pm';
 import { spinner } from '../utils/spinner';
 import { writeEnv } from '../utils/write-env';
 
@@ -39,15 +38,9 @@ export const create = new Command('create')
       .default('https://api.bc-sample.store')
       .hideHelp(),
   )
-  .addOption(
-    new Option('--package-manager <pm>', 'Override detected package manager')
-      .choices(packageManagerChoices)
-      .default(getPackageManager())
-      .hideHelp(),
-  )
   // eslint-disable-next-line complexity
   .action(async (options) => {
-    const { ghRef, packageManager } = options;
+    const { ghRef } = options;
 
     try {
       execSync('which git', { stdio: 'ignore' });
@@ -132,8 +125,6 @@ export const create = new Command('create')
       console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
       cloneCatalyst({ projectDir, projectName, ghRef });
-
-      console.log(`\nUsing ${chalk.bold(packageManager)}\n`);
 
       await installDependencies(projectDir);
 
@@ -237,11 +228,9 @@ export const create = new Command('create')
       customerImpersonationToken,
     });
 
-    console.log(`\nUsing ${chalk.bold(packageManager)}\n`);
-
     await installDependencies(projectDir);
 
-    await spinner(exec(`${packageManager} run --prefix ${projectDir} generate`), {
+    await spinner(exec(`pnpm run --prefix ${projectDir} generate`), {
       text: 'Creating GraphQL schema...',
       successText: 'Created GraphQL schema',
       failText: (err) => chalk.red(`Failed to create GraphQL schema: ${err.message}`),
@@ -250,6 +239,6 @@ export const create = new Command('create')
     console.log(
       `\n${chalk.green('Success!')} Created '${projectName}' at '${projectDir}'\n`,
       '\nNext steps:\n',
-      chalk.yellow(`\ncd ${projectName} && ${packageManager} run dev\n`),
+      chalk.yellow(`\ncd ${projectName} && pnpm run dev\n`),
     );
   });
