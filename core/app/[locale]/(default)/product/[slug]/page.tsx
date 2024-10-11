@@ -41,7 +41,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const product = await getProduct({
     entityId: productId,
     optionValueIds,
-    useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
+    useDefaultOptionSelections: true,
   });
 
   if (!product) {
@@ -80,7 +80,7 @@ export default async function Product({ params: { locale, slug }, searchParams }
   const product = await getProduct({
     entityId: productId,
     optionValueIds,
-    useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
+    useDefaultOptionSelections: true,
   });
 
   if (!product) {
