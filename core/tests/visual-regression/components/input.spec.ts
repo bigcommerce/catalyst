@@ -9,6 +9,7 @@ test('Input with placeholder', async ({ page }) => {
 
   // Act
   await page.getByRole('button', { name: 'Add to Cart' }).first().click();
+  await page.getByRole('button', { name: 'Add to Cart' }).first().isEnabled();
   await page.getByRole('link', { name: 'Cart Items 1' }).click();
   await page.getByText('Shipping cost').waitFor();
   await page.getByRole('button', { name: 'Add' }).first().click();

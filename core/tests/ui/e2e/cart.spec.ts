@@ -9,6 +9,7 @@ test.beforeEach(async ({ page }) => {
   ).toBeVisible();
 
   await page.getByRole('button', { name: 'Add to Cart' }).first().click();
+  await page.getByRole('button', { name: 'Add to Cart' }).first().isEnabled();
 });
 
 test('Add a single product to cart', async ({ page }) => {
