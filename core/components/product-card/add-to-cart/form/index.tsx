@@ -71,7 +71,7 @@ export const Form = ({ data: product }: Props) => {
     <form onSubmit={handleSubmit}>
       <input name="product_id" type="hidden" value={product.entityId} />
       <input name="quantity" type="hidden" value={1} />
-      <AddToCartButton className="mt-2" data={product} loading={isPending} />;
+      <AddToCartButton className="mt-2" data={product} loading={isPending} />
     </form>
   );
 };
