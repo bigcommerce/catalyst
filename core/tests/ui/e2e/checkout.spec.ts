@@ -57,6 +57,7 @@ test.describe('desktop', () => {
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Add to Cart' }).first().click();
+    await page.getByRole('button', { name: 'Add to Cart' }).first().isEnabled();
     await page.getByRole('link', { name: 'Cart Items 1' }).click();
     await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
     await page.getByRole('button', { name: 'Proceed to checkout' }).click();
@@ -91,6 +92,7 @@ test.describe('desktop', () => {
       page.getByRole('heading', { level: 1, name: '[Sample] Laundry Detergent' }),
     ).toBeVisible();
     await page.getByRole('button', { name: 'Add to Cart' }).first().click();
+    await page.getByRole('button', { name: 'Add to Cart' }).first().isEnabled();
     await page.getByRole('link', { name: 'Cart Items 1' }).click();
     await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
     await page.getByRole('button', { name: 'Proceed to checkout' }).click();
@@ -121,6 +123,7 @@ test.describe('mobile', () => {
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Add to Cart' }).first().click();
+    await page.getByRole('button', { name: 'Add to Cart' }).first().isEnabled();
     await page.getByRole('link', { name: 'Cart Items 1' }).click();
     await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
     await page.getByRole('button', { name: 'Proceed to checkout' }).click();
