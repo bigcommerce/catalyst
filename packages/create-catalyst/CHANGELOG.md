@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.13.0
+
+### Minor Changes
+
+- [#1443](https://github.com/bigcommerce/catalyst/pull/1443) [`c166d53`](https://github.com/bigcommerce/catalyst/commit/c166d536394ec8b32831aa384868d0cabc5d86e2) Thanks [@matthewvolk](https://github.com/matthewvolk)! - BREAKING: Remove automatic generation of GraphQL type definitions on project creation. This results in faster project creation and generation will happen already as part of starting the development sever or kicking off a build
+
+- [#1438](https://github.com/bigcommerce/catalyst/pull/1438) [`d12c0d2`](https://github.com/bigcommerce/catalyst/commit/d12c0d22ec121f0effb95e1fab347a05ca84c7af) Thanks [@matthewvolk](https://github.com/matthewvolk)! - BREAKING: Refactor `cloneCatalyst` so that it simply clones the `bigcommerce/catalyst` repo, configures remotes, and checks out an optional ref
+
+- [#1440](https://github.com/bigcommerce/catalyst/pull/1440) [`5b3cbbd`](https://github.com/bigcommerce/catalyst/commit/5b3cbbd75ec05b6a21062b600a930f15e1c004a4) Thanks [@matthewvolk](https://github.com/matthewvolk)! - BREAKING: Refactor `installDependencies` so that it installs all dependencies found in the root package.json file of the monorepo
+
+- [#1435](https://github.com/bigcommerce/catalyst/pull/1435) [`b38209f`](https://github.com/bigcommerce/catalyst/commit/b38209f93345ebc6584fe3486e10ca5baadf17ec) Thanks [@matthewvolk](https://github.com/matthewvolk)! - BREAKING: Ensure `pnpm` is installed on the machine running the CLI
+
+- [#1434](https://github.com/bigcommerce/catalyst/pull/1434) [`c105d07`](https://github.com/bigcommerce/catalyst/commit/c105d07695f1d1070ce6774e4b33037633e97e28) Thanks [@matthewvolk](https://github.com/matthewvolk)! - BREAKING: Change required Node.js version to `^20` (instead of `>=20`)
+
+- [#1441](https://github.com/bigcommerce/catalyst/pull/1441) [`5463157`](https://github.com/bigcommerce/catalyst/commit/5463157ed6060880dd22e60e1c7caba38dd3cbb5) Thanks [@matthewvolk](https://github.com/matthewvolk)! - BREAKING: Remove `pm` utility because the package manager must be `pnpm` when working in the monorepo
+
+- [#1436](https://github.com/bigcommerce/catalyst/pull/1436) [`673bea2`](https://github.com/bigcommerce/catalyst/commit/673bea2bef3d7b80267c7f0c8b204b652fd09f34) Thanks [@matthewvolk](https://github.com/matthewvolk)! - BREAKING: Ensure `git` is installed on the machine running the CLI
+
+- [#1437](https://github.com/bigcommerce/catalyst/pull/1437) [`6db8527`](https://github.com/bigcommerce/catalyst/commit/6db8527042d3c0b04b6b0a61c56f3cc2ef8eeff7) Thanks [@matthewvolk](https://github.com/matthewvolk)! - BREAKING: Remove `applyIntegrations`. Integrations will now be applied by simply fetching the appropriate remote `integrations/*` branch from upstream, and cherry-picking the integration code
+
+### Patch Changes
+
+- [#1439](https://github.com/bigcommerce/catalyst/pull/1439) [`addf5e9`](https://github.com/bigcommerce/catalyst/commit/addf5e98a08427631e03ef152efe6949a5d01b9e) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Removes unused `getLatestCoreTag` function
+
+- [#1433](https://github.com/bigcommerce/catalyst/pull/1433) [`ea74be2`](https://github.com/bigcommerce/catalyst/commit/ea74be2b0c066b8f9e99c1e1b64ef1b97ea4b7f5) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Add function to allow user to specify an arbitrary ref to checkout after cloning
+
+- [#1431](https://github.com/bigcommerce/catalyst/pull/1431) [`3a3370e`](https://github.com/bigcommerce/catalyst/commit/3a3370e2323a82dd753cf22042b9cd9130c3a7a0) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Adds a typeguard to narrow Errors thrown by `execSync` to be of the type `ExecException`
+
+- [#1432](https://github.com/bigcommerce/catalyst/pull/1432) [`5a2a86e`](https://github.com/bigcommerce/catalyst/commit/5a2a86ecbe8ab831c54b60d2f723274cabc00d98) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Adds a function to check if a user is set up with SSH authentication for GitHub
+
 ## 0.12.0
 
 ### Minor Changes
