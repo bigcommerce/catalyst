@@ -14,7 +14,7 @@ import { type MiddlewareFactory } from './compose-middlewares';
 const GetRouteQuery = graphql(`
   query getRoute($path: String!) {
     site {
-      route(path: $path) {
+      route(path: $path, redirectBehavior: FOLLOW) {
         redirect {
           __typename
           to {
@@ -249,27 +249,19 @@ export const withRoutes: MiddlewareFactory = () => {
     // Use 301 status code as it is more universally supported by crawlers
     const redirectConfig = { status: 301 };
 
-    if (route?.node && route.node.__typename === 'Product') {
-      // If there's a valid Product node, process it as a normal product page
-      const productUrl = new URL(`/${locale}/product/${route.node.entityId}`, request.url);
-  
-      return NextResponse.rewrite(productUrl);
-    } else if (route?.redirect) {
+    if (route?.redirect) {
       switch (route.redirect.to.__typename) {
         case 'ManualRedirect': {
           // For manual redirects, redirect to the full URL to handle cases
           // where the destination URL might be external to the site
           return NextResponse.redirect(route.redirect.toUrl, redirectConfig);
         }
-  
+
         default: {
           // For all other cases, assume an internal redirect and construct the URL
           // based on the current request URL to maintain internal redirection
           // in non-production environments
-          const redirectPathname = new URL(route.redirect.toUrl).pathname;
-          const redirectUrl = new URL(redirectPathname, request.url);
-  
-          return NextResponse.redirect(redirectUrl, redirectConfig);
+          break;
         }
       }
     }
