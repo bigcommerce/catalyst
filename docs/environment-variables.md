@@ -198,3 +198,17 @@ When enabled, the client logger logs the following information:
 | CLI-configurable | false   |
 
 This environment variable sets a limit on the number of JS chunks webpack will generate via the `LimitChunkCountPlugin` in `next.config.js`. Generally speaking, using more chunks can improve performance, but will increase the number of requests to the origin to download these files. For hosts that charge for each asset request, this may make your site more expensive to serve. You can decrease this number to decrease the number of individual JS files that will be requested on each page, but each file will be larger, which may decrease Lighthouse scores due to more time spent on script parsing and more unused JS code in each chunk on a given page.
+
+### BIGCOMMERCE_TRUSTED_PROXY_SECRET
+
+> [!CAUTION]
+> This token is a **sensitive secret**. Do not expose outside environment variables.
+
+| Attribute        | Value    |
+| :--------------- | :------- |
+| Type             | string   |
+| Default          | no value |
+| Required         | false    |
+| CLI-configurable | false    |
+
+If BigCommerce has provided you with a Trusted Proxy secret, you may set it using this environment variable to have it automatically sent as a header on requests.
