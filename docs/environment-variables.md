@@ -27,45 +27,6 @@ The store hash is visible as part of the store's canonical URL, and you can also
 https://{BIGCOMMERCE_STORE_HASH}.mybigcommerce.com/manage
 ```
 
-### BIGCOMMERCE_ACCESS_TOKEN
-
-> [!CAUTION]
-> This token is a **sensitive secret**. Do not expose outside environment variables.
-
-| Attribute            | Value  |
-| :------------------- | :----- |
-| Type                 | string |
-| Permanently required | false  |
-| CLI-configurable     | true   |
-
-This token is currently required; Catalyst requires this access token to make a few essential API calls to the Management API and the Customer Login API. This dependency will be removed in a future version of Catalyst.
-
-The CLI will prompt you to enter this access token. The following steps will help you create the necessary API account and collect the access token.
-
-#### Creating the access token
-
-In the store's control panel, [create a store-level API account](https://developer.bigcommerce.com/docs/start/authentication/api-accounts#creating-store-level-api-credentials) and add the following OAuth scopes. To learn more, see [OAuth scopes](https://developer.bigcommerce.com/docs/start/authentication/api-accounts#store-resource-scopes).
-
-| UI Name                | Permission | Parameter                        | Required                                                         |
-| :--------------------- | :--------- | :------------------------------- | :--------------------------------------------------------------- |
-| Carts                  | modify     | `store_cart`                     | true. See [Carts](#carts).                                       |
-| Customers Login        | modify     | `store_v2_customers_login`       | false. See [Customer Login](#customer-login).                    |
-| Information & Settings | read-only  | `store_v2_information_read_only` | true. See [Information and Settings](#information-and-settings). |
-
-The value of `BIGCOMMERCE_ACCESS_TOKEN` is the access token that's automatically generated when you create this API account.
-
-#### Carts
-
-The call to the carts feature of the Management API generates checkout redirect URLs. We will remove this dependency in a future version of Catalyst.
-
-#### Customer Login
-
-If you want to support checkout for signed-in customers, add the Customers Login scope so you can generate valid Customer Login JWTs to pass to the [Customer Login API](https://developer.bigcommerce.com/docs/start/authentication/customer-login). To learn more, see [BIGCOMMERCE_CLIENT_SECRET](#bigcommerce_client_secret).
-
-#### Information and Settings
-
-As of this writing, Catalyst requires the Information & Settings read-only scopes to estimate shipping costs using the Management API.
-
 ### BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN
 
 > [!CAUTION]
@@ -147,33 +108,6 @@ To generate, open the terminal and run the following command. Then copy-paste th
 ```shell copy
 openssl rand -hex 32
 ```
-
-### BIGCOMMERCE_CLIENT_SECRET
-
-> [!CAUTION]
-> This token is a **sensitive secret**. Do not expose outside environment variables.
-
-| Attribute        | Value    |
-| :--------------- | :------- |
-| Type             | string   |
-| Default          | no value |
-| Required         | false    |
-| CLI-configurable | false    |
-| Recommended      | true     |
-
-You can use this API account client secret to sign [Customer Login API](https://developer.bigcommerce.com/docs/start/authentication/customer-login) JWTs. Providing this value lets shoppers preserve their logged-in state when Catalyst redirects them to checkout.
-
-You can use the client secret from the same API account you configured in [BIGCOMMERCE_ACCESS_TOKEN](#bigcommerce_access_token), or configure a dedicated API account with the following scope.
-
-| UI Name         | Permission | Parameter                  |
-| :-------------- | :--------- | :------------------------- |
-| Customers Login | modify     | `store_v2_customers_login` |
-
-To learn more, see any of the following docs:
-
-- [Customer Login](#customer-login) in this reference
-- Guide to the [Customer Login API](https://developer.bigcommerce.com/docs/start/authentication/customer-login), which describes how to make the necessary JWT
-- Reference for the endpoint to [Log a customer in](https://developer.bigcommerce.com/docs/rest-authentication/customer-login), which describes how to send the JWT to BigCommerce
 
 ## Optional
 
