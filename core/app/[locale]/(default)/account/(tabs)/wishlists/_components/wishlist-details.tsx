@@ -4,7 +4,6 @@ import { Ellipsis } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
-import { updateWishlist } from '~/client/mutations/update-wishlist';
 import { ExistingResultType } from '~/client/util';
 import { ProductCard } from '~/components/product-card';
 import { Button } from '~/components/ui/button';
@@ -18,9 +17,10 @@ import { getWishlist } from '../page-data';
 
 import { DeleteWishlistForm } from './delete-wishlist-form';
 import { UpdateWishlistForm } from './update-wishlist-form';
+import { updateWishlist } from './update-wishlist-form/_actions/update-wishlist';
 
 type Wishlist = ExistingResultType<typeof getWishlist>['wishlists'][number];
-type UpdatedWishlist = ExistingResultType<typeof updateWishlist>;
+type UpdatedWishlist = NonNullable<ExistingResultType<typeof updateWishlist>['data']>;
 
 interface WishlistDetailsProps {
   data: Wishlist;

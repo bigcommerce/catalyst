@@ -233,7 +233,10 @@
             "createTitle": "New wishlist",
             "selectCta": "Select from available lists:",
             "favorites": "Favorites"
-        }
+        },
+        "Errors": {
+            "error": "Something went wrong. Please try again later."
+        }            
     },
     "Settings": {
       "title": "Account settings",
