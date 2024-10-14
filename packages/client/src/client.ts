@@ -33,6 +33,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   private beforeRequest?: (
     fetchOptions?: FetcherRequestInit,
   ) => Partial<FetcherRequestInit> | undefined;
+  private trustedProxySecret = process.env.BIGCOMMERCE_TRUSTED_PROXY_SECRET;
 
   constructor(private config: Config<FetcherRequestInit>) {
     if (!config.channelId) {
@@ -93,6 +94,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
         Authorization: `Bearer ${this.config.customerImpersonationToken}`,
         'User-Agent': this.backendUserAgent,
         ...(customerId && { 'X-Bc-Customer-Id': customerId }),
+        ...(this.trustedProxySecret && { 'X-BC-Trusted-Proxy-Secret': this.trustedProxySecret }),
         ...additionalFetchHeaders,
         ...headers,
       },
@@ -143,6 +145,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
         Accept: 'application/xml',
         'Content-Type': 'application/xml',
         'User-Agent': this.backendUserAgent,
+        ...(this.trustedProxySecret && { 'X-BC-Trusted-Proxy-Secret': this.trustedProxySecret }),
       },
     });
 
