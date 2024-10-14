@@ -36,9 +36,9 @@ In addition to Next.js's built-in caching, Catalyst offers further optimizations
 
 ### Guest vs. Logged-in Customer Caching
 
-Catalyst includes paths containing a `/static/page.tsx` file with `export const dynamic = 'force-static';` for generating static pages at build time for guest shoppers.
+Catalyst includes paths containing a `/static/page.tsx` file with `export const dynamic = 'force-static';` for generating static pages at build time for guest shoppers. These static pages are periodically rebuilt using Incremental Static Regeneration (ISR), without requiring a re-build of the entire storefront. The revalidation period is controlled by the same `DEFAULT_REVALIDATE_TARGET` environment variable as the Data Cache.
 
-- **Guest shoppers**: Requests are rewritten to statically built pages for better performance.
+- **Guest shoppers**: Requests are rewritten to statically built pages for better performance. Pages are periodically rebuilt using ISR.
 - **Logged-in customers**: Dynamic rendering is used, and requests are rewritten to the regular path (`/page.tsx`).
 
 This setup ensures non-unique, repeatable requests benefit from the performance of static pages while maintaining dynamic rendering when necessary.
