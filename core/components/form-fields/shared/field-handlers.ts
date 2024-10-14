@@ -123,8 +123,10 @@ const createTextInputValidationHandler =
   (e: ChangeEvent<HTMLInputElement>) => {
     const fieldId = Number(e.target.id.split('-')[1]);
 
+    const isEmptyString = e.target.value.trim().length === 0;
     const validityState = e.target.validity;
-    const validationStatus = validityState.valueMissing || validityState.typeMismatch;
+    const validationStatus =
+      validityState.valueMissing || validityState.typeMismatch || isEmptyString;
 
     textInputStateSetter({ ...textInputState, [fieldId]: !validationStatus });
   };
@@ -134,8 +136,12 @@ const createMultilineTextValidationHandler =
   (e: ChangeEvent<HTMLTextAreaElement>) => {
     const fieldId = Number(e.target.id.split('-')[1]);
     const validityState = e.target.validity;
+    const isEmptyString = e.target.value.trim().length === 0;
 
-    multiTextStateSetter({ ...multiTextState, [fieldId]: !validityState.valueMissing });
+    multiTextStateSetter({
+      ...multiTextState,
+      [fieldId]: !validityState.valueMissing && !isEmptyString,
+    });
   };
 
 const createNumbersInputValidationHandler =

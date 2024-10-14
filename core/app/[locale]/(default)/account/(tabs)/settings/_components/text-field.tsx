@@ -49,12 +49,20 @@ export const TextField = ({
         />
       </FieldControl>
       {isRequired && (
-        <FieldMessage
-          className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary"
-          match="valueMissing"
-        >
-          {t(fieldNameById ?? 'empty')}
-        </FieldMessage>
+        <>
+          <FieldMessage
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary"
+            match="valueMissing"
+          >
+            {t(fieldNameById ?? 'empty')}
+          </FieldMessage>
+          <FieldMessage
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary"
+            match={(value) => value.trim().length === 0}
+          >
+            {t('empty')}
+          </FieldMessage>
+        </>
       )}
     </Field>
   );
