@@ -4,21 +4,22 @@ import { checkoutRef } from './checkout-ref';
 import { hasGitHubSSH } from './has-github-ssh';
 
 export const cloneCatalyst = ({
+  repository,
   projectName,
   projectDir,
   ghRef,
 }: {
+  repository: string;
   projectName: string;
   projectDir: string;
   ghRef?: string;
 }) => {
-  const repositoryName = 'bigcommerce/catalyst';
   const useSSH = hasGitHubSSH();
 
-  console.log(`Cloning ${repositoryName} using ${useSSH ? 'SSH' : 'HTTPS'}...\n`);
+  console.log(`Cloning ${repository} using ${useSSH ? 'SSH' : 'HTTPS'}...\n`);
 
   const cloneCommand = `git clone ${
-    useSSH ? `git@github.com:${repositoryName}` : `https://github.com/${repositoryName}`
+    useSSH ? `git@github.com:${repository}` : `https://github.com/${repository}`
   }.git${projectName ? ` ${projectName}` : ''}`;
 
   execSync(cloneCommand, { stdio: 'inherit' });
