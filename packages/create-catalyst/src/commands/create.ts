@@ -23,7 +23,8 @@ export const create = new Command('create')
   .option('--access-token <token>', 'BigCommerce access token')
   .option('--channel-id <id>', 'BigCommerce channel ID')
   .option('--customer-impersonation-token <token>', 'BigCommerce customer impersonation token')
-  .option('--gh-ref <ref>', 'Clone a specific ref from the bigcommerce/catalyst repository')
+  .option('--gh-ref <ref>', 'Clone a specific ref from the source repository')
+  .option('--repository <repository>', 'GitHub repository to clone from', 'bigcommerce/catalyst')
   .addOption(
     new Option('--bigcommerce-hostname <hostname>', 'BigCommerce hostname')
       .default('bigcommerce.com')
@@ -36,7 +37,7 @@ export const create = new Command('create')
   )
   // eslint-disable-next-line complexity
   .action(async (options) => {
-    const { ghRef } = options;
+    const { ghRef, repository } = options;
 
     try {
       execSync('which git', { stdio: 'ignore' });
@@ -120,7 +121,7 @@ export const create = new Command('create')
     if (!storeHash || !accessToken) {
       console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
-      cloneCatalyst({ projectDir, projectName, ghRef });
+      cloneCatalyst({ repository, projectName, projectDir, ghRef });
 
       await installDependencies(projectDir);
 
@@ -216,7 +217,7 @@ export const create = new Command('create')
 
     console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
-    cloneCatalyst({ projectDir, projectName, ghRef });
+    cloneCatalyst({ repository, projectName, projectDir, ghRef });
 
     writeEnv(projectDir, {
       channelId: channelId.toString(),
