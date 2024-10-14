@@ -45,8 +45,8 @@
             "createLink": "Crea account "
         },
         "ForgotPassword": {
-            "title": "Forgot password",
-            "heading": "Forgot password",
+            "title": "Password dimenticata",
+            "heading": "Password dimenticata",
             "Form": {
                 "description": "Inserisci di seguito l'e-mail associata al tuo account. Ti invieremo le istruzioni per reimpostare la password.",
                 "emailLabel": "E-mail",

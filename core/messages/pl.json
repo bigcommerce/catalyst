@@ -45,8 +45,8 @@
             "createLink": "Utwórz konto "
         },
         "ForgotPassword": {
-            "title": "Forgot password",
-            "heading": "Forgot password",
+            "title": "Nie pamiętam hasła",
+            "heading": "Nie pamiętam hasła",
             "Form": {
                 "description": "Podaj poniżej adres e-mail powiązany z Twoim kontem. Wyślemy Ci instrukcje resetowania hasła.",
                 "emailLabel": "Email",

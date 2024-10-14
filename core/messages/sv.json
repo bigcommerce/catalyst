@@ -45,8 +45,8 @@
             "createLink": "Skapa konto "
         },
         "ForgotPassword": {
-            "title": "Forgot password",
-            "heading": "Forgot password",
+            "title": "Glömt ditt lösenord",
+            "heading": "Glömt ditt lösenord",
             "Form": {
                 "description": "Ange e-postadressen som är kopplad till ditt konto nedan. Vi skickar instruktioner för att återställa ditt lösenord.",
                 "emailLabel": "E-post",

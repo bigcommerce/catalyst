@@ -45,8 +45,8 @@
             "createLink": "Opprett konto "
         },
         "ForgotPassword": {
-            "title": "Forgot password",
-            "heading": "Forgot password",
+            "title": "Glemt passord",
+            "heading": "Glemt passord",
             "Form": {
                 "description": "Skriv inn e-posten som er knyttet til kontoen din nedenfor. Vi sender deg instruksjoner for å tilbakestille passordet ditt.",
                 "emailLabel": "E-post",

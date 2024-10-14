@@ -45,8 +45,8 @@
             "createLink": "Opret konto "
         },
         "ForgotPassword": {
-            "title": "Forgot password",
-            "heading": "Forgot password",
+            "title": "Glemt adgangskode",
+            "heading": "Glemt adgangskode",
             "Form": {
                 "description": "Indtast den e-mail, der er knyttet til din konto, nedenfor. Vi sender dig instruktioner til nulstilling af din adgangskode.",
                 "emailLabel": "E-mail",
