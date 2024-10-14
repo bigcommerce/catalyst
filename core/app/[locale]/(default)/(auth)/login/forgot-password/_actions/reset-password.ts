@@ -53,6 +53,9 @@ export const resetPassword = async ({
         },
         ...(reCaptchaToken && { reCaptchaV2: { token: reCaptchaToken } }),
       },
+      fetchOptions: {
+        cache: 'no-store',
+      },
     });
 
     const result = response.data.customer.requestResetPassword;

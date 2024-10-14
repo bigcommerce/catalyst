@@ -54,6 +54,9 @@ export const changePassword = async (_previousState: unknown, formData: FormData
           newPassword: parsedData.newPassword,
         },
       },
+      fetchOptions: {
+        cache: 'no-store',
+      },
     });
 
     const result = response.data.customer.resetPassword;
