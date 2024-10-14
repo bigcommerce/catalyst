@@ -41,7 +41,7 @@ export const MultilineText = ({
         <TextArea
           className="h-auto min-h-12"
           defaultValue={defaultValue || field.defaultText || undefined}
-          error={isValid === false}
+          error={field.isRequired && isValid === false}
           id={`field-${field.entityId}`}
           onChange={onChange}
           onInvalid={onChange}
@@ -51,12 +51,20 @@ export const MultilineText = ({
       </FieldControl>
       <div className="relative h-7">
         {field.isRequired && (
-          <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-error-secondary"
-            match="valueMissing"
-          >
-            {t('empty')}
-          </FieldMessage>
+          <>
+            <FieldMessage
+              className="inline-flex w-full text-xs font-normal text-error-secondary"
+              match="valueMissing"
+            >
+              {t('empty')}
+            </FieldMessage>
+            <FieldMessage
+              className="inline-flex w-full text-xs font-normal text-error-secondary"
+              match={(value) => value.trim().length === 0}
+            >
+              {t('empty')}
+            </FieldMessage>
+          </>
         )}
       </div>
     </Field>
