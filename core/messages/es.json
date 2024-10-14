@@ -45,8 +45,8 @@
             "createLink": "Crear cuenta "
         },
         "ForgotPassword": {
-            "title": "Forgot password",
-            "heading": "Forgot password",
+            "title": "Olvidé mi contraseña",
+            "heading": "Olvidé mi contraseña",
             "Form": {
                 "description": "Introduce a continuación la dirección de correo electrónico asociada a tu cuenta. Te enviaremos instrucciones para restablecer tu contraseña.",
                 "emailLabel": "Correo electrónico",

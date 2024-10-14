@@ -45,8 +45,8 @@
             "createLink": "Criar conta "
         },
         "ForgotPassword": {
-            "title": "Forgot password",
-            "heading": "Forgot password",
+            "title": "Esqueci a senha",
+            "heading": "Esqueci a senha",
             "Form": {
                 "description": "Insira abaixo o e-mail associado à sua conta. Enviaremos instruções para redefinir sua senha.",
                 "emailLabel": "Email",

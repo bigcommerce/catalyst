@@ -45,8 +45,8 @@
             "createLink": "Konto erstellen "
         },
         "ForgotPassword": {
-            "title": "Forgot password",
-            "heading": "Forgot password",
+            "title": "Passwort vergessen",
+            "heading": "Passwort vergessen",
             "Form": {
                 "description": "Geben Sie unten die mit Ihrem Konto verknüpfte E-Mail-Adresse ein. Wir senden Ihnen Anweisungen zum Zurücksetzen Ihres Passworts.",
                 "emailLabel": "E-Mail",

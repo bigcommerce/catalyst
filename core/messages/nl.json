@@ -45,8 +45,8 @@
             "createLink": "Account aanmaken "
         },
         "ForgotPassword": {
-            "title": "Forgot password",
-            "heading": "Forgot password",
+            "title": "Wachtwoord vergeten",
+            "heading": "Wachtwoord vergeten",
             "Form": {
                 "description": "Voer hieronder het e-mailadres in dat aan je account is gekoppeld. We sturen je instructies om je wachtwoord opnieuw in te stellen.",
                 "emailLabel": "E-mailadres",
