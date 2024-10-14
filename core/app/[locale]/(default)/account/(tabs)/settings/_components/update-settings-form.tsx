@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
+import { MouseEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
@@ -121,14 +121,10 @@ export const UpdateSettingsForm = ({
 
   const t = useTranslations('Account.Settings');
 
-  const handleTextInputValidation = (e: ChangeEvent<HTMLInputElement>) => {
-    const fieldId = Number(e.target.id.split('-')[1]);
-
-    const validityState = e.target.validity;
-    const validationStatus = validityState.valueMissing || validityState.typeMismatch;
-
-    setTextInputValid({ ...textInputValid, [fieldId]: !validationStatus });
-  };
+  const handleTextInputValidation = createTextInputValidationHandler(
+    setTextInputValid,
+    textInputValid,
+  );
   const handleMultiTextValidation = createMultilineTextValidationHandler(
     setMultiTextValid,
     multiTextValid,

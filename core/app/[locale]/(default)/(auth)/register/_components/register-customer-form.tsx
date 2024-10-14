@@ -29,6 +29,7 @@ import {
   createPreSubmitCheckboxesValidationHandler,
   createPreSubmitPicklistValidationHandler,
   createRadioButtonsValidationHandler,
+  createTextInputValidationHandler,
   isAddressOrAccountFormField,
 } from '~/components/form-fields/shared/field-handlers';
 import { Button } from '~/components/ui/button';
@@ -118,14 +119,10 @@ export const RegisterCustomerForm = ({
 
   const t = useTranslations('Register.Form');
 
-  const handleTextInputValidation = (e: ChangeEvent<HTMLInputElement>) => {
-    const fieldId = Number(e.target.id.split('-')[1]);
-
-    const validityState = e.target.validity;
-    const validationStatus = validityState.valueMissing || validityState.typeMismatch;
-
-    setTextInputValid({ ...textInputValid, [fieldId]: !validationStatus });
-  };
+  const handleTextInputValidation = createTextInputValidationHandler(
+    setTextInputValid,
+    textInputValid,
+  );
   const handleNumbersInputValidation = createNumbersInputValidationHandler(
     setNumbersInputValid,
     numbersInputValid,
