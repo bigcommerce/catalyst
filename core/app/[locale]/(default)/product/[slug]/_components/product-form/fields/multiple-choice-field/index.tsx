@@ -1,5 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 
 import { FragmentOf } from '~/client/graphql';
 import { Label, PickList, RadioGroup, RectangleList, Select, Swatch } from '~/components/ui/form';
@@ -9,7 +10,6 @@ import { useProductFieldController } from '../../use-product-form';
 import { ErrorMessage } from '../shared/error-message';
 
 import { MultipleChoiceFieldFragment } from './fragment';
-import { imageManagerImageUrl } from '~/lib/store-assets';
 
 interface Props {
   option: FragmentOf<typeof MultipleChoiceFieldFragment>;
