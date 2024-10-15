@@ -49,7 +49,6 @@ export const LoginForm = ({ logo, fb, google, email, apple }: IconProps) => {
   const { accountState } = useAccountStatusContext();
   const [showLogin, setShowLogin] = useState(false);
 
-  const isFormInvalid = state.status === 'error';
   const [rememberMeCookie, setRememberMeCookie] = useState<any>(null);
   useEffect(() => {
     async function fetchMyCookie() {
