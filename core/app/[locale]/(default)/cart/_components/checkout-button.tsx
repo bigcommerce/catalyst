@@ -12,7 +12,7 @@ const InternalButton = () => {
   const { pending } = useFormStatus();
 
   return (
-    <Button className="mt-6 tracking-widest bg-sky-600" loading={pending} loadingText={t('loading')}>
+    <Button className="mt-6 tracking-widest bg-sky-600 bg-[#008BB7]" loading={pending} loadingText={t('loading')}>
       {t('proceedToCheckout')}
     </Button>
   );
@@ -20,7 +20,7 @@ const InternalButton = () => {
 
 export const CheckoutButton = ({ cartId }: { cartId: string }) => {
   return (
-    <form action={redirectToCheckout}>
+    <form action={redirectToCheckout} className='cart-checkout-button'>
       <input name="cartId" type="hidden" value={cartId} />
       <InternalButton />
     </form>

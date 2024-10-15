@@ -57,9 +57,12 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
     <>
       <ShippingEstimator checkout={checkout} shippingCountries={shippingCountries} />
       
-      <div className="flex justify-between border-t border-t-gray-200 py-4">
-        <span className="font-semibold">{t('subTotal')}</span>
-        <span>
+      <div className="flex justify-between">
+      <span className="text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-left text-[#353535]">
+  {t('subTotal')}
+</span>
+
+        <span className="text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-left text-[#353535]">
           {format.number(subtotal?.value || 0, {
             style: 'currency',
             currency: cart?.currencyCode,
@@ -68,9 +71,9 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
       </div>
 
       {cart?.discountedAmount && (
-        <div className="flex justify-between border-t border-t-gray-200 py-4">
-          <span className="font-semibold">{t('discounts')}</span>
-          <span>
+        <div className="flex justify-between">
+          <span className="text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-left text-[#353535]">{t('discounts')}</span>
+          <span className="text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-left text-[#008BB7]">
             -
             {format.number(cart.discountedAmount.value, {
               style: 'currency',
@@ -83,9 +86,9 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
       <CouponCode checkout={checkout} />
 
       {taxTotal && (
-        <div className="flex justify-between border-t border-t-gray-200 py-4">
-          <span className="font-semibold">{t('tax')}</span>
-          <span>
+        <div className="flex justify-between">
+          <span className="text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-left text-[#353535]">{t('tax')}</span>
+          <span className="text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-left text-[#353535]">
             {format.number(taxTotal.value, {
               style: 'currency',
               currency: cart?.currencyCode,
@@ -94,9 +97,9 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
         </div>
       )}
 
-      <div className="flex justify-between border-t border-t-gray-200 py-4 text-xl font-bold lg:text-2xl">
+<div className="flex justify-between py-4 text-[1.25rem] font-medium leading-[2rem] tracking-[0.009375rem] text-left text-[#353535] lg:text-[1.25rem]">
         {t('grandTotal')}
-        <span>
+        <span className="text-[1.25rem] font-medium leading-[2rem] tracking-[0.009375rem] text-left text-[#353535] lg:text-[1.25rem]">
           {format.number(grandTotal?.value || 0, {
             style: 'currency',
             currency: cart?.currencyCode,

@@ -52,9 +52,15 @@ export const ShippingEstimator = ({ checkout, shippingCountries }: Props) => {
 
   return (
     <>
-      <div className="flex flex-col gap-2 border-t border-t-gray-200 py-4">
+      <div className="flex flex-col gap-2 pb-1">
+      <div className="font-sans text-[20px] font-medium leading-[32px] tracking-[0.15px] text-left text-[#002A37]">
+    Order Summary
+</div>
+
         <div className="flex justify-between">
-          <span className="font-semibold">{t('shippingCost')}</span>
+         
+        <span className="text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-left">
+            {t('shippingCost')}</span>
           {selectedShippingConsignment ? (
             <span>
               {format.number(checkout.shippingCostTotal?.value || 0, {
@@ -65,7 +71,7 @@ export const ShippingEstimator = ({ checkout, shippingCountries }: Props) => {
           ) : (
             <Button
               aria-controls="shipping-options"
-              className="w-fit p-0 text-primary hover:bg-transparent"
+              className="w-fit p-0 text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] underline"
               onClick={() => setShowShippingInfo((open) => !open)}
               variant="subtle"
             >

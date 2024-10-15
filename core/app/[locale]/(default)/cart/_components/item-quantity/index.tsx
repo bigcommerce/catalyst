@@ -135,14 +135,16 @@ const Quantity = ({ value }: { value: number }) => {
   const t = useTranslations('Cart.SubmitItemQuantity');
 
   return (
-    <span className="flex w-10 flex-1 justify-center border-x-gray-300">
+    <span className="flex w-[1.5rem] flex-1 justify-center border-l-2 border-r-2 border-[#D7D7D7]">
       {pending ? (
         <>
           <Spinner aria-hidden="true" className="animate-spin text-primary" />
           <span className="sr-only">{t('spinnerText')}</span>
         </>
       ) : (
-        <span>{value}</span>
+        <span className="mx-[0.525rem] text-center text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#000000]">
+          {value}
+        </span>
       )}
     </span>
   );
@@ -175,10 +177,10 @@ export const ItemQuantity = ({ product }: { product: Product }) => {
   };
 
   return (
-    <div className="w-[120px] rounded-3xl border-2 border-gray-200 p-2.5">
+    <div className="cart-add-to-cart w-[105px] rounded-3xl border-2 border-gray-200 p-2.5">
       <form action={onSubmit} className="flex items-center">
         <SubmitButton onClick={() => setProductQuantity(productQuantity - 1)}>
-          <Minus>
+          <Minus className="h-[1rem] w-[1rem] text-[#7F7F7F] mr-[8px]">
             <title>{t('submitReduceText')}</title>
           </Minus>
         </SubmitButton>
@@ -187,7 +189,7 @@ export const ItemQuantity = ({ product }: { product: Product }) => {
         <Quantity value={productQuantity} />
 
         <SubmitButton onClick={() => setProductQuantity(productQuantity + 1)}>
-          <Plus>
+          <Plus className="h-[1rem] w-[1rem] text-[#7F7F7F] ml-[8px]">
             <title>{t('submitIncreaseText')}</title>
           </Plus>
         </SubmitButton>

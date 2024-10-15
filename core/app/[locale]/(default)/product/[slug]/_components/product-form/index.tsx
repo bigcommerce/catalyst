@@ -1,11 +1,13 @@
 'use client';
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FragmentOf } from 'gql.tada';
 import { AlertCircle, Check, Heart, ShoppingCart } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
+import { useEffect } from 'react';
 
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { AddToCartButton } from '~/components/add-to-cart-button';
@@ -23,9 +25,11 @@ import { NumberField } from './fields/number-field';
 import { QuantityField } from './fields/quantity-field';
 import { TextField } from './fields/text-field';
 import { ProductFormData, useProductForm } from './use-product-form';
+import { imageManagerImageUrl } from '~/lib/store-assets';
 
 interface Props {
   data: FragmentOf<typeof ProductItemFragment>;
+  multipleOptionIcon: string;
 }
 
 const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
@@ -58,18 +62,63 @@ export const Submit = ({ data: product }: Props) => {
   );
 };
 
-export const ProductForm = ({ data: product }: Props) => {
+export const ProductForm = ({ data: product, multipleOptionIcon }: Props) => {
   const t = useTranslations('Product.Form');
   const productOptions = removeEdgesAndNodes(product.productOptions);
-
-  const cart = useCart();
+  if (productOptions?.length > 0) {
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const optionSearchParams = new URLSearchParams(searchParams.toString());
+    const handleInteraction = (urlParamArray: any) => {
+      urlParamArray?.forEach((urlData: any) => {
+        optionSearchParams.set(String(urlData?.selectedValue), String(urlData?.defaultValue));
+      });
+      const newUrl = `${pathname}?${optionSearchParams.toString()}`;
+      router.replace(newUrl, { scroll: false });
+    };
+    let urlParamArray: any = [];
+    productOptions.forEach((option: any) => {
+      const searchParamSelected = searchParams.get(String(option.entityId));
+      const values: any = removeEdgesAndNodes(option.values);
+      const selectedValue = option.entityId;
+      if (selectedValue) {
+        const defaultValue = values.find((value: any) => value.isDefault)?.entityId.toString();
+        urlParamArray.push({
+          selectedValue: selectedValue,
+          defaultValue: defaultValue,
+        });
+      }
+    });
+    useEffect(() => {
+      handleInteraction(urlParamArray);
+    }, []);
+  }
   const { handleSubmit, register, ...methods } = useProductForm();
 
   const productFormSubmit = async (data: ProductFormData) => {
+    const result = await handleAddToCart(data, product);
     const quantity = Number(data.quantity);
 
-    // Optimistic update
-    cart.increment(quantity);
+    if (result.error) {
+      toast.error(t('error'), {
+        icon: <AlertCircle className="text-error-secondary" />,
+      });
+      return;
+    }
+
+    const transformedProduct = productItemTransform(product);
+
+    bodl.cart.productAdded({
+      product_value: transformedProduct.purchase_price * quantity,
+      currency: transformedProduct.currency,
+      line_items: [
+        {
+          ...transformedProduct,
+          quantity,
+        },
+      ],
+    });
 
     toast.success(
       () => (
@@ -122,12 +171,21 @@ export const ProductForm = ({ data: product }: Props) => {
 
   return (
     <FormProvider handleSubmit={handleSubmit} register={register} {...methods}>
-      <form className="flex flex-col gap-6 @container" onSubmit={handleSubmit(productFormSubmit)}>
+      <form
+        className="product-variants flex flex-col gap-6 @container"
+        onSubmit={handleSubmit(productFormSubmit)}
+      >
         <input type="hidden" value={product.entityId} {...register('product_id')} />
 
         {productOptions.map((option) => {
           if (option.__typename === 'MultipleChoiceOption') {
-            return <MultipleChoiceField key={option.entityId} option={option} />;
+            return (
+              <MultipleChoiceField
+                key={option.entityId}
+                option={option}
+                multipleOptionIcon={multipleOptionIcon}
+              />
+            );
           }
 
           if (option.__typename === 'CheckboxOption') {
@@ -155,11 +213,9 @@ export const ProductForm = ({ data: product }: Props) => {
 
         <QuantityField />
 
-        <div className="mt-4 flex flex-col gap-4 @md:flex-row">
-          <Submit data={product} />
-
-          {/* NOT IMPLEMENTED YET */}
-          <div className="w-full">
+        <div className="mt-0 flex flex-col gap-4 @md:flex-row xl:mt-4">
+          <Submit data={product} multipleOptionIcon={''} />
+          <div className="hidden w-full">
             <Button disabled type="submit" variant="secondary">
               <Heart aria-hidden="true" className="mr-2" />
               <span>{t('saveToWishlist')}</span>

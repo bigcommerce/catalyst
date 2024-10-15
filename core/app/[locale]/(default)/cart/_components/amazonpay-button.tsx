@@ -26,7 +26,7 @@ const InternalButton = ({ icon }: { icon: string }) => {
 
 export const AmazonpayButton = ({ cartId, icon }: { cartId: string, icon: string }) => {
   return (
-    <form action={redirectToCheckout}>
+    <form action={redirectToCheckout} className='cart-amazonPayButton'>
       <input name="cartId" type="hidden" value={cartId} />
       <InternalButton icon={icon} />
     </form>

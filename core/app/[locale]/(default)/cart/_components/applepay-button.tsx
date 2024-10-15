@@ -26,7 +26,7 @@ const InternalButton = ({ icon }: { icon: string }) => {
 
 export const ApplepayButton = ({ cartId, icon }: { cartId: string, icon: string }) => {
   return (
-    <form action={redirectToCheckout}>
+    <form action={redirectToCheckout} className='cart-applePay-button'>
       <input name="cartId" type="hidden" value={cartId} />
       <InternalButton icon={icon} />
     </form>

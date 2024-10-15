@@ -115,9 +115,12 @@ export default async function Cart() {
     <div>
       {/* Cart number for mobile (centered on small devices, above "Your cart" with top padding), hidden on larger screens */}
       <ContinuetocheckoutButton cartId={cartId} />
-      <div className="text-center pt-8 lg:hidden">
-        <div className="inline-flex items-center gap-2">
-          Subtotal {format.number(checkout?.subtotal?.value || 0, {
+
+
+      <div className="pt-6 text-center lg:hidden">
+      <div className="inline-flex items-center gap-2 font-medium text-[20px] leading-[32px] text-[#002A37] tracking-[0.15px]">
+          Subtotal{' '}
+          {format.number(checkout?.subtotal?.value || 0, {
             style: 'currency',
             currency: cart?.currencyCode,
           })}
@@ -125,71 +128,87 @@ export default async function Cart() {
             alt="Remove"
             width={12}
             height={8}
-            className="w-[12px] h-[8px]"
+            className="h-[8px] w-[12px]"
             src={downArrow}
           />
         </div>
       </div>
 
-      <div className="text-center pt-8 lg:hidden">
+      <div className="pt-8 text-center lg:hidden">
         <div>Cart #12345</div>
       </div>
 
       {/* Heading section */}
-      <ComponentsBreadcrumbs breadcrumbs={breadcrumbs} />
-      <h1 className="pb-4 pt-9 text-xl font-medium text-center lg:text-left lg:pb-10 lg:text-xl">
-        {`${t('heading')}(${cartQty}${cartItemsText})`}
-      </h1>
+      <ComponentsBreadcrumbs className="mt-10" breadcrumbs={breadcrumbs} />
+  
+<h1 className="cart-heading pb-6 pt-0 text-center lg:text-left text-[24px] font-normal leading-[32px] lg:pb-4 lg:text-[24px]">
+  {`${t('heading')}(${cartQty}${cartItemsText})`}
+</h1>
 
       {/* Cart number for larger screens, SaveCart, and RemoveCart all in one line */}
       <div className="hidden lg:flex lg:items-center lg:space-x-8">
         <SaveCart cartItems={lineItems} saveCartIcon={heartIcon} />
-        { /*<RemoveCart cartId={cart.entityId} icon={deleteIcon} deleteIcon={closeIcon} /> */ }
-        <div>Cart #12345</div>
+        {/*<RemoveCart cartId={cart.entityId} icon={deleteIcon} deleteIcon={closeIcon} /> */}
+        <div className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.03125rem] text-[#7F7F7F]">
+          Cart #12345
+        </div>
       </div>
 
       {/* Your cart section */}
-      <div className="pb-12 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-6">
+      <div className="save-cart pb-8 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-6">
         {/* Mobile layout for SaveCart and RemoveCart */}
-        <div className="w-full flex justify-center items-center gap-4 lg:hidden">
+        <div className="flex w-full items-center justify-center gap-4 lg:hidden">
           {/* SaveCart aligned left on small devices */}
-          <div className="w-auto text-left">
+          <div className="w-auto text-left cart-save-item">
             <SaveCart cartItems={lineItems} saveCartIcon={heartIcon} />
           </div>
           {/* RemoveCart aligned right on small devices */}
-          <div className="w-auto text-right">
+          <div className="w-auto text-right delete-icon-empty-cart-hidden">
             <RemoveCart cartId={cart.entityId} icon={deleteIcon} deleteIcon={closeIcon} />
           </div>
         </div>
       </div>
-      <div className="pb-12 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-3 px-18">
+      <div className="cart-right-side-details px-18 pb-0 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-3">
         <ul className="col-span-2">
           {lineItems.map((product) => (
-            <CartItem currencyCode={cart.currencyCode} key={product.entityId} product={product} deleteIcon={deleteIcon} />
+            <CartItem
+              currencyCode={cart.currencyCode}
+              key={product.entityId}
+              product={product}
+              deleteIcon={deleteIcon}
+            />
           ))}
         </ul>
 
-        <div className="col-span-1 col-start-2 lg:col-start-3">
+        <div className="cart-right-side col-span-1 col-start-2 lg:col-start-3 border-t border-[#CCCBCB] pt-1 sticky top-0 overflow-hidden min-h-[800px] h-[100px]">
+
           {checkout && <CheckoutSummary checkout={checkout} geography={geography} />}
 
           <CheckoutButton cartId={cartId} />
           <ApplepayButton cartId={cartId} icon={applePayIcon} />
           <PaypalButton cartId={cartId} icon={paypalIcon} />
           <AmazonpayButton cartId={cartId} icon={amazonPayIcon} />
-          <div className="pt-3"></div>
-          <p className="pt-1 text-blue-600 underline underline-offset-4">Return Policy</p>
-          <p className="pt-1 text-blue-600 underline underline-offset-4">Shipping Policy</p>
-          <p className="pt-1 flex items-center text-blue-600 align-middle underline underline-offset-4">
+          <div className="pt-1"></div>
+          <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-4">
+            Return Policy
+          </p>
+          <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-4">
+            Shipping Policy
+          </p>
+          <p className="flex items-center pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-4">
             <BcImage
               alt="Agent Icon"
-              width={12}
+              width={10}
               height={8}
-              className="w-[16px] h-[16px]"
+              className="h-[14px] w-[14px] mr-1"
               src={agentIcon}
-            /> Talk to an Agent</p>
-            
+            />{' '}
+            Talk to an Agent
+          </p>
+         
         </div>
-      </div>
+        </div>
+ 
       <CartViewed checkout={checkout} currencyCode={cart.currencyCode} lineItems={lineItems} />
     </div>
   );

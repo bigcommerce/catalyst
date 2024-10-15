@@ -45,16 +45,20 @@ export const SaveCart = ({ cartItems, saveCartIcon }: any) => {
   }
 
   return (
-    <button onClick={() => saveCartItems()} className="bg-green4 text-green11 hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none">
-      <div className="flex space-x-2">
+    <button onClick={() => saveCartItems()} className="bg-green4 text-green11 hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] font-medium">
+      <div className="flex items-center space-x-2">
         <BcImage
           alt={t('saveCartWishlist')}
-          width={20}
-          height={20}
-          className="w-[20px] h-[20px]"
+          width={15}
+          height={15}
+          className="w-[15px] h-[15px]"
           src={saveCartIcon}
         />
-        <div>{t('saveCartWishlist')}</div>
+    <div className="text-[1rem] font-normal leading-[2rem] tracking-[0.03125rem] text-left text-[#353535] savecart-wishlist-span">
+  {t('saveCartWishlist')} <span>{t('saveCartWishlistSpan')}</span>
+</div>
+
+
       </div>
     </button>
   );
