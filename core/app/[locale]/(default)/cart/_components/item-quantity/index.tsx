@@ -171,6 +171,8 @@ export const ItemQuantity = ({ product }: { product: Product }) => {
       toast.error(t('errorMessage'), {
         icon: <AlertCircle className="text-error-secondary" />,
       });
+
+      setProductQuantity(quantity);
     }
   };
 
