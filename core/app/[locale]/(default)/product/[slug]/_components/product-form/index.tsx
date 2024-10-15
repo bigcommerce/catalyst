@@ -64,6 +64,7 @@ export const Submit = ({ data: product }: Props) => {
 
 export const ProductForm = ({ data: product, multipleOptionIcon }: Props) => {
   const t = useTranslations('Product.Form');
+  const cart = useCart();
   const productOptions = removeEdgesAndNodes(product.productOptions);
   if (productOptions?.length > 0) {
     const router = useRouter();
@@ -97,28 +98,10 @@ export const ProductForm = ({ data: product, multipleOptionIcon }: Props) => {
   const { handleSubmit, register, ...methods } = useProductForm();
 
   const productFormSubmit = async (data: ProductFormData) => {
-    const result = await handleAddToCart(data, product);
     const quantity = Number(data.quantity);
 
-    if (result.error) {
-      toast.error(t('error'), {
-        icon: <AlertCircle className="text-error-secondary" />,
-      });
-      return;
-    }
-
-    const transformedProduct = productItemTransform(product);
-
-    bodl.cart.productAdded({
-      product_value: transformedProduct.purchase_price * quantity,
-      currency: transformedProduct.currency,
-      line_items: [
-        {
-          ...transformedProduct,
-          quantity,
-        },
-      ],
-    });
+    // Optimistic update
+    cart.increment(quantity);
 
     toast.success(
       () => (
