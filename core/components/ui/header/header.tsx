@@ -53,7 +53,7 @@ const Header = ({
   search,
 }: Props) => (
   <div className={cn('relative', className)}>
-    <header className="flex h-[92px] items-center justify-between gap-1 overflow-y-visible bg-white px-4 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0">
+    <header className="flex h-[92px] items-center justify-between gap-1 overflow-y-visible bg-white 2xl:container sm:px-10 lg:gap-8 lg:px-18 2xl:mx-auto 2xl:px-18 px-18 pt-6">    
       <CustomLink className="overflow-hidden text-ellipsis py-3" href="/">
         {typeof logo === 'object' ? (
           <BcImage

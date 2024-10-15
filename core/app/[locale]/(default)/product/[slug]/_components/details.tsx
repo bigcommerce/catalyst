@@ -4,11 +4,19 @@ import { useFormatter, useTranslations } from 'next-intl';
 import { PricingFragment } from '~/client/fragments/pricing';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { FragmentOf, graphql } from '~/client/graphql';
-
+import CertificationsAndRatings from '~/components/ui/pdp/belami-certification-rating-pdp';
+import { Payment } from '~/components/ui/pdp/belami-payment-pdp';
+import Dropdown from '~/components/ui/pdp/belami-product-details-pdp';
+import { RequestQuote } from '~/components/ui/pdp/belami-request-a-quote-pdp';
+import { ShippingReturns } from '~/components/ui/pdp/belami-shipping-returns-pdp';
+import { imageManagerImageUrl } from '~/lib/store-assets';
+import { FreeDelivery } from './belami-product-free-shipping-pdp';
 import { ProductForm } from './product-form';
 import { ProductFormFragment } from './product-form/fragment';
 import { ProductSchema, ProductSchemaFragment } from './product-schema';
 import { ReviewSummary, ReviewSummaryFragment } from './review-summary';
+import { Coupon } from './belami-product-coupon-pdp';
+import { BcImage } from '~/components/bc-image';
 
 export const DetailsFragment = graphql(
   `
@@ -64,24 +72,44 @@ export const Details = ({ product }: Props) => {
   const format = useFormatter();
 
   const customFields = removeEdgesAndNodes(product.customFields);
+  const deleteIcon = imageManagerImageUrl('delete.png', '20w');
 
   const showPriceRange =
     product.prices?.priceRange.min.value !== product.prices?.priceRange.max.value;
 
+  const certificationIcon = imageManagerImageUrl('vector-7-.png', '20w');
+  const multipleOptionIcon = imageManagerImageUrl('vector-5-.png', '20w');
+
+
   return (
     <div>
-      {product.brand && (
-        <p className="mb-2 font-semibold uppercase text-gray-500">{product.brand.name}</p>
-      )}
+      <div className="div-product-details">
+        <h1 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
+          {product.name}
+        </h1>
 
-      <h1 className="mb-4 text-4xl font-black lg:text-5xl">{product.name}</h1>
+        {/* Brand and Product Information */}
+        <div className="items-center space-x-1 text-center lg:text-left xl:text-left">
+          <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+            SKU: <span>{product.sku}</span>
+          </span>
+          <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+            by{' '}
+            <span className="products-underline border-b border-black">{product.brand?.name}</span>
+          </span>
+          <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+            from the{' '}
+            <span className="products-underline border-b border-black">Galtech International</span>
+          </span>
+        </div>
 
-      <ReviewSummary data={product} />
+        <ReviewSummary data={product} />
+      </div>
 
       {product.prices && (
-        <div className="my-6 text-2xl font-bold lg:text-3xl">
+        <div className="product-price mt-2 flex gap-2 text-center text-2xl font-bold lg:mt-6 lg:text-left lg:text-3xl">
           {showPriceRange ? (
-            <span>
+            <span className="span1-product-price">
               {format.number(product.prices.priceRange.min.value, {
                 style: 'currency',
                 currency: product.prices.price.currencyCode,
@@ -94,11 +122,10 @@ export const Details = ({ product }: Props) => {
             </span>
           ) : (
             <>
-              {product.prices.retailPrice?.value !== undefined && (
-                <span>
-                  {t('Prices.msrp')}:{' '}
-                  <span className="line-through">
-                    {format.number(product.prices.retailPrice.value, {
+              {product.prices.price?.value !== undefined && (
+                <span className="span2-product-price text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px]">
+                  <span>
+                    {format.number(product.prices.price.value, {
                       style: 'currency',
                       currency: product.prices.price.currencyCode,
                     })}
@@ -106,11 +133,10 @@ export const Details = ({ product }: Props) => {
                   <br />
                 </span>
               )}
-              {product.prices.salePrice?.value !== undefined &&
+              {product.prices.saved?.value !== undefined &&
               product.prices.basePrice?.value !== undefined ? (
                 <>
-                  <span>
-                    {t('Prices.was')}:{' '}
+                  <span className="span3-product-price text-[1rem] font-normal leading-[2rem] tracking-[0.15px]">
                     <span className="line-through">
                       {format.number(product.prices.basePrice.value, {
                         style: 'currency',
@@ -118,33 +144,32 @@ export const Details = ({ product }: Props) => {
                       })}
                     </span>
                   </span>
-                  <br />
-                  <span>
-                    {t('Prices.now')}:{' '}
-                    {format.number(product.prices.price.value, {
+                  <span className="span4-product-price text-[1rem] font-normal leading-[2rem] tracking-[0.15px]">
+                    {t('Prices.now')}{' '}
+                    {format.number(product.prices.saved.value, {
                       style: 'currency',
                       currency: product.prices.price.currencyCode,
                     })}
                   </span>
                 </>
               ) : (
-                product.prices.price.value && (
-                  <span>
-                    {format.number(product.prices.price.value, {
-                      style: 'currency',
-                      currency: product.prices.price.currencyCode,
-                    })}
-                  </span>
-                )
+                product.prices.price.value && <span className="span5-product-price"></span>
               )}
             </>
           )}
         </div>
       )}
 
-      <ProductForm data={product} />
+      {/* coupon */}
+      <Coupon />
 
-      <div className="my-12">
+      {/* Free Delivery */}
+      <FreeDelivery />
+
+      {/* Product Form */}
+      <ProductForm data={product} multipleOptionIcon={multipleOptionIcon} deleteIcon={deleteIcon} />
+
+      <div className="div-product-description my-12 hidden">
         <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
         <div className="grid gap-3 sm:grid-cols-2">
           {Boolean(product.sku) && (
@@ -201,6 +226,33 @@ export const Details = ({ product }: Props) => {
         </div>
       </div>
       <ProductSchema product={product} />
+      <div className="apple-pay mt-4 xl:hidden">
+        <button className="flex w-[100%] items-center justify-center rounded bg-[#353535] p-4 text-white">
+          <BcImage
+            alt="GPay icon"
+            src={imageManagerImageUrl('apple-xxl.png', '20w')}
+            height={20}
+            width={20}
+            className="mr-4 inline"
+          />
+          Pay with Google
+        </button>
+      </div>
+
+      {/* Payment Section */}
+      <Payment />
+
+      {/* Request a Quote */}
+      <RequestQuote />
+
+      {/* Certifications & Ratings */}
+      <CertificationsAndRatings certificationIcon={certificationIcon} />
+
+      {/* Dropdown */}
+      <Dropdown />
+
+      {/* Shipping & Returns */}
+      <ShippingReturns />
     </div>
   );
 };

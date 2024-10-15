@@ -19,6 +19,11 @@ export const PricingFragment = graphql(`
         value
         currencyCode
       }
+      saved {
+        currencyCode
+        formatted
+        value
+      }
       priceRange {
         min {
           value

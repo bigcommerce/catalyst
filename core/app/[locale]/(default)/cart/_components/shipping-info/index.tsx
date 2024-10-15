@@ -1,6 +1,6 @@
 import { AlertCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'react-hot-toast';
 
@@ -35,7 +35,7 @@ const SubmitButton = () => {
 
   return (
     <Button
-      className="w-full items-center px-8 py-2"
+      className="w-full items-center px-8 py-2 mt-6 tracking-widest bg-sky-600 text-white"
       loading={pending}
       loadingText={t('spinnerText')}
       variant="secondary"
@@ -76,7 +76,7 @@ export const ShippingInfo = ({
   );
 
   const selectedCountry = shippingCountries.find(({ code }) => code === formValues.country);
-
+  const [isUSSelected, setIsUSSelected] = useState(true);
   // Preselect first state when states array changes and state is empty
   useEffect(() => {
     if (!!selectedCountry?.statesOrProvinces && !formValues.state) {
@@ -117,8 +117,14 @@ export const ShippingInfo = ({
               onValueChange={(value: string) => {
                 if (value) {
                   setFormValues({ country: value, state: '', city: '', postcode: '' });
+                  if(value === 'CA') {
+                    setIsUSSelected(false);
+                  } else {
+                    setIsUSSelected(true);
+                  }
                 } else {
                   setFormValues({ country: '', state: '', city: '', postcode: '' });
+                  setIsUSSelected(false);
                 }
 
                 hideShippingOptions();
@@ -133,7 +139,7 @@ export const ShippingInfo = ({
           </FieldControl>
         </Field>
         <Field className="relative space-y-2" name="state">
-          <FieldLabel htmlFor="state">{t('state')}</FieldLabel>
+          <FieldLabel htmlFor="state">{(isUSSelected) ? 'State': 'Province'}</FieldLabel>
           <FieldControl asChild>
             {selectedCountry?.statesOrProvinces ? (
               <Select
@@ -159,26 +165,26 @@ export const ShippingInfo = ({
           </FieldControl>
         </Field>
         <Field className="relative space-y-2" name="city">
-          <FieldLabel htmlFor="city-field">{t('city')}</FieldLabel>
+          <FieldLabel htmlFor="city-field">{(isUSSelected) ? 'City': 'Suburb'}</FieldLabel>
           <FieldControl asChild>
             <Input
               autoComplete="address-level2"
               id="city-field"
               onChange={(e) => setFormValues({ city: e.target.value })}
-              placeholder={t('cityPlaceholder')}
+              placeholder={(isUSSelected) ? 'City': 'Suburb'}
               type="text"
               value={formValues.city}
             />
           </FieldControl>
         </Field>
         <Field className="relative space-y-2" name="zip">
-          <FieldLabel htmlFor="zip-field">{t('postcode')}</FieldLabel>
+          <FieldLabel htmlFor="zip-field">{(isUSSelected) ? 'Zip': 'Postal Code'}</FieldLabel>
           <FieldControl asChild>
             <Input
               autoComplete="postal-code"
               id="zip-field"
               onChange={(e) => setFormValues({ postcode: e.target.value })}
-              placeholder={t('postcodePlaceholder')}
+              placeholder={(isUSSelected) ? 'Zip': 'Postcode'}
               type="text"
               value={formValues.postcode}
             />

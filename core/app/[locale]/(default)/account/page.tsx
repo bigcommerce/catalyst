@@ -1,4 +1,4 @@
-import { BookUser, Settings } from 'lucide-react';
+import { BookUser, Settings, Gift } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
@@ -49,6 +49,9 @@ export default function Account() {
       <div className="mb-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <AccountItem href="/account/addresses" title={t('addresses')}>
           <BookUser className="me-8" size={48} strokeWidth={1.5} />
+        </AccountItem>
+        <AccountItem href="/account/wishlists" title={t('wishlists')}>
+          <Gift className="me-8" size={48} strokeWidth={1.5} />
         </AccountItem>
         <AccountItem href="/account/settings" title={t('settings')}>
           <Settings className="me-8" size={48} strokeWidth={1.5} />

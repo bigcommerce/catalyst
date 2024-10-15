@@ -2,10 +2,13 @@
 
 import { useTranslations } from 'next-intl';
 import { useFormStatus } from 'react-dom';
+import { BcImage } from '~/components/bc-image';
 
 import { Button } from '~/components/ui/button';
-
-export const RemoveFromCartButton = () => {
+interface Props {
+  icon: string
+}
+export const RemoveFromCartButton = ({icon}: Props) => {
   const { pending } = useFormStatus();
   const t = useTranslations('Cart.SubmitRemoveItem');
 
@@ -17,7 +20,13 @@ export const RemoveFromCartButton = () => {
       type="submit"
       variant="subtle"
     >
-      {t('remove')}
+      <BcImage
+        alt="Remove"
+        width={20}
+        height={20}
+        className="w-[20px] h-[20px]"
+        src={icon}
+      />
     </Button>
   );
 };

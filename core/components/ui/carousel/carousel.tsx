@@ -1,7 +1,8 @@
 import useEmblaCarousel, { UseEmblaCarouselType } from 'embla-carousel-react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { ReactNode, useCallback, useEffect, useId, useMemo, useState } from 'react';
-
+import { BcImage } from '~/components/bc-image';
+import { imageManagerImageUrl } from '~/lib/store-assets';
 import { cn } from '~/lib/utils';
 
 type CarouselApi = UseEmblaCarouselType[1];
@@ -97,6 +98,7 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
 
   return (
     <div
+    id="relatedproduct-carousel"
       aria-labelledby={titleId}
       aria-roledescription="carousel"
       className={cn('relative', className)}
@@ -104,41 +106,55 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
       role="region"
       {...props}
     >
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-black lg:text-4xl" id={titleId}>
+      <div className="div-carousel mt-11 flex items-center justify-between">
+        <h2 className="text-3xl font-black text-[1.5rem] font-normal leading-[2rem] text-left text-[#353535]" id={titleId}>
           {title}
         </h2>
         <span className="no-wrap flex">
           <button
             aria-label="Previous products"
             className={cn(
-              'inline-flex h-12 w-12 items-center justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:text-gray-400',
+              'carousel-previous-arrow inline-flex h-12 w-12 items-center justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:text-gray-400',
               api?.scrollSnapList().length === 1 && 'hidden',
             )}
             disabled={!canScrollPrev}
             onClick={scrollPrev}
           >
-            <ArrowLeft />
+             <BcImage
+            className='mb-2 -rotate-180'
+              alt="Options icon"
+              src={imageManagerImageUrl('vector-8-.png', '30w')}
+              height={20}
+              priority={true}
+              width={30}
+            />
             <span className="sr-only">Previous slide</span>
           </button>
 
           <button
             aria-label="Next products"
             className={cn(
-              'inline-flex h-12 w-12 items-center justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:text-gray-400',
+              'carousel-next-arrow inline-flex h-12 w-12 items-center justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:text-gray-400',
               api?.scrollSnapList().length === 1 && 'hidden',
             )}
             disabled={!canScrollNext}
             onClick={scrollNext}
           >
-            <ArrowRight />
+              <BcImage
+            className='mb-2'
+              alt="Options icon"
+              src={imageManagerImageUrl('vector-8-.png', '30w')}
+              height={20}
+              priority={true}
+              width={30}
+            />
             <span className="sr-only">Next slide</span>
           </button>
         </span>
       </div>
 
-      <div className="-mx-2 overflow-hidden px-2" ref={carouselRef}>
-        <div className="-mx-4 mb-16 mt-8 flex lg:mt-10">
+      <div className="realted-product-carousel relative -mx-2 overflow-hidden px-2" ref={carouselRef}>
+        <div className="-mx-4 mb-16 mt-5 flex lg:mt-6">
           {groupedProducts.map((group, index) => (
             <div
               aria-label={`${index + 1} of ${groupedProducts.length}`}
@@ -160,7 +176,7 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
       <div
         aria-label="Slides"
         className={cn(
-          'no-wrap absolute bottom-1 flex w-full items-center justify-center gap-2',
+          'no-wrap mb-3 absolute bottom-1 flex w-full items-center justify-center gap-2',
           api?.scrollSnapList().length === 1 && 'hidden',
         )}
         role="tablist"

@@ -147,6 +147,8 @@
     },
     "Addresses": {
       "title": "Addresses",
+	  "alternativeAddress": "Alternative",
+      "newAddress": "New address",
       "addNewAddress": "Add new address",
       "editButton": "Edit",
       "deleteButton": "Delete",
@@ -165,6 +167,34 @@
             "inputError": "Something went wrong with processing user input.",
             "error": "Unknown error."
           }
+        },
+        "Wishlist": {
+          "noItems": "No items added",
+          "new": "New wishlist",
+          "cancel": "Cancel",
+          "create": "Create",
+          "delete": "Delete",
+          "createPopupDescription": "Create new wishlist popup window",
+          "inputLabel": "Wishlist name",
+          "emptyName": "Provide wishlist name",
+          "onSubmitText": "Submitting...",
+          "deleteTitle": "Are you sure you want to delete wishlist {name}?",
+          "favorites": "Favorites",
+          "noGalleryText": "Coming Soon",
+          "messages": {
+            "created": "Your wishlist {name} was created successfully",
+            "deleted": "Your wishlist {name} was deleted successfully"
+          },
+          "Sheet": {
+            "title": "Add to list",
+            "new": "New list",
+            "save": "Save",
+            "saveToWishlist": "Save to wishlist",
+            "saved": "Saved",
+            "createTitle": "New wishlist",
+            "selectCta": "Select from available lists:",
+            "favorites": "Favorites"
+          }      
         }
       },
       "Edit": {
@@ -245,9 +275,10 @@
     "heading": "Your cart",
     "empty": "Your cart is empty",
     "emptyDetails": "Looks like you have not added anything to your cart. Go ahead & explore top categories",
-    "proceedToCheckout": "Proceed to checkout",
+    "proceedToCheckout": "CHECKOUT",
     "loading": "Loading...",
     "spinnerText": "Updating...",
+    "saveCartWishlist": "Save Cart as Wishlist",
     "CheckoutSummary": {
       "subTotal": "Subtotal",
       "discounts": "Discounts",
@@ -326,7 +357,7 @@
       "Prices": {
         "msrp": "MSRP",
         "was": "Was",
-        "now": "Now"
+        "now": "Save"
       }
     },
     "AddToCart": {
@@ -336,6 +367,7 @@
   },
   "Product": {
     "loading": "Loading...",
+    "noGalleryText": "Coming Soon",
     "Carousel": {
       "relatedProducts": "Related products"
     },
@@ -370,7 +402,7 @@
       "Prices": {
         "msrp": "MSRP",
         "was": "Was",
-        "now": "Now"
+        "now": "Save"
       },
       "ReviewSummary": {
         "rating": "Rating:",
@@ -425,6 +457,7 @@
         "account": "Account",
         "myAccount": "My account",
         "addresses": "Addresses",
+        "wishlists": "Wishlists",
         "accountSettings": "Account settings",
         "login": "Login",
         "logout": "Log out"
@@ -479,5 +512,133 @@
         "postalCode": "Enter a zip / postcode"
       }
     }
+  },
+  "payment": {
+    "payment": "Pay in Interest-free payments of $-50",
+    "learnMore": "Learn More"
+  },
+  "promotion": {
+    "placeholder": "Promotion Placeholder"
+  },
+  "requestQuote": {
+    "heading": "B2B Customers : ",
+    "requestQuoteLink": "Request a Quote",
+    "createTradeAccountLink": "Create a Trade Account",
+    "or": " or "
+  },
+  "protectYourPurchase": {
+    "warrantyHeading": "Protect Your Purchase",
+    "warrantyOption1": "1 Year Limited Manufacturer Warranty (Included)",
+    "warrantyOption2": "+ 2 Year Warranty (+$60)",
+    "warrantyOption3": "+ 5 Year Warranty (+$120)"
+  },
+  "shippingReturns": {
+    "shippingPolicy": "Shipping Policy",
+    "returnPolicy": "Return Policy"
+  },
+  "similarProducts": {
+    "heading": "What can we help you find?",
+    "paragraph": "I'm looking for something...",
+    "buttonSimilar": "Similar",
+    "buttonDifferentColor": "A Different Color",
+    "buttonSmaller": "Smaller",
+    "buttonDimmer": "Dimmer",
+    "buttonBigger": "Bigger",
+    "buttonBrighter": "Bigger",
+    "buttonCheaper": "Cheaper",
+    "sku": "SKU###",
+    "price": "$20",
+    "moreOptions": "MORE OPTIONS"
+  },
+  "gallery": {
+    "viewAll": "View All",
+    "viewAllCount": "+{{count}}",
+    "comingSoon": "Coming soon"
+  },
+  "promotions": {
+    "promo1": "Buy one get one Free Now through 8/24",
+    "promo2": "Save 20% on all items through 9/01",
+    "promo3": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa dolores dolorum velit cupiditate asperiores numquam aliquam dignissimos eius expedita ratione quidem enim fugit, aliquid odit a quibusdam corrupti accusamus? Placeat."
+  },
+  "productCoupon": {
+    "couponText": "Extra 20% Off at checkout with coupon code COUPON"
+  },
+  "freeDelivery": {
+    "title": "Free Delivery",
+    "description": "This product is backordered until mm/dd."
+  },
+  "certificationsAndRatings": {
+    "title": "Certifications and Ratings",
+    "dampRated": "Damp Rated",
+    "csaCertified": "CSA Certified",
+    "etlCertified": "ETL Certified",
+    "wetRated": "Wet Rated"
+  },
+  "dropdown": {
+    "buttonText": "Product Details",
+    "closeButtonText": "Close Details",
+    "whatsInTheBox": "What's In The Box?",
+    "sku": "SKU###",
+    "specSheet": "SPEC SHEET",
+    "installationSheet": "INSTALLATION SHEET",
+    "dimensionsAndWeights": "Dimensions and Weights",
+    "installationDetails": "Installation Details",
+    "lamping": "Lamping",
+    "compatibilityAndSmartFeatures": "Compatibility and Smart Features",
+    "productDetails": "Product Details",
+    "warningNotice": "Warning: California Prop 65 Notice",
+    "canopy": "Canopy",
+    "shade": "Shade",
+    "rod2to6": "2-6\" Rod",
+    "rod2to12": "2-12\" Rod",
+    "widthDiameter": "Width/Diameter (in)",
+    "height": "Height",
+    "depthExtension": "Depth/Extension",
+    "canopyWidth": "Canopy Width",
+    "wireLength": "Wire Length",
+    "chainLength": "Chain Length",
+    "numberOfBulbs": "# of Bulbs",
+    "standardWattage": "Standard Wattage",
+    "smartCompatible": "Smart Compatible",
+    "finishes": "Finishes",
+    "shadeMaterial": "Shade Material"
+  },
+  "productDetailDropdown": {
+    "productDetails": "Product Details",
+    "whatsInTheBox": "What's in the Box?",
+    "sku": "SKU###",
+    "canopy": "Canopy",
+    "shade": "Shade",
+    "rod2to6": "2-6'Rod",
+    "rod2to12": "2-12'Rod",
+    "downloadSpecSheet": "SPEC SHEET",
+    "installationSheet": "INSTALLATION SHEET",
+    "dimensionsAndWeights": "Dimensions and Weights",
+    "widthDiameter": "Width/Diameter (In)",
+    "Eighteen": "18'",
+    "height": "Height",
+    "725": "7.25'",
+    "depthExtension": "Depth/Extension",
+    "canopyWidth": "Canopy Width",
+    "fourteen": "14'",
+    "installationDetails": "Installation Details",
+    "wireLength": "Wire Length",
+    "onetwenty": "120'",
+    "chainLength": "Chain Length",
+    "twelve": "12'",
+    "lamping": "Lamping",
+    "numberOfBulbs": "# of Bulbs",
+    "one": "1",
+    "standardWattage": "100 Watts",
+    "compatibilityAndSmartFeatures": "Compatibility and Smart Features",
+    "smartCompatible": "Smart Compatible",
+    "smartCompatibleText": "Alexa, Google, Bluetooth, Cortana, Wifi",
+    "productDetailHeading": "Product Details",
+    "finishes": "Finishes",
+    "finishesText": "Aged Brass, Antique Nickel, Matte Black, Matte White",
+    "shadeMaterial": "Shade Material",
+    "glass": "Glass",
+    "warning": "Warning: California Prop 65 Notice",
+    "closeDetails": "Close Details"
   }
 }

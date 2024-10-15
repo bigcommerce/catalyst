@@ -55,6 +55,8 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
 
   return (
     <>
+      <ShippingEstimator checkout={checkout} shippingCountries={shippingCountries} />
+      
       <div className="flex justify-between border-t border-t-gray-200 py-4">
         <span className="font-semibold">{t('subTotal')}</span>
         <span>
@@ -64,8 +66,6 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
           })}
         </span>
       </div>
-
-      <ShippingEstimator checkout={checkout} shippingCountries={shippingCountries} />
 
       {cart?.discountedAmount && (
         <div className="flex justify-between border-t border-t-gray-200 py-4">

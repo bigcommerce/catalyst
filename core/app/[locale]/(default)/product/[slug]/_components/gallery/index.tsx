@@ -9,9 +9,11 @@ import { GalleryFragment } from './fragment';
 
 interface Props {
   product: FragmentOf<typeof GalleryFragment>;
+  bannerIcon: string;
+  galleryExpandIcon: string; // Ensure this is included in the Props
 }
 
-export const Gallery = ({ product }: Props) => {
+export const Gallery = ({ product, bannerIcon, galleryExpandIcon }: Props) => {
   const images = removeEdgesAndNodes(product.images);
 
   // Pick the top-level default image
@@ -34,9 +36,11 @@ export const Gallery = ({ product }: Props) => {
   const defaultImageIndex = images.findIndex((image) => image.isDefault);
 
   return (
-    <div className="-mx-6 mb-10 sm:-mx-0 md:mb-12">
+    <div className="-mx-6 mb-10 sm:-mx-0 md:mb-3">
       <div className="lg:sticky lg:top-0">
         <ComponentsGallery
+          bannerIcon={bannerIcon}
+          galleryExpandIcon={galleryExpandIcon}
           defaultImageIndex={defaultImageIndex}
           images={images.map((image) => ({ src: image.url, altText: image.altText }))}
         />

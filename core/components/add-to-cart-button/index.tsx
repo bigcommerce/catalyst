@@ -41,6 +41,7 @@ export const AddToCartButton = ({
 
   return (
     <Button
+      id="add-to-cart"
       className={className}
       disabled={isProductDisabled}
       loading={loading}
@@ -52,3 +53,5 @@ export const AddToCartButton = ({
     </Button>
   );
 };
+
+export default AddToCartButton;

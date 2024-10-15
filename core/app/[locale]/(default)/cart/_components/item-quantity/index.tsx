@@ -135,7 +135,7 @@ const Quantity = ({ value }: { value: number }) => {
   const t = useTranslations('Cart.SubmitItemQuantity');
 
   return (
-    <span className="flex w-10 flex-1 justify-center">
+    <span className="flex w-10 flex-1 justify-center border-x-gray-300">
       {pending ? (
         <>
           <Spinner aria-hidden="true" className="animate-spin text-primary" />
@@ -175,7 +175,7 @@ export const ItemQuantity = ({ product }: { product: Product }) => {
   };
 
   return (
-    <div className="w-[120px] border-2 border-gray-200 p-2.5">
+    <div className="w-[120px] rounded-3xl border-2 border-gray-200 p-2.5">
       <form action={onSubmit} className="flex items-center">
         <SubmitButton onClick={() => setProductQuantity(productQuantity - 1)}>
           <Minus>

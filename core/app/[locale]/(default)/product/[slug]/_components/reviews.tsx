@@ -61,7 +61,7 @@ export const Reviews = async ({ productId }: Props) => {
 
   return (
     <>
-      <h3 className="mb-4 mt-8 text-xl font-bold md:text-2xl">
+      <h3 className="mt-4 mb-6 text-[1.5rem] font-normal leading-[2rem] text-left text-[#353535] product-review">
         {t('heading')}
         {reviews.length > 0 && (
           <span className="ms-2 ps-1 text-gray-500">
@@ -71,7 +71,8 @@ export const Reviews = async ({ productId }: Props) => {
         )}
       </h3>
 
-      <ul className="lg:grid lg:grid-cols-2 lg:gap-8">
+      {/* <ul className="lg:grid lg:grid-cols-12 lg:gap-12 ul-product-review bg-[#D9D9D9]"> */}
+      <ul className="ul-product-review bg-[#D9D9D9] h-[25em] pt-[11em] text-center">
         {reviews.length === 0 ? (
           <li>
             <p className="pb-6 pt-1">{t('unreviewed')}</p>

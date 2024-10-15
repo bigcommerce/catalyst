@@ -20,7 +20,7 @@ const Swatch = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
 
     return (
       <RadioGroupPrimitive.Root
-        className={cn('flex flex-wrap gap-4', className)}
+        className={cn('block xl:flex flex-wrap gap-2', className)}
         ref={ref}
         role="radiogroup"
         {...props}

@@ -19,7 +19,7 @@ const RectangleList = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Pr
 
     return (
       <RadioGroupPrimitive.Root
-        className={cn('flex flex-wrap gap-4', className)}
+        className={cn('flex flex-wrap gap-2', className)}
         orientation="horizontal"
         ref={ref}
         {...props}
