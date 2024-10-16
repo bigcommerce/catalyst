@@ -27,7 +27,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const categoryId = Number(params.slug);
 
-  const data = await getCategoryPageData({
+  const { data } = await getCategoryPageData({
     categoryId,
   });
 
@@ -53,7 +53,13 @@ export default async function Category({ params: { locale, slug }, searchParams 
 
   const categoryId = Number(slug);
 
-  const [{ category, categoryTree }, search] = await Promise.all([
+  const [
+    {
+      data: { category, categoryTree },
+      wishlists,
+    },
+    search,
+  ] = await Promise.all([
     getCategoryPageData({ categoryId }),
     fetchFacetedSearch({ ...searchParams, category: categoryId }),
   ]);
@@ -116,6 +122,8 @@ export default async function Category({ params: { locale, slug }, searchParams 
                 imageSize="wide"
                 key={product.entityId}
                 product={product}
+                showWishlistSheet
+                wishlistsList={wishlists}
               />
             ))}
           </div>

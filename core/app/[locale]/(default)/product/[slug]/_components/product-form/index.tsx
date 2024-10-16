@@ -158,7 +158,7 @@ export const ProductForm = ({ data: product, isLogged, wishlists }: ProductFormP
         <div className="mt-4 flex flex-col gap-4 @md:flex-row">
           <Submit data={product} />
           {isLogged && wishlists ? (
-            <WishlistSheet productId={product.entityId} wishlistsData={wishlists} />
+            <WishlistSheet productId={product.entityId} wishlistsList={wishlists} />
           ) : (
             <Button asChild type="button" variant="secondary">
               <Link href="/login">

@@ -9,7 +9,7 @@ import { bodl } from '~/lib/bodl';
 
 import { getCategoryPageData } from '../page-data';
 
-type Category = Awaited<ReturnType<typeof getCategoryPageData>>['category'];
+type Category = Awaited<ReturnType<typeof getCategoryPageData>>['data']['category'];
 type productSearchItem = FragmentOf<typeof ProductCardFragment>;
 
 interface Props {

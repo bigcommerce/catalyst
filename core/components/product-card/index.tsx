@@ -1,5 +1,9 @@
 import { useFormatter } from 'next-intl';
 
+import {
+  Wishlist,
+  WishlistSheet,
+} from '~/app/[locale]/(default)/account/(tabs)/wishlists/_components/wishlist-sheet';
 import { ResultOf } from '~/client/graphql';
 import { ProductCard as ComponentProductCard } from '~/components/ui/product-card';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
@@ -15,7 +19,9 @@ interface Props {
   showCompare?: boolean;
   showCart?: boolean;
   showWishlist?: boolean;
+  showWishlistSheet?: boolean;
   wishlistData?: DeleteWishlistItemFormProps;
+  wishlistsList?: Wishlist[];
 }
 
 export const ProductCard = ({
@@ -25,7 +31,9 @@ export const ProductCard = ({
   showCart = true,
   showCompare = true,
   showWishlist = false,
+  showWishlistSheet = false,
   wishlistData,
+  wishlistsList,
 }: Props) => {
   const format = useFormatter();
 
@@ -48,6 +56,16 @@ export const ProductCard = ({
       price={price}
       showCompare={showCompare}
       subtitle={brand?.name}
+      wishlistSheet={
+        showWishlistSheet &&
+        wishlistsList && (
+          <WishlistSheet
+            productId={product.entityId}
+            trigger="icon"
+            wishlistsList={wishlistsList}
+          />
+        )
+      }
     />
   );
 };

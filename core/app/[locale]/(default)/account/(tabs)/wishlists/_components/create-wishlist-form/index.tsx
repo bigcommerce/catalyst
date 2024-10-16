@@ -14,6 +14,7 @@ import {
   FormSubmit,
   Input,
 } from '~/components/ui/form';
+import { useRouter } from '~/i18n/routing';
 
 import { useAccountStatusContext } from '../../../_components/account-status-provider';
 
@@ -47,6 +48,8 @@ export const CreateWishlistForm = ({ onWishlistCreated }: CreateWishlistFormProp
 
   const t = useTranslations('Account.Wishlist');
 
+  const router = useRouter();
+
   const handleInputValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const validationStatus = e.target.validity.valueMissing;
 
@@ -62,6 +65,7 @@ export const CreateWishlistForm = ({ onWishlistCreated }: CreateWishlistFormProp
         status: submit.status,
         message: t('messages.created', { name: submit.data.name }),
       });
+      router.refresh();
     }
 
     if (submit.status === 'error') {
