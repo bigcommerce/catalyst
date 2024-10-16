@@ -506,6 +506,9 @@
         "success": "Item removed from wishlist. <undoButton>Undo</undoButton> ",
         "delete": "Delete",
         "deleteAriaLabel": "Delete from wishlist"
+      },
+      "OpenWishlistSheet": {
+        "open": "Open wishlist sheet"
       }
     },
     "FormFields": {

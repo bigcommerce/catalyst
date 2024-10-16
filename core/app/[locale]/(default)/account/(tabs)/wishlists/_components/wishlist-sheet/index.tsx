@@ -14,12 +14,25 @@ import { WishlistSheetContent } from './wishlist-sheet-content';
 export type Wishlist = NonNullable<ExistingResultType<typeof addWishlistItems>['data']>;
 
 interface WishlistSheetProps extends PropsWithChildren {
+  defaultOpen?: boolean;
   productId: number;
   wishlistsData: Wishlist[];
+  withTrigger?: boolean;
 }
 
-export const WishlistSheet = ({ productId, wishlistsData }: WishlistSheetProps) => {
+export const WishlistSheet = ({
+  defaultOpen = false,
+  withTrigger = true,
+  productId,
+  wishlistsData,
+}: WishlistSheetProps) => {
   const t = useTranslations('Account.Wishlist.Sheet');
+
+  const [open, setOpen] = useState(defaultOpen);
+
+  useEffect(() => {
+    setOpen(true);
+  }, [productId]);
 
   const [wishlists, setWishlists] = useState(() => {
     if (wishlistsData.length === 0) {
@@ -49,17 +62,21 @@ export const WishlistSheet = ({ productId, wishlistsData }: WishlistSheetProps) 
 
   return (
     <Sheet
+      onOpenChange={setOpen}
+      open={open}
       side="right"
       title={t('title')}
       trigger={
-        <Button type="button" variant="secondary">
-          <Heart
-            aria-hidden="true"
-            className="mx-2"
-            fill={saved ? 'currentColor' : 'transparent'}
-          />
-          <span>{t(saved ? 'saved' : 'saveToWishlist')}</span>
-        </Button>
+        withTrigger && (
+          <Button type="button" variant="secondary">
+            <Heart
+              aria-hidden="true"
+              className="mx-2"
+              fill={saved ? 'currentColor' : 'transparent'}
+            />
+            <span>{t(saved ? 'saved' : 'saveToWishlist')}</span>
+          </Button>
+        )
       }
     >
       <AccountStatusProvider>
