@@ -278,7 +278,8 @@
     "proceedToCheckout": "CHECKOUT",
     "loading": "Loading...",
     "spinnerText": "Updating...",
-    "saveCartWishlist": "Save Cart as Wishlist",
+    "saveCartWishlist": "Save Cart",
+    "saveCartWishlistSpan": "as Wishlist",
     "CheckoutSummary": {
       "subTotal": "Subtotal",
       "discounts": "Discounts",
