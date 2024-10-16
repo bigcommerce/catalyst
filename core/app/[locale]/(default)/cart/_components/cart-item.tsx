@@ -220,12 +220,23 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
                       }
                       switch (selectedOption.__typename) {
                         case 'CartSelectedMultipleChoiceOption':
-                        return (
-                          <div key={selectedOption.entityId}>
-                            <span>{selectedOption.name}:</span>{' '}
-                            <span className="font-semibold">{selectedOption.value}</span>
-                          </div>
-                        );
+                          return (
+                            <div key={selectedOption.entityId} className="flex items-center">
+                              <span className="text-left text-[0.875rem] font-bold leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
+                                {selectedOption.name}:
+                              </span>
+                              <span className="ml-1.5 mr-1.5 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#7F7F7F]">
+                                {selectedOption.value}
+                              </span>
+
+                              {pipeLineData && (
+                                <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
+                                  {' '}
+                                  {pipeLineData}
+                                </span>
+                              )}
+                            </div>
+                          );
                         case 'CartSelectedCheckboxOption':
                           return (
                             <div key={selectedOption.entityId} className="flex items-center">
