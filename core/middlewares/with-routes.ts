@@ -112,6 +112,7 @@ const getStoreStatus = async (channelId?: string) => {
 };
 
 type Route = Awaited<ReturnType<typeof getRoute>>;
+type RouteInfo = Awaited<ReturnType<typeof getRouteInfo>>;
 type StorefrontStatusType = ReturnType<typeof graphql.scalar<'StorefrontStatusType'>>;
 
 interface RouteCache {
@@ -252,13 +253,63 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
   }
 };
 
+const getPostfix = async (request: NextRequest) => {
+  const customerId = await getSessionCustomerId();
+
+  if (!request.nextUrl.search && !customerId && request.method === 'GET') {
+    return '/static';
+  }
+
+  return '';
+};
+
+const getRouteUrl = async (route: RouteInfo['route'], request: NextRequest) => {
+  const postfix = await getPostfix(request);
+  const locale = request.headers.get('x-bc-locale') ?? '';
+  const node = route?.node;
+
+  switch (node?.__typename) {
+    case 'Brand': {
+      return `/${locale}/brand/${node.entityId}${postfix}`;
+    }
+
+    case 'Category': {
+      return `/${locale}/category/${node.entityId}${postfix}`;
+    }
+
+    case 'Product': {
+      return `/${locale}/product/${node.entityId}${postfix}`;
+    }
+
+    case 'NormalPage': {
+      return `/${locale}/webpages/normal/${node.id}`;
+    }
+
+    case 'ContactPage': {
+      return `/${locale}/webpages/contact/${node.id}`;
+    }
+
+    default: {
+      const { pathname } = new URL(request.url);
+
+      const cleanPathName = clearLocaleFromPath(pathname, locale);
+
+      if (cleanPathName === '/' && postfix) {
+        return `/${locale}${postfix}`;
+      }
+
+      return `/${locale}${cleanPathName}`;
+    }
+  }
+};
+
 export const withRoutes: MiddlewareFactory = () => {
   return async (request, event) => {
-    const locale = request.headers.get('x-bc-locale') ?? '';
-
     const { route, status } = await getRouteInfo(request, event);
 
     if (status === 'MAINTENANCE') {
+      const locale = request.headers.get('x-bc-locale') ?? '';
+
       // 503 status code not working - https://github.com/vercel/next.js/issues/50155
       return NextResponse.rewrite(new URL(`/${locale}/maintenance`, request.url), { status: 503 });
     }
@@ -294,64 +345,15 @@ export const withRoutes: MiddlewareFactory = () => {
       }
     }
 
-    const customerId = await getSessionCustomerId();
-    let postfix = '';
+    if (route?.node?.__typename === 'RawHtmlPage') {
+      const { htmlBody } = await getRawWebPageContent(route.node.id);
 
-    if (!request.nextUrl.search && !customerId && request.method === 'GET') {
-      postfix = '/static';
+      return new NextResponse(htmlBody, {
+        headers: { 'content-type': 'text/html' },
+      });
     }
 
-    const node = route?.node;
-    let url: string;
-
-    switch (node?.__typename) {
-      case 'Brand': {
-        url = `/${locale}/brand/${node.entityId}${postfix}`;
-        break;
-      }
-
-      case 'Category': {
-        url = `/${locale}/category/${node.entityId}${postfix}`;
-        break;
-      }
-
-      case 'Product': {
-        url = `/${locale}/product/${node.entityId}${postfix}`;
-        break;
-      }
-
-      case 'NormalPage': {
-        url = `/${locale}/webpages/normal/${node.id}`;
-        break;
-      }
-
-      case 'ContactPage': {
-        url = `/${locale}/webpages/contact/${node.id}`;
-        break;
-      }
-
-      case 'RawHtmlPage': {
-        const { htmlBody } = await getRawWebPageContent(node.id);
-
-        return new NextResponse(htmlBody, {
-          headers: { 'content-type': 'text/html' },
-        });
-      }
-
-      default: {
-        const { pathname } = new URL(request.url);
-
-        const cleanPathName = clearLocaleFromPath(pathname, locale);
-
-        if (cleanPathName === '/' && postfix) {
-          url = `/${locale}${postfix}`;
-          break;
-        }
-
-        url = `/${locale}${cleanPathName}`;
-      }
-    }
-
+    const url = await getRouteUrl(route, request);
     const rewriteUrl = new URL(url, request.url);
 
     rewriteUrl.search = request.nextUrl.search;
