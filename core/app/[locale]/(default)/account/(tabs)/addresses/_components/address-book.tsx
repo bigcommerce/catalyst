@@ -79,6 +79,7 @@ export const AddressBook = ({
           <p>{accountState.message}</p>
         </Message>
       )}
+      {!addressesCount && <p className="border-t py-12 text-center">{t('emptyAddresses')}</p>}
       <ul className="mb-12">
         {addressBook.map(
           ({
