@@ -55,6 +55,20 @@ const GetRouteQuery = graphql(`
 `);
 
 const getRoute = async (path: string, channelId?: string) => {
+  // This is a special case for the homepage, which does not return
+  // a node. Instead, we return a dummy node to indicate that this is
+  // the homepage to ensure we handle the prepending of the locale to
+  // the URL.
+  //
+  // This also ensures we don't need to make an additional request to
+  // BigCommerce, to provide a better response time.
+  if (path === '/') {
+    return {
+      redirect: null,
+      node: { __typename: 'HomePage' },
+    };
+  }
+
   const response = await client.fetch({
     document: GetRouteQuery,
     variables: { path },
@@ -154,6 +168,7 @@ const NodeSchema = z.union([
   z.object({ __typename: z.literal('ContactPage'), id: z.string() }),
   z.object({ __typename: z.literal('NormalPage'), id: z.string() }),
   z.object({ __typename: z.literal('RawHtmlPage'), id: z.string() }),
+  z.object({ __typename: z.literal('HomePage') }),
 ]);
 
 const RouteSchema = z.object({
@@ -345,19 +360,21 @@ export const withRoutes: MiddlewareFactory = () => {
       }
     }
 
-    if (route?.node?.__typename === 'RawHtmlPage') {
-      const { htmlBody } = await getRawWebPageContent(route.node.id);
+    if (route?.node) {
+      if (route.node.__typename === 'RawHtmlPage') {
+        const { htmlBody } = await getRawWebPageContent(route.node.id);
 
-      return new NextResponse(htmlBody, {
-        headers: { 'content-type': 'text/html' },
-      });
+        return new NextResponse(htmlBody, {
+          headers: { 'content-type': 'text/html' },
+        });
+      }
+
+      const url = await getRouteUrl(route, request);
+      const rewriteUrl = new URL(url, request.url);
+
+      rewriteUrl.search = request.nextUrl.search;
+
+      return NextResponse.rewrite(rewriteUrl);
     }
-
-    const url = await getRouteUrl(route, request);
-    const rewriteUrl = new URL(url, request.url);
-
-    rewriteUrl.search = request.nextUrl.search;
-
-    return NextResponse.rewrite(rewriteUrl);
   };
 };
