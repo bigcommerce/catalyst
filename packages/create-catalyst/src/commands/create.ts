@@ -12,7 +12,10 @@ import { Https } from '../utils/https';
 import { installDependencies } from '../utils/install-dependencies';
 import { login } from '../utils/login';
 import { parse } from '../utils/parse';
+import { Telemetry } from '../utils/telemetry/telemetry';
 import { writeEnv } from '../utils/write-env';
+
+const telemetry = new Telemetry();
 
 export const create = new Command('create')
   .description('Command to scaffold and connect a Catalyst storefront to your BigCommerce store')
@@ -135,6 +138,9 @@ export const create = new Command('create')
 
       process.exit(0);
     }
+
+    // At this point we should have a storeHash and can identify the account
+    await telemetry.identify(storeHash);
 
     if (!channelId || !customerImpersonationToken) {
       const bc = new Https({ bigCommerceApiUrl: bigcommerceApiUrl, storeHash, accessToken });
