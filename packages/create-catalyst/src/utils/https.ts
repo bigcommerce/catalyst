@@ -276,6 +276,30 @@ export class Https {
     return fetch(`${this.sampleDataApiUrl}/stores/${this.storeHash}${path}`, options);
   }
 
+  async checkEligibility() {
+    const res = await this.sampleDataApi('/v3/channels/catalyst/eligibility', {
+      method: 'GET',
+    });
+
+    if (!res.ok) {
+      console.error(
+        chalk.red(
+          `\nGET /v3/channels/catalyst/eligibility failed: ${res.status} ${res.statusText}\n`,
+        ),
+      );
+      process.exit(1);
+    }
+
+    const CheckEligibilitySchema = z.object({
+      data: z.object({
+        eligible: z.boolean(),
+        message: z.string(),
+      }),
+    });
+
+    return parse(await res.json(), CheckEligibilitySchema);
+  }
+
   async createChannel(channelName: string) {
     const res = await this.sampleDataApi('/v3/channels/catalyst', {
       body: JSON.stringify({ name: channelName }),
