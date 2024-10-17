@@ -4,6 +4,8 @@ import { ResultOf } from '~/client/graphql';
 import { ProductCard as ComponentProductCard } from '~/components/ui/product-card';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
+import { WishlistSheetButton } from '../../app/[locale]/(default)/(faceted)/_components/wishlist-sheet-button';
+
 import { AddToCart } from './add-to-cart';
 import { DeleteWishlistItemForm, DeleteWishlistItemFormProps } from './delete-wishlist-item-form';
 import { ProductCardFragment } from './fragment';
@@ -15,6 +17,7 @@ interface Props {
   showCompare?: boolean;
   showCart?: boolean;
   showWishlist?: boolean;
+  showWishlistSheet?: boolean;
   wishlistData?: DeleteWishlistItemFormProps;
 }
 
@@ -25,6 +28,7 @@ export const ProductCard = ({
   showCart = true,
   showCompare = true,
   showWishlist = false,
+  showWishlistSheet = false,
   wishlistData,
 }: Props) => {
   const format = useFormatter();
@@ -45,6 +49,7 @@ export const ProductCard = ({
       imagePriority={imagePriority}
       imageSize={imageSize}
       name={name}
+      openWishlistSheet={showWishlistSheet && <WishlistSheetButton productId={entityId} />}
       price={price}
       showCompare={showCompare}
       subtitle={brand?.name}

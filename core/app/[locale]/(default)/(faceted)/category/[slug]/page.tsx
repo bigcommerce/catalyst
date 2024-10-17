@@ -10,6 +10,7 @@ import { LocaleType } from '~/i18n/routing';
 import { FacetedSearch } from '../../_components/faceted-search';
 import { MobileSideNav } from '../../_components/mobile-side-nav';
 import { SortBy } from '../../_components/sort-by';
+import { WishlistSheetWrapper } from '../../_components/wishlist-sheet-wrapper';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { CategoryViewed } from './_components/category-viewed';
@@ -27,7 +28,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const categoryId = Number(params.slug);
 
-  const data = await getCategoryPageData({
+  const { data } = await getCategoryPageData({
     categoryId,
   });
 
@@ -53,7 +54,13 @@ export default async function Category({ params: { locale, slug }, searchParams 
 
   const categoryId = Number(slug);
 
-  const [{ category, categoryTree }, search] = await Promise.all([
+  const [
+    {
+      data: { category, categoryTree },
+      wishlists,
+    },
+    search,
+  ] = await Promise.all([
     getCategoryPageData({ categoryId }),
     fetchFacetedSearch({ ...searchParams, category: categoryId }),
   ]);
@@ -116,9 +123,12 @@ export default async function Category({ params: { locale, slug }, searchParams 
                 imageSize="wide"
                 key={product.entityId}
                 product={product}
+                showWishlistSheet
               />
             ))}
           </div>
+
+          <WishlistSheetWrapper wishlistsData={wishlists} />
 
           <Pagination
             endCursor={endCursor ?? undefined}
