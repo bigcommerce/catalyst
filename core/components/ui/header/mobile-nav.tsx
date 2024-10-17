@@ -3,7 +3,7 @@
 import * as SheetPrimitive from '@radix-ui/react-dialog';
 import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu';
 import { ChevronDown, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 import { BcImage } from '~/components/bc-image';
 import { Link as CustomLink } from '~/components/link';
@@ -16,12 +16,13 @@ interface Image {
   altText: string;
   src: string;
 }
-
 interface Props {
   links: Links[];
   logo?: string | Image;
 }
-
+interface Props {
+  account: string;
+}
 export const MobileNav = ({ links, logo }: Props) => {
   const [open, setOpen] = useState(false);
 
@@ -47,7 +48,7 @@ export const MobileNav = ({ links, logo }: Props) => {
             <h2 className="sr-only">Navigation menu</h2>
           </SheetPrimitive.Title>
           <div className="flex h-[92px] items-center justify-between">
-            <div className="overflow-hidden text-ellipsis py-3">
+            <div className="overflow-hidden text-ellipsis py-3 mobile-logo-open-state">
               {typeof logo === 'object' ? (
                 <BcImage
                   alt={logo.altText}
@@ -132,6 +133,22 @@ export const MobileNav = ({ links, logo }: Props) => {
                   </NavigationMenuPrimitive.Item>
                 ),
               )}
+
+              {/* New Blog and Contact Us Section */}
+              <nav className="static-menu-mobile flex items-center gap-10" id="static-menu">
+                <CustomLink href="/new" className="font-semiboldd hover:text-primary">
+                  New
+                </CustomLink>
+                <CustomLink href="/sale" className="font-semiboldd hover:text-primary">
+                  Sale
+                </CustomLink>
+                <CustomLink href="/blog" className="font-semiboldd hover:text-primary">
+                  Blog
+                </CustomLink>
+                <CustomLink href="/blog" className="font-semiboldd hover:text-primary">
+                  Our Brands
+                </CustomLink>
+              </nav>
             </NavigationMenuPrimitive.List>
           </NavigationMenuPrimitive.Root>
         </SheetPrimitive.Content>

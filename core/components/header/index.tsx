@@ -1,4 +1,4 @@
-import { ShoppingCart, User } from 'lucide-react';
+import { ShoppingCart, User, Hand } from 'lucide-react';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { ReactNode, Suspense } from 'react';
 
@@ -58,32 +58,62 @@ export const Header = async ({ cart }: Props) => {
   return (
     <ComponentsHeader
       account={
-        customerId ? (
+        <div className="flex items-center">
+          {/* Support Dropdown */}
           <Dropdown
             items={[
-              { href: '/account', label: t('Account.myAccount') },
-              { href: '/account/addresses', label: t('Account.addresses') },
-              { href: '/account/wishlists', label: t('Account.wishlists') },
-              { href: '/account/settings', label: t('Account.accountSettings') },
-              { action: logout, name: t('Account.logout') },
+              { href: '/support/faqs', label: 'Existing Purchase' },
+              { href: '/support/contact', label: 'Order Status' },
+              { href: '/support/contact', label: 'Return/Replacement' },
+              { href: '/support/contact', label: 'Gift Certificates' },
+              { href: '/support/contact', label: 'Visit Our Help Center' },
+              { href: '/support/contact', label: 'New Purchase' },
+              { href: '/support/contact', label: 'Contact ' },
             ]}
+            trigger={
+              <Button
+                aria-label={'Support'}
+                className="p-3 text-black hover:bg-transparent hover:text-primary"
+                variant="subtle"
+              >
+                <Hand className="mr-2" />
+                {'Support'}
+              </Button>
+            }
+          />
+
+          {/* Account Dropdown */}
+          <Dropdown
+            items={
+              customerId
+                ? [
+                    { href: '/account', label: 'My Account' },
+                    { href: '/account/favorites', label: 'Favorites' },
+                    { href: '/account/purchase-history', label: 'Purchase History' },
+                    { href: '/account/finance', label: 'Finance' },
+                    { action: logout, name: 'Logout' },
+                  ]
+                : [
+                    { href: '/login', label: 'Account' },
+                    { href: '/login', label: 'My Account' },
+                    { href: '/login', label: 'Favorites' },
+                    { href: '/login', label: 'Purchase History' },
+                    { href: '/login', label: 'Financing' },
+                    { href: '/login', label: 'Login' },
+                  ]
+            }
             trigger={
               <Button
                 aria-label={t('Account.account')}
                 className="p-3 text-black hover:bg-transparent hover:text-primary"
                 variant="subtle"
               >
-                <User>
-                  <title>{t('Account.account')}</title>
-                </User>
+                <User className="mr-2" />
+                {t('Account.account')}
               </Button>
             }
           />
-        ) : (
-          <Link aria-label={t('Account.login')} className="block p-3" href="/login">
-            <User />
-          </Link>
-        )
+        </div>
       }
       activeLocale={locale}
       cart={

@@ -51,13 +51,15 @@ const Footer = ({
   socialMediaLinks,
   ...props
 }: Props) => (
-  <footer className={cn('2xl:container 2xl:mx-auto px-18', className)} {...props}>
-    <section className="flex flex-col gap-8 border-t border-gray-200 px-4 py-10 md:flex-row lg:gap-4 lg:px-12">    
-      <nav className="grid flex-auto auto-cols-fr gap-8 sm:grid-flow-col">
+  <footer className={cn('px-18 2xl:container 2xl:mx-auto', className)} {...props}>
+    <section className="section-footer flex flex-col gap-8 border-t border-gray-200 px-4 py-10 md:flex-row lg:gap-4 lg:px-12">
+      <nav className="grid flex-auto auto-cols-fr gap-8 sm:grid-flow-col" id="nav-footer-section">
         {sections.map((section) => (
           <div key={section.title}>
-            <h3 className="mb-4 text-lg font-bold">{section.title}</h3>
-            <ul className="flex flex-col gap-4">
+            <h3 className="text-left text-[20px] font-medium leading-[32px] tracking-[0.15px] text-white">
+              {section.title}
+            </h3>
+            <ul className="footer-submenu flex flex-col">
               {section.links.map((link) => (
                 <li key={link.href}>
                   <CustomLink href={link.href}>{link.label}</CustomLink>
@@ -67,43 +69,54 @@ const Footer = ({
           </div>
         ))}
       </nav>
-      <div className="flex flex-col gap-4 md:order-first md:grow">
+      <div className="div-footer flex flex-col gap-2.5 md:order-first md:grow">
         {Boolean(logo) && (
-          <h3>
-            {typeof logo === 'object' ? (
-              <BcImage
-                alt={logo.altText}
-                className="max-h-16 object-contain"
-                height={32}
-                priority
-                src={logo.src}
-                width={155}
-              />
-            ) : (
-              <span className="truncate text-2xl font-black">{logo}</span>
-            )}
+          <h3 className="footer-customer-service text-left text-[20px] font-medium leading-[32px] tracking-[0.15px] text-white">
+            Customer Service
           </h3>
         )}
-        {Boolean(contactInformation) && (
-          <>
-            <address className="not-italic">
-              {contactInformation?.address?.split('\n').map((line) => (
-                <Fragment key={line}>
-                  {line}
-                  <br />
-                </Fragment>
-              ))}
-            </address>
-            {Boolean(contactInformation?.phone) && (
-              <a
-                className="hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-                href={`tel:${contactInformation?.phone}`}
-              >
-                <p>{contactInformation?.phone}</p>
-              </a>
-            )}
-          </>
+
+        {Boolean(contactInformation?.phone) && (
+          <a
+            className="hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
+            href={`tel:${contactInformation?.phone}`}
+          >
+            <p className="mb-4 text-left font-sans text-[14px] font-normal leading-[24px] tracking-[0.25px] text-white">
+              Start a Return or Replacement
+            </p>
+            <p className="mb-4 text-left font-sans text-[14px] font-normal leading-[24px] tracking-[0.25px] text-white">
+              View Order Status
+            </p>
+            <p className="mb-4 text-left font-sans text-[14px] font-normal leading-[24px] tracking-[0.25px] text-white">
+              Visit our Helpdesk
+            </p>
+
+            <h3 className="footerheading footer-shopping-assistance mb-2.5 mt-5 pt-0.5 text-left text-[20px] font-medium leading-[32px] tracking-[0.15px] text-white">
+              Shopping Assistance
+            </h3>
+            <p className="mb-1.5 text-left text-[14px] font-normal leading-[24px] tracking-[0.25px] text-white">
+              PHONE HOURS
+            </p>
+
+            <p className="Footertxt mb-1.5 text-left text-[14px] font-normal leading-[24px] tracking-[0.25px] text-white">
+              Monday-friday 6am -5pm PST
+            </p>
+            <p className="Footertxt mb-1.5 text-left text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#80C5DA] text-white">
+              (####) ###-###
+            </p>
+            <h3 className="footerheading mb-1.5 text-left text-[14px] font-normal leading-[24px] tracking-[0.25px] text-white">
+              {' '}
+              CHAT HOURS{' '}
+            </h3>
+            <p className="Footertxt Footertxt mb-1.5 text-left text-[14px] font-normal leading-[24px] tracking-[0.25px] text-white">
+              Monday-Friday 6am-4pm PST
+            </p>
+            <p className="Footertxt Footertxt mb-1.5 text-left text-[14px] font-normal leading-[24px] tracking-[0.25px] text-white">
+              Saturday & Sunday 6am-3pm PST
+            </p>
+          </a>
         )}
+
         {Boolean(socialMediaLinks) && (
           <nav aria-label="Social media links" className="block">
             <ul className="flex gap-6">
@@ -119,18 +132,10 @@ const Footer = ({
         )}
       </div>
     </section>
-    <section className="flex flex-col gap-10 border-t border-gray-200 px-4 py-8 sm:gap-8 sm:px-10 sm:py-6 lg:hidden lg:px-12 2xl:px-0">
-      <Locale />
 
-      <div className="flex w-full flex-col justify-between gap-10 sm:flex-row sm:gap-8">
-        <div className="flex gap-6">{paymentIcons}</div>
-        <p className="text-gray-500 sm:order-first">{copyright}</p>
-      </div>
-    </section>
-
-    <section className="hidden justify-between gap-8 border-t border-gray-200 px-18 py-6 sm:px-10 lg:flex lg:px-12">
-      <p className="text-gray-500 sm:order-first">{copyright}</p>
-      <div className="flex gap-8">
+    <section className="copyright">
+      <p className="text-white-400 sm:order-first">{copyright}</p>
+      <div className="flex gap-8" id="icon">
         <Locale />
         <div className="flex gap-6">{paymentIcons}</div>
       </div>

@@ -37,6 +37,12 @@ const GetCartQuery = graphql(
               extendedSalePrice {
                 ...MoneyFieldFragment
               }
+              originalPrice {
+                ...MoneyFieldFragment
+              }
+              listPrice {
+                ...MoneyFieldFragment
+              }
               selectedOptions {
                 __typename
                 entityId
@@ -77,6 +83,12 @@ const GetCartQuery = graphql(
                 ...MoneyFieldFragment
               }
               extendedSalePrice {
+                ...MoneyFieldFragment
+              }
+              originalPrice {
+                ...MoneyFieldFragment
+              }
+              listPrice {
                 ...MoneyFieldFragment
               }
               selectedOptions {
