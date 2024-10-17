@@ -113,13 +113,13 @@ export class Https {
     const response = await this.auth('/device/token', {
       body: JSON.stringify({
         scopes: [
+          'store_channel_settings',
+          'store_sites',
+          'store_storefront_api',
+          'store_storefront_api_customer_impersonation',
           'store_v2_content',
           'store_v2_information',
           'store_v2_products',
-          'store_cart',
-          'store_sites',
-          'store_channel_settings',
-          'store_storefront_api_customer_impersonation',
         ].join(' '),
         client_id: this.DEVICE_OAUTH_CLIENT_ID,
       }),
