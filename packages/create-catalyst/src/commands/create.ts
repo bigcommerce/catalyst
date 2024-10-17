@@ -21,7 +21,7 @@ export const create = new Command('create')
   .option('--store-hash <hash>', 'BigCommerce store hash')
   .option('--access-token <token>', 'BigCommerce access token')
   .option('--channel-id <id>', 'BigCommerce channel ID')
-  .option('--customer-impersonation-token <token>', 'BigCommerce customer impersonation token')
+  .option('--storefront-token <token>', 'BigCommerce storefront token')
   .option('--gh-ref <ref>', 'Clone a specific ref from the source repository')
   .option('--repository <repository>', 'GitHub repository to clone from', 'bigcommerce/catalyst')
   .addOption(
@@ -63,7 +63,7 @@ export const create = new Command('create')
     let storeHash = options.storeHash;
     let accessToken = options.accessToken;
     let channelId;
-    let customerImpersonationToken = options.customerImpersonationToken;
+    let storefrontToken = options.storefrontToken;
 
     if (options.channelId) {
       channelId = parseInt(options.channelId, 10);
@@ -136,7 +136,7 @@ export const create = new Command('create')
       process.exit(0);
     }
 
-    if (!channelId || !customerImpersonationToken) {
+    if (!channelId || !storefrontToken) {
       const bc = new Https({ bigCommerceApiUrl: bigcommerceApiUrl, storeHash, accessToken });
       const sampleDataApi = new Https({
         sampleDataApiUrl,
@@ -174,7 +174,7 @@ export const create = new Command('create')
         await bc.createChannelMenus(createdChannelId);
 
         channelId = createdChannelId;
-        customerImpersonationToken = storefrontApiToken;
+        storefrontToken = storefrontApiToken;
 
         /**
          * @todo prompt sample data API
@@ -206,16 +206,15 @@ export const create = new Command('create')
         channelId = existingChannel.id;
 
         const {
-          data: { token },
-        } = await bc.customerImpersonationToken();
+          data: { token: sfToken },
+        } = await bc.storefrontToken();
 
-        customerImpersonationToken = token;
+        storefrontToken = sfToken;
       }
     }
 
     if (!channelId) throw new Error('Something went wrong, channelId is not defined');
-    if (!customerImpersonationToken)
-      throw new Error('Something went wrong, customerImpersonationToken is not defined');
+    if (!storefrontToken) throw new Error('Something went wrong, storefrontToken is not defined');
 
     console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
@@ -224,7 +223,7 @@ export const create = new Command('create')
     writeEnv(projectDir, {
       channelId: channelId.toString(),
       storeHash,
-      customerImpersonationToken,
+      storefrontToken,
     });
 
     await installDependencies(projectDir);

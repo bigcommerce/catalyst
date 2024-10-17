@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 
@@ -34,13 +34,12 @@ const DeleteCustomerAddressMutation = graphql(`
 
 export const deleteAddress = async (addressId: number): Promise<State> => {
   const t = await getTranslations('Account.Addresses.Delete');
-
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   try {
     const response = await client.fetch({
       document: DeleteCustomerAddressMutation,
-      customerId,
+      customerAccessToken,
       fetchOptions: { cache: 'no-store' },
       variables: {
         input: {

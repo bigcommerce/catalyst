@@ -10,7 +10,7 @@ import {
 import { JSX } from 'react';
 
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -36,11 +36,11 @@ const socialIcons: Record<string, { icon: JSX.Element }> = {
 };
 
 export const Footer = async () => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data: response } = await client.fetch({
     document: LayoutQuery,
-    fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   const data = readFragment(FooterFragment, response).site;

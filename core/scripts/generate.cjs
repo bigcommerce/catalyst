@@ -21,10 +21,10 @@ const getChannelId = () => {
 };
 
 const getToken = () => {
-  const token = process.env.BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN;
+  const token = process.env.BIGCOMMERCE_STOREFRONT_TOKEN;
 
   if (!token) {
-    throw new Error('Missing customer impersonation token');
+    throw new Error('Missing storefront token');
   }
 
   return token;
