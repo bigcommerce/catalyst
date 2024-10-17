@@ -13,6 +13,7 @@ import { SortBy } from '../../_components/sort-by';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { CategoryViewed } from './_components/category-viewed';
+import { EmptyState } from './_components/empty-state';
 import { SubCategories } from './_components/sub-categories';
 import { getCategoryPageData } from './page-data';
 
@@ -108,6 +109,8 @@ export default async function Category({ params: { locale, slug }, searchParams 
           <h2 className="sr-only" id="product-heading">
             {t('products')}
           </h2>
+
+          {products.length === 0 && <EmptyState />}
 
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 sm:gap-8">
             {products.map((product, index) => (
