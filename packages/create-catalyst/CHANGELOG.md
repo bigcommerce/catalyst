@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.14.0
+
+### Minor Changes
+
+- [#1478](https://github.com/bigcommerce/catalyst/pull/1478) [`7d66252`](https://github.com/bigcommerce/catalyst/commit/7d6625263bf87aa19b6c05c190729d8b147ca7a8) Thanks [@bookernath](https://github.com/bookernath)! - Update OAuth scopes to future needs
+
 ## 0.13.0
 
 ### Minor Changes

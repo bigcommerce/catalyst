@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.10.0
+
+### Minor Changes
+
+- [#1449](https://github.com/bigcommerce/catalyst/pull/1449) [`2d1526a`](https://github.com/bigcommerce/catalyst/commit/2d1526a50402b2eb677abd55f19fb904234d1a84) Thanks [@bookernath](https://github.com/bookernath)! - Support Trusted Proxy in client to support higher-traffic stores
+
 ## 0.9.0
 
 ### Minor Changes
