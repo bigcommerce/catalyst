@@ -122,7 +122,11 @@
   "Category": {
     "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
     "products": "Products",
-    "items": "items"
+    "items": "items",
+    "Empty": {
+      "message": "No products in this category",
+      "cta": "Return to Home"
+    }
   },
   "Search": {
     "title": "Search results",
