@@ -11,8 +11,8 @@ export enum FieldNameToFieldId {
   email = 1,
   password,
   confirmPassword,
-  firstName,
-  lastName,
+  firstName = 4,
+  lastName = 5,
   company,
   phone,
   address1,
@@ -46,6 +46,8 @@ export const BOTH_CUSTOMER_ADDRESS_FIELDS = [
   FieldNameToFieldId.company,
   FieldNameToFieldId.phone,
 ];
+
+export const NAME_FORM_FIELD = [FieldNameToFieldId.firstName, FieldNameToFieldId.lastName];
 
 export const createFieldName = (
   field: FragmentOf<typeof FormFieldsFragment>,
