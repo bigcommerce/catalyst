@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import { z } from 'zod';
 
 import { parse } from './parse';
+import { getCLIUserAgent } from './user-agent';
 
 interface BigCommerceRestApiConfig {
   bigCommerceApiUrl: string;
@@ -67,6 +68,7 @@ export class Https {
   sampleDataApiUrl: string;
   storeHash: string;
   accessToken: string;
+  userAgent: string;
 
   constructor({ bigCommerceApiUrl, storeHash, accessToken }: BigCommerceRestApiConfig);
   constructor({ sampleDataApiUrl, storeHash, accessToken }: SampleDataApiConfig);
@@ -83,6 +85,7 @@ export class Https {
     this.sampleDataApiUrl = sampleDataApiUrl ?? '';
     this.storeHash = storeHash ?? '';
     this.accessToken = accessToken ?? '';
+    this.userAgent = getCLIUserAgent();
   }
 
   auth(path: string, opts: RequestInit = {}) {
@@ -98,6 +101,7 @@ export class Https {
         ...headers,
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'User-Agent': this.userAgent,
       },
       ...rest,
     };
@@ -175,6 +179,7 @@ export class Https {
         ...headers,
         Accept: 'application/json',
         'X-Auth-Token': this.accessToken,
+        'User-Agent': this.userAgent,
       },
       ...rest,
     };
@@ -269,6 +274,7 @@ export class Https {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'X-Auth-Token': this.accessToken,
+        'User-Agent': this.userAgent,
       },
       ...rest,
     };
