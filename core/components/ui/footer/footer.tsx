@@ -1,6 +1,5 @@
 import { Fragment, ReactNode } from 'react';
 
-import { BcImage } from '~/components/bc-image';
 import { Link as CustomLink } from '~/components/link';
 import { cn } from '~/lib/utils';
 
@@ -54,15 +53,15 @@ const Footer = ({
   <footer className={cn('px-18 2xl:container 2xl:mx-auto', className)} {...props}>
     <section className="section-footer flex flex-col gap-8 border-t border-gray-200 px-4 py-10 md:flex-row lg:gap-4 lg:px-12">
       <nav className="grid flex-auto auto-cols-fr gap-8 sm:grid-flow-col" id="nav-footer-section">
-        {sections.map((section) => (
-          <div key={section.title}>
+        {sections.map((section, index) => (
+          <div key={`${section.title}-${index}`}>
             <h3 className="text-left text-[20px] font-medium leading-[32px] tracking-[0.15px] text-white">
               {section.title}
             </h3>
             <ul className="footer-submenu flex flex-col">
-              {section.links.map((link) => (
-                <li key={link.href}>
-                  <CustomLink href={link.href}>{link.label}</CustomLink>
+              {section.links.map((link, index) => (
+                <li key={`${link.label}-${index}`}>
+                  {link.href != '#' ? <CustomLink href={link.href}>{link.label}</CustomLink> : link.label }
                 </li>
               ))}
             </ul>
@@ -77,7 +76,7 @@ const Footer = ({
         )}
 
         {Boolean(contactInformation?.phone) && (
-          <a
+          <CustomLink
             className="hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
             href={`tel:${contactInformation?.phone}`}
           >
@@ -114,21 +113,7 @@ const Footer = ({
             <p className="Footertxt Footertxt mb-1.5 text-left text-[14px] font-normal leading-[24px] tracking-[0.25px] text-white">
               Saturday & Sunday 6am-3pm PST
             </p>
-          </a>
-        )}
-
-        {Boolean(socialMediaLinks) && (
-          <nav aria-label="Social media links" className="block">
-            <ul className="flex gap-6">
-              {socialMediaLinks?.map((link) => (
-                <li key={link.href}>
-                  <CustomLink className="inline-block" href={link.href} target="_blank">
-                    {link.icon}
-                  </CustomLink>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          </CustomLink>
         )}
       </div>
     </section>

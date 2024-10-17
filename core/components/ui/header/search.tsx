@@ -97,14 +97,32 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
 
   return (
     <SheetPrimitive.Root onOpenChange={setOpen} open={open}>
-      <SheetPrimitive.Trigger asChild>
-        <Button
-          aria-label="Open search popup"
-          className="border-0 bg-transparent p-3 text-black hover:bg-transparent hover:text-primary focus-visible:text-primary"
-        >
-          <SearchIcon />
-        </Button>
-      </SheetPrimitive.Trigger>
+  <SheetPrimitive.Trigger asChild>
+    <Button
+      aria-label="Open search popup"
+      className="border-0 bg-transparent p-3 text-black hover:bg-transparent hover:text-primary focus-visible:text-primary flex items-center"
+      style={{ width: '900px', padding: '0', border: '1px solid #ccc', borderRadius: '0px' }}
+    >
+      {/* Left-side Search Icon */}
+      <div className="p-2">
+        <SearchIcon />
+      </div>
+      
+      {/* Search Input */}
+      <input
+        type="text"
+        name="search"
+        placeholder="What can we help you find?"
+        className="flex-grow text-base p-2 bg-transparent border-none outline-none" id='placeholder'
+        style={{ width: '100%', boxSizing: 'border-box' }}
+      />
+      
+      {/* Right-side Camera Icon */}
+      <div className="p-2">
+        
+      </div>
+    </Button>
+  </SheetPrimitive.Trigger>
       <SheetPrimitive.Overlay className="fixed inset-0 bg-transparent backdrop-blur-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0">
         <SheetPrimitive.Portal>
           <SheetPrimitive.Content
