@@ -35,9 +35,9 @@ const Dropdown = ({ align = 'center', className, items, trigger }: Props) => {
           className="z-50 bg-white p-4 text-base shadow-md outline-none hover:focus-visible:ring-0 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
           sideOffset={4}
         >
-          {items.map((item) =>
+          {items.map((item, index) =>
             'href' in item ? (
-              <DropdownMenu.Item asChild key={item.href}>
+              <DropdownMenu.Item asChild key={`${item.href}-${index}`}>
                 <CustomLink
                   className="block whitespace-nowrap p-3 hover:focus-visible:ring-0"
                   href={item.href}

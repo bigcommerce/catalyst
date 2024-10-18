@@ -188,7 +188,7 @@ const Header = ({
         <CustomLink href="/blog" className="font-semiboldd hover:text-primary">
           Blog
         </CustomLink>
-        <CustomLink href="/blog" className="font-semiboldd hover:text-primary">
+        <CustomLink href="/brands" className="font-semiboldd hover:text-primary">
           Our Brands
         </CustomLink>
       </nav>

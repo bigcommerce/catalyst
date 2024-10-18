@@ -21,7 +21,6 @@ import { EmptyCart } from './_components/empty-cart';
 import { GeographyFragment } from './_components/shipping-estimator/fragment';
 import { SaveCart } from './_components/save-cart';
 import { RemoveCart } from './_components/remove-cart';
-import { getProductMetaFields } from '~/components/get-meta-fields';
 
 
 const CartPageQuery = graphql(
@@ -55,15 +54,8 @@ export async function generateMetadata() {
   };
 }
 
-async function getFields() {
-  return await getProductMetaFields(41110, 'Details');
-}
 
 export default async function Cart() {
-
-  
-  let metaFields = await getFields();
-  console.log('========metaFields=======', metaFields);
   const cartId = cookies().get('cartId')?.value;
 
   if (!cartId) {
