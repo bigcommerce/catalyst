@@ -46,54 +46,44 @@ export class Telemetry {
   }
 
   async track(eventName: string, payload: Record<string, unknown>) {
-    await new Promise((resolve) => {
-      if (!this.isEnabled()) {
-        resolve(undefined);
-      }
+    if (!this.isEnabled()) {
+      return Promise.resolve(undefined);
+    }
 
-      this.analytics.track(
-        {
-          event: eventName,
-          anonymousId: this.getAnonymousId(),
-          properties: {
-            ...payload,
-            sessionId: this.sessionId,
-          },
-          context: {
-            app: {
-              name: this.projectName,
-              version: this.projectVersion,
-            },
-          },
+    this.analytics.track({
+      event: eventName,
+      anonymousId: this.getAnonymousId(),
+      properties: {
+        ...payload,
+        sessionId: this.sessionId,
+      },
+      context: {
+        app: {
+          name: this.projectName,
+          version: this.projectVersion,
         },
-        resolve,
-      );
+      },
     });
   }
 
   async identify(storeHash?: string) {
-    await new Promise((resolve) => {
-      if (!this.isEnabled()) {
-        resolve(undefined);
-      }
+    if (!this.isEnabled()) {
+      return Promise.resolve(undefined);
+    }
 
-      if (!storeHash) {
-        resolve(undefined);
-      }
+    if (!storeHash) {
+      return Promise.resolve(undefined);
+    }
 
-      this.analytics.identify(
-        {
-          userId: storeHash,
-          anonymousId: this.getAnonymousId(),
-          context: {
-            app: {
-              name: this.projectName,
-              version: this.projectVersion,
-            },
-          },
+    this.analytics.identify({
+      userId: storeHash,
+      anonymousId: this.getAnonymousId(),
+      context: {
+        app: {
+          name: this.projectName,
+          version: this.projectVersion,
         },
-        resolve,
-      );
+      },
     });
   }
 
