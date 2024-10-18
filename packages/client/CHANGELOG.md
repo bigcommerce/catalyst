@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.0
+
+### Minor Changes
+
+- [#1483](https://github.com/bigcommerce/catalyst/pull/1483) [`d4120d3`](https://github.com/bigcommerce/catalyst/commit/d4120d39c10398e842a7ebe14ada685ec8aae3a8) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Start collecting telemetry.
+
 ## 0.10.0
 
 ### Minor Changes
