@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.14.0
+
+### Minor Changes
+
+- [#1478](https://github.com/bigcommerce/catalyst/pull/1478) [`7d66252`](https://github.com/bigcommerce/catalyst/commit/7d6625263bf87aa19b6c05c190729d8b147ca7a8) Thanks [@bookernath](https://github.com/bookernath)! - Update OAuth scopes to future needs
+
+- [#1479](https://github.com/bigcommerce/catalyst/pull/1479) [`a7ce4b3`](https://github.com/bigcommerce/catalyst/commit/a7ce4b341ad8b69a001e03ff5050e3c70c7dca1b) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Adds telemetry collection to the CLI. If users want to opt out of CLI telemetry collection, use `pnpm create @bigcommerce/catalyst telemetry disable` or use the `CATALYST_TELEMETRY_DISABLED` environment variable to opt-out.
+
 ## 0.13.0
 
 ### Minor Changes
