@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.14.1
+
+### Patch Changes
+
+- [#1480](https://github.com/bigcommerce/catalyst/pull/1480) [`eb1707b`](https://github.com/bigcommerce/catalyst/commit/eb1707b7845f9f6ca68afa32c1469459c58b9505) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Fix the CLI from hanging while waiting for segment.
+
 ## 0.14.0
 
 ### Minor Changes
