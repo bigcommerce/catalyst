@@ -45,5 +45,5 @@ test('Order details are visible on Orders page', async ({ page, account, order }
   await expect(page.getByText(formattedTotal).first()).toBeVisible();
   await expect(page.getByText(orderDetails.status)).toBeVisible();
   await expect(page.getByRole('link', { name: '[Sample] Chemex Coffeemaker 3 Cup' })).toBeVisible();
-  await expect(page.getByText('$49.50')).toBeVisible();
+  await expect(page.getByText('$49.50').nth(1)).toBeVisible();
 });
