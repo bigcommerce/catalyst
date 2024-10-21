@@ -23,7 +23,7 @@ export const client = createClient({
      * - Requests in middlewares
      * - Requests in `generateStaticParams`
      * - Request in api routes
-     * - Requests in static sites without `unstable_setRequestLocale`
+     * - Requests in static sites without `setRequestLocale`
      *
      * We use the default channelId as a fallback, but it is not ideal in some scenarios.
      *  */

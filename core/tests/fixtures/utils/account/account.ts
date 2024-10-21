@@ -17,7 +17,7 @@ export class Account {
     await this.page.getByRole('button', { name: 'Log in' }).click();
     // Prepending locale to URL as a workaround for issue in next-intl
     // More info: https://github.com/amannn/next-intl/issues/1335
-    await this.page.waitForURL('/en/account/');
+    await this.page.waitForURL('/account/');
   }
 
   async logout() {

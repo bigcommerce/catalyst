@@ -1,4 +1,4 @@
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
@@ -35,7 +35,7 @@ interface Props {
 }
 
 export default async function StoreSelector({ params: { locale: selectedLocale } }: Props) {
-  unstable_setRequestLocale(selectedLocale);
+  setRequestLocale(selectedLocale);
 
   const t = await getTranslations('StoreSelector');
 

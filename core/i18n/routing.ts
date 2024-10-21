@@ -1,5 +1,5 @@
-import { createSharedPathnamesNavigation } from 'next-intl/navigation';
-import { defineRouting, LocalePrefix } from 'next-intl/routing';
+import { createNavigation } from 'next-intl/navigation';
+import { defineRouting } from 'next-intl/routing';
 
 // Enable locales by including them here.
 // List includes locales with existing messages support.
@@ -70,16 +70,14 @@ enum LocalePrefixes {
   ASNEEDED = 'as-needed', // removes prefix on default locale
 }
 
-export const localePrefix: LocalePrefix = LocalePrefixes.ASNEEDED;
+export const localePrefix = LocalePrefixes.ASNEEDED;
 
 export const defaultLocale = 'en';
 
 export const routing = defineRouting({
   locales,
   defaultLocale,
-  localePrefix: {
-    mode: localePrefix,
-  },
+  localePrefix,
 });
 
 // Lightweight wrappers around Next.js' navigation APIs
@@ -87,4 +85,4 @@ export const routing = defineRouting({
 // Redirect will append locale prefix even when in default locale
 // More info: https://github.com/amannn/next-intl/issues/1335
 export const { Link, redirect, usePathname, useRouter, permanentRedirect } =
-  createSharedPathnamesNavigation(routing);
+  createNavigation(routing);

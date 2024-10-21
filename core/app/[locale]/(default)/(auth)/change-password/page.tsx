@@ -1,4 +1,4 @@
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 
 import { redirect } from '~/i18n/routing';
@@ -22,12 +22,13 @@ interface Props {
 
 export default function ChangePassword({ searchParams }: Props) {
   const t = useTranslations('ChangePassword');
+  const locale = useLocale();
 
   const customerId = searchParams.c;
   const customerToken = searchParams.t;
 
   if (!customerId || !customerToken) {
-    redirect('/login');
+    redirect({ href: '/login', locale });
   }
 
   if (customerId && customerToken) {
