@@ -4,7 +4,7 @@ import { FragmentOf, graphql } from '~/client/graphql';
 import { BcImage } from '~/components/bc-image';
 
 import { ItemQuantity } from './item-quantity';
-import { RemoveItem } from './remove-item';
+import { RemoveItem, RemoveGiftCertificate } from './remove-item';
 
 const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
@@ -122,6 +122,28 @@ const DigitalItemFragment = graphql(`
   }
 `);
 
+const GiftCertificateItemFragment = graphql(`
+  fragment GiftCertificateItemFragment on CartGiftCertificate {
+    entityId
+    name
+    theme
+    amount {
+      currencyCode
+      value
+    }
+    isTaxable
+    sender {
+      email
+      name
+    }
+    recipient {
+      email
+      name
+    }
+    message
+  }
+`);
+
 export const CartItemFragment = graphql(
   `
     fragment CartItemFragment on CartLineItems {
@@ -131,14 +153,18 @@ export const CartItemFragment = graphql(
       digitalItems {
         ...DigitalItemFragment
       }
+      giftCertificates {
+        ...GiftCertificateItemFragment
+      }
     }
   `,
-  [PhysicalItemFragment, DigitalItemFragment],
+  [PhysicalItemFragment, DigitalItemFragment, GiftCertificateItemFragment],
 );
 
 type FragmentResult = FragmentOf<typeof CartItemFragment>;
 type PhysicalItem = FragmentResult['physicalItems'][number];
 type DigitalItem = FragmentResult['digitalItems'][number];
+type GiftCertificateItem = FragmentResult['giftCertificates'][number];
 
 export type Product = PhysicalItem | DigitalItem;
 
@@ -235,7 +261,7 @@ export const CartItem = ({ currencyCode, product }: Props) => {
             <div className="flex flex-col gap-2 md:items-end">
               <div>
                 {product.originalPrice.value &&
-                product.originalPrice.value !== product.listPrice.value ? (
+                  product.originalPrice.value !== product.listPrice.value ? (
                   <p className="text-lg font-bold line-through">
                     {format.number(product.originalPrice.value * product.quantity, {
                       style: 'currency',
@@ -257,6 +283,59 @@ export const CartItem = ({ currencyCode, product }: Props) => {
 
           <div className="mt-4 md:hidden">
             <RemoveItem currency={currencyCode} product={product} />
+          </div>
+        </div>
+      </div>
+    </li>
+  );
+};
+
+interface GiftCertificateProps {
+  giftCertificate: GiftCertificateItem;
+  currencyCode: string;
+}
+
+export const CartGiftCertificate = ({ currencyCode, giftCertificate }: GiftCertificateProps) => {
+  const format = useFormatter();
+
+  return (
+    <li>
+      <div className="flex gap-4 border-t border-t-gray-200 py-4 md:flex-row">
+        <div className="flex justify-center items-center w-24 md:w-[144px]">
+          <h2 className="text-lg font-bold">{giftCertificate.theme}</h2>
+        </div>
+
+        <div className="flex-1">
+          <div className="flex flex-col gap-2 md:flex-row">
+            <div className="flex flex-1 flex-col gap-2">
+              <p className="text-xl font-bold md:text-2xl">{format.number(giftCertificate.amount.value, {
+                style: 'currency',
+                currency: currencyCode,
+              })} Gift Certificate</p>
+              
+              <p className="text-md text-gray-500">{giftCertificate.message}</p>
+              <p className="text-sm text-gray-500">To: {giftCertificate.recipient.name} ({giftCertificate.recipient.email})</p>
+              <p className="text-sm text-gray-500">From: {giftCertificate.sender.name} ({giftCertificate.sender.email})</p>
+
+              <div className="hidden md:block">
+                <RemoveGiftCertificate currency={currencyCode} giftCertificate={giftCertificate} />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 md:items-end">
+              <div>
+                <p className="text-lg font-bold">
+                  {format.number(giftCertificate.amount.value, {
+                    style: 'currency',
+                    currency: currencyCode,
+                  })}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 md:hidden">
+            <RemoveGiftCertificate currency={currencyCode} giftCertificate={giftCertificate} />
           </div>
         </div>
       </div>
