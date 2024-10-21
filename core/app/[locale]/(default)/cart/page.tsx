@@ -6,7 +6,7 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
 
-import { CartItem, CartItemFragment } from './_components/cart-item';
+import { CartGiftCertificate, CartItem, CartItemFragment } from './_components/cart-item';
 import { CartViewed } from './_components/cart-viewed';
 import { CheckoutButton } from './_components/checkout-button';
 import { CheckoutSummary, CheckoutSummaryFragment } from './_components/checkout-summary';
@@ -76,6 +76,7 @@ export default async function Cart() {
   }
 
   const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
+  const giftCertificates = [...cart.lineItems.giftCertificates];
 
   return (
     <div>
@@ -84,6 +85,9 @@ export default async function Cart() {
         <ul className="col-span-2">
           {lineItems.map((product) => (
             <CartItem currencyCode={cart.currencyCode} key={product.entityId} product={product} />
+          ))}
+          {giftCertificates.map((giftCertificate) => (
+            <CartGiftCertificate currencyCode={cart.currencyCode} key={giftCertificate.name} giftCertificate={giftCertificate} />
           ))}
         </ul>
 

@@ -15,6 +15,7 @@ import { RemoveFromCartButton } from './remove-from-cart-button';
 type FragmentResult = FragmentOf<typeof CartItemFragment>;
 type PhysicalItem = FragmentResult['physicalItems'][number];
 type DigitalItem = FragmentResult['digitalItems'][number];
+type GiftCertificate = FragmentResult['giftCertificates'][number];
 
 export type Product = PhysicalItem | DigitalItem;
 
@@ -59,6 +60,57 @@ export const RemoveItem = ({ currency, product }: Props) => {
       currency,
       product_value: product.listPrice.value * product.quantity,
       line_items: [lineItemTransform(product)],
+    });
+  };
+
+  return (
+    <form action={onSubmitRemoveItem}>
+      <RemoveFromCartButton />
+    </form>
+  );
+};
+
+interface GiftCertificateProps {
+  currency: string;
+  giftCertificate: GiftCertificate;
+}
+
+const giftCertificateTransform = (item: GiftCertificate) => {
+  return {
+    product_id: item.entityId.toString(),
+    product_name: `${item.theme} Gift Certificate`,
+    brand_name: undefined,
+    sku: undefined,
+    sale_price: undefined,
+    purchase_price: item.amount.value,
+    base_price: undefined,
+    retail_price: undefined,
+    currency: item.amount.currencyCode,
+    variant_id: undefined,
+    quantity: 1,
+  };
+};
+
+export const RemoveGiftCertificate = ({ currency, giftCertificate }: GiftCertificateProps) => {
+  const t = useTranslations('Cart.SubmitRemoveItem');
+
+  const onSubmitRemoveItem = async () => {
+    const { status } = await removeItem({
+      lineItemEntityId: giftCertificate.entityId,
+    });
+
+    if (status === 'error') {
+      toast.error(t('errorMessage'), {
+        icon: <AlertCircle className="text-error-secondary" />,
+      });
+
+      return;
+    }
+
+    bodl.cart.productRemoved({
+      currency,
+      product_value: giftCertificate.amount.value,
+      line_items: [giftCertificateTransform(giftCertificate)],
     });
   };
 

@@ -484,5 +484,57 @@
         "postalCode": "Enter a zip / postcode"
       }
     }
+  },
+  "GiftCertificate": {
+    "title": "Gift Certificates",
+    "Tabs": {
+      "label": "Gift Certificate Assistance",
+      "purchase": "Purchase Gift Certificate",
+      "check": "Check Balance",
+      "redeem": "Redeem Gift Certificate"
+    },
+    "Purchase": {
+      "heading": "Purchase a Gift Certificate",
+      "themeLabel": "Theme",
+      "amountLabel": "Amount",
+      "senderEmailLabel": "Your Email",
+      "senderNameLabel": "Your Name",
+      "recipientEmailLabel": "Recipient's Email",
+      "recipientNameLabel": "Recipient's Name",
+      "messageLabel": "Message",
+      "submitFormText": "Add Gift Certificate to Cart",
+      "buttonSubmitText": "Add Gift Certificate to Cart",
+      "buttonPendingText": "Adding...",
+      "success": "Gift Certificate added to cart.",
+      "amountValidationMessage": "An amount is required",
+      "emailValidationMessage": "Enter a valid email such as name@domain.com",
+      "nameValidationMessage": "Please enter a name"
+    },
+    "Check": {
+      "heading": "Check Your Gift Certificate Balance",
+      "balanceResult": "Balance: {balance}",
+      "placeholder": "Enter gift certificate code",
+      "buttonSubmitText": "Check Balance",
+      "buttonPendingText": "Checking..."
+    },
+    "Redeem": {
+      "heading": "Redeem Gift Certificate",
+      "instructionIntro": "To redeem a gift certificate, follow the simple steps below:",
+      "instructionOne": "Find your unique gift certificate code (e.g. Z50-Y6K-COS-402), normally recieved as an email attachment.",
+      "instructionTwo": "Browse this store and add what you'd like to purchase to your cart.",
+      "instructionThree": "When checking out, submit your code in the 'Coupon / Gift Certificate' box.",
+      "instructionFour": ""
+    },
+    "Actions": {
+      "Lookup": {
+        "noCode": "Please enter a gift certificate code.",
+        "notFound": "Gift certificate not found. Please check the code and try again.",
+        "error": "An error occured while up the gift certificate. Please try again."
+      },
+      "AddToCart": {
+        "certificateName": "{amount} Gift Certificate",
+        "error": "Failed to add gift certificate to cart."
+      }
+    }
   }
 }

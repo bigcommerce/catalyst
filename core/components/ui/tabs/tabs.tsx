@@ -20,7 +20,7 @@ export function Tabs({ className, defaultValue, label, tabs, ...props }: Props) 
     <TabsPrimitive.Root activationMode="manual" defaultValue={defaultValue} {...props}>
       <TabsPrimitive.List
         aria-label={label}
-        className="mb-8 flex list-none items-start overflow-x-auto text-base"
+        className={`mb-8 flex list-none items-start overflow-x-auto text-base ${className}`}
       >
         {tabs.map((tab) => (
           <TabsPrimitive.Trigger
