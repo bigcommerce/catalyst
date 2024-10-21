@@ -1,4 +1,4 @@
-import { unstable_setRequestLocale } from 'next-intl/server';
+import { setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren, Suspense } from 'react';
 
 import { Footer } from '~/components/footer/footer';
@@ -11,7 +11,7 @@ interface Props extends PropsWithChildren {
 }
 
 export default function DefaultLayout({ children, params: { locale } }: Props) {
-  unstable_setRequestLocale(locale);
+  setRequestLocale(locale);
 
   return (
     <>

@@ -1,5 +1,5 @@
 import { Phone } from 'lucide-react';
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ReactNode } from 'react';
 
 import { client } from '~/client';
@@ -42,7 +42,7 @@ interface Props {
 }
 
 export default async function Maintenance({ params: { locale } }: Props) {
-  unstable_setRequestLocale(locale);
+  setRequestLocale(locale);
 
   const t = await getTranslations('Maintenance');
 

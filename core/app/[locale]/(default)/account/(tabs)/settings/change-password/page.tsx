@@ -1,4 +1,4 @@
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { locales, LocaleType } from '~/i18n/routing';
 
@@ -19,7 +19,7 @@ interface Props {
 }
 
 export default function ChangePassword({ params: { locale } }: Props) {
-  unstable_setRequestLocale(locale);
+  setRequestLocale(locale);
 
   return (
     <>

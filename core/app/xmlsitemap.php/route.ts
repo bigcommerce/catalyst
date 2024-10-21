@@ -1,4 +1,6 @@
 /* eslint-disable check-file/folder-naming-convention */
+import { useLocale } from 'next-intl';
+
 import { permanentRedirect } from '~/i18n/routing';
 
 /*
@@ -8,6 +10,10 @@ import { permanentRedirect } from '~/i18n/routing';
  * on /xmlsitemap.php
  */
 
-export const GET = () => permanentRedirect('/sitemap.xml');
+export const GET = () => {
+  const locale = useLocale();
+
+  permanentRedirect({ href: '/sitemap.xml', locale });
+};
 
 export const runtime = 'edge';

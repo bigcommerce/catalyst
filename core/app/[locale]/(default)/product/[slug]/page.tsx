@@ -1,7 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
 import { Breadcrumbs } from '~/components/breadcrumbs';
@@ -69,7 +69,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 }
 
 export default async function Product({ params: { locale, slug }, searchParams }: Props) {
-  unstable_setRequestLocale(locale);
+  setRequestLocale(locale);
 
   const t = await getTranslations('Product');
 

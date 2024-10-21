@@ -1,5 +1,6 @@
 'use server';
 
+import { getLocale } from 'next-intl/server';
 import { z } from 'zod';
 
 import { getSessionCustomerId } from '~/auth';
@@ -20,6 +21,7 @@ const CheckoutRedirectMutation = graphql(`
 `);
 
 export const redirectToCheckout = async (formData: FormData) => {
+  const locale = await getLocale();
   const cartId = z.string().parse(formData.get('cartId'));
   const customerId = await getSessionCustomerId();
 
@@ -36,5 +38,5 @@ export const redirectToCheckout = async (formData: FormData) => {
     throw new Error('Invalid checkout url.');
   }
 
-  redirect(url);
+  redirect({ href: url, locale });
 };
