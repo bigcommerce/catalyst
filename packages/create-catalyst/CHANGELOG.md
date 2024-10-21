@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.14.2
+
+### Patch Changes
+
+- [#1488](https://github.com/bigcommerce/catalyst/pull/1488) [`1bbc3f8`](https://github.com/bigcommerce/catalyst/commit/1bbc3f85fd56572b3a6cfe24e5be551d0e8f8488) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Noop commit to rebuild CLI.
+
 ## 0.14.1
 
 ### Patch Changes
