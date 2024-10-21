@@ -113,7 +113,7 @@ const Slideshow = ({ className, interval = 15_000, slides }: Props) => {
               inert={index === activeSlide - 1 ? null : 'true'}
               key={index}
             >
-              <div className="relative">
+              <div className="relative h-full">
                 {slide.image && (
                   <NextImage
                     alt={slide.image.altText}
@@ -132,8 +132,14 @@ const Slideshow = ({ className, interval = 15_000, slides }: Props) => {
                     !slide.image && 'bg-gray-100',
                   )}
                 >
-                  <h2 className="text-5xl font-black lg:text-6xl">{slide.title}</h2>
-                  {Boolean(slide.description) && <p className="max-w-xl">{slide.description}</p>}
+                  <h2 className="text-5xl font-black drop-shadow-[0_0_3px_rgba(255,255,255,0.3)] lg:text-6xl">
+                    {slide.title}
+                  </h2>
+                  {Boolean(slide.description) && (
+                    <p className="max-w-xl drop-shadow-[0_0_3px_rgba(255,255,255,0.3)]">
+                      {slide.description}
+                    </p>
+                  )}
                   {slide.cta && (
                     <Button asChild className="w-fit">
                       <a href={slide.cta.href}>{slide.cta.label}</a>
