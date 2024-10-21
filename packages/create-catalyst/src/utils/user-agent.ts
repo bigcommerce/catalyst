@@ -27,8 +27,6 @@ const getEnv = () => {
   if (isDevelopment) return 'Development';
   if (isTest) return 'Test';
   if (isProduction) return 'Production';
-
-  return 'Unknown Env';
 };
 
 const getPlatform = () => {
