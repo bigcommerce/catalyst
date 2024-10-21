@@ -122,7 +122,11 @@
     "Category": {
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
         "products": "Produkter",
-        "items": "varor"
+        "items": "varor",
+        "Empty": {
+            "message": "Inga produkter i denna kategori",
+            "cta": "Tillbaka till startsidan"
+        }
     },
     "Search": {
         "title": "Sökresultat",
