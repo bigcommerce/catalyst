@@ -1,7 +1,5 @@
 /* eslint-disable check-file/folder-naming-convention */
-import { useLocale } from 'next-intl';
-
-import { permanentRedirect } from '~/i18n/routing';
+import { defaultLocale, permanentRedirect } from '~/i18n/routing';
 
 /*
  * This route is used to redirect the legacy Stencil sitemap that lives on /xmlsitemap.php
@@ -11,9 +9,7 @@ import { permanentRedirect } from '~/i18n/routing';
  */
 
 export const GET = () => {
-  const locale = useLocale();
-
-  permanentRedirect({ href: '/sitemap.xml', locale });
+  permanentRedirect({ href: '/sitemap.xml', locale: defaultLocale });
 };
 
 export const runtime = 'edge';
