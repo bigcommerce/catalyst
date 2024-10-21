@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.14.3
+
+### Patch Changes
+
+- [#1492](https://github.com/bigcommerce/catalyst/pull/1492) [`0b28a4c`](https://github.com/bigcommerce/catalyst/commit/0b28a4c7d8f71f677e81788655d2bc70d41c4882) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Default to the `create` command when running the preCommand hook.
+
 ## 0.14.2
 
 ### Patch Changes
