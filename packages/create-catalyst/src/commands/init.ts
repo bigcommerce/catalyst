@@ -6,7 +6,10 @@ import * as z from 'zod';
 import { Https } from '../utils/https';
 import { login } from '../utils/login';
 import { parse } from '../utils/parse';
+import { Telemetry } from '../utils/telemetry/telemetry';
 import { writeEnv } from '../utils/write-env';
+
+const telemetry = new Telemetry();
 
 export const init = new Command('init')
   .description('Connect a BigCommerce store with an existing Catalyst project')
@@ -49,6 +52,8 @@ export const init = new Command('init')
 
       process.exit(1);
     }
+
+    await telemetry.identify(storeHash);
 
     const bc = new Https({ bigCommerceApiUrl, storeHash, accessToken });
     const sampleDataApi = new Https({
