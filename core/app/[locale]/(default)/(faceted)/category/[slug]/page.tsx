@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
+import { auth } from '~/auth';
 import { Breadcrumbs } from '~/components/breadcrumbs';
 import { ProductCard } from '~/components/product-card';
 import { Pagination } from '~/components/ui/pagination';
@@ -52,6 +53,8 @@ export default async function Category({ params: { locale, slug }, searchParams 
   const t = await getTranslations('Category');
 
   const categoryId = Number(slug);
+
+  const session = await auth();
 
   const [
     {
@@ -122,7 +125,7 @@ export default async function Category({ params: { locale, slug }, searchParams 
                 imageSize="wide"
                 key={product.entityId}
                 product={product}
-                showWishlistSheet
+                showWishlistSheet={Boolean(session)}
                 wishlistsList={wishlists}
               />
             ))}

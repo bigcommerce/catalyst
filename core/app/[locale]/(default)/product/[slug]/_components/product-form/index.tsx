@@ -7,12 +7,12 @@ import { useTranslations } from 'next-intl';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
-import { WishlistSheet } from '~/components/wishlist-sheet';
 import { Wishlists } from '~/app/[locale]/(default)/product/[slug]/_components/details';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { AddToCartButton } from '~/components/add-to-cart-button';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
+import { WishlistSheet } from '~/components/wishlist-sheet';
 import { bodl } from '~/lib/bodl';
 
 import { handleAddToCart } from './_actions/add-to-cart';

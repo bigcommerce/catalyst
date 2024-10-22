@@ -1,11 +1,8 @@
 import { useFormatter } from 'next-intl';
 
-import {
-  Wishlist,
-  WishlistSheet,
-} from '~/components/wishlist-sheet';
 import { ResultOf } from '~/client/graphql';
 import { ProductCard as ComponentProductCard } from '~/components/ui/product-card';
+import { Wishlist, WishlistSheet } from '~/components/wishlist-sheet';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
 import { AddToCart } from './add-to-cart';
