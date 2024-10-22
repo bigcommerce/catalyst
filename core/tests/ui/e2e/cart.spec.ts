@@ -1,4 +1,4 @@
-import { expect, Page, test } from '~/tests/fixtures';
+import { expect, test } from '~/tests/fixtures';
 
 const sampleProduct = '[Sample] Able Brewing System';
 
@@ -77,4 +77,32 @@ test('Edit product quantity with limited stock', async ({ page }) => {
 
   await expect(page.getByRole('link', { name: 'Cart Items 5' })).toBeVisible();
   await expect(page.getByRole('listitem').filter({ hasText: '5' })).toBeVisible();
+});
+
+/**
+ * @todo: Enable this test when session-sync is available
+ */
+test.skip('Cart is session-synced for logged in customer', async ({ page, account }) => {
+  await page.getByRole('link', { name: 'Cart Items 1' }).click();
+  await page.getByRole('button', { name: 'Remove' }).click();
+  await page.getByRole('heading', { name: 'Your cart is empty' }).click();
+
+  const customer = await account.create();
+
+  await customer.login();
+  await page.goto('/sample-able-brewing-system/');
+  await expect(
+    page.getByRole('heading', { level: 1, name: '[Sample] Able Brewing System' }),
+  ).toBeVisible();
+
+  await page.getByRole('button', { name: 'Add to Cart' }).first().click();
+  await page.getByRole('button', { name: 'Add to Cart' }).first().isEnabled();
+  await page.getByRole('link', { name: 'Cart Items 1' }).click();
+
+  await expect(page.getByRole('heading', { level: 1, name: 'Your cart' })).toBeVisible();
+
+  await customer.logout();
+
+  await customer.login();
+  await page.getByRole('link', { name: 'Cart Items 1' }).isVisible();
 });

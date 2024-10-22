@@ -23,5 +23,6 @@ export class Account {
   async logout() {
     await this.page.getByRole('button', { name: 'Account' }).click();
     await this.page.getByRole('menuitem', { name: 'Log out' }).click();
+    await this.page.getByRole('button', { name: 'Log in' }).isVisible();
   }
 }

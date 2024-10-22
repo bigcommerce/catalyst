@@ -110,6 +110,9 @@ test.describe('desktop', () => {
     await expect(
       page.getByRole('heading', { name: `Thank you ${firstName}!`, level: 1 }),
     ).toBeVisible();
+
+    await page.goto('/account/');
+    await customer.logout();
   });
 });
 
