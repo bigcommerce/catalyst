@@ -6,6 +6,7 @@
         }
     },
     "ChangePassword": {
+        "title": "Zmień hasło",
         "heading": "Zmień hasło",
         "Form": {
             "newPasswordLabel": "Nowe hasło",
@@ -21,6 +22,7 @@
         }
     },
     "Login": {
+        "title": "Zaloguj się",
         "heading": "Zaloguj",
         "Form": {
             "error": "Twój adres e-mail lub hasło są nieprawidłowe. Spróbuj zalogować się ponownie lub zresetuj hasło",
@@ -30,7 +32,7 @@
             "entePasswordMessage": "Podaj hasło",
             "submitting": "Przekazanie...",
             "logIn": "Zaloguj się",
-            "resetPassword": "Nie pamiętasz hasła?"
+            "forgotPassword": "Nie pamiętasz hasła?"
         },
         "CreateAccount": {
             "heading": "Nowy klient?",
@@ -39,11 +41,28 @@
             "multipleAddresses": "Zapisz wiele adresów wysyłki",
             "ordersHistory": "Dostęp do historii zamówień",
             "ordersTracking": "Śledzenie nowych zamówień",
-            "wishlists": "Zapisz przedmioty na swojej liście życzeń",
+            "wishlists": "Zapisz elementy na swojej liście życzeń",
             "createLink": "Utwórz konto "
+        },
+        "ForgotPassword": {
+            "title": "Nie pamiętam hasła",
+            "heading": "Nie pamiętam hasła",
+            "Form": {
+                "description": "Podaj poniżej adres e-mail powiązany z Twoim kontem. Wyślemy Ci instrukcje resetowania hasła.",
+                "emailLabel": "Email",
+                "emailValidationMessage": "Podaj prawidłowy adres e-mail, np. nazwa@domena.com",
+                "recaptchaText": "Zdaj test ReCAPTCHA",
+                "confirmResetPassword": "Jeśli adres e-mail {email} jest powiązany z kontem w naszym sklepie, otrzymasz wiadomość e-mail umożliwiającą zresetowanie hasła. Jeśli jej nie widzisz, sprawdź skrzynkę odbiorczą i folder ze spamem.",
+                "submitting": "Przekazanie...",
+                "submit": "Zresetuj hasło"
+            },
+            "Errors": {
+                "error": "Nieznany błąd."
+            }
         }
     },
     "Register": {
+        "title": "Zarejestruj konto",
         "heading": "Nowe konto",
         "Form": {
             "submit": "Utwórz konto",
@@ -55,21 +74,6 @@
             "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
             "apiError": "Wygląda na to, że wystąpił błąd serwera, spróbuj ponownie za kilka minut.",
             "error": "Coś poszło nie tak. Proszę spróbować później."
-        }
-    },
-    "Reset": {
-        "heading": "Zresetuj hasło",
-        "Form": {
-            "description": "Podaj poniżej adres e-mail powiązany z Twoim kontem. Wyślemy Ci instrukcje resetowania hasła.",
-            "emailLabel": "Email",
-            "emailValidationMessage": "Podaj prawidłowy adres e-mail, np. nazwa@domena.com",
-            "recaptchaText": "Zdaj test ReCAPTCHA",
-            "confirmResetPassword": "Jeśli adres e-mail {email} jest powiązany z kontem w naszym sklepie, otrzymasz wiadomość e-mail umożliwiającą zresetowanie hasła. Jeśli jej nie widzisz, sprawdź skrzynkę odbiorczą i folder ze spamem.",
-            "submitting": "Przekazanie...",
-            "submit": "Zresetuj hasło"
-        },
-        "Errors": {
-            "error": "Nieznany błąd."
         }
     },
     "FacetedGroup": {
@@ -118,9 +122,14 @@
     "Category": {
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
         "products": "Produkty",
-        "items": "produkty"
+        "items": "produkty",
+        "Empty": {
+            "message": "Brak produktów w tej kategorii",
+            "cta": "Powrót na początek"
+        }
     },
     "Search": {
+        "title": "Wyniki wyszukiwania",
         "heading": "Szukaj na stronie",
         "products": "Produkty",
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
@@ -128,6 +137,7 @@
     },
     "Account": {
         "Home": {
+            "title": "Moje konto",
             "heading": "Moje konto",
             "accountTabsLabel": "Karty konta",
             "orders": "Zamówienia",
@@ -140,56 +150,53 @@
             "successMessage": "Konto zostało pomyślnie utworzone"
         },
         "Addresses": {
-            "defaultAddress": "Domyślnie",
-            "alternativeAddress": "Alternatywna strona",
-            "newAddress": "Nowy adres",
+            "title": "Adresy",
             "addNewAddress": "Dodaj nowy adres",
-            "addNewAddressSuccessMessage": "Adres został dodany do Twojego konta",
-            "editAddress": "Edytuj adres",
             "editButton": "Edytuj",
             "deleteButton": "Usuń",
-            "deleteAddress": "Adres został usunięty z Twojego konta.",
-            "confirmDeleteAddress": "Usuń adres",
-            "deleteModalTitle": "Czy na pewno chcesz usunąć adres?",
-            "recaptchaText": "Zdaj test ReCAPTCHA",
-            "emptyTextValidationMessage": "To pole nie może być puste",
-            "successMessage": "Adres został pomyślnie utworzony.",
-            "submit": "Dodaj nowy adres",
-            "cancel": "Anuluj",
-            "submitting": "W toku…"
-        },
-        "AddAddress": {
-            "success": "Adres został dodany.",
-            "Errors": {
-                "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
-                "error": "Nieznany błąd."
-            }
-        },
-        "DeleteAddress": {
-            "success": "Adres został usunięty z Twojego konta.",
-            "error": "Nieznany błąd."
-        },
-        "UpdateAddress": {
-            "success": "Adres został zaktualizowany.",
-            "Errors": {
-                "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
-                "notFound": "Adres nie istnieje.",
-                "error": "Nieznany błąd."
-            }
-        },
-        "EditAddress": {
-            "recaptchaText": "Zdaj test ReCAPTCHA",
-            "emptyTextValidationMessage": "To pole nie może być puste",
-            "successMessage": "Adres został pomyślnie zaktualizowany.",
-            "cancel": "Anuluj",
-            "deleteButton": "Usuń",
-            "deleteAddress": "Adres został usunięty z Twojego konta.",
             "confirmDeleteAddress": "Usuń adres",
             "deleteModalTitle": "Czy na pewno chcesz usunąć ten adres?",
-            "submit": "Zaktualizuj adres",
-            "submitting": "W toku…"
+            "Add": {
+                "title": "Dodaj adres",
+                "heading": "Nowy adres",
+                "Form": {
+                    "recaptchaText": "Zdaj test ReCAPTCHA",
+                    "submit": "Dodaj nowy adres",
+                    "submitting": "Zapisywanie adresu...",
+                    "cancel": "Anuluj",
+                    "success": "Adres został dodany do Twojego konta.",
+                    "Errors": {
+                        "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
+                        "error": "Nieznany błąd."
+                    }
+                }
+            },
+            "Edit": {
+                "title": "Edytuj adres",
+                "heading": "Edytuj adres",
+                "Form": {
+                    "recaptchaText": "Zdaj test ReCAPTCHA",
+                    "submit": "Edytuj adres",
+                    "submitting": "Aktualizowanie adresu...",
+                    "cancel": "Anuluj",
+                    "confirmDeleteAddress": "Usuń adres",
+                    "deleteModalTitle": "Czy na pewno chcesz usunąć ten adres?",
+                    "deleteButton": "Usuń",
+                    "success": "Adres został pomyślnie zaktualizowany.",
+                    "Errors": {
+                        "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
+                        "notFound": "Adres nie istnieje.",
+                        "error": "Nieznany błąd."
+                    }
+                }
+            },
+            "Delete": {
+                "success": "Adres został usunięty z Twojego konta.",
+                "error": "Nieznany błąd."
+            }
         },
         "Settings": {
+            "title": "Ustawienia konta",
             "emptyTextValidatoinMessage": "To pole nie może być puste",
             "cancel": "Anuluj",
             "recaptchaText": "Zdaj test ReCAPTCHA",
@@ -207,8 +214,19 @@
                 "phone": "Wprowadź numer telefonu"
             },
             "ChangePassword": {
+                "title": "Zmień hasło",
                 "success": "Hasło zostało pomyślnie zaktualizowane.",
-                "error": "Nieznany błąd."
+                "error": "Nieznany błąd.",
+                "currentPasswordLabel": "Aktualne hasło",
+                "newPasswordLabel": "Nowe hasło",
+                "confirmPasswordLabel": "Potwierdź hasło",
+                "cancel": "Anuluj",
+                "confirmPasswordValidationMessage": "Podane hasła są niezgodne. Spróbuj ponownie.",
+                "newPasswordValidationMessage": "Nowe hasło musi różnić się od aktualnego hasła i/lub być zgodne z potwierdzeniem hasła.",
+                "notEmptyMessage": "Pole nie powinno być puste",
+                "confirmChangePassword": "Hasło zostało pomyślnie zmienione. Zaloguj się przy użyciu nowych danych uwierzytelniających.",
+                "spinnerText": "Przekazanie...",
+                "submitText": "Zmień hasło"
             },
             "UpdateCustomer": {
                 "Errors": {
@@ -216,24 +234,10 @@
                     "notFound": "Klient nie istnieje"
                 }
             }
-        },
-        "ChangePassword": {
-            "currentPasswordLabel": "Aktualne hasło",
-            "newPasswordLabel": "Nowe hasło",
-            "confirmPasswordLabel": "Potwierdź hasło",
-            "cancel": "Anuluj",
-            "confirmPasswordValidationMessage": "Podane hasła są niezgodne. Spróbuj ponownie.",
-            "newPasswordValidationMessage": "Nowe hasło musi różnić się od aktualnego hasła i/lub być zgodne z potwierdzeniem hasła.",
-            "notEmptyMessage": "Pole nie powinno być puste",
-            "successMessage": "Hasło zostało pomyślnie zaktualizowane!",
-            "confirmChangePassword": "Hasło zostało pomyślnie zmienione. Zaloguj się przy użyciu nowych danych uwierzytelniających."
-        },
-        "SubmitChangePassword": {
-            "spinnerText": "Przekazanie...",
-            "submitText": "Zmień hasło"
         }
     },
     "Blog": {
+        "title": "Blog",
         "SharingLinks": {
             "share": "Udostępnij",
             "email": "Email",
@@ -241,6 +245,7 @@
         }
     },
     "Cart": {
+        "title": "Koszyk",
         "heading": "Twój koszyk",
         "empty": "Twój koszyk jest pusty",
         "emptyDetails": "Wygląda na to, że nie dodano nic do koszyka. Poznaj najpopularniejsze kategorie",
@@ -311,6 +316,7 @@
         }
     },
     "Compare": {
+        "title": "Porównaj",
         "heading": "Porównanie {quantity, plural, =1 {1 Product} other {# Products}}",
         "nothingToCompare": "Brak produktów do porównania!",
         "helpingText": "Jakoś udało Ci się tu trafić, ale najpierw musisz wybrać kilka produktów.",
@@ -398,10 +404,12 @@
         }
     },
     "Maintenance": {
+        "title": "Konserwacja",
         "message": "Przerwa z powodu konserwacji",
         "contactUs": "Możesz skontaktować się z nami:"
     },
     "StoreSelector": {
+        "title": "Selektor sklepu",
         "heading": "Wybierz język i region"
     },
     "Error": {

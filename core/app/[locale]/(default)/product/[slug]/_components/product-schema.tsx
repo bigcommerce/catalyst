@@ -19,7 +19,7 @@ export const ProductSchemaFragment = graphql(`
       numberOfReviews
     }
     defaultImage {
-      url: urlTemplate
+      url: urlTemplate(lossy: true)
     }
     prices {
       price {

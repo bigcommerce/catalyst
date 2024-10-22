@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import { z } from 'zod';
 
 import { parse } from './parse';
+import { getCLIUserAgent } from './user-agent';
 
 interface BigCommerceRestApiConfig {
   bigCommerceApiUrl: string;
@@ -67,6 +68,7 @@ export class Https {
   sampleDataApiUrl: string;
   storeHash: string;
   accessToken: string;
+  userAgent: string;
 
   constructor({ bigCommerceApiUrl, storeHash, accessToken }: BigCommerceRestApiConfig);
   constructor({ sampleDataApiUrl, storeHash, accessToken }: SampleDataApiConfig);
@@ -83,6 +85,7 @@ export class Https {
     this.sampleDataApiUrl = sampleDataApiUrl ?? '';
     this.storeHash = storeHash ?? '';
     this.accessToken = accessToken ?? '';
+    this.userAgent = getCLIUserAgent();
   }
 
   auth(path: string, opts: RequestInit = {}) {
@@ -98,6 +101,7 @@ export class Https {
         ...headers,
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'User-Agent': this.userAgent,
       },
       ...rest,
     };
@@ -109,13 +113,13 @@ export class Https {
     const response = await this.auth('/device/token', {
       body: JSON.stringify({
         scopes: [
+          'store_channel_settings',
+          'store_sites',
+          'store_storefront_api',
+          'store_storefront_api_customer_impersonation',
           'store_v2_content',
           'store_v2_information',
           'store_v2_products',
-          'store_cart',
-          'store_sites',
-          'store_channel_settings',
-          'store_storefront_api_customer_impersonation',
         ].join(' '),
         client_id: this.DEVICE_OAUTH_CLIENT_ID,
       }),
@@ -175,6 +179,7 @@ export class Https {
         ...headers,
         Accept: 'application/json',
         'X-Auth-Token': this.accessToken,
+        'User-Agent': this.userAgent,
       },
       ...rest,
     };
@@ -269,11 +274,36 @@ export class Https {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'X-Auth-Token': this.accessToken,
+        'User-Agent': this.userAgent,
       },
       ...rest,
     };
 
     return fetch(`${this.sampleDataApiUrl}/stores/${this.storeHash}${path}`, options);
+  }
+
+  async checkEligibility() {
+    const res = await this.sampleDataApi('/v3/channels/catalyst/eligibility', {
+      method: 'GET',
+    });
+
+    if (!res.ok) {
+      console.error(
+        chalk.red(
+          `\nGET /v3/channels/catalyst/eligibility failed: ${res.status} ${res.statusText}\n`,
+        ),
+      );
+      process.exit(1);
+    }
+
+    const CheckEligibilitySchema = z.object({
+      data: z.object({
+        eligible: z.boolean(),
+        message: z.string(),
+      }),
+    });
+
+    return parse(await res.json(), CheckEligibilitySchema);
   }
 
   async createChannel(channelName: string) {

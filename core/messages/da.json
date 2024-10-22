@@ -6,6 +6,7 @@
         }
     },
     "ChangePassword": {
+        "title": "Skift adgangskode",
         "heading": "Skift adgangskode",
         "Form": {
             "newPasswordLabel": "Den nye adgangskode",
@@ -21,6 +22,7 @@
         }
     },
     "Login": {
+        "title": "Log på",
         "heading": "Log på",
         "Form": {
             "error": "Din e-mailadresse eller adgangskode er forkert. Prøv at logge ind igen, eller nulstil din adgangskode",
@@ -30,7 +32,7 @@
             "entePasswordMessage": "Indtast din adgangskode.",
             "submitting": "Indsender ...",
             "logIn": "Log ind",
-            "resetPassword": "Har du glemt din adgangskode?"
+            "forgotPassword": "Har du glemt din adgangskode?"
         },
         "CreateAccount": {
             "heading": "Ny kunde?",
@@ -41,9 +43,26 @@
             "ordersTracking": "Spore nye ordrer",
             "wishlists": "Gemme varer til din ønskeliste",
             "createLink": "Opret konto "
+        },
+        "ForgotPassword": {
+            "title": "Glemt adgangskode",
+            "heading": "Glemt adgangskode",
+            "Form": {
+                "description": "Indtast den e-mail, der er knyttet til din konto, nedenfor. Vi sender dig instruktioner til nulstilling af din adgangskode.",
+                "emailLabel": "E-mail",
+                "emailValidationMessage": "Indtast en gyldig e-mail, f.eks. navn@domæne.com",
+                "recaptchaText": "Bestå ReCAPTCHA-kontrol",
+                "confirmResetPassword": "Hvis e-mailadressen {email} er knyttet til en konto i vores butik, har vi sendt dig en e-mail til nulstilling af adgangskode. Tjek din indbakke og spam-mappe, hvis du ikke kan se den.",
+                "submitting": "Indsender ...",
+                "submit": "Nulstil adgangskoden"
+            },
+            "Errors": {
+                "error": "Ukendt fejl."
+            }
         }
     },
     "Register": {
+        "title": "Registrer konto",
         "heading": "Ny konto",
         "Form": {
             "submit": "Opret konto",
@@ -55,21 +74,6 @@
             "inputError": "Noget gik galt med behandling af brugerinput.",
             "apiError": "Det ser ud til, at vi oplever en serverfejl. Prøv igen om et par minutter.",
             "error": "Noget gik galt. Prøv igen senere."
-        }
-    },
-    "Reset": {
-        "heading": "Nulstil adgangskoden",
-        "Form": {
-            "description": "Indtast den e-mail, der er knyttet til din konto, nedenfor. Vi sender dig instruktioner til nulstilling af din adgangskode.",
-            "emailLabel": "E-mail",
-            "emailValidationMessage": "Indtast en gyldig e-mail, f.eks. navn@domæne.com",
-            "recaptchaText": "Bestå ReCAPTCHA-kontrol",
-            "confirmResetPassword": "Hvis e-mailadressen {email} er knyttet til en konto i vores butik, har vi sendt dig en e-mail til nulstilling af adgangskode. Tjek din indbakke og spam-mappe, hvis du ikke kan se den.",
-            "submitting": "Indsender ...",
-            "submit": "Nulstil adgangskoden"
-        },
-        "Errors": {
-            "error": "Ukendt fejl."
         }
     },
     "FacetedGroup": {
@@ -118,9 +122,14 @@
     "Category": {
         "sortBy": "{items, plural, =0 {no items} =1 {1 vare} other {# varer}}",
         "products": "produkter",
-        "items": "Varer"
+        "items": "Varer",
+        "Empty": {
+            "message": "No products in this category",
+            "cta": "Return to Home"
+        }
     },
     "Search": {
+        "title": "Søgeresultater",
         "heading": "Søg",
         "products": "produkter",
         "sortBy": "{items, plural, =0 {no items} =1 {1 vare} other {# varer}}",
@@ -128,6 +137,7 @@
     },
     "Account": {
         "Home": {
+            "title": "Min konto",
             "heading": "Min konto",
             "accountTabsLabel": "Konto-faner",
             "orders": "Ordrer",
@@ -140,56 +150,53 @@
             "successMessage": "Din konto er blevet oprettet"
         },
         "Addresses": {
-            "defaultAddress": "Standard",
-            "alternativeAddress": "Alternativ",
-            "newAddress": "Ny adresse",
+            "title": "Adresser",
             "addNewAddress": "Tilføj ny adresse",
-            "addNewAddressSuccessMessage": "Adressen er tilføjet til din konto.",
-            "editAddress": "Rediger adresse",
             "editButton": "Rediger",
             "deleteButton": "Slet",
-            "deleteAddress": "Adressen er slettet fra din konto.",
-            "confirmDeleteAddress": "Slet adresse",
-            "deleteModalTitle": "Er du sikker på, at du vil slette adressen?",
-            "recaptchaText": "Bestå ReCAPTCHA-kontrol",
-            "emptyTextValidationMessage": "Dette felt må ikke være tomt",
-            "successMessage": "Adressen er blevet oprettet.",
-            "submit": "Tilføj ny adresse",
-            "cancel": "Annuller",
-            "submitting": "I gang ..."
-        },
-        "AddAddress": {
-            "success": "Adressen er blevet tilføjet.",
-            "Errors": {
-                "inputError": "Noget gik galt med behandling af brugerinput.",
-                "error": "Ukendt fejl."
-            }
-        },
-        "DeleteAddress": {
-            "success": "Adressen er slettet fra din konto.",
-            "error": "Ukendt fejl."
-        },
-        "UpdateAddress": {
-            "success": "Adressen er blevet opdateret.",
-            "Errors": {
-                "inputError": "Noget gik galt med behandling af brugerinput.",
-                "notFound": "Adressen findes ikke.",
-                "error": "Ukendt fejl."
-            }
-        },
-        "EditAddress": {
-            "recaptchaText": "Bestå ReCAPTCHA-kontrol",
-            "emptyTextValidationMessage": "Dette felt må ikke være tomt",
-            "successMessage": "Adressen er blevet opdateret.",
-            "cancel": "Annuller",
-            "deleteButton": "Slet",
-            "deleteAddress": "Adressen er slettet fra din konto.",
             "confirmDeleteAddress": "Slet adresse",
             "deleteModalTitle": "Er du sikker på, at du vil slette denne adresse?",
-            "submit": "Opdatér adresse",
-            "submitting": "I gang ..."
+            "Add": {
+                "title": "Tilføj adresse",
+                "heading": "Ny adresse",
+                "Form": {
+                    "recaptchaText": "Bestå ReCAPTCHA-kontrol",
+                    "submit": "Tilføj ny adresse",
+                    "submitting": "Gemmer adresse ...",
+                    "cancel": "Annuller",
+                    "success": "Adressen er tilføjet til din konto.",
+                    "Errors": {
+                        "inputError": "Noget gik galt med behandling af brugerinput.",
+                        "error": "Ukendt fejl."
+                    }
+                }
+            },
+            "Edit": {
+                "title": "Rediger adresse",
+                "heading": "Rediger adresse",
+                "Form": {
+                    "recaptchaText": "Bestå ReCAPTCHA-kontrol",
+                    "submit": "Rediger adresse",
+                    "submitting": "Opdaterer adresse ...",
+                    "cancel": "Annuller",
+                    "confirmDeleteAddress": "Slet adresse",
+                    "deleteModalTitle": "Er du sikker på, at du vil slette denne adresse?",
+                    "deleteButton": "Slet",
+                    "success": "Adressen er blevet opdateret.",
+                    "Errors": {
+                        "inputError": "Noget gik galt med behandling af brugerinput.",
+                        "notFound": "Adressen findes ikke.",
+                        "error": "Ukendt fejl."
+                    }
+                }
+            },
+            "Delete": {
+                "success": "Adressen er slettet fra din konto.",
+                "error": "Ukendt fejl."
+            }
         },
         "Settings": {
+            "title": "Kontoindstillinger",
             "emptyTextValidatoinMessage": "Dette felt må ikke være tomt",
             "cancel": "Annuller",
             "recaptchaText": "Bestå ReCAPTCHA-kontrol",
@@ -207,8 +214,19 @@
                 "phone": "Indtast et telefonnummer"
             },
             "ChangePassword": {
+                "title": "Skift adgangskode",
                 "success": "Adgangskoden er blevet opdateret.",
-                "error": "Ukendt fejl."
+                "error": "Ukendt fejl.",
+                "currentPasswordLabel": "Nuværende adgangskode",
+                "newPasswordLabel": "Den nye adgangskode",
+                "confirmPasswordLabel": "Bekræft adgangskode",
+                "cancel": "Annuller",
+                "confirmPasswordValidationMessage": "De indtastede adgangskoder stemmer ikke overens. Prøv igen.",
+                "newPasswordValidationMessage": "Den nye adgangskode skal være forskellig fra den nuværende og/eller svare til bekræftelsesadgangskoden.",
+                "notEmptyMessage": "Feltet må ikke være tomt",
+                "confirmChangePassword": "Din adgangskode er blevet opdateret. Log ind med dine nye legitimationsoplysninger.",
+                "spinnerText": "Indsender ...",
+                "submitText": "Skift adgangskode"
             },
             "UpdateCustomer": {
                 "Errors": {
@@ -216,24 +234,10 @@
                     "notFound": "Kunden findes ikke."
                 }
             }
-        },
-        "ChangePassword": {
-            "currentPasswordLabel": "Nuværende adgangskode",
-            "newPasswordLabel": "Den nye adgangskode",
-            "confirmPasswordLabel": "Bekræft adgangskode",
-            "cancel": "Annuller",
-            "confirmPasswordValidationMessage": "De indtastede adgangskoder stemmer ikke overens. Prøv igen.",
-            "newPasswordValidationMessage": "Den nye adgangskode skal være forskellig fra den nuværende og/eller svare til bekræftelsesadgangskoden.",
-            "notEmptyMessage": "Feltet må ikke være tomt",
-            "successMessage": "Adgangskoden er blevet opdateret.",
-            "confirmChangePassword": "Din adgangskode er blevet opdateret. Log ind med dine nye legitimationsoplysninger."
-        },
-        "SubmitChangePassword": {
-            "spinnerText": "Indsender ...",
-            "submitText": "Skift adgangskode"
         }
     },
     "Blog": {
+        "title": "blog",
         "SharingLinks": {
             "share": "Del",
             "email": "E-mail",
@@ -241,6 +245,7 @@
         }
     },
     "Cart": {
+        "title": "Indkøbskurv",
         "heading": "Din indkøbskurv",
         "empty": "din indkøbskurv er tom",
         "emptyDetails": "Det ser ud til, at du ikke har tilføjet noget til din indkøbskurv. Gå videre, og udforsk vores mest populære kategorier",
@@ -311,6 +316,7 @@
         }
     },
     "Compare": {
+        "title": "Sammenlign",
         "heading": "Sammenligning af {quantity, plural, =1 {1 Produkt} other {# Produkter}}",
         "nothingToCompare": "Der er ikke noget at sammenligne.",
         "helpingText": "På en eller anden måde er det lykkedes dig at lande her, men du skal først vælge et par produkter.",
@@ -361,7 +367,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Minimumskøb",
-            "maxPurchase": "Maxiumumkøb",
+            "maxPurchase": "Maksimumkøb",
             "availability": "Tilgængelighed",
             "condition": "Tilstand",
             "weight": "Vægt",
@@ -398,10 +404,12 @@
         }
     },
     "Maintenance": {
+        "title": "Vedligeholdelse",
         "message": "Vi er nede på grund af vedligeholdelse",
         "contactUs": "Du kan kontakte os på:"
     },
     "StoreSelector": {
+        "title": "Butiksvælger",
         "heading": "Vælg et sprog og en region"
     },
     "Error": {

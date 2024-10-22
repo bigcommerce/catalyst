@@ -21,7 +21,7 @@ export const MultipleChoiceFieldFragment = graphql(`
             __typename
             defaultImage {
               altText
-              url: urlTemplate
+              url: urlTemplate(lossy: true)
             }
           }
         }

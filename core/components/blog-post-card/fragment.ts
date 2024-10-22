@@ -10,7 +10,7 @@ export const BlogPostCardFragment = graphql(`
       utc
     }
     thumbnailImage {
-      url: urlTemplate
+      url: urlTemplate(lossy: true)
       altText
     }
   }

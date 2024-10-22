@@ -6,6 +6,7 @@
         }
     },
     "ChangePassword": {
+        "title": "Wachtwoord wijzigen",
         "heading": "Wachtwoord wijzigen",
         "Form": {
             "newPasswordLabel": "Nieuw wachtwoord",
@@ -21,6 +22,7 @@
         }
     },
     "Login": {
+        "title": "Inloggen",
         "heading": "Inloggen",
         "Form": {
             "error": "Je e-mailadres of wachtwoord is niet correct. Probeer opnieuw in te loggen of stel je wachtwoord opnieuw in",
@@ -30,7 +32,7 @@
             "entePasswordMessage": "Voer je wachtwoord in",
             "submitting": "Verzenden...",
             "logIn": "Inloggen",
-            "resetPassword": "Wachtwoord vergeten?"
+            "forgotPassword": "Wachtwoord vergeten?"
         },
         "CreateAccount": {
             "heading": "Nieuwe klant?",
@@ -39,11 +41,28 @@
             "multipleAddresses": "Meerdere verzendadressen op te slaan",
             "ordersHistory": "Uw bestelgeschiedenis te bekijken",
             "ordersTracking": "Nieuwe bestellingen te volgen",
-            "wishlists": "Artikelen opslaan in uw verlanglijstje",
+            "wishlists": "Artikelen in uw verlanglijstje op te slaan",
             "createLink": "Account aanmaken "
+        },
+        "ForgotPassword": {
+            "title": "Wachtwoord vergeten",
+            "heading": "Wachtwoord vergeten",
+            "Form": {
+                "description": "Voer hieronder het e-mailadres in dat aan je account is gekoppeld. We sturen je instructies om je wachtwoord opnieuw in te stellen.",
+                "emailLabel": "E-mailadres",
+                "emailValidationMessage": "Voer een geldig e-mailadres in, zoals naam@domein.com",
+                "recaptchaText": "reCAPTCHA-check doorstaan",
+                "confirmResetPassword": "Als het e-mailadres {email} is gekoppeld aan een account in onze winkel, hebben we je een e-mail gestuurd om je wachtwoord opnieuw in te stellen. Controleer je inbox en spammap als je de e-mail niet ziet.",
+                "submitting": "Verzenden...",
+                "submit": "Wachtwoord opnieuw instellen"
+            },
+            "Errors": {
+                "error": "Onbekende fout."
+            }
         }
     },
     "Register": {
+        "title": "Account registreren",
         "heading": "Nieuw account",
         "Form": {
             "submit": "Account aanmaken",
@@ -55,21 +74,6 @@
             "inputError": "Er is iets misgegaan bij het verwerken van de gebruikersinvoer.",
             "apiError": "Het lijkt erop dat er een serverfout is opgetreden. Probeer het over een paar minuten opnieuw.",
             "error": "Er is iets fout gegaan. Probeer het later opnieuw."
-        }
-    },
-    "Reset": {
-        "heading": "Wachtwoord opnieuw instellen",
-        "Form": {
-            "description": "Voer hieronder het e-mailadres in dat aan je account is gekoppeld. We sturen je instructies om je wachtwoord opnieuw in te stellen.",
-            "emailLabel": "E-mailadres",
-            "emailValidationMessage": "Voer een geldig e-mailadres in, zoals naam@domein.com",
-            "recaptchaText": "reCAPTCHA-check doorstaan",
-            "confirmResetPassword": "Als het e-mailadres {email} is gekoppeld aan een account in onze winkel, hebben we je een e-mail gestuurd om je wachtwoord opnieuw in te stellen. Controleer je inbox en spammap als je de e-mail niet ziet.",
-            "submitting": "Verzenden...",
-            "submit": "Wachtwoord opnieuw instellen"
-        },
-        "Errors": {
-            "error": "Onbekende fout."
         }
     },
     "FacetedGroup": {
@@ -118,9 +122,14 @@
     "Category": {
         "sortBy": "{items, plural, =0 {geen items} =1 {1 item} other {# items}}",
         "products": "Producten",
-        "items": "artikelen"
+        "items": "artikelen",
+        "Empty": {
+            "message": "Er zijn geen producten in deze categorie.",
+            "cta": "Terug naar Startpagina"
+        }
     },
     "Search": {
+        "title": "Zoekresultaten",
         "heading": "Zoeken",
         "products": "Producten",
         "sortBy": "{items, plural, =0 {geen items} =1 {1 item} other {# items}}",
@@ -128,6 +137,7 @@
     },
     "Account": {
         "Home": {
+            "title": "Mijn account",
             "heading": "Mijn account",
             "accountTabsLabel": "Accounttabbladen",
             "orders": "Bestellingen",
@@ -140,56 +150,53 @@
             "successMessage": "Je account is aangemaakt"
         },
         "Addresses": {
-            "defaultAddress": "Standaard",
-            "alternativeAddress": "Alternatief",
-            "newAddress": "Nieuw adres",
+            "title": "Adressen",
             "addNewAddress": "Nieuw adres toevoegen",
-            "addNewAddressSuccessMessage": "Adres is toegevoegd aan je account",
-            "editAddress": "Adres bewerken",
             "editButton": "Bewerken",
             "deleteButton": "Verwijderen",
-            "deleteAddress": "Adres is verwijderd uit je account.",
-            "confirmDeleteAddress": "Adres verwijderen",
-            "deleteModalTitle": "Weet je zeker dat je dit adres wilt verwijderen?",
-            "recaptchaText": "reCAPTCHA-check doorstaan",
-            "emptyTextValidationMessage": "Dit veld mag niet leeg zijn",
-            "successMessage": "Het adres is aangemaakt.",
-            "submit": "Nieuw adres toevoegen",
-            "cancel": "Annuleren",
-            "submitting": "In uitvoering..."
-        },
-        "AddAddress": {
-            "success": "Het adres is toegevoegd.",
-            "Errors": {
-                "inputError": "Er is iets misgegaan bij het verwerken van de gebruikersinvoer.",
-                "error": "Onbekende fout."
-            }
-        },
-        "DeleteAddress": {
-            "success": "Adres is verwijderd uit je account.",
-            "error": "Onbekende fout."
-        },
-        "UpdateAddress": {
-            "success": "Het adres is bijgewerkt.",
-            "Errors": {
-                "inputError": "Er is iets misgegaan bij het verwerken van de gebruikersinvoer.",
-                "notFound": "Adres bestaat niet.",
-                "error": "Onbekende fout."
-            }
-        },
-        "EditAddress": {
-            "recaptchaText": "reCAPTCHA-check doorstaan",
-            "emptyTextValidationMessage": "Dit veld mag niet leeg zijn",
-            "successMessage": "Het adres is bijgewerkt.",
-            "cancel": "Annuleren",
-            "deleteButton": "Verwijderen",
-            "deleteAddress": "Adres is verwijderd uit je account.",
             "confirmDeleteAddress": "Adres verwijderen",
             "deleteModalTitle": "Weet u zeker dat u dit adres wilt verwijderen?",
-            "submit": "Adres bijwerken",
-            "submitting": "In uitvoering..."
+            "Add": {
+                "title": "Voeg adres toe",
+                "heading": "Nieuw adres",
+                "Form": {
+                    "recaptchaText": "reCAPTCHA-check doorstaan",
+                    "submit": "Nieuw adres toevoegen",
+                    "submitting": "Adres opslaan...",
+                    "cancel": "Annuleren",
+                    "success": "Adres is toegevoegd aan je account.",
+                    "Errors": {
+                        "inputError": "Er is iets misgegaan bij het verwerken van de gebruikersinvoer.",
+                        "error": "Onbekende fout."
+                    }
+                }
+            },
+            "Edit": {
+                "title": "Adres bewerken",
+                "heading": "Adres bewerken",
+                "Form": {
+                    "recaptchaText": "reCAPTCHA-check doorstaan",
+                    "submit": "Adres bewerken",
+                    "submitting": "Adres bijwerken...",
+                    "cancel": "Annuleren",
+                    "confirmDeleteAddress": "Adres verwijderen",
+                    "deleteModalTitle": "Weet u zeker dat u dit adres wilt verwijderen?",
+                    "deleteButton": "Verwijderen",
+                    "success": "Het adres is bijgewerkt.",
+                    "Errors": {
+                        "inputError": "Er is iets misgegaan bij het verwerken van de gebruikersinvoer.",
+                        "notFound": "Adres bestaat niet.",
+                        "error": "Onbekende fout."
+                    }
+                }
+            },
+            "Delete": {
+                "success": "Adres is verwijderd uit je account.",
+                "error": "Onbekende fout."
+            }
         },
         "Settings": {
+            "title": "Accountinstellingen",
             "emptyTextValidatoinMessage": "Dit veld mag niet leeg zijn",
             "cancel": "Annuleren",
             "recaptchaText": "reCAPTCHA-check doorstaan",
@@ -207,8 +214,19 @@
                 "phone": "Voer een telefoonnummer in"
             },
             "ChangePassword": {
+                "title": "Wachtwoord wijzigen",
                 "success": "Wachtwoord is bijgewerkt.",
-                "error": "Onbekende fout."
+                "error": "Onbekende fout.",
+                "currentPasswordLabel": "Huidig wachtwoord",
+                "newPasswordLabel": "Nieuw wachtwoord",
+                "confirmPasswordLabel": "Wachtwoord bevestigen",
+                "cancel": "Annuleren",
+                "confirmPasswordValidationMessage": "Ingevoerde wachtwoorden komen niet overeen. Probeer het opnieuw.",
+                "newPasswordValidationMessage": "Het nieuwe wachtwoord moet anders zijn dan het huidige wachtwoord en/of overeenkomen met het bevestigingswachtwoord.",
+                "notEmptyMessage": "Het veld mag niet leeg zijn",
+                "confirmChangePassword": "Je wachtwoord is bijgewerkt. Log in met je nieuwe gegevens.",
+                "spinnerText": "Verzenden...",
+                "submitText": "Wachtwoord wijzigen"
             },
             "UpdateCustomer": {
                 "Errors": {
@@ -216,24 +234,10 @@
                     "notFound": "Klant bestaat niet"
                 }
             }
-        },
-        "ChangePassword": {
-            "currentPasswordLabel": "Huidig wachtwoord",
-            "newPasswordLabel": "Nieuw wachtwoord",
-            "confirmPasswordLabel": "Wachtwoord bevestigen",
-            "cancel": "Annuleren",
-            "confirmPasswordValidationMessage": "Ingevoerde wachtwoorden komen niet overeen. Probeer het opnieuw.",
-            "newPasswordValidationMessage": "Het nieuwe wachtwoord moet anders zijn dan het huidige wachtwoord en/of overeenkomen met het bevestigingswachtwoord.",
-            "notEmptyMessage": "Het veld mag niet leeg zijn",
-            "successMessage": "Wachtwoord is succesvol bijgewerkt!",
-            "confirmChangePassword": "Je wachtwoord is bijgewerkt. Log in met je nieuwe gegevens."
-        },
-        "SubmitChangePassword": {
-            "spinnerText": "Verzenden...",
-            "submitText": "Wachtwoord wijzigen"
         }
     },
     "Blog": {
+        "title": "Blog",
         "SharingLinks": {
             "share": "Delen",
             "email": "E-mailadres",
@@ -241,6 +245,7 @@
         }
     },
     "Cart": {
+        "title": "Winkelmandje",
         "heading": "Uw winkelmandje",
         "empty": "Uw winkelmandje is leeg",
         "emptyDetails": "Het lijkt erop dat je nog niets aan je winkelmandje hebt toegevoegd. Ga je gang en ontdek de populairste categorieën",
@@ -311,6 +316,7 @@
         }
     },
     "Compare": {
+        "title": "Vergelijken",
         "heading": "{quantity, plural, =1 {1 product} other {# producten}} vergelijken",
         "nothingToCompare": "Er valt niets te vergelijken!",
         "helpingText": "Op de een of andere manier ben je hier terechtgekomen, maar je moet eerst een paar producten selecteren.",
@@ -398,10 +404,12 @@
         }
     },
     "Maintenance": {
+        "title": "Onderhoud",
         "message": "We zijn offline voor onderhoud",
         "contactUs": "Je kunt contact met ons opnemen via:"
     },
     "StoreSelector": {
+        "title": "Winkelkiezer",
         "heading": "Selecteer een taal en regio"
     },
     "Error": {

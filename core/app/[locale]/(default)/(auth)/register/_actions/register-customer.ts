@@ -43,7 +43,7 @@ interface RegisterCustomerForm {
 }
 
 const isRegisterCustomerInput = (data: unknown): data is RegisterCustomerInput => {
-  if (typeof data === 'object' && data !== null && 'email' in data && 'address' in data) {
+  if (typeof data === 'object' && data !== null && 'email' in data) {
     return true;
   }
 
@@ -70,6 +70,9 @@ export const registerCustomer = async ({ formData, reCaptchaToken }: RegisterCus
       variables: {
         input: parsedData,
         ...(reCaptchaToken && { reCaptchaV2: { token: reCaptchaToken } }),
+      },
+      fetchOptions: {
+        cache: 'no-store',
       },
     });
 

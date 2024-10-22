@@ -1,15 +1,14 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { ShoppingCart } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { Footer } from '~/components/footer/footer';
-import { FooterFragment } from '~/components/footer/fragment';
-import { Header } from '~/components/header';
+import { Header, HeaderSkeleton } from '~/components/header';
 import { CartLink } from '~/components/header/cart';
-import { HeaderFragment } from '~/components/header/fragment';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { ProductCardCarousel } from '~/components/product-card-carousel';
 import { SearchForm } from '~/components/search-form';
@@ -18,8 +17,6 @@ const NotFoundQuery = graphql(
   `
     query NotFoundQuery {
       site {
-        ...HeaderFragment
-        ...FooterFragment
         featuredProducts(first: 4) {
           edges {
             node {
@@ -30,7 +27,7 @@ const NotFoundQuery = graphql(
       }
     }
   `,
-  [HeaderFragment, FooterFragment, ProductCardFragment],
+  [ProductCardFragment],
 );
 
 export default async function NotFound() {
@@ -45,14 +42,15 @@ export default async function NotFound() {
 
   return (
     <>
-      <Header
-        cart={
-          <CartLink>
-            <ShoppingCart aria-label="cart" />
-          </CartLink>
-        }
-        data={data.site}
-      />
+      <Suspense fallback={<HeaderSkeleton />}>
+        <Header
+          cart={
+            <CartLink>
+              <ShoppingCart aria-label="cart" />
+            </CartLink>
+          }
+        />
+      </Suspense>
 
       <main className="mx-auto mb-10 max-w-[835px] space-y-8 px-4 sm:px-10 lg:px-0">
         <div className="flex flex-col gap-8 px-0 py-16">
@@ -68,7 +66,9 @@ export default async function NotFound() {
         />
       </main>
 
-      <Footer data={data.site} />
+      <Suspense>
+        <Footer />
+      </Suspense>
     </>
   );
 }

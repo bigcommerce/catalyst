@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl';
-import { unstable_setRequestLocale } from 'next-intl/server';
+import { setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
 
 import { Link } from '~/components/link';
@@ -15,7 +15,7 @@ interface Props extends PropsWithChildren {
 }
 
 export default function AccountTabLayout({ children, params: { locale } }: Props) {
-  unstable_setRequestLocale(locale);
+  setRequestLocale(locale);
 
   const t = useTranslations('Account.Home');
 

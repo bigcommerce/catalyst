@@ -1,4 +1,5 @@
 import { createClient } from '@bigcommerce/catalyst-client';
+import { headers } from 'next/headers';
 import { getLocale } from 'next-intl/server';
 
 import { getChannelIdFromLocale } from '~/channels.config';
@@ -22,7 +23,7 @@ export const client = createClient({
      * - Requests in middlewares
      * - Requests in `generateStaticParams`
      * - Request in api routes
-     * - Requests in static sites without `unstable_setRequestLocale`
+     * - Requests in static sites without `setRequestLocale`
      *
      * We use the default channelId as a fallback, but it is not ideal in some scenarios.
      *  */
@@ -35,6 +36,20 @@ export const client = createClient({
       console.error('Warning: issue using `getLocale`, using default channel id instead.');
 
       return defaultChannelId;
+    }
+  },
+  beforeRequest: (fetchOptions) => {
+    if (fetchOptions?.cache && ['no-store', 'no-cache'].includes(fetchOptions.cache)) {
+      const ipAddress = headers().get('X-Forwarded-For');
+
+      if (ipAddress) {
+        return {
+          headers: {
+            'X-Forwarded-For': ipAddress,
+            'True-Client-IP': ipAddress,
+          },
+        };
+      }
     }
   },
 });

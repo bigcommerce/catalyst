@@ -37,7 +37,7 @@ export const resetPassword = async ({
   path,
   reCaptchaToken,
 }: SubmitResetPasswordForm) => {
-  const t = await getTranslations('Reset');
+  const t = await getTranslations('Login.ForgotPassword');
 
   try {
     const parsedData = ResetPasswordSchema.parse({
@@ -52,6 +52,9 @@ export const resetPassword = async ({
           path,
         },
         ...(reCaptchaToken && { reCaptchaV2: { token: reCaptchaToken } }),
+      },
+      fetchOptions: {
+        cache: 'no-store',
       },
     });
 

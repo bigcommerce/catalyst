@@ -12,7 +12,7 @@ const PhysicalItemFragment = graphql(`
     brand
     sku
     image {
-      url: urlTemplate
+      url: urlTemplate(lossy: true)
     }
     entityId
     quantity
@@ -70,7 +70,7 @@ const DigitalItemFragment = graphql(`
     brand
     sku
     image {
-      url: urlTemplate
+      url: urlTemplate(lossy: true)
     }
     entityId
     quantity

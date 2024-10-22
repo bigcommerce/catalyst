@@ -10,7 +10,7 @@ export const graphqlApiDomain: string =
 export const adminApiHostname: string =
   process.env.BIGCOMMERCE_ADMIN_API_HOST ?? 'api.bigcommerce.com';
 
-interface Config {
+interface Config<FetcherRequestInit extends RequestInit = RequestInit> {
   storeHash: string;
   customerImpersonationToken: string;
   xAuthToken: string;
@@ -19,6 +19,7 @@ interface Config {
   backendUserAgentExtensions?: string;
   logger?: boolean;
   getChannelId?: (defaultChannelId: string) => Promise<string> | string;
+  beforeRequest?: (fetchOptions?: FetcherRequestInit) => Partial<FetcherRequestInit> | undefined;
 }
 
 interface BigCommerceResponse<T> {
@@ -29,8 +30,12 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   private backendUserAgent: string;
   private readonly defaultChannelId: string;
   private getChannelId: (defaultChannelId: string) => Promise<string> | string;
+  private beforeRequest?: (
+    fetchOptions?: FetcherRequestInit,
+  ) => Partial<FetcherRequestInit> | undefined;
+  private trustedProxySecret = process.env.BIGCOMMERCE_TRUSTED_PROXY_SECRET;
 
-  constructor(private config: Config) {
+  constructor(private config: Config<FetcherRequestInit>) {
     if (!config.channelId) {
       throw new Error('Client configuration must include a channelId.');
     }
@@ -40,6 +45,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     this.getChannelId = config.getChannelId
       ? config.getChannelId
       : (defaultChannelId) => defaultChannelId;
+    this.beforeRequest = config.beforeRequest;
   }
 
   // Overload for documents that require variables
@@ -73,11 +79,13 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
   }): Promise<BigCommerceResponse<TResult>> {
-    const { cache, headers = {}, ...rest } = fetchOptions;
+    const { headers = {}, ...rest } = fetchOptions;
     const query = normalizeQuery(document);
     const log = this.requestLogger(query);
 
     const graphqlUrl = await this.getGraphQLEndpoint(channelId);
+    const { headers: additionalFetchHeaders = {}, ...additionalFetchOptions } =
+      this.beforeRequest?.(fetchOptions) ?? {};
 
     const response = await fetch(graphqlUrl, {
       method: 'POST',
@@ -86,13 +94,15 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
         Authorization: `Bearer ${this.config.customerImpersonationToken}`,
         'User-Agent': this.backendUserAgent,
         ...(customerId && { 'X-Bc-Customer-Id': customerId }),
+        ...(this.trustedProxySecret && { 'X-BC-Trusted-Proxy-Secret': this.trustedProxySecret }),
+        ...additionalFetchHeaders,
         ...headers,
       },
       body: JSON.stringify({
         query,
         ...(variables && { variables }),
       }),
-      ...(cache && { cache }),
+      ...additionalFetchOptions,
       ...rest,
     });
 
@@ -135,6 +145,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
         Accept: 'application/xml',
         'Content-Type': 'application/xml',
         'User-Agent': this.backendUserAgent,
+        ...(this.trustedProxySecret && { 'X-BC-Trusted-Proxy-Secret': this.trustedProxySecret }),
       },
     });
 
@@ -180,6 +191,8 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   }
 }
 
-export function createClient<FetcherRequestInit extends RequestInit = RequestInit>(config: Config) {
+export function createClient<FetcherRequestInit extends RequestInit = RequestInit>(
+  config: Config<FetcherRequestInit>,
+) {
   return new Client<FetcherRequestInit>(config);
 }

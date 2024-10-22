@@ -1,4 +1,4 @@
-import { faker, fi } from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { z } from 'zod';
 
 const Customer = z.object({
@@ -12,7 +12,7 @@ const CreateCustomersResponse = z.object({
 export async function createAccount() {
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
-  const email = faker.internet.email({ firstName, lastName });
+  const email = faker.internet.email({ firstName, lastName, provider: 'example.com' });
   // Prefix is added to ensure that the password requirements are met
   const password = faker.internet.password({ pattern: /[a-zA-Z0-9]/, prefix: '1At', length: 10 });
   const address1 = faker.location.streetAddress();
@@ -55,6 +55,7 @@ export async function createAccount() {
               postal_code,
             },
           ],
+          origin_channel_id: process.env.BIGCOMMERCE_CHANNEL_ID,
         },
       ]),
     },

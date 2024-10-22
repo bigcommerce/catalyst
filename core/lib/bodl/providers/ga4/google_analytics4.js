@@ -1,12 +1,6 @@
-export function subscribeOnBodlEvents(measurementId, developerId, consentModeEnabled) {
-  window.dataLayer = window.dataLayer || [];
-
+export function subscribeOnBodlEvents(measurementId, consentModeEnabled) {
   if (!window || typeof window.bodlEvents === 'undefined') {
     return;
-  }
-
-  function gtag() {
-    dataLayer.push(arguments);
   }
 
   function addDestination(payload) {
@@ -292,94 +286,6 @@ export function subscribeOnBodlEvents(measurementId, developerId, consentModeEna
     }
   }
 
-  function setupConsent() {
-    if (!consentModeEnabled) {
-      return;
-    }
-
-    function transformConsentPayload(payload) {
-      var BODL_TO_GA4_CONSENT_CATEGORIES_MAP = {
-        advertising: ['ad_storage', 'ad_user_data', 'ad_personalization'],
-        analytics: ['analytics_storage'],
-        functional: ['functionality_storage'],
-      };
-
-      var transformed = {};
-
-      Object.keys(payload).forEach(function (category) {
-        var mapped = BODL_TO_GA4_CONSENT_CATEGORIES_MAP[category];
-        var permission = payload[category] ? 'granted' : 'denied';
-
-        if (Array.isArray(mapped)) {
-          mapped.forEach(function (ga4category) {
-            transformed[ga4category] = permission;
-          });
-        }
-      });
-
-      return transformed;
-    }
-
-    var DEFAULTS = {
-      advertising: false,
-      analytics: false,
-      functional: false,
-    };
-
-    function isConsentChanged(currentConsent) {
-      return Object.keys(DEFAULTS).some(function (category) {
-        return DEFAULTS[category] !== currentConsent[category];
-      });
-    }
-
-    function setupDefaults() {
-      gtag('consent', 'default', transformConsentPayload(DEFAULTS));
-    }
-
-    function subscribeOnConsentEvents() {
-      if (typeof window.bodlEvents.consent === 'undefined') {
-        return;
-      }
-
-      if (typeof window.bodlEvents.consent.loaded === 'function') {
-        window.bodlEvents.consent.loaded(function (payload) {
-          if (isConsentChanged(payload)) {
-            gtag('consent', 'update', transformConsentPayload(payload));
-          }
-        });
-      }
-
-      if (typeof window.bodlEvents.consent.updated === 'function') {
-        window.bodlEvents.consent.updated(function (payload) {
-          gtag('consent', 'update', transformConsentPayload(payload));
-        });
-      }
-    }
-
-    setupDefaults();
-    subscribeOnConsentEvents();
-  }
-
-  function setupGtag() {
-    function configureGtag() {
-      gtag('js', new Date());
-      gtag('set', 'developer_id.' + developerId, true);
-      gtag('config', measurementId);
-    }
-
-    function addGtagScript() {
-      var script = document.createElement('script');
-
-      script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-      script.async = true;
-
-      document.head.appendChild(script);
-    }
-
-    addGtagScript();
-    configureGtag();
-  }
-
   function subscribeOnEcommerceEvents() {
     subscribeOnCheckoutEvents();
     subscribeOnCartEvents();
@@ -387,7 +293,5 @@ export function subscribeOnBodlEvents(measurementId, developerId, consentModeEna
     subscribeOnPromotionEvents();
   }
 
-  setupConsent();
-  setupGtag();
   subscribeOnEcommerceEvents();
 }

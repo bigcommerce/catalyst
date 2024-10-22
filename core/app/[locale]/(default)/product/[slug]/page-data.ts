@@ -33,7 +33,7 @@ const ProductPageQuery = graphql(
           entityId
           name
           defaultImage {
-            url: urlTemplate
+            url: urlTemplate(lossy: true)
             altText
           }
           categories(first: 1) {

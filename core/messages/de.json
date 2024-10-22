@@ -6,6 +6,7 @@
         }
     },
     "ChangePassword": {
+        "title": "Passwort ändern",
         "heading": "Passwort ändern",
         "Form": {
             "newPasswordLabel": "Neues Passwort",
@@ -21,6 +22,7 @@
         }
     },
     "Login": {
+        "title": "Anmelden",
         "heading": "Anmelden",
         "Form": {
             "error": "Ihre E-Mail-Adresse oder Ihr Passwort ist falsch. Versuchen Sie, sich erneut anzumelden, oder setzen Sie Ihr Passwort zurück",
@@ -30,7 +32,7 @@
             "entePasswordMessage": "Geben Sie Ihr Passwort ein.",
             "submitting": "Wird eingereicht ...",
             "logIn": "Anmelden",
-            "resetPassword": "Passwort vergessen?"
+            "forgotPassword": "Passwort vergessen?"
         },
         "CreateAccount": {
             "heading": "Neuer Kunde?",
@@ -41,9 +43,26 @@
             "ordersTracking": "Tracking von neuen Bestellungen",
             "wishlists": "Hinzufügen von Artikeln zu Ihrer Wunschliste",
             "createLink": "Konto erstellen "
+        },
+        "ForgotPassword": {
+            "title": "Passwort vergessen",
+            "heading": "Passwort vergessen",
+            "Form": {
+                "description": "Geben Sie unten die mit Ihrem Konto verknüpfte E-Mail-Adresse ein. Wir senden Ihnen Anweisungen zum Zurücksetzen Ihres Passworts.",
+                "emailLabel": "E-Mail",
+                "emailValidationMessage": "Geben Sie eine gültige E-Mail-Adresse wie name@domain.com ein.",
+                "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
+                "confirmResetPassword": "Wenn die E-Mail-Adresse {email} mit einem Konto in unserem Geschäft verknüpft ist, haben wir Ihnen eine E-Mail zum Zurücksetzen des Passworts gesendet. Bitte überprüfen Sie Ihren Posteingang und Spam-Ordner, wenn Sie sie nicht sehen.",
+                "submitting": "Wird eingereicht ...",
+                "submit": "Passwort zurücksetzen"
+            },
+            "Errors": {
+                "error": "Unbekannter Fehler."
+            }
         }
     },
     "Register": {
+        "title": "Konto registrieren",
         "heading": "Neues Konto",
         "Form": {
             "submit": "Konto erstellen",
@@ -55,21 +74,6 @@
             "inputError": "Bei der Verarbeitung der Benutzereingabe ist ein Fehler aufgetreten.",
             "apiError": "Es scheint ein Serverfehler vorzuliegen. Bitte versuchen Sie es in ein paar Minuten erneut.",
             "error": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
-        }
-    },
-    "Reset": {
-        "heading": "Passwort zurücksetzen",
-        "Form": {
-            "description": "Geben Sie unten die mit Ihrem Konto verknüpfte E-Mail-Adresse ein. Wir senden Ihnen Anweisungen zum Zurücksetzen Ihres Passworts.",
-            "emailLabel": "E-Mail",
-            "emailValidationMessage": "Geben Sie eine gültige E-Mail-Adresse wie name@domain.com ein.",
-            "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
-            "confirmResetPassword": "Wenn die E-Mail-Adresse {email} mit einem Konto in unserem Geschäft verknüpft ist, haben wir Ihnen eine E-Mail zum Zurücksetzen des Passworts gesendet. Bitte überprüfen Sie Ihren Posteingang und Spam-Ordner, wenn Sie sie nicht sehen.",
-            "submitting": "Wird eingereicht ...",
-            "submit": "Passwort zurücksetzen"
-        },
-        "Errors": {
-            "error": "Unbekannter Fehler."
         }
     },
     "FacetedGroup": {
@@ -118,9 +122,14 @@
     "Category": {
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
         "products": "Produkte",
-        "items": "Artikel"
+        "items": "Artikel",
+        "Empty": {
+            "message": "Keine Produkte in dieser Kategorie",
+            "cta": "Zurück zur Startseite"
+        }
     },
     "Search": {
+        "title": "Suchergebnisse",
         "heading": "Suchen",
         "products": "Produkte",
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
@@ -128,6 +137,7 @@
     },
     "Account": {
         "Home": {
+            "title": "Mein Konto",
             "heading": "Mein Konto",
             "accountTabsLabel": "Konto-Registerkarten",
             "orders": "Bestellungen",
@@ -140,56 +150,53 @@
             "successMessage": "Ihr Konto wurde erfolgreich erstellt"
         },
         "Addresses": {
-            "defaultAddress": "Standard",
-            "alternativeAddress": "Abwechselnd",
-            "newAddress": "Neue Adresse",
+            "title": "Adressen",
             "addNewAddress": "Neue Adresse hinzufügen",
-            "addNewAddressSuccessMessage": "Adresse zu Ihrem Konto hinzugefügt",
-            "editAddress": "Adresse bearbeiten",
             "editButton": "Bearbeiten",
             "deleteButton": "Löschen",
-            "deleteAddress": "Adresse aus Ihrem Konto gelöscht.",
             "confirmDeleteAddress": "Adresse löschen",
             "deleteModalTitle": "Möchten Sie diese Adresse wirklich löschen?",
-            "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
-            "emptyTextValidationMessage": "Dieses Feld darf nicht leer sein",
-            "successMessage": "Die Adresse wurde erfolgreich erstellt.",
-            "submit": "Neue Adresse hinzufügen",
-            "cancel": "Abbrechen",
-            "submitting": "In Bearbeitung ..."
-        },
-        "AddAddress": {
-            "success": "Die Adresse wurde hinzugefügt.",
-            "Errors": {
-                "inputError": "Bei der Verarbeitung der Benutzereingabe ist ein Fehler aufgetreten.",
+            "Add": {
+                "title": "Adresse hinzufügen",
+                "heading": "Neue Adresse",
+                "Form": {
+                    "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
+                    "submit": "Neue Adresse hinzufügen",
+                    "submitting": "Adresse wird gespeichert...",
+                    "cancel": "Abbrechen",
+                    "success": "Adresse zu Ihrem Konto hinzugefügt",
+                    "Errors": {
+                        "inputError": "Bei der Verarbeitung der Benutzereingabe ist ein Fehler aufgetreten.",
+                        "error": "Unbekannter Fehler."
+                    }
+                }
+            },
+            "Edit": {
+                "title": "Adresse bearbeiten",
+                "heading": "Adresse bearbeiten",
+                "Form": {
+                    "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
+                    "submit": "Adresse bearbeiten",
+                    "submitting": "Adresse wird aktualisiert...",
+                    "cancel": "Abbrechen",
+                    "confirmDeleteAddress": "Adresse löschen",
+                    "deleteModalTitle": "Möchten Sie diese Adresse wirklich löschen?",
+                    "deleteButton": "Löschen",
+                    "success": "Die Adresse wurde erfolgreich aktualisiert.",
+                    "Errors": {
+                        "inputError": "Bei der Verarbeitung der Benutzereingabe ist ein Fehler aufgetreten.",
+                        "notFound": "Adresse existiert nicht.",
+                        "error": "Unbekannter Fehler."
+                    }
+                }
+            },
+            "Delete": {
+                "success": "Adresse aus Ihrem Konto gelöscht.",
                 "error": "Unbekannter Fehler."
             }
-        },
-        "DeleteAddress": {
-            "success": "Adresse aus Ihrem Konto gelöscht.",
-            "error": "Unbekannter Fehler."
-        },
-        "UpdateAddress": {
-            "success": "Die Adresse wurde aktualisiert.",
-            "Errors": {
-                "inputError": "Bei der Verarbeitung der Benutzereingabe ist ein Fehler aufgetreten.",
-                "notFound": "Adresse existiert nicht.",
-                "error": "Unbekannter Fehler."
-            }
-        },
-        "EditAddress": {
-            "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
-            "emptyTextValidationMessage": "Dieses Feld darf nicht leer sein",
-            "successMessage": "Die Adresse wurde erfolgreich aktualisiert.",
-            "cancel": "Abbrechen",
-            "deleteButton": "Löschen",
-            "deleteAddress": "Adresse aus Ihrem Konto gelöscht.",
-            "confirmDeleteAddress": "Adresse löschen",
-            "deleteModalTitle": "Möchten Sie diese Adresse wirklich löschen?",
-            "submit": "Adresse aktualisieren",
-            "submitting": "In Bearbeitung ..."
         },
         "Settings": {
+            "title": "Kontoeinstellungen",
             "emptyTextValidatoinMessage": "Dieses Feld darf nicht leer sein",
             "cancel": "Abbrechen",
             "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
@@ -207,8 +214,19 @@
                 "phone": "Geben Sie eine Telefonnummer ein"
             },
             "ChangePassword": {
+                "title": "Passwort ändern",
                 "success": "Passwort wurde erfolgreich aktualisiert.",
-                "error": "Unbekannter Fehler."
+                "error": "Unbekannter Fehler.",
+                "currentPasswordLabel": "Aktuelles Passwort",
+                "newPasswordLabel": "Neues Passwort",
+                "confirmPasswordLabel": "Passwort bestätigen",
+                "cancel": "Abbrechen",
+                "confirmPasswordValidationMessage": "Die eingegebenen Passwörter stimmen nicht überein. Bitte versuchen Sie es erneut.",
+                "newPasswordValidationMessage": "Das neue Passwort muss sich vom aktuellen Passwort unterscheiden oder/und mit dem Bestätigungspasswort übereinstimmen.",
+                "notEmptyMessage": "Feld sollte nicht leer sein",
+                "confirmChangePassword": "Ihr Passwort wurde erfolgreich aktualisiert. Bitte melden Sie sich mit Ihren neuen Zugangsdaten an.",
+                "spinnerText": "Wird eingereicht ...",
+                "submitText": "Passwort ändern"
             },
             "UpdateCustomer": {
                 "Errors": {
@@ -216,24 +234,10 @@
                     "notFound": "Kunde existiert nicht"
                 }
             }
-        },
-        "ChangePassword": {
-            "currentPasswordLabel": "Aktuelles Passwort",
-            "newPasswordLabel": "Neues Passwort",
-            "confirmPasswordLabel": "Passwort bestätigen",
-            "cancel": "Abbrechen",
-            "confirmPasswordValidationMessage": "Die eingegebenen Passwörter stimmen nicht überein. Bitte versuchen Sie es erneut.",
-            "newPasswordValidationMessage": "Das neue Passwort muss sich vom aktuellen Passwort unterscheiden oder/und mit dem Bestätigungspasswort übereinstimmen.",
-            "notEmptyMessage": "Feld sollte nicht leer sein",
-            "successMessage": "Passwort wurde erfolgreich aktualisiert!",
-            "confirmChangePassword": "Ihr Passwort wurde erfolgreich aktualisiert. Bitte melden Sie sich mit Ihren neuen Zugangsdaten an."
-        },
-        "SubmitChangePassword": {
-            "spinnerText": "Wird eingereicht ...",
-            "submitText": "Passwort ändern"
         }
     },
     "Blog": {
+        "title": "Blog",
         "SharingLinks": {
             "share": "Freigeben",
             "email": "E-Mail",
@@ -241,6 +245,7 @@
         }
     },
     "Cart": {
+        "title": "Warenkorb",
         "heading": "Ihr Warenkorb",
         "empty": "Ihr Warenkorb ist leer",
         "emptyDetails": "Sieht so aus, als hätten Sie nichts zu Ihrem Warenkorb hinzugefügt. Machen Sie weiter & erkunden Sie die Top-Kategorien",
@@ -311,6 +316,7 @@
         }
     },
     "Compare": {
+        "title": "Vergleichen",
         "heading": "Vergleich von {quantity, plural, =1 {1 Product} other {# Products}}",
         "nothingToCompare": "Nun, es gibt nichts Vergleichbares!",
         "helpingText": "Sie haben es irgendwie geschafft, hier zu landen, aber Sie müssen erst noch ein paar Produkte auswählen.",
@@ -361,7 +367,7 @@
             "sku": "SKU",
             "upc": "UPC",
             "minPurchase": "Mindestkaufwert",
-            "maxPurchase": "Maximale Abnahme",
+            "maxPurchase": "Höchstkaufwert",
             "availability": "Verfügbarkeit",
             "condition": "Zustand",
             "weight": "Gewicht",
@@ -398,10 +404,12 @@
         }
     },
     "Maintenance": {
+        "title": "WARTUNG",
         "message": "Wir sind wegen Wartungsarbeiten nicht erreichbar",
         "contactUs": "Sie können uns kontaktieren unter:"
     },
     "StoreSelector": {
+        "title": "Filialen-Auswahl",
         "heading": "Wählen Sie eine Sprache und Region aus"
     },
     "Error": {

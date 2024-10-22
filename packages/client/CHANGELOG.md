@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.11.0
+
+### Minor Changes
+
+- [#1483](https://github.com/bigcommerce/catalyst/pull/1483) [`d4120d3`](https://github.com/bigcommerce/catalyst/commit/d4120d39c10398e842a7ebe14ada685ec8aae3a8) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Start collecting telemetry.
+
+## 0.10.0
+
+### Minor Changes
+
+- [#1449](https://github.com/bigcommerce/catalyst/pull/1449) [`2d1526a`](https://github.com/bigcommerce/catalyst/commit/2d1526a50402b2eb677abd55f19fb904234d1a84) Thanks [@bookernath](https://github.com/bookernath)! - Support Trusted Proxy in client to support higher-traffic stores
+
+## 0.9.0
+
+### Minor Changes
+
+- [#1384](https://github.com/bigcommerce/catalyst/pull/1384) [`17692ca`](https://github.com/bigcommerce/catalyst/commit/17692caa3ff9b25180359d8a020470ece3e589f6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Add the ability to hook into the fetchOptions before the request is sent.
+
 ## 0.8.0
 
 ### Minor Changes
