@@ -50,6 +50,9 @@ const getMetaFieldsByProduct = async (entityId: Number, nameSpace: string = '', 
           'Content-Type': 'application/json',
           'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
         },
+        next: { 
+          revalidate: 3600 
+        }
       },
     ).then(res => res.json())
     .then(jsonData => {
