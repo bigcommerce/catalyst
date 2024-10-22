@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
-import { WishlistSheet } from '~/app/[locale]/(default)/account/(tabs)/wishlists/_components/wishlist-sheet';
+import { WishlistSheet } from '~/components/wishlist-sheet';
 import { Wishlists } from '~/app/[locale]/(default)/product/[slug]/_components/details';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { AddToCartButton } from '~/components/add-to-cart-button';

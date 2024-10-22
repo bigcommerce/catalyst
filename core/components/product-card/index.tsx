@@ -3,7 +3,7 @@ import { useFormatter } from 'next-intl';
 import {
   Wishlist,
   WishlistSheet,
-} from '~/app/[locale]/(default)/account/(tabs)/wishlists/_components/wishlist-sheet';
+} from '~/components/wishlist-sheet';
 import { ResultOf } from '~/client/graphql';
 import { ProductCard as ComponentProductCard } from '~/components/ui/product-card';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';

@@ -8,7 +8,7 @@ import { ExistingResultType } from '~/client/util';
 import { Button } from '~/components/ui/button';
 import { Sheet } from '~/components/ui/sheet';
 
-import { AccountStatusProvider } from '../../../_components/account-status-provider';
+import { AccountStatusProvider } from '../../app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
 
 import { addWishlistItems } from './update-wishlists-form/_actions/add-wishlist-items';
 import { WishlistSheetContent } from './wishlist-sheet-content';
