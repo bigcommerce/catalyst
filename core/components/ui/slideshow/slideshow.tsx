@@ -121,7 +121,7 @@ const Slideshow = ({ className, interval = 15_000, slides }: Props) => {
                     className="absolute -z-10 object-cover"
                     fill
                     placeholder="blur"
-                    priority
+                    priority={index === 0}
                     sizes="(max-width: 1536px) 100vw, 1536px"
                     src={slide.image.src}
                   />
