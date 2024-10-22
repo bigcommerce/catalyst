@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { AddToCartButton } from '~/components/add-to-cart-button';
+import { getCartData } from '~/components/get-cart-items';
 import { useCart } from '~/components/header/cart-provider';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
@@ -25,11 +26,13 @@ import { NumberField } from './fields/number-field';
 import { QuantityField } from './fields/quantity-field';
 import { TextField } from './fields/text-field';
 import { ProductFormData, useProductForm } from './use-product-form';
-import { imageManagerImageUrl } from '~/lib/store-assets';
+import { ProductFlyout } from './_actions/product-flyout';
+import { useCommonContext } from '~/components/common-context/common-provider';
 
 interface Props {
   data: FragmentOf<typeof ProductItemFragment>;
   multipleOptionIcon: string;
+  deleteIcon: string;
 }
 
 const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
@@ -51,7 +54,7 @@ const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
   };
 };
 
-export const Submit = ({ data: product }: Props) => {
+export const Submit = ({ data: product }: {data:Props['data']}) => {
   const { formState } = useFormContext();
   const { isSubmitting } = formState;
 
@@ -62,16 +65,17 @@ export const Submit = ({ data: product }: Props) => {
   );
 };
 
-export const ProductForm = ({ data: product, multipleOptionIcon }: Props) => {
+export const ProductForm = ({ data: product, multipleOptionIcon, deleteIcon }: Props) => {
   const t = useTranslations('Product.Form');
   const cart = useCart();
+  const productFlyout:any = useCommonContext();
   const productOptions = removeEdgesAndNodes(product.productOptions);
   if (productOptions?.length > 0) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const optionSearchParams = new URLSearchParams(searchParams.toString());
     const handleInteraction = (urlParamArray: any) => {
+      const optionSearchParams = new URLSearchParams(searchParams.toString());
       urlParamArray?.forEach((urlData: any) => {
         optionSearchParams.set(String(urlData?.selectedValue), String(urlData?.defaultValue));
       });
@@ -95,14 +99,25 @@ export const ProductForm = ({ data: product, multipleOptionIcon }: Props) => {
       handleInteraction(urlParamArray);
     }, []);
   }
+  
   const { handleSubmit, register, ...methods } = useProductForm();
 
   const productFormSubmit = async (data: ProductFormData) => {
     const quantity = Number(data.quantity);
-
     // Optimistic update
     cart.increment(quantity);
+    const result = await handleAddToCart(data, product);
 
+    if (result.error) {
+      toast.error(t('error'), {
+        icon: <AlertCircle className="text-error-secondary" />,
+      });
+
+      cart.decrement(quantity);
+
+      return;
+    }
+    
     toast.success(
       () => (
         <div className="flex items-center gap-3">
@@ -125,19 +140,26 @@ export const ProductForm = ({ data: product, multipleOptionIcon }: Props) => {
       ),
       { icon: <Check className="text-success-secondary" /> },
     );
-
-    const result = await handleAddToCart(data, product);
-
-    if (result.error) {
-      toast.error(t('error'), {
-        icon: <AlertCircle className="text-error-secondary" />,
-      });
-
-      cart.decrement(quantity);
-
-      return;
+    if(result?.data?.entityId) {
+      let cartData = await getCartData(result?.data?.entityId);
+      if(cartData?.data?.lineItems?.physicalItems) {
+        cartData?.data?.lineItems?.physicalItems?.forEach((items: any) => {
+          if(items?.productEntityId == data?.product_id) {
+            let selectedOptions = items?.selectedOptions;
+            let productSelection = true;
+            selectedOptions?.some((selOptions: any) => {
+              if(data?.['attribute_'+selOptions?.entityId] != selOptions?.valueEntityId) {
+                productSelection = false;
+                return true;
+              }
+            });
+            if(productSelection) {
+              productFlyout.setProductDataFn(items);
+            }
+          }
+        });
+      }
     }
-
     const transformedProduct = productItemTransform(product);
 
     bodl.cart.productAdded({
@@ -153,59 +175,53 @@ export const ProductForm = ({ data: product, multipleOptionIcon }: Props) => {
   };
 
   return (
-    <FormProvider handleSubmit={handleSubmit} register={register} {...methods}>
-      <form
-        className="product-variants flex flex-col gap-6 @container"
-        onSubmit={handleSubmit(productFormSubmit)}
-      >
-        <input type="hidden" value={product.entityId} {...register('product_id')} />
+    <>
+      <ProductFlyout data={product} deleteIcon={deleteIcon} />
+      <FormProvider handleSubmit={handleSubmit} register={register} {...methods}>
+        <form className="flex flex-col gap-6 @container product-variants" onSubmit={handleSubmit(productFormSubmit)}>
+          <input type="hidden" value={product.entityId} {...register('product_id')} />
 
-        {productOptions.map((option) => {
-          if (option.__typename === 'MultipleChoiceOption') {
-            return (
-              <MultipleChoiceField
-                key={option.entityId}
-                option={option}
-                multipleOptionIcon={multipleOptionIcon}
-              />
-            );
-          }
+          {productOptions.map((option) => {
+            if (option.__typename === 'MultipleChoiceOption') {
+              return <MultipleChoiceField key={option.entityId} option={option} multipleOptionIcon={multipleOptionIcon} />;
+            }
 
-          if (option.__typename === 'CheckboxOption') {
-            return <CheckboxField key={option.entityId} option={option} />;
-          }
+            if (option.__typename === 'CheckboxOption') {
+              return <CheckboxField key={option.entityId} option={option} />;
+            }
 
-          if (option.__typename === 'NumberFieldOption') {
-            return <NumberField key={option.entityId} option={option} />;
-          }
+            if (option.__typename === 'NumberFieldOption') {
+              return <NumberField key={option.entityId} option={option} />;
+            }
 
-          if (option.__typename === 'MultiLineTextFieldOption') {
-            return <MultiLineTextField key={option.entityId} option={option} />;
-          }
+            if (option.__typename === 'MultiLineTextFieldOption') {
+              return <MultiLineTextField key={option.entityId} option={option} />;
+            }
 
-          if (option.__typename === 'TextFieldOption') {
-            return <TextField key={option.entityId} option={option} />;
-          }
+            if (option.__typename === 'TextFieldOption') {
+              return <TextField key={option.entityId} option={option} />;
+            }
 
-          if (option.__typename === 'DateFieldOption') {
-            return <DateField key={option.entityId} option={option} />;
-          }
+            if (option.__typename === 'DateFieldOption') {
+              return <DateField key={option.entityId} option={option} />;
+            }
 
-          return null;
-        })}
+            return null;
+          })}
 
-        <QuantityField />
+          <QuantityField />
 
-        <div className="mt-0 flex flex-col gap-4 @md:flex-row xl:mt-4">
-          <Submit data={product} multipleOptionIcon={''} />
-          <div className="hidden w-full">
-            <Button disabled type="submit" variant="secondary">
-              <Heart aria-hidden="true" className="mr-2" />
-              <span>{t('saveToWishlist')}</span>
-            </Button>
+          <div className="mt-0 xl:mt-4 flex flex-col gap-4 @md:flex-row">
+            <Submit data={product} />
+            <div className="w-full hidden">
+              <Button disabled type="submit" variant="secondary">
+                <Heart aria-hidden="true" className="mr-2" />
+                <span>{t('saveToWishlist')}</span>
+              </Button>
+            </div>
           </div>
-        </div>
-      </form>
-    </FormProvider>
+        </form>
+      </FormProvider>
+    </>
   );
 };

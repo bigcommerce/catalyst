@@ -19,10 +19,13 @@ import { logout } from './_actions/logout';
 import { CartLink } from './cart';
 import { HeaderFragment } from './fragment';
 import { QuickSearch } from './quick-search';
+import { BcImage } from '../bc-image';
+import { imageManagerImageUrl } from '~/lib/store-assets';
 
 interface Props {
   cart: ReactNode;
 }
+const headerCart = imageManagerImageUrl('header-cart-icon.png', '25w');
 
 export const Header = async ({ cart }: Props) => {
   const locale = await getLocale();
@@ -76,7 +79,17 @@ export const Header = async ({ cart }: Props) => {
                 className="p-3 text-black hover:bg-transparent hover:text-primary"
                 variant="subtle"
               >
-                <Hand className="mr-2" />
+                {/* <Hand className="mr-2" /> */}
+
+                <BcImage
+                  alt="an assortment of brandless products against a blank background"
+                  className="mr-2"
+                  height={28}
+                  priority={true}
+                  src={imageManagerImageUrl('waving-hand-1-.png', '20w')}
+                  width={28}
+                />
+
                 {'Support'}
               </Button>
             }
@@ -108,7 +121,14 @@ export const Header = async ({ cart }: Props) => {
                 className="p-3 text-black hover:bg-transparent hover:text-primary"
                 variant="subtle"
               >
-                <User className="mr-2" />
+                <BcImage
+                  className="mr-2"
+                  alt="an assortment of brandless products against a blank background"
+                  height={16}
+                  priority={true}
+                  src={imageManagerImageUrl('account-icon.png', '20w')}
+                  width={16}
+                />
                 {t('Account.account')}
               </Button>
             }
@@ -117,11 +137,11 @@ export const Header = async ({ cart }: Props) => {
       }
       activeLocale={locale}
       cart={
-        <p role="status">
+        <p role="status" className="header-cart-icon">
           <Suspense
             fallback={
               <CartLink>
-                <ShoppingCart aria-label="cart" />
+                <ShoppingCart className="hidden" aria-label="cart" />
               </CartLink>
             }
           >

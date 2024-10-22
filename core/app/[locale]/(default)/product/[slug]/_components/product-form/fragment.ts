@@ -16,6 +16,7 @@ export const ProductFormFragment = graphql(
         edges {
           node {
             entityId
+            sku
           }
         }
       }
