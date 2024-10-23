@@ -15,6 +15,7 @@
   "dependencies": {
     "@bigcommerce/catalyst-client": "workspace:^",
     "@icons-pack/react-simple-icons": "^10.0.0",
+    "@next/bundle-analyzer": "15.0.2-canary.1",
     "@radix-ui/react-accordion": "^1.2.1",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-checkbox": "^1.1.2",
@@ -65,7 +66,6 @@
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@faker-js/faker": "^9.0.3",
     "@gql.tada/cli-utils": "^1.6.3",
-    "@next/bundle-analyzer": "15.0.2-canary.1",
     "@playwright/test": "^1.48.0",
     "@tailwindcss/container-queries": "^0.1.1",
     "@types/gtag.js": "^0.0.20",
