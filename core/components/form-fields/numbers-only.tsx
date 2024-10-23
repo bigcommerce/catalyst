@@ -48,21 +48,21 @@ export const NumbersOnly = ({ defaultValue, field, isValid, name, onChange }: Nu
       <div className="relative h-7">
         {field.isRequired && (
           <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-error-secondary"
+            className="inline-flex w-full text-xs font-normal text-error"
             match="valueMissing"
           >
             {t('empty')}
           </FieldMessage>
         )}
         <FieldMessage
-          className="inline-flex w-full text-xs font-normal text-error-secondary"
+          className="inline-flex w-full text-xs font-normal text-error"
           match="typeMismatch"
         >
           {t('numbersOnly')}
         </FieldMessage>
         {Boolean(field.minNumber) && (
           <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-error-secondary"
+            className="inline-flex w-full text-xs font-normal text-error"
             match="rangeUnderflow"
           >
             {t('numbersUnderflow', { min: field.minNumber })}
@@ -70,7 +70,7 @@ export const NumbersOnly = ({ defaultValue, field, isValid, name, onChange }: Nu
         )}
         {Boolean(field.maxNumber) && (
           <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-error-secondary"
+            className="inline-flex w-full text-xs font-normal text-error"
             match="rangeOverflow"
           >
             {t('numbersOverflow', { max: field.maxNumber })}
