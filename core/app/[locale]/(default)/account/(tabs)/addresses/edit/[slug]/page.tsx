@@ -2,7 +2,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { FormFieldValuesFragment } from '~/client/fragments/form-fields-values';
 import { PaginationFragment } from '~/client/fragments/pagination';
@@ -104,12 +104,11 @@ interface Props {
 
 export default async function Edit({ params: { slug } }: Props) {
   const t = await getTranslations('Account.Addresses.Edit');
-
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data } = await client.fetch({
     document: CustomerEditAddressQuery,
-    customerId,
+    customerAccessToken,
     fetchOptions: { cache: 'no-store' },
     variables: {
       countryCode: null,
