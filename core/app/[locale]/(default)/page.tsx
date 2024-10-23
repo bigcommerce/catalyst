@@ -35,12 +35,12 @@ const HomePageQuery = graphql(
 );
 
 interface Props {
-  params: {
-    locale: LocaleType;
-  };
+  params: Promise<{ locale: LocaleType }>;
 }
 
-export default async function Home({ params: { locale } }: Props) {
+export default async function Home({ params }: Props) {
+  const { locale } = await params;
+
   setRequestLocale(locale);
 
   const t = await getTranslations('Home');
