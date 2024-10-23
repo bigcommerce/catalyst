@@ -75,7 +75,7 @@ export const LoginForm = () => {
           <p>{t('Form.error')}</p>
         </Message>
       )}
-      <Form action={formAction} className="mb-8 md:mb-14 flex flex-col gap-3">
+      <Form action={formAction} className="mb-8 flex flex-col gap-3 md:mb-14">
         <Field className="relative space-y-2 pb-7" name="email">
           <FieldLabel htmlFor="email">{t('Form.emailLabel')}</FieldLabel>
           <FieldControl asChild>
@@ -120,7 +120,7 @@ export const LoginForm = () => {
             <SubmitButton />
           </FormSubmit>
           <Link
-            className="my-5 mx-auto md:mx-0 px-8 py-3 inline-flex items-center justify-start font-semibold text-primary hover:text-secondary md:my-0"
+            className="mx-auto my-5 inline-flex items-center justify-start px-8 py-3 font-semibold text-primary hover:text-secondary md:mx-0 md:my-0"
             href="/login/forgot-password"
           >
             {t('Form.forgotPassword')}
