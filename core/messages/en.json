@@ -483,26 +483,6 @@
         "phone": "Enter a phone number",
         "postalCode": "Enter a zip / postcode"
       }
-    },
-    "Slideshow": {
-      "SlideOne": {
-        "title": "Fall Collection",
-        "description": "Cozy up with our newest arrivals for the fall season! From stylish jackets to soft knits, discover the must-haves to keep you warm and trendy.",
-        "imageAltText": "Three people staggered wearing different shades of sweaters.",
-        "cta": "Shop the Fall Collection"
-      },
-      "SlideTwo": {
-        "title": "Exclusive Offer: 20% Off!",
-        "description": "Limited-time sale! Get 20% off on all items for a fresh wardrobe update. Don't miss out on these savings, available for a short time only.",
-        "imageAltText": "A woman with a red top, looking to the right with a smile.",
-        "cta": "Grab Your Discount"
-      },
-      "SlideThree": {
-        "title": "Sustainable Fashion",
-        "description": "Fashion with a purpose. Explore our eco-friendly clothing line, made from sustainable materials. Look good and feel good knowing you're making a difference.",
-        "imageAltText": "A man wearing a green jacket and backpack looks confidently into the distance.",
-        "cta": "Explore Sustainable Styles"
-      }
     }
   }
 }
