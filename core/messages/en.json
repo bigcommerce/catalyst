@@ -26,9 +26,9 @@
     "heading": "Log In",
     "Form": {
       "error": "Your email address or password is incorrect. Try signing in again or reset your password",
-      "emailLabel": "Email",
+      "emailLabel": "Email Address (Login ID)*",
       "enterEmailMessage": "Enter your email",
-      "passwordLabel": "Password",
+      "passwordLabel": "Password*",
       "entePasswordMessage": "Enter your password",
       "submitting": "Submitting...",
       "logIn": "Log in",
@@ -37,12 +37,13 @@
     "CreateAccount": {
       "heading": "New customer?",
       "accountBenefits": "Create an account with us and you'll be able to:",
-      "fastCheckout": "Check out faster",
-      "multipleAddresses": "Save multiple shipping addresses",
-      "ordersHistory": "Access your order history",
-      "ordersTracking":  "Track new orders",
-      "wishlists": "Save items to your Wishlist",
-      "createLink": "Create Account "
+      "fastCheckout": "Use your points across our entire network!",
+      "multipleAddresses": "Exclusive promotions on the products you love",
+      "ordersHistory": "Example Explanation: ## points for every $ spent + save 5% extra every 1000 points ($12345.55 spent = 20% Discount on EVERY future purchase)",
+      "ordersTracking":  "Save your order history, checkout faster",
+      "wishlists": "Save Favorites and Lists",
+      "exclusiveAccess":"First look at sales, new arrivals, news, and restocks!",
+      "createLink": "CREATE AN ACCOUNT"
     },
     "ForgotPassword": {
       "title": "Forgot password",
