@@ -1,53 +1,37 @@
-import { useTranslations } from 'next-intl';
-
 import { Slideshow as ComponentsSlideshow } from '~/components/ui/slideshow';
 
-import Slide1 from './slide-1.jpg';
-import Slide2 from './slide-2.jpg';
-import Slide3 from './slide-3.jpg';
+import SlideshowBG from './slideshow-bg-01.jpg';
 
-export const Slideshow = () => {
-  const t = useTranslations('Components.Slideshow');
+const slides = [
+  {
+    cta: { label: 'Shop now', href: '/#' },
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.',
+    image: {
+      src: SlideshowBG,
+      altText: 'An assortment of brandless products against a blank background',
+      blurDataUrl:
+        'data:image/jpeg;base64,/9j/4QC8RXhpZgAASUkqAAgAAAAGABIBAwABAAAAAQAAABoBBQABAAAAVgAAABsBBQABAAAAXgAAACgBAwABAAAAAgAAABMCAwABAAAAAQAAAGmHBAABAAAAZgAAAAAAAABIAAAAAQAAAEgAAAABAAAABgAAkAcABAAAADAyMTABkQcABAAAAAECAwAAoAcABAAAADAxMDABoAMAAQAAAP//AAACoAQAAQAAAAoAAAADoAQAAQAAAAcAAAAAAAAA/9sAQwADAgIDAgIDAwMDBAMDBAUIBQUEBAUKBwcGCAwKDAwLCgsLDQ4SEA0OEQ4LCxAWEBETFBUVFQwPFxgWFBgSFBUU/9sAQwEDBAQFBAUJBQUJFA0LDRQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU/8AAEQgABwAKAwERAAIRAQMRAf/EABUAAQEAAAAAAAAAAAAAAAAAAAMJ/8QAIBAAAQQBBAMAAAAAAAAAAAAAAQIDBAURABIhMQYjgf/EABYBAQEBAAAAAAAAAAAAAAAAAAEAAv/EABkRAAIDAQAAAAAAAAAAAAAAAAARAQIhQf/aAAwDAQACEQMRAD8AoZ5EzayKWW3Syo0GyKPTJlsF9ts9klsKTu46GQOfms2awJfAKywmt1sRNgqK7PS0gSHI4WltTmBuKQckJJzgE9aYa0tP/9k=',
+    },
+    key: 1,
+    title: '25% Off Sale',
+  },
 
-  return (
-    <ComponentsSlideshow
-      slides={[
-        {
-          cta: { label: t('SlideOne.cta'), href: '/#' },
-          description: t('SlideOne.description'),
-          image: {
-            src: Slide1,
-            altText: t('SlideOne.imageAltText'),
-            blurDataUrl:
-              'data:image/jpeg;base64,/9j/4QC8RXhpZgAASUkqAAgAAAAGABIBAwABAAAAAQAAABoBBQABAAAAVgAAABsBBQABAAAAXgAAACgBAwABAAAAAgAAABMCAwABAAAAAQAAAGmHBAABAAAAZgAAAAAAAABIAAAAAQAAAEgAAAABAAAABgAAkAcABAAAADAyMTABkQcABAAAAAECAwAAoAcABAAAADAxMDABoAMAAQAAAP//AAACoAQAAQAAAAoAAAADoAQAAQAAAAYAAAAAAAAA/9sAQwADAgIDAgIDAwMDBAMDBAUIBQUEBAUKBwcGCAwKDAwLCgsLDQ4SEA0OEQ4LCxAWEBETFBUVFQwPFxgWFBgSFBUU/9sAQwEDBAQFBAUJBQUJFA0LDRQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU/8AAEQgABgAKAwERAAIRAQMRAf/EABUAAQEAAAAAAAAAAAAAAAAAAAQI/8QAIhAAAgIBAwQDAAAAAAAAAAAAAQIDBBEABRMGCBIxIVFh/8QAFQEBAQAAAAAAAAAAAAAAAAAABAb/xAAfEQEAAQQBBQAAAAAAAAAAAAABAAIEESESMVGBkbH/2gAMAwEAAhEDEQA/AGd4W6bnVm6Qevekjqz0Zo0rqxVVm5UHIcH3h0GfYCn70GoasHbcTa8aSvW+nuRXcuS3bc9h/FnldpCzqrMSTnJJHyf3VI34uQweIAtkML9n/9k=',
-          },
-          title: t('SlideOne.title'),
-        },
+  {
+    cta: { label: 'Shop now', href: '/#' },
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.',
+    key: 2,
+    title: 'Great Deals',
+  },
 
-        {
-          cta: { label: t('SlideTwo.cta'), href: '/#' },
-          description: t('SlideTwo.description'),
-          image: {
-            src: Slide2,
-            altText: t('SlideTwo.imageAltText'),
-            blurDataUrl:
-              'data:image/jpeg;base64,/9j/4QC8RXhpZgAASUkqAAgAAAAGABIBAwABAAAAAQAAABoBBQABAAAAVgAAABsBBQABAAAAXgAAACgBAwABAAAAAgAAABMCAwABAAAAAQAAAGmHBAABAAAAZgAAAAAAAABIAAAAAQAAAEgAAAABAAAABgAAkAcABAAAADAyMTABkQcABAAAAAECAwAAoAcABAAAADAxMDABoAMAAQAAAP//AAACoAQAAQAAAAoAAAADoAQAAQAAAAYAAAAAAAAA/9sAQwADAgIDAgIDAwMDBAMDBAUIBQUEBAUKBwcGCAwKDAwLCgsLDQ4SEA0OEQ4LCxAWEBETFBUVFQwPFxgWFBgSFBUU/9sAQwEDBAQFBAUJBQUJFA0LDRQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU/8AAEQgABgAKAwERAAIRAQMRAf/EABQAAQAAAAAAAAAAAAAAAAAAAAb/xAAiEAACAQMCBwAAAAAAAAAAAAABAgMEBREABwYTFiFRYYH/xAAWAQEBAQAAAAAAAAAAAAAAAAADBAb/xAAhEQACAQMEAwEAAAAAAAAAAAABAhEAAwQFEiExBkFhUf/aAAwDAQACEQMRAD8AZbybs9O7hcH2mO1QVUEUS3QvOMlZDNyAVHkKXwe2C3wlm3bqOjWuhyfs8U/imi4Go42Qubu3vKoViAVG7mfpHUyAR7p7X2CjSuqFES4EjAZHs6uZBJrCW3LICfyv/9k=',
-          },
-          title: t('SlideTwo.title'),
-        },
+  {
+    cta: { label: 'Shop now', href: '/#' },
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.',
+    key: 3,
+    title: 'Low Prices',
+  },
+];
 
-        {
-          cta: { label: t('SlideThree.cta'), href: '/#' },
-          description: t('SlideThree.description'),
-          image: {
-            src: Slide3,
-            altText: t('SlideThree.imageAltText'),
-            blurDataUrl:
-              'data:image/jpeg;base64,/9j/4QC8RXhpZgAASUkqAAgAAAAGABIBAwABAAAAAQAAABoBBQABAAAAVgAAABsBBQABAAAAXgAAACgBAwABAAAAAgAAABMCAwABAAAAAQAAAGmHBAABAAAAZgAAAAAAAABIAAAAAQAAAEgAAAABAAAABgAAkAcABAAAADAyMTABkQcABAAAAAECAwAAoAcABAAAADAxMDABoAMAAQAAAP//AAACoAQAAQAAAAoAAAADoAQAAQAAAAYAAAAAAAAA/9sAQwADAgIDAgIDAwMDBAMDBAUIBQUEBAUKBwcGCAwKDAwLCgsLDQ4SEA0OEQ4LCxAWEBETFBUVFQwPFxgWFBgSFBUU/9sAQwEDBAQFBAUJBQUJFA0LDRQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU/8AAEQgABgAKAwERAAIRAQMRAf/EABUAAQEAAAAAAAAAAAAAAAAAAAQH/8QAHxAAAgEEAwEBAAAAAAAAAAAAAQIDBAURIQAGQQcI/8QAFgEBAQEAAAAAAAAAAAAAAAAABQME/8QAHxEAAQMDBQAAAAAAAAAAAAAAAQACAwQRQQUhIjGB/9oADAMBAAIRAxEAPwC0fr/vNV1yfpV0tsklNVW65CrVF0k4ZlhaOTe1KSP4d4PnC9SrX0ksTW5uT5hYJJiziB2h3H6JWpcKpYkQRCVggYbAycZ4/dX2X//Z',
-          },
-          title: t('SlideThree.title'),
-        },
-      ]}
-    />
-  );
-};
+export const Slideshow = () => <ComponentsSlideshow slides={slides} />;
