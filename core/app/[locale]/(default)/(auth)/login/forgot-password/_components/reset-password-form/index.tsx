@@ -144,7 +144,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-gray-500"
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-gray-500"
             match="valueMissing"
           >
             {t('emailValidationMessage')}

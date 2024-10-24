@@ -52,7 +52,7 @@ export const MultilineText = ({
       <div className="relative h-7">
         {field.isRequired && (
           <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-error-secondary"
+            className="inline-flex w-full text-xs font-normal text-error"
             match="valueMissing"
           >
             {t('empty')}

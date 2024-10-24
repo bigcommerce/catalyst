@@ -85,7 +85,7 @@ export const Picklist = ({
       </FieldControl>
       <div className="relative h-7">
         {validationError && (
-          <FieldMessage className="inline-flex w-full text-xs font-normal text-error-secondary">
+          <FieldMessage className="inline-flex w-full text-xs font-normal text-error">
             {t('empty')}
           </FieldMessage>
         )}
