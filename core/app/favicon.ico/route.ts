@@ -28,6 +28,7 @@ export const GET = async () => {
   const { data } = await client.fetch({
     document: GetFaviconQuery,
     channelId: getChannelIdFromLocale(defaultLocale),
+    fetchOptions: { cache: 'no-store' }, // disable caching to get the latest favicon at build time
   });
 
   const faviconUrl = data.site.settings?.faviconUrl;
