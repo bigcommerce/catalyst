@@ -1,6 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { useFormatter, useTranslations } from 'next-intl';
-
 import { PricingFragment } from '~/client/fragments/pricing';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { FragmentOf, graphql } from '~/client/graphql';
@@ -17,6 +16,7 @@ import { ProductSchema, ProductSchemaFragment } from './product-schema';
 import { ReviewSummary, ReviewSummaryFragment } from './review-summary';
 import { Coupon } from './belami-product-coupon-pdp';
 import { BcImage } from '~/components/bc-image';
+import ProductDetailDropdown from '~/components/ui/pdp/belami-product-details-pdp';
 
 export const DetailsFragment = graphql(
   `
@@ -65,9 +65,10 @@ export const DetailsFragment = graphql(
 
 interface Props {
   product: FragmentOf<typeof DetailsFragment>;
+  collectionValue?: string;
 }
 
-export const Details = ({ product }: Props) => {
+export const Details = ({ product, collectionValue }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
 
@@ -75,11 +76,10 @@ export const Details = ({ product }: Props) => {
   const deleteIcon = imageManagerImageUrl('delete.png', '20w');
 
   const showPriceRange =
-    product.prices?.priceRange.min.value !== product.prices?.priceRange.max.value;
+    product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
 
   const certificationIcon = imageManagerImageUrl('vector-7-.png', '20w');
   const multipleOptionIcon = imageManagerImageUrl('vector-5-.png', '20w');
-
 
   return (
     <div>
@@ -97,10 +97,16 @@ export const Details = ({ product }: Props) => {
             by{' '}
             <span className="products-underline border-b border-black">{product.brand?.name}</span>
           </span>
-          <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-            from the{' '}
-            <span className="products-underline border-b border-black">Galtech International</span>
-          </span>
+
+          {collectionValue && (
+            <>
+              {console.log('Collections Value:', collectionValue)}
+              <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+                from the{' '}
+                <span className="products-underline border-b border-black">{collectionValue}</span>
+              </span>
+            </>
+          )}
         </div>
 
         <ReviewSummary data={product} />
@@ -159,7 +165,6 @@ export const Details = ({ product }: Props) => {
           )}
         </div>
       )}
-
       {/* coupon */}
       <Coupon />
 
@@ -246,10 +251,10 @@ export const Details = ({ product }: Props) => {
       <RequestQuote />
 
       {/* Certifications & Ratings */}
-      <CertificationsAndRatings certificationIcon={certificationIcon} />
+      <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
 
       {/* Dropdown */}
-      <Dropdown />
+      <ProductDetailDropdown product={product} />
 
       {/* Shipping & Returns */}
       <ShippingReturns />

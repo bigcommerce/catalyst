@@ -1,3 +1,5 @@
+// pages.tsx
+
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -94,16 +96,33 @@ export default async function Product({ params: { locale, slug }, searchParams }
   if (!product) {
     return notFound();
   }
+  // Fetch the meta fields for the product
+  let metaFields = await GetProductMetaFields(product.entityId, '');
+  // console.log("page-----------------------------metafields", JSON.stringify(metaFields, null, 2));
 
-  let metaFields = await GetProductMetaFields(productId, '');
+  // Extract the collection value from meta fields
+  let collectionValue = '';
+  let collectionMetaField = metaFields?.find(
+    // (field: { key: string }) => field?.key === 'collection',
+    (field: { key: string }) => field?.key === 'collection',
+  );
+  if (collectionMetaField?.value) {
+    // console.log('page------Collection value:', collectionMetaField.value);
+    collectionValue = collectionMetaField.value; // Store the collection value
+  } else {
+    console.log('Collection meta field not found');
+  }
+
   const category = removeEdgesAndNodes(product.categories).at(0);
   if (category?.breadcrumbs?.edges) {
     category.breadcrumbs.edges.push({ node: { name: product?.sku, path: '#' } });
   }
 
+
+
   return (
     <>
-      <ProductProvider getMetaFields={metaFields}>
+      <ProductProvider getMetaFields={metaFields} >
         {category && <Breadcrumbs category={category} />}
         <div className="main-product-details">
           <h2 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
@@ -116,10 +135,18 @@ export default async function Product({ params: { locale, slug }, searchParams }
             </span>
             <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
               by{' '}
-              <span className="products-underline border-b border-black">{product.brand?.name}</span>
+              <span className="products-underline border-b border-black">
+                {product.brand?.name}
+              </span>
             </span>
-          </div>
 
+            {collectionMetaField?.value && (
+              <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+                from the{' '}
+                <span className="products-underline border-b border-black">{collectionValue}</span>
+              </span>
+            )}
+          </div>
           <ReviewSummary data={product} />
         </div>
         <div className="mb-4 mt-4 lg:grid lg:grid-cols-2 lg:gap-8 xl:mb-12">
@@ -129,7 +156,7 @@ export default async function Product({ params: { locale, slug }, searchParams }
             bannerIcon={bannerIcon}
             galleryExpandIcon={galleryExpandIcon} // Pass galleryExpandIcon to Gallery component
           />
-          <Details product={product} />
+          <Details product={product} collectionValue={collectionValue} />
           <div className="lg:col-span-2">
             <Description product={product} />
             <RelatedProducts productId={product.entityId} />
