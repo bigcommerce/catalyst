@@ -120,7 +120,7 @@ const Wishlist = ({ setWishlistBook, wishlist }: WishlistProps) => {
             <ul className="flex gap-4 [&>*:nth-child(n+2)]:hidden md:[&>*:nth-child(n+2)]:list-item md:[&>*:nth-child(n+4)]:hidden lg:[&>*:nth-child(n+4)]:list-item lg:[&>*:nth-child(n+5)]:hidden xl:[&>*:nth-child(n+5)]:list-item lg:[&>*:nth-child(n+7)]:hidden">
               {items.slice(0, VisibleWishlistItemsPerDevice.xl).map((item) => {
                 const { entityId: productId, product } = item;
-                const defaultImage = product.images.find(({ isDefault }) => isDefault);
+
                 const showPriceRange =
                   product.prices?.priceRange.min.value !== product.prices?.priceRange.max.value;
 
@@ -128,12 +128,12 @@ const Wishlist = ({ setWishlistBook, wishlist }: WishlistProps) => {
                   <li className="w-32 sm:w-40 md:w-36" key={productId}>
                     <Link className="mb-2 flex" href={product.path}>
                       <div className="flex h-32 w-full sm:h-40 md:h-36">
-                        {defaultImage ? (
+                        {product.defaultImage ? (
                           <BcImage
-                            alt={defaultImage.altText}
+                            alt={product.defaultImage.altText}
                             className="object-contain"
                             height={300}
-                            src={defaultImage.url}
+                            src={product.defaultImage.url}
                             width={300}
                           />
                         ) : (
