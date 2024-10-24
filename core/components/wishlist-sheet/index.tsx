@@ -1,3 +1,5 @@
+'use client';
+
 import { Heart } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { PropsWithChildren, useEffect, useState } from 'react';
@@ -6,7 +8,7 @@ import { ExistingResultType } from '~/client/util';
 import { Button } from '~/components/ui/button';
 import { Sheet } from '~/components/ui/sheet';
 
-import { AccountStatusProvider } from '../../../_components/account-status-provider';
+import { AccountStatusProvider } from '../../app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
 
 import { addWishlistItems } from './update-wishlists-form/_actions/add-wishlist-items';
 import { WishlistSheetContent } from './wishlist-sheet-content';
@@ -15,26 +17,29 @@ export type Wishlist = NonNullable<ExistingResultType<typeof addWishlistItems>['
 
 interface WishlistSheetProps extends PropsWithChildren {
   productId: number;
-  wishlistsData: Wishlist[];
+  trigger?: 'button' | 'icon';
+  wishlistsList: Wishlist[];
 }
 
-export const WishlistSheet = ({ productId, wishlistsData }: WishlistSheetProps) => {
+export const WishlistSheet = ({
+  productId,
+  trigger = 'button',
+  wishlistsList,
+}: WishlistSheetProps) => {
   const t = useTranslations('Account.Wishlist.Sheet');
 
-  const [wishlists, setWishlists] = useState(() => {
-    if (wishlistsData.length === 0) {
-      return [{ items: [], entityId: 0, name: t('favorites') }];
-    }
+  const [wishlists, setWishlists] = useState(wishlistsList);
 
-    return wishlistsData;
-  });
+  useEffect(() => {
+    setWishlists(wishlistsList);
+  }, [wishlistsList]);
 
   const [saved, setSaved] = useState(() => {
-    if (wishlistsData.length === 0) {
+    if (wishlistsList.length === 0) {
       return false;
     }
 
-    return wishlistsData.some(({ items }) => {
+    return wishlistsList.some(({ items }) => {
       return items.some(({ product }) => product.entityId === productId);
     });
   });
@@ -52,14 +57,26 @@ export const WishlistSheet = ({ productId, wishlistsData }: WishlistSheetProps) 
       side="right"
       title={t('title')}
       trigger={
-        <Button type="button" variant="secondary">
-          <Heart
-            aria-hidden="true"
-            className="mx-2"
-            fill={saved ? 'currentColor' : 'transparent'}
-          />
-          <span>{t(saved ? 'saved' : 'saveToWishlist')}</span>
-        </Button>
+        trigger === 'button' ? (
+          <Button type="button" variant="secondary">
+            <Heart
+              aria-hidden="true"
+              className="mx-2"
+              fill={saved ? 'currentColor' : 'transparent'}
+            />
+            <span>{t(saved ? 'saved' : 'saveToWishlist')}</span>
+          </Button>
+        ) : (
+          <Button
+            aria-label={t('open')}
+            className="p-3 text-black hover:bg-transparent hover:text-black"
+            title={t('open')}
+            type="button"
+            variant="subtle"
+          >
+            <Heart fill="currentColor" />
+          </Button>
+        )
       }
     >
       <AccountStatusProvider>

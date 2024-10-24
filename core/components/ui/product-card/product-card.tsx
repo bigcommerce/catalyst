@@ -40,6 +40,7 @@ interface Props extends Product {
   imagePriority?: boolean;
   imageSize?: 'square' | 'tall' | 'wide';
   deleteFromWishlist?: ReactNode;
+  wishlistSheet?: ReactNode;
   showCompare?: boolean;
 }
 
@@ -53,6 +54,7 @@ const ProductCard = ({
   price,
   id,
   deleteFromWishlist,
+  wishlistSheet,
   showCompare = true,
   subtitle,
   name,
@@ -119,6 +121,7 @@ const ProductCard = ({
       </div>
     </div>
     {deleteFromWishlist ? <div className="absolute right-0 top-0">{deleteFromWishlist}</div> : null}
+    {wishlistSheet ? <div className="absolute right-0 top-0">{wishlistSheet}</div> : null}
     {addToCart}
   </div>
 );
