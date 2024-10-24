@@ -108,3 +108,76 @@ const getMetaFieldsByProductVariant = async (entityId: Number, variantId: number
     console.error(error);
   }
 };
+
+export const GetVariantsByProductId = async (entityId: Number) => {
+  try {
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/catalog/products/${entityId}/variants`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        next: { 
+          revalidate: 3600 
+        }
+      },
+    ).then(res => res.json())
+    .then(jsonData => {
+        return jsonData;
+    });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const GetProductBySKU = async (sku: string) => {
+  try {
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/catalog/products?sku:in=${sku}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        next: { 
+          revalidate: 3600 
+        }
+      },
+    ).then(res => res.json())
+    .then(jsonData => {
+        return jsonData;
+    });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+export const GetProductImagesById = async (id: Number) => {
+  try {
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/catalog/products?sku:in=${sku}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        next: { 
+          revalidate: 3600 
+        }
+      },
+    ).then(res => res.json())
+    .then(jsonData => {
+        return jsonData;
+    });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};

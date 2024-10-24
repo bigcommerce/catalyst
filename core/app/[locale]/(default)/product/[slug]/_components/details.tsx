@@ -74,6 +74,7 @@ export const Details = ({ product, collectionValue }: Props) => {
 
   const customFields = removeEdgesAndNodes(product.customFields);
   const deleteIcon = imageManagerImageUrl('delete.png', '20w');
+  const closeIcon = imageManagerImageUrl('close.png', '14w')
 
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
@@ -172,7 +173,7 @@ export const Details = ({ product, collectionValue }: Props) => {
       <FreeDelivery />
 
       {/* Product Form */}
-      <ProductForm data={product} multipleOptionIcon={multipleOptionIcon} deleteIcon={deleteIcon} />
+      <ProductForm data={product} multipleOptionIcon={multipleOptionIcon} closeIcon={closeIcon} deleteIcon={deleteIcon} />
 
       <div className="div-product-description my-12 hidden">
         <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
