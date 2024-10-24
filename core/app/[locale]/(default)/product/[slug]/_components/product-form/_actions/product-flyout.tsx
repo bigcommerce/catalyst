@@ -7,15 +7,11 @@ import { useEffect, useState } from 'react';
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { ProductItemFragment } from '~/client/fragments/product-item';
-import { Link } from '~/components/link';
 import { BcImage } from '~/components/bc-image';
 import { useCommonContext } from '~/components/common-context/common-provider';
-import { useProductContext } from '~/components/common-context/product-provider';
 import { Minus, Plus } from 'lucide-react';
 import { GetProductMetaFields, GetProductVariantMetaFields, GetVariantsByProductId, GetProductBySKU } from '~/components/management-apis';
 import { ProductAccessories } from './product-accessories';
-import { getProductMetaFields } from '~/components/graphql-apis';
-import { Select } from '~/components/ui/form';
 
 interface Props {
   data: FragmentOf<typeof ProductItemFragment>;
@@ -41,7 +37,6 @@ const getVariantProductInfo = async (metaData: any) => {
         if (parentProductInformation?.length > 0) {
           for await (const productInfo of parentProductInformation) {
             let varaiantProductData = await GetVariantsByProductId(productInfo?.id);
-            console.log('========productInfo=======', productInfo);
             let variantNewObject: any = [];
             varaiantProductData?.forEach((item: any) => {
               let optionValues: string = item?.option_values?.map((data: any) => data?.label).join(' ');
@@ -60,7 +55,8 @@ const getVariantProductInfo = async (metaData: any) => {
             let productAccesslabel = accessoriesLabelData?.find((prod: any) => prod?.sku == productInfo?.sku);
             variantProductInfo.push({
               label: productAccesslabel?.label,
-              productData: variantNewObject
+              productData: variantNewObject,
+              entityId: productInfo?.id
             });
           }
         }
@@ -72,11 +68,9 @@ const getVariantProductInfo = async (metaData: any) => {
 
 export const ProductFlyout = ({
   data: product,
-  deleteIcon,
   closeIcon
 }: {
   data: Props['data'];
-  deleteIcon: string;
   closeIcon: string;
 }) => {
   const format = useFormatter();
@@ -91,7 +85,6 @@ export const ProductFlyout = ({
     let variantProduct: any = variantData?.find((item: any) => item?.sku == product?.sku);
     useEffect(() => {
       const getProductMetaData = async () => {
-        console.log('-----graphql-----', await getProductMetaFields(product?.entityId, 'Details'));
         let metaData = await GetProductVariantMetaFields(product?.entityId, variantProduct?.entityId, 'Accessories');
         let productData = await getVariantProductInfo(metaData);
         setVariantProductData([...productData]);
@@ -110,7 +103,7 @@ export const ProductFlyout = ({
       getProductMetaData();
     }, [product?.entityId]);
   }
-  //console.log('=======variantProductData========', variantProductData);
+
   return (
     <>
       <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -140,7 +133,7 @@ export const ProductFlyout = ({
                 </Dialog.Title>
               </div>
             </div>
-            {/* <Dialog.Description></Dialog.Description> */}
+            <Dialog.Description></Dialog.Description>
             <Dialog.Content className="popup-box1 flex flex-row gap-[30px]">
               <div className="popup-box1-div1 relative flex h-[160px] w-[140px] border border-[#cccbcb]">
                 <BcImage
@@ -217,6 +210,23 @@ export const ProductFlyout = ({
                 </div>
               </div>
             </Dialog.Content>
+            {variantProductData && (
+            <>
+            <hr className="" />
+            <div className="flex flex-col gap-4 md:flex-row pop-up-text">
+              <div className=" text-[20px] font-medium tracking-[0.15px] text-black">
+                You May Also Need
+                  <div className="accessories-data">
+                    {variantProductData && variantProductData?.map((accessories: any, index: number) => (
+                      <div className='product-card' key={index}>
+                        <ProductAccessories accessories={accessories} index={index} />
+                      </div>
+                    ))}
+                </div>
+              </div>
+            </div>
+            </>
+            )}
             <Dialog.Close asChild>
               <button
                 aria-modal
