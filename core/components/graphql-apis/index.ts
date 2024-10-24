@@ -31,12 +31,63 @@ const ProductMetaFieldsQuery = graphql(
 );
 
 export const getProductMetaFields = async (entityId: number, nameSpace: string) => {
-    console.log('========entityId=======', entityId);
     const customerId = await getSessionCustomerId();
 
     const { data } = await client.fetch({
         document: ProductMetaFieldsQuery,
         variables: {entityId: entityId, nameSpace: nameSpace}
     });
-    console.log('========datasssss=======', data);
+    return data;
+};
+
+const GetVariantsByProductSKUQuery = graphql(
+  `query ProductsQuery {
+    site {
+      SKU1: product(sku: "73_Downrod") {
+        sku
+        entityId
+        name
+        mpn
+        variants {
+          edges {
+            cursor
+            node {
+              entityId
+              mpn
+              sku
+              id
+              upc
+            }
+          }
+        }
+      }
+      SKU2: product(sku: "372_CP5423L") {
+        sku
+        entityId
+        name
+        mpn
+        variants {
+          edges {
+            cursor
+            node {
+              entityId
+              mpn
+              sku
+              id
+              upc
+            }
+          }
+        }
+      }
+    }
+  }`
+);
+
+export const GetVariantsByProductSKU = async () => {
+  const customerId = await getSessionCustomerId();
+
+  const { data } = await client.fetch({
+      document: GetVariantsByProductSKUQuery
+  });
+  return data;
 };

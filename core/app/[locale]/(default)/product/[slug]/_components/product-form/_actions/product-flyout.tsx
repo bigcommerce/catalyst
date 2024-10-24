@@ -3,7 +3,7 @@
 import { useFormatter } from 'next-intl';
 import { FragmentOf } from 'gql.tada';
 import * as Dialog from '@radix-ui/react-dialog';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { ProductItemFragment } from '~/client/fragments/product-item';
@@ -11,12 +11,63 @@ import { Link } from '~/components/link';
 import { BcImage } from '~/components/bc-image';
 import { useCommonContext } from '~/components/common-context/common-provider';
 import { useProductContext } from '~/components/common-context/product-provider';
-import { GetProductMetaFields } from '~/components/management-apis';
 import { Minus, Plus } from 'lucide-react';
-
+import { GetProductMetaFields, GetProductVariantMetaFields, GetVariantsByProductId, GetProductBySKU } from '~/components/management-apis';
+import { ProductAccessories } from './product-accessories';
+import { getProductMetaFields } from '~/components/graphql-apis';
+import { Select } from '~/components/ui/form';
 
 interface Props {
   data: FragmentOf<typeof ProductItemFragment>;
+}
+
+const getVariantProductInfo = async (metaData: any) => {
+  let variantProductInfo: any = [];
+  let accessoriesLabelData: any = [];
+  if (metaData?.[0]?.value) {
+    let varaiantDatas: any = JSON?.parse(metaData?.[0]?.value);
+    if (varaiantDatas?.length > 0) {
+      let variantProductIdSkus: string = "";
+      varaiantDatas?.forEach(async (itemData: any) => {
+        variantProductIdSkus += itemData?.products?.[0]?.parent_sku + ",";
+        accessoriesLabelData.push({
+          sku: itemData?.products?.[0]?.parent_sku,
+          label: itemData?.label
+        });
+      });
+      if (variantProductIdSkus) {
+        variantProductIdSkus = variantProductIdSkus?.replace(/,\s*$/, "");
+        let parentProductInformation = await GetProductBySKU(variantProductIdSkus);
+        if (parentProductInformation?.length > 0) {
+          for await (const productInfo of parentProductInformation) {
+            let varaiantProductData = await GetVariantsByProductId(productInfo?.id);
+            console.log('========productInfo=======', productInfo);
+            let variantNewObject: any = [];
+            varaiantProductData?.forEach((item: any) => {
+              let optionValues: string = item?.option_values?.map((data: any) => data?.label).join(' ');
+              variantNewObject.push({
+                image: item?.image_url,
+                price: item?.price,
+                retail_price: item?.retail_price,
+                sale_price: item?.sale_price,
+                id: item?.id,
+                mpn: item?.mpn,
+                sku: item?.sku,
+                name: productInfo?.name + '-' + optionValues,
+                parentImage: productInfo?.image
+              })
+            });
+            let productAccesslabel = accessoriesLabelData?.find((prod: any) => prod?.sku == productInfo?.sku);
+            variantProductInfo.push({
+              label: productAccesslabel?.label,
+              productData: variantNewObject
+            });
+          }
+        }
+      }
+    }
+  }
+  return variantProductInfo;
 }
 
 export const ProductFlyout = ({
@@ -33,27 +84,33 @@ export const ProductFlyout = ({
   let productData = productFlyout.productData;
   let open = productFlyout.open;
   let setOpen = productFlyout.handlePopup;
-  if (product?.variants) {
-    let variantData: any = removeEdgesAndNodes(product?.variants);
+  let variantData: any = removeEdgesAndNodes(product?.variants);
+  let optionsData: any = removeEdgesAndNodes(product?.productOptions);
+  const [variantProductData, setVariantProductData] = useState<any>([]);
+  if (variantData && optionsData && optionsData?.length > 0) {
     let variantProduct: any = variantData?.find((item: any) => item?.sku == product?.sku);
-    let productMetaFields: any = [];
     useEffect(() => {
       const getProductMetaData = async () => {
-        return await GetProductMetaFields(variantProduct?.entityId, 'accessories');
-      };
-      if (variantProduct) {
-        productMetaFields = getProductMetaData();
-      } else {
-        let productMetaData = useProductContext();
-        productMetaFields = productMetaData?.getMetaFields;
+        console.log('-----graphql-----', await getProductMetaFields(product?.entityId, 'Details'));
+        let metaData = await GetProductVariantMetaFields(product?.entityId, variantProduct?.entityId, 'Accessories');
+        let productData = await getVariantProductInfo(metaData);
+        setVariantProductData([...productData]);
       }
-      console.log('========productMetaFields=======', productMetaFields);
-    }, []);
+      if (variantProduct) {
+        getProductMetaData();
+      }
+    }, [variantProduct?.entityId, product?.entityId]);
+  } else {
+    useEffect(() => {
+      const getProductMetaData = async () => {
+        let metaData = await GetProductMetaFields(product?.entityId, 'Accessories');
+        let productData = await getVariantProductInfo(metaData);
+        setVariantProductData([...productData]);
+      }
+      getProductMetaData();
+    }, [product?.entityId]);
   }
-  function t(arg0: string): import('react').ReactNode {
-    throw new Error('Function not implemented.');
-  }
-
+  //console.log('=======variantProductData========', variantProductData);
   return (
     <>
       <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -126,8 +183,8 @@ export const ProductFlyout = ({
                 })}
                 <div className="md:flex-row">
                   {productData?.originalPrice?.value &&
-                  productData?.selectedOptions?.length === 0 &&
-                  productData?.originalPrice?.value !== productData?.listPrice?.value ? (
+                    productData?.selectedOptions?.length === 0 &&
+                    productData?.originalPrice?.value !== productData?.listPrice?.value ? (
                     <div className="">
                       {format.number(productData?.originalPrice?.value * productData?.quantity, {
                         style: 'currency',
@@ -147,24 +204,19 @@ export const ProductFlyout = ({
                 <div className="text-[14px] font-normal tracking-[0.25px] text-[#353535]">
                   <div className='flex items-center justify-center gap-[10px] h-[44px] max-w-[105px] border border-[#d6d6d6] rounded-[20px]'>
                     <div className=''>
-                    <Minus className=" h-[1rem] w-[1rem] text-[#7F7F7F]"></Minus></div>
+                      <Minus className=" h-[1rem] w-[1rem] text-[#7F7F7F]"></Minus></div>
                     <input
                       name="quantity"
                       type="number"
                       className="w-[40%] border text-center"
                       min="1"
+                      value={productData?.quantity}
                     />
                     <div className=''><Plus className="h-[1rem] w-[1rem] text-[#7F7F7F] "></Plus></div>
                   </div>
                 </div>
               </div>
             </Dialog.Content>
-            <hr className="" />
-            <div className="flex flex-col gap-4 md:flex-row pop-up-text">
-              <div className=" text-[20px] font-medium tracking-[0.15px] text-black">
-                You May Also Need
-              </div>
-            </div>
             <Dialog.Close asChild>
               <button
                 aria-modal
