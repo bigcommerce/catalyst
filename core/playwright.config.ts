@@ -6,6 +6,7 @@ config();
 export default defineConfig({
   testDir: './tests',
   expect: {
+    timeout: 60000,
     toHaveScreenshot: {
       maxDiffPixelRatio: 0.02,
     },

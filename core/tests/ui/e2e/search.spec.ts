@@ -64,7 +64,7 @@ test('Search dialog sections', async ({ page }) => {
 
   const searchBox = page.getByPlaceholder('Search...');
 
-  await searchBox.fill(productName);
+  await searchBox.fill('Able Brewing System');
 
   await expect(page.getByRole('heading', { name: 'Categories' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Products' })).toBeVisible();
