@@ -1119,7 +1119,9 @@ button.show-all {
 }
 
 .cart-add-to-cart input[type="number"]::-webkit-inner-spin-button,
-.cart-add-to-cart input[type="number"]::-webkit-outer-spin-button{
+.cart-add-to-cart input[type="number"]::-webkit-outer-spin-button,
+.popup-box1-div2 input[type="number"]::-webkit-inner-spin-button,
+.popup-box1-div2 input[type="number"]::-webkit-outer-spin-button{
   -webkit-appearance: none;
   margin: 0;
 }
@@ -1129,7 +1131,13 @@ button.show-all {
   width: 50%;
 }
 
-.cart-add-to-cart input[type="number"]:focus {
+.popup-box1-div2 input[type="number"]{
+  width: 35%;
+  border-block: none;
+}
+
+.cart-add-to-cart input[type="number"]:focus,
+.popup-box1-div2 input[type="number"]:focus {
   border-block: none;
   outline: none;
 }
@@ -1147,3 +1155,38 @@ button.show-all {
   margin-top: 6rem;
 }
 
+.popup-container-parent .popup-box1{
+  pointer-events: all !important;
+}
+
+@media screen and (max-width: 500px) {
+  .popup-container-parent .popup-box1{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: all !important;
+  }
+
+
+  .popup-container-parent .popup-box1-div1{
+    width: 200px;
+    height: 200px;
+    display: flex;
+  }
+
+  .popup-container-parent .popup-box1-div2{
+    text-align: center;
+    gap: 3px;
+  }
+
+  .popup-container-parent .popup-box1-div2 .text-right{
+    text-align: center;
+  }
+  
+  .popup-container-parent .popup-box1-div2 .popup-box1-div2-sku{
+    font-weight: 400;
+    font-size: 12px;
+    letter-spacing: 0.4px;
+  }
+
+}

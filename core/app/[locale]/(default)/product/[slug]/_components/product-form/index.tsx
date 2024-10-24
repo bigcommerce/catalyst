@@ -33,6 +33,7 @@ interface Props {
   data: FragmentOf<typeof ProductItemFragment>;
   multipleOptionIcon: string;
   deleteIcon: string;
+  closeIcon: string;
 }
 
 const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
@@ -65,7 +66,7 @@ export const Submit = ({ data: product }: {data:Props['data']}) => {
   );
 };
 
-export const ProductForm = ({ data: product, multipleOptionIcon, deleteIcon }: Props) => {
+export const ProductForm = ({ data: product, multipleOptionIcon, closeIcon, deleteIcon }: Props) => {
   const t = useTranslations('Product.Form');
   const cart = useCart();
   const productFlyout:any = useCommonContext();
@@ -176,7 +177,7 @@ export const ProductForm = ({ data: product, multipleOptionIcon, deleteIcon }: P
 
   return (
     <>
-      <ProductFlyout data={product} deleteIcon={deleteIcon} />
+      <ProductFlyout data={product} closeIcon={closeIcon} deleteIcon={deleteIcon} />
       <FormProvider handleSubmit={handleSubmit} register={register} {...methods}>
         <form className="flex flex-col gap-6 @container product-variants" onSubmit={handleSubmit(productFormSubmit)}>
           <input type="hidden" value={product.entityId} {...register('product_id')} />

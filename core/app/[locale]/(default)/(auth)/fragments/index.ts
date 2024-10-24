@@ -15,6 +15,7 @@ export interface IconProps {
     'bailey-street'?: string | StaticImport | any;
     'canada-lightning'?: string | StaticImport | any;
     'homeclick-black'?: string | StaticImport | any;
+    'closeIcon'?: string | StaticImport | any;
     
 
 }
@@ -32,5 +33,6 @@ export const imageIconList: IconProps = {
     '1stop-lightning': imageManagerImageUrl('1stop-lightning.png', '194w'),
     'bailey-street': imageManagerImageUrl('bailey-street.png', '138w'),
     'canada-lightning': imageManagerImageUrl('canada-lightning.png', '228w'),
-    'homeclick-black': imageManagerImageUrl('homeclick-black.png', '150w')
+    'homeclick-black': imageManagerImageUrl('homeclick-black.png', '150w'),
+    'closeIcon': imageManagerImageUrl('close.png', '14w')
 };
