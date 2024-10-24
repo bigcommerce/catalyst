@@ -146,6 +146,11 @@ svg.lucide.lucide-user {
 svg.lucide.lucide-shopping-cart {
   color: #008bb7;
 }
+
+.product-variants svg.lucide.lucide-shopping-cart {
+  color: white;
+}
+
 span.cart {
   color: #008bb7;
   padding-left: 8px;
@@ -301,11 +306,9 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
   font-size: 14px;
   font-weight: 400;
   text-transform: uppercase;
-  background-color: #03465C !important;
+  background-color: #008BB7 !important;
 }
-form.text-base.mb-14.flex.flex-col.gap-3.md\:p-8.lg\:p-0 {
-  margin-top: 30px;
-}
+
 .radix-state-checked\:bg-primary[data-state="checked"] {
   background-color: #008BB7 !important;
 }
@@ -314,6 +317,41 @@ form.text-base.mb-14.flex.flex-col.gap-3.md\:p-8.lg\:p-0 {
 }
 button#remember-me {
   border-color: #008BB7 !important;
+}
+
+.login-first-child .login-input{
+  margin-top: 0 !important;
+  width: 100%;
+  height: 44px;
+}
+
+
+.login-first-child .login-in-buttons{
+  width: 100%  !important;
+  justify-content: space-between;
+  height: 54px;
+}
+
+.login-first-child .login-in-buttons button{
+  display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px;
+    width: 144px;
+    border: 1px solid #D7D7D7;
+    border-radius: 3px;
+}
+
+
+.login-submit-btn{
+  width: 100%;
+}
+
+.login-submit-btn button{
+  width: 100%;
+  background: #008BB7 !important;
 }
 .gallery-pop-up-img {
   width: 85%;
@@ -596,6 +634,20 @@ button.relative.w-full.rounded.justify-center.text-base.font-semibold.leading-6.
 body div header.main-header a img {
   margin-left: 2.5em;
 }
+  }
+@media only screen and (max-width: 1200px) {
+  /* Login page */
+  .login-div {
+    width: calc((800 / 1000) * 100vw); 
+  }
+  .gallery-pop-up-img {
+    width: 85% !important;
+  }
+/* gallery */
+.group.main-gallery .product-img {
+  width: 100%;
+  height: 100%;
+}
 body div button.relative.w-full.rounded.justify-center.text-base.font-semibold.leading-6.disabled\:bg-sky-400.border-0.bg-transparent.p-3.text-black.hover\:bg-transparent.hover\:text-primary.focus-visible\:text-primary.flex.items-center {
   top: 0em;
   position: absolute;
@@ -827,6 +879,19 @@ nav#static-menu a {
       }
     }
     
+
+/* Login page*/
+@media screen and (max-width: 768px) {
+  .login-div {
+    width: calc((500 / 768) * 100vw); /* Adjust the ratio based on mobile design */
+  }
+  .login-first-child,
+  .login-sec-child{
+    width: calc(90vw);
+  }
+}
+
+
 img.variant-img {
   width: 20px !important;
   height: 20px !important;
@@ -1051,4 +1116,77 @@ button.carousel-previous-arrow {
 button.show-all {
   padding-bottom: 0px !important;
   padding-top: 0px !important;
+}
+
+.cart-add-to-cart input[type="number"]::-webkit-inner-spin-button,
+.cart-add-to-cart input[type="number"]::-webkit-outer-spin-button,
+.popup-box1-div2 input[type="number"]::-webkit-inner-spin-button,
+.popup-box1-div2 input[type="number"]::-webkit-outer-spin-button{
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.cart-add-to-cart input[type="number"]{
+  border-block: none;
+  width: 50%;
+}
+
+.popup-box1-div2 input[type="number"]{
+  width: 35%;
+  border-block: none;
+}
+
+.cart-add-to-cart input[type="number"]:focus,
+.popup-box1-div2 input[type="number"]:focus {
+  border-block: none;
+  outline: none;
+}
+
+.login-first-child, 
+.login-sec-child{
+  width: calc(35.28vw);
+}
+
+.login-div {
+  width: calc((1116 / 1600) * 100vw); 
+}
+
+.login-div-one{
+  margin-top: 6rem;
+}
+
+.popup-container-parent .popup-box1{
+  pointer-events: all !important;
+}
+
+@media screen and (max-width: 500px) {
+  .popup-container-parent .popup-box1{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: all !important;
+  }
+
+
+  .popup-container-parent .popup-box1-div1{
+    width: 200px;
+    height: 200px;
+    display: flex;
+  }
+
+  .popup-container-parent .popup-box1-div2{
+    text-align: center;
+    gap: 3px;
+  }
+
+  .popup-container-parent .popup-box1-div2 .text-right{
+    text-align: center;
+  }
+  
+  .popup-container-parent .popup-box1-div2 .popup-box1-div2-sku{
+    font-weight: 400;
+    font-size: 12px;
+    letter-spacing: 0.4px;
+  }
+
 }

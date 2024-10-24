@@ -18,7 +18,8 @@ export default function DefaultLayout({ children, params: { locale } }: Props) {
       <Suspense fallback={<HeaderSkeleton />}>
         <Header cart={<Cart />} />
       </Suspense>
-
+      {/* //I want to add some components here if it was login page  */}
+      {/* Can you make it */}
       <main className="flex-1 px-4 2xl:container sm:px-10 lg:px-12 2xl:mx-auto main-slider">
         {children}
       </main>

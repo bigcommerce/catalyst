@@ -160,11 +160,11 @@ export const ItemQuantity = ({ product }: { product: Product }) => {
     setProductQuantity(quantity);
   }, [quantity]);
 
-  const onSubmit = async (formData: FormData) => {
+  const onSubmit = async () => {
     const { status } = await updateItemQuantity({
       lineItemEntityId: entityId,
       productEntityId,
-      quantity: Number(formData.get('quantity')),
+      quantity: productQuantity,
       selectedOptions: parseSelectedOptions(selectedOptions),
       variantEntityId,
     });
@@ -176,6 +176,19 @@ export const ItemQuantity = ({ product }: { product: Product }) => {
     }
   };
 
+  const handleQuantityChange = (e: { target: { value: any; }; }) => {
+    const quantity = Number(e.target.value);
+    if (quantity < 1) {
+      setProductQuantity(1);  // Enforce minimum value of 1
+    } else {
+      setProductQuantity(quantity);  // Set the valid quantity
+    }
+  };
+
+  const handleBlur = () => {
+    onSubmit();  // Call backend update when the input loses focus
+  };
+
   return (
     <div className="cart-add-to-cart w-[105px] rounded-3xl border-2 border-gray-200 p-2.5">
       <form action={onSubmit} className="flex items-center">
@@ -185,8 +198,18 @@ export const ItemQuantity = ({ product }: { product: Product }) => {
           </Minus>
         </SubmitButton>
 
-        <input name="quantity" type="hidden" value={productQuantity} />
-        <Quantity value={productQuantity} />
+        {/* <input name="quantity" type="hidden" value={productQuantity} />*/}
+        {/* <Quantity value={productQuantity} /> */}
+        {/* Direct Input for Quantity */}
+        <input
+          name="quantity"
+          type="number"
+          value={productQuantity}
+          onBlur={handleBlur}  // Sync with backend on blur
+          onChange={handleQuantityChange} // Use the new function
+          className="border w-12 text-center"
+          min="1"
+        />
 
         <SubmitButton onClick={() => setProductQuantity(productQuantity + 1)}>
           <Plus className="h-[1rem] w-[1rem] text-[#7F7F7F] ml-[8px]">
