@@ -17,6 +17,7 @@ async function addEstimatedShippingCosts(
   await page.getByLabel('Zip/Postcode').fill(zip);
 
   await page.getByRole('button', { name: 'Estimate shipping' }).click();
+  await page.waitForLoadState('networkidle', { timeout: 30000 });
   await page.getByRole('button', { name: 'Update shipping costs' }).click();
 }
 

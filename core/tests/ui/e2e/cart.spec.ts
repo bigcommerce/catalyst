@@ -1,11 +1,11 @@
-import { expect, Page, test } from '~/tests/fixtures';
+import { expect, test } from '~/tests/fixtures';
 
-const sampleProduct = '[Sample] Able Brewing System';
+const sampleProduct = '[Sample] Orbit Terrarium - Large';
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/sample-able-brewing-system/');
+  await page.goto('/orbit-terrarium-large/');
   await expect(
-    page.getByRole('heading', { level: 1, name: '[Sample] Able Brewing System' }),
+    page.getByRole('heading', { level: 1, name: '[Sample] Orbit Terrarium - Large' }),
   ).toBeVisible();
 
   await page.getByRole('button', { name: 'Add to Cart' }).first().click();
@@ -25,11 +25,17 @@ test('Edit product quantity in cart', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1, name: 'Your cart' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Proceed to checkout' })).toBeVisible();
 
-  await page.getByRole('button', { name: 'Increase count' }).click();
+  await Promise.all([
+    page.waitForResponse((resp) => resp.url().includes('/cart/'), { timeout: 30000 }),
+    page.getByRole('button', { name: 'Increase count' }).click(),
+  ]);
 
   await expect(page.getByRole('link', { name: 'Cart Items 2' })).toBeVisible();
 
-  await page.getByRole('button', { name: 'Decrease count' }).click();
+  await Promise.all([
+    page.waitForResponse((resp) => resp.url().includes('/cart/'), { timeout: 30000 }),
+    page.getByRole('button', { name: 'Decrease count' }).click(),
+  ]);
   await expect(page.getByRole('link', { name: 'Cart Items 1' })).toBeVisible();
 });
 

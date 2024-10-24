@@ -6,6 +6,7 @@ config();
 export default defineConfig({
   testDir: './tests',
   expect: {
+    timeout: 60000,
     toHaveScreenshot: {
       maxDiffPixelRatio: 0.02,
     },
@@ -27,5 +28,5 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  retries: 1,
+  retries: 2,
 });

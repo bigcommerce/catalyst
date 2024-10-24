@@ -49,6 +49,7 @@ test('Search a product category', async ({ page }) => {
   const searchBox = page.getByPlaceholder('Search...');
 
   await searchBox.fill('OFS');
+  await page.waitForLoadState('networkidle', { timeout: 30000 });
 
   await expect(page.getByRole('link', { name: '[Sample] Utility Caddy' })).toBeVisible();
   await expect(page.getByRole('link', { name: '[Sample] Tiered Wire Basket' })).toBeVisible();
@@ -64,7 +65,7 @@ test('Search dialog sections', async ({ page }) => {
 
   const searchBox = page.getByPlaceholder('Search...');
 
-  await searchBox.fill(productName);
+  await searchBox.fill('Able Brewing System');
 
   await expect(page.getByRole('heading', { name: 'Categories' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Products' })).toBeVisible();

@@ -14,6 +14,7 @@ test.beforeEach(async ({ page }) => {
   await page.getByLabel('Main').getByRole('link', { name: 'Shop All' }).click();
 
   await expect(page.getByRole('heading', { level: 1, name: 'Shop all' })).toBeVisible();
+  await page.waitForLoadState('networkidle');
 });
 
 test('Validate product page', async ({ page }) => {
