@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.14.4
+
+### Patch Changes
+
+- [#1501](https://github.com/bigcommerce/catalyst/pull/1501) [`513a740`](https://github.com/bigcommerce/catalyst/commit/513a7407feab03f5b7c16eb82d6d2826d238cb27) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Adds a identify call on init.
+
 ## 0.14.3
 
 ### Patch Changes
