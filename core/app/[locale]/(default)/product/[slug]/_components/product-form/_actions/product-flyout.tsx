@@ -203,7 +203,7 @@ export const ProductFlyout = ({
                       type="number"
                       className="w-[40%] border text-center"
                       min="1"
-                      value={productData?.quantity}
+                      defaultValue={productData?.quantity}
                     />
                     <div className=''><Plus className="h-[1rem] w-[1rem] text-[#7F7F7F] "></Plus></div>
                   </div>
