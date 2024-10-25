@@ -98,7 +98,6 @@ export default async function Product({ params: { locale, slug }, searchParams }
   }
   // Fetch the meta fields for the product
   let metaFields = await GetProductMetaFields(product.entityId, '');
-  // console.log("page-----------------------------metafields", JSON.stringify(metaFields, null, 2));
 
   // Extract the collection value from meta fields
   let collectionValue = '';
@@ -107,10 +106,7 @@ export default async function Product({ params: { locale, slug }, searchParams }
     (field: { key: string }) => field?.key === 'collection',
   );
   if (collectionMetaField?.value) {
-    // console.log('page------Collection value:', collectionMetaField.value);
     collectionValue = collectionMetaField.value; // Store the collection value
-  } else {
-    console.log('Collection meta field not found');
   }
 
   const category = removeEdgesAndNodes(product.categories).at(0);

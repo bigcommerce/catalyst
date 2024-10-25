@@ -101,7 +101,6 @@ export const Details = ({ product, collectionValue }: Props) => {
 
           {collectionValue && (
             <>
-              {console.log('Collections Value:', collectionValue)}
               <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
                 from the{' '}
                 <span className="products-underline border-b border-black">{collectionValue}</span>
