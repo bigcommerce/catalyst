@@ -11,7 +11,12 @@ div[data-radix-popper-content-wrapper] div{
   width: 300px !important;
   transition: unset !important;
 }
-
+.right-container span:nth-child(1) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 240px;
+}
 
 
 

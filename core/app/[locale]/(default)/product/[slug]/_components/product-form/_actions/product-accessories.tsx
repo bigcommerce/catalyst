@@ -99,7 +99,7 @@ export const ProductAccessories = ({ accessories, index }: Props) => {
           {/* <div className="accessories-label">{accessories?.label}</div> */}
          
           <Select
-          className="right"
+          
             name={`accessories-products-${index}`}
             id={`accessories-products-${index}`}
             options={accessoriesProducts}
