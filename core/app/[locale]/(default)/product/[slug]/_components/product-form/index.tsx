@@ -177,7 +177,7 @@ export const ProductForm = ({ data: product, multipleOptionIcon, closeIcon, dele
 
   return (
     <>
-      <ProductFlyout data={product} closeIcon={closeIcon} deleteIcon={deleteIcon} />
+      <ProductFlyout data={product} closeIcon={closeIcon} />
       <FormProvider handleSubmit={handleSubmit} register={register} {...methods}>
         <form className="flex flex-col gap-6 @container product-variants" onSubmit={handleSubmit(productFormSubmit)}>
           <input type="hidden" value={product.entityId} {...register('product_id')} />

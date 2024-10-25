@@ -124,6 +124,13 @@ declare module '@bigcommerce/bodl-events' {
   }
 
   declare class ProductEmitter extends EventEmitter {
+    variantId: number;
+    variantID(entityId: (entityId: any, variantID: any, arg2: string) => void, variantID: any, arg2: string) {
+      throw new Error('Method not implemented.');
+    }
+    entityId(entityId: any, variantID: any, arg2: string) {
+      throw new Error('Method not implemented.');
+    }
     pageViewed(callback: BodlEventCallback): this;
     categoryViewed(callback: BodlEventCallback): this;
     searchPerformed(callback: BodlEventCallback): this;
