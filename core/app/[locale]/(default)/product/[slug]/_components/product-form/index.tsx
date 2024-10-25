@@ -7,13 +7,13 @@ import { useTranslations } from 'next-intl';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
-import { WishlistSheet } from '~/app/[locale]/(default)/account/(tabs)/wishlists/_components/wishlist-sheet';
 import { Wishlists } from '~/app/[locale]/(default)/product/[slug]/_components/details';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { AddToCartButton } from '~/components/add-to-cart-button';
 import { useCart } from '~/components/header/cart-provider';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
+import { WishlistSheet } from '~/components/wishlist-sheet';
 import { bodl } from '~/lib/bodl';
 
 import { handleAddToCart } from './_actions/add-to-cart';
@@ -166,7 +166,7 @@ export const ProductForm = ({ data: product, isLogged, wishlists }: ProductFormP
         <div className="mt-4 flex flex-col gap-4 @md:flex-row">
           <Submit data={product} />
           {isLogged && wishlists ? (
-            <WishlistSheet productId={product.entityId} wishlistsData={wishlists} />
+            <WishlistSheet productId={product.entityId} wishlistsList={wishlists} />
           ) : (
             <Button asChild type="button" variant="secondary">
               <Link href="/login">

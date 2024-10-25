@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
+import { auth } from '~/auth';
 import { Breadcrumbs } from '~/components/breadcrumbs';
 import { ProductCard } from '~/components/product-card';
 import { Pagination } from '~/components/ui/pagination';
@@ -28,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const categoryId = Number(slug);
 
-  const data = await getCategoryPageData({
+  const { data } = await getCategoryPageData({
     categoryId,
   });
 
@@ -59,7 +60,15 @@ export default async function Category(props: Props) {
 
   const categoryId = Number(slug);
 
-  const [{ category, categoryTree }, search] = await Promise.all([
+  const session = await auth();
+
+  const [
+    {
+      data: { category, categoryTree },
+      wishlists,
+    },
+    search,
+  ] = await Promise.all([
     getCategoryPageData({ categoryId }),
     fetchFacetedSearch({ ...searchParams, category: categoryId }),
   ]);
@@ -124,6 +133,8 @@ export default async function Category(props: Props) {
                 imageSize="wide"
                 key={product.entityId}
                 product={product}
+                showWishlistSheet={Boolean(session)}
+                wishlistsList={wishlists}
               />
             ))}
           </div>

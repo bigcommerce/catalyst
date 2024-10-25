@@ -1,6 +1,5 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
 import { createWishlist as createWishlistMutation } from '~/client/mutations/create-wishlist';
@@ -21,8 +20,6 @@ export const createWishlist = async (formData: FormData) => {
 
   try {
     const newWishlist = await createWishlistMutation({ input });
-
-    revalidatePath('/account/wishlists', 'page');
 
     if (newWishlist) {
       return {

@@ -232,7 +232,8 @@
             "saved": "Saved",
             "createTitle": "New wishlist",
             "selectCta": "Select from available lists:",
-            "favorites": "Favorites"
+            "favorites": "Favorites",
+            "open": "Open wishlist sheet"
         },
         "Errors": {
             "error": "Something went wrong. Please try again later."
