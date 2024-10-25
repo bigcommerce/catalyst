@@ -13,7 +13,7 @@ interface Props {
   imagePriority?: boolean;
   showCompare?: boolean;
   showCart?: boolean;
-  relatedProductArrow: string;
+
 }
 
 export const ProductCard = ({
@@ -32,7 +32,6 @@ export const ProductCard = ({
 
   return (
     <ComponentProductCard
-  
       addToCart={showCart && <AddToCart data={product} />}
       href={path}
       id={entityId.toString()}

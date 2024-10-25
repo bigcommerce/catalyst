@@ -150,7 +150,7 @@ export default async function Product({ params: { locale, slug }, searchParams }
             bannerIcon={bannerIcon}
             galleryExpandIcon={galleryExpandIcon} // Pass galleryExpandIcon to Gallery component
           />
-          <Details product={product} collectionValue={collectionValue} />
+          <Details product={product} collectionValue={collectionValue}  />
           <div className="lg:col-span-2">
             <Description product={product} />
             <RelatedProducts productId={product.entityId} relatedProductArrow={relatedProductArrow}/>

@@ -281,3 +281,17 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
 };
 
 export default ProductDetailDropdown;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
