@@ -5,9 +5,9 @@ import { createWishlist } from '~/client/mutations/create-wishlist';
 import { Button } from '~/components/ui/button';
 import { Message } from '~/components/ui/message';
 
-import { useAccountStatusContext } from '../../../_components/account-status-provider';
-import { Modal } from '../../../_components/modal';
-import { CreateWishlistForm } from '../create-wishlist-form';
+import { useAccountStatusContext } from '../../app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
+import { Modal } from '../../app/[locale]/(default)/account/(tabs)/_components/modal';
+import { CreateWishlistForm } from '../../app/[locale]/(default)/account/(tabs)/wishlists/_components/create-wishlist-form';
 
 import { UpdateWishlistsForm } from './update-wishlists-form';
 

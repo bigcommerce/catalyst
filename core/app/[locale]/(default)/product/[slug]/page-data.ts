@@ -7,8 +7,7 @@ import { ProductItemFragment } from '~/client/fragments/product-item';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { BreadcrumbsFragment } from '~/components/breadcrumbs/fragment';
-
-import { WishlistSheetFragment } from '../../account/(tabs)/wishlists/_components/wishlist-sheet/fragment';
+import { WishlistSheetFragment } from '~/components/wishlist-sheet/fragment';
 
 import { DescriptionFragment } from './_components/description';
 import { DetailsFragment } from './_components/details';
