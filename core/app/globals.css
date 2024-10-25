@@ -18,14 +18,12 @@ div[data-radix-popper-content-wrapper] div{
   width: 240px;
 }
 
-button#add-to-cart {
- position: static !important;
+.popup-box1-div1.relative.flex.h-\[160px\].w-\[140px\].border.border-\[\#cccbcb\] {
+  background-color: lightgrey;
 }
-.block.xl\:flex {
-  z-index: -1 !important;
-  position: relative !important;
+img.popup-box1-div-img.absolute.h-full.w-full.object-contain {
+  display: none;
 }
-
 
 
 
