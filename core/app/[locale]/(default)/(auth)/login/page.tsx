@@ -7,6 +7,7 @@ import { locales, LocaleType } from '~/i18n/routing';
 import { imageIconList } from '../fragments';
 import { LoginForm } from './_components/login-form';
 import { imageManagerImageUrl } from '~/lib/store-assets';
+import { BcImage } from '~/components/bc-image';
 
 export async function generateMetadata() {
   const t = await getTranslations('Login');
@@ -39,12 +40,48 @@ export default function Login({ params: { locale } }: Props) {
     <>
       <div className='absolute w-full block left-0 bg-[#F3F4F5]'>
         <div className="flex flex-row items-center justify-center gap-[30px] px-0 py-[20px]">
-          <img src={patjoheatAndShade} alt="" />
-          <img src={baileyStreet} alt="" />
-          <img src={OneStopLightning} alt="" />
-          <img src={lunaWarehouse} alt="" />
-          <img src={canadaLightning} alt="" />
-          <img src={homeclickBlack} alt="" />
+          <BcImage
+            alt="PatJoheat"
+            width={95}
+            height={40}
+            unoptimized={true}
+            src={patjoheatAndShade}
+          />
+          <BcImage
+            alt="PatJoheat"
+            width={95}
+            height={40}
+            unoptimized={true}
+            src={baileyStreet}
+          />
+          <BcImage
+            alt="1Stop"
+            width={194}
+            height={40}
+            unoptimized={true}
+            src={OneStopLightning}
+          />
+          <BcImage
+            alt="Luna"
+            width={298}
+            height={40}
+            unoptimized={true}
+            src={lunaWarehouse}
+          />
+          <BcImage
+            alt="Canada Lighting"
+            width={228}
+            height={40}
+            unoptimized={true}
+            src={canadaLightning}
+          />
+          <BcImage
+            alt="Bailey Street"
+            width={138}
+            height={40}
+            unoptimized={true}
+            src={homeclickBlack}
+          />
         </div>
       </div>
       <div className="mt-[20px] flex flex-col gap-[20px] px-4 2xl:container sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0">

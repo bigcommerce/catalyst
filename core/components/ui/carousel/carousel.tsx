@@ -12,9 +12,10 @@ interface Props {
   pageSize?: 2 | 3 | 4;
   products: ReactNode[];
   title: string;
+  relatedProductArrow: string;
 }
 
-const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props) => {
+const Carousel = ({ className, title, relatedProductArrow , pageSize = 4, products, ...props }: Props) => {
   const id = useId();
   const titleId = useId();
   const itemsPerGroup = pageSize;
@@ -123,7 +124,7 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
              <BcImage
             className='mb-2 -rotate-180'
               alt="Options icon"
-              src={imageManagerImageUrl('vector-8-.png', '30w')}
+              src={relatedProductArrow}
               height={20}
               priority={true}
               width={30}
@@ -143,7 +144,7 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
               <BcImage
             className='mb-2'
               alt="Options icon"
-              src={imageManagerImageUrl('vector-8-.png', '30w')}
+              src={relatedProductArrow}
               height={20}
               priority={true}
               width={30}

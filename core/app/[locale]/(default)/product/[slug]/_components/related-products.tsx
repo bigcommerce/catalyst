@@ -28,10 +28,11 @@ const RelatedProductsQuery = graphql(
 );
 
 interface Props {
+  relatedProductArrow:string;
   productId: number;
 }
 
-export const RelatedProducts = async ({ productId }: Props) => {
+export const RelatedProducts = async ({ productId , relatedProductArrow }: Props) => {
   const t = await getTranslations('Product.Carousel');
 
   const customerId = await getSessionCustomerId();
@@ -53,6 +54,7 @@ export const RelatedProducts = async ({ productId }: Props) => {
 
   return (
     <ProductCardCarousel
+    relatedProductArrow={relatedProductArrow}
       products={relatedProducts}
       showCart={false}
       showCompare={false}
