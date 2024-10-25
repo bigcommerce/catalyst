@@ -18,7 +18,13 @@ div[data-radix-popper-content-wrapper] div{
   width: 240px;
 }
 
-
+button#add-to-cart {
+ position: static !important;
+}
+.block.xl\:flex {
+  z-index: -1 !important;
+  position: relative !important;
+}
 
 
 
@@ -1038,7 +1044,7 @@ span.span3-product-price.text-\[1rem\].font-normal.leading-\[2rem\].tracking-\[0
 }
 
 #add-to-cart svg {
-  right: -0.6em;
+  right: 2.4em;
   position: absolute;
   visibility: hidden;
   opacity: 0;
