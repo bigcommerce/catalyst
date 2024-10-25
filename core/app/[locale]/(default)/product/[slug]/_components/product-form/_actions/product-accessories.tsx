@@ -95,16 +95,16 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
   return (
     <>
       {accessories?.length}
-      <div className="left-container w-[150px] h-[177px] border border-[#cccbcb]">
+      <div className="left-container w-[150px] h-[177px]">
         <BcImage
           alt={accessories?.label}
-          className="object-fill h-[150px]"
+          className="object-fill h-[177px]"
           height={150}
           src={fanPopup}   //accessories?.image
           width={150}
         />
       </div>
-      <div className='w-full flex flex-col gap-[10px]'>
+      <div className='w-full flex flex-col gap-[10px] shrink-[100]'>
         {productlabel && (
         <div className='flex flex-col'>
             <p className='font-normal text-[16px] tracking-[0.15px] text-[#353535]'>{productlabel}</p>

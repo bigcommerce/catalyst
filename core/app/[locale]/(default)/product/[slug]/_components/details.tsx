@@ -75,7 +75,7 @@ export const Details = ({ product, collectionValue}: Props) => {
   const customFields = removeEdgesAndNodes(product.customFields);
   const deleteIcon = imageManagerImageUrl('delete.png', '20w');
   const closeIcon = imageManagerImageUrl('close.png', '14w');
-  const fanPopup = imageManagerImageUrl('add-to-cart-pop-up-img1.jpg', '150w');
+  const fanPopup = imageManagerImageUrl('image-2-.png', '150w');
 
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;

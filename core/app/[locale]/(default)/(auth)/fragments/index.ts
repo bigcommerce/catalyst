@@ -17,6 +17,7 @@ export interface IconProps {
     'homeclick-black'?: string | StaticImport | any;
     'closeIcon'?: string | StaticImport | any;
     'fan1'?: string | StaticImport | any;
+    'fan2'?: string | StaticImport | any;
     
 
 }
@@ -36,5 +37,6 @@ export const imageIconList: IconProps = {
     'canada-lightning': imageManagerImageUrl('canada-lightning.png', '228w'),
     'homeclick-black': imageManagerImageUrl('homeclick-black.png', '150w'),
     'closeIcon': imageManagerImageUrl('close.png', '14w'),
-    'fan1': imageManagerImageUrl('add-to-cart-pop-up-img1.jpg', '150w')
+    'fan1': imageManagerImageUrl('image-2-.png', '150w'),
+    'fan2': imageManagerImageUrl('add-to-cart-pop-up-img1.jpg', '150w'),
 };
