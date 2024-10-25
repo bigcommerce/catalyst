@@ -78,6 +78,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
 export default async function Product({ params: { locale, slug }, searchParams }: Props) {
   const bannerIcon = imageManagerImageUrl('example-1.png', '50w');
+  const relatedProductArrow = imageManagerImageUrl('vector-8-.png', '30w');
   const galleryExpandIcon = imageManagerImageUrl('vector.jpg', '20w'); // Set galleryExpandIcon here
   unstable_setRequestLocale(locale);
 
@@ -98,16 +99,13 @@ export default async function Product({ params: { locale, slug }, searchParams }
   }
   // Fetch the meta fields for the product
   let metaFields = await GetProductMetaFields(product.entityId, '');
-  // console.log("page-----------------------------metafields", JSON.stringify(metaFields, null, 2));
 
   // Extract the collection value from meta fields
   let collectionValue = '';
   let collectionMetaField = metaFields?.find(
-    // (field: { key: string }) => field?.key === 'collection',
     (field: { key: string }) => field?.key === 'collection',
   );
   if (collectionMetaField?.value) {
-    // console.log('page------Collection value:', collectionMetaField.value);
     collectionValue = collectionMetaField.value; // Store the collection value
   } else {
     console.log('Collection meta field not found');
@@ -157,7 +155,7 @@ export default async function Product({ params: { locale, slug }, searchParams }
           <Details product={product} collectionValue={collectionValue} />
           <div className="lg:col-span-2">
             <Description product={product} />
-            <RelatedProducts productId={product.entityId} />
+            <RelatedProducts productId={product.entityId} relatedProductArrow={relatedProductArrow}/>
             <SimilarProducts />
             <Promotion />
             <Warranty product={product} />

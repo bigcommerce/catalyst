@@ -68,7 +68,7 @@ interface Props {
   collectionValue?: string;
 }
 
-export const Details = ({ product, collectionValue }: Props) => {
+export const Details = ({ product, collectionValue}: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
 
@@ -231,7 +231,9 @@ export const Details = ({ product, collectionValue }: Props) => {
             ))}
         </div>
       </div>
-      <ProductSchema product={product} />
+      
+      <ProductSchema product={product}/>
+
       <div className="apple-pay mt-4 xl:hidden">
         <button className="flex w-[100%] items-center justify-center rounded bg-[#353535] p-4 text-white">
           <BcImage
