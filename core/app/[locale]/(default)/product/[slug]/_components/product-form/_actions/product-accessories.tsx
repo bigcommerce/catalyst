@@ -97,13 +97,17 @@ export const ProductAccessories = ({ accessories, index }: Props) => {
         </div>
         <div className="right-container">
           {/* <div className="accessories-label">{accessories?.label}</div> */}
+         
           <Select
+          className="right"
             name={`accessories-products-${index}`}
             id={`accessories-products-${index}`}
             options={accessoriesProducts}
             placeholder={accessories?.label}
             onValueChange={(value: string) => onProductChange(value)}
           />
+        
+          
         </div>
         <div className="add-to-cart">
           <form onSubmit={handleSubmit}>

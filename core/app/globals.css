@@ -4,12 +4,13 @@
 
 
 
-div#radix-\:r9\: {
-  pointer-events: unset !important;
+
+
+
+div[data-radix-popper-content-wrapper] div{
+  width: 300px !important;
+  transition: unset !important;
 }
-
-
-
 
 
 

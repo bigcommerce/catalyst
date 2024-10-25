@@ -26,7 +26,7 @@ const Select = forwardRef<ElementRef<typeof SelectPrimitive.Trigger>, Props>(
         <SelectPrimitive.Trigger
           aria-label={label}
           className={cn(
-            'rounded-[3px] border-[1px] border-[#cccbcb] font-normal text-[16px] tracking-[0.5px] text-[#5c5c5c] group relative flex h-[44px] w-full items-center justify-between p-3 text-base hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200 data-[placeholder]:text-gray-500',
+            'pop-up-container rounded-[3px] border-[1px] border-[#cccbcb] font-normal text-[16px] tracking-[0.5px] text-[#5c5c5c] group relative flex h-[44px] w-full items-center justify-between p-3 text-base hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200 data-[placeholder]:text-gray-500',
             error &&
               'border-error-secondary hover:border-error focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 disabled:border-gray-200',
           )}
@@ -40,8 +40,9 @@ const Select = forwardRef<ElementRef<typeof SelectPrimitive.Trigger>, Props>(
         </SelectPrimitive.Trigger>
 
         <SelectPrimitive.Portal>
+         
           <SelectPrimitive.Content
-            className="max-h-radix-select-content-available-height relative z-50 max-h-96 w-full bg-white shadow-md data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1"
+            className="pop-up-containers max-h-radix-select-content-available-height relative z-50 max-h-96 w-full bg-white shadow-md data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1"
             position="popper"
           >
             <SelectPrimitive.ScrollUpButton className="flex cursor-default items-center justify-center py-1">
@@ -70,6 +71,7 @@ const Select = forwardRef<ElementRef<typeof SelectPrimitive.Trigger>, Props>(
               <ChevronDownIcon />
             </SelectPrimitive.ScrollDownButton>
           </SelectPrimitive.Content>
+         
         </SelectPrimitive.Portal>
       </SelectPrimitive.Root>
     );
