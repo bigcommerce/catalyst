@@ -18,12 +18,7 @@ div[data-radix-popper-content-wrapper] div{
   width: 240px;
 }
 
-.popup-box1-div1.relative.flex.h-\[160px\].w-\[140px\].border.border-\[\#cccbcb\] {
-  background-color: lightgrey;
-}
-img.popup-box1-div-img.absolute.h-full.w-full.object-contain {
-  display: none;
-}
+
 .left-container img {
   display: none;
 }
