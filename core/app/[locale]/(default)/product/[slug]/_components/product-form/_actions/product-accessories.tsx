@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useFormatter, useTranslations } from 'next-intl';
 import { BcImage } from '~/components/bc-image';
 import { Select } from '~/components/ui/form';
 import { useCart } from '~/components/header/cart-provider';
@@ -14,9 +14,13 @@ import { Button } from '~/components/ui/button';
 interface Props {
   accessories: any;
   index: number;
+  fanPopup:string;
+  currencyCode: string;
 }
 
-export const ProductAccessories = ({ accessories, index }: Props) => {
+
+export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup}: Props) => {
+  const format = useFormatter();
   const t = useTranslations('Components.ProductCard.AddToCart');
   const cart = useCart();
   let accessoriesProducts: any = accessories?.productData?.map(
@@ -25,12 +29,22 @@ export const ProductAccessories = ({ accessories, index }: Props) => {
       label: `(+$${price}) ${sku}-  ${name}`,
     }),
   );
-  const onProductChange = (variant: any) => {
-    setvariantId(variant);
-  };
   const [isPending, startTransition] = useTransition();
   const [variantId, setvariantId] = useState<number>(0);
-
+  const [productlabel, setProductLabel] = useState<string>(accessories?.label);
+  const [productPrice, setProductPrice] = useState<any>();
+  const onProductChange = (variant: any) => {
+    setvariantId(variant);
+    let accessoriesData = accessories?.productData?.find((prod: any) => prod.id == variant);
+    if(accessoriesData) {
+      let formatPrice = format.number(accessoriesData?.price, {
+        style: 'currency',
+        currency: currencyCode,
+      });
+      setProductLabel(accessoriesData?.name);
+      setProductPrice(formatPrice);
+    }
+  };
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -81,33 +95,30 @@ export const ProductAccessories = ({ accessories, index }: Props) => {
   return (
     <>
       {accessories?.length}
-      <div className="left-container w-[150px] h-[150px]">
+      <div className="left-container w-[150px] h-[177px]">
         <BcImage
           alt={accessories?.label}
-          className="object-contain"
+          className="object-fill h-[177px]"
           height={150}
-          src={accessories?.image}
+          src={fanPopup}   //accessories?.image
           width={150}
         />
       </div>
-      <div className='w-full flex flex-col gap-[10px]'>
+      <div className='w-full flex flex-col gap-[10px] shrink-[100]'>
+        {productlabel && (
         <div className='flex flex-col'>
-            <p className='font-normal text-[16px] tracking-[0.15px] text-[#353535]'>36W 3 LED Bowl Light Kit-6.85 Inches Tall and 13.07 Inches Wide</p>
-            <p className='font-normal text-[16px] tracking-[0.15px] text-[#353535] text-right'>$321.00 <span className='text-[#808080] line-through'>$400.00</span></p>
+            <p className='font-normal text-[16px] tracking-[0.15px] text-[#353535]'>{productlabel}</p>
+            <p className='font-normal text-[16px] tracking-[0.15px] text-[#353535] text-right'>{productPrice}</p>
         </div>
+        )}
         <div className="right-container">
-          {/* <div className="accessories-label">{accessories?.label}</div> */}
-         
           <Select
-          
             name={`accessories-products-${index}`}
             id={`accessories-products-${index}`}
             options={accessoriesProducts}
             placeholder={accessories?.label}
             onValueChange={(value: string) => onProductChange(value)}
           />
-        
-          
         </div>
         <div className="add-to-cart">
           <form onSubmit={handleSubmit}>
