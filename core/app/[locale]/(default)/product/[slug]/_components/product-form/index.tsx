@@ -144,6 +144,7 @@ export const ProductForm = ({ data: product, multipleOptionIcon, closeIcon, dele
     if(result?.data?.entityId) {
       let cartData = await getCartData(result?.data?.entityId);
       if(cartData?.data?.lineItems?.physicalItems) {
+        productFlyout.setCartDataFn(cartData?.data);
         cartData?.data?.lineItems?.physicalItems?.forEach((items: any) => {
           if(items?.productEntityId == data?.product_id) {
             let selectedOptions = items?.selectedOptions;

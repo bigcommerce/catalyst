@@ -12,6 +12,8 @@ import { useCommonContext } from '~/components/common-context/common-provider';
 import { Minus, Plus } from 'lucide-react';
 import { GetProductMetaFields, GetProductVariantMetaFields, GetVariantsByProductId, GetProductBySKU } from '~/components/management-apis';
 import { ProductAccessories } from './product-accessories';
+import Link from 'next/link';
+import { CheckoutButton } from '~/app/[locale]/(default)/cart/_components/checkout-button';
 
 interface Props {
   data: FragmentOf<typeof ProductItemFragment>;
@@ -76,8 +78,10 @@ export const ProductFlyout = ({
   const format = useFormatter();
   const productFlyout = useCommonContext();
   let productData = productFlyout.productData;
+  let cartItemsData = productFlyout.cartData;
   let open = productFlyout.open;
   let setOpen = productFlyout.handlePopup;
+  const [productQty, setProductQty] = useState<number>(1);
   let variantData: any = removeEdgesAndNodes(product?.variants);
   let optionsData: any = removeEdgesAndNodes(product?.productOptions);
   const [variantProductData, setVariantProductData] = useState<any>([]);
@@ -92,7 +96,8 @@ export const ProductFlyout = ({
       if (variantProduct) {
         getProductMetaData();
       }
-    }, [variantProduct?.entityId, product?.entityId]);
+      setProductQty(productData?.quantity);
+    }, [variantProduct?.entityId, product?.entityId, productData?.quantity]);
   } else {
     useEffect(() => {
       const getProductMetaData = async () => {
@@ -101,7 +106,8 @@ export const ProductFlyout = ({
         setVariantProductData([...productData]);
       }
       getProductMetaData();
-    }, [product?.entityId]);
+      setProductQty(productData?.quantity);
+    }, [product?.entityId, productData?.quantity]);
   }
 
   return (
@@ -203,14 +209,14 @@ export const ProductFlyout = ({
                       type="number"
                       className="w-[40%] border text-center"
                       min="1"
-                      defaultValue={productData?.quantity}
+                      defaultValue={productQty}
                     />
                     <div className=''><Plus className="h-[1rem] w-[1rem] text-[#7F7F7F] "></Plus></div>
                   </div>
                 </div>
               </div>
             </Dialog.Content>
-            {variantProductData && (
+            {variantProductData && variantProductData?.length > 0 && (
             <>
             <hr className="" />
             <div className="flex flex-col gap-4 md:flex-row pop-up-text">
@@ -227,6 +233,29 @@ export const ProductFlyout = ({
             </div>
             </>
             )}
+            <hr className="" />
+            <div className='footer-section'>
+              <div className='subtotal-section'>
+                <div className='items-qty'>
+                Subtotal ({cartItemsData?.lineItems?.totalQuantity}) {(cartItemsData?.lineItems?.totalQuantity > 1)? 'items': 'item'}:
+                </div>
+                <div className='total-price'>
+                {format.number(cartItemsData?.totalExtendedListPrice?.value, {
+                  style: 'currency',
+                  currency: cartItemsData?.totalExtendedListPrice?.currencyCode,
+                })}
+                </div>
+              </div>
+              <div className='cart-buttons'>
+              <Link
+                className="my-5 inline-flex items-center justify-start text-sm font-semibold text-primary hover:text-secondary md:my-0"
+                href="/cart"
+              >
+                View Cart
+              </Link>
+              <CheckoutButton cartId={cartItemsData?.entityId} />
+              </div>
+            </div>
             <Dialog.Close asChild>
               <button
                 aria-modal
