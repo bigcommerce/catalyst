@@ -2,6 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+div#radix-\:r9\: {
+  pointer-events: unset !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* cart */
 .cart-main-img img {
   object-fit: contain;
@@ -1003,6 +1021,16 @@ span.span3-product-price.text-\[1rem\].font-normal.leading-\[2rem\].tracking-\[0
     background-color 0.3s ease,
     border-color 0.3s ease;
 }
+
+.popup-container-parent #add-to-cart{
+  border-radius: 3px;
+  padding: 5px 10px;
+}
+
+.popup-container-parent .checkout-btn{
+  margin-top: 0 !important;
+}
+
 #add-to-cart svg {
   right: -0.6em;
   position: absolute;
@@ -1106,9 +1134,9 @@ footer.\32 xl\:container.\32 xl\:mx-auto {
   width: 100%;
   justify-content: space-between !important;
 }
-.lg\:sticky {
+/* .lg\:sticky {
   z-index: 10000 !important;
-}
+} */
 button.carousel-next-arrow {
   right: 2em;
   top: 9em;
