@@ -170,9 +170,9 @@ export default async function Product({ params: { locale, slug }, searchParams }
           </div>
         </div>
 
-        <Suspense fallback={t('loading')}>
+        {/* <Suspense fallback={t('loading')}>
           <RelatedProducts productId={product.entityId} />
-        </Suspense>
+        </Suspense> */}
 
         <ProductViewed product={product} />
       </ProductProvider>

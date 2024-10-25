@@ -32,6 +32,16 @@ footer {
 p.header-cart-icon a {
   padding-left: 0px;
 }
+.ratings-star span svg {
+  height: 17px;
+  width: 20px !important;
+}
+.ratings-star p span {
+  fill: black;
+}
+.ratings-star {
+  margin-top: 10px;
+}
 nav.header-nav-support div button {
   color: #353535 !important;
   font-weight: 400;
