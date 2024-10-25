@@ -10,6 +10,7 @@ import { toast } from 'react-hot-toast';
 import { Link } from '~/components/link';
 import { useState, useTransition } from 'react';
 import { Button } from '~/components/ui/button';
+import { useCommonContext } from '~/components/common-context/common-provider';
 
 interface Props {
   accessories: any;
@@ -21,6 +22,7 @@ interface Props {
 
 export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup}: Props) => {
   const format = useFormatter();
+  const productFlyout = useCommonContext();
   const t = useTranslations('Components.ProductCard.AddToCart');
   const cart = useCart();
   let accessoriesProducts: any = accessories?.productData?.map(
@@ -81,7 +83,9 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
 
     startTransition(async () => {
       const result = await addToCart(formData);
-
+      if(result?.items) {
+        productFlyout.setCartDataFn(result?.items);
+      }
       if (result.error) {
         cart.decrement(quantity);
 
