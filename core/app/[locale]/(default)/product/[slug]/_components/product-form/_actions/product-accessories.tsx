@@ -16,25 +16,27 @@ interface Props {
   index: number;
 }
 
-export const ProductAccessories = ({ accessories, index }: Props ) => {
+export const ProductAccessories = ({ accessories, index }: Props) => {
   const t = useTranslations('Components.ProductCard.AddToCart');
   const cart = useCart();
-  let accessoriesProducts: any = accessories?.productData?.map(({ sku, id, price, name }: {sku: any, id: any, price: any, name: any}) => ({
-    value: id,
-    label: `(+$${price}) ${sku}-  ${name}`,
-  }));
+  let accessoriesProducts: any = accessories?.productData?.map(
+    ({ sku, id, price, name }: { sku: any; id: any; price: any; name: any }) => ({
+      value: id,
+      label: `(+$${price}) ${sku}-  ${name}`,
+    }),
+  );
   const onProductChange = (variant: any) => {
     setvariantId(variant);
-  }
+  };
   const [isPending, startTransition] = useTransition();
   const [variantId, setvariantId] = useState<number>(0);
-  
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
     const quantity = Number(formData.get('quantity'));
-    if(variantId == 0) {
+    if (variantId == 0) {
       return false;
     }
 
@@ -78,8 +80,8 @@ export const ProductAccessories = ({ accessories, index }: Props ) => {
 
   return (
     <>
-    {accessories?.length}
-      <div className='left-container'>
+      {accessories?.length}
+      <div className="left-container w-[150px] h-[150px]">
         <BcImage
           alt={accessories?.label}
           className="object-contain"
@@ -88,32 +90,42 @@ export const ProductAccessories = ({ accessories, index }: Props ) => {
           width={150}
         />
       </div>
-      <div className='right-container'>
-        <div className='accessories-label'>{accessories?.label}</div>
-        <Select
-          name={`accessories-products-${index}`}
-          id={`accessories-products-${index}`}
-          options={accessoriesProducts}
-          placeholder={accessories?.label}
-          onValueChange={(value: string) => onProductChange(value)}
-        />
-      </div>
-      <div className='add-to-cart'>
-        <form onSubmit={handleSubmit}>
-        <input name="product_id" type="hidden" value={accessories?.entityId} />
-        <input name='variant_id' type='hidden' value={variantId} />
-        <input name="quantity" type="hidden" value={1} />
-        <Button
-          id="add-to-cart"
-          className="mt-2"
-          loading={isPending}
-          loadingText='processing'
-          type="submit"
-        >
-          ADD TO CART
-        </Button>
-      </form>
+      <div className='w-full flex flex-col gap-[10px]'>
+        <div className='flex flex-col'>
+            <p className='font-normal text-[16px] tracking-[0.15px] text-[#353535]'>36W 3 LED Bowl Light Kit-6.85 Inches Tall and 13.07 Inches Wide</p>
+            <p className='font-normal text-[16px] tracking-[0.15px] text-[#353535] text-right'>$321.00 <span className='text-[#808080] line-through'>$400.00</span></p>
+        </div>
+        <div className="right-container">
+          {/* <div className="accessories-label">{accessories?.label}</div> */}
+         
+          <Select
+          
+            name={`accessories-products-${index}`}
+            id={`accessories-products-${index}`}
+            options={accessoriesProducts}
+            placeholder={accessories?.label}
+            onValueChange={(value: string) => onProductChange(value)}
+          />
+        
+          
+        </div>
+        <div className="add-to-cart">
+          <form onSubmit={handleSubmit}>
+            <input name="product_id" type="hidden" value={accessories?.entityId} />
+            <input name="variant_id" type="hidden" value={variantId} />
+            <input name="quantity" type="hidden" value={1} />
+            <Button
+              id="add-to-cart"
+              className="rounded-[3px] py-[5px] px-[10px] h-[42px] text-[14px] font-medium tracking-[1.25px]"
+              loading={isPending}
+              loadingText="processing"
+              type="submit"
+            >
+              ADD TO CART
+            </Button>
+          </form>
+        </div>
       </div>
     </>
   );
-}
+};

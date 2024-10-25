@@ -78,6 +78,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
 export default async function Product({ params: { locale, slug }, searchParams }: Props) {
   const bannerIcon = imageManagerImageUrl('example-1.png', '50w');
+  const relatedProductArrow = imageManagerImageUrl('vector-8-.png', '30w');
   const galleryExpandIcon = imageManagerImageUrl('vector.jpg', '20w'); // Set galleryExpandIcon here
   unstable_setRequestLocale(locale);
 
@@ -98,19 +99,14 @@ export default async function Product({ params: { locale, slug }, searchParams }
   }
   // Fetch the meta fields for the product
   let metaFields = await GetProductMetaFields(product.entityId, '');
-  // console.log("page-----------------------------metafields", JSON.stringify(metaFields, null, 2));
 
   // Extract the collection value from meta fields
   let collectionValue = '';
   let collectionMetaField = metaFields?.find(
-    // (field: { key: string }) => field?.key === 'collection',
     (field: { key: string }) => field?.key === 'collection',
   );
   if (collectionMetaField?.value) {
-    // console.log('page------Collection value:', collectionMetaField.value);
     collectionValue = collectionMetaField.value; // Store the collection value
-  } else {
-    console.log('Collection meta field not found');
   }
 
   const category = removeEdgesAndNodes(product.categories).at(0);
@@ -118,11 +114,9 @@ export default async function Product({ params: { locale, slug }, searchParams }
     category.breadcrumbs.edges.push({ node: { name: product?.sku, path: '#' } });
   }
 
-
-
   return (
     <>
-      <ProductProvider getMetaFields={metaFields} >
+      <ProductProvider getMetaFields={metaFields}>
         {category && <Breadcrumbs category={category} />}
         <div className="main-product-details">
           <h2 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
@@ -156,10 +150,10 @@ export default async function Product({ params: { locale, slug }, searchParams }
             bannerIcon={bannerIcon}
             galleryExpandIcon={galleryExpandIcon} // Pass galleryExpandIcon to Gallery component
           />
-          <Details product={product} collectionValue={collectionValue} />
+          <Details product={product} collectionValue={collectionValue}  />
           <div className="lg:col-span-2">
             <Description product={product} />
-            <RelatedProducts productId={product.entityId} />
+            <RelatedProducts productId={product.entityId} relatedProductArrow={relatedProductArrow}/>
             <SimilarProducts />
             <Promotion />
             <Warranty product={product} />
@@ -169,10 +163,6 @@ export default async function Product({ params: { locale, slug }, searchParams }
             </Suspense>
           </div>
         </div>
-
-        <Suspense fallback={t('loading')}>
-          <RelatedProducts productId={product.entityId} />
-        </Suspense>
 
         <ProductViewed product={product} />
       </ProductProvider>

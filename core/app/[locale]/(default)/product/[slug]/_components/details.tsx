@@ -68,7 +68,7 @@ interface Props {
   collectionValue?: string;
 }
 
-export const Details = ({ product, collectionValue }: Props) => {
+export const Details = ({ product, collectionValue}: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
 
@@ -101,7 +101,6 @@ export const Details = ({ product, collectionValue }: Props) => {
 
           {collectionValue && (
             <>
-              {console.log('Collections Value:', collectionValue)}
               <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
                 from the{' '}
                 <span className="products-underline border-b border-black">{collectionValue}</span>
@@ -231,7 +230,9 @@ export const Details = ({ product, collectionValue }: Props) => {
             ))}
         </div>
       </div>
-      <ProductSchema product={product} />
+      
+      <ProductSchema product={product}/>
+
       <div className="apple-pay mt-4 xl:hidden">
         <button className="flex w-[100%] items-center justify-center rounded bg-[#353535] p-4 text-white">
           <BcImage
