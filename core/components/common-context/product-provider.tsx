@@ -3,7 +3,6 @@
 import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 
 interface ProductContext {
-  product: any;
   getMetaFields: any;
   setMetaFields: (data?: any) => void;
 }

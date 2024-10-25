@@ -107,8 +107,6 @@ export default async function Product({ params: { locale, slug }, searchParams }
   );
   if (collectionMetaField?.value) {
     collectionValue = collectionMetaField.value; // Store the collection value
-  } else {
-    console.log('Collection meta field not found');
   }
 
   const category = removeEdgesAndNodes(product.categories).at(0);
