@@ -24,7 +24,12 @@ div[data-radix-popper-content-wrapper] div{
 img.popup-box1-div-img.absolute.h-full.w-full.object-contain {
   display: none;
 }
-
+.left-container img {
+  display: none;
+}
+.left-container {
+  background-color: lightgrey;
+}
 
 
 
@@ -1042,7 +1047,7 @@ span.span3-product-price.text-\[1rem\].font-normal.leading-\[2rem\].tracking-\[0
 }
 
 #add-to-cart svg {
-  right: 2.4em;
+  right: -0.6em;
   position: absolute;
   visibility: hidden;
   opacity: 0;
