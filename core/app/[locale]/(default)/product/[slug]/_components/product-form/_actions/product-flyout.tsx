@@ -233,29 +233,33 @@ export const ProductFlyout = ({
             </div>
             </>
             )}
-            <hr className="" />
-            <div className='footer-section'>
-              <div className='subtotal-section'>
-                <div className='items-qty'>
-                Subtotal ({cartItemsData?.lineItems?.totalQuantity}) {(cartItemsData?.lineItems?.totalQuantity > 1)? 'items': 'item'}:
+            {cartItemsData?.entityId && (
+              <>
+              <hr className="" />
+              <div className='footer-section'>
+                <div className='subtotal-section'>
+                  <div className='items-qty'>
+                  Subtotal ({cartItemsData?.lineItems?.totalQuantity}) {(cartItemsData?.lineItems?.totalQuantity > 1)? 'items': 'item'}:
+                  </div>
+                  <div className='total-price'>
+                  {cartItemsData?.totalExtendedListPrice?.value && format.number(cartItemsData?.totalExtendedListPrice?.value, {
+                    style: 'currency',
+                    currency: cartItemsData?.totalExtendedListPrice?.currencyCode,
+                  })}
+                  </div>
                 </div>
-                <div className='total-price'>
-                {format.number(cartItemsData?.totalExtendedListPrice?.value, {
-                  style: 'currency',
-                  currency: cartItemsData?.totalExtendedListPrice?.currencyCode,
-                })}
+                <div className='cart-buttons'>
+                <Link
+                  className="my-5 inline-flex items-center justify-start text-sm font-semibold text-primary hover:text-secondary md:my-0"
+                  href="/cart"
+                >
+                  View Cart
+                </Link>
+                <CheckoutButton cartId={cartItemsData?.entityId} />
                 </div>
               </div>
-              <div className='cart-buttons'>
-              <Link
-                className="my-5 inline-flex items-center justify-start text-sm font-semibold text-primary hover:text-secondary md:my-0"
-                href="/cart"
-              >
-                View Cart
-              </Link>
-              <CheckoutButton cartId={cartItemsData?.entityId} />
-              </div>
-            </div>
+              </>
+            )}
             <Dialog.Close asChild>
               <button
                 aria-modal
