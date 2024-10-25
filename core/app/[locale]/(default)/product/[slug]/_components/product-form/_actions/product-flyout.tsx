@@ -247,7 +247,7 @@ export const ProductFlyout = ({
                             className="product-card flex flex-row items-center gap-[20px] border border-[#cccbcb] p-[20px]"
                             key={index}
                           >
-                            <ProductAccessories accessories={accessories} index={index} />
+                            <ProductAccessories accessories={accessories} index={index} currencyCode={productData?.extendedSalePrice?.currencyCode} />
                           </div>
                         ))}
                     </div>
