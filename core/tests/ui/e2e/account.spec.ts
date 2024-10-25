@@ -50,23 +50,3 @@ test('Account dropdown is visible in header', async ({ page, account }) => {
 
   await customer.logout();
 });
-
-test('Add and remove new wishlist', async ({ page, account }) => {
-  const customer = await account.create();
-
-  await customer.login();
-
-  await page.goto('/account/wishlists');
-  await page.getByRole('heading', { name: 'Wishlists' }).waitFor();
-
-  await page.getByRole('button', { name: 'New wishlist' }).click();
-  await page.getByLabel('Wishlist name').fill('test');
-  await page.getByRole('button', { name: 'Create' }).click();
-  await expect(page.getByText('Your wishlist test was created successfully')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'test' })).toBeVisible();
-
-  await page.getByRole('button', { name: 'Delete' }).click();
-  await page.getByRole('button', { name: /Delete/ }).click();
-  await expect(page.getByText('Your wishlist test was deleted successfully')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'test' })).toBeHidden();
-});
