@@ -26,8 +26,14 @@ div[data-radix-popper-content-wrapper] div{
   background-color: lightgrey;
 }
 
-
-
+/* form.flex.flex-col.gap-6.\@container.product-variants {
+  z-index: -1;
+  position: relative;
+} */
+.modal-open form.flex.flex-col.gap-6.\@container.product-variants {
+  z-index: -1;
+  position: relative;
+}
 
 
 /* cart */
