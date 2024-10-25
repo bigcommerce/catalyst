@@ -180,7 +180,7 @@ export const ChangePasswordForm = () => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-error"
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
             match="valueMissing"
           >
             {t('notEmptyMessage')}
@@ -202,13 +202,13 @@ export const ChangePasswordForm = () => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-error"
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
             match="valueMissing"
           >
             {t('notEmptyMessage')}
           </FieldMessage>
           {!isNewPasswordValid && (
-            <FieldMessage className="absolute inset-x-0 inline-flex w-full text-sm text-error md:bottom-0">
+            <FieldMessage className="absolute inset-x-0 inline-flex w-full text-xs text-error md:bottom-0">
               {t('newPasswordValidationMessage')}
             </FieldMessage>
           )}
@@ -229,13 +229,13 @@ export const ChangePasswordForm = () => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-error"
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
             match="valueMissing"
           >
             {t('notEmptyMessage')}
           </FieldMessage>
           {!isConfirmPasswordValid && (
-            <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-error">
+            <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error">
               {t('confirmPasswordValidationMessage')}
             </FieldMessage>
           )}

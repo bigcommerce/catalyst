@@ -47,7 +47,7 @@ export const Text = ({ defaultValue, field, isValid, name, onChange, type }: Tex
       <div className="relative h-7">
         {field.isRequired && (
           <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-error-secondary"
+            className="inline-flex w-full text-xs font-normal text-error"
             match="valueMissing"
           >
             {t(fieldName ?? 'empty')}
@@ -55,7 +55,7 @@ export const Text = ({ defaultValue, field, isValid, name, onChange, type }: Tex
         )}
         {fieldName === 'email' && (
           <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-error-secondary"
+            className="inline-flex w-full text-xs font-normal text-error"
             match="typeMismatch"
           >
             {t('email')}
