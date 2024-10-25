@@ -118,11 +118,9 @@ export default async function Product({ params: { locale, slug }, searchParams }
     category.breadcrumbs.edges.push({ node: { name: product?.sku, path: '#' } });
   }
 
-
-
   return (
     <>
-      <ProductProvider getMetaFields={metaFields} >
+      <ProductProvider getMetaFields={metaFields}>
         {category && <Breadcrumbs category={category} />}
         <div className="main-product-details">
           <h2 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
@@ -169,10 +167,6 @@ export default async function Product({ params: { locale, slug }, searchParams }
             </Suspense>
           </div>
         </div>
-
-        {/* <Suspense fallback={t('loading')}>
-          <RelatedProducts productId={product.entityId} />
-        </Suspense> */}
 
         <ProductViewed product={product} />
       </ProductProvider>

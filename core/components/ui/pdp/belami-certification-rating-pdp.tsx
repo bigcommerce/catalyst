@@ -29,14 +29,12 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps & { produ
     const fetchCertifications = async (product: any, metaField: string) => {
       // Fetch metafields data for the product
       let returnData = await getMetaFieldsByProduct(product, metaField);
-      console.log('Returned data:', returnData); // Log the returned data
 
       if (metaField === 'ratings_certifications' && returnData) {
         try {
           // Check if returnData is an object and has a specific property to extract
           const dataToParse = typeof returnData === 'string' ? returnData : returnData.value || '';
           const parsedValue: Certification[] = JSON.parse(dataToParse); // Attempt to parse the relevant data
-          console.log('ratings_certifications value:', parsedValue);
           setRatingsCertificationsValue(parsedValue);
         } catch (error) {
           console.error('Failed to parse ratings_certifications value:', error);

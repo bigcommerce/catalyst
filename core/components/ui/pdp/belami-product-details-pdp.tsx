@@ -113,7 +113,7 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
                       width={16}
                     />
                     {/* Add download attribute to force download */}
-                    <a className="ml-2" href={installSheet?.value} download>
+                    <a className="ml-2" href={installSheet?.value} download target="_blank">
                       {t('installationSheet')}
                     </a>
                   </button>

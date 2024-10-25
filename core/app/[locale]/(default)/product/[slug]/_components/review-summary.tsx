@@ -28,7 +28,7 @@ export const ReviewSummary = ({ data }: Props) => {
   const hasNoReviews = numberOfReviews === 0;
 
   return (
-    <div className="flex items-center gap-1 justify-center lg:justify-start ratings-star">
+    <div className="ratings-star flex items-center justify-center gap-1 lg:justify-start">
       <p
         aria-describedby={summaryId}
         className={cn('flex flex-nowrap text-primary', hasNoReviews && 'text-gray-400')}
