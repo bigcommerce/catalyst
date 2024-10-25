@@ -80,9 +80,11 @@ const getVariantProductInfo = async (metaData: any) => {
 export const ProductFlyout = ({
   data: product,
   closeIcon,
+  fanPopup
 }: {
   data: Props['data'];
   closeIcon: string;
+  fanPopup: string;
 }) => {
   const format = useFormatter();
   const productFlyout = useCommonContext();
@@ -247,7 +249,7 @@ export const ProductFlyout = ({
                             className="product-card flex flex-row items-center gap-[20px] border border-[#cccbcb] p-[20px]"
                             key={index}
                           >
-                            <ProductAccessories accessories={accessories} index={index} />
+                            <ProductAccessories fanPopup={fanPopup} accessories={accessories} index={index} />
                           </div>
                         ))}
                     </div>

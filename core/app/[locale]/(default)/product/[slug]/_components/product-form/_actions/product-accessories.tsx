@@ -14,9 +14,10 @@ import { Button } from '~/components/ui/button';
 interface Props {
   accessories: any;
   index: number;
+  fanPopup:string;
 }
 
-export const ProductAccessories = ({ accessories, index }: Props) => {
+export const ProductAccessories = ({ accessories, index, fanPopup }: Props) => {
   const t = useTranslations('Components.ProductCard.AddToCart');
   const cart = useCart();
   let accessoriesProducts: any = accessories?.productData?.map(
@@ -81,12 +82,12 @@ export const ProductAccessories = ({ accessories, index }: Props) => {
   return (
     <>
       {accessories?.length}
-      <div className="left-container w-[150px] h-[150px]">
+      <div className="left-container w-[150px] h-[177px] border border-[#cccbcb]">
         <BcImage
           alt={accessories?.label}
-          className="object-contain"
+          className="object-fill h-[150px]"
           height={150}
-          src={accessories?.image}
+          src={fanPopup}   //accessories?.image
           width={150}
         />
       </div>
