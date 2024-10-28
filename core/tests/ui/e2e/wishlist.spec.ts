@@ -22,7 +22,7 @@ test('Favorites wishlist present by default and cannot be deleted', async ({ pag
   await page.getByRole('link', { name: 'Favorites' }).click();
   await page.getByRole('heading', { name: 'Favorites' }).waitFor();
 
-  // Need to check there is no Wishlist Actions to edit/delete wishlist
+  // Need to check there is no Wishlist Actions to edit/delete wishlist after fixing SD-10825
 });
 
 test('Add product to Favorites wishlist from PDP', async ({ page, account }) => {
