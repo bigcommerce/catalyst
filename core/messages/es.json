@@ -124,8 +124,8 @@
         "products": "Productos",
         "items": "artículos",
         "Empty": {
-            "message": "No products in this category",
-            "cta": "Return to Home"
+            "message": "No hay productos en esta categoría",
+            "cta": "Volver a Inicio"
         }
     },
     "Search": {
@@ -153,6 +153,7 @@
             "title": "Direcciones",
             "addNewAddress": "Añadir nueva dirección",
             "editButton": "Editar",
+            "emptyAddresses": "No se han añadido direcciones",
             "deleteButton": "Eliminar",
             "confirmDeleteAddress": "Eliminar dirección",
             "deleteModalTitle": "¿Está seguro de que desea eliminar esta dirección?",

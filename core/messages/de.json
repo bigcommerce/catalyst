@@ -153,6 +153,7 @@
             "title": "Adressen",
             "addNewAddress": "Neue Adresse hinzufügen",
             "editButton": "Bearbeiten",
+            "emptyAddresses": "Keine Adressen hinzugefügt",
             "deleteButton": "Löschen",
             "confirmDeleteAddress": "Adresse löschen",
             "deleteModalTitle": "Möchten Sie diese Adresse wirklich löschen?",

@@ -124,8 +124,8 @@
         "products": "Produkter",
         "items": "Varer",
         "Empty": {
-            "message": "No products in this category",
-            "cta": "Return to Home"
+            "message": "Ingen produkter i denne kategorien",
+            "cta": "Gå tilbake til Hjem"
         }
     },
     "Search": {
@@ -153,6 +153,7 @@
             "title": "Adresser",
             "addNewAddress": "Legg til ny adresse",
             "editButton": "Rediger",
+            "emptyAddresses": "No addresses added",
             "deleteButton": "Slett",
             "confirmDeleteAddress": "Slett adresse",
             "deleteModalTitle": "Er du sikker på at du vil slette denne adressen?",

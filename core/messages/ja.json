@@ -153,6 +153,7 @@
             "title": "住所",
             "addNewAddress": "Add new address",
             "editButton": "編集",
+            "emptyAddresses": "No addresses added",
             "deleteButton": "削除する",
             "confirmDeleteAddress": "アドレスの削除",
             "deleteModalTitle": "このアドレスを削除しますか?",
