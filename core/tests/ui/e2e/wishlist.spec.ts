@@ -9,6 +9,22 @@ test('Guest user is redirected to login upon adding product to wishlist', async 
   await expect(page).toHaveURL(/login/);
 });
 
+test('Favorites wishlist present by default and cannot be deleted', async ({ page, account }) => {
+  const customer = await account.create();
+
+  await customer.login();
+
+  await page.goto('/account/wishlists/');
+
+  await expect(page.getByText('Favorites')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Delete' })).toBeHidden();
+
+  await page.getByRole('link', { name: 'Favorites' }).click();
+  await page.getByRole('heading', { name: 'Favorites' }).waitFor();
+
+  // Need to check there is no Wishlist Actions to edit/delete wishlist
+});
+
 test('Add product to Favorites wishlist from PDP', async ({ page, account }) => {
   const customer = await account.create();
 
