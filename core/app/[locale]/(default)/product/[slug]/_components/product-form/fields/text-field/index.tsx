@@ -31,9 +31,9 @@ export const TextField = ({ option }: Props) => {
     defaultValue: option.defaultText ?? '',
   });
   const { error } = fieldState;
-
+  let accessoriesHidden = (option?.displayName == 'accessories_modifier') ? 'hidden' : '';
   return (
-    <div>
+    <div className={`${accessoriesHidden}`}>
       <Label className="mb-2 inline-block font-semibold" htmlFor={`${option.entityId}`}>
         {option.isRequired ? (
           <>
