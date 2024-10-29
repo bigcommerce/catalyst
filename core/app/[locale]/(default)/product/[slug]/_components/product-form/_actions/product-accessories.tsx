@@ -50,6 +50,8 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
       let salePrice: number = accessoriesData?.sale_price;
       if(salePrice != accessoriesData?.price) {
         setHasSalePrice(1);
+      } else {
+        setHasSalePrice(0);
       }
       let formatSalePrice: any = 0;
       formatSalePrice = format.number(salePrice, {
