@@ -32,7 +32,6 @@ import { useCommonContext } from '~/components/common-context/common-provider';
 interface Props {
   data: FragmentOf<typeof ProductItemFragment>;
   multipleOptionIcon: string;
-  deleteIcon: string;
   closeIcon: string;
   fanPopup: string;
 }
@@ -67,7 +66,7 @@ export const Submit = ({ data: product }: {data:Props['data']}) => {
   );
 };
 
-export const ProductForm = ({ data: product, multipleOptionIcon, closeIcon, deleteIcon,fanPopup }: Props) => {
+export const ProductForm = ({ data: product, multipleOptionIcon, closeIcon,fanPopup }: Props) => {
   const t = useTranslations('Product.Form');
   const cart = useCart();
   const productFlyout:any = useCommonContext();
