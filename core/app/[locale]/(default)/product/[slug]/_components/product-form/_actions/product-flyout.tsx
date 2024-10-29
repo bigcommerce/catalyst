@@ -14,52 +14,63 @@ import {
   GetProductMetaFields,
   GetProductVariantMetaFields,
   GetVariantsByProductId,
-  GetProductBySKU,
 } from '~/components/management-apis';
 import { ProductAccessories } from './product-accessories';
 import Link from 'next/link';
 import { CheckoutButton } from '~/app/[locale]/(default)/cart/_components/checkout-button';
+import { GetVariantsByProductSKU } from '~/components/graphql-apis';
 
 interface Props {
   data: FragmentOf<typeof ProductItemFragment>;
 }
 
 const getVariantProductInfo = async (metaData: any) => {
-  let variantProductInfo: any = [];
-  let accessoriesLabelData: any = [];
+  let variantProductInfo: any = [], accessoriesLabelData: any = [], skuArrayData: any = [];
   if (metaData?.[0]?.value) {
-    let varaiantDatas: any = JSON?.parse(metaData?.[0]?.value);
-    if (varaiantDatas?.length > 0) {
-      let variantProductIdSkus: string = '';
-      varaiantDatas?.forEach(async (itemData: any) => {
-        variantProductIdSkus += itemData?.products?.[0]?.parent_sku + ',';
+    let variantDatas: any = JSON?.parse(metaData?.[0]?.value);
+    if (variantDatas?.length > 0) {
+      let variantProductIdSkus: Array<any> = [];
+      variantDatas?.forEach(async (itemData: any) => {
+        variantProductIdSkus.push(itemData?.products?.[0]?.parent_sku);
         accessoriesLabelData.push({
           sku: itemData?.products?.[0]?.parent_sku,
-          label: itemData?.label,
+          label: itemData?.label
         });
+        if(itemData?.products?.[0]?.variants) {
+          skuArrayData.push(...itemData?.products?.[0]?.variants);
+        } else {
+          skuArrayData.push(itemData?.products?.[0]?.parent_sku);
+        }
       });
-      if (variantProductIdSkus) {
-        variantProductIdSkus = variantProductIdSkus?.replace(/,\s*$/, '');
-        let parentProductInformation = await GetProductBySKU(variantProductIdSkus);
+      if (variantProductIdSkus?.length) {
+        let parentProductInformation = await GetVariantsByProductSKU(variantProductIdSkus);
         if (parentProductInformation?.length > 0) {
           for await (const productInfo of parentProductInformation) {
-            let varaiantProductData = await GetVariantsByProductId(productInfo?.id);
+            let varaiantProductData = await GetVariantsByProductId(productInfo?.entityId);
             let variantNewObject: any = [];
+            let productName: string = productInfo?.name;
+            let imageArray: Array<any> = removeEdgesAndNodes(productInfo?.images);
             varaiantProductData?.forEach((item: any) => {
-              let optionValues: string = item?.option_values
-                ?.map((data: any) => data?.label)
-                .join(' ');
-              variantNewObject.push({
-                image: item?.image_url,
-                price: item?.price,
-                retail_price: item?.retail_price,
-                sale_price: item?.sale_price,
-                id: item?.id,
-                mpn: item?.mpn,
-                sku: item?.sku,
-                name: productInfo?.name + '-' + optionValues,
-                parentImage: productInfo?.image,
-              });
+              if(skuArrayData?.find((sku:any) => sku == item?.sku)) {
+                let optionValues: string = item?.option_values?.map((data: any) => data?.label)?.join(' ');
+                optionValues = (optionValues) ? '-' + optionValues: '';
+                let getProductImage = imageArray?.find((image: any) => image?.altText?.includes(item?.mpn));
+                let salePriceData = item?.price;
+                let price = item?.price;
+                if(price != item?.sale_price && item?.sale_price > 0) {
+                  salePriceData = item?.sale_price;
+                }
+                variantNewObject.push({
+                  image: getProductImage?.url,
+                  price: price,
+                  retail_price: item?.retail_price,
+                  sale_price: salePriceData,
+                  id: item?.id,
+                  mpn: item?.mpn,
+                  sku: item?.sku,
+                  name: productName + optionValues
+                });
+              }
             });
             let productAccesslabel = accessoriesLabelData?.find(
               (prod: any) => prod?.sku == productInfo?.sku,
@@ -67,7 +78,7 @@ const getVariantProductInfo = async (metaData: any) => {
             variantProductInfo.push({
               label: productAccesslabel?.label,
               productData: variantNewObject,
-              entityId: productInfo?.id,
+              entityId: productInfo?.entityId,
             });
           }
         }

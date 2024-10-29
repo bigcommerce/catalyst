@@ -73,9 +73,8 @@ export const Details = ({ product, collectionValue}: Props) => {
   const format = useFormatter();
 
   const customFields = removeEdgesAndNodes(product.customFields);
-  const deleteIcon = imageManagerImageUrl('delete.png', '20w');
   const closeIcon = imageManagerImageUrl('close.png', '14w');
-  const fanPopup = imageManagerImageUrl('image-2-.png', '150w');
+  const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
 
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
@@ -173,7 +172,7 @@ export const Details = ({ product, collectionValue}: Props) => {
       <FreeDelivery />
 
       {/* Product Form */}
-      <ProductForm data={product} multipleOptionIcon={multipleOptionIcon} fanPopup={fanPopup} closeIcon={closeIcon} deleteIcon={deleteIcon} />
+      <ProductForm data={product} multipleOptionIcon={multipleOptionIcon} fanPopup={fanPopup} closeIcon={closeIcon} />
 
       <div className="div-product-description my-12 hidden">
         <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>

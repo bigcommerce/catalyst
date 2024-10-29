@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
+import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 import { locales, LocaleType } from '~/i18n/routing';
@@ -35,6 +36,11 @@ export default function Login({ params: { locale } }: Props) {
   unstable_setRequestLocale(locale);
 
   const t = useTranslations('Login');
+
+  const breadcrumbs: any = [{
+    label: "Rewards Program",
+    href: '#'
+  }];
 
   return (
     <>
@@ -85,6 +91,7 @@ export default function Login({ params: { locale } }: Props) {
         </div>
       </div>
       <div className="mt-[20px] flex flex-col gap-[20px] px-4 2xl:container sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0">
+         <ComponentsBreadcrumbs className="login-div mt-[6rem] mx-auto px-[1px]" breadcrumbs={breadcrumbs} />
         <div className="login-div login-div-one px-[1px] mx-auto flex justify-between gap-24">
           <h2 className="text-[34px] font-normal text-[#353535]">Rewards Program</h2>
           <div className="flex flex-row flex-wrap content-center items-center justify-center gap-[10px] px-0 pb-0 pt-[10px]">
