@@ -27,6 +27,7 @@ export const create = new Command('create')
   .option('--customer-impersonation-token <token>', 'BigCommerce customer impersonation token')
   .option('--gh-ref <ref>', 'Clone a specific ref from the source repository')
   .option('--repository <repository>', 'GitHub repository to clone from', 'bigcommerce/catalyst')
+  .option('--env <vars...>', 'Arbitrary environment variables to set in .env.local')
   .addOption(
     new Option('--bigcommerce-hostname <hostname>', 'BigCommerce hostname')
       .default('bigcommerce.com')
@@ -231,6 +232,7 @@ export const create = new Command('create')
       channelId: channelId.toString(),
       storeHash,
       customerImpersonationToken,
+      arbitraryEnv: options.env,
     });
 
     await installDependencies(projectDir);
