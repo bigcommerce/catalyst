@@ -18,18 +18,22 @@ div[data-radix-popper-content-wrapper] div{
   width: 240px;
 }
 
-button#add-to-cart {
- position: static !important;
+
+.left-container img {
+  display: none;
 }
-.block.xl\:flex {
-  z-index: -1 !important;
-  position: relative !important;
+.left-container {
+  background-color: lightgrey;
 }
 
-
-
-
-
+/* form.flex.flex-col.gap-6.\@container.product-variants {
+  z-index: -1;
+  position: relative;
+} */
+.modal-open form.flex.flex-col.gap-6.\@container.product-variants {
+  z-index: -1;
+  position: relative;
+}
 
 
 /* cart */
@@ -1062,7 +1066,7 @@ span.span3-product-price.text-\[1rem\].font-normal.leading-\[2rem\].tracking-\[0
 }
 
 #add-to-cart svg {
-  right: 2.4em;
+  right: -0.6em;
   position: absolute;
   visibility: hidden;
   opacity: 0;

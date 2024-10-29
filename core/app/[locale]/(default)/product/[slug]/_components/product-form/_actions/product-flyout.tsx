@@ -257,33 +257,37 @@ export const ProductFlyout = ({
                 </div>
               </>
             )}
-            <hr className="" />
-            <div className="footer-section flex flex-col gap-[20px]">
-              <div className="subtotal-section flex flex-col gap-[10px] items-start">
-                <div className='font-medium text-[20px] tracking-[0.15px] text-[#008BB7]'>Free Shipping</div>
-                <div className='w-full flex flex-row justify-between items-start gap-[10px]'>
-                  <div className="items-qty font-medium text-[20px] tracking-[0.15px] text-black">
-                    Subtotal ({cartItemsData?.lineItems?.totalQuantity}){' '}
-                    {cartItemsData?.lineItems?.totalQuantity > 1 ? 'items' : 'item'}:
-                  </div>
-                  <div className="total-price font-medium text-[20px] tracking-[0.15px] text-black">
-                    {format.number(cartItemsData?.totalExtendedListPrice?.value, {
-                      style: 'currency',
-                      currency: cartItemsData?.totalExtendedListPrice?.currencyCode,
-                    })}
+            {cartItemsData && (
+              <>
+              <hr className="" />
+              <div className="footer-section flex flex-col gap-[20px]">
+                <div className="subtotal-section flex flex-col gap-[10px] items-start">
+                  <div className='font-medium text-[20px] tracking-[0.15px] text-[#008BB7]'>Free Shipping</div>
+                  <div className='w-full flex flex-row justify-between items-start gap-[10px]'>
+                    <div className="items-qty font-medium text-[20px] tracking-[0.15px] text-black">
+                      Subtotal ({cartItemsData?.lineItems?.totalQuantity}){' '}
+                      {cartItemsData?.lineItems?.totalQuantity > 1 ? 'items' : 'item'}:
+                    </div>
+                    <div className="total-price font-medium text-[20px] tracking-[0.15px] text-black">
+                      {cartItemsData?.totalExtendedListPrice?.currencyCode && format.number(cartItemsData?.totalExtendedListPrice?.value, {
+                        style: 'currency',
+                        currency: cartItemsData?.totalExtendedListPrice?.currencyCode,
+                      })}
+                    </div>
                   </div>
                 </div>
+                <div className="cart-buttons flex flex-row items-start gap-[10px]">
+                  <Link
+                    className="flex flex-row items-center self-stretch justify-center w-[100%] border border-[#b3dce8] rounded-[3px] font-medium text-[14px] tracking-[1.25px] uppercase text-[#002A37] my-5 text-sm  hover:text-secondary md:my-0"
+                    href="/cart"
+                  >
+                    View Cart
+                  </Link>
+                  <CheckoutButton cartId={cartItemsData?.entityId} />
+                </div>
               </div>
-              <div className="cart-buttons flex flex-row items-start gap-[10px]">
-                <Link
-                  className="flex flex-row items-center self-stretch justify-center w-[100%] border border-[#b3dce8] rounded-[3px] font-medium text-[14px] tracking-[1.25px] uppercase text-[#002A37] my-5 text-sm  hover:text-secondary md:my-0"
-                  href="/cart"
-                >
-                  View Cart
-                </Link>
-                <CheckoutButton cartId={cartItemsData?.entityId} />
-              </div>
-            </div>
+            </>
+            )}
             <Dialog.Close asChild>
               <button
                 aria-modal

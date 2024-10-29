@@ -27,15 +27,18 @@ const GalleryModel = ({
     const originalPosition = body.style.position;
 
     if (isOpen) {
+      body.classList.add('modal-open'); // Add new class to body
       body.style.position = 'fixed';
       body.style.overflow = 'hidden';
       body.style.width = '100%';
     } else {
+      body.classList.remove('modal-open'); // Remove class when modal closes
       body.style.position = originalPosition;
       body.style.overflow = '';
     }
 
     return () => {
+      body.classList.remove('modal-open'); // Clean up class on unmount
       body.style.position = originalPosition;
       body.style.overflow = '';
     };
