@@ -676,7 +676,8 @@ ul.div-breadcrumb li:last-child a {
 }
 @media only screen and (max-width: 1200px) {
   /* Login page */
-  .login-div {
+  .login-div,
+  .reset-pass {
     width: calc((800 / 1000) * 100vw);
   }
   .gallery-pop-up-img {
@@ -923,15 +924,32 @@ ul.div-breadcrumb li:last-child a {
   }
 }
 
-/* Login page*/
 @media screen and (max-width: 768px) {
-  .login-div {
+  .login-div,
+  .reset-pass {
     width: calc((500 / 768) * 100vw); /* Adjust the ratio based on mobile design */
   }
   .login-first-child,
   .login-sec-child {
     width: calc(90vw);
   }
+
+  .reset-pass{
+    gap: 20px !important;
+    margin-inline: 0;
+    width: 100% !important;
+  }
+
+  .reset-pass .reset-pass-form{
+    margin-top: 0;
+    padding-top: 0;
+    max-width: none !important;
+  }
+
+  .reset-pass .reset-pass-head{
+    font-size: 24px;
+  }
+
 }
 
 img.variant-img {
@@ -1199,13 +1217,22 @@ button.show-all {
   width: calc(35.28vw);
 }
 
-.login-div {
+.login-div,
+.reset-pass {
   width: calc((1116 / 1600) * 100vw);
 }
 
-.login-div-one {
-  margin-top: 6rem;
+.reset-pass .reset-pass-form{
+  max-width: 514px;
+  margin-inline: auto;
 }
+
+@media screen and (max-width: 422px) {
+  .reset-pass .reset-pass-form{
+    margin-inline: 0;
+  }
+}
+
 
 .popup-container-parent .popup-box1 {
   pointer-events: all !important;
@@ -1239,4 +1266,38 @@ button.show-all {
     font-size: 12px;
     letter-spacing: 0.4px;
   }
+}
+
+
+.reset-pass{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+}
+
+.reset-pass .reset-pass-form input#email{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 6px 10px;
+  gap: 10px;
+  height: 44px;
+  border: 1px solid #CCCBCB;
+  border-radius: 3px;
+  background: #FFFFFF;
+}
+
+.login-breadcrumb .div-breadcrumb{ 
+  padding-block: 0 !important;
+}
+
+.reset-pass nav{
+  display: flex;
+  justify-content: center;
+}
+
+.reset-pass nav ul{
+  padding-block: 6px;
 }

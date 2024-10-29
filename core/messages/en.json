@@ -47,10 +47,10 @@
     },
     "ForgotPassword": {
       "title": "Forgot password",
-      "heading": "Forgot password",
+      "heading": "Reset Your Password",
       "Form": {
-        "description": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
-        "emailLabel": "Email",
+        "description": "Fill in your email below to request a new password. An email will be sent to the address below containing a link to verify your email address.",
+        "emailLabel": "Email Address",
         "emailValidationMessage": "Enter a valid email such as name@domain.com",
         "recaptchaText": "Pass ReCAPTCHA check",
         "confirmResetPassword": "If the email address {email} is linked to an account in our store, we have sent you a password reset email. Please check your inbox and spam folder if you don't see it.",

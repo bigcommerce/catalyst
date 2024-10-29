@@ -40,7 +40,7 @@ const SubmitButton = () => {
 
   return (
     <Button
-      className="relative w-fit items-center px-8 py-2"
+      className="relative uppercase px-8 py-2 w-full flex flex-row justify-center items-center p-[5px_10px] h-[42px] bg-[#008BB7] rounded-[3px] font-[500] text-[14px] tracking-[1.25px] text-white"
       data-button
       loading={pending}
       loadingText={t('submitting')}
@@ -127,13 +127,15 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
         </Message>
       )}
 
-      <p className="mb-4 text-base">{t('description')}</p>
 
-      <Form action={onSubmit} className="mb-14 flex flex-col gap-4 md:py-4 lg:p-0" ref={form}>
-        <Field className="relative space-y-2 pb-7" name="email">
-          <FieldLabel htmlFor="email">{t('emailLabel')}</FieldLabel>
+      <Form action={onSubmit} className="reset-pass-form mt-[30px] flex flex-col gap-[22px] md:py-4 lg:p-0" ref={form}>
+        <p className="text-[16px] font-normal tracking-[0.5px] text-[#353535] leading-[32px]">{t('description')}</p>
+        <div className='flex flex-col gap-[22px]'>
+        <Field className="flex flex-col gap-[9px] items-start" name="email">
+          <FieldLabel className='font-normal text-[16px] flex items-center tracking-[0.15px] text-[#353535]' htmlFor="email">{t('emailLabel')}</FieldLabel>
           <FieldControl asChild>
             <Input
+              className='w-full '
               autoComplete="email"
               error={!isEmailValid}
               id="email"
@@ -152,7 +154,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
         </Field>
 
         {reCaptchaSettings?.isEnabledOnStorefront && (
-          <Field className="relative col-span-full max-w-full space-y-2 pb-7" name="ReCAPTCHA">
+          <Field className="relative col-span-full max-w-full space-y-2" name="ReCAPTCHA">
             <ReCaptcha
               onChange={onReCatpchaChange}
               ref={reCaptchaRef}
@@ -169,6 +171,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
         <FormSubmit asChild>
           <SubmitButton />
         </FormSubmit>
+        </div>
       </Form>
     </>
   );
