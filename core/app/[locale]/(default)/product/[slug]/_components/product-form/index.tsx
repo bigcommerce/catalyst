@@ -86,14 +86,16 @@ export const ProductForm = ({ data: product, multipleOptionIcon, closeIcon,fanPo
     let urlParamArray: any = [];
     productOptions.forEach((option: any) => {
       const searchParamSelected = searchParams.get(String(option.entityId));
-      const values: any = removeEdgesAndNodes(option.values);
-      const selectedValue = option.entityId;
-      if (selectedValue) {
-        const defaultValue = values.find((value: any) => value.isDefault)?.entityId.toString();
-        urlParamArray.push({
-          selectedValue: selectedValue,
-          defaultValue: defaultValue,
-        });
+      if(option?.values) {
+        const values: any = removeEdgesAndNodes(option.values);
+        const selectedValue = option.entityId;
+        if (selectedValue) {
+          const defaultValue = values.find((value: any) => value.isDefault)?.entityId.toString();
+          urlParamArray.push({
+            selectedValue: selectedValue,
+            defaultValue: defaultValue,
+          });
+        }
       }
     });
     useEffect(() => {
