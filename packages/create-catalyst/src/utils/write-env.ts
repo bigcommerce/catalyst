@@ -8,10 +8,12 @@ export const writeEnv = (
     channelId,
     storeHash,
     customerImpersonationToken,
+    arbitraryEnv,
   }: {
     channelId: string;
     storeHash: string;
     customerImpersonationToken: string;
+    arbitraryEnv?: string[];
   },
 ) => {
   outputFileSync(
@@ -25,6 +27,7 @@ export const writeEnv = (
       `CLIENT_LOGGER=false`,
       `ENABLE_ADMIN_ROUTE=true`,
       `DEFAULT_REVALIDATE_TARGET=3600`,
+      arbitraryEnv?.map((env) => env).join('\n'),
     ].join('\n'),
   );
 };
