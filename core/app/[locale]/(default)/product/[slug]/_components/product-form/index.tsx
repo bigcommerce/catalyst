@@ -32,7 +32,6 @@ import { useCommonContext } from '~/components/common-context/common-provider';
 interface Props {
   data: FragmentOf<typeof ProductItemFragment>;
   multipleOptionIcon: string;
-  deleteIcon: string;
   closeIcon: string;
   fanPopup: string;
 }
@@ -67,7 +66,7 @@ export const Submit = ({ data: product }: {data:Props['data']}) => {
   );
 };
 
-export const ProductForm = ({ data: product, multipleOptionIcon, closeIcon, deleteIcon,fanPopup }: Props) => {
+export const ProductForm = ({ data: product, multipleOptionIcon, closeIcon,fanPopup }: Props) => {
   const t = useTranslations('Product.Form');
   const cart = useCart();
   const productFlyout:any = useCommonContext();
@@ -87,14 +86,16 @@ export const ProductForm = ({ data: product, multipleOptionIcon, closeIcon, dele
     let urlParamArray: any = [];
     productOptions.forEach((option: any) => {
       const searchParamSelected = searchParams.get(String(option.entityId));
-      const values: any = removeEdgesAndNodes(option.values);
-      const selectedValue = option.entityId;
-      if (selectedValue) {
-        const defaultValue = values.find((value: any) => value.isDefault)?.entityId.toString();
-        urlParamArray.push({
-          selectedValue: selectedValue,
-          defaultValue: defaultValue,
-        });
+      if(option?.values) {
+        const values: any = removeEdgesAndNodes(option.values);
+        const selectedValue = option.entityId;
+        if (selectedValue) {
+          const defaultValue = values.find((value: any) => value.isDefault)?.entityId.toString();
+          urlParamArray.push({
+            selectedValue: selectedValue,
+            defaultValue: defaultValue,
+          });
+        }
       }
     });
     useEffect(() => {

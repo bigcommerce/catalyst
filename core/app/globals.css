@@ -19,10 +19,7 @@ div[data-radix-popper-content-wrapper] div{
 }
 
 
-.left-container img {
-  display: none;
-}
-.left-container {
+.left-container.bg-set {
   background-color: lightgrey;
 }
 
