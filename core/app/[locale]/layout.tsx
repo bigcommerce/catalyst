@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
-import { PropsWithChildren, use } from 'react';
+import { PropsWithChildren } from 'react';
 
 import '../globals.css';
 
@@ -77,12 +77,10 @@ const VercelComponents = () => {
 };
 
 interface Props extends PropsWithChildren {
-  params: Promise<{ locale: string }>;
+  params: { locale: string };
 }
 
-export default function RootLayout({ params, children }: Props) {
-  const { locale } = use(params);
-
+export default function RootLayout({ children, params: { locale } }: Props) {
   // need to call this method everywhere where static rendering is enabled
   // https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-setRequestLocale-to-all-layouts-and-pages
   setRequestLocale(locale);

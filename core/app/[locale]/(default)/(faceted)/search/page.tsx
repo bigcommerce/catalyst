@@ -18,11 +18,10 @@ export async function generateMetadata() {
 }
 
 interface Props {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
-export default async function Search(props: Props) {
-  const searchParams = await props.searchParams;
+export default async function Search({ searchParams }: Props) {
   const t = await getTranslations('Search');
 
   const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : undefined;

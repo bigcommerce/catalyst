@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
-import { PropsWithChildren, use } from 'react';
+import { PropsWithChildren } from 'react';
 
 import { Link } from '~/components/link';
 import { LocaleType } from '~/i18n/routing';
@@ -11,12 +11,10 @@ const tabList = ['addresses', 'settings'] as const;
 export type TabType = (typeof tabList)[number];
 
 interface Props extends PropsWithChildren {
-  params: Promise<{ locale: LocaleType; tab?: TabType }>;
+  params: { locale: LocaleType; tab?: TabType };
 }
 
-export default function AccountTabLayout({ children, params }: Props) {
-  const { locale } = use(params);
-
+export default function AccountTabLayout({ children, params: { locale } }: Props) {
   setRequestLocale(locale);
 
   const t = useTranslations('Account.Home');

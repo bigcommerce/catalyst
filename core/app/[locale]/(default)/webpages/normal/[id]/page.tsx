@@ -4,12 +4,10 @@ import { notFound } from 'next/navigation';
 import { getWebpageData } from './page-data';
 
 interface Props {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-
+export async function generateMetadata({ params: { id } }: Props): Promise<Metadata> {
   const data = await getWebpageData({ id: decodeURIComponent(id) });
   const webpage = data.node?.__typename === 'NormalPage' ? data.node : null;
 
@@ -26,9 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function WebPage({ params }: Props) {
-  const { id } = await params;
-
+export default async function WebPage({ params: { id } }: Props) {
   const data = await getWebpageData({ id: decodeURIComponent(id) });
   const webpage = data.node?.__typename === 'NormalPage' ? data.node : null;
 

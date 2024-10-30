@@ -1,8 +1,8 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { ChangeEvent, useActionState, useRef, useState } from 'react';
-import { useFormStatus } from 'react-dom';
+import { ChangeEvent, useRef, useState } from 'react';
+import { useFormState, useFormStatus } from 'react-dom';
 
 import { Button } from '~/components/ui/button';
 import {
@@ -48,7 +48,7 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
 
   const form = useRef<HTMLFormElement>(null);
   const router = useRouter();
-  const [state, formAction] = useActionState(changePassword, {
+  const [state, formAction] = useFormState(changePassword, {
     status: 'idle',
     message: '',
   });

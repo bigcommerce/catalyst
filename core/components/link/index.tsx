@@ -1,6 +1,5 @@
 'use client';
 
-import { useLocale } from 'next-intl';
 import { ComponentPropsWithRef, ElementRef, forwardRef, useReducer } from 'react';
 
 import { cn } from '~/lib/utils';
@@ -20,22 +19,17 @@ type Props = NextLinkProps & PrefetchOptions;
  * This custom `Link` is based on  Next-Intl's `Link` component
  * https://next-intl-docs.vercel.app/docs/routing/navigation#link
  * which adds automatically prefixes for the href with the current locale as necessary
- * and extends with additional prefetching controls, making navigation
+ * and etends with additional prefetching controls, making navigation
  * prefetching more adaptable to different use cases. By offering `prefetch` and `prefetchKind`
  * props, it grants explicit management over when and how prefetching occurs, defaulting to 'hover' for
  * prefetch behavior and 'auto' for prefetch kind. This approach provides a balance between optimizing
  * page load performance and resource usage. https://nextjs.org/docs/app/api-reference/components/link#prefetch
  */
 export const Link = forwardRef<ElementRef<'a'>, Props>(
-  (
-    { href, prefetch = 'hover', prefetchKind = 'auto', children, className, locale, ...rest },
-    ref,
-  ) => {
+  ({ href, prefetch = 'hover', prefetchKind = 'auto', children, className, ...rest }, ref) => {
     const router = useRouter();
     const [prefetched, setPrefetched] = useReducer(() => true, false);
     const computedPrefetch = computePrefetchProp({ prefetch, prefetchKind });
-    const defaultLocale = useLocale();
-    const finalLocale = locale || defaultLocale;
 
     const triggerPrefetch = () => {
       if (prefetched) {
@@ -56,7 +50,6 @@ export const Link = forwardRef<ElementRef<'a'>, Props>(
           className,
         )}
         href={href}
-        locale={finalLocale}
         onMouseEnter={prefetch === 'hover' ? triggerPrefetch : undefined}
         onTouchStart={prefetch === 'hover' ? triggerPrefetch : undefined}
         prefetch={computedPrefetch}

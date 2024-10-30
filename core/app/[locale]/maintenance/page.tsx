@@ -38,12 +38,10 @@ const Container = ({ children }: { children: ReactNode }) => (
 );
 
 interface Props {
-  params: Promise<{ locale: LocaleType }>;
+  params: { locale: LocaleType };
 }
 
-export default async function Maintenance({ params }: Props) {
-  const { locale } = await params;
-
+export default async function Maintenance({ params: { locale } }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations('Maintenance');

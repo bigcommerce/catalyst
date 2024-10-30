@@ -9,11 +9,11 @@ import { AddressBook } from './_components/address-book';
 import { getCustomerAddresses } from './page-data';
 
 interface Props {
-  searchParams: Promise<{
+  searchParams: {
     [key: string]: string | string[] | undefined;
     before?: string;
     after?: string;
-  }>;
+  };
 }
 
 export async function generateMetadata() {
@@ -25,7 +25,7 @@ export async function generateMetadata() {
 }
 
 export default async function Addresses({ searchParams }: Props) {
-  const { before, after } = await searchParams;
+  const { before, after } = searchParams;
 
   const data = await getCustomerAddresses({
     ...(after && { after }),
