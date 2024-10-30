@@ -127,7 +127,7 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-gray-500"
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
             match={(value: string) => value !== newPassword}
           >
             {t('confirmPasswordValidationMessage')}
