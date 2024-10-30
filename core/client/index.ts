@@ -38,9 +38,9 @@ export const client = createClient({
       return defaultChannelId;
     }
   },
-  beforeRequest: async (fetchOptions) => {
+  beforeRequest: (fetchOptions) => {
     if (fetchOptions?.cache && ['no-store', 'no-cache'].includes(fetchOptions.cache)) {
-      const ipAddress = (await headers()).get('X-Forwarded-For');
+      const ipAddress = headers().get('X-Forwarded-For');
 
       if (ipAddress) {
         return {

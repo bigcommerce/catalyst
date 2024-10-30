@@ -1,6 +1,5 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
-import { use } from 'react';
 
 import { redirect } from '~/i18n/routing';
 
@@ -15,16 +14,18 @@ export async function generateMetadata() {
 }
 
 interface Props {
-  searchParams: Promise<{
+  searchParams: {
     c?: string;
     t?: string;
-  }>;
+  };
 }
 
 export default function ChangePassword({ searchParams }: Props) {
-  const { c: customerId, t: customerToken } = use(searchParams);
   const t = useTranslations('ChangePassword');
   const locale = useLocale();
+
+  const customerId = searchParams.c;
+  const customerToken = searchParams.t;
 
   if (!customerId || !customerToken) {
     redirect({ href: '/login', locale });

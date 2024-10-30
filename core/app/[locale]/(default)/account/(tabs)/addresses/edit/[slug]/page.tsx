@@ -98,12 +98,11 @@ export async function generateMetadata() {
 }
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
-export default async function Edit({ params }: Props) {
-  const { slug } = await params;
-
+export default async function Edit({ params: { slug } }: Props) {
   const t = await getTranslations('Account.Addresses.Edit');
 
   const customerId = await getSessionCustomerId();
@@ -118,6 +117,7 @@ export default async function Edit({ params }: Props) {
     },
   });
 
+  const reCaptchaSettings = data.site.settings?.reCaptcha;
   const countries = data.geography.countries;
   const addressFields = [...(data.site.settings?.formFields.shippingAddress ?? [])];
   const addresses = removeEdgesAndNodes({ edges: data.customer?.addresses.edges });
@@ -132,8 +132,6 @@ export default async function Edit({ params }: Props) {
     return notFound();
   }
 
-  const reCaptchaSettings = await bypassReCaptcha(data.site.settings?.reCaptcha);
-
   return (
     <div className="mx-auto mb-14 lg:w-2/3">
       <h1 className="mb-8 text-3xl font-black lg:text-4xl">{t('heading')}</h1>
@@ -142,7 +140,7 @@ export default async function Edit({ params }: Props) {
         addressFields={addressFields}
         countries={countries || []}
         isAddressRemovable={addresses.length > 1}
-        reCaptchaSettings={reCaptchaSettings}
+        reCaptchaSettings={bypassReCaptcha(reCaptchaSettings)}
       />
     </div>
   );

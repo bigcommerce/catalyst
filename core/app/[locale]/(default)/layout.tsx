@@ -7,12 +7,10 @@ import { Cart } from '~/components/header/cart';
 import { LocaleType } from '~/i18n/routing';
 
 interface Props extends PropsWithChildren {
-  params: Promise<{ locale: LocaleType }>;
+  params: { locale: LocaleType };
 }
 
-export default async function DefaultLayout({ params, children }: Props) {
-  const { locale } = await params;
-
+export default function DefaultLayout({ children, params: { locale } }: Props) {
   setRequestLocale(locale);
 
   return (

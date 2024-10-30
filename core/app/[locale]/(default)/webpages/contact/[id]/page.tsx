@@ -7,12 +7,11 @@ import { ContactUs } from './contact-us';
 import { getWebpageData } from './page-data';
 
 interface Props {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  const data = await getWebpageData({ id: decodeURIComponent(id) });
+  const data = await getWebpageData({ id: decodeURIComponent(params.id) });
   const webpage = data.node?.__typename === 'ContactPage' ? data.node : null;
 
   if (!webpage) {
@@ -28,18 +27,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function WebPage({ params }: Props) {
-  const { id } = await params;
-
+export default async function WebPage({ params: { id } }: Props) {
   const data = await getWebpageData({ id: decodeURIComponent(id) });
   const webpage = data.node?.__typename === 'ContactPage' ? data.node : null;
+  const recaptchaSettings = data.site.settings?.reCaptcha;
 
   if (!webpage) {
     notFound();
   }
 
   const { name, htmlBody } = webpage;
-  const recaptchaSettings = await bypassReCaptcha(data.site.settings?.reCaptcha);
 
   return (
     <>
@@ -48,7 +45,7 @@ export default async function WebPage({ params }: Props) {
         <div dangerouslySetInnerHTML={{ __html: htmlBody }} />
       </div>
 
-      <ContactUs node={webpage} reCaptchaSettings={recaptchaSettings} />
+      <ContactUs node={webpage} reCaptchaSettings={bypassReCaptcha(recaptchaSettings)} />
     </>
   );
 }

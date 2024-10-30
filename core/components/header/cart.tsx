@@ -13,8 +13,7 @@ export const CartLink = ({ children }: { children: ReactNode }) => (
 );
 
 export const Cart = async () => {
-  const cookieStore = await cookies();
-  const cartId = cookieStore.get('cartId')?.value;
+  const cartId = cookies().get('cartId')?.value;
 
   if (!cartId) {
     return (

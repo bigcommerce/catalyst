@@ -6,16 +6,13 @@ import { Pagination } from '~/components/ui/pagination';
 import { getBlogPosts } from '../../page-data';
 
 interface Props {
-  params: Promise<{
+  params: {
     tagId: string;
-  }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
+  };
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
-export default async function Tag(props: Props) {
-  const searchParams = await props.searchParams;
-  const { tagId } = await props.params;
-
+export default async function Tag({ params: { tagId }, searchParams }: Props) {
   const blogPosts = await getBlogPosts({ tagId, ...searchParams });
 
   if (!blogPosts) {

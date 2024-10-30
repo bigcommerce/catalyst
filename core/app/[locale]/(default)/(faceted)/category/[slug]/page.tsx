@@ -18,16 +18,15 @@ import { SubCategories } from './_components/sub-categories';
 import { getCategoryPageData } from './page-data';
 
 interface Props {
-  params: Promise<{
+  params: {
     slug: string;
     locale: LocaleType;
-  }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
+  };
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const categoryId = Number(slug);
+  const categoryId = Number(params.slug);
 
   const data = await getCategoryPageData({
     categoryId,
@@ -48,12 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function Category(props: Props) {
-  const searchParams = await props.searchParams;
-  const params = await props.params;
-
-  const { locale, slug } = params;
-
+export default async function Category({ params: { locale, slug }, searchParams }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations('Category');

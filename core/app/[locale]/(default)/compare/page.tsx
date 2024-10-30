@@ -90,11 +90,10 @@ export async function generateMetadata() {
 }
 
 interface Props {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
-export default async function Compare(props: Props) {
-  const searchParams = await props.searchParams;
+export default async function Compare({ searchParams }: Props) {
   const t = await getTranslations('Compare');
   const format = await getFormatter();
 
