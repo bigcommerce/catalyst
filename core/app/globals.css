@@ -5,8 +5,8 @@
 
 
 
-
-
+/* test 1 j*/
+/* add to cart pdp dropdown */
 div[data-radix-popper-content-wrapper] div{
   width: 300px !important;
   transition: unset !important;
@@ -19,19 +19,20 @@ div[data-radix-popper-content-wrapper] div{
 }
 
 
-.left-container.bg-set {
+.left-container img {
+  display: none;
+}
+.left-container {
   background-color: lightgrey;
 }
+/* test 1 j*/
 
-/* form.flex.flex-col.gap-6.\@container.product-variants {
-  z-index: -1;
-  position: relative;
-} */
+
+
 .modal-open form.flex.flex-col.gap-6.\@container.product-variants {
   z-index: -1;
   position: relative;
 }
-
 
 /* cart */
 .cart-main-img img {
@@ -61,16 +62,6 @@ footer {
 
 p.header-cart-icon a {
   padding-left: 0px;
-}
-.ratings-star span svg {
-  height: 17px;
-  width: 20px !important;
-}
-.ratings-star p span {
-  fill: black;
-}
-.ratings-star {
-  margin-top: 10px;
 }
 nav.header-nav-support div button {
   color: #353535 !important;
@@ -185,11 +176,9 @@ svg.lucide.lucide-user {
 svg.lucide.lucide-shopping-cart {
   color: #008bb7;
 }
-
 .product-variants svg.lucide.lucide-shopping-cart {
   color: white;
 }
-
 span.cart {
   color: #008bb7;
   padding-left: 8px;
@@ -677,10 +666,12 @@ ul.div-breadcrumb li:last-child a {
 }
 @media only screen and (max-width: 1200px) {
   /* Login page */
-  .login-div,
-  .reset-pass {
+
+  /* test 1 j*/
+  .login-div {
     width: calc((800 / 1000) * 100vw);
   }
+  /* test 1 j*/
   .gallery-pop-up-img {
     width: 85% !important;
   }
@@ -731,11 +722,6 @@ ul.div-breadcrumb li:last-child a {
     width: 50px;
     top: 2em;
   }
-  /* p.header-cart-icon img {
-      right: 2.5em !important;
-      position: absolute !important ;
-      top: 3em !important;
-    } */
   .mobile-logo-open-state img {
     width: 80%;
     position: relative;
@@ -924,7 +910,6 @@ ul.div-breadcrumb li:last-child a {
     padding: 5px 40px 15px;
   }
 }
-
 @media screen and (max-width: 768px) {
   .login-div,
   .reset-pass {
@@ -952,7 +937,7 @@ ul.div-breadcrumb li:last-child a {
   }
 
 }
-
+/* test 1 j*/
 img.variant-img {
   width: 20px !important;
   height: 20px !important;
@@ -1165,9 +1150,6 @@ footer.\32 xl\:container.\32 xl\:mx-auto {
   width: 100%;
   justify-content: space-between !important;
 }
-/* .lg\:sticky {
-  z-index: 10000 !important;
-} */
 button.carousel-next-arrow {
   right: 2em;
   top: 9em;
@@ -1188,6 +1170,8 @@ button.show-all {
   padding-bottom: 0px !important;
   padding-top: 0px !important;
 }
+
+/* test 1 j*/
 
 .cart-add-to-cart input[type='number']::-webkit-inner-spin-button,
 .cart-add-to-cart input[type='number']::-webkit-outer-spin-button,
@@ -1238,7 +1222,11 @@ button.show-all {
 .popup-container-parent .popup-box1 {
   pointer-events: all !important;
 }
+/* test 1 j*/
 
+
+
+/* test 1 j*/
 @media screen and (max-width: 500px) {
   .popup-container-parent .popup-box1 {
     display: flex;
@@ -1302,3 +1290,4 @@ button.show-all {
 .reset-pass nav ul{
   padding-block: 6px;
 }
+/* test 1 j*/

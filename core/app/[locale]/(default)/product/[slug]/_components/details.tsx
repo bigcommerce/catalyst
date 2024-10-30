@@ -5,7 +5,6 @@ import { ProductItemFragment } from '~/client/fragments/product-item';
 import { FragmentOf, graphql } from '~/client/graphql';
 import CertificationsAndRatings from '~/components/ui/pdp/belami-certification-rating-pdp';
 import { Payment } from '~/components/ui/pdp/belami-payment-pdp';
-import Dropdown from '~/components/ui/pdp/belami-product-details-pdp';
 import { RequestQuote } from '~/components/ui/pdp/belami-request-a-quote-pdp';
 import { ShippingReturns } from '~/components/ui/pdp/belami-shipping-returns-pdp';
 import { imageManagerImageUrl } from '~/lib/store-assets';
