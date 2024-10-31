@@ -1,32 +1,98 @@
-import { ShoppingCart, User } from 'lucide-react';
-import { getLocale, getTranslations } from 'next-intl/server';
-import { ReactNode, Suspense } from 'react';
+import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 
+import { Navigation } from '@/vibes/soul/primitives/navigation';
+import { SearchResult } from '@/vibes/soul/primitives/navigation/search-results';
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
 import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { ExistingResultType } from '~/client/util';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
+import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { localeLanguageRegionMap } from '~/i18n/routing';
 
-import { Link } from '../link';
-import { Button } from '../ui/button';
-import { Dropdown } from '../ui/dropdown';
-import { Header as ComponentsHeader } from '../ui/header';
-
-import { logout } from './_actions/logout';
-import { CartLink } from './cart';
+import { getSearchResults } from './_actions/get-search-results';
 import { HeaderFragment } from './fragment';
-import { QuickSearch } from './quick-search';
 
-interface Props {
-  cart: ReactNode;
-}
+type QuickSearchResults = ExistingResultType<typeof getSearchResults>;
 
-export const Header = async ({ cart }: Props) => {
+const isSearchQuery = (data: unknown): data is QuickSearchResults => {
+  if (typeof data === 'object' && data !== null && 'products' in data) {
+    return true;
+  }
+
+  return false;
+};
+
+const fetchSearchResults = async (term: string): Promise<SearchResult[]> => {
+  'use server';
+
+  const format = await getFormatter();
+  const { data: searchResults } = await getSearchResults(term);
+
+  if (isSearchQuery(searchResults) && searchResults.products.length > 0) {
+    return [
+      {
+        title: 'Categories',
+        links:
+          searchResults.products.length > 0
+            ? Object.entries(
+                searchResults.products.reduce<Record<string, string>>((categories, product) => {
+                  product.categories.edges?.forEach((category) => {
+                    categories[category.node.name] = category.node.path;
+                  });
+
+                  return categories;
+                }, {}),
+              ).map(([name, path]) => {
+                return { label: name, href: path };
+              })
+            : [],
+      },
+      {
+        title: 'Brands',
+        links:
+          searchResults.products.length > 0
+            ? Object.entries(
+                searchResults.products.reduce<Record<string, string>>((brands, product) => {
+                  if (product.brand) {
+                    brands[product.brand.name] = product.brand.path;
+                  }
+
+                  return brands;
+                }, {}),
+              ).map(([name, path]) => {
+                return { label: name, href: path };
+              })
+            : [],
+      },
+      {
+        title: 'Products',
+        products: searchResults.products.map((product) => {
+          const price = pricesTransformer(product.prices, format);
+
+          return {
+            id: product.entityId.toString(),
+            title: product.name,
+            href: product.path,
+            image: product.defaultImage
+              ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
+              : undefined,
+            price,
+          };
+        }),
+      },
+    ];
+  }
+
+  return [];
+};
+
+export const Header = async () => {
   const locale = await getLocale();
   const t = await getTranslations('Components.Header');
+
   const customerId = await getSessionCustomerId();
 
   const { data: response } = await client.fetch({
@@ -56,76 +122,16 @@ export const Header = async ({ cart }: Props) => {
   }));
 
   return (
-    <ComponentsHeader
-      account={
-        customerId ? (
-          <Dropdown
-            items={[
-              { href: '/account', label: t('Account.myAccount') },
-              { href: '/account/addresses', label: t('Account.addresses') },
-              { href: '/account/settings', label: t('Account.accountSettings') },
-              { action: logout, name: t('Account.logout') },
-            ]}
-            trigger={
-              <Button
-                aria-label={t('Account.account')}
-                className="p-3 text-black hover:bg-transparent hover:text-primary"
-                variant="subtle"
-              >
-                <User>
-                  <title>{t('Account.account')}</title>
-                </User>
-              </Button>
-            }
-          />
-        ) : (
-          <Link aria-label={t('Account.login')} className="block p-3" href="/login">
-            <User />
-          </Link>
-        )
-      }
+    <Navigation
+      accountHref="/account"
       activeLocale={locale}
-      cart={
-        <p role="status">
-          <Suspense
-            fallback={
-              <CartLink>
-                <ShoppingCart aria-label="cart" />
-              </CartLink>
-            }
-          >
-            {cart}
-          </Suspense>
-        </p>
-      }
+      cartHref="/cart"
       links={links}
       locales={localeLanguageRegionMap}
       logo={data.settings ? logoTransformer(data.settings) : undefined}
-      search={<QuickSearch logo={data.settings ? logoTransformer(data.settings) : ''} />}
+      searchAction={fetchSearchResults}
+      searchCtaLabel={t('viewAll')}
+      searchHref="/search"
     />
   );
 };
-
-export const HeaderSkeleton = () => (
-  <header className="flex min-h-[92px] animate-pulse items-center justify-between gap-1 overflow-y-visible bg-white px-4 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0">
-    <div className="h-16 w-40 rounded bg-slate-200" />
-    <div className="hidden space-x-4 lg:flex">
-      <div className="h-6 w-20 rounded bg-slate-200" />
-      <div className="h-6 w-20 rounded bg-slate-200" />
-      <div className="h-6 w-20 rounded bg-slate-200" />
-      <div className="h-6 w-20 rounded bg-slate-200" />
-    </div>
-    <div className="flex items-center gap-2 lg:gap-4">
-      <div className="h-8 w-8 rounded-full bg-slate-200" />
-
-      <div className="flex gap-2 lg:gap-4">
-        <div className="h-8 w-8 rounded-full bg-slate-200" />
-        <div className="h-8 w-8 rounded-full bg-slate-200" />
-      </div>
-
-      <div className="h-8 w-20 rounded bg-slate-200" />
-
-      <div className="h-8 w-8 rounded bg-slate-200 lg:hidden" />
-    </div>
-  </header>
-);
