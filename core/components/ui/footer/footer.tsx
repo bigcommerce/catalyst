@@ -107,8 +107,8 @@ const Footer = ({
         {Boolean(socialMediaLinks) && (
           <nav aria-label="Social media links" className="block">
             <ul className="flex gap-6">
-              {socialMediaLinks?.map((link) => (
-                <li key={link.href}>
+              {socialMediaLinks?.map((link, index) => (
+                <li key={index}>
                   <CustomLink className="inline-block" href={link.href} target="_blank">
                     {link.icon}
                   </CustomLink>
