@@ -5,7 +5,7 @@ import { defineRouting } from 'next-intl/routing';
 // List includes locales with existing messages support.
 export const locales = [
   'en',
-  // 'da',
+  'da',
   // 'es-419',
   // 'es-AR',
   // 'es-CL',
@@ -41,7 +41,7 @@ interface LocaleEntry {
  */
 export const localeLanguageRegionMap: LocaleEntry[] = [
   { id: 'en', language: 'English', region: 'United States', flag: '🇺🇸' },
-  // { id: 'da', language: 'Dansk', region: 'Danmark', flag: '🇩🇰' },
+  { id: 'da', language: 'Dansk', region: 'Danmark', flag: '🇩🇰' },
   // { id: 'es-419', language: 'Español', region: 'America Latina', flag: '' },
   // { id: 'es-AR', language: 'Español', region: 'Argentina', flag: '🇦🇷' },
   // { id: 'es-CL', language: 'Español', region: 'Chile', flag: '🇨🇱' },
