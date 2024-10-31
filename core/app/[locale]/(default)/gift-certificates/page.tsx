@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
-import GiftCertificateTabs from './_components/gift-certificate-tabs'
+
+import GiftCertificateTabs from './_components/gift-certificate-tabs';
 
 export async function generateMetadata() {
   const t = await getTranslations('GiftCertificate');
@@ -9,9 +10,7 @@ export async function generateMetadata() {
   };
 }
 
-export default async function GiftCertificateBalancePage() {
-  const t = await getTranslations('GiftCertificate');
-
+export default function GiftCertificateBalancePage() {
   return (
     <div>
       <div className="pb-12">

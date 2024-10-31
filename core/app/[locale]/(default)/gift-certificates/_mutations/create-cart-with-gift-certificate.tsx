@@ -1,5 +1,4 @@
 import { getSessionCustomerId } from '~/auth';
-
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 
@@ -26,7 +25,7 @@ export const createCartWithGiftCertificate = async (giftCertificates: GiftCertif
     document: CreateCartMutation,
     variables: {
       createCartInput: {
-        giftCertificates: giftCertificates
+        giftCertificates,
       },
     },
     customerId,

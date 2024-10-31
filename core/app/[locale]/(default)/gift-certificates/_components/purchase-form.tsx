@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
@@ -13,33 +13,40 @@ import {
   Form,
   FormSubmit,
   Input,
-  TextArea,
   Select,
+  TextArea,
 } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 
 import { addGiftCertificateToCart } from '../_actions/add-to-cart';
 
-const GIFT_CERTIFICATE_THEMES = ['GENERAL', 'BIRTHDAY', 'BOY', 'CELEBRATION', 'CHRISTMAS', 'GIRL', 'NONE'];
+const GIFT_CERTIFICATE_THEMES = [
+  'GENERAL',
+  'BIRTHDAY',
+  'BOY',
+  'CELEBRATION',
+  'CHRISTMAS',
+  'GIRL',
+  'NONE',
+];
 
 const defaultValues = {
-  theme: "GENERAL",
-  amount: 25.00,
+  theme: 'GENERAL',
+  amount: 25.0,
   senderName: 'Nate Stewart',
   senderEmail: 'nate.stewart@bigcommerce.com',
   recipientName: 'Nathan Booker',
   recipientEmail: 'nathan.booker@bigcommerce.com',
-  message: 'Hey, sorry I missed your birthday (again). No one is perfect, although I fully expect you to hold it against me. Anyway, let\'s get to work 🚀',
-}
+  message:
+    "Hey, sorry I missed your birthday (again). No one is perfect, although I fully expect you to hold it against me. Anyway, let's get to work 🚀",
+};
 
 interface FormStatus {
   status: 'success' | 'error';
   message: string;
 }
 
-interface FieldValidation {
-  [key: string]: boolean;
-}
+type FieldValidation = Record<string, boolean>;
 
 const Submit = () => {
   const { pending } = useFormStatus();
@@ -47,7 +54,7 @@ const Submit = () => {
 
   return (
     <FormSubmit asChild>
-      <Button type="submit" className="w-full" disabled={pending}>
+      <Button className="w-full" disabled={pending} type="submit">
         {pending ? t('buttonPendingText') : t('buttonSubmitText')}
       </Button>
     </FormSubmit>
@@ -79,7 +86,7 @@ export default function GiftCertificatePurchaseForm() {
     const { name, validity } = e.target;
     const isValid = !validity.valueMissing && !validity.typeMismatch;
 
-    setFieldValidation(prev => ({
+    setFieldValidation((prev) => ({
       ...prev,
       [name]: isValid,
     }));
@@ -88,7 +95,7 @@ export default function GiftCertificatePurchaseForm() {
   return (
     <>
       <div className="mx-auto mb-10 mt-8 lg:w-2/3">
-        <h2 className="text-2xl font-bold mb-4">{t('heading')}</h2>
+        <h2 className="mb-4 text-2xl font-bold">{t('heading')}</h2>
       </div>
       {formStatus && (
         <Message className="mx-auto lg:w-[830px]" variant={formStatus.status}>
@@ -101,32 +108,37 @@ export default function GiftCertificatePurchaseForm() {
         ref={form}
       >
         <Field className="relative space-y-2 pb-7" name="theme">
-          <FieldLabel htmlFor="theme" isRequired>{t('themeLabel')}</FieldLabel>
+          <FieldLabel htmlFor="theme" isRequired>
+            {t('themeLabel')}
+          </FieldLabel>
           <FieldControl asChild>
             <Select
+              defaultValue={defaultValues.theme}
               name="theme"
               options={GIFT_CERTIFICATE_THEMES.map((theme) => ({
-                value: theme, label: theme.charAt(0).toUpperCase() + theme.substring(1).toLowerCase()
+                value: theme,
+                label: theme.charAt(0).toUpperCase() + theme.substring(1).toLowerCase(),
               }))}
-              defaultValue={defaultValues.theme}
               required
             />
           </FieldControl>
         </Field>
         <Field className="relative space-y-2 pb-7" name="amount">
-          <FieldLabel htmlFor="amount" isRequired>{t('amountLabel')}</FieldLabel>
+          <FieldLabel htmlFor="amount" isRequired>
+            {t('amountLabel')}
+          </FieldLabel>
           <FieldControl asChild>
             <Input
               defaultValue={defaultValues.amount}
-              type="number"
+              error={fieldValidation.amount === false}
               id="amount"
-              name="amount"
               min="1"
-              step="0.01"
-              required
+              name="amount"
               onChange={handleInputValidation}
               onInvalid={handleInputValidation}
-              error={fieldValidation.amount === false}
+              required
+              step="0.01"
+              type="number"
             />
           </FieldControl>
           <FieldMessage
@@ -137,17 +149,19 @@ export default function GiftCertificatePurchaseForm() {
           </FieldMessage>
         </Field>
         <Field className="relative space-y-2 pb-7" name="senderEmail">
-          <FieldLabel htmlFor="senderEmail" isRequired>{t('senderEmailLabel')}</FieldLabel>
+          <FieldLabel htmlFor="senderEmail" isRequired>
+            {t('senderEmailLabel')}
+          </FieldLabel>
           <FieldControl asChild>
             <Input
               defaultValue={defaultValues.senderEmail}
-              type="email"
+              error={fieldValidation.senderEmail === false}
               id="senderEmail"
               name="senderEmail"
-              required
               onChange={handleInputValidation}
               onInvalid={handleInputValidation}
-              error={fieldValidation.senderEmail === false}
+              required
+              type="email"
             />
           </FieldControl>
           <FieldMessage
@@ -164,17 +178,19 @@ export default function GiftCertificatePurchaseForm() {
           </FieldMessage>
         </Field>
         <Field className="relative space-y-2 pb-7" name="senderName">
-          <FieldLabel htmlFor="senderName" isRequired>{t('senderNameLabel')}</FieldLabel>
+          <FieldLabel htmlFor="senderName" isRequired>
+            {t('senderNameLabel')}
+          </FieldLabel>
           <FieldControl asChild>
             <Input
               defaultValue={defaultValues.senderName}
-              type="text"
+              error={fieldValidation.senderName === false}
               id="senderName"
               name="senderName"
-              required
               onChange={handleInputValidation}
               onInvalid={handleInputValidation}
-              error={fieldValidation.senderName === false}
+              required
+              type="text"
             />
           </FieldControl>
           <FieldMessage
@@ -185,17 +201,19 @@ export default function GiftCertificatePurchaseForm() {
           </FieldMessage>
         </Field>
         <Field className="relative space-y-2 pb-7" name="recipientEmail">
-          <FieldLabel htmlFor="recipientEmail" isRequired>{t('recipientEmailLabel')}</FieldLabel>
+          <FieldLabel htmlFor="recipientEmail" isRequired>
+            {t('recipientEmailLabel')}
+          </FieldLabel>
           <FieldControl asChild>
             <Input
               defaultValue={defaultValues.recipientEmail}
-              type="email"
+              error={fieldValidation.recipientEmail === false}
               id="recipientEmail"
               name="recipientEmail"
-              required
               onChange={handleInputValidation}
               onInvalid={handleInputValidation}
-              error={fieldValidation.recipientEmail === false}
+              required
+              type="email"
             />
           </FieldControl>
           <FieldMessage
@@ -212,17 +230,19 @@ export default function GiftCertificatePurchaseForm() {
           </FieldMessage>
         </Field>
         <Field className="relative space-y-2 pb-7" name="recipientName">
-          <FieldLabel htmlFor="recipientName" isRequired>{t('recipientNameLabel')}</FieldLabel>
+          <FieldLabel htmlFor="recipientName" isRequired>
+            {t('recipientNameLabel')}
+          </FieldLabel>
           <FieldControl asChild>
             <Input
               defaultValue={defaultValues.recipientName}
-              type="text"
+              error={fieldValidation.recipientName === false}
               id="recipientName"
               name="recipientName"
-              required
               onChange={handleInputValidation}
               onInvalid={handleInputValidation}
-              error={fieldValidation.recipientName === false}
+              required
+              type="text"
             />
           </FieldControl>
           <FieldMessage
@@ -232,17 +252,10 @@ export default function GiftCertificatePurchaseForm() {
             {t('nameValidationMessage')}
           </FieldMessage>
         </Field>
-        <Field
-          className="relative col-span-full max-w-full space-y-2 pb-5"
-          name="message"
-        >
+        <Field className="relative col-span-full max-w-full space-y-2 pb-5" name="message">
           <FieldLabel htmlFor="message">{t('messageLabel')}</FieldLabel>
           <FieldControl asChild>
-            <TextArea
-              defaultValue={defaultValues.message}
-              id="message"
-              name="message"
-            />
+            <TextArea defaultValue={defaultValues.message} id="message" name="message" />
           </FieldControl>
         </Field>
         <Submit />

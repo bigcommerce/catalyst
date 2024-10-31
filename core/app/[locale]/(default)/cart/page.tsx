@@ -87,7 +87,11 @@ export default async function Cart() {
             <CartItem currencyCode={cart.currencyCode} key={product.entityId} product={product} />
           ))}
           {giftCertificates.map((giftCertificate) => (
-            <CartGiftCertificate currencyCode={cart.currencyCode} key={giftCertificate.name} giftCertificate={giftCertificate} />
+            <CartGiftCertificate
+              currencyCode={cart.currencyCode}
+              giftCertificate={giftCertificate}
+              key={giftCertificate.name}
+            />
           ))}
         </ul>
 
