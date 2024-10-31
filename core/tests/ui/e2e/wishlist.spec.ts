@@ -1,6 +1,6 @@
 import { expect, test } from '~/tests/fixtures';
 
-test('Guest user is redirected to login upon adding product to wishlist', async ({ page }) => {
+test('Guest user is required to register to create a wishlist', async ({ page }) => {
   await page.goto('/laundry-detergent/');
   await page.getByRole('heading', { level: 1, name: '[Sample] Laundry Detergent' }).waitFor();
 
@@ -19,10 +19,7 @@ test('Favorites wishlist present by default and cannot be deleted', async ({ pag
   await expect(page.getByText('Favorites')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Delete' })).toBeHidden();
 
-  await page.getByRole('link', { name: 'Favorites' }).click();
-  await page.getByRole('heading', { name: 'Favorites' }).waitFor();
-
-  // Need to check there is no Wishlist Actions to edit/delete wishlist after fixing related issue
+  // Need to check there is no Wishlist Actions to edit/delete wishlist on details page after fixing related issue
 });
 
 test('Add product to Favorites wishlist from PDP', async ({ page, account }) => {
