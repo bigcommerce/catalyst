@@ -68,6 +68,6 @@ export async function removeItem({
       return { status: 'error', error: error.message };
     }
 
-    return { status: 'error' };
+    return { status: 'error', error: 'Something went wrong.' };
   }
 }

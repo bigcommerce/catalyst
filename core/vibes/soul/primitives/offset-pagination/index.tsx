@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 import { clsx } from 'clsx';
 
-export const Pagination = function Pagination({ pages: totalPages }: { pages: number }) {
+export function OffsetPagination({ pages: totalPages }: { pages: number }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const initialPage = parseInt(searchParams.get('page') ?? '1', 10);
@@ -87,4 +87,4 @@ export const Pagination = function Pagination({ pages: totalPages }: { pages: nu
       </div>
     </div>
   );
-};
+}

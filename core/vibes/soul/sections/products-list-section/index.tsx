@@ -1,17 +1,12 @@
 import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/primitives/breadcrumbs'
+import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination'
 import { ListProduct, ProductsList } from '@/vibes/soul/primitives/products-list'
 
 import { Filter, FiltersPanel } from './filters-panel'
 import { MobileFilters } from './mobile-filters'
-import { Pagination, PaginationInfo } from './pagination'
 import { Option as SortOption } from './sorting'
 import { Sorting } from './sorting'
 
-interface Pages {
-  name: string
-  previousPage?: string
-  nextPage?: string
-}
 interface Props {
   breadcrumbs?: Breadcrumb[]
   title?: Promise<string> | string
@@ -20,8 +15,7 @@ interface Props {
   filters: Promise<Filter[]> | Filter[]
   sortOptions: Promise<SortOption[]> | SortOption[]
   compareProducts?: Promise<ListProduct[]> | ListProduct[]
-  pagination?: Promise<Pages> | Pages
-  paginationInfo?: Promise<PaginationInfo> | PaginationInfo
+  paginationInfo?: Promise<CursorPaginationInfo> | CursorPaginationInfo
   compareLabel?: string
   filterLabel?: string
   sortLabel?: string
@@ -70,7 +64,7 @@ export function ProductsListSection({
             compareParamName={compareParamName}
             compareProducts={compareProducts}
           />
-          {paginationInfo && <Pagination info={paginationInfo} />}
+          {paginationInfo && <CursorPagination info={paginationInfo} />}
         </div>
       </div>
     </div>

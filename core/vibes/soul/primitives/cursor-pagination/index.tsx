@@ -8,7 +8,7 @@ import clsx from 'clsx';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { createSerializer, parseAsString } from 'nuqs';
 
-export interface PaginationInfo {
+export interface CursorPaginationInfo {
   startCursorParamName?: string;
   startCursor?: string;
   endCursorParamName?: string;
@@ -16,18 +16,18 @@ export interface PaginationInfo {
 }
 
 interface Props {
-  info: PaginationInfo | Promise<PaginationInfo>;
+  info: CursorPaginationInfo | Promise<CursorPaginationInfo>;
 }
 
-export function Pagination({ info }: Props) {
+export function CursorPagination({ info }: Props) {
   return (
-    <Suspense fallback={<PaginationSkeleton />}>
-      <PaginationResolved info={info} />
+    <Suspense fallback={<CursorPaginationSkeleton />}>
+      <CursorPaginationResolved info={info} />
     </Suspense>
   );
 }
 
-function PaginationResolved({ info }: Props) {
+function CursorPaginationResolved({ info }: Props) {
   const {
     startCursorParamName = 'before',
     endCursorParamName = 'after',
@@ -85,7 +85,7 @@ function SkeletonLink({ children }: { children: React.ReactNode }) {
   );
 }
 
-function PaginationSkeleton() {
+export function CursorPaginationSkeleton() {
   return (
     <div className="flex w-full justify-center bg-background py-10 text-xs">
       <div className="flex gap-2">

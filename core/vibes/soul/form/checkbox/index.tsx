@@ -9,13 +9,12 @@ import { Check } from 'lucide-react'
 
 import { ErrorMessage } from '@/vibes/soul/form/error-message'
 
-export const Checkbox = React.forwardRef<
-  React.ElementRef<typeof CheckboxPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> & {
-    label?: React.ReactNode
-    errors?: string[]
-  }
->(({ id, label, errors, className, ...rest }) => {
+type Props = React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> & {
+  label?: React.ReactNode
+  errors?: string[]
+}
+
+export function Checkbox({ id, label, errors, className, ...rest }: Props) {
   return (
     <div className="space-y-2">
       <div className={clsx('flex items-center gap-2', className)}>
@@ -41,6 +40,4 @@ export const Checkbox = React.forwardRef<
       {errors?.map(error => <ErrorMessage key={error}>{error}</ErrorMessage>)}
     </div>
   )
-})
-
-Checkbox.displayName = 'Checkbox'
+}
