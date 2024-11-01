@@ -41,6 +41,8 @@ We'll begin by forking the Catalyst monorepo.
 
 GitHub will prompt you to choose a name for your fork; for the purposes of this guide, we'll refer to name of the fork as `<YOUR_FORK_NAME>`. You should replace `<YOUR_FORK_NAME>` in all of the commands below with your actual fork name.
 
+Github will also give the option to **Copy the `main` branch only**. If you're going to be working with any integration branches, leave this unchecked. If you're not sure, leave this unchecked just to be safe.
+
 Back in your terminal, clone your fork:
 
 ```shell copy
