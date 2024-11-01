@@ -1,7 +1,7 @@
 'use server';
 
+import { cookies } from 'next/headers';
 import { getLocale } from 'next-intl/server';
-import { z } from 'zod';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
@@ -20,10 +20,15 @@ const CheckoutRedirectMutation = graphql(`
   }
 `);
 
-export const redirectToCheckout = async (formData: FormData) => {
+export const redirectToCheckout = async () => {
   const locale = await getLocale();
-  const cartId = z.string().parse(formData.get('cartId'));
   const customerAccessToken = await getSessionCustomerAccessToken();
+
+  const cartId = cookies().get('cartId')?.value;
+
+  if (!cartId) {
+    throw new Error('No cartId cookie found');
+  }
 
   const { data } = await client.fetch({
     document: CheckoutRedirectMutation,

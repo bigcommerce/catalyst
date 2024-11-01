@@ -22,7 +22,7 @@ export const ButtonLink = function ButtonLink({
     <Link
       href={href}
       className={clsx(
-        'relative z-0 flex select-none items-center justify-center overflow-hidden rounded-full border text-center font-medium leading-normal transition-all duration-300 ease-in-out focus-visible:outline-none focus-visible:ring-2',
+        'relative z-0 flex h-fit select-none items-center justify-center overflow-hidden rounded-full border text-center font-medium leading-normal transition-all duration-300 ease-in-out focus-visible:outline-none focus-visible:ring-2',
         {
           primary:
             'border-primary bg-primary text-foreground ring-foreground after:bg-background/40',

@@ -96,7 +96,7 @@ export default function RootLayout({ children, params: { locale } }: Props) {
 
   return (
     <html className={[inter.variable, dm_serif_text.variable].join(' ')} lang={locale}>
-      <body className="font-body flex h-screen min-w-[375px] flex-col">
+      <body className="flex h-screen min-w-[375px] flex-col font-body">
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>{children}</Providers>

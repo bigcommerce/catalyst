@@ -1,5 +1,7 @@
 'use client';
 
+// import { BcImage } from '~/components/bc-image';
+// import { Link } from '~/components/link';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,20 +9,18 @@ import {
   DropdownMenuTrigger,
 } from '@radix-ui/react-dropdown-menu';
 import { clsx } from 'clsx';
-import debounce from 'lodash.debounce';
 import { ArrowRight, ChevronDown, Search, SearchIcon, ShoppingBag, User } from 'lucide-react';
-import { forwardRef, Ref, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { forwardRef, Ref, useEffect, useRef, useState } from 'react';
 import ReactHeadroom from 'react-headroom';
 
+import { ProductCard } from '@/vibes/soul/primitives/product-card';
 import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
-import { usePathname, useRouter } from '~/i18n/routing';
 
 import { Button } from '../button';
-import { Spinner } from '../spinner';
 
 import { HamburgerMenuButton } from './hamburger-menu-button';
-import { type SearchResult, SearchResults } from './search-results';
 
 interface Image {
   src?: string;
@@ -41,6 +41,7 @@ export interface Links {
 }
 
 interface Props {
+  // searchAction: (query: string) => Promise<SerializableProduct[]>
   accountHref: string;
   activeLocale?: string;
   cartCount?: number;
@@ -50,27 +51,19 @@ interface Props {
   logo?: string | Image;
   searchHref: string;
   searchParamName?: string;
-  searchAction?: (term: string) => Promise<SearchResult[]>;
-  searchCtaLabel?: string;
-  emptySearchTitleLabel?: string;
-  emptySearchSubtitleLabel?: string;
 }
 
 export const Navigation = forwardRef(function Navigation(
   {
-    cartHref,
-    cartCount,
     accountHref,
-    links,
-    logo,
     activeLocale,
+    cartCount,
+    cartHref,
+    links,
     locales,
+    logo,
     searchHref,
     searchParamName = 'term',
-    searchAction,
-    searchCtaLabel,
-    emptySearchTitleLabel,
-    emptySearchSubtitleLabel,
     ...rest
   }: Props,
   ref: Ref<HTMLDivElement>,
@@ -79,7 +72,7 @@ export const Navigation = forwardRef(function Navigation(
   const pathname = usePathname();
   const container = useRef<HTMLUListElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const searchRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLFormElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(0);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -87,13 +80,9 @@ export const Navigation = forwardRef(function Navigation(
   const [navigationHeight, setNavigationHeight] = useState<number>(0);
   const menuTriggerRef = useRef<HTMLAnchorElement | null>(null);
   const firstCategoryLinkRef = useRef<HTMLAnchorElement>(null);
-  const [searchResults, setSearchResults] = useState<SearchResult[] | null>(null);
-  const [term, setTerm] = useState('');
-  const [searchPending, setSearchPending] = useState(false);
 
   useEffect(() => {
     setNavOpen(false);
-    setSearchOpen(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -186,43 +175,6 @@ export const Navigation = forwardRef(function Navigation(
     if (searchTerm.length > 0) {
       router.push(`${searchHref}?${searchParamName}=${encodeURIComponent(searchTerm)}`);
     }
-  };
-
-  const debouncedOnSearch = useMemo(
-    () =>
-      debounce(async (query: string) => {
-        if (searchAction) {
-          const results = await searchAction(query);
-
-          setSearchResults(results);
-        }
-      }, 1000),
-    [searchAction],
-  );
-
-  const fetchSearchResults = useCallback(
-    async (query: string) => {
-      await debouncedOnSearch(query);
-    },
-    [debouncedOnSearch],
-  );
-
-  useEffect(() => {
-    if (term.length < 3 || !searchAction) {
-      setSearchResults(null);
-    } else {
-      setSearchPending(true);
-
-      void fetchSearchResults(term);
-    }
-  }, [term, fetchSearchResults, searchAction]);
-
-  useEffect(() => {
-    setSearchPending(false);
-  }, [searchResults]);
-
-  const handleTermChange = (e: React.FormEvent<HTMLInputElement>) => {
-    setTerm(e.currentTarget.value);
   };
 
   return (
@@ -384,9 +336,12 @@ export const Navigation = forwardRef(function Navigation(
               ? 'scale-100 bg-background opacity-100'
               : 'pointer-events-none scale-[0.99] select-none bg-transparent opacity-0',
           )}
-          ref={searchRef}
         >
-          <form className="flex items-center gap-3 px-3 py-4 @xl:px-5" onSubmit={handleSearch}>
+          <form
+            className="flex items-center gap-3 px-3 py-4 @xl:px-5"
+            onSubmit={handleSearch}
+            ref={searchRef}
+          >
             <SearchIcon
               className="hidden w-5 shrink-0 text-contrast-500 @xl:block"
               strokeWidth={1}
@@ -394,31 +349,107 @@ export const Navigation = forwardRef(function Navigation(
             <input
               className="flex-grow bg-transparent pl-2 text-lg font-medium outline-0 focus-visible:outline-none @xl:pl-0"
               name="searchTerm"
-              onChange={handleTermChange}
               placeholder="Search Products"
               ref={searchInputRef}
               type="text"
             />
             <Button size="icon" type="submit" variant="secondary">
-              {searchPending ? (
-                <Spinner size="xs" />
-              ) : (
-                <ArrowRight aria-label="Submit" size={20} strokeWidth={1.5} />
-              )}
+              <ArrowRight aria-label="Submit" size={20} strokeWidth={1.5} />
             </Button>
           </form>
 
           {/* Search Results */}
-          {searchResults && term.length > 2 && !searchPending ? (
-            <SearchResults
-              emptySearchSubtitleLabel={emptySearchSubtitleLabel}
-              emptySearchTitleLabel={emptySearchTitleLabel}
-              searchCtaLabel={searchCtaLabel}
-              searchHref={searchHref}
-              searchResults={searchResults}
-              term={term}
-            />
-          ) : null}
+          <div className="flex flex-col border-t border-contrast-100 @2xl:flex-row">
+            <div className="flex w-full flex-col gap-1 border-b border-contrast-100 p-5 @2xl:max-w-80 @2xl:border-b-0 @2xl:border-r">
+              <span className="mb-4 font-mono text-sm uppercase">Suggestions</span>
+              {[
+                { name: 'Indoor', href: '#' },
+                { name: 'Outdoor', href: '#' },
+                { name: 'Low light', href: '#' },
+                { name: 'Pet friendly', href: '#' },
+              ].map((item, i) => (
+                <Link
+                  className="block rounded-lg px-3 py-4 font-semibold text-contrast-500 ring-primary transition-colors hover:bg-contrast-100 hover:text-foreground focus-visible:outline-0 focus-visible:ring-2"
+                  href={item.href}
+                  key={i}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+            <div className="flex w-full flex-col gap-5 p-5">
+              <span className="font-mono text-sm uppercase">Products</span>
+              <div className="grid w-fit grid-cols-2 gap-5 @xl:grid-cols-4 @2xl:grid-cols-2 @4xl:grid-cols-4">
+                <ProductCard
+                  product={{
+                    id: '1',
+                    title: 'Philodendron Imperial Red',
+                    subtitle: 'Indoor Plant',
+                    badge: 'Popular',
+                    price: '$44.95',
+                    image: {
+                      src: 'https://rstr.in/monogram/vibes/-kv08IvX08j',
+                      alt: 'Philodendron Imperial Red',
+                    },
+                    href: '#',
+                  }}
+                />
+                <ProductCard
+                  product={{
+                    id: '2',
+                    title: 'Monstera',
+                    subtitle: 'Indoor Plant',
+                    badge: 'New',
+                    price: '$24.99',
+                    image: {
+                      src: 'https://rstr.in/monogram/vibes/n0P83RMnClS',
+                      alt: 'Monstera',
+                    },
+                    href: '#',
+                  }}
+                />
+                <ProductCard
+                  product={{
+                    id: '3',
+                    title: 'Pink Caladium',
+                    subtitle: 'Indoor Plant',
+                    // badge: 'New',
+                    price: '$19.95',
+                    image: {
+                      src: 'https://rstr.in/monogram/vibes/AaZW4j2VTd4',
+                      alt: 'Pink Caladium',
+                    },
+                    href: '#',
+                  }}
+                />
+                <ProductCard
+                  product={{
+                    id: '4',
+                    title: 'Hoya Kerrii',
+                    subtitle: 'Indoor Plant',
+                    // badge: 'New',
+                    price: '$16.99',
+                    image: {
+                      src: 'https://rstr.in/monogram/vibes/QSaMw6aC_AN',
+                      alt: 'Hoya Kerrii',
+                    },
+                    href: '#',
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* View all items */}
+          <div className="w-full border-t border-contrast-100 p-4">
+            <Link
+              className="group flex w-fit items-center gap-1 rounded-md p-1 text-[15px] font-semibold ring-primary hover:text-foreground focus-visible:outline-0 focus-visible:ring-2"
+              href="/"
+            >
+              View all items
+              <ArrowRight className="h-5 w-5 p-0.5 transition group-hover:translate-x-1" />
+            </Link>
+          </div>
         </div>
 
         {/* Menu Dropdown */}

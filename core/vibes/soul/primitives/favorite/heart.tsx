@@ -2,10 +2,7 @@ import { clsx } from 'clsx'
 
 import './styles.css'
 
-export function Heart(
-  { filled = false }: { filled: boolean | undefined },
-  props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
-) {
+export function Heart({ filled = false }: { filled?: boolean }) {
   return (
     <svg
       width="20"
@@ -14,7 +11,6 @@ export function Heart(
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className="group-active:heart-pulse transform-gpu transition-transform duration-300 ease-out group-active:scale-75 sm:group-hover:scale-110"
-      {...props}
     >
       {/* Line Heart */}
       <path
