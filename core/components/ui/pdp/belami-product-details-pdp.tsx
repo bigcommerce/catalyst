@@ -2,25 +2,30 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { GetProductMetaFields, GetProductVariantMetaFields } from '~/components/management-apis';
-import { getMetaFieldsByProduct } from '~/components/common-functions';
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { GetProductMetaFields } from '~/components/management-apis';
+import {
+  getMetaFieldsByProduct,
+  fetchVariantDetails,
+  fetchIncludedItems,
+  processMetaFields,
+} from '~/components/common-functions';
 
-interface MetaField {
-  id: number;
+// types/metafield.ts
+export interface MetaField {
+  id?: number;
   entityId: number;
   key: string;
   value: string;
-  namespace: string;
-  resource_type: string;
-  resource_id: number;
-  description: string;
-  date_created: string;
-  date_modified: string;
-  owner_client_id: string;
+  namespace?: string;
+  resource_type?: string;
+  resource_id?: number;
+  description?: string;
+  date_created?: string;
+  date_modified?: string;
+  owner_client_id?: string;
 }
 
-interface MetaFieldData {
+export interface MetaFieldData {
   metaField: MetaField | null;
   productMetaField: MetaField | null;
   message: string;
@@ -28,11 +33,11 @@ interface MetaFieldData {
   isVariantData: boolean;
 }
 
-interface IncludedItem {
+export interface IncludedItem {
   name: string;
 }
 
-interface ProcessedDetail {
+export interface ProcessedDetail {
   category: string;
   order: number;
   mainOrder: number;
@@ -40,15 +45,20 @@ interface ProcessedDetail {
   value: string;
 }
 
-interface GroupedDetails {
+export interface GroupedDetails {
   category: string;
   order: number;
   details: ProcessedDetail[];
 }
 
-interface Variant {
+export interface Variant {
   entityId: number;
   sku: string;
+}
+
+export interface ProcessedMetaFieldsResponse {
+  variantDetails: MetaField[];
+  groupedDetails: GroupedDetails[];
 }
 
 const ProductDetailDropdown = ({ product }: { product: any }) => {
@@ -60,6 +70,7 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
   const [installSheet, setInstallSheet] = useState<MetaField | null>(null);
   const [specSheet, setSpecSheet] = useState<MetaFieldData | null>(null);
   const [variantDetails, setVariantDetails] = useState<MetaField[]>([]);
+  const [groupedDetails, setGroupedDetails] = useState<GroupedDetails[]>([]);
   const [includedItems, setIncludedItems] = useState<{
     productLevel: IncludedItem[];
     variantLevel: IncludedItem[];
@@ -68,135 +79,39 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
     variantLevel: [],
   });
 
-  // Helper function to format values
-  const formatValue = (value: string): string => {
-    try {
-      const parsed = JSON.parse(value);
-      if (Array.isArray(parsed)) {
-        return parsed.join(', ');
-      }
-      return value;
-    } catch {
-      return value;
-    }
-  };
-
-  const processMetaFields = (metaFields: MetaField[]): GroupedDetails[] => {
-    const processed = metaFields.map((field) => {
-      try {
-        const [mainOrder, category, key, subOrder] = (field.description || '').split('|');
-        return {
-          category: category || 'Other',
-          order: parseInt(subOrder || '0', 10),
-          mainOrder: parseInt(mainOrder || '0', 10),
-          key: field.key,
-          value: formatValue(field.value),
-        };
-      } catch (error) {
-        return {
-          category: 'Other',
-          order: 999,
-          mainOrder: 999,
-          key: field.key,
-          value: formatValue(field.value),
-        };
-      }
-    });
-
-    const groupedByCategory = processed.reduce((acc, item) => {
-      const existing = acc.find((group) => group.category === item.category);
-      if (existing) {
-        existing.details.push(item);
-      } else {
-        acc.push({
-          category: item.category,
-          order: item.mainOrder,
-          details: [item],
-        });
-      }
-      return acc;
-    }, [] as GroupedDetails[]);
-
-    return groupedByCategory
-      .sort((a, b) => a.order - b.order)
-      .map((group) => ({
-        ...group,
-        details: group.details.sort((a, b) => a.order - b.order),
-      }));
-  };
-
   useEffect(() => {
-    const fetchMetaFields = async () => {
-      if (!product?.entityId) {
-        console.error('Product ID is missing');
-        return;
-      }
+    const loadProductDetails = async () => {
+      if (!product) return;
 
       try {
-        let variantData: Variant[] = removeEdgesAndNodes(product?.variants) as Variant[];
-        const currentSku = product.sku;
-        const matchingVariant = variantData.find((variant) => variant.sku === currentSku);
+        // Fetch variant details
+        const { variantDetails: newVariantDetails, groupedDetails: newGroupedDetails } =
+          await fetchVariantDetails(product);
+        setVariantDetails(newVariantDetails);
+        setGroupedDetails(newGroupedDetails);
 
-        if (matchingVariant?.entityId) {
-          const variantMetaFields = await GetProductVariantMetaFields(
-            product.entityId,
-            matchingVariant.entityId,
-            'Details',
-          );
-
-          console.log('Variant Meta Fields:', variantMetaFields);
-
-          if (variantMetaFields) {
-            setVariantDetails(variantMetaFields);
-          }
-        }
-
-        // Get product level metadata only for install sheet and included items
+        // Get product level metadata
         const productMetaFields = await GetProductMetaFields(product.entityId, '');
 
-        const productIncludedMeta = productMetaFields?.find(
-          (meta: MetaField) => meta.key === 'included',
-        );
+        // Fetch included items
+        const includedItemsData = await fetchIncludedItems(product, productMetaFields);
+        setIncludedItems(includedItemsData);
 
-        let productLevelItems: IncludedItem[] = [];
-        if (productIncludedMeta) {
-          try {
-            productLevelItems = JSON.parse(productIncludedMeta.value);
-          } catch (parseError) {
-            console.error('Error parsing product level included items');
-          }
-        }
-
-        const variantIncludedData = await getMetaFieldsByProduct(product, 'included');
-        let variantLevelItems: IncludedItem[] = [];
-        if (variantIncludedData?.isVariantData && variantIncludedData?.metaField?.value) {
-          try {
-            variantLevelItems = JSON.parse(variantIncludedData.metaField.value);
-          } catch (parseError) {
-            console.error('Error parsing variant level included items');
-          }
-        }
-
-        setIncludedItems({
-          productLevel: productLevelItems,
-          variantLevel: variantLevelItems,
-        });
-
+        // Set install sheet
         const installSheetMeta = productMetaFields?.find(
           (meta: MetaField) => meta.key === 'install_sheet',
         );
         setInstallSheet(installSheetMeta || null);
 
+        // Set spec sheet
         const specSheetData = await getMetaFieldsByProduct(product, 'spec_sheet');
         setSpecSheet(specSheetData as MetaFieldData);
       } catch (error) {
-        console.error('Error fetching meta fields:', error);
+        console.error('Error loading product details:', error);
       }
     };
 
-    if (product) {
-      fetchMetaFields();
-    }
+    loadProductDetails();
   }, [product]);
 
   const getSpecSheetValue = () => {
@@ -230,9 +145,6 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
 
   const specSheetUrl = getSpecSheetValue();
   const installSheetUrl = installSheet?.value;
-
-  // Use only variant details for display
-  const groupedDetails = processMetaFields(variantDetails);
 
   return (
     <div
@@ -269,7 +181,9 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
 
       {/* Dropdown Content */}
       <div
-        className={`transition-max-height overflow-hidden duration-300 ${isOpen ? 'max-h-[1600px]' : 'max-h-0'}`}
+        className={`transition-max-height overflow-hidden duration-300 ${
+          isOpen ? 'max-h-[1600px]' : 'max-h-0'
+        }`}
         style={{ transitionTimingFunction: 'ease' }}
       >
         {isOpen && (
@@ -375,7 +289,7 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
             <div className="mt-4 text-center text-base underline" style={{ fontSize: '16px' }}>
               {t('warning')}
             </div>
-            
+
             {/* Close Button */}
             <button
               type="button"
