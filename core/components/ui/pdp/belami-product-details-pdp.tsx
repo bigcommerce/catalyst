@@ -2,13 +2,22 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { GetProductMetaFields } from '~/components/management-apis';
+import { GetProductMetaFields, GetProductVariantMetaFields } from '~/components/management-apis';
 import { getMetaFieldsByProduct } from '~/components/common-functions';
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 
 interface MetaField {
+  id: number;
   entityId: number;
   key: string;
   value: string;
+  namespace: string;
+  resource_type: string;
+  resource_id: number;
+  description: string;
+  date_created: string;
+  date_modified: string;
+  owner_client_id: string;
 }
 
 interface MetaFieldData {
@@ -23,6 +32,25 @@ interface IncludedItem {
   name: string;
 }
 
+interface ProcessedDetail {
+  category: string;
+  order: number;
+  mainOrder: number;
+  key: string;
+  value: string;
+}
+
+interface GroupedDetails {
+  category: string;
+  order: number;
+  details: ProcessedDetail[];
+}
+
+interface Variant {
+  entityId: number;
+  sku: string;
+}
+
 const ProductDetailDropdown = ({ product }: { product: any }) => {
   const t = useTranslations('productDetailDropdown');
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -31,6 +59,7 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
 
   const [installSheet, setInstallSheet] = useState<MetaField | null>(null);
   const [specSheet, setSpecSheet] = useState<MetaFieldData | null>(null);
+  const [variantDetails, setVariantDetails] = useState<MetaField[]>([]);
   const [includedItems, setIncludedItems] = useState<{
     productLevel: IncludedItem[];
     variantLevel: IncludedItem[];
@@ -38,6 +67,63 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
     productLevel: [],
     variantLevel: [],
   });
+
+  // Helper function to format values
+  const formatValue = (value: string): string => {
+    try {
+      const parsed = JSON.parse(value);
+      if (Array.isArray(parsed)) {
+        return parsed.join(', ');
+      }
+      return value;
+    } catch {
+      return value;
+    }
+  };
+
+  const processMetaFields = (metaFields: MetaField[]): GroupedDetails[] => {
+    const processed = metaFields.map((field) => {
+      try {
+        const [mainOrder, category, key, subOrder] = (field.description || '').split('|');
+        return {
+          category: category || 'Other',
+          order: parseInt(subOrder || '0', 10),
+          mainOrder: parseInt(mainOrder || '0', 10),
+          key: field.key,
+          value: formatValue(field.value),
+        };
+      } catch (error) {
+        return {
+          category: 'Other',
+          order: 999,
+          mainOrder: 999,
+          key: field.key,
+          value: formatValue(field.value),
+        };
+      }
+    });
+
+    const groupedByCategory = processed.reduce((acc, item) => {
+      const existing = acc.find((group) => group.category === item.category);
+      if (existing) {
+        existing.details.push(item);
+      } else {
+        acc.push({
+          category: item.category,
+          order: item.mainOrder,
+          details: [item],
+        });
+      }
+      return acc;
+    }, [] as GroupedDetails[]);
+
+    return groupedByCategory
+      .sort((a, b) => a.order - b.order)
+      .map((group) => ({
+        ...group,
+        details: group.details.sort((a, b) => a.order - b.order),
+      }));
+  };
 
   useEffect(() => {
     const fetchMetaFields = async () => {
@@ -47,31 +133,27 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
       }
 
       try {
-        // Get variants array safely
-        let variantData = Array.isArray(product.variants) ? product.variants : [];
-        // For Canopy data structure
-        if (product.variants?.edges) {
-          variantData = product.variants.edges.map((edge: any) => edge.node);
+        let variantData: Variant[] = removeEdgesAndNodes(product?.variants) as Variant[];
+        const currentSku = product.sku;
+        const matchingVariant = variantData.find((variant) => variant.sku === currentSku);
+
+        if (matchingVariant?.entityId) {
+          const variantMetaFields = await GetProductVariantMetaFields(
+            product.entityId,
+            matchingVariant.entityId,
+            'Details',
+          );
+
+          console.log('Variant Meta Fields:', variantMetaFields);
+
+          if (variantMetaFields) {
+            setVariantDetails(variantMetaFields);
+          }
         }
 
-        // Find matching variant by SKU
-        const currentSku = product.sku;
-        const matchingVariant = variantData.find((variant: any) => variant.sku === currentSku);
-
-        console.log('SKU and Variant Match:', {
-          productSku: currentSku,
-          variants: variantData.map((v: any) => ({
-            sku: v.sku,
-            entityId: v.entityId,
-          })),
-          matchingVariantId: matchingVariant?.entityId,
-          isMatch: Boolean(matchingVariant),
-        });
-
-        // Fetch product level metadata
+        // Get product level metadata only for install sheet and included items
         const productMetaFields = await GetProductMetaFields(product.entityId, '');
 
-        // Parse product level included items
         const productIncludedMeta = productMetaFields?.find(
           (meta: MetaField) => meta.key === 'included',
         );
@@ -85,18 +167,7 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
           }
         }
 
-        // Get variant level included items with variant ID
         const variantIncludedData = await getMetaFieldsByProduct(product, 'included');
-
-        // Log detailed variant metadata information
-        console.log('Variant Metadata Details:', {
-          matchedVariantId: matchingVariant?.entityId,
-          productSku: currentSku,
-          hasVariantMetadata: Boolean(variantIncludedData?.metaField),
-          variantMetadata: variantIncludedData?.metaField,
-          isVariantData: variantIncludedData?.isVariantData,
-        });
-
         let variantLevelItems: IncludedItem[] = [];
         if (variantIncludedData?.isVariantData && variantIncludedData?.metaField?.value) {
           try {
@@ -111,24 +182,13 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
           variantLevel: variantLevelItems,
         });
 
-        // Find install sheet metadata
         const installSheetMeta = productMetaFields?.find(
           (meta: MetaField) => meta.key === 'install_sheet',
         );
         setInstallSheet(installSheetMeta || null);
 
-        // Get spec sheet metadata
         const specSheetData = await getMetaFieldsByProduct(product, 'spec_sheet');
-
-        // Log spec sheet variant information with variant ID
-        console.log('Spec Sheet Data:', {
-          variantId: matchingVariant?.entityId,
-          isVariantLevel: specSheetData?.isVariantData,
-          hasVariantMetadata: Boolean(specSheetData?.metaField),
-          metadataValue: specSheetData?.metaField?.value,
-        });
-
-        setSpecSheet(specSheetData);
+        setSpecSheet(specSheetData as MetaFieldData);
       } catch (error) {
         console.error('Error fetching meta fields:', error);
       }
@@ -141,7 +201,6 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
 
   const getSpecSheetValue = () => {
     if (!specSheet) return null;
-
     const isUsingVariant = specSheet.isVariantData && specSheet.metaField?.value;
     return isUsingVariant ? specSheet.metaField?.value : specSheet.productMetaField?.value;
   };
@@ -172,11 +231,15 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
   const specSheetUrl = getSpecSheetValue();
   const installSheetUrl = installSheet?.value;
 
+  // Use only variant details for display
+  const groupedDetails = processMetaFields(variantDetails);
+
   return (
     <div
-      className={`relative mt-6 inline-block w-full transition-all duration-300 xl:mt-12`}
+      className="relative mt-6 inline-block w-full transition-all duration-300 xl:mt-12"
       ref={dropdownRef}
     >
+      {/* Dropdown Toggle Button */}
       <button
         ref={buttonRef}
         className="relative flex w-full cursor-pointer items-center rounded border border-gray-300 px-6 py-4 text-left"
@@ -204,114 +267,122 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
         </svg>
       </button>
 
+      {/* Dropdown Content */}
       <div
-        className={`transition-max-height overflow-hidden duration-300 ${
-          isOpen ? 'max-h-[1600px]' : 'max-h-0'
-        }`}
+        className={`transition-max-height overflow-hidden duration-300 ${isOpen ? 'max-h-[1600px]' : 'max-h-0'}`}
         style={{ transitionTimingFunction: 'ease' }}
       >
         {isOpen && (
           <div className="mt-6 w-full rounded border border-gray-300 bg-white p-8 shadow-lg">
-            <div className="mb-2 flex items-center justify-between" style={{ fontSize: '18px' }}>
-              <span className="mb-2 mt-4 text-lg font-semibold">{t('whatsInTheBox')}</span>
-              <span style={{ fontSize: '14px' }}>{product?.sku || t('sku')}</span>
+            {/* Header Section */}
+            <div className="mb-4 flex items-center justify-between">
+              <span className="text-lg font-semibold text-gray-900">{t('whatsInTheBox')}</span>
+              <span className="text-sm text-gray-600">SKU: {product?.sku || t('sku')}</span>
             </div>
 
-            <div className="mt-2 text-gray-700" style={{ fontSize: '14px' }}>
-              {includedItems.variantLevel.length > 0
-                ? includedItems.variantLevel.map((item, index) => (
-                    <React.Fragment key={`variant-${index}`}>
-                      <span>{item.name}</span>
-                      {index < includedItems.variantLevel.length - 1 && <span> | </span>}
-                    </React.Fragment>
-                  ))
-                : includedItems.productLevel.length > 0
-                  ? includedItems.productLevel.map((item, index) => (
-                      <React.Fragment key={`product-${index}`}>
+            {/* Included Items Section */}
+            <div className="mb-2">
+              <div className="text-gray-700">
+                {includedItems.variantLevel.length > 0
+                  ? includedItems.variantLevel.map((item, index) => (
+                      <React.Fragment key={`variant-${index}`}>
                         <span>{item.name}</span>
-                        {index < includedItems.productLevel.length - 1 && <span> | </span>}
+                        {index < includedItems.variantLevel.length - 1 && (
+                          <span className="mx-2">|</span>
+                        )}
                       </React.Fragment>
                     ))
-                  : null}
+                  : includedItems.productLevel.length > 0
+                    ? includedItems.productLevel.map((item, index) => (
+                        <React.Fragment key={`product-${index}`}>
+                          <span>{item.name}</span>
+                          {index < includedItems.productLevel.length - 1 && (
+                            <span className="mx-2">|</span>
+                          )}
+                        </React.Fragment>
+                      ))
+                    : null}
+              </div>
             </div>
 
-            <div className="mt-4">
+            {/* Document Buttons Section */}
+            <div className="space-y-2">
               {specSheetUrl && (
                 <button
                   type="button"
-                  className="mb-2 flex w-full items-center justify-center rounded bg-[#008BB7] px-4 py-2 text-sm text-white"
+                  className="flex w-full items-center justify-center rounded bg-[#008BB7] px-4 py-2.5 text-sm text-white hover:bg-[#007aa3]"
                 >
-                  <img
-                    alt="Download spec sheet"
-                    src="https://cdn11.bigcommerce.com/s-6cdngmevrl/images/stencil/original/image-manager/icons8-download-symbol-16.png?t=1726210410"
-                    height={16}
-                    width={16}
-                  />
                   <a
-                    className="ml-2 text-white"
+                    className="text-white"
                     href={specSheetUrl}
                     download
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {t('downloadSpecSheet')}
+                    SPEC SHEET
                   </a>
                 </button>
               )}
-
               {installSheetUrl && (
-                <div className="mt-4">
-                  <button
-                    type="button"
-                    className="flex w-full items-center justify-center rounded border border-gray-300 px-4 py-2 text-sm"
+                <button
+                  type="button"
+                  className="flex w-full items-center justify-center rounded bg-[#008BB7] px-4 py-2.5 text-sm text-white hover:bg-[#007aa3]"
+                >
+                  <a
+                    className="text-white"
+                    href={installSheetUrl}
+                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
-                    <img
-                      alt="Download installation sheet"
-                      src="https://cdn11.bigcommerce.com/s-6cdngmevrl/images/stencil/original/image-manager/icons8-download-symbol-16-1-.png?t=1726210403"
-                      height={16}
-                      width={16}
-                    />
-                    <a
-                      className="ml-2"
-                      href={installSheetUrl}
-                      download
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {t('installationSheet')}
-                    </a>
-                  </button>
-                </div>
+                    INSTALL SHEET
+                  </a>
+                </button>
               )}
             </div>
 
-            <h2 className="mb-2 mt-4 text-lg font-semibold">Heading</h2>
-            <table className="w-full border-collapse text-base">
-              <tbody>
-                <tr>
-                  <td className="border p-2" style={{ width: '30%' }}>
-                    subheading
-                  </td>
-                  <td className="border p-2" style={{ width: '70%' }}>
-                    value
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            {/* Product Details Section */}
+            {groupedDetails.length > 0 && (
+              <div className="space-y-3">
+                {groupedDetails.map((group, groupIndex) => (
+                  <div key={`group-${groupIndex}`} className="pt-2">
+                    <h3 className="mb-3 text-xl font-bold text-gray-900">{group.category}</h3>
+                    <div className="w-full">
+                      <table className="w-full table-auto">
+                        <tbody>
+                          {group.details.map((detail, detailIndex) => (
+                            <tr key={`${group.category}-${detailIndex}`}>
+                              <td
+                                className="border p-2 py-2 pr-4 text-[15px] text-gray-700"
+                                style={{ width: '200px' }}
+                              >
+                                {detail.key}
+                              </td>
+                              <td className="border p-2 py-2 text-[15px] text-gray-900">
+                                {detail.value}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
+            {/* Warning Section */}
             <div className="mt-4 text-center text-base underline" style={{ fontSize: '16px' }}>
               {t('warning')}
             </div>
-
+            
+            {/* Close Button */}
             <button
               type="button"
-              className="items-centertext-left mt-4 flex w-full items-center justify-center rounded border border-gray-300 px-6 py-4 text-sm text-[#002A37]"
+              className="mt-8 flex w-full items-center justify-center rounded border border-gray-300 px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50"
               onClick={closeDropdown}
             >
-              <span className="flex-grow text-center text-[0.875rem] font-semibold uppercase text-[#002A37]">
-                {t('closeDetails')}
-              </span>
-
+              <span>{t('closeDetails')}</span>
               <svg
                 className={`ml-2 transition-transform ${isOpen ? 'rotate-180' : ''}`}
                 width="12"

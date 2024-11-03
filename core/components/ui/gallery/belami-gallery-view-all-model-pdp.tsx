@@ -135,4 +135,3 @@ const GalleryModel = ({
 };
 
 export { GalleryModel };
-

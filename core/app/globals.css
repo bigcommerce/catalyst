@@ -2,12 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
-
 /* test 1 j*/
 /* add to cart pdp dropdown */
-div[data-radix-popper-content-wrapper] div{
+div[data-radix-popper-content-wrapper] div {
   width: 300px !important;
   transition: unset !important;
 }
@@ -18,7 +15,6 @@ div[data-radix-popper-content-wrapper] div{
   width: 240px;
 }
 
-
 .left-container img {
   display: none;
 }
@@ -26,8 +22,6 @@ div[data-radix-popper-content-wrapper] div{
   background-color: lightgrey;
 }
 /* test 1 j*/
-
-
 
 .modal-open form.flex.flex-col.gap-6.\@container.product-variants {
   z-index: -1;
@@ -920,22 +914,21 @@ ul.div-breadcrumb li:last-child a {
     width: calc(90vw);
   }
 
-  .reset-pass{
+  .reset-pass {
     gap: 20px !important;
     margin-inline: 0;
     width: 100% !important;
   }
 
-  .reset-pass .reset-pass-form{
+  .reset-pass .reset-pass-form {
     margin-top: 0;
     padding-top: 0;
     max-width: none !important;
   }
 
-  .reset-pass .reset-pass-head{
+  .reset-pass .reset-pass-head {
     font-size: 24px;
   }
-
 }
 /* test 1 j*/
 img.variant-img {
@@ -1038,12 +1031,12 @@ span.span3-product-price.text-\[1rem\].font-normal.leading-\[2rem\].tracking-\[0
     border-color 0.3s ease;
 }
 
-.popup-container-parent #add-to-cart{
+.popup-container-parent #add-to-cart {
   border-radius: 3px;
   padding: 5px 10px;
 }
 
-.popup-container-parent .checkout-btn{
+.popup-container-parent .checkout-btn {
   margin-top: 0 !important;
 }
 
@@ -1207,24 +1200,21 @@ button.show-all {
   width: calc((1116 / 1600) * 100vw);
 }
 
-.reset-pass .reset-pass-form{
+.reset-pass .reset-pass-form {
   max-width: 514px;
   margin-inline: auto;
 }
 
 @media screen and (max-width: 422px) {
-  .reset-pass .reset-pass-form{
+  .reset-pass .reset-pass-form {
     margin-inline: 0;
   }
 }
-
 
 .popup-container-parent .popup-box1 {
   pointer-events: all !important;
 }
 /* test 1 j*/
-
-
 
 /* test 1 j*/
 @media screen and (max-width: 500px) {
@@ -1257,15 +1247,14 @@ button.show-all {
   }
 }
 
-
-.reset-pass{
+.reset-pass {
   display: flex;
   flex-direction: column;
   gap: 8px;
   justify-content: center;
 }
 
-.reset-pass .reset-pass-form input#email{
+.reset-pass .reset-pass-form input#email {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1273,21 +1262,21 @@ button.show-all {
   padding: 6px 10px;
   gap: 10px;
   height: 44px;
-  border: 1px solid #CCCBCB;
+  border: 1px solid #cccbcb;
   border-radius: 3px;
-  background: #FFFFFF;
+  background: #ffffff;
 }
 
-.login-breadcrumb .div-breadcrumb{ 
+.login-breadcrumb .div-breadcrumb {
   padding-block: 0 !important;
 }
 
-.reset-pass nav{
+.reset-pass nav {
   display: flex;
   justify-content: center;
 }
 
-.reset-pass nav ul{
+.reset-pass nav ul {
   padding-block: 6px;
 }
 /* test 1 j*/
