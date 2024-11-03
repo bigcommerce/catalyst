@@ -77,7 +77,7 @@ const Header = ({
           <LocaleSwitcher activeLocale={activeLocale} locales={locales} />
         ) : null}
 
-        <MobileNav links={links} logo={logo} />
+        <MobileNav links={links} logo={logo} account={''} />
       </div>
     </header>
 

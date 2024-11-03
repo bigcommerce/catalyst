@@ -65,9 +65,10 @@ export const DetailsFragment = graphql(
 interface Props {
   product: FragmentOf<typeof DetailsFragment>;
   collectionValue?: string;
+  dropdownSheetIcon?: string;
 }
 
-export const Details = ({ product, collectionValue}: Props) => {
+export const Details = ({ product, collectionValue , dropdownSheetIcon}: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
 
@@ -255,7 +256,7 @@ export const Details = ({ product, collectionValue}: Props) => {
       <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
 
       {/* Dropdown */}
-      <ProductDetailDropdown product={product} />
+      <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
 
       {/* Shipping & Returns */}
       <ShippingReturns />

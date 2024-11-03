@@ -9,8 +9,9 @@ import {
   fetchIncludedItems,
   processMetaFields,
 } from '~/components/common-functions';
+import { BcImage } from '~/components/bc-image';
+import type { StaticImageData } from 'next/image';
 
-// types/metafield.ts
 export interface MetaField {
   id?: number;
   entityId: number;
@@ -61,7 +62,11 @@ export interface ProcessedMetaFieldsResponse {
   groupedDetails: GroupedDetails[];
 }
 
-const ProductDetailDropdown = ({ product }: { product: any }) => {
+interface dropdownIcon {
+  dropdownSheetIcon?: string | StaticImageData;
+}
+
+const ProductDetailDropdown = ({ product, dropdownSheetIcon }: { product: any } & dropdownIcon) => {
   const t = useTranslations('productDetailDropdown');
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -84,26 +89,21 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
       if (!product) return;
 
       try {
-        // Fetch variant details
         const { variantDetails: newVariantDetails, groupedDetails: newGroupedDetails } =
           await fetchVariantDetails(product);
         setVariantDetails(newVariantDetails);
         setGroupedDetails(newGroupedDetails);
 
-        // Get product level metadata
         const productMetaFields = await GetProductMetaFields(product.entityId, '');
 
-        // Fetch included items
         const includedItemsData = await fetchIncludedItems(product, productMetaFields);
         setIncludedItems(includedItemsData);
 
-        // Set install sheet
         const installSheetMeta = productMetaFields?.find(
           (meta: MetaField) => meta.key === 'install_sheet',
         );
         setInstallSheet(installSheetMeta || null);
 
-        // Set spec sheet
         const specSheetData = await getMetaFieldsByProduct(product, 'spec_sheet');
         setSpecSheet(specSheetData as MetaFieldData);
       } catch (error) {
@@ -151,7 +151,6 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
       className="relative mt-6 inline-block w-full transition-all duration-300 xl:mt-12"
       ref={dropdownRef}
     >
-      {/* Dropdown Toggle Button */}
       <button
         ref={buttonRef}
         className="relative flex w-full cursor-pointer items-center rounded border border-gray-300 px-6 py-4 text-left"
@@ -179,7 +178,6 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
         </svg>
       </button>
 
-      {/* Dropdown Content */}
       <div
         className={`transition-max-height overflow-hidden duration-300 ${
           isOpen ? 'max-h-[1600px]' : 'max-h-0'
@@ -188,13 +186,11 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
       >
         {isOpen && (
           <div className="mt-6 w-full rounded border border-gray-300 bg-white p-8 shadow-lg">
-            {/* Header Section */}
             <div className="mb-4 flex items-center justify-between">
               <span className="text-lg font-semibold text-gray-900">{t('whatsInTheBox')}</span>
               <span className="text-sm text-gray-600">SKU: {product?.sku || t('sku')}</span>
             </div>
 
-            {/* Included Items Section */}
             <div className="mb-2">
               <div className="text-gray-700">
                 {includedItems.variantLevel.length > 0
@@ -219,13 +215,21 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
               </div>
             </div>
 
-            {/* Document Buttons Section */}
             <div className="space-y-2">
               {specSheetUrl && (
                 <button
                   type="button"
-                  className="flex w-full items-center justify-center rounded bg-[#008BB7] px-4 py-2.5 text-sm text-white hover:bg-[#007aa3]"
+                  className="flex w-full items-center justify-center gap-2 rounded bg-[#008BB7] px-4 py-2.5 text-sm text-white hover:bg-[#007aa3]"
                 >
+                  {dropdownSheetIcon && (
+                    <BcImage
+                      alt="SPEC SHEET"
+                      src={dropdownSheetIcon}
+                      height={20}
+                      priority={true}
+                      width={20}
+                    />
+                  )}
                   <a
                     className="text-white"
                     href={specSheetUrl}
@@ -240,8 +244,17 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
               {installSheetUrl && (
                 <button
                   type="button"
-                  className="flex w-full items-center justify-center rounded bg-[#008BB7] px-4 py-2.5 text-sm text-white hover:bg-[#007aa3]"
+                  className="flex w-full items-center justify-center gap-2 rounded bg-[#008BB7] px-4 py-2.5 text-sm text-white hover:bg-[#007aa3]"
                 >
+                  {dropdownSheetIcon && (
+                    <BcImage
+                      alt="INSTALL SHEET"
+                      src={dropdownSheetIcon}
+                      height={20}
+                      priority={true}
+                      width={20}
+                    />
+                  )}
                   <a
                     className="text-white"
                     href={installSheetUrl}
@@ -255,7 +268,6 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
               )}
             </div>
 
-            {/* Product Details Section */}
             {groupedDetails.length > 0 && (
               <div className="space-y-3">
                 {groupedDetails.map((group, groupIndex) => (
@@ -285,12 +297,10 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
               </div>
             )}
 
-            {/* Warning Section */}
             <div className="mt-4 text-center text-base underline" style={{ fontSize: '16px' }}>
               {t('warning')}
             </div>
 
-            {/* Close Button */}
             <button
               type="button"
               className="mt-8 flex w-full items-center justify-center rounded border border-gray-300 px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50"
