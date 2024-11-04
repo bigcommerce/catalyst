@@ -122,7 +122,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
   return (
     <>
       {formStatus?.status === 'error' && (
-        <Message className="mb-8 w-full" variant={formStatus.status}>
+        <Message className="mb-8 w-full whitespace-pre" variant={formStatus.status}>
           <p>{formStatus.message}</p>
         </Message>
       )}
