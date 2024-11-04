@@ -34,6 +34,7 @@ const fetchSearchResults = async (term: string): Promise<SearchResult[]> => {
   if (isSearchQuery(searchResults) && searchResults.products.length > 0) {
     return [
       {
+        type: 'links',
         title: 'Categories',
         links:
           searchResults.products.length > 0
@@ -51,6 +52,7 @@ const fetchSearchResults = async (term: string): Promise<SearchResult[]> => {
             : [],
       },
       {
+        type: 'links',
         title: 'Brands',
         links:
           searchResults.products.length > 0
@@ -68,6 +70,7 @@ const fetchSearchResults = async (term: string): Promise<SearchResult[]> => {
             : [],
       },
       {
+        type: 'products',
         title: 'Products',
         products: searchResults.products.map((product) => {
           const price = pricesTransformer(product.prices, format);
