@@ -5,7 +5,6 @@
 
 /* add to cart pdp dropdown */
 div[data-radix-popper-content-wrapper] div {
-div[data-radix-popper-content-wrapper] div {
   width: 300px !important;
   transition: unset !important;
 }
@@ -1178,12 +1177,10 @@ span.span3-product-price.text-\[1rem\].font-normal.leading-\[2rem\].tracking-\[0
 }
 
 .popup-container-parent #add-to-cart {
-.popup-container-parent #add-to-cart {
   border-radius: 3px;
   padding: 5px 10px;
 }
 
-.popup-container-parent .checkout-btn {
 .popup-container-parent .checkout-btn {
   margin-top: 0 !important;
 }
@@ -1421,7 +1418,6 @@ button.show-all {
   justify-content: center;
 }
 
-.reset-pass nav ul {
 .reset-pass nav ul {
   padding-block: 6px;
 }
