@@ -1,10 +1,12 @@
 import { getTranslations } from 'next-intl/server';
 
+import { ResetPasswordSection } from '@/vibes/soul/sections/reset-password-section';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
+import { resetPassword } from './_actions/reset-password';
 import { ResetPasswordForm } from './_components/reset-password-form';
 import { ResetPasswordFormFragment } from './_components/reset-password-form/fragment';
 
@@ -39,11 +41,14 @@ export default async function Reset() {
     fetchOptions: { next: { revalidate } },
   });
 
+  // TODO: recaptcha and action
   return (
-    <div className="mx-auto my-6 max-w-4xl">
-      <h2 className="mb-8 text-4xl font-black lg:text-5xl">{t('heading')}</h2>
-      <ResetPasswordForm reCaptchaSettings={bypassReCaptcha(data.site.settings?.reCaptcha)} />
-    </div>
+    <ResetPasswordSection
+      action={resetPassword}
+      submitLabel={t('Form.submit')}
+      subtitle={t('Form.description')}
+      title={t('heading')}
+    />
   );
 }
 

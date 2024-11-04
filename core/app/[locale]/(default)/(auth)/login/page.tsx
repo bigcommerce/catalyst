@@ -28,6 +28,7 @@ export default function Login({ params: { locale } }: Props) {
   return (
     <SignInSection
       action={login}
+      forgotPasswordHref="/login/forgot-password"
       forgotPasswordLabel={t('Form.forgotPassword')}
       submitLabel={t('Form.logIn')}
       title={t('heading')}
