@@ -1,31 +1,127 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { getMetaFieldsByProduct } from '~/components/common-functions';
+import { GetProductMetaFields } from '~/components/management-apis';
+import {
+  getMetaFieldsByProduct,
+  fetchVariantDetails,
+  fetchIncludedItems,
+  processMetaFields,
+} from '~/components/common-functions';
+import { BcImage } from '~/components/bc-image';
+import type { StaticImageData } from 'next/image';
 
-const ProductDetailDropdown = ({ product }: { product: any }) => {
+export interface MetaField {
+  id?: number;
+  entityId: number;
+  key: string;
+  value: string;
+  namespace?: string;
+  resource_type?: string;
+  resource_id?: number;
+  description?: string;
+  date_created?: string;
+  date_modified?: string;
+  owner_client_id?: string;
+}
+
+export interface MetaFieldData {
+  metaField: MetaField | null;
+  productMetaField: MetaField | null;
+  message: string;
+  hasVariantOptions: boolean;
+  isVariantData: boolean;
+}
+
+export interface IncludedItem {
+  name: string;
+}
+
+export interface ProcessedDetail {
+  category: string;
+  order: number;
+  mainOrder: number;
+  key: string;
+  value: string;
+}
+
+export interface GroupedDetails {
+  category: string;
+  order: number;
+  details: ProcessedDetail[];
+}
+
+export interface Variant {
+  entityId: number;
+  sku: string;
+}
+
+export interface ProcessedMetaFieldsResponse {
+  variantDetails: MetaField[];
+  groupedDetails: GroupedDetails[];
+}
+
+interface dropdownIcon {
+  dropdownSheetIcon?: string | StaticImageData;
+}
+
+const ProductDetailDropdown = ({ product, dropdownSheetIcon }: { product: any } & dropdownIcon) => {
   const t = useTranslations('productDetailDropdown');
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const buttonRef = useRef<HTMLButtonElement | null>(null); // Ref for the "Product Details" button
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
 
-  const [installSheet, setInstallSheet] = useState<any>();
+  const [installSheet, setInstallSheet] = useState<MetaField | null>(null);
+  const [specSheet, setSpecSheet] = useState<MetaFieldData | null>(null);
+  const [variantDetails, setVariantDetails] = useState<MetaField[]>([]);
+  const [groupedDetails, setGroupedDetails] = useState<GroupedDetails[]>([]);
+  const [includedItems, setIncludedItems] = useState<{
+    productLevel: IncludedItem[];
+    variantLevel: IncludedItem[];
+  }>({
+    productLevel: [],
+    variantLevel: [],
+  });
 
   useEffect(() => {
-    const getMetaDetails = async (product2: any, metaField: string) => {
-      let returnData = await getMetaFieldsByProduct(product2, metaField);
-      if (metaField == 'install_sheet') {
-        setInstallSheet(returnData);
+    const loadProductDetails = async () => {
+      if (!product) return;
+
+      try {
+        const { variantDetails: newVariantDetails, groupedDetails: newGroupedDetails } =
+          await fetchVariantDetails(product);
+        setVariantDetails(newVariantDetails);
+        setGroupedDetails(newGroupedDetails);
+
+        const productMetaFields = await GetProductMetaFields(product.entityId, '');
+
+        const includedItemsData = await fetchIncludedItems(product, productMetaFields);
+        setIncludedItems(includedItemsData);
+
+        const installSheetMeta = productMetaFields?.find(
+          (meta: MetaField) => meta.key === 'install_sheet',
+        );
+        setInstallSheet(installSheetMeta || null);
+
+        const specSheetData = await getMetaFieldsByProduct(product, 'spec_sheet');
+        setSpecSheet(specSheetData as MetaFieldData);
+      } catch (error) {
+        console.error('Error loading product details:', error);
       }
     };
-    getMetaDetails(product, 'install_sheet');
+
+    loadProductDetails();
   }, [product]);
 
-  // Toggle dropdown
+  const getSpecSheetValue = () => {
+    if (!specSheet) return null;
+    const isUsingVariant = specSheet.isVariantData && specSheet.metaField?.value;
+    return isUsingVariant ? specSheet.metaField?.value : specSheet.productMetaField?.value;
+  };
+
   const toggleDropdown = () => setIsOpen((prev) => !prev);
 
-  // Close dropdown and refocus on button
   const closeDropdown = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsOpen(false);
@@ -34,7 +130,6 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
     }
   };
 
-  // Handle click outside dropdown to close it
   const handleClickOutside = (e: MouseEvent) => {
     if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
       setIsOpen(false);
@@ -47,15 +142,20 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
+
+  const specSheetUrl = getSpecSheetValue();
+  const installSheetUrl = installSheet?.value;
+
   return (
     <div
-      className={`relative mt-6 inline-block w-full transition-all duration-300 xl:mt-12`}
+      className="relative mt-6 inline-block w-full transition-all duration-300 xl:mt-12"
       ref={dropdownRef}
     >
       <button
         ref={buttonRef}
         className="relative flex w-full cursor-pointer items-center rounded border border-gray-300 px-6 py-4 text-left"
         onClick={toggleDropdown}
+        type="button"
       >
         <span className="flex-grow text-center text-[0.875rem] font-semibold uppercase text-[#002A37]">
           {t('productDetails')}
@@ -79,183 +179,134 @@ const ProductDetailDropdown = ({ product }: { product: any }) => {
       </button>
 
       <div
-        className={`transition-max-height overflow-hidden duration-300 ${isOpen ? 'max-h-[1600px]' : 'max-h-0'}`}
+        className={`transition-max-height overflow-hidden duration-300 ${
+          isOpen ? 'max-h-[1600px]' : 'max-h-0'
+        }`}
         style={{ transitionTimingFunction: 'ease' }}
       >
         {isOpen && (
           <div className="mt-6 w-full rounded border border-gray-300 bg-white p-8 shadow-lg">
-            <div className="mb-2 flex items-center justify-between" style={{ fontSize: '18px' }}>
-              <span className="mb-2 mt-4 text-lg font-semibold">{t('whatsInTheBox')}</span>
-              <span style={{ fontSize: '14px' }}>{t('sku')}</span>
+            <div className="mb-4 flex items-center justify-between">
+              <span className="text-lg font-semibold text-gray-900">{t('whatsInTheBox')}</span>
+              <span className="text-sm text-gray-600">SKU: {product?.sku || t('sku')}</span>
             </div>
-            <div className="mt-2 text-gray-700" style={{ fontSize: '14px' }}>
-              <span>{t('canopy')}</span> <span>|</span> <span>{t('shade')}</span> <span>|</span>{' '}
-              <span>{t('rod2to6')}</span> <span>|</span> <span>{t('rod2to12')}</span>
-            </div>
-            <div className="mt-4">
-              <button className="mb-2 flex w-full items-center justify-center rounded bg-[#008BB7] px-4 py-2 text-sm text-white">
-                <img
-                  alt="Download spec sheet"
-                  src="https://cdn11.bigcommerce.com/s-6cdngmevrl/images/stencil/original/image-manager/icons8-download-symbol-16.png?t=1726210410"
-                  height={16}
-                  width={16}
-                />
-                <span className="ml-2">{t('downloadSpecSheet')}</span>
-              </button>
 
-              {installSheet && (
-                <div className="mt-4">
-                  <button className="flex w-full items-center justify-center rounded border border-gray-300 px-4 py-2 text-sm">
-                    <img
-                      alt="Download installation sheet"
-                      src="https://cdn11.bigcommerce.com/s-6cdngmevrl/images/stencil/original/image-manager/icons8-download-symbol-16-1-.png?t=1726210403"
-                      height={16}
-                      width={16}
+            <div className="mb-2">
+              <div className="text-gray-700">
+                {includedItems.variantLevel.length > 0
+                  ? includedItems.variantLevel.map((item, index) => (
+                      <React.Fragment key={`variant-${index}`}>
+                        <span>{item.name}</span>
+                        {index < includedItems.variantLevel.length - 1 && (
+                          <span className="mx-2">|</span>
+                        )}
+                      </React.Fragment>
+                    ))
+                  : includedItems.productLevel.length > 0
+                    ? includedItems.productLevel.map((item, index) => (
+                        <React.Fragment key={`product-${index}`}>
+                          <span>{item.name}</span>
+                          {index < includedItems.productLevel.length - 1 && (
+                            <span className="mx-2">|</span>
+                          )}
+                        </React.Fragment>
+                      ))
+                    : null}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              {specSheetUrl && (
+                <button
+                  type="button"
+                  className="flex w-full items-center justify-center gap-2 rounded bg-[#008BB7] px-4 py-2.5 text-sm text-white hover:bg-[#007aa3]"
+                >
+                  {dropdownSheetIcon && (
+                    <BcImage
+                      alt="SPEC SHEET"
+                      src={dropdownSheetIcon}
+                      height={20}
+                      priority={true}
+                      width={20}
                     />
-                    {/* Add download attribute to force download */}
-                    <a className="ml-2" href={installSheet?.value} download target="_blank">
-                      {t('installationSheet')}
-                    </a>
-                  </button>
-                </div>
+                  )}
+                  <a
+                    className="text-white"
+                    href={specSheetUrl}
+                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    SPEC SHEET
+                  </a>
+                </button>
+              )}
+              {installSheetUrl && (
+                <button
+                  type="button"
+                  className="flex w-full items-center justify-center gap-2 rounded bg-[#008BB7] px-4 py-2.5 text-sm text-white hover:bg-[#007aa3]"
+                >
+                  {dropdownSheetIcon && (
+                    <BcImage
+                      alt="INSTALL SHEET"
+                      src={dropdownSheetIcon}
+                      height={20}
+                      priority={true}
+                      width={20}
+                    />
+                  )}
+                  <a
+                    className="text-white"
+                    href={installSheetUrl}
+                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    INSTALL SHEET
+                  </a>
+                </button>
               )}
             </div>
 
-            {/* Product Dimensions and Details */}
-            <h2 className="mb-2 mt-4 text-lg font-semibold" style={{ fontSize: '18px' }}>
-              {t('dimensionsAndWeights')}
-            </h2>
-            <table className="mt-4 w-full border-collapse text-base" style={{ fontSize: '16px' }}>
-              <tbody>
-                <tr>
-                  <td className="border p-2" style={{ width: '30%' }}>
-                    {t('widthDiameter')}
-                  </td>
-                  <td className="border p-2" style={{ width: '70%' }}>
-                    {t('Eighteen')}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border p-2" style={{ width: '30%' }}>
-                    {t('height')}
-                  </td>
-                  <td className="border p-2" style={{ width: '70%' }}>
-                    {t('725')}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border p-2" style={{ width: '30%' }}>
-                    {t('depthExtension')}
-                  </td>
-                  <td className="border p-2" style={{ width: '70%' }}>
-                    {t('Eighteen')}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border p-2" style={{ width: '30%' }}>
-                    {t('canopyWidth')}
-                  </td>
-                  <td className="border p-2" style={{ width: '70%' }}>
-                    {t('fourteen')}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            {groupedDetails.length > 0 && (
+              <div className="space-y-3">
+                {groupedDetails.map((group, groupIndex) => (
+                  <div key={`group-${groupIndex}`} className="pt-2">
+                    <h3 className="mb-3 text-xl font-bold text-gray-900">{group.category}</h3>
+                    <div className="w-full">
+                      <table className="w-full table-auto">
+                        <tbody>
+                          {group.details.map((detail, detailIndex) => (
+                            <tr key={`${group.category}-${detailIndex}`}>
+                              <td
+                                className="border p-2 py-2 pr-4 text-[15px] text-gray-700"
+                                style={{ width: '200px' }}
+                              >
+                                {detail.key}
+                              </td>
+                              <td className="border p-2 py-2 text-[15px] text-gray-900">
+                                {detail.value}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
-            <h2 className="mb-2 mt-4 text-lg font-semibold">{t('installationDetails')}</h2>
-            <table className="w-full border-collapse text-base">
-              <tbody>
-                <tr>
-                  <td className="border p-2" style={{ width: '30%' }}>
-                    {t('wireLength')}
-                  </td>
-                  <td className="border p-2" style={{ width: '70%' }}>
-                    {t('onetwenty')}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border p-2" style={{ width: '30%' }}>
-                    {t('chainLength')}
-                  </td>
-                  <td className="border p-2" style={{ width: '70%' }}>
-                    {t('twelve')}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            {/* More Product Details */}
-            <h2 className="mb-2 mt-4 text-lg font-semibold">{t('Lamping')}</h2>
-            <table className="w-full border-collapse text-base">
-              <tbody>
-                <tr>
-                  <td className="border p-2" style={{ width: '30%' }}>
-                    {t('numberOfBulbs')}
-                  </td>
-                  <td className="border p-2" style={{ width: '70%' }}>
-                    {t('one')}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border p-2" style={{ width: '30%' }}>
-                    {t('standardWattage')}
-                  </td>
-                  <td className="border p-2" style={{ width: '70%' }}>
-                    {t('standardWattageText')}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <h2 className="mb-2 mt-4 text-lg font-semibold" style={{ fontSize: '18px' }}>
-              {t('compatibilityAndSmartFeatures')}
-            </h2>
-            <table className="w-full border-collapse text-base" style={{ fontSize: '16px' }}>
-              <tbody>
-                <tr>
-                  <td className="border p-2" style={{ width: '30%' }}>
-                    {t('smartCompatible')}
-                  </td>
-                  <td className="border p-2" style={{ width: '70%' }}>
-                    {t('smartCompatibleText')}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <h2 className="mb-2 mt-4 text-lg font-semibold" style={{ fontSize: '18px' }}>
-              {t('productDetailHeading')}
-            </h2>
-            <table className="w-full border-collapse text-base" style={{ fontSize: '16px' }}>
-              <tbody>
-                <tr>
-                  <td className="border p-2" style={{ width: '30%' }}>
-                    {t('finishes')}
-                  </td>
-                  <td className="border p-2" style={{ width: '70%' }}>
-                    {t('finishesText')}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border p-2" style={{ width: '30%' }}>
-                    {t('smartCompatible')}
-                  </td>
-                  <td className="border p-2" style={{ width: '70%' }}>
-                    {t('glass')}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
             <div className="mt-4 text-center text-base underline" style={{ fontSize: '16px' }}>
               {t('warning')}
             </div>
 
             <button
-              className="items-centertext-left mt-4 flex w-full items-center justify-center rounded border border-gray-300 px-6 py-4 text-sm text-[#002A37]"
-              onClick={closeDropdown} // Close the dropdown on click
+              type="button"
+              className="mt-8 flex w-full items-center justify-center rounded border border-gray-300 px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              onClick={closeDropdown}
             >
-              <span className="flex-grow text-center text-[0.875rem] font-semibold uppercase text-[#002A37]">
-                {t('closeDetails')}
-              </span>
-
+              <span>{t('closeDetails')}</span>
               <svg
                 className={`ml-2 transition-transform ${isOpen ? 'rotate-180' : ''}`}
                 width="12"

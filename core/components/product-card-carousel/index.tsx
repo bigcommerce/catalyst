@@ -26,7 +26,6 @@ export const ProductCardCarousel = ({
 
   const items = products.map((product) => (
     <ProductCard
-    relatedProductArrow={relatedProductArrow}
       imageSize="tall"
       key={product.entityId}
       product={product}

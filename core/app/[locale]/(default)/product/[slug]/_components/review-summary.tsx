@@ -28,7 +28,7 @@ export const ReviewSummary = ({ data }: Props) => {
   const hasNoReviews = numberOfReviews === 0;
 
   return (
-    <div className="ratings-star flex items-center justify-center gap-1 lg:justify-start">
+    <div className="ratings-star flex items-center justify-center gap-1 lg:justify-start mt-2">
       <p
         aria-describedby={summaryId}
         className={cn('flex flex-nowrap text-primary', hasNoReviews && 'text-gray-400')}
@@ -36,7 +36,7 @@ export const ReviewSummary = ({ data }: Props) => {
         <Rating rating={averageRating} />
       </p>
 
-      <div className="font-semibold" id={summaryId}>
+      <div className="font-semibold review-count mt-[-3px]" id={summaryId}>
         {!hasNoReviews && (
           <>
             <span className="sr-only">{t('rating')}</span>

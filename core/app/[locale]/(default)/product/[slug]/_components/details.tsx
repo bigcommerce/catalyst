@@ -5,7 +5,6 @@ import { ProductItemFragment } from '~/client/fragments/product-item';
 import { FragmentOf, graphql } from '~/client/graphql';
 import CertificationsAndRatings from '~/components/ui/pdp/belami-certification-rating-pdp';
 import { Payment } from '~/components/ui/pdp/belami-payment-pdp';
-import Dropdown from '~/components/ui/pdp/belami-product-details-pdp';
 import { RequestQuote } from '~/components/ui/pdp/belami-request-a-quote-pdp';
 import { ShippingReturns } from '~/components/ui/pdp/belami-shipping-returns-pdp';
 import { imageManagerImageUrl } from '~/lib/store-assets';
@@ -66,9 +65,10 @@ export const DetailsFragment = graphql(
 interface Props {
   product: FragmentOf<typeof DetailsFragment>;
   collectionValue?: string;
+  dropdownSheetIcon?: string;
 }
 
-export const Details = ({ product, collectionValue}: Props) => {
+export const Details = ({ product, collectionValue , dropdownSheetIcon}: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
 
@@ -256,7 +256,7 @@ export const Details = ({ product, collectionValue}: Props) => {
       <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
 
       {/* Dropdown */}
-      <ProductDetailDropdown product={product} />
+      <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
 
       {/* Shipping & Returns */}
       <ShippingReturns />

@@ -137,11 +137,11 @@ export const Header = async ({ cart }: Props) => {
       }
       activeLocale={locale}
       cart={
-        <p role="status" className="header-cart-icon">
+        <p role="status" className="header-cart-icon flex items-center">
           <Suspense
             fallback={
               <CartLink>
-                <ShoppingCart className="hidden" aria-label="cart" />
+                <ShoppingCart className="hidden header-cart-link" aria-label="cart" />
               </CartLink>
             }
           >

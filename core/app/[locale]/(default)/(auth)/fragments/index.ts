@@ -18,8 +18,6 @@ export interface IconProps {
     'closeIcon'?: string | StaticImport | any;
     'fan1'?: string | StaticImport | any;
     'fan2'?: string | StaticImport | any;
-    
-
 }
 
 export const imageIconList: IconProps = {

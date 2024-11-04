@@ -6,6 +6,14 @@ const config = {
     '!./node_modules/**', // Exclude everything in node_modules to speed up builds
   ],
   theme: {
+    screens : {
+      'xsm' : '450px', 
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+      '2xl': '1536px',
+    },
     extend: {
       colors: {
         transparent: 'transparent',

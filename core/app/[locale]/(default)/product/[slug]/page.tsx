@@ -80,6 +80,7 @@ export default async function Product({ params: { locale, slug }, searchParams }
   const bannerIcon = imageManagerImageUrl('example-1.png', '50w');
   const relatedProductArrow = imageManagerImageUrl('vector-8-.png', '30w');
   const galleryExpandIcon = imageManagerImageUrl('vector.jpg', '20w'); // Set galleryExpandIcon here
+  const dropdownSheetIcon = imageManagerImageUrl('icons8-download-symbol-16.png', '20w'); 
   unstable_setRequestLocale(locale);
 
   const t = await getTranslations('Product');
@@ -150,7 +151,7 @@ export default async function Product({ params: { locale, slug }, searchParams }
             bannerIcon={bannerIcon}
             galleryExpandIcon={galleryExpandIcon} // Pass galleryExpandIcon to Gallery component
           />
-          <Details product={product} collectionValue={collectionValue}  />
+          <Details product={product} collectionValue={collectionValue}  dropdownSheetIcon={dropdownSheetIcon} />
           <div className="lg:col-span-2">
             <Description product={product} />
             <RelatedProducts productId={product.entityId} relatedProductArrow={relatedProductArrow}/>
