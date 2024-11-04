@@ -105,6 +105,9 @@
     }
   },
   "FacetedGroup": {
+    "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+    "products": "Products",
+    "compare": "Compare",
     "MobileSideNav": {
       "filters": "Filters",
       "showFilters": "Show Filters",
@@ -132,7 +135,7 @@
       }
     },
     "SortBy": {
-      "ariaLabel": "Sort by:",
+      "ariaLabel": "Sort",
       "featuredItems": "Featured items",
       "bestSellingItems": "Best selling items",
       "newestItems": "Newest items",
@@ -144,15 +147,11 @@
       "relevance": "Relevance"
     }
   },
-  "Brand": {
-    "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
-    "products": "Products"
-  },
+  "Brand": {},
   "Category": {
     "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
     "products": "Products",
     "items": "items",
-    "compare": "Compare",
     "Empty": {
       "message": "No products in this category",
       "cta": "Return to Home"
