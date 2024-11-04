@@ -90,7 +90,7 @@ export default function Login({ params: { locale } }: Props) {
           />
         </div>
       </div>
-      <div className="mt-[20px] flex flex-col gap-[20px] px-4 2xl:container sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0">
+      <div className="mt-[20px] flex flex-col gap-[20px] px-4 2xl:container sm:px-10 lg:px-12 2xl:mx-auto !px-[40px] 2xl:px-0">
          <ComponentsBreadcrumbs className="login-div login-breadcrumb mt-[6rem] mx-auto px-[1px]" breadcrumbs={breadcrumbs} />
         <div className="login-div login-div-one px-[1px] mx-auto flex justify-between gap-24">
           <h2 className="text-[34px] font-normal text-[#353535]">Rewards Program</h2>

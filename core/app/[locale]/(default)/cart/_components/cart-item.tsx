@@ -176,7 +176,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
               height={144}
               src={product.image.url}
               width={144}
-              className="h-full w-full object-cover" // Added class to fill space
+              className="h-full w-full object-contain min-h-[9em]" // Added class to fill space
             />
           ) : (
             <div className="min-h-[300px] min-w-[300px] bg-gray-200" />
@@ -184,7 +184,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
         </div>
 
         <div className="flex-1">
-          <p className="text-base text-gray-500">{product.brand}</p>
+          <p className="text-base text-gray-500 hidden">{product.brand}</p>
           <div className="flex flex-col gap-2 md:flex-row">
             <div className="flex flex-1 flex-col gap-2">
               <Link href={product.url}>

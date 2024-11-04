@@ -56,7 +56,7 @@ const ProductCard = ({
   name,
   ...props
 }: Props) => (
-  <div className={cn('group div-product relative flex flex-col overflow-visible', className)} {...props}>
+  <div className={cn('group div-product relative flex flex-row w-[350px] p-[20px_20px_10px_20px] border-[2px] border-[#cccbcb] overflow-visible', className)} {...props}>
     <div className="relative flex justify-center pb-3">
       <div
         className={cn('relative flex-auto', {
@@ -80,7 +80,7 @@ const ProductCard = ({
       </div>
     </div>
     <div className={cn('flex flex-1 flex-col gap-1 mt-3', Boolean(addToCart) && 'justify-end')}>
-      {subtitle ? <p className="text-base text-gray-500">{subtitle}</p> : null}
+      {subtitle ? <p className="text-base text-gray-500 hidden">{subtitle}</p> : null}
       <h3 className="text-xl font-bold lg:text-2xl">
         <Link
           className="focus-visible:outline text-base font-normal text-[#353535] focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-primary/20 focus-visible:ring-0"

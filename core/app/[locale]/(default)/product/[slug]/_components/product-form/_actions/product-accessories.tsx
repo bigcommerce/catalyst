@@ -121,7 +121,7 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
   return (
     <>
       {accessories?.length}
-      <div className={`left-container w-[150px] h-[177px]${baseImage}`}>
+      <div className={`left-container bg-[#d3d3d3] hidden  w-[150px] h-[177px]${baseImage}`}>
         <BcImage
           alt={accessories?.label}
           className={`object-fill h-[177px]${baseImage}${hideImage}`}
@@ -153,7 +153,7 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
             <input name="quantity" type="hidden" value={1} />
             <Button
               id="add-to-cart"
-              className="rounded-[3px] py-[5px] px-[10px] h-[42px] text-[14px] font-medium tracking-[1.25px]"
+              className="!rounded-[3px] !py-[5px] !px-[10px] h-[42px] text-[14px] font-medium tracking-[1.25px]"
               loading={isPending}
               loadingText="processing"
               type="submit"

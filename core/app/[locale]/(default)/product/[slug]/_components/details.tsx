@@ -129,7 +129,7 @@ export const Details = ({ product, collectionValue , dropdownSheetIcon}: Props) 
           ) : (
             <>
               {product.prices.price?.value !== undefined && (
-                <span className="span2-product-price text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px]">
+                <span className="span2-product-price text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] text-[#008bb7]">
                   <span>
                     {format.number(product.prices.price.value, {
                       style: 'currency',
@@ -142,7 +142,7 @@ export const Details = ({ product, collectionValue , dropdownSheetIcon}: Props) 
               {product.prices.saved?.value !== undefined &&
               product.prices.basePrice?.value !== undefined ? (
                 <>
-                  <span className="span3-product-price text-[1rem] font-normal leading-[2rem] tracking-[0.15px]">
+                  <span className="span3-product-price text-[1rem] text-[#002a37] font-normal leading-[2rem] tracking-[0.15px]">
                     <span className="line-through">
                       {format.number(product.prices.basePrice.value, {
                         style: 'currency',

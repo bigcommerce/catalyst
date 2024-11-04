@@ -53,7 +53,7 @@ const Header = ({
   search,
 }: Props) => (
   <div className={cn('relative', className)}>
-    <header className="main-header flex h-[92px] items-center justify-between gap-1 overflow-y-visible bg-white px-4 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0">
+    <header className="main-header  !max-w-[100%] p-[0px_4em] flex h-[92px] items-center justify-between gap-1 overflow-y-visible bg-white 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto !px-[40px] 2xl:px-0">
       <CustomLink className="overflow-hidden text-ellipsis py-3" href="/">
         {typeof logo === 'object' ? (
           <BcImage
@@ -81,11 +81,11 @@ const Header = ({
       </div>
     </header>
 
-    <div className="header-bottom flex items-center justify-between bg-white px-4 lg:px-10">
+    <div className="header-bottom p-[0px_4.8em_0em_4em] m-auto max-w-[100%] flex items-center justify-between bg-white px-4 lg:px-10">
       <NavigationMenuPrimitive.Root id="nav-menu-root" className="hidden lg:block">
         <NavigationMenuPrimitive.List
           id="nav-menu-list"
-          className="flex items-center gap-2 lg:gap-4"
+          className="flex items-center gap-2 lg:gap-4 !font-normal text-[16px]"
         >
           {links.map((link) =>
             link.groups && link.groups.length > 0 ? (
@@ -111,7 +111,7 @@ const Header = ({
                 {/* Content divided into two sections */}
                 <NavigationMenuPrimitive.Content
                   id={`nav-menu-content-${link.href}`}
-                  className="grid w-full grid-cols-2 gap-10 2xl:container data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0"
+                  className="grid w-full grid-cols-2 gap-10 2xl:container data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 sm:px-10 lg:px-12 2xl:mx-auto !px-[40px] 2xl:px-0"
                 >
                   {/* Column 1: Main navigation links */}
                   <div className="flex flex-col">
@@ -178,7 +178,7 @@ const Header = ({
       </NavigationMenuPrimitive.Root>
 
       {/* New Blog and Contact Us Section */}
-      <nav className="static-menu-class flex items-center gap-10" id="static-menu">
+      <nav className="static-menu-class flex items-center gap-10 font-normal text-[16px] text-[#008bb7] relative right-[1em]" id="static-menu">
         <CustomLink href="/new" className="font-semiboldd hover:text-primary">
           New
         </CustomLink>
