@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 
-import { TabType } from '../layout';
+import { TabType } from './tab-navigation';
 
 export const TabHeading = ({ heading }: { heading: TabType }) => {
   const t = useTranslations('Account.Home');
