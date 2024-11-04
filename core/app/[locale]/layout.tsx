@@ -14,6 +14,7 @@ import { revalidate } from '~/client/revalidate-target';
 
 import { Notifications } from '../notifications';
 import { Providers } from '../providers';
+import BigCommerceScripts from './_components/bigcommerce-scripts';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -95,6 +96,7 @@ export default function RootLayout({ children, params: { locale } }: Props) {
           <Providers>{children}</Providers>
         </NextIntlClientProvider>
         <VercelComponents />
+        <BigCommerceScripts />
       </body>
     </html>
   );
