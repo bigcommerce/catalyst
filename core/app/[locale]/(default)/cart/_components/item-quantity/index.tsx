@@ -207,7 +207,7 @@ export const ItemQuantity = ({ product }: { product: Product }) => {
           value={productQuantity}
           onBlur={handleBlur}  // Sync with backend on blur
           onChange={handleQuantityChange} // Use the new function
-          className="border w-12 text-center"
+          className="border w-[50%] [&::-webkit-outer-spin-button]:margin-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-inner-spin-button]:margin-0 border-y-0 text-center focus:border-y-0 focus:outline-none"
           min="1"
         />
 

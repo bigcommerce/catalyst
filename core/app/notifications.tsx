@@ -3,7 +3,7 @@ import { Toaster } from 'react-hot-toast';
 export const Notifications = () => {
   return (
     <Toaster
-      containerClassName="px-4 2xl:container sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0"
+      containerClassName="px-4 2xl:container sm:px-10 lg:px-12 2xl:mx-auto !px-[40px] 2xl:px-0"
       position="top-right"
       toastOptions={{
         className:

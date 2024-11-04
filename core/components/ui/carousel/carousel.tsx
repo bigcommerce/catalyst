@@ -115,7 +115,7 @@ const Carousel = ({ className, title, relatedProductArrow , pageSize = 4, produc
           <button
             aria-label="Previous products"
             className={cn(
-              'carousel-previous-arrow inline-flex h-12 w-12 items-center justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:text-gray-400',
+              'carousel-previous-arrow absolute !z-[1] left-[2rem] top-[9em] inline-flex h-12 w-12 items-center justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:text-gray-400',
               api?.scrollSnapList().length === 1 && 'hidden',
             )}
             disabled={!canScrollPrev}
@@ -135,7 +135,7 @@ const Carousel = ({ className, title, relatedProductArrow , pageSize = 4, produc
           <button
             aria-label="Next products"
             className={cn(
-              'carousel-next-arrow inline-flex h-12 w-12 items-center justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:text-gray-400',
+              'carousel-next-arrow absolute !z-[1] right-[2em] top-[9em] inline-flex h-12 w-12 items-center justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:text-gray-400',
               api?.scrollSnapList().length === 1 && 'hidden',
             )}
             disabled={!canScrollNext}

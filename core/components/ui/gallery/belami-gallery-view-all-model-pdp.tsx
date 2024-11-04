@@ -66,7 +66,7 @@ const GalleryModel = ({
       id="gallery-model"
     >
       <div
-        className="modal-content relative flex h-full w-full flex-col bg-white xl:flex-row"
+        className="modal-content !p-[30px] relative flex h-full w-full flex-col bg-white xl:flex-row"
         id="div-modal-content"
       >
         {/* Gallery Slider */}

@@ -73,14 +73,14 @@ export const Footer = async () => {
 
         {
           label: (
-            <div className="footer-subscribe">
+            <div className="footer-subscribe !ml-[0em]">
               
               <form action="/subscribe" method="POST">
                 <input
                   type="email"
                   name="email"
                   placeholder="Enter your email"
-                  className="subscription-input"
+                  className="subscription-input !placeholder:pl-[8px] placeholder:text-[14px] placeholder:font-normal placeholder:leading-[24px] tracking-[0.25px] text-left text-[#6b7280] h-[40px]"
                   required
                 />
               <button type="submit" className="text-[14px] font-medium leading-[32px] tracking-[1.25px] text-left text-white subscription-button">

@@ -93,7 +93,7 @@ export const MultipleChoiceField = ({ option, multipleOptionIcon }: Props) => {
             {option.displayName} :
           </Label>
           {/* Show selection text initially; only selected option displayed without "Selection:" label */}
-          <span className="selection text-[#008BB7]">
+          <span className="selection ml-[5px] text-[#008BB7]">
             {/* {selectedOption ? selectedOption : 'Selection'} */}
             {activeOptionswatch ? activeOptionswatch.label : 'Selection'}
           </span>
@@ -132,7 +132,7 @@ export const MultipleChoiceField = ({ option, multipleOptionIcon }: Props) => {
                   <button
                     type="button"
                     onClick={() => setShowAll(true)}
-                    className="show-all view-more-button w-full text-center text-[14px] font-medium leading-[24px] tracking-[0.25px] text-[#008BB7]"
+                    className="show-all !py-[0px] view-more-button !p-[0.4rem] rounded-[50px] !shadow-none w-full text-center text-[14px] font-medium leading-[24px] tracking-[0.25px] text-[#008BB7]"
                   >
                     Show All
                   </button>
@@ -145,7 +145,7 @@ export const MultipleChoiceField = ({ option, multipleOptionIcon }: Props) => {
                 <button
                   type="button"
                   onClick={() => setShowAll(false)}
-                  className="show-all view-more-button view-all w-full text-center text-[14px] font-medium leading-[24px] tracking-[0.25px] text-[#008BB7] xl:mt-3"
+                  className="show-all !py-[0px] view-more-button !p-[0.4rem] rounded-[50px] !shadow-none view-all w-full text-center text-[14px] font-medium leading-[24px] tracking-[0.25px] text-[#008BB7] xl:mt-3"
                 >
                   View Less
                 </button>
@@ -164,7 +164,7 @@ export const MultipleChoiceField = ({ option, multipleOptionIcon }: Props) => {
         <div key={option.entityId} className="div-product-rectangleboxes mt-3 xl:mt-0">
           <div className="mb-3 block text-center lg:flex lg:items-center xl:flex xl:items-center">
             <img
-              className="variant-img inline-block"
+              className="variant-img !w-[20px] !h-[20px] rounded-[50px] inline-block"
               alt="headline icon"
               src={multipleOptionIcon}
               loading="lazy"
@@ -176,7 +176,7 @@ export const MultipleChoiceField = ({ option, multipleOptionIcon }: Props) => {
               {option.displayName} :
             </Label>
             {/* Show selected option label if available, otherwise show "Selection" */}
-            <span className="selection text-[#008BB7]">
+            <span className="selection ml-[5px] text-[#008BB7]">
               {activeOptionRectangleBoxes ? activeOptionRectangleBoxes.label : 'Selection'}
             </span>
           </div>
@@ -260,7 +260,7 @@ export const MultipleChoiceField = ({ option, multipleOptionIcon }: Props) => {
         >
           <div className="mb-3 block text-center lg:flex lg:items-center xl:flex xl:items-center">
             <img
-              className="variant-img inline-block"
+              className="variant-img !w-[20px] !h-[20px] rounded-[50px] inline-block"
               alt="headline icon"
               src={multipleOptionIcon}
               loading="lazy"
@@ -272,7 +272,7 @@ export const MultipleChoiceField = ({ option, multipleOptionIcon }: Props) => {
               {option.displayName} :
             </Label>
             {/* Show selection text initially; only selected option displayed without "Selection:" label */}
-            <span className="selection text-[#008BB7]">
+            <span className="selection ml-[5px] text-[#008BB7]">
               {activeOptionDropdownList ? activeOptionDropdownList.label : 'Selection'}
             </span>
           </div>
@@ -311,7 +311,7 @@ export const MultipleChoiceField = ({ option, multipleOptionIcon }: Props) => {
         <div key={Option.entityId} className="div-product-productpicklist">
           <div className="mb-3 flex items-center">
             <img
-              className="variant-img" // This ensures the width is set, and height auto-scales to maintain aspect ratio
+              className="variant-img !w-[20px] !h-[20px] rounded-[50px]" // This ensures the width is set, and height auto-scales to maintain aspect ratio
               alt="headline icon"
               src={multipleOptionIcon}
               loading="lazy"

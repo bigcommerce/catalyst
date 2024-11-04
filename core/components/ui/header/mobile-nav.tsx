@@ -135,7 +135,7 @@ export const MobileNav = ({ links, logo }: Props) => {
               )}
 
               {/* New Blog and Contact Us Section */}
-              <nav className="static-menu-mobile flex items-center gap-10" id="static-menu">
+              <nav className="static-menu-mobile flex items-center gap-10 font-normal text-[16px] text-[#008bb7] relative right-[1em]" id="static-menu">
                 <CustomLink href="/new" className="font-semiboldd hover:text-primary">
                   New
                 </CustomLink>

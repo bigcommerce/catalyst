@@ -166,8 +166,8 @@ export const ProductFlyout = ({
               </div>
             </div>
             <Dialog.Description></Dialog.Description>
-            <Dialog.Content className="popup-box1 flex flex-row gap-[30px]">
-              <div className="popup-box1-div1 relative flex h-[160px] w-[140px] border border-[#cccbcb]">
+            <Dialog.Content className="popup-box1 flex flex-col items-center ssm:items-start ssm:flex-row gap-[30px]">
+              <div className="popup-box1-div1 relative flex h-[200px] w-[200px] ssm:h-[160px] ssm:w-[140px] border border-[#cccbcb]">
                 <BcImage
                   alt={productData?.name}
                   width={140}
@@ -177,11 +177,11 @@ export const ProductFlyout = ({
                   src={productData?.imageUrl}
                 />
               </div>
-              <div className="popup-box1-div2 flex max-w-[360px] flex-shrink-[50] flex-col gap-[1px]">
+              <div className="popup-box1-div2 flex max-w-[360px] flex-shrink-[50] flex-col text-center ssm:text-start gap-[3px] ssm:gap-[1px]">
                 <p className="text-[14px] font-normal tracking-[0.25px] text-[#353535]">
                   {productData?.name}
                 </p>
-                <p className="popup-box1-div2-sku text-[12px] leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
+                <p className="popup-box1-div2-sku text-[12px] leading-[1.5rem] ssm:tracking-[0.015625rem] tracking-[0.4px] text-[#5C5C5C]">
                   SKU: {product?.sku}
                 </p>
                 {productData?.selectedOptions?.map((selectedOption: any, index: number) => {
@@ -190,15 +190,15 @@ export const ProductFlyout = ({
                     pipeLineData = ',';
                   }
                   return (
-                    <div key={selectedOption.entityId} className="flex items-center">
-                      <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
+                    <div key={selectedOption.entityId} className="ssm:flex ssm:items-center text-center ssm:text-start">
+                      <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] ssm:tracking-[0.015625rem] tracking-[0.4px] text-[#5C5C5C]">
                         {selectedOption.name}:
                       </span>
-                      <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
+                      <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] ssm:tracking-[0.015625rem] tracking-[0.4px] text-[#5C5C5C]">
                         {selectedOption.value}
                       </span>
                       {pipeLineData && (
-                        <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
+                        <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] ssm:tracking-[0.015625rem] tracking-[0.4px] text-[#5C5C5C]">
                           {' '}
                           {pipeLineData}
                         </span>
@@ -218,7 +218,7 @@ export const ProductFlyout = ({
                     </div>
                   ) : null}
                   {productData?.extendedSalePrice?.value ? (
-                    <div className="text-right text-[14px] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535]">
+                    <div className="ssm:text-right text-center text-[14px] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535]">
                       {format.number(productData?.extendedSalePrice?.value, {
                         style: 'currency',
                         currency: productData?.extendedSalePrice?.currencyCode,
@@ -234,7 +234,7 @@ export const ProductFlyout = ({
                     <input
                       name="quantity"
                       type="number"
-                      className="w-[40%] border text-center"
+                      className="border [&::-webkit-outer-spin-button]:margin-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-inner-spin-button]:margin-0 text-center w-[35%] border-y-0 focus:border-y-0 focus:outline-none"
                       min="1"
                       defaultValue={productQty}
                     />

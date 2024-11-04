@@ -47,7 +47,7 @@ export default async function StoreSelector({ params: { locale: selectedLocale }
 
   return (
     <>
-      <header className="flex h-[92px] items-center bg-white px-4 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0">
+      <header className="flex h-[92px] !max-w-[100%] p-[0px_4em] items-center bg-white px-4 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto !px-[40px] 2xl:px-0">
         {storeSettings && (
           <Link className="p-0" href="/">
             <StoreLogo data={storeSettings} />
