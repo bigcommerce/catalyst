@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.18.1
+
+### Patch Changes
+
+- [#1525](https://github.com/bigcommerce/catalyst/pull/1525) [`e751319`](https://github.com/bigcommerce/catalyst/commit/e751319728359a2e72d48072a4b68055ed4dbb1e) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - fix warning for using the same keys on items
+
+- [#1521](https://github.com/bigcommerce/catalyst/pull/1521) [`fd83a78`](https://github.com/bigcommerce/catalyst/commit/fd83a78f94b170dcf6e8aed14c61e3791b64c5de) Thanks [@bc-yevhenii-buliuk](https://github.com/bc-yevhenii-buliuk)! - fix styles for active account tab
+
+- [#1520](https://github.com/bigcommerce/catalyst/pull/1520) [`c898792`](https://github.com/bigcommerce/catalyst/commit/c898792a0ed3ee9849cdfeda7018245e491e8016) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - improve error message on reset password page
+
+- [#1524](https://github.com/bigcommerce/catalyst/pull/1524) [`f08883c`](https://github.com/bigcommerce/catalyst/commit/f08883c8fa559f0b6015321e2396606d77fa0ad6) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - improve behaviour for change password page for logged in user
+
+- [#1529](https://github.com/bigcommerce/catalyst/pull/1529) [`22426b2`](https://github.com/bigcommerce/catalyst/commit/22426b256e29b6c3dd145fd6df9ed57c5a99bd75) Thanks [@bc-yevhenii-buliuk](https://github.com/bc-yevhenii-buliuk)! - fix validation message for email on account settings page
+
+- [#1516](https://github.com/bigcommerce/catalyst/pull/1516) [`41270c2`](https://github.com/bigcommerce/catalyst/commit/41270c29a6e21217622c29b18e91f9a24d58ea8b) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
+- [#1534](https://github.com/bigcommerce/catalyst/pull/1534) [`de48618`](https://github.com/bigcommerce/catalyst/commit/de486186acfec2604d749b9f6d2b4656a9e9280a) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
 ## 0.18.0
 
 ### Minor Changes
