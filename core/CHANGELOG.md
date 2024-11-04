@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.19.0
+
+### Minor Changes
+
+- [#1262](https://github.com/bigcommerce/catalyst/pull/1262) [`0c2023b`](https://github.com/bigcommerce/catalyst/commit/0c2023bae650039cd79ba51b1161b5c8c16f0b8d) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Removes all usages of the customer impersonation token. Also updates the docs to correspond with the Storefront API Token.
+
+- [#1262](https://github.com/bigcommerce/catalyst/pull/1262) [`0c2023b`](https://github.com/bigcommerce/catalyst/commit/0c2023bae650039cd79ba51b1161b5c8c16f0b8d) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Allows the ability to consume a [storefront token](https://developer.bigcommerce.com/docs/rest-authentication/tokens#storefront-tokens). This new token will allow Catalyst to create `customerAccessToken`'s whenever a user logs into their account. This change doesn't include consuming the either token, only adding the ability to pass it in.
+
+### Patch Changes
+
+- Updated dependencies [[`0c2023b`](https://github.com/bigcommerce/catalyst/commit/0c2023bae650039cd79ba51b1161b5c8c16f0b8d), [`0c2023b`](https://github.com/bigcommerce/catalyst/commit/0c2023bae650039cd79ba51b1161b5c8c16f0b8d)]:
+  - @bigcommerce/catalyst-client@0.12.0
+
 ## 0.18.1
 
 ### Patch Changes

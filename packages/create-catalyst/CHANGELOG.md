@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.16.0
+
+### Minor Changes
+
+- [#1262](https://github.com/bigcommerce/catalyst/pull/1262) [`0c2023b`](https://github.com/bigcommerce/catalyst/commit/0c2023bae650039cd79ba51b1161b5c8c16f0b8d) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Generates a storefront token when using the CLI to init or create a Catalyst storefront.
+
+- [#1262](https://github.com/bigcommerce/catalyst/pull/1262) [`0c2023b`](https://github.com/bigcommerce/catalyst/commit/0c2023bae650039cd79ba51b1161b5c8c16f0b8d) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Remove generating a customer impersonation token as we are using the API Token + Customer Access Token approach"
+
 ## 0.15.0
 
 ### Minor Changes
