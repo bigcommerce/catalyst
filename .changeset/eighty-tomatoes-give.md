@@ -2,4 +2,4 @@
 "@bigcommerce/catalyst-core": patch
 ---
 
-update styles for reset password validation
+improve error message on reset password page

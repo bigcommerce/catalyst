@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.18.0
+
+### Minor Changes
+
+- [#1491](https://github.com/bigcommerce/catalyst/pull/1491) [`313a591`](https://github.com/bigcommerce/catalyst/commit/313a5913181a144b53cb12208132f4a9924e2256) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Bump `next-intl` which includes [some minor changes and updated APIs](<(https://next-intl-docs.vercel.app/blog/next-intl-3-22)>):
+
+  - Use new `createNavigation` api.
+  - Pass `locale` to redirects.
+  - `setRequestLocale` is no longer unstable.
+
+### Patch Changes
+
+- [#1505](https://github.com/bigcommerce/catalyst/pull/1505) [`691ec2b`](https://github.com/bigcommerce/catalyst/commit/691ec2bcbb8839446463e292856080cc9b16c584) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - update login page & error message styles
+
+- [#1506](https://github.com/bigcommerce/catalyst/pull/1506) [`ac83d3e`](https://github.com/bigcommerce/catalyst/commit/ac83d3eb98e19307a3a82fa94c222cff3c0806f0) Thanks [@bc-yevhenii-buliuk](https://github.com/bc-yevhenii-buliuk)! - remove unnecessary fields from account settings form and update confirmation message
+
+- [#1499](https://github.com/bigcommerce/catalyst/pull/1499) [`b5aea9b`](https://github.com/bigcommerce/catalyst/commit/b5aea9b36159d11a77d090fee62cb1736bc794be) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Bumps next-intl to fix issue with hashes and query params in urls.
+
+- [#1511](https://github.com/bigcommerce/catalyst/pull/1511) [`370d0b1`](https://github.com/bigcommerce/catalyst/commit/370d0b18f0f47100d7e520fcf9f209f6e41f34e9) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - update styles for reset password validation
+
+- [#1454](https://github.com/bigcommerce/catalyst/pull/1454) [`53599e6`](https://github.com/bigcommerce/catalyst/commit/53599e6e02988ab63d158c5c9f587669a5581402) Thanks [@bc-yevhenii-buliuk](https://github.com/bc-yevhenii-buliuk)! - remove unnecessary fields from create account form
+
+- [#1487](https://github.com/bigcommerce/catalyst/pull/1487) [`a22233f`](https://github.com/bigcommerce/catalyst/commit/a22233f8fc94c5ad602fa734cadbb892af34fe6b) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
 ## 0.17.1
 
 ### Patch Changes

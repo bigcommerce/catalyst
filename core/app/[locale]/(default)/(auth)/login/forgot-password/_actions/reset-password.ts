@@ -10,6 +10,22 @@ const ResetPasswordSchema = z.object({
   email: z.string().email(),
 });
 
+const processZodErrors = (err: z.ZodError) => {
+  const { fieldErrors, formErrors } = err.flatten((issue: z.ZodIssue) => ({
+    message: issue.message,
+  }));
+
+  if (formErrors.length > 0) {
+    return formErrors.join('\n');
+  }
+
+  return Object.entries(fieldErrors)
+    .map(([, errorList]) => {
+      return `${errorList?.map(({ message }) => message).join('\n')}`;
+    })
+    .join('\n');
+};
+
 const ResetPasswordMutation = graphql(`
   mutation ResetPassword($input: RequestResetPasswordInput!, $reCaptcha: ReCaptchaV2Input) {
     customer {
@@ -69,7 +85,14 @@ export const resetPassword = async ({
       error: result.errors.map((error) => error.message).join('\n'),
     };
   } catch (error: unknown) {
-    if (error instanceof Error || error instanceof z.ZodError) {
+    if (error instanceof z.ZodError) {
+      return {
+        status: 'error',
+        error: processZodErrors(error),
+      };
+    }
+
+    if (error instanceof Error) {
       return { status: 'error', error: error.message };
     }
 
