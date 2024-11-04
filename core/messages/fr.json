@@ -204,7 +204,7 @@
             "changePassword": "Modifier le mot de passe",
             "submit": "MODIFIER LES PARAMÈTRES",
             "submitting": "MODIFIER LES PARAMÈTRES...",
-            "successMessage": "Bonjour {firstName} {lastName}, les données de votre compte ont bien été mises à jour",
+            "successMessage": "Les paramètres de votre compte ont été mis à jour",
             "validationMessages": {
                 "email": "Veuillez saisir une adresse e-mail valide, telle que nom@domaine.com",
                 "empty": "Ce champ ne peut pas être vide",

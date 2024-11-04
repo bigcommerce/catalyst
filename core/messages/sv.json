@@ -204,7 +204,7 @@
             "changePassword": "Ändra lösenor",
             "submit": "Uppdatera inställningar",
             "submitting": "Uppdatera inställningar ...",
-            "successMessage": "Bästa {firstName} {lastName}, du har uppdaterat dina kontouppgifter",
+            "successMessage": "Dina kontoinställningar har uppdaterats",
             "validationMessages": {
                 "email": "Ange en giltig e-postadress, t.ex. namn@domän.com",
                 "empty": "Det här fältet får inte vara tomt",

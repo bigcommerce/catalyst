@@ -204,7 +204,7 @@
             "changePassword": "Passwort ändern",
             "submit": "EINSTELLUNGEN AKTUALISIEREN",
             "submitting": "Einstellungen aktualisieren ...",
-            "successMessage": "Sehr geehrte/r {firstName} {lastName}, Sie haben Ihre Kontodaten erfolgreich aktualisiert",
+            "successMessage": "Ihre Kontoeinstellungen wurden geändert",
             "validationMessages": {
                 "email": "Geben Sie eine gültige E-Mail-Adresse wie name@domain.com ein.",
                 "empty": "Dieses Feld darf nicht leer sein",

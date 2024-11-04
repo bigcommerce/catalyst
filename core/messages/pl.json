@@ -153,7 +153,7 @@
             "title": "Adresy",
             "addNewAddress": "Dodaj nowy adres",
             "editButton": "Edytuj",
-            "emptyAddresses": "No addresses added",
+            "emptyAddresses": "Brak dodanych adresów",
             "deleteButton": "Usuń",
             "confirmDeleteAddress": "Usuń adres",
             "deleteModalTitle": "Czy na pewno chcesz usunąć ten adres?",
@@ -204,7 +204,7 @@
             "changePassword": "Zmień hasło",
             "submit": "Zaktualizuj ustawienia",
             "submitting": "Zaktualizuj ustawienia...",
-            "successMessage": "Witaj, {firstName} {lastName}. Dane Twojego konta zostały pomyślnie zaktualizowane.",
+            "successMessage": "Your account settings have been updated",
             "validationMessages": {
                 "email": "Podaj prawidłowy adres e-mail, np. nazwa@domena.com",
                 "empty": "To pole nie może być puste",

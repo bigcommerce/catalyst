@@ -153,7 +153,7 @@
             "title": "Adresser",
             "addNewAddress": "Legg til ny adresse",
             "editButton": "Rediger",
-            "emptyAddresses": "No addresses added",
+            "emptyAddresses": "Ingen adresser lagt til",
             "deleteButton": "Slett",
             "confirmDeleteAddress": "Slett adresse",
             "deleteModalTitle": "Er du sikker på at du vil slette denne adressen?",
@@ -204,7 +204,7 @@
             "changePassword": "Endre passord",
             "submit": "Oppdater innstillingene",
             "submitting": "Oppdater innstillingene …",
-            "successMessage": "{firstName} {lastName}, du har oppdatert kontodataene dine",
+            "successMessage": "Kontoinnstillingene dine er oppdatert",
             "validationMessages": {
                 "email": "Angi en gyldig e-postadresse, for eksempel navn@domene.com",
                 "empty": "Dette feltet kan ikke være tomt",

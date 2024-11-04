@@ -204,7 +204,7 @@
             "changePassword": "パスワード変更",
             "submit": "Update settings",
             "submitting": "Update settings...",
-            "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+            "successMessage": "Your account settings have been updated",
             "validationMessages": {
                 "email": "Enter a valid email such as name@domain.com",
                 "empty": "This field can not be empty",
