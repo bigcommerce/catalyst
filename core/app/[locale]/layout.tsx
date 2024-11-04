@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import { DM_Serif_Text, Inter } from 'next/font/google';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { PropsWithChildren } from 'react';
 
 import '../globals.css';
@@ -103,7 +104,9 @@ export default function RootLayout({ children, params: { locale } }: Props) {
       <body className="font-body flex h-screen min-w-[375px] flex-col">
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <Providers>{children}</Providers>
+          <NuqsAdapter>
+            <Providers>{children}</Providers>
+          </NuqsAdapter>
         </NextIntlClientProvider>
         <VercelComponents />
       </body>
