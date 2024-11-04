@@ -135,7 +135,7 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo}: IconP
           </FieldLabel>
           <FieldControl asChild className={`${cookieIsSet ? 'hidden' : ''} mt-0 login-form-div`}>
             <Input
-            className='login-input'
+            className='login-input !mt-[0px] w-full h-[44px]'
               autoComplete="email"
               error={!isEmailValid}
               id="email"
@@ -160,7 +160,7 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo}: IconP
           <FieldLabel className='login-label flex items-center tracking-[0.15px]' htmlFor="password">{t('Form.passwordLabel')}</FieldLabel>
           <FieldControl asChild className='mt-0 login-form-div'>
             <Input
-              className='login-input'
+              className='login-input !mt-[0px] w-full h-[44px]'
               error={!isPasswordValid}
               id="password"
               onChange={handleInputValidation}
@@ -212,9 +212,9 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo}: IconP
           
 
           {/* Social buttons */}
-          <div className="login-in-buttons flex flex-row gap-[20px]">
+          <div className="login-in-buttons w-full h-[54px] justify-between flex flex-row gap-[20px]">
             {/* Log In with Facebook Button */}
-            <button className="flex h-[54px] w-[114px] gap-[10px] rounded-[3px] bg-[#FFFFFF] p-[15px]">
+            <button className="flex h-[54px] items-center justify-center w-[144px] gap-[10px] rounded-[3px] bg-[#FFFFFF] p-[15px] border border-[#d7d7d7]">
               <BcImage
                 alt="Facebook logo"
                 className="Login-logo h-[24px] w-[24px]"
@@ -227,7 +227,7 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo}: IconP
             </button>
 
             {/* Log In with Google Button */}
-            <button className="flex h-[54px] w-[114px] gap-[10px] rounded-[3px] bg-[#FFFFFF]">
+            <button className="flex h-[54px] items-center justify-center w-[144px] gap-[10px] rounded-[3px] bg-[#FFFFFF] p-[15px] border border-[#d7d7d7]">
               <BcImage
                 alt="Google logo"
                 className="Login-logo h-[24px] w-[24px]"
@@ -240,7 +240,7 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo}: IconP
             </button>
 
             {/* Log In with Apple Button */}
-            <button className="flex h-[54px] w-[114px]  gap-[10px] rounded-[3px] bg-[#FFFFFF]">
+            <button className="flex h-[54px] items-center justify-center w-[144px] gap-[10px] rounded-[3px] bg-[#FFFFFF] p-[15px] border border-[#d7d7d7]">
               <BcImage
                 alt="Apple logo"
                 className="Login-logo w-[24px]"
