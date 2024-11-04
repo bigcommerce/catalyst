@@ -40,7 +40,7 @@ export const CartIcon = ({ count: serverCount }: CartIconProps) => {
   if (!count) {
     return (
       <img
-        className='header-cart-icon'
+        className='header-cart-icon mr-0'
         src={cartIconBase64}
         alt="Cart"
         style={{ width: '24px', height: '24px' }}
@@ -53,7 +53,7 @@ export const CartIcon = ({ count: serverCount }: CartIconProps) => {
     <>
       <span className="sr-only">Cart Items</span>
       <img
-        className='header-cart-icon'
+        className='header-cart-icon mr-0'
         src={cartIconBase64}
         alt="Cart"
         style={{ width: '24px', height: '24px' }}
