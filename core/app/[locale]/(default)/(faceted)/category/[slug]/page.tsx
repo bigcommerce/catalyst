@@ -10,6 +10,7 @@ import { LocaleType } from '~/i18n/routing';
 
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
+import { CategoryViewed } from './_components/category-viewed';
 import { getCategoryPageData } from './page-data';
 
 interface Props {
@@ -89,47 +90,54 @@ export default async function Category({ params: { locale, slug }, searchParams 
   const filters = await facetsTransformer(facets);
 
   return (
-    <ProductsListSection
-      breadcrumbs={breadcrumbs}
-      compareLabel={t('compare')}
-      compareParamName="compare"
-      filterLabel={t('FacetedSearch.filterBy')}
-      filters={filters}
-      paginationInfo={{
-        startCursorParamName: 'before',
-        endCursorParamName: 'after',
-        endCursor: endCursor ?? undefined,
-        startCursor: startCursor ?? undefined,
-      }}
-      products={products}
-      sortLabel={t('SortBy.ariaLabel')}
-      sortOptions={[
-        { value: 'featured', label: t('SortBy.featuredItems') },
-        { value: 'newest', label: t('SortBy.newestItems') },
-        {
-          value: 'best_selling',
-          label: t('SortBy.bestSellingItems'),
-        },
-        { value: 'a_to_z', label: t('SortBy.aToZ') },
-        { value: 'z_to_a', label: t('SortBy.zToA') },
-        {
-          value: 'best_reviewed',
-          label: t('SortBy.byReview'),
-        },
-        {
-          value: 'lowest_price',
-          label: t('SortBy.priceAscending'),
-        },
-        {
-          value: 'highest_price',
-          label: t('SortBy.priceDescending'),
-        },
-        { value: 'relevance', label: t('SortBy.relevance') },
-      ]}
-      sortParamName="sort"
-      title={category.name}
-      totalCount={totalProducts}
-    />
+    <>
+      <ProductsListSection
+        breadcrumbs={breadcrumbs}
+        compareLabel={t('compare')}
+        compareParamName="compare"
+        filterLabel={t('FacetedSearch.filterBy')}
+        filters={filters}
+        paginationInfo={{
+          startCursorParamName: 'before',
+          endCursorParamName: 'after',
+          endCursor: endCursor ?? undefined,
+          startCursor: startCursor ?? undefined,
+        }}
+        products={products}
+        sortLabel={t('SortBy.ariaLabel')}
+        sortOptions={[
+          { value: 'featured', label: t('SortBy.featuredItems') },
+          { value: 'newest', label: t('SortBy.newestItems') },
+          {
+            value: 'best_selling',
+            label: t('SortBy.bestSellingItems'),
+          },
+          { value: 'a_to_z', label: t('SortBy.aToZ') },
+          { value: 'z_to_a', label: t('SortBy.zToA') },
+          {
+            value: 'best_reviewed',
+            label: t('SortBy.byReview'),
+          },
+          {
+            value: 'lowest_price',
+            label: t('SortBy.priceAscending'),
+          },
+          {
+            value: 'highest_price',
+            label: t('SortBy.priceDescending'),
+          },
+          { value: 'relevance', label: t('SortBy.relevance') },
+        ]}
+        sortParamName="sort"
+        title={category.name}
+        totalCount={totalProducts}
+      />
+      <CategoryViewed
+        category={category}
+        categoryId={categoryId}
+        products={search.products.items}
+      />
+    </>
   );
 }
 

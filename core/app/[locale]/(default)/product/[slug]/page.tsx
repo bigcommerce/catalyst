@@ -4,14 +4,16 @@ import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
-import { getProduct } from './page-data';
 import { IconBlock } from '@/vibes/soul/sections/icon-block';
 import { ProductDescription } from '@/vibes/soul/sections/product-description';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { LocaleType } from '~/i18n/routing';
+
+import { ProductViewed } from './_components/product-viewed';
 import { RelatedProducts } from './_components/related-products';
 import { Reviews } from './_components/reviews';
+import { getProduct } from './page-data';
 
 interface Props {
   params: { slug: string; locale: LocaleType };
@@ -168,6 +170,8 @@ export default async function Product({ params: { locale, slug }, searchParams }
       <Suspense fallback={t('loading')}>
         <Reviews productId={product.entityId} />
       </Suspense>
+
+      <ProductViewed product={product} />
     </>
   );
 }

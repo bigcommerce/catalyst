@@ -2,12 +2,33 @@ import { cookies } from 'next/headers';
 import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { Cart as CartComponent } from '@/vibes/soul/sections/cart';
+// import { bodl } from '~/lib/bodl';
 
 import { redirectToCheckout } from './_actions/redirect-to-checkout';
 import { removeItem } from './_actions/remove-item';
 import { CartSelectedOptionsInput, updateQuantity } from './_actions/update-quantity';
 import { CartViewed } from './_components/cart-viewed';
 import { getCart } from './page-data';
+
+// type PhysicalItem = FragmentOf<typeof PhysicalItemFragment>;
+// type DigitalItem = FragmentOf<typeof DigitalItemFragment>;
+// type LineItem = PhysicalItem | DigitalItem;
+
+// const lineItemTransform = (item: LineItem) => {
+//   return {
+//     product_id: item.productEntityId.toString(),
+//     product_name: item.name,
+//     brand_name: item.brand ?? undefined,
+//     sku: item.sku ?? undefined,
+//     sale_price: item.extendedSalePrice.value,
+//     purchase_price: item.listPrice.value,
+//     base_price: item.originalPrice.value,
+//     retail_price: item.listPrice.value,
+//     currency: item.listPrice.currencyCode,
+//     variant_id: item.variantEntityId ? [item.variantEntityId] : undefined,
+//     quantity: item.quantity,
+//   };
+// };
 
 export async function generateMetadata() {
   const t = await getTranslations('Cart');
@@ -105,6 +126,13 @@ export default async function Cart() {
     if (result.status === 'error') {
       return { error: result.error ?? '' };
     }
+
+    // TODO: add bodl
+    // bodl.cart.productRemoved({
+    //   currency,
+    //   product_value: product.listPrice.value * product.quantity,
+    //   line_items: [lineItemTransform(product)],
+    // });
 
     return { error: null };
   };
