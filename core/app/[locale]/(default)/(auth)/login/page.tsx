@@ -91,7 +91,7 @@ export default function Login({ params: { locale } }: Props) {
         </div>
       </div>
       <div className="mt-[20px] flex flex-col gap-[20px] px-4 2xl:container sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0">
-         <ComponentsBreadcrumbs className="login-div mt-[6rem] mx-auto px-[1px]" breadcrumbs={breadcrumbs} />
+         <ComponentsBreadcrumbs className="login-div login-breadcrumb mt-[6rem] mx-auto px-[1px]" breadcrumbs={breadcrumbs} />
         <div className="login-div login-div-one px-[1px] mx-auto flex justify-between gap-24">
           <h2 className="text-[34px] font-normal text-[#353535]">Rewards Program</h2>
           <div className="flex flex-row flex-wrap content-center items-center justify-center gap-[10px] px-0 pb-0 pt-[10px]">
@@ -109,10 +109,10 @@ export default function Login({ params: { locale } }: Props) {
         </div>
         <div className="login-div mx-auto mb-6 flex justify-center gap-24">
           {/* <h2 className="text-h2 mb-8 text-4xl font-black lg:text-5xl">{t('heading')}</h2> */}
-          <div className="login-first-child mx-[1px] login-logo flex flex-grow flex-col">
+          <div className="login-first-child w-[calc(90vw)]  md:w-[calc(35.28vw)] mx-[1px] login-logo flex flex-grow flex-col">
             <LoginForm {...imageIconList} />
           </div>
-          <div className="login-sec-child mx-[1px] flex flex-grow flex-col items-center gap-[20px] rounded-[5px] p-0">
+          <div className="login-sec-child w-[calc(90vw)] md:w-[calc(35.28vw)] mx-[1px] flex flex-grow flex-col items-center gap-[20px] rounded-[5px] p-0">
             <div className="flex w-full flex-col gap-[20px] rounded-[5px] bg-[#008BB7] p-[40px] text-white">
               <h3 className="flex items-center justify-center text-center text-[34px] font-bold tracking-[0.25px]">
                 {t('CreateAccount.heading')}

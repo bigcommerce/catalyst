@@ -154,14 +154,11 @@ export default function OrderConfirmation({ params, searchParams }: ProductPageP
               </p>
             </div>
           </div>
-          <div>
+          <div className='flex items-start gap-[7px]'>
             <p className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#353535]">
               Payment
             </p>
-            <p className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535] flex items-center gap-[7px]">
-              <img src={creditCardImg} width={20} height={16} alt="" className='w-[20px] h-[16px]' />
-              <span>*** *** *** 1234</span>
-            </p>
+            <img src={tikGreenImg} className='relative !top-[5px]' alt="Tik img" />
           </div>
         </div>
         <div className="flex w-full flex-col">

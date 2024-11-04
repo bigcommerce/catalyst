@@ -128,14 +128,14 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
       )}
 
 
-      <Form action={onSubmit} className="reset-pass-form mt-[30px] flex flex-col gap-[22px] md:py-4 lg:p-0" ref={form}>
+      <Form action={onSubmit} className="reset-pass-form max-w-[none] md:max-w-[514px] mx-0 xsm:mx-auto mt-0 md:mt-[30px] flex flex-col gap-[22px] pt-0 md:py-4 lg:p-0" ref={form}>
         <p className="text-[16px] font-normal tracking-[0.5px] text-[#353535] leading-[32px]">{t('description')}</p>
         <div className='flex flex-col gap-[22px]'>
         <Field className="flex flex-col gap-[9px] items-start" name="email">
           <FieldLabel className='font-normal text-[16px] flex items-center tracking-[0.15px] text-[#353535]' htmlFor="email">{t('emailLabel')}</FieldLabel>
           <FieldControl asChild>
             <Input
-              className='w-full '
+              className='w-full'
               autoComplete="email"
               error={!isEmailValid}
               id="email"
