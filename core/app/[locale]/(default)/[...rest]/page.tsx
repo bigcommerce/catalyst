@@ -1,5 +1,6 @@
 import { Page as MakeswiftPage } from '@makeswift/runtime/next';
 import { getSiteVersion } from '@makeswift/runtime/next/server';
+import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 
 import { defaultLocale, locales } from '~/i18n/routing';
@@ -37,7 +38,7 @@ export default async function CatchAllPage({ params }: { params: CatchAllParams 
   if (snapshot == null) return notFound();
 
   return (
-    <MakeswiftProvider>
+    <MakeswiftProvider previewMode={await draftMode().isEnabled}>
       <MakeswiftPage snapshot={snapshot} />
     </MakeswiftProvider>
   );

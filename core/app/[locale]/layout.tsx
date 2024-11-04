@@ -98,7 +98,7 @@ export default function RootLayout({ children, params: { locale } }: Props) {
   return (
     <html className={[inter.variable, dm_serif_text.variable].join(' ')} lang={locale}>
       <head>
-        <DraftModeScript />
+        <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
       </head>
       <body className="font-body flex h-screen min-w-[375px] flex-col">
         <Notifications />
