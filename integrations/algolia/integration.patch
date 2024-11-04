@@ -26,7 +26,7 @@ index 344c40e3..4e218344 100644
 +import { createFetchRequester } from '@algolia/requester-fetch';
 +import { ResultOf } from 'gql.tada';
  
- import { getSessionCustomerId } from '~/auth';
+ import { getSessionCustomerAccessToken } from '~/auth';
 -import { ProductCardFragment } from '~/components/product-card';
 +import { PricingFragment, ProductCardFragment } from '~/components/product-card';
  
@@ -108,7 +108,7 @@ index 344c40e3..4e218344 100644
 +}
  
 -export const getQuickSearchResults = cache(async ({ searchTerm }: QuickSearch) => {
--  const customerId = await getSessionCustomerId();
+-  const customerAccessToken = await getSessionCustomerAccessToken();
 +interface Product {
 +  name: string;
 +  brand_id: number;
@@ -193,8 +193,8 @@ index 344c40e3..4e218344 100644
 -  const response = await client.fetch({
 -    document: GET_QUICK_SEARCH_RESULTS_QUERY,
 -    variables: { filters: { searchTerm } },
--    customerId,
--    fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
+-    customerAccessToken,
+-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
 -  });
 +interface HighlightResultItem {
 +  value: string;
@@ -244,7 +244,7 @@ index 344c40e3..4e218344 100644
 +
 +export const getQuickSearchResults = cache(async ({ searchTerm }: QuickSearch) => {
 +  const selectedCurrency = 'USD'; // TODO: use selected storefront currency
-+  const customerId = await getSessionCustomerId(); // Customer specific product viz / pricing not implmented in Algolia's app integration yet
++  const customerAccessToken = await getSessionCustomerAccessToken(); // Customer specific product viz / pricing not implmented in Algolia's app integration yet
 +
 +  try {
 +    const { results } = await searchClient.search<ProductSearchResponse>([

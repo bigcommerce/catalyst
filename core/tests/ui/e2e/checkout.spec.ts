@@ -98,9 +98,8 @@ test.describe('desktop', () => {
     await page.getByRole('button', { name: 'Proceed to checkout' }).click();
 
     await waitForShippingForm(page, isMobile);
-    await enterShopperDetails(page);
 
-    await page.getByRole('button', { name: 'Continue' }).click();
+    await page.getByText(customer.email).isVisible();
     await page.getByRole('heading', { name: 'Payment', exact: true }).waitFor();
 
     await enterCreditCardDetails(page);

@@ -3,7 +3,7 @@
 import { revalidateTag } from 'next/cache';
 import { z } from 'zod';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
@@ -47,7 +47,7 @@ export const submitShippingInfo = async (
     lineItems: Array<{ quantity: number; lineItemEntityId: string }>;
   },
 ) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   try {
     const parsedData = ShippingInfoSchema.parse({
@@ -81,7 +81,7 @@ export const submitShippingInfo = async (
             },
           },
         },
-        customerId,
+        customerAccessToken,
         fetchOptions: { cache: 'no-store' },
       });
 
@@ -108,7 +108,7 @@ export const submitShippingInfo = async (
             },
           },
         },
-        customerId,
+        customerAccessToken,
         fetchOptions: { cache: 'no-store' },
       });
 

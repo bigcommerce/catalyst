@@ -3,7 +3,7 @@
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
@@ -26,7 +26,7 @@ type DeleteCartLineItemInput = Variables['input'];
 export async function removeItem({
   lineItemEntityId,
 }: Omit<DeleteCartLineItemInput, 'cartEntityId'>) {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   try {
     const cartId = cookies().get('cartId')?.value;
@@ -47,7 +47,7 @@ export async function removeItem({
           lineItemEntityId,
         },
       },
-      customerId,
+      customerAccessToken,
       fetchOptions: { cache: 'no-store' },
     });
 
