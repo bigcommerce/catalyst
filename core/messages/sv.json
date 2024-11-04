@@ -153,6 +153,7 @@
             "title": "Adresser",
             "addNewAddress": "Lägg till ny adress",
             "editButton": "Redigera",
+            "emptyAddresses": "Inga adresser har lagts till",
             "deleteButton": "Radera",
             "confirmDeleteAddress": "Radera adress",
             "deleteModalTitle": "Är du säker på att du vill ta bort den här adressen?",

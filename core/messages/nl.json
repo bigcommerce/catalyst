@@ -153,6 +153,7 @@
             "title": "Adressen",
             "addNewAddress": "Nieuw adres toevoegen",
             "editButton": "Bewerken",
+            "emptyAddresses": "Geen adressen toegevoegd",
             "deleteButton": "Verwijderen",
             "confirmDeleteAddress": "Adres verwijderen",
             "deleteModalTitle": "Weet u zeker dat u dit adres wilt verwijderen?",
