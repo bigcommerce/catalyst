@@ -121,13 +121,25 @@ export default async function Cart() {
   ): Promise<{ error: string | null }> => {
     'use server';
 
-    const lineItem = lineItems.find((item) => item.entityId === id);
+    const t2 = await getTranslations('Cart.Errors');
 
-    if (!lineItem) {
-      return { error: t('itemNotFound') };
+    const data2 = await getCart(cartId);
+
+    const cart2 = data2.site.cart;
+
+    if (!cart2) {
+      return { error: t2('cartNotFound') };
     }
 
-    const parsedSelectedOptions = lineItem.selectedOptions.reduce<CartSelectedOptionsInput>(
+    const lineItem2 = [...cart2.lineItems.physicalItems, ...cart2.lineItems.digitalItems].find(
+      (lineItem) => lineItem.entityId === id,
+    );
+
+    if (!lineItem2) {
+      return { error: t2('itemNotFound') };
+    }
+
+    const parsedSelectedOptions = lineItem2.selectedOptions.reduce<CartSelectedOptionsInput>(
       (accum, option) => {
         let multipleChoicesOptionInput;
         let checkboxOptionInput;
@@ -240,9 +252,9 @@ export default async function Cart() {
     );
 
     const result = await updateQuantity({
-      lineItemEntityId: lineItem.entityId,
-      productEntityId: lineItem.productEntityId,
-      variantEntityId: lineItem.variantEntityId,
+      lineItemEntityId: lineItem2.entityId,
+      productEntityId: lineItem2.productEntityId,
+      variantEntityId: lineItem2.variantEntityId,
       selectedOptions: parsedSelectedOptions,
       quantity,
     });

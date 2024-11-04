@@ -8,6 +8,8 @@ import { getSessionCustomerId } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 
+import { getCart } from '../page-data';
+
 import { removeItem } from './remove-item';
 
 const UpdateCartLineItemMutation = graphql(`

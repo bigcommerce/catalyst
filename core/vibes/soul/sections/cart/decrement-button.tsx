@@ -2,7 +2,8 @@
 
 import { clsx } from 'clsx';
 import { Minus } from 'lucide-react';
-import { useActionState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useFormState } from 'react-dom';
 
 import { Action } from './remove-button';
 
@@ -17,7 +18,7 @@ export function DecrementButton({
   action: Action<{ error: string | null }, { id: string; quantity: number }>;
   ariaLabel?: string;
 }) {
-  const [{ error }, formAction, isPending] = useActionState(action, { error: null });
+  const [{ error }, formAction, isPending] = useFormState(action, { error: null });
 
   useEffect(() => {
     if (error != null) console.error(error);
