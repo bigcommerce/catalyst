@@ -204,7 +204,7 @@
             "changePassword": "Cambiar contraseña",
             "submit": "ACTUALICE LA CONFIGURACIÓN",
             "submitting": "Actualizando la configuración...",
-            "successMessage": "Estimado/a {firstName} {lastName}, has actualizado correctamente los datos de tu cuenta.",
+            "successMessage": "Your account settings have been updated",
             "validationMessages": {
                 "email": "Introduce un correo electrónico válido, como nombre@dominio.com",
                 "empty": "Este campo no puede estar vacío",
