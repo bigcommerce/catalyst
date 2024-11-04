@@ -1,9 +1,8 @@
-import { LocaleType } from '~/i18n/routing';
+'use server';
+
 import { cookies } from 'next/headers';
-import { OrderMessage } from './_components/OrderMessage';
-import { OrderSummaryTitle } from './_components/OrderSummaryTitle';
-import { OrderCustomerInfo } from './_components/OrderCustomerInfo';
 import { imageManagerImageUrl } from '~/lib/store-assets';
+import { getOrderDetails } from './page-data';
 
 
 const emailImg = imageManagerImageUrl('emailicon.png', '16w');
@@ -16,52 +15,12 @@ const printIconImg = imageManagerImageUrl('printicon.png','16w');
 const creditCardImg = imageManagerImageUrl('creditcard.png','20w');
 const productSampleImg = imageManagerImageUrl('image-2-.png','150w');
 
-interface ProductPageProps {
-  params: { slug: string; locale: LocaleType };
-  searchParams: Record<string, string | string[] | undefined>;
-}
-
-function getOptionValueIds({ searchParams }: { searchParams: ProductPageProps['searchParams'] }) {
-  const { slug, ...options } = searchParams;
-
-  console.log('searchParams', searchParams);
-
-  return Object.keys(options)
-    .map((option) => ({
-      optionEntityId: Number(option),
-      valueEntityId: Number(searchParams[option]),
-    }))
-    .filter(
-      (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
-    );
-}
-
-export default function OrderConfirmation({ params, searchParams }: ProductPageProps) {
-  //export default function OrderConfirmation() {
-  const optionValueIds = getOptionValueIds({ searchParams });
-
-  console.log('----options----', optionValueIds);
-  console.log('----params----', params);
-  console.log('---searchParams-----', searchParams);
-
-  const data = cookies().get('orderDetails')?.value;
-  if (data) {
-    console.log(data);
-    let dataJson = JSON.parse(data);
-    console.log(dataJson);
-    console.log(dataJson.orderDetails.orderId);
-    console.log(dataJson.orderDetails.customerName);
-
-    //let ema: string = "mithranbalaji@arizon.digital";
-    return (
-      <div>
-        {' '}
-        Order Confirmation{data}
-        <OrderMessage email={dataJson?.orderDetails?.customerName} />
-        <OrderSummaryTitle />
-        {/* <OrderCustomerInfo order={order}/> */}
-      </div>
-    );
+export default async function OrderConfirmation() {
+  const orderId = cookies().get('orderId')?.value;
+  console.log('=========orderId======', orderId);
+  if (orderId) {
+    const data  = await getOrderDetails({orderId});
+    console.log('----orderId----', JSON.stringify(data));
   }
 
   return (

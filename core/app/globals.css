@@ -17,6 +17,10 @@ div[data-radix-popper-content-wrapper] div {
   width: 240px;
 }
 
+.left-container.bg-set {
+  background-color: lightgrey;
+}
+
 .modal-open form.flex.flex-col.gap-6.\@container.product-variants {
   z-index: -1;
   position: relative;
