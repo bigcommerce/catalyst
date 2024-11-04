@@ -1,8 +1,7 @@
-import { BcImage } from '~/components/bc-image';
-
 import { clsx } from 'clsx';
 
 import { Breadcrumbs } from '@/vibes/soul/primitives/breadcrumbs';
+import { BcImage } from '~/components/bc-image';
 
 interface Image {
   src: string;
@@ -57,16 +56,16 @@ export const BlogPostContent = function BlogPostContent({
         </header>
 
         <BcImage
-          src={image.src}
           alt={image.alt}
-          height={780}
-          width={1280}
           className="mx-auto aspect-[5/3] w-full max-w-screen-2xl rounded-2xl bg-contrast-100 object-cover"
+          height={780}
+          src={image.src}
+          width={1280}
         />
 
         <article
-          dangerouslySetInnerHTML={{ __html: content }}
           className="prose mx-auto w-full max-w-4xl space-y-4 pb-20 pt-10 @4xl:py-20 [&_h2]:font-heading [&_h3]:font-heading [&_h4]:font-heading [&_h5]:font-heading [&_h6]:font-heading [&_img]:mx-auto [&_img]:max-h-[600px] [&_img]:w-fit [&_img]:rounded-2xl [&_img]:object-cover"
+          dangerouslySetInnerHTML={{ __html: content }}
         />
       </div>
     </section>
