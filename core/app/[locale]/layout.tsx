@@ -1,3 +1,4 @@
+import { DraftModeScript } from '@makeswift/runtime/next/server';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
@@ -96,7 +97,10 @@ export default function RootLayout({ children, params: { locale } }: Props) {
 
   return (
     <html className={[inter.variable, dm_serif_text.variable].join(' ')} lang={locale}>
-      <body className="flex h-screen min-w-[375px] flex-col font-body">
+      <head>
+        <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
+      </head>
+      <body className="font-body flex h-screen min-w-[375px] flex-col">
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>{children}</Providers>
