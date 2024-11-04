@@ -43,7 +43,7 @@ interface RegisterCustomerForm {
 }
 
 const isRegisterCustomerInput = (data: unknown): data is RegisterCustomerInput => {
-  if (typeof data === 'object' && data !== null && 'email' in data && 'address' in data) {
+  if (typeof data === 'object' && data !== null && 'email' in data) {
     return true;
   }
 
@@ -52,11 +52,10 @@ const isRegisterCustomerInput = (data: unknown): data is RegisterCustomerInput =
 
 export const registerCustomer = async ({ formData, reCaptchaToken }: RegisterCustomerForm) => {
   const t = await getTranslations('Register');
-
   formData.delete('customer-confirmPassword');
-
-  const parsedData = parseRegisterCustomerFormData(formData);
-
+  let parsedDataValue: any = parseRegisterCustomerFormData(formData);
+  delete parsedDataValue['address'];
+  const parsedData = parsedDataValue;
   if (!isRegisterCustomerInput(parsedData)) {
     return {
       status: 'error',
