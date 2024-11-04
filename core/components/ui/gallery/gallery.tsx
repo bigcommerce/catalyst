@@ -94,7 +94,7 @@ const Gallery = ({ className, images, defaultImageIndex = 0, bannerIcon , galler
                   <BcImage
                     alt={image.altText}
                     className={cn(
-                      'flex h-full w-full cursor-pointer items-center justify-center border-2 object-contain hover:border-primary',
+                      'flex h-full w-full cursor-pointer items-center justify-center border-2 object-fill hover:border-primary',
                       isActive && 'border-primary',
                     )}
                     height={94}
@@ -104,7 +104,7 @@ const Gallery = ({ className, images, defaultImageIndex = 0, bannerIcon , galler
                   />
                   <BcImage
                     alt={image.altText}
-                    className="absolute right-2 bottom-2 m-1 h-4 w-4 rounded-full bg-white p-1 object-cover opacity-70"
+                    className="absolute right-2 bottom-2 m-1 h-4 w-4 rounded-full bg-white p-1 object-fill opacity-70"
                     height={10}
                     priority={true}
                     src={galleryExpandIcon}
@@ -122,7 +122,7 @@ const Gallery = ({ className, images, defaultImageIndex = 0, bannerIcon , galler
               >
                 <BcImage
                   alt="View All"
-                  className="flex h-full w-full cursor-pointer items-center justify-center border-2 object-contain"
+                  className="flex h-full w-full cursor-pointer items-center justify-center border-2 object-fill"
                   height={94}
                   priority={true}
                   src={images[3].src}
