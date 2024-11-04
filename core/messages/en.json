@@ -111,6 +111,7 @@
       "subCategories": "Categories"
     },
     "FacetedSearch": {
+      "filterBy": "Filter by",
       "filters": "Filters",
       "RefineBy": {
         "refineBy": "Refine by",
@@ -151,6 +152,7 @@
     "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
     "products": "Products",
     "items": "items",
+    "compare": "Compare",
     "Empty": {
       "message": "No products in this category",
       "cta": "Return to Home"

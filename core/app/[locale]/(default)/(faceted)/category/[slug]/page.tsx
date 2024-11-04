@@ -47,7 +47,9 @@ export default async function Category({ params: { locale, slug }, searchParams 
 
   const categoryId = Number(slug);
 
-  const t = await getTranslations('FacetedGroup.SortBy');
+  const t = await getTranslations('Category');
+  const g = await getTranslations('FacetedGroup');
+
   const format = await getFormatter();
 
   const [{ category }, search] = await Promise.all([
@@ -94,7 +96,7 @@ export default async function Category({ params: { locale, slug }, searchParams 
       breadcrumbs={breadcrumbs}
       compareLabel={t('compare')}
       compareParamName="compare"
-      filterLabel={t('filterBy')}
+      filterLabel={g('FacetedSearch.filterBy')}
       filters={filters}
       paginationInfo={{
         startCursorParamName: 'before',
@@ -103,29 +105,29 @@ export default async function Category({ params: { locale, slug }, searchParams 
         startCursor: startCursor ?? undefined,
       }}
       products={products}
-      sortLabel={t('sortBy')}
+      sortLabel={g('SortBy.ariaLabel')}
       sortOptions={[
-        { value: 'featured', label: t('featuredItems') },
-        { value: 'newest', label: t('newestItems') },
+        { value: 'featured', label: g('SortBy.featuredItems') },
+        { value: 'newest', label: g('SortBy.newestItems') },
         {
           value: 'best_selling',
-          label: t('bestSellingItems'),
+          label: g('SortBy.bestSellingItems'),
         },
-        { value: 'a_to_z', label: t('aToZ') },
-        { value: 'z_to_a', label: t('zToA') },
+        { value: 'a_to_z', label: g('SortBy.aToZ') },
+        { value: 'z_to_a', label: g('SortBy.zToA') },
         {
           value: 'best_reviewed',
-          label: t('byReview'),
+          label: g('SortBy.byReview'),
         },
         {
           value: 'lowest_price',
-          label: t('priceAscending'),
+          label: g('SortBy.priceAscending'),
         },
         {
           value: 'highest_price',
-          label: t('priceDescending'),
+          label: g('SortBy.priceDescending'),
         },
-        { value: 'relevance', label: t('relevance') },
+        { value: 'relevance', label: g('SortBy.relevance') },
       ]}
       sortParamName="sort"
       title={category.name}
