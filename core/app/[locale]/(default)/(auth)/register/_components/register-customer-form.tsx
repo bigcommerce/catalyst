@@ -32,7 +32,7 @@ import {
   isAddressOrAccountFormField,
 } from '~/components/form-fields/shared/field-handlers';
 import { Button } from '~/components/ui/button';
-import { Field, Form, FormSubmit } from '~/components/ui/form';
+import { Checkbox, Field, Form, FormSubmit, Label } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 
 import { login } from '../_actions/login';
@@ -249,7 +249,7 @@ export const RegisterCustomerForm = ({
         </Message>
       )}
       <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>
-        <div className="mb-4 grid grid-cols-1 gap-y-3 lg:grid-cols-2 lg:gap-x-6">
+        <div className="register-form mb-4 grid grid-cols-1 gap-y-3 lg:grid-cols-2 lg:gap-x-6">
           {customerFields
             .filter((field) => !CUSTOMER_FIELDS_TO_EXCLUDE.includes(field.entityId))
             .map((field) => {
@@ -344,6 +344,34 @@ export const RegisterCustomerForm = ({
         <FormSubmit asChild>
           <SubmitButton messages={{ submit: t('submit'), submitting: t('submitting') }} />
         </FormSubmit>
+
+        <div className="remember-forgot-div mt-3">
+          <Field className="relative mt-2 inline-flex items-center space-y-2" name="remember-me">
+            <Checkbox aria-labelledby="remember-me" id="remember-me" name="remember-me" value="1" />
+            <div className="flex">
+              <Label
+                className="ml-2 mt-0 cursor-pointer space-y-2 pb-2 pl-1 text-left text-sm font-normal leading-6 tracking-[0.25px] md:my-0"
+                htmlFor="remember-me"
+                id="remember-me"
+              >
+                Keep me informed on sales, news, and special offers
+              </Label>
+
+              <a
+                className="ml-2 text-center text-sm font-normal leading-6 tracking-tight text-[#008BB7]"
+                href="#"
+              >
+                Privacy Policy
+              </a>
+            </div>
+          </Field>
+        </div>
+
+        <div className="mb-[30px] mt-[45px]">
+          <a className="font-open-sans cursor-pointer text-left text-lg font-medium leading-8 tracking-[0.15px] text-[#353535]">
+            Sign in With an Existing Account
+          </a>
+        </div>
       </Form>
     </>
   );

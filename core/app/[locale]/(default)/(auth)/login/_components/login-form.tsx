@@ -43,9 +43,8 @@ const SubmitButton = () => {
 // 'apple-black': imageManagerImageUrl('apple-black.png.png', '24w'),
 // 'facebook-blue': imageManagerImageUrl('facebook-blue.png', '16w'),
 
-export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo}: IconProps) => {
+export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: IconProps) => {
   const t = useTranslations('Login');
-
 
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
@@ -110,7 +109,7 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo}: IconP
       )}
       {/* {showLogin && ( */}
       <Form action={formAction} className="mb-14 flex flex-col gap-3 md:p-8 lg:p-0">
-        <Field className="relative space-y-2 flex flex-col items-start gap-5" name="email">
+        <Field className="relative flex flex-col items-start gap-5 space-y-2" name="email">
           {cookieIsSet === 1 && (
             <div className="flex flex-col items-center justify-center">
               <p className="text-center text-[20px] font-[500] leading-[32px] tracking-[0.15px] text-[#353535]">
@@ -129,13 +128,15 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo}: IconP
             </div>
           )}
 
-          
-          <FieldLabel  className={`${cookieIsSet ? 'hidden' : ''} login-label flex items-center tracking-[0.15px]`} htmlFor="email">
+          <FieldLabel
+            className={`${cookieIsSet ? 'hidden' : ''} login-label flex items-center tracking-[0.15px]`}
+            htmlFor="email"
+          >
             {t('Form.emailLabel')}
           </FieldLabel>
-          <FieldControl asChild className={`${cookieIsSet ? 'hidden' : ''} mt-0 login-form-div`}>
+          <FieldControl asChild className={`${cookieIsSet ? 'hidden' : ''} login-form-div mt-0`}>
             <Input
-            className='login-input !mt-[0px] w-full h-[44px]'
+              className="login-input !mt-[0px] h-[44px] w-full"
               autoComplete="email"
               error={!isEmailValid}
               id="email"
@@ -156,11 +157,16 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo}: IconP
             {t('Form.enterEmailMessage')}
           </FieldMessage>
         </Field>
-        <Field className="pb- relative space-y-2 flex flex-col items-start gap-5" name="password">
-          <FieldLabel className='login-label flex items-center tracking-[0.15px]' htmlFor="password">{t('Form.passwordLabel')}</FieldLabel>
-          <FieldControl asChild className='mt-0 login-form-div'>
+        <Field className="pb- relative flex flex-col items-start gap-5 space-y-2" name="password">
+          <FieldLabel
+            className="login-label flex items-center tracking-[0.15px]"
+            htmlFor="password"
+          >
+            {t('Form.passwordLabel')}
+          </FieldLabel>
+          <FieldControl asChild className="login-form-div mt-0">
             <Input
-              className='login-input !mt-[0px] w-full h-[44px]'
+              className="login-input !mt-[0px] h-[44px] w-full"
               error={!isPasswordValid}
               id="password"
               onChange={handleInputValidation}
@@ -176,23 +182,22 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo}: IconP
             {t('Form.entePasswordMessage')}
           </FieldMessage>
         </Field>
-        <div className='remember-forgot-div'>
-        <Field className="relative mt-2 inline-flex space-y-2 " name="remember-me">
-          <Checkbox aria-labelledby="remember-me" id="remember-me" name="remember-me" value="1" />
-          <Label
-            className="ml-2 mt-0 cursor-pointer space-y-2 pb-2 md:my-0"
-            htmlFor="remember-me"
-            id="remember-me"
-          >
-            Remember me
-          </Label>
-        </Field>
-        
+        <div className="remember-forgot-div">
+          <Field className="relative mt-2 inline-flex space-y-2" name="remember-me">
+            <Checkbox aria-labelledby="remember-me" id="remember-me" name="remember-me" value="1" />
+            <Label
+              className="ml-2 mt-0 cursor-pointer space-y-2 pb-2 md:my-0"
+              htmlFor="remember-me"
+              id="remember-me"
+            >
+              Remember me
+            </Label>
+          </Field>
         </div>
-        <div className='login-submit-btn mt-[6px]'>
-        <FormSubmit asChild>
+        <div className="login-submit-btn mt-[6px]">
+          <FormSubmit asChild>
             <SubmitButton />
-        </FormSubmit>
+          </FormSubmit>
         </div>
         <div className="forgot-signin-div my-[18px] flex flex-row-reverse items-center justify-between">
           <Link
@@ -201,20 +206,19 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo}: IconP
           >
             {t('Form.forgotPassword')}
           </Link>
-        <p className="cursor-pointer text-center text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#353535]">
+          <p className="cursor-pointer text-center text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#353535]">
             Sign in With an Existing Account
-        </p>
+          </p>
         </div>
         <div className="flex items-center justify-center pt-0">
           {/* Continue With Email Button */}
 
           {/* Sign in text */}
-          
 
           {/* Social buttons */}
-          <div className="login-in-buttons w-full h-[54px] justify-between flex flex-row gap-[20px]">
+          <div className="login-in-buttons flex h-[54px] w-full flex-row justify-between gap-[20px]">
             {/* Log In with Facebook Button */}
-            <button className="flex h-[54px] items-center justify-center w-[144px] gap-[10px] rounded-[3px] bg-[#FFFFFF] p-[15px] border border-[#d7d7d7]">
+            <button className="flex h-[54px] w-[144px] items-center justify-center gap-[10px] rounded-[3px] border border-[#d7d7d7] bg-[#FFFFFF] p-[15px]">
               <BcImage
                 alt="Facebook logo"
                 className="Login-logo h-[24px] w-[24px]"
@@ -223,11 +227,11 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo}: IconP
                 height={20}
                 priority={true}
               />{' '}
-              <p className='font-medium text-[20px] text-[#1877F2]'>Facebook</p>
+              <p className="text-[20px] font-medium text-[#1877F2]">Facebook</p>
             </button>
 
             {/* Log In with Google Button */}
-            <button className="flex h-[54px] items-center justify-center w-[144px] gap-[10px] rounded-[3px] bg-[#FFFFFF] p-[15px] border border-[#d7d7d7]">
+            <button className="flex h-[54px] w-[144px] items-center justify-center gap-[10px] rounded-[3px] border border-[#d7d7d7] bg-[#FFFFFF] p-[15px]">
               <BcImage
                 alt="Google logo"
                 className="Login-logo h-[24px] w-[24px]"
@@ -236,11 +240,11 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo}: IconP
                 height={20}
                 priority={true}
               />{' '}
-              <p className='font-medium text-[20px] text-[#757575]'>Google</p>
+              <p className="text-[20px] font-medium text-[#757575]">Google</p>
             </button>
 
             {/* Log In with Apple Button */}
-            <button className="flex h-[54px] items-center justify-center w-[144px] gap-[10px] rounded-[3px] bg-[#FFFFFF] p-[15px] border border-[#d7d7d7]">
+            <button className="flex h-[54px] w-[144px] items-center justify-center gap-[10px] rounded-[3px] border border-[#d7d7d7] bg-[#FFFFFF] p-[15px]">
               <BcImage
                 alt="Apple logo"
                 className="Login-logo w-[24px]"
@@ -249,7 +253,7 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo}: IconP
                 height={24}
                 priority={true}
               />{' '}
-              <p className='font-medium text-[20px] text-[#353535]'>Apple</p>
+              <p className="text-[20px] font-medium text-[#353535]">Apple</p>
             </button>
           </div>
         </div>
