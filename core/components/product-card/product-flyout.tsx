@@ -75,11 +75,13 @@ const getVariantProductInfo = async (metaData: any) => {
             let productAccesslabel = accessoriesLabelData?.find(
               (prod: any) => prod?.sku == productInfo?.sku,
             );
-            variantProductInfo.push({
-              label: productAccesslabel?.label,
-              productData: variantNewObject,
-              entityId: productInfo?.entityId,
-            });
+            if(variantNewObject?.length > 0) {
+              variantProductInfo.push({
+                label: productAccesslabel?.label,
+                productData: variantNewObject,
+                entityId: productInfo?.entityId,
+              });
+            }
           }
         }
       }

@@ -123,7 +123,11 @@
   "Category": {
     "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
     "products": "Products",
-    "items": "items"
+    "items": "items",
+    "Empty": {
+      "message": "No products in this category",
+      "cta": "Return to Home"
+    }
   },
   "Search": {
     "title": "Search results",
@@ -145,6 +149,34 @@
       "settings": "Account settings",
       "changePassword": "Change password",
       "successMessage": "Your account has been successfully created"
+    },
+    "Orders": {
+      "noOrders": "No orders yet",
+      "orderNumber": "Order #",
+      "placedDate": "Order placed",
+      "totalPrice": "Total",
+      "viewDetails": "View Details",
+      "trackOrder": "Track order",
+      "returnOrder": "Return items",
+      "orderSummary": "Order Summary",
+      "orderContents": "Order contents",
+      "orderSubtotal": "Subtotal:",
+      "orderGrandtotal": "Grand total:",
+      "orderDiscount": "Discount:",
+      "orderAppliedCoupon": "Coupon code ({code}):",
+      "orderShipping": "Shipping:",
+      "orderTax": "Tax:",
+      "printInvoice": "Print Invoice",
+      "repurchaseOrder": "Repurchase",
+      "return": "Return",
+      "shippedDate": "Shipped on",
+      "shippingAddress": "Shipping address",
+      "shippingMethod": "Shipping method",
+      "shipmentTitle": "Shipment",
+      "shippingTitle": "Shipping",
+      "shippingPayment": "Payment",
+      "shippingPaymentMethod": "Payment method",
+      "billingAddress": "Billing address"
     },
     "Addresses": {
       "title": "Addresses",
@@ -400,6 +432,8 @@
       "maxPurchase": "Maximum purchase",
       "availability": "Availability",
       "condition": "Condition",
+      "comingSoon": "Coming Soon",
+      "qty": "Qty",
       "weight": "Weight",
       "Prices": {
         "msrp": "MSRP",
@@ -458,6 +492,7 @@
       "Account": {
         "account": "Account",
         "myAccount": "My account",
+        "orders": "Orders",
         "addresses": "Addresses",
         "wishlists": "Wishlists",
         "accountSettings": "Account settings",

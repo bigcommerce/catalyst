@@ -20,9 +20,7 @@ div[data-radix-popper-content-wrapper] div {
   text-overflow: ellipsis;
   width: 240px;
 }
-.left-container img {
-  display: none;
-}
+
 .left-container.bg-set {
   background-color: lightgrey;
 }

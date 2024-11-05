@@ -118,10 +118,11 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
   if(baseImage) {
     hideImage = ' hidden';
   }
+  console.log('========accessories=======', accessories);
   return (
     <>
       {accessories?.length}
-      <div className={`left-container bg-[#d3d3d3] hidden  w-[150px] h-[177px]${baseImage}`}>
+      <div className={`left-container w-[150px] h-[177px]${baseImage}`}>
         <BcImage
           alt={accessories?.label}
           className={`object-fill h-[177px]${baseImage}${hideImage}`}
