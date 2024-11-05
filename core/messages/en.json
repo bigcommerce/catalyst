@@ -459,6 +459,9 @@
     "message": "It looks like the page you requested has moved or no longer exists.",
     "Carousel": {
       "featuredProducts": "Featured products"
+    },
+    "Subscribe": {
+      "title": "Sign up for our newsletter"
     }
   },
   "Components": {

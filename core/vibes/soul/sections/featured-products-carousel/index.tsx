@@ -1,6 +1,5 @@
-import { Link } from '~/components/link';
-
 import { CarouselProduct, ProductsCarousel } from '@/vibes/soul/primitives/products-carousel';
+import { Link } from '~/components/link';
 
 interface Link {
   label: string;
@@ -32,8 +31,8 @@ export const FeaturedProductsCarousel = function FeaturedProductsCarousel({
           </div>
           {cta != null && cta.href !== '' && cta.label !== '' && (
             <Link
-              href={cta.href}
               className="rounded-lg font-semibold text-foreground ring-primary focus-visible:outline-0 focus-visible:ring-2"
+              href={cta.href}
             >
               {cta.label}
             </Link>
