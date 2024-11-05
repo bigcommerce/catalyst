@@ -1,7 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';
@@ -189,13 +189,13 @@ interface CustomerOrdersArgs {
 
 export const getCustomerOrders = cache(
   async ({ before = '', after = '', limit = 2 }: CustomerOrdersArgs) => {
-    const customerId = await getSessionCustomerId();
+    const customerAccessToken = await getSessionCustomerAccessToken();
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
       document: CustomerAllOrders,
       variables: { ...paginationArgs },
-      customerId,
+      customerAccessToken,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -229,7 +229,7 @@ interface OrderDetailsProps extends CustomerOrdersArgs {
 
 export const getOrderDetails = cache(
   async ({ orderId, before = '', after = '', limit = 2 }: OrderDetailsProps) => {
-    const customerId = await getSessionCustomerId();
+    const customerAccessToken = await getSessionCustomerAccessToken();
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
@@ -240,8 +240,8 @@ export const getOrderDetails = cache(
           entityId: +orderId,
         },
       },
-      customerId,
       fetchOptions: { cache: 'no-store' },
+      customerAccessToken,
     });
     const order = response.data.site.order;
 
