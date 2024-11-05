@@ -8,9 +8,7 @@ import { createCart } from '~/client/mutations/create-cart';
 import { getCart } from '~/client/queries/get-cart';
 import { TAGS } from '~/client/tags';
 
-export const addToCart = async (data: FormData) => {
-  const productEntityId = Number(data.get('product_id'));
-
+export const addToCart = async (id: string) => {
   const cartId = cookies().get('cartId')?.value;
 
   let cart;
@@ -22,7 +20,7 @@ export const addToCart = async (data: FormData) => {
       cart = await addCartLineItem(cart.entityId, {
         lineItems: [
           {
-            productEntityId,
+            productEntityId: Number(id),
             quantity: 1,
           },
         ],
@@ -37,7 +35,7 @@ export const addToCart = async (data: FormData) => {
       return { status: 'success', data: cart };
     }
 
-    cart = await createCart([{ productEntityId, quantity: 1 }]);
+    cart = await createCart([{ productEntityId: Number(id), quantity: 1 }]);
 
     if (!cart?.entityId) {
       return { status: 'error', error: 'Failed to add product to cart.' };
