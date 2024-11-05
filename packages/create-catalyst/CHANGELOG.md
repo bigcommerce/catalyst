@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.17.0
+
+### Minor Changes
+
+- [#1541](https://github.com/bigcommerce/catalyst/pull/1541) [`20c08da`](https://github.com/bigcommerce/catalyst/commit/20c08dae691b43149099892ffd1fa717310b602f) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Introduce an additional project creation scenario in which projects can be created without prompts if the CLI is provided with a valid `--store-hash`, `--channel-id`, and `--storefront-token`
+
 ## 0.16.0
 
 ### Minor Changes
