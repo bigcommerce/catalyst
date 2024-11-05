@@ -11,11 +11,14 @@ env:
   BIGCOMMERCE_STORE_HASH: ${{ secrets.BIGCOMMERCE_STORE_HASH }}
 
 jobs:
-  generate-lighthouse-audit:
-    name: Lighthouse Audit
-    timeout-minutes: 30
+  Changes:
     runs-on: ubuntu-latest
-    if: ${{ contains(fromJson('["Production – catalyst-latest", "Preview – catalyst-latest"]'), github.event.deployment_status.environment) }}
+    outputs:
+      run_job: ${{ steps.pr_details.outputs.run_job }}
+      pr: ${{ steps.pr_details.outputs.pr }}
+      title: ${{ steps.pr_details.outputs.title }}
+      url: ${{ steps.pr_details.outputs.url }}
+      draft: ${{ steps.pr_details.outputs.draft }}
 
     steps:
       - name: Checkout code
@@ -28,6 +31,17 @@ jobs:
           script: |
             const prData = require('./.github/workflows/pull-request-data.js');
             await prData({ github, context, core });
+
+  generate-lighthouse-audit:
+    needs: Changes
+    name: Lighthouse Audit
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    if: ${{ needs.changes.outputs.run_job == 'true' && contains(fromJson('["Production – catalyst-latest", "Preview – catalyst-latest"]'), github.event.deployment_status.environment) }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Lighthouse house audit on desktop
         id: lighthouse_audit_desktop
@@ -84,11 +98,11 @@ jobs:
       - name: Add comment to PR
         id: comment_to_pr
         uses: marocchino/sticky-pull-request-comment@v2.9.0
-        if: ${{ steps.pr_details.outputs.pr }}
+        if: ${{ needs.changes.outputs.pr }}
         with:
           recreate: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          number: ${{ steps.pr_details.outputs.pr }}
+          number: ${{ needs.changes.outputs.pr }}
           header: lighthouse
           message: |
             # ⚡️🏠 Lighthouse report
@@ -104,10 +118,11 @@ jobs:
             ${{ steps.format_lighthouse_score_mobile.outputs.comment }}
 
   ui-tests:
+    needs: Changes
     name: Playwright UI Tests
     timeout-minutes: 30
     runs-on: ubuntu-latest
-    if: ${{ contains(fromJson('["Production – catalyst-latest", "Preview – catalyst-latest"]'), github.event.deployment_status.environment) }}
+    if: ${{ needs.changes.outputs.run_job == 'true' && contains(fromJson('["Production – catalyst-latest", "Preview – catalyst-latest"]'), github.event.deployment_status.environment) }}
 
     steps:
       - name: Checkout code
@@ -123,14 +138,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Pull Request Details
-        id: pr_details
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const prData = require('./.github/workflows/pull-request-data.js');
-            await prData({ github, context, core });
 
       - name: Install Playwright Browsers
         run: |
@@ -151,7 +158,7 @@ jobs:
 
       - name: Send slack notification
         uses: slackapi/slack-github-action@v1.26.0
-        if: ${{ steps.pr_details.outputs.draft != 'true' && steps.pr_details.outputs.pr && failure() }}
+        if: ${{ needs.changes.outputs.draft != 'true' && needs.changes.outputs.pr && failure() }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:
@@ -160,16 +167,17 @@ jobs:
               "Job": "${{ github.job }}",
               "Status": "Failed",
               "Environment": "${{ github.event.deployment_status.environment }}",
-              "Pull_Request": "${{ steps.pr_details.outputs.url }}",
-              "Commit_Message" : "${{ steps.pr_details.outputs.title }}",
+              "Pull_Request": "${{ needs.changes.outputs.url }}",
+              "Commit_Message" : "${{ needs.changes.outputs.title }}",
               "Job_Run": "https://github.com/bigcommerce/catalyst/actions/runs/${{ github.run_id }}"
             }
 
   visual-regression-tests:
+    needs: Changes
     name: Playwright Visual Regression Tests
     timeout-minutes: 30
     runs-on: macos-14
-    if: ${{ contains(fromJson('["Production – catalyst-latest", "Preview – catalyst-latest"]'), github.event.deployment_status.environment) }}
+    if: ${{ needs.changes.outputs.run_job == 'true' && contains(fromJson('["Production – catalyst-latest", "Preview – catalyst-latest"]'), github.event.deployment_status.environment) }}
 
     steps:
       - name: Checkout code
@@ -185,14 +193,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Pull Request Details
-        id: pr_details
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const prData = require('./.github/workflows/pull-request-data.js');
-            await prData({ github, context, core });
 
       - name: Install Playwright Browsers
         run: |
@@ -213,7 +213,7 @@ jobs:
 
       - name: Send slack notification
         uses: slackapi/slack-github-action@v1.26.0
-        if: ${{ steps.pr_details.outputs.draft != 'true' && steps.pr_details.outputs.pr && failure() }}
+        if: ${{ needs.changes.outputs.draft != 'true' && needs.changes.outputs.pr && failure() }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:
@@ -222,7 +222,7 @@ jobs:
               "Job": "${{ github.job }}",
               "Status": "Failed",
               "Environment": "${{ github.event.deployment_status.environment }}",
-              "Pull_Request": "${{ steps.pr_details.outputs.url }}",
-              "Commit_Message" : "${{ steps.pr_details.outputs.title }}",
+              "Pull_Request": "${{ needs.changes.outputs.url }}",
+              "Commit_Message" : "${{ needs.changes.outputs.title }}",
               "Job_Run": "https://github.com/bigcommerce/catalyst/actions/runs/${{ github.run_id }}"
             }
