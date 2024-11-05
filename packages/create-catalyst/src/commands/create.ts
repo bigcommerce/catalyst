@@ -111,15 +111,38 @@ export const create = new Command('create')
       });
     }
 
+    if (!projectName) throw new Error('Something went wrong, projectName is not defined');
+    if (!projectDir) throw new Error('Something went wrong, projectDir is not defined');
+
+    if (storeHash && channelId && storefrontToken) {
+      console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
+
+      cloneCatalyst({ repository, projectName, projectDir, ghRef });
+
+      writeEnv(projectDir, {
+        channelId: channelId.toString(),
+        storeHash,
+        storefrontToken,
+        arbitraryEnv: options.env,
+      });
+
+      await installDependencies(projectDir);
+
+      console.log(
+        `\n${chalk.green('Success!')} Created '${projectName}' at '${projectDir}'\n`,
+        '\nNext steps:\n',
+        chalk.yellow(`\ncd ${projectName} && pnpm run dev\n`),
+      );
+
+      process.exit(0);
+    }
+
     if (!options.storeHash || !options.accessToken) {
       const credentials = await login(bigcommerceAuthUrl);
 
       storeHash = credentials.storeHash;
       accessToken = credentials.accessToken;
     }
-
-    if (!projectName) throw new Error('Something went wrong, projectName is not defined');
-    if (!projectDir) throw new Error('Something went wrong, projectDir is not defined');
 
     if (!storeHash || !accessToken) {
       console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
