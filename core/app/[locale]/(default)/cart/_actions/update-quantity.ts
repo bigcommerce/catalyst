@@ -4,11 +4,9 @@ import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
-
-import { getCart } from '../page-data';
 
 import { removeItem } from './remove-item';
 
@@ -44,7 +42,7 @@ export const updateQuantity = async ({
 }: UpdateProductQuantityParams) => {
   const t = await getTranslations('Cart.Errors');
 
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   try {
     const cartId = cookies().get('cartId')?.value;
@@ -80,7 +78,7 @@ export const updateQuantity = async ({
           },
         },
       },
-      customerId,
+      customerAccessToken,
       fetchOptions: { cache: 'no-store' },
     });
 
