@@ -67,7 +67,7 @@ let nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/checkout',
+        source: '/checkout/',
         destination: `https://${process.env.BIGCOMMERCE_CHECKOUT_URL ?? 'belami-e-commerce-sandbox-1.mybigcommerce.com'}/checkout`,
       },
     ]
