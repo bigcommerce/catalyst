@@ -1,7 +1,11 @@
+import { SubmissionResult } from '@conform-to/react';
+import { parseWithZod } from '@conform-to/zod';
+import { cookies } from 'next/headers';
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 
-import { Navigation } from '@/vibes/soul/primitives/navigation';
-import { SearchResult } from '@/vibes/soul/primitives/navigation/search-results';
+import { SearchResult } from '@/vibes/soul/primitives/navigation/index';
+import { localeSchema, searchSchema } from '@/vibes/soul/primitives/navigation/schema';
+import { HeaderSection } from '@/vibes/soul/sections/header-section';
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
@@ -10,7 +14,7 @@ import { revalidate } from '~/client/revalidate-target';
 import { ExistingResultType } from '~/client/util';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
-import { localeLanguageRegionMap } from '~/i18n/routing';
+import { localeLanguageRegionMap, redirect } from '~/i18n/routing';
 
 import { getSearchResults } from '~/client/queries/get-search-results';
 import { HeaderFragment } from './fragment';
@@ -25,72 +29,104 @@ const isSearchQuery = (data: unknown): data is QuickSearchResults => {
   return false;
 };
 
-const fetchSearchResults = async (term: string): Promise<SearchResult[]> => {
+const SEARCH_PARAM_NAME = 'term';
+
+async function search(
+  state: unknown,
+  formData: FormData,
+): Promise<{ lastResult: SubmissionResult; searchResults: SearchResult[] | null }> {
   'use server';
 
+  const submission = parseWithZod(formData, { schema: searchSchema(SEARCH_PARAM_NAME) });
+
+  if (submission.status !== 'success')
+    return { lastResult: submission.reply(), searchResults: null };
+
+  const term = submission.value[SEARCH_PARAM_NAME];
+
+  if (term == null) return { lastResult: submission.reply(), searchResults: null };
+
   const format = await getFormatter();
-  const { data: searchResults } = await getSearchResults(term);
+  const { data } = await getSearchResults(term);
 
-  if (isSearchQuery(searchResults) && searchResults.products.length > 0) {
-    return [
-      {
-        type: 'links',
-        title: 'Categories',
-        links:
-          searchResults.products.length > 0
-            ? Object.entries(
-                searchResults.products.reduce<Record<string, string>>((categories, product) => {
-                  product.categories.edges?.forEach((category) => {
-                    categories[category.node.name] = category.node.path;
-                  });
+  if (isSearchQuery(data) && data.products.length > 0) {
+    return {
+      lastResult: submission.reply(),
+      searchResults: [
+        {
+          type: 'links',
+          title: 'Categories',
+          links:
+            data.products.length > 0
+              ? Object.entries(
+                  data.products.reduce<Record<string, string>>((categories, product) => {
+                    product.categories.edges?.forEach((category) => {
+                      categories[category.node.name] = category.node.path;
+                    });
 
-                  return categories;
-                }, {}),
-              ).map(([name, path]) => {
-                return { label: name, href: path };
-              })
-            : [],
-      },
-      {
-        type: 'links',
-        title: 'Brands',
-        links:
-          searchResults.products.length > 0
-            ? Object.entries(
-                searchResults.products.reduce<Record<string, string>>((brands, product) => {
-                  if (product.brand) {
-                    brands[product.brand.name] = product.brand.path;
-                  }
+                    return categories;
+                  }, {}),
+                ).map(([name, path]) => {
+                  return { label: name, href: path };
+                })
+              : [],
+        },
+        {
+          type: 'links',
+          title: 'Brands',
+          links:
+            data.products.length > 0
+              ? Object.entries(
+                  data.products.reduce<Record<string, string>>((brands, product) => {
+                    if (product.brand) {
+                      brands[product.brand.name] = product.brand.path;
+                    }
 
-                  return brands;
-                }, {}),
-              ).map(([name, path]) => {
-                return { label: name, href: path };
-              })
-            : [],
-      },
-      {
-        type: 'products',
-        title: 'Products',
-        products: searchResults.products.map((product) => {
-          const price = pricesTransformer(product.prices, format);
+                    return brands;
+                  }, {}),
+                ).map(([name, path]) => {
+                  return { label: name, href: path };
+                })
+              : [],
+        },
+        {
+          type: 'products',
+          title: 'Products',
+          products: data.products.map((product) => {
+            const price = pricesTransformer(product.prices, format);
 
-          return {
-            id: product.entityId.toString(),
-            title: product.name,
-            href: product.path,
-            image: product.defaultImage
-              ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
-              : undefined,
-            price,
-          };
-        }),
-      },
-    ];
+            return {
+              id: product.entityId.toString(),
+              title: product.name,
+              href: product.path,
+              image: product.defaultImage
+                ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
+                : undefined,
+              price,
+            };
+          }),
+        },
+      ],
+    };
   }
 
-  return [];
-};
+  return { lastResult: submission.reply(), searchResults: null };
+}
+
+// eslint-disable-next-line @typescript-eslint/require-await
+async function switchLocale(state: unknown, formData: FormData): Promise<SubmissionResult> {
+  'use server';
+
+  const submission = parseWithZod(formData, { schema: localeSchema });
+
+  if (submission.status !== 'success') return submission.reply();
+
+  // HACK(miguel): This is a temporary workaround to allow switching locales. Otherwise the
+  // `NEXT_LOCALE` cookie will override whatever value we redirect to below.
+  cookies().delete('NEXT_LOCALE');
+
+  return redirect({ href: '/', locale: submission.value.id });
+}
 
 export const Header = async () => {
   const locale = await getLocale();
@@ -124,16 +160,20 @@ export const Header = async () => {
   }));
 
   return (
-    <Navigation
-      accountHref="/account"
-      activeLocale={locale}
-      cartHref="/cart"
-      links={links}
-      locales={localeLanguageRegionMap}
-      logo={data.settings ? logoTransformer(data.settings) : undefined}
-      searchAction={fetchSearchResults}
-      searchCtaLabel={t('viewAll')}
-      searchHref="/search"
+    <HeaderSection
+      navigation={{
+        accountHref: '/account',
+        activeLocaleId: locale,
+        cartHref: '/cart',
+        links,
+        localeAction: switchLocale,
+        locales: localeLanguageRegionMap.map(({ id, flag }) => ({ id, label: flag })),
+        logo: data.settings ? logoTransformer(data.settings) : undefined,
+        searchAction: search,
+        searchParamName: SEARCH_PARAM_NAME,
+        searchCtaLabel: t('viewAll'),
+        searchHref: '/search',
+      }}
     />
   );
 };
