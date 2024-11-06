@@ -31,14 +31,14 @@ export default async function CatchAllPage({ params }: { params: CatchAllParams 
   const path = `/${params.rest.join('/')}`;
 
   const snapshot = await client.getPageSnapshot(path, {
-    siteVersion: getSiteVersion(),
+    siteVersion: await getSiteVersion(),
     locale: params.locale === defaultLocale ? undefined : params.locale,
   });
 
   if (snapshot == null) return notFound();
 
   return (
-    <MakeswiftProvider previewMode={await draftMode().isEnabled}>
+    <MakeswiftProvider previewMode={draftMode().isEnabled}>
       <MakeswiftPage snapshot={snapshot} />
     </MakeswiftProvider>
   );
