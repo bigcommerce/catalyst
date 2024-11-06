@@ -188,7 +188,7 @@ function CarouselScrollbar({ className }: React.HTMLAttributes<HTMLDivElement>) 
     setScrollbarPosition({ width: scrollbarWidth, left: scrollbarLeft });
 
     api.scrollTo(closestSnapIndex);
-  }, [progress, api]);
+  }, [progress, api, findClosestSnap]);
 
   useEffect(() => {
     if (!api) return;
@@ -196,6 +196,7 @@ function CarouselScrollbar({ className }: React.HTMLAttributes<HTMLDivElement>) 
     function onScroll() {
       if (!api) return;
 
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       setProgress(api.scrollSnapList()[api.selectedScrollSnap()]! * 100);
     }
 
