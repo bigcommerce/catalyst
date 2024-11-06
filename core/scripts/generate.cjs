@@ -3,51 +3,34 @@ const { generateSchema, generateOutput } = require('@gql.tada/cli-utils');
 const { join } = require('path');
 
 const graphqlApiDomain = process.env.BIGCOMMERCE_GRAPHQL_API_DOMAIN ?? 'mybigcommerce.com';
-
-const getStoreHash = () => {
-  const storeHash = process.env.BIGCOMMERCE_STORE_HASH;
-
-  if (!storeHash) {
-    throw new Error('Missing store hash');
-  }
-
-  return storeHash;
-};
-
-const getChannelId = () => {
-  const channelId = process.env.BIGCOMMERCE_CHANNEL_ID;
-
-  return channelId;
-};
-
-const getToken = () => {
-  const token = process.env.BIGCOMMERCE_STOREFRONT_TOKEN;
-
-  if (!token) {
-    throw new Error('Missing storefront token');
-  }
-
-  return token;
-};
+const defaultSchemaEndpoint = 'https://gql-schema-storefront.bigcommerce.tools/graphql';
 
 const getEndpoint = () => {
-  const storeHash = getStoreHash();
-  const channelId = getChannelId();
+  const schemaEndpoint = process.env.BIGCOMMERCE_GRAPHQL_SCHEMA_ENDPOINT ?? defaultSchemaEndpoint;
+  const storeHash = process.env.BIGCOMMERCE_STORE_HASH;
+  const token = process.env.BIGCOMMERCE_STOREFRONT_TOKEN;
 
-  // Not all sites have the channel-specific canonical URL backfilled.
-  // Wait till MSF-2643 is resolved before removing and simplifying the endpoint logic.
-  if (!channelId || channelId === '1') {
-    return `https://store-${storeHash}.${graphqlApiDomain}/graphql`;
+  // If either store hash or token is missing, use the schema endpoint
+  if (!storeHash || !token) {
+    return schemaEndpoint;
   }
 
+  // Otherwise, use the store-specific endpoint
+  const channelId = process.env.BIGCOMMERCE_CHANNEL_ID || 1;
   return `https://store-${storeHash}-${channelId}.${graphqlApiDomain}/graphql`;
+};
+
+const getHeaders = () => {
+  const token = process.env.BIGCOMMERCE_STOREFRONT_TOKEN;
+  
+  return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
 const generate = async () => {
   try {
     await generateSchema({
       input: getEndpoint(),
-      headers: { Authorization: `Bearer ${getToken()}` },
+      headers: getHeaders(),
       output: join(__dirname, '../bigcommerce.graphql'),
       tsconfig: undefined,
     });
