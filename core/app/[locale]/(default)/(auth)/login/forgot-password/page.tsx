@@ -1,29 +1,25 @@
 import { getTranslations } from 'next-intl/server';
 
-import { ResetPasswordSection } from '@/vibes/soul/sections/reset-password-section';
-import { client } from '~/client';
-import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
-import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
+import { ForgotPasswordSection } from '@/vibes/soul/sections/forgot-password-section';
+// import { client } from '~/client';
+// import { graphql } from '~/client/graphql';
+// import { revalidate } from '~/client/revalidate-target';
+// import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
-import { resetPassword } from './_actions/reset-password';
-import { ResetPasswordForm } from './_components/reset-password-form';
-import { ResetPasswordFormFragment } from './_components/reset-password-form/fragment';
+import { resetPassword } from '../_actions/reset-password';
 
-const ResetPageQuery = graphql(
-  `
-    query ResetPageQuery {
-      site {
-        settings {
-          reCaptcha {
-            ...ResetPasswordFormFragment
-          }
-        }
-      }
-    }
-  `,
-  [ResetPasswordFormFragment],
-);
+// const ResetPageQuery = graphql(`
+//   query ResetPageQuery {
+//     site {
+//       settings {
+//         reCaptcha {
+//           isEnabledOnStorefront
+//           siteKey
+//         }
+//       }
+//     }
+//   }
+// `);
 
 export async function generateMetadata() {
   const t = await getTranslations('Login.ForgotPassword');
@@ -36,14 +32,15 @@ export async function generateMetadata() {
 export default async function Reset() {
   const t = await getTranslations('Login.ForgotPassword');
 
-  const { data } = await client.fetch({
-    document: ResetPageQuery,
-    fetchOptions: { next: { revalidate } },
-  });
+  // TODO: recaptcha
+  // const { data } = await client.fetch({
+  //   document: ResetPageQuery,
+  //   fetchOptions: { next: { revalidate } },
+  // });
 
-  // TODO: recaptcha and action
+  // TODO: add missing translations labels
   return (
-    <ResetPasswordSection
+    <ForgotPasswordSection
       action={resetPassword}
       submitLabel={t('Form.submit')}
       subtitle={t('Form.description')}

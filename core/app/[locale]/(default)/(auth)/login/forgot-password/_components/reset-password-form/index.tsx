@@ -20,7 +20,7 @@ import {
 import { Message } from '~/components/ui/message';
 import { useRouter } from '~/i18n/routing';
 
-import { resetPassword } from '../../_actions/reset-password';
+import { resetPassword } from '../../../_actions/reset-password';
 
 import { ResetPasswordFormFragment } from './fragment';
 

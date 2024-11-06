@@ -1,15 +1,15 @@
-import { ResetPasswordAction, ResetPasswordForm } from './reset-password-form';
+import { ForgotPasswordAction, ForgotPasswordForm } from './forgot-password-form';
 
 interface Props {
   title?: string;
   subtitle?: string;
-  action: ResetPasswordAction;
+  action: ForgotPasswordAction;
   submitLabel?: string;
 }
 
-export function ResetPasswordSection({
-  title = 'Reset password',
-  subtitle = 'Enter a new password below to reset your account password.',
+export function ForgotPasswordSection({
+  title = 'Forgot your password?',
+  subtitle = 'Enter the email associated with your account below. We’ll send you instructions to reset your password.',
   submitLabel,
   action,
 }: Props) {
@@ -19,7 +19,7 @@ export function ResetPasswordSection({
         <div className="flex w-full flex-col @xl:max-w-md @xl:pr-10 @4xl:pr-20">
           <h1 className="mb-5 text-4xl font-medium leading-none @xl:text-5xl">{title}</h1>
           <p className="mb-10 text-base font-light leading-none @xl:text-lg">{subtitle}</p>
-          <ResetPasswordForm action={action} submitLabel={submitLabel} />
+          <ForgotPasswordForm action={action} submitLabel={submitLabel} />
         </div>
       </div>
     </div>

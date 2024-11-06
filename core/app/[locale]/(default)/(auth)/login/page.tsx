@@ -1,9 +1,8 @@
 import { useTranslations } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
+import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { SignInSection } from '@/vibes/soul/sections/sign-in-section';
-import { Link } from '~/components/link';
-import { Button } from '~/components/ui/button';
 import { locales, LocaleType } from '~/i18n/routing';
 
 import { login } from './_actions/login';
@@ -43,9 +42,7 @@ export default function Login({ params: { locale } }: Props) {
           <li>{t('CreateAccount.ordersTracking')}</li>
           <li>{t('CreateAccount.wishlists')}</li>
         </ul>
-        <Button asChild>
-          <Link href="/register">{t('CreateAccount.createLink')}</Link>
-        </Button>
+        <ButtonLink href="/register">{t('CreateAccount.createLink')}</ButtonLink>
       </div>
     </SignInSection>
   );

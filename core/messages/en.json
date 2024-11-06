@@ -85,7 +85,7 @@
         "submit": "Reset password"
       },
       "Errors": {
-        "error": "Unknown error."
+        "error": "Something went wrong. Please try again later."
       }
     }
   },

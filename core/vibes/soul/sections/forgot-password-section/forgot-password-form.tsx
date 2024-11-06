@@ -12,14 +12,14 @@ import { schema } from './schema';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
-export type ResetPasswordAction = Action<SubmissionResult | null, FormData>;
+export type ForgotPasswordAction = Action<SubmissionResult | null, FormData>;
 
 interface Props {
-  action: ResetPasswordAction;
+  action: ForgotPasswordAction;
   submitLabel?: string;
 }
 
-export function ResetPasswordForm({ action, submitLabel = 'Update' }: Props) {
+export function ForgotPasswordForm({ action, submitLabel = 'Reset password' }: Props) {
   const [lastResult, formAction, isPending] = useFormState(action, null);
   const [form, fields] = useForm({
     constraint: getZodConstraint(schema),
@@ -37,21 +37,14 @@ export function ResetPasswordForm({ action, submitLabel = 'Update' }: Props) {
   }, [lastResult]);
 
   return (
-    <form {...getFormProps(form)} action={formAction} className="space-y-5">
+    <form {...getFormProps(form)} action={formAction} className="flex flex-grow flex-col gap-5">
       <Input
-        {...getInputProps(fields.password, { type: 'password' })}
-        errors={fields.password.errors}
-        key={fields.password.id}
-        label="Password"
+        {...getInputProps(fields.email, { type: 'text' })}
+        errors={fields.email.errors}
+        key={fields.email.id}
+        label="Email"
       />
-      <Input
-        {...getInputProps(fields.confirmPassword, { type: 'password' })}
-        className="mb-6"
-        errors={fields.confirmPassword.errors}
-        key={fields.confirmPassword.id}
-        label="Confirm password"
-      />
-      <Button loading={isPending} size="small" type="submit" variant="secondary">
+      <Button className="mt-auto w-full" loading={isPending} type="submit" variant="secondary">
         {submitLabel}
       </Button>
     </form>
