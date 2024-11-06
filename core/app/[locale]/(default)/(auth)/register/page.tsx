@@ -30,7 +30,9 @@ export default async function Register() {
 
   // const { addressFields, customerFields, reCaptchaSettings } = registerCustomerData;
 
-  return <SignUpSection action={registerCustomer} submitLabel={t('submit')} title={t('heading')} />;
+  return (
+    <SignUpSection action={registerCustomer} submitLabel={t('Form.submit')} title={t('heading')} />
+  );
 }
 
 export const runtime = 'edge';
