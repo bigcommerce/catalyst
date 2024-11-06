@@ -50,7 +50,7 @@ export const TextField = ({
       </FieldControl>
       {isRequired && (
         <FieldMessage
-          className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary"
+          className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error-secondary validation-error-1"
           match="valueMissing"
         >
           {t(fieldNameById ?? 'empty')}

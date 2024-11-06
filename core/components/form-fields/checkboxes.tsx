@@ -110,7 +110,7 @@ export const Checkboxes = ({
         </div>
         <div className="relative h-7">
           {validationError && (
-            <FieldMessage className="inline-flex w-full text-xs font-normal text-error-secondary">
+            <FieldMessage className="inline-flex w-full text-xs font-normal text-error-secondary validation-error-2">
               {t('empty')}
             </FieldMessage>
           )}
