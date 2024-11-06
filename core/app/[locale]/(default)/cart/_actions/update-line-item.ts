@@ -3,6 +3,7 @@
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { cookies } from 'next/headers';
+import { getTranslations } from 'next-intl/server';
 
 import { schema } from '@/vibes/soul/sections/cart/schema';
 import { CartLineItem } from '@/vibes/soul/sections/cart/types';
@@ -22,31 +23,45 @@ export const updateLineItem = async (
   lineItems: CartLineItem[];
   lastResult: SubmissionResult | null;
 }> => {
-  const intent = formData.get('intent');
+  const t = await getTranslations('Cart.Errors');
 
   const submission = parseWithZod(formData, { schema });
-
-  const cartId = cookies().get('cartId')?.value;
 
   if (submission.status !== 'success') {
     return {
       ...prevState,
-      lastResult: submission.reply({ formErrors: ['Boom!'] }),
+      lastResult: submission.reply({ formErrors: [t('somethingWentWrong')] }),
     };
   }
 
-  switch (intent) {
+  const cartId = cookies().get('cartId')?.value;
+
+  if (!cartId) {
+    return { ...prevState, lastResult: submission.reply({ formErrors: [t('cartNotFound')] }) };
+  }
+
+  switch (submission.value.intent) {
     case 'increment': {
-      // const item = await incrementLineItem(submission.value)\
       const data = await getCart(cartId);
 
       const cart = data.site.cart;
 
+      if (!cart) {
+        return { ...prevState, lastResult: submission.reply({ formErrors: [t('cartNotFound')] }) };
+      }
+
       const cartLineItem = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems].find(
-        (item) => item.entityId === submission.value.id,
+        (cartItem) => cartItem.entityId === submission.value.id,
       );
 
-      const parsedSelectedOptions = cartLineItem?.selectedOptions.reduce<CartSelectedOptionsInput>(
+      if (!cartLineItem) {
+        return {
+          ...prevState,
+          lastResult: submission.reply({ formErrors: [t('lineItemNotFound')] }),
+        };
+      }
+
+      const parsedSelectedOptions = cartLineItem.selectedOptions.reduce<CartSelectedOptionsInput>(
         (accum, option) => {
           let multipleChoicesOptionInput;
           let checkboxOptionInput;
@@ -161,13 +176,21 @@ export const updateLineItem = async (
         {},
       );
 
-      await updateQuantity({
-        lineItemEntityId: cartLineItem.entityId,
-        productEntityId: cartLineItem.productEntityId,
-        variantEntityId: cartLineItem.variantEntityId,
-        selectedOptions: parsedSelectedOptions,
-        quantity: submission.value.quantity + 1,
-      });
+      try {
+        await updateQuantity({
+          lineItemEntityId: cartLineItem.entityId,
+          productEntityId: cartLineItem.productEntityId,
+          variantEntityId: cartLineItem.variantEntityId,
+          selectedOptions: parsedSelectedOptions,
+          quantity: submission.value.quantity + 1,
+        });
+      } catch (error) {
+        if (error instanceof Error) {
+          return { ...prevState, lastResult: submission.reply({ formErrors: [error.message] }) };
+        }
+
+        return { ...prevState, lastResult: submission.reply({ formErrors: [String(error)] }) };
+      }
 
       const item = submission.value;
 
@@ -180,16 +203,26 @@ export const updateLineItem = async (
     }
 
     case 'decrement': {
-      // const item = await decrementLineItem(submission.value)
       const data = await getCart(cartId);
 
       const cart = data.site.cart;
 
+      if (!cart) {
+        return { ...prevState, lastResult: submission.reply({ formErrors: [t('cartNotFound')] }) };
+      }
+
       const cartLineItem = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems].find(
-        (item) => item.entityId === submission.value.id,
+        (cartItem) => cartItem.entityId === submission.value.id,
       );
 
-      const parsedSelectedOptions = cartLineItem?.selectedOptions.reduce<CartSelectedOptionsInput>(
+      if (!cartLineItem) {
+        return {
+          ...prevState,
+          lastResult: submission.reply({ formErrors: [t('lineItemNotFound')] }),
+        };
+      }
+
+      const parsedSelectedOptions = cartLineItem.selectedOptions.reduce<CartSelectedOptionsInput>(
         (accum, option) => {
           let multipleChoicesOptionInput;
           let checkboxOptionInput;
@@ -304,13 +337,21 @@ export const updateLineItem = async (
         {},
       );
 
-      await updateQuantity({
-        lineItemEntityId: cartLineItem.entityId,
-        productEntityId: cartLineItem.productEntityId,
-        variantEntityId: cartLineItem.variantEntityId,
-        selectedOptions: parsedSelectedOptions,
-        quantity: submission.value.quantity - 1,
-      });
+      try {
+        await updateQuantity({
+          lineItemEntityId: cartLineItem.entityId,
+          productEntityId: cartLineItem.productEntityId,
+          variantEntityId: cartLineItem.variantEntityId,
+          selectedOptions: parsedSelectedOptions,
+          quantity: submission.value.quantity - 1,
+        });
+      } catch (error) {
+        if (error instanceof Error) {
+          return { ...prevState, lastResult: submission.reply({ formErrors: [error.message] }) };
+        }
+
+        return { ...prevState, lastResult: submission.reply({ formErrors: [String(error)] }) };
+      }
 
       const item = submission.value;
 
@@ -323,8 +364,15 @@ export const updateLineItem = async (
     }
 
     case 'delete': {
-      // const deletedItem = await deleteLineItem(submission.value)
-      await removeItem({ lineItemEntityId: submission.value.id });
+      try {
+        await removeItem({ lineItemEntityId: submission.value.id });
+      } catch (error) {
+        if (error instanceof Error) {
+          return { ...prevState, lastResult: submission.reply({ formErrors: [error.message] }) };
+        }
+
+        return { ...prevState, lastResult: submission.reply({ formErrors: [String(error)] }) };
+      }
 
       const deletedItem = submission.value;
 

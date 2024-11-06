@@ -1,7 +1,10 @@
 'use server';
 
+import { SubmissionResult } from '@conform-to/react';
+import { parseWithZod } from '@conform-to/zod';
 import { cookies } from 'next/headers';
-import { getLocale } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
+import { z } from 'zod';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
@@ -20,28 +23,43 @@ const CheckoutRedirectMutation = graphql(`
   }
 `);
 
-export const redirectToCheckout = async () => {
+export const redirectToCheckout = async (
+  _lastResult: SubmissionResult | null,
+  formData: FormData,
+): Promise<SubmissionResult | null> => {
   const locale = await getLocale();
+  const t = await getTranslations('Cart.Errors');
+
   const customerAccessToken = await getSessionCustomerAccessToken();
+
+  const submission = parseWithZod(formData, { schema: z.object({}) });
 
   const cartId = cookies().get('cartId')?.value;
 
   if (!cartId) {
-    throw new Error('No cartId cookie found');
+    return submission.reply({ formErrors: [t('cartNotFound')] });
   }
 
-  const { data } = await client.fetch({
-    document: CheckoutRedirectMutation,
-    variables: { cartId },
-    fetchOptions: { cache: 'no-store' },
-    customerAccessToken,
-  });
+  try {
+    const { data } = await client.fetch({
+      document: CheckoutRedirectMutation,
+      variables: { cartId },
+      fetchOptions: { cache: 'no-store' },
+      customerAccessToken,
+    });
 
-  const url = data.cart.createCartRedirectUrls.redirectUrls?.redirectedCheckoutUrl;
+    const url = data.cart.createCartRedirectUrls.redirectUrls?.redirectedCheckoutUrl;
 
-  if (!url) {
-    throw new Error('Invalid checkout url.');
+    if (!url) {
+      return submission.reply({ formErrors: [t('failedToRedirectToCheckout')] });
+    }
+
+    return redirect({ href: url, locale });
+  } catch (error) {
+    if (error instanceof Error) {
+      return submission.reply({ formErrors: [error.message] });
+    }
+
+    return submission.reply({ formErrors: [String(error)] });
   }
-
-  redirect({ href: url, locale });
 };

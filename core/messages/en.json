@@ -351,6 +351,13 @@
       "title": "Your cart is empty.",
       "subtitle": "Add some products to get started.",
       "cta": "Continue shopping"
+    },
+    "Errors": {
+      "cartNotFound": "No cartId cookie found.",
+      "lineItemNotFound": "Line item not found.",
+      "failedToRedirectToCheckout": "Failed to redirect to checkout.",
+      "failedToUpdateQuantity": "Failed to update quantity.",
+      "somethingWentWrong": "Something went wrong. Please try again later."
     }
   },
   "Compare": {

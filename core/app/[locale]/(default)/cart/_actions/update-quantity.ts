@@ -48,11 +48,11 @@ export const updateQuantity = async ({
     const cartId = cookies().get('cartId')?.value;
 
     if (!cartId) {
-      return { status: 'error', error: t('cartNotFound') };
+      throw new Error(t('cartNotFound'));
     }
 
     if (!lineItemEntityId) {
-      return { status: 'error', error: t('itemNotFound') };
+      throw new Error(t('lineItemNotFound'));
     }
 
     if (quantity === 0) {
@@ -85,17 +85,17 @@ export const updateQuantity = async ({
     const cart = response.data.cart.updateCartLineItem?.cart;
 
     if (!cart) {
-      return { status: 'error', error: t('failedToUpdateQuantity') };
+      throw new Error(t('failedToUpdateQuantity'));
     }
 
     revalidatePath('/cart');
 
-    return { status: 'success', data: cart };
+    return cart;
   } catch (error: unknown) {
     if (error instanceof Error) {
-      return { status: 'error', error: error.message };
+      throw new Error(error.message);
     }
 
-    return { status: 'error', error: 'Something went wrong.' };
+    throw new Error(t('somethingWentWrong'));
   }
 };

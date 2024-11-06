@@ -5,6 +5,7 @@ import { parseWithZod } from '@conform-to/zod';
 import clsx from 'clsx';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { startTransition, Suspense, use, useEffect, useOptimistic } from 'react';
+import { useFormState } from 'react-dom';
 
 import { Button } from '@/vibes/soul/primitives/button';
 
@@ -13,7 +14,6 @@ import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
 
 import { schema } from './schema';
-import { useFormState } from 'react-dom';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 

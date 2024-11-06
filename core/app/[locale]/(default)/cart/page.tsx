@@ -57,14 +57,11 @@ export default async function Cart() {
 
   const formattedLineItems = lineItems.map((item) => ({
     id: item.entityId,
-    // productEntityId: item.productEntityId,
-    // variantEntityId: item.variantEntityId ?? undefined,
     quantity: item.quantity,
     price: format.number(item.listPrice.value, {
       style: 'currency',
       currency: item.listPrice.currencyCode,
     }),
-    // selectedOptions: item.selectedOptions,
     subtitle: item.selectedOptions
       .map((option) => {
         switch (option.__typename) {
