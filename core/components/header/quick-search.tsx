@@ -7,7 +7,7 @@ import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
 import { Search } from '../ui/header';
 
-import { getSearchResults } from './_actions/get-search-results';
+import { getSearchResults } from '~/client/queries/get-search-results';
 
 interface Image {
   src: string;

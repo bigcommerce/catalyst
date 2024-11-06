@@ -12,7 +12,7 @@ import { logoTransformer } from '~/data-transformers/logo-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { localeLanguageRegionMap } from '~/i18n/routing';
 
-import { getSearchResults } from './_actions/get-search-results';
+import { getSearchResults } from '~/client/queries/get-search-results';
 import { HeaderFragment } from './fragment';
 
 type QuickSearchResults = ExistingResultType<typeof getSearchResults>;
