@@ -86,7 +86,6 @@ nav#nav-footer-section div:nth-child(1) {
   text-align: left;
 }
 
-
 svg.lucide.lucide-user {
   color: #008bb7;
 }
@@ -630,7 +629,9 @@ ul.div-breadcrumb li:last-child a {
   .gallery-pop-up-img {
     width: 85% !important;
   }
-
+  .register-form {
+    margin-top: 1em;
+  }
   /* gallery */
   .group.main-gallery .product-img {
     width: 100%;
@@ -1013,7 +1014,6 @@ button#label-1462 {
     border-color 0.3s ease;
 }
 
-
 #add-to-cart svg {
   right: -0.6em;
   position: absolute;
@@ -1133,7 +1133,6 @@ footer.\32 xl\:container.\32 xl\:mx-auto {
 .relative.mb-14 {
   margin-bottom: 0.5em;
 }
-
 
 /* test 1 j*/
 /* cant change */

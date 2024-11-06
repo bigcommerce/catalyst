@@ -48,7 +48,7 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
       <div className="relative h-7">
         {field.isRequired && (
           <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-error-secondary"
+            className="inline-flex w-full text-xs font-normal text-error-secondary validation-error-password relative -top-3"
             match="valueMissing"
           >
             {t('password')}
@@ -56,7 +56,7 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
         )}
         {fieldName === 'confirmPassword' && (
           <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-error-secondary"
+            className="inline-flex w-full text-xs font-normal text-error-secondary validation-error-confirm-password relative -top-3"
             match={() => {
               return !isValid;
             }}

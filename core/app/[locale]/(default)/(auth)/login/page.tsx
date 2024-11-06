@@ -37,82 +37,118 @@ export default function Login({ params: { locale } }: Props) {
 
   const t = useTranslations('Login');
 
-  const breadcrumbs: any = [{
-    label: "Rewards Program",
-    href: '#'
-  }];
+  const breadcrumbs: any = [
+    {
+      label: 'Rewards Program',
+      href: '#',
+    },
+  ];
 
   return (
     <>
-      <div className='absolute w-full block left-0 bg-[#F3F4F5]'>
-        <div className="flex flex-row items-center justify-center gap-[30px] px-0 py-[20px]">
-          <BcImage
-            alt="PatJoheat"
-            width={95}
-            height={40}
-            unoptimized={true}
-            src={patjoheatAndShade}
-          />
-          <BcImage
-            alt="PatJoheat"
-            width={95}
-            height={40}
-            unoptimized={true}
-            src={baileyStreet}
-          />
-          <BcImage
-            alt="1Stop"
-            width={194}
-            height={40}
-            unoptimized={true}
-            src={OneStopLightning}
-          />
-          <BcImage
-            alt="Luna"
-            width={298}
-            height={40}
-            unoptimized={true}
-            src={lunaWarehouse}
-          />
-          <BcImage
-            alt="Canada Lighting"
-            width={228}
-            height={40}
-            unoptimized={true}
-            src={canadaLightning}
-          />
-          <BcImage
-            alt="Bailey Street"
-            width={138}
-            height={40}
-            unoptimized={true}
-            src={homeclickBlack}
-          />
+      <div className="absolute left-0 w-full bg-[#F3F4F5]">
+        <div className="relative overflow-x-auto">
+          <div className="flex min-w-fit items-center whitespace-nowrap py-5 pl-4 pr-4 md:justify-center md:py-[20px]">
+            <div className="flex items-center gap-4 md:gap-[30px]">
+              <div className="flex-none">
+                <BcImage
+                  alt="PatJoheat"
+                  width={95}
+                  height={40}
+                  unoptimized={true}
+                  src={patjoheatAndShade}
+                  className="h-4 w-auto md:h-10 lg:h-6 xl:h-8 2xl:h-10"
+                />
+              </div>
+              <div className="flex-none">
+                <BcImage
+                  alt="Bailey Street"
+                  width={138}
+                  height={40}
+                  unoptimized={true}
+                  src={baileyStreet}
+                  className="h-4 w-auto md:h-10 lg:h-6 xl:h-8 2xl:h-10"
+                />
+              </div>
+              <div className="flex-none">
+                <BcImage
+                  alt="1Stop Lightning"
+                  width={194}
+                  height={40}
+                  unoptimized={true}
+                  src={OneStopLightning}
+                  className="h-4 w-auto md:h-10 lg:h-6 xl:h-8 2xl:h-10"
+                />
+              </div>
+              <div className="flex-none">
+                <BcImage
+                  alt="Luna Warehouse"
+                  width={298}
+                  height={40}
+                  unoptimized={true}
+                  src={lunaWarehouse}
+                  className="h-4 w-auto md:h-10 lg:h-6 xl:h-8 2xl:h-10"
+                />
+              </div>
+              <div className="flex-none">
+                <BcImage
+                  alt="Canada Lighting"
+                  width={228}
+                  height={40}
+                  unoptimized={true}
+                  src={canadaLightning}
+                  className="h-4 w-auto md:h-10 lg:h-6 xl:h-8 2xl:h-10"
+                />
+              </div>
+              <div className="flex-none">
+                <BcImage
+                  alt="Homeclick Black"
+                  width={150}
+                  height={40}
+                  unoptimized={true}
+                  src={homeclickBlack}
+                  className="h-4 w-auto md:h-10 lg:h-6 xl:h-8 2xl:h-10"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="mt-[20px] flex flex-col gap-[20px] px-4 2xl:container sm:px-10 lg:px-12 2xl:mx-auto !px-[40px] 2xl:px-0">
-         <ComponentsBreadcrumbs className="login-div login-breadcrumb mt-[6rem] mx-auto px-[1px]" breadcrumbs={breadcrumbs} />
-        <div className="login-div login-div-one px-[1px] mx-auto flex justify-between gap-24">
-          <h2 className="text-[34px] font-normal text-[#353535]">Rewards Program</h2>
+
+      <div className="mt-[20px] flex flex-col gap-[20px] px-0 xl:px-12 2xl:container 2xl:mx-auto 2xl:px-0">
+        <ComponentsBreadcrumbs
+          className="login-div login-breadcrumb mx-auto mt-[6rem] w-[80%] px-[1px]"
+          breadcrumbs={breadcrumbs}
+        />
+<div className="login-div login-div-one mx-auto flex flex-col xl:flex-row w-full xl:w-[80%] justify-between gap-0 xl:gap-24 xl:gap-24 px-[1px] text-center xl:text-left mt-5 md:mt-6 md:pt-5 lg:mt-0">
+
+
+          <h2 className="text-[24px] font-normal text-[#353535] md:text-[34px]">Rewards Program</h2>
           <div className="flex flex-row flex-wrap content-center items-center justify-center gap-[10px] px-0 pb-0 pt-[10px]">
             <p className="flex items-center text-center text-[20px] font-medium tracking-[0.15px] text-[#002A37]">
               Shopping for a Business?
             </p>
 
-            <button className="box-border flex flex-row justify-center items-center px-6 py-2 gap-1 max-w-[258px] bg-white border border-[#B4DDE9] rounded">
-              <div className='font-medium text-sm flex items-center tracking-wide text-[#002A37]'>OPEN A TRADE ACCOUNT</div>
+            <button className="box-border flex max-w-[258px] flex-row items-center justify-center gap-1 rounded border border-[#B4DDE9] bg-white px-6 py-2">
+              <div className="flex items-center text-sm font-medium tracking-wide text-[#002A37]">
+                OPEN A TRADE ACCOUNT
+              </div>
             </button>
           </div>
         </div>
-        <div className="login-div px-[1px] font-weight-[500] mx-auto text-[20px] tracking-[0.15px]">
-          Log In
-        </div>
-        <div className="login-div mx-auto mb-6 flex justify-center gap-24">
+        <div className="login-div font-weight-[500] mx-auto w-[80%] px-[1px] text-[20px] tracking-[0.15px] text-center xl:text-left">
+    Log In
+</div>
+
+        <div className="login-div mx-auto mb-6 flex w-full flex-col justify-center lg:gap-[4.5rem] xl:w-[80%] xl:flex-row">
           {/* <h2 className="text-h2 mb-8 text-4xl font-black lg:text-5xl">{t('heading')}</h2> */}
-          <div className="login-first-child w-[calc(90vw)]  md:w-[calc(35.28vw)] mx-[1px] login-logo flex flex-grow flex-col">
+          <div className="login-first-child login-logo mx-[1px] flex w-[calc(90vw)] flex-grow flex-col xl:w-[calc(35.28vw)]">
             <LoginForm {...imageIconList} />
           </div>
-          <div className="login-sec-child w-[calc(90vw)] md:w-[calc(35.28vw)] mx-[1px] flex flex-grow flex-col items-center gap-[20px] rounded-[5px] p-0">
+
+          <div className="login-sec-child mx-[1px] flex w-[calc(90vw)] flex-grow flex-col xl:items-center gap-[20px] rounded-[5px] p-0 mt-[7em] sm:mt-[7em] xl:mt-0  xl:w-[calc(35.28vw)]">
+
+
             <div className="flex w-full flex-col gap-[20px] rounded-[5px] bg-[#008BB7] p-[40px] text-white">
               <h3 className="flex items-center justify-center text-center text-[34px] font-bold tracking-[0.25px]">
                 {t('CreateAccount.heading')}
@@ -132,37 +168,37 @@ export default function Login({ params: { locale } }: Props) {
               <ul className="flex list-disc flex-col gap-[20px]">
                 <li className="flex list-none flex-row items-center gap-[10px]">
                   <img className="mt-[5px] self-start" src={checkCircle} alt="" />
-                  <p className="text-[20px] font-normal tracking-[0.15px]">
+                  <p className="text-[19px] font-normal tracking-[0.15px]">
                     {t('CreateAccount.fastCheckout')}
                   </p>
                 </li>
                 <li className="flex list-none flex-row items-center gap-[10px]">
                   <img className="mt-[5px] self-start" src={checkCircle} alt="" />
-                  <p className="text-[20px] font-normal tracking-[0.15px]">
+                  <p className="text-[19px] font-normal tracking-[0.15px]">
                     {t('CreateAccount.multipleAddresses')}
                   </p>
                 </li>
                 <li className="flex list-none flex-row items-center gap-[10px]">
                   <img className="mt-[5px] self-start" src={checkCircle} alt="" />
-                  <p className="text-[20px] font-normal tracking-[0.15px]">
+                  <p className="text-[19px] font-normal tracking-[0.15px]">
                     {t('CreateAccount.ordersHistory')}
                   </p>
                 </li>
                 <li className="flex list-none flex-row items-center gap-[10px]">
                   <img className="mt-[5px] self-start" src={checkCircle} alt="" />
-                  <p className="text-[20px] font-normal tracking-[0.15px]">
+                  <p className="text-[19px] font-normal tracking-[0.15px]">
                     {t('CreateAccount.ordersTracking')}
                   </p>
                 </li>
                 <li className="flex list-none flex-row items-center gap-[10px]">
                   <img className="mt-[5px] self-start" src={checkCircle} alt="" />
-                  <p className="text-[20px] font-normal tracking-[0.15px]">
+                  <p className="text-[19px] font-normal tracking-[0.15px]">
                     {t('CreateAccount.wishlists')}
                   </p>
                 </li>
                 <li className="flex list-none flex-row items-center gap-[10px]">
                   <img className="mt-[5px] self-start" src={checkCircle} alt="" />
-                  <p className="text-[20px] font-normal tracking-[0.15px]">
+                  <p className="text-[19px] font-normal tracking-[0.15px]">
                     {t('CreateAccount.exclusiveAccess')}
                   </p>
                 </li>
