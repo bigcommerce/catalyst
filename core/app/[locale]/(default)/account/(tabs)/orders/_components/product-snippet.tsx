@@ -14,6 +14,10 @@ export const OrderItemFragment = graphql(`
     brand
     name
     quantity
+    image {
+      url: urlTemplate(lossy: true)
+      altText
+    }
     subTotalListPrice {
       value
       currencyCode
@@ -39,7 +43,7 @@ export type ProductSnippetFragment = Omit<
 };
 
 export const assembleProductData = (orderItem: FragmentOf<typeof OrderItemFragment>) => {
-  const { entityId: productId, name, brand, subTotalListPrice, productOptions } = orderItem;
+  const { entityId: productId, name, brand, image, subTotalListPrice, productOptions } = orderItem;
 
   return {
     entityId: productId,
@@ -48,8 +52,12 @@ export const assembleProductData = (orderItem: FragmentOf<typeof OrderItemFragme
       name: brand ?? '',
       path: '', // will be added later
     },
-    // NOTE: update later when API is ready
-    defaultImage: null,
+    defaultImage: image
+      ? {
+          url: image.url,
+          altText: image.altText,
+        }
+      : null,
     productOptions,
     path: '', // will be added later
     quantity: orderItem.quantity,
@@ -121,15 +129,14 @@ export const ProductSnippet = ({
   const t = useTranslations('Product.Details');
   const { name, defaultImage, brand, path, prices } = product;
   const price = pricesTransformer(prices, format);
-  // TODO: clear once API is ready
-  const isImageAvailable = isExtended && defaultImage?.url === 'string';
+  const isImageAvailable = defaultImage !== null;
 
   return (
-    <div className={cn('relative flex flex-col overflow-visible', isExtended && 'flex-row')}>
-      <div className={cn('relative flex justify-center pb-3', isImageAvailable && 'w-1/4')}>
+    <div className={cn('relative flex flex-col overflow-visible', isExtended && 'flex-row gap-4')}>
+      <div className="flex justify-center pb-3">
         {isImageAvailable && (
           <div
-            className={cn('relative flex-auto', {
+            className={cn('relative flex-auto', isExtended && 'h-20 md:h-36', {
               'aspect-square': imageSize === 'square',
               'aspect-[4/5]': imageSize === 'tall',
               'aspect-[7/5]': imageSize === 'wide',
@@ -140,12 +147,12 @@ export const ProductSnippet = ({
               className="object-contain"
               fill
               priority={imagePriority}
-              sizes="(max-width: 768px) 50vw, (max-width: 1536px) 25vw, 500px"
+              sizes="(max-width: 768px) 80px, 144px"
               src={defaultImage.url}
             />
           </div>
         )}
-        {!isExtended && defaultImage?.url !== 'string' && (
+        {!isImageAvailable && (
           <div className="relative aspect-square flex-auto">
             <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
               <span>{t('comingSoon')}</span>
@@ -153,7 +160,7 @@ export const ProductSnippet = ({
           </div>
         )}
       </div>
-      <div className={cn('flex flex-1 flex-col gap-1', isExtended && 'w-3/4')}>
+      <div className="flex flex-1 flex-col gap-1">
         {brand ? <p className={cn('text-base text-gray-500', brandSize)}>{brand.name}</p> : null}
         {isExtended ? (
           <div className="flex flex-col items-start justify-between md:flex-row">
