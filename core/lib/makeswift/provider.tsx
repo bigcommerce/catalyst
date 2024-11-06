@@ -13,7 +13,7 @@ export function MakeswiftProvider({
   previewMode: boolean;
 }) {
   return (
-    <ReactRuntimeProvider runtime={runtime} previewMode={previewMode}>
+    <ReactRuntimeProvider previewMode={previewMode} runtime={runtime}>
       <RootStyleRegistry>{children}</RootStyleRegistry>
     </ReactRuntimeProvider>
   );
