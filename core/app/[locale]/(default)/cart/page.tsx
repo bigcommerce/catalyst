@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { getFormatter, getTranslations } from 'next-intl/server';
 
-import { Cart as CartComponent } from '@/vibes/soul/sections/cart';
+import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/cart';
 
 import { redirectToCheckout } from './_actions/redirect-to-checkout';
 import { updateLineItem } from './_actions/update-line-item';
@@ -24,13 +24,10 @@ export default async function Cart() {
 
   if (!cartId) {
     return (
-      <CartComponent
-        emptyState={{
-          title: t('Empty.title'),
-          subtitle: t('Empty.subtitle'),
-          cta: { label: t('Empty.cta'), href: '/shop-all' },
-        }}
-        lineItems={[]}
+      <CartEmptyState
+        cta={{ label: t('Empty.cta'), href: '/shop-all' }}
+        subtitle={t('Empty.subtitle')}
+        title={t('Empty.title')}
       />
     );
   }
@@ -42,13 +39,10 @@ export default async function Cart() {
 
   if (!cart) {
     return (
-      <CartComponent
-        emptyState={{
-          title: t('Empty.title'),
-          subtitle: t('Empty.subtitle'),
-          cta: { label: t('Empty.cta'), href: '/shop-all' },
-        }}
-        lineItems={[]}
+      <CartEmptyState
+        cta={{ label: t('Empty.cta'), href: '/shop-all' }}
+        subtitle={t('Empty.subtitle')}
+        title={t('Empty.title')}
       />
     );
   }
