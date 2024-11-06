@@ -109,3 +109,39 @@ export const ProductCardSkeleton = function ProductCardSkeleton({
     </div>
   );
 };
+
+interface ProductCardEmptyProps {
+  className?: string;
+  title: string;
+}
+
+export const ProductCardEmpty = function ProductCardEmpty({
+  className,
+  title,
+}: ProductCardEmptyProps) {
+  return (
+    <div className={clsx('rounded-xl @md:rounded-2xl', className)}>
+      {/* Image */}
+      <div className="bg-contrast-100 relative aspect-[5/6] overflow-hidden rounded-xl @6xl:min-w-80" />
+      <p className="text-contrast-500 mx-1 pt-3 text-base font-semibold">{title}</p>
+    </div>
+  );
+};
+
+interface ProductCardErrorProps {
+  className?: string;
+  title: string;
+}
+
+export const ProductCardError = function ProductCardError({
+  className,
+  title,
+}: ProductCardErrorProps) {
+  return (
+    <div className={clsx('rounded-xl @md:rounded-2xl', className)}>
+      {/* Image */}
+      <div className="bg-error-highlight relative aspect-[5/6] overflow-hidden rounded-xl @6xl:min-w-80" />
+      <p className="text-error-shadow mx-1 pt-3 text-base font-semibold">{title}</p>
+    </div>
+  );
+};

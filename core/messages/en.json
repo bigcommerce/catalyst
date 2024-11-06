@@ -511,7 +511,9 @@
         "viewOptions": "View options",
         "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
         "error": "Error adding product to cart. Please try again."
-      }
+      },
+      "empty": "There is no product selected",
+      "error": "Error loading product"
     },
     "FormFields": {
       "Validation": {
