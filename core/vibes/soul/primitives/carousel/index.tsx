@@ -165,6 +165,9 @@ function CarouselScrollbar({ className }: React.HTMLAttributes<HTMLDivElement>) 
 
       const point = progress / 100;
       const snapList = api.scrollSnapList();
+
+      if (snapList.length === 0) return -1;
+
       const closestSnap = snapList.reduce((prev, curr) =>
         Math.abs(curr - point) < Math.abs(prev - point) ? curr : prev,
       );
