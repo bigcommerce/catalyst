@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from '~/components/link';
 
 import { CarouselProduct, ProductsCarousel } from '@/vibes/soul/primitives/products-carousel';
 
