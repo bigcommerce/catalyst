@@ -8,6 +8,7 @@ import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { LocaleType } from '~/i18n/routing';
 
+import { redirectToCompare } from '../../_actions/redirect-to-compare';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { CategoryViewed } from './_components/category-viewed';
@@ -109,6 +110,7 @@ export default async function Category({ params: { locale, slug }, searchParams 
     <>
       <ProductsListSection
         breadcrumbs={breadcrumbs}
+        compareAction={redirectToCompare}
         compareLabel={t('compare')}
         compareParamName="compare"
         compareProducts={compareProducts}

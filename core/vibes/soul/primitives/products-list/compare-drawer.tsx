@@ -1,38 +1,105 @@
-'use client'
+'use client';
 
-import { Suspense, use } from 'react'
+import { ArrowRight, X } from 'lucide-react';
+import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
+import { Suspense, use } from 'react';
 
-import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs'
+import { Button } from '@/vibes/soul/primitives/button';
+import { Drawer, DrawerItem } from '@/vibes/soul/primitives/drawer';
+import { BcImage } from '~/components/bc-image';
+import { Link } from '~/components/link';
 
-import { Drawer, DrawerItem } from '../drawer'
-
-interface Props {
-  items: DrawerItem[] | Promise<DrawerItem[]>
-  paramName?: string
+function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .map((word) => word[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
 }
 
-function CompareDrawerInner({ items, paramName = 'compare' }: Props) {
-  const resolved = items instanceof Promise ? use(items) : items
+interface Props {
+  items: DrawerItem[] | Promise<DrawerItem[]>;
+  paramName?: string;
+  action?: React.ComponentProps<'form'>['action'];
+  submitLabel?: string;
+}
+
+function CompareDrawerInner({
+  items,
+  paramName = 'compare',
+  action,
+  submitLabel = 'Compare',
+}: Props) {
+  const resolved = items instanceof Promise ? use(items) : items;
   const [, setParam] = useQueryState(
     paramName,
-    parseAsArrayOf(parseAsString).withOptions({ shallow: false })
-  )
+    parseAsArrayOf(parseAsString).withOptions({ shallow: false, scroll: false }),
+  );
 
   return (
     resolved.length > 0 && (
-      <Drawer
-        items={resolved}
-        onRemoveClick={id => {
-          setParam(prev => {
-            const next = prev?.filter(v => v !== id) ?? []
+      <Drawer>
+        <form
+          action={action}
+          className="mx-auto flex w-full max-w-7xl flex-col items-start justify-end gap-x-3 gap-y-4 @md:flex-row"
+        >
+          <div className="flex flex-1 flex-wrap justify-end gap-4">
+            {resolved.map((item) => (
+              <div className="relative" key={item.id}>
+                <input key={item.id} name={paramName} type="hidden" value={item.id} />
+                <Link
+                  className="group relative flex max-w-56 items-center whitespace-nowrap rounded-xl border border-contrast-100 bg-background font-semibold ring-primary transition-all duration-150 hover:bg-contrast-100 focus:outline-0 focus:ring-2"
+                  href={item.href}
+                >
+                  <div className="bg-primary-highlight/10 relative aspect-square w-12 shrink-0">
+                    {item.image?.src != null ? (
+                      <BcImage
+                        alt={item.image.alt}
+                        className="rounded-lg object-cover @4xl:rounded-r-none"
+                        fill
+                        src={item.image.src}
+                      />
+                    ) : (
+                      <span className="max-w-full break-all p-1 text-xs text-primary-shadow opacity-20">
+                        {getInitials(item.title)}
+                      </span>
+                    )}
+                  </div>
+                  <span className="hidden truncate pl-3 pr-5 text-foreground @4xl:block">
+                    {item.title}
+                  </span>
+                </Link>
 
-            return next.length > 0 ? next : null
-          })
-        }}
-        cta={{ label: 'Compare', href: '/compare' }}
-      />
+                <button
+                  aria-label={`Remove ${item.title}`}
+                  className="absolute -right-2.5 -top-2.5 flex h-7 w-7 items-center justify-center rounded-full border border-contrast-100 bg-background text-contrast-400 transition-colors duration-150 hover:border-contrast-200 hover:bg-contrast-100 hover:text-foreground"
+                  onClick={() => {
+                    void setParam((prev) => {
+                      const next = prev?.filter((v) => v !== item.id) ?? [];
+
+                      return next.length > 0 ? next : null;
+                    });
+                  }}
+                  type="button"
+                >
+                  <X absoluteStrokeWidth size={16} strokeWidth={1.5} />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <Button className="hidden @md:block" size="medium" type="submit" variant="primary">
+            {submitLabel} <ArrowRight absoluteStrokeWidth size={20} strokeWidth={1} />
+          </Button>
+
+          <Button className="w-full @md:hidden" size="small" type="submit" variant="primary">
+            {submitLabel} <ArrowRight absoluteStrokeWidth size={16} strokeWidth={1} />
+          </Button>
+        </form>
+      </Drawer>
     )
-  )
+  );
 }
 
 export function CompareDrawer(props: Props) {
@@ -40,5 +107,5 @@ export function CompareDrawer(props: Props) {
     <Suspense fallback={null}>
       <CompareDrawerInner {...props} />
     </Suspense>
-  )
+  );
 }

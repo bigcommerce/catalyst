@@ -1,20 +1,24 @@
-import { Suspense, use } from 'react'
+import { clsx } from 'clsx';
+import { Suspense, use } from 'react';
 
-import { clsx } from 'clsx'
+import {
+  CardProduct,
+  ProductCard,
+  ProductCardSkeleton,
+} from '@/vibes/soul/primitives/product-card';
 
-import { CardProduct, ProductCard, ProductCardSkeleton } from '@/vibes/soul/primitives/product-card'
+import { CompareDrawer } from './compare-drawer';
 
-import { CompareDrawer } from './compare-drawer'
-
-export type ListProduct = CardProduct
+export type ListProduct = CardProduct;
 
 interface Props {
-  products: ListProduct[] | Promise<ListProduct[]>
-  compareProducts?: ListProduct[] | Promise<ListProduct[]>
-  className?: string
-  showCompare?: boolean
-  compareLabel?: string
-  compareParamName?: string
+  products: ListProduct[] | Promise<ListProduct[]>;
+  compareProducts?: ListProduct[] | Promise<ListProduct[]>;
+  className?: string;
+  showCompare?: boolean;
+  compareAction?: React.ComponentProps<'form'>['action'];
+  compareLabel?: string;
+  compareParamName?: string;
 }
 
 function ProductsListInner({
@@ -23,23 +27,24 @@ function ProductsListInner({
   compareLabel,
   compareParamName,
 }: Omit<Props, 'className'>) {
-  const resolved = products instanceof Promise ? use(products) : products
+  const resolved = products instanceof Promise ? use(products) : products;
 
-  return resolved.map(product => (
+  return resolved.map((product) => (
     <ProductCard
+      compareLabel={compareLabel}
+      compareParamName={compareParamName}
       key={product.id}
       product={product}
       showCompare={showCompare}
-      compareLabel={compareLabel}
-      compareParamName={compareParamName}
     />
-  ))
+  ));
 }
 
 export function ProductsList({
   products,
   className,
   showCompare,
+  compareAction,
   compareProducts,
   compareLabel,
   compareParamName,
@@ -54,15 +59,22 @@ export function ProductsList({
             ))}
           >
             <ProductsListInner
-              products={products}
-              showCompare={showCompare}
               compareLabel={compareLabel}
               compareParamName={compareParamName}
+              products={products}
+              showCompare={showCompare}
             />
           </Suspense>
         </div>
       </div>
-      {compareProducts && <CompareDrawer items={compareProducts} paramName={compareParamName} />}
+      {compareProducts && (
+        <CompareDrawer
+          action={compareAction}
+          items={compareProducts}
+          paramName={compareParamName}
+          submitLabel={compareLabel}
+        />
+      )}
     </>
-  )
+  );
 }

@@ -6,6 +6,7 @@ import { SearchForm } from '~/components/search-form';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
+import { redirectToCompare } from '../_actions/redirect-to-compare';
 import { fetchFacetedSearch } from '../fetch-faceted-search';
 
 import { getCompareProducts } from './page-data';
@@ -88,6 +89,7 @@ export default async function Search({ searchParams }: Props) {
 
   return (
     <ProductsListSection
+      compareAction={redirectToCompare}
       compareLabel={f('compare')}
       compareParamName="compare"
       compareProducts={compareProducts}

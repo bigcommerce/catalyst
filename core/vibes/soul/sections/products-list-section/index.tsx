@@ -1,26 +1,26 @@
-import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/primitives/breadcrumbs'
-import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination'
-import { ListProduct, ProductsList } from '@/vibes/soul/primitives/products-list'
+import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/primitives/breadcrumbs';
+import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
+import { ListProduct, ProductsList } from '@/vibes/soul/primitives/products-list';
 
-import { Filter, FiltersPanel } from './filters-panel'
-import { MobileFilters } from './mobile-filters'
-import { Option as SortOption } from './sorting'
-import { Sorting } from './sorting'
+import { Filter, FiltersPanel } from './filters-panel';
+import { MobileFilters } from './mobile-filters';
+import { Sorting, Option as SortOption } from './sorting';
 
 interface Props {
-  breadcrumbs?: Breadcrumb[]
-  title?: Promise<string> | string
-  totalCount: Promise<number> | number
-  products: Promise<ListProduct[]> | ListProduct[]
-  filters: Promise<Filter[]> | Filter[]
-  sortOptions: Promise<SortOption[]> | SortOption[]
-  compareProducts?: Promise<ListProduct[]> | ListProduct[]
-  paginationInfo?: Promise<CursorPaginationInfo> | CursorPaginationInfo
-  compareLabel?: string
-  filterLabel?: string
-  sortLabel?: string
-  sortParamName?: string
-  compareParamName?: string
+  breadcrumbs?: Breadcrumb[];
+  title?: Promise<string> | string;
+  totalCount: Promise<number> | number;
+  products: Promise<ListProduct[]> | ListProduct[];
+  filters: Promise<Filter[]> | Filter[];
+  sortOptions: Promise<SortOption[]> | SortOption[];
+  compareProducts?: Promise<ListProduct[]> | ListProduct[];
+  paginationInfo?: Promise<CursorPaginationInfo> | CursorPaginationInfo;
+  compareAction?: React.ComponentProps<'form'>['action'];
+  compareLabel?: string;
+  filterLabel?: string;
+  sortLabel?: string;
+  sortParamName?: string;
+  compareParamName?: string;
 }
 
 export function ProductsListSection({
@@ -31,6 +31,7 @@ export function ProductsListSection({
   compareProducts,
   sortOptions,
   filters,
+  compareAction,
   compareLabel,
   paginationInfo,
   filterLabel,
@@ -42,11 +43,11 @@ export function ProductsListSection({
     <div className="mx-auto max-w-7xl @container">
       {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
       <div className="flex flex-wrap items-center justify-between gap-4 pb-8 pt-6 text-foreground">
-        <h1 className="text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl ">
+        <h1 className="text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
           {title} <span className="text-contrast-300">{totalCount}</span>
         </h1>
         <div className="flex gap-2">
-          <Sorting options={sortOptions} label={sortLabel} paramName={sortParamName} />
+          <Sorting label={sortLabel} options={sortOptions} paramName={sortParamName} />
           <div className="block @3xl:hidden">
             <MobileFilters filters={filters} label={filterLabel} />
           </div>
@@ -58,15 +59,16 @@ export function ProductsListSection({
         </div>
         <div className="flex-1">
           <ProductsList
-            products={products}
-            showCompare
+            compareAction={compareAction}
             compareLabel={compareLabel}
             compareParamName={compareParamName}
             compareProducts={compareProducts}
+            products={products}
+            showCompare
           />
           {paginationInfo && <CursorPagination info={paginationInfo} />}
         </div>
       </div>
     </div>
-  )
+  );
 }

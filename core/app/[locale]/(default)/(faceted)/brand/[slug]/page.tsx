@@ -11,6 +11,7 @@ import { LocaleType } from '~/i18n/routing';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { getBrand, getCompareProducts } from './page-data';
+import { redirectToCompare } from '../../_actions/redirect-to-compare';
 
 interface Props {
   params: {
@@ -94,6 +95,7 @@ export default async function Brand({ params: { slug, locale }, searchParams }: 
 
   return (
     <ProductsListSection
+      compareAction={redirectToCompare}
       compareLabel={t('compare')}
       compareParamName="compare"
       compareProducts={compareProducts}
