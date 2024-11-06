@@ -1,6 +1,4 @@
-import { Link } from '~/components/link';
-
-import { Button } from '@/vibes/soul/primitives/button';
+import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { ListProduct, ProductsList } from '@/vibes/soul/primitives/products-list';
 
 interface Link {
@@ -15,28 +13,32 @@ export interface FeaturedProductsListProps {
   products: ListProduct[];
 }
 
-export const FeaturedProductsList = function FeaturedProductsList({
+export function FeaturedProductsList({
   title,
   description,
   cta,
   products,
 }: FeaturedProductsListProps) {
   return (
-    <section className="bg-background @container">
-      <div className="relative mx-auto flex max-w-screen-2xl flex-col gap-6 py-10 @4xl:flex-row @4xl:py-24 @5xl:px-20">
-        <div className="4xl:w-1/2 top-28 flex w-full items-start justify-between gap-4 self-start px-3 @xl:px-6 @4xl:sticky @4xl:max-w-md @4xl:flex-col @4xl:items-start @4xl:justify-start @5xl:px-0 @6xl:w-4/12">
+    <section className="@container">
+      <div className="relative mx-auto flex max-w-screen-2xl flex-col gap-6 px-4 py-10 @4xl:flex-row @4xl:px-8 @4xl:py-24">
+        <div className="top-28 flex w-full flex-col items-start justify-between gap-4 self-start @xl:flex-row @4xl:sticky @4xl:w-1/2 @4xl:max-w-md @4xl:flex-col @4xl:items-start @4xl:justify-start @5xl:px-0 @6xl:w-4/12">
           <div>
-            <h2 className="mb-4 font-heading text-lg font-semibold leading-none text-foreground @4xl:text-6xl @4xl:font-medium">
+            <h2 className="mb-4 font-heading text-4xl font-semibold leading-none text-foreground @4xl:text-6xl @4xl:font-medium">
               {title}
             </h2>
             {description != null && description !== '' && (
-              <p className="mt-1.5 max-w-md pb-2 text-foreground">{description}</p>
+              <p className="mt-1.5 max-w-md pb-2 text-lg font-light text-foreground">
+                {description}
+              </p>
             )}
           </div>
           {cta?.href != null && cta.href !== '' && cta.label !== '' && (
-            <Button className="h-5 bg-transparent text-sm @4xl:h-12 @4xl:bg-primary" asChild>
-              <Link href={cta.href}>{cta.label}</Link>
-            </Button>
+            <div className="shrink-0">
+              <ButtonLink href={cta.href} variant="secondary">
+                {cta.label}
+              </ButtonLink>
+            </div>
           )}
         </div>
 
@@ -44,4 +46,4 @@ export const FeaturedProductsList = function FeaturedProductsList({
       </div>
     </section>
   );
-};
+}

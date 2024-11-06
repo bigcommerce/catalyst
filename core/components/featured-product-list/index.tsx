@@ -11,6 +11,7 @@ type Product = ResultOf<typeof FeaturedProductsListFragment>;
 export const FeaturedProductsList = ({
   products,
   title,
+  cta,
 }: {
   products: Product[];
   title: string;
@@ -33,5 +34,5 @@ export const FeaturedProductsList = ({
     subtitle: product.brand?.name ?? undefined,
   }));
 
-  return <FeaturedProductsListComponent products={formattedProducts} title={title} />;
+  return <FeaturedProductsListComponent products={formattedProducts} title={title} cta={cta} />;
 };
