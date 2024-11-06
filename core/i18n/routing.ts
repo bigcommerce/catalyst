@@ -11,7 +11,7 @@ export const locales = [
   // 'es-CL',
   // 'es-CO',
   // 'es-LA',
-  'es-MX',
+  // 'es-MX',
   // 'es-PE',
   // 'es',
   // 'it',
