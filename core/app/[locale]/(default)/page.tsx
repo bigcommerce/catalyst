@@ -2,6 +2,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { FeaturedImage } from '@/vibes/soul/sections/featured-image';
+import { Subscribe } from '@/vibes/soul/sections/subscribe';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
@@ -81,6 +82,11 @@ export default async function Home({ params: { locale } }: Props) {
         description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         products={featuredProducts}
         title={t('List.title')}
+      />
+
+      <Subscribe
+        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
+        title={t('Subscribe.title')}
       />
     </>
   );
