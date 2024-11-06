@@ -43,7 +43,7 @@
     "embla-carousel": "^8.3.1",
     "embla-carousel-autoplay": "^8.3.1",
     "embla-carousel-fade": "^8.3.1",
-    "embla-carousel-react": "8.3.0",
+    "embla-carousel-react": "^8.3.1",
     "focus-trap-react": "^10.3.0",
     "gql.tada": "^1.8.10",
     "graphql": "^16.9.0",

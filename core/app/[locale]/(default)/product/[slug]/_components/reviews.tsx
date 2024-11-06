@@ -1,5 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter } from 'next-intl/server';
 
 import { Reviews as ReviewsComponent } from '@/vibes/soul/sections/reviews';
 import { client } from '~/client';
@@ -46,7 +46,7 @@ interface Props {
 
 export const Reviews = async ({ productId }: Props) => {
   // TODO: add translations to component
-  const t = await getTranslations('Product.Reviews');
+  // const t = await getTranslations('Product.Reviews');
   const format = await getFormatter();
 
   const { data } = await client.fetch({
