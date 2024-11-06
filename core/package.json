@@ -1,6 +1,6 @@
 {
-  "name": "@bigcommerce/catalyst-core",
-  "description": "BigCommerce Catalyst is a Next.js starter kit for building headless BigCommerce storefronts.",
+  "name": "Stringovation",
+  "description": "Stringovation is a Next.js starter kit for building headless BigCommerce storefronts.",
   "version": "0.19.0",
   "private": true,
   "scripts": {
