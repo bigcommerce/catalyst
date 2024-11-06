@@ -95,8 +95,8 @@ export default async function Category({ params: { locale, slug }, searchParams 
         breadcrumbs={breadcrumbs}
         compareLabel={t('compare')}
         compareParamName="compare"
-        filterLabel={t('FacetedSearch.filterBy')}
-        filters={filters}
+        filterLabel={t('FacetedSearch.filters')}
+        filters={filters.filter((filter) => !!filter)}
         paginationInfo={{
           startCursorParamName: 'before',
           endCursorParamName: 'after',
@@ -104,7 +104,7 @@ export default async function Category({ params: { locale, slug }, searchParams 
           startCursor: startCursor ?? undefined,
         }}
         products={products}
-        sortLabel={t('SortBy.ariaLabel')}
+        sortLabel={t('SortBy.label')}
         sortOptions={[
           { value: 'featured', label: t('SortBy.featuredItems') },
           { value: 'newest', label: t('SortBy.newestItems') },

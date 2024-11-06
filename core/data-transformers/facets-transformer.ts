@@ -66,37 +66,33 @@ export const facetsTransformer = async (
       };
     }
 
-    const otherOptions = [];
-
     if (facet.freeShipping) {
-      otherOptions.push({
+      return {
+        type: 'toggle-group' as const,
+        paramName: `shipping`,
         label: t('freeShippingLabel'),
-        // key: 'shipping',
-        value: 'free_shipping',
-      });
+        options: [{ label: t('freeShippingLabel'), value: 'free_shipping' }],
+      };
     }
 
     if (facet.isFeatured) {
-      otherOptions.push({
+      return {
+        type: 'toggle-group' as const,
+        paramName: `isFeatured`,
         label: t('isFeaturedLabel'),
-        // key: 'isFeatured',
-        value: 'on',
-      });
+        options: [{ label: t('isFeaturedLabel'), value: 'on' }],
+      };
     }
 
     if (facet.isInStock) {
-      otherOptions.push({
+      return {
+        type: 'toggle-group' as const,
+        paramName: `stock`,
         label: t('inStockLabel'),
-        // key: 'stock',
-        value: 'in_stock',
-      });
+        options: [{ label: t('inStockLabel'), value: 'in_stock' }],
+      };
     }
 
-    return {
-      type: 'toggle-group' as const,
-      paramName: facet.name,
-      label: facet.name,
-      options: otherOptions,
-    };
+    return null;
   });
 };

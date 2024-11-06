@@ -232,12 +232,14 @@ const getProductSearchResults = cache(
 const SearchParamSchema = z.union([z.string(), z.array(z.string()), z.undefined()]);
 
 const SearchParamToArray = SearchParamSchema.transform((value) => {
+  console.log(value, Array.isArray(value));
+
   if (Array.isArray(value)) {
     return value;
   }
 
   if (typeof value === 'string') {
-    return [value];
+    return value.split(',');
   }
 
   return undefined;
@@ -351,7 +353,7 @@ const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchParamToArr
       .filter(([attribute]) => AttributeKey.safeParse(attribute).success)
       .map(([attribute, values]) => ({
         attribute: attribute.replace('attr_', ''),
-        values,
+        values: values?.flatMap((value) => value.split(',')) ?? [],
       }));
 
     return {

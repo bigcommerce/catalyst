@@ -27,6 +27,7 @@ export default async function Search({ searchParams }: Props) {
 
   const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : undefined;
 
+  // TODO: add Soul component
   if (!searchTerm) {
     return (
       <>
@@ -70,8 +71,8 @@ export default async function Search({ searchParams }: Props) {
     <ProductsListSection
       compareLabel={f('compare')}
       compareParamName="compare"
-      filterLabel={f('FacetedSearch.filterBy')}
-      filters={filters}
+      filterLabel={f('FacetedSearch.filters')}
+      filters={filters.filter((filter) => !!filter)}
       paginationInfo={{
         startCursorParamName: 'before',
         endCursorParamName: 'after',
@@ -79,13 +80,13 @@ export default async function Search({ searchParams }: Props) {
         startCursor: startCursor ?? undefined,
       }}
       products={products}
-      sortLabel={f('SortBy.ariaLabel')}
+      sortLabel={f('SortBy.label')}
       sortOptions={[
         { value: 'featured', label: f('SortBy.featuredItems') },
         { value: 'newest', label: f('SortBy.newestItems') },
         {
           value: 'best_selling',
-          label: t('SortBy.bestSellingItems'),
+          label: f('SortBy.bestSellingItems'),
         },
         { value: 'a_to_z', label: f('SortBy.aToZ') },
         { value: 'z_to_a', label: f('SortBy.zToA') },

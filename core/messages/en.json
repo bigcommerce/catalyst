@@ -135,7 +135,7 @@
       }
     },
     "SortBy": {
-      "ariaLabel": "Sort",
+      "label": "Sort",
       "featuredItems": "Featured items",
       "bestSellingItems": "Best selling items",
       "newestItems": "Newest items",
