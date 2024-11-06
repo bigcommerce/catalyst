@@ -1,8 +1,11 @@
+// Login page
+
 'use client';
 
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, useState, useEffect } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
+import { Eye, EyeOff } from 'lucide-react';
 
 import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
@@ -24,6 +27,44 @@ import { useAccountStatusContext } from '../../../account/(tabs)/_components/acc
 import { login, getRememberMeCookie, deleteRememberCookie } from '../_actions/login';
 import { IconProps } from '../../fragments';
 
+// Custom PasswordInput component with larger black icon
+const PasswordInput = ({
+  error,
+  onChange,
+  onInvalid,
+  required,
+}: {
+  error: boolean;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onInvalid: (e: ChangeEvent<HTMLInputElement>) => void;
+  required: boolean;
+}) => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  return (
+    <div className="login-input relative !mt-[0px] h-[44px] w-full">
+      <input
+        className={`h-full w-full border-none bg-transparent pl-3 outline-none ${error ? 'border-error' : ''}`}
+        id="password"
+        name="password"
+        type={showPassword ? 'text' : 'password'}
+        onChange={onChange}
+        onInvalid={onInvalid}
+        required={required}
+        placeholder="Enter your password"
+      />
+      <button
+        type="button"
+        onClick={() => setShowPassword(!showPassword)}
+        className="absolute right-3 top-1/2 flex h-6 w-6 -translate-y-1/2 cursor-pointer items-center justify-center text-black hover:text-gray-800"
+        tabIndex={-1}
+      >
+        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+      </button>
+    </div>
+  );
+};
+
 const SubmitButton = () => {
   const { pending } = useFormStatus();
   const t = useTranslations('Login');
@@ -39,9 +80,6 @@ const SubmitButton = () => {
     </Button>
   );
 };
-
-// 'apple-black': imageManagerImageUrl('apple-black.png.png', '24w'),
-// 'facebook-blue': imageManagerImageUrl('facebook-blue.png', '16w'),
 
 export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: IconProps) => {
   const t = useTranslations('Login');
@@ -74,10 +112,8 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
     switch (e.target.name) {
       case 'email': {
         setIsEmailValid(!validationStatus);
-
         return;
       }
-
       case 'password': {
         setIsPasswordValid(!validationStatus);
       }
@@ -107,8 +143,8 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
           <p>{t('Form.error')}</p>
         </Message>
       )}
-      {/* {showLogin && ( */}
-      <Form action={formAction} className="mb-14 flex flex-col gap-3 md:p-8 lg:p-0">
+
+      <Form action={formAction} className="mb-14 flex flex-col gap-3 lg:p-0">
         <Field className="relative flex flex-col items-start gap-5 space-y-2" name="email">
           {cookieIsSet === 1 && (
             <div className="flex flex-col items-center justify-center">
@@ -144,6 +180,7 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
               onInvalid={handleInputValidation}
               required
               type="email"
+              placeholder="Enter your email"
             />
           </FieldControl>
           <FieldMessage
@@ -157,6 +194,7 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
             {t('Form.enterEmailMessage')}
           </FieldMessage>
         </Field>
+
         <Field className="pb- relative flex flex-col items-start gap-5 space-y-2" name="password">
           <FieldLabel
             className="login-label flex items-center tracking-[0.15px]"
@@ -165,14 +203,11 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
             {t('Form.passwordLabel')}
           </FieldLabel>
           <FieldControl asChild className="login-form-div mt-0">
-            <Input
-              className="login-input !mt-[0px] h-[44px] w-full"
+            <PasswordInput
               error={!isPasswordValid}
-              id="password"
               onChange={handleInputValidation}
               onInvalid={handleInputValidation}
               required
-              type="password"
             />
           </FieldControl>
           <FieldMessage
@@ -182,8 +217,9 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
             {t('Form.entePasswordMessage')}
           </FieldMessage>
         </Field>
+
         <div className="remember-forgot-div">
-          <Field className="relative mt-2 inline-flex space-y-2" name="remember-me">
+          <Field className="relative mt-2 inline-flex items-center space-y-2" name="remember-me">
             <Checkbox aria-labelledby="remember-me" id="remember-me" name="remember-me" value="1" />
             <Label
               className="ml-2 mt-0 cursor-pointer space-y-2 pb-2 md:my-0"
@@ -194,12 +230,14 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
             </Label>
           </Field>
         </div>
+
         <div className="login-submit-btn mt-[6px]">
           <FormSubmit asChild>
             <SubmitButton />
           </FormSubmit>
         </div>
-        <div className="forgot-signin-div my-[18px] flex flex-row-reverse items-center justify-between">
+
+        <div className="forgot-signin-div md:grid-none grid items-center justify-between sm:grid sm:px-6 md:my-[18px] md:flex md:flex-row-reverse md:px-[0]">
           <Link
             className="my-5 inline-flex items-center justify-start text-sm font-semibold text-primary hover:text-secondary md:my-0"
             href="/login/forgot-password"
@@ -210,15 +248,10 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
             Sign in With an Existing Account
           </p>
         </div>
+
         <div className="flex items-center justify-center pt-0">
-          {/* Continue With Email Button */}
-
-          {/* Sign in text */}
-
-          {/* Social buttons */}
-          <div className="login-in-buttons flex h-[54px] w-full flex-row justify-between gap-[20px]">
-            {/* Log In with Facebook Button */}
-            <button className="flex h-[54px] w-[144px] items-center justify-center gap-[10px] rounded-[3px] border border-[#d7d7d7] bg-[#FFFFFF] p-[15px]">
+          <div className="login-in-buttons flex h-[54px] w-full flex-col justify-between gap-[20px] sm:flex-row sm:gap-[20px] md:flex-col lg:flex-col lg:gap-[20px] xl:flex-row">
+            <button className="flex h-[54px] w-full items-center justify-center gap-[10px] rounded-[3px] border border-[#d7d7d7] bg-[#FFFFFF] p-[15px] sm:w-full md:w-full lg:w-full xl:w-[170px]">
               <BcImage
                 alt="Facebook logo"
                 className="Login-logo h-[24px] w-[24px]"
@@ -226,12 +259,11 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
                 width={20}
                 height={20}
                 priority={true}
-              />{' '}
+              />
               <p className="text-[20px] font-medium text-[#1877F2]">Facebook</p>
             </button>
 
-            {/* Log In with Google Button */}
-            <button className="flex h-[54px] w-[144px] items-center justify-center gap-[10px] rounded-[3px] border border-[#d7d7d7] bg-[#FFFFFF] p-[15px]">
+            <button className="flex h-[54px] w-full items-center justify-center gap-[10px] rounded-[3px] border border-[#d7d7d7] bg-[#FFFFFF] p-[15px] sm:w-full md:w-full lg:w-full xl:w-[170px]">
               <BcImage
                 alt="Google logo"
                 className="Login-logo h-[24px] w-[24px]"
@@ -239,12 +271,11 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
                 width={20}
                 height={20}
                 priority={true}
-              />{' '}
+              />
               <p className="text-[20px] font-medium text-[#757575]">Google</p>
             </button>
 
-            {/* Log In with Apple Button */}
-            <button className="flex h-[54px] w-[144px] items-center justify-center gap-[10px] rounded-[3px] border border-[#d7d7d7] bg-[#FFFFFF] p-[15px]">
+            <button className="flex h-[54px] w-full items-center justify-center gap-[10px] rounded-[3px] border border-[#d7d7d7] bg-[#FFFFFF] p-[15px] sm:w-full md:w-full lg:w-full xl:w-[170px]">
               <BcImage
                 alt="Apple logo"
                 className="Login-logo w-[24px]"
@@ -252,13 +283,12 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
                 width={24}
                 height={24}
                 priority={true}
-              />{' '}
+              />
               <p className="text-[20px] font-medium text-[#353535]">Apple</p>
             </button>
           </div>
         </div>
       </Form>
-      {/* )} */}
     </>
   );
 };
