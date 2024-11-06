@@ -232,8 +232,6 @@ const getProductSearchResults = cache(
 const SearchParamSchema = z.union([z.string(), z.array(z.string()), z.undefined()]);
 
 const SearchParamToArray = SearchParamSchema.transform((value) => {
-  console.log(value, Array.isArray(value));
-
   if (Array.isArray(value)) {
     return value;
   }
@@ -328,7 +326,7 @@ const AttributeKey = z.custom<`attr_${string}`>((val) => {
 
 const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchParamToArray)
   .transform((publicParams) => {
-    const { after, before, limit, sort, ...filters } = publicParams;
+    const { after, before, limit, sort, compare, ...filters } = publicParams;
 
     const {
       brand,
