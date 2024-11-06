@@ -1,14 +1,13 @@
-import { BcImage } from '~/components/bc-image';
-import { Link } from '~/components/link';
-
 import { clsx } from 'clsx';
 
 import { Badge } from '@/vibes/soul/primitives/badge';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
+import { BcImage as Image } from '~/components/bc-image';
+import { Link } from '~/components/link';
 
 import { Compare } from './compare';
 
-export type CardProduct = {
+export interface CardProduct {
   id: string;
   title: string;
   href: string;
@@ -17,15 +16,15 @@ export type CardProduct = {
   subtitle?: string;
   badge?: string;
   rating?: number;
-};
+}
 
-type Props = {
+interface Props {
   className?: string;
   showCompare?: boolean;
   compareLabel?: string;
   compareParamName?: string;
   product: CardProduct;
-};
+}
 
 export function ProductCard({
   product: { id, title, subtitle, badge, price, image, href },
@@ -37,18 +36,18 @@ export function ProductCard({
   return (
     <div className={className}>
       <Link
-        id={id}
-        href={href}
         className="group flex cursor-pointer flex-col gap-2 rounded-xl ring-primary ring-offset-4 focus-visible:outline-0 focus-visible:ring-2 @md:rounded-2xl"
+        href={href}
+        id={id}
       >
         <div className="relative aspect-[5/6] overflow-hidden rounded-[inherit] bg-contrast-100">
           {image?.src != null ? (
-            <BcImage
-              src={image.src}
-              fill
-              sizes="(max-width: 768px) 70vw, 33vw"
+            <Image
               alt="Category card image"
               className="w-full scale-100 select-none bg-contrast-100 object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+              fill
+              sizes="(max-width: 768px) 70vw, 33vw"
+              src={image.src}
             />
           ) : (
             <div className="pl-2 pt-3 text-7xl font-bold leading-[0.8] tracking-tighter text-contrast-300 transition-transform duration-500 ease-out group-hover:scale-105">
@@ -56,7 +55,7 @@ export function ProductCard({
             </div>
           )}
           {badge != null && badge !== '' && (
-            <Badge variant="rounded" className="absolute left-3 top-3">
+            <Badge className="absolute left-3 top-3" variant="rounded">
               {badge}
             </Badge>
           )}
@@ -65,7 +64,7 @@ export function ProductCard({
 
       <div className="mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
         <div className="flex-1">
-          <Link tabIndex={-1} href={href} className="group text-base">
+          <Link className="group text-base" href={href} tabIndex={-1}>
             <span className="block font-semibold">{title}</span>
 
             {subtitle != null && subtitle !== '' && (
@@ -77,7 +76,7 @@ export function ProductCard({
 
         {showCompare && (
           <div className="mt-0.5 shrink-0">
-            <Compare productId={id} label={compareLabel} paramName={compareParamName} />
+            <Compare label={compareLabel} paramName={compareParamName} productId={id} />
           </div>
         )}
       </div>
@@ -95,7 +94,7 @@ export const ProductCardSkeleton = function ProductCardSkeleton({
   return (
     <div className={clsx('animate-pulse cursor-pointer rounded-xl @md:rounded-2xl', className)}>
       {/* Image */}
-      <div className="relative aspect-[5/6] overflow-hidden rounded-xl bg-contrast-100 @6xl:min-w-80"></div>
+      <div className="relative aspect-[5/6] overflow-hidden rounded-xl bg-contrast-100 @6xl:min-w-80" />
       <div className="flex justify-between gap-2 pt-4 @sm:gap-2 @sm:pt-7">
         <h3 className="flex flex-col flex-wrap justify-between gap-2 @sm:gap-2 @4xl:flex-row">
           {/* Name */}
@@ -106,42 +105,6 @@ export const ProductCardSkeleton = function ProductCardSkeleton({
         {/* Price */}
         <div className="h-4 w-16 rounded-lg bg-contrast-100 @4xl:h-6" />
       </div>
-    </div>
-  );
-};
-
-interface ProductCardEmptyProps {
-  className?: string;
-  title: string;
-}
-
-export const ProductCardEmpty = function ProductCardEmpty({
-  className,
-  title,
-}: ProductCardEmptyProps) {
-  return (
-    <div className={clsx('rounded-xl @md:rounded-2xl', className)}>
-      {/* Image */}
-      <div className="bg-contrast-100 relative aspect-[5/6] overflow-hidden rounded-xl @6xl:min-w-80" />
-      <p className="text-contrast-500 mx-1 pt-3 text-base font-semibold">{title}</p>
-    </div>
-  );
-};
-
-interface ProductCardErrorProps {
-  className?: string;
-  title: string;
-}
-
-export const ProductCardError = function ProductCardError({
-  className,
-  title,
-}: ProductCardErrorProps) {
-  return (
-    <div className={clsx('rounded-xl @md:rounded-2xl', className)}>
-      {/* Image */}
-      <div className="bg-error-highlight relative aspect-[5/6] overflow-hidden rounded-xl @6xl:min-w-80" />
-      <p className="text-error-shadow mx-1 pt-3 text-base font-semibold">{title}</p>
     </div>
   );
 };

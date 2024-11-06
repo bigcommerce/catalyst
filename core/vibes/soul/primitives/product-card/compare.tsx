@@ -1,13 +1,13 @@
-'use client'
+'use client';
 
-import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs'
+import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
 
-import { Checkbox } from '@/vibes/soul/form/checkbox'
+import { Checkbox } from '@/vibes/soul/form/checkbox';
 
 interface Props {
-  productId: string
-  paramName?: string
-  label?: string
+  productId: string;
+  paramName?: string;
+  label?: string;
 }
 
 export const Compare = function Compare({
@@ -17,8 +17,8 @@ export const Compare = function Compare({
 }: Props) {
   const [param, setParam] = useQueryState(
     paramName,
-    parseAsArrayOf(parseAsString).withOptions({ shallow: false })
-  )
+    parseAsArrayOf(parseAsString).withOptions({ shallow: false }),
+  );
 
   return (
     <Checkbox
@@ -26,16 +26,16 @@ export const Compare = function Compare({
       className="text-contrast-500 transition-colors duration-300 hover:text-foreground"
       label={label}
       checked={param?.includes(productId) ?? false}
-      onCheckedChange={value => {
-        void setParam(prev => {
+      onCheckedChange={(value) => {
+        void setParam((prev) => {
           const next =
             value === true
               ? [...(prev ?? []), productId]
-              : (prev ?? []).filter(v => v !== productId)
+              : (prev ?? []).filter((v) => v !== productId);
 
-          return next.length > 0 ? next : null
-        })
+          return next.length > 0 ? next : null;
+        });
       }}
     />
-  )
-}
+  );
+};

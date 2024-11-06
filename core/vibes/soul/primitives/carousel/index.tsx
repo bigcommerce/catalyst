@@ -114,7 +114,7 @@ function CarouselContent({ className, ...rest }: React.HTMLAttributes<HTMLDivEle
   const { carouselRef } = useCarousel();
 
   return (
-    <div className="w-full overflow-hidden" ref={carouselRef}>
+    <div className="w-full" ref={carouselRef}>
       <div {...rest} className={clsx('-ml-4 flex', className)} />
     </div>
   );
@@ -155,7 +155,7 @@ function CarouselButtons({ className, ...rest }: React.HTMLAttributes<HTMLDivEle
 }
 
 function CarouselScrollbar({ className }: React.HTMLAttributes<HTMLDivElement>) {
-  const { api, scrollPrev, scrollNext, canScrollPrev, canScrollNext } = useCarousel();
+  const { api } = useCarousel();
   const [progress, setProgress] = useState(0);
   const [scrollbarPosition, setScrollbarPosition] = useState({ width: 0, left: 0 });
 
@@ -165,9 +165,8 @@ function CarouselScrollbar({ className }: React.HTMLAttributes<HTMLDivElement>) 
 
       const point = progress / 100;
       const snapList = api.scrollSnapList();
-      const closestSnap = snapList.reduce(
-        (prev, curr) => (Math.abs(curr - point) < Math.abs(prev - point) ? curr : prev),
-        [],
+      const closestSnap = snapList.reduce((prev, curr) =>
+        Math.abs(curr - point) < Math.abs(prev - point) ? curr : prev,
       );
 
       return snapList.findIndex((snap) => snap === closestSnap);
@@ -181,7 +180,7 @@ function CarouselScrollbar({ className }: React.HTMLAttributes<HTMLDivElement>) 
     const snapList = api.scrollSnapList();
     const closestSnapIndex = findClosestSnap(progress);
     const scrollbarWidth = 100 / snapList.length;
-    const scrollbarLeft = snapList[closestSnapIndex] * (100 - scrollbarWidth);
+    const scrollbarLeft = (closestSnapIndex / snapList.length) * 100;
 
     setScrollbarPosition({ width: scrollbarWidth, left: scrollbarLeft });
 
@@ -194,7 +193,7 @@ function CarouselScrollbar({ className }: React.HTMLAttributes<HTMLDivElement>) 
     function onScroll() {
       if (!api) return;
 
-      setProgress(api.scrollSnapList()[api.selectedScrollSnap()] * 100);
+      setProgress(api.scrollSnapList()[api.selectedScrollSnap()]! * 100);
     }
 
     api.on('select', onScroll);
