@@ -3,6 +3,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 import { DM_Serif_Text, Inter } from 'next/font/google';
+import { draftMode } from 'next/headers';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
@@ -13,9 +14,12 @@ import '../globals.css';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { MakeswiftProvider } from '~/lib/makeswift/provider';
 
 import { Notifications } from '../notifications';
 import { Providers } from '../providers';
+
+import '~/lib/makeswift/components';
 
 const dm_serif_text = DM_Serif_Text({
   display: 'swap',
@@ -101,11 +105,13 @@ export default function RootLayout({ children, params: { locale } }: Props) {
       <head>
         <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
       </head>
-      <body className="font-body flex h-screen min-w-[375px] flex-col">
+      <body className="flex h-screen min-w-[375px] flex-col font-body">
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <NuqsAdapter>
-            <Providers>{children}</Providers>
+            <MakeswiftProvider previewMode={draftMode().isEnabled}>
+              <Providers>{children}</Providers>
+            </MakeswiftProvider>
           </NuqsAdapter>
         </NextIntlClientProvider>
         <VercelComponents />
