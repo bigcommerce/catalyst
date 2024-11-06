@@ -42,7 +42,9 @@ export default function Login({ params: { locale } }: Props) {
           <li>{t('CreateAccount.ordersTracking')}</li>
           <li>{t('CreateAccount.wishlists')}</li>
         </ul>
-        <ButtonLink href="/register">{t('CreateAccount.createLink')}</ButtonLink>
+        <ButtonLink href="/register" variant="secondary">
+          {t('CreateAccount.createLink')}
+        </ButtonLink>
       </div>
     </SignInSection>
   );
