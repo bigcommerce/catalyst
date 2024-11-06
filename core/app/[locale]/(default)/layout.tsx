@@ -14,9 +14,7 @@ export default function DefaultLayout({ children, params: { locale } }: Props) {
 
   return (
     <>
-      <Suspense>
-        <Header />
-      </Suspense>
+      <Header />
 
       <main>{children}</main>
 
