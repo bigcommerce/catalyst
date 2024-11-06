@@ -374,7 +374,7 @@ function CheckoutButton({
   );
 }
 
-function CartEmptyState({ title, subtitle, cta }: CartEmptyState) {
+export function CartEmptyState({ title, subtitle, cta }: CartEmptyState) {
   return (
     <div className="mt-20 flex min-h-96 flex-col items-center justify-center @container">
       <span className="mb-3 text-center font-heading text-2xl font-medium leading-none text-foreground @lg:text-4xl @3xl:text-5xl">
@@ -388,7 +388,7 @@ function CartEmptyState({ title, subtitle, cta }: CartEmptyState) {
   );
 }
 
-function CartSkeleton({ title }: { title: string }) {
+export function CartSkeleton({ title }: { title: string }) {
   return (
     <div className="mx-auto w-full max-w-screen-2xl animate-pulse @container">
       <div className="flex w-full flex-col gap-10 px-3 pb-10 pt-24 @xl:px-6 @4xl:flex-row @4xl:gap-20 @4xl:pb-20 @4xl:pt-32 @5xl:px-20">
