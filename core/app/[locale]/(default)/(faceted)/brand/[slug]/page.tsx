@@ -1,3 +1,4 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
@@ -9,7 +10,7 @@ import { LocaleType } from '~/i18n/routing';
 
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
-import { getBrand } from './page-data';
+import { getBrand, getCompareProducts } from './page-data';
 
 interface Props {
   params: {
@@ -75,10 +76,27 @@ export default async function Brand({ params: { slug, locale }, searchParams }: 
   const facets = search.facets.items.filter((facet) => facet.__typename !== 'BrandSearchFilter');
   const filters = await facetsTransformer(facets);
 
+  const compare = searchParams.compare;
+
+  const compareProducts =
+    typeof compare === 'string'
+      ? getCompareProducts({ entityIds: compare.split(',').map((id) => Number(id)) }).then((data) =>
+          removeEdgesAndNodes(data.products).map((product) => ({
+            id: product.entityId.toString(),
+            title: product.name,
+            href: product.path,
+            image: product.defaultImage
+              ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
+              : undefined,
+          })),
+        )
+      : [];
+
   return (
     <ProductsListSection
       compareLabel={t('compare')}
       compareParamName="compare"
+      compareProducts={compareProducts}
       filterLabel={t('FacetedSearch.filters')}
       filters={filters.filter((filter) => !!filter)}
       paginationInfo={{

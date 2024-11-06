@@ -11,7 +11,7 @@ import { LocaleType } from '~/i18n/routing';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { CategoryViewed } from './_components/category-viewed';
-import { getCategoryPageData } from './page-data';
+import { getCategoryPageData, getCompareProducts } from './page-data';
 
 interface Props {
   params: {
@@ -89,12 +89,29 @@ export default async function Category({ params: { locale, slug }, searchParams 
   const facets = search.facets.items.filter((facet) => facet.__typename !== 'CategorySearchFilter');
   const filters = await facetsTransformer(facets);
 
+  const compare = searchParams.compare;
+
+  const compareProducts =
+    typeof compare === 'string'
+      ? getCompareProducts({ entityIds: compare.split(',').map((id) => Number(id)) }).then((data) =>
+          removeEdgesAndNodes(data.products).map((product) => ({
+            id: product.entityId.toString(),
+            title: product.name,
+            href: product.path,
+            image: product.defaultImage
+              ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
+              : undefined,
+          })),
+        )
+      : [];
+
   return (
     <>
       <ProductsListSection
         breadcrumbs={breadcrumbs}
         compareLabel={t('compare')}
         compareParamName="compare"
+        compareProducts={compareProducts}
         filterLabel={t('FacetedSearch.filters')}
         filters={filters.filter((filter) => !!filter)}
         paginationInfo={{

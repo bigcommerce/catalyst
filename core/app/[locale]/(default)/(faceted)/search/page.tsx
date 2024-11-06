@@ -1,3 +1,4 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
@@ -6,6 +7,8 @@ import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
 import { fetchFacetedSearch } from '../fetch-faceted-search';
+
+import { getCompareProducts } from './page-data';
 
 export async function generateMetadata() {
   const t = await getTranslations('Search');
@@ -67,10 +70,27 @@ export default async function Search({ searchParams }: Props) {
   const facets = search.facets.items;
   const filters = await facetsTransformer(facets);
 
+  const compare = searchParams.compare;
+
+  const compareProducts =
+    typeof compare === 'string'
+      ? getCompareProducts({ entityIds: compare.split(',').map((id) => Number(id)) }).then((data) =>
+          removeEdgesAndNodes(data.products).map((product) => ({
+            id: product.entityId.toString(),
+            title: product.name,
+            href: product.path,
+            image: product.defaultImage
+              ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
+              : undefined,
+          })),
+        )
+      : [];
+
   return (
     <ProductsListSection
       compareLabel={f('compare')}
       compareParamName="compare"
+      compareProducts={compareProducts}
       filterLabel={f('FacetedSearch.filters')}
       filters={filters.filter((filter) => !!filter)}
       paginationInfo={{
