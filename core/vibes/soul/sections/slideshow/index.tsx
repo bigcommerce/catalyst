@@ -1,16 +1,15 @@
 'use client';
 
-import { BcImage } from '~/components/bc-image';
-import { useCallback, useEffect, useState } from 'react';
-
 import { clsx } from 'clsx';
 import { EmblaCarouselType } from 'embla-carousel';
 import Autoplay from 'embla-carousel-autoplay';
 import Fade from 'embla-carousel-fade';
 import useEmblaCarousel from 'embla-carousel-react';
 import { Pause, Play } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Button } from '@/vibes/soul/primitives/button';
+import { BcImage } from '~/components/bc-image';
 
 interface Link {
   label: string;
@@ -29,6 +28,7 @@ export interface Slide {
   image?: Image;
   cta?: Link;
 }
+
 interface Props {
   slides: Slide[];
   interval?: number;
@@ -92,14 +92,17 @@ export const Slideshow = function Slideshow({ slides, interval = 5000, className
 
   const toggleAutoplay = useCallback(() => {
     const autoplay = emblaApi?.plugins().autoplay;
+
     if (!autoplay) return;
 
     const playOrStop = autoplay.isPlaying() ? autoplay.stop : autoplay.play;
+
     playOrStop();
   }, [emblaApi]);
 
   const resetAutoplay = useCallback(() => {
     const autoplay = emblaApi?.plugins().autoplay;
+
     if (!autoplay) return;
 
     autoplay.reset();
@@ -107,6 +110,7 @@ export const Slideshow = function Slideshow({ slides, interval = 5000, className
 
   useEffect(() => {
     const autoplay = emblaApi?.plugins().autoplay;
+
     if (!autoplay) return;
 
     setIsPlaying(autoplay.isPlaying());
@@ -126,25 +130,25 @@ export const Slideshow = function Slideshow({ slides, interval = 5000, className
   return (
     <section
       className={clsx(
-        'relative h-dvh max-h-[880px] overflow-hidden bg-primary-shadow @container',
+        'bg-primary-shadow relative h-dvh max-h-[880px] overflow-hidden @container',
         className,
       )}
     >
-      <div ref={emblaRef} className="h-full">
+      <div className="h-full" ref={emblaRef}>
         <div className="flex h-full">
           {slides.map(({ title, description, image, cta }, idx) => {
             return (
-              <div key={idx} className="relative h-full w-full min-w-0 shrink-0 grow-0 basis-full">
-                <div className="absolute bottom-0 left-1/2 z-10 w-full -translate-x-1/2 bg-gradient-to-t from-foreground to-transparent pb-5 pt-20 text-background">
+              <div className="relative h-full w-full min-w-0 shrink-0 grow-0 basis-full" key={idx}>
+                <div className="from-foreground text-background absolute bottom-0 left-1/2 z-10 w-full -translate-x-1/2 bg-gradient-to-t to-transparent pb-5 pt-20">
                   <div className="mx-auto max-w-screen-2xl px-3 pb-8 @xl:px-6 @5xl:px-20">
-                    <h1 className="mb-2 font-heading text-5xl font-medium leading-none @2xl:text-8xl">
+                    <h1 className="font-heading mb-2 text-5xl font-medium leading-none @2xl:text-8xl">
                       {title}
                     </h1>
                     {description != null && description !== '' && (
                       <p className="mb-4 max-w-xl">{description}</p>
                     )}
                     {cta != null && cta.href !== '' && cta.label !== '' && (
-                      <Button variant="tertiary" className="my-4">
+                      <Button className="my-4" variant="tertiary">
                         {cta.label}
                       </Button>
                     )}
@@ -153,16 +157,16 @@ export const Slideshow = function Slideshow({ slides, interval = 5000, className
 
                 {image?.src != null && image.src !== '' && (
                   <BcImage
-                    src={image.src}
+                    alt={image.alt}
+                    blurDataURL={image.blurDataUrl}
+                    className="block h-20 w-full object-cover"
+                    fill
                     placeholder={
                       image.blurDataUrl != null && image.blurDataUrl !== '' ? 'blur' : 'empty'
                     }
-                    blurDataURL={image.blurDataUrl}
-                    alt={image.alt}
-                    fill
                     priority
                     sizes="100vw"
-                    className="block h-20 w-full object-cover"
+                    src={image.src}
                   />
                 )}
               </div>
@@ -172,14 +176,14 @@ export const Slideshow = function Slideshow({ slides, interval = 5000, className
       </div>
 
       {/* Controls */}
-      <div className="absolute bottom-6 left-1/2 flex w-full max-w-screen-2xl -translate-x-1/2 flex-wrap items-center px-3 text-background @xl:px-6 @5xl:px-20">
+      <div className="text-background absolute bottom-6 left-1/2 flex w-full max-w-screen-2xl -translate-x-1/2 flex-wrap items-center px-3 @xl:px-6 @5xl:px-20">
         {/* Progress Buttons */}
         {scrollSnaps.map((_: number, index: number) => {
           return (
             <button
               aria-label={`View image number ${index + 1}`}
-              key={index}
               className="rounded-lg px-1.5 py-2 focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-primary"
+              key={index}
               onClick={() => {
                 onProgressButtonClick(index);
                 resetAutoplay();
@@ -188,15 +192,15 @@ export const Slideshow = function Slideshow({ slides, interval = 5000, className
               <div className="relative overflow-hidden">
                 {/* White Bar - Current Index Indicator / Progress Bar */}
                 <div
-                  key={`progress-${playCount}`} // Force the animation to restart when pressing "Play", to match animation with embla's autoplay timer
                   className={clsx(
-                    'absolute h-0.5 bg-background',
+                    'bg-background absolute h-0.5',
                     'opacity-0 fill-mode-forwards',
                     isPlaying ? 'running' : 'paused',
                     index === selectedIndex
                       ? 'opacity-100 ease-linear animate-in slide-in-from-left'
                       : 'ease-out animate-out fade-out',
                   )}
+                  key={`progress-${playCount}`} // Force the animation to restart when pressing "Play", to match animation with embla's autoplay timer
                   style={{
                     animationDuration: index === selectedIndex ? `${interval}ms` : '200ms',
                     width: `${175 / slides.length}px`,
@@ -204,7 +208,7 @@ export const Slideshow = function Slideshow({ slides, interval = 5000, className
                 />
                 {/* Grey Bar BG */}
                 <div
-                  className="h-0.5 bg-background opacity-30"
+                  className="bg-background h-0.5 opacity-30"
                   style={{ width: `${175 / slides.length}px` }}
                 />
               </div>
@@ -220,15 +224,15 @@ export const Slideshow = function Slideshow({ slides, interval = 5000, className
 
         {/* Stop / Start Button */}
         <button
-          className="flex h-7 w-7 items-center justify-center rounded-lg border border-contrast-300/50 ring-primary transition-opacity duration-300 hover:border-contrast-300/80 focus-visible:outline-0 focus-visible:ring-2"
+          aria-label={isPlaying ? 'Pause' : 'Play'}
+          className="border-contrast-300/50 hover:border-contrast-300/80 flex h-7 w-7 items-center justify-center rounded-lg border ring-primary transition-opacity duration-300 focus-visible:outline-0 focus-visible:ring-2"
           onClick={toggleAutoplay}
           type="button"
-          aria-label={isPlaying ? 'Pause' : 'Play'}
         >
           {isPlaying ? (
-            <Pause strokeWidth={1.5} className="pointer-events-none w-3.5" />
+            <Pause className="pointer-events-none w-3.5" strokeWidth={1.5} />
           ) : (
-            <Play strokeWidth={1.5} className="pointer-events-none ml-0.5 w-3.5" />
+            <Play className="pointer-events-none ml-0.5 w-3.5" strokeWidth={1.5} />
           )}
         </button>
       </div>

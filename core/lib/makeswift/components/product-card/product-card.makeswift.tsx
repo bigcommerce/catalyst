@@ -1,17 +1,13 @@
 import { Checkbox, Combobox, Style } from '@makeswift/runtime/controls';
-import { useFormatter, useTranslations } from 'next-intl';
+import { useFormatter } from 'next-intl';
 import useSWR from 'swr';
-import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
-import {
-  ProductCard,
-  ProductCardEmpty,
-  ProductCardError,
-  ProductCardSkeleton,
-} from '~/vibes/soul/primitives/product-card';
-import { runtime } from '../../runtime';
-import { SearchProductsResponse } from '~/app/api/products/route';
 import { GetProductResponse } from '~/app/api/products/[entityId]/route';
+import { SearchProductsResponse } from '~/app/api/products/route';
+import { pricesTransformer } from '~/data-transformers/prices-transformer';
+import { ProductCard, ProductCardSkeleton } from '~/vibes/soul/primitives/product-card';
+
+import { runtime } from '../../runtime';
 
 interface Props {
   entityId?: string;
@@ -23,7 +19,7 @@ const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 function MakeswiftProductCard({ entityId, className, showCompare }: Props) {
   const format = useFormatter();
-  const t = useTranslations('Components.ProductCard');
+  // const t = useTranslations('Components.ProductCard');
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { data, error, isLoading } = useSWR<GetProductResponse>(
@@ -32,15 +28,17 @@ function MakeswiftProductCard({ entityId, className, showCompare }: Props) {
   );
 
   if (entityId == null) {
-    return <ProductCardEmpty title={t('empty')} />;
+    // return <ProductCardEmpty title={t('empty')} />;
+    return <ProductCardSkeleton className={className} />;
   }
 
   if (isLoading) {
-    return <ProductCardSkeleton />;
+    return <ProductCardSkeleton className={className} />;
   }
 
   if (data == null || error) {
-    return <ProductCardError title={t('error')} />;
+    // return <ProductCardError title={t('error')} />;
+    return <ProductCardSkeleton className={className} />;
   }
 
   const { name, defaultImage, brand, path, prices } = data;
@@ -63,8 +61,8 @@ function MakeswiftProductCard({ entityId, className, showCompare }: Props) {
 }
 
 runtime.registerComponent(MakeswiftProductCard, {
-  type: 'catalyst-product-card',
-  label: 'Catalyst / Product Card',
+  type: 'catalog-product-card',
+  label: 'Catalog / Product Card',
   props: {
     className: Style(),
     entityId: Combobox({
