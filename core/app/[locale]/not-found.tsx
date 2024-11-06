@@ -7,10 +7,10 @@ import { Subscribe } from '@/vibes/soul/sections/subscribe';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { FeaturedProductsCarousel } from '~/components/featured-products-carousel';
 import { Footer } from '~/components/footer/footer';
 import { Header } from '~/components/header';
 import { ProductCardFragment } from '~/components/product-card/fragment';
-import { ProductsCarousel } from '~/components/products-carousel';
 
 const NotFoundQuery = graphql(
   `
@@ -49,7 +49,10 @@ export default async function NotFound() {
         {/* TODO: add translations */}
         <NotFoundComponent />
 
-        <ProductsCarousel products={featuredProducts} />
+        <FeaturedProductsCarousel
+          products={featuredProducts}
+          title={t('Carousel.featuredProducts')}
+        />
 
         <Subscribe
           description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
