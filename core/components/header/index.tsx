@@ -5,7 +5,6 @@ import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 
 import { SearchResult } from '@/vibes/soul/primitives/navigation/index';
 import { localeSchema, searchSchema } from '@/vibes/soul/primitives/navigation/schema';
-import { HeaderSection } from '@/vibes/soul/sections/header-section';
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
@@ -16,6 +15,7 @@ import { ExistingResultType } from '~/client/util';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { localeLanguageRegionMap, redirect } from '~/i18n/routing';
+import { Header as HeaderSection } from '~/makeswift/components/header';
 
 import { HeaderFragment } from './fragment';
 
@@ -171,7 +171,10 @@ export const Header = async () => {
         logo: data.settings ? logoTransformer(data.settings) : undefined,
         searchAction: search,
         searchParamName: SEARCH_PARAM_NAME,
+        searchInputPlaceholder: t('searchPlaceholder'),
         searchCtaLabel: t('viewAll'),
+        emptySearchTitle: t('emptySearchTitle'),
+        emptySearchSubtitle: t('emptySearchSubtitle'),
         searchHref: '/search',
       }}
     />

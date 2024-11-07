@@ -1,6 +1,8 @@
 import './components/product-card/product-card.makeswift';
 
+import '~/makeswift/components/header/register';
 import '~/makeswift/components/footer/register';
+
 import '@/vibes/soul/primitives/accordions/accordions.makeswift';
 import '@/vibes/soul/primitives/button-link/button-link.makeswift';
 import '@/vibes/soul/primitives/card/card.makeswift';
