@@ -1,6 +1,9 @@
 import { ReactNode } from 'react';
 
+import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
+
 import { AccountLayoutLink } from './account-layout-link';
+import { AccountLayoutLinkSelect } from './account-layout-link-select';
 
 type Props = {
   links: Array<{
@@ -12,19 +15,24 @@ type Props = {
 
 export function AccountLayout({ links, children }: Props) {
   return (
-    <div className="flex justify-center @container">
-      <div className="relative flex w-full gap-12 px-12 py-12 @5xl:max-w-7xl">
-        <nav className="basis-48">
-          <ul className="sticky top-12">
+    <StickySidebarLayout
+      sidebarSize="small"
+      sidebar={
+        <nav>
+          <ul className="hidden @2xl:block">
             {links.map((link, index) => (
               <li key={index}>
                 <AccountLayoutLink href={link.href}>{link.label}</AccountLayoutLink>
               </li>
             ))}
           </ul>
+          <div className="@2xl:hidden">
+            <AccountLayoutLinkSelect links={links} />
+          </div>
         </nav>
-        <div className="flex-1">{children}</div>
-      </div>
-    </div>
+      }
+    >
+      {children}
+    </StickySidebarLayout>
   );
 }

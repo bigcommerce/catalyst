@@ -8,8 +8,9 @@ import { startTransition, Suspense, use, useEffect, useOptimistic } from 'react'
 import { useFormState as useActionState } from 'react-dom';
 
 import { Button } from '@/vibes/soul/primitives/button';
+import { ButtonLink } from '@/vibes/soul/primitives/button-link';
+import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
 import { BcImage as Image } from '~/components/bc-image';
-import { Link } from '~/components/link';
 
 import { cartLineItemActionFormDataSchema } from './schema';
 
@@ -123,12 +124,11 @@ function CartInner<LineItem extends CartLineItem>({
   const [optimisticLineItems, setOptimisticLineItems] = useOptimistic<CartLineItem[], FormData>(
     state.lineItems,
     (prevState, formData) => {
-      const intent = formData.get('intent');
       const submission = parseWithZod(formData, { schema: cartLineItemActionFormDataSchema });
 
       if (submission.status !== 'success') return prevState;
 
-      switch (intent) {
+      switch (submission.value.intent) {
         case 'increment': {
           const { id } = submission.value;
 
@@ -164,57 +164,9 @@ function CartInner<LineItem extends CartLineItem>({
   }
 
   return (
-    <div className="mx-auto max-w-screen-2xl @container">
-      <div className="flex w-full flex-col gap-10 px-3 pb-10 pt-24 @xl:px-6 @4xl:flex-row @4xl:gap-20 @4xl:pb-20 @4xl:pt-32 @5xl:px-20">
-        {/* Cart Side */}
-        <div className="w-full">
-          <h1 className="mb-10 font-heading text-4xl font-medium leading-none @xl:text-5xl">
-            {title}
-            <span className="ml-4 text-contrast-200">{optimisticQuantity}</span>
-          </h1>
-
-          {/* Cart Items */}
-          <ul className="flex flex-col gap-5">
-            {optimisticLineItems.map((lineItem) => (
-              <li
-                className="flex flex-col items-start gap-x-5 gap-y-6 @sm:flex-row @sm:items-center @sm:gap-y-4"
-                key={lineItem.id}
-              >
-                <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-contrast-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 @sm:max-w-36">
-                  <Image
-                    alt={lineItem.image.alt}
-                    className="object-cover"
-                    fill
-                    sizes="(max-width: 400px) 100vw, 144px"
-                    src={lineItem.image.src}
-                  />
-                </div>
-                <div className="flex flex-grow flex-wrap justify-between gap-y-2">
-                  <div className="flex flex-col @xl:w-1/2 @xl:pr-4">
-                    <span className="font-medium">{lineItem.title}</span>
-                    <span className="text-contrast-300">{lineItem.subtitle}</span>
-                  </div>
-                  <CounterForm
-                    action={formAction}
-                    decrementLabel={decrementLineItemLabel}
-                    deleteLabel={deleteLineItemLabel}
-                    incrementLabel={incrementLineItemLabel}
-                    lineItem={lineItem}
-                    onSubmit={(formData) => {
-                      startTransition(() => {
-                        formAction(formData);
-                        setOptimisticLineItems(formData);
-                      });
-                    }}
-                  />
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Summary Side */}
-        <div className="@4xl:w-1/3">
+    <StickySidebarLayout
+      sidebar={
+        <>
           <h2 className="mb-10 font-heading text-4xl font-medium leading-none @xl:text-5xl">
             {summary.title}
           </h2>
@@ -253,9 +205,57 @@ function CartInner<LineItem extends CartLineItem>({
           <CheckoutButton action={checkoutAction} className="mt-10 w-full" disabled={isPending}>
             {summary.ctaLabel}
           </CheckoutButton>
-        </div>
+        </>
+      }
+      sidebarPosition="right"
+      sidebarSize="1/3"
+    >
+      <div className="w-full">
+        <h1 className="mb-10 font-heading text-4xl font-medium leading-none @xl:text-5xl">
+          {title}
+          <span className="ml-4 text-contrast-200">{optimisticQuantity}</span>
+        </h1>
+
+        {/* Cart Items */}
+        <ul className="flex flex-col gap-5 @container">
+          {optimisticLineItems.map((lineItem) => (
+            <li
+              className="flex flex-col items-start gap-x-5 gap-y-6 @container @sm:flex-row @sm:gap-y-4"
+              key={lineItem.id}
+            >
+              <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-contrast-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 @sm:max-w-24 @md:max-w-36">
+                <Image
+                  alt={lineItem.image.alt}
+                  className="object-cover"
+                  fill
+                  sizes="(max-width: 400px) 100vw, 144px"
+                  src={lineItem.image.src}
+                />
+              </div>
+              <div className="flex flex-grow flex-col flex-wrap justify-between gap-y-2 @xl:flex-row">
+                <div className="flex w-full flex-1 flex-col @xl:w-1/2 @xl:pr-4">
+                  <span className="font-medium">{lineItem.title}</span>
+                  <span className="text-contrast-300">{lineItem.subtitle}</span>
+                </div>
+                <CounterForm
+                  action={formAction}
+                  decrementLabel={decrementLineItemLabel}
+                  deleteLabel={deleteLineItemLabel}
+                  incrementLabel={incrementLineItemLabel}
+                  lineItem={lineItem}
+                  onSubmit={(formData) => {
+                    startTransition(() => {
+                      formAction(formData);
+                      setOptimisticLineItems(formData);
+                    });
+                  }}
+                />
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
-    </div>
+    </StickySidebarLayout>
   );
 }
 
@@ -343,7 +343,7 @@ function CounterForm({
           type="submit"
           value="delete"
         >
-          <Trash2 size={18} strokeWidth={1} />
+          <Trash2 size={20} strokeWidth={1} />
         </button>
       </div>
     </form>
@@ -373,60 +373,26 @@ function CheckoutButton({
 
 export function CartEmptyState({ title, subtitle, cta }: CartEmptyState) {
   return (
-    <div className="mt-20 flex min-h-96 flex-col items-center justify-center @container">
-      <span className="mb-3 text-center font-heading text-2xl font-medium leading-none text-foreground @lg:text-4xl @3xl:text-5xl">
-        {title}
-      </span>
-      <h2 className="mb-10 text-center leading-none text-contrast-300 @3xl:text-lg">{subtitle}</h2>
-      <Button asChild>
-        <Link href={cta.href}>{cta.label}</Link>
-      </Button>
+    <div className="@container">
+      <div className="px-4 py-10 text-center @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
+        <h1 className="mb-3 text-center font-heading text-2xl leading-none text-foreground @lg:text-4xl @3xl:text-5xl">
+          {title}
+        </h1>
+        <p className="mb-10 text-center leading-normal text-contrast-500 @3xl:text-lg">
+          {subtitle}
+        </p>
+        <ButtonLink href={cta.href}>{cta.label}</ButtonLink>
+      </div>
     </div>
   );
 }
 
-export function CartSkeleton({ title }: { title: string }) {
+export function CartSkeleton({ title = 'Cart' }: { title?: string }) {
   return (
-    <div className="mx-auto w-full max-w-screen-2xl animate-pulse @container">
-      <div className="flex w-full flex-col gap-10 px-3 pb-10 pt-24 @xl:px-6 @4xl:flex-row @4xl:gap-20 @4xl:pb-20 @4xl:pt-32 @5xl:px-20">
-        {/* Cart Side */}
-        <div className="w-full">
-          <h1 className="mb-10 font-heading text-4xl font-medium leading-none @xl:text-5xl">
-            {title}
-          </h1>
-
-          {/* Cart Line Items */}
-          <ul className="flex flex-col gap-5">
-            {Array.from({ length: 2 }).map((_, index) => (
-              <li
-                className="flex flex-col items-start gap-x-5 gap-y-8 @sm:flex-row @sm:items-center @sm:gap-y-4"
-                key={index}
-              >
-                {/* Image */}
-                <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-contrast-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 @sm:max-w-36" />
-                <div className="flex flex-grow flex-wrap justify-between gap-y-3.5">
-                  <div className="flex flex-col gap-3 @xl:w-1/2 @xl:pr-4">
-                    {/* Line Item Title */}
-                    <div className="h-4 w-44 rounded-md bg-contrast-100" />
-                    {/* Subtitle */}
-                    <div className="h-3 w-36 rounded-md bg-contrast-100" />
-                  </div>
-                  <div className="flex w-full flex-wrap items-center justify-between gap-x-5 gap-y-2 @sm:justify-start @xl:w-1/2 @xl:flex-nowrap @xl:justify-end">
-                    {/* Price */}
-                    <div className="h-4 w-8 rounded-md bg-contrast-100" />
-                    {/* Counter */}
-                    <div className="h-[44px] w-[120px] rounded-lg bg-contrast-100" />
-                    {/* DeleteLineItemButton */}
-                    <div className="mr-1 h-6 w-6 rounded-full bg-contrast-100" />
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Summary Side */}
-        <div className="@4xl:w-1/3">
+    <StickySidebarLayout
+      className="animate-pulse"
+      sidebar={
+        <>
           {/* Summary Title */}
           <div className="mt-3.5 h-4 w-40 rounded-lg bg-contrast-100 @xl:h-7 @xl:w-52" />
 
@@ -450,14 +416,51 @@ export function CartSkeleton({ title }: { title: string }) {
 
           {/* Grand Total */}
           {/* <div className="mt-10 flex justify-between border-b border-contrast-100/50 pb-5">
-            <div className="h-6 w-20 rounded-lg bg-contrast-100" />
-            <div className="h-6 w-16 rounded-lg bg-contrast-100" />
-          </div> */}
+                <div className="h-6 w-20 rounded-lg bg-contrast-100" />
+                <div className="h-6 w-16 rounded-lg bg-contrast-100" />
+              </div> */}
 
           {/* Checkout Button */}
           <div className="mt-10 h-[50px] w-full rounded-full bg-contrast-100" />
-        </div>
+        </>
+      }
+      sidebarPosition="right"
+      sidebarSize="1/3"
+    >
+      <div className="w-full">
+        <h1 className="mb-10 font-heading text-4xl font-medium leading-none @xl:text-5xl">
+          {title}
+        </h1>
+
+        {/* Cart Line Items */}
+        <ul className="flex flex-col gap-5">
+          {Array.from({ length: 2 }).map((_, index) => (
+            <li
+              className="flex flex-col items-start gap-x-5 gap-y-6 @container @sm:flex-row @sm:gap-y-4"
+              key={index}
+            >
+              {/* Image */}
+              <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-contrast-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 @sm:max-w-24 @md:max-w-36" />
+              <div className="flex flex-grow flex-col flex-wrap justify-between gap-y-4 @xl:flex-row">
+                <div className="flex w-full flex-1 flex-col @xl:w-1/2 @xl:pr-4">
+                  {/* Line Item Title */}
+                  <div className="mb-3 h-4 w-44 rounded-md bg-contrast-100" />
+                  {/* Subtitle */}
+                  <div className="h-3 w-36 rounded-md bg-contrast-100" />
+                </div>
+                <div className="flex flex-wrap items-center justify-end gap-x-5 gap-y-2 @sm:justify-start @xl:w-1/2 @xl:flex-nowrap @xl:justify-end">
+                  {/* Price */}
+                  <div className="h-4 w-8 rounded-md bg-contrast-100" />
+                  {/* Counter */}
+                  <div className="h-[44px] w-[120px] rounded-lg bg-contrast-100" />
+                  {/* DeleteLineItemButton */}
+                  <div className="mr-1 h-6 w-6 rounded-full bg-contrast-100" />
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
-    </div>
+    </StickySidebarLayout>
   );
 }
