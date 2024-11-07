@@ -34,5 +34,5 @@ export const FeaturedProductsList = ({
     subtitle: product.brand?.name ?? undefined,
   }));
 
-  return <FeaturedProductsListComponent products={formattedProducts} title={title} cta={cta} />;
+  return <FeaturedProductsListComponent cta={cta} products={formattedProducts} title={title} />;
 };

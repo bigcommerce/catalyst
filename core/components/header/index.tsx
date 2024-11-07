@@ -10,13 +10,13 @@ import { LayoutQuery } from '~/app/[locale]/(default)/query';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { readFragment } from '~/client/graphql';
+import { getSearchResults } from '~/client/queries/get-search-results';
 import { revalidate } from '~/client/revalidate-target';
 import { ExistingResultType } from '~/client/util';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { localeLanguageRegionMap, redirect } from '~/i18n/routing';
 
-import { getSearchResults } from '~/client/queries/get-search-results';
 import { HeaderFragment } from './fragment';
 
 type QuickSearchResults = ExistingResultType<typeof getSearchResults>;
