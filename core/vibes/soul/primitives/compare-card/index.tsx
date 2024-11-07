@@ -6,7 +6,7 @@ import { CardProduct, ProductCard } from '@/vibes/soul/primitives/product-card'
 
 import { Rating } from '../rating'
 
-export type CompareProduct = CardProduct & { description?: string }
+export type CompareProduct = CardProduct & { description?: string; customFields?: { name: string; value: string }[] }
 
 export type Props = {
   className?: string
@@ -15,6 +15,7 @@ export type Props = {
   addToCartLabel?: string
   descriptionLabel?: string
   ratingLabel?: string
+  otherDetailsLabel?: string
 }
 
 export function CompareCard({
@@ -24,6 +25,7 @@ export function CompareCard({
   addToCartLabel = 'Add to Cart',
   descriptionLabel = 'Description',
   ratingLabel = 'Rating',
+  otherDetailsLabel = 'Other Details',
 }: Props) {
   return (
     <div className={clsx('flex flex-col divide-y divide-contrast-100 @container', className)}>
@@ -39,11 +41,21 @@ export function CompareCard({
       </div>
       <div className="space-y-5 py-5">
         <h3 className="font-mono text-xs uppercase">{descriptionLabel}</h3>
-        <p>{product.description}</p>
+        <p className="text-sm">{product.description}</p>
       </div>
       <div className="space-y-5 py-5">
         <h3 className="font-mono text-xs uppercase">{ratingLabel}</h3>
         {product.rating != null && <Rating rating={product.rating} />}
+      </div>
+      <div className="space-y-5 py-5">
+        <h3 className="font-mono text-xs uppercase">{otherDetailsLabel}</h3>
+        {product.customFields?.map((field) => (
+          <div>
+            <p className="text-xs">
+              <strong>{field.name}</strong>: {field.value}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   )
