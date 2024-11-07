@@ -8,6 +8,7 @@ const config = {
   rules: {
     '@typescript-eslint/no-shadow': 'off',
     '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+    'react/jsx-no-bind': 'off',
   },
 };
 
