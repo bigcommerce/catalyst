@@ -4,7 +4,8 @@ import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform
 import { parseWithZod } from '@conform-to/zod';
 import clsx from 'clsx';
 import { ArrowRight } from 'lucide-react';
-import { useActionState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useFormState as useActionState } from 'react-dom';
 
 import { ErrorMessage } from '../../form/error-message';
 import { Button } from '../button';

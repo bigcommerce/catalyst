@@ -2,7 +2,8 @@
 
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
-import { useActionState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useFormState as useActionState } from 'react-dom';
 
 import { Input } from '@/vibes/soul/form/input';
 import { Button } from '@/vibes/soul/primitives/button';

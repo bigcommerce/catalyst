@@ -2,7 +2,7 @@
 
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import { clsx } from 'clsx';
-import NextImage from 'next/image';
+import { BcImage as Image } from '~/components/bc-image';
 import { useState } from 'react';
 
 import { Button } from '@/vibes/soul/primitives/button';
@@ -91,7 +91,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
                       value={swatch.id}
                     >
                       {swatch.image?.src != null && swatch.image.src !== '' ? (
-                        <NextImage
+                        <Image
                           alt={swatch.image.alt}
                           className="h-full object-cover"
                           height={48}

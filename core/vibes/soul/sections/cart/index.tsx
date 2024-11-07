@@ -4,7 +4,8 @@ import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform
 import { parseWithZod } from '@conform-to/zod';
 import clsx from 'clsx';
 import { Minus, Plus, Trash2 } from 'lucide-react';
-import { startTransition, Suspense, use, useActionState, useEffect, useOptimistic } from 'react';
+import { startTransition, Suspense, use, useEffect, useOptimistic } from 'react';
+import { useFormState as useActionState } from 'react-dom';
 
 import { Button } from '@/vibes/soul/primitives/button';
 import { BcImage as Image } from '~/components/bc-image';

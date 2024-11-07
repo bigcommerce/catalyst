@@ -2,7 +2,8 @@
 
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
-import { startTransition, useActionState, useEffect, useOptimistic, useState } from 'react';
+import { startTransition, useEffect, useOptimistic, useState } from 'react';
+import { useFormState as useActionState } from 'react-dom';
 import { z } from 'zod';
 
 import { Input } from '@/vibes/soul/form/input';
