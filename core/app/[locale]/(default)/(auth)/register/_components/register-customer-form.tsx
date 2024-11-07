@@ -37,6 +37,7 @@ import { Message } from '~/components/ui/message';
 import { login } from '../_actions/login';
 import { registerCustomer } from '../_actions/register-customer';
 import { getRegisterCustomerQuery } from '../page-data';
+import { cn } from '~/lib/utils';
 
 interface FormStatus {
   status: 'success' | 'error';
@@ -96,11 +97,9 @@ const PasswordField = ({ field, isValid, name, onChange }: PasswordFieldProps) =
         <input
           aria-invalid={!isValid}
           aria-required={field.required}
-          className={`h-[42px] w-full rounded-lg border bg-white px-4 text-sm ${
-            !isValid
-              ? 'border-[#DB4444] focus:border-[#DB4444]'
-              : 'border-[#D1D5DB] focus:border-[#008BB7]'
-          } pr-10 transition-colors duration-200 focus:outline-none`}
+          className={cn(
+            'peer w-full border-2 border-gray-200 px-4 py-2.5 text-base placeholder:text-gray-500 hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200',
+          )}
           id={fieldId}
           name={name}
           onChange={onChange}
