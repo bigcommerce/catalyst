@@ -7,7 +7,7 @@ import { SearchProductsResponse } from '~/app/api/products/route';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { ProductCard, ProductCardSkeleton } from '~/vibes/soul/primitives/product-card';
 
-import { runtime } from '../../runtime';
+import { runtime } from '~/lib/makeswift/runtime';
 
 interface Props {
   entityId?: string;

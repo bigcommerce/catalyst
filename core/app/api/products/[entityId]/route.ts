@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, ResultOf } from '~/client/graphql';
-import { MakeswiftProductCardFragment } from '~/lib/makeswift/components/product-card/fragment';
+import { MakeswiftProductCardFragment } from '~/makeswift/components/product-card/fragment';
 
 const GetProduct = graphql(
   `
