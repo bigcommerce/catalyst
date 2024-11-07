@@ -60,7 +60,15 @@ const ComparePageQuery = graphql(
                   }
                 }
               }
-              description
+              plainTextDescription(characterLimit: 200)
+              customFields {
+                edges {
+                  node {
+                    name
+                    value
+                  }
+                }
+              }
               inventory {
                 aggregated {
                   availableToSell
@@ -110,6 +118,7 @@ export default async function Compare({ searchParams }: Props) {
   const products = removeEdgesAndNodes(data.site.products).map((product) => ({
     ...product,
     productOptions: removeEdgesAndNodes(product.productOptions),
+    customFields: removeEdgesAndNodes(product.customFields),
   }));
 
   const formattedProducts = products.map((product) => ({
@@ -120,8 +129,12 @@ export default async function Compare({ searchParams }: Props) {
       ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
       : undefined,
     price: pricesTransformer(product.prices, format),
-    description: product.description,
+    description: product.plainTextDescription,
     rating: product.reviewSummary.averageRating,
+    customFields: product.customFields.map((field) => ({
+      name: field.name,
+      value: field.value,
+    })),
   }));
 
   // if (!products.length) {
