@@ -68,7 +68,7 @@ export default async function Home({ params: { locale } }: Props) {
       <FeaturedProductsCarousel products={newestProducts} title={t('Carousel.title')} />
 
       <FeaturedImage
-        cta={{ href: '/products', label: t('FeaturedImage.cta') }}
+        cta={{ href: '/shop-all', label: t('FeaturedImage.cta') }}
         description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
         image={{
           src: image.src,
