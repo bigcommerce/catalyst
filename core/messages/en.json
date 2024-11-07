@@ -474,6 +474,9 @@
   "Components": {
     "Header": {
       "viewAll": "View all results",
+      "searchPlaceholder": "Search for products",
+      "emptySearchTitle": "No results were found for",
+      "emptySearchSubtitle": "Please try another search.",
       "Account": {
         "account": "Account",
         "myAccount": "My account",
