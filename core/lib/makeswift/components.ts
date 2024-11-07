@@ -1,4 +1,6 @@
 import '~/makeswift/components/product-card/product-card.makeswift';
+import '~/makeswift/components/featured-products-carousel/featured-products-carousel.makeswift';
+import '~/makeswift/components/featured-products-list/featured-products-list.makeswift';
 import '~/makeswift/components/header/register';
 import '~/makeswift/components/footer/register';
 
