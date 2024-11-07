@@ -29,21 +29,26 @@ import { Field, schema, SchemaRawShape } from './schema';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
-type State = {
-  fields: Field[];
+type State<F extends Field> = {
+  fields: F[];
   lastResult: SubmissionResult | null;
 };
 
-export type ProductDetailFormAction = Action<State, FormData>;
+export type ProductDetailFormAction<F extends Field> = Action<State<F>, FormData>;
 
-type Props = {
-  fields: Field[];
-  action: ProductDetailFormAction;
+type Props<F extends Field> = {
+  fields: F[];
+  action: ProductDetailFormAction<F>;
   productId: string;
   ctaLabel?: string;
 };
 
-export function ProductDetailForm({ action, fields, productId, ctaLabel = 'Add to cart' }: Props) {
+export function ProductDetailForm<F extends Field>({
+  action,
+  fields,
+  productId,
+  ctaLabel = 'Add to cart',
+}: Props<F>) {
   const [params] = useQueryStates(
     fields.reduce<Record<string, typeof parseAsString>>(
       (acc, field) => {
