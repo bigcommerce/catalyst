@@ -2,7 +2,7 @@ import { DraftModeScript } from '@makeswift/runtime/next/server';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
-import { DM_Serif_Text, Inter } from 'next/font/google';
+import { DM_Serif_Text, Inter, Roboto_Mono } from 'next/font/google';
 import { draftMode } from 'next/headers';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
@@ -32,6 +32,12 @@ const inter = Inter({
   display: 'swap',
   subsets: ['latin'],
   variable: '--font-family-body',
+});
+
+const roboto_mono = Roboto_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-family-mono',
 });
 
 const RootLayoutMetadataQuery = graphql(`
@@ -101,7 +107,10 @@ export default function RootLayout({ children, params: { locale } }: Props) {
   const messages = useMessages();
 
   return (
-    <html className={[inter.variable, dm_serif_text.variable].join(' ')} lang={locale}>
+    <html
+      className={[inter.variable, dm_serif_text.variable, roboto_mono.variable].join(' ')}
+      lang={locale}
+    >
       <head>
         <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
       </head>
