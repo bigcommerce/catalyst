@@ -11,7 +11,7 @@ import { Button } from '@/vibes/soul/primitives/button';
 import { BcImage as Image } from '~/components/bc-image';
 import { Link } from '~/components/link';
 
-import { schema } from './schema';
+import { cartLineItemActionFormDataSchema } from './schema';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
@@ -124,7 +124,7 @@ function CartInner<LineItem extends CartLineItem>({
     state.lineItems,
     (prevState, formData) => {
       const intent = formData.get('intent');
-      const submission = parseWithZod(formData, { schema });
+      const submission = parseWithZod(formData, { schema: cartLineItemActionFormDataSchema });
 
       if (submission.status !== 'success') return prevState;
 
@@ -275,11 +275,11 @@ function CounterForm({
   onSubmit(formData: FormData): void;
 }) {
   const [form, fields] = useForm({
-    defaultValue: lineItem,
+    defaultValue: { id: lineItem.id },
     shouldValidate: 'onBlur',
     shouldRevalidate: 'onInput',
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema });
+      return parseWithZod(formData, { schema: cartLineItemActionFormDataSchema });
     },
     onSubmit(event, { formData }) {
       event.preventDefault();
@@ -291,7 +291,6 @@ function CounterForm({
   return (
     <form {...getFormProps(form)} action={action}>
       <input {...getInputProps(fields.id, { type: 'hidden' })} key={fields.id.id} />
-      <input {...getInputProps(fields.quantity, { type: 'hidden' })} key={fields.quantity.id} />
       <div className="flex w-full flex-wrap items-center justify-between gap-x-5 gap-y-2 @sm:justify-start @xl:w-1/2 @xl:flex-nowrap">
         <span className="font-medium @xl:ml-auto">{lineItem.price}</span>
 
