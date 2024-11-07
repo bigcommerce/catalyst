@@ -1,9 +1,9 @@
 import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql } from '~/client/graphql';
 
-export const MakeswiftProductCardFragment = graphql(
+export const MakeswiftProductFragment = graphql(
   `
-    fragment MakeswiftProductCardFragment on Product {
+    fragment MakeswiftProductFragment on Product {
       entityId
       name
       defaultImage {
