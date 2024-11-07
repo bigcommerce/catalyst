@@ -18,6 +18,7 @@ interface Props {
   compareAction?: React.ComponentProps<'form'>['action'];
   compareLabel?: string;
   filterLabel?: string;
+  resetFiltersLabel?: string;
   sortLabel?: string;
   sortParamName?: string;
   compareParamName?: string;
@@ -35,6 +36,7 @@ export function ProductsListSection({
   compareLabel,
   paginationInfo,
   filterLabel,
+  resetFiltersLabel,
   sortLabel,
   sortParamName,
   compareParamName,
@@ -55,7 +57,11 @@ export function ProductsListSection({
           </div>
         </div>
         <div className="flex gap-8 @4xl:gap-10">
-          <FiltersPanel className="hidden w-52 @3xl:block @4xl:w-60" filters={filters} />
+          <FiltersPanel
+            className="hidden w-52 @3xl:block @4xl:w-60"
+            filters={filters}
+            resetFiltersLabel={resetFiltersLabel}
+          />
           <div className="flex-1">
             <ProductsList
               compareAction={compareAction}
