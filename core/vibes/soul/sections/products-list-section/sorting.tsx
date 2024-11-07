@@ -1,8 +1,7 @@
 'use client';
 
-import { Suspense, use } from 'react';
-
 import { parseAsString, useQueryState } from 'nuqs';
+import { Suspense, use } from 'react';
 
 import { Select } from '@/vibes/soul/form/select';
 
@@ -21,7 +20,7 @@ type Props = {
 export function Sorting({ label = 'Sort', options, paramName }: Props) {
   return (
     <Suspense fallback={<SortingSkeleton placeholder={label} />}>
-      <SortingInner options={options} label={label} paramName={paramName} />
+      <SortingInner label={label} options={options} paramName={paramName} />
     </Suspense>
   );
 }
@@ -32,15 +31,16 @@ function SortingInner({ label = 'Sort', options, paramName = 'sort', defaultValu
 
   return (
     <Select
-      placeholder={label}
-      variant="round"
+      name={paramName}
+      onValueChange={(value) => setParam(value)}
       options={resolved}
+      placeholder={label}
       value={param}
-      onValueChange={(value) => void setParam(value)}
+      variant="round"
     />
   );
 }
 
 function SortingSkeleton({ placeholder }: { placeholder: string }) {
-  return <Select placeholder={placeholder} disabled options={[]} variant="round" />;
+  return <Select disabled name="skeleton" options={[]} placeholder={placeholder} variant="round" />;
 }

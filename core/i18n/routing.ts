@@ -47,7 +47,7 @@ export const localeLanguageRegionMap: LocaleEntry[] = [
   // { id: 'es-CL', language: 'Español', region: 'Chile', flag: '🇨🇱' },
   // { id: 'es-CO', language: 'Español', region: 'Colombia', flag: '🇨🇴' },
   // { id: 'es-LA', language: 'Español', region: 'America Latina', flag: '' },
-  { id: 'es-MX', language: 'Español', region: 'México', flag: '🇲🇽' },
+  // { id: 'es-MX', language: 'Español', region: 'México', flag: '🇲🇽' },
   // { id: 'es-PE', language: 'Español', region: 'Perú', flag: '🇵🇪' },
   // { id: 'es', language: 'Español', region: 'España', flag: '🇪🇸' },
   // { id: 'it', language: 'Italiano', region: 'Italia', flag: '🇮🇹' },
