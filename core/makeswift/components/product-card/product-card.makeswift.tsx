@@ -1,13 +1,12 @@
 import { Checkbox, Combobox, Style } from '@makeswift/runtime/controls';
-import { useFormatter } from 'next-intl';
 import useSWR from 'swr';
 
 import { GetProductResponse } from '~/app/api/products/[entityId]/route';
 import { SearchProductsResponse } from '~/app/api/products/route';
-import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { ProductCard, ProductCardSkeleton } from '~/vibes/soul/primitives/product-card';
 
 import { runtime } from '~/lib/makeswift/runtime';
+import { useBcProductToVibesProduct } from '~/makeswift/utils/use-bc-product-to-vibes-product/use-bc-product-to-vibes-product';
 
 interface Props {
   entityId?: string;
@@ -18,9 +17,7 @@ interface Props {
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 function MakeswiftProductCard({ entityId, className, showCompare }: Props) {
-  const format = useFormatter();
-  // const t = useTranslations('Components.ProductCard');
-
+  const bcProductToVibesProduct = useBcProductToVibesProduct();
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { data, error, isLoading } = useSWR<GetProductResponse>(
     entityId ? `/api/products/${entityId}` : null,
@@ -41,23 +38,9 @@ function MakeswiftProductCard({ entityId, className, showCompare }: Props) {
     return <ProductCardSkeleton className={className} />;
   }
 
-  const { name, defaultImage, brand, path, prices } = data;
-  const price = pricesTransformer(prices, format);
+  const product = bcProductToVibesProduct(data);
 
-  return (
-    <ProductCard
-      className={className}
-      product={{
-        id: entityId.toString(),
-        title: name,
-        href: path,
-        image: defaultImage ? { src: defaultImage.url, alt: defaultImage.altText } : undefined,
-        price,
-        subtitle: brand?.name,
-      }}
-      showCompare={showCompare}
-    />
-  );
+  return <ProductCard className={className} product={product} showCompare={showCompare} />;
 }
 
 runtime.registerComponent(MakeswiftProductCard, {

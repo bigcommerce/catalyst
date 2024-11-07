@@ -3,42 +3,45 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
-import { graphql } from '~/client/graphql';
-import { ProductCardCarouselFragment } from '~/components/product-card-carousel/fragment';
+import { FragmentOf, graphql } from '~/client/graphql';
+import { MakeswiftProductFragment } from '~/makeswift/utils/use-bc-product-to-vibes-product/fragment';
 
-const GetProductCardCarousel = graphql(
+const GetFeaturedProducts = graphql(
   `
-    query GetProductCardCarousel {
+    query GetFeaturedProducts {
       site {
         newestProducts(first: 12) {
           edges {
             node {
-              ...ProductCardCarouselFragment
+              ...MakeswiftProductFragment
             }
           }
         }
         featuredProducts(first: 12) {
           edges {
             node {
-              ...ProductCardCarouselFragment
+              ...MakeswiftProductFragment
             }
           }
         }
       }
     }
   `,
-  [ProductCardCarouselFragment],
+  [MakeswiftProductFragment],
 );
 
+export type GetFeaturedProductResponse = Array<FragmentOf<typeof MakeswiftProductFragment>>;
+
 export const GET = async (
-  _request: NextRequest,
-  { params }: { params: { type: 'newest' | 'featured' } },
-) => {
+  request: NextRequest,
+): Promise<NextResponse<GetFeaturedProductResponse>> => {
+  const searchParams = request.nextUrl.searchParams;
+  const type = searchParams.get('type');
+
   const customerAccessToken = await getSessionCustomerAccessToken();
-  const { type } = params;
 
   const { data } = await client.fetch({
-    document: GetProductCardCarousel,
+    document: GetFeaturedProducts,
     customerAccessToken,
   });
 
