@@ -15,6 +15,7 @@ export const HeaderSection = forwardRef<React.ComponentRef<'div'>, Props>(
   ({ navigation, banner }, ref) => {
     const [bannerElement, setBannerElement] = useState<HTMLElement | null>(null);
     const [bannerHeight, setBannerHeight] = useState(0);
+    const [isFloating, setIsFloating] = useState(false);
 
     useEffect(() => {
       if (bannerElement) {
@@ -27,9 +28,13 @@ export const HeaderSection = forwardRef<React.ComponentRef<'div'>, Props>(
         {banner && (
           <Banner ref={setBannerElement} {...banner} onDismiss={() => setBannerHeight(0)} />
         )}
-        <Headroom pinStart={bannerHeight}>
-          <div className="p-2">
-            <Navigation {...navigation} />
+        <Headroom
+          onUnfix={() => setIsFloating(false)}
+          onUnpin={() => setIsFloating(true)}
+          pinStart={bannerHeight}
+        >
+          <div className="p-2 @container">
+            <Navigation {...navigation} isFloating={isFloating} />
           </div>
         </Headroom>
       </div>

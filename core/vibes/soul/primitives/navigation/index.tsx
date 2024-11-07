@@ -60,12 +60,14 @@ export type SearchResult =
     };
 
 type LocaleAction = Action<SubmissionResult | null, FormData>;
-type SearchAction = Action<
-  { searchResults: SearchResult[] | null; lastResult: SubmissionResult | null },
+type SearchAction<S extends SearchResult> = Action<
+  { searchResults: S[] | null; lastResult: SubmissionResult | null },
   FormData
 >;
 
-type Props = {
+type Props<S extends SearchResult> = {
+  className?: string;
+  isFloating?: boolean;
   accountHref: string;
   cartCount?: number;
   cartHref: string;
@@ -77,15 +79,17 @@ type Props = {
   logoHref?: string;
   searchHref: string;
   searchParamName?: string;
-  searchAction?: SearchAction;
+  searchAction?: SearchAction<S>;
   searchCtaLabel?: string;
   searchInputPlaceholder?: string;
   emptySearchTitle?: string;
   emptySearchSubtitle?: string;
 };
 
-export const Navigation = forwardRef(function Navigation(
+export const Navigation = forwardRef(function Navigation<S extends SearchResult>(
   {
+    className,
+    isFloating,
     cartHref,
     cartCount,
     accountHref,
@@ -102,7 +106,7 @@ export const Navigation = forwardRef(function Navigation(
     searchInputPlaceholder,
     emptySearchTitle,
     emptySearchSubtitle,
-  }: Props,
+  }: Props<S>,
   ref: Ref<HTMLDivElement>,
 ) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -116,14 +120,33 @@ export const Navigation = forwardRef(function Navigation(
     setIsSearchOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    function handleScroll() {
+      setIsSearchOpen(false);
+      setIsMobileMenuOpen(false);
+    }
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <NavigationMenu.Root
-      className="relative mx-auto w-full max-w-screen-2xl text-foreground @container"
+      className={clsx(
+        'relative mx-auto w-full max-w-screen-2xl text-foreground @container',
+        className,
+      )}
       delayDuration={0}
       onValueChange={() => setIsSearchOpen(false)}
       ref={ref}
     >
-      <div className="flex h-14 items-center justify-between bg-background pl-3 pr-2 @4xl:rounded-2xl @4xl:px-2 @4xl:pl-6 @4xl:pr-2.5">
+      <div
+        className={clsx(
+          'flex h-14 items-center justify-between bg-background pl-3 pr-2 transition-shadow @4xl:rounded-2xl @4xl:px-2 @4xl:pl-6 @4xl:pr-2.5',
+          isFloating ? 'shadow-xl ring-1 ring-foreground/10' : 'shadow-none ring-0',
+        )}
+      >
         {/* Logo */}
         <Popover.Root onOpenChange={setIsMobileMenuOpen} open={isMobileMenuOpen}>
           <Popover.Anchor className="absolute left-0 right-0 top-full" />
@@ -379,7 +402,7 @@ function HamburgerMenuButton({
   );
 }
 
-function SearchForm({
+function SearchForm<S extends SearchResult>({
   searchAction,
   searchParamName = 'query',
   searchHref = '/search',
@@ -388,7 +411,7 @@ function SearchForm({
   emptySearchTitle,
   emptySearchSubtitle,
 }: {
-  searchAction: SearchAction;
+  searchAction: SearchAction<S>;
   searchParamName?: string;
   searchHref?: string;
   searchCtaLabel?: string;
