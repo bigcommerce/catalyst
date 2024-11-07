@@ -59,7 +59,7 @@ export const CartIcon = ({ count: serverCount }: CartIconProps) => {
         style={{ width: '24px', height: '24px' }}
         aria-hidden="true"
       />
-      <Badge className='header-cart-count'>{count}</Badge>
+    <Badge className="text-[#008bb7] pl-2 text-[15px] mt-1 header-cart-count">{count}</Badge>
     </>
   );
 };
