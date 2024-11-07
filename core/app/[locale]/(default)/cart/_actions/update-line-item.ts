@@ -5,7 +5,7 @@ import { parseWithZod } from '@conform-to/zod';
 import { FragmentOf } from 'gql.tada';
 import { getTranslations } from 'next-intl/server';
 
-import { schema } from '@/vibes/soul/sections/cart/schema';
+import { cartLineItemActionFormDataSchema } from '@/vibes/soul/sections/cart/schema';
 import { CartLineItem } from '@/vibes/soul/sections/cart/types';
 
 import { DigitalItemFragment, PhysicalItemFragment } from '../page-data';
@@ -33,7 +33,7 @@ export const updateLineItem = async (
 }> => {
   const t = await getTranslations('Cart.Errors');
 
-  const submission = parseWithZod(formData, { schema });
+  const submission = parseWithZod(formData, { schema: cartLineItemActionFormDataSchema });
 
   if (submission.status !== 'success') {
     return {
@@ -174,7 +174,7 @@ export const updateLineItem = async (
           productEntityId: cartLineItem.productEntityId,
           variantEntityId: cartLineItem.variantEntityId,
           selectedOptions: parsedSelectedOptions,
-          quantity: submission.value.quantity + 1,
+          quantity: cartLineItem.quantity + 1,
         });
       } catch (error) {
         if (error instanceof Error) {
@@ -316,7 +316,7 @@ export const updateLineItem = async (
           productEntityId: cartLineItem.productEntityId,
           variantEntityId: cartLineItem.variantEntityId,
           selectedOptions: parsedSelectedOptions,
-          quantity: submission.value.quantity - 1,
+          quantity: cartLineItem.quantity - 1,
         });
       } catch (error) {
         if (error instanceof Error) {
