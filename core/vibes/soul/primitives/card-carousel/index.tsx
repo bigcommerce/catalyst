@@ -20,20 +20,20 @@ type Props = {
 export function CardCarousel({ cards, textContrast, className }: Props) {
   return (
     <Carousel className={className}>
-      <CarouselContent className="mb-20">
+      <CarouselContent className="mb-10">
         {cards.length > 0
           ? cards.map((card) => (
               <CarouselItem
-                className="basis-full @md:basis-1/2 @lg:basis-1/3 @2xl:basis-1/4"
                 key={card.id}
+                className="basis-full @md:basis-1/2 @lg:basis-1/3 @2xl:basis-1/4"
               >
                 <Card {...card} textContrast={textContrast} />
               </CarouselItem>
             ))
           : Array.from({ length: 5 }).map((_, index) => (
               <CarouselItem
-                className="basis-full @md:basis-1/2 @lg:basis-1/3 @2xl:basis-1/4"
                 key={index}
+                className="basis-full @md:basis-1/2 @lg:basis-1/3 @2xl:basis-1/4"
               >
                 <CardSkeleton />
               </CarouselItem>

@@ -21,20 +21,20 @@ type Props = {
 export function ProductsCarousel({ products, className }: Props) {
   return (
     <Carousel className={className}>
-      <CarouselContent className="mb-20">
+      <CarouselContent className="mb-10">
         {products.length > 0
           ? products.map((product) => (
               <CarouselItem
-                className="basis-full @md:basis-1/2 @lg:basis-1/3 @2xl:basis-1/4"
                 key={product.id}
+                className="basis-full @md:basis-1/2 @lg:basis-1/3 @2xl:basis-1/4"
               >
                 <ProductCard product={product} />
               </CarouselItem>
             ))
           : Array.from({ length: 5 }).map((_, index) => (
               <CarouselItem
-                className="basis-full @md:basis-1/2 @lg:basis-1/3 @2xl:basis-1/4"
                 key={index}
+                className="basis-full @md:basis-1/2 @lg:basis-1/3 @2xl:basis-1/4"
               >
                 <ProductCardSkeleton />
               </CarouselItem>

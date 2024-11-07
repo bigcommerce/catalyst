@@ -20,9 +20,10 @@ export function ButtonLink({
 }: Props) {
   return (
     <Link
+      {...props}
       href={href}
       className={clsx(
-        'relative z-0 flex h-fit select-none items-center justify-center overflow-hidden rounded-full border text-center font-medium leading-normal transition-all duration-300 ease-in-out focus-visible:outline-none focus-visible:ring-2',
+        'relative z-0 inline-flex h-fit select-none items-center justify-center overflow-hidden rounded-full border text-center font-medium leading-normal transition-all duration-300 ease-in-out focus-visible:outline-none focus-visible:ring-2',
         {
           primary:
             'border-primary bg-primary text-foreground ring-foreground after:bg-background/40',
@@ -41,7 +42,6 @@ export function ButtonLink({
         'after:absolute after:inset-0 after:-z-10 after:-translate-x-[105%] after:rounded-full after:transition-[opacity,transform] after:duration-300 after:[animation-timing-function:cubic-bezier(0,0.25,0,1)] hover:after:translate-x-0',
         className,
       )}
-      {...props}
     >
       <span className={clsx(variant === 'secondary' && 'mix-blend-difference')}>{children}</span>
     </Link>
