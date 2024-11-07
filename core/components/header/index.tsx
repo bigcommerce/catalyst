@@ -25,7 +25,10 @@ import { imageManagerImageUrl } from '~/lib/store-assets';
 interface Props {
   cart: ReactNode;
 }
+
+
 const headerCart = imageManagerImageUrl('header-cart-icon.png', '25w');
+
 
 export const Header = async ({ cart }: Props) => {
   const locale = await getLocale();
@@ -152,6 +155,7 @@ export const Header = async ({ cart }: Props) => {
       links={links}
       locales={localeLanguageRegionMap}
       logo={data.settings ? logoTransformer(data.settings) : undefined}
+     
       search={<QuickSearch logo={data.settings ? logoTransformer(data.settings) : ''} />}
     />
   );

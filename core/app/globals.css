@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* cannot done by tailwind */
+
+.header-search-bar button[aria-label='Open search popup'] {
+  width: 61% !important;
+  position: absolute;
+  left: 13em;
+  top: 1.5em;
+}
 body
   button.flex.rounded.justify-center.text-base.font-semibold.leading-6.bg-sky-400.text-white.disabled\:bg-sky-400.relative.mt-8.w-fit.items-center.px-8.py-2 {
   background-color: #008bb7 !important;
@@ -41,13 +49,6 @@ footer.\32 xl\:container.\32 xl\:mx-auto {
   background-color: #002a37;
   margin-top: 50px !important;
   color: #fff;
-}
-
-.flex.justify-between.items-center.bg-white.px-4.lg\:px-10 {
-  border-top: 1px solid #cccbcb;
-  border-bottom: 1px solid #cccbcb;
-  border-left: none;
-  border-right: none;
 }
 
 nav#nav-footer-section div:nth-child(3) ul li a {
@@ -98,13 +99,6 @@ svg.lucide.lucide-shopping-cart {
 
 .product-variants svg.lucide.lucide-shopping-cart {
   color: white;
-}
-
-span.cart {
-  color: #008bb7;
-  padding-left: 8px;
-  font-size: 15px;
-  margin-top: 3px;
 }
 
 input#placeholder {
@@ -206,27 +200,13 @@ input.subscription-input:focus-visible {
 
 .footer-social-media a {
   margin: 0 10px;
-  /* Adds space between icons */
   color: white;
-  /* Change color to white for the icons */
   text-decoration: none;
-  /* Removes underline from links */
 }
 
 .footer-social-media a:hover {
   opacity: 0.8;
-  /* Slightly dims the icons on hover */
 }
-
-/* forms-register */
-/* form.text-base label {
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 24px;
-  letter-spacing: 0.15px;
-  text-align: left;
-  color: #353535 !important;
-} */
 
 .focus\:ring-\[\#008BB7\]:focus {
   --tw-ring-color: unset !important;
@@ -255,11 +235,6 @@ button.flex.rounded.justify-center.text-base.font-semibold.leading-6.bg-sky-400.
 section.register-top-section.text-center {
   padding-top: 30px;
 }
-
-/* label#remember-me {
-  margin-top: 0px !important;
-  margin-left: 10px;
-} */
 
 button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2\.5.text-base.font-semibold.leading-6.bg-sky-400.text-white.disabled\:bg-sky-400.md\:w-auto {
   letter-spacing: 1.25px;
@@ -502,23 +477,20 @@ ul.div-breadcrumb li:last-child a {
     margin-top: 35px;
   }
 
-  div header.main-header a img {
-    margin-left: 4em;
-  }
-
   div
     button.relative.flex.w-full.rounded.items-center.justify-center.text-base.font-semibold.leading-6.group.bg-transparent.p-3.text-black.hover\:bg-transparent.hover\:text-primary.lg\:hidden {
     left: 1em;
   }
 
   div nav.header-cart a {
+    top: 1.4em;
     right: 1em;
   }
 
-  div
-    button.relative.w-full.rounded.justify-center.text-base.font-semibold.leading-6.disabled\:bg-sky-400.border-0.bg-transparent.p-3.text-black.hover\:bg-transparent.hover\:text-primary.focus-visible\:text-primary.flex.items-center {
-    margin-left: 2em;
-    width: 92% !important;
+  /* cannot done by tailwind */
+
+  .header-search-bar button[aria-label='Open search popup'] {
+    margin-left: 1em;
   }
 
   h3.footer-customer-service {
@@ -540,6 +512,9 @@ ul.div-breadcrumb li:last-child a {
 }
 
 @media only screen and (min-width: 1000px) and (max-width: 1030px) {
+  .header-search-bar button[aria-label='Open search popup'] {
+    margin-left: 2em;
+  }
   .main-product-details {
     display: none !important;
   }
@@ -584,24 +559,14 @@ ul.div-breadcrumb li:last-child a {
     margin-left: 5em;
   }
 
-  header.main-header {
-    display: unset !important;
-  }
-
-  button.relative.w-full.rounded.justify-center.text-base.font-semibold.leading-6.disabled\:bg-sky-400.border-0.bg-transparent.p-3.text-black.hover\:bg-transparent.hover\:text-primary.focus-visible\:text-primary.flex.items-center {
-    margin-left: 27.5em;
-    width: 35% !important;
-  }
-
   header.main-header a img {
     position: absolute;
     top: 1em;
     left: 2.5em;
   }
 
-  button.relative.w-full.rounded.justify-center.text-base.font-semibold.leading-6.disabled\:bg-sky-400.border-0.bg-transparent.p-3.text-black.hover\:bg-transparent.hover\:text-primary.focus-visible\:text-primary.flex.items-center {
-    margin-left: 16em;
-    width: 49% !important;
+  body .header-search-bar button[aria-label='Open search popup'] {
+    width: 52% !important;
   }
 }
 
@@ -612,22 +577,7 @@ ul.div-breadcrumb li:last-child a {
   }
 }
 
-@media only screen and (min-width: 1000px) and (max-width: 1030px) {
-  /* header */
-  body div header.main-header a img {
-    margin-left: 2.5em;
-  }
-}
-
 @media only screen and (max-width: 1200px) {
-  /* test 1 j*/
-  /* cant change */
-  /* .login-div {
-    width: calc((800 / 1000) * 100vw);
-  } */
-
-  /* test 1 j*/
-
   .gallery-pop-up-img {
     width: 85% !important;
   }
@@ -639,14 +589,11 @@ ul.div-breadcrumb li:last-child a {
     width: 100%;
     height: 100%;
   }
-
-  body
-    div
-    button.relative.w-full.rounded.justify-center.text-base.font-semibold.leading-6.disabled\:bg-sky-400.border-0.bg-transparent.p-3.text-black.hover\:bg-transparent.hover\:text-primary.focus-visible\:text-primary.flex.items-center {
-    top: 0em;
+  .header-search-bar button[aria-label='Open search popup'] {
+    width: 92% !important;
     position: absolute;
-    margin-left: 13.8em;
-    width: 67% !important;
+    left: 1em;
+    top: 5em;
   }
 
   ul#nav-menu-list {
@@ -708,21 +655,6 @@ ul.div-breadcrumb li:last-child a {
     right: 0em;
     position: absolute;
     top: 2em;
-  }
-
-  header.main-header a img {
-    margin-left: 3em;
-  }
-
-  button.relative.w-full.rounded.justify-center.text-base.font-semibold.leading-6.disabled\:bg-sky-400.border-0.bg-transparent.p-3.text-black.hover\:bg-transparent.hover\:text-primary.focus-visible\:text-primary.flex.items-center {
-    margin-left: 1em;
-    margin-top: 2em;
-    width: 92% !important;
-    position: absolute;
-  }
-
-  nav.static-menu-class {
-    display: none;
   }
 
   .main-slider {
@@ -1022,16 +954,13 @@ button#label-1462 {
   visibility: hidden;
   opacity: 0;
   transform: translateX(10px);
-  /* Start off slightly to the right */
   transition:
     visibility 0s,
     opacity 0.3s ease,
     transform 0.3s ease,
     background-color 0.3s ease;
   background-color: transparent;
-  /* Initial background color */
   padding: 4px;
-  /* Adjust padding as needed */
 }
 
 #add-to-cart:hover svg {
@@ -1171,33 +1100,16 @@ footer.\32 xl\:container.\32 xl\:mx-auto {
 .login-breadcrumb .div-breadcrumb {
   padding-block: 0 !important;
 }
-
-/* .login-div{
-  width: calc((1116 / 1600) * 100vw);
-} */
-
-@media screen and (max-width: 768px) {
-  /* .login-div{
-    width: calc((500 / 768) * 100vw);
-  } */
-}
-
 .login-submit-btn {
   width: 100%;
 }
-
 .login-submit-btn button {
   width: 100%;
   background: #008bb7 !important;
 }
-
 .popup-container-parent .checkout-btn {
   margin-top: 0 !important;
 }
-
 .popup-container-parent .popup-box1 {
   pointer-events: all !important;
 }
-
-/* cant change */
-/* test 1 j*/
