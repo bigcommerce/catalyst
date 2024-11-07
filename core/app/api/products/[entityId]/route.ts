@@ -5,7 +5,7 @@ import { client } from '~/client';
 import { graphql, ResultOf } from '~/client/graphql';
 import { MakeswiftProductFragment } from '~/makeswift/utils/use-bc-product-to-vibes-product/fragment';
 
-const GetProduct = graphql(
+export const GetProduct = graphql(
   `
     query GetProduct($entityId: Int!) {
       site {
