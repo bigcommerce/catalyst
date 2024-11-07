@@ -65,6 +65,7 @@ export const Reviews = async ({ productId }: Props) => {
 
   const formattedReviews = reviews.map((review) => ({
     id: review.entityId.toString(),
+    rating: review.rating,
     review: review.text,
     name: review.author.name,
     date: format.dateTime(new Date(review.createdAt.utc), {

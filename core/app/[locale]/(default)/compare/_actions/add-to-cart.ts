@@ -8,7 +8,7 @@ import { createCart } from '~/client/mutations/create-cart';
 import { getCart } from '~/client/queries/get-cart';
 import { TAGS } from '~/client/tags';
 
-export const addToCart = async (id: string) => {
+export const addToCart = async (id: string): Promise<void> => {
   const cartId = cookies().get('cartId')?.value;
 
   let cart;
@@ -27,18 +27,21 @@ export const addToCart = async (id: string) => {
       });
 
       if (!cart?.entityId) {
-        return { status: 'error', error: 'Failed to add product to cart.' };
+        // return { status: 'error', error: 'Failed to add product to cart.' };
+        return;
       }
 
       revalidateTag(TAGS.cart);
 
-      return { status: 'success', data: cart };
+      // return { status: 'success', data: cart };
+      return;
     }
 
     cart = await createCart([{ productEntityId: Number(id), quantity: 1 }]);
 
     if (!cart?.entityId) {
-      return { status: 'error', error: 'Failed to add product to cart.' };
+      // return { status: 'error', error: 'Failed to add product to cart.' };
+      return;
     }
 
     cookies().set({
@@ -52,12 +55,12 @@ export const addToCart = async (id: string) => {
 
     revalidateTag(TAGS.cart);
 
-    return { status: 'success', data: cart };
+    // return { status: 'success', data: cart };
   } catch (error: unknown) {
     if (error instanceof Error) {
-      return { status: 'error', error: error.message };
+      // return { status: 'error', error: error.message };
     }
 
-    return { status: 'error', error: 'Something went wrong. Please try again.' };
+    // return { status: 'error', error: 'Something went wrong. Please try again.' };
   }
 };

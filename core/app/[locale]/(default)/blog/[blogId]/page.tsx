@@ -47,9 +47,9 @@ export default async function Blog({ params: { blogId } }: Props) {
       image={
         blogPost.thumbnailImage
           ? { src: blogPost.thumbnailImage.url, alt: blogPost.thumbnailImage.altText }
-          : 'undefined'
+          : null
       }
-      tags={blogPost.tags}
+      // tags={blogPost.tags}
       title={blogPost.name}
     />
   );

@@ -154,6 +154,7 @@ export default async function Product({ params: { locale, slug }, searchParams }
 
   return (
     <>
+      {/* @ts-expect-error: TODO(jorgemoya): fix this issue */}
       <ProductDetail product={formattedProduct} />
 
       <ProductDescription

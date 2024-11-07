@@ -71,8 +71,9 @@ export default async function Home({ params: { locale } }: Props) {
         cta={{ href: '/#', label: t('FeaturedImage.cta') }}
         description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
         image={{
-          src: image,
+          src: image.src,
           alt: t('FeaturedImage.altText'),
+          blurDataUrl: image.blurDataURL,
         }}
         title={t('FeaturedImage.title')}
       />
