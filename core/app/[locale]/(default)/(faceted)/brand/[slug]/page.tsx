@@ -8,10 +8,10 @@ import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { LocaleType } from '~/i18n/routing';
 
+import { redirectToCompare } from '../../_actions/redirect-to-compare';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { getBrand, getCompareProducts } from './page-data';
-import { redirectToCompare } from '../../_actions/redirect-to-compare';
 
 interface Props {
   params: {

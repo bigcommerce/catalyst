@@ -93,32 +93,48 @@ export default async function Product({ params: { locale, slug }, searchParams }
 
   const accordions: AccordionItem[] = [
     // Description - only if not null/empty
-    ...(product.description ? [{
-      title: t('Description.heading'),
-      content: <div className="prose" dangerouslySetInnerHTML={{ __html: product.description }} />
-    }] : []),
+    ...(product.description
+      ? [
+          {
+            title: t('Description.heading'),
+            content: (
+              <div className="prose" dangerouslySetInnerHTML={{ __html: product.description }} />
+            ),
+          },
+        ]
+      : []),
 
     // Additional Details - only if there are custom fields
-    ...(product.customFields.edges?.length ? [{
-      title: t('Details.additionalDetails'),
-      content: (
-        <div className="prose">
-          {product.customFields.edges.map((field, index) => (
-            <div key={index}>
-              <strong>{field.node.name}</strong> <br />
-              {field.node.value}
-              {index < product.customFields.edges.length - 1 && <br />}
-            </div>
-          ))}
-        </div>
-      )
-    }] : []),
+    ...(product.customFields.edges?.length
+      ? [
+          {
+            title: t('Details.additionalDetails'),
+            content: (
+              <div className="prose">
+                {product.customFields.edges.map((field, index, array) => (
+                  <div key={index}>
+                    <strong>{field.node.name}</strong> <br />
+                    {field.node.value}
+                    {index < array.length - 1 && <br />}
+                  </div>
+                ))}
+              </div>
+            ),
+          },
+        ]
+      : []),
 
     // Warranty - only if not null/empty
-    ...(product.warranty ? [{
-      title: t('Warranty.heading'),
-      content: <div className="prose" dangerouslySetInnerHTML={{ __html: product.warranty }} />
-    }] : []),
+    ...(product.warranty
+      ? [
+          {
+            title: t('Warranty.heading'),
+            content: (
+              <div className="prose" dangerouslySetInnerHTML={{ __html: product.warranty }} />
+            ),
+          },
+        ]
+      : []),
   ];
 
   const formattedProduct = {

@@ -20,7 +20,7 @@ export async function generateStaticParams() {
       locales.map((locale) => ({
         rest: page.path.split('/').filter((segment) => segment !== ''),
         // Remove eslint disable once more locales are added
-
+        /* eslint-disable-next-line */
         locale: locale === defaultLocale ? undefined : locale,
       })),
     );

@@ -2,12 +2,11 @@
 
 import { useFormatter } from 'next-intl';
 
+import { getSearchResults } from '~/client/queries/get-search-results';
 import { ExistingResultType } from '~/client/util';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
 import { Search } from '../ui/header';
-
-import { getSearchResults } from '~/client/queries/get-search-results';
 
 interface Image {
   src: string;
