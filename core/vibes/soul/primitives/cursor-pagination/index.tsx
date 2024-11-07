@@ -10,9 +10,9 @@ import { createSerializer, parseAsString } from 'nuqs';
 
 export interface CursorPaginationInfo {
   startCursorParamName?: string;
-  startCursor?: string;
+  startCursor?: string | null;
   endCursorParamName?: string;
-  endCursor?: string;
+  endCursor?: string | null;
 }
 
 interface Props {

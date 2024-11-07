@@ -85,7 +85,7 @@ export default async function Category({ params: { locale, slug }, searchParams 
   // const subcategories = categoryTree;
 
   // TODO: remove hasNextPage and hasPreviousPage from query
-  const { endCursor, startCursor } = productsCollection.pageInfo;
+  const { endCursor, startCursor, hasNextPage, hasPreviousPage } = productsCollection.pageInfo;
 
   const facets = search.facets.items.filter((facet) => facet.__typename !== 'CategorySearchFilter');
   const filters = await facetsTransformer(facets);
@@ -116,12 +116,16 @@ export default async function Category({ params: { locale, slug }, searchParams 
         compareProducts={compareProducts}
         filterLabel={t('FacetedSearch.filters')}
         filters={filters.filter((filter) => !!filter)}
-        paginationInfo={{
-          startCursorParamName: 'before',
-          endCursorParamName: 'after',
-          endCursor: endCursor ?? undefined,
-          startCursor: startCursor ?? undefined,
-        }}
+        paginationInfo={
+          hasNextPage || hasPreviousPage
+            ? {
+                startCursorParamName: 'before',
+                endCursorParamName: 'after',
+                endCursor: hasNextPage ? endCursor : null,
+                startCursor: hasPreviousPage ? startCursor : null,
+              }
+            : undefined
+        }
         products={products}
         sortLabel={t('SortBy.label')}
         sortOptions={[
