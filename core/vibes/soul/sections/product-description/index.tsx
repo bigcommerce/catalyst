@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { BcImage as Image } from '~/components/bc-image';
 
 import { Accordion, Accordions } from '@/vibes/soul/primitives/accordions';
 
