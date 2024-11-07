@@ -4,6 +4,7 @@ import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import { clsx } from 'clsx';
 import { BcImage as Image } from '~/components/bc-image';
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { Button } from '@/vibes/soul/primitives/button';
 import { Favorite } from '@/vibes/soul/primitives/favorite';
@@ -32,6 +33,8 @@ export function ProductDetail({ product }: ProductDetailProps) {
   const [favorited, setFavorited] = useState(false);
   const [selectedOption, setSelectedOption] = useState(product.options?.[0] ?? null);
   const [selectedSwatch, setSelectedSwatch] = useState(product.swatches?.[0] ?? null);
+
+  const t = useTranslations('Components.AddToCartButton');
 
   return (
     <section className="flex flex-col bg-background @container">
@@ -107,7 +110,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
             )}
 
             <div className="mt-4 flex max-w-sm gap-2">
-              <Button className="flex-grow">Add to Cart</Button>
+              <Button className="flex-grow">{t('addToCart')}</Button>
               <Favorite checked={favorited} setChecked={setFavorited} />
             </div>
           </form>
