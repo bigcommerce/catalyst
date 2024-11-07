@@ -15,3 +15,4 @@ import '@/vibes/soul/primitives/inline-email-form/inline-email-form.makeswift';
 
 import '@/vibes/soul/sections/slideshow/slideshow.makeswift';
 import '@/vibes/soul/sections/featured-image/featured-image.makeswift';
+import '@/vibes/soul/sections/sticky-sidebar-layout/sticky-sidebar-layout.makeswift';
