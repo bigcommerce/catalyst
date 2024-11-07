@@ -5,7 +5,7 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { Suspense } from 'react';
 
 import { IconBlock } from '@/vibes/soul/sections/icon-block';
-import { ProductDescription } from '@/vibes/soul/sections/product-description';
+import { AccordionItem, ProductDescription } from '@/vibes/soul/sections/product-description';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { LocaleType } from '~/i18n/routing';
@@ -67,30 +67,6 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   };
 }
 
-// TODO: Temporary accordions
-const accordions = [
-  {
-    title: 'What is your return policy?',
-    content:
-      'We want you to be completely satisfied with your purchase. If you’re not happy with your plant, you can return it within 30 days of delivery. Please ensure the plant is in its original condition and packaging. For detailed return instructions, visit our Return Policy page or contact our customer support team.',
-  },
-  {
-    title: 'How do I care for my new plants?',
-    content:
-      'Caring for your new plants involves understanding their specific needs. Most indoor plants require indirect sunlight, regular watering, and occasional feeding. Check the plant care tag that comes with your purchase for detailed instructions. If you need more help, our Care Guide section offers detailed advice for each plant type.',
-  },
-  {
-    title: 'Do you offer plant delivery services?',
-    content:
-      'Yes, we offer nationwide delivery for all our plants. Our plants are carefully packaged to ensure they arrive healthy and safe. Delivery times vary depending on your location but typically range from 3 to 7 business days. For more information, check our Delivery Information page or enter your zip code at checkout for estimated delivery times.',
-  },
-  {
-    title: 'Can I get advice on choosing the right plant?',
-    content:
-      'Absolutely! Choosing the right plant can depend on several factors such as your living space, light availability, and personal preferences. Our Plant Finder tool can help you select the perfect plant for your environment. Additionally, our customer service team is available to offer personalized recommendations based on your needs.',
-  },
-];
-
 export default async function Product({ params: { locale, slug }, searchParams }: Props) {
   setRequestLocale(locale);
 
@@ -114,6 +90,36 @@ export default async function Product({ params: { locale, slug }, searchParams }
 
   // TODO: add breadcrumb
   // const category = removeEdgesAndNodes(product.categories).at(0);
+
+  const accordions: AccordionItem[] = [
+    // Description - only if not null/empty
+    ...(product.description ? [{
+      title: t('Description.heading'),
+      content: <div className="prose" dangerouslySetInnerHTML={{ __html: product.description }} />
+    }] : []),
+
+    // Additional Details - only if there are custom fields
+    ...(product.customFields.edges?.length ? [{
+      title: t('Details.additionalDetails'),
+      content: (
+        <div className="prose">
+          {product.customFields.edges.map((field, index) => (
+            <div key={index}>
+              <strong>{field.node.name}</strong> <br />
+              {field.node.value}
+              {index < product.customFields.edges.length - 1 && <br />}
+            </div>
+          ))}
+        </div>
+      )
+    }] : []),
+
+    // Warranty - only if not null/empty
+    ...(product.warranty ? [{
+      title: t('Warranty.heading'),
+      content: <div className="prose" dangerouslySetInnerHTML={{ __html: product.warranty }} />
+    }] : []),
+  ];
 
   const formattedProduct = {
     id: product.entityId.toString(),
