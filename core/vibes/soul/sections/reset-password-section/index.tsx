@@ -1,16 +1,20 @@
 import { ResetPasswordAction, ResetPasswordForm } from './reset-password-form';
 
-interface Props {
+type Props = {
   title?: string;
   subtitle?: string;
   action: ResetPasswordAction;
   submitLabel?: string;
-}
+  newPasswordLabel?: string;
+  confirmPasswordLabel?: string;
+};
 
 export function ResetPasswordSection({
   title = 'Reset password',
   subtitle = 'Enter a new password below to reset your account password.',
   submitLabel,
+  newPasswordLabel,
+  confirmPasswordLabel,
   action,
 }: Props) {
   return (
@@ -19,7 +23,12 @@ export function ResetPasswordSection({
         <div className="flex w-full flex-col @xl:max-w-md @xl:pr-10 @4xl:pr-20">
           <h1 className="mb-5 text-4xl font-medium leading-none @xl:text-5xl">{title}</h1>
           <p className="mb-10 text-base font-light leading-none @xl:text-lg">{subtitle}</p>
-          <ResetPasswordForm action={action} submitLabel={submitLabel} />
+          <ResetPasswordForm
+            action={action}
+            submitLabel={submitLabel}
+            newPasswordLabel={newPasswordLabel}
+            confirmPasswordLabel={confirmPasswordLabel}
+          />
         </div>
       </div>
     </div>

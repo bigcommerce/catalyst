@@ -1,10 +1,11 @@
 'use client';
 
-import { Link } from '~/components/link';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-
 import { clsx } from 'clsx';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { usePathname } from '~/i18n/routing';
+
+import { Link } from '~/components/link';
 
 export function OffsetPagination({ pages: totalPages }: { pages: number }) {
   const pathname = usePathname();
@@ -15,6 +16,7 @@ export function OffsetPagination({ pages: totalPages }: { pages: number }) {
 
   useEffect(() => {
     const current = parseInt(searchParams.get('page') ?? '1', 10);
+
     if (current !== currentPage) {
       setCurrentPage(current);
     }
@@ -62,16 +64,13 @@ export function OffsetPagination({ pages: totalPages }: { pages: number }) {
         {renderPagination().map((page, index) =>
           typeof page === 'string' ? (
             <span
-              key={index}
               className="hidden h-12 w-12 items-center justify-center text-foreground @lg:flex"
+              key={index}
             >
               ...
             </span>
           ) : (
             <Link
-              href={`${pathname}?page=${page.toString()}`}
-              onClick={() => setCurrentPage(page)}
-              key={index}
               className={clsx(
                 'flex h-12 w-12 items-center justify-center rounded-full border transition-colors duration-300',
                 'ring-primary focus-visible:outline-0 focus-visible:ring-2',
@@ -79,6 +78,9 @@ export function OffsetPagination({ pages: totalPages }: { pages: number }) {
                   ? 'border-foreground bg-foreground text-background'
                   : 'border-contrast-100 text-foreground hover:bg-contrast-100',
               )}
+              href={`${pathname}?page=${page.toString()}`}
+              key={index}
+              onClick={() => setCurrentPage(page)}
             >
               {page}
             </Link>

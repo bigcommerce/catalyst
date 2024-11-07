@@ -11,7 +11,7 @@ import { CompareDrawer } from './compare-drawer';
 
 export type ListProduct = CardProduct;
 
-interface Props {
+type Props = {
   products: ListProduct[] | Promise<ListProduct[]>;
   compareProducts?: ListProduct[] | Promise<ListProduct[]>;
   className?: string;
@@ -19,7 +19,7 @@ interface Props {
   compareAction?: React.ComponentProps<'form'>['action'];
   compareLabel?: string;
   compareParamName?: string;
-}
+};
 
 function ProductsListInner({
   products,

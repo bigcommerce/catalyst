@@ -18,7 +18,7 @@ import { usePathname } from '~/i18n/routing';
 import { Price } from '../price-label';
 import { ProductCard } from '../product-card';
 
-interface Link {
+type Link = {
   label: string;
   href: string;
   groups?: Array<{
@@ -29,12 +29,12 @@ interface Link {
       href: string;
     }>;
   }>;
-}
+};
 
-interface Locale {
+type Locale = {
   id: string;
   label: string;
-}
+};
 
 type Action<State, Payload> = (
   state: Awaited<State>,
@@ -65,7 +65,7 @@ type SearchAction = Action<
   FormData
 >;
 
-interface Props {
+type Props = {
   accountHref: string;
   cartCount?: number;
   cartHref: string;
@@ -82,7 +82,7 @@ interface Props {
   searchInputPlaceholder?: string;
   emptySearchTitle?: string;
   emptySearchSubtitle?: string;
-}
+};
 
 export const Navigation = forwardRef(function Navigation(
   {

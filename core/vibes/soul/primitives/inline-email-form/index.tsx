@@ -1,47 +1,79 @@
-import { ArrowRight } from 'lucide-react'
+'use client';
 
-export const InlineEmailForm = function InlineEmailForm() {
-  // action: (prevState: unknown, formData: FormData) => Promise<SubmissionResult>
+import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
+import { parseWithZod } from '@conform-to/zod';
+import clsx from 'clsx';
+import { ArrowRight } from 'lucide-react';
+import { useActionState, useEffect } from 'react';
 
-  // const schema = z.object({
-  //   email: z.string().email(),
-  // })
+import { ErrorMessage } from '../../form/error-message';
+import { Button } from '../button';
+import { schema } from './schema';
 
-  // const [lastResult, formAction] = useFormState(action, undefined)
+type Action<State, Payload> = (
+  prevState: Awaited<State>,
+  formData: Payload,
+) => State | Promise<State>;
 
-  // const [form] = useForm({
-  //   lastResult,
-  //   onValidate({ formData }) {
-  //     return parseWithZod(formData, { schema })
-  //   },
-  //   shouldValidate: 'onSubmit',
-  //   shouldRevalidate: 'onInput',
-  // })
+export function InlineEmailForm({
+  className,
+  action,
+  submitLabel = 'Submit',
+  placeholder = 'Enter your email',
+}: {
+  className?: string;
+  placeholder?: string;
+  submitLabel?: string;
+  action: Action<SubmissionResult | null, FormData>;
+}) {
+  const [lastResult, formAction, isPending] = useActionState(action, null);
+
+  const [form, fields] = useForm({
+    lastResult,
+    onValidate({ formData }) {
+      return parseWithZod(formData, { schema });
+    },
+    shouldValidate: 'onSubmit',
+    shouldRevalidate: 'onInput',
+  });
+
+  useEffect(() => {
+    if (lastResult?.error) {
+      console.log(lastResult.error);
+    }
+  }, [lastResult]);
+
+  const { errors } = fields.email;
 
   return (
-    <form
-      // id={form.id}
-      className="w-full"
-      // onSubmit={form.onSubmit}
-      // action={action}
-      noValidate
-    >
-      <div className="relative w-full max-w-5xl shrink-0 rounded-lg border border-contrast-100 bg-primary-highlight text-[15px] ring-foreground transition-colors duration-200 focus-within:ring-[1px] focus:outline-none">
+    <form {...getFormProps(form)} action={formAction} className={className}>
+      <div
+        className={clsx(
+          'relative rounded-xl border bg-background text-base transition-colors duration-200 focus-within:border-primary focus:outline-none',
+          errors?.length ? 'border-error' : 'border-black',
+        )}
+      >
         <input
-          type="email"
-          placeholder="Join our Newsletter"
-          className="placeholder-contrast-gray-500 w-full bg-transparent py-5 pl-5 pr-16 text-foreground placeholder:font-normal focus:outline-none"
+          {...getInputProps(fields.email, { type: 'email' })}
+          className="placeholder-contrast-gray-500 h-14 w-full bg-transparent pl-5 pr-16 text-foreground placeholder:font-normal focus:outline-none"
+          key={fields.email.id}
+          placeholder={placeholder}
         />
-
-        <button
-          // formAction={formAction}
-          type="submit"
-          className="group absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-lg bg-foreground text-background ring-foreground transition-transform focus:outline-none focus:ring-[1px]"
-          aria-label="Submit"
-        >
-          <ArrowRight strokeWidth={1.5} size={20} />
-        </button>
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 pr-2">
+          <Button
+            aria-label={submitLabel}
+            loading={isPending}
+            size="icon"
+            type="submit"
+            variant="secondary"
+          >
+            <ArrowRight size={20} strokeWidth={1.5} />
+          </Button>
+        </div>
       </div>
+      {errors &&
+        errors.length > 0 &&
+        errors.map((error, index) => <ErrorMessage key={index}>{error}</ErrorMessage>)}
     </form>
-  )
+  );
 }

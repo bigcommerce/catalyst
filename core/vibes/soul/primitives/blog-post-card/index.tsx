@@ -1,23 +1,21 @@
-import { BcImage } from '~/components/bc-image';
+import { BcImage as Image } from '~/components/bc-image';
 import { Link } from '~/components/link';
 
 import { clsx } from 'clsx';
 
-interface Image {
-  src: string;
-  alt: string;
-}
-
-export interface BlogPost {
+export type BlogPost = {
   id: string;
   author?: string | null;
   content: string;
   date: string;
-  image?: Image | null;
+  image?: {
+    src: string;
+    alt: string;
+  };
   href: string;
   title: string;
   className?: string;
-}
+};
 
 export const BlogPostCard = function BlogPostCard({
   title,
@@ -38,7 +36,7 @@ export const BlogPostCard = function BlogPostCard({
     >
       <div className="relative mb-4 aspect-[4/3] w-full overflow-hidden rounded-2xl bg-contrast-100">
         {image?.src != null && image.src !== '' ? (
-          <BcImage
+          <Image
             src={image.src}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -71,13 +69,11 @@ export const BlogPostCard = function BlogPostCard({
   );
 };
 
-interface BlogPostCardSkeletonProps {
-  className?: string;
-}
-
 export const BlogPostCardSkeleton = function BlogPostCardSkeleton({
   className,
-}: BlogPostCardSkeletonProps) {
+}: {
+  className?: string;
+}) {
   return (
     <div className={clsx('flex max-w-md animate-pulse flex-col gap-2 rounded-xl', className)}>
       {/* Image */}

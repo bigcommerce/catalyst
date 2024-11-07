@@ -3,12 +3,12 @@ import { clsx } from 'clsx';
 import { Breadcrumbs } from '@/vibes/soul/primitives/breadcrumbs';
 import { BcImage } from '~/components/bc-image';
 
-interface Image {
+type Image = {
   src: string;
   alt: string;
-}
+};
 
-interface Props {
+type Props = {
   id: string;
   title: string;
   author: string;
@@ -16,7 +16,7 @@ interface Props {
   content: string;
   image: Image;
   className?: string;
-}
+};
 
 export const BlogPostContent = function BlogPostContent({
   title,

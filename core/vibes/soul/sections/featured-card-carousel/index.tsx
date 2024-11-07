@@ -2,17 +2,17 @@ import { Link } from '~/components/link';
 
 import { Card, CardCarousel } from '@/vibes/soul/primitives/card-carousel';
 
-interface Link {
+type Link = {
   label: string;
   href: string;
-}
+};
 
-interface Props {
+type Props = {
   title: string;
   description?: string;
   cta?: Link;
   cards: Card[];
-}
+};
 
 export function FeaturedCardCarousel({ title, description, cta, cards }: Props) {
   return (

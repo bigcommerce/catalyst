@@ -7,7 +7,7 @@ import { Link } from '~/components/link';
 
 import { Compare } from './compare';
 
-export interface CardProduct {
+export type CardProduct = {
   id: string;
   title: string;
   href: string;
@@ -16,15 +16,15 @@ export interface CardProduct {
   subtitle?: string;
   badge?: string;
   rating?: number;
-}
+};
 
-interface Props {
+type Props = {
   className?: string;
   showCompare?: boolean;
   compareLabel?: string;
   compareParamName?: string;
   product: CardProduct;
-}
+};
 
 export function ProductCard({
   product: { id, title, subtitle, badge, price, image, href },
@@ -40,17 +40,17 @@ export function ProductCard({
         href={href}
         id={id}
       >
-        <div className="bg-contrast-100 relative aspect-[5/6] overflow-hidden rounded-[inherit]">
+        <div className="relative aspect-[5/6] overflow-hidden rounded-[inherit] bg-contrast-100">
           {image?.src != null ? (
             <BcImage
               alt="Category card image"
-              className="bg-contrast-100 w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+              className="w-full scale-100 select-none bg-contrast-100 object-cover transition-transform duration-500 ease-out group-hover:scale-110"
               fill
               sizes="(max-width: 768px) 70vw, 33vw"
               src={image.src}
             />
           ) : (
-            <div className="text-contrast-300 pl-2 pt-3 text-7xl font-bold leading-[0.8] tracking-tighter transition-transform duration-500 ease-out group-hover:scale-105">
+            <div className="pl-2 pt-3 text-7xl font-bold leading-[0.8] tracking-tighter text-contrast-300 transition-transform duration-500 ease-out group-hover:scale-105">
               {title}
             </div>
           )}
@@ -68,7 +68,7 @@ export function ProductCard({
             <span className="block font-semibold">{title}</span>
 
             {subtitle != null && subtitle !== '' && (
-              <span className="text-contrast-400 mb-2 block text-sm font-normal">{subtitle}</span>
+              <span className="mb-2 block text-sm font-normal text-contrast-400">{subtitle}</span>
             )}
             {price != null && <PriceLabel price={price} />}
           </Link>
@@ -84,9 +84,9 @@ export function ProductCard({
   );
 }
 
-interface ProductCardSkeletonProps {
+type ProductCardSkeletonProps = {
   className?: string;
-}
+};
 
 export const ProductCardSkeleton = function ProductCardSkeleton({
   className,
@@ -94,16 +94,16 @@ export const ProductCardSkeleton = function ProductCardSkeleton({
   return (
     <div className={clsx('animate-pulse cursor-pointer rounded-xl @md:rounded-2xl', className)}>
       {/* Image */}
-      <div className="bg-contrast-100 relative aspect-[5/6] overflow-hidden rounded-xl @6xl:min-w-80" />
+      <div className="relative aspect-[5/6] overflow-hidden rounded-xl bg-contrast-100 @6xl:min-w-80" />
       <div className="flex justify-between gap-2 pt-4 @sm:gap-2 @sm:pt-7">
         <h3 className="flex flex-col flex-wrap justify-between gap-2 @sm:gap-2 @4xl:flex-row">
           {/* Name */}
-          <div className="bg-contrast-100 h-4 w-24 rounded-lg" />
+          <div className="h-4 w-24 rounded-lg bg-contrast-100" />
           {/* Subtitle */}
-          <div className="bg-contrast-100 h-4 w-20 rounded-lg" />
+          <div className="h-4 w-20 rounded-lg bg-contrast-100" />
         </h3>
         {/* Price */}
-        <div className="bg-contrast-100 h-4 w-16 rounded-lg @4xl:h-6" />
+        <div className="h-4 w-16 rounded-lg bg-contrast-100 @4xl:h-6" />
       </div>
     </div>
   );

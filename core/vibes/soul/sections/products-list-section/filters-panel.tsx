@@ -1,9 +1,8 @@
 'use client';
 
-import { Suspense, use } from 'react';
-
 import clsx from 'clsx';
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
+import { Suspense, use } from 'react';
 
 import { Accordion, Accordions } from '@/vibes/soul/primitives/accordions';
 import { Button } from '@/vibes/soul/primitives/button';
@@ -12,20 +11,20 @@ import { FilterRange } from './filter-range';
 import { FilterRating } from './filter-rating';
 import { FilterToggleGroup } from './filter-toggle-group';
 
-export interface ToggleGroupFilter {
+export type ToggleGroupFilter = {
   type: 'toggle-group';
   paramName: string;
   label: string;
-  options: { label: string; value: string }[];
-}
+  options: Array<{ label: string; value: string }>;
+};
 
-export interface RatingFilter {
+export type RatingFilter = {
   type: 'rating';
   paramName: string;
   label: string;
-}
+};
 
-export interface RangeFilter {
+export type RangeFilter = {
   type: 'range';
   label: string;
   minParamName: string;
@@ -38,19 +37,20 @@ export interface RangeFilter {
   maxPrepend?: React.ReactNode;
   minPlaceholder?: string;
   maxPlaceholder?: string;
-}
+};
 
 export type Filter = ToggleGroupFilter | RangeFilter | RatingFilter;
 
-interface Props {
+type Props = {
   className?: string;
   filters: Filter[] | Promise<Filter[]>;
   resetFiltersLabel?: string;
-}
+};
 
 function getParamCountLabel(params: Record<string, string | null | string[]>, key: string) {
   if (Array.isArray(params[key]) && params[key].length > 0) return `(${params[key].length})`;
-  else return '';
+
+  return '';
 }
 
 export function FiltersPanel({ className, filters, resetFiltersLabel }: Props) {
@@ -80,6 +80,7 @@ export function FiltersPanelInner({
             [filter.minParamName]: parseAsInteger,
             [filter.maxParamName]: parseAsInteger,
           };
+
         default:
           return { ...acc, [filter.paramName]: parseAsArrayOf(parseAsString) };
       }
@@ -91,7 +92,7 @@ export function FiltersPanelInner({
 
   return (
     <div className={clsx('space-y-5', className)}>
-      <Accordions type="multiple" defaultValue={resolved.map((_, i) => i.toString())}>
+      <Accordions defaultValue={resolved.map((_, i) => i.toString())} type="multiple">
         {resolved.map((filter, index) => {
           switch (filter.type) {
             case 'toggle-group':
@@ -101,42 +102,47 @@ export function FiltersPanelInner({
                   title={`${filter.label}${getParamCountLabel(params, filter.paramName)}`}
                   value={index.toString()}
                 >
-                  <FilterToggleGroup paramName={filter.paramName} options={filter.options} />
+                  <FilterToggleGroup options={filter.options} paramName={filter.paramName} />
                 </Accordion>
               );
+
             case 'range':
               return (
                 <Accordion key={index} title={filter.label} value={index.toString()}>
                   <FilterRange
-                    min={filter.min}
                     max={filter.max}
-                    minLabel={filter.minLabel}
                     maxLabel={filter.maxLabel}
-                    minPrepend={filter.minPrepend}
-                    maxPrepend={filter.maxPrepend}
-                    minPlaceholder={filter.minPlaceholder}
-                    maxPlaceholder={filter.maxPlaceholder}
-                    minParamName={filter.minParamName}
                     maxParamName={filter.maxParamName}
+                    maxPlaceholder={filter.maxPlaceholder}
+                    maxPrepend={filter.maxPrepend}
+                    min={filter.min}
+                    minLabel={filter.minLabel}
+                    minParamName={filter.minParamName}
+                    minPlaceholder={filter.minPlaceholder}
+                    minPrepend={filter.minPrepend}
                   />
                 </Accordion>
               );
+
             case 'rating':
               return (
                 <Accordion key={index} title={filter.label} value={index.toString()}>
                   <FilterRating paramName={filter.paramName} />
                 </Accordion>
               );
+
+            default:
+              return null;
           }
         })}
       </Accordions>
 
       <Button
-        variant="secondary"
-        size="small"
         onClick={() => {
           void setParams(null);
         }}
+        size="small"
+        variant="secondary"
       >
         {resetFiltersLabel}
       </Button>

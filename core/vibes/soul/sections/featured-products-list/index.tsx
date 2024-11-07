@@ -1,17 +1,17 @@
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { ListProduct, ProductsList } from '@/vibes/soul/primitives/products-list';
 
-interface Link {
+type Link = {
   label: string;
   href: string;
-}
+};
 
-export interface FeaturedProductsListProps {
+export type FeaturedProductsListProps = {
   title: string;
   description?: string;
   cta?: Link;
   products: ListProduct[];
-}
+};
 
 export function FeaturedProductsList({
   title,

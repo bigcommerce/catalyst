@@ -1,35 +1,35 @@
+import { clsx } from 'clsx';
+import { forwardRef, ReactNode, Ref } from 'react';
+
 import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
-import { ReactNode, Ref, forwardRef } from 'react';
 
-import { clsx } from 'clsx';
-
-interface Image {
+type Image = {
   src: string;
   alt: string;
-}
+};
 
-interface Link {
+type Link = {
   href: string;
   label: string;
-}
+};
 
-export interface Section {
+export type Section = {
   title?: string;
   links: Link[];
-}
+};
 
-interface SocialMediaLink {
+type SocialMediaLink = {
   href: string;
   icon: ReactNode;
-}
+};
 
-interface ContactInformation {
+type ContactInformation = {
   address?: string;
   phone?: string;
-}
+};
 
-interface Props {
+type Props = {
   logo?: string | Image;
   sections: Section[];
   copyright?: string;
@@ -37,7 +37,7 @@ interface Props {
   paymentIcons?: ReactNode[];
   socialMediaLinks?: SocialMediaLink[];
   className?: string;
-}
+};
 
 export const Footer = forwardRef(function Footer(
   {
@@ -53,11 +53,11 @@ export const Footer = forwardRef(function Footer(
 ) {
   return (
     <footer
-      ref={ref}
       className={clsx(
         'border-b-[4px] border-b-primary bg-background text-foreground @container',
         className,
       )}
+      ref={ref}
     >
       <div className="mx-auto max-w-screen-2xl">
         <div className="mx-3 flex flex-col justify-between gap-10 border-t border-t-contrast-100 pt-16 @xl:mx-6 @xl:py-20 @2xl:flex-row @5xl:mx-20">
@@ -78,8 +78,8 @@ export const Footer = forwardRef(function Footer(
             ) : (
               // Logo
               <Link
-                href="#"
                 className="relative inline-block h-10 w-full max-w-56 rounded-lg ring-primary focus-visible:outline-0 focus-visible:ring-2"
+                href="#"
               >
                 {typeof logo === 'string' ? (
                   <span className="whitespace-nowrap font-heading text-2xl font-semibold">
@@ -89,11 +89,11 @@ export const Footer = forwardRef(function Footer(
                   logo?.src != null &&
                   logo.src !== '' && (
                     <BcImage
-                      src={logo.src}
-                      fill
-                      sizes="400px"
                       alt={logo.alt}
                       className="object-contain object-left"
+                      fill
+                      sizes="400px"
+                      src={logo.src}
                     />
                   )
                 )}
@@ -106,9 +106,9 @@ export const Footer = forwardRef(function Footer(
                 {socialMediaLinks.map(({ href, icon }, i) => {
                   return (
                     <Link
-                      key={i}
-                      href={href}
                       className="flex items-center justify-center rounded-lg fill-contrast-400 p-1 ring-primary transition-colors duration-300 ease-out hover:fill-foreground focus-visible:outline-0 focus-visible:ring-2"
+                      href={href}
+                      key={i}
                     >
                       {icon}
                     </Link>
@@ -120,12 +120,12 @@ export const Footer = forwardRef(function Footer(
 
           {/* Footer Columns of Links */}
           <div className="flex w-full flex-1 flex-grow flex-wrap gap-y-8 @lg:gap-y-10 @xl:justify-end">
-            {sections.length &&
+            {sections.length > 0 &&
               sections.map(({ title, links }, i) => {
                 return (
                   <div
-                    key={i}
                     className="flex-1 basis-full pr-10 text-[15px] last:pr-0 @sm:basis-1/3 @2xl:pr-10 @4xl:max-w-[170px] @4xl:basis-auto"
+                    key={i}
                   >
                     {title != null && <span className="mb-8 block font-medium">{title}</span>}
 

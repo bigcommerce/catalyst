@@ -6,7 +6,7 @@ import { Filter, FiltersPanel } from './filters-panel';
 import { MobileFilters } from './mobile-filters';
 import { Sorting, Option as SortOption } from './sorting';
 
-interface Props {
+type Props = {
   breadcrumbs?: Breadcrumb[];
   title?: Promise<string> | string;
   totalCount: Promise<number> | number;
@@ -22,7 +22,7 @@ interface Props {
   sortLabel?: string;
   sortParamName?: string;
   compareParamName?: string;
-}
+};
 
 export function ProductsListSection({
   breadcrumbs,

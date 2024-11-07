@@ -1,28 +1,28 @@
-'use client'
+'use client';
 
-import { Input } from '@/vibes/soul/form/input'
+import { Input } from '@/vibes/soul/form/input';
 
-interface Props {
-  minName?: string
-  maxName?: string
-  min?: number
-  max?: number
-  minLabel?: string
-  maxLabel?: string
-  minPlaceholder?: string
-  maxPlaceholder?: string
-  minPrepend?: React.ReactNode
-  maxPrepend?: React.ReactNode
-  minValue?: number | null
-  maxValue?: number | null
-  onMinValueChange?: (value: number) => void
-  onMaxValueChange?: (value: number) => void
-  minStep?: number
-  maxStep?: number
-}
+type Props = {
+  minName?: string;
+  maxName?: string;
+  min?: number;
+  max?: number;
+  minLabel?: string;
+  maxLabel?: string;
+  minPlaceholder?: string;
+  maxPlaceholder?: string;
+  minPrepend?: React.ReactNode;
+  maxPrepend?: React.ReactNode;
+  minValue?: number | null;
+  maxValue?: number | null;
+  onMinValueChange?: (value: number) => void;
+  onMaxValueChange?: (value: number) => void;
+  minStep?: number;
+  maxStep?: number;
+};
 
 const clamp = (value: number, min = -Infinity, max = Infinity) =>
-  Math.min(Math.max(value, min), max)
+  Math.min(Math.max(value, min), max);
 
 export function RangeInput({
   minName = 'min',
@@ -45,45 +45,45 @@ export function RangeInput({
   return (
     <div className="flex w-full items-center gap-2">
       <Input
-        type="number"
-        name={minName}
-        label={minLabel}
-        prepend={minPrepend}
-        value={minValue ?? ''}
-        min={min}
-        max={maxValue ?? max}
-        step={minStep}
-        onChange={e => onMinValueChange?.(e.currentTarget.valueAsNumber)}
-        placeholder={minPlaceholder}
-        onBlur={e => {
-          const clamped = clamp(e.currentTarget.valueAsNumber, min, maxValue ?? max)
-
-          if (Number.isNaN(clamped)) e.currentTarget.value = clamped.toString()
-
-          onMinValueChange?.(clamped)
-        }}
         className="flex-1"
+        label={minLabel}
+        max={maxValue ?? max}
+        min={min}
+        name={minName}
+        onBlur={(e) => {
+          const clamped = clamp(e.currentTarget.valueAsNumber, min, maxValue ?? max);
+
+          if (Number.isNaN(clamped)) e.currentTarget.value = clamped.toString();
+
+          onMinValueChange?.(clamped);
+        }}
+        onChange={(e) => onMinValueChange?.(e.currentTarget.valueAsNumber)}
+        placeholder={minPlaceholder}
+        prepend={minPrepend}
+        step={minStep}
+        type="number"
+        value={minValue ?? ''}
       />
       <Input
-        type="number"
-        name={maxName}
-        label={maxLabel}
-        prepend={maxPrepend}
-        min={minValue ?? min}
-        max={max}
-        step={maxStep}
-        value={maxValue ?? ''}
-        onChange={e => onMaxValueChange?.(e.currentTarget.valueAsNumber)}
-        placeholder={maxPlaceholder}
-        onBlur={e => {
-          const clamped = clamp(e.currentTarget.valueAsNumber, minValue ?? min, max)
-
-          if (!Number.isNaN(clamped)) e.currentTarget.value = clamped.toString()
-
-          onMaxValueChange?.(clamped)
-        }}
         className="flex-1"
+        label={maxLabel}
+        max={max}
+        min={minValue ?? min}
+        name={maxName}
+        onBlur={(e) => {
+          const clamped = clamp(e.currentTarget.valueAsNumber, minValue ?? min, max);
+
+          if (!Number.isNaN(clamped)) e.currentTarget.value = clamped.toString();
+
+          onMaxValueChange?.(clamped);
+        }}
+        onChange={(e) => onMaxValueChange?.(e.currentTarget.valueAsNumber)}
+        placeholder={maxPlaceholder}
+        prepend={maxPrepend}
+        step={maxStep}
+        type="number"
+        value={maxValue ?? ''}
       />
     </div>
-  )
+  );
 }

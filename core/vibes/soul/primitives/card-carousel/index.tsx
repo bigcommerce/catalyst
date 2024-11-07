@@ -7,15 +7,15 @@ import {
   CarouselScrollbar,
 } from '@/vibes/soul/primitives/carousel';
 
-export interface Card extends CardProps {
+export type Card = CardProps & {
   id: string;
-}
+};
 
-interface Props {
+type Props = {
   cards: Card[];
   textContrast?: 'light' | 'dark';
   className?: string;
-}
+};
 
 export function CardCarousel({ cards, textContrast, className }: Props) {
   return (

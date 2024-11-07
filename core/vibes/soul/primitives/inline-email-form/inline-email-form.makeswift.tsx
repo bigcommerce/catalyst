@@ -2,17 +2,16 @@ import { Style } from '@makeswift/runtime/controls';
 
 import { runtime } from '~/lib/makeswift/runtime';
 
-import { InlineEmailForm } from '.';
-
-interface MSInlineEmailFormProps {
+type MSInlineEmailFormProps = {
   className: string;
-}
+};
 
 runtime.registerComponent(
   function MSInlineEmailForm({ className }: MSInlineEmailFormProps) {
     return (
       <div className={className}>
-        <InlineEmailForm />
+        Inline Form! TODO: Replace
+        {/* <InlineEmailForm /> */}
       </div>
     );
   },

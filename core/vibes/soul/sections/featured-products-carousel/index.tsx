@@ -1,17 +1,17 @@
 import { CarouselProduct, ProductsCarousel } from '@/vibes/soul/primitives/products-carousel';
 import { Link } from '~/components/link';
 
-interface Link {
+type Link = {
   label: string;
   href: string;
-}
+};
 
-interface Props {
+type Props = {
   title: string;
   description?: string;
   cta?: Link;
   products: CarouselProduct[];
-}
+};
 
 export function FeaturedProductsCarousel({ title, description, cta, products }: Props) {
   return (

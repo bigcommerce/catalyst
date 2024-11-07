@@ -4,7 +4,7 @@ import { runtime } from '~/lib/makeswift/runtime';
 
 import { FeaturedImage } from '.';
 
-interface MSFeaturedImageProps {
+type MSFeaturedImageProps = {
   className: string;
   title: string;
   description: string;
@@ -13,7 +13,7 @@ interface MSFeaturedImageProps {
   link: { href?: string; target?: string };
   label: string;
   mediaAlign?: 'left' | 'right' | 'full';
-}
+};
 
 runtime.registerComponent(
   function MSFeaturedImage({

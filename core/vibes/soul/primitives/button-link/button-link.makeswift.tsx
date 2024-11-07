@@ -4,10 +4,10 @@ import { runtime } from '~/lib/makeswift/runtime';
 
 import { ButtonLink, Props } from '.';
 
-interface MSButtonLinkProps extends Omit<Props, 'href'> {
+type MSButtonLinkProps = Omit<Props, 'href'> & {
   link: { href?: string; target?: string };
   text: string;
-}
+};
 
 runtime.registerComponent(
   function MSButtonLink({ link, text, ...props }: MSButtonLinkProps) {

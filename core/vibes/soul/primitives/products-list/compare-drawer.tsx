@@ -18,12 +18,12 @@ function getInitials(name: string): string {
     .slice(0, 2);
 }
 
-interface Props {
+type Props = {
   items: DrawerItem[] | Promise<DrawerItem[]>;
   paramName?: string;
   action?: React.ComponentProps<'form'>['action'];
   submitLabel?: string;
-}
+};
 
 function CompareDrawerInner({
   items,

@@ -1,12 +1,12 @@
-import { clsx } from 'clsx'
-import { AlertTriangle, Check, X } from 'lucide-react'
+import { clsx } from 'clsx';
+import { AlertTriangle, Check, X } from 'lucide-react';
 
-interface Props {
-  variant: 'success' | 'warning' | 'error'
-  message: string
-}
+type Props = {
+  variant: 'success' | 'warning' | 'error';
+  message: string;
+};
 
-export const Alert = function Alert({ variant, message }: Props) {
+export function Alert({ variant, message }: Props) {
   return (
     <div
       role="alert"
@@ -17,7 +17,7 @@ export const Alert = function Alert({ variant, message }: Props) {
           success: 'bg-success-highlight',
           warning: 'bg-warning-highlight',
           error: 'bg-error-highlight',
-        }[variant]
+        }[variant],
       )}
     >
       <div
@@ -27,16 +27,12 @@ export const Alert = function Alert({ variant, message }: Props) {
             success: 'bg-success/50',
             warning: 'bg-warning/30',
             error: 'bg-error/50',
-          }[variant]
+          }[variant],
         )}
       >
-        {variant === 'success' ? (
-          <Check size={16} strokeWidth={1} />
-        ) : variant === 'warning' ? (
-          <AlertTriangle size={16} strokeWidth={1} />
-        ) : variant === 'error' ? (
-          <X size={16} strokeWidth={1} />
-        ) : null}
+        {variant === 'success' && <Check size={16} strokeWidth={1} />}
+        {variant === 'warning' && <AlertTriangle size={16} strokeWidth={1} />}
+        {variant === 'error' && <X size={16} strokeWidth={1} />}
       </div>
 
       <span className="flex-1 pl-3 pr-5 text-sm leading-normal text-foreground">{message}</span>
@@ -48,5 +44,5 @@ export const Alert = function Alert({ variant, message }: Props) {
         <X size={20} strokeWidth={1} />
       </button>
     </div>
-  )
+  );
 }

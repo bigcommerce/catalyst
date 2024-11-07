@@ -4,17 +4,17 @@ import { Fragment } from 'react';
 import { clsx } from 'clsx';
 import { ChevronRight } from 'lucide-react';
 
-export interface Breadcrumb {
+export type Breadcrumb = {
   label: string;
   href: string;
-}
+};
 
-export interface BreadcrumbsProps {
+export type BreadcrumbsProps = {
   breadcrumbs: Breadcrumb[];
   className?: string;
-}
+};
 
-export const Breadcrumbs = function Breadcrumbs({ breadcrumbs, className }: BreadcrumbsProps) {
+export function Breadcrumbs({ breadcrumbs, className }: BreadcrumbsProps) {
   return (
     <nav
       aria-label="breadcrumb"
@@ -36,14 +36,14 @@ export const Breadcrumbs = function Breadcrumbs({ breadcrumbs, className }: Brea
               <ChevronRight size={16} strokeWidth={1} className="text-contrast-500" />
             </Fragment>
           );
-        } else {
-          return (
-            <span key={idx} className="text-contrast-400">
-              {label}
-            </span>
-          );
         }
+
+        return (
+          <span key={idx} className="text-contrast-400">
+            {label}
+          </span>
+        );
       })}
     </nav>
   );
-};
+}

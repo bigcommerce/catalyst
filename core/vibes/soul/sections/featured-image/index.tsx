@@ -5,7 +5,7 @@ import { clsx } from 'clsx';
 
 import { Button } from '@/vibes/soul/primitives/button';
 
-export interface FeaturedImageProps {
+export type FeaturedImageProps = {
   title: string;
   description: string;
   image: {
@@ -18,7 +18,7 @@ export interface FeaturedImageProps {
     label: string;
   };
   mediaAlign?: 'left' | 'right' | 'full';
-}
+};
 
 export const FeaturedImage = function FeaturedImage({
   title,

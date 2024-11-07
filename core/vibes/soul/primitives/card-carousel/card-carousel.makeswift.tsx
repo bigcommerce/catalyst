@@ -4,18 +4,18 @@ import { runtime } from '~/lib/makeswift/runtime';
 
 import { CardCarousel } from '.';
 
-interface Card {
+type Card = {
   title?: string;
   imageSrc?: string;
   imageAlt?: string;
   link?: { href?: string; target?: string };
-}
+};
 
-interface MSCardCarouselProps {
+type MSCardCarouselProps = {
   className: string;
   textContrast: 'light' | 'dark';
   cards: Card[];
-}
+};
 
 runtime.registerComponent(
   function MSCardCarousel({ className, textContrast, cards }: MSCardCarouselProps) {

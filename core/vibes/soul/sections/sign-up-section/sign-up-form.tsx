@@ -1,15 +1,13 @@
 'use client';
 
-import { useEffect } from 'react';
-
-import { SubmissionResult, getFormProps, getInputProps, useForm } from '@conform-to/react';
+import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
+import { useActionState, useEffect } from 'react';
 
 import { Input } from '@/vibes/soul/form/input';
 import { Button } from '@/vibes/soul/primitives/button';
 
 import { schema } from './schema';
-import { useFormState } from 'react-dom';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
@@ -17,11 +15,24 @@ export type SignUpAction = Action<SubmissionResult | null, FormData>;
 
 type Props = {
   action: SignUpAction;
+  firstNameLabel?: string;
+  lastNameLabel?: string;
+  emailLabel?: string;
+  passwordLabel?: string;
+  confirmPasswordLabel?: string;
   submitLabel?: string;
 };
 
-export function SignUpForm({ action, submitLabel = 'Sign up' }: Props) {
-  const [lastResult, formAction, isPending] = useFormState(action, null);
+export function SignUpForm({
+  action,
+  firstNameLabel = 'First name',
+  lastNameLabel = 'Last name',
+  emailLabel = 'Email',
+  passwordLabel = 'Password',
+  confirmPasswordLabel = 'Confirm password',
+  submitLabel = 'Sign up',
+}: Props) {
+  const [lastResult, formAction, isPending] = useActionState(action, null);
   const [form, fields] = useForm({
     constraint: getZodConstraint(schema),
     shouldValidate: 'onBlur',
@@ -32,45 +43,47 @@ export function SignUpForm({ action, submitLabel = 'Sign up' }: Props) {
   });
 
   useEffect(() => {
-    if (lastResult?.error) return console.log(lastResult.error);
+    if (lastResult?.error) {
+      console.log(lastResult.error);
+    }
   }, [lastResult]);
 
   return (
-    <form {...getFormProps(form)} className="flex flex-grow flex-col gap-5" action={formAction}>
+    <form {...getFormProps(form)} action={formAction} className="flex flex-grow flex-col gap-5">
       <div className="flex gap-5">
         <Input
           {...getInputProps(fields.firstName, { type: 'text' })}
-          key={fields.firstName.id}
           errors={fields.firstName.errors}
-          label="First name"
+          key={fields.firstName.id}
+          label={firstNameLabel}
         />
         <Input
           {...getInputProps(fields.lastName, { type: 'text' })}
-          key={fields.lastName.id}
           errors={fields.lastName.errors}
-          label="Last name"
+          key={fields.lastName.id}
+          label={lastNameLabel}
         />
       </div>
       <Input
         {...getInputProps(fields.email, { type: 'text' })}
-        key={fields.email.id}
         errors={fields.email.errors}
-        label="Email"
+        key={fields.email.id}
+        label={emailLabel}
       />
       <Input
         {...getInputProps(fields.password, { type: 'password' })}
-        key={fields.password.id}
         errors={fields.password.errors}
-        label="Password"
+        key={fields.password.id}
+        label={passwordLabel}
       />
       <Input
         {...getInputProps(fields.confirmPassword, { type: 'password' })}
-        key={fields.confirmPassword.id}
-        errors={fields.confirmPassword.errors}
         className="mb-6"
-        label="Confirm password"
+        errors={fields.confirmPassword.errors}
+        key={fields.confirmPassword.id}
+        label={confirmPasswordLabel}
       />
-      <Button type="submit" variant="secondary" className="mt-auto w-full" loading={isPending}>
+      <Button className="mt-auto w-full" loading={isPending} type="submit" variant="secondary">
         {submitLabel}
       </Button>
     </form>

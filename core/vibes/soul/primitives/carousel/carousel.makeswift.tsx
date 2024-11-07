@@ -5,15 +5,15 @@ import { runtime } from '~/lib/makeswift/runtime';
 
 import { Carousel, CarouselButtons, CarouselContent, CarouselItem, CarouselScrollbar } from '.';
 
-interface Slide {
+type Slide = {
   link: { href?: string; target?: string };
   children: React.ReactNode;
-}
+};
 
-interface MSCarouselProps {
+type MSCarouselProps = {
   className: string;
   slides?: Slide[];
-}
+};
 
 runtime.registerComponent(
   function MSCarousel({ className, slides }: MSCarouselProps) {

@@ -4,29 +4,26 @@ import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform
 import { parseWithZod } from '@conform-to/zod';
 import clsx from 'clsx';
 import { Minus, Plus, Trash2 } from 'lucide-react';
-import { startTransition, Suspense, use, useEffect, useOptimistic } from 'react';
-import { useFormState } from 'react-dom';
+import { startTransition, Suspense, use, useActionState, useEffect, useOptimistic } from 'react';
 
 import { Button } from '@/vibes/soul/primitives/button';
-
-// import { CheckoutButton } from './redirect-to-checkout-button'
-import { BcImage } from '~/components/bc-image';
+import { BcImage as Image } from '~/components/bc-image';
 import { Link } from '~/components/link';
 
 import { schema } from './schema';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
-export interface CartLineItem {
+export type CartLineItem = {
   id: string;
   image: { alt: string; src: string };
   title: string;
   subtitle: string;
   quantity: number;
   price: string;
-}
+};
 
-interface CartSummary {
+type CartSummary = {
   title?: string;
   caption?: string;
   subtotalLabel?: string;
@@ -38,35 +35,35 @@ interface CartSummary {
   grandTotalLabel?: string;
   grandTotal?: string | Promise<string>;
   ctaLabel?: string;
-}
+};
 
-interface CartEmptyState {
+type CartEmptyState = {
   title: string;
   subtitle: string;
   cta: {
     label: string;
     href: string;
   };
-}
+};
 
-interface CartState {
-  lineItems: CartLineItem[];
+type CartState<LineItem extends CartLineItem> = {
+  lineItems: LineItem[];
   lastResult: SubmissionResult | null;
-}
+};
 
-interface CartProps {
+type CartProps<LineItem extends CartLineItem> = {
   title?: string;
-  lineItems: CartLineItem[] | Promise<CartLineItem[]>;
+  lineItems: LineItem[] | Promise<LineItem[]>;
   summary: CartSummary;
   emptyState: CartEmptyState;
-  lineItemAction: Action<CartState, FormData>;
+  lineItemAction: Action<CartState<LineItem>, FormData>;
   checkoutAction: Action<SubmissionResult | null, FormData>;
   deleteLineItemLabel?: string;
   decrementLineItemLabel?: string;
   incrementLineItemLabel?: string;
-}
+};
 
-export function Cart({
+export function Cart<LineItem extends CartLineItem>({
   title = 'Cart',
   lineItems,
   lineItemAction,
@@ -76,7 +73,7 @@ export function Cart({
   deleteLineItemLabel,
   decrementLineItemLabel,
   incrementLineItemLabel,
-}: CartProps) {
+}: CartProps<LineItem>) {
   return (
     <Suspense fallback={<CartSkeleton title={title} />}>
       <CartInner
@@ -94,7 +91,7 @@ export function Cart({
   );
 }
 
-function CartInner({
+function CartInner<LineItem extends CartLineItem>({
   title,
   lineItems,
   summary = {
@@ -114,10 +111,10 @@ function CartInner({
   deleteLineItemLabel,
   lineItemAction,
   checkoutAction,
-}: CartProps) {
+}: CartProps<LineItem>) {
   const resolvedLineItems = lineItems instanceof Promise ? use(lineItems) : lineItems;
 
-  const [state, formAction, isPending] = useFormState(lineItemAction, {
+  const [state, formAction, isPending] = useActionState(lineItemAction, {
     lineItems: resolvedLineItems,
     lastResult: null,
   });
@@ -183,7 +180,7 @@ function CartInner({
                 key={lineItem.id}
               >
                 <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-contrast-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 @sm:max-w-36">
-                  <BcImage
+                  <Image
                     alt={lineItem.image.alt}
                     className="object-cover"
                     fill
@@ -203,7 +200,7 @@ function CartInner({
                     incrementLabel={incrementLineItemLabel}
                     lineItem={lineItem}
                     onSubmit={(formData) => {
-                      startTransition(async () => {
+                      startTransition(() => {
                         formAction(formData);
                         setOptimisticLineItems(formData);
                       });
@@ -227,13 +224,13 @@ function CartInner({
                 <td>{summary.subtotalLabel}</td>
                 <td className="py-4 text-right">{summary.subtotal}</td>
               </tr>
-              {summary.shipping && (
+              {summary.shipping != null && summary.shipping !== '' && (
                 <tr className="border-b border-contrast-100">
                   <td>{summary.shippingLabel}</td>
                   <td className="py-4 text-right">{summary.shipping}</td>
                 </tr>
               )}
-              {summary.tax && (
+              {summary.tax != null && summary.tax !== '' && (
                 <tr>
                   <td>{summary.taxLabel}</td>
                   <td className="py-4 text-right">{summary.tax}</td>
@@ -241,7 +238,7 @@ function CartInner({
               )}
             </tbody>
 
-            {summary.grandTotal && (
+            {summary.grandTotal != null && summary.grandTotal !== '' && (
               <tfoot>
                 <tr className="text-xl">
                   <th className="text-left" scope="row">
@@ -269,12 +266,12 @@ function CounterForm({
   decrementLabel = 'Decrease count',
   deleteLabel = 'Remove item',
 }: {
-  action(payload: FormData): void;
-  onSubmit(formData: FormData): void;
   lineItem: CartLineItem;
   incrementLabel?: string;
   decrementLabel?: string;
   deleteLabel?: string;
+  action(payload: FormData): void;
+  onSubmit(formData: FormData): void;
 }) {
   const [form, fields] = useForm({
     defaultValue: lineItem,
@@ -359,7 +356,7 @@ function CheckoutButton({
 }: { action: Action<SubmissionResult | null, FormData> } & React.ComponentPropsWithoutRef<
   typeof Button
 >) {
-  const [lastResult, formAction, isPending] = useFormState(action, null);
+  const [lastResult, formAction, isPending] = useActionState(action, null);
 
   useEffect(() => {
     if (lastResult?.error) {
