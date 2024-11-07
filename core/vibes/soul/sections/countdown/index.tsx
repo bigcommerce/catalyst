@@ -6,62 +6,37 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { clsx } from 'clsx';
 import { X } from 'lucide-react';
 
-interface Default {
+type Default = {
   type: 'default';
   images?: string[];
-}
+};
 
-interface Full {
+type Full = {
   type: 'full';
   backgroundImage: string;
-}
+};
 
-interface Split {
+type Split = {
   type: 'split';
   image: string;
-}
+};
 
-interface Banner {
+type Banner = {
   type: 'banner';
-}
+};
 
-interface Props {
+type Props = {
   title: string;
   targetDate: Date;
   variant: Default | Full | Split | Banner;
-}
+};
 
 export const Countdown = function Countdown({
   title,
   targetDate,
   variant = { type: 'default' },
 }: Props) {
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-  const [banner, setBanner] = useState({ dismissed: false, initialized: false });
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
-    }, 1000);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, [targetDate]);
-
-  useEffect(() => {
-    const hidden = localStorage.getItem('hidden-countdown') === 'true';
-    setBanner({ dismissed: hidden, initialized: true });
-  }, []);
-
-  const hideBanner = useCallback(() => {
-    setBanner((prev) => ({ ...prev, dismissed: true }));
-    localStorage.setItem('hidden-countdown', 'true');
-  }, []);
-
-  if (!banner.initialized) return null;
-
-  function calculateTimeLeft() {
+  const calculateTimeLeft = useCallback(() => {
     const difference = +targetDate - +new Date();
     let timeRemaining = { days: 0, hours: 0, mins: 0, secs: 0 };
 
@@ -75,7 +50,31 @@ export const Countdown = function Countdown({
     }
 
     return timeRemaining;
-  }
+  }, [targetDate]);
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+  const [banner, setBanner] = useState({ dismissed: false, initialized: false });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [targetDate, calculateTimeLeft]);
+
+  useEffect(() => {
+    const hidden = localStorage.getItem('hidden-countdown') === 'true';
+    setBanner({ dismissed: hidden, initialized: true });
+  }, []);
+
+  const hideBanner = useCallback(() => {
+    setBanner((prev) => ({ ...prev, dismissed: true }));
+    localStorage.setItem('hidden-countdown', 'true');
+  }, []);
+
+  if (!banner.initialized) return null;
 
   const AnimatedNumber = ({ value }: { value: number }) => {
     const [displayValue, setDisplayValue] = useState(value);

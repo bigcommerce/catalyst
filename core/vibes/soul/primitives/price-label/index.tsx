@@ -1,23 +1,23 @@
 import clsx from 'clsx';
 
-export interface PriceRange {
+export type PriceRange = {
   type: 'range';
   minValue: string;
   maxValue: string;
-}
+};
 
-export interface PriceSale {
+export type PriceSale = {
   type: 'sale';
   previousValue: string;
   currentValue: string;
-}
+};
 
 export type Price = string | PriceRange | PriceSale;
 
-interface Props {
+type Props = {
   className?: string;
   price: Price;
-}
+};
 
 export function PriceLabel({ className, price }: Props) {
   if (typeof price === 'string') {

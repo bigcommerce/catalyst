@@ -8,16 +8,16 @@ import clsx from 'clsx';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { createSerializer, parseAsString } from 'nuqs';
 
-export interface CursorPaginationInfo {
+export type CursorPaginationInfo = {
   startCursorParamName?: string;
   startCursor?: string | null;
   endCursorParamName?: string;
   endCursor?: string | null;
-}
+};
 
-interface Props {
+type Props = {
   info: CursorPaginationInfo | Promise<CursorPaginationInfo>;
-}
+};
 
 export function CursorPagination({ info }: Props) {
   return (

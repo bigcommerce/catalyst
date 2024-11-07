@@ -1,5 +1,5 @@
-import clsx from 'clsx'
-import { CircleAlert } from 'lucide-react'
+import clsx from 'clsx';
+import { CircleAlert } from 'lucide-react';
 
 export function ErrorMessage({
   className,
@@ -8,9 +8,9 @@ export function ErrorMessage({
 }: React.ComponentPropsWithoutRef<'div'>) {
   return (
     <div {...rest} className={clsx('flex items-center gap-1 text-xs text-error', className)}>
-      <CircleAlert strokeWidth={1.5} size={20} />
+      <CircleAlert size={20} strokeWidth={1.5} />
 
       {children}
     </div>
-  )
+  );
 }

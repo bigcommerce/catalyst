@@ -1,9 +1,9 @@
 import { clsx } from 'clsx';
 
-interface Props {
+type Props = {
   size?: 'xs' | 'sm' | 'md' | 'lg';
   loadingAriaLabel?: string;
-}
+};
 
 export const Spinner = function Spinner({ size = 'sm', loadingAriaLabel }: Props) {
   return (

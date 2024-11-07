@@ -4,17 +4,17 @@ import { BlogPost } from '@/vibes/soul/primitives/blog-post-card';
 import { Button } from '@/vibes/soul/primitives/button';
 import { BlogPostList } from '@/vibes/soul/sections/blog-post-list';
 
-interface Link {
+type Link = {
   label: string;
   href: string;
-}
+};
 
-interface Props {
+type Props = {
   title: string;
   description?: string;
   cta?: Link;
   posts: BlogPost[];
-}
+};
 
 export const FeaturedBlogPostList = function FeaturedBlogPostList({
   title,

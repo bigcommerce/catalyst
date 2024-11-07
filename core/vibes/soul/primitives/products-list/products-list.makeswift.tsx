@@ -17,7 +17,7 @@ import { Price } from '../price-label';
 
 import { ProductsList } from '.';
 
-interface Product {
+type Product = {
   title?: string;
   link?: { href?: string; target?: string };
   imageSrc?: string;
@@ -27,15 +27,15 @@ interface Product {
   type: 'single' | 'range' | 'sale';
   priceOne?: number;
   priceTwo?: number;
-}
+};
 
-interface MSProductsListProps {
+type MSProductsListProps = {
   className: string;
   products: Product[];
   showCompare: boolean;
   compareLabel: string;
   compareParamName: string;
-}
+};
 
 runtime.registerComponent(
   function MSProductsList({ className, products, ...props }: MSProductsListProps) {

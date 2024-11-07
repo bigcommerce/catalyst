@@ -6,10 +6,10 @@ import * as SidePanel from '@/vibes/soul/primitives/side-panel';
 import { Filter, FiltersPanel } from './filters-panel';
 import { Suspense, use } from 'react';
 
-interface Props {
+type Props = {
   filters: Filter[] | Promise<Filter[]>;
   label?: string;
-}
+};
 
 export function MobileFilters(props: Props) {
   return (

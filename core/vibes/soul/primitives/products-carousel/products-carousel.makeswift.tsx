@@ -15,7 +15,7 @@ import { Price } from '../price-label';
 
 import { ProductsCarousel } from '.';
 
-interface Product {
+type Product = {
   title?: string;
   link?: { href?: string; target?: string };
   imageSrc?: string;
@@ -25,12 +25,12 @@ interface Product {
   type: 'single' | 'range' | 'sale';
   priceOne?: number;
   priceTwo?: number;
-}
+};
 
-interface MSProductsCarouselProps {
+type MSProductsCarouselProps = {
   className: string;
   products: Product[];
-}
+};
 
 runtime.registerComponent(
   function MSProductsCarousel({ className, products }: MSProductsCarouselProps) {

@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 
 import { NotFound as NotFoundComponent } from '@/vibes/soul/sections/not-found';
-import { Subscribe } from '@/vibes/soul/sections/subscribe';
+// import { Subscribe } from '@/vibes/soul/sections/subscribe';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -53,11 +53,11 @@ export default async function NotFound() {
           products={featuredProducts}
           title={t('Carousel.featuredProducts')}
         />
-
-        <Subscribe
+        {/* TODO: Wire up action */}
+        {/* <Subscribe
           description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
           title={t('Subscribe.title')}
-        />
+        /> */}
       </main>
 
       <Suspense>

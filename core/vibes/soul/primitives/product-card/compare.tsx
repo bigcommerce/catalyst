@@ -4,11 +4,11 @@ import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
 
 import { Checkbox } from '@/vibes/soul/form/checkbox';
 
-interface Props {
+type Props = {
   productId: string;
   paramName?: string;
   label?: string;
-}
+};
 
 export const Compare = function Compare({
   productId,

@@ -1,19 +1,17 @@
 'use client';
 
-import { BcImage } from '~/components/bc-image';
-import { useEffect, useState } from 'react';
-
 import { clsx } from 'clsx';
 import useEmblaCarousel from 'embla-carousel-react';
+import { useEffect, useState } from 'react';
 
-interface Image {
-  alt: string;
-  src: string;
-}
+import { BcImage } from '~/components/bc-image';
 
-export interface ProductGalleryProps {
-  images: Image[];
-}
+export type ProductGalleryProps = {
+  images: Array<{
+    alt: string;
+    src: string;
+  }>;
+};
 
 export const ProductGallery = ({ images }: ProductGalleryProps) => {
   const [previewImage, setPreviewImage] = useState(0);
@@ -42,16 +40,16 @@ export const ProductGallery = ({ images }: ProductGalleryProps) => {
         <div className="flex h-full w-full">
           {images.map((image, idx) => (
             <div
-              key={idx}
               className="relative h-full w-full min-w-0 shrink-0 grow-0 basis-full items-center"
+              key={idx}
             >
               <BcImage
-                src={image.src}
                 alt={image.alt}
+                className="object-cover"
                 fill
                 priority
                 sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover"
+                src={image.src}
               />
             </div>
           ))}
@@ -61,20 +59,20 @@ export const ProductGallery = ({ images }: ProductGalleryProps) => {
       <div className="absolute bottom-6 left-1/2 flex max-w-full -translate-x-1/2 gap-1.5 overflow-x-auto px-10 @3xl:gap-3 @4xl:bottom-10">
         {images.map((image, index) => (
           <button
-            key={index}
             aria-label={`View image number ${index + 1}`}
             className={clsx(
               'h-10 w-10 shrink-0 overflow-hidden rounded-lg border transition-colors duration-300 @4xl:h-14 @4xl:w-14',
               index === previewImage ? 'border-foreground' : 'border-transparent',
             )}
+            key={index}
             onClick={() => selectImage(index)}
           >
             <BcImage
-              src={image.src}
               alt={image.alt}
-              height={256}
-              width={256}
               className="h-full w-full bg-contrast-100 object-cover"
+              height={256}
+              src={image.src}
+              width={256}
             />
           </button>
         ))}

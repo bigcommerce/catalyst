@@ -2,14 +2,14 @@ import { Link } from '~/components/link';
 
 import { clsx } from 'clsx';
 
-export interface Props extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+export type Props = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
   variant?: 'primary' | 'secondary' | 'tertiary';
   size?: 'large' | 'medium' | 'small' | 'icon';
   href: string;
   asChild?: boolean;
-}
+};
 
-export const ButtonLink = function ButtonLink({
+export function ButtonLink({
   variant = 'primary',
   size = 'large',
   href,
@@ -46,4 +46,4 @@ export const ButtonLink = function ButtonLink({
       <span className={clsx(variant === 'secondary' && 'mix-blend-difference')}>{children}</span>
     </Link>
   );
-};
+}

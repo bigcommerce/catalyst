@@ -1,38 +1,37 @@
-'use client'
+'use client';
 
-import NextImage from 'next/image'
-import { useState } from 'react'
+import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
+import { clsx } from 'clsx';
+import NextImage from 'next/image';
+import { useState } from 'react';
 
-import * as RadioGroupPrimitive from '@radix-ui/react-radio-group'
-import { clsx } from 'clsx'
+import { Button } from '@/vibes/soul/primitives/button';
+import { Favorite } from '@/vibes/soul/primitives/favorite';
+import { Label } from '@/vibes/soul/primitives/label';
+import { PriceLabel } from '@/vibes/soul/primitives/price-label';
+import { CardProduct } from '@/vibes/soul/primitives/product-card';
+import { Rating } from '@/vibes/soul/primitives/rating';
+import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery';
 
-import { Button } from '@/vibes/soul/primitives/button'
-import { Favorite } from '@/vibes/soul/primitives/favorite'
-import { Label } from '@/vibes/soul/primitives/label'
-import { PriceLabel } from '@/vibes/soul/primitives/price-label'
-import { CardProduct } from '@/vibes/soul/primitives/product-card'
-import { Rating } from '@/vibes/soul/primitives/rating'
-import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery'
+type ProductDetailType = {
+  options?: string[];
+  swatches?: Array<{
+    id: string;
+    name: string;
+    image?: { src: string; alt: string };
+    hex?: string;
+  }>;
+  images?: Array<{ src: string; alt: string }>;
+} & CardProduct;
 
-interface ProductDetailType extends CardProduct {
-  options?: string[]
-  swatches?: {
-    id: string
-    name: string
-    image?: { src: string; alt: string }
-    hex?: string
-  }[]
-  images?: { src: string; alt: string }[]
-}
+export type ProductDetailProps = {
+  product: ProductDetailType;
+};
 
-export interface ProductDetailProps {
-  product: ProductDetailType
-}
-
-export const ProductDetail = function ProductDetail({ product }: ProductDetailProps) {
-  const [favorited, setFavorited] = useState(false)
-  const [selectedOption, setSelectedOption] = useState(product.options?.[0] ?? null)
-  const [selectedSwatch, setSelectedSwatch] = useState(product.swatches?.[0] ?? null)
+export function ProductDetail({ product }: ProductDetailProps) {
+  const [favorited, setFavorited] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(product.options?.[0] ?? null);
+  const [selectedSwatch, setSelectedSwatch] = useState(product.swatches?.[0] ?? null);
 
   return (
     <section className="flex flex-col bg-background @container">
@@ -44,26 +43,26 @@ export const ProductDetail = function ProductDetail({ product }: ProductDetailPr
           <h2 className="font-heading text-3xl font-medium leading-none">{product.title}</h2>
           <Rating rating={product.rating ?? 0} />
           {product.subtitle != null && product.subtitle !== '' && <p>{product.subtitle}</p>}
-          <PriceLabel price={product.price ?? ''} className="!text-2xl" />
+          <PriceLabel className="!text-2xl" price={product.price ?? ''} />
 
           <form className="mt-6 flex flex-col gap-4 @4xl:mt-12">
             {/* Options */}
             {product.options && (
               <>
                 <Label>Size</Label>
-                <RadioGroupPrimitive.Root className="flex flex-wrap gap-2.5 ">
+                <RadioGroupPrimitive.Root className="flex flex-wrap gap-2.5">
                   {product.options.map((option, index) => (
                     <RadioGroupPrimitive.Item
-                      key={index}
-                      value={option}
-                      onClick={() => setSelectedOption(option)}
                       className={clsx(
                         'flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-xs font-medium transition-colors duration-300',
                         'ring-primary focus-visible:outline-0 focus-visible:ring-2',
                         option === selectedOption
                           ? 'bg-foreground text-background'
-                          : 'bg-contrast-100 hover:bg-contrast-200'
+                          : 'bg-contrast-100 hover:bg-contrast-200',
                       )}
+                      key={index}
+                      onClick={() => setSelectedOption(option)}
+                      value={option}
                     >
                       {option}
                     </RadioGroupPrimitive.Item>
@@ -80,24 +79,24 @@ export const ProductDetail = function ProductDetail({ product }: ProductDetailPr
                   {(selectedSwatch?.name != null && selectedSwatch.name !== '') || 'Color'}
                 </Label>
                 <RadioGroupPrimitive.Root className="flex flex-wrap gap-2.5">
-                  {product.swatches.map(swatch => (
+                  {product.swatches.map((swatch) => (
                     <RadioGroupPrimitive.Item
-                      key={swatch.id}
-                      value={swatch.id}
-                      onClick={() => setSelectedSwatch(swatch)}
                       className={clsx(
                         'relative h-12 w-12 shrink-0 overflow-hidden rounded-full transition-colors duration-300',
-                        ' focus-visible:outline-0 focus-visible:ring-2',
-                        swatch.id === selectedSwatch?.id ? 'ring-primary' : 'ring-transparent'
+                        'focus-visible:outline-0 focus-visible:ring-2',
+                        swatch.id === selectedSwatch?.id ? 'ring-primary' : 'ring-transparent',
                       )}
+                      key={swatch.id}
+                      onClick={() => setSelectedSwatch(swatch)}
+                      value={swatch.id}
                     >
                       {swatch.image?.src != null && swatch.image.src !== '' ? (
                         <NextImage
-                          src={swatch.image.src}
                           alt={swatch.image.alt}
-                          height={48}
-                          width={48}
                           className="h-full object-cover"
+                          height={48}
+                          src={swatch.image.src}
+                          width={48}
                         />
                       ) : null}
                       {/* {swatch.name} */}
@@ -115,5 +114,5 @@ export const ProductDetail = function ProductDetail({ product }: ProductDetailPr
         </div>
       </div>
     </section>
-  )
+  );
 }

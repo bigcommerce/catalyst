@@ -1,11 +1,11 @@
 import { CompareCard, CompareProduct } from '../../primitives/compare-card';
 
-interface Props {
+type Props = {
   className?: string;
   title?: string;
   products: CompareProduct[];
   addToCartAction?(id: string): Promise<void>;
-}
+};
 
 export function CompareSection({
   className,
@@ -23,6 +23,7 @@ export function CompareSection({
       <div className="flex w-full gap-8 @container">
         {products.map((product) => (
           <CompareCard
+            key={product.id}
             addToCartAction={addToCartAction}
             className="min-w-[400px] flex-1"
             product={product}

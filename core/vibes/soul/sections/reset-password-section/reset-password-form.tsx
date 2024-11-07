@@ -2,8 +2,7 @@
 
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
-import { useEffect } from 'react';
-import { useFormState } from 'react-dom';
+import { useActionState, useEffect } from 'react';
 
 import { Input } from '@/vibes/soul/form/input';
 import { Button } from '@/vibes/soul/primitives/button';
@@ -14,13 +13,20 @@ type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State
 
 export type ResetPasswordAction = Action<SubmissionResult | null, FormData>;
 
-interface Props {
+type Props = {
   action: ResetPasswordAction;
   submitLabel?: string;
-}
+  newPasswordLabel?: string;
+  confirmPasswordLabel?: string;
+};
 
-export function ResetPasswordForm({ action, submitLabel = 'Update' }: Props) {
-  const [lastResult, formAction, isPending] = useFormState(action, null);
+export function ResetPasswordForm({
+  action,
+  newPasswordLabel = 'New password',
+  confirmPasswordLabel = 'Confirm Password',
+  submitLabel = 'Update',
+}: Props) {
+  const [lastResult, formAction, isPending] = useActionState(action, null);
   const [form, fields] = useForm({
     constraint: getZodConstraint(schema),
     shouldValidate: 'onBlur',
@@ -42,14 +48,14 @@ export function ResetPasswordForm({ action, submitLabel = 'Update' }: Props) {
         {...getInputProps(fields.password, { type: 'password' })}
         errors={fields.password.errors}
         key={fields.password.id}
-        label="Password"
+        label={newPasswordLabel}
       />
       <Input
         {...getInputProps(fields.confirmPassword, { type: 'password' })}
         className="mb-6"
         errors={fields.confirmPassword.errors}
         key={fields.confirmPassword.id}
-        label="Confirm password"
+        label={confirmPasswordLabel}
       />
       <Button loading={isPending} size="small" type="submit" variant="secondary">
         {submitLabel}

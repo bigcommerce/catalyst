@@ -3,16 +3,16 @@ import { Link } from '~/components/link';
 import { BlogPost } from '@/vibes/soul/primitives/blog-post-card';
 import { BlogPostCarousel } from '@/vibes/soul/primitives/blog-post-carousel';
 
-interface Link {
+type Link = {
   label: string;
   href: string;
-}
+};
 
-interface Props {
+type Props = {
   title: string;
   cta?: Link;
   blogPosts: BlogPost[];
-}
+};
 
 export function FeaturedBlogPostCarousel({ cta, title, blogPosts }: Props) {
   return (

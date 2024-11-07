@@ -11,11 +11,11 @@ type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
 type CarouselOptions = UseCarouselParameters[0];
 type CarouselPlugin = UseCarouselParameters[1];
 
-interface CarouselProps extends React.ComponentPropsWithoutRef<'div'> {
+type CarouselProps = React.ComponentPropsWithoutRef<'div'> & {
   opts?: CarouselOptions;
   plugins?: CarouselPlugin;
   setApi?: (api: CarouselApi) => void;
-}
+};
 
 type CarouselContextProps = {
   carouselRef: ReturnType<typeof useEmblaCarousel>[0];

@@ -4,12 +4,12 @@ import { clsx } from 'clsx';
 import { X } from 'lucide-react';
 import { forwardRef, ReactNode, useCallback, useEffect, useState } from 'react';
 
-interface Props {
+type Props = {
   children: ReactNode;
   hideDismiss?: boolean;
   onDismiss?: () => void;
   className?: string;
-}
+};
 
 export const Banner = forwardRef<React.ComponentRef<'div'>, Props>(
   ({ children, hideDismiss, className, onDismiss }, ref) => {

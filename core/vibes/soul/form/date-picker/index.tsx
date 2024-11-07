@@ -1,21 +1,21 @@
-import { ComponentPropsWithoutRef, ElementRef, forwardRef, useState } from 'react'
+import { ComponentPropsWithoutRef, ComponentRef, forwardRef, useState } from 'react';
 
-import * as PopoverPrimitive from '@radix-ui/react-popover'
-import { CalendarIcon } from 'lucide-react'
+import * as PopoverPrimitive from '@radix-ui/react-popover';
+import { CalendarIcon } from 'lucide-react';
 
-import { Calendar } from '@/vibes/soul/primitives/calendar'
+import { Calendar } from '@/vibes/soul/primitives/calendar';
 
-import { Input } from '../input'
+import { Input } from '../input';
 
-interface Props extends Omit<ComponentPropsWithoutRef<'input'>, 'defaultValue' | 'onSelect'> {
-  defaultValue?: string | Date
-  disabledDays?: Date[]
-  errors?: string[]
-  onSelect?: (date: Date | undefined) => void
-  selected?: Date | undefined
-}
+type Props = {
+  defaultValue?: string | Date;
+  disabledDays?: Date[];
+  errors?: string[];
+  onSelect?: (date: Date | undefined) => void;
+  selected?: Date | undefined;
+} & Omit<ComponentPropsWithoutRef<'input'>, 'defaultValue' | 'onSelect'>;
 
-const DatePicker = forwardRef<ElementRef<'input'>, Props>(
+const DatePicker = forwardRef<ComponentRef<'input'>, Props>(
   (
     {
       defaultValue,
@@ -27,26 +27,26 @@ const DatePicker = forwardRef<ElementRef<'input'>, Props>(
       selected,
       ...props
     },
-    ref
+    ref,
   ) => {
     // State to manage the selected date
     const [date, setDate] = useState<Date | undefined>(
-      defaultValue ? new Date(defaultValue) : undefined
-    )
+      defaultValue ? new Date(defaultValue) : undefined,
+    );
 
     // Format the selected date for display
-    const formattedSelected = selected ? Intl.DateTimeFormat().format(selected) : undefined
+    const formattedSelected = selected ? Intl.DateTimeFormat().format(selected) : undefined;
 
     // Format the default date for display
-    const formattedDate = date ? Intl.DateTimeFormat().format(date) : undefined
+    const formattedDate = date ? Intl.DateTimeFormat().format(date) : undefined;
 
     return (
       <PopoverPrimitive.Root>
         <PopoverPrimitive.Trigger asChild>
           <Input
             errors={errors}
-            prepend={<CalendarIcon className="h-5 w-5" strokeWidth={1} />}
             placeholder={placeholder}
+            prepend={<CalendarIcon className="h-5 w-5" strokeWidth={1} />}
             readOnly={true}
             ref={ref}
             required={required}
@@ -71,10 +71,10 @@ const DatePicker = forwardRef<ElementRef<'input'>, Props>(
           </PopoverPrimitive.Content>
         </PopoverPrimitive.Portal>
       </PopoverPrimitive.Root>
-    )
-  }
-)
+    );
+  },
+);
 
-DatePicker.displayName = 'DatePicker'
+DatePicker.displayName = 'DatePicker';
 
-export { DatePicker }
+export { DatePicker };

@@ -4,20 +4,20 @@ import { runtime } from '~/lib/makeswift/runtime';
 
 import { Slideshow } from '.';
 
-interface Slide {
+type Slide = {
   title?: string;
   description?: string;
   imageSrc?: string;
   imageAlt?: string;
   link?: { href?: string; target?: string };
   label: string;
-}
+};
 
-interface MSAccordionsProps {
+type MSAccordionsProps = {
   className: string;
   slides: Slide[];
   interval: number;
-}
+};
 
 runtime.registerComponent(
   function MSSlideshow({ className, slides, interval }: MSAccordionsProps) {

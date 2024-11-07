@@ -2,8 +2,7 @@
 
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
-import { useEffect } from 'react';
-import { useFormState } from 'react-dom';
+import { useActionState, useEffect } from 'react';
 
 import { Input } from '@/vibes/soul/form/input';
 import { Button } from '@/vibes/soul/primitives/button';
@@ -14,13 +13,18 @@ type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State
 
 export type ForgotPasswordAction = Action<SubmissionResult | null, FormData>;
 
-interface Props {
+type Props = {
   action: ForgotPasswordAction;
+  emailLabel?: string;
   submitLabel?: string;
-}
+};
 
-export function ForgotPasswordForm({ action, submitLabel = 'Reset password' }: Props) {
-  const [lastResult, formAction, isPending] = useFormState(action, null);
+export function ForgotPasswordForm({
+  action,
+  emailLabel = 'Email',
+  submitLabel = 'Reset password',
+}: Props) {
+  const [lastResult, formAction, isPending] = useActionState(action, null);
   const [form, fields] = useForm({
     constraint: getZodConstraint(schema),
     shouldValidate: 'onBlur',
@@ -31,9 +35,7 @@ export function ForgotPasswordForm({ action, submitLabel = 'Reset password' }: P
   });
 
   useEffect(() => {
-    if (lastResult?.error) {
-      console.log(lastResult.error);
-    }
+    if (lastResult?.error) console.log(lastResult.error);
   }, [lastResult]);
 
   return (
@@ -42,7 +44,7 @@ export function ForgotPasswordForm({ action, submitLabel = 'Reset password' }: P
         {...getInputProps(fields.email, { type: 'text' })}
         errors={fields.email.errors}
         key={fields.email.id}
-        label="Email"
+        label={emailLabel}
       />
       <Button className="mt-auto w-full" loading={isPending} type="submit" variant="secondary">
         {submitLabel}

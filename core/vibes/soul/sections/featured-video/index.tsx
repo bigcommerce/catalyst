@@ -4,7 +4,7 @@ import { clsx } from 'clsx';
 
 import { Button } from '@/vibes/soul/primitives/button';
 
-interface Props {
+type Props = {
   title: string;
   description: string;
   video: string;
@@ -13,7 +13,7 @@ interface Props {
     label: string;
   };
   mediaAlign?: 'left' | 'right' | 'full';
-}
+};
 
 export const FeaturedVideo = function FeaturedVideo({
   title,

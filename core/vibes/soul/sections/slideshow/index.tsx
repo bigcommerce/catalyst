@@ -9,37 +9,26 @@ import { Pause, Play } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { Button } from '@/vibes/soul/primitives/button';
-import { BcImage } from '~/components/bc-image';
+import { BcImage as Image } from '~/components/bc-image';
 
-interface Link {
-  label: string;
-  href: string;
-}
-
-interface Image {
-  alt: string;
-  blurDataUrl?: string;
-  src: string;
-}
-
-export interface Slide {
+type Slide = {
   title: string;
   description?: string;
-  image?: Image;
-  cta?: Link;
-}
+  image?: { alt: string; blurDataUrl?: string; src: string };
+  cta?: { label: string; href: string };
+};
 
-interface Props {
+type Props = {
   slides: Slide[];
   interval?: number;
   className?: string;
-}
+};
 
-interface UseProgressButtonType {
+type UseProgressButtonType = {
   selectedIndex: number;
   scrollSnaps: number[];
   onProgressButtonClick: (index: number) => void;
-}
+};
 
 const useProgressButton = (
   emblaApi: EmblaCarouselType | undefined,
@@ -81,7 +70,7 @@ const useProgressButton = (
   };
 };
 
-export const Slideshow = function Slideshow({ slides, interval = 5000, className }: Props) {
+export function Slideshow({ slides, interval = 5000, className }: Props) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, duration: 20 }, [
     Autoplay({ delay: interval }),
     Fade(),
@@ -129,34 +118,31 @@ export const Slideshow = function Slideshow({ slides, interval = 5000, className
 
   return (
     <section
-      className={clsx(
-        'bg-primary-shadow relative h-dvh max-h-[880px] overflow-hidden @container',
-        className,
-      )}
+      className={clsx('relative h-[80vh] overflow-hidden bg-primary-shadow @container', className)}
     >
       <div className="h-full" ref={emblaRef}>
         <div className="flex h-full">
           {slides.map(({ title, description, image, cta }, idx) => {
             return (
               <div className="relative h-full w-full min-w-0 shrink-0 grow-0 basis-full" key={idx}>
-                <div className="from-foreground text-background absolute bottom-0 left-1/2 z-10 w-full -translate-x-1/2 bg-gradient-to-t to-transparent pb-5 pt-20">
-                  <div className="mx-auto max-w-screen-2xl px-3 pb-8 @xl:px-6 @5xl:px-20">
-                    <h1 className="font-heading mb-2 text-5xl font-medium leading-none @2xl:text-8xl">
+                <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-foreground/80 to-transparent">
+                  <div className="mx-auto w-full max-w-screen-2xl px-4 pb-16 pt-12 text-background @xl:px-6 @xl:pb-20 @xl:pt-16 @4xl:px-8 @4xl:pt-20">
+                    <h1 className="font-heading text-4xl font-medium leading-none @2xl:text-5xl @4xl:text-6xl">
                       {title}
                     </h1>
                     {description != null && description !== '' && (
-                      <p className="mb-4 max-w-xl">{description}</p>
+                      <p className="mb-6 mt-2 max-w-xl text-lg text-background/80 @xl:mb-8 @xl:mt-3">
+                        {description}
+                      </p>
                     )}
                     {cta != null && cta.href !== '' && cta.label !== '' && (
-                      <Button className="my-4" variant="tertiary">
-                        {cta.label}
-                      </Button>
+                      <Button variant="tertiary">{cta.label}</Button>
                     )}
                   </div>
                 </div>
 
                 {image?.src != null && image.src !== '' && (
-                  <BcImage
+                  <Image
                     alt={image.alt}
                     blurDataURL={image.blurDataUrl}
                     className="block h-20 w-full object-cover"
@@ -176,7 +162,7 @@ export const Slideshow = function Slideshow({ slides, interval = 5000, className
       </div>
 
       {/* Controls */}
-      <div className="text-background absolute bottom-6 left-1/2 flex w-full max-w-screen-2xl -translate-x-1/2 flex-wrap items-center px-3 @xl:px-6 @5xl:px-20">
+      <div className="absolute bottom-4 left-1/2 flex w-full max-w-screen-2xl -translate-x-1/2 flex-wrap items-center px-4 text-background @xl:bottom-6 @xl:px-6 @4xl:px-8">
         {/* Progress Buttons */}
         {scrollSnaps.map((_: number, index: number) => {
           return (
@@ -193,7 +179,7 @@ export const Slideshow = function Slideshow({ slides, interval = 5000, className
                 {/* White Bar - Current Index Indicator / Progress Bar */}
                 <div
                   className={clsx(
-                    'bg-background absolute h-0.5',
+                    'absolute h-0.5 bg-background',
                     'opacity-0 fill-mode-forwards',
                     isPlaying ? 'running' : 'paused',
                     index === selectedIndex
@@ -203,13 +189,13 @@ export const Slideshow = function Slideshow({ slides, interval = 5000, className
                   key={`progress-${playCount}`} // Force the animation to restart when pressing "Play", to match animation with embla's autoplay timer
                   style={{
                     animationDuration: index === selectedIndex ? `${interval}ms` : '200ms',
-                    width: `${175 / slides.length}px`,
+                    width: `${150 / slides.length}px`,
                   }}
                 />
                 {/* Grey Bar BG */}
                 <div
-                  className="bg-background h-0.5 opacity-30"
-                  style={{ width: `${175 / slides.length}px` }}
+                  className="h-0.5 bg-background opacity-30"
+                  style={{ width: `${150 / slides.length}px` }}
                 />
               </div>
             </button>
@@ -217,7 +203,7 @@ export const Slideshow = function Slideshow({ slides, interval = 5000, className
         })}
 
         {/* Carousel Count - "01/03" */}
-        <span className="ml-auto mr-2 mt-px font-mono text-xs">
+        <span className="ml-auto mr-3 mt-px font-mono text-sm">
           {selectedIndex + 1 < 10 ? `0${selectedIndex + 1}` : selectedIndex + 1}/
           {slides.length < 10 ? `0${slides.length}` : slides.length}
         </span>
@@ -225,17 +211,17 @@ export const Slideshow = function Slideshow({ slides, interval = 5000, className
         {/* Stop / Start Button */}
         <button
           aria-label={isPlaying ? 'Pause' : 'Play'}
-          className="border-contrast-300/50 hover:border-contrast-300/80 flex h-7 w-7 items-center justify-center rounded-lg border ring-primary transition-opacity duration-300 focus-visible:outline-0 focus-visible:ring-2"
+          className="flex h-7 w-7 items-center justify-center rounded-lg border border-contrast-300/50 ring-primary transition-opacity duration-300 hover:border-contrast-300/80 focus-visible:outline-0 focus-visible:ring-2"
           onClick={toggleAutoplay}
           type="button"
         >
           {isPlaying ? (
-            <Pause className="pointer-events-none w-3.5" strokeWidth={1.5} />
+            <Pause className="pointer-events-none" size={16} strokeWidth={1.5} />
           ) : (
-            <Play className="pointer-events-none ml-0.5 w-3.5" strokeWidth={1.5} />
+            <Play className="pointer-events-none" size={16} strokeWidth={1.5} />
           )}
         </button>
       </div>
     </section>
   );
-};
+}

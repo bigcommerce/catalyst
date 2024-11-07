@@ -1,15 +1,14 @@
 import { Link } from '~/components/link';
-import { CSSProperties } from 'react';
 
 import { clsx } from 'clsx';
 
-export interface AnimatedLinkProps {
+export type AnimatedLinkProps = {
   href: string;
   label: string;
   className?: string;
-}
+};
 
-export const AnimatedLink = function AnimatedLink({ href, label, className }: AnimatedLinkProps) {
+export function AnimatedLink({ href, label, className }: AnimatedLinkProps) {
   return (
     <Link
       href={href}
@@ -21,4 +20,4 @@ export const AnimatedLink = function AnimatedLink({ href, label, className }: An
       {label}
     </Link>
   );
-};
+}

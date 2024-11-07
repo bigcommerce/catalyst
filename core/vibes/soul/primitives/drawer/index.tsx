@@ -3,16 +3,16 @@
 import * as Portal from '@radix-ui/react-portal';
 import { useEffect, useState } from 'react';
 
-export interface DrawerItem {
+export type DrawerItem = {
   id: string;
   image?: { src: string; alt: string };
   title: string;
   href: string;
-}
+};
 
-interface DrawerProps {
+type DrawerProps = {
   children: React.ReactNode;
-}
+};
 
 export function Drawer({ children }: DrawerProps) {
   // This hack is needed to prevent hydration errors.

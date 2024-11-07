@@ -13,10 +13,10 @@ import {
 
 export type CarouselProduct = CardProduct;
 
-interface Props {
+type Props = {
   products: CarouselProduct[];
   className?: string;
-}
+};
 
 export function ProductsCarousel({ products, className }: Props) {
   return (

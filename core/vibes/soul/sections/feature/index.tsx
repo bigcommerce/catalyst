@@ -1,29 +1,28 @@
-import { BcImage } from '~/components/bc-image';
-import { Link } from '~/components/link';
-
 import { clsx } from 'clsx';
 import { icons } from 'lucide-react';
 
 import { Button } from '@/vibes/soul/primitives/button';
 import { Icon } from '@/vibes/soul/primitives/icon';
+import { BcImage } from '~/components/bc-image';
+import { Link } from '~/components/link';
 
-export interface FeatureProps {
+export type FeatureProps = {
   image: {
     src: string;
     alt: string;
   };
   title?: string;
   description?: string;
-  grid?: {
+  grid?: Array<{
     icon: keyof typeof icons;
     title: string;
     description: string;
-  }[];
+  }>;
   cta: {
     href: string;
     label: string;
   };
-}
+};
 
 export const Feature = function Feature({ image, title, description, grid, cta }: FeatureProps) {
   return (
@@ -32,11 +31,11 @@ export const Feature = function Feature({ image, title, description, grid, cta }
         {/* Image Side */}
         <div className="relative aspect-square w-full overflow-hidden bg-primary/10 @3xl/section:aspect-[9/12] @4xl/section:my-[110px] @4xl/section:w-2/3 @4xl/section:rounded-xl @4xl:ml-10 @5xl/section:w-3/5 @6xl/section:ml-20">
           <BcImage
-            src={image.src}
             alt={image.alt}
+            className="object-cover"
             fill
             sizes="(max-width: 768px) 100vw, 384px"
-            className="object-cover"
+            src={image.src}
           />
         </div>
 
@@ -55,10 +54,10 @@ export const Feature = function Feature({ image, title, description, grid, cta }
               <ul className="mx-auto mb-16 grid gap-10 @xs/content:grid-cols-2 @4xl/section:mx-0">
                 {grid.map(({ title: itemTitle, description: itemDescription, icon }, idx) => {
                   return (
-                    <li key={idx} className="flex gap-4 @sm/content:items-center">
+                    <li className="flex gap-4 @sm/content:items-center" key={idx}>
                       <Icon
-                        name={icon}
                         className="h-8 w-8 @xs/content:h-5 @xs/content:w-5 @lg/content:h-10 @lg/content:w-10"
+                        name={icon}
                       />
                       <div className="flex flex-col">
                         <span className="-mt-1.5 text-lg font-medium @sm/content:-mt-1 @md/content:text-xl">
@@ -74,11 +73,11 @@ export const Feature = function Feature({ image, title, description, grid, cta }
               </ul>
             )}
             <Button
-              variant="primary"
+              asChild
               className={clsx({
                 'self-center @3xl/section:self-start': grid?.length,
               })}
-              asChild
+              variant="primary"
             >
               <Link href={cta.href}>{cta.label}</Link>
             </Button>

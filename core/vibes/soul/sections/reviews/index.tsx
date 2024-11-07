@@ -1,51 +1,47 @@
-import {
-  Carousel,
-  CarouselButtons,
-  CarouselContent,
-  CarouselItem,
-  CarouselScrollbar,
-} from '@/vibes/soul/primitives/carousel'
-import { Rating } from '@/vibes/soul/primitives/rating'
+import { Rating } from '@/vibes/soul/primitives/rating';
 
-export interface Props {
-  reviews: {
-    id: string
-    review: string
-    name: string
-    date: string
-  }[]
-  averageRating: number
-}
+type Props = {
+  reviews: Array<{
+    id: string;
+    rating: number;
+    review: string;
+    name: string;
+    date: string;
+  }>;
+  averageRating: number;
+};
 
-export const Reviews = function Reviews({ reviews, averageRating }: Readonly<Props>) {
+export function Reviews({ reviews, averageRating }: Readonly<Props>) {
   return (
     <div className="@container">
-      <div className="mx-auto max-w-screen-2xl px-3 @xl:px-6 @5xl:px-20">
-        <h2 className="border-t border-t-contrast-100 pb-6 pt-10 text-2xl font-medium @4xl:pt-20">
-          Reviews <span className="text-contrast-300">{reviews.length}</span>
-        </h2>
-        <span className="font-heading text-6xl @2xl:text-8xl">{averageRating}</span>
-        <Rating rating={averageRating} className="-mt-3 mb-3" />
-      </div>
-      <Carousel className="pt-6 @4xl:pt-8">
-        <CarouselContent className="mb-20 @xl:px-6 @5xl:px-20">
-          {reviews.map(({ id, review, name, date }) => {
-            return (
-              <CarouselItem key={id} className="basis-1/3">
-                <div className="flex flex-col border-t border-t-contrast-200">
-                  <p className="my-10 text-sm">{review}</p>
-                  <span className="text-sm font-medium">{name}</span>
-                  <span className="text-sm text-contrast-400">{date}</span>
-                </div>
-              </CarouselItem>
-            )
-          })}
-        </CarouselContent>
-        <div className="flex items-center justify-between px-3 @xl:px-6 @5xl:px-20">
-          <CarouselScrollbar />
-          <CarouselButtons />
+      <div className="mx-auto flex w-full max-w-screen-2xl flex-col items-stretch gap-10 px-4 py-10 @xl:px-6 @xl:py-14 @2xl:flex-row @4xl:px-8 @4xl:py-20">
+        <div className="w-40 @2xl:w-52">
+          <div className="sticky top-12">
+            <h2 className="mb-4 mt-0 text-xl font-medium @xl:my-5 @xl:text-2xl">
+              Reviews <span className="text-contrast-300">{reviews.length}</span>
+            </h2>
+            <div className="mb-2 font-heading text-5xl leading-none tracking-tighter @2xl:text-6xl">
+              {averageRating}
+            </div>
+            <Rating rating={averageRating} showRating={false} />
+          </div>
         </div>
-      </Carousel>
+
+        <div className="flex-1 border-t border-contrast-100">
+          {reviews.map(({ id, rating, review, name, date }) => {
+            return (
+              <div className="border-b border-contrast-100 py-6" key={id}>
+                <Rating rating={rating} />
+                <p className="mt-5 text-lg font-semibold text-foreground">{name}</p>
+                <p className="mb-8 mt-2 leading-normal text-contrast-500">{review}</p>
+                <p className="text-sm text-contrast-500">{date}</p>
+              </div>
+            );
+          })}
+
+          {/* Pagination goes here */}
+        </div>
+      </div>
     </div>
-  )
+  );
 }

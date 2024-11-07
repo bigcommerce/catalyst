@@ -4,16 +4,16 @@ import { runtime } from '~/lib/makeswift/runtime';
 
 import { Accordion, Accordions } from '.';
 
-interface MSAccordion {
+type MSAccordion = {
   title: string;
   children: React.ReactNode;
-}
+};
 
-interface MSAccordionsProps {
+type MSAccordionsProps = {
   className: string;
   accordions: MSAccordion[];
   type: 'single' | 'multiple';
-}
+};
 
 runtime.registerComponent(
   function MSAccordions({ className, accordions, type }: MSAccordionsProps) {

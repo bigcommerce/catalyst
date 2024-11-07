@@ -2,8 +2,7 @@
 
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
-import { useEffect } from 'react';
-import { useFormState } from 'react-dom';
+import { useActionState, useEffect } from 'react';
 
 import { Input } from '@/vibes/soul/form/input';
 import { Button } from '@/vibes/soul/primitives/button';
@@ -14,13 +13,20 @@ type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State
 
 export type SignInAction = Action<SubmissionResult | null, FormData>;
 
-interface Props {
+type Props = {
   action: SignInAction;
+  emailLabel?: string;
+  passwordLabel?: string;
   submitLabel?: string;
-}
+};
 
-export function SignInForm({ action, submitLabel = 'Sign in' }: Props) {
-  const [lastResult, formAction, isPending] = useFormState(action, null);
+export function SignInForm({
+  action,
+  emailLabel = 'Email',
+  passwordLabel = 'Password',
+  submitLabel = 'Sign in',
+}: Props) {
+  const [lastResult, formAction, isPending] = useActionState(action, null);
   const [form, fields] = useForm({
     defaultValue: { email: '', password: '' },
     constraint: getZodConstraint(schema),
@@ -32,9 +38,7 @@ export function SignInForm({ action, submitLabel = 'Sign in' }: Props) {
   });
 
   useEffect(() => {
-    if (lastResult?.error) {
-      console.log(lastResult.error);
-    }
+    if (lastResult?.error) console.log(lastResult.error);
   }, [lastResult]);
 
   return (
@@ -43,14 +47,14 @@ export function SignInForm({ action, submitLabel = 'Sign in' }: Props) {
         {...getInputProps(fields.email, { type: 'text' })}
         errors={fields.email.errors}
         key={fields.email.id}
-        label="Email"
+        label={emailLabel}
       />
       <Input
         {...getInputProps(fields.password, { type: 'password' })}
         className="mb-6"
         errors={fields.password.errors}
         key={fields.password.id}
-        label="Password"
+        label={passwordLabel}
       />
       <Button className="mt-auto w-full" loading={isPending} type="submit" variant="secondary">
         {submitLabel}

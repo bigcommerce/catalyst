@@ -4,11 +4,11 @@ import { runtime } from '~/lib/makeswift/runtime';
 
 import { Card, CardProps } from '.';
 
-interface MSCardProps extends Omit<CardProps, 'href' | 'image'> {
+type MSCardProps = Omit<CardProps, 'href' | 'image'> & {
   link?: { href?: string; target?: string };
   imageSrc?: string;
   imageAlt: string;
-}
+};
 
 runtime.registerComponent(
   function MSCard({ link, imageSrc, imageAlt, ...props }: MSCardProps) {
