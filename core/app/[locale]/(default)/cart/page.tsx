@@ -21,6 +21,7 @@ import { EmptyCart } from './_components/empty-cart';
 import { GeographyFragment } from './_components/shipping-estimator/fragment';
 import { SaveCart } from './_components/save-cart';
 import { RemoveCart } from './_components/remove-cart';
+import { GetCartMetaFields } from '~/components/management-apis';
 
 
 const CartPageQuery = graphql(
@@ -86,8 +87,8 @@ export default async function Cart() {
     return <EmptyCart />;
   }
 
-  const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
-  let cartQty = lineItems?.reduce(function (total, cartItems) { return total + cartItems?.quantity }, 0);
+  const lineItems: any = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
+  let cartQty = lineItems?.reduce(function (total: number, cartItems: any) { return total + cartItems?.quantity }, 0);
   let cartItemsText = (cartQty > 1) ? " Items" : " Item";
   const deleteIcon = imageManagerImageUrl('delete.png', '20w');
   const downArrow = imageManagerImageUrl('downarrow.png', '20w');
@@ -98,7 +99,33 @@ export default async function Cart() {
   const paypalIcon = imageManagerImageUrl('fill-11.png', '25w');
   const closeIcon = imageManagerImageUrl('close.png', '25w');
   const format = await getFormatter();
-  
+  let getCartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
+  let updatedLineItemInfo: any = [];
+  let accessoriesSkuArray: any = [];
+  if (getCartMetaFields?.length > 0) {
+    lineItems?.forEach((item: any) => {
+      let accessoriesData: any = [];
+      let findAccessories = getCartMetaFields?.find((acces: any) => acces?.key == item?.entityId);
+      if (findAccessories) {
+        let getAccessoriesInfo = (findAccessories?.value) ? JSON?.parse(findAccessories?.value) : [];
+        if (getAccessoriesInfo?.length > 0) {
+          getAccessoriesInfo?.forEach((getInfo: any) => {
+            (!accessoriesSkuArray?.includes(getInfo?.variantId)) ? accessoriesSkuArray.push(getInfo?.variantId) : '';
+            let accessoriesInfo = lineItems?.find((line: any) => line?.variantEntityId == getInfo?.variantId);
+            if (accessoriesInfo) {
+              accessoriesInfo.prodQuantity = getInfo.quantity
+              accessoriesData.push(accessoriesInfo);
+            }
+          });
+        }
+      }
+      item.accessories = accessoriesData;
+      if (!accessoriesSkuArray?.includes(item?.variantEntityId)) {
+        updatedLineItemInfo.push(item);
+      }
+    });
+  }
+
   const breadcrumbs: any = [{
     label: "Your Cart",
     href: '#'
@@ -110,7 +137,7 @@ export default async function Cart() {
 
 
       <div className="pt-6 text-center lg:hidden">
-      <div className="inline-flex items-center gap-2 font-medium text-[20px] leading-[32px] text-[#002A37] tracking-[0.15px]">
+        <div className="inline-flex items-center gap-2 font-medium text-[20px] leading-[32px] text-[#002A37] tracking-[0.15px]">
           Subtotal{' '}
           {format.number(checkout?.subtotal?.value || 0, {
             style: 'currency',
@@ -132,10 +159,10 @@ export default async function Cart() {
 
       {/* Heading section */}
       <ComponentsBreadcrumbs className="mt-10" breadcrumbs={breadcrumbs} />
-  
-<h1 className="cart-heading pb-6 pt-0 text-center lg:text-left text-[24px] font-normal leading-[32px] lg:pb-4 lg:text-[24px]">
-  {`${t('heading')}(${cartQty}${cartItemsText})`}
-</h1>
+
+      <h1 className="cart-heading pb-6 pt-0 text-center lg:text-left text-[24px] font-normal leading-[32px] lg:pb-4 lg:text-[24px]">
+        {`${t('heading')}(${cartQty}${cartItemsText})`}
+      </h1>
 
       {/* Cart number for larger screens, SaveCart, and RemoveCart all in one line */}
       <div className="hidden lg:flex lg:items-center lg:space-x-8">
@@ -162,7 +189,7 @@ export default async function Cart() {
       </div>
       <div className="cart-right-side-details px-18 pb-0 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-3">
         <ul className="col-span-2">
-          {lineItems.map((product) => (
+          {updatedLineItemInfo.map((product: any) => (
             <CartItem
               currencyCode={cart.currencyCode}
               key={product.entityId}
@@ -197,10 +224,10 @@ export default async function Cart() {
             />{' '}
             Talk to an Agent
           </p>
-         
+
         </div>
-        </div>
- 
+      </div>
+
       <CartViewed checkout={checkout} currencyCode={cart.currencyCode} lineItems={lineItems} />
     </div>
   );

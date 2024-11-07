@@ -109,6 +109,78 @@ const getMetaFieldsByProductVariant = async (entityId: Number, variantId: number
   }
 };
 
+export const UpdateCartMetaFields = async (entityId: string, metaFieldId: string, postData: any) => {
+  try {
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/carts/${entityId}/metafields/${metaFieldId}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        body: JSON.stringify(postData),
+        cache: 'no-store'
+      },
+    ).then(res => res.json())
+    .then(jsonData => {
+        return jsonData;
+    });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const CreateCartMetaFields = async (entityId: string, postData: any) => {
+  try {
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/carts/${entityId}/metafields`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        body: JSON.stringify(postData),
+        cache: 'no-store'
+      },
+    ).then(res => res.json())
+    .then(jsonData => {
+        return jsonData;
+    });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const GetCartMetaFields = async (entityId: string, nameSpace: string) => {
+  try {
+    let nameSpaceValue = '';
+    if(nameSpace) {
+      nameSpaceValue = '?namespace='+nameSpace;
+    }
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/carts/${entityId}/metafields${nameSpaceValue}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        cache: 'no-store'
+      },
+    ).then(res => res.json())
+    .then(jsonData => {
+        return jsonData;
+    });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const GetVariantsByProductId = async (entityId: Number) => {
   try {
     let { data } = await fetch(
