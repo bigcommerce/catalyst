@@ -154,8 +154,16 @@ export default async function Product({ params: { locale, slug }, searchParams }
 
   return (
     <>
-      {/* @ts-expect-error: TODO(jorgemoya): fix this issue */}
-      <ProductDetail product={formattedProduct} />
+      {/* TODO(jorgemoya): pass appropriate fields and action */}
+      <ProductDetail
+        action={async (state) => {
+          'use server';
+
+          return await Promise.resolve(state);
+        }}
+        fields={[]}
+        product={formattedProduct}
+      />
 
       <ProductDescription
         accordions={accordions}
