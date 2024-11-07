@@ -81,6 +81,9 @@ export default async function Cart() {
     title: item.name,
     image: { src: item.image?.url || '', alt: item.name },
     href: new URL(item.url).pathname,
+    selectedOptions: item.selectedOptions,
+    productEntityId: item.productEntityId,
+    variantEntityId: item.variantEntityId,
   }));
 
   return (

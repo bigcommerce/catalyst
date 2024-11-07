@@ -2,25 +2,33 @@
 
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { cookies } from 'next/headers';
+import { FragmentOf } from 'gql.tada';
 import { getTranslations } from 'next-intl/server';
 
 import { schema } from '@/vibes/soul/sections/cart/schema';
 import { CartLineItem } from '@/vibes/soul/sections/cart/types';
 
-import { getCart } from '../page-data';
+import { DigitalItemFragment, PhysicalItemFragment } from '../page-data';
 
 import { removeItem } from './remove-item';
 import { CartSelectedOptionsInput, updateQuantity } from './update-quantity';
 
+type LineItem = {
+  selectedOptions:
+    | FragmentOf<typeof PhysicalItemFragment>['selectedOptions']
+    | FragmentOf<typeof DigitalItemFragment>['selectedOptions'];
+  productEntityId: number;
+  variantEntityId: number | null;
+} & CartLineItem;
+
 export const updateLineItem = async (
   prevState: Awaited<{
-    lineItems: CartLineItem[];
+    lineItems: LineItem[];
     lastResult: SubmissionResult | null;
   }>,
   formData: FormData,
 ): Promise<{
-  lineItems: CartLineItem[];
+  lineItems: LineItem[];
   lastResult: SubmissionResult | null;
 }> => {
   const t = await getTranslations('Cart.Errors');
@@ -34,33 +42,17 @@ export const updateLineItem = async (
     };
   }
 
-  const cartId = cookies().get('cartId')?.value;
+  const cartLineItem = prevState.lineItems.find((item) => item.id === submission.value.id);
 
-  if (!cartId) {
-    return { ...prevState, lastResult: submission.reply({ formErrors: [t('cartNotFound')] }) };
+  if (!cartLineItem) {
+    return {
+      ...prevState,
+      lastResult: submission.reply({ formErrors: [t('lineItemNotFound')] }),
+    };
   }
 
   switch (submission.value.intent) {
     case 'increment': {
-      const data = await getCart(cartId);
-
-      const cart = data.site.cart;
-
-      if (!cart) {
-        return { ...prevState, lastResult: submission.reply({ formErrors: [t('cartNotFound')] }) };
-      }
-
-      const cartLineItem = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems].find(
-        (cartItem) => cartItem.entityId === submission.value.id,
-      );
-
-      if (!cartLineItem) {
-        return {
-          ...prevState,
-          lastResult: submission.reply({ formErrors: [t('lineItemNotFound')] }),
-        };
-      }
-
       const parsedSelectedOptions = cartLineItem.selectedOptions.reduce<CartSelectedOptionsInput>(
         (accum, option) => {
           let multipleChoicesOptionInput;
@@ -178,7 +170,7 @@ export const updateLineItem = async (
 
       try {
         await updateQuantity({
-          lineItemEntityId: cartLineItem.entityId,
+          lineItemEntityId: cartLineItem.id,
           productEntityId: cartLineItem.productEntityId,
           variantEntityId: cartLineItem.variantEntityId,
           selectedOptions: parsedSelectedOptions,
@@ -203,25 +195,6 @@ export const updateLineItem = async (
     }
 
     case 'decrement': {
-      const data = await getCart(cartId);
-
-      const cart = data.site.cart;
-
-      if (!cart) {
-        return { ...prevState, lastResult: submission.reply({ formErrors: [t('cartNotFound')] }) };
-      }
-
-      const cartLineItem = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems].find(
-        (cartItem) => cartItem.entityId === submission.value.id,
-      );
-
-      if (!cartLineItem) {
-        return {
-          ...prevState,
-          lastResult: submission.reply({ formErrors: [t('lineItemNotFound')] }),
-        };
-      }
-
       const parsedSelectedOptions = cartLineItem.selectedOptions.reduce<CartSelectedOptionsInput>(
         (accum, option) => {
           let multipleChoicesOptionInput;
@@ -339,7 +312,7 @@ export const updateLineItem = async (
 
       try {
         await updateQuantity({
-          lineItemEntityId: cartLineItem.entityId,
+          lineItemEntityId: cartLineItem.id,
           productEntityId: cartLineItem.productEntityId,
           variantEntityId: cartLineItem.variantEntityId,
           selectedOptions: parsedSelectedOptions,
