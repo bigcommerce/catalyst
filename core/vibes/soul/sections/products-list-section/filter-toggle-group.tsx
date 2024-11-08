@@ -15,7 +15,7 @@ export function FilterToggleGroup({ paramName, options }: Props) {
   return (
     <ToggleGroup
       onValueChange={(value) => {
-        setParam(value).catch(() => console.error(`Failed to update ${paramName} param`));
+        void setParam(value.length === 0 ? null : value);
       }}
       options={options}
       type="multiple"
