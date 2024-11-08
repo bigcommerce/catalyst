@@ -74,6 +74,9 @@ export default async function Product({ params: { locale, slug }, searchParams }
   setRequestLocale(locale);
 
   const t = await getTranslations('Product');
+  const c = await getTranslations('Components');
+
+  const ctaLabel = c('AddToCartButton.addToCart')
 
   const format = await getFormatter();
 
@@ -324,7 +327,7 @@ export default async function Product({ params: { locale, slug }, searchParams }
 
   return (
     <>
-      <ProductDetail action={addToCart} fields={formattedFields} product={formattedProduct} />
+      <ProductDetail action={addToCart} fields={formattedFields} product={formattedProduct} ctaLabel={ctaLabel} />
 
       <ProductDescription
         accordions={accordions}

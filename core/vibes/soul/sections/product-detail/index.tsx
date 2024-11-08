@@ -1,7 +1,6 @@
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
 import { Rating } from '@/vibes/soul/primitives/rating';
 import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery';
-import { useTranslations } from 'next-intl';
 
 import { ProductDetailForm, ProductDetailFormAction } from './product-detail-form';
 import { Field } from './schema';
@@ -22,10 +21,10 @@ type Props<F extends Field> = {
   product: ProductDetailProduct;
   action: ProductDetailFormAction<F>;
   fields: F[];
+  ctaLabel: string;
 };
 
-export function ProductDetail<F extends Field>({ product, action, fields }: Props<F>) {
-  const t = useTranslations('Components.AddToCartButton');
+export function ProductDetail<F extends Field>({ product, action, fields, ctaLabel }: Props<F>) {
 
   return (
     <section className="@container">
@@ -60,7 +59,7 @@ export function ProductDetail<F extends Field>({ product, action, fields }: Prop
             action={action}
             fields={fields}
             productId={product.id}
-            ctaLabel={t('addToCart')}
+            ctaLabel={ctaLabel}
           />
         </div>
       </div>
