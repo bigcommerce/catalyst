@@ -15,10 +15,12 @@ export async function generateMetadata() {
 }
 
 interface Props {
-  params: { locale: LocaleType };
+  params: Promise<{ locale: LocaleType }>;
 }
 
-export default function ChangePassword({ params: { locale } }: Props) {
+export default async function ChangePassword({ params }: Props) {
+  const { locale } = await params;
+
   setRequestLocale(locale);
 
   return (

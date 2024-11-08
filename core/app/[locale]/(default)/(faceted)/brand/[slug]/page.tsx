@@ -14,14 +14,15 @@ import { fetchFacetedSearch } from '../../fetch-faceted-search';
 import { getBrand } from './page-data';
 
 interface Props {
-  params: {
+  params: Promise<{
     slug: string;
     locale: LocaleType;
-  };
-  searchParams: Record<string, string | string[] | undefined>;
+  }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const brandId = Number(params.slug);
 
   const brand = await getBrand({ entityId: brandId });
@@ -39,7 +40,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function Brand({ params: { slug, locale }, searchParams }: Props) {
+export default async function Brand(props: Props) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const { slug, locale } = params;
+
   setRequestLocale(locale);
 
   const t = await getTranslations('Brand');

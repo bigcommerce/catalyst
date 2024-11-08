@@ -409,6 +409,9 @@ export const UpdateSettingsForm = ({
 
           {reCaptchaSettings?.isEnabledOnStorefront && (
             <Field className="relative col-span-full max-w-full space-y-2 pb-7" name="ReCAPTCHA">
+              {/* https://github.com/dozoisch/react-google-recaptcha/issues/277 */}
+              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+              {/* @ts-expect-error */}
               <ReCaptcha
                 onChange={onReCaptchaChange}
                 ref={reCaptchaRef}

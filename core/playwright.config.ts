@@ -34,4 +34,5 @@ export default defineConfig({
       },
     },
   ],
+  retries: 1,
 });

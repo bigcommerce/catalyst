@@ -1,5 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { use } from 'react';
 
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
@@ -16,10 +17,12 @@ export async function generateMetadata() {
 }
 
 interface Props {
-  params: { locale: LocaleType };
+  params: Promise<{ locale: LocaleType }>;
 }
 
-export default function Login({ params: { locale } }: Props) {
+export default function Login({ params }: Props) {
+  const { locale } = use(params);
+
   setRequestLocale(locale);
 
   const t = useTranslations('Login');
