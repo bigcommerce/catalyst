@@ -78,7 +78,8 @@ const config = {
   },
   events: {
     async signIn({ user }) {
-      const cookieCartId = cookies().get('cartId')?.value;
+      const cookieStore = await cookies();
+      const cookieCartId = cookieStore.get('cartId')?.value;
 
       if (cookieCartId && user.id) {
         try {
@@ -101,7 +102,8 @@ const config = {
       }
     },
     async signOut(message) {
-      const cookieCartId = cookies().get('cartId')?.value;
+      const cookieStore = await cookies();
+      const cookieCartId = cookieStore.get('cartId')?.value;
 
       const customerId = 'token' in message ? message.token?.id : null;
 
