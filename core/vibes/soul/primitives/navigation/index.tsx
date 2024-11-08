@@ -7,7 +7,15 @@ import * as Popover from '@radix-ui/react-popover';
 import { clsx } from 'clsx';
 import debounce from 'lodash.debounce';
 import { ArrowRight, ChevronDown, Search, SearchIcon, ShoppingBag, User } from 'lucide-react';
-import { forwardRef, Ref, startTransition, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  forwardRef,
+  Ref,
+  startTransition,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useFormState as useActionState } from 'react-dom';
 
 import { Button } from '@/vibes/soul/primitives/button';
@@ -85,6 +93,65 @@ type Props<S extends SearchResult> = {
   emptySearchTitle?: string;
   emptySearchSubtitle?: string;
 };
+
+const HamburgerMenuButton = forwardRef<
+  React.ComponentRef<'button'>,
+  { open: boolean } & React.ComponentPropsWithoutRef<'button'>
+>(({ open, className, ...rest }, ref) => {
+  return (
+    <button
+      {...rest}
+      ref={ref}
+      className={clsx(
+        'group relative rounded-lg p-2 outline-0 ring-primary transition-colors focus-visible:ring-2',
+        className,
+      )}
+    >
+      <div className="flex h-4 w-4 origin-center transform flex-col justify-between overflow-hidden transition-all duration-300">
+        <div
+          className={clsx(
+            'h-px origin-left transform bg-foreground transition-all duration-300',
+            open ? 'translate-x-10' : 'w-7',
+          )}
+        />
+        <div
+          className={clsx(
+            'h-px transform rounded bg-foreground transition-all delay-75 duration-300',
+            open ? 'translate-x-10' : 'w-7',
+          )}
+        />
+        <div
+          className={clsx(
+            'h-px origin-left transform bg-foreground transition-all delay-150 duration-300',
+            open ? 'translate-x-10' : 'w-7',
+          )}
+        />
+
+        <div
+          className={clsx(
+            'absolute top-2 flex transform items-center justify-between bg-foreground transition-all duration-500',
+            open ? 'w-12 translate-x-0' : 'w-0 -translate-x-10',
+          )}
+        >
+          <div
+            className={clsx(
+              'absolute h-px w-4 transform bg-foreground transition-all delay-300 duration-500',
+              open ? 'rotate-45' : 'rotate-0',
+            )}
+          />
+          <div
+            className={clsx(
+              'absolute h-px w-4 transform bg-foreground transition-all delay-300 duration-500',
+              open ? '-rotate-45' : 'rotate-0',
+            )}
+          />
+        </div>
+      </div>
+    </button>
+  );
+});
+
+HamburgerMenuButton.displayName = 'HamburgerMenuButton';
 
 export const Navigation = forwardRef(function Navigation<S extends SearchResult>(
   {
@@ -344,63 +411,6 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 });
 
 Navigation.displayName = 'Navigation';
-
-function HamburgerMenuButton({
-  open,
-  className,
-  ...rest
-}: { open: boolean } & React.ComponentPropsWithoutRef<'button'>) {
-  return (
-    <button
-      {...rest}
-      className={clsx(
-        'group relative rounded-lg p-2 outline-0 ring-primary transition-colors focus-visible:ring-2',
-        className,
-      )}
-    >
-      <div className="flex h-4 w-4 origin-center transform flex-col justify-between overflow-hidden transition-all duration-300">
-        <div
-          className={clsx(
-            'h-px origin-left transform bg-foreground transition-all duration-300',
-            open ? 'translate-x-10' : 'w-7',
-          )}
-        />
-        <div
-          className={clsx(
-            'h-px transform rounded bg-foreground transition-all delay-75 duration-300',
-            open ? 'translate-x-10' : 'w-7',
-          )}
-        />
-        <div
-          className={clsx(
-            'h-px origin-left transform bg-foreground transition-all delay-150 duration-300',
-            open ? 'translate-x-10' : 'w-7',
-          )}
-        />
-
-        <div
-          className={clsx(
-            'absolute top-2 flex transform items-center justify-between bg-foreground transition-all duration-500',
-            open ? 'w-12 translate-x-0' : 'w-0 -translate-x-10',
-          )}
-        >
-          <div
-            className={clsx(
-              'absolute h-px w-4 transform bg-foreground transition-all delay-300 duration-500',
-              open ? 'rotate-45' : 'rotate-0',
-            )}
-          />
-          <div
-            className={clsx(
-              'absolute h-px w-4 transform bg-foreground transition-all delay-300 duration-500',
-              open ? '-rotate-45' : 'rotate-0',
-            )}
-          />
-        </div>
-      </div>
-    </button>
-  );
-}
 
 function SearchForm<S extends SearchResult>({
   searchAction,
