@@ -26,7 +26,7 @@ import { NumberField } from './fields/number-field';
 import { QuantityField } from './fields/quantity-field';
 import { TextField } from './fields/text-field';
 import { ProductFormData, useProductForm } from './use-product-form';
-import { ProductFlyout } from './_actions/product-flyout';
+import { ProductFlyout } from '~/components/product-card/product-flyout';
 import { useCommonContext } from '~/components/common-context/common-provider';
 
 interface Props {

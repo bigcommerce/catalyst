@@ -11,6 +11,7 @@ import { Link } from '~/components/link';
 import { useState, useTransition } from 'react';
 import { Button } from '~/components/ui/button';
 import { useCommonContext } from '~/components/common-context/common-provider';
+import { GetCartMetaFields, CreateCartMetaFields, UpdateCartMetaFields } from '../management-apis';
 
 interface Props {
   accessories: any;
@@ -88,6 +89,53 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
         });
       }
       if (result?.status == 'success') {
+        let cartId: string = result?.data?.entityId || '';
+        //update the cart metafields
+        if(cartId) {
+          let optionValueToUpdate: any = '';
+          let lineItemId = productFlyout?.productData?.entityId;
+          let productId = productFlyout?.productData?.productEntityId;
+          let variantProductId = productFlyout?.productData?.variantEntityId;
+          let prodQuantity = productFlyout?.productData?.quantity;
+          let optionValue = {
+            'productId': productId,
+            'variantId': variantId,
+            'quantity': quantity
+          }
+          let cartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
+          let getCartMetaLineItems = cartMetaFields?.find((item: any) => item?.key == lineItemId);
+          if(cartMetaFields?.length == 0 || !getCartMetaLineItems) {
+            let metaArray: any = [];
+            metaArray.push(optionValue);
+            let cartMeta = {
+              "permission_set": "write_and_sf_access",
+              "namespace": "accessories_data",
+              "key": lineItemId,
+              "value": JSON.stringify(metaArray),
+            }
+            await CreateCartMetaFields(cartId, cartMeta);
+          } else {
+            let metaFieldId = getCartMetaLineItems?.id;
+            let existingValue: any = '';
+            if(getCartMetaLineItems?.id) {
+              existingValue = JSON?.parse(getCartMetaLineItems?.value);
+              let existingIndex = existingValue?.findIndex((item: any) => item?.variantId == variantId)
+              if(existingIndex >= 0) {
+                existingValue[existingIndex].quantity += quantity;
+              } else {
+                existingValue.push(optionValue);
+              }
+            }
+            let cartMeta = {
+              "permission_set": "write_and_sf_access",
+              "namespace": "accessories_data",
+              "key": lineItemId,
+              "value": JSON.stringify(existingValue),
+            }
+            await UpdateCartMetaFields(cartId, metaFieldId, cartMeta);
+          }
+        }
+        
         // Optimistic update
         toast.success(
           () => (
@@ -118,16 +166,18 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
   if(baseImage) {
     hideImage = ' hidden';
   }
+
   return (
     <>
       {accessories?.length}
-      <div className={`left-container bg-[#d3d3d3] hidden  w-[150px] h-[177px]${baseImage}`}>
+      <div className={`left-container w-[150px] h-[177px]${baseImage}`}>
         <BcImage
           alt={accessories?.label}
           className={`object-fill h-[177px]${baseImage}${hideImage}`}
           height={150}
           src={productImage}
           width={150}
+          unoptimized={true}
         />
       </div>
       <div className='w-full flex flex-col gap-[10px] shrink-[100]'>

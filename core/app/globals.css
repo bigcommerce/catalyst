@@ -28,9 +28,7 @@ div[data-radix-popper-content-wrapper] div {
   text-overflow: ellipsis;
   width: 240px;
 }
-.left-container img {
-  display: none;
-}
+
 .left-container.bg-set {
   background-color: lightgrey;
 }
@@ -266,6 +264,10 @@ button#remember-me {
   margin-top: 10px;
   width: 16px;
   height: 18px;
+}
+
+.cart-accessories .cart-deleteIcon button img{
+  margin-top: 0px !important;
 }
 
 .cart-add-to-cart {
@@ -1113,3 +1115,17 @@ footer.\32 xl\:container.\32 xl\:mx-auto {
 .popup-container-parent .popup-box1 {
   pointer-events: all !important;
 }
+
+@media screen and (max-width: 768px) {
+  .cart-deleteIcon form{
+    order: 1;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .cart-deleteIcon .cart-add-to-cart{
+    order: 1;
+    position: absolute;
+    bottom: 0;
+  }  
+}
+
