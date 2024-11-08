@@ -165,7 +165,13 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
     'Protect Your Purchase',
   );
   const format = useFormatter();
-
+  let oldPrice = product?.originalPrice?.value;
+  let salePrice = product?.extendedSalePrice?.value;
+  let discountedPrice: number = Number((Number(100 - (salePrice * 100) / oldPrice))?.toFixed(2));
+  let discountPriceText: string = '';
+  if(discountedPrice > 0) {
+    discountPriceText = discountedPrice?.toPrecision(4)+'% Off';
+  }
   return (
     <li>
       <div className="mb-5 flex flex-col gap-4 border border-gray-200 p-4 py-4 md:flex-row">
@@ -312,12 +318,22 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
                 {/* Mobile layout for dollar amount and item quantity/remove button in separate rows */}
                 <div className="block md:hidden">
                   {/* Dollar amount row */}
-                  <p className="mb-4 text-left text-lg font-bold">
-                    {format.number(product.extendedSalePrice.value, {
-                      style: 'currency',
-                      currency: currencyCode,
-                    })}
-                  </p>
+                  {product.originalPrice.value &&
+                    product.originalPrice.value !== product.listPrice.value ? (
+                      <p className="mb-1 text-lg font-bold line-through">
+                        {format.number(product.originalPrice.value * product.quantity, {
+                          style: 'currency',
+                          currency: currencyCode,
+                        })}
+                      </p>
+                    ) : null}
+                    {discountPriceText}
+                    <p className="pb-2 mt-2 text-right text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#353535]">
+                      {format.number(product.extendedSalePrice.value, {
+                        style: 'currency',
+                        currency: currencyCode,
+                      })}
+                    </p>
                   {/* Item quantity and remove button in separate columns */}
                   <div className="flex items-center justify-between delete-icon-top-position">
                     {/* Item quantity aligned left */}
@@ -335,7 +351,6 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
                   <RemoveItem currency={currencyCode} product={product} deleteIcon={deleteIcon} />
                   <div>
                     {product.originalPrice.value &&
-                    changeTheProtectedPosition?.length === 0 &&
                     product.originalPrice.value !== product.listPrice.value ? (
                       <p className="mb-1 text-lg font-bold line-through">
                         {format.number(product.originalPrice.value * product.quantity, {
@@ -344,6 +359,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
                         })}
                       </p>
                     ) : null}
+                    {discountPriceText}
                     <p className="pb-2 mt-2 text-right text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#353535]">
                       {format.number(product.extendedSalePrice.value, {
                         style: 'currency',
@@ -357,8 +373,8 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
             </div>
           </div>
         </div>
-        {product?.accessories && product?.accessories?.map((item: any) => (
-          <div className="mb-5 flex gap-4 p-4 py-4 md:flex-row">
+        {product?.accessories && product?.accessories?.map((item: any, index: number) => (
+          <div className="mb-5 flex gap-4 p-4 py-4 md:flex-row" key={`${index}-${item?.entityId}`}>
             {item.name}
             <div className="cart-deleteIcon hidden flex-col gap-2 md:flex md:items-end">
               <RemoveItem currency={currencyCode} product={item} deleteIcon={deleteIcon} />
