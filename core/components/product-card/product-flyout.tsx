@@ -290,12 +290,14 @@ export const ProductFlyout = ({
                   </div>
                 </div>
                 <div className="cart-buttons flex flex-row items-start gap-[10px]">
-                  <Link
-                    className="flex flex-row items-center self-stretch justify-center w-[100%] border border-[#b3dce8] rounded-[3px] font-medium text-[14px] tracking-[1.25px] uppercase text-[#002A37] my-5 text-sm  hover:text-secondary md:my-0"
-                    href="/cart"
-                  >
-                    View Cart
-                  </Link>
+                  <Dialog.Close asChild>
+                    <Link
+                      className="flex flex-row items-center self-stretch justify-center w-[100%] border border-[#b3dce8] rounded-[3px] font-medium text-[14px] tracking-[1.25px] uppercase text-[#002A37] my-5 text-sm  hover:text-secondary md:my-0"
+                      href="/cart"
+                    >
+                      View Cart
+                    </Link>
+                  </Dialog.Close>
                   <CheckoutButton cartId={cartItemsData?.entityId} />
                 </div>
               </div>
