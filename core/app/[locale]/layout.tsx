@@ -2,7 +2,7 @@ import { DraftModeScript } from '@makeswift/runtime/next/server';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
-import { DM_Serif_Text, Inter, Roboto_Mono } from 'next/font/google';
+import localFont from 'next/font/local';
 import { draftMode } from 'next/headers';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
@@ -21,22 +21,24 @@ import { Providers } from '../providers';
 
 import '~/lib/makeswift/components';
 
-const dm_serif_text = DM_Serif_Text({
-  display: 'swap',
-  subsets: ['latin'],
-  weight: '400',
+const dm_serif_text = localFont({
+  src: [
+    {
+      path: '../../public/fonts/DMSerifText-Regular.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+  ],
   variable: '--font-family-heading',
 });
 
-const inter = Inter({
-  display: 'swap',
-  subsets: ['latin'],
+const inter = localFont({
+  src: '../../public/fonts/Inter-Variable.woff2',
   variable: '--font-family-body',
 });
 
-const roboto_mono = Roboto_Mono({
-  subsets: ['latin'],
-  display: 'swap',
+const roboto_mono = localFont({
+  src: '../../public/fonts/RobotoMono-Variable.woff2',
   variable: '--font-family-mono',
 });
 
