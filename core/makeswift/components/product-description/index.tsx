@@ -22,7 +22,7 @@ export const ProductDescription = async ({ product, ...props }: Props) => {
   return (
     <PropsContextProvider value={props}>
       <MakeswiftComponent
-        name={`Description for ${product.title}`}
+        label={`Description for ${product.title}`}
         snapshot={snapshot}
         type={COMPONENT_TYPE}
       />
