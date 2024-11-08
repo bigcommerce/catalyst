@@ -8,6 +8,9 @@ import { cn } from '~/lib/utils';
 
 import { type Locale, LocaleSwitcher } from './locale-switcher';
 import { MobileNav } from './mobile-nav';
+import { StaticImport } from 'next/dist/shared/lib/get-img-props';
+import { imageManagerImageUrl } from '~/lib/store-assets';
+import { imageIconList } from '~/app/[locale]/(default)/(auth)/fragments';
 
 interface Link {
   label: string;
@@ -53,23 +56,45 @@ const Header = ({
   search,
 }: Props) => (
   <div className={cn('relative', className)}>
-    <header className="main-header  !max-w-[100%] p-[0px_4em] flex h-[92px] items-center justify-between gap-1 overflow-y-visible bg-white 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto !px-[40px] 2xl:px-0">
-      <CustomLink className="overflow-hidden text-ellipsis py-3" href="/">
-        {typeof logo === 'object' ? (
-          <BcImage
-            alt={logo.altText}
-            className="max-h-16 object-contain"
-            height={32}
-            priority
-            src={logo.src}
-            width={155}
-          />
-        ) : (
-          <span className="truncate text-2xl font-black">{logo}</span>
-        )}
-      </CustomLink>
+    <header className="main-header flex h-[92px] !max-w-[100%] items-center justify-between gap-1 overflow-y-visible bg-white p-[0px_4em] !px-[40px] 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0">
+      <div className="flex items-center space-x-4">
+        {/* First Logo */}
+        <CustomLink className="home-logo-one overflow-hidden text-ellipsis py-3" href="/">
+          {typeof logo === 'object' ? (
+            <div className="hidden items-center space-x-2 lg:flex">
+              <BcImage
+                alt={logo.altText}
+                className="max-h-16 object-contain"
+                height={32}
+                priority
+                src={logo.src}
+                width={155}
+              />
+            </div>
+          ) : (
+            <span className="truncate text-2xl font-black">{logo}</span>
+          )}
+        </CustomLink>
 
-      <div className="flex items-center gap-2 lg:gap-4">
+        <CustomLink className="home-logo-two overflow-hidden text-ellipsis pt-3 md:pl-5" href="/">
+          {typeof logo === 'object' ? (
+            <div className="second-home-logo block lg:hidden">
+              <BcImage
+                alt="homeLogo"
+                className="max-h-16 object-contain"
+                height={30}
+                priority
+                src={imageIconList.homeLogo}
+                width={30}
+              />
+            </div>
+          ) : (
+            <span className="truncate text-2xl font-black">{imageIconList.homeLogo}</span>
+          )}
+        </CustomLink>
+      </div>
+
+      <div className="header-search-bar flex items-center gap-2 lg:gap-4">
         {search}
         <nav className="header-nav-support flex gap-2 lg:gap-4">{account}</nav>
         <nav className="header-cart flex gap-2 lg:gap-9">{cart}</nav>
@@ -81,11 +106,11 @@ const Header = ({
       </div>
     </header>
 
-    <div className="header-bottom p-[0px_4.8em_0em_4em] m-auto max-w-[100%] flex items-center justify-between bg-white px-4 lg:px-10">
+    <div className="header-bottom mx-auto flex max-w-full items-center justify-between border-b border-t border-[#cccbcb] bg-white px-4 pb-4 pt-4 lg:mt-[30px] lg:px-10 xl:mt-0">
       <NavigationMenuPrimitive.Root id="nav-menu-root" className="hidden lg:block">
         <NavigationMenuPrimitive.List
           id="nav-menu-list"
-          className="flex items-center gap-2 lg:gap-4 !font-normal text-[16px]"
+          className="flex items-center gap-2 text-[16px] !font-normal lg:gap-4"
         >
           {links.map((link) =>
             link.groups && link.groups.length > 0 ? (
@@ -108,12 +133,10 @@ const Header = ({
                   />
                 </NavigationMenuPrimitive.Trigger>
 
-                {/* Content divided into two sections */}
                 <NavigationMenuPrimitive.Content
                   id={`nav-menu-content-${link.href}`}
-                  className="grid w-full grid-cols-2 gap-10 2xl:container data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 sm:px-10 lg:px-12 2xl:mx-auto !px-[40px] 2xl:px-0"
+                  className="grid w-full grid-cols-2 gap-10 !px-[40px] 2xl:container data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0"
                 >
-                  {/* Column 1: Main navigation links */}
                   <div className="flex flex-col">
                     {link.groups.map((group) => (
                       <ul
@@ -177,8 +200,10 @@ const Header = ({
         />
       </NavigationMenuPrimitive.Root>
 
-      {/* New Blog and Contact Us Section */}
-      <nav className="static-menu-class flex items-center gap-10 font-normal text-[16px] text-[#008bb7] relative right-[1em]" id="static-menu">
+      <nav
+        className="static-menu-class relative right-[1em] hidden items-center gap-10 text-[16px] font-normal text-[#008bb7] lg:flex lg:gap-5"
+        id="static-menu"
+      >
         <CustomLink href="/new" className="font-semiboldd hover:text-primary">
           New
         </CustomLink>

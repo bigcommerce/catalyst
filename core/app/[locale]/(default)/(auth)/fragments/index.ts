@@ -3,6 +3,7 @@ import { imageManagerImageUrl } from '~/lib/store-assets';
 
 export interface IconProps {
     'logo'?: string | StaticImport | any;
+    'homeLogo'?: string | StaticImport | any;
     'email'?: string | StaticImport | any;
     'facebookLogo'?: string | StaticImport | any;
     'google'?: string | StaticImport | any;
@@ -22,6 +23,7 @@ export interface IconProps {
 
 export const imageIconList: IconProps = {
     'logo': imageManagerImageUrl('site-logo.png', '150w'),
+    'homeLogo': imageManagerImageUrl('logo-mark.png', '150w'),
     'email': imageManagerImageUrl('emailicon.png', '16w'),
     'facebookLogo': imageManagerImageUrl('facebook-blue.png', '16w'),
     'google': imageManagerImageUrl('google-logo.png', '23w'),
