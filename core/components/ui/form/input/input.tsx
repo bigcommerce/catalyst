@@ -13,7 +13,7 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
     const [showPassword, setShowPassword] = useState(false);
 
     const isPassword = type === 'password';
-    const effectiveType = isPassword ? (showPassword ? 'text' : 'password') : type;
+    const effectiveType = isPassword ? (showPassword ? 'password' : 'text') : type;
 
     return (
       <div className={cn('relative', className)}>
