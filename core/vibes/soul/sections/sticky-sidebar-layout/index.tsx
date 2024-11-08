@@ -29,7 +29,8 @@ export function StickySidebarLayout({
       >
         <div
           className={clsx(
-            clsx(sidebarPosition === 'right' ? 'order-2' : 'order-1'),
+            'shrink-0',
+            sidebarPosition === 'right' ? 'order-2' : 'order-1',
             {
               '1/3': '@4xl:w-1/3',
               '1/2': '@4xl:w-1/2',
@@ -42,7 +43,19 @@ export function StickySidebarLayout({
         >
           <div className="sticky top-10">{sidebar}</div>
         </div>
-        <div className={clsx('flex-1', sidebarPosition === 'right' ? 'order-1' : 'order-2')}>
+        <div
+          className={clsx(
+            sidebarPosition === 'right' ? 'order-1' : 'order-2',
+            {
+              '1/3': '@4xl:w-2/3',
+              '1/2': '@4xl:w-1/2',
+              '1/4': '@4xl:w-3/4',
+              small: '@4xl:flex-1',
+              medium: '@4xl:flex-1',
+              large: '@4xl:flex-1',
+            }[sidebarSize],
+          )}
+        >
           {children}
         </div>
       </div>
