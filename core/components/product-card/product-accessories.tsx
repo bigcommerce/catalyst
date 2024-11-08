@@ -113,7 +113,7 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
               "key": lineItemId,
               "value": JSON.stringify(metaArray),
             }
-            let createData = await CreateCartMetaFields(cartId, cartMeta);
+            await CreateCartMetaFields(cartId, cartMeta);
           } else {
             let metaFieldId = getCartMetaLineItems?.id;
             let existingValue: any = '';
@@ -132,7 +132,7 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
               "key": lineItemId,
               "value": JSON.stringify(existingValue),
             }
-            let createData = await UpdateCartMetaFields(cartId, metaFieldId, cartMeta);
+            await UpdateCartMetaFields(cartId, metaFieldId, cartMeta);
           }
         }
         

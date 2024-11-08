@@ -167,10 +167,10 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
   const format = useFormatter();
   let oldPrice = product?.originalPrice?.value;
   let salePrice = product?.extendedSalePrice?.value;
-  let discountedPrice: number = Number(Number(100 - (salePrice * 100) / oldPrice)?.toFixed(2));
+  let discountedPrice: any = (Number(100 - (salePrice * 100) / oldPrice)?.toFixed(2));
   let discountPriceText: string = '';
   if (discountedPrice > 0) {
-    discountPriceText = discountedPrice?.toPrecision(4) + '% Off';
+    discountPriceText = discountedPrice + '% Off';
   }
   return (
     <li className="border border-gray-200">
@@ -349,10 +349,10 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
           product?.accessories?.map((item: any, index: number) => {
             let oldPriceAccess = item?.originalPrice?.value;
             let salePriceAccess = item?.extendedSalePrice?.value;
-            let discountedPrice: number = Number(Number(100 - (salePriceAccess * 100) / oldPriceAccess)?.toFixed(2));
+            let discountedPrice: any = (Number(100 - (salePriceAccess * 100) / oldPriceAccess)?.toFixed(2));
             let discountPriceText: string = '';
             if (discountedPrice > 0) {
-              discountPriceText = discountedPrice?.toPrecision(4) + '% Off';
+              discountPriceText = discountedPrice + '% Off';
             }
             return (
               <div
