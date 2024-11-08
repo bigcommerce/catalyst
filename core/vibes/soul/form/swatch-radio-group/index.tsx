@@ -1,11 +1,11 @@
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import clsx from 'clsx';
 import { X } from 'lucide-react';
-import { BcImage as Image } from '~/components/bc-image';
 import * as React from 'react';
 
 import { ErrorMessage } from '@/vibes/soul/form/error-message';
 import { Label } from '@/vibes/soul/form/label';
+import { BcImage as Image } from '~/components/bc-image';
 
 type SwatchOption =
   | {
@@ -60,7 +60,7 @@ export const SwatchRadioGroup = React.forwardRef<
                 style={{ backgroundColor: option.color }}
               />
             ) : (
-              <span className="relative block h-10 w-10 rounded-full border border-foreground/10">
+              <span className="relative block size-full overflow-hidden rounded-full border border-foreground/10">
                 <Image alt={option.image.alt} height={40} src={option.image.src} width={40} />
               </span>
             )}
