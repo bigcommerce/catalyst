@@ -89,7 +89,7 @@ const ProductImage: React.FC<ProductImageProps> = ({ scale, size, src }) => {
         ref={imgRef}
         src={imageUrl} // Use the constructed image URL
         alt="Product"
-        className="img1 object-cover"
+        className="img1 object-fill"
         height={600} // Set the desired height
         width="original" // Set the desired width
         style={{ willChange: 'transform', transition: 'transform 0.3s ease-in-out' }} // Improve performance

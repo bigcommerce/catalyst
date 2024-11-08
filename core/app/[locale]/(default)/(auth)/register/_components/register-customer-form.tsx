@@ -1,9 +1,10 @@
+// register
+
 'use client';
 
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { Eye, EyeOff } from 'lucide-react';
 
 import { useAccountStatusContext } from '~/app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
 import { ExistingResultType } from '~/client/util';
@@ -16,6 +17,7 @@ import {
   FieldWrapper,
   MultilineText,
   NumbersOnly,
+  Password,
   Picklist,
   PicklistOrText,
   RadioButtons,
@@ -38,6 +40,7 @@ import { login } from '../_actions/login';
 import { registerCustomer } from '../_actions/register-customer';
 import { getRegisterCustomerQuery } from '../page-data';
 import { cn } from '~/lib/utils';
+import error from 'next/error';
 
 interface FormStatus {
   status: 'success' | 'error';
@@ -73,53 +76,6 @@ interface PasswordFieldProps {
   name: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
-
-const PasswordField = ({ field, isValid, name, onChange }: PasswordFieldProps) => {
-  const [showPassword, setShowPassword] = useState(false);
-  const fieldId = `field-${field.entityId}`;
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  return (
-    <div className="mb-4">
-      <div className="mb-2 flex items-center justify-between">
-        <label
-          htmlFor={fieldId}
-          className="block text-sm font-normal leading-6 tracking-[0.25px] text-[#353535]"
-        >
-          {field.label}
-          {field.required && <span className="ml-1 text-[#DB4444]">*</span>}
-        </label>
-      </div>
-      <div className="relative">
-        <input
-          aria-invalid={!isValid}
-          aria-required={field.required}
-          className={cn(
-            'peer w-full border-2 border-gray-200 px-4 py-2.5 text-base placeholder:text-gray-500 hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200',
-          )}
-          id={fieldId}
-          name={name}
-          onChange={onChange}
-          required={field.required}
-          type={showPassword ? 'text' : 'password'}
-          placeholder={field.label}
-        />
-        <button
-          type="button"
-          onClick={togglePasswordVisibility}
-          className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-black hover:text-gray-700 focus:outline-none"
-          aria-label={showPassword ? 'Hide password' : 'Show password'}
-        >
-          {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-        </button>
-      </div>
-      {!isValid && <p className="mt-1 text-sm text-[#DB4444]">{field.label} is required</p>}
-    </div>
-  );
-};
 
 const SubmitButton = ({ messages }: SubmitMessages) => {
   const { pending } = useFormStatus();
@@ -261,14 +217,14 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
 
                 case 'PasswordFormField': {
                   return (
-                    <div key={fieldId} className="password-field mb-4">
-                      <PasswordField
+                    <FieldWrapper fieldId={fieldId} key={fieldId}>
+                      <Password
                         field={field}
-                        isValid={passwordValid[fieldId] ?? true}
+                        isValid={passwordValid[fieldId]}
                         name={fieldName}
                         onChange={handlePasswordValidation}
                       />
-                    </div>
+                    </FieldWrapper>
                   );
                 }
 
@@ -296,17 +252,16 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
                     </FieldWrapper>
                   );
                 }
-
                 case 'PasswordFormField': {
                   return (
-                    <div key={fieldId} className="password-field mb-4">
-                      <PasswordField
+                    <FieldWrapper fieldId={fieldId} key={fieldId}>
+                      <Password
                         field={field}
-                        isValid={passwordValid[fieldId] ?? true}
+                        isValid={passwordValid[fieldId]}
                         name={fieldName}
                         onChange={handlePasswordValidation}
                       />
-                    </div>
+                    </FieldWrapper>
                   );
                 }
 

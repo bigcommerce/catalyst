@@ -744,9 +744,9 @@ ul.div-breadcrumb li:last-child a {
     margin-bottom: 30px;
   }
 
-  .gallery-thumbnails div img {
+  /* .gallery-thumbnails div img {
     height: 100% !important;
-  }
+  } */
 
   /* cart */
   ul.div-breadcrumb {
@@ -980,10 +980,10 @@ button#label-1462 {
   container-type: normal !important;
 }
 
-.gallery-thumbnails div img {
+/* .gallery-thumbnails div img {
   max-width: 100% !important;
   width: 100% !important;
-}
+} */
 
 /* description - bigcommerce products description*/
 div#proddesc p {
