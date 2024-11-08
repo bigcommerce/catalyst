@@ -16,3 +16,41 @@ import '~/makeswift/components/inline-email-form/inline-email-form.makeswift';
 import '~/makeswift/components/slideshow/slideshow.makeswift';
 import '~/makeswift/components/featured-image/featured-image.makeswift';
 import '~/makeswift/components/sticky-sidebar-layout/sticky-sidebar-layout.makeswift';
+
+import { MakeswiftComponentType } from '@makeswift/runtime';
+
+import { runtime } from './runtime';
+
+// Hide some builtin Makeswift components
+
+// TODO(migueloller): Hiding builtins this way results in existing components being rendered without
+// the ability to edit them. We should find a way to hide them in the editor without affecting the
+// rendering of existing components.
+
+runtime.registerComponent(() => null, {
+  type: MakeswiftComponentType.Carousel,
+  label: 'Carousel (hidden)',
+  hidden: true,
+  props: {},
+});
+
+runtime.registerComponent(() => null, {
+  type: MakeswiftComponentType.Countdown,
+  label: 'Countdown (hidden)',
+  hidden: true,
+  props: {},
+});
+
+runtime.registerComponent(() => null, {
+  type: MakeswiftComponentType.Form,
+  label: 'Form (hidden)',
+  hidden: true,
+  props: {},
+});
+
+runtime.registerComponent(() => null, {
+  type: MakeswiftComponentType.Navigation,
+  label: 'Navigation (hidden)',
+  hidden: true,
+  props: {},
+});
