@@ -1,10 +1,9 @@
 import { Image, Link as MSLink, Select, Style, TextInput } from '@makeswift/runtime/controls';
 
+import { FeaturedImage } from '@/vibes/soul/sections/featured-image';
 import { runtime } from '~/lib/makeswift/runtime';
 
-import { FeaturedImage } from '.';
-
-type MSFeaturedImageProps = {
+interface MSFeaturedImageProps {
   className: string;
   title: string;
   description: string;
@@ -13,7 +12,7 @@ type MSFeaturedImageProps = {
   link: { href?: string; target?: string };
   label: string;
   mediaAlign?: 'left' | 'right' | 'full';
-};
+}
 
 runtime.registerComponent(
   function MSFeaturedImage({

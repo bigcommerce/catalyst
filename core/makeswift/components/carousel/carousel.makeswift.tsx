@@ -1,19 +1,24 @@
 import { List, Link as MSLink, Shape, Slot, Style, TextInput } from '@makeswift/runtime/controls';
 
+import {
+  Carousel,
+  CarouselButtons,
+  CarouselContent,
+  CarouselItem,
+  CarouselScrollbar,
+} from '@/vibes/soul/primitives/carousel';
 import { Link } from '~/components/link';
 import { runtime } from '~/lib/makeswift/runtime';
 
-import { Carousel, CarouselButtons, CarouselContent, CarouselItem, CarouselScrollbar } from '.';
-
-type Slide = {
+interface Slide {
   link: { href?: string; target?: string };
   children: React.ReactNode;
-};
+}
 
-type MSCarouselProps = {
+interface MSCarouselProps {
   className: string;
   slides?: Slide[];
-};
+}
 
 runtime.registerComponent(
   function MSCarousel({ className, slides }: MSCarouselProps) {

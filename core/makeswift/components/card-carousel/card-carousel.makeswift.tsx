@@ -1,21 +1,20 @@
 import { Image, Link, List, Select, Shape, Style, TextInput } from '@makeswift/runtime/controls';
 
+import { CardCarousel } from '@/vibes/soul/primitives/card-carousel';
 import { runtime } from '~/lib/makeswift/runtime';
 
-import { CardCarousel } from '.';
-
-type Card = {
+interface Card {
   title?: string;
   imageSrc?: string;
   imageAlt?: string;
   link?: { href?: string; target?: string };
-};
+}
 
-type MSCardCarouselProps = {
+interface MSCardCarouselProps {
   className: string;
   textContrast: 'light' | 'dark';
   cards: Card[];
-};
+}
 
 runtime.registerComponent(
   function MSCardCarousel({ className, textContrast, cards }: MSCardCarouselProps) {

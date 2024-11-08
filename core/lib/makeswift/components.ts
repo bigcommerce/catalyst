@@ -3,16 +3,16 @@ import '~/makeswift/components/featured-products-carousel/featured-products-caro
 import '~/makeswift/components/featured-products-list/featured-products-list.makeswift';
 import '~/makeswift/components/header/register';
 import '~/makeswift/components/footer/register';
+import '~/makeswift/components/accordions/accordions.makeswift';
+import '~/makeswift/components/button-link/button-link.makeswift';
+import '~/makeswift/components/card/card.makeswift';
+import '~/makeswift/components/carousel/carousel.makeswift';
+import '~/makeswift/components/card-carousel/card-carousel.makeswift';
+import '~/makeswift/components/products-carousel/products-carousel.makeswift';
 
-import '@/vibes/soul/primitives/accordions/accordions.makeswift';
-import '@/vibes/soul/primitives/button-link/button-link.makeswift';
-import '@/vibes/soul/primitives/card/card.makeswift';
-import '@/vibes/soul/primitives/carousel/carousel.makeswift';
-import '@/vibes/soul/primitives/card-carousel/card-carousel.makeswift';
-import '@/vibes/soul/primitives/products-carousel/products-carousel.makeswift';
-import '@/vibes/soul/primitives/products-list/products-list.makeswift';
-import '@/vibes/soul/primitives/inline-email-form/inline-email-form.makeswift';
+import '~/makeswift/components/products-list/products-list.makeswift';
+import '~/makeswift/components/inline-email-form/inline-email-form.makeswift';
 
-import '@/vibes/soul/sections/slideshow/slideshow.makeswift';
-import '@/vibes/soul/sections/featured-image/featured-image.makeswift';
-import '@/vibes/soul/sections/sticky-sidebar-layout/sticky-sidebar-layout.makeswift';
+import '~/makeswift/components/slideshow/slideshow.makeswift';
+import '~/makeswift/components/featured-image/featured-image.makeswift';
+import '~/makeswift/components/sticky-sidebar-layout/sticky-sidebar-layout.makeswift';

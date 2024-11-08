@@ -1,6 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import {
-  Checkbox,
   Combobox,
   Image,
   Link,
@@ -15,17 +14,15 @@ import clsx from 'clsx';
 import { useFormatter } from 'next-intl';
 import useSWR from 'swr';
 
+import { CardSkeleton } from '@/vibes/soul/primitives/card';
+import { Price } from '@/vibes/soul/primitives/price-label';
+import { ProductsCarousel } from '@/vibes/soul/primitives/products-carousel';
 import { SearchProductsResponse } from '~/app/api/products/route';
 import { GetProductsResponse } from '~/client/queries/get-products';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { runtime } from '~/lib/makeswift/runtime';
 
-import { CardSkeleton } from '../card';
-import { Price } from '../price-label';
-
-import { ProductsList } from '.';
-
-type Product = {
+interface Product {
   entityId?: string;
   title?: string;
   link?: { href?: string; target?: string };
@@ -36,15 +33,13 @@ type Product = {
   type: 'single' | 'range' | 'sale';
   priceOne?: number;
   priceTwo?: number;
-};
+}
 
-type MSProductsListProps = {
+interface MSProductsCarouselProps {
   className: string;
   collection: 'none' | 'bestSelling' | 'newest' | 'featured';
   products: Product[];
-  showCompare: boolean;
-  compareLabel: string;
-};
+}
 
 const fetcher = async (url: string): Promise<{ products: GetProductsResponse }> => {
   const response = await fetch(url);
@@ -58,13 +53,18 @@ const fetcher = async (url: string): Promise<{ products: GetProductsResponse }> 
 };
 
 runtime.registerComponent(
-  function MSProductsList({ className, collection, products, ...props }: MSProductsListProps) {
+  function MSProductsCarousel({
+    className,
+    collection,
+    products,
+    ...props
+  }: MSProductsCarouselProps) {
     const format = useFormatter();
 
     const productIds = products.map(({ entityId }) => entityId ?? '');
 
     const { data, isLoading } = useSWR([collection, productIds], async () => {
-      const apiProducts =
+      const apiResults =
         collection !== 'none'
           ? await fetcher(`/api/products/group/${collection}`)
           : { products: [] };
@@ -75,7 +75,7 @@ runtime.registerComponent(
 
       const additionalProducts = await fetcher(`/api/products/ids?${searchParams.toString()}`);
 
-      return [...apiProducts.products, ...additionalProducts.products];
+      return [...apiResults.products, ...additionalProducts.products];
     });
 
     if (isLoading)
@@ -141,7 +141,7 @@ runtime.registerComponent(
             href: path,
             image: defaultImage ? { src: defaultImage.url, alt: defaultImage.altText } : undefined,
             subtitle: removeEdgesAndNodes(categories)
-              .map(({ name }) => name)
+              .map((category) => category.name)
               .join(', '),
             price: pricesTransformer(prices, format),
           };
@@ -150,16 +150,14 @@ runtime.registerComponent(
 
     const allProducts = [...apiProducts, ...listedProducts];
 
-    return <ProductsList {...props} className={className} products={allProducts} />;
+    return <ProductsCarousel {...props} className={className} products={allProducts} />;
   },
   {
-    type: 'primitive-products-list',
-    label: 'Primitives / Products List',
-    icon: 'gallery',
+    type: 'primitive-products-carousel',
+    label: 'Primitives / Products Carousel',
+    icon: 'carousel',
     props: {
       className: Style(),
-      showCompare: Checkbox({ label: 'Show compare', defaultValue: false }),
-      compareLabel: TextInput({ label: 'Compare label', defaultValue: 'Compare' }),
       collection: Select({
         label: 'Product collection',
         options: [
@@ -171,7 +169,7 @@ runtime.registerComponent(
         defaultValue: 'bestSelling',
       }),
       products: List({
-        label: 'Additional products',
+        label: 'Products',
         type: Shape({
           type: {
             entityId: Combobox({
@@ -211,7 +209,7 @@ runtime.registerComponent(
           },
         }),
         getItemLabel(product) {
-          return product?.title || 'Product Title';
+          return product?.title || 'Product';
         },
       }),
     },
