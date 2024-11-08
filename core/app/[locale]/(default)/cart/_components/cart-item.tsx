@@ -167,23 +167,23 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
   const format = useFormatter();
   let oldPrice = product?.originalPrice?.value;
   let salePrice = product?.extendedSalePrice?.value;
-  let discountedPrice: number = Number((Number(100 - (salePrice * 100) / oldPrice))?.toFixed(2));
+  let discountedPrice: number = Number(Number(100 - (salePrice * 100) / oldPrice)?.toFixed(2));
   let discountPriceText: string = '';
-  if(discountedPrice > 0) {
-    discountPriceText = discountedPrice?.toPrecision(4)+'% Off';
+  if (discountedPrice > 0) {
+    discountPriceText = discountedPrice?.toPrecision(4) + '% Off';
   }
   return (
-    <li>
-      <div className="mb-5 flex flex-col gap-4 border border-gray-200 p-4 py-4 md:flex-row">
+    <li className="border border-gray-200">
+      <div className="mb-5 flex flex-col gap-4 p-4 py-4 md:flex-row">
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 md:flex-row">
-          <div className="mx-auto w-full flex-none border border-gray-300 md:mx-0 md:w-[144px] cart-main-img">
+          <div className="cart-main-img mx-auto w-full flex-none border border-gray-300 md:mx-0 md:w-[144px]">
             {product.image?.url ? (
               <BcImage
                 alt={product.name}
                 height={144}
                 src={product.image.url}
                 width={144}
-                className="h-full w-full object-contain min-h-[9em]" // Added class to fill space
+                className="h-full min-h-[9em] w-full object-contain" // Added class to fill space
               />
             ) : (
               <div className="min-h-[300px] min-w-[300px] bg-gray-200" />
@@ -191,7 +191,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
           </div>
 
           <div className="flex-1">
-            <p className="text-base text-gray-500 hidden">{product.brand}</p>
+            <p className="hidden text-base text-gray-500">{product.brand}</p>
             <div className="flex flex-col gap-2 md:flex-row">
               <div className="flex flex-1 flex-col gap-2">
                 <Link href={product.url}>
@@ -201,7 +201,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
                 </Link>
                 {changeTheProtectedPosition?.length == 0 && (
                   <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 sm:min-w-[300px]">
-                    <div className="flex flex-wrap gap-2 cart-options">
+                    <div className="cart-options flex flex-wrap gap-2">
                       <p className="text-left text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
                         SKU: {product.sku}
                       </p>
@@ -210,7 +210,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
                 )}
                 {changeTheProtectedPosition?.length > 0 && (
                   <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 sm:min-w-[300px]">
-                    <div className="flex flex-wrap gap-2 cart-options">
+                    <div className="cart-options flex flex-wrap gap-2">
                       <p className="text-left text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
                         SKU: {product.sku}
                         {changeTheProtectedPosition.length > 0 && (
@@ -319,30 +319,34 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
                 <div className="block md:hidden">
                   {/* Dollar amount row */}
                   {product.originalPrice.value &&
-                    product.originalPrice.value !== product.listPrice.value ? (
-                      <p className="mb-1 text-lg font-bold line-through">
-                        {format.number(product.originalPrice.value * product.quantity, {
-                          style: 'currency',
-                          currency: currencyCode,
-                        })}
-                      </p>
-                    ) : null}
-                    {discountPriceText}
-                    <p className="pb-2 mt-2 text-right text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#353535]">
-                      {format.number(product.extendedSalePrice.value, {
+                  product.originalPrice.value !== product.listPrice.value ? (
+                    <p className="mb-1 text-lg font-bold line-through">
+                      {format.number(product.originalPrice.value * product.quantity, {
                         style: 'currency',
                         currency: currencyCode,
                       })}
                     </p>
+                  ) : null}
+                  {discountPriceText}
+                  <p className="mt-2 pb-2 text-right text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#353535]">
+                    {format.number(product.extendedSalePrice.value, {
+                      style: 'currency',
+                      currency: currencyCode,
+                    })}
+                  </p>
                   {/* Item quantity and remove button in separate columns */}
-                  <div className="flex items-center justify-between delete-icon-top-position">
+                  <div className="delete-icon-top-position flex items-center justify-between">
                     {/* Item quantity aligned left */}
                     <div className="text-left">
                       <ItemQuantity product={product} />
                     </div>
                     {/* Remove button aligned right */}
                     <div className="text-right">
-                      <RemoveItem currency={currencyCode} product={product} deleteIcon={deleteIcon} />
+                      <RemoveItem
+                        currency={currencyCode}
+                        product={product}
+                        deleteIcon={deleteIcon}
+                      />
                     </div>
                   </div>
                 </div>
@@ -360,7 +364,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
                       </p>
                     ) : null}
                     {discountPriceText}
-                    <p className="pb-2 mt-2 text-right text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#353535]">
+                    <p className="mt-2 pb-2 text-right text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#353535]">
                       {format.number(product.extendedSalePrice.value, {
                         style: 'currency',
                         currency: currencyCode,
@@ -373,32 +377,45 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
             </div>
           </div>
         </div>
-        {product?.accessories && product?.accessories?.map((item: any, index: number) => (
-          <div className="mb-5 flex gap-4 p-4 py-4 md:flex-row" key={`${index}-${item?.entityId}`}>
-            {item.name}
-            <div className="cart-deleteIcon hidden flex-col gap-2 md:flex md:items-end">
-              <RemoveItem currency={currencyCode} product={item} deleteIcon={deleteIcon} />
-              <div>
-                {item.originalPrice.value &&
-                item.originalPrice.value !== item.listPrice.value ? (
-                  <p className="mb-1 text-lg font-bold line-through">
-                    {format.number(item.originalPrice.value * item.quantity, {
-                      style: 'currency',
-                      currency: currencyCode,
-                    })}
-                  </p>
-                ) : null}
-                <p className="pb-2 mt-2 text-right text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#353535]">
-                  {format.number(item.extendedSalePrice.value, {
-                    style: 'currency',
-                    currency: currencyCode,
-                  })}
-                </p>
+      </div>
+      <div>
+        {product?.accessories &&
+          product?.accessories?.map((item: any, index: number) => (
+            <div
+              className="m-5 flex gap-4 bg-[#F3F4F5] p-[15px_20px] cart-accessories"
+              key={`${index}-${item?.entityId}`}
+            >
+              <div className='w-full'>
+                <div>
+                  <img src="" alt="" />
+                  <div>
+                    <div>{item.name}</div>
+                    <div>
+                      {item.originalPrice.value &&
+                      item.originalPrice.value !== item.listPrice.value ? (
+                        <p className="mb-1 text-lg font-bold line-through">
+                          {format.number(item.originalPrice.value * item.quantity, {
+                            style: 'currency',
+                            currency: currencyCode,
+                          })}
+                        </p>
+                      ) : null}
+                      <p className="mt-2 pb-2 text-right text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#353535]">
+                        {format.number(item.extendedSalePrice.value, {
+                          style: 'currency',
+                          currency: currencyCode,
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="cart-deleteIcon hidden md:flex flex-row justify-end items-center p-0 gap-[20px]">
+                  <div>QTY: {item.prodQuantity}</div>
+                  <RemoveItem currency={currencyCode} product={item} deleteIcon={deleteIcon} />
+                </div>
               </div>
             </div>
-            <div>QTY: {item.prodQuantity}</div>
-          </div>
-        ))}
+          ))}
       </div>
     </li>
   );
