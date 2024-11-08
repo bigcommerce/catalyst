@@ -174,7 +174,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
   }
   return (
     <li className="border border-gray-200 mb-[24px]">
-      <div className="mb-5 flex flex-col gap-4 p-4 py-4 md:flex-row">
+      <div className="flex flex-col gap-4 p-4 py-4 md:flex-row">
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 md:flex-row">
           <div className="cart-main-img mx-auto w-full flex-none border border-gray-300 md:mx-0 md:w-[144px]">
             {product.image?.url ? (
@@ -373,7 +373,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
                     />
                     <div className="flex flex-col items-start p-0">
                       <div>{item.name}</div>
-                      <div className="flex items-center gap-[10px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
+                      <div className="flex items-center gap-[0px_10px] flex-wrap text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
                         {item.originalPrice.value &&
                         item.originalPrice.value !== item.listPrice.value ? (
                           <p className="flex items-center tracking-[0.25px] line-through">

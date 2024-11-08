@@ -1125,7 +1125,7 @@ footer.\32 xl\:container.\32 xl\:mx-auto {
   .cart-deleteIcon .cart-add-to-cart{
     order: 1;
     position: absolute;
-    bottom: 0;
+    bottom: -18px;
   }  
 }
 
