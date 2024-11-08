@@ -26,7 +26,10 @@ export function Sorting({ label = 'Sort', options, paramName }: Props) {
 }
 
 function SortingInner({ label = 'Sort', options, paramName = 'sort', defaultValue = '' }: Props) {
-  const [param, setParam] = useQueryState(paramName, parseAsString.withDefault(defaultValue));
+  const [param, setParam] = useQueryState(
+    paramName,
+    parseAsString.withDefault(defaultValue).withOptions({ shallow: false }),
+  );
   const resolved = options instanceof Promise ? use(options) : options;
 
   return (
