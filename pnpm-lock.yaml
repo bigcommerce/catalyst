@@ -39,8 +39,8 @@ importers:
         specifier: ^10.0.0
         version: 10.0.0(react@18.3.1)
       '@makeswift/runtime':
-        specifier: 0.0.0-snapshot-20241101205520
-        version: 0.0.0-snapshot-20241101205520(@types/react-dom@18.3.1)(@types/react@18.3.12)(next@14.2.15(@playwright/test@1.48.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 0.0.0-snapshot-20241108092605
+        version: 0.0.0-snapshot-20241108092605(@types/react-dom@18.3.1)(@types/react@18.3.12)(next@14.2.15(@playwright/test@1.48.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-accordion':
         specifier: ^1.2.1
         version: 1.2.1(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1351,8 +1351,8 @@ packages:
   '@makeswift/prop-controllers@0.3.5':
     resolution: {integrity: sha512-v4EV0J4Kh8vboUu8hJM/Ctg7T+LqRzyQn2Vtzzx/A9HOAA5rnTy1sqyOEOBkJ2tW9r+oJS3soDl7Yq4Aea/xkQ==}
 
-  '@makeswift/runtime@0.0.0-snapshot-20241101205520':
-    resolution: {integrity: sha512-gDDknFfs5NaLdYYZ7Ez3m9E8G/qofMs92HWFNo2/M4y3REsQBGp7Qxgynke6OTrL2tBcna738zagOiFGSFWcVg==}
+  '@makeswift/runtime@0.0.0-snapshot-20241108092605':
+    resolution: {integrity: sha512-WwQbYnKfGjgIcmzEDDKNRftJQcCuCrNV2je8L8IIhqHWHS9eU4q9mRX1KxtfSBr2O90ppNx1WgLO+efzQEfEmQ==}
     peerDependencies:
       '@types/react': ^18.0.0
       '@types/react-dom': ^18.0.0
@@ -7279,7 +7279,7 @@ snapshots:
       ts-pattern: 5.3.1
       zod: 3.23.8
 
-  '@makeswift/runtime@0.0.0-snapshot-20241101205520(@types/react-dom@18.3.1)(@types/react@18.3.12)(next@14.2.15(@playwright/test@1.48.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@makeswift/runtime@0.0.0-snapshot-20241108092605(@types/react-dom@18.3.1)(@types/react@18.3.12)(next@14.2.15(@playwright/test@1.48.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@emotion/cache': 11.13.1
       '@emotion/css': 11.13.0
@@ -9905,13 +9905,13 @@ snapshots:
       react: 18.3.1
       react-fast-compare: 2.0.4
       tiny-warning: 1.0.3
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   fraction.js@4.3.7: {}
 
   framer-motion@10.18.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
     optionalDependencies:
       '@emotion/is-prop-valid': 0.8.8
       react: 18.3.1
@@ -12131,8 +12131,7 @@ snapshots:
 
   tslib@2.6.3: {}
 
-  tslib@2.8.1:
-    optional: true
+  tslib@2.8.1: {}
 
   tsup@8.3.0(@swc/core@1.7.39(@swc/helpers@0.5.13))(jiti@2.4.0)(postcss@8.4.47)(typescript@5.6.3)(yaml@2.6.0):
     dependencies:

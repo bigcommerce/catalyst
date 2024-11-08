@@ -21,7 +21,7 @@ export const Header = async ({
 
   return (
     <PropsContextProvider value={props}>
-      <MakeswiftComponent name={label} snapshot={snapshot} type={COMPONENT_TYPE} />
+      <MakeswiftComponent label={label} snapshot={snapshot} type={COMPONENT_TYPE} />
     </PropsContextProvider>
   );
 };

@@ -5,11 +5,11 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { Suspense } from 'react';
 
 import { IconBlock } from '@/vibes/soul/sections/icon-block';
-import { AccordionItem, ProductDescription } from '@/vibes/soul/sections/product-description';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { LocaleType } from '~/i18n/routing';
+import { AccordionItem, ProductDescription } from '~/makeswift/components/product-description';
 
 import { addToCart } from './_actions/add-to-cart';
 import { ProductSchema } from './_components/product-schema';
@@ -332,6 +332,7 @@ export default async function Product({ params: { locale, slug }, searchParams }
           src: product.defaultImage?.url ?? '',
           alt: product.defaultImage?.altText ?? '',
         }}
+        product={formattedProduct}
       />
 
       <ProductSchema product={product} />
