@@ -387,7 +387,13 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
             >
               <div className='w-full'>
                 <div className='flex flex-row items-center p-0 g-[17px]'>
-                  <img src="" alt="Accessories Image" width={75} height={75} className='w-[75px] h-[75px]' />
+                  <BcImage 
+                    alt={item.name}
+                    height={75}
+                    src={item?.image?.url}
+                    width={75}
+                    className='w-[75px] h-[75px]'
+                  />
                   <div className='flex flex-col items-start p-0'>
                     <div>{item.name}</div>
                     <div>
