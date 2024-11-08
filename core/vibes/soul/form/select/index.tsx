@@ -55,7 +55,7 @@ export function Select({
           </SelectPrimitive.Icon>
         </SelectPrimitive.Trigger>
         <SelectPrimitive.Portal>
-          <SelectPrimitive.Content className="max-h-80 w-full overflow-y-scroll rounded-xl bg-background p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:rounded-3xl @4xl:p-4">
+          <SelectPrimitive.Content className="z-50 max-h-80 w-full overflow-y-scroll rounded-xl bg-background p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:rounded-3xl @4xl:p-4">
             <SelectPrimitive.ScrollUpButton className="flex w-full cursor-default items-center justify-center py-3">
               <ChevronUp className="w-5 text-foreground" strokeWidth={1.5} />
             </SelectPrimitive.ScrollUpButton>
