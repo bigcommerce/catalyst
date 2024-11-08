@@ -1,11 +1,8 @@
-// Login page
-
 'use client';
 
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, useState, useEffect } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
-import { Eye, EyeOff } from 'lucide-react';
 
 import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
@@ -26,8 +23,9 @@ import { Message } from '~/components/ui/message';
 import { useAccountStatusContext } from '../../../account/(tabs)/_components/account-status-provider';
 import { login, getRememberMeCookie, deleteRememberCookie } from '../_actions/login';
 import { IconProps } from '../../fragments';
+import { cn } from '~/lib/utils';
 
-// Custom PasswordInput component with larger black icon
+// Simplified PasswordInput component without eye icon
 const PasswordInput = ({
   error,
   onChange,
@@ -39,28 +37,22 @@ const PasswordInput = ({
   onInvalid: (e: ChangeEvent<HTMLInputElement>) => void;
   required: boolean;
 }) => {
-  const [showPassword, setShowPassword] = useState(false);
-
   return (
     <div className="login-input relative !mt-[0px] h-[44px] w-full">
       <input
-        className={`h-full w-full border-none bg-transparent pl-3 outline-none ${error ? 'border-error' : ''}`}
+        className={cn(
+          'peer w-full border-2 border-gray-200 px-4 py-2.5 text-base placeholder:text-gray-500 hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200',
+          error &&
+            'border-error-secondary pe-12 hover:border-error focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 disabled:border-gray-200',
+        )}
         id="password"
         name="password"
-        type={showPassword ? 'text' : 'password'}
+        type="password"
         onChange={onChange}
         onInvalid={onInvalid}
         required={required}
         placeholder="Enter your password"
       />
-      <button
-        type="button"
-        onClick={() => setShowPassword(!showPassword)}
-        className="absolute right-3 top-1/2 flex h-6 w-6 -translate-y-1/2 cursor-pointer items-center justify-center text-black hover:text-gray-800"
-        tabIndex={-1}
-      >
-        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-      </button>
     </div>
   );
 };
@@ -203,11 +195,15 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
             {t('Form.passwordLabel')}
           </FieldLabel>
           <FieldControl asChild className="login-form-div mt-0">
-            <PasswordInput
+            <Input
+              className="login-input !mt-[0px] h-[44px] w-full"
               error={!isPasswordValid}
+              id="password"
               onChange={handleInputValidation}
               onInvalid={handleInputValidation}
               required
+              type="password"
+              placeholder="Enter your password"
             />
           </FieldControl>
           <FieldMessage
