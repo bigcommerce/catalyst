@@ -1,6 +1,5 @@
-import { useTranslations } from 'next-intl';
-import { setRequestLocale } from 'next-intl/server';
-import { PropsWithChildren, use } from 'react';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { PropsWithChildren } from 'react';
 
 import { LocaleType } from '~/i18n/routing';
 
@@ -10,12 +9,12 @@ interface Props extends PropsWithChildren {
   params: Promise<{ locale: LocaleType; tab?: TabType }>;
 }
 
-export default function AccountTabLayout({ children, params }: Props) {
-  const { locale } = use(params);
+export default async function AccountTabLayout({ children, params }: Props) {
+  const { locale } = await params;
 
   setRequestLocale(locale);
 
-  const t = useTranslations('Account.Home');
+  const t = await getTranslations('Account.Home');
 
   return (
     <>

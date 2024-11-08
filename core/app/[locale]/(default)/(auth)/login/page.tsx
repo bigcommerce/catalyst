@@ -1,6 +1,4 @@
-import { useTranslations } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { use } from 'react';
 
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
@@ -8,7 +6,11 @@ import { locales, LocaleType } from '~/i18n/routing';
 
 import { LoginForm } from './_components/login-form';
 
-export async function generateMetadata() {
+export async function generateMetadata({ params }: Props) {
+  const { locale } = await params;
+
+  setRequestLocale(locale);
+
   const t = await getTranslations('Login');
 
   return {
@@ -20,12 +22,12 @@ interface Props {
   params: Promise<{ locale: LocaleType }>;
 }
 
-export default function Login({ params }: Props) {
-  const { locale } = use(params);
+export default async function Login({ params }: Props) {
+  const { locale } = await params;
 
   setRequestLocale(locale);
 
-  const t = useTranslations('Login');
+  const t = await getTranslations('Login');
 
   return (
     <div className="mx-auto my-6 max-w-4xl">
