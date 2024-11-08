@@ -1,12 +1,12 @@
 'use client';
 
-import { Link } from '~/components/link';
-import { useSearchParams } from 'next/navigation';
-import { Suspense, use } from 'react';
-
 import clsx from 'clsx';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { createSerializer, parseAsString } from 'nuqs';
+import { Suspense, use } from 'react';
+
+import { Link } from '~/components/link';
 
 export type CursorPaginationInfo = {
   startCursorParamName?: string;
@@ -43,7 +43,12 @@ function CursorPaginationResolved({ info }: Props) {
   return (
     <div className="flex w-full items-center justify-center gap-3 py-10">
       {startCursor != null ? (
-        <PaginationLink href={serialize(searchParams, { [startCursorParamName]: startCursor })}>
+        <PaginationLink
+          href={serialize(searchParams, {
+            [startCursorParamName]: startCursor,
+            [endCursorParamName]: null,
+          })}
+        >
           <ArrowLeft size={24} strokeWidth={1} />
         </PaginationLink>
       ) : (
@@ -52,7 +57,12 @@ function CursorPaginationResolved({ info }: Props) {
         </SkeletonLink>
       )}
       {endCursor != null ? (
-        <PaginationLink href={serialize(searchParams, { [endCursorParamName]: endCursor })}>
+        <PaginationLink
+          href={serialize(searchParams, {
+            [endCursorParamName]: endCursor,
+            [startCursorParamName]: null,
+          })}
+        >
           <ArrowRight size={24} strokeWidth={1} />
         </PaginationLink>
       ) : (
@@ -67,10 +77,10 @@ function CursorPaginationResolved({ info }: Props) {
 function PaginationLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <Link
-      href={href}
       className={clsx(
         'flex h-12 w-12 items-center justify-center rounded-full border border-contrast-100 text-foreground ring-primary transition-colors duration-300 hover:border-contrast-200 hover:bg-contrast-100 focus-visible:outline-0 focus-visible:ring-2',
       )}
+      href={href}
     >
       {children}
     </Link>
