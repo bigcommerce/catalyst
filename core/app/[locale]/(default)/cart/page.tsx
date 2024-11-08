@@ -124,6 +124,8 @@ export default async function Cart() {
         updatedLineItemInfo.push(item);
       }
     });
+  } else {
+    updatedLineItemInfo = lineItems;
   }
 
   const breadcrumbs: any = [{
