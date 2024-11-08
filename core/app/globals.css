@@ -266,6 +266,10 @@ button#remember-me {
   height: 18px;
 }
 
+.cart-accessories .cart-deleteIcon button img{
+  margin-top: 0px !important;
+}
+
 .cart-add-to-cart {
   border-width: 1px !important;
 }
