@@ -173,7 +173,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
     discountPriceText = discountedPrice?.toPrecision(4) + '% Off';
   }
   return (
-    <li className="border border-gray-200">
+    <li className="border border-gray-200 mb-[24px]">
       <div className="mb-5 flex flex-col gap-4 p-4 py-4 md:flex-row">
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 md:flex-row">
           <div className="cart-main-img mx-auto w-full flex-none border border-gray-300 md:mx-0 md:w-[144px]">
@@ -315,22 +315,25 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
                 )}
               </div>
               <div className="flex flex-col gap-2 md:items-end">
-
                 {/* Desktop layout (unchanged) */}
-                <div className="cart-deleteIcon flex-col gap-2 flex md:items-end">
+                <div className="cart-deleteIcon flex flex-col gap-0 md:gap-2 text-right md:items-end relative">
                   <RemoveItem currency={currencyCode} product={product} deleteIcon={deleteIcon} />
-                  <div>
-                    {product.originalPrice.value &&
+                  <div className='mb-[20px] md:mb-0'>
+                    <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
+                      {product.originalPrice.value &&
                       product.originalPrice.value !== product.listPrice.value ? (
-                      <p className="mb-1 text-lg font-bold line-through">
-                        {format.number(product.originalPrice.value * product.quantity, {
-                          style: 'currency',
-                          currency: currencyCode,
-                        })}
+                        <p className="line-through">
+                          {format.number(product.originalPrice.value * product.quantity, {
+                            style: 'currency',
+                            currency: currencyCode,
+                          })}
+                        </p>
+                      ) : null}
+                      <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
+                        {discountPriceText}
                       </p>
-                    ) : null}
-                    {discountPriceText}
-                    <p className="mt-2 pb-2 text-right text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#353535]">
+                    </div>
+                    <p className="text-left md:text-right">
                       {format.number(product.extendedSalePrice.value, {
                         style: 'currency',
                         currency: currencyCode,
@@ -349,54 +352,58 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
           product?.accessories?.map((item: any, index: number) => {
             let oldPriceAccess = item?.originalPrice?.value;
             let salePriceAccess = item?.extendedSalePrice?.value;
-            let discountedPrice: number = Number(Number(100 - (salePriceAccess * 100) / oldPriceAccess)?.toFixed(2));
+            let discountedPrice: number = Number(
+              Number(100 - (salePriceAccess * 100) / oldPriceAccess)?.toFixed(2),
+            );
             let discountPriceText: string = '';
             if (discountedPrice > 0) {
               discountPriceText = discountedPrice?.toPrecision(4) + '% Off';
             }
             return (
               <div
-                className="m-5 flex gap-4 bg-[#F3F4F5] p-[15px_20px] cart-accessories"
+                className="cart-accessories m-5 flex gap-4 bg-[#F3F4F5] p-[15px_20px]"
                 key={`${index}-${item?.entityId}`}
               >
-                <div className='w-full flex flex-col md:flex-row items-center'>
-                  <div className='flex flex-row items-center p-0 g-[17px] flex-shrink-[100] w-full md:w-[90%] '>
+                <div className="flex w-full flex-col items-center md:flex-row">
+                  <div className="g-[17px] flex w-full flex-shrink-[100] flex-row items-center p-0 md:w-[90%]">
                     <BcImage
                       alt={item.name}
                       height={75}
                       src={item?.image?.url}
                       width={75}
-                      className='w-[75px] h-[75px] mr-[20px]'
+                      className="mr-[20px] h-[75px] w-[75px]"
                     />
-                    <div className='flex flex-col items-start p-0'>
+                    <div className="flex flex-col items-start p-0">
                       <div>{item.name}</div>
-                      <div className='flex items-center gap-[20px]'>
+                      <div className="flex items-center gap-[10px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
                         {item.originalPrice.value &&
-                          item.originalPrice.value !== item.listPrice.value ? (
-                          <p className="font-normal text-[14px] leading-[24px] flex items-center tracking-[0.25px] line-through text-[#353535]">
+                        item.originalPrice.value !== item.listPrice.value ? (
+                          <p className="flex items-center tracking-[0.25px] line-through">
                             {format.number(item.originalPrice.value * item.quantity, {
                               style: 'currency',
                               currency: currencyCode,
                             })}
                           </p>
                         ) : null}
-                        {discountPriceText}
-                        <p className="text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#353535]">
+                        <p className="text-[#353535]">
                           {format.number(item.extendedSalePrice.value, {
                             style: 'currency',
                             currency: currencyCode,
                           })}
                         </p>
+                        <p>{discountPriceText}</p>
                       </div>
                     </div>
                   </div>
-                  <div className="cart-deleteIcon flex flex-row items-center p-0 gap-[20px] md:justify-start justify-between w-full md:w-auto mt-[5px] md:mt-0">
-                    <div className='font-normal text-[12px] leading-[18px] flex items-center text-right tracking-[0.4px] text-[#353535]'>QTY: {item.prodQuantity}</div>
+                  <div className="cart-deleteIcon mt-[5px] flex w-full flex-row items-center justify-between gap-[20px] p-0 md:mt-0 md:w-auto md:justify-start">
+                    <div className="flex items-center text-right text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#353535]">
+                      QTY: {item.prodQuantity}
+                    </div>
                     <RemoveItem currency={currencyCode} product={item} deleteIcon={deleteIcon} />
                   </div>
                 </div>
               </div>
-            )
+            );
           })}
       </div>
     </li>

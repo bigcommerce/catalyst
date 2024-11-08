@@ -1115,3 +1115,18 @@ footer.\32 xl\:container.\32 xl\:mx-auto {
 .popup-container-parent .popup-box1 {
   pointer-events: all !important;
 }
+
+@media screen and (max-width: 768px) {
+  .cart-deleteIcon form{
+    order: 1;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .cart-deleteIcon .cart-add-to-cart{
+    order: 1;
+    position: absolute;
+    bottom: 0;
+  }  
+}
+
+
