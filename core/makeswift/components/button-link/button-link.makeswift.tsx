@@ -24,7 +24,7 @@ runtime.registerComponent(
     props: {
       className: Style({ properties: [Style.Margin] }),
       link: Link({ label: 'Link' }),
-      text: TextInput({ label: 'Button Text', defaultValue: 'Button Text' }),
+      text: TextInput({ label: 'Button text', defaultValue: 'Button text' }),
       variant: Select({
         label: 'Variant',
         options: [
