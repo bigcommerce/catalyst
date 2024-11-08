@@ -1,8 +1,7 @@
 import { Select, Slot, Style } from '@makeswift/runtime/controls';
 
+import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
 import { runtime } from '~/lib/makeswift/runtime';
-
-import { StickySidebarLayout } from '.';
 
 runtime.registerComponent(StickySidebarLayout, {
   type: 'sticky-sidebar-layout',

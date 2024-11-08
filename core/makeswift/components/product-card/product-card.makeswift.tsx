@@ -3,10 +3,9 @@ import useSWR from 'swr';
 
 import { GetProductResponse } from '~/app/api/products/[entityId]/route';
 import { SearchProductsResponse } from '~/app/api/products/route';
-import { ProductCard, ProductCardSkeleton } from '~/vibes/soul/primitives/product-card';
-
 import { runtime } from '~/lib/makeswift/runtime';
 import { useBcProductToVibesProduct } from '~/makeswift/utils/use-bc-product-to-vibes-product/use-bc-product-to-vibes-product';
+import { ProductCard, ProductCardSkeleton } from '~/vibes/soul/primitives/product-card';
 
 interface Props {
   entityId?: string;
