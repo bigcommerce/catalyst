@@ -64,6 +64,6 @@ runtime.registerComponent(MakeswiftProductCard, {
         }));
       },
     }),
-    showCompare: Checkbox({ label: 'Show Compare', defaultValue: false }),
+    showCompare: Checkbox({ label: 'Show compare', defaultValue: false }),
   },
 });
