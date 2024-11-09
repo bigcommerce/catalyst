@@ -6,7 +6,7 @@ import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Popover from '@radix-ui/react-popover';
 import { clsx } from 'clsx';
 import debounce from 'lodash.debounce';
-import { ArrowRight, ChevronDown, Search, SearchIcon, ShoppingBag, User } from 'lucide-react';
+import { ArrowRight, ChevronDown, Search, SearchIcon, User } from 'lucide-react';
 import React, {
   forwardRef,
   Ref,
@@ -93,6 +93,8 @@ type Props<S extends SearchResult> = {
   searchInputPlaceholder?: string;
   emptySearchTitle?: string;
   emptySearchSubtitle?: string;
+  // TODO: Temporary cart prop
+  cart?: React.ReactNode;
 };
 
 const HamburgerMenuButton = forwardRef<
@@ -158,8 +160,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
   {
     className,
     isFloating,
-    cartHref,
-    cartCount,
+    // cartHref,
+    // cartCount,
     accountHref,
     links,
     logo,
@@ -174,6 +176,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     searchInputPlaceholder,
     emptySearchTitle,
     emptySearchSubtitle,
+    cart,
   }: Props<S>,
   ref: Ref<HTMLDivElement>,
 ) {
@@ -381,7 +384,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           >
             <User size={20} strokeWidth={1} />
           </Link>
-          <Link
+          {/* <Link
             aria-label="Cart"
             className="relative rounded-lg p-1.5 ring-primary focus-visible:outline-0 focus-visible:ring-2 @4xl:hover:bg-contrast-100"
             href={cartHref}
@@ -392,7 +395,9 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 {cartCount}
               </span>
             )}
-          </Link>
+          </Link> */}
+          {/* TODO: Remove custom Cart component when PPR is enabled */}
+          {cart}
 
           {/* Locale / Language Dropdown */}
           {locales && locales.length > 1 && localeAction ? (
