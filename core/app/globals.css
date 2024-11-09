@@ -1128,8 +1128,3 @@ footer.\32 xl\:container.\32 xl\:mx-auto {
     bottom: -18px;
   }  
 }
-
-.register-form :first-child :first-child .error-msg span {
-  position: relative;
-  top: -12px;
-}
