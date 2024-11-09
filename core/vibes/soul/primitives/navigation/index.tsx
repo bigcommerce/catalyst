@@ -298,42 +298,44 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                   {item.label}
                 </Link>
               </NavigationMenu.Trigger>
-              <NavigationMenu.Content className="max-h-96 overflow-y-auto rounded-2xl bg-background shadow-xl shadow-foreground/5 ring-1 ring-foreground/5">
-                <div className="grid w-full grid-cols-4 divide-x divide-contrast-100">
-                  {item.groups?.map((group, columnIndex) => (
-                    <ul className="flex flex-col gap-1 p-5" key={columnIndex}>
-                      {/* Second Level Links */}
-                      {group.label != null && group.label !== '' && (
-                        <li>
-                          {group.href != null && group.href !== '' ? (
+              {item.groups != null && item.groups.length > 0 && (
+                <NavigationMenu.Content className="max-h-96 overflow-y-auto rounded-2xl bg-background shadow-xl shadow-foreground/5 ring-1 ring-foreground/5">
+                  <div className="grid w-full grid-cols-4 divide-x divide-contrast-100">
+                    {item.groups.map((group, columnIndex) => (
+                      <ul className="flex flex-col gap-1 p-5" key={columnIndex}>
+                        {/* Second Level Links */}
+                        {group.label != null && group.label !== '' && (
+                          <li>
+                            {group.href != null && group.href !== '' ? (
+                              <Link
+                                className="block rounded-lg px-3 py-2 font-medium ring-primary transition-colors hover:bg-contrast-100 focus-visible:outline-0 focus-visible:ring-2"
+                                href={group.href}
+                              >
+                                {group.label}
+                              </Link>
+                            ) : (
+                              <span className="block rounded-lg px-3 py-2 font-medium ring-primary transition-colors hover:bg-contrast-100 focus-visible:outline-0 focus-visible:ring-2">
+                                {group.label}
+                              </span>
+                            )}
+                          </li>
+                        )}
+                        {group.links.map((link, idx) => (
+                          // Third Level Links
+                          <li key={idx}>
                             <Link
-                              className="block rounded-lg px-3 py-2 font-medium ring-primary transition-colors hover:bg-contrast-100 focus-visible:outline-0 focus-visible:ring-2"
-                              href={group.href}
+                              className="block rounded-lg px-3 py-2 font-medium text-contrast-500 ring-primary transition-colors hover:bg-contrast-100 hover:text-foreground focus-visible:outline-0 focus-visible:ring-2"
+                              href={link.href}
                             >
-                              {group.label}
+                              {link.label}
                             </Link>
-                          ) : (
-                            <span className="block rounded-lg px-3 py-2 font-medium ring-primary transition-colors hover:bg-contrast-100 focus-visible:outline-0 focus-visible:ring-2">
-                              {group.label}
-                            </span>
-                          )}
-                        </li>
-                      )}
-                      {group.links.map((link, idx) => (
-                        // Third Level Links
-                        <li key={idx}>
-                          <Link
-                            className="block rounded-lg px-3 py-2 font-medium text-contrast-500 ring-primary transition-colors hover:bg-contrast-100 hover:text-foreground focus-visible:outline-0 focus-visible:ring-2"
-                            href={link.href}
-                          >
-                            {link.label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  ))}
-                </div>
-              </NavigationMenu.Content>
+                          </li>
+                        ))}
+                      </ul>
+                    ))}
+                  </div>
+                </NavigationMenu.Content>
+              )}
             </NavigationMenu.Item>
           ))}
         </ul>
