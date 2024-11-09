@@ -162,7 +162,7 @@ export const Header = async () => {
   return (
     <HeaderSection
       navigation={{
-        accountHref: '/account',
+        accountHref: '/login',
         activeLocaleId: locale,
         cartHref: '/cart',
         links,
