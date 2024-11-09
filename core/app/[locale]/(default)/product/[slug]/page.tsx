@@ -7,6 +7,7 @@ import { Suspense } from 'react';
 import { IconBlock } from '@/vibes/soul/sections/icon-block';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
+import { ReviewsSkeleton } from '@/vibes/soul/sections/reviews';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { LocaleType } from '~/i18n/routing';
 import { AccordionItem, ProductDescription } from '~/makeswift/components/product-description';
@@ -144,14 +145,16 @@ export default async function Product({ params: { locale, slug }, searchParams }
     id: product.entityId.toString(),
     title: product.name,
     href: product.path,
-    image: { src: product.defaultImage?.url ?? '', alt: product.defaultImage?.altText ?? '' },
+    image: product.defaultImage && {
+      src: product.defaultImage.url,
+      alt: product.defaultImage.altText,
+    },
     images: removeEdgesAndNodes(product.images).map((image) => ({
       src: image.url,
       alt: image.altText,
     })),
     price: pricesTransformer(product.prices, format),
     subtitle: product.brand?.name,
-    description: product.description,
     rating: product.reviewSummary.averageRating,
   };
 
@@ -362,8 +365,8 @@ export default async function Product({ params: { locale, slug }, searchParams }
         <RelatedProducts productId={product.entityId} />
       </Suspense>
 
-      <Suspense fallback={t('loading')}>
-        <Reviews productId={product.entityId} />
+      <Suspense fallback={<ReviewsSkeleton />}>
+        <Reviews productId={product.entityId} searchParams={searchParams} />
       </Suspense>
 
       <ProductViewed product={product} />
