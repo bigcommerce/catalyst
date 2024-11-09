@@ -50,5 +50,9 @@ export const RelatedProducts = async ({ productId }: Props) => {
 
   const relatedProducts = removeEdgesAndNodes(product.relatedProducts);
 
+  if (!relatedProducts.length) {
+    return null;
+  }
+
   return <FeaturedProductsCarousel products={relatedProducts} title={t('relatedProducts')} />;
 };
