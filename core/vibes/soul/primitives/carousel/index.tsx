@@ -115,7 +115,7 @@ function CarouselContent({ className, ...rest }: React.HTMLAttributes<HTMLDivEle
 
   return (
     <div className="w-full" ref={carouselRef}>
-      <div {...rest} className={clsx('-ml-4 flex', className)} />
+      <div {...rest} className={clsx('-ml-4 flex @2xl:-ml-5', className)} />
     </div>
   );
 }
@@ -125,7 +125,7 @@ function CarouselItem({ className, ...rest }: React.HTMLAttributes<HTMLDivElemen
     <div
       {...rest}
       aria-roledescription="slide"
-      className={clsx('min-w-0 shrink-0 grow-0 pl-4', className)}
+      className={clsx('min-w-0 shrink-0 grow-0 pl-4 @2xl:pl-5', className)}
       role="group"
     />
   );
