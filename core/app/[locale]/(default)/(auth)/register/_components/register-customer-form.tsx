@@ -279,7 +279,7 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
 
         <div className="remember-forgot-div mt-5">
           <Field className="relative mt-2 inline-flex items-center space-y-2" name="remember-me">
-            <Checkbox aria-labelledby="remember-me" id="remember-me" name="remember-me" value="1" />
+            <Checkbox aria-labelledby="remember-me" className='border-[#008bb7]' id="remember-me" name="remember-me" value="1" />
             <div className="mt-0 flex">
               <Label
                 className="ml-2 mt-0 w-[15em] cursor-pointer space-y-2 pb-2 pl-1 text-left text-sm font-normal leading-6 tracking-[0.25px] md:my-0 md:w-auto"

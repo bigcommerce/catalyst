@@ -87,7 +87,7 @@ const Gallery = ({ className, images, defaultImageIndex = 0, bannerIcon , galler
                 <button
                   aria-label="Enlarge product image"
                   aria-pressed={isActive}
-                  className="gallery-thumbnail relative h-12 w-12 flex-shrink-0 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 xl:h-24 xl:w-24"
+                  className="gallery-thumbnail xl:w-[6.4em] xl:h-[6.4em] relative h-12 w-12 flex-shrink-0 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
                   key={image.src}
                   onClick={() => openPopup(index)} 
                 >
@@ -117,7 +117,7 @@ const Gallery = ({ className, images, defaultImageIndex = 0, bannerIcon , galler
             {!viewAll && images.length > 4 && (
               <button
                 aria-label="View all thumbnails"
-                className="gallery-thumbnail relative h-12 w-12 flex-shrink-0 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 xl:h-24 xl:w-24"
+                className="gallery-thumbnail xl:w-[6.4em] xl:h-[6.4em] relative h-12 w-12 flex-shrink-0 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 xl:h-24 xl:w-24"
                 onClick={() => openPopup()} 
               >
                 <BcImage

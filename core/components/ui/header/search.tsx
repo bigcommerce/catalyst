@@ -113,7 +113,7 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
         type="text"
         name="search"
         placeholder="What can we help you find?"
-        className="flex-grow text-base p-2 bg-transparent border-none outline-none" id='placeholder'
+        className="flex-grow text-base p-2 bg-transparent border-none outline-none font-normal text-[#5c5c5c]" id='placeholder'
         style={{ width: '100%', boxSizing: 'border-box' }}
       />
       
