@@ -21,9 +21,11 @@ type Props<F extends Field> = {
   product: ProductDetailProduct;
   action: ProductDetailFormAction<F>;
   fields: F[];
+  ctaLabel: string;
 };
 
-export function ProductDetail<F extends Field>({ product, action, fields }: Props<F>) {
+export function ProductDetail<F extends Field>({ product, action, fields, ctaLabel }: Props<F>) {
+
   return (
     <section className="@container">
       <div className="mx-auto grid w-full max-w-screen-xl grid-cols-1 items-stretch gap-x-8 gap-y-10 px-4 py-10 @xl:px-6 @xl:py-14 @2xl:grid-cols-2 @4xl:px-8 @4xl:py-20 @5xl:gap-x-16">
@@ -53,7 +55,12 @@ export function ProductDetail<F extends Field>({ product, action, fields }: Prop
             <p className="mb-6 text-contrast-500">{product.description}</p>
           )}
 
-          <ProductDetailForm action={action} fields={fields} productId={product.id} />
+          <ProductDetailForm
+            action={action}
+            fields={fields}
+            productId={product.id}
+            ctaLabel={ctaLabel}
+          />
         </div>
       </div>
     </section>
