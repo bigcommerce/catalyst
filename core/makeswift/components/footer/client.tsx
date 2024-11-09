@@ -10,9 +10,9 @@ import {
 } from 'react';
 
 import { Footer } from '@/vibes/soul/sections/footer';
+import { mergeSections } from '~/makeswift/lib/merge-sections';
 
 type Props = ComponentPropsWithoutRef<typeof Footer>;
-type Section = Props['sections'][number];
 
 interface MakeswiftSection {
   title?: string;
@@ -29,19 +29,6 @@ const PropsContext = createContext<Props>({
 export const PropsContextProvider = ({ value, children }: PropsWithChildren<{ value: Props }>) => (
   <PropsContext.Provider value={value}>{children}</PropsContext.Provider>
 );
-
-const mergeSections = (defaultSections: Section[], sections: Section[]): Section[] => {
-  const defaultSectionKeys = new Set(defaultSections.map((section) => section.title));
-  const sectionsMap = new Map(sections.map(({ title, links }) => [title, links]));
-
-  return [
-    ...defaultSections.map((section) => ({
-      ...section,
-      links: [...section.links, ...(sectionsMap.get(section.title ?? '') ?? [])],
-    })),
-    ...sections.filter((section) => !defaultSectionKeys.has(section.title ?? '')),
-  ];
-};
 
 export const MakeswiftFooter = forwardRef(
   (
@@ -65,6 +52,7 @@ export const MakeswiftFooter = forwardRef(
               title,
               links: links.map(({ label, link }) => ({ label, href: link.href })),
             })),
+            (left, right) => ({ ...left, links: [...left.links, ...right.links] }),
           ),
         }}
       />

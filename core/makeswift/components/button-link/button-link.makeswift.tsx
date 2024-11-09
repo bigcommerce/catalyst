@@ -1,8 +1,7 @@
 import { Link, Select, Style, TextInput } from '@makeswift/runtime/controls';
 
+import { ButtonLink, Props } from '@/vibes/soul/primitives/button-link';
 import { runtime } from '~/lib/makeswift/runtime';
-
-import { ButtonLink, Props } from '.';
 
 type MSButtonLinkProps = Omit<Props, 'href'> & {
   link: { href?: string; target?: string };

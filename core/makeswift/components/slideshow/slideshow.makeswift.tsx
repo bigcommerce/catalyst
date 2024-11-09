@@ -1,23 +1,22 @@
 import { Image, Link, List, Number, Shape, Style, TextInput } from '@makeswift/runtime/controls';
 
+import { Slideshow } from '@/vibes/soul/sections/slideshow';
 import { runtime } from '~/lib/makeswift/runtime';
 
-import { Slideshow } from '.';
-
-type Slide = {
+interface Slide {
   title?: string;
   description?: string;
   imageSrc?: string;
   imageAlt?: string;
   link?: { href?: string; target?: string };
   label: string;
-};
+}
 
-type MSAccordionsProps = {
+interface MSAccordionsProps {
   className: string;
   slides: Slide[];
   interval: number;
-};
+}
 
 runtime.registerComponent(
   function MSSlideshow({ className, slides, interval }: MSAccordionsProps) {

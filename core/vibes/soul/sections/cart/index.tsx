@@ -3,7 +3,7 @@
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import clsx from 'clsx';
-import { Minus, Plus, Trash2 } from 'lucide-react';
+import { ArrowRight, Minus, Plus, Trash2 } from 'lucide-react';
 import { startTransition, Suspense, use, useEffect, useOptimistic } from 'react';
 import { useFormState as useActionState } from 'react-dom';
 
@@ -204,6 +204,7 @@ function CartInner<LineItem extends CartLineItem>({
           </table>
           <CheckoutButton action={checkoutAction} className="mt-10 w-full" disabled={isPending}>
             {summary.ctaLabel}
+            <ArrowRight size={20} strokeWidth={1} />
           </CheckoutButton>
         </>
       }

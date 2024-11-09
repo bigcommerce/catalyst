@@ -1,19 +1,18 @@
 import { List, Select, Shape, Slot, Style, TextInput } from '@makeswift/runtime/controls';
 
+import { Accordion, Accordions } from '@/vibes/soul/primitives/accordions';
 import { runtime } from '~/lib/makeswift/runtime';
 
-import { Accordion, Accordions } from '.';
-
-type MSAccordion = {
+interface MSAccordion {
   title: string;
   children: React.ReactNode;
-};
+}
 
-type MSAccordionsProps = {
+interface MSAccordionsProps {
   className: string;
   accordions: MSAccordion[];
   type: 'single' | 'multiple';
-};
+}
 
 runtime.registerComponent(
   function MSAccordions({ className, accordions, type }: MSAccordionsProps) {

@@ -1,8 +1,7 @@
 import { Image, Link, Select, Style, TextInput } from '@makeswift/runtime/controls';
 
+import { Card, CardProps } from '@/vibes/soul/primitives/card';
 import { runtime } from '~/lib/makeswift/runtime';
-
-import { Card, CardProps } from '.';
 
 type MSCardProps = Omit<CardProps, 'href' | 'image'> & {
   link?: { href?: string; target?: string };

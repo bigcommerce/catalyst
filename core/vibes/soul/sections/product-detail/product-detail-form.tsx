@@ -9,7 +9,6 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
-import { ArrowRight } from 'lucide-react';
 import { parseAsString, useQueryState, useQueryStates } from 'nuqs';
 import { useCallback } from 'react';
 import { useFormState as useActionState } from 'react-dom';
@@ -67,7 +66,10 @@ export function ProductDetailForm<F extends Field>({
     }),
     { quantity: 1 },
   );
-  const [{ lastResult }, formAction] = useActionState(action, { fields, lastResult: null });
+  const [{ lastResult }, formAction, isPending] = useActionState(action, {
+    fields,
+    lastResult: null,
+  });
   const [form, formFields] = useForm({
     lastResult,
     constraint: getZodConstraint(schema(fields)),
@@ -109,9 +111,8 @@ export function ProductDetailForm<F extends Field>({
               required
               value={quantityControl.value}
             />
-            <Button className="w-auto @xl:w-56" size="medium" type="submit">
+            <Button className="w-auto @xl:w-56" size="medium" type="submit" loading={isPending}>
               {ctaLabel}
-              <ArrowRight size={20} strokeWidth={1} />
             </Button>
           </div>
         </div>
