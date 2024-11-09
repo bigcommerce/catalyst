@@ -2,7 +2,7 @@ import { clsx } from 'clsx';
 
 import { Badge } from '@/vibes/soul/primitives/badge';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
-import { BcImage } from '~/components/bc-image';
+import { BcImage as Image } from '~/components/bc-image';
 import { Link } from '~/components/link';
 
 import { Compare } from './compare';
@@ -41,9 +41,9 @@ export function ProductCard({
         id={id}
       >
         <div className="relative aspect-[5/6] overflow-hidden rounded-[inherit] bg-contrast-100">
-          {image?.src != null ? (
-            <BcImage
-              alt="Category card image"
+          {image != null ? (
+            <Image
+              alt={image.alt}
               className="w-full scale-100 select-none bg-contrast-100 object-cover transition-transform duration-500 ease-out group-hover:scale-110"
               fill
               sizes="(max-width: 768px) 70vw, 33vw"
