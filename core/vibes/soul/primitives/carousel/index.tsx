@@ -135,7 +135,14 @@ function CarouselButtons({ className, ...rest }: React.HTMLAttributes<HTMLDivEle
   const { scrollPrev, scrollNext, canScrollPrev, canScrollNext } = useCarousel();
 
   return (
-    <div {...rest} className={clsx('flex gap-2 text-foreground', className)}>
+    <div
+      {...rest}
+      className={clsx(
+        'flex gap-2 text-foreground',
+        !canScrollPrev && !canScrollNext && 'hidden',
+        className,
+      )}
+    >
       <button
         className="rounded-lg ring-primary transition-colors duration-300 focus-visible:outline-0 focus-visible:ring-2 disabled:pointer-events-none disabled:text-contrast-300"
         disabled={!canScrollPrev}
@@ -155,7 +162,7 @@ function CarouselButtons({ className, ...rest }: React.HTMLAttributes<HTMLDivEle
 }
 
 function CarouselScrollbar({ className }: React.HTMLAttributes<HTMLDivElement>) {
-  const { api } = useCarousel();
+  const { api, canScrollPrev, canScrollNext } = useCarousel();
   const [progress, setProgress] = useState(0);
   const [scrollbarPosition, setScrollbarPosition] = useState({ width: 0, left: 0 });
 
@@ -211,7 +218,11 @@ function CarouselScrollbar({ className }: React.HTMLAttributes<HTMLDivElement>) 
 
   return (
     <div
-      className={clsx('relative flex h-6 w-full max-w-56 items-center overflow-hidden', className)}
+      className={clsx(
+        'relative flex h-6 w-full max-w-56 items-center overflow-hidden',
+        !canScrollPrev && !canScrollNext && 'hidden',
+        className,
+      )}
     >
       <input
         className="absolute h-full w-full cursor-pointer appearance-none bg-transparent opacity-0"
