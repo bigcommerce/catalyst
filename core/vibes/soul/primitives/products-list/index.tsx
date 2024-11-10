@@ -72,3 +72,27 @@ export function ProductsList({
     </>
   );
 }
+
+export function ProductsListSkeleton({
+  className,
+  message,
+}: {
+  className?: string;
+  message?: string;
+}) {
+  return (
+    <div className={clsx('relative w-full @container', className)}>
+      <div
+        className={clsx(
+          'mx-auto grid grid-cols-1 gap-x-4 gap-y-6 @sm:grid-cols-2 @2xl:grid-cols-3 @2xl:gap-x-5 @2xl:gap-y-8 @5xl:grid-cols-4 @7xl:grid-cols-5',
+          message && message !== '' && '[mask-image:radial-gradient(circle,transparent,black)]',
+        )}
+      >
+        {Array.from({ length: 9 }).map((_, index) => (
+          <ProductCardSkeleton key={index} />
+        ))}
+      </div>
+      <div className="absolute inset-0 flex items-center justify-center text-xl">{message}</div>
+    </div>
+  );
+}

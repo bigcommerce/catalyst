@@ -13,13 +13,11 @@ import {
   Style,
   TextInput,
 } from '@makeswift/runtime/controls';
-import clsx from 'clsx';
 import { useFormatter } from 'next-intl';
 import useSWR from 'swr';
 
-import { CardSkeleton } from '@/vibes/soul/primitives/card';
 import { Price } from '@/vibes/soul/primitives/price-label';
-import { ProductsList } from '@/vibes/soul/primitives/products-list';
+import { ProductsList, ProductsListSkeleton } from '@/vibes/soul/primitives/products-list';
 import { SearchProductsResponse } from '~/app/api/products/route';
 import { GetProductsResponse } from '~/client/queries/get-products';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
@@ -78,17 +76,12 @@ runtime.registerComponent(
       return [...apiResults.products, ...additionalProducts.products];
     });
 
-    if (isLoading)
-      return Array.from({ length: 5 }).map((_, index) => (
-        <div className="basis-full @md:basis-1/2 @lg:basis-1/3 @2xl:basis-1/4" key={index}>
-          <CardSkeleton />
-        </div>
-      ));
+    if (isLoading) {
+      return <ProductsListSkeleton className={className} />;
+    }
 
-    if (products.length < 1 && data && data.length < 1) {
-      return (
-        <div className={clsx(className, 'p-4 text-center text-lg text-gray-400')}>Add products</div>
-      );
+    if (products.length === 0 && data && data.length === 0) {
+      return <ProductsListSkeleton className={className} message="No products found" />;
     }
 
     const listedProducts = products
