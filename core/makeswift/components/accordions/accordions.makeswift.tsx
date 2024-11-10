@@ -17,12 +17,12 @@ interface MSAccordionsProps {
 runtime.registerComponent(
   function MSAccordions({ className, accordions, type }: MSAccordionsProps) {
     return (
-      <Accordions className={className} type={type}>
+      <Accordions className={className} collapsible type={type}>
         {accordions.length < 1 && (
           <div className="p-4 text-center text-lg text-gray-400">Add accordions</div>
         )}
         {accordions.map(({ title, children }, index) => (
-          <Accordion key={index} title={title} value={title}>
+          <Accordion key={index} title={title} value={index.toString()}>
             {children}
           </Accordion>
         ))}
