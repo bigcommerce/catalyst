@@ -3,7 +3,7 @@
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { useEffect } from 'react';
-import { useFormState as useActionState } from 'react-dom';
+import { useFormState, useFormStatus } from 'react-dom';
 
 import { Input } from '@/vibes/soul/form/input';
 import { Button } from '@/vibes/soul/primitives/button';
@@ -27,7 +27,7 @@ export function SignInForm({
   passwordLabel = 'Password',
   submitLabel = 'Sign in',
 }: Props) {
-  const [lastResult, formAction, isPending] = useActionState(action, null);
+  const [lastResult, formAction] = useFormState(action, null);
   const [form, fields] = useForm({
     defaultValue: { email: '', password: '' },
     constraint: getZodConstraint(schema),
@@ -57,9 +57,17 @@ export function SignInForm({
         key={fields.password.id}
         label={passwordLabel}
       />
-      <Button className="mt-auto w-full" loading={isPending} type="submit" variant="secondary">
-        {submitLabel}
-      </Button>
+      <SubmitButton>{submitLabel}</SubmitButton>
     </form>
+  );
+}
+
+function SubmitButton({ children }: { children: React.ReactNode }) {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button className="mt-auto w-full" loading={pending} type="submit" variant="secondary">
+      {children}
+    </Button>
   );
 }

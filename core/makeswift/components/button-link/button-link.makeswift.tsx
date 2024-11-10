@@ -1,3 +1,4 @@
+import { MakeswiftComponentType } from '@makeswift/runtime';
 import { Link, Select, Style, TextInput } from '@makeswift/runtime/controls';
 
 import { ButtonLink, Props } from '@/vibes/soul/primitives/button-link';
@@ -17,8 +18,8 @@ runtime.registerComponent(
     );
   },
   {
-    type: 'primitive-button',
-    label: 'Primitives / Button',
+    type: MakeswiftComponentType.Button,
+    label: 'Button',
     icon: 'button',
     props: {
       className: Style({ properties: [Style.Margin] }),
