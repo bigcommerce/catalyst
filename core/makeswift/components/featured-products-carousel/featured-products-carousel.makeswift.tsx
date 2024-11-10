@@ -1,3 +1,5 @@
+'use client';
+
 import useSWR from 'swr';
 
 import { FeaturedProductsCarousel } from '@/vibes/soul/sections/featured-products-carousel';

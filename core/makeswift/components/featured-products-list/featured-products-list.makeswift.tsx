@@ -1,3 +1,5 @@
+'use client';
+
 import useSWR from 'swr';
 
 import { FeaturedProductsList } from '@/vibes/soul/sections/featured-products-list';
