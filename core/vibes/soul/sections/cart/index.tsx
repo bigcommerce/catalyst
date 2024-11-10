@@ -5,7 +5,7 @@ import { parseWithZod } from '@conform-to/zod';
 import clsx from 'clsx';
 import { ArrowRight, Minus, Plus, Trash2 } from 'lucide-react';
 import { startTransition, Suspense, use, useEffect, useOptimistic } from 'react';
-import { useFormState as useActionState } from 'react-dom';
+import { useFormState, useFormStatus } from 'react-dom';
 
 import { Button } from '@/vibes/soul/primitives/button';
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
@@ -116,7 +116,7 @@ function CartInner<LineItem extends CartLineItem>({
 }: CartProps<LineItem>) {
   const resolvedLineItems = lineItems instanceof Promise ? use(lineItems) : lineItems;
 
-  const [state, formAction, isPending] = useActionState(lineItemAction, {
+  const [state, formAction] = useFormState(lineItemAction, {
     lineItems: resolvedLineItems,
     lastResult: null,
   });
@@ -202,7 +202,7 @@ function CartInner<LineItem extends CartLineItem>({
               </tfoot>
             )}
           </table>
-          <CheckoutButton action={checkoutAction} className="mt-10 w-full" disabled={isPending}>
+          <CheckoutButton action={checkoutAction} className="mt-10 w-full">
             {summary.ctaLabel}
             <ArrowRight size={20} strokeWidth={1} />
           </CheckoutButton>
@@ -357,7 +357,7 @@ function CheckoutButton({
 }: { action: Action<SubmissionResult | null, FormData> } & React.ComponentPropsWithoutRef<
   typeof Button
 >) {
-  const [lastResult, formAction, isPending] = useActionState(action, null);
+  const [lastResult, formAction] = useFormState(action, null);
 
   useEffect(() => {
     if (lastResult?.error) {
@@ -367,9 +367,15 @@ function CheckoutButton({
 
   return (
     <form action={formAction}>
-      <Button {...rest} loading={isPending} type="submit" />
+      <SubmitButton {...rest} />
     </form>
   );
+}
+
+function SubmitButton(props: React.ComponentPropsWithoutRef<typeof Button>) {
+  const { pending } = useFormStatus();
+
+  return <Button {...props} loading={pending} disabled={pending} type="submit" />;
 }
 
 export function CartEmptyState({ title, subtitle, cta }: CartEmptyState) {
