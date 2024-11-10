@@ -1,3 +1,4 @@
+import { MakeswiftComponentType } from '@makeswift/runtime';
 import { Link, Select, Style, TextInput } from '@makeswift/runtime/controls';
 
 import { ButtonLink, Props } from '@/vibes/soul/primitives/button-link';
@@ -17,13 +18,13 @@ runtime.registerComponent(
     );
   },
   {
-    type: 'primitive-button',
-    label: 'Primitives / Button',
+    type: MakeswiftComponentType.Button,
+    label: 'Button',
     icon: 'button',
     props: {
       className: Style({ properties: [Style.Margin] }),
       link: Link({ label: 'Link' }),
-      text: TextInput({ label: 'Button Text', defaultValue: 'Button Text' }),
+      text: TextInput({ label: 'Button text', defaultValue: 'Button text' }),
       variant: Select({
         label: 'Variant',
         options: [

@@ -1,20 +1,20 @@
 import useSWR from 'swr';
 
-import { runtime } from '~/lib/makeswift/runtime';
 import { FeaturedProductsList } from '@/vibes/soul/sections/featured-products-list';
 import { GetFeaturedProductResponse } from '~/app/api/products/featured/route';
+import { runtime } from '~/lib/makeswift/runtime';
 import { featuredProductsControls } from '~/makeswift/composed-controls/featured-products-controls';
 import { useBcProductToVibesProduct } from '~/makeswift/utils/use-bc-product-to-vibes-product/use-bc-product-to-vibes-product';
 
-type Props = {
+interface Props {
   className?: string;
   limit: number;
   title: string;
   description?: string;
   showButton: boolean;
   buttonText: string;
-  buttonHref: string;
-};
+  buttonHref: { href: string };
+}
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -28,16 +28,16 @@ function MakeswiftFeaturedProductsList({
   buttonHref,
 }: Props) {
   const bcProductToVibesProduct = useBcProductToVibesProduct();
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
   const { data } = useSWR<GetFeaturedProductResponse>('/api/products/featured', fetcher);
 
-  const cta = showButton ? { label: buttonText, href: buttonHref } : undefined;
+  const cta = showButton ? { label: buttonText, href: buttonHref.href } : undefined;
   const products = data?.slice(0, limit).map(bcProductToVibesProduct) ?? [];
 
   return (
     <div className={className}>
       {/* TODO: Fix skeleton */}
-      <FeaturedProductsList title={title} description={description} products={products} cta={cta} />
+      <FeaturedProductsList cta={cta} description={description} products={products} title={title} />
     </div>
   );
 }

@@ -10,7 +10,7 @@ export type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   asChild?: boolean;
 };
 
-export const Button = function Button({
+export function Button({
   variant = 'primary',
   size = 'large',
   onClick,
@@ -24,15 +24,14 @@ export const Button = function Button({
 }: Props) {
   return (
     <button
+      aria-busy={loading}
       className={clsx(
-        'relative z-0 h-fit overflow-hidden rounded-full border font-medium leading-normal transition-all duration-300 focus-visible:outline-none focus-visible:ring-2',
+        'relative z-0 h-fit overflow-hidden rounded-full border font-medium leading-normal duration-300 after:absolute after:inset-0 after:-z-10 after:-translate-x-[105%] after:rounded-full after:transition-[opacity,transform] after:duration-300 after:[animation-timing-function:cubic-bezier(0,0.25,0,1)] focus-visible:outline-none focus-visible:ring-2',
         {
           primary: 'border-primary bg-primary text-foreground ring-foreground',
           secondary: 'border-foreground bg-foreground text-background ring-primary',
           tertiary: 'border-contrast-200 bg-background text-foreground ring-primary',
         }[variant],
-        // After Pseudo Element / Animated Background Styles
-        'after:absolute after:inset-0 after:-z-10 after:-translate-x-[105%] after:rounded-full after:transition-[opacity,transform] after:duration-300 after:[animation-timing-function:cubic-bezier(0,0.25,0,1)]',
         !loading && !disabled && 'hover:after:translate-x-0',
         {
           primary: 'after:bg-background/40',
@@ -42,9 +41,8 @@ export const Button = function Button({
         disabled && 'cursor-not-allowed opacity-30',
         className,
       )}
-      type={type}
       onClick={onClick}
-      aria-busy={loading}
+      type={type}
       {...props}
     >
       <span
@@ -73,4 +71,4 @@ export const Button = function Button({
       </span>
     </button>
   );
-};
+}

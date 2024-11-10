@@ -11,6 +11,15 @@ runtime.registerComponent(StickySidebarLayout, {
     className: Style(),
     sidebar: Slot(),
     children: Slot(),
+    containerSize: Select({
+      label: 'Container Size',
+      options: [
+        { value: 'lg', label: 'Large' },
+        { value: 'xl', label: 'XL' },
+        { value: '2xl', label: '2XL' },
+      ],
+      defaultValue: '2xl',
+    }),
     sidebarPosition: Select({
       label: 'Sidebar Position',
       options: [

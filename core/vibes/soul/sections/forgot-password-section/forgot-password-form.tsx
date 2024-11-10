@@ -3,7 +3,7 @@
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { useEffect } from 'react';
-import { useFormState as useActionState } from 'react-dom';
+import { useFormState, useFormStatus } from 'react-dom';
 
 import { Input } from '@/vibes/soul/form/input';
 import { Button } from '@/vibes/soul/primitives/button';
@@ -25,7 +25,7 @@ export function ForgotPasswordForm({
   emailLabel = 'Email',
   submitLabel = 'Reset password',
 }: Props) {
-  const [lastResult, formAction, isPending] = useActionState(action, null);
+  const [lastResult, formAction] = useFormState(action, null);
   const [form, fields] = useForm({
     constraint: getZodConstraint(schema),
     shouldValidate: 'onBlur',
@@ -47,9 +47,17 @@ export function ForgotPasswordForm({
         key={fields.email.id}
         label={emailLabel}
       />
-      <Button className="mt-auto w-full" loading={isPending} type="submit" variant="secondary">
-        {submitLabel}
-      </Button>
+      <SubmitButton>{submitLabel}</SubmitButton>
     </form>
+  );
+}
+
+function SubmitButton({ children }: { children: React.ReactNode }) {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button className="mt-auto w-full" loading={pending} type="submit" variant="secondary">
+      {children}
+    </Button>
   );
 }

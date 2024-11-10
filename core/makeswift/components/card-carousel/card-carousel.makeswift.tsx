@@ -51,9 +51,9 @@ runtime.registerComponent(
         label: 'Cards',
         type: Shape({
           type: {
-            title: TextInput({ label: 'Title', defaultValue: 'Card Title' }),
+            title: TextInput({ label: 'Title', defaultValue: 'Card title' }),
             imageSrc: Image({ label: 'Image' }),
-            imageAlt: TextInput({ label: 'Image Alt', defaultValue: 'Card Image' }),
+            imageAlt: TextInput({ label: 'Image alt', defaultValue: 'Card image' }),
             link: Link({ label: 'Link' }),
           },
         }),
