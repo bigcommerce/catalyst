@@ -1,3 +1,5 @@
+'use client';
+
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import {
   Checkbox,

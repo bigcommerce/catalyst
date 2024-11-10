@@ -1,3 +1,5 @@
+'use client';
+
 import { Checkbox, Combobox, Style } from '@makeswift/runtime/controls';
 import useSWR from 'swr';
 
