@@ -10,8 +10,7 @@ import {
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { parseAsString, useQueryState, useQueryStates } from 'nuqs';
-import { useCallback } from 'react';
-import { useFormState as useActionState } from 'react-dom';
+import { useActionState, useCallback } from 'react';
 import { z } from 'zod';
 
 import { ButtonRadioGroup } from '@/vibes/soul/form/button-radio-group';

@@ -11,12 +11,12 @@ import React, {
   forwardRef,
   Ref,
   startTransition,
+  useActionState,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import { useFormState as useActionState } from 'react-dom';
 
 import { Button } from '@/vibes/soul/primitives/button';
 import { BcImage as Image } from '~/components/bc-image';
