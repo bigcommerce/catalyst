@@ -1,11 +1,9 @@
 'use client';
 
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingBag } from 'lucide-react';
 import { useLocale } from 'next-intl';
 import { useEffect } from 'react';
 import { z } from 'zod';
-
-import { Badge } from '~/components/ui/badge';
 
 import { useCart } from './cart-provider';
 
@@ -40,14 +38,16 @@ export const CartIcon = ({ count: serverCount }: CartIconProps) => {
   }, [serverCount, locale, setCount]);
 
   if (!count) {
-    return <ShoppingCart aria-label="cart" />;
+    return <ShoppingBag size={20} strokeWidth={1} />;
   }
 
   return (
     <>
       <span className="sr-only">Cart Items</span>
-      <ShoppingCart aria-hidden="true" />
-      <Badge>{count}</Badge>
+      <ShoppingBag size={20} strokeWidth={1} />
+      <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-xs text-background">
+        {count}
+      </span>
     </>
   );
 };

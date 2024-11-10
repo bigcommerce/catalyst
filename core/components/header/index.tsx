@@ -1,7 +1,9 @@
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
+import { ShoppingBag } from 'lucide-react';
 import { cookies } from 'next/headers';
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import { SearchResult } from '@/vibes/soul/primitives/navigation/index';
 import { localeSchema, searchSchema } from '@/vibes/soul/primitives/navigation/schema';
@@ -17,6 +19,7 @@ import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { localeLanguageRegionMap, redirect } from '~/i18n/routing';
 import { Header as HeaderSection } from '~/makeswift/components/header';
 
+import { Cart, CartLink } from './cart';
 import { HeaderFragment } from './fragment';
 
 type QuickSearchResults = ExistingResultType<typeof getSearchResults>;
@@ -176,6 +179,17 @@ export const Header = async () => {
         emptySearchTitle: t('emptySearchTitle'),
         emptySearchSubtitle: t('emptySearchSubtitle'),
         searchHref: '/search',
+        cart: (
+          <Suspense
+            fallback={
+              <CartLink>
+                <ShoppingBag aria-label="cart" size={20} strokeWidth={1} />
+              </CartLink>
+            }
+          >
+            <Cart />
+          </Suspense>
+        ),
       }}
     />
   );

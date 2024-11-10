@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 
+import { mapStreamable } from '@/vibes/soul/lib/streamable/server';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
@@ -53,28 +54,31 @@ export default async function Category({ params: { locale, slug }, searchParams 
 
   const format = await getFormatter();
 
-  const [{ category }, search] = await Promise.all([
-    getCategoryPageData({ categoryId }),
-    fetchFacetedSearch({ ...searchParams, category: categoryId }),
-  ]);
+  const { category } = await getCategoryPageData({ categoryId });
 
   if (!category) {
     return notFound();
   }
 
-  const productsCollection = search.products;
-  const products = productsCollection.items.map((product) => ({
-    id: product.entityId.toString(),
-    title: product.name,
-    href: product.path,
-    image: product.defaultImage
-      ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
-      : undefined,
-    price: pricesTransformer(product.prices, format),
-    subtitle: product.brand?.name ?? undefined,
-  }));
+  const searchPromise = fetchFacetedSearch({ ...searchParams, category: categoryId });
 
-  const totalProducts = productsCollection.collectionInfo?.totalItems ?? 0;
+  const productsCollectionPromise = searchPromise.then((search) => search.products);
+  const productsPromise = productsCollectionPromise.then((productsCollection) =>
+    productsCollection.items.map((product) => ({
+      id: product.entityId.toString(),
+      title: product.name,
+      href: product.path,
+      image: product.defaultImage
+        ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
+        : undefined,
+      price: pricesTransformer(product.prices, format),
+      subtitle: product.brand?.name ?? undefined,
+    })),
+  );
+
+  const totalProducts = productsCollectionPromise.then(
+    (productsCollection) => productsCollection.collectionInfo?.totalItems ?? 0,
+  );
 
   const breadcrumbs = removeEdgesAndNodes(category.breadcrumbs).map(({ name, path }) => ({
     label: name,
@@ -85,10 +89,14 @@ export default async function Category({ params: { locale, slug }, searchParams 
   // const subcategories = categoryTree;
 
   // TODO: remove hasNextPage and hasPreviousPage from query
-  const { endCursor, startCursor, hasNextPage, hasPreviousPage } = productsCollection.pageInfo;
+  const pageInfoPromise = productsCollectionPromise.then(
+    (productsCollection) => productsCollection.pageInfo,
+  );
 
-  const facets = search.facets.items.filter((facet) => facet.__typename !== 'CategorySearchFilter');
-  const filters = await facetsTransformer(facets);
+  const facetsPromise = searchPromise.then((search) =>
+    search.facets.items.filter((facet) => facet.__typename !== 'CategorySearchFilter'),
+  );
+  const filtersPromise = facetsPromise.then((facets) => facetsTransformer(facets));
 
   const compare = searchParams.compare;
 
@@ -115,18 +123,23 @@ export default async function Category({ params: { locale, slug }, searchParams 
         compareParamName="compare"
         compareProducts={compareProducts}
         filterLabel={t('FacetedSearch.filters')}
-        filters={filters.filter((filter) => !!filter)}
-        paginationInfo={
-          hasNextPage || hasPreviousPage
-            ? {
-                startCursorParamName: 'before',
-                endCursorParamName: 'after',
-                endCursor: hasNextPage ? endCursor : null,
-                startCursor: hasPreviousPage ? startCursor : null,
-              }
-            : undefined
-        }
-        products={products}
+        filters={filtersPromise.then((filters) => filters.filter((filter) => !!filter))}
+        paginationInfo={pageInfoPromise.then(
+          ({ hasNextPage, hasPreviousPage, endCursor, startCursor }) =>
+            hasNextPage || hasPreviousPage
+              ? {
+                  startCursorParamName: 'before',
+                  endCursorParamName: 'after',
+                  endCursor: hasNextPage ? endCursor : null,
+                  startCursor: hasPreviousPage ? startCursor : null,
+                }
+              : null,
+        )}
+        products={productsPromise.then(async (products) => {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+
+          return products;
+        })}
         sortLabel={t('SortBy.label')}
         sortOptions={[
           { value: 'featured', label: t('SortBy.featuredItems') },
@@ -155,11 +168,13 @@ export default async function Category({ params: { locale, slug }, searchParams 
         title={category.name}
         totalCount={totalProducts}
       />
-      <CategoryViewed
-        category={category}
-        categoryId={categoryId}
-        products={search.products.items}
-      />
+      {mapStreamable(searchPromise, (search) => (
+        <CategoryViewed
+          category={category}
+          categoryId={categoryId}
+          products={search.products.items}
+        />
+      ))}
     </>
   );
 }

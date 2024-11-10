@@ -1,49 +1,77 @@
 'use client';
 
 import { parseAsString, useQueryState } from 'nuqs';
-import { Suspense, use } from 'react';
+import { Suspense, use, useOptimistic } from 'react';
 
 import { Select } from '@/vibes/soul/form/select';
+import { Streamable, useStreamable } from '@/vibes/soul/lib/streamable';
+
+import { ProductListTransitionContext } from './context';
 
 export type Option = {
   label: string;
   value: string;
 };
 
-type Props = {
-  options: Option[] | Promise<Option[]>;
+export function Sorting({
+  label = 'Sort',
+  options,
+  paramName = 'sort',
+  defaultValue = '',
+}: {
   label?: string;
+  options: Streamable<Option[]>;
   paramName?: string;
   defaultValue?: string;
-};
-
-export function Sorting({ label = 'Sort', options, paramName }: Props) {
+}) {
   return (
-    <Suspense fallback={<SortingSkeleton placeholder={label} />}>
-      <SortingInner label={label} options={options} paramName={paramName} />
+    <Suspense fallback={<SortingSkeleton />}>
+      <SortingInner
+        defaultValue={defaultValue}
+        label={label}
+        options={options}
+        paramName={paramName}
+      />
     </Suspense>
   );
 }
 
-function SortingInner({ label = 'Sort', options, paramName = 'sort', defaultValue = '' }: Props) {
+function SortingInner({
+  paramName,
+  defaultValue,
+  options: streamableOptions,
+  label,
+}: {
+  paramName: string;
+  defaultValue: string;
+  options: Streamable<Option[]>;
+  label: string;
+}) {
   const [param, setParam] = useQueryState(
     paramName,
-    parseAsString.withDefault(defaultValue).withOptions({ shallow: false }),
+    parseAsString.withDefault(defaultValue).withOptions({ shallow: false, history: 'push' }),
   );
-  const resolved = options instanceof Promise ? use(options) : options;
+  const [optimisticParam, setOptimisticParam] = useOptimistic(param);
+  const [, startTransition] = use(ProductListTransitionContext);
+  const options = useStreamable(streamableOptions);
 
   return (
     <Select
       name={paramName}
-      onValueChange={(value) => setParam(value)}
-      options={resolved}
+      onValueChange={(value) => {
+        startTransition(async () => {
+          setOptimisticParam(value);
+          await setParam(value);
+        });
+      }}
+      options={options}
       placeholder={label}
-      value={param}
+      value={optimisticParam}
       variant="round"
     />
   );
 }
 
-function SortingSkeleton({ placeholder }: { placeholder: string }) {
-  return <Select disabled name="skeleton" options={[]} placeholder={placeholder} variant="round" />;
+function SortingSkeleton() {
+  return <div className="h-[50px] w-[12ch] animate-pulse rounded-full bg-contrast-100" />;
 }
