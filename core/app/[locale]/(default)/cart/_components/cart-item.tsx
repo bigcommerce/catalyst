@@ -186,7 +186,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
                 className="h-full min-h-[9em] w-full object-contain" // Added class to fill space
               />
             ) : (
-              <div className="min-h-[300px] min-w-[300px] bg-gray-200" />
+              <div className="min-h-[300px] min-w-[300px]" />
             )}
           </div>
 

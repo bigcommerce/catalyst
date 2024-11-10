@@ -140,7 +140,7 @@ const Gallery = ({ className, images, defaultImageIndex = 0, bannerIcon , galler
         <figure className="group main-gallery relative aspect-square h-full max-h-[100%] w-full">
           {selectedImage ? (
             <>
-              <div className="product-img" data-scale="2">
+              <div className="product-img relative overflow-hidden w-full h-full float-left" data-scale="2">
                 {/* Use the ProductImage component for zoom functionality */}
      
                 <ProductImage 

@@ -61,7 +61,8 @@ export const Submit = ({ data: product }: {data:Props['data']}) => {
 
   return (
     <AddToCartButton data={product} loading={isSubmitting}>
-      <ShoppingCart className="mr-2" />
+      <ShoppingCart className="mr-2 text-white right-[-0.6em] absolute invisible opacity-0 bg-transparent p-[4px]
+" />
     </AddToCartButton>
   );
 };

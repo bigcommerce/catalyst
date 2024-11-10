@@ -162,7 +162,7 @@ export const MultipleChoiceField = ({ option, multipleOptionIcon }: Props) => {
 
       return (
         <div key={option.entityId} className="div-product-rectangleboxes mt-3 xl:mt-0">
-          <div className="mb-3 block text-center lg:flex lg:items-center xl:flex xl:items-center">
+          <div className="mb-3 block text-center lg:flex lg:items-center xl:flex xl:items-center !gap-0">
             <img
               className="variant-img !w-[20px] !h-[20px] rounded-[50px] inline-block"
               alt="headline icon"

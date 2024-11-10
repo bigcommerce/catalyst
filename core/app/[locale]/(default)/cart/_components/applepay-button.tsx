@@ -17,7 +17,7 @@ const InternalButton = ({ icon }: { icon: string }) => {
         alt="Apple Pay"
         width={60}
         height={25}
-        className="w-[60px] h-[25px]"
+        className="w-[45px] h-[20px]"
         src={icon}
       />
     </Button>

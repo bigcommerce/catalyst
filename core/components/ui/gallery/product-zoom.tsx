@@ -56,7 +56,7 @@ const ProductImage: React.FC<ProductImageProps> = ({ scale, size, src }) => {
 
   return (
     <div
-      className="product-img"
+      className="product-img relative overflow-hidden w-full h-full float-left"
       ref={containerRef}
       style={{
         position: 'relative',
@@ -89,7 +89,7 @@ const ProductImage: React.FC<ProductImageProps> = ({ scale, size, src }) => {
         ref={imgRef}
         src={imageUrl} // Use the constructed image URL
         alt="Product"
-        className="img1 object-fill"
+        className="img1 object-fill absolute top-0 left-0 w-full h-full bg-center bg-cover bg-no-repeat transition-transform duration-500 ease-out"
         height={600} // Set the desired height
         width="original" // Set the desired width
         style={{ willChange: 'transform', transition: 'transform 0.3s ease-in-out' }} // Improve performance
