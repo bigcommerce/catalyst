@@ -15,8 +15,9 @@ import React, {
   useMemo,
   useRef,
   useState,
+  useTransition,
 } from 'react';
-import { useFormState as useActionState } from 'react-dom';
+import { useFormState, useFormStatus } from 'react-dom';
 
 import { Button } from '@/vibes/soul/primitives/button';
 import { BcImage as Image } from '~/components/bc-image';
@@ -101,11 +102,11 @@ const HamburgerMenuButton = forwardRef<
   return (
     <button
       {...rest}
-      ref={ref}
       className={clsx(
         'group relative rounded-lg p-2 outline-0 ring-primary transition-colors focus-visible:ring-2',
         className,
       )}
+      ref={ref}
     >
       <div className="flex h-4 w-4 origin-center transform flex-col justify-between overflow-hidden transition-all duration-300">
         <div
@@ -432,28 +433,36 @@ function SearchForm<S extends SearchResult>({
   emptySearchSubtitle?: string;
 }) {
   const [query, setQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
-  const debouncedOnChange = useMemo(() => debounce(setDebouncedQuery, 300), []);
-  const [{ searchResults, lastResult }, formAction, isPending] = useActionState(searchAction, {
+  const [isSearching, startSearching] = useTransition();
+  const [{ searchResults, lastResult }, formAction] = useFormState(searchAction, {
     searchResults: null,
     lastResult: null,
   });
+  const [isDebouncing, setIsDebouncing] = useState(false);
+  const debouncedOnChange = useMemo(() => {
+    const debounced = debounce((query: string) => {
+      setIsDebouncing(false);
+
+      const formData = new FormData();
+
+      formData.append(searchParamName, query);
+
+      startSearching(() => {
+        formAction(formData);
+      });
+    }, 300);
+
+    return (query: string) => {
+      setIsDebouncing(true);
+
+      debounced(query);
+    };
+  }, [formAction, searchParamName]);
+  const isPending = isSearching || isDebouncing;
 
   useEffect(() => {
     if (lastResult?.error) console.log(lastResult.error);
   }, [lastResult]);
-
-  useEffect(() => {
-    if (debouncedQuery === '') return;
-
-    startTransition(() => {
-      const formData = new FormData();
-
-      formData.append(searchParamName, debouncedQuery);
-
-      formAction(formData);
-    });
-  }, [searchParamName, debouncedQuery, formAction]);
 
   return (
     <>
@@ -474,9 +483,7 @@ function SearchForm<S extends SearchResult>({
           type="text"
           value={query}
         />
-        <Button loading={isPending} size="icon" type="submit" variant="secondary">
-          <ArrowRight aria-label="Submit" size={20} strokeWidth={1.5} />
-        </Button>
+        <SubmitButton loading={isPending} />
       </form>
 
       {/* Search Results */}
@@ -492,6 +499,16 @@ function SearchForm<S extends SearchResult>({
         />
       )}
     </>
+  );
+}
+
+function SubmitButton({ loading }: { loading: boolean }) {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button loading={pending || loading} size="icon" type="submit" variant="secondary">
+      <ArrowRight aria-label="Submit" size={20} strokeWidth={1.5} />
+    </Button>
   );
 }
 
@@ -591,7 +608,7 @@ function LocaleForm({
   action: LocaleAction;
   locales: [Locale, ...Locale[]];
 }) {
-  const [lastResult, formAction] = useActionState(action, null);
+  const [lastResult, formAction] = useFormState(action, null);
   const activeLocale = locales.find((locale) => locale.id === activeLocaleId);
 
   useEffect(() => {
