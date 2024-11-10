@@ -16,6 +16,7 @@ import '~/makeswift/components/inline-email-form/inline-email-form.makeswift';
 import '~/makeswift/components/slideshow/slideshow.makeswift';
 import '~/makeswift/components/featured-image/featured-image.makeswift';
 import '~/makeswift/components/sticky-sidebar-layout/sticky-sidebar-layout.makeswift';
+import '~/makeswift/components/section-layout/section-layout.makeswift';
 
 import { MakeswiftComponentType } from '@makeswift/runtime';
 
