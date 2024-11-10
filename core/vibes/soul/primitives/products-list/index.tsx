@@ -1,6 +1,8 @@
 import { clsx } from 'clsx';
-import { Suspense, use } from 'react';
+import { Suspense } from 'react';
 
+import { Streamable } from '@/vibes/soul/lib/streamable';
+import { mapStreamable } from '@/vibes/soul/lib/streamable/server';
 import {
   CardProduct,
   ProductCard,
@@ -12,8 +14,8 @@ import { CompareDrawer } from './compare-drawer';
 export type ListProduct = CardProduct;
 
 type Props = {
-  products: ListProduct[] | Promise<ListProduct[]>;
-  compareProducts?: ListProduct[] | Promise<ListProduct[]>;
+  products: Streamable<ListProduct[]>;
+  compareProducts?: Streamable<ListProduct[] | null>;
   className?: string;
   showCompare?: boolean;
   compareAction?: React.ComponentProps<'form'>['action'];
@@ -21,31 +23,12 @@ type Props = {
   compareParamName?: string;
 };
 
-function ProductsListInner({
-  products,
-  showCompare,
-  compareLabel,
-  compareParamName,
-}: Omit<Props, 'className'>) {
-  const resolved = products instanceof Promise ? use(products) : products;
-
-  return resolved.map((product) => (
-    <ProductCard
-      compareLabel={compareLabel}
-      compareParamName={compareParamName}
-      key={product.id}
-      product={product}
-      showCompare={showCompare}
-    />
-  ));
-}
-
 export function ProductsList({
-  products,
+  products: streamableProducts,
   className,
   showCompare,
   compareAction,
-  compareProducts,
+  compareProducts: streamableCompareProducts,
   compareLabel,
   compareParamName,
 }: Props) {
@@ -58,23 +41,34 @@ export function ProductsList({
               <ProductCardSkeleton key={index} />
             ))}
           >
-            <ProductsListInner
-              compareLabel={compareLabel}
-              compareParamName={compareParamName}
-              products={products}
-              showCompare={showCompare}
-            />
+            {mapStreamable(streamableProducts, (products) =>
+              products.map((product) => (
+                <ProductCard
+                  compareLabel={compareLabel}
+                  compareParamName={compareParamName}
+                  key={product.id}
+                  product={product}
+                  showCompare={showCompare}
+                />
+              )),
+            )}
           </Suspense>
         </div>
       </div>
-      {compareProducts && (
-        <CompareDrawer
-          action={compareAction}
-          items={compareProducts}
-          paramName={compareParamName}
-          submitLabel={compareLabel}
-        />
-      )}
+      <Suspense>
+        {mapStreamable(
+          streamableCompareProducts,
+          (compareProducts) =>
+            compareProducts && (
+              <CompareDrawer
+                action={compareAction}
+                items={compareProducts}
+                paramName={compareParamName}
+                submitLabel={compareLabel}
+              />
+            ),
+        )}
+      </Suspense>
     </>
   );
 }
