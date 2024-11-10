@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
-import { IconBlock } from '@/vibes/soul/sections/icon-block';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { ReviewsSkeleton } from '@/vibes/soul/sections/reviews';
@@ -332,27 +331,6 @@ export default async function Product({ params: { locale, slug }, searchParams }
       <ProductDescription accordions={accordions} image={images[0]} product={formattedProduct} />
 
       <ProductSchema product={product} />
-
-      {/* TODO: Temporary */}
-      <IconBlock
-        list={[
-          {
-            icon: 'Truck',
-            title: 'Free Shipping',
-            description: 'On orders over $250',
-          },
-          {
-            icon: 'RotateCcw',
-            title: 'Free Returns',
-            description: 'On full priced items only',
-          },
-          {
-            icon: 'Star',
-            title: '2 Year Warranty',
-            description: 'As standard',
-          },
-        ]}
-      />
 
       <Suspense fallback={t('loading')}>
         <RelatedProducts productId={product.entityId} />

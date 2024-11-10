@@ -1,6 +1,6 @@
 import '~/makeswift/components/product-card/product-card.makeswift';
-import '~/makeswift/components/featured-products-carousel/featured-products-carousel.makeswift';
-import '~/makeswift/components/featured-products-list/featured-products-list.makeswift';
+// import '~/makeswift/components/featured-products-carousel/featured-products-carousel.makeswift';
+// import '~/makeswift/components/featured-products-list/featured-products-list.makeswift';
 import '~/makeswift/components/header/register';
 import '~/makeswift/components/footer/register';
 import '~/makeswift/components/accordions/accordions.makeswift';
@@ -11,7 +11,8 @@ import '~/makeswift/components/card-carousel/card-carousel.makeswift';
 import '~/makeswift/components/product-description/register';
 import '~/makeswift/components/products-carousel/products-carousel.makeswift';
 import '~/makeswift/components/products-list/products-list.makeswift';
-import '~/makeswift/components/inline-email-form/inline-email-form.makeswift';
+// import '~/makeswift/components/inline-email-form/inline-email-form.makeswift';
+import '~/makeswift/components/icon/icon.makeswift';
 
 import '~/makeswift/components/slideshow/slideshow.makeswift';
 import '~/makeswift/components/featured-image/featured-image.makeswift';
