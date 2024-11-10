@@ -76,7 +76,7 @@ declare module '@bigcommerce/bodl-events' {
     private eventEmitter;
     private historyManager?;
     private updateBodl;
-    constructor(eventEmitter: EventEmitter, historyManager?: HistoryManager | undefined);
+    constructor(eventEmitter: EventEmitter, historyManager?: HistoryManager);
     emit(eventName: string, payload: BoldEventPayload): boolean;
     on(eventName: string, callback: (payload: BoldEventPayload) => void): this;
     off(eventName: string, callback: (payload: BoldEventPayload) => void): this;

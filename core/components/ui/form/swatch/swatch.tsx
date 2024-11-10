@@ -1,5 +1,5 @@
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
-import { ComponentPropsWithRef, ElementRef, forwardRef, useId } from 'react';
+import { ComponentPropsWithRef, ComponentRef, forwardRef, useId } from 'react';
 
 import { cn } from '~/lib/utils';
 
@@ -14,7 +14,7 @@ interface Props extends ComponentPropsWithRef<typeof RadioGroupPrimitive.Root> {
   swatches: Swatch[];
 }
 
-const Swatch = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
+const Swatch = forwardRef<ComponentRef<typeof RadioGroupPrimitive.Root>, Props>(
   ({ children, className, error = false, swatches, ...props }, ref) => {
     const id = useId();
 

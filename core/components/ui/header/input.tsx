@@ -1,7 +1,7 @@
 'use client';
 
 import { Search, Loader2 as Spinner, X } from 'lucide-react';
-import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
+import { ComponentPropsWithRef, ComponentRef, forwardRef } from 'react';
 
 import { Button } from '../button';
 
@@ -12,7 +12,7 @@ interface Props extends ComponentPropsWithRef<'input'> {
   showClear?: boolean;
 }
 
-export const Input = forwardRef<ElementRef<'input'>, Props>(
+export const Input = forwardRef<ComponentRef<'input'>, Props>(
   ({ className, pending, showClear, onClickClear, ...props }, ref) => (
     <div className="relative">
       <input

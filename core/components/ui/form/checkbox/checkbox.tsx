@@ -1,6 +1,6 @@
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { Check } from 'lucide-react';
-import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
+import { ComponentPropsWithRef, ComponentRef, forwardRef } from 'react';
 
 import { cn } from '~/lib/utils';
 
@@ -8,7 +8,7 @@ interface Props extends ComponentPropsWithRef<typeof CheckboxPrimitive.Root> {
   error?: boolean;
 }
 
-const Checkbox = forwardRef<ElementRef<typeof CheckboxPrimitive.Root>, Props>(
+const Checkbox = forwardRef<ComponentRef<typeof CheckboxPrimitive.Root>, Props>(
   ({ className, defaultChecked, error = false, onCheckedChange, ...props }, ref) => {
     return (
       <CheckboxPrimitive.Root

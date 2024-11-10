@@ -1,6 +1,6 @@
 import { Slot } from '@radix-ui/react-slot';
 import { Loader2 as Spinner } from 'lucide-react';
-import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
+import { ComponentPropsWithRef, ComponentRef, forwardRef } from 'react';
 
 import { cn } from '~/lib/utils';
 
@@ -11,7 +11,7 @@ interface Props extends ComponentPropsWithRef<'button'> {
   variant?: 'primary' | 'secondary' | 'subtle';
 }
 
-const Button = forwardRef<ElementRef<'button'>, Props>(
+const Button = forwardRef<ComponentRef<'button'>, Props>(
   (
     {
       asChild = false,

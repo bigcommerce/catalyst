@@ -1,6 +1,6 @@
 import * as SelectPrimitive from '@radix-ui/react-select';
 import { Check, ChevronDown, ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
-import { ComponentPropsWithRef, ElementRef, forwardRef, ReactNode, useId } from 'react';
+import { ComponentPropsWithRef, ComponentRef, forwardRef, ReactNode, useId } from 'react';
 
 import { cn } from '~/lib/utils';
 
@@ -17,7 +17,7 @@ interface Props extends ComponentPropsWithRef<typeof SelectPrimitive.Root> {
   placeholder?: string | ReactNode;
 }
 
-const Select = forwardRef<ElementRef<typeof SelectPrimitive.Trigger>, Props>(
+const Select = forwardRef<ComponentRef<typeof SelectPrimitive.Trigger>, Props>(
   ({ children, id: triggerId, label, options, placeholder, error = false, ...props }, ref) => {
     const id = useId();
 

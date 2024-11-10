@@ -1,5 +1,5 @@
 import { AlertCircle } from 'lucide-react';
-import { ComponentPropsWithRef, ElementRef, forwardRef, ReactNode } from 'react';
+import { ComponentPropsWithRef, ComponentRef, forwardRef, ReactNode } from 'react';
 
 import { cn } from '~/lib/utils';
 
@@ -8,7 +8,7 @@ interface Props extends ComponentPropsWithRef<'input'> {
   icon?: ReactNode;
 }
 
-const Input = forwardRef<ElementRef<'input'>, Props>(
+const Input = forwardRef<ComponentRef<'input'>, Props>(
   ({ className, children, error = false, icon, type = 'text', ...props }, ref) => (
     <div className={cn('relative', className)}>
       <input
