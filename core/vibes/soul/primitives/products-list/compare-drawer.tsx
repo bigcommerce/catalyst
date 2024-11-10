@@ -2,11 +2,11 @@
 
 import { ArrowRight, X } from 'lucide-react';
 import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
-import { Suspense, use } from 'react';
+import { startTransition } from 'react';
 
 import { Button } from '@/vibes/soul/primitives/button';
-import { Drawer, DrawerItem } from '@/vibes/soul/primitives/drawer';
-import { BcImage } from '~/components/bc-image';
+import { Drawer } from '@/vibes/soul/primitives/drawer';
+import { BcImage as Image } from '~/components/bc-image';
 import { Link } from '~/components/link';
 
 function getInitials(name: string): string {
@@ -18,34 +18,40 @@ function getInitials(name: string): string {
     .slice(0, 2);
 }
 
+type DrawerItem = {
+  id: string;
+  image?: { src: string; alt: string };
+  href: string;
+  title: string;
+};
+
 type Props = {
-  items: DrawerItem[] | Promise<DrawerItem[]>;
+  items: DrawerItem[];
   paramName?: string;
   action?: React.ComponentProps<'form'>['action'];
   submitLabel?: string;
 };
 
-function CompareDrawerInner({
+export function CompareDrawer({
   items,
   paramName = 'compare',
   action,
   submitLabel = 'Compare',
 }: Props) {
-  const resolved = items instanceof Promise ? use(items) : items;
   const [, setParam] = useQueryState(
     paramName,
     parseAsArrayOf(parseAsString).withOptions({ shallow: false, scroll: false }),
   );
 
   return (
-    resolved.length > 0 && (
+    items.length > 0 && (
       <Drawer>
         <form
           action={action}
           className="mx-auto flex w-full max-w-7xl flex-col items-start justify-end gap-x-3 gap-y-4 @md:flex-row"
         >
           <div className="flex flex-1 flex-wrap justify-end gap-4">
-            {resolved.map((item) => (
+            {items.map((item) => (
               <div className="relative" key={item.id}>
                 <input key={item.id} name={paramName} type="hidden" value={item.id} />
                 <Link
@@ -54,7 +60,7 @@ function CompareDrawerInner({
                 >
                   <div className="bg-primary-highlight/10 relative aspect-square w-12 shrink-0">
                     {item.image?.src != null ? (
-                      <BcImage
+                      <Image
                         alt={item.image.alt}
                         className="rounded-lg object-cover @4xl:rounded-r-none"
                         fill
@@ -75,10 +81,12 @@ function CompareDrawerInner({
                   aria-label={`Remove ${item.title}`}
                   className="absolute -right-2.5 -top-2.5 flex h-7 w-7 items-center justify-center rounded-full border border-contrast-100 bg-background text-contrast-400 transition-colors duration-150 hover:border-contrast-200 hover:bg-contrast-100 hover:text-foreground"
                   onClick={() => {
-                    void setParam((prev) => {
-                      const next = prev?.filter((v) => v !== item.id) ?? [];
+                    startTransition(async () => {
+                      await setParam((prev) => {
+                        const next = prev?.filter((v) => v !== item.id) ?? [];
 
-                      return next.length > 0 ? next : null;
+                        return next.length > 0 ? next : null;
+                      });
                     });
                   }}
                   type="button"
@@ -99,13 +107,5 @@ function CompareDrawerInner({
         </form>
       </Drawer>
     )
-  );
-}
-
-export function CompareDrawer(props: Props) {
-  return (
-    <Suspense fallback={null}>
-      <CompareDrawerInner {...props} />
-    </Suspense>
   );
 }
