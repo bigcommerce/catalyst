@@ -3,7 +3,7 @@
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { useEffect } from 'react';
-import { useFormState as useActionState } from 'react-dom';
+import { useFormState, useFormStatus } from 'react-dom';
 
 import { Input } from '@/vibes/soul/form/input';
 import { Button } from '@/vibes/soul/primitives/button';
@@ -29,7 +29,7 @@ export function ChangePasswordForm({
   confirmPasswordLabel = 'Confirm password',
   submitLabel = 'Update',
 }: Props) {
-  const [lastResult, formAction, isPending] = useActionState(action, null);
+  const [lastResult, formAction] = useFormState(action, null);
   const [form, fields] = useForm({
     constraint: getZodConstraint(changePasswordSchema),
     shouldValidate: 'onBlur',
@@ -66,9 +66,17 @@ export function ChangePasswordForm({
         key={fields.confirmPassword.id}
         label={confirmPasswordLabel}
       />
-      <Button loading={isPending} size="small" type="submit" variant="secondary">
-        {submitLabel}
-      </Button>
+      <SubmitButton>{submitLabel}</SubmitButton>
     </form>
+  );
+}
+
+function SubmitButton({ children }: { children: React.ReactNode }) {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button loading={pending} size="small" type="submit" variant="secondary">
+      {children}
+    </Button>
   );
 }

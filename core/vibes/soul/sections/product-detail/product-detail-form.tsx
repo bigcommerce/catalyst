@@ -11,7 +11,7 @@ import {
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { parseAsString, useQueryState, useQueryStates } from 'nuqs';
 import { useCallback } from 'react';
-import { useFormState as useActionState } from 'react-dom';
+import { useFormState, useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
 import { ButtonRadioGroup } from '@/vibes/soul/form/button-radio-group';
@@ -66,7 +66,7 @@ export function ProductDetailForm<F extends Field>({
     }),
     { quantity: 1 },
   );
-  const [{ lastResult }, formAction, isPending] = useActionState(action, {
+  const [{ lastResult }, formAction] = useFormState(action, {
     fields,
     lastResult: null,
   });
@@ -111,13 +111,21 @@ export function ProductDetailForm<F extends Field>({
               required
               value={quantityControl.value}
             />
-            <Button className="w-auto @xl:w-56" size="medium" type="submit" loading={isPending}>
-              {ctaLabel}
-            </Button>
+            <SubmitButton>{ctaLabel}</SubmitButton>
           </div>
         </div>
       </form>
     </FormProvider>
+  );
+}
+
+function SubmitButton({ children }: { children: React.ReactNode }) {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button className="w-auto @xl:w-56" loading={pending} size="medium" type="submit">
+      {children}
+    </Button>
   );
 }
 

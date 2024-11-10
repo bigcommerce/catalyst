@@ -2,58 +2,21 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter } from 'next-intl/server';
 
 import { Reviews as ReviewsComponent } from '@/vibes/soul/sections/reviews';
-import { client } from '~/client';
-import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 
-import { ProductReviewSchema, ProductReviewSchemaFragment } from './product-review-schema';
-
-const ReviewsQuery = graphql(
-  `
-    query ReviewsQuery($entityId: Int!) {
-      site {
-        product(entityId: $entityId) {
-          reviews(first: 5) {
-            edges {
-              node {
-                ...ProductReviewSchemaFragment
-                author {
-                  name
-                }
-                entityId
-                title
-                text
-                rating
-                createdAt {
-                  utc
-                }
-              }
-            }
-          }
-          reviewSummary {
-            averageRating
-          }
-        }
-      }
-    }
-  `,
-  [ProductReviewSchemaFragment],
-);
+import { ProductReviewSchema } from './product-review-schema';
+import { getReviews } from './reviews-data';
 
 interface Props {
   productId: number;
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
-export const Reviews = async ({ productId }: Props) => {
+export const Reviews = async ({ productId, searchParams }: Props) => {
   // TODO: add translations to component
   // const t = await getTranslations('Product.Reviews');
   const format = await getFormatter();
 
-  const { data } = await client.fetch({
-    document: ReviewsQuery,
-    variables: { entityId: productId },
-    fetchOptions: { next: { revalidate } },
-  });
+  const { data } = await getReviews({ entityId: productId, ...searchParams });
 
   const product = data.site.product;
 
@@ -62,6 +25,7 @@ export const Reviews = async ({ productId }: Props) => {
   }
 
   const reviews = removeEdgesAndNodes(product.reviews);
+  const { hasNextPage, hasPreviousPage, endCursor, startCursor } = product.reviews.pageInfo;
 
   const formattedReviews = reviews.map((review) => ({
     id: review.entityId.toString(),
@@ -79,7 +43,18 @@ export const Reviews = async ({ productId }: Props) => {
     <>
       <ReviewsComponent
         averageRating={product.reviewSummary.averageRating}
+        paginationInfo={
+          hasNextPage || hasPreviousPage
+            ? {
+                startCursorParamName: 'before',
+                endCursorParamName: 'after',
+                endCursor: hasNextPage ? endCursor : null,
+                startCursor: hasPreviousPage ? startCursor : null,
+              }
+            : undefined
+        }
         reviews={formattedReviews}
+        totalCount={product.reviewSummary.numberOfReviews}
       />
       {reviews.length > 0 && <ProductReviewSchema productId={productId} reviews={reviews} />}
     </>

@@ -13,7 +13,7 @@ interface Props {
   description?: string;
   showButton: boolean;
   buttonText: string;
-  buttonHref: string;
+  buttonHref: { href: string };
 }
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
@@ -31,7 +31,7 @@ function MakeswiftFeaturedProductsCarousel({
 
   const { data } = useSWR<GetFeaturedProductResponse>('/api/products/featured', fetcher);
 
-  const cta = showButton ? { label: buttonText, href: buttonHref } : undefined;
+  const cta = showButton ? { label: buttonText, href: buttonHref.href } : undefined;
   const products = data?.slice(0, limit).map(bcProductToVibesProduct) ?? [];
 
   return (

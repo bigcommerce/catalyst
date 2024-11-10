@@ -15,8 +15,9 @@ import React, {
   useMemo,
   useRef,
   useState,
+  useTransition,
 } from 'react';
-import { useFormState as useActionState } from 'react-dom';
+import { useFormState, useFormStatus } from 'react-dom';
 
 import { Button } from '@/vibes/soul/primitives/button';
 import { BcImage as Image } from '~/components/bc-image';
@@ -301,42 +302,44 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                   {item.label}
                 </Link>
               </NavigationMenu.Trigger>
-              <NavigationMenu.Content className="max-h-96 overflow-y-auto rounded-2xl bg-background shadow-xl shadow-foreground/5 ring-1 ring-foreground/5">
-                <div className="grid w-full grid-cols-4 divide-x divide-contrast-100">
-                  {item.groups?.map((group, columnIndex) => (
-                    <ul className="flex flex-col gap-1 p-5" key={columnIndex}>
-                      {/* Second Level Links */}
-                      {group.label != null && group.label !== '' && (
-                        <li>
-                          {group.href != null && group.href !== '' ? (
+              {item.groups != null && item.groups.length > 0 && (
+                <NavigationMenu.Content className="max-h-96 overflow-y-auto rounded-2xl bg-background shadow-xl shadow-foreground/5 ring-1 ring-foreground/5">
+                  <div className="grid w-full grid-cols-4 divide-x divide-contrast-100">
+                    {item.groups.map((group, columnIndex) => (
+                      <ul className="flex flex-col gap-1 p-5" key={columnIndex}>
+                        {/* Second Level Links */}
+                        {group.label != null && group.label !== '' && (
+                          <li>
+                            {group.href != null && group.href !== '' ? (
+                              <Link
+                                className="block rounded-lg px-3 py-2 font-medium ring-primary transition-colors hover:bg-contrast-100 focus-visible:outline-0 focus-visible:ring-2"
+                                href={group.href}
+                              >
+                                {group.label}
+                              </Link>
+                            ) : (
+                              <span className="block rounded-lg px-3 py-2 font-medium ring-primary transition-colors hover:bg-contrast-100 focus-visible:outline-0 focus-visible:ring-2">
+                                {group.label}
+                              </span>
+                            )}
+                          </li>
+                        )}
+                        {group.links.map((link, idx) => (
+                          // Third Level Links
+                          <li key={idx}>
                             <Link
-                              className="block rounded-lg px-3 py-2 font-medium ring-primary transition-colors hover:bg-contrast-100 focus-visible:outline-0 focus-visible:ring-2"
-                              href={group.href}
+                              className="block rounded-lg px-3 py-2 font-medium text-contrast-500 ring-primary transition-colors hover:bg-contrast-100 hover:text-foreground focus-visible:outline-0 focus-visible:ring-2"
+                              href={link.href}
                             >
-                              {group.label}
+                              {link.label}
                             </Link>
-                          ) : (
-                            <span className="block rounded-lg px-3 py-2 font-medium ring-primary transition-colors hover:bg-contrast-100 focus-visible:outline-0 focus-visible:ring-2">
-                              {group.label}
-                            </span>
-                          )}
-                        </li>
-                      )}
-                      {group.links.map((link, idx) => (
-                        // Third Level Links
-                        <li key={idx}>
-                          <Link
-                            className="block rounded-lg px-3 py-2 font-medium text-contrast-500 ring-primary transition-colors hover:bg-contrast-100 hover:text-foreground focus-visible:outline-0 focus-visible:ring-2"
-                            href={link.href}
-                          >
-                            {link.label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  ))}
-                </div>
-              </NavigationMenu.Content>
+                          </li>
+                        ))}
+                      </ul>
+                    ))}
+                  </div>
+                </NavigationMenu.Content>
+              )}
             </NavigationMenu.Item>
           ))}
         </ul>
@@ -435,28 +438,36 @@ function SearchForm<S extends SearchResult>({
   emptySearchSubtitle?: string;
 }) {
   const [query, setQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
-  const debouncedOnChange = useMemo(() => debounce(setDebouncedQuery, 300), []);
-  const [{ searchResults, lastResult }, formAction, isPending] = useActionState(searchAction, {
+  const [isSearching, startSearching] = useTransition();
+  const [{ searchResults, lastResult }, formAction] = useFormState(searchAction, {
     searchResults: null,
     lastResult: null,
   });
+  const [isDebouncing, setIsDebouncing] = useState(false);
+  const debouncedOnChange = useMemo(() => {
+    const debounced = debounce((query: string) => {
+      setIsDebouncing(false);
+
+      const formData = new FormData();
+
+      formData.append(searchParamName, query);
+
+      startSearching(() => {
+        formAction(formData);
+      });
+    }, 300);
+
+    return (query: string) => {
+      setIsDebouncing(true);
+
+      debounced(query);
+    };
+  }, [formAction, searchParamName]);
+  const isPending = isSearching || isDebouncing;
 
   useEffect(() => {
     if (lastResult?.error) console.log(lastResult.error);
   }, [lastResult]);
-
-  useEffect(() => {
-    if (debouncedQuery === '') return;
-
-    startTransition(() => {
-      const formData = new FormData();
-
-      formData.append(searchParamName, debouncedQuery);
-
-      formAction(formData);
-    });
-  }, [searchParamName, debouncedQuery, formAction]);
 
   return (
     <>
@@ -477,9 +488,7 @@ function SearchForm<S extends SearchResult>({
           type="text"
           value={query}
         />
-        <Button loading={isPending} size="icon" type="submit" variant="secondary">
-          <ArrowRight aria-label="Submit" size={20} strokeWidth={1.5} />
-        </Button>
+        <SubmitButton loading={isPending} />
       </form>
 
       {/* Search Results */}
@@ -495,6 +504,16 @@ function SearchForm<S extends SearchResult>({
         />
       )}
     </>
+  );
+}
+
+function SubmitButton({ loading }: { loading: boolean }) {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button loading={pending || loading} size="icon" type="submit" variant="secondary">
+      <ArrowRight aria-label="Submit" size={20} strokeWidth={1.5} />
+    </Button>
   );
 }
 
@@ -594,7 +613,7 @@ function LocaleForm({
   action: LocaleAction;
   locales: [Locale, ...Locale[]];
 }) {
-  const [lastResult, formAction] = useActionState(action, null);
+  const [lastResult, formAction] = useFormState(action, null);
   const activeLocale = locales.find((locale) => locale.id === activeLocaleId);
 
   useEffect(() => {

@@ -46,7 +46,7 @@ runtime.registerComponent(
       title: TextInput({ label: 'Title', defaultValue: 'Title' }),
       description: TextInput({ label: 'Description', defaultValue: 'Description' }),
       imageSrc: Image({ label: 'Image' }),
-      imageAlt: TextInput({ label: 'Image Alt', defaultValue: 'Image' }),
+      imageAlt: TextInput({ label: 'Image alt', defaultValue: 'Image' }),
       link: MSLink({ label: 'Link' }),
       label: TextInput({ label: 'Label', defaultValue: 'Label' }),
       mediaAlign: Select({

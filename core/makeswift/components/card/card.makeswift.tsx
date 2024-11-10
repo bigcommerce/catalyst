@@ -27,7 +27,7 @@ runtime.registerComponent(
       className: Style(),
       title: TextInput({ label: 'Title', defaultValue: 'Card' }),
       imageSrc: Image({ label: 'Image' }),
-      imageAlt: TextInput({ label: 'Image Alt', defaultValue: 'Card Image' }),
+      imageAlt: TextInput({ label: 'Image Alt', defaultValue: 'Card image' }),
       link: Link({ label: 'Link' }),
       textContrast: Select({
         label: 'Contrast',

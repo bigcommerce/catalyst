@@ -1,4 +1,13 @@
-import { Image, Link, List, Number, Shape, Style, TextInput } from '@makeswift/runtime/controls';
+import {
+  Image,
+  Link,
+  List,
+  Number,
+  Shape,
+  Style,
+  TextArea,
+  TextInput,
+} from '@makeswift/runtime/controls';
 
 import { Slideshow } from '@/vibes/soul/sections/slideshow';
 import { runtime } from '~/lib/makeswift/runtime';
@@ -45,19 +54,19 @@ runtime.registerComponent(
         label: 'Slides',
         type: Shape({
           type: {
-            title: TextInput({ label: 'Title', defaultValue: 'Slide Title' }),
-            description: TextInput({ label: 'Description', defaultValue: 'Slide Description' }),
+            title: TextInput({ label: 'Title', defaultValue: 'Slide title' }),
+            description: TextArea({ label: 'Description', defaultValue: 'Slide description' }),
             imageSrc: Image(),
-            imageAlt: TextInput({ label: 'Image Alt', defaultValue: 'Slide Image' }),
+            imageAlt: TextInput({ label: 'Image alt', defaultValue: 'Slide image' }),
             link: Link({ label: 'Link' }),
-            label: TextInput({ label: 'CTA Label', defaultValue: 'Learn More' }),
+            label: TextInput({ label: 'CTA label', defaultValue: 'Learn more' }),
           },
         }),
         getItemLabel(slide) {
-          return slide?.title || 'Slide Title';
+          return slide?.title || 'Slide title';
         },
       }),
-      interval: Number({ label: 'Interval', defaultValue: 5 }),
+      interval: Number({ label: 'Duration', defaultValue: 5, suffix: 's' }),
     },
   },
 );
