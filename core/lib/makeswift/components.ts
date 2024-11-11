@@ -19,6 +19,7 @@ import '~/makeswift/components/slideshow/slideshow.makeswift';
 import '~/makeswift/components/featured-image/featured-image.makeswift';
 import '~/makeswift/components/sticky-sidebar-layout/sticky-sidebar-layout.makeswift';
 import '~/makeswift/components/section-layout/section-layout.makeswift';
+import '~/makeswift/components/css-theme/register';
 
 import { MakeswiftComponentType } from '@makeswift/runtime';
 
