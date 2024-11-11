@@ -42,7 +42,7 @@ const Swatch = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
             >
               {color ? (
                 <span
-                  className="block h-9 w-9 group-disabled:bg-gray-200 group-disabled:opacity-30"
+                  className="swatch-span block h-9 w-9 group-disabled:bg-gray-200 group-disabled:opacity-30 -m-[0.1em] rounded-full"
                   style={{
                     backgroundColor: color,
                     backgroundImage: `url(${color})`,

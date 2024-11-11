@@ -43,7 +43,7 @@ const Banner = ({ promoImages }: PromoBannerProps) => {
               key={index}
               alt={promoAltText}
               src={promoImage.filename}
-              className="h-16 w-auto sm:h-24 md:h-28" // Responsive image sizes
+              className="!h-[5rem] w-auto sm:h-24 md:h-28" // Responsive image sizes
               height={90}
               width={100}
               priority={true}

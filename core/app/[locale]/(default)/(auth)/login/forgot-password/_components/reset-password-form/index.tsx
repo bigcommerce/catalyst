@@ -40,7 +40,7 @@ const SubmitButton = () => {
 
   return (
     <Button
-      className="relative uppercase px-8 py-2 w-full flex flex-row justify-center items-center p-[5px_10px] h-[42px] bg-[#008BB7] rounded-[3px] font-[500] text-[14px] tracking-[1.25px] text-white"
+      className="relative flex h-[42px] w-full flex-row items-center justify-center rounded-[3px] bg-[#008BB7] p-[5px_10px] px-8 py-2 text-[14px] font-[500] uppercase tracking-[1.25px] text-white"
       data-button
       loading={pending}
       loadingText={t('submitting')}
@@ -127,50 +127,60 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
         </Message>
       )}
 
-
-      <Form action={onSubmit} className="reset-pass-form max-w-[none] md:max-w-[514px] mx-0 xsm:mx-auto mt-0 md:mt-[30px] flex flex-col gap-[22px] pt-0 md:py-4 lg:p-0" ref={form}>
-        <p className="text-[16px] font-normal tracking-[0.5px] text-[#353535] leading-[32px]">{t('description')}</p>
-        <div className='flex flex-col gap-[22px]'>
-        <Field className="flex flex-col gap-[9px] items-start" name="email">
-          <FieldLabel className='font-normal text-[16px] flex items-center tracking-[0.15px] text-[#353535]' htmlFor="email">{t('emailLabel')}</FieldLabel>
-          <FieldControl asChild>
-            <Input
-              className='w-full'
-              autoComplete="email"
-              error={!isEmailValid}
-              id="email"
-              onChange={handleEmailValidation}
-              onInvalid={handleEmailValidation}
-              required
-              type="email"
-            />
-          </FieldControl>
-          <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-gray-500"
-            match="valueMissing"
-          >
-            {t('emailValidationMessage')}
-          </FieldMessage>
-        </Field>
-
-        {reCaptchaSettings?.isEnabledOnStorefront && (
-          <Field className="relative col-span-full max-w-full space-y-2" name="ReCAPTCHA">
-            <ReCaptcha
-              onChange={onReCatpchaChange}
-              ref={reCaptchaRef}
-              sitekey={reCaptchaSettings.siteKey}
-            />
-            {!isReCaptchaValid && (
-              <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200">
-                {t('recaptchaText')}
-              </span>
-            )}
+      <Form
+        action={onSubmit}
+        className="reset-pass-form mx-0 mt-0 flex max-w-[none] flex-col gap-[22px] pt-0 xsm:mx-auto md:mt-[30px] md:max-w-[514px] md:py-4 lg:p-0"
+        ref={form}
+      >
+        <p className="text-[16px] font-normal leading-[32px] tracking-[0.5px] text-[#353535]">
+          {t('description')}
+        </p>
+        <div className="flex flex-col gap-[22px]">
+          <Field className="flex flex-col items-start gap-[9px]" name="email">
+            <FieldLabel
+              className="flex items-center text-[16px] font-normal tracking-[0.15px] text-[#353535]"
+              htmlFor="email"
+            >
+              {t('emailLabel')}
+            </FieldLabel>
+            <FieldControl asChild>
+              <Input
+                className="flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] border border-[#cccbcb] bg-white"
+                autoComplete="email"
+                error={!isEmailValid}
+                id="email"
+                onChange={handleEmailValidation}
+                onInvalid={handleEmailValidation}
+                required
+                type="email"
+              />
+            </FieldControl>
+            <FieldMessage
+              className="inline-flex w-full text-sm text-gray-500"
+              match="valueMissing"
+            >
+              {t('emailValidationMessage')}
+            </FieldMessage>
           </Field>
-        )}
 
-        <FormSubmit asChild>
-          <SubmitButton />
-        </FormSubmit>
+          {reCaptchaSettings?.isEnabledOnStorefront && (
+            <Field className="relative col-span-full max-w-full space-y-2" name="ReCAPTCHA">
+              <ReCaptcha
+                onChange={onReCatpchaChange}
+                ref={reCaptchaRef}
+                sitekey={reCaptchaSettings.siteKey}
+              />
+              {!isReCaptchaValid && (
+                <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-red-200">
+                  {t('recaptchaText')}
+                </span>
+              )}
+            </Field>
+          )}
+
+          <FormSubmit asChild>
+            <SubmitButton />
+          </FormSubmit>
         </div>
       </Form>
     </>

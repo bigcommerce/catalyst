@@ -36,9 +36,9 @@ import { Button } from '~/components/ui/button';
 import { Checkbox, Field, Form, FormSubmit, Label } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 
-import { login } from '../_actions/login';
-import { registerCustomer } from '../_actions/register-customer';
-import { getRegisterCustomerQuery } from '../page-data';
+import { logins } from '../_actionss/logins';
+import { registerCustomers } from '../_actionss/register-customers';
+import { getRegisterCustomerQuerys } from '../page-datas';
 import { cn } from '~/lib/utils';
 import error from 'next/error';
 
@@ -47,9 +47,9 @@ interface FormStatus {
   message: string;
 }
 
-type CustomerFields = ExistingResultType<typeof getRegisterCustomerQuery>['customerFields'];
-type AddressFields = ExistingResultType<typeof getRegisterCustomerQuery>['addressFields'];
-type Countries = ExistingResultType<typeof getRegisterCustomerQuery>['countries'];
+type CustomerFields = ExistingResultType<typeof getRegisterCustomerQuerys>['customerFields'];
+type AddressFields = ExistingResultType<typeof getRegisterCustomerQuerys>['addressFields'];
+type Countries = ExistingResultType<typeof getRegisterCustomerQuerys>['countries'];
 type CountryCode = Countries[number]['code'];
 type CountryStates = Countries[number]['statesOrProvinces'];
 
@@ -92,7 +92,7 @@ const SubmitButton = ({ messages }: SubmitMessages) => {
   );
 };
 
-export const RegisterCustomerForm = ({ addressFields, customerFields }: RegisterCustomerProps) => {
+export const RegisterCustomerForms = ({ addressFields, customerFields }: RegisterCustomerProps) => {
   const form = useRef<HTMLFormElement>(null);
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
 
@@ -163,11 +163,11 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
   };
 
   const onSubmit = async (formData: FormData) => {
-    const submit = await registerCustomer({ formData });
+    const submit = await registerCustomers({ formData });
 
     if (submit.status === 'success') {
       setAccountState({ status: 'success' });
-      await login(formData);
+      await logins(formData);
     }
 
     if (submit.status === 'error') {

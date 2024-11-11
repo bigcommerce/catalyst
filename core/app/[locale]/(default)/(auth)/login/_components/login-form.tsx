@@ -63,7 +63,7 @@ const SubmitButton = () => {
 
   return (
     <Button
-      className="md:w-auto"
+      className="md:w-auto !w-full text-[14px] font-normal uppercase tracking-[1.25px] bg-[#008bb7] !important"
       loading={pending}
       loadingText={t('Form.submitting')}
       variant="primary"
@@ -137,7 +137,7 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
       )}
 
       <Form action={formAction} className="mb-14 flex flex-col gap-3 lg:p-0">
-        <Field className="relative flex flex-col items-start gap-5 space-y-2" name="email">
+        <Field className="relative flex flex-col items-start gap-2 space-y-2" name="email">
           {cookieIsSet === 1 && (
             <div className="flex flex-col items-center justify-center">
               <p className="text-center text-[20px] font-[500] leading-[32px] tracking-[0.15px] text-[#353535]">
@@ -187,7 +187,7 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
           </FieldMessage>
         </Field>
 
-        <Field className="pb- relative flex flex-col items-start gap-5 space-y-2" name="password">
+        <Field className="pb- relative flex flex-col items-start gap-2 space-y-2" name="password">
           <FieldLabel
             className="login-label flex items-center tracking-[0.15px]"
             htmlFor="password"
@@ -216,7 +216,7 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
 
         <div className="remember-forgot-div">
           <Field className="relative mt-2 inline-flex items-center space-y-2" name="remember-me">
-            <Checkbox aria-labelledby="remember-me" id="remember-me" name="remember-me" value="1" />
+            <Checkbox className='border-[#008bb7]' aria-labelledby="remember-me" id="remember-me" name="remember-me" value="1" />
             <Label
               className="ml-2 mt-0 cursor-pointer space-y-2 pb-2 md:my-0"
               htmlFor="remember-me"
@@ -227,7 +227,7 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
           </Field>
         </div>
 
-        <div className="login-submit-btn mt-[6px]">
+        <div className="login-submit-btn mt-[6px] w-full">
           <FormSubmit asChild>
             <SubmitButton />
           </FormSubmit>

@@ -12,12 +12,12 @@ const InternalButton = ({ icon }: { icon: string }) => {
   const { pending } = useFormStatus();
 
   return (
-    <Button className="mt-6 bg-white border-solid border-2 border-stone-950 align-middle" loading={pending} loadingText={t('loading')}>      
+    <Button className="pt-[10px] pb-[5px] bg-white border-solid border-2 border-stone-950 align-middle" loading={pending} loadingText={t('loading')}>      
       <BcImage
         alt="Amazon Pay"
         width={125}
         height={25}
-        className="w-[125px] h-[25px]"
+        className="w-[25%] h-[21px]"
         src={icon}
       />
     </Button>

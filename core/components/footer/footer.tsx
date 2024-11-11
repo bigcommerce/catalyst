@@ -80,12 +80,27 @@ export const Footer = async () => {
                   type="email"
                   name="email"
                   placeholder="Enter your email"
-                  className="subscription-input !placeholder:pl-[8px] placeholder:text-[14px] placeholder:font-normal placeholder:leading-[24px] tracking-[0.25px] text-left text-[#6b7280] h-[40px]"
+                  className="subscription-input !placeholder:pl-[8px] placeholder:text-[14px] placeholder:font-normal placeholder:leading-[24px] tracking-[0.25px] text-left text-[#6b7280] h-[40px] focus:outline-none"
                   required
                 />
-              <button type="submit" className="text-[14px] font-medium leading-[32px] tracking-[1.25px] text-left text-white subscription-button">
+<button 
+  type="submit" 
+  className="
+    text-[14px] 
+    font-normal 
+    text-center 
+    uppercase 
+    w-[85px] 
+    h-[40px] 
+    bg-[#008bb7] 
+    text-white 
+    relative 
+    top-[-1px]
+    subscription-button
+">
   Sign Up
 </button>
+
 
               </form>
             </div>
@@ -105,7 +120,7 @@ export const Footer = async () => {
         {
           label: (
             
-            <div className="footer-social-media">
+            <div className="footer-social-media flex !ml-[-7px]">
               
               {/* Social Media Icons Inside Footer */}
               {socialIcons && Object.entries(socialIcons).map(([key, value]) => (

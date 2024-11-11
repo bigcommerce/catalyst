@@ -59,7 +59,7 @@ const ProductCard = ({
   <div className={cn('group div-product relative flex flex-row w-[350px] p-[20px_20px_10px_20px] border-[2px] border-[#cccbcb] overflow-visible', className)} {...props}>
     <div className="relative flex justify-center pb-3">
       <div
-        className={cn('relative flex-auto', {
+        className={cn('relative flex-auto w-[140px] !border-[2px] !border-[#cccbcb] mr-[15px]', {
           'aspect-square': imageSize === 'square',
           'aspect-[4/5]': imageSize === 'tall',
           'aspect-[7/5]': imageSize === 'wide',
@@ -81,9 +81,9 @@ const ProductCard = ({
     </div>
     <div className={cn('flex flex-1 flex-col gap-1 mt-3', Boolean(addToCart) && 'justify-end')}>
       {subtitle ? <p className="text-base text-gray-500 hidden">{subtitle}</p> : null}
-      <h3 className="text-xl font-bold lg:text-2xl">
+      <h3 className="related-product-name text-xl font-bold lg:text-2xl leading-normal text-[14px]">
         <Link
-          className="focus-visible:outline text-base font-normal text-[#353535] focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-primary/20 focus-visible:ring-0"
+          className="line-clamp-2 text-[#353535] !text-opacity-100 leading-[22px] overflow-hidden text-ellipsis focus-visible:outline text-base font-normal text-[#353535] focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-primary/20 focus-visible:ring-0"
           href={href}
         >
           <span aria-hidden="true" className="absolute inset-0 bottom-20" />

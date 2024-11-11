@@ -50,8 +50,8 @@ const Footer = ({
   socialMediaLinks,
   ...props
 }: Props) => (
-  <footer className={cn('px-18  2xl:container 2xl:mx-auto !max-w-[100%]', className)} {...props}>
-    <section className="section-footer flex flex-col gap-8 border-t border-gray-200 px-4 py-10 md:flex-row lg:gap-4 lg:px-12">
+  <footer className={cn('px-18  2xl:container 2xl:mx-auto !max-w-[100%] bg-[#002a37] mt-[50px] text-white', className)} {...props}>
+    <section className="section-footer flex flex-col gap-8 border-t border-gray-200 px-4 pt-10 pb-0 md:flex-row lg:gap-4 lg:px-12">
       <nav className="grid flex-auto auto-cols-fr gap-8 sm:grid-flow-col pl-[5em]" id="nav-footer-section">
         {sections.map((section, index) => (
           <div key={`${section.title}-${index}`}>

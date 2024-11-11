@@ -205,7 +205,7 @@ export default async function Cart() {
           ))}
         </ul>
 
-        <div className="cart-right-side col-span-1 col-start-2 lg:col-start-3 border-t border-[#CCCBCB] pt-1 sticky top-0 overflow-hidden min-h-[800px] h-[100px]">
+        <div className="cart-right-side pt-[1.4em] -mt-[9em] col-span-1 col-start-2 lg:col-start-3 border-t border-[#CCCBCB] pt-1 sticky top-0 overflow-hidden min-h-[800px] h-[100px]">
 
           {checkout && <CheckoutSummary checkout={checkout} geography={geography} />}
 
