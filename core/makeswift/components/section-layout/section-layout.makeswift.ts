@@ -8,7 +8,7 @@ runtime.registerComponent(SectionLayout, {
   label: 'Layouts / Section',
   // icon: "accordion", TODO: (drew) add icon
   props: {
-    className: Style(),
+    className: Style({ properties: [Style.Border, Style.BorderRadius] }),
     children: Slot(),
     containerSize: Select({
       label: 'Container Size',
