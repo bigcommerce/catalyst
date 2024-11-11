@@ -2,7 +2,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
-import { SearchForm } from '~/components/search-form';
+import { EmptySearch } from '~/components/empty-search';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
@@ -31,14 +31,8 @@ export default async function Search({ searchParams }: Props) {
 
   const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : undefined;
 
-  // TODO: add Soul component
   if (!searchTerm) {
-    return (
-      <>
-        <h1 className="mb-3 text-4xl font-black lg:text-5xl">{t('heading')}</h1>
-        <SearchForm />
-      </>
-    );
+    return <EmptySearch />;
   }
 
   const search = await fetchFacetedSearch({ ...searchParams });
@@ -56,11 +50,7 @@ export default async function Search({ searchParams }: Props) {
   }));
 
   if (products.length === 0) {
-    return (
-      <div>
-        <SearchForm initialTerm={searchTerm} />
-      </div>
-    );
+    return <EmptySearch searchTerm={searchTerm} />;
   }
 
   const totalProducts = productsCollection.collectionInfo?.totalItems ?? 0;

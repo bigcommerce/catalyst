@@ -500,7 +500,8 @@
       "searchPlaceholder": "Search...",
       "search": "Search",
       "noSearchResults": "Sorry, no results for {term}.",
-      "checkSpelling": "Please check the spelling or try another search."
+      "checkSpelling": "Please check the spelling or try another search.",
+      "clickToSearch": "Click the search icon at the top to search all products."
     },
     "AddToCartButton": {
       "addToCart": "Add to cart",
