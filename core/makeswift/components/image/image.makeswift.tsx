@@ -15,20 +15,20 @@ import { runtime } from '~/lib/makeswift/runtime';
 runtime.registerComponent(
   function MSImage({
     className,
-    image,
+    file,
     link,
     ...rest
   }: Omit<ComponentPropsWithoutRef<typeof Image>, 'src'> & {
-    image?: { url: string; dimensions: { width: number; height: number } };
+    file?: { url: string; dimensions: { width: number; height: number } };
     link: { href: string; target?: string };
   }) {
-    const imageElement = image ? (
+    const image = file ? (
       <Image
         {...rest}
         className={className}
-        height={image.dimensions.height}
-        src={image.url}
-        width={image.dimensions.width}
+        height={file.dimensions.height}
+        src={file.url}
+        width={file.dimensions.width}
       />
     ) : (
       <Image
@@ -41,10 +41,10 @@ runtime.registerComponent(
     );
 
     return link.href === '#' ? (
-      imageElement
+      image
     ) : (
       <Link className={className} href={link.href} target={link.target}>
-        {imageElement}
+        {image}
       </Link>
     );
   },
@@ -55,7 +55,7 @@ runtime.registerComponent(
       className: Style({
         properties: [Style.Width, Style.Margin, Style.Border, Style.BorderRadius],
       }),
-      image: ImageControl({
+      file: ImageControl({
         format: ImageControl.Format.WithDimensions,
       }),
       alt: TextInput({
