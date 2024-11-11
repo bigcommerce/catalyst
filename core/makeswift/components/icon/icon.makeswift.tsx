@@ -17,7 +17,7 @@ runtime.registerComponent(
   },
   {
     type: 'icon',
-    label: 'Primitives / Icon',
+    label: 'Basic / Icon',
     props: {
       className: Style({ properties: [Style.Margin] }),
       size: Number({

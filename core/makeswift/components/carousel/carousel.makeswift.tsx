@@ -51,7 +51,7 @@ runtime.registerComponent(
   },
   {
     type: 'primitive-carousel',
-    label: 'Primitives / Carousel',
+    label: 'Basic / Carousel',
     icon: 'carousel',
     props: {
       className: Style(),

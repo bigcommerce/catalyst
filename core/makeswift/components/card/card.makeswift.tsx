@@ -21,7 +21,7 @@ runtime.registerComponent(
   },
   {
     type: 'primitive-card',
-    label: 'Primitives / Card',
+    label: 'Basic / Card',
     icon: 'layout',
     props: {
       className: Style(),
