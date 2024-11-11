@@ -92,11 +92,8 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
         let cartId: string = result?.data?.entityId || '';
         //update the cart metafields
         if(cartId) {
-          let optionValueToUpdate: any = '';
           let lineItemId = productFlyout?.productData?.entityId;
           let productId = productFlyout?.productData?.productEntityId;
-          let variantProductId = productFlyout?.productData?.variantEntityId;
-          let prodQuantity = productFlyout?.productData?.quantity;
           let optionValue = {
             'productId': productId,
             'variantId': variantId,
@@ -134,31 +131,29 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
             }
             await UpdateCartMetaFields(cartId, metaFieldId, cartMeta);
           }
+          toast.success(
+            () => (
+              <div className="flex items-center gap-3">
+                <span>
+                  {t.rich('success', {
+                    cartItems: quantity,
+                    cartLink: (chunks: any) => (
+                      <Link
+                        className="font-semibold text-primary"
+                        href="/cart"
+                        prefetch="viewport"
+                        prefetchKind="full"
+                      >
+                        {chunks}
+                      </Link>
+                    ),
+                  })}
+                </span>
+              </div>
+            ),
+            { icon: <Check className="text-success-secondary" /> },
+          );
         }
-        
-        // Optimistic update
-        toast.success(
-          () => (
-            <div className="flex items-center gap-3">
-              <span>
-                {t.rich('success', {
-                  cartItems: quantity,
-                  cartLink: (chunks: any) => (
-                    <Link
-                      className="font-semibold text-primary"
-                      href="/cart"
-                      prefetch="viewport"
-                      prefetchKind="full"
-                    >
-                      {chunks}
-                    </Link>
-                  ),
-                })}
-              </span>
-            </div>
-          ),
-          { icon: <Check className="text-success-secondary" /> },
-        );
       }
     });
   };
