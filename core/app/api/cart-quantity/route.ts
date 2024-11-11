@@ -5,7 +5,8 @@ import { getChannelIdFromLocale } from '~/channels.config';
 import { getCart } from '~/client/queries/get-cart';
 
 export const GET = async (request: NextRequest) => {
-  const cartId = cookies().get('cartId')?.value;
+  const cookieStore = await cookies();
+  const cartId = cookieStore.get('cartId')?.value;
 
   const searchParams = request.nextUrl.searchParams;
   const locale = searchParams.get('locale') ?? undefined;

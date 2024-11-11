@@ -31,10 +31,12 @@ export async function generateMetadata() {
 }
 
 interface Props {
-  params: { locale: LocaleType };
+  params: Promise<{ locale: LocaleType }>;
 }
 
-export default async function StoreSelector({ params: { locale: selectedLocale } }: Props) {
+export default async function StoreSelector({ params }: Props) {
+  const { locale: selectedLocale } = await params;
+
   setRequestLocale(selectedLocale);
 
   const t = await getTranslations('StoreSelector');
@@ -54,7 +56,6 @@ export default async function StoreSelector({ params: { locale: selectedLocale }
           </Link>
         )}
       </header>
-
       <div className="flex flex-col gap-2 px-4 lg:container sm:px-10 lg:mx-auto lg:max-w-[1000px] lg:px-12">
         <h1 className="text-3xl font-black lg:text-4xl">{t('heading')}</h1>
 
