@@ -30,7 +30,9 @@ export function StickySidebarLayout({
         <div
           className={clsx(
             'shrink-0',
-            sidebarPosition === 'right' ? 'order-2 pt-5 @4xl:pl-8' : 'order-1 pb-5 @4xl:pr-8',
+            sidebarPosition === 'right'
+              ? 'order-2 pt-5 @4xl:pl-8 @4xl:pt-0'
+              : 'order-1 pb-5 @4xl:pb-0 @4xl:pr-8',
             {
               '1/3': '@4xl:w-1/3',
               '1/2': '@4xl:w-1/2',
@@ -46,7 +48,9 @@ export function StickySidebarLayout({
         <div
           className={clsx(
             'flex-1',
-            sidebarPosition === 'right' ? 'order-1 pb-5 @4xl:pr-8' : 'order-2 pt-5 @4xl:pl-8',
+            sidebarPosition === 'right'
+              ? 'order-1 pb-5 @4xl:pb-0 @4xl:pr-8'
+              : 'order-2 pt-5 @4xl:pl-8 @4xl:pt-0',
             {
               '1/3': '@4xl:w-2/3',
               '1/2': '@4xl:w-1/2',
