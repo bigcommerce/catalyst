@@ -36,7 +36,7 @@ export function PriceLabel({ className, price }: Props) {
       return (
         <span className={clsx('block font-semibold', className)}>
           <span className="font-normal text-contrast-400 line-through">{price.previousValue}</span>{' '}
-          <span className="text-accent">{price.currentValue}</span>
+          <span className="text-foreground">{price.currentValue}</span>
         </span>
       );
 
