@@ -56,7 +56,7 @@ export function ProductsListSection({
             {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
             <Suspense fallback="Loading...">
               <div className="flex flex-wrap items-center justify-between gap-4 pb-8 pt-6 text-foreground">
-                <h1 className="flex items-center gap-2 text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
+                <h1 className="flex items-center gap-2 font-heading text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
                   <Suspense
                     fallback={
                       <span className="inline-flex h-[1lh] w-[6ch] animate-pulse rounded-lg bg-contrast-100" />
