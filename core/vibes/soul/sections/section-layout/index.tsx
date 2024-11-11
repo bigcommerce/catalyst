@@ -10,7 +10,7 @@ export function SectionLayout({
   containerSize?: 'lg' | 'xl' | '2xl';
 }) {
   return (
-    <section className={clsx('w-full @container', className)}>
+    <section className={clsx('w-full overflow-hidden @container', className)}>
       <div
         className={clsx(
           'mx-auto px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20',
