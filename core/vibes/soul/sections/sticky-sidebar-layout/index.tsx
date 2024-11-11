@@ -19,7 +19,7 @@ export function StickySidebarLayout({
     <section className={clsx('@container', className)}>
       <div
         className={clsx(
-          'mx-auto flex flex-col items-stretch gap-x-16 gap-y-10 px-4 py-10 @xl:px-6 @xl:py-14 @4xl:flex-row @4xl:px-8 @4xl:py-20',
+          'mx-auto flex flex-col items-stretch px-4 py-10 @xl:px-6 @xl:py-14 @4xl:flex-row @4xl:px-8 @4xl:py-20',
           {
             lg: 'max-w-screen-lg',
             xl: 'max-w-screen-xl',
@@ -30,7 +30,7 @@ export function StickySidebarLayout({
         <div
           className={clsx(
             'shrink-0',
-            sidebarPosition === 'right' ? 'order-2' : 'order-1',
+            sidebarPosition === 'right' ? 'order-2 pt-5 @4xl:pl-8' : 'order-1 pb-5 @4xl:pr-8',
             {
               '1/3': '@4xl:w-1/3',
               '1/2': '@4xl:w-1/2',
@@ -45,7 +45,8 @@ export function StickySidebarLayout({
         </div>
         <div
           className={clsx(
-            sidebarPosition === 'right' ? 'order-1' : 'order-2',
+            'flex-1',
+            sidebarPosition === 'right' ? 'order-1 pb-5 @4xl:pr-8' : 'order-2 pt-5 @4xl:pl-8',
             {
               '1/3': '@4xl:w-2/3',
               '1/2': '@4xl:w-1/2',
