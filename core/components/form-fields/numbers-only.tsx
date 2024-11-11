@@ -23,7 +23,7 @@ export const NumbersOnly = ({ defaultValue, field, isValid, name, onChange }: Nu
   const t = useTranslations('Components.FormFields.Validation');
 
   return (
-    <Field className="relative space-y-2" name={name}>
+    <Field className="relative space-y-2 mm2" name={name}>
       <FieldLabel
         className="font-semibold"
         htmlFor={`field-${field.entityId}`}

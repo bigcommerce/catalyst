@@ -29,7 +29,7 @@ export const MultilineText = ({
   const t = useTranslations('Components.FormFields.Validation');
 
   return (
-    <Field className="relative space-y-2" name={name}>
+    <Field className="relative space-y-2 mm1" name={name}>
       <FieldLabel
         className="font-semibold"
         htmlFor={`field-${field.entityId}`}

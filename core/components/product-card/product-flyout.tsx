@@ -168,7 +168,7 @@ export const ProductFlyout = ({
               </div>
             </div>
             <Dialog.Description></Dialog.Description>
-            <Dialog.Content className="popup-box1 flex flex-col items-center ssm:items-start ssm:flex-row gap-[30px]">
+            <Dialog.Content className="popup-box1 !pointer-events-auto flex flex-col items-center ssm:items-start ssm:flex-row gap-[30px]">
               <div className="popup-box1-div1 relative flex h-[200px] w-[200px] ssm:h-[160px] ssm:w-[140px] border border-[#cccbcb]">
                 <BcImage
                   alt={productData?.name}

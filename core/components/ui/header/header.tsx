@@ -196,7 +196,7 @@ const Header = ({
 
         <NavigationMenuPrimitive.Viewport
           id="nav-menu-viewport"
-          className="absolute start-0 top-full z-50 w-full bg-white pb-12 pt-6 shadow-xl duration-200 animate-in slide-in-from-top-5"
+          className="absolute z-[10000000] start-0 top-full z-50 w-full bg-white pb-12 pt-6 shadow-xl duration-200 animate-in slide-in-from-top-5"
         />
       </NavigationMenuPrimitive.Root>
 

@@ -47,7 +47,7 @@ export const Text = ({ defaultValue, field, isValid, name, onChange, type }: Tex
       <div className="relative h-7 pass2">
         {field.isRequired && (
           <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-error-secondary validation-error-email relative -top-3"
+            className="inline-flex w-full text-xs font-normal text-error-secondary validation-error-email relative"
             match="valueMissing"
           >
             {t(fieldName ?? 'empty')}

@@ -42,7 +42,18 @@ export const AddToCartButton = ({
   return (
     <Button
       id="add-to-cart"
-      className={className}
+      className="rounded-[4px] 
+  uppercase 
+  relative 
+  px-[30px] 
+  py-[15px] 
+  !bg-[#03465c] 
+  text-white 
+  text-[14px] 
+  font-medium 
+  transition-colors 
+  duration-300 
+  ease-in-out"
       disabled={isProductDisabled}
       loading={loading}
       loadingText={t('processing')}

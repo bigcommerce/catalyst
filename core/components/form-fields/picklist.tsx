@@ -52,7 +52,7 @@ export const Picklist = ({
       : undefined;
 
   return (
-    <Field className="relative space-y-2" name={name}>
+    <Field className="relative space-y-2 mm4" name={name}>
       <FieldLabel
         className="font-semibold"
         htmlFor={`field-${field.entityId}`}

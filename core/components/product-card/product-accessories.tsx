@@ -170,7 +170,7 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
   return (
     <>
       {accessories?.length}
-      <div className={`left-container w-[150px] h-[177px]${baseImage}`}>
+      <div className={`left-container bg-gray-200 w-[150px] h-[177px]${baseImage}`}>
         <BcImage
           alt={accessories?.label}
           className={`object-fill h-[177px]${baseImage}${hideImage}`}

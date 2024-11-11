@@ -21,6 +21,7 @@ export default function DefaultLayout({ children, params: { locale } }: Props) {
       {/* //I want to add some components here if it was login page  */}
       {/* Can you make it */}
       <main className="flex-1 px-4 2xl:container sm:px-10 xl:px-12 2xl:mx-auto main-slider">
+      {/* <main className="flex-1 main-slider"> */}
         {children}
       </main>
 

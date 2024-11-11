@@ -26,7 +26,7 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
   const fieldName = FieldNameToFieldId[field.entityId];
 
   return (
-    <Field className="relative space-y-2" name={name}>
+    <Field className="relative space-y-2 mm3" name={name}>
       <FieldLabel
         className="font-semibold"
         htmlFor={`field-${field.entityId}`}
@@ -48,7 +48,7 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
       <div className="relative h-7 pass1">
         {field.isRequired && (
           <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-error-secondary relative -top-3"
+            className="inline-flex w-full text-xs font-normal text-error-secondary relative"
             match="valueMissing"
           >
             {t('password')}

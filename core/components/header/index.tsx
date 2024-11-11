@@ -116,6 +116,7 @@ export const Header = async ({ cart }: Props) => {
                     { href: '/login', label: 'Purchase History' },
                     { href: '/login', label: 'Financing' },
                     { href: '/login', label: 'Login' },
+                    { href: '/trade', label: 'trade' },
                   ]
             }
             trigger={
