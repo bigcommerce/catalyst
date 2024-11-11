@@ -24,3 +24,4 @@ export default async function Home({ params: { locale } }: Props) {
 }
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
