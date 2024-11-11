@@ -148,7 +148,7 @@ runtime.registerComponent(
   },
   {
     type: 'primitive-products-carousel',
-    label: 'Primitives / Products Carousel',
+    label: 'Catalog / Products Carousel',
     icon: 'carousel',
     props: {
       className: Style(),
