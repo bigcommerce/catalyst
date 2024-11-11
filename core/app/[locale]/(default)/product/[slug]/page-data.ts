@@ -205,7 +205,6 @@ const ProductSchemaFragment = graphql(`
   fragment ProductSchemaFragment on Product {
     name
     path
-    plainTextDescription
     sku
     gtin
     mpn
@@ -289,6 +288,7 @@ const DetailsFragment = graphql(
 export const DescriptionFragment = graphql(`
   fragment DescriptionFragment on Product {
     description
+    plainTextDescription(characterLimit: 1200)
   }
 `);
 

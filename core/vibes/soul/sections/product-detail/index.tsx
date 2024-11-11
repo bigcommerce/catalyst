@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/primitives/breadcrumbs';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
 import { Rating } from '@/vibes/soul/primitives/rating';
@@ -15,7 +17,7 @@ type ProductDetailProduct = {
   subtitle?: string;
   badge?: string;
   rating?: number;
-  description?: string;
+  description?: string | ReactNode;
 };
 
 type Props<F extends Field> = {
@@ -55,7 +57,7 @@ export function ProductDetail<F extends Field>({ product, action, fields, breadc
             </div>
 
             {product.description != null && product.description !== '' && (
-              <p className="mb-6 text-contrast-500">{product.description}</p>
+              <div className="mb-6 text-contrast-500">{product.description}</div>
             )}
 
             <ProductDetailForm action={action} fields={fields} productId={product.id} />
