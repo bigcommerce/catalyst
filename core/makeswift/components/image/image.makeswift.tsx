@@ -40,10 +40,6 @@ runtime.registerComponent(
       />
     );
 
-    console.log({
-      link,
-    });
-
     return link.href === '#' ? (
       imageElement
     ) : (
