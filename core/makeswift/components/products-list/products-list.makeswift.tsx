@@ -147,7 +147,7 @@ runtime.registerComponent(
   },
   {
     type: 'primitive-products-list',
-    label: 'Primitives / Products List',
+    label: 'Catalog / Products List',
     icon: 'gallery',
     props: {
       className: Style(),

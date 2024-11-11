@@ -23,8 +23,8 @@ runtime.registerComponent(StickySidebarLayout, {
     sidebarPosition: Select({
       label: 'Sidebar Position',
       options: [
-        { value: 'left', label: 'Left' },
-        { value: 'right', label: 'Right' },
+        { value: 'left', label: 'Before' },
+        { value: 'right', label: 'After' },
       ],
       defaultValue: 'left',
     }),
