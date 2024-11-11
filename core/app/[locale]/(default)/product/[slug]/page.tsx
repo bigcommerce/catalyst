@@ -4,12 +4,12 @@ import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
-import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { ReviewsSkeleton } from '@/vibes/soul/sections/reviews';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { LocaleType } from '~/i18n/routing';
 import { AccordionItem, ProductDescription } from '~/makeswift/components/product-description';
+import { ProductDetail } from '~/makeswift/components/product-detail';
 
 import { addToCart } from './_actions/add-to-cart';
 import { ProductSchema } from './_components/product-schema';
@@ -148,6 +148,8 @@ export default async function Product({ params: { locale, slug }, searchParams }
   const formattedProduct = {
     id: product.entityId.toString(),
     title: product.name,
+    description: product.description,
+    plainTextDescription: product.plainTextDescription,
     href: product.path,
     images: product.defaultImage
       ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...images]
