@@ -145,7 +145,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
             </FieldLabel>
             <FieldControl asChild>
               <Input
-                className="flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] border border-[#cccbcb] bg-white p-[6px_10px]"
+                className="flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] border border-[#cccbcb] bg-white"
                 autoComplete="email"
                 error={!isEmailValid}
                 id="email"
@@ -156,7 +156,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
               />
             </FieldControl>
             <FieldMessage
-              className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-gray-500"
+              className="inline-flex w-full text-sm text-gray-500"
               match="valueMissing"
             >
               {t('emailValidationMessage')}
