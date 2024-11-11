@@ -17,7 +17,7 @@ runtime.registerComponent(
   },
   {
     type: 'primitive-inline-form',
-    label: 'Primitives / Inline Email Form',
+    label: 'Basic / Inline Email Form',
     icon: 'form',
     props: {
       className: Style(),

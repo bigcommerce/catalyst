@@ -31,7 +31,7 @@ runtime.registerComponent(
   },
   {
     type: 'primitive-accordions',
-    label: 'Primitives / Accordions',
+    label: 'Basic / Accordions',
     // icon: "accordion", TODO: (drew) add icon
     props: {
       className: Style(),
