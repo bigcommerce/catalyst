@@ -137,7 +137,7 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
       )}
 
       <Form action={formAction} className="mb-14 flex flex-col gap-3 lg:p-0">
-        <Field className="relative flex flex-col items-start gap-5 space-y-2" name="email">
+        <Field className="relative flex flex-col items-start gap-2 space-y-2" name="email">
           {cookieIsSet === 1 && (
             <div className="flex flex-col items-center justify-center">
               <p className="text-center text-[20px] font-[500] leading-[32px] tracking-[0.15px] text-[#353535]">
@@ -187,7 +187,7 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
           </FieldMessage>
         </Field>
 
-        <Field className="pb- relative flex flex-col items-start gap-5 space-y-2" name="password">
+        <Field className="pb- relative flex flex-col items-start gap-2 space-y-2" name="password">
           <FieldLabel
             className="login-label flex items-center tracking-[0.15px]"
             htmlFor="password"
