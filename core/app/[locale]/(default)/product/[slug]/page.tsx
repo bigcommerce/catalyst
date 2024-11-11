@@ -141,18 +141,18 @@ export default async function Product({ params: { locale, slug }, searchParams }
       : []),
   ];
 
+  const images = removeEdgesAndNodes(product.images).map((image) => ({
+    src: image.url,
+    alt: image.altText,
+  }));
+
   const formattedProduct = {
     id: product.entityId.toString(),
     title: product.name,
     href: product.path,
-    image: product.defaultImage && {
-      src: product.defaultImage.url,
-      alt: product.defaultImage.altText,
-    },
-    images: removeEdgesAndNodes(product.images).map((image) => ({
-      src: image.url,
-      alt: image.altText,
-    })),
+    images: product.defaultImage
+      ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...images]
+      : images,
     price: pricesTransformer(product.prices, format),
     subtitle: product.brand?.name,
     rating: product.reviewSummary.averageRating,
@@ -329,14 +329,7 @@ export default async function Product({ params: { locale, slug }, searchParams }
     <>
       <ProductDetail action={addToCart} fields={formattedFields} product={formattedProduct} />
 
-      <ProductDescription
-        accordions={accordions}
-        image={{
-          src: product.defaultImage?.url ?? '',
-          alt: product.defaultImage?.altText ?? '',
-        }}
-        product={formattedProduct}
-      />
+      <ProductDescription accordions={accordions} image={images[0]} product={formattedProduct} />
 
       <ProductSchema product={product} />
 
