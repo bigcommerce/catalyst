@@ -567,16 +567,3 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
     padding: 5px 40px 15px;
   }
 }
-
-@media screen and (max-width: 768px) {
-  .cart-deleteIcon form {
-    order: 1;
-    display: flex;
-    justify-content: flex-end;
-  }
-  .cart-deleteIcon .cart-add-to-cart {
-    order: 1;
-    position: absolute;
-    bottom: -18px;
-  }
-}
