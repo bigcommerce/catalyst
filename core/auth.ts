@@ -135,6 +135,10 @@ const config = {
           },
         });
 
+        if (response.errors && response.errors.length > 0) {
+          return null;
+        }
+
         const result = response.data.login;
 
         if (!result.customer || !result.customerAccessToken) {
