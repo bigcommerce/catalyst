@@ -3,13 +3,15 @@ import { PropsWithChildren } from 'react';
 
 import { LocaleType } from '~/i18n/routing';
 
-import { TabNavigation } from './_components/tab-navigation';
+import { TabNavigation, TabType } from './_components/tab-navigation';
 
 interface Props extends PropsWithChildren {
-  params: { locale: LocaleType };
+  params: Promise<{ locale: LocaleType; tab?: TabType }>;
 }
 
-export default function AccountTabLayout({ children, params: { locale } }: Props) {
+export default async function AccountTabLayout({ children, params }: Props) {
+  const { locale } = await params;
+
   setRequestLocale(locale);
 
   return (

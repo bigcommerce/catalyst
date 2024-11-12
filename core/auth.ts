@@ -75,7 +75,8 @@ const config = {
   },
   events: {
     async signIn({ user: { customerAccessToken } }) {
-      const cookieCartId = cookies().get('cartId')?.value;
+      const cookieStore = await cookies();
+      const cookieCartId = cookieStore.get('cartId')?.value;
 
       if (cookieCartId) {
         try {

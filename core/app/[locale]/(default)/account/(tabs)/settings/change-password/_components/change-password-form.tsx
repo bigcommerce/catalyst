@@ -1,8 +1,8 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { ChangeEvent, useActionState, useEffect, useRef, useState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
 import { logout } from '~/components/header/_actions/logout';
@@ -97,7 +97,7 @@ const SubmitButton = () => {
 export const ChangePasswordForm = () => {
   const form = useRef<HTMLFormElement>(null);
   const t = useTranslations('Account.Settings.ChangePassword');
-  const [state, formAction] = useFormState(changePassword, {
+  const [state, formAction] = useActionState(changePassword, {
     status: 'idle',
     message: '',
   });

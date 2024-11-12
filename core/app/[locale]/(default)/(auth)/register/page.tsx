@@ -27,6 +27,7 @@ export default async function Register() {
   }
 
   const { addressFields, customerFields, reCaptchaSettings } = registerCustomerData;
+  const reCaptcha = await bypassReCaptcha(reCaptchaSettings);
 
   return (
     <div className="mx-auto mb-10 mt-8 text-base lg:w-2/3">
@@ -34,7 +35,7 @@ export default async function Register() {
       <RegisterCustomerForm
         addressFields={addressFields}
         customerFields={customerFields}
-        reCaptchaSettings={bypassReCaptcha(reCaptchaSettings)}
+        reCaptchaSettings={reCaptcha}
       />
     </div>
   );
