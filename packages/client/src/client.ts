@@ -24,8 +24,18 @@ interface Config<FetcherRequestInit extends RequestInit = RequestInit> {
   ) => Promise<Partial<FetcherRequestInit> | undefined> | Partial<FetcherRequestInit> | undefined;
 }
 
+interface BigCommerceResponseError {
+  message: string;
+  locations: Array<{
+    line: number;
+    column: number;
+  }>;
+  path: string[];
+}
+
 interface BigCommerceResponse<T> {
   data: T;
+  errors?: BigCommerceResponseError[];
 }
 
 class Client<FetcherRequestInit extends RequestInit = RequestInit> {

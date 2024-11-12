@@ -31,9 +31,6 @@ export const client = createClient({
 
       return getChannelIdFromLocale(locale) ?? defaultChannelId;
     } catch {
-      // eslint-disable-next-line no-console
-      console.error('Warning: issue using `getLocale`, using default channel id instead.');
-
       return defaultChannelId;
     }
   },
