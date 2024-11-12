@@ -16,18 +16,29 @@ import { GetCartMetaFields, CreateCartMetaFields, UpdateCartMetaFields } from '.
 interface Props {
   accessories: any;
   index: number;
-  fanPopup:string;
+  fanPopup: string;
   currencyCode: string;
 }
 
-
-export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup}: Props) => {
+export const ProductAccessories = ({ accessories, index, currencyCode, fanPopup }: Props) => {
   const format = useFormatter();
   const productFlyout = useCommonContext();
   const t = useTranslations('Components.ProductCard.AddToCart');
   const cart = useCart();
   let accessoriesProducts: any = accessories?.productData?.map(
-    ({ sku, id, price, name, sale_price }: { sku: any; id: any; price: any; name: any, sale_price: any }) => ({
+    ({
+      sku,
+      id,
+      price,
+      name,
+      sale_price,
+    }: {
+      sku: any;
+      id: any;
+      price: any;
+      name: any;
+      sale_price: any;
+    }) => ({
       value: id,
       label: `(+$${sale_price}) ${sku}-  ${name}`,
     }),
@@ -44,13 +55,13 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
   const onProductChange = (variant: any) => {
     setvariantId(variant);
     let accessoriesData = accessories?.productData?.find((prod: any) => prod.id == variant);
-    if(accessoriesData) {
+    if (accessoriesData) {
       let formatPrice = format.number(accessoriesData?.price, {
         style: 'currency',
         currency: currencyCode,
       });
       let salePrice: number = accessoriesData?.sale_price;
-      if(salePrice != accessoriesData?.price) {
+      if (salePrice != accessoriesData?.price) {
         setHasSalePrice(1);
       } else {
         setHasSalePrice(0);
@@ -78,10 +89,10 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
     cart.increment(quantity);
     startTransition(async () => {
       const result = await addToCart(formData);
-      if(result?.items) {
+      if (result?.items) {
         productFlyout.setCartDataFn(result?.items);
       }
-      
+
       if (result.error) {
         cart.decrement(quantity);
 
@@ -92,44 +103,46 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
       if (result?.status == 'success') {
         let cartId: string = result?.data?.entityId || '';
         //update the cart metafields
-        if(cartId) {
+        if (cartId) {
           let lineItemId = productFlyout?.productData?.entityId;
           let productId = productFlyout?.productData?.productEntityId;
           let optionValue = {
-            'productId': productId,
-            'variantId': variantId,
-            'quantity': quantity
-          }
+            productId: productId,
+            variantId: variantId,
+            quantity: quantity,
+          };
           let cartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
           let getCartMetaLineItems = cartMetaFields?.find((item: any) => item?.key == lineItemId);
-          if(cartMetaFields?.length == 0 || !getCartMetaLineItems) {
+          if (cartMetaFields?.length == 0 || !getCartMetaLineItems) {
             let metaArray: any = [];
             metaArray.push(optionValue);
             let cartMeta = {
-              "permission_set": "write_and_sf_access",
-              "namespace": "accessories_data",
-              "key": lineItemId,
-              "value": JSON.stringify(metaArray),
-            }
+              permission_set: 'write_and_sf_access',
+              namespace: 'accessories_data',
+              key: lineItemId,
+              value: JSON.stringify(metaArray),
+            };
             await CreateCartMetaFields(cartId, cartMeta);
           } else {
             let metaFieldId = getCartMetaLineItems?.id;
             let existingValue: any = '';
-            if(getCartMetaLineItems?.id) {
+            if (getCartMetaLineItems?.id) {
               existingValue = JSON?.parse(getCartMetaLineItems?.value);
-              let existingIndex = existingValue?.findIndex((item: any) => item?.variantId == variantId)
-              if(existingIndex >= 0) {
+              let existingIndex = existingValue?.findIndex(
+                (item: any) => item?.variantId == variantId,
+              );
+              if (existingIndex >= 0) {
                 existingValue[existingIndex].quantity += quantity;
               } else {
                 existingValue.push(optionValue);
               }
             }
             let cartMeta = {
-              "permission_set": "write_and_sf_access",
-              "namespace": "accessories_data",
-              "key": lineItemId,
-              "value": JSON.stringify(existingValue),
-            }
+              permission_set: 'write_and_sf_access',
+              namespace: 'accessories_data',
+              key: lineItemId,
+              value: JSON.stringify(existingValue),
+            };
             await UpdateCartMetaFields(cartId, metaFieldId, cartMeta);
           }
           toast.success(
@@ -159,41 +172,49 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
     });
   };
   let hideImage = '';
-  if(baseImage) {
+  if (baseImage) {
     hideImage = ' hidden';
   }
 
   const changeInput = (param: any) => {
-    if(param == 'minus') {
-      let quanty = quantity-1;
-      if(quanty <= 0) {
+    if (param == 'minus') {
+      let quanty = quantity - 1;
+      if (quanty <= 0) {
         quanty = 1;
       }
       setQuantity(quanty);
     } else {
-      setQuantity(quantity+1);
+      setQuantity(quantity + 1);
     }
-  }
+  };
 
   return (
     <>
       {accessories?.length}
-      <div className={`left-container bg-gray-200 w-[150px] h-[177px]${baseImage}`}>
+      <div className={`left-container w-[195px] h-[150px] border border-[#CCCBCB] basis-[content] sm:basis-[unset]  sm:w-[150px] bg-transparent flex items-center justify-center sm:bg-transparent sm:h-[155px] ${baseImage}`}>
         <BcImage
           alt={accessories?.label}
-          className={`object-fill h-[177px]${baseImage}${hideImage}`}
+          className={`object-fill w-[190px] h-[145px] sm:h-[150px] sm:w-[150px] ${baseImage} ${hideImage}`}
           height={150}
           src={productImage}
           width={150}
           unoptimized={true}
         />
       </div>
-      <div className='w-full flex flex-col gap-[10px] shrink-[100]'>
+      <div className="flex w-full shrink-[100] flex-col gap-[10px]">
         {productlabel && (
-        <div className='flex flex-col'>
-          <p className='font-normal text-[16px] tracking-[0.15px] text-[#353535]'>{productlabel}</p>
-          <p className='font-normal text-[16px] tracking-[0.15px] text-[#353535] text-right'> {productSalePrice} {hasSalePrice == 1 && (<span className='text-[#808080] line-through'>{productPrice}</span>)}</p>
-        </div>
+          <div className="flex flex-col gap-[5px] sm:gap-[0px]">
+            <p className="text-[16px] font-normal text-center sm:text-left tracking-[0.15px] text-[#353535]">
+              {productlabel}
+            </p>
+            <p className="sm:text-right text-center text-[16px] font-normal tracking-[0.15px] text-[#353535]">
+              {' '}
+              {productSalePrice}{' '}
+              {hasSalePrice == 1 && (
+                <span className="text-[#808080] line-through">{productPrice}</span>
+              )}
+            </p>
+          </div>
         )}
         <div className="right-container">
           <Select
@@ -208,33 +229,41 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
           <form onSubmit={handleSubmit}>
             <input name="product_id" type="hidden" value={accessories?.entityId} />
             <input name="variant_id" type="hidden" value={variantId} />
-            <div className="text-[14px] font-normal tracking-[0.25px] text-[#353535]">
-              <div className="flex h-[44px] max-w-[105px] items-center justify-center gap-[10px] rounded-[20px] border border-[#d6d6d6]">
-                <div className="">
-                  <Minus onClick={() => changeInput('minus')} className="h-[1rem] w-[1rem] text-[#7F7F7F]"></Minus>
-                </div>
-                <input
-                  name="quantity"
-                  type="number"
-                  readOnly
-                  className="border [&::-webkit-outer-spin-button]:margin-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-inner-spin-button]:margin-0 text-center w-[35%] border-y-0 focus:border-y-0 focus:outline-none"
-                  min="1"
-                  value={quantity}
-                />
-                <div className="">
-                  <Plus onClick={() => changeInput('plus')} className="h-[1rem] w-[1rem] text-[#7F7F7F]"></Plus>
+            <div className='flex flex-col sm:flex-row justify-end items-center sm:items-start p-0 gap-[10px]'>
+              <div className="text-[14px] font-normal tracking-[0.25px] text-[#353535]">
+                <div className="flex h-[44px] max-w-[105px] items-center justify-center gap-[10px] rounded-[20px] border border-[#d6d6d6]">
+                  <div className="">
+                    <Minus
+                      onClick={() => changeInput('minus')}
+                      className="h-[1rem] w-[1rem] text-[#7F7F7F]"
+                    ></Minus>
+                  </div>
+                  <input
+                    name="quantity"
+                    type="number"
+                    readOnly
+                    className="[&::-webkit-outer-spin-button]:margin-0 [&::-webkit-inner-spin-button]:margin-0 w-[35%] border border-y-0 text-center focus:border-y-0 focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                    min="1"
+                    value={quantity}
+                  />
+                  <div className="">
+                    <Plus
+                      onClick={() => changeInput('plus')}
+                      className="h-[1rem] w-[1rem] text-[#7F7F7F]"
+                    ></Plus>
+                  </div>
                 </div>
               </div>
+              <Button
+                id="add-to-cart"
+                className="h-[42px] flex-shrink-[100] !rounded-[3px] !px-[10px] !py-[5px] text-[14px] font-medium tracking-[1.25px] bg-[#03465C]"
+                loading={isPending}
+                loadingText="processing"
+                type="submit"
+              >
+                ADD TO CART
+              </Button>
             </div>
-            <Button
-              id="add-to-cart"
-              className="!rounded-[3px] !py-[5px] !px-[10px] h-[42px] text-[14px] font-medium tracking-[1.25px]"
-              loading={isPending}
-              loadingText="processing"
-              type="submit"
-            >
-              ADD TO CART
-            </Button>
           </form>
         </div>
       </div>

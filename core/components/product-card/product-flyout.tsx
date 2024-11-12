@@ -180,10 +180,10 @@ export const ProductFlyout = ({
                 />
               </div>
               <div className="popup-box1-div2 flex max-w-[360px] flex-shrink-[50] flex-col text-center ssm:text-start gap-[3px] ssm:gap-[1px]">
-                <p className="text-[14px] font-normal tracking-[0.25px] text-[#353535]">
+                <p className="text-[14px] font-normal text-center ssm:text-left tracking-[0.25px] text-[#353535]">
                   {productData?.name}
                 </p>
-                <p className="popup-box1-div2-sku text-[12px] leading-[1.5rem] ssm:tracking-[0.015625rem] tracking-[0.4px] text-[#5C5C5C]">
+                <p className="popup-box1-div2-sku text-center ssm:text-left text-[12px] leading-[1.5rem] ssm:tracking-[0.015625rem] tracking-[0.4px] text-[#5C5C5C]">
                   SKU: {product?.sku}
                 </p>
                 {productData?.selectedOptions?.map((selectedOption: any, index: number) => {
@@ -249,7 +249,7 @@ export const ProductFlyout = ({
             </Dialog.Content>
             {variantProductData && variantProductData?.length > 0 && (
               <>
-                <hr className="" />
+                <hr className="border-[#93cfa1]" />
                 <div className="pop-up-text flex flex-col gap-4">
                   <div className="flex flex-col gap-[20px]">
                     <div className="text-[20px] font-medium tracking-[0.15px] text-black">
@@ -259,7 +259,7 @@ export const ProductFlyout = ({
                       {variantProductData &&
                         variantProductData?.map((accessories: any, index: number) => (
                           <div
-                            className="product-card flex flex-row items-center gap-[20px] border border-[#cccbcb] p-[20px]"
+                            className="product-card flex sm:flex-row flex-col items-center gap-[20px] border border-[#cccbcb] p-[20px]"
                             key={index}
                           >
                             <ProductAccessories accessories={accessories} fanPopup={fanPopup} index={index} currencyCode={productData?.extendedSalePrice?.currencyCode} />
@@ -292,7 +292,7 @@ export const ProductFlyout = ({
                 <div className="cart-buttons flex flex-row items-start gap-[10px]">
                   <Dialog.Close asChild>
                     <Link
-                      className="flex flex-row items-center self-stretch justify-center w-[100%] border border-[#b3dce8] rounded-[3px] font-medium text-[14px] tracking-[1.25px] uppercase text-[#002A37] my-5 text-sm  hover:text-secondary md:my-0"
+                      className="flex flex-row items-center self-stretch justify-center w-[100%] border border-[#b3dce8] rounded-[3px] font-medium text-[14px] tracking-[1.25px] uppercase text-[#002A37]  text-sm  hover:text-secondary"
                       href="/cart"
                     >
                       View Cart
