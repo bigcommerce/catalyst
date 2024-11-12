@@ -6,7 +6,6 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { StoreLogo } from '~/components/store-logo';
 import { StoreLogoFragment } from '~/components/store-logo/fragment';
-import { LocaleType } from '~/i18n/routing';
 
 const MaintenancePageQuery = graphql(
   `
@@ -38,7 +37,7 @@ const Container = ({ children }: { children: ReactNode }) => (
 );
 
 interface Props {
-  params: Promise<{ locale: LocaleType }>;
+  params: Promise<{ locale: string }>;
 }
 
 export default async function Maintenance({ params }: Props) {

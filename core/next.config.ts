@@ -3,11 +3,27 @@ import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 import { optimize } from 'webpack';
 
+import { writeBuildConfig } from './build-config/writer';
+import { client } from './client';
+import { graphql } from './client/graphql';
 import { cspHeader } from './lib/content-security-policy';
 
 const withNextIntl = createNextIntlPlugin();
 
-export default (): NextConfig => {
+const LocaleQuery = graphql(`
+  query LocaleQuery {
+    site {
+      settings {
+        locales {
+          code
+          isDefault
+        }
+      }
+    }
+  }
+`);
+
+export default async (): Promise<NextConfig> => {
   let nextConfig: NextConfig = {
     reactStrictMode: true,
     experimental: {
@@ -69,5 +85,13 @@ export default (): NextConfig => {
     nextConfig = withBundleAnalyzer(nextConfig);
   }
 
+  await writeLocaleToBuildConfig();
+
   return nextConfig;
 };
+
+async function writeLocaleToBuildConfig() {
+  const { data } = await client.fetch({ document: LocaleQuery });
+
+  await writeBuildConfig({ locales: data.site.settings?.locales });
+}

@@ -2,7 +2,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
-import { locales, LocaleType } from '~/i18n/routing';
+import { locales } from '~/i18n/routing';
 
 import { LoginForm } from './_components/login-form';
 
@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props) {
 }
 
 interface Props {
-  params: Promise<{ locale: LocaleType }>;
+  params: Promise<{ locale: string }>;
 }
 
 export default async function Login({ params }: Props) {

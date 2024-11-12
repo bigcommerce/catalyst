@@ -4,10 +4,9 @@ import { PropsWithChildren, Suspense } from 'react';
 import { Footer } from '~/components/footer/footer';
 import { Header, HeaderSkeleton } from '~/components/header';
 import { Cart } from '~/components/header/cart';
-import { LocaleType } from '~/i18n/routing';
 
 interface Props extends PropsWithChildren {
-  params: Promise<{ locale: LocaleType }>;
+  params: Promise<{ locale: string }>;
 }
 
 export default async function DefaultLayout({ params, children }: Props) {

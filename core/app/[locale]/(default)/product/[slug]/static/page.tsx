@@ -7,7 +7,7 @@ import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate as revalidateTarget } from '~/client/revalidate-target';
-import { locales, LocaleType } from '~/i18n/routing';
+import { locales } from '~/i18n/routing';
 
 import ProductPage from '../page';
 import { getProduct } from '../page-data';
@@ -60,7 +60,7 @@ export async function generateStaticParams() {
 }
 
 interface Props {
-  params: Promise<{ slug: string; locale: LocaleType }>;
+  params: Promise<{ slug: string; locale: string }>;
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
