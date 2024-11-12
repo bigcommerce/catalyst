@@ -12,7 +12,7 @@ const InternalButton = ({ icon }: { icon: string }) => {
   const { pending } = useFormStatus();
 
   return (
-    <Button className="mt-3 bg-slate-100 border-solid border-2 border-black-600 h-[40px]" loading={pending} loadingText={t('loading')}>
+    <Button className="mt-3 mb-3 bg-slate-100 border-solid border-2 border-black-600 h-[40px]" loading={pending} loadingText={t('loading')}>
       <BcImage
         alt="Paypal"
         width={20}
