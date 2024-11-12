@@ -4,12 +4,11 @@ import { getTranslations } from 'next-intl/server';
 
 import { BlogPostCard } from '~/components/blog-post-card';
 import { Pagination } from '~/components/ui/pagination';
-import { LocaleType } from '~/i18n/routing';
 
 import { getBlogPosts } from './page-data';
 
 interface Props {
-  params: Promise<{ locale: LocaleType }>;
+  params: Promise<{ locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 

@@ -43,3 +43,6 @@ client/generated
 
 # secrets
 .catalyst
+
+# Build config
+build-config.json

@@ -5,7 +5,6 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
 import { Breadcrumbs } from '~/components/breadcrumbs';
-import { LocaleType } from '~/i18n/routing';
 
 import { Description } from './_components/description';
 import { Details } from './_components/details';
@@ -17,7 +16,7 @@ import { Warranty } from './_components/warranty';
 import { getProduct } from './page-data';
 
 interface Props {
-  params: Promise<{ slug: string; locale: LocaleType }>;
+  params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
