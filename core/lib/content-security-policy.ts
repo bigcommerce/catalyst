@@ -1,14 +1,13 @@
-// @ts-check
+import builder from 'content-security-policy-builder';
+
 const makeswiftEnabled = !!process.env.MAKESWIFT_SITE_API_KEY;
 
 const makeswiftBaseUrl = process.env.MAKESWIFT_BASE_URL || 'https://app.makeswift.com';
 
 const frameAncestors = makeswiftEnabled ? makeswiftBaseUrl : 'none';
 
-const builder = require('content-security-policy-builder');
-
 // customize the directives as needed
-const cspHeader = builder({
+export const cspHeader = builder({
   directives: {
     baseUri: ['self'],
     frameAncestors: [frameAncestors],
@@ -30,7 +29,3 @@ const cspHeader = builder({
     // reportUri: ['none'],
   },
 });
-
-module.exports = {
-  cspHeader,
-};
