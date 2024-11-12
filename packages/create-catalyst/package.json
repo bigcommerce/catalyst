@@ -43,7 +43,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/jest": "^29.5.14",
     "@types/lodash.kebabcase": "^4.1.9",
-    "@types/node": "^20.16.11",
+    "@types/node": "^20.17.6",
     "@types/prompts": "^2.4.9",
     "@types/semver": "^7.5.8",
     "eslint": "^8.57.1",
