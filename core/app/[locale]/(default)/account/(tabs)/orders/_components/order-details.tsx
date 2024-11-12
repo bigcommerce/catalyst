@@ -1,4 +1,3 @@
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { Link } from '~/components/link';
@@ -130,8 +129,8 @@ const combineAddressInfo = (
 };
 const combineShippingMethodInfo = async (
   shipment?: NonNullable<
-    NonNullable<OrderDetailsDataType['consignments']['shipping']>[number]['shipments']['edges']
-  >[number]['node'],
+    NonNullable<OrderDetailsDataType['consignments']['shipping']>[number]['shipments']
+  >[number],
 ) => {
   if (!shipment) {
     return [];
@@ -152,20 +151,17 @@ const combineShippingMethodInfo = async (
 
 const ShippingInfo = async ({
   consignments,
-  isMutiConsignments,
+  isMultiConsignments,
   shippingNumber,
 }: {
   consignments: OrderDetailsDataType['consignments'];
-  isMutiConsignments: boolean;
+  isMultiConsignments: boolean;
   shippingNumber?: number;
 }) => {
   const t = await getTranslations('Account.Orders');
-  const orderShipments = consignments.shipping?.map(({ shipments, shippingAddress }) => ({
-    shipments: removeEdgesAndNodes(shipments),
-    shippingAddress,
-  }));
+  const shippingConsignments = consignments.shipping;
 
-  if (!orderShipments) {
+  if (!shippingConsignments) {
     return;
   }
 
@@ -173,17 +169,19 @@ const ShippingInfo = async ({
   let customerShippingMethod: string[] = [];
   let trackingData;
 
-  if (!isMutiConsignments && orderShipments[0]?.shippingAddress) {
-    trackingData = orderShipments[0].shipments[0]?.tracking;
-    customerShippingAddress = combineAddressInfo(orderShipments[0].shippingAddress);
-    customerShippingMethod = await combineShippingMethodInfo(orderShipments[0].shipments[0]);
+  if (!isMultiConsignments && shippingConsignments[0]?.shippingAddress) {
+    trackingData = shippingConsignments[0].shipments[0]?.tracking;
+    customerShippingAddress = combineAddressInfo(shippingConsignments[0].shippingAddress);
+    customerShippingMethod = await combineShippingMethodInfo(shippingConsignments[0].shipments[0]);
   }
 
-  if (isMutiConsignments && shippingNumber !== undefined && orderShipments[shippingNumber]) {
-    trackingData = orderShipments[shippingNumber].shipments[0]?.tracking;
-    customerShippingAddress = combineAddressInfo(orderShipments[shippingNumber].shippingAddress);
+  if (isMultiConsignments && shippingNumber !== undefined && shippingConsignments[shippingNumber]) {
+    trackingData = shippingConsignments[shippingNumber].shipments[0]?.tracking;
+    customerShippingAddress = combineAddressInfo(
+      shippingConsignments[shippingNumber].shippingAddress,
+    );
     customerShippingMethod = await combineShippingMethodInfo(
-      orderShipments[shippingNumber].shipments[0],
+      shippingConsignments[shippingNumber].shipments[0],
     );
   }
 
@@ -196,10 +194,10 @@ const ShippingInfo = async ({
     <div
       className={cn(
         'border border-gray-200 p-6',
-        isMutiConsignments && 'flex flex-col gap-4 border-none md:flex-row md:gap-16',
+        isMultiConsignments && 'flex flex-col gap-4 border-none md:flex-row md:gap-16',
       )}
     >
-      {!isMutiConsignments ? (
+      {!isMultiConsignments ? (
         <p className="border-b border-gray-200 pb-4 text-lg font-semibold">{t('shippingTitle')}</p>
       ) : null}
       <div className="flex flex-col gap-2 py-4">
@@ -211,7 +209,7 @@ const ShippingInfo = async ({
       <div
         className={cn(
           'flex flex-col gap-2 border-t border-gray-200 pt-4 text-base',
-          isMutiConsignments && 'border-0',
+          isMultiConsignments && 'border-0',
         )}
       >
         <p className="font-semibold">{t('shippingMethod')}</p>
@@ -237,31 +235,28 @@ const ShippingInfo = async ({
 export const OrderDetails = async ({ data }: { data: OrderDetailsDataType }) => {
   const t = await getTranslations('Account.Orders');
   const { orderState, summaryInfo, consignments } = data;
-  const isMultiShippingConsignments = consignments.shipping && consignments.shipping.length > 1;
-
-  const orderContent = consignments.shipping?.map(({ lineItems }) => ({
-    lineItems: removeEdgesAndNodes(lineItems),
-  }));
+  const shippingConsignments = consignments.shipping;
+  const isMultiShippingConsignments = shippingConsignments && shippingConsignments.length > 1;
 
   return (
     <div className="mb-14">
       <OrderState orderState={orderState} />
       <div className="flex flex-col gap-8 lg:flex-row">
         <div className="flex flex-col gap-8 lg:w-2/3">
-          {orderContent?.map((consignment, idx) => {
+          {shippingConsignments?.map((consignment, idx) => {
             const { lineItems } = consignment;
 
             return (
               <div className="w-full border border-gray-200 p-6" key={idx}>
                 <p className="border-b border-gray-200 pb-4 text-xl font-semibold lg:text-2xl">
                   {isMultiShippingConsignments
-                    ? `${t('shipmentTitle')} ${idx + 1}/${orderContent.length}`
+                    ? `${t('shipmentTitle')} ${idx + 1}/${shippingConsignments.length}`
                     : t('orderContents')}
                 </p>
                 {isMultiShippingConsignments && (
                   <ShippingInfo
                     consignments={consignments}
-                    isMutiConsignments={true}
+                    isMultiConsignments={true}
                     shippingNumber={idx}
                   />
                 )}
@@ -286,7 +281,7 @@ export const OrderDetails = async ({ data }: { data: OrderDetailsDataType }) => 
         <div className="flex grow flex-col gap-8">
           <OrderSummaryInfo summaryInfo={summaryInfo} />
           {!isMultiShippingConsignments && (
-            <ShippingInfo consignments={consignments} isMutiConsignments={false} />
+            <ShippingInfo consignments={consignments} isMultiConsignments={false} />
           )}
           {/* TODO: add PaymentInfo component later */}
         </div>

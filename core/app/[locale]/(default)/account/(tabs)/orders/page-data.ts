@@ -4,7 +4,8 @@ import { cache } from 'react';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
-import { graphql } from '~/client/graphql';
+import { graphql, ResultOf, VariablesOf } from '~/client/graphql';
+import { revalidate } from '~/client/revalidate-target';
 
 import { OrderItemFragment } from './_components/product-snippet';
 
@@ -181,6 +182,65 @@ const CustomerOrderDetails = graphql(
   [OrderItemFragment, OrderShipmentFragment],
 );
 
+const ProductAttributes = graphql(`
+  query ProductAttributes($entityId: Int) {
+    site {
+      product(entityId: $entityId) {
+        path
+      }
+    }
+  }
+`);
+
+type Variables = VariablesOf<typeof ProductAttributes>;
+
+export const getProductAttributes = cache(async (variables: Variables) => {
+  const response = await client.fetch({
+    document: ProductAttributes,
+    variables,
+    fetchOptions: { next: { revalidate } },
+  });
+
+  return response.data.site.product;
+});
+
+type ShippingConsignments = NonNullable<
+  NonNullable<ResultOf<typeof CustomerOrderDetails>['site']['order']>['consignments']
+>['shipping'];
+
+const addProductAttributesToShippingConsignments = async (consignments: ShippingConsignments) => {
+  const shipping = removeEdgesAndNodes(consignments);
+
+  const shippingConsignments = await Promise.all(
+    shipping.map(async (consignment) => {
+      const { lineItems, shipments, ...otherItems } = consignment;
+      const extendedLineItems = await Promise.all(
+        removeEdgesAndNodes(lineItems).map(async ({ productEntityId, ...otherAttributes }) => {
+          const productAtrributes = await getProductAttributes({
+            entityId: productEntityId,
+          });
+
+          const { path = '' } = productAtrributes ?? {};
+
+          return {
+            productEntityId,
+            path,
+            ...otherAttributes,
+          };
+        }),
+      );
+
+      return {
+        lineItems: extendedLineItems,
+        shipments: removeEdgesAndNodes(shipments),
+        ...otherItems,
+      };
+    }),
+  );
+
+  return shippingConsignments;
+};
+
 interface CustomerOrdersArgs {
   after?: string;
   before?: string;
@@ -206,18 +266,22 @@ export const getCustomerOrders = cache(
     }
 
     const data = {
-      orders: removeEdgesAndNodes(orders).map((order) => ({
-        ...order,
-        consignments: {
-          ...(order.consignments?.shipping && {
-            shipping: removeEdgesAndNodes(order.consignments.shipping),
-          }),
-        },
-      })),
+      orders: await Promise.all(
+        removeEdgesAndNodes(orders).map(async (order) => {
+          const shipping =
+            order.consignments?.shipping &&
+            (await addProductAttributesToShippingConsignments(order.consignments.shipping));
+
+          return {
+            ...order,
+            consignments: {
+              shipping,
+            },
+          };
+        }),
+      ),
       pageInfo: orders.pageInfo,
     };
-
-    // TODO: add product, brand paths later
 
     return data;
   },
@@ -249,6 +313,10 @@ export const getOrderDetails = cache(
       return undefined;
     }
 
+    const shipping =
+      order.consignments?.shipping &&
+      (await addProductAttributesToShippingConsignments(order.consignments.shipping));
+
     const data = {
       orderState: {
         orderId: order.entityId,
@@ -267,9 +335,7 @@ export const getOrderDetails = cache(
         // TODO: add payments data
       },
       consignments: {
-        ...(order.consignments?.shipping && {
-          shipping: removeEdgesAndNodes(order.consignments.shipping),
-        }),
+        shipping,
       },
     };
 

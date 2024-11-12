@@ -1,6 +1,5 @@
 'use client';
 
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { useFormatter, useTranslations } from 'next-intl';
 
 import { Link } from '~/components/link';
@@ -161,21 +160,9 @@ const OrderDetails = ({
 };
 
 export const OrdersList = ({ customerOrders }: OrdersListProps) => {
-  const ordersHistory = customerOrders.map((order) => ({
-    ...order,
-    consignments: {
-      shipping: order.consignments.shipping
-        ? order.consignments.shipping.map(({ lineItems, shipments }) => ({
-            lineItems: removeEdgesAndNodes(lineItems),
-            shipments: removeEdgesAndNodes(shipments),
-          }))
-        : null,
-    },
-  }));
-
   return (
     <ul className="flex w-full flex-col">
-      {ordersHistory.map(({ entityId, orderedAt, status, totalIncTax, consignments }) => {
+      {customerOrders.map(({ entityId, orderedAt, status, totalIncTax, consignments }) => {
         // NOTE: tracking url will be supported later
         const trackingUrl = consignments.shipping
           ? consignments.shipping

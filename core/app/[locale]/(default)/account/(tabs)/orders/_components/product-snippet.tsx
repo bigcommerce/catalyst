@@ -1,6 +1,6 @@
 import { useFormatter, useTranslations } from 'next-intl';
 
-import { FragmentOf, graphql, ResultOf } from '~/client/graphql';
+import { graphql, ResultOf } from '~/client/graphql';
 import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
 import { ProductCardFragment } from '~/components/product-card/fragment';
@@ -11,6 +11,7 @@ import { cn } from '~/lib/utils';
 export const OrderItemFragment = graphql(`
   fragment OrderItemFragment on OrderPhysicalLineItem {
     entityId
+    productEntityId
     brand
     name
     quantity
@@ -32,8 +33,10 @@ export const OrderItemFragment = graphql(`
 
 export type ProductSnippetFragment = Omit<
   ResultOf<typeof ProductCardFragment>,
-  'productOptions' | 'reviewSummary' | 'inventory' | 'availabilityV2'
+  'productOptions' | 'reviewSummary' | 'inventory' | 'availabilityV2' | 'brand'
 > & {
+  path: string;
+  brand: string | null;
   quantity: number;
   productOptions?: Array<{
     __typename: string;
@@ -42,16 +45,27 @@ export type ProductSnippetFragment = Omit<
   }>;
 };
 
-export const assembleProductData = (orderItem: FragmentOf<typeof OrderItemFragment>) => {
-  const { entityId: productId, name, brand, image, subTotalListPrice, productOptions } = orderItem;
+type ExtendedOrderItem = ResultOf<typeof OrderItemFragment> & {
+  path: string;
+};
+
+export const assembleProductData = (orderItem: ExtendedOrderItem) => {
+  const {
+    entityId,
+    productEntityId: productId,
+    name,
+    path,
+    brand,
+    image,
+    subTotalListPrice,
+    productOptions,
+  } = orderItem;
 
   return {
-    entityId: productId,
+    entityId,
+    productId,
     name,
-    brand: {
-      name: brand ?? '',
-      path: '', // will be added later
-    },
+    brand,
     defaultImage: image
       ? {
           url: image.url,
@@ -59,7 +73,7 @@ export const assembleProductData = (orderItem: FragmentOf<typeof OrderItemFragme
         }
       : null,
     productOptions,
-    path: '', // will be added later
+    path,
     quantity: orderItem.quantity,
     prices: {
       price: subTotalListPrice,
@@ -161,16 +175,16 @@ export const ProductSnippet = ({
         )}
       </div>
       <div className="flex flex-1 flex-col gap-1">
-        {brand ? <p className={cn('text-base text-gray-500', brandSize)}>{brand.name}</p> : null}
+        {brand ? <p className={cn('text-base text-gray-500', brandSize)}>{brand}</p> : null}
         {isExtended ? (
           <div className="flex flex-col items-start justify-between md:flex-row">
             <div>
               <h3 className={cn('text-base font-semibold', productSize)}>
                 <Link
-                  className="focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-primary/20 focus-visible:ring-0"
+                  className="hover:text-primary focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-primary/20 focus-visible:ring-0"
                   href={path}
                 >
-                  <span aria-hidden="true" className="absolute inset-0 bottom-20" />
+                  <span aria-hidden="true" className="absolute inset-0" />
                   {name}
                 </Link>
               </h3>
@@ -196,10 +210,10 @@ export const ProductSnippet = ({
         ) : (
           <h3 className={cn('text-base font-semibold', productSize)}>
             <Link
-              className="focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-primary/20 focus-visible:ring-0"
+              className="hover:text-primary focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-primary/20 focus-visible:ring-0"
               href={path}
             >
-              <span aria-hidden="true" className="absolute inset-0 bottom-20" />
+              <span aria-hidden="true" className="absolute inset-0" />
               {name}
             </Link>
           </h3>
