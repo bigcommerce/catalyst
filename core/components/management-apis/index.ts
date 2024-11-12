@@ -155,6 +155,28 @@ export const CreateCartMetaFields = async (entityId: string, postData: any) => {
   }
 };
 
+export const RemoveCartMetaFields = async(entityId: string, metaId: number) => {
+  try {
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/carts/${entityId}/metafields/${metaId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        cache: 'no-store'
+      },
+    ).then(res => res.json())
+    .then(jsonData => {
+        return jsonData;
+    });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export const GetCartMetaFields = async (entityId: string, nameSpace: string) => {
   try {
     let nameSpaceValue = '';
