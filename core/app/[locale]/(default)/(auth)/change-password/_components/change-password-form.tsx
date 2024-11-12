@@ -79,7 +79,7 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
   return (
     <>
       {state.status === 'error' && (
-        <Message className="mb-8 w-full text-gray-500" variant={state.status}>
+        <Message className="mb-8 w-full text-gray-500 " variant={state.status}>
           <p>{messageText}</p>
         </Message>
       )}
