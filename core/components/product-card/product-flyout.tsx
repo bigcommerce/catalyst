@@ -93,11 +93,13 @@ const getVariantProductInfo = async (metaData: any) => {
 export const ProductFlyout = ({
   data: product,
   closeIcon,
-  fanPopup
+  fanPopup,
+  blankAddImg,
 }: {
   data: Props['data'];
   closeIcon: string;
   fanPopup: string;
+  blankAddImg: string;
 }) => {
   const format = useFormatter();
   const productFlyout = useCommonContext();
@@ -228,7 +230,7 @@ export const ProductFlyout = ({
                     </div>
                   ) : null}
                 </div>
-                <div className="text-[14px] font-normal tracking-[0.25px] text-[#353535]">
+                <div className="text-[14px] font-normal tracking-[0.25px] text-[#353535] flex justify-center ssm:justify-start">
                   <div className="flex h-[44px] max-w-[105px] items-center justify-center gap-[10px] rounded-[20px] border border-[#d6d6d6]">
                     <div className="">
                       <Minus className="h-[1rem] w-[1rem] text-[#7F7F7F]"></Minus>
@@ -262,7 +264,7 @@ export const ProductFlyout = ({
                             className="product-card flex sm:flex-row flex-col items-center gap-[20px] border border-[#cccbcb] p-[20px]"
                             key={index}
                           >
-                            <ProductAccessories accessories={accessories} fanPopup={fanPopup} index={index} currencyCode={productData?.extendedSalePrice?.currencyCode} />
+                            <ProductAccessories accessories={accessories} fanPopup={fanPopup} blankAddImg={blankAddImg} index={index} currencyCode={productData?.extendedSalePrice?.currencyCode} />
                           </div>
                         ))}
                     </div>
@@ -289,10 +291,10 @@ export const ProductFlyout = ({
                     </div>
                   </div>
                 </div>
-                <div className="cart-buttons flex flex-row items-start gap-[10px]">
+                <div className="cart-buttons flex flex-col ssm:flex-row items-start gap-[10px]">
                   <Dialog.Close asChild>
                     <Link
-                      className="flex flex-row items-center self-stretch justify-center w-[100%] border border-[#b3dce8] rounded-[3px] font-medium text-[14px] tracking-[1.25px] uppercase text-[#002A37]  text-sm  hover:text-secondary"
+                      className="flex flex-row h-[41px] items-center self-stretch justify-center w-[100%] border border-[#b3dce8] rounded-[3px] font-medium text-[14px] tracking-[1.25px] uppercase text-[#002A37]  text-sm  hover:text-secondary"
                       href="/cart"
                     >
                       View Cart

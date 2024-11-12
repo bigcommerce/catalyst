@@ -18,9 +18,10 @@ interface Props {
   index: number;
   fanPopup: string;
   currencyCode: string;
+  blankAddImg: string
 }
 
-export const ProductAccessories = ({ accessories, index, currencyCode, fanPopup }: Props) => {
+export const ProductAccessories = ({ accessories, index, currencyCode, fanPopup, blankAddImg }: Props) => {
   const format = useFormatter();
   const productFlyout = useCommonContext();
   const t = useTranslations('Components.ProductCard.AddToCart');
@@ -48,7 +49,7 @@ export const ProductAccessories = ({ accessories, index, currencyCode, fanPopup 
   const [productlabel, setProductLabel] = useState<string>(accessories?.label);
   const [productPrice, setProductPrice] = useState<any>();
   const [productSalePrice, setProductSalePrice] = useState<any>();
-  const [productImage, setProductImage] = useState<string>(fanPopup);
+  const [productImage, setProductImage] = useState<string>(blankAddImg);
   const [baseImage, setBaseImage] = useState<string>(' bg-set');
   const [hasSalePrice, setHasSalePrice] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(1);
@@ -191,10 +192,10 @@ export const ProductAccessories = ({ accessories, index, currencyCode, fanPopup 
   return (
     <>
       {accessories?.length}
-      <div className={`left-container w-[195px] h-[150px] border border-[#CCCBCB] basis-[content] sm:basis-[unset]  sm:w-[150px] bg-transparent flex items-center justify-center sm:bg-transparent sm:h-[155px] ${baseImage}`}>
+      <div className={`left-container w-[195px] h-[150px] border border-[#CCCBCB]  sm:w-[150px] bg-transparent flex items-center justify-center sm:bg-transparent sm:h-[155px] ${baseImage}`}>
         <BcImage
           alt={accessories?.label}
-          className={`object-fill w-[190px] h-[145px] sm:h-[150px] sm:w-[150px] ${baseImage} ${hideImage}`}
+          className={`object-fill w-[190px] h-[145px] sm:h-[150px] sm:w-[150px] ${baseImage}`}
           height={150}
           src={productImage}
           width={150}
