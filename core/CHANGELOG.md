@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.21.0
+
+### Minor Changes
+
+- [#1631](https://github.com/bigcommerce/catalyst/pull/1631) [`58d9e7c`](https://github.com/bigcommerce/catalyst/commit/58d9e7ccb7915593cd012cce6d9f4bdf66cb381f) Thanks [@deini](https://github.com/deini)! - fetch available locales at build time
+
+### Patch Changes
+
+- [#1636](https://github.com/bigcommerce/catalyst/pull/1636) [`23abacf`](https://github.com/bigcommerce/catalyst/commit/23abacfb8ff4ff9d269e51821a6a992a9cb2d4f5) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Remove console.error when falling back to defaultChannelId
+
+- [#1636](https://github.com/bigcommerce/catalyst/pull/1636) [`23abacf`](https://github.com/bigcommerce/catalyst/commit/23abacfb8ff4ff9d269e51821a6a992a9cb2d4f5) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Clean up login error handling.
+
+- Updated dependencies [[`23abacf`](https://github.com/bigcommerce/catalyst/commit/23abacfb8ff4ff9d269e51821a6a992a9cb2d4f5)]:
+  - @bigcommerce/catalyst-client@0.14.0
+
 ## 0.20.0
 
 ### Minor Changes
