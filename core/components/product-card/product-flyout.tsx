@@ -9,7 +9,6 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { BcImage } from '~/components/bc-image';
 import { useCommonContext } from '~/components/common-context/common-provider';
-import { Minus, Plus } from 'lucide-react';
 import {
   GetProductMetaFields,
   GetProductVariantMetaFields,
@@ -19,6 +18,7 @@ import { ProductAccessories } from './product-accessories';
 import Link from 'next/link';
 import { CheckoutButton } from '~/app/[locale]/(default)/cart/_components/checkout-button';
 import { GetVariantsByProductSKU } from '~/components/graphql-apis';
+import { InputPlusMinus } from '../form-fields/input-plus-minus';
 
 interface Props {
   data: FragmentOf<typeof ProductItemFragment>;
@@ -68,7 +68,8 @@ const getVariantProductInfo = async (metaData: any) => {
                   id: item?.id,
                   mpn: item?.mpn,
                   sku: item?.sku,
-                  name: productName + optionValues
+                  name: productName + optionValues,
+                  selectedOptions: item?.selectedOption
                 });
               }
             });
@@ -230,23 +231,7 @@ export const ProductFlyout = ({
                     </div>
                   ) : null}
                 </div>
-                <div className="text-[14px] font-normal tracking-[0.25px] text-[#353535] flex justify-center ssm:justify-start">
-                  <div className="flex h-[44px] max-w-[105px] items-center justify-center gap-[10px] rounded-[20px] border border-[#d6d6d6]">
-                    <div className="">
-                      <Minus className="h-[1rem] w-[1rem] text-[#7F7F7F]"></Minus>
-                    </div>
-                    <input
-                      name="quantity"
-                      type="number"
-                      className="border [&::-webkit-outer-spin-button]:margin-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-inner-spin-button]:margin-0 text-center w-[35%] border-y-0 focus:border-y-0 focus:outline-none"
-                      min="1"
-                      defaultValue={productQty}
-                    />
-                    <div className="">
-                      <Plus className="h-[1rem] w-[1rem] text-[#7F7F7F]"></Plus>
-                    </div>
-                  </div>
-                </div>
+                <InputPlusMinus product="true" productData={productData} />
               </div>
             </Dialog.Content>
             {variantProductData && variantProductData?.length > 0 && (

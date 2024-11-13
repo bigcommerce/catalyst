@@ -5,13 +5,14 @@ import { BcImage } from '~/components/bc-image';
 import { Select } from '~/components/ui/form';
 import { useCart } from '~/components/header/cart-provider';
 import { addToCart } from '~/components/product-card/add-to-cart/form/_actions/add-to-cart';
-import { AlertCircle, Check, Minus, Plus } from 'lucide-react';
+import { AlertCircle, Check } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { Link } from '~/components/link';
 import { useState, useTransition } from 'react';
 import { Button } from '~/components/ui/button';
 import { useCommonContext } from '~/components/common-context/common-provider';
 import { GetCartMetaFields, CreateCartMetaFields, UpdateCartMetaFields } from '../management-apis';
+import { InputPlusMinus } from '../form-fields/input-plus-minus';
 
 interface Props {
   accessories: any;
@@ -52,7 +53,7 @@ export const ProductAccessories = ({ accessories, index, currencyCode, fanPopup,
   const [productImage, setProductImage] = useState<string>(blankAddImg);
   const [baseImage, setBaseImage] = useState<string>(' bg-set');
   const [hasSalePrice, setHasSalePrice] = useState<number>(0);
-  const [quantity, setQuantity] = useState<number>(1);
+  
   const onProductChange = (variant: any) => {
     setvariantId(variant);
     let accessoriesData = accessories?.productData?.find((prod: any) => prod.id == variant);
@@ -177,18 +178,6 @@ export const ProductAccessories = ({ accessories, index, currencyCode, fanPopup,
     hideImage = ' hidden';
   }
 
-  const changeInput = (param: any) => {
-    if (param == 'minus') {
-      let quanty = quantity - 1;
-      if (quanty <= 0) {
-        quanty = 1;
-      }
-      setQuantity(quanty);
-    } else {
-      setQuantity(quantity + 1);
-    }
-  };
-
   return (
     <>
       {accessories?.length}
@@ -231,30 +220,7 @@ export const ProductAccessories = ({ accessories, index, currencyCode, fanPopup,
             <input name="product_id" type="hidden" value={accessories?.entityId} />
             <input name="variant_id" type="hidden" value={variantId} />
             <div className='flex flex-col sm:flex-row justify-end items-center sm:items-start p-0 gap-[10px]'>
-              <div className="text-[14px] font-normal tracking-[0.25px] text-[#353535]">
-                <div className="flex h-[44px] max-w-[105px] items-center justify-center gap-[10px] rounded-[20px] border border-[#d6d6d6]">
-                  <div className="">
-                    <Minus
-                      onClick={() => changeInput('minus')}
-                      className="h-[1rem] w-[1rem] text-[#7F7F7F]"
-                    ></Minus>
-                  </div>
-                  <input
-                    name="quantity"
-                    type="number"
-                    readOnly
-                    className="[&::-webkit-outer-spin-button]:margin-0 [&::-webkit-inner-spin-button]:margin-0 w-[35%] border border-y-0 text-center focus:border-y-0 focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                    min="1"
-                    value={quantity}
-                  />
-                  <div className="">
-                    <Plus
-                      onClick={() => changeInput('plus')}
-                      className="h-[1rem] w-[1rem] text-[#7F7F7F]"
-                    ></Plus>
-                  </div>
-                </div>
-              </div>
+              <InputPlusMinus product="false" productData="" />
               <Button
                 id="add-to-cart"
                 className="h-[42px] flex-shrink-[100] !rounded-[3px] !px-[10px] !py-[5px] text-[14px] font-medium tracking-[1.25px] bg-[#03465C]"
