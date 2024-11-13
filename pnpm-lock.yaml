@@ -39,8 +39,8 @@ importers:
         specifier: ^10.0.0
         version: 10.0.0(react@18.3.1)
       '@makeswift/runtime':
-        specifier: 0.0.0-snapshot-20241108213631
-        version: 0.0.0-snapshot-20241108213631(@types/react-dom@18.3.1)(@types/react@18.3.12)(next@14.2.15(@playwright/test@1.48.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 0.0.0-snapshot-20241113021631
+        version: 0.0.0-snapshot-20241113021631(@types/react-dom@18.3.1)(@types/react@18.3.12)(next@14.2.15(@playwright/test@1.48.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-accordion':
         specifier: ^1.2.1
         version: 1.2.1(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1381,19 +1381,19 @@ packages:
     resolution: {integrity: sha512-qC72D4+CDdjGqJvkFMMEAtancHUQ7/d/tAiHf64z8MopFDmcrtbcJuerDtFceuAfQJ2pDSfCKCtbqoGBNnwg0w==}
     engines: {node: '>=8'}
 
-  '@makeswift/controls@0.1.4':
-    resolution: {integrity: sha512-Wh168NXY/xm7F1twk3vyN1VCkD7rfFcZAjp2h5D/n77HhygzdWnfjWpLNGtMwEx6DS68OTA6ZzGwOHbIt9hWIQ==}
+  '@makeswift/controls@0.1.5':
+    resolution: {integrity: sha512-3+3cPc4tYj0q/XwUc+0pAZBnme0DS3EnncDU/v6FdHUNFwuWKafBoZ+0z+6chMbh0QNl5Qr3W4Htq+YdId8fsg==}
 
   '@makeswift/next-plugin@0.3.0':
     resolution: {integrity: sha512-pGe0D6KrVxZcyaM8hFCIK806yNV6YJtRcjjD+2Wpn5qkFStIMTlACkGRVHVLftFyfi8/E3lGkbR05Jo3aTecwQ==}
     peerDependencies:
       next: ^13.4.0 || ^14.0.0
 
-  '@makeswift/prop-controllers@0.3.5':
-    resolution: {integrity: sha512-v4EV0J4Kh8vboUu8hJM/Ctg7T+LqRzyQn2Vtzzx/A9HOAA5rnTy1sqyOEOBkJ2tW9r+oJS3soDl7Yq4Aea/xkQ==}
+  '@makeswift/prop-controllers@0.3.6':
+    resolution: {integrity: sha512-pEro/ziA+jw/fXYAGEAi375VGnZQCKJZTwVuuaUj63eXgFQWBjsgZFV1v77wfsv27xyLPXHecm2QEjq0BRmhBw==}
 
-  '@makeswift/runtime@0.0.0-snapshot-20241108213631':
-    resolution: {integrity: sha512-ogSV6ZaadpNPHm+5iI8ktgj5nvBSm+hCBffku8+qM7Hj9OcOws4ltaT3Q9fab9Na9uN5MswEDYYkbObAKhMHag==}
+  '@makeswift/runtime@0.0.0-snapshot-20241113021631':
+    resolution: {integrity: sha512-yWibOLzsNC5sqOLbrxX4aA5T9In4MlYLgqILdyPCe2sBw/t9GLd7MBZshyshupxQzZnxhje5D2hyU2Hvr0IyuQ==}
     peerDependencies:
       '@types/react': ^18.0.0
       '@types/react-dom': ^18.0.0
@@ -2293,8 +2293,8 @@ packages:
   '@swc/types@0.1.13':
     resolution: {integrity: sha512-JL7eeCk6zWCbiYQg2xQSdLXQJl8Qoc9rXmG2cEKvHe3CKwMHwHGpfOb8frzNLmbycOo6I51qxnLnn9ESf4I20Q==}
 
-  '@swc/types@0.1.14':
-    resolution: {integrity: sha512-PbSmTiYCN+GMrvfjrMo9bdY+f2COnwbdnoMw7rqU/PI5jXpKjxOGZ0qqZCImxnT81NkNsKnmEpvu+hRXLBeCJg==}
+  '@swc/types@0.1.15':
+    resolution: {integrity: sha512-XKaZ+dzDIQ9Ot9o89oJQ/aluI17+VvUnIpYJTcZtvv1iYX6MzHh3Ik2CSR7MdPKpPwfZXHBeCingb2b4PoDVdw==}
 
   '@tailwindcss/container-queries@0.1.1':
     resolution: {integrity: sha512-p18dswChx6WnTSaJCSGx6lTmrGzNNvm2FtXmiO6AuA1V4U5REyoqwmT6kgAsIMdjo07QdAfYXHJ4hnMtfHzWgA==}
@@ -7396,7 +7396,7 @@ snapshots:
     dependencies:
       '@lukeed/csprng': 1.1.0
 
-  '@makeswift/controls@0.1.4':
+  '@makeswift/controls@0.1.5':
     dependencies:
       color: 3.2.1
       css-box-model: 1.2.1
@@ -7412,13 +7412,13 @@ snapshots:
       next: 14.2.15(@playwright/test@1.48.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       semver: 7.6.3
 
-  '@makeswift/prop-controllers@0.3.5':
+  '@makeswift/prop-controllers@0.3.6':
     dependencies:
-      '@makeswift/controls': 0.1.4
+      '@makeswift/controls': 0.1.5
       ts-pattern: 5.5.0
       zod: 3.23.8
 
-  '@makeswift/runtime@0.0.0-snapshot-20241108213631(@types/react-dom@18.3.1)(@types/react@18.3.12)(next@14.2.15(@playwright/test@1.48.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@makeswift/runtime@0.0.0-snapshot-20241113021631(@types/react-dom@18.3.1)(@types/react@18.3.12)(next@14.2.15(@playwright/test@1.48.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@emotion/cache': 11.13.1
       '@emotion/css': 11.13.4
@@ -7426,9 +7426,9 @@ snapshots:
       '@emotion/server': 11.11.0(@emotion/css@11.13.4)
       '@emotion/sheet': 1.4.0
       '@emotion/utils': 1.4.1
-      '@makeswift/controls': 0.1.4
+      '@makeswift/controls': 0.1.5
       '@makeswift/next-plugin': 0.3.0(next@14.2.15(@playwright/test@1.48.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
-      '@makeswift/prop-controllers': 0.3.5
+      '@makeswift/prop-controllers': 0.3.6
       '@popmotion/popcorn': 0.4.4
       '@redux-devtools/extension': 3.3.0(redux@4.2.1)
       '@types/is-hotkey': 0.1.10
@@ -8297,7 +8297,7 @@ snapshots:
   '@swc/core@1.9.1(@swc/helpers@0.5.13)':
     dependencies:
       '@swc/counter': 0.1.3
-      '@swc/types': 0.1.14
+      '@swc/types': 0.1.15
     optionalDependencies:
       '@swc/core-darwin-arm64': 1.9.1
       '@swc/core-darwin-x64': 1.9.1
@@ -8335,7 +8335,7 @@ snapshots:
     dependencies:
       '@swc/counter': 0.1.3
 
-  '@swc/types@0.1.14':
+  '@swc/types@0.1.15':
     dependencies:
       '@swc/counter': 0.1.3
     optional: true
