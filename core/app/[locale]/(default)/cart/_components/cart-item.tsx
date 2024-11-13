@@ -6,6 +6,8 @@ import { BcImage } from '~/components/bc-image';
 
 import { ItemQuantity } from './item-quantity';
 import { RemoveItem } from './remove-item';
+import { RemoveAccessoryItem } from '../../../../../components/product-card/remove-accessory-item';
+import { cookies } from 'next/headers';
 
 const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
@@ -160,6 +162,7 @@ function moveToTheEnd(arr: any, word: string) {
   return arr;
 }
 export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
+  const cartId = cookies().get('cartId')?.value;
   const changeTheProtectedPosition = moveToTheEnd(
     product?.selectedOptions,
     'Protect Your Purchase',
@@ -397,7 +400,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
                     <div className="flex items-center text-right text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#353535]">
                       QTY: {item.prodQuantity}
                     </div>
-                    <RemoveItem currency={currencyCode} product={item} deleteIcon={deleteIcon} />
+                    <RemoveAccessoryItem currency={currencyCode} cartId={cartId} lineItemId={product?.entityId} product={item} deleteIcon={deleteIcon} />
                   </div>
                 </div>
               </div>

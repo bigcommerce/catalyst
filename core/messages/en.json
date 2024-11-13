@@ -528,7 +528,8 @@
       "AddToCart": {
         "viewOptions": "View options",
         "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-        "error": "Error adding product to cart. Please try again."
+        "error": "Error adding product to cart. Please try again.",
+        "update": "Item updated to <cartLink> your cart</cartLink>"
       }
     },
     "FormFields": {
