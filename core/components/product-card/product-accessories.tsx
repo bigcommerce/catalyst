@@ -12,22 +12,35 @@ import { useState, useTransition } from 'react';
 import { Button } from '~/components/ui/button';
 import { useCommonContext } from '~/components/common-context/common-provider';
 import { GetCartMetaFields, CreateCartMetaFields, UpdateCartMetaFields } from '../management-apis';
+import { InputPlusMinus } from '../form-fields/input-plus-minus';
 
 interface Props {
   accessories: any;
   index: number;
-  fanPopup:string;
+  fanPopup: string;
   currencyCode: string;
+  blankAddImg: string
 }
 
-
-export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup}: Props) => {
+export const ProductAccessories = ({ accessories, index, currencyCode, fanPopup, blankAddImg }: Props) => {
   const format = useFormatter();
   const productFlyout = useCommonContext();
   const t = useTranslations('Components.ProductCard.AddToCart');
   const cart = useCart();
   let accessoriesProducts: any = accessories?.productData?.map(
-    ({ sku, id, price, name, sale_price }: { sku: any; id: any; price: any; name: any, sale_price: any }) => ({
+    ({
+      sku,
+      id,
+      price,
+      name,
+      sale_price,
+    }: {
+      sku: any;
+      id: any;
+      price: any;
+      name: any;
+      sale_price: any;
+    }) => ({
       value: id,
       label: `(+$${sale_price}) ${sku}-  ${name}`,
     }),
@@ -37,19 +50,20 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
   const [productlabel, setProductLabel] = useState<string>(accessories?.label);
   const [productPrice, setProductPrice] = useState<any>();
   const [productSalePrice, setProductSalePrice] = useState<any>();
-  const [productImage, setProductImage] = useState<string>(fanPopup);
+  const [productImage, setProductImage] = useState<string>(blankAddImg);
   const [baseImage, setBaseImage] = useState<string>(' bg-set');
   const [hasSalePrice, setHasSalePrice] = useState<number>(0);
+  
   const onProductChange = (variant: any) => {
     setvariantId(variant);
     let accessoriesData = accessories?.productData?.find((prod: any) => prod.id == variant);
-    if(accessoriesData) {
+    if (accessoriesData) {
       let formatPrice = format.number(accessoriesData?.price, {
         style: 'currency',
         currency: currencyCode,
       });
       let salePrice: number = accessoriesData?.sale_price;
-      if(salePrice != accessoriesData?.price) {
+      if (salePrice != accessoriesData?.price) {
         setHasSalePrice(1);
       } else {
         setHasSalePrice(0);
@@ -77,10 +91,10 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
     cart.increment(quantity);
     startTransition(async () => {
       const result = await addToCart(formData);
-      if(result?.items) {
+      if (result?.items) {
         productFlyout.setCartDataFn(result?.items);
       }
-      
+
       if (result.error) {
         cart.decrement(quantity);
 
@@ -91,44 +105,46 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
       if (result?.status == 'success') {
         let cartId: string = result?.data?.entityId || '';
         //update the cart metafields
-        if(cartId) {
+        if (cartId) {
           let lineItemId = productFlyout?.productData?.entityId;
           let productId = productFlyout?.productData?.productEntityId;
           let optionValue = {
-            'productId': productId,
-            'variantId': variantId,
-            'quantity': quantity
-          }
+            productId: productId,
+            variantId: variantId,
+            quantity: quantity,
+          };
           let cartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
           let getCartMetaLineItems = cartMetaFields?.find((item: any) => item?.key == lineItemId);
-          if(cartMetaFields?.length == 0 || !getCartMetaLineItems) {
+          if (cartMetaFields?.length == 0 || !getCartMetaLineItems) {
             let metaArray: any = [];
             metaArray.push(optionValue);
             let cartMeta = {
-              "permission_set": "write_and_sf_access",
-              "namespace": "accessories_data",
-              "key": lineItemId,
-              "value": JSON.stringify(metaArray),
-            }
+              permission_set: 'write_and_sf_access',
+              namespace: 'accessories_data',
+              key: lineItemId,
+              value: JSON.stringify(metaArray),
+            };
             await CreateCartMetaFields(cartId, cartMeta);
           } else {
             let metaFieldId = getCartMetaLineItems?.id;
             let existingValue: any = '';
-            if(getCartMetaLineItems?.id) {
+            if (getCartMetaLineItems?.id) {
               existingValue = JSON?.parse(getCartMetaLineItems?.value);
-              let existingIndex = existingValue?.findIndex((item: any) => item?.variantId == variantId)
-              if(existingIndex >= 0) {
+              let existingIndex = existingValue?.findIndex(
+                (item: any) => item?.variantId == variantId,
+              );
+              if (existingIndex >= 0) {
                 existingValue[existingIndex].quantity += quantity;
               } else {
                 existingValue.push(optionValue);
               }
             }
             let cartMeta = {
-              "permission_set": "write_and_sf_access",
-              "namespace": "accessories_data",
-              "key": lineItemId,
-              "value": JSON.stringify(existingValue),
-            }
+              permission_set: 'write_and_sf_access',
+              namespace: 'accessories_data',
+              key: lineItemId,
+              value: JSON.stringify(existingValue),
+            };
             await UpdateCartMetaFields(cartId, metaFieldId, cartMeta);
           }
           toast.success(
@@ -158,29 +174,37 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
     });
   };
   let hideImage = '';
-  if(baseImage) {
+  if (baseImage) {
     hideImage = ' hidden';
   }
 
   return (
     <>
       {accessories?.length}
-      <div className={`left-container bg-gray-200 w-[150px] h-[177px]${baseImage}`}>
+      <div className={`left-container w-[195px] h-[150px] border border-[#CCCBCB]  sm:w-[150px] bg-transparent flex items-center justify-center sm:bg-transparent sm:h-[155px] ${baseImage}`}>
         <BcImage
           alt={accessories?.label}
-          className={`object-fill h-[177px]${baseImage}${hideImage}`}
+          className={`object-fill w-[190px] h-[145px] sm:h-[150px] sm:w-[150px] ${baseImage}`}
           height={150}
           src={productImage}
           width={150}
           unoptimized={true}
         />
       </div>
-      <div className='w-full flex flex-col gap-[10px] shrink-[100]'>
+      <div className="flex w-full shrink-[100] flex-col gap-[10px]">
         {productlabel && (
-        <div className='flex flex-col'>
-          <p className='font-normal text-[16px] tracking-[0.15px] text-[#353535]'>{productlabel}</p>
-          <p className='font-normal text-[16px] tracking-[0.15px] text-[#353535] text-right'> {productSalePrice} {hasSalePrice == 1 && (<span className='text-[#808080] line-through'>{productPrice}</span>)}</p>
-        </div>
+          <div className="flex flex-col gap-[5px] sm:gap-[0px]">
+            <p className="text-[16px] font-normal text-center sm:text-left tracking-[0.15px] text-[#353535]">
+              {productlabel}
+            </p>
+            <p className="sm:text-right text-center text-[16px] font-normal tracking-[0.15px] text-[#353535]">
+              {' '}
+              {productSalePrice}{' '}
+              {hasSalePrice == 1 && (
+                <span className="text-[#808080] line-through">{productPrice}</span>
+              )}
+            </p>
+          </div>
         )}
         <div className="right-container">
           <Select
@@ -195,16 +219,18 @@ export const ProductAccessories = ({ accessories, index, currencyCode , fanPopup
           <form onSubmit={handleSubmit}>
             <input name="product_id" type="hidden" value={accessories?.entityId} />
             <input name="variant_id" type="hidden" value={variantId} />
-            <input name="quantity" type="hidden" value={1} />
-            <Button
-              id="add-to-cart"
-              className="!rounded-[3px] !py-[5px] !px-[10px] h-[42px] text-[14px] font-medium tracking-[1.25px]"
-              loading={isPending}
-              loadingText="processing"
-              type="submit"
-            >
-              ADD TO CART
-            </Button>
+            <div className='flex flex-col sm:flex-row justify-end items-center sm:items-start p-0 gap-[10px]'>
+              <InputPlusMinus product="false" productData="" />
+              <Button
+                id="add-to-cart"
+                className="h-[42px] flex-shrink-[100] !rounded-[3px] !px-[10px] !py-[5px] text-[14px] font-medium tracking-[1.25px] bg-[#03465C]"
+                loading={isPending}
+                loadingText="processing"
+                type="submit"
+              >
+                ADD TO CART
+              </Button>
+            </div>
           </form>
         </div>
       </div>

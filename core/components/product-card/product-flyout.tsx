@@ -9,7 +9,6 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { BcImage } from '~/components/bc-image';
 import { useCommonContext } from '~/components/common-context/common-provider';
-import { Minus, Plus } from 'lucide-react';
 import {
   GetProductMetaFields,
   GetProductVariantMetaFields,
@@ -19,6 +18,7 @@ import { ProductAccessories } from './product-accessories';
 import Link from 'next/link';
 import { CheckoutButton } from '~/app/[locale]/(default)/cart/_components/checkout-button';
 import { GetVariantsByProductSKU } from '~/components/graphql-apis';
+import { InputPlusMinus } from '../form-fields/input-plus-minus';
 
 interface Props {
   data: FragmentOf<typeof ProductItemFragment>;
@@ -68,7 +68,8 @@ const getVariantProductInfo = async (metaData: any) => {
                   id: item?.id,
                   mpn: item?.mpn,
                   sku: item?.sku,
-                  name: productName + optionValues
+                  name: productName + optionValues,
+                  selectedOptions: item?.selectedOption
                 });
               }
             });
@@ -93,11 +94,13 @@ const getVariantProductInfo = async (metaData: any) => {
 export const ProductFlyout = ({
   data: product,
   closeIcon,
-  fanPopup
+  fanPopup,
+  blankAddImg,
 }: {
   data: Props['data'];
   closeIcon: string;
   fanPopup: string;
+  blankAddImg: string;
 }) => {
   const format = useFormatter();
   const productFlyout = useCommonContext();
@@ -180,10 +183,10 @@ export const ProductFlyout = ({
                 />
               </div>
               <div className="popup-box1-div2 flex max-w-[360px] flex-shrink-[50] flex-col text-center ssm:text-start gap-[3px] ssm:gap-[1px]">
-                <p className="text-[14px] font-normal tracking-[0.25px] text-[#353535]">
+                <p className="text-[14px] font-normal text-center ssm:text-left tracking-[0.25px] text-[#353535]">
                   {productData?.name}
                 </p>
-                <p className="popup-box1-div2-sku text-[12px] leading-[1.5rem] ssm:tracking-[0.015625rem] tracking-[0.4px] text-[#5C5C5C]">
+                <p className="popup-box1-div2-sku text-center ssm:text-left text-[12px] leading-[1.5rem] ssm:tracking-[0.015625rem] tracking-[0.4px] text-[#5C5C5C]">
                   SKU: {product?.sku}
                 </p>
                 {productData?.selectedOptions?.map((selectedOption: any, index: number) => {
@@ -228,28 +231,12 @@ export const ProductFlyout = ({
                     </div>
                   ) : null}
                 </div>
-                <div className="text-[14px] font-normal tracking-[0.25px] text-[#353535]">
-                  <div className="flex h-[44px] max-w-[105px] items-center justify-center gap-[10px] rounded-[20px] border border-[#d6d6d6]">
-                    <div className="">
-                      <Minus className="h-[1rem] w-[1rem] text-[#7F7F7F]"></Minus>
-                    </div>
-                    <input
-                      name="quantity"
-                      type="number"
-                      className="border [&::-webkit-outer-spin-button]:margin-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-inner-spin-button]:margin-0 text-center w-[35%] border-y-0 focus:border-y-0 focus:outline-none"
-                      min="1"
-                      defaultValue={productQty}
-                    />
-                    <div className="">
-                      <Plus className="h-[1rem] w-[1rem] text-[#7F7F7F]"></Plus>
-                    </div>
-                  </div>
-                </div>
+                <InputPlusMinus product="true" productData={productData} />
               </div>
             </Dialog.Content>
             {variantProductData && variantProductData?.length > 0 && (
               <>
-                <hr className="" />
+                <hr className="border-[#93cfa1]" />
                 <div className="pop-up-text flex flex-col gap-4">
                   <div className="flex flex-col gap-[20px]">
                     <div className="text-[20px] font-medium tracking-[0.15px] text-black">
@@ -259,10 +246,10 @@ export const ProductFlyout = ({
                       {variantProductData &&
                         variantProductData?.map((accessories: any, index: number) => (
                           <div
-                            className="product-card flex flex-row items-center gap-[20px] border border-[#cccbcb] p-[20px]"
+                            className="product-card flex sm:flex-row flex-col items-center gap-[20px] border border-[#cccbcb] p-[20px]"
                             key={index}
                           >
-                            <ProductAccessories accessories={accessories} fanPopup={fanPopup} index={index} currencyCode={productData?.extendedSalePrice?.currencyCode} />
+                            <ProductAccessories accessories={accessories} fanPopup={fanPopup} blankAddImg={blankAddImg} index={index} currencyCode={productData?.extendedSalePrice?.currencyCode} />
                           </div>
                         ))}
                     </div>
@@ -289,10 +276,10 @@ export const ProductFlyout = ({
                     </div>
                   </div>
                 </div>
-                <div className="cart-buttons flex flex-row items-start gap-[10px]">
+                <div className="cart-buttons flex flex-col ssm:flex-row items-start gap-[10px]">
                   <Dialog.Close asChild>
                     <Link
-                      className="flex flex-row items-center self-stretch justify-center w-[100%] border border-[#b3dce8] rounded-[3px] font-medium text-[14px] tracking-[1.25px] uppercase text-[#002A37] my-5 text-sm  hover:text-secondary md:my-0"
+                      className="flex flex-row h-[41px] items-center self-stretch justify-center w-[100%] border border-[#b3dce8] rounded-[3px] font-medium text-[14px] tracking-[1.25px] uppercase text-[#002A37]  text-sm  hover:text-secondary"
                       href="/cart"
                     >
                       View Cart

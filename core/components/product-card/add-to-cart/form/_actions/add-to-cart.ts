@@ -11,6 +11,7 @@ import { TAGS } from '~/client/tags';
 export const addToCart = async (data: FormData) => {
   const productEntityId = Number(data.get('product_id'));
   const variantEntityId = Number(data.get('variant_id'));
+  const quantity: number = Number(data.get('quantity')) || 1;
   const cartId = cookies().get('cartId')?.value;
   let cart;
   let cartData: any = {};
@@ -20,12 +21,13 @@ export const addToCart = async (data: FormData) => {
 
     if (cart) {
       if(variantEntityId > 0) {
+        
         cart = await addCartLineItem(cart.entityId, {
           lineItems: [
             {
               productEntityId,
               variantEntityId: variantEntityId,
-              quantity: 1,
+              quantity: quantity,
             },
           ],
         });
@@ -34,7 +36,7 @@ export const addToCart = async (data: FormData) => {
           lineItems: [
             {
               productEntityId,
-              quantity: 1,
+              quantity: quantity,
             },
           ],
         });
