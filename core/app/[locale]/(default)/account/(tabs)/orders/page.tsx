@@ -4,16 +4,17 @@ import { OrdersContent } from './_components/orders-content';
 import { getCustomerOrders } from './page-data';
 
 interface Props {
-  searchParams: {
+  searchParams: Promise<{
     [key: string]: string | string[] | undefined;
     before?: string;
     after?: string;
     order?: string;
-  };
+  }>;
 }
 
 export default async function OrdersPage({ searchParams }: Props) {
-  const { before, after, order } = searchParams;
+  const { before, after, order } = await searchParams;
+
   const customerOrdersDetails = await getCustomerOrders({
     ...(after && { after }),
     ...(before && { before }),
