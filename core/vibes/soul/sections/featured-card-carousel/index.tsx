@@ -17,8 +17,8 @@ export function FeaturedCardCarousel({ title, description, cta, cards }: Props) 
   return (
     <section className="overflow-hidden @container">
       <div className="mx-auto w-full max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
-        <div className="mb-6 flex w-full flex-row flex-wrap justify-between gap-x-8 text-foreground @4xl:mb-8 @4xl:items-end">
-          <div className="flex-1">
+        <div className="mb-6 flex w-full flex-row flex-wrap items-end justify-between gap-x-8 gap-y-6 text-foreground @4xl:mb-8">
+          <div>
             <h2 className="font-heading text-2xl font-medium leading-none @xl:text-3xl @4xl:text-4xl">
               {title}
             </h2>
