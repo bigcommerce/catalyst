@@ -131,12 +131,12 @@ export function Slideshow({ slides, interval = 5000, className }: Props) {
                       {title}
                     </h1>
                     {description != null && description !== '' && (
-                      <p className="mb-6 mt-2 max-w-xl text-base leading-normal text-background/80 @xl:mb-8 @xl:mt-3 @xl:text-lg">
+                      <p className="mt-2 max-w-xl text-base leading-normal text-background/80 @xl:mt-3 @xl:text-lg">
                         {description}
                       </p>
                     )}
                     {cta != null && cta.href !== '' && cta.label !== '' && (
-                      <ButtonLink href={cta.href} variant="tertiary">
+                      <ButtonLink href={cta.href} variant="tertiary" className="mt-6 @xl:mt-8">
                         {cta.label}
                       </ButtonLink>
                     )}
