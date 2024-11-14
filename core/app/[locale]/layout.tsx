@@ -12,6 +12,7 @@ import '../globals.css';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { MakeswiftProvider } from '~/lib/makeswift/provider';
 
 import { Notifications } from '../notifications';
 import { Providers } from '../providers';
@@ -88,6 +89,8 @@ interface Props extends PropsWithChildren {
 export default async function RootLayout({ params, children }: Props) {
   const { locale } = await params;
 
+  // const data = { customer: { customerGroupId: 1 } };
+
   // need to call this method everywhere where static rendering is enabled
   // https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-setRequestLocale-to-all-layouts-and-pages
   setRequestLocale(locale);
@@ -100,11 +103,13 @@ export default async function RootLayout({ params, children }: Props) {
         <DraftModeScript />
       </head>
       <body className="flex h-screen min-w-[375px] flex-col">
-        <Notifications />
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <Providers>{children}</Providers>
-        </NextIntlClientProvider>
-        <VercelComponents />
+        <MakeswiftProvider>
+          <Notifications />
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <Providers>{children}</Providers>
+          </NextIntlClientProvider>
+          <VercelComponents />
+        </MakeswiftProvider>
       </body>
     </html>
   );
