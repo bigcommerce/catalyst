@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import Script from 'next/script';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
@@ -101,6 +102,21 @@ export default async function RootLayout({ params, children }: Props) {
           <Providers>{children}</Providers>
         </NextIntlClientProvider>
         <VercelComponents />
+        <Script id="b3-settings">
+          {`window.B3 = {
+            setting: {
+              store_hash: 'nphozlrwue', 
+              channel_id: 1210811,
+              platform: 'catalyst',
+            },
+          };`}
+        </Script>
+        <Script
+          data-channelid="1210811"
+          data-storehash="nphozlrwue"
+          src="https://cdn.bundleb2b.net/b2b/tier1/storefront/headless.js"
+          type="module"
+        />
       </body>
     </html>
   );

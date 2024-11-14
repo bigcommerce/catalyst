@@ -145,6 +145,49 @@ const config = {
           return null;
         }
 
+        // eslint-disable-next-line no-console
+        console.dir(
+          {
+            customerId: result.customer.entityId,
+            channelId: process.env.BIGCOMMERCE_CHANNEL_ID,
+            // customerAccessToken: result.customerAccessToken.value,
+            // b2bAuthToken: process.env.B2B_AUTH_TOKEN,
+          },
+          { depth: null },
+        );
+
+        const b2bloginResponse = await fetch(
+          ` https://api-b2b.bigcommerce.com/api/io/auth/customers/storefront`,
+          {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              authToken: process.env.B2B_AUTH_TOKEN || '',
+            },
+            body: JSON.stringify({
+              customerId: result.customer.entityId,
+              channelId: process.env.BIGCOMMERCE_CHANNEL_ID,
+              customerAccessToken: {
+                value: result.customerAccessToken.value,
+                expiresAt: '2024-12-31T23:59:59.999Z',
+              },
+            }),
+          },
+        );
+
+        // eslint-disable-next-line no-console
+        console.dir(
+          { status: b2bloginResponse.status, statusText: b2bloginResponse.statusText },
+          { depth: null },
+        );
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const b2bLoginData = await b2bloginResponse.json();
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, no-console
+        console.dir({ b2bLoginData }, { depth: null });
+
         return {
           name: `${result.customer.firstName} ${result.customer.lastName}`,
           email: result.customer.email,
