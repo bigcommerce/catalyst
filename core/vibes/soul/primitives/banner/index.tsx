@@ -46,7 +46,7 @@ export const Banner = forwardRef<React.ComponentRef<'div'>, Props>(
         {!hideDismiss && (
           <button
             aria-label="Dismiss banner"
-            className="absolute right-3 top-3 grid h-8 w-8 place-content-center rounded-full text-foreground/50 transition-colors duration-300 hover:bg-background/40 hover:text-foreground @xl:top-1/2 @xl:-translate-y-1/2"
+            className="absolute right-3 top-1/2 grid h-8 w-8 -translate-y-1/2 place-content-center rounded-full text-foreground/50 transition-colors duration-300 hover:bg-background/40 hover:text-foreground"
             onClick={(e) => {
               e.preventDefault();
               hideBanner();
