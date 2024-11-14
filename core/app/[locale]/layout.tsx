@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import Script from 'next/script';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
@@ -96,6 +97,7 @@ export default async function RootLayout({ params, children }: Props) {
   return (
     <html className={`${inter.variable} font-sans`} lang={locale}>
       <body className="flex h-screen min-w-[375px] flex-col">
+        <Script src="https://cdn.noibu.com/collect-core.js" />
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>{children}</Providers>
