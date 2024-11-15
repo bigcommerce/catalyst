@@ -39,6 +39,7 @@ interface Product {
 interface MSProductsListProps {
   className: string;
   collection: 'none' | 'bestSelling' | 'newest' | 'featured';
+  append: boolean;
   products: Product[];
   showCompare: boolean;
   compareLabel: string;
@@ -56,13 +57,19 @@ const fetcher = async (url: string): Promise<{ products: GetProductsResponse }> 
 };
 
 runtime.registerComponent(
-  function MSProductsList({ className, collection, products, ...props }: MSProductsListProps) {
+  function MSProductsList({
+    className,
+    collection,
+    append,
+    products,
+    ...props
+  }: MSProductsListProps) {
     const format = useFormatter();
 
     const productIds = products.map(({ entityId }) => entityId ?? '');
 
-    const { data, isLoading } = useSWR([collection, productIds], async () => {
-      const apiResults =
+    const { data } = useSWR([collection, productIds], async () => {
+      const collectionResults =
         collection !== 'none'
           ? await fetcher(`/api/products/group/${collection}`)
           : { products: [] };
@@ -71,22 +78,46 @@ runtime.registerComponent(
 
       searchParams.append('ids', productIds.join(','));
 
-      const additionalProducts = await fetcher(`/api/products/ids?${searchParams.toString()}`);
+      const additionalResults = await fetcher(`/api/products/ids?${searchParams.toString()}`);
 
-      return [...apiResults.products, ...additionalProducts.products];
+      return { collection: collectionResults.products, fromIds: additionalResults.products };
     });
 
-    if (isLoading) {
-      return <ProductsListSkeleton className={className} />;
-    }
-
-    if (products.length === 0 && data && data.length === 0) {
+    if (
+      products.length === 0 &&
+      data &&
+      data.collection.length === 0 &&
+      data.fromIds.length === 0
+    ) {
       return <ProductsListSkeleton className={className} message="No products found" />;
     }
 
-    const listedProducts = products
-      .filter((p) => !p.entityId)
-      .map(({ title, link, imageSrc, imageAlt, subtitle, badge, priceOne, priceTwo, type }) => {
+    const listedProducts = products.map(
+      (
+        { entityId, title, link, imageSrc, imageAlt, subtitle, badge, priceOne, priceTwo, type },
+        index,
+      ) => {
+        // If entity ID is provided, use the data from SWR
+        if (data?.fromIds && entityId) {
+          const idData = data.fromIds.find(
+            (product) => product.entityId === parseInt(entityId, 10),
+          );
+
+          if (idData)
+            return {
+              id: idData.entityId.toString(),
+              title: idData.name,
+              href: idData.path,
+              image: idData.defaultImage
+                ? { src: idData.defaultImage.url, alt: idData.defaultImage.altText }
+                : undefined,
+              subtitle: removeEdgesAndNodes(idData.categories)
+                .map((category) => category.name)
+                .join(', '),
+              price: pricesTransformer(idData.prices, format),
+            };
+        }
+
         let price: Price;
 
         switch (type) {
@@ -115,7 +146,7 @@ runtime.registerComponent(
         }
 
         return {
-          id: title ?? '',
+          id: `${title}-${index}`,
           title: title ?? '',
           href: link?.href ?? '',
           image: imageSrc ? { src: imageSrc, alt: imageAlt } : undefined,
@@ -124,10 +155,11 @@ runtime.registerComponent(
           badge: badge ?? '',
           type,
         };
-      });
+      },
+    );
 
-    const apiProducts = data
-      ? data.map(({ entityId, name, prices, defaultImage, path, categories }) => {
+    const collectionData = data?.collection
+      ? data.collection.map(({ entityId, name, prices, defaultImage, path, categories }) => {
           return {
             id: entityId.toString(),
             title: name,
@@ -141,7 +173,9 @@ runtime.registerComponent(
         })
       : [];
 
-    const allProducts = [...apiProducts, ...listedProducts];
+    const allProducts = append
+      ? [...collectionData, ...listedProducts]
+      : [...listedProducts, ...collectionData];
 
     return <ProductsList {...props} className={className} products={allProducts} />;
   },
@@ -163,6 +197,7 @@ runtime.registerComponent(
         ],
         defaultValue: 'bestSelling',
       }),
+      append: Checkbox({ label: 'Append additional products', defaultValue: true }),
       products: List({
         label: 'Additional products',
         type: Shape({
@@ -190,7 +225,6 @@ runtime.registerComponent(
             imageAlt: TextInput({ label: 'Image alt', defaultValue: 'Product image' }),
             subtitle: TextInput({ label: 'Subtitle', defaultValue: 'Product subtitle' }),
             badge: TextInput({ label: 'Badge', defaultValue: 'New' }),
-
             type: Select({
               options: [
                 { value: 'single', label: 'Single' },
@@ -204,7 +238,7 @@ runtime.registerComponent(
           },
         }),
         getItemLabel(product) {
-          return product?.title || 'Product Title';
+          return product?.entityId?.label ?? product?.title ?? 'Product Title';
         },
       }),
     },
