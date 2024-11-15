@@ -315,10 +315,11 @@ export const withRoutes: MiddlewareFactory = () => {
         break;
       }
 
-      case 'Product': {
-        url = `/${locale}/product/${node.entityId}${postfix}`;
-        break;
-      }
+      // Disable static caching on the product page because the page is editable with Makeswift
+      // case 'Product': {
+      //   url = `/${locale}/product/${node.entityId}${postfix}`;
+      //   break;
+      // }
 
       case 'NormalPage': {
         url = `/${locale}/webpages/normal/${node.id}`;
@@ -343,10 +344,11 @@ export const withRoutes: MiddlewareFactory = () => {
 
         const cleanPathName = clearLocaleFromPath(pathname, locale);
 
-        if (cleanPathName === '/' && postfix) {
-          url = `/${locale}${postfix}`;
-          break;
-        }
+        // Disable static caching for the homepage because we're using Makeswift page as the homepage.
+        // if (cleanPathName === '/' && postfix) {
+        //   url = `/${locale}${postfix}`;
+        //   break;
+        // }
 
         url = `/${locale}${cleanPathName}`;
       }
