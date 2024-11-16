@@ -46,7 +46,7 @@ const CustomerChangePasswordMutation = graphql(`
 
 export interface State {
   status: 'idle' | 'error' | 'success';
-  message?: string;
+  messages?: string[];
 }
 
 export const changePassword = async (_previousState: unknown, formData: FormData) => {
@@ -74,30 +74,28 @@ export const changePassword = async (_previousState: unknown, formData: FormData
     const result = response.data.customer.changePassword;
 
     if (result.errors.length === 0) {
-      return { status: 'success', message: t('success') };
+      return { status: 'success', messages: [t('success')] };
     }
 
     return {
       status: 'error',
-      message: result.errors.map((error) => error.message).join('\n'),
+      messages: result.errors.map((error) => error.message),
     };
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return {
         status: 'error',
-        message: error.issues
-          .map(({ path, message }) => `${path.toString()}: ${message}.`)
-          .join('\n'),
+        messages: error.issues.map(({ path, message }) => `${path.toString()}: ${message}.`),
       };
     }
 
     if (error instanceof Error) {
       return {
         status: 'error',
-        message: error.message,
+        messages: [error.message],
       };
     }
 
-    return { status: 'error', message: t('error') };
+    return { status: 'error', messages: [t('error')] };
   }
 };

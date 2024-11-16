@@ -74,7 +74,7 @@ export const updateCustomer = async ({ formData, reCaptchaToken }: UpdateCustome
   if (!isUpdateCustomerInput(parsed)) {
     return {
       status: 'error',
-      error: t('Errors.inputError'),
+      errors: [t('Errors.inputError')],
     };
   }
 
@@ -98,7 +98,7 @@ export const updateCustomer = async ({ formData, reCaptchaToken }: UpdateCustome
     if (!customer) {
       return {
         status: 'error',
-        error: t('Errors.notFound'),
+        errors: [t('Errors.notFound')],
       };
     }
 
@@ -109,6 +109,6 @@ export const updateCustomer = async ({ formData, reCaptchaToken }: UpdateCustome
 
   return {
     status: 'error',
-    error: result.errors.map((error) => error.message).join('\n'),
+    errors: result.errors.map((error) => error.message),
   };
 };
