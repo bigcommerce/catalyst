@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { expirePath } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -88,7 +88,7 @@ export const updateAddress = async ({
 
     const result = response.data.customer.updateCustomerAddress;
 
-    revalidatePath('/account/addresses', 'page');
+    expirePath('/account/addresses', 'page');
 
     if (result.errors.length === 0) {
       return { status: 'success', message: t('success') };

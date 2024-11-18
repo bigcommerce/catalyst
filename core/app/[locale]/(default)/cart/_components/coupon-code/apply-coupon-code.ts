@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidateTag } from 'next/cache';
+import { expireTag } from 'next/cache';
 import { z } from 'zod';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -54,7 +54,7 @@ export const applyCouponCode = async (formData: FormData) => {
       return { status: 'error', error: 'Coupon code is invalid.' };
     }
 
-    revalidateTag(TAGS.checkout);
+    expireTag(TAGS.checkout);
 
     return { status: 'success', data: checkout };
   } catch (error: unknown) {

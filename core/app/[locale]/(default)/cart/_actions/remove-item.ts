@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidateTag } from 'next/cache';
+import { expireTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -61,7 +61,7 @@ export async function removeItem({
       cookieStore.delete('cartId');
     }
 
-    revalidateTag(TAGS.cart);
+    expireTag(TAGS.cart);
 
     return { status: 'success', data: cart };
   } catch (error: unknown) {
