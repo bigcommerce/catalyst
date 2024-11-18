@@ -4,6 +4,7 @@ import { Link as CustomLink } from '~/components/link';
 import { cn } from '~/lib/utils';
 
 import { Locale } from './locale';
+import AgentFooter from '~/app/[locale]/(default)/sales-buddy/pages/footer';
 
 interface Image {
   altText: string;
@@ -52,6 +53,7 @@ const Footer = ({
 }: Props) => (
   <footer className={cn('px-18  2xl:container 2xl:mx-auto !max-w-[100%] bg-[#002a37] mt-[50px] text-white', className)} {...props}>
     <section className="section-footer flex flex-col gap-8 border-t border-gray-200 px-4 pt-10 pb-0 md:flex-row lg:gap-4 lg:px-12">
+      <AgentFooter />
       <nav className="grid flex-auto auto-cols-fr gap-8 sm:grid-flow-col pl-[5em]" id="nav-footer-section">
         {sections.map((section, index) => (
           <div key={`${section.title}-${index}`}>
@@ -61,14 +63,18 @@ const Footer = ({
             <ul className="footer-submenu flex flex-col">
               {section.links.map((link, index) => (
                 <li key={`${link.label}-${index}`} className='mb-[14px]'>
-                  {link.href != '#' ? <CustomLink className='text-[14px] font-normal leading-[24px] tracking-[0.25px] text-left !text-white' href={link.href}>{link.label}</CustomLink> : link.label }
+                  {link.href != '#' ? <CustomLink className='text-[14px] font-normal leading-[24px] tracking-[0.25px] text-left !text-white' href={link.href}>{link.label}</CustomLink> : link.label}
                 </li>
+
               ))}
             </ul>
+
           </div>
         ))}
+
       </nav>
       <div className="div-footer flex flex-col gap-2.5 md:order-first md:grow">
+
         {Boolean(logo) && (
           <h3 className="footer-customer-service text-left text-[20px] font-medium leading-[32px] tracking-[0.15px] text-white">
             Customer Service
@@ -89,14 +95,12 @@ const Footer = ({
             <p className="mb-4 text-left font-sans text-[14px] font-normal leading-[24px] tracking-[0.25px] text-white">
               Visit our Helpdesk
             </p>
-
             <h3 className="footerheading footer-shopping-assistance mb-2.5 mt-5 pt-0.5 text-left text-[20px] font-medium leading-[32px] tracking-[0.15px] text-white">
               Shopping Assistance
             </h3>
             <p className="mb-1.5 text-left text-[14px] font-normal leading-[24px] tracking-[0.25px] text-white">
               PHONE HOURS
             </p>
-
             <p className="Footertxt mb-1.5 text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
               Monday-friday 6am -5pm PST
             </p>
@@ -117,6 +121,7 @@ const Footer = ({
         )}
       </div>
     </section>
+
 
     <section className="copyright">
       <p className="text-white-400 text-[14px] flex justify-center font-normal leading-[24px] tracking-[0.25px] text-left sm:order-first">{copyright}</p>
