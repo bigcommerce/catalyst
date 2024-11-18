@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { expirePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -83,7 +83,7 @@ export async function updateItemQuantity({
       return { status: 'error', error: 'Failed to change product quantity in Cart' };
     }
 
-    revalidatePath('/cart');
+    expirePath('/cart');
 
     return { status: 'success', data: cart };
   } catch (error: unknown) {

@@ -1,7 +1,7 @@
 'use server';
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { revalidateTag } from 'next/cache';
+import { expireTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
 import { FragmentOf, graphql } from '~/client/graphql';
@@ -159,7 +159,7 @@ export async function handleAddToCart(
         throw new Error('Failed to add product to cart.');
       }
 
-      revalidateTag(TAGS.cart);
+      expireTag(TAGS.cart);
 
       return { status: 'success', data: cart };
     }
@@ -189,7 +189,7 @@ export async function handleAddToCart(
       path: '/',
     });
 
-    revalidateTag(TAGS.cart);
+    expireTag(TAGS.cart);
 
     return { status: 'success', data: cart };
   } catch (error: unknown) {

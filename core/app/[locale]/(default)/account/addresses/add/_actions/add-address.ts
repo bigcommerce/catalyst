@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { expirePath } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -70,7 +70,7 @@ export const addAddress = async (formData: FormData) => {
 
     const result = response.data.customer.addCustomerAddress;
 
-    revalidatePath('/account/addresses', 'page');
+    expirePath('/account/addresses', 'page');
 
     if (result.errors.length === 0) {
       return { status: 'success', messages: [t('success')] };

@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidateTag } from 'next/cache';
+import { expireTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -56,7 +56,7 @@ export const deleteAddress = async (addressId: number): Promise<DeleteAddressRes
       });
     }
 
-    revalidateTag(TAGS.customer);
+    expireTag(TAGS.customer);
 
     return { status: 'success', message: t('success') };
   } catch (error: unknown) {
