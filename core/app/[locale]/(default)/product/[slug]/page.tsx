@@ -123,7 +123,6 @@ export default async function Product({ params: { locale, slug }, searchParams }
           <h2 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
             {product.name}
           </h2>
-
           <div className="items-center space-x-1 text-center lg:text-left xl:text-left">
             <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
               SKU: <span>{product.sku}</span>
@@ -134,7 +133,6 @@ export default async function Product({ params: { locale, slug }, searchParams }
                 {product.brand?.name}
               </span>
             </span>
-
             {collectionMetaField?.value && (
               <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
                 from the{' '}
@@ -164,7 +162,6 @@ export default async function Product({ params: { locale, slug }, searchParams }
             </Suspense>
           </div>
         </div>
-
         <ProductViewed product={product} />
       </ProductProvider>
     </>

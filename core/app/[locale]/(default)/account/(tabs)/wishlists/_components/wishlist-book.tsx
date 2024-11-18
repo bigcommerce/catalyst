@@ -109,13 +109,13 @@ const Wishlist = ({ setWishlistBook, wishlist }: WishlistProps) => {
 
   return (
     <>
-      <h3 className="mb-2 text-lg font-bold">{name}</h3>
-      <div className="flex w-full flex-col items-start justify-between lg:flex-row">
+      <h3 className="mb-2 text-lg text-[#353535] font-normal text-[16px] leading-[32px] tracking-[0.5px]">{name}</h3>
+      <div className="flex flex-col gap-[20px] mb-[20px]">
         {items.length === 0 ? (
           <p className="flex-1 py-4 text-center">{t('noItems')}</p>
         ) : (
-          <div className="mb-4 flex gap-4 lg:me-12">
-            <ul className="flex gap-4 [&>*:nth-child(n+2)]:hidden md:[&>*:nth-child(n+2)]:list-item md:[&>*:nth-child(n+4)]:hidden lg:[&>*:nth-child(n+4)]:list-item lg:[&>*:nth-child(n+5)]:hidden xl:[&>*:nth-child(n+5)]:list-item lg:[&>*:nth-child(n+7)]:hidden">
+          <div className="">
+            <ul className="grid grid-cols-[32%_32%_32%] justify-start gap-[20px] [&>*:nth-child(n+2)]:hidden md:[&>*:nth-child(n+2)]:list-item md:[&>*:nth-child(n+4)]:hidden lg:[&>*:nth-child(n+4)]:list-item lg:[&>*:nth-child(n+5)]:hidden xl:[&>*:nth-child(n+5)]:list-item lg:[&>*:nth-child(n+7)]:hidden">
               {items.slice(0, VisibleWishlistItemsPerDevice.xl).map((item) => {
                 const { entityId: productId, product } = item;
                 const defaultImage = product.images.find(({ isDefault }) => isDefault);
@@ -123,13 +123,13 @@ const Wishlist = ({ setWishlistBook, wishlist }: WishlistProps) => {
                   product.prices?.priceRange.min.value !== product.prices?.priceRange.max.value;
 
                 return (
-                  <li className="w-32 sm:w-40 md:w-36" key={productId}>
-                    <Link className="mb-2 flex" href={product.path}>
-                      <div className="h-32 w-full sm:h-40 md:h-36">
+                  <li className="border border-[#CCCBCB]" key={productId}>
+                    <Link className="flex justify-center items-center" href={product.path}>
+                      <div className="mzx-w-[344px] w-[344px] max-h-[360px] h-[360px]">
                         {defaultImage ? (
                           <BcImage
                             alt={defaultImage.altText}
-                            className="object-contain"
+                            className="object-contain w-full h-full"
                             height={300}
                             src={defaultImage.url}
                             width={300}
@@ -148,10 +148,10 @@ const Wishlist = ({ setWishlistBook, wishlist }: WishlistProps) => {
                       </Link>
                     )}
                     <Link href={product.path}>
-                      <h4 className="mb-2 font-semibold">{product.name}</h4>
+                      <h4 className="font-semibold text-center w-[80%]">{product.name}</h4>
                     </Link>
                     {product.prices && (
-                      <p className="w-36 shrink-0">
+                      <p className="text-center shrink-0">
                         {showPriceRange ? (
                           <>
                             {format.number(product.prices.priceRange.min.value, {
@@ -304,7 +304,7 @@ export const WishlistBook = ({
         {wishlistBook.map((wishlist) => {
           return (
             <li
-              className="flex flex-wrap items-start border-b py-4 first:border-t"
+              className=""
               key={wishlist.entityId}
             >
               <Wishlist setWishlistBook={setWishlistBook} wishlist={wishlist} />
