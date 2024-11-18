@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidateTag } from 'next/cache';
+import { expireTag } from 'next/cache';
 import { z } from 'zod';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -57,7 +57,7 @@ export const submitShippingCosts = async (
       return { status: 'error', error: 'Failed to submit shipping cost.' };
     }
 
-    revalidateTag(TAGS.checkout);
+    expireTag(TAGS.checkout);
 
     return { status: 'success', data: shippingCost };
   } catch (error: unknown) {
