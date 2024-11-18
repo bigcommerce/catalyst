@@ -11,6 +11,7 @@ import '../globals.css';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { routing } from '~/i18n/routing';
 
 import { Notifications } from '../notifications';
 import { Providers } from '../providers';
@@ -104,6 +105,10 @@ export default async function RootLayout({ params, children }: Props) {
       </body>
     </html>
   );
+}
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
 }
 
 export const fetchCache = 'default-cache';
