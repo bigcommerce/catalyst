@@ -1,4 +1,5 @@
 'use server';
+
 export const GetCustomerById = async (entityId: Number) => {
     try {
         let customerData = await fetch(
@@ -104,6 +105,29 @@ const getMetaFieldsByProductVariant = async (entityId: Number, variantId: number
         return jsonData;
     });
     return productMetaFields;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const UpdateCartLineItems = async (entityId: string, itemId: string, postData: any) => {
+  try {
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/carts/${entityId}/items/${itemId}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        body: JSON.stringify(postData),
+        cache: 'no-store'
+      },
+    ).then(res => res.json())
+    .then(jsonData => {
+      return jsonData;
+    });
+    return data;
   } catch (error) {
     console.error(error);
   }

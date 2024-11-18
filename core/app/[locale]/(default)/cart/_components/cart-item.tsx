@@ -6,7 +6,7 @@ import { BcImage } from '~/components/bc-image';
 
 import { ItemQuantity } from './item-quantity';
 import { RemoveItem } from './remove-item';
-import { RemoveAccessoryItem } from './remove-accessory-item';
+import { RemoveAccessoryItem } from '../../../../../components/product-card/remove-accessory-item';
 import { cookies } from 'next/headers';
 
 const PhysicalItemFragment = graphql(`

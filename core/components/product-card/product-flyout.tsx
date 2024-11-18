@@ -19,6 +19,7 @@ import { ProductAccessories } from './product-accessories';
 import Link from 'next/link';
 import { CheckoutButton } from '~/app/[locale]/(default)/cart/_components/checkout-button';
 import { GetVariantsByProductSKU } from '~/components/graphql-apis';
+import { InputPlusMinus } from '../form-fields/input-plus-minus';
 
 interface Props {
   data: FragmentOf<typeof ProductItemFragment>;
@@ -75,6 +76,7 @@ const getVariantProductInfo = async (metaData: any) => {
                   mpn: item?.mpn,
                   sku: item?.sku,
                   name: productName + optionValues,
+                  selectedOptions: item?.selectedOption
                 });
               }
             });

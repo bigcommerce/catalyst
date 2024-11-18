@@ -6,10 +6,10 @@ import { toast } from 'react-hot-toast';
 
 import { FragmentOf } from '~/client/graphql';
 
-import { CartItemFragment } from './cart-item';
-import { RemoveFromCartButton } from './remove-from-cart-button';
+import { CartItemFragment } from '~/app/[locale]/(default)/cart/_components/cart-item';
+import { RemoveFromCartButton } from '~/app/[locale]/(default)/cart/_components/remove-from-cart-button';
 import { GetCartMetaFields, RemoveCartMetaFields, UpdateCartMetaFields } from '~/components/management-apis';
-import { updateItemQuantity } from './item-quantity/update-item-quantity';
+import { updateItemQuantity } from '~/app/[locale]/(default)/cart/_components/item-quantity/update-item-quantity';
 
 type FragmentResult = FragmentOf<typeof CartItemFragment>;
 type PhysicalItem = FragmentResult['physicalItems'][number];
