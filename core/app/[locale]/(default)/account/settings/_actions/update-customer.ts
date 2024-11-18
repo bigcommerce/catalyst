@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidateTag } from 'next/cache';
+import { expireTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -101,7 +101,7 @@ export const updateCustomer = async (formData: FormData): Promise<UpdateCustomer
     };
   }
 
-  revalidateTag(TAGS.customer);
+  expireTag(TAGS.customer);
 
   return { status: 'success', message: t('successMessage') };
 };
