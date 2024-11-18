@@ -16,7 +16,7 @@
   "scripts": {
     "dev": "dotenv -e .env.local -- turbo run dev",
     "build": "dotenv -e .env.local -- turbo run build",
-    "lint": "turbo lint",
+    "lint": "dotenv -e .env.local -- turbo lint",
     "typecheck": "turbo typecheck"
   },
   "devDependencies": {
