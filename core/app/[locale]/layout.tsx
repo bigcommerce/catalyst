@@ -1,7 +1,7 @@
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { DM_Serif_Text, Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
@@ -17,9 +17,16 @@ import { Notifications } from '../notifications';
 import { Providers } from '../providers';
 
 const inter = Inter({
-  subsets: ['latin'],
   display: 'swap',
-  variable: '--font-inter',
+  subsets: ['latin'],
+  variable: '--font-family-body',
+});
+
+const dm_serif_text = DM_Serif_Text({
+  display: 'swap',
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-family-heading',
 });
 
 const RootLayoutMetadataQuery = graphql(`
@@ -95,8 +102,8 @@ export default async function RootLayout({ params, children }: Props) {
   const messages = await getMessages();
 
   return (
-    <html className={`${inter.variable} font-sans`} lang={locale}>
-      <body className="flex h-screen min-w-[375px] flex-col">
+    <html lang={locale}>
+      <body className={`${inter.variable} ${dm_serif_text.variable}`}>
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>{children}</Providers>
