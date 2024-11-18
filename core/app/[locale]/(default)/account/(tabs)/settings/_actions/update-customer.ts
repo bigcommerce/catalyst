@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { expirePath } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -88,7 +88,7 @@ export const updateCustomer = async ({ formData, reCaptchaToken }: UpdateCustome
     },
   });
 
-  revalidatePath('/account/settings', 'page');
+  expirePath('/account/settings', 'page');
 
   const result = response.data.customer.updateCustomer;
 
