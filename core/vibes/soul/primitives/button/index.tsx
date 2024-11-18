@@ -26,7 +26,7 @@ export function Button({
     <button
       aria-busy={loading}
       className={clsx(
-        'relative z-0 h-fit overflow-hidden rounded-full border font-medium leading-normal duration-300 after:absolute after:inset-0 after:-z-10 after:-translate-x-[105%] after:rounded-full after:transition-[opacity,transform] after:duration-300 after:[animation-timing-function:cubic-bezier(0,0.25,0,1)] focus-visible:outline-none focus-visible:ring-2',
+        'relative z-0 h-fit overflow-hidden rounded-full border font-medium leading-normal after:absolute after:inset-0 after:-z-10 after:-translate-x-[105%] after:rounded-full after:transition-[opacity,transform] after:duration-300 after:[animation-timing-function:cubic-bezier(0,0.25,0,1)] focus-visible:outline-none focus-visible:ring-2',
         {
           primary: 'border-primary bg-primary text-foreground ring-foreground',
           secondary: 'border-foreground bg-foreground text-background ring-primary',
