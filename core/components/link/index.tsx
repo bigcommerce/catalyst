@@ -59,10 +59,7 @@ export const Link = forwardRef<ComponentRef<'a'>, Props>(
 
     return (
       <NavLink
-        className={cn(
-          'hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
-          className,
-        )}
+        className={cn(className)}
         href={href}
         locale={finalLocale}
         onMouseEnter={prefetch === 'hover' ? triggerPrefetch : undefined}
