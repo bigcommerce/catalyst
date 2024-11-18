@@ -315,11 +315,12 @@ export const withRoutes: MiddlewareFactory = () => {
         break;
       }
 
-      // Disable static caching on the product page because the page is editable with Makeswift
-      // case 'Product': {
-      //   url = `/${locale}/product/${node.entityId}${postfix}`;
-      //   break;
-      // }
+      case 'Product': {
+        // Disable static caching on the product page because the page is editable with Makeswift
+        // url = `/${locale}/product/${node.entityId}${postfix}`;
+        url = `/${locale}/product/${node.entityId}`;
+        break;
+      }
 
       case 'NormalPage': {
         url = `/${locale}/webpages/normal/${node.id}`;
