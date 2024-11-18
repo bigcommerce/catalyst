@@ -35,7 +35,7 @@ const Swatch = forwardRef<ComponentRef<typeof RadioGroupPrimitive.Root>, Props>(
               className={cn(
                 'group h-12 w-12 border-2 bg-white p-1 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-gray-100 disabled:hover:border-gray-100 data-[state=checked]:border-primary',
                 error &&
-                  'border-error-secondary hover:border-error focus-visible:border-error-secondary focus-visible:ring-error/20 disabled:border-gray-200 data-[state=checked]:border-error-secondary',
+                  'border-error-secondary focus-visible:border-error-secondary data-[state=checked]:border-error-secondary hover:border-error focus-visible:ring-error/20 disabled:border-gray-200',
               )}
               title={label}
               value={value}
@@ -50,7 +50,7 @@ const Swatch = forwardRef<ComponentRef<typeof RadioGroupPrimitive.Root>, Props>(
                 />
               ) : (
                 <span className="relative block h-9 w-9 overflow-hidden border border-gray-200 group-disabled:border-gray-100">
-                  <span className="absolute -start-px -top-[2px] w-[51px] origin-top-left rotate-45 border-t-2 border-error-secondary group-disabled:opacity-30" />
+                  <span className="border-error-secondary absolute -start-px -top-[2px] w-[51px] origin-top-left rotate-45 border-t-2 group-disabled:opacity-30" />
                 </span>
               )}
             </RadioGroupPrimitive.Item>
