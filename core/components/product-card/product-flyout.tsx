@@ -251,23 +251,7 @@ export const ProductFlyout = ({
                       </div>
                     ) : null}
                   </div>
-                  <div className="flex justify-center text-[14px] font-normal tracking-[0.25px] text-[#353535] ssm:justify-start">
-                    <div className="flex h-[44px] max-w-[105px] items-center justify-center gap-[10px] rounded-[20px] border border-[#d6d6d6]">
-                      <div className="cursor-pointer">
-                        <Minus className="h-[1rem] w-[1rem] text-[#7F7F7F]"></Minus>
-                      </div>
-                      <input
-                        name="quantity"
-                        type="number"
-                        className="[&::-webkit-outer-spin-button]:margin-0 [&::-webkit-inner-spin-button]:margin-0 w-[35%] border border-y-0 text-center focus:border-y-0 focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                        min="1"
-                        defaultValue={productQty}
-                      />
-                      <div className="cursor-pointer">
-                        <Plus className="h-[1rem] w-[1rem] text-[#7F7F7F]"></Plus>
-                      </div>
-                    </div>
-                  </div>
+                  <InputPlusMinus product="true" productData={productData} />
                 </div>
               </Dialog.Content>
               {variantProductData && variantProductData?.length > 0 && (
