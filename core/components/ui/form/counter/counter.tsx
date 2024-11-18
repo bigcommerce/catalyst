@@ -137,7 +137,7 @@ const Counter = forwardRef<ComponentRef<'input'>, Props>(
           className={cn(
             'peer/input w-full border-2 border-gray-200 px-12 py-2.5 text-center text-base placeholder:text-gray-500 hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200 peer-hover/down:border-primary peer-hover/up:border-primary peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200 [&::-webkit-inner-spin-button]:appearance-none',
             error &&
-              'border-error-secondary hover:border-error focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 disabled:border-gray-200 peer-hover/down:border-error peer-hover/up:border-error peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
+              'border-error-secondary focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 hover:border-error disabled:border-gray-200 peer-hover/down:border-error peer-hover/up:border-error peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
           )}
           disabled={disabled}
           max={max}

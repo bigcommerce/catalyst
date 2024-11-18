@@ -120,7 +120,7 @@ export const LoginForm = () => {
           <SubmitButton />
         </FormSubmit>
         <Link
-          className="mx-auto my-5 inline-flex items-center justify-start px-8 py-3 font-semibold text-primary hover:text-secondary md:mx-0 md:my-0"
+          className="hover:text-secondary mx-auto my-5 inline-flex items-center justify-start px-8 py-3 font-semibold text-primary md:mx-0 md:my-0"
           href="/login/forgot-password"
         >
           {t('Form.forgotPassword')}

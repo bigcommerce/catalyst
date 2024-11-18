@@ -369,7 +369,7 @@ export const UpdateSettingsForm = ({ addressFields, customerFields, customerInfo
             <Link href="/account">{t('cancel')}</Link>
           </Button>
           <Link
-            className="mt-2 w-fit font-semibold text-primary hover:text-secondary md:ms-auto md:mt-0"
+            className="hover:text-secondary mt-2 w-fit font-semibold text-primary md:ms-auto md:mt-0"
             href="/account/settings/change-password"
           >
             {t('changePassword')}
