@@ -16,14 +16,12 @@ const processZodErrors = (err: z.ZodError) => {
   }));
 
   if (formErrors.length > 0) {
-    return formErrors.join('\n');
+    return formErrors.map(({ message }) => message);
   }
 
-  return Object.entries(fieldErrors)
-    .map(([, errorList]) => {
-      return `${errorList?.map(({ message }) => message).join('\n')}`;
-    })
-    .join('\n');
+  return Object.entries(fieldErrors).flatMap(([, errorList]) => {
+    return errorList?.map(({ message }) => message) ?? [''];
+  });
 };
 
 const ResetPasswordMutation = graphql(`
@@ -82,20 +80,20 @@ export const resetPassword = async ({
 
     return {
       status: 'error',
-      error: result.errors.map((error) => error.message).join('\n'),
+      errors: result.errors.map((error) => error.message),
     };
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return {
         status: 'error',
-        error: processZodErrors(error),
+        errors: processZodErrors(error),
       };
     }
 
     if (error instanceof Error) {
-      return { status: 'error', error: error.message };
+      return { status: 'error', errors: [error.message] };
     }
 
-    return { status: 'error', error: t('Errors.error') };
+    return { status: 'error', errors: [t('Errors.error')] };
   }
 };

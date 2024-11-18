@@ -64,7 +64,7 @@ export const addAddress = async ({
     if (!isAddCustomerAddressInput(parsed)) {
       return {
         status: 'error',
-        error: t('Errors.inputError'),
+        errors: [t('Errors.inputError')],
       };
     }
 
@@ -83,21 +83,21 @@ export const addAddress = async ({
     revalidatePath('/account/addresses', 'page');
 
     if (result.errors.length === 0) {
-      return { status: 'success', message: t('success') };
+      return { status: 'success', messages: [t('success')] };
     }
 
     return {
       status: 'error',
-      message: result.errors.map((error) => error.message).join('\n'),
+      messages: result.errors.map((error) => error.message),
     };
   } catch (error: unknown) {
     if (error instanceof Error) {
       return {
         status: 'error',
-        message: error.message,
+        messages: [error.message],
       };
     }
 
-    return { status: 'error', message: t('Errors.error') };
+    return { status: 'error', messages: [t('Errors.error')] };
   }
 };
