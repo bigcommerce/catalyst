@@ -74,6 +74,14 @@ export default async (): Promise<NextConfig> => {
         },
       ];
     },
+    async rewrites() {
+      return [
+        {
+          source: '/checkout/',
+          destination: `https://${process.env.BIGCOMMERCE_CHECKOUT_URL ?? 'belami-e-commerce-sandbox-1.mybigcommerce.com'}/checkout`,
+        },
+      ]
+    },
   };
 
   // Apply withNextIntl to the config

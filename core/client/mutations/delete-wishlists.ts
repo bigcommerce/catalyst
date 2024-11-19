@@ -1,4 +1,4 @@
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 
 import { client } from '..';
 import { graphql, VariablesOf } from '../graphql';
@@ -21,12 +21,12 @@ export interface DeleteWishlists {
 }
 
 export const deleteWishlists = async ({ input }: DeleteWishlists) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: DELETE_WISHLISTS_MUTATION,
     variables: { input },
-    customerId,
+    customerAccessToken,
     fetchOptions: { cache: 'no-store' },
   });
 

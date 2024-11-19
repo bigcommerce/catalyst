@@ -203,6 +203,7 @@ export default async function Cart() {
               key={product.entityId}
               product={product}
               deleteIcon={deleteIcon}
+              cartId={cart.entityId}
             />
           ))}
         </ul>
