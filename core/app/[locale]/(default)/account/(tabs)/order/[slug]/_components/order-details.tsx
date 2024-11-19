@@ -4,11 +4,10 @@ import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 import { cn } from '~/lib/utils';
 
-import { OrderDetailsDataType } from '../page-data';
+import { assembleProductData, ProductSnippet } from '../../../orders/_components/product-snippet';
+import { OrderDataType } from '../page';
 
-import { assembleProductData, ProductSnippet } from './product-snippet';
-
-const OrderState = async ({ orderState }: { orderState: OrderDetailsDataType['orderState'] }) => {
+const OrderState = async ({ orderState }: { orderState: OrderDataType['orderState'] }) => {
   const t = await getTranslations('Account.Orders');
   const format = await getFormatter();
   const { orderId, orderDate, status } = orderState;
@@ -35,11 +34,7 @@ const OrderState = async ({ orderState }: { orderState: OrderDetailsDataType['or
   );
 };
 
-const OrderSummaryInfo = async ({
-  summaryInfo,
-}: {
-  summaryInfo: OrderDetailsDataType['summaryInfo'];
-}) => {
+const OrderSummaryInfo = async ({ summaryInfo }: { summaryInfo: OrderDataType['summaryInfo'] }) => {
   const t = await getTranslations('Account.Orders');
   const format = await getFormatter();
   const { subtotal, shipping, tax, discounts, grandTotal } = summaryInfo;
@@ -117,7 +112,7 @@ const OrderSummaryInfo = async ({
   );
 };
 const combineAddressInfo = (
-  address: NonNullable<OrderDetailsDataType['consignments']['shipping']>[number]['shippingAddress'],
+  address: NonNullable<OrderDataType['consignments']['shipping']>[number]['shippingAddress'],
 ) => {
   const { firstName, lastName, address1, city, stateOrProvince, postalCode, country } = address;
   const fullName = `${firstName ?? ''} ${lastName ?? ''}`;
@@ -129,7 +124,7 @@ const combineAddressInfo = (
 };
 const combineShippingMethodInfo = async (
   shipment?: NonNullable<
-    NonNullable<OrderDetailsDataType['consignments']['shipping']>[number]['shipments']
+    NonNullable<OrderDataType['consignments']['shipping']>[number]['shipments']
   >[number],
 ) => {
   if (!shipment) {
@@ -154,7 +149,7 @@ const ShippingInfo = async ({
   isMultiConsignments,
   shippingNumber,
 }: {
-  consignments: OrderDetailsDataType['consignments'];
+  consignments: OrderDataType['consignments'];
   isMultiConsignments: boolean;
   shippingNumber?: number;
 }) => {
@@ -232,7 +227,7 @@ const ShippingInfo = async ({
   );
 };
 
-export const OrderDetails = async ({ data }: { data: OrderDetailsDataType }) => {
+export const OrderDetails = async ({ data }: { data: OrderDataType }) => {
   const t = await getTranslations('Account.Orders');
   const { orderState, summaryInfo, consignments } = data;
   const shippingConsignments = consignments.shipping;

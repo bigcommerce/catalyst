@@ -1,12 +1,24 @@
 import { useFormatter, useTranslations } from 'next-intl';
 
-import { graphql, ResultOf } from '~/client/graphql';
+import { graphql, ResultOf, VariablesOf } from '~/client/graphql';
 import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { Price as PricesType } from '~/components/ui/product-card';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { cn } from '~/lib/utils';
+
+export const ProductAttributes = graphql(`
+  query ProductAttributes($entityId: Int) {
+    site {
+      product(entityId: $entityId) {
+        path
+      }
+    }
+  }
+`);
+
+export type ProductAttributesVariables = VariablesOf<typeof ProductAttributes>;
 
 export const OrderItemFragment = graphql(`
   fragment OrderItemFragment on OrderPhysicalLineItem {
