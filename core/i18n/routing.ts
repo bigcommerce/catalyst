@@ -7,6 +7,7 @@ const localeNodes = buildConfig.get('locales');
 
 export const locales = localeNodes.map((locale) => locale.code);
 export const defaultLocale = localeNodes.find((locale) => locale.isDefault)?.code ?? 'en';
+export const fallbackLocale = process.env.LOCALE_FALLBACK ?? 'en';
 
 interface LocaleEntry {
   id: string;
