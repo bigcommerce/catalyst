@@ -16,6 +16,7 @@ export const MultipleChoiceFieldFragment = graphql(`
           ... on SwatchOptionValue {
             __typename
             hexColors
+            imageUrl(height: 48, lossy: false, width: 48)
           }
           ... on ProductPickListOptionValue {
             __typename
