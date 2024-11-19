@@ -42,3 +42,38 @@ export const getCategoryPageData = cache(async (variables: Variables) => {
 
   return response.data.site;
 });
+
+const ProductsQuery = graphql(`
+  query ProductsQuery($entityIds: [Int!]) {
+    site {
+      products(entityIds: $entityIds) {
+        edges {
+          node {
+            entityId
+            name
+            path
+            defaultImage {
+              url: urlTemplate(lossy: true)
+              altText
+            }
+          }
+        }
+      }
+    }
+  }
+`);
+
+type ProductVariables = VariablesOf<typeof ProductsQuery>;
+
+export const getCompareProducts = cache(async (variables: ProductVariables) => {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+
+  const response = await client.fetch({
+    document: ProductsQuery,
+    variables,
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+  });
+
+  return response.data.site;
+});

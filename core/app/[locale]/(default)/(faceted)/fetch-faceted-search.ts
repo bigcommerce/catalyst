@@ -237,7 +237,7 @@ const SearchParamToArray = SearchParamSchema.transform((value) => {
   }
 
   if (typeof value === 'string') {
-    return [value];
+    return value.split(',');
   }
 
   return undefined;
@@ -326,7 +326,7 @@ const AttributeKey = z.custom<`attr_${string}`>((val) => {
 
 const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchParamToArray)
   .transform((publicParams) => {
-    const { after, before, limit, sort, ...filters } = publicParams;
+    const { after, before, limit, sort, compare, ...filters } = publicParams;
 
     const {
       brand,
@@ -351,7 +351,7 @@ const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchParamToArr
       .filter(([attribute]) => AttributeKey.safeParse(attribute).success)
       .map(([attribute, values]) => ({
         attribute: attribute.replace('attr_', ''),
-        values,
+        values: values?.flatMap((value) => value.split(',')) ?? [],
       }));
 
     return {

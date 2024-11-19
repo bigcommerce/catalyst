@@ -1,13 +1,15 @@
-import { getTranslations } from 'next-intl/server';
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { getFormatter, getTranslations } from 'next-intl/server';
 
-import { ProductCard } from '~/components/product-card';
-import { SearchForm } from '~/components/search-form';
-import { Pagination } from '~/components/ui/pagination';
+import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
+import { EmptySearch } from '~/components/empty-search';
+import { facetsTransformer } from '~/data-transformers/facets-transformer';
+import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
-import { FacetedSearch } from '../_components/faceted-search';
-import { MobileSideNav } from '../_components/mobile-side-nav';
-import { SortBy } from '../_components/sort-by';
+import { redirectToCompare } from '../_actions/redirect-to-compare';
 import { fetchFacetedSearch } from '../fetch-faceted-search';
+
+import { getCompareProducts } from './page-data';
 
 export async function generateMetadata() {
   const t = await getTranslations('Search');
@@ -24,93 +26,105 @@ interface Props {
 export default async function Search(props: Props) {
   const searchParams = await props.searchParams;
   const t = await getTranslations('Search');
+  const f = await getTranslations('FacetedGroup');
+
+  const format = await getFormatter();
 
   const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : undefined;
 
   if (!searchTerm) {
-    return (
-      <>
-        <h1 className="mb-3 text-4xl font-black lg:text-5xl">{t('heading')}</h1>
-        <SearchForm />
-      </>
-    );
+    return <EmptySearch />;
   }
 
   const search = await fetchFacetedSearch({ ...searchParams });
 
   const productsCollection = search.products;
-  const products = productsCollection.items;
+  const products = productsCollection.items.map((product) => ({
+    id: product.entityId.toString(),
+    title: product.name,
+    href: product.path,
+    image: product.defaultImage
+      ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
+      : undefined,
+    price: pricesTransformer(product.prices, format),
+    subtitle: product.brand?.name ?? undefined,
+  }));
 
   if (products.length === 0) {
-    return (
-      <div>
-        <SearchForm initialTerm={searchTerm} />
-      </div>
-    );
+    return <EmptySearch searchTerm={searchTerm} />;
   }
 
-  const { hasNextPage, hasPreviousPage, endCursor, startCursor } = productsCollection.pageInfo;
+  const totalProducts = productsCollection.collectionInfo?.totalItems ?? 0;
+
+  // TODO: remove hasNextPage and hasPreviousPage from query
+  const { endCursor, startCursor, hasNextPage, hasPreviousPage } = productsCollection.pageInfo;
+
+  const facets = search.facets.items;
+  const filters = await facetsTransformer(facets);
+
+  const compare = searchParams.compare;
+
+  const compareProducts =
+    typeof compare === 'string'
+      ? getCompareProducts({ entityIds: compare.split(',').map((id) => Number(id)) }).then((data) =>
+          removeEdgesAndNodes(data.products).map((product) => ({
+            id: product.entityId.toString(),
+            title: product.name,
+            href: product.path,
+            image: product.defaultImage
+              ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
+              : undefined,
+          })),
+        )
+      : [];
 
   return (
-    <div className="group">
-      <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
-        <h1 className="mb-3 text-base">
-          {t('searchResults')} <br />
-          <b className="text-2xl font-bold lg:text-3xl">"{searchTerm}"</b>
-        </h1>
-
-        <div className="flex flex-col items-center gap-3 whitespace-nowrap md:flex-row">
-          <MobileSideNav>
-            <FacetedSearch
-              facets={search.facets.items}
-              headingId="mobile-filter-heading"
-              pageType="search"
-            />
-          </MobileSideNav>
-          <div className="flex w-full flex-col items-start gap-4 md:flex-row md:items-center md:justify-end md:gap-6">
-            <SortBy />
-            <div className="order-3 py-4 text-base font-semibold md:order-2 md:py-0">
-              {t('sortBy', { items: productsCollection.collectionInfo?.totalItems ?? 0 })}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-4 gap-8">
-        <FacetedSearch
-          className="mb-8 hidden lg:block"
-          facets={search.facets.items}
-          headingId="desktop-filter-heading"
-          pageType="search"
-        />
-        <section
-          aria-labelledby="product-heading"
-          className="col-span-4 group-has-[[data-pending]]:animate-pulse lg:col-span-3"
-        >
-          <h2 className="sr-only" id="product-heading">
-            {t('products')}
-          </h2>
-
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 sm:gap-8">
-            {products.map((product, index) => (
-              <ProductCard
-                imagePriority={index <= 3}
-                imageSize="wide"
-                key={product.entityId}
-                product={product}
-              />
-            ))}
-          </div>
-
-          <Pagination
-            endCursor={endCursor ?? undefined}
-            hasNextPage={hasNextPage}
-            hasPreviousPage={hasPreviousPage}
-            startCursor={startCursor ?? undefined}
-          />
-        </section>
-      </div>
-    </div>
+    <ProductsListSection
+      compareAction={redirectToCompare}
+      compareLabel={f('compare')}
+      compareParamName="compare"
+      compareProducts={compareProducts}
+      filterLabel={f('FacetedSearch.filters')}
+      filters={filters.filter((filter) => !!filter)}
+      paginationInfo={
+        hasNextPage || hasPreviousPage
+          ? {
+              startCursorParamName: 'before',
+              endCursorParamName: 'after',
+              endCursor: hasNextPage ? endCursor : null,
+              startCursor: hasPreviousPage ? startCursor : null,
+            }
+          : undefined
+      }
+      products={products}
+      sortLabel={f('SortBy.label')}
+      sortOptions={[
+        { value: 'featured', label: f('SortBy.featuredItems') },
+        { value: 'newest', label: f('SortBy.newestItems') },
+        {
+          value: 'best_selling',
+          label: f('SortBy.bestSellingItems'),
+        },
+        { value: 'a_to_z', label: f('SortBy.aToZ') },
+        { value: 'z_to_a', label: f('SortBy.zToA') },
+        {
+          value: 'best_reviewed',
+          label: f('SortBy.byReview'),
+        },
+        {
+          value: 'lowest_price',
+          label: f('SortBy.priceAscending'),
+        },
+        {
+          value: 'highest_price',
+          label: f('SortBy.priceDescending'),
+        },
+        { value: 'relevance', label: f('SortBy.relevance') },
+      ]}
+      sortParamName="sort"
+      title={`${t('searchResults')} "${searchTerm}"`}
+      totalCount={totalProducts}
+    />
   );
 }
 

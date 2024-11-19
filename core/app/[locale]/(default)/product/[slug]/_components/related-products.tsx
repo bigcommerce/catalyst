@@ -5,7 +5,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { ProductCardCarousel } from '~/components/product-card-carousel';
+import { FeaturedProductsCarousel } from '~/components/featured-products-carousel';
 import { ProductCardCarouselFragment } from '~/components/product-card-carousel/fragment';
 
 const RelatedProductsQuery = graphql(
@@ -51,13 +51,9 @@ export const RelatedProducts = async ({ productId , relatedProductArrow }: Props
 
   const relatedProducts = removeEdgesAndNodes(product.relatedProducts);
 
-  return (
-    <ProductCardCarousel
-    relatedProductArrow={relatedProductArrow}
-      products={relatedProducts}
-      showCart={false}
-      showCompare={false}
-      title={t('relatedProducts')}
-    />
-  );
+  if (!relatedProducts.length) {
+    return null;
+  }
+
+  return <FeaturedProductsCarousel products={relatedProducts} title={t('relatedProducts')} />;
 };

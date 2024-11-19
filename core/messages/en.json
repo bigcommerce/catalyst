@@ -1,8 +1,36 @@
 {
   "Home": {
     "Carousel": {
-      "featuredProducts": "Featured Products",
-      "newestProducts": "Newest products"
+      "title": "Newest products"
+    },
+    "List": {
+      "title": "Featured products",
+      "cta": "Shop now"
+    },
+    "FeaturedImage": {
+      "title": "Title",
+      "altText": "An assortment of brandless products against a blank background",
+      "cta": "Shop now"
+    },
+    "Slides": {
+      "Slide1": {
+        "title": "25% Off Sale",
+        "altText": "An assortment of brandless products against a blank background",
+        "cta": "Shop now"
+      },
+      "Slide2": {
+        "title": "Great Deals",
+        "altText": "An assortment of brandless products against a blank background",
+        "cta": "Shop now"
+      },
+      "Slide3": {
+        "title": "Low Prices",
+        "altText": "An assortment of brandless products against a blank background",
+        "cta": "Shop now"
+      }
+    },
+    "Subscribe": {
+      "title": "Sign up for our newsletter"
     }
   },
   "ChangePassword": {
@@ -58,7 +86,7 @@
         "submit": "Reset password"
       },
       "Errors": {
-        "error":"Unknown error."
+        "error": "Something went wrong. Please try again later."
       }
     }
   },
@@ -78,12 +106,16 @@
     }
   },
   "FacetedGroup": {
+    "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
+    "products": "Products",
+    "compare": "Compare",
     "MobileSideNav": {
       "filters": "Filters",
       "showFilters": "Show Filters",
       "subCategories": "Categories"
     },
     "FacetedSearch": {
+      "filterBy": "Filter by",
       "filters": "Filters",
       "RefineBy": {
         "refineBy": "Refine by",
@@ -104,7 +136,7 @@
       }
     },
     "SortBy": {
-      "ariaLabel": "Sort by:",
+      "label": "Sort",
       "featuredItems": "Featured items",
       "bestSellingItems": "Best selling items",
       "newestItems": "Newest items",
@@ -116,10 +148,7 @@
       "relevance": "Relevance"
     }
   },
-  "Brand": {
-    "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
-    "products": "Products"
-  },
+  "Brand": {},
   "Category": {
     "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
     "products": "Products",
@@ -265,13 +294,13 @@
       "submitting": "Update settings...",
       "successMessage": "Your account settings have been updated",
       "validationMessages": {
-          "email": "Enter a valid email such as name@domain.com",
-          "empty": "This field can not be empty",
-          "firstName": "Enter your first name",
-          "lastName": "Enter your last name",
-          "city": "Enter a suburb / city",
-          "company": "Enter a company name",
-          "phone": "Enter a phone number"
+        "email": "Enter a valid email such as name@domain.com",
+        "empty": "This field can not be empty",
+        "firstName": "Enter your first name",
+        "lastName": "Enter your last name",
+        "city": "Enter a suburb / city",
+        "company": "Enter a company name",
+        "phone": "Enter a phone number"
       },
       "ChangePassword": {
         "title": "Change password",
@@ -312,6 +341,9 @@
     "proceedToCheckout": "CHECKOUT",
     "loading": "Loading...",
     "spinnerText": "Updating...",
+    "increment": "Increase quantity",
+    "decrement": "Decrease quantity",
+    "removeItem": "Remove item",
     "saveCartWishlist": "Save Cart",
     "saveCartWishlistSpan": "as Wishlist",
     "CheckoutSummary": {
@@ -375,6 +407,18 @@
       "remove": "Remove",
       "spinnerText": "Removing...",
       "errorMessage": "Something went wrong while removing item, please try again."
+    },
+    "Empty": {
+      "title": "Your cart is empty.",
+      "subtitle": "Add some products to get started.",
+      "cta": "Continue shopping"
+    },
+    "Errors": {
+      "cartNotFound": "No cartId cookie found.",
+      "lineItemNotFound": "Line item not found.",
+      "failedToRedirectToCheckout": "Failed to redirect to checkout.",
+      "failedToUpdateQuantity": "Failed to update quantity.",
+      "somethingWentWrong": "Something went wrong. Please try again later."
     }
   },
   "Compare": {
@@ -486,10 +530,17 @@
     "message": "It looks like the page you requested has moved or no longer exists.",
     "Carousel": {
       "featuredProducts": "Featured products"
+    },
+    "Subscribe": {
+      "title": "Sign up for our newsletter"
     }
   },
   "Components": {
     "Header": {
+      "viewAll": "View all results",
+      "searchPlaceholder": "Search for products",
+      "emptySearchTitle": "No results were found for",
+      "emptySearchSubtitle": "Please try another search.",
       "Account": {
         "account": "Account",
         "myAccount": "My account",
@@ -515,11 +566,12 @@
       "searchPlaceholder": "Search...",
       "search": "Search",
       "noSearchResults": "Sorry, no results for {term}.",
-      "checkSpelling": "Please check the spelling or try another search."
+      "checkSpelling": "Please check the spelling or try another search.",
+      "clickToSearch": "Click the search icon at the top to search all products."
     },
     "AddToCartButton": {
       "addToCart": "Add to cart",
-      "outOfStock": "Out of stock", 
+      "outOfStock": "Out of stock",
       "preorder": "Preorder",
       "unavailable": "Unavailable",
       "processing": "Processing..."
@@ -530,7 +582,9 @@
         "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
         "error": "Error adding product to cart. Please try again.",
         "update": "Item updated to <cartLink> your cart</cartLink>"
-      }
+      },
+      "empty": "There is no product selected",
+      "error": "Error loading product"
     },
     "FormFields": {
       "Validation": {

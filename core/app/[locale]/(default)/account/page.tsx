@@ -3,6 +3,7 @@ import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
+import { logout } from '~/components/header/_actions/logout';
 import { Link } from '~/components/link';
 
 import { AccountNotification } from './(tabs)/_components/account-notification';
@@ -59,6 +60,9 @@ export default function Account() {
         <AccountItem href="/account/settings" title={t('settings')}>
           <Settings className="me-8" size={48} strokeWidth={1.5} />
         </AccountItem>
+        <form action={logout}>
+          <button>Logout</button>
+        </form>
       </div>
     </div>
   );
