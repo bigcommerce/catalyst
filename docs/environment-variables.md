@@ -188,17 +188,6 @@ When enabled, the client logger logs the following information:
 - How long the request took in milliseconds.
 - The complexity score of the GraphQL request payload, as indicated by the `X-Bc-Graphql-Complexity` response header.
 
-### WEBPACK_MAX_CHUNKS
-
-| Attribute        | Value   |
-| :--------------- | :------ |
-| Type             | integer |
-| Default          | 50      |
-| Required         | false   |
-| CLI-configurable | false   |
-
-This environment variable sets a limit on the number of JS chunks webpack will generate via the `LimitChunkCountPlugin` in `next.config.js`. Generally speaking, using more chunks can improve performance, but will increase the number of requests to the origin to download these files. For hosts that charge for each asset request, this may make your site more expensive to serve. You can decrease this number to decrease the number of individual JS files that will be requested on each page, but each file will be larger, which may decrease Lighthouse scores due to more time spent on script parsing and more unused JS code in each chunk on a given page.
-
 ### BIGCOMMERCE_TRUSTED_PROXY_SECRET
 
 > [!CAUTION]
