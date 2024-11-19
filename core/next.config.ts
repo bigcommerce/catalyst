@@ -1,7 +1,6 @@
 import bundleAnalyzer from '@next/bundle-analyzer';
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
-import { optimize } from 'webpack';
 
 import { writeBuildConfig } from './build-config/writer';
 import { client } from './client';
@@ -35,24 +34,6 @@ export default async (): Promise<NextConfig> => {
     eslint: {
       ignoreDuringBuilds: !!process.env.CI,
       dirs: ['app', 'client', 'components', 'lib', 'middlewares'],
-    },
-    webpack: (config, { isServer }) => {
-      // Limit the number of chunks to reduce CDN requests, which contribute to Edge Request costs
-      // Making this number higher may improve performance, but making it lower will reduce total requests and costs
-      // Simply set the WEBPACK_MAX_CHUNKS environment variable to the desired number of chunks
-      if (!isServer) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-        config.plugins.push(
-          new optimize.LimitChunkCountPlugin({
-            maxChunks: process.env.WEBPACK_MAX_CHUNKS
-              ? parseInt(process.env.WEBPACK_MAX_CHUNKS, 10)
-              : 50,
-          }),
-        );
-      }
-
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return config;
     },
     // default URL generation in BigCommerce uses trailing slash
     trailingSlash: process.env.TRAILING_SLASH !== 'false',
