@@ -1,6 +1,6 @@
-'use client';
-
-import { useFormatter, useTranslations } from 'next-intl';
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { getFormatter, getTranslations } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import { ExistingResultType } from '~/client/util';
 import { Link } from '~/components/link';
@@ -8,7 +8,7 @@ import { Button } from '~/components/ui/button';
 
 import { getCustomerOrders } from '../page-data';
 
-import { assembleProductData, ProductSnippet } from './product-snippet';
+import { assembleProductData, ProductSnippet, ProductSnippetSkeleton } from './product-snippet';
 
 export type Orders = ExistingResultType<typeof getCustomerOrders>['orders'];
 
@@ -71,13 +71,13 @@ interface ManageOrderButtonsProps {
   orderStatus: string | null;
 }
 
-const ManageOrderButtons = ({
+const ManageOrderButtons = async ({
   className,
   orderId,
   orderStatus,
   orderTrackingUrl,
 }: ManageOrderButtonsProps) => {
-  const t = useTranslations('Account.Orders');
+  const t = await getTranslations('Account.Orders');
 
   return (
     <div className={className}>
@@ -107,7 +107,7 @@ const ManageOrderButtons = ({
     </div>
   );
 };
-const OrderDetails = ({
+const OrderDetails = async ({
   orderId,
   orderDate,
   orderPrice,
@@ -121,8 +121,8 @@ const OrderDetails = ({
   };
   orderStatus: string;
 }) => {
-  const t = useTranslations('Account.Orders');
-  const format = useFormatter();
+  const t = await getTranslations('Account.Orders');
+  const format = await getFormatter();
 
   return (
     <div className="inline-flex flex-col gap-2 text-base md:flex-row md:gap-12">
@@ -162,9 +162,15 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
   return (
     <ul className="flex w-full flex-col">
       {customerOrders.map(({ entityId, orderedAt, status, totalIncTax, consignments }) => {
+        const shippingConsignments = consignments.shipping
+          ? consignments.shipping.map(({ lineItems, shipments }) => ({
+              lineItems: removeEdgesAndNodes(lineItems),
+              shipments: removeEdgesAndNodes(shipments),
+            }))
+          : undefined;
         // NOTE: tracking url will be supported later
-        const trackingUrl = consignments.shipping
-          ? consignments.shipping
+        const trackingUrl = shippingConsignments
+          ? shippingConsignments
               .flatMap(({ shipments }) =>
                 shipments.map((shipment) => {
                   if (
@@ -193,22 +199,24 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
             />
             <div className="flex gap-4">
               <ul className="inline-flex gap-4 [&>*:nth-child(n+2)]:hidden md:[&>*:nth-child(n+2)]:list-item md:[&>*:nth-child(n+4)]:hidden lg:[&>*:nth-child(n+4)]:list-item lg:[&>*:nth-child(n+5)]:hidden xl:[&>*:nth-child(n+5)]:list-item lg:[&>*:nth-child(n+7)]:hidden">
-                {(consignments.shipping ?? []).map(({ lineItems }) => {
+                {(shippingConsignments ?? []).map(({ lineItems }) => {
                   return lineItems.slice(0, VisibleListItemsPerDevice.xl).map((shippedProduct) => {
                     return (
                       <li className="w-36" key={shippedProduct.entityId}>
-                        <ProductSnippet
-                          imagePriority={true}
-                          imageSize="square"
-                          product={assembleProductData({ ...shippedProduct, productOptions: [] })}
-                        />
+                        <Suspense fallback={<ProductSnippetSkeleton />}>
+                          <ProductSnippet
+                            imagePriority={true}
+                            imageSize="square"
+                            product={assembleProductData({ ...shippedProduct, productOptions: [] })}
+                          />
+                        </Suspense>
                       </li>
                     );
                   });
                 })}
               </ul>
               <TruncatedCard
-                itemsQuantity={(consignments.shipping ?? []).reduce(
+                itemsQuantity={(shippingConsignments ?? []).reduce(
                   (orderItems, shipment) => orderItems + shipment.lineItems.length,
                   0,
                 )}

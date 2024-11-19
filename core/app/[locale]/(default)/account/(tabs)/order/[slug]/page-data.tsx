@@ -1,17 +1,11 @@
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
-import { graphql, ResultOf, VariablesOf } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+import { graphql, VariablesOf } from '~/client/graphql';
 import { ExistingResultType } from '~/client/util';
 
-import {
-  OrderItemFragment,
-  ProductAttributes,
-  ProductAttributesVariables,
-} from '../../orders/_components/product-snippet';
+import { OrderItemFragment } from '../../orders/_components/product-snippet';
 
 export const OrderShipmentFragment = graphql(`
   fragment OrderShipmentFragment on OrderShipment {
@@ -127,73 +121,24 @@ const CustomerOrderDetails = graphql(
   [OrderItemFragment, OrderShipmentFragment],
 );
 
-export const getProductAttributes = cache(async (variables: ProductAttributesVariables) => {
-  const response = await client.fetch({
-    document: ProductAttributes,
-    variables,
-    fetchOptions: { next: { revalidate } },
-  });
+export const getOrderDetails = cache(
+  async (variables: VariablesOf<typeof CustomerOrderDetails>) => {
+    const customerAccessToken = await getSessionCustomerAccessToken();
 
-  return response.data.site.product;
-});
+    const response = await client.fetch({
+      document: CustomerOrderDetails,
+      variables,
+      fetchOptions: { cache: 'no-store' },
+      customerAccessToken,
+    });
+    const order = response.data.site.order;
 
-type ShippingConsignments = NonNullable<
-  NonNullable<ResultOf<typeof CustomerOrderDetails>['site']['order']>['consignments']
->['shipping'];
+    if (!order) {
+      return undefined;
+    }
 
-export const addProductAttributesToShippingConsignments = async (
-  consignments: ShippingConsignments,
-) => {
-  const shipping = removeEdgesAndNodes(consignments);
-
-  const shippingConsignments = await Promise.all(
-    shipping.map(async (consignment) => {
-      const { lineItems, shipments, ...otherItems } = consignment;
-      const extendedLineItems = await Promise.all(
-        removeEdgesAndNodes(lineItems).map(async ({ productEntityId, ...otherAttributes }) => {
-          const productAtrributes = await getProductAttributes({
-            entityId: productEntityId,
-          });
-
-          const { path = '' } = productAtrributes ?? {};
-
-          return {
-            productEntityId,
-            path,
-            ...otherAttributes,
-          };
-        }),
-      );
-
-      return {
-        lineItems: extendedLineItems,
-        shipments: removeEdgesAndNodes(shipments),
-        ...otherItems,
-      };
-    }),
-  );
-
-  return shippingConsignments;
-};
-
-type OrderVariables = VariablesOf<typeof CustomerOrderDetails>;
-
-export const getOrderDetails = cache(async (variables: OrderVariables) => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
-
-  const response = await client.fetch({
-    document: CustomerOrderDetails,
-    variables,
-    fetchOptions: { cache: 'no-store' },
-    customerAccessToken,
-  });
-  const order = response.data.site.order;
-
-  if (!order) {
-    return undefined;
-  }
-
-  return order;
-});
+    return order;
+  },
+);
 
 export type OrderDetailsType = ExistingResultType<typeof getOrderDetails>;

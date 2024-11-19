@@ -1,10 +1,15 @@
 import { getFormatter, getTranslations } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 import { cn } from '~/lib/utils';
 
-import { assembleProductData, ProductSnippet } from '../../../orders/_components/product-snippet';
+import {
+  assembleProductData,
+  ProductSnippet,
+  ProductSnippetSkeleton,
+} from '../../../orders/_components/product-snippet';
 import { OrderDataType } from '../page';
 
 const OrderState = async ({ orderState }: { orderState: OrderDataType['orderState'] }) => {
@@ -259,12 +264,14 @@ export const OrderDetails = async ({ data }: { data: OrderDataType }) => {
                   {lineItems.map((shipment) => {
                     return (
                       <li key={shipment.entityId}>
-                        <ProductSnippet
-                          imagePriority={true}
-                          imageSize="square"
-                          isExtended={true}
-                          product={assembleProductData(shipment)}
-                        />
+                        <Suspense fallback={<ProductSnippetSkeleton isExtended={true} />}>
+                          <ProductSnippet
+                            imagePriority={true}
+                            imageSize="square"
+                            isExtended={true}
+                            product={assembleProductData(shipment)}
+                          />
+                        </Suspense>
                       </li>
                     );
                   })}
