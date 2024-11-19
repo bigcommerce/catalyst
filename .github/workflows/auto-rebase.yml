@@ -1,0 +1,59 @@
+name: Rebase soul/main with main
+
+on:
+  schedule:
+    - cron: "0 */3 * * *" # Every 3 hours
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  rebase:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch branches
+        run: |
+          git fetch origin main:soul/main
+          git fetch origin main:main
+
+      - name: Rebase soul/main onto main
+        run: |
+          git checkout soul/main
+          git rebase main
+        continue-on-error: true
+
+      - name: Push rebased branch
+        if: ${{ success() }}
+        run: |
+          git push --force-with-lease origin soul/main
+
+      - name: Create PR for conflicts
+        if: ${{ failure() }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+            gh pr create \
+              --title "Fix rebase conflicts for soul/main" \
+              --body "Rebase of soul/main onto main failed. Please resolve conflicts." \
+              --base soul/main \
+              --head main \
+              --label conflict-resolution
+
+      - name: Close superseded PRs
+        if: ${{ failure() }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr list --state open --label conflict-resolution --json number | jq -r '.[] | .number' | while read pr; do
+            gh pr close $pr --comment "Superseded by a new conflict-resolution PR."
+          done
+  
