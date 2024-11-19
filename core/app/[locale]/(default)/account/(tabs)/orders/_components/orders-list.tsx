@@ -2,6 +2,7 @@
 
 import { useFormatter, useTranslations } from 'next-intl';
 
+import { ExistingResultType } from '~/client/util';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 
@@ -9,7 +10,7 @@ import { getCustomerOrders } from '../page-data';
 
 import { assembleProductData, ProductSnippet } from './product-snippet';
 
-export type Orders = NonNullable<Awaited<ReturnType<typeof getCustomerOrders>>>['orders'];
+export type Orders = ExistingResultType<typeof getCustomerOrders>['orders'];
 
 interface OrdersListProps {
   customerOrders: Orders;
@@ -81,9 +82,7 @@ const ManageOrderButtons = ({
   return (
     <div className={className}>
       <Button aria-label={t('viewDetails')} asChild className="w-full md:w-fit" variant="secondary">
-        <Link href={{ pathname: '/account/orders', query: { order: orderId } }}>
-          {t('viewDetails')}
-        </Link>
+        <Link href={`/account/order/${orderId}`}>{t('viewDetails')}</Link>
       </Button>
       {Boolean(orderTrackingUrl) && (
         <Button
@@ -127,7 +126,7 @@ const OrderDetails = ({
 
   return (
     <div className="inline-flex flex-col gap-2 text-base md:flex-row md:gap-12">
-      <Link href={{ pathname: '/account/orders', query: { order: orderId } }}>
+      <Link href={`/account/order/${orderId}`}>
         <p className="flex justify-between md:flex-col">
           <span>{t('orderNumber')}</span>
           <span className="font-semibold">{orderId}</span>
