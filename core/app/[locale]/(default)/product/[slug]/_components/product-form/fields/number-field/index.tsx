@@ -11,20 +11,23 @@ interface Props {
 }
 
 export const NumberField = ({ option }: Props) => {
+  const min = option.lowest !== null ? Number(option.lowest) : undefined;
+  const max = option.highest !== null ? Number(option.highest) : undefined;
+
   const { field, fieldState } = useProductFieldController({
     name: `attribute_${option.entityId}`,
     rules: {
       required: option.isRequired ? 'Please enter a number.' : false,
-      min: option.lowest
+      min: min
         ? {
-            value: option.lowest,
-            message: `Number must be equal or higher than ${option.lowest}.`,
+            value: min,
+            message: `Number must be equal or higher than ${min}.`,
           }
         : undefined,
-      max: option.highest
+      max: max
         ? {
-            value: option.highest,
-            message: `Number must be equal or lower than ${option.highest}.`,
+            value: max,
+            message: `Number must be equal or lower than ${max}.`,
           }
         : undefined,
     },
@@ -48,11 +51,11 @@ export const NumberField = ({ option }: Props) => {
           error={Boolean(error)}
           id={`${option.entityId}`}
           isInteger={option.isIntegerOnly}
-          max={Number(option.highest)}
-          min={Number(option.lowest)}
+          max={max}
+          min={min}
           name={field.name}
           onChange={field.onChange}
-          value={field.value ? Number(field.value) : ''}
+          value={field.value === '' ? '' : Number(field.value)}
         />
       </div>
       {error && <ErrorMessage>{error.message}</ErrorMessage>}

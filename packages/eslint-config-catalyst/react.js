@@ -6,6 +6,7 @@ const config = {
   rules: {
     'react/react-in-jsx-scope': 'off',
     'react/prefer-read-only-props': 'off',
+    'react/destructuring-assignment': 'off',
   }
 };
 

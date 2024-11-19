@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, ResultOf } from '~/client/graphql';
 import { FormFieldsFragment } from '~/components/form-fields/fragment';
@@ -69,12 +69,11 @@ export async function generateMetadata() {
 
 export default async function AddPage() {
   const t = await getTranslations('Account.Addresses.Add');
-
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data } = await client.fetch({
     document: CustomerNewAdressQuery,
-    customerId,
+    customerAccessToken,
     fetchOptions: { cache: 'no-store' },
     variables: {
       shippingSorting: 'SORT_ORDER',
@@ -82,7 +81,6 @@ export default async function AddPage() {
   });
 
   const addressFields = [...(data.site.settings?.formFields.shippingAddress ?? [])];
-  const reCaptchaSettings = data.site.settings?.reCaptcha;
   const countries = data.geography.countries;
   const defaultCountry = data.site.settings?.contact?.country || FALLBACK_COUNTRY.name;
 
@@ -92,6 +90,8 @@ export default async function AddPage() {
     statesOrProvinces: defaultCountryStates = FALLBACK_COUNTRY.states,
   } = countries?.find(({ name: country }) => country === defaultCountry) || {};
 
+  const recaptchaSettings = await bypassReCaptcha(data.site.settings?.reCaptcha);
+
   return (
     <div className="mx-auto mb-14 lg:w-2/3">
       <h1 className="mb-8 text-3xl font-black lg:text-4xl">{t('heading')}</h1>
@@ -99,7 +99,7 @@ export default async function AddPage() {
         addressFields={addressFields}
         countries={countries || []}
         defaultCountry={{ id: entityId, code, states: defaultCountryStates }}
-        reCaptchaSettings={bypassReCaptcha(reCaptchaSettings)}
+        reCaptchaSettings={recaptchaSettings}
       />
     </div>
   );

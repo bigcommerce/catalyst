@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { getTranslations, getFormatter } from 'next-intl/server';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
@@ -57,7 +57,9 @@ export async function generateMetadata() {
 
 
 export default async function Cart() {
-  const cartId = cookies().get('cartId')?.value;
+  const cookieStore = await cookies();
+
+  const cartId = cookieStore.get('cartId')?.value;
 
   if (!cartId) {
     return <EmptyCart />;
@@ -65,12 +67,12 @@ export default async function Cart() {
 
   const t = await getTranslations('Cart');
 
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data } = await client.fetch({
     document: CartPageQuery,
     variables: { cartId },
-    customerId,
+    customerAccessToken,
     fetchOptions: {
       cache: 'no-store',
       next: {

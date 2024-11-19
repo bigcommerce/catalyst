@@ -122,7 +122,11 @@
     "Category": {
         "sortBy": "{items, plural, =0 {no items} =1 {1 vare} other {# varer}}",
         "products": "produkter",
-        "items": "Varer"
+        "items": "Varer",
+        "Empty": {
+            "message": "Ingen produkter i denne kategori",
+            "cta": "Tilbage til start"
+        }
     },
     "Search": {
         "title": "Søgeresultater",
@@ -149,6 +153,7 @@
             "title": "Adresser",
             "addNewAddress": "Tilføj ny adresse",
             "editButton": "Rediger",
+            "emptyAddresses": "Der blev ikke tilføjet nogen adresser",
             "deleteButton": "Slet",
             "confirmDeleteAddress": "Slet adresse",
             "deleteModalTitle": "Er du sikker på, at du vil slette denne adresse?",
@@ -199,7 +204,7 @@
             "changePassword": "Skift adgangskode",
             "submit": "Opdater indstillinger",
             "submitting": "Opdater indstillinger ...",
-            "successMessage": "Kære {firstName} {lastName}, du har opdateret dine kontodata",
+            "successMessage": "Dine kontoindstillinger er blevet opdateret",
             "validationMessages": {
                 "email": "Indtast en gyldig e-mail, f.eks. navn@domæne.com",
                 "empty": "Dette felt må ikke være tomt",

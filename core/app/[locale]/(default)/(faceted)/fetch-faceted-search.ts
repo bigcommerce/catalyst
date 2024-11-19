@@ -2,7 +2,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 import { z } from 'zod';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql, VariablesOf } from '~/client/graphql';
@@ -167,15 +167,15 @@ interface ProductSearch {
 
 const getProductSearchResults = cache(
   async ({ limit = 9, after, before, sort, filters }: ProductSearch) => {
-    const customerId = await getSessionCustomerId();
+    const customerAccessToken = await getSessionCustomerAccessToken();
     const filterArgs = { filters, sort };
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
       document: GetProductSearchResultsQuery,
       variables: { ...filterArgs, ...paginationArgs },
-      customerId,
-      fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate: 300 } },
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 300 } },
     });
 
     const { site } = response.data;

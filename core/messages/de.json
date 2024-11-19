@@ -122,7 +122,11 @@
     "Category": {
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
         "products": "Produkte",
-        "items": "Artikel"
+        "items": "Artikel",
+        "Empty": {
+            "message": "Keine Produkte in dieser Kategorie",
+            "cta": "Zurück zur Startseite"
+        }
     },
     "Search": {
         "title": "Suchergebnisse",
@@ -149,6 +153,7 @@
             "title": "Adressen",
             "addNewAddress": "Neue Adresse hinzufügen",
             "editButton": "Bearbeiten",
+            "emptyAddresses": "Keine Adressen hinzugefügt",
             "deleteButton": "Löschen",
             "confirmDeleteAddress": "Adresse löschen",
             "deleteModalTitle": "Möchten Sie diese Adresse wirklich löschen?",
@@ -199,7 +204,7 @@
             "changePassword": "Passwort ändern",
             "submit": "EINSTELLUNGEN AKTUALISIEREN",
             "submitting": "Einstellungen aktualisieren ...",
-            "successMessage": "Sehr geehrte/r {firstName} {lastName}, Sie haben Ihre Kontodaten erfolgreich aktualisiert",
+            "successMessage": "Ihre Kontoeinstellungen wurden geändert",
             "validationMessages": {
                 "email": "Geben Sie eine gültige E-Mail-Adresse wie name@domain.com ein.",
                 "empty": "Dieses Feld darf nicht leer sein",

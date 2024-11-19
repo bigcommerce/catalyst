@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 
@@ -36,10 +36,11 @@ export async function updateItemQuantity({
   variantEntityId,
   selectedOptions,
 }: UpdateProductQuantityParams) {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   try {
-    const cartId = cookies().get('cartId')?.value;
+    const cookieStore = await cookies();
+    const cartId = cookieStore.get('cartId')?.value;
 
     if (!cartId) {
       return { status: 'error', error: 'No cartId cookie found' };
@@ -72,7 +73,7 @@ export async function updateItemQuantity({
           },
         },
       },
-      customerId,
+      customerAccessToken,
       fetchOptions: { cache: 'no-store' },
     });
 

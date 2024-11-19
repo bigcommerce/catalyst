@@ -80,7 +80,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
   };
 
   const handleEmailValidation = (e: ChangeEvent<HTMLInputElement>) => {
-    const validationStatus = e.target.validity.valueMissing;
+    const validationStatus = e.target.validity.valueMissing || e.target.validity.typeMismatch;
 
     setIsEmailValid(!validationStatus);
   };
@@ -122,7 +122,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
   return (
     <>
       {formStatus?.status === 'error' && (
-        <Message className="mb-8 w-full" variant={formStatus.status}>
+        <Message className="mb-8 w-full whitespace-pre" variant={formStatus.status}>
           <p>{formStatus.message}</p>
         </Message>
       )}

@@ -1,6 +1,7 @@
 'use server';
 
-import { isRedirectError } from 'next/dist/client/components/redirect';
+import { unstable_rethrow as rethrow } from 'next/navigation';
+import { getLocale } from 'next-intl/server';
 import { cookies } from 'next/headers';
 import { Credentials, signIn } from '~/auth';
 import { redirect } from '~/i18n/routing';
@@ -15,6 +16,8 @@ export const deleteRememberCookie = async () => {
 
 export const login = async (_previousState: unknown, formData: FormData) => {
   try {
+    const locale = await getLocale();
+
     const credentials = Credentials.parse({
       email: formData.get('email'),
       password: formData.get('password'),
@@ -42,12 +45,9 @@ export const login = async (_previousState: unknown, formData: FormData) => {
       let emailData: any = formData.get('email');
       await createCookie(emailData);
     }
-    redirect('/account');
+    redirect({ href: '/account', locale });
   } catch (error: unknown) {
-    // We need to throw this error to trigger the redirect as Next.js uses error boundaries to redirect.
-    if (isRedirectError(error)) {
-      throw error;
-    }
+    rethrow(error);
 
     return {
       status: 'error',

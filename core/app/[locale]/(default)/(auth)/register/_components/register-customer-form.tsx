@@ -15,11 +15,11 @@ import {
   DateField,
   FieldNameToFieldId,
   FieldWrapper,
+  FULL_NAME_FIELDS,
   MultilineText,
   NumbersOnly,
   Password,
   Picklist,
-  PicklistOrText,
   RadioButtons,
   Text,
 } from '~/components/form-fields';
@@ -49,13 +49,14 @@ interface FormStatus {
 
 type CustomerFields = ExistingResultType<typeof getRegisterCustomerQuery>['customerFields'];
 type AddressFields = ExistingResultType<typeof getRegisterCustomerQuery>['addressFields'];
-type Countries = ExistingResultType<typeof getRegisterCustomerQuery>['countries'];
-type CountryCode = Countries[number]['code'];
-type CountryStates = Countries[number]['statesOrProvinces'];
 
 interface RegisterCustomerProps {
   addressFields: AddressFields;
   customerFields: CustomerFields;
+  reCaptchaSettings?: {
+    isEnabledOnStorefront: boolean;
+    siteKey: string;
+  };
 }
 
 interface SubmitMessages {
@@ -92,7 +93,11 @@ const SubmitButton = ({ messages }: SubmitMessages) => {
   );
 };
 
-export const RegisterCustomerForm = ({ addressFields, customerFields }: RegisterCustomerProps) => {
+export const RegisterCustomerForm = ({
+  addressFields,
+  customerFields,
+  reCaptchaSettings,
+}: RegisterCustomerProps) => {
   const form = useRef<HTMLFormElement>(null);
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
 
@@ -106,6 +111,10 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
   const [picklistValid, setPicklistValid] = useState<Record<string, boolean>>({});
   const [checkboxesValid, setCheckboxesValid] = useState<Record<string, boolean>>({});
   const [multiTextValid, setMultiTextValid] = useState<Record<string, boolean>>({});
+
+  const reCaptchaRef = useRef<ReCaptcha>(null);
+  const [reCaptchaToken, setReCaptchaToken] = useState('');
+  const [isReCaptchaValid, setReCaptchaValid] = useState(true);
 
   const { setAccountState } = useAccountStatusContext();
 
@@ -160,6 +169,17 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
       validatePicklistFields(form.current);
       validateCheckboxFields(form.current);
     }
+  };
+
+  const onReCaptchaChange = (token: string | null) => {
+    if (!token) {
+      setReCaptchaValid(false);
+
+      return;
+    }
+
+    setReCaptchaToken(token);
+    setReCaptchaValid(true);
   };
 
   const onSubmit = async (formData: FormData) => {

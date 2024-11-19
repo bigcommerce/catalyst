@@ -122,7 +122,11 @@
     "Category": {
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
         "products": "商品",
-        "items": "お品物"
+        "items": "お品物",
+        "Empty": {
+            "message": "No products in this category",
+            "cta": "Return to Home"
+        }
     },
     "Search": {
         "title": "検索結果",
@@ -149,6 +153,7 @@
             "title": "住所",
             "addNewAddress": "Add new address",
             "editButton": "編集",
+            "emptyAddresses": "No addresses added",
             "deleteButton": "削除する",
             "confirmDeleteAddress": "アドレスの削除",
             "deleteModalTitle": "このアドレスを削除しますか?",
@@ -199,7 +204,7 @@
             "changePassword": "パスワード変更",
             "submit": "Update settings",
             "submitting": "Update settings...",
-            "successMessage": "Dear {firstName} {lastName}, you successfully updated your account data",
+            "successMessage": "Your account settings have been updated",
             "validationMessages": {
                 "email": "Enter a valid email such as name@domain.com",
                 "empty": "This field can not be empty",

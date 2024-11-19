@@ -5,7 +5,6 @@ import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
 import { Link } from '~/components/link';
-import { LocaleType } from '~/i18n/routing';
 
 import { Button } from '../button';
 import { Select } from '../form';
@@ -19,7 +18,7 @@ type LanguagesByRegionMap = Record<
 >;
 
 interface Locale {
-  id: LocaleType;
+  id: string;
   region: string;
   language: string;
   flag: string;

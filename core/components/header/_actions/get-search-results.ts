@@ -3,7 +3,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -39,14 +39,14 @@ const GetQuickSearchResultsQuery = graphql(
 );
 
 export const getSearchResults = cache(async (searchTerm: string) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   try {
     const response = await client.fetch({
       document: GetQuickSearchResultsQuery,
       variables: { filters: { searchTerm } },
-      customerId,
-      fetchOptions: customerId ? { cache: 'no-store' } : { next: { revalidate } },
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     const { products } = response.data.site.search.searchProducts;
