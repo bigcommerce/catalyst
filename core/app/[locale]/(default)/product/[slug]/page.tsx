@@ -7,7 +7,6 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
 import { Breadcrumbs } from '~/components/breadcrumbs';
-import { LocaleType } from '~/i18n/routing';
 
 import Promotion from '../../../../../components/ui/pdp/belami-promotion-banner-pdp';
 import { SimilarProducts } from '../../../../../components/ui/pdp/belami-similar-products-pdp';
@@ -83,7 +82,7 @@ export default async function Product(props: Props) {
   const params = await props.params;
 
   const { locale, slug } = params;
-  
+
   const bannerIcon = imageManagerImageUrl('example-1.png', '50w');
   const relatedProductArrow = imageManagerImageUrl('vector-8-.png', '30w');
   const galleryExpandIcon = imageManagerImageUrl('vector.jpg', '20w'); // Set galleryExpandIcon here

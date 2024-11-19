@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
-import { locales, LocaleType } from '~/i18n/routing';
+import { locales } from '~/i18n/routing';
 import { imageIconList } from '../fragments';
 import { LoginForm } from './_components/login-form';
 import { imageManagerImageUrl } from '~/lib/store-assets';

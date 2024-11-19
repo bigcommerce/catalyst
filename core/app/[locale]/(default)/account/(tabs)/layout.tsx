@@ -2,9 +2,6 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
 
 import { TabNavigation, TabType } from './_components/tab-navigation';
-import { Link } from '~/components/link';
-import { LocaleType } from '~/i18n/routing';
-import { cn } from '~/lib/utils';
 
 const tabList = ['orders', 'addresses', 'wishlists', 'settings'] as const;
 
@@ -18,7 +15,7 @@ export default async function AccountTabLayout({ children, params }: Props) {
   const { locale } = await params;
 
   setRequestLocale(locale);
-  
+
   const t = await getTranslations('Account.Home');
 
   const tabsTitles = {

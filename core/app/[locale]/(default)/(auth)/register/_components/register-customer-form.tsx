@@ -1,26 +1,18 @@
-// register
-
 'use client';
 
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
+import ReCaptcha from 'react-google-recaptcha';
 
 import { useAccountStatusContext } from '~/app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
 import { ExistingResultType } from '~/client/util';
 import {
-  Checkboxes,
   createFieldName,
   CUSTOMER_FIELDS_TO_EXCLUDE,
-  DateField,
   FieldNameToFieldId,
   FieldWrapper,
-  FULL_NAME_FIELDS,
-  MultilineText,
-  NumbersOnly,
   Password,
-  Picklist,
-  RadioButtons,
   Text,
 } from '~/components/form-fields';
 import {
@@ -39,8 +31,6 @@ import { Message } from '~/components/ui/message';
 import { login } from '../_actions/login';
 import { registerCustomer } from '../_actions/register-customer';
 import { getRegisterCustomerQuery } from '../page-data';
-import { cn } from '~/lib/utils';
-import error from 'next/error';
 
 interface FormStatus {
   status: 'success' | 'error';
