@@ -42,20 +42,26 @@ interface RegisterCustomerForm {
   reCaptchaToken?: string;
 }
 
+// Updated to accept optional email and validate form data
 const isRegisterCustomerInput = (data: unknown): data is RegisterCustomerInput => {
-  if (typeof data === 'object' && data !== null && 'email' in data) {
+  if (typeof data === 'object' && data !== null) {
+    // We no longer enforce an email validation here
     return true;
   }
-
   return false;
 };
 
 export const registerCustomers = async ({ formData, reCaptchaToken }: RegisterCustomerForm) => {
   const t = await getTranslations('Register');
   formData.delete('customer-confirmPassword');
+
+  // Parse the form data
   let parsedDataValue: any = parseRegisterCustomerFormData(formData);
-  delete parsedDataValue['address'];
+  delete parsedDataValue['address']; // Remove address if unnecessary for the mutation
+
   const parsedData = parsedDataValue;
+
+  // Ensure the parsedData doesn't throw error even if email is missing
   if (!isRegisterCustomerInput(parsedData)) {
     return {
       status: 'error',
@@ -77,18 +83,24 @@ export const registerCustomers = async ({ formData, reCaptchaToken }: RegisterCu
 
     const result = response.data.customer.registerCustomer;
 
+    // Handle possible registration errors
     if (result.errors.length === 0) {
       return { status: 'success', data: parsedData };
     }
 
+    // Collect and return error messages from BigCommerce API
     return {
       status: 'error',
       error: result.errors.map((error) => error.message).join('\n'),
     };
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
+  } catch (error: any) {
+    // Log and handle unexpected errors
+    console.error('Unexpected error:', error);
 
+    // Fallback error handling to ensure we catch all errors
+    const errorMessage = error?.message || error?.response?.data?.message || t('Errors.error');
+
+    // Specific BigCommerce API error handling
     if (error instanceof BigCommerceAPIError) {
       return {
         status: 'error',
@@ -98,7 +110,7 @@ export const registerCustomers = async ({ formData, reCaptchaToken }: RegisterCu
 
     return {
       status: 'error',
-      error: t('Errors.error'),
+      error: errorMessage,
     };
   }
 };

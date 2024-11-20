@@ -51,7 +51,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "tests/**/*"
-  ],
+, "app/[locale]/(default)/(auth)/trade-account/trade-step1"  ],
   "exclude": [
     "node_modules",
     ".next"
