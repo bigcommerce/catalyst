@@ -1,7 +1,7 @@
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
-import { DM_Serif_Text, Inter } from 'next/font/google';
+import { DM_Serif_Text, Inter, Roboto_Mono } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
@@ -26,6 +26,12 @@ const dm_serif_text = DM_Serif_Text({
   subsets: ['latin'],
   weight: '400',
   variable: '--font-family-heading',
+});
+
+const roboto_mono = Roboto_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-family-mono',
 });
 
 const RootLayoutMetadataQuery = graphql(`
@@ -102,7 +108,7 @@ export default async function RootLayout({ params, children }: Props) {
 
   return (
     <html lang={locale}>
-      <body className={`${inter.variable} ${dm_serif_text.variable}`}>
+      <body className={`${inter.variable} ${dm_serif_text.variable} ${roboto_mono.variable}`}>
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>{children}</Providers>
