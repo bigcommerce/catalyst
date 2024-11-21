@@ -57,7 +57,7 @@ const BrandPartnersSection: React.FC = () => {
       position: "Director of Sales"
     },
     {
-      imageSrc: imageManagerImageUrl('maxim-trade.png', 'original'),
+      imageSrc: imageManagerImageUrl('maxim-trade.jpg', 'original'),
       imageAlt: "Quality Products",
       testimonial: "Maxim/ET2 has a well-established professional relationship with the Belami team. They have proven to be a top tier partner working alongside trade professionals and helping grow a client's business. Balami's Pro team is second to none when it comes to product knowledge, logistic accuracy, and customer service.",
       name: "Jason Eberhardt",

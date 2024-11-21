@@ -90,7 +90,7 @@ const breadcrumbs = [
 // Define image URLs
 const imageUrls = {
   tradeAccountHeader: imageManagerImageUrl('trade-account-header.png', 'original'),
-  tradeCircleCircle: imageManagerImageUrl('trade-check-circle.png', 'original'),
+  tradeCircleCircle: imageManagerImageUrl('trade-check-circle.jpg', 'original'),
   patjoheatAndShade: imageManagerImageUrl('patjoheat-and-shade.png', 'original'),
   baileyStreet: imageManagerImageUrl('bailey-street.png', 'original'),
   oneStopLightning: imageManagerImageUrl('1stop-lightning.png', 'original'),
@@ -148,17 +148,17 @@ type CarouselImage = {
 
 const images: CarouselImage[] = [
   {
-    src: 'https://cdn11.bigcommerce.com/s-6cdngmevrl/images/stencil/original/image-manager/trade-carousel-1.png',
+    src: imageManagerImageUrl('trade-carousel-1.jpg', 'original'),
     alt: 'California Homebuilders Inc.',
     title: 'California Homebuilders Inc.',
   },
   {
-    src: 'https://cdn11.bigcommerce.com/s-6cdngmevrl/images/stencil/original/image-manager/trade-carousel-1.png',
+    src: imageManagerImageUrl('trade-carousel-1.jpg', 'original'),
     alt: 'Modern Home Design',
     title: 'Modern Home Design',
   },
   {
-    src: 'https://cdn11.bigcommerce.com/s-6cdngmevrl/images/stencil/original/image-manager/trade-carousel-1.png',
+    src: imageManagerImageUrl('trade-carousel-1.jpg', 'original'),
     alt: 'Luxury Homes',
     title: 'Luxury Homes',
   },
@@ -217,12 +217,12 @@ export default async function Trade() {
         </div>
 
         <ComponentsBreadcrumbs
-          className="trade2-div-breadcrumb m-auto flex w-[89%] pb-[10px] pt-[30px]"
+          className="trade2-div-breadcrumb m-auto hidden w-[92%] pb-[10px] pt-[0px] lg:flex lg:pt-[30px]"
           breadcrumbs={breadcrumbs}
         />
 
         {/* Form Section */}
-        <div className="flex w-[96.5%] flex-col lg:flex-row lg:justify-between lg:space-x-8">
+        <div className="m-auto flex w-[88%] flex-col lg:m-[unset] lg:w-[96.5%] lg:flex-row lg:justify-between lg:space-x-8">
           {/* Left Side Content */}
           <TradeForm tradeCircleCircle={imageUrls.tradeCircleCircle} />
 
