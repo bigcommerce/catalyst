@@ -55,7 +55,8 @@
         "recaptchaText": "Pass ReCAPTCHA check",
         "confirmResetPassword": "If the email address {email} is linked to an account in our store, we have sent you a password reset email. Please check your inbox and spam folder if you don't see it.",
         "submitting": "Submitting...",
-        "submit": "Reset password"
+        "submit": "Reset password",
+        "emailInvalidMessage": "Invalid email"
       },
       "Errors": {
         "error":"Unknown error."
@@ -527,7 +528,8 @@
       "AddToCart": {
         "viewOptions": "View options",
         "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-        "error": "Error adding product to cart. Please try again."
+        "error": "Error adding product to cart. Please try again.",
+        "update": "Item updated to <cartLink> your cart</cartLink>"
       }
     },
     "FormFields": {

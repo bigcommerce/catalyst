@@ -100,7 +100,7 @@ export default async function Cart() {
   const closeIcon = imageManagerImageUrl('close.png', '25w');
   const format = await getFormatter();
   let getCartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
-  let updatedLineItemInfo: any = [];
+  let updatedLineItemInfo: any = [], updatedLineItemWithoutAccessories: any = [];
   let accessoriesSkuArray: any = [];
   if (getCartMetaFields?.length > 0) {
     lineItems?.forEach((item: any) => {
@@ -131,13 +131,15 @@ export default async function Cart() {
   } else {
     updatedLineItemInfo = lineItems;
   }
-
-  const breadcrumbs: any = [
-    {
-      label: 'Your Cart',
-      href: '#',
-    },
-  ];
+  updatedLineItemInfo?.forEach((item: any, index: number) => {
+    if(!accessoriesSkuArray?.includes(item?.variantEntityId)) {
+      updatedLineItemWithoutAccessories.push(item);
+    }
+  });
+  const breadcrumbs: any = [{
+    label: "Your Cart",
+    href: '#'
+  }];
   return (
     <div className="cart-page mx-auto max-w-[93.5%] pt-8">
       <ContinuetocheckoutButton cartId={cartId} />
@@ -188,8 +190,8 @@ export default async function Cart() {
         </div>
       </div>
       <div className="cart-right-side-details px-18 pb-0 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-        <ul className="cart-details-item col-span-2 lgg:w-[90%]">
-          {updatedLineItemInfo.map((product: any) => (
+        <ul className="col-span-2 cart-details-item lgg:w-[90%]">
+          {updatedLineItemWithoutAccessories.map((product: any) => (
             <CartItem
               currencyCode={cart.currencyCode}
               key={product.entityId}
