@@ -62,14 +62,14 @@ export default async function Home({ params }: Props) {
 
       <FeaturedProductsList
         cta={{ label: t('FeaturedProducts.cta'), href: '/shop-all' }}
-        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        description={t('FeaturedProducts.description')}
         products={featuredProducts}
         title={t('FeaturedProducts.title')}
       />
 
       <FeaturedProductsCarousel
         cta={{ label: t('NewestProducts.cta'), href: '/shop-all/?sort=newest' }}
-        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        description={t('NewestProducts.description')}
         products={newestProducts}
         title={t('NewestProducts.title')}
       />
