@@ -71,7 +71,6 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
   const onReCatpchaChange = (token: string | null) => {
     if (!token) {
       setReCaptchaValid(false);
-
       return;
     }
 
@@ -86,38 +85,61 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
   };
 
   const onSubmit = async (formData: FormData) => {
+    const email = formData.get('email')?.toString() || '';
+
+    if (!email) {
+      setIsEmailValid(false);
+      setFormStatus({ status: 'error', message: t('emailValidationMessage') });
+      return;
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    console.log(emailRegex.test(email), 'Email Regex');
+
+    if (!emailRegex.test(email)) {
+      setIsEmailValid(false);
+      setFormStatus({ status: 'error', message: t('emailInvalidMessage') });
+      return;
+    }
+
+    setIsEmailValid(true);
+
     if (reCaptchaSettings?.isEnabledOnStorefront && !reCaptchaToken) {
       setReCaptchaValid(false);
-
       return;
     }
 
     setReCaptchaValid(true);
 
-    const submit = await resetPassword({
-      formData,
-      reCaptchaToken,
-      path: '/change-password',
-    });
-
-    if (submit.status === 'success') {
-      form.current?.reset();
-
-      const customerEmail = formData.get('email');
-
-      setAccountState({
-        status: 'success',
-        message: t('confirmResetPassword', { email: customerEmail?.toString() }),
+    try {
+      const submit = await resetPassword({
+        formData,
+        reCaptchaToken,
+        path: '/change-password',
       });
-      router.push('/login');
-    }
 
-    if (submit.status === 'error') {
-      setFormStatus({ status: 'error', message: submit.error ?? '' });
-    }
+      if (submit.status === 'success') {
+        form.current?.reset();
 
-    reCaptchaRef.current?.reset();
+        const customerEmail = formData.get('email');
+
+        setAccountState({
+          status: 'success',
+          message: t('confirmResetPassword', { email: customerEmail?.toString() }),
+        });
+        router.push('/login');
+      } else {
+        setFormStatus({ status: 'error', message: t('emailInvalidMessage') });
+      }
+    } catch (error) {
+      setFormStatus({ status: 'error', message: t('emailInvalidMessage') });
+    } finally {
+      reCaptchaRef.current?.reset();
+    }
   };
+
+  console.log([formStatus, isEmailValid]);
 
   return (
     <>
@@ -147,20 +169,18 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
               <Input
                 className="flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] border border-[#cccbcb] bg-white"
                 autoComplete="email"
-                error={!isEmailValid}
                 id="email"
-                onChange={handleEmailValidation}
+                // onChange={handleEmailValidation}
                 onInvalid={handleEmailValidation}
                 required
                 type="email"
               />
             </FieldControl>
-            <FieldMessage
-              className="inline-flex w-full text-sm text-gray-500"
-              match="valueMissing"
-            >
-              {t('emailValidationMessage')}
-            </FieldMessage>
+            {formStatus?.status === 'error' && (
+              <FieldMessage className="w-full text-red-700" variant={formStatus?.status}>
+                {formStatus?.message}
+              </FieldMessage>
+            )}
           </Field>
 
           {reCaptchaSettings?.isEnabledOnStorefront && (

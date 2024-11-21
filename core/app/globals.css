@@ -22,6 +22,10 @@
 .Open_Sans {
   font-family: var(--font-Open_Sans);
 }
+nav.trade2-div-breadcrumb ul li:nth-child(1),
+nav.trade2-div-breadcrumb ul span:nth-child(2) {
+  display: none;
+}
 /* description - bigcommerce products description*/
 div#proddesc p {
   line-height: 32px;
@@ -161,11 +165,6 @@ ul#nav-menu-list li button svg {
 }
 #nav-footer-section div:nth-child(3) ul li:nth-child(3) a span.privacy-policy-label {
   border-bottom: 1px solid #ffffff;
-}
-ul.div-breadcrumb li:last-child a {
-  font-size: 16px;
-  color: #008bb7 !important;
-  font-weight: 600 !important;
 }
 .footer-social-media a svg {
   margin-left: 7px;

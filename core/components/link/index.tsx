@@ -52,7 +52,7 @@ export const Link = forwardRef<ElementRef<'a'>, Props>(
     return (
       <NavLink
         className={cn(
-          'hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 hover:opacity-80 no-underline',
+          'hover:text-primary flex justify-center focus-visible:outline-none focus-visible:ring-4 text-center focus-visible:ring-primary/20 hover:opacity-80 no-underline font-normal text-[16px] leading-[32px] tracking-[0.5px] text-[#353535]',
           className,
         )}
         href={href}

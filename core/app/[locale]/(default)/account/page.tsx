@@ -42,7 +42,7 @@ export default function Account() {
   const t = useTranslations('Account.Home');
 
   return (
-    <div className="mx-auto">
+    <div className="my-account-page m-auto mx-auto w-[94%]">
       <h1 className="my-8 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
 
       <AccountNotification message={t('successMessage')} />

@@ -1,6 +1,5 @@
 import { AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { ComponentPropsWithRef, ElementRef, forwardRef, ReactNode, useState } from 'react';
-
 import { cn } from '~/lib/utils';
 
 interface Props extends ComponentPropsWithRef<'input'> {
@@ -13,7 +12,7 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
     const [showPassword, setShowPassword] = useState(false);
 
     const isPassword = type === 'password';
-    const effectiveType = isPassword ? (showPassword ? 'password' : 'text') : type;
+    const effectiveType = isPassword ? (showPassword ? 'text' : 'password') : type;
 
     return (
       <div className={cn('relative', className)}>
@@ -28,12 +27,13 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
           type={effectiveType}
           {...props}
         />
+
         {Boolean(error || icon || isPassword) && (
           <span
             className={cn(
               'absolute end-4 top-0 flex h-full items-center',
               error && 'text-error-secondary peer-disabled:text-gray-200',
-              isPassword && !error && 'text-black hover:text-gray-800', // Updated to black with dark gray hover
+              isPassword && !error && 'text-black hover:text-gray-800', // Icon color logic
               isPassword && 'pointer-events-auto cursor-pointer',
               !isPassword && 'pointer-events-none',
             )}
@@ -47,9 +47,9 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
                 <AlertCircle />
               ) : isPassword ? (
                 showPassword ? (
-                  <EyeOff size={20} />
-                ) : (
                   <Eye size={20} />
+                ) : (
+                  <EyeOff size={20} />
                 )
               ) : null)}
           </span>

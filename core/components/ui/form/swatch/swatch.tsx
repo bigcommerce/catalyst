@@ -33,7 +33,7 @@ const Swatch = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
               key={`${id}-${value}`}
               {...itemProps}
               className={cn(
-                'group h-12 w-12 border-2 bg-white p-1 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-gray-100 disabled:hover:border-gray-100 data-[state=checked]:border-primary',
+                'group h-12 w-12 border-2 bg-white hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-gray-100 disabled:hover:border-gray-100 data-[state=checked]:border-primary p-0 m-0',
                 error &&
                   'border-error-secondary focus-visible:border-error-secondary data-[state=checked]:border-error-secondary hover:border-error focus-visible:ring-error/20 disabled:border-gray-200',
               )}
@@ -42,7 +42,7 @@ const Swatch = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
             >
               {color ? (
                 <span
-                  className="swatch-span block h-9 w-9 group-disabled:bg-gray-200 group-disabled:opacity-30 -m-[0.1em] rounded-full"
+                  className="swatch-span block h-full w-full group-disabled:bg-gray-200 group-disabled:opacity-30 "
                   style={{
                     backgroundColor: color,
                     backgroundImage: `url(${color})`,

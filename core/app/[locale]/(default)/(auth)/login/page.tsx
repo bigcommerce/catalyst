@@ -120,14 +120,12 @@ export default async function Login({ params }: Props) {
         </div>
       </div>
 
-      <div className="mt-[20px] flex flex-col gap-[20px] px-0 xl:px-12 2xl:container 2xl:mx-auto 2xl:px-0">
+      <div className="mt-[20px] flex flex-col gap-[20px] px-0 2xl:container xl:px-12 2xl:mx-auto 2xl:px-0">
         <ComponentsBreadcrumbs
           className="login-div login-breadcrumb mx-auto mt-[6rem] w-[80%] px-[1px]"
           breadcrumbs={breadcrumbs}
         />
-<div className="login-div login-div-one mx-auto flex flex-col xl:flex-row w-full xl:w-[80%] justify-between gap-0 xl:gap-24 xl:gap-24 px-[1px] text-center xl:text-left mt-5 md:mt-6 md:pt-5 lg:mt-0">
-
-
+        <div className="login-div login-div-one mx-auto mt-5 flex w-full flex-col justify-between gap-0 px-[1px] text-center md:mt-6 md:pt-5 lg:mt-0 xl:w-[80%] xl:flex-row xl:gap-24 xl:text-left">
           <h2 className="text-[24px] font-normal text-[#353535] md:text-[34px]">Rewards Program</h2>
           <div className="flex flex-row flex-wrap content-center items-center justify-center gap-[10px] px-0 pb-0 pt-[10px]">
             <p className="flex items-center text-center text-[20px] font-medium tracking-[0.15px] text-[#002A37]">
@@ -141,24 +139,21 @@ export default async function Login({ params }: Props) {
             </button>
           </div>
         </div>
-        <div className="login-div font-weight-[500] mx-auto w-[80%] px-[1px] text-[20px] tracking-[0.15px] text-center xl:text-left">
-    Log In
-</div>
+        <div className="login-div font-weight-[500] mx-auto w-[80%] px-[1px] text-center text-[20px] tracking-[0.15px] xl:text-left">
+          Log In
+        </div>
 
         <div className="login-div mx-auto mb-6 flex w-full flex-col justify-center lg:gap-[4.5rem] xl:w-[80%] xl:flex-row">
-          {/* <h2 className="text-h2 mb-8 text-4xl font-black lg:text-5xl">{t('heading')}</h2> */}
           <div className="login-first-child login-logo mx-[1px] flex w-[calc(90vw)] flex-grow flex-col xl:w-[calc(35.28vw)]">
             <LoginForm {...imageIconList} />
           </div>
 
-          <div className="login-sec-child mx-[1px] flex w-[calc(90vw)] flex-grow flex-col xl:items-center gap-[20px] rounded-[5px] p-0 mt-[7em] sm:mt-[7em] xl:mt-0  xl:w-[calc(35.28vw)]">
-
-
+          <div className="login-sec-child mx-[1px] mt-[7em] flex w-[calc(90vw)] flex-grow flex-col gap-[20px] rounded-[5px] p-0 sm:mt-[7em] xl:mt-0 xl:w-[calc(35.28vw)] xl:items-center">
             <div className="flex w-full flex-col gap-[20px] rounded-[5px] bg-[#008BB7] p-[40px] text-white">
               <h3 className="flex items-center justify-center text-center text-[34px] font-bold tracking-[0.25px]">
                 {t('CreateAccount.heading')}
               </h3>
-              {/* <p className="text-base font-semibold">{t('CreateAccount.accountBenefits')}</p> */}
+
               <div className="item-center flex flex-row justify-center">
                 <Button
                   asChild
