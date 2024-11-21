@@ -1,14 +1,14 @@
 import { useFormatter } from 'next-intl';
 
-import { FeaturedProductsList as FeaturedProductsListComponent } from '@/vibes/soul/sections/featured-products-list';
+import { FeaturedProductsCarousel as FeaturedProductsCarouselComponent } from '@/vibes/soul/sections/featured-products-carousel';
 import { ResultOf } from '~/client/graphql';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
-import { FeaturedProductsListFragment } from './fragment';
+import { FeaturedProductsCarouselFragment } from './fragment';
 
-type Product = ResultOf<typeof FeaturedProductsListFragment>;
+type Product = ResultOf<typeof FeaturedProductsCarouselFragment>;
 
-export const FeaturedProductsList = ({
+export const FeaturedProductsCarousel = ({
   products,
   ...props
 }: {
@@ -37,5 +37,5 @@ export const FeaturedProductsList = ({
     subtitle: product.brand?.name ?? undefined,
   }));
 
-  return <FeaturedProductsListComponent products={formattedProducts} {...props} />;
+  return <FeaturedProductsCarouselComponent products={formattedProducts} {...props} />;
 };
