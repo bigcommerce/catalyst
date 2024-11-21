@@ -15,8 +15,9 @@
       "cta": "See all"
     },
     "BestSellingProducts": {
-      "title": "Best selling products",
-      "cta": "Shop now"
+      "title": "Our best sellers",
+      "description": "Our best selling products are here. Check out what's popular in store.",
+      "cta": "See all"
     }
   },
   "ChangePassword": {
