@@ -15,6 +15,13 @@ const HomePageQuery = graphql(
   `
     query HomePageQuery {
       site {
+        featuredProducts(first: 12) {
+          edges {
+            node {
+              ...FeaturedProductsListFragment
+            }
+          }
+        }
         newestProducts(first: 12) {
           edges {
             node {
@@ -22,10 +29,10 @@ const HomePageQuery = graphql(
             }
           }
         }
-        featuredProducts(first: 12) {
+        bestSellingProducts(first: 12) {
           edges {
             node {
-              ...FeaturedProductsListFragment
+              ...FeaturedProductsCarouselFragment
             }
           }
         }
@@ -55,6 +62,7 @@ export default async function Home({ params }: Props) {
 
   const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
   const newestProducts = removeEdgesAndNodes(data.site.newestProducts);
+  const bestSellingProducts = removeEdgesAndNodes(data.site.bestSellingProducts);
 
   return (
     <>
@@ -72,6 +80,13 @@ export default async function Home({ params }: Props) {
         description={t('NewestProducts.description')}
         products={newestProducts}
         title={t('NewestProducts.title')}
+      />
+
+      <FeaturedProductsCarousel
+        cta={{ label: t('BestSellingProducts.cta'), href: '/shop-all/?sort=best_selling' }}
+        description={t('BestSellingProducts.description')}
+        products={bestSellingProducts}
+        title={t('BestSellingProducts.title')}
       />
     </>
   );
