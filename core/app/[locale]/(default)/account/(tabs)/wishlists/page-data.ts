@@ -49,14 +49,14 @@ const WishlistQuery = graphql(
 );
 
 export const getWishlist = cache(async ({ limit = 8, before, after, filters }: GetWishlists) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
   const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
   const response = await client.fetch({
     document: WishlistQuery,
     variables: { filters, ...paginationArgs },
     fetchOptions: { cache: 'no-store' },
-    customerId,
+    customerAccessToken,
   });
 
   const { customer } = response.data;
