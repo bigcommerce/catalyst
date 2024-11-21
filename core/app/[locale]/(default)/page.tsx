@@ -9,7 +9,7 @@ import { FeaturedProductsCarousel } from '~/components/featured-products-carouse
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
 import { FeaturedProductsList } from '~/components/featured-products-list';
 import { FeaturedProductsListFragment } from '~/components/featured-products-list/fragment';
-import { Slideshow } from '~/components/slideshow';
+import { HomepageSlideshow } from '~/components/homepage-slideshow';
 
 const HomePageQuery = graphql(
   `
@@ -66,7 +66,7 @@ export default async function Home({ params }: Props) {
 
   return (
     <>
-      <Slideshow />
+      <HomepageSlideshow />
 
       <FeaturedProductsList
         cta={{ label: t('FeaturedProducts.cta'), href: '/shop-all' }}
