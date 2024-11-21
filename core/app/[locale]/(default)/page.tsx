@@ -5,10 +5,10 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { FeaturedProductsCarousel } from '~/components/featured-products-carousel';
+import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
 import { FeaturedProductsList } from '~/components/featured-products-list';
 import { FeaturedProductsListFragment } from '~/components/featured-products-list/fragment';
-import { ProductCardCarousel } from '~/components/product-card-carousel';
-import { ProductCardCarouselFragment } from '~/components/product-card-carousel/fragment';
 import { Slideshow } from '~/components/slideshow';
 
 const HomePageQuery = graphql(
@@ -18,7 +18,7 @@ const HomePageQuery = graphql(
         newestProducts(first: 12) {
           edges {
             node {
-              ...ProductCardCarouselFragment
+              ...FeaturedProductsCarouselFragment
             }
           }
         }
@@ -32,7 +32,7 @@ const HomePageQuery = graphql(
       }
     }
   `,
-  [ProductCardCarouselFragment, FeaturedProductsListFragment],
+  [FeaturedProductsCarouselFragment, FeaturedProductsListFragment],
 );
 
 interface Props {
@@ -62,19 +62,17 @@ export default async function Home({ params }: Props) {
 
       <FeaturedProductsList
         cta={{ label: t('FeaturedProducts.cta'), href: '/shop-all' }}
-        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        description={t('FeaturedProducts.description')}
         products={featuredProducts}
         title={t('FeaturedProducts.title')}
       />
 
-      <div className="my-10">
-        <ProductCardCarousel
-          products={newestProducts}
-          showCart={false}
-          showCompare={false}
-          title={t('Carousel.newestProducts')}
-        />
-      </div>
+      <FeaturedProductsCarousel
+        cta={{ label: t('NewestProducts.cta'), href: '/shop-all/?sort=newest' }}
+        description={t('NewestProducts.description')}
+        products={newestProducts}
+        title={t('NewestProducts.title')}
+      />
     </>
   );
 }
