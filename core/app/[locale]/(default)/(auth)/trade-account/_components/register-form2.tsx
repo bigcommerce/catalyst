@@ -263,7 +263,7 @@ export const RegisterForm2 = ({
 
         setFormStatus({
           status: 'success',
-          message: 'Successfully registered! Redirecting...',
+          message: 'Successfully registered!',
         });
 
         setTimeout(() => {
@@ -305,7 +305,6 @@ export const RegisterForm2 = ({
         return 'City*';
       case 'Zip/Postcode':
         return 'Zipcode*';
-
       default:
         return originalLabel;
     }
@@ -317,9 +316,23 @@ export const RegisterForm2 = ({
     const isCountrySelector = fieldId === FieldNameToFieldId.countryCode;
     const isStateField = fieldId === FieldNameToFieldId.stateOrProvince;
 
+    // Special handling for Address Line 2 label
     const modifiedField = {
       ...field,
-      label: getModifiedLabel(field.label),
+      label:
+        field.label === 'Address Line 2' ? (
+          <div
+            className="flex w-full cursor-pointer"
+            onClick={(e) => {
+              e.preventDefault();
+              setShowAddressLine2(false);
+            }}
+          >
+            Address Line 2
+          </div>
+        ) : (
+          getModifiedLabel(field.label)
+        ),
       isRequired: field.label !== 'Address Line 2',
     };
 
@@ -333,6 +346,10 @@ export const RegisterForm2 = ({
               name={fieldName}
               onChange={handleTextInputValidation}
               type={FieldNameToFieldId[fieldId]}
+              onClick={(e) => {
+                // Prevent click on input from closing Address Line 2
+                e.stopPropagation();
+              }}
             />
           </FieldWrapper>
         );
@@ -505,27 +522,25 @@ export const RegisterForm2 = ({
                   (FIELD_ORDER[b.label as FieldOrderKeys] || 0),
               )
               .map((field) => (
-                <>
-                  {field.label === 'Address Line 2' ? (
-                    <div onClick={() => setShowAddressLine2(false)}>
+                <div key={field.entityId}>
+                  {field.label === 'Address Line 1' ? (
+                    <>
                       {renderField(field, false)}
-                    </div>
+                      {!showAddressLine2 && (
+                        <button
+                          type="button"
+                          className="relative top-[-1em] flex items-center gap-2 text-left text-[14px] font-normal leading-6 tracking-wide text-[#353535]"
+                          onClick={() => setShowAddressLine2(true)}
+                        >
+                          <img src={TradeAddress1} alt="" />
+                          <span>Add Apt, suite, floor, or other.</span>
+                        </button>
+                      )}
+                    </>
                   ) : (
                     renderField(field, false)
                   )}
-
-                  {field.label === 'Address Line 1' && !showAddressLine2 && (
-                    <div
-                      className="relative top-[-1em] flex items-center gap-2"
-                      onClick={() => setShowAddressLine2(true)}
-                    >
-                      <span className="text-left text-[14px] font-normal leading-6 tracking-wide text-[#353535]">
-                        <img src={TradeAddress1} alt="" />
-                      </span>{' '}
-                      Add Apt, suite, floor, or other.
-                    </div>
-                  )}
-                </>
+                </div>
               )),
           ]}
         </div>
