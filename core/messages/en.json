@@ -3,6 +3,10 @@
     "Carousel": {
       "featuredProducts": "Featured Products",
       "newestProducts": "Newest products"
+    },
+    "FeaturedProducts": {
+      "title": "Featured products",
+      "cta": "Shop now"
     }
   },
   "ChangePassword": {
