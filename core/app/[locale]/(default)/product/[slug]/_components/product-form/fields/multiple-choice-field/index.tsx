@@ -116,7 +116,7 @@ export const MultipleChoiceField = ({ option, multipleOptionIcon }: Props) => {
                 .map((value) => ({
                   label: value.label,
                   value: value.entityId.toString(),
-                  color: value.hexColors[0],
+                  color: value.hexColors[0] ?? value.imageUrl,
                   onMouseEnter: () => {
                     handleMouseEnter({
                       optionId: option.entityId,

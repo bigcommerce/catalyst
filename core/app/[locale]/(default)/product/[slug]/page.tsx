@@ -172,7 +172,6 @@ export default async function Product({ params: { locale, slug }, searchParams }
               </Suspense>
             </div>
           </div>
-
           <ProductViewed product={product} />
         </ProductProvider>
       </div>
