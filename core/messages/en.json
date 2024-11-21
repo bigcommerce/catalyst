@@ -5,8 +5,14 @@
       "newestProducts": "Newest products"
     },
     "FeaturedProducts": {
-      "title": "Featured products",
-      "cta": "Shop now"
+      "title": "Featured collection",
+      "description": "Explore our top picks in this featured collection. Find the perfect gift or treat yourself!",
+      "cta": "View more"
+    },
+    "NewestProducts": {
+      "title": "New arrivals",
+      "description": "Our latest products are here. Check out what's new in store.",
+      "cta": "See all"
     }
   },
   "ChangePassword": {
