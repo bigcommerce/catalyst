@@ -24,7 +24,6 @@ export const login = async (formData: FormData) => {
     if (isRedirectError(error)) {
       throw error;
     }
-
     return {
       status: 'error',
     };

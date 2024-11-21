@@ -23,7 +23,6 @@ import { SaveCart } from './_components/save-cart';
 import { RemoveCart } from './_components/remove-cart';
 import { GetCartMetaFields } from '~/components/management-apis';
 
-
 const CartPageQuery = graphql(
   `
     query CartPageQuery($cartId: String) {
@@ -54,7 +53,6 @@ export async function generateMetadata() {
     title: t('title'),
   };
 }
-
 
 export default async function Cart() {
   const cartId = cookies().get('cartId')?.value;
@@ -88,8 +86,10 @@ export default async function Cart() {
   }
 
   const lineItems: any = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
-  let cartQty = lineItems?.reduce(function (total: number, cartItems: any) { return total + cartItems?.quantity }, 0);
-  let cartItemsText = (cartQty > 1) ? " Items" : " Item";
+  let cartQty = lineItems?.reduce(function (total: number, cartItems: any) {
+    return total + cartItems?.quantity;
+  }, 0);
+  let cartItemsText = cartQty > 1 ? ' Items' : ' Item';
   const deleteIcon = imageManagerImageUrl('delete.png', '20w');
   const downArrow = imageManagerImageUrl('downarrow.png', '20w');
   const agentIcon = imageManagerImageUrl('agent-icon.png', '20w');
@@ -107,13 +107,17 @@ export default async function Cart() {
       let accessoriesData: any = [];
       let findAccessories = getCartMetaFields?.find((acces: any) => acces?.key == item?.entityId);
       if (findAccessories) {
-        let getAccessoriesInfo = (findAccessories?.value) ? JSON?.parse(findAccessories?.value) : [];
+        let getAccessoriesInfo = findAccessories?.value ? JSON?.parse(findAccessories?.value) : [];
         if (getAccessoriesInfo?.length > 0) {
           getAccessoriesInfo?.forEach((getInfo: any) => {
-            (!accessoriesSkuArray?.includes(getInfo?.variantId)) ? accessoriesSkuArray.push(getInfo?.variantId) : '';
-            let accessoriesInfo = lineItems?.find((line: any) => line?.variantEntityId == getInfo?.variantId);
+            !accessoriesSkuArray?.includes(getInfo?.variantId)
+              ? accessoriesSkuArray.push(getInfo?.variantId)
+              : '';
+            let accessoriesInfo = lineItems?.find(
+              (line: any) => line?.variantEntityId == getInfo?.variantId,
+            );
             if (accessoriesInfo) {
-              accessoriesInfo.prodQuantity = getInfo.quantity
+              accessoriesInfo.prodQuantity = getInfo.quantity;
               accessoriesData.push(accessoriesInfo);
             }
           });
@@ -137,13 +141,11 @@ export default async function Cart() {
     href: '#'
   }];
   return (
-    <div>
-      {/* Cart number for mobile (centered on small devices, above "Your cart" with top padding), hidden on larger screens */}
+    <div className="cart-page mx-auto max-w-[93.5%] pt-8">
       <ContinuetocheckoutButton cartId={cartId} />
 
-
       <div className="pt-6 text-center lg:hidden">
-        <div className="inline-flex items-center gap-2 font-medium text-[20px] leading-[32px] text-[#002A37] tracking-[0.15px]">
+        <div className="inline-flex items-center gap-2 text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#002A37]">
           Subtotal{' '}
           {format.number(checkout?.subtotal?.value || 0, {
             style: 'currency',
@@ -163,32 +165,26 @@ export default async function Cart() {
         <div>Cart #12345</div>
       </div>
 
-      {/* Heading section */}
       <ComponentsBreadcrumbs className="mt-10" breadcrumbs={breadcrumbs} />
 
-      <h1 className="cart-heading pb-6 pt-0 text-center lg:text-left text-[24px] font-normal leading-[32px] lg:pb-4 lg:text-[24px]">
+      <h1 className="cart-heading pb-6 pt-0 text-center text-[24px] font-normal leading-[32px] lg:pb-4 lg:text-left lg:text-[24px]">
         {`${t('heading')}(${cartQty}${cartItemsText})`}
       </h1>
 
-      {/* Cart number for larger screens, SaveCart, and RemoveCart all in one line */}
       <div className="hidden lg:flex lg:items-center lg:space-x-8">
         <SaveCart cartItems={lineItems} saveCartIcon={heartIcon} />
-        {/*<RemoveCart cartId={cart.entityId} icon={deleteIcon} deleteIcon={closeIcon} /> */}
+
         <div className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.03125rem] text-[#7F7F7F]">
           Cart #12345
         </div>
       </div>
 
-      {/* Your cart section */}
       <div className="save-cart pb-8 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-6">
-        {/* Mobile layout for SaveCart and RemoveCart */}
         <div className="flex w-full items-center justify-center gap-4 lg:hidden">
-          {/* SaveCart aligned left on small devices */}
-          <div className="w-auto text-left cart-save-item">
+          <div className="cart-save-item w-auto text-left">
             <SaveCart cartItems={lineItems} saveCartIcon={heartIcon} />
           </div>
-          {/* RemoveCart aligned right on small devices */}
-          <div className="w-auto text-right delete-icon-empty-cart-hidden">
+          <div className="delete-icon-empty-cart-hidden w-auto text-right">
             <RemoveCart cartId={cart.entityId} icon={deleteIcon} deleteIcon={closeIcon} />
           </div>
         </div>
@@ -205,8 +201,7 @@ export default async function Cart() {
           ))}
         </ul>
 
-        <div className="cart-right-side pt-[1.4em] -mt-[9em] col-span-1 col-start-2 lg:col-start-3 border-t border-[#CCCBCB] pt-1 sticky top-0 overflow-hidden min-h-[800px] h-[100px]">
-
+        <div className="cart-right-side sticky top-0 col-span-1 col-start-2 -mt-[9em] h-[100px] min-h-[800px] overflow-hidden border-t border-[#CCCBCB] pt-1 pt-[1.4em] lg:col-start-3">
           {checkout && <CheckoutSummary checkout={checkout} geography={geography} />}
 
           <CheckoutButton cartId={cartId} />
@@ -225,12 +220,11 @@ export default async function Cart() {
               alt="Agent Icon"
               width={10}
               height={8}
-              className="h-[14px] w-[14px] mr-1"
+              className="mr-1 h-[14px] w-[14px]"
               src={agentIcon}
             />{' '}
             Talk to an Agent
           </p>
-
         </div>
       </div>
 
