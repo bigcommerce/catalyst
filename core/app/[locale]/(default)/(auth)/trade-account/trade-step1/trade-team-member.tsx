@@ -36,31 +36,31 @@ const TeamMember: React.FC<TeamMemberProps> = ({ imageSrc, name, startYear, quot
 const TeamMembersSection: React.FC = () => {
   const teamMembers = [
     {
-      imageSrc: imageManagerImageUrl('team-member1-trade.png', 'original'),
+      imageSrc: imageManagerImageUrl('team-member1-trade.jpg', 'original'),
       name: "Garrison Samples",
       startYear: "2014",
       quote: "Getting our customers the best deal on products is the easiest part of my day, and I love helping their plan come together!"
     },
     {
-      imageSrc: imageManagerImageUrl('team-member2-trade.png', 'original'),
+      imageSrc: imageManagerImageUrl('team-member2-trade.jpg', 'original'),
       name: "Armando Ramirez",
       startYear: "2016",
       quote: "Supporting PRO business is rewarding, because at it's core- it is a pure contribution to someone else's success."
     },
     {
-      imageSrc: imageManagerImageUrl('team-member3-trade.png', 'original'),
+      imageSrc: imageManagerImageUrl('team-member3-trade.jpg', 'original'),
       name: "Jeremy Coone",
       startYear: "2020",
       quote: "It's my privilege to get my clients the right products at the right price."
     },
     {
-      imageSrc: imageManagerImageUrl('team-member4-trade.png', 'original'),
+      imageSrc: imageManagerImageUrl('team-member4-trade.jpg', 'original'),
       name: "Sandy Vogt",
       startYear: "2017",
       quote: "Getting what clients want or need for their properties is always a puzzle, and that's what makes my job so interesting. No project is a walk in the park, but that's what keeps it exciting."
     },
     {
-      imageSrc: imageManagerImageUrl('team-member5-trade.png', 'original'),
+      imageSrc: imageManagerImageUrl('team-member5-trade.jpg', 'original'),
       name: "Erik Anderson",
       startYear: "2018",
       quote: "I enjoy providing maximum comfort for my clients while we meticulously resolve project challenges. I believe in measuring twice and ordering once."
