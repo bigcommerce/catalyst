@@ -13,6 +13,10 @@
       "title": "New arrivals",
       "description": "Our latest products are here. Check out what's new in store.",
       "cta": "See all"
+    },
+    "BestSellingProducts": {
+      "title": "Best selling products",
+      "cta": "Shop now"
     }
   },
   "ChangePassword": {
