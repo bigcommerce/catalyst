@@ -261,28 +261,22 @@ export const RegisterForm2 = ({
         await logins(email, password, combinedFormData);
         localStorage.removeItem('registrationFormData');
 
-        setFormStatus({
-          status: 'success',
-          message: 'Successfully registered!',
-        });
-
-        setTimeout(() => {
-          router.push('/trade-account/trade-step3/');
-        }, 20);
+        // Remove success message and directly redirect
+        router.push('/trade-account/trade-step3/');
       } else {
         setFormStatus({
           status: 'error',
           message: submit.error || 'Registration failed',
         });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     } catch (error) {
       setFormStatus({
         status: 'error',
         message: 'An unexpected error occurred',
       });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const getModifiedLabel = (originalLabel: string): string => {

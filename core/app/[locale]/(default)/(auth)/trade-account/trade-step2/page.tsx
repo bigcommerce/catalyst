@@ -26,7 +26,7 @@ const FALLBACK_COUNTRY = {
 // Define image URLs
 const imageUrls = {
   tradeAccountHeader: imageManagerImageUrl('trade-account-header.png', 'original'),
-  tradeCircleCircle: imageManagerImageUrl('trade-check-circle.png', 'original'),
+  tradeCircleCircle: imageManagerImageUrl('trade-check-circle.jpg', 'original'),
   patjoheatAndShade: imageManagerImageUrl('patjoheat-and-shade.png', 'original'),
   baileyStreet: imageManagerImageUrl('bailey-street.png', 'original'),
   oneStopLightning: imageManagerImageUrl('1stop-lightning.png', 'original'),
@@ -111,15 +111,15 @@ type CarouselImage = {
 
 const images: CarouselImage[] = [
   {
-    src: 'https://cdn11.bigcommerce.com/s-6cdngmevrl/images/stencil/original/image-manager/trade2-carosuel-img.png',
+    src: imageManagerImageUrl('trade2-carosuel-img.jpg', 'original'),
     alt: 'California Homebuilders Inc.',
   },
   {
-    src: 'https://cdn11.bigcommerce.com/s-6cdngmevrl/images/stencil/original/image-manager/trade2-carosuel-img.png',
+    src: imageManagerImageUrl('trade2-carosuel-img.jpg', 'original'),
     alt: 'Modern Home Design',
   },
   {
-    src: 'https://cdn11.bigcommerce.com/s-6cdngmevrl/images/stencil/original/image-manager/trade2-carosuel-img.png',
+    src: imageManagerImageUrl('trade2-carosuel-img.jpg', 'original'),
     alt: 'Luxury Homes',
   },
 ];

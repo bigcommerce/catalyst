@@ -1,6 +1,8 @@
 import { useTranslations } from 'next-intl';
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
+// import Link as NxtLink from 'next/link';
+
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
@@ -129,7 +131,7 @@ export default function Login({ params: { locale } }: Props) {
 
             <button className="box-border flex max-w-[258px] flex-row items-center justify-center gap-1 rounded border border-[#B4DDE9] bg-white px-6 py-2">
               <div className="flex items-center text-sm font-medium tracking-wide text-[#002A37]">
-                OPEN A TRADE ACCOUNT
+                <Link href="/trade-account/trade-step1/">OPEN A TRADE ACCOUNT</Link>
               </div>
             </button>
           </div>
