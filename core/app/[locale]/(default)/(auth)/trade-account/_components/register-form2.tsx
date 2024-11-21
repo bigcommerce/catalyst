@@ -300,7 +300,7 @@ export const RegisterForm2 = ({
       case 'Address Line 1':
         return 'Address Line 1*';
       case 'Address Line 2':
-        return 'Address Line 2';
+        return 'Address Line 2 (Optional)';
       case 'Suburb/City':
         return 'City*';
       case 'Zip/Postcode':
@@ -328,7 +328,7 @@ export const RegisterForm2 = ({
               setShowAddressLine2(false);
             }}
           >
-            Address Line 2
+            Address Line 2 (Optional)
           </div>
         ) : (
           getModifiedLabel(field.label)
@@ -346,7 +346,7 @@ export const RegisterForm2 = ({
               name={fieldName}
               onChange={handleTextInputValidation}
               type={FieldNameToFieldId[fieldId]}
-              onClick={(e) => {
+              onClick={(e: { stopPropagation: () => void }) => {
                 // Prevent click on input from closing Address Line 2
                 e.stopPropagation();
               }}
