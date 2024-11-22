@@ -1,7 +1,5 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { LocaleType } from '~/i18n/routing';
-
 import { TabHeading } from '../../_components/tab-heading';
 
 import { ChangePasswordForm } from './_components/change-password-form';
@@ -15,10 +13,12 @@ export async function generateMetadata() {
 }
 
 interface Props {
-  params: { locale: LocaleType };
+  params: Promise<{ locale: string }>;
 }
 
-export default function ChangePassword({ params: { locale } }: Props) {
+export default async function ChangePassword({ params }: Props) {
+  const { locale } = await params;
+
   setRequestLocale(locale);
 
   return (

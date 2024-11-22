@@ -1,16 +1,34 @@
+import deepmerge from 'deepmerge';
 import { notFound } from 'next/navigation';
 import { getRequestConfig } from 'next-intl/server';
 
-import { locales, LocaleType } from './routing';
+import { locales } from './routing';
 
-export default getRequestConfig(async ({ locale }) => {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  if (!locales.includes(locale as LocaleType)) {
+// The language to fall back to if the requested message string is not available.
+const fallbackLocale = 'en';
+
+export default getRequestConfig(async ({ requestLocale }) => {
+  const locale = await requestLocale;
+
+  if (!locale || !locales.includes(locale)) {
     notFound();
   }
 
+  if (locale === fallbackLocale) {
+    return {
+      locale,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
+      messages: (await import(`../messages/${locale}.json`)).default,
+    };
+  }
+
   return {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    messages: (await import(`../messages/${locale}.json`)).default,
+    locale,
+    messages: deepmerge(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
+      (await import(`../messages/${fallbackLocale}.json`)).default,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
+      (await import(`../messages/${locale}.json`)).default,
+    ),
   };
 });

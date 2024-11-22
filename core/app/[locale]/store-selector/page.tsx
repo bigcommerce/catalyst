@@ -5,7 +5,7 @@ import { graphql } from '~/client/graphql';
 import { Link } from '~/components/link';
 import { StoreLogo } from '~/components/store-logo';
 import { StoreLogoFragment } from '~/components/store-logo/fragment';
-import { locales, LocaleType } from '~/i18n/routing';
+import { locales } from '~/i18n/routing';
 
 import { LocaleLink } from './_components/locale-link';
 
@@ -31,10 +31,12 @@ export async function generateMetadata() {
 }
 
 interface Props {
-  params: { locale: LocaleType };
+  params: Promise<{ locale: string }>;
 }
 
-export default async function StoreSelector({ params: { locale: selectedLocale } }: Props) {
+export default async function StoreSelector({ params }: Props) {
+  const { locale: selectedLocale } = await params;
+
   setRequestLocale(selectedLocale);
 
   const t = await getTranslations('StoreSelector');
@@ -54,13 +56,11 @@ export default async function StoreSelector({ params: { locale: selectedLocale }
           </Link>
         )}
       </header>
-
       <div className="flex flex-col gap-2 px-4 lg:container sm:px-10 lg:mx-auto lg:max-w-[1000px] lg:px-12">
         <h1 className="text-3xl font-black lg:text-4xl">{t('heading')}</h1>
 
         <div className="grid grid-cols-1 gap-6 py-6 md:grid-cols-3 md:gap-11 lg:grid-cols-4 lg:gap-8">
           {locales.map((locale) => (
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             <LocaleLink key={locale} locale={locale} selected={selectedLocale === locale} />
           ))}
         </div>

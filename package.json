@@ -16,14 +16,20 @@
   "scripts": {
     "dev": "dotenv -e .env.local -- turbo run dev",
     "build": "dotenv -e .env.local -- turbo run build",
-    "lint": "turbo lint",
+    "lint": "dotenv -e .env.local -- turbo lint",
     "typecheck": "turbo typecheck"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.27.9",
-    "dotenv-cli": "^7.4.2",
-    "turbo": "^2.1.3",
+    "dotenv-cli": "^7.4.3",
+    "turbo": "^2.3.0",
     "typescript": "^5.6.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "npm:types-react@19.0.0-rc.1",
+      "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
+    }
   }
 }

@@ -19,11 +19,23 @@ interface Config<FetcherRequestInit extends RequestInit = RequestInit> {
   backendUserAgentExtensions?: string;
   logger?: boolean;
   getChannelId?: (defaultChannelId: string) => Promise<string> | string;
-  beforeRequest?: (fetchOptions?: FetcherRequestInit) => Partial<FetcherRequestInit> | undefined;
+  beforeRequest?: (
+    fetchOptions?: FetcherRequestInit,
+  ) => Promise<Partial<FetcherRequestInit> | undefined> | Partial<FetcherRequestInit> | undefined;
+}
+
+interface BigCommerceResponseError {
+  message: string;
+  locations: Array<{
+    line: number;
+    column: number;
+  }>;
+  path: string[];
 }
 
 interface BigCommerceResponse<T> {
   data: T;
+  errors?: BigCommerceResponseError[];
 }
 
 class Client<FetcherRequestInit extends RequestInit = RequestInit> {
@@ -32,7 +44,8 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   private getChannelId: (defaultChannelId: string) => Promise<string> | string;
   private beforeRequest?: (
     fetchOptions?: FetcherRequestInit,
-  ) => Partial<FetcherRequestInit> | undefined;
+  ) => Promise<Partial<FetcherRequestInit> | undefined> | Partial<FetcherRequestInit> | undefined;
+
   private trustedProxySecret = process.env.BIGCOMMERCE_TRUSTED_PROXY_SECRET;
 
   constructor(private config: Config<FetcherRequestInit>) {
@@ -85,7 +98,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
     const graphqlUrl = await this.getGraphQLEndpoint(channelId);
     const { headers: additionalFetchHeaders = {}, ...additionalFetchOptions } =
-      this.beforeRequest?.(fetchOptions) ?? {};
+      (await this.beforeRequest?.(fetchOptions)) ?? {};
 
     const response = await fetch(graphqlUrl, {
       method: 'POST',

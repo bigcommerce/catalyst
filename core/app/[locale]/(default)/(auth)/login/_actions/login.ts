@@ -1,6 +1,6 @@
 'use server';
 
-import { isRedirectError } from 'next/dist/client/components/redirect';
+import { unstable_rethrow as rethrow } from 'next/navigation';
 import { getLocale } from 'next-intl/server';
 
 import { Credentials, signIn } from '~/auth';
@@ -24,10 +24,7 @@ export const login = async (_previousState: unknown, formData: FormData) => {
 
     redirect({ href: '/account', locale });
   } catch (error: unknown) {
-    // We need to throw this error to trigger the redirect as Next.js uses error boundaries to redirect.
-    if (isRedirectError(error)) {
-      throw error;
-    }
+    rethrow(error);
 
     return {
       status: 'error',

@@ -5,7 +5,6 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
 import { Breadcrumbs } from '~/components/breadcrumbs';
-import { LocaleType } from '~/i18n/routing';
 
 import { Description } from './_components/description';
 import { Details } from './_components/details';
@@ -17,11 +16,11 @@ import { Warranty } from './_components/warranty';
 import { getProduct } from './page-data';
 
 interface Props {
-  params: { slug: string; locale: LocaleType };
-  searchParams: Record<string, string | string[] | undefined>;
+  params: Promise<{ slug: string; locale: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-function getOptionValueIds({ searchParams }: { searchParams: Props['searchParams'] }) {
+function getOptionValueIds({ searchParams }: { searchParams: Awaited<Props['searchParams']> }) {
   const { slug, ...options } = searchParams;
 
   return Object.keys(options)
@@ -34,7 +33,9 @@ function getOptionValueIds({ searchParams }: { searchParams: Props['searchParams
     );
 }
 
-export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   const productId = Number(params.slug);
   const optionValueIds = getOptionValueIds({ searchParams });
 
@@ -68,7 +69,12 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   };
 }
 
-export default async function Product({ params: { locale, slug }, searchParams }: Props) {
+export default async function Product(props: Props) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const { locale, slug } = params;
+
   setRequestLocale(locale);
 
   const t = await getTranslations('Product');
