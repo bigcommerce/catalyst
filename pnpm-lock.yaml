@@ -36,8 +36,11 @@ importers:
       '@conform-to/react':
         specifier: ^1.2.2
         version: 1.2.2(react@19.0.0-rc-5c56b873-20241107)
+      '@conform-to/zod':
+        specifier: ^1.2.2
+        version: 1.2.2(zod@3.23.8)
       '@icons-pack/react-simple-icons':
-        specifier: ^10.2.0
+        specifier: ^10.1.0
         version: 10.2.0(react@19.0.0-rc-5c56b873-20241107)
       '@radix-ui/react-accordion':
         specifier: ^1.2.1
@@ -743,6 +746,11 @@ packages:
     resolution: {integrity: sha512-1JBECb3NKi5/IlexaYLgnAxGJ55MRuO2sEQ10cJfUK2bfltNbTIQnYUDG6pU886A4lda/q6UH/adPsjiB/4Gkg==}
     peerDependencies:
       react: '>=18'
+
+  '@conform-to/zod@1.2.2':
+    resolution: {integrity: sha512-mNCzh0XsF2vhCtD8bfHYMYayEJ9dP6/KsGjmq8DFcO1ykDTNQZwfi1MIm4evGYVempSS3poYr4xZjd7cXEbtaw==}
+    peerDependencies:
+      zod: ^3.21.0
 
   '@discoveryjs/json-ext@0.5.7':
     resolution: {integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==}
@@ -6027,6 +6035,11 @@ snapshots:
     dependencies:
       '@conform-to/dom': 1.2.2
       react: 19.0.0-rc-5c56b873-20241107
+
+  '@conform-to/zod@1.2.2(zod@3.23.8)':
+    dependencies:
+      '@conform-to/dom': 1.2.2
+      zod: 3.23.8
 
   '@discoveryjs/json-ext@0.5.7': {}
 
