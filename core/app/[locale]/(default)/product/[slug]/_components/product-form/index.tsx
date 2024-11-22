@@ -4,6 +4,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { FragmentOf } from 'gql.tada';
 import { AlertCircle, Check, Heart, ShoppingCart } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useId } from 'react';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
@@ -63,6 +64,7 @@ export const ProductForm = ({ data: product }: Props) => {
   const productOptions = removeEdgesAndNodes(product.productOptions);
 
   const cart = useCart();
+  const toastId = useId();
   const { handleSubmit, register, ...methods } = useProductForm();
 
   const productFormSubmit = async (data: ProductFormData) => {
@@ -91,14 +93,15 @@ export const ProductForm = ({ data: product }: Props) => {
           </span>
         </div>
       ),
-      { icon: <Check className="text-success-secondary" /> },
+      { icon: <Check className="text-success-secondary" />, id: toastId },
     );
 
     const result = await handleAddToCart(data, product);
 
     if (result.error) {
-      toast.error(t('error'), {
+      toast.error(result.error, {
         icon: <AlertCircle className="text-error-secondary" />,
+        id: toastId,
       });
 
       cart.decrement(quantity);
