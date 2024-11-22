@@ -197,6 +197,7 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
           {customerFields
             .filter((field) => !CUSTOMER_FIELDS_TO_EXCLUDE.includes(field.entityId))
             .filter((field) => FieldNameToFieldId[field.entityId] !== 'confirmPassword')
+            .filter((field) => FieldNameToFieldId[field.entityId] != undefined)
             .map((field) => {
               const fieldId = field.entityId;
               const fieldName = createFieldName(field, 'customer');
