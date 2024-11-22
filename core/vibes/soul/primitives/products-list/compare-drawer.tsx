@@ -1,11 +1,11 @@
 'use client';
 
 import { ArrowRight, X } from 'lucide-react';
+import Image from 'next/image';
 import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
 
 import { Button } from '@/vibes/soul/primitives/button';
 import { Drawer } from '@/vibes/soul/primitives/drawer';
-import { BcImage as Image } from '~/components/bc-image';
 import { Link } from '~/components/link';
 
 function getInitials(name: string): string {
