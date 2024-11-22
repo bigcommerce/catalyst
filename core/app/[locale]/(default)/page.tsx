@@ -60,7 +60,7 @@ export default async function Home({ params: { locale } }: Props) {
     <>
       <Slideshow />
 
-      <div className="my-10">
+      <div className="my-10 w-[94%] m-auto">
         <ProductCardCarousel
           products={featuredProducts}
           showCart={false}

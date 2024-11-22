@@ -84,9 +84,9 @@ nav.header-nav-support div button {
   color: #353535 !important;
   font-weight: 400;
 }
-nav#nav-footer-section div:nth-child(3) ul li a {
+/* nav#nav-footer-section div:nth-child(3) ul li a {
   font-size: 16px;
-}
+} */
 nav#nav-footer-section div:nth-child(3) h3 {
   display: none;
 }
@@ -94,23 +94,23 @@ nav#nav-footer-section div:nth-child(3) {
   width: 21em;
   padding-left: 2em;
 }
-nav#nav-footer-section div:nth-child(1) {
+/* nav#nav-footer-section div:nth-child(1) {
   margin-left: 2em;
-}
-#nav-footer-section div:nth-child(3) ul li:nth-child(4) a {
+} */
+/* #nav-footer-section div:nth-child(3) ul li:nth-child(4) a {
   font-size: 12px !important;
   font-weight: 400;
   line-height: 18px;
   letter-spacing: 0.4px;
   text-align: left;
-}
-#nav-footer-section div:nth-child(3) ul li:nth-child(3) a {
+} */
+/* #nav-footer-section div:nth-child(3) ul li:nth-child(3) a {
   font-size: 12px !important;
   font-weight: 400;
   line-height: 18px;
   letter-spacing: 0.4px;
   text-align: left;
-}
+} */
 nav#nav-footer-section div:nth-child(2) {
   margin-left: 2em;
 }
@@ -133,27 +133,6 @@ div#radix-\:Raiptajt6H1\: {
 }
 ul#nav-menu-list li button svg {
   display: none !important;
-}
-#nav-footer-section div:nth-child(3) ul li:nth-child(6) {
-  margin-top: 2.5em;
-}
-#nav-footer-section div:nth-child(3) ul li:nth-child(4) {
-  margin-bottom: 5px;
-}
-#nav-footer-section div:nth-child(3) ul li:nth-child(6) a {
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 24px;
-  letter-spacing: 0.25px;
-  text-align: left;
-}
-#nav-footer-section div:nth-child(3) ul li:nth-child(3) a span.privacy-policy-label {
-  border-bottom: 1px solid #ffffff;
-}
-.footer-social-media a svg {
-  margin-left: 7px;
-  margin-right: 15px;
-  width: 20px;
 }
 .focus\:ring-\[\#008BB7\]:focus {
   --tw-ring-color: unset !important;

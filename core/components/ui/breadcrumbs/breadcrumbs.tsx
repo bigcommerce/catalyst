@@ -52,7 +52,7 @@ const Breadcrumbs = ({ breadcrumbs, className }: Props) => {
               </li>
               {!isLast ? (
                 <span className="mx-1">
-                  <ChevronRight aria-hidden="true" size={20} />
+              {/* {'>'} */}
                 </span>
               ) : null}
             </Fragment>

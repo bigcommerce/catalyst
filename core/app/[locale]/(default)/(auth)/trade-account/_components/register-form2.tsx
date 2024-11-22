@@ -526,7 +526,7 @@ export const RegisterForm2 = ({
                           className="relative top-[-1em] flex items-center gap-2 text-left text-[14px] font-normal leading-6 tracking-wide text-[#353535]"
                           onClick={() => setShowAddressLine2(true)}
                         >
-                          <img src={TradeAddress1} alt="" />
+                          <img src={TradeAddress1} className='w-[20px]' alt="" />
                           <span>Add Apt, suite, floor, or other.</span>
                         </button>
                       )}
