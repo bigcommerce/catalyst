@@ -130,8 +130,8 @@ export default function Login({ params: { locale } }: Props) {
             </p>
 
             <button className="box-border flex max-w-[258px] flex-row items-center justify-center gap-1 rounded border border-[#B4DDE9] bg-white px-6 py-2">
-              <div className="flex items-center text-sm font-medium tracking-wide text-[#002A37]">
-                <Link href="/trade-account/trade-step1/">OPEN A TRADE ACCOUNT</Link>
+              <div className="flex items-center text-[14px] font-medium tracking-wide text-[#002A37]">
+                <Link className="text-[14px]" href="/trade-account/trade-step1/">OPEN A TRADE ACCOUNT</Link>
               </div>
             </button>
           </div>
