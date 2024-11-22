@@ -229,7 +229,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
         </div>
 
         <Button
-          className="relative mt-8 w-fit items-center px-8 py-2"
+          className="relative mt-8 w-fit items-center px-8 py-2 !bg-[#008BB7]"
           variant="primary"
           type="submit"
         >

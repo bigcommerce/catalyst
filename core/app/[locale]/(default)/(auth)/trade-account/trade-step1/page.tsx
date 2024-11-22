@@ -204,7 +204,7 @@ export default async function Trade() {
       <div className="registeration-breadcrumbs-heading">
         {/* Hero Image Section */}
         <div className="relative w-full">
-          <div className="trade-banner">
+          <div className="trade-banner mb-[30px] lg:mb-[0px]">
             <BcImage
               alt="Hero Background"
               width={1600}
@@ -222,16 +222,15 @@ export default async function Trade() {
         />
 
         {/* Form Section */}
-        <div className="m-auto flex w-[88%] flex-col lg:m-[unset] lg:w-[96.5%] lg:flex-row lg:justify-between lg:space-x-8">
+        <div className="m-auto flex w-[88%] flex-col-reverse lg:m-[unset] lg:w-[96.5%] lg:flex-row lg:justify-between lg:space-x-8">
           {/* Left Side Content */}
           <TradeForm tradeCircleCircle={imageUrls.tradeCircleCircle} />
 
           {/* Right Side Registration Form */}
-          <div className="rounded-lg bg-white pb-[3em] pt-[3em] shadow-md lg:w-1/2">
-            <h2 className="mb-[15px] text-center text-[34px] font-normal leading-[32px] text-[#353535]">
+          <div className="rounded-lg bg-white p-[20px] md:pb-[3em] mb-5 lg:mb-0 md:pt-[3em] shadow-md lg:w-1/2">
+            <h2 className="mb-[15px] text-center text-[25px] lg:text-[34px] font-normal leading-[32px] text-[#353535]">
               Apply Today
             </h2>
-
             <RegisterForm1
               addressFields={addressFields as AddressFormField[]}
               countries={countries}
@@ -242,7 +241,7 @@ export default async function Trade() {
           </div>
         </div>
 
-        <h2 className="mb-[40px] mt-[40px] text-center text-[24px] font-normal leading-[32px] text-[#353535]">
+        <h2 className="mb-[40px] mt-[0px] lg:mt-[40px] text-center text-[24px] font-normal leading-[32px] text-[#353535]">
           Our Network
         </h2>
 
