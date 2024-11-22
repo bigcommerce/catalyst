@@ -1,6 +1,6 @@
 import { clsx } from 'clsx';
-import { Suspense } from 'react';
 
+import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import {
   Carousel,
   CarouselButtons,
@@ -13,9 +13,6 @@ import {
   ProductCard,
   ProductCardSkeleton,
 } from '@/vibes/soul/primitives/product-card';
-
-import { Streamable } from '../../lib/streamable';
-import { mapStreamable } from '../../lib/streamable/server';
 
 export type CarouselProduct = CardProduct;
 
@@ -33,10 +30,11 @@ export function ProductsCarousel({
   return (
     <Carousel className={className}>
       <CarouselContent className="mb-10">
-        <Suspense
-          fallback={<ProductsCarouselSkeleton className={className} message={emptyStateMessage} />}
+        <Stream
+          fallback={<ProductsCarouselSkeleton className={className} />}
+          value={streamableProducts}
         >
-          {mapStreamable(streamableProducts, (products) => {
+          {(products) => {
             if (products.length === 0) {
               return <ProductsCarouselSkeleton className={className} message={emptyStateMessage} />;
             }
@@ -49,8 +47,8 @@ export function ProductsCarousel({
                 <ProductCard product={product} />
               </CarouselItem>
             ));
-          })}
-        </Suspense>
+          }}
+        </Stream>
       </CarouselContent>
       <div className="flex w-full items-center justify-between">
         <CarouselScrollbar />
