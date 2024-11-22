@@ -1,7 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+.trade2-form .relative.h-7.pass2 {
+  position: relative;
+  top: -10px;
+}
 /* Desktop */
 .Open_Sans {
   font-family: var(--font-Open_Sans);
@@ -146,7 +149,7 @@ button.flex.rounded.justify-center.text-base.font-semibold.leading-6.bg-sky-400.
   font-size: 14px;
   font-weight: 400;
   text-transform: uppercase;
-  background-color: #03465c !important;
+  background-color: #03465c;
   display: block;
   width: 100%;
   margin-top: 10px;
