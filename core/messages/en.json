@@ -33,6 +33,18 @@
       "title": "New arrivals",
       "description": "Our latest products are here. Check out what's new in store.",
       "cta": "See all"
+<<<<<<< HEAD
+=======
+    },
+    "BestSellingProducts": {
+      "title": "Our best sellers",
+      "description": "Our best selling products are here. Check out what's popular in store.",
+      "cta": "See all"
+    },
+    "Subscribe": {
+      "title": "Sign up for our newsletter",
+      "placeholder": "Enter your email"
+>>>>>>> fa6b0475 (feat(core): add subscribe form to Homepage)
     }
   },
   "ChangePassword": {

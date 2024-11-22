@@ -1,6 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
+import { Subscribe } from '@/vibes/soul/sections/subscribe';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
@@ -73,6 +74,14 @@ export default async function Home({ params }: Props) {
         description={t('NewestProducts.description')}
         products={newestProducts}
         title={t('NewestProducts.title')}
+      />
+
+      <Subscribe
+        // @ts-expect-error - We don't have an action ready for this component. TODO: add action
+        action={null}
+        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
+        placeholder={t('Subscribe.placeholder')}
+        title={t('Subscribe.title')}
       />
     </>
   );
