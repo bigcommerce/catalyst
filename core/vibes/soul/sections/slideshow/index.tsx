@@ -9,7 +9,7 @@ import { Pause, Play } from 'lucide-react';
 import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 
-import { ButtonLink } from '~/vibes/soul/primitives/button-link';
+import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 
 interface Slide {
   title: string;
@@ -102,7 +102,7 @@ export function Slideshow({ slides, interval = 5000, className }: Props) {
 
     if (!autoplay) return;
 
-    setIsPlaying(!!autoplay.isPlaying());
+    setIsPlaying(autoplay.isPlaying());
     emblaApi
       .on('autoplay:play', () => {
         setIsPlaying(true);
@@ -112,7 +112,7 @@ export function Slideshow({ slides, interval = 5000, className }: Props) {
         setIsPlaying(false);
       })
       .on('reInit', () => {
-        setIsPlaying(!!autoplay.isPlaying());
+        setIsPlaying(autoplay.isPlaying());
       });
   }, [emblaApi, playCount]);
 
@@ -126,7 +126,7 @@ export function Slideshow({ slides, interval = 5000, className }: Props) {
             return (
               <div className="relative h-full w-full min-w-0 shrink-0 grow-0 basis-full" key={idx}>
                 <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-foreground/80 to-transparent">
-                  <div className="mx-auto w-full max-w-screen-2xl px-4 pb-16 pt-12 text-background @xl:px-6 @xl:pb-20 @xl:pt-16 @4xl:px-8 @4xl:pt-20">
+                  <div className="mx-auto w-full max-w-screen-2xl text-pretty px-4 pb-16 pt-12 text-background @xl:px-6 @xl:pb-20 @xl:pt-16 @4xl:px-8 @4xl:pt-20">
                     <h1 className="m-0 max-w-xl font-heading text-4xl font-medium leading-none @2xl:text-5xl @2xl:leading-[.9] @4xl:text-6xl">
                       {title}
                     </h1>
