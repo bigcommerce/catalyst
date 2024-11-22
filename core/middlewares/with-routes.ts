@@ -256,12 +256,12 @@ export const withRoutes: MiddlewareFactory = () => {
   return async (request, event) => {
     const locale = request.headers.get('x-bc-locale') ?? '';
 
-    const { route, status } = await getRouteInfo(request, event);
+    const { route } = await getRouteInfo(request, event);
 
-    if (status === 'MAINTENANCE') {
-      // 503 status code not working - https://github.com/vercel/next.js/issues/50155
-      return NextResponse.rewrite(new URL(`/${locale}/maintenance`, request.url), { status: 503 });
-    }
+    // if (status === 'MAINTENANCE') {
+    //   // 503 status code not working - https://github.com/vercel/next.js/issues/50155
+    //   return NextResponse.rewrite(new URL(`/${locale}/maintenance`, request.url), { status: 503 });
+    // }
 
     const redirectConfig = {
       // Use 301 status code as it is more universally supported by crawlers
