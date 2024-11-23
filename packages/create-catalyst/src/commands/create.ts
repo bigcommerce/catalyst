@@ -15,6 +15,11 @@ import { parse } from '../utils/parse';
 import { Telemetry } from '../utils/telemetry/telemetry';
 import { writeEnv } from '../utils/write-env';
 
+function getPlatformCheckCommand(command: string): string {
+  const isWindows = process.platform === 'win32';
+  return isWindows ? `where.exe ${command}` : `which ${command}`;
+}
+
 const telemetry = new Telemetry();
 
 export const create = new Command('create')
@@ -43,14 +48,14 @@ export const create = new Command('create')
     const { ghRef, repository } = options;
 
     try {
-      execSync('which git', { stdio: 'ignore' });
+      execSync(getPlatformCheckCommand('git'), { stdio: 'ignore' });
     } catch {
       console.error(chalk.red('Error: git is required to create a Catalyst project\n'));
       process.exit(1);
     }
 
     try {
-      execSync('which pnpm', { stdio: 'ignore' });
+      execSync(getPlatformCheckCommand('pnpm'), { stdio: 'ignore' });
     } catch {
       console.error(chalk.red('Error: pnpm is required to create a Catalyst project\n'));
       console.error(chalk.yellow('Tip: Enable it by running `corepack enable pnpm`\n'));
