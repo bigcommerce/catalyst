@@ -1,4 +1,7 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface TestimonialProps {
   title: string;
@@ -24,7 +27,7 @@ const StarRating: React.FC = () => (
 );
 
 const Testimonial: React.FC<TestimonialProps> = ({ title, content, name, position }) => (
-  <div className="flex flex-col">
+  <div className="flex h-full flex-col p-6">
     <h3 className="mb-3 px-3 text-center text-[16px] font-bold leading-[32px] tracking-[0.5px] text-[#008BB7]">
       {title}
     </h3>
@@ -32,7 +35,7 @@ const Testimonial: React.FC<TestimonialProps> = ({ title, content, name, positio
       {content}
     </p>
 
-    <div className="flex flex-col">
+    <div className="mt-auto flex flex-col">
       <div className="mb-3">
         <span className="text-[16px] font-bold leading-[32px] tracking-[0.5px] text-[#353535]">
           {name},{' '}
@@ -49,38 +52,154 @@ const Testimonial: React.FC<TestimonialProps> = ({ title, content, name, positio
 const HappyProsSection: React.FC = () => {
   const testimonials = [
     {
-      title: '"I cannot recommend them enough to anyone who is looking for any type of lighting you might need!"',
-      content: "Jeremy and 1StopLighting have been amazing to work with... All of the lighting fixtures we have bought for our landscaping projects have worked great and our clients love the aesthetic - especially at night! Our orders ship almost immediately after placing them. If there has been any issue or we have needed to return for an overage on the lights, Jeremy & 1StopLighting have worked very efficiently with getting that process started.",
-      name: "Brook Wilson",
-      position: "Cutters Landscaping"
+      title:
+        '"I cannot recommend them enough to anyone who is looking for any type of lighting you might need!"',
+      content:
+        'Jeremy and 1StopLighting have been amazing to work with... All of the lighting fixtures we have bought for our landscaping projects have worked great and our clients love the aesthetic - especially at night! Our orders ship almost immediately after placing them. If there has been any issue or we have needed to return for an overage on the lights, Jeremy & 1StopLighting have worked very efficiently with getting that process started.',
+      name: 'Brook Wilson',
+      position: 'Cutters Landscaping',
     },
     {
       title: '"They are very helpful and have great products."',
-      content: "I've been buying chandeliers and pendant lights from Belami for years. Sandy and the rest of the team have been great to work with. They are very helpful and have great products.",
-      name: "Julie de Lancellotti",
-      position: "Director of Store Planning, Windsor"
+      content:
+        "I've been buying chandeliers and pendant lights from Belami for years. Sandy and the rest of the team have been great to work with. They are very helpful and have great products.",
+      name: 'Julie de Lancellotti',
+      position: 'Director of Store Planning, Windsor',
     },
     {
       title: '"Their dedication to customer satisfaction is evident in every interaction."',
-      content: "Sandy's company not only met but exceeded our requirements, consistently going above and beyond to ensure that our needs were met efficiently and effectively. Their attention to detail, proactive communication, and willingness to accommodate our specific requests were particularly noteworthy. We are truly impressed by Sandy's leadership and the outstanding performance of her team.",
-      name: "Kona Contractors",
-      position: "Company"
-    }
+      content:
+        "Sandy's company not only met but exceeded our requirements, consistently going above and beyond to ensure that our needs were met efficiently and effectively. Their attention to detail, proactive communication, and willingness to accommodate our specific requests were particularly noteworthy. We are truly impressed by Sandy's leadership and the outstanding performance of her team.",
+      name: 'Kona Contractors',
+      position: 'Company',
+    },
   ];
 
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const getItemsPerView = () => {
+    // Check if we're on client side
+    if (typeof window === 'undefined') return 1;
+
+    // Get the current window width
+    const width = window.innerWidth;
+
+    if (width >= 1024) return 3; // Desktop
+    if (width >= 768) return 2; // Tablet/iPad
+    return 1; // Mobile
+  };
+
+  const itemsPerView = getItemsPerView();
+  const totalSlides = Math.ceil(testimonials.length / itemsPerView);
+
+  const handleNext = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1 >= totalSlides ? 0 : prevIndex + 1));
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 < 0 ? totalSlides - 1 : prevIndex - 1));
+  };
+
+  if (testimonials.length === 0) {
+    return null;
+  }
+
   return (
-    <div className="m-auto w-[94%]">
-      <h2 className="mb-[40px] mt-[40px] text-center text-[24px] font-normal leading-[32px] text-[#353535]">
+    <div className="w-full pb-[40px] pt-[40px]">
+      <h2 className="mb-10 text-center text-2xl font-normal leading-8 text-[#353535]">
         Happy Pros
       </h2>
 
-      <div className="grid grid-cols-1 gap-16 pb-[2em] md:grid-cols-3 md:px-8">
-        {testimonials.map((testimonial, index) => (
-          <Testimonial
-            key={index}
-            {...testimonial}
-          />
-        ))}
+      <div className="relative m-auto w-full max-w-[97%] px-4">
+        <div className="relative overflow-hidden">
+          <div
+            className="flex transition-transform duration-500 ease-in-out"
+            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+          >
+            {[...Array(totalSlides)].map((_, slideIndex) => (
+              <div key={`slide-${slideIndex}`} className="w-full flex-shrink-0">
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                  {testimonials
+                    .slice(slideIndex * itemsPerView, slideIndex * itemsPerView + itemsPerView)
+                    .map((testimonial, index) => (
+                      <div
+                        key={`testimonial-${slideIndex}-${index}`}
+                        className="transform transition-transform duration-500 ease-in-out"
+                      >
+                        <Testimonial
+                          title={testimonial.title}
+                          content={testimonial.content}
+                          name={testimonial.name}
+                          position={testimonial.position}
+                        />
+                      </div>
+                    ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Navigation Arrows */}
+          {totalSlides > 1 && (
+            <>
+              <button
+                onClick={handlePrev}
+                className="absolute left-0 top-1/2 -translate-y-1/2 transform rounded-full bg-white p-2 shadow-lg hover:bg-gray-100"
+                aria-label="Previous slide"
+              >
+                <ChevronLeft className="h-6 w-6 text-[#008BB7]" />
+              </button>
+              <button
+                onClick={handleNext}
+                className="absolute right-0 top-1/2 -translate-y-1/2 transform rounded-full bg-white p-2 shadow-lg hover:bg-gray-100"
+                aria-label="Next slide"
+              >
+                <ChevronRight className="h-6 w-6 text-[#008BB7]" />
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* Slide Indicators */}
+        {totalSlides > 1 && (
+          <div className="m-auto mt-4 flex w-[98%] justify-center gap-3">
+            {[...Array(totalSlides)].map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`h-[5px] w-full transition-all ${
+                  currentIndex === index ? 'bg-[#008BB7]' : 'bg-gray-300'
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Slide Counter */}
+        {totalSlides > 1 && (
+          <div className="mt-2 flex items-center justify-center space-x-4">
+            <button
+              onClick={handlePrev}
+              className="p-2 transition hover:opacity-75"
+              aria-label="Previous slide"
+            >
+              <ChevronLeft className="h-3 w-3 text-[#1C1B1F]" />
+            </button>
+
+            <div className="text-center text-sm font-medium text-gray-600">
+              {currentIndex + 1} / {totalSlides}
+            </div>
+
+            <button
+              onClick={handleNext}
+              className="p-2 transition hover:opacity-75"
+              aria-label="Next slide"
+            >
+              <ChevronRight className="h-3 w-3 text-[#1C1B1F]" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -7,7 +7,8 @@ interface PartnerBenefitsProps {
 
 const TradeForm: React.FC<PartnerBenefitsProps> = ({ tradeCircleCircle }) => {
   return (
-    <div className="mb-4 lg:mb-0 lg:w-1/2 lg:pl-[5em] lg:pr-[9em]">
+    // <div className="mb-4 lg:mb-0 lg:w-1/2 lg:pl-[5em] lg:pr-[9em]">
+    <div className="mb-4 lg:mb-0 lg:w-1/2 lg:pl-[2em] xl:pl-[5em] xl:pr-[9em]">
       <h1 className="text-brand-700 mb-3 text-center text-[25px] font-normal lg:font-bold leading-[32px] tracking-[-0.5px] lg:text-left lg:text-[60px] lg:leading-[81.71px]">
         Let us be a Partner in your success.
       </h1>

@@ -161,9 +161,9 @@ export default async function Trade() {
         {/* Breadcrumbs */}
 
         {/* Main Content */}
-        <div className="mx-auto flex w-[94%] flex-col gap-6 lg:flex-row lg:gap-8">
+        <div className="mx-auto flex w-[92%] lg:w-[94%] flex-col-reverse gap-6 lg:flex-row lg:gap-8">
           {/* Left Side Carousel */}
-          <div className="mt-[2.8em] w-full lg:w-1/2">
+          <div className="xl:mt-[2.8em] mt-[1em] w-full lg:w-1/2">
             <ImageCarousel images={images} height="800px" />
           </div>
 
@@ -171,14 +171,14 @@ export default async function Trade() {
           <div className="w-full lg:w-1/2">
             <div className="trade2-breadcrumbs">
               <ComponentsBreadcrumbs
-                className="trade2-div-breadcrumb flex w-[100%] pb-[10px] pt-[30px]"
+                className="trade2-div-breadcrumb flex w-[100%] lg:pb-[10px] lg:pt-[30px]"
                 breadcrumbs={breadcrumbs}
               />
             </div>
-            <h2 className="m-auto mb-[40px] mt-[10px] text-left text-[20px] font-[500] leading-[32px] text-[#353535]">
+            <h2 className="m-auto mb-[30px] lg:mb-[40px] mt-[10px] text-center lg:text-left text-[20px] font-[500] leading-[32px] text-[#353535]">
               Quickly tell us about what you do.
             </h2>
-            <div className="rounded-lg bg-white pb-[3.5em] pt-[2em] shadow-[0_0_30px_5px_rgba(0,0,0,0.06)]">
+            <div className="rounded-lg bg-white px-5 xl:px-0  xl:pb-[3.5em] pb-[2.5em] pt-[2em] shadow-[0_0_30px_5px_rgba(0,0,0,0.06)]">
               <RegisterForm2
                 TradeAddress1={TradeAddress1}
                 addressFields={addressFields as FormField[]}
@@ -191,7 +191,7 @@ export default async function Trade() {
         </div>
 
         {/* Network Section */}
-        <div className="mt-[60px]">
+        <div className="mt-[30px] lg:mt-[60px]">
           <NetworkSection networkImages={networkImages} />
         </div>
       </div>

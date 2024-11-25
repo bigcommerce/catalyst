@@ -627,7 +627,7 @@ export const RegisterForm2 = ({
             </div>
           )}
           <Button
-            className="relative mt-8 w-fit items-center !bg-[#008BB7] px-8 py-2"
+            className="relative xl:mt-8 w-full items-center !bg-[#008BB7] px-8 py-2"
             variant="primary"
             type="submit"
             disabled={isSubmitting}
