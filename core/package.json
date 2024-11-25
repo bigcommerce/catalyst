@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@bigcommerce/catalyst-client": "workspace:^",
-    "@icons-pack/react-simple-icons": "^10.1.0",
+    "@icons-pack/react-simple-icons": "^10.2.0",
     "@radix-ui/react-accordion": "^1.2.1",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-checkbox": "^1.1.2",
@@ -36,7 +36,7 @@
     "clsx": "^2.1.1",
     "content-security-policy-builder": "^2.2.0",
     "deepmerge": "^4.3.1",
-    "embla-carousel-react": "8.4.0",
+    "embla-carousel-react": "8.5.1",
     "focus-trap-react": "^10.3.1",
     "gql.tada": "^1.8.10",
     "graphql": "^16.9.0",
@@ -55,7 +55,7 @@
     "schema-dts": "^1.1.2",
     "server-only": "^0.0.1",
     "sharp": "^0.33.5",
-    "tailwind-merge": "^2.5.4",
+    "tailwind-merge": "^2.5.5",
     "tailwindcss-radix": "^3.0.5",
     "uuid": "^11.0.3",
     "zod": "^3.23.8"
@@ -70,14 +70,14 @@
     "@tailwindcss/container-queries": "^0.1.1",
     "@types/gtag.js": "^0.0.20",
     "@types/lodash.debounce": "^4.0.9",
-    "@types/node": "^20.17.6",
+    "@types/node": "^20.17.7",
     "@types/react": "npm:types-react@19.0.0-rc.1",
     "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
     "@types/react-google-recaptcha": "^2.1.9",
     "@types/uuid": "^10.0.0",
     "autoprefixer": "^10.4.20",
     "dotenv": "^16.4.5",
-    "dotenv-cli": "^7.4.3",
+    "dotenv-cli": "^7.4.4",
     "eslint": "^8.57.1",
     "eslint-config-next": "15.0.3",
     "postcss": "^8.4.49",
@@ -85,6 +85,6 @@
     "prettier-plugin-tailwindcss": "^0.6.9",
     "tailwindcss": "^3.4.15",
     "tailwindcss-animate": "1.0.7",
-    "typescript": "^5.6.3"
+    "typescript": "^5.7.2"
   }
 }
