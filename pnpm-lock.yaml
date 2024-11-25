@@ -96,6 +96,9 @@ importers:
       '@vercel/analytics':
         specifier: ^1.4.0
         version: 1.4.0(next@15.0.3(@playwright/test@1.48.2)(react-dom@19.0.0-rc-5c56b873-20241107(react@19.0.0-rc-5c56b873-20241107))(react@19.0.0-rc-5c56b873-20241107))(react@19.0.0-rc-5c56b873-20241107)(svelte@4.2.19)
+      '@vercel/functions':
+        specifier: ^1.4.2
+        version: 1.5.0
       '@vercel/kv':
         specifier: ^3.0.0
         version: 3.0.0
@@ -2410,6 +2413,15 @@ packages:
       vue:
         optional: true
       vue-router:
+        optional: true
+
+  '@vercel/functions@1.5.0':
+    resolution: {integrity: sha512-ub3ptVeOsx8UPgiTv9+rpQJqmF7VG8QIzguBZo0E0VRAyJliB8bt1ooB9Wrh3333dKzMNS8NMe3iFtf6OPUP3A==}
+    engines: {node: '>= 16'}
+    peerDependencies:
+      '@aws-sdk/credential-provider-web-identity': '*'
+    peerDependenciesMeta:
+      '@aws-sdk/credential-provider-web-identity':
         optional: true
 
   '@vercel/kv@3.0.0':
@@ -8338,6 +8350,8 @@ snapshots:
       next: 15.0.3(@playwright/test@1.48.2)(react-dom@19.0.0-rc-5c56b873-20241107(react@19.0.0-rc-5c56b873-20241107))(react@19.0.0-rc-5c56b873-20241107)
       react: 19.0.0-rc-5c56b873-20241107
       svelte: 4.2.19
+
+  '@vercel/functions@1.5.0': {}
 
   '@vercel/kv@3.0.0':
     dependencies:
