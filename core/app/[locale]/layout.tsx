@@ -3,10 +3,8 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
-import { draftMode } from 'next/headers';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
-import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { PropsWithChildren } from 'react';
 
 import '../globals.css';
@@ -14,12 +12,9 @@ import '../globals.css';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { MakeswiftProvider } from '~/lib/makeswift/provider';
-import { CssTheme } from '~/makeswift/components/css-theme';
 
 import { Notifications } from '../notifications';
 import { Providers } from '../providers';
-import { colors } from '../theme';
 
 import '~/lib/makeswift/components';
 
