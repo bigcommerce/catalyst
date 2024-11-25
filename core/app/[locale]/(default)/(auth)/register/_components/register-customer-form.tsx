@@ -207,6 +207,7 @@ export const RegisterCustomerForm = ({
           {customerFields
             .filter((field) => !CUSTOMER_FIELDS_TO_EXCLUDE.includes(field.entityId))
             .filter((field) => FieldNameToFieldId[field.entityId] !== 'confirmPassword')
+            .filter((field) => FieldNameToFieldId[field.entityId] != undefined)
             .map((field) => {
               const fieldId = field.entityId;
               const fieldName = createFieldName(field, 'customer');
@@ -290,7 +291,7 @@ export const RegisterCustomerForm = ({
         <div className="remember-forgot-div mt-5">
           <Field className="relative mt-2 inline-flex items-center space-y-2" name="remember-me">
             <Checkbox aria-labelledby="remember-me" className='border-[#008bb7]' id="remember-me" name="remember-me" value="1" />
-            <div className="mt-0 flex">
+            <div className="mt-0 flex gap-1">
               <Label
                 className="ml-2 mt-0 w-[15em] cursor-pointer space-y-2 pb-2 pl-1 text-left text-sm font-normal leading-6 tracking-[0.25px] md:my-0 md:w-auto"
                 htmlFor="remember-me"

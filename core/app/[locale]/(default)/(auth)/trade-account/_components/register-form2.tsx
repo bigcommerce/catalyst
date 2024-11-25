@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useAccountStatusContext } from '~/app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
@@ -25,10 +25,21 @@ import { Message } from '~/components/ui/message';
 import { registerCustomers } from '../_actions/register-customers';
 import { logins } from '../_actions/logins';
 
+// Constants
+const REQUIRED_FIELDS = new Set([
+  'customer-email',
+  'customer-password',
+  'address-countryCode',
+  'address-stateOrProvince',
+  'address-line1',
+  'address-city',
+  'address-postalCode',
+]);
+
 type FieldOrderKeys =
   | 'I am a'
   | 'Company Name'
-  | 'Tax ID/Licence#'
+  | 'Tax ID / Licence#'
   | 'Country'
   | 'Suburb/City'
   | 'State/Province'
@@ -39,16 +50,16 @@ type FieldOrderKeys =
 const FIELD_ORDER: Record<FieldOrderKeys, number> = {
   'I am a': 1,
   'Company Name': 2,
-  'Tax ID/Licence#': 3,
+  'Tax ID / Licence#': 3,
   Country: 4,
-  'Suburb/City': 8,
   'State/Province': 5,
-  'Zip/Postcode': 9,
   'Address Line 1': 6,
   'Address Line 2': 7,
+  'Suburb/City': 8,
+  'Zip/Postcode': 9,
 };
 
-const ALLOWED_CUSTOMER_FIELDS = ['I am a', 'Tax ID/Licence#'];
+const ALLOWED_CUSTOMER_FIELDS = ['I am a', 'Tax ID / Licence#'];
 
 const ALLOWED_ADDRESS_FIELDS = [
   'Company Name',
@@ -60,6 +71,7 @@ const ALLOWED_ADDRESS_FIELDS = [
   'Address Line 2',
 ];
 
+// Interfaces
 interface BaseField {
   entityId: number;
   label: string;
@@ -67,9 +79,11 @@ interface BaseField {
   isBuiltIn: boolean;
   isRequired: boolean;
 }
+
 interface TradeAddress1 {
   TradeAddress1: string;
 }
+
 interface TextFormField extends BaseField {
   __typename: 'TextFormField';
   defaultText: string | null;
@@ -165,10 +179,14 @@ export const RegisterForm2 = ({
   defaultCountry,
   TradeAddress1,
 }: RegisterForm2Props) => {
+  // Refs and Router
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
-  const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
 
+  // States
+  const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitProgress, setSubmitProgress] = useState(0);
   const [textInputValid, setTextInputValid] = useState<Record<number, boolean>>({});
   const [multiTextValid, setMultiTextValid] = useState<Record<number, boolean>>({});
   const [numbersInputValid, setNumbersInputValid] = useState<Record<number, boolean>>({});
@@ -177,17 +195,57 @@ export const RegisterForm2 = ({
   const [picklistValid, setPicklistValid] = useState<Record<number, boolean>>({});
   const [checkboxesValid, setCheckboxesValid] = useState<Record<number, boolean>>({});
   const [passwordValid, setPasswordValid] = useState<Record<number, boolean>>({});
+  const [stateInputValid, setStateInputValid] = useState(false);
   const [countryStates, setCountryStates] = useState(defaultCountry.states);
-
   const [showAddressLine2, setShowAddressLine2] = useState(false);
 
   const { setAccountState } = useAccountStatusContext();
   const t = useTranslations('Register.Form');
 
-  const firstStepData: Record<string, string | number | null> =
-    typeof window !== 'undefined'
-      ? JSON.parse(localStorage.getItem('registrationFormData') || '{}')
-      : {};
+  // Effects
+  useEffect(() => {
+    router.prefetch('/trade-account/trade-step3/');
+  }, [router]);
+
+  // Form Data Handling
+  const isValidFormValue = (value: unknown): value is string | Blob => {
+    return (
+      value !== null && value !== undefined && (typeof value === 'string' || value instanceof Blob)
+    );
+  };
+
+  const processFormData = (formData: FormData): FormData => {
+    const combinedFormData = new FormData();
+
+    // Process first step data
+    if (typeof window !== 'undefined') {
+      const firstStepData = JSON.parse(localStorage.getItem('registrationFormData') || '{}');
+      Object.entries(firstStepData).forEach(([key, value]) => {
+        if (isValidFormValue(value)) {
+          combinedFormData.append(key, String(value));
+        }
+      });
+    }
+
+    // Process current form data
+    for (const [key, value] of formData.entries()) {
+      if (isValidFormValue(value)) {
+        combinedFormData.append(key, String(value));
+      }
+    }
+
+    return combinedFormData;
+  };
+
+  // Validation Handlers
+  const validateStateInput = (value: string) => {
+    if (!value) {
+      setStateInputValid(false);
+      return false;
+    }
+    setStateInputValid(true);
+    return true;
+  };
 
   const handleTextInputValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const fieldId = Number(e.target.id.split('-')[1]);
@@ -226,68 +284,68 @@ export const RegisterForm2 = ({
     setCountryStates(states);
   };
 
-  const isValidFormValue = (value: unknown): value is string | Blob => {
-    return (
-      value !== null && value !== undefined && (typeof value === 'string' || value instanceof Blob)
-    );
-  };
-
-  const handleBack = () => {
-    router.push('/trade-account/trade-step1/');
-  };
-
+  // Submit Handler
   const onSubmit = async (formData: FormData) => {
-    try {
-      const combinedFormData = new FormData();
+    if (isSubmitting) return;
 
-      Object.entries(firstStepData).forEach(([key, value]) => {
-        if (isValidFormValue(value)) {
-          combinedFormData.append(key, String(value));
-        }
+    // Validate state field
+    const stateValue = formData.get('address-stateOrProvince');
+    if (!stateValue) {
+      setFormStatus({
+        status: 'error',
+        message: 'Please select or enter a state',
       });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
 
-      for (const [key, value] of formData.entries()) {
-        if (isValidFormValue(value)) {
-          combinedFormData.append(key, String(value));
-        }
-      }
+    try {
+      setIsSubmitting(true);
+      setSubmitProgress(20);
+
+      const combinedFormData = processFormData(formData);
+      setSubmitProgress(40);
 
       const submit = await registerCustomers({ formData: combinedFormData });
+      setSubmitProgress(60);
 
       if (submit.status === 'success') {
-        setAccountState({ status: 'success' });
         const email = formData.get('customer-email') as string;
         const password = formData.get('customer-password') as string;
-        await logins(email, password, combinedFormData);
+
         localStorage.removeItem('registrationFormData');
+        setSubmitProgress(80);
 
-        setFormStatus({
-          status: 'success',
-          message: 'Successfully registered!',
-        });
+        await Promise.all([
+          setAccountState({ status: 'success' }),
+          logins(email, password, combinedFormData),
+        ]);
 
-        setTimeout(() => {
-          router.push('/trade-account/trade-step3/');
-        }, 20);
+        setSubmitProgress(100);
+        router.push('/trade-account/trade-step3/');
       } else {
         setFormStatus({
           status: 'error',
           message: submit.error || 'Registration failed',
         });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     } catch (error) {
       setFormStatus({
         status: 'error',
         message: 'An unexpected error occurred',
       });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } finally {
+      setIsSubmitting(false);
+      setSubmitProgress(0);
     }
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Label Modifier
   const getModifiedLabel = (originalLabel: string): string => {
     switch (originalLabel) {
-      case 'Tax ID/Licence#':
+      case 'Tax ID / Licence#':
         return 'Tax ID/License#*';
       case 'I am a':
         return 'I am a*';
@@ -310,13 +368,13 @@ export const RegisterForm2 = ({
     }
   };
 
+  // Field Renderer
   const renderField = (field: FormField, isCustomerField: boolean = false) => {
     const fieldId = field.entityId;
     const fieldName = createFieldName(field, isCustomerField ? 'customer' : 'address');
     const isCountrySelector = fieldId === FieldNameToFieldId.countryCode;
     const isStateField = fieldId === FieldNameToFieldId.stateOrProvince;
 
-    // Special handling for Address Line 2 label
     const modifiedField = {
       ...field,
       label:
@@ -347,7 +405,6 @@ export const RegisterForm2 = ({
               onChange={handleTextInputValidation}
               type={FieldNameToFieldId[fieldId]}
               onClick={(e: { stopPropagation: () => void }) => {
-                // Prevent click on input from closing Address Line 2
                 e.stopPropagation();
               }}
             />
@@ -454,12 +511,22 @@ export const RegisterForm2 = ({
             <FieldWrapper fieldId={fieldId} key={fieldId}>
               <PicklistOrText
                 defaultValue={countryStates[0]?.name}
-                field={modifiedField}
+                field={{
+                  ...modifiedField,
+                  isRequired: true, // Make state field required
+                }}
                 name={fieldName}
                 options={countryStates.map(({ name }) => ({
                   entityId: name,
                   label: name,
                 }))}
+                onChange={(value: string) => {
+                  validateStateInput(value);
+                }}
+                onValidate={(isValid: boolean | ((prevState: boolean) => boolean)) => {
+                  setStateInputValid(isValid);
+                }}
+                isValid={stateInputValid}
               />
             </FieldWrapper>
           );
@@ -487,6 +554,7 @@ export const RegisterForm2 = ({
     }
   };
 
+  // Render Component
   return (
     <>
       {formStatus && (
@@ -495,9 +563,13 @@ export const RegisterForm2 = ({
         </Message>
       )}
       <Form
-        action={async (data: FormData) => await onSubmit(data)}
         ref={formRef}
         className="register-form mx-auto max-w-[600px] sm:pt-3 md:pt-3"
+        onSubmit={(e) => {
+          e.preventDefault();
+          const formData = new FormData(e.currentTarget);
+          onSubmit(formData);
+        }}
       >
         <div className="trade2-form">
           {[
@@ -532,7 +604,7 @@ export const RegisterForm2 = ({
                           className="relative top-[-1em] flex items-center gap-2 text-left text-[14px] font-normal leading-6 tracking-wide text-[#353535]"
                           onClick={() => setShowAddressLine2(true)}
                         >
-                          <img src={TradeAddress1} alt="" />
+                          <img src={TradeAddress1} className="w-[20px]" alt="" />
                           <span>Add Apt, suite, floor, or other.</span>
                         </button>
                       )}
@@ -545,13 +617,22 @@ export const RegisterForm2 = ({
           ]}
         </div>
 
-        <div className="mt-0 flex gap-4">
+        <div className="mt-0 flex flex-col gap-4">
+          {isSubmitting && (
+            <div className="h-2 w-full rounded-full bg-gray-200">
+              <div
+                className="h-2 rounded-full bg-[#008BB7] transition-all duration-300"
+                style={{ width: `${submitProgress}%` }}
+              />
+            </div>
+          )}
           <Button
-            className="relative mt-8 w-fit items-center px-8 py-2"
+            className="relative mt-8 w-fit items-center !bg-[#008BB7] px-8 py-2"
             variant="primary"
             type="submit"
+            disabled={isSubmitting}
           >
-            SUBMIT
+            {isSubmitting ? 'SUBMITTING...' : 'SUBMIT'}
           </Button>
         </div>
       </Form>

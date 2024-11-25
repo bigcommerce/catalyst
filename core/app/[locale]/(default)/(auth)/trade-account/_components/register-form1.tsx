@@ -217,7 +217,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
       <Form
         action={(data: FormData) => onSubmit(data)}
         ref={form}
-        className="register-form mx-auto max-w-[600px] sm:pt-3 md:pt-3"
+        className="register-form mx-auto max-w-[38.5em] sm:pt-3 md:pt-3"
       >
         <div className="block grid-cols-1 gap-y-3">
           {getOrderedFields().map(({ field, type, fieldName }) => {
@@ -229,7 +229,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
         </div>
 
         <Button
-          className="relative mt-8 w-fit items-center px-8 py-2"
+          className="relative mt-8 w-fit items-center px-8 py-2 !bg-[#008BB7]"
           variant="primary"
           type="submit"
         >

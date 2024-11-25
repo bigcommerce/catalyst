@@ -148,6 +148,9 @@ export const MobileNav = ({ links, logo }: Props) => {
                 <CustomLink href="/blog" className="font-semiboldd hover:text-primary">
                   Our Brands
                 </CustomLink>
+                <CustomLink href="/trade-account/trade-step1/" className="font-semiboldd hover:text-primary">
+        trade 1
+        </CustomLink>
               </nav>
             </NavigationMenuPrimitive.List>
           </NavigationMenuPrimitive.Root>

@@ -68,13 +68,13 @@ export interface RegisterForm1Props {
 
 const breadcrumbs = [
   {
-    label: 'Apply',
+    label: 'Apply >',
     href: '/trade-account/trade-step1',
     color: '#008BB7',
     fontWeight: '600', // Change to string
   },
   {
-    label: 'Business Details',
+    label: 'Business Details >',
     href: '/trade-account/trade-step2',
     color: '#000000',
     fontWeight: '400',
@@ -90,7 +90,7 @@ const breadcrumbs = [
 // Define image URLs
 const imageUrls = {
   tradeAccountHeader: imageManagerImageUrl('trade-account-header.png', 'original'),
-  tradeCircleCircle: imageManagerImageUrl('trade-check-circle.png', 'original'),
+  tradeCircleCircle: imageManagerImageUrl('trade-check-circle.jpg', 'original'),
   patjoheatAndShade: imageManagerImageUrl('patjoheat-and-shade.png', 'original'),
   baileyStreet: imageManagerImageUrl('bailey-street.png', 'original'),
   oneStopLightning: imageManagerImageUrl('1stop-lightning.png', 'original'),
@@ -148,17 +148,17 @@ type CarouselImage = {
 
 const images: CarouselImage[] = [
   {
-    src: 'https://cdn11.bigcommerce.com/s-6cdngmevrl/images/stencil/original/image-manager/trade-carousel-1.png',
+    src: imageManagerImageUrl('trade-carousel-1.jpg', 'original'),
     alt: 'California Homebuilders Inc.',
     title: 'California Homebuilders Inc.',
   },
   {
-    src: 'https://cdn11.bigcommerce.com/s-6cdngmevrl/images/stencil/original/image-manager/trade-carousel-1.png',
+    src: imageManagerImageUrl('trade-carousel-1.jpg', 'original'),
     alt: 'Modern Home Design',
     title: 'Modern Home Design',
   },
   {
-    src: 'https://cdn11.bigcommerce.com/s-6cdngmevrl/images/stencil/original/image-manager/trade-carousel-1.png',
+    src: imageManagerImageUrl('trade-carousel-1.jpg', 'original'),
     alt: 'Luxury Homes',
     title: 'Luxury Homes',
   },
@@ -204,7 +204,7 @@ export default async function Trade() {
       <div className="registeration-breadcrumbs-heading">
         {/* Hero Image Section */}
         <div className="relative w-full">
-          <div className="trade-banner">
+          <div className="trade-banner mb-[30px] lg:mb-[0px]">
             <BcImage
               alt="Hero Background"
               width={1600}
@@ -217,21 +217,20 @@ export default async function Trade() {
         </div>
 
         <ComponentsBreadcrumbs
-          className="trade2-div-breadcrumb m-auto flex w-[89%] pb-[10px] pt-[30px]"
+          className="trade2-div-breadcrumb m-auto hidden w-[92%] pb-[10px] pt-[0px] lg:flex lg:pt-[30px]"
           breadcrumbs={breadcrumbs}
         />
 
         {/* Form Section */}
-        <div className="flex w-[96.5%] flex-col lg:flex-row lg:justify-between lg:space-x-8">
+        <div className="m-auto flex w-[88%] flex-col-reverse lg:m-[unset] lg:w-[96.5%] lg:flex-row lg:justify-between lg:space-x-8">
           {/* Left Side Content */}
           <TradeForm tradeCircleCircle={imageUrls.tradeCircleCircle} />
 
           {/* Right Side Registration Form */}
-          <div className="rounded-lg bg-white pb-[3em] pt-[3em] shadow-md lg:w-1/2">
-            <h2 className="mb-[15px] text-center text-[34px] font-normal leading-[32px] text-[#353535]">
+          <div className="rounded-lg bg-white p-[20px] md:pb-[3em] mb-5 lg:mb-0 md:pt-[3em] shadow-md lg:w-1/2">
+            <h2 className="mb-[15px] text-center text-[25px] lg:text-[34px] font-normal leading-[32px] text-[#353535]">
               Apply Today
             </h2>
-
             <RegisterForm1
               addressFields={addressFields as AddressFormField[]}
               countries={countries}
@@ -242,7 +241,7 @@ export default async function Trade() {
           </div>
         </div>
 
-        <h2 className="mb-[40px] mt-[40px] text-center text-[24px] font-normal leading-[32px] text-[#353535]">
+        <h2 className="mb-[40px] mt-[0px] lg:mt-[40px] text-center text-[24px] font-normal leading-[32px] text-[#353535]">
           Our Network
         </h2>
 

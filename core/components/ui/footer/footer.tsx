@@ -60,8 +60,8 @@ const Footer = ({
             </h3>
             <ul className="footer-submenu flex flex-col">
               {section.links.map((link, index) => (
-                <li key={`${link.label}-${index}`} className='mb-[14px]'>
-                  {link.href != '#' ? <CustomLink className='text-[14px] font-normal leading-[24px] tracking-[0.25px] text-left !text-white' href={link.href}>{link.label}</CustomLink> : link.label }
+                <li key={`${link.label}-${index}`} className='mb-[14px] pt-1 pb-1'>
+                  {link.href != '#' ? <CustomLink className='!justify-start text-[14px] font-normal leading-[24px] tracking-[0.25px] text-left !text-white' href={link.href}>{link.label}</CustomLink> : link.label }
                 </li>
               ))}
             </ul>
@@ -77,7 +77,7 @@ const Footer = ({
 
         {Boolean(contactInformation?.phone) && (
           <CustomLink
-            className="hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
+            className="flex-col hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
             href={`tel:${contactInformation?.phone}`}
           >
             <p className="mb-4 text-left font-sans text-[14px] font-normal leading-[24px] tracking-[0.25px] text-white">

@@ -80,7 +80,7 @@ export const Footer = async () => {
                   type="email"
                   name="email"
                   placeholder="Enter your email"
-                  className="subscription-input !placeholder:pl-[8px] placeholder:text-[14px] placeholder:font-normal placeholder:leading-[24px] tracking-[0.25px] text-left text-[#6b7280] h-[40px] focus:outline-none"
+                  className="subscription-input w-[12em] pl-[12px] !placeholder:pl-[8px] placeholder:text-[14px] placeholder:font-normal placeholder:leading-[24px] tracking-[0.25px] text-left text-[#6b7280] h-[40px] focus:outline-none"
                   required
                 />
 <button 
@@ -110,7 +110,9 @@ export const Footer = async () => {
         { 
           label: (
             <>
-              <span>View our</span> <span className="privacy-policy-label">privacy policy</span>
+<span className="text-xs font-normal leading-[18px] tracking-[0.4px] text-left">View our</span> 
+<span className="text-xs font-normal leading-[18px] tracking-[0.4px] text-left privacy-policy-label ml-2 underline">Privacy Policy</span>
+
             </>
           ), 
           href: '/path-6' 
@@ -120,11 +122,12 @@ export const Footer = async () => {
         {
           label: (
             
-            <div className="footer-social-media flex !ml-[-7px]">
+            <div className="footer-social-media flex !ml-[0px] !mt-[-9px] mb-[25px]">
               
               {/* Social Media Icons Inside Footer */}
               {socialIcons && Object.entries(socialIcons).map(([key, value]) => (
                 <CustomLink
+                className='w-[20px] mr-[15px]'
                   key={key}
                   href={value?.link}
                   target="_blank"
