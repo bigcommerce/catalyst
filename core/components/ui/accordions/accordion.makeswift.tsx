@@ -15,7 +15,6 @@ runtime.registerComponent(Accordions, {
           title: TextInput({
             label: 'Title',
             defaultValue: 'Lorem Ipsum?',
-            placeholder: 'Unique value',
           }),
         },
       }),

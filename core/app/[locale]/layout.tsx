@@ -111,25 +111,17 @@ export default function RootLayout({ children, params: { locale } }: Props) {
   const messages = useMessages();
 
   return (
-    <html
-      className={[inter.variable, dm_serif_text.variable, roboto_mono.variable].join(' ')}
-      lang={locale}
-    >
-      <MakeswiftProvider previewMode={draftMode().isEnabled}>
-        <head>
-          <CssTheme colors={colors} />
-          <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
-        </head>
-        <body className="flex h-screen min-w-[375px] flex-col font-body">
-          <Notifications />
-          <NextIntlClientProvider locale={locale} messages={messages}>
-            <NuqsAdapter>
-              <Providers>{children}</Providers>
-            </NuqsAdapter>
-          </NextIntlClientProvider>
-          <VercelComponents />
-        </body>
-      </MakeswiftProvider>
+    <html className={`${inter.variable} font-sans`} lang={locale}>
+      <head>
+        <DraftModeScript />
+      </head>
+      <body className="flex h-screen min-w-[375px] flex-col">
+        <Notifications />
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <Providers>{children}</Providers>
+        </NextIntlClientProvider>
+        <VercelComponents />
+      </body>
     </html>
   );
 }
