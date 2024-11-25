@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { ChangeEvent, useState, useEffect } from 'react';
+import { ChangeEvent, useActionState, useState, useEffect } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 
 import { BcImage } from '~/components/bc-image';
@@ -77,7 +77,7 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
 
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
-  const [state, formAction] = useFormState(login, { status: 'idle' });
+  const [state, formAction] = useActionState(login, { status: 'idle' });
   const { accountState } = useAccountStatusContext();
   const [showLogin, setShowLogin] = useState(false);
 

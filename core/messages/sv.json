@@ -122,7 +122,11 @@
     "Category": {
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
         "products": "Produkter",
-        "items": "varor"
+        "items": "varor",
+        "Empty": {
+            "message": "Inga produkter i denna kategori",
+            "cta": "Tillbaka till startsidan"
+        }
     },
     "Search": {
         "title": "Sökresultat",
@@ -149,6 +153,7 @@
             "title": "Adresser",
             "addNewAddress": "Lägg till ny adress",
             "editButton": "Redigera",
+            "emptyAddresses": "Inga adresser har lagts till",
             "deleteButton": "Radera",
             "confirmDeleteAddress": "Radera adress",
             "deleteModalTitle": "Är du säker på att du vill ta bort den här adressen?",
@@ -199,7 +204,7 @@
             "changePassword": "Ändra lösenor",
             "submit": "Uppdatera inställningar",
             "submitting": "Uppdatera inställningar ...",
-            "successMessage": "Bästa {firstName} {lastName}, du har uppdaterat dina kontouppgifter",
+            "successMessage": "Dina kontoinställningar har uppdaterats",
             "validationMessages": {
                 "email": "Ange en giltig e-postadress, t.ex. namn@domän.com",
                 "empty": "Det här fältet får inte vara tomt",

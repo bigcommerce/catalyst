@@ -1,6 +1,6 @@
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDown, X } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 import { BcImage } from '~/components/bc-image';
 import { Link as CustomLink } from '~/components/link';
@@ -12,13 +12,17 @@ import { type Product, useCompareDrawerContext } from './context';
 
 const CompareLink = ({ products }: { products: Product[] }) => {
   const t = useTranslations('Components.Compare');
+  const locale = useLocale();
 
   return (
     <Button
       asChild
       className="me-4 h-12 w-auto grow whitespace-nowrap px-8 hover:text-white md:grow-0"
     >
-      <CustomLink href={`/compare?ids=${products.map(({ id }) => id).join(',')}`}>
+      <CustomLink
+        href={{ pathname: '/compare', query: { ids: products.map(({ id }) => id).join(',') } }}
+        locale={locale}
+      >
         {t('compareButton', { products: products.length })}
       </CustomLink>
     </Button>
@@ -90,7 +94,7 @@ const CompareDrawer = () => {
       <AccordionPrimitive.Root className="w-full md:hidden" collapsible type="single">
         <AccordionPrimitive.Item value="compare">
           <AccordionPrimitive.Header className="flex">
-            <AccordionPrimitive.Trigger className="flex flex-1 items-center justify-between py-[9.5px] text-lg font-bold outline-none transition-all hover:text-secondary focus-visible:text-secondary [&[data-state=open]>svg]:rotate-180">
+            <AccordionPrimitive.Trigger className="hover:text-secondary focus-visible:text-secondary flex flex-1 items-center justify-between py-[9.5px] text-lg font-bold outline-none transition-all [&[data-state=open]>svg]:rotate-180">
               <CompareLink products={products} />
               <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
             </AccordionPrimitive.Trigger>

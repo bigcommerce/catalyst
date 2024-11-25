@@ -79,8 +79,9 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
   };
 
   const handleEmailValidation = (e: ChangeEvent<HTMLInputElement>) => {
-    setIsEmailValid(false);
-    setFormStatus({ status: 'error', message: t('emailValidationMessage') });
+    const validationStatus = e.target.validity.valueMissing || e.target.validity.typeMismatch;
+
+    setIsEmailValid(!validationStatus);
   };
 
   const onSubmit = async (formData: FormData) => {
@@ -142,6 +143,12 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
 
   return (
     <>
+      {formStatus?.status === 'error' && (
+        <Message className="mb-8 w-full whitespace-pre" variant={formStatus.status}>
+          <p>{formStatus.message}</p>
+        </Message>
+      )}
+
       <Form
         action={onSubmit}
         className="reset-pass-form mx-0 mt-0 flex max-w-[none] flex-col gap-[22px] pt-0 xsm:mx-auto md:mt-[30px] md:max-w-[514px] md:py-4 lg:p-0"

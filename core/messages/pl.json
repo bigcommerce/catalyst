@@ -122,7 +122,11 @@
     "Category": {
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
         "products": "Produkty",
-        "items": "produkty"
+        "items": "produkty",
+        "Empty": {
+            "message": "Brak produktów w tej kategorii",
+            "cta": "Powrót na początek"
+        }
     },
     "Search": {
         "title": "Wyniki wyszukiwania",
@@ -149,6 +153,7 @@
             "title": "Adresy",
             "addNewAddress": "Dodaj nowy adres",
             "editButton": "Edytuj",
+            "emptyAddresses": "Brak dodanych adresów",
             "deleteButton": "Usuń",
             "confirmDeleteAddress": "Usuń adres",
             "deleteModalTitle": "Czy na pewno chcesz usunąć ten adres?",
@@ -199,7 +204,7 @@
             "changePassword": "Zmień hasło",
             "submit": "Zaktualizuj ustawienia",
             "submitting": "Zaktualizuj ustawienia...",
-            "successMessage": "Witaj, {firstName} {lastName}. Dane Twojego konta zostały pomyślnie zaktualizowane.",
+            "successMessage": "Ustawienia konta zostały zaktualizowane",
             "validationMessages": {
                 "email": "Podaj prawidłowy adres e-mail, np. nazwa@domena.com",
                 "empty": "To pole nie może być puste",

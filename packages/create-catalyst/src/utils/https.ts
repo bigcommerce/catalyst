@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import { z } from 'zod';
 
 import { parse } from './parse';
+import { getCLIUserAgent } from './user-agent';
 
 interface BigCommerceRestApiConfig {
   bigCommerceApiUrl: string;
@@ -60,13 +61,15 @@ const BigCommerceChannelsV3ResponseSchema = BigCommerceV3ApiResponseSchema(
 export type BigCommerceChannelsV3Response = z.infer<typeof BigCommerceChannelsV3ResponseSchema>;
 
 export class Https {
-  DEVICE_OAUTH_CLIENT_ID = 'acse0vvawm9r1n0evag4b8e1ea1fo90';
-
   bigCommerceApiUrl: string;
   bigCommerceAuthUrl: string;
   sampleDataApiUrl: string;
   storeHash: string;
   accessToken: string;
+  userAgent: string;
+
+  private DEVICE_OAUTH_CLIENT_ID = 'acse0vvawm9r1n0evag4b8e1ea1fo90';
+  private MAX_EPOC_EXPIRES_AT = 2147483647;
 
   constructor({ bigCommerceApiUrl, storeHash, accessToken }: BigCommerceRestApiConfig);
   constructor({ sampleDataApiUrl, storeHash, accessToken }: SampleDataApiConfig);
@@ -83,6 +86,7 @@ export class Https {
     this.sampleDataApiUrl = sampleDataApiUrl ?? '';
     this.storeHash = storeHash ?? '';
     this.accessToken = accessToken ?? '';
+    this.userAgent = getCLIUserAgent();
   }
 
   auth(path: string, opts: RequestInit = {}) {
@@ -98,6 +102,7 @@ export class Https {
         ...headers,
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'User-Agent': this.userAgent,
       },
       ...rest,
     };
@@ -109,13 +114,13 @@ export class Https {
     const response = await this.auth('/device/token', {
       body: JSON.stringify({
         scopes: [
+          'store_channel_settings',
+          'store_sites',
+          'store_storefront_api',
           'store_v2_content',
           'store_v2_information',
           'store_v2_products',
           'store_cart',
-          'store_sites',
-          'store_channel_settings',
-          'store_storefront_api_customer_impersonation',
         ].join(' '),
         client_id: this.DEVICE_OAUTH_CLIENT_ID,
       }),
@@ -175,6 +180,7 @@ export class Https {
         ...headers,
         Accept: 'application/json',
         'X-Auth-Token': this.accessToken,
+        'User-Agent': this.userAgent,
       },
       ...rest,
     };
@@ -228,29 +234,27 @@ export class Https {
     }
   }
 
-  async customerImpersonationToken() {
-    const res = await this.api('/v3/storefront/api-token-customer-impersonation', {
+  async storefrontToken() {
+    const res = await this.api('/v3/storefront/api-token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ expires_at: 2147483647, channel_ids: [] }),
+      body: JSON.stringify({ expires_at: this.MAX_EPOC_EXPIRES_AT, channel_ids: [] }),
     });
 
     if (!res.ok) {
       console.error(
-        chalk.red(
-          `\nPOST /v3/storefront/api-token-customer-impersonation failed: ${res.status} ${res.statusText}\n`,
-        ),
+        chalk.red(`\nPOST /v3/storefront/api-token failed: ${res.status} ${res.statusText}\n`),
       );
       process.exit(1);
     }
 
-    const BigCommerceCustomerImpersonationTokenSchema = z.object({
+    const BigCommerceStorefrontTokenSchema = z.object({
       data: z.object({
         token: z.string(),
       }),
     });
 
-    return parse(await res.json(), BigCommerceCustomerImpersonationTokenSchema);
+    return parse(await res.json(), BigCommerceStorefrontTokenSchema);
   }
 
   sampleDataApi(path: string, opts: RequestInit = {}) {
@@ -269,6 +273,7 @@ export class Https {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'X-Auth-Token': this.accessToken,
+        'User-Agent': this.userAgent,
       },
       ...rest,
     };
@@ -276,9 +281,33 @@ export class Https {
     return fetch(`${this.sampleDataApiUrl}/stores/${this.storeHash}${path}`, options);
   }
 
+  async checkEligibility() {
+    const res = await this.sampleDataApi('/v3/channels/catalyst/eligibility', {
+      method: 'GET',
+    });
+
+    if (!res.ok) {
+      console.error(
+        chalk.red(
+          `\nGET /v3/channels/catalyst/eligibility failed: ${res.status} ${res.statusText}\n`,
+        ),
+      );
+      process.exit(1);
+    }
+
+    const CheckEligibilitySchema = z.object({
+      data: z.object({
+        eligible: z.boolean(),
+        message: z.string(),
+      }),
+    });
+
+    return parse(await res.json(), CheckEligibilitySchema);
+  }
+
   async createChannel(channelName: string) {
     const res = await this.sampleDataApi('/v3/channels/catalyst', {
-      body: JSON.stringify({ name: channelName }),
+      body: JSON.stringify({ name: channelName, tokenType: 'normal' }),
     });
 
     if (!res.ok) {

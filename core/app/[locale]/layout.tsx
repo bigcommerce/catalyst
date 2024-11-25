@@ -2,9 +2,10 @@ import { DraftModeScript } from '@makeswift/runtime/next/server';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import localFont from 'next/font/local';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
-import { unstable_setRequestLocale } from 'next-intl/server';
+import { setRequestLocale } from 'next-intl/server';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { PropsWithChildren } from 'react';
 
 import '../globals.css';
@@ -16,10 +17,27 @@ import { revalidate } from '~/client/revalidate-target';
 import { Notifications } from '../notifications';
 import { Providers } from '../providers';
 
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
+import '~/lib/makeswift/components';
+
+const dm_serif_text = localFont({
+  src: [
+    {
+      path: '../../public/fonts/DMSerifText-Regular.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-family-heading',
+});
+
+const inter = localFont({
+  src: '../../public/fonts/Inter-Variable.woff2',
+  variable: '--font-family-body',
+});
+
+const roboto_mono = localFont({
+  src: '../../public/fonts/RobotoMono-Variable.woff2',
+  variable: '--font-family-mono',
 });
 
 const RootLayoutMetadataQuery = graphql(`
@@ -83,20 +101,25 @@ interface Props extends PropsWithChildren {
 
 export default function RootLayout({ children, params: { locale } }: Props) {
   // need to call this method everywhere where static rendering is enabled
-  // https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-unstable_setrequestlocale-to-all-layouts-and-pages
-  unstable_setRequestLocale(locale);
+  // https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-setRequestLocale-to-all-layouts-and-pages
+  setRequestLocale(locale);
 
   const messages = useMessages();
 
   return (
-    <html className={`${inter.variable} font-sans`} lang={locale}>
+    <html
+      className={[inter.variable, dm_serif_text.variable, roboto_mono.variable].join(' ')}
+      lang={locale}
+    >
       <head>
         <DraftModeScript />
       </head>
       <body className="flex h-screen min-w-[375px] flex-col">
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <Providers>{children}</Providers>
+          <NuqsAdapter>
+            <Providers>{children}</Providers>
+          </NuqsAdapter>
         </NextIntlClientProvider>
         <VercelComponents />
       </body>

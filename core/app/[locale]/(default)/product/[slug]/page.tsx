@@ -1,11 +1,10 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
 import { Breadcrumbs } from '~/components/breadcrumbs';
-import { LocaleType } from '~/i18n/routing';
 
 import Promotion from '../../../../../components/ui/pdp/belami-promotion-banner-pdp';
 import { SimilarProducts } from '../../../../../components/ui/pdp/belami-similar-products-pdp';
@@ -24,11 +23,11 @@ import { GetProductMetaFields } from '~/components/management-apis';
 import { ProductProvider } from '~/components/common-context/product-provider';
 
 interface Props {
-  params: { slug: string; locale: LocaleType };
-  searchParams: Record<string, string | string[] | undefined>;
+  params: Promise<{ slug: string; locale: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-function getOptionValueIds({ searchParams }: { searchParams: Props['searchParams'] }) {
+function getOptionValueIds({ searchParams }: { searchParams: Awaited<Props['searchParams']> }) {
   const { slug, ...options } = searchParams;
 
   return Object.keys(options)
@@ -41,7 +40,9 @@ function getOptionValueIds({ searchParams }: { searchParams: Props['searchParams
     );
 }
 
-export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   const productId = Number(params.slug);
   const optionValueIds = getOptionValueIds({ searchParams });
   const product = await getProduct({
@@ -74,12 +75,17 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   };
 }
 
-export default async function Product({ params: { locale, slug }, searchParams }: Props) {
+export default async function Product(props: Props) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const { locale, slug } = params;
+
   const bannerIcon = imageManagerImageUrl('example-1.png', '50w');
   const relatedProductArrow = imageManagerImageUrl('vector-8-.png', '30w');
   const galleryExpandIcon = imageManagerImageUrl('vector.jpg', '20w'); // Set galleryExpandIcon here
-  const dropdownSheetIcon = imageManagerImageUrl('icons8-download-symbol-16.png', '20w');
-  unstable_setRequestLocale(locale);
+  const dropdownSheetIcon = imageManagerImageUrl('icons8-download-symbol-16.png', '20w'); 
+  setRequestLocale(locale);
 
   const t = await getTranslations('Product');
 

@@ -131,7 +131,7 @@ export const ProductForm = ({ data: product, multipleOptionIcon, closeIcon,fanPo
               cartItems: quantity,
               cartLink: (chunks) => (
                 <Link
-                  className="font-semibold text-primary hover:text-secondary"
+                  className="hover:text-secondary font-semibold text-primary"
                   href="/cart"
                   prefetch="viewport"
                   prefetchKind="full"

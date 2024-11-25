@@ -1,12 +1,15 @@
 'use server';
 
-import { isRedirectError } from 'next/dist/client/components/redirect';
+import { unstable_rethrow as rethrow } from 'next/navigation';
+import { getLocale } from 'next-intl/server';
 
 import { Credentials, signIn } from '~/auth';
 import { redirect } from '~/i18n/routing';
 
 export const login = async (formData: FormData) => {
   try {
+    const locale = await getLocale();
+
     const credentials = Credentials.parse({
       email: formData.get('customer-email'),
       password: formData.get('customer-password'),
@@ -19,11 +22,10 @@ export const login = async (formData: FormData) => {
       redirect: false,
     });
 
-    redirect('/account');
+    redirect({ href: '/account', locale });
   } catch (error: unknown) {
-    if (isRedirectError(error)) {
-      throw error;
-    }
+    rethrow(error);
+
     return {
       status: 'error',
     };
