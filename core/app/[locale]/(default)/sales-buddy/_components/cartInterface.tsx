@@ -1,8 +1,13 @@
 'use client';
+import Image from 'next/image';
 import { useState } from 'react';
 import { Accordions } from '~/components/ui/accordions';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/form';
+import ShopIcon from '../assets/badge.png';
+
+import ChatIcon from '../assets/chat.png';
+import CategoryIcon from "../assets/category.png"
 
 export default function CartInterface() {
   const [openAccordions, setOpenAccordions] = useState<number[]>([]);
@@ -25,11 +30,14 @@ export default function CartInterface() {
   const accordions = [
     {
       title: (
-        <h4 className="text-base font-normal">
-          Add an Account ID
+        <h4 className="flex items-center gap-2 text-base font-normal">
+          <div className="flex items-center">
+            <Image src={ShopIcon} alt="App-icon" />
+          </div>
+          <span className="flex items-center">Add an Account ID</span>
         </h4>
       ),
-      content: (
+      content: (  
         <div>
           <label htmlFor="accountId" className="mb-1 block text-sm font-medium text-gray-700">
             Account ID
@@ -46,9 +54,12 @@ export default function CartInterface() {
       ),
     },
     {
-      title:(
-        <h4 className="text-base font-normal">
-          Add an Account ID
+      title: (
+        <h4 className="flex items-center gap-2 text-base font-normal">
+          <div className="flex items-center">
+            <Image src={CategoryIcon} alt="App-icon" />
+          </div>
+          <span className="flex items-center">Add Item to Cart</span>
         </h4>
       ),
       content: (
@@ -117,40 +128,25 @@ export default function CartInterface() {
         </div>
       ),
     },
+    {
+      title: (
+        <h4 className="flex items-center gap-2 text-base font-normal">
+          <div className="flex items-center">
+            <Image src={ChatIcon} alt="App-icon" />
+          </div>
+          <span className="flex items-center">Add Order Comments (Internal)</span>
+        </h4>
+      ),
+      content: <div className="space-y-4 m-5"></div>,
+    },
   ];
 
   return (
     <>
-      <div className=" w-[460px]h-[81px] space-y-1 rounded-lg ">
-        <div className="border-none flex flex-row justify-between">
-          <h2 className="text-2xl font-normal">Cart ID: #123456789</h2>
-          <span className="w-[110px] font-normal text-base h-[32px] bg-[#F2DEBE] flex items-center justify-center">Mark: #.#</span>
-        </div>
-        <div className="flex h-[36px] items-center justify-between">
-          {!showReferralInput ? (
-            <>
-              <span className="text-sm text-green-600 cursor-pointer" onClick={() => setShowReferralInput(true)}>
-                Add Referral ID +
-              </span>
-              <Button className="w-1/4 bg-green-600 px-2 text-white text-xs">RESET CART</Button>
-            </>
-          ) : (
-            <>
-              <input placeholder="Markup" className="w-[224px] h-[36px] border border-[#c1c1c1]" />
-              <span className="text-xs text-green-600 cursor-pointer" onClick={() => setShowReferralInput(true)}>
-                save
-              </span>
-              <Button className="w-1/4 bg-green-600 px-2 text-white text-xs">RESET CART</Button>
-            </>
-          )}
-        </div>
-      </div>
-      <div className="bg-white mt-[15px] px-[20px]">
+      <div className="mt-[15px] bg-white px-[20px]">
+        {/* <h2 className="text-[24px] font-semibold">Customer Information</h2> */}
         {/* Accordions */}
-        <Accordions
-          accordions={accordions}
-          type="multiple"
-        />
+        <Accordions accordions={accordions} type="multiple" />
         {/* Quick Links */}
       </div>
     </>
