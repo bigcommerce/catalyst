@@ -81,7 +81,7 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
             (error || isPassword) && 'pe-12',
             error &&
               'border-error-secondary hover:border-error focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 disabled:border-gray-200',
-            'font-mono tracking-wide',
+            'tracking-wide',
           )}
           ref={ref}
           type="text"
