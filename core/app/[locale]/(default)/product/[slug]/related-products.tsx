@@ -137,7 +137,7 @@ export function RelatedProducts({ productId }: Props) {
             <Carousel
               pageSize={3}
               products={props.items.map((item) => (
-                <CustomItem hit={item} useDefaultPrices={true} />
+                <CustomItem key={item.objectID} hit={item} useDefaultPrices={true} />
                 /*
                 <ProductCard imageSize="tall" key={item.objectID} product={{
                   entityId: Number(item.objectID),
