@@ -79,7 +79,7 @@ const SubmitButton = ({ messages }: SubmitMessages) => {
 
   return (
     <Button
-      className="relative mt-8 w-fit items-center px-8 py-2"
+      className="create-account-button !bg-[#008BB7] relative mt-8 w-fit items-center px-8 py-2"
       loading={pending}
       loadingText={messages.submitting}
       variant="primary"
@@ -194,7 +194,7 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
           {customerFields
             .filter((field) => !CUSTOMER_FIELDS_TO_EXCLUDE.includes(field.entityId))
             .filter((field) => FieldNameToFieldId[field.entityId] !== 'confirmPassword')
-            .filter((field) => field.label !== 'Tax ID / Licence#') // Exact match with the UI label
+            .filter((field) => field.label !== 'Tax ID / Licence#')
             .map((field) => {
               const fieldId = field.entityId;
               const fieldName = createFieldName(field, 'customer');

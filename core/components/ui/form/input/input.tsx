@@ -1,14 +1,25 @@
 import { AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { ComponentPropsWithRef, ElementRef, forwardRef, ReactNode, useState } from 'react';
+import { BcImage } from '~/components/bc-image';
 import { cn } from '~/lib/utils';
+import { imageManagerImageUrl } from '~/lib/store-assets';
+import { imageIconList } from '~/app/[locale]/(default)/(auth)/fragments';
+import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 
 interface Props extends ComponentPropsWithRef<'input'> {
   error?: boolean;
   icon?: ReactNode;
+  children?: ReactNode;
+  className?: string;
+  storeHash?: string;
+  passwordHide?: string;
 }
 
 const Input = forwardRef<ElementRef<'input'>, Props>(
-  ({ className, children, error = false, icon, type = 'text', ...props }, ref) => {
+  (
+    { className, children, error = false, icon, type = 'text', storeHash, passwordHide, ...props },
+    ref,
+  ) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const isPassword = type === 'password';
@@ -31,9 +42,9 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
         {Boolean(error || icon || isPassword) && (
           <span
             className={cn(
-              'absolute end-4 top-0 flex h-full items-center',
+              'eye-icon-password absolute end-4 top-0 flex h-full items-center',
               error && 'text-error-secondary peer-disabled:text-gray-200',
-              isPassword && !error && 'text-black hover:text-gray-800', // Icon color logic
+              isPassword && !error && 'text-black hover:text-gray-800',
               isPassword && 'pointer-events-auto cursor-pointer',
               !isPassword && 'pointer-events-none',
             )}
@@ -47,9 +58,18 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
                 <AlertCircle />
               ) : isPassword ? (
                 showPassword ? (
-                  <Eye size={20} />
+                  <BcImage
+                    src={passwordHide || imageManagerImageUrl('eye-password-hide.png', '150w')}
+                    alt="eye-on"
+                    width={24}
+                    height={24}
+                    className="h-[25px] w-[25px] object-contain"
+                  />
                 ) : (
-                  <EyeOff size={20} />
+                  <Eye
+                    size={20}
+                    className="password-off h-[25px] w-[25px] object-contain [&>circle]:fill-black"
+                  />
                 )
               ) : null)}
           </span>

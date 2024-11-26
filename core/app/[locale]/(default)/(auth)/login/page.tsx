@@ -26,6 +26,8 @@ const OneStopLightning = imageManagerImageUrl('1stop-lightning.png', '194w');
 const lunaWarehouse = imageManagerImageUrl('luna-warehouse.png', '298w');
 const canadaLightning = imageManagerImageUrl('canada-lightning.png', '228w');
 const homeclickBlack = imageManagerImageUrl('homeclick-black.png', '150w');
+const passwordHide =  imageManagerImageUrl('eye-password-hide.png', '150w');
+
 
 interface Props {
   params: { locale: LocaleType };
@@ -48,7 +50,7 @@ export default function Login({ params: { locale } }: Props) {
 
   return (
     <>
-      <div className="absolute left-0 w-full bg-[#F3F4F5]">
+      <div className="main-login-page w-full bg-[#F3F4F5]">
         <div className="relative overflow-x-auto">
           <div className="flex min-w-fit items-center whitespace-nowrap py-5 pl-4 pr-4 md:justify-center md:py-[20px]">
             <div className="flex items-center gap-4 md:gap-[30px]">
@@ -117,12 +119,12 @@ export default function Login({ params: { locale } }: Props) {
         </div>
       </div>
 
-      <div className="mt-[20px] flex flex-col gap-[20px] px-0 2xl:container xl:px-12 2xl:mx-auto 2xl:px-0">
+      <div className="mt-[20px] flex flex-col gap-[20px] px-0 w-[92%] m-auto xl:px-12 2xl:mx-auto 2xl:px-0">
         <ComponentsBreadcrumbs
-          className="login-div login-breadcrumb mx-auto mt-[6rem] w-[80%] px-[1px]"
+          className="login-div login-breadcrumb mx-auto mt-[0.5rem] w-[80%] px-[1px] hidden lg:block"
           breadcrumbs={breadcrumbs}
         />
-        <div className="login-div login-div-one mx-auto mt-5 flex w-full flex-col justify-between gap-0 px-[1px] text-center md:mt-6 md:pt-5 lg:mt-0 xl:w-[80%] xl:flex-row xl:gap-24 xl:text-left">
+        <div className="login-div login-div-one mx-auto mt-3 flex w-full flex-col justify-between gap-0 px-[1px] text-center md:mt-6 lg:mt-0 xl:w-[80%] xl:flex-row xl:gap-24 xl:text-left">
           <h2 className="text-[24px] font-normal text-[#353535] md:text-[34px]">Rewards Program</h2>
           <div className="flex flex-row flex-wrap content-center items-center justify-center gap-[10px] px-0 pb-0 pt-[10px]">
             <p className="flex items-center text-center text-[20px] font-medium tracking-[0.15px] text-[#002A37]">
@@ -142,7 +144,7 @@ export default function Login({ params: { locale } }: Props) {
 
         <div className="login-div mx-auto mb-6 flex w-full flex-col justify-center lg:gap-[4.5rem] xl:w-[80%] xl:flex-row">
           <div className="login-first-child login-logo mx-[1px] flex w-[calc(90vw)] flex-grow flex-col xl:w-[calc(35.28vw)]">
-            <LoginForm {...imageIconList} />
+            <LoginForm {...imageIconList} passwordHide={passwordHide} />
           </div>
 
           <div className="login-sec-child mx-[1px] mt-[7em] flex w-[calc(90vw)] flex-grow flex-col gap-[20px] rounded-[5px] p-0 sm:mt-[7em] xl:mt-0 xl:w-[calc(35.28vw)] xl:items-center">
