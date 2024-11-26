@@ -185,7 +185,7 @@ export default async function ProductPage(props: Props) {
               <Suspense fallback={t('loading')}>
                 <Reviews productId={product.entityId} />
               </Suspense>
-              <SitevibesReviews id={product.entityId} />
+              <SitevibesReviews product={product} category={category} />
             </div>
           </div>
           <ProductViewed product={product} />

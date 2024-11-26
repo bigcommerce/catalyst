@@ -1,9 +1,10 @@
 'use client';
 
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { useEffect } from 'react';
 import Script from 'next/script';
 
-export function SitevibesReviews({ id }: { id: number }) {
+export function SitevibesReviews({ product, category }: { product: any, category: any }) {
 
   useEffect(() => {
     // Trigger page refresh for SPA support
@@ -12,17 +13,22 @@ export function SitevibesReviews({ id }: { id: number }) {
     }
   }, [])
 
+  const breadcrumbs = (removeEdgesAndNodes(category.breadcrumbs) as any[]).map(({ name, path }) => ({
+    label: name,
+    href: path ?? '#',
+  }));
+
   const productData = {
-    product_id: id,
-    product_sku: "SKU123",
-    name: "Example Product",
-    description: "This is an example product description.",
-    url: `https://example.com/product/${id}`,
-    image_url: "https://example.com/product-image.jpg",
-    category_name: "Electronics",
-    brand_name: "ExampleBrand",
+    product_id: product.entityId,
+    product_sku: product.sku,
+    name: product.name,
+    description: product.plainTextDescription,
+    url: `https://localhost:3000${product.path}`,
+    image_url: product.defaultImage && product.defaultImage.url ? product.defaultImage.url.replace('{size}', 'original') : null,
+    category_name: breadcrumbs && breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1]?.label : '',
+    brand_name: product.brand?.name,
     quantity: 1,
-    price: 99.99,
+    price: product.prices?.price.value,
   }
 
   return (
