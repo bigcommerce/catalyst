@@ -466,11 +466,13 @@ export function AutocompleteSearch() {
       openOnFocus: false,
       autoFocus: true,
 
+      /*
       onStateChange({ state }) {
         //console.log('The Autocomplete state has changed:', state);
         // Synchronize the Autocomplete state with the React state. (Doesn't work!!!)
         setAutocompleteState(state);
       },
+      */
 
       getSources({ query, setContext }): any {
         if (!query) {

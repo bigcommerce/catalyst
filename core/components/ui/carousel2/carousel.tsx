@@ -142,15 +142,14 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
       <div className="realted-product-carousel relative -mx-2 overflow-hidden px-2" ref={carouselRef}>
         <div className="-mx-4 mb-16 mt-5 flex lg:mt-6">
           {groupedProducts.map((group, index) => (
-            <div
+            <div key={`${id}-slide-${group}-${index + 1}`}
               aria-label={`${index + 1} of ${groupedProducts.length}`}
               aria-roledescription="slide"
               className={cn(
                 `grid min-w-0 shrink-0 grow-0 basis-full grid-cols-2 gap-6 px-4 md:grid-cols-${itemsPerGroup} lg:gap-8`,
                 !slidesInView.includes(index) && 'invisible',
               )}
-              id={`${id}-slide-${index + 1}`}
-              key={index}
+              id={`${id}-slide-${group}-${index + 1}`}
               role="group"
             >
               {group.map((item) => item)}

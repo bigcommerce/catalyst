@@ -22,6 +22,8 @@ import { cn } from '~/lib/utils';
 
 import { Open_Sans, Roboto_Mono } from 'next/font/google';
 
+import Script from 'next/script';
+
 import '~/lib/makeswift/components';
 
 const dm_serif_text = localFont({
@@ -127,7 +129,11 @@ export default function RootLayout({ children, params: { locale } }: Props) {
     <html className={cn(openSans.variable, robotoMono.variable, 'font-sans')} lang={locale}>
       <head>
         <DraftModeScript />
-        <script id="sv-pixel-script" src="https://app.sitevibes.com/js/pixel.js?key=e0feae51-26fd-453a-8e67-f9a1a74c8d69" async />
+        <Script
+          id="sv-pixel-script"
+          src="https://app.sitevibes.com/js/pixel.js?key=e0feae51-26fd-453a-8e67-f9a1a74c8d69"
+          async
+        />
       </head>
       <body className="flex h-screen min-w-[375px] flex-col">
         <Notifications />

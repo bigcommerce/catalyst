@@ -26,7 +26,6 @@ export default async function DefaultLayout({ params, children }: Props) {
       <main className="py-4 px-4 xl:px-12 main-slider">
         {children}
       </main>
-
       <Suspense>
         <Footer />
       </Suspense>
