@@ -143,10 +143,10 @@ export default function CartInterface() {
 
   return (
     <>
-      <div className="mt-[15px] bg-white px-[20px]">
+      <div className="mt-[15px] bg-white ">
         {/* <h2 className="text-[24px] font-semibold">Customer Information</h2> */}
         {/* Accordions */}
-        <Accordions accordions={accordions} type="multiple" />
+        <Accordions styles="border-t border-b p-1" accordions={accordions} type="multiple" />
         {/* Quick Links */}
       </div>
     </>

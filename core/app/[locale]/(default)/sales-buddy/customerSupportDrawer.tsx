@@ -1,13 +1,12 @@
 'use client';
 import React, { useState } from 'react'
-import InternalSearch from './_components/internalSearch';
 import AppIcon from "./assets/image.png";
 import AgentTools from './_components/agentToolDrawer';
 import CartInterface from './_components/cartInterface';
 import Image from 'next/image';
 import { Accordions } from '~/components/ui/accordions';
 import { Button } from '~/components/ui/button';
-import { Input } from '~/components/ui/form';
+import { Checkbox, Input } from '~/components/ui/form';
 import ShoppingCartIcon from './assets/shopping_cart_checkout.png';
 import PersonIcon from './assets/person_add.png';
 import DataLossIcon from './assets/data_loss_prevention.png';
@@ -21,6 +20,15 @@ export default function CustomerSupportDrawer() {
   // State to manage open status of multiple accordion items
   const [openAccordions, setOpenAccordions] = useState<number[]>([]);
   const path = usePathname();
+  // const windowPathName=window.location.href
+  // const pathMatch = path.match(/\/([^\/?]*)/);
+  // const lastSegment = pathMatch ? pathMatch[1] : '';
+
+  // // Regular expression to check if it ends with numbers
+  // const endsWithNumbers = /\d+$/.test(lastSegment);
+
+  // console.log(endsWithNumbers)
+
   // Function to toggle the drawer
   const toggleDrawer = () => setIsOpen(!isOpen);
 
@@ -45,7 +53,6 @@ export default function CustomerSupportDrawer() {
       {/* Drawer modal */}
       {isOpen && (
         <>
-         
           <div
             className="fixed inset-0 flex h-full justify-end"
             onClick={toggleDrawer} // Close drawer when background is clicked
@@ -74,22 +81,23 @@ export default function CustomerSupportDrawer() {
 
               <div className="bg-[#f3f4f5] p-4">
                 <div>
-                  
                   {path == '/' ? (
                     <>
+                      
                       <ReferalId />
                       <CustomerSupport />
+                      {/* <InternalSearch /> */}
                     </>
-                  )  : path == '/cart/' ? (
+                  ) : path == '/cart/' ? (
                     <>
-                     <ReferalId />
-                     <CartInterface/>
-                     <CustomerSupport/>
+                      <ReferalId />
+                      <CartInterface />
+                      <CustomerSupport />
                     </>
                   ) : path.split('/').length - 1 === 2 ? (
                     <SalesBuddyProductPage />
-                  ): (
-                    ''
+                  ) : (
+                    <InternalSearch />
                   )}
                 </div>
               </div>
@@ -147,7 +155,11 @@ function ReferalId(){
           <label htmlFor="cart-id" className="block text-gray-500">
             Cart ID
           </label>
-          <Input id="cart-id" placeholder="Enter Cart ID" className="mt-2" />
+          <Input
+            id="cart-id"
+            placeholder="Enter Cart ID"
+            className="mt-2 "
+          />
           <Button className="mt-2 w-full bg-green-600 text-white hover:bg-green-700">
             Fetch Cart
           </Button>
@@ -212,13 +224,134 @@ function ReferalId(){
   ];
 
   return (
-    
     <>
-     <h2 className="mt-[40px] text-xl font-semibold">Customer Support</h2>
-    <div className="mt-[15px] bg-white px-[20px]">
-      <Accordions accordions={accordions} type="multiple" />
-    </div>
+      <p className="mt-[40px] text-[24px] font-normal text-[#353535]">Customer Information</p>
+      <div className="mt-[15px] bg-white">
+        <Accordions styles="border-t border-b p-1" accordions={accordions} type="multiple" />
+      </div>
     </>
   );
 }
 
+
+
+function InternalSearch() {
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+
+  const ourInventoryFilters = ['24', '1836', '18456', '3242', '3', '42'];
+  const supplierInventoryFilters = ['1836', '18456', '3242', '3', '42'];
+
+  // Function to handle checkbox toggle
+  const handleFilterToggle = (filter: string) => {
+    setSelectedFilters((prevSelectedFilters) =>
+      prevSelectedFilters.includes(filter)
+        ? prevSelectedFilters.filter((f) => f !== filter)
+        : [...prevSelectedFilters, filter],
+    );
+  };
+
+  // Function to remove a filter from selected filters
+  const handleFilterRemove = (filter: string) => {
+    setSelectedFilters((prevSelectedFilters) => prevSelectedFilters.filter((f) => f !== filter));
+  };
+
+  const accordions = [
+    {
+      title: (
+        <h4 className="flex items-center gap-2 text-[#353535] text-base font-normal">
+          <span className="flex items-center"> Our Inventory</span>
+        </h4>
+      ),
+      content: (
+        <div className="mt-2 space-y-2">
+          {ourInventoryFilters.map((filter) => (
+            <div key={filter} className="flex items-center gap-2">
+              <Checkbox
+                id={`our-inventory-${filter}`}
+                checked={selectedFilters.includes(filter)}
+                onCheckedChange={() => handleFilterToggle(filter)}
+              />
+              <label htmlFor={`our-inventory-${filter}`} className="text-sm text-gray-700">
+                {filter}
+              </label>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title:  <h4 className="flex items-center gap-2 text-[#353535] text-base font-normal">
+          <span className="flex items-center"> Supplier Inventory</span>
+        </h4>,
+      content: (
+        <div className="mt-2 space-y-2">
+          {supplierInventoryFilters.map((filter) => (
+            <div key={filter} className="flex items-center gap-2">
+              <Checkbox
+                id={`supplier-inventory-${filter}`}
+                checked={selectedFilters.includes(filter)}
+                onCheckedChange={() => handleFilterToggle(filter)}
+              />
+              <label htmlFor={`supplier-inventory-${filter}`} className="text-sm text-gray-700">
+                {filter}
+              </label>
+            </div>
+          ))}
+          <div className="mt-2">
+            <a href="#" className="text-sm text-blue-600">
+              (+)&nbsp;Show ## More
+            </a>
+          </div>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div className="w-full rounded-lg bg-gray-100 bg-white p-2">
+      <h2 className="mb-4 text-[24px] text-lg font-normal  text-[#353535]">
+        Internal Search
+      </h2>
+
+      <div className="mb-4 rounded-lg p-3">
+        <h3 className="mb-2 text-sm font-semibold"> Filters</h3>
+        <div className="flex flex-wrap gap-2">
+          {selectedFilters.length === 0 ? (
+            <span className="text-sm text-gray-500">No filters selected</span>
+          ) : (
+            selectedFilters.map((filter) => (
+              <span
+                key={filter}
+                className="flex items-center rounded-full bg-gray-200 px-3 py-1 text-sm"
+              >
+                {filter}
+                <button
+                  onClick={() => handleFilterRemove(filter)}
+                  className="ml-1 text-gray-600 hover:text-gray-800"
+                >
+                  ✕
+                </button>
+              </span>
+            ))
+          )}
+        </div>
+      </div>
+
+      <Accordions
+        styles="border-t border-b p-1"
+        accordions={accordions}
+        type="multiple"
+        defaultValue={['Our Inventory', 'Supplier Inventory']}
+      />
+
+      <div className="mt-4">
+        <Input
+          placeholder="Search the docs…"
+          // icon={<MagnifyingGlassIcon height="16" width="16" />}
+        />
+      </div>
+
+      <Button className="mt-4 w-full bg-green-600 text-white hover:bg-green-700">Search</Button>
+    </div>
+  );
+}

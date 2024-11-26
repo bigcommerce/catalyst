@@ -139,8 +139,8 @@ export default function SalesBuddyProductPage() {
       
 
         {/* Accordions */}
-        <div className= "bg-white mt-[15px] px-[20px]">
-          <Accordions accordions={accordions} type="multiple" />
+        <div className= "bg-white mt-[15px] ">
+          <Accordions styles="border-t border-b p-1" accordions={accordions} type="multiple" />
         </div>
 
         {/* Quick Links */}
