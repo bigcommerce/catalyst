@@ -7,13 +7,13 @@ import { Suspense } from 'react';
 import { Breadcrumbs } from '~/components/breadcrumbs';
 
 import Promotion from '../../../../../components/ui/pdp/belami-promotion-banner-pdp';
-import { SimilarProducts } from '../../../../../components/ui/pdp/belami-similar-products-pdp';
+import { SimilarProducts as SimilarProducts0 } from '../../../../../components/ui/pdp/belami-similar-products-pdp';
 
 import { Description } from './_components/description';
 import { Details } from './_components/details';
 import { Gallery } from './_components/gallery';
 import { ProductViewed } from './_components/product-viewed';
-import { RelatedProducts } from './_components/related-products';
+//import { RelatedProducts } from './_components/related-products';
 import { Reviews } from './_components/reviews';
 import { Warranty } from './_components/warranty';
 import { getProduct } from './page-data';
@@ -21,6 +21,9 @@ import { ReviewSummary } from './_components/review-summary';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import { GetProductMetaFields } from '~/components/management-apis';
 import { ProductProvider } from '~/components/common-context/product-provider';
+
+import { RelatedProducts } from './related-products';
+//import { SimilarProducts } from './similar-products';
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
@@ -75,7 +78,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
-export default async function Product(props: Props) {
+export default async function ProductPage(props: Props) {
   const searchParams = await props.searchParams;
   const params = await props.params;
 
@@ -165,17 +168,23 @@ export default async function Product(props: Props) {
             />
             <div className="lg:col-span-2">
               <Description product={product} />
+              {/*
               <RelatedProducts
                 productId={product.entityId}
                 relatedProductArrow={relatedProductArrow}
               />
-              <SimilarProducts />
+              */}
+              <RelatedProducts productId={product.entityId} />
+              {/*
+              <SimilarProducts productId={product.entityId} />
+              */}
+              <SimilarProducts0 />
               <Promotion />
               <Warranty product={product} />
-              <Suspense fallback={t('loading')} />
               <Suspense fallback={t('loading')}>
                 <Reviews productId={product.entityId} />
               </Suspense>
+              <div id="sitevibes-product-reviews"></div>
             </div>
           </div>
           <ProductViewed product={product} />

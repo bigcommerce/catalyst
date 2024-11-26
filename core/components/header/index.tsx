@@ -18,7 +18,8 @@ import { Header as ComponentsHeader } from '../ui/header';
 import { logout } from './_actions/logout';
 import { CartLink } from './cart';
 import { HeaderFragment } from './fragment';
-import { QuickSearch } from './quick-search';
+//import { QuickSearch } from './quick-search';
+import { AutocompleteSearch } from './autocomplete-search';
 import { BcImage } from '../bc-image';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 
@@ -155,8 +156,7 @@ export const Header = async ({ cart }: Props) => {
       links={links}
       locales={localeLanguageRegionMap}
       logo={data.settings ? logoTransformer(data.settings) : undefined}
-     
-      search={<QuickSearch logo={data.settings ? logoTransformer(data.settings) : ''} />}
+      search={<AutocompleteSearch />}     
     />
   );
 };

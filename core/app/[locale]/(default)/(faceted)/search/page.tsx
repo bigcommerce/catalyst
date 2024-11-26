@@ -11,6 +11,36 @@ import { fetchFacetedSearch } from '../fetch-faceted-search';
 
 import { getCompareProducts } from './page-data';
 
+import { Breadcrumbs } from '~/components/breadcrumbs';
+import { Search } from './search';
+
+/*
+TODO: Move to separate file...
+*/
+const storeHash = process.env.BIGCOMMERCE_STORE_HASH;
+const client = process.env.BIGCOMMERCE_API_CLIENT || '';
+const tokenRest = process.env.BIGCOMMERCE_ACCESS_TOKEN || '';
+const channelId = process.env.BIGCOMMERCE_CHANNEL_ID;
+
+export async function getPromotions() {
+  const response = await fetch(`https://api.bigcommerce.com/stores/${storeHash}/v3/promotions?channels=${channelId}&sort=priority&status=ENABLED&redemption_type=AUTOMATIC`, {
+    method: "GET",
+    credentials: "same-origin",
+    headers: {
+      "X-Auth-Client": client,
+      "X-Auth-Token": tokenRest,
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    cache: 'force-cache',
+    //next: { revalidate: 3600 }
+  });
+
+  const data = await response.json();
+
+  return data.data;
+}
+
 export async function generateMetadata() {
   const t = await getTranslations('Search');
 
@@ -23,109 +53,30 @@ interface Props {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export default async function Search(props: Props) {
+export default async function SearchPage(props: Props) {
   const searchParams = await props.searchParams;
   const t = await getTranslations('Search');
   const f = await getTranslations('FacetedGroup');
 
   const format = await getFormatter();
 
-  const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : undefined;
+  const searchTerm = typeof searchParams.query === 'string' ? searchParams.query : undefined;
+  const promotions = await getPromotions();
 
   if (!searchTerm) {
     return <EmptySearch />;
   }
 
-  const search = await fetchFacetedSearch({ ...searchParams });
-
-  const productsCollection = search.products;
-  const products = productsCollection.items.map((product) => ({
-    id: product.entityId.toString(),
-    title: product.name,
-    href: product.path,
-    image: product.defaultImage
-      ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
-      : undefined,
-    price: pricesTransformer(product.prices, format),
-    subtitle: product.brand?.name ?? undefined,
-  }));
-
-  if (products.length === 0) {
-    return <EmptySearch searchTerm={searchTerm} />;
-  }
-
-  const totalProducts = productsCollection.collectionInfo?.totalItems ?? 0;
-
-  // TODO: remove hasNextPage and hasPreviousPage from query
-  const { endCursor, startCursor, hasNextPage, hasPreviousPage } = productsCollection.pageInfo;
-
-  const facets = search.facets.items;
-  const filters = await facetsTransformer(facets);
-
-  const compare = searchParams.compare;
-
-  const compareProducts =
-    typeof compare === 'string'
-      ? getCompareProducts({ entityIds: compare.split(',').map((id) => Number(id)) }).then((data) =>
-          removeEdgesAndNodes(data.products).map((product) => ({
-            id: product.entityId.toString(),
-            title: product.name,
-            href: product.path,
-            image: product.defaultImage
-              ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
-              : undefined,
-          })),
-        )
-      : [];
-
   return (
-    <ProductsListSection
-      compareAction={redirectToCompare}
-      compareLabel={f('compare')}
-      compareParamName="compare"
-      compareProducts={compareProducts}
-      filterLabel={f('FacetedSearch.filters')}
-      filters={filters.filter((filter) => !!filter)}
-      paginationInfo={
-        hasNextPage || hasPreviousPage
-          ? {
-              startCursorParamName: 'before',
-              endCursorParamName: 'after',
-              endCursor: hasNextPage ? endCursor : null,
-              startCursor: hasPreviousPage ? startCursor : null,
-            }
-          : undefined
-      }
-      products={products}
-      sortLabel={f('SortBy.label')}
-      sortOptions={[
-        { value: 'featured', label: f('SortBy.featuredItems') },
-        { value: 'newest', label: f('SortBy.newestItems') },
-        {
-          value: 'best_selling',
-          label: f('SortBy.bestSellingItems'),
-        },
-        { value: 'a_to_z', label: f('SortBy.aToZ') },
-        { value: 'z_to_a', label: f('SortBy.zToA') },
-        {
-          value: 'best_reviewed',
-          label: f('SortBy.byReview'),
-        },
-        {
-          value: 'lowest_price',
-          label: f('SortBy.priceAscending'),
-        },
-        {
-          value: 'highest_price',
-          label: f('SortBy.priceDescending'),
-        },
-        { value: 'relevance', label: f('SortBy.relevance') },
-      ]}
-      sortParamName="sort"
-      title={`${t('searchResults')} "${searchTerm}"`}
-      totalCount={totalProducts}
-    />
+    <div className="group">
+      <Breadcrumbs category={{breadcrumbs: {edges: [{node: {name: t('title'), path: '/search'}}]}}} />
+      <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
+        <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{t('searchResults')}: <b className="text-2xl font-bold lg:text-3xl">"{searchTerm}"</b></h1>
+      </div>
+      <Search query={searchTerm} promotions={promotions} />
+    </div>
   );
 }
 
-export const runtime = 'edge';
+// TODO: Not sure why its not working with this line uncommented... Something needs to be fixed to enable it.
+//export const runtime = 'edge';

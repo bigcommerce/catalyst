@@ -706,5 +706,9 @@
     "glass": "Glass",
     "warning": "Warning: California Prop 65 Notice",
     "closeDetails": "Close Details"
+  },
+  "Brands": {
+    "title": "Brands",
+    "all": "All Brands"
   }
 }
