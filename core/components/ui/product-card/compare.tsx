@@ -51,6 +51,7 @@ export const Compare = ({ id, image, name }: Props) => {
   return (
     <div className="flex items-center gap-3">
       <Checkbox
+        aria-label="Compare"
         checked={checkedState}
         className="h-4 w-4"
         id={checkboxId}
