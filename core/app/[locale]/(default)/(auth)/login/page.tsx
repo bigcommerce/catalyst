@@ -50,7 +50,7 @@ export default function Login({ params: { locale } }: Props) {
 
   return (
     <>
-      <div className="main-login-page w-full bg-[#F3F4F5]">
+      <div className="main-login-page w-full bg-[#F3F4F5] border-t-[10px] border-t-[#008BB7]">
         <div className="relative overflow-x-auto">
           <div className="flex min-w-fit items-center whitespace-nowrap py-5 pl-4 pr-4 md:justify-center md:py-[20px]">
             <div className="flex items-center gap-4 md:gap-[30px]">

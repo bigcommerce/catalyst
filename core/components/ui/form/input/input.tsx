@@ -1,10 +1,6 @@
 import { AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { ComponentPropsWithRef, ElementRef, forwardRef, ReactNode, useState } from 'react';
-import { BcImage } from '~/components/bc-image';
 import { cn } from '~/lib/utils';
-import { imageManagerImageUrl } from '~/lib/store-assets';
-import { imageIconList } from '~/app/[locale]/(default)/(auth)/fragments';
-import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 
 interface Props extends ComponentPropsWithRef<'input'> {
   error?: boolean;
@@ -17,26 +13,81 @@ interface Props extends ComponentPropsWithRef<'input'> {
 
 const Input = forwardRef<ElementRef<'input'>, Props>(
   (
-    { className, children, error = false, icon, type = 'text', storeHash, passwordHide, ...props },
+    {
+      className,
+      children,
+      error = false,
+      icon,
+      type = 'text',
+      storeHash,
+      passwordHide,
+      onChange,
+      ...props
+    },
     ref,
   ) => {
     const [showPassword, setShowPassword] = useState(false);
-
+    const [actualValue, setActualValue] = useState('');
     const isPassword = type === 'password';
-    const effectiveType = isPassword ? (showPassword ? 'text' : 'password') : type;
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value;
+      let updatedValue = actualValue;
+
+      // If deleting characters
+      if (newValue.length < actualValue.length) {
+        updatedValue = actualValue.slice(0, -1);
+      }
+      // If text is pasted or multiple characters added
+      else if (newValue.length > actualValue.length + 1) {
+        // Strip any asterisks from pasted text
+        const cleanValue = newValue.replace(/\*/g, '');
+        updatedValue = cleanValue;
+      }
+      // If single character is added
+      else if (newValue.length > actualValue.length) {
+        // Get the last character that was added
+        const lastChar = newValue[newValue.length - 1];
+        updatedValue = actualValue + lastChar;
+      }
+
+      setActualValue(updatedValue);
+
+      if (onChange) {
+        onChange({
+          ...e,
+          target: {
+            ...e.target,
+            value: updatedValue,
+          },
+        } as React.ChangeEvent<HTMLInputElement>);
+      }
+    };
 
     return (
       <div className={cn('relative', className)}>
+        <style>{`
+          .password-on circle {
+            outline: 3px solid white;
+            border-radius: 50px;
+            r: 1.5;
+            cy: 11.5;
+          }
+        `}</style>
+
         <input
           className={cn(
             'peer w-full border-2 border-gray-200 px-4 py-2.5 text-base placeholder:text-gray-500 hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200',
             (error || isPassword) && 'pe-12',
             error &&
               'border-error-secondary hover:border-error focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 disabled:border-gray-200',
+            'font-mono tracking-wide',
           )}
           ref={ref}
-          type={effectiveType}
+          type="text"
           {...props}
+          value={isPassword && !showPassword ? '*'.repeat(actualValue.length) : actualValue}
+          onChange={handleChange}
         />
 
         {Boolean(error || icon || isPassword) && (
@@ -58,12 +109,9 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
                 <AlertCircle />
               ) : isPassword ? (
                 showPassword ? (
-                  <BcImage
-                    src={passwordHide || imageManagerImageUrl('eye-password-hide.png', '150w')}
-                    alt="eye-on"
-                    width={24}
-                    height={24}
-                    className="h-[25px] w-[25px] object-contain"
+                  <Eye
+                    size={20}
+                    className="password-on h-[25px] w-[25px] fill-black [&>circle]:fill-black"
                   />
                 ) : (
                   <Eye
