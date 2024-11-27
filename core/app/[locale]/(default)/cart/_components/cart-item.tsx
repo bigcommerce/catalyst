@@ -151,6 +151,7 @@ interface Props {
   product: any;
   currencyCode: string;
   deleteIcon: string;
+  cartId: string;
 }
 function moveToTheEnd(arr: any, word: string) {
   arr?.map((elem: any, index: number) => {
@@ -161,8 +162,7 @@ function moveToTheEnd(arr: any, word: string) {
   });
   return arr;
 }
-export const CartItem = ({ currencyCode, product, deleteIcon }: Props) => {
-  const cartId = cookies().get('cartId')?.value;
+export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) => {
   const changeTheProtectedPosition = moveToTheEnd(
     product?.selectedOptions,
     'Protect Your Purchase',

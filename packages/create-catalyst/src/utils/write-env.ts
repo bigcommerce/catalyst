@@ -7,11 +7,13 @@ export const writeEnv = (
   {
     channelId,
     storeHash,
-    customerImpersonationToken,
+    storefrontToken,
+    arbitraryEnv,
   }: {
     channelId: string;
     storeHash: string;
-    customerImpersonationToken: string;
+    storefrontToken?: string;
+    arbitraryEnv?: string[];
   },
 ) => {
   outputFileSync(
@@ -19,12 +21,13 @@ export const writeEnv = (
     [
       `BIGCOMMERCE_STORE_HASH=${storeHash}`,
       `BIGCOMMERCE_CHANNEL_ID=${channelId}`,
-      `BIGCOMMERCE_CUSTOMER_IMPERSONATION_TOKEN=${customerImpersonationToken}`,
+      `BIGCOMMERCE_STOREFRONT_TOKEN=${storefrontToken}`,
       '',
       `AUTH_SECRET=${randomBytes(32).toString('hex')}`,
       `CLIENT_LOGGER=false`,
       `ENABLE_ADMIN_ROUTE=true`,
       `DEFAULT_REVALIDATE_TARGET=3600`,
+      arbitraryEnv?.map((env) => env).join('\n'),
     ].join('\n'),
   );
 };

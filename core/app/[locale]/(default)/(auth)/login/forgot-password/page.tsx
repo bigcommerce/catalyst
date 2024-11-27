@@ -7,23 +7,20 @@ import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
 import {Breadcrumbs as ComponentsBreadcrumbs} from '~/components/ui/breadcrumbs'
 
-import { ResetPasswordForm } from './_components/reset-password-form';
-import { ResetPasswordFormFragment } from './_components/reset-password-form/fragment';
+import { resetPassword } from '../_actions/reset-password';
 
-const ResetPageQuery = graphql(
-  `
-    query ResetPageQuery {
-      site {
-        settings {
-          reCaptcha {
-            ...ResetPasswordFormFragment
-          }
-        }
-      }
-    }
-  `,
-  [ResetPasswordFormFragment],
-);
+// const ResetPageQuery = graphql(`
+//   query ResetPageQuery {
+//     site {
+//       settings {
+//         reCaptcha {
+//           isEnabledOnStorefront
+//           siteKey
+//         }
+//       }
+//     }
+//   }
+// `);
 
 export async function generateMetadata() {
   const t = await getTranslations('Login.ForgotPassword');
@@ -46,11 +43,14 @@ export default async function Reset() {
     fetchOptions: { next: { revalidate } },
   });
 
+  const recaptchaSettings = await bypassReCaptcha(data.site.settings?.reCaptcha);
+
+  // TODO: add missing translations labels
   return (
     <div className="reset-pass w-[100%] md:w-[calc((1116 / 1600) * 100vw)] flex flex-col gap-[20px] md:gap-[8px] justify-center mt-6 mx-[0px] md:mx-auto">
       <ComponentsBreadcrumbs className="flex justify-center" breadcrumbs={breadcrumbs} />
       <h2 className="reset-pass-head text-[24px] md:text-[34px] font-normal text-center tracking-[0.25px] text-[#353535]">{t('heading')}</h2>
-      <ResetPasswordForm reCaptchaSettings={bypassReCaptcha(data.site.settings?.reCaptcha)} />
+      <ResetPasswordForm reCaptchaSettings={recaptchaSettings} />
     </div>
   );
 }

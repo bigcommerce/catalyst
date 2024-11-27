@@ -1,7 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { PricingFragment } from '~/client/fragments/pricing';
@@ -65,14 +65,14 @@ interface GetWishlists {
 }
 
 export const getWishlists = cache(async ({ limit = 3, before, after, filters }: GetWishlists) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
   const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
   const response = await client.fetch({
     document: WishlistsQuery,
     variables: { ...filters, ...paginationArgs },
     fetchOptions: { cache: 'no-store' },
-    customerId,
+    customerAccessToken,
   });
 
   const { customer } = response.data;

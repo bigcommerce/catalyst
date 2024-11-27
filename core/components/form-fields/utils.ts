@@ -47,6 +47,8 @@ export const BOTH_CUSTOMER_ADDRESS_FIELDS = [
   FieldNameToFieldId.phone,
 ];
 
+export const FULL_NAME_FIELDS = [FieldNameToFieldId.firstName, FieldNameToFieldId.lastName];
+
 export const createFieldName = (
   field: FragmentOf<typeof FormFieldsFragment>,
   fieldOrigin: 'customer' | 'address',

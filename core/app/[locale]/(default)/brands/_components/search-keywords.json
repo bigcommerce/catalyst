@@ -1,0 +1,11 @@
+{
+    "Lighting": 10,
+    "Fans": 9,
+    "Outdoor Heating": 8,
+    "Outdoor Shading": 7,
+    "Outdoor Cooling": 6,
+    "Outdoor Cooking": 5,
+    "Home Decor": 4,
+    "Furniture": 3,
+    "Rugs": 2
+}

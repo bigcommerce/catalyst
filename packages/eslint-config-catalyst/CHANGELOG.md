@@ -1,5 +1,11 @@
 # @bigcommerce/eslint-config-catalyst
 
+## 0.1.3
+
+### Patch Changes
+
+- [#1623](https://github.com/bigcommerce/catalyst/pull/1623) [`16e3a76`](https://github.com/bigcommerce/catalyst/commit/16e3a763571324dccd9031a79e400409eff9ee0c) Thanks [@chanceaclark](https://github.com/chanceaclark)! - allow props not to be spread
+
 ## 0.1.2
 
 ### Patch Changes

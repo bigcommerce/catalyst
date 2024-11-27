@@ -1,7 +1,7 @@
 'use server';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { revalidate } from '~/client/revalidate-target';
 
 const ProductMetaFieldsQuery = graphql(
@@ -32,13 +32,11 @@ const ProductMetaFieldsQuery = graphql(
 );
 
 export const getProductMetaFields = async (entityId: number, nameSpace: string) => {
-    const customerId = await getSessionCustomerId();
-
-    const { data } = await client.fetch({
-        document: ProductMetaFieldsQuery,
-        variables: {entityId: entityId, nameSpace: nameSpace}
-    });
-    return data;
+  const { data } = await client.fetch({
+    document: ProductMetaFieldsQuery,
+    variables: {entityId: entityId, nameSpace: nameSpace}
+  });
+  return data;
 };
 
 const splitArray = (array: Array<any>, count: number) => {
@@ -95,10 +93,10 @@ export const GetVariantsByProductSKU = async (skuArray: any) => {
         }
         skuQuery += `}
         }`;
-        const customerId = await getSessionCustomerId();
+        const customerAccessToken = await getSessionCustomerAccessToken();
         const { data } = await client.fetch({
           document: graphql(skuQuery),
-          customerId,
+          customerAccessToken,
           fetchOptions: { next: { revalidate } },
         });
         Object.values(data?.site)?.forEach((element: any) => {

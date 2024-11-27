@@ -122,7 +122,11 @@
     "Category": {
         "sortBy": "{items, plural, =0 {aucun article} =1 {1 article} other {# articles}}",
         "products": "Produits",
-        "items": "articles"
+        "items": "articles",
+        "Empty": {
+            "message": "Aucun produit dans cette catégorie",
+            "cta": "Retour à l’accueil"
+        }
     },
     "Search": {
         "title": "Résultats de recherche",
@@ -149,6 +153,7 @@
             "title": "Adresses",
             "addNewAddress": "Ajouter une nouvelle adresse",
             "editButton": "Modifier",
+            "emptyAddresses": "Aucune adresse ajoutée",
             "deleteButton": "Supprimer",
             "confirmDeleteAddress": "Supprimer l'adresse",
             "deleteModalTitle": "Voulez-vraiment supprimer cette adresse ?",
@@ -199,7 +204,7 @@
             "changePassword": "Modifier le mot de passe",
             "submit": "MODIFIER LES PARAMÈTRES",
             "submitting": "MODIFIER LES PARAMÈTRES...",
-            "successMessage": "Bonjour {firstName} {lastName}, les données de votre compte ont bien été mises à jour",
+            "successMessage": "Les paramètres de votre compte ont été mis à jour",
             "validationMessages": {
                 "email": "Veuillez saisir une adresse e-mail valide, telle que nom@domaine.com",
                 "empty": "Ce champ ne peut pas être vide",

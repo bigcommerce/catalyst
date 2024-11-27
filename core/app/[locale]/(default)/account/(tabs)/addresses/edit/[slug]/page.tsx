@@ -2,7 +2,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { FormFieldValuesFragment } from '~/client/fragments/form-fields-values';
 import { PaginationFragment } from '~/client/fragments/pagination';
@@ -98,18 +98,18 @@ export async function generateMetadata() {
 }
 
 interface Props {
-  params: { slug: string };
-  searchParams: Record<string, string | string[] | undefined>;
+  params: Promise<{ slug: string }>;
 }
 
-export default async function Edit({ params: { slug } }: Props) {
-  const t = await getTranslations('Account.Addresses.Edit');
+export default async function Edit({ params }: Props) {
+  const { slug } = await params;
 
-  const customerId = await getSessionCustomerId();
+  const t = await getTranslations('Account.Addresses.Edit');
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data } = await client.fetch({
     document: CustomerEditAddressQuery,
-    customerId,
+    customerAccessToken,
     fetchOptions: { cache: 'no-store' },
     variables: {
       countryCode: null,
@@ -117,7 +117,6 @@ export default async function Edit({ params: { slug } }: Props) {
     },
   });
 
-  const reCaptchaSettings = data.site.settings?.reCaptcha;
   const countries = data.geography.countries;
   const addressFields = [...(data.site.settings?.formFields.shippingAddress ?? [])];
   const addresses = removeEdgesAndNodes({ edges: data.customer?.addresses.edges });
@@ -132,6 +131,8 @@ export default async function Edit({ params: { slug } }: Props) {
     return notFound();
   }
 
+  const reCaptchaSettings = await bypassReCaptcha(data.site.settings?.reCaptcha);
+
   return (
     <div className="mx-auto mb-14 lg:w-2/3">
       <h1 className="mb-8 text-3xl font-black lg:text-4xl">{t('heading')}</h1>
@@ -140,7 +141,7 @@ export default async function Edit({ params: { slug } }: Props) {
         addressFields={addressFields}
         countries={countries || []}
         isAddressRemovable={addresses.length > 1}
-        reCaptchaSettings={bypassReCaptcha(reCaptchaSettings)}
+        reCaptchaSettings={reCaptchaSettings}
       />
     </div>
   );

@@ -17,3 +17,6 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: 'react-day-picker'
         update-types: ['version-update:semver-major']
+      # We are using the latest pre-releases for react and react-dom.
+      - dependency-name: 'react'
+      - dependency-name: 'react-dom'

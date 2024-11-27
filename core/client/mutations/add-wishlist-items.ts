@@ -1,6 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 
 import { client } from '..';
 import { graphql, VariablesOf } from '../graphql';
@@ -38,12 +38,12 @@ export interface AddWishlistItems {
 }
 
 export const addWishlistItems = async ({ hideOutOfStock = false, input }: AddWishlistItems) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: ADD_WISHLIST_ITEMS_MUTATION,
     variables: { hideOutOfStock, input },
-    customerId,
+    customerAccessToken,
     fetchOptions: { cache: 'no-store' },
   });
 

@@ -122,7 +122,11 @@
     "Category": {
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# itens}}",
         "products": "Produtos",
-        "items": "itens"
+        "items": "itens",
+        "Empty": {
+            "message": "Não há produtos nesta categoria",
+            "cta": "Voltar para o início"
+        }
     },
     "Search": {
         "title": "Resultados da pesquisa",
@@ -149,6 +153,7 @@
             "title": "Endereços",
             "addNewAddress": "Adicionar novo endereço",
             "editButton": "Editar",
+            "emptyAddresses": "Nenhum endereço adicionado",
             "deleteButton": "Excluir",
             "confirmDeleteAddress": "Excluir endereço",
             "deleteModalTitle": "Deseja mesmo excluir esse endereço?",
@@ -199,7 +204,7 @@
             "changePassword": "Alterar senha",
             "submit": "Atualizar configurações",
             "submitting": "Atualizar configurações...",
-            "successMessage": "{firstName} {lastName}, os dados da sua conta foram atualizados.",
+            "successMessage": "As configurações da sua conta foram atualizadas",
             "validationMessages": {
                 "email": "Insira um e-mail válido, como nome@dominio.com",
                 "empty": "Este campo não pode ficar vazio",
