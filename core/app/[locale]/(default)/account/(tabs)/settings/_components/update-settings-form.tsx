@@ -68,8 +68,6 @@ export enum FieldNameToFieldId {
   email = 1,
   firstName = 4,
   lastName,
-  company,
-  phone,
 }
 
 type FieldUnionType = keyof typeof FieldNameToFieldId;
@@ -192,10 +190,7 @@ export const UpdateSettingsForm = ({
     if (submit.status === 'success') {
       setFormStatus({
         status: 'success',
-        message: t('successMessage', {
-          firstName: submit.data?.firstName,
-          lastName: submit.data?.lastName,
-        }),
+        message: t('successMessage'),
       });
     }
 

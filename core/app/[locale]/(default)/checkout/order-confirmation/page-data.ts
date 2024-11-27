@@ -1,7 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 
@@ -144,7 +144,7 @@ interface OrderDetailsProps {
 }
 
 export const getOrderDetails = async ({ orderId}: OrderDetailsProps) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: CustomerOrderDetails,
@@ -153,7 +153,7 @@ export const getOrderDetails = async ({ orderId}: OrderDetailsProps) => {
         entityId: +orderId,
       },
     },
-    customerId,
+    customerAccessToken,
     fetchOptions: { cache: 'no-store' },
   });
   const order = response.data.site.order;

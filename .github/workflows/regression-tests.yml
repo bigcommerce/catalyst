@@ -140,7 +140,7 @@ jobs:
       - name: Run Playwright tests
         run: |
           cd core
-          npx playwright test tests/ui/ --project=tests-chromium 
+          npx playwright test tests/ui/ --project=tests-chromium
 
       - uses: actions/upload-artifact@v4
         if: failure()
@@ -151,7 +151,7 @@ jobs:
 
       - name: Send slack notification
         uses: slackapi/slack-github-action@v1.26.0
-        if: ${{ steps.pr_details.outputs.draft != 'true' && failure() }}
+        if: ${{ steps.pr_details.outputs.draft != 'true' && steps.pr_details.outputs.pr && failure() }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:
@@ -213,7 +213,7 @@ jobs:
 
       - name: Send slack notification
         uses: slackapi/slack-github-action@v1.26.0
-        if: ${{ steps.pr_details.outputs.draft != 'true' && failure() }}
+        if: ${{ steps.pr_details.outputs.draft != 'true' && steps.pr_details.outputs.pr && failure() }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:

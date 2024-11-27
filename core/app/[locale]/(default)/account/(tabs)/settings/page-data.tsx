@@ -1,7 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { FormFieldValuesFragment } from '~/client/fragments/form-fields-values';
 import { PaginationFragment } from '~/client/fragments/pagination';
@@ -91,7 +91,7 @@ interface Props {
 }
 
 export const getCustomerSettingsQuery = cache(async ({ address, customer }: Props = {}) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: CustomerSettingsQuery,
@@ -102,14 +102,14 @@ export const getCustomerSettingsQuery = cache(async ({ address, customer }: Prop
       customerSortBy: customer?.sortBy,
     },
     fetchOptions: { cache: 'no-store' },
-    customerId,
+    customerAccessToken,
   });
 
   const addressFields = response.data.site.settings?.formFields.shippingAddress;
   const customerFields = response.data.site.settings?.formFields.customer;
   const customerInfo = response.data.customer;
 
-  const reCaptchaSettings = bypassReCaptcha(response.data.site.settings?.reCaptcha);
+  const reCaptchaSettings = await bypassReCaptcha(response.data.site.settings?.reCaptcha);
 
   if (!addressFields || !customerFields || !customerInfo) {
     return null;
@@ -168,13 +168,13 @@ export interface CustomerAddressesArgs {
 
 export const getCustomerAddresses = cache(
   async ({ before = '', after = '', limit = 9 }: CustomerAddressesArgs) => {
-    const customerId = await getSessionCustomerId();
+    const customerAccessToken = await getSessionCustomerAccessToken();
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
       document: GetCustomerAddressesQuery,
       variables: { ...paginationArgs },
-      customerId,
+      customerAccessToken,
       fetchOptions: { cache: 'no-store' },
     });
 

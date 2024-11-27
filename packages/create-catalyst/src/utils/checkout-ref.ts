@@ -26,15 +26,14 @@ export function checkoutRef(repoDir: string, ref: string): void {
       } else {
         console.error(`Error checking out ref '${ref}':`, stderr.trim());
       }
-    } else if (error instanceof Error) {
-      // General error handling
-      console.error(`Error checking out ref '${ref}':`, error.message);
-    } else {
-      // Unknown error type
-      console.error(`Unknown error occurred while checking out ref '${ref}'.`);
     }
 
-    // Exit the process with a non-zero exit code
-    process.exit(1);
+    if (error instanceof Error) {
+      // General error handling
+      console.error(`Error checking out ref '${ref}':`, error.message);
+    }
+
+    // Unknown error type
+    console.error(`Unknown error occurred while checking out ref '${ref}'.`);
   }
 }

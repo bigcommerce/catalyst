@@ -19,7 +19,6 @@ type FormFieldsType = VariablesOf<typeof FakeMutation>['input']['formFields'];
 
 interface ReturnedFormData {
   [k: string]: unknown;
-  address: Record<string, unknown>;
   formFields: Record<string, unknown>;
 }
 
@@ -225,24 +224,7 @@ export const parseRegisterCustomerFormData = (registerFormData: FormData): unkno
         });
       }
 
-      if (sections.includes('address')) {
-        parsedData.address[key] = value;
-      }
-
-      if (sections.some((section) => section.startsWith('custom_address'))) {
-        const fields = updateFormFields({
-          formFields: isFormFieldsType(parsedData.address.formFields)
-            ? parsedData.address.formFields
-            : null,
-          fieldType: sections[1] ?? '',
-          fieldEntityId: Number(key),
-          fieldValue: value,
-        });
-
-        parsedData.address = { ...parsedData.address, formFields: { ...fields } };
-      }
-
       return parsedData;
     },
-    { formFields: {}, address: {} },
+    { formFields: {} },
   );

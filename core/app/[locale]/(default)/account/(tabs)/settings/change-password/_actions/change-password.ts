@@ -3,7 +3,7 @@
 import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 
@@ -51,8 +51,7 @@ export interface State {
 
 export const changePassword = async (_previousState: unknown, formData: FormData) => {
   const t = await getTranslations('Account.Settings.ChangePassword');
-
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   try {
     const parsedData = CustomerChangePasswordSchema.parse({
@@ -69,7 +68,7 @@ export const changePassword = async (_previousState: unknown, formData: FormData
           newPassword: parsedData.newPassword,
         },
       },
-      customerId,
+      customerAccessToken,
     });
 
     const result = response.data.customer.changePassword;

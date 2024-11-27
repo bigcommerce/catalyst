@@ -16,5 +16,9 @@ export const Breadcrumbs = ({ category }: Props) => {
     href: path ?? '#',
   }));
 
+  if (breadcrumbs.length < 2) {
+    return null;
+  }
+
   return <ComponentsBreadcrumbs breadcrumbs={breadcrumbs} />;
 };

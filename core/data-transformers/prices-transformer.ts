@@ -7,7 +7,7 @@ import { Price } from '~/components/ui/product-card';
 
 export const pricesTransformer = (
   prices: ResultOf<typeof PricingFragment>['prices'],
-  format: ExistingResultType<typeof getFormatter>,
+  format: ExistingResultType<typeof getFormatter>, // TODO: remove?
 ): Price | undefined => {
   if (!prices) {
     return undefined;

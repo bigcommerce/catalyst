@@ -1,7 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { ProductCardCarouselFragment } from '~/components/product-card-carousel/fragment';
@@ -34,12 +34,12 @@ export const GET = async (
   _request: NextRequest,
   { params }: { params: { type: 'newest' | 'featured' } },
 ) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
   const { type } = params;
 
   const { data } = await client.fetch({
     document: GetProductCardCarousel,
-    customerId,
+    customerAccessToken,
   });
 
   if (type === 'newest') {
