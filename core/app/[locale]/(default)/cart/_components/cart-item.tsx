@@ -186,7 +186,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                 height={144}
                 src={product.image.url}
                 width={144}
-                className="h-full min-h-[9em] w-full object-contain" // Added class to fill space
+                className="h-full min-h-[9em] w-full object-contain"
               />
             ) : (
               <div className="min-h-[300px] min-w-[300px]" />

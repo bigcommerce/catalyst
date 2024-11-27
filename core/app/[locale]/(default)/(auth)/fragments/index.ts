@@ -19,6 +19,7 @@ export interface IconProps {
     'closeIcon'?: string | StaticImport | any;
     'fan1'?: string | StaticImport | any;
     'fan2'?: string | StaticImport | any;
+    'passwordHide'?: string | StaticImport | any;
 }
 
 export const imageIconList: IconProps = {
@@ -39,4 +40,5 @@ export const imageIconList: IconProps = {
     'closeIcon': imageManagerImageUrl('close.png', '14w'),
     'fan1': imageManagerImageUrl('image-2-.png', '150w'),
     'fan2': imageManagerImageUrl('add-to-cart-pop-up-img1.jpg', '150w'),
+    'passwordHide' : imageManagerImageUrl('eye-password-hide.png', '150w'),
 };

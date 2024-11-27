@@ -40,7 +40,7 @@ const SubmitButton = () => {
 
   return (
     <Button
-      className="relative flex h-[42px] w-full flex-row items-center justify-center rounded-[3px] bg-[#008BB7] p-[5px_10px] px-8 py-2 text-[14px] font-[500] uppercase tracking-[1.25px] text-white"
+      className="relative mb-[60px] flex h-[50px] w-full flex-row items-center justify-center rounded-[3px] bg-[#008BB7] p-[5px_10px] px-8 py-2 text-[14px] font-[500] uppercase tracking-[1.25px] text-white hover:bg-[rgb(75,200,240)] transition-colors duration-500"
       data-button
       loading={pending}
       loadingText={t('submitting')}
@@ -167,7 +167,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
             </FieldLabel>
             <FieldControl asChild>
               <Input
-                className="flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] border border-[#cccbcb] bg-white"
+                className="flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] border-[#cccbcb] bg-white"
                 autoComplete="email"
                 id="email"
                 // onChange={handleEmailValidation}
