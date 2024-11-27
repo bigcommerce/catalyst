@@ -10,7 +10,7 @@ import { type Locale, LocaleSwitcher } from './locale-switcher';
 import { MobileNav } from './mobile-nav';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import { imageIconList } from '~/app/[locale]/(default)/(auth)/fragments';
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
+import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 
 interface Link {
   label: string;
@@ -116,12 +116,13 @@ const Header = ({
             link.groups && link.groups.length > 0 ? (
               <NavigationMenuPrimitive.Item id={`nav-menu-item-${link.href}`} key={link.href}>
                 <NavigationMenuPrimitive.Trigger
+                  //  button--indoor-lightning
                   id={`nav-menu-trigger-${link.href}`}
                   className="group/button font-semiboldd flex items-center hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
                 >
                   <CustomLink
                     id={`nav-menu-link-${link.href}`}
-                    className="p-3 font-semibold"
+                    className="p-3 font-normal"
                     href={link.href}
                   >
                     {link.label}
@@ -135,9 +136,9 @@ const Header = ({
 
                 <NavigationMenuPrimitive.Content
                   id={`nav-menu-content-${link.href}`}
-                  className="grid w-full grid-cols-2 gap-10 !px-[40px] 2xl:container data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0"
+                  className="grid w-[auto] grid-cols-1 gap-10 !px-[40px] 2xl:container data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0"
                 >
-                  <div className="flex flex-col">
+                  <div className="grid grid-cols-[repeat(6,minmax(0,auto))] gap-4">
                     {link.groups.map((group) => (
                       <ul
                         id={`nav-menu-group-${group.href}`}
@@ -148,7 +149,7 @@ const Header = ({
                           <NavigationMenuPrimitive.Link asChild>
                             <CustomLink
                               id={`nav-menu-group-link-${group.href}`}
-                              className="font-semiboldd block p-3"
+                              className="block p-3 text-[16px] font-[500]"
                               href={group.href}
                             >
                               {group.label}
@@ -165,7 +166,7 @@ const Header = ({
                               <NavigationMenuPrimitive.Link asChild>
                                 <CustomLink
                                   id={`nav-menu-nested-link-${nestedLink.href}`}
-                                  className="block p-3"
+                                  className="block p-3 text-[14px] font-[400]"
                                   href={nestedLink.href}
                                 >
                                   {nestedLink.label}
@@ -196,7 +197,7 @@ const Header = ({
 
         <NavigationMenuPrimitive.Viewport
           id="nav-menu-viewport"
-          className="absolute z-[10000000] start-0 top-full z-50 w-full bg-white pb-12 pt-6 shadow-xl duration-200 animate-in slide-in-from-top-5"
+          className="absolute start-0 top-full z-50 z-[10000000] ml-[3em] w-[auto] max-w-[95%] bg-white pb-12 pt-6 shadow-xl duration-200 animate-in slide-in-from-top-5"
         />
       </NavigationMenuPrimitive.Root>
 
@@ -216,7 +217,6 @@ const Header = ({
         <CustomLink href="/brands" className="font-semiboldd hover:text-primary">
           Our Brands
         </CustomLink>
-
       </nav>
     </div>
   </div>
