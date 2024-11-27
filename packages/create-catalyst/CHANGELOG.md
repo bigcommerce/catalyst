@@ -1,5 +1,57 @@
 # Changelog
 
+## 0.17.0
+
+### Minor Changes
+
+- [#1541](https://github.com/bigcommerce/catalyst/pull/1541) [`20c08da`](https://github.com/bigcommerce/catalyst/commit/20c08dae691b43149099892ffd1fa717310b602f) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Introduce an additional project creation scenario in which projects can be created without prompts if the CLI is provided with a valid `--store-hash`, `--channel-id`, and `--storefront-token`
+
+## 0.16.0
+
+### Minor Changes
+
+- [#1262](https://github.com/bigcommerce/catalyst/pull/1262) [`0c2023b`](https://github.com/bigcommerce/catalyst/commit/0c2023bae650039cd79ba51b1161b5c8c16f0b8d) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Generates a storefront token when using the CLI to init or create a Catalyst storefront.
+
+- [#1262](https://github.com/bigcommerce/catalyst/pull/1262) [`0c2023b`](https://github.com/bigcommerce/catalyst/commit/0c2023bae650039cd79ba51b1161b5c8c16f0b8d) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Remove generating a customer impersonation token as we are using the API Token + Customer Access Token approach"
+
+## 0.15.0
+
+### Minor Changes
+
+- [#1518](https://github.com/bigcommerce/catalyst/pull/1518) [`739bd25`](https://github.com/bigcommerce/catalyst/commit/739bd254593a76cfe351ce216a225d957e390823) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Add the ability to pass in extra, arbitrary environment variables to add to the `.env.local` file created by the Catalyst CLI installer in the format of `pnpm create @bigcommerce/catalyst@latest --env VAR_ONE=VALUE_ONE --env VAR_TWO=VALUE_TWO`
+
+- [#1519](https://github.com/bigcommerce/catalyst/pull/1519) [`630e2ed`](https://github.com/bigcommerce/catalyst/commit/630e2ed4dcca3b245b98efc2de66be81585f1bb5) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Ensures a command is always passed as an event name and provides a allowlist of args to pass as additional properties to the event.
+
+### Patch Changes
+
+- [#1501](https://github.com/bigcommerce/catalyst/pull/1501) [`513a740`](https://github.com/bigcommerce/catalyst/commit/513a7407feab03f5b7c16eb82d6d2826d238cb27) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Adds a identify call on init.
+
+## 0.14.3
+
+### Patch Changes
+
+- [#1492](https://github.com/bigcommerce/catalyst/pull/1492) [`0b28a4c`](https://github.com/bigcommerce/catalyst/commit/0b28a4c7d8f71f677e81788655d2bc70d41c4882) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Default to the `create` command when running the preCommand hook.
+
+## 0.14.2
+
+### Patch Changes
+
+- [#1488](https://github.com/bigcommerce/catalyst/pull/1488) [`1bbc3f8`](https://github.com/bigcommerce/catalyst/commit/1bbc3f85fd56572b3a6cfe24e5be551d0e8f8488) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Noop commit to rebuild CLI.
+
+## 0.14.1
+
+### Patch Changes
+
+- [#1480](https://github.com/bigcommerce/catalyst/pull/1480) [`eb1707b`](https://github.com/bigcommerce/catalyst/commit/eb1707b7845f9f6ca68afa32c1469459c58b9505) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Fix the CLI from hanging while waiting for segment.
+
+## 0.14.0
+
+### Minor Changes
+
+- [#1478](https://github.com/bigcommerce/catalyst/pull/1478) [`7d66252`](https://github.com/bigcommerce/catalyst/commit/7d6625263bf87aa19b6c05c190729d8b147ca7a8) Thanks [@bookernath](https://github.com/bookernath)! - Update OAuth scopes to future needs
+
+- [#1479](https://github.com/bigcommerce/catalyst/pull/1479) [`a7ce4b3`](https://github.com/bigcommerce/catalyst/commit/a7ce4b341ad8b69a001e03ff5050e3c70c7dca1b) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Adds telemetry collection to the CLI. If users want to opt out of CLI telemetry collection, use `pnpm create @bigcommerce/catalyst telemetry disable` or use the `CATALYST_TELEMETRY_DISABLED` environment variable to opt-out.
+
 ## 0.13.0
 
 ### Minor Changes

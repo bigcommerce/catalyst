@@ -7,7 +7,7 @@ import {
   forwardRef,
   useState,
 } from 'react';
-import { DayPicker, DayPickerSingleProps } from 'react-day-picker';
+import { DayPicker, PropsSingle } from 'react-day-picker';
 
 import { Input } from '../input';
 
@@ -34,8 +34,12 @@ const Calendar = ({ ...props }: ComponentPropsWithoutRef<typeof DayPicker>) => {
         day_disabled: 'text-gray-400 aria-selected:bg-gray-100 aria-selected:text-white',
       }}
       components={{
-        IconLeft: () => <ChevronLeftIcon className="h-6 w-6" />,
-        IconRight: () => <ChevronRightIcon className="h-6 w-6" />,
+        Chevron: ({ orientation }) =>
+          orientation === 'left' ? (
+            <ChevronLeftIcon className="h-6 w-6" />
+          ) : (
+            <ChevronRightIcon className="h-6 w-6" />
+          ),
       }}
       {...props}
     />
@@ -47,16 +51,14 @@ Calendar.displayName = 'Calendar';
 interface Props extends Omit<ComponentPropsWithRef<'input'>, 'defaultValue' | 'onSelect'> {
   defaultValue?: string | Date;
   error?: boolean;
-  selected?: DayPickerSingleProps['selected'];
-  onSelect?: DayPickerSingleProps['onSelect'];
-  disabledDays?: DayPickerSingleProps['disabled'];
+  selected?: PropsSingle['selected'];
+  onSelect?: PropsSingle['onSelect'];
 }
 
 const DatePicker = forwardRef<ElementRef<'input'>, Props>(
   (
     {
       defaultValue,
-      disabledDays,
       error = false,
       onSelect,
       placeholder = 'MM/DD/YYYY',
@@ -95,8 +97,6 @@ const DatePicker = forwardRef<ElementRef<'input'>, Props>(
             sideOffset={4}
           >
             <Calendar
-              disabled={disabledDays}
-              initialFocus
               mode="single"
               onSelect={onSelect || setDate}
               required={required}

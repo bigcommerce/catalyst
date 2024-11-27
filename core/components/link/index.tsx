@@ -1,5 +1,6 @@
 'use client';
 
+import { useLocale } from 'next-intl';
 import { ComponentPropsWithRef, ElementRef, forwardRef, useReducer } from 'react';
 
 import { cn } from '~/lib/utils';
@@ -19,17 +20,22 @@ type Props = NextLinkProps & PrefetchOptions;
  * This custom `Link` is based on  Next-Intl's `Link` component
  * https://next-intl-docs.vercel.app/docs/routing/navigation#link
  * which adds automatically prefixes for the href with the current locale as necessary
- * and etends with additional prefetching controls, making navigation
+ * and extends with additional prefetching controls, making navigation
  * prefetching more adaptable to different use cases. By offering `prefetch` and `prefetchKind`
  * props, it grants explicit management over when and how prefetching occurs, defaulting to 'hover' for
  * prefetch behavior and 'auto' for prefetch kind. This approach provides a balance between optimizing
  * page load performance and resource usage. https://nextjs.org/docs/app/api-reference/components/link#prefetch
  */
 export const Link = forwardRef<ElementRef<'a'>, Props>(
-  ({ href, prefetch = 'hover', prefetchKind = 'auto', children, className, ...rest }, ref) => {
+  (
+    { href, prefetch = 'hover', prefetchKind = 'auto', children, className, locale, ...rest },
+    ref,
+  ) => {
     const router = useRouter();
     const [prefetched, setPrefetched] = useReducer(() => true, false);
     const computedPrefetch = computePrefetchProp({ prefetch, prefetchKind });
+    const defaultLocale = useLocale();
+    const finalLocale = locale || defaultLocale;
 
     const triggerPrefetch = () => {
       if (prefetched) {
@@ -46,10 +52,11 @@ export const Link = forwardRef<ElementRef<'a'>, Props>(
     return (
       <NavLink
         className={cn(
-          'hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 hover:opacity-80 no-underline',
+          'hover:text-primary flex justify-center focus-visible:outline-none focus-visible:ring-4 text-center focus-visible:ring-primary/20 hover:opacity-80 no-underline font-normal text-[16px] leading-[32px] tracking-[0.5px] text-[#353535]',
           className,
         )}
         href={href}
+        locale={finalLocale}
         onMouseEnter={prefetch === 'hover' ? triggerPrefetch : undefined}
         onTouchStart={prefetch === 'hover' ? triggerPrefetch : undefined}
         prefetch={computedPrefetch}

@@ -1,5 +1,5 @@
 import { Link } from '~/components/link';
-import { localeLanguageRegionMap, LocaleType } from '~/i18n/routing';
+import { localeLanguageRegionMap } from '~/i18n/routing';
 import { cn } from '~/lib/utils';
 
 export const LocaleLink = ({ locale, selected }: { locale: string; selected: boolean }) => {
@@ -16,8 +16,7 @@ export const LocaleLink = ({ locale, selected }: { locale: string; selected: boo
         selected && 'border-black',
       )}
       href="/"
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      locale={locale as LocaleType}
+      locale={locale}
     >
       <div className="flex h-full items-center gap-2">
         <div className="text-2xl">{selectedLocale.flag}</div>

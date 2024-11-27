@@ -216,6 +216,7 @@ const Header = ({
         <CustomLink href="/brands" className="font-semiboldd hover:text-primary">
           Our Brands
         </CustomLink>
+
       </nav>
     </div>
   </div>

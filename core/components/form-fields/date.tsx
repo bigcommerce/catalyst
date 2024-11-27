@@ -8,27 +8,27 @@ import { DatePicker, Field, FieldLabel, FieldMessage } from '~/components/ui/for
 
 import { FormFieldsFragment } from './fragment';
 
-const getDisabledDays = ({
-  earliest,
-  latest,
-}: {
-  earliest: string | null;
-  latest: string | null;
-}) => {
-  if (earliest && latest) {
-    return [{ before: new Date(earliest), after: new Date(latest) }];
-  }
+// const getDisabledDays = ({
+//   earliest,
+//   latest,
+// }: {
+//   earliest: string | null;
+//   latest: string | null;
+// }) => {
+//   if (earliest && latest) {
+//     return [{ before: new Date(earliest), after: new Date(latest) }];
+//   }
 
-  if (earliest) {
-    return [{ before: new Date(earliest) }];
-  }
+//   if (earliest) {
+//     return [{ before: new Date(earliest) }];
+//   }
 
-  if (latest) {
-    return [{ after: new Date(latest) }];
-  }
+//   if (latest) {
+//     return [{ after: new Date(latest) }];
+//   }
 
-  return [];
-};
+//   return [];
+// };
 
 type DateType = Extract<FragmentOf<typeof FormFieldsFragment>, { __typename: 'DateFormField' }>;
 
@@ -57,7 +57,7 @@ export const DateField = ({
 
   const selectedDate = defaultValue || field.defaultDate || undefined;
   const [date, setDate] = useState<Date | string | undefined>(selectedDate);
-  const disabledDays = getDisabledDays({ earliest: field.minDate, latest: field.maxDate });
+  // const disabledDays = getDisabledDays({ earliest: field.minDate, latest: field.maxDate });
   const validationError = field.isRequired && isValid === false;
   const handleDateSelect = field.isRequired
     ? (d: Date | undefined) => {
@@ -85,7 +85,6 @@ export const DateField = ({
           value={date ? new Date(date).toLocaleDateString('en-US') : ''}
         />
         <DatePicker
-          disabledDays={disabledDays}
           error={isValid === false}
           id={name}
           onChange={field.isRequired ? onChange : undefined}

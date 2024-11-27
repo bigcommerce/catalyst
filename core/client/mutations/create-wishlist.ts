@@ -1,4 +1,4 @@
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 
 import { client } from '..';
 import { graphql, VariablesOf } from '../graphql';
@@ -24,12 +24,12 @@ export interface CreateWishlist {
 }
 
 export const createWishlist = async ({ input }: CreateWishlist) => {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: CREATE_WISHLIST_MUTATION,
     variables: { input },
-    customerId,
+    customerAccessToken,
     fetchOptions: { cache: 'no-store' },
   });
 

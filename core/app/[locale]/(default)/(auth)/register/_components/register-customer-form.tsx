@@ -1,26 +1,18 @@
-// register
-
 'use client';
 
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
+import ReCaptcha from 'react-google-recaptcha';
 
 import { useAccountStatusContext } from '~/app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
 import { ExistingResultType } from '~/client/util';
 import {
-  Checkboxes,
   createFieldName,
   CUSTOMER_FIELDS_TO_EXCLUDE,
-  DateField,
   FieldNameToFieldId,
   FieldWrapper,
-  MultilineText,
-  NumbersOnly,
   Password,
-  Picklist,
-  PicklistOrText,
-  RadioButtons,
   Text,
 } from '~/components/form-fields';
 import {
@@ -39,8 +31,6 @@ import { Message } from '~/components/ui/message';
 import { login } from '../_actions/login';
 import { registerCustomer } from '../_actions/register-customer';
 import { getRegisterCustomerQuery } from '../page-data';
-import { cn } from '~/lib/utils';
-import error from 'next/error';
 
 interface FormStatus {
   status: 'success' | 'error';
@@ -49,13 +39,14 @@ interface FormStatus {
 
 type CustomerFields = ExistingResultType<typeof getRegisterCustomerQuery>['customerFields'];
 type AddressFields = ExistingResultType<typeof getRegisterCustomerQuery>['addressFields'];
-type Countries = ExistingResultType<typeof getRegisterCustomerQuery>['countries'];
-type CountryCode = Countries[number]['code'];
-type CountryStates = Countries[number]['statesOrProvinces'];
 
 interface RegisterCustomerProps {
   addressFields: AddressFields;
   customerFields: CustomerFields;
+  reCaptchaSettings?: {
+    isEnabledOnStorefront: boolean;
+    siteKey: string;
+  };
 }
 
 interface SubmitMessages {
@@ -92,7 +83,11 @@ const SubmitButton = ({ messages }: SubmitMessages) => {
   );
 };
 
-export const RegisterCustomerForm = ({ addressFields, customerFields }: RegisterCustomerProps) => {
+export const RegisterCustomerForm = ({
+  addressFields,
+  customerFields,
+  reCaptchaSettings,
+}: RegisterCustomerProps) => {
   const form = useRef<HTMLFormElement>(null);
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
 
@@ -106,6 +101,10 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
   const [picklistValid, setPicklistValid] = useState<Record<string, boolean>>({});
   const [checkboxesValid, setCheckboxesValid] = useState<Record<string, boolean>>({});
   const [multiTextValid, setMultiTextValid] = useState<Record<string, boolean>>({});
+
+  const reCaptchaRef = useRef<ReCaptcha>(null);
+  const [reCaptchaToken, setReCaptchaToken] = useState('');
+  const [isReCaptchaValid, setReCaptchaValid] = useState(true);
 
   const { setAccountState } = useAccountStatusContext();
 
@@ -162,6 +161,17 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
     }
   };
 
+  const onReCaptchaChange = (token: string | null) => {
+    if (!token) {
+      setReCaptchaValid(false);
+
+      return;
+    }
+
+    setReCaptchaToken(token);
+    setReCaptchaValid(true);
+  };
+
   const onSubmit = async (formData: FormData) => {
     const submit = await registerCustomer({ formData });
 
@@ -197,6 +207,7 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
           {customerFields
             .filter((field) => !CUSTOMER_FIELDS_TO_EXCLUDE.includes(field.entityId))
             .filter((field) => FieldNameToFieldId[field.entityId] !== 'confirmPassword')
+            .filter((field) => FieldNameToFieldId[field.entityId] != undefined)
             .map((field) => {
               const fieldId = field.entityId;
               const fieldName = createFieldName(field, 'customer');
@@ -280,7 +291,7 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
         <div className="remember-forgot-div mt-5">
           <Field className="relative mt-2 inline-flex items-center space-y-2" name="remember-me">
             <Checkbox aria-labelledby="remember-me" className='border-[#008bb7]' id="remember-me" name="remember-me" value="1" />
-            <div className="mt-0 flex">
+            <div className="mt-0 flex gap-1">
               <Label
                 className="ml-2 mt-0 w-[15em] cursor-pointer space-y-2 pb-2 pl-1 text-left text-sm font-normal leading-6 tracking-[0.25px] md:my-0 md:w-auto"
                 htmlFor="remember-me"

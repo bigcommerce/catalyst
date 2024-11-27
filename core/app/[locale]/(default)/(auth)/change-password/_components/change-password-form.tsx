@@ -1,8 +1,8 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { ChangeEvent, useRef, useState } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { ChangeEvent, useActionState, useRef, useState } from 'react';
+import { useFormStatus } from 'react-dom';
 
 import { Button } from '~/components/ui/button';
 import {
@@ -48,7 +48,7 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
 
   const form = useRef<HTMLFormElement>(null);
   const router = useRouter();
-  const [state, formAction] = useFormState(changePassword, {
+  const [state, formAction] = useActionState(changePassword, {
     status: 'idle',
     message: '',
   });
@@ -79,7 +79,7 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
   return (
     <>
       {state.status === 'error' && (
-        <Message className="mb-8 w-full text-gray-500" variant={state.status}>
+        <Message className="mb-8 w-full text-gray-500 " variant={state.status}>
           <p>{messageText}</p>
         </Message>
       )}
@@ -127,7 +127,7 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-sm text-gray-500"
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
             match={(value: string) => value !== newPassword}
           >
             {t('confirmPasswordValidationMessage')}

@@ -3,11 +3,11 @@
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
-import { getSessionCustomerId } from '~/auth';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { createWishlist as createWishlistMutation } from '~/client/mutations/create-wishlist';
 
 export async function saveCartData(cartItemsData: any) {
-  const customerId = await getSessionCustomerId();
+  const customerAccessToken = await getSessionCustomerAccessToken();
   const dateTime = new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     month: 'numeric',
@@ -23,13 +23,14 @@ export async function saveCartData(cartItemsData: any) {
     isPublic: true,
   };
   try {
-    const cartId = cookies().get('cartId')?.value;
+    const cookieStore = await cookies();
+    const cartId = cookieStore.get('cartId')?.value;
 
     if (!cartId) {
       return { status: 'error', error: 'No cartId cookie found' };
     }
 
-    if (!customerId) {
+    if (!customerAccessToken) {
       return { status: 'error', error: 'Please login to continue' };
     }
 

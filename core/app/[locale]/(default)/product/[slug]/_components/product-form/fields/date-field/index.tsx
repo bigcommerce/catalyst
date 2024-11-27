@@ -10,24 +10,24 @@ import { DateFieldFragment } from './fragment';
 
 type Option = FragmentOf<typeof DateFieldFragment>;
 
-const getDisabledDays = (option: Option) => {
-  switch (option.limitDateBy) {
-    case 'EARLIEST_DATE':
-      return option.earliest ? [{ before: new Date(option.earliest) }] : [];
+// const getDisabledDays = (option: Option) => {
+//   switch (option.limitDateBy) {
+//     case 'EARLIEST_DATE':
+//       return option.earliest ? [{ before: new Date(option.earliest) }] : [];
 
-    case 'LATEST_DATE':
-      return option.latest ? [{ after: new Date(option.latest) }] : [];
+//     case 'LATEST_DATE':
+//       return option.latest ? [{ after: new Date(option.latest) }] : [];
 
-    case 'RANGE':
-      return option.earliest && option.latest
-        ? [{ before: new Date(option.earliest), after: new Date(option.latest) }]
-        : [];
+//     case 'RANGE':
+//       return option.earliest && option.latest
+//         ? [{ before: new Date(option.earliest), after: new Date(option.latest) }]
+//         : [];
 
-    case 'NO_LIMIT':
-    default:
-      return [];
-  }
-};
+//     case 'NO_LIMIT':
+//     default:
+//       return [];
+//   }
+// };
 
 interface Props {
   option: Option;
@@ -36,7 +36,7 @@ interface Props {
 export const DateField = ({ option }: Props) => {
   const format = useFormatter();
 
-  const disabledDays = getDisabledDays(option);
+  // const disabledDays = getDisabledDays(option);
   const { field, fieldState } = useProductFieldController({
     name: `attribute_${option.entityId}`,
     rules: {
@@ -58,7 +58,6 @@ export const DateField = ({ option }: Props) => {
         )}
       </Label>
       <DatePicker
-        disabledDays={disabledDays}
         error={Boolean(error)}
         id={`${option.entityId}`}
         onSelect={field.onChange}
