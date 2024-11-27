@@ -1,14 +1,19 @@
-// import { notFound } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import { SignUpSection } from '@/vibes/soul/sections/sign-up-section';
-// import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
+import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
 import { RegisterCustomerForm } from './_components/register-customer-form';
 import { getRegisterCustomerQuery } from './page-data';
 import { BcImage } from '~/components/bc-image';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
+
+const FALLBACK_COUNTRY = {
+  entityId: 226,
+  name: 'United States',
+  code: 'US',
+};
 
 export async function generateMetadata() {
   const t = await getTranslations('Register');
@@ -39,18 +44,28 @@ const appleLogo = imageManagerImageUrl('apple-black.png', '24w');
 export default async function Register() {
   const t = await getTranslations('Register');
 
-  // TODO: add dynamic fields from GQL
-  // const registerCustomerData = await getRegisterCustomerQuery({
-  //   address: { sortBy: 'SORT_ORDER' },
-  //   customer: { sortBy: 'SORT_ORDER' },
-  // });
+  const registerCustomerData = await getRegisterCustomerQuery({
+    address: { sortBy: 'SORT_ORDER' },
+    customer: { sortBy: 'SORT_ORDER' },
+  });
 
-  // if (!registerCustomerData) {
-  //   notFound();
-  // }
+  if (!registerCustomerData) {
+    notFound();
+  }
 
-  const { addressFields, customerFields, reCaptchaSettings } = registerCustomerData;
-  const reCaptcha = await bypassReCaptcha(reCaptchaSettings);
+  const {
+    addressFields,
+    customerFields,
+    countries,
+    defaultCountry = FALLBACK_COUNTRY.name,
+    reCaptchaSettings,
+  } = registerCustomerData;
+
+  const {
+    code = FALLBACK_COUNTRY.code,
+    entityId = FALLBACK_COUNTRY.entityId,
+    statesOrProvinces,
+  } = countries.find(({ name }) => name === defaultCountry) || {};
 
   return (
     <div className="mx-auto mb-10 text-base lg:w-2/3">
@@ -137,8 +152,10 @@ export default async function Register() {
 
       <RegisterCustomerForm
         addressFields={addressFields}
+        countries={countries}
         customerFields={customerFields}
-        reCaptchaSettings={reCaptcha}
+        defaultCountry={{ entityId, code, states: statesOrProvinces ?? [] }}
+        reCaptchaSettings={bypassReCaptcha(reCaptchaSettings)}
       />
 
       <div className="mx-auto flex max-w-[600px] items-center justify-center pt-0">
