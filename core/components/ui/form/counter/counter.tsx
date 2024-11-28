@@ -9,6 +9,7 @@ import {
 } from 'react';
 
 import { cn } from '~/lib/utils';
+import { useTranslations } from 'next-intl';
 
 interface Props extends Omit<ComponentPropsWithRef<'input'>, 'onChange'> {
   error?: boolean;
@@ -56,6 +57,7 @@ const Counter = forwardRef<ElementRef<'input'>, Props>(
   ) => {
     const [value, setValue] = useState<number | ''>(getDefaultValue(defaultValue, min, max));
     const inputRef = useRef<CounterRef>(null);
+    const t = useTranslations('Components.FormFields.Counter');
 
     useImperativeHandle<CounterRef, CounterRef>(ref, () => inputRef.current);
 
@@ -101,7 +103,7 @@ const Counter = forwardRef<ElementRef<'input'>, Props>(
       <div className={cn('relative', className)}>
         <button
           aria-hidden="true"
-          aria-label="Decrease count"
+          aria-label={t('decrease')}
           className="peer/down absolute start-0 top-0 flex h-full w-12 items-center justify-center focus-visible:outline-none disabled:text-gray-200"
           disabled={!canDecrement()}
           onClick={() => {
@@ -117,7 +119,7 @@ const Counter = forwardRef<ElementRef<'input'>, Props>(
 
         <button
           aria-hidden="true"
-          aria-label="Increase count"
+          aria-label={t('increase')}
           className="peer/up absolute end-0 top-0 flex h-full w-12 items-center justify-center focus-visible:outline-none disabled:text-gray-200"
           disabled={!canIncrement()}
           onClick={() => {

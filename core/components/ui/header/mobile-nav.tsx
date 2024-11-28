@@ -11,6 +11,7 @@ import { Link as CustomLink } from '~/components/link';
 import { Button } from '../button';
 
 import { Links } from './header';
+import { useTranslations } from 'next-intl';
 
 interface Image {
   altText: string;
@@ -24,13 +25,14 @@ interface Props {
 
 export const MobileNav = ({ links, logo }: Props) => {
   const [open, setOpen] = useState(false);
+  const t = useTranslations('Components.Header.Navigation');
 
   return (
     <SheetPrimitive.Root onOpenChange={setOpen} open={open}>
       <SheetPrimitive.Trigger asChild>
         <Button
           aria-controls="nav-menu"
-          aria-label="Toggle navigation"
+          aria-label={t('toggle')}
           className="group bg-transparent p-3 text-black hover:bg-transparent hover:text-primary lg:hidden"
           variant="subtle"
         >
@@ -44,7 +46,7 @@ export const MobileNav = ({ links, logo }: Props) => {
           className="fixed inset-y-0 left-0 z-50 h-full w-3/4 border-r bg-white p-6 pt-0 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm"
         >
           <SheetPrimitive.Title asChild>
-            <h2 className="sr-only">Navigation menu</h2>
+            <h2 className="sr-only">{t('navigationMenu')}</h2>
           </SheetPrimitive.Title>
           <div className="flex h-[92px] items-center justify-between">
             <div className="overflow-hidden text-ellipsis py-3">
