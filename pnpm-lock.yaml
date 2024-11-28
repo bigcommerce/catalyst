@@ -222,6 +222,9 @@ importers:
       react-instantsearch:
         specifier: ^7.13.8
         version: 7.13.8(algoliasearch@5.15.0)(react-dom@19.0.0-rc-5c56b873-20241107(react@19.0.0-rc-5c56b873-20241107))(react@19.0.0-rc-5c56b873-20241107)
+      react-instantsearch-core:
+        specifier: ^7.13.8
+        version: 7.13.8(algoliasearch@5.15.0)(react@19.0.0-rc-5c56b873-20241107)
       react-instantsearch-nextjs:
         specifier: ^0.3.18
         version: 0.3.18(next@15.0.3(@playwright/test@1.48.2)(react-dom@19.0.0-rc-5c56b873-20241107(react@19.0.0-rc-5c56b873-20241107))(react@19.0.0-rc-5c56b873-20241107))(react-instantsearch@7.13.8(algoliasearch@5.15.0)(react-dom@19.0.0-rc-5c56b873-20241107(react@19.0.0-rc-5c56b873-20241107))(react@19.0.0-rc-5c56b873-20241107))

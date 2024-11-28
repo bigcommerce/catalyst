@@ -14,7 +14,7 @@ import { Details } from './_components/details';
 import { Gallery } from './_components/gallery';
 import { ProductViewed } from './_components/product-viewed';
 //import { RelatedProducts } from './_components/related-products';
-import { Reviews } from './_components/reviews';
+//import { Reviews } from './_components/reviews';
 import { Warranty } from './_components/warranty';
 import { getProduct } from './page-data';
 import { ReviewSummary } from './_components/review-summary';
@@ -157,7 +157,7 @@ export default async function ProductPage(props: Props) {
           </div>
           <div className="mb-4 mt-4 lg:grid lg:grid-cols-2 lg:gap-8 xl:mb-12">
             <Gallery
-              noImageText={t('noGalleryText')}
+              // noImageText={t('noGalleryText')}
               product={product}
               bannerIcon={bannerIcon}
               galleryExpandIcon={galleryExpandIcon} // Pass galleryExpandIcon to Gallery component
@@ -182,9 +182,11 @@ export default async function ProductPage(props: Props) {
               <SimilarProducts0 />
               <Promotion />
               <Warranty product={product} />
+              {/*
               <Suspense fallback={t('loading')}>
                 <Reviews productId={product.entityId} />
               </Suspense>
+              */}
               <SitevibesReviews product={product} category={category} />
             </div>
           </div>
@@ -196,4 +198,4 @@ export default async function ProductPage(props: Props) {
 }
 
 // TODO: Not sure why its not working with this line uncommented... Something needs to be fixed to enable it.
-//export const runtime = 'edge';
+export const runtime = 'edge';

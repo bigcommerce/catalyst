@@ -79,7 +79,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const brand = await getBrand({ entityId: brandId });
 
   if (!brand) {
-    return {};
+    return notFound();
   }
 
   const { pageTitle, metaDescription, metaKeywords } = brand.seo;
@@ -543,4 +543,4 @@ export default async function BrandPage(props: Props) {
 }
 
 // TODO: Not sure why its not working with this line uncommented... Something needs to be fixed to enable it.
-//export const runtime = 'edge';
+export const runtime = 'edge';
