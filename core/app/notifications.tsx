@@ -7,7 +7,7 @@ export const Notifications = () => {
       position="top-right"
       toastOptions={{
         className:
-          '!text-black !rounded !border !border-gray-200 !bg-white !shadow-lg !py-4 !px-6 !text-base',
+          '!text-black !rounded !border !border-gray-200 !bg-white !shadow-lg !py-4 !px-6 !text-base [&>svg]:!shrink-0',
       }}
     />
   );
