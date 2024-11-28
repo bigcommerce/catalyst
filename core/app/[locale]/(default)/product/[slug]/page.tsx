@@ -24,7 +24,6 @@ import { ProductProvider } from '~/components/common-context/product-provider';
 
 import { RelatedProducts } from './related-products';
 //import { SimilarProducts } from './similar-products';
-import { SitevibesReviews } from './sitevibes-reviews';
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
@@ -185,7 +184,7 @@ export default async function ProductPage(props: Props) {
               <Suspense fallback={t('loading')}>
                 <Reviews productId={product.entityId} />
               </Suspense>
-              <SitevibesReviews product={product} category={category} />
+              <Reviews productId={product.entityId} />
             </div>
           </div>
           <ProductViewed product={product} />
