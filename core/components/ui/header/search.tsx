@@ -14,6 +14,7 @@ import { Button } from '../button';
 import { Price } from '../product-card';
 
 import { Input } from './input';
+import { useTranslations } from 'next-intl';
 
 interface Image {
   src: string;
@@ -55,6 +56,7 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
   const [pending, setPending] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchResults | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const t = useTranslations('Components.Header.Search');
 
   const debouncedOnSearch = useMemo(
     () =>
@@ -99,7 +101,7 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
     <SheetPrimitive.Root onOpenChange={setOpen} open={open}>
       <SheetPrimitive.Trigger asChild>
         <Button
-          aria-label="Open search popup"
+          aria-label={t('openSearchPopup')}
           className="border-0 bg-transparent p-3 text-black hover:bg-transparent hover:text-primary focus-visible:text-primary"
         >
           <SearchIcon />
@@ -115,7 +117,7 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
             )}
           >
             <SheetPrimitive.Title asChild>
-              <h2 className="sr-only">Search bar</h2>
+              <h2 className="sr-only">{t('searchBar')}</h2>
             </SheetPrimitive.Title>
 
             <div className="grid h-[92px] w-full grid-cols-5 items-center">
@@ -149,7 +151,7 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
                       onChange={handleTermChange}
                       onClickClear={handleTermClear}
                       pending={pending}
-                      placeholder="Search..."
+                      placeholder={t('searchPlaceholder')}
                       ref={inputRef}
                       role="combobox"
                       showClear={term.length > 0}
@@ -160,7 +162,7 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
               </Form.Root>
               <SheetPrimitive.Close asChild>
                 <Button
-                  aria-label="Close search popup"
+                  aria-label={t('closeSearchPopup')}
                   className="w-auto justify-self-end border-0 bg-transparent p-2.5 text-black hover:bg-transparent hover:text-primary focus-visible:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 peer-hover:text-primary peer-focus-visible:text-primary"
                 >
                   <small className="me-2 hidden text-base md:inline-flex">Close</small>
@@ -170,9 +172,9 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
             </div>
             {searchResults && searchResults.products.length > 0 && (
               <div className="mt-8 grid overflow-auto px-1 lg:grid-cols-3 lg:gap-6">
-                <section>
+                <section aria-label={t('categories')}>
                   <h3 className="mb-6 border-b border-gray-200 pb-3 text-xl font-bold lg:text-2xl">
-                    Categories
+                    {t('categories')}
                   </h3>
                   <ul id="categories" role="listbox">
                     {searchResults.categories.map(({ label, href }) => {
@@ -189,9 +191,9 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
                     })}
                   </ul>
                 </section>
-                <section>
+                <section aria-label={t('products')}>
                   <h3 className="mb-6 border-b border-gray-200 pb-3 text-xl font-bold lg:text-2xl">
-                    Products
+                    {t('products')}
                   </h3>
                   <ul id="products" role="listbox">
                     {searchResults.products.map(({ name, href, price, image }) => {
@@ -211,7 +213,7 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
                               />
                             ) : (
                               <span className="flex h-20 w-20 flex-shrink-0 items-center justify-center bg-gray-200 text-lg font-bold text-gray-500">
-                                Photo
+                                {t('photo')}
                               </span>
                             )}
 
@@ -248,9 +250,9 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
                     })}
                   </ul>
                 </section>
-                <section>
+                <section aria-label={t('brands')}>
                   <h3 className="mb-6 border-b border-gray-200 pb-3 text-xl font-bold lg:text-2xl">
-                    Brands
+                    {t('brands')}
                   </h3>
                   <ul id="brands" role="listbox">
                     {searchResults.brands.map(({ label, href }) => {
@@ -270,9 +272,7 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
               </div>
             )}
             {searchResults && searchResults.products.length === 0 && (
-              <p className="p-6">
-                No products matched with <b>"{term}"</b>
-              </p>
+              <p className="p-6">{t('noSearchResults', { term })}</p>
             )}
           </SheetPrimitive.Content>
         </SheetPrimitive.Portal>
