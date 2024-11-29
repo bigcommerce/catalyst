@@ -1,9 +1,9 @@
 import useEmblaCarousel, { UseEmblaCarouselType } from 'embla-carousel-react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { ReactNode, useCallback, useEffect, useId, useMemo, useState } from 'react';
 
 import { cn } from '~/lib/utils';
-import { useTranslations } from 'next-intl';
 
 type CarouselApi = UseEmblaCarouselType[1];
 

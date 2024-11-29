@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { Fragment, ReactNode } from 'react';
 
 import { BcImage } from '~/components/bc-image';
@@ -5,7 +6,6 @@ import { Link as CustomLink } from '~/components/link';
 import { cn } from '~/lib/utils';
 
 import { Locale } from './locale';
-import { useTranslations } from 'next-intl';
 
 interface Image {
   altText: string;

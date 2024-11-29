@@ -4,6 +4,7 @@ import * as SheetPrimitive from '@radix-ui/react-dialog';
 import * as Form from '@radix-ui/react-form';
 import debounce from 'lodash.debounce';
 import { Search as SearchIcon, X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { BcImage } from '~/components/bc-image';
@@ -14,7 +15,6 @@ import { Button } from '../button';
 import { Price } from '../product-card';
 
 import { Input } from './input';
-import { useTranslations } from 'next-intl';
 
 interface Image {
   src: string;

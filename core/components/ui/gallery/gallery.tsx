@@ -1,9 +1,9 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import { BcImage } from '~/components/bc-image';
 import { cn } from '~/lib/utils';
-import { useTranslations } from 'next-intl';
 
 interface Image {
   altText: string;

@@ -1,6 +1,6 @@
 'use client';
 
-import { Loader2 as Spinner, Search, X } from 'lucide-react';
+import { Search, Loader2 as Spinner, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
 
