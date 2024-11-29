@@ -9,7 +9,7 @@ type CarouselApi = UseEmblaCarouselType[1];
 
 interface Props {
   className?: string;
-  pageSize?: 2 | 3 | 4;
+  pageSize?: 2 | 3 | 4 | 5 | 6;
   products: ReactNode[];
   title: string;
 }
@@ -21,7 +21,7 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
 
   const [carouselRef, api] = useEmblaCarousel({
     loop: true,
-    axis: 'x',
+    axis: 'x'
   });
 
   const groupedProducts = useMemo(() => {
@@ -98,7 +98,7 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
 
   return (
     <div
-    id="relatedproduct-carousel"
+    id="carousel"
       aria-labelledby={titleId}
       aria-roledescription="carousel"
       className={cn('relative', className)}
@@ -139,14 +139,14 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
         </span>
       </div>
 
-      <div className="realted-product-carousel relative -mx-2 overflow-hidden px-2" ref={carouselRef}>
+      <div className="relative -mx-2 overflow-hidden px-2" ref={carouselRef}>
         <div className="-mx-4 mb-16 mt-5 flex lg:mt-6">
           {groupedProducts.map((group, index) => (
             <div key={`${id}-group-${index + 1}`}
               aria-label={`${index + 1} of ${groupedProducts.length}`}
               aria-roledescription="slide"
               className={cn(
-                `grid min-w-0 shrink-0 grow-0 basis-full grid-cols-2 gap-6 px-4 md:grid-cols-${itemsPerGroup} lg:gap-8`,
+                `grid min-w-0 shrink-0 grow-0 basis-full gap-6 px-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 lg:gap-8`,
                 !slidesInView.includes(index) && 'invisible',
               )}
               id={`${id}-group-${index + 1}`}
@@ -168,9 +168,10 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
       >
         {groupedProducts.map((_, index) => (
           <button
+            type="button"
             aria-controls={`${id}-slide-${index + 1}`}
             aria-label={`Go to slide ${index + 1}`}
-            aria-selected={selectedSnapIndex === index}
+            //aria-selected={selectedSnapIndex === index}
             className={cn(
               "h-7 w-7 p-0.5 after:block after:h-0.5 after:w-full after:bg-gray-400 after:content-[''] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20",
               selectedSnapIndex === index && 'after:bg-black',

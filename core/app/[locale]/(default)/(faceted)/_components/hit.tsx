@@ -183,7 +183,7 @@ export function Hit({ hit, sendEvent, insights, promotions = null, useDefaultPri
   }
 
   return (view === 'grid'
-    ? (<article className="w-full product flex flex-col h-full border border-gray-300 rounded-none">
+    ? (<article data-id={hit.objectID} className="w-full product flex flex-col h-full border border-gray-300 rounded-none">
       <div className="flex items-start p-4 overflow-x-hidden">
         <div className="compare-product mr-4">
           <Compare id={hit.objectID} image={hit.image_url ? { src: hit.image_url, altText: hit.name } : noImage} name={hit.name} />
@@ -275,25 +275,11 @@ export function Hit({ hit, sendEvent, insights, promotions = null, useDefaultPri
             </span>
             <span>(10)</span>
           </div>
-          <div className="mt-2 text-xs">ID: {hit.objectID}</div>
-          {/* <p>{JSON.stringify(hit.metafields)}</p> */}
-{/*
-          {"Akeneo":{
-            "collection":"La Maison",
-            "height":"{\n  \"amount\": \"30.0000\",\n  \"unit\": \"INCH\"\n}",
-            "lamp_base_type":"candelabra","number_of_bulbs":"6",
-            "product_style":"[\n  \"traditional\"\n]",
-            "ratings_certifications":"[{\"code\":\"damp\",\"label\":\"Damp Rated\",\"image\":\"https://images.1stoplighting.com/site/common/cert/damp_rated.png\"}]",
-            "voltage":"{\n  \"amount\": 120,\n  \"unit\": \"VOLT\"\n}",
-            "wattage":"{\n  \"amount\": \"360.0000\",\n  \"unit\": \"WATT\"\n}",
-            "width":"{\n  \"amount\": \"26.0000\",\n  \"unit\": \"INCH\"\n}"
-          }}
-*/}
         </div>
         <Promotion promotions={promotions} brand_id={hit.brand_id} category_ids={hit.category_ids} />
       </div>
     </article>)
-    : (view === 'list' ? <article className="product w-full p-4 border border-gray-300 rounded-none">
+    : (view === 'list' ? <article data-id={hit.objectID} className="product w-full p-4 border border-gray-300 rounded-none">
       <div className="flex flex-col md:flex-row tems-start space-y-4 md:space-y-0 space-x-0 md:space-x-8">
         <div className="flex-none w-full md:w-auto md:max-w-[240px] lg:max-w-[300px]">
           <div className="flex-none flex items-center space-x-1 mr-4 mb-4">
@@ -380,11 +366,6 @@ export function Hit({ hit, sendEvent, insights, promotions = null, useDefaultPri
             </span>
             <span>(10)</span>
           </div>
-          <div className="mt-2 text-xs">ID: {hit.objectID}</div>
-          {/*
-          <p>{JSON.stringify(hit.metafields)}</p>
-          <p>{JSON.stringify(hit.variants)}</p>
-          */}
           <Promotion promotions={promotions} brand_id={hit.brand_id} category_ids={hit.category_ids} />
         </div>
         <div className="flex-1 bg-gray-50 px-8 py-4">
