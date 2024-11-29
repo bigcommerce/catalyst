@@ -1,12 +1,12 @@
 "use client";
 import React, { useState } from 'react';
-import { Input } from '~/components/ui/form';
+import { Input } from '../Input';
 import PencilIcon from "~/app/[locale]/(default)/sales-buddy/assets/stylus.png"
 import Image from 'next/image';
 interface ProductPriceAdjusterProps {
   parentSku: string;
   sku: string;
-  initialCost: number;
+  initialCost: string;
   initialFloor: number;
   initialMarkup: number;
 }
@@ -29,11 +29,11 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
   initialFloor,
   initialMarkup,
 }) => {
-  const [cost, setCost] = useState<number>(initialCost);
+  const [cost, setCost] = useState<string>(initialCost);
   const [floor] = useState<number>(initialFloor);
   const [markup] = useState<number>(initialMarkup);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [newCost, setNewCost] = useState<number>(cost);
+  const [newCost, setNewCost] = useState<string>(cost);
 
   const handleSave = () => {
     setCost(newCost); // Update the cost value
@@ -60,7 +60,7 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
       {/* Cost */}
       <div className="m-1 flex justify-between">
         <p className="text-[10px] font-semibold">Cost</p>
-        <p className="text-[10px]">{cost?.toFixed(2)}</p>
+        <p className="text-[10px]">{cost}</p>
       </div>
       <hr className="border-white-600 m-2" />
 
@@ -87,7 +87,7 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
           <div className="flex items-center justify-center">
             {' '}
             {/* Changed justify-content to justify-center */}
-            <EditIcon/>
+            <EditIcon />
             {/* Added width and height for icon size */}
             <span className="">ADJUST PRICE</span> {/* Added margin for spacing */}
           </div>
@@ -97,11 +97,12 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
       {/* Input and Save/Cancel Buttons */}
       {isEditing && (
         <>
-          <input
-            type="number"
+          <Input
+            // type="number"
             value={newCost}
-            onChange={(e) => setNewCost(parseFloat(e.target.value))}
-            className="mb-4 w-full rounded border-none bg-white p-2 text-black"
+            style={{ color: 'black' }}
+            onChange={(e) => setNewCost(e.target.value)}
+            className="text-black-700 mb-4 w-full rounded border-none bg-[#FFFFFF] p-2"
             placeholder="$0.00"
           />
 
