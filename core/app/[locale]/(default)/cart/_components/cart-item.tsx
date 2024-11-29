@@ -8,7 +8,7 @@ import { ItemQuantity } from './item-quantity';
 import { RemoveItem } from './remove-item';
 import { RemoveAccessoryItem } from '../../../../../components/product-card/remove-accessory-item';
 import { cookies } from 'next/headers';
-import ProductPriceAdjuster from '../../sales-buddy/_components/ProductPriceAdjuster';
+import ProductPriceAdjuster from '../../sales-buddy/common-components/_components/ProductPriceAdjuster';
 
 const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
