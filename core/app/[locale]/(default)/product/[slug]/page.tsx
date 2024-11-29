@@ -193,4 +193,4 @@ export default async function ProductPage(props: Props) {
 }
 
 // TODO: Not sure why its not working with this line uncommented... Something needs to be fixed to enable it.
-export const runtime = 'edge';
+//export const runtime = 'edge';
