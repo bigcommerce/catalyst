@@ -52,7 +52,7 @@ const Footer = ({
   socialMediaLinks,
   ...props
 }: Props) => {
-  const t = useTranslations('Footer');
+  const t = useTranslations('Components.Footer');
 
   return (
     <footer className={cn('2xl:container 2xl:mx-auto', className)} {...props}>
