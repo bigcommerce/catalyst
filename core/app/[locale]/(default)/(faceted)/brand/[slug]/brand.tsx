@@ -51,7 +51,7 @@ const indexName: string = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || '';
 const useDefaultPrices = process.env.NEXT_PUBLIC_USE_DEFAULT_PRICES === 'true';
 const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
 
-const sortByNumericName: RefinementListProps['sortBy'] = (a, b) => {
+const sortByNumericName: RefinementListProps['sortBy'] = (a: any, b: any) => {
   return parseInt(a.name) < parseInt(b.name) ? -1 : 1;
 };
 
@@ -89,7 +89,7 @@ export const Brand = ({ brand, promotions }: any) => {
       routing={{
         router: {
           cleanUrlOnDispose: false,
-          windowTitle(routeState) {
+          windowTitle(routeState: any) {
             const indexState = routeState.indexName || {};
             return indexState.query
               ? `Results for: ${indexState.query}`
@@ -141,6 +141,9 @@ export const Brand = ({ brand, promotions }: any) => {
       onStateChange={({
         uiState,
         setUiState,
+      }: {
+        uiState: any;
+        setUiState: any;
       }) => {
         if (showSidebar) {
           setShowViewResultsButton(true);
@@ -258,7 +261,12 @@ export const Brand = ({ brand, promotions }: any) => {
           <div className="flex-1">
             <Stats
               translations={{
-                rootElementText({ nbHits, processingTimeMS, nbSortedHits, areHitsSorted }) {
+                rootElementText({ nbHits, processingTimeMS, nbSortedHits, areHitsSorted }: {
+                  nbHits: number,
+                  processingTimeMS: number,
+                  nbSortedHits: number,
+                  areHitsSorted: boolean
+                }) {
                   return areHitsSorted && nbHits !== nbSortedHits
                     ? `${nbSortedHits!.toLocaleString()} relevant results sorted out of ${nbHits.toLocaleString()} found in ${processingTimeMS.toLocaleString()}ms`
                     : `${nbHits.toLocaleString()} results found in ${processingTimeMS.toLocaleString()}ms`;

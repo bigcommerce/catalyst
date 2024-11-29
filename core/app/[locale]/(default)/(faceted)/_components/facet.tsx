@@ -45,11 +45,11 @@ export function getFirstChildPropValue(
 ): string | string[] | undefined {
   let propValue = undefined;
 
-  Children.forEach(children, (element) => {
+  Children.forEach(children, (element: any) => {
     if (!isValidElement(element)) return;
     const propName = propNameCb(element.props);
-    if (propName in element.props) {
-      propValue = element.props[propName];
+    if (propName in (element.props as any)) {
+      propValue = (element.props as any)[propName] || null;
       return;
     }
   });

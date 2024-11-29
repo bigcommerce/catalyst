@@ -22,7 +22,7 @@ export function RatingMenu(props: UseRatingMenuProps) {
 
   return (
     <ul className={`${props.attribute}-list`}>
-      {items.map((item) => (
+      {items.map((item: any) => (
         <li key={item.value} className={`${props.attribute}-item`}>
           <a
             className={`${props.attribute}-link`}
@@ -34,7 +34,7 @@ export function RatingMenu(props: UseRatingMenuProps) {
               refine(item.value);
             }}
           >
-            {item.stars.map((isFilled, index) => (
+            {item.stars.map((isFilled: boolean, index: number) => (
               <svg
                 key={index}
                 xmlns="http://www.w3.org/2000/svg"
