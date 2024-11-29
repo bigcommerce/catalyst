@@ -57,9 +57,9 @@ function ColorSwatches({ variants, onImageClick }: any) {
   }) : null;
 
   return (
-    items && items.length > 0 &&
-    <>
-      <div className="mx-auto mt-4 flex space-x-2 items-center justify-center">
+    //items && items.length > 0 &&
+    //<>
+      <div className="mx-auto mt-4 h-8 flex space-x-2 items-center justify-center">
         {items.slice(0, 5).map((item: string) => <button key={item} type="button" title={item} className="rounded-full w-8 h-8 border border-gray-500 cursor-auto" style={
           searchColorsHEX[item] && searchColorsHEX[item].indexOf('.svg') !== -1
             ? { backgroundImage: `url("/swatches/${searchColorsHEX[item]}")`, backgroundSize: `cover`, backgroundRepeat: `no-repeat` }
@@ -69,7 +69,7 @@ function ColorSwatches({ variants, onImageClick }: any) {
           <span>+{(items.length - 5)}</span>
         }
       </div>
-    </>
+    //</>
   )
 }
 
@@ -101,9 +101,6 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-4 text-center">
           <ColorSwatches variants={hit.variants} onImageClick={setImageUrl} />
-          {(hit.brand_name || hit.brand) &&
-            <div className="mt-2">{hit.brand_name ?? hit.brand}</div>
-          }
           <h2 className="text-lg font-medium mt-2"><Link href={hit.url}><Highlight hit={hit} attribute="name" /></Link></h2>
           {useAsyncMode && !useDefaultPrices ? (
             <div className="mx-auto mt-2 flex flex-wrap space-x-2 items-center justify-center">
