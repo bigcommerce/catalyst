@@ -65,6 +65,11 @@ const Header = ({
     setOpenMenuId(openMenuId === linkHref ? null : linkHref);
   };
 
+  // Add this new handler for menu item clicks
+  const handleMenuItemClick = () => {
+    setOpenMenuId(null);
+  };
+
   return (
     <div className={cn('relative', className)}>
       <header className="main-header flex h-[92px] !max-w-[100%] items-center justify-between gap-1 overflow-y-visible bg-white p-[0px_4em] !px-[40px] 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0">
@@ -176,6 +181,7 @@ const Header = ({
                                   id={`nav-menu-group-link-${group.href}`}
                                   className="block border-b border-gray-200 pb-2 text-[15px] font-[500] hover:text-primary"
                                   href={group.href}
+                                  onClick={handleMenuItemClick} // Add click handler here
                                 >
                                   {group.label}
                                 </CustomLink>
@@ -189,6 +195,7 @@ const Header = ({
                                     id={`nav-menu-nested-link-${nestedLink.href}`}
                                     className="block py-1.5 text-[14px] font-[400] text-gray-600 hover:text-primary"
                                     href={nestedLink.href}
+                                    onClick={handleMenuItemClick} // Add click handler here
                                   >
                                     {nestedLink.label}
                                   </CustomLink>
