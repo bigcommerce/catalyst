@@ -4,7 +4,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
-import { setRequestLocale } from 'next-intl/server';
+import { getMessages, setRequestLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { PropsWithChildren } from 'react';
 
@@ -74,7 +74,11 @@ const RootLayoutMetadataQuery = graphql(`
   }
 `);
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  setRequestLocale(locale);
+
   const { data } = await client.fetch({
     document: RootLayoutMetadataQuery,
     fetchOptions: { next: { revalidate } },
@@ -118,15 +122,12 @@ interface Props extends PropsWithChildren {
   params: { locale: string };
 }
 
-export default function RootLayout({ children, params: { locale } }: Props) {
-//export default function RootLayout({ children }: Props) {
-  // need to call this method everywhere where static rendering is enabled
-  // https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-setRequestLocale-to-all-layouts-and-pages
+export default async function RootLayout({ params, children }: Props) {
+  const { locale } = await params;
 
-  //const locale = 'en';
   setRequestLocale(locale);
 
-  const messages = useMessages();
+  const messages = await getMessages();
 
   return (
     <html className={cn(openSans.variable, robotoMono.variable, 'font-sans')} lang={locale}>
