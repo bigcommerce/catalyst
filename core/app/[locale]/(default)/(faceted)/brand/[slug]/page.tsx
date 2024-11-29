@@ -113,7 +113,7 @@ export default async function BrandPage(props: Props) {
   const hasExtendedContent = false;
 
   return (
-    <div className="group">
+    <div className="group py-4 px-4 xl:px-12">
       <Breadcrumbs
         category={{ breadcrumbs: { edges: [{ node: { name: brand.name, path: brand.path } }] } }}
       />
