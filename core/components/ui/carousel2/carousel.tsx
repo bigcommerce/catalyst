@@ -12,9 +12,10 @@ interface Props {
   pageSize?: 2 | 3 | 4 | 5 | 6;
   products: ReactNode[];
   title: string;
+  icon?: ReactNode
 }
 
-const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props) => {
+const Carousel = ({ className, title, pageSize = 4, products, icon, ...props }: Props) => {
   const id = useId();
   const titleId = useId();
   const itemsPerGroup = pageSize;
@@ -107,8 +108,11 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
       {...props}
     >
       <div className="div-carousel mt-11 flex items-center justify-between">
-        <h2 className="text-3xl font-black text-[1.5rem] font-normal leading-[2rem] text-left text-[#353535]" id={titleId}>
-          {title}
+        <h2 className="flex space-x-2 items-center text-3xl font-black text-[1.5rem] font-normal leading-[2rem] text-left text-[#353535]" id={titleId}>
+          {icon &&
+            <span>{icon}</span>
+          }
+          <span>{title}</span>
         </h2>
         <span className="no-wrap flex">
           <button
