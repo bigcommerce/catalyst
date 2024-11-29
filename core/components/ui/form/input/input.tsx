@@ -1,5 +1,13 @@
 import { AlertCircle, Eye, EyeOff } from 'lucide-react';
-import { ComponentPropsWithRef, ElementRef, forwardRef, ReactNode, useState } from 'react';
+import {
+  ComponentPropsWithRef,
+  ElementRef,
+  forwardRef,
+  ReactNode,
+  useState,
+  useRef,
+  useEffect,
+} from 'react';
 import { cn } from '~/lib/utils';
 
 interface Props extends ComponentPropsWithRef<'input'> {
@@ -29,38 +37,58 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
     const [showPassword, setShowPassword] = useState(false);
     const [actualValue, setActualValue] = useState('');
     const isPassword = type === 'password';
+    const inputRef = useRef<HTMLInputElement>(null);
+    const [cursorPosition, setCursorPosition] = useState<number | null>(null);
+
+    useEffect(() => {
+      if (cursorPosition !== null && inputRef.current) {
+        inputRef.current.setSelectionRange(cursorPosition, cursorPosition);
+      }
+    }, [cursorPosition, actualValue]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value;
-      let updatedValue = actualValue;
+      const input = e.target;
+      const newValue = input.value;
+      const currentPosition = input.selectionStart || 0;
 
-      // If deleting characters
-      if (newValue.length < actualValue.length) {
-        updatedValue = actualValue.slice(0, -1);
+      if (isPassword) {
+        // Handle deletion
+        if (newValue.length < actualValue.length) {
+          const deletePosition = currentPosition;
+          const newActualValue =
+            actualValue.slice(0, deletePosition - 1) + actualValue.slice(deletePosition);
+          setActualValue(newActualValue);
+          setCursorPosition(deletePosition - 1);
+        }
+        // Handle insertion
+        else {
+          const insertedChar = newValue.charAt(currentPosition - 1);
+          if (insertedChar !== '*') {
+            const newActualValue =
+              actualValue.slice(0, currentPosition - 1) +
+              insertedChar +
+              actualValue.slice(currentPosition - 1);
+            setActualValue(newActualValue);
+            setCursorPosition(currentPosition);
+          }
+        }
+      } else {
+        setActualValue(newValue);
       }
-      // If text is pasted or multiple characters added
-      else if (newValue.length > actualValue.length + 1) {
-        // Strip any asterisks from pasted text
-        const cleanValue = newValue.replace(/\*/g, '');
-        updatedValue = cleanValue;
-      }
-      // If single character is added
-      else if (newValue.length > actualValue.length) {
-        // Get the last character that was added
-        const lastChar = newValue[newValue.length - 1];
-        updatedValue = actualValue + lastChar;
-      }
-
-      setActualValue(updatedValue);
 
       if (onChange) {
-        onChange({
+        const syntheticEvent = {
           ...e,
           target: {
             ...e.target,
-            value: updatedValue,
+            value: isPassword
+              ? newValue.length < actualValue.length
+                ? actualValue.slice(0, -1)
+                : actualValue + newValue.charAt(newValue.length - 1)
+              : newValue,
           },
-        } as React.ChangeEvent<HTMLInputElement>);
+        };
+        onChange(syntheticEvent as React.ChangeEvent<HTMLInputElement>);
       }
     };
 
@@ -76,6 +104,15 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
         `}</style>
 
         <input
+          ref={(node) => {
+            // Handle both refs
+            if (typeof ref === 'function') {
+              ref(node);
+            } else if (ref) {
+              ref.current = node;
+            }
+            inputRef.current = node;
+          }}
           className={cn(
             'peer w-full border-2 border-gray-200 px-4 py-2.5 text-base placeholder:text-gray-500 hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200',
             (error || isPassword) && 'pe-12',
@@ -83,11 +120,22 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
               'border-error-secondary hover:border-error focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 disabled:border-gray-200',
             'tracking-wide',
           )}
-          ref={ref}
           type="text"
           {...props}
           value={isPassword && !showPassword ? '*'.repeat(actualValue.length) : actualValue}
           onChange={handleChange}
+          onKeyDown={(e) => {
+            if (isPassword) {
+              const currentPosition = inputRef.current?.selectionStart || 0;
+              setCursorPosition(currentPosition);
+            }
+          }}
+          onClick={(e) => {
+            if (isPassword) {
+              const currentPosition = inputRef.current?.selectionStart || 0;
+              setCursorPosition(currentPosition);
+            }
+          }}
         />
 
         {Boolean(error || icon || isPassword) && (

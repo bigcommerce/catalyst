@@ -6,6 +6,8 @@
   position: relative;
   top: -10px;
 }
+
+/* 
 :root {
   --font-variation-settings-body: 'slnt' 0;
   --font-variation-settings-heading: 'slnt' 0;
@@ -43,9 +45,9 @@
   --gray-500: #7f7f7f;
   --gray-600: #5c5c5c;
   --gray-700: #353535;
-}
+} */
 
-html, 
+/* html, 
 body {
   color: var(--foreground);
   background: var(--background);
@@ -53,7 +55,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior:smooth;
-}
+} */
 
 /* Desktop */
 .Open_Sans {
@@ -255,17 +257,6 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
   body p.header-cart-icon img {
     right: 3.5em !important;
   }
-  /* footer */
-  /* nav#nav-footer-section div:nth-child(3) {
-    position: absolute;
-    bottom: 7.5em;
-    right: 2.2em;
-  } */
-  /* nav#nav-footer-section div:nth-child(2) {
-    position: absolute !important;
-    top: 2.5em;
-    right: 16em;
-  } */
   section.section-footer {
     position: relative;
     flex-direction: column;
@@ -433,19 +424,6 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
     gap: 2em;
     display: grid;
   }
-  /* footer */
-  /* nav#nav-footer-section {
-    padding-left: unset !important;
-  } */
-  /* nav#nav-footer-section div:nth-child(1) {
-    margin-left: 0em !important;
-  } */
-  /* nav#nav-footer-section div:nth-child(2) {
-    margin-left: 0em !important;
-  } */
-  /* nav#nav-footer-section div:nth-child(3) {
-    padding-left: 0em !important;
-  } */
   section.copyright {
     padding: 30px 0px;
   }
@@ -562,15 +540,6 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
   }
 }
 
-
-
-
-
-
-
-
-
-
 button.carousel-next-arrow {
   right: 1em;
   top: 50%;
@@ -596,25 +565,35 @@ button.show-all {
 .aa-SourceHeaderLine {
   border-bottom: 1px solid var(--gray-400);
 }
-.ais-RefinementList:not(.numbers-of-lights) .ais-RefinementList-checkbox, .ais-GeoSearch-input {
+.ais-RefinementList:not(.numbers-of-lights) .ais-RefinementList-checkbox,
+.ais-GeoSearch-input {
   box-shadow: none !important;
   border: 1px solid var(--gray-500) !important;
 }
-.ais-RefinementList:not(.numbers-of-lights) .ais-RefinementList-item--selected .ais-RefinementList-checkbox, .ais-GeoSearch-input:checked {
-  background-image: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E") !important;
+.ais-RefinementList:not(.numbers-of-lights)
+  .ais-RefinementList-item--selected
+  .ais-RefinementList-checkbox,
+.ais-GeoSearch-input:checked {
+  background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E') !important;
   background-color: var(--brand-400) !important;
   color: var(--brand-400) !important;
   box-shadow: none !important;
   border: 1px solid var(--brand-400) !important;
 }
-.ais-RefinementList-item--selected .ais-RefinementList-checkbox:focus, .ais-GeoSearch-input:checked:focus {
+.ais-RefinementList-item--selected .ais-RefinementList-checkbox:focus,
+.ais-GeoSearch-input:checked:focus {
   box-shadow: none !important;
 }
-.ais-ToggleRefinement-count, .ais-HierarchicalMenu-count, .ais-Menu-count, .ais-RatingMenu-count, .ais-RefinementList-count {
+.ais-ToggleRefinement-count,
+.ais-HierarchicalMenu-count,
+.ais-Menu-count,
+.ais-RatingMenu-count,
+.ais-RefinementList-count {
   background: var(--gray-50) !important;
   border: 1px solid var(--gray-300) !important;
 }
-.aa-Label svg, .aa-LoadingIndicator svg {
+.aa-Label svg,
+.aa-LoadingIndicator svg {
   color: var(--gray-600) !important;
 }
 .aa-Form {
@@ -625,7 +604,8 @@ button.show-all {
   box-shadow: none !important;
   outline: none !important;
 }
-.ais-Highlight-highlighted, .ais-Snippet-highlighted {
+.ais-Highlight-highlighted,
+.ais-Snippet-highlighted {
   background-color: var(--brand-50) !important;
   color: var(--brand-600) !important;
 }
@@ -654,20 +634,18 @@ button.show-all {
   flex: none;
 }
 .facets .ais-Panel-body {
-  padding: .5rem 0 1rem;
+  padding: 0.5rem 0 1rem;
 }
-
 
 .ais-CurrentRefinements-delete {
   color: var(--gray-700) !important;
   font-weight: 600 !important;
 }
 
-
 .compare-product .gap-3 {
   gap: 0 !important;
 }
-.compare-product button[role="checkbox"] {
+.compare-product button[role='checkbox'] {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -680,10 +658,10 @@ button.show-all {
   color: #d6d6e7;
   cursor: inherit;
   height: 1rem;
-  margin: 0 .5rem 0 0 !important;
+  margin: 0 0.5rem 0 0 !important;
   min-width: 1rem;
 }
-.compare-product button[data-state="checked"] {
+.compare-product button[data-state='checked'] {
   background-image: url(data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E) !important;
   background-color: var(--brand-400) !important;
   background-size: 14px;
