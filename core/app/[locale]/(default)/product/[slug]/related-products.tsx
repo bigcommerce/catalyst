@@ -133,10 +133,10 @@ export function RelatedProducts({ productId }: Props) {
         <AlgoliaRelatedProducts
           objectIDs={[productId.toString()]}
           headerComponent={() => <></>}
-          layoutComponent={(props) => (
+          layoutComponent={(props: any) => (
             <Carousel
               pageSize={3}
-              products={props.items.map((item) => (
+              products={props.items.map((item: any) => (
                 <CustomItem key={item.objectID} hit={item} useDefaultPrices={true} />
                 /*
                 <ProductCard imageSize="tall" key={item.objectID} product={{

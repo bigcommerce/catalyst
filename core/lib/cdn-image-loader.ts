@@ -3,7 +3,7 @@
 export default function bcCdnImageLoader({
   src,
   width,
-  height,
+  height
 }: {
   src: string;
   width: number;
@@ -11,11 +11,11 @@ export default function bcCdnImageLoader({
 }): string {
   let url;
 
+  url = src.replace('{:size}', `${width}w`);
+
   if (height) {
     url = src.replace('{:size}', `${width}x${height}`);
   }
-
-  url = src.replace('{:size}', `${width}w`);
 
   return url;
 }

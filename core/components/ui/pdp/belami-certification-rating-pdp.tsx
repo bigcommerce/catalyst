@@ -129,9 +129,9 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
             <BcImage
               alt={certification.label}
               src={certification.image}
+              width={30}
               height={20}
               priority={true}
-              width={30}
             />
             <span className="text-[0.875rem]">{certification.label}</span>
           </div>

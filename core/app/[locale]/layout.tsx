@@ -118,12 +118,12 @@ interface Props extends PropsWithChildren {
   params: { locale: string };
 }
 
-//export default function RootLayout({ children, params: { locale } }: Props) {
-export default function RootLayout({ children }: Props) {
+export default function RootLayout({ children, params: { locale } }: Props) {
+//export default function RootLayout({ children }: Props) {
   // need to call this method everywhere where static rendering is enabled
   // https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-setRequestLocale-to-all-layouts-and-pages
 
-  const locale = 'en';
+  //const locale = 'en';
   setRequestLocale(locale);
 
   const messages = useMessages();
