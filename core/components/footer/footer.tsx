@@ -26,12 +26,18 @@ import { PayPalIcon } from './payment-icons/paypal';
 import { VisaIcon } from './payment-icons/visa';
 import { Link as CustomLink } from '~/components/link';
 
-const socialIcons: Record<string, { icon: JSX.Element, link: string }> = {
-  Pinterest: { icon: <SiPinterest title="pinterest" color="#ffffff" />, link:'https://pinterest.com' },
-  YouTube: { icon: <SiYoutube title="YouTube" color="#ffffff" />, link:'https://youtube.com' },
-  Instagram: { icon: <SiInstagram title="Instagram" color="#ffffff" />, link:'https://instagram.com' },
-  Twitter: { icon: <SiX title="Twitter" color="#ffffff" />, link:'https://x.com' },
-  Facebook: { icon: <SiFacebook title="Facebook" color="#ffffff" />, link:'https://facebook.com' },
+const socialIcons: Record<string, { icon: JSX.Element; link: string }> = {
+  Pinterest: {
+    icon: <SiPinterest title="pinterest" color="#ffffff" />,
+    link: 'https://pinterest.com',
+  },
+  YouTube: { icon: <SiYoutube title="YouTube" color="#ffffff" />, link: 'https://youtube.com' },
+  Instagram: {
+    icon: <SiInstagram title="Instagram" color="#ffffff" />,
+    link: 'https://instagram.com',
+  },
+  Twitter: { icon: <SiX title="Twitter" color="#ffffff" />, link: 'https://x.com' },
+  Facebook: { icon: <SiFacebook title="Facebook" color="#ffffff" />, link: 'https://facebook.com' },
 };
 
 export const Footer = async () => {
@@ -47,100 +53,110 @@ export const Footer = async () => {
     {
       title: 'Shopping',
       links: [
-        { label: 'Gift Cards', href: '/path-1' },
-        { label: 'On Sale', href: '/path-2' },
-        { label: 'Our Brands', href: '/path-3' },
-        { label: 'B2B and Trade Customers', href: '/path-4' },
-        { label: 'View your Cart', href: '/path-5' },
-        { label: 'Coupon Policy', href: '/path-6' },
+        { label: <span className="footer-link shopping-link">Gift Cards</span>, href: '/path-1' },
+        { label: <span className="footer-link shopping-link">On Sale</span>, href: '/path-2' },
+        { label: <span className="footer-link shopping-link">Our Brands</span>, href: '/path-3' },
+        {
+          label: <span className="footer-link shopping-link">B2B and Trade Customers</span>,
+          href: '/path-4',
+        },
+        {
+          label: <span className="footer-link shopping-link">View your Cart</span>,
+          href: '/path-5',
+        },
+        {
+          label: <span className="footer-link shopping-link">Coupon Policy</span>,
+          href: '/path-6',
+        },
       ],
     },
     {
       title: 'About Us',
       links: [
-        { label: 'About Us', href: '/path-1' },
-        { label: 'Partners', href: '/path-2' },
-        { label: 'Privacy Policy', href: '/path-3' },
-        { label: 'Terms of Use', href: '/path-4' },
-        { label: 'Affiliate Program', href: '/path-5' },
-        { label: 'Accessibility', href: '/path-6' },
+        { label: <span className="footer-link about-link">About Us</span>, href: '/path-1' },
+        { label: <span className="footer-link about-link">Partners</span>, href: '/path-2' },
+        { label: <span className="footer-link about-link">Privacy Policy</span>, href: '/path-3' },
+        { label: <span className="footer-link about-link">Terms of Use</span>, href: '/path-4' },
+        {
+          label: <span className="footer-link about-link">Affiliate Program</span>,
+          href: '/path-5',
+        },
+        { label: <span className="footer-link about-link">Accessibility</span>, href: '/path-6' },
       ],
     },
     {
       title: '',
       links: [
-        { label: 'Be the first to know about new arrivals sales, and more.', href: '/path-1' }, 
-
+        {
+          label: (
+            <span className="footer-newsletter-text text-[16px] leading-[32px]">
+              Be the first to know about new arrivals, sales, and more.
+            </span>
+          ),
+          href: '/path-1',
+        },
         {
           label: (
             <div className="footer-subscribe !ml-[0em]">
-              
               <form action="/subscribe" method="POST">
                 <input
                   type="email"
                   name="email"
                   placeholder="Enter your email"
-                  className="subscription-input w-[12em] pl-[12px] !placeholder:pl-[8px] placeholder:text-[14px] placeholder:font-normal placeholder:leading-[24px] tracking-[0.25px] text-left text-[#6b7280] h-[40px] focus:outline-none"
+                  className="subscription-input !placeholder:pl-[8px] h-[40px] w-[14.6em] pl-[12px] text-left tracking-[0.25px] text-[#6b7280] placeholder:text-[14px] placeholder:font-normal placeholder:leading-[24px] focus:outline-none"
                   required
                 />
-<button 
-  type="submit" 
-  className="
-    text-[14px] 
-    font-normal 
-    text-center 
-    uppercase 
-    w-[85px] 
-    h-[40px] 
-    bg-[#008bb7] 
-    text-white 
-    relative 
-    top-[-1px]
-    subscription-button
-">
-  Sign Up
-</button>
-
-
+                <button
+                  type="submit"
+                  className="subscription-button relative top-[-1px] h-[40px] w-[85px] bg-[#008bb7] text-center text-[14px] font-normal uppercase text-white"
+                >
+                  Sign Up
+                </button>
               </form>
             </div>
           ),
-          href: '#', // We can leave href as '#' because it's not a link
+          href: '#',
         },
-        { 
-          label: (
-            <>
-<span className="text-xs font-normal leading-[18px] tracking-[0.4px] text-left">View our</span> 
-<span className="text-xs font-normal leading-[18px] tracking-[0.4px] text-left privacy-policy-label ml-2 underline">Privacy Policy</span>
-
-            </>
-          ), 
-          href: '/path-6' 
-        },
-        { label: 'FOLLOW US', href: '/path-6' },
-        
         {
           label: (
-            
-            <div className="footer-social-media flex !ml-[0px] !mt-[-9px] mb-[25px]">
-              
-              {/* Social Media Icons Inside Footer */}
-              {socialIcons && Object.entries(socialIcons).map(([key, value]) => (
-                <CustomLink
-                className='w-[20px] mr-[15px]'
-                  key={key}
-                  href={value?.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {socialIcons?.[key]?.icon}
-                </CustomLink>
-              ))}
+            <div className="footer-privacy-section">
+              <span className="privacy-text text-left text-xs font-normal leading-[18px] tracking-[0.4px]">
+                View our
+              </span>
+              <span className="privacy-link privacy-policy-label ml-2 text-left text-xs font-normal leading-[18px] tracking-[0.4px] underline">
+                Privacy Policy
+              </span>
             </div>
           ),
-          href: '#', // Placeholder since this is not a link
+          href: '/path-6',
         },
-        { label: 'Your Shopping ID:##########', href: '/path-6' },
+        {
+          label: <span className="footer-social-title">FOLLOW US</span>,
+          href: '/path-6',
+        },
+        {
+          label: (
+            <div className="footer-social-media !ml-[0px] !mt-[-9px] mb-[25px] flex">
+              {socialIcons &&
+                Object.entries(socialIcons).map(([key, value]) => (
+                  <CustomLink
+                    className="social-icon mr-[15px] w-[20px]"
+                    key={key}
+                    href={value?.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {socialIcons?.[key]?.icon}
+                  </CustomLink>
+                ))}
+            </div>
+          ),
+          href: '#',
+        },
+        {
+          label: <span className="footer-shopping-id">Your Shopping ID:##########</span>,
+          href: '/path-6',
+        },
       ],
     },
   ];

@@ -25,6 +25,10 @@ import { login, getRememberMeCookie, deleteRememberCookie } from '../_actions/lo
 import { IconProps } from '../../fragments';
 import { cn } from '~/lib/utils';
 
+interface LoginFormProps extends IconProps {
+  passwordHide: string;
+}
+
 const PasswordInput = ({
   error,
   onChange,
@@ -61,18 +65,29 @@ const SubmitButton = () => {
   const t = useTranslations('Login');
 
   return (
-    <Button
-      className="!important !w-full bg-[#008bb7] text-[14px] font-normal uppercase tracking-[1.25px] md:w-auto"
-      loading={pending}
-      loadingText={t('Form.submitting')}
-      variant="primary"
-    >
-      {t('Form.logIn')}
-    </Button>
+<Button
+  className="!important !w-full bg-[rgb(45,177,219)] text-[14px] font-normal uppercase tracking-[1.25px] md:w-auto 
+             hover:bg-[rgb(75,200,240)] transition-colors duration-500 h-[50px]"
+  loading={pending}
+  loadingText={t('Form.submitting')}
+  variant="primary"
+>
+  {t('Form.logIn')}
+</Button>
+
+
+
   );
 };
 
-export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: IconProps) => {
+export const LoginForm = ({
+  logo,
+  google,
+  email,
+  facebookLogo,
+  appleLogo,
+  passwordHide,
+}: IconProps & { passwordHide: string }) => {
   const t = useTranslations('Login');
 
   const [isEmailValid, setIsEmailValid] = useState(true);
@@ -203,6 +218,7 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
               required
               type="password"
               placeholder="Enter your password"
+              passwordHide={passwordHide}
             />
           </FieldControl>
           <FieldMessage
@@ -213,24 +229,12 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
           </FieldMessage>
         </Field>
 
-        <div className="remember-forgot-div">
-          <Field className="relative mt-2 inline-flex items-center space-y-2" name="remember-me">
-            <Checkbox
-              className="border-[#008bb7]"
-              aria-labelledby="remember-me"
-              id="remember-me"
-              name="remember-me"
-              value="1"
-            />
-            <Label
-              className="ml-2 mt-0 cursor-pointer space-y-2 pb-2 md:my-0"
-              htmlFor="remember-me"
-              id="remember-me"
-            >
-              Remember me
-            </Label>
-          </Field>
-        </div>
+        <Link
+          className="my-5 inline-flex items-center justify-start pb-2 text-sm font-semibold text-[#008BB7] hover:text-[#008BB7] md:my-0"
+          href="/login/forgot-password"
+        >
+          {t('Form.forgotPassword')}
+        </Link>
 
         <div className="login-submit-btn mt-[6px] w-full">
           <FormSubmit asChild>
@@ -238,15 +242,9 @@ export const LoginForm = ({ logo, google, email, facebookLogo, appleLogo }: Icon
           </FormSubmit>
         </div>
 
-        <div className="forgot-signin-div md:grid-none grid items-center justify-between sm:grid sm:px-6 md:my-[18px] md:flex md:flex-row-reverse md:px-[0]">
-          <Link
-            className="my-5 inline-flex items-center justify-start text-sm font-semibold text-primary hover:text-secondary md:my-0"
-            href="/login/forgot-password"
-          >
-            {t('Form.forgotPassword')}
-          </Link>
-          <p className="cursor-pointer text-center text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#353535]">
-            Sign in With an Existing Account
+        <div className="forgot-signin-div md:grid-none grid items-center justify-between sm:grid sm:px-6 md:my-[14px] md:px-[0]">
+          <p className="cursor-pointer text-center text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#353535]">
+            Sign up With an Existing Account
           </p>
         </div>
 

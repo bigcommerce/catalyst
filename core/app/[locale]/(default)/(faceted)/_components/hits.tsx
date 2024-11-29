@@ -14,7 +14,7 @@ export function Hits({ hitComponent, view, useDefaultPrices, promotions, ...prop
   const [prices, setPrices] = useState({} as any);
   const [cachedPrices, setCachedPrices] = useState({} as any);
 
-  const skus: string[] = items.map((hit) => hit.sku);
+  const skus: string[] = items.map((hit: any) => hit.sku);
 
   const [hits, setHits] = useState(null as any);
 
@@ -35,7 +35,7 @@ export function Hits({ hitComponent, view, useDefaultPrices, promotions, ...prop
               });
               setPrices(data.data);
 
-              setHits(items.map((hit) => ({
+              setHits(items.map((hit: any) => ({
                 ...hit,
                 prices: data.data && data.data[hit.sku] && data.data[hit.sku].price ? {
                   USD: data.data[hit.sku].price
@@ -88,7 +88,7 @@ export function HitsAsync({ hitComponent, view, useDefaultPrices, promotions, ..
   const [prices, setPrices] = useState({} as any);
   const [cachedPrices, setCachedPrices] = useState({} as any);
 
-  const skus: string[] = items.map((hit) => hit.sku);
+  const skus: string[] = items.map((hit: any) => hit.sku);
 
     useEffect(() => {
       (async () => {
@@ -125,7 +125,7 @@ export function HitsAsync({ hitComponent, view, useDefaultPrices, promotions, ..
   return (
     <div className="ais-Hits mt-4">
       <ol className={view == 'list' ? 'ais-Hits-list grid grid-cols-1 gap-4' : 'ais-Hits-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4'}>
-        {items.map((hit) => (
+        {items.map((hit: any) => (
           <li className="ais-Hits-item !p-0 !shadow-none !radius-none"
             key={hit.objectID}
             onClick={() => sendEvent('click', hit, 'Hit Clicked')}

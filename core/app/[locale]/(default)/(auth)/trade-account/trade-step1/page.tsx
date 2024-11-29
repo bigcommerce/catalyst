@@ -8,7 +8,7 @@ import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumb
 import ImageCarousel from '../trade-carousel';
 import TradeForm from './trade-form-section';
 import NetworkSection from './trade-our-network';
-import BrandPartnersSection from './trade-brand-partner';
+import BrandPartnersSection, { TestimonialData } from './trade-brand-partner';
 import TeamMembersSection from './trade-team-member';
 import HappyProsSection from './trade-testimonial';
 import type { FormField } from '../_components/register-form1';
@@ -71,7 +71,7 @@ const breadcrumbs = [
     label: 'Apply >',
     href: '/trade-account/trade-step1',
     color: '#008BB7',
-    fontWeight: '600', // Change to string
+    fontWeight: '600', 
   },
   {
     label: 'Business Details >',
@@ -98,6 +98,33 @@ const imageUrls = {
   canadaLightning: imageManagerImageUrl('canada-lightning.png', 'original'),
   homeclickBlack: imageManagerImageUrl('homeclick-black.png', 'original'),
 };
+
+const testimonials: TestimonialData[] = [
+  {
+    imageSrc: imageManagerImageUrl('quorem-trade.png', 'original'),
+    imageAlt: 'Fast Shipping',
+    testimonial:
+      '1StopLighting.com has been an invaluable partner for Quorum Brands, consistently exceeding our expectations as the go-to resource for builders, electricians, and lighting professionals.',
+    name: 'Field Bradford',
+    position: 'National Sales Manager',
+  },
+  {
+    imageSrc: imageManagerImageUrl('quoizel-trade.png', 'original'),
+    imageAlt: 'Reliable Support',
+    testimonial:
+      'Belami not only offers top-tier products within the Pro category, seamlessly blending functionality and design, but also ensures unparalleled customer service, responsiveness, and expertise.',
+    name: 'Howard Greenberg',
+    position: 'Director of Sales',
+  },
+  {
+    imageSrc: imageManagerImageUrl('maxim-trade.jpg', 'original'),
+    imageAlt: 'Quality Products',
+    testimonial:
+      "Maxim/ET2 has a well-established professional relationship with the Belami team. They have proven to be a top tier partner working alongside trade professionals and helping grow a client's business.",
+    name: 'Jason Eberhardt',
+    position: 'National E-commerce Accounting Manager',
+  },
+];
 
 // Network images configuration
 const networkImages = [
@@ -227,8 +254,8 @@ export default async function Trade() {
           <TradeForm tradeCircleCircle={imageUrls.tradeCircleCircle} />
 
           {/* Right Side Registration Form */}
-          <div className="rounded-lg bg-white p-[20px] md:pb-[3em] mb-5 lg:mb-0 md:pt-[3em] shadow-md lg:w-1/2">
-            <h2 className="mb-[15px] text-center text-[25px] lg:text-[34px] font-normal leading-[32px] text-[#353535]">
+          <div className="mb-5 rounded-lg bg-white p-[20px] shadow-md md:pb-[3em] md:pt-[3em] lg:mb-0 lg:w-1/2">
+            <h2 className="mb-[15px] text-center text-[25px] font-normal leading-[32px] text-[#353535] lg:text-[34px]">
               Apply Today
             </h2>
             <RegisterForm1
@@ -241,7 +268,7 @@ export default async function Trade() {
           </div>
         </div>
 
-        <h2 className="mb-[40px] mt-[0px] lg:mt-[40px] text-center text-[24px] font-normal leading-[32px] text-[#353535]">
+        <h2 className="mb-[40px] mt-[0px] text-center text-[24px] font-normal leading-[32px] text-[#353535] lg:mt-[40px]">
           Our Network
         </h2>
 
@@ -249,11 +276,11 @@ export default async function Trade() {
         <NetworkSection networkImages={networkImages} />
 
         {/* Brand Partners Section */}
-        <BrandPartnersSection />
+        <BrandPartnersSection testimonials={testimonials} />
 
         {/* Project Carousel Section */}
         <div className="w-full">
-          <h2 className="mb-[40px] mt-[40px] text-center text-[24px] font-normal leading-[32px] text-[#353535]">
+          <h2 className="mb-[40px] mt-[10px] text-center text-[24px] font-normal leading-[32px] text-[#353535]">
             Our Projects
           </h2>
           <div className="m-auto w-[95%] px-4">

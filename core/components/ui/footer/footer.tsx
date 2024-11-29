@@ -52,7 +52,7 @@ const Footer = ({
 }: Props) => (
   <footer className={cn('px-18  2xl:container 2xl:mx-auto !max-w-[100%] bg-[#002a37] text-white', className)} {...props}>
     <section className="section-footer flex flex-col gap-8 border-t border-gray-200 px-4 pt-10 pb-0 md:flex-row lg:gap-4 lg:px-12">
-      <nav className="grid flex-auto auto-cols-fr gap-8 sm:grid-flow-col pl-[5em]" id="nav-footer-section">
+      <nav className="grid flex-auto auto-cols-fr gap-8 sm:grid-flow-col" id="nav-footer-section">
         {sections.map((section, index) => (
           <div key={`${section.title}-${index}`}>
             <h3 className="text-left text-[20px] mb-[10px] font-medium leading-[32px] tracking-[0.15px] text-white">
@@ -68,7 +68,7 @@ const Footer = ({
           </div>
         ))}
       </nav>
-      <div className="div-footer flex flex-col gap-2.5 md:order-first md:grow">
+      <div className="div-footer flex flex-col gap-2.5 md:order-first md:grow w-[35%]">
         {Boolean(logo) && (
           <h3 className="footer-customer-service text-left text-[20px] font-medium leading-[32px] tracking-[0.15px] text-white">
             Customer Service

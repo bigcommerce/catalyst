@@ -88,10 +88,7 @@ export default async function CategoryPage(props: Props) {
 
   const categoryId = Number(slug);
 
-  const [{ category, categoryTree }, search] = await Promise.all([
-    getCategoryPageData({ categoryId }),
-    fetchFacetedSearch({ ...searchParams, category: categoryId }),
-  ]);
+  const { category, categoryTree } = await getCategoryPageData({ categoryId });
 
   if (!category) {
     return notFound();
@@ -111,4 +108,4 @@ export default async function CategoryPage(props: Props) {
 }
 
 // TODO: Not sure why its not working with this line uncommented... Something needs to be fixed to enable it.
-//export const runtime = 'edge';
+export const runtime = 'edge';

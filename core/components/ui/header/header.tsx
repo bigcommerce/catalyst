@@ -8,9 +8,9 @@ import { cn } from '~/lib/utils';
 
 import { type Locale, LocaleSwitcher } from './locale-switcher';
 import { MobileNav } from './mobile-nav';
-import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import { imageIconList } from '~/app/[locale]/(default)/(auth)/fragments';
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
 interface Link {
   label: string;
