@@ -142,7 +142,7 @@ function AmountUnitValue({ data }: any) {
   )
 }
 
-function ColorSwatches({ variants, metafields, onImageClick }: any) {
+function ColorSwatches({ variants, onImageClick }: any) {
   const items = variants && variants.length > 0 ? variants.filter((item: any) => Object.hasOwn(item.options, 'Finish Color')).map((item: any) => item.options['Finish Color']).filter((value: string, index: number, array: Array<string>) => array.indexOf(value) === index) : null;
 
   const imageUrls = {} as any;
@@ -221,7 +221,7 @@ export function Hit({ hit, sendEvent, insights, promotions = null, useDefaultPri
 
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-4 text-center">
-          <ColorSwatches variants={hit.variants} metafields={hit.metafields} onImageClick={setImageUrl} />
+          <ColorSwatches variants={hit.variants} onImageClick={setImageUrl} />
           {(hit.brand_name || hit.brand) &&
             <div className="mt-2">{hit.brand_name ?? hit.brand}</div>
           }
@@ -311,7 +311,7 @@ export function Hit({ hit, sendEvent, insights, promotions = null, useDefaultPri
               </button>
             </div>
           </div>
-          <ColorSwatches variants={hit.variants} metafields={hit.metafields} onImageClick={setImageUrl} />
+          <ColorSwatches variants={hit.variants} onImageClick={setImageUrl} />
         </div>
         <div className="flex-1 md:!ml-4">
           {(hit.brand_name || hit.brand) &&

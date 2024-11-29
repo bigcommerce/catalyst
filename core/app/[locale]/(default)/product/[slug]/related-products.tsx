@@ -24,6 +24,14 @@ import { Carousel } from '~/components/ui/carousel2';
 
 import { useFormatter } from 'next-intl';
 
+import searchColors from './search-colors.json';
+
+type DynamicObject = {
+  [key: string]: string;
+};
+
+const searchColorsHEX: DynamicObject = searchColors;
+
 const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
 
 interface Props {
@@ -38,6 +46,31 @@ const indexName: string = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || '';
 
 function getDiscount(price: number, sale: number): number | null {
   return price > 0 ? Math.floor(((price - sale) * 100) / price) : 0;
+}
+
+function ColorSwatches({ variants, onImageClick }: any) {
+  const items = variants && variants.length > 0 ? variants.filter((item: any) => Object.hasOwn(item.options, 'Finish Color')).map((item: any) => item.options['Finish Color']).filter((value: string, index: number, array: Array<string>) => array.indexOf(value) === index) : null;
+
+  const imageUrls = {} as any;
+  const items2 = items && items.length > 0 ? variants.filter((item: any) => item.image_url && item.image_url.length > 0 && Object.hasOwn(item.options, 'Finish Color')).map((item: any) => {
+    imageUrls[item.options['Finish Color']] = item.image_url.replace('.220.290.', '.386.513.');
+  }) : null;
+
+  return (
+    items && items.length > 0 &&
+    <>
+      <div className="mx-auto mt-4 flex space-x-2 items-center justify-center">
+        {items.slice(0, 5).map((item: string) => <button key={item} type="button" title={item} className="rounded-full w-8 h-8 border border-gray-500 cursor-auto" style={
+          searchColorsHEX[item] && searchColorsHEX[item].indexOf('.svg') !== -1
+            ? { backgroundImage: `url("/swatches/${searchColorsHEX[item]}")`, backgroundSize: `cover`, backgroundRepeat: `no-repeat` }
+            : { backgroundColor: (searchColorsHEX[item] ?? 'transparent') }
+        } onClick={() => imageUrls[item] ? onImageClick(imageUrls[item]) : null} />)}
+        {items.length > 5 &&
+          <span>+{(items.length - 5)}</span>
+        }
+      </div>
+    </>
+  )
 }
 
 function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = null, isLoading = false, isLoaded = false }: any) {
@@ -65,12 +98,9 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
           </figure>
         </div>
       </div>
-
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-4 text-center">
-          {/*
-          <ColorSwatches variants={hit.variants} metafields={hit.metafields} onImageClick={setImageUrl} />
-          */}
+          <ColorSwatches variants={hit.variants} onImageClick={setImageUrl} />
           {(hit.brand_name || hit.brand) &&
             <div className="mt-2">{hit.brand_name ?? hit.brand}</div>
           }
