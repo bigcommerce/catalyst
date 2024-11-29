@@ -496,7 +496,7 @@
       }
     },
     "Slideshow": {
-      "slideShow": "Interactive slide show",
+      "slideshow": "Interactive slide show",
       "slide": "Slide",
       "previousSlide": "Previous slide",
       "nextSlide": "Next slide",
