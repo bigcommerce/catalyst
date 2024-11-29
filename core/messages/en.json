@@ -40,7 +40,7 @@
       "fastCheckout": "Check out faster",
       "multipleAddresses": "Save multiple shipping addresses",
       "ordersHistory": "Access your order history",
-      "ordersTracking":  "Track new orders",
+      "ordersTracking": "Track new orders",
       "wishlists": "Save items to your Wishlist",
       "createLink": "Create Account "
     },
@@ -57,7 +57,7 @@
         "submit": "Reset password"
       },
       "Errors": {
-        "error":"Unknown error."
+        "error": "Unknown error."
       }
     }
   },
@@ -206,13 +206,13 @@
       "submitting": "Update settings...",
       "successMessage": "Your account settings have been updated",
       "validationMessages": {
-          "email": "Enter a valid email such as name@domain.com",
-          "empty": "This field can not be empty",
-          "firstName": "Enter your first name",
-          "lastName": "Enter your last name",
-          "city": "Enter a suburb / city",
-          "company": "Enter a company name",
-          "phone": "Enter a phone number"
+        "email": "Enter a valid email such as name@domain.com",
+        "empty": "This field can not be empty",
+        "firstName": "Enter your first name",
+        "lastName": "Enter your last name",
+        "city": "Enter a suburb / city",
+        "company": "Enter a company name",
+        "phone": "Enter a phone number"
       },
       "ChangePassword": {
         "title": "Change password",
@@ -451,12 +451,15 @@
     },
     "AddToCartButton": {
       "addToCart": "Add to cart",
-      "outOfStock": "Out of stock", 
+      "outOfStock": "Out of stock",
       "preorder": "Preorder",
       "unavailable": "Unavailable",
       "processing": "Processing..."
     },
     "ProductCard": {
+      "Compare": {
+        "compare": "Compare"
+      },
       "AddToCart": {
         "viewOptions": "View options",
         "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>"
