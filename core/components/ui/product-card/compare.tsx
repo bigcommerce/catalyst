@@ -1,11 +1,11 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useEffect, useId, useState } from 'react';
 
 import { useCompareDrawerContext } from '../compare-drawer';
 import { Checkbox } from '../form/checkbox';
 import { Label } from '../form/label';
-import { useTranslations } from 'next-intl';
 
 interface Image {
   altText?: string;

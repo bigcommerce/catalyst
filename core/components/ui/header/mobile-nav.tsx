@@ -3,6 +3,7 @@
 import * as SheetPrimitive from '@radix-ui/react-dialog';
 import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu';
 import { ChevronDown, Menu, X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import { BcImage } from '~/components/bc-image';
@@ -11,7 +12,6 @@ import { Link as CustomLink } from '~/components/link';
 import { Button } from '../button';
 
 import { Links } from './header';
-import { useTranslations } from 'next-intl';
 
 interface Image {
   altText: string;

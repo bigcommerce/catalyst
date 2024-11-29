@@ -1,4 +1,5 @@
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import {
   ComponentPropsWithRef,
   ElementRef,
@@ -9,7 +10,6 @@ import {
 } from 'react';
 
 import { cn } from '~/lib/utils';
-import { useTranslations } from 'next-intl';
 
 interface Props extends Omit<ComponentPropsWithRef<'input'>, 'onChange'> {
   error?: boolean;

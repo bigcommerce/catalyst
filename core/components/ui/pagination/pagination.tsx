@@ -1,10 +1,10 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 import { Link as CustomLink } from '~/components/link';
 import { usePathname } from '~/i18n/routing';
 import { cn } from '~/lib/utils';
-import { useTranslations } from 'next-intl';
 
 interface Props {
   className?: string;
