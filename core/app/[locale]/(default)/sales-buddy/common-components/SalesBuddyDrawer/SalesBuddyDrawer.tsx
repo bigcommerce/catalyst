@@ -28,7 +28,7 @@ export default function DrawerModal({
       onClick={onClose}
     >
       <div
-        className="relative h-full overflow-y-auto bg-white shadow-lg"
+        className="relative h-full overflow-y-auto bg-[#f3f4f5] shadow-lg"
         style={{ transform: 'translateX(0)', width }}
         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
       >

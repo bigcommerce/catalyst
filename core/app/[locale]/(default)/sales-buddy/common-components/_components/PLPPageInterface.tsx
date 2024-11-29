@@ -59,10 +59,10 @@ function PLPPageInterface() {
   }));
 
   return (
-    <div className="mt-5 w-[460px] rounded-lg bg-gray-100">
+    <div className="mt-5 w-[460px] bg-[#f3f4f5]">
       <h2 className="mb-4 text-[24px] font-normal text-[#353535]">Internal Search</h2>
 
-      <div className="rounded-lg bg-white p-3">
+      <div className="bg-white p-3">
         <h3 className="mb-2 text-sm font-semibold">Filters</h3>
         <div className="flex flex-wrap gap-2">
           {selectedFilters.length === 0 ? (
