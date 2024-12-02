@@ -41,7 +41,7 @@ export const BrandsList = ({ brands }: any) => {
                 {
                   brands.filter((brand: any) => (!category || brand.searchKeywords.includes(category)) && brand.name.charAt(0).toUpperCase() == letter).map((brand: any, index: number) => 
                     <li key={index} className="text-center sm:text-left py-1 mb-1">
-                      {brand.path ? <CustomLink href={brand.path}>{brand.name}</CustomLink> : brand.name }
+                      {brand.path ? <CustomLink href={brand.path} className="!inline !justify-normal">{brand.name}</CustomLink> : brand.name }
                     </li>
                   )
                 }

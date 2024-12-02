@@ -7,7 +7,6 @@
   top: -10px;
 }
 
-/* 
 :root {
   --font-variation-settings-body: 'slnt' 0;
   --font-variation-settings-heading: 'slnt' 0;
@@ -45,9 +44,9 @@
   --gray-500: #7f7f7f;
   --gray-600: #5c5c5c;
   --gray-700: #353535;
-} */
+}
 
-/* html, 
+html, 
 body {
   color: var(--foreground);
   background: var(--background);
@@ -55,7 +54,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior:smooth;
-} */
+}
 
 /* Desktop */
 .Open_Sans {
