@@ -132,6 +132,7 @@ export default async function ProductPage(props: Props) {
     optionValueIds,
     useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
   });
+  console.log("Product details=============================:", product);
 
   if (!product) {
     return notFound();

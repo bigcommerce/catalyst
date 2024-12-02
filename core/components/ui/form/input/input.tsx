@@ -1,4 +1,4 @@
-import { AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { AlertCircle, Eye } from 'lucide-react';
 import {
   ComponentPropsWithRef,
   ElementRef,
@@ -10,13 +10,15 @@ import {
 } from 'react';
 import { cn } from '~/lib/utils';
 
-interface Props extends ComponentPropsWithRef<'input'> {
+interface Props extends Omit<ComponentPropsWithRef<'input'>, 'value' | 'defaultValue'> {
   error?: boolean;
   icon?: ReactNode;
   children?: ReactNode;
   className?: string;
   storeHash?: string;
   passwordHide?: string;
+  value?: string;
+  defaultValue?: string;
 }
 
 const Input = forwardRef<ElementRef<'input'>, Props>(
@@ -30,18 +32,27 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
       storeHash,
       passwordHide,
       onChange,
+      value: propValue,
+      defaultValue,
       ...props
     },
     ref,
   ) => {
     const [showPassword, setShowPassword] = useState(false);
-    const [actualValue, setActualValue] = useState('');
+    const [actualValue, setActualValue] = useState(propValue || defaultValue || '');
     const isPassword = type === 'password';
     const inputRef = useRef<HTMLInputElement>(null);
     const [cursorPosition, setCursorPosition] = useState<number | null>(null);
     const [selectionStart, setSelectionStart] = useState<number | null>(null);
     const [selectionEnd, setSelectionEnd] = useState<number | null>(null);
     const lastKeyPressRef = useRef<string | null>(null);
+
+    // Update actualValue when propValue changes
+    useEffect(() => {
+      if (propValue !== undefined) {
+        setActualValue(propValue);
+      }
+    }, [propValue]);
 
     useEffect(() => {
       if (cursorPosition !== null && inputRef.current && !selectionStart && !selectionEnd) {
@@ -59,20 +70,19 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
       const input = e.target;
       const newValue = input.value;
       const currentPosition = input.selectionStart || 0;
-      const hasSelection = selectionStart !== null && 
-                          selectionEnd !== null && 
-                          selectionStart !== selectionEnd;
+      const hasSelection =
+        selectionStart !== null && selectionEnd !== null && selectionStart !== selectionEnd;
 
       if (isPassword) {
         // Handle complete deletion or selection deletion
         if (newValue.length === 0 || hasSelection) {
           if (hasSelection) {
-            const newActualValue = actualValue.slice(0, selectionStart!) + 
-                                 actualValue.slice(selectionEnd!);
-            setActualValue(newActualValue);
+            const newActualValue =
+              actualValue.slice(0, selectionStart!) + actualValue.slice(selectionEnd!);
+            if (propValue === undefined) setActualValue(newActualValue);
             setCursorPosition(selectionStart);
           } else {
-            setActualValue('');
+            if (propValue === undefined) setActualValue('');
             setCursorPosition(0);
           }
           // Reset selection after deletion
@@ -83,17 +93,15 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
         else if (newValue.length < actualValue.length) {
           if (lastKeyPressRef.current === 'Backspace') {
             // For backspace, remove character before cursor
-            const newActualValue = 
-              actualValue.slice(0, currentPosition) + 
-              actualValue.slice(currentPosition + 1);
-            setActualValue(newActualValue);
+            const newActualValue =
+              actualValue.slice(0, currentPosition) + actualValue.slice(currentPosition + 1);
+            if (propValue === undefined) setActualValue(newActualValue);
             setCursorPosition(currentPosition);
           } else if (lastKeyPressRef.current === 'Delete') {
             // For delete key, remove character at cursor
-            const newActualValue = 
-              actualValue.slice(0, currentPosition) + 
-              actualValue.slice(currentPosition + 1);
-            setActualValue(newActualValue);
+            const newActualValue =
+              actualValue.slice(0, currentPosition) + actualValue.slice(currentPosition + 1);
+            if (propValue === undefined) setActualValue(newActualValue);
             setCursorPosition(currentPosition);
           }
         }
@@ -105,12 +113,12 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
               actualValue.slice(0, currentPosition - 1) +
               insertedChar +
               actualValue.slice(currentPosition - 1);
-            setActualValue(newActualValue);
+            if (propValue === undefined) setActualValue(newActualValue);
             setCursorPosition(currentPosition);
           }
         }
       } else {
-        setActualValue(newValue);
+        if (propValue === undefined) setActualValue(newValue);
       }
 
       if (onChange) {
@@ -149,7 +157,7 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
             'peer w-full border-2 border-gray-200 px-4 py-2.5 text-base placeholder:text-gray-500 hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200',
             (error || isPassword) && 'pe-12',
             error &&
-              'border-error-secondary hover:border-error focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 disabled:border-gray-200',
+              'border-error-secondary focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 hover:border-error disabled:border-gray-200',
             'tracking-wide',
           )}
           type="text"

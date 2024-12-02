@@ -101,6 +101,7 @@ const Header = ({
                   priority
                   src={imageIconList.homeLogo}
                   width={30}
+                  unoptimized
                 />
               </div>
             ) : (
