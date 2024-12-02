@@ -335,8 +335,7 @@
             }
         },
         "AddToCart": {
-            "success": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
-            "error": "Produkten kunde inte läggas till i kundvagnen. Försök igen."
+            "success": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>"
         }
     },
     "Product": {
@@ -344,9 +343,14 @@
         "Carousel": {
             "relatedProducts": "Relaterade produkter"
         },
+        "Gallery": {
+            "previous": "Previous product image",
+            "next": "Next product image",
+            "thumbnailNavigation": "Thumbnail navigation",
+            "enlarge": "Enlarge product image"
+        },
         "Form": {
             "success": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
-            "error": "Produkten kunde inte läggas till i kundvagnen. Försök igen.",
             "saveToWishlist": "Spara i önskelistan",
             "quantityLabel": "Kvantitet"
         },
@@ -437,7 +441,34 @@
             "LocaleSwitcher": {
                 "chooseCountryAndLanguage": "Välj land och språk",
                 "goToSite": "Gå till webbplatsen"
+            },
+            "MiniCart": {
+                "cart": "Kundvagn",
+                "items": "Artiklar i kundvagnen"
+            },
+            "Navigation": {
+                "toggle": "Toggle navigation",
+                "navigationMenu": "Navigation menu"
+            },
+            "Search": {
+                "openSearchPopup": "Open search popup",
+                "closeSearchPopup": "Close search popup",
+                "searchBar": "Search bar",
+                "photo": "Foto",
+                "products": "Produkter",
+                "categories": "Kategorier",
+                "brands": "Varumärke",
+                "noSearchResults": "Tyvärr, inga resultat för {term}.",
+                "searchPlaceholder": "Sök...",
+                "clearSearch": "Rensa sökning",
+                "processing": "Behandlar…"
             }
+        },
+        "Footer": {
+            "socialMediaLinks": "Sociala Media-länkar"
+        },
+        "Breadcrumb": {
+            "breadcrumb": "Breadcrumb"
         },
         "Compare": {
             "compareButton": "Jämför ({products})",
@@ -459,11 +490,34 @@
             "processing": "Behandlar…"
         },
         "ProductCard": {
+            "Compare": {
+                "compare": "Jämför"
+            },
             "AddToCart": {
                 "viewOptions": "Visa alternativ",
-                "success": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
-                "error": "Produkten kunde inte läggas till i kundvagnen. Försök igen."
+                "success": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>"
             }
+        },
+        "Slideshow": {
+            "slideshow": "Interactive slide show",
+            "slide": "Glida",
+            "previousSlide": "Previous slide",
+            "nextSlide": "Next slide",
+            "slideNo": "{n} of {total}",
+            "pause": "Pause slideshow",
+            "play": "Play slideshow"
+        },
+        "Pagination": {
+            "pagination": "sidnumrering",
+            "previous": "Föregående",
+            "next": "Nästa"
+        },
+        "Carousel": {
+            "carousel": "Karusell",
+            "previousProducts": "Previous products",
+            "nextProducts": "Next products",
+            "slides": "Slides",
+            "goto": "Go to slide {n}"
         },
         "FormFields": {
             "Validation": {
@@ -482,6 +536,10 @@
                 "password": "Ange ett lösenord",
                 "phone": "Ange ett telefonnummer",
                 "postalCode": "Ange ett postnummer"
+            },
+            "Counter": {
+                "increase": "Öka antal",
+                "decrease": "Minska antal"
             }
         }
     }
