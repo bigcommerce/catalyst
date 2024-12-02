@@ -14,7 +14,6 @@ import { ProductCardCarousel } from '~/components/product-card-carousel';
 import { SearchForm } from '~/components/search-form';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 
-const homeLogo = imageManagerImageUrl('logo-mark.png', '150w');
 
 const NotFoundQuery = graphql(
   `

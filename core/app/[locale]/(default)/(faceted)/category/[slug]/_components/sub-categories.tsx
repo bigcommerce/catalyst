@@ -1,3 +1,5 @@
+// sub-categories
+
 import { useTranslations } from 'next-intl';
 
 import { FragmentOf, graphql } from '~/client/graphql';
