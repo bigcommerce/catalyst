@@ -349,11 +349,14 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
               </div>
               <div className="px-3 overflow-x-hidden">
                 <ProductPriceAdjuster
-                  parentSku="ABCDE-123-FG"
-                  sku="ABCDE-123-FG"
-                  initialCost={0.0}
-                  initialFloor={0.0}
-                  initialMarkup={0.0}
+                  parentSku={product.sku}
+                  sku={product.sku}
+                  productPrice={Number(product.listPrice.value)}
+                  initialCost={Number(product.listPrice.value)}
+                  initialFloor={Number(product.listPrice.value)}
+                  initialMarkup={Number(product.listPrice.value)}
+                  productId={product.productEntityId}
+                  cartId={cartId}
                 />
               </div>
             </div>
