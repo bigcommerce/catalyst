@@ -39,26 +39,60 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
     const isPassword = type === 'password';
     const inputRef = useRef<HTMLInputElement>(null);
     const [cursorPosition, setCursorPosition] = useState<number | null>(null);
+    const [selectionStart, setSelectionStart] = useState<number | null>(null);
+    const [selectionEnd, setSelectionEnd] = useState<number | null>(null);
+    const lastKeyPressRef = useRef<string | null>(null);
 
     useEffect(() => {
-      if (cursorPosition !== null && inputRef.current) {
+      if (cursorPosition !== null && inputRef.current && !selectionStart && !selectionEnd) {
         inputRef.current.setSelectionRange(cursorPosition, cursorPosition);
       }
-    }, [cursorPosition, actualValue]);
+    }, [cursorPosition, actualValue, selectionStart, selectionEnd]);
+
+    const handleSelect = (e: React.SyntheticEvent<HTMLInputElement>) => {
+      const input = e.target as HTMLInputElement;
+      setSelectionStart(input.selectionStart);
+      setSelectionEnd(input.selectionEnd);
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const input = e.target;
       const newValue = input.value;
       const currentPosition = input.selectionStart || 0;
+      const hasSelection =
+        selectionStart !== null && selectionEnd !== null && selectionStart !== selectionEnd;
 
       if (isPassword) {
-        // Handle deletion
-        if (newValue.length < actualValue.length) {
-          const deletePosition = currentPosition;
-          const newActualValue =
-            actualValue.slice(0, deletePosition - 1) + actualValue.slice(deletePosition);
-          setActualValue(newActualValue);
-          setCursorPosition(deletePosition - 1);
+        // Handle complete deletion or selection deletion
+        if (newValue.length === 0 || hasSelection) {
+          if (hasSelection) {
+            const newActualValue =
+              actualValue.slice(0, selectionStart!) + actualValue.slice(selectionEnd!);
+            setActualValue(newActualValue);
+            setCursorPosition(selectionStart);
+          } else {
+            setActualValue('');
+            setCursorPosition(0);
+          }
+          // Reset selection after deletion
+          setSelectionStart(null);
+          setSelectionEnd(null);
+        }
+        // Handle single character deletion
+        else if (newValue.length < actualValue.length) {
+          if (lastKeyPressRef.current === 'Backspace') {
+            // For backspace, remove character before cursor
+            const newActualValue =
+              actualValue.slice(0, currentPosition) + actualValue.slice(currentPosition + 1);
+            setActualValue(newActualValue);
+            setCursorPosition(currentPosition);
+          } else if (lastKeyPressRef.current === 'Delete') {
+            // For delete key, remove character at cursor
+            const newActualValue =
+              actualValue.slice(0, currentPosition) + actualValue.slice(currentPosition + 1);
+            setActualValue(newActualValue);
+            setCursorPosition(currentPosition);
+          }
         }
         // Handle insertion
         else {
@@ -81,11 +115,7 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
           ...e,
           target: {
             ...e.target,
-            value: isPassword
-              ? newValue.length < actualValue.length
-                ? actualValue.slice(0, -1)
-                : actualValue + newValue.charAt(newValue.length - 1)
-              : newValue,
+            value: isPassword ? actualValue : newValue,
           },
         };
         onChange(syntheticEvent as React.ChangeEvent<HTMLInputElement>);
@@ -105,7 +135,6 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
 
         <input
           ref={(node) => {
-            // Handle both refs
             if (typeof ref === 'function') {
               ref(node);
             } else if (ref) {
@@ -124,16 +153,22 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
           {...props}
           value={isPassword && !showPassword ? '*'.repeat(actualValue.length) : actualValue}
           onChange={handleChange}
+          onSelect={handleSelect}
           onKeyDown={(e) => {
             if (isPassword) {
-              const currentPosition = inputRef.current?.selectionStart || 0;
-              setCursorPosition(currentPosition);
+              lastKeyPressRef.current = e.key;
+              const input = e.currentTarget;
+              setCursorPosition(input.selectionStart);
+              setSelectionStart(input.selectionStart);
+              setSelectionEnd(input.selectionEnd);
             }
           }}
           onClick={(e) => {
             if (isPassword) {
-              const currentPosition = inputRef.current?.selectionStart || 0;
-              setCursorPosition(currentPosition);
+              const input = e.currentTarget;
+              setCursorPosition(input.selectionStart);
+              setSelectionStart(input.selectionStart);
+              setSelectionEnd(input.selectionEnd);
             }
           }}
         />
