@@ -23,6 +23,7 @@ import { GetProductMetaFields } from '~/components/management-apis';
 import { ProductProvider } from '~/components/common-context/product-provider';
 
 import { RelatedProducts } from './related-products';
+import { CollectionProducts } from './collection-products';
 //import { SimilarProducts } from './similar-products';
 import { SitevibesReviews } from './sitevibes-reviews';
 
@@ -38,7 +39,35 @@ const appId = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '';
 const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_API_KEY || '';
 const indexName: string = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || '';
 
-export async function getCatalogProducts() {
+export async function getRelatedProducts(objectId: number) {
+  const response = await fetch(`https://${appId}.algolia.net/1/indexes/*/recommendations`, {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "x-algolia-application-id": appId,
+      "x-algolia-api-key": apiKey,
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({
+      "requests": [{
+        "indexName": indexName,
+        "model": "related-products",
+        "objectID": objectId.toString(),
+        "threshold": 0,
+        "maxRecommendations": 18
+      }]
+    }),
+    cache: 'force-cache',
+    //next: { revalidate: 3600 }
+  });
+
+  const data = await response.json();
+
+  return data && data.results && data.results[0]?.hits ? data.results[0]?.hits : [];
+}
+
+export async function getCollectionProducts(collection: string) {
   const response = await fetch(`https://${appId}.algolia.net/1/indexes/${indexName}/query`, {
     method: "POST",
     credentials: "same-origin",
@@ -49,8 +78,9 @@ export async function getCatalogProducts() {
       "Accept": "application/json"
     },
     body: JSON.stringify({
-      "filters": "metafields.Akeneo.collection:Brewmaster",
-      "length": 100
+      "filters": `metafields.Akeneo.collection:${collection}`,
+      "length": 6,
+      "offset": 0
     }),
     cache: 'force-cache',
     //next: { revalidate: 3600 }
@@ -58,7 +88,7 @@ export async function getCatalogProducts() {
 
   const data = await response.json();
 
-  return data.hits;
+  return data.hits ?? [];
 }
 
 function getOptionValueIds({ searchParams }: { searchParams: Awaited<Props['searchParams']> }) {
@@ -149,6 +179,9 @@ export default async function ProductPage(props: Props) {
     collectionValue = collectionMetaField.value; // Store the collection value
   }
 
+  const relatedProducts = await getRelatedProducts(product.entityId);
+  const collectionProducts = await getCollectionProducts(collectionValue);
+
   const category = removeEdgesAndNodes(product.categories).at(0);
   if (category?.breadcrumbs?.edges) {
     category.breadcrumbs.edges.push({ node: { name: product?.sku, path: '#' } });
@@ -200,17 +233,20 @@ export default async function ProductPage(props: Props) {
             />
             <div className="lg:col-span-2">
               <Description product={product} />
+              <CollectionProducts collection={collectionValue} products={collectionProducts} />
               {/*
               <RelatedProducts
                 productId={product.entityId}
                 relatedProductArrow={relatedProductArrow}
               />
               */}
-              <RelatedProducts productId={product.entityId} />
+              <RelatedProducts productId={product.entityId} products={relatedProducts} />
               {/*
               <SimilarProducts productId={product.entityId} />
               */}
+              {/*
               <SimilarProducts0 />
+              */}
               <Promotion />
               <Warranty product={product} />
               <SitevibesReviews product={product} category={category} />
