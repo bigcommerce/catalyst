@@ -1,3 +1,4 @@
+import { DraftModeScript } from '@makeswift/runtime/next/server';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
@@ -108,6 +109,9 @@ export default async function RootLayout({ params, children }: Props) {
 
   return (
     <html lang={locale}>
+      <head>
+        <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
+      </head>
       <body className={`${inter.variable} ${dm_serif_text.variable} ${roboto_mono.variable}`}>
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
