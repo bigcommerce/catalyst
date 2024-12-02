@@ -21,8 +21,8 @@ export default function ReferalId() {
   };
 
   return (
-    <div className="h-[81px] w-[460px] space-y-1 rounded-lg">
-      <div className="flex flex-row items-center justify-between border-none">
+    <div className="grid content-evenly gap-[10px] h-[81px] w-[460px] space-y-1 rounded-lg">
+      <div className="flex flex-row items-center h-[32px] justify-between border-none">
         {/* Heading at the start */}
         <h2 className="text-2xl font-normal">Cart ID: #123456789</h2>
 
@@ -31,7 +31,7 @@ export default function ReferalId() {
           Mark: #.#
         </span>
       </div>
-      <div className="flex h-[36px] items-center justify-between">
+      <div className="flex h-[36px] items-end justify-between">
         {!showReferralInput ? (
           <>
             {!saved && (
@@ -41,7 +41,7 @@ export default function ReferalId() {
               >
                 Add Referral ID
                 <span>
-                  <Image src={addIcon} />
+                  <Image src={addIcon} alt= "addIcon" />
                 </span>
               </div>
             )}
@@ -49,7 +49,7 @@ export default function ReferalId() {
               <div className="font-open-sans flex items-center gap-2 text-[16px] text-[#353535]">
                 <span>{`Referral ID: ${referralId}`}</span>
                 <div onClick={handleDelete}>
-                  <Image src={deleteIcon} />
+                  <Image src={deleteIcon} alt="deleteIcon" />
                 </div>
               </div>
             )}
@@ -74,7 +74,7 @@ export default function ReferalId() {
                   className="m-0 flex items-center justify-start gap-1 bg-transparent px-[5px]"
                   onClick={handleSave}
                 >
-                  <Image src={SaveIcon} />
+                  <Image src={SaveIcon} alt="saveIcon" />
                   <span className="cursor-pointer text-[16px] text-green-600">save</span>
                 </Button>
               </div>

@@ -18,7 +18,7 @@ const TailwindCustomCssValues = {
 const ACCORDION_DATA = {
   existingQuote: {
     title: (
-      <div className="flex items-center gap-2 text-base font-normal">
+      <div className="flex items-center gap-[5px] text-base font-normal">
         <Image src={NotesIcons} alt="Add Notes Icon" />
         <span className={`${TailwindCustomCssValues.font} text-[#353535]`}>
           Add to Existing Quote

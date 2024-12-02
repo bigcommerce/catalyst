@@ -68,13 +68,13 @@ const Accordions = ({ accordions, ...props }: Props) => {
           value={accordion.title}
         >
           <AccordionPrimitive.Header className={`flex ${props.titleStyle}`}>
-            <AccordionPrimitive.Trigger className="flex flex-1 items-center justify-between py-[9.5px] text-lg font-bold outline-none transition-all focus-visible:text-secondary [&[data-state=open]>svg]:rotate-180">
+            <AccordionPrimitive.Trigger className="flex space-y-[10px] flex-1 items-center justify-between h-[30px] text-lg font-bold outline-none transition-all focus-visible:text-secondary [&[data-state=open]>svg]:rotate-180">
               {accordion.title}
               <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
             </AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
           <AccordionPrimitive.Content
-            className={`data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down m-0 overflow-hidden transition-all`}
+            className={`mt-[10px] data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down m-0 overflow-hidden transition-all`}
           >
             {accordion.content}
           </AccordionPrimitive.Content>

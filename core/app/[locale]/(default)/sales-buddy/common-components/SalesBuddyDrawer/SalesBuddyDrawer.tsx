@@ -33,10 +33,10 @@ export default function DrawerModal({
         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
       >
         {/* Modal Header */}
-        <div className="flex items-center justify-between bg-[#353535] px-[40px] py-[20px] text-white">
-          <div className="flex items-center gap-[10px]">
+        <div className="flex items-center justify-between bg-[#353535] px-[40px] py-[20px] text-white h-[72px]">
+          <div className="flex items-center gap-[16px]">
             <Image className="h-[25.2px] w-[28px]" src={headerIcon} alt="header-icon" />
-            <span className="font-sans text-[24px] font-bold">{headerTitle}</span>
+            <span className="font-Open-Sans text-2xl font-bold">{headerTitle}</span>
           </div>
           <button onClick={onClose} className="h-[14px] w-[14px] text-white hover:text-gray-700">
             ✖
