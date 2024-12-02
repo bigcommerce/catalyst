@@ -24,10 +24,41 @@ import { ProductProvider } from '~/components/common-context/product-provider';
 
 import { RelatedProducts } from './related-products';
 //import { SimilarProducts } from './similar-products';
+import { SitevibesReviews } from './sitevibes-reviews';
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
+
+/*
+TODO: Move to separate file...
+*/
+const appId = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '';
+const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_API_KEY || '';
+const indexName: string = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || '';
+
+export async function getCatalogProducts() {
+  const response = await fetch(`https://${appId}.algolia.net/1/indexes/${indexName}/query`, {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "x-algolia-application-id": appId,
+      "x-algolia-api-key": apiKey,
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({
+      "filters": "metafields.Akeneo.collection:Brewmaster",
+      "length": 100
+    }),
+    cache: 'force-cache',
+    //next: { revalidate: 3600 }
+  });
+
+  const data = await response.json();
+
+  return data.hits;
 }
 
 function getOptionValueIds({ searchParams }: { searchParams: Awaited<Props['searchParams']> }) {
@@ -181,6 +212,7 @@ export default async function ProductPage(props: Props) {
               <SimilarProducts0 />
               <Promotion />
               <Warranty product={product} />
+              <SitevibesReviews product={product} category={category} />
             </div>
           </div>
           <ProductViewed product={product} />
@@ -191,4 +223,4 @@ export default async function ProductPage(props: Props) {
 }
 
 // TODO: Not sure why its not working with this line uncommented... Something needs to be fixed to enable it.
-export const runtime = 'edge';
+//export const runtime = 'edge';

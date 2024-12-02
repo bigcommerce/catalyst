@@ -113,7 +113,7 @@ export default async function BrandPage(props: Props) {
   const hasExtendedContent = false;
 
   return (
-    <div className="group">
+    <div className="group py-4 px-4 xl:px-12">
       <Breadcrumbs
         category={{ breadcrumbs: { edges: [{ node: { name: brand.name, path: brand.path } }] } }}
       />
@@ -543,4 +543,4 @@ export default async function BrandPage(props: Props) {
 }
 
 // TODO: Not sure why its not working with this line uncommented... Something needs to be fixed to enable it.
-export const runtime = 'edge';
+//export const runtime = 'edge';
