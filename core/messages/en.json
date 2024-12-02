@@ -458,7 +458,7 @@
         "products": "Products",
         "categories": "Categories",
         "brands": "Brands",
-        "noSearchResults": "Sorry, no results for {term}.",
+        "noSearchResults": "Sorry, no results for \"{term}\".",
         "searchPlaceholder": "Search...",
         "clearSearch": "Clear search",
         "processing": "Processing..."
@@ -479,7 +479,7 @@
       "searchProducts": "Search for products",
       "searchPlaceholder": "Search...",
       "search": "Search",
-      "noSearchResults": "Sorry, no results for {term}.",
+      "noSearchResults": "Sorry, no results for \"{term}\".",
       "checkSpelling": "Please check the spelling or try another search."
     },
     "AddToCartButton": {
