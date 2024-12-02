@@ -234,6 +234,7 @@ export default async function ProductPage(props: Props) {
             <div className="lg:col-span-2">
               <Description product={product} />
               <CollectionProducts collection={collectionValue} products={collectionProducts} />
+              <Promotion />
               {/*
               <RelatedProducts
                 productId={product.entityId}
@@ -247,7 +248,6 @@ export default async function ProductPage(props: Props) {
               {/*
               <SimilarProducts0 />
               */}
-              <Promotion />
               <Warranty product={product} />
               <SitevibesReviews product={product} category={category} />
             </div>
