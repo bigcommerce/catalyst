@@ -59,15 +59,16 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
       const input = e.target;
       const newValue = input.value;
       const currentPosition = input.selectionStart || 0;
-      const hasSelection =
-        selectionStart !== null && selectionEnd !== null && selectionStart !== selectionEnd;
+      const hasSelection = selectionStart !== null && 
+                          selectionEnd !== null && 
+                          selectionStart !== selectionEnd;
 
       if (isPassword) {
         // Handle complete deletion or selection deletion
         if (newValue.length === 0 || hasSelection) {
           if (hasSelection) {
-            const newActualValue =
-              actualValue.slice(0, selectionStart!) + actualValue.slice(selectionEnd!);
+            const newActualValue = actualValue.slice(0, selectionStart!) + 
+                                 actualValue.slice(selectionEnd!);
             setActualValue(newActualValue);
             setCursorPosition(selectionStart);
           } else {
@@ -82,14 +83,16 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
         else if (newValue.length < actualValue.length) {
           if (lastKeyPressRef.current === 'Backspace') {
             // For backspace, remove character before cursor
-            const newActualValue =
-              actualValue.slice(0, currentPosition) + actualValue.slice(currentPosition + 1);
+            const newActualValue = 
+              actualValue.slice(0, currentPosition) + 
+              actualValue.slice(currentPosition + 1);
             setActualValue(newActualValue);
             setCursorPosition(currentPosition);
           } else if (lastKeyPressRef.current === 'Delete') {
             // For delete key, remove character at cursor
-            const newActualValue =
-              actualValue.slice(0, currentPosition) + actualValue.slice(currentPosition + 1);
+            const newActualValue = 
+              actualValue.slice(0, currentPosition) + 
+              actualValue.slice(currentPosition + 1);
             setActualValue(newActualValue);
             setCursorPosition(currentPosition);
           }
