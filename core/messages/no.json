@@ -335,8 +335,7 @@
             }
         },
         "AddToCart": {
-            "success": "{cartItems, plural, =1 {1 vare} other {# varer}} lagt til i <cartLink>handlekurven din</cartLink>",
-            "error": "Feil da produktet skulle legges til i handlekurven. Prøv igjen."
+            "success": "{cartItems, plural, =1 {1 vare} other {# varer}} lagt til i <cartLink>handlekurven din</cartLink>"
         }
     },
     "Product": {
@@ -344,9 +343,14 @@
         "Carousel": {
             "relatedProducts": "Relaterte produkter"
         },
+        "Gallery": {
+            "previous": "Previous product image",
+            "next": "Next product image",
+            "thumbnailNavigation": "Thumbnail navigation",
+            "enlarge": "Enlarge product image"
+        },
         "Form": {
             "success": "{cartItems, plural, =1 {1 vare} other {# varer}} lagt til i <cartLink>handlekurven din</cartLink>",
-            "error": "Feil da produktet skulle legges til i handlekurven. Prøv igjen.",
             "saveToWishlist": "Legg til på ønskeliste",
             "quantityLabel": "Mengde"
         },
@@ -437,7 +441,34 @@
             "LocaleSwitcher": {
                 "chooseCountryAndLanguage": "Velg land og språk",
                 "goToSite": "Gå til nettstedet"
+            },
+            "MiniCart": {
+                "cart": "Handlekurv",
+                "items": "Varer i handlekurv"
+            },
+            "Navigation": {
+                "toggle": "Toggle navigation",
+                "navigationMenu": "Navigation menu"
+            },
+            "Search": {
+                "openSearchPopup": "Open search popup",
+                "closeSearchPopup": "Close search popup",
+                "searchBar": "Search bar",
+                "photo": "Foto",
+                "products": "Produkter",
+                "categories": "Kategorier",
+                "brands": "merker",
+                "noSearchResults": "Beklager, ingen resultater for {term}.",
+                "searchPlaceholder": "Søk …",
+                "clearSearch": "Nullstill søk",
+                "processing": "Behandler …"
             }
+        },
+        "Footer": {
+            "socialMediaLinks": "Lenker til sosiale medier"
+        },
+        "Breadcrumb": {
+            "breadcrumb": "Breadcrumb"
         },
         "Compare": {
             "compareButton": "Sammenlign ({products})",
@@ -459,11 +490,34 @@
             "processing": "Behandler …"
         },
         "ProductCard": {
+            "Compare": {
+                "compare": "Sammenlign"
+            },
             "AddToCart": {
                 "viewOptions": "Vis alternativer",
-                "success": "{cartItems, plural, =1 {1 vare} other {# varer}} lagt til i <cartLink>handlekurven din</cartLink>",
-                "error": "Feil da produktet skulle legges til i handlekurven. Prøv igjen."
+                "success": "{cartItems, plural, =1 {1 vare} other {# varer}} lagt til i <cartLink>handlekurven din</cartLink>"
             }
+        },
+        "Slideshow": {
+            "slideshow": "Interactive slide show",
+            "slide": "Lysbilde",
+            "previousSlide": "Previous slide",
+            "nextSlide": "Next slide",
+            "slideNo": "{n} of {total}",
+            "pause": "Pause slideshow",
+            "play": "Play slideshow"
+        },
+        "Pagination": {
+            "pagination": "paginering",
+            "previous": "Forrige",
+            "next": "Neste"
+        },
+        "Carousel": {
+            "carousel": "Karusell",
+            "previousProducts": "Previous products",
+            "nextProducts": "Next products",
+            "slides": "Slides",
+            "goto": "Go to slide {n}"
         },
         "FormFields": {
             "Validation": {
@@ -482,6 +536,10 @@
                 "password": "Skriv inn et passord",
                 "phone": "Skriv inn et telefonnummer",
                 "postalCode": "Skriv inn et postnummer"
+            },
+            "Counter": {
+                "increase": "Øk antall",
+                "decrease": "Reduser antall"
             }
         }
     }

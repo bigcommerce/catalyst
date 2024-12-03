@@ -1,7 +1,7 @@
 'use client';
 
 import { ShoppingCart } from 'lucide-react';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 import { z } from 'zod';
 
@@ -20,6 +20,7 @@ interface CartIconProps {
 export const CartIcon = ({ count: serverCount }: CartIconProps) => {
   const { count, setCount } = useCart();
   const locale = useLocale();
+  const t = useTranslations('Components.Header.MiniCart');
 
   useEffect(() => {
     async function fetchCartQuantity() {
@@ -40,12 +41,12 @@ export const CartIcon = ({ count: serverCount }: CartIconProps) => {
   }, [serverCount, locale, setCount]);
 
   if (!count) {
-    return <ShoppingCart aria-label="cart" />;
+    return <ShoppingCart aria-label={t('cart')} />;
   }
 
   return (
     <>
-      <span className="sr-only">Cart Items</span>
+      <span className="sr-only">{t('items')}</span>
       <ShoppingCart aria-hidden="true" />
       <Badge>{count}</Badge>
     </>

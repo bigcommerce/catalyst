@@ -370,8 +370,7 @@
       }
     },
     "AddToCart": {
-      "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-      "error": "Error adding product to cart. Please try again."
+      "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>"
     }
   },
   "Product": {
@@ -379,9 +378,14 @@
     "Carousel": {
       "relatedProducts": "Related products"
     },
+    "Gallery": {
+      "previous": "Previous product image",
+      "next": "Next product image",
+      "thumbnailNavigation": "Thumbnail navigation",
+      "enlarge": "Enlarge product image"
+    },
     "Form": {
       "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-      "error": "Error adding product to cart. Please try again.",
       "saveToWishlist": "Save to wishlist",
       "quantityLabel": "Quantity"
     },
@@ -472,7 +476,34 @@
       "LocaleSwitcher": {
         "chooseCountryAndLanguage": "Choose your country and language",
         "goToSite": "Go to site"
+      },
+      "MiniCart": {
+        "cart": "Cart",
+        "items": "Cart Items"
+      },
+      "Navigation": {
+        "toggle": "Toggle navigation",
+        "navigationMenu": "Navigation menu"
+      },
+      "Search": {
+        "openSearchPopup": "Open search popup",
+        "closeSearchPopup": "Close search popup",
+        "searchBar": "Search bar",
+        "photo": "Photo",
+        "products": "Products",
+        "categories": "Categories",
+        "brands": "Brands",
+        "noSearchResults": "Sorry, no results for {term}.",
+        "searchPlaceholder": "Search...",
+        "clearSearch": "Clear search",
+        "processing": "Processing..."
       }
+    },
+    "Footer": {
+      "socialMediaLinks": "Social media links"
+    },
+    "Breadcrumb": {
+      "breadcrumb": "Breadcrumb"
     },
     "Compare": {
       "compareButton": "Compare ({products})",
@@ -494,11 +525,34 @@
       "processing": "Processing..."
     },
     "ProductCard": {
+      "Compare": {
+        "compare": "Compare"
+      },
       "AddToCart": {
         "viewOptions": "View options",
-        "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-        "error": "Error adding product to cart. Please try again."
+        "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>"
       }
+    },
+    "Slideshow": {
+      "slideshow": "Interactive slide show",
+      "slide": "Slide",
+      "previousSlide": "Previous slide",
+      "nextSlide": "Next slide",
+      "slideNo": "{n} of {total}",
+      "pause": "Pause slideshow",
+      "play": "Play slideshow"
+    },
+    "Pagination": {
+      "pagination": "Pagination",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "Carousel": {
+      "carousel": "Carousel",
+      "previousProducts": "Previous products",
+      "nextProducts": "Next products",
+      "slides": "Slides",
+      "goto": "Go to slide {n}"
     },
     "FormFields": {
       "Validation": {
@@ -517,6 +571,10 @@
         "password": "Enter a password",
         "phone": "Enter a phone number",
         "postalCode": "Enter a zip / postcode"
+      },
+      "Counter": {
+        "increase": "Increase count",
+        "decrease": "Decrease count"
       }
     }
   }
