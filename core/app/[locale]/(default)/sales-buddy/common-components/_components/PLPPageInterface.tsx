@@ -91,7 +91,7 @@ function PLPPageInterface() {
         type="multiple"
         defaultValue={['Our Inventory', 'Supplier Inventory']}
         contentGap="gap-4"
-        // titleStyle="items-center  justify-between"
+        // titlestyle="items-center  justify-between"
       />
       <div className="w-[460px] space-y-[10px]">
         <div className="bg-white"></div>

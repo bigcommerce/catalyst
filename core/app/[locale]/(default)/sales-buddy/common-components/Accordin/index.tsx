@@ -23,7 +23,7 @@ type Props =
       type: 'multiple';
       contentGap: string;
       styles: string;
-      titleStyle:string
+      titlestyle:string
     };
 
 // const Accordions = ({ accordions, ...props }: Props) => {
@@ -36,7 +36,7 @@ type Props =
 //           className={props.styles}
 //           value={accordion.title}
 //         >
-//           <AccordionPrimitive.Header className={`flex ${props.titleStyle}`}>
+//           <AccordionPrimitive.Header className={`flex ${props.titlestyle}`}>
 //             <AccordionPrimitive.Trigger className="flex flex-1 items-center justify-between py-[9.5px] text-lg font-bold outline-none transition-all focus-visible:text-secondary [&[data-state=open]>svg]:rotate-180">
 //               {accordion.title}
 //               <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
@@ -67,7 +67,7 @@ const Accordions = ({ accordions, ...props }: Props) => {
           className={props.styles}
           value={accordion.title}
         >
-          <AccordionPrimitive.Header className={`flex ${props.titleStyle}`}>
+          <AccordionPrimitive.Header className={`flex ${props.titlestyle}`}>
             <AccordionPrimitive.Trigger className="flex flex-1 items-center justify-between py-[9.5px] text-lg font-bold outline-none transition-all focus-visible:text-secondary [&[data-state=open]>svg]:rotate-180">
               {accordion.title}
               <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />

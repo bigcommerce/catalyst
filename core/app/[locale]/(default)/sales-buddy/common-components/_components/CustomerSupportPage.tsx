@@ -88,7 +88,7 @@ function CustomerSupportPage() {
         <Accordions
           styles="border-t border-b bg-white py-[10px] px-[20px] text-[16px]"
           accordions={accordions}
-          titleStyle="   "
+          titlestyle="   "
           type="multiple"
         />
       </div>
