@@ -5,7 +5,6 @@ import { cn } from '~/lib/utils';
 
 import { Locale } from './locale';
 import AgentFooter from '~/app/[locale]/(default)/sales-buddy/pages/footer';
-import GetQuote from '../../../app/[locale]/(default)/sales-buddy/pages/getQuote';
 
 interface Image {
   altText: string;
@@ -55,7 +54,6 @@ const Footer = ({
   <footer className={cn('px-18  2xl:container 2xl:mx-auto !max-w-[100%] bg-[#002a37] text-white', className)} {...props}>
      <div className='absolute flex flex-col right-[200px] gap-[10px] mt-[370px]'>
       <AgentFooter />
-      <GetQuote />
     </div>
     <section className="section-footer flex flex-col gap-8 border-t border-gray-200 px-4 pt-10 pb-0 md:flex-row lg:gap-4 lg:px-12">
       <nav className="grid flex-auto auto-cols-fr gap-8 sm:grid-flow-col" id="nav-footer-section">
