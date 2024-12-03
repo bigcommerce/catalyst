@@ -13,7 +13,7 @@ type Props =
       className?: string;
       defaultValue?: string;
       type: 'single';
-      contentGap: string;
+      contentgap: string;
       styles: string;
     }
   | {
@@ -21,7 +21,7 @@ type Props =
       className?: string;
       defaultValue?: string[];
       type: 'multiple';
-      contentGap: string;
+      contentgap: string;
       styles: string;
       titlestyle:string
     };
@@ -57,7 +57,7 @@ const Accordions = ({ accordions, ...props }: Props) => {
   return (
     <AccordionPrimitive.Root
       {...props}
-      className={props.contentGap}
+      className={props.contentgap}
       defaultValue={props.defaultValue || props.defaultValue}
     >
       {accordions.map((accordion, i) => (

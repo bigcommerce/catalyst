@@ -89,8 +89,8 @@ function PLPPageInterface() {
         styles="border-x-0 border-y-[1px] -my-[1px] border-[#CCCBCB] py-[10px] px-[20px] text-[16px] bg-white"
         accordions={accordions}
         type="multiple"
-        defaultValue={['Our Inventory', 'Supplier Inventory']}
-        contentGap="gap-4"
+        defaultvalue={['Our Inventory', 'Supplier Inventory']}
+        contentgap="gap-4"
         // titlestyle="items-center  justify-between"
       />
       <div className="w-[460px] space-y-[10px]">

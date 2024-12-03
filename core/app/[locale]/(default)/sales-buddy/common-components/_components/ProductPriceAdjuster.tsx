@@ -4,6 +4,7 @@ import { Input } from '../Input';
 import { useRouter } from 'next/navigation';
 
 import {updateProductPrice} from '../../_actions/price-update-in-cart'
+import Spinner from './Spinner';
 interface ProductPriceAdjusterProps {
   parentSku: string;
   sku: string;
@@ -50,27 +51,30 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
   };
 
   const handleSubmit = async () => {
+  
     setLoading(true);
     let res = await updateProductPrice(newCost, cartId, productId);
     console.log('res');
     console.log(res)
     if(res.status == 200){
       setIsSave(true);
+      setLoading(false)
     }else{
+      setLoading(false);
       console.log('show error message' + res.error);
     }
   };
 
   const router = useRouter();
-  useEffect(()=>{
-    if(isSave){
-      router.refresh();
-      setIsSave(false);
-      setIsEditing(false);
-      setLoading(false);
-    }
-  },[isSave]);
-
+  // useEffect(()=>{
+    
+  // },[isSave]);
+if (isSave) {
+  router.refresh();
+  setIsSave(false);
+  setIsEditing(false);
+  setLoading(false);
+}
   return (
     <div className="w-full bg-[#353535] p-1 text-white">
       {/* Parent SKU */}
@@ -143,14 +147,18 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
             >
               Cancel
             </button>
+           
             <button
-              //onClick={handleSave}
-              className="mb-2 w-full rounded bg-[#1DB14B] px-4 py-2 text-white"
+              className="relative mb-2 w-full rounded bg-[#1DB14B] px-4 py-2 text-white"
               onClick={handleSubmit}
             >
-              Save
+              {loading && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Spinner />
+                </div>
+              )}
+              <span className="">Save</span>
             </button>
-            {loading && <p>Loading...</p>}
           </div>
         </>
       )}
