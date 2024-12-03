@@ -30,7 +30,7 @@ export default function SalesBuddyAppIndex() {
       );
     }
 
-    if (path === '/cart/') {
+    else if (path === '/cart/') {
       return (
         <div className="space-y-[20px]">
           <ReferalId />
@@ -38,24 +38,32 @@ export default function SalesBuddyAppIndex() {
           <CustomerSupportPage />
         </div>
       );
-    }
-
-    if (path.split('/').length - 1 === 2 && endsWithNumbers) {
+    }else{
       return (
         <div className=" space-y-[20px] ">
           <SalesBuddyProductPage />
+          <PLPPageInterface />
           <CustomerSupportPage />
         </div>
       );
     }
-    if (!endsWithNumbers){
-        return (
-          <div className="">
-            <CustomerSupportPage />
-            <PLPPageInterface />
-          </div>
-        );
-    }
+
+    // if (path.split('/').length - 1 === 2 && endsWithNumbers) {
+    //   return (
+    //     <div className=" space-y-[20px] ">
+    //       <SalesBuddyProductPage />
+    //       <CustomerSupportPage />
+    //     </div>
+    //   );
+    // }
+    // if (!endsWithNumbers){
+    //     return (
+    //       <div className="">
+    //         <CustomerSupportPage />
+    //         <PLPPageInterface />
+    //       </div>
+    //     );
+    // }
      return null; 
   };
 
