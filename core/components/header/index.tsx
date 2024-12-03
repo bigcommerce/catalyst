@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { cache } from 'react';
 
 import { HeaderSection } from '@/vibes/soul/sections/header-section';
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
@@ -10,7 +11,7 @@ import { logoTransformer } from '~/data-transformers/logo-transformer';
 
 import { HeaderFragment } from './fragment';
 
-const getLayoutData = async () => {
+const getLayoutData = cache(async () => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data: response } = await client.fetch({
@@ -19,7 +20,7 @@ const getLayoutData = async () => {
   });
 
   return readFragment(HeaderFragment, response).site;
-};
+});
 
 const getLinks = async () => {
   const data = await getLayoutData();
