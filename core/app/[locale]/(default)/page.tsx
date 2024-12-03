@@ -1,6 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
+import { Subscribe } from '@/vibes/soul/sections/subscribe';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
@@ -88,6 +89,19 @@ export default async function Home({ params }: Props) {
         description={t('BestSellingProducts.description')}
         products={bestSellingProducts}
         title={t('BestSellingProducts.title')}
+      />
+
+      <Subscribe
+        // eslint-disable-next-line @typescript-eslint/require-await
+        action={async () => {
+          'use server';
+
+          // TODO: Subscribe API is not yet implemented, add at a later date
+          return null;
+        }}
+        description={t('Subscribe.description')}
+        placeholder={t('Subscribe.placeholder')}
+        title={t('Subscribe.title')}
       />
     </>
   );

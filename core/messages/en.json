@@ -38,6 +38,11 @@
       "title": "Our best sellers",
       "description": "Our best selling products are here. Check out what's popular in store.",
       "cta": "See all"
+    },
+    "Subscribe": {
+      "title": "Sign up for our newsletter",
+      "placeholder": "Enter your email",
+      "description": "Stay up to date with the latest news and offers from our store."
     }
   },
   "ChangePassword": {
