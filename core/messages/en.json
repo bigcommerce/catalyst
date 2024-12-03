@@ -41,7 +41,8 @@
     },
     "Subscribe": {
       "title": "Sign up for our newsletter",
-      "placeholder": "Enter your email"
+      "placeholder": "Enter your email",
+      "description": "Stay up to date with the latest news and offers from our store."
     }
   },
   "ChangePassword": {
