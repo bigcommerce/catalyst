@@ -80,13 +80,13 @@ interface Props<S extends SearchResult> {
   className?: string;
   isFloating?: boolean;
   accountHref: string;
-  cartCount?: Streamable<number>;
+  cartCount?: Streamable<number | null>;
   cartHref: string;
   links: Streamable<Link[]>;
   locales?: Locale[];
   activeLocaleId?: string;
   localeAction?: LocaleAction;
-  logo?: Streamable<string | { src: string; alt: string }>;
+  logo?: Streamable<string | { src: string; alt: string } | null>;
   logoHref?: string;
   searchHref: string;
   searchParamName?: string;
@@ -304,7 +304,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               value={streamableLogo}
             >
               {(logo) =>
-                typeof logo === 'object' && logo.src !== '' ? (
+                typeof logo === 'object' && logo !== null && logo.src !== '' ? (
                   <Image
                     alt={logo.alt}
                     className="object-contain object-left"
