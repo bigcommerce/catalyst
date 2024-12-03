@@ -26,7 +26,7 @@ export function Hits({ hitComponent, view, useDefaultPrices, promotions, ...prop
               setIsLoaded(false);
               setIsLoading(true);
               console.log(skus.join(','));
-              const response = await fetch('http://localhost:3000/api/prices?skus=' + skus.join(','));
+              const response = await fetch('/api/prices/?skus=' + skus.join(','));
               const data = await response.json();
               console.log(data);
               setCachedPrices({
@@ -98,7 +98,7 @@ export function HitsAsync({ hitComponent, view, useDefaultPrices, promotions, ..
               setIsLoaded(false);
               setIsLoading(true);
               console.log(skus.join(','));
-              const response = await fetch('http://localhost:3000/api/prices?skus=' + skus.join(','));
+              const response = await fetch('/api/prices/?skus=' + skus.join(','));
               const data = await response.json();
               console.log(data);
               setCachedPrices({

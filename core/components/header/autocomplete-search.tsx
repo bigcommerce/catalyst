@@ -513,7 +513,7 @@ export function AutocompleteSearch() {
                           isLoaded: false,
                         });
                         //console.log(skus.join(','));
-                        fetch('http://localhost:3000/api/prices?skus=' + skus.join(','))
+                        fetch('/api/prices/?skus=' + skus.join(','))
                           .then((response) => {
                             if (!response.ok) {
                               throw new Error('Network response was not ok');
