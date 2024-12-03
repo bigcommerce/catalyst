@@ -5,7 +5,7 @@ import { cn } from '~/lib/utils';
 
 import { Locale } from './locale';
 import AgentFooter from '~/app/[locale]/(default)/sales-buddy/pages/footer';
-import GetQuote from './getQuote';
+import GetQuote from '../../../app/[locale]/(default)/sales-buddy/pages/getQuote';
 
 interface Image {
   altText: string;
