@@ -29,7 +29,7 @@ const Button = forwardRef<ElementRef<'button'>, Props>(
 
     return (
       <Comp
-        className={`relative flex open-font-sans text-[14px] w-full items-center justify-center rounded px-[30px] py-2.5 text-base font-normal leading-6 ${
+        className={`relative flex Open Sans text-[14px] w-full items-center justify-center rounded tracking-[1.25px] px-[30px] py-2.5 font-normal leading-6 ${
           variant === 'primary' ? 'text-white disabled:bg-sky-400' : ''
         } ${
           variant === 'secondary' ? 'bg-transparent text-primary disabled:text-sky-400' : ''

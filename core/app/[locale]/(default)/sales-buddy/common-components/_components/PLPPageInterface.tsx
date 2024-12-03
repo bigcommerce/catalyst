@@ -62,7 +62,7 @@ function PLPPageInterface() {
     <div className="mt-5 w-[460px] bg-[#f3f4f5]">
       <h2 className="mb-4 text-[24px] font-normal text-[#353535]">Internal Search</h2>
 
-      <div className="bg-white p-3">
+      <div className="bg-white p-[20px]">
         <h3 className="mb-2 text-sm font-semibold">Filters</h3>
         <div className="flex flex-wrap gap-2">
           {selectedFilters.length === 0 ? (
@@ -71,7 +71,7 @@ function PLPPageInterface() {
             selectedFilters.map((filter) => (
               <span
                 key={filter}
-                className="flex items-center rounded-full bg-gray-200 px-3 py-1 text-sm"
+                className="flex items-center rounded-full bg-gray-200 px-3 py-1 text-xs"
               >
                 {filter}
                 <button
@@ -86,7 +86,7 @@ function PLPPageInterface() {
         </div>
       </div>
       <Accordions
-        styles="border-t border-b py-[10px] px-[20px] text-[16px] bg-white"
+        styles="border-x-0 border-y-[1px] -my-[1px] border-[#CCCBCB] py-[10px] px-[20px] text-[16px] bg-white"
         accordions={accordions}
         type="multiple"
         defaultValue={['Our Inventory', 'Supplier Inventory']}

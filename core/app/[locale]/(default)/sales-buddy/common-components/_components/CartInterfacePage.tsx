@@ -19,7 +19,7 @@ export default function CartInterface() {
     sku: '',
     cost: '',
     retailPrice: '',
-    productName: '',
+    productName: ''
   });
 
   const toggleAccordion = (index: number) => {
@@ -43,9 +43,9 @@ export default function CartInterface() {
             placeholder="Account ID"
             value={formData.accountId}
             onChange={handleInputChange}
-            className="mb-4"
+            className="mb-[10px]"
           />
-          <Button className="font-open-sans w-full bg-[#1DB14B] font-normal text-white">
+          <Button className="font-open-sans w-full bg-[#1DB14B] font-normal text-white tracking-[1.25px]">
             ASSIGN ID
           </Button>
         </div>
@@ -72,8 +72,8 @@ export default function CartInterface() {
             { id: 'retailPrice', label: 'Retail Price*' },
             { id: 'productName', label: 'Product Name (Optional)' },
           ].map(({ id, label, component }) => (
-            <div key={id} className="space-y-[10px]">
-              <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+            <div key={id} className= "flex flex-col">
+              <label htmlFor={id} className="font-open-sans block text-[16px] font-base text-gray-700 leading-[32px] tracking-[0.5px] content-center">
                 {label}
               </label>
               {component || (
@@ -86,7 +86,7 @@ export default function CartInterface() {
               )}
             </div>
           ))}
-          <Button className="font-open-sans w-full bg-[#1DB14B] font-normal text-white">
+          <Button className="font-open-sans w-full bg-[#1DB14B] font-normal text-white tracking-[1.25px]">
             ADD TO CART
           </Button>
         </div>
@@ -115,7 +115,7 @@ export default function CartInterface() {
                     setComments(false);
                   }}
                 >
-                  <Image className="" src={editIcon} layout="intrinsic" />
+                  <Image className="" src={editIcon} layout="intrinsic" alt="editIcon"/>
                   <span className="font-open-sans item-center mx-1 text-[#1DB14B]"> Edit</span>
                 </div>
                 <div
@@ -124,7 +124,7 @@ export default function CartInterface() {
                     setComments(true);
                   }}
                 >
-                  <Image className="" src={deleteIcon} layout="intrinsic" />
+                  <Image className="" src={deleteIcon} alt="deleteIcon"layout="intrinsic" />
                   <span className="font-open-sans item-center mx-1 text-[#A71F23]"> Delete</span>
                 </div>
 
@@ -136,7 +136,7 @@ export default function CartInterface() {
             onClick={() => {
               setComments(true);
             }}
-            className="font-open-sans w-full bg-[#1DB14B] font-normal text-white"
+            className="font-open-sans w-full bg-[#1DB14B] font-normal text-white tracking-[1.25px]"
           >
             SAVE COMMENT
           </Button>
@@ -146,19 +146,24 @@ export default function CartInterface() {
   ];
 
   return (
-    <div className="mt-[15px] bg-white">
+    <>
+    <div className="mt-[15px] bg-white ">
       <Accordions
-        styles="border-t border-b py-[10px] px-[20px] font-sans text-[16px]"
+        styles="border-t border-b py-[10px] px-[20px] font-open-sans text-[16px]"
         accordions={accordions}
         type="multiple"
       />
-    </div>
+      </div>
+      <Button className="font-open-sans w-full bg-[#1DB14B] font-normal text-white tracking-[1.25px]">
+            CREATE QUOTE
+          </Button>
+    </>
   );
 }
 
 function AccordionTitle({ icon, text }: { icon: string; text: string }) {
   return (
-    <h4 className="flex items-center gap-2 text-base font-normal">
+    <h4 className="flex items-center gap-1 text-base font-normal">
       <Image src={icon} alt="App-icon" />
       <span className="text-[#353535]">{text}</span>
     </h4>
@@ -179,7 +184,7 @@ function SelectDropdown({
       id={id}
       value={value}
       onChange={onChange}
-      className="font-open-sans block w-full rounded border border-gray-200 p-3 text-sm text-[#7F7F7F] focus:outline-none"
+      className="font-open-sans block w-full rounded border-2 border-gray-200 p-3 text-sm text-[#7F7F7F] focus:outline-none"
     >
       <option value="" disabled>
         Choose Supplier

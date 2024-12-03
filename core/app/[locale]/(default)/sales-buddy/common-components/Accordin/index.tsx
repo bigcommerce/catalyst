@@ -74,7 +74,7 @@ const Accordions = ({ accordions, ...props }: Props) => {
             </AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
           <AccordionPrimitive.Content
-            className={`data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down m-0 overflow-hidden transition-all`}
+            className={`mt-[10px] data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down m-0 overflow-hidden transition-all`}
           >
             {accordion.content}
           </AccordionPrimitive.Content>

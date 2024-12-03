@@ -24,7 +24,7 @@ export default function SalesBuddyAppIndex() {
   const renderDrawerContent = () => {
     if (path === '/') {
       return (
-        <div className="overflow-x-hidden">
+        <div className="">
           <CustomerSupportPage />
         </div>
       );
@@ -32,7 +32,7 @@ export default function SalesBuddyAppIndex() {
 
     if (path === '/cart/') {
       return (
-        <div className="space-y-[20px] overflow-x-hidden">
+        <div className="space-y-[20px]">
           <ReferalId />
           <CartInterface />
           <CustomerSupportPage />
