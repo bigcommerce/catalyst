@@ -79,7 +79,7 @@ export default async function Home({ params }: Props) {
       <Subscribe
         // @ts-expect-error - We don't have an action ready for this component. TODO: add action
         action={null}
-        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
+        description={t('Subscribe.description')}
         placeholder={t('Subscribe.placeholder')}
         title={t('Subscribe.title')}
       />
