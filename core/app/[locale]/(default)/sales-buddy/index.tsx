@@ -50,7 +50,7 @@ export default function SalesBuddyAppIndex() {
     }
     if (!endsWithNumbers){
         return (
-          <div className="overflow-x-hidden">
+          <div className="">
             <CustomerSupportPage />
             <PLPPageInterface />
           </div>

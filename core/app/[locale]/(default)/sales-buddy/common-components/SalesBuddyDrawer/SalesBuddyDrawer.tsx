@@ -28,7 +28,7 @@ export default function DrawerModal({
       onClick={onClose}
     >
       <div
-        className="relative h-full overflow-y-auto bg-[#f3f4f5] shadow-lg"
+        className="relative h-full overflow-auto scrollbar-hide bg-[#f3f4f5] shadow-lg"
         style={{ transform: 'translateX(0)', width }}
         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
       >
@@ -38,7 +38,7 @@ export default function DrawerModal({
             <Image className="h-[25.2px] w-[28px]" src={headerIcon} alt="header-icon" />
             <span className="font-Open-Sans text-2xl font-bold">{headerTitle}</span>
           </div>
-          <button onClick={onClose} className="h-[14px] w-[14px] text-white hover:text-gray-700">
+          <button onClick={onClose} className="h-[25px] w-[25px] text-white hover:text-black">
             ✖
           </button>
         </div>
