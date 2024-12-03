@@ -18,7 +18,7 @@ import { Search } from './search';
 TODO: Move to separate file...
 */
 const storeHash = process.env.BIGCOMMERCE_STORE_HASH;
-const client = process.env.BIGCOMMERCE_API_CLIENT || '';
+const client = process.env.BIGCOMMERCE_ACCESS_TOKEN || '';
 const tokenRest = process.env.BIGCOMMERCE_ACCESS_TOKEN || '';
 const channelId = process.env.BIGCOMMERCE_CHANNEL_ID;
 
