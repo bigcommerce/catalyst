@@ -14,6 +14,7 @@ import 'instantsearch.css/themes/satellite-min.css';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { MakeswiftProvider } from '~/lib/makeswift/provider';
 
 import { Notifications } from '../notifications';
 import { Providers } from '../providers';
@@ -141,11 +142,13 @@ export default async function RootLayout({ params, children }: Props) {
       </head>
       <body className="flex h-screen min-w-[375px] flex-col">
         <Notifications />
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <NuqsAdapter>
-            <Providers>{children}</Providers>
-          </NuqsAdapter>
-        </NextIntlClientProvider>
+        <MakeswiftProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <NuqsAdapter>
+              <Providers>{children}</Providers>
+            </NuqsAdapter>
+          </NextIntlClientProvider>
+        </MakeswiftProvider>
         <VercelComponents />
       </body>
     </html>

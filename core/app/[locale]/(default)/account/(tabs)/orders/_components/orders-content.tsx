@@ -8,6 +8,7 @@ import { getCustomerOrders, getOrderDetails } from '../page-data';
 
 import { OrderDetails } from './order-details';
 import { OrdersList } from './orders-list';
+import { OrderDetailsInfo } from '~/app/[locale]/(default)/checkout/order-confirmation/order-details';
 
 type CustomerOrders = NonNullable<Awaited<ReturnType<typeof getCustomerOrders>>>;
 
@@ -18,6 +19,7 @@ interface Props {
 }
 
 export const OrdersContent = async ({ orderId, orders, pageInfo }: Props) => {
+  console.log('========inside orfer content=======', );
   const t = await getTranslations('Account.Orders');
   const { hasNextPage, hasPreviousPage, startCursor, endCursor } = pageInfo;
   console.log('========orderId=======', orderId);
@@ -44,6 +46,7 @@ export const OrdersContent = async ({ orderId, orders, pageInfo }: Props) => {
           startCursor={startCursor ?? undefined}
         />
       </div>
+      <OrderDetailsInfo />
     </>
   );
 };

@@ -4,18 +4,10 @@ import { notFound } from 'next/navigation';
 
 import { defaultLocale, locales } from '~/i18n/routing';
 import { client } from '~/lib/makeswift/client';
-import { MakeswiftProvider } from '~/lib/makeswift/provider';
 
 interface CatchAllParams {
   locale: string;
   rest: string[];
-}
-
-interface Props {
-  params: {
-    rest: string[];
-    locale: string;
-  };
 }
 
 export async function generateStaticParams() {
@@ -33,22 +25,18 @@ export async function generateStaticParams() {
     );
 }
 
-export default async function CatchAllPage(props: Props) {
-  const params: any = await props.params;
-  const path = `/${params.rest.join('/')}`;
+export default async function CatchAllPage({ params }: { params: Promise<CatchAllParams> }) {
+  const { rest, locale } = await params;
+  const path = `/${rest.join('/')}`;
 
   const snapshot = await client.getPageSnapshot(path, {
-    siteVersion: getSiteVersion(),
-    locale: params.locale === defaultLocale ? undefined : params.locale,
+    siteVersion: await getSiteVersion(),
+    locale: locale === defaultLocale ? undefined : locale,
   });
 
   if (snapshot == null) return notFound();
 
-  return (
-    <MakeswiftProvider>
-      <MakeswiftPage snapshot={snapshot} />
-    </MakeswiftProvider>
-  );
+  return <MakeswiftPage snapshot={snapshot} />;
 }
 
 export const runtime = 'nodejs';
