@@ -7,7 +7,7 @@ import {
   autocomplete,
   getAlgoliaResults,
   getAlgoliaFacets,
-  AutocompleteComponents,
+  AutocompleteComponents
 } from '@algolia/autocomplete-js';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import { Hit as AlgoliaHit } from '@algolia/client-search';
@@ -456,7 +456,7 @@ export function AutocompleteSearch() {
         Fragment,
         render: () => {},
       },
-      render({ children }, root) {
+      render({ children }: any, root: any) {
         if (!panelRoot.current) {
           panelRoot.current = createRoot(root) as any;
         }
@@ -474,7 +474,7 @@ export function AutocompleteSearch() {
       },
       */
 
-      getSources({ query, setContext }): any {
+      getSources({ query, setContext }: any): any {
         if (!query) {
           return [];
         }
@@ -635,7 +635,7 @@ export function AutocompleteSearch() {
           },
         ]);
       },
-      onSubmit: (params) => {
+      onSubmit: (params: any) => {
         search.setQuery('');
         router.push(`/search?query=${params.state?.query ?? ''}`);
       },

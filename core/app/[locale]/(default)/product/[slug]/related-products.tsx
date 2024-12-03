@@ -103,7 +103,9 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
       </div>
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-4 text-center">
+          {/*
           <ColorSwatches variants={hit.variants} onImageClick={setImageUrl} />
+          */}
           <h2 className="text-lg font-medium mt-2"><Link href={hit.url}>{hit.name}</Link></h2>
           {useAsyncMode && !useDefaultPrices ? (
             <div className="mx-auto mt-2 flex flex-wrap space-x-2 items-center justify-center">
