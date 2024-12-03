@@ -77,8 +77,13 @@ export default async function Home({ params }: Props) {
       />
 
       <Subscribe
-        // @ts-expect-error - We don't have an action ready for this component. TODO: add action
-        action={null}
+        // eslint-disable-next-line @typescript-eslint/require-await
+        action={async () => {
+          'use server';
+
+          // TODO: Subscribe API is not yet implemented, add at a later date
+          return null;
+        }}
         description={t('Subscribe.description')}
         placeholder={t('Subscribe.placeholder')}
         title={t('Subscribe.title')}
