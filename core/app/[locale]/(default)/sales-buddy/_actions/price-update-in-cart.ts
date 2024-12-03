@@ -8,8 +8,11 @@ export const updateProductPrice = async (price: any, cartId : any, productId:num
             "cart_id": cartId,
             "access_id": process.env.SALES_BUDDY_ACCESS_ID
         });
+        const apiUrl = process.env.SALES_BUDDY_API_URL!;
+        const apiEnv = process.env.SALES_BUDDY_API_ENV!;
+        const apiPath = process.env.SALES_BUDDY_API_PATH!; 
         let data = await fetch(
-            process.env.SALES_BUDDY_API_URL+'update-price',
+          apiUrl + apiEnv + apiPath + 'update-price',
           {
             method: 'PUT',
             headers: {
