@@ -96,9 +96,6 @@ export default async function CategoryPage(props: Props) {
 
   const promotions = await getPromotions();
 
-console.log(promotions);
-return <>OK</>;
-
   return (
     <div className="group py-4 px-4 xl:px-12">
       <Breadcrumbs category={category} />
