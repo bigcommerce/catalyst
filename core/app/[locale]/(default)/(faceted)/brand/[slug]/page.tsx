@@ -69,7 +69,7 @@ export default async function BrandPage(props: Props) {
   const params = await props.params;
 
   const customerAccessToken = await getSessionCustomerAccessToken();
-  const useDefaultPrices = !!customerAccessToken;
+  const useDefaultPrices = !customerAccessToken;
 
   const { slug, locale } = params;
 

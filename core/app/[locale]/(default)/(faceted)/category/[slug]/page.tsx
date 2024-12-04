@@ -58,7 +58,7 @@ export default async function CategoryPage(props: Props) {
   const params = await props.params;
 
   const customerAccessToken = await getSessionCustomerAccessToken();
-  const useDefaultPrices = !!customerAccessToken;
+  const useDefaultPrices = !customerAccessToken;
 
   const { locale, slug } = params;
 

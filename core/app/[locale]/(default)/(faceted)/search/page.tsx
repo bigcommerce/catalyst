@@ -34,7 +34,7 @@ export default async function SearchPage(props: Props) {
   const searchParams = await props.searchParams;
 
   const customerAccessToken = await getSessionCustomerAccessToken();
-  const useDefaultPrices = !!customerAccessToken;
+  const useDefaultPrices = !customerAccessToken;
 
   const t = await getTranslations('Search');
   const f = await getTranslations('FacetedGroup');
