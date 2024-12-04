@@ -19,10 +19,20 @@ interface Props {
   index: number;
   fanPopup: string;
   currencyCode: string;
-  blankAddImg: string
+  blankAddImg: string;
+  isLoading: boolean;
+  setIsLoading: (loading: boolean) => void;
 }
 
-export const ProductAccessories = ({ accessories, index, currencyCode, fanPopup, blankAddImg }: Props) => {
+export const ProductAccessories = ({
+  accessories,
+  index,
+  currencyCode,
+  fanPopup,
+  blankAddImg,
+  isLoading,
+  setIsLoading,
+}: Props) => {
   const format = useFormatter();
   const productFlyout = useCommonContext();
   const t = useTranslations('Components.ProductCard.AddToCart');
@@ -53,7 +63,7 @@ export const ProductAccessories = ({ accessories, index, currencyCode, fanPopup,
   const [productImage, setProductImage] = useState<string>(blankAddImg);
   const [baseImage, setBaseImage] = useState<string>(' bg-set');
   const [hasSalePrice, setHasSalePrice] = useState<number>(0);
-  
+
   const onProductChange = (variant: any) => {
     setvariantId(variant);
     let accessoriesData = accessories?.productData?.find((prod: any) => prod.id == variant);
@@ -81,21 +91,25 @@ export const ProductAccessories = ({ accessories, index, currencyCode, fanPopup,
     }
   };
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    setIsLoading(true);
     event.preventDefault();
-
+    
     const formData = new FormData(event.currentTarget);
     const quantity = Number(formData.get('quantity'));
     if (variantId == 0) {
+      setIsLoading(false);
       return false;
     }
     cart.increment(quantity);
     startTransition(async () => {
+      
       const result = await addToCart(formData);
       if (result?.items) {
         productFlyout.setCartDataFn(result?.items);
       }
 
       if (result.error) {
+        setIsLoading(false);
         cart.decrement(quantity);
 
         toast.error(t('error'), {
@@ -147,6 +161,7 @@ export const ProductAccessories = ({ accessories, index, currencyCode, fanPopup,
             };
             await UpdateCartMetaFields(cartId, metaFieldId, cartMeta);
           }
+          setIsLoading(false);
           toast.success(
             () => (
               <div className="flex items-center gap-3">
@@ -181,10 +196,12 @@ export const ProductAccessories = ({ accessories, index, currencyCode, fanPopup,
   return (
     <>
       {accessories?.length}
-      <div className={`left-container w-[195px] h-[150px] border border-[#CCCBCB]  sm:w-[150px] bg-transparent flex items-center justify-center sm:bg-transparent sm:h-[155px] ${baseImage}`}>
+      <div
+        className={`left-container flex h-[150px] w-[195px] items-center justify-center border border-[#CCCBCB] bg-transparent sm:h-[155px] sm:w-[150px] sm:bg-transparent ${baseImage}`}
+      >
         <BcImage
           alt={accessories?.label}
-          className={`object-fill w-[190px] h-[145px] sm:h-[150px] sm:w-[150px] ${baseImage}`}
+          className={`h-[145px] w-[190px] object-fill sm:h-[150px] sm:w-[150px] ${baseImage}`}
           height={150}
           src={productImage}
           width={150}
@@ -194,10 +211,10 @@ export const ProductAccessories = ({ accessories, index, currencyCode, fanPopup,
       <div className="flex w-full shrink-[100] flex-col gap-[10px]">
         {productlabel && (
           <div className="flex flex-col gap-[5px] sm:gap-[0px]">
-            <p className="text-[16px] font-normal text-center sm:text-left tracking-[0.15px] text-[#353535]">
+            <p className="text-center text-[16px] font-normal tracking-[0.15px] text-[#353535] sm:text-left">
               {productlabel}
             </p>
-            <p className="sm:text-right text-center text-[16px] font-normal tracking-[0.15px] text-[#353535]">
+            <p className="text-center text-[16px] font-normal tracking-[0.15px] text-[#353535] sm:text-right">
               {' '}
               {productSalePrice}{' '}
               {hasSalePrice == 1 && (
@@ -219,11 +236,16 @@ export const ProductAccessories = ({ accessories, index, currencyCode, fanPopup,
           <form onSubmit={handleSubmit}>
             <input name="product_id" type="hidden" value={accessories?.entityId} />
             <input name="variant_id" type="hidden" value={variantId} />
-            <div className='flex flex-col sm:flex-row justify-end items-center sm:items-start p-0 gap-[10px]'>
-              <InputPlusMinus product="false" productData="" />
+            <div className="relative flex flex-col items-center justify-end gap-[10px] p-0 sm:flex-row sm:items-start">
+              <InputPlusMinus
+                product="false"
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
+                productData=""
+              />
               <Button
                 id="add-to-cart"
-                className="h-[42px] flex-shrink-[100] !rounded-[3px] !px-[10px] !py-[5px] text-[14px] font-medium tracking-[1.25px] bg-[#03465C]"
+                className="h-[42px] flex-shrink-[100] !rounded-[3px] bg-[#03465C] !px-[10px] !py-[5px] text-[14px] font-medium tracking-[1.25px]"
                 loading={isPending}
                 loadingText="processing"
                 type="submit"

@@ -12,6 +12,7 @@ import { ShippingOptions } from '../shipping-options';
 
 import { ShippingEstimatorFragment } from './fragment';
 import { getShippingCountries } from './get-shipping-countries';
+import { MapPin } from 'lucide-react';
 
 interface Props {
   checkout: FragmentOf<typeof ShippingEstimatorFragment>;
@@ -53,14 +54,30 @@ export const ShippingEstimator = ({ checkout, shippingCountries }: Props) => {
   return (
     <>
       <div className="flex flex-col gap-2 pb-1">
-      <div className="font-sans text-[20px] font-medium leading-[32px] tracking-[0.15px] text-left text-[#002A37]">
-    Order Summary
-</div>
+        <div className="text-left font-sans text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#002A37]">
+          Order Summary
+        </div>
+
+        <div className='flex flex-col justify-center items-start py-[10px] gap-[5px]'>
+          <div className='font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535]'>Calculate Shipping/Tax:</div>
+          <div className='flex justify-center items-center p-0 gap-[5px]'>
+            <div>
+              <input  type="text" height={44} className='min-h-[44px] p-[6px_10px] bg-[#ffffff] border border-[#cccbcb] rounded-[3px]' />
+            </div>
+            <button className='font-[500] text-[14px] leading-[24px] tracking-[1.25px] text-[#002a37]'>CALCULATE</button>
+          </div>
+          <div>
+            <div>
+              <MapPin width={12} height={17} />
+            </div>
+            <div className='font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535] underline'>Use your current location</div>
+          </div>
+        </div>
 
         <div className="flex justify-between">
-         
-        <span className="text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-left">
-            {t('shippingCost')}</span>
+          <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem]">
+            {t('shippingCost')}
+          </span>
           {selectedShippingConsignment ? (
             <span>
               {format.number(checkout.shippingCostTotal?.value || 0, {
