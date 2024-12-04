@@ -36,6 +36,8 @@ export const Header = async ({ cart }: Props) => {
   const t = await getTranslations('Components.Header');
   const customerAccessToken = await getSessionCustomerAccessToken();
 
+  const useDefaultPrices = !customerAccessToken;
+
   const { data: response } = await client.fetch({
     document: LayoutQuery,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
@@ -156,7 +158,7 @@ export const Header = async ({ cart }: Props) => {
       links={links}
       locales={localeLanguageRegionMap}
       logo={data.settings ? logoTransformer(data.settings) : undefined}
-      search={<AutocompleteSearch />}     
+      search={<AutocompleteSearch useDefaultPrices={useDefaultPrices} />}     
     />
   );
 };
