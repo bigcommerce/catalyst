@@ -78,7 +78,7 @@ export async function getCollectionProducts(collection: string) {
       "Accept": "application/json"
     },
     body: JSON.stringify({
-      "filters": `metafields.Akeneo.collection:${collection}`,
+      "filters": `metafields.Akeneo.collection:${encodeURIComponent(collection)}`,
       "length": 6,
       "offset": 0
     }),

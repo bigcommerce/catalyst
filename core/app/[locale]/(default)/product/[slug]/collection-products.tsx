@@ -25,6 +25,7 @@ type DynamicObject = {
 
 const searchColorsHEX: DynamicObject = searchColors;
 
+const useDefaultPrices = process.env.NEXT_PUBLIC_USE_DEFAULT_PRICES === 'true';
 const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
 
 interface Props {
@@ -146,14 +147,71 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
 
 export function CollectionProducts({ collection, products }: Props) {
   const breakpoints = ["xs:flex", "sm:flex", "md:flex", "lg:flex", "xl:flex", "2xl:flex"];
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [prices, setPrices] = useState({} as any);
+  const [cachedPrices, setCachedPrices] = useState({} as any);
+
+  const skus: string[] = products.map((hit: any) => hit.sku);
+
+  useEffect(() => {
+    (async () => {
+      if (!useDefaultPrices && !isLoading) {
+        if (!cachedPrices[skus.join(',')]) {
+          try {
+            setIsLoaded(false);
+            setIsLoading(true);
+            console.log(skus.join(','));
+            const response = await fetch('/api/prices/?skus=' + skus.join(','));
+            const data = await response.json();
+            console.log(data);
+            setCachedPrices({
+              ...cachedPrices,
+              [skus.join(',')]: data.data,
+            });
+            setPrices(data.data);
+            setIsLoading(false);
+            setIsLoaded(true);
+          } catch (error) {
+            setIsLoading(false);
+            setIsLoaded(true);
+            console.error('Error fetching pricing data: ', error);
+          }
+        } else {
+          setPrices(cachedPrices[skus.join(',')]);
+          setIsLoading(false);
+          setIsLoaded(true);
+        }
+      }
+    })();
+  }, [skus]);
+
   return (
     <div className="carousel-container p-4 xl:p-8 bg-gray-50 mt-8 mb-12">
       <h2 className="text-3xl font-black text-[1.5rem] font-normal leading-[2rem] text-left text-[#353535]">{`More from ${collection} collection`}</h2>
       <div className="mt-5 grid xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 xl:gap-8">
         {products.map((item: any, index: number) => (
-          <CustomItem key={item.objectID} hit={item} useDefaultPrices={true} className={cn(
-            index > 0 && index < 6 && `hidden ${breakpoints[index]}` 
-          )} />
+          <CustomItem 
+            key={item.objectID} 
+            hit={item} 
+            useDefaultPrices={useDefaultPrices}
+            price={
+              item.sku && prices && prices[item.sku] && prices[item.sku].price
+                ? prices[item.sku].price
+                : null
+            }
+            salePrice={
+              item.sku && prices && prices[item.sku] && prices[item.sku].salePrice
+                ? prices[item.sku].salePrice
+                : null
+            }
+            isLoading={isLoading}
+            isLoaded={isLoaded}
+            className={cn(
+              index > 0 && index < 6 && `hidden ${breakpoints[index]}` 
+            )} 
+          />
         ))}
       </div>
     </div>
