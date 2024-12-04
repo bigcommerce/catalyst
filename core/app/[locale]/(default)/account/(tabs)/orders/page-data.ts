@@ -6,10 +6,7 @@ import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql, VariablesOf } from '~/client/graphql';
 
-import {
-  addProductAttributesToShippingConsignments,
-  OrderShipmentFragment,
-} from '../order/[slug]/page-data';
+import { OrderShipmentFragment } from '../order/[slug]/page-data';
 
 import { OrderItemFragment } from './_components/product-snippet';
 
@@ -114,20 +111,15 @@ export const getCustomerOrders = cache(
     }
 
     const data = {
-      orders: await Promise.all(
-        removeEdgesAndNodes(orders).map(async (order) => {
-          const shipping =
-            order.consignments?.shipping &&
-            (await addProductAttributesToShippingConsignments(order.consignments.shipping));
-
-          return {
-            ...order,
-            consignments: {
-              shipping,
-            },
-          };
-        }),
-      ),
+      orders: removeEdgesAndNodes(orders).map((order) => {
+        return {
+          ...order,
+          consignments: {
+            shipping:
+              order.consignments?.shipping && removeEdgesAndNodes(order.consignments.shipping),
+          },
+        };
+      }),
       pageInfo: orders.pageInfo,
     };
 

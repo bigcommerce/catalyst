@@ -1,13 +1,10 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { notFound } from 'next/navigation';
 
 import { ExistingResultType } from '~/client/util';
 
 import { OrderDetails } from './_components/order-details';
-import {
-  addProductAttributesToShippingConsignments,
-  getOrderDetails,
-  OrderDetailsType,
-} from './page-data';
+import { getOrderDetails, OrderDetailsType } from './page-data';
 
 interface Props {
   params: Promise<{
@@ -16,10 +13,16 @@ interface Props {
   }>;
 }
 
-const mapOrderData = async (order: OrderDetailsType) => {
-  const shipping =
-    order.consignments?.shipping &&
-    (await addProductAttributesToShippingConsignments(order.consignments.shipping));
+const mapOrderData = (order: OrderDetailsType) => {
+  const shipping = order.consignments?.shipping
+    ? removeEdgesAndNodes(order.consignments.shipping).map(
+        ({ shipments, lineItems, ...otherItems }) => ({
+          ...otherItems,
+          lineItems: removeEdgesAndNodes(lineItems),
+          shipments: removeEdgesAndNodes(shipments),
+        }),
+      )
+    : undefined;
 
   return {
     orderState: {
@@ -60,7 +63,7 @@ export default async function Order(props: Props) {
     notFound();
   }
 
-  const data = await mapOrderData(order);
+  const data = mapOrderData(order);
 
   return <OrderDetails data={data} />;
 }
