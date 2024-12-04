@@ -241,7 +241,7 @@ const ProductSchemaFragment = graphql(`
   }
 `);
 
-const DetailsFragment = graphql(
+export const DetailsFragment = graphql(
   `
     fragment DetailsFragment on Product {
       ...ReviewSummaryFragment
@@ -252,6 +252,7 @@ const DetailsFragment = graphql(
       name
       sku
       upc
+      mpn
       minPurchaseQuantity
       maxPurchaseQuantity
       condition
