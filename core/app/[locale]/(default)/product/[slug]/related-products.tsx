@@ -210,6 +210,7 @@ export function RelatedProducts({ productId, products }: Props) {
   }, [skus]);
 
   return (
+    products && products.length > 0 &&
     <div className="mt-4 mb-12">
       <Carousel
         pageSize={6}

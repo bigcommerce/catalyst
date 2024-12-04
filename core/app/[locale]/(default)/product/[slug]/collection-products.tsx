@@ -188,6 +188,7 @@ export function CollectionProducts({ collection, products }: Props) {
   }, [skus]);
 
   return (
+    products && products.length > 0 &&
     <div className="carousel-container p-4 xl:p-8 bg-gray-50 mt-8 mb-12">
       <h2 className="text-3xl font-black text-[1.5rem] font-normal leading-[2rem] text-left text-[#353535]">{`More from ${collection} collection`}</h2>
       <div className="mt-5 grid xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 xl:gap-8">
