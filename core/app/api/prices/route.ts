@@ -56,10 +56,15 @@ const ProductPricesQuery = function(searchFragments: string | null) {
 
 export const GET = async (
   _request: NextRequest,
-  { params }: { params: { skus: string } },
+  // { params }: { params: { skus: string } },
 ) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
-  const { skus } = await params;
+  //const { skus } = await params;
+
+  const searchParams = _request.nextUrl.searchParams;
+  const skus = searchParams.get('skus') ?? '';
+
+//console.log(skus);
 
   const searchFragments = skus?.split(',').map((sku, key) => `SKU${key}: product(sku: "${sku}") {...ProductFields}`);
 
