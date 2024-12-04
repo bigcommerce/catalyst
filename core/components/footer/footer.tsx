@@ -152,11 +152,7 @@ export const Footer = async () => {
             </div>
           ),
           href: '#',
-        },
-        {
-          label: <span className="footer-shopping-id">Your Shopping ID:##########</span>,
-          href: '/path-6',
-        },
+        }
       ],
     },
   ];
