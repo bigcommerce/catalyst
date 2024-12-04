@@ -5,7 +5,7 @@ import { isExecException } from './is-exec-exception';
 export function checkoutRef(repoDir: string, ref: string): void {
   try {
     // Attempt to checkout the specified ref
-    execSync(`git checkout ${ref}`, {
+    execSync(`git checkout -- ${ref}`, {
       cwd: repoDir,
       stdio: 'inherit',
       encoding: 'utf8',
