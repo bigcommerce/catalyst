@@ -31,7 +31,7 @@ test('Order details are visible on Orders page', async ({ page, account, order }
 
   await customer.login();
 
-  const orderDetails = await order.create(94, customer.id);
+  const orderDetails = await order.create(98, customer.id);
 
   await page.goto('/account/orders/');
 
@@ -44,5 +44,5 @@ test('Order details are visible on Orders page', async ({ page, account, order }
   await expect(page.getByText('Total')).toBeVisible();
   await expect(page.getByText(formattedTotal).first()).toBeVisible();
   await expect(page.getByText(orderDetails.status)).toBeVisible();
-  await expect(page.getByRole('link', { name: '[Sample] Oak Cheese Grater' })).toBeVisible();
+  await expect(page.getByRole('link', { name: '[Sample] Laundry Detergent' })).toBeVisible();
 });
