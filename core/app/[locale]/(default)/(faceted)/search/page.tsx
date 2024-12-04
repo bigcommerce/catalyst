@@ -9,6 +9,8 @@ import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { redirectToCompare } from '../_actions/redirect-to-compare';
 import { fetchFacetedSearch } from '../fetch-faceted-search';
 
+import { getSessionCustomerAccessToken } from '~/auth';
+
 import { getCompareProducts } from './page-data';
 import { getPromotions } from '../fetch-promotions';
 
@@ -30,6 +32,10 @@ interface Props {
 
 export default async function SearchPage(props: Props) {
   const searchParams = await props.searchParams;
+
+  const customerAccessToken = await getSessionCustomerAccessToken();
+  const useDefaultPrices = !!customerAccessToken;
+
   const t = await getTranslations('Search');
   const f = await getTranslations('FacetedGroup');
 
@@ -48,7 +54,7 @@ export default async function SearchPage(props: Props) {
       <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
         <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{t('searchResults')}: <b className="text-2xl font-bold lg:text-3xl">"{searchTerm}"</b></h1>
       </div>
-      <Search query={searchTerm} promotions={promotions} />
+      <Search query={searchTerm} promotions={promotions} useDefaultPrices={useDefaultPrices} />
     </div>
   );
 }

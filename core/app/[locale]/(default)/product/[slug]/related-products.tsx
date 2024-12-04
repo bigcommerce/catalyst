@@ -31,12 +31,13 @@ type DynamicObject = {
 
 const searchColorsHEX: DynamicObject = searchColors;
 
-const useDefaultPrices = process.env.NEXT_PUBLIC_USE_DEFAULT_PRICES === 'true';
+//const useDefaultPrices = process.env.NEXT_PUBLIC_USE_DEFAULT_PRICES === 'true';
 const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
 
 interface Props {
   productId: number,
-  products: any[]
+  products: any[],
+  useDefaultPrices?: boolean
 }
 
 /*
@@ -168,7 +169,7 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
   );
 }
 
-export function RelatedProducts({ productId, products }: Props) {
+export function RelatedProducts({ productId, products, useDefaultPrices = false }: Props) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
