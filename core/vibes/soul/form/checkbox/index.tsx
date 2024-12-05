@@ -6,7 +6,7 @@ import { clsx } from 'clsx';
 import { Check } from 'lucide-react';
 import * as React from 'react';
 
-import { ErrorMessage } from '@/vibes/soul/form/error-message';
+import { FieldError } from '@/vibes/soul/form/field-error';
 
 type Props = React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> & {
   label?: React.ReactNode;
@@ -38,7 +38,7 @@ export function Checkbox({ id, label, errors, className, ...rest }: Props) {
           </LabelPrimitive.Root>
         )}
       </div>
-      {errors?.map((error) => <ErrorMessage key={error}>{error}</ErrorMessage>)}
+      {errors?.map((error) => <FieldError key={error}>{error}</FieldError>)}
     </div>
   );
 }
