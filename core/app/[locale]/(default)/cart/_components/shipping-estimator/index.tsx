@@ -60,15 +60,15 @@ export const ShippingEstimator = ({ checkout, shippingCountries }: Props) => {
 
         <div className='flex flex-col justify-center items-start py-[10px] gap-[5px]'>
           <div className='font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535]'>Calculate Shipping/Tax:</div>
-          <div className='flex justify-center items-center p-0 gap-[5px]'>
-            <div>
-              <input  type="text" height={44} className='min-h-[44px] p-[6px_10px] bg-[#ffffff] border border-[#cccbcb] rounded-[3px]' />
+          <div className='flex justify-center items-center p-0 gap-[5px] w-full'>
+            <div className='flex-1'>
+              <input  type="text" height={44} className='w-full min-h-[44px] p-[6px_10px] bg-[#ffffff] border border-[#cccbcb] rounded-[3px]' />
             </div>
-            <button className='font-[500] text-[14px] leading-[24px] tracking-[1.25px] text-[#002a37]'>CALCULATE</button>
+            <button className='font-[500] text-[14px] leading-[24px] tracking-[1.25px] text-[#002a37] flex justify-center items-center px-[10px] bg-[#ffffff] border border-[#4eaecc] h-[44px]'>CALCULATE</button>
           </div>
-          <div>
-            <div>
-              <MapPin width={12} height={17} />
+          <div className='flex items-center p-0 gap-[5px]'>
+            <div className=''>
+              <MapPin width={15} height={18} />
             </div>
             <div className='font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535] underline'>Use your current location</div>
           </div>
