@@ -7,8 +7,11 @@ import { locales } from '~/i18n/routing';
 
 import { login } from './_actions/login';
 
-export async function generateMetadata() {
+export async function generateMetadata({ params }: Props) {
+  const { locale } = params;
   const t = await getTranslations('Login');
+
+  setRequestLocale(locale);
 
   return {
     title: t('title'),
