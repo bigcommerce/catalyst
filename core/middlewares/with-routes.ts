@@ -252,8 +252,58 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
   }
 };
 
-export const withRoutes: MiddlewareFactory = () => {
+// See https://github.com/vercel/next.js/blob/main/packages/next/src/server/lib/server-action-request-meta.ts
+const isServerAction = ({ method, headers }: NextRequest) =>
+  method === 'POST' &&
+  (headers.get('next-action') != null ||
+    headers.get('content-type') === 'application/x-www-form-urlencoded' ||
+    headers.get('content-type')?.startsWith('multipart/form-data'));
+
+const getRewriteUrl = (
+  locale: string,
+  node: z.infer<typeof NodeSchema> | null | undefined,
+  request: NextRequest,
+  postfix: string,
+) => {
+  switch (node?.__typename) {
+    case 'Brand':
+      return `/${locale}/brand/${node.entityId}${postfix}`;
+
+    case 'Category':
+      return `/${locale}/category/${node.entityId}${postfix}`;
+
+    case 'Product':
+      return `/${locale}/product/${node.entityId}${postfix}`;
+
+    case 'NormalPage':
+      return `/${locale}/webpages/normal/${node.id}`;
+
+    case 'ContactPage':
+      return `/${locale}/webpages/contact/${node.id}`;
+
+    default: {
+      const { pathname } = new URL(request.url);
+
+      const cleanPathName = clearLocaleFromPath(pathname, locale);
+
+      if (cleanPathName === '/' && postfix) {
+        return `/${locale}${postfix}`;
+      }
+
+      return `/${locale}${cleanPathName}`;
+    }
+  }
+};
+
+export const withRoutes: MiddlewareFactory = (next) => {
   return async (request, event) => {
+    // Behind the scenes, Next.js server actions are translated into `POST` requests
+    // that get handled by the framework; don't interfere with these requests
+    // https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#behavior
+    if (isServerAction(request)) {
+      return next(request, event);
+    }
+
     const locale = request.headers.get('x-bc-locale') ?? '';
 
     const { route, status } = await getRouteInfo(request, event);
@@ -294,64 +344,21 @@ export const withRoutes: MiddlewareFactory = () => {
       }
     }
 
-    const customerAccessToken = await getSessionCustomerAccessToken();
-    let postfix = '';
-
-    if (!request.nextUrl.search && !customerAccessToken && request.method === 'GET') {
-      postfix = '/static';
-    }
-
     const node = route?.node;
-    let url: string;
 
-    switch (node?.__typename) {
-      case 'Brand': {
-        url = `/${locale}/brand/${node.entityId}${postfix}`;
-        break;
-      }
+    if (node?.__typename === 'RawHtmlPage') {
+      const { htmlBody } = await getRawWebPageContent(node.id);
 
-      case 'Category': {
-        url = `/${locale}/category/${node.entityId}${postfix}`;
-        break;
-      }
-
-      case 'Product': {
-        url = `/${locale}/product/${node.entityId}${postfix}`;
-        break;
-      }
-
-      case 'NormalPage': {
-        url = `/${locale}/webpages/normal/${node.id}`;
-        break;
-      }
-
-      case 'ContactPage': {
-        url = `/${locale}/webpages/contact/${node.id}`;
-        break;
-      }
-
-      case 'RawHtmlPage': {
-        const { htmlBody } = await getRawWebPageContent(node.id);
-
-        return new NextResponse(htmlBody, {
-          headers: { 'content-type': 'text/html' },
-        });
-      }
-
-      default: {
-        const { pathname } = new URL(request.url);
-
-        const cleanPathName = clearLocaleFromPath(pathname, locale);
-
-        if (cleanPathName === '/' && postfix) {
-          url = `/${locale}${postfix}`;
-          break;
-        }
-
-        url = `/${locale}${cleanPathName}`;
-      }
+      return new NextResponse(htmlBody, {
+        headers: { 'content-type': 'text/html' },
+      });
     }
 
+    const customerAccessToken = await getSessionCustomerAccessToken();
+    const postfix =
+      !request.nextUrl.search && !customerAccessToken && request.method === 'GET' ? '/static' : '';
+
+    const url = getRewriteUrl(locale, node, request, postfix);
     const rewriteUrl = new URL(url, request.url);
 
     rewriteUrl.search = request.nextUrl.search;
