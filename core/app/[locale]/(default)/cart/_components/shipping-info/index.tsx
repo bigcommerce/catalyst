@@ -256,7 +256,7 @@ export const ShippingInfo = ({
           <div className=''>
             <MapPin width={15} height={18} />
           </div>
-          <div onClick={()=>getUserCurrentLocation()} className='font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535] underline'>Use your current location</div>
+          <div onClick={()=>getUserCurrentLocation()} className='font-normal cursor-pointer text-[14px] leading-[24px] tracking-[0.25px] text-[#353535] underline'>Use your current location</div>
         </div>
       </div>
     </Form>
