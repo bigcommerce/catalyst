@@ -111,7 +111,7 @@ export default async function ProductPage(props: Props) {
     useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
   });
 
-  const productMpn = product.mpn;
+  const productMpn = product?.mpn;
 
   console.log('Product MPN===================================:', JSON.stringify(productMpn));
 
