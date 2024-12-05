@@ -8,7 +8,7 @@ import { cn } from '~/lib/utils';
 import { Locale } from './locale';
 
 interface Image {
-  altText: string;
+  alt: string;
   src: string;
 }
 
@@ -76,7 +76,7 @@ const Footer = ({
             <h3>
               {typeof logo === 'object' ? (
                 <Image
-                  alt={logo.altText}
+                  alt={logo.alt}
                   className="max-h-16 object-contain"
                   height={32}
                   priority
