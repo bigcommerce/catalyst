@@ -76,54 +76,54 @@ if (isSave) {
   setLoading(false);
 }
   return (
-    <div className="w-full bg-[#353535] p-1 text-white">
+    <div className="w-full bg-[#353535] p-[10px] text-white">
       {/* Parent SKU */}
-      <div className="m-1 flex justify-between">
-        <p className="text-[10px] font-semibold">PARENT SKU</p>
-        <p className="text-[10px]">{parentSku}</p>
+      <div className="my-0 mx-auto h-[24px] flex items-center justify-between border-b border-[#cccbcb]">
+        <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">PARENT SKU</p>
+        <p className="text-[14px] font-normal tracking-[0.25px]">{parentSku}</p>
       </div>
-      <hr className="border-white-600 m-2" />
+      {/* <hr className="border-white-600 m-2" /> */}
 
       {/* SKU */}
-      <div className="m-1 flex justify-between">
-        <p className="text-[10px] font-semibold">SKU</p>
-        <p className="text-[10px]">{sku}</p>
+      <div className="my-0 mx-auto h-[24px] flex items-center justify-between border-b border-[#cccbcb]">
+        <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">SKU</p>
+        <p className="text-[14px] font-normal tracking-[0.25px]">{sku}</p>
       </div>
-      <hr className="border-white-600 m-2" />
+      {/* <hr className="border-white-600 m-2" /> */}
 
       {/* Cost */}
-      <div className="m-1 flex justify-between">
-        <p className="text-[10px] font-semibold">Cost</p>
-        <p className="text-[10px]">{cost}</p>
+      <div className="my-0 mx-auto h-[24px] flex items-center justify-between border-b border-[#cccbcb]">
+        <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">Cost</p>
+        <p className="text-[14px] font-normal tracking-[0.25px]">{cost}</p>
       </div>
-      <hr className="border-white-600 m-2" />
+      {/* <hr className="border-white-600 m-2" /> */}
 
       {/* Floor */}
-      <div className="m-1 flex justify-between">
-        <p className="text-[10px] font-semibold">Floor ($)</p>
-        <p className="text-[10px]">{floor?.toFixed(2)}</p>
+      <div className="my-0 mx-auto h-[24px] flex items-center justify-between border-b border-[#cccbcb]">
+        <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">Floor ($)</p>
+        <p className="text-[14px] font-normal tracking-[0.25px]">{floor?.toFixed(2)}</p>
       </div>
-      <hr className="border-white-600 m-2" />
+      {/* <hr className="border-white-600 m-2" /> */}
 
       {/* Markup */}
-      <div className="m-1 flex justify-between">
-        <p className="text-[10px] font-semibold">Markup</p>
-        <p className="text-[10px]">{markup?.toFixed(1)}</p>
+      <div className="my-0 mx-auto h-[24px] flex items-center justify-between">
+        <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">Markup</p>
+        <p className="text-[14px] font-normal tracking-[0.25px]">{markup?.toFixed(1)}</p>
       </div>
-      <hr className="border-white-600 m-2" />
+      {/* <hr className="border-white-600 m-2" /> */}
 
       {/* Adjust Price Button */}
       {!isEditing && (
         <button
           onClick={() => setIsEditing(true)}
-          className="w-full rounded bg-green-600 px-4 py-2 text-[12px] text-white hover:bg-green-700"
+          className="w-full rounded-sm bg-[#1DB14B] px-[10px] py-[5px] h-[42px] hover:bg-green-700"
         >
           <div className="flex items-center justify-center">
             {' '}
             {/* Changed justify-content to justify-center */}
             <EditIcon />
             {/* Added width and height for icon size */}
-            <span className="">ADJUST PRICE</span> {/* Added margin for spacing */}
+            <span className="text-[14px] font-medium tracking-[1.25px] leading-[32px] items-center">ADJUST PRICE</span> {/* Added margin for spacing */}
           </div>
         </button>
       )}
@@ -140,7 +140,7 @@ if (isSave) {
             placeholder="$0.00"
           />
 
-          <div className="mt-4 flex items-center justify-center">
+          <div className="mt-[10px] flex items-center justify-center">
             <button
               onClick={() => setIsEditing(false)}
               className="mb-2 mr-2 w-full rounded bg-white px-4 py-2 text-black"

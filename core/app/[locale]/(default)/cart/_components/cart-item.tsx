@@ -178,7 +178,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
   }
   return (
     <li className="mb-[24px] border border-gray-200">
-      <div className="flex flex-col gap-4 p-4 py-4 md:flex-row">
+      <div className="">
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 md:flex-row">
           <div className="cart-main-img mx-auto w-full flex-none border border-gray-300 md:mx-0 md:w-[144px]">
             {product.image?.url ? (
@@ -196,7 +196,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
 
           <div className="flex-1">
             <p className="hidden text-base text-gray-500">{product.brand}</p>
-            <div className="flex grid  lg:grid-cols-[40%_20%_40%] gap-4 ">
+            <div className="grid lg:grid-cols-[40%_20%_40%] gap-1">
               <div className="">
                 <Link href={product.url}>
                   <p className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
@@ -347,7 +347,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                   <ItemQuantity product={product} />
                 </div>
               </div>
-              <div className="px-3 overflow-x-hidden">
+              <div className="pl-[10px] overflow-x-hidden">
                 <ProductPriceAdjuster
                   parentSku={product.sku}
                   sku={product.sku}
