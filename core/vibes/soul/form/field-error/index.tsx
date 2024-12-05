@@ -1,7 +1,7 @@
 import { clsx } from 'clsx';
 import { CircleAlert } from 'lucide-react';
 
-export function ErrorMessage({
+export function FieldError({
   className,
   children,
   ...rest
