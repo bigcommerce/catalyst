@@ -10,8 +10,8 @@ export class OrderFactory {
 
   constructor(private readonly page: Page) {}
 
-  async create(customerId: number, productId: number) {
-    const orderData = await createOrder(customerId, productId);
+  async create(productId: number, customerId: number) {
+    const orderData = await createOrder(productId, customerId);
 
     const order = new Order(
       this.page,
