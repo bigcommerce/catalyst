@@ -51,7 +51,7 @@ interface Pagination {
 }
 
 export const getCustomerAddresses = cache(
-  async ({ before = '', after = '', limit = 9 }: Pagination) => {
+  async ({ before = '', after = '', limit = 10 }: Pagination) => {
     const customerAccessToken = await getSessionCustomerAccessToken();
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
