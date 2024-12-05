@@ -134,7 +134,7 @@ export default async function ProductPage(props: Props) {
   const collectionProducts = await getCollectionProducts(collectionValue);
 
   const category = removeEdgesAndNodes(product.categories).at(0);
-  if (category?.breadcrumbs?.edges) {
+  if (category?.breadcrumbs?.edges && product?.mpn) {
     category.breadcrumbs.edges.push({ node: { name: product?.mpn, path: '#' } });
   }
 
