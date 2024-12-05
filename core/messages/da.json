@@ -335,8 +335,7 @@
             }
         },
         "AddToCart": {
-            "success": "<cartLink>{cartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
-            "error": "Fejl ved tilføjelse af produkt til indkøbskurv. Prøv igen."
+            "success": "<cartLink>{cartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>"
         }
     },
     "Product": {
@@ -344,9 +343,14 @@
         "Carousel": {
             "relatedProducts": "Relaterede produkter"
         },
+        "Gallery": {
+            "previous": "Previous product image",
+            "next": "Next product image",
+            "thumbnailNavigation": "Thumbnail navigation",
+            "enlarge": "Enlarge product image"
+        },
         "Form": {
             "success": "<cartLink>{cartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
-            "error": "Fejl ved tilføjelse af produkt til indkøbskurv. Prøv igen.",
             "saveToWishlist": "Gem i ønskeliste",
             "quantityLabel": "Antal"
         },
@@ -437,7 +441,34 @@
             "LocaleSwitcher": {
                 "chooseCountryAndLanguage": "Vælg land og sprog",
                 "goToSite": "Gå til webstedet"
+            },
+            "MiniCart": {
+                "cart": "Indkøbskurv",
+                "items": "Varer i indkøbskurven"
+            },
+            "Navigation": {
+                "toggle": "Toggle navigation",
+                "navigationMenu": "Navigation menu"
+            },
+            "Search": {
+                "openSearchPopup": "Open search popup",
+                "closeSearchPopup": "Close search popup",
+                "searchBar": "Search bar",
+                "photo": "Foto",
+                "products": "produkter",
+                "categories": "Kategorier",
+                "brands": "mærker",
+                "noSearchResults": "Beklager, ingen resultater for {term}.",
+                "searchPlaceholder": "Søg ...",
+                "clearSearch": "Ryd søgning",
+                "processing": "Behandler..."
             }
+        },
+        "Footer": {
+            "socialMediaLinks": "Links til sociale medier"
+        },
+        "Breadcrumb": {
+            "breadcrumb": "Breadcrumb"
         },
         "Compare": {
             "compareButton": "Sammenlign ({products})",
@@ -459,11 +490,34 @@
             "processing": "Behandler..."
         },
         "ProductCard": {
+            "Compare": {
+                "compare": "Sammenlign"
+            },
             "AddToCart": {
                 "viewOptions": "Se muligheder",
-                "success": "<cartLink>{cartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
-                "error": "Fejl ved tilføjelse af produkt til indkøbskurv. Prøv igen."
+                "success": "<cartLink>{cartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>"
             }
+        },
+        "Slideshow": {
+            "slideshow": "Interactive slide show",
+            "slide": "Dias",
+            "previousSlide": "Previous slide",
+            "nextSlide": "Next slide",
+            "slideNo": "{n} of {total}",
+            "pause": "Pause slideshow",
+            "play": "Play slideshow"
+        },
+        "Pagination": {
+            "pagination": "sideopsætning",
+            "previous": "Foregående",
+            "next": "Næste"
+        },
+        "Carousel": {
+            "carousel": "Karrusel",
+            "previousProducts": "Previous products",
+            "nextProducts": "Next products",
+            "slides": "Slides",
+            "goto": "Go to slide {n}"
         },
         "FormFields": {
             "Validation": {
@@ -482,6 +536,10 @@
                 "password": "Indtast en adgangskode",
                 "phone": "Indtast et telefonnummer",
                 "postalCode": "Indtast et postnummer"
+            },
+            "Counter": {
+                "increase": "Forøg antal",
+                "decrease": "Reducer antallet"
             }
         }
     }

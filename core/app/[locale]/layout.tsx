@@ -1,7 +1,8 @@
+import { DraftModeScript } from '@makeswift/runtime/next/server';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { DM_Serif_Text, Inter, Roboto_Mono } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
@@ -16,9 +17,22 @@ import { Notifications } from '../notifications';
 import { Providers } from '../providers';
 
 const inter = Inter({
+  display: 'swap',
+  subsets: ['latin'],
+  variable: '--font-family-body',
+});
+
+const dm_serif_text = DM_Serif_Text({
+  display: 'swap',
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-family-heading',
+});
+
+const roboto_mono = Roboto_Mono({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-inter',
+  variable: '--font-family-mono',
 });
 
 const RootLayoutMetadataQuery = graphql(`
@@ -94,8 +108,11 @@ export default async function RootLayout({ params, children }: Props) {
   const messages = await getMessages();
 
   return (
-    <html className={`${inter.variable} font-sans`} lang={locale}>
-      <body className="flex h-screen min-w-[375px] flex-col">
+    <html lang={locale}>
+      <head>
+        <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
+      </head>
+      <body className={`${inter.variable} ${dm_serif_text.variable} ${roboto_mono.variable}`}>
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>{children}</Providers>

@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import { BcImage } from '~/components/bc-image';
@@ -17,6 +18,7 @@ interface Props {
 
 const Gallery = ({ className, images, defaultImageIndex = 0 }: Props) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(defaultImageIndex);
+  const t = useTranslations('Product.Gallery');
 
   const selectedImage = images.length > 0 ? images[selectedImageIndex] : undefined;
 
@@ -40,7 +42,7 @@ const Gallery = ({ className, images, defaultImageIndex = 0 }: Props) => {
         {images.length > 1 && (
           <div className="absolute top-1/2 flex w-full -translate-y-1/2 justify-between px-5 sm:px-0">
             <button
-              aria-label="Previous product image"
+              aria-label={t('previous')}
               className="focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
               onClick={() =>
                 setSelectedImageIndex((prev) => {
@@ -55,7 +57,7 @@ const Gallery = ({ className, images, defaultImageIndex = 0 }: Props) => {
               <ChevronLeft />
             </button>
             <button
-              aria-label="Next product image"
+              aria-label={t('next')}
               className="focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
               onClick={() =>
                 setSelectedImageIndex((prev) => {
@@ -73,7 +75,7 @@ const Gallery = ({ className, images, defaultImageIndex = 0 }: Props) => {
         )}
       </figure>
       <nav
-        aria-label="Thumbnail navigation"
+        aria-label={t('thumbnailNavigation')}
         className="mt-3 flex w-full flex-wrap items-center gap-4 px-6 py-1 sm:px-1 md:mt-5 md:gap-6"
       >
         {images.map((image, index) => {
@@ -81,7 +83,7 @@ const Gallery = ({ className, images, defaultImageIndex = 0 }: Props) => {
 
           return (
             <button
-              aria-label="Enlarge product image"
+              aria-label={t('enlarge')}
               aria-pressed={isActive}
               className="inline-block h-12 w-12 flex-shrink-0 flex-grow-0 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 md:h-24 md:w-24"
               key={image.src}

@@ -90,7 +90,7 @@ export const Header = async ({ cart }: Props) => {
           <Suspense
             fallback={
               <CartLink>
-                <ShoppingCart aria-label="cart" />
+                <ShoppingCart aria-label={t('MiniCart.cart')} />
               </CartLink>
             }
           >

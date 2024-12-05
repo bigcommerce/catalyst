@@ -335,8 +335,7 @@
             }
         },
         "AddToCart": {
-            "success": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>",
-            "error": "Fout opgetreden bij het toevoegen van product aan winkelwagen. Probeer het opnieuw."
+            "success": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>"
         }
     },
     "Product": {
@@ -344,9 +343,14 @@
         "Carousel": {
             "relatedProducts": "Gerelateerde producten"
         },
+        "Gallery": {
+            "previous": "Previous product image",
+            "next": "Next product image",
+            "thumbnailNavigation": "Thumbnail navigation",
+            "enlarge": "Enlarge product image"
+        },
         "Form": {
             "success": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>",
-            "error": "Fout opgetreden bij het toevoegen van product aan winkelwagen. Probeer het opnieuw.",
             "saveToWishlist": "Opslaan in verlanglijstje",
             "quantityLabel": "Aantal"
         },
@@ -437,7 +441,34 @@
             "LocaleSwitcher": {
                 "chooseCountryAndLanguage": "Kies je land en taal",
                 "goToSite": "Ga naar de site"
+            },
+            "MiniCart": {
+                "cart": "Winkelmandje",
+                "items": "Artikelen in winkelmandje"
+            },
+            "Navigation": {
+                "toggle": "Toggle navigation",
+                "navigationMenu": "Navigation menu"
+            },
+            "Search": {
+                "openSearchPopup": "Open search popup",
+                "closeSearchPopup": "Close search popup",
+                "searchBar": "Search bar",
+                "photo": "Foto",
+                "products": "Producten",
+                "categories": "Categorieën",
+                "brands": "Merken",
+                "noSearchResults": "Helaas, geen resultaten voor {term}.",
+                "searchPlaceholder": "Zoeken...",
+                "clearSearch": "Zoekopdracht wissen",
+                "processing": "Verwerken..."
             }
+        },
+        "Footer": {
+            "socialMediaLinks": "Links naar sociale media"
+        },
+        "Breadcrumb": {
+            "breadcrumb": "Breadcrumb"
         },
         "Compare": {
             "compareButton": "Vergelijken ({products})",
@@ -459,11 +490,34 @@
             "processing": "Verwerken..."
         },
         "ProductCard": {
+            "Compare": {
+                "compare": "Vergelijken"
+            },
             "AddToCart": {
                 "viewOptions": "Opties weergeven",
-                "success": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>",
-                "error": "Fout opgetreden bij het toevoegen van product aan winkelwagen. Probeer het opnieuw."
+                "success": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>"
             }
+        },
+        "Slideshow": {
+            "slideshow": "Interactive slide show",
+            "slide": "Dia",
+            "previousSlide": "Previous slide",
+            "nextSlide": "Next slide",
+            "slideNo": "{n} of {total}",
+            "pause": "Pause slideshow",
+            "play": "Play slideshow"
+        },
+        "Pagination": {
+            "pagination": "paginering",
+            "previous": "Vorige",
+            "next": "Volgende"
+        },
+        "Carousel": {
+            "carousel": "Carrousel",
+            "previousProducts": "Previous products",
+            "nextProducts": "Next products",
+            "slides": "Slides",
+            "goto": "Go to slide {n}"
         },
         "FormFields": {
             "Validation": {
@@ -482,6 +536,10 @@
                 "password": "Vul een wachtwoord in",
                 "phone": "Voer een telefoonnummer in",
                 "postalCode": "Voer een postcode in"
+            },
+            "Counter": {
+                "increase": "Aantal verhogen",
+                "decrease": "Aantal verlagen"
             }
         }
     }

@@ -5,32 +5,42 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { ProductCardCarousel } from '~/components/product-card-carousel';
-import { ProductCardCarouselFragment } from '~/components/product-card-carousel/fragment';
-import { Slideshow } from '~/components/slideshow';
+import { FeaturedProductsCarousel } from '~/components/featured-products-carousel';
+import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
+import { FeaturedProductsList } from '~/components/featured-products-list';
+import { FeaturedProductsListFragment } from '~/components/featured-products-list/fragment';
+
+import { Slideshow } from './_components/slideshow';
 
 const HomePageQuery = graphql(
   `
     query HomePageQuery {
       site {
-        newestProducts(first: 12) {
-          edges {
-            node {
-              ...ProductCardCarouselFragment
-            }
-          }
-        }
         featuredProducts(first: 12) {
           edges {
             node {
-              ...ProductCardCarouselFragment
+              ...FeaturedProductsListFragment
+            }
+          }
+        }
+        newestProducts(first: 12) {
+          edges {
+            node {
+              ...FeaturedProductsCarouselFragment
+            }
+          }
+        }
+        bestSellingProducts(first: 12) {
+          edges {
+            node {
+              ...FeaturedProductsCarouselFragment
             }
           }
         }
       }
     }
   `,
-  [ProductCardCarouselFragment],
+  [FeaturedProductsCarouselFragment, FeaturedProductsListFragment],
 );
 
 interface Props {
@@ -53,25 +63,32 @@ export default async function Home({ params }: Props) {
 
   const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
   const newestProducts = removeEdgesAndNodes(data.site.newestProducts);
+  const bestSellingProducts = removeEdgesAndNodes(data.site.bestSellingProducts);
 
   return (
     <>
       <Slideshow />
 
-      <div className="my-10">
-        <ProductCardCarousel
-          products={featuredProducts}
-          showCart={false}
-          showCompare={false}
-          title={t('Carousel.featuredProducts')}
-        />
-        <ProductCardCarousel
-          products={newestProducts}
-          showCart={false}
-          showCompare={false}
-          title={t('Carousel.newestProducts')}
-        />
-      </div>
+      <FeaturedProductsList
+        cta={{ label: t('FeaturedProducts.cta'), href: '/shop-all' }}
+        description={t('FeaturedProducts.description')}
+        products={featuredProducts}
+        title={t('FeaturedProducts.title')}
+      />
+
+      <FeaturedProductsCarousel
+        cta={{ label: t('NewestProducts.cta'), href: '/shop-all/?sort=newest' }}
+        description={t('NewestProducts.description')}
+        products={newestProducts}
+        title={t('NewestProducts.title')}
+      />
+
+      <FeaturedProductsCarousel
+        cta={{ label: t('BestSellingProducts.cta'), href: '/shop-all/?sort=best_selling' }}
+        description={t('BestSellingProducts.description')}
+        products={bestSellingProducts}
+        title={t('BestSellingProducts.title')}
+      />
     </>
   );
 }

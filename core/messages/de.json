@@ -335,8 +335,7 @@
             }
         },
         "AddToCart": {
-            "success": "{cartItems, plural, =1 {1 Item} other {# Items}} wurde zu<cartLink> Ihrem Warenkorb</cartLink> hinzugefügt",
-            "error": "Fehler beim Hinzufügen des Produkts zum Warenkorb. Bitte versuchen Sie es erneut."
+            "success": "{cartItems, plural, =1 {1 Item} other {# Items}} wurde zu<cartLink> Ihrem Warenkorb</cartLink> hinzugefügt"
         }
     },
     "Product": {
@@ -344,9 +343,14 @@
         "Carousel": {
             "relatedProducts": "Verwandte Produkte"
         },
+        "Gallery": {
+            "previous": "Previous product image",
+            "next": "Next product image",
+            "thumbnailNavigation": "Thumbnail navigation",
+            "enlarge": "Enlarge product image"
+        },
         "Form": {
             "success": "{cartItems, plural, =1 {1 Item} other {# Items}} wurde zu<cartLink> Ihrem Warenkorb</cartLink> hinzugefügt",
-            "error": "Fehler beim Hinzufügen des Produkts zum Warenkorb. Bitte versuchen Sie es erneut.",
             "saveToWishlist": "Auf Wunschliste speichern",
             "quantityLabel": "Menge"
         },
@@ -437,7 +441,34 @@
             "LocaleSwitcher": {
                 "chooseCountryAndLanguage": "Wählen Sie Ihr Land und Ihre Sprache",
                 "goToSite": "Zur Website"
+            },
+            "MiniCart": {
+                "cart": "Warenkorb",
+                "items": "Artikel im Warenkorb"
+            },
+            "Navigation": {
+                "toggle": "Toggle navigation",
+                "navigationMenu": "Navigation menu"
+            },
+            "Search": {
+                "openSearchPopup": "Open search popup",
+                "closeSearchPopup": "Close search popup",
+                "searchBar": "Search bar",
+                "photo": "Foto",
+                "products": "Produkte",
+                "categories": "Kategorien",
+                "brands": "Marken",
+                "noSearchResults": "Leider keine Ergebnisse für {term}.",
+                "searchPlaceholder": "Suchen ...",
+                "clearSearch": "Suche löschen",
+                "processing": "Verarbeitung ..."
             }
+        },
+        "Footer": {
+            "socialMediaLinks": "Social-Media-Links"
+        },
+        "Breadcrumb": {
+            "breadcrumb": "Breadcrumb"
         },
         "Compare": {
             "compareButton": "Vergleichen ({products})",
@@ -459,11 +490,34 @@
             "processing": "Verarbeitung ..."
         },
         "ProductCard": {
+            "Compare": {
+                "compare": "Vergleichen"
+            },
             "AddToCart": {
                 "viewOptions": "Optionen anzeigen",
-                "success": "{cartItems, plural, =1 {1 Item} other {# Items}} wurde zu<cartLink> Ihrem Warenkorb</cartLink> hinzugefügt",
-                "error": "Fehler beim Hinzufügen des Produkts zum Warenkorb. Bitte versuchen Sie es erneut."
+                "success": "{cartItems, plural, =1 {1 Item} other {# Items}} wurde zu<cartLink> Ihrem Warenkorb</cartLink> hinzugefügt"
             }
+        },
+        "Slideshow": {
+            "slideshow": "Interactive slide show",
+            "slide": "Folie",
+            "previousSlide": "Previous slide",
+            "nextSlide": "Next slide",
+            "slideNo": "{n} of {total}",
+            "pause": "Pause slideshow",
+            "play": "Play slideshow"
+        },
+        "Pagination": {
+            "pagination": "Seitennummerierung",
+            "previous": "Zurück",
+            "next": "Weiter"
+        },
+        "Carousel": {
+            "carousel": "Karussell",
+            "previousProducts": "Previous products",
+            "nextProducts": "Next products",
+            "slides": "Slides",
+            "goto": "Go to slide {n}"
         },
         "FormFields": {
             "Validation": {
@@ -482,6 +536,10 @@
                 "password": "Geben Sie ein Passwort ein",
                 "phone": "Geben Sie eine Telefonnummer ein",
                 "postalCode": "Geben Sie eine Postleitzahl ein"
+            },
+            "Counter": {
+                "increase": "Anzahl erhöhen",
+                "decrease": "Anzahl verringern"
             }
         }
     }

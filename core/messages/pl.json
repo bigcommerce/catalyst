@@ -335,8 +335,7 @@
             }
         },
         "AddToCart": {
-            "success": "Dodano {cartItems, plural, =1 {1 produkt} other {# produkty(-ów)}} <cartLink>do koszyka</cartLink>",
-            "error": "Błąd podczas dodawania produktu do koszyka. Spróbuj ponownie."
+            "success": "Dodano {cartItems, plural, =1 {1 produkt} other {# produkty(-ów)}} <cartLink>do koszyka</cartLink>"
         }
     },
     "Product": {
@@ -344,9 +343,14 @@
         "Carousel": {
             "relatedProducts": "Powiązane produkty"
         },
+        "Gallery": {
+            "previous": "Previous product image",
+            "next": "Next product image",
+            "thumbnailNavigation": "Thumbnail navigation",
+            "enlarge": "Enlarge product image"
+        },
         "Form": {
             "success": "Dodano {cartItems, plural, =1 {1 produkt} other {# produkty(-ów)}} <cartLink>do koszyka</cartLink>",
-            "error": "Błąd podczas dodawania produktu do koszyka. Spróbuj ponownie.",
             "saveToWishlist": "Zapisz na liście życzeń",
             "quantityLabel": "Ilość"
         },
@@ -437,7 +441,34 @@
             "LocaleSwitcher": {
                 "chooseCountryAndLanguage": "Wybierz kraj i język",
                 "goToSite": "Przejdź do witryny"
+            },
+            "MiniCart": {
+                "cart": "Koszyk",
+                "items": "Produkty w koszyku"
+            },
+            "Navigation": {
+                "toggle": "Toggle navigation",
+                "navigationMenu": "Navigation menu"
+            },
+            "Search": {
+                "openSearchPopup": "Open search popup",
+                "closeSearchPopup": "Close search popup",
+                "searchBar": "Search bar",
+                "photo": "Zdjęcie",
+                "products": "Produkty",
+                "categories": "Kategorie",
+                "brands": "Marki",
+                "noSearchResults": "Niestety, brak wyników dla {term}.",
+                "searchPlaceholder": "Szukaj...",
+                "clearSearch": "Wyraźne wyszukiwanie",
+                "processing": "Przetwarzanie..."
             }
+        },
+        "Footer": {
+            "socialMediaLinks": "Linki do mediów społecznościowych"
+        },
+        "Breadcrumb": {
+            "breadcrumb": "Breadcrumb"
         },
         "Compare": {
             "compareButton": "Porównaj ({products})",
@@ -459,11 +490,34 @@
             "processing": "Przetwarzanie..."
         },
         "ProductCard": {
+            "Compare": {
+                "compare": "Porównaj"
+            },
             "AddToCart": {
                 "viewOptions": "Wyświetl opcje",
-                "success": "Dodano {cartItems, plural, =1 {1 produkt} other {# produkty(-ów)}} <cartLink>do koszyka</cartLink>",
-                "error": "Błąd podczas dodawania produktu do koszyka. Spróbuj ponownie."
+                "success": "Dodano {cartItems, plural, =1 {1 produkt} other {# produkty(-ów)}} <cartLink>do koszyka</cartLink>"
             }
+        },
+        "Slideshow": {
+            "slideshow": "Interactive slide show",
+            "slide": "Slajd",
+            "previousSlide": "Previous slide",
+            "nextSlide": "Next slide",
+            "slideNo": "{n} of {total}",
+            "pause": "Pause slideshow",
+            "play": "Play slideshow"
+        },
+        "Pagination": {
+            "pagination": "dzielenie na strony",
+            "previous": "Poprzedni",
+            "next": "Dalej"
+        },
+        "Carousel": {
+            "carousel": "Karuzela",
+            "previousProducts": "Previous products",
+            "nextProducts": "Next products",
+            "slides": "Slides",
+            "goto": "Go to slide {n}"
         },
         "FormFields": {
             "Validation": {
@@ -482,6 +536,10 @@
                 "password": "Wprowadź hasło",
                 "phone": "Wprowadź numer telefonu",
                 "postalCode": "Wprowadź kod pocztowy"
+            },
+            "Counter": {
+                "increase": "Zwiększ liczbę",
+                "decrease": "Zmniejsz liczbę"
             }
         }
     }
