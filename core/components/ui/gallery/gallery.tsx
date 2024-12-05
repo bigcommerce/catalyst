@@ -77,15 +77,12 @@ const Gallery = ({
 
   const renderMpn = () => {
     if (!productMpn) {
-      console.log('No MPN available to render');
+      console.log('No MPN available');
       return null;
     }
-    console.log('Rendering MPN:', productMpn);
-    return (
-      <div className="absolute bottom-4 left-4 rounded-md bg-white bg-opacity-90 px-3 py-1 text-sm">
-        MPN: {productMpn}
-      </div>
-    );
+    // Just log the MPN but don't render it
+    console.log('Current MPN (not displayed):', productMpn);
+    return null;
   };
 
   const openPopup = (index?: number) => {
