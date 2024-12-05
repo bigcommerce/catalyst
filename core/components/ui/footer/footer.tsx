@@ -4,6 +4,7 @@ import { Link as CustomLink } from '~/components/link';
 import { cn } from '~/lib/utils';
 
 import { Locale } from './locale';
+import AgentFooter from '~/app/[locale]/(default)/sales-buddy/pages/footer';
 
 interface Image {
   altText: string;
@@ -51,21 +52,28 @@ const Footer = ({
   ...props
 }: Props) => (
   <footer className={cn('px-18  2xl:container 2xl:mx-auto !max-w-[100%] bg-[#002a37] text-white', className)} {...props}>
+     <div className='absolute flex flex-col right-[200px] gap-[10px] mt-[370px]'>
+      <AgentFooter />
+    </div>
     <section className="section-footer flex flex-col gap-8 border-t border-gray-200 px-4 pt-10 pb-0 md:flex-row lg:gap-4 lg:px-12">
       <nav className="grid flex-auto auto-cols-fr gap-8 sm:grid-flow-col" id="nav-footer-section">
         {sections.map((section, index) => (
-          <div key={`${section.title}-${index}`}>
-            <h3 className="text-left text-[20px] mb-[10px] font-medium leading-[32px] tracking-[0.15px] text-white">
-              {section.title}
-            </h3>
-            <ul className="footer-submenu flex flex-col">
-              {section.links.map((link, index) => (
-                <li key={`${link.label}-${index}`} className='mb-[14px] pt-1 pb-1'>
-                  {link.href != '#' ? <CustomLink className='!justify-start text-[14px] font-normal leading-[24px] tracking-[0.25px] text-left !text-white' href={link.href}>{link.label}</CustomLink> : link.label }
-                </li>
-              ))}
-            </ul>
-          </div>
+          <>
+            <div key={`${section.title}-${index}`}>
+              <h3 className="text-left text-[20px] mb-[10px] font-medium leading-[32px] tracking-[0.15px] text-white">
+                {section.title}
+              </h3>
+              <ul className="footer-submenu flex flex-col">
+                {section.links.map((link, index) => (
+                  <li key={`${link.label}-${index}`} className='mb-[14px] pt-1 pb-1'>
+                    {link.href != '#' ? <CustomLink className='!justify-start text-[14px] font-normal leading-[24px] tracking-[0.25px] text-left !text-white' href={link.href}>{link.label}</CustomLink> : link.label}
+                  </li>
+                ))}
+              </ul>
+
+            </div>
+
+          </>
         ))}
       </nav>
       <div className="div-footer flex flex-col gap-2.5 md:order-first md:grow w-[35%]">

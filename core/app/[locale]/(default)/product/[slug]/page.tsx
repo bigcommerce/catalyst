@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
+import { getSessionCustomerAccessToken } from '~/auth';
+
 import { Breadcrumbs } from '~/components/breadcrumbs';
 
 import Promotion from '../../../../../components/ui/pdp/belami-promotion-banner-pdp';
@@ -23,42 +25,15 @@ import { GetProductMetaFields } from '~/components/management-apis';
 import { ProductProvider } from '~/components/common-context/product-provider';
 
 import { RelatedProducts } from './related-products';
+import { CollectionProducts } from './collection-products';
 //import { SimilarProducts } from './similar-products';
 import { SitevibesReviews } from './sitevibes-reviews';
+
+import { getRelatedProducts, getCollectionProducts } from './fetch-algolia-products';
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
-}
-
-/*
-TODO: Move to separate file...
-*/
-const appId = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '';
-const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_API_KEY || '';
-const indexName: string = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || '';
-
-export async function getCatalogProducts() {
-  const response = await fetch(`https://${appId}.algolia.net/1/indexes/${indexName}/query`, {
-    method: 'POST',
-    credentials: 'same-origin',
-    headers: {
-      'x-algolia-application-id': appId,
-      'x-algolia-api-key': apiKey,
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify({
-      filters: 'metafields.Akeneo.collection:Brewmaster',
-      length: 100,
-    }),
-    cache: 'force-cache',
-    //next: { revalidate: 3600 }
-  });
-
-  const data = await response.json();
-
-  return data.hits;
 }
 
 function getOptionValueIds({ searchParams }: { searchParams: Awaited<Props['searchParams']> }) {
@@ -113,6 +88,9 @@ export default async function ProductPage(props: Props) {
   const searchParams = await props.searchParams;
   const params = await props.params;
 
+  const customerAccessToken = await getSessionCustomerAccessToken();
+  const useDefaultPrices = !customerAccessToken;
+
   const { locale, slug } = params;
 
   const bannerIcon = imageManagerImageUrl('example-1.png', '50w');
@@ -151,6 +129,9 @@ export default async function ProductPage(props: Props) {
   if (collectionMetaField?.value) {
     collectionValue = collectionMetaField.value; // Store the collection value
   }
+
+  const relatedProducts = await getRelatedProducts(product.entityId);
+  const collectionProducts = await getCollectionProducts(collectionValue);
 
   const category = removeEdgesAndNodes(product.categories).at(0);
   if (category?.breadcrumbs?.edges) {
@@ -203,18 +184,21 @@ export default async function ProductPage(props: Props) {
             />
             <div className="lg:col-span-2">
               <Description product={product} />
+              <CollectionProducts collection={collectionValue} products={collectionProducts} useDefaultPrices={useDefaultPrices} />
+              <Promotion />
               {/*
               <RelatedProducts
                 productId={product.entityId}
                 relatedProductArrow={relatedProductArrow}
               />
               */}
-              <RelatedProducts productId={product.entityId} />
+              <RelatedProducts productId={product.entityId} products={relatedProducts} useDefaultPrices={useDefaultPrices} />
               {/*
               <SimilarProducts productId={product.entityId} />
               */}
+              {/*
               <SimilarProducts0 />
-              <Promotion />
+              */}
               <Warranty product={product} />
               <SitevibesReviews product={product} category={category} />
             </div>

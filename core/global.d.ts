@@ -1,3 +1,10 @@
+declare module '@algolia/autocomplete-js' {
+  export type AutocompleteComponents = AutocompleteComponents;
+  export function autocomplete(props: autocompleteProps): ReactNode;
+  export function getAlgoliaResults<ProductRecord>(props: getAlgoliaResultsProps): ReactNode;
+  export function getAlgoliaFacets(props: getAlgoliaFacetsProps): ReactNode;
+}
+
 declare module 'react-instantsearch' {
   export type RefinementListProps = RefinementListProps;
   export type UsePaginationProps = UsePaginationProps;

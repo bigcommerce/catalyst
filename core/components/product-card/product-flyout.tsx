@@ -9,7 +9,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { BcImage } from '~/components/bc-image';
 import { useCommonContext } from '~/components/common-context/common-provider';
-import { Minus, Plus, LoaderCircle } from 'lucide-react';
+import { Minus, Plus, LoaderCircle, Loader2 as Spinner } from 'lucide-react';
 import {
   GetProductMetaFields,
   GetProductVariantMetaFields,
@@ -76,7 +76,7 @@ const getVariantProductInfo = async (metaData: any) => {
                   mpn: item?.mpn,
                   sku: item?.sku,
                   name: productName + optionValues,
-                  selectedOptions: item?.selectedOption
+                  selectedOptions: item?.selectedOption,
                 });
               }
             });
@@ -109,6 +109,7 @@ export const ProductFlyout = ({
   fanPopup: string;
   blankAddImg: string;
 }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const format = useFormatter();
   const productFlyout = useCommonContext();
   let productData = productFlyout.productData;
@@ -154,16 +155,12 @@ export const ProductFlyout = ({
         <Dialog.Portal>
           <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
           <Dialog.Content className="popup-container-parent data-[state=open]:animate-contentShow fixed left-[50%] top-[50%] flex max-h-[85vh] w-[90vw] max-w-[610px] translate-x-[-50%] translate-y-[-50%] flex-col gap-[20px] overflow-auto rounded-[6px] bg-white px-[40px] py-[20px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
-            
-            {/* WHen loading is true display flex otherwise hidden */}
-            <div className='flyout-loading hidden fixed top-0 left-0 w-full h-full bg-gray-200 bg-opacity-80 flex items-center justify-center z-50'>
-              <div>
-                <LoaderCircle className="animate-spin text-blue-600" />
-              </div>
+            <div
+              className={`flyout-loading ${isLoading ? 'flex' : 'hidden'} fixed left-0 top-0 z-50 h-full w-full items-center justify-center`}
+            >
+              <Spinner className="animate-spin rounded-[50%] bg-[#8b8d8f] text-white shadow-[0_10px_38px_2000px_#0e121659,_0_10px_20px_2000px_#0e121633]" />
             </div>
-            {/* WHen it's loading you have to add the class */}
-            {/* overflow-hidden */}
-            <div className='flex flex-col gap-[20px]'>
+            <div className={`flex ${isLoading ? 'overflow-hidden' : ''} flex-col gap-[20px]`}>
               <div className="flex flex-col items-center justify-center gap-[20px]">
                 <Dialog.Close asChild>
                   <button
@@ -199,7 +196,7 @@ export const ProductFlyout = ({
                     src={productData?.imageUrl}
                   />
                 </div>
-                <div className="popup-box1-div2 flex max-w-[360px] flex-shrink-[50] flex-col gap-[3px] text-center ssm:gap-[1px] ssm:text-start">
+                <div className="popup-box1-div2 relative flex max-w-[360px] flex-shrink-[50] flex-col gap-[3px] text-center ssm:gap-[1px] ssm:text-start">
                   <p className="text-center text-[14px] font-normal tracking-[0.25px] text-[#353535] ssm:text-left">
                     {productData?.name}
                   </p>
@@ -251,12 +248,17 @@ export const ProductFlyout = ({
                       </div>
                     ) : null}
                   </div>
-                  <InputPlusMinus product="true" productData={productData} />
+                  <InputPlusMinus
+                    product="true"
+                    isLoading={isLoading}
+                    setIsLoading={setIsLoading}
+                    productData={productData}
+                  />
                 </div>
               </Dialog.Content>
               {variantProductData && variantProductData?.length > 0 && (
                 <>
-                  <hr className="border-[#93cfa1] my-[20px]" />
+                  <hr className="my-[20px] border-[#93cfa1]" />
                   <div className="pop-up-text flex flex-col gap-4">
                     <div className="flex flex-col gap-[20px]">
                       <div className="text-[20px] font-medium tracking-[0.15px] text-black">
@@ -270,6 +272,8 @@ export const ProductFlyout = ({
                               key={index}
                             >
                               <ProductAccessories
+                                isLoading={isLoading}
+                                setIsLoading={setIsLoading}
                                 accessories={accessories}
                                 fanPopup={fanPopup}
                                 blankAddImg={blankAddImg}
@@ -308,7 +312,7 @@ export const ProductFlyout = ({
                     <div className="cart-buttons flex flex-col items-start gap-[10px] ssm:flex-row">
                       <Dialog.Close asChild>
                         <Link
-                          className="flex h-[41px] w-[100%] flex-row items-center justify-center self-stretch rounded-[3px] border border-[#b3dce8] text-[14px] text-sm font-medium uppercase tracking-[1.25px] text-[#002A37] hover:text-secondary"
+                          className="hover:text-secondary flex h-[41px] w-[100%] flex-row items-center justify-center self-stretch rounded-[3px] border border-[#b3dce8] text-[14px] text-sm font-medium uppercase tracking-[1.25px] text-[#002A37]"
                           href="/cart"
                         >
                           View Cart

@@ -191,8 +191,8 @@ export default async function Cart() {
           </div>
         </div>
       </div>
-      <div className="cart-right-side-details px-18 pb-0 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-        <ul className="col-span-2 cart-details-item lgg:w-[90%]">
+      <div className="cart-right-side-details w-full px-18 pb-0 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-3">
+        <ul className="col-span-2 cart-details-item lgg:w-full">
           {updatedLineItemWithoutAccessories.map((product: any) => (
             <CartItem
               currencyCode={cart.currencyCode}

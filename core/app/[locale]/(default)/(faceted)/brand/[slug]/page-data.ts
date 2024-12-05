@@ -10,6 +10,10 @@ const BrandQuery = graphql(`
     site {
       brand(entityId: $entityId) {
         name
+        defaultImage {
+          urlOriginal
+        }
+        path
         seo {
           pageTitle
           metaDescription

@@ -151,9 +151,9 @@ function ColorSwatches({ variants, onImageClick }: any) {
   }) : null;
 
   return (
-    items && items.length > 0 &&
+    //items && items.length > 0 &&
     <>
-      <div className="mx-auto mt-4 flex space-x-2 items-center justify-center">
+      <div className="mx-auto mt-4 h-8 flex space-x-2 items-center justify-center">
         {items.slice(0, 5).map((item: string) => <button key={item} type="button" title={item} className="rounded-full w-8 h-8 border border-gray-500 cursor-auto" style={
           searchColorsHEX[item] && searchColorsHEX[item].indexOf('.svg') !== -1
             ? { backgroundImage: `url("/swatches/${searchColorsHEX[item]}")`, backgroundSize: `cover`, backgroundRepeat: `no-repeat` }

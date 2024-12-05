@@ -8,6 +8,7 @@ import { ItemQuantity } from './item-quantity';
 import { RemoveItem } from './remove-item';
 import { RemoveAccessoryItem } from '../../../../../components/product-card/remove-accessory-item';
 import { cookies } from 'next/headers';
+import ProductPriceAdjuster from '../../sales-buddy/common-components/_components/ProductPriceAdjuster';
 
 const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
@@ -176,7 +177,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
     discountPriceText = discountedPrice + '% Off';
   }
   return (
-    <li className="border border-gray-200 mb-[24px]">
+    <li className="mb-[24px] border border-gray-200">
       <div className="flex flex-col gap-4 p-4 py-4 md:flex-row">
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 md:flex-row">
           <div className="cart-main-img mx-auto w-full flex-none border border-gray-300 md:mx-0 md:w-[144px]">
@@ -195,8 +196,8 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
 
           <div className="flex-1">
             <p className="hidden text-base text-gray-500">{product.brand}</p>
-            <div className="flex flex-col gap-2 md:flex-row">
-              <div className="flex flex-1 flex-col gap-2">
+            <div className="flex grid  lg:grid-cols-[40%_20%_40%] gap-4 ">
+              <div className="">
                 <Link href={product.url}>
                   <p className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
                     {product.name}
@@ -317,11 +318,11 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                   </div>
                 )}
               </div>
-              <div className="flex flex-col gap-2 md:items-end">
+              <div className="">
                 {/* Desktop layout (unchanged) */}
-                <div className="cart-deleteIcon flex flex-col gap-0 md:gap-2 text-right md:items-end relative">
+                <div className="cart-deleteIcon relative flex flex-col gap-0 text-right md:items-end md:gap-2">
                   <RemoveItem currency={currencyCode} product={product} deleteIcon={deleteIcon} />
-                  <div className='mb-[20px] md:mb-0'>
+                  <div className="mb-[20px] md:mb-0">
                     <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
                       {product.originalPrice.value &&
                       product.originalPrice.value !== product.listPrice.value ? (
@@ -346,6 +347,18 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                   <ItemQuantity product={product} />
                 </div>
               </div>
+              <div className="px-3 overflow-x-hidden">
+                <ProductPriceAdjuster
+                  parentSku={product.sku}
+                  sku={product.sku}
+                  productPrice={Number(product.listPrice.value)}
+                  initialCost={Number(product.listPrice.value)}
+                  initialFloor={Number(product.listPrice.value)}
+                  initialMarkup={Number(product.listPrice.value)}
+                  productId={product.productEntityId}
+                  cartId={cartId}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -355,7 +368,9 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
           product?.accessories?.map((item: any, index: number) => {
             let oldPriceAccess = item?.originalPrice?.value;
             let salePriceAccess = item?.extendedSalePrice?.value;
-            let discountedPrice: any = (Number(100 - (salePriceAccess * 100) / oldPriceAccess)?.toFixed(2));
+            let discountedPrice: any = Number(
+              100 - (salePriceAccess * 100) / oldPriceAccess,
+            )?.toFixed(2);
             let discountPriceText: string = '';
             if (discountedPrice > 0) {
               discountPriceText = discountedPrice + '% Off';
@@ -376,7 +391,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                     />
                     <div className="flex flex-col items-start p-0">
                       <div>{item.name}</div>
-                      <div className="flex items-center gap-[0px_10px] flex-wrap text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
+                      <div className="flex flex-wrap items-center gap-[0px_10px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
                         {item.originalPrice.value &&
                         item.originalPrice.value !== item.listPrice.value ? (
                           <p className="flex items-center tracking-[0.25px] line-through">
@@ -400,7 +415,13 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                     <div className="flex items-center text-right text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#353535]">
                       QTY: {item.prodQuantity}
                     </div>
-                    <RemoveAccessoryItem currency={currencyCode} cartId={cartId} lineItemId={product?.entityId} product={item} deleteIcon={deleteIcon} />
+                    <RemoveAccessoryItem
+                      currency={currencyCode}
+                      cartId={cartId}
+                      lineItemId={product?.entityId}
+                      product={item}
+                      deleteIcon={deleteIcon}
+                    />
                   </div>
                 </div>
               </div>

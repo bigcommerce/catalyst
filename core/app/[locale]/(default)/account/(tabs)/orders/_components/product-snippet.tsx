@@ -7,6 +7,7 @@ import { ProductCardFragment } from '~/components/product-card/fragment';
 import { Price as PricesType } from '~/components/ui/product-card';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { cn } from '~/lib/utils';
+// import { processLineItems } from './orders-list';
 
 export const OrderItemFragment = graphql(`
   fragment OrderItemFragment on OrderPhysicalLineItem {
@@ -49,7 +50,6 @@ export const assembleProductData = (orderItem: FragmentOf<typeof OrderItemFragme
       path: '', // will be added later
     },
     // NOTE: update later when API is ready
-    defaultImage: null,
     productOptions,
     path: '', // will be added later
     quantity: orderItem.quantity,
@@ -99,7 +99,15 @@ const Price = ({ price }: { price?: PricesType }) => {
     ))
   );
 };
-
+const AnotherComponent = ({ lineItems }: { lineItems: any[] }) => {
+  return (
+    <ul>
+      {lineItems.map(({ name, entityId }) => (
+        <li key={entityId}>{name}</li>
+      ))}
+    </ul>
+  );
+};
 interface Props {
   product: ProductSnippetFragment;
   imageSize?: 'tall' | 'wide' | 'square';
@@ -125,8 +133,8 @@ export const ProductSnippet = ({
   const isImageAvailable = isExtended && defaultImage?.url === 'string';
 
   return (
-    <div className={cn('relative flex flex-col overflow-visible', isExtended && 'flex-row')}>
-      <div className={cn('relative flex justify-center pb-3', isImageAvailable && 'w-1/4')}>
+    <div className={cn('relative flex flex-row gap-[20px] overflow-visible', isExtended && 'flex-row')}>
+      <div className={cn('relative flex justify-center w-[150px]', isImageAvailable && 'w-1/4')}>
         {isImageAvailable && (
           <div
             className={cn('relative flex-auto', {
@@ -151,14 +159,16 @@ export const ProductSnippet = ({
               <span>{t('comingSoon')}</span>
             </div>
           </div>
+         
         )}
+        
       </div>
-      <div className={cn('flex flex-1 flex-col gap-1', isExtended && 'w-3/4')}>
+      <div className={cn('flex flex-1 flex-col gap-1 w-[332px] py-[20px]', isExtended && 'w-3/4')}>
         {brand ? <p className={cn('text-base text-gray-500', brandSize)}>{brand.name}</p> : null}
         {isExtended ? (
           <div className="flex flex-col items-start justify-between md:flex-row">
             <div>
-              <h3 className={cn('text-base font-semibold', productSize)}>
+              <h3 className={cn('text-base font-normal', productSize)}>
                 <Link
                   className="focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-primary/20 focus-visible:ring-0"
                   href={path}
@@ -187,7 +197,7 @@ export const ProductSnippet = ({
             </div>
           </div>
         ) : (
-          <h3 className={cn('text-base font-semibold', productSize)}>
+          <h3 className={cn('text-base font-normal', productSize)}>
             <Link
               className="focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-primary/20 focus-visible:ring-0"
               href={path}
@@ -199,7 +209,9 @@ export const ProductSnippet = ({
         )}
         {!isExtended && (
           <div className="flex flex-wrap items-end justify-between">
-            <Price price={price} />
+            {/* <Price price={price} /> */}
+           <span className='text-base font-semi'>{t('qty')}: {product.quantity}</span> 
+            
           </div>
         )}
       </div>

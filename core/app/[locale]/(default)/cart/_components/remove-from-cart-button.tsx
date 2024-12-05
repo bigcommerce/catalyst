@@ -24,7 +24,7 @@ export const RemoveFromCartButton = ({icon}: Props) => {
         alt="Remove"
         width={20}
         height={20}
-        className="mt-[10px] w-[16px] h-[18px]"
+        className="w-[16px] h-[18px]"
         src={icon}
       />
     </Button>
