@@ -21,6 +21,6 @@ export const fetchCountryByZipcode = async (postalCode: string) => {
 
 export const fetchZipCodeByLatLng = async (lat: any, lng: any) => {
   let sql = await connect();
-  const data = await sql `select * from   country_postal_code_us_ca z where  earth_distance(ll_to_earth((z.latitude), (z.longitude)), ll_to_earth(${lat}, ${lng})) < 100000.0;`;
+  const data = await sql `select * from   country_postal_code_us_ca z where  earth_distance(ll_to_earth((z.latitude), (z.longitude)), ll_to_earth(${lat}, ${lng})) < ${process.env.MILES_RADIUS_IN_METERS};`;
   return data;
 }

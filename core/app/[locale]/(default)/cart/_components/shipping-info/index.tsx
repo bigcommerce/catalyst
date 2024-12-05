@@ -153,6 +153,10 @@ export const ShippingInfo = ({
       let dataFromLatLng = await fetchZipCodeByLatLng(latitude, longitude);
       if(dataFromLatLng?.[0]?.postal_code) {
         setFormValues({ postcode: dataFromLatLng?.[0]?.postal_code || '' });
+      } else {
+        toast.error('The current location is not in the range.', {
+          icon: <AlertCircle className="text-error-secondary" />,
+        });
       }
     }
   }
