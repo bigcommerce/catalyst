@@ -10,6 +10,8 @@ import { MobileSideNav } from '../../_components/mobile-side-nav';
 import { SortBy } from '../../_components/sort-by';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
+import { getSessionCustomerAccessToken } from '~/auth';
+
 import { Breadcrumbs } from '~/components/breadcrumbs';
 
 import Image from 'next/image';
@@ -47,7 +49,6 @@ interface Props {
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params;
   const brandId = Number(params.slug);
-
   const brand = await getBrand({ entityId: brandId });
 
   if (!brand) {
@@ -66,6 +67,9 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function BrandPage(props: Props) {
   const searchParams = await props.searchParams;
   const params = await props.params;
+
+  const customerAccessToken = await getSessionCustomerAccessToken();
+  const useDefaultPrices = !customerAccessToken;
 
   const { slug, locale } = params;
 
@@ -509,7 +513,7 @@ export default async function BrandPage(props: Props) {
         </>
       )}
 
-      <Brand brand={brand} promotions={promotions} />
+      <Brand brand={brand} promotions={promotions} useDefaultPrices={useDefaultPrices} />
     </div>
   );
 }

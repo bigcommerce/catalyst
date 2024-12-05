@@ -1,3 +1,5 @@
+// password-input.tsx
+
 import { FragmentOf } from 'gql.tada';
 import { useTranslations } from 'next-intl';
 import { ChangeEvent } from 'react';

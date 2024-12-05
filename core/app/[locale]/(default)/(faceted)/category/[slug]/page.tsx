@@ -11,6 +11,8 @@ import { MobileSideNav } from '../../_components/mobile-side-nav';
 import { SortBy } from '../../_components/sort-by';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
+import { getSessionCustomerAccessToken } from '~/auth';
+
 import { CategoryViewed } from './_components/category-viewed';
 import { EmptyState } from './_components/empty-state';
 import { SubCategories } from './_components/sub-categories';
@@ -55,6 +57,9 @@ export default async function CategoryPage(props: Props) {
   const searchParams = await props.searchParams;
   const params = await props.params;
 
+  const customerAccessToken = await getSessionCustomerAccessToken();
+  const useDefaultPrices = !customerAccessToken;
+
   const { locale, slug } = params;
 
   setRequestLocale(locale);
@@ -77,7 +82,7 @@ export default async function CategoryPage(props: Props) {
       <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
         <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{category.name}</h1>
       </div>
-      <Category category={category} promotions={promotions} />
+      <Category category={category} promotions={promotions} useDefaultPrices={useDefaultPrices} />
     </div>
   );
 }

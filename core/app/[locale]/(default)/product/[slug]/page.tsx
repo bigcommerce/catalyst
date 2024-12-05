@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
+import { getSessionCustomerAccessToken } from '~/auth';
+
 import { Breadcrumbs } from '~/components/breadcrumbs';
 
 import Promotion from '../../../../../components/ui/pdp/belami-promotion-banner-pdp';
@@ -27,68 +29,11 @@ import { CollectionProducts } from './collection-products';
 //import { SimilarProducts } from './similar-products';
 import { SitevibesReviews } from './sitevibes-reviews';
 
+import { getRelatedProducts, getCollectionProducts } from './fetch-algolia-products';
+
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
-}
-
-/*
-TODO: Move to separate file...
-*/
-const appId = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '';
-const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_API_KEY || '';
-const indexName: string = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || '';
-
-export async function getRelatedProducts(objectId: number) {
-  const response = await fetch(`https://${appId}.algolia.net/1/indexes/*/recommendations`, {
-    method: "POST",
-    credentials: "same-origin",
-    headers: {
-      "x-algolia-application-id": appId,
-      "x-algolia-api-key": apiKey,
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    body: JSON.stringify({
-      "requests": [{
-        "indexName": indexName,
-        "model": "related-products",
-        "objectID": objectId.toString(),
-        "threshold": 0,
-        "maxRecommendations": 18
-      }]
-    }),
-    cache: 'force-cache',
-    //next: { revalidate: 3600 }
-  });
-
-  const data = await response.json();
-
-  return data && data.results && data.results[0]?.hits ? data.results[0]?.hits : [];
-}
-
-export async function getCollectionProducts(collection: string) {
-  const response = await fetch(`https://${appId}.algolia.net/1/indexes/${indexName}/query`, {
-    method: "POST",
-    credentials: "same-origin",
-    headers: {
-      "x-algolia-application-id": appId,
-      "x-algolia-api-key": apiKey,
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    body: JSON.stringify({
-      "filters": `metafields.Akeneo.collection:${collection}`,
-      "length": 6,
-      "offset": 0
-    }),
-    cache: 'force-cache',
-    //next: { revalidate: 3600 }
-  });
-
-  const data = await response.json();
-
-  return data.hits ?? [];
 }
 
 function getOptionValueIds({ searchParams }: { searchParams: Awaited<Props['searchParams']> }) {
@@ -143,12 +88,15 @@ export default async function ProductPage(props: Props) {
   const searchParams = await props.searchParams;
   const params = await props.params;
 
+  const customerAccessToken = await getSessionCustomerAccessToken();
+  const useDefaultPrices = !customerAccessToken;
+
   const { locale, slug } = params;
 
   const bannerIcon = imageManagerImageUrl('example-1.png', '50w');
   const relatedProductArrow = imageManagerImageUrl('vector-8-.png', '30w');
   const galleryExpandIcon = imageManagerImageUrl('vector.jpg', '20w'); // Set galleryExpandIcon here
-  const dropdownSheetIcon = imageManagerImageUrl('icons8-download-symbol-16.png', '20w'); 
+  const dropdownSheetIcon = imageManagerImageUrl('icons8-download-symbol-16.png', '20w');
   setRequestLocale(locale);
 
   const t = await getTranslations('Product');
@@ -162,7 +110,10 @@ export default async function ProductPage(props: Props) {
     optionValueIds,
     useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
   });
-  console.log("Product details=============================:", product);
+
+  const productMpn = product?.mpn;
+
+  console.log('Product MPN===================================:', JSON.stringify(productMpn));
 
   if (!product) {
     return notFound();
@@ -221,7 +172,7 @@ export default async function ProductPage(props: Props) {
           </div>
           <div className="mb-4 mt-4 lg:grid lg:grid-cols-2 lg:gap-8 xl:mb-12">
             <Gallery
-              // noImageText={t('noGalleryText')}
+              productMpn={product.mpn} // Pass MPN from product
               product={product}
               bannerIcon={bannerIcon}
               galleryExpandIcon={galleryExpandIcon} // Pass galleryExpandIcon to Gallery component
@@ -233,7 +184,7 @@ export default async function ProductPage(props: Props) {
             />
             <div className="lg:col-span-2">
               <Description product={product} />
-              <CollectionProducts collection={collectionValue} products={collectionProducts} />
+              <CollectionProducts collection={collectionValue} products={collectionProducts} useDefaultPrices={useDefaultPrices} />
               <Promotion />
               {/*
               <RelatedProducts
@@ -241,7 +192,7 @@ export default async function ProductPage(props: Props) {
                 relatedProductArrow={relatedProductArrow}
               />
               */}
-              <RelatedProducts productId={product.entityId} products={relatedProducts} />
+              <RelatedProducts productId={product.entityId} products={relatedProducts} useDefaultPrices={useDefaultPrices} />
               {/*
               <SimilarProducts productId={product.entityId} />
               */}
@@ -258,6 +209,3 @@ export default async function ProductPage(props: Props) {
     </>
   );
 }
-
-// TODO: Not sure why its not working with this line uncommented... Something needs to be fixed to enable it.
-//export const runtime = 'edge';
