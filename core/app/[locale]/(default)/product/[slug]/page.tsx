@@ -96,7 +96,7 @@ export default async function ProductPage(props: Props) {
   const bannerIcon = imageManagerImageUrl('example-1.png', '50w');
   const relatedProductArrow = imageManagerImageUrl('vector-8-.png', '30w');
   const galleryExpandIcon = imageManagerImageUrl('vector.jpg', '20w'); // Set galleryExpandIcon here
-  const dropdownSheetIcon = imageManagerImageUrl('icons8-download-symbol-16.png', '20w'); 
+  const dropdownSheetIcon = imageManagerImageUrl('icons8-download-symbol-16.png', '20w');
   setRequestLocale(locale);
 
   const t = await getTranslations('Product');
@@ -110,7 +110,10 @@ export default async function ProductPage(props: Props) {
     optionValueIds,
     useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
   });
-  console.log("Product details=============================:", product);
+
+  const productMpn = product.mpn;
+
+  console.log('Product MPN===================================:', JSON.stringify(productMpn));
 
   if (!product) {
     return notFound();
@@ -169,7 +172,7 @@ export default async function ProductPage(props: Props) {
           </div>
           <div className="mb-4 mt-4 lg:grid lg:grid-cols-2 lg:gap-8 xl:mb-12">
             <Gallery
-              // noImageText={t('noGalleryText')}
+              productMpn={product.mpn} // Pass MPN from product
               product={product}
               bannerIcon={bannerIcon}
               galleryExpandIcon={galleryExpandIcon} // Pass galleryExpandIcon to Gallery component
@@ -206,6 +209,3 @@ export default async function ProductPage(props: Props) {
     </>
   );
 }
-
-// TODO: Not sure why its not working with this line uncommented... Something needs to be fixed to enable it.
-//export const runtime = 'edge';
