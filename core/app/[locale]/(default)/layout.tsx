@@ -2,8 +2,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren, Suspense } from 'react';
 
 import { Footer } from '~/components/footer/footer';
-import { Header, HeaderSkeleton } from '~/components/header';
-import { Cart } from '~/components/header/cart';
+import { Header } from '~/components/header';
 
 interface Props extends PropsWithChildren {
   params: Promise<{ locale: string }>;
@@ -16,13 +15,9 @@ export default async function DefaultLayout({ params, children }: Props) {
 
   return (
     <>
-      <Suspense fallback={<HeaderSkeleton />}>
-        <Header cart={<Cart />} />
-      </Suspense>
+      <Header />
 
-      <main className="flex-1 px-4 2xl:container sm:px-10 lg:px-12 2xl:mx-auto 2xl:px-0">
-        {children}
-      </main>
+      <main>{children}</main>
 
       <Suspense>
         <Footer />
@@ -30,3 +25,5 @@ export default async function DefaultLayout({ params, children }: Props) {
     </>
   );
 }
+
+export const experimental_ppr = true;

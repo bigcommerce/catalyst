@@ -78,7 +78,7 @@ export default async function Maintenance({ params }: Props) {
           <p className="flex items-center gap-2">
             <Phone aria-hidden="true" />
             <a
-              className="text-primary hover:text-secondary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
+              className="hover:text-secondary text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
               href={`tel:${contact.phone}`}
             >
               {contact.phone}

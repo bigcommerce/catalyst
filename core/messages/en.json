@@ -1,8 +1,43 @@
 {
   "Home": {
+    "Slideshow": {
+      "Slide01": {
+        "title": "Fresh finds for every occasion",
+        "description": "Explore our latest arrivals, curated to bring you style, functionality, and inspiration. Shop now and discover your next favorite.",
+        "alt": "Five small potted plants displayed on beige stacked blocks, featuring a variety of green foliage in dark gray pots against a neutral background.",
+        "cta": "Shop Now"
+      },
+      "Slide02": {
+        "title": "Discover what's new",
+        "description": "Shop our latest arrivals and find something fresh and exciting for your home.",
+        "alt": "Hands reaching out to hold a green fern in a woven basket with a decorative bow, against a beige background with soft shadows.",
+        "cta": "Shop Now"
+      },
+      "Slide03": {
+        "title": "Something for everyone",
+        "description": "Don’t miss out on exclusive offers across our best-selling products. Shop today and save big on the items you love.",
+        "alt": "Close-up of a vibrant green leaf with perforations, showcasing its smooth texture and natural details.",
+        "cta": "Shop Now"
+      }
+    },
     "Carousel": {
       "featuredProducts": "Featured Products",
       "newestProducts": "Newest products"
+    },
+    "FeaturedProducts": {
+      "title": "Featured collection",
+      "description": "Explore our top picks in this featured collection. Find the perfect gift or treat yourself!",
+      "cta": "View more"
+    },
+    "NewestProducts": {
+      "title": "New arrivals",
+      "description": "Our latest products are here. Check out what's new in store.",
+      "cta": "See all"
+    },
+    "BestSellingProducts": {
+      "title": "Our best sellers",
+      "description": "Our best selling products are here. Check out what's popular in store.",
+      "cta": "See all"
     }
   },
   "ChangePassword": {
@@ -40,7 +75,7 @@
       "fastCheckout": "Check out faster",
       "multipleAddresses": "Save multiple shipping addresses",
       "ordersHistory": "Access your order history",
-      "ordersTracking":  "Track new orders",
+      "ordersTracking": "Track new orders",
       "wishlists": "Save items to your Wishlist",
       "createLink": "Create Account "
     },
@@ -57,7 +92,7 @@
         "submit": "Reset password"
       },
       "Errors": {
-        "error":"Unknown error."
+        "error": "Unknown error."
       }
     }
   },
@@ -206,13 +241,13 @@
       "submitting": "Update settings...",
       "successMessage": "Your account settings have been updated",
       "validationMessages": {
-          "email": "Enter a valid email such as name@domain.com",
-          "empty": "This field can not be empty",
-          "firstName": "Enter your first name",
-          "lastName": "Enter your last name",
-          "city": "Enter a suburb / city",
-          "company": "Enter a company name",
-          "phone": "Enter a phone number"
+        "email": "Enter a valid email such as name@domain.com",
+        "empty": "This field can not be empty",
+        "firstName": "Enter your first name",
+        "lastName": "Enter your last name",
+        "city": "Enter a suburb / city",
+        "company": "Enter a company name",
+        "phone": "Enter a phone number"
       },
       "ChangePassword": {
         "title": "Change password",
@@ -335,8 +370,7 @@
       }
     },
     "AddToCart": {
-      "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-      "error": "Error adding product to cart. Please try again."
+      "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>"
     }
   },
   "Product": {
@@ -344,9 +378,14 @@
     "Carousel": {
       "relatedProducts": "Related products"
     },
+    "Gallery": {
+      "previous": "Previous product image",
+      "next": "Next product image",
+      "thumbnailNavigation": "Thumbnail navigation",
+      "enlarge": "Enlarge product image"
+    },
     "Form": {
       "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-      "error": "Error adding product to cart. Please try again.",
       "saveToWishlist": "Save to wishlist",
       "quantityLabel": "Quantity"
     },
@@ -426,6 +465,11 @@
   },
   "Components": {
     "Header": {
+      "Icons": {
+        "Account": "Profile",
+        "Cart": "Cart",
+        "Search": "Search"
+      },
       "Account": {
         "account": "Account",
         "myAccount": "My account",
@@ -437,7 +481,34 @@
       "LocaleSwitcher": {
         "chooseCountryAndLanguage": "Choose your country and language",
         "goToSite": "Go to site"
+      },
+      "MiniCart": {
+        "cart": "Cart",
+        "items": "Cart Items"
+      },
+      "Navigation": {
+        "toggle": "Toggle navigation",
+        "navigationMenu": "Navigation menu"
+      },
+      "Search": {
+        "openSearchPopup": "Open search popup",
+        "closeSearchPopup": "Close search popup",
+        "searchBar": "Search bar",
+        "photo": "Photo",
+        "products": "Products",
+        "categories": "Categories",
+        "brands": "Brands",
+        "noSearchResults": "Sorry, no results for \"{term}\".",
+        "searchPlaceholder": "Search...",
+        "clearSearch": "Clear search",
+        "processing": "Processing..."
       }
+    },
+    "Footer": {
+      "socialMediaLinks": "Social media links"
+    },
+    "Breadcrumb": {
+      "breadcrumb": "Breadcrumb"
     },
     "Compare": {
       "compareButton": "Compare ({products})",
@@ -448,22 +519,45 @@
       "searchProducts": "Search for products",
       "searchPlaceholder": "Search...",
       "search": "Search",
-      "noSearchResults": "Sorry, no results for {term}.",
+      "noSearchResults": "Sorry, no results for \"{term}\".",
       "checkSpelling": "Please check the spelling or try another search."
     },
     "AddToCartButton": {
       "addToCart": "Add to cart",
-      "outOfStock": "Out of stock", 
+      "outOfStock": "Out of stock",
       "preorder": "Preorder",
       "unavailable": "Unavailable",
       "processing": "Processing..."
     },
     "ProductCard": {
+      "Compare": {
+        "compare": "Compare"
+      },
       "AddToCart": {
         "viewOptions": "View options",
-        "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-        "error": "Error adding product to cart. Please try again."
+        "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>"
       }
+    },
+    "Slideshow": {
+      "slideshow": "Interactive slide show",
+      "slide": "Slide",
+      "previousSlide": "Previous slide",
+      "nextSlide": "Next slide",
+      "slideNo": "{n} of {total}",
+      "pause": "Pause slideshow",
+      "play": "Play slideshow"
+    },
+    "Pagination": {
+      "pagination": "Pagination",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "Carousel": {
+      "carousel": "Carousel",
+      "previousProducts": "Previous products",
+      "nextProducts": "Next products",
+      "slides": "Slides",
+      "goto": "Go to slide {n}"
     },
     "FormFields": {
       "Validation": {
@@ -482,6 +576,10 @@
         "password": "Enter a password",
         "phone": "Enter a phone number",
         "postalCode": "Enter a zip / postcode"
+      },
+      "Counter": {
+        "increase": "Increase count",
+        "decrease": "Decrease count"
       }
     }
   }

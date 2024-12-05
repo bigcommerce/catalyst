@@ -80,5 +80,5 @@ test('Search not found', async ({ page }) => {
 
   await searchBox.fill('flora & fauna');
 
-  await expect(page.getByText('No products matched with "flora & fauna"')).toBeVisible();
+  await expect(page.getByText('Sorry, no results for "flora & fauna".')).toBeVisible();
 });

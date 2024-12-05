@@ -24,12 +24,10 @@ export default async function Settings() {
   }
 
   return (
-    <>
+    <div className="mx-auto lg:w-2/3">
       <TabHeading heading="settings" />
-      <div className="mx-auto lg:w-2/3">
-        <UpdateSettingsForm {...customerSettings} />
-      </div>
-    </>
+      <UpdateSettingsForm {...customerSettings} />
+    </div>
   );
 }
 

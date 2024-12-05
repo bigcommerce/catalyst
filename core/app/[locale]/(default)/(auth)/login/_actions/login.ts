@@ -1,18 +1,27 @@
 'use server';
 
-import { unstable_rethrow as rethrow } from 'next/navigation';
-import { getLocale } from 'next-intl/server';
+import { SubmissionResult } from '@conform-to/react';
+import { parseWithZod } from '@conform-to/zod';
+import { getLocale, getTranslations } from 'next-intl/server';
 
+import { schema } from '@/vibes/soul/sections/sign-in-section/schema';
 import { Credentials, signIn } from '~/auth';
 import { redirect } from '~/i18n/routing';
 
-export const login = async (_previousState: unknown, formData: FormData) => {
-  try {
-    const locale = await getLocale();
+export const login = async (_lastResult: SubmissionResult | null, formData: FormData) => {
+  const locale = await getLocale();
+  const t = await getTranslations('Login');
 
+  const submission = parseWithZod(formData, { schema });
+
+  if (submission.status !== 'success') {
+    return submission.reply({ formErrors: [t('Form.error')] });
+  }
+
+  try {
     const credentials = Credentials.parse({
-      email: formData.get('email'),
-      password: formData.get('password'),
+      email: submission.value.email,
+      password: submission.value.password,
     });
 
     await signIn('credentials', {
@@ -21,13 +30,9 @@ export const login = async (_previousState: unknown, formData: FormData) => {
       // follows basePath and trailing slash configurations.
       redirect: false,
     });
-
-    redirect({ href: '/account', locale });
-  } catch (error: unknown) {
-    rethrow(error);
-
-    return {
-      status: 'error',
-    };
+  } catch {
+    return submission.reply({ formErrors: [t('Form.error')] });
   }
+
+  return redirect({ href: '/account', locale });
 };

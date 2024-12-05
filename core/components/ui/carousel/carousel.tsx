@@ -1,5 +1,6 @@
 import useEmblaCarousel, { UseEmblaCarouselType } from 'embla-carousel-react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { ReactNode, useCallback, useEffect, useId, useMemo, useState } from 'react';
 
 import { cn } from '~/lib/utils';
@@ -22,6 +23,8 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
     loop: true,
     axis: 'x',
   });
+
+  const t = useTranslations('Components.Carousel');
 
   const groupedProducts = useMemo(() => {
     return products.reduce<ReactNode[][]>((batches, _, index) => {
@@ -98,7 +101,7 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
   return (
     <div
       aria-labelledby={titleId}
-      aria-roledescription="carousel"
+      aria-roledescription={t('carousel')}
       className={cn('relative', className)}
       onKeyDownCapture={handleKeyDown}
       role="region"
@@ -110,7 +113,7 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
         </h2>
         <span className="no-wrap flex">
           <button
-            aria-label="Previous products"
+            aria-label={t('previousProducts')}
             className={cn(
               'inline-flex h-12 w-12 items-center justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:text-gray-400',
               api?.scrollSnapList().length === 1 && 'hidden',
@@ -119,11 +122,11 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
             onClick={scrollPrev}
           >
             <ArrowLeft />
-            <span className="sr-only">Previous slide</span>
+            <span className="sr-only">{t('previousProducts')}</span>
           </button>
 
           <button
-            aria-label="Next products"
+            aria-label={t('nextProducts')}
             className={cn(
               'inline-flex h-12 w-12 items-center justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:text-gray-400',
               api?.scrollSnapList().length === 1 && 'hidden',
@@ -132,7 +135,7 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
             onClick={scrollNext}
           >
             <ArrowRight />
-            <span className="sr-only">Next slide</span>
+            <span className="sr-only">{t('nextProducts')}</span>
           </button>
         </span>
       </div>
@@ -158,7 +161,7 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
       </div>
 
       <div
-        aria-label="Slides"
+        aria-label={t('slides')}
         className={cn(
           'no-wrap absolute bottom-1 flex w-full items-center justify-center gap-2',
           api?.scrollSnapList().length === 1 && 'hidden',
@@ -168,7 +171,7 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
         {groupedProducts.map((_, index) => (
           <button
             aria-controls={`${id}-slide-${index + 1}`}
-            aria-label={`Go to slide ${index + 1}`}
+            aria-label={t('goto', { n: index + 1 })}
             aria-selected={selectedSnapIndex === index}
             className={cn(
               "h-7 w-7 p-0.5 after:block after:h-0.5 after:w-full after:bg-gray-400 after:content-[''] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20",
