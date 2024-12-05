@@ -1,34 +1,26 @@
 'use client';
 
-import Image from 'next/image';
-import { ComponentPropsWithRef } from 'react';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import Image, { ImageProps } from 'next/image';
 
 import bcCdnImageLoader from '~/lib/cdn-image-loader';
 
-type NextImageProps = Omit<ComponentPropsWithRef<typeof Image>, 'quality'>;
+const cdnHostname = process.env.BIGCOMMERCE_CDN_HOSTNAME ?? 'cdn11.bigcommerce.com';
 
-interface BcImageOptions {
-  lossy?: boolean;
+function shouldUseLoaderProp(props: ImageProps): boolean {
+  return typeof props.src === 'string' && props.src.startsWith(`https://${cdnHostname}`);
 }
 
-type Props = NextImageProps & BcImageOptions;
-
 /**
- * This `<BcImage>` component is a wrapper for Next's `<Image>` component, designed to
- * specifically handle images that are served from the BigCommerce CDN. It makes the
- * assumption that it has been supplied with a `urlTemplate` field from GraphQL, which
- *  contains a `{:size}` placeholder that will be replaced with the appropriate width
- * and height values. It also adds a `compression` query parameter based on the `lossy`
- * prop, which defaults to `true`.
- *
- * This component can be used in place of Next's `Image` component for images from the
+ * This component should be used in place of Next's `Image` component for images from the
  * BigCommerce platform, which will reduce load on the Next.js application for image assets.
  *
- * This has been forked from the `Image` component to ensure the developer experience of
- * `Image` is unaffected for other use cases.
+ * It defaults to use the default loader in Next.js if it's an image not from the BigCommerce CDN.
  *
  * @returns {React.ReactElement} The `<BcImage>` component
  */
-export const BcImage = ({ ...props }: Props) => {
-  return <Image loader={bcCdnImageLoader} {...props} />;
+export const BcImage = ({ ...props }: ImageProps) => {
+  const loader = shouldUseLoaderProp(props) ? bcCdnImageLoader : undefined;
+
+  return <Image loader={loader} {...props} />;
 };

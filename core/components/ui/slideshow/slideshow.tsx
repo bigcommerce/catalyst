@@ -1,9 +1,10 @@
 import useEmblaCarousel from 'embla-carousel-react';
 import { ArrowLeft, ArrowRight, Pause, Play } from 'lucide-react';
-import NextImage, { StaticImageData } from 'next/image';
+import { StaticImageData } from 'next/image';
 import { useTranslations } from 'next-intl';
 import { useEffect, useReducer, useState } from 'react';
 
+import { BcImage } from '~/components/bc-image';
 import { cn } from '~/lib/utils';
 
 import { Button } from '../button';
@@ -116,7 +117,7 @@ const Slideshow = ({ className, interval = 15_000, slides }: Props) => {
             >
               <div className="relative">
                 {slide.image && (
-                  <NextImage
+                  <BcImage
                     alt={slide.image.altText}
                     blurDataURL={slide.image.blurDataUrl}
                     className="absolute -z-10 object-cover"
