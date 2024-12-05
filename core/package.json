@@ -15,6 +15,7 @@
   "dependencies": {
     "@bigcommerce/catalyst-client": "workspace:^",
     "@conform-to/react": "^1.2.2",
+    "@conform-to/zod": "^1.2.2",
     "@icons-pack/react-simple-icons": "^10.2.0",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-alert-dialog": "^1.1.3",
