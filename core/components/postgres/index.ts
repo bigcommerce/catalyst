@@ -5,7 +5,7 @@ let dbConnect: any;
 
 export async function connect() {
   if(!dbConnect) {
-    let dbUrl: any = process.env.DATABASE_URL;
+    let dbUrl: any = process.env.DATABASE_URL_BELAMI;
     const sql = neon(dbUrl);
     return sql;
   } else {
