@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren, useEffect } from 'react';
 
 import { ExistingResultType } from '~/client/util';
 import { Link } from '~/components/link';
@@ -12,7 +12,6 @@ import { useRouter } from '~/i18n/routing';
 import { useAccountStatusContext } from '../../_components/account-status-provider';
 import { Modal } from '../../_components/modal';
 import { deleteAddress } from '../_actions/delete-address';
-import { SearchParams } from '../page';
 import { getCustomerAddresses } from '../page-data';
 
 export type Addresses = ExistingResultType<typeof getCustomerAddresses>['addresses'];
@@ -20,28 +19,19 @@ export type Addresses = ExistingResultType<typeof getCustomerAddresses>['address
 interface AddressChangeProps {
   addressId: number;
   isAddressRemovable: boolean;
-  onDelete: (addresses: Addresses) => void;
-  searchParams: SearchParams;
 }
 
-const AddressChangeButtons = ({
-  addressId,
-  isAddressRemovable,
-  onDelete,
-  searchParams,
-}: AddressChangeProps) => {
+const AddressChangeButtons = ({ addressId, isAddressRemovable }: AddressChangeProps) => {
   const { setAccountState } = useAccountStatusContext();
   const t = useTranslations('Account.Addresses');
 
   const handleDeleteAddress = async () => {
-    const result = await deleteAddress(addressId, searchParams);
+    const submit = await deleteAddress(addressId);
 
-    if (result.status === 'success' && result.addresses) {
-      onDelete(result.addresses);
-
+    if (submit.status === 'success') {
       setAccountState({
         status: 'success',
-        message: result.message || '',
+        message: submit.message || '',
       });
     }
   };
@@ -67,29 +57,22 @@ const AddressChangeButtons = ({
 interface AddressBookProps {
   customerAddresses: Addresses;
   addressesCount: number;
-  hasPreviousPage: boolean;
-  startCursor: string | null;
-  searchParams: SearchParams;
 }
 
 export const AddressBook = ({
   children,
   addressesCount,
   customerAddresses,
-  hasPreviousPage,
-  startCursor,
-  searchParams,
 }: PropsWithChildren<AddressBookProps>) => {
   const t = useTranslations('Account.Addresses');
-  const [addressBook, setAddressBook] = useState(customerAddresses);
   const { accountState } = useAccountStatusContext();
   const router = useRouter();
 
   useEffect(() => {
-    if (addressBook.length === 0 && hasPreviousPage) {
-      router.push(`/account/addresses/?before=${startCursor}`);
+    if (customerAddresses.length === 0) {
+      router.push(`/account/addresses/`);
     }
-  }, [addressBook, hasPreviousPage, startCursor, router]);
+  }, [customerAddresses, router]);
 
   return (
     <>
@@ -100,7 +83,7 @@ export const AddressBook = ({
       )}
       {!addressesCount && <p className="border-t py-12 text-center">{t('emptyAddresses')}</p>}
       <ul className="mb-12">
-        {addressBook.map(
+        {customerAddresses.map(
           ({
             entityId,
             firstName,
@@ -127,12 +110,7 @@ export const AddressBook = ({
                 </p>
                 <p>{countryCode}</p>
               </div>
-              <AddressChangeButtons
-                addressId={entityId}
-                isAddressRemovable={addressesCount > 1}
-                onDelete={setAddressBook}
-                searchParams={searchParams}
-              />
+              <AddressChangeButtons addressId={entityId} isAddressRemovable={addressesCount > 1} />
             </li>
           ),
         )}

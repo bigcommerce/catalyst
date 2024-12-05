@@ -8,14 +8,12 @@ import { TabHeading } from '../_components/tab-heading';
 import { AddressBook } from './_components/address-book';
 import { getCustomerAddresses } from './page-data';
 
-export interface SearchParams {
-  [key: string]: string | string[] | undefined;
-  before?: string;
-  after?: string;
-}
-
 interface Props {
-  searchParams: Promise<SearchParams>;
+  searchParams: Promise<{
+    [key: string]: string | string[] | undefined;
+    before?: string;
+    after?: string;
+  }>;
 }
 
 export async function generateMetadata() {
@@ -44,14 +42,7 @@ export default async function Addresses({ searchParams }: Props) {
   return (
     <>
       <TabHeading heading="addresses" />
-      <AddressBook
-        addressesCount={addressesCount}
-        customerAddresses={addresses}
-        hasPreviousPage={hasPreviousPage}
-        key={startCursor}
-        searchParams={{ before, after }}
-        startCursor={startCursor}
-      >
+      <AddressBook addressesCount={addressesCount} customerAddresses={addresses} key={endCursor}>
         <Pagination
           className="my-0 inline-flex justify-center text-center"
           endCursor={endCursor ?? undefined}

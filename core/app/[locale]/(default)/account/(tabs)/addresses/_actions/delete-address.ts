@@ -8,13 +8,6 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 
 import { State } from '../../settings/change-password/_actions/change-password';
-import { Addresses } from '../_components/address-book';
-import { SearchParams } from '../page';
-import { getCustomerAddresses } from '../page-data';
-
-interface DeleteAddressResponse extends State {
-  addresses?: Addresses;
-}
 
 const DeleteCustomerAddressMutation = graphql(`
   mutation DeleteCustomerAddressMutation(
@@ -39,13 +32,9 @@ const DeleteCustomerAddressMutation = graphql(`
   }
 `);
 
-export const deleteAddress = async (
-  addressId: number,
-  searchParams?: SearchParams,
-): Promise<DeleteAddressResponse> => {
+export const deleteAddress = async (addressId: number): Promise<State> => {
   const t = await getTranslations('Account.Addresses.Delete');
   const customerAccessToken = await getSessionCustomerAccessToken();
-  const { before, after } = searchParams || {};
 
   try {
     const response = await client.fetch({
@@ -64,16 +53,7 @@ export const deleteAddress = async (
     revalidatePath('/account/addresses', 'page');
 
     if (result.errors.length === 0) {
-      const updatedData = await getCustomerAddresses({
-        ...(after && { after }),
-        ...(before && { before }),
-      });
-
-      return {
-        status: 'success',
-        message: t('success'),
-        addresses: updatedData?.addresses || [],
-      };
+      return { status: 'success', message: t('success') };
     }
 
     return {
