@@ -28,6 +28,7 @@
     "@conform-to/zod": "^1.2.2",
     "@icons-pack/react-simple-icons": "^10.1.0",
     "@makeswift/runtime": "^0.21.3",
+    "@neondatabase/serverless": "^0.10.4",
     "@radix-ui/react-accordion": "^1.2.1",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-checkbox": "^1.1.2",

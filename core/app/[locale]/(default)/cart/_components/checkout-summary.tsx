@@ -87,19 +87,15 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
 
       <CouponCode checkout={checkout} />
 
-
-      <div className="flex justify-between">
+      {/*<div className="flex justify-between">
         <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
         You Save
         </span>
 
         <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
-          {format.number(subtotal?.value || 0, {
-            style: 'currency',
-            currency: cart?.currencyCode,
-          })}
+          
         </span>
-      </div>
+      </div>*/}
 
       <div className="flex justify-between">
         <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
@@ -113,15 +109,12 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
         </span>
       </div>
 
-      <div className="flex justify-between">
+      {/*<div className="flex justify-between">
         <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
         Shipping
         </span>
         <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
-          {format.number(subtotal?.value || 0, {
-            style: 'currency',
-            currency: cart?.currencyCode,
-          })}
+         
         </span>
       </div>
 
@@ -132,10 +125,7 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
         Freight & Handling
         </span>
         <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
-          {format.number(subtotal?.value || 0, {
-            style: 'currency',
-            currency: cart?.currencyCode,
-          })}
+          
         </span>
       </div>
 
@@ -146,12 +136,9 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
         Destination Surcharge
         </span>
         <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
-          {format.number(subtotal?.value || 0, {
-            style: 'currency',
-            currency: cart?.currencyCode,
-          })}
+         
         </span>
-      </div>
+      </div>*/}
       
       {taxTotal && (
         <div className="flex justify-between">
