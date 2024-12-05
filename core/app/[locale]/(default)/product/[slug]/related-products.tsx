@@ -32,7 +32,8 @@ type DynamicObject = {
 const searchColorsHEX: DynamicObject = searchColors;
 
 //const useDefaultPrices = process.env.NEXT_PUBLIC_USE_DEFAULT_PRICES === 'true';
-const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
+//const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
+const useAsyncMode = false;
 
 interface Props {
   productId: number,
