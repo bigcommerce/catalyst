@@ -18,16 +18,24 @@ export const HeaderSection = forwardRef<React.ComponentRef<'div'>, Props>(
     const [isFloating, setIsFloating] = useState(false);
 
     useEffect(() => {
-      if (bannerElement) {
-        setBannerHeight(bannerElement.getBoundingClientRect().height);
-      }
+      if (!bannerElement) return;
+
+      const resizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
+        entries.forEach((entry) => {
+          setBannerHeight(entry.contentRect.height);
+        });
+      });
+
+      resizeObserver.observe(bannerElement);
+
+      return () => {
+        resizeObserver.disconnect();
+      };
     }, [bannerElement]);
 
     return (
       <div ref={ref}>
-        {banner && (
-          <Banner ref={setBannerElement} {...banner} onDismiss={() => setBannerHeight(0)} />
-        )}
+        {banner && <Banner ref={setBannerElement} {...banner} />}
         <Headroom
           onUnfix={() => setIsFloating(false)}
           onUnpin={() => setIsFloating(true)}

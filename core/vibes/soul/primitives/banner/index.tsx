@@ -7,11 +7,13 @@ import { ForwardedRef, forwardRef, ReactNode, useCallback, useEffect, useState }
 export const Banner = forwardRef(
   (
     {
+      id,
       children,
       hideDismiss = false,
       className,
       onDismiss,
     }: {
+      id: string;
       children: ReactNode;
       hideDismiss?: boolean;
       className?: string;
@@ -22,16 +24,16 @@ export const Banner = forwardRef(
     const [banner, setBanner] = useState({ dismissed: false, initialized: false });
 
     useEffect(() => {
-      const hidden = localStorage.getItem('hidden-banner') === 'true';
+      const hidden = localStorage.getItem(`${id}-hidden-banner`) === 'true';
 
       setBanner({ dismissed: hidden, initialized: true });
-    }, []);
+    }, [id]);
 
     const hideBanner = useCallback(() => {
       setBanner((prev) => ({ ...prev, dismissed: true }));
-      localStorage.setItem('hidden-banner', 'true');
+      localStorage.setItem(`${id}-hidden-banner`, 'true');
       onDismiss?.();
-    }, [onDismiss]);
+    }, [id, onDismiss]);
 
     if (!banner.initialized) return null;
 
