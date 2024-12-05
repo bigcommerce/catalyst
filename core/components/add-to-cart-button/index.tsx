@@ -20,8 +20,11 @@ export const AddToCartButton = ({
 }) => {
   const t = useTranslations('Components.AddToCartButton');
 
+  const noParentOrVariantStock =
+    !product.inventory.isInStock && !product.inventory.hasVariantInventory;
+
   const isProductDisabled =
-    product.availabilityV2.status === 'Unavailable' || !product.inventory.isInStock;
+    product.availabilityV2.status === 'Unavailable' || noParentOrVariantStock;
 
   const buttonText = () => {
     if (product.availabilityV2.status === 'Unavailable') {
@@ -32,7 +35,7 @@ export const AddToCartButton = ({
       return t('preorder');
     }
 
-    if (!product.inventory.isInStock) {
+    if (noParentOrVariantStock) {
       return t('outOfStock');
     }
 
