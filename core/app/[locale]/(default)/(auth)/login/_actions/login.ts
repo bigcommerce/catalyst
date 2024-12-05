@@ -2,7 +2,6 @@
 
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { isRedirectError } from 'next/dist/client/components/redirect';
 import { getLocale, getTranslations } from 'next-intl/server';
 
 import { schema } from '@/vibes/soul/sections/sign-in-section/schema';
@@ -32,14 +31,9 @@ export const login = async (_lastResult: SubmissionResult | null, formData: Form
       // follows basePath and trailing slash configurations.
       redirect: false,
     });
-
-    return redirect({ href: '/account', locale });
-  } catch (error) {
-    // We need to throw this error to trigger the redirect as Next.js uses error boundaries to redirect.
-    if (isRedirectError(error)) {
-      throw error;
-    }
-
+  } catch {
     return submission.reply({ formErrors: [t('Form.error')] });
   }
+
+  return redirect({ href: '/account', locale });
 };
