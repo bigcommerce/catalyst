@@ -1,7 +1,7 @@
 'use client';
 
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import Image, { ImageProps } from 'next/image';
+import NextImage, { ImageProps } from 'next/image';
 
 import bcCdnImageLoader from '~/lib/cdn-image-loader';
 
@@ -17,10 +17,10 @@ function shouldUseLoaderProp(props: ImageProps): boolean {
  *
  * It defaults to use the default loader in Next.js if it's an image not from the BigCommerce CDN.
  *
- * @returns {React.ReactElement} The `<BcImage>` component
+ * @returns {React.ReactElement} The `<Image>` component
  */
-export const BcImage = ({ ...props }: ImageProps) => {
+export const Image = ({ ...props }: ImageProps) => {
   const loader = shouldUseLoaderProp(props) ? bcCdnImageLoader : undefined;
 
-  return <Image loader={loader} {...props} />;
+  return <NextImage loader={loader} {...props} />;
 };

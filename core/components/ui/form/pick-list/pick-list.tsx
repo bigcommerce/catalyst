@@ -1,7 +1,7 @@
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import { ComponentPropsWithRef, ElementRef, forwardRef, useId } from 'react';
 
-import { BcImage } from '~/components/bc-image';
+import { Image } from '~/components/image';
 import { cn } from '~/lib/utils';
 
 import { Label } from '../label';
@@ -43,7 +43,7 @@ const PickList = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
               onMouseEnter={onMouseEnter}
             >
               {image && (
-                <BcImage
+                <Image
                   alt={image.altText}
                   className="me-6"
                   height={48}

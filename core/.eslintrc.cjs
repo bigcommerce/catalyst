@@ -31,7 +31,7 @@ const config = {
             name: 'next/image',
             importNames: ['default'],
             message:
-              "Please import 'BcImage' from '~/components/bc-image' instead. This component handles CDN and static image optimization.",
+              "Please import 'Image' from '~/components/image' instead. This component handles CDN and static image optimization.",
           },
           {
             name: '~/i18n/routing',
