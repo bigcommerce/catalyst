@@ -7,6 +7,7 @@ import { CouponCodeFragment } from './coupon-code/fragment';
 import { ShippingEstimator } from './shipping-estimator';
 import { GeographyFragment, ShippingEstimatorFragment } from './shipping-estimator/fragment';
 import { getShippingCountries } from './shipping-estimator/get-shipping-countries';
+import { ChevronDown } from 'lucide-react';
 
 const MoneyFieldsFragment = graphql(`
   fragment MoneyFields on Money {
@@ -84,18 +85,8 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
         </div>
       )}
 
-<div className="flex justify-between">
-        <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
-        Coupon: COUPON
-        </span>
+      <CouponCode checkout={checkout} />
 
-        <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
-          {format.number(subtotal?.value || 0, {
-            style: 'currency',
-            currency: cart?.currencyCode,
-          })}
-        </span>
-      </div>
 
       <div className="flex justify-between">
         <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
@@ -162,9 +153,6 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
         </span>
       </div>
       
-
-      <CouponCode checkout={checkout} />
-
       {taxTotal && (
         <div className="flex justify-between">
           <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
@@ -187,6 +175,13 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
             currency: cart?.currencyCode,
           })}
         </span>
+      </div>
+
+      <div className='border-y border-y-[#cccbcb] flex justify-between items-center mb-[2rem] p-[5px]'>
+        <div className='font-normal text-[14px] leading-[24px] tracking-[0.25px]'>
+          Add a coupon or gift card
+        </div>
+        <ChevronDown />
       </div>
     </>
   );

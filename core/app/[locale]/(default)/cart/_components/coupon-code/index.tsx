@@ -90,9 +90,9 @@ export const CouponCode = ({ checkout }: Props) => {
   };
 
   return selectedCoupon ? (
-    <div className="flex flex-col gap-2 border-t border-t-gray-200 py-4">
+    <div className="flex flex-col gap-2">
       <div className="flex justify-between">
-        <span className="font-semibold">
+        <span className="font-normal">
           {t('coupon')} ({selectedCoupon.code})
         </span>
         <span>
@@ -109,12 +109,12 @@ export const CouponCode = ({ checkout }: Props) => {
       </form>
     </div>
   ) : (
-    <div className="flex flex-col gap-2 border-t border-t-gray-200 py-4">
+    <div className="flex flex-col gap-2">
       <div className="flex justify-between">
-        <span className="font-semibold">{t('couponCode')}</span>
+        <span className="font-normal">{t('couponCode')}</span>
         <Button
           aria-controls="coupon-code-form"
-          className="w-fit p-0 text-primary hover:bg-transparent"
+          className="w-fit p-0 text-primary font-normal hover:bg-transparent"
           onClick={() => setShowAddCoupon((open) => !open)}
           variant="subtle"
         >

@@ -360,7 +360,7 @@
       "spinnerText": "Removing...",
       "couponCodeRemoveFailed": "There was an error removing the coupon code. Please try again.",
       "tax": "Tax",
-      "grandTotal": "Grand total",
+      "grandTotal": "Total",
       "shipping": "Shipping",
       "shippingCost": "Shipping cost",
       "handlingCost": "Handling cost",
