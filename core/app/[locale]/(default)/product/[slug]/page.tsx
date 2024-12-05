@@ -135,7 +135,7 @@ export default async function ProductPage(props: Props) {
 
   const category = removeEdgesAndNodes(product.categories).at(0);
   if (category?.breadcrumbs?.edges) {
-    category.breadcrumbs.edges.push({ node: { name: product?.sku, path: '#' } });
+    category.breadcrumbs.edges.push({ node: { name: product?.mpn, path: '#' } });
   }
 
   return (
@@ -150,7 +150,7 @@ export default async function ProductPage(props: Props) {
 
             <div className="items-center space-x-1 text-center lg:text-left xl:text-left">
               <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-                SKU: <span>{product.sku}</span>
+                SKU: <span>{product.mpn}</span>
               </span>
               <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
                 by{' '}
@@ -163,7 +163,7 @@ export default async function ProductPage(props: Props) {
                 <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
                   from the{' '}
                   <span className="products-underline border-b border-black">
-                    {collectionValue}
+                    {collectionValue} {' '} Family 
                   </span>
                 </span>
               )}

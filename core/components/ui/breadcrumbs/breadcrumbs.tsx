@@ -26,7 +26,7 @@ const Breadcrumbs = ({ breadcrumbs, className }: Props) => {
               Home
             </CustomLink>
           </li>
-          <span className="mx-1"> / </span>
+          <span className="mx-1">  {'>'} </span>
         </Fragment>
         {breadcrumbs.map(({ label, href, color, fontWeight }, i, arr) => {
           const isLast = arr.length - 1 === i;
@@ -52,7 +52,7 @@ const Breadcrumbs = ({ breadcrumbs, className }: Props) => {
               </li>
               {!isLast ? (
                 <span className="mx-1">
-              {/* {'>'} */}
+              {'>'}
                 </span>
               ) : null}
             </Fragment>

@@ -6,7 +6,9 @@
   position: relative;
   top: -10px;
 }
-
+.modal-open .no-scrollbar.h-full.justify-start.bg-\[\#F3F4F5\] {
+  display: none;
+}
 :root {
   --font-variation-settings-body: 'slnt' 0;
   --font-variation-settings-heading: 'slnt' 0;

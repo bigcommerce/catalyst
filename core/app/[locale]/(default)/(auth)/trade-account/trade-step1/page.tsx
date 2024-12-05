@@ -68,13 +68,13 @@ export interface RegisterForm1Props {
 
 const breadcrumbs = [
   {
-    label: 'Apply >',
+    label: 'Apply',
     href: '/trade-account/trade-step1',
     color: '#008BB7',
     fontWeight: '600', 
   },
   {
-    label: 'Business Details >',
+    label: 'Business Details',
     href: '/trade-account/trade-step2',
     color: '#000000',
     fontWeight: '400',
