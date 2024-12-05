@@ -10,6 +10,8 @@ import { MobileSideNav } from '../../_components/mobile-side-nav';
 import { SortBy } from '../../_components/sort-by';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
+import { getSessionCustomerAccessToken } from '~/auth';
+
 import { Breadcrumbs } from '~/components/breadcrumbs';
 
 import Image from 'next/image';
@@ -32,6 +34,8 @@ import image2 from '~/public/brand/image2.svg';
 
 import { getBrand } from './page-data';
 
+import { getPromotions } from '../../fetch-promotions';
+
 import { Brand } from './brand';
 
 interface Props {
@@ -42,40 +46,9 @@ interface Props {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-/*
-TODO: Move to separate file...
-*/
-const storeHash = process.env.BIGCOMMERCE_STORE_HASH;
-const client = process.env.BIGCOMMERCE_API_CLIENT || '';
-const tokenRest = process.env.BIGCOMMERCE_ACCESS_TOKEN || '';
-const channelId = process.env.BIGCOMMERCE_CHANNEL_ID;
-
-export async function getPromotions() {
-  const response = await fetch(
-    `https://api.bigcommerce.com/stores/${storeHash}/v3/promotions?channels=${channelId}&sort=priority&status=ENABLED&redemption_type=AUTOMATIC`,
-    {
-      method: 'GET',
-      credentials: 'same-origin',
-      headers: {
-        'X-Auth-Client': client,
-        'X-Auth-Token': tokenRest,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      cache: 'force-cache',
-      //next: { revalidate: 3600 }
-    },
-  );
-
-  const data = await response.json();
-
-  return data.data;
-}
-
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params;
   const brandId = Number(params.slug);
-
   const brand = await getBrand({ entityId: brandId });
 
   if (!brand) {
@@ -94,6 +67,9 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function BrandPage(props: Props) {
   const searchParams = await props.searchParams;
   const params = await props.params;
+
+  const customerAccessToken = await getSessionCustomerAccessToken();
+  const useDefaultPrices = !customerAccessToken;
 
   const { slug, locale } = params;
 
@@ -537,7 +513,7 @@ export default async function BrandPage(props: Props) {
         </>
       )}
 
-      <Brand brand={brand} promotions={promotions} />
+      <Brand brand={brand} promotions={promotions} useDefaultPrices={useDefaultPrices} />
     </div>
   );
 }

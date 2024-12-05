@@ -7,7 +7,7 @@ import {
   autocomplete,
   getAlgoliaResults,
   getAlgoliaFacets,
-  AutocompleteComponents,
+  AutocompleteComponents
 } from '@algolia/autocomplete-js';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import { Hit as AlgoliaHit } from '@algolia/client-search';
@@ -31,8 +31,8 @@ const client = algoliasearch(
 const indexName: string = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || '';
 const indexName2: string = process.env.NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME || '';
 
-const useDefaultPrices = process.env.NEXT_PUBLIC_USE_DEFAULT_PRICES === 'true';
-const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
+//const useDefaultPrices = process.env.NEXT_PUBLIC_USE_DEFAULT_PRICES === 'true';
+//const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
 
 insightsClient('init', {
   appId: process.env.NEXT_PUBLIC_ALGOLIA_APP_ID,
@@ -352,8 +352,6 @@ function ProductItem({
             </span>
             <span>(10)</span>
           </div>
-
-          <div className="text-xs">ID: {hit.objectID}</div>
         </div>
       </div>
       {/*
@@ -412,7 +410,7 @@ function getDiscount(price: number, salePrice: number): number | null {
   return price > 0 ? Math.floor(((price - salePrice) * 100) / price) : 0;
 }
 
-export function AutocompleteSearch() {
+export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPrices?: boolean }) {
   const containerRef = useRef(null);
   const panelRoot = useRef(null);
 
@@ -456,7 +454,7 @@ export function AutocompleteSearch() {
         Fragment,
         render: () => {},
       },
-      render({ children }, root) {
+      render({ children }: any, root: any) {
         if (!panelRoot.current) {
           panelRoot.current = createRoot(root) as any;
         }
@@ -474,7 +472,7 @@ export function AutocompleteSearch() {
       },
       */
 
-      getSources({ query, setContext }): any {
+      getSources({ query, setContext }: any): any {
         if (!query) {
           return [];
         }
@@ -513,7 +511,7 @@ export function AutocompleteSearch() {
                           isLoaded: false,
                         });
                         //console.log(skus.join(','));
-                        fetch('http://localhost:3000/api/prices?skus=' + skus.join(','))
+                        fetch('/api/prices/?skus=' + skus.join(','))
                           .then((response) => {
                             if (!response.ok) {
                               throw new Error('Network response was not ok');
@@ -635,7 +633,7 @@ export function AutocompleteSearch() {
           },
         ]);
       },
-      onSubmit: (params) => {
+      onSubmit: (params: any) => {
         search.setQuery('');
         router.push(`/search?query=${params.state?.query ?? ''}`);
       },

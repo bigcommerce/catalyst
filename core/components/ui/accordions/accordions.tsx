@@ -25,14 +25,14 @@ const Accordions = ({ accordions, ...props }: Props) => {
   return (
     <AccordionPrimitive.Root {...props}>
       {accordions.map((accordion, i) => (
-        <AccordionPrimitive.Item key={i} value={accordion.title}>
-          <AccordionPrimitive.Header className="flex">
-            <AccordionPrimitive.Trigger className="hover:text-secondary focus-visible:text-secondary flex flex-1 items-center justify-between py-[9.5px] text-lg font-bold outline-none transition-all [&[data-state=open]>svg]:rotate-180">
+        <AccordionPrimitive.Item key={i} value={accordion.title} className='px-[20px] py-[10px] -my-[1px] border-x-0 border-y-[1px] border-[#CCCBCB]'>
+          <AccordionPrimitive.Header className="flex h-[52px]">
+            <AccordionPrimitive.Trigger className=" hover:text-secondary focus-visible:text-secondary flex flex-1 items-center justify-between py-[9.5px] text-lg font-bold outline-none transition-all [&[data-state=open]>svg]:rotate-180">
               {accordion.title}
               <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
             </AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
-          <AccordionPrimitive.Content className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down mb-4 overflow-hidden transition-all">
+          <AccordionPrimitive.Content className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down  mb-4 overflow-hidden transition-all">
             {accordion.content}
           </AccordionPrimitive.Content>
         </AccordionPrimitive.Item>

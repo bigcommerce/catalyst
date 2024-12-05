@@ -8,7 +8,8 @@ import { useTranslations } from "next-intl";
 import { Link } from '~/components/link';
 import { getCartData } from "../get-cart-items";
 
-export const InputPlusMinus = ({product, productData}: {product:string, productData: any}) => {
+export const InputPlusMinus = ({product, productData, isLoading,
+  setIsLoading}: {product:string, productData: any, isLoading: boolean, setIsLoading: (loading: boolean) => void}) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [loader, setLoader] = useState<Boolean>(false);
   const productFlyout = useCommonContext();
@@ -30,6 +31,7 @@ export const InputPlusMinus = ({product, productData}: {product:string, productD
     }
     if(product == "true") {
       setLoader(true);
+      setIsLoading(true);
       let postData = {line_item:{
         product_id : productFlyout?.productData?.productEntityId,
         quantity: quanty,
@@ -67,15 +69,17 @@ export const InputPlusMinus = ({product, productData}: {product:string, productD
         );
       }
       setLoader(false);
+      setIsLoading(false);
     }
   };
 
   return(
     <>
-      {loader && <Spinner aria-hidden="true" className="animate-spin text-primary"></Spinner>}
+    <div className="relative w-max">
+      {/* {loader && <Spinner aria-hidden="true" className="animate-spin text-blue-600 absolute top-[23%] left-[38.1%] "></Spinner>} */}
       <div className="text-[14px] font-normal tracking-[0.25px] text-[#353535]">
         <div className="flex h-[44px] max-w-[105px] items-center justify-center gap-[10px] rounded-[20px] border border-[#d6d6d6]">
-          <div className="">
+          <div className="cursor-pointer">
             <Minus
               onClick={() => changeInput('minus')}
               className="h-[1rem] w-[1rem] text-[#7F7F7F]"
@@ -89,13 +93,14 @@ export const InputPlusMinus = ({product, productData}: {product:string, productD
             min="1"
             value={quantity}
           />
-          <div className="">
+          <div className="cursor-pointer">
             <Plus
               onClick={() => changeInput('plus')}
               className="h-[1rem] w-[1rem] text-[#7F7F7F]"
             ></Plus>
           </div>
         </div>
+      </div>
       </div>
     </>
   )

@@ -22,7 +22,7 @@ const Carousel = ({ className, title, pageSize = 4, products, icon, ...props }: 
 
   const [carouselRef, api] = useEmblaCarousel({
     loop: true,
-    axis: 'x'
+    axis: 'x',
   });
 
   const groupedProducts = useMemo(() => {
