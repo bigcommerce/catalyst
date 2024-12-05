@@ -490,6 +490,11 @@
   },
   "Components": {
     "Header": {
+      "Icons": {
+        "Account": "Profile",
+        "Cart": "Cart",
+        "Search": "Search"
+      },
       "Account": {
         "account": "Account",
         "orders": "Orders",
