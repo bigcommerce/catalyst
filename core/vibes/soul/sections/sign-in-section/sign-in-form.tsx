@@ -2,9 +2,10 @@
 
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
-import { useActionState, useEffect } from 'react';
+import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 
+import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Input } from '@/vibes/soul/form/input';
 import { Button } from '@/vibes/soul/primitives/button';
 
@@ -29,6 +30,7 @@ export function SignInForm({
 }: Props) {
   const [lastResult, formAction] = useActionState(action, null);
   const [form, fields] = useForm({
+    lastResult,
     defaultValue: { email: '', password: '' },
     constraint: getZodConstraint(schema),
     shouldValidate: 'onBlur',
@@ -37,10 +39,6 @@ export function SignInForm({
       return parseWithZod(formData, { schema });
     },
   });
-
-  useEffect(() => {
-    if (lastResult?.error) console.log(lastResult.error);
-  }, [lastResult]);
 
   return (
     <form {...getFormProps(form)} action={formAction} className="flex flex-grow flex-col gap-5">
@@ -58,6 +56,11 @@ export function SignInForm({
         label={passwordLabel}
       />
       <SubmitButton>{submitLabel}</SubmitButton>
+      {form.errors?.map((error, index) => (
+        <FormStatus key={index} type="error">
+          {error}
+        </FormStatus>
+      ))}
     </form>
   );
 }
