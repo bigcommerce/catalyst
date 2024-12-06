@@ -154,7 +154,7 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
         </div>
       )}
 
-      <div className="flex justify-between py-4 text-left text-[1.25rem] font-medium leading-[2rem] tracking-[0.009375rem] text-[#353535] lg:text-[1.25rem]">
+      <div className="flex justify-between py-5 text-left text-[1.25rem] font-medium leading-[2rem] tracking-[0.009375rem] text-[#353535] lg:text-[1.25rem]">
         {t('grandTotal')}
         <span className="text-left text-[1.25rem] font-medium leading-[2rem] tracking-[0.009375rem] text-[#353535] lg:text-[1.25rem]">
           {format.number(grandTotal?.value || 0, {
@@ -164,7 +164,7 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
         </span>
       </div>
 
-      <div className='border-y border-y-[#cccbcb] flex justify-between items-center mb-[2rem] p-[5px]'>
+      <div className='border-y border-y-[#cccbcb] flex justify-between items-center my-[20px] p-[5px]'>
         <div className='font-normal text-[14px] leading-[24px] tracking-[0.25px]'>
           Add a coupon or gift card
         </div>

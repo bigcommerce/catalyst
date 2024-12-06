@@ -164,7 +164,7 @@ export const ShippingInfo = ({
   return (
     <Form
       action={onSubmit}
-      className={cn('mx-auto mb-4 mt-4 hidden w-full grid-cols-1 gap-y-4', isVisible && 'grid')}
+      className={cn('mx-auto hidden w-full grid-cols-1 gap-y-4', isVisible && 'grid')}
     >
       <div className="flex flex-col items-start justify-center gap-[5px] py-[10px]">
         <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">

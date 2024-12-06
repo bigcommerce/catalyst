@@ -90,7 +90,7 @@ export const CouponCode = ({ checkout }: Props) => {
   };
 
   return selectedCoupon ? (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 bg-[#E7F5F8] leading-[32px]">
       <div className="flex justify-between">
         <span className="font-normal">
           {t('coupon')} ({selectedCoupon.code})
