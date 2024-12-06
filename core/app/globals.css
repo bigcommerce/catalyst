@@ -2,6 +2,56 @@
 @tailwind components;
 @tailwind utilities;
 
+.header-sub-menu {
+  gap: 20px;
+  grid-template-columns: auto auto auto auto auto auto;
+  display: grid;
+}
+.header-sub-menu-0 .submenu-div:nth-child(4) {
+  grid-row: span 2;
+}
+.parent-sub-menu:hover a {
+  text-decoration: underline;
+}
+.header-sub-menu-1 .submenu-div:nth-child(4) {
+  grid-row: span 2;
+}
+.header-sub-menu-2 .submenu-div:nth-child(4) {
+  grid-row: span 8;
+}
+
+.parent-menu-2 {
+  margin-left: 21.5em;
+}
+.parent-menu-3 {
+  margin-left: 26.5em;
+}
+.parent-menu-4 {
+  margin-left: 25em;
+}
+.parent-menu-5 {
+  margin-left: 21em;
+}
+.header-sub-menu-2 {
+  grid-template-rows: 20px 20px 20px 20px 20px 20px;
+}
+
+.header-sub-menu-1 {
+  grid-template-rows: 24px 17px 50px 30px 30px 60px;
+  gap: 20px;
+  grid-template-columns: auto auto auto auto auto auto;
+  display: grid;
+}
+.header-sub-menu-1 .submenu-div:nth-child(10) {
+  margin-top: 40px;
+}
+.header-sub-menu-1 .submenu-div:nth-child(12) {
+  margin-top: 40px;
+}
+.header-sub-menu-1 .submenu-div:nth-child(11) {
+  margin-top: 1px;
+}
+
 .trade2-form .relative.h-7.pass2 {
   position: relative;
   top: -10px;
@@ -48,14 +98,14 @@
   --gray-700: #353535;
 }
 
-html, 
+html,
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: var(--font-opensans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  scroll-behavior:smooth;
+  scroll-behavior: smooth;
 }
 
 /* Desktop */
@@ -98,7 +148,8 @@ div#techdesc p br {
 /* description - bigcommerce products description*/
 
 /* add-to-cart */
-button:hover svg.lucide.lucide-shopping-cart.mr-2.text-white.right-\[-0\.6em\].absolute.invisible.opacity-0.bg-transparent.p-\[4px\] {
+button:hover
+  svg.lucide.lucide-shopping-cart.mr-2.text-white.right-\[-0\.6em\].absolute.invisible.opacity-0.bg-transparent.p-\[4px\] {
   visibility: visible;
   opacity: 1;
 }
@@ -108,7 +159,6 @@ svg.lucide.lucide-shopping-cart.mr-2.text-white.right-\[-0\.6em\].absolute.invis
   height: 52px;
   width: 52px;
 }
-
 
 .header-search-bar button[aria-label='Open search popup'] {
   width: 61% !important;

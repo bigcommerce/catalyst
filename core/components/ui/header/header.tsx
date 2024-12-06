@@ -65,7 +65,6 @@ const Header = ({
     setOpenMenuId(openMenuId === linkHref ? null : linkHref);
   };
 
-  // Add this new handler for menu item clicks
   const handleMenuItemClick = () => {
     setOpenMenuId(null);
   };
@@ -128,7 +127,7 @@ const Header = ({
             id="nav-menu-list"
             className="flex items-center gap-2 text-[16px] !font-normal lg:gap-4"
           >
-            {links.map((link) =>
+            {links.map((link, menuIndex) =>
               link.groups && link.groups.length > 0 ? (
                 <NavigationMenuPrimitive.Item id={`nav-menu-item-${link.href}`} key={link.href}>
                   <div
@@ -149,9 +148,11 @@ const Header = ({
                   {openMenuId === link.href && (
                     <div
                       id={`nav-menu-content-${link.href}`}
-                      className="absolute left-0 top-[4.8em] z-50 w-auto bg-white py-8 shadow-xl"
+                      className={`parent-menu-${menuIndex} absolute left-0 top-[4.8em] z-50 w-auto bg-white py-8 shadow-xl`}
                     >
-                      <div className="relative mx-auto grid max-w-[95em] grid-cols-[repeat(6,auto)] gap-6 px-12">
+                      <div
+                        className={`header-sub-menu-${menuIndex} relative mx-auto grid max-w-[90em] grid-cols-[repeat(6,auto)] gap-6 px-12`}
+                      >
                         <button
                           className="absolute -top-[1em] right-[1em] text-gray-600 hover:text-gray-800 focus:outline-none"
                           onClick={() => setOpenMenuId(null)}
@@ -172,15 +173,18 @@ const Header = ({
                           </svg>
                         </button>
                         {link.groups.map((group, index) => (
-                          <div key={group.href} className="min-w-fit whitespace-nowrap">
+                          <div key={group.href} className="submenu-div min-w-fit whitespace-nowrap">
                             <ul
                               id={`nav-menu-group-${group.href}`}
                               className="flex flex-col space-y-2"
                             >
-                              <li id={`nav-menu-group-item-${group.href}`}>
+                              <li
+                                id={`nav-menu-group-item-${group.href}`}
+                                className="parent-sub-menu"
+                              >
                                 <CustomLink
                                   id={`nav-menu-group-link-${group.href}`}
-                                  className="block border-b border-gray-200 pb-2 text-[15px] font-[500] hover:text-primary"
+                                  className="block pb-2 text-[15px] font-[500] hover:text-primary"
                                   href={group.href}
                                   onClick={handleMenuItemClick} // Add click handler here
                                 >
@@ -194,7 +198,7 @@ const Header = ({
                                 >
                                   <CustomLink
                                     id={`nav-menu-nested-link-${nestedLink.href}`}
-                                    className="block py-1.5 text-[14px] font-[400] text-gray-600 hover:text-primary"
+                                    className="block py-1.5 text-[14px] font-[400] text-gray-600 hover:underline"
                                     href={nestedLink.href}
                                     onClick={handleMenuItemClick} // Add click handler here
                                   >
