@@ -36,14 +36,13 @@ import { Field, Form, FormSubmit } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 import { useRouter } from '~/i18n/routing';
 
-import { useAccountStatusContext } from '../../../_components/account-status-provider';
+import {
+  AccountState as FormStatus,
+  useAccountStatusContext,
+} from '../../../_components/account-status-provider';
+import { SubmitMessagesList } from '../../../_components/submit-messages-list';
 import { addAddress } from '../_actions/add-address';
 import { NewAddressQueryResult } from '../page';
-
-interface FormStatus {
-  status: 'success' | 'error';
-  message: string;
-}
 
 type AddressFields = NonNullable<
   NewAddressQueryResult['site']['settings']
@@ -124,7 +123,7 @@ export const AddAddressForm = ({
   const { setAccountState } = useAccountStatusContext();
 
   useEffect(() => {
-    setAccountState({ status: 'idle' });
+    setAccountState({ status: 'idle', messages: [''] });
   }, [setAccountState]);
 
   const handleTextInputValidation = createTextInputValidationHandler(
@@ -187,7 +186,7 @@ export const AddAddressForm = ({
     if (submit.status === 'success') {
       setAccountState({
         status: 'success',
-        message: submit.message || '',
+        messages: submit.messages || [''],
       });
 
       router.push('/account/addresses');
@@ -196,7 +195,7 @@ export const AddAddressForm = ({
     }
 
     if (submit.status === 'error') {
-      setFormStatus({ status: 'error', message: submit.message || '' });
+      setFormStatus({ status: 'error', messages: submit.messages || [''] });
     }
 
     window.scrollTo({
@@ -207,9 +206,9 @@ export const AddAddressForm = ({
 
   return (
     <>
-      {formStatus && (
+      {formStatus && formStatus.status !== 'idle' && (
         <Message className="mx-auto mb-8 w-full" variant={formStatus.status}>
-          <p>{formStatus.message}</p>
+          <SubmitMessagesList messages={formStatus.messages} />
         </Message>
       )}
       <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>

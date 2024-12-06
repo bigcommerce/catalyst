@@ -5,7 +5,11 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
-import { useAccountStatusContext } from '~/app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
+import {
+  AccountState as FormStatus,
+  useAccountStatusContext,
+} from '~/app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
+import { SubmitMessagesList } from '~/app/[locale]/(default)/account/(tabs)/_components/submit-messages-list';
 import { type FragmentOf } from '~/client/graphql';
 import { Button } from '~/components/ui/button';
 import {
@@ -26,11 +30,6 @@ import { ResetPasswordFormFragment } from './fragment';
 
 interface Props {
   reCaptchaSettings?: FragmentOf<typeof ResetPasswordFormFragment>;
-}
-
-interface FormStatus {
-  status: 'success' | 'error';
-  message: string;
 }
 
 const SubmitButton = () => {
@@ -65,7 +64,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
   const router = useRouter();
 
   useEffect(() => {
-    setAccountState({ status: 'idle' });
+    setAccountState({ status: 'idle', messages: [''] });
   }, [setAccountState]);
 
   const onReCatpchaChange = (token: string | null) => {
@@ -107,13 +106,13 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
 
       setAccountState({
         status: 'success',
-        message: t('confirmResetPassword', { email: customerEmail?.toString() }),
+        messages: [t('confirmResetPassword', { email: customerEmail?.toString() })],
       });
       router.push('/login');
     }
 
     if (submit.status === 'error') {
-      setFormStatus({ status: 'error', message: submit.error ?? '' });
+      setFormStatus({ status: 'error', messages: submit.errors ?? [''] });
     }
 
     reCaptchaRef.current?.reset();
@@ -123,7 +122,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
     <>
       {formStatus?.status === 'error' && (
         <Message className="mb-8 w-full whitespace-pre" variant={formStatus.status}>
-          <p>{formStatus.message}</p>
+          <SubmitMessagesList messages={formStatus.messages} />
         </Message>
       )}
 

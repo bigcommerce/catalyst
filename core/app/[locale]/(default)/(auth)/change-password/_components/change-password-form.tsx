@@ -18,6 +18,7 @@ import { Message } from '~/components/ui/message';
 import { useRouter } from '~/i18n/routing';
 
 import { useAccountStatusContext } from '../../../account/(tabs)/_components/account-status-provider';
+import { SubmitMessagesList } from '../../../account/(tabs)/_components/submit-messages-list';
 import { changePassword } from '../_actions/change-password';
 
 interface Props {
@@ -50,18 +51,12 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
   const router = useRouter();
   const [state, formAction] = useActionState(changePassword, {
     status: 'idle',
-    message: '',
+    messages: [''],
   });
 
   const [newPassword, setNewPasssword] = useState('');
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
   const { setAccountState } = useAccountStatusContext();
-
-  let messageText = '';
-
-  if (state.status === 'error') {
-    messageText = state.message;
-  }
 
   const handleNewPasswordChange = (e: ChangeEvent<HTMLInputElement>) =>
     setNewPasssword(e.target.value);
@@ -72,7 +67,7 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
   };
 
   if (state.status === 'success') {
-    setAccountState({ status: 'success', message: t('confirmChangePassword') });
+    setAccountState({ status: 'success', messages: [t('confirmChangePassword')] });
     router.push('/login');
   }
 
@@ -80,7 +75,7 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
     <>
       {state.status === 'error' && (
         <Message className="mb-8 w-full text-gray-500" variant={state.status}>
-          <p>{messageText}</p>
+          <SubmitMessagesList messages={state.messages} />
         </Message>
       )}
 
