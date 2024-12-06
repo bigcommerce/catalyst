@@ -154,7 +154,7 @@ export const Brand = ({ brand, promotions, useDefaultPrices = false }: any) => {
       future={{ preserveSharedStateOnUnmount: true }}
       insights={true}
     >
-      <Configure filters={`brand_name:'${brand.name}'`} maxFacetHits={100} />
+      <Configure filters={`brand_name:"${brand.name}"`} maxFacetHits={100} />
       {showSidebar &&
         <div className="hidden sm:block fixed inset-0 w-full h-full pointer-events-auto z-[9995] bg-black bg-opacity-60 backdrop-blur-sm opacity-100" onClick={() => setShowSidebar(false)}></div>
       }
