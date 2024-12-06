@@ -155,7 +155,7 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
   return (
     <>
       {formStatus && (
-        <Message className="mb-8" variant={formStatus.status}>
+        <Message className="mb-8 border border-[#ff4500] rounded-[3px]" variant={formStatus.status}>
           <p>{formStatus.message}</p>
         </Message>
       )}

@@ -50,7 +50,7 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
             {' '}
             {icon ??
               (error ? (
-                <AlertCircle />
+                <AlertCircle className='text-[#ff4500]' />
               ) : isPassword ? (
                 showPassword ? (
                   <>
