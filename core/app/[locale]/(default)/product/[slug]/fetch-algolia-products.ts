@@ -33,7 +33,6 @@ export async function getRelatedProducts(objectId: number) {
 }
 
 export async function getCollectionProducts(objectId: number, brand: string, collection: string) {
-  console.log(`brand_name:${encodeURIComponent(brand)} AND metafields.Akeneo.collection:${encodeURIComponent(collection)}`);
   const response = await fetch(`https://${appId}.algolia.net/1/indexes/${indexName}/query`, {
     method: "POST",
     credentials: "same-origin",

@@ -131,7 +131,20 @@ export default async function ProductPage(props: Props) {
   }
 
   const relatedProducts = await getRelatedProducts(product.entityId);
-  const collectionProducts = await getCollectionProducts(product.entityId, product.brand?.name, collectionValue);
+  const collectionProducts = await getCollectionProducts(product.entityId, product.brand?.name ?? '', collectionValue);
+
+  const averageRatingMetaField = metaFields?.find(
+    (field: { key: string }) => field?.key === 'sv-average-rating',
+  );
+
+  const totalReviewsMetaField = metaFields?.find(
+    (field: { key: string }) => field?.key === 'sv-total-reviews',
+  );
+
+  if (averageRatingMetaField && totalReviewsMetaField) {
+    product.reviewSummary.numberOfReviews = totalReviewsMetaField.value ?? 0;
+    product.reviewSummary.averageRating = averageRatingMetaField.value ?? 0;
+  }
 
   const category = removeEdgesAndNodes(product.categories).at(0);
   if (category?.breadcrumbs?.edges && product?.mpn) {
