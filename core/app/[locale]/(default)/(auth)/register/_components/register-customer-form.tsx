@@ -35,13 +35,14 @@ import { Button } from '~/components/ui/button';
 import { Field, Form, FormSubmit } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 
+import { SubmitErrorsList } from '../../../account/(tabs)/_components/submit-errors-list';
 import { login } from '../_actions/login';
 import { registerCustomer } from '../_actions/register-customer';
 import { getRegisterCustomerQuery } from '../page-data';
 
 interface FormStatus {
   status: 'success' | 'error';
-  message: string;
+  messages: string[];
 }
 
 type CustomerFields = ExistingResultType<typeof getRegisterCustomerQuery>['customerFields'];
@@ -202,7 +203,7 @@ export const RegisterCustomerForm = ({
     if (formData.get('customer-password') !== formData.get('customer-confirmPassword')) {
       setFormStatus({
         status: 'error',
-        message: t('confirmPassword'),
+        messages: [t('confirmPassword')],
       });
 
       window.scrollTo({
@@ -230,7 +231,7 @@ export const RegisterCustomerForm = ({
     }
 
     if (submit.status === 'error') {
-      setFormStatus({ status: 'error', message: submit.error ?? '' });
+      setFormStatus({ status: 'error', messages: submit.errors ?? [''] });
     }
 
     window.scrollTo({
@@ -243,7 +244,7 @@ export const RegisterCustomerForm = ({
     <>
       {formStatus && (
         <Message className="mb-8" variant={formStatus.status}>
-          <p>{formStatus.message}</p>
+          <SubmitErrorsList errors={formStatus.messages} />
         </Message>
       )}
       <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>
