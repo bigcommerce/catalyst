@@ -22,40 +22,49 @@ interface Props {
 
 const Gallery = ({
   className,
-  images,
+  images = [],
   defaultImageIndex = 0,
   bannerIcon,
   galleryExpandIcon,
   productMpn,
 }: Props) => {
-  if (!images || images.length === 0) return null;
+  // Basic validation
+  const safeImages = useMemo(() => {
+    return Array.isArray(images) ? images : [];
+  }, [images]);
 
-  const [selectedImageIndex, setSelectedImageIndex] = useState(defaultImageIndex);
+  if (safeImages.length === 0) return null;
+
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [viewAll, setViewAll] = useState(false);
   const thumbnailRef = useRef<HTMLDivElement>(null);
 
-  // Filter images based on MPN match
+  // Simple filtering without complex logic
   const filteredImages = useMemo(() => {
-    if (!productMpn) {
-      return images;
-    }
-    const matchingImages = images.filter((image) =>
-      image.altText.toLowerCase().includes(productMpn.toLowerCase()),
-    );
-    return matchingImages.length > 0 ? matchingImages : images;
-  }, [images, productMpn]);
+    if (!productMpn || !safeImages.length) return safeImages;
 
+    const matchingImages = safeImages.filter((image) =>
+      image?.altText?.toLowerCase?.()?.includes?.(productMpn.toLowerCase()),
+    );
+
+    return matchingImages.length > 0 ? matchingImages : safeImages;
+  }, [safeImages, productMpn]);
+
+  // Make sure selected index is valid
   useEffect(() => {
-    setSelectedImageIndex(0);
-  }, [filteredImages]);
+    const maxIndex = filteredImages.length - 1;
+    if (selectedImageIndex > maxIndex) {
+      setSelectedImageIndex(0);
+    }
+  }, [filteredImages, selectedImageIndex]);
 
   const selectedImage = filteredImages[selectedImageIndex];
-  if (!selectedImage) return null;
-
-  const remainingImagesCount = filteredImages.length - 4;
+  const remainingImagesCount = Math.max(0, filteredImages.length - 4);
 
   const openPopup = (index?: number) => {
-    if (index !== undefined) setSelectedImageIndex(index);
+    if (typeof index === 'number' && index >= 0 && index < filteredImages.length) {
+      setSelectedImageIndex(index);
+    }
     setViewAll(true);
   };
 
@@ -64,24 +73,12 @@ const Gallery = ({
   };
 
   const handleNextImage = () => {
-    setSelectedImageIndex((selectedImageIndex + 1) % filteredImages.length);
+    setSelectedImageIndex((prev) => (prev + 1) % filteredImages.length);
   };
 
   const handlePrevImage = () => {
-    setSelectedImageIndex((selectedImageIndex - 1 + filteredImages.length) % filteredImages.length);
+    setSelectedImageIndex((prev) => (prev === 0 ? filteredImages.length - 1 : prev - 1));
   };
-
-  useEffect(() => {
-    // Ensure the selected index is within bounds of filtered images
-    if (selectedImageIndex >= filteredImages.length) {
-      setSelectedImageIndex(0);
-    }
-  }, [selectedImageIndex, filteredImages.length]);
-
-  useEffect(() => {
-    const validDefaultIndex = Math.min(defaultImageIndex, filteredImages.length - 1);
-    setSelectedImageIndex(validDefaultIndex);
-  }, [images, defaultImageIndex, filteredImages.length]);
 
   const promoImages = [
     {
@@ -115,6 +112,7 @@ const Gallery = ({
             style={{ maxHeight: '700px' }}
           >
             {(viewAll ? filteredImages : filteredImages.slice(0, 4)).map((image, index) => {
+              if (!image?.src) return null;
               const isActive = selectedImageIndex === index;
 
               return (
@@ -125,11 +123,11 @@ const Gallery = ({
                     'gallery-thumbnail relative h-12 w-12 flex-shrink-0 border-2 transition-colors duration-200 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 xl:h-[6.4em] xl:w-[6.4em]',
                     isActive ? 'border-primary' : 'border-gray-200',
                   )}
-                  key={image.src}
+                  key={`${image.src}-${index}`}
                   onClick={() => openPopup(index)}
                 >
                   <BcImage
-                    alt={image.altText}
+                    alt={image.altText || ''}
                     className="flex h-full w-full cursor-pointer items-center justify-center object-fill"
                     height={94}
                     priority={true}
@@ -137,7 +135,7 @@ const Gallery = ({
                     width={94}
                   />
                   <BcImage
-                    alt={image.altText}
+                    alt={image.altText || ''}
                     className="absolute bottom-2 right-2 m-1 h-4 w-4 rounded-full bg-white object-fill p-1 opacity-70"
                     height={10}
                     priority={true}
@@ -159,7 +157,7 @@ const Gallery = ({
                   className="flex h-full w-full cursor-pointer items-center justify-center object-fill"
                   height={94}
                   priority={true}
-                  src={filteredImages[3].src}
+                  src={filteredImages[3]?.src || ''}
                   width={94}
                 />
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 text-white">
@@ -172,44 +170,52 @@ const Gallery = ({
         </div>
 
         <figure className="main-gallery group relative aspect-square h-full max-h-[100%] w-full">
-          <div
-            className="product-img relative float-left h-full w-full overflow-hidden"
-            data-scale="2"
-          >
-            <ProductImage size="original" scale={2} src={selectedImage.src} />
-          </div>
+          {selectedImage?.src && (
+            <>
+              <div
+                className="product-img relative float-left h-full w-full overflow-hidden"
+                data-scale="2"
+              >
+                <ProductImage size="original" scale={2} src={selectedImage.src} />
+              </div>
 
-          <div
-            className="absolute bottom-4 right-4 m-1 h-6 w-6 cursor-pointer rounded-full bg-white object-cover p-1 opacity-70 transition-opacity hover:opacity-100"
-            onClick={() => openPopup()}
-          >
-            <img
-              alt="Overlay"
-              className="h-full w-full object-cover"
-              height={24}
-              src={galleryExpandIcon}
-              width={24}
-            />
-          </div>
+              <div
+                className="absolute bottom-4 right-4 m-1 h-6 w-6 cursor-pointer rounded-full bg-white object-cover p-1 opacity-70 transition-opacity hover:opacity-100"
+                onClick={() => openPopup()}
+              >
+                <img
+                  alt="Overlay"
+                  className="h-full w-full object-cover"
+                  height={24}
+                  src={galleryExpandIcon}
+                  width={24}
+                />
+              </div>
 
-          <button
-            aria-label="Previous image"
-            className="absolute left-4 top-1/2 -translate-y-1/2 transform border border-gray-300 bg-white p-3 text-lg font-bold leading-[0.9] text-black opacity-0 transition-opacity duration-300 hover:bg-gray-200 group-hover:opacity-100"
-            onClick={handlePrevImage}
-          >
-            &#10094;
-          </button>
-          <button
-            aria-label="Next image"
-            className="absolute right-4 top-1/2 -translate-y-1/2 transform border border-gray-300 bg-white p-3 text-lg font-bold leading-[0.9] text-black opacity-0 transition-opacity duration-300 hover:bg-gray-200 group-hover:opacity-100"
-            onClick={handleNextImage}
-          >
-            &#10095;
-          </button>
+              {filteredImages.length > 1 && (
+                <>
+                  <button
+                    aria-label="Previous image"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 transform border border-gray-300 bg-white p-3 text-lg font-bold leading-[0.9] text-black opacity-0 transition-opacity duration-300 hover:bg-gray-200 group-hover:opacity-100"
+                    onClick={handlePrevImage}
+                  >
+                    &#10094;
+                  </button>
+                  <button
+                    aria-label="Next image"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 transform border border-gray-300 bg-white p-3 text-lg font-bold leading-[0.9] text-black opacity-0 transition-opacity duration-300 hover:bg-gray-200 group-hover:opacity-100"
+                    onClick={handleNextImage}
+                  >
+                    &#10095;
+                  </button>
+                </>
+              )}
+            </>
+          )}
         </figure>
       </div>
 
-      {viewAll && selectedImage && (
+      {viewAll && selectedImage?.src && (
         <GalleryModel
           isOpen={viewAll}
           onClose={closePopup}
