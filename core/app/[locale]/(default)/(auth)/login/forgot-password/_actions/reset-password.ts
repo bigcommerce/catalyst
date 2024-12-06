@@ -1,28 +1,12 @@
 'use server';
 
+import { SubmissionResult } from '@conform-to/react';
+import { parseWithZod } from '@conform-to/zod';
 import { getTranslations } from 'next-intl/server';
-import { z } from 'zod';
 
+import { schema } from '@/vibes/soul/sections/forgot-password-section/schema';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-
-const ResetPasswordSchema = z.object({
-  email: z.string().email(),
-});
-
-const processZodErrors = (err: z.ZodError) => {
-  const { fieldErrors, formErrors } = err.flatten((issue: z.ZodIssue) => ({
-    message: issue.message,
-  }));
-
-  if (formErrors.length > 0) {
-    return formErrors.map(({ message }) => message);
-  }
-
-  return Object.entries(fieldErrors).flatMap(([, errorList]) => {
-    return errorList?.map(({ message }) => message) ?? [''];
-  });
-};
 
 const ResetPasswordMutation = graphql(`
   mutation ResetPassword($input: RequestResetPasswordInput!, $reCaptcha: ReCaptchaV2Input) {
@@ -40,32 +24,29 @@ const ResetPasswordMutation = graphql(`
   }
 `);
 
-interface SubmitResetPasswordForm {
-  formData: FormData;
-  path: string;
-  reCaptchaToken: string;
-}
-
-export const resetPassword = async ({
-  formData,
-  path,
-  reCaptchaToken,
-}: SubmitResetPasswordForm) => {
+export const resetPassword = async (
+  _lastResult: (SubmissionResult & { successMessage?: string }) | null,
+  formData: FormData,
+  // TODO: add recaptcha token
+  // reCaptchaToken,
+) => {
   const t = await getTranslations('Login.ForgotPassword');
 
-  try {
-    const parsedData = ResetPasswordSchema.parse({
-      email: formData.get('email'),
-    });
+  const submission = parseWithZod(formData, { schema });
 
+  if (submission.status !== 'success') {
+    return submission.reply({ formErrors: [t('Errors.error')] });
+  }
+
+  try {
     const response = await client.fetch({
       document: ResetPasswordMutation,
       variables: {
         input: {
-          email: parsedData.email,
-          path,
+          email: submission.value.email,
+          path: '/change-password',
         },
-        ...(reCaptchaToken && { reCaptchaV2: { token: reCaptchaToken } }),
+        // ...(reCaptchaToken && { reCaptchaV2: { token: reCaptchaToken } }),
       },
       fetchOptions: {
         cache: 'no-store',
@@ -75,25 +56,18 @@ export const resetPassword = async ({
     const result = response.data.customer.requestResetPassword;
 
     if (result.errors.length === 0) {
-      return { status: 'success', data: parsedData };
-    }
-
-    return {
-      status: 'error',
-      errors: result.errors.map((error) => error.message),
-    };
-  } catch (error: unknown) {
-    if (error instanceof z.ZodError) {
       return {
-        status: 'error',
-        errors: processZodErrors(error),
+        ...submission.reply(),
+        successMessage: t('Form.confirmResetPassword', { email: submission.value.email }),
       };
     }
 
+    return submission.reply({ formErrors: result.errors.map((error) => error.message) });
+  } catch (error) {
     if (error instanceof Error) {
-      return { status: 'error', errors: [error.message] };
+      return submission.reply({ formErrors: [error.message] });
     }
 
-    return { status: 'error', errors: [t('Errors.error')] };
+    return submission.reply({ formErrors: [t('Errors.error')] });
   }
 };
