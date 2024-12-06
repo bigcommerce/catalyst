@@ -102,7 +102,7 @@ export const CouponCode = ({ checkout }: Props) => {
           })}
         </span>
       </div>
-      <form action={onSubmitRemoveCouponCode}>
+      <form action={onSubmitRemoveCouponCode} className=''>
         <input name="checkoutEntityId" type="hidden" value={checkout.entityId} />
         <input name="couponCode" type="hidden" value={selectedCoupon.code} />
         <RemoveButton />
@@ -123,8 +123,11 @@ export const CouponCode = ({ checkout }: Props) => {
       </div>
       {showAddCoupon && (
         <Form
+        // border: 1px solid #4EAECC;
+        // border-radius: 3px;
           action={onSubmitApplyCouponCode}
-          className="my-4 flex flex-col gap-2"
+          className="flex flex-col gap-[5px] [&>button]:border [&>button]:rounded-[3px] [&>button]:border-[#4EAECC] 
+          [&>input]:!h-[44px] [&>input]:!border [&_input]:!border-[#cccbcb] [&>input]:!rounded-[3px]"
           id="coupon-code-form"
         >
           <input name="checkoutEntityId" type="hidden" value={checkout.entityId} />

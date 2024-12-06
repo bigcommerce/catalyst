@@ -37,7 +37,7 @@ const SubmitButton = () => {
 
   return (
     <Button
-      className='font-[500] text-[14px] leading-[24px] tracking-[1.25px] text-[#002a37] flex justify-center items-center px-[10px] bg-[#ffffff] border border-[#4eaecc] h-[44px]'
+      className="flex h-[44px] items-center !mt-0 justify-center border border-[#4eaecc] bg-[#ffffff] px-[10px] text-[14px] font-[500] leading-[24px] tracking-[1.25px] text-[#002a37]"
       loading={pending}
       loadingText={t('spinnerText')}
       variant="secondary"
@@ -110,7 +110,7 @@ export const ShippingInfo = ({
         icon: <AlertCircle className="text-error-secondary" />,
       });
     }
-  }
+  };
   const onSubmit = async (formData: FormData) => {
     let postalCode: any = formData.get('zip');
     if (postalCode) {
@@ -127,31 +127,31 @@ export const ShippingInfo = ({
         enableHighAccuracy: true,
       });
     } else {
-      console.log("Sorry, Geolocation is not supported by this browser.");
+      console.log('Sorry, Geolocation is not supported by this browser.');
     }
   };
   const error = (error: any) => {
     switch (error?.code) {
       case error.PERMISSION_DENIED:
-        console.log("Location permission denied.");
+        console.log('Location permission denied.');
         break;
       case error.POSITION_UNAVAILABLE:
-        console.log("Location information is unavailable.");
+        console.log('Location information is unavailable.');
         break;
       case error.TIMEOUT:
-        console.log("The request to get user location timed out.");
+        console.log('The request to get user location timed out.');
         break;
       case error.UNKNOWN_ERROR:
-        console.log("An unknown error occurred.");
+        console.log('An unknown error occurred.');
         break;
     }
-  }
+  };
   const showPosition = async (position: any) => {
     let formData: FormData = new FormData();
-    const { latitude, longitude }: { latitude: any, longitude: any } = position?.coords;
+    const { latitude, longitude }: { latitude: any; longitude: any } = position?.coords;
     if (latitude && longitude) {
       let dataFromLatLng = await fetchZipCodeByLatLng(latitude, longitude);
-      if(dataFromLatLng?.[0]?.postal_code) {
+      if (dataFromLatLng?.[0]?.postal_code) {
         setFormValues({ postcode: dataFromLatLng?.[0]?.postal_code || '' });
       } else {
         toast.error('The current location is not in the range.', {
@@ -159,18 +159,20 @@ export const ShippingInfo = ({
         });
       }
     }
-  }
+  };
 
   return (
     <Form
       action={onSubmit}
       className={cn('mx-auto mb-4 mt-4 hidden w-full grid-cols-1 gap-y-4', isVisible && 'grid')}
     >
-      <div className='flex flex-col justify-center items-start py-[10px] gap-[5px]'>
-        <div className='font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535]'>Calculate Shipping/Tax:</div>
-        <div className='flex justify-center items-center p-0 gap-[5px] w-full'>
-          <div className='flex-1'>
-            <Field className="relative space-y-2 hidden" name="country">
+      <div className="flex flex-col items-start justify-center gap-[5px] py-[10px]">
+        <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
+          Calculate Shipping/Tax:
+        </div>
+        <div className="flex w-full items-center justify-center gap-[5px] p-0">
+          <div className="flex-1">
+            <Field className="relative hidden space-y-2" name="country">
               <FieldLabel htmlFor="country">{t('country')}</FieldLabel>
               <FieldControl asChild>
                 <Select
@@ -198,8 +200,8 @@ export const ShippingInfo = ({
                 />
               </FieldControl>
             </Field>
-            <Field className="relative space-y-2 hidden" name="state">
-              <FieldLabel htmlFor="state">{(isUSSelected) ? 'State' : 'Province'}</FieldLabel>
+            <Field className="relative hidden space-y-2" name="state">
+              <FieldLabel htmlFor="state">{isUSSelected ? 'State' : 'Province'}</FieldLabel>
               <FieldControl asChild>
                 {selectedCountry?.statesOrProvinces ? (
                   <Select
@@ -224,43 +226,48 @@ export const ShippingInfo = ({
                 )}
               </FieldControl>
             </Field>
-            <Field className="relative space-y-2 hidden" name="city">
-              <FieldLabel htmlFor="city-field">{(isUSSelected) ? 'City' : 'Suburb'}</FieldLabel>
+            <Field className="relative hidden space-y-2" name="city">
+              <FieldLabel htmlFor="city-field">{isUSSelected ? 'City' : 'Suburb'}</FieldLabel>
               <FieldControl asChild>
                 <Input
                   autoComplete="address-level2"
                   id="city-field"
                   onChange={(e) => setFormValues({ city: e.target.value })}
-                  placeholder={(isUSSelected) ? 'City' : 'Suburb'}
+                  placeholder={isUSSelected ? 'City' : 'Suburb'}
                   type="text"
                   value={formValues.city}
                 />
               </FieldControl>
             </Field>
-            <Field className="relative space-y-2" name="zip">
+            <Field className="relative space-y-2 flex items-center gap-[5px] [&>button]:!uppercase [&>button]:!mt-[0] [&>button]:border [&>button]:border-[#4eaecc] [&>button]:rounded-[3px] [&>button]:text-[14px] [&>button]:leading-[24px] [&>button]:!w-max [&>button]:text-[#002a37]  [&>button]:!p-[5px_10px] " name="zip">
               <FieldControl asChild>
                 <Input
                   height={44}
-                  className='w-full min-h-[44px] p-[6px_10px] bg-[#ffffff] border border-[#cccbcb] rounded-[3px]'
+                  className="[&>input]:h-[44px] [&>input]:border flex-1 [&>input]:border-[#cccbcb]  [&>input]:rounded-[3px]"
                   autoComplete="postal-code"
                   id="zip-field"
                   onChange={(e) => setFormValues({ postcode: e.target.value })}
-                  placeholder='Zip/Postcode'
+                  placeholder="Zip/Postcode"
                   type="text"
                   value={formValues.postcode}
                 />
               </FieldControl>
+              <FormSubmit asChild>
+                <SubmitButton />
+              </FormSubmit>
             </Field>
           </div>
-          <FormSubmit asChild>
-            <SubmitButton />
-          </FormSubmit>
         </div>
-        <div className='flex items-center p-0 gap-[5px]'>
-          <div className=''>
+        <div className="flex items-center gap-[5px] p-0">
+          <div className="">
             <MapPin width={15} height={18} />
           </div>
-          <div onClick={()=>getUserCurrentLocation()} className='font-normal cursor-pointer text-[14px] leading-[24px] tracking-[0.25px] text-[#353535] underline'>Use your current location</div>
+          <div
+            onClick={() => getUserCurrentLocation()}
+            className="cursor-pointer text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535] underline"
+          >
+            Use your current location
+          </div>
         </div>
       </div>
     </Form>
