@@ -11,7 +11,7 @@ export function FormStatus({
     <div
       {...rest}
       className={clsx(
-        'flex items-center gap-3 rounded-xl bg-error-highlight px-4 py-3 text-sm',
+        'flex items-center gap-3 rounded-xl px-4 py-3 text-sm',
         {
           error: 'bg-error-highlight text-error-shadow',
           success: 'bg-success-highlight text-success-shadow',
@@ -19,8 +19,8 @@ export function FormStatus({
         className,
       )}
     >
-      {type === 'error' && <CircleAlert className="shrink-0" strokeWidth={1.5} size={20} />}
-      {type === 'success' && <CheckCircle className="shrink-0" strokeWidth={1.5} size={20} />}
+      {type === 'error' && <CircleAlert className="shrink-0" size={20} strokeWidth={1.5} />}
+      {type === 'success' && <CheckCircle className="shrink-0" size={20} strokeWidth={1.5} />}
 
       {children}
     </div>
