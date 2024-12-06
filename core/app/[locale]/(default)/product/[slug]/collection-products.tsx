@@ -30,9 +30,11 @@ const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
 //const useAsyncMode = false;
 
 interface Props {
+  productId?: number,
+  brand?: string,
   collection: string,
   products: any[],
-  useDefaultPrices?: boolean
+  useDefaultPrices?: boolean,
 }
 
 function getDiscount(price: number, sale: number): number | null {
@@ -147,7 +149,7 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
   );
 }
 
-export function CollectionProducts({ collection, products, useDefaultPrices = false }: Props) {
+export function CollectionProducts({collection, products, useDefaultPrices = false }: Props) {
   const breakpoints = ["xs:flex", "sm:flex", "md:flex", "lg:flex", "xl:flex", "2xl:flex"];
 
   const [isLoading, setIsLoading] = useState(false);

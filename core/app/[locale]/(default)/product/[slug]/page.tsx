@@ -131,7 +131,7 @@ export default async function ProductPage(props: Props) {
   }
 
   const relatedProducts = await getRelatedProducts(product.entityId);
-  const collectionProducts = await getCollectionProducts(collectionValue);
+  const collectionProducts = await getCollectionProducts(product.entityId, product.brand?.name, collectionValue);
 
   const category = removeEdgesAndNodes(product.categories).at(0);
   if (category?.breadcrumbs?.edges && product?.mpn) {
