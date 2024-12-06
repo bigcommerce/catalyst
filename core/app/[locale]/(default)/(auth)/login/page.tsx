@@ -1,14 +1,9 @@
 import { useTranslations } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-<<<<<<< HEAD
-import { Link } from '~/components/link';
-import { Button } from '~/components/ui/button';
-=======
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { SignInSection } from '@/vibes/soul/sections/sign-in-section';
 import { locales } from '~/i18n/routing';
->>>>>>> 1d4aa1e5 (feat: add soul SignInSection)
 
 import { login } from './_actions/login';
 
