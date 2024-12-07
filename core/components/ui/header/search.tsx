@@ -7,7 +7,7 @@ import { Search as SearchIcon, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { BcImage } from '~/components/bc-image';
+import { Image } from '~/components/image';
 import { Link as CustomLink } from '~/components/link';
 import { cn } from '~/lib/utils';
 
@@ -124,7 +124,7 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
               <div className="me-2 hidden lg:block lg:justify-self-start">
                 <CustomLink className="overflow-hidden text-ellipsis py-3" href="/">
                   {typeof logo === 'object' ? (
-                    <BcImage
+                    <Image
                       alt={logo.altText}
                       className="max-h-16 object-contain"
                       height={32}
@@ -204,7 +204,7 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
                             href={href}
                           >
                             {image ? (
-                              <BcImage
+                              <Image
                                 alt={image.altText}
                                 className="self-start object-contain"
                                 height={80}

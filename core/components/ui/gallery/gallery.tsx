@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-import { BcImage } from '~/components/bc-image';
+import { Image } from '~/components/image';
 import { cn } from '~/lib/utils';
 
 interface Image {
@@ -26,7 +26,7 @@ const Gallery = ({ className, images, defaultImageIndex = 0 }: Props) => {
     <div aria-live="polite" className={className}>
       <figure className="relative aspect-square h-full max-h-[548px] w-full">
         {selectedImage ? (
-          <BcImage
+          <Image
             alt={selectedImage.altText}
             className="h-full w-full object-contain"
             fill
@@ -91,7 +91,7 @@ const Gallery = ({ className, images, defaultImageIndex = 0 }: Props) => {
                 setSelectedImageIndex(index);
               }}
             >
-              <BcImage
+              <Image
                 alt={image.altText}
                 className={cn(
                   'flex h-full w-full cursor-pointer items-center justify-center border-2 object-contain hover:border-primary',

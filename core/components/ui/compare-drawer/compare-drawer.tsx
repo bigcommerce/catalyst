@@ -2,7 +2,7 @@ import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDown, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 
-import { BcImage } from '~/components/bc-image';
+import { Image } from '~/components/image';
 import { Link as CustomLink } from '~/components/link';
 import { usePathname } from '~/i18n/routing';
 
@@ -38,7 +38,7 @@ const Product = ({ product, onDismiss }: { product: Product; onDismiss: () => vo
       key={product.id}
     >
       {product.image ? (
-        <BcImage
+        <Image
           alt={product.image.altText}
           className="object-contain"
           height={48}

@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { Fragment, ReactNode } from 'react';
 
-import { BcImage } from '~/components/bc-image';
+import { Image } from '~/components/image';
 import { Link as CustomLink } from '~/components/link';
 import { cn } from '~/lib/utils';
 
@@ -75,7 +75,7 @@ const Footer = ({
           {Boolean(logo) && (
             <h3>
               {typeof logo === 'object' ? (
-                <BcImage
+                <Image
                   alt={logo.altText}
                   className="max-h-16 object-contain"
                   height={32}
