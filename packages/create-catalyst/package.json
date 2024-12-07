@@ -1,6 +1,6 @@
 {
   "name": "@bigcommerce/create-catalyst",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "type": "module",
   "bin": "bin/index.cjs",
   "files": [
