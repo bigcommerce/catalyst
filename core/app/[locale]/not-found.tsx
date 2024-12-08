@@ -56,9 +56,7 @@ export default async function NotFound() {
         />
       </main>
 
-      <Suspense>
-        <Footer />
-      </Suspense>
+      <Footer />
     </>
   );
 }

@@ -19,9 +19,7 @@ export default async function DefaultLayout({ params, children }: Props) {
 
       <main>{children}</main>
 
-      <Suspense>
-        <Footer />
-      </Suspense>
+      <Footer />
     </>
   );
 }
