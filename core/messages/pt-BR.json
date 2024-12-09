@@ -344,10 +344,10 @@
             "relatedProducts": "Produtos relacionados"
         },
         "Gallery": {
-            "previous": "Previous product image",
-            "next": "Next product image",
-            "thumbnailNavigation": "Thumbnail navigation",
-            "enlarge": "Enlarge product image"
+            "previous": "Imagem do produto anterior",
+            "next": "Próxima imagem do produto",
+            "thumbnailNavigation": "Navegação por miniaturas",
+            "enlarge": "Ampliar imagem do produto"
         },
         "Form": {
             "success": "{cartItems, plural, =1 {1 item} other {# itens}} adicionado(s) <cartLink> ao carrinho</cartLink>",
@@ -447,18 +447,18 @@
                 "items": "Itens do carrinho"
             },
             "Navigation": {
-                "toggle": "Toggle navigation",
-                "navigationMenu": "Navigation menu"
+                "toggle": "Alternar navegação",
+                "navigationMenu": "Menu de navegação"
             },
             "Search": {
-                "openSearchPopup": "Open search popup",
-                "closeSearchPopup": "Close search popup",
-                "searchBar": "Search bar",
+                "openSearchPopup": "Abrir pop-up de pesquisa",
+                "closeSearchPopup": "Fechar pop-up de pesquisa",
+                "searchBar": "Barra de pesquisa",
                 "photo": "Foto",
                 "products": "Produtos",
                 "categories": "Categorias",
                 "brands": "Marcas",
-                "noSearchResults": "Não há resultados para {term}.",
+                "noSearchResults": "Nenhum resultado para “{term}”.",
                 "searchPlaceholder": "Pesquisar...",
                 "clearSearch": "Limpar pesquisa",
                 "processing": "Processando..."
@@ -479,7 +479,7 @@
             "searchProducts": "Pesquisar produtos",
             "searchPlaceholder": "Pesquisar...",
             "search": "Pesquisar",
-            "noSearchResults": "Não há resultados para {term}.",
+            "noSearchResults": "Nenhum resultado para “{term}”.",
             "checkSpelling": "Verifique a ortografia ou tente outra pesquisa."
         },
         "AddToCartButton": {
@@ -499,13 +499,13 @@
             }
         },
         "Slideshow": {
-            "slideshow": "Interactive slide show",
+            "slideshow": "Apresentação de slides interativa",
             "slide": "Slide",
-            "previousSlide": "Previous slide",
-            "nextSlide": "Next slide",
-            "slideNo": "{n} of {total}",
-            "pause": "Pause slideshow",
-            "play": "Play slideshow"
+            "previousSlide": "Slide anterior",
+            "nextSlide": "Próximo slide",
+            "slideNo": "{n} de {total}",
+            "pause": "Pausar apresentação de slides",
+            "play": "Reproduzir apresentação de slides"
         },
         "Pagination": {
             "pagination": "paginação",
@@ -514,10 +514,10 @@
         },
         "Carousel": {
             "carousel": "Carrossel",
-            "previousProducts": "Previous products",
-            "nextProducts": "Next products",
+            "previousProducts": "Produtos anteriores",
+            "nextProducts": "Próximos produtos",
             "slides": "Slides",
-            "goto": "Go to slide {n}"
+            "goto": "Ir para o slide {n}"
         },
         "FormFields": {
             "Validation": {
