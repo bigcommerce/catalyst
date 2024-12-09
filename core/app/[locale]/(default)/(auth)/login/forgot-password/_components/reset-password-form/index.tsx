@@ -8,8 +8,8 @@ import ReCaptcha from 'react-google-recaptcha';
 import {
   AccountState as FormStatus,
   useAccountStatusContext,
-} from '~/app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
-import { SubmitMessagesList } from '~/app/[locale]/(default)/account/(tabs)/_components/submit-messages-list';
+} from '~/app/[locale]/(default)/account/_components/account-status-provider';
+import { SubmitMessagesList } from '~/app/[locale]/(default)/account/_components/submit-messages-list';
 import { type FragmentOf } from '~/client/graphql';
 import { Button } from '~/components/ui/button';
 import {

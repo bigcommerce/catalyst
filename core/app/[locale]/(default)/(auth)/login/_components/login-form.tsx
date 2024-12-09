@@ -17,8 +17,8 @@ import {
 } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 
-import { useAccountStatusContext } from '../../../account/(tabs)/_components/account-status-provider';
-import { SubmitMessagesList } from '../../../account/(tabs)/_components/submit-messages-list';
+import { useAccountStatusContext } from '../../../account/_components/account-status-provider';
+import { SubmitMessagesList } from '../../../account/_components/submit-messages-list';
 import { login } from '../_actions/login';
 
 const SubmitButton = () => {
