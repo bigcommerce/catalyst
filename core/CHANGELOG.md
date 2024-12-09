@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.23.0
+
+### Minor Changes
+
+- [#1639](https://github.com/bigcommerce/catalyst/pull/1639) [`ae2c6cd`](https://github.com/bigcommerce/catalyst/commit/ae2c6cd76b2ccc5c994bd298983cb1665c571d02) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - Add orders for customer account. Now customer can open orders history or move to specific order details.
+
 ## 0.22.1
 
 ### Patch Changes
