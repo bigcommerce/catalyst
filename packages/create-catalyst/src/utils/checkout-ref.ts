@@ -2,7 +2,7 @@ import { execSync } from 'node:child_process';
 
 import { isExecException } from './is-exec-exception';
 
-export function checkoutRef(repoDir: string, ref: string): void {
+export function checkoutRef(repoDir: string, ref: string): boolean {
   try {
     // Attempt to checkout the specified ref
     execSync(`git checkout ${ref}`, {
@@ -11,6 +11,7 @@ export function checkoutRef(repoDir: string, ref: string): void {
       encoding: 'utf8',
     });
     console.log(`Checked out ref ${ref} successfully.`);
+    return true;
   } catch (error: unknown) {
     // Handle the error safely according to ESLint rules
     if (isExecException(error)) {
@@ -35,5 +36,6 @@ export function checkoutRef(repoDir: string, ref: string): void {
 
     // Unknown error type
     console.error(`Unknown error occurred while checking out ref '${ref}'.`);
+    return false;
   }
 }

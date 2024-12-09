@@ -32,6 +32,7 @@ export const create = new Command('create')
   .option('--channel-id <id>', 'BigCommerce channel ID')
   .option('--storefront-token <token>', 'BigCommerce storefront token')
   .option('--gh-ref <ref>', 'Clone a specific ref from the source repository')
+  .option('--reset-main', 'Reset the main branch to the gh-ref')
   .option('--repository <repository>', 'GitHub repository to clone from', 'bigcommerce/catalyst')
   .option('--env <vars...>', 'Arbitrary environment variables to set in .env.local')
   .addOption(
@@ -74,6 +75,7 @@ export const create = new Command('create')
     let accessToken = options.accessToken;
     let channelId;
     let storefrontToken = options.storefrontToken;
+    let resetMain = options.resetMain;
 
     if (options.channelId) {
       channelId = parseInt(options.channelId, 10);
@@ -123,7 +125,7 @@ export const create = new Command('create')
     if (storeHash && channelId && storefrontToken) {
       console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
-      cloneCatalyst({ repository, projectName, projectDir, ghRef });
+      cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain });
 
       writeEnv(projectDir, {
         channelId: channelId.toString(),
@@ -153,7 +155,7 @@ export const create = new Command('create')
     if (!storeHash || !accessToken) {
       console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
-      cloneCatalyst({ repository, projectName, projectDir, ghRef });
+      cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain });
 
       await installDependencies(projectDir);
 
@@ -254,7 +256,7 @@ export const create = new Command('create')
 
     console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
-    cloneCatalyst({ repository, projectName, projectDir, ghRef });
+    cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain });
 
     writeEnv(projectDir, {
       channelId: channelId.toString(),
