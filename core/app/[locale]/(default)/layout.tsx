@@ -1,5 +1,5 @@
 import { setRequestLocale } from 'next-intl/server';
-import { PropsWithChildren, Suspense } from 'react';
+import { PropsWithChildren } from 'react';
 
 import { Footer } from '~/components/footer/footer';
 import { Header } from '~/components/header';
@@ -19,9 +19,7 @@ export default async function DefaultLayout({ params, children }: Props) {
 
       <main>{children}</main>
 
-      <Suspense>
-        <Footer />
-      </Suspense>
+      <Footer />
     </>
   );
 }
