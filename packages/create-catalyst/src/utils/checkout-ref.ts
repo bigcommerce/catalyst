@@ -11,6 +11,7 @@ export function checkoutRef(repoDir: string, ref: string): boolean {
       encoding: 'utf8',
     });
     console.log(`Checked out ref ${ref} successfully.`);
+
     return true;
   } catch (error: unknown) {
     // Handle the error safely according to ESLint rules
@@ -36,6 +37,7 @@ export function checkoutRef(repoDir: string, ref: string): boolean {
 
     // Unknown error type
     console.error(`Unknown error occurred while checking out ref '${ref}'.`);
+
     return false;
   }
 }
