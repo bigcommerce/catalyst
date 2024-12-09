@@ -14,13 +14,12 @@ import { schema } from './schema';
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
 export type ForgotPasswordAction = Action<
-  (SubmissionResult & { successMessage?: string }) | null,
+  { lastResult: SubmissionResult | null; successMessage?: string },
   FormData
 >;
 
 interface Props {
   action: ForgotPasswordAction;
-  recaptchaSiteKey?: string;
   emailLabel?: string;
   submitLabel?: string;
 }
@@ -30,7 +29,7 @@ export function ForgotPasswordForm({
   emailLabel = 'Email',
   submitLabel = 'Reset password',
 }: Props) {
-  const [lastResult, formAction] = useActionState(action, null);
+  const [{ lastResult, successMessage }, formAction] = useActionState(action, { lastResult: null });
   const [form, fields] = useForm({
     lastResult,
     constraint: getZodConstraint(schema),
@@ -55,8 +54,8 @@ export function ForgotPasswordForm({
           {error}
         </FormStatus>
       ))}
-      {form.status === 'success' && lastResult?.successMessage != null && (
-        <FormStatus>{lastResult.successMessage}</FormStatus>
+      {form.status === 'success' && successMessage != null && (
+        <FormStatus>{successMessage}</FormStatus>
       )}
     </form>
   );
