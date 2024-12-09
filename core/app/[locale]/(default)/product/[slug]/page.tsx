@@ -113,7 +113,6 @@ export default async function ProductPage(props: Props) {
 
   const productMpn = product?.mpn;
 
-  console.log('Product MPN===================================:', JSON.stringify(productMpn));
 
   if (!product) {
     return notFound();
