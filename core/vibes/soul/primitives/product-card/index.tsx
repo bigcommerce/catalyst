@@ -2,7 +2,7 @@ import { clsx } from 'clsx';
 
 import { Badge } from '@/vibes/soul/primitives/badge';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
-import { BcImage as Image } from '~/components/bc-image';
+import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 
 import { Compare } from './compare';
