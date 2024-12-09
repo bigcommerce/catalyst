@@ -1,7 +1,7 @@
 'use client';
 
 import { useLocale } from 'next-intl';
-import { ComponentPropsWithRef, ElementRef, forwardRef, useReducer } from 'react';
+import { ComponentPropsWithRef, ComponentRef, forwardRef, useReducer } from 'react';
 
 import { cn } from '~/lib/utils';
 
@@ -26,7 +26,7 @@ type Props = NextLinkProps & PrefetchOptions;
  * prefetch behavior and 'auto' for prefetch kind. This approach provides a balance between optimizing
  * page load performance and resource usage. https://nextjs.org/docs/app/api-reference/components/link#prefetch
  */
-export const Link = forwardRef<ElementRef<'a'>, Props>(
+export const Link = forwardRef<ComponentRef<'a'>, Props>(
   (
     { href, prefetch = 'hover', prefetchKind = 'auto', children, className, locale, ...rest },
     ref,
@@ -42,10 +42,18 @@ export const Link = forwardRef<ElementRef<'a'>, Props>(
         return;
       }
 
-      // PrefetchKind enum is not exported
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      router.prefetch(String(href), { kind: prefetchKind });
+      if (typeof href === 'string') {
+        // PrefetchKind enum is not exported
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        router.prefetch(href, { kind: prefetchKind });
+      } else {
+        // PrefetchKind enum is not exported
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        router.prefetch(href.href, { kind: prefetchKind });
+      }
+
       setPrefetched();
     };
 

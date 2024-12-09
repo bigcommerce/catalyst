@@ -2,7 +2,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import {
   ComponentPropsWithRef,
-  ElementRef,
+  ComponentRef,
   forwardRef,
   useImperativeHandle,
   useRef,
@@ -34,9 +34,9 @@ const getDefaultValue = (defaultValue: number | '', min: number, max: number) =>
   return defaultValue;
 };
 
-type CounterRef = ElementRef<'input'> | null;
+type CounterRef = ComponentRef<'input'> | null;
 
-const Counter = forwardRef<ElementRef<'input'>, Props>(
+const Counter = forwardRef<ComponentRef<'input'>, Props>(
   (
     {
       children,
