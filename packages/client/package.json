@@ -16,16 +16,16 @@
     "dist"
   ],
   "dependencies": {
-    "@0no-co/graphql.web": "^1.0.11",
+    "@0no-co/graphql.web": "^1.0.12",
     "std-env": "^3.8.0"
   },
   "devDependencies": {
-    "@bigcommerce/eslint-config": "^2.9.1",
+    "@bigcommerce/eslint-config": "^2.10.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@types/node": "^20.17.9",
     "dotenv-cli": "^7.4.4",
     "eslint": "^8.57.1",
-    "prettier": "^3.4.1",
+    "prettier": "^3.4.2",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2"
   }
