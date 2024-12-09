@@ -33,9 +33,10 @@ export const cloneCatalyst = ({
 
   if (ghRef) {
     if (resetMain) {
-      return resetBranchToRef(projectDir, 'main', ghRef);
+      resetBranchToRef(projectDir, 'main', ghRef);
+      return;
     }
-    
+
     checkoutRef(projectDir, ghRef);
 
     console.log();
