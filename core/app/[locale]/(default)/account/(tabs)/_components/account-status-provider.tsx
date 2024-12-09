@@ -4,9 +4,14 @@ import { createContext, ReactNode, useContext, useEffect, useState } from 'react
 
 import { usePathname } from '~/i18n/routing';
 
-import { State as AccountState } from '../settings/change-password/_actions/change-password';
+// import { State as AccountState } from '../settings/change-password/_actions/change-password';
 
-const defaultState: AccountState = { status: 'idle', message: '' };
+export interface AccountState {
+  status: 'idle' | 'error' | 'success';
+  messages: string[];
+}
+
+const defaultState: AccountState = { status: 'idle', messages: [''] };
 
 export const AccountStatusContext = createContext<{
   accountState: AccountState;

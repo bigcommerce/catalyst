@@ -62,30 +62,28 @@ export const changePassword = async (_previousState: unknown, formData: FormData
     const result = response.data.customer.resetPassword;
 
     if (result.errors.length === 0) {
-      return { status: 'success', message: '' };
+      return { status: 'success', messages: [''] };
     }
 
     return {
       status: 'error',
-      message: result.errors.map((error) => error.message).join('\n'),
+      messages: result.errors.map((error) => error.message),
     };
   } catch (error: unknown) {
     if (error instanceof ZodError) {
       return {
         status: 'error',
-        message: error.issues
-          .map(({ path, message }) => `${path.toString()}: ${message}.`)
-          .join('\n'),
+        messages: error.issues.map(({ path, message }) => `${path.toString()}: ${message}.`),
       };
     }
 
     if (error instanceof Error) {
       return {
         status: 'error',
-        message: error.message,
+        messages: [error.message],
       };
     }
 
-    return { status: 'error', message: t('Errors.error') };
+    return { status: 'error', messages: [t('Errors.error')] };
   }
 };

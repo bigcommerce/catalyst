@@ -5,7 +5,10 @@ import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
-import { useAccountStatusContext } from '~/app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
+import {
+  AccountState as FormStatus,
+  useAccountStatusContext,
+} from '~/app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
 import { ExistingResultType } from '~/client/util';
 import {
   Checkboxes,
@@ -35,15 +38,10 @@ import { Button } from '~/components/ui/button';
 import { Field, Form, FormSubmit } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 
-import { SubmitErrorsList } from '../../../account/(tabs)/_components/submit-errors-list';
+import { SubmitMessagesList } from '../../../account/(tabs)/_components/submit-messages-list';
 import { login } from '../_actions/login';
 import { registerCustomer } from '../_actions/register-customer';
 import { getRegisterCustomerQuery } from '../page-data';
-
-interface FormStatus {
-  status: 'success' | 'error';
-  messages: string[];
-}
 
 type CustomerFields = ExistingResultType<typeof getRegisterCustomerQuery>['customerFields'];
 type AddressFields = ExistingResultType<typeof getRegisterCustomerQuery>['addressFields'];
@@ -225,7 +223,7 @@ export const RegisterCustomerForm = ({
     const submit = await registerCustomer({ formData, reCaptchaToken });
 
     if (submit.status === 'success') {
-      setAccountState({ status: 'success' });
+      setAccountState({ status: 'success', messages: [''] });
 
       await login(formData);
     }
@@ -242,9 +240,9 @@ export const RegisterCustomerForm = ({
 
   return (
     <>
-      {formStatus && (
+      {formStatus && formStatus.status !== 'idle' && (
         <Message className="mb-8" variant={formStatus.status}>
-          <SubmitErrorsList errors={formStatus.messages} />
+          <SubmitMessagesList messages={formStatus.messages} />
         </Message>
       )}
       <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>

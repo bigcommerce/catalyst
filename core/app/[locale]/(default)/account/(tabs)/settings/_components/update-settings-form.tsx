@@ -33,6 +33,8 @@ import { Button } from '~/components/ui/button';
 import { Field, Form, FormSubmit } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 
+import { AccountState as FormStatus } from '../../_components/account-status-provider';
+import { SubmitMessagesList } from '../../_components/submit-messages-list';
 import { updateCustomer } from '../_actions/update-customer';
 import { getCustomerSettingsQuery } from '../page-data';
 
@@ -50,11 +52,6 @@ interface FormProps {
     isEnabledOnStorefront: boolean;
     siteKey: string;
   };
-}
-
-interface FormStatus {
-  status: 'success' | 'error';
-  message: string;
 }
 
 interface SumbitMessages {
@@ -190,12 +187,12 @@ export const UpdateSettingsForm = ({
     if (submit.status === 'success') {
       setFormStatus({
         status: 'success',
-        message: t('successMessage'),
+        messages: [t('successMessage')],
       });
     }
 
     if (submit.status === 'error') {
-      setFormStatus({ status: 'error', message: submit.error ?? '' });
+      setFormStatus({ status: 'error', messages: submit.errors ?? [''] });
     }
 
     window.scrollTo({
@@ -206,9 +203,9 @@ export const UpdateSettingsForm = ({
 
   return (
     <>
-      {formStatus && (
+      {formStatus && formStatus.status !== 'idle' && (
         <Message className="mx-auto" variant={formStatus.status}>
-          <p>{formStatus.message}</p>
+          <SubmitMessagesList messages={formStatus.messages} />
         </Message>
       )}
       <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>

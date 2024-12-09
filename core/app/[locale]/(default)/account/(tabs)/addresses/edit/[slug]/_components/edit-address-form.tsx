@@ -37,16 +37,15 @@ import { Field, Form, FormSubmit } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 import { useRouter } from '~/i18n/routing';
 
-import { useAccountStatusContext } from '../../../../_components/account-status-provider';
+import {
+  AccountState as FormStatus,
+  useAccountStatusContext,
+} from '../../../../_components/account-status-provider';
 import { Modal } from '../../../../_components/modal';
+import { SubmitMessagesList } from '../../../../_components/submit-messages-list';
 import { deleteAddress } from '../../../_actions/delete-address';
 import { updateAddress } from '../_actions/update-address';
 import { CustomerEditAddressQueryResult } from '../page';
-
-interface FormStatus {
-  status: 'success' | 'error';
-  message: string;
-}
 
 type Address = NonNullable<
   NonNullable<CustomerEditAddressQueryResult['customer']>['addresses']['edges']
@@ -130,7 +129,7 @@ export const EditAddressForm = ({
   const { setAccountState } = useAccountStatusContext();
 
   useEffect(() => {
-    setAccountState({ status: 'idle' });
+    setAccountState({ status: 'idle', messages: [''] });
   }, [setAccountState]);
 
   const [textInputValid, setTextInputValid] = useState<Record<string, boolean>>({});
@@ -211,7 +210,7 @@ export const EditAddressForm = ({
     if (submit.status === 'success') {
       setAccountState({
         status: 'success',
-        message: submit.message || '',
+        messages: submit.messages || [''],
       });
 
       router.push('/account/addresses');
@@ -220,7 +219,7 @@ export const EditAddressForm = ({
     }
 
     if (submit.status === 'error') {
-      setFormStatus({ status: 'error', message: submit.message || '' });
+      setFormStatus({ status: 'error', messages: submit.messages || [''] });
     }
 
     window.scrollTo({
@@ -233,11 +232,11 @@ export const EditAddressForm = ({
     const submit = await deleteAddress(address.entityId);
 
     if (submit.status === 'success') {
-      setAccountState({ status: submit.status, message: submit.message || '' });
+      setAccountState({ status: submit.status, messages: submit.messages || [''] });
     }
 
     if (submit.status === 'error') {
-      setAccountState({ status: submit.status, message: submit.message || '' });
+      setAccountState({ status: submit.status, messages: submit.messages || [''] });
     }
 
     router.push('/account/addresses');
@@ -245,9 +244,9 @@ export const EditAddressForm = ({
 
   return (
     <>
-      {formStatus && (
+      {formStatus && formStatus.status !== 'idle' && (
         <Message className="mx-auto mb-8 w-full" variant={formStatus.status}>
-          <p>{formStatus.message}</p>
+          <SubmitMessagesList messages={formStatus.messages} />
         </Message>
       )}
       <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>

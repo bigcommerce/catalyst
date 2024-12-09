@@ -11,6 +11,7 @@ import { useRouter } from '~/i18n/routing';
 
 import { useAccountStatusContext } from '../../_components/account-status-provider';
 import { Modal } from '../../_components/modal';
+import { SubmitMessagesList } from '../../_components/submit-messages-list';
 import { deleteAddress } from '../_actions/delete-address';
 import { getCustomerAddresses } from '../page-data';
 
@@ -31,7 +32,7 @@ const AddressChangeButtons = ({ addressId, isAddressRemovable }: AddressChangePr
     if (submit.status === 'success') {
       setAccountState({
         status: 'success',
-        message: submit.message || '',
+        messages: submit.messages || [''],
       });
     }
   };
@@ -78,7 +79,7 @@ export const AddressBook = ({
     <>
       {(accountState.status === 'error' || accountState.status === 'success') && (
         <Message className="mb-8 w-full text-gray-500" variant={accountState.status}>
-          <p>{accountState.message}</p>
+          <SubmitMessagesList messages={accountState.messages} />
         </Message>
       )}
       {!addressesCount && <p className="border-t py-12 text-center">{t('emptyAddresses')}</p>}

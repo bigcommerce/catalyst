@@ -20,6 +20,7 @@ import {
 import { Message } from '~/components/ui/message';
 
 import { useAccountStatusContext } from '../../../_components/account-status-provider';
+import { SubmitMessagesList } from '../../../_components/submit-messages-list';
 import { changePassword } from '../_actions/change-password';
 
 const ChangePasswordFieldsSchema = z.object({
@@ -99,7 +100,7 @@ export const ChangePasswordForm = () => {
   const t = useTranslations('Account.Settings.ChangePassword');
   const [state, formAction] = useActionState(changePassword, {
     status: 'idle',
-    message: '',
+    messages: [''],
   });
 
   const [isCurrentPasswordValid, setIsCurrentPasswordValid] = useState(true);
@@ -114,20 +115,10 @@ export const ChangePasswordForm = () => {
 
       setAccountState({
         status: 'success',
-        message: t('confirmChangePassword'),
+        messages: [t('confirmChangePassword')],
       });
     }
   }, [state, setAccountState, t]);
-
-  let messageText = '';
-
-  if (state.status === 'error') {
-    messageText = state.message;
-  }
-
-  if (state.status === 'success') {
-    messageText = state.message;
-  }
 
   const handleCurrentPasswordChange = (e: ChangeEvent<HTMLInputElement>) =>
     setIsCurrentPasswordValid(!e.target.validity.valueMissing);
@@ -159,7 +150,7 @@ export const ChangePasswordForm = () => {
     <>
       {state.status === 'error' && (
         <Message className="mb-8 w-full text-gray-500" variant={state.status}>
-          <p>{messageText}</p>
+          <SubmitMessagesList messages={state.messages} />
         </Message>
       )}
 

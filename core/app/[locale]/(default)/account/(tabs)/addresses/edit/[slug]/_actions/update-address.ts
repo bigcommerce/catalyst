@@ -17,6 +17,9 @@ const UpdateCustomerAddressMutation = graphql(`
       updateCustomerAddress(input: $input, reCaptchaV2: $reCaptchaV2) {
         errors {
           __typename
+          ... on AddressDoesNotExistError {
+            message
+          }
           ... on CustomerAddressUpdateError {
             message
           }
@@ -69,7 +72,7 @@ export const updateAddress = async ({
     if (!isUpdateCustomerAddressInput(parsed)) {
       return {
         status: 'error',
-        error: t('Errors.inputError'),
+        errors: [t('Errors.inputError')],
       };
     }
 
@@ -91,29 +94,21 @@ export const updateAddress = async ({
     revalidatePath('/account/addresses', 'page');
 
     if (result.errors.length === 0) {
-      return { status: 'success', message: t('success') };
+      return { status: 'success', messages: [t('success')] };
     }
 
     return {
       status: 'error',
-      message: result.errors
-        .map((error) => {
-          if (error.__typename === 'AddressDoesNotExistError') {
-            return t('Errors.notFound');
-          }
-
-          return error.message;
-        })
-        .join('\n'),
+      messages: result.errors.map((error) => error.message),
     };
   } catch (error: unknown) {
     if (error instanceof Error) {
       return {
         status: 'error',
-        message: error.message,
+        messages: [error.message],
       };
     }
 
-    return { status: 'error', message: t('Errors.error') };
+    return { status: 'error', messages: [t('Errors.error')] };
   }
 };
