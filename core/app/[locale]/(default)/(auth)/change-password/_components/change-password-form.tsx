@@ -17,8 +17,8 @@ import {
 import { Message } from '~/components/ui/message';
 import { useRouter } from '~/i18n/routing';
 
-import { useAccountStatusContext } from '../../../account/(tabs)/_components/account-status-provider';
-import { SubmitMessagesList } from '../../../account/(tabs)/_components/submit-messages-list';
+import { useAccountStatusContext } from '../../../account/_components/account-status-provider';
+import { SubmitMessagesList } from '../../../account/_components/submit-messages-list';
 import { changePassword } from '../_actions/change-password';
 
 interface Props {

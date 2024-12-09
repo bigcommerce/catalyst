@@ -8,7 +8,7 @@ import ReCaptcha from 'react-google-recaptcha';
 import {
   AccountState as FormStatus,
   useAccountStatusContext,
-} from '~/app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
+} from '~/app/[locale]/(default)/account/_components/account-status-provider';
 import { ExistingResultType } from '~/client/util';
 import {
   Checkboxes,
@@ -38,7 +38,7 @@ import { Button } from '~/components/ui/button';
 import { Field, Form, FormSubmit } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 
-import { SubmitMessagesList } from '../../../account/(tabs)/_components/submit-messages-list';
+import { SubmitMessagesList } from '../../../account/_components/submit-messages-list';
 import { login } from '../_actions/login';
 import { registerCustomer } from '../_actions/register-customer';
 import { getRegisterCustomerQuery } from '../page-data';

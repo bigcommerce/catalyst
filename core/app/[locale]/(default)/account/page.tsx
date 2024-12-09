@@ -5,7 +5,7 @@ import { ReactNode } from 'react';
 
 import { Link } from '~/components/link';
 
-import { AccountNotification } from './(tabs)/_components/account-notification';
+import { AccountNotification } from './_components/account-notification';
 
 interface AccountItem {
   children: ReactNode;
