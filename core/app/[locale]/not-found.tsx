@@ -1,6 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getTranslations } from 'next-intl/server';
-import { Suspense } from 'react';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
@@ -56,9 +55,7 @@ export default async function NotFound() {
         />
       </main>
 
-      <Suspense>
-        <Footer />
-      </Suspense>
+      <Footer />
     </>
   );
 }
