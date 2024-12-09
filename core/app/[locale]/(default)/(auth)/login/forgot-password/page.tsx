@@ -10,20 +10,18 @@ import { ForgotPasswordSection } from '@/vibes/soul/sections/forgot-password-sec
 import { resetPassword } from './_actions/reset-password';
 
 // TODO: add recaptcha token
-// const ResetPageQuery = graphql(
-//   `
-//     query ResetPageQuery {
-//       site {
-//         settings {
-//           reCaptcha {
-//             ...ResetPasswordFormFragment
-//           }
+// const ResetPageQuery = graphql(`
+//   query ResetPageQuery {
+//     site {
+//       settings {
+//         reCaptcha {
+//           isEnabledOnStorefront
+//           siteKey
 //         }
 //       }
 //     }
-//   `,
-//   [ResetPasswordFormFragment],
-// );
+//   }
+// `);
 
 export async function generateMetadata() {
   const t = await getTranslations('Login.ForgotPassword');
