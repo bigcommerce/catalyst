@@ -1,7 +1,7 @@
 import { execSync } from 'node:child_process';
 
-import { isExecException } from './is-exec-exception';
 import { checkoutRef } from './checkout-ref';
+import { isExecException } from './is-exec-exception';
 
 export function resetBranchToRef(repoDir: string, targetBranch: string, ref: string): void {
   try {
