@@ -45,6 +45,7 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
           onInvalid={onChange}
           required={field.isRequired}
           type="password"
+          className='[&_input]:tracking-[0.5px]'
         />
       </FieldControl>
       <div className="relative h-7 pass1">

@@ -136,7 +136,7 @@ export default async function Login({ params }: Props) {
               Shopping for a Business?
             </p>
 
-            <button className="box-border flex max-w-[258px] flex-row items-center justify-center gap-1 rounded border border-[#B4DDE9] bg-white px-6 py-2">
+            <button className="box-border flex max-w-[258px] flex-row items-center justify-center gap-1 rounded border border-[#4EAECC] xl:border-[#B4DDE9] bg-white px-6 py-2">
               <div className="flex items-center text-[14px] font-medium tracking-wide text-[#002A37]">
                 <Link className="text-[16px]" href="/trade-account/trade-step1/">OPEN A TRADE ACCOUNT</Link>
               </div>
@@ -148,11 +148,11 @@ export default async function Login({ params }: Props) {
         </div>
 
         <div className="login-div mx-auto mb-6 flex w-full flex-col justify-center lg:gap-[4.5rem] xl:w-[80%] xl:flex-row">
-          <div className="login-first-child login-logo mx-[1px] flex w-[calc(90vw)] flex-grow flex-col xl:w-[calc(35.28vw)]">
+          <div className="login-first-child login-logo mx-[1px] flex w-[calc(90vw)] flex-grow flex-col xl:w-[calc(35.28vw)] self-center xl:self-auto">
             <LoginForm {...imageIconList} passwordHide={passwordHide} />
           </div>
 
-          <div className="login-sec-child mx-[1px] mt-[7em] flex w-[calc(90vw)] flex-grow flex-col gap-[20px] rounded-[5px] p-0 sm:mt-[7em] xl:mt-0 xl:w-[calc(35.28vw)] xl:items-center">
+          <div className="login-sec-child mx-[1px] mt-[7em] flex w-[calc(90vw)] flex-grow flex-col gap-[20px] self-center xl:self-auto rounded-[5px] p-0 sm:mt-[7em] xl:mt-0 xl:w-[calc(35.28vw)] xl:items-center">
             <div className="flex w-full flex-col gap-[20px] rounded-[5px] bg-[#008BB7] p-[40px] text-white">
               <h3 className="flex items-center justify-center text-center text-[34px] font-bold tracking-[0.25px]">
                 {t('CreateAccount.heading')}

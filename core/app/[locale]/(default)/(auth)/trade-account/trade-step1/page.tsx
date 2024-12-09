@@ -104,7 +104,7 @@ const testimonials: TestimonialData[] = [
     imageSrc: imageManagerImageUrl('quorem-trade.png', 'original'),
     imageAlt: 'Fast Shipping',
     testimonial:
-      '1StopLighting.com has been an invaluable partner for Quorum Brands, consistently exceeding our expectations as the go-to resource for builders, electricians, and lighting professionals.',
+      '"1StopLighting.com has been an invaluable partner for Quorum Brands, consistently exceeding our expectations as the go-to resource for builders, electricians, and lighting professionals."',
     name: 'Field Bradford',
     position: 'National Sales Manager',
   },
@@ -112,7 +112,7 @@ const testimonials: TestimonialData[] = [
     imageSrc: imageManagerImageUrl('quoizel-trade.png', 'original'),
     imageAlt: 'Reliable Support',
     testimonial:
-      'Belami not only offers top-tier products within the Pro category, seamlessly blending functionality and design, but also ensures unparalleled customer service, responsiveness, and expertise.',
+      '"Belami not only offers top-tier products within the Pro category, seamlessly blending functionality and design, but also ensures unparalleled customer service, responsiveness, and expertise."',
     name: 'Howard Greenberg',
     position: 'Director of Sales',
   },
@@ -120,7 +120,7 @@ const testimonials: TestimonialData[] = [
     imageSrc: imageManagerImageUrl('maxim-trade.jpg', 'original'),
     imageAlt: 'Quality Products',
     testimonial:
-      "Maxim/ET2 has a well-established professional relationship with the Belami team. They have proven to be a top tier partner working alongside trade professionals and helping grow a client's business.",
+      '"Maxim/ET2 has a well-established professional relationship with the Belami team. They have proven to be a top tier partner working alongside trade professionals and helping grow a client\'s business."',
     name: 'Jason Eberhardt',
     position: 'National E-commerce Accounting Manager',
   },
