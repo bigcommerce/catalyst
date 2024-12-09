@@ -507,6 +507,12 @@
     "Footer": {
       "socialMediaLinks": "Social media links"
     },
+    "Subscribe": {
+      "title": "Sign up for our newsletter",
+      "placeholder": "Enter your email",
+      "description": "Stay up to date with the latest news and offers from our store.",
+      "success": "Thank you for your interest! Newsletter feature is coming soon!"
+    },
     "Breadcrumb": {
       "breadcrumb": "Breadcrumb"
     },
