@@ -38,11 +38,6 @@
       "title": "Our best sellers",
       "description": "Our best selling products are here. Check out what's popular in store.",
       "cta": "See all"
-    },
-    "Subscribe": {
-      "title": "Sign up for our newsletter",
-      "placeholder": "Enter your email",
-      "description": "Stay up to date with the latest news and offers from our store."
     }
   },
   "ChangePassword": {
@@ -511,6 +506,12 @@
     },
     "Footer": {
       "socialMediaLinks": "Social media links"
+    },
+    "Subscribe": {
+      "title": "Sign up for our newsletter",
+      "placeholder": "Enter your email",
+      "description": "Stay up to date with the latest news and offers from our store.",
+      "success": "Thanks for your interest! Newsletter feature is coming soon!"
     },
     "Breadcrumb": {
       "breadcrumb": "Breadcrumb"

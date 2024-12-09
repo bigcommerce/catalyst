@@ -4,10 +4,10 @@ import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform
 import { parseWithZod } from '@conform-to/zod';
 import { clsx } from 'clsx';
 import { ArrowRight } from 'lucide-react';
-import { useActionState, useEffect } from 'react';
+import { useActionState } from 'react';
 
-import { ErrorMessage } from '../../form/error-message';
-import { Button } from '../button';
+import { FormStatus } from '@/vibes/soul/form/form-status';
+import { Button } from '@/vibes/soul/primitives/button';
 
 import { schema } from './schema';
 
@@ -25,9 +25,11 @@ export function InlineEmailForm({
   className?: string;
   placeholder?: string;
   submitLabel?: string;
-  action: Action<SubmissionResult | null, FormData>;
+  action: Action<{ lastResult: SubmissionResult | null; successMessage?: string }, FormData>;
 }) {
-  const [lastResult, formAction, isPending] = useActionState(action, null);
+  const [{ lastResult, successMessage }, formAction, isPending] = useActionState(action, {
+    lastResult: null,
+  });
 
   const [form, fields] = useForm({
     lastResult,
@@ -37,12 +39,6 @@ export function InlineEmailForm({
     shouldValidate: 'onSubmit',
     shouldRevalidate: 'onInput',
   });
-
-  useEffect(() => {
-    if (lastResult?.error) {
-      console.log(lastResult.error);
-    }
-  }, [lastResult]);
 
   const { errors = [] } = fields.email;
 
@@ -57,6 +53,7 @@ export function InlineEmailForm({
         <input
           {...getInputProps(fields.email, { type: 'email' })}
           className="placeholder-contrast-gray-500 h-14 w-full bg-transparent pl-5 pr-16 text-foreground placeholder:font-normal focus:outline-none"
+          data-1p-ignore
           key={fields.email.id}
           placeholder={placeholder}
         />
@@ -73,8 +70,13 @@ export function InlineEmailForm({
         </div>
       </div>
       {errors.map((error, index) => (
-        <ErrorMessage key={index}>{error}</ErrorMessage>
+        <FormStatus key={index} type="error">
+          {error}
+        </FormStatus>
       ))}
+      {form.status === 'success' && successMessage != null && (
+        <FormStatus>{successMessage}</FormStatus>
+      )}
     </form>
   );
 }
