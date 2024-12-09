@@ -1,7 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { Subscribe } from '@/vibes/soul/sections/subscribe';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
@@ -10,6 +9,7 @@ import { FeaturedProductsCarousel } from '~/components/featured-products-carouse
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
 import { FeaturedProductsList } from '~/components/featured-products-list';
 import { FeaturedProductsListFragment } from '~/components/featured-products-list/fragment';
+import { Subscribe } from '~/components/subscribe';
 
 import { Slideshow } from './_components/slideshow';
 
@@ -76,18 +76,7 @@ export default async function Home({ params }: Props) {
         title={t('NewestProducts.title')}
       />
 
-      <Subscribe
-        // eslint-disable-next-line @typescript-eslint/require-await
-        action={async () => {
-          'use server';
-
-          // TODO: Subscribe API is not yet implemented, add at a later date
-          return null;
-        }}
-        description={t('Subscribe.description')}
-        placeholder={t('Subscribe.placeholder')}
-        title={t('Subscribe.title')}
-      />
+      <Subscribe />
     </>
   );
 }
