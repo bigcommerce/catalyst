@@ -9,7 +9,7 @@ export const SubmitButton = () => {
 
   return (
     <Button
-      className="w-full items-center px-8 py-2 mt-6 tracking-widest bg-sky-600 text-white"
+      className="w-full items-center px-8 py-2 tracking-widest bg-sky-600 text-white"
       loading={pending}
       loadingText={t('spinnerText')}
       variant="secondary"
