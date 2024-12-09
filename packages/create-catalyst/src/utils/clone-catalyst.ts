@@ -37,6 +37,7 @@ export const cloneCatalyst = ({
     } else {
       checkoutRef(projectDir, ghRef);
     }
+
     console.log();
   }
 };
