@@ -33,13 +33,13 @@ export async function generateStaticParams() {
     );
 }
 
-export default async function CatchAllPage(props: Props) {
-  const params: any = await props.params;
-  const path = `/${params.rest.join('/')}`;
+export default async function CatchAllPage({ params }: { params: Promise<CatchAllParams> }) {
+  const { rest, locale } = await params;
+  const path = `/${rest.join('/')}`;
 
   const snapshot = await client.getPageSnapshot(path, {
     siteVersion: getSiteVersion(),
-    locale: params.locale === defaultLocale ? undefined : params.locale,
+    locale: locale === defaultLocale ? undefined : locale,
   });
 
   if (snapshot == null) return notFound();

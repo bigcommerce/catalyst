@@ -26,6 +26,8 @@ import { PayPalIcon } from './payment-icons/paypal';
 import { VisaIcon } from './payment-icons/visa';
 import { Link as CustomLink } from '~/components/link';
 
+import { imageManagerImageUrl } from '~/lib/store-assets';
+
 const socialIcons: Record<string, { icon: JSX.Element; link: string }> = {
   Pinterest: {
     icon: <SiPinterest title="pinterest" color="#ffffff" />,
@@ -41,6 +43,14 @@ const socialIcons: Record<string, { icon: JSX.Element; link: string }> = {
 };
 
 export const Footer = async () => {
+  const bbbIcon = imageManagerImageUrl('bbb.png', '63w');
+  const payPalIcon = imageManagerImageUrl('paypalfooter.png', '34w');
+  const visaIcon = imageManagerImageUrl('visa.png', '34w');
+  const paymentIcon = imageManagerImageUrl('payment-icon.png', '34w');
+  const discoverIcon = imageManagerImageUrl('discover.png', '34w');
+  const amexIcon = imageManagerImageUrl('amex.png', '34w');
+  const brainTreeIcon = imageManagerImageUrl('braintree.png', '89w');
+
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data: response } = await client.fetch({
@@ -103,7 +113,7 @@ export const Footer = async () => {
                   type="email"
                   name="email"
                   placeholder="Enter your email"
-                  className="subscription-input !placeholder:pl-[8px] h-[40px] w-[14.6em] pl-[12px] text-left tracking-[0.25px] text-[#6b7280] placeholder:text-[14px] placeholder:font-normal placeholder:leading-[24px] focus:outline-none"
+                  className="subscription-input !placeholder:pl-[8px] h-[40px] w-[14em] pl-[12px] text-left tracking-[0.25px] text-[#6b7280] placeholder:text-[14px] placeholder:font-normal placeholder:leading-[24px] focus:outline-none"
                   required
                 />
                 <button
@@ -168,12 +178,22 @@ export const Footer = async () => {
         }
         logo={data.settings ? logoTransformer(data.settings) : undefined}
         paymentIcons={[
-          <AmazonIcon key="amazon" />,
-          <AmericanExpressIcon key="americanExpress" />,
-          <ApplePayIcon key="apple" />,
-          <MastercardIcon key="mastercard" />,
-          <PayPalIcon key="paypal" />,
-          <VisaIcon key="visa" />,
+          // <AmazonIcon key="amazon" />,
+          // <AmericanExpressIcon key="americanExpress" />,
+          // <ApplePayIcon key="apple" />,
+          // <MastercardIcon key="mastercard" />,
+          // <PayPalIcon key="paypal" />,
+          // <VisaIcon key="visa" />,
+
+          <div className="flex items-center gap-[10px]">
+            <img src={bbbIcon} className='w-[63px] h-[24px]' alt="payment images" width={63} height={24} />
+            <img src={payPalIcon} className='w-[34px] h-[24px]' alt="payment images" width={34} height={24}/>
+            <img src={visaIcon} className='w-[34px] h-[24px]' alt="payment images" width={34} height={24}/>
+            <img src={paymentIcon} className='w-[34px] h-[24px]' alt="payment images" width={34} height={24}/>
+            <img src={discoverIcon} className='w-[34px] h-[24px]' alt="payment images"width={34} height={24} />
+            <img src={amexIcon} className='w-[34px] h-[24px]' alt="payment images" width={34} height={24}/>
+            <img src={brainTreeIcon} className='w-[89px] h-[24px]' alt="payment images" width={89} height={24} />
+          </div>,
         ]}
         sections={sections}
       />

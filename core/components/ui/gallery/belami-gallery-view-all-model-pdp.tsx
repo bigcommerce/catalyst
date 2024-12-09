@@ -104,7 +104,7 @@ const GalleryModel = ({
               <div
                 key={index}
                 className={`cursor-pointer border-2 ${
-                  index === validIndex ? 'border-black' : 'border-transparent'
+                  index === validIndex ? 'border-[#03465C]' : 'border-transparent'
                 }`}
                 onClick={() => onSelectImage(index)}
               >

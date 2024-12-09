@@ -25,65 +25,24 @@ import { login, getRememberMeCookie, deleteRememberCookie } from '../_actions/lo
 import { IconProps } from '../../fragments';
 import { cn } from '~/lib/utils';
 
-interface LoginFormProps extends IconProps {
-  passwordHide: string;
-}
-
-const PasswordInput = ({
-  error,
-  onChange,
-  onInvalid,
-  required,
-}: {
-  error: boolean;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  onInvalid: (e: ChangeEvent<HTMLInputElement>) => void;
-  required: boolean;
-}) => {
-  return (
-    <div className="login-input relative !mt-[0px] h-[44px] w-full">
-      <input
-        className={cn(
-          'peer w-full border-2 border-gray-200 px-4 py-2.5 text-base placeholder:text-gray-500 hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200',
-          error &&
-            'border-error-secondary pe-12 hover:border-error focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 disabled:border-gray-200',
-        )}
-        id="password"
-        name="password"
-        type="password"
-        onChange={onChange}
-        onInvalid={onInvalid}
-        required={required}
-        placeholder="Enter your password"
-      />
-    </div>
-  );
-};
-
 const SubmitButton = () => {
   const { pending } = useFormStatus();
   const t = useTranslations('Login');
 
   return (
-<Button
-  className="!important !w-full bg-[rgb(45,177,219)] text-[14px] font-normal uppercase tracking-[1.25px] md:w-auto 
-             hover:bg-[rgb(75,200,240)] transition-colors duration-500 h-[50px]"
-  loading={pending}
-  loadingText={t('Form.submitting')}
-  variant="primary"
->
-  {t('Form.logIn')}
-</Button>
-
-
-
+    <Button
+      className="!important h-[50px] !w-full bg-[rgb(45,177,219)] text-[14px] font-normal uppercase tracking-[1.25px] transition-colors duration-500 hover:bg-[rgb(75,200,240)] md:w-auto"
+      loading={pending}
+      loadingText={t('Form.submitting')}
+      variant="primary"
+    >
+      {t('Form.logIn')}
+    </Button>
   );
 };
 
 export const LoginForm = ({
-  logo,
   google,
-  email,
   facebookLogo,
   appleLogo,
   passwordHide,
@@ -145,7 +104,7 @@ export const LoginForm = ({
       )}
 
       {isFormInvalid && (
-        <Message className="mb-8 lg:col-span-2" variant="error">
+        <Message className="mb-8 lg:col-span-2 border border-[#ff4500] rounded-[3px] flex items-center" variant="error">
           <p>{t('Form.error')}</p>
         </Message>
       )}
@@ -193,7 +152,7 @@ export const LoginForm = ({
             className={
               cookieIsSet
                 ? 'hidden'
-                : 'relative inset-x-0 bottom-0 inline-flex w-full text-sm text-error'
+                : 'relative inset-x-0 bottom-0 inline-flex w-full text-sm text-error text-[#ff4500]'
             }
             match="valueMissing"
           >
@@ -222,7 +181,7 @@ export const LoginForm = ({
             />
           </FieldControl>
           <FieldMessage
-            className="relative inset-x-0 bottom-0 inline-flex w-full text-sm text-error"
+            className="relative inset-x-0 bottom-0 inline-flex w-full text-sm text-error text-[#ff4500]"
             match="valueMissing"
           >
             {t('Form.entePasswordMessage')}

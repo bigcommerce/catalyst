@@ -33,4 +33,4 @@ export default async function AccountTabPage({ searchParams }: Props) {
   return <WishlistContent {...wishlistDetails} />;
 }
 
-export const runtime = 'edge';
+//export const runtime = 'edge';

@@ -174,7 +174,7 @@
       "orders": "Orders",
       "messages": "Messages",
       "addresses": "Addresses",
-      "wishlists": "Wish lists",
+      "wishlists": "Wishlists",
       "recentlyViewed": "Recently viewed",
       "settings": "Account settings",
       "changePassword": "Change password",
@@ -208,9 +208,37 @@
       "shippingPaymentMethod": "Payment method",
       "billingAddress": "Billing address"
     },
+    "Wishlist": {
+      "noItems": "No items added",
+      "new": "New wishlist",
+      "cancel": "Cancel",
+      "create": "Create",
+      "delete": "Delete",
+      "createPopupDescription": "Create new wishlist popup window",
+      "inputLabel": "Wishlist name",
+      "emptyName": "Provide wishlist name",
+      "onSubmitText": "Submitting...",
+      "deleteTitle": "Are you sure you want to delete wishlist {name}?",
+      "favorites": "Favorites",
+      "noGalleryText": "Coming Soon",
+      "messages": {
+        "created": "Your wishlist {name} was created successfully",
+        "deleted": "Your wishlist {name} was deleted successfully"
+      },
+      "Sheet": {
+        "title": "Add to list",
+        "new": "New list",
+        "save": "Save",
+        "saveToWishlist": "Save to wishlist",
+        "saved": "Saved",
+        "createTitle": "New wishlist",
+        "selectCta": "Select from available lists:",
+        "favorites": "Favorites"
+      }      
+    },
     "Addresses": {
       "title": "Addresses",
-	  "alternativeAddress": "Alternative",
+	    "alternativeAddress": "Alternative",
       "newAddress": "New address",
       "addNewAddress": "Add new address",
       "editButton": "Edit",
@@ -231,34 +259,6 @@
             "inputError": "Something went wrong with processing user input.",
             "error": "Unknown error."
           }
-        },
-        "Wishlist": {
-          "noItems": "No items added",
-          "new": "New wishlist",
-          "cancel": "Cancel",
-          "create": "Create",
-          "delete": "Delete",
-          "createPopupDescription": "Create new wishlist popup window",
-          "inputLabel": "Wishlist name",
-          "emptyName": "Provide wishlist name",
-          "onSubmitText": "Submitting...",
-          "deleteTitle": "Are you sure you want to delete wishlist {name}?",
-          "favorites": "Favorites",
-          "noGalleryText": "Coming Soon",
-          "messages": {
-            "created": "Your wishlist {name} was created successfully",
-            "deleted": "Your wishlist {name} was deleted successfully"
-          },
-          "Sheet": {
-            "title": "Add to list",
-            "new": "New list",
-            "save": "Save",
-            "saveToWishlist": "Save to wishlist",
-            "saved": "Saved",
-            "createTitle": "New wishlist",
-            "selectCta": "Select from available lists:",
-            "favorites": "Favorites"
-          }      
         }
       },
       "Edit": {
@@ -360,9 +360,9 @@
       "spinnerText": "Removing...",
       "couponCodeRemoveFailed": "There was an error removing the coupon code. Please try again.",
       "tax": "Tax",
-      "grandTotal": "Grand total",
+      "grandTotal": "Total",
       "shipping": "Shipping",
-      "shippingCost": "Shipping cost",
+      "shippingCost": "Calculate Shipping/Tax",
       "handlingCost": "Handling cost",
       "add": "Add",
       "change": "Change",
@@ -382,7 +382,7 @@
     },
     "SubmitShippingInfo": {
       "spinnerText": "Submitting...",
-      "submitText": "Estimate shipping"
+      "submitText": "Calculate"
     },
     "ShippingCost": {
       "shippingOptions": "Available options",

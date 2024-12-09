@@ -1,19 +1,20 @@
+// gallery
+
 'use client';
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-
 import { FragmentOf } from '~/client/graphql';
 import { Gallery as ComponentsGallery } from '~/components/ui/gallery';
-
 import { GalleryFragment } from './fragment';
 
 interface Props {
   product: FragmentOf<typeof GalleryFragment>;
   bannerIcon: string;
-  galleryExpandIcon: string; // Ensure this is included in the Props
+  galleryExpandIcon: string;
+  productMpn?: string | null; // Add MPN to props
 }
 
-export const Gallery = ({ product, bannerIcon, galleryExpandIcon }: Props) => {
+export const Gallery = ({ product, bannerIcon, galleryExpandIcon, productMpn }: Props) => {
   const images = removeEdgesAndNodes(product.images);
 
   // Pick the top-level default image
@@ -32,8 +33,14 @@ export const Gallery = ({ product, bannerIcon, galleryExpandIcon }: Props) => {
       isDefault: true,
     });
   }
-
   const defaultImageIndex = images.findIndex((image) => image.isDefault);
+
+  // Add MPN to image metadata if needed
+  const imagesWithMetadata = images.map((image) => ({
+    src: image.url,
+    altText: image.altText,
+    mpn: productMpn, // Include MPN with each image
+  }));
 
   return (
     <div className="-mx-6 mb-10 sm:-mx-0 md:mb-3">
@@ -42,7 +49,8 @@ export const Gallery = ({ product, bannerIcon, galleryExpandIcon }: Props) => {
           bannerIcon={bannerIcon}
           galleryExpandIcon={galleryExpandIcon}
           defaultImageIndex={defaultImageIndex}
-          images={images.map((image) => ({ src: image.url, altText: image.altText }))}
+          images={imagesWithMetadata}
+          productMpn={productMpn} // Pass MPN to ComponentsGallery
         />
       </div>
     </div>

@@ -1,3 +1,5 @@
+// password-input.tsx
+
 import { FragmentOf } from 'gql.tada';
 import { useTranslations } from 'next-intl';
 import { ChangeEvent } from 'react';
@@ -48,7 +50,7 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
       <div className="relative h-7 pass1">
         {field.isRequired && (
           <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-error-secondary relative"
+            className="inline-flex w-full text-xs font-normal text-error-secondary relative text-[#ff4500]"
             match="valueMissing"
           >
             {t('password')}
@@ -56,7 +58,7 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
         )}
         {fieldName === 'confirmPassword' && (
           <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-error"
+            className="inline-flex w-full text-xs font-normal text-error text-[#ff4500]"
             match={() => {
               return !isValid;
             }}

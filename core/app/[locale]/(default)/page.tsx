@@ -12,7 +12,9 @@ interface Props {
   };
 }
 
-export default async function Home({ params: { locale } }: Props) {
+export default async function Home(props : Props) {
+  const params = await props.params;
+  const { locale } = params;
   const snapshot = await client.getPageSnapshot('/', {
     siteVersion: await getSiteVersion(),
     locale: locale === defaultLocale ? undefined : locale,

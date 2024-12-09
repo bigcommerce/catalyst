@@ -3,7 +3,6 @@
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import ReCaptcha from 'react-google-recaptcha';
 
 import { useAccountStatusContext } from '~/app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
 import { ExistingResultType } from '~/client/util';
@@ -22,7 +21,6 @@ import {
   createPreSubmitCheckboxesValidationHandler,
   createPreSubmitPicklistValidationHandler,
   createRadioButtonsValidationHandler,
-  isAddressOrAccountFormField,
 } from '~/components/form-fields/shared/field-handlers';
 import { Button } from '~/components/ui/button';
 import { Checkbox, Field, Form, FormSubmit, Label } from '~/components/ui/form';
@@ -31,7 +29,6 @@ import { Message } from '~/components/ui/message';
 import { login } from '../_actions/login';
 import { registerCustomer } from '../_actions/register-customer';
 import { getRegisterCustomerQuery } from '../page-data';
-import { cn } from '~/lib/utils';
 
 interface FormStatus {
   status: 'success' | 'error';
@@ -44,10 +41,6 @@ type AddressFields = ExistingResultType<typeof getRegisterCustomerQuery>['addres
 interface RegisterCustomerProps {
   addressFields: AddressFields;
   customerFields: CustomerFields;
-  reCaptchaSettings?: {
-    isEnabledOnStorefront: boolean;
-    siteKey: string;
-  };
 }
 
 interface SubmitMessages {
@@ -57,24 +50,12 @@ interface SubmitMessages {
   };
 }
 
-interface PasswordFieldProps {
-  field: {
-    label: string;
-    required?: boolean;
-    entityId: string | number;
-    __typename?: string;
-  };
-  isValid: boolean;
-  name: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-}
-
 const SubmitButton = ({ messages }: SubmitMessages) => {
   const { pending } = useFormStatus();
 
   return (
     <Button
-      className="create-account-button !bg-[#008BB7] relative mt-8 w-fit items-center px-8 py-2"
+      className="create-account-button relative mt-8 w-fit items-center !bg-[#008BB7] px-8 py-2"
       loading={pending}
       loadingText={messages.submitting}
       variant="primary"
@@ -84,11 +65,7 @@ const SubmitButton = ({ messages }: SubmitMessages) => {
   );
 };
 
-export const RegisterCustomerForm = ({
-  addressFields,
-  customerFields,
-  reCaptchaSettings,
-}: RegisterCustomerProps) => {
+export const RegisterCustomerForm = ({ addressFields, customerFields }: RegisterCustomerProps) => {
   const form = useRef<HTMLFormElement>(null);
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
 
@@ -103,12 +80,7 @@ export const RegisterCustomerForm = ({
   const [checkboxesValid, setCheckboxesValid] = useState<Record<string, boolean>>({});
   const [multiTextValid, setMultiTextValid] = useState<Record<string, boolean>>({});
 
-  const reCaptchaRef = useRef<ReCaptcha>(null);
-  const [reCaptchaToken, setReCaptchaToken] = useState('');
-  const [isReCaptchaValid, setReCaptchaValid] = useState(true);
-
   const { setAccountState } = useAccountStatusContext();
-
   const t = useTranslations('Register.Form');
 
   const handleTextInputValidation = (e: ChangeEvent<HTMLInputElement>) => {
@@ -162,23 +134,12 @@ export const RegisterCustomerForm = ({
     }
   };
 
-  const onReCaptchaChange = (token: string | null) => {
-    if (!token) {
-      setReCaptchaValid(false);
-
-      return;
-    }
-
-    setReCaptchaToken(token);
-    setReCaptchaValid(true);
-  };
-
   const onSubmit = async (formData: FormData) => {
-    const submit = await registerCustomer({ formData });
+    const submit = await registerCustomer(null, formData);
 
     if (submit.status === 'success') {
       setAccountState({ status: 'success' });
-      await login(formData);
+      await login(null, formData);
     }
 
     if (submit.status === 'error') {
@@ -194,7 +155,7 @@ export const RegisterCustomerForm = ({
   return (
     <>
       {formStatus && (
-        <Message className="mb-8" variant={formStatus.status}>
+        <Message className="mb-8 border border-[#ff4500] rounded-[3px]" variant={formStatus.status}>
           <p>{formStatus.message}</p>
         </Message>
       )}
@@ -227,7 +188,7 @@ export const RegisterCustomerForm = ({
                     </FieldWrapper>
                   );
 
-                case 'PasswordFormField': {
+                case 'PasswordFormField':
                   return (
                     <FieldWrapper fieldId={fieldId} key={fieldId}>
                       <Password
@@ -238,7 +199,6 @@ export const RegisterCustomerForm = ({
                       />
                     </FieldWrapper>
                   );
-                }
 
                 default:
                   return null;
@@ -252,7 +212,7 @@ export const RegisterCustomerForm = ({
             const fieldName = createFieldName(field, 'address');
             if (field.label === 'First Name' || field.label === 'Last Name') {
               switch (field.__typename) {
-                case 'TextFormField': {
+                case 'TextFormField':
                   return (
                     <FieldWrapper fieldId={fieldId} key={fieldId}>
                       <Text
@@ -263,8 +223,7 @@ export const RegisterCustomerForm = ({
                       />
                     </FieldWrapper>
                   );
-                }
-                case 'PasswordFormField': {
+                case 'PasswordFormField':
                   return (
                     <FieldWrapper fieldId={fieldId} key={fieldId}>
                       <Password
@@ -275,7 +234,6 @@ export const RegisterCustomerForm = ({
                       />
                     </FieldWrapper>
                   );
-                }
 
                 default:
                   return null;

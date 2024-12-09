@@ -26,57 +26,65 @@ export default function OrderTracking() {
   const t = useTranslations('OrderTracking');
   return (
     <>
-      <Form className="m-10 flex w-full flex-row items-center justify-center gap-4">
-        {/* Email Field */}
-        <div className="m-2 basis-1/3">
-          <Field name="email">
-            <FieldLabel className="login-label flex items-center tracking-[0.15px]" htmlFor="email">
-              {t('Form.emailLabel')}
-            </FieldLabel>
-            <FieldControl asChild>
-              <Input
-                className="login-input h-[40px] w-full"
-                autoComplete="email"
-                id="email"
-                required
-                type="email"
-                placeholder="Enter your email"
-              />
-            </FieldControl>
-          </Field>
-        </div>
+      <div className="flex justify-center">
+        <div className="w-[70%]">
+          <div className="flex flex-col gap-[20px]">
+            <div>Home / Find an Order</div>
+            <div className="text-[24px] font-[400] leading-[32px] text-[#000]">Find Your Order</div>
+            <Form className="flex flex-row items-end gap-[20px] p-0">
+              <Field name="email" className="flex flex-1 flex-col gap-[20px]">
+                <FieldLabel
+                  className="text-[20px] font-[500] leading-[32px] tracking-[0.15px] text-[#008BB7]"
+                  htmlFor="email"
+                >
+                  {t('Form.emailLabel')}
+                </FieldLabel>
+                <FieldControl asChild>
+                  <Input
+                    className="flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] border border-[#CCCBCB] bg-white"
+                    autoComplete="email"
+                    id="email"
+                    required
+                    type="email"
+                    placeholder="Enter your email"
+                  />
+                </FieldControl>
+              </Field>
 
-        {/* Order Tracking Field */}
-        <div className="m-2 basis-1/3">
-          <Field name="orderTracking">
-            <FieldLabel
-              className="login-label flex items-center tracking-[0.15px]"
-              htmlFor="orderTracking"
-            >
-              {t('Form.OrderTackingLabel')}
-            </FieldLabel>
-            <FieldControl asChild>
-              <Input
-                className="login-input h-[40px] w-full"
-                autoComplete="off"
-                id="orderTracking"
-                required
-                type="text"
-                placeholder="Enter your tracking number"
-              />
-            </FieldControl>
-          </Field>
-        </div>
+              <Field name="orderTracking" className="flex flex-1 flex-col gap-[20px]">
+                <FieldLabel
+                  className="text-[20px] font-[500] leading-[32px] tracking-[0.15px] text-[#008BB7]"
+                  htmlFor="orderTracking"
+                >
+                  {t('Form.OrderTackingLabel')}
+                </FieldLabel>
+                <FieldControl asChild>
+                  <Input
+                    className="flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] border border-[#CCCBCB] bg-white"
+                    autoComplete="off"
+                    id="orderTracking"
+                    required
+                    type="text"
+                    placeholder="Enter your tracking number"
+                  />
+                </FieldControl>
+              </Field>
 
-        {/* Submit Button */}
-        <div className="mt-7 flex basis-1/6 items-center justify-center">
-          <FormSubmit asChild>
-            <Button className="h-[46px] w-full" variant="primary">
-              {t('Form.findOrder')}
-            </Button>
-          </FormSubmit>
+              {/* Submit Button */}
+              <div className="">
+                <FormSubmit asChild>
+                  <Button
+                    className="flex h-[42px] flex-row items-center justify-center gap-[5px] rounded bg-[#03465C] p-[5px_10px] text-sm font-[500] leading-8 tracking-[1.25px] text-[#ffffff]"
+                    variant="primary"
+                  >
+                    {t('Form.findOrder')}
+                  </Button>
+                </FormSubmit>
+              </div>
+            </Form>
+          </div>
         </div>
-      </Form>
+      </div>
     </>
   );
 }

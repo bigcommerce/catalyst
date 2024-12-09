@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from 'react';
 
 import { FragmentOf } from '~/client/graphql';
 import { ExistingResultType } from '~/client/util';
-import { Button } from '~/components/ui/button';
 
 import { ShippingInfo } from '../shipping-info';
 import { ShippingOptions } from '../shipping-options';
@@ -22,7 +21,6 @@ export const ShippingEstimator = ({ checkout, shippingCountries }: Props) => {
   const t = useTranslations('Cart.CheckoutSummary');
   const format = useFormatter();
 
-  const [showShippingInfo, setShowShippingInfo] = useState(false);
   const [showShippingOptions, setShowShippingOptions] = useState(false);
 
   const selectedShippingConsignment = checkout.shippingConsignments?.find(
@@ -34,72 +32,43 @@ export const ShippingEstimator = ({ checkout, shippingCountries }: Props) => {
   useEffect(() => {
     const checkoutChanged = !Object.is(prevCheckout.current, checkout);
 
-    if (checkoutChanged && showShippingInfo) {
+    if (checkoutChanged) {
       setShowShippingOptions(true);
     }
 
-    if (!showShippingInfo) {
-      setShowShippingOptions(false);
-    }
-
-    if (checkoutChanged && selectedShippingConsignment && showShippingInfo && showShippingOptions) {
-      setShowShippingInfo(false);
+    if (checkoutChanged && selectedShippingConsignment && showShippingOptions) {
       setShowShippingOptions(false);
     }
 
     prevCheckout.current = checkout;
-  }, [checkout, selectedShippingConsignment, showShippingInfo, showShippingOptions]);
+  }, [checkout, selectedShippingConsignment, showShippingOptions]);
 
   return (
     <>
       <div className="flex flex-col gap-2 pb-1">
-      <div className="font-sans text-[20px] font-medium leading-[32px] tracking-[0.15px] text-left text-[#002A37]">
-    Order Summary
-</div>
-
-        <div className="flex justify-between">
-         
-        <span className="text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-left">
-            {t('shippingCost')}</span>
-          {selectedShippingConsignment ? (
-            <span>
-              {format.number(checkout.shippingCostTotal?.value || 0, {
-                style: 'currency',
-                currency: checkout.cart?.currencyCode,
-              })}
-            </span>
-          ) : (
-            <Button
-              aria-controls="shipping-options"
-              className="w-fit p-0 text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] underline"
-              onClick={() => setShowShippingInfo((open) => !open)}
-              variant="subtle"
-            >
-              {showShippingInfo ? t('cancel') : t('add')}
-            </Button>
-          )}
+        <div className="text-left font-sans text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#002A37]">
+          Order Summary
         </div>
-
-        {selectedShippingConsignment && (
-          <div className="flex justify-between">
-            <span>{selectedShippingConsignment.selectedShippingOption?.description}</span>
-            <Button
-              aria-controls="shipping-options"
-              className="w-fit p-0 text-primary hover:bg-transparent"
-              onClick={() => setShowShippingInfo((open) => !open)}
-              variant="subtle"
-            >
-              {showShippingInfo ? t('cancel') : t('change')}
-            </Button>
-          </div>
-        )}
 
         <ShippingInfo
           checkout={checkout}
-          hideShippingOptions={() => setShowShippingOptions(false)}
-          isVisible={showShippingInfo}
+          isVisible={true}
           shippingCountries={shippingCountries}
         />
+
+        <div className="flex justify-between">
+          {selectedShippingConsignment && (
+            <>
+              <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem]">Shipping</span>
+              <span>
+                {format.number(checkout.shippingCostTotal?.value || 0, {
+                  style: 'currency',
+                  currency: checkout.cart?.currencyCode,
+                })}
+              </span>
+            </>
+          )}
+        </div>
 
         {showShippingOptions && checkout.shippingConsignments && (
           <div className="flex flex-col" id="shipping-options">

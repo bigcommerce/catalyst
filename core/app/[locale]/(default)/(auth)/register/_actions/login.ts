@@ -6,7 +6,7 @@ import { getLocale } from 'next-intl/server';
 import { Credentials, signIn } from '~/auth';
 import { redirect } from '~/i18n/routing';
 
-export const login = async (formData: FormData) => {
+export const login = async (p0: null, formData: FormData) => {
   try {
     const locale = await getLocale();
 

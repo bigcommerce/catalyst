@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
+import { getSessionCustomerAccessToken } from '~/auth';
+
 import { Breadcrumbs } from '~/components/breadcrumbs';
 
 import Promotion from '../../../../../components/ui/pdp/belami-promotion-banner-pdp';
@@ -23,8 +25,11 @@ import { GetProductMetaFields } from '~/components/management-apis';
 import { ProductProvider } from '~/components/common-context/product-provider';
 
 import { RelatedProducts } from './related-products';
+import { CollectionProducts } from './collection-products';
 //import { SimilarProducts } from './similar-products';
 import { SitevibesReviews } from './sitevibes-reviews';
+
+import { getRelatedProducts, getCollectionProducts } from './fetch-algolia-products';
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
@@ -83,12 +88,15 @@ export default async function ProductPage(props: Props) {
   const searchParams = await props.searchParams;
   const params = await props.params;
 
+  const customerAccessToken = await getSessionCustomerAccessToken();
+  const useDefaultPrices = !customerAccessToken;
+
   const { locale, slug } = params;
 
   const bannerIcon = imageManagerImageUrl('example-1.png', '50w');
   const relatedProductArrow = imageManagerImageUrl('vector-8-.png', '30w');
   const galleryExpandIcon = imageManagerImageUrl('vector.jpg', '20w'); // Set galleryExpandIcon here
-  const dropdownSheetIcon = imageManagerImageUrl('icons8-download-symbol-16.png', '20w'); 
+  const dropdownSheetIcon = imageManagerImageUrl('icons8-download-symbol-16.png', '20w');
   setRequestLocale(locale);
 
   const t = await getTranslations('Product');
@@ -102,6 +110,10 @@ export default async function ProductPage(props: Props) {
     optionValueIds,
     useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
   });
+
+  const productMpn = product?.mpn;
+
+  console.log('Product MPN===================================:', JSON.stringify(productMpn));
 
   if (!product) {
     return notFound();
@@ -118,9 +130,12 @@ export default async function ProductPage(props: Props) {
     collectionValue = collectionMetaField.value; // Store the collection value
   }
 
+  const relatedProducts = await getRelatedProducts(product.entityId);
+  const collectionProducts = await getCollectionProducts(collectionValue);
+
   const category = removeEdgesAndNodes(product.categories).at(0);
-  if (category?.breadcrumbs?.edges) {
-    category.breadcrumbs.edges.push({ node: { name: product?.sku, path: '#' } });
+  if (category?.breadcrumbs?.edges && product?.mpn) {
+    category.breadcrumbs.edges.push({ node: { name: product?.mpn, path: '#' } });
   }
 
   return (
@@ -135,7 +150,7 @@ export default async function ProductPage(props: Props) {
 
             <div className="items-center space-x-1 text-center lg:text-left xl:text-left">
               <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-                SKU: <span>{product.sku}</span>
+                SKU: <span>{product.mpn}</span>
               </span>
               <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
                 by{' '}
@@ -148,8 +163,9 @@ export default async function ProductPage(props: Props) {
                 <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
                   from the{' '}
                   <span className="products-underline border-b border-black">
-                    {collectionValue}
+                    {collectionValue} 
                   </span>
+                  {' '} Family 
                 </span>
               )}
             </div>
@@ -157,7 +173,7 @@ export default async function ProductPage(props: Props) {
           </div>
           <div className="mb-4 mt-4 lg:grid lg:grid-cols-2 lg:gap-8 xl:mb-12">
             <Gallery
-              // noImageText={t('noGalleryText')}
+              productMpn={product.mpn} // Pass MPN from product
               product={product}
               bannerIcon={bannerIcon}
               galleryExpandIcon={galleryExpandIcon} // Pass galleryExpandIcon to Gallery component
@@ -169,24 +185,22 @@ export default async function ProductPage(props: Props) {
             />
             <div className="lg:col-span-2">
               <Description product={product} />
+              <CollectionProducts collection={collectionValue} products={collectionProducts} useDefaultPrices={useDefaultPrices} />
+              <Promotion />
               {/*
               <RelatedProducts
                 productId={product.entityId}
                 relatedProductArrow={relatedProductArrow}
               />
               */}
-              <RelatedProducts productId={product.entityId} />
+              <RelatedProducts productId={product.entityId} products={relatedProducts} useDefaultPrices={useDefaultPrices} />
               {/*
               <SimilarProducts productId={product.entityId} />
               */}
-              <SimilarProducts0 />
-              <Promotion />
-              <Warranty product={product} />
               {/*
-              <Suspense fallback={t('loading')}>
-                <Reviews productId={product.entityId} />
-              </Suspense>
+              <SimilarProducts0 />
               */}
+              <Warranty product={product} />
               <SitevibesReviews product={product} category={category} />
             </div>
           </div>
@@ -196,6 +210,3 @@ export default async function ProductPage(props: Props) {
     </>
   );
 }
-
-// TODO: Not sure why its not working with this line uncommented... Something needs to be fixed to enable it.
-export const runtime = 'edge';

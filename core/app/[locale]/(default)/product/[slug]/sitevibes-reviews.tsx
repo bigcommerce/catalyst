@@ -8,10 +8,10 @@ import Script from 'next/script';
 export function SitevibesReviews({ product, category }: { product: any, category: any }) {
 
 
-  const breadcrumbs = (removeEdgesAndNodes(category.breadcrumbs) as any[]).map(({ name, path }) => ({
+  const breadcrumbs = (category?.breadcrumbs)?(removeEdgesAndNodes(category?.breadcrumbs) as any[]).map(({ name, path }) => ({
     label: name,
     href: path ?? '#',
-  }));
+  })): [];
 
   const productData = {
     product_id: product.entityId,

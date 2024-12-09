@@ -9,6 +9,8 @@ import { Button } from '~/components/ui/button';
 import { getCustomerOrders } from '../page-data';
 
 import { assembleProductData, ProductSnippet } from './product-snippet';
+import { PrinterIcon } from 'lucide-react';
+import { BcImage } from '~/components/bc-image';
 
 export type Orders = NonNullable<Awaited<ReturnType<typeof getCustomerOrders>>>['orders'];
 
@@ -81,9 +83,9 @@ const ManageOrderButtons = ({
 
   return (
     <div className={className}>
-      <Button aria-label={t('viewDetails')} asChild className="w-full md:w-fit" variant="secondary">
-        <Link href={{ pathname: '/account/orders', query: { order: orderId } }}>
-          {t('viewDetails')}
+      <Button aria-label={t('viewOrderDetails')} asChild className="w-full font-normal  md:w-fit" variant="secondary">
+        <Link href={{ pathname: '/account/orders', query: { order: orderId } }} className='hover:text-black'>
+          {t('viewOrderDetails')}
         </Link>
       </Button>
       {Boolean(orderTrackingUrl) && (
@@ -113,13 +115,14 @@ const OrderDetails = ({
   orderId,
   orderDate,
   orderPrice,
-  orderStatus,
+  orderStatus
 }: {
   orderId: number;
   orderDate: string;
   orderPrice: {
     value: number;
     currencyCode: string;
+
   };
   orderStatus: string;
 }) => {
@@ -127,36 +130,48 @@ const OrderDetails = ({
   const format = useFormatter();
 
   return (
-    <div className="inline-flex flex-col gap-2 text-base md:flex-row md:gap-12">
-      <Link href={{ pathname: '/account/orders', query: { order: orderId } }}>
-        <p className="flex justify-between md:flex-col">
-          <span>{t('orderNumber')}</span>
-          <span className="font-semibold">{orderId}</span>
+    <>
+      <div className="w-full bg-[#03465C] h-[52px] flex flex-row items-center">
+        <p className="max-w-max h-[32px] content-center px-2 ml-2 rounded-3xl bg-[#E7F5F8] font-normal text-[#03465C]">
+          {orderStatus}
         </p>
-      </Link>
-      <p className="flex justify-between md:flex-col">
-        <span>{t('placedDate')}</span>
-        <span className="font-semibold">
-          {format.dateTime(new Date(orderDate), {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </span>
-      </p>
-      <p className="flex justify-between md:flex-col">
-        <span>{t('totalPrice')}</span>
-        <span className="font-semibold">
-          {format.number(orderPrice.value, {
-            style: 'currency',
-            currency: orderPrice.currencyCode,
-          })}
-        </span>
-      </p>
-      <p className="align-center flex h-fit justify-center gap-2.5 rounded-3xl bg-secondary/10 px-4 py-1.5 font-semibold text-primary">
-        {orderStatus}
-      </p>
-    </div>
+      </div>
+      <div className="flex flex-row justify-between gap-2 pb-[20px] px-[20px] text-base md:flex-row md:gap-12">
+        <div className='flex flex-row gap-[10px]'>
+          <p className="flex justify-between md:flex-col">
+            {/* <span>{t('placedDate')}</span> */}
+            <span className="font-normal">
+              {format.dateTime(new Date(orderDate), {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </span>
+          </p>
+          <span> | </span>
+          <Link href={{ pathname: '/account/orders', query: { order: orderId } }}>
+            <p className="flex justify-between leading-[24px] md:flex-col">
+              <span className="text-base font-normal">{t('orderNumber')} {orderId}</span>
+            </p>
+          </Link>
+        </div>
+        <div className='flex flex-row gap-[10px]'>
+          <p className="flex justify-between md:flex-col">
+            <span className="font-normal">{t('orderTotal')}
+              {format.number(orderPrice.value, {
+                style: 'currency',
+                currency: orderPrice.currencyCode,
+              })}
+            </span>
+          </p>
+          <div className='flex flex-row '>
+            <span className='mr-[10px]'> | </span>
+            <PrinterIcon className='stroke-[#008bb7]' />
+            <span className='text-[#008bb7] ml-[10px]'>{t('printInvoice')}</span>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 
@@ -166,37 +181,37 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
     consignments: {
       shipping: order.consignments.shipping
         ? order.consignments.shipping.map(({ lineItems, shipments }) => ({
-            lineItems: removeEdgesAndNodes(lineItems),
-            shipments: removeEdgesAndNodes(shipments),
-          }))
+          lineItems: removeEdgesAndNodes(lineItems),
+          shipments: removeEdgesAndNodes(shipments),
+        }))
         : null,
     },
   }));
 
   return (
-    <ul className="flex w-full flex-col">
+    <ul className="flex w-full flex-col mt-[20px]">
       {ordersHistory.map(({ entityId, orderedAt, status, totalIncTax, consignments }) => {
         // NOTE: tracking url will be supported later
         const trackingUrl = consignments.shipping
           ? consignments.shipping
-              .flatMap(({ shipments }) =>
-                shipments.map((shipment) => {
-                  if (
-                    shipment.tracking?.__typename === 'OrderShipmentNumberAndUrlTracking' ||
-                    shipment.tracking?.__typename === 'OrderShipmentUrlOnlyTracking'
-                  ) {
-                    return shipment.tracking.url;
-                  }
+            .flatMap(({ shipments }) =>
+              shipments.map((shipment) => {
+                if (
+                  shipment.tracking?.__typename === 'OrderShipmentNumberAndUrlTracking' ||
+                  shipment.tracking?.__typename === 'OrderShipmentUrlOnlyTracking'
+                ) {
+                  return shipment.tracking.url;
+                }
 
-                  return null;
-                }),
-              )
-              .find((url) => url !== null)
+                return null;
+              }),
+            )
+            .find((url) => url !== null)
           : undefined;
 
         return (
           <li
-            className="inline-flex border-collapse flex-col gap-y-6 border-t border-gray-200 py-6 last:border-b"
+            className="inline-flex border-collapse flex-col gap-y-6 border border-[#CCCBCB] mb-[20px]"
             key={entityId}
           >
             <OrderDetails
@@ -205,20 +220,26 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
               orderPrice={totalIncTax}
               orderStatus={status.label}
             />
-            <div className="flex gap-4">
+            <div className="flex items-center gap-4 pb-[20px] px-[20px]">
               <ul className="inline-flex gap-4 [&>*:nth-child(n+2)]:hidden md:[&>*:nth-child(n+2)]:list-item md:[&>*:nth-child(n+4)]:hidden lg:[&>*:nth-child(n+4)]:list-item lg:[&>*:nth-child(n+5)]:hidden xl:[&>*:nth-child(n+5)]:list-item lg:[&>*:nth-child(n+7)]:hidden">
                 {(consignments.shipping ?? []).map(({ lineItems }) => {
-                  return lineItems.slice(0, VisibleListItemsPerDevice.xl).map((shippedProduct) => {
-                    return (
-                      <li className="w-36" key={shippedProduct.entityId}>
-                        <ProductSnippet
-                          imagePriority={true}
-                          imageSize="square"
-                          product={assembleProductData({ ...shippedProduct, productOptions: [] })}
-                        />
-                      </li>
-                    );
-                  });
+                  if (lineItems.length === 1) {
+                    return lineItems.slice(0, VisibleListItemsPerDevice.xl).map((shippedProduct) => {
+                      return (
+
+                        <li key={shippedProduct.entityId}>
+                          <ProductSnippet
+                            imagePriority={true}
+                            imageSize="square"
+                            product={assembleProductData({ ...shippedProduct, productOptions: [] })}
+                          />
+                        </li>
+                      );
+                    });
+                  }
+                   return (
+                    <span className="text-base font-semibold">  {lineItems.length} Items </span>
+                  )
                 })}
               </ul>
               <TruncatedCard
@@ -228,18 +249,18 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
                 )}
               />
               <ManageOrderButtons
-                className="hidden lg:ms-auto lg:inline-flex lg:flex-col lg:gap-2"
+                className="ms-auto inline-flex flex-col gap-2 w-[320px] h-[42px] border border-[#B4DDE9] rounded-[3px] items-center hover:cursor-pointer hover:border-[2px] hover:border-[#008BB7] hover:bg-[#e7f5f8]"
                 orderId={entityId}
                 orderStatus={status.value}
                 orderTrackingUrl={trackingUrl}
               />
             </div>
-            <ManageOrderButtons
-              className="inline-flex flex-col gap-2 md:flex-row lg:hidden"
+            {/* <ManageOrderButtons
+              className="inline-flex flex-col gap-2 md:flex-row item:"
               orderId={entityId}
               orderStatus={status.value}
               orderTrackingUrl={trackingUrl}
-            />
+            /> */}
           </li>
         );
       })}

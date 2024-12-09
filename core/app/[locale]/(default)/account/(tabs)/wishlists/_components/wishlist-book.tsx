@@ -109,13 +109,13 @@ const Wishlist = ({ setWishlistBook, wishlist }: WishlistProps) => {
 
   return (
     <>
-      <h3 className="mb-2 text-lg text-[#353535] font-normal text-[16px] leading-[32px] tracking-[0.5px]">{name}</h3>
+      <h3 className="mb-2 text-[#353535] font-normal text-[16px] leading-[32px] tracking-[0.5px]">{name}</h3>
       <div className="flex flex-col gap-[20px] mb-[20px]">
         {items.length === 0 ? (
           <p className="flex-1 py-4 text-center">{t('noItems')}</p>
         ) : (
           <div className="">
-            <ul className="grid grid-cols-[32%_32%_32%] justify-start gap-[20px] [&>*:nth-child(n+2)]:hidden md:[&>*:nth-child(n+2)]:list-item md:[&>*:nth-child(n+4)]:hidden lg:[&>*:nth-child(n+4)]:list-item lg:[&>*:nth-child(n+5)]:hidden xl:[&>*:nth-child(n+5)]:list-item lg:[&>*:nth-child(n+7)]:hidden">
+            <ul className="grid grid-cols-[auto_auto] lg:grid-cols-[32%_32%_32%] justify-start gap-[20px] [&>*:nth-child(n+2)]:hidden md:[&>*:nth-child(n+2)]:list-item md:[&>*:nth-child(n+4)]:hidden lg:[&>*:nth-child(n+4)]:list-item lg:[&>*:nth-child(n+5)]:hidden xl:[&>*:nth-child(n+5)]:list-item lg:[&>*:nth-child(n+7)]:hidden">
               {items.slice(0, VisibleWishlistItemsPerDevice.xl).map((item) => {
                 const { entityId: productId, product } = item;
                 const defaultImage = product.images.find(({ isDefault }) => isDefault);

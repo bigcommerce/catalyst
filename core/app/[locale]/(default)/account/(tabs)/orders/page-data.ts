@@ -189,18 +189,18 @@ interface CustomerOrdersArgs {
 
 export const getCustomerOrders = cache(
   async ({ before = '', after = '', limit = 2 }: CustomerOrdersArgs) => {
-    const customerId = await getSessionCustomerAccessToken();
+    const customerAccessToken = await getSessionCustomerAccessToken();
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
       document: CustomerAllOrders,
       variables: { ...paginationArgs },
-      customerId,
+      customerAccessToken,
       fetchOptions: { cache: 'no-store' },
     });
 
     const orders = response.data.customer?.orders;
-
+    console.log('========orders page.ts=======', orders);
     if (!orders) {
       return undefined;
     }

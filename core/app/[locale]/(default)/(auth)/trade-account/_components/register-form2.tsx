@@ -284,7 +284,10 @@ export const RegisterForm2 = ({
     setCountryStates(states);
   };
 
-  // Submit Handler
+  useEffect(() => {
+    router.prefetch('/trade-account/trade-step3');
+  }, [router]);
+
   const onSubmit = async (formData: FormData) => {
     if (isSubmitting) return;
 
@@ -316,13 +319,27 @@ export const RegisterForm2 = ({
         localStorage.removeItem('registrationFormData');
         setSubmitProgress(80);
 
-        await Promise.all([
-          setAccountState({ status: 'success' }),
-          logins(email, password, combinedFormData),
-        ]);
+        try {
+          await Promise.all([
+            setAccountState({ status: 'success' }),
+            logins(email, password, combinedFormData),
+          ]);
 
-        setSubmitProgress(100);
-        router.push('/trade-account/trade-step3/');
+          setSubmitProgress(100);
+
+          // Simple navigation without try/catch since router.push returns void
+          router.push('/trade-account/trade-step3');
+
+          // Fallback navigation after a delay if needed
+          setTimeout(() => {
+            if (document.location.pathname !== '/trade-account/trade-step3') {
+              window.location.href = '/trade-account/trade-step3';
+            }
+          }, 1000);
+        } catch (loginError) {
+          // Even if login fails, still try to navigate
+          router.push('/trade-account/trade-step3');
+        }
       } else {
         setFormStatus({
           status: 'error',
@@ -627,7 +644,7 @@ export const RegisterForm2 = ({
             </div>
           )}
           <Button
-            className="relative xl:mt-8 w-full items-center !bg-[#008BB7] px-8 py-2"
+            className="relative w-full items-center !bg-[#008BB7] px-8 py-2 xl:mt-8"
             variant="primary"
             type="submit"
             disabled={isSubmitting}

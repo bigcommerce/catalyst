@@ -1,15 +1,11 @@
 'use server';
 
 import { BigCommerceAPIError } from '@bigcommerce/catalyst-client';
-import { SubmissionResult } from '@conform-to/react';
-import { parseWithZod } from '@conform-to/zod';
 import { getTranslations } from 'next-intl/server';
 
-import { schema } from '@/vibes/soul/sections/sign-up-section/schema';
 import { client } from '~/client';
-import { graphql } from '~/client/graphql';
-
-import { login } from '../../login/_actions/login';
+import { graphql, VariablesOf } from '~/client/graphql';
+import { parseRegisterCustomerFormData } from '~/components/form-fields/shared/parse-fields';
 
 const RegisterCustomerMutation = graphql(`
   mutation RegisterCustomer($input: RegisterCustomerInput!, $reCaptchaV2: ReCaptchaV2Input) {
@@ -38,17 +34,33 @@ const RegisterCustomerMutation = graphql(`
   }
 `);
 
+type Variables = VariablesOf<typeof RegisterCustomerMutation>;
+type RegisterCustomerInput = Variables['input'];
+
+interface RegisterCustomerOptions {
+  reCaptchaToken?: string;
+}
+
+const isRegisterCustomerInput = (data: unknown): data is RegisterCustomerInput => {
+  if (typeof data === 'object' && data !== null && 'email' in data) {
+    return true;
+  }
+
+  return false;
+};
+
 export const registerCustomer = async (
-  _lastResult: SubmissionResult | null,
-  formData: FormData,
-  // TODO: add recaptcha token
-  // reCaptchaToken
+  prevState: null,
+  data: FormData,
+  options?: RegisterCustomerOptions,
 ) => {
   const t = await getTranslations('Register');
-  formData.delete('customer-confirmPassword');
-  let parsedDataValue: any = parseRegisterCustomerFormData(formData);
+  data.delete('customer-confirmPassword');
+
+  let parsedDataValue: any = parseRegisterCustomerFormData(data);
   delete parsedDataValue['address'];
   const parsedData = parsedDataValue;
+
   if (!isRegisterCustomerInput(parsedData)) {
     return {
       status: 'error',
@@ -60,8 +72,8 @@ export const registerCustomer = async (
     const response = await client.fetch({
       document: RegisterCustomerMutation,
       variables: {
-        input: submission.value,
-        // ...(reCaptchaToken && { reCaptchaV2: { token: reCaptchaToken } }),
+        input: parsedData,
+        ...(options?.reCaptchaToken && { reCaptchaV2: { token: options.reCaptchaToken } }),
       },
       fetchOptions: {
         cache: 'no-store',
@@ -71,20 +83,26 @@ export const registerCustomer = async (
     const result = response.data.customer.registerCustomer;
 
     if (result.errors.length === 0) {
-      void login(null, formData);
-
-      return submission.reply({ resetForm: true });
+      return { status: 'success', data: parsedData };
     }
 
-    return submission.reply({ formErrors: result.errors.map((error) => error.message) });
+    return {
+      status: 'error',
+      error: result.errors.map((error) => error.message).join('\n'),
+    };
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error(error);
 
     if (error instanceof BigCommerceAPIError) {
-      return submission.reply({ formErrors: [t('Errors.apiError')] });
+      return {
+        status: 'error',
+        error: t('Errors.apiError'),
+      };
     }
 
-    return submission.reply({ formErrors: [t('Errors.error')] });
+    return {
+      status: 'error',
+      error: t('Errors.error'),
+    };
   }
 };

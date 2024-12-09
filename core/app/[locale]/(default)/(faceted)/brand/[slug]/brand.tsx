@@ -48,8 +48,9 @@ const searchClient = algoliasearch(
 );
 const indexName: string = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || '';
 
-const useDefaultPrices = process.env.NEXT_PUBLIC_USE_DEFAULT_PRICES === 'true';
+//const useDefaultPrices = process.env.NEXT_PUBLIC_USE_DEFAULT_PRICES === 'true';
 const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
+//const useAsyncMode = false;
 
 const sortByNumericName: RefinementListProps['sortBy'] = (a: any, b: any) => {
   return parseInt(a.name) < parseInt(b.name) ? -1 : 1;
@@ -57,7 +58,7 @@ const sortByNumericName: RefinementListProps['sortBy'] = (a: any, b: any) => {
 
 const closeOnChange = () => window.innerWidth > 375;
 
-export const Brand = ({ brand, promotions }: any) => {
+export const Brand = ({ brand, promotions, useDefaultPrices = false }: any) => {
 
   const [view, setView] = useState('grid');
 

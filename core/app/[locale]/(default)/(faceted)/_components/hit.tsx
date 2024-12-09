@@ -142,7 +142,7 @@ function AmountUnitValue({ data }: any) {
   )
 }
 
-function ColorSwatches({ variants, metafields, onImageClick }: any) {
+function ColorSwatches({ variants, onImageClick }: any) {
   const items = variants && variants.length > 0 ? variants.filter((item: any) => Object.hasOwn(item.options, 'Finish Color')).map((item: any) => item.options['Finish Color']).filter((value: string, index: number, array: Array<string>) => array.indexOf(value) === index) : null;
 
   const imageUrls = {} as any;
@@ -151,9 +151,9 @@ function ColorSwatches({ variants, metafields, onImageClick }: any) {
   }) : null;
 
   return (
-    items && items.length > 0 &&
+    //items && items.length > 0 &&
     <>
-      <div className="mx-auto mt-4 flex space-x-2 items-center justify-center">
+      <div className="mx-auto mt-4 h-8 flex space-x-2 items-center justify-center">
         {items.slice(0, 5).map((item: string) => <button key={item} type="button" title={item} className="rounded-full w-8 h-8 border border-gray-500 cursor-auto" style={
           searchColorsHEX[item] && searchColorsHEX[item].indexOf('.svg') !== -1
             ? { backgroundImage: `url("/swatches/${searchColorsHEX[item]}")`, backgroundSize: `cover`, backgroundRepeat: `no-repeat` }
@@ -183,7 +183,7 @@ export function Hit({ hit, sendEvent, insights, promotions = null, useDefaultPri
   }
 
   return (view === 'grid'
-    ? (<article className="w-full product flex flex-col h-full border border-gray-300 rounded-none">
+    ? (<article data-id={hit.objectID} className="w-full product flex flex-col h-full border border-gray-300 rounded-none">
       <div className="flex items-start p-4 overflow-x-hidden">
         <div className="compare-product mr-4">
           <Compare id={hit.objectID} image={hit.image_url ? { src: hit.image_url, altText: hit.name } : noImage} name={hit.name} />
@@ -221,7 +221,7 @@ export function Hit({ hit, sendEvent, insights, promotions = null, useDefaultPri
 
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-4 text-center">
-          <ColorSwatches variants={hit.variants} metafields={hit.metafields} onImageClick={setImageUrl} />
+          <ColorSwatches variants={hit.variants} onImageClick={setImageUrl} />
           {(hit.brand_name || hit.brand) &&
             <div className="mt-2">{hit.brand_name ?? hit.brand}</div>
           }
@@ -275,25 +275,11 @@ export function Hit({ hit, sendEvent, insights, promotions = null, useDefaultPri
             </span>
             <span>(10)</span>
           </div>
-          <div className="mt-2 text-xs">ID: {hit.objectID}</div>
-          {/* <p>{JSON.stringify(hit.metafields)}</p> */}
-{/*
-          {"Akeneo":{
-            "collection":"La Maison",
-            "height":"{\n  \"amount\": \"30.0000\",\n  \"unit\": \"INCH\"\n}",
-            "lamp_base_type":"candelabra","number_of_bulbs":"6",
-            "product_style":"[\n  \"traditional\"\n]",
-            "ratings_certifications":"[{\"code\":\"damp\",\"label\":\"Damp Rated\",\"image\":\"https://images.1stoplighting.com/site/common/cert/damp_rated.png\"}]",
-            "voltage":"{\n  \"amount\": 120,\n  \"unit\": \"VOLT\"\n}",
-            "wattage":"{\n  \"amount\": \"360.0000\",\n  \"unit\": \"WATT\"\n}",
-            "width":"{\n  \"amount\": \"26.0000\",\n  \"unit\": \"INCH\"\n}"
-          }}
-*/}
         </div>
         <Promotion promotions={promotions} brand_id={hit.brand_id} category_ids={hit.category_ids} />
       </div>
     </article>)
-    : (view === 'list' ? <article className="product w-full p-4 border border-gray-300 rounded-none">
+    : (view === 'list' ? <article data-id={hit.objectID} className="product w-full p-4 border border-gray-300 rounded-none">
       <div className="flex flex-col md:flex-row tems-start space-y-4 md:space-y-0 space-x-0 md:space-x-8">
         <div className="flex-none w-full md:w-auto md:max-w-[240px] lg:max-w-[300px]">
           <div className="flex-none flex items-center space-x-1 mr-4 mb-4">
@@ -325,7 +311,7 @@ export function Hit({ hit, sendEvent, insights, promotions = null, useDefaultPri
               </button>
             </div>
           </div>
-          <ColorSwatches variants={hit.variants} metafields={hit.metafields} onImageClick={setImageUrl} />
+          <ColorSwatches variants={hit.variants} onImageClick={setImageUrl} />
         </div>
         <div className="flex-1 md:!ml-4">
           {(hit.brand_name || hit.brand) &&
@@ -380,11 +366,6 @@ export function Hit({ hit, sendEvent, insights, promotions = null, useDefaultPri
             </span>
             <span>(10)</span>
           </div>
-          <div className="mt-2 text-xs">ID: {hit.objectID}</div>
-          {/*
-          <p>{JSON.stringify(hit.metafields)}</p>
-          <p>{JSON.stringify(hit.variants)}</p>
-          */}
           <Promotion promotions={promotions} brand_id={hit.brand_id} category_ids={hit.category_ids} />
         </div>
         <div className="flex-1 bg-gray-50 px-8 py-4">

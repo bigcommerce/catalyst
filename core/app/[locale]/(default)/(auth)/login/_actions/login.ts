@@ -1,48 +1,30 @@
 'use server';
 
-import { SubmissionResult } from '@conform-to/react';
-import { parseWithZod } from '@conform-to/zod';
-import { isRedirectError } from 'next/dist/client/components/redirect';
-import { getLocale, getTranslations } from 'next-intl/server';
-import { cookies } from 'next/headers';
-import { schema } from '@/vibes/soul/sections/sign-in-section/schema';
+import { unstable_rethrow as rethrow } from 'next/navigation';
+import { getLocale } from 'next-intl/server';
+
 import { Credentials, signIn } from '~/auth';
 import { redirect } from '~/i18n/routing';
+import { cookies } from 'next/headers';
 
 export const getRememberMeCookie = async () => {
-  return await cookies().get('rememberMe');
+  const cookieStore = await cookies();
+  return cookieStore.get('rememberMe');
 }
 
 export const deleteRememberCookie = async () => {
-  return await cookies().delete('rememberMe');
+  const cookieStore = await cookies();
+  cookieStore.delete('rememberMe');
 }
 
-export const login = async (_lastResult: SubmissionResult | null, formData: FormData) => {
-  const locale = await getLocale();
-  const t = await getTranslations('Login');
-
-  const submission = parseWithZod(formData, { schema });
-
-  if (submission.status !== 'success') {
-    return submission.reply({ formErrors: [t('Form.error')] });
-  }
-
+export const login = async (_previousState: unknown, formData: FormData) => {
   try {
+    const locale = await getLocale();
+
     const credentials = Credentials.parse({
-      email: submission.value.email,
-      password: submission.value.password,
+      email: formData.get('email'),
+      password: formData.get('password'),
     });
-    const createCookie = async (email: string) => {
-      const oneMonth = 30 * 24 * 60 * 60 * 1000;
-      await cookies().set({
-        name: 'rememberMe',
-        value: email,
-        sameSite: 'lax',
-        secure: true,
-        path: '/',
-        expires: Date.now() + oneMonth
-      });
-    }
 
     await signIn('credentials', {
       ...credentials,
@@ -50,18 +32,13 @@ export const login = async (_lastResult: SubmissionResult | null, formData: Form
       // follows basePath and trailing slash configurations.
       redirect: false,
     });
-    let rememberMe = formData.get('remember-me');
-    if(rememberMe) {
-      let emailData: any = formData.get('email');
-      await createCookie(emailData);
-    }
-    return redirect({ href: '/account', locale });
-  } catch (error) {
-    // We need to throw this error to trigger the redirect as Next.js uses error boundaries to redirect.
-    if (isRedirectError(error)) {
-      throw error;
-    }
 
-    return submission.reply({ formErrors: [t('Form.error')] });
+    redirect({ href: '/account', locale });
+  } catch (error: unknown) {
+    rethrow(error);
+
+    return {
+      status: 'error',
+    };
   }
 };

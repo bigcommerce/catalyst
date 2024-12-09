@@ -12,7 +12,7 @@ const InternalButton = () => {
   const { pending } = useFormStatus();
 
   return (
-    <Button className="mt-6 bg-sky-400 lg:hidden font-medium bg-[#008BB7]" loading={pending} loadingText={t('loading')}>      
+    <Button className="mt-6 lg:hidden font-medium bg-[#008BB7]" loading={pending} loadingText={t('loading')}>      
       CONTINUE TO CHECKOUT
     </Button>
   );

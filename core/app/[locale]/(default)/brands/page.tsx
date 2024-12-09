@@ -106,11 +106,11 @@ export default async function BrandsPage() {
     }))
     .sort((a: any, b: any) => a.name.localeCompare(b.name));
 
-  return <>
+  return <div className="py-4 px-4 xl:px-12">
     <Breadcrumbs category={{ breadcrumbs: { edges: [{ node: { name: t('title'), path: '/brands' }}]}}} />
     <BrandsList brands={brands} />
-  </>;
+  </div>;
 }
 
 // TODO: Not sure why its not working with this line uncommented... Something needs to be fixed to enable it.
-export const runtime = 'edge';
+//export const runtime = 'edge';

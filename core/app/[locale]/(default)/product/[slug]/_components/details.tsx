@@ -68,7 +68,7 @@ interface Props {
   dropdownSheetIcon?: string;
 }
 
-export const Details = ({ product, collectionValue , dropdownSheetIcon}: Props) => {
+export const Details = ({ product, collectionValue, dropdownSheetIcon }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
 
@@ -76,6 +76,10 @@ export const Details = ({ product, collectionValue , dropdownSheetIcon}: Props) 
   const closeIcon = imageManagerImageUrl('close.png', '14w');
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
   const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
+
+  const productMpn = product.mpn;
+
+  console.log('Product MPN===================================:', JSON.stringify(productMpn));
 
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
@@ -93,7 +97,7 @@ export const Details = ({ product, collectionValue , dropdownSheetIcon}: Props) 
         {/* Brand and Product Information */}
         <div className="items-center space-x-1 text-center lg:text-left xl:text-left">
           <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-            SKU: <span>{product.sku}</span>
+            SKU: <span>{product.mpn}</span>
           </span>
           <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
             by{' '}
@@ -104,7 +108,8 @@ export const Details = ({ product, collectionValue , dropdownSheetIcon}: Props) 
             <>
               <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
                 from the{' '}
-                <span className="products-underline border-b border-black">{collectionValue}</span>
+                <span className="products-underline border-b border-black">{collectionValue}  </span>
+                {' '} Family
               </span>
             </>
           )}
@@ -143,7 +148,7 @@ export const Details = ({ product, collectionValue , dropdownSheetIcon}: Props) 
               {product.prices.saved?.value !== undefined &&
               product.prices.basePrice?.value !== undefined ? (
                 <>
-                  <span className="span3-product-price text-[1rem] text-[#002a37] font-normal leading-[2rem] tracking-[0.15px]">
+                  <span className="span3-product-price text-[1rem] font-normal leading-[2rem] tracking-[0.15px] text-[#002a37]">
                     <span className="line-through">
                       {format.number(product.prices.basePrice.value, {
                         style: 'currency',
@@ -172,8 +177,14 @@ export const Details = ({ product, collectionValue , dropdownSheetIcon}: Props) 
       {/* Free Delivery */}
       <FreeDelivery />
 
-      {/* Product Form */}
-      <ProductForm data={product} multipleOptionIcon={multipleOptionIcon} blankAddImg={blankAddImg} fanPopup={fanPopup} closeIcon={closeIcon} />
+      <ProductForm
+        data={product}
+        productMpn={product.mpn || ''} // Default to an empty string if null
+        multipleOptionIcon={multipleOptionIcon}
+        blankAddImg={blankAddImg}
+        fanPopup={fanPopup}
+        closeIcon={closeIcon}
+      />
 
       <div className="div-product-description my-12 hidden">
         <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
@@ -231,8 +242,8 @@ export const Details = ({ product, collectionValue , dropdownSheetIcon}: Props) 
             ))}
         </div>
       </div>
-      
-      <ProductSchema product={product}/>
+
+      <ProductSchema product={product} />
 
       <div className="apple-pay mt-4 xl:hidden">
         <button className="flex w-[100%] items-center justify-center rounded bg-[#353535] p-4 text-white">

@@ -84,13 +84,13 @@ export async function generateMetadata() {
 
 const breadcrumbs = [
   {
-    label: 'Apply >',
+    label: 'Apply',
     href: '/trade-account/trade-step1',
     color: '#000000',
     fontWeight: '400', // Changed to string
   },
   {
-    label: 'Business Details >',
+    label: 'Business Details',
     href: '/trade-account/trade-step2',
     color: '#008BB7',
     fontWeight: '600', // Changed to string

@@ -138,7 +138,7 @@ export default async function Login({ params }: Props) {
 
             <button className="box-border flex max-w-[258px] flex-row items-center justify-center gap-1 rounded border border-[#B4DDE9] bg-white px-6 py-2">
               <div className="flex items-center text-[14px] font-medium tracking-wide text-[#002A37]">
-                <Link className="text-[14px]" href="/trade-account/trade-step1/">OPEN A TRADE ACCOUNT</Link>
+                <Link className="text-[16px]" href="/trade-account/trade-step1/">OPEN A TRADE ACCOUNT</Link>
               </div>
             </button>
           </div>

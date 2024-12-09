@@ -3,7 +3,7 @@
 import { cookies } from 'next/headers';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import { getOrderDetails } from './page-data';
-
+import { OrderDetailsInfo } from './order-details';
 
 const emailImg = imageManagerImageUrl('emailicon.png', '16w');
 const facebookImg = imageManagerImageUrl('facebook.png', '23w');
@@ -16,7 +16,9 @@ const creditCardImg = imageManagerImageUrl('creditcard.png','20w');
 const productSampleImg = imageManagerImageUrl('image-2-.png','150w');
 
 export default async function OrderConfirmation() {
-  const orderId = cookies().get('orderId')?.value;
+  const cookieStore = await cookies();
+  const orderId = cookieStore.get('orderId')?.value;
+  
   console.log('=========orderId======', orderId);
   if (orderId) {
     const data  = await getOrderDetails({orderId});
@@ -27,6 +29,7 @@ export default async function OrderConfirmation() {
     <div className="lg:mt-[3rem] mt-[1rem] flex lg:flex-row justify-around gap-[30px] lg:gap-[50px] px-[20px] flex-col">
       <div className="flex w-full lg:w-[calc((800/1600)*100vw)] flex-col items-start gap-[30px] p-[0px] lg:p-[0px_40px]">
         <div className="flex flex-col items-start gap-[10px] p-[0px]">
+          <OrderDetailsInfo />
           <div className="flex items-center gap-[7px] w-full justify-center xsm:justify-normal xsm:w-[unset]">
             <img src={tikGreenImg} className='relative self-start top-[6px]' width={20} height={20} alt="Tik" />
             <p className="flex items-center xsm:text-[24px] xsm:font-[400] xsm:-tracking-normal leading-[32px] text-[#353535] text-[20px] font-[500] tracking-[0.15px]">

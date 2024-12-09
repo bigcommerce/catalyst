@@ -188,7 +188,7 @@ const ProductDetailDropdown = ({ product, dropdownSheetIcon }: { product: any } 
           <div className="mt-6 w-full rounded border border-gray-300 bg-white p-8 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <span className="text-lg font-semibold text-gray-900">{t('whatsInTheBox')}</span>
-              <span className="text-sm text-gray-600">SKU: {product?.sku || t('sku')}</span>
+              <span className="text-sm text-gray-600">SKU: {product?.mpn || t('sku')}</span>
             </div>
 
             <div className="mb-2">
