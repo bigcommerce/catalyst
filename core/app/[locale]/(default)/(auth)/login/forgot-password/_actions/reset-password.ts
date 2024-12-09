@@ -25,17 +25,17 @@ const ResetPasswordMutation = graphql(`
 `);
 
 export const resetPassword = async (
-  _lastResult: (SubmissionResult & { successMessage?: string }) | null,
+  _lastResult: { lastResult: SubmissionResult | null; successMessage?: string },
   formData: FormData,
   // TODO: add recaptcha token
   // reCaptchaToken,
-) => {
+): Promise<{ lastResult: SubmissionResult | null; successMessage?: string }> => {
   const t = await getTranslations('Login.ForgotPassword');
 
   const submission = parseWithZod(formData, { schema });
 
   if (submission.status !== 'success') {
-    return submission.reply({ formErrors: [t('Errors.error')] });
+    return { lastResult: submission.reply({ formErrors: [t('Errors.error')] }) };
   }
 
   try {
@@ -57,17 +57,19 @@ export const resetPassword = async (
 
     if (result.errors.length === 0) {
       return {
-        ...submission.reply(),
+        lastResult: submission.reply(),
         successMessage: t('Form.confirmResetPassword', { email: submission.value.email }),
       };
     }
 
-    return submission.reply({ formErrors: result.errors.map((error) => error.message) });
+    return {
+      lastResult: submission.reply({ formErrors: result.errors.map((error) => error.message) }),
+    };
   } catch (error) {
     if (error instanceof Error) {
-      return submission.reply({ formErrors: [error.message] });
+      return { lastResult: submission.reply({ formErrors: [error.message] }) };
     }
 
-    return submission.reply({ formErrors: [t('Errors.error')] });
+    return { lastResult: submission.reply({ formErrors: [t('Errors.error')] }) };
   }
 };
