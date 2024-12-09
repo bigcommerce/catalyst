@@ -335,8 +335,7 @@
             }
         },
         "AddToCart": {
-            "success": "<cartLink>{cartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
-            "error": "Fejl ved tilføjelse af produkt til indkøbskurv. Prøv igen."
+            "success": "<cartLink>{cartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>"
         }
     },
     "Product": {
@@ -344,9 +343,14 @@
         "Carousel": {
             "relatedProducts": "Relaterede produkter"
         },
+        "Gallery": {
+            "previous": "Forrige produktbillede",
+            "next": "Næste produktbillede",
+            "thumbnailNavigation": "Navigation med miniaturebilleder",
+            "enlarge": "Forstør produktbilledet"
+        },
         "Form": {
             "success": "<cartLink>{cartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
-            "error": "Fejl ved tilføjelse af produkt til indkøbskurv. Prøv igen.",
             "saveToWishlist": "Gem i ønskeliste",
             "quantityLabel": "Antal"
         },
@@ -437,7 +441,34 @@
             "LocaleSwitcher": {
                 "chooseCountryAndLanguage": "Vælg land og sprog",
                 "goToSite": "Gå til webstedet"
+            },
+            "MiniCart": {
+                "cart": "Indkøbskurv",
+                "items": "Varer i indkøbskurven"
+            },
+            "Navigation": {
+                "toggle": "Skift navigation",
+                "navigationMenu": "Navigationsmenu"
+            },
+            "Search": {
+                "openSearchPopup": "Åbn søge-pop op",
+                "closeSearchPopup": "Luk søge-pop op",
+                "searchBar": "Søgelinje",
+                "photo": "Foto",
+                "products": "produkter",
+                "categories": "Kategorier",
+                "brands": "mærker",
+                "noSearchResults": "Beklager, der var ingen resultater for “{term}”.",
+                "searchPlaceholder": "Søg ...",
+                "clearSearch": "Ryd søgning",
+                "processing": "Behandler..."
             }
+        },
+        "Footer": {
+            "socialMediaLinks": "Links til sociale medier"
+        },
+        "Breadcrumb": {
+            "breadcrumb": "Brødkrumme"
         },
         "Compare": {
             "compareButton": "Sammenlign ({products})",
@@ -448,7 +479,7 @@
             "searchProducts": "Søg efter produkter",
             "searchPlaceholder": "Søg ...",
             "search": "Søg",
-            "noSearchResults": "Beklager, ingen resultater for {term}.",
+            "noSearchResults": "Beklager, der var ingen resultater for “{term}”.",
             "checkSpelling": "Kontrollér stavningen, eller prøv en anden søgning."
         },
         "AddToCartButton": {
@@ -459,11 +490,34 @@
             "processing": "Behandler..."
         },
         "ProductCard": {
+            "Compare": {
+                "compare": "Sammenlign"
+            },
             "AddToCart": {
                 "viewOptions": "Se muligheder",
-                "success": "<cartLink>{cartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
-                "error": "Fejl ved tilføjelse af produkt til indkøbskurv. Prøv igen."
+                "success": "<cartLink>{cartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>"
             }
+        },
+        "Slideshow": {
+            "slideshow": "Interaktivt slideshow",
+            "slide": "Dias",
+            "previousSlide": "Forrige slide",
+            "nextSlide": "Næste slide",
+            "slideNo": "{n} af {total}",
+            "pause": "Sæt slideshowet på pause",
+            "play": "Afspil slideshow"
+        },
+        "Pagination": {
+            "pagination": "sideopsætning",
+            "previous": "Foregående",
+            "next": "Næste"
+        },
+        "Carousel": {
+            "carousel": "Karrusel",
+            "previousProducts": "Forrige produkter",
+            "nextProducts": "Næste produkter",
+            "slides": "Slides",
+            "goto": "Gå til slide {n}"
         },
         "FormFields": {
             "Validation": {
@@ -482,6 +536,10 @@
                 "password": "Indtast en adgangskode",
                 "phone": "Indtast et telefonnummer",
                 "postalCode": "Indtast et postnummer"
+            },
+            "Counter": {
+                "increase": "Forøg antal",
+                "decrease": "Reducer antallet"
             }
         }
     }

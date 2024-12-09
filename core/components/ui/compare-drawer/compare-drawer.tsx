@@ -2,7 +2,7 @@ import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDown, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 
-import { BcImage } from '~/components/bc-image';
+import { Image } from '~/components/image';
 import { Link as CustomLink } from '~/components/link';
 import { usePathname } from '~/i18n/routing';
 
@@ -38,7 +38,7 @@ const Product = ({ product, onDismiss }: { product: Product; onDismiss: () => vo
       key={product.id}
     >
       {product.image ? (
-        <BcImage
+        <Image
           alt={product.image.altText}
           className="object-contain"
           height={48}
@@ -94,7 +94,7 @@ const CompareDrawer = () => {
       <AccordionPrimitive.Root className="w-full md:hidden" collapsible type="single">
         <AccordionPrimitive.Item value="compare">
           <AccordionPrimitive.Header className="flex">
-            <AccordionPrimitive.Trigger className="flex flex-1 items-center justify-between py-[9.5px] text-lg font-bold outline-none transition-all hover:text-secondary focus-visible:text-secondary [&[data-state=open]>svg]:rotate-180">
+            <AccordionPrimitive.Trigger className="hover:text-secondary focus-visible:text-secondary flex flex-1 items-center justify-between py-[9.5px] text-lg font-bold outline-none transition-all [&[data-state=open]>svg]:rotate-180">
               <CompareLink products={products} />
               <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
             </AccordionPrimitive.Trigger>

@@ -1,4 +1,5 @@
 import { ChevronRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Fragment } from 'react';
 
 import { Link as CustomLink } from '~/components/link';
@@ -15,8 +16,10 @@ interface Props {
 }
 
 const Breadcrumbs = ({ breadcrumbs, className }: Props) => {
+  const t = useTranslations('Components.Breadcrumb');
+
   return (
-    <nav aria-label="Breadcrumb" className={className}>
+    <nav aria-label={t('breadcrumb')} className={className}>
       <ul className="flex flex-wrap items-center py-4">
         {breadcrumbs.map(({ label, href }, i, arr) => {
           const isLast = arr.length - 1 === i;

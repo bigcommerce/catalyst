@@ -60,7 +60,7 @@ export const registerCustomer = async ({ formData, reCaptchaToken }: RegisterCus
   if (!isRegisterCustomerInput(parsedData)) {
     return {
       status: 'error',
-      error: t('Errors.inputError'),
+      errors: [t('Errors.inputError')],
     };
   }
 
@@ -84,7 +84,7 @@ export const registerCustomer = async ({ formData, reCaptchaToken }: RegisterCus
 
     return {
       status: 'error',
-      error: result.errors.map((error) => error.message).join('\n'),
+      errors: result.errors.map((error) => error.message),
     };
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -93,13 +93,13 @@ export const registerCustomer = async ({ formData, reCaptchaToken }: RegisterCus
     if (error instanceof BigCommerceAPIError) {
       return {
         status: 'error',
-        error: t('Errors.apiError'),
+        errors: [t('Errors.apiError')],
       };
     }
 
     return {
       status: 'error',
-      error: t('Errors.error'),
+      errors: [t('Errors.error')],
     };
   }
 };

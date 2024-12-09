@@ -1,7 +1,7 @@
 import { useFormatter } from 'next-intl';
 
 import { FragmentOf, graphql } from '~/client/graphql';
-import { BcImage } from '~/components/bc-image';
+import { Image } from '~/components/image';
 
 import { ItemQuantity } from './item-quantity';
 import { RemoveItem } from './remove-item';
@@ -155,7 +155,7 @@ export const CartItem = ({ currencyCode, product }: Props) => {
       <div className="flex gap-4 border-t border-t-gray-200 py-4 md:flex-row">
         <div className="w-24 flex-none md:w-[144px]">
           {product.image?.url ? (
-            <BcImage alt={product.name} height={144} src={product.image.url} width={144} />
+            <Image alt={product.name} height={144} src={product.image.url} width={144} />
           ) : (
             <div className="h-full w-full bg-gray-200" />
           )}

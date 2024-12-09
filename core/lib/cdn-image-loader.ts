@@ -1,21 +1,9 @@
 'use client';
 
-export default function bcCdnImageLoader({
-  src,
-  width,
-  height,
-}: {
-  src: string;
-  width: number;
-  height?: number;
-}): string {
-  let url;
+import { ImageLoaderProps } from 'next/image';
 
-  if (height) {
-    url = src.replace('{:size}', `${width}x${height}`);
-  }
-
-  url = src.replace('{:size}', `${width}w`);
+export default function bcCdnImageLoader({ src, width }: ImageLoaderProps): string {
+  const url = src.replace('{:size}', `${width}w`);
 
   return url;
 }

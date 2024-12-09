@@ -28,7 +28,7 @@ const Select = forwardRef<ElementRef<typeof SelectPrimitive.Trigger>, Props>(
           className={cn(
             'group relative flex h-12 w-full items-center justify-between border-2 border-gray-200 px-4 py-3 text-base text-black hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200 data-[placeholder]:text-gray-500',
             error &&
-              'border-error-secondary hover:border-error focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 disabled:border-gray-200',
+              'border-error-secondary focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 hover:border-error disabled:border-gray-200',
           )}
           id={triggerId}
           ref={ref}
@@ -55,7 +55,7 @@ const Select = forwardRef<ElementRef<typeof SelectPrimitive.Trigger>, Props>(
                   <SelectPrimitive.Item
                     key={`${id}-${value}`}
                     {...optionProps}
-                    className='relative flex w-full cursor-pointer select-none items-center justify-between overflow-visible px-4 py-2 outline-none hover:bg-secondary/10 hover:text-primary focus-visible:bg-secondary/10 data-[disabled]:pointer-events-none data-[state="checked"]:bg-secondary/10 data-[state="checked"]:text-primary data-[disabled]:opacity-50'
+                    className='hover:bg-secondary/10 focus-visible:bg-secondary/10 data-[state="checked"]:bg-secondary/10 relative flex w-full cursor-pointer select-none items-center justify-between overflow-visible px-4 py-2 outline-none hover:text-primary data-[disabled]:pointer-events-none data-[state="checked"]:text-primary data-[disabled]:opacity-50'
                     value={value}
                   >
                     <SelectPrimitive.ItemText>{optionLabel}</SelectPrimitive.ItemText>
