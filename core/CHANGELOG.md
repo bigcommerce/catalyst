@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.22.0
+
+### Minor Changes
+
+- [#1717](https://github.com/bigcommerce/catalyst/pull/1717) [`12fea79`](https://github.com/bigcommerce/catalyst/commit/12fea7962c25c395b550717343300561fb8d6a4c) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Add a check for variant stock levels on add to cart button
+
+- [#1674](https://github.com/bigcommerce/catalyst/pull/1674) [`512c338`](https://github.com/bigcommerce/catalyst/commit/512c338e4abcb3cdb7f457e4012e0c90c6a8391a) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Uses the API responses to show better errors when adding a product to the cart.
+
+- [#1710](https://github.com/bigcommerce/catalyst/pull/1710) [`15edf31`](https://github.com/bigcommerce/catalyst/commit/15edf311f5508a85f09acd8135fbf2b4aae09ff0) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Rename `BcImage` to `Image`
+
+- [#1703](https://github.com/bigcommerce/catalyst/pull/1703) [`7b598ff`](https://github.com/bigcommerce/catalyst/commit/7b598ff012ce40fe4b34be780c01cdbbe61e9b7e) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Adds localized data fetching withing the beforeRequest client helper. If information is translated (currently possible to update via the Admin GraphQL API) then we will return the translated product data. See https://developer.bigcommerce.com/docs/store-operations/catalog/graphql-admin/product-basic-info for more information on how to use overrides.
+
+- [#1710](https://github.com/bigcommerce/catalyst/pull/1710) [`15edf31`](https://github.com/bigcommerce/catalyst/commit/15edf311f5508a85f09acd8135fbf2b4aae09ff0) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Force usage of the `<Image/>` component. This component should fallback to using the default image loader if the url doesn't come from the BigCommerce CDN.
+
+- [#1672](https://github.com/bigcommerce/catalyst/pull/1672) [`ffefc61`](https://github.com/bigcommerce/catalyst/commit/ffefc6151b0fb09bf83e7556736452a3138ef9c4) Thanks [@chanceaclark](https://github.com/chanceaclark)! - If a string is not provided in the selected locale, the translation system will fallback to "en" for that specific entry.
+
+### Patch Changes
+
+- [#1661](https://github.com/bigcommerce/catalyst/pull/1661) [`93d9984`](https://github.com/bigcommerce/catalyst/commit/93d99844ed4957a5a4611970589a2246b1dffb16) Thanks [@bookernath](https://github.com/bookernath)! - Remove webpack chunk plugin
+
+- [#1688](https://github.com/bigcommerce/catalyst/pull/1688) [`3267840`](https://github.com/bigcommerce/catalyst/commit/3267840981ebb6ed62e0b87f60623d0c4352309d) Thanks [@thebigrick](https://github.com/thebigrick)! - Added aria label for compare button
+
+- [#1617](https://github.com/bigcommerce/catalyst/pull/1617) [`c852961`](https://github.com/bigcommerce/catalyst/commit/c852961063fb090907b23074301fcbc41e75b8ec) Thanks [@bc-yevhenii-buliuk](https://github.com/bc-yevhenii-buliuk)! - UX improvements for account pages
+
+- [#1690](https://github.com/bigcommerce/catalyst/pull/1690) [`ee6bbb9`](https://github.com/bigcommerce/catalyst/commit/ee6bbb96e9c357af249fb881f5de503f9e164fb1) Thanks [@thebigrick](https://github.com/thebigrick)! - Added localization to hardcoded strings
+
+- [#1647](https://github.com/bigcommerce/catalyst/pull/1647) [`ad5ed3f`](https://github.com/bigcommerce/catalyst/commit/ad5ed3f50f6d3025bf299cc04f51bf0864afd3a2) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - update submit create account errors message
+
+- [#1715](https://github.com/bigcommerce/catalyst/pull/1715) [`2960a70`](https://github.com/bigcommerce/catalyst/commit/2960a708084030b484de945e725b5bd0c32462ee) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
+- [#1694](https://github.com/bigcommerce/catalyst/pull/1694) [`07f8463`](https://github.com/bigcommerce/catalyst/commit/07f84634000c4d1dac6f89037d9501bc056537c9) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
 ## 0.21.0
 
 ### Minor Changes
