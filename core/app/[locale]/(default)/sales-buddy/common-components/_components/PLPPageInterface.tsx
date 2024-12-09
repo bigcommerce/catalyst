@@ -44,7 +44,7 @@ function PLPPageInterface() {
               id={`our-inventory-${filter}`}
               checked={selectedFilters.includes(filter)}
               onCheckedChange={() => handleFilterToggle(filter)}
-              nohover={true}
+              // nohover={true}
             />
             <label htmlFor={`our-inventory-${filter}`} className="flex text-sm text-gray-700">
               {filterProductName}
@@ -89,7 +89,7 @@ function PLPPageInterface() {
         styles="border-x-0 border-y-[1px] -my-[1px] border-[#CCCBCB] py-[10px] px-[20px] text-[16px] bg-white"
         accordions={accordions}
         type="multiple"
-        defaultvalue={['Our Inventory', 'Supplier Inventory']}
+        // defaultvalue={['Our Inventory', 'Supplier Inventory']}
         contentgap="gap-4"
         // titlestyle="items-center  justify-between"
       />

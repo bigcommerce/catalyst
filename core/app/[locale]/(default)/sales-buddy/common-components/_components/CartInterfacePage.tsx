@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
-import { Accordions } from '~/components/ui/accordions';
+import { Accordions } from '../Accordin/index';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/form';
 import ShopIcon from '../../assets/badge.png';
@@ -147,16 +147,16 @@ export default function CartInterface() {
 
   return (
     <>
-    <div className="mt-[15px] bg-white ">
-      <Accordions
-        styles="border-t border-b py-[10px] px-[20px] font-open-sans text-[16px]"
-        accordions={accordions}
-        type="multiple"
-      />
+      <div className="mt-[15px] bg-white">
+        <Accordions
+          styles="border-t border-b border-[#CCCBCB] py-[10px] px-[20px] font-open-sans text-[16px]"
+          accordions={accordions}
+          type="multiple"
+        />
       </div>
-      <Button className="font-open-sans w-full bg-[#1DB14B] font-normal text-white tracking-[1.25px]">
-            CREATE QUOTE
-          </Button>
+      <Button className="font-open-sans w-full bg-[#1DB14B] font-normal tracking-[1.25px] text-white">
+        CREATE QUOTE
+      </Button>
     </>
   );
 }
