@@ -6,7 +6,7 @@ import { ChevronDown, Menu, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-import { BcImage } from '~/components/bc-image';
+import { Image } from '~/components/image';
 import { Link as CustomLink } from '~/components/link';
 
 import { Button } from '../button';
@@ -51,7 +51,7 @@ export const MobileNav = ({ links, logo }: Props) => {
           <div className="flex h-[92px] items-center justify-between">
             <div className="overflow-hidden text-ellipsis py-3">
               {typeof logo === 'object' ? (
-                <BcImage
+                <Image
                   alt={logo.altText}
                   className="max-h-16 object-contain"
                   height={32}

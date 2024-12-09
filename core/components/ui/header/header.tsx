@@ -2,7 +2,7 @@ import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu';
 import { ChevronDown } from 'lucide-react';
 import { ComponentPropsWithoutRef, ReactNode } from 'react';
 
-import { BcImage } from '~/components/bc-image';
+import { Image } from '~/components/image';
 import { Link as CustomLink } from '~/components/link';
 import { cn } from '~/lib/utils';
 
@@ -56,7 +56,7 @@ const Header = ({
     <header className="flex h-[92px] items-center justify-between gap-1 overflow-y-visible bg-white px-4 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0">
       <CustomLink className="overflow-hidden text-ellipsis py-3" href="/">
         {typeof logo === 'object' ? (
-          <BcImage
+          <Image
             alt={logo.altText}
             className="max-h-16 object-contain"
             height={32}
