@@ -344,10 +344,10 @@
             "relatedProducts": "Produits associés"
         },
         "Gallery": {
-            "previous": "Previous product image",
-            "next": "Next product image",
-            "thumbnailNavigation": "Thumbnail navigation",
-            "enlarge": "Enlarge product image"
+            "previous": "Image du produit précédent",
+            "next": "Image du produit suivant",
+            "thumbnailNavigation": "Navigation par vignettes",
+            "enlarge": "Agrandir l'image du produit"
         },
         "Form": {
             "success": "<cartLink>{cartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
@@ -447,18 +447,18 @@
                 "items": "Articles du panier"
             },
             "Navigation": {
-                "toggle": "Toggle navigation",
-                "navigationMenu": "Navigation menu"
+                "toggle": "Basculer la navigation",
+                "navigationMenu": "Menu de navigation"
             },
             "Search": {
-                "openSearchPopup": "Open search popup",
-                "closeSearchPopup": "Close search popup",
-                "searchBar": "Search bar",
+                "openSearchPopup": "Ouvrir la fenêtre contextuelle de recherche",
+                "closeSearchPopup": "Fermer la fenêtre contextuelle de recherche",
+                "searchBar": "Barre de recherche",
                 "photo": "Photo",
                 "products": "Produits",
                 "categories": "Catégories",
                 "brands": "Marques",
-                "noSearchResults": "Désolé, il n'y a aucun résultat pour « {term} ».",
+                "noSearchResults": "Désolé, aucun résultat pour « {term} ».",
                 "searchPlaceholder": "Recherche...",
                 "clearSearch": "Effacer la recherche",
                 "processing": "Traitement en cours…"
@@ -468,7 +468,7 @@
             "socialMediaLinks": "Lien vers les médias sociaux"
         },
         "Breadcrumb": {
-            "breadcrumb": "Breadcrumb"
+            "breadcrumb": "Fil d'Ariane"
         },
         "Compare": {
             "compareButton": "Comparer ({products})",
@@ -479,7 +479,7 @@
             "searchProducts": "Rechercher des produits",
             "searchPlaceholder": "Recherche...",
             "search": "Rechercher",
-            "noSearchResults": "Désolé, il n'y a aucun résultat pour « {term} ».",
+            "noSearchResults": "Désolé, aucun résultat pour « {term} ».",
             "checkSpelling": "Veuillez vérifier l’orthographe ou modifier votre recherche."
         },
         "AddToCartButton": {
@@ -499,13 +499,13 @@
             }
         },
         "Slideshow": {
-            "slideshow": "Interactive slide show",
+            "slideshow": "Diaporama interactif",
             "slide": "Diapositive",
-            "previousSlide": "Previous slide",
-            "nextSlide": "Next slide",
-            "slideNo": "{n} of {total}",
-            "pause": "Pause slideshow",
-            "play": "Play slideshow"
+            "previousSlide": "Diapositive précédente",
+            "nextSlide": "Diapositive suivante",
+            "slideNo": "{n} sur {total}",
+            "pause": "Mettre le diaporama en pause",
+            "play": "Lancer le diaporama"
         },
         "Pagination": {
             "pagination": "pagination",
@@ -514,10 +514,10 @@
         },
         "Carousel": {
             "carousel": "Carrousel",
-            "previousProducts": "Previous products",
-            "nextProducts": "Next products",
-            "slides": "Slides",
-            "goto": "Go to slide {n}"
+            "previousProducts": "Produits précédents",
+            "nextProducts": "Prochains produits",
+            "slides": "Diapositives",
+            "goto": "Aller à la diapositive {n}"
         },
         "FormFields": {
             "Validation": {

@@ -344,10 +344,10 @@
             "relatedProducts": "Relaterade produkter"
         },
         "Gallery": {
-            "previous": "Previous product image",
-            "next": "Next product image",
-            "thumbnailNavigation": "Thumbnail navigation",
-            "enlarge": "Enlarge product image"
+            "previous": "Föregående produktbild",
+            "next": "Nästa produktbild",
+            "thumbnailNavigation": "Navigering med miniatyrbild",
+            "enlarge": "Förstora produktbilden"
         },
         "Form": {
             "success": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
@@ -447,18 +447,18 @@
                 "items": "Artiklar i kundvagnen"
             },
             "Navigation": {
-                "toggle": "Toggle navigation",
-                "navigationMenu": "Navigation menu"
+                "toggle": "Växla navigering",
+                "navigationMenu": "Navigera meny"
             },
             "Search": {
-                "openSearchPopup": "Open search popup",
-                "closeSearchPopup": "Close search popup",
-                "searchBar": "Search bar",
+                "openSearchPopup": "Öppna popup-fönstret för sökning",
+                "closeSearchPopup": "Stäng popup-fönstret för sökning",
+                "searchBar": "Sökfält",
                 "photo": "Foto",
                 "products": "Produkter",
                 "categories": "Kategorier",
                 "brands": "Varumärke",
-                "noSearchResults": "Tyvärr, inga resultat för {term}.",
+                "noSearchResults": "Tyvärr finns inga resultat för ”{term}”.",
                 "searchPlaceholder": "Sök...",
                 "clearSearch": "Rensa sökning",
                 "processing": "Behandlar…"
@@ -479,7 +479,7 @@
             "searchProducts": "Sök efter produkter",
             "searchPlaceholder": "Sök...",
             "search": "Sök",
-            "noSearchResults": "Tyvärr, inga resultat för {term}.",
+            "noSearchResults": "Tyvärr finns inga resultat för ”{term}”.",
             "checkSpelling": "Kontrollera stavningen eller försök med en annan sökning."
         },
         "AddToCartButton": {
@@ -499,13 +499,13 @@
             }
         },
         "Slideshow": {
-            "slideshow": "Interactive slide show",
+            "slideshow": "Interaktivt bildspel",
             "slide": "Glida",
-            "previousSlide": "Previous slide",
-            "nextSlide": "Next slide",
-            "slideNo": "{n} of {total}",
-            "pause": "Pause slideshow",
-            "play": "Play slideshow"
+            "previousSlide": "Föregående bild",
+            "nextSlide": "Nästa bild",
+            "slideNo": "{n} av {total}",
+            "pause": "Pausa bildspelet",
+            "play": "Spela upp bildspel"
         },
         "Pagination": {
             "pagination": "sidnumrering",
@@ -514,10 +514,10 @@
         },
         "Carousel": {
             "carousel": "Karusell",
-            "previousProducts": "Previous products",
-            "nextProducts": "Next products",
-            "slides": "Slides",
-            "goto": "Go to slide {n}"
+            "previousProducts": "Tidigare produkter",
+            "nextProducts": "Nästa produkter",
+            "slides": "Bilder",
+            "goto": "Gå till bild {n}"
         },
         "FormFields": {
             "Validation": {

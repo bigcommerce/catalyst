@@ -344,10 +344,10 @@
             "relatedProducts": "Gerelateerde producten"
         },
         "Gallery": {
-            "previous": "Previous product image",
-            "next": "Next product image",
-            "thumbnailNavigation": "Thumbnail navigation",
-            "enlarge": "Enlarge product image"
+            "previous": "Vorige productafbeelding",
+            "next": "Volgende productafbeelding",
+            "thumbnailNavigation": "Navigatie met miniaturen",
+            "enlarge": "Vergroot productafbeelding"
         },
         "Form": {
             "success": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>",
@@ -447,18 +447,18 @@
                 "items": "Artikelen in winkelmandje"
             },
             "Navigation": {
-                "toggle": "Toggle navigation",
-                "navigationMenu": "Navigation menu"
+                "toggle": "Navigatie in- of uitschakelen",
+                "navigationMenu": "Navigatiemenu"
             },
             "Search": {
-                "openSearchPopup": "Open search popup",
-                "closeSearchPopup": "Close search popup",
-                "searchBar": "Search bar",
+                "openSearchPopup": "Popup voor zoeken openen",
+                "closeSearchPopup": "Popup voor zoeken sluiten",
+                "searchBar": "Zoekbalk",
                 "photo": "Foto",
                 "products": "Producten",
                 "categories": "Categorieën",
                 "brands": "Merken",
-                "noSearchResults": "Helaas, geen resultaten voor {term}.",
+                "noSearchResults": "Sorry, geen resultaten voor '{term}'.",
                 "searchPlaceholder": "Zoeken...",
                 "clearSearch": "Zoekopdracht wissen",
                 "processing": "Verwerken..."
@@ -479,7 +479,7 @@
             "searchProducts": "Zoek producten...",
             "searchPlaceholder": "Zoeken...",
             "search": "Zoeken",
-            "noSearchResults": "Helaas, geen resultaten voor {term}.",
+            "noSearchResults": "Sorry, geen resultaten voor '{term}'.",
             "checkSpelling": "Controleer de spelling of probeer een andere zoekopdracht."
         },
         "AddToCartButton": {
@@ -499,13 +499,13 @@
             }
         },
         "Slideshow": {
-            "slideshow": "Interactive slide show",
+            "slideshow": "Interactieve diavoorstelling",
             "slide": "Dia",
-            "previousSlide": "Previous slide",
-            "nextSlide": "Next slide",
-            "slideNo": "{n} of {total}",
-            "pause": "Pause slideshow",
-            "play": "Play slideshow"
+            "previousSlide": "Vorige dia",
+            "nextSlide": "Volgende dia",
+            "slideNo": "{n} van {total}",
+            "pause": "Diavoorstelling onderbreken",
+            "play": "Diavoorstelling afspelen"
         },
         "Pagination": {
             "pagination": "paginering",
@@ -514,10 +514,10 @@
         },
         "Carousel": {
             "carousel": "Carrousel",
-            "previousProducts": "Previous products",
-            "nextProducts": "Next products",
-            "slides": "Slides",
-            "goto": "Go to slide {n}"
+            "previousProducts": "Vorige producten",
+            "nextProducts": "Volgende producten",
+            "slides": "Dia's",
+            "goto": "Ga naar dia {n}"
         },
         "FormFields": {
             "Validation": {

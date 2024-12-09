@@ -344,10 +344,10 @@
             "relatedProducts": "Relaterte produkter"
         },
         "Gallery": {
-            "previous": "Previous product image",
-            "next": "Next product image",
-            "thumbnailNavigation": "Thumbnail navigation",
-            "enlarge": "Enlarge product image"
+            "previous": "Forrige produktbilde",
+            "next": "Neste produktbilde",
+            "thumbnailNavigation": "Navigering med miniatyrbilder",
+            "enlarge": "Forstørre produktbildet"
         },
         "Form": {
             "success": "{cartItems, plural, =1 {1 vare} other {# varer}} lagt til i <cartLink>handlekurven din</cartLink>",
@@ -447,18 +447,18 @@
                 "items": "Varer i handlekurv"
             },
             "Navigation": {
-                "toggle": "Toggle navigation",
-                "navigationMenu": "Navigation menu"
+                "toggle": "Veksle navigasjon",
+                "navigationMenu": "Navigasjonsmeny"
             },
             "Search": {
-                "openSearchPopup": "Open search popup",
-                "closeSearchPopup": "Close search popup",
-                "searchBar": "Search bar",
+                "openSearchPopup": "Åpne popup-vinduet for søk",
+                "closeSearchPopup": "Lukk popup-vinduet for søk",
+                "searchBar": "Søkefelt",
                 "photo": "Foto",
                 "products": "Produkter",
                 "categories": "Kategorier",
                 "brands": "merker",
-                "noSearchResults": "Beklager, ingen resultater for {term}.",
+                "noSearchResults": "Beklager, ingen resultater for «{term}».",
                 "searchPlaceholder": "Søk …",
                 "clearSearch": "Nullstill søk",
                 "processing": "Behandler …"
@@ -468,7 +468,7 @@
             "socialMediaLinks": "Lenker til sosiale medier"
         },
         "Breadcrumb": {
-            "breadcrumb": "Breadcrumb"
+            "breadcrumb": "Brødsmuler"
         },
         "Compare": {
             "compareButton": "Sammenlign ({products})",
@@ -479,7 +479,7 @@
             "searchProducts": "Søk etter produkter",
             "searchPlaceholder": "Søk …",
             "search": "Søk",
-            "noSearchResults": "Beklager, ingen resultater for {term}.",
+            "noSearchResults": "Beklager, ingen resultater for «{term}».",
             "checkSpelling": "Kontroller stavemåten, eller prøv et annet søk."
         },
         "AddToCartButton": {
@@ -499,13 +499,13 @@
             }
         },
         "Slideshow": {
-            "slideshow": "Interactive slide show",
+            "slideshow": "Interaktiv lysbildefremvisning",
             "slide": "Lysbilde",
-            "previousSlide": "Previous slide",
-            "nextSlide": "Next slide",
-            "slideNo": "{n} of {total}",
-            "pause": "Pause slideshow",
-            "play": "Play slideshow"
+            "previousSlide": "Forrige lysbilde",
+            "nextSlide": "Neste lysbilde",
+            "slideNo": "{n} av {total}",
+            "pause": "Sett lysbildefremvisningen på pause",
+            "play": "Spill av lysbildefremvisning"
         },
         "Pagination": {
             "pagination": "paginering",
@@ -514,10 +514,10 @@
         },
         "Carousel": {
             "carousel": "Karusell",
-            "previousProducts": "Previous products",
-            "nextProducts": "Next products",
-            "slides": "Slides",
-            "goto": "Go to slide {n}"
+            "previousProducts": "Forrige produkter",
+            "nextProducts": "Neste produkter",
+            "slides": "Lysbilder",
+            "goto": "Gå til lysbilde {n}"
         },
         "FormFields": {
             "Validation": {

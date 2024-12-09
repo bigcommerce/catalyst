@@ -458,7 +458,7 @@
                 "products": "商品",
                 "categories": "カテゴリー",
                 "brands": "ブランド",
-                "noSearchResults": "Sorry, no results for {term}.",
+                "noSearchResults": "Sorry, no results for \"{term}\".",
                 "searchPlaceholder": "検索…",
                 "clearSearch": "検索クリア",
                 "processing": "処理中..."
@@ -479,7 +479,7 @@
             "searchProducts": "Search for products",
             "searchPlaceholder": "検索…",
             "search": "検索",
-            "noSearchResults": "Sorry, no results for {term}.",
+            "noSearchResults": "Sorry, no results for \"{term}\".",
             "checkSpelling": "Please check the spelling or try another search."
         },
         "AddToCartButton": {
