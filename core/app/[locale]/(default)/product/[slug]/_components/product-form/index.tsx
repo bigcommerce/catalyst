@@ -80,8 +80,6 @@ export const ProductForm = ({
   const cart = useCart();
   const productFlyout: any = useCommonContext();
   const productOptions = removeEdgesAndNodes(product.productOptions);
-  // const mpn = product.mpn ;
-  // console.log('------mpnnnnnnss----', mpn )
   if (productOptions?.length > 0) {
     const router = useRouter();
     const pathname = usePathname();

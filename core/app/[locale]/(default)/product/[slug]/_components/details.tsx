@@ -79,7 +79,6 @@ export const Details = ({ product, collectionValue, dropdownSheetIcon }: Props) 
 
   const productMpn = product.mpn;
 
-  console.log('Product MPN===================================:', JSON.stringify(productMpn));
 
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
