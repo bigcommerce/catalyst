@@ -69,21 +69,6 @@ export const ShippingEstimator = ({ checkout, shippingCountries }: Props) => {
             </>
           )}
         </div>
-
-        {showShippingOptions && checkout.shippingConsignments && (
-          <div className="flex flex-col" id="shipping-options">
-            {checkout.shippingConsignments.map((consignment) => {
-              return (
-                <ShippingOptions
-                  checkoutEntityId={checkout.entityId}
-                  currencyCode={checkout.cart?.currencyCode}
-                  data={consignment}
-                  key={consignment.entityId}
-                />
-              );
-            })}
-          </div>
-        )}
       </div>
 
       {Boolean(checkout.handlingCostTotal?.value) && (
