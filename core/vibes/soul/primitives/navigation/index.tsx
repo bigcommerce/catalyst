@@ -22,7 +22,7 @@ import { useFormStatus } from 'react-dom';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Button } from '@/vibes/soul/primitives/button';
-import { BcImage as Image } from '~/components/bc-image';
+import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 import { usePathname } from '~/i18n/routing';
 

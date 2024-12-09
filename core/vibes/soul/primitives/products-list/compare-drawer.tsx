@@ -5,7 +5,7 @@ import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
 
 import { Button } from '@/vibes/soul/primitives/button';
 import { Drawer } from '@/vibes/soul/primitives/drawer';
-import { BcImage as Image } from '~/components/bc-image';
+import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 
 function getInitials(name: string): string {

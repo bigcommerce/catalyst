@@ -6,10 +6,10 @@ import Autoplay from 'embla-carousel-autoplay';
 import Fade from 'embla-carousel-fade';
 import useEmblaCarousel from 'embla-carousel-react';
 import { Pause, Play } from 'lucide-react';
-import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
+import { Image } from '~/components/image';
 
 interface Slide {
   title: string;
