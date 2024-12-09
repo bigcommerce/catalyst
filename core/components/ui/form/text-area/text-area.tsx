@@ -1,4 +1,4 @@
-import { ComponentPropsWithRef, ElementRef, forwardRef } from 'react';
+import { ComponentPropsWithRef, ComponentRef, forwardRef } from 'react';
 
 import { cn } from '~/lib/utils';
 
@@ -6,7 +6,7 @@ interface Props extends ComponentPropsWithRef<'textarea'> {
   error?: boolean;
 }
 
-const TextArea = forwardRef<ElementRef<'textarea'>, Props>(
+const TextArea = forwardRef<ComponentRef<'textarea'>, Props>(
   ({ className, error = false, ...props }, ref) => {
     return (
       <textarea

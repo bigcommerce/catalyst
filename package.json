@@ -12,7 +12,7 @@
   "license": "MIT",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@9.7.0",
+  "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "dotenv -e .env.local -- turbo run dev",
     "build": "dotenv -e .env.local -- turbo run build",
@@ -25,11 +25,5 @@
     "dotenv-cli": "^7.4.4",
     "turbo": "^2.3.3",
     "typescript": "^5.7.2"
-  },
-  "pnpm": {
-    "overrides": {
-      "@types/react": "npm:types-react@19.0.0-rc.1",
-      "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
-    }
   }
 }
