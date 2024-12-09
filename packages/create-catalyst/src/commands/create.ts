@@ -68,6 +68,7 @@ export const create = new Command('create')
     const sampleDataApiUrl = parse(options.sampleDataApiUrl, URLSchema);
     const bigcommerceApiUrl = parse(`https://api.${options.bigcommerceHostname}`, URLSchema);
     const bigcommerceAuthUrl = parse(`https://login.${options.bigcommerceHostname}`, URLSchema);
+    const resetMain = options.resetMain;
 
     let projectName;
     let projectDir;
@@ -75,7 +76,6 @@ export const create = new Command('create')
     let accessToken = options.accessToken;
     let channelId;
     let storefrontToken = options.storefrontToken;
-    let resetMain = options.resetMain;
 
     if (options.channelId) {
       channelId = parseInt(options.channelId, 10);
