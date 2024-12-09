@@ -7,14 +7,14 @@ import {
   SiX,
   SiYoutube,
 } from '@icons-pack/react-simple-icons';
-import { JSX } from 'react';
+import { cache, JSX } from 'react';
 
+import { Footer as FooterSection } from '@/vibes/soul/sections/footer';
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { Footer as ComponentsFooter } from '~/components/ui/footer';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 
 import { FooterFragment } from './fragment';
@@ -24,6 +24,15 @@ import { ApplePayIcon } from './payment-icons/apple-pay';
 import { MastercardIcon } from './payment-icons/mastercard';
 import { PayPalIcon } from './payment-icons/paypal';
 import { VisaIcon } from './payment-icons/visa';
+
+const paymentIcons = [
+  <AmazonIcon key="amazon" />,
+  <AmericanExpressIcon key="americanExpress" />,
+  <ApplePayIcon key="apple" />,
+  <MastercardIcon key="mastercard" />,
+  <PayPalIcon key="paypal" />,
+  <VisaIcon key="visa" />,
+];
 
 const socialIcons: Record<string, { icon: JSX.Element }> = {
   Facebook: { icon: <SiFacebook title="Facebook" /> },
@@ -35,7 +44,7 @@ const socialIcons: Record<string, { icon: JSX.Element }> = {
   YouTube: { icon: <SiYoutube title="YouTube" /> },
 };
 
-export const Footer = async () => {
+const getLayoutData = cache(async () => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data: response } = await client.fetch({
@@ -43,9 +52,46 @@ export const Footer = async () => {
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
-  const data = readFragment(FooterFragment, response).site;
+  return readFragment(FooterFragment, response).site;
+});
 
-  const sections = [
+const getContactInformation = async () => {
+  const data = await getLayoutData();
+
+  if (!data.settings?.contact) {
+    return null;
+  }
+
+  return {
+    address: data.settings.contact.address,
+    phone: data.settings.contact.phone,
+  };
+};
+
+const getCopyright = async () => {
+  const data = await getLayoutData();
+
+  if (!data.settings) {
+    return null;
+  }
+
+  return `© ${new Date().getFullYear()} ${data.settings.storeName} – Powered by BigCommerce`;
+};
+
+const getLogo = async () => {
+  const data = await getLayoutData();
+
+  if (!data.settings) {
+    return null;
+  }
+
+  return logoTransformer(data.settings);
+};
+
+const getSections = async () => {
+  const data = await getLayoutData();
+
+  return [
     {
       title: 'Categories',
       links: data.categoryTree.map((category) => ({
@@ -68,31 +114,32 @@ export const Footer = async () => {
       })),
     },
   ];
+};
 
+const getSocialMediaLinks = async () => {
+  const data = await getLayoutData();
+
+  if (!data.settings?.socialMediaLinks) {
+    return null;
+  }
+
+  return data.settings.socialMediaLinks
+    .filter((socialMediaLink) => Boolean(socialIcons[socialMediaLink.name]))
+    .map((socialMediaLink) => ({
+      href: socialMediaLink.url,
+      icon: socialIcons[socialMediaLink.name]?.icon,
+    }));
+};
+
+export const Footer = () => {
   return (
-    <ComponentsFooter
-      contactInformation={data.settings?.contact ?? undefined}
-      copyright={
-        data.settings
-          ? `© ${new Date().getFullYear()} ${data.settings.storeName} – Powered by BigCommerce`
-          : undefined
-      }
-      logo={data.settings ? logoTransformer(data.settings) : undefined}
-      paymentIcons={[
-        <AmazonIcon key="amazon" />,
-        <AmericanExpressIcon key="americanExpress" />,
-        <ApplePayIcon key="apple" />,
-        <MastercardIcon key="mastercard" />,
-        <PayPalIcon key="paypal" />,
-        <VisaIcon key="visa" />,
-      ]}
-      sections={sections}
-      socialMediaLinks={data.settings?.socialMediaLinks
-        .filter((socialMediaLink) => Boolean(socialIcons[socialMediaLink.name]))
-        .map((socialMediaLink) => ({
-          href: socialMediaLink.url,
-          icon: socialIcons[socialMediaLink.name]?.icon,
-        }))}
+    <FooterSection
+      contactInformation={getContactInformation()}
+      copyright={getCopyright()}
+      logo={getLogo()}
+      paymentIcons={paymentIcons}
+      sections={getSections()}
+      socialMediaLinks={getSocialMediaLinks()}
     />
   );
 };
