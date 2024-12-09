@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.22.1
+
+### Patch Changes
+
+- [#1649](https://github.com/bigcommerce/catalyst/pull/1649) [`d38f164`](https://github.com/bigcommerce/catalyst/commit/d38f164d3e87ca87d3e792f8058a74c1f13e4220) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - improve account forms submit errors message
+
+- [#1651](https://github.com/bigcommerce/catalyst/pull/1651) [`1a222cb`](https://github.com/bigcommerce/catalyst/commit/1a222cb09dfc65b440090f868b01291e644bec4a) Thanks [@bc-yevhenii-buliuk](https://github.com/bc-yevhenii-buliuk)! - refresh the entire list of addresses after deleting an address
+
+- [#1722](https://github.com/bigcommerce/catalyst/pull/1722) [`1f0c2ef`](https://github.com/bigcommerce/catalyst/commit/1f0c2ef9212be079630f64a15a2f121ed7a358f9) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Remove `--turbo` from `pnpm dev` as it has some issues with the latest dependency bump, along with others.
+
 ## 0.22.0
 
 ### Minor Changes
