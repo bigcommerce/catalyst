@@ -55,33 +55,7 @@ export const ShippingEstimator = ({ checkout, shippingCountries }: Props) => {
           isVisible={true}
           shippingCountries={shippingCountries}
         />
-
-        <div className="flex justify-between">
-          {selectedShippingConsignment && (
-            <>
-              <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem]">Shipping</span>
-              <span>
-                {format.number(checkout.shippingCostTotal?.value || 0, {
-                  style: 'currency',
-                  currency: checkout.cart?.currencyCode,
-                })}
-              </span>
-            </>
-          )}
-        </div>
       </div>
-
-      {Boolean(checkout.handlingCostTotal?.value) && (
-        <div className="flex justify-between border-t border-t-gray-200 py-4">
-          <span className="font-semibold">{t('handlingCost')}</span>
-          <span>
-            {format.number(checkout.handlingCostTotal?.value || 0, {
-              style: 'currency',
-              currency: checkout.cart?.currencyCode,
-            })}
-          </span>
-        </div>
-      )}
     </>
   );
 };
