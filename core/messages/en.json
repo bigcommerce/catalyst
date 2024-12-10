@@ -33,11 +33,6 @@
       "title": "New arrivals",
       "description": "Our latest products are here. Check out what's new in store.",
       "cta": "See all"
-    },
-    "BestSellingProducts": {
-      "title": "Our best sellers",
-      "description": "Our best selling products are here. Check out what's popular in store.",
-      "cta": "See all"
     }
   },
   "ChangePassword": {
