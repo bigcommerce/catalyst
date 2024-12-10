@@ -189,7 +189,6 @@
         "title": "Add address",
         "heading": "New address",
         "Form": {
-          "recaptchaText": "Pass ReCAPTCHA check",
           "submit": "Add new address",
           "submitting": "Saving address...",
           "cancel": "Cancel",
@@ -204,7 +203,6 @@
         "title": "Edit address",
         "heading": "Edit address",
         "Form": {
-          "recaptchaText": "Pass ReCAPTCHA check",
           "submit": "Edit address",
           "submitting": "Updating address...",
           "cancel": "Cancel",
@@ -228,7 +226,6 @@
       "title": "Account settings",
       "emptyTextValidatoinMessage": "This field can not be empty",
       "cancel": "Cancel",
-      "recaptchaText": "Pass ReCAPTCHA check",
       "changePassword": "Change password",
       "submit": "Update settings",
       "submitting": "Update settings...",

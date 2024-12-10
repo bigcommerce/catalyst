@@ -7,7 +7,6 @@ import { FormFieldValuesFragment } from '~/client/fragments/form-fields-values';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { FormFieldsFragment } from '~/components/form-fields/fragment';
-import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
 const CustomerSettingsQuery = graphql(
   `
@@ -65,10 +64,6 @@ const CustomerSettingsQuery = graphql(
               ...FormFieldsFragment
             }
           }
-          reCaptcha {
-            isEnabledOnStorefront
-            siteKey
-          }
         }
       }
     }
@@ -109,8 +104,6 @@ export const getCustomerSettingsQuery = cache(async ({ address, customer }: Prop
   const customerFields = response.data.site.settings?.formFields.customer;
   const customerInfo = response.data.customer;
 
-  const reCaptchaSettings = await bypassReCaptcha(response.data.site.settings?.reCaptcha);
-
   if (!addressFields || !customerFields || !customerInfo) {
     return null;
   }
@@ -119,7 +112,6 @@ export const getCustomerSettingsQuery = cache(async ({ address, customer }: Prop
     addressFields,
     customerFields,
     customerInfo,
-    reCaptchaSettings,
   };
 });
 

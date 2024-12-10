@@ -10,12 +10,9 @@ import { graphql } from '~/client/graphql';
 import { State } from '../../settings/change-password/_actions/change-password';
 
 const DeleteCustomerAddressMutation = graphql(`
-  mutation DeleteCustomerAddressMutation(
-    $reCaptcha: ReCaptchaV2Input
-    $input: DeleteCustomerAddressInput!
-  ) {
+  mutation DeleteCustomerAddressMutation($input: DeleteCustomerAddressInput!) {
     customer {
-      deleteCustomerAddress(reCaptchaV2: $reCaptcha, input: $input) {
+      deleteCustomerAddress(input: $input) {
         errors {
           __typename
           ... on CustomerAddressDeletionError {
