@@ -232,11 +232,11 @@ export const EditAddressForm = ({
     const submit = await deleteAddress(address.entityId);
 
     if (submit.status === 'success') {
-      setAccountState({ status: submit.status, messages: submit.messages || [''] });
+      setAccountState({ status: submit.status, messages: [submit.message] });
     }
 
     if (submit.status === 'error') {
-      setAccountState({ status: submit.status, messages: submit.messages || [''] });
+      setAccountState({ status: submit.status, messages: [submit.message] });
     }
 
     router.push('/account/addresses');

@@ -1,88 +1,51 @@
 'use client';
 
+import { AlertCircle, Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { PropsWithChildren, useEffect } from 'react';
+import { PropsWithChildren } from 'react';
+import { toast } from 'react-hot-toast';
 
 import { ExistingResultType } from '~/client/util';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
-import { Message } from '~/components/ui/message';
-import { useRouter } from '~/i18n/routing';
 
-import { useAccountStatusContext } from '../../_components/account-status-provider';
 import { Modal } from '../../_components/modal';
-import { SubmitMessagesList } from '../../_components/submit-messages-list';
 import { deleteAddress } from '../_actions/delete-address';
 import { getCustomerAddresses } from '../page-data';
 
 export type Addresses = ExistingResultType<typeof getCustomerAddresses>['addresses'];
 
-interface AddressChangeProps {
-  addressId: number;
-  isAddressRemovable: boolean;
-}
-
-const AddressChangeButtons = ({ addressId, isAddressRemovable }: AddressChangeProps) => {
-  const { setAccountState } = useAccountStatusContext();
-  const t = useTranslations('Account.Addresses');
-
-  const handleDeleteAddress = async () => {
-    const submit = await deleteAddress(addressId);
-
-    if (submit.status === 'success') {
-      setAccountState({
-        status: 'success',
-        messages: submit.messages || [''],
-      });
-    }
-  };
-
-  return (
-    <div className="flex w-fit gap-x-2 divide-y-0">
-      <Button aria-label={t('editButton')} asChild variant="secondary">
-        <Link href={`/account/addresses/edit/${addressId}`}>{t('editButton')}</Link>
-      </Button>
-      <Modal
-        actionHandler={handleDeleteAddress}
-        confirmationText={t('confirmDeleteAddress')}
-        title={t('deleteModalTitle')}
-      >
-        <Button aria-label={t('deleteButton')} disabled={!isAddressRemovable} variant="subtle">
-          {t('deleteButton')}
-        </Button>
-      </Modal>
-    </div>
-  );
-};
-
 interface AddressBookProps {
   customerAddresses: Addresses;
-  addressesCount: number;
+  totalAddresses: number;
 }
 
 export const AddressBook = ({
   children,
-  addressesCount,
+  totalAddresses,
   customerAddresses,
 }: PropsWithChildren<AddressBookProps>) => {
   const t = useTranslations('Account.Addresses');
-  const { accountState } = useAccountStatusContext();
-  const router = useRouter();
 
-  useEffect(() => {
-    if (customerAddresses.length === 0) {
-      router.push(`/account/addresses/`);
+  const handleDeleteAddress = (addressId: number) => async () => {
+    const { status, message } = await deleteAddress(addressId);
+
+    if (status === 'error') {
+      toast.error(message, {
+        icon: <AlertCircle className="text-error-secondary" />,
+      });
+
+      return;
     }
-  }, [customerAddresses, router]);
+
+    toast.success(message, {
+      icon: <Check className="text-success-secondary" />,
+    });
+  };
 
   return (
     <>
-      {(accountState.status === 'error' || accountState.status === 'success') && (
-        <Message className="mb-8 w-full text-gray-500" variant={accountState.status}>
-          <SubmitMessagesList messages={accountState.messages} />
-        </Message>
-      )}
-      {!addressesCount && <p className="border-t py-12 text-center">{t('emptyAddresses')}</p>}
+      {totalAddresses === 0 && <p className="border-t py-12 text-center">{t('emptyAddresses')}</p>}
       <ul className="mb-12">
         {customerAddresses.map(
           ({
@@ -111,7 +74,24 @@ export const AddressBook = ({
                 </p>
                 <p>{countryCode}</p>
               </div>
-              <AddressChangeButtons addressId={entityId} isAddressRemovable={addressesCount > 1} />
+              <div className="flex w-fit gap-x-2 divide-y-0">
+                <Button aria-label={t('editButton')} asChild variant="secondary">
+                  <Link href={`/account/addresses/edit/${entityId}`}>{t('editButton')}</Link>
+                </Button>
+                <Modal
+                  actionHandler={handleDeleteAddress(entityId)}
+                  confirmationText={t('confirmDeleteAddress')}
+                  title={t('deleteModalTitle')}
+                >
+                  <Button
+                    aria-label={t('deleteButton')}
+                    disabled={totalAddresses === 1}
+                    variant="subtle"
+                  >
+                    {t('deleteButton')}
+                  </Button>
+                </Modal>
+              </div>
             </li>
           ),
         )}
