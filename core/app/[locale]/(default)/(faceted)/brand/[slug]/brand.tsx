@@ -89,13 +89,7 @@ export const Brand = ({ brand, promotions, useDefaultPrices = false }: any) => {
       indexName={indexName}
       routing={{
         router: {
-          cleanUrlOnDispose: false,
-          windowTitle(routeState: any) {
-            const indexState = routeState.indexName || {};
-            return indexState.query
-              ? `Results for: ${indexState.query}`
-              : 'Results page';
-          },
+          cleanUrlOnDispose: false
         },
         stateMapping: {
         stateToRoute(uiState: any) {
