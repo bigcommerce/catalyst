@@ -11,7 +11,7 @@ interface Props {
   product: FragmentOf<typeof GalleryFragment>;
   bannerIcon: string;
   galleryExpandIcon: string;
-  productMpn?: string | null; // Add MPN to props
+  productMpn?: string | null;
 }
 
 export const Gallery = ({ product, bannerIcon, galleryExpandIcon, productMpn }: Props) => {
@@ -39,7 +39,7 @@ export const Gallery = ({ product, bannerIcon, galleryExpandIcon, productMpn }: 
   const imagesWithMetadata = images.map((image) => ({
     src: image.url,
     altText: image.altText,
-    mpn: productMpn, // Include MPN with each image
+    mpn: productMpn, 
   }));
 
   return (
@@ -50,7 +50,7 @@ export const Gallery = ({ product, bannerIcon, galleryExpandIcon, productMpn }: 
           galleryExpandIcon={galleryExpandIcon}
           defaultImageIndex={defaultImageIndex}
           images={imagesWithMetadata}
-          productMpn={productMpn} // Pass MPN to ComponentsGallery
+          productMpn={productMpn} 
         />
       </div>
     </div>

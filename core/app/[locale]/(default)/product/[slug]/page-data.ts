@@ -9,7 +9,8 @@ import { BreadcrumbsFragment } from '~/components/breadcrumbs/fragment';
 
 const GalleryFragment = graphql(`
   fragment GalleryFragment on Product {
-    images {
+    images(first: 50) {
+      # Increased limit to fetch all images
       edges {
         node {
           altText

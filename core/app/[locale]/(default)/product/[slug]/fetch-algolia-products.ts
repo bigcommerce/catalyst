@@ -45,7 +45,7 @@ export async function getCollectionProducts(objectId: number, brand: string, col
     body: JSON.stringify({
       //"filters": `metafields.Akeneo.collection:${encodeURIComponent(collection)}`,
       "filters": `brand_name:"${brand}" AND metafields.Akeneo.collection:"${collection}"`,
-      "length": 7,
+      "length": 10,
       "offset": 0
     }),
     cache: 'force-cache',
@@ -54,5 +54,5 @@ export async function getCollectionProducts(objectId: number, brand: string, col
 
   const data = await response.json();
 
-  return data.hits && data.hits.length > 0 ? data.hits.filter((item: any) => item.objectID !== objectId.toString()).slice(0, 6) : [];
+  return data.hits && data.hits.length > 0 ? {"hits": data.hits.filter((item: any) => item.objectID !== objectId.toString()).slice(0, 9), "total": data.nbHits ?? 0} : {"hits": [], "total": 0};
 }
