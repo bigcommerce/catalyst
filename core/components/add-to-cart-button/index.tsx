@@ -20,11 +20,6 @@ export const AddToCartButton = ({
 }) => {
   const t = useTranslations('Components.AddToCartButton');
 
-  const noParentOrVariantStock =
-    !product.inventory.isInStock ||
-    !product.inventory.hasVariantInventory ||
-    product.availabilityV2.status === 'Unavailable';
-
   const buttonText = () => {
     if (product.availabilityV2.status === 'Unavailable') {
       return t('unavailable');
@@ -34,7 +29,7 @@ export const AddToCartButton = ({
       return t('preorder');
     }
 
-    if (noParentOrVariantStock) {
+    if (!product.inventory.isInStock) {
       return t('outOfStock');
     }
 
@@ -44,7 +39,7 @@ export const AddToCartButton = ({
   return (
     <Button
       className={className}
-      disabled={noParentOrVariantStock}
+      disabled={!product.inventory.isInStock}
       loading={loading}
       loadingText={t('processing')}
       type="submit"
