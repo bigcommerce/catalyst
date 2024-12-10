@@ -356,6 +356,8 @@ export const withRoutes: MiddlewareFactory = () => {
 
     rewriteUrl.search = request.nextUrl.search;
 
+    console.log('withRoutes', { rewriteUrl: rewriteUrl.href });
+
     return NextResponse.rewrite(rewriteUrl);
   };
 };

@@ -4,7 +4,19 @@ import { withChannelId } from './middlewares/with-channel-id';
 import { withIntl } from './middlewares/with-intl';
 import { withRoutes } from './middlewares/with-routes';
 
-export const middleware = composeMiddlewares(withAuth, withIntl, withChannelId, withRoutes);
+export const middleware = composeMiddlewares(
+  (next) => (request, event) => {
+    const searchParams = Object.fromEntries(request.nextUrl.searchParams.entries());
+
+    console.log('middleware', { searchParams });
+
+    return next(request, event);
+  },
+  withAuth,
+  withIntl,
+  withChannelId,
+  withRoutes,
+);
 
 export const config = {
   matcher: [

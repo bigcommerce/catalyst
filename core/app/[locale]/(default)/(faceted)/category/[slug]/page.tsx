@@ -159,6 +159,8 @@ async function getPaginationInfo(
 export default async function Category({ params, searchParams }: Props) {
   const { locale, slug } = await params;
 
+  console.log('Category', { searchParams: await searchParams });
+
   setRequestLocale(locale);
 
   const categoryId = Number(slug);
