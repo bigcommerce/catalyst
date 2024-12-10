@@ -33,6 +33,11 @@
       "title": "New arrivals",
       "description": "Our latest products are here. Check out what's new in store.",
       "cta": "See all"
+    },
+    "BestSellingProducts": {
+      "title": "Our best sellers",
+      "description": "Our best selling products are here. Check out what's popular in store.",
+      "cta": "See all"
     }
   },
   "ChangePassword": {
@@ -501,6 +506,12 @@
     },
     "Footer": {
       "socialMediaLinks": "Social media links"
+    },
+    "Subscribe": {
+      "title": "Sign up for our newsletter",
+      "placeholder": "Enter your email",
+      "description": "Stay up to date with the latest news and offers from our store.",
+      "success": "Thank you for your interest! Newsletter feature is coming soon!"
     },
     "Breadcrumb": {
       "breadcrumb": "Breadcrumb"
