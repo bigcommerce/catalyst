@@ -9,6 +9,7 @@ import { FeaturedProductsCarousel } from '~/components/featured-products-carouse
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
 import { FeaturedProductsList } from '~/components/featured-products-list';
 import { FeaturedProductsListFragment } from '~/components/featured-products-list/fragment';
+import { Subscribe } from '~/components/subscribe';
 
 import { Slideshow } from './_components/slideshow';
 
@@ -74,6 +75,8 @@ export default async function Home({ params }: Props) {
         products={newestProducts}
         title={t('NewestProducts.title')}
       />
+
+      <Subscribe />
     </>
   );
 }
