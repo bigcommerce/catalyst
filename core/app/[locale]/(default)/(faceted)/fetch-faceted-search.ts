@@ -236,7 +236,7 @@ const SearchParamToArray = SearchParamSchema.transform((value) => {
     return value;
   }
 
-  if (typeof value === 'string') {
+  if (typeof value === 'string' && value !== '') {
     return [value];
   }
 
