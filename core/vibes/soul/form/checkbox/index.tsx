@@ -8,15 +8,17 @@ import * as React from 'react';
 
 import { FieldError } from '@/vibes/soul/form/field-error';
 
-type Props = React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> & {
+type Props = Omit<React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>, 'id'> & {
   label?: React.ReactNode;
   errors?: string[];
 };
 
-export function Checkbox({ id, label, errors, className, ...rest }: Props) {
+export function Checkbox({ label, errors, className, ...rest }: Props) {
+  const id = React.useId();
+
   return (
     <div className="space-y-2">
-      <div className={clsx('flex items-center gap-2', className)}>
+      <div className={clsx('flex items-center gap-3', className)}>
         <CheckboxPrimitive.Root
           {...rest}
           className={clsx(
