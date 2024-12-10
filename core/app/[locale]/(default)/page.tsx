@@ -1,16 +1,17 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
+import { FeaturedProductsCarousel } from '@/vibes/soul/sections/featured-products-carousel';
+import { FeaturedProductsList } from '@/vibes/soul/sections/featured-products-list';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { FeaturedProductsCarousel } from '~/components/featured-products-carousel';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
-import { FeaturedProductsList } from '~/components/featured-products-list';
 import { FeaturedProductsListFragment } from '~/components/featured-products-list/fragment';
 import { Subscribe } from '~/components/subscribe';
+import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 
 import { Slideshow } from './_components/slideshow';
 
@@ -52,14 +53,20 @@ const getPageData = cache(async () => {
 
 const getFeaturedProducts = async () => {
   const data = await getPageData();
+  const format = await getFormatter();
 
-  return removeEdgesAndNodes(data.site.featuredProducts);
+  const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
+
+  return productCardTransformer(featuredProducts, format);
 };
 
 const getNewestProducts = async () => {
   const data = await getPageData();
+  const format = await getFormatter();
 
-  return removeEdgesAndNodes(data.site.newestProducts);
+  const newestProducts = removeEdgesAndNodes(data.site.newestProducts);
+
+  return productCardTransformer(newestProducts, format);
 };
 
 interface Props {
