@@ -79,7 +79,6 @@ export const Details = ({ product, collectionValue, dropdownSheetIcon }: Props) 
 
   const productMpn = product.mpn;
 
-
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
 
