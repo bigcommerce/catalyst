@@ -809,12 +809,19 @@ button.show-all {
   width: 100%;
   margin: 0 1rem 1rem;
 }
-
+.aa-DetachedSearchButtonIcon {
+  color: #5C5C5C !important;
+}
+.aa-DetachedSearchButtonIcon svg.aa-SubmitIcon {
+  height: 16px;
+}
 .ais-Dropdown-mobileTitle {
   display: none;
   margin-top: 0;
 }
-
+.aa-DetachedSearchButtonPlaceholder {
+  color: #5C5C5C;
+}
 @media only screen and (max-width: 375px) {
   .ais-Dropdown.ais-Dropdown--opened .ais-Panel-body {
     position: fixed;
