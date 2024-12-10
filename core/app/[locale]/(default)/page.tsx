@@ -94,6 +94,8 @@ export default async function Home({ params }: Props) {
       <FeaturedProductsCarousel
         cta={{ label: t('NewestProducts.cta'), href: '/shop-all/?sort=newest' }}
         description={t('NewestProducts.description')}
+        emptyStateSubtitle={t('NewestProducts.emptyStateSubtitle')}
+        emptyStateTitle={t('NewestProducts.emptyStateTitle')}
         products={getNewestProducts()}
         title={t('NewestProducts.title')}
       />
