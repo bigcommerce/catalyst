@@ -33,27 +33,17 @@ export const cloneCatalyst = ({
 
   if (ghRef) {
     if (resetMain) {
-      try {
-        resetBranchToRef(projectDir, 'main', ghRef);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error(error.message);
-        } else {
-          console.error('Unknown error occurred while resetting branch to ref');
-        }
-      }
+      checkoutRef(projectDir, 'main');
+
+      resetBranchToRef(projectDir, ghRef);
+
+      console.log(`Reset main to ${ghRef} successfully.`);
+      console.log();
+
       return;
     }
 
-    try {
-      checkoutRef(projectDir, ghRef);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error('Unknown error occurred while checking out ref');
-      }
-    }
+    checkoutRef(projectDir, ghRef);
 
     console.log();
   }
