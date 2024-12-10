@@ -14,6 +14,7 @@ interface Props {
   products: Streamable<CarouselProduct[]>;
   emptyStateTitle?: string;
   emptyStateSubtitle?: string;
+  scrollbarLabel?: string;
 }
 
 export function FeaturedProductsCarousel({
@@ -23,6 +24,7 @@ export function FeaturedProductsCarousel({
   products,
   emptyStateTitle,
   emptyStateSubtitle,
+  scrollbarLabel,
 }: Props) {
   return (
     <section className="group/pending overflow-hidden @container">
@@ -46,6 +48,7 @@ export function FeaturedProductsCarousel({
             emptyStateSubtitle={emptyStateSubtitle}
             emptyStateTitle={emptyStateTitle}
             products={products}
+            scrollbarLabel={scrollbarLabel}
           />
         </div>
       </div>

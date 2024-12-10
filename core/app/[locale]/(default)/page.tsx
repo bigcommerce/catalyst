@@ -97,6 +97,7 @@ export default async function Home({ params }: Props) {
         emptyStateSubtitle={t('NewestProducts.emptyStateSubtitle')}
         emptyStateTitle={t('NewestProducts.emptyStateTitle')}
         products={getNewestProducts()}
+        scrollbarLabel={t('NewestProducts.scrollbar')}
         title={t('NewestProducts.title')}
       />
 

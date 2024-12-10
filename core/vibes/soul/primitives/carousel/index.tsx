@@ -15,6 +15,7 @@ interface CarouselProps extends React.ComponentPropsWithoutRef<'div'> {
   opts?: CarouselOptions;
   plugins?: CarouselPlugin;
   setApi?: (api: CarouselApi) => void;
+  carouselScrollbarLabel?: string;
 }
 
 type CarouselContextProps = {
@@ -155,7 +156,10 @@ function CarouselButtons({ className, ...rest }: React.HTMLAttributes<HTMLDivEle
   );
 }
 
-function CarouselScrollbar({ className }: React.HTMLAttributes<HTMLDivElement>) {
+function CarouselScrollbar({
+  className,
+  label = 'Carousel scrollbar',
+}: React.HTMLAttributes<HTMLDivElement> & { label?: string }) {
   const { api } = useCarousel();
   const [progress, setProgress] = useState(0);
   const [scrollbarPosition, setScrollbarPosition] = useState({ width: 0, left: 0 });
@@ -203,10 +207,12 @@ function CarouselScrollbar({ className }: React.HTMLAttributes<HTMLDivElement>) 
 
     api.on('select', onScroll);
     api.on('scroll', onScroll);
+    api.on('reInit', onScroll);
 
     return () => {
       api.off('select', onScroll);
       api.off('scroll', onScroll);
+      api.off('reInit', onScroll);
     };
   }, [api]);
 
@@ -215,6 +221,10 @@ function CarouselScrollbar({ className }: React.HTMLAttributes<HTMLDivElement>) 
       className={clsx('relative flex h-6 w-full max-w-56 items-center overflow-hidden', className)}
     >
       <input
+        aria-label={label}
+        aria-orientation="horizontal"
+        aria-valuenow={progress}
+        aria-valuetext={`${Math.round(progress)}%`}
         className="absolute h-full w-full cursor-pointer appearance-none bg-transparent opacity-0"
         max={100}
         min={0}

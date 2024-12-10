@@ -21,6 +21,7 @@ interface Props {
   className?: string;
   emptyStateTitle?: string;
   emptyStateSubtitle?: string;
+  scrollbarLabel?: string;
 }
 
 export function ProductsCarousel({
@@ -28,6 +29,7 @@ export function ProductsCarousel({
   className,
   emptyStateTitle,
   emptyStateSubtitle,
+  scrollbarLabel,
 }: Props) {
   return (
     <Stream fallback={<ProductsCarouselSkeleton pending />} value={streamableProducts}>
@@ -54,7 +56,7 @@ export function ProductsCarousel({
               ))}
             </CarouselContent>
             <div className="flex w-full items-center justify-between">
-              <CarouselScrollbar />
+              <CarouselScrollbar label={scrollbarLabel} />
               <CarouselButtons />
             </div>
           </Carousel>

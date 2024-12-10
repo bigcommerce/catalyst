@@ -34,7 +34,8 @@
       "description": "Our latest products are here. Check out what's new in store.",
       "cta": "See all",
       "emptyStateTitle": "No products found",
-      "emptyStateSubtitle": "Please try again later."
+      "emptyStateSubtitle": "Please try again later.",
+      "scrollbar": "Newest products carousel scrollbar"
     },
     "BestSellingProducts": {
       "title": "Our best sellers",
