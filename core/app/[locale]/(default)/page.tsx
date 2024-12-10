@@ -30,13 +30,6 @@ const HomePageQuery = graphql(
             }
           }
         }
-        bestSellingProducts(first: 12) {
-          edges {
-            node {
-              ...FeaturedProductsCarouselFragment
-            }
-          }
-        }
       }
     }
   `,
@@ -63,7 +56,6 @@ export default async function Home({ params }: Props) {
 
   const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
   const newestProducts = removeEdgesAndNodes(data.site.newestProducts);
-  const bestSellingProducts = removeEdgesAndNodes(data.site.bestSellingProducts);
 
   return (
     <>
@@ -81,13 +73,6 @@ export default async function Home({ params }: Props) {
         description={t('NewestProducts.description')}
         products={newestProducts}
         title={t('NewestProducts.title')}
-      />
-
-      <FeaturedProductsCarousel
-        cta={{ label: t('BestSellingProducts.cta'), href: '/shop-all/?sort=best_selling' }}
-        description={t('BestSellingProducts.description')}
-        products={bestSellingProducts}
-        title={t('BestSellingProducts.title')}
       />
     </>
   );
