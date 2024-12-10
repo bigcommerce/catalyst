@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.18.0
+
+### Minor Changes
+
+- [#1732](https://github.com/bigcommerce/catalyst/pull/1732) [`df4912c`](https://github.com/bigcommerce/catalyst/commit/df4912cd4a24a6f8d36359d80834c378df6c6297) Thanks [@jamesqquick](https://github.com/jamesqquick)! - Create command now accepts a --reset-main flag which resets the main branch to the provided git ref if present.
+
 ## 0.17.1
 
 ### Patch Changes
