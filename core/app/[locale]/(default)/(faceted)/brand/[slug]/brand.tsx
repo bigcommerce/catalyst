@@ -11,7 +11,7 @@ import {
   DynamicWidgets,
   RangeInput,
   HitsPerPage,
-  Pagination,
+  //Pagination,
   SortBy,
   Stats
 } from 'react-instantsearch';
@@ -23,6 +23,7 @@ import { RatingMenu } from '../../_components/rating-menu';
 import { Hits, HitsAsync } from '../../_components/hits';
 import { ClearRefinements } from '../../_components/clear-refinements';
 import { CurrentRefinements } from '../../_components/current-refinements';
+import { Pagination } from '../../_components/pagination';
 
 import { Facet } from '../../_components/facet';
 import { FacetDropdown } from '../../_components/facet-dropdown';
