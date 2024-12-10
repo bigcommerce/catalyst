@@ -36,7 +36,6 @@ export const MultipleChoiceField = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const lastActiveVariant = useRef<{ label: string; mpn: string | null }>({ label: '', mpn: null });
-  const updateTimeoutRef = useRef<NodeJS.Timeout>();
 
   const searchParamSelected = searchParams.get(String(option.entityId));
   const values = useMemo(() => removeEdgesAndNodes(option.values), [option.values]);
@@ -53,6 +52,7 @@ export const MultipleChoiceField = ({
       router.prefetch(newUrl);
     } else {
       await router.replace(newUrl, { scroll: false });
+      // Immediately trigger variant change after URL update
       onVariantChange?.(productMpn);
     }
   };
@@ -78,9 +78,7 @@ export const MultipleChoiceField = ({
     defaultValue: searchParamSelected || selectedValue || defaultValue || '',
   });
 
-  const { error } = fieldState;
-  const displayedValues = useMemo(() => (showAll ? values : values.slice(0, 6)), [showAll, values]);
-
+  // Update MPN immediately when field value changes
   useEffect(() => {
     if (field.value && productMpn) {
       const activeOptionValue = values.find((v) => v.entityId.toString() === field.value);
@@ -90,28 +88,19 @@ export const MultipleChoiceField = ({
           mpn: productMpn,
         };
 
-        if (updateTimeoutRef.current) {
-          clearTimeout(updateTimeoutRef.current);
+        if (
+          lastActiveVariant.current.label !== currentVariant.label ||
+          lastActiveVariant.current.mpn !== currentVariant.mpn
+        ) {
+          lastActiveVariant.current = currentVariant;
+          onMpnChange?.(currentVariant.mpn);
         }
-
-        updateTimeoutRef.current = setTimeout(() => {
-          if (
-            lastActiveVariant.current.label !== currentVariant.label ||
-            lastActiveVariant.current.mpn !== currentVariant.mpn
-          ) {
-            lastActiveVariant.current = currentVariant;
-            onMpnChange?.(currentVariant.mpn);
-          }
-        }, 3000);
       }
     }
-
-    return () => {
-      if (updateTimeoutRef.current) {
-        clearTimeout(updateTimeoutRef.current);
-      }
-    };
   }, [field.value, values, productMpn, onMpnChange]);
+
+  const { error } = fieldState;
+  const displayedValues = useMemo(() => (showAll ? values : values.slice(0, 6)), [showAll, values]);
 
   const renderShowAllButton = (remainingCount: number) => (
     <div className="mt-4 flex flex-col items-center lg:mt-2 xl:mt-0">

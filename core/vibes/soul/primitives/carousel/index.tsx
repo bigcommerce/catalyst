@@ -144,16 +144,20 @@ function CarouselButtons({ className, ...rest }: React.HTMLAttributes<HTMLDivEle
       )}
     >
       <button
+        type="button"
         className="rounded-lg ring-primary transition-colors duration-300 focus-visible:outline-0 focus-visible:ring-2 disabled:pointer-events-none disabled:text-contrast-300"
         disabled={!canScrollPrev}
         onClick={scrollPrev}
+        title="Previous"
       >
         <ArrowLeft strokeWidth={1.5} />
       </button>
       <button
+        type="button"
         className="rounded-lg ring-primary transition-colors duration-300 focus-visible:outline-0 focus-visible:ring-2 disabled:pointer-events-none disabled:text-contrast-300"
         disabled={!canScrollNext}
         onClick={scrollNext}
+        title="Next"
       >
         <ArrowRight strokeWidth={1.5} />
       </button>
@@ -231,6 +235,7 @@ function CarouselScrollbar({ className }: React.HTMLAttributes<HTMLDivElement>) 
         onChange={(e) => setProgress(e.currentTarget.valueAsNumber)}
         type="range"
         value={progress}
+        title="Scrollbar"
       />
       {/* Track */}
       <div className="pointer-events-none absolute h-1 w-full rounded-full bg-contrast-100" />

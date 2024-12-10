@@ -363,7 +363,7 @@
       "grandTotal": "Total",
       "shipping": "Shipping",
       "shippingCost": "Calculate Shipping/Tax",
-      "handlingCost": "Handling cost",
+      "handlingCost": "Destination Surcharge",
       "add": "Add",
       "change": "Change",
       "cancel": "Cancel",

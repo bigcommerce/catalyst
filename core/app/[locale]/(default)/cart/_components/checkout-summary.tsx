@@ -59,7 +59,7 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
       <ShippingEstimator checkout={checkout} shippingCountries={shippingCountries} />
       <div className="flex justify-between">
         <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
-        Reg. Subtotal
+          Reg. Subtotal
         </span>
 
         <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
@@ -109,37 +109,30 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
         </span>
       </div>
 
-      {/*<div className="flex justify-between">
+      {<div className="flex justify-between">
         <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
-        Shipping
+          Shipping
         </span>
         <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
-         
+          {format.number(checkout.shippingCostTotal?.value || 0, {
+            style: 'currency',
+            currency: checkout.cart?.currencyCode,
+          })}
         </span>
-      </div>
+      </div>}
 
-      
+      {Boolean(checkout.handlingCostTotal?.value) && (
+        <div className="flex justify-between">
+          <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">{t('handlingCost')}</span>
+          <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
+            {format.number(checkout.handlingCostTotal?.value || 0, {
+              style: 'currency',
+              currency: checkout.cart?.currencyCode,
+            })}
+          </span>
+        </div>
+      )}
 
-      <div className="flex justify-between">
-        <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
-        Freight & Handling
-        </span>
-        <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
-          
-        </span>
-      </div>
-
-      
-
-      <div className="flex justify-between">
-        <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
-        Destination Surcharge
-        </span>
-        <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
-         
-        </span>
-      </div>*/}
-      
       {taxTotal && (
         <div className="flex justify-between">
           <span className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">

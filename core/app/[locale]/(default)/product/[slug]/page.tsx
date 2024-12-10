@@ -113,7 +113,6 @@ export default async function ProductPage(props: Props) {
 
   const productMpn = product?.mpn;
 
-  console.log('Product MPN===================================:', JSON.stringify(productMpn));
 
   if (!product) {
     return notFound();
@@ -198,7 +197,10 @@ export default async function ProductPage(props: Props) {
             />
             <div className="lg:col-span-2">
               <Description product={product} />
-              <CollectionProducts collection={collectionValue} products={collectionProducts} useDefaultPrices={useDefaultPrices} />
+              {/*
+              <CollectionProducts collection={collectionValue} products={collectionProducts.hits} total={collectionProducts.total} moreLink={`${product.brand?.path ?? '/search'}?collection[0]=${collectionValue}`} useDefaultPrices={useDefaultPrices} />
+              */}
+              <CollectionProducts collection={collectionValue} products={collectionProducts.hits} total={collectionProducts.hits && collectionProducts.total > 10 ? collectionProducts.total - collectionProducts.hits.length : 0} moreLink={`/search?brand_name[0]=${product.brand?.name ?? ''}&collection[0]=${collectionValue}`} useDefaultPrices={useDefaultPrices} />
               <Promotion />
               {/*
               <RelatedProducts
