@@ -1,5 +1,3 @@
-import { clsx } from 'clsx';
-
 import { Badge } from '@/vibes/soul/primitives/badge';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
 import { Image } from '~/components/image';
@@ -86,25 +84,20 @@ export function ProductCard({
 
 export function ProductCardSkeleton({ className }: { className?: string }) {
   return (
-    <div className={clsx('animate-pulse', className)}>
-      <div className="group flex cursor-pointer flex-col gap-2 rounded-xl ring-primary ring-offset-4 focus-visible:outline-0 focus-visible:ring-2 @md:rounded-2xl">
-        <div className="relative aspect-[5/6] overflow-hidden rounded-[inherit] bg-contrast-100">
-          <div className="w-full scale-100 select-none bg-contrast-100 object-cover transition-transform duration-500 ease-out group-hover:scale-110" />
-        </div>
-      </div>
-
+    <div className={className}>
+      <div className="flex aspect-[5/6] flex-col gap-2 rounded-xl bg-contrast-100 @md:rounded-2xl" />
       <div className="mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
         <div className="flex-1">
-          <div className="group flex flex-col text-base">
-            <span className="inline-flex h-[1lh] items-center font-semibold">
+          <div className="flex flex-col text-base">
+            <div className="flex h-[1lh] items-center">
               <span className="block h-[1ex] w-[10ch] rounded-sm bg-contrast-100" />
-            </span>
-            <span className="mb-2 inline-flex h-[1lh] items-center text-sm font-normal text-contrast-400">
+            </div>
+            <div className="mb-2 flex h-[1lh] items-center text-sm font-normal text-contrast-400">
               <span className="block h-[1ex] w-[8ch] rounded-sm bg-contrast-100" />
-            </span>
-            <span className="inline-flex h-[1lh] items-center font-semibold">
+            </div>
+            <div className="flex h-[1lh] items-center">
               <span className="block h-[1ex] w-[5ch] rounded-sm bg-contrast-100" />
-            </span>
+            </div>
           </div>
         </div>
       </div>

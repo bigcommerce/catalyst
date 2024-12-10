@@ -1,12 +1,6 @@
-import { Suspense } from 'react';
-
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { AnimatedLink } from '@/vibes/soul/primitives/animated-link';
-import {
-  CarouselProduct,
-  ProductsCarousel,
-  ProductsCarouselSkeleton,
-} from '@/vibes/soul/primitives/products-carousel';
+import { CarouselProduct, ProductsCarousel } from '@/vibes/soul/primitives/products-carousel';
 
 interface Link {
   label: string;
@@ -18,11 +12,20 @@ interface Props {
   description?: string;
   cta?: Link;
   products: Streamable<CarouselProduct[]>;
+  emptyStateTitle?: string;
+  emptyStateSubtitle?: string;
 }
 
-export function FeaturedProductsCarousel({ title, description, cta, products }: Props) {
+export function FeaturedProductsCarousel({
+  title,
+  description,
+  cta,
+  products,
+  emptyStateTitle,
+  emptyStateSubtitle,
+}: Props) {
   return (
-    <section className="overflow-hidden @container">
+    <section className="group/pending overflow-hidden @container">
       <div className="mx-auto w-full max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
         <div className="mb-6 flex w-full flex-row flex-wrap items-end justify-between gap-x-8 gap-y-6 text-foreground @4xl:mb-8">
           <div>
@@ -38,9 +41,13 @@ export function FeaturedProductsCarousel({ title, description, cta, products }: 
             <AnimatedLink className="mr-3" label={cta.label} link={{ href: cta.href }} />
           )}
         </div>
-        <Suspense fallback={<ProductsCarouselSkeleton />}>
-          <ProductsCarousel products={products} />
-        </Suspense>
+        <div className="group-has-[[data-pending]]/pending:animate-pulse">
+          <ProductsCarousel
+            emptyStateSubtitle={emptyStateSubtitle}
+            emptyStateTitle={emptyStateTitle}
+            products={products}
+          />
+        </div>
       </div>
     </section>
   );
