@@ -8,7 +8,6 @@ import { FormFieldValuesFragment } from '~/client/fragments/form-fields-values';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql, ResultOf } from '~/client/graphql';
 import { FormFieldsFragment } from '~/components/form-fields/fragment';
-import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
 import { EditAddressForm } from './_components/edit-address-form';
 
@@ -56,10 +55,6 @@ const CustomerEditAddressQuery = graphql(
         settings {
           contact {
             country
-          }
-          reCaptcha {
-            isEnabledOnStorefront
-            siteKey
           }
           formFields {
             shippingAddress(filters: $shippingFilters, sortBy: $shippingSorting) {
@@ -131,8 +126,6 @@ export default async function Edit({ params }: Props) {
     return notFound();
   }
 
-  const reCaptchaSettings = await bypassReCaptcha(data.site.settings?.reCaptcha);
-
   return (
     <div className="mx-auto mb-14 lg:w-2/3">
       <h1 className="mb-8 text-3xl font-black lg:text-4xl">{t('heading')}</h1>
@@ -141,7 +134,6 @@ export default async function Edit({ params }: Props) {
         addressFields={addressFields}
         countries={countries || []}
         isAddressRemovable={addresses.length > 1}
-        reCaptchaSettings={reCaptchaSettings}
       />
     </div>
   );

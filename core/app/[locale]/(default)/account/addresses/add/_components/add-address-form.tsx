@@ -3,7 +3,6 @@
 import { useTranslations } from 'next-intl';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import ReCaptcha from 'react-google-recaptcha';
 
 import {
   Checkboxes,
@@ -32,7 +31,7 @@ import {
 } from '~/components/form-fields/shared/field-handlers';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
-import { Field, Form, FormSubmit } from '~/components/ui/form';
+import { Form, FormSubmit } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 import { useRouter } from '~/i18n/routing';
 
@@ -89,26 +88,14 @@ interface AddAddressProps {
     code: CountryCode;
     states: CountryStates;
   };
-  reCaptchaSettings?: {
-    isEnabledOnStorefront: boolean;
-    siteKey: string;
-  };
 }
 
-export const AddAddressForm = ({
-  addressFields,
-  countries,
-  defaultCountry,
-  reCaptchaSettings,
-}: AddAddressProps) => {
+export const AddAddressForm = ({ addressFields, countries, defaultCountry }: AddAddressProps) => {
   const form = useRef<HTMLFormElement>(null);
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
 
-  const reCaptchaRef = useRef<ReCaptcha>(null);
   const router = useRouter();
   const t = useTranslations('Account.Addresses.Add.Form');
-  const [reCaptchaToken, setReCaptchaToken] = useState('');
-  const [isReCaptchaValid, setReCaptchaValid] = useState(true);
 
   const [textInputValid, setTextInputValid] = useState<Record<string, boolean>>({});
   const [numbersInputValid, setNumbersInputValid] = useState<Record<string, boolean>>({});
@@ -162,26 +149,8 @@ export const AddAddressForm = ({
     }
   };
 
-  const onReCaptchaChange = (token: string | null) => {
-    if (!token) {
-      setReCaptchaValid(false);
-
-      return;
-    }
-
-    setReCaptchaToken(token);
-    setReCaptchaValid(true);
-  };
   const onSubmit = async (formData: FormData) => {
-    if (reCaptchaSettings?.isEnabledOnStorefront && !reCaptchaToken) {
-      setReCaptchaValid(false);
-
-      return;
-    }
-
-    setReCaptchaValid(true);
-
-    const submit = await addAddress({ formData, reCaptchaToken });
+    const submit = await addAddress(formData);
 
     if (submit.status === 'success') {
       setAccountState({
@@ -359,21 +328,6 @@ export const AddAddressForm = ({
                 return null;
             }
           })}
-
-          {reCaptchaSettings?.isEnabledOnStorefront && (
-            <Field className="relative col-span-full max-w-full space-y-2 pb-7" name="ReCAPTCHA">
-              <ReCaptcha
-                onChange={onReCaptchaChange}
-                ref={reCaptchaRef}
-                sitekey={reCaptchaSettings.siteKey}
-              />
-              {!isReCaptchaValid && (
-                <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error">
-                  {t('recaptchaText')}
-                </span>
-              )}
-            </Field>
-          )}
         </div>
 
         <div className="mt-8 flex flex-col justify-stretch gap-2 md:flex-row md:justify-start md:gap-6">

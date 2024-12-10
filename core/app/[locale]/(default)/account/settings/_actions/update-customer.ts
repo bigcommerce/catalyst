@@ -9,9 +9,9 @@ import { graphql, VariablesOf } from '~/client/graphql';
 import { parseAccountFormData } from '~/components/form-fields/shared/parse-fields';
 
 const UpdateCustomerMutation = graphql(`
-  mutation UpdateCustomerMutation($input: UpdateCustomerInput!, $reCaptchaV2: ReCaptchaV2Input) {
+  mutation UpdateCustomerMutation($input: UpdateCustomerInput!) {
     customer {
-      updateCustomer(input: $input, reCaptchaV2: $reCaptchaV2) {
+      updateCustomer(input: $input) {
         customer {
           firstName
           lastName
@@ -58,16 +58,9 @@ const isUpdateCustomerInput = (data: unknown): data is AddCustomerAddressInput =
   return false;
 };
 
-interface UpdateCustomerForm {
-  formData: FormData;
-  reCaptchaToken?: string;
-}
-
-export const updateCustomer = async ({ formData, reCaptchaToken }: UpdateCustomerForm) => {
+export const updateCustomer = async (formData: FormData) => {
   const t = await getTranslations('Account.Settings.UpdateCustomer');
   const customerAccessToken = await getSessionCustomerAccessToken();
-
-  formData.delete('g-recaptcha-response');
 
   const parsed = parseAccountFormData(formData);
 
@@ -84,7 +77,6 @@ export const updateCustomer = async ({ formData, reCaptchaToken }: UpdateCustome
     fetchOptions: { cache: 'no-store' },
     variables: {
       input: parsed,
-      ...(reCaptchaToken && { reCaptchaV2: { token: reCaptchaToken } }),
     },
   });
 

@@ -9,12 +9,9 @@ import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
 
 const DeleteCustomerAddressMutation = graphql(`
-  mutation DeleteCustomerAddressMutation(
-    $reCaptcha: ReCaptchaV2Input
-    $input: DeleteCustomerAddressInput!
-  ) {
+  mutation DeleteCustomerAddressMutation($input: DeleteCustomerAddressInput!) {
     customer {
-      deleteCustomerAddress(reCaptchaV2: $reCaptcha, input: $input) {
+      deleteCustomerAddress(input: $input) {
         errors {
           __typename
           ... on CustomerAddressDeletionError {

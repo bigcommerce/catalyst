@@ -3,7 +3,6 @@
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import ReCaptcha from 'react-google-recaptcha';
 
 import { ExistingResultType } from '~/client/util';
 import {
@@ -30,7 +29,7 @@ import {
 } from '~/components/form-fields/shared/field-handlers';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
-import { Field, Form, FormSubmit } from '~/components/ui/form';
+import { Form, FormSubmit } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 
 import { AccountState as FormStatus } from '../../_components/account-status-provider';
@@ -48,10 +47,6 @@ interface FormProps {
   addressFields: AddressFields;
   customerInfo: CustomerInfo;
   customerFields: CustomerFields;
-  reCaptchaSettings?: {
-    isEnabledOnStorefront: boolean;
-    siteKey: string;
-  };
 }
 
 interface SumbitMessages {
@@ -92,12 +87,7 @@ const SubmitButton = ({ messages }: SumbitMessages) => {
   );
 };
 
-export const UpdateSettingsForm = ({
-  addressFields,
-  customerFields,
-  customerInfo,
-  reCaptchaSettings,
-}: FormProps) => {
+export const UpdateSettingsForm = ({ addressFields, customerFields, customerInfo }: FormProps) => {
   const form = useRef<HTMLFormElement>(null);
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
 
@@ -109,10 +99,6 @@ export const UpdateSettingsForm = ({
   const [checkboxesValid, setCheckboxesValid] = useState<Record<string, boolean>>({});
   const [datesValid, setDatesValid] = useState<Record<string, boolean>>({});
   const [passwordValid, setPasswordValid] = useState<Record<string, boolean>>({});
-
-  const reCaptchaRef = useRef<ReCaptcha>(null);
-  const [reCaptchaToken, setReCaptchaToken] = useState('');
-  const [isReCaptchaValid, setReCaptchaValid] = useState(true);
 
   const t = useTranslations('Account.Settings');
 
@@ -162,27 +148,8 @@ export const UpdateSettingsForm = ({
     }
   };
 
-  const onReCaptchaChange = (token: string | null) => {
-    if (!token) {
-      setReCaptchaValid(false);
-
-      return;
-    }
-
-    setReCaptchaToken(token);
-    setReCaptchaValid(true);
-  };
-
   const onSubmit = async (formData: FormData) => {
-    if (reCaptchaSettings?.isEnabledOnStorefront && !reCaptchaToken) {
-      setReCaptchaValid(false);
-
-      return;
-    }
-
-    setReCaptchaValid(true);
-
-    const submit = await updateCustomer({ formData, reCaptchaToken });
+    const submit = await updateCustomer(formData);
 
     if (submit.status === 'success') {
       setFormStatus({
@@ -403,21 +370,6 @@ export const UpdateSettingsForm = ({
                   return null;
               }
             })}
-
-          {reCaptchaSettings?.isEnabledOnStorefront && (
-            <Field className="relative col-span-full max-w-full space-y-2 pb-7" name="ReCAPTCHA">
-              <ReCaptcha
-                onChange={onReCaptchaChange}
-                ref={reCaptchaRef}
-                sitekey={reCaptchaSettings.siteKey}
-              />
-              {!isReCaptchaValid && (
-                <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error">
-                  {t('recaptchaText')}
-                </span>
-              )}
-            </Field>
-          )}
           <div className="mt-8 flex flex-col items-center md:flex-row md:flex-wrap md:justify-start lg:col-span-2">
             <FormSubmit asChild>
               <SubmitButton messages={{ submit: t('submit'), submitting: t('submitting') }} />

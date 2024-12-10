@@ -9,12 +9,9 @@ import { graphql, VariablesOf } from '~/client/graphql';
 import { parseAccountFormData } from '~/components/form-fields/shared/parse-fields';
 
 const AddCustomerAddressMutation = graphql(`
-  mutation AddCustomerAddressMutation(
-    $input: AddCustomerAddressInput!
-    $reCaptchaV2: ReCaptchaV2Input
-  ) {
+  mutation AddCustomerAddressMutation($input: AddCustomerAddressInput!) {
     customer {
-      addCustomerAddress(input: $input, reCaptchaV2: $reCaptchaV2) {
+      addCustomerAddress(input: $input) {
         errors {
           ... on CustomerAddressCreationError {
             message
@@ -48,13 +45,7 @@ const isAddCustomerAddressInput = (data: unknown): data is AddCustomerAddressInp
   return false;
 };
 
-export const addAddress = async ({
-  formData,
-  reCaptchaToken,
-}: {
-  formData: FormData;
-  reCaptchaToken?: string;
-}) => {
+export const addAddress = async (formData: FormData) => {
   const t = await getTranslations('Account.Addresses.Add.Form');
   const customerAccessToken = await getSessionCustomerAccessToken();
 
@@ -74,7 +65,6 @@ export const addAddress = async ({
       fetchOptions: { cache: 'no-store' },
       variables: {
         input: parsed,
-        ...(reCaptchaToken && { reCaptchaV2: { token: reCaptchaToken } }),
       },
     });
 
