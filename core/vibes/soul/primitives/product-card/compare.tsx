@@ -24,7 +24,6 @@ export const Compare = function Compare({
     <Checkbox
       checked={param?.includes(productId) ?? false}
       className="text-contrast-500 transition-colors duration-300 hover:text-foreground"
-      id={`${paramName}-${productId}`}
       label={label}
       onCheckedChange={(value) => {
         void setParam((prev) => {
