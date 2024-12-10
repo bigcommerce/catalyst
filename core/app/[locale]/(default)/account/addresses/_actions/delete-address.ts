@@ -1,13 +1,12 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-
-import { State } from '../../settings/change-password/_actions/change-password';
+import { TAGS } from '~/client/tags';
 
 const DeleteCustomerAddressMutation = graphql(`
   mutation DeleteCustomerAddressMutation(
@@ -19,11 +18,9 @@ const DeleteCustomerAddressMutation = graphql(`
         errors {
           __typename
           ... on CustomerAddressDeletionError {
-            __typename
             message
           }
           ... on CustomerNotLoggedInError {
-            __typename
             message
           }
         }
@@ -32,7 +29,12 @@ const DeleteCustomerAddressMutation = graphql(`
   }
 `);
 
-export const deleteAddress = async (addressId: number): Promise<State> => {
+interface DeleteAddressResponse {
+  status: 'success' | 'error';
+  message: string;
+}
+
+export const deleteAddress = async (addressId: number): Promise<DeleteAddressResponse> => {
   const t = await getTranslations('Account.Addresses.Delete');
   const customerAccessToken = await getSessionCustomerAccessToken();
 
@@ -50,24 +52,24 @@ export const deleteAddress = async (addressId: number): Promise<State> => {
 
     const result = response.data.customer.deleteCustomerAddress;
 
-    revalidatePath('/account/addresses', 'page');
-
-    if (result.errors.length === 0) {
-      return { status: 'success', messages: [t('success')] };
+    if (result.errors.length > 0) {
+      result.errors.forEach((error) => {
+        // Throw the first error message, as we should only handle one error at a time
+        throw new Error(error.message);
+      });
     }
 
-    return {
-      status: 'error',
-      messages: result.errors.map((error) => error.message),
-    };
+    revalidateTag(TAGS.customer);
+
+    return { status: 'success', message: t('success') };
   } catch (error: unknown) {
     if (error instanceof Error) {
       return {
         status: 'error',
-        messages: [error.message],
+        message: error.message,
       };
     }
 
-    return { status: 'error', messages: [t('error')] };
+    return { status: 'error', message: t('error') };
   }
 };

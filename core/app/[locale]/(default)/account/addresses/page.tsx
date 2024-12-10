@@ -36,13 +36,13 @@ export default async function Addresses({ searchParams }: Props) {
     notFound();
   }
 
-  const { addresses, pageInfo, addressesCount } = data;
+  const { addresses, pageInfo, totalAddresses } = data;
   const { hasNextPage, hasPreviousPage, startCursor, endCursor } = pageInfo;
 
   return (
     <>
       <TabHeading heading="addresses" />
-      <AddressBook addressesCount={addressesCount} customerAddresses={addresses} key={endCursor}>
+      <AddressBook customerAddresses={addresses} key={endCursor} totalAddresses={totalAddresses}>
         <Pagination
           className="my-0 inline-flex justify-center text-center"
           endCursor={endCursor ?? undefined}

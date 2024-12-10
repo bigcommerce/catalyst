@@ -6,6 +6,7 @@ import { client } from '~/client';
 import { FormFieldValuesFragment } from '~/client/fragments/form-fields-values';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';
+import { TAGS } from '~/client/tags';
 
 const GetCustomerAddressesQuery = graphql(
   `
@@ -59,7 +60,7 @@ export const getCustomerAddresses = cache(
       document: GetCustomerAddressesQuery,
       variables: { ...paginationArgs },
       customerAccessToken,
-      fetchOptions: { cache: 'no-store' },
+      fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
     });
 
     const addresses = response.data.customer?.addresses;
@@ -70,7 +71,7 @@ export const getCustomerAddresses = cache(
 
     return {
       pageInfo: addresses.pageInfo,
-      addressesCount: addresses.collectionInfo?.totalItems ?? 0,
+      totalAddresses: addresses.collectionInfo?.totalItems ?? 0,
       addresses: removeEdgesAndNodes({ edges: addresses.edges }),
     };
   },

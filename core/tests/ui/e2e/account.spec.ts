@@ -16,19 +16,21 @@ test('My Account tabs are displayed and clickable', async ({ page, account }) =>
   // More info: https://github.com/amannn/next-intl/issues/1335
   await expect(page).toHaveURL('/account/');
 
-  await expect(page.getByRole('link', { name: 'Orders' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Addresses' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Account settings' })).toBeVisible();
+  const tabs = page.getByRole('navigation', { name: 'Account Tabs' });
 
-  await page.getByRole('link', { name: 'Orders' }).click();
+  await expect(tabs.getByRole('link', { name: 'Orders' })).toBeVisible();
+  await expect(tabs.getByRole('link', { name: 'Addresses' })).toBeVisible();
+  await expect(tabs.getByRole('link', { name: 'Account settings' })).toBeVisible();
+
+  await tabs.getByRole('link', { name: 'Orders' }).click();
   await expect(page).toHaveURL('/account/orders/');
   await expect(page.getByRole('heading', { name: 'Orders' })).toBeVisible();
 
-  await page.getByRole('link', { name: 'Addresses' }).click();
+  await tabs.getByRole('link', { name: 'Addresses' }).click();
   await expect(page).toHaveURL('/account/addresses/');
   await expect(page.getByRole('heading', { name: 'Addresses' })).toBeVisible();
 
-  await page.getByRole('link', { name: 'Account settings' }).click();
+  await tabs.getByRole('link', { name: 'Account settings' }).click();
   await expect(page).toHaveURL('/account/settings/');
   await expect(page.getByRole('heading', { name: 'Account settings' })).toBeVisible();
 
