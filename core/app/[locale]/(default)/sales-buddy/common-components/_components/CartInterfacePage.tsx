@@ -149,9 +149,9 @@ export default function CartInterface() {
     <>
       <div className="mt-[15px] bg-white">
         <Accordions
-          styles="border-t border-b border-[#CCCBCB] py-[10px] px-[20px] font-open-sans text-[16px]"
+          styles="border-y-[1px] border-x-0  border-[#CCCBCB] bg-white py-[10px] px-[20px] text-[16px]"
+          // styles="border-t border-b border-[#CCCBCB] py-[10px] px-[20px] font-open-sans text-[16px]"
           accordions={accordions}
-          type="multiple"
         />
       </div>
       <Button className="font-open-sans w-full bg-[#1DB14B] font-normal tracking-[1.25px] text-white">

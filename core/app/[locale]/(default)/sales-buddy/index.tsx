@@ -55,7 +55,7 @@ export default function SalesBuddyAppIndex() {
     <>
       {/* Chat Button */}
       <div className="no-scrollbar h-full justify-start bg-[#F3F4F5]">
-        <button onClick={toggleDrawer} className="fixed bottom-[10vh] left-[5%] flex">
+        <button onClick={toggleDrawer} className="fixed bottom-[1vh] left-[1vh] flex">
           <Image src={ChatIcon} alt="Chat Icon" className="h-[164px] w-[164px] object-cover" />
         </button>
       </div>

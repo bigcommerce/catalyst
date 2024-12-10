@@ -1,7 +1,9 @@
 'use server';
 
 export const createCustomerAccount = async (payload: {
-  fullname: string;
+  // fullname: string;
+  first_name: string;
+  last_name: string;
   company: string;
   email: string;
   phone: string;
@@ -10,11 +12,11 @@ export const createCustomerAccount = async (payload: {
   try {
     console.log('createCustomerAccount called4');
 
-    const { fullname, company, email, phone, referrerId } = payload;
+    const { first_name, last_name,company, email, phone, referrerId } = payload;
     const postData = JSON.stringify({
       email: email,
-      first_name: fullname.split(' ')[0], // Assuming first name is the first part of fullname
-      last_name: fullname.split(' ').slice(1).join(' '), // Assuming last name is the rest of the fullname
+      first_name: first_name, // Assuming first name is the first part of fullname
+      last_name: last_name, // Assuming last name is the rest of the fullname
       access_id: process.env.SALES_BUDDY_ACCESS_ID,
     });
 
@@ -38,9 +40,10 @@ export const createCustomerAccount = async (payload: {
         console.log(jsonData);
       })
       .catch((error) => {
+        //        return { status: 500, error: error.message };
       });
 
-    return data;
+    return { status: 200, data: data };
   } catch (error) {
     return { status: 500, error: JSON.stringify(error) };
   }

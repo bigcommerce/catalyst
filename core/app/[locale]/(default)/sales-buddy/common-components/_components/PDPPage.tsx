@@ -141,14 +141,14 @@ export default function SalesBuddyProductPage() {
         <Accordions
           styles="border-y-[1px] border-x-0  border-[#CCCBCB] bg-white py-[10px] px-[20px] text-[16px]"
           accordions={[ACCORDION_DATA.existingQuote]}
-          type="multiple"
+          // type="multiple"
         />
       </div>
       <div className="w-full">
         <Accordions
           styles="  py-[10px] px-[20px] text-[16px]"
           accordions={[ACCORDION_DATA.costPricing, ACCORDION_DATA.inventory]}
-          type="multiple"
+          // type="multiple"
         />
       </div>
 

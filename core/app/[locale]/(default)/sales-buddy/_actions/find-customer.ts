@@ -1,21 +1,23 @@
 'use server';
 
 export const findCustomerDetails = async (payload: {
-  fullname: string;
+  first_name: string;
+  last_name: string;
   company?: string;
   email: string;
   phone?: string;
   referrerId?: string;
 }) => {
   try {
-    const { fullname, company, email, phone, referrerId } = payload;
+    const { first_name, last_name, company, email, phone, referrerId } = payload;
+    const fullname=first_name+last_name
     const nameParts = fullname.trim().split(' ');
     const firstName = nameParts[0] || ''; // First part as first name
     const lastName = nameParts.slice(1).join(' ') || ''; // Remaining parts as last name
 
     const postData = JSON.stringify({
       email: email,
-      full_name:fullname,
+      full_name: fullname,
       company: company, // Optional field
       phone: phone, // Optional field
       access_id: process.env.SALES_BUDDY_ACCESS_ID, // Required field

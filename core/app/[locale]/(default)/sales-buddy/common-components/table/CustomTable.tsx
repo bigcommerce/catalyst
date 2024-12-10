@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 export default function DynamicTable({ data }) {
   if (!data || !data.length) {
@@ -38,7 +39,7 @@ export default function DynamicTable({ data }) {
           </tr>
         </thead>
         <tbody>
-          {data.map((row, rowIndex) => (
+          {data.map((row: { [s: string]: unknown; } | ArrayLike<unknown>, rowIndex: React.Key | null | undefined) => (
             <tr key={rowIndex}>
               {Object.entries(row).map(([key, value], cellIndex) => (
                 <td
@@ -52,10 +53,15 @@ export default function DynamicTable({ data }) {
                     whiteSpace: 'normal', // Allow normal wrapping
                   }}
                 >
-                  {typeof value === 'object' && value !== null
-                    ? JSON.stringify(value) // Converts objects to string
-                    : value?.toString() || 'N/A'}{' '}
-                  {/* Handles null or empty values */}
+                  <Link href={`/cart`}>
+                    {' '}
+                    {/* Adjust the path as needed */}
+                    <a style={{ textDecoration: 'none', color: 'inherit' }}>
+                      {typeof value === 'object' && value !== null
+                        ? JSON.stringify(value) // Converts objects to string
+                        : value?.toString() || 'N/A'}{' '}
+                    </a>
+                  </Link>
                 </td>
               ))}
             </tr>

@@ -1,6 +1,6 @@
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDown } from 'lucide-react';
-import { Key, ReactNode, useEffect, useRef, useState } from 'react';
+import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useRef, useState } from 'react';
 
 interface Accordion {
   content: ReactNode;
@@ -95,15 +95,15 @@ const Accordions = ({ accordions,styles }) => {
 
   return (
     <div id="accordion-collapse" className="w-[460px]" data-accordion="collapse">
-      {accordions.map((accordion, index) => (
+      {accordions.map((accordion: { title: string | number }, index: Key | null | undefined) => (
         <div key={index} className={` ${openIndex === index ? 'bg-[#FFFFFF]' : 'bg-[#F3F4F6]'}`}>
           <h2
-            className={`${styles} ${openIndex === index ? 'border-b-0' : ''}`}
+            className={`h-[52px] items-center${styles} ${openIndex === index ? 'border-b-0' : ''}`}
             id={`accordion-collapse-heading-${index + 1}`}
           >
             <button
               type="button"
-              className="flex  w-full items-center justify-between gap-3 font-medium text-gray-500 dark:text-gray-400 dark:hover:bg-gray-800 dark:focus:ring-gray-800"
+              className="flex w-full items-center justify-between gap-3 font-medium text-gray-500 dark:text-gray-400 dark:hover:bg-gray-800 dark:focus:ring-gray-800"
               onClick={() => toggleAccordion(index)}
               aria-expanded={openIndex === index}
               aria-controls={`accordion-collapse-body-${index + 1}`}
