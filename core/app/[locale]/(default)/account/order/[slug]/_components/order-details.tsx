@@ -32,7 +32,7 @@ const OrderState = async ({ orderState }: { orderState: OrderDataType['orderStat
           })}
         </p>
       </div>
-      <p className="align-center flex h-fit justify-center gap-2.5 rounded-3xl bg-secondary/10 px-4 py-1.5 font-semibold text-primary">
+      <p className="align-center bg-secondary/10 flex h-fit justify-center gap-2.5 rounded-3xl px-4 py-1.5 font-semibold text-primary">
         {status.label}
       </p>
     </div>
