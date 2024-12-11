@@ -34,6 +34,7 @@ export function ProductCard({
   return (
     <div className={className}>
       <Link
+        aria-label={title}
         className="group flex cursor-pointer flex-col gap-2 rounded-xl ring-primary ring-offset-4 focus-visible:outline-0 focus-visible:ring-2 @md:rounded-2xl"
         href={href}
         id={id}

@@ -21,6 +21,9 @@ interface Props {
   className?: string;
   emptyStateTitle?: string;
   emptyStateSubtitle?: string;
+  scrollbarLabel?: string;
+  previousLabel?: string;
+  nextLabel?: string;
 }
 
 export function ProductsCarousel({
@@ -28,6 +31,9 @@ export function ProductsCarousel({
   className,
   emptyStateTitle,
   emptyStateSubtitle,
+  scrollbarLabel,
+  previousLabel,
+  nextLabel,
 }: Props) {
   return (
     <Stream fallback={<ProductsCarouselSkeleton pending />} value={streamableProducts}>
@@ -54,8 +60,8 @@ export function ProductsCarousel({
               ))}
             </CarouselContent>
             <div className="flex w-full items-center justify-between">
-              <CarouselScrollbar />
-              <CarouselButtons />
+              <CarouselScrollbar label={scrollbarLabel} />
+              <CarouselButtons nextLabel={nextLabel} previousLabel={previousLabel} />
             </div>
           </Carousel>
         );
@@ -85,10 +91,7 @@ export function ProductsCarouselSkeleton({
           </CarouselItem>
         ))}
       </CarouselContent>
-      <div className="flex w-full items-center justify-between">
-        <CarouselScrollbar />
-        <CarouselButtons />
-      </div>
+      <div className="h-6 w-56 animate-pulse bg-contrast-100" />
     </Carousel>
   );
 }
