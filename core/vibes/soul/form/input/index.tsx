@@ -6,12 +6,14 @@ import { Label } from '@/vibes/soul/form/label';
 
 export const Input = React.forwardRef<
   React.ComponentRef<'input'>,
-  React.ComponentPropsWithoutRef<'input'> & {
+  Omit<React.ComponentPropsWithoutRef<'input'>, 'id'> & {
     prepend?: React.ReactNode;
     label?: string;
     errors?: string[];
   }
->(({ id, prepend, label, className, required, errors, ...rest }, ref) => {
+>(({ prepend, label, className, required, errors, ...rest }, ref) => {
+  const id = React.useId();
+
   return (
     <div className={clsx('w-full space-y-2', className)}>
       {label != null && label !== '' && <Label htmlFor={id}>{label}</Label>}
