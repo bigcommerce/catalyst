@@ -34,7 +34,7 @@ export function CardCarousel({
 }: Props) {
   return (
     <Carousel className={clsx('overflow-x-hidden w-full max-w-full relative', classNames?.root)}>
-      <CarouselContent className={clsx('mb-10', classNames?.content)}>
+      <CarouselContent className={clsx(classNames?.content)}>
         <Suspense
           fallback={<CardCarouselSkeleton classNames={classNames} message={emptyStateMessage} />}
         >
@@ -79,7 +79,7 @@ export function CardCarouselSkeleton({
     <Carousel className={clsx('overflow-x-hidden w-full max-w-full relative', classNames?.root)}>
       <CarouselContent
         className={clsx(
-          'relative mb-10',
+          'relative',
           classNames?.content,
           message && message !== '' && '[mask-image:radial-gradient(circle,transparent,black)]',
         )}

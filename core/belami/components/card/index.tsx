@@ -21,7 +21,7 @@ export function Card({ title, image, href, classNames }: CardProps) {
   return (
     <div className={classNames?.root}>
       <Link
-        className="group relative flex cursor-pointer flex-col gap-2 rounded-xl ring-primary ring-offset-4 focus-visible:outline-0 focus-visible:ring-2 @md:rounded-2xl"
+        className="group relative flex cursor-pointer flex-col gap-2 focus-visible:outline-0 focus-visible:ring-2"
         href={href}
       >
         <ArrowUpRight
@@ -31,7 +31,7 @@ export function Card({ title, image, href, classNames }: CardProps) {
           )}
           strokeWidth={1.5}
         />
-        <div className="relative aspect-[5/6] overflow-hidden rounded-[inherit] bg-contrast-100">
+        <figure className="relative aspect-[5/6] overflow-hidden rounded-[inherit] bg-contrast-100">
           {image != null ? (
             <Image
               alt={image.alt}
@@ -45,15 +45,15 @@ export function Card({ title, image, href, classNames }: CardProps) {
               {title}
             </div>
           )}
-        </div>
-        <span
+        </figure>
+        <h3
           className={clsx(
             'line-clamp-1 text-lg font-medium text-foreground text-center',
             '@4xl:text-foreground',
           )}
         >
           {title}
-        </span>
+        </h3>
       </Link>
     </div>
   );
