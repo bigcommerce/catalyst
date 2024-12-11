@@ -1,5 +1,4 @@
 import { clsx } from 'clsx';
-import { ArrowUpRight } from 'lucide-react';
 import { BcImage as Image } from '~/components/bc-image';
 
 import { Link } from '~/components/link';

@@ -8,7 +8,7 @@ import {
   CarouselContent,
   CarouselItem,
   CarouselScrollbar,
-} from '@/vibes/soul/primitives/carousel';
+} from '../carousel';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { mapStreamable } from '@/vibes/soul/lib/streamable/server';
@@ -54,10 +54,8 @@ export function CardCarousel({
           })}
         </Suspense>
       </CarouselContent>
-      <div className="flex w-full items-center justify-between">
-        <CarouselScrollbar />
-        <CarouselButtons />
-      </div>
+      <CarouselScrollbar />
+      <CarouselButtons />
     </Carousel>
   );
 }
