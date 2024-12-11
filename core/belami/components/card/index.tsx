@@ -24,13 +24,6 @@ export function Card({ title, image, href, classNames }: CardProps) {
         className="group relative flex cursor-pointer flex-col gap-2 focus-visible:outline-0 focus-visible:ring-2"
         href={href}
       >
-        <ArrowUpRight
-          className={clsx(
-            'absolute right-2.5 top-2.5 z-10 transition-transform duration-700 ease-out group-hover:-translate-y-1.5 group-hover:translate-x-1.5 @4xl:right-5 @4xl:top-5',
-            'text-foreground',
-          )}
-          strokeWidth={1.5}
-        />
         <figure className="relative aspect-[5/6] overflow-hidden rounded-[inherit] bg-contrast-100">
           {image != null ? (
             <Image
