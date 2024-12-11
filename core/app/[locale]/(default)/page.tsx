@@ -1,79 +1,30 @@
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
-
-import { getSessionCustomerAccessToken } from '~/auth';
-import { client } from '~/client';
-import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
-import { ProductCardCarousel } from '~/components/product-card-carousel';
-import { ProductCardCarouselFragment } from '~/components/product-card-carousel/fragment';
-import { Slideshow } from '~/components/slideshow';
-
-const HomePageQuery = graphql(
-  `
-    query HomePageQuery {
-      site {
-        newestProducts(first: 12) {
-          edges {
-            node {
-              ...ProductCardCarouselFragment
-            }
-          }
-        }
-        featuredProducts(first: 12) {
-          edges {
-            node {
-              ...ProductCardCarouselFragment
-            }
-          }
-        }
-      }
-    }
-  `,
-  [ProductCardCarouselFragment],
-);
-
+import { Page as MakeswiftPage } from '@makeswift/runtime/next';
+import { getSiteVersion } from '@makeswift/runtime/next/server';
+import { notFound } from 'next/navigation';
+ 
+import { defaultLocale } from '~/i18n/routing';
+import { client } from '~/lib/makeswift/client';
+import '~/lib/makeswift/components';
+ 
 interface Props {
-  params: Promise<{ locale: string }>;
+  params: {
+    locale: string;
+  };
 }
-
-export default async function Home({ params }: Props) {
-  const { locale } = await params;
-
-  setRequestLocale(locale);
-
-  const t = await getTranslations('Home');
-  const customerAccessToken = await getSessionCustomerAccessToken();
-
-  const { data } = await client.fetch({
-    document: HomePageQuery,
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+ 
+export default async function Home(props : Props) {
+  const params = await props.params;
+ 
+  const { locale } = params;
+  const snapshot = await client.getPageSnapshot('/', {
+    siteVersion: await getSiteVersion(),
+    locale: locale === defaultLocale ? undefined : locale,
   });
-
-  const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
-  const newestProducts = removeEdgesAndNodes(data.site.newestProducts);
-
-  return (
-    <>
-      <Slideshow />
-
-      <div className="my-10">
-        <ProductCardCarousel
-          products={featuredProducts}
-          showCart={false}
-          showCompare={false}
-          title={t('Carousel.featuredProducts')}
-        />
-        <ProductCardCarousel
-          products={newestProducts}
-          showCart={false}
-          showCompare={false}
-          title={t('Carousel.newestProducts')}
-        />
-      </div>
-    </>
-  );
+ 
+  if (snapshot == null) return notFound();
+ 
+  return <MakeswiftPage snapshot={snapshot} />;
 }
-
-export const runtime = 'edge';
+ 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';

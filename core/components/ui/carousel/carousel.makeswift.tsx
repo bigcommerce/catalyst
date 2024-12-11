@@ -1,3 +1,5 @@
+'use client';
+
 import { Select, Style, TextInput } from '@makeswift/runtime/controls';
 
 import { runtime } from '~/lib/makeswift/runtime';
