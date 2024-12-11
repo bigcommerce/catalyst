@@ -192,12 +192,17 @@ export const Details = ({ product }: Props) => {
             </div>
           )}
           {Boolean(customFields) &&
-            customFields.map((customField) => (
+            customFields.map((customField) => {
+              let customFieldName = customField.name;
+              if(customFieldName == 'ProdType') {
+                customFieldName = 'Product Type';
+              }
+             return (
               <div key={customField.entityId}>
-                <h3 className="font-semibold">{customField.name}</h3>
+                <h3 className="font-semibold">{customFieldName}</h3>
                 <p>{customField.value}</p>
               </div>
-            ))}
+            )})}
         </div>
       </div>
       <ProductSchema product={product} />
