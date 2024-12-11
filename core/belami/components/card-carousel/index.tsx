@@ -19,41 +19,36 @@ export type Card = CardProps & {
 
 type Props = {
   cards: Streamable<Card[]>;
-  textContrast?: 'light' | 'dark';
-  className?: string;
   classNames?: {
     root?: string,
     content?: string,
-    item?: string,
-    card?: string
+    item?: string
   };
   emptyStateMessage?: string;
 };
 
 export function CardCarousel({
   cards: streamableCards,
-  textContrast,
-  className,
   classNames,
   emptyStateMessage = 'No items found',
 }: Props) {
   return (
-    <Carousel className={clsx('overflow-x-hidden', className)}>
-      <CarouselContent className="mb-10">
+    <Carousel className={clsx('overflow-x-hidden', classNames?.root)}>
+      <CarouselContent className={clsx('relative mb-10', classNames?.content)}>
         <Suspense
-          fallback={<CardCarouselSkeleton className={className} message={emptyStateMessage} />}
+          fallback={<CardCarouselSkeleton classNames={classNames} message={emptyStateMessage} />}
         >
           {mapStreamable(streamableCards, (cards) => {
             if (cards.length === 0) {
-              return <CardCarouselSkeleton className={className} message={emptyStateMessage} />;
+              return <CardCarouselSkeleton classNames={classNames} message={emptyStateMessage} />;
             }
 
             return cards.map((card) => (
               <CarouselItem
-                className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:basis-1/6"
+                className={clsx('basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:basis-1/6', classNames?.item)}
                 key={card.id}
               >
-                <Card {...card} textContrast={textContrast} />
+                <Card {...card} />
               </CarouselItem>
             ));
           })}
@@ -68,32 +63,30 @@ export function CardCarousel({
 }
 
 export function CardCarouselSkeleton({
-  className,
   classNames,
   message,
   count = 8,
 }: {
-  className?: string;
   classNames?: {
     root?: string,
     content?: string,
-    item?: string,
-    card?: string
+    item?: string
   };
   message?: string;
   count?: number;
 }) {
   return (
-    <Carousel className={clsx('overflow-x-hidden', className)}>
+    <Carousel className={clsx('overflow-x-hidden', classNames?.root)}>
       <CarouselContent
         className={clsx(
           'relative mb-10',
+          classNames?.content,
           message && message !== '' && '[mask-image:radial-gradient(circle,transparent,black)]',
         )}
       >
         {Array.from({ length: count }).map((_, index) => (
           <CarouselItem
-            className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:basis-1/6"
+            className={clsx('basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:basis-1/6', classNames?.item)}
             key={index}
           >
             <CardSkeleton />

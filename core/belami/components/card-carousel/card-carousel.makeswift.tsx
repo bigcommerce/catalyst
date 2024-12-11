@@ -1,4 +1,4 @@
-import { Image, Link, List, Select, Shape, Style, TextInput } from '@makeswift/runtime/controls';
+import { Image, Link, List, Shape, TextInput } from '@makeswift/runtime/controls';
 
 import { CardCarousel } from '../card-carousel';
 import { runtime } from '~/lib/makeswift/runtime';
@@ -8,22 +8,26 @@ interface Card {
   imageSrc?: string;
   imageAlt?: string;
   link?: { href?: string; target?: string };
+  classNames?: {
+    root?: string,
+    link?: string,
+    figure?: string,
+    image?: string,
+    title?: string
+  }
 }
 
 interface MSCardCarouselProps {
-  className: string;
-  classNames: {
+  classNames?: {
     root?: string,
     content?: string,
-    item?: string,
-    card?: string
+    item?: string
   };
-  textContrast: 'light' | 'dark';
   cards: Card[];
 }
 
 runtime.registerComponent(
-  function MSCardCarousel({ className, classNames, textContrast, cards }: MSCardCarouselProps) {
+  function MSCardCarousel({ classNames, cards }: MSCardCarouselProps) {
     return (
       <CardCarousel
         cards={cards.map(({ title, imageSrc, imageAlt, link }, index) => {
@@ -34,9 +38,7 @@ runtime.registerComponent(
             href: link?.href ?? '',
           };
         })}
-        className={className}
         classNames={classNames}
-        textContrast={textContrast}
       />
     );
   },
@@ -45,23 +47,15 @@ runtime.registerComponent(
     label: 'Belami / Card Carousel',
     icon: 'carousel',
     props: {
-      className: Style(),
+      /*
       classNames: Shape({
         type: {
-          root: TextInput({ label: 'Root classes', defaultValue: '' }),
-          content: TextInput({ label: 'Content classes', defaultValue: '' }),
-          item: TextInput({ label: 'Item classes', defaultValue: '' }),
-          card: TextInput({ label: 'Card classes', defaultValue: '' })
+          root: TextInput({ label: 'Root class', defaultValue: '' }),
+          content: TextInput({ label: 'Content class', defaultValue: '' }),
+          item: TextInput({ label: 'Item class', defaultValue: '' }),
         }
       }),
-      textContrast: Select({
-        label: 'Contrast',
-        options: [
-          { value: 'light', label: 'Light' },
-          { value: 'dark', label: 'Dark' },
-        ],
-        defaultValue: 'dark',
-      }),
+      */
       cards: List({
         label: 'Cards',
         type: Shape({
@@ -70,6 +64,17 @@ runtime.registerComponent(
             imageSrc: Image({ label: 'Image' }),
             imageAlt: TextInput({ label: 'Image alt', defaultValue: 'Card image' }),
             link: Link({ label: 'Link' }),
+            /*
+            classNames: Shape({
+              type: {
+                root: TextInput({ label: 'Root class', defaultValue: '' }),
+                link: TextInput({ label: 'Link class', defaultValue: '' }),
+                figure: TextInput({ label: 'Figure class', defaultValue: '' }),
+                image: TextInput({ label: 'Image class', defaultValue: '' }),
+                title: TextInput({ label: 'Title class', defaultValue: '' })
+              }
+            })
+            */
           },
         }),
         getItemLabel(card) {

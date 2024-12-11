@@ -5,16 +5,21 @@ import { BcImage as Image } from '~/components/bc-image';
 import { Link } from '~/components/link';
 
 export type CardProps = {
-  className?: string;
   title: string;
   image?: { src: string; alt: string };
   href: string;
-  textContrast?: 'light' | 'dark';
+  classNames?: {
+    root?: string,
+    link?: string,
+    figure?: string,
+    image?: string,
+    title?: string
+  }
 };
 
-export function Card({ className, title, image, href, textContrast = 'dark' }: CardProps) {
+export function Card({ title, image, href, classNames }: CardProps) {
   return (
-    <div className={className}>
+    <div className={classNames?.root}>
       <Link
         className="group relative flex cursor-pointer flex-col gap-2 rounded-xl ring-primary ring-offset-4 focus-visible:outline-0 focus-visible:ring-2 @md:rounded-2xl"
         href={href}
@@ -22,7 +27,7 @@ export function Card({ className, title, image, href, textContrast = 'dark' }: C
         <ArrowUpRight
           className={clsx(
             'absolute right-2.5 top-2.5 z-10 transition-transform duration-700 ease-out group-hover:-translate-y-1.5 group-hover:translate-x-1.5 @4xl:right-5 @4xl:top-5',
-            textContrast === 'light' ? 'text-background' : 'text-foreground',
+            'text-foreground',
           )}
           strokeWidth={1.5}
         />
@@ -44,7 +49,7 @@ export function Card({ className, title, image, href, textContrast = 'dark' }: C
         <span
           className={clsx(
             'line-clamp-1 text-lg font-medium text-foreground text-center',
-            textContrast === 'light' ? '@4xl:text-background' : '@4xl:text-foreground',
+            '@4xl:text-foreground',
           )}
         >
           {title}
