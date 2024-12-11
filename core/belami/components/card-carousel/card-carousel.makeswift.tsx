@@ -12,12 +12,18 @@ interface Card {
 
 interface MSCardCarouselProps {
   className: string;
+  classNames: {
+    root?: string,
+    content?: string,
+    item?: string,
+    card?: string
+  };
   textContrast: 'light' | 'dark';
   cards: Card[];
 }
 
 runtime.registerComponent(
-  function MSCardCarousel({ className, textContrast, cards }: MSCardCarouselProps) {
+  function MSCardCarousel({ className, classNames, textContrast, cards }: MSCardCarouselProps) {
     return (
       <CardCarousel
         cards={cards.map(({ title, imageSrc, imageAlt, link }, index) => {
@@ -29,6 +35,7 @@ runtime.registerComponent(
           };
         })}
         className={className}
+        classNames={classNames}
         textContrast={textContrast}
       />
     );
@@ -39,6 +46,14 @@ runtime.registerComponent(
     icon: 'carousel',
     props: {
       className: Style(),
+      classNames: Shape({
+        type: {
+          root: TextInput({ label: 'Root classes', defaultValue: '' }),
+          content: TextInput({ label: 'Content classes', defaultValue: '' }),
+          item: TextInput({ label: 'Item classes', defaultValue: '' }),
+          card: TextInput({ label: 'Card classes', defaultValue: '' })
+        }
+      }),
       textContrast: Select({
         label: 'Contrast',
         options: [

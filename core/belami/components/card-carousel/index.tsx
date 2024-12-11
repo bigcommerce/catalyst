@@ -21,6 +21,12 @@ type Props = {
   cards: Streamable<Card[]>;
   textContrast?: 'light' | 'dark';
   className?: string;
+  classNames?: {
+    root?: string,
+    content?: string,
+    item?: string,
+    card?: string
+  };
   emptyStateMessage?: string;
 };
 
@@ -28,6 +34,7 @@ export function CardCarousel({
   cards: streamableCards,
   textContrast,
   className,
+  classNames,
   emptyStateMessage = 'No items found',
 }: Props) {
   return (
@@ -62,10 +69,17 @@ export function CardCarousel({
 
 export function CardCarouselSkeleton({
   className,
+  classNames,
   message,
   count = 8,
 }: {
   className?: string;
+  classNames?: {
+    root?: string,
+    content?: string,
+    item?: string,
+    card?: string
+  };
   message?: string;
   count?: number;
 }) {
@@ -79,7 +93,7 @@ export function CardCarouselSkeleton({
       >
         {Array.from({ length: count }).map((_, index) => (
           <CarouselItem
-            className="basis-full @md:basis-1/2 @lg:basis-1/3 @2xl:basis-1/4"
+            className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:basis-1/6"
             key={index}
           >
             <CardSkeleton />
