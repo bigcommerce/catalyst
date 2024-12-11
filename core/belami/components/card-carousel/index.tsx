@@ -31,7 +31,7 @@ export function CardCarousel({
   emptyStateMessage = 'No items found',
 }: Props) {
   return (
-    <Carousel className={className}>
+    <Carousel className={clsx('overflow-x-hidden', className)}>
       <CarouselContent className="mb-10">
         <Suspense
           fallback={<CardCarouselSkeleton className={className} message={emptyStateMessage} />}
@@ -70,7 +70,7 @@ export function CardCarouselSkeleton({
   count?: number;
 }) {
   return (
-    <Carousel className={className}>
+    <Carousel className={clsx('overflow-x-hidden', className)}>
       <CarouselContent
         className={clsx(
           'relative mb-10',
