@@ -38,3 +38,14 @@ test('Login fails with invalid credentials', async ({ page }) => {
     ),
   ).toBeVisible();
 });
+
+test('If a customer is logged in, redirect to account pages', async ({ page, account }) => {
+  const customer = await account.create();
+
+  await customer.login();
+  await page.waitForURL('/account/');
+  await page.goto('/login');
+  await page.waitForURL('/account/');
+
+  await expect(page.getByRole('heading', { name: 'My Account' })).toBeVisible();
+});
