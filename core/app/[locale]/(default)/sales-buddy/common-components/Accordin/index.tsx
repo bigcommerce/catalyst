@@ -96,9 +96,12 @@ const Accordions = ({ accordions,styles }) => {
   return (
     <div id="accordion-collapse" className="w-[460px]" data-accordion="collapse">
       {accordions.map((accordion: { title: string | number }, index: Key | null | undefined) => (
-        <div key={index} className={` ${openIndex === index ? 'bg-[#FFFFFF]' : 'bg-[#F3F4F6]'}`}>
+        <div
+          key={index}
+          className={`border-y-2 ${openIndex === index ? 'bg-[#FFFFFF]' : 'bg-[#F3F4F6]'}`}
+        >
           <h2
-            className={`h-[52px] items-center${styles} ${openIndex === index ? 'border-b-0' : ''}`}
+            className={`flex h-[52px] items-center justify-center${styles} ${openIndex === index ? 'border-b-0' : ''}`}
             id={`accordion-collapse-heading-${index + 1}`}
           >
             <button
