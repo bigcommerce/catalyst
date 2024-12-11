@@ -82,7 +82,7 @@ test.describe('desktop', () => {
     ).toBeVisible();
   });
 
-  test('Complete checkout as a logged in shopper', async ({ page, isMobile, account }) => {
+  test('Complete checkout as a logged in shopper', async ({ page, account }) => {
     const customer = await account.create();
 
     await customer.login();
@@ -97,9 +97,14 @@ test.describe('desktop', () => {
     await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
     await page.getByRole('button', { name: 'Proceed to checkout' }).click();
 
-    await waitForShippingForm(page, isMobile);
+    await page.waitForRequest('**/internalapi/v1/store/countries');
+    await page
+      .locator('.checkout-step--shipping .checkout-view-content[aria-busy="false"]')
+      .waitFor();
 
     await page.getByText(customer.email).isVisible();
+
+    await page.getByRole('button', { name: 'Continue' }).click();
     await page.getByRole('heading', { name: 'Payment', exact: true }).waitFor();
 
     await enterCreditCardDetails(page);
@@ -107,7 +112,7 @@ test.describe('desktop', () => {
     await page.getByRole('button', { name: 'Place Order' }).click();
     await page.waitForLoadState('networkidle');
     await expect(
-      page.getByRole('heading', { name: `Thank you ${firstName}!`, level: 1 }),
+      page.getByRole('heading', { name: `Thank you ${customer.firstName}!`, level: 1 }),
     ).toBeVisible();
   });
 });

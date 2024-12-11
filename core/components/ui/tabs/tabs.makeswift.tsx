@@ -18,7 +18,6 @@ runtime.registerComponent(Tabs, {
           value: TextInput({
             label: 'Unique value',
             defaultValue: Math.random().toString(36).substring(7),
-            placeholder: 'Unique value',
           }),
         },
       }),
@@ -26,7 +25,6 @@ runtime.registerComponent(Tabs, {
     label: TextInput({
       label: 'Label',
       defaultValue: 'Tabs',
-      placeholder: 'Label',
     }),
   },
 });

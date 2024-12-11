@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { Metadata } from 'next';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -9,8 +10,8 @@ import { revalidate as revalidateTarget } from '~/client/revalidate-target';
 import { locales } from '~/i18n/routing';
 
 import ProductPage from '../page';
+import { getProduct } from '../page-data';
 
-export { generateMetadata } from '../page';
 export default ProductPage;
 
 const FeaturedProductsQuery = graphql(`
@@ -56,6 +57,43 @@ export async function generateStaticParams() {
       slug: product.entityId.toString(),
     }));
   });
+}
+
+interface Props {
+  params: Promise<{ slug: string; locale: string }>;
+}
+
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
+  const productId = Number(params.slug);
+
+  const product = await getProduct({
+    entityId: productId,
+    useDefaultOptionSelections: true,
+  });
+
+  if (!product) {
+    return {};
+  }
+
+  const { pageTitle, metaDescription, metaKeywords } = product.seo;
+  const { url, altText: alt } = product.defaultImage || {};
+
+  return {
+    title: pageTitle || product.name,
+    description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
+    keywords: metaKeywords ? metaKeywords.split(',') : null,
+    openGraph: url
+      ? {
+          images: [
+            {
+              url,
+              alt,
+            },
+          ],
+        }
+      : null,
+  };
 }
 
 export const dynamic = 'force-static';

@@ -140,7 +140,7 @@ jobs:
       - name: Run Playwright tests
         run: |
           cd core
-          npx playwright test tests/ui/ --project=tests-chromium 
+          npx playwright test tests/ui/ --project=tests-chromium
 
       - uses: actions/upload-artifact@v4
         if: failure()

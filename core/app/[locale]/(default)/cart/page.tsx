@@ -45,7 +45,9 @@ export async function generateMetadata() {
 }
 
 export default async function Cart() {
-  const cartId = cookies().get('cartId')?.value;
+  const cookieStore = await cookies();
+
+  const cartId = cookieStore.get('cartId')?.value;
 
   if (!cartId) {
     return <EmptyCart />;

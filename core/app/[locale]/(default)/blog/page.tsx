@@ -4,16 +4,16 @@ import { getTranslations } from 'next-intl/server';
 
 import { BlogPostCard } from '~/components/blog-post-card';
 import { Pagination } from '~/components/ui/pagination';
-import { LocaleType } from '~/i18n/routing';
 
 import { getBlogPosts } from './page-data';
 
 interface Props {
-  params: { locale: LocaleType };
-  searchParams: Record<string, string | string[] | undefined>;
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const searchParams = await props.searchParams;
   const t = await getTranslations('Blog');
   const blogPosts = await getBlogPosts(searchParams);
 
@@ -26,7 +26,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   };
 }
 
-export default async function Blog({ searchParams }: Props) {
+export default async function Blog(props: Props) {
+  const searchParams = await props.searchParams;
   const blogPosts = await getBlogPosts(searchParams);
 
   if (!blogPosts) {

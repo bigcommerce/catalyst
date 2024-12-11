@@ -204,7 +204,7 @@
             "changePassword": "Zmień hasło",
             "submit": "Zaktualizuj ustawienia",
             "submitting": "Zaktualizuj ustawienia...",
-            "successMessage": "Your account settings have been updated",
+            "successMessage": "Ustawienia konta zostały zaktualizowane",
             "validationMessages": {
                 "email": "Podaj prawidłowy adres e-mail, np. nazwa@domena.com",
                 "empty": "To pole nie może być puste",

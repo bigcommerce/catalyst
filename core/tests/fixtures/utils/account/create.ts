@@ -55,7 +55,7 @@ export async function createAccount() {
               postal_code,
             },
           ],
-          origin_channel_id: process.env.BIGCOMMERCE_CHANNEL_ID,
+          origin_channel_id: Number(process.env.BIGCOMMERCE_CHANNEL_ID),
         },
       ]),
     },

@@ -39,7 +39,8 @@ export async function updateItemQuantity({
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   try {
-    const cartId = cookies().get('cartId')?.value;
+    const cookieStore = await cookies();
+    const cartId = cookieStore.get('cartId')?.value;
 
     if (!cartId) {
       return { status: 'error', error: 'No cartId cookie found' };

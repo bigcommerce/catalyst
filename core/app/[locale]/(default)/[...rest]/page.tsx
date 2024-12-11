@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation';
 
 import { defaultLocale, locales } from '~/i18n/routing';
 import { client } from '~/lib/makeswift/client';
-import { MakeswiftProvider } from '~/lib/makeswift/provider';
 
 interface CatchAllParams {
   locale: string;
@@ -20,28 +19,23 @@ export async function generateStaticParams() {
       locales.map((locale) => ({
         rest: page.path.split('/').filter((segment) => segment !== ''),
         // Remove eslint disable once more locales are added
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         locale: locale === defaultLocale ? undefined : locale,
       })),
     );
 }
 
-export default async function CatchAllPage({ params }: { params: CatchAllParams }) {
-  const path = `/${params.rest.join('/')}`;
+export default async function CatchAllPage({ params }: { params: Promise<CatchAllParams> }) {
+  const { locale, rest } = await params;
+  const path = `/${rest.join('/')}`;
 
   const snapshot = await client.getPageSnapshot(path, {
     siteVersion: getSiteVersion(),
-    locale: params.locale === defaultLocale ? undefined : params.locale,
+    locale: locale === defaultLocale ? undefined : locale,
   });
 
   if (snapshot == null) return notFound();
 
-  return (
-    <MakeswiftProvider>
-      <MakeswiftPage snapshot={snapshot} />
-    </MakeswiftProvider>
-  );
+  return <MakeswiftPage snapshot={snapshot} />;
 }
 
 export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';

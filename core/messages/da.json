@@ -204,7 +204,7 @@
             "changePassword": "Skift adgangskode",
             "submit": "Opdater indstillinger",
             "submitting": "Opdater indstillinger ...",
-            "successMessage": "Your account settings have been updated",
+            "successMessage": "Dine kontoindstillinger er blevet opdateret",
             "validationMessages": {
                 "email": "Indtast en gyldig e-mail, f.eks. navn@domæne.com",
                 "empty": "Dette felt må ikke være tomt",

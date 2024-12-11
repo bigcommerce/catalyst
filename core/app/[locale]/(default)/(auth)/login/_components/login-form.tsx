@@ -1,8 +1,8 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { ChangeEvent, useState } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { ChangeEvent, useActionState, useState } from 'react';
+import { useFormStatus } from 'react-dom';
 
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
@@ -41,7 +41,7 @@ export const LoginForm = () => {
 
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
-  const [state, formAction] = useFormState(login, { status: 'idle' });
+  const [state, formAction] = useActionState(login, { status: 'idle' });
   const { accountState } = useAccountStatusContext();
 
   const isFormInvalid = state?.status === 'error';

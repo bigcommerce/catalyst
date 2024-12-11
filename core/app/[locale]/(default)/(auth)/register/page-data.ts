@@ -89,7 +89,7 @@ export const getRegisterCustomerQuery = cache(async ({ address, customer }: Prop
   const countries = response.data.geography.countries;
   const defaultCountry = response.data.site.settings?.contact?.country;
 
-  const reCaptchaSettings = bypassReCaptcha(response.data.site.settings?.reCaptcha);
+  const reCaptchaSettings = await bypassReCaptcha(response.data.site.settings?.reCaptcha);
 
   if (!addressFields || !customerFields || !countries) {
     return null;

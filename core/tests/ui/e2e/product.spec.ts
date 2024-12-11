@@ -23,6 +23,7 @@ test('Validate product page', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Size' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Price', exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Rating' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Other' })).toBeVisible();
   await expect(page.getByLabel('Sort by:')).toBeVisible();
 });
 

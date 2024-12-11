@@ -109,7 +109,7 @@ export const getCustomerSettingsQuery = cache(async ({ address, customer }: Prop
   const customerFields = response.data.site.settings?.formFields.customer;
   const customerInfo = response.data.customer;
 
-  const reCaptchaSettings = bypassReCaptcha(response.data.site.settings?.reCaptcha);
+  const reCaptchaSettings = await bypassReCaptcha(response.data.site.settings?.reCaptcha);
 
   if (!addressFields || !customerFields || !customerInfo) {
     return null;

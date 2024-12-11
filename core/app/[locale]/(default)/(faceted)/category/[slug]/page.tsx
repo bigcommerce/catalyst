@@ -5,7 +5,6 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Breadcrumbs } from '~/components/breadcrumbs';
 import { ProductCard } from '~/components/product-card';
 import { Pagination } from '~/components/ui/pagination';
-import { LocaleType } from '~/i18n/routing';
 
 import { FacetedSearch } from '../../_components/faceted-search';
 import { MobileSideNav } from '../../_components/mobile-side-nav';
@@ -18,15 +17,16 @@ import { SubCategories } from './_components/sub-categories';
 import { getCategoryPageData } from './page-data';
 
 interface Props {
-  params: {
+  params: Promise<{
     slug: string;
-    locale: LocaleType;
-  };
-  searchParams: Record<string, string | string[] | undefined>;
+    locale: string;
+  }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const categoryId = Number(params.slug);
+  const { slug } = await params;
+  const categoryId = Number(slug);
 
   const data = await getCategoryPageData({
     categoryId,
@@ -47,7 +47,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function Category({ params: { locale, slug }, searchParams }: Props) {
+export default async function Category(props: Props) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const { locale, slug } = params;
+
   setRequestLocale(locale);
 
   const t = await getTranslations('Category');

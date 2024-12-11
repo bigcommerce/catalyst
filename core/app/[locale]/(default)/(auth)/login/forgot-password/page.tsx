@@ -39,10 +39,12 @@ export default async function Reset() {
     fetchOptions: { next: { revalidate } },
   });
 
+  const recaptchaSettings = await bypassReCaptcha(data.site.settings?.reCaptcha);
+
   return (
     <div className="mx-auto my-6 max-w-4xl">
       <h2 className="mb-8 text-4xl font-black lg:text-5xl">{t('heading')}</h2>
-      <ResetPasswordForm reCaptchaSettings={bypassReCaptcha(data.site.settings?.reCaptcha)} />
+      <ResetPasswordForm reCaptchaSettings={recaptchaSettings} />
     </div>
   );
 }

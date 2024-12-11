@@ -75,7 +75,8 @@ const config = {
   },
   events: {
     async signIn({ user: { customerAccessToken } }) {
-      const cookieCartId = cookies().get('cartId')?.value;
+      const cookieStore = await cookies();
+      const cookieCartId = cookieStore.get('cartId')?.value;
 
       if (cookieCartId) {
         try {
@@ -133,6 +134,10 @@ const config = {
             cache: 'no-store',
           },
         });
+
+        if (response.errors && response.errors.length > 0) {
+          return null;
+        }
 
         const result = response.data.login;
 

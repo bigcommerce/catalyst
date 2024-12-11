@@ -1,4 +1,4 @@
-import { expect, Page, test } from '~/tests/fixtures';
+import { expect, test } from '~/tests/fixtures';
 
 const sampleProduct = '[Sample] Able Brewing System';
 

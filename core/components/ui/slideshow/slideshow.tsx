@@ -1,3 +1,5 @@
+'use client';
+
 import useEmblaCarousel from 'embla-carousel-react';
 import { ArrowLeft, ArrowRight, Pause, Play } from 'lucide-react';
 import NextImage, { StaticImageData } from 'next/image';
@@ -109,8 +111,7 @@ const Slideshow = ({ className, interval = 15_000, slides }: Props) => {
               aria-label={`${index + 1} of ${slides.length}`}
               aria-roledescription="slide"
               className="min-w-0 shrink-0 grow-0 basis-full"
-              // @ts-expect-error https://github.com/DefinitelyTyped/DefinitelyTyped/pull/60822
-              inert={index === activeSlide - 1 ? null : 'true'}
+              inert={index === activeSlide - 1 ? undefined : true}
               key={index}
             >
               <div className="relative">

@@ -24,7 +24,15 @@ export default defineConfig({
   projects: [
     {
       name: 'tests-chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        launchOptions: {
+          // When redirected to checkout, BigCommerce blocks preflight requests from a HeadlessChrome user agent.
+          // We need to disable web security to allow the preflight request to go through.
+          args: ['--disable-web-security'],
+        },
+      },
     },
   ],
+  retries: 1,
 });
