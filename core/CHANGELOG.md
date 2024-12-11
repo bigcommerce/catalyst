@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.24.0
+
+### Minor Changes
+
+- [#1741](https://github.com/bigcommerce/catalyst/pull/1741) [`5136fac`](https://github.com/bigcommerce/catalyst/commit/5136fac6e05c6eb1ebce9707abcf1f180712358e) Thanks [@chanceaclark](https://github.com/chanceaclark)! - If a customer is already logged in, we want to redirect them back to their account pages if they are trying to hit one of the non-logged-in customer auth routes. The prevents any side effects that may occur trying to re-auth the client. This is done by providing a root layout.tsx page under the (auth) route group.
+
 ## 0.23.0
 
 ### Minor Changes
