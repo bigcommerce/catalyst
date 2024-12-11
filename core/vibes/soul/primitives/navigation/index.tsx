@@ -88,6 +88,7 @@ interface Props<S extends SearchResult> {
   localeAction?: LocaleAction;
   logo?: Streamable<string | { src: string; alt: string } | null>;
   logoHref?: string;
+  logoLabel?: string;
   searchHref: string;
   searchParamName?: string;
   searchAction?: SearchAction<S>;
@@ -98,6 +99,7 @@ interface Props<S extends SearchResult> {
   cartLabel?: string;
   accountLabel?: string;
   searchLabel?: string;
+  mobileMenuTriggerLabel?: string;
 }
 
 const HamburgerMenuButton = forwardRef<
@@ -169,6 +171,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     links: streamableLinks,
     logo: streamableLogo,
     logoHref = '/',
+    logoLabel = 'Home',
     activeLocaleId,
     localeAction,
     locales,
@@ -182,6 +185,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     cartLabel = 'Cart',
     accountLabel = 'Profile',
     searchLabel = 'Search',
+    mobileMenuTriggerLabel = 'Toggle navigation',
   }: Props<S>,
   ref: Ref<HTMLDivElement>,
 ) {
@@ -228,6 +232,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           <Popover.Anchor className="absolute left-0 right-0 top-full" />
           <Popover.Trigger asChild>
             <HamburgerMenuButton
+              aria-label={mobileMenuTriggerLabel}
               className="mr-3 @4xl:hidden"
               onClick={() => setIsMobileMenuOpen((prev) => !prev)}
               open={isMobileMenuOpen}
@@ -296,6 +301,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         </Popover.Root>
         <div className="flex flex-1 items-center self-stretch py-2">
           <Link
+            aria-label={logoLabel}
             className="relative flex size-full max-w-[80%] items-center outline-0 ring-primary ring-offset-4 focus-visible:ring-2 @4xl:max-w-[50%]"
             href={logoHref}
           >

@@ -34,7 +34,9 @@
       "description": "Our latest products are here. Check out what's new in store.",
       "cta": "See all",
       "emptyStateTitle": "No products found",
-      "emptyStateSubtitle": "Please try again later."
+      "emptyStateSubtitle": "Please try again later.",
+      "previousProducts": "Previous products",
+      "nextProducts": "Next products"
     },
     "BestSellingProducts": {
       "title": "Our best sellers",
@@ -494,10 +496,12 @@
   },
   "Components": {
     "Header": {
+      "home": "Home",
+      "toggleNavigation": "Toggle navigation",
       "Icons": {
-        "Account": "Profile",
-        "Cart": "Cart",
-        "Search": "Search"
+        "account": "Profile",
+        "cart": "Cart",
+        "search": "Search"
       },
       "Account": {
         "account": "Account",
@@ -535,6 +539,7 @@
       }
     },
     "Footer": {
+      "home": "Home",
       "socialMediaLinks": "Social media links"
     },
     "Subscribe": {
