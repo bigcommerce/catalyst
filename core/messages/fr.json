@@ -335,8 +335,7 @@
             }
         },
         "AddToCart": {
-            "success": "<cartLink>{cartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
-            "error": "Erreur lors de l'ajout d'un produit au panier. Veuillez réessayer."
+            "success": "<cartLink>{cartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>"
         }
     },
     "Product": {
@@ -344,9 +343,14 @@
         "Carousel": {
             "relatedProducts": "Produits associés"
         },
+        "Gallery": {
+            "previous": "Image du produit précédent",
+            "next": "Image du produit suivant",
+            "thumbnailNavigation": "Navigation par vignettes",
+            "enlarge": "Agrandir l'image du produit"
+        },
         "Form": {
             "success": "<cartLink>{cartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
-            "error": "Erreur lors de l'ajout d'un produit au panier. Veuillez réessayer.",
             "saveToWishlist": "Enregistrer dans la liste d'envies",
             "quantityLabel": "Quantité"
         },
@@ -437,7 +441,34 @@
             "LocaleSwitcher": {
                 "chooseCountryAndLanguage": "Sélectionnez le pays et la langue.",
                 "goToSite": "Accéder au site"
+            },
+            "MiniCart": {
+                "cart": "Panier",
+                "items": "Articles du panier"
+            },
+            "Navigation": {
+                "toggle": "Basculer la navigation",
+                "navigationMenu": "Menu de navigation"
+            },
+            "Search": {
+                "openSearchPopup": "Ouvrir la fenêtre contextuelle de recherche",
+                "closeSearchPopup": "Fermer la fenêtre contextuelle de recherche",
+                "searchBar": "Barre de recherche",
+                "photo": "Photo",
+                "products": "Produits",
+                "categories": "Catégories",
+                "brands": "Marques",
+                "noSearchResults": "Désolé, aucun résultat pour « {term} ».",
+                "searchPlaceholder": "Recherche...",
+                "clearSearch": "Effacer la recherche",
+                "processing": "Traitement en cours…"
             }
+        },
+        "Footer": {
+            "socialMediaLinks": "Lien vers les médias sociaux"
+        },
+        "Breadcrumb": {
+            "breadcrumb": "Fil d'Ariane"
         },
         "Compare": {
             "compareButton": "Comparer ({products})",
@@ -448,7 +479,7 @@
             "searchProducts": "Rechercher des produits",
             "searchPlaceholder": "Recherche...",
             "search": "Rechercher",
-            "noSearchResults": "Désolé, il n'y a aucun résultat pour « {term} ».",
+            "noSearchResults": "Désolé, aucun résultat pour « {term} ».",
             "checkSpelling": "Veuillez vérifier l’orthographe ou modifier votre recherche."
         },
         "AddToCartButton": {
@@ -459,11 +490,34 @@
             "processing": "Traitement en cours…"
         },
         "ProductCard": {
+            "Compare": {
+                "compare": "Comparer"
+            },
             "AddToCart": {
                 "viewOptions": "Afficher les options",
-                "success": "<cartLink>{cartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
-                "error": "Erreur lors de l'ajout d'un produit au panier. Veuillez réessayer."
+                "success": "<cartLink>{cartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>"
             }
+        },
+        "Slideshow": {
+            "slideshow": "Diaporama interactif",
+            "slide": "Diapositive",
+            "previousSlide": "Diapositive précédente",
+            "nextSlide": "Diapositive suivante",
+            "slideNo": "{n} sur {total}",
+            "pause": "Mettre le diaporama en pause",
+            "play": "Lancer le diaporama"
+        },
+        "Pagination": {
+            "pagination": "pagination",
+            "previous": "Précédent",
+            "next": "Suivant"
+        },
+        "Carousel": {
+            "carousel": "Carrousel",
+            "previousProducts": "Produits précédents",
+            "nextProducts": "Prochains produits",
+            "slides": "Diapositives",
+            "goto": "Aller à la diapositive {n}"
         },
         "FormFields": {
             "Validation": {
@@ -482,6 +536,10 @@
                 "password": "Saisissez un mot de passe",
                 "phone": "Saisissez un numéro de téléphone",
                 "postalCode": "Saisissez un code postal"
+            },
+            "Counter": {
+                "increase": "Augmenter le nombre",
+                "decrease": "Diminuer le nombre"
             }
         }
     }

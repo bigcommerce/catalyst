@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useEffect, useId, useState } from 'react';
 
 import { useCompareDrawerContext } from '../compare-drawer';
@@ -19,6 +20,7 @@ interface Props {
 
 export const Compare = ({ id, image, name }: Props) => {
   const checkboxId = useId();
+  const t = useTranslations('Components.ProductCard.Compare');
 
   const [checkedState, setCheckedState] = useState(false);
   const { products, setProducts } = useCompareDrawerContext();
@@ -51,13 +53,14 @@ export const Compare = ({ id, image, name }: Props) => {
   return (
     <div className="flex items-center gap-3">
       <Checkbox
+        aria-label={t('compare')}
         checked={checkedState}
         className="h-4 w-4"
         id={checkboxId}
         onCheckedChange={handleOnCheckedChange}
       />
       <Label className="font-normal" htmlFor={checkboxId}>
-        Compare
+        {t('compare')}
       </Label>
     </div>
   );

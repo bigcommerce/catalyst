@@ -15,6 +15,12 @@ import { parse } from '../utils/parse';
 import { Telemetry } from '../utils/telemetry/telemetry';
 import { writeEnv } from '../utils/write-env';
 
+function getPlatformCheckCommand(command: string): string {
+  const isWindows = process.platform === 'win32';
+
+  return isWindows ? `where.exe ${command}` : `which ${command}`;
+}
+
 const telemetry = new Telemetry();
 
 export const create = new Command('create')
@@ -26,6 +32,7 @@ export const create = new Command('create')
   .option('--channel-id <id>', 'BigCommerce channel ID')
   .option('--storefront-token <token>', 'BigCommerce storefront token')
   .option('--gh-ref <ref>', 'Clone a specific ref from the source repository')
+  .option('--reset-main', 'Reset the main branch to the gh-ref')
   .option('--repository <repository>', 'GitHub repository to clone from', 'bigcommerce/catalyst')
   .option('--env <vars...>', 'Arbitrary environment variables to set in .env.local')
   .addOption(
@@ -43,14 +50,14 @@ export const create = new Command('create')
     const { ghRef, repository } = options;
 
     try {
-      execSync('which git', { stdio: 'ignore' });
+      execSync(getPlatformCheckCommand('git'), { stdio: 'ignore' });
     } catch {
       console.error(chalk.red('Error: git is required to create a Catalyst project\n'));
       process.exit(1);
     }
 
     try {
-      execSync('which pnpm', { stdio: 'ignore' });
+      execSync(getPlatformCheckCommand('pnpm'), { stdio: 'ignore' });
     } catch {
       console.error(chalk.red('Error: pnpm is required to create a Catalyst project\n'));
       console.error(chalk.yellow('Tip: Enable it by running `corepack enable pnpm`\n'));
@@ -61,6 +68,7 @@ export const create = new Command('create')
     const sampleDataApiUrl = parse(options.sampleDataApiUrl, URLSchema);
     const bigcommerceApiUrl = parse(`https://api.${options.bigcommerceHostname}`, URLSchema);
     const bigcommerceAuthUrl = parse(`https://login.${options.bigcommerceHostname}`, URLSchema);
+    const resetMain = options.resetMain;
 
     let projectName;
     let projectDir;
@@ -117,7 +125,7 @@ export const create = new Command('create')
     if (storeHash && channelId && storefrontToken) {
       console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
-      cloneCatalyst({ repository, projectName, projectDir, ghRef });
+      cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain });
 
       writeEnv(projectDir, {
         channelId: channelId.toString(),
@@ -147,7 +155,7 @@ export const create = new Command('create')
     if (!storeHash || !accessToken) {
       console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
-      cloneCatalyst({ repository, projectName, projectDir, ghRef });
+      cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain });
 
       await installDependencies(projectDir);
 
@@ -248,7 +256,7 @@ export const create = new Command('create')
 
     console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
-    cloneCatalyst({ repository, projectName, projectDir, ghRef });
+    cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain });
 
     writeEnv(projectDir, {
       channelId: channelId.toString(),

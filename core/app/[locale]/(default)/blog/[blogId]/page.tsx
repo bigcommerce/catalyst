@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter } from 'next-intl/server';
 
-import { BcImage } from '~/components/bc-image';
+import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 import { Tag } from '~/components/ui/tag';
 
@@ -62,7 +62,7 @@ export default async function Blog({ params }: Props) {
 
       {blogPost.thumbnailImage ? (
         <div className="mb-6 flex h-40 sm:h-80 lg:h-96">
-          <BcImage
+          <Image
             alt={blogPost.thumbnailImage.altText}
             className="h-full w-full object-cover object-center"
             height={900}

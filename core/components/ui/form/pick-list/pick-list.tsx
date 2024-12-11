@@ -1,7 +1,7 @@
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
-import { ComponentPropsWithRef, ElementRef, forwardRef, useId } from 'react';
+import { ComponentPropsWithRef, ComponentRef, forwardRef, useId } from 'react';
 
-import { BcImage } from '~/components/bc-image';
+import { Image } from '~/components/image';
 import { cn } from '~/lib/utils';
 
 import { Label } from '../label';
@@ -23,7 +23,7 @@ interface Props extends ComponentPropsWithRef<typeof RadioGroupPrimitive.Root> {
   items: Item[];
 }
 
-const PickList = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
+const PickList = forwardRef<ComponentRef<typeof RadioGroupPrimitive.Root>, Props>(
   ({ children, error = false, items, className, ...props }, ref) => {
     const id = useId();
 
@@ -43,7 +43,7 @@ const PickList = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
               onMouseEnter={onMouseEnter}
             >
               {image && (
-                <BcImage
+                <Image
                   alt={image.altText}
                   className="me-6"
                   height={48}
@@ -54,9 +54,9 @@ const PickList = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
               <RadioGroupPrimitive.Item
                 {...itemProps}
                 className={cn(
-                  'flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-gray-200 hover:border-secondary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 focus-visible:hover:border-secondary disabled:pointer-events-none disabled:bg-gray-100 radix-state-checked:border-primary radix-state-checked:bg-primary radix-state-checked:hover:border-secondary radix-state-checked:hover:bg-secondary radix-state-checked:disabled:border-gray-400 radix-state-checked:disabled:bg-gray-400',
+                  'hover:border-secondary focus-visible:hover:border-secondary radix-state-checked:hover:border-secondary radix-state-checked:hover:bg-secondary flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-gray-200 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:pointer-events-none disabled:bg-gray-100 radix-state-checked:border-primary radix-state-checked:bg-primary radix-state-checked:disabled:border-gray-400 radix-state-checked:disabled:bg-gray-400',
                   error &&
-                    'border-error-secondary hover:border-error focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 focus-visible:hover:border-error disabled:border-gray-200 radix-state-checked:border-error-secondary radix-state-checked:bg-error-secondary radix-state-checked:hover:border-error radix-state-checked:hover:bg-error',
+                    'border-error-secondary focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 radix-state-checked:border-error-secondary radix-state-checked:bg-error-secondary hover:border-error focus-visible:hover:border-error disabled:border-gray-200 radix-state-checked:hover:border-error radix-state-checked:hover:bg-error',
                 )}
                 id={`${id}-${value}`}
                 value={value}

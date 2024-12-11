@@ -1,7 +1,8 @@
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import {
   ComponentPropsWithRef,
-  ElementRef,
+  ComponentRef,
   forwardRef,
   useImperativeHandle,
   useRef,
@@ -33,9 +34,9 @@ const getDefaultValue = (defaultValue: number | '', min: number, max: number) =>
   return defaultValue;
 };
 
-type CounterRef = ElementRef<'input'> | null;
+type CounterRef = ComponentRef<'input'> | null;
 
-const Counter = forwardRef<ElementRef<'input'>, Props>(
+const Counter = forwardRef<ComponentRef<'input'>, Props>(
   (
     {
       children,
@@ -56,6 +57,7 @@ const Counter = forwardRef<ElementRef<'input'>, Props>(
   ) => {
     const [value, setValue] = useState<number | ''>(getDefaultValue(defaultValue, min, max));
     const inputRef = useRef<CounterRef>(null);
+    const t = useTranslations('Components.FormFields.Counter');
 
     useImperativeHandle<CounterRef, CounterRef>(ref, () => inputRef.current);
 
@@ -101,7 +103,7 @@ const Counter = forwardRef<ElementRef<'input'>, Props>(
       <div className={cn('relative', className)}>
         <button
           aria-hidden="true"
-          aria-label="Decrease count"
+          aria-label={t('decrease')}
           className="peer/down absolute start-0 top-0 flex h-full w-12 items-center justify-center focus-visible:outline-none disabled:text-gray-200"
           disabled={!canDecrement()}
           onClick={() => {
@@ -117,7 +119,7 @@ const Counter = forwardRef<ElementRef<'input'>, Props>(
 
         <button
           aria-hidden="true"
-          aria-label="Increase count"
+          aria-label={t('increase')}
           className="peer/up absolute end-0 top-0 flex h-full w-12 items-center justify-center focus-visible:outline-none disabled:text-gray-200"
           disabled={!canIncrement()}
           onClick={() => {
@@ -135,7 +137,7 @@ const Counter = forwardRef<ElementRef<'input'>, Props>(
           className={cn(
             'peer/input w-full border-2 border-gray-200 px-12 py-2.5 text-center text-base placeholder:text-gray-500 hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200 peer-hover/down:border-primary peer-hover/up:border-primary peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200 [&::-webkit-inner-spin-button]:appearance-none',
             error &&
-              'border-error-secondary hover:border-error focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 disabled:border-gray-200 peer-hover/down:border-error peer-hover/up:border-error peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
+              'border-error-secondary focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 hover:border-error disabled:border-gray-200 peer-hover/down:border-error peer-hover/up:border-error peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
           )}
           disabled={disabled}
           max={max}

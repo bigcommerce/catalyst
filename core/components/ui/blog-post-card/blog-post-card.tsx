@@ -1,4 +1,4 @@
-import { BcImage } from '~/components/bc-image';
+import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 import { cn } from '~/lib/utils';
 
@@ -32,7 +32,7 @@ const BlogPostCard = ({
       {image ? (
         <div className="mb-2 flex h-44 lg:h-56">
           <Link className="block w-full" href={href}>
-            <BcImage
+            <Image
               alt={image.altText}
               className="h-full w-full object-cover object-center"
               height={300}

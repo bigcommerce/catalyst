@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.17.1
+
+### Patch Changes
+
+- [#1700](https://github.com/bigcommerce/catalyst/pull/1700) [`12923a5`](https://github.com/bigcommerce/catalyst/commit/12923a58692c19ae317eac55784f47690de36a1f) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Adds a platform check to check if a command is installed.
+
 ## 0.17.0
 
 ### Minor Changes

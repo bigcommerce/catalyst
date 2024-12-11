@@ -3,7 +3,7 @@
 import { FragmentOf } from 'gql.tada';
 import { AlertCircle, Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useTransition } from 'react';
+import { useId, useTransition } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { AddToCartButton } from '~/components/add-to-cart-button';
@@ -21,6 +21,7 @@ interface Props {
 export const Form = ({ data: product }: Props) => {
   const t = useTranslations('Components.ProductCard.AddToCart');
   const cart = useCart();
+  const toastId = useId();
   const [isPending, startTransition] = useTransition();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -51,7 +52,7 @@ export const Form = ({ data: product }: Props) => {
           </span>
         </div>
       ),
-      { icon: <Check className="text-success-secondary" /> },
+      { icon: <Check className="text-success-secondary" />, id: toastId },
     );
 
     startTransition(async () => {
@@ -60,8 +61,9 @@ export const Form = ({ data: product }: Props) => {
       if (result.error) {
         cart.decrement(quantity);
 
-        toast.error(t('error'), {
+        toast.error(result.error, {
           icon: <AlertCircle className="text-error-secondary" />,
+          id: toastId,
         });
       }
     });

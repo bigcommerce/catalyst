@@ -1,6 +1,5 @@
 import { FragmentOf } from '~/client/graphql';
-
-import { BcImage } from '../bc-image';
+import { Image } from '~/components/image';
 
 import { StoreLogoFragment } from './fragment';
 
@@ -16,7 +15,7 @@ export const StoreLogo = ({ data }: Props) => {
   }
 
   return (
-    <BcImage
+    <Image
       alt={logo.image.altText ? logo.image.altText : storeName}
       className="max-h-16 object-contain"
       height={32}

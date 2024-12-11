@@ -2,17 +2,20 @@ import { execSync } from 'child_process';
 
 import { checkoutRef } from './checkout-ref';
 import { hasGitHubSSH } from './has-github-ssh';
+import { resetBranchToRef } from './reset-branch-to-ref';
 
 export const cloneCatalyst = ({
   repository,
   projectName,
   projectDir,
   ghRef,
+  resetMain = false,
 }: {
   repository: string;
   projectName: string;
   projectDir: string;
   ghRef?: string;
+  resetMain?: boolean;
 }) => {
   const useSSH = hasGitHubSSH();
 
@@ -29,7 +32,19 @@ export const cloneCatalyst = ({
   console.log();
 
   if (ghRef) {
+    if (resetMain) {
+      checkoutRef(projectDir, 'main');
+
+      resetBranchToRef(projectDir, ghRef);
+
+      console.log(`Reset main to ${ghRef} successfully.`);
+      console.log();
+
+      return;
+    }
+
     checkoutRef(projectDir, ghRef);
+
     console.log();
   }
 };

@@ -25,7 +25,6 @@ class Kv {
     return value;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
   async mget<T extends unknown[]>(keys: string[]): Promise<{ [K in keyof T]: T[K] | null }> {
     const normalizedKeys = Array.isArray(keys) ? keys : [keys];
 

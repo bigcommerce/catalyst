@@ -20,9 +20,6 @@ export const AddToCartButton = ({
 }) => {
   const t = useTranslations('Components.AddToCartButton');
 
-  const isProductDisabled =
-    product.availabilityV2.status === 'Unavailable' || !product.inventory.isInStock;
-
   const buttonText = () => {
     if (product.availabilityV2.status === 'Unavailable') {
       return t('unavailable');
@@ -42,7 +39,7 @@ export const AddToCartButton = ({
   return (
     <Button
       className={className}
-      disabled={isProductDisabled}
+      disabled={!product.inventory.isInStock}
       loading={loading}
       loadingText={t('processing')}
       type="submit"

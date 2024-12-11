@@ -28,6 +28,12 @@ const config = {
             message: "Please import 'Link' from '~/components/Link' instead.",
           },
           {
+            name: 'next/image',
+            importNames: ['default'],
+            message:
+              "Please import 'Image' from '~/components/image' instead. This component handles CDN and static image optimization.",
+          },
+          {
             name: '~/i18n/routing',
             importNames: ['Link'],
             message: "Please import 'Link' from '~/components/Link' instead.",
