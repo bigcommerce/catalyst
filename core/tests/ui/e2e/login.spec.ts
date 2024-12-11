@@ -12,9 +12,9 @@ test('Account login and logout', async ({ page, account }) => {
   await page.getByLabel('Password').fill(customer.password);
   await page.getByRole('button', { name: 'Log in' }).click();
 
-  await page.waitForURL('/account/');
+  await page.waitForURL('/account/orders/');
 
-  await expect(page.getByRole('heading', { name: 'My Account' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Orders' })).toBeVisible();
 
   await customer.logout();
 
@@ -43,9 +43,9 @@ test('If a customer is logged in, redirect to account pages', async ({ page, acc
   const customer = await account.create();
 
   await customer.login();
-  await page.waitForURL('/account/');
+  await page.waitForURL('/account/orders/');
   await page.goto('/login');
-  await page.waitForURL('/account/');
+  await page.waitForURL('/account/orders/');
 
   await expect(page.getByRole('heading', { name: 'My Account' })).toBeVisible();
 });

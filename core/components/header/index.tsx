@@ -61,7 +61,6 @@ export const Header = async ({ cart }: Props) => {
         customerAccessToken ? (
           <Dropdown
             items={[
-              { href: '/account', label: t('Account.myAccount') },
               { href: '/account/orders', label: t('Account.orders') },
               { href: '/account/addresses', label: t('Account.addresses') },
               { href: '/account/settings', label: t('Account.accountSettings') },
