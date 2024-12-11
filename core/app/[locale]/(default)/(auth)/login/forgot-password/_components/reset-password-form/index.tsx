@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
@@ -40,7 +40,7 @@ const SubmitButton = () => {
 
   return (
     <Button
-      className="relative mb-[60px] flex h-[50px] w-full flex-row items-center justify-center rounded-[3px] bg-[#008BB7] p-[5px_10px] px-8 py-2 text-[14px] font-[500] uppercase tracking-[1.25px] text-white transition-colors duration-500 hover:bg-[rgb(75,200,240)]"
+      className="relative mb-[60px] flex h-[50px] w-full flex-row items-center justify-center rounded-[3px] bg-[#008BB7] p-[5px_10px] px-8 py-2 text-[14px] font-[500] uppercase tracking-[1.25px] text-white hover:bg-[rgb(75,200,240)] transition-colors duration-500"
       data-button
       loading={pending}
       loadingText={t('submitting')}
@@ -55,8 +55,9 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
   const t = useTranslations('Login.ForgotPassword.Form');
 
   const form = useRef<HTMLFormElement>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const [emailError, setEmailError] = useState('');
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
-  const [isEmailValid, setIsEmailValid] = useState(true);
 
   const reCaptchaRef = useRef<ReCaptcha>(null);
   const [reCaptchaToken, setReCaptchaToken] = useState('');
@@ -78,32 +79,42 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
     setReCaptchaValid(true);
   };
 
-  const handleEmailValidation = (e: ChangeEvent<HTMLInputElement>) => {
-    const email = e.target.value;
-    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-    if(!email.trim()){
-      setFormStatus({ status: 'error', message: t('emailValidationMessage') });
-      setIsEmailValid(false);
-    } else if (!email || !isValidEmail) {
-      setFormStatus({ status: 'error', message: t('emailInvalidMessage') });
-      setIsEmailValid(false);
-    } else {
-      setFormStatus(null);
-      setIsEmailValid(true);
+  const validateEmail = (email: string): boolean => {
+    // Check if email is empty
+    if (!email.trim()) {
+      setEmailError(t('emailValidationMessage'));
+      return false;
     }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    
+    // Check if email is invalid
+    if (!emailRegex.test(email)) {
+      setEmailError(t('emailInvalidMessage'));
+      return false;
+    }
+
+    setEmailError('');
+    return true;
   };
 
-  const onSubmit = async (formData: FormData) => {
-    const email = formData.get('email')?.toString() || '';
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setFormStatus({ status: 'error', message: t('emailInvalidMessage') });
-      setIsEmailValid(false);
-      return;
-    }
+    event.preventDefault();
 
-    setIsEmailValid(true);
+     // Reset previous statuses
+     setFormStatus(null);
+     setEmailError(t('emailInvalidMessage'));
+ 
+     const email = emailInputRef.current?.value || '';
+ 
+     // Validate email
+     if (!validateEmail(email)) {
+      setEmailError(t('emailInvalidMessage'));
+       return;
+     }
+ 
 
     if (reCaptchaSettings?.isEnabledOnStorefront && !reCaptchaToken) {
       setReCaptchaValid(false);
@@ -113,6 +124,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
     setReCaptchaValid(true);
 
     try {
+      const formData = new FormData(event.currentTarget);
       const submit = await resetPassword({
         formData,
         reCaptchaToken,
@@ -148,7 +160,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
       )}
 
       <Form
-        action={onSubmit}
+        onSubmit={handleSubmit}
         className="reset-pass-form mx-0 mt-0 flex max-w-[none] flex-col gap-[22px] pt-0 xsm:mx-auto md:mt-[30px] md:max-w-[514px] md:py-4 lg:p-0"
         ref={form}
       >
@@ -165,18 +177,18 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
             </FieldLabel>
             <FieldControl asChild>
               <Input
-                className={`flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] [&_input]:border  [&_input]:border-[#cccbcb]
-                 bg-white`}
+                ref={emailInputRef}
+                className="flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] border-[#cccbcb] bg-white"
                 autoComplete="email"
                 id="email"
-                onBlur={handleEmailValidation}
+                name="email"
                 required
                 type="email"
               />
             </FieldControl>
-            {formStatus?.status === 'error' && (
-              <FieldMessage className="w-full text-red-700" variant={formStatus?.status}>
-                {formStatus?.message}
+            {emailError &&(
+              <FieldMessage className="w-full text-red-700" variant="error">
+                {emailError}
               </FieldMessage>
             )}
           </Field>

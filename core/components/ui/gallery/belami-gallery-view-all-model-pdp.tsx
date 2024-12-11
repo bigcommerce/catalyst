@@ -60,6 +60,7 @@ const GalleryModel = ({
     onSelectImage(validIndex === images.length - 1 ? 0 : validIndex + 1);
   };
 
+
   return (
     <div
       className="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70"
@@ -99,13 +100,13 @@ const GalleryModel = ({
 
         {/* Thumbnail Images */}
         <div className="gallery-thumbnails h-auto w-full overflow-y-auto p-4 xl:h-full xl:w-[25%]">
-          <div className="grid grid-cols-6 gap-4 xl:grid-cols-3">
+          <div className={`grid grid-cols-6 gap-4 xl:grid-cols-3  ${images.length % 3 === 1 ? 'xl:[&>div:last-child]:[grid-column:2]' : ''}`}>
             {images.map((image, index) => (
               <div
                 key={index}
                 className={`cursor-pointer border-2 ${
-                  index === validIndex ? 'border-[#03465C]' : 'border-transparent'
-                }`}
+                  index === validIndex ? 'border-[#008BB7] border-[3px]' : 'border-transparent'
+                } `}
                 onClick={() => onSelectImage(index)}
               >
                 <BcImage
