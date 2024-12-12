@@ -29,7 +29,7 @@
             "emailLabel": "E-mailadres",
             "enterEmailMessage": "Voer uw e-mail in",
             "passwordLabel": "Wachtwoord",
-            "entePasswordMessage": "Voer je wachtwoord in",
+            "enterPasswordMessage": "Voer je wachtwoord in",
             "submitting": "Verzenden...",
             "logIn": "Inloggen",
             "forgotPassword": "Wachtwoord vergeten?"

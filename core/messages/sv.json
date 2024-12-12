@@ -29,7 +29,7 @@
             "emailLabel": "E-post",
             "enterEmailMessage": "Ange din e-postadress",
             "passwordLabel": "Lösenord",
-            "entePasswordMessage": "Ange ditt lösenord",
+            "enterPasswordMessage": "Ange ditt lösenord",
             "submitting": "Skickar ...",
             "logIn": "Logga in",
             "forgotPassword": "Glömt ditt lösenord?"

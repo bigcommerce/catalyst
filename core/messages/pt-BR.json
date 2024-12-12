@@ -29,7 +29,7 @@
             "emailLabel": "Email",
             "enterEmailMessage": "Digite seu email",
             "passwordLabel": "Senha",
-            "entePasswordMessage": "Digite sua senha",
+            "enterPasswordMessage": "Digite sua senha",
             "submitting": "Enviando...",
             "logIn": "Credencial de acesso",
             "forgotPassword": "Esqueceu sua senha?"

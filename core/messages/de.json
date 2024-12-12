@@ -29,7 +29,7 @@
             "emailLabel": "E-Mail",
             "enterEmailMessage": "Geben Sie Ihre E-Mail-Adresse ein",
             "passwordLabel": "Passwort",
-            "entePasswordMessage": "Geben Sie Ihr Passwort ein.",
+            "enterPasswordMessage": "Geben Sie Ihr Passwort ein.",
             "submitting": "Wird eingereicht ...",
             "logIn": "Anmelden",
             "forgotPassword": "Passwort vergessen?"

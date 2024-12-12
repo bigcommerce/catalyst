@@ -113,7 +113,7 @@ export const LoginForm = () => {
             className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
             match="valueMissing"
           >
-            {t('Form.entePasswordMessage')}
+            {t('Form.enterPasswordMessage')}
           </FieldMessage>
         </Field>
         <div className="flex flex-col items-start md:flex-row md:items-center md:justify-start md:gap-2">

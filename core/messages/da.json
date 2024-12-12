@@ -29,7 +29,7 @@
             "emailLabel": "E-mail",
             "enterEmailMessage": "Indtast din e-mailadresse",
             "passwordLabel": "Adgangskode",
-            "entePasswordMessage": "Indtast din adgangskode.",
+            "enterPasswordMessage": "Indtast din adgangskode.",
             "submitting": "Indsender ...",
             "logIn": "Log ind",
             "forgotPassword": "Har du glemt din adgangskode?"

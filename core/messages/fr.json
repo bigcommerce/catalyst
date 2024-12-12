@@ -29,7 +29,7 @@
             "emailLabel": "E-mail",
             "enterEmailMessage": "Saisissez votre adresse e-mail",
             "passwordLabel": "Mot de passe",
-            "entePasswordMessage": "Veuillez saisir votre mot de passe.",
+            "enterPasswordMessage": "Veuillez saisir votre mot de passe.",
             "submitting": "Envoi...",
             "logIn": "Connexion",
             "forgotPassword": "Mot de passe oublié ?"
