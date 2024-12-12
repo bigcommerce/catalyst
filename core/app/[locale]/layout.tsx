@@ -5,6 +5,7 @@ import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
+import B2B from '~/components/b2b';
 
 import '../globals.css';
 
@@ -100,6 +101,7 @@ export default async function RootLayout({ params, children }: Props) {
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>{children}</Providers>
         </NextIntlClientProvider>
+        <B2B />
         <VercelComponents />
       </body>
     </html>
