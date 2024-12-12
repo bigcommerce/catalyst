@@ -26,6 +26,7 @@
     "heading": "Log In",
     "Form": {
       "error": "Your email address or password is incorrect. Try signing in again or reset your password",
+      "successful": "You have successfully logged in.",
       "emailLabel": "Email",
       "enterEmailMessage": "Enter your email",
       "passwordLabel": "Password",
