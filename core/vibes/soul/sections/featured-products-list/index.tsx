@@ -8,17 +8,25 @@ interface Link {
   href: string;
 }
 
+interface Props {
+  title: string;
+  description?: string;
+  cta?: Link;
+  products: Streamable<ListProduct[]>;
+  emptyStateTitle?: Streamable<string | null>;
+  emptyStateSubtitle?: Streamable<string | null>;
+  placeholderCount?: number;
+}
+
 export function FeaturedProductsList({
   title,
   description,
   cta,
   products,
-}: {
-  title: string;
-  description?: string;
-  cta?: Link;
-  products: Streamable<ListProduct[]>;
-}) {
+  emptyStateTitle,
+  emptyStateSubtitle,
+  placeholderCount,
+}: Props) {
   return (
     <StickySidebarLayout
       sidebar={
@@ -41,7 +49,15 @@ export function FeaturedProductsList({
       }
       sidebarSize="1/3"
     >
-      <ProductsList className="flex-1" products={products} />
+      <div className="group-has-[[data-pending]]/pending:animate-pulse">
+        <ProductsList
+          className="flex-1"
+          emptyStateSubtitle={emptyStateSubtitle}
+          emptyStateTitle={emptyStateTitle}
+          placeholderCount={placeholderCount}
+          products={products}
+        />
+      </div>
     </StickySidebarLayout>
   );
 }
