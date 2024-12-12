@@ -96,6 +96,8 @@ export default async function Home({ params }: Props) {
         description={t('NewestProducts.description')}
         emptyStateSubtitle={t('NewestProducts.emptyStateSubtitle')}
         emptyStateTitle={t('NewestProducts.emptyStateTitle')}
+        nextLabel={t('NewestProducts.nextProducts')}
+        previousLabel={t('NewestProducts.previousProducts')}
         products={getNewestProducts()}
         title={t('NewestProducts.title')}
       />
