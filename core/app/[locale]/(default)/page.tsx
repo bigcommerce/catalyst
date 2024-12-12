@@ -87,6 +87,8 @@ export default async function Home({ params }: Props) {
       <FeaturedProductsList
         cta={{ label: t('FeaturedProducts.cta'), href: '/shop-all' }}
         description={t('FeaturedProducts.description')}
+        emptyStateSubtitle={t('FeaturedProducts.emptyStateSubtitle')}
+        emptyStateTitle={t('FeaturedProducts.emptyStateTitle')}
         products={getFeaturedProducts()}
         title={t('FeaturedProducts.title')}
       />
