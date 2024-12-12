@@ -58,13 +58,15 @@ export const Header = async () => {
     <HeaderSection
       navigation={{
         accountHref: '/login',
-        accountLabel: t('Icons.Account'),
+        accountLabel: t('Icons.account'),
         cartHref: '/cart',
-        cartLabel: t('Icons.Cart'),
+        cartLabel: t('Icons.cart'),
         searchHref: '/search',
-        searchLabel: t('Icons.Search'),
+        searchLabel: t('Icons.search'),
         links: getLinks(),
         logo: getLogo(),
+        mobileMenuTriggerLabel: t('toggleNavigation'),
+        logoLabel: t('home'),
       }}
     />
   );

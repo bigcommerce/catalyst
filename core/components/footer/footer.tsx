@@ -7,6 +7,7 @@ import {
   SiX,
   SiYoutube,
 } from '@icons-pack/react-simple-icons';
+import { useTranslations } from 'next-intl';
 import { cache, JSX } from 'react';
 
 import { Footer as FooterSection } from '@/vibes/soul/sections/footer';
@@ -132,11 +133,15 @@ const getSocialMediaLinks = async () => {
 };
 
 export const Footer = () => {
+  const t = useTranslations('Components.Footer');
+
   return (
     <FooterSection
       contactInformation={getContactInformation()}
       copyright={getCopyright()}
       logo={getLogo()}
+      logoHref="/"
+      logoLabel={t('home')}
       paymentIcons={paymentIcons}
       sections={getSections()}
       socialMediaLinks={getSocialMediaLinks()}
