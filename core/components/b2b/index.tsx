@@ -30,12 +30,6 @@ export default async function index() {
         {
             process.env.NODE_ENV !== 'production' ? (
                 <>
-                    <script
-                    type="module"
-                    data-storehash="glzvoziq5k"
-                    data-channelid="1664810"
-                    src="http://localhost:3001/src/buyerPortal.ts"
-                    ></script>
                     <script>
                     {
                         `
@@ -48,6 +42,12 @@ export default async function index() {
                         `
                     }
                     </script>
+                    <script
+                    type="module"
+                    data-storehash="glzvoziq5k"
+                    data-channelid="1664810"
+                    src="http://localhost:3001/src/buyerPortal.ts"
+                    ></script>
                 </>
             ) : (
                 <>
