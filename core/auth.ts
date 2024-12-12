@@ -234,7 +234,7 @@ declare module 'next-auth' {
     name?: string | null;
     email?: string | null;
     customerAccessToken?: string;
-    expiresAt?: number;
+    expiresAt?: string;
     b2bToken?: string;
   }
 }
@@ -250,6 +250,7 @@ declare global {
   interface Window {
     b2b: {
       utils: {
+        openPage: (path: string, url?: string) => void;
         user: {
           getProfile: () => { role: number };
           loginWithB2BStorefrontToken: (b2bStorefrontJWTToken: string) => Promise<void>;

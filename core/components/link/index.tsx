@@ -57,6 +57,24 @@ export const Link = forwardRef<ComponentRef<'a'>, Props>(
       setPrefetched();
     };
 
+    // if an href contains a hash route
+    if (typeof href === 'string' && href.includes('#')) {
+      return (
+        <button
+          className={cn(
+            'hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
+            className,
+          )}
+          onClick={(e) => {
+            e.preventDefault()
+            window?.b2b?.utils?.openPage('', href.slice(3));
+          }}
+        >
+          {children}
+        </button>
+      );
+    }
+
     return (
       <NavLink
         className={cn(
