@@ -26,6 +26,7 @@ import { NumberInput } from '@/vibes/soul/form/number-input';
 import { RadioGroup } from '@/vibes/soul/form/radio-group';
 import { Select } from '@/vibes/soul/form/select';
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
+import { Textarea } from '@/vibes/soul/form/textarea';
 import { Button } from '@/vibes/soul/primitives/button';
 
 import { Field, FieldGroup, schema } from './schema';
@@ -115,7 +116,7 @@ export function DynamicForm<F extends Field>({
 
             if (formField == null) return null;
 
-            return <DynamicFormField field={field} formField={formField} key={field.name} />;
+            return <DynamicFormField field={field} formField={formField} key={formField.id} />;
           })}
           <div className="flex gap-x-3 pt-3">
             <SubmitButton name={submitName} value={submitValue}>
@@ -188,6 +189,16 @@ function DynamicFormField({
         />
       );
 
+    case 'textarea':
+      return (
+        <Textarea
+          {...getInputProps(formField, { type: 'text' })}
+          errors={formField.errors}
+          key={field.name}
+          label={field.label}
+        />
+      );
+
     case 'password':
     case 'confirm-password':
       return (
@@ -228,7 +239,6 @@ function DynamicFormField({
       return (
         <CheckboxGroup
           errors={formField.errors}
-          id={formField.id}
           key={field.name}
           label={field.label}
           name={formField.name}
@@ -242,7 +252,6 @@ function DynamicFormField({
       return (
         <Select
           errors={formField.errors}
-          id={formField.id}
           key={field.name}
           label={field.label}
           name={formField.name}
@@ -259,7 +268,6 @@ function DynamicFormField({
       return (
         <RadioGroup
           errors={formField.errors}
-          id={formField.id}
           key={field.name}
           label={field.label}
           name={formField.name}

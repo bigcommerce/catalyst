@@ -32,13 +32,14 @@ export function CheckboxGroup({
   value,
   onValueChange,
 }: Props) {
+  const id = React.useId();
+
   return (
     <div className={clsx('space-y-2', className)}>
-      {label !== undefined && label !== '' && <Label>{label}</Label>}
-      <div className="space-y-2">
+      {label !== undefined && label !== '' && <Label htmlFor={id}>{label}</Label>}
+      <div aria-labelledby={id} className="space-y-2" role="group">
         {options.map((option) => (
           <Checkbox
-            aria-label={option.label}
             checked={value.includes(option.value)}
             key={option.value}
             label={option.label}
