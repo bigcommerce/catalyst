@@ -26,10 +26,11 @@
     "heading": "Log In",
     "Form": {
       "error": "Your email address or password is incorrect. Try signing in again or reset your password",
+      "successful": "You have successfully logged in.",
       "emailLabel": "Email",
       "enterEmailMessage": "Enter your email",
       "passwordLabel": "Password",
-      "entePasswordMessage": "Enter your password",
+      "enterPasswordMessage": "Enter your password",
       "submitting": "Submitting...",
       "logIn": "Log in",
       "forgotPassword": "Forgot your password?"
@@ -251,6 +252,7 @@
         "submitText": "Change password"
       },
       "UpdateCustomer": {
+        "successMessage": "Your account settings have been updated",
         "Errors": {
           "inputError": "Something went wrong with processing user input.",
           "notFound": "Customer does not exist"

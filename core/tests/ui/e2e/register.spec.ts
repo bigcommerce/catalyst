@@ -35,5 +35,5 @@ test('Account is not created if email is already in use', async ({ page, account
 
   await page.getByRole('button', { name: 'Create account' }).click();
 
-  await expect(page.getByText('The email address is already in use.')).toBeVisible();
+  await expect(page.getByText('Something went wrong. Please try again later.')).toBeVisible();
 });

@@ -29,7 +29,7 @@
             "emailLabel": "Correo electrónico",
             "enterEmailMessage": "Ingresa tu correo electrónico",
             "passwordLabel": "Contraseña",
-            "entePasswordMessage": "Ingresa tu contraseña",
+            "enterPasswordMessage": "Ingresa tu contraseña",
             "submitting": "Enviando...",
             "logIn": "Inicio de sesión",
             "forgotPassword": "¿Olvidaste tu contraseña?"

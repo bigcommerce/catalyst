@@ -6,7 +6,11 @@ import { getLocale } from 'next-intl/server';
 import { Credentials, signIn } from '~/auth';
 import { redirect } from '~/i18n/routing';
 
-export const login = async (_previousState: unknown, formData: FormData) => {
+interface LoginResponse {
+  status: 'success' | 'error';
+}
+
+export const login = async (formData: FormData): Promise<LoginResponse> => {
   try {
     const locale = await getLocale();
 
@@ -23,6 +27,10 @@ export const login = async (_previousState: unknown, formData: FormData) => {
     });
 
     redirect({ href: '/account/orders', locale });
+
+    return {
+      status: 'success',
+    };
   } catch (error: unknown) {
     rethrow(error);
 

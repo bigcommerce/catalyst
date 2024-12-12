@@ -5,6 +5,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql, VariablesOf } from '~/client/graphql';
+import { TAGS } from '~/client/tags';
 
 import { OrderShipmentFragment } from '../order/[slug]/page-data';
 
@@ -101,7 +102,7 @@ export const getCustomerOrders = cache(
       document: CustomerAllOrders,
       variables: { ...paginationArgs, ...filtersArgs },
       customerAccessToken,
-      fetchOptions: { cache: 'no-store' },
+      fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
     });
 
     const orders = response.data.customer?.orders;

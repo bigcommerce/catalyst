@@ -2,7 +2,6 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
-import { locales } from '~/i18n/routing';
 
 import { LoginForm } from './_components/login-form';
 
@@ -52,9 +51,3 @@ export default async function Login({ params }: Props) {
     </div>
   );
 }
-
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
-}
-
-export const dynamic = 'force-static';
