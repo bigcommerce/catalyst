@@ -850,36 +850,3 @@ button.show-all {
     display: block;
   }
 }
-
-
-.carousel-scrollbar {
-  margin-left: auto;
-  margin-right: auto;
-}
-.carousel-scrollbar .bg-contrast-100 {
-  background-color:var(--gray-100);
-}
-.carousel-arrows button {
-  background-color:var(--brand-600);
-  width: 2rem;
-  height: 2rem;
-  color: #ffffff;
-  align-items: center;
-  border-radius: 9999px;
-  justify-content: center;
-  display: inline-flex;
-  top: 50%;
-  margin-top: -2.5rem;
-  position: absolute;
-  z-index: 1;
-}
-.carousel-arrows button:disabled {
-  color:var(--gray-400);
-  display: none;
-}
-.carousel-arrows button:first-child {
-  left: 1rem;
-}
-.carousel-arrows button:last-child {
-  right: 1rem;
-}
