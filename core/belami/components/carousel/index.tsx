@@ -138,14 +138,13 @@ function CarouselButtons({ className, ...rest }: React.HTMLAttributes<HTMLDivEle
     <div
       {...rest}
       className={clsx(
-        'flex gap-2 text-foreground',
         !canScrollPrev && !canScrollNext && 'hidden',
         className,
       )}
     >
       <button
         type="button"
-        className="rounded-lg ring-primary transition-colors duration-300 focus-visible:outline-0 focus-visible:ring-2 disabled:pointer-events-none disabled:text-contrast-300"
+        className="bg-brand-600 absolute top-1/2 left-4 z-10 -mt-10 w-8 h-8 text-white inline-flex items-center justify-center rounded-full disabled:hidden disabled:text-gray-400 ring-primary transition-colors duration-300 focus-visible:outline-0 focus-visible:ring-2 disabled:pointer-events-none"
         disabled={!canScrollPrev}
         onClick={scrollPrev}
         title="Previous"
@@ -154,7 +153,7 @@ function CarouselButtons({ className, ...rest }: React.HTMLAttributes<HTMLDivEle
       </button>
       <button
         type="button"
-        className="rounded-lg ring-primary transition-colors duration-300 focus-visible:outline-0 focus-visible:ring-2 disabled:pointer-events-none disabled:text-contrast-300"
+        className="bg-brand-600 absolute top-1/2 right-4 z-10 -mt-10 w-8 h-8 text-white inline-flex items-center justify-center rounded-full disabled:hidden disabled:text-gray-400 ring-primary transition-colors duration-300 focus-visible:outline-0 focus-visible:ring-2 disabled:pointer-events-none"
         disabled={!canScrollNext}
         onClick={scrollNext}
         title="Next"
@@ -223,7 +222,7 @@ function CarouselScrollbar({ className }: React.HTMLAttributes<HTMLDivElement>) 
   return (
     <div
       className={clsx(
-        'relative flex h-6 w-full max-w-56 items-center overflow-hidden',
+        'mx-auto relative flex h-6 w-full max-w-56 items-center overflow-hidden',
         !canScrollPrev && !canScrollNext && 'hidden',
         className,
       )}
@@ -238,7 +237,7 @@ function CarouselScrollbar({ className }: React.HTMLAttributes<HTMLDivElement>) 
         title="Scrollbar"
       />
       {/* Track */}
-      <div className="pointer-events-none absolute h-1 w-full rounded-full bg-contrast-100" />
+      <div className="pointer-events-none absolute h-1 w-full rounded-full bg-contrast-100 bg-gray-100" />
 
       {/* Bar */}
       <div

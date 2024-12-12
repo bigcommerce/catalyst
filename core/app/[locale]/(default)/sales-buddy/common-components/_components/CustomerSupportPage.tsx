@@ -164,7 +164,7 @@ const handleCreateAccountSubmit = async (e: React.FormEvent) => {
           />
           <button
             type="submit"
-            className="mt-[10px] flex h-[42px ] w-full items-center justify-center rounded bg-[#1DB14B] text-white hover:bg-[#178B3E]"
+            className="mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
           >
             <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">FETCH CART</p>
           </button>

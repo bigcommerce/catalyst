@@ -14,6 +14,13 @@ const UpdateCheckoutShippingConsignmentMutation = graphql(`
       updateCheckoutShippingConsignment(input: $input) {
         checkout {
           entityId
+          shippingConsignments {
+            entityId
+            availableShippingOptions {
+              entityId
+              description
+            }
+          }
         }
       }
     }
@@ -26,6 +33,13 @@ const AddCheckoutShippingConsignmentsMutation = graphql(`
       addCheckoutShippingConsignments(input: $input) {
         checkout {
           entityId
+          shippingConsignments {
+            entityId
+            availableShippingOptions {
+              entityId
+              description
+            }
+          }
         }
       }
     }
@@ -59,7 +73,6 @@ export const submitShippingInfo = async (
     const { checkoutId, lineItems, shippingId } = checkoutData;
 
     let result;
-
     if (shippingId) {
       const response = await client.fetch({
         document: UpdateCheckoutShippingConsignmentMutation,
@@ -116,17 +129,16 @@ export const submitShippingInfo = async (
     }
 
     if (!result?.entityId) {
-      return { status: 'error', error: 'Failed to submit shipping info.' };
+      return { status: 'error', error: 'Failed to submit shipping info.', checkoutData: [] };
     }
 
     revalidateTag(TAGS.checkout);
-
-    return { status: 'success', data: result };
+    return { status: 'success', data: result, checkoutData: result };
   } catch (error: unknown) {
     if (error instanceof Error || error instanceof z.ZodError) {
-      return { status: 'error', error: error.message };
+      return { status: 'error', error: error.message, checkoutData: [] };
     }
 
-    return { status: 'error', error: 'Failed to submit shipping info.' };
+    return { status: 'error', error: 'Failed to submit shipping info.', checkoutData: [] };
   }
 };

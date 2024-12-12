@@ -20,9 +20,9 @@
   grid-row: span 8;
 }
 
-.parent-menu-2 {
+ .parent-menu-2 {
   margin-left: 21.5em;
-}
+} 
 .parent-menu-3 {
   margin-left: 26.5em;
 }
@@ -31,16 +31,18 @@
 }
 .parent-menu-5 {
   margin-left: 21em;
-}
+} 
+
 .header-sub-menu-2 {
-  grid-template-rows: 20px 20px 20px 20px 20px 20px;
+  grid-template-rows: 14px;
 }
 
 .header-sub-menu-1 {
   grid-template-rows: 24px 17px 50px 30px 30px 60px;
-  gap: 20px;
+  gap: 14px;
   grid-template-columns: auto auto auto auto auto auto;
   display: grid;
+  padding-bottom:15px !important;
 }
 .header-sub-menu-1 .submenu-div:nth-child(10) {
   margin-top: 40px;
@@ -48,9 +50,9 @@
 .header-sub-menu-1 .submenu-div:nth-child(12) {
   margin-top: 40px;
 }
-.header-sub-menu-1 .submenu-div:nth-child(11) {
+/* .header-sub-menu-1 .submenu-div:nth-child(11) {
   margin-top: 1px;
-}
+} */
 
 .trade2-form .relative.h-7.pass2 {
   position: relative;
@@ -413,12 +415,12 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
   ul#nav-menu-list li a {
     font-size: 14px !important;
   }
-  nav#static-menu a {
+  /* nav#static-menu a {
     left: 2em;
     position: relative;
     padding-left: 16px;
     font-size: 12px !important;
-  }
+  } */
   .main-product-details {
     display: none !important;
   }
@@ -438,11 +440,11 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
     width: 50px;
     top: 2em;
   }
-  .mobile-logo-open-state img {
+  /* .mobile-logo-open-state img {
     width: 80%;
     position: relative;
     left: -0.5em;
-  }
+  } */
   header.flex.h-\[92px\].items-center.justify-between.gap-1.overflow-y-visible.bg-white.px-4.\32
     xl\:container.sm\:px-10.lg\:gap-8.lg\:px-12.\32
     xl\:mx-auto.\32
@@ -463,12 +465,12 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
   .header-bottom {
     border: unset !important;
   }
-  nav.static-menu-mobile {
+  /* nav.static-menu-mobile {
     margin-left: 1em;
     margin-top: 1em;
     gap: 2em;
     display: grid;
-  }
+  } */
   section.copyright {
     padding: 30px 0px;
   }
@@ -584,6 +586,19 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
     padding: 5px 40px 15px;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/* clients-side-css */
 
 button.carousel-next-arrow {
   right: 1em;
@@ -707,7 +722,7 @@ button.show-all {
   min-width: 1rem;
 }
 .compare-product button[data-state='checked'] {
-  background-image: url(data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E) !important;
+  background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E') !important;
   background-color: var(--brand-400) !important;
   background-size: 14px;
   color: var(--brand-400) !important;
@@ -794,12 +809,19 @@ button.show-all {
   width: 100%;
   margin: 0 1rem 1rem;
 }
-
+.aa-DetachedSearchButtonIcon {
+  color: #5C5C5C !important;
+}
+.aa-DetachedSearchButtonIcon svg.aa-SubmitIcon {
+  height: 16px;
+}
 .ais-Dropdown-mobileTitle {
   display: none;
   margin-top: 0;
 }
-
+.aa-DetachedSearchButtonPlaceholder {
+  color: #5C5C5C;
+}
 @media only screen and (max-width: 375px) {
   .ais-Dropdown.ais-Dropdown--opened .ais-Panel-body {
     position: fixed;
@@ -827,4 +849,37 @@ button.show-all {
   .ais-Dropdown-mobileTitle {
     display: block;
   }
+}
+
+
+.carousel-scrollbar {
+  margin-left: auto;
+  margin-right: auto;
+}
+.carousel-scrollbar .bg-contrast-100 {
+  background-color:var(--gray-100);
+}
+.carousel-arrows button {
+  background-color:var(--brand-600);
+  width: 2rem;
+  height: 2rem;
+  color: #ffffff;
+  align-items: center;
+  border-radius: 9999px;
+  justify-content: center;
+  display: inline-flex;
+  top: 50%;
+  margin-top: -2.5rem;
+  position: absolute;
+  z-index: 1;
+}
+.carousel-arrows button:disabled {
+  color:var(--gray-400);
+  display: none;
+}
+.carousel-arrows button:first-child {
+  left: 1rem;
+}
+.carousel-arrows button:last-child {
+  right: 1rem;
 }

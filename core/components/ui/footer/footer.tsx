@@ -5,6 +5,7 @@ import { cn } from '~/lib/utils';
 
 import { Locale } from './locale';
 import AgentFooter from '~/app/[locale]/(default)/sales-buddy/pages/footer';
+import CookieConsent from '../cookie-consent/cookieConsent';
 
 interface Image {
   altText: string;
@@ -41,6 +42,7 @@ interface Props {
   socialMediaLinks?: SocialMediaLink[];
 }
 
+const cookieConsentUrl = process.env.COOKIE_CONSENT_URL;
 const Footer = ({
   className,
   contactInformation,
@@ -58,7 +60,6 @@ const Footer = ({
     <section className="section-footer flex flex-col gap-8 border-t border-gray-200 px-4 pt-10 pb-0 md:flex-row lg:gap-4 lg:px-12">
       <nav className="grid flex-auto auto-cols-fr gap-8 sm:grid-flow-col" id="nav-footer-section">
         {sections.map((section, index) => (
-          <>
             <div key={`${section.title}-${index}`}>
               <h3 className="text-left text-[20px] mb-[10px] font-medium leading-[32px] tracking-[0.15px] text-white">
                 {section.title}
@@ -72,8 +73,6 @@ const Footer = ({
               </ul>
 
             </div>
-
-          </>
         ))}
       </nav>
       <div className="div-footer flex flex-col gap-2.5 md:order-first md:grow w-[35%]">
@@ -133,6 +132,7 @@ const Footer = ({
         <div className="flex gap-[10px]">{paymentIcons}</div>
       </div>
     </section>
+    <CookieConsent url={cookieConsentUrl} />
   </footer>
 );
 

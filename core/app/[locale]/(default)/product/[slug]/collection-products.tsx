@@ -9,6 +9,7 @@ import Image from 'next/image';
 //import { imageManagerImageUrl } from '~/lib/store-assets';
 
 import noImage from '~/public/no-image.svg';
+import blurredRectangle from '~/public/other/blurred-rectangle.jpg';
 
 //import { Carousel } from '~/components/ui/carousel2';
 //import { ProductCard } from '~/components/product-card';
@@ -26,13 +27,15 @@ type DynamicObject = {
 const searchColorsHEX: DynamicObject = searchColors;
 
 //const useDefaultPrices = process.env.NEXT_PUBLIC_USE_DEFAULT_PRICES === 'true';
-//const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
-const useAsyncMode = false;
+const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
+//const useAsyncMode = false;
 
 interface Props {
   collection: string,
   products: any[],
-  useDefaultPrices?: boolean
+  total?: number,
+  useDefaultPrices?: boolean,
+  moreLink?: string | null
 }
 
 function getDiscount(price: number, sale: number): number | null {
@@ -80,7 +83,7 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
       <div>
         <div className="flex my-0 mx-auto pb-full w-full h-auto overflow-hidden pb-[100%] relative">
           <figure className="absolute left-0 top-0 w-full h-full">
-            <Link href={hit.url} className="w-full h-full flex justify-center items-center align-middle">
+            <Link href={hit.url} className="w-full h-full flex justify-center items-center align-middle bg-white">
               {hit.image_url
                 ? <img src={imageUrl || ''} alt={hit.name} className="inline-block m-auto w-auto h-auto max-h-full max-w-full relative align-middle" />
                 : <Image src={noImage} alt="No Image" className="inline-block m-auto w-auto h-auto max-h-full max-w-full relative align-middle" />
@@ -91,9 +94,7 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
       </div>
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-4 text-center">
-          {/*
           <ColorSwatches variants={hit.variants} onImageClick={setImageUrl} />
-          */}
           <h2 className="text-lg font-medium mt-2"><Link href={hit.url}>{hit.name}</Link></h2>
           {useAsyncMode && !useDefaultPrices ? (
             <div className="mx-auto mt-2 flex flex-wrap space-x-2 items-center justify-center">
@@ -147,8 +148,29 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
   );
 }
 
-export function CollectionProducts({ collection, products, useDefaultPrices = false }: Props) {
-  const breakpoints = ["xs:flex", "sm:flex", "md:flex", "lg:flex", "xl:flex", "2xl:flex"];
+
+function MoreItem({ total = 0, moreLink = null, className = {} }: any) {
+  return (total > 0 &&
+    <article className={cn("collection-products-more w-full flex flex-col h-full", className)}>
+      <div>
+        <div className="flex my-0 mx-auto pb-full w-full h-auto overflow-hidden pb-[100%] relative">
+          <figure className="absolute left-0 top-0 w-full h-full">
+            <div className="w-full h-full flex flex-col justify-center items-center align-middle bg-brand-300 bg-no-repeat bg-cover" style={{backgroundImage: `url(${blurredRectangle.src})`}}>
+              <h2 className="flex text-lg font-medium text-white">+ {total} Items</h2>
+              {moreLink && <Link href={moreLink} className="mx-auto mt-1 flex items-center justify-center space-x-2 px-8 h-10 rounded uppercase bg-white text-gray-700">Shop</Link>}
+            </div>
+          </figure>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+
+
+
+export function CollectionProducts({collection, products, total = 0, useDefaultPrices = false, moreLink = null }: Props) {
+  const breakpoints = ["sm:flex", "md:flex", "lg:flex", "xl:flex", "2xl:flex"];
 
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -193,7 +215,7 @@ export function CollectionProducts({ collection, products, useDefaultPrices = fa
     products && products.length > 0 &&
     <div className="carousel-container p-4 xl:p-8 bg-gray-50 mt-8 mb-12">
       <h2 className="text-3xl font-black text-[1.5rem] font-normal leading-[2rem] text-left text-[#353535]">{`More from ${collection} collection`}</h2>
-      <div className="mt-5 grid xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 xl:gap-8">
+      <div className="mt-5 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 xl:gap-8">
         {products.map((item: any, index: number) => (
           <CustomItem 
             key={item.objectID} 
@@ -212,10 +234,34 @@ export function CollectionProducts({ collection, products, useDefaultPrices = fa
             isLoading={isLoading}
             isLoaded={isLoaded}
             className={cn(
+              index > 0 && `hidden`,
+              index == 1 && total == 0 && `${breakpoints[0]}`,
+              index == 1 && total > 0 && `${breakpoints[1]}`,
+              index == 2 && total == 0 && `${breakpoints[1]}`,
+              index == 2 && total > 0 && `${breakpoints[2]}`,
+              index == 3 && total == 0 && `${breakpoints[2]}`,
+              index == 3 && total > 0 && `${breakpoints[2]}`,
+              index == 4 && total == 0 && `${breakpoints[2]}`,
+              index == 4 && total > 0 && `${breakpoints[2]}`,
+              index == 5 && total == 0 && `${breakpoints[2]}`,
+              index == 5 && total > 0 && `${breakpoints[3]}`,
+              index == 6 && total == 0 && `${breakpoints[3]}`,
+              index == 6 && total > 0 && `${breakpoints[3]}`,
+              index == 7 && total == 0 && `${breakpoints[3]}`,
+              index == 7 && total > 0 && `${breakpoints[4]}`,
+              index == 8 && total == 0 && `${breakpoints[4]}`,
+              index == 8 && total > 0 && `${breakpoints[4]}`,
+              index == 9 && total == 0 && `${breakpoints[4]}`,
+              index == 9 && total > 0 && `${breakpoints[4]}`,
+            )}
+            /*
+            className={cn(
               index > 0 && index < 6 && `hidden ${breakpoints[index]}` 
-            )} 
+            )}
+            */ 
           />
         ))}
+        <MoreItem total={total} moreLink={moreLink} />
       </div>
     </div>
   );

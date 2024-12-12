@@ -38,6 +38,12 @@ import { getPromotions } from '../../fetch-promotions';
 
 import { Brand } from './brand';
 
+import { Page as MakeswiftPage } from '@makeswift/runtime/next';
+import { getSiteVersion } from '@makeswift/runtime/next/server';
+import { defaultLocale } from '~/i18n/routing';
+import { client } from '~/lib/makeswift/client';
+import '~/lib/makeswift/components';
+
 interface Props {
   params: Promise<{
     slug: string;
@@ -84,6 +90,11 @@ export default async function BrandPage(props: Props) {
   if (!brand) {
     notFound();
   }
+
+  const snapshot = await client.getPageSnapshot(brand.path, {
+    siteVersion: await getSiteVersion(),
+    locale: locale === defaultLocale ? undefined : locale,
+  });
 
   const promotions = await getPromotions();
   const hasExtendedContent = false;
@@ -151,6 +162,10 @@ export default async function BrandPage(props: Props) {
           <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{brand.name}</h1>
         </div>
       )}
+
+      {!!snapshot &&
+        <MakeswiftPage snapshot={snapshot} />
+      }
 
       {hasExtendedContent && (
         <>

@@ -644,12 +644,12 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
     };
   }, []);
 
-  return <div ref={containerRef} id="autocomplete" className="flex-auto lg:w-96 xl:w-[900px]" />;
+  return <div ref={containerRef} id="autocomplete" className="flex-auto xl:w-[650px] 2xl:w-[900px] absolute top-20 w-[93%] left-4 md:left-[2em] lg:left-[3em] xl:static" />;
 }
 
 export function AutocompleteSearchSkeleton() {
   return (
-    <div id="autocomplete" className="flex-auto lg:w-96 xl:w-[900px]">
+    <div id="autocomplete" className="flex-auto lg:w-96">
       <div className="aa-Autocomplete">
         <div className="aa-Form">
           <div className="aa-InputWrapperPrefix">

@@ -4,8 +4,14 @@ const config = {
     './app/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
     './vibes/**/*.{ts,tsx}',
+    './belami/**/*.{ts,tsx}',
     '!./node_modules/**', // Exclude everything in node_modules to speed up builds
   ],
+  /*
+  safelist: [
+    'basis-full', 'sm:basis-1/2', 'md:basis-1/3', 'lg:basis-1/4', 'xl:basis-1/5', '2xl:basis-1/6',
+  ],
+  */
   theme: {
     screens : {
       'xsm' : '450px', 

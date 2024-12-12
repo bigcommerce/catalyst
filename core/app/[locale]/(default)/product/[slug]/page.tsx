@@ -111,7 +111,7 @@ export default async function ProductPage(props: Props) {
     useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
   });
 
-  const productMpn = product.mpn;
+  const productMpn = product?.mpn;
 
 
   if (!product) {
@@ -130,10 +130,23 @@ export default async function ProductPage(props: Props) {
   }
 
   const relatedProducts = await getRelatedProducts(product.entityId);
-  const collectionProducts = await getCollectionProducts(collectionValue);
+  const collectionProducts = await getCollectionProducts(product.entityId, product.brand?.name ?? '', collectionValue);
+
+  const averageRatingMetaField = metaFields?.find(
+    (field: { key: string }) => field?.key === 'sv-average-rating',
+  );
+
+  const totalReviewsMetaField = metaFields?.find(
+    (field: { key: string }) => field?.key === 'sv-total-reviews',
+  );
+
+  if (averageRatingMetaField && totalReviewsMetaField) {
+    product.reviewSummary.numberOfReviews = totalReviewsMetaField.value ?? 0;
+    product.reviewSummary.averageRating = averageRatingMetaField.value ?? 0;
+  }
 
   const category = removeEdgesAndNodes(product.categories).at(0);
-  if (category?.breadcrumbs?.edges) {
+  if (category?.breadcrumbs?.edges && product?.mpn) {
     category.breadcrumbs.edges.push({ node: { name: product?.mpn, path: '#' } });
   }
 
@@ -184,7 +197,10 @@ export default async function ProductPage(props: Props) {
             />
             <div className="lg:col-span-2">
               <Description product={product} />
-              <CollectionProducts collection={collectionValue} products={collectionProducts} useDefaultPrices={useDefaultPrices} />
+              {/*
+              <CollectionProducts collection={collectionValue} products={collectionProducts.hits} total={collectionProducts.total} moreLink={`${product.brand?.path ?? '/search'}?collection[0]=${collectionValue}`} useDefaultPrices={useDefaultPrices} />
+              */}
+              <CollectionProducts collection={collectionValue} products={collectionProducts.hits} total={collectionProducts.hits && collectionProducts.total > 10 ? collectionProducts.total - collectionProducts.hits.length : 0} moreLink={`/search?brand_name[0]=${product.brand?.name ?? ''}&collection[0]=${collectionValue}`} useDefaultPrices={useDefaultPrices} />
               <Promotion />
               {/*
               <RelatedProducts

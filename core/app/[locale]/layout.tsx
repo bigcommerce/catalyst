@@ -14,9 +14,12 @@ import 'instantsearch.css/themes/satellite-min.css';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { MakeswiftProvider } from '~/lib/makeswift/provider';
 
 import { Notifications } from '../notifications';
 import { Providers } from '../providers';
+
+import '~/lib/makeswift/components';
 
 import { cn } from '~/lib/utils';
 
@@ -51,13 +54,13 @@ const openSans = Open_Sans({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-opensans',
-})
+});
 
 const robotoMono = Roboto_Mono({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-roboto-mono',
-})
+});
 
 const RootLayoutMetadataQuery = graphql(`
   query RootLayoutMetadataQuery {
@@ -141,11 +144,13 @@ export default async function RootLayout({ params, children }: Props) {
       </head>
       <body className="flex h-screen min-w-[375px] flex-col">
         <Notifications />
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <NuqsAdapter>
-            <Providers>{children}</Providers>
-          </NuqsAdapter>
-        </NextIntlClientProvider>
+        <MakeswiftProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <NuqsAdapter>
+              <Providers>{children}</Providers>
+            </NuqsAdapter>
+          </NextIntlClientProvider>
+        </MakeswiftProvider>
         <VercelComponents />
       </body>
     </html>

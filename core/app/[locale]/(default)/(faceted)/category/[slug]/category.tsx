@@ -50,8 +50,8 @@ const searchClient = algoliasearch(
 const indexName: string = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || '';
 
 //const useDefaultPrices = process.env.NEXT_PUBLIC_USE_DEFAULT_PRICES === 'true';
-//const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
-const useAsyncMode = false;
+const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
+//const useAsyncMode = false;
 
 const sortByNumericName: RefinementListProps['sortBy'] = (a: any, b: any) => {
   return parseInt(a.name) < parseInt(b.name) ? -1 : 1;
@@ -92,13 +92,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
       indexName={indexName}
       routing={{
         router: {
-          cleanUrlOnDispose: false,
-          windowTitle(routeState: any) {
-            const indexState = routeState.indexName || {};
-            return indexState.query
-              ? `Results for: ${indexState.query}`
-              : 'Results page';
-          },
+          cleanUrlOnDispose: false
         },
         stateMapping: {
         stateToRoute(uiState: any) {
@@ -161,7 +155,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
       <Configure filters="categories_without_path:'Indoor Lighting'" maxFacetHits={100} />
       */}
       {breadcrumbs && breadcrumbs.length > 0 &&
-        <Configure filters={breadcrumbs.map((item: any) => `categories_without_path:'${item.name}'`).join(' AND ')} maxFacetHits={100} />
+        <Configure filters={breadcrumbs.map((item: any) => `categories_without_path:"${item.name}"`).join(' AND ')} maxFacetHits={100} />
       }
       {showSidebar &&
         <div className="hidden sm:block fixed inset-0 w-full h-full pointer-events-auto z-[9995] bg-black bg-opacity-60 backdrop-blur-sm opacity-100" onClick={() => setShowSidebar(false)}></div>

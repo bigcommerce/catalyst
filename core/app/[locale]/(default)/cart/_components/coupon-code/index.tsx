@@ -90,9 +90,9 @@ export const CouponCode = ({ checkout }: Props) => {
   };
 
   return selectedCoupon ? (
-    <div className="flex flex-col gap-2 border-t border-t-gray-200 py-4">
+    <div className="flex flex-col gap-2 ">
       <div className="flex justify-between">
-        <span className="font-semibold">
+        <span className="font-normal">
           {t('coupon')} ({selectedCoupon.code})
         </span>
         <span>
@@ -102,19 +102,19 @@ export const CouponCode = ({ checkout }: Props) => {
           })}
         </span>
       </div>
-      <form action={onSubmitRemoveCouponCode}>
+      <form action={onSubmitRemoveCouponCode} className=''>
         <input name="checkoutEntityId" type="hidden" value={checkout.entityId} />
         <input name="couponCode" type="hidden" value={selectedCoupon.code} />
         <RemoveButton />
       </form>
     </div>
   ) : (
-    <div className="flex flex-col gap-2 border-t border-t-gray-200 py-4">
-      <div className="flex justify-between">
-        <span className="font-semibold">{t('couponCode')}</span>
+    <div className="flex flex-col gap-2 ">
+      <div className="flex justify-between !bg-[#E7F5F8] leading-[32px] font-[400]">
+        <span className="font-normal">{t('couponCode')}</span>
         <Button
           aria-controls="coupon-code-form"
-          className="w-fit p-0 text-primary hover:bg-transparent"
+          className="w-fit p-0 text-primary font-normal hover:bg-transparent"
           onClick={() => setShowAddCoupon((open) => !open)}
           variant="subtle"
         >
@@ -123,8 +123,11 @@ export const CouponCode = ({ checkout }: Props) => {
       </div>
       {showAddCoupon && (
         <Form
+        // border: 1px solid #4EAECC;
+        // border-radius: 3px;
           action={onSubmitApplyCouponCode}
-          className="my-4 flex flex-col gap-2"
+          className="flex flex-col gap-[5px] [&>button]:border [&>button]:rounded-[3px] [&>button]:border-[#4EAECC] 
+          [&>input]:!h-[44px] [&>input]:!border [&_input]:!border-[#cccbcb] [&>input]:!rounded-[3px]"
           id="coupon-code-form"
         >
           <input name="checkoutEntityId" type="hidden" value={checkout.entityId} />

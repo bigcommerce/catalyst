@@ -9,7 +9,7 @@ import {
   DynamicWidgets,
   RangeInput,
   HitsPerPage,
-  Pagination,
+  //Pagination,
   SortBy,
   Stats,
   useSearchBox
@@ -22,6 +22,7 @@ import { RatingMenu } from '../_components/rating-menu';
 import { Hits, HitsAsync } from '../_components/hits';
 import { ClearRefinements } from '../_components/clear-refinements';
 import { CurrentRefinements } from '../_components/current-refinements';
+import { Pagination } from '../_components/pagination';
 
 import { Facet } from '../_components/facet';
 import { FacetDropdown } from '../_components/facet-dropdown';
@@ -48,8 +49,8 @@ const searchClient = algoliasearch(
 const indexName: string = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || '';
 
 //const useDefaultPrices = process.env.NEXT_PUBLIC_USE_DEFAULT_PRICES === 'true';
-//const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
-const useAsyncMode = false;
+const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
+//const useAsyncMode = false;
 
 const sortByNumericName: RefinementListProps['sortBy'] = (a: any, b: any) => {
   return parseInt(a.name) < parseInt(b.name) ? -1 : 1;
@@ -100,13 +101,7 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
       indexName={indexName}
       routing={{
         router: {
-          cleanUrlOnDispose: false,
-          windowTitle(routeState: any) {
-            const indexState = routeState.indexName || {};
-            return indexState.query
-              ? `Results for: ${indexState.query}`
-              : 'Results page';
-          },
+          cleanUrlOnDispose: false
         },
         stateMapping: {
         stateToRoute(uiState: any) {

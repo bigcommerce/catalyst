@@ -9,8 +9,8 @@ export default function page() {
     <div className="my-[2rem] text-[#353535]">
       {/* <OrderTracking /> */}
       {/* <OrderNonMember /> */}
-      {/* <OrderSummary /> */}
-      <HelpCenter/>
+      <OrderSummary />
+      {/* <HelpCenter/> */}
     </div>
   );
 }

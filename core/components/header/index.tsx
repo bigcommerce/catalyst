@@ -27,9 +27,7 @@ interface Props {
   cart: ReactNode;
 }
 
-
-const headerCart = imageManagerImageUrl('header-cart-icon.png', '25w');
-
+const homeLogoMobile = imageManagerImageUrl('logo-mark.png', '150w');
 
 export const Header = async ({ cart }: Props) => {
   const locale = await getLocale();
@@ -66,6 +64,7 @@ export const Header = async ({ cart }: Props) => {
 
   return (
     <ComponentsHeader
+    homeLogoMobile = {homeLogoMobile} 
       account={
         <div className="flex items-center">
           {/* Support Dropdown */}
