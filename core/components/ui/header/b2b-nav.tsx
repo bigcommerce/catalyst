@@ -7,14 +7,16 @@ interface B2bNavProps {
   triggerButton: React.ReactNode;
 }
 
+const action = { action: logout, name: 'Logout', isMenuItem: true }
+
 export default function B2bNav({ triggerButton }: B2bNavProps) {
-  const [b2bLinks, setB2bLinks] = useState<any[]>([]);
+  const [b2bLinks, setB2bLinks] = useState<any[]>([action]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (window.b2b?.utils?.user) {
         const routes = window.b2b.utils.user.getAllowedRoutes();
-        setB2bLinks([...routes, { action: logout, name: 'Logout', isMenuItem: true }]);
+        setB2bLinks([...routes, action]);
         clearInterval(interval);
       }
     }, 500);
