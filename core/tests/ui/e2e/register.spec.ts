@@ -18,8 +18,8 @@ test('Account register', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Create account' }).click();
 
-  await expect(page).toHaveURL('/account/');
-  await expect(page.getByText('Your account has been successfully created')).toBeVisible();
+  await expect(page).toHaveURL('/account/orders/');
+  await expect(page.getByRole('heading', { name: 'Orders' })).toBeVisible();
 });
 
 test('Account is not created if email is already in use', async ({ page, account }) => {

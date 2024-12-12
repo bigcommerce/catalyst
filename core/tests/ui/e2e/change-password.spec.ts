@@ -37,12 +37,12 @@ test('Change password from Account Settings and log in', async ({ page, account 
     'Your password has been successfully updated. Please log in using your new credentials.',
   );
 
-  await page.goto('/account/');
+  await page.goto('/account/orders/');
   await page.getByRole('heading', { name: 'Log In' }).waitFor();
 
   await page.getByLabel('Email').fill(customer.email);
   await page.getByLabel('Password').fill(`${customer.password}1`);
   await page.getByRole('button', { name: 'Log in' }).click();
 
-  await expect(page).toHaveURL('/account/');
+  await expect(page).toHaveURL('/account/orders/');
 });

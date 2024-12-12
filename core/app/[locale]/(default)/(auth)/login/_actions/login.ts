@@ -22,7 +22,7 @@ export const login = async (_previousState: unknown, formData: FormData) => {
       redirect: false,
     });
 
-    redirect({ href: '/account', locale });
+    redirect({ href: '/account/orders', locale });
   } catch (error: unknown) {
     rethrow(error);
 
