@@ -24,7 +24,7 @@ export default function AgentFooter() {
         Agent Login
       </div>
       <div className="cursor-pointer text-[14px] font-normal">Create Quote</div>
-      <div className="cursor-default text-[14px] font-normal">Session Id: ########</div>
+      <div className="cursor-pointer text-[14px] font-normal">Session Id: <div id="sessionIdDiv">#####</div></div>
     </>
   );
 }
