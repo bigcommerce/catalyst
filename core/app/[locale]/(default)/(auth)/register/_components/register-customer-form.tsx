@@ -1,14 +1,12 @@
 'use client';
 
+import { AlertCircle, Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
+import { toast } from 'react-hot-toast';
 
-import {
-  AccountState as FormStatus,
-  useAccountStatusContext,
-} from '~/app/[locale]/(default)/account/_components/account-status-provider';
 import { ExistingResultType } from '~/client/util';
 import {
   Checkboxes,
@@ -36,9 +34,7 @@ import {
 } from '~/components/form-fields/shared/field-handlers';
 import { Button } from '~/components/ui/button';
 import { Field, Form, FormSubmit } from '~/components/ui/form';
-import { Message } from '~/components/ui/message';
 
-import { SubmitMessagesList } from '../../../account/_components/submit-messages-list';
 import { login } from '../_actions/login';
 import { registerCustomer } from '../_actions/register-customer';
 import { getRegisterCustomerQuery } from '../page-data';
@@ -83,7 +79,6 @@ export const RegisterCustomerForm = ({
   reCaptchaSettings,
 }: RegisterCustomerProps) => {
   const form = useRef<HTMLFormElement>(null);
-  const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
 
   const [textInputValid, setTextInputValid] = useState<Record<string, boolean>>({});
   const [passwordValid, setPassswordValid] = useState<Record<string, boolean>>({
@@ -100,8 +95,6 @@ export const RegisterCustomerForm = ({
   const reCaptchaRef = useRef<ReCaptcha>(null);
   const [reCaptchaToken, setReCaptchaToken] = useState('');
   const [isReCaptchaValid, setReCaptchaValid] = useState(true);
-
-  const { setAccountState } = useAccountStatusContext();
 
   const t = useTranslations('Register.Form');
 
@@ -199,9 +192,8 @@ export const RegisterCustomerForm = ({
 
   const onSubmit = async (formData: FormData) => {
     if (formData.get('customer-password') !== formData.get('customer-confirmPassword')) {
-      setFormStatus({
-        status: 'error',
-        messages: [t('confirmPassword')],
+      toast.error(t('confirmPassword'), {
+        icon: <AlertCircle className="text-error-secondary" />,
       });
 
       window.scrollTo({
@@ -220,191 +212,183 @@ export const RegisterCustomerForm = ({
 
     setReCaptchaValid(true);
 
-    const submit = await registerCustomer({ formData, reCaptchaToken });
+    const { status, message } = await registerCustomer(formData, reCaptchaToken);
 
-    if (submit.status === 'success') {
-      setAccountState({ status: 'success', messages: [''] });
+    if (status === 'error') {
+      toast.error(message, {
+        icon: <AlertCircle className="text-error-secondary" />,
+      });
 
-      await login(formData);
+      return;
     }
 
-    if (submit.status === 'error') {
-      setFormStatus({ status: 'error', messages: submit.errors ?? [''] });
-    }
-
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
+    toast.success(message, {
+      icon: <Check className="text-success-secondary" />,
     });
+
+    await login(formData);
   };
 
   return (
-    <>
-      {formStatus && formStatus.status !== 'idle' && (
-        <Message className="mb-8" variant={formStatus.status}>
-          <SubmitMessagesList messages={formStatus.messages} />
-        </Message>
-      )}
-      <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>
-        <div className="grid grid-cols-1 gap-y-3 lg:grid-cols-2 lg:gap-x-6">
-          {addressFields.map((field) => {
+    <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>
+      <div className="grid grid-cols-1 gap-y-3 lg:grid-cols-2 lg:gap-x-6">
+        {addressFields.map((field) => {
+          const fieldId = field.entityId;
+          const fieldName = createFieldName(field, 'customer');
+
+          if (field.__typename === 'TextFormField' && FULL_NAME_FIELDS.includes(fieldId)) {
+            return (
+              <FieldWrapper fieldId={fieldId} key={fieldId}>
+                <Text
+                  field={field}
+                  isValid={textInputValid[fieldId]}
+                  name={fieldName}
+                  onChange={handleTextInputValidation}
+                />
+              </FieldWrapper>
+            );
+          }
+
+          return null;
+        })}
+      </div>
+      <div className="mb-4 grid grid-cols-1 gap-y-3 lg:grid-cols-2 lg:gap-x-6">
+        {customerFields
+          .filter((field) => !CUSTOMER_FIELDS_TO_EXCLUDE.includes(field.entityId))
+          .map((field) => {
             const fieldId = field.entityId;
             const fieldName = createFieldName(field, 'customer');
 
-            if (field.__typename === 'TextFormField' && FULL_NAME_FIELDS.includes(fieldId)) {
-              return (
-                <FieldWrapper fieldId={fieldId} key={fieldId}>
-                  <Text
-                    field={field}
-                    isValid={textInputValid[fieldId]}
-                    name={fieldName}
-                    onChange={handleTextInputValidation}
-                  />
-                </FieldWrapper>
-              );
-            }
+            switch (field.__typename) {
+              case 'TextFormField':
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <Text
+                      field={field}
+                      isValid={textInputValid[fieldId]}
+                      name={fieldName}
+                      onChange={handleTextInputValidation}
+                      type={FieldNameToFieldId[fieldId]}
+                    />
+                  </FieldWrapper>
+                );
 
-            return null;
-          })}
-        </div>
-        <div className="mb-4 grid grid-cols-1 gap-y-3 lg:grid-cols-2 lg:gap-x-6">
-          {customerFields
-            .filter((field) => !CUSTOMER_FIELDS_TO_EXCLUDE.includes(field.entityId))
-            .map((field) => {
-              const fieldId = field.entityId;
-              const fieldName = createFieldName(field, 'customer');
+              case 'PasswordFormField':
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <Password
+                      field={field}
+                      isValid={passwordValid[fieldId]}
+                      name={fieldName}
+                      onChange={handlePasswordValidation}
+                    />
+                  </FieldWrapper>
+                );
 
-              switch (field.__typename) {
-                case 'TextFormField':
-                  return (
-                    <FieldWrapper fieldId={fieldId} key={fieldId}>
-                      <Text
-                        field={field}
-                        isValid={textInputValid[fieldId]}
-                        name={fieldName}
-                        onChange={handleTextInputValidation}
-                        type={FieldNameToFieldId[fieldId]}
-                      />
-                    </FieldWrapper>
-                  );
-
-                case 'PasswordFormField':
-                  return (
-                    <FieldWrapper fieldId={fieldId} key={fieldId}>
-                      <Password
-                        field={field}
-                        isValid={passwordValid[fieldId]}
-                        name={fieldName}
-                        onChange={handlePasswordValidation}
-                      />
-                    </FieldWrapper>
-                  );
-
-                case 'MultilineTextFormField': {
-                  return (
-                    <FieldWrapper fieldId={fieldId} key={fieldId}>
-                      <MultilineText
-                        field={field}
-                        isValid={multiTextValid[fieldId]}
-                        name={fieldName}
-                        onChange={handleMultiTextValidation}
-                      />
-                    </FieldWrapper>
-                  );
-                }
-
-                case 'NumberFormField': {
-                  return (
-                    <FieldWrapper fieldId={fieldId} key={fieldId}>
-                      <NumbersOnly
-                        field={field}
-                        isValid={numbersInputValid[fieldId]}
-                        name={fieldName}
-                        onChange={handleNumbersInputValidation}
-                      />
-                    </FieldWrapper>
-                  );
-                }
-
-                case 'DateFormField': {
-                  return (
-                    <FieldWrapper fieldId={fieldId} key={fieldId}>
-                      <DateField
-                        field={field}
-                        isValid={datesValid[fieldId]}
-                        name={fieldName}
-                        onChange={handleDatesValidation}
-                        onValidate={setDatesValid}
-                      />
-                    </FieldWrapper>
-                  );
-                }
-
-                case 'RadioButtonsFormField': {
-                  return (
-                    <FieldWrapper fieldId={fieldId} key={fieldId}>
-                      <RadioButtons
-                        field={field}
-                        isValid={radioButtonsValid[fieldId]}
-                        name={fieldName}
-                        onChange={handleRadioButtonsChange}
-                      />
-                    </FieldWrapper>
-                  );
-                }
-
-                case 'PicklistFormField': {
-                  return (
-                    <FieldWrapper fieldId={fieldId} key={fieldId}>
-                      <Picklist
-                        field={field}
-                        isValid={picklistValid[fieldId]}
-                        name={fieldName}
-                        onValidate={setPicklistValid}
-                        options={field.options}
-                      />
-                    </FieldWrapper>
-                  );
-                }
-
-                case 'CheckboxesFormField': {
-                  return (
-                    <FieldWrapper fieldId={fieldId} key={fieldId}>
-                      <Checkboxes
-                        field={field}
-                        isValid={checkboxesValid[fieldId]}
-                        name={fieldName}
-                        onValidate={setCheckboxesValid}
-                        options={field.options}
-                      />
-                    </FieldWrapper>
-                  );
-                }
-
-                default:
-                  return null;
+              case 'MultilineTextFormField': {
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <MultilineText
+                      field={field}
+                      isValid={multiTextValid[fieldId]}
+                      name={fieldName}
+                      onChange={handleMultiTextValidation}
+                    />
+                  </FieldWrapper>
+                );
               }
-            })}
-          {reCaptchaSettings?.isEnabledOnStorefront && (
-            <Field className="relative col-span-full max-w-full space-y-2 pb-7" name="ReCAPTCHA">
-              <ReCaptcha
-                onChange={onReCaptchaChange}
-                ref={reCaptchaRef}
-                sitekey={reCaptchaSettings.siteKey}
-              />
-              {!isReCaptchaValid && (
-                <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error">
-                  {t('recaptchaText')}
-                </span>
-              )}
-            </Field>
-          )}
-        </div>
 
-        <FormSubmit asChild>
-          <SubmitButton messages={{ submit: t('submit'), submitting: t('submitting') }} />
-        </FormSubmit>
-      </Form>
-    </>
+              case 'NumberFormField': {
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <NumbersOnly
+                      field={field}
+                      isValid={numbersInputValid[fieldId]}
+                      name={fieldName}
+                      onChange={handleNumbersInputValidation}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
+              case 'DateFormField': {
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <DateField
+                      field={field}
+                      isValid={datesValid[fieldId]}
+                      name={fieldName}
+                      onChange={handleDatesValidation}
+                      onValidate={setDatesValid}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
+              case 'RadioButtonsFormField': {
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <RadioButtons
+                      field={field}
+                      isValid={radioButtonsValid[fieldId]}
+                      name={fieldName}
+                      onChange={handleRadioButtonsChange}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
+              case 'PicklistFormField': {
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <Picklist
+                      field={field}
+                      isValid={picklistValid[fieldId]}
+                      name={fieldName}
+                      onValidate={setPicklistValid}
+                      options={field.options}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
+              case 'CheckboxesFormField': {
+                return (
+                  <FieldWrapper fieldId={fieldId} key={fieldId}>
+                    <Checkboxes
+                      field={field}
+                      isValid={checkboxesValid[fieldId]}
+                      name={fieldName}
+                      onValidate={setCheckboxesValid}
+                      options={field.options}
+                    />
+                  </FieldWrapper>
+                );
+              }
+
+              default:
+                return null;
+            }
+          })}
+        {reCaptchaSettings?.isEnabledOnStorefront && (
+          <Field className="relative col-span-full max-w-full space-y-2 pb-7" name="ReCAPTCHA">
+            <ReCaptcha
+              onChange={onReCaptchaChange}
+              ref={reCaptchaRef}
+              sitekey={reCaptchaSettings.siteKey}
+            />
+            {!isReCaptchaValid && (
+              <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error">
+                {t('recaptchaText')}
+              </span>
+            )}
+          </Field>
+        )}
+      </div>
+
+      <FormSubmit asChild>
+        <SubmitButton messages={{ submit: t('submit'), submitting: t('submitting') }} />
+      </FormSubmit>
+    </Form>
   );
 };
