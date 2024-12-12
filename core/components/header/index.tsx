@@ -59,6 +59,7 @@ export const Header = async ({ cart }: Props) => {
   return (
     <ComponentsHeader
       b2bToken={session?.b2bToken}
+      accountLabel={t('Account.account')}
       account={
         customerAccessToken ? (
           <Dropdown
