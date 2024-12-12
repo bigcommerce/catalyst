@@ -27,14 +27,16 @@
     "FeaturedProducts": {
       "title": "Featured collection",
       "description": "Explore our top picks in this featured collection. Find the perfect gift or treat yourself!",
-      "cta": "View more"
+      "cta": "View more",
+      "emptyStateTitle": "No products found",
+      "emptyStateSubtitle": "Try browsing our complete catalog of products."
     },
     "NewestProducts": {
       "title": "New arrivals",
       "description": "Our latest products are here. Check out what's new in store.",
       "cta": "See all",
       "emptyStateTitle": "No products found",
-      "emptyStateSubtitle": "Please try again later.",
+      "emptyStateSubtitle": "Try browsing our complete catalog of products.",
       "previousProducts": "Previous products",
       "nextProducts": "Next products"
     },
