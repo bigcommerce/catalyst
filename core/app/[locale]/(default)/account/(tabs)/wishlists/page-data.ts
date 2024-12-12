@@ -9,6 +9,7 @@ import { graphql, VariablesOf } from '~/client/graphql';
 
 import { GalleryFragment } from '../../../product/[slug]/_components/gallery/fragment';
 
+
 const WishlistsQuery = graphql(
   `
     query WishlistsQuery(
