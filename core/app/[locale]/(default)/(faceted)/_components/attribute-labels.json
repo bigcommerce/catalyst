@@ -1,4 +1,7 @@
 {
+  "categories.lvl0": "Category",
+  "categories.lvl1": "Category",
+  "categories.lvl2": "Category",
   "brand_name": "Brand",
   "metafields.Akeneo.collection": "Collection",
   "metafields.Akeneo.number_of_bulbs": "Number of Lights",
@@ -7,5 +10,6 @@
   "metafields.Akeneo.product_style": "Style",
   "metafields.Akeneo.product_shape": "Shape",
   "prices.USD": "Price",
+  "is_new": "Is New",
   "on_sale": "On Sale"
 }

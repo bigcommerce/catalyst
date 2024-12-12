@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 
+import Link from 'next/link';
 import { Breadcrumbs } from '~/components/breadcrumbs';
 
 import Promotion from '../../../../../components/ui/pdp/belami-promotion-banner-pdp';
@@ -169,17 +170,17 @@ export default async function ProductPage(props: Props) {
               </span>
               <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
                 by{' '}
-                <span className="products-underline border-b border-black">
+                <Link href={product.brand?.path ?? ''} className="products-underline border-b border-black">
                   {product.brand?.name}
-                </span>
+                </Link>
               </span>
 
               {collectionMetaField?.value && (
                 <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
                   from the{' '}
-                  <span className="products-underline border-b border-black">
+                  <Link href={`/search?brand_name[0]=${product.brand?.name ?? ''}&collection[0]=${collectionValue}`} className="products-underline border-b border-black">
                     {collectionValue}
-                  </span>{' '}
+                  </Link>{' '}
                   Family
                 </span>
               )}
