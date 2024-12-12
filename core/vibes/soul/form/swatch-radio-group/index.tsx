@@ -30,15 +30,18 @@ export const SwatchRadioGroup = React.forwardRef<
     options: SwatchOption[];
     errors?: string[];
   }
->(({ id, label, options, errors, className, ...rest }, ref) => {
+>(({ label, options, errors, className, ...rest }, ref) => {
+  const id = React.useId();
+
   return (
     <div className={clsx('space-y-2', className)}>
-      {label !== undefined && label !== '' && <Label>{label}</Label>}
+      {label !== undefined && label !== '' && <Label htmlFor={id}>{label}</Label>}
       <RadioGroupPrimitive.Root
         {...rest}
-        aria-label={label}
+        aria-labelledby={id}
         className="flex flex-wrap gap-1"
         ref={ref}
+        role="group"
       >
         {options.map((option) => (
           <RadioGroupPrimitive.Item
