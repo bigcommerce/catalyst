@@ -10,20 +10,6 @@ const ResetPasswordSchema = z.object({
   email: z.string().email(),
 });
 
-const processZodErrors = (err: z.ZodError) => {
-  const { fieldErrors, formErrors } = err.flatten((issue: z.ZodIssue) => ({
-    message: issue.message,
-  }));
-
-  if (formErrors.length > 0) {
-    return formErrors.map(({ message }) => message);
-  }
-
-  return Object.entries(fieldErrors).flatMap(([, errorList]) => {
-    return errorList?.map(({ message }) => message) ?? [''];
-  });
-};
-
 const ResetPasswordMutation = graphql(`
   mutation ResetPassword($input: RequestResetPasswordInput!, $reCaptcha: ReCaptchaV2Input) {
     customer {
@@ -40,17 +26,16 @@ const ResetPasswordMutation = graphql(`
   }
 `);
 
-interface SubmitResetPasswordForm {
-  formData: FormData;
-  path: string;
-  reCaptchaToken: string;
+interface SubmitResetPasswordResponse {
+  status: 'success' | 'error';
+  message: string;
 }
 
-export const resetPassword = async ({
-  formData,
-  path,
-  reCaptchaToken,
-}: SubmitResetPasswordForm) => {
+export const resetPassword = async (
+  formData: FormData,
+  path: string,
+  reCaptchaToken?: string,
+): Promise<SubmitResetPasswordResponse> => {
   const t = await getTranslations('Login.ForgotPassword');
 
   try {
@@ -74,26 +59,24 @@ export const resetPassword = async ({
 
     const result = response.data.customer.requestResetPassword;
 
-    if (result.errors.length === 0) {
-      return { status: 'success', data: parsedData };
+    if (result.errors.length > 0) {
+      result.errors.forEach((error) => {
+        throw new Error(error.message);
+      });
     }
 
     return {
-      status: 'error',
-      errors: result.errors.map((error) => error.message),
+      status: 'success',
+      message: t('Form.confirmResetPassword', { email: parsedData.email }),
     };
   } catch (error: unknown) {
-    if (error instanceof z.ZodError) {
+    if (error instanceof Error || error instanceof z.ZodError) {
       return {
         status: 'error',
-        errors: processZodErrors(error),
+        message: error.message,
       };
     }
 
-    if (error instanceof Error) {
-      return { status: 'error', errors: [error.message] };
-    }
-
-    return { status: 'error', errors: [t('Errors.error')] };
+    return { status: 'error', message: t('Errors.error') };
   }
 };
