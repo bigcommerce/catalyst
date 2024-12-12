@@ -38,6 +38,8 @@ interface Props {
   paymentIcons?: Streamable<ReactNode[] | null>;
   socialMediaLinks?: Streamable<SocialMediaLink[] | null>;
   className?: string;
+  logoHref?: string;
+  logoLabel?: string;
 }
 
 export const Footer = forwardRef(function Footer(
@@ -48,7 +50,9 @@ export const Footer = forwardRef(function Footer(
     paymentIcons: streamablePaymentIcons,
     socialMediaLinks: streamableSocialMediaLinks,
     copyright: streamableCopyright,
-    className = '',
+    className,
+    logoHref = '#',
+    logoLabel = 'Home',
   }: Props,
   ref: Ref<HTMLDivElement>,
 ) {
@@ -76,8 +80,9 @@ export const Footer = forwardRef(function Footer(
                 if (logo != null && typeof logo === 'string') {
                   return (
                     <Link
+                      aria-label={logoLabel}
                       className="relative mb-2 inline-block h-10 w-full max-w-56 rounded-lg ring-primary focus-visible:outline-0 focus-visible:ring-2"
-                      href="#"
+                      href={logoHref}
                     >
                       <span className="whitespace-nowrap font-heading text-2xl font-semibold">
                         {logo}
@@ -89,8 +94,9 @@ export const Footer = forwardRef(function Footer(
                 if (logo != null && typeof logo === 'object' && logo.src !== '') {
                   return (
                     <Link
+                      aria-label={logoLabel}
                       className="relative mb-2 inline-block h-10 w-full max-w-56 rounded-lg ring-primary focus-visible:outline-0 focus-visible:ring-2"
-                      href="#"
+                      href={logoHref}
                     >
                       <Image
                         alt={logo.alt}
