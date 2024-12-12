@@ -184,14 +184,14 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
         <div className="mt-4 flex flex-col">
 
           <div className="mt-4 order-2">
-            <Panel header="Category">
+            <Facet title="Category">
               <HierarchicalMenu attributes={[
                 'categories.lvl0',
                 'categories.lvl1',
                 'categories.lvl2',
                 'categories.lvl3'
               ]} />
-            </Panel>
+            </Facet>
             <DynamicWidgets maxValuesPerFacet={1000}>
               <Facet title="Brand">
                 <RefinementList attribute="brand_name" searchable={false} />

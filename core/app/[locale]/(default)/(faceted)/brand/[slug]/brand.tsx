@@ -172,14 +172,14 @@ export const Brand = ({ brand, promotions, useDefaultPrices = false }: any) => {
         <div className="mt-4 flex flex-col">
 
           <div className="mt-4 order-2">
-            <Panel header="Category">
+            <Facet title="Category">
               <HierarchicalMenu attributes={[
                 'categories.lvl0',
                 'categories.lvl1',
                 'categories.lvl2',
                 'categories.lvl3'
               ]} />
-            </Panel>
+            </Facet>
             <DynamicWidgets maxValuesPerFacet={1000}>
               <Facet title="Collection">
                 <RefinementList attribute="metafields.Akeneo.collection" />
