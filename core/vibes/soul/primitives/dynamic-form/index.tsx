@@ -67,7 +67,7 @@ export function DynamicForm<F extends Field>({
         ...acc,
         [field.name]: 'defaultValue' in field ? field.defaultValue : '',
       }),
-      { quantity: 1 },
+      {},
     );
   const [form, formFields] = useForm({
     lastResult,
