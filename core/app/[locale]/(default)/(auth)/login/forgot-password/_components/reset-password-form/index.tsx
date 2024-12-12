@@ -75,7 +75,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
   };
 
   const onSubmit = async (formData: FormData) => {
-    if (!isReCaptchaValid) {
+    if (reCaptchaSettings?.isEnabledOnStorefront && !isReCaptchaValid) {
       return;
     }
 
@@ -91,12 +91,11 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
       return;
     }
 
-    form.current?.reset();
-
     toast.success(message, {
       icon: <Check className="text-success-secondary" />,
     });
 
+    form.current?.reset();
     router.push('/login');
   };
 

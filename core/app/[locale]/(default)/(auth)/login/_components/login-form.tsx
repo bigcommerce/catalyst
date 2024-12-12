@@ -62,14 +62,14 @@ export const LoginForm = () => {
     const { status } = await login(formData);
 
     if (status === 'error') {
-      toast.error(t('error'), {
+      toast.error(t('Form.error'), {
         icon: <AlertCircle className="text-error-secondary" />,
       });
 
       return;
     }
 
-    toast.success(t('successful'), {
+    toast.success(t('Form.successful'), {
       icon: <Check className="text-success-secondary" />,
     });
   };

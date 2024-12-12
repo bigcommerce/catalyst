@@ -252,6 +252,7 @@
         "submitText": "Change password"
       },
       "UpdateCustomer": {
+        "successMessage": "Your account settings have been updated",
         "Errors": {
           "inputError": "Something went wrong with processing user input.",
           "notFound": "Customer does not exist"

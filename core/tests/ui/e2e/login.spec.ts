@@ -43,9 +43,11 @@ test('If a customer is logged in, redirect to account pages', async ({ page, acc
   const customer = await account.create();
 
   await customer.login();
-  await page.waitForURL('/account/orders/');
-  await page.goto('/login');
-  await page.waitForURL('/account/orders/');
+  await expect(page).toHaveURL('/account/orders/');
+  await expect(page.getByRole('heading', { name: 'Orders' })).toBeVisible();
 
-  await expect(page.getByRole('heading', { name: 'My Account' })).toBeVisible();
+  await page.goto('/login');
+
+  await expect(page).toHaveURL('/account/orders/');
+  await expect(page.getByRole('heading', { name: 'Orders' })).toBeVisible();
 });

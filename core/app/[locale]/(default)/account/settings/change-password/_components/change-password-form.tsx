@@ -143,7 +143,7 @@ export const ChangePasswordForm = () => {
       icon: <Check className="text-success-secondary" />,
     });
 
-    void logout();
+    await logout();
   };
 
   return (
