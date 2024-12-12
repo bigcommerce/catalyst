@@ -178,7 +178,7 @@ export default async function ProductPage(props: Props) {
               {collectionMetaField?.value && (
                 <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
                   from the{' '}
-                  <Link href={`/search?brand_name[0]=${product.brand?.name ?? ''}&collection[0]=${collectionValue}`} className="products-underline border-b border-black">
+                  <Link href={`/search?brand_name%5B0%5D=${encodeURIComponent(product.brand?.name ?? '')}&collection%5B0%5D=${encodeURIComponent(collectionValue)}`} className="products-underline border-b border-black">
                     {collectionValue}
                   </Link>{' '}
                   Family

@@ -104,10 +104,6 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
         router: {
           cleanUrlOnDispose: false
         },
-/*
-/search/?categories%5B0%5D=Indoor%20Lighting&categories%5B1%5D=Ceiling%20Lights&brand_name%5B0%5D=Quorum%20Lighting
-/search/?brand_name%5B0%5D=Quorum%20Lighting&categories%5B0%5D=Indoor%20Lighting&categories%5B1%5D=Ceiling%20Lights&categories%5B2%5D=Chandeliers
-*/
         stateMapping: {
           stateToRoute(uiState: any) {
             const indexUiState = uiState[indexName];
