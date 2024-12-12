@@ -11,6 +11,7 @@ import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { FieldNameToFieldId } from '~/components/form-fields';
 import { redirect } from '~/i18n/routing';
+import { z } from 'zod';
 
 const RegisterCustomerMutation = graphql(`
   mutation RegisterCustomer($input: RegisterCustomerInput!, $reCaptchaV2: ReCaptchaV2Input) {
@@ -39,6 +40,13 @@ const RegisterCustomerMutation = graphql(`
   }
 `);
 
+const requiredInputSchema = z.object({
+  email: z.string(),
+  password: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+});
+
 function parseRegisterCustomerInput(
   value: Record<string, string | number | string[] | undefined>,
   fields: Array<Field | FieldGroup<Field>>,
@@ -53,18 +61,17 @@ function parseRegisterCustomerInput(
           String(FieldNameToFieldId.confirmPassword),
           String(FieldNameToFieldId.firstName),
           String(FieldNameToFieldId.lastName),
-          String(FieldNameToFieldId.phone),
-          String(FieldNameToFieldId.company),
         ].includes(field.name),
     );
+  const requiredInput = requiredInputSchema.parse({
+    email: value[FieldNameToFieldId.email],
+    password: value[FieldNameToFieldId.password],
+    firstName: value[FieldNameToFieldId.firstName],
+    lastName: value[FieldNameToFieldId.lastName],
+  });
 
   return {
-    email: String(value[FieldNameToFieldId.email] ?? ''),
-    password: String(value[FieldNameToFieldId.password] ?? ''),
-    firstName: String(value[FieldNameToFieldId.firstName] ?? ''),
-    lastName: String(value[FieldNameToFieldId.lastName] ?? ''),
-    phone: String(value[FieldNameToFieldId.phone] ?? ''),
-    company: String(value[FieldNameToFieldId.company] ?? ''),
+    ...requiredInput,
     formFields: {
       checkboxes: customFields
         .filter((field) => ['checkbox-group'].includes(field.type))
@@ -145,9 +152,8 @@ export async function registerCustomer<F extends Field>(
     };
   }
 
-  const input = parseRegisterCustomerInput(submission.value, prevState.fields);
-
   try {
+    const input = parseRegisterCustomerInput(submission.value, prevState.fields);
     const response = await client.fetch({
       document: RegisterCustomerMutation,
       variables: {
