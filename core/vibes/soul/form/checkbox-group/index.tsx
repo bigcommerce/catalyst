@@ -36,7 +36,7 @@ export function CheckboxGroup({
 
   return (
     <div className={clsx('space-y-2', className)}>
-      {label !== undefined && label !== '' && <Label htmlFor={id}>{label}</Label>}
+      {label !== undefined && label !== '' && <Label id={id}>{label}</Label>}
       <div aria-labelledby={id} className="space-y-2" role="group">
         {options.map((option) => (
           <Checkbox
