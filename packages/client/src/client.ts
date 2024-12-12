@@ -10,6 +10,8 @@ export const graphqlApiDomain: string =
 export const adminApiHostname: string =
   process.env.BIGCOMMERCE_ADMIN_API_HOST ?? 'api.bigcommerce.com';
 
+const b2bApiHostname: string = process.env.B2B_API_HOST ?? 'api-b2b.bigcommerce.com';
+
 interface Config<FetcherRequestInit extends RequestInit = RequestInit> {
   storeHash: string;
   storefrontToken: string;
@@ -127,6 +129,42 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
     return response.json() as Promise<BigCommerceResponse<TResult>>;
   }
+  //Based on the followung code, create b2bFetch method
+  // const payload = {
+  //   channelId: Number(process.env.BIGCOMMERCE_CHANNEL_ID),
+  //   customerId:  result.customer.entityId,
+  //   customerAccessToken: {
+  //     value: result.customerAccessToken.value,
+  //     expiresAt: result.customerAccessToken.expiresAt,
+  //   },
+  // }
+
+  // const signInToB2B = await fetch(
+  //   `${process.env.B2B_API_HOST}/api/io/auth/customers/storefront`,
+  //   {
+  //     method: 'POST',
+  //     body: JSON.stringify(payload),
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       authtoken: process.env.B2B_API_TOKEN || '',
+  //     },
+  //   },
+  // );
+  // 
+  // const response = await signInToB2B.json();
+  // const b2bToken = response.data?.token?.[0];
+  //
+  async b2bFetch<TResult>(endpoint: string, reqInit: RequestInit) {
+    const response = await fetch(`${b2bApiHostname}${endpoint}`, reqInit);
+
+    if (!response.ok) {
+      throw new Error(`Unable to fetch B2B endpoint: ${response.statusText}`);
+    }
+
+    return response.json() as Promise<TResult>;
+  }
+
+
 
   async fetchShippingZones() {
     const response = await fetch(

@@ -12,6 +12,7 @@ const LoginMutation = graphql(`
     login(email: $email, password: $password) {
       customerAccessToken {
         value
+        expiresAt
       }
       customer {
         entityId
@@ -63,9 +64,18 @@ const config = {
         token.customerAccessToken = user.customerAccessToken;
       }
 
+      if (user?.b2bToken) {
+        token.b2bToken = user?.b2bToken
+      }
+
       return token;
     },
     session({ session, token }) {
+      if (token?.b2bToken){
+        //@ts-ignore
+        session.b2bToken = token?.b2bToken;
+      }
+      
       if (token.customerAccessToken) {
         session.customerAccessToken = token.customerAccessToken;
       }
@@ -145,11 +155,55 @@ const config = {
           return null;
         }
 
-        return {
-          name: `${result.customer.firstName} ${result.customer.lastName}`,
-          email: result.customer.email,
-          customerAccessToken: result.customerAccessToken.value,
-        };
+        const user = {
+            id: result.customer.entityId.toString(),
+            name: `${result.customer.firstName} ${result.customer.lastName}`,
+            email: result.customer.email,
+            customerAccessToken: result.customerAccessToken.value,
+            expiresAt: result.customerAccessToken.expiresAt,
+        }
+
+        if (!process.env.B2B_API_HOST || !process.env.B2B_API_TOKEN) {
+          return user;
+        }
+
+        try {
+          const payload = {
+            channelId: Number(process.env.BIGCOMMERCE_CHANNEL_ID),
+            customerId:  result.customer.entityId,
+            customerAccessToken: {
+              value: result.customerAccessToken.value,
+              expiresAt: result.customerAccessToken.expiresAt,
+            },
+          }
+
+          const response = await client.b2bFetch<{
+            data: {
+              token: string[]
+            }
+          }>(
+            '/api/io/auth/customers/storefront',
+            {
+              method: 'POST',
+              body: JSON.stringify(payload),
+              headers: {
+                'Content-Type': 'application/json',
+                authtoken: process.env.B2B_API_TOKEN || '',
+              },
+            },
+          );
+
+          const b2bToken = response.data?.token?.[0];
+
+          if (b2bToken) 
+            return {...user, b2bToken };
+
+          return user
+        } catch (e) {
+          e
+          return user; 
+        } 
+
       },
     }),
   ],
@@ -173,12 +227,15 @@ declare module 'next-auth' {
   interface Session {
     user?: DefaultSession['user'];
     customerAccessToken?: string;
+    b2bToken?: string
   }
 
   interface User {
     name?: string | null;
     email?: string | null;
     customerAccessToken?: string;
+    expiresAt?: number;
+    b2bToken?: string;
   }
 }
 
@@ -186,5 +243,21 @@ declare module 'next-auth/jwt' {
   interface JWT {
     id?: string;
     customerAccessToken?: string;
+  }
+}
+
+declare global {
+  interface Window {
+    b2b: {
+      utils: {
+        user: {
+          getProfile: () => { role: number };
+          loginWithB2BStorefrontToken: (b2bStorefrontJWTToken: string) => Promise<void>;
+          logout: (params?: { handleError?: (error: any) => any }) => Promise<void>;
+          getB2BToken: () => string;
+          getAllowedRoutes: () => any[]
+        };
+      };
+    };
   }
 }

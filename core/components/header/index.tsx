@@ -3,7 +3,7 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import { ReactNode, Suspense } from 'react';
 
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
-import { getSessionCustomerAccessToken } from '~/auth';
+import { auth, getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -28,6 +28,7 @@ export const Header = async ({ cart }: Props) => {
   const locale = await getLocale();
   const t = await getTranslations('Components.Header');
   const customerAccessToken = await getSessionCustomerAccessToken();
+  const session = await auth()
 
   const { data: response } = await client.fetch({
     document: LayoutQuery,
@@ -57,6 +58,7 @@ export const Header = async ({ cart }: Props) => {
 
   return (
     <ComponentsHeader
+      b2bToken={session?.b2bToken}
       account={
         customerAccessToken ? (
           <Dropdown
