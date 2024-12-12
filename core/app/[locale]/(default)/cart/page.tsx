@@ -191,7 +191,7 @@ export default async function Cart() {
           </div>
         </div>
       </div>
-      <div className="cart-right-side-details w-full px-18 pb-0 md:grid md:grid-cols-2 md:!gap-[6rem] lg:grid-cols-3">
+      <div className="cart-right-side-details w-full px-18 pb-0 md:grid md:grid-cols-2 md:!gap-[6rem] lg:grid-cols-3 [@media_(min-width:1200px)]:pb-[40px]">
         <ul className="col-span-2 cart-details-item lg:w-full">
           {updatedLineItemWithoutAccessories.map((product: any) => (
             <CartItem
@@ -204,7 +204,7 @@ export default async function Cart() {
           ))}
         </ul>
 
-        <div className="cart-right-side sticky top-0 col-span-1 col-start-2 -mt-[9em] h-[100px] min-h-[800px] overflow-hidden border-t border-[#CCCBCB] pt-[1.4em] lg:col-start-3">
+        <div className="cart-right-side sticky top-0 col-span-1 col-start-2 -mt-[9em] h-[100px] min-h-[800px] border-t border-[#CCCBCB] py-[1.4em] lg:col-start-3">
           {checkout && <CheckoutSummary checkout={checkout} geography={geography} />}
 
           <CheckoutButton cartId={cartId} />
