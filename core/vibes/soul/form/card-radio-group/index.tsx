@@ -25,7 +25,7 @@ export const CardRadioGroup = React.forwardRef<
 
   return (
     <div className={clsx('space-y-2', className)}>
-      {label !== undefined && label !== '' && <Label htmlFor={id}>{label}</Label>}
+      {label !== undefined && label !== '' && <Label id={id}>{label}</Label>}
       <RadioGroupPrimitive.Root
         {...rest}
         aria-labelledby={id}
