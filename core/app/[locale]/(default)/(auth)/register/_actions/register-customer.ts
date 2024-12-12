@@ -37,11 +37,6 @@ const RegisterCustomerMutation = graphql(`
 type Variables = VariablesOf<typeof RegisterCustomerMutation>;
 type RegisterCustomerInput = Variables['input'];
 
-interface RegisterCustomerForm {
-  formData: FormData;
-  reCaptchaToken?: string;
-}
-
 const isRegisterCustomerInput = (data: unknown): data is RegisterCustomerInput => {
   if (typeof data === 'object' && data !== null && 'email' in data) {
     return true;
@@ -50,7 +45,15 @@ const isRegisterCustomerInput = (data: unknown): data is RegisterCustomerInput =
   return false;
 };
 
-export const registerCustomer = async ({ formData, reCaptchaToken }: RegisterCustomerForm) => {
+interface RegisterCustomerResponse {
+  status: 'success' | 'error';
+  message: string;
+}
+
+export const registerCustomer = async (
+  formData: FormData,
+  reCaptchaToken?: string,
+): Promise<RegisterCustomerResponse> => {
   const t = await getTranslations('Register');
 
   formData.delete('customer-confirmPassword');
@@ -60,7 +63,7 @@ export const registerCustomer = async ({ formData, reCaptchaToken }: RegisterCus
   if (!isRegisterCustomerInput(parsedData)) {
     return {
       status: 'error',
-      errors: [t('Errors.inputError')],
+      message: t('Errors.inputError'),
     };
   }
 
@@ -78,14 +81,13 @@ export const registerCustomer = async ({ formData, reCaptchaToken }: RegisterCus
 
     const result = response.data.customer.registerCustomer;
 
-    if (result.errors.length === 0) {
-      return { status: 'success', data: parsedData };
+    if (result.errors.length > 0) {
+      result.errors.forEach((error) => {
+        throw new Error(error.message);
+      });
     }
 
-    return {
-      status: 'error',
-      errors: result.errors.map((error) => error.message),
-    };
+    return { status: 'success', message: t('Form.successMessage') };
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
@@ -93,13 +95,13 @@ export const registerCustomer = async ({ formData, reCaptchaToken }: RegisterCus
     if (error instanceof BigCommerceAPIError) {
       return {
         status: 'error',
-        errors: [t('Errors.apiError')],
+        message: t('Errors.apiError'),
       };
     }
 
     return {
       status: 'error',
-      errors: [t('Errors.error')],
+      message: t('Errors.error'),
     };
   }
 };
