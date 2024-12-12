@@ -4,6 +4,7 @@ import { BigCommerceAPIError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { getLocale, getTranslations } from 'next-intl/server';
+import { z } from 'zod';
 
 import { Field, FieldGroup, schema } from '@/vibes/soul/primitives/dynamic-form/schema';
 import { signIn } from '~/auth';
@@ -11,7 +12,6 @@ import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { FieldNameToFieldId } from '~/components/form-fields';
 import { redirect } from '~/i18n/routing';
-import { z } from 'zod';
 
 const RegisterCustomerMutation = graphql(`
   mutation RegisterCustomer($input: RegisterCustomerInput!, $reCaptchaV2: ReCaptchaV2Input) {
@@ -40,11 +40,57 @@ const RegisterCustomerMutation = graphql(`
   }
 `);
 
-const requiredInputSchema = z.object({
+const stringToNumber = z.string().pipe(z.coerce.number());
+
+const inputSchema = z.object({
   email: z.string(),
   password: z.string(),
   firstName: z.string(),
   lastName: z.string(),
+  formFields: z.object({
+    checkboxes: z.array(
+      z.object({
+        fieldEntityId: stringToNumber,
+        fieldValueEntityIds: z.array(stringToNumber),
+      }),
+    ),
+    multipleChoices: z.array(
+      z.object({
+        fieldEntityId: stringToNumber,
+        fieldValueEntityId: stringToNumber,
+      }),
+    ),
+    numbers: z.array(
+      z.object({
+        fieldEntityId: stringToNumber,
+        number: stringToNumber,
+      }),
+    ),
+    dates: z.array(
+      z.object({
+        fieldEntityId: stringToNumber,
+        date: z.string(),
+      }),
+    ),
+    passwords: z.array(
+      z.object({
+        fieldEntityId: stringToNumber,
+        password: z.string(),
+      }),
+    ),
+    multilineTexts: z.array(
+      z.object({
+        fieldEntityId: stringToNumber,
+        multilineText: z.string(),
+      }),
+    ),
+    texts: z.array(
+      z.object({
+        fieldEntityId: stringToNumber,
+        text: z.string(),
+      }),
+    ),
+  }),
 });
 
 function parseRegisterCustomerInput(
@@ -63,25 +109,19 @@ function parseRegisterCustomerInput(
           String(FieldNameToFieldId.lastName),
         ].includes(field.name),
     );
-  const requiredInput = requiredInputSchema.parse({
+  const mappedInput = {
     email: value[FieldNameToFieldId.email],
     password: value[FieldNameToFieldId.password],
     firstName: value[FieldNameToFieldId.firstName],
     lastName: value[FieldNameToFieldId.lastName],
-  });
-
-  return {
-    ...requiredInput,
     formFields: {
       checkboxes: customFields
         .filter((field) => ['checkbox-group'].includes(field.type))
         .filter((field) => Boolean(value[field.name]))
         .map((field) => {
-          const values = value[field.name];
-
           return {
-            fieldEntityId: Number(field.name),
-            fieldValueEntityIds: Array.isArray(values) ? values.map((v) => Number(v)) : [],
+            fieldEntityId: field.name,
+            fieldValueEntityIds: value[field.name],
           };
         }),
       multipleChoices: customFields
@@ -89,8 +129,8 @@ function parseRegisterCustomerInput(
         .filter((field) => Boolean(value[field.name]))
         .map((field) => {
           return {
-            fieldEntityId: Number(field.name),
-            fieldValueEntityId: Number(value[field.name]),
+            fieldEntityId: field.name,
+            fieldValueEntityId: value[field.name],
           };
         }),
       numbers: customFields
@@ -98,8 +138,8 @@ function parseRegisterCustomerInput(
         .filter((field) => Boolean(value[field.name]))
         .map((field) => {
           return {
-            fieldEntityId: Number(field.name),
-            number: Number(value[field.name]),
+            fieldEntityId: field.name,
+            number: value[field.name],
           };
         }),
       dates: customFields
@@ -107,7 +147,7 @@ function parseRegisterCustomerInput(
         .filter((field) => Boolean(value[field.name]))
         .map((field) => {
           return {
-            fieldEntityId: Number(field.name),
+            fieldEntityId: field.name,
             date: new Date(String(value[field.name])).toISOString(),
           };
         }),
@@ -115,25 +155,27 @@ function parseRegisterCustomerInput(
         .filter((field) => ['password'].includes(field.type))
         .filter((field) => Boolean(value[field.name]))
         .map((field) => ({
-          fieldEntityId: Number(field.name),
-          password: String(value[field.name] ?? ''),
+          fieldEntityId: field.name,
+          password: value[field.name],
         })),
       multilineTexts: customFields
         .filter((field) => ['textarea'].includes(field.type))
         .filter((field) => Boolean(value[field.name]))
         .map((field) => ({
-          fieldEntityId: Number(field.name),
-          multilineText: String(value[field.name] ?? ''),
+          fieldEntityId: field.name,
+          multilineText: value[field.name],
         })),
       texts: customFields
         .filter((field) => ['text'].includes(field.type))
         .filter((field) => Boolean(value[field.name]))
         .map((field) => ({
-          fieldEntityId: Number(field.name),
-          text: String(value[field.name] ?? ''),
+          fieldEntityId: field.name,
+          text: value[field.name],
         })),
     },
   };
+
+  return inputSchema.parse(mappedInput);
 }
 
 export async function registerCustomer<F extends Field>(
