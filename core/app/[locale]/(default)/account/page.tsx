@@ -6,6 +6,8 @@ import { ReactNode } from 'react';
 import { Link } from '~/components/link';
 
 import { AccountNotification } from './_components/account-notification';
+import { auth } from '~/auth';
+import { redirect } from 'next/navigation';
 
 interface AccountItem {
   children: ReactNode;
@@ -37,9 +39,8 @@ export async function generateMetadata() {
   };
 }
 
-export default function Account() {
+const AccountComponent = () => {
   const t = useTranslations('Account.Home');
-
   return (
     <div className="mx-auto">
       <h1 className="my-8 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
@@ -59,6 +60,16 @@ export default function Account() {
       </div>
     </div>
   );
+}
+
+export default async function Account() {
+  const session = await auth()
+
+  if (session?.b2bToken) {
+    return redirect('/#/orders')
+  }
+
+  return <AccountComponent />;
 }
 
 export const runtime = 'edge';
