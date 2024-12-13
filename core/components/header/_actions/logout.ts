@@ -22,7 +22,6 @@ export const logout = async () => {
       body: JSON.stringify(payload),
       headers: {
         'Content-Type': 'application/json',
-        authtoken: process.env.B2B_API_TOKEN || '',
       },
     },
   );
