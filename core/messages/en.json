@@ -180,12 +180,12 @@
   },
   "Account": {
     "Layout": {
-      "accountTabsLabel": "Account Tabs",
-      "orders": "Orders",
       "addresses": "Addresses",
+      "logout": "Logout",
+      "orders": "Orders",
+      "settings": "Account",
       "wishlists": "Wish lists",
-      "recentlyViewed": "Recently viewed",
-      "settings": "Account settings"
+      "recentlyViewed": "Recently viewed"
     },
     "Orders": {
       "noOrders": "No orders yet",
