@@ -31,7 +31,7 @@ test('Add new address', async ({ page, account }) => {
   await page.getByRole('button', { name: 'Add new address' }).click();
   await page.waitForURL('/account/addresses/');
 
-  // await expect(page.getByText('Address added to your account.')).toBeVisible();
+  await expect(page.getByText('Address added to your account.')).toBeVisible();
 
   await customer.logout();
 });
@@ -47,7 +47,7 @@ test('Edit address', async ({ page, account }) => {
   await page.getByRole('button', { name: 'Edit address' }).click();
   await page.waitForURL('/account/addresses/');
 
-  // await expect(page.getByText('The address has been successfully updated.')).toBeVisible();
+  await expect(page.getByText('The address has been successfully updated.')).toBeVisible();
 
   await customer.logout();
 });

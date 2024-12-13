@@ -1,8 +1,10 @@
 'use client';
 
+import { AlertCircle, Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { ChangeEvent, useActionState, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
+import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 
 import { logout } from '~/components/header/_actions/logout';
@@ -17,10 +19,7 @@ import {
   FormSubmit,
   Input,
 } from '~/components/ui/form';
-import { Message } from '~/components/ui/message';
 
-import { useAccountStatusContext } from '../../../_components/account-status-provider';
-import { SubmitMessagesList } from '../../../_components/submit-messages-list';
 import { changePassword } from '../_actions/change-password';
 
 const ChangePasswordFieldsSchema = z.object({
@@ -98,27 +97,10 @@ const SubmitButton = () => {
 export const ChangePasswordForm = () => {
   const form = useRef<HTMLFormElement>(null);
   const t = useTranslations('Account.Settings.ChangePassword');
-  const [state, formAction] = useActionState(changePassword, {
-    status: 'idle',
-    messages: [''],
-  });
 
   const [isCurrentPasswordValid, setIsCurrentPasswordValid] = useState(true);
   const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
-
-  const { setAccountState } = useAccountStatusContext();
-
-  useEffect(() => {
-    if (state.status === 'success') {
-      void logout();
-
-      setAccountState({
-        status: 'success',
-        messages: [t('confirmChangePassword')],
-      });
-    }
-  }, [state, setAccountState, t]);
 
   const handleCurrentPasswordChange = (e: ChangeEvent<HTMLInputElement>) =>
     setIsCurrentPasswordValid(!e.target.validity.valueMissing);
@@ -146,100 +128,114 @@ export const ChangePasswordForm = () => {
     }
   };
 
-  return (
-    <>
-      {state.status === 'error' && (
-        <Message className="mb-8 w-full text-gray-500" variant={state.status}>
-          <SubmitMessagesList messages={state.messages} />
-        </Message>
-      )}
+  const handleChangePassword = async (formData: FormData) => {
+    const { status, message } = await changePassword(formData);
 
-      <Form action={formAction} className="mb-14 flex flex-col gap-4 md:py-4 lg:p-0" ref={form}>
-        <Field className="relative space-y-2 pb-7" name="current-password">
-          <FieldLabel htmlFor="current-password" isRequired={true}>
-            {t('currentPasswordLabel')}
-          </FieldLabel>
-          <FieldControl asChild>
-            <Input
-              autoComplete="none"
-              error={!isCurrentPasswordValid}
-              id="current-password"
-              onChange={handleCurrentPasswordChange}
-              onInvalid={handleCurrentPasswordChange}
-              required
-              type="password"
-            />
-          </FieldControl>
-          <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
-            match="valueMissing"
-          >
-            {t('notEmptyMessage')}
+    if (status === 'error') {
+      toast.error(message, {
+        icon: <AlertCircle className="text-error-secondary" />,
+      });
+
+      return;
+    }
+
+    toast.success(message, {
+      icon: <Check className="text-success-secondary" />,
+    });
+
+    await logout();
+  };
+
+  return (
+    <Form
+      action={handleChangePassword}
+      className="mb-14 flex flex-col gap-4 md:py-4 lg:p-0"
+      ref={form}
+    >
+      <Field className="relative space-y-2 pb-7" name="current-password">
+        <FieldLabel htmlFor="current-password" isRequired={true}>
+          {t('currentPasswordLabel')}
+        </FieldLabel>
+        <FieldControl asChild>
+          <Input
+            autoComplete="none"
+            error={!isCurrentPasswordValid}
+            id="current-password"
+            onChange={handleCurrentPasswordChange}
+            onInvalid={handleCurrentPasswordChange}
+            required
+            type="password"
+          />
+        </FieldControl>
+        <FieldMessage
+          className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
+          match="valueMissing"
+        >
+          {t('notEmptyMessage')}
+        </FieldMessage>
+      </Field>
+      <Field className="relative space-y-2 pb-7" name="new-password">
+        <FieldLabel htmlFor="new-password" isRequired={true}>
+          {t('newPasswordLabel')}
+        </FieldLabel>
+        <FieldControl asChild>
+          <Input
+            autoComplete="none"
+            error={!isNewPasswordValid}
+            id="new-password"
+            onChange={handlePasswordChange}
+            onInvalid={handlePasswordChange}
+            required
+            type="password"
+          />
+        </FieldControl>
+        <FieldMessage
+          className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
+          match="valueMissing"
+        >
+          {t('notEmptyMessage')}
+        </FieldMessage>
+        {!isNewPasswordValid && (
+          <FieldMessage className="absolute inset-x-0 inline-flex w-full text-xs text-error md:bottom-0">
+            {t('newPasswordValidationMessage')}
           </FieldMessage>
-        </Field>
-        <Field className="relative space-y-2 pb-7" name="new-password">
-          <FieldLabel htmlFor="new-password" isRequired={true}>
-            {t('newPasswordLabel')}
-          </FieldLabel>
-          <FieldControl asChild>
-            <Input
-              autoComplete="none"
-              error={!isNewPasswordValid}
-              id="new-password"
-              onChange={handlePasswordChange}
-              onInvalid={handlePasswordChange}
-              required
-              type="password"
-            />
-          </FieldControl>
-          <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
-            match="valueMissing"
-          >
-            {t('notEmptyMessage')}
+        )}
+      </Field>
+      <Field className="relative space-y-2 pb-7" name="confirm-password">
+        <FieldLabel htmlFor="confirm-password" isRequired={true}>
+          {t('confirmPasswordLabel')}
+        </FieldLabel>
+        <FieldControl asChild>
+          <Input
+            autoComplete="none"
+            error={!isConfirmPasswordValid}
+            id="confirm-password"
+            onChange={handlePasswordChange}
+            onInvalid={handlePasswordChange}
+            required
+            type="password"
+          />
+        </FieldControl>
+        <FieldMessage
+          className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
+          match="valueMissing"
+        >
+          {t('notEmptyMessage')}
+        </FieldMessage>
+        {!isConfirmPasswordValid && (
+          <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error">
+            {t('confirmPasswordValidationMessage')}
           </FieldMessage>
-          {!isNewPasswordValid && (
-            <FieldMessage className="absolute inset-x-0 inline-flex w-full text-xs text-error md:bottom-0">
-              {t('newPasswordValidationMessage')}
-            </FieldMessage>
-          )}
-        </Field>
-        <Field className="relative space-y-2 pb-7" name="confirm-password">
-          <FieldLabel htmlFor="confirm-password" isRequired={true}>
-            {t('confirmPasswordLabel')}
-          </FieldLabel>
-          <FieldControl asChild>
-            <Input
-              autoComplete="none"
-              error={!isConfirmPasswordValid}
-              id="confirm-password"
-              onChange={handlePasswordChange}
-              onInvalid={handlePasswordChange}
-              required
-              type="password"
-            />
-          </FieldControl>
-          <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
-            match="valueMissing"
-          >
-            {t('notEmptyMessage')}
-          </FieldMessage>
-          {!isConfirmPasswordValid && (
-            <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error">
-              {t('confirmPasswordValidationMessage')}
-            </FieldMessage>
-          )}
-        </Field>
-        <div className="flex flex-col justify-start gap-4 md:flex-row">
-          <FormSubmit asChild>
-            <SubmitButton />
-          </FormSubmit>
-          <Button asChild className="w-full md:w-fit" variant="secondary">
-            <Link href="/account/settings">{t('cancel')}</Link>
-          </Button>
-        </div>
-      </Form>
-    </>
+        )}
+      </Field>
+      <div className="flex flex-col justify-start gap-4 md:flex-row">
+        <FormSubmit asChild>
+          <SubmitButton />
+        </FormSubmit>
+        <Button asChild className="w-full md:w-fit" variant="secondary">
+          <Link href="/account/settings">{t('cancel')}</Link>
+        </Button>
+      </div>
+    </Form>
   );
 };

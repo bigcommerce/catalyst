@@ -15,9 +15,7 @@ test('Cannot change password with invalid reset token and customerId', async ({ 
 
   await page.getByRole('button', { name: 'Change password' }).click();
 
-  await expect(page.getByRole('region')).toHaveText(
-    'Invalid password reset token or customerEntityId.',
-  );
+  await expect(page.getByText('Invalid password reset token or customerEntityId.')).toBeVisible();
 });
 
 test('Change password from Account Settings and log in', async ({ page, account }) => {
@@ -33,16 +31,18 @@ test('Change password from Account Settings and log in', async ({ page, account 
 
   await page.getByRole('button', { name: 'Change password' }).click();
 
-  await expect(page.getByRole('region')).toHaveText(
-    'Your password has been successfully updated. Please log in using your new credentials.',
-  );
+  await expect(
+    page.getByText(
+      'Your password has been successfully updated. Please log in using your new credentials.',
+    ),
+  ).toBeVisible();
 
-  await page.goto('/account/');
+  await page.goto('/account/orders/');
   await page.getByRole('heading', { name: 'Log In' }).waitFor();
 
   await page.getByLabel('Email').fill(customer.email);
   await page.getByLabel('Password').fill(`${customer.password}1`);
   await page.getByRole('button', { name: 'Log in' }).click();
 
-  await expect(page).toHaveURL('/account/');
+  await expect(page).toHaveURL('/account/orders/');
 });

@@ -26,26 +26,9 @@ const RegisterCustomerQuery = graphql(
           }
         }
         settings {
-          contact {
-            country
-          }
           reCaptcha {
             isEnabledOnStorefront
             siteKey
-          }
-        }
-      }
-      geography {
-        countries {
-          code
-          entityId
-          name
-          __typename
-          statesOrProvinces {
-            abbreviation
-            entityId
-            name
-            __typename
           }
         }
       }
@@ -68,7 +51,7 @@ interface Props {
   };
 }
 
-export const getRegisterCustomerQuery = cache(async ({ address, customer }: Props = {}) => {
+export const getRegisterCustomerQuery = cache(async ({ address, customer }: Props) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
@@ -86,20 +69,15 @@ export const getRegisterCustomerQuery = cache(async ({ address, customer }: Prop
   const addressFields = response.data.site.settings?.formFields.shippingAddress;
   const customerFields = response.data.site.settings?.formFields.customer;
 
-  const countries = response.data.geography.countries;
-  const defaultCountry = response.data.site.settings?.contact?.country;
-
   const reCaptchaSettings = await bypassReCaptcha(response.data.site.settings?.reCaptcha);
 
-  if (!addressFields || !customerFields || !countries) {
+  if (!addressFields || !customerFields) {
     return null;
   }
 
   return {
     addressFields,
     customerFields,
-    countries,
-    defaultCountry,
     reCaptchaSettings,
   };
 });

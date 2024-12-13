@@ -29,7 +29,7 @@
             "emailLabel": "Eメール",
             "enterEmailMessage": "Enter your email",
             "passwordLabel": "パスワード",
-            "entePasswordMessage": "Enter your password",
+            "enterPasswordMessage": "Enter your password",
             "submitting": "提出中…",
             "logIn": "ログイン",
             "forgotPassword": "パスワードをお忘れですか?"

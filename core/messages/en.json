@@ -67,10 +67,11 @@
     "heading": "Log In",
     "Form": {
       "error": "Your email address or password is incorrect. Try signing in again or reset your password",
+      "successful": "You have successfully logged in.",
       "emailLabel": "Email",
       "enterEmailMessage": "Enter your email",
       "passwordLabel": "Password",
-      "entePasswordMessage": "Enter your password",
+      "enterPasswordMessage": "Enter your password",
       "submitting": "Submitting...",
       "logIn": "Log in",
       "forgotPassword": "Forgot your password?"
@@ -109,7 +110,8 @@
       "submit": "Create account",
       "submitting": "Creating account...",
       "recaptchaText": "Pass ReCAPTCHA check",
-      "confirmPassword": "Passwords don't match"
+      "confirmPassword": "Passwords don't match",
+      "successMessage": "Account was successfully created."
     },
     "Errors": {
       "inputError": "Something went wrong with processing user input.",
@@ -177,18 +179,13 @@
     "searchResults": "Search results for"
   },
   "Account": {
-    "Home": {
-      "title": "My account",
-      "heading": "My account",
+    "Layout": {
       "accountTabsLabel": "Account Tabs",
       "orders": "Orders",
-      "messages": "Messages",
       "addresses": "Addresses",
       "wishlists": "Wish lists",
       "recentlyViewed": "Recently viewed",
-      "settings": "Account settings",
-      "changePassword": "Change password",
-      "successMessage": "Your account has been successfully created"
+      "settings": "Account settings"
     },
     "Orders": {
       "noOrders": "No orders yet",
@@ -296,6 +293,7 @@
         "submitText": "Change password"
       },
       "UpdateCustomer": {
+        "successMessage": "Your account settings have been updated",
         "Errors": {
           "inputError": "Something went wrong with processing user input.",
           "notFound": "Customer does not exist"
@@ -507,7 +505,6 @@
       },
       "Account": {
         "account": "Account",
-        "myAccount": "My account",
         "orders": "Orders",
         "addresses": "Addresses",
         "accountSettings": "Account settings",

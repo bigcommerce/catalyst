@@ -1,11 +1,12 @@
 'use server';
 
-import { expirePath } from 'next/cache';
+import { expireTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
+import { TAGS } from '~/client/tags';
 import { parseAccountFormData } from '~/components/form-fields/shared/parse-fields';
 
 const UpdateCustomerMutation = graphql(`
@@ -58,7 +59,12 @@ const isUpdateCustomerInput = (data: unknown): data is AddCustomerAddressInput =
   return false;
 };
 
-export const updateCustomer = async (formData: FormData) => {
+interface UpdateCustomerResponse {
+  status: 'success' | 'error';
+  message: string;
+}
+
+export const updateCustomer = async (formData: FormData): Promise<UpdateCustomerResponse> => {
   const t = await getTranslations('Account.Settings.UpdateCustomer');
   const customerAccessToken = await getSessionCustomerAccessToken();
 
@@ -67,7 +73,7 @@ export const updateCustomer = async (formData: FormData) => {
   if (!isUpdateCustomerInput(parsed)) {
     return {
       status: 'error',
-      errors: [t('Errors.inputError')],
+      message: t('Errors.inputError'),
     };
   }
 
@@ -80,27 +86,22 @@ export const updateCustomer = async (formData: FormData) => {
     },
   });
 
-  expirePath('/account/settings', 'page');
-
   const result = response.data.customer.updateCustomer;
 
-  if (result.errors.length === 0) {
-    const { customer } = result;
-
-    if (!customer) {
-      return {
-        status: 'error',
-        errors: [t('Errors.notFound')],
-      };
-    }
-
-    const { firstName, lastName } = customer;
-
-    return { status: 'success', data: { firstName, lastName } };
+  if (result.errors.length > 0) {
+    result.errors.forEach((error) => {
+      throw new Error(error.message);
+    });
   }
 
-  return {
-    status: 'error',
-    errors: result.errors.map((error) => error.message),
-  };
+  if (!result.customer) {
+    return {
+      status: 'error',
+      message: t('Errors.notFound'),
+    };
+  }
+
+  expireTag(TAGS.customer);
+
+  return { status: 'success', message: t('successMessage') };
 };

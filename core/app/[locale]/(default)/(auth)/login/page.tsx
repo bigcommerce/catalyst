@@ -52,9 +52,3 @@ export default function Login({ params: { locale } }: Props) {
     </SignInSection>
   );
 }
-
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
-}
-
-export const dynamic = 'force-static';

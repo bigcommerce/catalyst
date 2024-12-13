@@ -11,7 +11,7 @@ const tabList = ['orders', 'addresses', 'settings'] as const;
 export type TabType = (typeof tabList)[number];
 
 export const TabNavigation = () => {
-  const t = useTranslations('Account.Home');
+  const t = useTranslations('Account.Layout');
   const pathname = usePathname();
   const activeTab = pathname.slice(0, -1).split('/').pop();
 

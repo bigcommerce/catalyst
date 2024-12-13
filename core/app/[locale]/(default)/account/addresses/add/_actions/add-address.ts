@@ -1,11 +1,12 @@
 'use server';
 
-import { expirePath } from 'next/cache';
+import { expireTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
+import { TAGS } from '~/client/tags';
 import { parseAccountFormData } from '~/components/form-fields/shared/parse-fields';
 
 const AddCustomerAddressMutation = graphql(`
@@ -45,7 +46,12 @@ const isAddCustomerAddressInput = (data: unknown): data is AddCustomerAddressInp
   return false;
 };
 
-export const addAddress = async (formData: FormData) => {
+interface AddAddressResponse {
+  status: 'success' | 'error';
+  message: string;
+}
+
+export const addAddress = async (formData: FormData): Promise<AddAddressResponse> => {
   const t = await getTranslations('Account.Addresses.Add.Form');
   const customerAccessToken = await getSessionCustomerAccessToken();
 
@@ -55,7 +61,7 @@ export const addAddress = async (formData: FormData) => {
     if (!isAddCustomerAddressInput(parsed)) {
       return {
         status: 'error',
-        errors: [t('Errors.inputError')],
+        message: t('Errors.inputError'),
       };
     }
 
@@ -70,24 +76,24 @@ export const addAddress = async (formData: FormData) => {
 
     const result = response.data.customer.addCustomerAddress;
 
-    expirePath('/account/addresses', 'page');
-
-    if (result.errors.length === 0) {
-      return { status: 'success', messages: [t('success')] };
+    if (result.errors.length > 0) {
+      result.errors.forEach((error) => {
+        // Throw the first error message, as we should only handle one error at a time
+        throw new Error(error.message);
+      });
     }
 
-    return {
-      status: 'error',
-      messages: result.errors.map((error) => error.message),
-    };
+    expireTag(TAGS.customer);
+
+    return { status: 'success', message: t('success') };
   } catch (error: unknown) {
     if (error instanceof Error) {
       return {
         status: 'error',
-        messages: [error.message],
+        message: error.message,
       };
     }
 
-    return { status: 'error', messages: [t('Errors.error')] };
+    return { status: 'error', message: t('Errors.error') };
   }
 };

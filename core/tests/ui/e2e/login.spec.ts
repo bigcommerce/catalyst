@@ -12,9 +12,9 @@ test('Account login and logout', async ({ page, account }) => {
   await page.getByLabel('Password').fill(customer.password);
   await page.getByRole('button', { name: 'Log in' }).click();
 
-  await page.waitForURL('/account/');
+  await page.waitForURL('/account/orders/');
 
-  await expect(page.getByRole('heading', { name: 'My Account' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Orders' })).toBeVisible();
 
   await customer.logout();
 
@@ -37,4 +37,17 @@ test('Login fails with invalid credentials', async ({ page }) => {
       'Your email address or password is incorrect. Try signing in again or reset your password',
     ),
   ).toBeVisible();
+});
+
+test('If a customer is logged in, redirect to account pages', async ({ page, account }) => {
+  const customer = await account.create();
+
+  await customer.login();
+  await expect(page).toHaveURL('/account/orders/');
+  await expect(page.getByRole('heading', { name: 'Orders' })).toBeVisible();
+
+  await page.goto('/login');
+
+  await expect(page).toHaveURL('/account/orders/');
+  await expect(page.getByRole('heading', { name: 'Orders' })).toBeVisible();
 });

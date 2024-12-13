@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.23.0
+
+### Minor Changes
+
+- [#1639](https://github.com/bigcommerce/catalyst/pull/1639) [`ae2c6cd`](https://github.com/bigcommerce/catalyst/commit/ae2c6cd76b2ccc5c994bd298983cb1665c571d02) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - Add orders for customer account. Now customer can open orders history or move to specific order details.
+
+- [#1729](https://github.com/bigcommerce/catalyst/pull/1729) [`d52affe`](https://github.com/bigcommerce/catalyst/commit/d52affe56dee23a81263392030fe635c824fb182) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Removed ReCaptcha validation when you are logged in and making account changes. We have already validated a customer is human at the loggin screen.
+
+- [#1728](https://github.com/bigcommerce/catalyst/pull/1728) [`d7dbd7a`](https://github.com/bigcommerce/catalyst/commit/d7dbd7a04fc8cb87cf223fb5a17af8d59c6431ea) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Convert the messages that were displayed when deleting an address over to using the toast functionality.
+
+### Patch Changes
+
+- [#1727](https://github.com/bigcommerce/catalyst/pull/1727) [`d3c6dbc`](https://github.com/bigcommerce/catalyst/commit/d3c6dbc25c16901f694e053ccdee8193647f5760) Thanks [@migueloller](https://github.com/migueloller)! - Ignore empty strings when parsing array URL search parameters in faceted search.
+
+- [#1730](https://github.com/bigcommerce/catalyst/pull/1730) [`ad8c86d`](https://github.com/bigcommerce/catalyst/commit/ad8c86d574474eb5ed18d99265fe4001d267fb5f) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Fixes the inventory handling to handle some options being out of stock.
+
 ## 0.22.1
 
 ### Patch Changes

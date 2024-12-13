@@ -1,8 +1,10 @@
 'use client';
 
+import { AlertCircle, Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { MouseEvent, useEffect, useRef, useState } from 'react';
+import { MouseEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
+import { toast } from 'react-hot-toast';
 
 import {
   Checkboxes,
@@ -32,14 +34,8 @@ import {
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 import { Form, FormSubmit } from '~/components/ui/form';
-import { Message } from '~/components/ui/message';
 import { useRouter } from '~/i18n/routing';
 
-import {
-  AccountState as FormStatus,
-  useAccountStatusContext,
-} from '../../../_components/account-status-provider';
-import { SubmitMessagesList } from '../../../_components/submit-messages-list';
 import { addAddress } from '../_actions/add-address';
 import { NewAddressQueryResult } from '../page';
 
@@ -92,7 +88,6 @@ interface AddAddressProps {
 
 export const AddAddressForm = ({ addressFields, countries, defaultCountry }: AddAddressProps) => {
   const form = useRef<HTMLFormElement>(null);
-  const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
 
   const router = useRouter();
   const t = useTranslations('Account.Addresses.Add.Form');
@@ -106,12 +101,6 @@ export const AddAddressForm = ({ addressFields, countries, defaultCountry }: Add
   const [checkboxesValid, setCheckboxesValid] = useState<Record<string, boolean>>({});
   const [multiTextValid, setMultiTextValid] = useState<Record<string, boolean>>({});
   const [countryStates, setCountryStates] = useState(defaultCountry.states);
-
-  const { setAccountState } = useAccountStatusContext();
-
-  useEffect(() => {
-    setAccountState({ status: 'idle', messages: [''] });
-  }, [setAccountState]);
 
   const handleTextInputValidation = createTextInputValidationHandler(
     setTextInputValid,
@@ -150,195 +139,182 @@ export const AddAddressForm = ({ addressFields, countries, defaultCountry }: Add
   };
 
   const onSubmit = async (formData: FormData) => {
-    const submit = await addAddress(formData);
+    const { status, message } = await addAddress(formData);
 
-    if (submit.status === 'success') {
-      setAccountState({
-        status: 'success',
-        messages: submit.messages || [''],
+    if (status === 'error') {
+      toast.error(message, {
+        icon: <AlertCircle className="text-error-secondary" />,
       });
-
-      router.push('/account/addresses');
 
       return;
     }
 
-    if (submit.status === 'error') {
-      setFormStatus({ status: 'error', messages: submit.messages || [''] });
-    }
-
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
+    toast.success(message, {
+      icon: <Check className="text-success-secondary" />,
     });
+
+    router.push('/account/addresses', { scroll: true });
   };
 
   return (
-    <>
-      {formStatus && formStatus.status !== 'idle' && (
-        <Message className="mx-auto mb-8 w-full" variant={formStatus.status}>
-          <SubmitMessagesList messages={formStatus.messages} />
-        </Message>
-      )}
-      <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>
-        <div className="grid grid-cols-1 gap-y-3 lg:grid-cols-2 lg:gap-x-6">
-          {addressFields.map((field) => {
-            const fieldId = field.entityId;
-            const fieldName = createFieldName(field, 'address');
+    <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>
+      <div className="grid grid-cols-1 gap-y-3 lg:grid-cols-2 lg:gap-x-6">
+        {addressFields.map((field) => {
+          const fieldId = field.entityId;
+          const fieldName = createFieldName(field, 'address');
 
-            switch (field.__typename) {
-              case 'TextFormField': {
-                return (
-                  <FieldWrapper fieldId={fieldId} key={fieldId}>
-                    <Text
-                      field={field}
-                      isValid={textInputValid[fieldId]}
-                      name={fieldName}
-                      onChange={handleTextInputValidation}
-                    />
-                  </FieldWrapper>
-                );
-              }
-
-              case 'MultilineTextFormField': {
-                return (
-                  <FieldWrapper fieldId={fieldId} key={fieldId}>
-                    <MultilineText
-                      field={field}
-                      isValid={multiTextValid[fieldId]}
-                      name={fieldName}
-                      onChange={handleMultiTextValidation}
-                    />
-                  </FieldWrapper>
-                );
-              }
-
-              case 'NumberFormField': {
-                return (
-                  <FieldWrapper fieldId={fieldId} key={fieldId}>
-                    <NumbersOnly
-                      field={field}
-                      isValid={numbersInputValid[fieldId]}
-                      name={fieldName}
-                      onChange={handleNumbersInputValidation}
-                    />
-                  </FieldWrapper>
-                );
-              }
-
-              case 'CheckboxesFormField': {
-                return (
-                  <FieldWrapper fieldId={fieldId} key={fieldId}>
-                    <Checkboxes
-                      field={field}
-                      isValid={checkboxesValid[fieldId]}
-                      name={fieldName}
-                      onValidate={setCheckboxesValid}
-                      options={field.options}
-                    />
-                  </FieldWrapper>
-                );
-              }
-
-              case 'DateFormField': {
-                return (
-                  <FieldWrapper fieldId={fieldId} key={fieldId}>
-                    <DateField
-                      field={field}
-                      isValid={datesValid[fieldId]}
-                      name={fieldName}
-                      onChange={handleDatesValidation}
-                      onValidate={setDatesValid}
-                    />
-                  </FieldWrapper>
-                );
-              }
-
-              case 'RadioButtonsFormField': {
-                return (
-                  <FieldWrapper fieldId={fieldId} key={fieldId}>
-                    <RadioButtons
-                      field={field}
-                      isValid={radioButtonsValid[fieldId]}
-                      name={fieldName}
-                      onChange={handleRadioButtonsChange}
-                    />
-                  </FieldWrapper>
-                );
-              }
-
-              case 'PicklistFormField': {
-                const isCountrySelector = fieldId === FieldNameToFieldId.countryCode;
-                const picklistOptions = isCountrySelector
-                  ? countries.map(({ name, code }) => ({ label: name, entityId: code }))
-                  : field.options;
-                const defaultMultipleChoiceValue = isCountrySelector
-                  ? defaultCountry.code
-                  : undefined;
-
-                return (
-                  <FieldWrapper fieldId={fieldId} key={fieldId}>
-                    <Picklist
-                      defaultValue={defaultMultipleChoiceValue}
-                      field={field}
-                      isValid={picklistValid[fieldId]}
-                      name={fieldName}
-                      onChange={
-                        fieldId === FieldNameToFieldId.countryCode ? handleCountryChange : undefined
-                      }
-                      onValidate={setPicklistValid}
-                      options={picklistOptions}
-                    />
-                  </FieldWrapper>
-                );
-              }
-
-              case 'PicklistOrTextFormField':
-                return (
-                  <FieldWrapper fieldId={fieldId} key={fieldId}>
-                    <PicklistOrText
-                      defaultValue={
-                        fieldId === FieldNameToFieldId.stateOrProvince
-                          ? countryStates[0]?.name
-                          : undefined
-                      }
-                      field={field}
-                      name={fieldName}
-                      options={countryStates.map(({ name }) => {
-                        return { entityId: name, label: name };
-                      })}
-                    />
-                  </FieldWrapper>
-                );
-
-              case 'PasswordFormField': {
-                return (
-                  <FieldWrapper fieldId={fieldId} key={fieldId}>
-                    <Password
-                      field={field}
-                      isValid={passwordValid[fieldId]}
-                      name={fieldName}
-                      onChange={handlePasswordValidation}
-                    />
-                  </FieldWrapper>
-                );
-              }
-
-              default:
-                return null;
+          switch (field.__typename) {
+            case 'TextFormField': {
+              return (
+                <FieldWrapper fieldId={fieldId} key={fieldId}>
+                  <Text
+                    field={field}
+                    isValid={textInputValid[fieldId]}
+                    name={fieldName}
+                    onChange={handleTextInputValidation}
+                  />
+                </FieldWrapper>
+              );
             }
-          })}
-        </div>
 
-        <div className="mt-8 flex flex-col justify-stretch gap-2 md:flex-row md:justify-start md:gap-6">
-          <FormSubmit asChild>
-            <SubmitButton messages={{ submit: t('submit'), submitting: t('submitting') }} />
-          </FormSubmit>
-          <Button asChild className="items-center px-8 md:w-fit" variant="secondary">
-            <Link href="/account/addresses">{t('cancel')}</Link>
-          </Button>
-        </div>
-      </Form>
-    </>
+            case 'MultilineTextFormField': {
+              return (
+                <FieldWrapper fieldId={fieldId} key={fieldId}>
+                  <MultilineText
+                    field={field}
+                    isValid={multiTextValid[fieldId]}
+                    name={fieldName}
+                    onChange={handleMultiTextValidation}
+                  />
+                </FieldWrapper>
+              );
+            }
+
+            case 'NumberFormField': {
+              return (
+                <FieldWrapper fieldId={fieldId} key={fieldId}>
+                  <NumbersOnly
+                    field={field}
+                    isValid={numbersInputValid[fieldId]}
+                    name={fieldName}
+                    onChange={handleNumbersInputValidation}
+                  />
+                </FieldWrapper>
+              );
+            }
+
+            case 'CheckboxesFormField': {
+              return (
+                <FieldWrapper fieldId={fieldId} key={fieldId}>
+                  <Checkboxes
+                    field={field}
+                    isValid={checkboxesValid[fieldId]}
+                    name={fieldName}
+                    onValidate={setCheckboxesValid}
+                    options={field.options}
+                  />
+                </FieldWrapper>
+              );
+            }
+
+            case 'DateFormField': {
+              return (
+                <FieldWrapper fieldId={fieldId} key={fieldId}>
+                  <DateField
+                    field={field}
+                    isValid={datesValid[fieldId]}
+                    name={fieldName}
+                    onChange={handleDatesValidation}
+                    onValidate={setDatesValid}
+                  />
+                </FieldWrapper>
+              );
+            }
+
+            case 'RadioButtonsFormField': {
+              return (
+                <FieldWrapper fieldId={fieldId} key={fieldId}>
+                  <RadioButtons
+                    field={field}
+                    isValid={radioButtonsValid[fieldId]}
+                    name={fieldName}
+                    onChange={handleRadioButtonsChange}
+                  />
+                </FieldWrapper>
+              );
+            }
+
+            case 'PicklistFormField': {
+              const isCountrySelector = fieldId === FieldNameToFieldId.countryCode;
+              const picklistOptions = isCountrySelector
+                ? countries.map(({ name, code }) => ({ label: name, entityId: code }))
+                : field.options;
+              const defaultMultipleChoiceValue = isCountrySelector
+                ? defaultCountry.code
+                : undefined;
+
+              return (
+                <FieldWrapper fieldId={fieldId} key={fieldId}>
+                  <Picklist
+                    defaultValue={defaultMultipleChoiceValue}
+                    field={field}
+                    isValid={picklistValid[fieldId]}
+                    name={fieldName}
+                    onChange={
+                      fieldId === FieldNameToFieldId.countryCode ? handleCountryChange : undefined
+                    }
+                    onValidate={setPicklistValid}
+                    options={picklistOptions}
+                  />
+                </FieldWrapper>
+              );
+            }
+
+            case 'PicklistOrTextFormField':
+              return (
+                <FieldWrapper fieldId={fieldId} key={fieldId}>
+                  <PicklistOrText
+                    defaultValue={
+                      fieldId === FieldNameToFieldId.stateOrProvince
+                        ? countryStates[0]?.name
+                        : undefined
+                    }
+                    field={field}
+                    name={fieldName}
+                    options={countryStates.map(({ name }) => {
+                      return { entityId: name, label: name };
+                    })}
+                  />
+                </FieldWrapper>
+              );
+
+            case 'PasswordFormField': {
+              return (
+                <FieldWrapper fieldId={fieldId} key={fieldId}>
+                  <Password
+                    field={field}
+                    isValid={passwordValid[fieldId]}
+                    name={fieldName}
+                    onChange={handlePasswordValidation}
+                  />
+                </FieldWrapper>
+              );
+            }
+
+            default:
+              return null;
+          }
+        })}
+      </div>
+
+      <div className="mt-8 flex flex-col justify-stretch gap-2 md:flex-row md:justify-start md:gap-6">
+        <FormSubmit asChild>
+          <SubmitButton messages={{ submit: t('submit'), submitting: t('submitting') }} />
+        </FormSubmit>
+        <Button asChild className="items-center px-8 md:w-fit" variant="secondary">
+          <Link href="/account/addresses">{t('cancel')}</Link>
+        </Button>
+      </div>
+    </Form>
   );
 };
