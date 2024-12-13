@@ -113,7 +113,7 @@ export default async function BrandPage(props: Props) {
             alt={brand.name}
             className="mx-auto h-16 w-auto"
           />
-          <div className="mt-4 inline-flex flex-wrap items-center justify-center space-x-4">
+          <div className="mt-4 inline-flex flex-wrap items-center justify-center gap-4">
             <Link href={`/search?brand_name[0]=${encodeURIComponent(brand?.name ?? '')}`} className="flex space-x-2 rounded bg-brand-700 px-4 py-2 uppercase text-white">
               <span>Shop All {brand.name}</span>
             </Link>
