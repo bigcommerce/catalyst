@@ -1,14 +1,16 @@
-import { useTranslations } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { SignInSection } from '@/vibes/soul/sections/sign-in-section';
-import { locales } from '~/i18n/routing';
 
 import { login } from './_actions/login';
 
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
 export async function generateMetadata({ params }: Props) {
-  const { locale } = params;
+  const { locale } = await params;
   const t = await getTranslations('Login');
 
   setRequestLocale(locale);
@@ -18,14 +20,12 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-interface Props {
-  params: { locale: (typeof locales)[number] };
-}
+export default async function Login({ params }: Props) {
+  const { locale } = await params;
 
-export default function Login({ params: { locale } }: Props) {
   setRequestLocale(locale);
 
-  const t = useTranslations('Login');
+  const t = await getTranslations('Login');
 
   return (
     <SignInSection
