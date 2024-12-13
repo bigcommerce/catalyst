@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function AgentLogin({ isOpen, toggleModal }) {
   return (
-    <div>
+    <>
       {/* Backdrop and modal container */}
       <div
         id="authentication-modal"
@@ -117,6 +117,6 @@ export default function AgentLogin({ isOpen, toggleModal }) {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

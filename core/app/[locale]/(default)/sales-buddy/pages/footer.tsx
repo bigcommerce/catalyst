@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import AgentLogin from '../common-components/agent-login/index';
+import ReferralId from './referral';
 
 export default function AgentFooter() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,14 +18,15 @@ export default function AgentFooter() {
   return (
     <>
       {/* Pass modal control to AgentLogin */}
+      <ReferralId />
       <AgentLogin isOpen={isModalOpen} toggleModal={toggleModal} />
 
       {/* Trigger to open the modal */}
-      <div className="cursor-pointer text-[14px] font-normal" onClick={toggleModal}>
+      <div className=" cursor-pointer hover:text-primary flex justify-space focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20  text-[14px] font-normal leading-[24px] tracking-[0.25px] text-left !text-white" onClick={toggleModal}>
         Agent Login
       </div>
-      <div className="cursor-pointer text-[14px] font-normal">Create Quote</div>
-      <div className="cursor-pointer text-[14px] font-normal">Session Id: <div id="sessionIdDiv">#####</div></div>
+      <div className=" cursor-pointer hover:text-primary flex justify-space focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20  text-[14px] font-normal leading-[24px] tracking-[0.25px] text-left !text-white">Create Quote</div>
+      <div className="hover:text-primary flex justify-space focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20  text-[14px] font-normal leading-[24px] tracking-[0.25px] text-left !text-white">Session Id : <div id="sessionIdDiv" className='ml-[10px]'>#####</div></div>
     </>
   );
 }

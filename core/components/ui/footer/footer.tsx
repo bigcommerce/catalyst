@@ -5,7 +5,6 @@ import { cn } from '~/lib/utils';
 
 import { Locale } from './locale';
 import AgentFooter from '~/app/[locale]/(default)/sales-buddy/pages/footer';
-import ReferralId from '~/app/[locale]/(default)/sales-buddy/pages/referral';
 
 interface Image {
   altText: string;
@@ -53,8 +52,8 @@ const Footer = ({
   ...props
 }: Props) => (
   <footer className={cn('px-18  2xl:container 2xl:mx-auto !max-w-[100%] bg-[#002a37] text-white', className)} {...props}>
-     <div className='absolute flex flex-col right-[200px] gap-[10px] mt-[370px]'>
-      <ReferralId />
+     <div className='absolute flex flex-col right-0 pr-[147px] gap-[10px] mt-[370px]'>
+      
       <AgentFooter />
     </div>
     <section className="section-footer flex flex-col gap-8 border-t border-gray-200 px-4 pt-10 pb-0 md:flex-row lg:gap-4 lg:px-12">

@@ -18,7 +18,7 @@ export default function ReferralId() {
     }, []);
     return (
     <>
-        <div className="">Referral Id : <div id="referralIdDiv">#####</div> </div>
+        <div className="hover:text-primary flex justify-space focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20  text-[14px] font-normal leading-[24px] tracking-[0.25px] text-left !text-white">Referral Id : <div id="referralIdDiv" className='ml-[10px]'>#####</div> </div>
     </>
     )
 }
