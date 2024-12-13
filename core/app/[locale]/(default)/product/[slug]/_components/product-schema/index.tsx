@@ -1,46 +1,8 @@
 import { Product as ProductSchemaType, WithContext } from 'schema-dts';
 
-import { FragmentOf, graphql } from '~/client/graphql';
+import { FragmentOf } from '~/client/graphql';
 
-export const ProductSchemaFragment = graphql(`
-  fragment ProductSchemaFragment on Product {
-    name
-    path
-    plainTextDescription
-    sku
-    gtin
-    mpn
-    brand {
-      name
-      path
-    }
-    reviewSummary {
-      averageRating
-      numberOfReviews
-    }
-    defaultImage {
-      url: urlTemplate(lossy: true)
-    }
-    prices {
-      price {
-        value
-        currencyCode
-      }
-      priceRange {
-        min {
-          value
-        }
-        max {
-          value
-        }
-      }
-    }
-    condition
-    availabilityV2 {
-      status
-    }
-  }
-`);
+import { ProductSchemaFragment } from './fragment';
 
 interface Props {
   product: FragmentOf<typeof ProductSchemaFragment>;

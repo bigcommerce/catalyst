@@ -1,11 +1,12 @@
 import { clsx } from 'clsx';
 import { X } from 'lucide-react';
+import { ReactNode } from 'react';
 
 import { Button } from '@/vibes/soul/primitives/button';
 
 interface Props {
   variant: 'success' | 'warning' | 'error' | 'info';
-  message: string;
+  message: ReactNode;
   description?: string;
   dismissLabel?: string;
   action?: {
