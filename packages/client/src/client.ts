@@ -132,9 +132,9 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
   async b2bFetch<TResult>(endpoint: string, reqInit?: RequestInit): Promise<TResult> {
     const response = await fetch(`${b2bApiHostname}${endpoint}`, reqInit && {
-      body: reqInit.body,
+      ...(reqInit ?? {}), 
       headers: {
-        ...(reqInit.headers ?? {}),
+        ...(reqInit?.headers ?? {}),
         authtoken: process.env.B2B_API_TOKEN ?? '',
       },
     });
