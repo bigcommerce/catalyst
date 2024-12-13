@@ -1,5 +1,9 @@
+'use client';
+
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { useFormatter, useTranslations } from 'next-intl';
+import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { PricingFragment } from '~/client/fragments/pricing';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { FragmentOf, graphql } from '~/client/graphql';
@@ -16,6 +20,32 @@ import { ReviewSummary, ReviewSummaryFragment } from './review-summary';
 import { Coupon } from './belami-product-coupon-pdp';
 import { BcImage } from '~/components/bc-image';
 import ProductDetailDropdown from '~/components/ui/pdp/belami-product-details-pdp';
+import { ShoppingCart } from 'lucide-react';
+import { useFormContext } from 'react-hook-form';
+import { AddToCartButton } from '~/components/add-to-cart-button';
+
+interface ProductOptionValue {
+  entityId: number;
+  label: string;
+  isDefault: boolean;
+}
+
+interface MultipleChoiceOption {
+  __typename: 'MultipleChoiceOption';
+  entityId: number;
+  displayName: string;
+  values: {
+    edges: Array<{
+      node: ProductOptionValue;
+    }>;
+  };
+}
+
+interface ProductImage {
+  url: string;
+  altText: string;
+  isDefault: boolean;
+}
 
 export const DetailsFragment = graphql(
   `
@@ -27,9 +57,34 @@ export const DetailsFragment = graphql(
       entityId
       name
       sku
+      mpn
       upc
       minPurchaseQuantity
       maxPurchaseQuantity
+      defaultImage {
+        url(width: 64)
+        altText
+      }
+      images {
+        edges {
+          node {
+            url(width: 64)
+            altText
+            isDefault
+          }
+        }
+      }
+      variants {
+        edges {
+          node {
+            entityId
+            defaultImage {
+              url(width: 64)
+              altText
+            }
+          }
+        }
+      }
       condition
       weight {
         value
@@ -68,31 +123,163 @@ interface Props {
   dropdownSheetIcon?: string;
 }
 
+const StickyAddToCart = ({ data }: { data: FragmentOf<typeof ProductItemFragment> }) => {
+  const { formState } = useFormContext();
+  const { isSubmitting } = formState;
+
+  return (
+    <AddToCartButton data={data} loading={isSubmitting}>
+      <ShoppingCart className="mr-2 h-5 w-5" />
+      Add to Cart
+    </AddToCartButton>
+  );
+};
+
 export const Details = ({ product, collectionValue, dropdownSheetIcon }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
+  const productFormRef = useRef<HTMLDivElement>(null);
+  const [showStickyHeader, setShowStickyHeader] = useState(false);
+  const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
+  const searchParams = useSearchParams();
 
   const customFields = removeEdgesAndNodes(product.customFields);
+  const productOptions = removeEdgesAndNodes(product.productOptions);
+  const productImages = removeEdgesAndNodes(product.images);
+  const variants = removeEdgesAndNodes(product.variants);
+
+  // Declare all the constants needed
   const closeIcon = imageManagerImageUrl('close.png', '14w');
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
   const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
-
+  const certificationIcon = imageManagerImageUrl('vector-7-.png', '20w');
+  const multipleOptionIcon = imageManagerImageUrl('vector-5-.png', '20w');
   const productMpn = product.mpn;
 
+  // Calculate price range
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
 
-  const certificationIcon = imageManagerImageUrl('vector-7-.png', '20w');
-  const multipleOptionIcon = imageManagerImageUrl('vector-5-.png', '20w');
+  // Update image when variant changes
+  useEffect(() => {
+    const updateImageFromVariant = () => {
+      const selectedOptionIds = productOptions
+        .filter((option) => option.__typename === 'MultipleChoiceOption')
+        .map((option) => searchParams.get(String(option.entityId)))
+        .filter(Boolean);
+
+      if (selectedOptionIds.length > 0) {
+        const selectedVariant = variants.find((variant) =>
+          selectedOptionIds.includes(String(variant.entityId)),
+        );
+
+        if (selectedVariant?.defaultImage?.url) {
+          setCurrentImageUrl(selectedVariant.defaultImage.url);
+          return;
+        }
+      }
+
+      setCurrentImageUrl(product.defaultImage?.url || '');
+    };
+
+    updateImageFromVariant();
+  }, [searchParams, product, variants, productOptions]);
+
+  // Scroll handling
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!productFormRef.current) return;
+      const formRect = productFormRef.current.getBoundingClientRect();
+      setShowStickyHeader(formRect.bottom < 0);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const getSelectedValue = (option: MultipleChoiceOption): string => {
+    const selectedId = searchParams.get(String(option.entityId));
+    if (selectedId) {
+      const values = removeEdgesAndNodes(option.values);
+      const selected = values.find((value) => String(value.entityId) === selectedId);
+      if (selected) {
+        return selected.label;
+      }
+    }
+
+    const values = removeEdgesAndNodes(option.values);
+    const defaultValue = values.find((value) => value.isDefault);
+    return defaultValue?.label || 'Select';
+  };
 
   return (
     <div>
+      {showStickyHeader && (
+        <div className="fixed left-0 right-0 top-0 z-50 border-b border-gray-200 bg-white py-3 shadow-sm">
+          <div className="container mx-auto px-4">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start gap-4">
+                <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                  <BcImage
+                    src={currentImageUrl}
+                    alt={product.name}
+                    width={64}
+                    height={64}
+                    className="h-full w-full object-cover object-center"
+                  />
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-lg font-medium text-gray-900">{product.name}</h2>
+                  <div className="mt-1 text-sm text-gray-600">by {product.brand?.name}</div>
+                  <div className="mt-1 text-sm text-gray-500">SKU: {product.mpn}</div>
+
+                  <div className="mt-2 flex flex-wrap gap-4">
+                    {productOptions
+                      .filter((option) => option.__typename === 'MultipleChoiceOption')
+                      .map((option) => (
+                        <div key={option.entityId} className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-gray-700">
+                            {option.displayName}:
+                          </span>
+                          <span className="text-sm text-gray-600">
+                            {getSelectedValue(option as MultipleChoiceOption)}
+                          </span>
+                        </div>
+                      ))}
+                  </div>
+
+                  {product.prices?.price?.value && (
+                    <div className="mt-1 text-lg font-medium text-[#008bb7]">
+                      {format.number(product.prices.price.value, {
+                        style: 'currency',
+                        currency: product.prices.price.currencyCode,
+                      })}
+                    </div>
+                  )}
+                </div>
+              </div>
+              {/* ProductForm with showInSticky prop */}
+              <div className="flex-shrink-0">
+                <ProductForm
+                  data={product}
+                  productMpn={product.mpn || ''}
+                  multipleOptionIcon={multipleOptionIcon}
+                  blankAddImg={blankAddImg}
+                  fanPopup={fanPopup}
+                  closeIcon={closeIcon}
+                  showInSticky={true}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="div-product-details">
         <h1 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
           {product.name}
         </h1>
 
-        {/* Brand and Product Information */}
         <div className="items-center space-x-1 text-center lg:text-left xl:text-left">
           <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
             SKU: <span>{product.mpn}</span>
@@ -106,8 +293,8 @@ export const Details = ({ product, collectionValue, dropdownSheetIcon }: Props) 
             <>
               <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
                 from the{' '}
-                <span className="products-underline border-b border-black">{collectionValue}  </span>
-                {' '} Family
+                <span className="products-underline border-b border-black">{collectionValue} </span>{' '}
+                Family
               </span>
             </>
           )}
@@ -169,20 +356,20 @@ export const Details = ({ product, collectionValue, dropdownSheetIcon }: Props) 
           )}
         </div>
       )}
-      {/* coupon */}
-      <Coupon />
 
-      {/* Free Delivery */}
+      <Coupon />
       <FreeDelivery />
 
-      <ProductForm
-        data={product}
-        productMpn={product.mpn || ''} // Default to an empty string if null
-        multipleOptionIcon={multipleOptionIcon}
-        blankAddImg={blankAddImg}
-        fanPopup={fanPopup}
-        closeIcon={closeIcon}
-      />
+      <div ref={productFormRef}>
+        <ProductForm
+          data={product}
+          productMpn={product.mpn || ''}
+          multipleOptionIcon={multipleOptionIcon}
+          blankAddImg={blankAddImg}
+          fanPopup={fanPopup}
+          closeIcon={closeIcon}
+        />
+      </div>
 
       <div className="div-product-description my-12 hidden">
         <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
@@ -256,19 +443,10 @@ export const Details = ({ product, collectionValue, dropdownSheetIcon }: Props) 
         </button>
       </div>
 
-      {/* Payment Section */}
       <Payment />
-
-      {/* Request a Quote */}
       <RequestQuote />
-
-      {/* Certifications & Ratings */}
       <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
-
-      {/* Dropdown */}
       <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
-
-      {/* Shipping & Returns */}
       <ShippingReturns />
     </div>
   );
