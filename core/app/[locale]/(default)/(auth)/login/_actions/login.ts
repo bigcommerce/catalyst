@@ -34,5 +34,5 @@ export const login = async (_lastResult: SubmissionResult | null, formData: Form
     return submission.reply({ formErrors: [t('Form.error')] });
   }
 
-  return redirect({ href: '/account', locale });
+  return redirect({ href: '/account/orders', locale });
 };
