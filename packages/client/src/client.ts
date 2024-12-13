@@ -130,8 +130,14 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     return response.json() as Promise<BigCommerceResponse<TResult>>;
   }
 
-  async b2bFetch<TResult>(endpoint: string, reqInit: RequestInit) {
-    const response = await fetch(`${b2bApiHostname}${endpoint}`, reqInit);
+  async b2bFetch<TResult>(endpoint: string, reqInit?: RequestInit): Promise<TResult> {
+    const response = await fetch(`${b2bApiHostname}${endpoint}`, reqInit && {
+      body: reqInit.body,
+      headers: {
+        ...(reqInit.headers ?? {}),
+        authtoken: process.env.B2B_API_TOKEN ?? '',
+      },
+    });
 
     if (!response.ok) {
       throw new Error(`Unable to fetch B2B endpoint: ${response.statusText}`);

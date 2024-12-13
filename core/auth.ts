@@ -188,8 +188,7 @@ const config = {
               body: JSON.stringify(payload),
               headers: {
                 'Content-Type': 'application/json',
-                authtoken: process.env.B2B_API_TOKEN || '',
-              },
+              }
             },
           );
 
@@ -246,17 +245,32 @@ declare module 'next-auth/jwt' {
   }
 }
 
+
+type B2BEvent = string;
+type CallbackEvent = {
+  data: any; // Adjust to match the actual type of CustomFieldItems
+  preventDefault: () => void;
+};
+type Callback = (event: CallbackEvent) => any;
+type CallbackManagerType = {
+  callbacks: Map<B2BEvent, Callback[]>;
+  addEventListener(callbackKey: B2BEvent, callback: Callback): void;
+  removeEventListener(callbackKey: B2BEvent, callback: Callback): boolean;
+  dispatchEvent(callbackKey: B2BEvent, data?: any): boolean;
+};
+
 declare global {
   interface Window {
     b2b: {
+      callbacks: CallbackManagerType;
       utils: {
+        getRoutes: () => any[]
         openPage: (path: string, url?: string) => void;
         user: {
           getProfile: () => { role: number };
           loginWithB2BStorefrontToken: (b2bStorefrontJWTToken: string) => Promise<void>;
           logout: (params?: { handleError?: (error: any) => any }) => Promise<void>;
           getB2BToken: () => string;
-          getAllowedRoutes: () => any[]
         };
       };
     };

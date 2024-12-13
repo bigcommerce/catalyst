@@ -15,7 +15,7 @@ export default function B2bNav({ triggerButton }: B2bNavProps) {
   useEffect(() => {
     const interval = setInterval(() => {
       if (window.b2b?.utils?.user) {
-        const routes = window.b2b.utils.user.getAllowedRoutes();
+        const routes = window.b2b.utils?.getRoutes?.() || [];
         setB2bLinks([...routes, action]);
         clearInterval(interval);
       }

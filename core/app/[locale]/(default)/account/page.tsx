@@ -66,7 +66,7 @@ export default async function Account() {
   const session = await auth()
 
   if (session?.b2bToken) {
-    return redirect('/#/orders')
+    redirect('/#/orders')
   }
 
   return <AccountComponent />;

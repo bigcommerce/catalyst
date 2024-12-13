@@ -34,11 +34,12 @@ export default async function index() {
                     {
                         `
                         window.B3 = {
-                        setting: {
-                            store_hash: '${process.env.BIGCOMMERCE_STORE_HASH}',
-                            channel_id: ${process.env.BIGCOMMERCE_CHANNEL_ID},
-                            platform: 'catalyst',
-                        },
+                            setting: {
+                                store_hash: '${process.env.BIGCOMMERCE_STORE_HASH}',
+                                channel_id: ${process.env.BIGCOMMERCE_CHANNEL_ID},
+                                platform: 'catalyst',
+                            }
+                        }
                         `
                     }
                     </script>
@@ -46,7 +47,7 @@ export default async function index() {
                     type="module"
                     data-storehash="glzvoziq5k"
                     data-channelid="1664810"
-                    src="http://localhost:3001/src/buyerPortal.ts"
+                    src="http://localhost:3001/src/headless.ts"
                     ></script>
                 </>
             ) : (
