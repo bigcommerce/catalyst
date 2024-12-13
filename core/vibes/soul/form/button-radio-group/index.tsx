@@ -17,8 +17,9 @@ export const ButtonRadioGroup = React.forwardRef<
     label?: string;
     options: Option[];
     errors?: string[];
+    onOptionMouseEnter?: (value: string) => void;
   }
->(({ label, options, errors, className, ...rest }, ref) => {
+>(({ label, options, errors, className, onOptionMouseEnter, ...rest }, ref) => {
   const id = React.useId();
 
   return (
@@ -43,6 +44,11 @@ export const ButtonRadioGroup = React.forwardRef<
             disabled={option.disabled}
             id={option.value}
             key={option.value}
+            onMouseEnter={() => {
+              if (typeof onOptionMouseEnter === 'function') {
+                onOptionMouseEnter(option.value);
+              }
+            }}
             value={option.value}
           >
             {option.label}

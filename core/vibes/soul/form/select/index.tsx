@@ -19,6 +19,7 @@ type Props = {
   errors?: string[];
   onFocus?: (e: React.FocusEvent<HTMLButtonElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLButtonElement>) => void;
+  onOptionMouseEnter?: (value: string) => void;
 } & React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root>;
 
 export function Select({
@@ -32,6 +33,7 @@ export function Select({
   onFocus,
   onBlur,
   value,
+  onOptionMouseEnter,
   ...rest
 }: Props) {
   const id = React.useId();
@@ -66,6 +68,11 @@ export function Select({
                 <SelectPrimitive.Item
                   className="w-full cursor-default select-none rounded-xl px-3 py-2 text-sm font-medium text-contrast-400 outline-none transition-colors hover:bg-contrast-100 hover:text-foreground data-[state=checked]:text-foreground @4xl:text-base"
                   key={option.value}
+                  onMouseEnter={() => {
+                    if (typeof onOptionMouseEnter === 'function') {
+                      onOptionMouseEnter(option.value);
+                    }
+                  }}
                   value={option.value}
                 >
                   <SelectPrimitive.ItemText>{option.label}</SelectPrimitive.ItemText>

@@ -1,10 +1,14 @@
 'use server';
 
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { SubmissionResult } from '@conform-to/react';
+import { parseWithZod } from '@conform-to/zod';
 import { expireTag } from 'next/cache';
 import { cookies } from 'next/headers';
+import { getTranslations } from 'next-intl/server';
+import { ReactNode } from 'react';
 
-import { FragmentOf, graphql } from '~/client/graphql';
+import { Field, schema } from '@/vibes/soul/sections/product-detail/schema';
+import { graphql } from '~/client/graphql';
 import {
   addCartLineItem,
   assertAddCartLineItemErrors,
@@ -12,28 +16,42 @@ import {
 import { assertCreateCartErrors, createCart } from '~/client/mutations/create-cart';
 import { getCart } from '~/client/queries/get-cart';
 import { TAGS } from '~/client/tags';
-
-import { ProductFormFragment } from '../fragment';
-import { ProductFormData } from '../use-product-form';
+import { Link } from '~/components/link';
 
 type CartSelectedOptionsInput = ReturnType<typeof graphql.scalar<'CartSelectedOptionsInput'>>;
 
-export async function handleAddToCart(
-  data: ProductFormData,
-  product: FragmentOf<typeof ProductFormFragment>,
-) {
-  const productEntityId = Number(data.product_id);
-  const quantity = Number(data.quantity);
+interface State {
+  fields: Field[];
+  lastResult: SubmissionResult | null;
+  successMessage?: ReactNode;
+}
+
+export const addToCart = async (
+  prevState: State,
+  payload: FormData,
+): Promise<{
+  fields: Field[];
+  lastResult: SubmissionResult | null;
+  successMessage?: ReactNode;
+}> => {
+  const t = await getTranslations('Product.ProductDetails');
+
+  const submission = parseWithZod(payload, { schema: schema(prevState.fields) });
+
+  if (submission.status !== 'success') {
+    return { lastResult: submission.reply(), fields: prevState.fields };
+  }
+
+  const productEntityId = Number(submission.value.id);
+  const quantity = Number(submission.value.quantity);
 
   const cookieStore = await cookies();
   const cartId = cookieStore.get('cartId')?.value;
 
   let cart;
 
-  const selectedOptions = removeEdgesAndNodes(
-    product.productOptions,
-  ).reduce<CartSelectedOptionsInput>((accum, option) => {
-    const optionValueEntityId = data[`attribute_${option.entityId}`];
+  const selectedOptions = prevState.fields.reduce<CartSelectedOptionsInput>((accum, field) => {
+    const optionValueEntityId = submission.value[field.name];
 
     let multipleChoicesOptionInput;
     let checkboxOptionInput;
@@ -43,12 +61,16 @@ export async function handleAddToCart(
     let dateFieldOptionInput;
 
     // Skip empty strings since option is empty
-    if (optionValueEntityId === '') return accum;
+    if (!optionValueEntityId) return accum;
 
-    switch (option.__typename) {
-      case 'MultipleChoiceOption':
+    switch (field.type) {
+      case 'select':
+      case 'radio-group':
+      case 'swatch-radio-group':
+      case 'card-radio-group':
+      case 'button-radio-group':
         multipleChoicesOptionInput = {
-          optionEntityId: option.entityId,
+          optionEntityId: Number(field.name),
           optionValueEntityId: Number(optionValueEntityId),
         };
 
@@ -61,13 +83,15 @@ export async function handleAddToCart(
 
         return { ...accum, multipleChoices: [multipleChoicesOptionInput] };
 
-      case 'CheckboxOption':
+      case 'checkbox':
         checkboxOptionInput = {
-          optionEntityId: option.entityId,
+          optionEntityId: Number(field.name),
           optionValueEntityId:
-            Number(optionValueEntityId) !== 0
-              ? option.checkedOptionValueEntityId
-              : option.uncheckedOptionValueEntityId,
+            optionValueEntityId === 'true'
+              ? // @ts-expect-error Need to fix types
+                Number(field.checkedValue)
+              : // @ts-expect-error Need to fix types
+                Number(field.uncheckedValue),
         };
 
         if (accum.checkboxes) {
@@ -76,9 +100,9 @@ export async function handleAddToCart(
 
         return { ...accum, checkboxes: [checkboxOptionInput] };
 
-      case 'NumberFieldOption':
+      case 'number':
         numberFieldOptionInput = {
-          optionEntityId: option.entityId,
+          optionEntityId: Number(field.name),
           number: Number(optionValueEntityId),
         };
 
@@ -88,9 +112,9 @@ export async function handleAddToCart(
 
         return { ...accum, numberFields: [numberFieldOptionInput] };
 
-      case 'TextFieldOption':
+      case 'text':
         textFieldOptionInput = {
-          optionEntityId: option.entityId,
+          optionEntityId: Number(field.name),
           text: String(optionValueEntityId),
         };
 
@@ -103,9 +127,9 @@ export async function handleAddToCart(
 
         return { ...accum, textFields: [textFieldOptionInput] };
 
-      case 'MultiLineTextFieldOption':
+      case 'textarea':
         multiLineTextFieldOptionInput = {
-          optionEntityId: option.entityId,
+          optionEntityId: Number(field.name),
           text: String(optionValueEntityId),
         };
 
@@ -118,9 +142,9 @@ export async function handleAddToCart(
 
         return { ...accum, multiLineTextFields: [multiLineTextFieldOptionInput] };
 
-      case 'DateFieldOption':
+      case 'date':
         dateFieldOptionInput = {
-          optionEntityId: option.entityId,
+          optionEntityId: Number(field.name),
           date: new Date(String(optionValueEntityId)).toISOString(),
         };
 
@@ -132,9 +156,10 @@ export async function handleAddToCart(
         }
 
         return { ...accum, dateFields: [dateFieldOptionInput] };
-    }
 
-    return accum;
+      default:
+        return { ...accum };
+    }
   }, {});
 
   try {
@@ -156,14 +181,29 @@ export async function handleAddToCart(
       cart = addCartLineItemResponse.data.cart.addCartLineItems?.cart;
 
       if (!cart?.entityId) {
-        throw new Error('Failed to add product to cart.');
+        return {
+          lastResult: submission.reply({ formErrors: [t('missingCart')] }),
+          fields: prevState.fields,
+        };
       }
 
       expireTag(TAGS.cart);
 
-      return { status: 'success', data: cart };
+      return {
+        lastResult: submission.reply(),
+        fields: prevState.fields,
+        successMessage: t.rich('successMessage', {
+          cartItems: quantity,
+          cartLink: (chunks) => (
+            <Link className="underline" href="/cart" prefetch="viewport" prefetchKind="full">
+              {chunks}
+            </Link>
+          ),
+        }),
+      };
     }
 
+    // Create cart
     const createCartResponse = await createCart([
       {
         productEntityId,
@@ -177,7 +217,10 @@ export async function handleAddToCart(
     cart = createCartResponse.data.cart.createCart?.cart;
 
     if (!cart?.entityId) {
-      return { status: 'error', error: 'Failed to add product to cart.' };
+      return {
+        lastResult: submission.reply({ formErrors: [t('missingCart')] }),
+        fields: prevState.fields,
+      };
     }
 
     cookieStore.set({
@@ -191,12 +234,29 @@ export async function handleAddToCart(
 
     expireTag(TAGS.cart);
 
-    return { status: 'success', data: cart };
+    return {
+      lastResult: submission.reply(),
+      fields: prevState.fields,
+      successMessage: t.rich('successMessage', {
+        cartItems: quantity,
+        cartLink: (chunks) => (
+          <Link className="underline" href="/cart" prefetch="viewport" prefetchKind="full">
+            {chunks}
+          </Link>
+        ),
+      }),
+    };
   } catch (error: unknown) {
     if (error instanceof Error) {
-      return { status: 'error', error: error.message };
+      return {
+        lastResult: submission.reply({ formErrors: [error.message] }),
+        fields: prevState.fields,
+      };
     }
 
-    return { status: 'error', error: 'Something went wrong. Please try again.' };
+    return {
+      lastResult: submission.reply({ formErrors: [t('unknownError')] }),
+      fields: prevState.fields,
+    };
   }
-}
+};

@@ -406,6 +406,20 @@
   },
   "Product": {
     "loading": "Loading...",
+    "ProductDetails": {
+      "quantity": "Quantity",
+      "increaseQuantity": "Increase quantity",
+      "decreaseQuantity": "Decrease quantity",
+      "successMessage": "{cartItems, plural, =1 {1 item} other {# Iiems}} added to <cartLink> your cart</cartLink>",
+      "missingCart": "Cart not found. Please try again later!",
+      "unknownError": "Unknown error. Please try again later.",
+      "Submit": {
+        "addToCart": "Add to cart",
+        "outOfStock": "Out of stock",
+        "preorder": "Preorder",
+        "unavailable": "Unavailable"
+      }
+    },
     "Carousel": {
       "relatedProducts": "Related products"
     },
