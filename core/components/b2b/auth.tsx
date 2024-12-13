@@ -15,9 +15,8 @@ const loginToB2b = async (b2bToken: string, refresh: () => void) => {
     return;
   }
 
-  if (!token) {
+  if (!token || (token !== '' && token !== b2bToken)) {
     await window.b2b.utils.user.loginWithB2BStorefrontToken(b2bToken);
-    refresh()
   }
 };
 
