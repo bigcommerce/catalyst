@@ -13,9 +13,9 @@ export const addCustomProduct = async (payload: {
   const cartId = cookieStore.get('cartId')?.value; 
   try {
     const { sku, cost, retailPrice, productName } = payload;
-    const apiUrl = process.env.SALES_BUDDY_API_URL_SERVER!;
-    const apiEnv = process.env.SALES_BUDDY_API_ENV_SERVER!;
-    const apiPath = process.env.SALES_BUDDY_API_PATH_SERVER!;
+    const apiUrl = process.env.SALES_BUDDY_API_URL!;
+    const apiEnv = process.env.SALES_BUDDY_API_ENV!;
+    const apiPath = process.env.SALES_BUDDY_API_PATH!;
     const accessId = process.env.SALES_BUDDY_ACCESS_ID;
 
     let postData = JSON.stringify({
