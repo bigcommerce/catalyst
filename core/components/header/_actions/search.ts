@@ -3,6 +3,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
+import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
 import { SearchResult } from '@/vibes/soul/primitives/navigation';
@@ -42,6 +43,7 @@ export async function search(
   },
   formData: FormData,
 ): Promise<{ lastResult: SubmissionResult | null; searchResults: SearchResult[] | null }> {
+  const t = await getTranslations('Components.Header.Search');
   const submission = parseWithZod(formData, { schema: z.object({ term: z.string() }) });
 
   if (submission.status !== 'success') {
@@ -74,7 +76,7 @@ export async function search(
 
     return {
       lastResult: submission.reply({
-        formErrors: ['Something went wrong. Please try again.'],
+        formErrors: [t('error')],
       }),
       searchResults: lastResult.searchResults,
     };

@@ -534,7 +534,8 @@
         "noSearchResults": "Sorry, no results for \"{term}\".",
         "searchPlaceholder": "Search...",
         "clearSearch": "Clear search",
-        "processing": "Processing..."
+        "processing": "Processing...",
+        "error": "Something went wrong. Please try again."
       }
     },
     "Footer": {
