@@ -9,6 +9,7 @@ import { readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 
+import { search } from './_actions/search';
 import { HeaderFragment } from './fragment';
 
 const getLayoutData = cache(async () => {
@@ -63,6 +64,8 @@ export const Header = async () => {
         cartLabel: t('Icons.cart'),
         searchHref: '/search',
         searchLabel: t('Icons.search'),
+        searchParamName: 'q',
+        searchAction: search,
         links: getLinks(),
         logo: getLogo(),
         mobileMenuTriggerLabel: t('toggleNavigation'),
