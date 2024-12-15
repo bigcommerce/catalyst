@@ -3,30 +3,62 @@
 @tailwind utilities;
 
 :root {
-    --primary: 96 100% 68%;
-    --accent: 96 100% 88%;
-    --background: 0 0% 100%;
-    --foreground: 0 0% 7%;
-    --success: 116 78% 65%;
-    --error: 0 100% 60%;
-    --warning: 40 100% 60%;
-    --info: 220 70% 45%;
-    --contrast-100: 0 0% 93%;
-    --contrast-200: 0 0% 82%;
-    --contrast-300: 0 0% 70%;
-    --contrast-400: 0 0% 54%;
-    --contrast-500: 0 0% 34%;
-    --font-variation-settings-body: "slnt" 0;
-    --font-variation-settings-heading: "slnt" 0;
-    --font-size-xs: 0.75rem;
-    --font-size-sm: 0.875rem;
-    --font-size-base: 1rem;
-    --font-size-lg: 1.125rem;
-    --font-size-xl: 1.25rem;
-    --font-size-2xl: 1.5rem;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  }
+  --primary: 96 100% 68%;
+  --accent: 96 100% 88%;
+  --background: 0 0% 100%;
+  --foreground: 0 0% 7%;
+  --success: 116 78% 65%;
+  --error: 0 100% 60%;
+  --warning: 40 100% 60%;
+  --info: 220 70% 45%;
+  --contrast-100: 0 0% 93%;
+  --contrast-200: 0 0% 82%;
+  --contrast-300: 0 0% 70%;
+  --contrast-400: 0 0% 54%;
+  --contrast-500: 0 0% 34%;
+  --font-variation-settings-body: 'slnt' 0;
+  --font-variation-settings-heading: 'slnt' 0;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* Button */
+
+  --button-font-family: var(--font-family-body);
+
+  --button-primary-background: hsl(var(--primary));
+  --button-primary-background-hover: color-mix(in oklab, hsl(var(--primary)), white 75%);
+  --button-primary-foreground: hsl(var(--foreground));
+  --button-primary-foreground-hover: hsl(var(--foreground));
+  --button-primary-border: hsl(var(--primary));
+  --button-primary-focus: hsl(var(--foreground));
+
+  --button-secondary-background: hsl(var(--foreground));
+  --button-secondary-background-hover: hsl(var(--background));
+  --button-secondary-foreground: hsl(var(--background));
+  --button-secondary-foreground-hover: hsl(var(--foreground));
+  --button-secondary-border: hsl(var(--foreground));
+  --button-secondary-focus: hsl(var(--foreground));
+
+  --button-tertiary-background: hsl(var(--background));
+  --button-tertiary-background-hover: hsl(var(--contrast-100));
+  --button-tertiary-foreground: hsl(var(--foreground));
+  --button-tertiary-foreground-hover: hsl(var(--foreground));
+  --button-tertiary-border: hsl(var(--contrast-200));
+  --button-tertiary-focus: hsl(var(--foreground));
+
+  --button-ghost-background: transparent;
+  --button-ghost-background-hover: hsl(var(--foreground) / 5%);
+  --button-ghost-foreground: hsl(var(--foreground));
+  --button-ghost-foreground-hover: hsl(var(--foreground));
+  --button-ghost-border: transparent;
+  --button-ghost-focus: hsl(var(--foreground));
+}
