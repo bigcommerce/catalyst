@@ -185,7 +185,7 @@ const ProductItemFragment = graphql(
       entityId
       name
       sku
-      categories(first: 1) {
+      categories {
         edges {
           node {
             ...BreadcrumbsFragment
@@ -333,7 +333,7 @@ const ProductPageQuery = graphql(
             url: urlTemplate(lossy: true)
             altText
           }
-          categories(first: 1) {
+          categories {
             edges {
               node {
                 ...BreadcrumbsFragment

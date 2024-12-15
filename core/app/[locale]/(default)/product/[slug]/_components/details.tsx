@@ -122,9 +122,11 @@ interface Props {
   collectionValue?: string;
   dropdownSheetIcon?: string;
   cartHeader?: string;
+  couponIcon?:string;
+  paywithGoogle?:string;
 }
 
-export const Details = ({ product, collectionValue, dropdownSheetIcon, cartHeader }: Props) => {
+export const Details = ({ product, collectionValue, dropdownSheetIcon, cartHeader , couponIcon , paywithGoogle }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
   const productFormRef = useRef<HTMLDivElement>(null);
@@ -421,7 +423,7 @@ export const Details = ({ product, collectionValue, dropdownSheetIcon, cartHeade
         </div>
       )}
 
-      <Coupon />
+      <Coupon couponIcon={couponIcon} />
       <FreeDelivery />
 
       <div ref={productFormRef}>
@@ -498,7 +500,7 @@ export const Details = ({ product, collectionValue, dropdownSheetIcon, cartHeade
         <button className="flex w-[100%] items-center justify-center rounded bg-[#353535] p-4 text-white">
           <BcImage
             alt="GPay icon"
-            src={imageManagerImageUrl('apple-xxl.png', '20w')}
+            src={paywithGoogle}
             height={20}
             width={20}
             className="mr-4 inline"

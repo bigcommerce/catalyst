@@ -1,8 +1,11 @@
 import { BcImage } from '~/components/bc-image';
-import { imageManagerImageUrl } from '~/lib/store-assets';
 import { useTranslations } from 'next-intl';
 
-export const Coupon = () => {
+interface CouponProps {
+  couponIcon: string;
+}
+
+export const Coupon = ({ couponIcon }: CouponProps) => {
   const t = useTranslations('productCoupon'); 
 
   return (
@@ -11,7 +14,7 @@ export const Coupon = () => {
         alt="an assortment of brandless products against a blank background"
         height={10}
         priority={true}
-        src={imageManagerImageUrl('vector-2-.png', '20w')}
+        src={couponIcon} 
         width={20}
       />
       <div className="product-coupon text-left text-sm font-normal leading-6 tracking-wide">
@@ -20,4 +23,3 @@ export const Coupon = () => {
     </div>
   );
 };
-
