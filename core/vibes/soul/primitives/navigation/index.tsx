@@ -1,6 +1,6 @@
 'use client';
 
-import { SubmissionResult } from '@conform-to/react';
+import { SubmissionResult, useForm } from '@conform-to/react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Popover from '@radix-ui/react-popover';
@@ -12,6 +12,7 @@ import React, {
   Ref,
   startTransition,
   useActionState,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -26,6 +27,7 @@ import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 import { usePathname } from '~/i18n/routing';
 
+import { FormStatus } from '../../form/form-status';
 import { Price } from '../price-label';
 import { ProductCard } from '../product-card';
 
@@ -524,6 +526,8 @@ function SearchForm<S extends SearchResult>({
     lastResult: null,
   });
   const [isDebouncing, setIsDebouncing] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isPending = isSearching || isDebouncing || isSubmitting;
   const debouncedOnChange = useMemo(() => {
     const debounced = debounce((q: string) => {
       setIsDebouncing(false);
@@ -543,15 +547,20 @@ function SearchForm<S extends SearchResult>({
       debounced(q);
     };
   }, [formAction, searchParamName]);
-  const isPending = isSearching || isDebouncing;
 
-  useEffect(() => {
-    if (lastResult?.error) console.log(lastResult.error);
-  }, [lastResult]);
+  const [form] = useForm({ lastResult });
+
+  const handleSubmit = useCallback(() => {
+    setIsSubmitting(true);
+  }, []);
 
   return (
     <>
-      <form action={searchHref} className="flex items-center gap-3 px-3 py-3 @4xl:px-5 @4xl:py-4">
+      <form
+        action={searchHref}
+        className="flex items-center gap-3 px-3 py-3 @4xl:px-5 @4xl:py-4"
+        onSubmit={handleSubmit}
+      >
         <SearchIcon
           className="hidden shrink-0 text-contrast-500 @xl:block"
           size={20}
@@ -571,18 +580,16 @@ function SearchForm<S extends SearchResult>({
         <SubmitButton loading={isPending} submitLabel={submitLabel} />
       </form>
 
-      {/* Search Results */}
-      {searchResults && (
-        <SearchResults
-          emptySearchSubtitle={emptySearchSubtitle}
-          emptySearchTitle={emptySearchTitle}
-          query={query}
-          searchCtaLabel={searchCtaLabel}
-          searchParamName={searchParamName}
-          searchResults={searchResults}
-          stale={isPending}
-        />
-      )}
+      <SearchResults
+        emptySearchSubtitle={emptySearchSubtitle}
+        emptySearchTitle={emptySearchTitle}
+        errors={form.errors}
+        query={query}
+        searchCtaLabel={searchCtaLabel}
+        searchParamName={searchParamName}
+        searchResults={searchResults}
+        stale={isPending}
+      />
     </>
   );
 }
@@ -609,18 +616,36 @@ function SearchResults({
   stale,
   emptySearchTitle = 'No results were found for',
   emptySearchSubtitle = 'Please try another search.',
+  errors,
 }: {
   query: string;
   searchParamName: string;
   searchCtaLabel?: string;
   emptySearchTitle?: string;
   emptySearchSubtitle?: string;
-  searchResults: SearchResult[];
+  searchResults: SearchResult[] | null;
   stale: boolean;
+  errors?: string[];
 }) {
   if (query === '') return null;
 
-  if (searchResults.length === 0) {
+  if (errors != null && errors.length > 0) {
+    if (stale) return null;
+
+    return (
+      <div className="flex flex-col border-t border-contrast-100 p-6">
+        {errors.map((error) => (
+          <FormStatus key={error} type="error">
+            {error}
+          </FormStatus>
+        ))}
+      </div>
+    );
+  }
+
+  if (searchResults == null || searchResults.length === 0) {
+    if (stale) return null;
+
     return (
       <div className="flex flex-col border-t border-contrast-100 p-6">
         <h1 className="text-2xl font-medium text-foreground">
