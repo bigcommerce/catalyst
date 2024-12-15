@@ -1,5 +1,6 @@
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { clsx } from 'clsx';
 import type { Metadata } from 'next';
 import { DM_Serif_Text, Inter, Roboto_Mono } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
@@ -108,8 +109,11 @@ export default async function RootLayout({ params, children }: Props) {
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
-      <body className={`${inter.variable} ${dm_serif_text.variable} ${roboto_mono.variable}`}>
+    <html
+      className={clsx(inter.variable, dm_serif_text.variable, roboto_mono.variable)}
+      lang={locale}
+    >
+      <body>
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <NuqsAdapter>
