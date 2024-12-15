@@ -50,7 +50,13 @@ export function Alert({
           </Button>
         )}
 
-        <Button aria-label={dismissLabel} onClick={onDismiss} size="icon-small" variant="ghost">
+        <Button
+          aria-label={dismissLabel}
+          onClick={onDismiss}
+          shape="circle"
+          size="x-small"
+          variant="ghost"
+        >
           <X size={20} strokeWidth={1} />
         </Button>
       </div>
