@@ -69,6 +69,7 @@ export const Header = async () => {
         links: getLinks(),
         logo: getLogo(),
         mobileMenuTriggerLabel: t('toggleNavigation'),
+        openSearchPopupLabel: t('Search.openSearchPopup'),
         logoLabel: t('home'),
       }}
     />

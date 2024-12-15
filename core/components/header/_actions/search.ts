@@ -37,21 +37,42 @@ const GetQuickSearchResultsQuery = graphql(
 );
 
 export async function search(
-  lastResult: {
+  prevState: {
     lastResult: SubmissionResult | null;
     searchResults: SearchResult[] | null;
+    emptyStateTitle?: string;
+    emptyStateSubtitle?: string;
   },
   formData: FormData,
-): Promise<{ lastResult: SubmissionResult | null; searchResults: SearchResult[] | null }> {
+): Promise<{
+  lastResult: SubmissionResult | null;
+  searchResults: SearchResult[] | null;
+  emptyStateTitle: string;
+  emptyStateSubtitle: string;
+}> {
   const t = await getTranslations('Components.Header.Search');
   const submission = parseWithZod(formData, { schema: z.object({ term: z.string() }) });
+  const emptyStateTitle = t('noSearchResultsTitle', {
+    term: submission.status === 'success' ? submission.value.term : '',
+  });
+  const emptyStateSubtitle = t('noSearchResultsSubtitle');
 
   if (submission.status !== 'success') {
-    return { lastResult: submission.reply(), searchResults: lastResult.searchResults };
+    return {
+      lastResult: submission.reply(),
+      searchResults: prevState.searchResults,
+      emptyStateTitle,
+      emptyStateSubtitle,
+    };
   }
 
   if (submission.value.term.length < 3) {
-    return { lastResult: submission.reply(), searchResults: null };
+    return {
+      lastResult: submission.reply(),
+      searchResults: null,
+      emptyStateTitle,
+      emptyStateSubtitle,
+    };
   }
 
   const customerAccessToken = await getSessionCustomerAccessToken();
@@ -69,12 +90,16 @@ export async function search(
     return {
       lastResult: submission.reply(),
       searchResults: await searchResultsTransformer(removeEdgesAndNodes(products)),
+      emptyStateTitle,
+      emptyStateSubtitle,
     };
   } catch (error: unknown) {
     if (error instanceof Error) {
       return {
         lastResult: submission.reply({ formErrors: [error.message] }),
-        searchResults: lastResult.searchResults,
+        searchResults: prevState.searchResults,
+        emptyStateTitle,
+        emptyStateSubtitle,
       };
     }
 
@@ -82,7 +107,9 @@ export async function search(
       lastResult: submission.reply({
         formErrors: [t('error')],
       }),
-      searchResults: lastResult.searchResults,
+      searchResults: prevState.searchResults,
+      emptyStateTitle,
+      emptyStateSubtitle,
     };
   }
 }
