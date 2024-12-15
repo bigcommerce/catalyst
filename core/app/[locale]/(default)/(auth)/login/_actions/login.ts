@@ -15,6 +15,7 @@ export const login = async (formData: FormData): Promise<LoginResponse> => {
     const locale = await getLocale();
 
     const credentials = Credentials.parse({
+      type: 'password',
       email: formData.get('email'),
       password: formData.get('password'),
     });
