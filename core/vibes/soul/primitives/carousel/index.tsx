@@ -135,16 +135,31 @@ function CarouselItem({ className, ...rest }: React.HTMLAttributes<HTMLDivElemen
 
 function CarouselButtons({
   className,
+  colorScheme = 'light',
   previousLabel = 'Previous',
   nextLabel = 'Next',
   ...rest
-}: React.HTMLAttributes<HTMLDivElement> & { previousLabel?: string; nextLabel?: string }) {
+}: React.HTMLAttributes<HTMLDivElement> & {
+  colorScheme?: 'light' | 'dark';
+  previousLabel?: string;
+  nextLabel?: string;
+}) {
   const { scrollPrev, scrollNext, canScrollPrev, canScrollNext } = useCarousel();
 
   return (
-    <div {...rest} className={clsx('flex gap-2 text-foreground', className)}>
+    <div
+      {...rest}
+      className={clsx(
+        'flex gap-2',
+        {
+          light: 'text-[var(--carousel-light-arrows)]',
+          dark: 'text-[var(--carousel-dark-arrows)]',
+        }[colorScheme],
+        className,
+      )}
+    >
       <button
-        className="rounded-lg ring-primary transition-colors duration-300 focus-visible:outline-0 focus-visible:ring-2 disabled:pointer-events-none disabled:text-contrast-300"
+        className="rounded-lg ring-[var(--carousel-focus)] transition-colors duration-300 focus-visible:outline-0 focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-25"
         disabled={!canScrollPrev}
         onClick={scrollPrev}
         title={previousLabel}
@@ -152,7 +167,7 @@ function CarouselButtons({
         <ArrowLeft strokeWidth={1.5} />
       </button>
       <button
-        className="rounded-lg ring-primary transition-colors duration-300 focus-visible:outline-0 focus-visible:ring-2 disabled:pointer-events-none disabled:text-contrast-300"
+        className="rounded-lg ring-[var(--carousel-focus)] transition-colors duration-300 focus-visible:outline-0 focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-25"
         disabled={!canScrollNext}
         onClick={scrollNext}
         title={nextLabel}
@@ -165,8 +180,9 @@ function CarouselButtons({
 
 function CarouselScrollbar({
   className,
+  colorScheme = 'light',
   label = 'Carousel scrollbar',
-}: React.HTMLAttributes<HTMLDivElement> & { label?: string }) {
+}: React.HTMLAttributes<HTMLDivElement> & { label?: string; colorScheme?: 'light' | 'dark' }) {
   const { api } = useCarousel();
   const [progress, setProgress] = useState(0);
   const [scrollbarPosition, setScrollbarPosition] = useState({ width: 0, left: 0 });
@@ -240,11 +256,25 @@ function CarouselScrollbar({
         value={progress}
       />
       {/* Track */}
-      <div className="pointer-events-none absolute h-1 w-full rounded-full bg-contrast-100" />
+      <div
+        className={clsx(
+          'pointer-events-none absolute h-1 w-full rounded-full opacity-10',
+          {
+            light: 'bg-[var(--carousel-light-slider)]',
+            dark: 'bg-[var(--carousel-dark-slider)]',
+          }[colorScheme],
+        )}
+      />
 
       {/* Bar */}
       <div
-        className="pointer-events-none absolute h-1 rounded-full bg-foreground transition-all ease-out"
+        className={clsx(
+          'pointer-events-none absolute h-1 rounded-full transition-all ease-out',
+          {
+            light: 'bg-[var(--carousel-light-slider)]',
+            dark: 'bg-[var(--carousel-dark-slider)]',
+          }[colorScheme],
+        )}
         style={{
           width: `${scrollbarPosition.width}%`,
           left: `${scrollbarPosition.left}%`,
