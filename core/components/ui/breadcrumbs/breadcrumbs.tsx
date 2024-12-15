@@ -17,7 +17,7 @@ interface Props {
 const Breadcrumbs = ({ breadcrumbs, className }: Props) => {
   return (
     <nav aria-label="Breadcrumb" className={className}>
-      <ul className="flex flex-wrap items-center py-4">
+      <ul className="main-breadcrumbs flex flex-wrap items-center py-4">
         {breadcrumbs.map(({ label, href }, i, arr) => {
           const isLast = arr.length - 1 === i;
 
@@ -37,7 +37,8 @@ const Breadcrumbs = ({ breadcrumbs, className }: Props) => {
               </li>
               {!isLast ? (
                 <span className="mx-1">
-                  <ChevronRight aria-hidden="true" size={20} />
+                  /
+                  {/* <ChevronRight aria-hidden="true" size={20} /> */}
                 </span>
               ) : null}
             </Fragment>

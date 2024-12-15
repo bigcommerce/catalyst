@@ -20,9 +20,9 @@ import { ReviewSummary, ReviewSummaryFragment } from './review-summary';
 import { Coupon } from './belami-product-coupon-pdp';
 import { BcImage } from '~/components/bc-image';
 import ProductDetailDropdown from '~/components/ui/pdp/belami-product-details-pdp';
+import { useCommonContext } from '~/components/common-context/common-provider';
+import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { ShoppingCart } from 'lucide-react';
-import { useFormContext } from 'react-hook-form';
-import { AddToCartButton } from '~/components/add-to-cart-button';
 
 interface ProductOptionValue {
   entityId: number;
@@ -121,34 +121,25 @@ interface Props {
   product: FragmentOf<typeof DetailsFragment>;
   collectionValue?: string;
   dropdownSheetIcon?: string;
+  cartHeader?: string;
 }
 
-const StickyAddToCart = ({ data }: { data: FragmentOf<typeof ProductItemFragment> }) => {
-  const { formState } = useFormContext();
-  const { isSubmitting } = formState;
-
-  return (
-    <AddToCartButton data={data} loading={isSubmitting}>
-      <ShoppingCart className="mr-2 h-5 w-5" />
-      Add to Cart
-    </AddToCartButton>
-  );
-};
-
-export const Details = ({ product, collectionValue, dropdownSheetIcon }: Props) => {
+export const Details = ({ product, collectionValue, dropdownSheetIcon, cartHeader }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
   const productFormRef = useRef<HTMLDivElement>(null);
   const [showStickyHeader, setShowStickyHeader] = useState(false);
   const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
+  const [isScrollingUp, setIsScrollingUp] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const searchParams = useSearchParams();
+  const { currentMainMedia } = useCommonContext();
 
   const customFields = removeEdgesAndNodes(product.customFields);
   const productOptions = removeEdgesAndNodes(product.productOptions);
   const productImages = removeEdgesAndNodes(product.images);
   const variants = removeEdgesAndNodes(product.variants);
 
-  // Declare all the constants needed
   const closeIcon = imageManagerImageUrl('close.png', '14w');
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
   const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
@@ -156,13 +147,37 @@ export const Details = ({ product, collectionValue, dropdownSheetIcon }: Props) 
   const multipleOptionIcon = imageManagerImageUrl('vector-5-.png', '20w');
   const productMpn = product.mpn;
 
-  // Calculate price range
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
 
-  // Update image when variant changes
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (!productFormRef.current) return;
+
+      const formRect = productFormRef.current.getBoundingClientRect();
+      setShowStickyHeader(formRect.bottom < 0);
+
+      if (currentScrollY < lastScrollY) {
+        setIsScrollingUp(true);
+      } else {
+        setIsScrollingUp(false);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
+
   useEffect(() => {
     const updateImageFromVariant = () => {
+      if (currentMainMedia?.type === 'image' && currentMainMedia.src) {
+        setCurrentImageUrl(currentMainMedia.src);
+        return;
+      }
+
       const selectedOptionIds = productOptions
         .filter((option) => option.__typename === 'MultipleChoiceOption')
         .map((option) => searchParams.get(String(option.entityId)))
@@ -183,19 +198,7 @@ export const Details = ({ product, collectionValue, dropdownSheetIcon }: Props) 
     };
 
     updateImageFromVariant();
-  }, [searchParams, product, variants, productOptions]);
-
-  // Scroll handling
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!productFormRef.current) return;
-      const formRect = productFormRef.current.getBoundingClientRect();
-      setShowStickyHeader(formRect.bottom < 0);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [searchParams, product, variants, productOptions, currentMainMedia]);
 
   const getSelectedValue = (option: MultipleChoiceOption): string => {
     const selectedId = searchParams.get(String(option.entityId));
@@ -215,64 +218,125 @@ export const Details = ({ product, collectionValue, dropdownSheetIcon }: Props) 
   return (
     <div>
       {showStickyHeader && (
-        <div className="fixed left-0 right-0 top-0 z-50 border-b border-gray-200 bg-white py-3 shadow-sm">
-          <div className="container mx-auto px-4">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-start gap-4">
-                <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                  <BcImage
-                    src={currentImageUrl}
-                    alt={product.name}
-                    width={64}
-                    height={64}
-                    className="h-full w-full object-cover object-center"
-                  />
-                </div>
-                <div className="flex-1">
-                  <h2 className="text-lg font-medium text-gray-900">{product.name}</h2>
-                  <div className="mt-1 text-sm text-gray-600">by {product.brand?.name}</div>
-                  <div className="mt-1 text-sm text-gray-500">SKU: {product.mpn}</div>
-
-                  <div className="mt-2 flex flex-wrap gap-4">
-                    {productOptions
-                      .filter((option) => option.__typename === 'MultipleChoiceOption')
-                      .map((option) => (
-                        <div key={option.entityId} className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-gray-700">
-                            {option.displayName}:
-                          </span>
-                          <span className="text-sm text-gray-600">
-                            {getSelectedValue(option as MultipleChoiceOption)}
-                          </span>
-                        </div>
-                      ))}
+        <>
+          {/* Desktop View - Sticky Top */}
+          <div className="fixed left-0 right-0 top-0 z-50 hidden border-b border-gray-200 bg-white shadow-2xl xl:block">
+            <div className="container mx-auto px-[3rem] pb-[2rem] pt-[1rem]">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-start gap-5">
+                  <div className="flex-shrink-0 overflow-hidden rounded-md border border-gray-200 xl:h-[10em] xl:w-[10em] 2xl:h-[8em] 2xl:w-[8em]">
+                    <BcImage
+                      src={currentImageUrl}
+                      alt={product.name}
+                      width={100}
+                      height={100}
+                      className="h-full w-full object-center"
+                    />
                   </div>
+                  <div className="mr-[10em] flex-1">
+                    <h2 className="text-left text-[20px] font-medium leading-8 tracking-wide text-black">
+                      {product.name}
+                    </h2>
+                    <div className="mt-3 text-left text-[14px] font-normal leading-[10px] tracking-[0.25px]">
+                      by <span className="underline">{product.brand?.name}</span>
+                    </div>
+                    <div className="mt-3 flex items-center text-[#7F7F7F]">
+                      <div className="text-[14px] font-bold leading-[24px] tracking-[0.25px]">
+                        SKU: {product.mpn}
+                      </div>
+                      {productOptions.filter(
+                        (option) => option.__typename === 'MultipleChoiceOption',
+                      ).length > 0 && (
+                        <>
+                          <span className="mx-2 text-[14px] font-normal">|</span>
+                          <div className="text-[14px] font-normal">
+                            {productOptions
+                              .filter((option) => option.__typename === 'MultipleChoiceOption')
+                              .map((option, index, filteredArray) => {
+                                if (option.__typename === 'MultipleChoiceOption') {
+                                  const selectedValue = getSelectedValue(
+                                    option as MultipleChoiceOption,
+                                  );
+                                  return (
+                                    <span key={option.entityId}>
+                                      <span className="font-bold">{option.displayName}:</span>{' '}
+                                      <span className="text-[15px]">{selectedValue}</span>
+                                      {index < filteredArray.length - 1 && (
+                                        <span className="mx-2">|</span>
+                                      )}
+                                    </span>
+                                  );
+                                }
+                                return null;
+                              })}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
 
-                  {product.prices?.price?.value && (
-                    <div className="mt-1 text-lg font-medium text-[#008bb7]">
-                      {format.number(product.prices.price.value, {
-                        style: 'currency',
-                        currency: product.prices.price.currencyCode,
-                      })}
+                <div className="flex items-center gap-4">
+                  {product.prices?.price?.value !== undefined && (
+                    <div className="text-right">
+                      <div className="text-lg font-medium text-[#008bb7]">
+                        {format.number(product.prices.price.value, {
+                          style: 'currency',
+                          currency: product.prices.price.currencyCode,
+                        })}
+                      </div>
                     </div>
                   )}
+
+                  <button
+                    className="group relative flex h-[3em] w-[14em] items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white transition-all duration-300 hover:bg-[#03465C]/90"
+                    onClick={() => {
+                      const addToCartButton = productFormRef.current?.querySelector(
+                        'button[type="submit"]',
+                      ) as HTMLButtonElement | null;
+                      if (addToCartButton) {
+                        addToCartButton.click();
+                      }
+                    }}
+                  >
+                    <span className="transition-transform duration-300 group-hover:-translate-x-2">
+                      ADD TO CART
+                    </span>
+                    <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[2.5em]">
+                      <ShoppingCart className="h-5 w-0 transform opacity-0 transition-all duration-300 group-hover:w-5 group-hover:opacity-100" />
+                    </div>
+                  </button>
                 </div>
-              </div>
-              {/* ProductForm with showInSticky prop */}
-              <div className="flex-shrink-0">
-                <ProductForm
-                  data={product}
-                  productMpn={product.mpn || ''}
-                  multipleOptionIcon={multipleOptionIcon}
-                  blankAddImg={blankAddImg}
-                  fanPopup={fanPopup}
-                  closeIcon={closeIcon}
-                  showInSticky={true}
-                />
               </div>
             </div>
           </div>
-        </div>
+
+          <div
+            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
+              isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
+            } px-[20px] pt-[20px]`}
+          >
+            {/* Mobile View Button */}
+            <button
+              className="group relative flex h-[3em] w-full items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white"
+              onClick={() => {
+                const addToCartButton = productFormRef.current?.querySelector(
+                  'button[type="submit"]',
+                ) as HTMLButtonElement | null;
+                if (addToCartButton) {
+                  addToCartButton.click();
+                }
+              }}
+            >
+              <span className="transition-transform duration-300 group-hover:-translate-x-2">
+                ADD TO CART
+              </span>
+              <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-12">
+                <ShoppingCart className="h-5 w-0 transform opacity-0 transition-all duration-300 group-hover:w-5 group-hover:opacity-100" />
+              </div>
+            </button>
+          </div>
+        </>
       )}
 
       <div className="div-product-details">

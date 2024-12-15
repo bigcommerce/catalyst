@@ -97,6 +97,9 @@ export default async function ProductPage(props: Props) {
   const relatedProductArrow = imageManagerImageUrl('vector-8-.png', '30w');
   const galleryExpandIcon = imageManagerImageUrl('vector.jpg', '20w'); // Set galleryExpandIcon here
   const dropdownSheetIcon = imageManagerImageUrl('icons8-download-symbol-16.png', '20w');
+
+  const cartHeader = imageManagerImageUrl('cartheader.png', '20w');
+
   setRequestLocale(locale);
 
   const t = await getTranslations('Product');
@@ -197,6 +200,7 @@ export default async function ProductPage(props: Props) {
               product={product}
               collectionValue={collectionValue}
               dropdownSheetIcon={dropdownSheetIcon}
+              cartHeader={cartHeader}
             />
             <div className="lg:col-span-2">
               <Description product={product} />

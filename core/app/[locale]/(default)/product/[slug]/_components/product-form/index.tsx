@@ -71,6 +71,7 @@ export const Submit = ({
   return (
     <AddToCartButton data={product} loading={isSubmitting}>
       {/* Remove the ShoppingCart icon completely */}
+
       {isSticky ? '' : ''}
     </AddToCartButton>
   );
