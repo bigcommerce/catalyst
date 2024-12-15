@@ -23,6 +23,22 @@ const LoginMutation = graphql(`
   }
 `);
 
+const LoginWithTokenMutation = graphql(`
+  mutation LoginWithCustomerLoginJwt($jwt: String!) {
+    loginWithCustomerLoginJwt(jwt: $jwt) {
+        customerAccessToken {
+          value
+        }
+        customer {
+          entityId
+          firstName
+          lastName
+          email
+        }
+    }
+  }
+`);
+
 const AssignCartToCustomerMutation = graphql(`
   mutation AssignCartToCustomer($assignCartToCustomerInput: AssignCartToCustomerInput!) {
     cart {
