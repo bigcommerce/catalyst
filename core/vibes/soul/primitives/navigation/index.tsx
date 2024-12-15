@@ -74,7 +74,12 @@ export type SearchResult =
 
 type LocaleAction = Action<SubmissionResult | null, FormData>;
 type SearchAction<S extends SearchResult> = Action<
-  { searchResults: S[] | null; lastResult: SubmissionResult | null },
+  {
+    searchResults: S[] | null;
+    lastResult: SubmissionResult | null;
+    emptyStateTitle?: string;
+    emptyStateSubtitle?: string;
+  },
   FormData
 >;
 
@@ -96,10 +101,9 @@ interface Props<S extends SearchResult> {
   searchAction?: SearchAction<S>;
   searchCtaLabel?: string;
   searchInputPlaceholder?: string;
-  emptySearchTitle?: string;
-  emptySearchSubtitle?: string;
   cartLabel?: string;
   accountLabel?: string;
+  openSearchPopupLabel?: string;
   searchLabel?: string;
   mobileMenuTriggerLabel?: string;
 }
@@ -182,10 +186,9 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     searchAction,
     searchCtaLabel,
     searchInputPlaceholder,
-    emptySearchTitle,
-    emptySearchSubtitle,
     cartLabel = 'Cart',
     accountLabel = 'Profile',
+    openSearchPopupLabel = 'Open search popup',
     searchLabel = 'Search',
     mobileMenuTriggerLabel = 'Toggle navigation',
   }: Props<S>,
@@ -414,7 +417,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               <Popover.Anchor className="absolute left-0 right-0 top-full" />
               <Popover.Trigger asChild>
                 <button
-                  aria-label={searchLabel}
+                  aria-label={openSearchPopupLabel}
                   className="rounded-lg p-1.5 ring-primary transition-colors focus-visible:outline-0 focus-visible:ring-2 @4xl:hover:bg-contrast-100"
                   onPointerEnter={(e) => e.preventDefault()}
                   onPointerLeave={(e) => e.preventDefault()}
@@ -427,8 +430,6 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popper-anchor-width)] py-2 @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
                   <div className="flex max-h-[inherit] flex-col rounded-2xl bg-background shadow-xl shadow-foreground/5 ring-1 ring-foreground/5 transition-all duration-200 ease-in-out @4xl:inset-x-0">
                     <SearchForm
-                      emptySearchSubtitle={emptySearchSubtitle}
-                      emptySearchTitle={emptySearchTitle}
                       searchAction={searchAction}
                       searchCtaLabel={searchCtaLabel}
                       searchHref={searchHref}
@@ -506,8 +507,6 @@ function SearchForm<S extends SearchResult>({
   searchHref = '/search',
   searchInputPlaceholder = 'Search Products',
   searchCtaLabel = 'View more',
-  emptySearchTitle,
-  emptySearchSubtitle,
   submitLabel = 'Submit',
 }: {
   searchAction: SearchAction<S>;
@@ -515,16 +514,15 @@ function SearchForm<S extends SearchResult>({
   searchHref?: string;
   searchCtaLabel?: string;
   searchInputPlaceholder?: string;
-  emptySearchTitle?: string;
-  emptySearchSubtitle?: string;
   submitLabel?: string;
 }) {
   const [query, setQuery] = useState('');
   const [isSearching, startSearching] = useTransition();
-  const [{ searchResults, lastResult }, formAction] = useActionState(searchAction, {
-    searchResults: null,
-    lastResult: null,
-  });
+  const [{ searchResults, lastResult, emptyStateTitle, emptyStateSubtitle }, formAction] =
+    useActionState(searchAction, {
+      searchResults: null,
+      lastResult: null,
+    });
   const [isDebouncing, setIsDebouncing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isPending = isSearching || isDebouncing || isSubmitting;
@@ -581,8 +579,8 @@ function SearchForm<S extends SearchResult>({
       </form>
 
       <SearchResults
-        emptySearchSubtitle={emptySearchSubtitle}
-        emptySearchTitle={emptySearchTitle}
+        emptySearchSubtitle={emptyStateSubtitle}
+        emptySearchTitle={emptyStateTitle}
         errors={form.errors}
         query={query}
         searchCtaLabel={searchCtaLabel}
@@ -614,7 +612,7 @@ function SearchResults({
   query,
   searchResults,
   stale,
-  emptySearchTitle = 'No results were found for',
+  emptySearchTitle = `No results were found for '${query}'`,
   emptySearchSubtitle = 'Please try another search.',
   errors,
 }: {
@@ -648,9 +646,7 @@ function SearchResults({
 
     return (
       <div className="flex flex-col border-t border-contrast-100 p-6">
-        <h1 className="text-2xl font-medium text-foreground">
-          {emptySearchTitle} &apos;{query}&apos;.
-        </h1>
+        <p className="text-2xl font-medium text-foreground">{emptySearchTitle}</p>
         <p className="text-contrast-500">{emptySearchSubtitle}</p>
       </div>
     );
@@ -667,43 +663,56 @@ function SearchResults({
         switch (result.type) {
           case 'links': {
             return (
-              <div
+              <section
+                aria-label={result.title}
                 className="flex w-full flex-col gap-1 border-b border-contrast-100 p-5 @2xl:max-w-80 @2xl:border-b-0 @2xl:border-r"
                 key={`result-${index}`}
               >
-                <span className="mb-4 font-mono text-sm uppercase">{result.title}</span>
-                {result.links.map((link, i) => (
-                  <Link
-                    className="block rounded-lg px-3 py-4 font-semibold text-contrast-500 ring-primary transition-colors hover:bg-contrast-100 hover:text-foreground focus-visible:outline-0 focus-visible:ring-2"
-                    href={link.href}
-                    key={i}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
+                <h3 className="mb-4 font-mono text-sm uppercase">{result.title}</h3>
+                <ul role="listbox">
+                  {result.links.map((link, i) => (
+                    <li key={i}>
+                      <Link
+                        className="block rounded-lg px-3 py-4 font-semibold text-contrast-500 ring-primary transition-colors hover:bg-contrast-100 hover:text-foreground focus-visible:outline-0 focus-visible:ring-2"
+                        href={link.href}
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
             );
           }
 
           case 'products': {
             return (
-              <div className="flex w-full flex-col gap-5 p-5" key={`result-${index}`}>
-                <span className="font-mono text-sm uppercase">{result.title}</span>
-                <div className="grid w-fit grid-cols-2 gap-5 @xl:grid-cols-4 @2xl:grid-cols-2 @4xl:grid-cols-4">
+              <section
+                aria-label={result.title}
+                className="flex w-full flex-col gap-5 p-5"
+                key={`result-${index}`}
+              >
+                <h3 className="font-mono text-sm uppercase">{result.title}</h3>
+                <ul
+                  className="grid w-fit grid-cols-2 gap-5 @xl:grid-cols-4 @2xl:grid-cols-2 @4xl:grid-cols-4"
+                  role="listbox"
+                >
                   {result.products.map((product) => (
-                    <ProductCard
-                      key={product.id}
-                      product={{
-                        id: product.id,
-                        title: product.title,
-                        href: product.href,
-                        price: product.price,
-                        image: product.image,
-                      }}
-                    />
+                    <li key={product.id}>
+                      <ProductCard
+                        key={product.id}
+                        product={{
+                          id: product.id,
+                          title: product.title,
+                          href: product.href,
+                          price: product.price,
+                          image: product.image,
+                        }}
+                      />
+                    </li>
                   ))}
-                </div>
-              </div>
+                </ul>
+              </section>
             );
           }
 
