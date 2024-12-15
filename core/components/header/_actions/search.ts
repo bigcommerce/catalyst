@@ -50,6 +50,10 @@ export async function search(
     return { lastResult: submission.reply(), searchResults: lastResult.searchResults };
   }
 
+  if (submission.value.term.length < 3) {
+    return { lastResult: submission.reply(), searchResults: null };
+  }
+
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   try {
