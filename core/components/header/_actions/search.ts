@@ -42,7 +42,7 @@ export async function search(
   },
   formData: FormData,
 ): Promise<{ lastResult: SubmissionResult | null; searchResults: SearchResult[] | null }> {
-  const submission = parseWithZod(formData, { schema: z.object({ q: z.string() }) });
+  const submission = parseWithZod(formData, { schema: z.object({ term: z.string() }) });
 
   if (submission.status !== 'success') {
     return { lastResult: submission.reply(), searchResults: lastResult.searchResults };
@@ -53,7 +53,7 @@ export async function search(
   try {
     const response = await client.fetch({
       document: GetQuickSearchResultsQuery,
-      variables: { filters: { searchTerm: submission.value.q } },
+      variables: { filters: { searchTerm: submission.value.term } },
       customerAccessToken,
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
