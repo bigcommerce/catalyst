@@ -64,7 +64,7 @@ export const Header = async () => {
         cartLabel: t('Icons.cart'),
         searchHref: '/search',
         searchLabel: t('Icons.search'),
-        searchParamName: 'q',
+        searchParamName: 'term',
         searchAction: search,
         links: getLinks(),
         logo: getLogo(),
