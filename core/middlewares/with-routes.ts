@@ -11,6 +11,8 @@ import { kv } from '../lib/kv';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
+const EXEMPT_ROUTE_PREFIXES = ['/login/token'];
+
 const GetRouteQuery = graphql(`
   query getRoute($path: String!) {
     site {
@@ -255,6 +257,21 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
 export const withRoutes: MiddlewareFactory = () => {
   return async (request, event) => {
     const locale = request.headers.get('x-bc-locale') ?? '';
+    const pathname = request.nextUrl.pathname;
+
+    // Check if the current path (without locale) should be exempt
+    const pathWithoutLocale = clearLocaleFromPath(pathname, locale);
+    const isExempt = EXEMPT_ROUTE_PREFIXES.some(prefix => pathWithoutLocale.startsWith(prefix));
+
+    if (isExempt) {
+      // Ensure the locale prefix is present while exempting from route processing
+      if (!pathname.startsWith(`/${locale}/`)) {
+        const url = new URL(`/${locale}${pathname}`, request.url);
+        url.search = request.nextUrl.search;
+        return NextResponse.rewrite(url);
+      }
+      return NextResponse.next();
+    }
 
     const { route, status } = await getRouteInfo(request, event);
 

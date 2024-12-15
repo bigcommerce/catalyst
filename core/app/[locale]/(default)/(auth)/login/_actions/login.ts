@@ -13,18 +13,27 @@ interface LoginResponse {
 export const login = async (formData: FormData): Promise<LoginResponse> => {
   try {
     const locale = await getLocale();
+    console.log('Login action called with formData:', Object.fromEntries(formData));
 
     const credentials = Credentials.parse({
+      type: 'password',
       email: formData.get('email'),
       password: formData.get('password'),
     });
+    console.log('Parsed credentials:', credentials);
 
-    await signIn('credentials', {
+    const result = await signIn('credentials', {
       ...credentials,
-      // We want to use next/navigation for the redirect as it
-      // follows basePath and trailing slash configurations.
       redirect: false,
     });
+    console.log('SignIn result:', result);
+
+    if (result?.error) {
+      console.error('SignIn error:', result.error);
+      return {
+        status: 'error',
+      };
+    }
 
     redirect({ href: '/account/orders', locale });
 
@@ -32,6 +41,7 @@ export const login = async (formData: FormData): Promise<LoginResponse> => {
       status: 'success',
     };
   } catch (error: unknown) {
+    console.error('Login action error:', error);
     rethrow(error);
 
     return {

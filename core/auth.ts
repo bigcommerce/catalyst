@@ -35,6 +35,7 @@ const LoginWithTokenMutation = graphql(`
           lastName
           email
         }
+        redirectTo
     }
   }
 `);
@@ -59,10 +60,17 @@ const LogoutMutation = graphql(`
   }
 `);
 
-export const Credentials = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
-});
+export const Credentials = z.discriminatedUnion('type', [
+  z.object({
+    type: z.literal('password'),
+    email: z.string().email(),
+    password: z.string().min(1),
+  }),
+  z.object({
+    type: z.literal('jwt'),
+    jwt: z.string(),
+  }),
+]);
 
 const config = {
   session: {
@@ -137,35 +145,75 @@ const config = {
   providers: [
     CredentialsProvider({
       credentials: {
+        type: { type: 'text' },
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
+        jwt: { type: 'text' },
       },
-      async authorize(credentials) {
-        const { email, password } = Credentials.parse(credentials);
+      async authorize(credentials) {        
+        try {
+          const parsed = Credentials.parse(credentials);
 
-        const response = await client.fetch({
-          document: LoginMutation,
-          variables: { email, password },
-          fetchOptions: {
-            cache: 'no-store',
-          },
-        });
+          if (parsed.type === 'password') {
+            const response = await client.fetch({
+              document: LoginMutation,
+              variables: { email: parsed.email, password: parsed.password },
+              fetchOptions: {
+                cache: 'no-store',
+              },
+            });
 
-        if (response.errors && response.errors.length > 0) {
+            if (response.errors?.length > 0) {
+              console.error('Login errors:', response.errors);
+              return null;
+            }
+
+            const result = response.data.login;
+
+            if (!result.customer || !result.customerAccessToken) {
+              return null;
+            }
+
+            return {
+              name: `${result.customer.firstName} ${result.customer.lastName}`,
+              email: result.customer.email,
+              customerAccessToken: result.customerAccessToken.value,
+            };
+          }
+
+          if (parsed.type === 'jwt') {
+            const response = await client.fetch({
+              document: LoginWithTokenMutation,
+              variables: { jwt: parsed.jwt },
+              fetchOptions: {
+                cache: 'no-store',
+              },
+            });
+
+            if (response.errors?.length > 0) {
+              return null;
+            }
+
+            const result = response.data.loginWithCustomerLoginJwt;
+
+            console.log('Login with token result:', response);
+
+            if (!result.customer || !result.customerAccessToken) {
+              return null;
+            }
+
+            return {
+              name: `${result.customer.firstName} ${result.customer.lastName}`,
+              email: result.customer.email,
+              customerAccessToken: result.customerAccessToken.value,
+            };
+          }
+
+          return null;
+        } catch (error) {
+          console.error('Error in authorize:', error);
           return null;
         }
-
-        const result = response.data.login;
-
-        if (!result.customer || !result.customerAccessToken) {
-          return null;
-        }
-
-        return {
-          name: `${result.customer.firstName} ${result.customer.lastName}`,
-          email: result.customer.email,
-          customerAccessToken: result.customerAccessToken.value,
-        };
       },
     }),
   ],
