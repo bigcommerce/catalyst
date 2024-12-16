@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
+import Link from 'next/link';
 
 import { useAccountStatusContext } from '~/app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
 import { ExistingResultType } from '~/client/util';
@@ -268,20 +269,22 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
                 Keep me informed on sales, news, and special offers
               </Label>
 
-              <a
-                className="ml-2 text-center text-sm font-normal leading-6 tracking-tight text-[#008BB7]"
-                href="#"
               >
+              <Link href="#"><a
+                className="ml-2 text-center text-sm font-normal leading-6 tracking-tight text-[#008BB7]">
                 Privacy Policy
               </a>
+              </Link>
             </div>
           </Field>
         </div>
 
         <div className="mb-2 mt-2 md:mb-[30px] md:mt-[45px]">
+          <Link href="/login">
           <a className="font-open-sans cursor-pointer text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#353535] md:text-lg">
             Sign in With an Existing Account
           </a>
+          </Link>
         </div>
       </Form>
     </>

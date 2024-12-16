@@ -29,8 +29,7 @@ const OneStopLightning = imageManagerImageUrl('1stop-lightning.png', '194w');
 const lunaWarehouse = imageManagerImageUrl('luna-warehouse.png', '298w');
 const canadaLightning = imageManagerImageUrl('canada-lightning.png', '228w');
 const homeclickBlack = imageManagerImageUrl('homeclick-black.png', '150w');
-const passwordHide =  imageManagerImageUrl('eye-password-hide.png', '150w');
-
+const passwordHide = imageManagerImageUrl('eye-password-hide.png', '150w');
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -55,7 +54,8 @@ export default async function Login({ params }: Props) {
 
   return (
     <>
-      <div className="main-login-page w-full bg-[#F3F4F5] border-t-[10px] border-t-[#008BB7]">
+      <div>
+      <div className="main-login-page w-full border-t-[10px] border-t-[#008BB7] bg-[#F3F4F5]">
         <div className="relative overflow-x-auto">
           <div className="flex min-w-fit items-center whitespace-nowrap py-5 pl-4 pr-4 md:justify-center md:py-[20px]">
             <div className="flex items-center gap-4 md:gap-[30px]">
@@ -124,9 +124,9 @@ export default async function Login({ params }: Props) {
         </div>
       </div>
 
-      <div className="mt-[20px] flex flex-col gap-[20px] px-0 w-[92%] m-auto xl:px-12 2xl:mx-auto 2xl:px-0">
+      <div className="m-auto mt-[20px] flex w-[92%] flex-col gap-[20px] px-0 xl:px-12 2xl:mx-auto 2xl:px-0">
         <ComponentsBreadcrumbs
-          className="login-div login-breadcrumb mx-auto mt-[0.5rem] w-[80%] px-[1px] hidden lg:block"
+          className="login-div login-breadcrumb mx-auto mt-[0.5rem] hidden w-[80%] px-[1px] lg:block"
           breadcrumbs={breadcrumbs}
         />
         <div className="login-div login-div-one mx-auto mt-3 flex w-full flex-col justify-between gap-0 px-[1px] text-center md:mt-6 lg:mt-0 xl:w-[80%] xl:flex-row xl:gap-24 xl:text-left">
@@ -136,9 +136,11 @@ export default async function Login({ params }: Props) {
               Shopping for a Business?
             </p>
 
-            <button className="box-border flex max-w-[258px] flex-row items-center justify-center gap-1 rounded border border-[#4EAECC] xl:border-[#B4DDE9] bg-white px-6 py-2">
+            <button className="box-border flex max-w-[258px] flex-row items-center justify-center gap-1 rounded border border-[#4EAECC] bg-white px-6 py-2 xl:border-[#B4DDE9]">
               <div className="flex items-center text-[14px] font-medium tracking-wide text-[#002A37]">
-                <Link className="text-[16px]" href="/trade-account/trade-step1/">OPEN A TRADE ACCOUNT</Link>
+                <Link className="text-[16px]" href="/trade-account/trade-step1/">
+                  OPEN A TRADE ACCOUNT
+                </Link>
               </div>
             </button>
           </div>
@@ -148,11 +150,11 @@ export default async function Login({ params }: Props) {
         </div>
 
         <div className="login-div mx-auto mb-6 flex w-full flex-col justify-center lg:gap-[4.5rem] xl:w-[80%] xl:flex-row">
-          <div className="login-first-child login-logo mx-[1px] flex w-[calc(90vw)] flex-grow flex-col xl:w-[calc(35.28vw)] self-center xl:self-auto">
+          <div className="login-first-child login-logo mx-[1px] flex w-[calc(90vw)] flex-grow flex-col self-center xl:w-[calc(35.28vw)] xl:self-auto">
             <LoginForm {...imageIconList} passwordHide={passwordHide} />
           </div>
 
-          <div className="login-sec-child mx-[1px] mt-[7em] flex w-[calc(90vw)] flex-grow flex-col gap-[20px] self-center xl:self-auto rounded-[5px] p-0 sm:mt-[7em] xl:mt-0 xl:w-[calc(35.28vw)] xl:items-center">
+          <div className="login-sec-child mx-[1px] mt-[7em] flex w-[calc(90vw)] flex-grow flex-col gap-[20px] self-center rounded-[5px] p-0 sm:mt-[7em] xl:mt-0 xl:w-[calc(35.28vw)] xl:items-center xl:self-auto">
             <div className="flex w-full flex-col gap-[20px] rounded-[5px] bg-[#008BB7] p-[40px] text-white">
               <h3 className="flex items-center justify-center text-center text-[34px] font-bold tracking-[0.25px]">
                 {t('CreateAccount.heading')}
@@ -219,6 +221,7 @@ export default async function Login({ params }: Props) {
           </div>
         </div>
       </div>
+    </div>
     </>
   );
 }

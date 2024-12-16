@@ -80,7 +80,8 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
   };
 
 
-  const validateEmail = (email: string): boolean => {
+  const validateEmail = ()=> {
+    const email = emailInputRef.current?.value || '';
     // Check if email is empty
     if (!email.trim()) {
       setEmailError(t('emailValidationMessage'));
@@ -105,16 +106,6 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
 
      // Reset previous statuses
      setFormStatus(null);
-     setEmailError(t('emailInvalidMessage'));
- 
-     const email = emailInputRef.current?.value || '';
- 
-     // Validate email
-     if (!validateEmail(email)) {
-      setEmailError(t('emailInvalidMessage'));
-       return;
-     }
- 
 
     if (reCaptchaSettings?.isEnabledOnStorefront && !reCaptchaToken) {
       setReCaptchaValid(false);
@@ -184,6 +175,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
                 name="email"
                 required
                 type="email"
+                onBlur={validateEmail}
               />
             </FieldControl>
             {emailError &&(

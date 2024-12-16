@@ -93,6 +93,7 @@ export const Header = async ({ cart }: Props) => {
                   priority={true}
                   src={imageManagerImageUrl('waving-hand-1-.png', '20w')}
                   width={28}
+                  unoptimized={true}
                 />
 
                 {'Support'}
@@ -133,6 +134,7 @@ export const Header = async ({ cart }: Props) => {
                   priority={true}
                   src={imageManagerImageUrl('account-icon.png', '20w')}
                   width={16}
+                  unoptimized={true}
                 />
                 {t('Account.account')}
               </Button>

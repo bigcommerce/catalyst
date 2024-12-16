@@ -74,6 +74,7 @@ export const MobileNav = ({ links, logo, homeLogoMobile }: Props) => {
                     priority
                     src={homeLogoMobile}
                     width={155}
+                    unoptimized={true}
                   />
                 ) : (
                   <span className="w-[45%] truncate text-2xl font-black">{homeLogoMobile}</span>

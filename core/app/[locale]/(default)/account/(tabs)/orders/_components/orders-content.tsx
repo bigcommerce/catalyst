@@ -10,6 +10,7 @@ import { Search as SearchIcon } from 'lucide-react';
 
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import Link from 'next/link';
+import { BcImage } from '~/components/bc-image';
 
 type CustomerOrders = NonNullable<Awaited<ReturnType<typeof getCustomerOrders>>>;
 
@@ -43,7 +44,7 @@ export const OrdersContent = async ({ orderId, orders, pageInfo }: Props) => {
       <SearchIcon />
       </div>
       <div className ="flex flex-row gap-[10px] mt-[20px]">
-        <img src={icon} className="fill-[#fffff]" alt="hand-icon"/>
+        <BcImage src={icon} className="fill-[#fffff]" alt="hand-icon" width={24} unoptimized={true} />
       <span> {t('stillNeedHelp')} </span>
       <Link href="#" className="text-base font-semibold text-[#008BB7]"> {t('contact')}</Link> 
       </div>

@@ -268,7 +268,7 @@ export default async function Trade() {
           </div>
         </div>
 
-        <h2 className="mb-[40px] mt-[0px] text-center text-[24px] font-normal leading-[32px] text-[#353535] lg:mt-[40px]">
+        <h2 className="mb-[40px] mt-[0px] text-center text-[24px] font-normal leading-[32px] text-[#353535] lg:mt-[40px] hidden lg:block">
           Our Network
         </h2>
 

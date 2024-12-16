@@ -191,7 +191,7 @@ export default async function Trade() {
         </div>
 
         {/* Network Section */}
-        <div className="mt-[30px] lg:mt-[60px]">
+        <div className="mt-[30px] lg:mt-[60px] px-[20px] lg:px-0">
           <NetworkSection networkImages={networkImages} />
         </div>
       </div>
