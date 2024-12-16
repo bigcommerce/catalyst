@@ -183,7 +183,7 @@ export const LoginForm = ({
             {t('Form.enterEmailMessage')}
           </FieldMessage>
         </Field>
-        {emailError && <div className="text-[#ff4500] text-xs font-normal">{emailError}</div>}
+        {emailError && <div className="text-[#ff4500] text-sm font-normal">{emailError}</div>}
         <Field className="pb- relative flex flex-col items-start gap-2 space-y-2" name="password">
           <FieldLabel
             className="login-label flex items-center tracking-[0.15px]"

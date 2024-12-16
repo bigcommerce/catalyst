@@ -2,7 +2,7 @@
 
 import { FragmentOf } from 'gql.tada';
 import { useTranslations } from 'next-intl';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useState } from 'react';
 
 import { Field, FieldControl, FieldLabel, FieldMessage, Input } from '~/components/ui/form';
 
@@ -26,9 +26,29 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
   const t = useTranslations('Components.FormFields.Validation');
 
   const fieldName = FieldNameToFieldId[field.entityId];
+  const [passwordError, setPasswordError] = useState<string>('');
+
+  const validatePassword = (password: string) => {
+    if (fieldName === 'password') {
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+      if (!password.trim()) {
+        setPasswordError('');
+        return true;
+      }
+
+      if (!passwordRegex.test(password)) {
+        setPasswordError('Include uppercase, lowercase, number, symbol (8+ chars).');
+        return false;
+      }
+
+      setPasswordError('');
+      return true;
+    }
+  };
 
   return (
-    <Field className="relative space-y-2 mm3" name={name}>
+    <Field className="mm3 relative space-y-2" name={name}>
       <FieldLabel
         className="font-semibold"
         htmlFor={`field-${field.entityId}`}
@@ -45,13 +65,19 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
           onInvalid={onChange}
           required={field.isRequired}
           type="password"
-          className='[&_input]:tracking-[0.5px] [&_input]:h-[47.2px] [&_input[type="password"]]:text-[20px]'
+          className='[&_input[type="password"]]:text-[20px] [&_input]:h-[47.2px] [&_input]:tracking-[0.5px]'
+          onBlur={(e) => {
+            validatePassword((e.target as HTMLInputElement).value);
+          }}
         />
       </FieldControl>
-      <div className="relative h-7 pass1">
+      {passwordError && 
+      <div className='w-full text-xs font-normal text-[#ff4500] absolute bottom-[7%]'>{passwordError}</div>
+      }
+      <div className="pass1 relative h-7">
         {field.isRequired && (
           <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-error-secondary relative text-[#ff4500]"
+            className="text-error-secondary relative inline-flex w-full text-xs font-normal text-[#ff4500]"
             match="valueMissing"
           >
             {t('password')}
@@ -59,7 +85,7 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
         )}
         {fieldName === 'confirmPassword' && (
           <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-error text-[#ff4500]"
+            className="inline-flex w-full text-xs font-normal text-[#ff4500] text-error"
             match={() => {
               return !isValid;
             }}
