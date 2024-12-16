@@ -54,6 +54,7 @@ export const LoginForm = ({
   const [state, formAction] = useActionState(login, { status: 'idle' });
   const { accountState } = useAccountStatusContext();
   const [showLogin, setShowLogin] = useState(false);
+  const [emailError, setEmailError] = useState<string>('');
 
   const [rememberMeCookie, setRememberMeCookie] = useState<any>(null);
   useEffect(() => {
@@ -95,6 +96,23 @@ export const LoginForm = ({
     setRememberMeCookie(null);
   };
 
+  function validateEmail(email: string) {
+    if (!email.trim()) {
+      setEmailError('');
+      return true;
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    if (!emailRegex.test(email)) {
+      setEmailError('Please enter a valid email address');
+      return false;
+    }
+
+    setEmailError('');
+    return true;
+  }
+
   return (
     <>
       {accountState.status === 'success' && (
@@ -104,7 +122,10 @@ export const LoginForm = ({
       )}
 
       {isFormInvalid && (
-        <Message className="mb-8 lg:col-span-2 border border-[#ff4500] rounded-[3px] flex items-center" variant="error">
+        <Message
+          className="mb-8 flex items-center rounded-[3px] border border-[#ff4500] lg:col-span-2"
+          variant="error"
+        >
           <p>{t('Form.error')}</p>
         </Message>
       )}
@@ -146,20 +167,23 @@ export const LoginForm = ({
               required
               type="email"
               placeholder="Enter your email"
+              onBlur={(e) => {
+                validateEmail((e.target as HTMLInputElement).value);
+              }}
             />
           </FieldControl>
           <FieldMessage
             className={
               cookieIsSet
                 ? 'hidden'
-                : 'relative inset-x-0 bottom-0 inline-flex w-full text-sm text-error text-[#ff4500]'
+                : 'relative inset-x-0 bottom-0 inline-flex w-full text-sm text-[#ff4500]'
             }
             match="valueMissing"
           >
             {t('Form.enterEmailMessage')}
           </FieldMessage>
         </Field>
-
+        {emailError && <div className="text-[#ff4500] text-sm font-normal">{emailError}</div>}
         <Field className="pb- relative flex flex-col items-start gap-2 space-y-2" name="password">
           <FieldLabel
             className="login-label flex items-center tracking-[0.15px]"
@@ -181,7 +205,7 @@ export const LoginForm = ({
             />
           </FieldControl>
           <FieldMessage
-            className="relative inset-x-0 bottom-0 inline-flex w-full text-sm text-error text-[#ff4500]"
+            className="relative inset-x-0 bottom-0 inline-flex w-full text-sm text-[#ff4500]"
             match="valueMissing"
           >
             {t('Form.entePasswordMessage')}
@@ -217,6 +241,7 @@ export const LoginForm = ({
                 width={20}
                 height={20}
                 priority={true}
+                unoptimized={true}
               />
               <p className="text-[20px] font-medium text-[#1877F2]">Facebook</p>
             </button>
@@ -229,6 +254,7 @@ export const LoginForm = ({
                 width={20}
                 height={20}
                 priority={true}
+                unoptimized={true}
               />
               <p className="text-[20px] font-medium text-[#757575]">Google</p>
             </button>
@@ -241,6 +267,7 @@ export const LoginForm = ({
                 width={24}
                 height={24}
                 priority={true}
+                unoptimized={true}
               />
               <p className="text-[20px] font-medium text-[#353535]">Apple</p>
             </button>

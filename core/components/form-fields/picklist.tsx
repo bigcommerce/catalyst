@@ -84,7 +84,7 @@ export const Picklist = ({
         />
       </FieldControl>
       <div className="relative h-7">
-        {!validationError && (
+        {validationError && (
           <FieldMessage className="inline-flex w-full text-xs font-normal text-error text-[#ff4500]">
             {t('empty')}
           </FieldMessage>

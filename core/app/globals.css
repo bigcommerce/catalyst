@@ -16,13 +16,13 @@
 .header-sub-menu-1 .submenu-div:nth-child(4) {
   grid-row: span 2;
 }
-.header-sub-menu-2 .submenu-div:nth-child(4) {
-  grid-row: span 8;
+.header-sub-menu-1 .submenu-div:nth-child(11) {
+  margin-top: 2.6em;
 }
 
- .parent-menu-2 {
+.parent-menu-2 {
   margin-left: 21.5em;
-} 
+}
 .parent-menu-3 {
   margin-left: 26.5em;
 }
@@ -31,29 +31,21 @@
 }
 .parent-menu-5 {
   margin-left: 21em;
-} 
-
-.header-sub-menu-2 {
-  grid-template-rows: 14px;
 }
 
 .header-sub-menu-1 {
-  grid-template-rows: 24px 17px 50px 30px 30px 60px;
+  grid-template-rows: 28px;
   gap: 14px;
-  grid-template-columns: auto auto auto auto auto auto;
   display: grid;
-  padding-bottom:15px !important;
+  padding-bottom: 15px !important;
 }
+
 .header-sub-menu-1 .submenu-div:nth-child(10) {
-  margin-top: 40px;
+  margin-top: 2.6em;
 }
 .header-sub-menu-1 .submenu-div:nth-child(12) {
-  margin-top: 40px;
+  margin-top: 10.5em;
 }
-/* .header-sub-menu-1 .submenu-div:nth-child(11) {
-  margin-top: 1px;
-} */
-
 .trade2-form .relative.h-7.pass2 {
   position: relative;
   top: -10px;
@@ -587,17 +579,6 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
 /* clients-side-css */
 
 button.carousel-next-arrow {
@@ -810,7 +791,7 @@ button.show-all {
   margin: 0 1rem 1rem;
 }
 .aa-DetachedSearchButtonIcon {
-  color: #5C5C5C !important;
+  color: #5c5c5c !important;
 }
 .aa-DetachedSearchButtonIcon svg.aa-SubmitIcon {
   height: 16px;
@@ -820,7 +801,7 @@ button.show-all {
   margin-top: 0;
 }
 .aa-DetachedSearchButtonPlaceholder {
-  color: #5C5C5C;
+  color: #5c5c5c;
 }
 @media only screen and (max-width: 375px) {
   .ais-Dropdown.ais-Dropdown--opened .ais-Panel-body {

@@ -104,7 +104,7 @@ const testimonials: TestimonialData[] = [
     imageSrc: imageManagerImageUrl('quorem-trade.png', 'original'),
     imageAlt: 'Fast Shipping',
     testimonial:
-      '1StopLighting.com has been an invaluable partner for Quorum Brands, consistently exceeding our expectations as the go-to resource for builders, electricians, and lighting professionals.',
+      '"1StopLighting.com has been an invaluable partner for Quorum Brands, consistently exceeding our expectations as the go-to resource for builders, electricians, and lighting professionals. Their comprehensive understanding of Quorum products, combined with their unwavering commitment to customer satisfaction, sets them apart in the industry. Their dedication to excellence makes them our trusted ally."',
     name: 'Field Bradford',
     position: 'National Sales Manager',
   },
@@ -112,7 +112,7 @@ const testimonials: TestimonialData[] = [
     imageSrc: imageManagerImageUrl('quoizel-trade.png', 'original'),
     imageAlt: 'Reliable Support',
     testimonial:
-      'Belami not only offers top-tier products within the Pro category, seamlessly blending functionality and design, but also ensures unparalleled customer service, responsiveness, and expertise.',
+      '"Belami not only offers top-tier products within the Pro category, seamlessly blending functionality and design, but also ensures unparalleled customer service, responsiveness, and expertise. Amidst the complexities of the industry, you can confidently rely on the Belami team to deliver the best fixtures for your projects."',
     name: 'Howard Greenberg',
     position: 'Director of Sales',
   },
@@ -120,7 +120,7 @@ const testimonials: TestimonialData[] = [
     imageSrc: imageManagerImageUrl('maxim-trade.jpg', 'original'),
     imageAlt: 'Quality Products',
     testimonial:
-      "Maxim/ET2 has a well-established professional relationship with the Belami team. They have proven to be a top tier partner working alongside trade professionals and helping grow a client's business.",
+      '"Maxim/ET2 has a well-established professional relationship with the Belami team. They have proven to be a top tier partner working alongside trade professionals and helping grow a client\'s business. Balami\'s Pro team is second to none when it comes to product knowledge, logistic accuracy, and customer service."',
     name: 'Jason Eberhardt',
     position: 'National E-commerce Accounting Manager',
   },
@@ -268,7 +268,7 @@ export default async function Trade() {
           </div>
         </div>
 
-        <h2 className="mb-[40px] mt-[0px] text-center text-[24px] font-normal leading-[32px] text-[#353535] lg:mt-[40px]">
+        <h2 className="mb-[40px] mt-[0px] text-center text-[24px] font-normal leading-[32px] text-[#353535] lg:mt-[40px] hidden lg:block">
           Our Network
         </h2>
 
@@ -281,7 +281,7 @@ export default async function Trade() {
         {/* Project Carousel Section */}
         <div className="w-full">
           <h2 className="mb-[40px] mt-[10px] text-center text-[24px] font-normal leading-[32px] text-[#353535]">
-            Our Projects
+          Our Partner Projects in Action
           </h2>
           <div className="m-auto w-[95%] px-4">
             <ImageCarousel images={images} height="520px" />
