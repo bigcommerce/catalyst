@@ -106,6 +106,7 @@
   "Register": {
     "title": "Register account",
     "heading": "New account",
+    "successfulUpdate": "Account has been successfully updated.",
     "Form": {
       "submit": "Create account",
       "submitting": "Creating account...",
