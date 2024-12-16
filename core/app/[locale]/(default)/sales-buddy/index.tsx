@@ -11,11 +11,7 @@ import ReferalId from './common-components/_components/CartReferralPage';
 import SalesBuddyProductPage from './common-components/_components/PDPPage';
 import PLPPageInterface from './common-components/_components/PLPPageInterface';
 
-
-interface Props{
-  cartId: string;
-}
-export default function SalesBuddyAppIndex({cartId}: Props) {
+export default function SalesBuddyAppIndex() {
   const [isOpen, setIsOpen] = useState(false); 
   const path = usePathname();
   // Extract last segment of the path
@@ -25,7 +21,7 @@ export default function SalesBuddyAppIndex({cartId}: Props) {
     if (path.indexOf('/cart/') > -1) {
       return (
         <div className="space-y-[20px]">
-          <ReferalId cartId={cartId}/>
+          <ReferalId />
           <CartInterface />
           <CustomerSupportPage />
         </div>
