@@ -17,7 +17,7 @@ export const Banner = forwardRef(
       children: ReactNode;
       hideDismiss?: boolean;
       className?: string;
-      onDismiss?(): void;
+      onDismiss?: () => void;
     },
     ref: ForwardedRef<HTMLDivElement>,
   ) => {

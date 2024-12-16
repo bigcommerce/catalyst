@@ -16,7 +16,7 @@ export function StickySidebarLayout({
   sidebarPosition?: 'left' | 'right';
 }) {
   return (
-    <section className={clsx('@container', className)}>
+    <section className={clsx('group/pending @container', className)}>
       <div
         className={clsx(
           'mx-auto flex flex-col items-stretch gap-x-16 gap-y-10 px-4 py-10 @xl:px-6 @xl:py-14 @4xl:flex-row @4xl:px-8 @4xl:py-20',

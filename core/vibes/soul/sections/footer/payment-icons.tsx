@@ -1,4 +1,4 @@
-export function Amex() {
+export const Amex = function Amex() {
   return (
     <svg fill="none" height="24" viewBox="0 0 35 24" width="35" xmlns="http://www.w3.org/2000/svg">
       <rect fill="#1F72CD" height="23" rx="3.5" stroke="#D9D9D9" width="34" x="0.5" y="0.5" />
@@ -10,9 +10,9 @@ export function Amex() {
       />
     </svg>
   );
-}
+};
 
-export function ApplePay() {
+export const ApplePay = function ApplePay() {
   return (
     <svg fill="none" height="24" viewBox="0 0 35 24" width="35" xmlns="http://www.w3.org/2000/svg">
       <rect fill="white" height="23" rx="3.5" stroke="#D9D9D9" width="34" x="0.5" y="0.5" />
@@ -24,9 +24,9 @@ export function ApplePay() {
       />
     </svg>
   );
-}
+};
 
-export function Bitcoin() {
+export const Bitcoin = function Bitcoin() {
   return (
     <svg fill="none" height="24" viewBox="0 0 35 24" width="35" xmlns="http://www.w3.org/2000/svg">
       <rect fill="white" height="23" rx="3.5" stroke="#D9D9D9" width="34" x="0.5" y="0.5" />
@@ -38,9 +38,9 @@ export function Bitcoin() {
       />
     </svg>
   );
-}
+};
 
-export function GooglePay() {
+export const GooglePay = function GooglePay() {
   return (
     <svg fill="none" height="24" viewBox="0 0 35 24" width="35" xmlns="http://www.w3.org/2000/svg">
       <rect fill="white" height="23" rx="3.5" stroke="#D9D9D9" width="34" x="0.5" y="0.5" />
@@ -68,9 +68,9 @@ export function GooglePay() {
       />
     </svg>
   );
-}
+};
 
-export function Mastercard() {
+export const Mastercard = function Mastercard() {
   return (
     <svg fill="none" height="24" viewBox="0 0 35 24" width="35" xmlns="http://www.w3.org/2000/svg">
       <rect fill="white" height="23" rx="3.5" stroke="#D9D9D9" width="34" x="0.5" y="0.5" />
@@ -94,9 +94,9 @@ export function Mastercard() {
       />
     </svg>
   );
-}
+};
 
-export function Paypal() {
+export const Paypal = function Paypal() {
   return (
     <svg fill="none" height="24" viewBox="0 0 35 24" width="35" xmlns="http://www.w3.org/2000/svg">
       <rect fill="white" height="23" rx="3.5" stroke="#D9D9D9" width="34" x="0.5" y="0.5" />
@@ -130,9 +130,9 @@ export function Paypal() {
       />
     </svg>
   );
-}
+};
 
-export function Visa() {
+export const Visa = function Visa() {
   return (
     <svg fill="none" height="24" viewBox="0 0 35 24" width="35" xmlns="http://www.w3.org/2000/svg">
       <rect fill="white" height="23" rx="3.5" stroke="#D9D9D9" width="34" x="0.5" y="0.5" />
@@ -144,4 +144,4 @@ export function Visa() {
       />
     </svg>
   );
-}
+};

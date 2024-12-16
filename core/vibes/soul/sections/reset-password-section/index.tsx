@@ -11,7 +11,7 @@ interface Props {
 
 export function ResetPasswordSection({
   title = 'Reset password',
-  subtitle,
+  subtitle = 'Enter a new password below to reset your account password.',
   submitLabel,
   newPasswordLabel,
   confirmPasswordLabel,
