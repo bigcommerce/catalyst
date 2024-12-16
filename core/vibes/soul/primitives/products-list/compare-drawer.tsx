@@ -2,6 +2,7 @@
 
 import { ArrowRight, X } from 'lucide-react';
 import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
+import { startTransition } from 'react';
 
 import { Button } from '@/vibes/soul/primitives/button';
 import { Drawer } from '@/vibes/soul/primitives/drawer';
@@ -80,10 +81,12 @@ export function CompareDrawer({
                   aria-label={`Remove ${item.title}`}
                   className="absolute -right-2.5 -top-2.5 flex h-7 w-7 items-center justify-center rounded-full border border-contrast-100 bg-background text-contrast-400 transition-colors duration-150 hover:border-contrast-200 hover:bg-contrast-100 hover:text-foreground"
                   onClick={() => {
-                    void setParam((prev) => {
-                      const next = prev?.filter((v) => v !== item.id) ?? [];
+                    startTransition(async () => {
+                      await setParam((prev) => {
+                        const next = prev?.filter((v) => v !== item.id) ?? [];
 
-                      return next.length > 0 ? next : null;
+                        return next.length > 0 ? next : null;
+                      });
                     });
                   }}
                   type="button"

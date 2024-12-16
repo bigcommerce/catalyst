@@ -14,6 +14,10 @@ export interface BreadcrumbsProps {
 }
 
 export function Breadcrumbs({ breadcrumbs, className }: BreadcrumbsProps) {
+  if (breadcrumbs.length === 0) {
+    return <div className={clsx('min-h-[1lh]', className)} />;
+  }
+
   return (
     <nav aria-label="breadcrumb" className={clsx(className)}>
       <ol className="flex flex-wrap items-center gap-x-1.5 text-sm @xl:text-base">
@@ -48,7 +52,10 @@ export function Breadcrumbs({ breadcrumbs, className }: BreadcrumbsProps) {
 export function BreadcrumbsSkeleton({ className }: { className?: string }) {
   return (
     <div
-      className={clsx('flex animate-pulse flex-wrap items-center gap-x-1.5 text-base', className)}
+      className={clsx(
+        'flex min-h-[1lh] animate-pulse flex-wrap items-center gap-x-1.5 text-base',
+        className,
+      )}
     >
       <div className="flex h-[1lh] items-center">
         <span className="block h-[1.25ex] w-[4ch] rounded bg-contrast-100" />

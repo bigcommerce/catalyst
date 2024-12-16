@@ -1,10 +1,10 @@
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import { clsx } from 'clsx';
-import { Image } from '~/components/image';
 import * as React from 'react';
 
 import { FieldError } from '@/vibes/soul/form/field-error';
 import { Label } from '@/vibes/soul/form/label';
+import { Image } from '~/components/image';
 
 interface Option {
   value: string;

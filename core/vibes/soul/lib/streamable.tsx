@@ -11,7 +11,7 @@ function UseStreamable<T>({
   children,
 }: {
   value: Streamable<T>;
-  children(value: T): React.ReactNode;
+  children: (value: T) => React.ReactNode;
 }) {
   return children(useStreamable(value));
 }
@@ -23,7 +23,7 @@ export function Stream<T>({
 }: {
   value: Streamable<T>;
   fallback?: React.ReactNode;
-  children(value: T): React.ReactNode;
+  children: (value: T) => React.ReactNode;
 }) {
   return (
     <Suspense fallback={fallback}>

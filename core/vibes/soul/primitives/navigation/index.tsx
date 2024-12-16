@@ -700,7 +700,6 @@ function SearchResults({
                   {result.products.map((product) => (
                     <li key={product.id}>
                       <ProductCard
-                        key={product.id}
                         product={{
                           id: product.id,
                           title: product.title,

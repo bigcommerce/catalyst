@@ -161,7 +161,7 @@ export const Footer = forwardRef(function Footer(
               {(socialMediaLinks) => {
                 if (socialMediaLinks != null) {
                   return (
-                    <div className="flex flex-wrap items-center gap-3 pt-8 @3xl:pt-10">
+                    <div className="flex items-center gap-3 pt-8 @3xl:pt-10">
                       {socialMediaLinks.map(({ href, icon }, i) => {
                         return (
                           <Link
