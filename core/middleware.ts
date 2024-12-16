@@ -6,8 +6,8 @@ import { withIntl } from './middlewares/with-intl';
 import { withRoutes } from './middlewares/with-routes';
 
 export const middleware = composeMiddlewares(
-  withCustomerLoginAPI,
   withAuth,
+  withCustomerLoginAPI,
   withIntl,
   withChannelId,
   withRoutes,

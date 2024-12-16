@@ -20,24 +20,20 @@ export const withCustomerLoginAPI: MiddlewareFactory = () => {
     const token = match[1];
 
     try {
-      console.log('Attempting login with token');
-
       const result = await signIn('credentials', {
         type: 'jwt',
         jwt: token,
         redirect: false,
       });
 
-      console.log('SignIn result:', result);
-
       if (!result) {
         console.error('No result from signIn');
-        return NextResponse.redirect(new URL('/en/login?error=NoResponse', request.url));
+        return NextResponse.redirect(new URL('/login?error=NoResponse', request.url));
       }
 
       if (result.error) {
         console.error('SignIn error:', result.error);
-        return NextResponse.redirect(new URL('/en/login?error=InvalidToken', request.url));
+        return NextResponse.redirect(new URL('/login?error=InvalidToken', request.url));
       }
 
       // Handle the redirect URL
@@ -47,7 +43,7 @@ export const withCustomerLoginAPI: MiddlewareFactory = () => {
       }
 
       // Default fallback
-      return NextResponse.redirect(new URL('/account', request.url));
+      return NextResponse.redirect(new URL('/account/orders', request.url));
     } catch (error) {
       console.error('Login error:', error);
       return NextResponse.redirect(new URL('/en/login?error=UnexpectedError', request.url));
