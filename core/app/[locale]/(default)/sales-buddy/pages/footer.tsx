@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import AgentLogin from '../common-components/agent-login/index';
 import ReferralId from './referral';
+import SessionId from './session';
 
 export default function AgentFooter() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,7 +27,7 @@ export default function AgentFooter() {
         Agent Login
       </div>
       <div className=" cursor-pointer hover:text-primary flex justify-space focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20  text-[14px] font-normal leading-[24px] tracking-[0.25px] text-left !text-white">Create Quote</div>
-      <div className="hover:text-primary flex justify-space focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20  text-[14px] font-normal leading-[24px] tracking-[0.25px] text-left !text-white">Session Id : <div id="sessionIdDiv" className='ml-[10px]'>#####</div></div>
+      <SessionId />
     </>
   );
 }
