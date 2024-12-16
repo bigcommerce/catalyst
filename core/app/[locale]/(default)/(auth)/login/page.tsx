@@ -21,6 +21,7 @@ export async function generateMetadata({ params }: Props) {
   return {
     title: t('title'),
   };
+
 }
 
 const patjoheatAndShade = imageManagerImageUrl('patjoheat-and-shade.png', '95w');

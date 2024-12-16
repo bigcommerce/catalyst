@@ -23,6 +23,7 @@ import ProductDetailDropdown from '~/components/ui/pdp/belami-product-details-pd
 import { useCommonContext } from '~/components/common-context/common-provider';
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { ShoppingCart } from 'lucide-react';
+import { Link } from '~/components/link';
 
 interface ProductOptionValue {
   entityId: number;
