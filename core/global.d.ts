@@ -15,6 +15,7 @@ declare module 'react-instantsearch' {
   export function ToggleRefinement(props: ToggleRefinementProps): ReactNode;
   export function RangeInput(props: RangeInputProps): ReactNode;
   export function DynamicWidgets(props: DynamicWidgetsProps): ReactNode;
+  export function HierarchicalMenu(props: HierarchicalMenuProps): ReactNode;
   export function InstantSearch(props: InstantSearchProps): ReactNode;
   export function Configure(props: ConfigureProps): ReactNode;
   export function Hits(props: HitsProps): ReactNode;

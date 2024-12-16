@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 
+import Link from 'next/link';
 import { Breadcrumbs } from '~/components/breadcrumbs';
 
 import Promotion from '../../../../../components/ui/pdp/belami-promotion-banner-pdp';
@@ -113,7 +114,6 @@ export default async function ProductPage(props: Props) {
 
   const productMpn = product?.mpn;
 
-
   if (!product) {
     return notFound();
   }
@@ -130,7 +130,11 @@ export default async function ProductPage(props: Props) {
   }
 
   const relatedProducts = await getRelatedProducts(product.entityId);
-  const collectionProducts = await getCollectionProducts(product.entityId, product.brand?.name ?? '', collectionValue);
+  const collectionProducts = await getCollectionProducts(
+    product.entityId,
+    product.brand?.name ?? '',
+    collectionValue,
+  );
 
   const averageRatingMetaField = metaFields?.find(
     (field: { key: string }) => field?.key === 'sv-average-rating',
@@ -165,19 +169,16 @@ export default async function ProductPage(props: Props) {
                 SKU: <span>{product.mpn}</span>
               </span>
               <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-                by{' '}
-                <span className="products-underline border-b border-black">
+                by <Link href={product.brand?.path ?? ''} className="products-underline border-b border-black">
                   {product.brand?.name}
-                </span>
+                </Link>
               </span>
 
               {collectionMetaField?.value && (
                 <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-                  from the{' '}
-                  <span className="products-underline border-b border-black">
-                    {collectionValue} 
-                  </span>
-                  {' '} Family 
+                  from the <Link href={`/search?brand_name[0]=${encodeURIComponent(product.brand?.name ?? '')}&collection[0]=${encodeURIComponent(collectionValue)}`} className="products-underline border-b border-black">
+                    {collectionValue}
+                  </Link> Family
                 </span>
               )}
             </div>
@@ -200,7 +201,17 @@ export default async function ProductPage(props: Props) {
               {/*
               <CollectionProducts collection={collectionValue} products={collectionProducts.hits} total={collectionProducts.total} moreLink={`${product.brand?.path ?? '/search'}?collection[0]=${collectionValue}`} useDefaultPrices={useDefaultPrices} />
               */}
-              <CollectionProducts collection={collectionValue} products={collectionProducts.hits} total={collectionProducts.hits && collectionProducts.total > 10 ? collectionProducts.total - collectionProducts.hits.length : 0} moreLink={`/search?brand_name[0]=${product.brand?.name ?? ''}&collection[0]=${collectionValue}`} useDefaultPrices={useDefaultPrices} />
+              <CollectionProducts
+                collection={collectionValue}
+                products={collectionProducts.hits}
+                total={
+                  collectionProducts.hits && collectionProducts.total > 10
+                    ? collectionProducts.total - collectionProducts.hits.length
+                    : 0
+                }
+                moreLink={`/search?brand_name[0]=${product.brand?.name ?? ''}&collection[0]=${collectionValue}`}
+                useDefaultPrices={useDefaultPrices}
+              />
               <Promotion />
               {/*
               <RelatedProducts
@@ -208,7 +219,11 @@ export default async function ProductPage(props: Props) {
                 relatedProductArrow={relatedProductArrow}
               />
               */}
-              <RelatedProducts productId={product.entityId} products={relatedProducts} useDefaultPrices={useDefaultPrices} />
+              <RelatedProducts
+                productId={product.entityId}
+                products={relatedProducts}
+                useDefaultPrices={useDefaultPrices}
+              />
               {/*
               <SimilarProducts productId={product.entityId} />
               */}

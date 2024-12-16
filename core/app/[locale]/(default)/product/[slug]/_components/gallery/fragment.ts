@@ -2,7 +2,8 @@ import { graphql } from '~/client/graphql';
 
 export const GalleryFragment = graphql(`
   fragment GalleryFragment on Product {
-    images {
+    images(first: 50) {
+      # Increased limit to fetch all images
       edges {
         node {
           altText
@@ -14,6 +15,14 @@ export const GalleryFragment = graphql(`
     defaultImage {
       altText
       url: urlTemplate(lossy: true)
+    }
+    videos {
+      edges {
+        node {
+          title
+          url
+        }
+      }
     }
   }
 `);
