@@ -167,7 +167,8 @@
     "products": "Products",
     "items": "items",
     "Empty": {
-      "message": "No products in this category",
+      "title": "No products in this category",
+      "subtitle": "Try using different filters.",
       "cta": "Return to Home"
     }
   },
