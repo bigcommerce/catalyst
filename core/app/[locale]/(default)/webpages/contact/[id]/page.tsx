@@ -52,5 +52,3 @@ export default async function WebPage({ params }: Props) {
     </>
   );
 }
-
-export const runtime = 'edge';

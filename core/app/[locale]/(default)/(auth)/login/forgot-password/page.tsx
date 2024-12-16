@@ -49,5 +49,3 @@ export default async function Reset() {
     />
   );
 }
-
-export const runtime = 'edge';
