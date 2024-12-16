@@ -26,6 +26,7 @@
         "heading": "Connexion",
         "Form": {
             "error": "Votre adresse e-mail ou votre mot de passe est incorrect. Essayez de vous reconnecter ou réinitialisez votre mot de passe",
+            "successful": "You have successfully logged in.",
             "emailLabel": "E-mail",
             "enterEmailMessage": "Saisissez votre adresse e-mail",
             "passwordLabel": "Mot de passe",
@@ -68,7 +69,8 @@
             "submit": "Créer un compte",
             "submitting": "Création du compte...",
             "recaptchaText": "Réussir le test ReCAPTCHA",
-            "confirmPassword": "Les mots de passe ne correspondent pas"
+            "confirmPassword": "Les mots de passe ne correspondent pas",
+            "successMessage": "Account was successfully created."
         },
         "Errors": {
             "inputError": "Un problème est survenu lors du traitement des saisies de l'utilisateur.",
@@ -136,18 +138,41 @@
         "searchResults": "Résultats de recherche pour"
     },
     "Account": {
-        "Home": {
-            "title": "Mon compte",
-            "heading": "Mon compte",
+        "Layout": {
             "accountTabsLabel": "Onglets Compte",
             "orders": "Commandes",
-            "messages": "Messages",
             "addresses": "Adresses",
             "wishlists": "Listes d'envies",
             "recentlyViewed": "Consultés récemment",
-            "settings": "Paramètres des comptes",
-            "changePassword": "Modifier le mot de passe",
-            "successMessage": "Votre compte a été créé avec succès"
+            "settings": "Paramètres des comptes"
+        },
+        "Orders": {
+            "noOrders": "Aucune commande pour l'instant",
+            "orderNumber": "Commande n° ",
+            "placedDate": "Commande passée",
+            "totalPrice": "Total",
+            "viewDetails": "Afficher les détails",
+            "trackOrder": "Suivre la commande",
+            "returnOrder": "Retourner des articles",
+            "orderSummary": "Récapitulatif de la commande",
+            "orderContents": "Contenu de la commande",
+            "orderSubtotal": "Sous-total :",
+            "orderGrandtotal": "Total :",
+            "orderDiscount": "Remise :",
+            "orderAppliedCoupon": "Code promotionnel ({code}) :",
+            "orderShipping": "Expédition :",
+            "orderTax": "Taxes :",
+            "printInvoice": "Imprimer la facture",
+            "repurchaseOrder": "Racheter",
+            "return": "Retour",
+            "shippedDate": "Expédié le",
+            "shippingAddress": "Adresse de livraison",
+            "shippingMethod": "Mode de livraison",
+            "shipmentTitle": "Expédition",
+            "shippingTitle": "Livraison",
+            "shippingPayment": "Paiement",
+            "shippingPaymentMethod": "Mode de paiement",
+            "billingAddress": "Adresse de facturation"
         },
         "Addresses": {
             "title": "Adresses",
@@ -161,7 +186,6 @@
                 "title": "Ajouter une adresse",
                 "heading": "Nouvelle adresse",
                 "Form": {
-                    "recaptchaText": "Réussir le test ReCAPTCHA",
                     "submit": "Ajouter une nouvelle adresse",
                     "submitting": "Enregistrer l'adresse...",
                     "cancel": "Annuler",
@@ -176,7 +200,6 @@
                 "title": "Modifier l'adresse",
                 "heading": "Modifier l'adresse",
                 "Form": {
-                    "recaptchaText": "Réussir le test ReCAPTCHA",
                     "submit": "Modifier l'adresse",
                     "submitting": "Mise à jour de l'adresse...",
                     "cancel": "Annuler",
@@ -200,7 +223,6 @@
             "title": "Paramètres des comptes",
             "emptyTextValidatoinMessage": "Ce champ ne peut pas être vide",
             "cancel": "Annuler",
-            "recaptchaText": "Réussir le test ReCAPTCHA",
             "changePassword": "Modifier le mot de passe",
             "submit": "MODIFIER LES PARAMÈTRES",
             "submitting": "MODIFIER LES PARAMÈTRES...",
@@ -230,6 +252,7 @@
                 "submitText": "Modifier le mot de passe"
             },
             "UpdateCustomer": {
+                "successMessage": "Les paramètres de votre compte ont été mis à jour",
                 "Errors": {
                     "inputError": "Un problème est survenu lors du traitement des saisies de l'utilisateur.",
                     "notFound": "Le client n'existe pas"
@@ -375,6 +398,8 @@
             "maxPurchase": "Quantité maximale d'achat",
             "availability": "Disponibilité",
             "condition": "Condition",
+            "comingSoon": "Prochainement disponible·s",
+            "qty": "Qté",
             "weight": "Poids",
             "Prices": {
                 "msrp": "PDSF",
@@ -432,7 +457,7 @@
         "Header": {
             "Account": {
                 "account": "Compte",
-                "myAccount": "Mon compte",
+                "orders": "Commandes",
                 "addresses": "Adresses",
                 "accountSettings": "Paramètres des comptes",
                 "login": "Connexion",

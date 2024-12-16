@@ -26,6 +26,7 @@
         "heading": "Inloggen",
         "Form": {
             "error": "Je e-mailadres of wachtwoord is niet correct. Probeer opnieuw in te loggen of stel je wachtwoord opnieuw in",
+            "successful": "You have successfully logged in.",
             "emailLabel": "E-mailadres",
             "enterEmailMessage": "Voer uw e-mail in",
             "passwordLabel": "Wachtwoord",
@@ -68,7 +69,8 @@
             "submit": "Account aanmaken",
             "submitting": "Account aanmaken...",
             "recaptchaText": "reCAPTCHA-check doorstaan",
-            "confirmPassword": "Wachtwoorden komen niet overeen"
+            "confirmPassword": "Wachtwoorden komen niet overeen",
+            "successMessage": "Account was successfully created."
         },
         "Errors": {
             "inputError": "Er is iets misgegaan bij het verwerken van de gebruikersinvoer.",
@@ -136,18 +138,41 @@
         "searchResults": "Zoekresultaten voor"
     },
     "Account": {
-        "Home": {
-            "title": "Mijn account",
-            "heading": "Mijn account",
+        "Layout": {
             "accountTabsLabel": "Accounttabbladen",
             "orders": "Bestellingen",
-            "messages": "Berichten",
             "addresses": "Adressen",
             "wishlists": "Verlanglijstjes",
             "recentlyViewed": "Recent weergegeven",
-            "settings": "Accountinstellingen",
-            "changePassword": "Wachtwoord wijzigen",
-            "successMessage": "Je account is aangemaakt"
+            "settings": "Accountinstellingen"
+        },
+        "Orders": {
+            "noOrders": "Nog geen bestellingen",
+            "orderNumber": "Bestelnr.",
+            "placedDate": "Bestelling geplaatst",
+            "totalPrice": "Totaal",
+            "viewDetails": "Details weergeven",
+            "trackOrder": "Bestelling volgen",
+            "returnOrder": "Artikelen retourneren",
+            "orderSummary": "Besteloverzicht",
+            "orderContents": "Inhoud bestelling",
+            "orderSubtotal": "Subtotaal:",
+            "orderGrandtotal": "Totaal:",
+            "orderDiscount": "Korting:",
+            "orderAppliedCoupon": "Couponcode ({code}):",
+            "orderShipping": "Verzending:",
+            "orderTax": "Belasting:",
+            "printInvoice": "Factuur afdrukken",
+            "repurchaseOrder": "Terugkoop",
+            "return": "Retourneren",
+            "shippedDate": "Verzonden op",
+            "shippingAddress": "Verzendadres",
+            "shippingMethod": "Verzendmethode",
+            "shipmentTitle": "Verzending",
+            "shippingTitle": "Verzending",
+            "shippingPayment": "Betaling",
+            "shippingPaymentMethod": "Betaalmethode",
+            "billingAddress": "Factuuradres"
         },
         "Addresses": {
             "title": "Adressen",
@@ -161,7 +186,6 @@
                 "title": "Voeg adres toe",
                 "heading": "Nieuw adres",
                 "Form": {
-                    "recaptchaText": "reCAPTCHA-check doorstaan",
                     "submit": "Nieuw adres toevoegen",
                     "submitting": "Adres opslaan...",
                     "cancel": "Annuleren",
@@ -176,7 +200,6 @@
                 "title": "Adres bewerken",
                 "heading": "Adres bewerken",
                 "Form": {
-                    "recaptchaText": "reCAPTCHA-check doorstaan",
                     "submit": "Adres bewerken",
                     "submitting": "Adres bijwerken...",
                     "cancel": "Annuleren",
@@ -200,7 +223,6 @@
             "title": "Accountinstellingen",
             "emptyTextValidatoinMessage": "Dit veld mag niet leeg zijn",
             "cancel": "Annuleren",
-            "recaptchaText": "reCAPTCHA-check doorstaan",
             "changePassword": "Wachtwoord wijzigen",
             "submit": "INSTELLINGEN BIJWERKEN",
             "submitting": "Instellingen bijwerken...",
@@ -230,6 +252,7 @@
                 "submitText": "Wachtwoord wijzigen"
             },
             "UpdateCustomer": {
+                "successMessage": "Je accountinstellingen zijn bijgewerkt.",
                 "Errors": {
                     "inputError": "Er is iets misgegaan bij het verwerken van de gebruikersinvoer.",
                     "notFound": "Klant bestaat niet"
@@ -375,6 +398,8 @@
             "maxPurchase": "Maximale aankoop",
             "availability": "Beschikbaarheid",
             "condition": "Staat",
+            "comingSoon": "Binnenkort beschikbaar",
+            "qty": "Aantal",
             "weight": "Gewicht",
             "Prices": {
                 "msrp": "Adviesprijs",
@@ -432,7 +457,7 @@
         "Header": {
             "Account": {
                 "account": "Account",
-                "myAccount": "Mijn account",
+                "orders": "Bestellingen",
                 "addresses": "Adressen",
                 "accountSettings": "Accountinstellingen",
                 "login": "Inloggen",

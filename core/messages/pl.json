@@ -26,6 +26,7 @@
         "heading": "Zaloguj",
         "Form": {
             "error": "Twój adres e-mail lub hasło są nieprawidłowe. Spróbuj zalogować się ponownie lub zresetuj hasło",
+            "successful": "You have successfully logged in.",
             "emailLabel": "Email",
             "enterEmailMessage": "Wpisz swój adres e-mail",
             "passwordLabel": "Hasło",
@@ -68,7 +69,8 @@
             "submit": "Utwórz konto",
             "submitting": "Tworzenie konta...",
             "recaptchaText": "Zdaj test ReCAPTCHA",
-            "confirmPassword": "Hasła nie są zgodne"
+            "confirmPassword": "Hasła nie są zgodne",
+            "successMessage": "Account was successfully created."
         },
         "Errors": {
             "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
@@ -136,18 +138,41 @@
         "searchResults": "Wyniki wyszukiwania dla"
     },
     "Account": {
-        "Home": {
-            "title": "Moje konto",
-            "heading": "Moje konto",
+        "Layout": {
             "accountTabsLabel": "Karty konta",
             "orders": "Zamówienia",
-            "messages": "Wiadomości",
             "addresses": "Adresy",
             "wishlists": "Listy życzeń",
             "recentlyViewed": "Ostatnio oglądane",
-            "settings": "Ustawienia konta",
-            "changePassword": "Zmień hasło",
-            "successMessage": "Konto zostało pomyślnie utworzone"
+            "settings": "Ustawienia konta"
+        },
+        "Orders": {
+            "noOrders": "Brak zamówień",
+            "orderNumber": "Zamówienie #",
+            "placedDate": "Złożone zamówienie",
+            "totalPrice": "Razem",
+            "viewDetails": "Zobacz szczegóły",
+            "trackOrder": "Śledź zamówienie",
+            "returnOrder": "Elementy do zwrotu",
+            "orderSummary": "Podsumowanie zamówienia",
+            "orderContents": "Zawartość zamówienia",
+            "orderSubtotal": "Suma cząstkowa:",
+            "orderGrandtotal": "Suma całkowita:",
+            "orderDiscount": "Rabat:",
+            "orderAppliedCoupon": "Kod kuponu ({code}):",
+            "orderShipping": "Wysyłka:",
+            "orderTax": "Podatek:",
+            "printInvoice": "Drukuj fakturę",
+            "repurchaseOrder": "Odkup",
+            "return": "Wróć",
+            "shippedDate": "Wysłane",
+            "shippingAddress": "Adres dostawy",
+            "shippingMethod": "Metoda wysyłki",
+            "shipmentTitle": "Wysyłka",
+            "shippingTitle": "Wysyłka",
+            "shippingPayment": "Płatność",
+            "shippingPaymentMethod": "Metoda płatności",
+            "billingAddress": "Adres rozliczeniowy"
         },
         "Addresses": {
             "title": "Adresy",
@@ -161,7 +186,6 @@
                 "title": "Dodaj adres",
                 "heading": "Nowy adres",
                 "Form": {
-                    "recaptchaText": "Zdaj test ReCAPTCHA",
                     "submit": "Dodaj nowy adres",
                     "submitting": "Zapisywanie adresu...",
                     "cancel": "Anuluj",
@@ -176,7 +200,6 @@
                 "title": "Edytuj adres",
                 "heading": "Edytuj adres",
                 "Form": {
-                    "recaptchaText": "Zdaj test ReCAPTCHA",
                     "submit": "Edytuj adres",
                     "submitting": "Aktualizowanie adresu...",
                     "cancel": "Anuluj",
@@ -200,7 +223,6 @@
             "title": "Ustawienia konta",
             "emptyTextValidatoinMessage": "To pole nie może być puste",
             "cancel": "Anuluj",
-            "recaptchaText": "Zdaj test ReCAPTCHA",
             "changePassword": "Zmień hasło",
             "submit": "Zaktualizuj ustawienia",
             "submitting": "Zaktualizuj ustawienia...",
@@ -230,6 +252,7 @@
                 "submitText": "Zmień hasło"
             },
             "UpdateCustomer": {
+                "successMessage": "Ustawienia konta zostały zaktualizowane",
                 "Errors": {
                     "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
                     "notFound": "Klient nie istnieje"
@@ -375,6 +398,8 @@
             "maxPurchase": "Maksymalny zakup",
             "availability": "Dostępność",
             "condition": "Stan",
+            "comingSoon": "Już wkrótce",
+            "qty": "Ilość",
             "weight": "Waga",
             "Prices": {
                 "msrp": "SCDP",
@@ -432,7 +457,7 @@
         "Header": {
             "Account": {
                 "account": "Konto",
-                "myAccount": "Moje konto",
+                "orders": "Zamówienia",
                 "addresses": "Adresy",
                 "accountSettings": "Ustawienia konta",
                 "login": "Zaloguj się",

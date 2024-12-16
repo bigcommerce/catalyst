@@ -26,6 +26,7 @@
         "heading": "Log In",
         "Form": {
             "error": "Your email address or password is incorrect. Try signing in again or reset your password",
+            "successful": "You have successfully logged in.",
             "emailLabel": "Eメール",
             "enterEmailMessage": "Enter your email",
             "passwordLabel": "パスワード",
@@ -68,7 +69,8 @@
             "submit": "アカウント作成",
             "submitting": "Creating account...",
             "recaptchaText": "Pass ReCAPTCHA check",
-            "confirmPassword": "Passwords don't match"
+            "confirmPassword": "Passwords don't match",
+            "successMessage": "Account was successfully created."
         },
         "Errors": {
             "inputError": "Something went wrong with processing user input.",
@@ -136,18 +138,41 @@
         "searchResults": "Search results for"
     },
     "Account": {
-        "Home": {
-            "title": "My account",
-            "heading": "My account",
+        "Layout": {
             "accountTabsLabel": "Account Tabs",
             "orders": "注文",
-            "messages": "メッセージ",
             "addresses": "住所",
             "wishlists": "Wish lists",
             "recentlyViewed": "Recently viewed",
-            "settings": "アカウント設定",
-            "changePassword": "パスワード変更",
-            "successMessage": "Your account has been successfully created"
+            "settings": "アカウント設定"
+        },
+        "Orders": {
+            "noOrders": "No orders yet",
+            "orderNumber": "注文 #",
+            "placedDate": "Order placed",
+            "totalPrice": "合計",
+            "viewDetails": "詳細一覧",
+            "trackOrder": "Track order",
+            "returnOrder": "返品アイテム",
+            "orderSummary": "注文概要",
+            "orderContents": "Order contents",
+            "orderSubtotal": "小計:",
+            "orderGrandtotal": "Grand total:",
+            "orderDiscount": "割引:",
+            "orderAppliedCoupon": "Coupon code ({code}):",
+            "orderShipping": "送料:",
+            "orderTax": "税金:",
+            "printInvoice": "請求書印刷",
+            "repurchaseOrder": "Repurchase",
+            "return": "返品",
+            "shippedDate": "Shipped on",
+            "shippingAddress": "配送先住所",
+            "shippingMethod": "配送方法",
+            "shipmentTitle": "Shipment",
+            "shippingTitle": "配送",
+            "shippingPayment": "支払い",
+            "shippingPaymentMethod": "支払方法",
+            "billingAddress": "請求先住所"
         },
         "Addresses": {
             "title": "住所",
@@ -161,7 +186,6 @@
                 "title": "アドレスを追加",
                 "heading": "New address",
                 "Form": {
-                    "recaptchaText": "Pass ReCAPTCHA check",
                     "submit": "Add new address",
                     "submitting": "Saving address...",
                     "cancel": "キャンセル",
@@ -176,7 +200,6 @@
                 "title": "アドレスを編集",
                 "heading": "アドレスを編集",
                 "Form": {
-                    "recaptchaText": "Pass ReCAPTCHA check",
                     "submit": "アドレスを編集",
                     "submitting": "Updating address...",
                     "cancel": "キャンセル",
@@ -200,7 +223,6 @@
             "title": "アカウント設定",
             "emptyTextValidatoinMessage": "This field can not be empty",
             "cancel": "キャンセル",
-            "recaptchaText": "Pass ReCAPTCHA check",
             "changePassword": "パスワード変更",
             "submit": "Update settings",
             "submitting": "Update settings...",
@@ -230,6 +252,7 @@
                 "submitText": "パスワード変更"
             },
             "UpdateCustomer": {
+                "successMessage": "Your account settings have been updated",
                 "Errors": {
                     "inputError": "Something went wrong with processing user input.",
                     "notFound": "Customer does not exist"
@@ -375,6 +398,8 @@
             "maxPurchase": "Maximum purchase",
             "availability": "販売中",
             "condition": "条件",
+            "comingSoon": "近日公開",
+            "qty": "数量",
             "weight": "重さ",
             "Prices": {
                 "msrp": "メーカー希望小売価格",
@@ -432,7 +457,7 @@
         "Header": {
             "Account": {
                 "account": "アカウント",
-                "myAccount": "My account",
+                "orders": "注文",
                 "addresses": "住所",
                 "accountSettings": "アカウント設定",
                 "login": "ログイン",

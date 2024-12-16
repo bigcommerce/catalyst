@@ -26,6 +26,7 @@
         "heading": "Credencial de acesso",
         "Form": {
             "error": "O endereço de email ou a senha está incorreto. Tente fazer login novamente ou redefinir sua senha",
+            "successful": "You have successfully logged in.",
             "emailLabel": "Email",
             "enterEmailMessage": "Digite seu email",
             "passwordLabel": "Senha",
@@ -68,7 +69,8 @@
             "submit": "Criar conta",
             "submitting": "Criando conta...",
             "recaptchaText": "Passar na verificação ReCAPTCHA",
-            "confirmPassword": "As senhas não conferem."
+            "confirmPassword": "As senhas não conferem.",
+            "successMessage": "Account was successfully created."
         },
         "Errors": {
             "inputError": "Houve um erro no processamento da entrada do usuário.",
@@ -136,18 +138,41 @@
         "searchResults": "Pesquisar resultados por"
     },
     "Account": {
-        "Home": {
-            "title": "Minha conta",
-            "heading": "Minha conta",
+        "Layout": {
             "accountTabsLabel": "Abas da conta",
             "orders": "Pedidos",
-            "messages": "Mensagens",
             "addresses": "Endereços",
             "wishlists": "Lista de desejos",
             "recentlyViewed": "Visto recentemente",
-            "settings": "Configurações da conta",
-            "changePassword": "Alterar senha",
-            "successMessage": "Sua conta foi criada com sucesso"
+            "settings": "Configurações da conta"
+        },
+        "Orders": {
+            "noOrders": "Nenhum pedido ainda",
+            "orderNumber": "Pedido n.º",
+            "placedDate": "Pedido feito",
+            "totalPrice": "Total",
+            "viewDetails": "Ver detalhes",
+            "trackOrder": "Rastrear pedido",
+            "returnOrder": "Devolver itens",
+            "orderSummary": "Resumo do Pedido",
+            "orderContents": "Conteúdos do pedido",
+            "orderSubtotal": "Subtotal:",
+            "orderGrandtotal": "Total geral:",
+            "orderDiscount": "Desconto:",
+            "orderAppliedCoupon": "Código do cupom ({code}):",
+            "orderShipping": "Envio:",
+            "orderTax": "Imposto:",
+            "printInvoice": "Imprimir fatura",
+            "repurchaseOrder": "Recompra",
+            "return": "Devolver",
+            "shippedDate": "Enviado em",
+            "shippingAddress": "Endereço de entrega",
+            "shippingMethod": "Método de envio:",
+            "shipmentTitle": "Envio",
+            "shippingTitle": "Envio",
+            "shippingPayment": "Pagamento",
+            "shippingPaymentMethod": "Forma de pagamento",
+            "billingAddress": "Endereço de cobrança"
         },
         "Addresses": {
             "title": "Endereços",
@@ -161,7 +186,6 @@
                 "title": "Adicionar endereço",
                 "heading": "Novo endereço",
                 "Form": {
-                    "recaptchaText": "Passar na verificação ReCAPTCHA",
                     "submit": "Adicionar novo endereço",
                     "submitting": "Salvando endereço...",
                     "cancel": "Cancelar",
@@ -176,7 +200,6 @@
                 "title": "Editar endereço",
                 "heading": "Editar endereço",
                 "Form": {
-                    "recaptchaText": "Passar na verificação ReCAPTCHA",
                     "submit": "Editar endereço",
                     "submitting": "Atualizando endereço...",
                     "cancel": "Cancelar",
@@ -200,7 +223,6 @@
             "title": "Configurações da conta",
             "emptyTextValidatoinMessage": "Este campo não pode ficar vazio",
             "cancel": "Cancelar",
-            "recaptchaText": "Passar na verificação ReCAPTCHA",
             "changePassword": "Alterar senha",
             "submit": "Atualizar configurações",
             "submitting": "Atualizar configurações...",
@@ -230,6 +252,7 @@
                 "submitText": "Alterar senha"
             },
             "UpdateCustomer": {
+                "successMessage": "As configurações da sua conta foram atualizadas",
                 "Errors": {
                     "inputError": "Houve um erro no processamento da entrada do usuário.",
                     "notFound": "O cliente não existe"
@@ -375,6 +398,8 @@
             "maxPurchase": "Compra máxima",
             "availability": "Disponibilidade",
             "condition": "Condição",
+            "comingSoon": "Em breve",
+            "qty": "Qde",
             "weight": "Peso",
             "Prices": {
                 "msrp": "MSRP",
@@ -432,7 +457,7 @@
         "Header": {
             "Account": {
                 "account": "Conta",
-                "myAccount": "Minha conta",
+                "orders": "Pedidos",
                 "addresses": "Endereços",
                 "accountSettings": "Configurações da conta",
                 "login": "Acesso",
