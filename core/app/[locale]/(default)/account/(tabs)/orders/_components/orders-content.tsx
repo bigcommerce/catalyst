@@ -13,6 +13,7 @@ import { Search as SearchIcon } from 'lucide-react';
 
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import Link from 'next/link';
+import { BcImage } from '~/components/bc-image';
 
 type CustomerOrders = NonNullable<Awaited<ReturnType<typeof getCustomerOrders>>>;
 
@@ -45,10 +46,10 @@ export const OrdersContent = async ({ orderId, orders, pageInfo }: Props) => {
         <input className="w-[1120px] text-[16px] tracking-[0.5px] leading-8 font-normal outline-none" placeholder="Search by keyword or Order Number" />
         <SearchIcon />
       </div>
-      <div className="flex flex-row gap-[10px] mt-[20px]">
-        <img src={icon} className="fill-[#fffff]" alt="hand-icon" />
-        <span> {t('stillNeedHelp')} </span>
-        <Link href="#" className="text-base font-semibold text-[#008BB7]"> {t('contact')}</Link>
+      <div className ="flex flex-row gap-[10px] mt-[20px]">
+        <BcImage src={icon} className="fill-[#fffff]" alt="hand-icon" width={24} unoptimized={true} />
+      <span> {t('stillNeedHelp')} </span>
+      <Link href="#" className="text-base font-semibold text-[#008BB7]"> {t('contact')}</Link> 
       </div>
 
 

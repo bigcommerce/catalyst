@@ -168,7 +168,7 @@ export const Footer = async () => {
   ];
 
   return (
-    <>
+    <div>
       <ComponentsFooter
         contactInformation={data.settings?.contact ?? undefined}
         copyright={
@@ -197,6 +197,6 @@ export const Footer = async () => {
         ]}
         sections={sections}
       />
-    </>
+   </div>
   );
 };

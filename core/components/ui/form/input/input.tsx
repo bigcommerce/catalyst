@@ -19,12 +19,13 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
     const [showPassword, setShowPassword] = useState(false);
     const isPassword = type === 'password';
     const effectiveType = isPassword ? (showPassword ? 'text' : 'password') : type;
+
     return (
       <div className={cn('relative', className)}>
         {' '}
         <input
           className={cn(
-            'peer w-full border-2 border-gray-200 px-4 rounded-sm py-2.5 text-base placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200',
+            'peer w-full rounded-sm border-2 border-gray-200 px-4 py-2.5 text-base placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200',
             (error || isPassword) && 'pe-12',
             error &&
               'border-error-secondary focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 hover:border-error disabled:border-gray-200',
@@ -50,7 +51,7 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
             {' '}
             {icon ??
               (error ? (
-                <AlertCircle className='text-[#ff4500]' />
+                <AlertCircle className="text-[#ff4500]" />
               ) : isPassword ? (
                 showPassword ? (
                   <>
