@@ -5,6 +5,7 @@ import { cn } from '~/lib/utils';
 
 import { Locale } from './locale';
 import AgentFooter from '~/app/[locale]/(default)/sales-buddy/pages/footer';
+import CookieConsent from '../cookie-consent/cookieConsent';
 
 interface Image {
   altText: string;
@@ -41,6 +42,7 @@ interface Props {
   socialMediaLinks?: SocialMediaLink[];
 }
 
+const cookieConsentUrl = process.env.COOKIE_CONSENT_URL;
 const Footer = ({
   className,
   contactInformation,
@@ -130,6 +132,7 @@ const Footer = ({
         <div className="flex gap-[10px]">{paymentIcons}</div>
       </div>
     </section>
+    <CookieConsent url={cookieConsentUrl} />
   </footer>
 );
 

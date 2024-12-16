@@ -1,34 +1,56 @@
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 
-import { OrdersContent } from './_components/orders-content';
+import { Pagination } from '~/components/ui/pagination';
+
+import { TabHeading } from '../_components/tab-heading';
+
+import { OrdersList } from './_components/orders-list';
 import { getCustomerOrders } from './page-data';
-import { OrderDetailsInfo } from '../../../checkout/order-confirmation/order-details';
 
 interface Props {
-  searchParams: {
+  searchParams: Promise<{
     [key: string]: string | string[] | undefined;
     before?: string;
     after?: string;
-    order?: string;
-  };
+  }>;
 }
 
-export default async function OrdersPage({ searchParams }: Props) {
-  console.log('========inside order=======');
-  const { before, after, order } = await searchParams;
-  console.log('========teststttttt=======');
+export default async function Orders({ searchParams }: Props) {
+  const { before, after } = await searchParams;
+  const t = await getTranslations('Account.Orders');
+
   const customerOrdersDetails = await getCustomerOrders({
     ...(after && { after }),
     ...(before && { before }),
   });
-  console.log('======customerOrdersDetails=========', JSON.stringify(customerOrdersDetails));
+
   if (!customerOrdersDetails) {
-    return <OrderDetailsInfo />
-    //notFound();
+    notFound();
   }
 
   const { orders, pageInfo } = customerOrdersDetails;
-  return <OrdersContent orderId={order} orders={orders} pageInfo={pageInfo} />;
+  const { hasNextPage, hasPreviousPage, startCursor, endCursor } = pageInfo;
+
+  return (
+    <>
+      <TabHeading heading="orders" />
+      {orders.length === 0 ? (
+        <div className="mx-auto w-fit">{t('noOrders')}</div>
+      ) : (
+        <OrdersList customerOrders={orders} key={endCursor} />
+      )}
+      <div className="mb-14 inline-flex w-full justify-center py-6">
+        <Pagination
+          className="my-0 flex inline-flex justify-center text-center"
+          endCursor={endCursor ?? undefined}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          startCursor={startCursor ?? undefined}
+        />
+      </div>
+    </>
+  );
 }
 
-//export const runtime = 'edge';
+export const runtime = 'edge';

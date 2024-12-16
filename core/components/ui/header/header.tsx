@@ -45,7 +45,7 @@ interface Props extends ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.
   locale?: ReactNode;
   logo?: string | Image;
   search?: ReactNode;
-  homeLogoMobile? : string;
+  homeLogoMobile? : string | Image;
 }
 
 const Header = ({
@@ -118,7 +118,7 @@ const Header = ({
                   priority
                   src={imageIconList.homeLogo}
                   width={30}
-                  unoptimized
+                  unoptimized={true}
                 />
               </div>
             ) : (

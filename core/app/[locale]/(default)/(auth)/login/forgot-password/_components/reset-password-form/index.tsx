@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCaptcha from 'react-google-recaptcha';
 
@@ -55,8 +55,9 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
   const t = useTranslations('Login.ForgotPassword.Form');
 
   const form = useRef<HTMLFormElement>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const [emailError, setEmailError] = useState('');
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
-  const [isEmailValid, setIsEmailValid] = useState(true);
 
   const reCaptchaRef = useRef<ReCaptcha>(null);
   const [reCaptchaToken, setReCaptchaToken] = useState('');
@@ -78,32 +79,33 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
     setReCaptchaValid(true);
   };
 
-  const handleEmailValidation = (e: ChangeEvent<HTMLInputElement>) => {
-    const validationStatus = e.target.validity.valueMissing || e.target.validity.typeMismatch;
 
-    setIsEmailValid(!validationStatus);
-  };
-
-  const onSubmit = async (formData: FormData) => {
-    const email = formData.get('email')?.toString() || '';
-
-    if (!email) {
-      setIsEmailValid(false);
-      setFormStatus({ status: 'error', message: t('emailValidationMessage') });
-      return;
+  const validateEmail = ()=> {
+    const email = emailInputRef.current?.value || '';
+    // Check if email is empty
+    if (!email.trim()) {
+      setEmailError(t('emailValidationMessage'));
+      return false;
     }
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-    console.log(emailRegex.test(email), 'Email Regex');
-
+    
+    // Check if email is invalid
     if (!emailRegex.test(email)) {
-      setIsEmailValid(false);
-      setFormStatus({ status: 'error', message: t('emailInvalidMessage') });
-      return;
+      setEmailError(t('emailInvalidMessage'));
+      return false;
     }
 
-    setIsEmailValid(true);
+    setEmailError('');
+    return true;
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+
+    event.preventDefault();
+
+     // Reset previous statuses
+     setFormStatus(null);
 
     if (reCaptchaSettings?.isEnabledOnStorefront && !reCaptchaToken) {
       setReCaptchaValid(false);
@@ -113,6 +115,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
     setReCaptchaValid(true);
 
     try {
+      const formData = new FormData(event.currentTarget);
       const submit = await resetPassword({
         formData,
         reCaptchaToken,
@@ -139,8 +142,6 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
     }
   };
 
-  console.log([formStatus, isEmailValid]);
-
   return (
     <>
       {formStatus?.status === 'error' && (
@@ -150,7 +151,7 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
       )}
 
       <Form
-        action={onSubmit}
+        onSubmit={handleSubmit}
         className="reset-pass-form mx-0 mt-0 flex max-w-[none] flex-col gap-[22px] pt-0 xsm:mx-auto md:mt-[30px] md:max-w-[514px] md:py-4 lg:p-0"
         ref={form}
       >
@@ -167,18 +168,19 @@ export const ResetPasswordForm = ({ reCaptchaSettings }: Props) => {
             </FieldLabel>
             <FieldControl asChild>
               <Input
+                ref={emailInputRef}
                 className="flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] border-[#cccbcb] bg-white"
                 autoComplete="email"
                 id="email"
-                // onChange={handleEmailValidation}
-                onInvalid={handleEmailValidation}
+                name="email"
                 required
                 type="email"
+                onBlur={validateEmail}
               />
             </FieldControl>
-            {formStatus?.status === 'error' && (
-              <FieldMessage className="w-full text-red-700" variant={formStatus?.status}>
-                {formStatus?.message}
+            {emailError &&(
+              <FieldMessage className="w-full text-red-700" variant="error">
+                {emailError}
               </FieldMessage>
             )}
           </Field>

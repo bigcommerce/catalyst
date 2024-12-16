@@ -27,7 +27,7 @@ import {
   CarouselContent,
   CarouselItem,
   CarouselScrollbar,
-} from '@/vibes/soul/primitives/carousel';
+} from '~/belami/components/carousel';
 
 import { useFormatter } from 'next-intl';
 
