@@ -108,7 +108,7 @@ export default async function ProductPage(props: Props) {
   const cartHeader = imageManagerImageUrl('cartheader.png', '20w');
   const couponIcon = imageManagerImageUrl('vector-2-.png', '20w');
   const paywithGoogle = imageManagerImageUrl('apple-xxl.png', '20w');
-  
+
   setRequestLocale(locale);
 
   const t = await getTranslations('Product');

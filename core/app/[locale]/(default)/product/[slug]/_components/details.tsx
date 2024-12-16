@@ -122,11 +122,18 @@ interface Props {
   collectionValue?: string;
   dropdownSheetIcon?: string;
   cartHeader?: string;
-  couponIcon?:string;
-  paywithGoogle?:string;
+  couponIcon?: string;
+  paywithGoogle?: string;
 }
 
-export const Details = ({ product, collectionValue, dropdownSheetIcon, cartHeader , couponIcon , paywithGoogle }: Props) => {
+export const Details = ({
+  product,
+  collectionValue,
+  dropdownSheetIcon,
+  cartHeader,
+  couponIcon,
+  paywithGoogle,
+}: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
   const productFormRef = useRef<HTMLDivElement>(null);
@@ -243,36 +250,39 @@ export const Details = ({ product, collectionValue, dropdownSheetIcon, cartHeade
                       by <span className="underline">{product.brand?.name}</span>
                     </div>
                     <div className="mt-3 flex items-center text-[#7F7F7F]">
-                      <div className="text-[14px] font-bold leading-[24px] tracking-[0.25px]">
-                        SKU: {product.mpn}
-                      </div>
+                      {product.mpn && (
+                        <div className="text-[14px] font-bold leading-[24px] tracking-[0.25px]">
+                          SKU: {product.mpn}
+                        </div>
+                      )}
+                      {product.mpn &&
+                        productOptions.filter(
+                          (option) => option.__typename === 'MultipleChoiceOption',
+                        ).length > 0 && <span className="mx-2 text-[14px] font-normal">|</span>}
                       {productOptions.filter(
                         (option) => option.__typename === 'MultipleChoiceOption',
                       ).length > 0 && (
-                        <>
-                          <span className="mx-2 text-[14px] font-normal">|</span>
-                          <div className="text-[14px] font-normal">
-                            {productOptions
-                              .filter((option) => option.__typename === 'MultipleChoiceOption')
-                              .map((option, index, filteredArray) => {
-                                if (option.__typename === 'MultipleChoiceOption') {
-                                  const selectedValue = getSelectedValue(
-                                    option as MultipleChoiceOption,
-                                  );
-                                  return (
-                                    <span key={option.entityId}>
-                                      <span className="font-bold">{option.displayName}:</span>{' '}
-                                      <span className="text-[15px]">{selectedValue}</span>
-                                      {index < filteredArray.length - 1 && (
-                                        <span className="mx-2">|</span>
-                                      )}
-                                    </span>
-                                  );
-                                }
-                                return null;
-                              })}
-                          </div>
-                        </>
+                        <div className="text-[14px] font-normal">
+                          {productOptions
+                            .filter((option) => option.__typename === 'MultipleChoiceOption')
+                            .map((option, index, filteredArray) => {
+                              if (option.__typename === 'MultipleChoiceOption') {
+                                const selectedValue = getSelectedValue(
+                                  option as MultipleChoiceOption,
+                                );
+                                return (
+                                  <span key={option.entityId}>
+                                    <span className="font-bold">{option.displayName}:</span>{' '}
+                                    <span className="text-[15px]">{selectedValue}</span>
+                                    {index < filteredArray.length - 1 && (
+                                      <span className="mx-2">|</span>
+                                    )}
+                                  </span>
+                                );
+                              }
+                              return null;
+                            })}
+                        </div>
                       )}
                     </div>
                   </div>
