@@ -12,7 +12,7 @@ import { Spinner } from "@/vibes/soul/primitives/spinner";
 interface Props{
   cartId:string;
 }
-export default function ReferalId({cartId}:Props) {
+export default function ReferalId() {
   const [showReferralInput, setShowReferralInput] = useState(false);
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -50,7 +50,7 @@ export default function ReferalId({cartId}:Props) {
     <div className="grid content-evenly gap-[10px] h-[81px] w-[460px] space-y-1 rounded-lg">
       <div className="flex flex-row items-center h-[32px] justify-between border-none">
         {/* Heading at the start */}
-        <h2 className="text-2xl font-normal">Cart ID: #{cartId}</h2>
+        <h2 className="text-2xl font-normal">Cart ID: #123456789</h2>
 
         {/* Span at the end */}
         <span className="my-2 flex h-[32px] w-[110px] items-center justify-center bg-[#F2DEBE] text-base font-normal">
