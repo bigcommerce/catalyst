@@ -93,9 +93,31 @@ export default async function RootLayout({ params, children }: Props) {
   setRequestLocale(locale);
 
   const messages = await getMessages();
+  const environment = process.env.NODE_ENV
+
 
   return (
     <html className={`${inter.variable} font-sans`} lang={locale}>
+      <head>
+        {
+          process.env.NODE_ENV !== 'production' && (
+            <>
+              <script type="module">
+                  {
+                  `
+                  import RefreshRuntime from 'http://localhost:3001/@react-refresh'
+                  RefreshRuntime.injectIntoGlobalHook(window)
+                  window.$RefreshReg$ = () => {}
+                  window.$RefreshSig$ = () => (type) => type
+                  window.__vite_plugin_react_preamble_installed__ = true
+                  `
+                  }
+              </script>
+              <script type="module" src="http://localhost:3001/@vite/client"></script>
+            </>
+          )
+        }
+      </head>
       <body className="flex h-screen min-w-[375px] flex-col">
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>

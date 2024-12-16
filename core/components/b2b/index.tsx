@@ -1,5 +1,4 @@
 import { auth } from '~/auth';
-import Head from 'next/head';
 import B2bAuth from './auth';
 
 export default async function index() {
@@ -7,28 +6,8 @@ export default async function index() {
   const environment = process.env.NODE_ENV
   return (
     <>
-       <Head>
         {
-            environment !== 'production' && (
-                <>
-                <script type="module">
-                    {
-                    `
-                    import RefreshRuntime from 'http://localhost:3001/@react-refresh'
-                    RefreshRuntime.injectIntoGlobalHook(window)
-                    window.$RefreshReg$ = () => {}
-                    window.$RefreshSig$ = () => (type) => type
-                    window.__vite_plugin_react_preamble_installed__ = true
-                    `
-                    }
-                </script>
-                <script type="module" src="http://localhost:3001/@vite/client"></script>
-                </>
-            )
-        }
-        </Head>
-        {
-            process.env.NODE_ENV !== 'production' ? (
+            environment !== 'production' ? (
                 <>
                     <script>
                     {
@@ -47,7 +26,7 @@ export default async function index() {
                     type="module"
                     data-storehash="glzvoziq5k"
                     data-channelid="1664810"
-                    src="http://localhost:3001/src/headless.ts"
+                    src="http://localhost:3001/src/main.ts"
                     ></script>
                 </>
             ) : (
