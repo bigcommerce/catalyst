@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useState, useRef } from 'react';
-import { Accordions } from '~/components/ui/accordions';
+import { Accordions } from '../Accordin/index';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/form';
 import ShopIcon from '../../assets/badge.png';
@@ -205,36 +205,38 @@ export default function CartInterface() {
     <>
       <div className="mt-[15px] bg-white">
         <Accordions
-          styles="border-t border-b py-[10px] px-[20px] font-open-sans text-[16px]"
+          styles="border-y-[1px] border-x-0  border-[#CCCBCB] bg-white py-[10px] px-[20px] text-[16px]"
           accordions={accordions}
-          type="multiple"
         />
 
         <div>
-          <div className=" bg-white px-[20px] py-[10px] -my-[1px] border-x-0 border-y-[1px] border-[#CCCBCB]">
+          <div className=" border-x-0 border-y-[1px] border-[#CCCBCB] bg-white px-[20px] py-[10px]">
             <button
               onClick={() => setIsCommentVisible(!isCommentVisible)} // Toggle visibility of comment form
-              className="font-open sans w-full font-normal text-[#353535] tracking-[1.25px] flex flex-1 items-center justify-between gap-[5px] h-[52px] "
+              className="font-open sans flex   w-full flex-1 items-center justify-between gap-[5px] font-normal tracking-[1.25px] text-[#353535]"
             >
-              <div className='flex gap-[5px]'>
+              <div className="flex gap-[5px]">
                 <Image src={ChatIcon} alt="chat-icon" />
-                <span className='text-base font-normal'> Add Order Comments (Internal)</span>
+                <span className="text-base font-normal"> Add Order Comments (Internal)</span>
               </div>
-              <ChevronDown className={`h-6 w-6 shrink-0 transition-transform duration-200 ${isCommentVisible ? 'rotate-180' : ''}`} />
+              <ChevronDown
+                
+                className={`h-4 w-3 shrink-0 transition-transform duration-200 ${isCommentVisible ? 'rotate-180' : ''}`}
+              />
             </button>
 
             {/* If the form is visible, show the comment input field */}
             {isCommentVisible && !isCommentSaved && (
-              <div className="space-y-[10px] mt-4">
+              <div className="mt-4 space-y-[10px]">
                 <textarea
-                  className="font-open sans block w-full resize-none rounded bg-[#E8E7E7] h-[282px] p-[10px] text-sm text-gray-900 focus:outline-none"
+                  className="font-open sans block h-[282px] w-full resize-none rounded bg-[#E8E7E7] p-[10px] text-sm text-gray-900 focus:outline-none"
                   placeholder="Write your thoughts here..."
                   value={comment}
                   onChange={handleCommentChange} // Update comment state on change
                 />
                 <Button
                   onClick={handleCommentSubmit} // Save the comment
-                  className="font-open-sans w-full mt-[10px] bg-[#1DB14B] font-normal text-white tracking-[1.25px]"
+                  className="font-open-sans mt-[10px] w-full bg-[#1DB14B] font-normal tracking-[1.25px] text-white"
                 >
                   SAVE COMMENT
                 </Button>
@@ -243,7 +245,7 @@ export default function CartInterface() {
 
             {/* If the comment is saved, show Edit and Delete buttons */}
             {isCommentSaved && (
-              <div className="space-y-[10px] mt-4">
+              <div className="mt-4 space-y-[10px]">
                 <p>{comment}</p>
                 <div className="flex justify-between">
                   <button
@@ -265,9 +267,8 @@ export default function CartInterface() {
             )}
           </div>
         </div>
-
       </div>
-      <Button className="font-open-sans w-full bg-[#1DB14B] font-normal text-white tracking-[1.25px]">
+      <Button className="font-open-sans w-full bg-[#1DB14B] font-normal tracking-[1.25px] text-white">
         CREATE QUOTE
       </Button>
     </>
