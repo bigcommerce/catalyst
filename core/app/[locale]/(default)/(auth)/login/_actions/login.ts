@@ -13,20 +13,17 @@ interface LoginResponse {
 export const login = async (formData: FormData): Promise<LoginResponse> => {
   try {
     const locale = await getLocale();
-    console.log('Login action called with formData:', Object.fromEntries(formData));
 
     const credentials = Credentials.parse({
       type: 'password',
       email: formData.get('email'),
       password: formData.get('password'),
     });
-    console.log('Parsed credentials:', credentials);
 
     const result = await signIn('credentials', {
       ...credentials,
       redirect: false,
     });
-    console.log('SignIn result:', result);
 
     if (result?.error) {
       console.error('SignIn error:', result.error);
@@ -35,7 +32,8 @@ export const login = async (formData: FormData): Promise<LoginResponse> => {
       };
     }
 
-    redirect({ href: '/account/orders', locale });
+    const redirectUrl = result?.url || '/account/orders';
+    redirect({ href: redirectUrl, locale });
 
     return {
       status: 'success',

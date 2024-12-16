@@ -72,6 +72,17 @@ export const Credentials = z.discriminatedUnion('type', [
   }),
 ]);
 
+interface LoginResult {
+  customerAccessToken: { value: string };
+  customer: {
+    entityId: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+  redirectTo?: string;
+}
+
 const config = {
   session: {
     strategy: 'jwt',
@@ -85,6 +96,9 @@ const config = {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (user?.customerAccessToken) {
         token.customerAccessToken = user.customerAccessToken;
+        if (user.redirectTo) {
+          token.redirectTo = user.redirectTo;
+        }
       }
 
       return token;
@@ -95,6 +109,12 @@ const config = {
       }
 
       return session;
+    },
+    redirect({ url, baseUrl }) {
+      if (url.startsWith(baseUrl)) {
+        return url;
+      }
+      return baseUrl;
     },
   },
   events: {
@@ -164,7 +184,6 @@ const config = {
             });
 
             if (response.errors?.length > 0) {
-              console.error('Login errors:', response.errors);
               return null;
             }
 
@@ -178,6 +197,7 @@ const config = {
               name: `${result.customer.firstName} ${result.customer.lastName}`,
               email: result.customer.email,
               customerAccessToken: result.customerAccessToken.value,
+              redirectTo: result.redirectTo,
             };
           }
 
@@ -196,8 +216,6 @@ const config = {
 
             const result = response.data.loginWithCustomerLoginJwt;
 
-            console.log('Login with token result:', response);
-
             if (!result.customer || !result.customerAccessToken) {
               return null;
             }
@@ -206,6 +224,7 @@ const config = {
               name: `${result.customer.firstName} ${result.customer.lastName}`,
               email: result.customer.email,
               customerAccessToken: result.customerAccessToken.value,
+              redirectTo: result.redirectTo,
             };
           }
 
@@ -243,6 +262,7 @@ declare module 'next-auth' {
     name?: string | null;
     email?: string | null;
     customerAccessToken?: string;
+    redirectTo?: string;
   }
 }
 
@@ -250,5 +270,6 @@ declare module 'next-auth/jwt' {
   interface JWT {
     id?: string;
     customerAccessToken?: string;
+    redirectTo?: string;
   }
 }
