@@ -7,7 +7,7 @@ export default function SessionId() {
         createSessionIdCookie();
         async function fetchMyCookie() {
             let cookieValue = await getSessionIdCookie();
-            if (cookieValue?.value) { console.log('line no 10');
+            if (cookieValue?.value) {
                 let divSession = document.getElementById("sessionIdDiv");
                 if (divSession && divSession instanceof HTMLDivElement) {
                     divSession.innerText = cookieValue?.value;
