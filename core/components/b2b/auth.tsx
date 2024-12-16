@@ -8,7 +8,7 @@ interface B2BProviderProps {
   b2bToken?: string;
 }
 
-const loginToB2b = async (b2bToken: string, refresh: () => void) => {
+const loginToB2b = async (b2bToken: string) => {
   const token = window.b2b.utils.user.getB2BToken();
   if (!b2bToken) {
     if (token) await window.b2b.utils.user.logout();
@@ -17,12 +17,13 @@ const loginToB2b = async (b2bToken: string, refresh: () => void) => {
 
   if (!token || (token !== '' && token !== b2bToken)) {
     await window.b2b.utils.user.loginWithB2BStorefrontToken(b2bToken);
+    window.location.reload()
   }
 };
 
 export default function B2BProvider({ b2bToken }: B2BProviderProps) {
   const router = useRouter()
-  const [state, formAction] = useActionState(logout, null);
+  const [, formAction] = useActionState(logout, null);
   const formRef = useRef<HTMLFormElement | null>(null)
   const refresh = () => router.refresh()
   useEffect(() => {
@@ -31,11 +32,11 @@ export default function B2BProvider({ b2bToken }: B2BProviderProps) {
         window.b2b.callbacks.addEventListener('on-logout', () => {
           formRef.current?.submit();
         });
-        loginToB2b(b2bToken ?? '', refresh);
+        loginToB2b(b2bToken ?? '');
         clearInterval(interval);
       }
     }, 500);
-  }, []);
+  }, [b2bToken]);
 
   return <Form ref={formRef} action={formAction} style={{ display: 'none' }}></Form>;
 }
