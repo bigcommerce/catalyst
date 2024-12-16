@@ -23,7 +23,7 @@ import ProductDetailDropdown from '~/components/ui/pdp/belami-product-details-pd
 import { useCommonContext } from '~/components/common-context/common-provider';
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { ShoppingCart } from 'lucide-react';
-import { Link } from '~/components/link';
+import Link from 'next/link';
 
 interface ProductOptionValue {
   entityId: number;
@@ -362,19 +362,15 @@ export const Details = ({
             SKU: <span>{product.mpn}</span>
           </span>
           <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-            by{' '}
-            <span className="products-underline border-b border-black">{product.brand?.name}</span>
+            by <Link href={product.brand?.path ?? ''} className="products-underline border-b border-black">{product.brand?.name}</Link>
           </span>
-
-          {collectionValue && (
-            <>
-              <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-                from the{' '}
-                <span className="products-underline border-b border-black">{collectionValue} </span>{' '}
-                Family
-              </span>
-            </>
-          )}
+          {collectionValue &&
+            <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+              from the <Link href={`/search?brand_name[0]=${encodeURIComponent(product.brand?.name ?? '')}&collection[0]=${encodeURIComponent(collectionValue)}`} className="products-underline border-b border-black">
+                {collectionValue}
+              </Link> Family
+            </span>
+          }
         </div>
 
         <ReviewSummary data={product} />

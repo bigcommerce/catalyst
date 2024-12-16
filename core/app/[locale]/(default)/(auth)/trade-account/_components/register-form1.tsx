@@ -81,6 +81,50 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
   const [passwordValid, setPasswordValid] = useState<Record<number, boolean>>({
     [FieldNameToFieldId.password]: true,
   });
+  const [emailError, setEmailError] = useState<string>('');
+
+  const validateEmail = (email: string) => {
+    if (!email.trim()) {
+      setEmailError('');
+      return true;
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    if (!emailRegex.test(email)) {
+      setEmailError('Please enter a valid email address');
+      return false;
+    }
+
+    setEmailError('');
+    return true;
+  };
+
+  const validatePassword = (password: string) => {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if (!password.trim()) {
+      setPasswordValid((prev) => ({
+        ...prev,
+        [FieldNameToFieldId.password]: true,
+      }));
+      return true;
+    }
+
+    if (!passwordRegex.test(password)) {
+      setPasswordValid((prev) => ({
+        ...prev,
+        [FieldNameToFieldId.password]: false,
+      }));
+      return false;
+    }
+
+    setPasswordValid((prev) => ({
+      ...prev,
+      [FieldNameToFieldId.password]: true,
+    }));
+    return true;
+  };
 
   const handleTextInputValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const fieldId = Number(e.target.id.split('-')[1]);
@@ -92,7 +136,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
     const fieldId = Number(e.target.id.split('-')[1]);
     setPasswordValid((prevState) => ({
       ...prevState,
-      [fieldId]: true, // Always set to true to prevent red border
+      [fieldId]: true,
     }));
   };
 
@@ -197,13 +241,48 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
 
   const renderTextField = (field: TextFormField | AddressFormField, fieldName: string) => (
     <FieldWrapper fieldId={field.entityId} key={field.entityId}>
-      <Text field={field} isValid={true} name={fieldName} onChange={handleTextInputValidation} />
+      <div
+        onBlur={(e) => {
+          if (field.label.toLowerCase().includes('email')) {
+            validateEmail((e.target as HTMLInputElement).value);
+          }
+        }}
+      >
+        <Text
+          field={field}
+          name={fieldName}
+          onChange={handleTextInputValidation}
+          isValid={!emailError || !field.label.toLowerCase().includes('email')}
+        />
+        {field.label.toLowerCase().includes('email') && emailError && (
+          <div className="absolute bottom-[5%] inline-flex w-full text-xs font-normal text-[#ff4500]">
+            {emailError}
+          </div>
+        )}
+      </div>
     </FieldWrapper>
   );
 
   const renderPasswordField = (field: PasswordFormField, fieldName: string) => (
     <FieldWrapper fieldId={field.entityId} key={field.entityId}>
-      <Password field={field} isValid={true} name={fieldName} onChange={handlePasswordValidation} />
+      <div
+        onBlur={(e) => {
+          validatePassword((e.target as HTMLInputElement).value);
+        }}
+        className="relative"
+      >
+        <Password
+          field={field}
+          isValid={passwordValid[FieldNameToFieldId.password]}
+          name={fieldName}
+          onChange={handlePasswordValidation}
+        />
+        {!passwordValid[field.entityId] && (
+          <div className="absolute bottom-[5%] inline-flex w-full text-xs font-normal text-[#ff4500]">
+            Include uppercase, lowercase, number, symbol (8+ chars).
+          </div>
+        )}
+      </div>
     </FieldWrapper>
   );
 
@@ -229,9 +308,10 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
         </div>
 
         <Button
-          className="relative mt-8 w-fit items-center px-8 py-2 !bg-[#008BB7]"
+          className="relative mt-8 w-fit items-center !bg-[#008BB7] px-8 py-2 disabled:cursor-not-allowed [&>button:hover]:!bg-[rgb(75,200,240)] [&>button]:!transition-colors [&>button]:!duration-500"
           variant="primary"
           type="submit"
+          disabled={!!emailError || !passwordValid[FieldNameToFieldId.password]}
         >
           CONTINUE
         </Button>

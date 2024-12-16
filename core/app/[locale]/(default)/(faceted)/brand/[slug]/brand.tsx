@@ -8,10 +8,11 @@ import {
   Configure,
   RefinementList,
   ToggleRefinement,
+  HierarchicalMenu,
   DynamicWidgets,
   RangeInput,
   HitsPerPage,
-  Pagination,
+  //Pagination,
   SortBy,
   Stats
 } from 'react-instantsearch';
@@ -23,6 +24,7 @@ import { RatingMenu } from '../../_components/rating-menu';
 import { Hits, HitsAsync } from '../../_components/hits';
 import { ClearRefinements } from '../../_components/clear-refinements';
 import { CurrentRefinements } from '../../_components/current-refinements';
+import { Pagination } from '../../_components/pagination';
 
 import { Facet } from '../../_components/facet';
 import { FacetDropdown } from '../../_components/facet-dropdown';
@@ -89,54 +91,52 @@ export const Brand = ({ brand, promotions, useDefaultPrices = false }: any) => {
       indexName={indexName}
       routing={{
         router: {
-          cleanUrlOnDispose: false,
-          windowTitle(routeState: any) {
-            const indexState = routeState.indexName || {};
-            return indexState.query
-              ? `Results for: ${indexState.query}`
-              : 'Results page';
-          },
+          cleanUrlOnDispose: false
         },
         stateMapping: {
-        stateToRoute(uiState: any) {
-          const indexUiState = uiState[indexName];
-          return {
-            query: indexUiState.query,
-            categories: indexUiState.menu?.categories,
-            brand_name: indexUiState.refinementList?.brand_name,
-            collection: indexUiState.refinementList?.['metafields.Akeneo.collection'],
-            finish_color: indexUiState.refinementList?.['variants.options.Finish Color'],
-            number_of_bulbs: indexUiState.refinementList?.['metafields.Akeneo.number_of_bulbs'],
-            product_style: indexUiState.refinementList?.['metafields.Akeneo.product_style'],
-            on_sale: indexUiState.toggle?.['on_sale'] === null || indexUiState.toggle?.['on_sale'] === undefined ? undefined : indexUiState.toggle?.['on_sale'] as any,
-            page: indexUiState.page,
-            hitsPerPage: indexUiState.hitsPerPage,
-            sortBy: indexUiState.sortBy,
-          };
-        },
-        routeToState(routeState: any) {
-          return {
-            [indexName]: {
-              query: routeState?.query,
-              menu: {
-                categories: routeState?.categories,
+          stateToRoute(uiState: any) {
+            const indexUiState = uiState[indexName];
+            console.log(indexUiState);
+            return {
+              query: indexUiState.query,
+              categories: indexUiState.hierarchicalMenu?.['categories.lvl0'],
+              brand_name: indexUiState.refinementList?.brand_name,
+              collection: indexUiState.refinementList?.['metafields.Akeneo.collection'],
+              finish_color: indexUiState.refinementList?.['variants.options.Finish Color'],
+              number_of_bulbs: indexUiState.refinementList?.['metafields.Akeneo.number_of_bulbs'],
+              product_style: indexUiState.refinementList?.['metafields.Akeneo.product_style'],
+              on_sale: indexUiState.toggle?.['on_sale'] === null || indexUiState.toggle?.['on_sale'] === undefined ? undefined : indexUiState.toggle?.['on_sale'] as any,
+              is_new: indexUiState.toggle?.['is_new'] === null || indexUiState.toggle?.['is_new'] === undefined ? undefined : indexUiState.toggle?.['is_new'] as any,
+              page: indexUiState.page,
+              hitsPerPage: indexUiState.hitsPerPage,
+              sortBy: indexUiState.sortBy,
+            };
+          },
+          routeToState(routeState: any) {
+            console.log(routeState);
+            return {
+              [indexName]: {
+                query: routeState?.query,
+                hierarchicalMenu: {
+                  'categories.lvl0': routeState?.categories
+                },
+                refinementList: {
+                  'brand_name': routeState?.brand_name,
+                  'metafields.Akeneo.collection': routeState?.collection,
+                  'variants.options.Finish Color': routeState?.finish_color,
+                  'metafields.Akeneo.number_of_bulbs': routeState?.number_of_bulbs,
+                  'metafields.Akeneo.product_style': routeState?.product_style
+                },
+                toggle: {
+                  'on_sale': routeState?.on_sale == null || routeState?.on_sale == undefined ? undefined : (routeState?.on_sale === 'true' || routeState?.on_sale === true),
+                  'is_new': routeState?.is_new == null || routeState?.is_new == undefined ? undefined : (routeState?.is_new === 'true' || routeState?.is_new === true),
+                },
+                page: routeState?.page,
+                hitsPerPage: routeState?.hitsPerPage,
+                sortBy: routeState?.sortBy
               },
-              refinementList: {
-                'brand_name': routeState?.brand_name,
-                'metafields.Akeneo.collection': routeState?.collection,
-                'variants.options.Finish Color': routeState?.finish_color,
-                'metafields.Akeneo.number_of_bulbs': routeState?.number_of_bulbs,
-                'metafields.Akeneo.product_style': routeState?.product_style
-              },
-              toggle: {
-                'on_sale': routeState?.on_sale == null || routeState?.on_sale == undefined ? undefined : (routeState?.on_sale === 'true' || routeState?.on_sale === true),
-              },
-              page: routeState?.page,
-              hitsPerPage: routeState?.hitsPerPage,
-              sortBy: routeState?.sortBy
-            },
-          };
-        },
+            };
+          },
         }
       }}
       onStateChange={({
@@ -172,6 +172,14 @@ export const Brand = ({ brand, promotions, useDefaultPrices = false }: any) => {
         <div className="mt-4 flex flex-col">
 
           <div className="mt-4 order-2">
+            <Facet title="Category">
+              <HierarchicalMenu attributes={[
+                'categories.lvl0',
+                'categories.lvl1',
+                'categories.lvl2',
+                'categories.lvl3'
+              ]} />
+            </Facet>
             <DynamicWidgets maxValuesPerFacet={1000}>
               <Facet title="Collection">
                 <RefinementList attribute="metafields.Akeneo.collection" />
@@ -233,6 +241,9 @@ export const Brand = ({ brand, promotions, useDefaultPrices = false }: any) => {
               </Panel>
               <Panel header="Free Shipping">
                 <ToggleRefinement attribute="free_shipping" label="Free Shipping" />
+              </Panel>
+              <Panel header="Is New">
+                <ToggleRefinement attribute="is_new" label="Is New" />
               </Panel>
               <Panel header="On Sale">
                 <ToggleRefinement attribute="on_sale" label="On Sale" />
