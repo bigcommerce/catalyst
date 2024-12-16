@@ -26,6 +26,7 @@
         "heading": "Logga in",
         "Form": {
             "error": "Din e-postadress eller ditt lösenord är felaktigt. Försök att logga in igen eller återställ ditt lösenord",
+            "successful": "You have successfully logged in.",
             "emailLabel": "E-post",
             "enterEmailMessage": "Ange din e-postadress",
             "passwordLabel": "Lösenord",
@@ -68,7 +69,8 @@
             "submit": "Skapa konto",
             "submitting": "Skapar konto...",
             "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
-            "confirmPassword": "Lösenorden stämmer inte överens"
+            "confirmPassword": "Lösenorden stämmer inte överens",
+            "successMessage": "Account was successfully created."
         },
         "Errors": {
             "inputError": "Något gick fel när användarens inmatning skulle bearbetas.",
@@ -136,18 +138,41 @@
         "searchResults": "Sökresultat för"
     },
     "Account": {
-        "Home": {
-            "title": "Mitt konto",
-            "heading": "Mitt konto",
+        "Layout": {
             "accountTabsLabel": "Kontoflikar",
             "orders": "Beställningar",
-            "messages": "Meddelanden",
             "addresses": "Adresser",
             "wishlists": "Önskelistor",
             "recentlyViewed": "Nyss sedda",
-            "settings": "Kontoinställningar",
-            "changePassword": "Ändra lösenor",
-            "successMessage": "Ditt konto har skapats"
+            "settings": "Kontoinställningar"
+        },
+        "Orders": {
+            "noOrders": "Inga beställningar ännu",
+            "orderNumber": "Beställningsnummer",
+            "placedDate": "Beställning är gjord",
+            "totalPrice": "Total",
+            "viewDetails": "Visa detaljer",
+            "trackOrder": "Spåra beställning",
+            "returnOrder": "Returartiklar",
+            "orderSummary": "Beställningssammanfattning",
+            "orderContents": "Beställ innehåll",
+            "orderSubtotal": "Delsumma:",
+            "orderGrandtotal": "Totalsumma:",
+            "orderDiscount": "Rabatt:",
+            "orderAppliedCoupon": "Kupongkod ({code}):",
+            "orderShipping": "Frakt:",
+            "orderTax": "Moms:",
+            "printInvoice": "Skriv ut faktura",
+            "repurchaseOrder": "Återköp",
+            "return": "Lämna tillbaka",
+            "shippedDate": "Skickades den",
+            "shippingAddress": "Leveransadress",
+            "shippingMethod": "Fraktmetod:",
+            "shipmentTitle": "Leverans",
+            "shippingTitle": "Frakt",
+            "shippingPayment": "Betalning",
+            "shippingPaymentMethod": "Betalnings metod",
+            "billingAddress": "Fakturaadress"
         },
         "Addresses": {
             "title": "Adresser",
@@ -161,7 +186,6 @@
                 "title": "Lägg till adress",
                 "heading": "Ny adress",
                 "Form": {
-                    "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
                     "submit": "Lägg till ny adress",
                     "submitting": "Sparar adress ...",
                     "cancel": "Annullera",
@@ -176,7 +200,6 @@
                 "title": "Redigera adress",
                 "heading": "Redigera adress",
                 "Form": {
-                    "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
                     "submit": "Redigera adress",
                     "submitting": "Uppdaterar adress ...",
                     "cancel": "Annullera",
@@ -200,7 +223,6 @@
             "title": "Kontoinställningar",
             "emptyTextValidatoinMessage": "Det här fältet får inte vara tomt",
             "cancel": "Annullera",
-            "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
             "changePassword": "Ändra lösenor",
             "submit": "Uppdatera inställningar",
             "submitting": "Uppdatera inställningar ...",
@@ -230,6 +252,7 @@
                 "submitText": "Ändra lösenor"
             },
             "UpdateCustomer": {
+                "successMessage": "Dina kontoinställningar har uppdaterats",
                 "Errors": {
                     "inputError": "Något gick fel när användarens inmatning skulle bearbetas.",
                     "notFound": "Kunden finns inte"
@@ -375,6 +398,8 @@
             "maxPurchase": "Maximalt köp:",
             "availability": "Tillgänglighet",
             "condition": "Skick",
+            "comingSoon": "Kommer snart",
+            "qty": "Antal",
             "weight": "Vikt",
             "Prices": {
                 "msrp": "MSRP",
@@ -432,7 +457,7 @@
         "Header": {
             "Account": {
                 "account": "Konto",
-                "myAccount": "Mitt konto",
+                "orders": "Beställningar",
                 "addresses": "Adresser",
                 "accountSettings": "Kontoinställningar",
                 "login": "Logga in",

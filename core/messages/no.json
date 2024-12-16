@@ -26,6 +26,7 @@
         "heading": "Logg inn",
         "Form": {
             "error": "E-postadressen eller passordet er feil. Prøv å logge på igjen, eller tilbakestill passordet ditt.",
+            "successful": "You have successfully logged in.",
             "emailLabel": "E-post",
             "enterEmailMessage": "Skriv inn epostadressen din",
             "passwordLabel": "Passord",
@@ -68,7 +69,8 @@
             "submit": "Opprett konto",
             "submitting": "Oppretter konto …",
             "recaptchaText": "Bestå reCAPTCHA-sjekk",
-            "confirmPassword": "Passordene samsvarer ikke"
+            "confirmPassword": "Passordene samsvarer ikke",
+            "successMessage": "Account was successfully created."
         },
         "Errors": {
             "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
@@ -136,18 +138,41 @@
         "searchResults": "Søkeresultater for"
     },
     "Account": {
-        "Home": {
-            "title": "Min konto",
-            "heading": "Min konto",
+        "Layout": {
             "accountTabsLabel": "Konto-faner",
             "orders": "Bestillinger",
-            "messages": "Meldinger",
             "addresses": "Adresser",
             "wishlists": "Ønskelister",
             "recentlyViewed": "Nylig sett",
-            "settings": "Kontoinnstillinger",
-            "changePassword": "Endre passord",
-            "successMessage": "Kontoen din har blitt opprettet"
+            "settings": "Kontoinnstillinger"
+        },
+        "Orders": {
+            "noOrders": "Ingen bestillinger ennå",
+            "orderNumber": "Bestillingsnr.",
+            "placedDate": "Bestilling plassert",
+            "totalPrice": "Totalbeløp",
+            "viewDetails": "Vis detaljer",
+            "trackOrder": "Spor bestilling",
+            "returnOrder": "Returner varer",
+            "orderSummary": "Bestillingssammendrag",
+            "orderContents": "Innhold i bestilling",
+            "orderSubtotal": "Delsum:",
+            "orderGrandtotal": "Totalbeløp:",
+            "orderDiscount": "Rabatt:",
+            "orderAppliedCoupon": "Kupongkode ({code}):",
+            "orderShipping": "Frakt:",
+            "orderTax": "Avgift:",
+            "printInvoice": "Skriv ut faktura",
+            "repurchaseOrder": "Kjøpt på nytt",
+            "return": "Retur",
+            "shippedDate": "Sendt",
+            "shippingAddress": "Leveringsadresse",
+            "shippingMethod": "Forsendelsesmetode",
+            "shipmentTitle": "Forsendelse",
+            "shippingTitle": "Frakt",
+            "shippingPayment": "Betaling",
+            "shippingPaymentMethod": "Betalingsmåte",
+            "billingAddress": "Fakturaadresse"
         },
         "Addresses": {
             "title": "Adresser",
@@ -161,7 +186,6 @@
                 "title": "Legg til adresse",
                 "heading": "Ny adresse",
                 "Form": {
-                    "recaptchaText": "Bestå reCAPTCHA-sjekk",
                     "submit": "Legg til ny adresse",
                     "submitting": "Lagrer adresse …",
                     "cancel": "Avbryt",
@@ -176,7 +200,6 @@
                 "title": "Rediger adresse",
                 "heading": "Rediger adresse",
                 "Form": {
-                    "recaptchaText": "Bestå reCAPTCHA-sjekk",
                     "submit": "Rediger adresse",
                     "submitting": "Oppdaterer adresse …",
                     "cancel": "Avbryt",
@@ -200,7 +223,6 @@
             "title": "Kontoinnstillinger",
             "emptyTextValidatoinMessage": "Dette feltet kan ikke være tomt",
             "cancel": "Avbryt",
-            "recaptchaText": "Bestå reCAPTCHA-sjekk",
             "changePassword": "Endre passord",
             "submit": "Oppdater innstillingene",
             "submitting": "Oppdater innstillingene …",
@@ -230,6 +252,7 @@
                 "submitText": "Endre passord"
             },
             "UpdateCustomer": {
+                "successMessage": "Kontoinnstillingene dine er oppdatert",
                 "Errors": {
                     "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
                     "notFound": "Kunden eksisterer ikke"
@@ -375,6 +398,8 @@
             "maxPurchase": "Maksimalt kjøp",
             "availability": "Tilgjengelighet",
             "condition": "Tilstand",
+            "comingSoon": "Kommer snart",
+            "qty": "Antall",
             "weight": "Vekt",
             "Prices": {
                 "msrp": "MSRP",
@@ -432,7 +457,7 @@
         "Header": {
             "Account": {
                 "account": "Konto",
-                "myAccount": "Min konto",
+                "orders": "Bestillinger",
                 "addresses": "Adresser",
                 "accountSettings": "Kontoinnstillinger",
                 "login": "Logg inn",

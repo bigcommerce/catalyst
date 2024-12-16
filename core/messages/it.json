@@ -26,6 +26,7 @@
         "heading": "Accedi",
         "Form": {
             "error": "L'indirizzo e-mail o la password non sono corretti. Prova ad accedere di nuovo o reimposta la password",
+            "successful": "You have successfully logged in.",
             "emailLabel": "E-mail",
             "enterEmailMessage": "Inserisci la tua e-mail",
             "passwordLabel": "Password",
@@ -68,7 +69,8 @@
             "submit": "Crea account",
             "submitting": "Creazione dell'account...",
             "recaptchaText": "Supera il controllo ReCAPTCHA",
-            "confirmPassword": "Le password non corrispondono."
+            "confirmPassword": "Le password non corrispondono.",
+            "successMessage": "Account was successfully created."
         },
         "Errors": {
             "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
@@ -136,18 +138,41 @@
         "searchResults": "Risultati di ricerca per"
     },
     "Account": {
-        "Home": {
-            "title": "Il mio account",
-            "heading": "Il mio account",
+        "Layout": {
             "accountTabsLabel": "Schede account",
             "orders": "Ordini",
-            "messages": "Messaggi",
             "addresses": "Indirizzi",
             "wishlists": "Liste desideri",
             "recentlyViewed": "Visualizzati di recente",
-            "settings": "Impostazioni account",
-            "changePassword": "Cambia password",
-            "successMessage": "Il tuo account è stato creato"
+            "settings": "Impostazioni account"
+        },
+        "Orders": {
+            "noOrders": "Non sono ancora presenti ordini",
+            "orderNumber": "Ordine #",
+            "placedDate": "Ordine effettuato",
+            "totalPrice": "Totale",
+            "viewDetails": "Visualizza dettagli",
+            "trackOrder": "Traccia l'ordine",
+            "returnOrder": "Restituisci gli articoli",
+            "orderSummary": "Riepilogo ordine",
+            "orderContents": "Contenuto dell'ordine",
+            "orderSubtotal": "Subtotale:",
+            "orderGrandtotal": "Totale:",
+            "orderDiscount": "Sconto:",
+            "orderAppliedCoupon": "Codice coupon ({code}):",
+            "orderShipping": "Spedizione:",
+            "orderTax": "Tasse:",
+            "printInvoice": "Stampa la fattura",
+            "repurchaseOrder": "Riacquisto",
+            "return": "Restituisci",
+            "shippedDate": "Spedito il",
+            "shippingAddress": "Indirizzo di spedizione",
+            "shippingMethod": "Metodo di spedizione",
+            "shipmentTitle": "Spedizione",
+            "shippingTitle": "Spedizioni",
+            "shippingPayment": "Pagamento",
+            "shippingPaymentMethod": "Metodo di pagamento",
+            "billingAddress": "Indirizzo di fatturazione"
         },
         "Addresses": {
             "title": "Indirizzi",
@@ -161,7 +186,6 @@
                 "title": "Aggiungi indirizzo",
                 "heading": "Nuovo indirizzo",
                 "Form": {
-                    "recaptchaText": "Supera il controllo ReCAPTCHA",
                     "submit": "Aggiungi un nuovo indirizzo",
                     "submitting": "Salvataggio dell'indirizzo in corso...",
                     "cancel": "Annulla",
@@ -176,7 +200,6 @@
                 "title": "Modifica indirizzo",
                 "heading": "Modifica indirizzo",
                 "Form": {
-                    "recaptchaText": "Supera il controllo ReCAPTCHA",
                     "submit": "Modifica indirizzo",
                     "submitting": "Aggiornamento indirizzo in corso...",
                     "cancel": "Annulla",
@@ -200,7 +223,6 @@
             "title": "Impostazioni account",
             "emptyTextValidatoinMessage": "Questo campo non può essere vuoto",
             "cancel": "Annulla",
-            "recaptchaText": "Supera il controllo ReCAPTCHA",
             "changePassword": "Cambia password",
             "submit": "AGGIORNA IMPOSTAZIONI",
             "submitting": "Aggiorna impostazioni...",
@@ -230,6 +252,7 @@
                 "submitText": "Cambia password"
             },
             "UpdateCustomer": {
+                "successMessage": "Le impostazioni del tuo account sono state aggiornate",
                 "Errors": {
                     "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
                     "notFound": "Il cliente non esiste"
@@ -375,6 +398,8 @@
             "maxPurchase": "Spesa massima",
             "availability": "Disponibilità",
             "condition": "Condizioni",
+            "comingSoon": "Presto disponibile",
+            "qty": "Qtà",
             "weight": "Peso",
             "Prices": {
                 "msrp": "Prezzo di listino",
@@ -432,7 +457,7 @@
         "Header": {
             "Account": {
                 "account": "Account",
-                "myAccount": "Il mio account",
+                "orders": "Ordini",
                 "addresses": "Indirizzi",
                 "accountSettings": "Impostazioni account",
                 "login": "Accedi",
@@ -458,7 +483,7 @@
                 "products": "Prodotti",
                 "categories": "Categorie",
                 "brands": "Marchi",
-                "noSearchResults": "Sorry, no results for \"{term}\".",
+                "noSearchResults": "Spiacenti, nessun risultato per \"{term}\".",
                 "searchPlaceholder": "Cerca...",
                 "clearSearch": "Cancella ricerca",
                 "processing": "Elaborazione in corso..."
@@ -479,7 +504,7 @@
             "searchProducts": "Cerca prodotti",
             "searchPlaceholder": "Cerca...",
             "search": "Cerca",
-            "noSearchResults": "Sorry, no results for \"{term}\".",
+            "noSearchResults": "Spiacenti, nessun risultato per \"{term}\".",
             "checkSpelling": "Controlla l'ortografia o prova un'altra ricerca."
         },
         "AddToCartButton": {
