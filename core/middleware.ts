@@ -1,10 +1,17 @@
 import { composeMiddlewares } from './middlewares/compose-middlewares';
 import { withAuth } from './middlewares/with-auth';
 import { withChannelId } from './middlewares/with-channel-id';
+import { withCustomerLoginAPI } from './middlewares/with-customer-login-api';
 import { withIntl } from './middlewares/with-intl';
 import { withRoutes } from './middlewares/with-routes';
 
-export const middleware = composeMiddlewares(withAuth, withIntl, withChannelId, withRoutes);
+export const middleware = composeMiddlewares(
+  withCustomerLoginAPI,
+  withAuth,
+  withIntl,
+  withChannelId,
+  withRoutes,
+);
 
 export const config = {
   matcher: [
