@@ -61,4 +61,21 @@
   --button-ghost-foreground-hover: hsl(var(--foreground));
   --button-ghost-border: transparent;
   --button-ghost-focus: hsl(var(--foreground));
+
+  /* Accordion */
+
+  --accordion-light-title-text: hsl(var(--contrast-400));
+  --accordion-light-title-text-hover: hsl(var(--foreground));
+  --accordion-light-title-icon: hsl(var(--contrast-500));
+  --accordion-light-title-icon-hover: hsl(var(--foreground));
+  --accordion-light-content-text: hsl(var(--foreground));
+
+  --accordion-dark-title-text: hsl(var(--contrast-200));
+  --accordion-dark-title-text-hover: hsl(var(--background));
+  --accordion-dark-title-icon: hsl(var(--contrast-200));
+  --accordion-dark-title-icon-hover: hsl(var(--background));
+  --accordion-dark-content-text: hsl(var(--background));
+
+  --accordion-title-font-family: var(--font-family-mono);
+  --accordion-content-font-family: var(--font-family-body);
 }
