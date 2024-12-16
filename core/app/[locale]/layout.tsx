@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { DM_Serif_Text, Inter, Roboto_Mono } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { PropsWithChildren } from 'react';
 
 import '../globals.css';
@@ -111,7 +112,9 @@ export default async function RootLayout({ params, children }: Props) {
       <body className={`${inter.variable} ${dm_serif_text.variable} ${roboto_mono.variable}`}>
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <Providers>{children}</Providers>
+          <NuqsAdapter>
+            <Providers>{children}</Providers>
+          </NuqsAdapter>
         </NextIntlClientProvider>
         <VercelComponents />
       </body>
