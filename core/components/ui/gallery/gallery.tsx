@@ -4,6 +4,7 @@ import { cn } from '~/lib/utils';
 import { GalleryModel } from './belami-gallery-view-all-model-pdp';
 import { Banner } from './belami-banner-pdp';
 import ProductImage from './product-zoom';
+import { useCommonContext } from '~/components/common-context/common-provider';
 
 const isYoutubeUrl = (url?: string) => url?.includes('youtube.com') || url?.includes('youtu.be');
 
@@ -64,85 +65,114 @@ const Gallery = ({
   productMpn,
   selectedVariantId,
 }: Props) => {
+  const { setCurrentMainMedia } = useCommonContext();
   const [selectedIndex, setSelectedIndex] = useState(defaultImageIndex);
   const [viewAll, setViewAll] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [videoError, setVideoError] = useState<string | null>(null);
+  const prevMediaRef = useRef<string | null>(null);
 
   const thumbnailRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const safeImages = useMemo(() => {
-    return Array.isArray(images) ? images : [];
-  }, [images]);
-
-  const safeVideos = useMemo(() => {
-    return Array.isArray(videos) ? videos : [];
-  }, [videos]);
-
-  const filteredImages = useMemo(() => {
-    let filteredImages = safeImages;
-
-    if (selectedVariantId) {
-      filteredImages = safeImages.filter((image) => image.variantId === selectedVariantId);
-
-      if (filteredImages.length === 0) {
-        filteredImages = safeImages.filter((image) => !image.variantId);
+  const { mediaItems, selectedItem } = useMemo(() => {
+    // Process images
+    const filteredImages = (() => {
+      let filtered = Array.isArray(images) ? images : [];
+      if (selectedVariantId) {
+        const variantImages = filtered.filter((img) => img.variantId === selectedVariantId);
+        filtered =
+          variantImages.length > 0 ? variantImages : filtered.filter((img) => !img.variantId);
       }
-    }
-
-    if (productMpn) {
-      const mpnFilteredImages = filteredImages.filter((image) =>
-        image.altText?.toLowerCase?.()?.includes?.(productMpn.toLowerCase()),
-      );
-
-      if (mpnFilteredImages.length > 0) {
-        filteredImages = mpnFilteredImages;
+      if (productMpn) {
+        const mpnImages = filtered.filter((img) =>
+          img.altText?.toLowerCase()?.includes(productMpn.toLowerCase()),
+        );
+        if (mpnImages.length > 0) filtered = mpnImages;
       }
-    }
+      return filtered;
+    })();
 
-    return filteredImages;
-  }, [safeImages, selectedVariantId, productMpn]);
-
-  const processedVideos = useMemo(() => {
-    return safeVideos.map((video) => ({
+    // Process videos
+    const processedVideos = (Array.isArray(videos) ? videos : []).map((video) => ({
       ...video,
       type: video.type || (isYoutubeUrl(video.url) ? 'youtube' : 'direct'),
     }));
-  }, [safeVideos]);
 
-  const mediaItems = useMemo(() => {
-    return [
-      ...filteredImages.map(
-        (image): MediaItem => ({
-          type: 'image',
-          altText: image.altText,
-          src: image.src,
-          variantId: image.variantId,
-        }),
-      ),
-      ...processedVideos.map(
-        (video): MediaItem => ({
-          type: 'video',
-          title: video.title,
-          url: video.url,
-          videoType: video.type,
-        }),
-      ),
+    // Combine into media items
+    const items = [
+      ...filteredImages.map((image) => ({
+        type: 'image' as const,
+        altText: image.altText,
+        src: image.src,
+        variantId: image.variantId,
+      })),
+      ...processedVideos.map((video) => ({
+        type: 'video' as const,
+        title: video.title,
+        url: video.url,
+        videoType: video.type,
+      })),
     ];
-  }, [filteredImages, processedVideos]);
 
-  const selectedItem = mediaItems[selectedIndex];
-  const remainingItemsCount = Math.max(0, mediaItems.length - 4);
+    return {
+      mediaItems: items,
+      selectedItem: items[selectedIndex] || null,
+    };
+  }, [images, videos, selectedVariantId, productMpn, selectedIndex]);
 
-  if (mediaItems.length === 0) return null;
+  // First, let's properly define our union type for MediaItem
+  type ImageItem = {
+    type: 'image';
+    altText: string;
+    src: string;
+    variantId?: string;
+  };
+
+  type VideoItem = {
+    type: 'video';
+    title: string;
+    url: string;
+    videoType: 'youtube' | 'direct';
+  };
+  type MediaItem = ImageItem | VideoItem;
+
+  // Helper function to safely get the media source
+  const getMediaSource = (item: MediaItem): string => {
+    if (item.type === 'image') {
+      return item.src;
+    }
+    return item.url;
+  };
+
+  // Helper function to safely get the media title/alt text
+  const getMediaTitle = (item: MediaItem): string => {
+    if (item.type === 'image') {
+      return item.altText;
+    }
+    return item.title;
+  };
+
+  // Fix the useEffect implementation
+  useEffect(() => {
+    if (!selectedItem) return;
+
+    const currentMediaKey = `${selectedItem.type}-${getMediaSource(selectedItem)}`;
+    if (prevMediaRef.current !== currentMediaKey) {
+      prevMediaRef.current = currentMediaKey;
+      setCurrentMainMedia({
+        type: selectedItem.type,
+        src: selectedItem.type === 'image' ? selectedItem.src : undefined,
+        url: selectedItem.type === 'video' ? selectedItem.url : undefined,
+        altText: selectedItem.type === 'image' ? selectedItem.altText : undefined,
+        title: selectedItem.type === 'video' ? selectedItem.title : undefined,
+      });
+    }
+  }, [selectedItem, setCurrentMainMedia]);
 
   useEffect(() => {
-    const maxIndex = mediaItems.length - 1;
-    if (selectedIndex > maxIndex) {
-      setSelectedIndex(0);
-    }
-  }, [mediaItems, selectedIndex]);
+    setSelectedIndex(0);
+  }, [selectedVariantId]);
 
   useEffect(() => {
     setIsPlaying(false);
@@ -153,9 +183,12 @@ const Gallery = ({
     }
   }, [selectedIndex]);
 
-  useEffect(() => {
-    setSelectedIndex(0);
-  }, [selectedVariantId]);
+  const handleThumbnailClick = (index: number) => {
+    if (index !== selectedIndex) {
+      setSelectedIndex(index);
+      prevMediaRef.current = null;
+    }
+  };
 
   const handleVideoClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -223,6 +256,7 @@ const Gallery = ({
   const openPopup = (index?: number) => {
     if (typeof index === 'number' && index >= 0 && index < mediaItems.length) {
       setSelectedIndex(index);
+      prevMediaRef.current = null;
     }
     setViewAll(true);
   };
@@ -232,12 +266,24 @@ const Gallery = ({
   };
 
   const handleNextItem = () => {
-    setSelectedIndex((prev) => (prev + 1) % mediaItems.length);
+    setSelectedIndex((prev) => {
+      const next = (prev + 1) % mediaItems.length;
+      prevMediaRef.current = null;
+      return next;
+    });
   };
 
   const handlePrevItem = () => {
-    setSelectedIndex((prev) => (prev === 0 ? mediaItems.length - 1 : prev - 1));
+    setSelectedIndex((prev) => {
+      const next = prev === 0 ? mediaItems.length - 1 : prev - 1;
+      prevMediaRef.current = null;
+      return next;
+    });
   };
+
+  if (mediaItems.length === 0) return null;
+
+  const remainingItemsCount = Math.max(0, mediaItems.length - 4);
 
   const promoImages = [
     {
@@ -284,7 +330,7 @@ const Gallery = ({
                     isActive ? 'border-primary' : 'border-gray-200',
                   )}
                   key={`${isVideo ? item.url : item.src}-${index}`}
-                  onClick={() => setSelectedIndex(index)}
+                  onClick={() => handleThumbnailClick(index)}
                 >
                   {isVideo ? (
                     <div className="relative h-full w-full">
@@ -502,7 +548,10 @@ const Gallery = ({
           onClose={closePopup}
           mediaItems={mediaItems}
           selectedIndex={selectedIndex}
-          onSelectIndex={setSelectedIndex}
+          onSelectIndex={(index) => {
+            setSelectedIndex(index);
+            prevMediaRef.current = null;
+          }}
         />
       )}
 
