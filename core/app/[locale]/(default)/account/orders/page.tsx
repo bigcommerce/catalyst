@@ -52,5 +52,3 @@ export default async function Orders({ searchParams }: Props) {
     </>
   );
 }
-
-export const runtime = 'edge';
