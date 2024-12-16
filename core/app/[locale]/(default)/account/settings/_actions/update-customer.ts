@@ -1,13 +1,17 @@
 'use server';
 
+import { BigCommerceAPIError } from '@bigcommerce/catalyst-client';
+import { parseWithZod } from '@conform-to/zod';
 import { expireTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
+import { updateAccountSchema } from '@/vibes/soul/sections/account-settings-section/schema';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
-import { graphql, VariablesOf } from '~/client/graphql';
+import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
-import { parseAccountFormData } from '~/components/form-fields/shared/parse-fields';
+
+import { UpdateAccountAction } from '../../../../../../vibes/soul/sections/account-settings-section/update-account-form';
 
 const UpdateCustomerMutation = graphql(`
   mutation UpdateCustomerMutation($input: UpdateCustomerInput!) {
@@ -40,68 +44,59 @@ const UpdateCustomerMutation = graphql(`
   }
 `);
 
-type AddCustomerAddressInput = VariablesOf<typeof UpdateCustomerMutation>['input'];
-
-const isUpdateCustomerInput = (data: unknown): data is AddCustomerAddressInput => {
-  if (
-    typeof data === 'object' &&
-    data !== null &&
-    ('firstName' in data ||
-      'lastName' in data ||
-      'email' in data ||
-      'phone' in data ||
-      'company' in data ||
-      'formFields' in data)
-  ) {
-    return true;
-  }
-
-  return false;
-};
-
-interface UpdateCustomerResponse {
-  status: 'success' | 'error';
-  message: string;
-}
-
-export const updateCustomer = async (formData: FormData): Promise<UpdateCustomerResponse> => {
-  const t = await getTranslations('Account.Settings.UpdateCustomer');
+export const updateCustomer: UpdateAccountAction = async (prevState, formData) => {
+  const t = await getTranslations('Register');
   const customerAccessToken = await getSessionCustomerAccessToken();
 
-  const parsed = parseAccountFormData(formData);
+  const submission = parseWithZod(formData, { schema: updateAccountSchema });
 
-  if (!isUpdateCustomerInput(parsed)) {
+  if (submission.status !== 'success') {
     return {
-      status: 'error',
-      message: t('Errors.inputError'),
+      account: prevState.account,
+      lastResult: submission.reply(),
     };
   }
 
-  const response = await client.fetch({
-    document: UpdateCustomerMutation,
-    customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
-    variables: {
-      input: parsed,
-    },
-  });
-
-  const result = response.data.customer.updateCustomer;
-
-  if (result.errors.length > 0) {
-    result.errors.forEach((error) => {
-      throw new Error(error.message);
+  try {
+    const response = await client.fetch({
+      document: UpdateCustomerMutation,
+      customerAccessToken,
+      variables: {
+        input: submission.value,
+      },
+      fetchOptions: { cache: 'no-store' },
     });
-  }
 
-  if (!result.customer) {
+    const result = response.data.customer.updateCustomer;
+
+    if (result.errors.length > 0) {
+      return {
+        account: prevState.account,
+        lastResult: submission.reply({ formErrors: result.errors.map((error) => error.message) }),
+      };
+    }
+
+    expireTag(TAGS.customer);
+
     return {
-      status: 'error',
-      message: t('Errors.notFound'),
+      account: submission.value,
+      successMessage: t('successfulUpdate'),
+      lastResult: submission.reply(),
+    };
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+
+    if (error instanceof BigCommerceAPIError) {
+      return {
+        account: prevState.account,
+        lastResult: submission.reply({ formErrors: [t('Errors.apiError')] }),
+      };
+    }
+
+    return {
+      account: prevState.account,
+      lastResult: submission.reply({ formErrors: [t('Errors.error')] }),
     };
   }
-
-  expireTag(TAGS.customer);
-
-  return { status: 'success', message: t('successMessage') };
 };
