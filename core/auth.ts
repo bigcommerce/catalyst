@@ -97,6 +97,7 @@ const config = {
       if (user?.customerAccessToken) {
         token.customerAccessToken = user.customerAccessToken;
         if (user.redirectTo) {
+          console.log('Setting redirectTo:', user.redirectTo);
           token.redirectTo = user.redirectTo;
         }
       }
@@ -144,6 +145,8 @@ const config = {
     },
     async signOut(message) {
       const customerAccessToken = 'token' in message ? message.token?.customerAccessToken : null;
+      const cookieStore = await cookies();
+      const cookieCartId = cookieStore.get('cartId')?.value;
 
       if (customerAccessToken) {
         try {
@@ -173,6 +176,8 @@ const config = {
       async authorize(credentials) {        
         try {
           const parsed = Credentials.parse(credentials);
+          const cookieStore = await cookies();
+          const cookieCartId = cookieStore.get('cartId')?.value;
 
           if (parsed.type === 'password') {
             const response = await client.fetch({
@@ -197,7 +202,6 @@ const config = {
               name: `${result.customer.firstName} ${result.customer.lastName}`,
               email: result.customer.email,
               customerAccessToken: result.customerAccessToken.value,
-              redirectTo: result.redirectTo,
             };
           }
 

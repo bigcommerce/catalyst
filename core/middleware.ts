@@ -5,28 +5,31 @@ import { withCustomerLoginAPI } from './middlewares/with-customer-login-api';
 import { withIntl } from './middlewares/with-intl';
 import { withRoutes } from './middlewares/with-routes';
 
-export const middleware = composeMiddlewares(
+// Split the middleware into two parts
+const mainMiddleware = composeMiddlewares(
   withAuth,
-  withCustomerLoginAPI,
   withIntl,
   withChannelId,
   withRoutes,
 );
 
+const customerLoginMiddleware = composeMiddlewares(withCustomerLoginAPI);
+
+export function middleware(request: NextRequest, event: NextFetchEvent) {
+  // Handle customer login API routes
+  if (request.nextUrl.pathname.startsWith('/login/token/')) {
+    return customerLoginMiddleware(request, event);
+  }
+
+  // Handle all other routes
+  return mainMiddleware(request, event);
+}
+
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - _vercel (vercel internals, eg: web vitals)
-     * - favicon.ico (favicon file)
-     * - admin (admin panel)
-     * - sitemap.xml (sitemap route)
-     * - xmlsitemap.php (legacy sitemap route)
-     * - robots.txt (robots route)
-     */
+    // Customer Login API routes
+    '/login/token/:token*',
+    // All other routes (excluding the ones we don't want to process)
     '/((?!api|admin|_next/static|_next/image|_vercel|favicon.ico|xmlsitemap.php|sitemap.xml|robots.txt).*)',
   ],
 };
