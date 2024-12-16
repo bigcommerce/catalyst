@@ -1,20 +1,38 @@
-import { useFormatter, useTranslations } from 'next-intl';
+import { getFormatter, getTranslations } from 'next-intl/server';
 
-import { FragmentOf, graphql, ResultOf } from '~/client/graphql';
+import { client } from '~/client';
+import { graphql, ResultOf, VariablesOf } from '~/client/graphql';
+import { revalidate } from '~/client/revalidate-target';
 import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { Price as PricesType } from '~/components/ui/product-card';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { cn } from '~/lib/utils';
-// import { processLineItems } from './orders-list';
+
+const ProductAttributes = graphql(`
+  query ProductAttributes($entityId: Int) {
+    site {
+      product(entityId: $entityId) {
+        path
+      }
+    }
+  }
+`);
+
+export type ProductAttributesVariables = VariablesOf<typeof ProductAttributes>;
 
 export const OrderItemFragment = graphql(`
   fragment OrderItemFragment on OrderPhysicalLineItem {
     entityId
+    productEntityId
     brand
     name
     quantity
+    image {
+      url: urlTemplate(lossy: true)
+      altText
+    }
     subTotalListPrice {
       value
       currencyCode
@@ -29,8 +47,10 @@ export const OrderItemFragment = graphql(`
 
 export type ProductSnippetFragment = Omit<
   ResultOf<typeof ProductCardFragment>,
-  'productOptions' | 'reviewSummary' | 'inventory' | 'availabilityV2'
+  'productOptions' | 'reviewSummary' | 'inventory' | 'availabilityV2' | 'brand' | 'path'
 > & {
+  productId: number;
+  brand: string | null;
   quantity: number;
   productOptions?: Array<{
     __typename: string;
@@ -39,19 +59,29 @@ export type ProductSnippetFragment = Omit<
   }>;
 };
 
-export const assembleProductData = (orderItem: FragmentOf<typeof OrderItemFragment>) => {
-  const { entityId: productId, name, brand, subTotalListPrice, productOptions } = orderItem;
+export const assembleProductData = (orderItem: ResultOf<typeof OrderItemFragment>) => {
+  const {
+    entityId,
+    productEntityId: productId,
+    name,
+    brand,
+    image,
+    subTotalListPrice,
+    productOptions,
+  } = orderItem;
 
   return {
-    entityId: productId,
+    entityId,
+    productId,
     name,
-    brand: {
-      name: brand ?? '',
-      path: '', // will be added later
-    },
-    // NOTE: update later when API is ready
+    brand,
+    defaultImage: image
+      ? {
+          url: image.url,
+          altText: image.altText,
+        }
+      : null,
     productOptions,
-    path: '', // will be added later
     quantity: orderItem.quantity,
     prices: {
       price: subTotalListPrice,
@@ -66,8 +96,8 @@ export const assembleProductData = (orderItem: FragmentOf<typeof OrderItemFragme
   };
 };
 
-const Price = ({ price }: { price?: PricesType }) => {
-  const t = useTranslations('Product.Details.Prices');
+const Price = async ({ price }: { price?: PricesType }) => {
+  const t = await getTranslations('Product.Details.Prices');
 
   if (!price) {
     return;
@@ -99,15 +129,7 @@ const Price = ({ price }: { price?: PricesType }) => {
     ))
   );
 };
-const AnotherComponent = ({ lineItems }: { lineItems: any[] }) => {
-  return (
-    <ul>
-      {lineItems.map(({ name, entityId }) => (
-        <li key={entityId}>{name}</li>
-      ))}
-    </ul>
-  );
-};
+
 interface Props {
   product: ProductSnippetFragment;
   imageSize?: 'tall' | 'wide' | 'square';
@@ -117,7 +139,7 @@ interface Props {
   isExtended?: boolean;
 }
 
-export const ProductSnippet = ({
+export const ProductSnippet = async ({
   product,
   isExtended = false,
   imageSize = 'square',
@@ -125,12 +147,19 @@ export const ProductSnippet = ({
   brandSize,
   productSize,
 }: Props) => {
-  const format = useFormatter();
-  const t = useTranslations('Product.Details');
-  const { name, defaultImage, brand, path, prices } = product;
+  const { name, defaultImage, brand, productId, prices } = product;
+  const format = await getFormatter();
+  const t = await getTranslations('Product.Details');
   const price = pricesTransformer(prices, format);
-  // TODO: clear once API is ready
-  const isImageAvailable = isExtended && defaultImage?.url === 'string';
+  const isImageAvailable = defaultImage !== null;
+
+  const { data } = await client.fetch({
+    document: ProductAttributes,
+    variables: { entityId: productId },
+    fetchOptions: { next: { revalidate } },
+  });
+
+  const { path = '' } = data.site.product ?? {};
 
   return (
     <div className={cn('relative flex flex-row gap-[20px] overflow-visible', isExtended && 'flex-row')}>
@@ -153,13 +182,12 @@ export const ProductSnippet = ({
             />
           </div>
         )}
-        {!isExtended && defaultImage?.url !== 'string' && (
-          <div className="relative aspect-square flex-auto">
+        {!isImageAvailable && (
+          <div className={cn('relative aspect-square flex-auto', isExtended && 'h-20 md:h-36')}>
             <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
-              <span>{t('comingSoon')}</span>
+              <span className="text-center text-sm md:text-base">{t('comingSoon')}</span>
             </div>
           </div>
-         
         )}
         
       </div>
@@ -211,7 +239,40 @@ export const ProductSnippet = ({
           <div className="flex flex-wrap items-end justify-between">
             {/* <Price price={price} /> */}
            <span className='text-base font-semi'>{t('qty')}: {product.quantity}</span> 
-            
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export const ProductSnippetSkeleton = ({ isExtended = false }: { isExtended?: boolean }) => {
+  return (
+    <div
+      className={cn(
+        'relative flex animate-pulse flex-col overflow-visible',
+        isExtended && 'flex-row gap-4',
+      )}
+    >
+      <div className="flex justify-center pb-3">
+        <div className={cn('relative aspect-square flex-auto', isExtended && 'h-20 md:h-36')}>
+          <div className="flex h-full w-full items-center justify-center bg-slate-200 text-gray-500" />
+        </div>
+      </div>
+      <div className="flex flex-1 flex-col gap-1">
+        {isExtended ? (
+          <div className="flex h-full flex-col items-start justify-between md:flex-row">
+            <div className="flex h-20 flex-col justify-between md:h-36">
+              <div className="h-5 w-20 bg-slate-200 md:h-10 md:w-36" />
+              <div className="h-5 w-20 bg-slate-200 md:h-10 md:w-36" />
+              <div className="h-5 w-20 bg-slate-200 md:h-10 md:w-36" />
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-1 flex-col gap-2">
+            <div className="h-5 w-36 bg-slate-200 md:h-6" />
+            <div className="h-5 w-36 bg-slate-200 md:h-6" />
+            <div className="h-5 w-36 bg-slate-200 md:h-6" />
           </div>
         )}
       </div>

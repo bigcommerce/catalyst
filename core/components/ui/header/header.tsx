@@ -2,7 +2,7 @@
 
 import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu';
 import { ChevronDown } from 'lucide-react';
-import { ComponentPropsWithoutRef, ReactNode, useState, SyntheticEvent } from 'react';
+import { ComponentPropsWithoutRef, ReactNode, useState, useRef, useEffect } from 'react';
 
 import { BcImage } from '~/components/bc-image';
 import { Link as CustomLink } from '~/components/link';
@@ -45,6 +45,7 @@ interface Props extends ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.
   locale?: ReactNode;
   logo?: string | Image;
   search?: ReactNode;
+  homeLogoMobile? : string | Image;
 }
 
 const Header = ({
@@ -56,18 +57,35 @@ const Header = ({
   locales,
   logo,
   search,
+  homeLogoMobile,
 }: Props) => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout>();
 
-  const handleMenuToggle = (linkHref: string) => (event: SyntheticEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setOpenMenuId(openMenuId === linkHref ? null : linkHref);
+  const handleMenuEnter = (linkHref: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setOpenMenuId(linkHref);
   };
 
-  const handleMenuItemClick = () => {
+  const handleMenuLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setOpenMenuId(null);
+    }, 200);
+  };
+
+  const handleMenuClose = () => {
     setOpenMenuId(null);
   };
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className={cn('relative', className)}>
@@ -100,7 +118,7 @@ const Header = ({
                   priority
                   src={imageIconList.homeLogo}
                   width={30}
-                  unoptimized
+                  unoptimized={true}
                 />
               </div>
             ) : (
@@ -117,7 +135,7 @@ const Header = ({
             <LocaleSwitcher activeLocale={activeLocale} locales={locales} />
           ) : null}
 
-          <MobileNav links={links} logo={logo} account={''} />
+          <MobileNav links={links} logo={logo} account={''} homeLogoMobile={homeLogoMobile} />
         </div>
       </header>
 
@@ -129,17 +147,20 @@ const Header = ({
           >
             {links.map((link, menuIndex) =>
               link.groups && link.groups.length > 0 ? (
-                <NavigationMenuPrimitive.Item id={`nav-menu-item-${link.href}`} key={link.href}>
+                <NavigationMenuPrimitive.Item
+                  id={`nav-menu-item-${link.href}`}
+                  key={link.href}
+                  onMouseEnter={() => handleMenuEnter(link.href)}
+                  onMouseLeave={handleMenuLeave}
+                >
                   <div
                     id={`nav-menu-trigger-${link.href}`}
                     className="group/button font-semiboldd flex items-center hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-                    onClick={handleMenuToggle(link.href)}
                   >
                     <CustomLink
                       id={`nav-menu-link-${link.href}`}
                       className="p-3 font-normal"
                       href={link.href}
-                      onClick={(e) => e.preventDefault()}
                     >
                       {link.label}
                     </CustomLink>
@@ -149,13 +170,15 @@ const Header = ({
                     <div
                       id={`nav-menu-content-${link.href}`}
                       className={`parent-menu-${menuIndex} absolute left-0 top-[4.8em] z-50 w-auto bg-white py-8 shadow-xl`}
+                      onMouseEnter={() => handleMenuEnter(link.href)}
+                      onMouseLeave={handleMenuLeave}
                     >
                       <div
-                        className={`header-sub-menu-${menuIndex} relative mx-auto grid max-w-[90em] grid-cols-[repeat(6,auto)] gap-6 px-12`}
+                        className={`header-sub-menu-${menuIndex} relative mx-auto grid max-w-[90em] md:grid-cols-[repeat(2,auto)] lg:grid-cols-[repeat(2,auto)] xl:grid-cols-[repeat(6,auto)] gap-6 px-12`}
                       >
                         <button
                           className="absolute -top-[1em] right-[1em] text-gray-600 hover:text-gray-800 focus:outline-none"
-                          onClick={() => setOpenMenuId(null)}
+                          onClick={handleMenuClose}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -172,7 +195,7 @@ const Header = ({
                             />
                           </svg>
                         </button>
-                        {link.groups.map((group, index) => (
+                        {link.groups.map((group) => (
                           <div key={group.href} className="submenu-div min-w-fit whitespace-nowrap">
                             <ul
                               id={`nav-menu-group-${group.href}`}
@@ -186,7 +209,6 @@ const Header = ({
                                   id={`nav-menu-group-link-${group.href}`}
                                   className="block pb-2 text-[15px] font-[500] hover:text-primary"
                                   href={group.href}
-                                  onClick={handleMenuItemClick} // Add click handler here
                                 >
                                   {group.label}
                                 </CustomLink>
@@ -200,7 +222,6 @@ const Header = ({
                                     id={`nav-menu-nested-link-${nestedLink.href}`}
                                     className="block py-1.5 text-[14px] font-[400] text-gray-600 hover:underline"
                                     href={nestedLink.href}
-                                    onClick={handleMenuItemClick} // Add click handler here
                                   >
                                     {nestedLink.label}
                                   </CustomLink>

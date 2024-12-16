@@ -36,6 +36,7 @@ interface Props {
   fanPopup: string;
   blankAddImg: string;
   productMpn: string | null;
+  showInSticky?: boolean;
 }
 
 const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
@@ -57,13 +58,21 @@ const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
   };
 };
 
-export const Submit = ({ data: product }: { data: Props['data'] }) => {
+export const Submit = ({
+  data: product,
+  isSticky = false,
+}: {
+  data: Props['data'];
+  isSticky?: boolean;
+}) => {
   const { formState } = useFormContext();
   const { isSubmitting } = formState;
 
   return (
     <AddToCartButton data={product} loading={isSubmitting}>
-      <ShoppingCart className="invisible absolute right-[-0.6em] mr-2 bg-transparent p-[4px] text-white opacity-0" />
+      {/* Remove the ShoppingCart icon completely */}
+
+      {isSticky ? '' : ''}
     </AddToCartButton>
   );
 };
@@ -75,13 +84,13 @@ export const ProductForm = ({
   fanPopup,
   blankAddImg,
   productMpn,
+  showInSticky = false,
 }: Props) => {
   const t = useTranslations('Product.Form');
   const cart = useCart();
   const productFlyout: any = useCommonContext();
   const productOptions = removeEdgesAndNodes(product.productOptions);
-  // const mpn = product.mpn ;
-  // console.log('------mpnnnnnnss----', mpn )
+
   if (productOptions?.length > 0) {
     const router = useRouter();
     const pathname = usePathname();
@@ -154,6 +163,7 @@ export const ProductForm = ({
       ),
       { icon: <Check className="text-success-secondary" /> },
     );
+
     if (result?.data?.entityId) {
       let cartData = await getCartData(result?.data?.entityId);
       if (cartData?.data?.lineItems?.physicalItems) {
@@ -175,6 +185,7 @@ export const ProductForm = ({
         });
       }
     }
+
     const transformedProduct = productItemTransform(product);
 
     bodl.cart.productAdded({
@@ -189,6 +200,34 @@ export const ProductForm = ({
     });
   };
 
+  // If showing in sticky header, return only the Submit component
+  if (showInSticky) {
+    return (
+      <FormProvider handleSubmit={handleSubmit} register={register} {...methods}>
+        <form onSubmit={handleSubmit(productFormSubmit)}>
+          <input type="hidden" value={product.entityId} {...register('product_id')} />
+          <input type="hidden" value="1" {...register('quantity')} />
+          {productOptions.map((option) => {
+            if (option.__typename === 'MultipleChoiceOption') {
+              const values = removeEdgesAndNodes(option.values);
+              const defaultValue = values.find((value) => value.isDefault)?.entityId.toString();
+              return (
+                <input
+                  key={option.entityId}
+                  type="hidden"
+                  value={defaultValue}
+                  {...register(`attribute_${option.entityId}`)}
+                />
+              );
+            }
+            return null;
+          })}
+          <Submit data={product} isSticky={true} />
+        </form>
+      </FormProvider>
+    );
+  }
+
   return (
     <>
       <ProductFlyout
@@ -199,7 +238,7 @@ export const ProductForm = ({
       />
       <FormProvider handleSubmit={handleSubmit} register={register} {...methods}>
         <form
-          className="product-variants flex flex-col gap-6 @container"
+          className="product-variants flex flex-col gap-6"
           onSubmit={handleSubmit(productFormSubmit)}
         >
           <input type="hidden" value={product.entityId} {...register('product_id')} />

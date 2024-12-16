@@ -21,6 +21,8 @@ import '~/makeswift/components/section-layout/section-layout.makeswift';
 import '~/makeswift/components/css-theme/register';
 import '~/makeswift/components/not-found/register';
 
+import '~/belami/components/card-carousel/card-carousel.makeswift';
+
 import { MakeswiftComponentType } from '@makeswift/runtime';
 
 import { runtime } from './runtime';

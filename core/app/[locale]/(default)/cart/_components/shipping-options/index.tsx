@@ -48,7 +48,7 @@ export const ShippingOptions = ({ data, checkoutEntityId, currencyCode }: Props)
   const defaultValue = shippingOptions?.find((option) => option.isDefault)?.shippingOptionEntityId;
 
   return items && items.length > 0 ? (
-    <Form action={onSubmit} className="mx-auto mb-4 mt-4 grid w-full grid-cols-1 gap-y-4">
+    <Form action={onSubmit} className="mx-auto grid w-full grid-cols-1 gap-y-4">
       <Field className="relative space-y-2" id="shipping-option" name="option">
         <FieldLabel htmlFor="shipping-option">{t('shippingOptions')}</FieldLabel>
         <RadioGroup

@@ -30,9 +30,9 @@ const Button = forwardRef<ElementRef<'button'>, Props>(
     return (
       <Comp
         className={cn(
-          'relative flex w-full rounded items-center justify-center px-[30px] py-2.5 text-base font-semibold leading-6',
+          'relative  flex w-full rounded items-center justify-center px-[30px] py-2.5 text-base font-semibold leading-6',
           variant === 'primary' &&
-            'bg-sky-400 text-white disabled:bg-sky-400',
+            'bg-sky-400 text-white disabled:bg-sky-400 ',
           // variant === 'secondary' &&
           //   'bg-transparent text-primary disabled:text-sky-400',
           // variant === 'subtle' &&
@@ -45,7 +45,7 @@ const Button = forwardRef<ElementRef<'button'>, Props>(
       >
         {loading ? (
           <>
-            <span className="absolute z-10 flex h-full w-full items-center justify-center">
+            <span className="absolute loading-span z-10 flex h-full w-full items-center justify-center">
               <Spinner aria-hidden="true" className="animate-spin" />
               <span className="sr-only">{loadingText}</span>
             </span>

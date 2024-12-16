@@ -23,6 +23,7 @@ import { ShippingInfoFragment } from './fragment';
 import { submitShippingInfo } from './submit-shipping-info';
 import { fetchCountryByZipcode, fetchZipCodeByLatLng } from '~/components/postgres';
 import { MapPin } from 'lucide-react';
+import { submitShippingCosts } from '../shipping-options/submit-shipping-costs';
 
 interface FormValues {
   country: string;
@@ -61,7 +62,6 @@ export const ShippingInfo = ({
   const shippingConsignment =
     checkout.shippingConsignments?.find((consignment) => consignment.selectedShippingOption) ||
     checkout.shippingConsignments?.[0];
-
   const [formValues, setFormValues] = useReducer(
     (currentValues: FormValues, newValues: Partial<FormValues>) => ({
       ...currentValues,
@@ -90,7 +90,7 @@ export const ShippingInfo = ({
       formData.set('state', data?.[0]?.state_code);
       formData.set('city', data?.[0]?.place_name);
 
-      const { status } = await submitShippingInfo(formData, {
+      const { status, checkoutData } = await submitShippingInfo(formData, {
         checkoutId: checkout.entityId,
         lineItems:
           checkout.cart?.lineItems.physicalItems.map((item) => ({
@@ -100,6 +100,20 @@ export const ShippingInfo = ({
         shippingId: shippingConsignment?.entityId ?? '',
       });
 
+      if(status != 'error') {
+        let checkoutId = checkout?.entityId;
+        let formDataShipping: FormData = new FormData();
+        let getAvailableShippingOptions = checkoutData?.shippingConsignments?.[0]?.availableShippingOptions?.[0]?.entityId;
+        let shipmentEntityId = checkoutData?.shippingConsignments?.[0]?.entityId;
+        formDataShipping.set('shippingOption', getAvailableShippingOptions);
+        let { status:shipStatus, error } = await submitShippingCosts(formDataShipping, checkoutId, shipmentEntityId);
+        if (shipStatus === 'error') {
+          toast.error(t('errorMessage'), {
+            icon: <AlertCircle className="text-error-secondary" />,
+          });
+        }
+
+      }
       if (status === 'error') {
         toast.error(t('errorMessage'), {
           icon: <AlertCircle className="text-error-secondary" />,

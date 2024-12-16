@@ -32,7 +32,7 @@ export async function getRelatedProducts(objectId: number) {
   return data && data.results && data.results[0]?.hits ? data.results[0]?.hits : [];
 }
 
-export async function getCollectionProducts(collection: string) {
+export async function getCollectionProducts(objectId: number, brand: string, collection: string) {
   const response = await fetch(`https://${appId}.algolia.net/1/indexes/${indexName}/query`, {
     method: "POST",
     credentials: "same-origin",
@@ -43,8 +43,9 @@ export async function getCollectionProducts(collection: string) {
       "Accept": "application/json"
     },
     body: JSON.stringify({
-      "filters": `metafields.Akeneo.collection:${encodeURIComponent(collection)}`,
-      "length": 6,
+      //"filters": `metafields.Akeneo.collection:${encodeURIComponent(collection)}`,
+      "filters": `brand_name:"${brand}" AND metafields.Akeneo.collection:"${collection}"`,
+      "length": 10,
       "offset": 0
     }),
     cache: 'force-cache',
@@ -53,5 +54,5 @@ export async function getCollectionProducts(collection: string) {
 
   const data = await response.json();
 
-  return data.hits ?? [];
+  return data.hits && data.hits.length > 0 ? {"hits": data.hits.filter((item: any) => item.objectID !== objectId.toString()).slice(0, 9), "total": data.nbHits ?? 0} : {"hits": [], "total": 0};
 }

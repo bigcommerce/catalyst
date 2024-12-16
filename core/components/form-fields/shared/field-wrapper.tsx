@@ -15,7 +15,7 @@ export const FieldWrapper = ({ children, fieldId }: { fieldId: number } & PropsW
   }
 
   if (LAYOUT_SINGLE_LINE_FIELDS.includes(fieldId)) {
-    return <div className="grid grid-cols-1 lg:col-span-2">{children}</div>;
+    return <div className="grid grid-cols-1 lg:col-span-2 relative">{children}</div>;
   }
 
   return children;

@@ -4,35 +4,23 @@ import { cache } from 'react';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
-import { graphql } from '~/client/graphql';
+import { graphql, VariablesOf } from '~/client/graphql';
+
+import { OrderShipmentFragment } from '../order/[slug]/page-data';
 
 import { OrderItemFragment } from './_components/product-snippet';
 
-const OrderShipmentFragment = graphql(`
-  fragment OrderShipmentFragment on OrderShipment {
-    shippingMethodName
-    shippingProviderName
-    tracking {
-      __typename
-      ... on OrderShipmentNumberAndUrlTracking {
-        number
-        url
-      }
-      ... on OrderShipmentUrlOnlyTracking {
-        url
-      }
-      ... on OrderShipmentNumberOnlyTracking {
-        number
-      }
-    }
-  }
-`);
-
 const CustomerAllOrders = graphql(
   `
-    query CustomerAllOrders($after: String, $before: String, $first: Int, $last: Int) {
+    query CustomerAllOrders(
+      $after: String
+      $before: String
+      $first: Int
+      $last: Int
+      $filters: OrdersFiltersInput
+    ) {
       customer {
-        orders(after: $after, before: $before, first: $first, last: $last) {
+        orders(after: $after, before: $before, first: $first, last: $last, filters: $filters) {
           pageInfo {
             ...PaginationFragment
           }
@@ -81,200 +69,59 @@ const CustomerAllOrders = graphql(
   [OrderItemFragment, OrderShipmentFragment, PaginationFragment],
 );
 
-const CustomerOrderDetails = graphql(
-  `
-    query CustomerOrderDetails(
-      $filter: OrderFilterInput
-      $after: String
-      $before: String
-      $first: Int
-      $last: Int
-    ) {
-      site {
-        order(filter: $filter) {
-          entityId
-          orderedAt {
-            utc
-          }
-          status {
-            label
-            value
-          }
-          totalIncTax {
-            value
-            currencyCode
-          }
-          subTotal {
-            value
-            currencyCode
-          }
-          discounts {
-            nonCouponDiscountTotal {
-              value
-              currencyCode
-            }
-            couponDiscounts {
-              couponCode
-              discountedAmount {
-                value
-                currencyCode
-              }
-            }
-          }
-          shippingCostTotal {
-            value
-            currencyCode
-          }
-          taxTotal {
-            value
-            currencyCode
-          }
-          billingAddress {
-            firstName
-            lastName
-            address1
-            city
-            stateOrProvince
-            postalCode
-            country
-          }
-          consignments {
-            shipping(before: $before, after: $after, first: $first, last: $last) {
-              edges {
-                node {
-                  entityId
-                  shippingAddress {
-                    firstName
-                    lastName
-                    address1
-                    city
-                    stateOrProvince
-                    postalCode
-                    country
-                  }
-                  shipments {
-                    edges {
-                      node {
-                        entityId
-                        shippedAt {
-                          utc
-                        }
-                        ...OrderShipmentFragment
-                      }
-                    }
-                  }
-                  lineItems {
-                    edges {
-                      node {
-                        ...OrderItemFragment
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  `,
-  [OrderItemFragment, OrderShipmentFragment],
-);
+type OrdersFiltersInput = VariablesOf<typeof CustomerAllOrders>['filters'];
+type OrderStatus = NonNullable<OrdersFiltersInput>['status'];
+type OrderDateRange = NonNullable<OrdersFiltersInput>['dateRange'];
 
 interface CustomerOrdersArgs {
   after?: string;
   before?: string;
   limit?: number;
+  filterByStatus?: OrderStatus;
+  filterByDateRange?: OrderDateRange;
 }
 
 export const getCustomerOrders = cache(
-  async ({ before = '', after = '', limit = 2 }: CustomerOrdersArgs) => {
+  async ({
+    before = '',
+    after = '',
+    filterByStatus,
+    filterByDateRange,
+    limit = 2,
+  }: CustomerOrdersArgs) => {
     const customerAccessToken = await getSessionCustomerAccessToken();
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
-
+    const filtersArgs = {
+      filters: {
+        ...(filterByDateRange && { dateRange: filterByDateRange }),
+        ...(filterByStatus && { status: filterByStatus }),
+      },
+    };
     const response = await client.fetch({
       document: CustomerAllOrders,
-      variables: { ...paginationArgs },
+      variables: { ...paginationArgs, ...filtersArgs },
       customerAccessToken,
       fetchOptions: { cache: 'no-store' },
     });
-
     const orders = response.data.customer?.orders;
-    console.log('========orders page.ts=======', orders);
+
     if (!orders) {
       return undefined;
     }
 
     const data = {
-      orders: removeEdgesAndNodes(orders).map((order) => ({
-        ...order,
-        consignments: {
-          ...(order.consignments?.shipping && {
-            shipping: removeEdgesAndNodes(order.consignments.shipping),
-          }),
-        },
-      })),
+      orders: removeEdgesAndNodes(orders).map((order) => {
+        return {
+          ...order,
+          consignments: {
+            shipping:
+              order.consignments?.shipping && removeEdgesAndNodes(order.consignments.shipping),
+          },
+        };
+      }),
       pageInfo: orders.pageInfo,
     };
-
-    // TODO: add product, brand paths later
 
     return data;
   },
 );
-
-interface OrderDetailsProps extends CustomerOrdersArgs {
-  orderId: string;
-}
-
-export const getOrderDetails = 
-  async ({ orderId, before = '', after = '', limit = 2 }: OrderDetailsProps) => {
-    const customerAccessToken = await getSessionCustomerAccessToken();
-    const paginationArgs = before ? { last: limit, before } : { first: limit, after };
-
-    const response = await client.fetch({
-      document: CustomerOrderDetails,
-      variables: {
-        ...paginationArgs,
-        filter: {
-          entityId: +orderId,
-        },
-      },
-      customerAccessToken,
-      fetchOptions: { cache: 'no-store' },
-    });
-    console.log('========response=======', JSON.stringify(response));
-    const order = response.data.site.order;
-
-    if (!order) {
-      return undefined;
-    }
-
-    const data = {
-      orderState: {
-        orderId: order.entityId,
-        status: order.status,
-        orderDate: order.orderedAt,
-      },
-      summaryInfo: {
-        subtotal: order.subTotal,
-        discounts: order.discounts,
-        shipping: order.shippingCostTotal,
-        tax: order.taxTotal,
-        grandTotal: order.totalIncTax,
-      },
-      paymentInfo: {
-        billingAddress: order.billingAddress,
-        // TODO: add payments data
-      },
-      consignments: {
-        ...(order.consignments?.shipping && {
-          shipping: removeEdgesAndNodes(order.consignments.shipping),
-        }),
-      },
-    };
-
-    return data;
-  };
-
-export type OrderDetailsDataType = NonNullable<Awaited<ReturnType<typeof getOrderDetails>>>;

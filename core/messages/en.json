@@ -84,7 +84,7 @@
         "confirmResetPassword": "If the email address {email} is linked to an account in our store, we have sent you a password reset email. Please check your inbox and spam folder if you don't see it.",
         "submitting": "Submitting...",
         "submit": "Reset password",
-        "emailInvalidMessage": "Invalid email"
+        "emailInvalidMessage": "Please enter a valid email address"
       },
       "Errors": {
         "error": "Something went wrong. Please try again later."
@@ -181,6 +181,12 @@
       "successMessage": "Your account has been successfully created"
     },
     "Orders": {
+      "heading": "My Orders",
+      "lookupAnOrder": "Lookup an Order",
+      "stillNeedHelp": "Stil need help?",
+      "contact": "Contact Us",
+      "viewOrderDetails": "VIEW ORDER DETAILS",
+      "orderTotal": "Order Total",
       "noOrders": "No orders yet",
       "orderNumber": "Order #",
       "placedDate": "Order placed",
@@ -363,7 +369,7 @@
       "grandTotal": "Total",
       "shipping": "Shipping",
       "shippingCost": "Calculate Shipping/Tax",
-      "handlingCost": "Handling cost",
+      "handlingCost": "Destination Surcharge",
       "add": "Add",
       "change": "Change",
       "cancel": "Cancel",

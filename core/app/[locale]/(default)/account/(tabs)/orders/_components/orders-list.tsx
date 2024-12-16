@@ -1,18 +1,18 @@
-'use client';
-
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { useFormatter, useTranslations } from 'next-intl';
+import { getFormatter, getTranslations } from 'next-intl/server';
+import { Suspense } from 'react';
 
+import { ExistingResultType } from '~/client/util';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 
 import { getCustomerOrders } from '../page-data';
 
-import { assembleProductData, ProductSnippet } from './product-snippet';
+import { assembleProductData, ProductSnippet, ProductSnippetSkeleton } from './product-snippet';
 import { PrinterIcon } from 'lucide-react';
 import { BcImage } from '~/components/bc-image';
 
-export type Orders = NonNullable<Awaited<ReturnType<typeof getCustomerOrders>>>['orders'];
+export type Orders = ExistingResultType<typeof getCustomerOrders>['orders'];
 
 interface OrdersListProps {
   customerOrders: Orders;
@@ -73,18 +73,18 @@ interface ManageOrderButtonsProps {
   orderStatus: string | null;
 }
 
-const ManageOrderButtons = ({
+const ManageOrderButtons = async ({
   className,
   orderId,
   orderStatus,
   orderTrackingUrl,
 }: ManageOrderButtonsProps) => {
-  const t = useTranslations('Account.Orders');
+  const t = await getTranslations('Account.Orders');
 
   return (
     <div className={className}>
       <Button aria-label={t('viewOrderDetails')} asChild className="w-full font-normal  md:w-fit" variant="secondary">
-        <Link href={{ pathname: '/account/orders', query: { order: orderId } }} className='hover:text-black'>
+        <Link href={`/account/order/${orderId}`} className='hover:text-black'>
           {t('viewOrderDetails')}
         </Link>
       </Button>
@@ -111,23 +111,22 @@ const ManageOrderButtons = ({
     </div>
   );
 };
-const OrderDetails = ({
+const OrderDetails = async ({
   orderId,
   orderDate,
   orderPrice,
-  orderStatus
+  orderStatus,
 }: {
   orderId: number;
   orderDate: string;
   orderPrice: {
     value: number;
     currencyCode: string;
-
   };
   orderStatus: string;
 }) => {
-  const t = useTranslations('Account.Orders');
-  const format = useFormatter();
+  const t = await getTranslations('Account.Orders');
+  const format = await getFormatter();
 
   return (
     <>
@@ -176,37 +175,31 @@ const OrderDetails = ({
 };
 
 export const OrdersList = ({ customerOrders }: OrdersListProps) => {
-  const ordersHistory = customerOrders.map((order) => ({
-    ...order,
-    consignments: {
-      shipping: order.consignments.shipping
-        ? order.consignments.shipping.map(({ lineItems, shipments }) => ({
-          lineItems: removeEdgesAndNodes(lineItems),
-          shipments: removeEdgesAndNodes(shipments),
-        }))
-        : null,
-    },
-  }));
-
   return (
     <ul className="flex w-full flex-col mt-[20px]">
-      {ordersHistory.map(({ entityId, orderedAt, status, totalIncTax, consignments }) => {
+      {customerOrders.map(({ entityId, orderedAt, status, totalIncTax, consignments }) => {
+        const shippingConsignments = consignments.shipping
+          ? consignments.shipping.map(({ lineItems, shipments }) => ({
+              lineItems: removeEdgesAndNodes(lineItems),
+              shipments: removeEdgesAndNodes(shipments),
+            }))
+          : undefined;
         // NOTE: tracking url will be supported later
-        const trackingUrl = consignments.shipping
-          ? consignments.shipping
-            .flatMap(({ shipments }) =>
-              shipments.map((shipment) => {
-                if (
-                  shipment.tracking?.__typename === 'OrderShipmentNumberAndUrlTracking' ||
-                  shipment.tracking?.__typename === 'OrderShipmentUrlOnlyTracking'
-                ) {
-                  return shipment.tracking.url;
-                }
+        const trackingUrl = shippingConsignments
+          ? shippingConsignments
+              .flatMap(({ shipments }) =>
+                shipments.map((shipment) => {
+                  if (
+                    shipment.tracking?.__typename === 'OrderShipmentNumberAndUrlTracking' ||
+                    shipment.tracking?.__typename === 'OrderShipmentUrlOnlyTracking'
+                  ) {
+                    return shipment.tracking.url;
+                  }
 
-                return null;
-              }),
-            )
-            .find((url) => url !== null)
+                  return null;
+                }),
+              )
+              .find((url) => url !== null)
           : undefined;
 
         return (
@@ -222,28 +215,24 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
             />
             <div className="flex items-center gap-4 pb-[20px] px-[20px]">
               <ul className="inline-flex gap-4 [&>*:nth-child(n+2)]:hidden md:[&>*:nth-child(n+2)]:list-item md:[&>*:nth-child(n+4)]:hidden lg:[&>*:nth-child(n+4)]:list-item lg:[&>*:nth-child(n+5)]:hidden xl:[&>*:nth-child(n+5)]:list-item lg:[&>*:nth-child(n+7)]:hidden">
-                {(consignments.shipping ?? []).map(({ lineItems }) => {
-                  if (lineItems.length === 1) {
-                    return lineItems.slice(0, VisibleListItemsPerDevice.xl).map((shippedProduct) => {
-                      return (
-
-                        <li key={shippedProduct.entityId}>
+                {(shippingConsignments ?? []).map(({ lineItems }) => {
+                  return lineItems.slice(0, VisibleListItemsPerDevice.xl).map((shippedProduct) => {
+                    return (
+                      <li className="w-36" key={shippedProduct.entityId}>
+                        <Suspense fallback={<ProductSnippetSkeleton />}>
                           <ProductSnippet
                             imagePriority={true}
                             imageSize="square"
                             product={assembleProductData({ ...shippedProduct, productOptions: [] })}
                           />
-                        </li>
-                      );
-                    });
-                  }
-                   return (
-                    <span className="text-base font-semibold">  {lineItems.length} Items </span>
-                  )
+                        </Suspense>
+                      </li>
+                    );
+                  });
                 })}
               </ul>
               <TruncatedCard
-                itemsQuantity={(consignments.shipping ?? []).reduce(
+                itemsQuantity={(shippingConsignments ?? []).reduce(
                   (orderItems, shipment) => orderItems + shipment.lineItems.length,
                   0,
                 )}
@@ -255,12 +244,6 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
                 orderTrackingUrl={trackingUrl}
               />
             </div>
-            {/* <ManageOrderButtons
-              className="inline-flex flex-col gap-2 md:flex-row item:"
-              orderId={entityId}
-              orderStatus={status.value}
-              orderTrackingUrl={trackingUrl}
-            /> */}
           </li>
         );
       })}

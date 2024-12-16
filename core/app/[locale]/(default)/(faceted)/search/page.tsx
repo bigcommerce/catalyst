@@ -44,15 +44,20 @@ export default async function SearchPage(props: Props) {
   const searchTerm = typeof searchParams.query === 'string' ? searchParams.query : undefined;
   const promotions = await getPromotions();
 
+  /*
   if (!searchTerm) {
     return <EmptySearch />;
   }
+  */
 
   return (
     <div className="group py-4 px-4 xl:px-12">
       <Breadcrumbs category={{breadcrumbs: {edges: [{node: {name: t('title'), path: '/search'}}]}}} />
       <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
-        <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{t('searchResults')}: <b className="text-2xl font-bold lg:text-3xl">"{searchTerm}"</b></h1>
+        {searchTerm 
+          ? <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{t('searchResults')}: <b className="text-2xl font-bold lg:text-3xl">"{searchTerm}"</b></h1>
+          : <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{t('title')}</h1>
+        }
       </div>
       <Search query={searchTerm} promotions={promotions} useDefaultPrices={useDefaultPrices} />
     </div>

@@ -9,7 +9,8 @@ import { BreadcrumbsFragment } from '~/components/breadcrumbs/fragment';
 
 const GalleryFragment = graphql(`
   fragment GalleryFragment on Product {
-    images {
+    images(first: 50) {
+      # Increased limit to fetch all images
       edges {
         node {
           altText
@@ -21,6 +22,14 @@ const GalleryFragment = graphql(`
     defaultImage {
       altText
       url: urlTemplate(lossy: true)
+    }
+    videos {
+      edges {
+        node {
+          title
+          url
+        }
+      }
     }
   }
 `);
@@ -176,7 +185,7 @@ const ProductItemFragment = graphql(
       entityId
       name
       sku
-      categories(first: 1) {
+      categories {
         edges {
           node {
             ...BreadcrumbsFragment
@@ -324,7 +333,7 @@ const ProductPageQuery = graphql(
             url: urlTemplate(lossy: true)
             altText
           }
-          categories(first: 1) {
+          categories {
             edges {
               node {
                 ...BreadcrumbsFragment

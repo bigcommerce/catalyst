@@ -2,29 +2,48 @@
 
 import * as SheetPrimitive from '@radix-ui/react-dialog';
 import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu';
-import { ChevronDown, Menu, X } from 'lucide-react';
+import { ChevronRight, Menu, Plus, Minus, X, Weight } from 'lucide-react';
 import { ReactNode, useState } from 'react';
 
 import { BcImage } from '~/components/bc-image';
 import { Link as CustomLink } from '~/components/link';
-
 import { Button } from '../button';
-
 import { Links } from './header';
 
 interface Image {
   altText: string;
   src: string;
 }
+
 interface Props {
   links: Links[];
   logo?: string | Image;
-}
-interface Props {
+  homeLogoMobile?: string | Image;
   account: string;
 }
-export const MobileNav = ({ links, logo }: Props) => {
+
+export const MobileNav = ({ links, logo, homeLogoMobile }: Props) => {
   const [open, setOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showMainMenu, setShowMainMenu] = useState(true);
+  const [expandedSubMenus, setExpandedSubMenus] = useState<Record<string, boolean>>({});
+
+  const handleCategoryClick = (href: string) => {
+    setSelectedCategory(href);
+    setShowMainMenu(false);
+  };
+
+  const handleBackToMain = () => {
+    setSelectedCategory(null);
+    setShowMainMenu(true);
+  };
+
+  const toggleSubMenu = (groupHref: string) => {
+    setExpandedSubMenus((prev) => ({
+      ...prev,
+      [groupHref]: !prev[groupHref],
+    }));
+  };
 
   return (
     <SheetPrimitive.Root onOpenChange={setOpen} open={open}>
@@ -40,120 +59,266 @@ export const MobileNav = ({ links, logo }: Props) => {
       </SheetPrimitive.Trigger>
       <SheetPrimitive.Portal>
         <SheetPrimitive.Overlay className="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-        <SheetPrimitive.Content
-          aria-describedby={undefined}
-          className="fixed inset-y-0 left-0 z-50 h-full w-3/4 border-r bg-white p-6 pt-0 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm"
-        >
-          <SheetPrimitive.Title asChild>
-            <h2 className="sr-only">Navigation menu</h2>
-          </SheetPrimitive.Title>
-          <div className="flex h-[92px] items-center justify-between">
-            <div className="overflow-hidden text-ellipsis py-3 mobile-logo-open-state">
-              {typeof logo === 'object' ? (
-                <BcImage
-                  alt={logo.altText}
-                  className="max-h-16 object-contain"
-                  height={32}
-                  priority
-                  src={logo.src}
-                  width={155}
-                />
-              ) : (
-                <span className="truncate text-2xl font-black">{logo}</span>
-              )}
-            </div>
-            <SheetPrimitive.DialogClose>
-              <div className="p-3">
-                <X className="h-6 w-6" />
+        <SheetPrimitive.Content className="fixed inset-y-0 left-0 z-50 flex h-full w-full flex-col border-r bg-white shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left">
+          <div className="flex-none p-6 pb-0">
+            <SheetPrimitive.Title asChild>
+              <h2 className="sr-only">Navigation menu</h2>
+            </SheetPrimitive.Title>
+            <div className="flex h-[92px] items-center justify-between">
+              <div className="mobile-logo-open-state overflow-hidden text-ellipsis py-3">
+                {typeof logo === 'object' ? (
+                  <BcImage
+                    alt={logo.altText}
+                    className="w-[45%] truncate text-2xl font-black"
+                    height={32}
+                    priority
+                    src={homeLogoMobile}
+                    width={155}
+                    unoptimized={true}
+                  />
+                ) : (
+                  <span className="w-[45%] truncate text-2xl font-black">{homeLogoMobile}</span>
+                )}
               </div>
-            </SheetPrimitive.DialogClose>
+              <SheetPrimitive.Close>
+                <div className="p-3">
+                  <X className="h-7 w-7" />
+                </div>
+              </SheetPrimitive.Close>
+            </div>
           </div>
-          <NavigationMenuPrimitive.Root orientation="vertical">
-            <NavigationMenuPrimitive.List className="flex flex-col gap-2 pb-6 lg:gap-4">
-              {links.map((link) =>
-                link.groups && link.groups.length > 0 ? (
-                  <NavigationMenuPrimitive.Item key={link.href}>
-                    <NavigationMenuPrimitive.Trigger className="group/button flex w-full items-center justify-between p-3 ps-0 font-semibold hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20">
-                      <CustomLink
-                        className="font-semibold"
-                        href={link.href}
-                        onClick={() => setOpen(false)}
+
+          <div className="scrollbar-none flex-1 overflow-y-auto px-6">
+            <NavigationMenuPrimitive.Root
+              orientation="vertical"
+              className="border-b border-[#CCCBCB]"
+            >
+              <NavigationMenuPrimitive.List className="flex flex-col gap-0 lg:gap-4">
+                <div className="flex justify-between">
+                {!showMainMenu && (
+  <>
+    <button
+      onClick={handleBackToMain}
+      className="relative -left-2 mb-5 flex items-center text-left font-sans text-sm font-normal leading-6 tracking-[0.25px] text-[#008BB7]"
+    >
+      <ChevronRight className="rotate-180 text-black" />
+      Main Menu
+    </button>
+    
+    <CustomLink
+      href={selectedCategory || ''}
+      onClick={() => {
+        setOpen(false); // Close the sheet/mobile menu
+        setSelectedCategory(null); // Reset selected category
+        setShowMainMenu(true); // Show main menu for next time
+      }}
+      className="mb-5 flex items-center text-left font-sans text-sm font-normal leading-6 tracking-[0.25px] text-[#008BB7]"
+    >
+      SHOP ALL
+    </CustomLink>
+  </>
+)}
+                </div>
+
+                {showMainMenu ? (
+                  <>
+                    {links.map((link) => (
+                      <NavigationMenuPrimitive.Item
+                        key={link.href}
+                        className="max-w-full border-t border-[#CCCBCB] pb-[0.5em] pt-[1em]"
                       >
-                        {link.label}
+                        <div
+                          className="group/button flex w-full items-center justify-between p-3 pl-0 font-normal hover:text-primary focus:outline-none focus:ring-4 focus:ring-primary/20"
+                          onClick={() => handleCategoryClick(link.href)}
+                        >
+                          <span className="text-base font-normal leading-6 tracking-[0.25px] text-black hover:text-primary">
+                            {link.label}
+                          </span>
+                          {link.groups && link.groups.length > 0 && (
+                            <ChevronRight className="cursor-pointer" />
+                          )}
+                        </div>
+                      </NavigationMenuPrimitive.Item>
+                    ))}
+
+                    <nav
+                      className="static-menu-mobile relative right-[1em] ml-[1em] flex flex-col items-center gap-5 text-[16px] font-normal text-[#008bb7]"
+                      id="static-menu"
+                    >
+                      <CustomLink
+                        href="/new"
+                        className="font-semiboldd w-[100%] border-b border-[#CCCBCB] pb-[1.5em] text-[#008BB7] hover:text-primary"
+                      >
+                        New
                       </CustomLink>
-                      <ChevronDown
-                        aria-hidden="true"
-                        className="cursor-pointer transition duration-200 group-data-[state=open]/button:-rotate-180"
-                      />
-                    </NavigationMenuPrimitive.Trigger>
-                    <NavigationMenuPrimitive.Content className="flex flex-col gap-4 py-2 ps-2 duration-200 animate-in slide-in-from-top-2">
-                      {link.groups.map((group) => (
-                        <ul className="flex flex-col" key={group.href}>
-                          <li>
-                            <NavigationMenuPrimitive.Link asChild>
-                              <CustomLink
-                                className="block w-full p-3 ps-0 font-semibold"
-                                href={group.href}
-                                onClick={() => setOpen(false)}
-                              >
-                                {group.label}
-                              </CustomLink>
-                            </NavigationMenuPrimitive.Link>
-                          </li>
-                          {group.links &&
-                            group.links.length > 0 &&
-                            group.links.map((nestedLink) => (
-                              <li key={nestedLink.href}>
-                                <NavigationMenuPrimitive.Link asChild>
+                      <CustomLink
+                        href="/sale"
+                        className="font-semiboldd w-[100%] border-b border-[#CCCBCB] pb-[1.5em] text-[#008BB7] hover:text-primary"
+                      >
+                        Sale
+                      </CustomLink>
+                      <CustomLink
+                        href="/blog"
+                        className="font-semiboldd w-[100%] border-b border-[#CCCBCB] pb-[1.5em] text-[#008BB7] hover:text-primary"
+                      >
+                        Blog
+                      </CustomLink>
+                      <CustomLink
+                        href="/blog"
+                        className="font-semiboldd w-[100%] border-b border-[#CCCBCB] pb-[1.5em] text-[#008BB7] hover:text-primary"
+                      >
+                        Our Brands
+                      </CustomLink>
+                    </nav>
+
+                    <section className="support-account-mobile mt-[20px]">
+                      <div className="support-div">
+                        <div className="mb-[14px] text-left text-base font-normal leading-8 tracking-[0.15px] text-[#006380]">
+                          Support
+                        </div>
+
+                        <CustomLink
+                          href="/Order Status"
+                          className="mb-[16px] text-[14px] font-normal leading-6 tracking-[0.25px] text-[#000000]"
+                        >
+                          Order Status
+                        </CustomLink>
+                        <CustomLink
+                          href="/Return-Replacement"
+                          className="mb-[16px] text-[14px] font-normal leading-6 tracking-[0.25px] text-[#000000]"
+                        >
+                          Return / Replacement
+                        </CustomLink>
+                        <CustomLink
+                          href="/visit"
+                          className="mb-[16px] text-[14px] font-normal leading-6 tracking-[0.25px] text-[#000000]"
+                        >
+                          Visit Our Help Center
+                        </CustomLink>
+                        <CustomLink
+                          href="/order"
+                          className="mb-[16px] text-[14px] font-normal leading-6 tracking-[0.25px] text-[#000000]"
+                        >
+                          Order Assistance
+                        </CustomLink>
+                      </div>
+
+                      <div className="mb-[16px] text-left text-base font-normal leading-8 tracking-[0.15px] text-[#008BB7] underline decoration-[#008BB7] underline-offset-2">
+                        Contact Us
+                      </div>
+
+                      <div className="Account-div mb-[14px]">
+                        <div className="mb-[16px] text-left text-base font-normal leading-8 tracking-[0.15px] text-[#006380]">
+                          Account
+                        </div>
+
+                        <CustomLink
+                          href="/Order Status"
+                          className="mb-[16px] text-[14px] font-normal leading-6 tracking-[0.25px] text-[#000000]"
+                        >
+                          My Account
+                        </CustomLink>
+                        <CustomLink
+                          href="/Favorites"
+                          className="mb-[16px] text-[14px] font-normal leading-6 tracking-[0.25px] text-[#000000]"
+                        >
+                          Favorites
+                        </CustomLink>
+                        <CustomLink
+                          href="/visit"
+                          className="mb-[16px] text-[14px] font-normal leading-6 tracking-[0.25px] text-[#000000]"
+                        >
+                          Purchase History
+                        </CustomLink>
+                        <CustomLink
+                          href="/order"
+                          className="mb-[16px] text-[14px] font-normal leading-6 tracking-[0.25px] text-[#000000]"
+                        >
+                          Financing
+                        </CustomLink>
+                      </div>
+
+                      <div className="mb-[16px] text-left text-base font-normal leading-8 tracking-[0.15px] text-[#008BB7] underline decoration-[#008BB7] underline-offset-2">
+                        Log In / Signup
+                      </div>
+                    </section>
+                  </>
+                ) : (
+                  selectedCategory && (
+                    <div className="animate-in slide-in-from-right-2">
+                      {links
+                        .find((link) => link.href === selectedCategory)
+                        ?.groups?.map((group) => (
+                          <ul
+                            className="flex flex-col border-t border-[#CCCBCB] pb-2"
+                            key={group.href}
+                          >
+                            <li className="w-[100%] pb-1 pt-1">
+                              <div className="flex items-center justify-between">
+                                <CustomLink
+                                  className="block flex-1 p-3 pb-1 ps-0 font-normal text-[#353535]"
+                                  href={group.href}
+                                  onClick={() => setOpen(false)}
+                                >
+                                  {group.label}
+                                </CustomLink>
+                                {group.links && group.links.length > 0 && (
+                                  <button
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      toggleSubMenu(group.href);
+                                    }}
+                                    className="p-2"
+                                  >
+                                    {expandedSubMenus[group.href] ? (
+                                      <Minus
+                                        className="h-5 w-5 font-bold"
+                                        style={{ fill: 'black' }}
+                                      />
+                                    ) : (
+                                      <Plus
+                                        className="h-5 w-5 font-bold"
+                                        style={{ fill: 'black' }}
+                                      />
+                                    )}
+                                  </button>
+                                )}
+                              </div>
+                            </li>
+
+                            {expandedSubMenus[group.href] && (
+                              <>
+                                {group.links?.map((nestedLink) => (
+                                  <li key={nestedLink.href}>
+                                    <CustomLink
+                                      className="block w-full pb-2 pl-[2em] text-[#353535]"
+                                      href={nestedLink.href}
+                                      onClick={() => setOpen(false)}
+                                    >
+                                      {nestedLink.label}
+                                    </CustomLink>
+                                  </li>
+                                ))}
+                                <li>
                                   <CustomLink
-                                    className="block w-full p-3 ps-0"
-                                    href={nestedLink.href}
+                                    className="block w-full pb-2 pl-[2em] text-[#008BB7]"
+                                    href={group.href}
                                     onClick={() => setOpen(false)}
                                   >
-                                    {nestedLink.label}
+                                    Shop All
                                   </CustomLink>
-                                </NavigationMenuPrimitive.Link>
-                              </li>
-                            ))}
-                        </ul>
-                      ))}
-                    </NavigationMenuPrimitive.Content>
-                  </NavigationMenuPrimitive.Item>
-                ) : (
-                  <NavigationMenuPrimitive.Item key={link.href}>
-                    <NavigationMenuPrimitive.Link asChild>
-                      <CustomLink
-                        className="block w-full p-3 ps-0 font-semibold"
-                        href={link.href}
-                        onClick={() => setOpen(false)}
-                      >
-                        {link.label}
-                      </CustomLink>
-                    </NavigationMenuPrimitive.Link>
-                  </NavigationMenuPrimitive.Item>
-                ),
-              )}
-
-              {/* New Blog and Contact Us Section */}
-              <nav className="static-menu-mobile flex items-center gap-10 font-normal text-[16px] text-[#008bb7] relative right-[1em]" id="static-menu">
-                <CustomLink href="/new" className="font-semiboldd hover:text-primary">
-                  New
-                </CustomLink>
-                <CustomLink href="/sale" className="font-semiboldd hover:text-primary">
-                  Sale
-                </CustomLink>
-                <CustomLink href="/blog" className="font-semiboldd hover:text-primary">
-                  Blog
-                </CustomLink>
-                <CustomLink href="/blog" className="font-semiboldd hover:text-primary">
-                  Our Brands
-                </CustomLink>
-                <CustomLink href="/trade-account/trade-step1/" className="font-semiboldd hover:text-primary">
-        trade 1
-        </CustomLink>
-              </nav>
-            </NavigationMenuPrimitive.List>
-          </NavigationMenuPrimitive.Root>
+                                </li>
+                              </>
+                            )}
+                          </ul>
+                        ))}
+                    </div>
+                  )
+                )}
+              </NavigationMenuPrimitive.List>
+            </NavigationMenuPrimitive.Root>
+          </div>
         </SheetPrimitive.Content>
       </SheetPrimitive.Portal>
     </SheetPrimitive.Root>
