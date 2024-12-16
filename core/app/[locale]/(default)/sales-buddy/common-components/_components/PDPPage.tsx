@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
-import { Accordions } from '~/components/ui/accordions';
+import { Accordions } from '../Accordin/index';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/form';
 import NotesIcons from '../../assets/add_notes.png';
@@ -37,7 +37,9 @@ const ACCORDION_DATA = {
     ),
   },
   costPricing: {
-    title: <h4 className="text-[20px] font-normal">Cost and Pricing - United States</h4>,
+    title: (
+      <h4 className="text-[20px] font-normal text-[#353535]">Cost and Pricing - United States</h4>
+    ),
     content: (
       <div className="bg-white">
         <table className="w-full border-collapse border-b border-gray-300 text-sm">
@@ -66,7 +68,7 @@ const ACCORDION_DATA = {
     ),
   },
   inventory: {
-    title: <h4 className="text-[20px] font-normal">Inventory</h4>,
+    title: <h4 className="text-[20px] font-normal text-[#353535]">Inventory</h4>,
     content: (
       <div className="w-[460px] bg-white p-[20px]">
         {[
@@ -137,17 +139,16 @@ export default function SalesBuddyProductPage() {
       {/* Accordions */}
       <div className="w-full bg-[#FFFFFF]">
         <Accordions
-          styles="border-t w-[460px] border-b py-[10px] px-[20px] text-[16px]"
-          accordinParent="bg-[#FFFFFF]"
+          styles="border-y-[1px] border-x-0  border-[#CCCBCB] bg-white py-[10px] px-[20px] text-[16px]"
           accordions={[ACCORDION_DATA.existingQuote]}
-          type="multiple"
+          // type="multiple"
         />
       </div>
       <div className="w-full">
         <Accordions
-          styles=" py-[10px]  text-[16px]"
+          styles="  py-[10px] px-[20px] text-[16px]"
           accordions={[ACCORDION_DATA.costPricing, ACCORDION_DATA.inventory]}
-          type="multiple"
+          // type="multiple"
         />
       </div>
 
