@@ -158,10 +158,10 @@ type SearchProductsSortInput = Variables['sort'];
 type SearchProductsFiltersInput = Variables['filters'];
 
 interface ProductSearch {
-  limit?: number;
-  before?: string;
-  after?: string;
-  sort?: SearchProductsSortInput;
+  limit?: number | null;
+  before?: string | null;
+  after?: string | null;
+  sort?: SearchProductsSortInput | null;
   filters: SearchProductsFiltersInput;
 }
 
@@ -258,18 +258,18 @@ const PrivateSortParam = z.union([
 const PublicSortParam = z.string().toUpperCase().pipe(PrivateSortParam);
 
 const SearchProductsFiltersInputSchema = z.object({
-  brandEntityIds: z.array(z.number()).optional(),
-  categoryEntityId: z.number().optional(),
-  categoryEntityIds: z.array(z.number()).optional(),
-  hideOutOfStock: z.boolean().optional(),
-  isFeatured: z.boolean().optional(),
-  isFreeShipping: z.boolean().optional(),
+  brandEntityIds: z.array(z.number()).nullish(),
+  categoryEntityId: z.number().nullish(),
+  categoryEntityIds: z.array(z.number()).nullish(),
+  hideOutOfStock: z.boolean().nullish(),
+  isFeatured: z.boolean().nullish(),
+  isFreeShipping: z.boolean().nullish(),
   price: z
     .object({
-      maxPrice: z.number().optional(),
-      minPrice: z.number().optional(),
+      maxPrice: z.number().nullish(),
+      minPrice: z.number().nullish(),
     })
-    .optional(),
+    .nullish(),
   productAttributes: z
     .array(
       z.object({
@@ -277,54 +277,54 @@ const SearchProductsFiltersInputSchema = z.object({
         values: z.array(z.string()),
       }),
     )
-    .optional(),
+    .nullish(),
   rating: z
     .object({
-      maxRating: z.number().optional(),
-      minRating: z.number().optional(),
+      maxRating: z.number().nullish(),
+      minRating: z.number().nullish(),
     })
-    .optional(),
-  searchSubCategories: z.boolean().optional(),
-  searchTerm: z.string().optional(),
+    .nullish(),
+  searchSubCategories: z.boolean().nullish(),
+  searchTerm: z.string().nullish(),
 }) satisfies z.ZodType<SearchProductsFiltersInput>;
 
 const PrivateSearchParamsSchema = z.object({
-  after: z.string().optional(),
-  before: z.string().optional(),
-  limit: z.number().optional(),
-  sort: PrivateSortParam.optional(),
+  after: z.string().nullish(),
+  before: z.string().nullish(),
+  limit: z.number().nullish(),
+  sort: PrivateSortParam.nullish(),
   filters: SearchProductsFiltersInputSchema,
 });
 
 export const PublicSearchParamsSchema = z.object({
-  after: z.string().optional(),
-  before: z.string().optional(),
-  brand: SearchParamToArray.transform((value) => value?.map(Number)),
+  after: z.string().nullish(),
+  before: z.string().nullish(),
+  brand: SearchParamToArray.nullish().transform((value) => value?.map(Number)),
   category: z.coerce.number().optional(),
-  categoryIn: SearchParamToArray.transform((value) => value?.map(Number)),
-  isFeatured: z.coerce.boolean().optional(),
-  limit: z.coerce.number().optional(),
-  minPrice: z.coerce.number().optional(),
-  maxPrice: z.coerce.number().optional(),
-  minRating: z.coerce.number().optional(),
-  maxRating: z.coerce.number().optional(),
-  sort: PublicSortParam.optional(),
+  categoryIn: SearchParamToArray.nullish().transform((value) => value?.map(Number)),
+  isFeatured: z.coerce.boolean().nullish(),
+  limit: z.coerce.number().nullish(),
+  minPrice: z.coerce.number().nullish(),
+  maxPrice: z.coerce.number().nullish(),
+  minRating: z.coerce.number().nullish(),
+  maxRating: z.coerce.number().nullish(),
+  sort: PublicSortParam.nullish(),
   // In the future we should support more stock filters, e.g. out of stock, low stock, etc.
-  stock: SearchParamToArray.transform((value) =>
+  stock: SearchParamToArray.nullish().transform((value) =>
     value?.filter((stock) => z.enum(['in_stock']).safeParse(stock).success),
   ),
   // In the future we should support more shipping filters, e.g. 2 day shipping, same day, etc.
-  shipping: SearchParamToArray.transform((value) =>
+  shipping: SearchParamToArray.nullish().transform((value) =>
     value?.filter((stock) => z.enum(['free_shipping']).safeParse(stock).success),
   ),
-  term: z.string().optional(),
+  term: z.string().nullish(),
 });
 
 const AttributeKey = z.custom<`attr_${string}`>((val) => {
   return typeof val === 'string' ? /^attr_\w+$/.test(val) : false;
 });
 
-const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchParamToArray)
+export const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchParamToArray.nullish())
   .transform((publicParams) => {
     const { after, before, limit, sort, ...filters } = publicParams;
 
@@ -349,6 +349,7 @@ const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchParamToArr
     // Assuming the rest of the params are product attributes for now. We need to see if we can get the GQL endpoint to ingore unknown params.
     const productAttributes = Object.entries(additionalParams)
       .filter(([attribute]) => AttributeKey.safeParse(attribute).success)
+      .filter(([, values]) => values != null)
       .map(([attribute, values]) => ({
         attribute: attribute.replace('attr_', ''),
         values,
