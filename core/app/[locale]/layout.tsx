@@ -1,3 +1,4 @@
+import { DraftModeScript } from '@makeswift/runtime/next/server';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { clsx } from 'clsx';
@@ -113,6 +114,9 @@ export default async function RootLayout({ params, children }: Props) {
       className={clsx(inter.variable, dm_serif_text.variable, roboto_mono.variable)}
       lang={locale}
     >
+      <head>
+        <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
+      </head>
       <body>
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
