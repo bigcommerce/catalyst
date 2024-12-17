@@ -18,11 +18,13 @@ export function Sorting({
   options,
   paramName = 'sort',
   defaultValue = '',
+  placeholder,
 }: {
   label?: Streamable<string | null>;
   options: Streamable<Option[]>;
   paramName?: string;
   defaultValue?: string;
+  placeholder?: Streamable<string | null>;
 }) {
   return (
     <Suspense fallback={<SortingSkeleton />}>
@@ -31,6 +33,7 @@ export function Sorting({
         label={label}
         options={options}
         paramName={paramName}
+        placeholder={placeholder}
       />
     </Suspense>
   );
@@ -41,11 +44,13 @@ function SortingInner({
   defaultValue,
   options: streamableOptions,
   label: streamableLabel,
+  placeholder: streamablePlaceholder,
 }: {
   paramName: string;
   defaultValue: string;
   options: Streamable<Option[]>;
   label?: Streamable<string | null>;
+  placeholder?: Streamable<string | null>;
 }) {
   const [param, setParam] = useQueryState(
     paramName,
@@ -55,9 +60,11 @@ function SortingInner({
   const [, startTransition] = use(ProductListTransitionContext);
   const options = useStreamable(streamableOptions);
   const label = useStreamable(streamableLabel) ?? 'Sort';
+  const placeholder = useStreamable(streamablePlaceholder) ?? 'Sort by';
 
   return (
     <Select
+      label={label}
       name={paramName}
       onValueChange={(value) => {
         startTransition(async () => {
@@ -66,7 +73,7 @@ function SortingInner({
         });
       }}
       options={options}
-      placeholder={label}
+      placeholder={placeholder}
       value={optimisticParam}
       variant="round"
     />
