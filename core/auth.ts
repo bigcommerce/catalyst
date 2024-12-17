@@ -8,8 +8,8 @@ import { client } from './client';
 import { graphql } from './client/graphql';
 
 const LoginMutation = graphql(`
-  mutation Login($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
+  mutation Login($email: String!, $password: String!, $cartEntityId: String) {
+    login(email: $email, password: $password, guestCartEntityId: $cartEntityId) {
       customerAccessToken {
         value
       }
@@ -18,18 +18,6 @@ const LoginMutation = graphql(`
         firstName
         lastName
         email
-      }
-    }
-  }
-`);
-
-const AssignCartToCustomerMutation = graphql(`
-  mutation AssignCartToCustomer($assignCartToCustomerInput: AssignCartToCustomerInput!) {
-    cart {
-      assignCartToCustomer(input: $assignCartToCustomerInput) {
-        cart {
-          entityId
-        }
       }
     }
   }
@@ -74,30 +62,6 @@ const config = {
     },
   },
   events: {
-    async signIn({ user: { customerAccessToken } }) {
-      const cookieStore = await cookies();
-      const cookieCartId = cookieStore.get('cartId')?.value;
-
-      if (cookieCartId) {
-        try {
-          await client.fetch({
-            document: AssignCartToCustomerMutation,
-            variables: {
-              assignCartToCustomerInput: {
-                cartEntityId: cookieCartId,
-              },
-            },
-            customerAccessToken,
-            fetchOptions: {
-              cache: 'no-store',
-            },
-          });
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error(error);
-        }
-      }
-    },
     async signOut(message) {
       const customerAccessToken = 'token' in message ? message.token?.customerAccessToken : null;
 
@@ -126,10 +90,12 @@ const config = {
       },
       async authorize(credentials) {
         const { email, password } = Credentials.parse(credentials);
+        const cookieStore = await cookies();
+        const cartEntityId = cookieStore.get('cartId')?.value;
 
         const response = await client.fetch({
           document: LoginMutation,
-          variables: { email, password },
+          variables: { email, password, cartEntityId },
           fetchOptions: {
             cache: 'no-store',
           },
