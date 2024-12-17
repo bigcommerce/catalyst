@@ -1,3 +1,4 @@
+import createWithMakeswift from '@makeswift/runtime/next/plugin';
 import bundleAnalyzer from '@next/bundle-analyzer';
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
@@ -7,6 +8,7 @@ import { client } from './client';
 import { graphql } from './client/graphql';
 import { cspHeader } from './lib/content-security-policy';
 
+const withMakeswift = createWithMakeswift({ previewMode: false });
 const withNextIntl = createNextIntlPlugin();
 
 const LocaleQuery = graphql(`
@@ -60,6 +62,9 @@ export default async (): Promise<NextConfig> => {
 
   // Apply withNextIntl to the config
   nextConfig = withNextIntl(nextConfig);
+
+  // Apply withMakeswift to the config
+  nextConfig = withMakeswift(nextConfig);
 
   if (process.env.ANALYZE === 'true') {
     const withBundleAnalyzer = bundleAnalyzer();
