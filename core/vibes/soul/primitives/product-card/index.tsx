@@ -20,6 +20,7 @@ interface Props {
   className?: string;
   showCompare?: boolean;
   compareLabel?: string;
+  imagePriority?: boolean;
   compareParamName?: string;
   product: CardProduct;
 }
@@ -30,6 +31,7 @@ export function ProductCard({
   showCompare = false,
   compareLabel,
   compareParamName,
+  imagePriority = false,
 }: Props) {
   return (
     <div className={className}>
@@ -45,6 +47,7 @@ export function ProductCard({
               alt={image.alt}
               className="w-full scale-100 select-none bg-contrast-100 object-cover transition-transform duration-500 ease-out group-hover:scale-110"
               fill
+              priority={imagePriority}
               sizes="(max-width: 768px) 70vw, 33vw"
               src={image.src}
             />
