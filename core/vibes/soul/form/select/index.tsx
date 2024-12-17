@@ -13,6 +13,7 @@ type Props = {
   name: string;
   placeholder?: string;
   label?: string;
+  hideLabel?: boolean;
   variant?: 'round' | 'rectangle';
   options: Array<{ label: string; value: string }>;
   className?: string;
@@ -24,6 +25,7 @@ type Props = {
 
 export function Select({
   label,
+  hideLabel = false,
   name,
   placeholder = 'Select an item',
   variant = 'rectangle',
@@ -39,8 +41,12 @@ export function Select({
   const id = React.useId();
 
   return (
-    <div className={clsx('space-y-2', className)}>
-      {label !== undefined && label !== '' && <Label htmlFor={id}>{label}</Label>}
+    <div className={className}>
+      {label !== undefined && label !== '' && (
+        <Label className={clsx(hideLabel && 'sr-only', 'mb-2')} htmlFor={id}>
+          {label}
+        </Label>
+      )}
       <SelectPrimitive.Root {...rest} value={value}>
         <SelectPrimitive.Trigger
           aria-label={label}
