@@ -6,12 +6,14 @@ import { Checkbox } from '@/vibes/soul/form/checkbox';
 
 interface Props {
   productId: string;
+  colorScheme?: 'light' | 'dark';
   paramName?: string;
   label?: string;
 }
 
 export const Compare = function Compare({
   productId,
+  colorScheme = 'light',
   paramName = 'compare',
   label = 'Compare',
 }: Props) {
@@ -23,7 +25,7 @@ export const Compare = function Compare({
   return (
     <Checkbox
       checked={param?.includes(productId) ?? false}
-      className="text-contrast-500 transition-colors duration-300 hover:text-foreground"
+      colorScheme={colorScheme}
       label={label}
       onCheckedChange={(value) => {
         void setParam((prev) => {
