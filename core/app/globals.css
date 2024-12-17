@@ -30,38 +30,6 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 
-  /* Button */
-
-  --button-font-family: var(--font-family-body);
-
-  --button-primary-background: hsl(var(--primary));
-  --button-primary-background-hover: color-mix(in oklab, hsl(var(--primary)), white 75%);
-  --button-primary-foreground: hsl(var(--foreground));
-  --button-primary-foreground-hover: hsl(var(--foreground));
-  --button-primary-border: hsl(var(--primary));
-  --button-primary-focus: hsl(var(--foreground));
-
-  --button-secondary-background: hsl(var(--foreground));
-  --button-secondary-background-hover: hsl(var(--background));
-  --button-secondary-foreground: hsl(var(--background));
-  --button-secondary-foreground-hover: hsl(var(--foreground));
-  --button-secondary-border: hsl(var(--foreground));
-  --button-secondary-focus: hsl(var(--foreground));
-
-  --button-tertiary-background: hsl(var(--background));
-  --button-tertiary-background-hover: hsl(var(--contrast-100));
-  --button-tertiary-foreground: hsl(var(--foreground));
-  --button-tertiary-foreground-hover: hsl(var(--foreground));
-  --button-tertiary-border: hsl(var(--contrast-200));
-  --button-tertiary-focus: hsl(var(--foreground));
-
-  --button-ghost-background: transparent;
-  --button-ghost-background-hover: hsl(var(--foreground) / 5%);
-  --button-ghost-foreground: hsl(var(--foreground));
-  --button-ghost-foreground-hover: hsl(var(--foreground));
-  --button-ghost-border: transparent;
-  --button-ghost-focus: hsl(var(--foreground));
-
   /* Slideshow */
 
   --slideshow-focus: hsl(var(--primary));
