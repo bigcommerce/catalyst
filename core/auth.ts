@@ -4,6 +4,7 @@ import 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { z } from 'zod';
 
+import { enrichUserWithB2B } from './b2b/auth';
 import { client } from './client';
 import { graphql } from './client/graphql';
 
@@ -52,18 +53,19 @@ const config = {
         token.customerAccessToken = user.customerAccessToken;
       }
 
+      // user can actually be undefined
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (user?.b2bToken) {
-        token.b2bToken = user?.b2bToken
+        token.b2bToken = user.b2bToken;
       }
 
       return token;
     },
     session({ session, token }) {
-      if (token?.b2bToken){
-        //@ts-ignore
-        session.b2bToken = token?.b2bToken;
+      if (token.b2bToken) {
+        session.b2bToken = token.b2bToken;
       }
-      
+
       if (token.customerAccessToken) {
         session.customerAccessToken = token.customerAccessToken;
       }
@@ -122,53 +124,14 @@ const config = {
         }
 
         const user = {
-            id: result.customer.entityId.toString(),
-            name: `${result.customer.firstName} ${result.customer.lastName}`,
-            email: result.customer.email,
-            customerAccessToken: result.customerAccessToken.value,
-            expiresAt: result.customerAccessToken.expiresAt,
-        }
+          id: result.customer.entityId.toString(),
+          name: `${result.customer.firstName} ${result.customer.lastName}`,
+          email: result.customer.email,
+          customerAccessToken: result.customerAccessToken.value,
+          expiresAt: result.customerAccessToken.expiresAt,
+        };
 
-        if (!process.env.B2B_API_HOST || !process.env.B2B_API_TOKEN) {
-          return user;
-        }
-
-        try {
-          const payload = {
-            channelId: Number(process.env.BIGCOMMERCE_CHANNEL_ID),
-            customerId:  result.customer.entityId,
-            customerAccessToken: {
-              value: result.customerAccessToken.value,
-              expiresAt: result.customerAccessToken.expiresAt,
-            },
-          }
-
-          const response = await client.b2bFetch<{
-            data: {
-              token: string[]
-            }
-          }>(
-            '/api/io/auth/customers/storefront',
-            {
-              method: 'POST',
-              body: JSON.stringify(payload),
-              headers: {
-                'Content-Type': 'application/json',
-              }
-            },
-          );
-
-          const b2bToken = response.data?.token?.[0];
-
-          if (b2bToken) 
-            return {...user, b2bToken };
-
-          return user
-        } catch (e) {
-          e
-          return user; 
-        } 
-
+        return enrichUserWithB2B(user);
       },
     }),
   ],
@@ -192,7 +155,6 @@ declare module 'next-auth' {
   interface Session {
     user?: DefaultSession['user'];
     customerAccessToken?: string;
-    b2bToken?: string
   }
 
   interface User {
@@ -200,7 +162,6 @@ declare module 'next-auth' {
     email?: string | null;
     customerAccessToken?: string;
     expiresAt?: string;
-    b2bToken?: string;
   }
 }
 
@@ -208,37 +169,5 @@ declare module 'next-auth/jwt' {
   interface JWT {
     id?: string;
     customerAccessToken?: string;
-  }
-}
-
-
-type B2BEvent = string;
-type CallbackEvent = {
-  data: any; // Adjust to match the actual type of CustomFieldItems
-  preventDefault: () => void;
-};
-type Callback = (event: CallbackEvent) => any;
-type CallbackManagerType = {
-  callbacks: Map<B2BEvent, Callback[]>;
-  addEventListener(callbackKey: B2BEvent, callback: Callback): void;
-  removeEventListener(callbackKey: B2BEvent, callback: Callback): boolean;
-  dispatchEvent(callbackKey: B2BEvent, data?: any): boolean;
-};
-
-declare global {
-  interface Window {
-    b2b: {
-      callbacks: CallbackManagerType;
-      utils: {
-        getRoutes: () => any[]
-        openPage: (path: string, url?: string) => void;
-        user: {
-          getProfile: () => { role: number };
-          loginWithB2BStorefrontToken: (b2bStorefrontJWTToken: string) => Promise<void>;
-          logout: (params?: { handleError?: (error: any) => any }) => Promise<void>;
-          getB2BToken: () => string;
-        };
-      };
-    };
   }
 }
