@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.24.0
+
+### Minor Changes
+
+- [#1749](https://github.com/bigcommerce/catalyst/pull/1749) [`cacdd22`](https://github.com/bigcommerce/catalyst/commit/cacdd22de140897f57fb8aaf52b2a9e7f48c23c4) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Change the rest of the auth pages to use toasts.
+
+- [#1746](https://github.com/bigcommerce/catalyst/pull/1746) [`0e34915`](https://github.com/bigcommerce/catalyst/commit/0e34915171da18ed141ecfacc6fa4c2a8f5e4c23) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Converts the change password messages over to using a toast. This should provide a better DX and UX.
+
+- [#1747](https://github.com/bigcommerce/catalyst/pull/1747) [`608b886`](https://github.com/bigcommerce/catalyst/commit/608b886978518f3d27230f50a2ad462363527d63) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Update the register customer page to use toasts for messaging.
+
+- [#1749](https://github.com/bigcommerce/catalyst/pull/1749) [`cacdd22`](https://github.com/bigcommerce/catalyst/commit/cacdd22de140897f57fb8aaf52b2a9e7f48c23c4) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Converts the reset password messages over to using a toast.
+
+- [#1749](https://github.com/bigcommerce/catalyst/pull/1749) [`cacdd22`](https://github.com/bigcommerce/catalyst/commit/cacdd22de140897f57fb8aaf52b2a9e7f48c23c4) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Remove the account state provider components
+
+- [#1749](https://github.com/bigcommerce/catalyst/pull/1749) [`cacdd22`](https://github.com/bigcommerce/catalyst/commit/cacdd22de140897f57fb8aaf52b2a9e7f48c23c4) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Converts the login messages over to using a toast.
+
+- [#1743](https://github.com/bigcommerce/catalyst/pull/1743) [`7c03428`](https://github.com/bigcommerce/catalyst/commit/7c03428bf815bf2cc7b8aa35ff331379f7615094) Thanks [@chanceaclark](https://github.com/chanceaclark)! - After login, redirect to orders page instead of an account overview page. This also removes the account overview page.
+
+- [#1741](https://github.com/bigcommerce/catalyst/pull/1741) [`5136fac`](https://github.com/bigcommerce/catalyst/commit/5136fac6e05c6eb1ebce9707abcf1f180712358e) Thanks [@chanceaclark](https://github.com/chanceaclark)! - If a customer is already logged in, we want to redirect them back to their account pages if they are trying to hit one of the non-logged-in customer auth routes. The prevents any side effects that may occur trying to re-auth the client. This is done by providing a root layout.tsx page under the (auth) route group.
+
+- [#1749](https://github.com/bigcommerce/catalyst/pull/1749) [`cacdd22`](https://github.com/bigcommerce/catalyst/commit/cacdd22de140897f57fb8aaf52b2a9e7f48c23c4) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Converts the change/forgot password messages over to using a toast.
+
+### Patch Changes
+
+- [#1765](https://github.com/bigcommerce/catalyst/pull/1765) [`1c9b880`](https://github.com/bigcommerce/catalyst/commit/1c9b8804cec99f5fd9700b422a3fb9739a850045) Thanks [@bookernath](https://github.com/bookernath)! - Assign cart to customer as part of initial login mutation
+
+- [#1760](https://github.com/bigcommerce/catalyst/pull/1760) [`f6161c5`](https://github.com/bigcommerce/catalyst/commit/f6161c5dcf2fbd65f4192eec36ebd3e62e60bd33) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
 ## 0.23.0
 
 ### Minor Changes
