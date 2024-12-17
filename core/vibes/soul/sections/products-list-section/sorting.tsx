@@ -64,6 +64,7 @@ function SortingInner({
 
   return (
     <Select
+      hideLabel
       label={label}
       name={paramName}
       onValueChange={(value) => {
