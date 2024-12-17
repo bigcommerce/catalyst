@@ -24,8 +24,8 @@ const LoginMutation = graphql(`
 `);
 
 const LogoutMutation = graphql(`
-  mutation LogoutMutation {
-    logout {
+  mutation LogoutMutation($cartEntityId: String) {
+    logout(cartEntityId: $cartEntityId) {
       result
     }
   }
@@ -64,12 +64,14 @@ const config = {
   events: {
     async signOut(message) {
       const customerAccessToken = 'token' in message ? message.token?.customerAccessToken : null;
+      const cookieStore = await cookies();
+      const cartEntityId = cookieStore.get('cartId')?.value;
 
       if (customerAccessToken) {
         try {
           await client.fetch({
             document: LogoutMutation,
-            variables: {},
+            variables: { cartEntityId },
             customerAccessToken,
             fetchOptions: {
               cache: 'no-store',
