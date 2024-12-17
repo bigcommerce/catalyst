@@ -1,3 +1,4 @@
+/* eslint-disable valid-jsdoc */
 'use client';
 
 import { clsx } from 'clsx';
@@ -133,6 +134,18 @@ function CarouselItem({ className, ...rest }: React.HTMLAttributes<HTMLDivElemen
   );
 }
 
+/**
+ * This component supports various CSS variables for theming. Here's a comprehensive list, along
+ * with their default values:
+ *
+ * ```css
+ * :root {
+    --carousel-focus: hsl(var(--primary));
+    --carousel-light-button: hsl(var(--foreground));
+    --carousel-dark-button: hsl(var(--background));
+ * }
+ * ```
+ */
 function CarouselButtons({
   className,
   colorScheme = 'light',
@@ -152,14 +165,14 @@ function CarouselButtons({
       className={clsx(
         'flex gap-2',
         {
-          light: 'text-[var(--carousel-light-arrows)]',
-          dark: 'text-[var(--carousel-dark-arrows)]',
+          light: 'text-[var(--carousel-light-button,hsl(var(--foreground)))]',
+          dark: 'text-[var(--carousel-dark-button,hsl(var(--background)))]',
         }[colorScheme],
         className,
       )}
     >
       <button
-        className="rounded-lg ring-[var(--carousel-focus)] transition-colors duration-300 focus-visible:outline-0 focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-25"
+        className="rounded-lg ring-[var(--carousel-focus,hsl(var(--primary)))] transition-colors duration-300 focus-visible:outline-0 focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-25"
         disabled={!canScrollPrev}
         onClick={scrollPrev}
         title={previousLabel}
@@ -167,7 +180,7 @@ function CarouselButtons({
         <ArrowLeft strokeWidth={1.5} />
       </button>
       <button
-        className="rounded-lg ring-[var(--carousel-focus)] transition-colors duration-300 focus-visible:outline-0 focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-25"
+        className="rounded-lg ring-[var(--carousel-focus,hsl(var(--primary)))] transition-colors duration-300 focus-visible:outline-0 focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-25"
         disabled={!canScrollNext}
         onClick={scrollNext}
         title={nextLabel}
@@ -178,12 +191,23 @@ function CarouselButtons({
   );
 }
 
+/**
+ * This component supports various CSS variables for theming. Here's a comprehensive list, along
+ * with their default values:
+ *
+ * ```css
+ * :root {
+    --carousel-light-scrollbar: hsl(var(--foreground));
+    --carousel-dark-scrollbar: hsl(var(--background));
+ * }
+ * ```
+ */
 function CarouselScrollbar({
   className,
   colorScheme = 'light',
   label = 'Carousel scrollbar',
 }: React.HTMLAttributes<HTMLDivElement> & { label?: string; colorScheme?: 'light' | 'dark' }) {
-  const { api } = useCarousel();
+  const { api, canScrollPrev, canScrollNext } = useCarousel();
   const [progress, setProgress] = useState(0);
   const [scrollbarPosition, setScrollbarPosition] = useState({ width: 0, left: 0 });
 
@@ -241,7 +265,11 @@ function CarouselScrollbar({
 
   return (
     <div
-      className={clsx('relative flex h-6 w-full max-w-56 items-center overflow-hidden', className)}
+      className={clsx(
+        'relative flex h-6 w-full max-w-56 items-center overflow-hidden',
+        !canScrollPrev && !canScrollNext && 'pointer-events-none invisible',
+        className,
+      )}
     >
       <input
         aria-label={label}
@@ -260,8 +288,8 @@ function CarouselScrollbar({
         className={clsx(
           'pointer-events-none absolute h-1 w-full rounded-full opacity-10',
           {
-            light: 'bg-[var(--carousel-light-slider)]',
-            dark: 'bg-[var(--carousel-dark-slider)]',
+            light: 'bg-[var(--carousel-light-scrollbar,hsl(var(--foreground)))]',
+            dark: 'bg-[var(--carousel-dark-scrollbar,hsl(var(--background)))]',
           }[colorScheme],
         )}
       />
@@ -271,8 +299,8 @@ function CarouselScrollbar({
         className={clsx(
           'pointer-events-none absolute h-1 rounded-full transition-all ease-out',
           {
-            light: 'bg-[var(--carousel-light-slider)]',
-            dark: 'bg-[var(--carousel-dark-slider)]',
+            light: 'bg-[var(--carousel-light-scrollbar,hsl(var(--foreground)))]',
+            dark: 'bg-[var(--carousel-dark-scrollbar,hsl(var(--background)))]',
           }[colorScheme],
         )}
         style={{
