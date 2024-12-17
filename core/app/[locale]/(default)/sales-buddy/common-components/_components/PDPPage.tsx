@@ -6,8 +6,6 @@ import { Accordions } from '../Accordin/index';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/form';
 import NotesIcons from '../../assets/add_notes.png';
-import { ProductProvider } from '~/components/common-context/product-provider';
-import { useCommonContext } from '~/components/common-context/common-provider';
 // Utility for styles
 const TailwindCustomCssValues = {
   font: 'font-open-sans',
@@ -121,7 +119,6 @@ const ACCORDION_DATA = {
 
 export default function SalesBuddyProductPage() {
   const retrievedProductData = JSON.parse(localStorage.getItem('productInfo') || '{}');
-  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",retrievedProductData);
   const [openAccordions, setOpenAccordions] = useState<number[]>([]);
   const [quoteNumber, setQuoteNumber] = useState('');
 
