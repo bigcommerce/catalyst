@@ -81,6 +81,29 @@ const useProgressButton = (
   };
 };
 
+// eslint-disable-next-line valid-jsdoc
+/**
+ * This component supports various CSS variables for theming. Here's a comprehensive list, along
+ * with their default values:
+ *
+ * ```css
+ * :root {
+ *   --slideshow-focus: hsl(var(--primary));
+ *   --slideshow-mask: hsl(var(--foreground) / 80%);
+ *   --slideshow-background: color-mix(in oklab, hsl(var(--primary)), black 75%);
+ *   --slideshow-title: hsl(var(--background));
+ *   --slideshow-title-font-family: var(--font-family-heading);
+ *   --slideshow-description: hsl(var(--background) / 80%);
+ *   --slideshow-description-font-family: var(--font-family-body);
+ *   --slideshow-pagination: hsl(var(--background));
+ *   --slideshow-play-border: hsl(var(--contrast-300) / 50%);
+ *   --slideshow-play-border-hover: hsl(var(--contrast-300) / 80%);
+ *   --slideshow-play-text: hsl(var(--background));
+ *   --slideshow-number: hsl(var(--background));
+ *   --slideshow-number-font-family: var(--font-family-mono);
+ * }
+ * ```
+ */
 export function Slideshow({ slides, playOnInit = true, interval = 5000, className }: Props) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, duration: 20 }, [
     Autoplay({ delay: interval, playOnInit }),
@@ -129,7 +152,10 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
 
   return (
     <section
-      className={clsx('relative h-[80vh] bg-[var(--slideshow-background)] @container', className)}
+      className={clsx(
+        'relative h-[80vh] bg-[var(--slideshow-background,color-mix(in_oklab,hsl(var(--primary)),black_75%))] @container',
+        className,
+      )}
     >
       <div className="h-full overflow-hidden" ref={emblaRef}>
         <div className="flex h-full">
@@ -140,13 +166,13 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
                   className="relative h-full w-full min-w-0 shrink-0 grow-0 basis-full"
                   key={idx}
                 >
-                  <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-[var(--slideshow-mask)] to-transparent">
+                  <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-[var(--slideshow-mask,hsl(var(--foreground)/80%))] to-transparent">
                     <div className="mx-auto w-full max-w-screen-2xl text-balance px-4 pb-16 pt-12 @xl:px-6 @xl:pb-20 @xl:pt-16 @4xl:px-8 @4xl:pt-20">
-                      <h1 className="m-0 max-w-xl font-[family-name:var(--slideshow-title-font-family)] text-4xl font-medium leading-none text-[var(--slideshow-title)] @2xl:text-5xl @2xl:leading-[.9] @4xl:text-6xl">
+                      <h1 className="m-0 max-w-xl font-[family-name:var(--slideshow-title-font-family,var(--font-family-heading))] text-4xl font-medium leading-none text-[var(--slideshow-title,hsl(var(--background)))] @2xl:text-5xl @2xl:leading-[.9] @4xl:text-6xl">
                         {title}
                       </h1>
                       {showDescription && (
-                        <p className="max-w-x mt-2 font-[family-name:var(--slideshow-description-font-family)] text-base leading-normal text-[var(--slideshow-description)] @xl:mt-3 @xl:text-lg">
+                        <p className="max-w-x mt-2 font-[family-name:var(--slideshow-description-font-family,var(--font-family-body))] text-base leading-normal text-[var(--slideshow-description,hsl(var(--background)/80%))] @xl:mt-3 @xl:text-lg">
                           {description}
                         </p>
                       )}
@@ -192,7 +218,7 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
           return (
             <button
               aria-label={`View image number ${index + 1}`}
-              className="rounded-lg px-1.5 py-2 focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--slideshow-focus)]"
+              className="rounded-lg px-1.5 py-2 focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--slideshow-focus,hsl(var(--primary)))]"
               key={index}
               onClick={() => {
                 onProgressButtonClick(index);
@@ -203,7 +229,7 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
                 {/* White Bar - Current Index Indicator / Progress Bar */}
                 <div
                   className={clsx(
-                    'absolute h-0.5 bg-[var(--slideshow-pagination)]',
+                    'absolute h-0.5 bg-[var(--slideshow-pagination,hsl(var(--background)))]',
                     'opacity-0 fill-mode-forwards',
                     isPlaying ? 'running' : 'paused',
                     index === selectedIndex
@@ -218,7 +244,7 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
                 />
                 {/* Grey Bar BG */}
                 <div
-                  className="h-0.5 bg-[var(--slideshow-pagination)] opacity-30"
+                  className="h-0.5 bg-[var(--slideshow-pagination,hsl(var(--background)))] opacity-30"
                   style={{ width: `${150 / slides.length}px` }}
                 />
               </div>
@@ -227,7 +253,7 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
         })}
 
         {/* Carousel Count - "01/03" */}
-        <span className="ml-auto mr-3 mt-px font-[family-name:var(--slideshow-number-font-family)] text-sm text-[var(--slideshow-number)]">
+        <span className="ml-auto mr-3 mt-px font-[family-name:var(--slideshow-number-font-family,var(--font-family-mono))] text-sm text-[var(--slideshow-number,hsl(var(--background)))]">
           {selectedIndex + 1 < 10 ? `0${selectedIndex + 1}` : selectedIndex + 1}/
           {slides.length < 10 ? `0${slides.length}` : slides.length}
         </span>
@@ -235,7 +261,7 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
         {/* Stop / Start Button */}
         <button
           aria-label={isPlaying ? 'Pause' : 'Play'}
-          className="flex h-7 w-7 items-center justify-center rounded-lg border border-[var(--slideshow-play-border)] text-[var(--slideshow-play-text)] ring-[var(--slideshow-focus)] transition-opacity duration-300 hover:border-[var(--slideshow-play-border-hover)] focus-visible:outline-0 focus-visible:ring-2"
+          className="flex h-7 w-7 items-center justify-center rounded-lg border border-[var(--slideshow-play-border,hsl(var(--contrast-300)/50%))] text-[var(--slideshow-play-text,hsl(var(--background)))] ring-[var(--slideshow-focus)] transition-opacity duration-300 hover:border-[var(--slideshow-play-border-hover,hsl(var(--contrast-300)/80%))] focus-visible:outline-0 focus-visible:ring-2"
           onClick={toggleAutoplay}
           type="button"
         >
