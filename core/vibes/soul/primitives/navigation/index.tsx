@@ -21,15 +21,14 @@ import React, {
 } from 'react';
 import { useFormStatus } from 'react-dom';
 
+import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Button } from '@/vibes/soul/primitives/button';
+import { Price } from '@/vibes/soul/primitives/price-label';
+import { ProductCard } from '@/vibes/soul/primitives/product-card';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 import { usePathname } from '~/i18n/routing';
-
-import { FormStatus } from '../../form/form-status';
-import { Price } from '../price-label';
-import { ProductCard } from '../product-card';
 
 interface Link {
   label: string;
