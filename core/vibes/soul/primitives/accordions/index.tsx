@@ -4,6 +4,28 @@ import * as AccordionsPrimitive from '@radix-ui/react-accordion';
 import { clsx } from 'clsx';
 import React from 'react';
 
+// eslint-disable-next-line valid-jsdoc
+/**
+ * This component supports various CSS variables for theming. Here's a comprehensive list, along
+ * with their default values:
+ *
+ * ```css
+ * :root {
+ *   --accordion-light-title-text: hsl(var(--contrast-400));
+ *   --accordion-light-title-text-hover: hsl(var(--foreground));
+ *   --accordion-light-title-icon: hsl(var(--contrast-500));
+ *   --accordion-light-title-icon-hover: hsl(var(--foreground));
+ *   --accordion-light-content-text: hsl(var(--foreground));
+ *   --accordion-dark-title-text: hsl(var(--contrast-200));
+ *   --accordion-dark-title-text-hover: hsl(var(--background));
+ *   --accordion-dark-title-icon: hsl(var(--contrast-200));
+ *   --accordion-dark-title-icon-hover: hsl(var(--background));
+ *   --accordion-dark-content-text: hsl(var(--background));
+ *   --accordion-title-font-family: var(--font-family-mono);
+ *   --accordion-content-font-family: var(--font-family-body);
+ * }
+ * ```
+ */
 function Accordion({
   children,
   title,
@@ -19,11 +41,11 @@ function Accordion({
           <div className="group cursor-pointer items-start gap-8 py-3 last:flex @md:py-4">
             <div
               className={clsx(
-                'flex-1 select-none font-[family-name:var(--accordion-title-font-family)] text-sm uppercase transition-colors duration-300 ease-out',
+                'flex-1 select-none font-[family-name:var(--accordion-title-font-family,var(--font-family-mono))] text-sm uppercase transition-colors duration-300 ease-out',
                 {
                   light:
-                    'text-[var(--accordion-light-title-text)] group-hover:text-[var(--accordion-light-title-text-hover)]',
-                  dark: 'text-[var(--accordion-dark-title-text)] group-hover:text-[var(--accordion-dark-title-text-hover)]',
+                    'text-[var(--accordion-light-title-text,hsl(var(--contrast-400)))] group-hover:text-[var(--accordion-light-title-text-hover,hsl(var(--foreground)))]',
+                  dark: 'text-[var(--accordion-dark-title-text,hsl(var(--contrast-200)))] group-hover:text-[var(--accordion-dark-title-text-hover,hsl(var(--background)))]',
                 }[colorScheme],
               )}
             >
@@ -33,8 +55,8 @@ function Accordion({
               className={clsx(
                 {
                   light:
-                    'stroke-[var(--accordion-light-title-icon)] group-hover:stroke-[var(--accordion-light-title-icon-hover)]',
-                  dark: 'stroke-[var(--accordion-dark-title-icon)] group-hover:stroke-[var(--accordion-dark-title-icon-hover)]',
+                    'stroke-[var(--accordion-light-title-icon,hsl(var(--contrast-500)))] group-hover:stroke-[var(--accordion-light-title-icon-hover,hsl(var(--foreground)))]',
+                  dark: 'stroke-[var(--accordion-dark-title-icon,hsl(var(--contrast-200)))] group-hover:stroke-[var(--accordion-dark-title-icon-hover,hsl(var(--background)))]',
                 }[colorScheme],
               )}
             />
@@ -46,8 +68,8 @@ function Accordion({
           className={clsx(
             'pb-5 font-[family-name:var(--accordion-content-font-family)] font-medium leading-normal',
             {
-              light: 'text-[var(--accordion-light-content-text)]',
-              dark: 'text-[var(--accordion-dark-content-text)]',
+              light: 'text-[var(--accordion-light-content-text,hsl(var(--foreground)))]',
+              dark: 'text-[var(--accordion-dark-content-text,hsl(var(--background)))]',
             }[colorScheme],
           )}
         >
