@@ -21,6 +21,17 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
   product,
   selectedVariant,
 }) => {
+  // console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",product);
+  const productData = {
+    brand: product.brand?.name || null, // Use null if brand.name is undefined
+    sku: product.sku,
+    name: product.name,
+    mpn: product.mpn,
+  };
+
+  // Save the object to localStorage
+  localStorage.setItem('productInfo', JSON.stringify(productData));
+  
   const t = useTranslations('certificationsAndRatings');
   const [variantCertifications, setVariantCertifications] = useState<Certification[]>([]);
   const [productCertifications, setProductCertifications] = useState<Certification[]>([]);
