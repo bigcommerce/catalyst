@@ -109,7 +109,7 @@ export default async function Compare(props: Props) {
       first: productIds?.length ? MAX_COMPARE_LIMIT : 0,
     },
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: { next: { revalidate: 3600 } },
   });
 
   const products = removeEdgesAndNodes(data.site.products).map((product) => ({

@@ -46,7 +46,7 @@ export const getSearchResults = cache(async (searchTerm: string) => {
       document: GetQuickSearchResultsQuery,
       variables: { filters: { searchTerm } },
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: { next: { revalidate: 3600 } },
     });
 
     const { products } = response.data.site.search.searchProducts;

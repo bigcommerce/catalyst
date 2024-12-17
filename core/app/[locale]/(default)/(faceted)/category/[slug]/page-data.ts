@@ -37,7 +37,7 @@ export const getCategoryPageData = cache(async (variables: Variables) => {
     document: CategoryPageQuery,
     variables,
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: { next: { revalidate: 3600 } },
   });
 
   return response.data.site;

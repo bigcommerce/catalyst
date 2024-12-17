@@ -31,7 +31,7 @@ export const Header = async ({ cart }: Props) => {
 
   const { data: response } = await client.fetch({
     document: LayoutQuery,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: { next: { revalidate: 3600 } },
   });
 
   const data = readFragment(HeaderFragment, response).site;

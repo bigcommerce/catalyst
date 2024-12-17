@@ -39,7 +39,7 @@ export const RelatedProducts = async ({ productId }: Props) => {
     document: RelatedProductsQuery,
     variables: { entityId: productId },
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: { next: { revalidate: 3600 } },
   });
 
   const product = data.site.product;

@@ -40,7 +40,7 @@ export const Footer = async () => {
 
   const { data: response } = await client.fetch({
     document: LayoutQuery,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: { next: { revalidate: 3600 } },
   });
 
   const data = readFragment(FooterFragment, response).site;

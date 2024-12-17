@@ -48,7 +48,7 @@ export default async function Home({ params }: Props) {
   const { data } = await client.fetch({
     document: HomePageQuery,
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: { next: { revalidate: 3600 } },
   });
 
   const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);

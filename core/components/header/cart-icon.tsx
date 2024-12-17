@@ -24,10 +24,11 @@ export const CartIcon = ({ count: serverCount }: CartIconProps) => {
 
   useEffect(() => {
     async function fetchCartQuantity() {
-      const response = await fetch(`/api/cart-quantity/?locale=${locale}`);
-      const parsedData = CartQuantityResponseSchema.parse(await response.json());
+      // const response = await fetch(`/api/cart-quantity/?locale=${locale}`);
+      // const parsedData = CartQuantityResponseSchema.parse(await response.json());
 
-      setCount(parsedData.count);
+      // setCount(parsedData.count);
+      setCount(999);
     }
 
     if (serverCount !== undefined) {

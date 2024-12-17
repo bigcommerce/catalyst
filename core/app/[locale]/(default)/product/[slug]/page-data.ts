@@ -71,7 +71,7 @@ export const getProduct = cache(async (variables: Variables) => {
     document: ProductPageQuery,
     variables,
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: { next: { revalidate: 3600 } },
   });
 
   return data.site.product;
