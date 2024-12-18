@@ -29,7 +29,7 @@ interface Props {
   breadcrumbs?: Breadcrumb[];
 }
 
-export const BlogPostContent = function BlogPostContent({
+export function BlogPostContent({
   title,
   author,
   date,
@@ -85,4 +85,4 @@ export const BlogPostContent = function BlogPostContent({
       </div>
     </section>
   );
-};
+}
