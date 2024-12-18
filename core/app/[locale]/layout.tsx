@@ -8,6 +8,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { PropsWithChildren } from 'react';
+import { draftMode } from 'next/headers';
 
 import '../globals.css';
 
@@ -18,23 +19,28 @@ import { revalidate } from '~/client/revalidate-target';
 import { Notifications } from '../notifications';
 import { Providers } from '../providers';
 
-const inter = Inter({
+import '~/lib/makeswift/components';
+import { CssTheme } from '~/lib/makeswift/components/css-theme';
+import { colors } from '~/lib/makeswift/components/css-theme/theme';
+import { MakeswiftProvider } from '~/lib/makeswift/provider';
+
+export const inter = Inter({
   display: 'swap',
   subsets: ['latin'],
-  variable: '--font-family-body',
+  variable: '--font-family-inter',
 });
 
-const dm_serif_text = DM_Serif_Text({
+export const dm_serif_text = DM_Serif_Text({
   display: 'swap',
   subsets: ['latin'],
   weight: '400',
-  variable: '--font-family-heading',
+  variable: '--font-family-dm-serif-text',
 });
 
-const roboto_mono = Roboto_Mono({
+export const roboto_mono = Roboto_Mono({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-family-mono',
+  variable: '--font-family-roboto-mono',
 });
 
 const RootLayoutMetadataQuery = graphql(`
@@ -110,23 +116,26 @@ export default async function RootLayout({ params, children }: Props) {
   const messages = await getMessages();
 
   return (
-    <html
-      className={clsx(inter.variable, dm_serif_text.variable, roboto_mono.variable)}
-      lang={locale}
-    >
-      <head>
-        <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
-      </head>
-      <body>
-        <Notifications />
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <NuqsAdapter>
-            <Providers>{children}</Providers>
-          </NuqsAdapter>
-        </NextIntlClientProvider>
-        <VercelComponents />
-      </body>
-    </html>
+    <MakeswiftProvider previewMode={(await draftMode()).isEnabled}>
+      <html
+        className={clsx(inter.variable, dm_serif_text.variable, roboto_mono.variable)}
+        lang={locale}
+      >
+        <head>
+          <CssTheme colors={colors} />
+          <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
+        </head>
+        <body>
+          <Notifications />
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <NuqsAdapter>
+              <Providers>{children}</Providers>
+            </NuqsAdapter>
+          </NextIntlClientProvider>
+          <VercelComponents />
+        </body>
+      </html>
+    </MakeswiftProvider>
   );
 }
 
