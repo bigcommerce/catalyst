@@ -156,7 +156,7 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
   return (
     <>
       {formStatus && (
-        <Message className="mb-8 rounded-[3px] border border-[#ff4500]" variant={formStatus.status}>
+        <Message className="mb-8 rounded-[3px] border border-[#A71F23]" variant={formStatus.status}>
           <p>{formStatus.message}</p>
         </Message>
       )}
@@ -171,6 +171,9 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
             .filter((field) => !CUSTOMER_FIELDS_TO_EXCLUDE.includes(field.entityId))
             .filter((field) => FieldNameToFieldId[field.entityId] !== 'confirmPassword')
             .filter((field) => field.label !== 'Tax ID / Licence#')
+            .filter((field) => field.label !== 'license (Tax ID)')
+            .filter((field)=> field.label !== 'owner_name')
+            .filter((field)=> field.label !== 'Priority')
             .map((field) => {
               const fieldId = field.entityId;
               const fieldName = createFieldName(field, 'customer');
@@ -260,7 +263,7 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
               name="remember-me"
               value="1"
             />
-            <div className="mt-0 flex w-full justify-between gap-1 lg:justify-start">
+            <div className="mt-0 flex w-full justify-between gap-1 xl:justify-start">
               <Label
                 className="ml-2 mt-0 w-[15em] cursor-pointer space-y-2 pb-2 pl-1 text-left text-sm font-normal leading-6 tracking-[0.25px] md:my-0 md:w-auto"
                 htmlFor="remember-me"
@@ -270,7 +273,7 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
               </Label>
               <Link
                 href="#"
-                className="ml-2 text-center text-sm font-normal leading-6 tracking-tight text-[#008BB7]"
+                className="xl:ml-2 text-center text-sm font-normal leading-6 tracking-tight text-[#008BB7]"
               >
                 Privacy Policy
               </Link>
