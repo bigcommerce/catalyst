@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 
 import { defaultLocale, locales } from '~/i18n/routing';
 import { client } from '~/lib/makeswift/client';
+import '~/lib/makeswift/components';
 
 export async function generateStaticParams() {
   const pages = await client.getPages().toArray();
