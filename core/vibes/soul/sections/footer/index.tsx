@@ -2,6 +2,7 @@ import { clsx } from 'clsx';
 import { forwardRef, ReactNode, type Ref } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { Logo } from '@/vibes/soul/primitives/logo';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 
@@ -37,15 +38,39 @@ interface Props {
   contactInformation?: Streamable<ContactInformation | null>;
   paymentIcons?: Streamable<ReactNode[] | null>;
   socialMediaLinks?: Streamable<SocialMediaLink[] | null>;
+  contactTitle?: string;
   className?: string;
   logoHref?: string;
   logoLabel?: string;
+  logoWidth?: number;
 }
 
+/**
+ * This component supports various CSS variables for theming. Here's a comprehensive list, along
+ * with their default values:
+ *
+ * ```css
+ * :root {
+ *   --footer-focus: hsl(var(--primary));
+ *   --footer-background: hsl(var(--background));
+ *   --footer-border-top: hsl(var(--contrast-100));
+ *   --footer-border-bottom: hsl(var(--primary));
+ *   --footer-contact-title: hsl(var(--contrast-300));
+ *   --footer-contact-text: hsl(var(--foreground));
+ *   --footer-social-icon: hsl(var(--contrast-400));
+ *   --footer-social-icon-hover: hsl(var(--foreground));
+ *   --footer-section-title: hsl(var(--foreground));
+ *   --footer-link: hsl(var(--contrast-400));
+ *   --footer-link-hover: hsl(var(--foreground));
+ *   --footer-copyright: hsl(var(--contrast-400));
+ * }
+ * ```
+ */
 export const Footer = forwardRef(function Footer(
   {
-    logo: streamableLogo,
+    logo,
     sections: streamableSections,
+    contactTitle = 'Contact Us',
     contactInformation: streamableContactInformation,
     paymentIcons: streamablePaymentIcons,
     socialMediaLinks: streamableSocialMediaLinks,
@@ -53,13 +78,14 @@ export const Footer = forwardRef(function Footer(
     className,
     logoHref = '#',
     logoLabel = 'Home',
+    logoWidth = 200,
   }: Props,
   ref: Ref<HTMLDivElement>,
 ) {
   return (
     <footer
       className={clsx(
-        'border-b-4 border-t border-b-primary border-t-contrast-100 bg-background text-foreground @container',
+        'border-b-4 border-t border-b-[var(--footer-border-bottom,hsl(var(--primary)))] border-t-[var(--footer-border-top,hsl(var(--contrast-100)))] bg-[var(--footer-background,hsl(var(--background)))] @container',
         className,
       )}
       ref={ref}
@@ -68,48 +94,7 @@ export const Footer = forwardRef(function Footer(
         <div className="flex flex-col justify-between gap-x-8 gap-y-12 @3xl:flex-row">
           <div className="@3xl:w-1/3">
             {/* Logo Information */}
-            <Stream
-              fallback={
-                <div className="mb-2 flex h-10 animate-pulse items-center text-2xl">
-                  <span className="h-[1ex] w-[10ch] rounded bg-contrast-100" />
-                </div>
-              }
-              value={streamableLogo}
-            >
-              {(logo) => {
-                if (logo != null && typeof logo === 'string') {
-                  return (
-                    <Link
-                      aria-label={logoLabel}
-                      className="relative mb-2 inline-block h-10 w-full max-w-56 rounded-lg ring-primary focus-visible:outline-0 focus-visible:ring-2"
-                      href={logoHref}
-                    >
-                      <span className="whitespace-nowrap font-heading text-2xl font-semibold">
-                        {logo}
-                      </span>
-                    </Link>
-                  );
-                }
-
-                if (logo != null && typeof logo === 'object' && logo.src !== '') {
-                  return (
-                    <Link
-                      aria-label={logoLabel}
-                      className="relative mb-2 inline-block h-10 w-full max-w-56 rounded-lg ring-primary focus-visible:outline-0 focus-visible:ring-2"
-                      href={logoHref}
-                    >
-                      <Image
-                        alt={logo.alt}
-                        className="object-contain object-left"
-                        fill
-                        sizes="400px"
-                        src={logo.src}
-                      />
-                    </Link>
-                  );
-                }
-              }}
-            </Stream>
+            <Logo href={logoHref} label={logoLabel} logo={logo} width={logoWidth} />
 
             {/* Contact Information */}
             <Stream
@@ -132,8 +117,10 @@ export const Footer = forwardRef(function Footer(
                 if (contactInformation?.address != null || contactInformation?.phone != null) {
                   return (
                     <div className="text-lg font-medium @lg:text-xl">
-                      <h3 className="text-contrast-300">Contact Us</h3>
-                      <div>
+                      <h3 className="text-[var(--footer-contact-title,hsl(var(--contrast-300)))]">
+                        {contactTitle}
+                      </h3>
+                      <div className="text-[var(--footer-contact-text,hsl(var(--foreground)))]">
                         {contactInformation.address != null &&
                           contactInformation.address !== '' && <p>{contactInformation.address}</p>}
                         {contactInformation.phone != null && contactInformation.phone !== '' && (
@@ -165,7 +152,7 @@ export const Footer = forwardRef(function Footer(
                       {socialMediaLinks.map(({ href, icon }, i) => {
                         return (
                           <Link
-                            className="flex items-center justify-center rounded-lg fill-contrast-400 p-1 ring-primary transition-colors duration-300 ease-out hover:fill-foreground focus-visible:outline-0 focus-visible:ring-2"
+                            className="flex items-center justify-center rounded-lg fill-[var(--footer-social-icon,hsl(var(--contrast-400)))] p-1 ring-[var(--footer-focus,hsl(var(--primary)))] transition-colors duration-300 ease-out hover:fill-[var(--footer-social-icon-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
                             href={href}
                             key={i}
                           >
@@ -309,14 +296,18 @@ export const Footer = forwardRef(function Footer(
                   <div className="grid w-full flex-1 gap-y-8 [grid-template-columns:_repeat(auto-fill,_minmax(200px,_1fr))] @xl:gap-y-10">
                     {sections.map(({ title, links }, i) => (
                       <div className="pr-8" key={i}>
-                        {title != null && <span className="mb-3 block font-semibold">{title}</span>}
+                        {title != null && (
+                          <span className="mb-3 block font-semibold text-[var(--footer-section-title,hsl(var(--foreground)))]">
+                            {title}
+                          </span>
+                        )}
 
                         <ul>
                           {links.map((link, idx) => {
                             return (
                               <li key={idx}>
                                 <Link
-                                  className="block rounded-lg py-2 text-sm font-medium opacity-50 ring-primary transition-opacity duration-300 hover:opacity-100 focus-visible:outline-0 focus-visible:ring-2"
+                                  className="block rounded-lg py-2 text-sm font-medium text-[var(--footer-link,hsl(var(--contrast-400)))] ring-[var(--footer-focus,hsl(var(--primary)))] transition-colors duration-300 hover:text-[var(--footer-link-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
                                   href={link.href}
                                 >
                                   {link.label}
@@ -346,7 +337,11 @@ export const Footer = forwardRef(function Footer(
           >
             {(copyright) => {
               if (copyright != null) {
-                return <p className="flex-1 text-sm text-contrast-400">{copyright}</p>;
+                return (
+                  <p className="flex-1 text-sm text-[var(--footer-copyright,hsl(var(--contrast-400)))]">
+                    {copyright}
+                  </p>
+                );
               }
             }}
           </Stream>

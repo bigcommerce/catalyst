@@ -23,9 +23,9 @@ import { useFormStatus } from 'react-dom';
 import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Button } from '@/vibes/soul/primitives/button';
+import { Logo } from '@/vibes/soul/primitives/logo';
 import { Price } from '@/vibes/soul/primitives/price-label';
 import { ProductCard } from '@/vibes/soul/primitives/product-card';
-import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 import { usePathname } from '~/i18n/routing';
 
@@ -169,55 +169,6 @@ const MobileMenuButton = forwardRef<
 
 MobileMenuButton.displayName = 'MobileMenuButton';
 
-function LogoLink({
-  className,
-  logo: streamableLogo,
-  href,
-  width,
-  label,
-}: {
-  className?: string;
-  logo?: Streamable<string | { src: string; alt: string } | null>;
-  label?: string;
-  href: string;
-  width: number;
-}) {
-  return (
-    <Stream
-      fallback={<div className="h-6 w-16 animate-pulse rounded-md bg-contrast-100" />}
-      value={streamableLogo}
-    >
-      {(logo) => (
-        <Link
-          aria-label={label}
-          className={clsx(
-            'relative h-full items-center outline-0 ring-[var(--nav-focus,hsl(var(--primary)))] ring-offset-4 focus-visible:ring-2',
-            className,
-          )}
-          href={href}
-          style={typeof logo === 'string' ? {} : { width }}
-        >
-          {typeof logo === 'object' && logo !== null && logo.src !== '' ? (
-            <Image
-              alt={logo.alt}
-              className="object-contain object-left"
-              fill
-              sizes="25vw"
-              src={logo.src}
-            />
-          ) : (
-            typeof logo === 'string' && (
-              <span className="font-[family-name:var(--nav-logo-font-family,var(--font-family-heading))] text-lg font-semibold leading-none text-[var(--nav-logo-text,hsl(var(--foreground)))] @xl:text-2xl">
-                {logo}
-              </span>
-            )
-          )}
-        </Link>
-      )}
-    </Stream>
-  );
-}
-
 const navGroupClassName =
   'block rounded-lg bg-[var(--nav-group-background,transparent)] px-3 py-2 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-group-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-group-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2';
 const navButtonClassName =
@@ -232,8 +183,6 @@ const navButtonClassName =
  *   --nav-focus: hsl(var(--primary));
  *   --nav-background: hsl(var(--background));
  *   --nav-floating-border: hsl(var(--foreground) / 10%);
- *   --nav-logo-font-family: var(--font-family-heading);
- *   --nav-logo-text: hsl(var(--foreground));
  *   --nav-link-text: hsl(var(--foreground));
  *   --nav-link-text-hover: hsl(var(--foreground));
  *   --nav-link-background: transparent;
@@ -435,7 +384,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             linksPosition === 'center' ? 'flex-1' : 'flex-1 @4xl:flex-none',
           )}
         >
-          <LogoLink
+          <Logo
             className={clsx(streamableMobileLogo != null ? 'hidden @4xl:flex' : 'flex')}
             href={logoHref}
             label={logoLabel}
@@ -443,7 +392,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             width={logoWidth}
           />
           {streamableMobileLogo != null && (
-            <LogoLink
+            <Logo
               className="flex @4xl:hidden"
               href={logoHref}
               label={logoLabel}
