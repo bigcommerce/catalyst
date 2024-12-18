@@ -10,7 +10,6 @@ import { PropsWithChildren } from 'react';
 
 import '../globals.css';
 
-import { Toaster } from '@/vibes/soul/primitives/toaster';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -118,7 +117,6 @@ export default async function RootLayout({ params, children }: Props) {
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <NuqsAdapter>
-            <Toaster position="top-right" />
             <Providers>{children}</Providers>
           </NuqsAdapter>
         </NextIntlClientProvider>
