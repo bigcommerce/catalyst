@@ -94,7 +94,7 @@ export interface CallbackManagerType {
 
 declare global {
   interface Window {
-    b2b: {
+    b2b?: {
       callbacks: CallbackManagerType;
       utils: {
         getRoutes: () => unknown[];
