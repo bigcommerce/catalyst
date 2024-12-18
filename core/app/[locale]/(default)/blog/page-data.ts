@@ -7,6 +7,19 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { BlogPostCardFragment } from '~/components/blog-post-card/fragment';
 
+const BlogQuery = graphql(`
+  query BlogQuery {
+    site {
+      content {
+        blog {
+          name
+          description
+        }
+      }
+    }
+  }
+`);
+
 const BlogPostsPageQuery = graphql(
   `
     query BlogPostsPageQuery(
@@ -19,8 +32,6 @@ const BlogPostsPageQuery = graphql(
       site {
         content {
           blog {
-            name
-            description
             posts(first: $first, after: $after, last: $last, before: $before, filters: $filters) {
               edges {
                 node {
@@ -50,6 +61,15 @@ interface Pagination {
   after?: string;
 }
 
+export const getBlog = cache(async () => {
+  const response = await client.fetch({
+    document: BlogQuery,
+    fetchOptions: { next: { revalidate } },
+  });
+
+  return response.data.site.content.blog;
+});
+
 export const getBlogPosts = cache(
   async ({ tagId, limit = 9, before, after }: BlogPostsFiltersInput & Pagination) => {
     const filterArgs = tagId ? { filters: { tags: [tagId] } } : {};
@@ -68,7 +88,6 @@ export const getBlogPosts = cache(
     }
 
     return {
-      ...blog,
       posts: {
         pageInfo: blog.posts.pageInfo,
         items: removeEdgesAndNodes(blog.posts),
