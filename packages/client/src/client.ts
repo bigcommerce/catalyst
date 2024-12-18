@@ -10,8 +10,6 @@ export const graphqlApiDomain: string =
 export const adminApiHostname: string =
   process.env.BIGCOMMERCE_ADMIN_API_HOST ?? 'api.bigcommerce.com';
 
-const b2bApiHostname: string = process.env.B2B_API_HOST ?? 'api-b2b.bigcommerce.com';
-
 interface Config<FetcherRequestInit extends RequestInit = RequestInit> {
   storeHash: string;
   storefrontToken: string;
@@ -128,22 +126,6 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     log(response);
 
     return response.json() as Promise<BigCommerceResponse<TResult>>;
-  }
-
-  async b2bFetch<TResult>(endpoint: string, reqInit?: RequestInit): Promise<TResult> {
-    const response = await fetch(`${b2bApiHostname}${endpoint}`, reqInit && {
-      ...(reqInit ?? {}), 
-      headers: {
-        ...(reqInit?.headers ?? {}),
-        authtoken: process.env.B2B_API_TOKEN ?? '',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Unable to fetch B2B endpoint: ${response.statusText}`);
-    }
-
-    return response.json() as Promise<TResult>;
   }
 
   async fetchShippingZones() {

@@ -1,4 +1,4 @@
-import { client } from '../client';
+import { z } from 'zod';
 
 export interface B2BUser {
   id: string;
@@ -7,12 +7,6 @@ export interface B2BUser {
   customerAccessToken: string;
   expiresAt: string;
   b2bToken?: string;
-}
-
-interface StorefrontTokenResponse {
-  data: {
-    token: string[];
-  };
 }
 
 export interface CustomerAccessToken {
@@ -24,7 +18,10 @@ export const getB2BToken = async (
   customerId: number,
   customerAccessToken: CustomerAccessToken,
 ): Promise<string | undefined> => {
-  if (!process.env.B2B_API_HOST || !process.env.B2B_API_TOKEN) {
+  if (!process.env.B2B_API_TOKEN) {
+    // eslint-disable-next-line no-console
+    console.warn('[B2B] B2B_API_TOKEN is not set, unable to fetch B2B token');
+
     return undefined;
   }
 
@@ -35,19 +32,30 @@ export const getB2BToken = async (
       customerAccessToken,
     };
 
-    const response = await client.b2bFetch<StorefrontTokenResponse>(
-      '/api/io/auth/customers/storefront',
+    const response = await fetch(
+      `https://api-b2b.bigcommerce.com/api/io/auth/customers/storefront`,
       {
         method: 'POST',
-        body: JSON.stringify(payload),
         headers: {
+          Accept: 'application/json',
           'Content-Type': 'application/json',
+          authToken: process.env.B2B_API_TOKEN || '',
         },
+        body: JSON.stringify(payload),
       },
     );
 
-    return response.data?.token?.[0];
+    const B2BTokenResponseSchema = z.object({
+      data: z.object({
+        token: z.array(z.string()),
+      }),
+    });
+
+    const responseData = B2BTokenResponseSchema.parse(await response.json());
+
+    return responseData.data.token[0];
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error fetching B2B token:', error);
 
     return undefined;
@@ -55,7 +63,7 @@ export const getB2BToken = async (
 };
 
 export const enrichUserWithB2B = async (user: B2BUser): Promise<B2BUser> => {
-  const b2bToken = await getB2BToken(parseInt(user.id), {
+  const b2bToken = await getB2BToken(parseInt(user.id, 10), {
     value: user.customerAccessToken,
     expiresAt: user.expiresAt,
   });
