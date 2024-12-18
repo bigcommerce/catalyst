@@ -143,7 +143,8 @@ export const productOptionsTransformer = (
           defaultValue: option.defaultNumber?.toString(),
           min: option.lowest ?? undefined,
           max: option.highest ?? undefined,
-          // TODO: other props?
+          // TODO: should we take into account other properties from API like isIntegerOnly, limitNumberBy?
+          // https://developer.bigcommerce.com/graphql-storefront/reference#definition-LimitInputBy
         };
       }
 
