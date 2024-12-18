@@ -188,6 +188,7 @@ const ProductDetailsFragment = graphql(
   [PricingFragment, ProductFormFragment],
 );
 
+// TODO: Add this fragment to the query when we add the other sections
 // const DetailsFragment = graphql(
 //   `
 //     fragment DetailsFragment on Product {
@@ -250,6 +251,7 @@ const ProductPageQuery = graphql(
           ...ProductDetailsFragment
           ...ProductViewedFragment
           ...ProductSchemaFragment
+          # TODO: Add this fragment to the query when we add the other sections
           # ...DetailsFragment
           # ...DescriptionFragment
           # ...WarrantyFragment
