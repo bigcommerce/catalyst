@@ -4,6 +4,22 @@ import { clsx } from 'clsx';
 import { X } from 'lucide-react';
 import { ForwardedRef, forwardRef, ReactNode, useCallback, useEffect, useState } from 'react';
 
+/**
+ * This component supports various CSS variables for theming. Here's a comprehensive list, along
+ * with their default values:
+ *
+ * ```css
+ * :root {
+ *   --banner-focus: hsl(var(--primary));
+ *   --banner-background: hsl(var(--primary));
+ *   --banner-text: hdl(var(--foreground));
+ *   --banner-close-icon: hdl(var(--foreground));
+ *   --banner-close-icon-hover: hdl(var(--foreground));
+ *   --banner-close-background: hdl(var(--foreground));
+ *   --banner-close-background-hover: hdl(var(--foreground));
+ * }
+ * ```
+ */
 export const Banner = forwardRef(
   (
     {
@@ -40,21 +56,21 @@ export const Banner = forwardRef(
     return (
       <div
         className={clsx(
-          'relative w-full overflow-hidden bg-primary transition-all duration-300 ease-in @container',
+          'relative w-full overflow-hidden bg-[var(--banner-background,hsl(var(--primary)))] transition-all duration-300 ease-in @container',
           banner.dismissed ? 'pointer-events-none max-h-0' : 'max-h-32',
           className,
         )}
         id="announcement-bar"
         ref={ref}
       >
-        <div className="p-3 pr-12 text-sm text-foreground @xl:px-12 @xl:text-center @xl:text-base">
+        <div className="p-3 pr-12 text-sm text-[var(--banner-text,hsl(var(--foreground)))] @xl:px-12 @xl:text-center @xl:text-base">
           {children}
         </div>
 
         {!hideDismiss && (
           <button
             aria-label="Dismiss banner"
-            className="absolute right-3 top-3 grid h-8 w-8 place-content-center rounded-full text-foreground/50 transition-colors duration-300 hover:bg-background/40 hover:text-foreground @xl:top-1/2 @xl:-translate-y-1/2"
+            className="absolute right-3 top-3 grid h-8 w-8 place-content-center rounded-full bg-[var(--banner-close-background,transparent)] text-[var(--banner-close-icon,hsl(var(--foreground)/50%))] transition-colors duration-300 hover:bg-[var(--banner-close-background-hover,hsl(var(--background)/40%))] hover:text-[var(--banner-close-icon-hover,hsl(var(--foreground)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--banner-focus,hsl(var(--foreground)))] @xl:top-1/2 @xl:-translate-y-1/2"
             onClick={(e) => {
               e.preventDefault();
               hideBanner();
