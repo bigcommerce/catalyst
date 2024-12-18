@@ -20,26 +20,17 @@ export const login = async (formData: FormData): Promise<LoginResponse> => {
       password: formData.get('password'),
     });
 
-    const result = await signIn('credentials', {
+    await signIn('credentials', {
       ...credentials,
       redirect: false,
     });
 
-    if (result?.error) {
-      console.error('SignIn error:', result.error);
-      return {
-        status: 'error',
-      };
-    }
-
-    const redirectUrl = result?.url || '/account/orders';
-    redirect({ href: redirectUrl, locale });
+    redirect({ href: '/account/orders', locale });
 
     return {
       status: 'success',
     };
   } catch (error: unknown) {
-    console.error('Login action error:', error);
     rethrow(error);
 
     return {

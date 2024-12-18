@@ -174,68 +174,61 @@ const config = {
         jwt: { type: 'text' },
       },
       async authorize(credentials) {        
-        try {
-          const parsed = Credentials.parse(credentials);
-          const cookieStore = await cookies();
-          const cookieCartId = cookieStore.get('cartId')?.value;
+        const parsed = Credentials.parse(credentials);
+        const cookieStore = await cookies();
+        const cookieCartId = cookieStore.get('cartId')?.value;
 
-          if (parsed.type === 'password') {
-            const response = await client.fetch({
-              document: LoginMutation,
-              variables: { email: parsed.email, password: parsed.password },
-              fetchOptions: {
-                cache: 'no-store',
-              },
-            });
+        if (parsed.type === 'password') {
+          const response = await client.fetch({
+            document: LoginMutation,
+            variables: { email: parsed.email, password: parsed.password },
+            fetchOptions: {
+              cache: 'no-store',
+            },
+          });
 
-            if (response.errors?.length > 0) {
-              return null;
-            }
-
-            const result = response.data.login;
-
-            if (!result.customer || !result.customerAccessToken) {
-              return null;
-            }
-
-            return {
-              name: `${result.customer.firstName} ${result.customer.lastName}`,
-              email: result.customer.email,
-              customerAccessToken: result.customerAccessToken.value,
-            };
+          if (response.errors?.length > 0) {
+            return null;
           }
 
-          if (parsed.type === 'jwt') {
-            const response = await client.fetch({
-              document: LoginWithTokenMutation,
-              variables: { jwt: parsed.jwt },
-              fetchOptions: {
-                cache: 'no-store',
-              },
-            });
+          const result = response.data.login;
 
-            if (response.errors?.length > 0) {
-              return null;
-            }
-
-            const result = response.data.loginWithCustomerLoginJwt;
-
-            if (!result.customer || !result.customerAccessToken) {
-              return null;
-            }
-
-            return {
-              name: `${result.customer.firstName} ${result.customer.lastName}`,
-              email: result.customer.email,
-              customerAccessToken: result.customerAccessToken.value,
-              redirectTo: result.redirectTo,
-            };
+          if (!result.customer || !result.customerAccessToken) {
+            return null;
           }
 
-          return null;
-        } catch (error) {
-          console.error('Error in authorize:', error);
-          return null;
+          return {
+            name: `${result.customer.firstName} ${result.customer.lastName}`,
+            email: result.customer.email,
+            customerAccessToken: result.customerAccessToken.value,
+          };
+        }
+
+        if (parsed.type === 'jwt') {
+          const response = await client.fetch({
+            document: LoginWithTokenMutation,
+            variables: { jwt: parsed.jwt },
+            fetchOptions: {
+              cache: 'no-store',
+            },
+          });
+
+          if (response.errors?.length > 0) {
+            return null;
+          }
+
+          const result = response.data.loginWithCustomerLoginJwt;
+
+          if (!result.customer || !result.customerAccessToken) {
+            return null;
+          }
+
+          return {
+            name: `${result.customer.firstName} ${result.customer.lastName}`,
+            email: result.customer.email,
+            customerAccessToken: result.customerAccessToken.value,
+            redirectTo: result.redirectTo,
+          };
         }
       },
     }),

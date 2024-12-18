@@ -254,7 +254,6 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
 
 export const withRoutes: MiddlewareFactory = () => {
   return async (request, event) => {
-    console.log('withRoutes');
     const locale = request.headers.get('x-bc-locale') ?? '';
 
     const { route, status } = await getRouteInfo(request, event);
