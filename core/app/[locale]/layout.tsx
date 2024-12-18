@@ -24,23 +24,23 @@ import { CssTheme } from '~/lib/makeswift/components/css-theme';
 import { colors } from '~/lib/makeswift/components/css-theme/theme';
 import { MakeswiftProvider } from '~/lib/makeswift/provider';
 
-const inter = Inter({
+export const inter = Inter({
   display: 'swap',
   subsets: ['latin'],
-  variable: '--font-family-body',
+  variable: '--font-family-inter',
 });
 
-const dm_serif_text = DM_Serif_Text({
+export const dm_serif_text = DM_Serif_Text({
   display: 'swap',
   subsets: ['latin'],
   weight: '400',
-  variable: '--font-family-heading',
+  variable: '--font-family-dm-serif-text',
 });
 
-const roboto_mono = Roboto_Mono({
+export const roboto_mono = Roboto_Mono({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-family-mono',
+  variable: '--font-family-roboto-mono',
 });
 
 const RootLayoutMetadataQuery = graphql(`

@@ -22,6 +22,17 @@ interface Colors {
 
 interface Props {
   colors: Colors;
+  fonts: {
+    heading: {
+      fontFamily: string;
+    };
+    body: {
+      fontFamily: string;
+    };
+    mono: {
+      fontFamily: string;
+    };
+  };
 }
 
 const colorToHslValue = (color: string) =>
@@ -43,10 +54,15 @@ function colorsToCssVars(colors: Colors) {
   return [...mainColors, ...contrastColors].filter(Boolean).join('\n');
 }
 
-export const CssTheme = ({ colors }: Props) => {
+export const CssTheme = ({ colors, fonts }: Props) => {
   return (
     <style data-makeswift="theme">{`:root {
       ${colorsToCssVars(colors)}
+
+      --font-family-heading: ${fonts.heading.fontFamily};
+      --font-family-body: ${fonts.body.fontFamily};
+      --font-family-mono: ${fonts.mono.fontFamily};
+
     }
   `}</style>
   );
@@ -74,7 +90,7 @@ function mergeColors<K extends string>(left: ColorMap<K>, right: ColorMap<K>): C
   return result;
 }
 
-export const MakeswiftCssTheme = ({ colors }: Props) => {
+export const MakeswiftCssTheme = ({ colors, fonts }: Props) => {
   const { colors: passedColors } = useContext(PropsContext);
-  return <CssTheme colors={mergeColors(passedColors, colors)} />;
+  return <CssTheme colors={mergeColors(passedColors, colors)} fonts={fonts} />;
 };

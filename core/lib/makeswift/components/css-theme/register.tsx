@@ -1,4 +1,4 @@
-import { Color, Shape } from '@makeswift/runtime/controls';
+import { Color, Font, Shape } from '@makeswift/runtime/controls';
 
 import { runtime } from '~/lib/makeswift/runtime';
 
@@ -32,6 +32,25 @@ runtime.registerComponent(MakeswiftCssTheme, {
             400: Color({ label: 'Contrast 400', defaultValue: toHsl(colors.contrast[400]) }),
             500: Color({ label: 'Contrast 500', defaultValue: toHsl(colors.contrast[500]) }),
           },
+        }),
+      },
+    }),
+    fonts: Shape({
+      type: {
+        heading: Font({
+          label: 'Heading',
+          variant: false,
+          defaultValue: { fontFamily: 'var(--font-family-dm-serif-text)' },
+        }),
+        body: Font({
+          label: 'Body',
+          variant: false,
+          defaultValue: { fontFamily: 'var(--font-family-inter)' },
+        }),
+        mono: Font({
+          label: 'Mono',
+          variant: false,
+          defaultValue: { fontFamily: 'var(--font-family-roboto-mono)' },
         }),
       },
     }),
