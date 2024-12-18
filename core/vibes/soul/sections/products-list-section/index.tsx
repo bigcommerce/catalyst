@@ -31,6 +31,7 @@ interface Props {
   filterLabel?: string;
   resetFiltersLabel?: string;
   sortLabel?: Streamable<string | null>;
+  sortPlaceholder?: Streamable<string | null>;
   sortParamName?: string;
   sortDefaultValue?: string;
   compareParamName?: string;
@@ -54,6 +55,7 @@ export function ProductsListSection({
   filterLabel = 'Filters',
   resetFiltersLabel,
   sortLabel,
+  sortPlaceholder,
   sortParamName,
   compareParamName,
   emptyStateSubtitle,
@@ -93,6 +95,7 @@ export function ProductsListSection({
                   label={sortLabel}
                   options={sortOptions}
                   paramName={sortParamName}
+                  placeholder={sortPlaceholder}
                 />
                 <div className="block @3xl:hidden">
                   <SidePanel.Root>
