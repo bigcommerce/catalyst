@@ -15,6 +15,8 @@ interface Props {
   products: Streamable<ListProduct[]>;
   compareProducts?: Streamable<ListProduct[] | null>;
   className?: string;
+  colorScheme?: 'light' | 'dark';
+  aspectRatio?: '5:6' | '3:4' | '1:1';
   showCompare?: boolean;
   compareAction?: React.ComponentProps<'form'>['action'];
   compareLabel?: string;
@@ -27,6 +29,8 @@ interface Props {
 export function ProductsList({
   products: streamableProducts,
   className,
+  colorScheme,
+  aspectRatio,
   showCompare,
   compareAction,
   compareProducts: streamableCompareProducts,
@@ -58,6 +62,8 @@ export function ProductsList({
               <div className="mx-auto grid grid-cols-1 gap-x-4 gap-y-6 @sm:grid-cols-2 @2xl:grid-cols-3 @2xl:gap-x-5 @2xl:gap-y-8 @5xl:grid-cols-4 @7xl:grid-cols-5">
                 {products.map((product) => (
                   <ProductCard
+                    aspectRatio={aspectRatio}
+                    colorScheme={colorScheme}
                     compareLabel={compareLabel}
                     compareParamName={compareParamName}
                     key={product.id}
