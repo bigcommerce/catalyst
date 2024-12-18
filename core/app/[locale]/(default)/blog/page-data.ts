@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { getFormatter, getTranslations } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -87,11 +88,37 @@ export const getBlogPosts = cache(
       return null;
     }
 
+    const format = await getFormatter();
+
     return {
-      posts: {
-        pageInfo: blog.posts.pageInfo,
-        items: removeEdgesAndNodes(blog.posts),
-      },
+      pageInfo: blog.posts.pageInfo,
+      posts: removeEdgesAndNodes(blog.posts).map((post) => ({
+        id: String(post.entityId),
+        author: post.author,
+        content: post.plainTextSummary,
+        date: format.dateTime(new Date(post.publishedDate.utc)),
+        image: post.thumbnailImage
+          ? {
+              src: post.thumbnailImage.url,
+              alt: post.thumbnailImage.altText,
+            }
+          : undefined,
+        href: `/blog/${post.entityId}`,
+        title: post.name,
+      })),
     };
   },
 );
+
+export async function getBlogMetaData() {
+  const t = await getTranslations('Blog');
+  const blog = await getBlog();
+
+  return {
+    title: blog?.name ?? t('title'),
+    description:
+      blog?.description && blog.description.length > 150
+        ? `${blog.description.substring(0, 150)}...`
+        : blog?.description,
+  };
+}
