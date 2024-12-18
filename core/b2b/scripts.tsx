@@ -75,8 +75,8 @@ function B2BLocalDevelopmentScripts() {
         `}
       </Script>
       <Script
-        data-channelid="1664810"
-        data-storehash="glzvoziq5k"
+        data-channelid={process.env.BIGCOMMERCE_CHANNEL_ID}
+        data-storehash={process.env.BIGCOMMERCE_STORE_HASH}
         src="http://localhost:3001/src/main.ts"
         type="module"
       />
