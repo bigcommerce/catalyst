@@ -1,59 +1,65 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations } from 'next-intl/server';
+import { SearchParams } from 'nuqs';
 
-import { BlogPostCard } from '~/components/blog-post-card';
-import { Pagination } from '~/components/ui/pagination';
+import { FeaturedBlogPostList } from '@/vibes/soul/sections/featured-blog-post-list';
 
-import { getBlogPosts } from './page-data';
+import { getBlog, getBlogPosts } from './page-data';
 
 interface Props {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
+  searchParams: Promise<SearchParams>;
 }
 
-export async function generateMetadata(props: Props): Promise<Metadata> {
-  const searchParams = await props.searchParams;
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Blog');
-  const blogPosts = await getBlogPosts(searchParams);
+  const blog = await getBlog();
 
   return {
-    title: blogPosts?.name ?? t('title'),
+    title: blog?.name ?? t('title'),
     description:
-      blogPosts?.description && blogPosts.description.length > 150
-        ? `${blogPosts.description.substring(0, 150)}...`
-        : blogPosts?.description,
+      blog?.description && blog.description.length > 150
+        ? `${blog.description.substring(0, 150)}...`
+        : blog?.description,
   };
 }
 
-export default async function Blog(props: Props) {
-  const searchParams = await props.searchParams;
+async function listBlogPosts(searchParamsPromise: Promise<SearchParams>) {
+  const searchParams = await searchParamsPromise;
   const blogPosts = await getBlogPosts(searchParams);
+  const format = await getFormatter();
+  const posts = blogPosts?.posts.items ?? [];
 
-  if (!blogPosts) {
+  return posts.map((post) => ({
+    id: String(post.entityId),
+    author: post.author,
+    content: post.plainTextSummary,
+    date: format.dateTime(new Date(post.publishedDate.utc)),
+    image: post.thumbnailImage
+      ? {
+          src: post.thumbnailImage.url,
+          alt: post.thumbnailImage.altText,
+        }
+      : undefined,
+    href: `/blog/${post.entityId}`,
+    title: post.name,
+  }));
+}
+
+export default async function Blog(props: Props) {
+  const blog = await getBlog();
+
+  if (!blog) {
     return notFound();
   }
 
   return (
-    <div className="mx-auto max-w-screen-xl">
-      <h1 className="mb-8 text-3xl font-black lg:text-5xl">{blogPosts.name}</h1>
-
-      <ul className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-        {blogPosts.posts.items.map((post) => {
-          return (
-            <li key={post.entityId}>
-              <BlogPostCard data={post} />
-            </li>
-          );
-        })}
-      </ul>
-
-      <Pagination
-        endCursor={blogPosts.posts.pageInfo.endCursor ?? undefined}
-        hasNextPage={blogPosts.posts.pageInfo.hasNextPage}
-        hasPreviousPage={blogPosts.posts.pageInfo.hasPreviousPage}
-        startCursor={blogPosts.posts.pageInfo.startCursor ?? undefined}
-      />
-    </div>
+    <FeaturedBlogPostList
+      cta={{ href: '#', label: 'View All' }}
+      description={blog.description}
+      posts={listBlogPosts(props.searchParams)}
+      title={blog.name}
+    />
   );
 }
