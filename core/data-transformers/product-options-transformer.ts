@@ -15,7 +15,7 @@ export const productOptionsTransformer = (
         switch (option.displayStyle) {
           case 'Swatch': {
             return {
-              persist: true,
+              persist: option.isVariantOption,
               type: 'swatch-radio-group',
               label: option.displayName,
               required: option.isRequired,
@@ -47,7 +47,7 @@ export const productOptionsTransformer = (
 
           case 'RectangleBoxes': {
             return {
-              persist: true,
+              persist: option.isVariantOption,
               type: 'button-radio-group',
               label: option.displayName,
               required: option.isRequired,
@@ -62,7 +62,7 @@ export const productOptionsTransformer = (
 
           case 'RadioButtons': {
             return {
-              persist: true,
+              persist: option.isVariantOption,
               type: 'radio-group',
               label: option.displayName,
               required: option.isRequired,
@@ -77,7 +77,7 @@ export const productOptionsTransformer = (
 
           case 'DropdownList': {
             return {
-              persist: true,
+              persist: option.isVariantOption,
               type: 'select',
               label: option.displayName,
               required: option.isRequired,
@@ -93,7 +93,7 @@ export const productOptionsTransformer = (
           case 'ProductPickList':
           case 'ProductPickListWithImages': {
             return {
-              persist: true,
+              persist: option.isVariantOption,
               type: 'card-radio-group',
               label: option.displayName,
               required: option.isRequired,
@@ -122,6 +122,7 @@ export const productOptionsTransformer = (
 
       if (option.__typename === 'CheckboxOption') {
         return {
+          persist: option.isVariantOption,
           type: 'checkbox',
           label: option.displayName,
           required: option.isRequired,
@@ -134,6 +135,7 @@ export const productOptionsTransformer = (
 
       if (option.__typename === 'NumberFieldOption') {
         return {
+          persist: option.isVariantOption,
           type: 'number',
           label: option.displayName,
           required: option.isRequired,
@@ -147,6 +149,7 @@ export const productOptionsTransformer = (
 
       if (option.__typename === 'MultiLineTextFieldOption') {
         return {
+          persist: option.isVariantOption,
           type: 'textarea',
           label: option.displayName,
           required: option.isRequired,
@@ -157,6 +160,7 @@ export const productOptionsTransformer = (
 
       if (option.__typename === 'TextFieldOption') {
         return {
+          persist: option.isVariantOption,
           type: 'text',
           label: option.displayName,
           required: option.isRequired,
@@ -167,6 +171,7 @@ export const productOptionsTransformer = (
 
       if (option.__typename === 'DateFieldOption') {
         return {
+          persist: option.isVariantOption,
           type: 'date',
           label: option.displayName,
           required: option.isRequired,
