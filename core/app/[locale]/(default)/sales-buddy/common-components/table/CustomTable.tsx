@@ -56,11 +56,11 @@ export default function DynamicTable({ data }) {
                   <Link href={`/cart`}>
                     {' '}
                     {/* Adjust the path as needed */}
-                    <a style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <span style={{ textDecoration: 'none', color: 'inherit' }}>
                       {typeof value === 'object' && value !== null
                         ? JSON.stringify(value) // Converts objects to string
                         : value?.toString() || 'N/A'}{' '}
-                    </a>
+                    </span>
                   </Link>
                 </td>
               ))}
