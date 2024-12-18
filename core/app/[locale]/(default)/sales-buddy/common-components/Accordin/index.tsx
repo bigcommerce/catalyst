@@ -113,7 +113,7 @@ const Accordions = ({ accordions,styles }) => {
             >
               <span>{accordion.title}</span>
               <svg
-                className={`h-3 w-2 shrink-0 transition-transform duration-200 ${
+                className={`h-4 w-3 shrink-0 transition-transform duration-200 ${
                   openIndex === index ? 'rotate-0' : 'rotate-180'
                 }`}
                 aria-hidden="true"
@@ -122,7 +122,7 @@ const Accordions = ({ accordions,styles }) => {
                 viewBox="0 0 10 6"
               >
                 <path
-                  stroke="currentColor"
+                  stroke="#1C1B1F"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}

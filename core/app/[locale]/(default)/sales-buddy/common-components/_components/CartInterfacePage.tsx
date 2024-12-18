@@ -13,6 +13,8 @@ import deleteIcon from '~/app/[locale]/(default)/sales-buddy/assets/delete.png';
 import { addCustomProduct } from '../../_actions/add-custom-product';
 import { addComment } from '../../_actions/add-comment';
 import { ChevronDown } from 'lucide-react';
+import { getBrand } from '../../_actions/brand';
+import { Spinner } from '@/vibes/soul/primitives/spinner';
 
 export default function CartInterface() {
   const [openAccordions, setOpenAccordions] = useState<number[]>([]);
@@ -32,7 +34,7 @@ export default function CartInterface() {
     comment: ''
   });
   const customProductRefs = {
-    supplier: useRef<HTMLInputElement>(null),
+    supplier: useRef<HTMLSelectElement>(null),
     sku: useRef<HTMLInputElement>(null),
     cost: useRef<HTMLInputElement>(null),
     retailPrice: useRef<HTMLInputElement>(null),
@@ -43,7 +45,7 @@ export default function CartInterface() {
     e.preventDefault();
 
     const createCustomProductData = {
-      supplier: "",
+      supplier: formData.supplier,
       sku: customProductRefs.sku.current?.value?.trim() || '',
       cost: parseFloat(customProductRefs.cost.current?.value?.trim() || ''),
       retailPrice: parseFloat(customProductRefs.retailPrice.current?.value?.trim() || ""),
@@ -94,8 +96,7 @@ export default function CartInterface() {
       console.error('Error during comment:', error);
       setErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
     }
-    console.log('Comment Data:', createCommentData);
-    console.log('===action===', action);
+
   };
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
@@ -150,9 +151,8 @@ export default function CartInterface() {
               className="w-full"
             />
           ) : (
-          <SelectDropdown id="supplier" value={formData.supplier}
-            onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
-          />)
+            <SelectDropdown id="supplier" value={formData.supplier}
+              onChange={(e) => setFormData({ ...formData, supplier: e.target.value })} options={[]} />)
           }
         </div>
       </div>
@@ -192,7 +192,7 @@ export default function CartInterface() {
             customProductRefs
           )}
           <Button className="font-open-sans mt-[10px] w-full bg-[#1DB14B] font-normal text-white tracking-[1.25px]">
-            
+
             ADD TO CART
           </Button>
         </form>
@@ -210,19 +210,34 @@ export default function CartInterface() {
         />
 
         <div>
-          <div className=" border-x-0 border-y-[1px] border-[#CCCBCB] bg-white px-[20px] py-[10px]">
+          <div className=" border-x-0 border-y-[1px] items-center border-[#CCCBCB] bg-white px-[20px] py-[10px]">
             <button
               onClick={() => setIsCommentVisible(!isCommentVisible)} // Toggle visibility of comment form
-              className="font-open sans flex   w-full flex-1 items-center justify-between gap-[5px] font-normal tracking-[1.25px] text-[#353535]"
+              className="font-open-sans flex h-[32px] w-full flex-1 items-center justify-between gap-[5px] font-normal tracking-[1.25px] text-[#353535]"
             >
               <div className="flex gap-[5px]">
                 <Image src={ChatIcon} alt="chat-icon" />
                 <span className="text-base font-normal"> Add Order Comments (Internal)</span>
               </div>
-              <ChevronDown
-                
-                className={`h-4 w-3 shrink-0 transition-transform duration-200 ${isCommentVisible ? 'rotate-180' : ''}`}
-              />
+              {/* <ChevronDown
+
+                className={`h-6 w-6 shrink-0 transition-transform duration-200 ${isCommentVisible ? 'rotate-180' : ''}`}
+              /> */}
+              <svg
+                className={`h-4 w-3 shrink-0 transition-transform duration-200 ${isCommentVisible ? 'rotate-0' : 'rotate-180'}`}
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 10 6"
+              >
+                <path
+                  stroke="#1C1B1F"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5 5 1 1 5"
+                />
+              </svg>
             </button>
 
             {/* If the form is visible, show the comment input field */}
@@ -287,24 +302,71 @@ function AccordionTitle({ icon, text, onClick }: { icon: string; text: string, o
 function SelectDropdown({
   id,
   value,
-  onChange,
+  onChange, // Passed down from parent component
+  options // Array of options passed down
 }: {
   id: string;
   value: string;
-  onChange: React.ChangeEventHandler<HTMLSelectElement>;
+  options: { id: string; name: string }[]; // Supplier options
+  onChange: React.ChangeEventHandler<HTMLSelectElement>; // Handler passed from parent
 }) {
+  const [loading, setLoading] = useState(false); // Loading state
+  const [error, setError] = useState<string | null>(null); // Optional error handling
+  const [brands, setBrands] = useState<{ id: string; name: string }[]>([]); // Brand data for options
+
+  // Handle the select focus (click) to trigger API call
+  const handleFocus = async () => {
+    if (brands.length > 0) return; // If brands are already loaded, do nothing
+
+    setLoading(true); // Start loading
+    setError(null); // Reset errors
+
+    try {
+      const res = await getBrand(); // Call the API to get brand data
+      console.log('Response:', res);
+
+      if (res.status === 200) {
+        setBrands(res.output); // Set the brand data into the state
+      } else {
+        setError('Failed to fetch brand data');
+      }
+    } catch (error) {
+      setError('An error occurred while fetching data');
+    } finally {
+      setLoading(false); // Stop loading
+    }
+  };
+
   return (
-    <select
-      id={id}
-      value={value}
-      onChange={onChange}
-      className="font-open-sans block w-full rounded border-2 border-gray-200 p-3 text-sm text-[#7F7F7F] focus:outline-none"
-    >
-      <option value="" disabled>
-        Choose Supplier
-      </option>
-      <option value="Supplier1">Supplier 1</option>
-      <option value="Supplier2">Supplier 2</option>
-    </select>
+    <div className='flex items-center justify-center'>
+      <select
+        id={id}
+        value={value}
+        onChange={onChange} // Handle the change when a brand is selected
+        onFocus={handleFocus} // Trigger API call when dropdown is clicked
+        className="font-open-sans block w-full rounded border-2 border-gray-200 px-[10px] py-[10px] text-sm text-[#7F7F7F] focus:outline-none"
+      >
+        <option value="" disabled>
+          Choose Supplier
+        </option>
+        {brands.length > 0 && (
+          <>
+            {brands.map((brand) => (
+              <option key={brand.id} value={brand.name}>
+                {brand.name}
+              </option>
+            ))}
+          </>
+        )}
+      </select>
+      {loading && (
+        <div className="absolute flex items-center justify-center">
+          <Spinner />
+        </div>
+      )} {/* Show loading indicator */}
+
+      {error && <div className="text-red-500">{error}</div>} {/* Display error if it exists */}
+    </div>
   );
 }
+
