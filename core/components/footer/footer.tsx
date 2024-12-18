@@ -138,6 +138,7 @@ export const Footer = () => {
   return (
     <FooterSection
       contactInformation={getContactInformation()}
+      contactTitle={t('contact')}
       copyright={getCopyright()}
       logo={getLogo()}
       logoHref="/"
