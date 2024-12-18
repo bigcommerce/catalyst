@@ -8,6 +8,7 @@ import deleteIcon from '~/app/[locale]/(default)/sales-buddy/assets/delete.png';
 import { deleteCart } from "../../_actions/delete-cart";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/vibes/soul/primitives/spinner";
+import { getCartIdCookie } from '../../_actions/cart';
 
 interface Props{
   cartId:string;
@@ -18,6 +19,7 @@ export default function ReferalId() {
   const [loading, setLoading] = useState(false);
   const [remove, setRemove] = useState(false);
   const [referralId] = useState("12345678"); // Example referral ID
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const router = useRouter();
 
@@ -33,7 +35,10 @@ export default function ReferalId() {
 
     if (res.status === 200) {
       setRemove(true);
+      setLoading(false);
     } else {
+      setRemove(false);
+      setLoading(false);
       console.log("Error:", res.error);
     }
   };
@@ -44,6 +49,15 @@ export default function ReferalId() {
       setRemove(false);
     }
     setLoading(false);
+    async function fetchMyCookie() {
+      let cookieValue = await getCartIdCookie();
+      if(cookieValue){
+        setIsDisabled(false);
+      }else{
+        setIsDisabled(true);
+      }
+  }
+  fetchMyCookie();
   }, [remove]);
 
   return (
@@ -103,6 +117,7 @@ export default function ReferalId() {
           <button
             className=""
             onClick={handleDelete}
+            disabled={isDisabled}
           >
              {loading && (
                 <div className="absolute flex items-center justify-center">
