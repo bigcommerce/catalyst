@@ -17,8 +17,9 @@ export const RadioGroup = React.forwardRef<
     label?: string;
     options: Option[];
     errors?: string[];
+    onOptionMouseEnter?: (value: string) => void;
   }
->(({ label, options, errors, className, ...rest }, ref) => {
+>(({ label, options, errors, className, onOptionMouseEnter, ...rest }, ref) => {
   const id = React.useId();
 
   return (
@@ -32,7 +33,12 @@ export const RadioGroup = React.forwardRef<
         role="group"
       >
         {options.map((option, index) => (
-          <RadioGroupItem error={errors != null && errors.length > 0} key={index} option={option} />
+          <RadioGroupItem
+            error={errors != null && errors.length > 0}
+            key={index}
+            onOptionMouseEnter={onOptionMouseEnter}
+            option={option}
+          />
         ))}
       </RadioGroupPrimitive.Root>
       {errors?.map((error) => <FieldError key={error}>{error}</FieldError>)}
@@ -42,7 +48,15 @@ export const RadioGroup = React.forwardRef<
 
 RadioGroup.displayName = 'RadioGroup';
 
-function RadioGroupItem({ option, error = false }: { option: Option; error?: boolean }) {
+function RadioGroupItem({
+  option,
+  error = false,
+  onOptionMouseEnter,
+}: {
+  option: Option;
+  error?: boolean;
+  onOptionMouseEnter?: (value: string) => void;
+}) {
   const id = React.useId();
 
   return (
@@ -57,6 +71,11 @@ function RadioGroupItem({ option, error = false }: { option: Option; error?: boo
         )}
         disabled={option.disabled}
         id={id}
+        onMouseEnter={() => {
+          if (typeof onOptionMouseEnter === 'function') {
+            onOptionMouseEnter(option.value);
+          }
+        }}
         value={option.value}
       >
         <RadioGroupPrimitive.Indicator className="relative flex size-full items-center justify-center after:block after:size-3 after:rounded-full after:bg-foreground" />

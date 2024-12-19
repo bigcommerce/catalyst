@@ -29,8 +29,9 @@ export const SwatchRadioGroup = React.forwardRef<
     label?: string;
     options: SwatchOption[];
     errors?: string[];
+    onOptionMouseEnter?: (value: string) => void;
   }
->(({ label, options, errors, className, ...rest }, ref) => {
+>(({ label, options, errors, className, onOptionMouseEnter, ...rest }, ref) => {
   const id = React.useId();
 
   return (
@@ -54,6 +55,11 @@ export const SwatchRadioGroup = React.forwardRef<
             )}
             disabled={option.disabled}
             key={option.value}
+            onMouseEnter={() => {
+              if (typeof onOptionMouseEnter === 'function') {
+                onOptionMouseEnter(option.value);
+              }
+            }}
             value={option.value}
           >
             {option.type === 'color' ? (

@@ -1,20 +1,17 @@
 'use client';
 
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { useEffect } from 'react';
 
-import { ProductItemFragment } from '~/client/fragments/product-item';
 import { FragmentOf } from '~/client/graphql';
 import { bodl } from '~/lib/bodl';
 
+import { ProductViewedFragment } from './fragment';
+
 interface Props {
-  product: FragmentOf<typeof ProductItemFragment>;
+  product: FragmentOf<typeof ProductViewedFragment>;
 }
 
-const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
-  const category = removeEdgesAndNodes(p.categories).at(0);
-  const breadcrumbs = category ? removeEdgesAndNodes(category.breadcrumbs) : [];
-
+const productItemTransform = (p: FragmentOf<typeof ProductViewedFragment>) => {
   return {
     product_id: p.entityId.toString(),
     product_name: p.name,
@@ -25,7 +22,6 @@ const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
     base_price: p.prices?.price.value,
     retail_price: p.prices?.retailPrice?.value,
     currency: p.prices?.price.currencyCode || 'USD',
-    category_names: breadcrumbs.map(({ name }) => name),
     variant_id: p.variants.edges?.map((variant) => variant.node.entityId),
   };
 };
