@@ -227,131 +227,6 @@ export const Details = ({
 
   return (
     <div>
-      {showStickyHeader && (
-        <>
-          {/* Desktop View - Sticky Top */}
-          <div className="fixed left-0 right-0 top-0 z-50 hidden border-b border-gray-200 bg-white shadow-2xl xl:block">
-            <div className="container mx-auto px-[3rem] pb-[2rem] pt-[1rem]">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-start gap-5">
-                  <div className="flex-shrink-0 overflow-hidden rounded-md border border-gray-200 xl:h-[10em] xl:w-[10em] 2xl:h-[8em] 2xl:w-[8em]">
-                    <BcImage
-                      src={currentImageUrl}
-                      alt={product.name}
-                      width={100}
-                      height={100}
-                      className="h-full w-full object-center"
-                    />
-                  </div>
-                  <div className="mr-[10em] flex-1">
-                    <h2 className="text-left text-[20px] font-medium leading-8 tracking-wide text-black">
-                      {product.name}
-                    </h2>
-                    <div className="mt-3 text-left text-[14px] font-normal leading-[10px] tracking-[0.25px]">
-                      by <span className="underline">{product.brand?.name}</span>
-                    </div>
-                    <div className="mt-3 flex items-center text-[#7F7F7F]">
-                      {product.mpn && (
-                        <div className="text-[14px] font-bold leading-[24px] tracking-[0.25px]">
-                          SKU: {product.mpn}
-                        </div>
-                      )}
-                      {product.mpn &&
-                        productOptions.filter(
-                          (option) => option.__typename === 'MultipleChoiceOption',
-                        ).length > 0 && <span className="mx-2 text-[14px] font-normal">|</span>}
-                      {productOptions.filter(
-                        (option) => option.__typename === 'MultipleChoiceOption',
-                      ).length > 0 && (
-                        <div className="text-[14px] font-normal">
-                          {productOptions
-                            .filter((option) => option.__typename === 'MultipleChoiceOption')
-                            .map((option, index, filteredArray) => {
-                              if (option.__typename === 'MultipleChoiceOption') {
-                                const selectedValue = getSelectedValue(
-                                  option as MultipleChoiceOption,
-                                );
-                                return (
-                                  <span key={option.entityId}>
-                                    <span className="font-bold">{option.displayName}:</span>{' '}
-                                    <span className="text-[15px]">{selectedValue}</span>
-                                    {index < filteredArray.length - 1 && (
-                                      <span className="mx-2">|</span>
-                                    )}
-                                  </span>
-                                );
-                              }
-                              return null;
-                            })}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  {product.prices?.price?.value !== undefined && (
-                    <div className="text-right">
-                      <div className="text-lg font-medium text-[#008bb7]">
-                        {format.number(product.prices.price.value, {
-                          style: 'currency',
-                          currency: product.prices.price.currencyCode,
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  <button
-                    className="group relative flex h-[3em] w-[14em] items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white transition-all duration-300 hover:bg-[#03465C]/90"
-                    onClick={() => {
-                      const addToCartButton = productFormRef.current?.querySelector(
-                        'button[type="submit"]',
-                      ) as HTMLButtonElement | null;
-                      if (addToCartButton) {
-                        addToCartButton.click();
-                      }
-                    }}
-                  >
-                    <span className="transition-transform duration-300 group-hover:-translate-x-2">
-                      ADD TO CART
-                    </span>
-                    <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[2.5em]">
-                      <ShoppingCart className="h-5 w-0 transform opacity-0 transition-all duration-300 group-hover:w-5 group-hover:opacity-100" />
-                    </div>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div
-            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
-              isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
-            } px-[20px] pt-[20px]`}
-          >
-            {/* Mobile View Button */}
-            <button
-              className="group relative flex h-[3em] w-full items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white"
-              onClick={() => {
-                const addToCartButton = productFormRef.current?.querySelector(
-                  'button[type="submit"]',
-                ) as HTMLButtonElement | null;
-                if (addToCartButton) {
-                  addToCartButton.click();
-                }
-              }}
-            >
-              <span className="transition-transform duration-300 group-hover:-translate-x-2">
-                ADD TO CART
-              </span>
-              <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-12">
-                <ShoppingCart className="h-5 w-0 transform opacity-0 transition-all duration-300 group-hover:w-5 group-hover:opacity-100" />
-              </div>
-            </button>
-          </div>
-        </>
-      )}
-
       <div className="div-product-details">
         <h1 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
           {product.name}
@@ -362,15 +237,26 @@ export const Details = ({
             SKU: <span>{product.mpn}</span>
           </span>
           <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-            by <Link href={product.brand?.path ?? ''} className="products-underline border-b border-black">{product.brand?.name}</Link>
+            by{' '}
+            <Link
+              href={product.brand?.path ?? ''}
+              className="products-underline border-b border-black"
+            >
+              {product.brand?.name}
+            </Link>
           </span>
-          {collectionValue &&
+          {collectionValue && (
             <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-              from the <Link href={`/search?brand_name[0]=${encodeURIComponent(product.brand?.name ?? '')}&collection[0]=${encodeURIComponent(collectionValue)}`} className="products-underline border-b border-black">
+              from the{' '}
+              <Link
+                href={`/search?brand_name[0]=${encodeURIComponent(product.brand?.name ?? '')}&collection[0]=${encodeURIComponent(collectionValue)}`}
+                className="products-underline border-b border-black"
+              >
                 {collectionValue}
-              </Link> Family
+              </Link>{' '}
+              Family
             </span>
-          }
+          )}
         </div>
 
         <ReviewSummary data={product} />
@@ -430,9 +316,6 @@ export const Details = ({
         </div>
       )}
 
-      <Coupon couponIcon={couponIcon} />
-      <FreeDelivery />
-
       <div ref={productFormRef}>
         <ProductForm
           data={product}
@@ -443,84 +326,6 @@ export const Details = ({
           closeIcon={closeIcon}
         />
       </div>
-
-      <div className="div-product-description my-12 hidden">
-        <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {Boolean(product.sku) && (
-            <div>
-              <h3 className="font-semibold">{t('sku')}</h3>
-              <p>{product.sku}</p>
-            </div>
-          )}
-          {Boolean(product.upc) && (
-            <div>
-              <h3 className="font-semibold">{t('upc')}</h3>
-              <p>{product.upc}</p>
-            </div>
-          )}
-          {Boolean(product.minPurchaseQuantity) && (
-            <div>
-              <h3 className="font-semibold">{t('minPurchase')}</h3>
-              <p>{product.minPurchaseQuantity}</p>
-            </div>
-          )}
-          {Boolean(product.maxPurchaseQuantity) && (
-            <div>
-              <h3 className="font-semibold">{t('maxPurchase')}</h3>
-              <p>{product.maxPurchaseQuantity}</p>
-            </div>
-          )}
-          {Boolean(product.availabilityV2.description) && (
-            <div>
-              <h3 className="font-semibold">{t('availability')}</h3>
-              <p>{product.availabilityV2.description}</p>
-            </div>
-          )}
-          {Boolean(product.condition) && (
-            <div>
-              <h3 className="font-semibold">{t('condition')}</h3>
-              <p>{product.condition}</p>
-            </div>
-          )}
-          {Boolean(product.weight) && (
-            <div>
-              <h3 className="font-semibold">{t('weight')}</h3>
-              <p>
-                {product.weight?.value} {product.weight?.unit}
-              </p>
-            </div>
-          )}
-          {Boolean(customFields) &&
-            customFields.map((customField) => (
-              <div key={customField.entityId}>
-                <h3 className="font-semibold">{customField.name}</h3>
-                <p>{customField.value}</p>
-              </div>
-            ))}
-        </div>
-      </div>
-
-      <ProductSchema product={product} />
-
-      <div className="apple-pay mt-4 xl:hidden">
-        <button className="flex w-[100%] items-center justify-center rounded bg-[#353535] p-4 text-white">
-          <BcImage
-            alt="GPay icon"
-            src={paywithGoogle}
-            height={20}
-            width={20}
-            className="mr-4 inline"
-          />
-          Pay with Google
-        </button>
-      </div>
-
-      <Payment />
-      <RequestQuote />
-      <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
-      <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
-      <ShippingReturns />
     </div>
   );
 };

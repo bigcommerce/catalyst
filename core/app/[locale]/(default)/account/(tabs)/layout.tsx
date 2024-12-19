@@ -22,17 +22,16 @@ export default async function AccountTabLayout({ children, params }: Props) {
     addresses: t('addresses'),
     wishlists: t('wishlists'),
     settings: t('settings'),
-    orders: t('orders')
+    orders: t('orders'),
   };
 
   return (
     <>
-    <div className='div-My-account-page w-[90%] m-auto'>
-    <h1 className="my-8 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
-      <TabNavigation />
-      {children}
-    </div>
-    
+      <div className="div-My-account-page m-auto w-[82%] mt-[40px]">
+        <h1 className="text-[24px] font-semibold leading-[32px] text-[#353535] mb-[20px]">{t('heading')}</h1>
+        <TabNavigation />
+        {children}
+      </div>
     </>
   );
 }
