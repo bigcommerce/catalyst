@@ -18,7 +18,11 @@ interface MSAccordionsProps {
 runtime.registerComponent(
   function MSAccordions({ className, accordions, colorScheme, type }: MSAccordionsProps) {
     return (
-      <Accordions className={className} collapsible type={type}>
+      <Accordions
+        className={className}
+        collapsible={type === 'single' ? true : undefined}
+        type={type}
+      >
         {accordions.length < 1 && (
           <div className="p-4 text-center text-lg text-gray-400">Add accordions</div>
         )}

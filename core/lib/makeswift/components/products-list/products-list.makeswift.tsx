@@ -65,7 +65,7 @@ runtime.registerComponent(
         `/api/products/ids?${searchParams.toString()}`,
       );
 
-      return [...apiResults.products.slice(0, limit), ...additionalProductsResult.products];
+      return [...apiResults.products, ...additionalProductsResult.products];
     });
 
     if (isLoading) {
@@ -76,7 +76,7 @@ runtime.registerComponent(
       return <ProductsListSkeleton className={className} />;
     }
 
-    const products = data.map(bcProductToVibesProduct);
+    const products = data.map(bcProductToVibesProduct).slice(0, limit);
 
     return <ProductsList {...props} className={className} products={products} />;
   },
@@ -96,7 +96,7 @@ runtime.registerComponent(
         ],
         defaultValue: 'bestSelling',
       }),
-      limit: Number({ label: 'Max number of item from collection', defaultValue: 12 }),
+      limit: Number({ label: 'Max number of item', defaultValue: 12 }),
       additionalProducts: List({
         label: 'Additional products',
         type: Shape({
