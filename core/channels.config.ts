@@ -1,6 +1,6 @@
 // Set overrides per locale
 const localeToChannelsMappings: Record<string, string> = {
-  // es: '12345',
+  fr: '1685086',
 };
 
 function getChannelIdFromLocale(locale = '') {
