@@ -23,7 +23,7 @@ runtime.registerComponent(MakeswiftHeader, {
   props: {
     banner: Shape({
       type: {
-        show: Checkbox({ label: 'Show banner', defaultValue: true }),
+        show: Checkbox({ label: 'Show banner', defaultValue: false }),
         allowClose: Checkbox({ label: 'Allow banner to close', defaultValue: true }),
         banner: Slot(),
       },

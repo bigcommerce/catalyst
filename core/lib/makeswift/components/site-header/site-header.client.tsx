@@ -13,8 +13,6 @@ import {
 import { useStreamable } from '@/vibes/soul/lib/streamable';
 import { HeaderSection } from '@/vibes/soul/sections/header-section';
 
-import { COMPONENT_TYPE } from './site-header.makeswift';
-
 type Props = ComponentPropsWithoutRef<typeof HeaderSection>;
 
 const PropsContext = createContext<Props>({
@@ -70,7 +68,7 @@ export const MakeswiftHeader = forwardRef(
         banner={
           banner?.show
             ? {
-                id: COMPONENT_TYPE, // Update this when we allow users to add multiple MakeswiftHeader
+                id: 'site-header', // Update this when we allow users to add multiple MakeswiftHeader
                 hideDismiss: !banner.allowClose,
                 children: bannerElement?.children,
               }
