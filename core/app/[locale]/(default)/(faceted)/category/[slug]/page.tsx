@@ -47,7 +47,7 @@ async function getCategory(categoryId: number) {
   return category;
 }
 
-async function getBreadcrumbs(categoryId: number): Promise<Breadcrumb[] | null> {
+async function getBreadcrumbs(categoryId: number): Promise<Breadcrumb[]> {
   const category = await getCategory(categoryId);
 
   return removeEdgesAndNodes(category.breadcrumbs).map(({ name, path }) => ({
