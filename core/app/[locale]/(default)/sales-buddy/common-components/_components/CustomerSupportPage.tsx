@@ -9,7 +9,7 @@ import { createCustomerAccount } from '../../_actions/create-customer-account';
 import { findCustomerDetails } from '../../_actions/find-customer';
 import DynamicTable from '../table/CustomTable';
 import { getCustomerCart } from '../../_actions/get-customer-cart';
-
+import Loader from './Spinner';
 function CustomerSupportPage() {
   const [customerDetails, setCustomerDetails] = useState({});
   const [cartErrorMessage, setCartErrorMessage] = useState<string | null>(null);
@@ -39,18 +39,28 @@ function CustomerSupportPage() {
     referrerId: '',
   });
 
+  const [loading, setLoading] = useState({
+    show1: false,
+    show2: false,
+    show3: false,
+  });
   const handleCartLookupSubmit = async (e: React.FormEvent) => {
+    setLoading((prev) => ({ ...prev, show1: true }));
     e.preventDefault();
     try {
       const response = await getCustomerCart(cartId);
+      setLoading((prev) => ({ ...prev, show1: false }));
       console.log(response);
     } catch (error: any) {
       console.log(error);
-    }
+      setLoading((prev) => ({ ...prev, show1: false }));
+    } 
     console.log('Cart ID:', cartId);
   };
 
   const handleFindCustomerSubmit = async (e: React.FormEvent) => {
+    setLoading((prev) => ({ ...prev, show2: true }));
+
     e.preventDefault();
     if (
       findCustomerData.email !== '' ||
@@ -64,37 +74,45 @@ function CustomerSupportPage() {
         setCustomerDetails(findCustomerData);
         console.log('|||||||||||||||', response);
         if (response.status === 200) {
+          setLoading((prev) => ({ ...prev, show2: false }));
           console.log('Account retrieved successfully:', response.data);
           let data = response.data.output;
-          const extractedData = data.map((item: { first_name: any; last_name: any; email: any; }) => ({
-            first_name: item.first_name,
-            last_name: item.last_name,
-            email: item.email,
-            // phone: item.phone,
-            // company: item.company,
-          }));
+          const extractedData = data.map(
+            (item: { first_name: any; last_name: any; email: any }) => ({
+              first_name: item.first_name,
+              last_name: item.last_name,
+              email: item.email,
+              // phone: item.phone,
+              // company: item.company,
+            }),
+          );
           console.log('extractedData=======', extractedData);
 
           setTableData(extractedData);
           setFindCustomerSuccessMessage('Account retrieved successfully!');
           setFindCustomerErrorMessage(null);
         } else {
+        setLoading((prev) => ({ ...prev, show2: false }));
           const errorMessage = response.error || 'An unknown error occurred';
           console.error('Error retrieving account:', errorMessage);
           setFindCustomerErrorMessage(`Failed to retrieve account: ${errorMessage}`);
           setFindCustomerSuccessMessage(null);
         }
       } catch (error: any) {
+        setLoading((prev) => ({ ...prev, show2: false }));
         console.error('Error during account retrieval:', error);
         setFindCustomerErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
         setFindCustomerSuccessMessage(null);
-      }
+      } 
     } else {
+        setLoading((prev) => ({ ...prev, show2: false }));
       setFindCustomerErrorMessage('Required at least one field');
     }
   };
 
   const handleCreateAccountSubmit = async (e: React.FormEvent) => {
+    setLoading((prev) => ({ ...prev, show3: true }));
+
     e.preventDefault();
 
     // Validate required fields
@@ -104,24 +122,33 @@ function CustomerSupportPage() {
         'Please provide a first name, last name, and a valid email address.',
       );
       setCreateAccountSuccessMessage(null);
+        setLoading((prev) => ({ ...prev, show3: false }));
+
       return;
+      
     } else {
       try {
-        console.log('|||||||||||||',createAccountData);
-        
+        console.log('|||||||||||||', createAccountData);
+
         const response = await createCustomerAccount(createAccountData);
         console.log(response.status);
-        if (response.status==200) {
+        if (response.status == 200) {
+        setLoading((prev) => ({ ...prev, show3: false }));
+
           setCreateAccountSuccessMessage('Account created successfully!');
           setCreateAccountErrorMessage(null);
-        }else{
+        } else {
+        setLoading((prev) => ({ ...prev, show3: false }));
+
           setCreateAccountErrorMessage('Error during account creation');
         }
       } catch (error: any) {
+        setLoading((prev) => ({ ...prev, show3: false }));
+
         console.error('Error during account creation:', error);
         setCreateAccountErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
         setCreateAccountSuccessMessage(null);
-      }
+      } 
     }
   };
 
@@ -210,9 +237,12 @@ function CustomerSupportPage() {
           {cartSuccessMessage && <p className="text-green-600">{cartSuccessMessage}</p>}
           <button
             type="submit"
-            className="mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
+            className="relative mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
           >
-            <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">FETCH CART</p>
+            <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">FETCH CART </p>
+            <div className="absolute inset-0 flex items-center justify-center">
+              {loading.show1 && <Loader />}
+            </div>
           </button>
         </form>
       ),
@@ -246,11 +276,14 @@ function CustomerSupportPage() {
             )}
             <button
               type="submit"
-              className="mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
+              className="relative mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
             >
               <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">
                 FIND CUSTOMER
               </p>
+              <div className="absolute inset-0 flex items-center justify-center">
+                {loading.show2 && <Loader />}
+              </div>
             </button>
           </form>
           {tableData.length > 0 && <DynamicTable data={tableData} />}
@@ -285,9 +318,12 @@ function CustomerSupportPage() {
           )}
           <button
             type="submit"
-            className="mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
+            className="relative mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
           >
             <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">CREATE</p>
+            <div className="absolute inset-0 flex items-center justify-center">
+              {loading.show3 && <Loader />}
+            </div>
           </button>
         </form>
       ),

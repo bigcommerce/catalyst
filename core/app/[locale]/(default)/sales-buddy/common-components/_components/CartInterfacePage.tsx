@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useRef } from 'react';
+import { useState, useRef, MouseEvent } from 'react';
 import { Accordions } from '../Accordin/index';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/form';
@@ -14,8 +14,7 @@ import { addCustomProduct } from '../../_actions/add-custom-product';
 import { addComment } from '../../_actions/add-comment';
 import { ChevronDown } from 'lucide-react';
 import { getBrand } from '../../_actions/brand';
-import { Spinner } from '@/vibes/soul/primitives/spinner';
-
+import Loader from './Spinner';
 export default function CartInterface() {
   const [openAccordions, setOpenAccordions] = useState<number[]>([]);
   const [comment, setComment] = useState<string>(''); // Comment state
@@ -33,6 +32,11 @@ export default function CartInterface() {
     productName: '',
     comment: ''
   });
+  const [loading, setLoading] = useState({
+      accountId: false,
+      customItem: false,
+      comments: false,
+  });
   const customProductRefs = {
     supplier: useRef<HTMLSelectElement>(null),
     sku: useRef<HTMLInputElement>(null),
@@ -43,6 +47,7 @@ export default function CartInterface() {
 
   const handleCustomProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading((prev) => ({ ...prev, customItem: true }));
 
     const createCustomProductData = {
       supplier: formData.supplier,
@@ -59,11 +64,14 @@ export default function CartInterface() {
       const response = await addCustomProduct(createCustomProductData);
 
       if (response.status === 200) {
+        setLoading((prev) => ({ ...prev, customItem: false }));
         setSuccessMessage('Product added successfully!');
       } else {
+        setLoading((prev) => ({ ...prev, customItem: false }));
         setErrorMessage(`Failed to add product: ${response.error || 'Unknown error'}`);
       }
     } catch (error: any) {
+    setLoading((prev) => ({ ...prev, customItem: false }));
       console.error('Error during add product:', error);
       setErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
     }
@@ -76,6 +84,7 @@ export default function CartInterface() {
 
   // Handle delete comment functionality
   const handleDeleteComment = async () => {
+
     setComment(""); // Clear the comment
     setAction("delete");
     setIsCommentSaved(false); // Set saved status to false
@@ -105,6 +114,8 @@ export default function CartInterface() {
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    setLoading((prev) => ({ ...prev, comments: true }));
 
     setIsCommentSaved(true);
     setIsCommentVisible(false);
@@ -117,13 +128,17 @@ export default function CartInterface() {
       const response = await addComment(createCommentData);
 
       if (response.status === 200) {
+        setLoading((prev) => ({ ...prev, comments: false }));
+
         setSuccessMessage('commented successfully!');
         // setIsCommentSaved(true);// Mark the comment as saved
         setIsCommentVisible(false);
       } else {
+        setLoading((prev) => ({ ...prev, comments: false }));
         setErrorMessage(`Failed to comment: ${response.error || 'Unknown error'}`);
       }
     } catch (error: any) {
+      setLoading((prev) => ({ ...prev, comments: false }));
       console.error('Error during comment:', error);
       setErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
     }
@@ -159,46 +174,74 @@ export default function CartInterface() {
     ));
   };
 
+  const handleAddAccountSubmit=(e:any)=>{
+    e.preventDefault();
+ setLoading((prev) => ({ ...prev, accountId: true }));
+ setInterval(() => {
+   setLoading((prev) => ({ ...prev, accountId: false }));
+ }, 3000);
+
+  }
+
   const accordions = [
     {
-      title: <AccordionTitle icon={ShopIcon} text="Add an Account ID" onClick={() => toggleAccordion(0)} />,
+      title: (
+        <AccordionTitle
+          icon={ShopIcon}
+          text="Add an Account ID"
+          onClick={() => toggleAccordion(0)}
+        />
+      ),
       content: (
         <div>
           <Input
             id="accountId"
             placeholder="Account ID"
             value={formData.accountId}
-            onChange={(e) => setFormData((prev) => ({ ...prev, accountId: e.target.value }))}
+            onChange={(e) => {
+              setFormData((prev) => ({ ...prev, accountId: e.target.value }));
+             
+            }}
             className="mb-[10px]"
           />
-          <Button className="font-open-sans w-full bg-[#1DB14B] font-normal text-white tracking-[1.25px]">
+          <Button className="font-open-sans w-full bg-[#1DB14B] font-normal tracking-[1.25px] text-white" onClick={(e)=>{handleAddAccountSubmit(e)}}>
+            <div className="absolute inset-0 flex items-center justify-center">
+              {loading.accountId && <Loader />}
+            </div>
             ASSIGN ID
           </Button>
         </div>
       ),
     },
     {
-      title: <AccordionTitle icon={CategoryIcon} text="Add Item to Cart" onClick={() => toggleAccordion(1)} />,
+      title: (
+        <AccordionTitle
+          icon={CategoryIcon}
+          text="Add Item to Cart"
+          onClick={() => toggleAccordion(1)}
+        />
+      ),
       content: (
         <form onSubmit={handleCustomProductSubmit}>
           {renderInputFields(
             [
-              { id: 'supplier', label: 'Supplier*', },
+              { id: 'supplier', label: 'Supplier*' },
               { id: 'sku', label: 'Full SKU*' },
               { id: 'cost', label: 'Our Cost*' },
               { id: 'retailPrice', label: 'Retail Price*' },
               { id: 'productName', label: 'Product Name (Optional)' },
             ],
-            customProductRefs
+            customProductRefs,
           )}
-          <Button className="font-open-sans mt-[10px] w-full bg-[#1DB14B] font-normal text-white tracking-[1.25px]">
-
+          <Button className="font-open-sans mt-[10px] w-full bg-[#1DB14B] font-normal tracking-[1.25px] text-white">
+            <div className="absolute inset-0 flex items-center justify-center">
+              {loading.customItem && <Loader />}
+            </div>
             ADD TO CART
           </Button>
         </form>
       ),
     },
-
   ];
 
   return (
@@ -361,7 +404,7 @@ function SelectDropdown({
       </select>
       {loading && (
         <div className="absolute flex items-center justify-center">
-          <Spinner />
+          <Loader />
         </div>
       )} {/* Show loading indicator */}
 
