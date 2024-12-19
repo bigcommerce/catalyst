@@ -161,7 +161,6 @@ const ProductDetailsFragment = graphql(
       entityId
       name
       description
-      plainTextDescription
       path
       images {
         edges {
@@ -182,59 +181,29 @@ const ProductDetailsFragment = graphql(
       reviewSummary {
         averageRating
       }
+      description
+      sku
+      weight {
+        value
+        unit
+      }
+      condition
+      customFields {
+        edges {
+          node {
+            entityId
+            name
+            value
+          }
+        }
+      }
+      warranty
       ...PricingFragment
       ...ProductFormFragment
     }
   `,
   [PricingFragment, ProductFormFragment],
 );
-
-// TODO: Add this fragment to the query when we add the other sections
-// const DetailsFragment = graphql(
-//   `
-//     fragment DetailsFragment on Product {
-//       ...ReviewSummaryFragment
-//       ...ProductFormFragment
-//       ...ProductDetailsFragment
-//       entityId
-//       name
-//       sku
-//       upc
-//       minPurchaseQuantity
-//       maxPurchaseQuantity
-//       condition
-//       weight {
-//         value
-//         unit
-//       }
-//       availabilityV2 {
-//         description
-//       }
-//       customFields {
-//         edges {
-//           node {
-//             entityId
-//             name
-//             value
-//           }
-//         }
-//       }
-//       brand {
-//         name
-//       }
-//       ...PricingFragment
-//     }
-//   `,
-//   [ReviewSummaryFragment, ProductFormFragment, ProductDetailsFragment, PricingFragment],
-// );
-
-// export const DescriptionFragment = graphql(`
-//   fragment DescriptionFragment on Product {
-//     description
-//     # plainTextDescription(characterLimit: 1200)
-//     plainTextDescription
-//   }
-// `);
 
 const ProductPageQuery = graphql(
   `
@@ -252,12 +221,7 @@ const ProductPageQuery = graphql(
           ...ProductDetailsFragment
           ...ProductViewedFragment
           ...ProductSchemaFragment
-          # TODO: Add this fragment to the query when we add the other sections
-          # ...DetailsFragment
-          # ...DescriptionFragment
-          # ...WarrantyFragment
           name
-          plainTextDescription
           defaultImage {
             url: urlTemplate(lossy: true)
             altText
@@ -283,9 +247,6 @@ const ProductPageQuery = graphql(
     ProductViewedFragment,
     ProductSchemaFragment,
     FeaturedProductsCarouselFragment,
-    // DetailsFragment,
-    // DescriptionFragment,
-    // WarrantyFragment,
   ],
 );
 
