@@ -57,7 +57,7 @@ interface Props {
   className?: string;
   filters: Filter[] | Promise<Filter[]>;
   resetFiltersLabel?: string;
-  paginationInfo?: Streamable<CursorPaginationInfo | null>;
+  paginationInfo?: Streamable<CursorPaginationInfo>;
 }
 
 function getParamCountLabel(params: Record<string, string | null | string[]>, key: string) {

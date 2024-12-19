@@ -14,6 +14,7 @@ import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/fi
 import { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
 import { Option as SortOption } from '@/vibes/soul/sections/products-list-section/sorting';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
+import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
@@ -162,7 +163,7 @@ async function getSortOptions(): Promise<SortOption[]> {
 async function getPaginationInfo(
   categoryId: number,
   searchParamsPromise: Promise<SearchParams>,
-): Promise<CursorPaginationInfo | null> {
+): Promise<CursorPaginationInfo> {
   const searchParams = await searchParamsPromise;
   const searchParamsCache = await createFiltersSearchParamCache(categoryId);
   const parsedSearchParams = searchParamsCache.parse(searchParams);
@@ -171,16 +172,8 @@ async function getPaginationInfo(
     ...parsedSearchParams,
     category: categoryId,
   });
-  const { hasNextPage, hasPreviousPage, endCursor, startCursor } = search.products.pageInfo;
 
-  return hasNextPage || hasPreviousPage
-    ? {
-        startCursorParamName: 'before',
-        endCursorParamName: 'after',
-        endCursor: hasNextPage ? endCursor : null,
-        startCursor: hasPreviousPage ? startCursor : null,
-      }
-    : null;
+  return pageInfoTransformer(search.products.pageInfo);
 }
 
 async function getFilterLabel(): Promise<string> {

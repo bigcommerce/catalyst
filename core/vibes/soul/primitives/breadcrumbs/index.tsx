@@ -1,19 +1,31 @@
 import { clsx } from 'clsx';
 import { ChevronRight } from 'lucide-react';
 
+import { Stream, Streamable, useStreamable } from '@/vibes/soul/lib/streamable';
 import { AnimatedLink } from '@/vibes/soul/primitives/animated-link';
 
 export interface Breadcrumb {
   label: string;
   href: string;
 }
-
 export interface BreadcrumbsProps {
-  breadcrumbs: Breadcrumb[];
+  breadcrumbs: Streamable<Breadcrumb[]>;
   className?: string;
 }
 
-export function Breadcrumbs({ breadcrumbs, className }: BreadcrumbsProps) {
+export function Breadcrumbs(props: BreadcrumbsProps) {
+  return (
+    <Stream fallback={<BreadcrumbsSkeleton />} value={props.breadcrumbs}>
+      {(breadcrumbs) => (
+        <BreadcrumbsResolved breadcrumbs={breadcrumbs} className={props.className} />
+      )}
+    </Stream>
+  );
+}
+
+function BreadcrumbsResolved({ breadcrumbs: streamableBreadcrumbs, className }: BreadcrumbsProps) {
+  const breadcrumbs = useStreamable(streamableBreadcrumbs);
+
   if (breadcrumbs.length === 0) {
     return <div className={clsx('min-h-[1lh]', className)} />;
   }
