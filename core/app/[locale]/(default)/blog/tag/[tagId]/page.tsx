@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { FeaturedBlogPostList } from '@/vibes/soul/sections/featured-blog-post-list';
+import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 
 import { getBlog, getBlogMetaData, getBlogPosts } from '../../page-data';
 
@@ -16,19 +17,25 @@ export async function generateMetadata(): Promise<Metadata> {
   return await getBlogMetaData();
 }
 
-async function listBlogPosts(
-  paramsPromise: Promise<{ tagId: string }>,
-  searchParamsPromise: Promise<SearchParams>,
-) {
-  const { tagId } = await paramsPromise;
-  const searchParams = await searchParamsPromise;
+async function listBlogPosts(props: Props) {
+  const { tagId } = await props.params;
+  const searchParams = await props.searchParams;
   const blogPosts = await getBlogPosts({ tagId, ...searchParams });
   const posts = blogPosts?.posts ?? [];
 
   return posts;
 }
 
+async function getPaginationInfo(props: Props) {
+  const { tagId } = await props.params;
+  const searchParams = await props.searchParams;
+  const blogPosts = await getBlogPosts({ tagId, ...searchParams });
+
+  return pageInfoTransformer(blogPosts?.pageInfo);
+}
+
 export default async function Tag(props: Props) {
+  const { tagId } = await props.params;
   const blog = await getBlog();
 
   if (!blog) {
@@ -37,9 +44,23 @@ export default async function Tag(props: Props) {
 
   return (
     <FeaturedBlogPostList
-      cta={{ href: '#', label: 'View All' }}
+      breadcrumbs={[
+        {
+          label: 'Home',
+          href: '/',
+        },
+        {
+          label: 'Blog',
+          href: '/blog',
+        },
+        {
+          label: tagId,
+          href: '#',
+        },
+      ]}
       description={blog.description}
-      posts={listBlogPosts(props.params, props.searchParams)}
+      paginationInfo={getPaginationInfo(props)}
+      posts={listBlogPosts(props)}
       title={blog.name}
     />
   );
