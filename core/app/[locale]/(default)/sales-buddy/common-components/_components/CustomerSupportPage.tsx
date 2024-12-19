@@ -21,7 +21,6 @@ function CustomerSupportPage() {
     null,
   );
   const [tableData, setTableData] = useState<any[]>([]);
-
   const [cartId, setCartId] = useState('');
   const [findCustomerData, setFindCustomerData] = useState({
     email: '',
@@ -38,30 +37,26 @@ function CustomerSupportPage() {
     phone: '',
     referrerId: '',
   });
-
   const [loading, setLoading] = useState({
     show1: false,
     show2: false,
     show3: false,
   });
+
   const handleCartLookupSubmit = async (e: React.FormEvent) => {
     setLoading((prev) => ({ ...prev, show1: true }));
     e.preventDefault();
     try {
       const response = await getCustomerCart(cartId);
       setLoading((prev) => ({ ...prev, show1: false }));
-      console.log(response);
     } catch (error: any) {
-      console.log(error);
       setLoading((prev) => ({ ...prev, show1: false }));
     } 
-    console.log('Cart ID:', cartId);
   };
 
   const handleFindCustomerSubmit = async (e: React.FormEvent) => {
-    setLoading((prev) => ({ ...prev, show2: true }));
-
     e.preventDefault();
+    setLoading((prev) => ({ ...prev, show2: true }));
     if (
       findCustomerData.email !== '' ||
       findCustomerData.company !== '' ||
@@ -72,10 +67,8 @@ function CustomerSupportPage() {
       try {
         const response = await findCustomerDetails(findCustomerData);
         setCustomerDetails(findCustomerData);
-        console.log('|||||||||||||||', response);
         if (response.status === 200) {
           setLoading((prev) => ({ ...prev, show2: false }));
-          console.log('Account retrieved successfully:', response.data);
           let data = response.data.output;
           const extractedData = data.map(
             (item: { first_name: any; last_name: any; email: any }) => ({
@@ -86,21 +79,17 @@ function CustomerSupportPage() {
               // company: item.company,
             }),
           );
-          console.log('extractedData=======', extractedData);
-
           setTableData(extractedData);
           setFindCustomerSuccessMessage('Account retrieved successfully!');
           setFindCustomerErrorMessage(null);
         } else {
         setLoading((prev) => ({ ...prev, show2: false }));
           const errorMessage = response.error || 'An unknown error occurred';
-          console.error('Error retrieving account:', errorMessage);
           setFindCustomerErrorMessage(`Failed to retrieve account: ${errorMessage}`);
           setFindCustomerSuccessMessage(null);
         }
       } catch (error: any) {
         setLoading((prev) => ({ ...prev, show2: false }));
-        console.error('Error during account retrieval:', error);
         setFindCustomerErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
         setFindCustomerSuccessMessage(null);
       } 
@@ -111,11 +100,8 @@ function CustomerSupportPage() {
   };
 
   const handleCreateAccountSubmit = async (e: React.FormEvent) => {
-    setLoading((prev) => ({ ...prev, show3: true }));
-
     e.preventDefault();
-
-    // Validate required fields
+    setLoading((prev) => ({ ...prev, show3: true }));
     if (!createAccountData.first_name || !createAccountData.last_name || !createAccountData.email) {
       console.error('First name, last name, and email are required fields.');
       setCreateAccountErrorMessage(
@@ -123,29 +109,20 @@ function CustomerSupportPage() {
       );
       setCreateAccountSuccessMessage(null);
         setLoading((prev) => ({ ...prev, show3: false }));
-
-      return;
-      
+      return 0;
     } else {
       try {
-        console.log('|||||||||||||', createAccountData);
-
         const response = await createCustomerAccount(createAccountData);
-        console.log(response.status);
         if (response.status == 200) {
         setLoading((prev) => ({ ...prev, show3: false }));
-
           setCreateAccountSuccessMessage('Account created successfully!');
           setCreateAccountErrorMessage(null);
         } else {
         setLoading((prev) => ({ ...prev, show3: false }));
-
           setCreateAccountErrorMessage('Error during account creation');
         }
       } catch (error: any) {
         setLoading((prev) => ({ ...prev, show3: false }));
-
-        console.error('Error during account creation:', error);
         setCreateAccountErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
         setCreateAccountSuccessMessage(null);
       } 
