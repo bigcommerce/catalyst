@@ -1,6 +1,6 @@
-import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { Streamable } from '@/vibes/soul/lib/streamable';
 import { BlogPost } from '@/vibes/soul/primitives/blog-post-card';
-import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/primitives/breadcrumbs';
+import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/primitives/breadcrumbs';
 import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { BlogPostList } from '@/vibes/soul/sections/blog-post-list';
 
@@ -17,16 +17,12 @@ export function FeaturedBlogPostList({
   description,
   posts,
   paginationInfo,
-  breadcrumbs: streamableBreadcrumbs,
+  breadcrumbs,
 }: Props) {
   return (
     <section className="@container">
       <div className="mx-auto max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
-        {streamableBreadcrumbs && (
-          <Stream fallback={<BreadcrumbsSkeleton />} value={streamableBreadcrumbs}>
-            {(breadcrumbs) => <Breadcrumbs breadcrumbs={breadcrumbs} />}
-          </Stream>
-        )}
+        {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
 
         <div className="pt-6">
           <h1 className="mb-3 font-heading text-4xl font-medium leading-none text-foreground @xl:text-5xl @4xl:text-6xl">
