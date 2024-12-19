@@ -153,7 +153,7 @@ export default function SalesBuddyProductPage() {
       </div>
 
       {/* Quick Links */}
-      <div className="w-[460px] space-y-[10px]">
+      {/* <div className="w-[460px] space-y-[10px]">
         <h3 className="text-[20px] font-normal">Quick Links</h3>
         <div className="mt-2 flex flex-col space-y-2">
           {[
@@ -169,7 +169,7 @@ export default function SalesBuddyProductPage() {
             </Button>
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
