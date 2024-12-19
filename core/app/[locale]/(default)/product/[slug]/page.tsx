@@ -166,15 +166,13 @@ export default async function Product(props: Props) {
       />
 
       <Stream fallback={null} value={productPromise}>
-        {(product) => <Reviews productId={product.entityId} />}
-      </Stream>
-
-      <Stream fallback={null} value={productPromise}>
-        {(product) => <ProductSchema product={product} />}
-      </Stream>
-
-      <Stream fallback={null} value={productPromise}>
-        {(product) => <ProductViewed product={product} />}
+        {(product) => (
+          <>
+            <Reviews productId={product.entityId} />
+            <ProductViewed product={product} />
+            <ProductSchema product={product} />
+          </>
+        )}
       </Stream>
     </>
   );
