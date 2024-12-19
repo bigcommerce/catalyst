@@ -36,6 +36,8 @@ type NumberInputField = {
   min?: number;
   max?: number;
   step?: number;
+  incrementLabel?: string;
+  decrementLabel?: string;
 } & FormField;
 
 type TextInputField = {

@@ -1,26 +1,18 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { Suspense } from 'react';
+import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { Breadcrumbs } from '~/components/breadcrumbs';
+import { Stream } from '@/vibes/soul/lib/streamable';
+import { ProductDetail } from '@/vibes/soul/sections/product-detail';
+import { pricesTransformer } from '~/data-transformers/prices-transformer';
+import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
 
-import { Description } from './_components/description';
-import { Details } from './_components/details';
-import { Gallery } from './_components/gallery';
+import { addToCart } from './_actions/add-to-cart';
+import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
-import { RelatedProducts } from './_components/related-products';
-import { Reviews } from './_components/reviews';
-import { Warranty } from './_components/warranty';
-import { getProduct } from './page-data';
+import { getProductData } from './page-data';
 
-interface Props {
-  params: Promise<{ slug: string; locale: string }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}
-
-function getOptionValueIds({ searchParams }: { searchParams: Awaited<Props['searchParams']> }) {
+const getOptionValueIds = ({ searchParams }: { searchParams: Awaited<Props['searchParams']> }) => {
   const { slug, ...options } = searchParams;
 
   return Object.keys(options)
@@ -31,6 +23,79 @@ function getOptionValueIds({ searchParams }: { searchParams: Awaited<Props['sear
     .filter(
       (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
     );
+};
+
+const getProduct = async (productPromise: ReturnType<typeof getProductData>) => {
+  const format = await getFormatter();
+  const product = await productPromise;
+
+  const images = removeEdgesAndNodes(product.images).map((image) => ({
+    src: image.url,
+    alt: image.altText,
+  }));
+
+  return {
+    id: product.entityId.toString(),
+    title: product.name,
+    description: product.description,
+    plainTextDescription: product.plainTextDescription,
+    href: product.path,
+    images: product.defaultImage
+      ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...images]
+      : images,
+    price: pricesTransformer(product.prices, format),
+    subtitle: product.brand?.name,
+    rating: product.reviewSummary.averageRating,
+  };
+};
+
+const getFields = async (productPromise: ReturnType<typeof getProductData>) => {
+  const product = await productPromise;
+
+  return productOptionsTransformer(product.productOptions);
+};
+
+const getCtaLabel = async (productPromise: ReturnType<typeof getProductData>) => {
+  const t = await getTranslations('Product.ProductDetails.Submit');
+
+  const product = await productPromise;
+
+  if (product.availabilityV2.status === 'Unavailable') {
+    return t('unavailable');
+  }
+
+  if (product.availabilityV2.status === 'Preorder') {
+    return t('preorder');
+  }
+
+  if (!product.inventory.isInStock) {
+    return t('outOfStock');
+  }
+
+  return t('addToCart');
+};
+
+const getCtaDisabled = async (productPromise: ReturnType<typeof getProductData>) => {
+  const product = await productPromise;
+
+  if (product.availabilityV2.status === 'Unavailable') {
+    return true;
+  }
+
+  if (product.availabilityV2.status === 'Preorder') {
+    return false;
+  }
+
+  if (!product.inventory.isInStock) {
+    return true;
+  }
+
+  return false;
+};
+
+interface Props {
+  params: Promise<{ slug: string; locale: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -39,15 +104,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const productId = Number(params.slug);
   const optionValueIds = getOptionValueIds({ searchParams });
 
-  const product = await getProduct({
+  const product = await getProductData({
     entityId: productId,
     optionValueIds,
     useDefaultOptionSelections: true,
   });
-
-  if (!product) {
-    return {};
-  }
 
   const { pageTitle, metaDescription, metaKeywords } = product.seo;
   const { url, altText: alt } = product.defaultImage || {};
@@ -83,39 +144,33 @@ export default async function Product(props: Props) {
 
   const optionValueIds = getOptionValueIds({ searchParams });
 
-  const product = await getProduct({
+  const productPromise = getProductData({
     entityId: productId,
     optionValueIds,
     useDefaultOptionSelections: true,
   });
 
-  if (!product) {
-    return notFound();
-  }
-
-  const category = removeEdgesAndNodes(product.categories).at(0);
-
   return (
     <>
-      {category && <Breadcrumbs category={category} />}
+      <ProductDetail
+        action={addToCart}
+        ctaDisabled={getCtaDisabled(productPromise)}
+        ctaLabel={getCtaLabel(productPromise)}
+        decrementLabel={t('ProductDetails.decreaseQuantity')}
+        fields={getFields(productPromise)}
+        incrementLabel={t('ProductDetails.increaseQuantity')}
+        prefetch={true}
+        product={getProduct(productPromise)}
+        quantityLabel={t('ProductDetails.quantity')}
+      />
 
-      <div className="mb-12 mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
-        <Gallery product={product} />
-        <Details product={product} />
-        <div className="lg:col-span-2">
-          <Description product={product} />
-          <Warranty product={product} />
-          <Suspense fallback={t('loading')}>
-            <Reviews productId={product.entityId} />
-          </Suspense>
-        </div>
-      </div>
+      <Stream fallback={null} value={productPromise}>
+        {(product) => <ProductSchema product={product} />}
+      </Stream>
 
-      <Suspense fallback={t('loading')}>
-        <RelatedProducts productId={product.entityId} />
-      </Suspense>
-
-      <ProductViewed product={product} />
+      <Stream fallback={null} value={productPromise}>
+        {(product) => <ProductViewed product={product} />}
+      </Stream>
     </>
   );
 }
