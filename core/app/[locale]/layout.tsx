@@ -4,6 +4,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { clsx } from 'clsx';
 import type { Metadata } from 'next';
 import { DM_Serif_Text, Inter, Roboto_Mono } from 'next/font/google';
+import { draftMode } from 'next/headers';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
@@ -14,6 +15,7 @@ import '../globals.css';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { MakeswiftProvider } from '~/lib/makeswift/provider';
 
 import { Notifications } from '../notifications';
 import { Providers } from '../providers';
@@ -114,18 +116,20 @@ export default async function RootLayout({ params, children }: Props) {
       className={clsx(inter.variable, dm_serif_text.variable, roboto_mono.variable)}
       lang={locale}
     >
-      <head>
-        <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
-      </head>
-      <body>
-        <Notifications />
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <NuqsAdapter>
-            <Providers>{children}</Providers>
-          </NuqsAdapter>
-        </NextIntlClientProvider>
-        <VercelComponents />
-      </body>
+      <MakeswiftProvider previewMode={(await draftMode()).isEnabled}>
+        <head>
+          <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
+        </head>
+        <body>
+          <Notifications />
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <NuqsAdapter>
+              <Providers>{children}</Providers>
+            </NuqsAdapter>
+          </NextIntlClientProvider>
+          <VercelComponents />
+        </body>
+      </MakeswiftProvider>
     </html>
   );
 }
