@@ -177,8 +177,8 @@ export default async function Product(props: Props) {
 
       <FeaturedProductsCarousel
         cta={{ label: t('RelatedProducts.cta'), href: '/shop-all' }}
-        emptyStateSubtitle={t('RelatedProducts.noRelatedProducts')}
-        emptyStateTitle={t('RelatedProducts.browseCatalog')}
+        emptyStateSubtitle={t('RelatedProducts.browseCatalog')}
+        emptyStateTitle={t('RelatedProducts.noRelatedProducts')}
         nextLabel={t('RelatedProducts.nextProducts')}
         previousLabel={t('RelatedProducts.previousProducts')}
         products={getRelatedProducts(productPromise)}

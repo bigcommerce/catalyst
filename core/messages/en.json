@@ -439,7 +439,7 @@
     },
     "RelatedProducts": {
       "title": "Related products",
-      "noRelatedProducts": "No related products found.",
+      "noRelatedProducts": "No related products found",
       "browseCatalog": "Try browsing our complete catalog of products.",
       "cta": "Shop all",
       "previousProducts": "Previous products",
