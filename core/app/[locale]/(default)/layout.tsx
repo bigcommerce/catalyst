@@ -29,7 +29,6 @@ export default async function DefaultLayout({ params, children }: Props) {
       </main>
       <Suspense>
         <Footer />
-        <SalesBuddyPage/>
         {/* <CustomerSupportDrawer /> */}
       </Suspense>
     </>

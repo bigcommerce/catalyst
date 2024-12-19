@@ -75,7 +75,7 @@ const getVariantProductInfo = async (metaData: any) => {
                   id: item?.id,
                   mpn: item?.mpn,
                   sku: item?.sku,
-                  name: productName + optionValues,
+                  name: optionValues,
                   selectedOptions: item?.selectedOption,
                 });
               }

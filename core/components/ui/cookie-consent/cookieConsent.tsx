@@ -2,7 +2,7 @@
 
 import useCookieScript from "use-cookiescript-hook";
 
-const CookieConsent = ({ url }: { url: string }) => {
+const CookieConsent = ({ url }: { url: any }) => {
 
   useCookieScript(url, {
     position: "head-bottom",

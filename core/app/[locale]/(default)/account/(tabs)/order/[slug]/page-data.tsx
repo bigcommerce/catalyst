@@ -61,6 +61,10 @@ const CustomerOrderDetails = graphql(
               }
             }
           }
+          handlingCostTotal {
+            currencyCode
+            value
+          }
           shippingCostTotal {
             value
             currencyCode

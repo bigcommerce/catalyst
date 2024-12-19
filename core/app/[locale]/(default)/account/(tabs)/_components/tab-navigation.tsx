@@ -13,8 +13,10 @@ export type TabType = (typeof tabList)[number];
 export const TabNavigation = () => {
   const t = useTranslations('Account.Home');
   const pathname = usePathname();
-  const activeTab = pathname.slice(0, -1).split('/').pop();
-
+  let activeTab: any = pathname.slice(0, -1).split('/').pop();
+  if(!isNaN(activeTab)) {
+    activeTab = 'orders';
+  }
   const tabsTitles = {
     addresses: t('addresses'),
     settings: t('settings'),
