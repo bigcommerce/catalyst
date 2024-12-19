@@ -11,35 +11,22 @@ function B2BProductionScripts() {
     <>
       <Script id="b2b-config">
         {`
-            window.b3CheckoutConfig = {
-              routes: {
-                dashboard: '/account.php?action=order_status',
-              },
-            }
-
             window.B3 = {
               setting: {
                 store_hash: '${process.env.BIGCOMMERCE_STORE_HASH}',
                 channel_id: ${process.env.BIGCOMMERCE_CHANNEL_ID},
                 platform: 'catalyst',
-              },
-              'dom.checkoutRegisterParentElement': '#checkout-app',
-              'dom.registerElement':
-              '[href^="/login.php"], #checkout-customer-login, [href="/login.php"] .navUser-item-loginLabel, #checkout-customer-returning .form-legend-container [href="#"]',
-              'dom.openB3Checkout': 'checkout-customer-continue',
-              before_login_goto_page: '/account.php?action=order_status',
-              checkout_super_clear_session: 'true',
-              'dom.navUserLoginElement': '.navUser-item.navUser-item--account',
+                cart_url: '/cart',
+              }
             }
         `}
       </Script>
       <Script
-        crossOrigin=""
-        src={`${process.env.B2B_BUYER_PORTAL_HOST}/index.*.js`}
+        data-channelid={process.env.BIGCOMMERCE_CHANNEL_ID}
+        data-storehash={process.env.BIGCOMMERCE_STORE_HASH}
+        src="https://cdn.bundleb2b.net/b2b/production/storefront/headless.js"
         type="module"
       />
-      <Script crossOrigin="" src={`${process.env.B2B_BUYER_PORTAL_HOST}/polyfills-legacy.*.js`} />
-      <Script crossOrigin="" src={`${process.env.B2B_BUYER_PORTAL_HOST}/index-legacy.*.js`} />
     </>
   );
 }
@@ -70,6 +57,7 @@ function B2BLocalDevelopmentScripts() {
                 store_hash: '${process.env.BIGCOMMERCE_STORE_HASH}',
                 channel_id: ${process.env.BIGCOMMERCE_CHANNEL_ID},
                 platform: 'catalyst',
+                cart_url: '/cart',
               },
             };
         `}
@@ -90,7 +78,7 @@ export async function B2BScripts() {
 
   return (
     <>
-      {process.env.NODE_ENV === 'production' ? (
+      {process.env.NODE_ENV === 'production' || process.env.VERCEL ? (
         <B2BProductionScripts />
       ) : (
         <B2BLocalDevelopmentScripts />

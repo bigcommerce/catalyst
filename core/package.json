@@ -4,7 +4,7 @@
   "version": "0.23.0",
   "private": true,
   "scripts": {
-    "dev": "npm run generate && next dev -p 3002",
+    "dev": "npm run generate && next dev",
     "generate": "dotenv -e .env.local -- node ./scripts/generate.cjs",
     "build": "npm run generate && next build",
     "build:analyze": "ANALYZE=true npm run build",
