@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { FeaturedBlogPostList } from '@/vibes/soul/sections/featured-blog-post-list';
-import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
+import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 
 import { getBlog, getBlogMetaData, getBlogPosts } from '../../page-data';
 
@@ -31,7 +31,7 @@ async function getPaginationInfo(props: Props) {
   const searchParams = await props.searchParams;
   const blogPosts = await getBlogPosts({ tagId, ...searchParams });
 
-  return pageInfoTransformer(blogPosts?.pageInfo);
+  return pageInfoTransformer(blogPosts?.pageInfo ?? defaultPageInfo);
 }
 
 export default async function Tag(props: Props) {
