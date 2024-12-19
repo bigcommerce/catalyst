@@ -1,14 +1,31 @@
 'use client';
 
-import useCookieScript from "use-cookiescript-hook";
+import { useEffect } from 'react';
 
-const CookieConsent = ({ url }: { url: string }) => {
+interface CookieConsentProps {
+  url: string;
+}
 
-  useCookieScript(url, {
-    position: "head-bottom",
-  });
+const CookieConsent = ({ url }: CookieConsentProps) => {
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = url;
+    script.async = true;
 
-  return(<></>);
+    // Get head element with null check
+    const head = document.head || document.getElementsByTagName('head')[0];
+
+    if (head) {
+      head.appendChild(script);
+
+      // Cleanup function
+      return () => {
+        head.removeChild(script);
+      };
+    }
+  }, [url]);
+
+  return null;
 };
 
 export default CookieConsent;

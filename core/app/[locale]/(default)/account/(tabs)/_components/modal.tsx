@@ -1,7 +1,7 @@
 'use client';
 
 import * as DialogPrimitive from '@radix-ui/react-alert-dialog';
-import { X } from 'lucide-react';
+import { Trash2, X } from 'lucide-react';
 import { MouseEventHandler, PropsWithChildren, useId } from 'react';
 
 import { Button } from '~/components/ui/button';
@@ -54,11 +54,13 @@ export const Modal = ({
           <div className="flex flex-col gap-2 p-6 lg:flex-row">
             <DialogPrimitive.Action asChild>
               <Button className="w-full lg:w-fit" onClick={actionHandler} variant="primary">
+              <Trash2 size={16} />
                 {confirmationText}
               </Button>
             </DialogPrimitive.Action>
             <DialogPrimitive.Cancel asChild>
               <Button className="w-full lg:w-fit" variant="subtle">
+              <Trash2 size={16} />
                 {abortText}
               </Button>
             </DialogPrimitive.Cancel>
