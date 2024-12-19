@@ -88,9 +88,9 @@ export const addToCart = async (
           optionEntityId: Number(field.name),
           optionValueEntityId:
             optionValueEntityId === 'true'
-              ? // @ts-expect-error Need to fix types
+              ? // @ts-expect-error Types from custom fields are not yet available, pending fix
                 Number(field.checkedValue)
-              : // @ts-expect-error Need to fix types
+              : // @ts-expect-error Types from custom fields are not yet available, pending fix
                 Number(field.uncheckedValue),
         };
 
