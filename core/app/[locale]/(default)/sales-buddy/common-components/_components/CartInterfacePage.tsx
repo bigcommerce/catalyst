@@ -178,7 +178,7 @@ export default function CartInterface() {
       ),
     },
     {
-      title: <AccordionTitle icon={CategoryIcon} text="Add Item to Cart" onClick={() => toggleAccordion(1)} />,
+      title: <AccordionTitle icon={CategoryIcon} text="Add Custom Item" onClick={() => toggleAccordion(1)} />,
       content: (
         <form onSubmit={handleCustomProductSubmit}>
           {renderInputFields(
