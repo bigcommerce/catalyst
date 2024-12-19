@@ -113,7 +113,7 @@ const OrderSummaryInfo = async ({ summaryInfo }: { summaryInfo: OrderDataType['s
           </div>
           { handlingCost.value > 0 && (
           <div className="flex justify-between border-b border-b-[#E8E7E7]">
-            <div>Freight & Handling</div>
+            <div>{t('surcharge')}</div>
             <div>
             {format.number(handlingCost.value, {
               style: 'currency',
@@ -268,7 +268,6 @@ export const OrderDetails = async ({ data }: { data: OrderDataType }) => {
   const shippingConsignments = consignments.shipping;
   const isMultiShippingConsignments = shippingConsignments && shippingConsignments.length > 1;
   const noOfItems: number = shippingConsignments?.[0]?.lineItems?.length || 0;
-  console.log('========order data=======', data);
   const breadcrumbs: any = [{
     label: "Orders",
     href: '/account/orders'
@@ -364,7 +363,7 @@ export const OrderDetails = async ({ data }: { data: OrderDataType }) => {
                       Customer Contact
                     </div>
                     <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">
-                      customer.email@domain.com
+                    {paymentInfo?.billingAddress?.email} 
                     </div>
                   </div>
                   <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">
@@ -375,7 +374,7 @@ export const OrderDetails = async ({ data }: { data: OrderDataType }) => {
                       <div>{shippingAddressData?.firstName} {shippingAddressData?.lastName}</div>
                       <div>{shippingAddressData?.address1}</div>
                       <div>{shippingAddressData?.city}</div>
-                      <div>{shippingAddressData?.stateOrProvince}, {shippingAddressData?.country} {shippingAddressData?.postalCode}</div>
+                      <div>{shippingAddressData?.stateOrProvince}, {shippingAddressData?.countryCode} {shippingAddressData?.postalCode}</div>
                     </div>
                   </div>
                   <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">
@@ -386,7 +385,7 @@ export const OrderDetails = async ({ data }: { data: OrderDataType }) => {
                       <div>{paymentInfo?.billingAddress?.firstName} {paymentInfo?.billingAddress?.lastName}</div>
                       <div>{paymentInfo?.billingAddress?.address1}</div>
                       <div>{paymentInfo?.billingAddress?.city}</div>
-                      <div>{paymentInfo?.billingAddress?.stateOrProvince}, {paymentInfo?.billingAddress?.country} {paymentInfo?.billingAddress?.postalCode}</div>
+                      <div>{paymentInfo?.billingAddress?.stateOrProvince}, {paymentInfo?.billingAddress?.countryCode} {paymentInfo?.billingAddress?.postalCode}</div>
                     </div>
                   </div>
                   {/*<div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">
