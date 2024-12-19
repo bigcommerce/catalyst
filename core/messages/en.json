@@ -178,7 +178,13 @@
     "heading": "Search",
     "products": "Products",
     "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
-    "searchResults": "Search results for"
+    "searchResults": "Search results for",
+    "emptyStateTitle": "Sorry, no results for \"{term}\".",
+    "emptyStateSubtitle": "Please try another search.",
+    "Breadcrumbs": {
+      "home": "Home",
+      "search": "Search"
+    }
   },
   "Account": {
     "Layout": {

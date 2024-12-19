@@ -2,40 +2,25 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
-import { createSearchParamsCache } from 'nuqs/server';
-import { cache } from 'react';
 
 import { Stream } from '@/vibes/soul/lib/streamable';
 import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { ListProduct } from '@/vibes/soul/primitives/products-list';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
-import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
 import { Option as SortOption } from '@/vibes/soul/sections/products-list-section/sorting';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
+import { createFiltersSearchParamCache } from '../../create-filters-search-params-cache';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { CategoryViewed } from './_components/category-viewed';
 import { getCategoryPageData } from './page-data';
 
 type SearchParams = Record<string, string | string[] | undefined>;
-
-const createFiltersSearchParamCache = cache(async (categoryId: number) => {
-  const search = await fetchFacetedSearch({ category: categoryId });
-  const facets = search.facets.items.filter((facet) => facet.__typename !== 'CategorySearchFilter');
-  const transformedFacets = await facetsTransformer({
-    refinedFacets: facets,
-    allFacets: facets,
-    searchParams: {},
-  });
-  const filters = transformedFacets.filter((facet) => facet != null);
-
-  return createSearchParamsCache(getFilterParsers(filters));
-});
 
 async function getCategory(categoryId: number) {
   const data = await getCategoryPageData({ categoryId });
@@ -64,7 +49,7 @@ async function getTitle(categoryId: number): Promise<string | null> {
 
 async function getSearch(categoryId: number, searchParamsPromise: Promise<SearchParams>) {
   const searchParams = await searchParamsPromise;
-  const searchParamsCache = await createFiltersSearchParamCache(categoryId);
+  const searchParamsCache = await createFiltersSearchParamCache({ category: categoryId });
   const parsedSearchParams = searchParamsCache.parse(searchParams);
   const search = await fetchFacetedSearch({
     ...searchParams,
@@ -114,7 +99,7 @@ async function getFilters(
   searchParamsPromise: Promise<SearchParams>,
 ): Promise<Filter[]> {
   const searchParams = await searchParamsPromise;
-  const searchParamsCache = await createFiltersSearchParamCache(categoryId);
+  const searchParamsCache = await createFiltersSearchParamCache({ category: categoryId });
   const parsedSearchParams = searchParamsCache.parse(searchParams);
   const categorySearch = await fetchFacetedSearch({ category: categoryId });
   const refinedSearch = await fetchFacetedSearch({
@@ -165,7 +150,7 @@ async function getPaginationInfo(
   searchParamsPromise: Promise<SearchParams>,
 ): Promise<CursorPaginationInfo> {
   const searchParams = await searchParamsPromise;
-  const searchParamsCache = await createFiltersSearchParamCache(categoryId);
+  const searchParamsCache = await createFiltersSearchParamCache({ category: categoryId });
   const parsedSearchParams = searchParamsCache.parse(searchParams);
   const search = await fetchFacetedSearch({
     ...searchParams,
