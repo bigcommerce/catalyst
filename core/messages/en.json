@@ -420,9 +420,6 @@
         "unavailable": "Unavailable"
       }
     },
-    "Carousel": {
-      "relatedProducts": "Related products"
-    },
     "Gallery": {
       "previous": "Previous product image",
       "next": "Next product image",
@@ -439,6 +436,15 @@
     },
     "Warranty": {
       "heading": "Warranty"
+    },
+    "RelatedProducts": {
+      "title": "Related products",
+      "noRelatedProducts": "No related products found.",
+      "browseCatalog": "Try browsing our complete catalog of products.",
+      "cta": "Shop all",
+      "previousProducts": "Previous products",
+      "nextProducts": "Next products",
+      "scrollbar": "Related products scrollbar"
     },
     "Reviews": {
       "heading": "Reviews",

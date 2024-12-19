@@ -6,6 +6,7 @@ import { client } from '~/client';
 import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
 
 import { ProductSchemaFragment } from './_components/product-schema/fragment';
 import { ProductViewedFragment } from './_components/product-viewed/fragment';
@@ -266,6 +267,13 @@ const ProductPageQuery = graphql(
             metaDescription
             metaKeywords
           }
+          relatedProducts(first: 8) {
+            edges {
+              node {
+                ...FeaturedProductsCarouselFragment
+              }
+            }
+          }
         }
       }
     }
@@ -274,6 +282,7 @@ const ProductPageQuery = graphql(
     ProductDetailsFragment,
     ProductViewedFragment,
     ProductSchemaFragment,
+    FeaturedProductsCarouselFragment,
     // DetailsFragment,
     // DescriptionFragment,
     // WarrantyFragment,
