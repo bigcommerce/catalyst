@@ -39,13 +39,16 @@ export const CartIcon = ({ count: serverCount }: CartIconProps) => {
 
   if (!count) {
     return (
-      <img
+      <div className='flex items-center'>
+        <img
         className='header-cart-icon mr-0 relative left-[0.4em]'
         src={cartIconBase64}
         alt="Cart"
         style={{ width: '24px', height: '24px' }}
         aria-label="cart"
       />
+        <Badge className="text-[#008bb7] pl-2 text-[15px] header-cart-count">{count}</Badge>
+      </div>
     );
   }
 
