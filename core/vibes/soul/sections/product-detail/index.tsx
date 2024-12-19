@@ -1,5 +1,5 @@
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/primitives/breadcrumbs';
+import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/primitives/breadcrumbs';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
 import { Rating } from '@/vibes/soul/primitives/rating';
 import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery';
@@ -36,7 +36,7 @@ export function ProductDetail<F extends Field>({
   product: streamableProduct,
   action,
   fields: streamableFields,
-  breadcrumbs: streamableBreadcrumbs,
+  breadcrumbs,
   quantityLabel,
   incrementLabel,
   decrementLabel,
@@ -47,11 +47,7 @@ export function ProductDetail<F extends Field>({
   return (
     <section className="@container">
       <div className="mx-auto w-full max-w-screen-lg px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
-        <Stream fallback={<BreadcrumbsSkeleton className="mb-6" />} value={streamableBreadcrumbs}>
-          {(breadcrumbs) =>
-            breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} className="mb-6" />
-          }
-        </Stream>
+        {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} className="mb-6" />}
 
         <Stream fallback={<ProductDetailSkeleton />} value={streamableProduct}>
           {(product) =>

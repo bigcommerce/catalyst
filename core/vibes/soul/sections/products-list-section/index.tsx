@@ -4,11 +4,7 @@ import { Suspense } from 'react';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/primitives/breadcrumbs';
 import { Button } from '@/vibes/soul/primitives/button';
-import {
-  CursorPagination,
-  CursorPaginationInfo,
-  CursorPaginationSkeleton,
-} from '@/vibes/soul/primitives/cursor-pagination';
+import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { ListProduct, ProductsList } from '@/vibes/soul/primitives/products-list';
 import * as SidePanel from '@/vibes/soul/primitives/side-panel';
 
@@ -18,14 +14,14 @@ import { ProductListContainer } from './product-list-container';
 import { Sorting, Option as SortOption } from './sorting';
 
 interface Props {
-  breadcrumbs?: Streamable<Breadcrumb[] | null>;
+  breadcrumbs?: Streamable<Breadcrumb[]>;
   title?: Streamable<string | null>;
   totalCount: Streamable<number>;
   products: Streamable<ListProduct[]>;
   filters: Streamable<Filter[]>;
   sortOptions: Streamable<SortOption[]>;
   compareProducts?: Streamable<ListProduct[] | null>;
-  paginationInfo?: Streamable<CursorPaginationInfo | null>;
+  paginationInfo?: Streamable<CursorPaginationInfo>;
   compareAction?: React.ComponentProps<'form'>['action'];
   compareLabel?: string;
   filterLabel?: string;
@@ -140,9 +136,8 @@ export function ProductsListSection({
                 products={products}
                 showCompare
               />
-              <Stream fallback={<CursorPaginationSkeleton />} value={paginationInfo}>
-                {(info) => info && <CursorPagination info={info} />}
-              </Stream>
+
+              {paginationInfo && <CursorPagination info={paginationInfo} />}
             </ProductListContainer>
           </div>
         </div>
