@@ -78,9 +78,11 @@ const CustomerOrderDetails = graphql(
             lastName
             address1
             city
+            email
             stateOrProvince
             postalCode
             country
+            countryCode
           }
           consignments {
             shipping {
@@ -95,6 +97,7 @@ const CustomerOrderDetails = graphql(
                     stateOrProvince
                     postalCode
                     country
+                    countryCode
                   }
                   shipments {
                     edges {

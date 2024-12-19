@@ -218,7 +218,8 @@
       "shippingPayment": "Payment",
       "shippingPaymentMethod": "Payment method",
       "billingAddress": "Billing address",
-      "subTotalReg": "Reg. Subtotal"
+      "subTotalReg": "Reg. Subtotal",
+      "surcharge": "Handling & Surcharge"
     },
     "Wishlist": {
       "noItems": "No items added",
