@@ -1,11 +1,10 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-
 import { FragmentOf } from '~/client/graphql';
 import { Button } from '~/components/ui/button';
-
 import { AddToCartButtonFragment } from './fragment';
+import { ShoppingCart } from 'lucide-react';
 
 export const AddToCartButton = ({
   children,
@@ -42,25 +41,19 @@ export const AddToCartButton = ({
   return (
     <Button
       id="add-to-cart"
-      className="rounded-[4px] 
-  uppercase 
-  relative 
-  px-[30px] 
-  py-[15px] 
-  !bg-[#03465c] 
-  text-white 
-  text-[14px] 
-  font-medium 
-  transition-colors 
-  duration-300 
-  ease-in-out"
+      className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#03465c] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
       disabled={isProductDisabled}
       loading={loading}
       loadingText={t('processing')}
       type="submit"
     >
       {children}
-      {buttonText()}
+      <span className="transition-transform duration-300 group-hover:-translate-x-2">
+        {buttonText()}
+      </span>
+      <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[4em]">
+        <ShoppingCart className="h-5 w-0 transform opacity-0 transition-all duration-300 group-hover:w-5 group-hover:opacity-100" />
+      </div>
     </Button>
   );
 };

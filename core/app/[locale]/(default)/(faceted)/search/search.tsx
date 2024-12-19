@@ -6,6 +6,7 @@ import {
   Configure,
   RefinementList,
   ToggleRefinement,
+  HierarchicalMenu,
   DynamicWidgets,
   RangeInput,
   HitsPerPage,
@@ -104,46 +105,49 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
           cleanUrlOnDispose: false
         },
         stateMapping: {
-        stateToRoute(uiState: any) {
-          const indexUiState = uiState[indexName];
-          return {
-            query: indexUiState.query,
-            categories: indexUiState.menu?.categories,
-            brand_name: indexUiState.refinementList?.brand_name,
-            collection: indexUiState.refinementList?.['metafields.Akeneo.collection'],
-            finish_color: indexUiState.refinementList?.['variants.options.Finish Color'],
-            number_of_bulbs: indexUiState.refinementList?.['metafields.Akeneo.number_of_bulbs'],
-            product_style: indexUiState.refinementList?.['metafields.Akeneo.product_style'],
-            on_sale: indexUiState.toggle?.['on_sale'] === null || indexUiState.toggle?.['on_sale'] === undefined ? undefined : indexUiState.toggle?.['on_sale'] as any,
-            page: indexUiState.page,
-            hitsPerPage: indexUiState.hitsPerPage,
-            sortBy: indexUiState.sortBy,
-          };
-        },
-        routeToState(routeState: any) {
-          console.log(routeState);
-          return {
-            [indexName]: {
-              query: routeState?.query,
-              menu: {
-                categories: routeState?.categories,
+          stateToRoute(uiState: any) {
+            const indexUiState = uiState[indexName];
+            console.log(indexUiState);
+            return {
+              query: indexUiState.query,
+              categories: indexUiState.hierarchicalMenu?.['categories.lvl0'],
+              brand_name: indexUiState.refinementList?.brand_name,
+              collection: indexUiState.refinementList?.['metafields.Akeneo.collection'],
+              finish_color: indexUiState.refinementList?.['variants.options.Finish Color'],
+              number_of_bulbs: indexUiState.refinementList?.['metafields.Akeneo.number_of_bulbs'],
+              product_style: indexUiState.refinementList?.['metafields.Akeneo.product_style'],
+              on_sale: indexUiState.toggle?.['on_sale'] === null || indexUiState.toggle?.['on_sale'] === undefined ? undefined : indexUiState.toggle?.['on_sale'] as any,
+              is_new: indexUiState.toggle?.['is_new'] === null || indexUiState.toggle?.['is_new'] === undefined ? undefined : indexUiState.toggle?.['is_new'] as any,
+              page: indexUiState.page,
+              hitsPerPage: indexUiState.hitsPerPage,
+              sortBy: indexUiState.sortBy,
+            };
+          },
+          routeToState(routeState: any) {
+            console.log(routeState);
+            return {
+              [indexName]: {
+                query: routeState?.query,
+                hierarchicalMenu: {
+                  'categories.lvl0': routeState?.categories
+                },
+                refinementList: {
+                  'brand_name': routeState?.brand_name,
+                  'metafields.Akeneo.collection': routeState?.collection,
+                  'variants.options.Finish Color': routeState?.finish_color,
+                  'metafields.Akeneo.number_of_bulbs': routeState?.number_of_bulbs,
+                  'metafields.Akeneo.product_style': routeState?.product_style
+                },
+                toggle: {
+                  'on_sale': routeState?.on_sale == null || routeState?.on_sale == undefined ? undefined : (routeState?.on_sale === 'true' || routeState?.on_sale === true),
+                  'is_new': routeState?.is_new == null || routeState?.is_new == undefined ? undefined : (routeState?.is_new === 'true' || routeState?.is_new === true),
+                },
+                page: routeState?.page,
+                hitsPerPage: routeState?.hitsPerPage,
+                sortBy: routeState?.sortBy
               },
-              refinementList: {
-                'brand_name': routeState?.brand_name,
-                'metafields.Akeneo.collection': routeState?.collection,
-                'variants.options.Finish Color': routeState?.finish_color,
-                'metafields.Akeneo.number_of_bulbs': routeState?.number_of_bulbs,
-                'metafields.Akeneo.product_style': routeState?.product_style
-              },
-              toggle: {
-                'on_sale': routeState?.on_sale == null || routeState?.on_sale == undefined ? undefined : (routeState?.on_sale === 'true' || routeState?.on_sale === true),
-              },
-              page: routeState?.page,
-              hitsPerPage: routeState?.hitsPerPage,
-              sortBy: routeState?.sortBy
-            },
-          };
-        },
+            };
+          },
         }
       }}
       onStateChange={({
@@ -180,6 +184,14 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
         <div className="mt-4 flex flex-col">
 
           <div className="mt-4 order-2">
+            <Facet title="Category">
+              <HierarchicalMenu attributes={[
+                'categories.lvl0',
+                'categories.lvl1',
+                'categories.lvl2',
+                'categories.lvl3'
+              ]} />
+            </Facet>
             <DynamicWidgets maxValuesPerFacet={1000}>
               <Facet title="Brand">
                 <RefinementList attribute="brand_name" searchable={false} />
@@ -188,7 +200,7 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
                 <RefinementList attribute="brand_name" />
               </Panel>
               <Facet title="Collection">
-                <RefinementList attribute="metafields.Akeneo.collection" />
+                <RefinementList attribute="metafields.Details.Collection" />
               </Facet>
               <Facet title="Finish Color">
                 <RefinementList attribute="variants.options.Finish Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} />
@@ -203,7 +215,7 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
                 <RefinementList attribute="variants.options.Blade Color" searchable={true} searchablePlaceholder="Quick Lookup" />
               </Panel>
               <Facet title="Number of Lights">
-                <RefinementList attribute="metafields.Akeneo.number_of_bulbs"
+                <RefinementList attribute="metafields.Details.Number of Bulbs"
                   sortBy={sortByNumericName}
                   limit={20}
                   showMore={true}
@@ -219,34 +231,154 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
                   }} />
               </Facet>
               <Facet title="Style">
-                <RefinementList attribute="metafields.Akeneo.product_style" />
+                <RefinementList attribute="metafields.Details.Product Style" />
               </Facet>
               <Facet title="Fuel Source">
-                <RefinementList attribute="metafields.Akeneo.fuel_source" />
-              </Facet>
-              <Facet title="Mounting Options">
-                <RefinementList attribute="metafields.Akeneo.mounting_options" />
+                <RefinementList attribute="metafields.Details.Fuel Source" />
               </Facet>
               <Facet title="Voltage Rating">
-                <RefinementList attribute="metafields.Akeneo.voltage" />
+                <RefinementList attribute="metafields.Details.Voltage" />
               </Facet>
               <Facet title="Shape">
-                <RefinementList attribute="metafields.Akeneo.product_shape" />
+                <RefinementList attribute="metafields.Details.Product Shape" />
               </Facet>
               <Panel header="Price">
                 <RangeInput attribute="prices.USD" classNames={{ input: 'max-w-[80px]' }} />
               </Panel>
-              <Panel header="Price">
-                <RangeInput attribute="prices.USD" classNames={{ input: 'max-w-[80px]' }} />
-              </Panel>
+              <Facet title="Length">
+                <RefinementList attribute="metafields.Details.Length" searchable={false} />
+              </Facet>
               <Facet title="Weight">
-                <RefinementList attribute="metafields.Akeneo.weight" searchable={false} />
+                <RefinementList attribute="metafields.Details.Weight" searchable={false} />
               </Facet>
+              <Facet title="Depth">
+                <RefinementList attribute="metafields.Details.Depth" searchable={false} />
+              </Facet>
+              <Facet title="Width">
+                <RefinementList attribute="metafields.Details.Width" searchable={false} />
+              </Facet>
+              <Facet title="Height">
+                <RefinementList attribute="metafields.Details.Height" searchable={false} />
+              </Facet>
+              <Facet title="Application">
+                <RefinementList attribute="metafields.Details.Application" />
+              </Facet>
+              <Facet title="Base Type">
+                <RefinementList attribute="metafields.Details.Base Type" />
+              </Facet>
+              <Facet title="Blade Span">
+                <RefinementList attribute="metafields.Details.Blade Span" />
+              </Facet>
+              <Facet title="Blade to Ceiling Height">
+                <RefinementList attribute="metafields.Details.Blade to Ceiling Height" />
+              </Facet>
+              <Facet title="Color Temperature">
+                <RefinementList attribute="metafields.Details.Color Temperature" />
+              </Facet>
+              <Facet title="Control Type">
+                <RefinementList attribute="metafields.Details.Control Type" />
+              </Facet>
+              <Facet title="Crystal Type">
+                <RefinementList attribute="metafields.Details.Crystal Type" />
+              </Facet>
+              <Facet title="Crystal Type">
+                <RefinementList attribute="metafields.Details.Crystal Type" />
+              </Facet>
+              <Facet title="Designer">
+                <RefinementList attribute="metafields.Details.Designer" />
+              </Facet>
+              <Facet title="Controls Included">
+                <RefinementList attribute="metafields.Details.Controls Included" />
+              </Facet>
+              <Facet title="Hanging Method">
+                <RefinementList attribute="metafields.Details.Hanging Method" />
+              </Facet>
+              <Facet title="Heat Rating">
+                <RefinementList attribute="metafields.Details.Heat Rating" />
+              </Facet>
+              <Facet title="Heating Area">
+                <RefinementList attribute="metafields.Details.Heating Area" />
+              </Facet>
+              <Facet title="IR Heat Technology">
+                <RefinementList attribute="metafields.Details.IR Heat Technology" />
+              </Facet>
+              <Facet title="Lift">
+                <RefinementList attribute="metafields.Details.Lift" />
+              </Facet>
+              <Facet title="Lumen Output">
+                <RefinementList attribute="metafields.Details.Lumen Output" />
+              </Facet>
+              <Facet title="Material">
+                <RefinementList attribute="metafields.Details.Material" />
+              </Facet>
+              <Facet title="Minimum Mounting Height">
+                <RefinementList attribute="metafields.Details.Minimum Mounting Height" />
+              </Facet>
+              <Facet title="Number of Blades">
+                <RefinementList attribute="metafields.Details.Number of Blades" />
+              </Facet>
+              <Facet title="Number of Main Burners">
+                <RefinementList attribute="metafields.Details.Number of Main Burners" />
+              </Facet>
+              <Facet title="Photocell Included">
+                <RefinementList attribute="metafields.Details.Photocell Included" />
+              </Facet>
+              <Facet title="Pole Material">
+                <RefinementList attribute="metafields.Details.Pole Material" />
+              </Facet>
+              <Facet title="Pole Diameter">
+                <RefinementList attribute="metafields.Details.Pole Diameter" />
+              </Facet>
+              <Facet title="Power Source">
+                <RefinementList attribute="metafields.Details.Power Source" />
+              </Facet>
+              <Facet title="Product Design">
+                <RefinementList attribute="metafields.Details.Product Design" />
+              </Facet>
+              <Facet title="Shade Height">
+                <RefinementList attribute="metafields.Details.Shade Height" />
+              </Facet>
+              <Facet title="Shade Material">
+                <RefinementList attribute="metafields.Details.Shade Material" />
+              </Facet>
+              <Facet title="Shade Width Bottom">
+                <RefinementList attribute="metafields.Details.Shade Width Bottom" />
+              </Facet>
+              <Facet title="Shade Width Top">
+                <RefinementList attribute="metafields.Details.Shade Width Top" />
+              </Facet>
+              <Facet title="Smart Compatible">
+                <RefinementList attribute="metafields.Details.Smart Compatible" />
+              </Facet>
+              <Facet title="Smart Product">
+                <RefinementList attribute="metafields.Details.Smart Product" />
+              </Facet>
+              <Facet title="Switch Type">
+                <RefinementList attribute="metafields.Details.Switch Type" />
+              </Facet>
+              <Facet title="Tilt">
+                <RefinementList attribute="metafields.Details.Tilt" />
+              </Facet>
+              <Facet title="Total Grilling Area">
+                <RefinementList attribute="metafields.Details.Total Grilling Area" />
+              </Facet>
+              <Facet title="Voltage Options">
+                <RefinementList attribute="metafields.Details.Voltage Options" />
+              </Facet>
+              <Facet title="Wattage">
+                <RefinementList attribute="metafields.Details.Wattage" />
+              </Facet>
+              <Panel header="Can be Recessed">
+                <ToggleRefinement attribute="metafields.Details.Can be Recessed" label="Can be Recessed" />
+              </Panel>
               <Panel header="Rating">
-                <RatingMenu attribute="rating" />
+                <RatingMenu attribute="reviews_rating_sum" />
               </Panel>
               <Panel header="Free Shipping">
                 <ToggleRefinement attribute="free_shipping" label="Free Shipping" />
+              </Panel>
+              <Panel header="Is New">
+                <ToggleRefinement attribute="is_new" label="Is New" />
               </Panel>
               <Panel header="On Sale">
                 <ToggleRefinement attribute="on_sale" label="On Sale" />
@@ -326,13 +458,13 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
                 <RefinementList attribute="brand_name" searchable={true} limit={10} showMore={true} showMoreLimit={100} />
               </FacetDropdown>
               <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
-                <RefinementList attribute="metafields.Akeneo.collection" limit={10} showMore={true} showMoreLimit={100} />
+                <RefinementList attribute="metafields.Details.Collection" limit={10} showMore={true} showMoreLimit={100} />
               </FacetDropdown>
               <FacetDropdown buttonText="Finish Color" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
                 <RefinementList attribute="variants.options.Finish Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} />
               </FacetDropdown>
               <FacetDropdown buttonText="Number of Lights" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
-                <RefinementList attribute="metafields.Akeneo.number_of_bulbs"
+                <RefinementList attribute="metafields.Details.Number of Bulbs"
                   title="Number of Lights"
                   sortBy={sortByNumericName}
                   limit={20}
@@ -349,38 +481,38 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
                   }} />
               </FacetDropdown>
               <FacetDropdown buttonText="Style" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
-                <RefinementList attribute="metafields.Akeneo.product_style" />
+                <RefinementList attribute="metafields.Details.Product Style" />
               </FacetDropdown>
 
               {/* Patio (Heating specific): Fuel Source, Collection, Mounting Option, Voltage Rating */}
               {/*
               <FacetDropdown buttonText="Fuel Source" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
-                <RefinementList attribute="metafields.Akeneo.fuel_source" />
+                <RefinementList attribute="metafields.Details.Fuel Source" />
               </FacetDropdown>
               <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
-                <RefinementList attribute="metafields.Akeneo.collection" />
+                <RefinementList attribute="metafields.Details.Collection" />
               </FacetDropdown>
               <FacetDropdown buttonText="Mounting Options" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
-                <RefinementList attribute="metafields.Akeneo.mounting_options" />
+                <RefinementList attribute="metafields.Details.Mounting Options" />
               </FacetDropdown>
               <FacetDropdown buttonText="Voltage Rating" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
-                <RefinementList attribute="metafields.Akeneo.voltage" />
+                <RefinementList attribute="metafields.Akeneo.Voltage" />
               </FacetDropdown>
               */}
 
               {/* Patio (Shading specific): Collection, Shape, Price, Weight, Finish */}
               {/*
               <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
-                <RefinementList attribute="metafields.Akeneo.collection" />
+                <RefinementList attribute="metafields.Details.Collection" />
               </FacetDropdown>
               <FacetDropdown buttonText="Shape" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
-                <RefinementList attribute="metafields.Akeneo.product_shape" />
+                <RefinementList attribute="metafields.Details.Product Shape" />
               </FacetDropdown>
               <FacetDropdown buttonText="Price" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
                 <RangeInput attribute="prices.USD" classNames={{ input: 'max-w-[80px]' }} />
               </FacetDropdown>
               <FacetDropdown buttonText="Weight" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
-                <RefinementList attribute="metafields.Akeneo.weight" />
+                <RefinementList attribute="metafields.Details.Weight" />
               </FacetDropdown>
               <FacetDropdown buttonText="Finish" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
                 <RefinementList attribute="variants.options.Finish Color" searchable={true} searchablePlaceholder="Quick Lookup" />

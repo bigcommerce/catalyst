@@ -1,6 +1,6 @@
 import { FragmentOf } from 'gql.tada';
 import { useTranslations } from 'next-intl';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useState } from 'react';
 
 import { Field, FieldControl, FieldLabel, FieldMessage, Input } from '~/components/ui/form';
 
@@ -22,6 +22,26 @@ export const Text = ({ defaultValue, field, isValid, name, onChange, type }: Tex
   const t = useTranslations('Components.FormFields.Validation');
 
   const fieldName = FieldNameToFieldId[field.entityId];
+  const [emailError, setEmailError] = useState('');
+
+  const validateEmail = (email: string) => {
+    // Check if email is empty
+    if (!email.trim()) {
+      setEmailError('Enter a valid email such as name@domain.com');
+      return false;
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    // Check if email is invalid
+    if (!emailRegex.test(email)) {
+      setEmailError('Please enter a valid email address');
+      return false;
+    }
+
+    setEmailError('');
+    return true;
+  };
 
   return (
     <Field className="relative space-y-2" name={name}>
@@ -42,23 +62,28 @@ export const Text = ({ defaultValue, field, isValid, name, onChange, type }: Tex
           onInvalid={field.isRequired ? onChange : undefined}
           required={field.isRequired}
           type={type === 'email' ? 'email' : 'text'}
+          onBlur={(e) => {
+            if (type === 'email') {
+              validateEmail((e.target as HTMLInputElement).value);
+            }
+          }}
         />
       </FieldControl>
-      <div className="relative h-7 pass2">
+      <div className="pass2 relative h-7">
         {field.isRequired && (
           <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-error-secondary validation-error-email relative text-[#ff4500]"
+            className="text-error-secondary validation-error-email relative inline-flex w-full text-xs font-normal text-[#A71F23]"
             match="valueMissing"
           >
             {t(fieldName ?? 'empty')}
           </FieldMessage>
         )}
-        {fieldName === 'email' && (
+        {fieldName === 'email' && emailError && (
           <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-error-secondary validation-error-13 text-[#ff4500]"
+            className="text-error-secondary validation-error-13 inline-flex w-full text-xs font-normal text-[#A71F23]"
             match="typeMismatch"
           >
-            {t('email')}
+            {emailError}
           </FieldMessage>
         )}
       </div>

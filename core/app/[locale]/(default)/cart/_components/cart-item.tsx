@@ -171,7 +171,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
   const format = useFormatter();
   let oldPrice = product?.originalPrice?.value;
   let salePrice = product?.extendedSalePrice?.value;
-  let discountedPrice: any = (Number(100 - (salePrice * 100) / oldPrice)?.toFixed(2));
+  let discountedPrice: any = Number(100 - (salePrice * 100) / oldPrice)?.toFixed(2);
   let discountPriceText: string = '';
   if (discountedPrice > 0) {
     discountPriceText = discountedPrice + '% Off';
@@ -196,7 +196,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
 
           <div className="flex-1">
             <p className="hidden text-base text-gray-500">{product.brand}</p>
-            <div className="grid lg:grid-cols-[40%_20%_40%] gap-1">
+            <div className="grid gap-1 lg:grid-cols-[40%_20%_40%]">
               <div className="">
                 <Link href={product.url}>
                   <p className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
@@ -347,7 +347,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                   <ItemQuantity product={product} />
                 </div>
               </div>
-              <div className="pl-[10px] overflow-x-hidden">
+              <div className="overflow-x-hidden pl-[10px]">
                 <ProductPriceAdjuster
                   parentSku={product.sku}
                   sku={product.sku}

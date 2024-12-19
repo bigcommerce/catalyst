@@ -1,11 +1,20 @@
-// gallery
-
 'use client';
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { FragmentOf } from '~/client/graphql';
 import { Gallery as ComponentsGallery } from '~/components/ui/gallery';
 import { GalleryFragment } from './fragment';
+
+interface Image {
+  url: string;
+  altText?: string;
+  isDefault: boolean;
+}
+
+interface Video {
+  title: string;
+  url: string;
+}
 
 interface Props {
   product: FragmentOf<typeof GalleryFragment>;
@@ -15,13 +24,11 @@ interface Props {
 }
 
 export const Gallery = ({ product, bannerIcon, galleryExpandIcon, productMpn }: Props) => {
-  const images = removeEdgesAndNodes(product.images);
+  const images: Image[] = removeEdgesAndNodes(product.images) as Image[];
+  const videos: Video[] = removeEdgesAndNodes(product.videos) as Video[];
 
-  // Pick the top-level default image
   const topLevelDefaultImg = images.find((image) => image.isDefault);
 
-  // If product.defaultImage exists, and product.defaultImage.url is not equal to the url of the isDefault image in images,
-  // mark the existing isDefault image to "isDefault = false" and append the correct default image to images
   if (product.defaultImage && topLevelDefaultImg?.url !== product.defaultImage.url) {
     images.forEach((image) => {
       image.isDefault = false;
@@ -33,13 +40,18 @@ export const Gallery = ({ product, bannerIcon, galleryExpandIcon, productMpn }: 
       isDefault: true,
     });
   }
+
   const defaultImageIndex = images.findIndex((image) => image.isDefault);
 
-  // Add MPN to image metadata if needed
   const imagesWithMetadata = images.map((image) => ({
     src: image.url,
-    altText: image.altText,
-    mpn: productMpn, 
+    altText: image.altText || 'No description available',
+    mpn: productMpn,
+  }));
+
+  const videosWithMetadata = videos.map((video) => ({
+    url: video.url,
+    title: video.title,
   }));
 
   return (
@@ -50,7 +62,8 @@ export const Gallery = ({ product, bannerIcon, galleryExpandIcon, productMpn }: 
           galleryExpandIcon={galleryExpandIcon}
           defaultImageIndex={defaultImageIndex}
           images={imagesWithMetadata}
-          productMpn={productMpn} 
+          videos={videosWithMetadata}
+          productMpn={productMpn}
         />
       </div>
     </div>

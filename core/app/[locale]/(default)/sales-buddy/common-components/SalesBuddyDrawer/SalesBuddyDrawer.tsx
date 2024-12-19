@@ -38,7 +38,7 @@ export default function DrawerModal({
             <Image className="h-[25.2px] w-[28px]" src={headerIcon} alt="header-icon" />
             <span className="font-Open-Sans text-2xl font-bold">{headerTitle}</span>
           </div>
-          <button onClick={onClose} className="h-[25px] w-[25px] text-white hover:text-black">
+          <button onClick={onClose} className="h-[25px] w-[25px] text-white">
             ✖
           </button>
         </div>

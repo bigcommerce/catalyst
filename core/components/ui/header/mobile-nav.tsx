@@ -74,6 +74,7 @@ export const MobileNav = ({ links, logo, homeLogoMobile }: Props) => {
                     priority
                     src={homeLogoMobile}
                     width={155}
+                    unoptimized={true}
                   />
                 ) : (
                   <span className="w-[45%] truncate text-2xl font-black">{homeLogoMobile}</span>
@@ -94,29 +95,29 @@ export const MobileNav = ({ links, logo, homeLogoMobile }: Props) => {
             >
               <NavigationMenuPrimitive.List className="flex flex-col gap-0 lg:gap-4">
                 <div className="flex justify-between">
-                {!showMainMenu && (
-  <>
-    <button
-      onClick={handleBackToMain}
-      className="relative -left-2 mb-5 flex items-center text-left font-sans text-sm font-normal leading-6 tracking-[0.25px] text-[#008BB7]"
-    >
-      <ChevronRight className="rotate-180 text-black" />
-      Main Menu
-    </button>
-    
-    <CustomLink
-      href={selectedCategory || ''}
-      onClick={() => {
-        setOpen(false); // Close the sheet/mobile menu
-        setSelectedCategory(null); // Reset selected category
-        setShowMainMenu(true); // Show main menu for next time
-      }}
-      className="mb-5 flex items-center text-left font-sans text-sm font-normal leading-6 tracking-[0.25px] text-[#008BB7]"
-    >
-      SHOP ALL
-    </CustomLink>
-  </>
-)}
+                  {!showMainMenu && (
+                    <>
+                      <button
+                        onClick={handleBackToMain}
+                        className="relative -left-2 mb-5 flex items-center text-left font-sans text-sm font-normal leading-6 tracking-[0.25px] text-[#008BB7]"
+                      >
+                        <ChevronRight className="rotate-180 text-black" />
+                        Main Menu
+                      </button>
+
+                      <CustomLink
+                        href={selectedCategory || ''}
+                        onClick={() => {
+                          setOpen(false); // Close the sheet/mobile menu
+                          setSelectedCategory(null); // Reset selected category
+                          setShowMainMenu(true); // Show main menu for next time
+                        }}
+                        className="mb-5 flex items-center text-left font-sans text-sm font-normal leading-6 tracking-[0.25px] text-[#008BB7]"
+                      >
+                        SHOP ALL
+                      </CustomLink>
+                    </>
+                  )}
                 </div>
 
                 {showMainMenu ? (

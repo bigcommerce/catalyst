@@ -25,7 +25,7 @@ export async function generateMetadata() {
 
 const breadcrumbs: any = [
   {
-    label: 'Rewards Program',
+    label: 'New Account',
     href: '#',
   },
 ];
@@ -68,7 +68,7 @@ export default async function Register() {
   } = countries.find(({ name }) => name === defaultCountry) || {};
 
   return (
-    <div className="mx-auto mb-10 text-base lg:w-2/3">
+    <div className="mx-5 sm:mx-auto [&_form_span.loading-span]:left-0 [&_form_span.loading-span]:top-0 mb-10 text-base lg:w-2/3">
       {/* Updated logo section with horizontal scroll */}
       {/* Updated logo section with fixed scroll starting position */}
       <div className="absolute left-0 w-full bg-[#F3F4F5]">

@@ -201,7 +201,7 @@ export const ProductFlyout = ({
                     {productData?.name}
                   </p>
                   <p className="popup-box1-div2-sku text-center text-[12px] leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:text-left ssm:tracking-[0.015625rem]">
-                    SKU: {product?.sku}
+                    SKU: {product?.mpn}
                   </p>
                   {productData?.selectedOptions?.map((selectedOption: any, index: number) => {
                     let pipeLineData = '';

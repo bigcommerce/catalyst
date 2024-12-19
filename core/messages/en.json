@@ -84,7 +84,7 @@
         "confirmResetPassword": "If the email address {email} is linked to an account in our store, we have sent you a password reset email. Please check your inbox and spam folder if you don't see it.",
         "submitting": "Submitting...",
         "submit": "Reset password",
-        "emailInvalidMessage": "Invalid email"
+        "emailInvalidMessage": "Please enter a valid email address"
       },
       "Errors": {
         "error": "Something went wrong. Please try again later."

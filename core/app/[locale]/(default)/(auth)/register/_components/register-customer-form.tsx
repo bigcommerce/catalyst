@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
+import Link from 'next/link';
 
 import { useAccountStatusContext } from '~/app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
 import { ExistingResultType } from '~/client/util';
@@ -155,7 +156,7 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
   return (
     <>
       {formStatus && (
-        <Message className="mb-8 border border-[#ff4500] rounded-[3px]" variant={formStatus.status}>
+        <Message className="mb-8 rounded-[3px] border border-[#A71F23]" variant={formStatus.status}>
           <p>{formStatus.message}</p>
         </Message>
       )}
@@ -170,6 +171,9 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
             .filter((field) => !CUSTOMER_FIELDS_TO_EXCLUDE.includes(field.entityId))
             .filter((field) => FieldNameToFieldId[field.entityId] !== 'confirmPassword')
             .filter((field) => field.label !== 'Tax ID / Licence#')
+            .filter((field) => field.label !== 'license (Tax ID)')
+            .filter((field)=> field.label !== 'owner_name')
+            .filter((field)=> field.label !== 'Priority')
             .map((field) => {
               const fieldId = field.entityId;
               const fieldName = createFieldName(field, 'customer');
@@ -248,7 +252,10 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
         </FormSubmit>
 
         <div className="remember-forgot-div mt-5">
-          <Field className="relative mt-2 inline-flex items-center space-y-2" name="remember-me">
+          <Field
+            className="relative mt-2 inline-flex w-full items-center space-y-2"
+            name="remember-me"
+          >
             <Checkbox
               aria-labelledby="remember-me"
               className="border-[#008bb7]"
@@ -256,7 +263,7 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
               name="remember-me"
               value="1"
             />
-            <div className="mt-0 flex gap-1">
+            <div className="mt-0 flex w-full justify-between gap-1 xl:justify-start">
               <Label
                 className="ml-2 mt-0 w-[15em] cursor-pointer space-y-2 pb-2 pl-1 text-left text-sm font-normal leading-6 tracking-[0.25px] md:my-0 md:w-auto"
                 htmlFor="remember-me"
@@ -264,21 +271,23 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
               >
                 Keep me informed on sales, news, and special offers
               </Label>
-
-              <a
-                className="ml-2 text-center text-sm font-normal leading-6 tracking-tight text-[#008BB7]"
+              <Link
                 href="#"
+                className="xl:ml-2 text-center text-sm font-normal leading-6 tracking-tight text-[#008BB7]"
               >
                 Privacy Policy
-              </a>
+              </Link>
             </div>
           </Field>
         </div>
 
         <div className="mb-2 mt-2 md:mb-[30px] md:mt-[45px]">
-          <a className="font-open-sans cursor-pointer text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#353535] md:text-lg">
+          <Link
+            href="/login"
+            className="font-open-sans cursor-pointer text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#353535] md:text-lg"
+          >
             Sign in With an Existing Account
-          </a>
+          </Link>
         </div>
       </Form>
     </>

@@ -5,7 +5,6 @@ import { Footer } from '~/components/footer/footer';
 import { Header, HeaderSkeleton } from '~/components/header';
 import { Cart } from '~/components/header/cart';
 import { LocaleType } from '~/i18n/routing';
-// import CustomerSupportDrawer from './sales-buddy/customerSupportDrawer';
 import SalesBuddyPage from './sales-buddy/page';
 
 interface Props extends PropsWithChildren {
@@ -29,7 +28,7 @@ export default async function DefaultLayout({ params, children }: Props) {
       </main>
       <Suspense>
         <Footer />
-        {/* <CustomerSupportDrawer /> */}
+        <SalesBuddyPage/>
       </Suspense>
     </>
   );
