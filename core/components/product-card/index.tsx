@@ -4,7 +4,6 @@ import { ResultOf } from '~/client/graphql';
 import { ProductCard as ComponentProductCard } from '~/components/ui/product-card';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
-import { AddToCart } from './add-to-cart';
 import { ProductCardFragment } from './fragment';
 
 interface Props {
@@ -19,7 +18,6 @@ export const ProductCard = ({
   product,
   imageSize = 'square',
   imagePriority = false,
-  showCart = true,
   showCompare = true,
 }: Props) => {
   const format = useFormatter();
@@ -30,7 +28,6 @@ export const ProductCard = ({
 
   return (
     <ComponentProductCard
-      addToCart={showCart && <AddToCart data={product} />}
       href={path}
       id={entityId.toString()}
       image={defaultImage ? { src: defaultImage.url, altText: defaultImage.altText } : undefined}
