@@ -1,8 +1,8 @@
 import { Sliders } from 'lucide-react';
 import { Suspense } from 'react';
 
-import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/primitives/breadcrumbs';
+import { Streamable } from '@/vibes/soul/lib/streamable';
+import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/primitives/breadcrumbs';
 import { Button } from '@/vibes/soul/primitives/button';
 import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { ListProduct, ProductsList } from '@/vibes/soul/primitives/products-list';
@@ -14,7 +14,7 @@ import { ProductListContainer } from './product-list-container';
 import { Sorting, Option as SortOption } from './sorting';
 
 interface Props {
-  breadcrumbs?: Streamable<Breadcrumb[] | null>;
+  breadcrumbs?: Streamable<Breadcrumb[]>;
   title?: Streamable<string | null>;
   totalCount: Streamable<number>;
   products: Streamable<ListProduct[]>;
@@ -36,7 +36,7 @@ interface Props {
 }
 
 export function ProductsListSection({
-  breadcrumbs: streamableBreadcrumbs,
+  breadcrumbs,
   title = 'Products',
   totalCount,
   products,
@@ -61,9 +61,8 @@ export function ProductsListSection({
       <div className="@container">
         <div className="mx-auto max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-12">
           <div>
-            <Stream fallback={<BreadcrumbsSkeleton />} value={streamableBreadcrumbs}>
-              {(breadcrumbs) => breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
-            </Stream>
+            {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
+
             <div className="flex flex-wrap items-center justify-between gap-4 pb-8 pt-6 text-foreground">
               <h1 className="flex items-center gap-2 font-heading text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
                 <Suspense
