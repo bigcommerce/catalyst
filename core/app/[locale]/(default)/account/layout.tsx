@@ -20,6 +20,10 @@ export default async function AccountLayout({ children, params }: Props) {
     redirect({ href: '/login', locale });
   }
 
+  if (session?.b2bToken) {
+    redirect({ href: '/#/orders', locale });
+  }
+
   return (
     <>
       <TabNavigation />
