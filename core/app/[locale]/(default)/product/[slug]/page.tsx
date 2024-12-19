@@ -3,8 +3,10 @@ import { Metadata } from 'next';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Stream } from '@/vibes/soul/lib/streamable';
+import { FeaturedProductsCarousel } from '@/vibes/soul/sections/featured-products-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
+import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
 
 import { addToCart } from './_actions/add-to-cart';
@@ -93,6 +95,15 @@ const getCtaDisabled = async (productPromise: ReturnType<typeof getProductData>)
   return false;
 };
 
+const getRelatedProducts = async (productPromise: ReturnType<typeof getProductData>) => {
+  const format = await getFormatter();
+  const product = await productPromise;
+
+  const relatedProducts = removeEdgesAndNodes(product.relatedProducts);
+
+  return productCardTransformer(relatedProducts, format);
+};
+
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -164,12 +175,24 @@ export default async function Product(props: Props) {
         quantityLabel={t('ProductDetails.quantity')}
       />
 
-      <Stream fallback={null} value={productPromise}>
-        {(product) => <ProductSchema product={product} />}
-      </Stream>
+      <FeaturedProductsCarousel
+        cta={{ label: t('RelatedProducts.cta'), href: '/shop-all' }}
+        emptyStateSubtitle={t('RelatedProducts.noRelatedProducts')}
+        emptyStateTitle={t('RelatedProducts.browseCatalog')}
+        nextLabel={t('RelatedProducts.nextProducts')}
+        previousLabel={t('RelatedProducts.previousProducts')}
+        products={getRelatedProducts(productPromise)}
+        scrollbarLabel={t('RelatedProducts.scrollbar')}
+        title={t('RelatedProducts.title')}
+      />
 
       <Stream fallback={null} value={productPromise}>
-        {(product) => <ProductViewed product={product} />}
+        {(product) => (
+          <>
+            <ProductSchema product={product} />
+            <ProductViewed product={product} />
+          </>
+        )}
       </Stream>
     </>
   );
