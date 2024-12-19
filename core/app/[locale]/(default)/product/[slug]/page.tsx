@@ -12,6 +12,7 @@ import { productOptionsTransformer } from '~/data-transformers/product-options-t
 import { addToCart } from './_actions/add-to-cart';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
+import { Reviews } from './_components/reviews';
 import { getProductData } from './page-data';
 
 const getOptionValueIds = ({ searchParams }: { searchParams: Awaited<Props['searchParams']> }) => {
@@ -185,6 +186,10 @@ export default async function Product(props: Props) {
         scrollbarLabel={t('RelatedProducts.scrollbar')}
         title={t('RelatedProducts.title')}
       />
+
+      <Stream fallback={null} value={productPromise}>
+        {(product) => <Reviews productId={product.entityId} />}
+      </Stream>
 
       <Stream fallback={null} value={productPromise}>
         {(product) => (
