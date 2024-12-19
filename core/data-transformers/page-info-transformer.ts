@@ -10,10 +10,10 @@ interface PageInfo {
 /**
  * Utility function to convert GraphQL PageInfo object into CursorPaginationInfo
  *
- * @param {PageInfo | undefined} pageInfo - The PageInfo object to transform
+ * @param {PageInfo | undefined | null} pageInfo - The PageInfo object to transform
  * @returns {CursorPaginationInfo}
  */
-export function pageInfoTransformer(pageInfo: PageInfo | undefined): CursorPaginationInfo {
+export function pageInfoTransformer(pageInfo: PageInfo | undefined | null): CursorPaginationInfo {
   return {
     startCursorParamName: 'before',
     startCursor: pageInfo?.hasPreviousPage ? pageInfo.startCursor : null,
