@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { FeaturedBlogPostList } from '@/vibes/soul/sections/featured-blog-post-list';
+import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 
 import { getBlog, getBlogMetaData, getBlogPosts } from './page-data';
 
@@ -24,6 +25,13 @@ async function listBlogPosts(searchParamsPromise: Promise<SearchParams>) {
   return posts;
 }
 
+async function getPaginationInfo(searchParamsPromise: Promise<SearchParams>) {
+  const searchParams = await searchParamsPromise;
+  const blogPosts = await getBlogPosts(searchParams);
+
+  return pageInfoTransformer(blogPosts?.pageInfo);
+}
+
 export default async function Blog(props: Props) {
   const blog = await getBlog();
 
@@ -33,8 +41,18 @@ export default async function Blog(props: Props) {
 
   return (
     <FeaturedBlogPostList
-      cta={{ href: '#', label: 'View All' }}
+      breadcrumbs={[
+        {
+          label: 'Home',
+          href: '/',
+        },
+        {
+          label: 'Blog',
+          href: '#',
+        },
+      ]}
       description={blog.description}
+      paginationInfo={getPaginationInfo(props.searchParams)}
       posts={listBlogPosts(props.searchParams)}
       title={blog.name}
     />
