@@ -83,7 +83,6 @@ const getCartCount = async () => {
         tags: [TAGS.cart],
       },
     },
-    // channelId,
   });
 
   if (!response.data.site.cart) {
