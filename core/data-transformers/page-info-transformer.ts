@@ -1,23 +1,22 @@
+import { ResultOf } from 'gql.tada';
+
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
+import { PaginationFragment } from '~/client/fragments/pagination';
 
-interface PageInfo {
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-  startCursor: string | null;
-  endCursor: string | null;
-}
+export const defaultPageInfo = {
+  hasNextPage: false,
+  hasPreviousPage: false,
+  startCursor: null,
+  endCursor: null,
+};
 
-/**
- * Utility function to convert GraphQL PageInfo object into CursorPaginationInfo
- *
- * @param {PageInfo | undefined} pageInfo - The PageInfo object to transform
- * @returns {CursorPaginationInfo}
- */
-export function pageInfoTransformer(pageInfo: PageInfo | undefined): CursorPaginationInfo {
+export function pageInfoTransformer(
+  pageInfo: ResultOf<typeof PaginationFragment>,
+): CursorPaginationInfo {
   return {
     startCursorParamName: 'before',
-    startCursor: pageInfo?.hasPreviousPage ? pageInfo.startCursor : null,
+    startCursor: pageInfo.startCursor,
     endCursorParamName: 'after',
-    endCursor: pageInfo?.hasNextPage ? pageInfo.endCursor : null,
+    endCursor: pageInfo.endCursor,
   };
 }
