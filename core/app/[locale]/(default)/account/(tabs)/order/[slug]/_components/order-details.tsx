@@ -47,6 +47,13 @@ const OrderSummaryInfo = async ({ summaryInfo }: { summaryInfo: OrderDataType['s
   const format = await getFormatter();
   const { subtotal, shipping, tax, discounts, grandTotal, handlingCost } = summaryInfo;
   const { nonCouponDiscountTotal, couponDiscounts } = discounts;
+  let regSubTotal = subtotal?.value;
+  if(nonCouponDiscountTotal?.value > 0) {
+    regSubTotal -= nonCouponDiscountTotal.value;
+  }
+  couponDiscounts.map(({ discountedAmount }) => {
+    regSubTotal -= discountedAmount.value;
+  });
 
   return (
     <>
@@ -97,7 +104,7 @@ const OrderSummaryInfo = async ({ summaryInfo }: { summaryInfo: OrderDataType['s
           <div className="flex justify-between border-b border-b-[#E8E7E7]">
             <div>{t('orderSubtotal')}</div>
             <div>
-              {format.number(subtotal.value, {
+              {format.number(regSubTotal, {
                 style: 'currency',
                 currency: subtotal.currencyCode,
               })}
