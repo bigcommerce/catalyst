@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 import { cache } from 'react';
 
@@ -5,12 +6,26 @@ import { HeaderSection } from '@/vibes/soul/sections/header-section';
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
-import { readFragment } from '~/client/graphql';
+import { graphql, readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { TAGS } from '~/client/tags';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 
 import { search } from './_actions/search';
 import { HeaderFragment } from './fragment';
+
+const GetCartCountQuery = graphql(`
+  query GetCartCountQuery($cartId: String) {
+    site {
+      cart(entityId: $cartId) {
+        entityId
+        lineItems {
+          totalQuantity
+        }
+      }
+    }
+  }
+`);
 
 const getLayoutData = cache(async () => {
   const customerAccessToken = await getSessionCustomerAccessToken();
@@ -52,6 +67,31 @@ const getLogo = async () => {
   return data.settings ? logoTransformer(data.settings) : '';
 };
 
+const getCartCount = async () => {
+  const cookieStore = await cookies();
+  const cartId = cookieStore.get('cartId')?.value;
+
+  const customerAccessToken = await getSessionCustomerAccessToken();
+
+  const response = await client.fetch({
+    document: GetCartCountQuery,
+    variables: { cartId },
+    customerAccessToken,
+    fetchOptions: {
+      cache: 'no-store',
+      next: {
+        tags: [TAGS.cart],
+      },
+    },
+  });
+
+  if (!response.data.site.cart) {
+    return null;
+  }
+
+  return response.data.site.cart.lineItems.totalQuantity;
+};
+
 export const Header = async () => {
   const t = await getTranslations('Components.Header');
 
@@ -71,6 +111,7 @@ export const Header = async () => {
         mobileMenuTriggerLabel: t('toggleNavigation'),
         openSearchPopupLabel: t('Search.openSearchPopup'),
         logoLabel: t('home'),
+        cartCount: getCartCount(),
       }}
     />
   );

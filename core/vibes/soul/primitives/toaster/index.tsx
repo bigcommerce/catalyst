@@ -1,5 +1,6 @@
 'use client';
 
+import { ReactNode } from 'react';
 import { Toaster as Sonner, toast as SonnerToast } from 'sonner';
 
 import { Alert } from '@/vibes/soul/primitives/alert';
@@ -31,7 +32,7 @@ export const Toaster = ({ ...props }: ToasterProps) => {
 };
 
 export const toast = {
-  success: (message: string, options?: ToastOptions) => {
+  success: (message: ReactNode, options?: ToastOptions) => {
     const position = options?.position;
 
     const toastId = SonnerToast(
@@ -44,7 +45,7 @@ export const toast = {
       { position },
     );
   },
-  error: (message: string, options?: ToastOptions) => {
+  error: (message: ReactNode, options?: ToastOptions) => {
     const position = options?.position;
 
     const toastId = SonnerToast(
@@ -57,7 +58,7 @@ export const toast = {
       { position },
     );
   },
-  warning: (message: string, options?: ToastOptions) => {
+  warning: (message: ReactNode, options?: ToastOptions) => {
     const position = options?.position;
 
     const toastId = SonnerToast(
@@ -70,7 +71,7 @@ export const toast = {
       { position },
     );
   },
-  info: (message: string, options?: ToastOptions) => {
+  info: (message: ReactNode, options?: ToastOptions) => {
     const position = options?.position;
 
     const toastId = SonnerToast(
