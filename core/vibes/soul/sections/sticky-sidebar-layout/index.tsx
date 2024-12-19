@@ -1,18 +1,5 @@
 import { clsx } from 'clsx';
 
-/**
- * This component supports various CSS variables for theming. Here's a comprehensive list, along
- * with their default values:
- *
- * ```css
- * :root {
- *   --section-max-width-medium: 768px;
- *   --section-max-width-lg: 1024px;
- *   --section-max-width-xl: 1280px;
- *   --section-max-width-2xl: 1536px;
- * }
- * ```
- */
 export function StickySidebarLayout({
   className,
   sidebar,
