@@ -4,11 +4,7 @@ import { Suspense } from 'react';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/primitives/breadcrumbs';
 import { Button } from '@/vibes/soul/primitives/button';
-import {
-  CursorPagination,
-  CursorPaginationInfo,
-  CursorPaginationSkeleton,
-} from '@/vibes/soul/primitives/cursor-pagination';
+import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { ListProduct, ProductsList } from '@/vibes/soul/primitives/products-list';
 import * as SidePanel from '@/vibes/soul/primitives/side-panel';
 
@@ -25,7 +21,7 @@ interface Props {
   filters: Streamable<Filter[]>;
   sortOptions: Streamable<SortOption[]>;
   compareProducts?: Streamable<ListProduct[] | null>;
-  paginationInfo?: Streamable<CursorPaginationInfo | null>;
+  paginationInfo?: Streamable<CursorPaginationInfo>;
   compareAction?: React.ComponentProps<'form'>['action'];
   compareLabel?: string;
   filterLabel?: string;
@@ -66,9 +62,7 @@ export function ProductsListSection({
         <div className="mx-auto max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-12">
           <div>
             <Stream fallback={<BreadcrumbsSkeleton />} value={streamableBreadcrumbs}>
-              {(breadcrumbs) =>
-                breadcrumbs && breadcrumbs.length > 1 && <Breadcrumbs breadcrumbs={breadcrumbs} />
-              }
+              {(breadcrumbs) => breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
             </Stream>
             <div className="flex flex-wrap items-center justify-between gap-4 pb-8 pt-6 text-foreground">
               <h1 className="flex items-center gap-2 font-heading text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
@@ -140,9 +134,8 @@ export function ProductsListSection({
                 products={products}
                 showCompare
               />
-              <Stream fallback={<CursorPaginationSkeleton />} value={paginationInfo}>
-                {(info) => info && <CursorPagination info={info} />}
-              </Stream>
+
+              {paginationInfo && <CursorPagination info={paginationInfo} />}
             </ProductListContainer>
           </div>
         </div>
