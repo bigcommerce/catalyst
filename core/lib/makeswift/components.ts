@@ -3,7 +3,9 @@ import './components/button-link/button-link.makeswift';
 import './components/card-carousel/card-carousel.makeswift';
 import './components/card/card.makeswift';
 import './components/carousel/carousel.makeswift';
+import './components/section/section.makeswift';
 import './components/slideshow/slideshow.makeswift';
+import './components/sticky-sidebar/sticky-sidebar.makeswift';
 
 import { MakeswiftComponentType } from '@makeswift/runtime';
 
